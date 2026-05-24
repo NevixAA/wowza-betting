@@ -60,7 +60,7 @@ def _load_notified() -> set:
 
 
 def _save_notified(keys: set) -> None:
-    NOTIFIED_FILE.write_text(json.dumps({"keys": list(keys)}, indent=2))
+    NOTIFIED_FILE.write_text(json.dumps({"keys": list(keys)}, indent=2), encoding="utf-8")
 
 
 def _drift_emoji(signal: str) -> str:
