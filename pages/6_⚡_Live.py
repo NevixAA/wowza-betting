@@ -10,8 +10,9 @@ import streamlit as st
 
 st.set_page_config(page_title="Live Scanner", page_icon="⚡", layout="wide")
 
-BASE_DIR   = Path(__file__).resolve().parents[1]
-TIPS_FILE  = BASE_DIR / "output" / "live_tips.csv"
+BASE_DIR    = Path(__file__).resolve().parents[1]
+TIPS_FILE   = BASE_DIR / "output" / "live_tips.csv"
+GAMES_FILE  = BASE_DIR / "output" / "live_games.csv"
 
 SIGNAL_META = {
     "UNDER_HOLD":     ("🔒", "#00cc88", "UNDER 2.5 — model prediction holding, time running out"),
@@ -45,10 +46,16 @@ with col_run:
 def load_tips():
     if not TIPS_FILE.exists():
         return pd.DataFrame()
-    df = pd.read_csv(TIPS_FILE)
-    return df
+    return pd.read_csv(TIPS_FILE)
 
-df = load_tips()
+@st.cache_data(ttl=60)
+def load_games():
+    if not GAMES_FILE.exists():
+        return pd.DataFrame()
+    return pd.read_csv(GAMES_FILE)
+
+df    = load_tips()
+games = load_games()
 
 # ── How it works ──────────────────────────────────────────────────────────────
 with st.expander("ℹ️ How this works"):
@@ -166,4 +173,38 @@ with st.expander("📊 Raw data"):
         "live_p_under", "live_p_over", "pre_p_over", "lam_remaining"
     ]], use_container_width=True)
 
-st.caption(f"Signals refresh every 10 minutes · Only leagues where we find edge · Powered by Poisson statistics")
+# ── All monitored live games ──────────────────────────────────────────────────
+st.markdown("---")
+st.subheader(f"👁 All Monitored Games ({len(games)})")
+
+if games.empty:
+    st.info("No live games right now in our tracked leagues.")
+else:
+    signal_matches = set(df["match"].tolist()) if not df.empty else set()
+
+    for _, g in games.iterrows():
+        has_signal  = g["match"] in signal_matches
+        has_pred    = str(g.get("has_prediction", "")).lower() == "true"
+        border      = "#ff4444" if has_signal else ("#00cc88" if has_pred else "#444")
+        badge       = "🚨 SIGNAL" if has_signal else ("📊 tracked" if has_pred else "👁 watching")
+        badge_color = "#ff4444" if has_signal else ("#00cc88" if has_pred else "#666")
+
+        p_under = g.get("live_p_under")
+        fair    = g.get("fair_under_odds")
+        p_str   = f"P(under): <b>{p_under}%</b> | Fair UNDER: <b>{fair}</b>" if pd.notna(p_under) and p_under else "No pre-match prediction"
+
+        st.markdown(f"""
+        <div style="border-left:3px solid {border}; padding:10px 14px; margin:6px 0;
+                    background:#111827; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <span style="color:white; font-weight:bold">{g['match']}</span>
+                <span style="color:#888; font-size:0.85em"> · {g['league']}</span><br/>
+                <span style="color:#ccc">⏱ {g['elapsed_mins']}' &nbsp;|&nbsp; ⚽ <b>{g['score']}</b>
+                &nbsp;|&nbsp; {p_str}</span>
+            </div>
+            <span style="background:{badge_color}22; color:{badge_color}; padding:3px 10px;
+                         border-radius:10px; font-size:0.8em; white-space:nowrap">{badge}</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+st.caption(f"Signals refresh every 30 seconds · Only leagues where we find edge · Powered by Poisson statistics")

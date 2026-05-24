@@ -32,6 +32,7 @@ import config
 log = logging.getLogger(__name__)
 
 LIVE_TIPS_FILE    = config.OUTPUT_DIR / "live_tips.csv"
+LIVE_GAMES_FILE   = config.OUTPUT_DIR / "live_games.csv"
 LIVE_NOTIFIED     = Path(__file__).resolve().parents[1] / "telegram_bot" / "live_notified.json"
 
 MIN_FAIR_UNDER    = 1.28   # only alert if fair UNDER odds >= this (meaningful value)
@@ -360,11 +361,35 @@ def run() -> list[dict]:
     if not live_games:
         log.info("  No in-progress games found right now.")
         _save_empty()
+        _save_empty_games()
         return []
 
     log.info(f"  {len(live_games)} in-progress game(s) found")
 
     pred_df = _load_predictions()
+
+    # Save all live games for dashboard visibility (with or without signal)
+    game_rows = []
+    for g in live_games:
+        pred = _match_prediction(pred_df, g["home_team"], g["away_team"]) if not pred_df.empty else None
+        p_over = float(pred["p_over25"]) if pred else None
+        lam    = _lambda_from_p_over(p_over) if p_over else None
+        probs  = _live_probs(g["total_goals"], g["elapsed_mins"], lam) if lam else {}
+        game_rows.append({
+            "league":          g["league"],
+            "match":           f"{g['home_team']} vs {g['away_team']}",
+            "score":           f"{g['home_goals']}-{g['away_goals']}",
+            "elapsed_mins":    g["elapsed_mins"],
+            "has_prediction":  pred is not None,
+            "pre_signal":      pred.get("signal_tier", "-") if pred else "-",
+            "pre_p_over":      round(p_over * 100, 1) if p_over else None,
+            "live_p_under":    round(probs.get("p_under", 0) * 100, 1) if probs else None,
+            "fair_under_odds": probs.get("fair_under_odds") if probs else None,
+            "fair_over_odds":  probs.get("fair_over_odds")  if probs else None,
+            "updated_at":      datetime.now().strftime("%H:%M"),
+        })
+    pd.DataFrame(game_rows).to_csv(LIVE_GAMES_FILE, index=False)
+
     if pred_df.empty:
         log.warning("  No predictions.csv found — run predict first.")
         _save_empty()
@@ -388,6 +413,14 @@ def run() -> list[dict]:
         _save_empty()
 
     return tips
+
+
+def _save_empty_games():
+    pd.DataFrame(columns=[
+        "league", "match", "score", "elapsed_mins", "has_prediction",
+        "pre_signal", "pre_p_over", "live_p_under", "fair_under_odds",
+        "fair_over_odds", "updated_at",
+    ]).to_csv(LIVE_GAMES_FILE, index=False)
 
 
 def _save_empty():
