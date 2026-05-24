@@ -51,7 +51,10 @@ def _send(token: str, chat_id: str, text: str) -> bool:
 
 def _load_notified() -> set:
     if NOTIFIED_FILE.exists():
-        data = json.loads(NOTIFIED_FILE.read_text())
+        text = NOTIFIED_FILE.read_text(encoding="utf-8-sig").strip()
+        if not text:
+            return set()
+        data = json.loads(text)
         return set(data.get("keys", []))
     return set()
 
@@ -121,6 +124,127 @@ def notify_new_snipers() -> int:
     return sent
 
 
+def notify_live_signals() -> int:
+    """Send Telegram alerts for live value signals. Returns count sent."""
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    live_file = app_config.OUTPUT_DIR / "live_tips.csv"
+    if not live_file.exists():
+        return 0
+
+    df = pd.read_csv(live_file)
+    if df.empty or "signal_type" not in df.columns:
+        return 0
+
+    notified = _load_notified()
+
+    # Load live-specific notified (keyed by match+minute window to re-alert if situation changes)
+    live_notified_file = Path(__file__).resolve().parent / "live_notified.json"
+    live_notified = set()
+    if live_notified_file.exists():
+        try:
+            text = live_notified_file.read_text(encoding="utf-8-sig").strip()
+            live_notified = set(json.loads(text).get("keys", []))
+        except Exception:
+            pass
+
+    SIGNAL_EMOJI = {
+        "UNDER_HOLD":     "🔒",
+        "SLEEPING_GAME":  "😴",
+        "UNDER_RECOVERY": "📉",
+        "STRONG_STUCK":   "💪",
+        "COMEBACK":       "🔥",
+    }
+
+    sent = 0
+    new_live_keys = set(live_notified)
+
+    for _, row in df.iterrows():
+        # Key includes 10-minute window so re-alerts if match progresses significantly
+        minute_bucket = (int(row["elapsed_mins"]) // 10) * 10
+        key = f"LIVE|{row['match']}|{row['signal_type']}|{minute_bucket}"
+        if key in live_notified:
+            continue
+
+        emoji   = SIGNAL_EMOJI.get(row["signal_type"], "📌")
+        is_under = "UNDER" in str(row["bet"])
+        fair    = row["fair_under_odds"] if is_under else row["fair_over_odds"]
+        live_p  = row["live_p_under"] if is_under else row["live_p_over"]
+
+        msg = (
+            f"{emoji} <b>LIVE VALUE — {row['signal_type']}</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"🏆 {row['league']}\n"
+            f"⚽ {row['match']}\n"
+            f"⏱ {row['elapsed_mins']}' | Score: <b>{row['score']}</b>\n"
+            f"📌 Bet: <b>{row['bet']}</b>\n"
+            f"💰 Fair price: <b>{fair}</b> | P={live_p*100:.0f}%\n"
+            f"📋 {row['reason'][:120]}\n"
+            f"⚠️ Check your bookmaker live screen!"
+        )
+
+        if _send(token, chat_id, msg):
+            new_live_keys.add(key)
+            sent += 1
+            print(f"  Live: {row['match']} [{row['signal_type']}] {row['score']} @{row['elapsed_mins']}'")
+
+    live_notified_file.write_text(
+        json.dumps({"keys": list(new_live_keys)}, indent=2), encoding="utf-8"
+    )
+    return sent
+
+
+def notify_wc_strong() -> int:
+    """Check worldcup_tips.csv for new STRONG drift signals and send Telegram alerts."""
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
+    if not wc_file.exists():
+        return 0
+
+    df = pd.read_csv(wc_file)
+    strong = df[df["signal"] == "STRONG"].copy()
+    if strong.empty:
+        return 0
+
+    notified = _load_notified()
+    sent = 0
+
+    for _, row in strong.iterrows():
+        key = f"WC|{str(row['date'])[:10]}|{row['match']}|{row['market']}"
+        if key in notified:
+            continue
+
+        direction = "▼ Shortening" if row["drift_pct"] < 0 else "▲ Lengthening"
+        msg = (
+            f"🌍 <b>WORLD CUP SHARP MONEY</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"📅 {str(row['date'])[:10]}\n"
+            f"⚽ {row['match']}\n"
+            f"📌 <b>{row['market']}</b>\n"
+            f"💰 Opening: {row['opening_odds']} → Now: {row['current_odds']}\n"
+            f"📉 Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
+            f"🔍 Based on {row['snapshots']} snapshots"
+        )
+
+        if _send(token, chat_id, msg):
+            notified.add(key)
+            sent += 1
+            print(f"  WC Sent: {row['match']} — {row['market']} {row['drift_pct']:+.1f}%")
+
+    _save_notified(notified)
+    return sent
+
+
 def get_chat_id(token: str) -> None:
     """Print the chat_id of the last user who messaged the bot."""
     r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=10)
@@ -141,5 +265,7 @@ if __name__ == "__main__":
         cfg = _load_config()
         get_chat_id(cfg["token"])
     else:
-        n = notify_new_snipers()
-        print(f"Notifications sent: {n}")
+        n    = notify_new_snipers()
+        live = notify_live_signals()
+        wc   = notify_wc_strong()
+        print(f"Notifications sent: {n} SNIPER + {live} Live + {wc} World Cup")
