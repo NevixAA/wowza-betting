@@ -50,7 +50,8 @@ def _run(script: str, args: list[str] = []) -> bool:
     cmd = [str(VENV_PY), str(BASE_DIR / script)] + args
     try:
         result = subprocess.run(cmd, cwd=BASE_DIR, timeout=300,
-                                capture_output=True, text=True)
+                                capture_output=True, text=True,
+                                encoding="utf-8", errors="replace")
         if result.returncode == 0:
             log.info(f"  OK: {script}")
         else:
