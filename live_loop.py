@@ -23,8 +23,8 @@ from telegram_bot.notifier import notify_live_signals
 
 MATCH_HOUR_START = 11   # don't scan before 11:00
 MATCH_HOUR_END   = 24   # don't scan after midnight
-INTERVAL_LIVE    = 30   # seconds between scans when games are active
-INTERVAL_IDLE    = 300  # seconds between scans when no live games (5 min)
+INTERVAL_LIVE    = 120  # seconds between scans when games are active (2 min)
+INTERVAL_IDLE    = 600  # seconds between scans when no live games (10 min)
 INTERVAL_SLEEP   = 600  # seconds when outside match hours (10 min)
 
 logging.basicConfig(

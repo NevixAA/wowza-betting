@@ -40,8 +40,8 @@ UPDATE_HOURS        = {7, 9, 11, 13, 15, 17, 19, 21, 23}
 WORLDCUP_HOURS      = {8, 10, 12, 14, 16, 18, 20, 22}
 LIVE_HOUR_START     = 11
 LIVE_HOUR_END       = 24
-LIVE_INTERVAL_LIVE  = 30    # seconds when games active
-LIVE_INTERVAL_IDLE  = 300   # seconds when no games
+LIVE_INTERVAL_LIVE  = 120   # seconds when games active (2 min)
+LIVE_INTERVAL_IDLE  = 600   # seconds when no games (10 min)
 
 
 # ── Task runner ───────────────────────────────────────────────────────────────
