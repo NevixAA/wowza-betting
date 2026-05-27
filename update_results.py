@@ -67,24 +67,34 @@ def _names_match(a: str, b: str) -> bool:
     return False
 
 
-# ── football-data.co.uk scores fetch (AUT, SWE, DNK) ─────────────────────────
+# ── football-data.co.uk scores fetch ─────────────────────────────────────────
+# "new" format: football-data.co.uk/new/{code}.csv  (cols: Home/Away/HG/AG/Date)
+# "std" format: football-data.co.uk/mmz4281/2526/{code}.csv (cols: HomeTeam/AwayTeam/FTHG/FTAG/Date)
 
-# Leagues served by football-data.co.uk that OddsAPI doesn't cover for scores
 _FD_SOURCES = {
-    "Austrian Bundesliga": ("new", "AUT", "Home", "Away", "HG",   "AG",   "Date"),
-    "Sweden Allsvenskan":  ("new", "SWE", "Home", "Away", "HG",   "AG",   "Date"),
-    "Denmark Superliga":   ("csv", "DNK", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    # new format
+    "Austrian Bundesliga":      ("new", "AUT", "Home", "Away", "HG",   "AG",   "Date"),
+    "Sweden Allsvenskan":       ("new", "SWE", "Home", "Away", "HG",   "AG",   "Date"),
+    "Denmark Superliga":        ("new", "DNK", "Home", "Away", "HG",   "AG",   "Date"),
+    "Japan J-League":           ("new", "JPN", "Home", "Away", "HG",   "AG",   "Date"),
+    "USA MLS":                  ("new", "USA", "Home", "Away", "HG",   "AG",   "Date"),
+    "China Super League":       ("new", "CHN", "Home", "Away", "HG",   "AG",   "Date"),
+    "Ireland Premier Division": ("new", "IRL", "Home", "Away", "HG",   "AG",   "Date"),
+    # standard format (2025/26 season)
+    "Bundesliga 2":             ("std", "D2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    "La Liga 2":                ("std", "SP2", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    "Ligue 2":                  ("std", "F2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    "League One":               ("std", "E2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    "League Two":               ("std", "E3",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    "Greek Super League":       ("std", "G1",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    "Belgian First Division A": ("std", "B1",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
 }
 
 _FD_NEW_URL = "https://www.football-data.co.uk/new/{code}.csv"
+_FD_STD_URL = "https://www.football-data.co.uk/mmz4281/2526/{code}.csv"
 
 def fetch_scores_fd(league: str) -> list[dict]:
-    """
-    Fetch completed results for leagues not covered by OddsAPI scores.
-    - new format (AUT, SWE): download fresh from football-data.co.uk
-    - csv format (DNK): use latest local CSV already downloaded
-    Returns same format as fetch_scores().
-    """
+    """Fetch completed results from football-data.co.uk (free, no quota)."""
     if league not in _FD_SOURCES:
         return []
 
@@ -95,23 +105,19 @@ def fetch_scores_fd(league: str) -> list[dict]:
 
         if fmt == "new":
             url = _FD_NEW_URL.format(code=code)
-            r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-            if r.status_code != 200:
-                log.debug(f"  FD {league}: HTTP {r.status_code}")
-                return []
-            raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
-                              on_bad_lines="skip", low_memory=False)
-            # Keep only current season rows
-            if "Season" in raw.columns:
-                raw = raw[raw["Season"].astype(str).str.contains("2025|2026")].copy()
+        else:  # std
+            url = _FD_STD_URL.format(code=code)
 
-        else:  # local CSV (DNK etc.)
-            csv_dir = config.DATA_DIR / "data" / "football_data" / code
-            csvs = sorted(csv_dir.glob(f"{code}_*.csv"))
-            if not csvs:
-                log.debug(f"  FD {league}: no local CSV found in {csv_dir}")
-                return []
-            raw = pd.read_csv(csvs[-1], low_memory=False)
+        r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+        if r.status_code != 200:
+            log.debug(f"  FD {league}: HTTP {r.status_code}")
+            return []
+
+        raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
+                          on_bad_lines="skip", low_memory=False)
+
+        if fmt == "new" and "Season" in raw.columns:
+            raw = raw[raw["Season"].astype(str).str.contains("2025|2026")].copy()
 
         results = []
         for _, row in raw.iterrows():

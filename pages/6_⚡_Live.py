@@ -25,6 +25,10 @@ SIGNAL_META = {
 st.title("⚡ Live Value Scanner")
 st.caption("In-play signals from Poisson recalculation. Check your bookmaker's live screen to compare odds.")
 
+# ── Auto-refresh every 2 minutes ──────────────────────────────────────────────
+import streamlit.components.v1 as components
+components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
+
 # ── Refresh ───────────────────────────────────────────────────────────────────
 col_ref, col_run = st.columns([1, 4])
 with col_ref:
@@ -42,13 +46,13 @@ with col_run:
         st.rerun()
 
 # ── Load data ─────────────────────────────────────────────────────────────────
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=120)
 def load_tips():
     if not TIPS_FILE.exists():
         return pd.DataFrame()
     return pd.read_csv(TIPS_FILE)
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=120)
 def load_games():
     if not GAMES_FILE.exists():
         return pd.DataFrame()

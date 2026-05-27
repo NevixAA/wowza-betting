@@ -16,6 +16,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import pandas as pd
 import requests
 
@@ -68,7 +71,7 @@ def _drift_emoji(signal: str) -> str:
 
 
 def notify_new_snipers() -> int:
-    """Check bets.csv for new SNIPERs and send Telegram alerts. Returns count sent."""
+    """Check bets.csv for new SNIPER and VALUE tips and send Telegram alerts. Returns count sent."""
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")
@@ -82,26 +85,37 @@ def notify_new_snipers() -> int:
         return 0
 
     df = pd.read_csv(bets_file)
-    snipers = df[df["signal_tier"] == "SNIPER"].copy()
-    if snipers.empty:
+    tips = df[df["signal_tier"].isin(["SNIPER", "VALUE"])].copy()
+
+    # Only upcoming games — never send finished matches
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    tips = tips[tips["date"].astype(str).str[:10] >= today_str]
+
+    if tips.empty:
         return 0
 
     notified = _load_notified()
     sent = 0
 
-    for _, row in snipers.iterrows():
+    for _, row in tips.iterrows():
         key = f"{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}|{row.get('best_side','')}"
         if key in notified:
             continue
 
+        tier  = row["signal_tier"]
         side  = row.get("best_side") or row.get("bet", "")
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
         edge  = float(row.get("best_edge", 0)) * 100
         drift = _drift_emoji(row.get("drift_signal", "New"))
         model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if row.get("model_type") == "standard" else "🌍 New-Format"
 
+        if tier == "SNIPER":
+            header = f"🎯 <b>SNIPER TIP</b> {drift}"
+        else:
+            header = f"📡 <b>VALUE TIP</b> (not a sniper) {drift}"
+
         msg = (
-            f"🎯 <b>SNIPER TIP</b> {drift}\n"
+            f"{header}\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"📅 {str(row['date'])[:10]}\n"
             f"🏆 {row.get('league','')}\n"
@@ -114,13 +128,12 @@ def notify_new_snipers() -> int:
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
-            print(f"  Sent: {row['home_team']} vs {row['away_team']} — {side}")
+            _save_notified(notified)  # save after each send so crashes don't cause duplicates
+            print(f"  Sent [{tier}]: {row['home_team']} vs {row['away_team']} — {side}")
 
-    _save_notified(notified)
     if sent:
-        # Summary message
         _send(token, chat_id,
-              f"📋 <b>{sent} new SNIPER tip(s)</b> found at {datetime.now().strftime('%H:%M')}")
+              f"📋 <b>{sent} new tip(s)</b> sent at {datetime.now().strftime('%H:%M')}")
     return sent
 
 
