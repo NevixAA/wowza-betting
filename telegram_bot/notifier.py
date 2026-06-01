@@ -85,7 +85,10 @@ def notify_new_snipers() -> int:
         return 0
 
     df = pd.read_csv(bets_file)
-    tips = df[df["signal_tier"].isin(["SNIPER", "VALUE"])].copy()
+    tips = df[
+        df["signal_tier"].isin(["SNIPER", "VALUE"]) &
+        df["bet"].isin(["UNDER", "OVER"])
+    ].copy()
 
     # Only upcoming games — never send finished matches
     today_str = datetime.now().strftime("%Y-%m-%d")
