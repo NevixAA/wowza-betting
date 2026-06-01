@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 PREDICT_HOURS       = {6, 10, 14, 18, 22}
 UPDATE_HOURS        = {7, 9, 11, 13, 15, 17, 19, 21, 23}
 WORLDCUP_HOURS      = {8, 10, 12, 14, 16, 18, 20, 22}
+SHARP_HOURS         = {8, 10, 12, 14, 16, 18, 20, 22}
 LIVE_HOUR_START     = 11
 LIVE_HOUR_END       = 24
 LIVE_INTERVAL_LIVE  = 120   # seconds when games active (2 min)
@@ -92,6 +93,7 @@ def main():
     last_predict  = datetime.min
     last_results  = datetime.min
     last_worldcup = datetime.min
+    last_sharp    = datetime.min
     last_telegram = datetime.min
     last_gitpush  = datetime.min
 
@@ -135,6 +137,12 @@ def main():
                 log.info(f"[{now.strftime('%H:%M')}] Running WORLD CUP...")
                 _run("worldcup/tracker.py")
                 last_worldcup = now
+
+            # ── Sharp money tracker every 2h ─────────────────────────────────
+            if hour in SHARP_HOURS and (now - last_sharp).total_seconds() > 3500:
+                log.info(f"[{now.strftime('%H:%M')}] Running SHARP TRACKER...")
+                _run("src/sharp_tracker.py")
+                last_sharp = now
 
             # ── Live scanner ─────────────────────────────────────────────────
             if LIVE_HOUR_START <= hour < LIVE_HOUR_END:
