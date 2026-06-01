@@ -108,14 +108,28 @@ def _live_probs(goals_scored: int, elapsed_mins: float, lam_total: float) -> dic
 
 # ── Live scores fetch ─────────────────────────────────────────────────────────
 
+def _leagues_with_games_today() -> set[str]:
+    """Return leagues that have at least one prediction for today (saves API credits)."""
+    try:
+        preds = pd.read_csv(config.OUTPUT_DIR / "predictions.csv")
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        return set(preds[preds["date"].astype(str).str[:10] == today]["league"].unique())
+    except Exception:
+        return set(config.ENABLED_LEAGUES)  # fallback: scan all
+
+
 def _fetch_live_scores() -> list[dict]:
-    """Fetch in-progress + recent scores for all enabled leagues."""
+    """Fetch in-progress + recent scores — only for leagues with games today."""
     live = []
     seen = set()
+
+    active_leagues = _leagues_with_games_today()
 
     for league, sport_key in config.ODDS_API_SPORT_KEYS.items():
         if league not in config.ENABLED_LEAGUES:
             continue
+        if league not in active_leagues:
+            continue  # no games today in this league — skip the API call
         try:
             r = requests.get(
                 f"https://api.the-odds-api.com/v4/sports/{sport_key}/scores",
