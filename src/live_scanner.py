@@ -41,6 +41,13 @@ MIN_ELAPSED       = 45     # don't alert before half-time
 MIN_LIVE_EDGE     = 0.12   # 12% edge threshold for live alerts (higher bar than pre-match)
 ATTACK_STR_HIGH   = 1.25   # threshold for "strong attack" signal
 
+IDLE_RECHECK_SECS   = 1800  # re-check a league with no live games every 30 min
+ACTIVE_RECHECK_SECS = 120   # re-check a league with live games every 2 min
+
+# Per-league cache — persists between calls when imported inline by master_loop
+_league_last_active:  dict = {}  # league -> datetime of last live game found
+_league_last_checked: dict = {}  # league -> datetime of last API call
+
 
 # ── Poisson helpers ───────────────────────────────────────────────────────────
 
@@ -119,9 +126,10 @@ def _leagues_with_games_today() -> set[str]:
 
 
 def _fetch_live_scores() -> list[dict]:
-    """Fetch in-progress + recent scores — only for leagues with games today."""
+    """Fetch in-progress scores — only for leagues with games today that are due a check."""
     live = []
     seen = set()
+    now = datetime.now(timezone.utc)
 
     active_leagues = _leagues_with_games_today()
 
@@ -129,7 +137,19 @@ def _fetch_live_scores() -> list[dict]:
         if league not in config.ENABLED_LEAGUES:
             continue
         if league not in active_leagues:
-            continue  # no games today in this league — skip the API call
+            continue  # no games today in this league
+
+        last_checked = _league_last_checked.get(league)
+        last_active  = _league_last_active.get(league)
+
+        if last_checked is not None:
+            secs_since_check = (now - last_checked).total_seconds()
+            recently_active  = last_active and (now - last_active).total_seconds() < ACTIVE_RECHECK_SECS
+            wait = ACTIVE_RECHECK_SECS if recently_active else IDLE_RECHECK_SECS
+            if secs_since_check < wait:
+                continue  # too soon to re-check this league
+
+        _league_last_checked[league] = now
         try:
             r = requests.get(
                 f"https://api.the-odds-api.com/v4/sports/{sport_key}/scores",
@@ -169,6 +189,8 @@ def _fetch_live_scores() -> list[dict]:
                 if key in seen:
                     continue
                 seen.add(key)
+
+                _league_last_active[league] = now  # mark league as active right now
 
                 live.append({
                     "league":      league,
