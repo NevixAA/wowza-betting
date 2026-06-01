@@ -152,7 +152,7 @@ BACKTEST_WALK_SIZE = 60
 BACKTEST_MIN_TRAIN = 400
 
 # ── APIs ──────────────────────────────────────────────────────────────────────
-ODDS_API_KEY = os.getenv("ODDS_API_KEY", "61b2774a8935e8df42e3c66309606663")
+ODDS_API_KEY = os.getenv("ODDS_API_KEY", "ecf45e338614775b3f476c2d7d6fa0bd")
 API_KEY      = os.getenv("API_KEY",      "d96374d5cdmshe35b5a98fe9c502p175d62jsn647d9735d7d0")
 API_HOST     = "api-football-v1.p.rapidapi.com"
 API_SEASON   = os.getenv("API_SEASON", "2025")
