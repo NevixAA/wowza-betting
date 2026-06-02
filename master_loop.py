@@ -37,7 +37,7 @@ log = logging.getLogger(__name__)
 # ── Schedule config ───────────────────────────────────────────────────────────
 PREDICT_HOURS       = {6, 10, 14, 18, 22}
 UPDATE_HOURS        = {7, 9, 11, 13, 15, 17, 19, 21, 23}
-WORLDCUP_HOURS      = {8, 10, 12, 14, 16, 18, 20, 22}
+WORLDCUP_HOURS      = {8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22}
 SHARP_HOURS         = {8, 10, 12, 14, 16, 18, 20, 22}
 LIVE_HOUR_START     = 11
 LIVE_HOUR_END       = 24
