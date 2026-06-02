@@ -171,9 +171,34 @@ if match_options:
         if rows:
             df_h = pd.DataFrame(rows)
             df_h["time"] = pd.to_datetime(df_h["time"])
-            fig2 = px.line(df_h, x="time", y="odds", color="side",
-                           title=f"{selected_match} — {market_label} odds over time",
-                           template="plotly_dark")
+
+            # Zoom Y-axis tight around actual values so movement is visible
+            y_min = df_h["odds"].min()
+            y_max = df_h["odds"].max()
+            padding = max((y_max - y_min) * 0.5, 0.05)
+
+            fig2 = px.line(
+                df_h, x="time", y="odds", color="side",
+                title=f"{selected_match} — {market_label} odds movement",
+                markers=True,
+                color_discrete_sequence=["#4fc3f7", "#ff7043", "#66bb6a", "#ab47bc"],
+            )
+            fig2.update_traces(line=dict(width=2.5), marker=dict(size=6))
+            fig2.update_layout(
+                template="plotly_dark",
+                plot_bgcolor="#0e1117",
+                paper_bgcolor="#0e1117",
+                font_color="white",
+                height=350,
+                yaxis=dict(
+                    range=[y_min - padding, y_max + padding],
+                    title="Odds",
+                    gridcolor="#2a2a3e",
+                ),
+                xaxis=dict(title="", gridcolor="#2a2a3e"),
+                legend=dict(title="", bgcolor="#1a1a2e", bordercolor="#333"),
+                margin=dict(l=40, r=20, t=50, b=40),
+            )
             st.plotly_chart(fig2, use_container_width=True)
 
 # ── Footer ────────────────────────────────────────────────────────────────────
