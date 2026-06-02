@@ -21,6 +21,10 @@ HISTORY_FILE = BASE_DIR / "output" / "worldcup_history.json"
 st.title("🌍 World Cup 2026 — Sharp Money Tracker")
 st.caption("No ML predictions. Pure odds drift analysis. Where the money flows, the edge follows.")
 
+if st.button("🔄 Refresh"):
+    st.cache_data.clear()
+    st.rerun()
+
 # ── Load data ─────────────────────────────────────────────────────────────────
 @st.cache_data(ttl=300)
 def load_tips():

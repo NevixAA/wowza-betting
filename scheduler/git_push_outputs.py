@@ -21,6 +21,10 @@ def git_push():
         "output/backtest_results_standard.csv",
         "output/backtest_by_league_standard.csv",
         "output/predictions.csv",
+        "output/worldcup_tips.csv",
+        "output/sharp_tips.csv",
+        "output/live_tips.csv",
+        "output/live_games.csv",
         "models/feature_importances_standard.csv",
         "models/feature_importances_newformat.csv",
     ]
