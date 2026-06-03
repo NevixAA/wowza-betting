@@ -7,12 +7,17 @@ using Poisson statistics + pre-match model predictions.
 No live odds API needed — we calculate the FAIR live price and alert the user
 to check their bookmaker's live screen.
 
-Signal types:
+Full-time signal types:
   UNDER_HOLD      — 0-0 or low score at 60+ min, model said UNDER, still good value
   SLEEPING_GAME   — two low-scoring teams, 0-0 at 75+ min, UNDER almost locked
   UNDER_RECOVERY  — score is 1-1 or 2-0, time left, Poisson says UNDER still value
   STRONG_STUCK    — high attack-strength team not scoring, pushing for goals → OVER value
   COMEBACK        — team losing at 60+ min has strong attack → OVER / draw value
+
+Half-time signal types (first half only, zero extra API calls):
+  HT_UNDER_0.5    — 0-0 at 35+ min, barely any time left, lock UNDER 0.5 HT
+  HT_UNDER_1.5    — low score at 25+ min, UNDER 1.5 HT fair price attractive
+  HT_OVER_0.5     — 0-0 at 20-38 min, strong attack teams, OVER 0.5 HT still live
 """
 from __future__ import annotations
 
@@ -40,6 +45,12 @@ MIN_FAIR_OVER     = 2.00   # only alert OVER if fair odds >= this
 MIN_ELAPSED       = 45     # don't alert before half-time
 MIN_LIVE_EDGE     = 0.12   # 12% edge threshold for live alerts (higher bar than pre-match)
 ATTACK_STR_HIGH   = 1.25   # threshold for "strong attack" signal
+
+# Half-time signal thresholds
+HT_MIN_ELAPSED    = 20     # min first-half minutes for HT signals
+HT_LOCK_ELAPSED   = 35     # min minutes for HT UNDER 0.5 lock signal
+HT_MIN_FAIR_UNDER = 1.18   # fair HT UNDER price must be >= this
+HT_MIN_FAIR_OVER  = 1.55   # fair HT OVER price must be >= this
 
 IDLE_RECHECK_SECS   = 1800  # re-check a league with no live games every 30 min
 ACTIVE_RECHECK_SECS = 120   # re-check a league with live games every 2 min
@@ -111,6 +122,34 @@ def _live_probs(goals_scored: int, elapsed_mins: float, lam_total: float) -> dic
         "fair_over_odds":  fair_over,
         "lam_remaining":   round(lam_remaining, 3),
     }
+
+
+def _ht_probs(ht_goals: int, elapsed_h1: float, lam_total: float) -> dict:
+    """
+    Calculate fair HT O/U prices for lines 0.5, 1.5, 2.5.
+    Uses first-half lambda = lam_total / 2.
+    Only valid when elapsed_h1 < 45 (first half).
+    """
+    lam_ht         = lam_total / 2
+    remaining_frac = max(0.0, (45.0 - elapsed_h1) / 45.0)
+    lam_remaining  = lam_ht * remaining_frac
+    result         = {"lam_ht_remaining": round(lam_remaining, 3)}
+
+    for line in [0.5, 1.5, 2.5]:
+        threshold = int(line)  # 0, 1, 2
+        if ht_goals > threshold:
+            p_under, p_over = 0.0, 1.0
+        else:
+            goals_needed = threshold + 1 - ht_goals
+            p_under = _poisson_cdf(goals_needed - 1, lam_remaining)
+            p_over  = 1.0 - p_under
+        line_key = str(line).replace(".", "")
+        result[f"ht_p_under_{line_key}"] = round(p_under, 4)
+        result[f"ht_p_over_{line_key}"]  = round(p_over,  4)
+        result[f"ht_fair_under_{line_key}"] = round(1.0 / max(p_under, 0.01), 2)
+        result[f"ht_fair_over_{line_key}"]  = round(1.0 / max(p_over,  0.01), 2)
+
+    return result
 
 
 # ── Live scores fetch ─────────────────────────────────────────────────────────
@@ -365,6 +404,61 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]
                     "reason":      f"{away} losing {away_g}-{home_g} at {elapsed}min "
                                    f"with attack str {away_atk:.2f}. Expect push. "
                                    f"Fair OVER price: {probs['fair_over_odds']}",
+                })
+
+        # ── HT Signals (first half only) ─────────────────────────────────────
+        if HT_MIN_ELAPSED <= elapsed < 45:
+            ht = _ht_probs(total_g, elapsed, lam)
+
+            # HT Signal 1: UNDER 0.5 lock — 0-0 late in first half
+            if (elapsed >= HT_LOCK_ELAPSED
+                    and total_g == 0
+                    and ht["ht_fair_under_05"] >= HT_MIN_FAIR_UNDER):
+                tips.append({**base,
+                    "signal_type": "HT_UNDER_0.5",
+                    "bet":         "HT UNDER 0.5",
+                    "reason":      f"0-0 at {elapsed}min first half. "
+                                   f"P(HT UNDER 0.5)={ht['ht_p_under_05']*100:.0f}%. "
+                                   f"Fair price: {ht['ht_fair_under_05']}",
+                    "fair_under_odds": ht["ht_fair_under_05"],
+                    "fair_over_odds":  ht["ht_fair_over_05"],
+                    "live_p_under":    ht["ht_p_under_05"],
+                    "live_p_over":     ht["ht_p_over_05"],
+                })
+
+            # HT Signal 2: UNDER 1.5 value — low score mid first half
+            elif (elapsed >= HT_MIN_ELAPSED
+                    and total_g <= 1
+                    and ht["ht_fair_under_15"] >= HT_MIN_FAIR_UNDER
+                    and ht["ht_p_under_15"] > 0.60):
+                tips.append({**base,
+                    "signal_type": "HT_UNDER_1.5",
+                    "bet":         "HT UNDER 1.5",
+                    "reason":      f"Score {home_g}-{away_g} at {elapsed}min first half. "
+                                   f"P(HT UNDER 1.5)={ht['ht_p_under_15']*100:.0f}%. "
+                                   f"Fair price: {ht['ht_fair_under_15']}",
+                    "fair_under_odds": ht["ht_fair_under_15"],
+                    "fair_over_odds":  ht["ht_fair_over_15"],
+                    "live_p_under":    ht["ht_p_under_15"],
+                    "live_p_over":     ht["ht_p_over_15"],
+                })
+
+            # HT Signal 3: OVER 0.5 — strong attack teams, 0-0, time still left
+            elif (elapsed <= 38
+                    and total_g == 0
+                    and (home_atk >= ATTACK_STR_HIGH or away_atk >= ATTACK_STR_HIGH)
+                    and ht["ht_fair_over_05"] >= HT_MIN_FAIR_OVER):
+                tips.append({**base,
+                    "signal_type": "HT_OVER_0.5",
+                    "bet":         "HT OVER 0.5",
+                    "reason":      f"0-0 at {elapsed}min, strong attack teams "
+                                   f"(H:{home_atk:.2f} A:{away_atk:.2f}). "
+                                   f"P(HT OVER 0.5)={ht['ht_p_over_05']*100:.0f}%. "
+                                   f"Fair price: {ht['ht_fair_over_05']}",
+                    "fair_under_odds": ht["ht_fair_under_05"],
+                    "fair_over_odds":  ht["ht_fair_over_05"],
+                    "live_p_under":    ht["ht_p_under_05"],
+                    "live_p_over":     ht["ht_p_over_05"],
                 })
 
     return tips

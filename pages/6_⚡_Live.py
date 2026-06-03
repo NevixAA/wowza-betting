@@ -15,11 +15,16 @@ TIPS_FILE   = BASE_DIR / "output" / "live_tips.csv"
 GAMES_FILE  = BASE_DIR / "output" / "live_games.csv"
 
 SIGNAL_META = {
+    # Full-time signals
     "UNDER_HOLD":     ("🔒", "#00cc88", "UNDER 2.5 — model prediction holding, time running out"),
     "SLEEPING_GAME":  ("😴", "#44aaff", "UNDER 2.5 — both teams low scoring, game going nowhere"),
     "UNDER_RECOVERY": ("📉", "#ffaa00", "UNDER 2.5 — 2 goals scored, 1 more needed for over, time left"),
     "STRONG_STUCK":   ("💪", "#ff6600", "OVER 2.5 — strong attack team can't score, will push harder"),
     "COMEBACK":       ("🔥", "#ff4444", "OVER 2.5 — losing team with strong attack pushing for goals"),
+    # Half-time signals
+    "HT_UNDER_0.5":   ("⏱", "#00eeff", "HT UNDER 0.5 — 0-0 late first half, barely any time left"),
+    "HT_UNDER_1.5":   ("🧊", "#aaddff", "HT UNDER 1.5 — low scoring first half, fair price attractive"),
+    "HT_OVER_0.5":    ("⚡", "#ffdd00", "HT OVER 0.5 — strong attack teams, 0-0, time still left"),
 }
 
 st.title("⚡ Live Value Scanner")
