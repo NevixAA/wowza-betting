@@ -15,9 +15,11 @@ TIPS_FILE  = BASE_DIR / "output" / "sharp_tips.csv"
 HIST_FILE  = BASE_DIR / "output" / "sharp_history.json"
 
 SIGNAL_META = {
-    "STRONG": ("🔴", "#ff4444", "Strong sharp money — >10% drift"),
-    "SHARP":  ("🟡", "#ffaa00", "Notable move — 5–10% drift"),
-    "FADING": ("⬆️", "#888888", "Odds lengthening — money moving away"),
+    "STEAM_STRONG": ("🔥", "#ff2222", "Steam + strong — fast money AND >10% total drift"),
+    "STEAM_SHARP":  ("⚡", "#ff8800", "Steam + sharp — fast move in last window"),
+    "STRONG":       ("🔴", "#ff4444", "Strong sharp money — >10% drift"),
+    "SHARP":        ("🟡", "#ffaa00", "Notable move — 5–10% drift"),
+    "FADING":       ("⬆️", "#888888", "Odds lengthening — money moving away"),
 }
 
 st.title("💰 Sharp Money Tracker")
@@ -56,19 +58,22 @@ strong = df[df["signal"] == "STRONG"]
 sharp  = df[df["signal"] == "SHARP"]
 fading = df[df["signal"] == "FADING"]
 
-c1, c2, c3, c4 = st.columns(4)
+steam = df[df["signal"].isin(["STEAM_STRONG", "STEAM_SHARP"])]
+
+c1, c2, c3, c4, c5 = st.columns(5)
 c1.metric("Total Signals",   len(df))
-c2.metric("🔴 STRONG",       len(strong))
-c3.metric("🟡 SHARP",        len(sharp))
-c4.metric("Last Update",     df["updated_at"].iloc[0] if not df.empty else "—")
+c2.metric("🔥 STEAM",        len(steam))
+c3.metric("🔴 STRONG",       len(strong))
+c4.metric("🟡 SHARP",        len(sharp))
+c5.metric("Last Update",     df["updated_at"].iloc[0] if not df.empty else "—")
 
 st.markdown("---")
 
 # ── Filter ────────────────────────────────────────────────────────────────────
 col_f1, col_f2 = st.columns([1, 2])
 with col_f1:
-    sig_filter = st.multiselect("Signal", ["STRONG", "SHARP", "FADING"],
-                                default=["STRONG", "SHARP"])
+    sig_filter = st.multiselect("Signal", ["STEAM_STRONG", "STEAM_SHARP", "STRONG", "SHARP", "FADING"],
+                                default=["STEAM_STRONG", "STEAM_SHARP", "STRONG", "SHARP"])
 with col_f2:
     league_filter = st.multiselect("League", sorted(df["league"].unique()),
                                    default=list(df["league"].unique()))
@@ -102,7 +107,7 @@ for _, row in filtered.iterrows():
         <div style="color:#aaa; font-size:0.88em; margin:4px 0">
             🏆 {row['league']} &nbsp;|&nbsp; 📅 {row['date']} &nbsp;|&nbsp; 📌 {row['market']}
         </div>
-        <div style="display:flex; gap:32px; margin:10px 0">
+        <div style="display:flex; gap:24px; margin:10px 0; flex-wrap:wrap">
             <div>
                 <span style="color:#aaa; font-size:0.82em">Opening</span><br>
                 <b style="color:#888; font-size:1.05em">{row['opening_odds']}</b>
@@ -116,11 +121,19 @@ for _, row in filtered.iterrows():
                 <b style="color:{color}; font-size:1.1em">{row['drift_pct']:+.1f}%</b>
             </div>
             <div>
+                <span style="color:#aaa; font-size:0.82em">Consensus</span><br>
+                <b style="color:{'#00cc88' if row.get('consensus_pct',0)>=70 else '#ffaa00' if row.get('consensus_pct',0)>=50 else '#888'}">{row.get('consensus_pct', '—')}%</b>
+            </div>
+            <div>
+                <span style="color:#aaa; font-size:0.82em">Books</span><br>
+                <b style="color:#888">{row.get('n_books', '—')}</b>
+            </div>
+            <div>
                 <span style="color:#aaa; font-size:0.82em">Snapshots</span><br>
                 <b style="color:#888">{row['snapshots']}</b>
             </div>
         </div>
-        <div style="color:{dir_color}; font-size:0.85em">{direction}</div>
+        <div style="color:{dir_color}; font-size:0.85em">{direction}{'&nbsp;&nbsp;🔥 <b>STEAM</b> — fast move detected' if row.get('steam') else ''}</div>
     </div>
     """, unsafe_allow_html=True)
 
