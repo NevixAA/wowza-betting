@@ -185,6 +185,47 @@ if not values.empty:
 if tips.empty:
     st.warning("No tips match your filters.")
 
+# ── HT O/U Predictions ────────────────────────────────────────────────────────
+@st.cache_data(ttl=300)
+def load_predictions_ht():
+    f = config.OUTPUT_DIR / "predictions.csv"
+    if not f.exists():
+        return pd.DataFrame()
+    preds = pd.read_csv(f)
+    if "p_ht_over05" not in preds.columns:
+        return pd.DataFrame()
+    preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
+    today = pd.Timestamp.now().normalize()
+    preds = preds[preds["date"] >= today].copy()
+    # Only standard-format leagues (have HT data)
+    preds = preds[preds["p_ht_over05"].notna()]
+    return preds
+
+ht_preds = load_predictions_ht()
+if not ht_preds.empty:
+    st.markdown("---")
+    st.markdown("### ⏱ Half-Time O/U Predictions")
+    st.caption("Standard-format leagues only · Based on HT rolling features (HTHG/HTAG)")
+    ht_rows = []
+    for _, row in ht_preds.iterrows():
+        p05 = float(row["p_ht_over05"])
+        p15 = float(row["p_ht_over15"]) if "p_ht_over15" in row and pd.notna(row["p_ht_over15"]) else None
+        fair05 = round(1 / max(p05, 0.01), 2)
+        fair_u05 = round(1 / max(1 - p05, 0.01), 2)
+        fair15 = round(1 / max(p15, 0.01), 2) if p15 else "—"
+        ht_rows.append({
+            "Date":          str(row["date"])[:10],
+            "League":        row.get("league", ""),
+            "Match":         f"{row['home_team']} vs {row['away_team']}",
+            "P(HT OVER 0.5)":  f"{p05*100:.0f}%",
+            "Fair OVER 0.5":   fair05,
+            "Fair UNDER 0.5":  fair_u05,
+            "P(HT OVER 1.5)":  f"{p15*100:.0f}%" if p15 else "—",
+            "Fair OVER 1.5":   fair15,
+        })
+    st.dataframe(pd.DataFrame(ht_rows), use_container_width=True, hide_index=True)
+    st.caption("Compare fair prices against your bookmaker's HT market to find value")
+
 # ── Suppressed bets note ────────────────────────────────────────────────────────
 avoided = df[df["bet"] == "AVOID"]
 if not avoided.empty:

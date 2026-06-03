@@ -70,6 +70,11 @@ FEATURE_COLS = [
     "home_sp_goals_pg",     "away_sp_goals_pg",
     "home_pen_goals_pg",    "away_pen_goals_pg",
     "home_fk_goals_pg",     "away_fk_goals_pg",
+    # Half-time rolling form (only populated for standard-format leagues)
+    "home_ht_scored_last5",   "away_ht_scored_last5",
+    "home_ht_conceded_last5", "away_ht_conceded_last5",
+    "home_ht_attack_str",     "away_ht_attack_str",
+    "combined_ht_goals_avg",
 ]
 
 

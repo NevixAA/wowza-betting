@@ -233,6 +233,22 @@ def predict_upcoming(
     feat.loc[std_mask, "model_type"] = "standard"
     feat.loc[nf_mask,  "model_type"] = "new_format"
 
+    # 5b. HT model predictions (standard-format leagues only)
+    from src.model import load_models as _load_models
+    feat["p_ht_over05"] = np.nan
+    feat["p_ht_over15"] = np.nan
+    if config.HT_MODEL_FILE_05.exists() and std_mask.any():
+        try:
+            ht_payload_05 = _load_models(model_file=config.HT_MODEL_FILE_05)
+            ht_payload_15 = _load_models(model_file=config.HT_MODEL_FILE_15) \
+                            if config.HT_MODEL_FILE_15.exists() else None
+            feat.loc[std_mask, "p_ht_over05"] = predict_proba(feat[std_mask], payload=ht_payload_05).values
+            if ht_payload_15:
+                feat.loc[std_mask, "p_ht_over15"] = predict_proba(feat[std_mask], payload=ht_payload_15).values
+            log.info(f"  HT model: {std_mask.sum()} fixtures scored")
+        except Exception as e:
+            log.warning(f"  HT model prediction failed: {e}")
+
     # 6. Value betting evaluation (includes both-losing guard)
     log.info("Applying value betting logic...")
     feat = evaluate_value(feat)

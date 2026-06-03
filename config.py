@@ -31,6 +31,10 @@ MODEL_FILE_STANDARD  = MODELS_DIR / "model_v9_standard.pkl"
 MODEL_FILE_NEWFORMAT = MODELS_DIR / "model_v9_newformat.pkl"
 MODEL_FILE           = MODEL_FILE_STANDARD   # backward-compat alias
 
+# ── HT models (standard-format leagues only — they have HTHG/HTAG data) ──────
+HT_MODEL_FILE_05 = MODELS_DIR / "model_ht_over05.pkl"
+HT_MODEL_FILE_15 = MODELS_DIR / "model_ht_over15.pkl"
+
 # ── League format classification ──────────────────────────────────────────────
 # Standard: historical CSVs contain shots, corners, O/U odds → richer features
 STANDARD_FORMAT_LEAGUES = {

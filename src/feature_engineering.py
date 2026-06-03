@@ -56,26 +56,38 @@ _N = config.ROLLING_N
 
 def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
     """Explode match rows into one row per team per match. Preserves row index."""
-    home = matches[["date", "league", "home_team", "away_team",
-                    "home_goals", "away_goals", "over25",
-                    "home_shots", "home_sot"]].copy()
+    has_ht = "ht_home_goals" in matches.columns and matches["ht_home_goals"].notna().any()
+
+    home_cols = ["date", "league", "home_team", "away_team",
+                 "home_goals", "away_goals", "over25", "home_shots", "home_sot"]
+    if has_ht:
+        home_cols += ["ht_home_goals", "ht_away_goals"]
+
+    home = matches[home_cols].copy()
     home["_src_idx"] = matches.index
     home = home.rename(columns={
         "home_team": "team", "away_team": "opponent",
         "home_goals": "scored", "away_goals": "conceded",
         "home_shots": "shots", "home_sot": "sot",
     })
+    if has_ht:
+        home = home.rename(columns={"ht_home_goals": "ht_scored", "ht_away_goals": "ht_conceded"})
     home["is_home"] = 1
 
-    away = matches[["date", "league", "home_team", "away_team",
-                    "home_goals", "away_goals", "over25",
-                    "away_shots", "away_sot"]].copy()
+    away_cols = ["date", "league", "home_team", "away_team",
+                 "home_goals", "away_goals", "over25", "away_shots", "away_sot"]
+    if has_ht:
+        away_cols += ["ht_home_goals", "ht_away_goals"]
+
+    away = matches[away_cols].copy()
     away["_src_idx"] = matches.index
     away = away.rename(columns={
         "away_team": "team", "home_team": "opponent",
         "away_goals": "scored", "home_goals": "conceded",
         "away_shots": "shots", "away_sot": "sot",
     })
+    if has_ht:
+        away = away.rename(columns={"ht_away_goals": "ht_scored", "ht_home_goals": "ht_conceded"})
     away["is_home"] = 0
 
     tc = pd.concat([home, away], ignore_index=True)
@@ -243,32 +255,57 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     tc["roll_shots"]    = _rolling(tc, "shots",   n)
     tc["roll_sot"]      = _rolling(tc, "sot",     n)
 
+    has_ht = "ht_scored" in tc.columns and tc["ht_scored"].notna().any()
+    if has_ht:
+        tc["roll_ht_scored"]   = _rolling(tc, "ht_scored",   n)
+        tc["roll_ht_conceded"] = _rolling(tc, "ht_conceded", n)
+
     # Map back by original row index to avoid any cross-league duplicates
-    home_tc = tc[tc["is_home"] == 1][
-        ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
-    ].copy()
+    home_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
+    away_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
+    if has_ht:
+        home_cols += ["roll_ht_scored", "roll_ht_conceded"]
+        away_cols += ["roll_ht_scored", "roll_ht_conceded"]
+
+    home_tc = tc[tc["is_home"] == 1][home_cols].copy()
     home_tc = home_tc.rename(columns={
-        "roll_scored":   "home_scored_last5",
-        "roll_conceded": "home_conceded_last5",
-        "roll_over25":   "home_over25_last5",
-        "roll_shots":    "home_shots_last5",
-        "roll_sot":      "home_sot_last5",
+        "roll_scored":       "home_scored_last5",
+        "roll_conceded":     "home_conceded_last5",
+        "roll_over25":       "home_over25_last5",
+        "roll_shots":        "home_shots_last5",
+        "roll_sot":          "home_sot_last5",
+        "roll_ht_scored":    "home_ht_scored_last5",
+        "roll_ht_conceded":  "home_ht_conceded_last5",
     })
-    away_tc = tc[tc["is_home"] == 0][
-        ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
-    ].copy()
+    away_tc = tc[tc["is_home"] == 0][away_cols].copy()
     away_tc = away_tc.rename(columns={
-        "roll_scored":   "away_scored_last5",
-        "roll_conceded": "away_conceded_last5",
-        "roll_over25":   "away_over25_last5",
-        "roll_shots":    "away_shots_last5",
-        "roll_sot":      "away_sot_last5",
+        "roll_scored":       "away_scored_last5",
+        "roll_conceded":     "away_conceded_last5",
+        "roll_over25":       "away_over25_last5",
+        "roll_shots":        "away_shots_last5",
+        "roll_sot":          "away_sot_last5",
+        "roll_ht_scored":    "away_ht_scored_last5",
+        "roll_ht_conceded":  "away_ht_conceded_last5",
     })
 
     df["_src_idx"] = df.index
     df = df.merge(home_tc, on="_src_idx", how="left")
     df = df.merge(away_tc, on="_src_idx", how="left")
     df = df.drop(columns=["_src_idx"])
+
+    # ── HT-derived features (when available) ──────────────────────────────
+    if has_ht and "home_ht_scored_last5" in df.columns:
+        df["combined_ht_goals_avg"] = (
+            df["home_ht_scored_last5"].fillna(0) + df["away_ht_scored_last5"].fillna(0)
+        )
+        if "league_avg_goals" in df.columns:
+            half_avg = (df["league_avg_goals"] / 2).replace(0, np.nan)
+        else:
+            half_avg = pd.Series(0.65, index=df.index)
+        df["home_ht_attack_str"]  = df["home_ht_scored_last5"]   / half_avg
+        df["away_ht_attack_str"]  = df["away_ht_scored_last5"]   / half_avg
+        df["home_ht_defense_str"] = df["home_ht_conceded_last5"] / half_avg
+        df["away_ht_defense_str"] = df["away_ht_conceded_last5"] / half_avg
 
     # ── League-wide expanding average ──────────────────────────────────────
     df["league_avg_goals"] = _league_expanding_avg(df).values
@@ -357,6 +394,11 @@ def build_upcoming_features(
         feat["home_sot_last5"]      = _team_recent(ht, "home_sot",    "away_sot",    n)
         feat["away_shots_last5"]    = _team_recent(at, "home_shots",  "away_shots",  n)
         feat["away_sot_last5"]      = _team_recent(at, "home_sot",    "away_sot",    n)
+        # HT rolling features (NaN for leagues without HTHG/HTAG data)
+        feat["home_ht_scored_last5"]    = _team_recent(ht, "ht_home_goals", "ht_away_goals", n)
+        feat["home_ht_conceded_last5"]  = _team_recent(ht, "ht_away_goals", "ht_home_goals", n)
+        feat["away_ht_scored_last5"]    = _team_recent(at, "ht_home_goals", "ht_away_goals", n)
+        feat["away_ht_conceded_last5"]  = _team_recent(at, "ht_away_goals", "ht_home_goals", n)
         feat_records.append(feat)
 
     df = pd.DataFrame(feat_records)
@@ -370,6 +412,15 @@ def build_upcoming_features(
     df["away_attack_str"]  = df["away_scored_last5"]   / half_avg
     df["home_defense_str"] = df["home_conceded_last5"] / half_avg
     df["away_defense_str"] = df["away_conceded_last5"] / half_avg
+
+    # HT strength features
+    df["combined_ht_goals_avg"] = (
+        df["home_ht_scored_last5"].fillna(0) + df["away_ht_scored_last5"].fillna(0)
+    )
+    df["home_ht_attack_str"]  = df["home_ht_scored_last5"]   / half_avg
+    df["away_ht_attack_str"]  = df["away_ht_scored_last5"]   / half_avg
+    df["home_ht_defense_str"] = df["home_ht_conceded_last5"] / half_avg
+    df["away_ht_defense_str"] = df["away_ht_conceded_last5"] / half_avg
 
     # Rest days using historical
     combined = pd.concat([

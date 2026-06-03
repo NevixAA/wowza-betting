@@ -97,16 +97,18 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         df["away_team"] = raw.get("AwayTeam", np.nan)
 
         for out_col, src_col in [
-            ("home_goals",   "FTHG"),
-            ("away_goals",   "FTAG"),
-            ("home_corners", "HC"),
-            ("away_corners", "AC"),
-            ("home_fouls",   "HF"),
-            ("away_fouls",   "AF"),
-            ("home_shots",   "HS"),
-            ("away_shots",   "AS"),
-            ("home_sot",     "HST"),
-            ("away_sot",     "AST"),
+            ("home_goals",      "FTHG"),
+            ("away_goals",      "FTAG"),
+            ("ht_home_goals",   "HTHG"),
+            ("ht_away_goals",   "HTAG"),
+            ("home_corners",    "HC"),
+            ("away_corners",    "AC"),
+            ("home_fouls",      "HF"),
+            ("away_fouls",      "AF"),
+            ("home_shots",      "HS"),
+            ("away_shots",      "AS"),
+            ("home_sot",        "HST"),
+            ("away_sot",        "AST"),
         ]:
             df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
 
@@ -174,6 +176,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                     df["away_team"] = raw.get("AwayTeam", np.nan)
                     for out_col, src_col in [
                         ("home_goals","FTHG"),("away_goals","FTAG"),
+                        ("ht_home_goals","HTHG"),("ht_away_goals","HTAG"),
                         ("home_corners","HC"),("away_corners","AC"),
                         ("home_fouls","HF"),("away_fouls","AF"),
                         ("home_shots","HS"),("away_shots","AS"),
@@ -208,6 +211,12 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     out["btts"]        = (
         (out["home_goals"] > 0) & (out["away_goals"] > 0)
     ).astype(float)
+
+    # HT targets (only populated when HTHG/HTAG available)
+    if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
+        out["ht_total_goals"] = out["ht_home_goals"] + out["ht_away_goals"]
+        out["ht_over05"]      = (out["ht_total_goals"] >= 1).astype(float)
+        out["ht_over15"]      = (out["ht_total_goals"] >= 2).astype(float)
 
     with np.errstate(divide="ignore", invalid="ignore"):
         out["home_sot_ratio"] = np.where(

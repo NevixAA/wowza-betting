@@ -68,46 +68,43 @@ def _names_match(a: str, b: str) -> bool:
 
 
 # ── football-data.co.uk scores fetch ─────────────────────────────────────────
-# "new" format: football-data.co.uk/new/{code}.csv  (cols: Home/Away/HG/AG/Date)
-# "std" format: football-data.co.uk/mmz4281/2526/{code}.csv (cols: HomeTeam/AwayTeam/FTHG/FTAG/Date)
+# "new" format: football-data.co.uk/new/{code}.csv  (cols: Home/Away/HG/AG/Date, no HT)
+# "std" format: football-data.co.uk/mmz4281/2526/{code}.csv (cols: HomeTeam/AwayTeam/FTHG/FTAG/HTHG/HTAG/Date)
+# Tuple: (fmt, code, home_col, away_col, ft_hg, ft_ag, date_col, ht_hg, ht_ag)
 
 _FD_SOURCES = {
-    # new format
-    "Austrian Bundesliga":      ("new", "AUT", "Home", "Away", "HG",   "AG",   "Date"),
-    "Sweden Allsvenskan":       ("new", "SWE", "Home", "Away", "HG",   "AG",   "Date"),
-    "Denmark Superliga":        ("new", "DNK", "Home", "Away", "HG",   "AG",   "Date"),
-    "Japan J-League":           ("new", "JPN", "Home", "Away", "HG",   "AG",   "Date"),
-    "USA MLS":                  ("new", "USA", "Home", "Away", "HG",   "AG",   "Date"),
-    "China Super League":       ("new", "CHN", "Home", "Away", "HG",   "AG",   "Date"),
-    "Ireland Premier Division": ("new", "IRL", "Home", "Away", "HG",   "AG",   "Date"),
-    # standard format (2025/26 season)
-    "Bundesliga 2":             ("std", "D2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
-    "La Liga 2":                ("std", "SP2", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
-    "Ligue 2":                  ("std", "F2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
-    "League One":               ("std", "E2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
-    "League Two":               ("std", "E3",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
-    "Greek Super League":       ("std", "G1",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
-    "Belgian First Division A": ("std", "B1",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date"),
+    # new format — no HT columns available
+    "Austrian Bundesliga":      ("new", "AUT", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    "Sweden Allsvenskan":       ("new", "SWE", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    "Denmark Superliga":        ("new", "DNK", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    "Japan J-League":           ("new", "JPN", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    "USA MLS":                  ("new", "USA", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    "China Super League":       ("new", "CHN", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    "Ireland Premier Division": ("new", "IRL", "Home", "Away", "HG",   "AG",   "Date", None,   None),
+    # standard format — includes HTHG/HTAG (half-time scores)
+    "Bundesliga 2":             ("std", "D2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
+    "La Liga 2":                ("std", "SP2", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
+    "Ligue 2":                  ("std", "F2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
+    "League One":               ("std", "E2",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
+    "League Two":               ("std", "E3",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
+    "Greek Super League":       ("std", "G1",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
+    "Belgian First Division A": ("std", "B1",  "HomeTeam", "AwayTeam", "FTHG", "FTAG", "Date", "HTHG", "HTAG"),
 }
 
 _FD_NEW_URL = "https://www.football-data.co.uk/new/{code}.csv"
 _FD_STD_URL = "https://www.football-data.co.uk/mmz4281/2526/{code}.csv"
 
 def fetch_scores_fd(league: str) -> list[dict]:
-    """Fetch completed results from football-data.co.uk (free, no quota)."""
+    """Fetch completed results from football-data.co.uk (free, no quota). Includes HT scores where available."""
     if league not in _FD_SOURCES:
         return []
 
-    fmt, code, home_col, away_col, hg_col, ag_col, date_col = _FD_SOURCES[league]
+    fmt, code, home_col, away_col, hg_col, ag_col, date_col, ht_hg_col, ht_ag_col = _FD_SOURCES[league]
 
     try:
         from io import StringIO
 
-        if fmt == "new":
-            url = _FD_NEW_URL.format(code=code)
-        else:  # std
-            url = _FD_STD_URL.format(code=code)
-
+        url = _FD_NEW_URL.format(code=code) if fmt == "new" else _FD_STD_URL.format(code=code)
         r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
         if r.status_code != 200:
             log.debug(f"  FD {league}: HTTP {r.status_code}")
@@ -127,13 +124,24 @@ def fetch_scores_fd(league: str) -> list[dict]:
                 dt = pd.to_datetime(row[date_col], dayfirst=True, errors="coerce")
                 if pd.isna(dt):
                     continue
-                results.append({
+
+                entry = {
                     "home_team":  str(row[home_col]).strip(),
                     "away_team":  str(row[away_col]).strip(),
                     "home_score": hg,
                     "away_score": ag,
                     "date_str":   str(dt.date()),
-                })
+                }
+
+                # HT scores (standard format only)
+                if ht_hg_col and ht_ag_col:
+                    try:
+                        entry["ht_home"] = int(float(row[ht_hg_col]))
+                        entry["ht_away"] = int(float(row[ht_ag_col]))
+                    except (ValueError, KeyError):
+                        pass
+
+                results.append(entry)
             except (ValueError, KeyError):
                 continue
 
@@ -244,10 +252,11 @@ def _closing_odds(home: str, away: str, match_date: str, side: str) -> float:
 def _find_result(
     home: str, away: str, date_str: str, side: str,
     completed: list[dict],
-) -> tuple[str, float] | None:
+) -> tuple[str, float, dict] | None:
     """
     Search `completed` for this fixture.
-    Returns (result_str, pnl) or None if not found.
+    Returns (result_str, total_goals, extras) or None if not found.
+    extras contains ht_total if HT scores are available.
     """
     for ev in completed:
         if ev["date_str"] != date_str:
@@ -256,15 +265,32 @@ def _find_result(
             continue
 
         total = ev["home_score"] + ev["away_score"]
+        ht_total = ev.get("ht_home", -1) + ev.get("ht_away", -1) if "ht_home" in ev else None
+
         if side == "OVER":
             won = total > 2.5
         elif side == "UNDER":
             won = total <= 2.5
+        elif side == "HT_OVER_0.5":
+            won = ht_total is not None and ht_total >= 1
+        elif side == "HT_UNDER_0.5":
+            won = ht_total is not None and ht_total < 1
+        elif side == "HT_OVER_1.5":
+            won = ht_total is not None and ht_total >= 2
+        elif side == "HT_UNDER_1.5":
+            won = ht_total is not None and ht_total <= 1
         else:
             return None
 
+        if side.startswith("HT_") and ht_total is None:
+            return None  # no HT data available, can't grade
+
         result = "WIN" if won else "LOSS"
-        return result, total
+        extras = {}
+        if ht_total is not None:
+            extras["ht_score"] = f"{ev.get('ht_home',0)}-{ev.get('ht_away',0)}"
+            extras["ht_total"] = ht_total
+        return result, total, extras
 
     return None
 
@@ -339,7 +365,7 @@ def main():
             log.debug(f"  Not found: {row['home_team']} vs {row['away_team']} ({row['match_date']})")
             continue
 
-        result_str, total_goals = found
+        result_str, total_goals, extras = found
         odds = float(row["odds"])
 
         if result_str == "WIN":
@@ -351,22 +377,26 @@ def main():
         cl = _closing_odds(row["home_team"], row["away_team"], row["match_date"], row["side"])
         clv = round((odds - cl) / cl * 100, 2) if (not np.isnan(cl) and cl > 0) else np.nan
 
-        updates.append({
+        update = {
             "idx":          idx,
             "result":       result_str,
             "pnl":          pnl,
             "total_goals":  total_goals,
             "closing_odds": cl,
             "clv_pct":      clv,
-        })
+        }
+        if "ht_score" in extras:
+            update["ht_score"] = extras["ht_score"]
+        updates.append(update)
 
+        ht_str  = f"  HT={extras['ht_score']}" if "ht_score" in extras else ""
         clv_str = f"  CLV={clv:+.1f}%" if not np.isnan(clv) else ""
         log.info(
             f"  {'[DRY]' if args.dry_run else '[ OK]'} "
             f"{row['home_team']} vs {row['away_team']} "
             f"({row['match_date']})  "
             f"{row['side']} @ {odds}  "
-            f"Goals={total_goals}  → {result_str}  PnL={pnl:+.3f}u{clv_str}"
+            f"Goals={total_goals}{ht_str}  → {result_str}  PnL={pnl:+.3f}u{clv_str}"
         )
         filled += 1
 
@@ -379,6 +409,8 @@ def main():
         return
 
     # Write back to ledger
+    if "ht_score" not in ledger.columns:
+        ledger["ht_score"] = ""
     for u in updates:
         ledger.at[u["idx"], "result"] = u["result"]
         ledger.at[u["idx"], "pnl"]    = str(u["pnl"])
@@ -386,6 +418,8 @@ def main():
             ledger.at[u["idx"], "closing_odds"] = str(u["closing_odds"])
         if not np.isnan(u["clv_pct"]):
             ledger.at[u["idx"], "clv_pct"] = str(u["clv_pct"])
+        if u.get("ht_score"):
+            ledger.at[u["idx"], "ht_score"] = u["ht_score"]
 
     ledger.to_csv(LEDGER_FILE, index=False)
 
