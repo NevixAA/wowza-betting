@@ -172,10 +172,13 @@ def _fetch_live_scores() -> list[dict]:
 
     active_leagues = _leagues_with_games_today()
 
-    for league, sport_key in config.ODDS_API_SPORT_KEYS.items():
-        if league not in config.ENABLED_LEAGUES:
-            continue
-        if league not in active_leagues:
+    # Always include World Cup when it's active (June 11 – July 19, 2026)
+    wc_leagues = {"World Cup 2026": "soccer_fifa_world_cup"}
+    scan_map = {**{l: k for l, k in config.ODDS_API_SPORT_KEYS.items()
+                   if l in config.ENABLED_LEAGUES}, **wc_leagues}
+
+    for league, sport_key in scan_map.items():
+        if league not in active_leagues and league not in wc_leagues:
             continue  # no games today in this league
 
         last_checked = _league_last_checked.get(league)
