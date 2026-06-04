@@ -34,7 +34,7 @@ def load_backtest_summary():
 
 st.markdown("## ℹ️ Model Information")
 
-tab1, tab2, tab3 = st.tabs(["🔍 Two Model Formats", "📊 Feature Importances", "🏆 Backtest Results"])
+tab1, tab2, tab3, tab4 = st.tabs(["🔍 Two Model Formats", "🎯 Per-League Thresholds", "📊 Feature Importances", "🏆 Backtest Results"])
 
 # ── Tab 1: Explanation ─────────────────────────────────────────────────────────
 with tab1:
@@ -44,87 +44,128 @@ with tab1:
         st.markdown("""
         ### 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard Format Model
         ---
-        **Leagues:**
-        League One, League Two, Bundesliga 2, La Liga 2,
-        Ligue 2, Championship, Serie B
+        **Leagues:** League One, League Two, Bundesliga 2, La Liga 2, Ligue 2, Championship, Serie B
 
         **Data source:** football-data.co.uk (mmz4281 format)
 
-        **Features available:**
+        **Features:**
         - ✅ Goals (scored / conceded last 5)
-        - ✅ Shots on target
-        - ✅ Corners
+        - ✅ HT goals (first-half rolling stats)
+        - ✅ Shots on target, Corners
         - ✅ Historical O/U 2.5 odds
-        - ✅ Implied probability from odds
-        - ✅ Attack / defense strength
-        - ✅ Rest days
+        - ✅ Attack / defense strength (FT + HT)
+        - ✅ Team HT tendency rates
+        - ✅ Rest days, Referee stats
 
-        **Why it's better:**
-        More input features = better calibration.
-        Historical O/U odds tell the model what the market
-        thought *at the time*, which is a strong signal.
+        **Training:** COVID seasons excluded (2019/20, 2020/21 removed — empty-stadium anomaly).
+        Time-decay: recent seasons weighted 2-4× higher than older data.
 
-        **Backtest results (walk-forward):**
-        - Overall ROI: **+14.2%**
-        - SNIPER ROI: **+31.8%** ✅
-        - VALUE ROI:  **-0.5%** ⚠️ (don't bet VALUE alone)
-        - Sharpe: **2.37**
+        **Backtest (walk-forward, post-COVID):**
+        - SNIPER ROI: **+13-18% per league** ✅
+        - VALUE ROI:  **+2.9%** ⚠️
+        - Sharpe: **2.43**
         """)
 
     with col2:
         st.markdown("""
         ### 🌍 New-Format Model
         ---
-        **Leagues:**
-        Brazil Serie A, Japan J-League, Ireland Premier,
-        Austrian Bundesliga, Denmark Superliga,
-        Sweden Allsvenskan, Norway Eliteserien,
-        Finland Veikkausliiga, Argentina Primera,
-        Mexico Liga MX, China Super League, USA MLS
+        **Leagues:** Brazil, Japan, Ireland, Austria, Denmark,
+        Sweden, Norway, Finland, Argentina, Mexico, China, USA MLS
 
         **Data source:** football-data.co.uk (/new/ format)
 
-        **Features available:**
+        **Features:**
         - ✅ Goals (scored / conceded last 5)
         - ✅ Attack / defense strength
         - ✅ Rest days
-        - ❌ No shots / corners data
+        - ❌ No shots / corners
         - ❌ No historical O/U odds in CSV
 
-        **How edge is calculated:**
-        Model outputs probability → compared to **live odds**
-        from OddsAPI at prediction time.
-        `edge = p_model - (1 / live_odds)`
-
-        **Backtest:**
-        Not possible — no historical O/U odds in CSV data.
+        **Backtest:** Not available — no historical odds.
         Performance tracked via live results only.
+
+        **Note:** These leagues use global SNIPER threshold (15%)
+        since no league-specific backtest is available.
         """)
 
     st.divider()
     st.markdown("""
-    ### 🔄 How Predictions Work
+    ### 🔄 How Predictions Work (v9 — post-COVID recalibrated)
 
     ```
     1. OddsAPI → fetch upcoming fixtures + live O/U odds
-    2. feature_engineering → build stats (form, strength, rest)
+    2. feature_engineering → build stats (form, HT tendency, strength)
     3. Model → predict p(over2.5) for each fixture
-    4. Edge = p_model - p_implied  (p_implied = 1/odds - vig)
-    5. Tier:
-         edge ≥ 10%  →  SNIPER  (bet full stake)
-         edge  4-10% →  VALUE   (bet half stake / monitor)
-         edge < 4%   →  AVOID
-    6. Both-losing guard: if BOTH over AND under edge are
-       negative, suppress the bet regardless of tier
-    7. Drift: compare current odds to first recorded odds
-       Confirmed  → line moved OUR way  (stronger signal)
-       Conflicted → line moved AGAINST  (weaker, be cautious)
+    4. Edge = p_model - p_implied  (p_implied = 1/odds)
+    5. Tier (per-league thresholds):
+         League Two:     edge ≥ 14%  → SNIPER
+         Bundesliga 2:   edge ≥ 20%  → SNIPER
+         La Liga 2:      edge ≥ 20%  → SNIPER
+         League One:     edge ≥ 25%  → SNIPER
+         Ligue 2:        edge ≥ 25%  → SNIPER
+         OVER bets:      edge ≥ 18%  → SNIPER (higher bar — less reliable)
+         UNDER bets:     edge ≥ 13%  → SNIPER (more reliable historically)
+         edge 4-threshold → VALUE (half stake)
+         edge < 4%        → AVOID
+    6. Both-losing guard: suppress if both OVER and UNDER negative
+    7. Drift adjustment:
+         Confirmed  → market moved our way  (stronger signal)
+         Conflicted → market moved against  (downgrade tier)
     ```
     """)
 
 
 # ── Tab 2: Feature Importances ─────────────────────────────────────────────────
+# ── Tab 2: Per-League Thresholds ──────────────────────────────────────────────
 with tab2:
+    st.markdown("### 🎯 Per-League SNIPER Thresholds")
+    st.caption("Each league has its own edge threshold calibrated from post-COVID backtest data.")
+
+    thresh_data = []
+    for lg, thresh in sorted(config.LEAGUE_SNIPER_THRESHOLDS.items()):
+        in_enabled = lg in config.ENABLED_LEAGUES
+        thresh_data.append({
+            "League":           lg,
+            "SNIPER Threshold": f"{thresh:.0%}",
+            "Live Predictions": "✅ Active" if in_enabled else "⚠️ Training only",
+            "Why this threshold": (
+                "Most data, reliable at lower bar" if thresh <= 0.14
+                else "Moderate bar — good edge density" if thresh <= 0.18
+                else "High bar — only highest confidence"
+            )
+        })
+    st.dataframe(pd.DataFrame(thresh_data), use_container_width=True, hide_index=True)
+
+    st.markdown("---")
+    st.markdown("### 📊 OVER vs UNDER Thresholds")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("OVER 2.5 threshold", f"{config.SNIPER_THRESHOLD_OVER:.0%}",
+                  help="OVER bets need higher edge — less reliable post-COVID")
+    with col2:
+        st.metric("UNDER 2.5 threshold", f"{config.SNIPER_THRESHOLD_UNDER:.0%}",
+                  help="UNDER bets slightly more reliable — lower bar")
+
+    st.markdown("---")
+    st.markdown("### 🚫 COVID Season Exclusion")
+    st.info(f"Training data excludes: **{', '.join(sorted(config.COVID_SEASONS))}**  \n"
+            f"Reason: Empty-stadium effect created anomalous OVER 2.5 patterns (55% win rate) "
+            f"that don't exist in normal football. Excluding these 2 seasons removed ~15,700 rows "
+            f"but dramatically improved post-COVID prediction accuracy.")
+
+    st.markdown("---")
+    st.markdown("### ⚖️ Time-Decay Weights")
+    decay_df = pd.DataFrame([
+        {"Season": s, "Weight": w, "Note": "Excluded (COVID)" if w == 0 else
+         "Highest weight" if w >= 4 else "High weight" if w >= 3 else
+         "Medium" if w >= 2 else "Normal"}
+        for s, w in sorted(config.TRAINING_DECAY_WEIGHTS.items(), reverse=True)
+    ])
+    st.dataframe(decay_df, use_container_width=True, hide_index=True)
+
+# ── Tab 3: Feature Importances ─────────────────────────────────────────────────
+with tab3:
     col_std, col_nf = st.columns(2)
 
     with col_std:
@@ -174,8 +215,8 @@ with tab2:
             st.info("Run retrain.py to generate feature importances.")
 
 
-# ── Tab 3: Backtest Results ────────────────────────────────────────────────────
-with tab3:
+# ── Tab 4: Backtest Results ────────────────────────────────────────────────────
+with tab4:
     st.markdown("#### Standard Model — Backtest by League")
     lg_std = config.OUTPUT_DIR / "backtest_by_league_standard.csv"
     if lg_std.exists():
