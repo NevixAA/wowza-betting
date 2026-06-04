@@ -114,9 +114,18 @@ def _stake(edge: float, p: float, odds: float, threshold: float) -> float:
     return config.FLAT_STAKE
 
 
-def _base_tier(edge: float) -> str:
-    """Fixed 3-tier label based on edge value alone."""
-    if edge >= config.SNIPER_THRESHOLD:
+def _base_tier(edge: float, side: str = "", league: str = "") -> str:
+    """Tier label using per-league threshold when available, else side-specific global."""
+    # Per-league threshold takes priority
+    if league and league in config.LEAGUE_SNIPER_THRESHOLDS:
+        sniper_thresh = config.LEAGUE_SNIPER_THRESHOLDS[league]
+    elif side == "OVER":
+        sniper_thresh = config.SNIPER_THRESHOLD_OVER
+    elif side == "UNDER":
+        sniper_thresh = config.SNIPER_THRESHOLD_UNDER
+    else:
+        sniper_thresh = config.SNIPER_THRESHOLD
+    if edge >= sniper_thresh:
         return "SNIPER"
     if edge >= config.VALUE_THRESHOLD:
         return "VALUE"
@@ -204,9 +213,10 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     df["stake_under"] = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
                          zip(df["edge_under"], p_under, un_odds.fillna(0))]
 
-    # Base tier from fixed thresholds
-    df["tier_over"]  = [_base_tier(e) for e in df["edge_over"]]
-    df["tier_under"] = [_base_tier(e) for e in df["edge_under"]]
+    # Base tier — per-league threshold if available, else side-specific global
+    leagues = df.get("league", pd.Series([""] * len(df), index=df.index))
+    df["tier_over"]  = [_base_tier(e, "OVER",  lg) for e, lg in zip(df["edge_over"],  leagues)]
+    df["tier_under"] = [_base_tier(e, "UNDER", lg) for e, lg in zip(df["edge_under"], leagues)]
 
     # Min-odds filter
     over_odds_ok  = ov_odds >= mo_s

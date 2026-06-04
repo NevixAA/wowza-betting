@@ -55,10 +55,11 @@ from src.ledger import append_tips, print_ledger
 
 # ── TRAIN ─────────────────────────────────────────────────────────────────────
 
-def _train_one(valid: "pd.DataFrame", label: str, model_file, target: str = "over25") -> dict:
+def _train_one(valid: "pd.DataFrame", label: str, model_file,
+               target: str = "over25", weights=None) -> dict:
     """Train one model and save it. target specifies which column to predict."""
     log.info(f"  [{label}] {len(valid):,} rows — training ensemble (target={target})...")
-    results = train_model(valid, target=target)
+    results = train_model(valid, target=target, sample_weight=weights)
     save_models(results, model_file=model_file)
 
     payload = load_models(model_file=model_file)
@@ -81,23 +82,40 @@ def mode_train() -> tuple:
     log.info(f"  {len(raw):,} matches | {raw['league'].nunique()} leagues | "
              f"{raw['date'].min().date()} → {raw['date'].max().date()}")
 
+    # ── Exclude COVID seasons ────────────────────────────────────────────────
+    if config.EXCLUDE_COVID_SEASONS:
+        before = len(raw)
+        raw = raw[~raw["season"].isin(config.COVID_SEASONS)]
+        log.info(f"  Excluded COVID seasons {config.COVID_SEASONS}: "
+                 f"{before - len(raw):,} rows removed → {len(raw):,} remaining")
+
     log.info("Engineering features...")
     feat  = build_features(raw)
     valid = feat.dropna(subset=["over25", "home_scored_last5"])
     log.info(f"  {len(valid):,} rows with full features")
 
+    # ── Build time-decay sample weights ─────────────────────────────────────
+    def _get_weights(df):
+        weights = df["season"].map(
+            lambda s: config.TRAINING_DECAY_WEIGHTS.get(s, config.DEFAULT_DECAY_WEIGHT)
+        ).fillna(config.DEFAULT_DECAY_WEIGHT)
+        return weights.values
+
     # ── Standard model — trained only on standard-format league data ────────
     log.info("\nTraining STANDARD model ...")
     std_valid = valid[valid["league"].isin(config.STANDARD_FORMAT_LEAGUES)]
+    std_weights = _get_weights(std_valid)
     log.info(f"  Standard leagues: {sorted(std_valid['league'].unique())}")
-    _train_one(std_valid, "standard", config.MODEL_FILE_STANDARD)
+    log.info(f"  Seasons in training: {sorted(std_valid['season'].unique())}")
+    _train_one(std_valid, "standard", config.MODEL_FILE_STANDARD, weights=std_weights)
 
     # ── New-format model — trained only on new-format league data ───────────
     log.info("\nTraining NEW-FORMAT model ...")
     nf_valid = valid[valid["league"].isin(config.NEW_FORMAT_LEAGUES)]
+    nf_weights = _get_weights(nf_valid)
     log.info(f"  New-format leagues: {sorted(nf_valid['league'].unique())}")
     if len(nf_valid) >= config.BACKTEST_MIN_TRAIN:
-        _train_one(nf_valid, "newformat", config.MODEL_FILE_NEWFORMAT)
+        _train_one(nf_valid, "newformat", config.MODEL_FILE_NEWFORMAT, weights=nf_weights)
     else:
         log.warning(f"  Not enough new-format data ({len(nf_valid)} rows) — skipping new-format model")
 

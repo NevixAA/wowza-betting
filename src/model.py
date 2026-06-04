@@ -101,11 +101,14 @@ def train(
     df: pd.DataFrame,
     target: str = "over25",
     train_ratio: float = 0.8,
+    sample_weight=None,
 ) -> dict:
     """
     Train on the chronological training split, calibrate on the test split.
+    sample_weight: array-like of per-row weights (time-decay etc.), same length as df.
     Returns dict: {model_name: {"model", "metrics", "feature_cols"}}
     """
+    import numpy as np
     df = df.dropna(subset=[target]).copy().sort_values("date").reset_index(drop=True)
     split   = int(len(df) * train_ratio)
     train_df = df.iloc[:split]
@@ -116,10 +119,20 @@ def train(
     y_train = train_df[target].values
     y_test  = test_df[target].values
 
+    # Align sample weights to the sorted/reset df
+    if sample_weight is not None:
+        w_all = np.array(sample_weight)[df.index] if len(sample_weight) == len(df) else \
+                np.ones(len(df))
+        w_train = w_all[:split]
+    else:
+        w_train = None
+
     # Hold out last 15% of train for calibration (still chronological, no leakage)
     cal_split  = int(len(X_train) * 0.85)
     X_fit, y_fit = X_train.iloc[:cal_split], y_train[:cal_split]
     X_cal, y_cal = X_train.iloc[cal_split:], y_train[cal_split:]
+    w_fit = w_train[:cal_split] if w_train is not None else None
+    w_cal = w_train[cal_split:] if w_train is not None else None
 
     models_cfg = [
         ("logistic", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
@@ -135,12 +148,15 @@ def train(
             ("scaler", StandardScaler()),
             ("clf",    base_clf),
         ])
-        pipe.fit(X_fit, y_fit)
+        fit_params = {}
+        if w_fit is not None:
+            fit_params[f"clf__sample_weight"] = w_fit
+        pipe.fit(X_fit, y_fit, **fit_params)
 
         # Isotonic calibration on cal split (chronologically after fit split)
         raw_proba_cal = pipe.predict_proba(X_cal)[:, 1]
         iso = IsotonicRegression(out_of_bounds="clip")
-        iso.fit(raw_proba_cal, y_cal)
+        iso.fit(raw_proba_cal, y_cal, sample_weight=w_cal)
 
         calibrated = _CalibratedModel(pipe, iso)
 

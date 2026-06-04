@@ -135,10 +135,47 @@ FOOTBALL_DATA_LEAGUES = {
 TARGET_COL  = "over25"
 ROLLING_N   = 5
 
-# ── Signal tiers ──────────────────────────────────────────────────────────────
-VALUE_THRESHOLD  = float(os.getenv("VALUE_THRESHOLD",  "0.04"))
-SNIPER_THRESHOLD = float(os.getenv("SNIPER_THRESHOLD", "0.10"))
-DRIFT_UPGRADE_EDGE = float(os.getenv("DRIFT_UPGRADE_EDGE", "0.07"))
+# ── Training data filters ─────────────────────────────────────────────────────
+# Exclude COVID seasons — empty stadiums created anomalous patterns not present today
+EXCLUDE_COVID_SEASONS = True
+COVID_SEASONS = {"2019/20", "2020/21"}   # seasons to drop from training
+
+# Time-decay weights — recent seasons are more representative of current market
+TRAINING_DECAY_WEIGHTS = {
+    "2024/25": 4.0,
+    "2023/24": 3.0,
+    "2022/23": 2.0,
+    "2021/22": 1.5,
+    "2020/21": 0.0,   # COVID — excluded
+    "2019/20": 0.0,   # COVID — excluded
+    "2018/19": 1.0,
+    "2017/18": 1.0,
+    "2016/17": 0.8,
+    "2015/16": 0.6,
+}
+DEFAULT_DECAY_WEIGHT = 1.0
+
+# ── Signal tiers (recalibrated for post-COVID market) ─────────────────────────
+# Investigation showed OVER bets unreliable post-COVID — require higher edge
+VALUE_THRESHOLD         = float(os.getenv("VALUE_THRESHOLD",         "0.04"))
+SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.15"))  # global default
+SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.18"))  # OVER needs more edge
+SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.13"))  # UNDER more reliable
+DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))  # was 0.07
+
+# ── Per-league SNIPER thresholds (from backtest optimisation) ─────────────────
+# These override SNIPER_THRESHOLD for specific leagues
+LEAGUE_SNIPER_THRESHOLDS: dict = {
+    # Standard format — live prediction leagues
+    "League Two":     0.14,   # most data, reliable at 14%  → ROI +22.6%
+    "Bundesliga 2":   0.20,   # needs higher bar             → ROI +22.4%
+    "La Liga 2":      0.20,   # high threshold, big ROI      → ROI +53.5%
+    "League One":     0.25,   # very high bar needed         → ROI +21.4%
+    "Ligue 2":        0.25,   # high bar, still good ROI     → ROI +45.2%
+    "Championship":   0.15,   # limited edge, conservative
+    "Serie B":        0.15,   # limited edge, conservative
+    "Greek Super League": 0.25,  # historically weak — high bar
+}
 
 KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))
 FLAT_STAKE     = float(os.getenv("FLAT_STAKE",     "1.0"))
