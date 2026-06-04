@@ -41,7 +41,7 @@ DAYS_AHEAD        = 30     # look 30 days forward (group stage + knockouts)
 # ── OddsAPI fetch ─────────────────────────────────────────────────────────────
 
 def _fetch_wc_odds() -> list[dict]:
-    """Fetch all WC fixtures with O/U 2.5 + 1X2 from OddsAPI."""
+    """Fetch all WC fixtures with O/U 2.5, O/U 1.5, O/U 3.5 + 1X2 from OddsAPI."""
     results = []
     cutoff  = datetime.utcnow() + timedelta(days=DAYS_AHEAD)
 
@@ -87,11 +87,16 @@ def _fetch_wc_odds() -> list[dict]:
                 for mkt in bm.get("markets", []):
                     if market == "totals" and mkt["key"] == "totals":
                         for o in mkt["outcomes"]:
-                            if o.get("point") == 2.5:
-                                if o["name"] == "Over":
-                                    entry["odds_over"]  = o["price"]
-                                elif o["name"] == "Under":
-                                    entry["odds_under"] = o["price"]
+                            pt = o.get("point")
+                            if pt == 2.5:
+                                if o["name"] == "Over":  entry["odds_over"]   = o["price"]
+                                else:                    entry["odds_under"]  = o["price"]
+                            elif pt == 1.5:
+                                if o["name"] == "Over":  entry["odds_over15"] = o["price"]
+                                else:                    entry["odds_under15"]= o["price"]
+                            elif pt == 3.5:
+                                if o["name"] == "Over":  entry["odds_over35"] = o["price"]
+                                else:                    entry["odds_under35"]= o["price"]
                     elif market == "h2h" and mkt["key"] == "h2h":
                         for o in mkt["outcomes"]:
                             if o["name"] == event["home_team"]:
@@ -146,7 +151,8 @@ def _update_history(history: dict, events: list[dict]) -> dict:
 
 
 def _extract_odds(ev: dict) -> dict:
-    keys = ("odds_over", "odds_under", "odds_home", "odds_away", "odds_draw")
+    keys = ("odds_over", "odds_under", "odds_over15", "odds_under15",
+            "odds_over35", "odds_under35", "odds_home", "odds_away", "odds_draw")
     return {k: ev[k] for k in keys if k in ev}
 
 
@@ -186,12 +192,16 @@ def _build_tips(history: dict) -> pd.DataFrame:
         n_snaps = len(rec["snapshots"])
 
         if rec["market"] == "totals":
-            for side, ok, ck in [
-                ("UNDER", "odds_under", "odds_under"),
-                ("OVER",  "odds_over",  "odds_over"),
+            for side, ok, label in [
+                ("UNDER", "odds_under",   "O/U 2.5 UNDER"),
+                ("OVER",  "odds_over",    "O/U 2.5 OVER"),
+                ("UNDER", "odds_under15", "O/U 1.5 UNDER"),
+                ("OVER",  "odds_over15",  "O/U 1.5 OVER"),
+                ("UNDER", "odds_under35", "O/U 3.5 UNDER"),
+                ("OVER",  "odds_over35",  "O/U 3.5 OVER"),
             ]:
                 op = opening.get(ok)
-                cu = current.get(ck)
+                cu = current.get(ok)
                 if not op or not cu:
                     continue
                 d = _drift_pct(op, cu)
@@ -201,7 +211,7 @@ def _build_tips(history: dict) -> pd.DataFrame:
                 rows.append({
                     "date":         rec["date"][:10],
                     "match":        f"{rec['home']} vs {rec['away']}",
-                    "market":       f"O/U 2.5 {side}",
+                    "market":       label,
                     "opening_odds": round(op, 3),
                     "current_odds": round(cu, 3),
                     "drift_pct":    round(d * 100, 1),
@@ -248,6 +258,118 @@ def _build_tips(history: dict) -> pd.DataFrame:
     return df.reset_index(drop=True)
 
 
+# ── ML model value detection ──────────────────────────────────────────────────
+
+WC_MODEL_FILE = config.OUTPUT_DIR / "worldcup_model_tips.csv"
+
+def _add_model_value(history: dict) -> pd.DataFrame:
+    """
+    Apply our FT + HT models to WC fixtures and compare vs market odds.
+    Returns DataFrame with value signals where our fair price differs from market.
+    """
+    try:
+        from src.model import load_models, predict_proba
+        from src.feature_engineering import build_upcoming_features
+        from src.data_loader import load_all_matches
+    except Exception as e:
+        log.warning(f"Model import failed: {e}")
+        return pd.DataFrame()
+
+    rows = []
+    now  = datetime.utcnow()
+
+    # Build a minimal upcoming DataFrame from WC history
+    fixtures = []
+    seen = set()
+    for key, rec in history.items():
+        if rec["market"] != "totals":
+            continue
+        match_dt = pd.to_datetime(rec["date"], errors="coerce")
+        if pd.isna(match_dt) or match_dt < now:
+            continue
+        match_key = f"{rec['home']}|{rec['away']}"
+        if match_key in seen:
+            continue
+        seen.add(match_key)
+        current = rec["snapshots"][-1]["odds"] if rec["snapshots"] else rec["opening"]
+        fixtures.append({
+            "date":        match_dt,
+            "league":      "World Cup 2026",
+            "home_team":   rec["home"],
+            "away_team":   rec["away"],
+            "odds_over25": current.get("odds_over"),
+            "odds_under25":current.get("odds_under"),
+        })
+
+    if not fixtures:
+        return pd.DataFrame()
+
+    upcoming = pd.DataFrame(fixtures)
+    upcoming = upcoming.dropna(subset=["odds_over25", "odds_under25"])
+
+    try:
+        historical = load_all_matches()
+        feat = build_upcoming_features(upcoming, historical)
+        payload = load_models(model_file=config.MODEL_FILE_STANDARD)
+        feat["p_over25"] = predict_proba(feat, payload=payload).values
+
+        # HT model if available
+        if config.HT_MODEL_FILE_05.exists():
+            ht_payload = load_models(model_file=config.HT_MODEL_FILE_05)
+            feat["p_ht_over05"] = predict_proba(feat, payload=ht_payload).values
+        if config.HT_MODEL_FILE_15.exists():
+            ht_payload15 = load_models(model_file=config.HT_MODEL_FILE_15)
+            feat["p_ht_over15"] = predict_proba(feat, payload=ht_payload15).values
+    except Exception as e:
+        log.warning(f"WC model prediction failed: {e}")
+        return pd.DataFrame()
+
+    for _, row in feat.iterrows():
+        p_over = float(row.get("p_over25", 0.5))
+        market_over  = float(row["odds_over25"])
+        market_under = float(row["odds_under25"])
+        fair_over  = round(1 / max(p_over, 0.01), 2)
+        fair_under = round(1 / max(1 - p_over, 0.01), 2)
+
+        # Value = our fair price is lower than market (market is paying more than fair)
+        ft_over_value  = round((market_over  / fair_over  - 1) * 100, 1) if fair_over  > 0 else 0
+        ft_under_value = round((market_under / fair_under - 1) * 100, 1) if fair_under > 0 else 0
+
+        entry = {
+            "date":          str(row["date"])[:10],
+            "match":         f"{row['home_team']} vs {row['away_team']}",
+            "p_ft_over25":   round(p_over, 3),
+            "fair_ft_over":  fair_over,
+            "fair_ft_under": fair_under,
+            "market_over25": market_over,
+            "market_under25":market_under,
+            "ft_over_value":  ft_over_value,
+            "ft_under_value": ft_under_value,
+        }
+
+        if "p_ht_over05" in row and pd.notna(row["p_ht_over05"]):
+            p_ht05 = float(row["p_ht_over05"])
+            entry["p_ht_over05"]   = round(p_ht05, 3)
+            entry["fair_ht_over05"]  = round(1 / max(p_ht05, 0.01), 2)
+            entry["fair_ht_under05"] = round(1 / max(1 - p_ht05, 0.01), 2)
+
+        if "p_ht_over15" in row and pd.notna(row.get("p_ht_over15")):
+            p_ht15 = float(row["p_ht_over15"])
+            entry["p_ht_over15"]   = round(p_ht15, 3)
+            entry["fair_ht_over15"]  = round(1 / max(p_ht15, 0.01), 2)
+            entry["fair_ht_under15"] = round(1 / max(1 - p_ht15, 0.01), 2)
+
+        rows.append(entry)
+
+    if not rows:
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows).sort_values("date")
+    df.to_csv(WC_MODEL_FILE, index=False)
+    log.info(f"  WC model tips saved → {WC_MODEL_FILE}")
+    return df
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def run():
@@ -268,6 +390,10 @@ def run():
 
     tips = _build_tips(history)
     tips.to_csv(WC_TIPS_FILE, index=False)
+
+    # ML model value analysis
+    log.info("Running ML model on WC fixtures...")
+    _add_model_value(history)
 
     strong = tips[tips["signal"] == "STRONG"]
     sharp  = tips[tips["signal"] == "SHARP"]

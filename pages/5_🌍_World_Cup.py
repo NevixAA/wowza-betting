@@ -13,13 +13,14 @@ import streamlit as st
 
 st.set_page_config(page_title="World Cup 2026", page_icon="🌍", layout="wide")
 
-BASE_DIR     = Path(__file__).resolve().parents[1]
-TIPS_FILE    = BASE_DIR / "output" / "worldcup_tips.csv"
-HISTORY_FILE = BASE_DIR / "output" / "worldcup_history.json"
+BASE_DIR        = Path(__file__).resolve().parents[1]
+TIPS_FILE       = BASE_DIR / "output" / "worldcup_tips.csv"
+HISTORY_FILE    = BASE_DIR / "output" / "worldcup_history.json"
+MODEL_TIPS_FILE = BASE_DIR / "output" / "worldcup_model_tips.csv"
 
 # ── Header ────────────────────────────────────────────────────────────────────
-st.title("🌍 World Cup 2026 — Sharp Money Tracker")
-st.caption("No ML predictions. Pure odds drift analysis. Where the money flows, the edge follows.")
+st.title("🌍 World Cup 2026")
+st.caption("Sharp money drift + ML model value signals · O/U 1.5 / 2.5 / 3.5 · 1X2")
 
 if st.button("🔄 Refresh"):
     st.cache_data.clear()
@@ -61,22 +62,77 @@ if tips.empty:
     """)
     st.stop()
 
+@st.cache_data(ttl=120)
+def load_model_tips():
+    if not MODEL_TIPS_FILE.exists():
+        return pd.DataFrame()
+    return pd.read_csv(MODEL_TIPS_FILE)
+
+model_tips = load_model_tips()
+
 # ── KPIs ──────────────────────────────────────────────────────────────────────
 strong = tips[tips["signal"] == "STRONG"]
 sharp  = tips[tips["signal"] == "SHARP"]
 fading = tips[tips["signal"] == "FADING"]
 matches = tips["match"].nunique()
 
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3, c4, c5 = st.columns(5)
 c1.metric("Matches Tracked", matches)
-c2.metric("STRONG Signals", len(strong), help=">10% odds move")
-c3.metric("SHARP Signals",  len(sharp),  help="5-10% odds move")
-c4.metric("FADING (backing off)", len(fading))
+c2.metric("🔴 STRONG",       len(strong), help=">10% odds move")
+c3.metric("🟡 SHARP",        len(sharp),  help="5-10% odds move")
+c4.metric("⬆️ FADING",       len(fading))
+c5.metric("🤖 Model Tips",   len(model_tips) if not model_tips.empty else 0)
 
 st.markdown("---")
 
-# ── Signal filter ─────────────────────────────────────────────────────────────
-col1, col2 = st.columns([1, 2])
+# ── Tabs ──────────────────────────────────────────────────────────────────────
+tab_drift, tab_model = st.tabs(["📡 Sharp Money Drift", "🤖 ML Model Value"])
+
+with tab_model:
+    st.subheader("🤖 ML Model Fair Prices vs Market")
+    st.caption("Our FT + HT models applied to WC fixtures · Compare fair price vs bookmaker odds to spot value")
+    if model_tips.empty:
+        st.info("⏳ Model tips will appear after the next WC tracker run.")
+    else:
+        for _, row in model_tips.iterrows():
+            p_over = float(row.get("p_ft_over25", 0.5))
+            fair_o = row.get("fair_ft_over", "—")
+            fair_u = row.get("fair_ft_under", "—")
+            mkt_o  = row.get("market_over25", "—")
+            mkt_u  = row.get("market_under25", "—")
+            val_o  = float(row.get("ft_over_value", 0))
+            val_u  = float(row.get("ft_under_value", 0))
+            best_val = max(val_o, val_u)
+            border = "#00cc88" if best_val > 5 else "#ffaa00" if best_val > 0 else "#444"
+
+            ht05 = row.get("p_ht_over05")
+            ht15 = row.get("p_ht_over15")
+
+            st.markdown(f"""
+            <div style="border-left:4px solid {border};padding:12px 16px;margin:6px 0;background:#111827;border-radius:6px">
+                <div style="display:flex;justify-content:space-between">
+                    <b style="color:white;font-size:1.05em">{row['match']}</b>
+                    <span style="color:#aaa;font-size:0.85em">📅 {row['date']}</span>
+                </div>
+                <div style="display:flex;gap:20px;margin:8px 0;flex-wrap:wrap">
+                    <div><span style="color:#aaa;font-size:0.8em">P(FT OVER 2.5)</span><br><b style="color:white">{p_over*100:.0f}%</b></div>
+                    <div><span style="color:#aaa;font-size:0.8em">Fair OVER 2.5</span><br><b style="color:{'#00cc88' if val_o>5 else 'white'}">{fair_o}</b></div>
+                    <div><span style="color:#aaa;font-size:0.8em">Market OVER 2.5</span><br><b style="color:white">{mkt_o}</b></div>
+                    <div><span style="color:#aaa;font-size:0.8em">Fair UNDER 2.5</span><br><b style="color:{'#00cc88' if val_u>5 else 'white'}">{fair_u}</b></div>
+                    <div><span style="color:#aaa;font-size:0.8em">Market UNDER 2.5</span><br><b style="color:white">{mkt_u}</b></div>
+                    {f'<div><span style="color:#aaa;font-size:0.8em">P(HT OVER 0.5)</span><br><b style="color:white">{float(ht05)*100:.0f}%</b></div>' if pd.notna(ht05) else ''}
+                    {f'<div><span style="color:#aaa;font-size:0.8em">P(HT OVER 1.5)</span><br><b style="color:white">{float(ht15)*100:.0f}%</b></div>' if pd.notna(ht15) else ''}
+                </div>
+                {f'<div style="color:#00cc88;font-size:0.85em">✅ Value: OVER 2.5 +{val_o:.1f}% vs fair</div>' if val_o > 5 else ''}
+                {f'<div style="color:#00cc88;font-size:0.85em">✅ Value: UNDER 2.5 +{val_u:.1f}% vs fair</div>' if val_u > 5 else ''}
+            </div>
+            """, unsafe_allow_html=True)
+
+with tab_drift:
+    st.subheader("📡 Sharp Money Drift Signals")
+
+    # ── Signal filter ──────────────────────────────────────────────────────────
+    col1, col2 = st.columns([1, 2])
 with col1:
     sig_filter = st.multiselect("Signal", ["STRONG", "SHARP", "FADING"],
                                 default=["STRONG", "SHARP"])
@@ -141,9 +197,9 @@ if len(filtered) > 0:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-# ── Match detail (odds history) ───────────────────────────────────────────────
-st.markdown("---")
-st.subheader("🔍 Match Odds History")
+    # ── Match detail (odds history) ────────────────────────────────────────────
+    st.markdown("---")
+    st.subheader("🔍 Match Odds History")
 
 match_options = sorted(tips["match"].unique().tolist())
 if match_options:

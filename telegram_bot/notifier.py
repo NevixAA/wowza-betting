@@ -310,6 +310,82 @@ def notify_sharp_strong() -> int:
     return sent
 
 
+def notify_ht_tips() -> int:
+    """Send Telegram alerts for strong HT O/U model predictions. Returns count sent."""
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    preds_file = app_config.OUTPUT_DIR / "predictions.csv"
+    if not preds_file.exists():
+        return 0
+
+    df = pd.read_csv(preds_file)
+    if "p_ht_over05" not in df.columns:
+        return 0
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    df = df[df["date"].astype(str).str[:10] >= today_str]
+    df = df[df["p_ht_over05"].notna()]
+
+    if df.empty:
+        return 0
+
+    notified = _load_notified()
+    sent = 0
+
+    for _, row in df.iterrows():
+        p05  = float(row["p_ht_over05"])
+        p15  = float(row["p_ht_over15"]) if pd.notna(row.get("p_ht_over15")) else None
+        date = str(row["date"])[:10]
+
+        # Only alert on strong signals
+        if p05 >= 0.75:
+            side, prob, line = "OVER", p05, "0.5"
+            fair = round(1 / max(p05, 0.01), 2)
+            emoji = "⚡"
+        elif p05 <= 0.30:
+            side, prob, line = "UNDER", 1 - p05, "0.5"
+            fair = round(1 / max(1 - p05, 0.01), 2)
+            emoji = "🧊"
+        elif p15 is not None and p15 >= 0.60:
+            side, prob, line = "OVER", p15, "1.5"
+            fair = round(1 / max(p15, 0.01), 2)
+            emoji = "🔥"
+        elif p15 is not None and p15 <= 0.25:
+            side, prob, line = "UNDER", 1 - p15, "1.5"
+            fair = round(1 / max(1 - p15, 0.01), 2)
+            emoji = "🔒"
+        else:
+            continue
+
+        key = f"HT|{date}|{row['home_team']}|{row['away_team']}|HT{side}{line}"
+        if key in notified:
+            continue
+
+        msg = (
+            f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"📅 {date}\n"
+            f"🏆 {row.get('league', '')}\n"
+            f"⚽ {row['home_team']} vs {row['away_team']}\n"
+            f"📌 <b>HT {side} {line}</b>\n"
+            f"📊 P(HT {side} {line}) = <b>{prob*100:.0f}%</b>\n"
+            f"💰 Fair price: <b>{fair}</b>\n"
+            f"⚠️ Check your bookmaker's HT market"
+        )
+
+        if _send(token, chat_id, msg):
+            notified.add(key)
+            sent += 1
+            _save_notified(notified)
+            print(f"  HT tip: {row['home_team']} vs {row['away_team']} — HT {side} {line} ({prob*100:.0f}%)")
+
+    return sent
+
+
 def get_chat_id(token: str) -> None:
     """Print the chat_id of the last user who messaged the bot."""
     r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=10)
@@ -331,7 +407,8 @@ if __name__ == "__main__":
         get_chat_id(cfg["token"])
     else:
         n      = notify_new_snipers()
+        ht     = notify_ht_tips()
         live   = notify_live_signals()
         wc     = notify_wc_strong()
         sharp  = notify_sharp_strong()
-        print(f"Notifications sent: {n} SNIPER + {live} Live + {wc} World Cup + {sharp} Sharp")
+        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp")
