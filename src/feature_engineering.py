@@ -259,13 +259,19 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     if has_ht:
         tc["roll_ht_scored"]   = _rolling(tc, "ht_scored",   n)
         tc["roll_ht_conceded"] = _rolling(tc, "ht_conceded", n)
+        # Team HT tendency: % of last N games with >= 1 / >= 2 HT goals (combined)
+        tc["ht_total"] = tc["ht_scored"] + tc["ht_conceded"]
+        tc["ht_over05_flag"] = (tc["ht_total"] >= 1).astype(float).where(tc["ht_total"].notna())
+        tc["ht_over15_flag"] = (tc["ht_total"] >= 2).astype(float).where(tc["ht_total"].notna())
+        tc["roll_ht_over05"] = _rolling(tc, "ht_over05_flag", n)
+        tc["roll_ht_over15"] = _rolling(tc, "ht_over15_flag", n)
 
     # Map back by original row index to avoid any cross-league duplicates
     home_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
     away_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
     if has_ht:
-        home_cols += ["roll_ht_scored", "roll_ht_conceded"]
-        away_cols += ["roll_ht_scored", "roll_ht_conceded"]
+        home_cols += ["roll_ht_scored", "roll_ht_conceded", "roll_ht_over05", "roll_ht_over15"]
+        away_cols += ["roll_ht_scored", "roll_ht_conceded", "roll_ht_over05", "roll_ht_over15"]
 
     home_tc = tc[tc["is_home"] == 1][home_cols].copy()
     home_tc = home_tc.rename(columns={
@@ -276,6 +282,8 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
         "roll_sot":          "home_sot_last5",
         "roll_ht_scored":    "home_ht_scored_last5",
         "roll_ht_conceded":  "home_ht_conceded_last5",
+        "roll_ht_over05":    "home_ht_over05_rate",
+        "roll_ht_over15":    "home_ht_over15_rate",
     })
     away_tc = tc[tc["is_home"] == 0][away_cols].copy()
     away_tc = away_tc.rename(columns={
@@ -286,6 +294,8 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
         "roll_sot":          "away_sot_last5",
         "roll_ht_scored":    "away_ht_scored_last5",
         "roll_ht_conceded":  "away_ht_conceded_last5",
+        "roll_ht_over05":    "away_ht_over05_rate",
+        "roll_ht_over15":    "away_ht_over15_rate",
     })
 
     df["_src_idx"] = df.index
@@ -399,6 +409,25 @@ def build_upcoming_features(
         feat["home_ht_conceded_last5"]  = _team_recent(ht, "ht_away_goals", "ht_home_goals", n)
         feat["away_ht_scored_last5"]    = _team_recent(at, "ht_home_goals", "ht_away_goals", n)
         feat["away_ht_conceded_last5"]  = _team_recent(at, "ht_away_goals", "ht_home_goals", n)
+        # HT tendency rates
+        feat["home_ht_over05_rate"] = _team_over25_rate(ht, n)  # reuse pattern, different stat
+        feat["away_ht_over05_rate"] = _team_over25_rate(at, n)
+
+        def _ht_rate(team, threshold, nn):
+            hm = hist[hist["home_team"] == team]["ht_home_goals"].dropna()
+            aw = hist[hist["away_team"] == team]["ht_away_goals"].dropna()
+            hm_t = hist[hist["home_team"] == team]["ht_away_goals"].dropna()
+            aw_t = hist[hist["away_team"] == team]["ht_home_goals"].dropna()
+            total = [(a + b) for a, b in zip(list(hm.tail(nn)), list(hm_t.tail(nn)))] + \
+                    [(a + b) for a, b in zip(list(aw.tail(nn)), list(aw_t.tail(nn)))]
+            if not total:
+                return float('nan')
+            return sum(1 for x in total if x >= threshold) / len(total)
+
+        feat["home_ht_over05_rate"] = _ht_rate(ht, 1, n)
+        feat["away_ht_over05_rate"] = _ht_rate(at, 1, n)
+        feat["home_ht_over15_rate"] = _ht_rate(ht, 2, n)
+        feat["away_ht_over15_rate"] = _ht_rate(at, 2, n)
         feat_records.append(feat)
 
     df = pd.DataFrame(feat_records)

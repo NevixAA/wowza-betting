@@ -75,6 +75,9 @@ FEATURE_COLS = [
     "home_ht_conceded_last5", "away_ht_conceded_last5",
     "home_ht_attack_str",     "away_ht_attack_str",
     "combined_ht_goals_avg",
+    # HT tendency rates (% of recent games with HT goal)
+    "home_ht_over05_rate",    "away_ht_over05_rate",
+    "home_ht_over15_rate",    "away_ht_over15_rate",
 ]
 
 

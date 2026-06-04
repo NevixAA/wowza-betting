@@ -101,13 +101,14 @@ def mode_train() -> tuple:
     else:
         log.warning(f"  Not enough new-format data ({len(nf_valid)} rows) — skipping new-format model")
 
-    # ── HT models — standard-format leagues only (have HTHG/HTAG data) ──────
-    log.info("\nTraining HT models (standard-format only)...")
-    ht_valid = std_valid.dropna(subset=["ht_over05"])
+    # ── HT models — all leagues with HT data (not just std_valid) ───────────
+    log.info("\nTraining HT models (all leagues with HTHG/HTAG data)...")
+    ht_valid = valid.dropna(subset=["ht_over05", "home_ht_over05_rate"])
+    log.info(f"  HT leagues: {sorted(ht_valid['league'].unique())}")
     if len(ht_valid) >= config.BACKTEST_MIN_TRAIN:
         log.info(f"  HT data: {len(ht_valid):,} rows with HT scores")
         _train_one(ht_valid, "ht_over05", config.HT_MODEL_FILE_05, target="ht_over05")
-        ht_valid15 = std_valid.dropna(subset=["ht_over15"])
+        ht_valid15 = valid.dropna(subset=["ht_over15", "home_ht_over15_rate"])
         _train_one(ht_valid15, "ht_over15", config.HT_MODEL_FILE_15, target="ht_over15")
     else:
         log.warning(f"  Not enough HT data ({len(ht_valid)} rows) — skipping HT models")

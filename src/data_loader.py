@@ -198,6 +198,55 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 except Exception as e:
                     log.warning(f"Failed to load CSV override {csv_path}: {e}")
 
+    # ── Direct HT download: big-5 leagues not in local files ─────────────────
+    # These leagues aren't used for prediction but add ~1,700 rows of HT data
+    _HT_EXTRA = {
+        "Premier League":    "E0",
+        "Bundesliga 1":      "D1",
+        "La Liga":           "SP1",
+        "Serie A":           "I1",
+        "Ligue 1":           "F1",
+    }
+    _STD_URL = "https://www.football-data.co.uk/mmz4281/2526/{code}.csv"
+    for lg_name, code in _HT_EXTRA.items():
+        # Skip if already loaded via local CSV
+        if any(lg_name in str(f.get("league", "")) for f in [{"league": f["league"].iloc[0]} for f in frames if not f.empty]):
+            continue
+        try:
+            import requests as _req
+            from io import StringIO as _SIO
+            r = _req.get(_STD_URL.format(code=code), timeout=20,
+                         headers={"User-Agent": "Mozilla/5.0"})
+            if r.status_code != 200:
+                continue
+            raw = pd.read_csv(_SIO(r.text), encoding="utf-8-sig", on_bad_lines="skip", low_memory=False)
+            if "FTHG" not in raw.columns:
+                continue
+            df = pd.DataFrame()
+            df["date"]      = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
+            df = df[df["date"].notna()].copy()
+            df["league"]    = lg_name
+            df["season"]    = "2025/26"
+            df["home_team"] = raw.get("HomeTeam", np.nan)
+            df["away_team"] = raw.get("AwayTeam", np.nan)
+            for out_col, src_col in [
+                ("home_goals","FTHG"),("away_goals","FTAG"),
+                ("ht_home_goals","HTHG"),("ht_away_goals","HTAG"),
+                ("home_shots","HS"),("away_shots","AS"),
+                ("home_sot","HST"),("away_sot","AST"),
+                ("home_corners","HC"),("away_corners","AC"),
+                ("home_fouls","HF"),("away_fouls","AF"),
+            ]:
+                df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
+            df["ftr"] = raw.get("FTR", np.nan)
+            df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
+            df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+            df = df[df["home_team"].notna() & df["away_team"].notna()]
+            frames.append(df)
+            log.debug(f"HT extra: {lg_name} {len(df)} rows")
+        except Exception as e:
+            log.debug(f"HT extra {lg_name}: {e}")
+
     if not frames:
         raise RuntimeError(f"No match sheets found in {path}")
 
