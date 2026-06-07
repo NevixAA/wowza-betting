@@ -31,6 +31,13 @@ import config as app_config
 
 
 def _load_config() -> dict:
+    import os
+    # GitHub Actions / CI: read from environment variables
+    env_token   = os.getenv("TELEGRAM_TOKEN", "")
+    env_chat_id = os.getenv("TELEGRAM_CHAT_ID", "")
+    if env_token and env_chat_id:
+        return {"token": env_token, "chat_id": env_chat_id}
+    # Local: read from bot_config.json
     if not CONFIG_FILE.exists():
         default = {"token": "YOUR_BOT_TOKEN", "chat_id": "YOUR_CHAT_ID"}
         CONFIG_FILE.write_text(json.dumps(default, indent=2))

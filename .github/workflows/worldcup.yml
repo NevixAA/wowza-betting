@@ -1,0 +1,48 @@
+name: World Cup Tracker
+
+on:
+  schedule:
+    - cron: '15 8-22 * * *'   # every hour 08:15-22:15 UTC
+  workflow_dispatch:
+
+jobs:
+  worldcup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run World Cup tracker
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python worldcup/tracker.py
+
+      - name: Run Telegram (WC alerts)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python telegram_bot/notifier.py
+        continue-on-error: true
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main || true
+          git add output/worldcup_tips.csv output/worldcup_history.json \
+                  output/worldcup_model_tips.csv telegram_bot/notified.json || true
+          git diff --quiet && git diff --staged --quiet || \
+            git commit -m "auto: worldcup $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push

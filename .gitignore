@@ -8,9 +8,11 @@ env/
 
 # Large data files (stay local)
 data/
-*.pkl
 *.zip
 *.xlsx
+
+# Model pkl files — included so GitHub Actions can run predict
+# *.pkl  ← removed from ignore so models are committed
 
 # Logs
 *.log

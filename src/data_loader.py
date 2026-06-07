@@ -64,6 +64,112 @@ def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
     return pd.Series(np.nan, index=raw.index)
 
 
+def _ci_download_all() -> list[pd.DataFrame]:
+    """
+    CI / GitHub Actions fallback: download current + recent seasons directly
+    from football-data.co.uk when local Excel/CSV files are not available.
+    Returns list of DataFrames (one per league/season).
+    """
+    import requests
+    from io import StringIO
+    HEADERS = {"User-Agent": "Mozilla/5.0"}
+    STD_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
+    NEW_URL = "https://www.football-data.co.uk/new/{code}.csv"
+    SEASONS = ["2526", "2425", "2324", "2223"]  # last 4 seasons
+
+    std_leagues = {
+        "League One": "E2", "League Two": "E3", "Championship": "E1",
+        "Bundesliga 2": "D2", "La Liga 2": "SP2", "Ligue 2": "F2",
+        "Serie B": "I2", "Greek Super League": "G1",
+        "Belgian First Division A": "B1", "Dutch Eredivisie": "N1",
+        "Turkish Super Lig": "T1", "Scottish Premiership": "SC0",
+        "Scottish Championship": "SC1", "Portuguese Primeira Liga": "P1",
+        "National League": "EC",
+    }
+    new_leagues = {
+        "Denmark Superliga": "DNK", "Austrian Bundesliga": "AUT",
+        "Sweden Allsvenskan": "SWE", "Norway Eliteserien": "NOR",
+        "Finland Veikkausliiga": "FIN", "Ireland Premier Division": "IRL",
+        "Argentina Primera Division": "ARG", "Brazil Serie A": "BRA",
+        "Japan J-League": "JPN", "Mexico Liga MX": "MEX",
+        "China Super League": "CHN", "USA MLS": "USA",
+    }
+
+    frames = []
+
+    # Standard format (multiple seasons)
+    for league, code in std_leagues.items():
+        for season in SEASONS:
+            season_label = f"20{season[:2]}/{season[2:]}"
+            url = STD_URL.format(season=season, code=code)
+            try:
+                r = requests.get(url, timeout=15, headers=HEADERS)
+                if r.status_code != 200:
+                    continue
+                raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
+                                  on_bad_lines="skip", low_memory=False)
+                df = pd.DataFrame()
+                df["date"] = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
+                df = df[df["date"].notna()].copy()
+                if df.empty:
+                    continue
+                df["league"] = league
+                df["season"] = season_label
+                df["home_team"] = raw.get("HomeTeam", np.nan)
+                df["away_team"] = raw.get("AwayTeam", np.nan)
+                for out_col, src_col in [
+                    ("home_goals","FTHG"),("away_goals","FTAG"),
+                    ("ht_home_goals","HTHG"),("ht_away_goals","HTAG"),
+                    ("home_corners","HC"),("away_corners","AC"),
+                    ("home_fouls","HF"),("away_fouls","AF"),
+                    ("home_shots","HS"),("away_shots","AS"),
+                    ("home_sot","HST"),("away_sot","AST"),
+                ]:
+                    df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
+                df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
+                df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+                df["ftr"] = raw.get("FTR", np.nan)
+                df = df[df["home_team"].notna() & df["away_team"].notna()]
+                frames.append(df)
+            except Exception:
+                continue
+
+    # New format (single file, all seasons)
+    for league, code in new_leagues.items():
+        url = NEW_URL.format(code=code)
+        try:
+            r = requests.get(url, timeout=15, headers=HEADERS)
+            if r.status_code != 200:
+                continue
+            raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
+                              on_bad_lines="skip", low_memory=False)
+            if "Season" in raw.columns:
+                raw = raw[raw["Season"].astype(str).str.contains(
+                    "2022|2023|2024|2025|2026")].copy()
+            df = pd.DataFrame()
+            df["date"] = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
+            df = df[df["date"].notna()].copy()
+            if df.empty:
+                continue
+            df["league"] = league
+            df["season"] = raw.get("Season", "2025/26").values[:len(df)] if "Season" in raw.columns else "2025/26"
+            df["home_team"] = raw.get("Home", np.nan)
+            df["away_team"] = raw.get("Away", np.nan)
+            for out_col, src_col in [
+                ("home_goals","HG"),("away_goals","AG"),
+            ]:
+                df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
+            df["odds_over25"]  = _pick_odds(raw, ["AvgCH","MaxCH","B365CH"])
+            df["odds_under25"] = _pick_odds(raw, ["AvgCA","MaxCA","B365CA"])
+            df = df[df["home_team"].notna() & df["away_team"].notna()]
+            frames.append(df)
+        except Exception:
+            continue
+
+    log.info(f"CI download: {len(frames)} league/season files loaded")
+    return frames
+
+
 def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> pd.DataFrame:
     """Load every match sheet from the summary workbook into one clean DataFrame."""
     global _CACHE
@@ -71,6 +177,31 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         return _CACHE
 
     path = xlsx_path or config.SUMMARY_XLSX
+
+    # ── CI / GitHub Actions fallback ─────────────────────────────────────────
+    if not path.exists():
+        log.info("Local Excel not found — downloading data from football-data.co.uk (CI mode)...")
+        ci_frames = _ci_download_all()
+        if not ci_frames:
+            raise RuntimeError("CI download failed — no data loaded")
+        out = pd.concat(ci_frames, ignore_index=True)
+        out = out[out["home_team"].notna() & out["away_team"].notna()]
+        out = out.sort_values("date").reset_index(drop=True)
+        out["total_goals"] = out["home_goals"] + out["away_goals"]
+        out["over25"] = (out["total_goals"] > 2.5).astype(float)
+        out["btts"] = ((out["home_goals"] > 0) & (out["away_goals"] > 0)).astype(float)
+        if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
+            out["ht_total_goals"] = out["ht_home_goals"] + out["ht_away_goals"]
+            out["ht_over05"] = (out["ht_total_goals"] >= 1).astype(float)
+            out["ht_over15"] = (out["ht_total_goals"] >= 2).astype(float)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            out["home_sot_ratio"] = np.where(out.get("home_shots", pd.Series(dtype=float)) > 0,
+                out.get("home_sot", pd.Series(dtype=float)) / out.get("home_shots", pd.Series(dtype=float)), np.nan)
+            out["away_sot_ratio"] = np.where(out.get("away_shots", pd.Series(dtype=float)) > 0,
+                out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
+        _CACHE = out
+        return out
+
     xl   = pd.ExcelFile(path)
 
     frames = []

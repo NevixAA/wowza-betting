@@ -1,0 +1,39 @@
+name: Update Results
+
+on:
+  schedule:
+    - cron: '30 7,9,11,13,15,17,19,21,23 * * *'  # every 2h, offset from predict
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update results
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python update_results.py --days 3
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main || true
+          git add output/bets_ledger.csv || true
+          git diff --quiet && git diff --staged --quiet || \
+            git commit -m "auto: results $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
