@@ -43,10 +43,15 @@ STANDARD_FORMAT_LEAGUES = {
     "Championship",
     "Serie B",
     "Greek Super League",
-    # Below have data but no OddsAPI live key → training-only contribution
+    # Training-only (no OddsAPI live key)
     "National League",
     "Portuguese Primeira Liga",
     "Scottish Championship", "Scottish League One", "Scottish League Two",
+    # Below have API keys but backtest shows negative ROI — training only, not predicted
+    "Belgian First Division A",  # -21.53%
+    "Dutch Eredivisie",          # -3.61%
+    "Scottish Premiership",      # -15.39%
+    "Turkish Super Lig",         # -8.03%
 }
 
 # New-format: goals + 1X2 odds only — no shots/corners/O/U odds in history
@@ -76,7 +81,11 @@ ENABLED_LEAGUES = {
     "Bundesliga 2", "La Liga 2", "Ligue 2",
     "Championship",
     "Serie B",
-    # "Greek Super League",  # removed: backtest ROI -7.26% (model finds no edge)
+    # "Greek Super League",   # -7.26% ROI
+    # "Belgian First Division A", # -21.53% ROI
+    # "Dutch Eredivisie",         # -3.61% ROI
+    # "Scottish Premiership",     # -15.39% ROI
+    # "Turkish Super Lig",        # -8.03% ROI
     # New format — live predictions enabled
     "Denmark Superliga",
     "Austrian Bundesliga",
