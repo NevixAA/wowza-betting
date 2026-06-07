@@ -34,7 +34,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked || true
           git pull --rebase origin main
+          git stash pop || true
           git add models/model_v9_standard.pkl models/model_v9_newformat.pkl \
                   models/model_ht_over05.pkl models/model_ht_over15.pkl \
                   models/feature_importances_standard.csv models/feature_importances_newformat.csv
