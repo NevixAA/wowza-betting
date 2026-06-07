@@ -22,6 +22,7 @@ scheduler/logs/
 telegram_bot/bot_config.json
 telegram_bot/notified.json
 odds_history_v9.json
+.streamlit/secrets.toml
 
 # Keep output CSVs (needed by Streamlit Cloud)
 !output/bets.csv
