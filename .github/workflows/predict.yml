@@ -20,10 +20,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Retrain models (ensures sklearn version compatibility)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python pipeline.py --mode train
 
       - name: Run predict
         env:
@@ -46,7 +51,9 @@ jobs:
                   output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
                   output/live_tips.csv output/live_games.csv \
                   output/worldcup_history.json output/sharp_history.json \
-                  telegram_bot/notified.json || true
+                  telegram_bot/notified.json \
+                  models/model_v9_standard.pkl models/model_v9_newformat.pkl \
+                  models/model_ht_over05.pkl models/model_ht_over15.pkl || true
           git diff --quiet && git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push

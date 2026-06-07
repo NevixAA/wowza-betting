@@ -2,8 +2,8 @@ name: Live Scanner
 
 on:
   schedule:
-    # Every 10 minutes during match hours (11:00-23:50 UTC)
-    - cron: '*/10 11-23 * * *'
+    # Every 30 minutes during match hours (11:00-23:30 UTC)
+    - cron: '*/30 11-23 * * *'
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+
 
       - name: Install dependencies
         run: pip install -r requirements.txt
