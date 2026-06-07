@@ -346,9 +346,12 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
 
     # ── Referee foul avg ────────────────────────────────────────────────────
     ref_stats, ref_default = _compute_referee_stats(df)
-    df["referee_foul_avg"] = df["referee"].map(
-        lambda r: ref_stats.get(str(r).strip(), ref_default) if pd.notna(r) else ref_default
-    )
+    if "referee" in df.columns:
+        df["referee_foul_avg"] = df["referee"].map(
+            lambda r: ref_stats.get(str(r).strip(), ref_default) if pd.notna(r) else ref_default
+        )
+    else:
+        df["referee_foul_avg"] = ref_default
 
     # ── Implied probability from historical odds ────────────────────────────
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
