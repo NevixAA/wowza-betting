@@ -324,13 +324,30 @@ def main():
 
     log.info(f"Found {len(pending)} tip(s) with missing results (match_date < {today_str})")
 
-    # Fetch scores — OddsAPI for major leagues, football-data.co.uk for others
+    # Fetch scores — FD first (free), OddsAPI as fallback when FD is stale
     scores_cache: dict[str, list[dict]] = {}
     for league in pending["league"].unique():
         if league in _FD_SOURCES:
             log.info(f"  Fetching scores for {league} from football-data.co.uk ...")
-            scores_cache[league] = fetch_scores_fd(league)
+            fd_results = fetch_scores_fd(league)
+            scores_cache[league] = fd_results
+
+            # Fall back to OddsAPI only for RECENT missing dates (within args.days)
+            from datetime import timedelta
+            cutoff = (datetime.utcnow() - timedelta(days=args.days)).strftime("%Y-%m-%d")
+            pending_dates = set(pending[
+                (pending["league"] == league) & (pending["match_date"] >= cutoff)
+            ]["match_date"].tolist())
+            fd_dates = {ev["date_str"] for ev in fd_results}
+            missing_dates = {d for d in pending_dates if d not in fd_dates}
+            if missing_dates and config.ODDS_API_SPORT_KEYS.get(league):
+                sport_key = config.ODDS_API_SPORT_KEYS[league]
+                log.info(f"  FD missing dates {missing_dates} — falling back to OddsAPI...")
+                api_results = fetch_scores(sport_key, args.days)
+                log.info(f"    → OddsAPI returned {len(api_results)} completed events")
+                scores_cache[league] = fd_results + api_results
             continue
+
         sport_key = config.ODDS_API_SPORT_KEYS.get(league)
         if not sport_key:
             log.info(f"  {league}: no scores source configured — skipping")
