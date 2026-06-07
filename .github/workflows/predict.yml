@@ -47,6 +47,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add output/bets.csv output/bets_ledger.csv output/predictions.csv \
                   output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
                   output/live_tips.csv output/live_games.csv \
@@ -56,5 +57,4 @@ jobs:
                   models/model_ht_over05.pkl models/model_ht_over15.pkl || true
           git diff --quiet && git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git pull --rebase origin main || true
           git push
