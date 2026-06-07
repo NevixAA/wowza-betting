@@ -386,6 +386,112 @@ def notify_ht_tips() -> int:
     return sent
 
 
+def notify_weekly_summary() -> bool:
+    """
+    Send weekly performance summary every Monday.
+    Groups results by model format (Standard / New-Format) and signal tier (SNIPER / VALUE).
+    Returns True if message was sent.
+    """
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return False
+
+    ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
+    if not ledger_file.exists():
+        return False
+
+    df = pd.read_csv(ledger_file)
+    df["pnl"]        = pd.to_numeric(df["pnl"],        errors="coerce")
+    df["match_date"] = pd.to_datetime(df["match_date"], errors="coerce")
+    df["generated_at"] = pd.to_datetime(df["generated_at"], errors="coerce")
+
+    # Last 7 days of settled bets
+    week_ago = datetime.now() - __import__("datetime").timedelta(days=7)
+    week = df[
+        (df["source"] == "live") &
+        df["pnl"].notna() &
+        (df["match_date"] >= week_ago)
+    ].copy()
+
+    # All-time live settled
+    alltime = df[(df["source"] == "live") & df["pnl"].notna()].copy()
+
+    def tier_stats(data, tier):
+        t = data[data["signal_tier"] == tier]
+        if t.empty:
+            return None
+        n = len(t); w = (t["pnl"] > 0).sum(); pnl = t["pnl"].sum()
+        return {"n": n, "win": w/n, "roi": pnl/n*100, "pnl": pnl}
+
+    def format_tier(label, stats, emoji):
+        if not stats or stats["n"] == 0:
+            return f"  {emoji} {label}: no bets this week"
+        roi_sign = "+" if stats["roi"] >= 0 else ""
+        pnl_sign = "+" if stats["pnl"] >= 0 else ""
+        return (f"  {emoji} {label}: <b>{stats['n']}</b> bets | "
+                f"{stats['win']:.0%} win | "
+                f"ROI <b>{roi_sign}{stats['roi']:.1f}%</b> | "
+                f"PnL {pnl_sign}{stats['pnl']:.2f}u")
+
+    week_start = (datetime.now() - __import__("datetime").timedelta(days=7)).strftime("%b %d")
+    week_end   = datetime.now().strftime("%b %d, %Y")
+
+    # Weekly section
+    std_week  = week[week["model_type"] == "standard"]    if "model_type" in week.columns else week
+    nf_week   = week[week["model_type"] == "new_format"]  if "model_type" in week.columns else pd.DataFrame()
+
+    # All-time section
+    std_all   = alltime[alltime["model_type"] == "standard"]   if "model_type" in alltime.columns else alltime
+    nf_all    = alltime[alltime["model_type"] == "new_format"] if "model_type" in alltime.columns else pd.DataFrame()
+
+    # Build message
+    lines = [
+        f"📊 <b>WEEKLY SUMMARY</b>",
+        f"━━━━━━━━━━━━━━━━",
+        f"📅 {week_start} → {week_end}",
+        f"",
+    ]
+
+    # This week
+    if week.empty:
+        lines.append("  No settled bets this week.")
+    else:
+        n_w = len(week); w_w = (week["pnl"]>0).sum(); pnl_w = week["pnl"].sum()
+        lines += [
+            f"<b>This week ({n_w} bets | {w_w/n_w:.0%} win | PnL {pnl_w:+.2f}u)</b>",
+            f"",
+            f"🏴 <b>Standard Model</b>",
+            format_tier("SNIPER", tier_stats(std_week, "SNIPER"), "🎯"),
+            format_tier("VALUE",  tier_stats(std_week, "VALUE"),  "📡"),
+        ]
+        if not nf_week.empty:
+            lines += [
+                f"",
+                f"🌍 <b>New-Format Model</b>",
+                format_tier("SNIPER", tier_stats(nf_week, "SNIPER"), "🎯"),
+                format_tier("VALUE",  tier_stats(nf_week, "VALUE"),  "📡"),
+            ]
+
+    # All-time
+    lines += ["", "━━━━━━━━━━━━━━━━"]
+    if not alltime.empty:
+        n_a = len(alltime); w_a = (alltime["pnl"]>0).sum(); pnl_a = alltime["pnl"].sum()
+        lines += [
+            f"📈 <b>All-time live ({n_a} bets)</b>",
+            format_tier("SNIPER", tier_stats(alltime, "SNIPER"), "🎯"),
+            format_tier("VALUE",  tier_stats(alltime, "VALUE"),  "📡"),
+            f"  Total PnL: <b>{pnl_a:+.2f}u</b>",
+        ]
+
+    msg = "\n".join(lines)
+    if _send(token, chat_id, msg):
+        print(f"Weekly summary sent.")
+        return True
+    return False
+
+
 def get_chat_id(token: str) -> None:
     """Print the chat_id of the last user who messaged the bot."""
     r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=10)

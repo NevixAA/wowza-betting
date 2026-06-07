@@ -43,6 +43,8 @@ LIVE_HOUR_START     = 11
 LIVE_HOUR_END       = 24
 LIVE_INTERVAL_LIVE  = 120   # seconds when games active (2 min)
 LIVE_INTERVAL_IDLE  = 600   # seconds when no games (10 min)
+WEEKLY_SUMMARY_DAY  = 0     # Monday (0=Mon, 6=Sun)
+WEEKLY_SUMMARY_HOUR = 9     # 09:00
 
 
 # ── Task runner ───────────────────────────────────────────────────────────────
@@ -90,12 +92,13 @@ def main():
     log.info(f"  Live:    {LIVE_HOUR_START}:00-{LIVE_HOUR_END}:00 (30s/5min)")
     log.info("=" * 55)
 
-    last_predict  = datetime.min
-    last_results  = datetime.min
-    last_worldcup = datetime.min
-    last_sharp    = datetime.min
-    last_telegram = datetime.min
-    last_gitpush  = datetime.min
+    last_predict        = datetime.min
+    last_results        = datetime.min
+    last_worldcup       = datetime.min
+    last_sharp          = datetime.min
+    last_telegram       = datetime.min
+    last_gitpush        = datetime.min
+    last_weekly_summary = datetime.min
 
     while True:
         now  = datetime.now()
@@ -143,6 +146,18 @@ def main():
                 log.info(f"[{now.strftime('%H:%M')}] Running SHARP TRACKER...")
                 _run("src/sharp_tracker.py")
                 last_sharp = now
+
+            # ── Weekly summary every Monday at 09:00 ─────────────────────────
+            if (now.weekday() == WEEKLY_SUMMARY_DAY
+                    and hour == WEEKLY_SUMMARY_HOUR
+                    and (now - last_weekly_summary).total_seconds() > 3500):
+                log.info(f"[{now.strftime('%H:%M')}] Running WEEKLY SUMMARY...")
+                try:
+                    from telegram_bot.notifier import notify_weekly_summary
+                    notify_weekly_summary()
+                except Exception as e:
+                    log.error(f"Weekly summary error: {e}")
+                last_weekly_summary = now
 
             # ── Live scanner ─────────────────────────────────────────────────
             if LIVE_HOUR_START <= hour < LIVE_HOUR_END:

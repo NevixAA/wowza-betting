@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 
 LIVE_TIPS_FILE    = config.OUTPUT_DIR / "live_tips.csv"
 LIVE_GAMES_FILE   = config.OUTPUT_DIR / "live_games.csv"
+LIVE_HISTORY_FILE = config.OUTPUT_DIR / "live_signals_history.csv"
 LIVE_NOTIFIED     = Path(__file__).resolve().parents[1] / "telegram_bot" / "live_notified.json"
 
 MIN_FAIR_UNDER    = 1.28   # only alert if fair UNDER odds >= this (meaningful value)
@@ -533,7 +534,12 @@ def run() -> list[dict]:
     if tips:
         df = pd.DataFrame(tips)
         df = df.sort_values("elapsed_mins", ascending=False)
+        df["date"] = datetime.now().strftime("%Y-%m-%d")
         df.to_csv(LIVE_TIPS_FILE, index=False)
+
+        # Append to history file for tracking signal usefulness over time
+        _append_to_history(df)
+
         log.info(f"\n{'='*60}")
         log.info(f"  LIVE VALUE SIGNALS: {len(tips)}")
         log.info(f"{'='*60}")
@@ -541,11 +547,35 @@ def run() -> list[dict]:
             log.info(f"  [{t['signal_type']}] {t['match']} | {t['score']} @{t['elapsed_mins']}min")
             log.info(f"    Bet: {t['bet']} | Fair odds: {t['fair_under_odds'] if 'UNDER' in t['bet'] else t['fair_over_odds']}")
             log.info(f"    {t['reason']}")
+
+        # Send Telegram alerts for new signals
+        try:
+            from telegram_bot.notifier import notify_live_signals
+            notify_live_signals()
+        except Exception as e:
+            log.error(f"Telegram live alert error: {e}")
     else:
         log.info("  No live value signals detected.")
         _save_empty()
 
     return tips
+
+
+def _append_to_history(df: pd.DataFrame) -> None:
+    """Append live signals to the history file for long-term tracking."""
+    try:
+        cols = ["date", "league", "match", "score", "elapsed_mins",
+                "signal_type", "bet", "fair_under_odds", "fair_over_odds",
+                "live_p_under", "live_p_over", "pre_p_over", "updated_at"]
+        row = df[[c for c in cols if c in df.columns]].copy()
+        if LIVE_HISTORY_FILE.exists():
+            existing = pd.read_csv(LIVE_HISTORY_FILE)
+            combined = pd.concat([existing, row], ignore_index=True)
+        else:
+            combined = row
+        combined.to_csv(LIVE_HISTORY_FILE, index=False)
+    except Exception as e:
+        log.debug(f"History append error: {e}")
 
 
 def _save_empty_games():

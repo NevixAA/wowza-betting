@@ -89,7 +89,14 @@ with st.expander("ℹ️ How this works"):
 
 # ── Empty state ───────────────────────────────────────────────────────────────
 if df.empty or "signal_type" not in df.columns:
-    st.info("⏳ No live value signals right now. Scanner runs every 10 minutes during match hours.")
+    from datetime import datetime as _dt
+    import os
+    tips_path = BASE_DIR / "output" / "live_tips.csv"
+    last_scan = ""
+    if tips_path.exists():
+        mt = _dt.fromtimestamp(os.path.getmtime(str(tips_path)))
+        last_scan = f" (last scan: {mt.strftime('%H:%M')})"
+    st.info(f"⏳ No live value signals right now. Scanner runs every 2 min during match hours (11:00–24:00).{last_scan}")
     st.markdown("""
     **When signals appear here:**
     - Match is in progress in one of our tracked leagues
