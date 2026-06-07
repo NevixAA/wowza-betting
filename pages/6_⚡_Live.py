@@ -35,13 +35,17 @@ import streamlit.components.v1 as components
 components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
 
 # ── Refresh ───────────────────────────────────────────────────────────────────
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from utils.access import is_public as _is_public
+
 col_ref, col_run = st.columns([1, 4])
 with col_ref:
     if st.button("🔄 Refresh"):
         st.cache_data.clear()
         st.rerun()
 with col_run:
-    if st.button("▶ Run Live Scan Now"):
+    if not _is_public() and st.button("▶ Run Live Scan Now"):
         import subprocess, sys
         result = subprocess.run(
             [sys.executable, str(BASE_DIR / "src" / "live_scanner.py")],

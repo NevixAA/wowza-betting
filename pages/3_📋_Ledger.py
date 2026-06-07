@@ -8,6 +8,7 @@ from streamlit_autorefresh import st_autorefresh
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from utils.access import is_public
 
 st.set_page_config(page_title="Ledger | Wowza", page_icon="📋", layout="wide")
 st_autorefresh(interval=5 * 60 * 1000, key="ledger_refresh")
@@ -173,7 +174,7 @@ if not pending.empty:
             with col_n:
                 note = st.text_input("Notes", key=f"note_{idx}")
 
-            if st.button("Save", key=f"save_{idx}") and result:
+            if not is_public() and st.button("Save", key=f"save_{idx}") and result:
                 full = pd.read_csv(config.OUTPUT_DIR / "bets_ledger.csv", dtype=str)
                 mask = (
                     (full["match_date"] == str(row["match_date"])[:10]) &

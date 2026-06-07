@@ -51,10 +51,13 @@ def odds_badge(side: str, odds: float) -> str:
 # ── Header ─────────────────────────────────────────────────────────────────────
 st.markdown("## 📊 Today's Tips")
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from utils.access import is_public
+
 col_run, col_upd, col_time = st.columns([2, 2, 6])
 
 with col_run:
-    if st.button("🔄 Run Predict Now", use_container_width=True):
+    if not is_public() and st.button("🔄 Run Predict Now", use_container_width=True):
         with st.spinner("Fetching fixtures & computing predictions..."):
             result = subprocess.run(
                 [PYTHON, "pipeline.py", "--mode", "predict"],
@@ -67,7 +70,7 @@ with col_run:
             st.error(f"Error: {result.stderr[-500:]}")
 
 with col_upd:
-    if st.button("📥 Update Results Now", use_container_width=True):
+    if not is_public() and st.button("📥 Update Results Now", use_container_width=True):
         with st.spinner("Fetching match results..."):
             result = subprocess.run(
                 [PYTHON, "update_results.py"],
