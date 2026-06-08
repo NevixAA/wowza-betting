@@ -164,13 +164,21 @@ TRAINING_DECAY_WEIGHTS = {
 }
 DEFAULT_DECAY_WEIGHT = 1.0
 
-# ── Signal tiers (recalibrated for post-COVID market) ─────────────────────────
-# Investigation showed OVER bets unreliable post-COVID — require higher edge
-VALUE_THRESHOLD         = float(os.getenv("VALUE_THRESHOLD",         "0.04"))
-SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.15"))  # global default
-SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.18"))  # OVER needs more edge
-SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.13"))  # UNDER more reliable
-DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))  # was 0.07
+# ── Three-tier signal system ──────────────────────────────────────────────────
+#
+#  SNIPER    — meets per-league threshold (14–25%)  → full stake
+#  MARKSMAN  — edge 8% to league threshold          → 3/4 stake
+#  VALUABLE  — edge 4–8%                            → half stake / monitor
+#
+VALUABLE_THRESHOLD      = float(os.getenv("VALUABLE_THRESHOLD",      "0.04"))   # min edge to show
+MARKSMAN_THRESHOLD      = float(os.getenv("MARKSMAN_THRESHOLD",      "0.08"))   # between VALUABLE and SNIPER
+SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.15"))   # global SNIPER default
+SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.18"))   # OVER needs more edge
+SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.13"))   # UNDER more reliable
+DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))
+
+# Backward-compat alias
+VALUE_THRESHOLD = VALUABLE_THRESHOLD
 
 # ── Per-league SNIPER thresholds (from backtest optimisation) ─────────────────
 # These override SNIPER_THRESHOLD for specific leagues

@@ -115,8 +115,13 @@ def _stake(edge: float, p: float, odds: float, threshold: float) -> float:
 
 
 def _base_tier(edge: float, side: str = "", league: str = "") -> str:
-    """Tier label using per-league threshold when available, else side-specific global."""
-    # Per-league threshold takes priority
+    """
+    Three-tier signal system:
+      SNIPER   — meets per-league threshold (highest confidence, full stake)
+      MARKSMAN — edge >= MARKSMAN_THRESHOLD (medium-high, 3/4 stake)
+      VALUABLE — edge >= VALUABLE_THRESHOLD (moderate, half stake / monitor)
+      AVOID    — below threshold
+    """
     if league and league in config.LEAGUE_SNIPER_THRESHOLDS:
         sniper_thresh = config.LEAGUE_SNIPER_THRESHOLDS[league]
     elif side == "OVER":
@@ -125,25 +130,32 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
         sniper_thresh = config.SNIPER_THRESHOLD_UNDER
     else:
         sniper_thresh = config.SNIPER_THRESHOLD
+
     if edge >= sniper_thresh:
         return "SNIPER"
-    if edge >= config.VALUE_THRESHOLD:
-        return "VALUE"
+    if edge >= config.MARKSMAN_THRESHOLD:
+        return "MARKSMAN"
+    if edge >= config.VALUABLE_THRESHOLD:
+        return "VALUABLE"
     return "AVOID"
 
 
 def _apply_drift_adjustment(tier: str, drift_signal: str, best_edge: float) -> str:
     """
-    Adjust tier based on market drift signal.
-      SNIPER + Conflicted  → VALUE   (market disagrees — hedge down)
-      VALUE  + Confirmed   → SNIPER  (market agrees and edge >= DRIFT_UPGRADE_EDGE)
+    Adjust tier based on market drift signal (three-tier system).
+      SNIPER   + Conflicted  → MARKSMAN  (market disagrees — one step down)
+      MARKSMAN + Confirmed   → SNIPER    (market confirms, edge strong enough)
+      VALUABLE + Confirmed   → MARKSMAN  (market confirms moderate edge)
     """
     if tier == "SNIPER" and drift_signal == "Conflicted":
-        log.debug(f"Drift downgrade SNIPER→VALUE (Conflicted, edge={best_edge:.3f})")
-        return "VALUE"
-    if tier == "VALUE" and drift_signal == "Confirmed" and best_edge >= config.DRIFT_UPGRADE_EDGE:
-        log.debug(f"Drift upgrade VALUE→SNIPER (Confirmed, edge={best_edge:.3f})")
+        log.debug(f"Drift downgrade SNIPER→MARKSMAN (Conflicted, edge={best_edge:.3f})")
+        return "MARKSMAN"
+    if tier == "MARKSMAN" and drift_signal == "Confirmed" and best_edge >= config.DRIFT_UPGRADE_EDGE:
+        log.debug(f"Drift upgrade MARKSMAN→SNIPER (Confirmed, edge={best_edge:.3f})")
         return "SNIPER"
+    if tier == "VALUABLE" and drift_signal == "Confirmed":
+        log.debug(f"Drift upgrade VALUABLE→MARKSMAN (Confirmed, edge={best_edge:.3f})")
+        return "MARKSMAN"
     return tier
 
 
@@ -280,7 +292,7 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
     threshold are included — giving full visibility into all 3 tiers.
     """
     df = df.copy()
-    visible = df[df["signal_tier"].isin(["SNIPER", "VALUE"])].copy()
+    visible = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
     visible = visible.sort_values("best_edge", ascending=False)
 
     output_cols = [

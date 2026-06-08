@@ -82,10 +82,11 @@ with col_fmt:
 with col_tier:
     tier_sel = st.radio(
         "Signal tier",
-        ["🎯 SNIPER", "💡 VALUE", "Both"],
+        ["🎯 SNIPER", "🔫 MARKSMAN", "💎 VALUABLE", "All"],
         horizontal=True,
-        help="SNIPER = high confidence (per-league threshold ≥14–25%)\n"
-             "VALUE = moderate confidence (4% edge threshold)"
+        help="SNIPER = highest confidence (per-league threshold ≥14–25%)\n"
+             "MARKSMAN = medium-high (8% to league threshold)\n"
+             "VALUABLE = moderate (4–8%)"
     )
 
 # ── Apply filters ─────────────────────────────────────────────────────────────
@@ -103,8 +104,11 @@ elif fmt == "New-Format only" and "model_type" in data.columns:
 
 if tier_sel == "🎯 SNIPER" and "signal_tier" in data.columns:
     data = data[data["signal_tier"] == "SNIPER"]
-elif tier_sel == "💡 VALUE" and "signal_tier" in data.columns:
-    data = data[data["signal_tier"] == "VALUE"]
+elif tier_sel == "🔫 MARKSMAN" and "signal_tier" in data.columns:
+    data = data[data["signal_tier"] == "MARKSMAN"]
+elif tier_sel == "💎 VALUABLE" and "signal_tier" in data.columns:
+    data = data[data["signal_tier"] == "VALUABLE"]
+# "All" = no filter
 
 # Remove voids (pnl=0) — postponed/cancelled matches are not real outcomes
 scored = data[data["pnl"].notna() & (data["pnl"] != 0)].copy()
@@ -138,7 +142,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["📊 Tier Breakdown", "📉 Equity Curve", "�
 with tab1:
     st.markdown("### SNIPER vs VALUE Performance")
     tier_rows = []
-    for tier in ["SNIPER", "VALUE"]:
+    for tier in ["SNIPER", "MARKSMAN", "VALUABLE"]:
         t = scored[scored["signal_tier"] == tier]
         if t.empty:
             continue

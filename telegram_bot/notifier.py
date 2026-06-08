@@ -98,7 +98,7 @@ def notify_new_snipers() -> int:
 
     df = pd.read_csv(bets_file)
     tips = df[
-        df["signal_tier"].isin(["SNIPER", "VALUE"]) &
+        df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
@@ -126,8 +126,10 @@ def notify_new_snipers() -> int:
 
         if tier == "SNIPER":
             header = f"🎯 <b>SNIPER TIP</b> {drift}"
+        elif tier == "MARKSMAN":
+            header = f"🔫 <b>MARKSMAN TIP</b> {drift}"
         else:
-            header = f"📡 <b>VALUE TIP</b> (not a sniper) {drift}"
+            header = f"💎 <b>VALUABLE TIP</b> {drift}"
 
         msg = (
             f"{header}\n"

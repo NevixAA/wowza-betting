@@ -96,7 +96,7 @@ st.caption(f"Last updated: {mod_time}  •  {len(df)} fixtures fetched")
 # ── Filters ────────────────────────────────────────────────────────────────────
 col_f1, col_f2, col_f3 = st.columns(3)
 with col_f1:
-    tier_filter = st.multiselect("Tier", ["SNIPER", "VALUE"], default=["SNIPER", "VALUE"])
+    tier_filter = st.multiselect("Tier", ["SNIPER", "MARKSMAN", "VALUABLE"], default=["SNIPER", "MARKSMAN", "VALUABLE"])
 with col_f2:
     available_models = sorted(df["model_type"].unique().tolist()) or ["standard", "new_format"]
     model_filter = st.multiselect("Model", available_models, default=available_models)
@@ -117,8 +117,9 @@ tips = df[
 st.divider()
 
 # ── SNIPER section ─────────────────────────────────────────────────────────────
-snipers = tips[tips["signal_tier"] == "SNIPER"].sort_values("best_edge", ascending=False)
-values  = tips[tips["signal_tier"] == "VALUE"].sort_values("best_edge", ascending=False)
+snipers   = tips[tips["signal_tier"] == "SNIPER"].sort_values("best_edge", ascending=False)
+marksmen  = tips[tips["signal_tier"] == "MARKSMAN"].sort_values("best_edge", ascending=False)
+valuables = tips[tips["signal_tier"] == "VALUABLE"].sort_values("best_edge", ascending=False)
 
 if not snipers.empty:
     st.markdown(f"### 🎯 SNIPER Tips &nbsp; <small style='color:#e94560'>({len(snipers)} bets)</small>",
@@ -153,13 +154,35 @@ else:
     if "SNIPER" in tier_filter:
         st.info("No SNIPER tips matching current filters.")
 
-# ── VALUE section ──────────────────────────────────────────────────────────────
-if not values.empty:
-    st.markdown(f"### 💡 VALUE Tips &nbsp; <small style='color:#f5a623'>({len(values)} bets — half stake)</small>",
+# ── MARKSMAN section ───────────────────────────────────────────────────────────
+if not marksmen.empty:
+    st.markdown(f"### 🔫 MARKSMAN Tips &nbsp; <small style='color:#00aaff'>({len(marksmen)} bets — 3/4 stake)</small>",
+                unsafe_allow_html=True)
+    marksman_rows = []
+    for _, row in marksmen.iterrows():
+        side  = row.get("best_side") or row.get("bet", "")
+        odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
+        edge  = float(row.get("best_edge", 0)) * 100
+        drift = str(row.get("drift_signal", "New"))
+        model = "Standard 🏴󠁧󠁢󠁥󠁮󠁧󠁿" if row.get("model_type") == "standard" else "New-Format 🌍"
+        marksman_rows.append({
+            "Date": str(row["date"])[:10], "League": row.get("league", ""),
+            "Match": f"{row['home_team']} vs {row['away_team']}",
+            "Side": side, "Odds": f"{odds:.2f}", "Edge": f"{edge:.1f}%",
+            "Drift": drift, "Model": model,
+        })
+    st.dataframe(pd.DataFrame(marksman_rows), use_container_width=True, hide_index=True)
+else:
+    if "MARKSMAN" in tier_filter:
+        st.info("No MARKSMAN tips matching current filters.")
+
+# ── VALUABLE section ───────────────────────────────────────────────────────────
+if not valuables.empty:
+    st.markdown(f"### 💎 VALUABLE Tips &nbsp; <small style='color:#f5a623'>({len(valuables)} bets — half stake)</small>",
                 unsafe_allow_html=True)
 
     rows_display = []
-    for _, row in values.iterrows():
+    for _, row in valuables.iterrows():
         side  = row.get("best_side") or row.get("bet", "")
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
         edge  = float(row.get("best_edge", 0)) * 100
@@ -185,7 +208,7 @@ if not values.empty:
         }
     )
 
-if tips.empty:
+if snipers.empty and marksmen.empty and valuables.empty:
     st.warning("No tips match your filters.")
 
 # ── HT O/U Predictions ────────────────────────────────────────────────────────
