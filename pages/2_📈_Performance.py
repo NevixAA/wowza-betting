@@ -34,16 +34,21 @@ def load_ledger():
 
 @st.cache_data(ttl=300)
 def load_new_backtest():
-    """Load the walk-forward backtest results from the improved model (COVID excluded, new thresholds)."""
+    """Load the walk-forward backtest results from the improved model (COVID excluded, new thresholds).
+    Only includes SNIPER and VALUE bets — AVOID rows are excluded."""
     f = config.OUTPUT_DIR / "backtest_results_standard.csv"
     if not f.exists():
         return pd.DataFrame()
     df = pd.read_csv(f)
-    df["pnl"]        = pd.to_numeric(df.get("pnl"),        errors="coerce")
-    df["match_date"] = pd.to_datetime(df.get("date"),      errors="coerce")
-    df["odds"]       = pd.to_numeric(df.get("odds_under25" if "odds_under25" in df.columns else "odds"), errors="coerce")
+    df["pnl"]        = pd.to_numeric(df.get("pnl"),   errors="coerce")
+    df["match_date"] = pd.to_datetime(df.get("date"), errors="coerce")
+    # Keep only actual bets (not AVOID)
+    if "signal_tier" in df.columns:
+        df = df[df["signal_tier"].isin(["SNIPER", "VALUE"])]
+    elif "bet" in df.columns:
+        df = df[df["bet"].isin(["OVER", "UNDER"])]
     df["source"]     = "backtest_new"
-    df["model_type"] = df.get("model_type", "standard")
+    df["model_type"] = df.get("model_type", "standard") if "model_type" in df.columns else "standard"
     return df
 
 
