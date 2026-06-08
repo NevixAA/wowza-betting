@@ -211,10 +211,16 @@ def _fetch_live_scores() -> list[dict]:
                     continue
 
                 now_utc = datetime.now(timezone.utc)
-                elapsed = (now_utc - commence).total_seconds() / 60.0
+                wall_mins = (now_utc - commence).total_seconds() / 60.0
 
-                if elapsed < 1:
+                if wall_mins < 1:
                     continue  # not started yet
+
+                # Approximate game clock: subtract ~15min halftime break if in 2nd half
+                # Wall clock > 60min likely means halftime has passed
+                HT_BREAK = 15  # typical halftime break duration in minutes
+                elapsed = wall_mins - HT_BREAK if wall_mins > 60 else wall_mins
+                elapsed = max(0.0, min(elapsed, 95.0))
 
                 scores = ev.get("scores") or []
                 home_goals = away_goals = 0

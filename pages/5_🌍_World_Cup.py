@@ -131,22 +131,22 @@ with tab_model:
 with tab_drift:
     st.subheader("📡 Sharp Money Drift Signals")
 
-    # ── Signal filter ──────────────────────────────────────────────────────────
+    # ── Signal filter ────────────────────────────────────────────────────────
     col1, col2 = st.columns([1, 2])
-with col1:
-    sig_filter = st.multiselect("Signal", ["STRONG", "SHARP", "FADING"],
-                                default=["STRONG", "SHARP"])
-with col2:
-    mkt_filter = st.multiselect("Market", tips["market"].str.split(" ").str[0].unique().tolist(),
-                                default=tips["market"].str.split(" ").str[0].unique().tolist())
+    with col1:
+        sig_filter = st.multiselect("Signal", ["STRONG", "SHARP", "FADING"],
+                                    default=["STRONG", "SHARP"])
+    with col2:
+        mkt_filter = st.multiselect("Market", tips["market"].str.split(" ").str[0].unique().tolist(),
+                                    default=tips["market"].str.split(" ").str[0].unique().tolist())
 
-filtered = tips[
-    tips["signal"].isin(sig_filter) &
-    tips["market"].str.startswith(tuple(mkt_filter))
-].copy() if sig_filter and mkt_filter else tips.copy()
+    filtered = tips[
+        tips["signal"].isin(sig_filter) &
+        tips["market"].str.startswith(tuple(mkt_filter))
+    ].copy() if sig_filter and mkt_filter else tips.copy()
 
-# ── Signal cards ──────────────────────────────────────────────────────────────
-st.subheader(f"📡 Active Signals ({len(filtered)})")
+    # ── Signal cards ──────────────────────────────────────────────────────────
+    st.subheader(f"📡 Active Signals ({len(filtered)})")
 
 if filtered.empty:
     st.info("No signals match the current filter.")
@@ -201,9 +201,9 @@ if len(filtered) > 0:
     st.markdown("---")
     st.subheader("🔍 Match Odds History")
 
-match_options = sorted(tips["match"].unique().tolist())
-if match_options:
-    selected_match = st.selectbox("Select match", match_options)
+    match_options = sorted(tips["match"].unique().tolist())
+    if match_options:
+        selected_match = st.selectbox("Select match", match_options)
 
     match_keys = [k for k, v in history.items()
                   if f"{v['home']} vs {v['away']}" == selected_match]

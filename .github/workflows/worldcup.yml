@@ -46,7 +46,7 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           git add output/worldcup_tips.csv output/worldcup_history.json \
-                  output/worldcup_model_tips.csv telegram_bot/notified.json || true
+                  output/worldcup_model_tips.csv telegram_bot/notified.json telegram_bot/live_notified.json || true
           git diff --quiet && git diff --staged --quiet || \
             git commit -m "auto: worldcup $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push

@@ -201,9 +201,18 @@ DRIFT_CONFLICT_THRESHOLD = 0.03
 BACKTEST_WALK_SIZE = 60
 BACKTEST_MIN_TRAIN = 400
 
-# ── APIs ──────────────────────────────────────────────────────────────────────
-ODDS_API_KEY = os.getenv("ODDS_API_KEY", "ecf45e338614775b3f476c2d7d6fa0bd")
-API_KEY      = os.getenv("API_KEY",      "d96374d5cdmshe35b5a98fe9c502p175d62jsn647d9735d7d0")
+# ── APIs — loaded from environment only, never hardcoded ─────────────────────
+# Local: set in shell or .env file
+# CI: set as GitHub Actions secrets
+_KEYS_FILE = BASE_DIR / ".api_keys"   # optional local file: KEY=VALUE per line
+if _KEYS_FILE.exists():
+    for _line in _KEYS_FILE.read_text().splitlines():
+        if "=" in _line and not _line.startswith("#"):
+            _k, _v = _line.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
+ODDS_API_KEY = os.getenv("ODDS_API_KEY", "")
+API_KEY      = os.getenv("API_KEY",      "")
 API_HOST     = "api-football-v1.p.rapidapi.com"
 API_SEASON   = os.getenv("API_SEASON", "2025")
 

@@ -3,12 +3,12 @@ name: Predict
 on:
   schedule:
     - cron: '0 6,10,14,18,22 * * *'   # 06:00, 10:00, 14:00, 18:00, 22:00 UTC
-  workflow_dispatch:                    # allow manual trigger
+  workflow_dispatch:
 
 jobs:
   predict:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     permissions:
       contents: write
 
@@ -21,14 +21,8 @@ jobs:
         with:
           python-version: '3.11'
 
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Retrain models (ensures sklearn version compatibility)
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python pipeline.py --mode train
 
       - name: Run predict
         env:
@@ -54,9 +48,7 @@ jobs:
                   output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
                   output/live_tips.csv output/live_games.csv \
                   output/worldcup_history.json output/sharp_history.json \
-                  telegram_bot/notified.json \
-                  models/model_v9_standard.pkl models/model_v9_newformat.pkl \
-                  models/model_ht_over05.pkl models/model_ht_over15.pkl || true
+                  telegram_bot/notified.json telegram_bot/live_notified.json || true
           git diff --quiet && git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push

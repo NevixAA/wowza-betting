@@ -380,42 +380,50 @@ def build_upcoming_features(
 
     hist = historical.sort_values("date").copy()
 
-    def _team_recent(team: str, stat_home: str, stat_away: str, nn: int) -> float:
-        hm = hist[hist["home_team"] == team][stat_home].dropna().tail(nn)
-        aw = hist[hist["away_team"] == team][stat_away].dropna().tail(nn)
+    def _team_recent(team: str, stat_home: str, stat_away: str, nn: int,
+                     league: str = "") -> float:
+        # Filter by league to avoid mixing stats from different competitions
+        h = hist[hist["home_team"] == team]
+        a = hist[hist["away_team"] == team]
+        if league:
+            h = h[h["league"] == league]
+            a = a[a["league"] == league]
+        hm = h[stat_home].dropna().tail(nn)
+        aw = a[stat_away].dropna().tail(nn)
         vals = list(hm) + list(aw)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
-    def _team_over25_rate(team: str, nn: int) -> float:
-        hm = hist[hist["home_team"] == team]["over25"].dropna().tail(nn)
-        aw = hist[hist["away_team"] == team]["over25"].dropna().tail(nn)
+    def _team_over25_rate(team: str, nn: int, league: str = "") -> float:
+        h = hist[hist["home_team"] == team]
+        a = hist[hist["away_team"] == team]
+        if league:
+            h = h[h["league"] == league]
+            a = a[a["league"] == league]
+        hm = h["over25"].dropna().tail(nn)
+        aw = a["over25"].dropna().tail(nn)
         vals = list(hm) + list(aw)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
     rows = upcoming.to_dict("records")
     feat_records = []
     for row in rows:
-        ht, at = row["home_team"], row["away_team"]
+        ht, at, lg = row["home_team"], row["away_team"], row.get("league", "")
         feat = dict(row)
-        feat["home_scored_last5"]   = _team_recent(ht, "home_goals",  "away_goals",  n)
-        feat["home_conceded_last5"] = _team_recent(ht, "away_goals",  "home_goals",  n)
-        feat["away_scored_last5"]   = _team_recent(at, "home_goals",  "away_goals",  n)
-        feat["away_conceded_last5"] = _team_recent(at, "away_goals",  "home_goals",  n)
-        feat["home_over25_last5"]   = _team_over25_rate(ht, n)
-        feat["away_over25_last5"]   = _team_over25_rate(at, n)
-        feat["home_shots_last5"]    = _team_recent(ht, "home_shots",  "away_shots",  n)
-        feat["home_sot_last5"]      = _team_recent(ht, "home_sot",    "away_sot",    n)
-        feat["away_shots_last5"]    = _team_recent(at, "home_shots",  "away_shots",  n)
-        feat["away_sot_last5"]      = _team_recent(at, "home_sot",    "away_sot",    n)
+        feat["home_scored_last5"]   = _team_recent(ht, "home_goals",  "away_goals",  n, lg)
+        feat["home_conceded_last5"] = _team_recent(ht, "away_goals",  "home_goals",  n, lg)
+        feat["away_scored_last5"]   = _team_recent(at, "home_goals",  "away_goals",  n, lg)
+        feat["away_conceded_last5"] = _team_recent(at, "away_goals",  "home_goals",  n, lg)
+        feat["home_over25_last5"]   = _team_over25_rate(ht, n, lg)
+        feat["away_over25_last5"]   = _team_over25_rate(at, n, lg)
+        feat["home_shots_last5"]    = _team_recent(ht, "home_shots",  "away_shots",  n, lg)
+        feat["home_sot_last5"]      = _team_recent(ht, "home_sot",    "away_sot",    n, lg)
+        feat["away_shots_last5"]    = _team_recent(at, "home_shots",  "away_shots",  n, lg)
+        feat["away_sot_last5"]      = _team_recent(at, "home_sot",    "away_sot",    n, lg)
         # HT rolling features (NaN for leagues without HTHG/HTAG data)
-        feat["home_ht_scored_last5"]    = _team_recent(ht, "ht_home_goals", "ht_away_goals", n)
-        feat["home_ht_conceded_last5"]  = _team_recent(ht, "ht_away_goals", "ht_home_goals", n)
+        feat["home_ht_scored_last5"]    = _team_recent(ht, "ht_home_goals", "ht_away_goals", n, lg)
+        feat["home_ht_conceded_last5"]  = _team_recent(ht, "ht_away_goals", "ht_home_goals", n, lg)
         feat["away_ht_scored_last5"]    = _team_recent(at, "ht_home_goals", "ht_away_goals", n)
         feat["away_ht_conceded_last5"]  = _team_recent(at, "ht_away_goals", "ht_home_goals", n)
-        # HT tendency rates
-        feat["home_ht_over05_rate"] = _team_over25_rate(ht, n)  # reuse pattern, different stat
-        feat["away_ht_over05_rate"] = _team_over25_rate(at, n)
-
         def _ht_rate(team, threshold, nn):
             hm = hist[hist["home_team"] == team]["ht_home_goals"].dropna()
             aw = hist[hist["away_team"] == team]["ht_away_goals"].dropna()

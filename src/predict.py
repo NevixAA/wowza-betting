@@ -257,24 +257,7 @@ def predict_upcoming(
     log.info("Enriching with odds drift signal...")
     feat = enrich(feat)
 
-    # 8. Re-run drift adjustment on signal_tier now that drift columns exist
-    #    (evaluate_value already handled it if drift cols were present,
-    #     but here we have freshly computed drift — reapply for safety)
-    if "drift_signal" in feat.columns:
-        from src.betting import _apply_drift_adjustment, _base_tier
-        import config as _cfg
-        adjusted = []
-        for _, row in feat.iterrows():
-            tier  = str(row["signal_tier"])
-            if tier == "AVOID":
-                adjusted.append("AVOID")
-                continue
-            if row.get("both_losing", False):
-                adjusted.append("AVOID")
-                continue
-            drift = str(row.get("drift_signal", "New"))
-            new_tier = _apply_drift_adjustment(tier, drift, float(row["best_edge"]))
-            adjusted.append(new_tier)
-        feat["signal_tier"] = adjusted
+    # 8. Re-run evaluate_value now that drift columns exist (single pass)
+    feat = evaluate_value(feat)
 
     return feat, postponed

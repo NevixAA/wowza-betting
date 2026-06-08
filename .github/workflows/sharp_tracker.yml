@@ -46,7 +46,7 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           git add output/sharp_tips.csv output/sharp_history.json \
-                  telegram_bot/notified.json || true
+                  telegram_bot/notified.json telegram_bot/live_notified.json || true
           git diff --quiet && git diff --staged --quiet || \
             git commit -m "auto: sharp $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
