@@ -21,20 +21,16 @@ from . import config
 
 # Target column per market
 TARGETS = {
-    "goals":   "goals",        # binary: scored at least 1
-    "assists": "assists",      # binary: at least 1 assist
-    "sot":     "shots_on",     # binary: at least 1 SOT (or use a threshold)
-    "cards":   "yellow_card",  # binary: got yellow
+    "goals":   "target_goals",
+    "assists": "target_assists",
+    "sot":     "target_sot",
+    "cards":   "target_cards",
 }
-
-SOT_THRESHOLD = 1   # "SOT Over 0.5" = at least 1 shot on target
 
 
 def _binarise(df: pd.DataFrame, market: str) -> pd.Series:
     col = TARGETS[market]
-    if market == "sot":
-        return (df[col] >= SOT_THRESHOLD).astype(int)
-    return (df[col] >= 1).astype(int)
+    return df[col].astype(int)
 
 
 def _prep(df: pd.DataFrame) -> pd.DataFrame:

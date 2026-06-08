@@ -16,8 +16,11 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+from dotenv import load_dotenv
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+_v9 = Path(__file__).resolve().parents[1]
+load_dotenv(_v9 / ".env")
+sys.path.insert(0, str(_v9))
 
 from player_model import config
 from player_model.data_fetcher import collect_history
