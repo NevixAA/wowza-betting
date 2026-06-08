@@ -61,8 +61,9 @@ if df.empty:
     st.warning("No ledger data yet.")
     st.stop()
 
-# ── Source selector ────────────────────────────────────────────────────────────
-col_src, col_fmt = st.columns(2)
+# ── Filters ────────────────────────────────────────────────────────────────────
+col_src, col_fmt, col_tier = st.columns(3)
+
 with col_src:
     source = st.radio(
         "Data source",
@@ -71,10 +72,23 @@ with col_src:
         help="Backtest = walk-forward with COVID excluded + per-league thresholds"
     )
 with col_fmt:
-    fmt = st.radio("Model format", ["Standard only", "New-Format only", "Both"], horizontal=True,
-                   help="Standard: League One, Bundesliga 2, La Liga 2, Ligue 2, League Two\n"
-                        "New-Format: Ireland, Finland, Japan, Brazil, etc.")
+    fmt = st.radio(
+        "Model format",
+        ["Standard only", "New-Format only", "Both"],
+        horizontal=True,
+        help="Standard: League One, Bundesliga 2, La Liga 2, Ligue 2, League Two\n"
+             "New-Format: Ireland, Finland, Japan, Brazil, etc."
+    )
+with col_tier:
+    tier_sel = st.radio(
+        "Signal tier",
+        ["🎯 SNIPER", "💡 VALUE", "Both"],
+        horizontal=True,
+        help="SNIPER = high confidence (per-league threshold ≥14–25%)\n"
+             "VALUE = moderate confidence (4% edge threshold)"
+    )
 
+# ── Apply filters ─────────────────────────────────────────────────────────────
 if source == "🔴 Live bets":
     data = df[df["source"] == "live"]
 else:
@@ -82,11 +96,15 @@ else:
     if not data.empty:
         st.info("Walk-forward backtest · COVID excluded · Per-league thresholds applied")
 
-# Model format filter — keep them completely separate
 if fmt == "Standard only" and "model_type" in data.columns:
     data = data[data["model_type"].isin(["standard", "Standard"])]
 elif fmt == "New-Format only" and "model_type" in data.columns:
     data = data[data["model_type"].isin(["new_format", "newformat"])]
+
+if tier_sel == "🎯 SNIPER" and "signal_tier" in data.columns:
+    data = data[data["signal_tier"] == "SNIPER"]
+elif tier_sel == "💡 VALUE" and "signal_tier" in data.columns:
+    data = data[data["signal_tier"] == "VALUE"]
 
 # Remove voids (pnl=0) — postponed/cancelled matches are not real outcomes
 scored = data[data["pnl"].notna() & (data["pnl"] != 0)].copy()
