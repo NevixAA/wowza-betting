@@ -499,6 +499,105 @@ def notify_weekly_summary() -> bool:
     return False
 
 
+def notify_agent_analysis() -> int:
+    """
+    For each new SNIPER pick, run the agent and send a follow-up Telegram message
+    with the Strongest Signals shortlist extracted from the analysis.
+    Requires GOOGLE_API_KEY (or ANTHROPIC_API_KEY) to be set — skips silently if not.
+    Returns count of agent analyses sent.
+    """
+    import os
+    if not os.getenv("GOOGLE_API_KEY") and not os.getenv("ANTHROPIC_API_KEY"):
+        return 0
+
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    bets_file = app_config.OUTPUT_DIR / "bets.csv"
+    if not bets_file.exists():
+        return 0
+
+    df = pd.read_csv(bets_file)
+    snipers = df[
+        (df["signal_tier"] == "SNIPER") &
+        (df["bet"].isin(["OVER", "UNDER"]))
+    ].copy()
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    snipers = snipers[snipers["date"].astype(str).str[:10] >= today_str]
+
+    if snipers.empty:
+        return 0
+
+    # Agent-notified tracking (separate from regular notified to avoid blocking base alerts)
+    agent_notified_file = BASE_DIR / "agent_notified.json"
+    agent_notified: set = set()
+    if agent_notified_file.exists():
+        try:
+            agent_notified = set(json.loads(agent_notified_file.read_text(encoding="utf-8")).get("keys", []))
+        except Exception:
+            pass
+
+    sys.path.insert(0, str(BASE_DIR.parent))
+    from agent.agent_runner import run_agent  # type: ignore
+
+    sent = 0
+    for _, row in snipers.iterrows():
+        key = f"AGENT|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}"
+        if key in agent_notified:
+            continue
+
+        try:
+            result = run_agent(row)
+        except Exception as e:
+            print(f"Agent error for {row['home_team']} vs {row['away_team']}: {e}")
+            continue
+
+        if result["mode"] == "manual":
+            continue
+
+        # Extract only the STRONGEST SIGNALS section to keep Telegram message short
+        analysis = result["response"]
+        strongest = ""
+        match = __import__("re").search(
+            r"###?\s*1\.?\s*STRONGEST SIGNALS(.*?)(?=###|\Z)", analysis,
+            __import__("re").DOTALL | __import__("re").IGNORECASE,
+        )
+        if match:
+            strongest = match.group(1).strip()[:1200]  # Telegram 4096 char limit
+        else:
+            strongest = analysis[:1200]
+
+        side = row.get("best_side") or row.get("bet", "")
+        edge = float(row.get("best_edge", 0)) * 100
+
+        msg = (
+            f"🤖 <b>AGENT ANALYSIS</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"⚽ {row['home_team']} vs {row['away_team']}\n"
+            f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
+            f"🎯 ML Signal: <b>{side} 2.5</b>  Edge: <b>{edge:.1f}%</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"<b>Strongest Signals:</b>\n"
+            f"{strongest}\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"Powered by {'Gemini' if result['mode'] == 'gemini' else 'Claude'} · Full analysis in dashboard"
+        )
+
+        if _send(token, chat_id, msg):
+            agent_notified.add(key)
+            sent += 1
+            print(f"  Agent analysis sent: {row['home_team']} vs {row['away_team']}")
+
+    agent_notified_file.write_text(
+        json.dumps({"keys": list(agent_notified)}, indent=2), encoding="utf-8"
+    )
+    return sent
+
+
 def get_chat_id(token: str) -> None:
     """Print the chat_id of the last user who messaged the bot."""
     r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=10)
@@ -524,4 +623,5 @@ if __name__ == "__main__":
         live   = notify_live_signals()
         wc     = notify_wc_strong()
         sharp  = notify_sharp_strong()
-        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp")
+        agent  = notify_agent_analysis()
+        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp + {agent} Agent")
