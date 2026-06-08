@@ -5,33 +5,22 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+from dotenv import load_dotenv
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+V9_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(V9_DIR / ".env")
+
+sys.path.insert(0, str(V9_DIR))
 import config
 from agent.agent_runner import run_agent, build_prompt
 
 st.set_page_config(page_title="Agent Analysis | Wowza", page_icon="🤖", layout="wide")
+PYTHON = str(Path(sys.executable))
 
 st.markdown("## 🤖 Agent Analysis — Sniper Value Signals")
 st.caption("Runs the Elite Football Analytics agent on SNIPER/VALUE picks to find cross-market edges, arbitrage, and strongest signals.")
 
 # ── API key status ─────────────────────────────────────────────────────────────
-# Priority: session input → env var (GOOGLE_API_KEY) → env var (ANTHROPIC_API_KEY) → manual
-if "api_key_input" not in st.session_state:
-    st.session_state["api_key_input"] = ""
-
-with st.expander("🔑 API Key (Gemini)", expanded=not bool(os.getenv("GOOGLE_API_KEY", ""))):
-    key_input = st.text_input(
-        "Google Gemini API key",
-        value=st.session_state["api_key_input"],
-        type="password",
-        placeholder="Paste your key from aistudio.google.com/apikey (free)",
-        help="Only stored in memory for this session. Get a free key at aistudio.google.com/apikey",
-    )
-    if key_input:
-        st.session_state["api_key_input"] = key_input
-        os.environ["GOOGLE_API_KEY"] = key_input
-
 has_gemini = bool(os.getenv("GOOGLE_API_KEY", ""))
 has_claude = bool(os.getenv("ANTHROPIC_API_KEY", ""))
 has_key    = has_gemini or has_claude
@@ -42,8 +31,8 @@ elif has_claude:
     st.success("✅ Anthropic Claude API key detected — analysis runs automatically.")
 else:
     st.warning(
-        "⚠️ No API key set. Enter your Gemini key above or run in **manual mode** — "
-        "copy the generated prompt and paste it into [Claude.ai](https://claude.ai) (free)."
+        "⚠️ No API key found in `.env`. Add `GOOGLE_API_KEY=your_key` to `v9/.env` and restart. "
+        "Running in **manual mode** — copy the prompt and paste into [Claude.ai](https://claude.ai) (free)."
     )
 
 st.divider()

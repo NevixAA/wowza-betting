@@ -25,6 +25,10 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+from dotenv import load_dotenv
+
+# Load .env from v9/ root (one level up from agent/)
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 AGENT_DIR   = Path(__file__).resolve().parent
 SYSTEM_FILE = AGENT_DIR / ".agent.md"
