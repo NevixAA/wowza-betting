@@ -40,13 +40,27 @@ if df.empty:
     st.stop()
 
 # ── Source selector ────────────────────────────────────────────────────────────
-source = st.radio("Data source", ["live", "backtest", "both"], horizontal=True)
+col_src, col_fmt = st.columns(2)
+with col_src:
+    source = st.radio("Data source", ["live", "backtest", "both"], horizontal=True)
+with col_fmt:
+    fmt = st.radio("Model format", ["Standard only", "New-Format only", "Both"], horizontal=True,
+                   help="Standard: League One, Bundesliga 2, La Liga 2, Ligue 2, League Two\n"
+                        "New-Format: Ireland, Finland, Japan, Brazil, etc.")
+
 if source == "both":
     data = df
 elif source == "live":
     data = df[df["source"] == "live"]
 else:
     data = df[df["source"] == "backtest"]
+
+# Model format filter — keep them completely separate
+if fmt == "Standard only":
+    data = data[data["model_type"] == "standard"]
+elif fmt == "New-Format only":
+    data = data[data["model_type"] == "new_format"]
+# "Both" = no filter
 
 scored = data[data["pnl"].notna()].copy()
 
