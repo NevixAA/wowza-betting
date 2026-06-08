@@ -229,7 +229,7 @@ def print_ledger() -> None:
         if grp.empty:
             continue
         print(f"\n  [{src.upper()}]")
-        for tier in ["SNIPER", "VALUE"]:
+        for tier in ["SNIPER", "MARKSMAN", "VALUABLE"]:
             t = grp[grp["signal_tier"] == tier]
             if t.empty:
                 continue

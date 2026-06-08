@@ -477,15 +477,17 @@ def notify_weekly_summary() -> bool:
             f"<b>This week ({n_w} bets | {w_w/n_w:.0%} win | PnL {pnl_w:+.2f}u)</b>",
             f"",
             f"🏴 <b>Standard Model</b>",
-            format_tier("SNIPER", tier_stats(std_week, "SNIPER"), "🎯"),
-            format_tier("VALUE",  tier_stats(std_week, "VALUE"),  "📡"),
+            format_tier("SNIPER",   tier_stats(std_week, "SNIPER"),   "🎯"),
+            format_tier("MARKSMAN", tier_stats(std_week, "MARKSMAN"), "🔫"),
+            format_tier("VALUABLE", tier_stats(std_week, "VALUABLE"), "💎"),
         ]
         if not nf_week.empty:
             lines += [
                 f"",
                 f"🌍 <b>New-Format Model</b>",
-                format_tier("SNIPER", tier_stats(nf_week, "SNIPER"), "🎯"),
-                format_tier("VALUE",  tier_stats(nf_week, "VALUE"),  "📡"),
+                format_tier("SNIPER",   tier_stats(nf_week, "SNIPER"),   "🎯"),
+                format_tier("MARKSMAN", tier_stats(nf_week, "MARKSMAN"), "🔫"),
+                format_tier("VALUABLE", tier_stats(nf_week, "VALUABLE"), "💎"),
             ]
 
     # All-time
@@ -494,8 +496,9 @@ def notify_weekly_summary() -> bool:
         n_a = len(alltime); w_a = (alltime["pnl"]>0).sum(); pnl_a = alltime["pnl"].sum()
         lines += [
             f"📈 <b>All-time live ({n_a} bets)</b>",
-            format_tier("SNIPER", tier_stats(alltime, "SNIPER"), "🎯"),
-            format_tier("VALUE",  tier_stats(alltime, "VALUE"),  "📡"),
+            format_tier("SNIPER",   tier_stats(alltime, "SNIPER"),   "🎯"),
+            format_tier("MARKSMAN", tier_stats(alltime, "MARKSMAN"), "🔫"),
+            format_tier("VALUABLE", tier_stats(alltime, "VALUABLE"), "💎"),
             f"  Total PnL: <b>{pnl_a:+.2f}u</b>",
         ]
 

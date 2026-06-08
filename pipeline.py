@@ -192,8 +192,9 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         display = [c for c in display if c in bets.columns]
 
         for tier, label, note in [
-            ("SNIPER", "SNIPER  (edge >= 0.10)", "bet full stake"),
-            ("VALUE",  "VALUE   (edge 0.04-0.10)", "bet half stake / monitor"),
+            ("SNIPER",   "SNIPER    (per-league threshold)", "full stake"),
+            ("MARKSMAN", "MARKSMAN  (edge 8%-threshold)",   "3/4 stake"),
+            ("VALUABLE", "VALUABLE  (edge 4-8%)",           "half stake / monitor"),
         ]:
             rows = bets[bets["signal_tier"] == tier]
             print("\n" + "=" * 90)
