@@ -36,9 +36,10 @@ def lambda_from_p_over(p_over):
     lo, hi = 0.01, 8.0
     for _ in range(60):
         mid = (lo + hi) / 2
-        (lo if poisson_cdf(2, mid) > p_under else hi).__class__  # dummy
-        if poisson_cdf(2, mid) > p_under: lo = mid
-        else: hi = mid
+        if poisson_cdf(2, mid) > p_under:
+            lo = mid
+        else:
+            hi = mid
     return round((lo + hi) / 2, 3)
 
 def btts_prob(lam_h, lam_a):
