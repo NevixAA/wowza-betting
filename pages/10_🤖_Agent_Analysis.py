@@ -16,12 +16,17 @@ st.markdown("## 🤖 Agent Analysis — Sniper Value Signals")
 st.caption("Runs the Elite Football Analytics agent on SNIPER/VALUE picks to find cross-market edges, arbitrage, and strongest signals.")
 
 # ── API key status ─────────────────────────────────────────────────────────────
-has_key = bool(os.getenv("ANTHROPIC_API_KEY", ""))
-if has_key:
-    st.success("✅ Anthropic API key detected — analysis runs automatically.")
+has_gemini  = bool(os.getenv("GOOGLE_API_KEY", ""))
+has_claude  = bool(os.getenv("ANTHROPIC_API_KEY", ""))
+has_key     = has_gemini or has_claude
+
+if has_gemini:
+    st.success("✅ Google Gemini API key detected — analysis runs automatically (free tier).")
+elif has_claude:
+    st.success("✅ Anthropic Claude API key detected — analysis runs automatically.")
 else:
     st.warning(
-        "⚠️ No ANTHROPIC_API_KEY found. Running in **manual mode** — "
+        "⚠️ No API key found (GOOGLE_API_KEY or ANTHROPIC_API_KEY). Running in **manual mode** — "
         "copy the generated prompt and paste it into [Claude.ai](https://claude.ai) (free)."
     )
 
