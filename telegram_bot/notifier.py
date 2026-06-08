@@ -600,6 +600,70 @@ def notify_agent_analysis() -> int:
     return sent
 
 
+def notify_player_props() -> int:
+    """Send Telegram alerts for top player prop tips. Returns count sent."""
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    tips_file = app_config.OUTPUT_DIR / "player_tips.csv"
+    if not tips_file.exists():
+        return 0
+
+    df = pd.read_csv(tips_file)
+    if df.empty:
+        return 0
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    df = df[df["date"].astype(str).str[:10] >= today_str]
+
+    # Only SNIPER-match players with high model probability
+    df = df[
+        (df["match_tier"] == "SNIPER") &
+        (df["model_prob"] >= 0.60)
+    ].sort_values("model_prob", ascending=False).head(10)
+
+    if df.empty:
+        return 0
+
+    notified = _load_notified()
+    sent = 0
+
+    MARKET_EMOJI = {"goals": "⚽", "assists": "🎯", "sot": "🔫", "cards": "🟨"}
+
+    for _, row in df.iterrows():
+        key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}"
+        if key in notified:
+            continue
+
+        emoji  = MARKET_EMOJI.get(row["market"], "📌")
+        p      = float(row["model_prob"])
+        fair   = float(row["fair_odds"])
+        market_label = {"goals": "Anytime Goalscorer", "assists": "Assist",
+                        "sot": "Shot on Target", "cards": "Yellow Card"}.get(row["market"], row["market"])
+
+        msg = (
+            f"{emoji} <b>PLAYER PROP — {market_label.upper()}</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"👤 <b>{row['player_name']}</b> ({row.get('position', '')} · {row['team']})\n"
+            f"⚽ {row['match']}\n"
+            f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
+            f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>\n"
+            f"🎯 Match signal: {row.get('match_tier', '')}\n"
+            f"⚠️ Check your bookmaker's player props market"
+        )
+
+        if _send(token, chat_id, msg):
+            notified.add(key)
+            sent += 1
+            _save_notified(notified)
+            print(f"  Player prop: {row['player_name']} — {market_label} ({p*100:.0f}%)")
+
+    return sent
+
+
 def get_chat_id(token: str) -> None:
     """Print the chat_id of the last user who messaged the bot."""
     r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=10)
@@ -626,4 +690,5 @@ if __name__ == "__main__":
         wc     = notify_wc_strong()
         sharp  = notify_sharp_strong()
         agent  = notify_agent_analysis()
-        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp + {agent} Agent")
+        props  = notify_player_props()
+        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp + {agent} Agent + {props} Player")
