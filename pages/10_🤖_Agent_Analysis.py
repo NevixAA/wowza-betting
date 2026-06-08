@@ -131,6 +131,10 @@ def verdict(ml_side, ml_p_over, formula_p_over, ml_edge):
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 
+FEAT_COLS = ["home_attack_str","away_attack_str","home_defense_str","away_defense_str",
+             "league_avg_goals","home_scored_last5","away_scored_last5",
+             "p_over25","p_ht_over05","p_ht_over15"]
+
 @st.cache_data(ttl=60)
 def load_tips():
     f = config.OUTPUT_DIR / "bets.csv"
@@ -139,20 +143,43 @@ def load_tips():
         return pd.DataFrame()
     bets  = pd.read_csv(f)
     preds = pd.read_csv(p)
-    bets["date"] = pd.to_datetime(bets["date"], errors="coerce")
+
+    bets["date"]  = pd.to_datetime(bets["date"],  errors="coerce")
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
     today = pd.Timestamp.now().normalize()
     bets  = bets[bets["date"] >= today]
-    bets  = bets[bets["signal_tier"].isin(["SNIPER","VALUE"]) & bets["bet"].isin(["OVER","UNDER"])]
-    # Merge to get team features
-    merged = bets.merge(
-        preds[["date","home_team","away_team","home_attack_str","away_attack_str",
-               "home_defense_str","away_defense_str","league_avg_goals",
-               "home_scored_last5","away_scored_last5","p_over25",
-               "p_ht_over05","p_ht_over15"]],
-        on=["date","home_team","away_team"], how="left"
-    )
-    return merged
+    bets  = bets[bets["signal_tier"].isin(["SNIPER","VALUE"]) & bets["bet"].isin(["OVER","UNDER"])].copy()
+
+    # Ensure feature columns exist as NaN first
+    for col in FEAT_COLS:
+        bets[col] = float("nan")
+
+    # Fuzzy row-by-row lookup — handles minor name/date differences
+    def _norm(s):
+        return str(s).lower().strip()
+
+    for idx, row in bets.iterrows():
+        h8 = _norm(row["home_team"])[:8]
+        a8 = _norm(row["away_team"])[:8]
+        d  = row["date"].date()
+        candidates = preds[
+            (preds["home_team"].str.lower().str[:8] == h8) &
+            (preds["away_team"].str.lower().str[:8] == a8) &
+            (preds["date"].dt.date == d)
+        ]
+        if candidates.empty:
+            # Try date ±1 day
+            candidates = preds[
+                (preds["home_team"].str.lower().str[:8] == h8) &
+                (preds["away_team"].str.lower().str[:8] == a8)
+            ]
+        if not candidates.empty:
+            src = candidates.iloc[0]
+            for col in FEAT_COLS:
+                if col in src.index:
+                    bets.at[idx, col] = src[col]
+
+    return bets
 
 tips = load_tips()
 if tips.empty:
