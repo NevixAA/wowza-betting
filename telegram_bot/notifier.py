@@ -690,5 +690,4 @@ if __name__ == "__main__":
         wc     = notify_wc_strong()
         sharp  = notify_sharp_strong()
         agent  = notify_agent_analysis()
-        props  = notify_player_props()
-        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp + {agent} Agent + {props} Player")
+        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp + {agent} Agent")
