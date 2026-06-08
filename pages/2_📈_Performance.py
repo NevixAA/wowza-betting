@@ -32,6 +32,21 @@ def load_ledger():
     return df
 
 
+@st.cache_data(ttl=300)
+def load_new_backtest():
+    """Load the walk-forward backtest results from the improved model (COVID excluded, new thresholds)."""
+    f = config.OUTPUT_DIR / "backtest_results_standard.csv"
+    if not f.exists():
+        return pd.DataFrame()
+    df = pd.read_csv(f)
+    df["pnl"]        = pd.to_numeric(df.get("pnl"),        errors="coerce")
+    df["match_date"] = pd.to_datetime(df.get("date"),      errors="coerce")
+    df["odds"]       = pd.to_numeric(df.get("odds_under25" if "odds_under25" in df.columns else "odds"), errors="coerce")
+    df["source"]     = "backtest_new"
+    df["model_type"] = df.get("model_type", "standard")
+    return df
+
+
 st.markdown("## 📈 Performance Analytics")
 
 df = load_ledger()
@@ -42,25 +57,29 @@ if df.empty:
 # ── Source selector ────────────────────────────────────────────────────────────
 col_src, col_fmt = st.columns(2)
 with col_src:
-    source = st.radio("Data source", ["live", "backtest", "both"], horizontal=True)
+    source = st.radio(
+        "Data source",
+        ["🔴 Live bets", "✅ Backtest (improved model)"],
+        horizontal=True,
+        help="Backtest = walk-forward with COVID excluded + per-league thresholds"
+    )
 with col_fmt:
     fmt = st.radio("Model format", ["Standard only", "New-Format only", "Both"], horizontal=True,
                    help="Standard: League One, Bundesliga 2, La Liga 2, Ligue 2, League Two\n"
                         "New-Format: Ireland, Finland, Japan, Brazil, etc.")
 
-if source == "both":
-    data = df
-elif source == "live":
+if source == "🔴 Live bets":
     data = df[df["source"] == "live"]
 else:
-    data = df[df["source"] == "backtest"]
+    data = load_new_backtest()
+    if not data.empty:
+        st.info("Walk-forward backtest · COVID excluded · Per-league thresholds applied")
 
 # Model format filter — keep them completely separate
-if fmt == "Standard only":
-    data = data[data["model_type"] == "standard"]
-elif fmt == "New-Format only":
-    data = data[data["model_type"] == "new_format"]
-# "Both" = no filter
+if fmt == "Standard only" and "model_type" in data.columns:
+    data = data[data["model_type"].isin(["standard", "Standard"])]
+elif fmt == "New-Format only" and "model_type" in data.columns:
+    data = data[data["model_type"].isin(["new_format", "newformat"])]
 
 scored = data[data["pnl"].notna()].copy()
 
