@@ -87,6 +87,9 @@ elif fmt == "New-Format only" and "model_type" in data.columns:
     data = data[data["model_type"].isin(["new_format", "newformat"])]
 
 scored = data[data["pnl"].notna()].copy()
+# Separate settled (win/loss) from void (pnl=0) for accurate win rate display
+settled = scored[scored["pnl"] != 0].copy()
+voids   = scored[scored["pnl"] == 0]
 
 if scored.empty:
     st.info("No resolved bets yet for this source.")
@@ -94,18 +97,21 @@ if scored.empty:
 
 # ── KPI row ────────────────────────────────────────────────────────────────────
 total_bets  = len(scored)
-wins        = (scored["pnl"] > 0).sum()
+n_settled   = len(settled)
+wins        = (settled["pnl"] > 0).sum()
 total_pnl   = scored["pnl"].sum()
 roi         = total_pnl / total_bets * 100 if total_bets else 0
-win_rate    = wins / total_bets * 100 if total_bets else 0
+# Win rate on SETTLED bets only (exclude voids/postponed)
+win_rate    = wins / n_settled * 100 if n_settled else 0
 max_dd      = (scored["pnl"].cumsum() - scored["pnl"].cumsum().cummax()).min()
 
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Total Bets",   total_bets)
-c2.metric("Win Rate",     f"{win_rate:.1f}%")
-c3.metric("ROI",          f"{roi:+.1f}%",  delta=f"{total_pnl:+.1f}u")
-c4.metric("Total PnL",    f"{total_pnl:+.1f}u")
-c5.metric("Max Drawdown", f"{max_dd:.1f}u")
+c1, c2, c3, c4, c5, c6 = st.columns(6)
+c1.metric("Total Bets",    total_bets)
+c2.metric("Settled",       n_settled, help="Excludes void/postponed (pnl=0)")
+c3.metric("Win Rate",      f"{win_rate:.1f}%", help="Wins among settled bets only")
+c4.metric("ROI",           f"{roi:+.1f}%", delta=f"{total_pnl:+.1f}u")
+c5.metric("Total PnL",     f"{total_pnl:+.1f}u")
+c6.metric("Max Drawdown",  f"{max_dd:.1f}u")
 
 st.divider()
 
