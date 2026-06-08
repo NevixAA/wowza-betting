@@ -1,0 +1,50 @@
+name: Backtest
+
+on:
+  workflow_dispatch:   # manual trigger only — takes 15-20 minutes
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train models first (CI needs fresh models)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python pipeline.py --mode train
+
+      - name: Run walk-forward backtest
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python pipeline.py --mode backtest
+
+      - name: Commit and push backtest results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked || true
+          git pull --rebase origin main
+          git stash pop || true
+          git add output/backtest_results_standard.csv \
+                  output/backtest_by_league_standard.csv \
+                  output/backtest_results_newformat.csv \
+                  output/backtest_by_league_newformat.csv \
+                  models/model_v9_standard.pkl models/model_v9_newformat.pkl \
+                  models/model_ht_over05.pkl models/model_ht_over15.pkl || true
+          git diff --quiet && git diff --staged --quiet || \
+            git commit -m "auto: backtest results $(date -u '+%Y-%m-%d')"
+          git push
