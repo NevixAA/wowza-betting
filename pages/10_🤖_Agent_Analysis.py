@@ -229,8 +229,7 @@ def analyse_row(row):
     ads        = _safe_float(row.get("away_defense_str"), 1.0)
 
     # ── Team Goal Expectancy (formulas.md §1) ─────────────────────────────
-    # λ_H = LHG × HAS × ADS   (home scores against away defense)
-    # λ_A = LAG × AAS × HDS   (away scores against home defense)
+    using_defaults = (has == 1.0 and aas == 1.0 and hds == 1.0 and ads == 1.0)
     lhg = lga * 0.55
     lag = lga * 0.45
     lam_h = round(lhg * has * ads, 3)
@@ -254,6 +253,7 @@ def analyse_row(row):
         "ev_val": ev(ml_p_bet, odds_bet),
         "kelly_val": kelly(ml_p_bet, odds_bet),
         "kelly_half": round(kelly(ml_p_bet, odds_bet) / 2, 4),
+        "using_defaults": using_defaults,
     }
 
 
@@ -286,6 +286,8 @@ def render_analysis(row, data):
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.markdown("**📐 Expected Goals (formula)**")
+        if data.get("using_defaults"):
+            st.caption("⚠️ Team strength data missing — using league averages (HAS=AAS=HDS=ADS=1.0)")
         st.metric("λ_H (home)", data["lam_h"],
                   help=f"LHG({data['lhg']:.2f}) × HAS({data['has']:.2f}) × ADS({data['ads']:.2f})")
         st.metric("λ_A (away)", data["lam_a"],

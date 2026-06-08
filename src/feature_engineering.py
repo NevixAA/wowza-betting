@@ -380,28 +380,35 @@ def build_upcoming_features(
 
     hist = historical.sort_values("date").copy()
 
+    def _find_team_rows(team: str, col: str, league: str = "") -> pd.Series:
+        """Find rows for a team with fuzzy name fallback (OddsAPI vs FD name differences)."""
+        mask = hist[col] == team
+        if league:
+            rows = hist[mask & (hist["league"] == league)]
+        else:
+            rows = hist[mask]
+        if not rows.empty:
+            return rows
+        # Fuzzy fallback: try first word or prefix match (e.g. "Shelbourne Dublin" → "Shelbourne")
+        first_word = team.split()[0].lower()
+        mask_fuzzy = hist[col].str.lower().str.startswith(first_word)
+        if league:
+            rows = hist[mask_fuzzy & (hist["league"] == league)]
+        else:
+            rows = hist[mask_fuzzy]
+        return rows
+
     def _team_recent(team: str, stat_home: str, stat_away: str, nn: int,
                      league: str = "") -> float:
-        # Filter by league to avoid mixing stats from different competitions
-        h = hist[hist["home_team"] == team]
-        a = hist[hist["away_team"] == team]
-        if league:
-            h = h[h["league"] == league]
-            a = a[a["league"] == league]
-        hm = h[stat_home].dropna().tail(nn)
-        aw = a[stat_away].dropna().tail(nn)
-        vals = list(hm) + list(aw)
+        h = _find_team_rows(team, "home_team", league)[stat_home].dropna().tail(nn)
+        a = _find_team_rows(team, "away_team", league)[stat_away].dropna().tail(nn)
+        vals = list(h) + list(a)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
     def _team_over25_rate(team: str, nn: int, league: str = "") -> float:
-        h = hist[hist["home_team"] == team]
-        a = hist[hist["away_team"] == team]
-        if league:
-            h = h[h["league"] == league]
-            a = a[a["league"] == league]
-        hm = h["over25"].dropna().tail(nn)
-        aw = a["over25"].dropna().tail(nn)
-        vals = list(hm) + list(aw)
+        h = _find_team_rows(team, "home_team", league)["over25"].dropna().tail(nn)
+        a = _find_team_rows(team, "away_team", league)["over25"].dropna().tail(nn)
+        vals = list(h) + list(a)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
     rows = upcoming.to_dict("records")
