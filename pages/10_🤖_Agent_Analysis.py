@@ -16,17 +16,33 @@ st.markdown("## 🤖 Agent Analysis — Sniper Value Signals")
 st.caption("Runs the Elite Football Analytics agent on SNIPER/VALUE picks to find cross-market edges, arbitrage, and strongest signals.")
 
 # ── API key status ─────────────────────────────────────────────────────────────
-has_gemini  = bool(os.getenv("GOOGLE_API_KEY", ""))
-has_claude  = bool(os.getenv("ANTHROPIC_API_KEY", ""))
-has_key     = has_gemini or has_claude
+# Priority: session input → env var (GOOGLE_API_KEY) → env var (ANTHROPIC_API_KEY) → manual
+if "api_key_input" not in st.session_state:
+    st.session_state["api_key_input"] = ""
+
+with st.expander("🔑 API Key (Gemini)", expanded=not bool(os.getenv("GOOGLE_API_KEY", ""))):
+    key_input = st.text_input(
+        "Google Gemini API key",
+        value=st.session_state["api_key_input"],
+        type="password",
+        placeholder="Paste your key from aistudio.google.com/apikey (free)",
+        help="Only stored in memory for this session. Get a free key at aistudio.google.com/apikey",
+    )
+    if key_input:
+        st.session_state["api_key_input"] = key_input
+        os.environ["GOOGLE_API_KEY"] = key_input
+
+has_gemini = bool(os.getenv("GOOGLE_API_KEY", ""))
+has_claude = bool(os.getenv("ANTHROPIC_API_KEY", ""))
+has_key    = has_gemini or has_claude
 
 if has_gemini:
-    st.success("✅ Google Gemini API key detected — analysis runs automatically (free tier).")
+    st.success("✅ Google Gemini ready — analysis runs automatically (free tier).")
 elif has_claude:
     st.success("✅ Anthropic Claude API key detected — analysis runs automatically.")
 else:
     st.warning(
-        "⚠️ No API key found (GOOGLE_API_KEY or ANTHROPIC_API_KEY). Running in **manual mode** — "
+        "⚠️ No API key set. Enter your Gemini key above or run in **manual mode** — "
         "copy the generated prompt and paste it into [Claude.ai](https://claude.ai) (free)."
     )
 
