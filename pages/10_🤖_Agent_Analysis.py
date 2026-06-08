@@ -204,20 +204,29 @@ with col_sel:
 with col_all:
     run_all = st.button("▶ Validate All", use_container_width=True)
 
+def _safe_float(val, default=1.0):
+    """Return float or default if NaN/None/missing."""
+    try:
+        v = float(val)
+        return default if (v != v) else v  # v != v is True for NaN
+    except (TypeError, ValueError):
+        return default
+
 def analyse_row(row):
     """Run full validation on one row."""
     side       = row.get("best_side") or row.get("bet", "OVER")
-    odds_o     = float(row.get("odds_over25",  2.0) or 2.0)
-    odds_u     = float(row.get("odds_under25", 1.75) or 1.75)
+    odds_o     = _safe_float(row.get("odds_over25"),  2.0)
+    odds_u     = _safe_float(row.get("odds_under25"), 1.75)
     odds_bet   = odds_u if side == "UNDER" else odds_o
-    edge       = float(row.get("best_edge", 0) or 0) * 100
+    edge       = _safe_float(row.get("best_edge"), 0.0) * 100
     tier       = row.get("signal_tier", "VALUE")
-    ml_p_over  = float(row.get("p_over25", 0.5) or 0.5)
-    lga        = float(row.get("league_avg_goals", 2.5) or 2.5)
-    has        = float(row.get("home_attack_str",  1.0) or 1.0)
-    aas        = float(row.get("away_attack_str",  1.0) or 1.0)
-    hds        = float(row.get("home_defense_str", 1.0) or 1.0)
-    ads        = float(row.get("away_defense_str", 1.0) or 1.0)
+    ml_p_over  = _safe_float(row.get("p_over25"),         0.5)
+    lga        = _safe_float(row.get("league_avg_goals"), 2.5)
+    # Default to 1.0 (league average) when team strength data is missing
+    has        = _safe_float(row.get("home_attack_str"),  1.0)
+    aas        = _safe_float(row.get("away_attack_str"),  1.0)
+    hds        = _safe_float(row.get("home_defense_str"), 1.0)
+    ads        = _safe_float(row.get("away_defense_str"), 1.0)
 
     # ── Team Goal Expectancy (formulas.md §1) ─────────────────────────────
     # λ_H = LHG × HAS × ADS   (home scores against away defense)
@@ -307,12 +316,17 @@ def render_analysis(row, data):
     with c4:
         st.markdown("**🎯 Top Correct Scores (Dixon-Coles)**")
         for (h, a), p in mkts["top_scores"]:
-            bar = "█" * max(1, int(p * 100))
-            vc = "#00cc88" if h + a > 2 else "#aaa"
+            if not p or p != p: continue  # skip NaN
+            bar_len = max(1, int(p * 100))
+            bar = "█" * bar_len
+            vc = "#00cc88" if h + a > 2 else "#ffaa00" if h + a == 2 else "#aaa"
             st.markdown(
-                f"<span style='color:white'>{h}-{a}</span> "
+                f"<span style='color:#00c896;font-weight:bold;font-size:1.05em'>{h}-{a}</span>"
+                f"<span style='color:#444'> │ </span>"
                 f"<span style='color:{vc}'>{bar}</span> "
-                f"<span style='color:#aaa'>{p:.1%} → {fair(p)}</span>",
+                f"<span style='color:#ccc'>{p:.1%}</span>"
+                f"<span style='color:#666'> → </span>"
+                f"<span style='color:white'>{fair(p)}</span>",
                 unsafe_allow_html=True,
             )
 
