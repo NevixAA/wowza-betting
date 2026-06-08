@@ -73,6 +73,11 @@ def _save_notified(keys: set) -> None:
     NOTIFIED_FILE.write_text(json.dumps({"keys": list(keys)}, indent=2), encoding="utf-8")
 
 
+def _escape_html(text: str) -> str:
+    """Escape characters that break Telegram HTML parse mode."""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def _drift_emoji(signal: str) -> str:
     return {"Confirmed": "✅", "Conflicted": "⚠️", "Neutral": "➡️", "New": "🆕"}.get(str(signal), "")
 
@@ -560,16 +565,13 @@ def notify_agent_analysis() -> int:
             continue
 
         # Extract only the STRONGEST SIGNALS section to keep Telegram message short
+        import re as _re
         analysis = result["response"]
-        strongest = ""
-        match = __import__("re").search(
+        m = _re.search(
             r"###?\s*1\.?\s*STRONGEST SIGNALS(.*?)(?=###|\Z)", analysis,
-            __import__("re").DOTALL | __import__("re").IGNORECASE,
+            _re.DOTALL | _re.IGNORECASE,
         )
-        if match:
-            strongest = match.group(1).strip()[:1200]  # Telegram 4096 char limit
-        else:
-            strongest = analysis[:1200]
+        strongest = _escape_html((m.group(1).strip() if m else analysis)[:1200])
 
         side = row.get("best_side") or row.get("bet", "")
         edge = float(row.get("best_edge", 0)) * 100
