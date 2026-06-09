@@ -58,20 +58,41 @@ MIN_GAMES_SNIPER = 10
 # IMPORTANT: Only popular leagues have SOT/Goals/Cards prop markets at bookmakers.
 # Lower leagues (League Two, Ligue 2, La Liga 2) rarely have these markets.
 PROP_LEAGUES = {
-    "Championship":    40,    # Good prop coverage — popular English league
-    "League One":      41,    # Moderate prop coverage
-    "Bundesliga 2":    79,    # Good coverage in Germany
-    "Ireland Premier": 357,   # Active season, growing prop market
-    "Finland Veikk":   244,   # Active season, limited but available
-    "World Cup":       1,     # WC 2026 — biggest player prop market globally
+    # ── Top tier — biggest player prop markets ────────────────────────────────
+    "Premier League":  39,    # ⭐⭐⭐⭐⭐ Most liquid props globally
+    "Bundesliga":      78,    # ⭐⭐⭐⭐  Very active German market
+    "La Liga":         140,   # ⭐⭐⭐⭐  Active Spanish market
+    "Serie A":         135,   # ⭐⭐⭐   Good Italian coverage
+    "Ligue 1":         61,    # ⭐⭐⭐   French market
+    # ── Our standard model leagues — moderate prop coverage ───────────────────
+    "Championship":    40,
+    "League One":      41,
+    "Bundesliga 2":    79,
+    # ── Active summer leagues ─────────────────────────────────────────────────
+    "Ireland Premier": 357,
+    "Finland Veikk":   244,
+    # ── European club competitions ────────────────────────────────────────────
+    "Champions League":    2,    # ⭐⭐⭐⭐⭐ Biggest club prop market
+    "Europa League":       3,    # ⭐⭐⭐⭐  Active prop market
+    "Conference League":   848,  # ⭐⭐⭐   Growing prop market
+    # ── World Cup 2026 — biggest event globally ───────────────────────────────
+    "World Cup":       1,
 }
-# Season year for each league (API-Football uses start year)
+# Season year for each league (API-Football uses start year of season)
 PROP_SEASONS = {
+    "Premier League":  "2025",
+    "Bundesliga":      "2025",
+    "La Liga":         "2025",
+    "Serie A":         "2025",
+    "Ligue 1":         "2025",
     "Championship":    "2025",
     "League One":      "2025",
     "Bundesliga 2":    "2025",
     "Ireland Premier": "2026",
     "Finland Veikk":   "2026",
+    "Champions League":    "2025",
+    "Europa League":       "2025",
+    "Conference League":   "2025",
     "World Cup":       "2026",
 }
 FBREF_LEAGUES = {

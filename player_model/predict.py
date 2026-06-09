@@ -165,24 +165,71 @@ def run_player_predictions(
     match_contexts: dict | None = None,
 ) -> pd.DataFrame:
     """
-    Generate player prop signals for today's SNIPER/MARKSMAN matches.
+    Generate player prop signals for ALL upcoming fixtures in PROP_LEAGUES.
+    Decoupled from team model — runs for Premier League, Bundesliga etc.
+    even when we don't have a team O/U signal for those leagues.
 
-    bets_csv:         output/bets.csv from main pipeline
+    bets_csv:         output/bets.csv (used to add context for our standard leagues)
     history_df:       player season stats from FBref training data
     referee_profiles: {match_key: {strictness_score, yellows_per_game}}
     match_contexts:   {match_key: {team_corners_per90, opp_sot_conceded_pg, ...}}
     """
-    if not bets_csv.exists() or history_df.empty:
+    if history_df.empty:
         return pd.DataFrame()
 
-    bets = pd.read_csv(bets_csv)
-    bets = bets[bets["signal_tier"].isin(["SNIPER", "MARKSMAN"])].copy()
-    bets["date"] = pd.to_datetime(bets["date"], errors="coerce")
     today = pd.Timestamp.now().normalize()
-    bets  = bets[bets["date"] >= today]
 
-    if bets.empty:
+    # Primary: ALL upcoming fixtures in PROP_LEAGUES (decoupled from team model)
+    prop_matches = []
+    if _APIFOOTBALL_KEY:
+        try:
+            from player_model.api_football import get_upcoming_fixtures
+            for league, lg_id in config.PROP_LEAGUES.items():
+                season = config.PROP_SEASONS.get(league, "2025")
+                fixtures = get_upcoming_fixtures(lg_id, season, next_n=5)
+                for fix in fixtures:
+                    teams = fix.get("teams", {})
+                    dt    = fix.get("fixture", {}).get("date", "")[:10]
+                    prop_matches.append({
+                        "home_team":    teams.get("home", {}).get("name", ""),
+                        "away_team":    teams.get("away", {}).get("name", ""),
+                        "league":       league,
+                        "date":         pd.Timestamp(dt) if dt else today,
+                        "signal_tier":  "PROP_LEAGUE",
+                        "fixture_id":   fix.get("fixture", {}).get("id"),
+                    })
+        except Exception as e:
+            print(f"[predict] API-Football fixtures fetch failed: {e}")
+
+    # Fallback / supplement: our team model matches (bets.csv)
+    if bets_csv and bets_csv.exists():
+        bets_df = pd.read_csv(bets_csv)
+        bets_df["date"] = pd.to_datetime(bets_df["date"], errors="coerce")
+        bets_df = bets_df[bets_df["date"] >= today]
+        for _, r in bets_df.iterrows():
+            prop_matches.append({
+                "home_team":   r["home_team"],
+                "away_team":   r["away_team"],
+                "league":      r.get("league", ""),
+                "date":        r["date"],
+                "signal_tier": r.get("signal_tier", ""),
+                "fixture_id":  None,
+            })
+
+    if not prop_matches:
         return pd.DataFrame()
+
+    # Deduplicate
+    seen = set()
+    bets_list = []
+    for m in prop_matches:
+        key = f"{m['home_team']}|{m['away_team']}|{str(m['date'])[:10]}"
+        if key not in seen:
+            seen.add(key)
+            bets_list.append(m)
+
+    import pandas as _pd
+    bets = _pd.DataFrame(bets_list)
 
     payloads = {m: load_model(m) for m in config.MARKETS}
     missing  = [m for m, p in payloads.items() if p is None]
