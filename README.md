@@ -1,221 +1,253 @@
-# Wowza v9 — Football Over/Under 2.5 Prediction System
+# Wowza v9.1 — Football Betting Intelligence System
 
-**Locked:** 2026-05-04  
-**Status:** Production-ready. Live tracking since April 2026.
+**Version:** v9.1  
+**Status:** Production — fully automated via GitHub Actions  
+**Live since:** April 2026
 
 ---
 
 ## What It Does
 
-Predicts whether football matches will have Over or Under 2.5 total goals, using an ensemble ML model trained on 6+ seasons of historical data. Generates daily betting tips with edge scores, stake sizing, and drift signals.
+A complete football betting intelligence platform with multiple prediction layers:
 
----
-
-## Performance (Backtest — walk-forward, leak-free)
-
-| Metric | Value |
+| Module | What it does |
 |---|---|
-| ROI | **8.55%** |
-| Sharpe Ratio | **1.629** |
-| Max Drawdown | **-178 units** |
-| Total Bets | **4,691** |
-| Win Rate | ~55% |
+| **O/U 2.5 Model** | Predicts Over/Under 2.5 goals using ML ensemble — SNIPER/MARKSMAN/VALUABLE tiers |
+| **HT Model** | Half-time O/U 0.5 and 1.5 predictions |
+| **Sharp Money Tracker** | Odds drift detection — STEAM, STRONG, SHARP signals across 20 leagues |
+| **World Cup Tracker** | WC 2026 drift + ML model value on O/U 1.5/2.5/3.5 and 1X2 |
+| **Live Scanner** | In-play Poisson signals during match hours |
+| **Player Props** | SNIPER/MARKSMAN/VALUABLE props — SOT, Goals, Cards, Assists *(Phase 1)* |
 
-### By League
-
-| League | Bets | ROI % |
-|---|---|---|
-| League One (ENG) | 685 | **17.24%** |
-| Bundesliga 2 (GER) | 478 | **13.52%** |
-| La Liga 2 (ESP) | 971 | **10.03%** |
-| Ligue 2 (FRA) | 760 | **9.19%** |
-| League Two (ENG) | 896 | **7.48%** |
-
-> Austria, Romania, Sweden: enabled but insufficient history for full walk-forward backtest.  
-> Denmark 1st Div: borderline (-0.37%) — candidate for removal next season.
-
----
-
-## Daily Workflow
-
-```
-# Morning — generate tips for upcoming fixtures
-python pipeline.py --mode predict
-
-# After matches — fill in results automatically
-python update_results.py
-
-# Check live P&L
-cat output/bets_ledger.csv
-```
-
----
-
-## End-of-Season Workflow (every July)
-
-```
-# Download latest data + retrain + backtest + compare metrics
-python retrain.py
-
-# Optional: check only what changed in backtest
-python retrain.py --no-download
-
-# Then generate new season's first predictions
-python pipeline.py --mode predict
-```
+All runs automatically in the cloud — no server or PC required.
 
 ---
 
 ## Architecture
 
 ```
-pipeline.py              ← entry point (train / predict / backtest / all)
-retrain.py               ← end-of-season data refresh + retrain
-update_results.py        ← fill WIN/LOSS/PnL in bets_ledger.csv
-config.py                ← all thresholds, paths, API keys
+pipeline.py                ← team model: train / predict / backtest
+update_results.py          ← fill WIN/LOSS/PnL via football-data.co.uk
+config.py                  ← all thresholds, paths, API keys
 
 src/
-  data_loader.py         ← loads XLSX + CSV overrides → unified DataFrame
-  feature_engineering.py ← rolling form, shot features, attack/defense strength
-  model.py               ← LogisticRegression + GradientBoosting + isotonic calibration
-  predict.py             ← fetches upcoming fixtures from OddsAPI, applies model
-  backtest.py            ← strict walk-forward backtest (no leakage)
-  betting.py             ← SNIPER / VALUE / AVOID tier logic
-  ledger.py              ← persistent bets_ledger.csv append + dedup
+  data_loader.py           ← Excel + CSV + CI download from FD
+  feature_engineering.py  ← rolling form, HT features, home advantage, league isolation
+  model.py                 ← LogisticRegression + GradientBoosting + Platt calibration
+  predict.py               ← OddsAPI fixtures → model → SNIPER/MARKSMAN/VALUABLE
+  backtest.py              ← walk-forward backtest (no leakage)
+  betting.py               ← 3-tier signal logic (per-league thresholds)
+  sharp_tracker.py         ← volume-weighted drift, steam detection, consensus scoring
+  live_scanner.py          ← Poisson in-play signals + HT sub-formula
+
+worldcup/
+  tracker.py               ← WC drift + ML model value on WC fixtures
+
+player_model/              ← Player Props module (Phase 1)
+  config.py                ← prop league/tier thresholds
+  api_football.py          ← API-Football client (match stats, lineups, referees)
+  feature_engineering.py  ← rolling player features, referee factor, set-piece, GES
+  model.py                 ← per-market Platt-calibrated ensemble
+  pipeline.py              ← collect → train → predict
+  predict.py               ← de-vig EV, relative edge, lazy market factors
+
+agent/
+  player-props-architecture.md  ← full player props ML architecture (v2)
+  formulas.md              ← formula library (Poisson, Dixon-Coles, Kelly, EV)
 
 output/
-  bets_ledger.csv        ← every tip ever generated + results
-  predictions.csv        ← latest full prediction run
-  bets.csv               ← latest tips only (VALUE + SNIPER)
-  backtest_results.csv   ← row-level backtest output
-  backtest_by_league.csv ← league-level summary
-  backtest_metrics_history.json ← season-over-season comparison
+  bets_ledger.csv          ← every tip + results
+  predictions.csv          ← latest prediction run (team model)
+  bets.csv                 ← latest SNIPER/MARKSMAN/VALUABLE tips
+  sharp_tips.csv           ← sharp money signals
+  worldcup_tips.csv        ← WC drift signals
+  worldcup_model_tips.csv  ← WC ML fair price vs market
+  player_tips.csv          ← player prop signals
+  live_tips.csv            ← in-play signals
+  backtest_results_standard.csv
+  backtest_by_league_standard.csv
 
-models/
-  model_v9.pkl           ← trained ensemble (LR + GBM + calibration)
-  feature_importances_v9.csv
+pages/                     ← Streamlit dashboard pages
+  1_📊_Dashboard.py
+  2_📈_Performance.py
+  3_📋_Ledger.py
+  4_ℹ️_Model_Info.py       ← all tools documented in 8 tabs
+  5_🌍_World_Cup.py
+  6_⚡_Live.py
+  7_💰_Sharp_Money.py
+  8_⏱_HalfTime.py
+  9_📜_Live_History.py
+  10_🤖_Agent_Analysis.py  ← formula-based match validator
+  11_👤_Player_Props.py
+
+.github/workflows/         ← GitHub Actions (fully automated)
+  predict.yml              ← 5×/day: train + predict + Telegram
+  update_results.yml       ← every 2h: fill results from FD
+  sharp_tracker.yml        ← every 2h: sharp money signals
+  worldcup.yml             ← every 1h: WC tracker
+  live_scanner.yml         ← every 30min (11-23 UTC): live signals
+  retrain.yml              ← every Sunday: full model retrain
+  backtest.yml             ← manual: walk-forward backtest
+  player_props.yml         ← 30min after predict: player prop signals
+  weekly_summary.yml       ← every Monday 09:00: Telegram summary
 ```
 
 ---
 
-## Enabled Leagues (10)
+## Backtest Performance (Standard Model — post-COVID, walk-forward)
 
-| League | Country | Data Source |
+> COVID seasons (2019/20, 2020/21) excluded from training — empty stadiums created anomalous patterns
+
+| League | Bets | ROI % |
 |---|---|---|
-| League One | England | football-data.co.uk (standard) |
-| League Two | England | football-data.co.uk (standard) |
-| Bundesliga 2 | Germany | football-data.co.uk (standard) |
-| Ligue 2 | France | football-data.co.uk (standard) |
-| La Liga 2 | Spain | football-data.co.uk (standard) |
-| Denmark Superliga | Denmark | football-data.co.uk (new format) |
-| Danish 1st Div | Denmark | Excel workbook (contamination warning) |
-| Austrian Bundesliga | Austria | football-data.co.uk (new format) |
-| Swedish Allsvenskan | Sweden | football-data.co.uk (new format) |
-| Romanian Superliga | Romania | football-data.co.uk (new format) |
+| League One (ENG) | 654 | **+18.3%** |
+| League Two (ENG) | 902 | **+14.9%** |
+| Ligue 2 (FRA) | 656 | **+13.7%** |
+| La Liga 2 (ESP) | 987 | **+13.3%** |
+| Bundesliga 2 (GER) | 594 | **+12.8%** |
 
 ---
 
-## Model
+## Signal Tiers (3-tier system)
 
-**Type:** Ensemble — LogisticRegression + GradientBoosting, isotonic calibration  
-**Target:** `over25` (1 if total goals > 2.5, else 0)  
-**Rolling window:** N=5 matches (uniform mean, shift(1) to prevent leakage)
+| Tier | Edge | Stake | Note |
+|---|---|---|---|
+| 🎯 **SNIPER** | Per-league threshold (14–25%) | Full stake | Highest confidence |
+| 🔫 **MARKSMAN** | 8% to threshold | 3/4 stake | Medium-high confidence |
+| 💎 **VALUABLE** | 4–8% | Half stake | Monitor / small bet |
 
-### Features
+### Per-League SNIPER Thresholds
 
-| Feature | Description |
-|---|---|
-| `home/away_form_last5` | Rolling win rate (last 5 games) |
-| `home/away_scored_last5` | Rolling goals scored |
-| `home/away_conceded_last5` | Rolling goals conceded |
-| `home/away_shots_last5` | Rolling shots |
-| `home/away_sot_last5` | Rolling shots on target |
-| `home/away_sot_ratio_last5` | Rolling SOT / shots |
-| `combined_sot_ratio` | Average of home + away SOT ratios |
-| `home/away_attack_str` | Attack strength index |
-| `home/away_defense_str` | Defense strength index |
-| `rest_days_home/away` | Days since last match |
-| `implied_prob_over/under` | From market odds (1/odds) |
-| `sp_goals_home/away` | Sofascore set-piece goals |
-| `ref_foul_avg` | Referee avg fouls per game |
-
----
-
-## Betting Tiers
-
-| Tier | Edge Threshold | Action |
+| League | Threshold | Rationale |
 |---|---|---|
-| SNIPER | ≥ 10% | Bet full stake |
-| VALUE | 4–10% | Bet half stake / monitor |
-| AVOID | < 4% | Skip |
-
-**Stake sizing:** Flat 1 unit default. Kelly staking (25% fraction) available via `USE_KELLY=1`.  
-**Min odds filter:** 1.75 for both OVER and UNDER.
-
----
-
-## Drift Signals
-
-Every predict run snapshots the current odds and compares to the first recorded odds for that fixture:
-
-| Signal | Meaning |
-|---|---|
-| Confirmed | Odds moved in our direction (≥ 0.03 improvement) |
-| Conflicted | Odds moved against us (≥ 0.03 adverse) |
-| Neutral | Small or no movement |
-| New | First time we've seen this fixture |
-
-Drift does not change the SNIPER/VALUE tier — it's advisory context.
+| League Two | 14% | Most data, reliable at lower bar |
+| Bundesliga 2 | 20% | Needs higher bar |
+| La Liga 2 | 20% | High threshold, big ROI |
+| League One | 25% | Very high bar needed |
+| Ligue 2 | 25% | High bar, still good ROI |
 
 ---
 
-## Results Tracking
+## Automation (GitHub Actions)
 
-`update_results.py` fetches completed scores automatically:
+Everything runs in the cloud — PC can be completely off.
 
-- **OddsAPI** → major leagues (League One, League Two, Bundesliga 2, La Liga 2, Ligue 2, etc.)
-- **football-data.co.uk** → Austria (AUT), Sweden (SWE), Denmark (DNK)
+| Workflow | Schedule | Does |
+|---|---|---|
+| **Predict** | 06/10/14/18/22 UTC | Train + predict + Telegram alerts |
+| **Update Results** | Every 2h | Fill WIN/LOSS from football-data.co.uk |
+| **Sharp Tracker** | Every 2h | Drift signals across 20 leagues |
+| **World Cup** | Every 1h | WC drift + ML value |
+| **Live Scanner** | Every 30min (11-23 UTC) | In-play Poisson signals |
+| **Retrain** | Sunday 04:00 | Full model retrain with latest data |
+| **Backtest** | Manual trigger | Walk-forward validation |
+| **Player Props** | 30min after predict | Player prop signals |
+| **Weekly Summary** | Monday 09:00 | Telegram performance summary |
 
-**CLV (Closing Line Value)** is calculated for each settled bet:  
-`CLV = (entry_odds - closing_odds) / closing_odds × 100`  
-Positive CLV = we got better odds than the closing line = sharp model signal.
+---
+
+## Model Details
+
+**Team O/U 2.5 Model:**
+- Ensemble: LogisticRegression + GradientBoosting
+- Calibration: Platt scaling (sigmoid) — replaces IsotonicRegression for better small-sample calibration
+- Validation: Strict walk-forward, no random splits
+- COVID excluded: 2019/20 + 2020/21 seasons removed from training
+- Time-decay: recent seasons weighted 2–4× higher
+
+**Key fixes applied (Senior ML audit 2026-06-08):**
+- Removed `implied_prob` circular dependency feature
+- Fixed corners/fouls to use rolling historical averages (not match-day actuals)
+- Fixed `_ht_rate()` league isolation bug
+- Added per-team rolling home advantage (replaced constant 1.0)
+- WC ML model now clearly labeled as informational only (trained on domestic leagues)
+
+---
+
+## Enabled Leagues
+
+### Standard Model (full stats + odds history → backtestable)
+| League | Country | SNIPER Threshold |
+|---|---|---|
+| League One | England | 25% |
+| League Two | England | 14% |
+| Bundesliga 2 | Germany | 20% |
+| La Liga 2 | Spain | 20% |
+| Ligue 2 | France | 25% |
+| Championship | England | 15% |
+| Serie B | Italy | 15% |
+
+*Belgian, Dutch, Scottish, Turkish leagues: in training data but not predicted (negative backtest ROI)*
+
+### New-Format Model (goals only — no backtest available)
+Ireland, Finland, Denmark, Austria, Sweden, Norway, Brazil, Japan, Mexico, China, USA MLS, Argentina
+
+---
+
+## Player Props Module (Phase 1)
+
+**Markets:** SOT, Goals, Yellow Cards, Assists  
+**Leagues:** Championship, League One, Bundesliga 2, Ireland Premier, Finland Veikkausliiga  
+**Data:** FBref season stats + API-Football match-by-match (requires `APIFOOTBALL_KEY`)
+
+**Architecture v2 highlights:**
+- Referee factor for cards (z-score vs league avg)
+- Set-piece sub-formula for defender SOT edge
+- Proper de-vigging (assumed overround by odds tier)
+- Relative edge floors (30% at 6.0 odds, 20% at 4.0)
+- 5-component confidence scoring
+- GES (Goal Edge Score) for goals/SOT signal gating
 
 ---
 
 ## Data Sources
 
-| Source | Used For |
-|---|---|
-| football-data.co.uk | Historical match data (goals, shots, odds) |
-| OddsAPI (the-odds-api.com) | Live upcoming odds + completed scores |
-| Sofascore (cached) | Set-piece goals per team |
-| API-Football (RapidAPI) | Referee stats |
+| Source | Used For | Cost |
+|---|---|---|
+| football-data.co.uk | Historical match data (free) | Free |
+| OddsAPI (the-odds-api.com) | Live odds + WC odds | $30/month (20K credits) |
+| API-Football (api-sports.io) | Player match stats, lineups, referees | Free tier (100/day) → Starter ($15/mo) for 2026 season |
+| Sofascore (cached) | Set-piece goals per team | Free (scraping) |
+| FBref (scraping) | Player season stats for training | Free (scraping) |
 
 ---
 
-## Key Design Decisions
+## Setup
 
-**No data leakage:** The original `combined_sot_ratio` feature used same-match shot data (future information at prediction time). Fixed to use rolling team averages from prior games only (`shift(1)`). This dropped inflated ROI from 27%+ to the true 8.55%.
-
-**League selection:** Leagues are only enabled after walk-forward backtest confirms positive ROI. Belgian, Scottish, Turkish, Dutch, Polish leagues all showed negative ROI after the leakage fix and were removed.
-
-**No time-decay / no Poisson:** Both were tested and reverted — they hurt ROI (8.55% → 4.39%) and worsened Sharpe and drawdown. Uniform rolling mean is better for this dataset size and signal type.
-
----
-
-## APIs & Keys
-
-Set via environment variables (or hardcoded in config.py for dev):
-
+### GitHub Secrets required
 ```
-ODDS_API_KEY    → the-odds-api.com key
-API_KEY         → RapidAPI key (API-Football, for referee stats)
+ODDS_API_KEY      → the-odds-api.com (20K plan)
+TELEGRAM_TOKEN    → @TheWowzaBot token
+TELEGRAM_CHAT_ID  → group chat ID (-5181665372)
+APIFOOTBALL_KEY   → api-sports.io key (for player props)
 ```
 
+### Local `.env`
+```
+ODDS_API_KEY=your_key
+APIFOOTBALL_KEY=your_key
+```
+
+### Local run
+```bash
+python pipeline.py --mode predict          # generate tips
+python update_results.py                   # fill results
+python -m player_model.pipeline --mode all # player props
+```
+
 ---
 
-## Live Track Record
+## Roadmap
 
-Started: April 2026  
-As of 2026-05-04: **17 settled bets — 5W / 12L — PnL: -5.29u**  
-*(Small sample, rough first week. Need ~200 bets for statistical significance.)*
+See `ROADMAP.md` for planned features:
+1. **More markets** — 1X2, Asian Handicap, BTTS (same leagues, zero extra cost)
+2. **More leagues** — Scottish League 1/2 (7.5% bookmaker margin, highest found)
+3. **Cross-market confirmation** — SNIPER only when O/U + Sharp Money + Formula agree
+4. **API-Football data** — first-half shots for HT live scanner PRESSURE_COOKER signal
+
+---
+
+## Dashboard
+
+Public: `https://nevixaa-wowza-betting-app-kqbjnm.streamlit.app/`  
+Local: `http://localhost:8501`
