@@ -24,6 +24,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Retrain models (ensures new features are compatible)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python pipeline.py --mode train
+
       - name: Run predict
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
