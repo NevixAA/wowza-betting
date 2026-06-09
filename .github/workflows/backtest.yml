@@ -52,6 +52,6 @@ jobs:
                   models/metrics_model_ht_over15.json \
                   models/feature_importances_ht_over05.csv \
                   models/feature_importances_ht_over15.csv || true
-          git diff --quiet && git diff --staged --quiet || \
+          git diff --staged --quiet || \
             git commit -m "auto: backtest results $(date -u '+%Y-%m-%d')"
           git push

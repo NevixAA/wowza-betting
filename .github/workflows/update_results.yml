@@ -38,6 +38,6 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           git add output/bets_ledger.csv || true
-          git diff --quiet && git diff --staged --quiet || \
+          git diff --staged --quiet || \
             git commit -m "auto: results $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push

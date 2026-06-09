@@ -66,6 +66,6 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           git add output/player_tips.csv telegram_bot/notified.json || true
-          git diff --quiet && git diff --staged --quiet || \
+          git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
