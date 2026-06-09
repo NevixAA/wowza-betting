@@ -58,8 +58,13 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
     """Explode match rows into one row per team per match. Preserves row index."""
     has_ht = "ht_home_goals" in matches.columns and matches["ht_home_goals"].notna().any()
 
+    # Include corners and fouls for rolling averages (replacing match-day actuals)
+    _corner_cols = [c for c in ["home_corners","away_corners"] if c in matches.columns]
+    _foul_cols   = [c for c in ["home_fouls",  "away_fouls"]   if c in matches.columns]
+
     home_cols = ["date", "league", "home_team", "away_team",
                  "home_goals", "away_goals", "over25", "home_shots", "home_sot"]
+    home_cols += [c for c in _corner_cols + _foul_cols if c in matches.columns]
     if has_ht:
         home_cols += ["ht_home_goals", "ht_away_goals"]
 
@@ -69,6 +74,7 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
         "home_team": "team", "away_team": "opponent",
         "home_goals": "scored", "away_goals": "conceded",
         "home_shots": "shots", "home_sot": "sot",
+        "home_corners": "corners", "home_fouls": "fouls",
     })
     if has_ht:
         home = home.rename(columns={"ht_home_goals": "ht_scored", "ht_away_goals": "ht_conceded"})
@@ -76,6 +82,7 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
 
     away_cols = ["date", "league", "home_team", "away_team",
                  "home_goals", "away_goals", "over25", "away_shots", "away_sot"]
+    away_cols += [c for c in _corner_cols + _foul_cols if c in matches.columns]
     if has_ht:
         away_cols += ["ht_home_goals", "ht_away_goals"]
 
@@ -84,6 +91,7 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
     away = away.rename(columns={
         "away_team": "team", "home_team": "opponent",
         "away_goals": "scored", "home_goals": "conceded",
+        "away_corners": "corners", "away_fouls": "fouls",
         "away_shots": "shots", "away_sot": "sot",
     })
     if has_ht:
@@ -112,6 +120,49 @@ def _league_expanding_avg(df: pd.DataFrame) -> pd.Series:
 
 
 # ── Rest days ────────────────────────────────────────────────────────────────
+
+def _add_home_advantage(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Per-team rolling home advantage index.
+    HA = fraction of team's last N home games where they scored > league-avg goals conceded.
+    A team that consistently scores well at home gets HA > 0.5; weak home teams < 0.5.
+    Replaces the constant 1.0 which provided zero discriminative signal.
+    """
+    df = df.copy()
+    n = _N
+    ha_home, ha_away = [], []
+    df_sorted = df.sort_values("date").reset_index(drop=True)
+    league_avg = df_sorted.groupby("league")["away_goals"].expanding().mean().shift(1)
+    df_sorted["league_avg_away_goals"] = league_avg.values
+
+    home_ha: dict[str, float] = {}
+    away_ha: dict[str, float] = {}
+    home_results: dict[str, list] = {}
+
+    for _, row in df_sorted.iterrows():
+        h, a = row["home_team"], row["away_team"]
+        lg_avg = row.get("league_avg_away_goals", 1.1) or 1.1
+
+        # Lookup existing window
+        h_wins = home_results.get(h, [])
+        ha_home.append(float(np.mean(h_wins[-n:])) if h_wins else 0.55)
+
+        a_wins = home_results.get(a, [])
+        ha_away.append(float(np.mean(a_wins[-n:])) if a_wins else 0.45)
+
+        # Update after this match (shift(1) — use result for next match)
+        if not pd.isna(row.get("home_goals")):
+            scored = float(row["home_goals"])
+            home_results.setdefault(h, []).append(1.0 if scored > lg_avg else 0.0)
+
+    df_sorted["home_advantage"]      = ha_home
+    df_sorted["away_home_adv_factor"] = ha_away
+    # Restore original order
+    df_sorted = df_sorted.set_index(df.sort_values("date").index)
+    df["home_advantage"]       = df_sorted["home_advantage"].values
+    df["away_home_adv_factor"] = df_sorted["away_home_adv_factor"].values
+    return df
+
 
 def _add_rest_days(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
@@ -254,6 +305,11 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     tc["roll_over25"]   = _rolling(tc, "over25",  n)
     tc["roll_shots"]    = _rolling(tc, "shots",   n)
     tc["roll_sot"]      = _rolling(tc, "sot",     n)
+    # Rolling corners and fouls — leak-free, replaces match-day actuals
+    if "corners" in tc.columns:
+        tc["roll_corners"] = _rolling(tc, "corners", n)
+    if "fouls" in tc.columns:
+        tc["roll_fouls"] = _rolling(tc, "fouls", n)
 
     has_ht = "ht_scored" in tc.columns and tc["ht_scored"].notna().any()
     if has_ht:
@@ -269,6 +325,14 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     # Map back by original row index to avoid any cross-league duplicates
     home_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
     away_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
+    has_corners = "roll_corners" in tc.columns
+    has_fouls   = "roll_fouls"   in tc.columns
+    if has_corners:
+        home_cols.append("roll_corners")
+        away_cols.append("roll_corners")
+    if has_fouls:
+        home_cols.append("roll_fouls")
+        away_cols.append("roll_fouls")
     if has_ht:
         home_cols += ["roll_ht_scored", "roll_ht_conceded", "roll_ht_over05", "roll_ht_over15"]
         away_cols += ["roll_ht_scored", "roll_ht_conceded", "roll_ht_over05", "roll_ht_over15"]
@@ -280,6 +344,8 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
         "roll_over25":       "home_over25_last5",
         "roll_shots":        "home_shots_last5",
         "roll_sot":          "home_sot_last5",
+        "roll_corners":      "home_corners_pg_roll",
+        "roll_fouls":        "home_fouls_pg_roll",
         "roll_ht_scored":    "home_ht_scored_last5",
         "roll_ht_conceded":  "home_ht_conceded_last5",
         "roll_ht_over05":    "home_ht_over05_rate",
@@ -292,6 +358,8 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
         "roll_over25":       "away_over25_last5",
         "roll_shots":        "away_shots_last5",
         "roll_sot":          "away_sot_last5",
+        "roll_corners":      "away_corners_pg_roll",
+        "roll_fouls":        "away_fouls_pg_roll",
         "roll_ht_scored":    "away_ht_scored_last5",
         "roll_ht_conceded":  "away_ht_conceded_last5",
         "roll_ht_over05":    "away_ht_over05_rate",
@@ -328,12 +396,18 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     df["away_defense_str"] = df["away_conceded_last5"] / half_avg
 
     # ── Match context ───────────────────────────────────────────────────────
-    df["home_advantage"] = 1.0
+    # Per-team rolling home advantage (replaces constant 1.0 which has no discriminative power)
+    # = fraction of home games where team scored more than away average goals conceded
     df = _add_rest_days(df)
+    df = _add_home_advantage(df)
 
-    # ── Set piece proxies from CSV ──────────────────────────────────────────
-    df["combined_corners_pg"] = df["home_corners"].fillna(0) + df["away_corners"].fillna(0)
-    df["combined_fouls_pg"]   = df["home_fouls"].fillna(0)   + df["away_fouls"].fillna(0)
+    # ── Set piece proxies — rolling historical averages (no match-day leakage) ──
+    # combined_corners_pg_roll and combined_fouls_pg_roll come from the team-centric
+    # rolling computation above — these are pre-match historical averages, not actuals
+    df["home_corners_pg_roll"]  = df.get("home_corners_pg_roll",  pd.Series(np.nan, index=df.index))
+    df["away_corners_pg_roll"]  = df.get("away_corners_pg_roll",  pd.Series(np.nan, index=df.index))
+    df["home_fouls_pg_roll"]    = df.get("home_fouls_pg_roll",    pd.Series(np.nan, index=df.index))
+    df["away_fouls_pg_roll"]    = df.get("away_fouls_pg_roll",    pd.Series(np.nan, index=df.index))
     # Rolling team SOT ratio (leak-free: each team's avg over their last N games)
     df["home_sot_ratio_last5"] = df["home_sot_last5"] / df["home_shots_last5"].replace(0, np.nan)
     df["away_sot_ratio_last5"] = df["away_sot_last5"] / df["away_shots_last5"].replace(0, np.nan)
@@ -400,6 +474,12 @@ def build_upcoming_features(
 
     def _team_recent(team: str, stat_home: str, stat_away: str, nn: int,
                      league: str = "") -> float:
+        """
+        Returns blended home+away average — consistent with build_features() training.
+        stat_home = column when team plays AT HOME (e.g. "home_goals" for scored)
+        stat_away = column when team plays AWAY    (e.g. "away_goals" for scored)
+        Both represent the SAME semantic quantity (scored/conceded) from different venues.
+        """
         h = _find_team_rows(team, "home_team", league)[stat_home].dropna().tail(nn)
         a = _find_team_rows(team, "away_team", league)[stat_away].dropna().tail(nn)
         vals = list(h) + list(a)
@@ -431,21 +511,27 @@ def build_upcoming_features(
         feat["home_ht_conceded_last5"]  = _team_recent(ht, "ht_away_goals", "ht_home_goals", n, lg)
         feat["away_ht_scored_last5"]    = _team_recent(at, "ht_home_goals", "ht_away_goals", n)
         feat["away_ht_conceded_last5"]  = _team_recent(at, "ht_away_goals", "ht_home_goals", n)
-        def _ht_rate(team, threshold, nn):
-            hm = hist[hist["home_team"] == team]["ht_home_goals"].dropna()
-            aw = hist[hist["away_team"] == team]["ht_away_goals"].dropna()
-            hm_t = hist[hist["home_team"] == team]["ht_away_goals"].dropna()
-            aw_t = hist[hist["away_team"] == team]["ht_home_goals"].dropna()
-            total = [(a + b) for a, b in zip(list(hm.tail(nn)), list(hm_t.tail(nn)))] + \
-                    [(a + b) for a, b in zip(list(aw.tail(nn)), list(aw_t.tail(nn)))]
+        def _ht_rate(team, threshold, nn, league=""):
+            # League-isolated: never mix HT stats across different leagues
+            h = hist[hist["home_team"] == team]
+            a = hist[hist["away_team"] == team]
+            if league:
+                h = h[h["league"] == league]
+                a = a[a["league"] == league]
+            hm   = h["ht_home_goals"].dropna()
+            hm_t = h["ht_away_goals"].dropna()
+            aw   = a["ht_away_goals"].dropna()
+            aw_t = a["ht_home_goals"].dropna()
+            total = [(a_ + b) for a_, b in zip(list(hm.tail(nn)), list(hm_t.tail(nn)))] + \
+                    [(a_ + b) for a_, b in zip(list(aw.tail(nn)), list(aw_t.tail(nn)))]
             if not total:
                 return float('nan')
             return sum(1 for x in total if x >= threshold) / len(total)
 
-        feat["home_ht_over05_rate"] = _ht_rate(ht, 1, n)
-        feat["away_ht_over05_rate"] = _ht_rate(at, 1, n)
-        feat["home_ht_over15_rate"] = _ht_rate(ht, 2, n)
-        feat["away_ht_over15_rate"] = _ht_rate(at, 2, n)
+        feat["home_ht_over05_rate"] = _ht_rate(ht, 1, n, lg)
+        feat["away_ht_over05_rate"] = _ht_rate(at, 1, n, lg)
+        feat["home_ht_over15_rate"] = _ht_rate(ht, 2, n, lg)
+        feat["away_ht_over15_rate"] = _ht_rate(at, 2, n, lg)
         feat_records.append(feat)
 
     df = pd.DataFrame(feat_records)

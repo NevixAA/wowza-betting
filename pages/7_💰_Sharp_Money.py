@@ -143,3 +143,6 @@ with st.expander("📊 Raw data"):
     st.dataframe(filtered, use_container_width=True)
 
 st.caption("Updates every 2 hours · 20 leagues tracked · STRONG = >10% odds move from opening")
+st.info("⚠️ **Note:** Opening odds = first snapshot when pipeline saw this fixture (not true market opening). "
+        "A move shown here may have already happened before our system first observed it. "
+        "For genuine sharp money detection, true opening odds from a historical odds API are required.")

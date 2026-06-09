@@ -22,7 +22,6 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, log_loss, roc_auc_score
 from sklearn.pipeline import Pipeline
@@ -37,14 +36,17 @@ log = logging.getLogger(__name__)
 # ── Calibrated model wrapper (module-level so pickle works) ───────────────────
 
 class _CalibratedModel:
-    """Wraps a sklearn Pipeline + IsotonicRegression calibrator."""
-    def __init__(self, pipe, iso):
-        self._pipe = pipe
-        self._iso  = iso
+    """Wraps a sklearn Pipeline + Platt scaling (sigmoid) calibrator.
+    Platt scaling uses LogisticRegression on raw probabilities — regularized,
+    no overfit risk on small calibration sets (unlike IsotonicRegression).
+    """
+    def __init__(self, pipe, calibrator):
+        self._pipe       = pipe
+        self._calibrator = calibrator
 
     def predict_proba(self, X):
-        raw = self._pipe.predict_proba(X)[:, 1]
-        cal = self._iso.predict(raw)
+        raw = self._pipe.predict_proba(X)[:, 1].reshape(-1, 1)
+        cal = self._calibrator.predict_proba(raw)[:, 1]
         cal = np.clip(cal, 0.001, 0.999)
         return np.column_stack([1 - cal, cal])
 
@@ -59,12 +61,13 @@ FEATURE_COLS = [
     "home_attack_str",      "away_attack_str",
     "home_defense_str",     "away_defense_str",
     # Match context
-    "home_advantage",
+    "home_advantage",       "away_home_adv_factor",   # per-team rolling home advantage
     "home_rest_days",       "away_rest_days",
-    # Odds-derived (market consensus)
-    "implied_prob_over",    "implied_prob_under",
-    # Set piece proxies (CSV)
-    "combined_corners_pg",  "combined_fouls_pg",  "combined_sot_ratio",
+    # NOTE: implied_prob_over/under removed — circular dependency (market predicts itself)
+    # Set piece proxies — rolling historical averages only (match-day actuals removed)
+    "home_corners_pg_roll", "away_corners_pg_roll",
+    "home_fouls_pg_roll",   "away_fouls_pg_roll",
+    "combined_sot_ratio",
     "referee_foul_avg",
     # Actual SP goals (Sofascore)
     "home_sp_goals_pg",     "away_sp_goals_pg",
@@ -153,12 +156,14 @@ def train(
             fit_params[f"clf__sample_weight"] = w_fit
         pipe.fit(X_fit, y_fit, **fit_params)
 
-        # Isotonic calibration on cal split (chronologically after fit split)
-        raw_proba_cal = pipe.predict_proba(X_cal)[:, 1]
-        iso = IsotonicRegression(out_of_bounds="clip")
-        iso.fit(raw_proba_cal, y_cal, sample_weight=w_cal)
+        # Platt scaling calibration (sigmoid) on cal split — regularized, no overfit risk
+        # Replaces IsotonicRegression which overfits on small cal sets (<300 samples)
+        raw_proba_cal = pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1)
+        platt = LogisticRegression(C=1.0, max_iter=1000)
+        platt.fit(raw_proba_cal, y_cal,
+                  sample_weight=w_cal if w_cal is not None else None)
 
-        calibrated = _CalibratedModel(pipe, iso)
+        calibrated = _CalibratedModel(pipe, platt)
 
         proba = calibrated.predict_proba(X_test)[:, 1]
         metrics = {

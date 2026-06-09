@@ -90,6 +90,9 @@ tab_drift, tab_model = st.tabs(["📡 Sharp Money Drift", "🤖 ML Model Value"]
 
 with tab_model:
     st.subheader("🤖 ML Model Fair Prices vs Market")
+    st.warning("⚠️ **Informational only.** The model was trained on European domestic leagues — "
+               "WC features will be imputed to league averages, making ML output essentially "
+               "mirror the market. **Use the Sharp Money Drift tab as the primary WC signal.**")
     st.caption("Our FT + HT models applied to WC fixtures · Compare fair price vs bookmaker odds to spot value")
     if model_tips.empty:
         st.info("⏳ Model tips will appear after the next WC tracker run.")

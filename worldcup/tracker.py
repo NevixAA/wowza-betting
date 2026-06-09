@@ -265,7 +265,16 @@ WC_MODEL_FILE = config.OUTPUT_DIR / "worldcup_model_tips.csv"
 def _add_model_value(history: dict) -> pd.DataFrame:
     """
     Apply our FT + HT models to WC fixtures and compare vs market odds.
-    Returns DataFrame with value signals where our fair price differs from market.
+
+    ⚠️  IMPORTANT DISCLAIMER — ML output is INFORMATIONAL ONLY:
+    The standard model was trained on European domestic leagues (League One,
+    Bundesliga 2, La Liga 2, Ligue 2, League Two). International tournament
+    football has fundamentally different dynamics (motivation, squad rotation,
+    tactical approach, rest periods). Features like attack_str and defense_str
+    will be NaN for WC fixtures (league not in historical data) and will be
+    imputed to league averages — effectively making ML output equal to market
+    price. Do NOT treat WC ML values as genuine independent edge signals.
+    Use the drift tracker (sharp money) as the primary WC signal instead.
     """
     try:
         from src.model import load_models, predict_proba
