@@ -1,16 +1,14 @@
 """
 API-Football Client — Player Stats, Lineups, Referees
 ======================================================
-Uses the existing API_KEY from config (RapidAPI key already in system).
-Fetches match-by-match player data for rolling feature computation.
+Uses direct API-Football.com (api-sports.io) — FREE tier: 100 calls/day.
+Register at: https://dashboard.api-football.com/register
+Add key to .env: APIFOOTBALL_KEY=your_key
 
 Endpoints used:
-  /fixtures           — get fixture IDs for a team/league
-  /fixtures/players   — player stats for a specific fixture (post-match)
-  /fixtures/lineups   — starting XI and bench (pre/post match)
-  /players            — season-level player stats (backup)
-
-Credit budget: ~5 calls per fixture, called once post-match then cached.
+  /fixtures           — fixture IDs for a league/season
+  /fixtures/players   — per-player stats for a completed fixture
+  /fixtures/lineups   — confirmed starting XI + bench
 """
 from __future__ import annotations
 
@@ -24,11 +22,11 @@ import requests
 
 from . import config
 
-HEADERS = {
-    "X-RapidAPI-Host": config.API_HOST,
-    "X-RapidAPI-Key":  config.API_KEY,
-}
-BASE_URL  = f"https://{config.API_HOST}"
+# Direct API-Football.com (api-sports.io) — different from RapidAPI
+import os as _os
+_APIFOOTBALL_KEY = _os.getenv("APIFOOTBALL_KEY", "")
+HEADERS  = {"x-apisports-key": _APIFOOTBALL_KEY}
+BASE_URL = "https://v3.football.api-sports.io"
 CACHE_DIR = config.BASE_DIR / "player_match_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 
@@ -63,8 +61,8 @@ def _save_cache(key: str, data: dict) -> None:
 
 def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
     """Make one API-Football call with caching."""
-    if not config.API_KEY:
-        return None
+    if not _APIFOOTBALL_KEY:
+        return None  # no key — fallback to FBref only
     cache_key = f"{endpoint}_{json.dumps(params, sort_keys=True)}"
     cached = _load_cache(cache_key, max_age_h=cache_hours)
     if cached:
