@@ -148,7 +148,7 @@ def load_tips():
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
     today = pd.Timestamp.now().normalize()
     bets  = bets[bets["date"] >= today]
-    bets  = bets[bets["signal_tier"].isin(["SNIPER","VALUE"]) & bets["bet"].isin(["OVER","UNDER"])].copy()
+    bets  = bets[bets["signal_tier"].isin(["SNIPER","MARKSMAN","VALUABLE"]) & bets["bet"].isin(["OVER","UNDER"])].copy()
 
     # Ensure feature columns exist as NaN first
     for col in FEAT_COLS:
@@ -391,3 +391,60 @@ else:
                          expanded=(data["verdict"].startswith("✅") and data["tier"]=="SNIPER")):
             render_analysis(row, data)
         st.markdown("---")
+
+# ── Agent Pipeline (9-agent flow) ─────────────────────────────────────────────
+st.markdown("---")
+with st.expander("🤖 9-Agent Player Props Pipeline", expanded=False):
+    from agent.agent_runner import PIPELINE_STAGES, AGENTS, run_pipeline
+
+    st.caption(
+        "Full pipeline: football-data-collection → minutes-projection → team-goal-expectancy "
+        "→ player-prop-modeling → market-intelligence → confidence-scoring → simulation → portfolio-manager"
+    )
+
+    # Show available agents
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown("**Pipeline agents:**")
+        for s in PIPELINE_STAGES:
+            exists = s in AGENTS
+            st.markdown(f"{'✅' if exists else '❌'} `{s}`")
+    with col_b:
+        st.markdown("**Other agents:**")
+        other = [k for k in AGENTS if k not in PIPELINE_STAGES and k]
+        for k in sorted(other):
+            st.markdown(f"🔹 `{k}`")
+
+    has_key = bool(os.getenv("GOOGLE_API_KEY") or os.getenv("ANTHROPIC_API_KEY"))
+    if not has_key:
+        st.warning("No API key configured (GOOGLE_API_KEY or ANTHROPIC_API_KEY). Add it to .env to run the pipeline.")
+    else:
+        st.markdown("**Run pipeline on a match:**")
+        pipeline_match = st.selectbox(
+            "Select match for pipeline run:",
+            tips["label"].tolist(),
+            key="pipeline_match_select",
+        )
+        if st.button("▶ Run 9-Agent Pipeline", key="run_pipeline_btn"):
+            row = tips[tips["label"] == pipeline_match].iloc[0]
+            match_data = {
+                "match":      f"{row['home_team']} vs {row['away_team']}",
+                "home_team":  row["home_team"],
+                "away_team":  row["away_team"],
+                "league":     row.get("league", ""),
+                "date":       str(row["date"])[:10],
+                "signal_tier": row.get("signal_tier", ""),
+                "p_over25":   row.get("p_over25", ""),
+                "odds_over25":row.get("odds_over25", ""),
+                "odds_under25":row.get("odds_under25", ""),
+                "best_edge":  row.get("best_edge", ""),
+            }
+            with st.spinner("Running 8-stage pipeline... (this takes ~30s per agent)"):
+                try:
+                    result = run_pipeline(match_data)
+                    st.success("Pipeline complete")
+                    for stage in PIPELINE_STAGES:
+                        with st.expander(f"📋 {stage}", expanded=(stage == "portfolio-manager")):
+                            st.markdown(result["stages"].get(stage, "No output"))
+                except Exception as e:
+                    st.error(f"Pipeline error: {e}")
