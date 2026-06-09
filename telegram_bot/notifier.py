@@ -694,5 +694,6 @@ if __name__ == "__main__":
         live   = notify_live_signals()
         wc     = notify_wc_strong()
         sharp  = notify_sharp_strong()
+        props  = notify_player_props()
         # agent = notify_agent_analysis()  # disabled — rebuilding with team-specific λ
-        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} World Cup + {sharp} Sharp")
+        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} WC + {sharp} Sharp + {props} Props")

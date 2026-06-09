@@ -42,9 +42,9 @@ def load_new_backtest():
     df = pd.read_csv(f)
     df["pnl"]        = pd.to_numeric(df.get("pnl"),   errors="coerce")
     df["match_date"] = pd.to_datetime(df.get("date"), errors="coerce")
-    # Keep only actual bets (not AVOID)
+    # Keep only actual bets (not AVOID) — includes all 3 tiers
     if "signal_tier" in df.columns:
-        df = df[df["signal_tier"].isin(["SNIPER", "VALUE"])]
+        df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])]
     elif "bet" in df.columns:
         df = df[df["bet"].isin(["OVER", "UNDER"])]
     # Remove voids (pnl=0 = postponed/cancelled — not real outcomes)
