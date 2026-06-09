@@ -532,6 +532,24 @@ def build_upcoming_features(
         feat["away_ht_over05_rate"] = _ht_rate(at, 1, n, lg)
         feat["home_ht_over15_rate"] = _ht_rate(ht, 2, n, lg)
         feat["away_ht_over15_rate"] = _ht_rate(at, 2, n, lg)
+
+        # Rolling corners / fouls per team (ML audit features — must match build_features())
+        feat["home_corners_pg_roll"] = _team_recent(ht, "home_corners", "away_corners", n, lg)
+        feat["away_corners_pg_roll"] = _team_recent(at, "home_corners", "away_corners", n, lg)
+        feat["home_fouls_pg_roll"]   = _team_recent(ht, "home_fouls",   "away_fouls",   n, lg)
+        feat["away_fouls_pg_roll"]   = _team_recent(at, "home_fouls",   "away_fouls",   n, lg)
+
+        # Away team's rolling home advantage (fraction of their own home games they dominate)
+        at_home_rows = _find_team_rows(at, "home_team", lg).tail(n)
+        if at_home_rows.empty:
+            feat["away_home_adv_factor"] = 0.45
+        else:
+            lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else hist["away_goals"].mean()
+            lg_avg_away = lg_avg_away if pd.notna(lg_avg_away) and lg_avg_away > 0 else 1.1
+            feat["away_home_adv_factor"] = float(
+                (at_home_rows["home_goals"] > lg_avg_away).sum() / len(at_home_rows)
+            )
+
         feat_records.append(feat)
 
     df = pd.DataFrame(feat_records)
