@@ -54,10 +54,23 @@ MIN_APPEARANCES  = 3
 MIN_GAMES_SIGNAL = 5
 MIN_GAMES_SNIPER = 10
 
-# ── Leagues ───────────────────────────────────────────────────────────────────
+# ── Leagues with player prop markets ─────────────────────────────────────────
+# IMPORTANT: Only popular leagues have SOT/Goals/Cards prop markets at bookmakers.
+# Lower leagues (League Two, Ligue 2, La Liga 2) rarely have these markets.
 PROP_LEAGUES = {
-    "League One": 41, "League Two": 42, "Championship": 40,
-    "Bundesliga 2": 79, "La Liga 2": 141, "Ligue 2": 62,
+    "Championship":    40,    # Good prop coverage — popular English league
+    "League One":      41,    # Moderate prop coverage
+    "Bundesliga 2":    79,    # Good coverage in Germany
+    "Ireland Premier": 357,   # Active season, growing prop market
+    "Finland Veikk":   244,   # Active season, limited but available
+}
+# Season year for each league (API-Football uses start year)
+PROP_SEASONS = {
+    "Championship":    "2025",
+    "League One":      "2025",
+    "Bundesliga 2":    "2025",
+    "Ireland Premier": "2026",
+    "Finland Veikk":   "2026",
 }
 FBREF_LEAGUES = {
     "Championship": (10, "Championship"), "League One": (15, "League-One"),

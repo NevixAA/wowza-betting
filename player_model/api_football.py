@@ -27,15 +27,20 @@ import os as _os
 _APIFOOTBALL_KEY = _os.getenv("APIFOOTBALL_KEY", "")
 HEADERS  = {"x-apisports-key": _APIFOOTBALL_KEY}
 BASE_URL = "https://v3.football.api-sports.io"
-CACHE_DIR = config.BASE_DIR / "player_match_cache"
+# Use WowzaApp junction (no Hebrew path) for cache
+import sys as _sys
+_WOWZA_DIR = Path("C:/WowzaApp") if Path("C:/WowzaApp").exists() else config.BASE_DIR
+CACHE_DIR = _WOWZA_DIR / "player_match_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 
 
 # ── Cache helpers ─────────────────────────────────────────────────────────────
 
 def _cache_path(key: str) -> Path:
-    safe = key.replace("/", "_").replace("?", "_").replace("&", "_")
-    return CACHE_DIR / f"{safe}.json"
+    import re, hashlib
+    # Use hash for safety — removes all special chars, Hebrew path issues etc.
+    h = hashlib.md5(key.encode("utf-8")).hexdigest()[:16]
+    return CACHE_DIR / f"{h}.json"
 
 
 def _load_cache(key: str, max_age_h: int = 24) -> Optional[dict]:
@@ -85,14 +90,21 @@ def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
 def get_recent_fixtures(league_id: int, season: str, last_n: int = 10) -> list[dict]:
-    """Get last N completed fixtures for a league."""
+    """Get recently completed fixtures for a league (last 30 days)."""
+    from datetime import date, timedelta
+    today    = date.today()
+    from_dt  = (today - timedelta(days=30)).isoformat()
+    to_dt    = today.isoformat()
     data = _get("/fixtures", {
         "league": league_id, "season": season,
-        "last": last_n, "status": "FT"
+        "from": from_dt, "to": to_dt, "status": "FT"
     }, cache_hours=6)
     if not data:
         return []
-    return data.get("response", [])
+    results = data.get("response", [])
+    # Return last N sorted by date descending
+    results.sort(key=lambda x: x.get("fixture", {}).get("date", ""), reverse=True)
+    return results[:last_n]
 
 
 def get_upcoming_fixtures(league_id: int, season: str, next_n: int = 5) -> list[dict]:
