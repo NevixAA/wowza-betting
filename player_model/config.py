@@ -63,6 +63,7 @@ PROP_LEAGUES = {
     "Bundesliga 2":    79,    # Good coverage in Germany
     "Ireland Premier": 357,   # Active season, growing prop market
     "Finland Veikk":   244,   # Active season, limited but available
+    "World Cup":       1,     # WC 2026 — biggest player prop market globally
 }
 # Season year for each league (API-Football uses start year)
 PROP_SEASONS = {
@@ -71,6 +72,7 @@ PROP_SEASONS = {
     "Bundesliga 2":    "2025",
     "Ireland Premier": "2026",
     "Finland Veikk":   "2026",
+    "World Cup":       "2026",
 }
 FBREF_LEAGUES = {
     "Championship": (10, "Championship"), "League One": (15, "League-One"),
