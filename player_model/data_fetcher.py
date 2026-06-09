@@ -1,222 +1,158 @@
 """
-Player Stats Data Fetcher — FBref (free, no API key needed).
-Extends the existing fbref_scraper.py pattern already in the project.
+Player Stats Data Fetcher — API-Football (Starter plan required).
+Replaces FBref scraper. Uses /players endpoint for season stats.
 
-Scrapes per-player season stats from FBref standard stat tables:
-  - shooting: goals, shots, shots_on_target
-  - passing: assists, key_passes
-  - misc: yellow_cards, red_cards, fouls
+Endpoints used:
+  GET /players?league={id}&season={year}&page={n}  — season stats per player
+  GET /fixtures/players?fixture={id}               — per-fixture stats (rolling features)
 
-Cached for 7 days. Polite 4s delay between requests.
+Cached for 7 days. ~25 API calls per league per collection run.
 """
 from __future__ import annotations
 
-import json
+import os
 import time
+import hashlib
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
-import pandas as pd
 import requests
 
 from . import config
 
-CACHE_FILE    = config.CACHE_FILE
+BASE_URL      = "https://v3.football.api-sports.io"
+CACHE_DIR     = config.BASE_DIR / "player_match_cache"
+CACHE_DIR.mkdir(exist_ok=True)
 CACHE_DAYS    = 7
-REQUEST_DELAY = 4.0   # polite scraping
+REQUEST_DELAY = 1.2   # ~50 req/min, well within Starter rate limit
 
-_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                  "AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/120.0.0.0 Safari/537.36",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept": "text/html,application/xhtml+xml",
-    "Referer": "https://fbref.com/",
+# API-Football league IDs for player stats collection
+# Only leagues with reliable player stat coverage
+APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
+    "Premier League":   (39,  "2024"),
+    "Bundesliga":       (78,  "2024"),
+    "La Liga":          (140, "2024"),
+    "Serie A":          (135, "2024"),
+    "Ligue 1":          (61,  "2024"),
+    "Championship":     (40,  "2024"),
+    "League One":       (41,  "2024"),
+    "Bundesliga 2":     (79,  "2024"),
+    "Ireland Premier":  (357, "2025"),
+    "Finland Veikk":    (244, "2025"),
+    "Champions League": (2,   "2024"),
+    "Europa League":    (3,   "2024"),
+    "Conference League":(848, "2024"),
+    "World Cup":        (1,   "2026"),
 }
 
-# FBref competition IDs → (comp_id, url_slug)
-FBREF_LEAGUES: dict[str, tuple] = {
-    "Championship":   (10,  "Championship"),
-    "League One":     (15,  "League-One"),
-    "League Two":     (16,  "League-Two"),
-    "Bundesliga 2":   (33,  "2-Bundesliga"),
-    "Ligue 2":        (60,  "Ligue-2"),
-    "La Liga 2":      (17,  "Segunda-Division"),
-    "Serie B":        (18,  "Serie-B"),
-    "Premier League": (9,   "Premier-League"),
-    "La Liga":        (12,  "La-Liga"),
-    "Bundesliga":     (20,  "Bundesliga"),
-    "Ligue 1":        (13,  "Ligue-1"),
-}
+# Keep this alias so pipeline.py import doesn't break
+FBREF_LEAGUES = APIFOOTBALL_LEAGUES
 
-# FBref table IDs for each stat type
-STAT_TABLES = {
-    "standard": "stats_standard",
-    "shooting":  "stats_shooting",
-    "misc":      "stats_misc",
-}
+
+# ── HTTP helper ───────────────────────────────────────────────────────────────
+
+def _api_get(endpoint: str, params: dict) -> dict:
+    key = os.getenv("APIFOOTBALL_KEY", "")
+    if not key:
+        raise RuntimeError("APIFOOTBALL_KEY not set in environment")
+    time.sleep(REQUEST_DELAY)
+    r = requests.get(
+        f"{BASE_URL}/{endpoint}",
+        headers={"x-apisports-key": key},
+        params=params,
+        timeout=15,
+    )
+    if r.status_code != 200:
+        raise RuntimeError(f"API-Football {r.status_code}: {r.text[:200]}")
+    d = r.json()
+    errors = d.get("errors", {})
+    if errors:
+        raise RuntimeError(f"API-Football errors: {errors}")
+    return d
 
 
 # ── Cache ─────────────────────────────────────────────────────────────────────
 
-def _load_cache() -> dict:
-    if CACHE_FILE.exists():
-        try:
-            return json.loads(CACHE_FILE.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    return {}
+def _cache_path(key: str) -> Path:
+    h = hashlib.md5(key.encode()).hexdigest()
+    return CACHE_DIR / f"players_{h}.json"
 
 
-def _save_cache(data: dict) -> None:
-    CACHE_FILE.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+def _load_cache(key: str) -> Optional[list]:
+    p = _cache_path(key)
+    if not p.exists():
+        return None
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        fetched = datetime.fromisoformat(data.get("fetched_at", "2000-01-01"))
+        if datetime.now() - fetched > timedelta(days=CACHE_DAYS):
+            return None
+        return data.get("players")
+    except Exception:
+        return None
+
+
+def _save_cache(key: str, players: list) -> None:
+    p = _cache_path(key)
+    p.write_text(
+        json.dumps({"fetched_at": datetime.now().isoformat(), "players": players},
+                   ensure_ascii=False, indent=2),
+        encoding="utf-8",
     )
 
 
-def _stale(entry: dict) -> bool:
-    ts = entry.get("fetched_at", "")
-    if not ts:
-        return True
-    try:
-        return datetime.now() - datetime.fromisoformat(ts) > timedelta(days=CACHE_DAYS)
-    except Exception:
-        return True
+# ── Player stats parser ───────────────────────────────────────────────────────
 
-
-# ── FBref scraper ─────────────────────────────────────────────────────────────
-
-def _fetch_fbref_table(comp_id: int, slug: str, table_id: str) -> Optional[pd.DataFrame]:
-    """Fetch one FBref stats table for a competition."""
-    url = f"https://fbref.com/en/comps/{comp_id}/{table_id}/{slug}-Stats"
-    time.sleep(REQUEST_DELAY)
-    try:
-        r = requests.get(url, headers=_HEADERS, timeout=20)
-        if r.status_code != 200:
-            print(f"    [FBref] {r.status_code} — {url}")
-            return None
-        tables = pd.read_html(r.text, attrs={"id": table_id})
-        if not tables:
-            return None
-        df = tables[0].copy()
-        # Flatten multi-level columns if present
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = [
-                f"{b}" if str(a).startswith("Unnamed") else f"{a}_{b}"
-                if b and str(b) != "nan" else str(a)
-                for a, b in df.columns
-            ]
-        return df
-    except Exception as e:
-        print(f"    [FBref] Error: {e}")
+def _parse_player(entry: dict, league: str) -> Optional[dict]:
+    """Parse one player entry from /players response."""
+    p    = entry.get("player", {})
+    name = p.get("name", "").strip()
+    if not name:
         return None
 
+    stats = entry.get("statistics", [{}])[0]
+    games  = stats.get("games", {})
+    goals  = stats.get("goals", {})
+    shots  = stats.get("shots", {})
+    cards  = stats.get("cards", {})
+    passes = stats.get("passes", {})
+    duels  = stats.get("duels", {})
+    team   = stats.get("team", {})
 
-def _parse_standard(df: pd.DataFrame) -> pd.DataFrame:
-    """Extract player, team, position, appearances, minutes, goals, assists."""
-    cols = {c.lower(): c for c in df.columns}
-
-    def _col(*candidates):
-        for c in candidates:
-            if c in cols:
-                return cols[c]
+    appearances = int(games.get("appearences") or 0)
+    minutes     = int(games.get("minutes")     or 0)
+    if appearances < config.MIN_APPEARANCES or minutes < 1:
         return None
 
-    name_col = _col("player")
-    team_col = _col("squad")
-    pos_col  = _col("pos")
-    mp_col   = _col("mp", "matches")
-    min_col  = _col("min", "minutes")
-    gls_col  = _col("gls", "goals")
-    ast_col  = _col("ast", "assists")
+    goals_n  = int(goals.get("total")   or 0)
+    assists_n = int(goals.get("assists") or 0)
+    shots_n  = int(shots.get("total")   or 0)
+    sot_n    = int(shots.get("on")      or 0)
+    yellow_n = int(cards.get("yellow")  or 0)
+    key_pass = int(passes.get("key")    or 0)
+    position = str(games.get("position") or p.get("position") or "").strip()
 
-    if not name_col:
-        return pd.DataFrame()
-
-    rows = []
-    for _, row in df.iterrows():
-        name = str(row.get(name_col, "")).strip()
-        if not name or name.lower() in ("player", ""):
-            continue
-        rows.append({
-            "player_name": name,
-            "team":        str(row.get(team_col, "")).strip() if team_col else "",
-            "position":    str(row.get(pos_col, "")).strip()  if pos_col  else "",
-            "appearances": _safe_int(row.get(mp_col))         if mp_col   else 0,
-            "minutes":     _safe_int(row.get(min_col))        if min_col  else 0,
-            "goals":       _safe_int(row.get(gls_col))        if gls_col  else 0,
-            "assists":     _safe_int(row.get(ast_col))        if ast_col  else 0,
-        })
-    return pd.DataFrame(rows)
+    return {
+        "player_id":       int(p.get("id", abs(hash(name)) % 10_000_000)),
+        "player_name":     name,
+        "team":            team.get("name", ""),
+        "league":          league,
+        "position":        position,
+        "appearances":     appearances,
+        "minutes":         minutes,
+        "goals":           goals_n,
+        "assists":         assists_n,
+        "shots_total":     shots_n,
+        "shots_on_target": sot_n,
+        "yellow_cards":    yellow_n,
+        "key_passes":      key_pass,
+        "rating":          float(games.get("rating") or 0),
+    }
 
 
-def _parse_shooting(df: pd.DataFrame) -> pd.DataFrame:
-    """Extract shots total and shots on target."""
-    cols = {c.lower(): c for c in df.columns}
-
-    def _col(*candidates):
-        for c in candidates:
-            if c in cols:
-                return cols[c]
-        return None
-
-    name_col = _col("player")
-    sh_col   = _col("sh", "shots")
-    sot_col  = _col("sot", "shots on target")
-
-    if not name_col:
-        return pd.DataFrame()
-
-    rows = []
-    for _, row in df.iterrows():
-        name = str(row.get(name_col, "")).strip()
-        if not name or name.lower() in ("player", ""):
-            continue
-        rows.append({
-            "player_name":     name,
-            "shots_total":     _safe_int(row.get(sh_col))  if sh_col  else 0,
-            "shots_on_target": _safe_int(row.get(sot_col)) if sot_col else 0,
-        })
-    return pd.DataFrame(rows)
-
-
-def _parse_misc(df: pd.DataFrame) -> pd.DataFrame:
-    """Extract yellow cards."""
-    cols = {c.lower(): c for c in df.columns}
-
-    def _col(*candidates):
-        for c in candidates:
-            if c in cols:
-                return cols[c]
-        return None
-
-    name_col = _col("player")
-    yc_col   = _col("cyel", "yellow cards", "yel", "crdy")
-
-    if not name_col:
-        return pd.DataFrame()
-
-    rows = []
-    for _, row in df.iterrows():
-        name = str(row.get(name_col, "")).strip()
-        if not name or name.lower() in ("player", ""):
-            continue
-        rows.append({
-            "player_name":  name,
-            "yellow_cards": _safe_int(row.get(yc_col)) if yc_col else 0,
-        })
-    return pd.DataFrame(rows)
-
-
-def _safe_int(val) -> int:
-    try:
-        return int(float(str(val).replace(",", "")))
-    except Exception:
-        return 0
-
-
-# ── Public: fetch all players for a league ────────────────────────────────────
+# ── Public: fetch one league ──────────────────────────────────────────────────
 
 def fetch_league_player_stats(
     league: str,
@@ -224,64 +160,55 @@ def fetch_league_player_stats(
 ) -> list[dict]:
     """
     Return flat list of player stat dicts for one league.
-    Scraped from FBref. Cached for CACHE_DAYS.
+    Fetched from API-Football /players endpoint, paginated.
+    Cached for CACHE_DAYS.
     """
-    info = FBREF_LEAGUES.get(league)
-    if not info or info[0] is None:
+    info = APIFOOTBALL_LEAGUES.get(league)
+    if not info:
+        print(f"  [fetch] Unknown league: {league}")
         return []
 
-    comp_id, slug = info
+    lg_id, season = info
+    cache_key = f"apifootball_players|{league}|{season}"
 
-    cache = _load_cache()
-    key   = f"fbref_players|{league}"
-    entry = cache.get(key, {})
+    if not force_refresh:
+        cached = _load_cache(cache_key)
+        if cached is not None:
+            print(f"  [{league}] {len(cached)} players (cached)")
+            return cached
 
-    if not force_refresh and entry and not _stale(entry):
-        return entry.get("players", [])
+    print(f"  [{league}] Fetching from API-Football (league={lg_id}, season={season})...")
 
-    print(f"  [FBref] Fetching player stats: {league}...")
+    players: list[dict] = []
+    page = 1
 
-    # Standard stats (appearances, goals, assists)
-    std_df = _fetch_fbref_table(comp_id, slug, "stats_standard")
-    if std_df is None or std_df.empty:
-        print(f"  [FBref] No standard stats for {league}")
-        return []
-    base = _parse_standard(std_df)
-    if base.empty:
-        return []
+    while True:
+        try:
+            data = _api_get("players", {"league": lg_id, "season": season, "page": page})
+        except RuntimeError as e:
+            print(f"  [{league}] API error page {page}: {e}")
+            break
 
-    # Shooting stats
-    sht_df = _fetch_fbref_table(comp_id, slug, "stats_shooting")
-    if sht_df is not None and not sht_df.empty:
-        shots = _parse_shooting(sht_df)
-        if not shots.empty:
-            base = base.merge(shots, on="player_name", how="left")
+        entries  = data.get("response", [])
+        paging   = data.get("paging", {})
+        total_pg = int(paging.get("total", 1))
 
-    # Misc stats (cards)
-    misc_df = _fetch_fbref_table(comp_id, slug, "stats_misc")
-    if misc_df is not None and not misc_df.empty:
-        misc = _parse_misc(misc_df)
-        if not misc.empty:
-            base = base.merge(misc, on="player_name", how="left")
+        for entry in entries:
+            parsed = _parse_player(entry, league)
+            if parsed:
+                players.append(parsed)
 
-    # Fill missing cols
-    for col in ["shots_total", "shots_on_target", "yellow_cards"]:
-        if col not in base.columns:
-            base[col] = 0
-        base[col] = base[col].fillna(0).astype(int)
+        print(f"    page {page}/{total_pg} — {len(entries)} entries")
 
-    base["league"]    = league
-    base["player_id"] = base["player_name"].apply(lambda n: abs(hash(n)) % 10_000_000)
-    base["rating"]    = 0.0
+        if page >= total_pg:
+            break
+        page += 1
 
-    players = base[base["appearances"] >= config.MIN_APPEARANCES].to_dict("records")
+    print(f"  [{league}] {len(players)} players with ≥{config.MIN_APPEARANCES} appearances")
 
-    cache[key] = {
-        "fetched_at": datetime.now().isoformat(),
-        "players":    players,
-    }
-    _save_cache(cache)
-    print(f"  [FBref] Cached {len(players)} players for {league}")
+    if players:
+        _save_cache(cache_key, players)
+
     return players
 
 
@@ -292,15 +219,14 @@ def collect_history(
     leagues: dict | None = None,
     seasons: list[str] | None = None,
 ) -> list[dict]:
-    """Collect player stats from FBref for all supported leagues."""
+    """Collect player season stats from API-Football for all supported leagues."""
     if leagues is None:
-        leagues = FBREF_LEAGUES
+        leagues = APIFOOTBALL_LEAGUES
 
     all_rows: list[dict] = []
     for league in leagues:
         rows = fetch_league_player_stats(league, force_refresh=False)
         all_rows.extend(rows)
-        print(f"  [{league}] {len(rows)} players")
 
-    print(f"[DONE] {len(all_rows)} total player rows.")
+    print(f"[DONE] {len(all_rows)} total player rows across {len(leagues)} leagues.")
     return all_rows
