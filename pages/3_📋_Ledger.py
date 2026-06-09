@@ -59,7 +59,7 @@ col1, col2, col3, col4, col5 = st.columns(5)
 with col1:
     source_f = st.multiselect("Source", ["live", "backtest"], default=["live", "backtest"])
 with col2:
-    tier_f = st.multiselect("Tier", ["SNIPER", "VALUE"], default=["SNIPER", "VALUE"])
+    tier_f = st.multiselect("Tier", ["SNIPER", "MARKSMAN", "VALUABLE"], default=["SNIPER", "MARKSMAN", "VALUABLE"])
 with col3:
     leagues = sorted(df["league"].dropna().unique().tolist()) if "league" in df else []
     league_f = st.multiselect("League", leagues, default=leagues)
