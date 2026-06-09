@@ -1,21 +1,20 @@
-"""Player Model Configuration."""
+"""Player Model Configuration — v2 (3-tier SNIPER/MARKSMAN/VALUABLE system)."""
 from __future__ import annotations
 import os
 from pathlib import Path
 
-BASE_DIR   = Path(__file__).resolve().parents[1]   # v9/
+BASE_DIR   = Path(__file__).resolve().parents[1]
 MODELS_DIR = BASE_DIR / "models"
 OUTPUT_DIR = BASE_DIR / "output"
 CACHE_FILE = BASE_DIR / "player_stats_cache.json"
 
-# ── API ───────────────────────────────────────────────────────────────────────
+# ── API-Football (same RapidAPI key as main system) ───────────────────────────
 API_HOST   = os.getenv("API_HOST",   "api-football-v1.p.rapidapi.com")
 API_KEY    = os.getenv("API_KEY",    "")
 API_SEASON = os.getenv("API_SEASON", "2025")
 
 # ── Markets ───────────────────────────────────────────────────────────────────
-MARKETS = ["goals", "assists", "sot", "cards"]
-
+MARKETS    = ["goals", "assists", "sot", "cards"]
 MODEL_FILES = {
     "goals":   MODELS_DIR / "model_player_goals.pkl",
     "assists": MODELS_DIR / "model_player_assists.pkl",
@@ -23,49 +22,49 @@ MODEL_FILES = {
     "cards":   MODELS_DIR / "model_player_cards.pkl",
 }
 
-# ── Features ──────────────────────────────────────────────────────────────────
-ROLLING_N = 5   # last N appearances per player
+# ── Signal tiers ──────────────────────────────────────────────────────────────
+SNIPER_EV   = 0.40
+MARKSMAN_EV = 0.25
+VALUABLE_EV = 0.15
+RELATIVE_EDGE_FLOORS  = {6.0: 0.30, 4.0: 0.20, 3.0: 0.12}
+OVERROUND_BY_ODDS     = {3.0: 1.06, 5.0: 1.10, 99.0: 1.15}
+GES_SNIPER_MIN        = 0.70
+GES_MARKSMAN_MIN      = 0.50
+GES_SUPPRESS          = 0.35
+KELLY_FRACTION        = 0.20
+MAX_STAKE_SNIPER      = 0.03
+MAX_STAKE_MARKSMAN    = 0.02
+MAX_STAKE_VALUABLE    = 0.01
+CONFIDENCE_FLOORS     = {"SNIPER": 0.72, "MARKSMAN": 0.62, "VALUABLE": 0.50}
 
+# ── Features ──────────────────────────────────────────────────────────────────
+ROLLING_N = 5
 PLAYER_FEATURE_COLS = [
-    # Player rolling stats (last N games)
-    "goals_pg",           # goals per game rolling
-    "assists_pg",
-    "shots_pg",
-    "sot_pg",             # shots on target per game
-    "cards_pg",           # yellow cards per game
-    "minutes_pg",         # avg minutes played
-    "key_passes_pg",
-    # Match context
+    "goals_pg", "assists_pg", "shots_pg", "sot_pg",
+    "cards_pg", "minutes_pg", "key_passes_pg", "sot_rate",
+    "set_piece_shot_rate", "touches_box_per90", "aerial_won_rate",
     "is_home",
-    "opp_goals_conceded_pg",   # opponent defensive weakness
-    "opp_shots_conceded_pg",
-    "team_attack_str",         # team-level attack strength
-    "team_goals_scored_pg",
-    # Player position encoding
-    "pos_forward",
-    "pos_midfielder",
-    "pos_defender",
-    # Fatigue
+    "opp_goals_conceded_pg", "opp_shots_conceded_pg", "opp_sot_conceded_pg",
+    "team_attack_str", "team_corners_per90", "team_goals_scored_pg",
+    "referee_strictness", "ref_cards_per_game",
+    "pos_forward", "pos_midfielder", "pos_defender",
     "rest_days",
 ]
+MIN_APPEARANCES  = 3
+MIN_GAMES_SIGNAL = 5
+MIN_GAMES_SNIPER = 10
 
-# ── Thresholds ────────────────────────────────────────────────────────────────
-MIN_APPEARANCES = 3    # minimum games to include a player
-SNIPER_EDGE     = 0.08 # 8% edge → SNIPER player prop
-VALUE_EDGE      = 0.04 # 4% edge → VALUE player prop
-
-# ── Leagues to collect training data for (API-Football IDs) ──────────────────
-TRAINING_LEAGUES = {
-    "Premier League":  39,
-    "Championship":    40,
-    "League One":      41,
-    "League Two":      42,
-    "La Liga":          140,
-    "La Liga 2":        141,
-    "Bundesliga":       78,
-    "Bundesliga 2":     79,
-    "Ligue 1":          61,
-    "Ligue 2":          62,
+# ── Leagues ───────────────────────────────────────────────────────────────────
+PROP_LEAGUES = {
+    "League One": 41, "League Two": 42, "Championship": 40,
+    "Bundesliga 2": 79, "La Liga 2": 141, "Ligue 2": 62,
+}
+FBREF_LEAGUES = {
+    "Championship": (10, "Championship"), "League One": (15, "League-One"),
+    "League Two": (16, "League-Two"),     "Bundesliga 2": (33, "2-Bundesliga"),
+    "Ligue 2": (60, "Ligue-2"),           "La Liga 2": (17, "Segunda-Division"),
+    "Serie B": (18, "Serie-B"),
 }
 
-TRAINING_SEASONS = ["2023", "2024", "2025"]
+CACHE_DAYS    = 7
+REQUEST_DELAY = 4.0
