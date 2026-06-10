@@ -2,14 +2,23 @@ name: Player Props
 
 on:
   schedule:
-    # Run 30 min after each predict run (gives time for bets.csv to update)
+    # Predict-only: 5x daily (30 min after main predict runs)
     - cron: '30 6,10,14,18,22 * * *'
+    # Full retrain: every Sunday at 05:00 UTC
+    - cron: '0 5 * * 0'
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: false
+        default: 'predict'
+        type: choice
+        options: [predict, collect_train_predict]
 
 jobs:
   player_props:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
     permissions:
       contents: write
 
@@ -25,14 +34,19 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect player data (FBref - runs every Sunday 06:30 UTC)
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && startsWith(github.event.schedule, '30 6') && contains(github.event.schedule, '* * 0'))
+      - name: Collect player data (Sundays + manual collect_train_predict)
+        if: |
+          github.event.schedule == '0 5 * * 0' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python -m player_model.pipeline --mode collect
         continue-on-error: true
 
-      - name: Train player models (if history exists)
+      - name: Train player models (Sundays + manual collect_train_predict)
+        if: |
+          github.event.schedule == '0 5 * * 0' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python -m player_model.pipeline --mode train
@@ -43,6 +57,7 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python -m player_model.pipeline --mode predict
+        continue-on-error: true
 
       - name: Send Telegram alerts for player prop signals
         env:
@@ -62,7 +77,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/player_tips.csv telegram_bot/notified.json 2>/dev/null || true
+          git add -f output/player_tips.csv telegram_bot/notified.json \
+                     player_history.parquet \
+                     models/model_player_goals.pkl models/model_player_assists.pkl \
+                     models/model_player_sot.pkl models/model_player_cards.pkl 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
           git pull --rebase origin main
