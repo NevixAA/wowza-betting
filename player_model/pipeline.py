@@ -162,8 +162,8 @@ def main() -> None:
     parser.add_argument("--mode", choices=["collect", "train", "predict", "all"], required=True)
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
-    parser.add_argument("--last-n", type=int, default=100,
-                        help="Number of recent fixtures to collect per league (default: 100)")
+    parser.add_argument("--last-n", type=int, default=99,
+                        help="Number of recent fixtures to collect per league (max 99, default: 99)")
     args = parser.parse_args()
 
     if args.mode == "collect" or args.mode == "all":

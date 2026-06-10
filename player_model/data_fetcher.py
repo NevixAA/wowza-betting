@@ -148,9 +148,10 @@ def _save_fixture_cache(fixture_id: int, data: list) -> None:
 
 # ── Per-fixture player stats (match-level data) ───────────────────────────────
 
-def _fetch_league_fixtures(league_id: int, season: str, last_n: int = 100) -> list[dict]:
+def _fetch_league_fixtures(league_id: int, season: str, last_n: int = 99) -> list[dict]:
     """Fetch list of completed fixtures for a league. Single API call.
-    Note: 'last' param already returns only played fixtures — don't combine with status."""
+    Note: API caps 'last' at 99 — values >= 100 return an error."""
+    last_n = min(last_n, 99)
     data = _api_get("fixtures", {
         "league": league_id,
         "season": season,
@@ -227,7 +228,7 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
 
 def collect_match_history(
     leagues: dict | None = None,
-    last_n:  int = 100,
+    last_n:  int = 99,
 ) -> list[dict]:
     """
     Collect per-match player stats from API-Football.
