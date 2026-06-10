@@ -36,13 +36,27 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Cache fixture stats (API-Football corner data)
+        uses: actions/cache@v4
+        with:
+          path: fixture_stats_cache
+          key: fixture-stats-${{ runner.os }}-${{ hashFiles('player_model/data_fetcher.py') }}
+          restore-keys: fixture-stats-${{ runner.os }}-
+
+      - name: Cache player prop odds
+        uses: actions/cache@v4
+        with:
+          path: prop_odds_cache
+          key: prop-odds-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: prop-odds-${{ runner.os }}-
+
       - name: Collect club league data (Sundays + manual)
         if: |
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode collect
+        run: python -m player_model.pipeline --mode collect --last-n 30
         continue-on-error: true
 
       - name: Collect WC2026 national team data (nightly during WC, Sundays, manual)
