@@ -148,8 +148,8 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
                 "player_name":     p.get("name", ""),
                 "team":            team_name,
                 "position":        games.get("position", ""),
-                "minutes_played":  games.get("minutes") or 0,
-                "started":         bool(games.get("minutes", 0) > 45),
+                "minutes_played":  int(games.get("minutes") or 0),
+                "started":         bool((games.get("minutes") or 0) > 45),
                 "goals":           goals.get("total") or 0,
                 "assists":         goals.get("assists") or 0,
                 "shots_total":     shots.get("total") or 0,
@@ -236,7 +236,7 @@ def get_player_recent_stats(player_id: int, league_id: int, season: str,
             continue
         stats = get_fixture_player_stats(fix_id)
         for s in stats:
-            if s.get("player_id") == player_id and s.get("minutes_played", 0) > 0:
+            if s.get("player_id") == player_id and (s.get("minutes_played") or 0) > 0:
                 s["date"] = fix.get("fixture", {}).get("date", "")
                 player_matches.append(s)
                 break
