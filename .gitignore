@@ -42,3 +42,7 @@ telegram_bot/bot_config.json
 
 # API-Football response cache — regeneratable, too large for git
 api_football_cache/
+
+# Player prop caches — regeneratable, not needed in git
+fixture_stats_cache/
+prop_odds_cache/
