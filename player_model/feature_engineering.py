@@ -63,8 +63,65 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # Count of previous games this player has in the dataset
     df["n_prev_games"] = grp["date"].transform("cumcount")
-    df["starter_rate"] = grp["started"].transform(
+
+    if "started" in df.columns:
+        df["starter_rate"] = grp["started"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["starter_rate"] = 0.8
+
+    # ── Phase 1: ratio and per-90 rolling features (zero leakage) ────────────
+    # Build intermediate per-game raw ratios, then roll them.
+    mins_safe = df["minutes"].replace(0, np.nan)
+
+    df["_shot_acc"]  = (df["shots_on_target"] / df["shots_total"].replace(0, np.nan)).fillna(0.0)
+    df["shot_accuracy_rate"] = grp["_shot_acc"].transform(
         lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+    df["_kp90"]  = (df["key_passes"] / mins_safe * 90).fillna(0.0)
+    df["kp_per90"] = grp["_kp90"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+    df["_gi90"]  = ((df["goals"] + df["assists"]) / mins_safe * 90).fillna(0.0)
+    df["goal_involvement_rate"] = grp["_gi90"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+    if "duels_won" in df.columns and "duels_total" in df.columns:
+        df["_box90"]  = ((df["shots_total"] + df["duels_won"]) / mins_safe * 90).fillna(0.0)
+        df["box_actions_per90"] = grp["_box90"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+        df["_aerial"] = (df["duels_won"] / df["duels_total"].replace(0, np.nan)).fillna(0.0)
+        df["aerial_won_rate"] = grp["_aerial"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+        df["_duel90"] = (df["duels_total"] / mins_safe * 90).fillna(0.0)
+        df["duel_intensity_per90"] = grp["_duel90"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["box_actions_per90"]    = 0.0
+        df["aerial_won_rate"]      = 0.0
+        df["duel_intensity_per90"] = 0.0
+
+    if "fouls_committed" in df.columns and "fouls_drawn" in df.columns:
+        df["_fd90"]  = (df["fouls_drawn"]     / mins_safe * 90).fillna(0.0)
+        df["fouls_drawn_per90"] = grp["_fd90"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+        df["_fp90"]  = (df["fouls_committed"] / mins_safe * 90).fillna(0.0)
+        df["fouls_per90"] = grp["_fp90"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+        df["_fcr"]   = df["fouls_committed"] / (df["fouls_committed"] + df["fouls_drawn"] + 0.01)
+        df["foul_committer_ratio"] = grp["_fcr"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["fouls_drawn_per90"]   = 0.0
+        df["fouls_per90"]         = 0.0
+        df["foul_committer_ratio"] = 0.0
+
+    # Drop intermediate columns
+    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
 
     # ── Opponent defensive rolling features ───────────────────────────────────
     # For each (fixture, team): aggregate goals scored/conceded from player rows.
@@ -116,6 +173,23 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["pos_forward"]    = pos.str.startswith("F").astype(int)
     df["pos_midfielder"] = pos.str.startswith("M").astype(int)
     df["pos_defender"]   = pos.str.startswith("D").astype(int)
+
+    # ── Composite features (depend on rolling stats + position) ──────────────
+    df["shooting_efficiency_index"] = (
+        df["goals_pg"] / df["sot_pg"].replace(0, np.nan)
+    ).fillna(0.0).clip(upper=1.0)
+
+    df["card_exposure_index"] = (
+        df["cards_pg"] * (df["minutes_pg"] / 90.0) * (1 - df["pos_forward"])
+    )
+
+    df["sot_quality_score"] = df["shot_accuracy_rate"] * df["sot_pg"]
+
+    df["opp_adjusted_shot_threat"] = df["shots_pg"] * df["opp_sot_conceded_pg"]
+
+    df["creative_playmaker_score"] = (
+        df["kp_per90"] * (df["pos_midfielder"] + 0.5 * df["pos_forward"])
+    )
 
     # ── Target variables — actual outcome in THIS match ───────────────────────
     df["target_goals"]   = (df["goals"]             >= 1).astype(int)
@@ -181,6 +255,54 @@ def build_upcoming_features(
 
         pos = str(p.get("position",
                    phist["position"].iloc[-1] if "position" in phist.columns else "")).upper()
+        pos_forward    = int(pos.startswith("F"))
+        pos_midfielder = int(pos.startswith("M"))
+        pos_defender   = int(pos.startswith("D"))
+
+        mins_s = phist["minutes"].replace(0, np.nan)
+        opp_sot_c = ctx.get("opp_sot_conceded_pg", 4.5)
+
+        # Phase 1 rolling features
+        shot_accuracy_rate = float(
+            (phist["shots_on_target"] / phist["shots_total"].replace(0, np.nan))
+            .fillna(0.0).mean()
+        )
+        kp_per90 = float((phist["key_passes"] / mins_s * 90).fillna(0.0).mean()) \
+            if "key_passes" in phist.columns else 0.0
+        goal_involvement_rate = float(
+            ((phist["goals"] + phist["assists"]) / mins_s * 90).fillna(0.0).mean()
+        )
+        shooting_efficiency_index = float(min(goals_pg / sot_pg if sot_pg > 0 else 0.0, 1.0))
+
+        if "duels_won" in phist.columns and "duels_total" in phist.columns:
+            box_actions_per90 = float(
+                ((phist["shots_total"] + phist["duels_won"]) / mins_s * 90).fillna(0.0).mean()
+            )
+            aerial_won_rate = float(
+                (phist["duels_won"] / phist["duels_total"].replace(0, np.nan)).fillna(0.0).mean()
+            )
+            duel_intensity_per90 = float((phist["duels_total"] / mins_s * 90).fillna(0.0).mean())
+        else:
+            box_actions_per90    = shots_pg * 0.6
+            aerial_won_rate      = 0.0
+            duel_intensity_per90 = 0.0
+
+        if "fouls_committed" in phist.columns and "fouls_drawn" in phist.columns:
+            fouls_drawn_per90 = float((phist["fouls_drawn"] / mins_s * 90).fillna(0.0).mean())
+            fouls_per90       = float((phist["fouls_committed"] / mins_s * 90).fillna(0.0).mean())
+            foul_committer_ratio = float(
+                (phist["fouls_committed"] / (phist["fouls_committed"] + phist["fouls_drawn"] + 0.01))
+                .mean()
+            )
+        else:
+            fouls_drawn_per90    = 0.0
+            fouls_per90          = 0.0
+            foul_committer_ratio = 0.0
+
+        sot_quality_score        = round(shot_accuracy_rate * sot_pg, 4)
+        opp_adjusted_shot_threat = round(shots_pg * opp_sot_c, 4)
+        creative_playmaker_score = round(kp_per90 * (pos_midfielder + 0.5 * pos_forward), 4)
+        card_exposure_index      = round(cards_pg * (minutes_pg / 90.0) * (1 - pos_forward), 4)
 
         rows.append({
             "player_id":   pid,
@@ -190,8 +312,9 @@ def build_upcoming_features(
             "position":    p.get("position", ""),
             "minutes_est": p.get("minutes", int(minutes_pg)),
             "n_games":     n_games,
+            "n_prev_games": n_games,
             "data_source": "match_level",
-            # Rolling form
+            # Base rolling form
             "goals_pg":            round(goals_pg,   4),
             "assists_pg":          round(assists_pg,  4),
             "shots_pg":            round(shots_pg,    4),
@@ -201,15 +324,30 @@ def build_upcoming_features(
             "key_passes_pg":       round(kp_pg,       4),
             "sot_rate":            round(sot_rate,    4),
             "starter_rate":        round(starter_rate, 3),
+            # Phase 1 features
+            "shot_accuracy_rate":        round(shot_accuracy_rate,        4),
+            "kp_per90":                  round(kp_per90,                   4),
+            "goal_involvement_rate":     round(goal_involvement_rate,      4),
+            "shooting_efficiency_index": round(shooting_efficiency_index,  4),
+            "box_actions_per90":         round(box_actions_per90,          4),
+            "aerial_won_rate":           round(aerial_won_rate,            4),
+            "duel_intensity_per90":      round(duel_intensity_per90,       4),
+            "fouls_drawn_per90":         round(fouls_drawn_per90,          4),
+            "fouls_per90":               round(fouls_per90,                4),
+            "foul_committer_ratio":      round(foul_committer_ratio,       4),
+            "sot_quality_score":         sot_quality_score,
+            "opp_adjusted_shot_threat":  opp_adjusted_shot_threat,
+            "creative_playmaker_score":  creative_playmaker_score,
+            "card_exposure_index":       card_exposure_index,
             # Match context
-            "is_home":              float(p.get("is_home", 0.5)),
+            "is_home":               float(p.get("is_home", 0.5)),
             "opp_goals_conceded_pg": ctx.get("opp_goals_conceded_pg", 1.3),
-            "opp_sot_conceded_pg":   ctx.get("opp_sot_conceded_pg",   4.5),
+            "opp_sot_conceded_pg":   opp_sot_c,
             "team_goals_pg_roll":    ctx.get("team_goals_pg_roll",    1.3),
             # Position
-            "pos_forward":    int(pos.startswith("F")),
-            "pos_midfielder": int(pos.startswith("M")),
-            "pos_defender":   int(pos.startswith("D")),
+            "pos_forward":    pos_forward,
+            "pos_midfielder": pos_midfielder,
+            "pos_defender":   pos_defender,
             "rest_days":      p.get("rest_days", 6.0),
         })
 
@@ -254,10 +392,21 @@ def build_rolling_features(match_rows: list[dict], n: int = None) -> dict:
 
 
 def compute_ges(row: dict, opp_weakness: float = 1.0, penalty_duty: bool = False) -> float:
-    """Goal Edge Score (0.0-1.0). Gates goals/SOT signals."""
+    """Goal Edge Score (0.0-1.0). Gates goals/SOT signals.
+
+    For forwards: replaces xg_form with clinical efficiency (sot_rate * opp_weakness).
+    For non-forwards: uses legacy goals_pg form (header/set-piece scorers).
+    """
     xg_form  = min(row.get("goals_pg", 0) / 0.50, 1.0)
     shot_vol = min(row.get("shots_pg", 0) / 3.5, 1.0)
     pen      = 1.0 if penalty_duty else 0.0
     opp      = min(opp_weakness / 1.5, 1.0)
     min_sec  = min(row.get("minutes_pg", 0) / 85.0, 1.0)
-    return round(0.40*xg_form + 0.20*shot_vol + 0.15*pen + 0.15*opp + 0.10*min_sec, 3)
+
+    is_fwd = float(row.get("pos_forward", 0))
+    sot_rate = row.get("sot_rate", 0.0)
+    # clinical: forward accuracy × defensive leakiness, normalised to [0,1]
+    clinical = min(sot_rate * opp_weakness / (0.35 * 1.5), 1.0)
+    form = clinical if is_fwd else xg_form
+
+    return round(0.40 * form + 0.20 * shot_vol + 0.15 * pen + 0.15 * opp + 0.10 * min_sec, 3)
