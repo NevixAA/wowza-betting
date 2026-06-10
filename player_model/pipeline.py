@@ -182,7 +182,7 @@ def _enrich_with_recent_form(history: pd.DataFrame) -> None:
                     if pid and len(history[history["player_id"] == pid]) > 0:
                         idx = history[history["player_id"] == pid].index[-1]
                         # Update with most recent match data
-                        mins = stat.get("minutes_played", 0)
+                        mins = int(stat.get("minutes_played") or 0)
                         if mins > 0:
                             history.at[idx, "goals_pg"]  = stat.get("goals", 0)
                             history.at[idx, "sot_pg"]    = stat.get("shots_on_target", 0)
