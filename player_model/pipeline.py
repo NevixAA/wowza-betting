@@ -31,7 +31,8 @@ from player_model.data_fetcher import (
 )
 from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
-from player_model.predict import run_player_predictions
+from player_model.predict import run_player_predictions, enrich_with_odds
+from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
 
 HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
@@ -144,6 +145,26 @@ def mode_predict() -> None:
     if tips.empty:
         print("[predict] No player tips generated.")
         return
+
+    # Enrich with live market odds from The Odds API
+    from player_model.odds_fetcher import _load_odds_key
+    odds_api_key = _load_odds_key()
+    if odds_api_key:
+        print("[predict] Fetching player prop odds from The Odds API...")
+        try:
+            odds_raw = fetch_prop_odds(tips)
+            if odds_raw:
+                odds_mapped = match_odds_to_tips(tips, odds_raw)
+                tips = enrich_with_odds(tips, odds_mapped)
+                # Re-save enriched CSV
+                tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
+                print(f"[predict] Odds enriched for {len(odds_mapped)} player/market pairs")
+            else:
+                print("[predict] No player prop odds returned from Odds API")
+        except Exception as e:
+            print(f"[predict] Odds enrichment failed: {e}")
+    else:
+        print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay WATCH)")
 
     sniper   = tips[tips["tier"] == "SNIPER"]
     marksman = tips[tips["tier"] == "MARKSMAN"]
