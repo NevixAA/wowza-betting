@@ -198,6 +198,11 @@ tips["label"] = (
 snipers_only = st.checkbox("SNIPER only", value=True)
 filtered = tips[tips["signal_tier"] == "SNIPER"] if snipers_only else tips
 
+if filtered.empty:
+    tier_label = "SNIPER" if snipers_only else "SNIPER/MARKSMAN/VALUABLE"
+    st.info(f"No {tier_label} picks for today. Try unchecking 'SNIPER only' or wait for the next predict run.")
+    st.stop()
+
 col_sel, col_all = st.columns([4, 1])
 with col_sel:
     selected_label = st.selectbox("Select pick:", filtered["label"].tolist())
