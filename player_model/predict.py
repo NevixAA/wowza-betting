@@ -124,7 +124,7 @@ def _classify_tier(
             and (not is_goals_sot or ges >= config.GES_MARKSMAN_MIN)):
         return "MARKSMAN"
 
-    if (ev >= config.VALUABLE_EV and market_odds >= 3.0
+    if (ev >= config.VALUABLE_EV
             and confidence >= config.CONFIDENCE_FLOORS["VALUABLE"]
             and _edge_passes_floor(rel_edge, market_odds)):
         return "VALUABLE"

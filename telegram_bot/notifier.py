@@ -626,11 +626,20 @@ def notify_player_props() -> int:
     today_str = datetime.now().strftime("%Y-%m-%d")
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
-    # SNIPER team matches: highest bar
+    # SNIPER team matches: high probability bar
     sniper_match = (df["match_tier"] == "SNIPER") & (df["model_prob"] >= 0.60)
-    # Prop-league matches (WC, top-5): model probability only — no team signal required
+    # Prop-league matches (WC, top-5): model probability gate
     prop_match   = (df["match_tier"] == "PROP_LEAGUE") & (df["model_prob"] >= 0.55)
-    df = df[sniper_match | prop_match].sort_values("model_prob", ascending=False).head(15)
+    # Any explicitly tiered signal (SNIPER/MARKSMAN/VALUABLE) — edge already validated by EV+rel_edge
+    tiered       = df["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])
+    # WC: send every signal that has a positive EV (odds enriched)
+    wc_ev        = (df["league"] == "World Cup") & (df["ev"].notna()) & (df["ev"] > 0)
+    df = df[sniper_match | prop_match | tiered | wc_ev].copy()
+    tier_order = {"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2, "WATCH": 3}
+    df["_tier_rank"] = df["tier"].map(tier_order).fillna(3)
+    # Sort: tiered signals first (by EV), then model_prob signals
+    df = df.sort_values(["_tier_rank", "ev", "model_prob"], ascending=[True, False, False]).head(20)
+    df = df.drop(columns=["_tier_rank"])
 
     if df.empty:
         return 0
@@ -648,17 +657,25 @@ def notify_player_props() -> int:
         emoji  = MARKET_EMOJI.get(row["market"], "📌")
         p      = float(row["model_prob"])
         fair   = float(row["fair_odds"])
+        tier   = row.get("tier", "WATCH")
+        mkt_odds = row.get("market_odds")
+        ev_val   = row.get("ev")
+        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "👁")
         market_label = {"goals": "Anytime Goalscorer", "assists": "Assist",
                         "sot": "Shot on Target", "cards": "Yellow Card"}.get(row["market"], row["market"])
 
+        odds_line = f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>" \
+                    if mkt_odds and not (isinstance(mkt_odds, float) and mkt_odds != mkt_odds) \
+                       and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
+                    else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
+
         msg = (
-            f"{emoji} <b>PLAYER PROP — {market_label.upper()}</b>\n"
+            f"{tier_emoji} <b>{tier} — {market_label.upper()}</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"👤 <b>{row['player_name']}</b> ({row.get('position', '')} · {row['team']})\n"
             f"⚽ {row['match']}\n"
             f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
-            f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>\n"
-            f"🎯 Match signal: {row.get('match_tier', '')}\n"
+            f"{odds_line}\n"
             f"⚠️ Check your bookmaker's player props market"
         )
 
