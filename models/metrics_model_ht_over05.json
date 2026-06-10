@@ -1,0 +1,18 @@
+{
+  "logistic": {
+    "accuracy": 0.7077,
+    "auc": 0.5454,
+    "log_loss": 0.60278,
+    "n_train": 15122,
+    "n_cal": 2669,
+    "n_test": 4448
+  },
+  "gradient_boost": {
+    "accuracy": 0.7077,
+    "auc": 0.5351,
+    "log_loss": 0.60297,
+    "n_train": 15122,
+    "n_cal": 2669,
+    "n_test": 4448
+  }
+}
