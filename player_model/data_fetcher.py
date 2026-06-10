@@ -206,6 +206,11 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     shots_d  = stats.get("shots",   {})
     cards_d  = stats.get("cards",   {})
     passes_d = stats.get("passes",  {})
+    duels_d  = stats.get("duels",   {})
+    fouls_d  = stats.get("fouls",   {})
+
+    substitute = games.get("substitute")
+    started = (not bool(substitute)) if substitute is not None else bool(minutes > 45)
 
     return {
         "player_id":       int(p.get("id", abs(hash(name)) % 10_000_000)),
@@ -219,6 +224,7 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "is_home":         int(meta["is_home"]),
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "minutes":         minutes,
+        "started":         int(started),
         "goals":           int(goals_d.get("total")   or 0),
         "assists":         int(goals_d.get("assists")  or 0),
         "shots_total":     int(shots_d.get("total")   or 0),
@@ -226,6 +232,10 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "yellow_cards":    int(cards_d.get("yellow")  or 0),
         "key_passes":      int(passes_d.get("key")    or 0),
         "rating":          float(games.get("rating")  or 0),
+        "fouls_committed": int(fouls_d.get("committed") or 0),
+        "fouls_drawn":     int(fouls_d.get("drawn")     or 0),
+        "duels_total":     int(duels_d.get("total")     or 0),
+        "duels_won":       int(duels_d.get("won")       or 0),
     }
 
 

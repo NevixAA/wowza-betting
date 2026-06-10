@@ -40,18 +40,40 @@ CONFIDENCE_FLOORS     = {"SNIPER": 0.72, "MARKSMAN": 0.62, "VALUABLE": 0.50}
 # ── Features ──────────────────────────────────────────────────────────────────
 ROLLING_N = 5
 PLAYER_FEATURE_COLS = [
+    # Base rolling stats
     "goals_pg", "assists_pg", "shots_pg", "sot_pg",
     "cards_pg", "minutes_pg", "key_passes_pg", "sot_rate",
-    "set_piece_shot_rate", "touches_box_per90", "aerial_won_rate",
+    "starter_rate", "n_prev_games",
+    # Phase 1: accuracy and per-90 rolling features (all computed from parquet)
+    "shot_accuracy_rate",        # rolling SOT/shots — r=0.903 for target_sot
+    "kp_per90",                  # rolling key_passes/90 — top assists predictor
+    "goal_involvement_rate",     # rolling (goals+assists)/90
+    "shooting_efficiency_index", # goals_pg / sot_pg, capped 1.0
+    "box_actions_per90",         # rolling (shots+duels_won)/90
+    "aerial_won_rate",           # rolling duels_won/duels_total
+    "duel_intensity_per90",      # rolling duels_total/90
+    "fouls_drawn_per90",         # rolling fouls_drawn/90
+    "fouls_per90",               # rolling fouls_committed/90
+    "foul_committer_ratio",      # rolling committed/(committed+drawn+eps)
+    "card_exposure_index",       # cards_pg * (minutes_pg/90) * (1-pos_forward)
+    # Composite scoring features
+    "sot_quality_score",         # shot_accuracy_rate * sot_pg — r=0.903 combined
+    "opp_adjusted_shot_threat",  # shots_pg * opp_sot_conceded_pg — r=0.237
+    "creative_playmaker_score",  # kp_per90 * position weight — r=0.311
+    # Match context
     "is_home",
-    "opp_goals_conceded_pg", "opp_shots_conceded_pg", "opp_sot_conceded_pg",
-    "team_attack_str", "team_corners_per90", "team_goals_scored_pg",
-    "referee_strictness", "ref_cards_per_game",
+    "opp_goals_conceded_pg", "opp_sot_conceded_pg",
+    "team_goals_pg_roll",
+    # Position encoding
     "pos_forward", "pos_midfielder", "pos_defender",
+    # Playing time / match context
     "rest_days",
 ]
-# starter_rate is computed but not yet in PLAYER_FEATURE_COLS — add and retrain to activate:
-#   "starter_rate",
+# Phase 2 (future — needs /fixtures/events API data):
+#   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)
+#   "referee_strictness"       (/fixtures/events fouls + /standings high-stakes flag)
+# Phase 3 (future — needs /players/statistics API data):
+#   "xg_per90", "xa_per90"    (shot location weighting — top goals feature once available)
 MIN_APPEARANCES  = 3   # season-stats fallback path
 MIN_GAMES_SIGNAL = 3   # minimum match history to generate a signal
 MIN_GAMES_SNIPER = 8
