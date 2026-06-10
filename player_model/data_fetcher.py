@@ -149,14 +149,17 @@ def _save_fixture_cache(fixture_id: int, data: list) -> None:
 # ── Per-fixture player stats (match-level data) ───────────────────────────────
 
 def _fetch_league_fixtures(league_id: int, season: str, last_n: int = 100) -> list[dict]:
-    """Fetch list of completed fixtures for a league. Single API call."""
+    """Fetch list of completed fixtures for a league. Single API call.
+    Note: 'last' param already returns only played fixtures — don't combine with status."""
     data = _api_get("fixtures", {
         "league": league_id,
         "season": season,
         "last":   last_n,
-        "status": "FT",
     })
-    return data.get("response", [])
+    # Filter to only finished matches (FT, AET, PEN) in case any scheduled sneak in
+    finished = {"FT", "AET", "PEN", "AWD", "WO"}
+    return [f for f in data.get("response", [])
+            if f.get("fixture", {}).get("status", {}).get("short", "") in finished]
 
 
 def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
