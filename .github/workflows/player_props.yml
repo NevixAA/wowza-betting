@@ -4,7 +4,9 @@ on:
   schedule:
     # Predict-only: 5x daily (30 min after main predict runs)
     - cron: '30 6,10,14,18,22 * * *'
-    # Full retrain: every Sunday at 05:00 UTC
+    # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
+    - cron: '30 23 * * *'
+    # Full club-league retrain: every Sunday at 05:00 UTC
     - cron: '0 5 * * 0'
   workflow_dispatch:
     inputs:
@@ -34,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect club league data (Sundays + manual collect_train_predict)
+      - name: Collect club league data (Sundays + manual)
         if: |
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
@@ -43,22 +45,42 @@ jobs:
         run: python -m player_model.pipeline --mode collect
         continue-on-error: true
 
-      - name: Collect WC2026 national team data (Sundays + manual collect_train_predict)
+      - name: Collect WC2026 national team data (nightly during WC, Sundays, manual)
         if: |
+          github.event.schedule == '30 23 * * *' ||
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode collect-wc --last-n 10
+        run: |
+          TODAY=$(date -u +%Y%m%d)
+          if [ "$TODAY" -ge "20260611" ] && [ "$TODAY" -le "20260726" ]; then
+            echo "WC2026 active — collecting national team data..."
+            python -m player_model.pipeline --mode collect-wc --last-n 10
+          else
+            echo "Outside WC2026 window ($TODAY), skipping collect-wc."
+          fi
         continue-on-error: true
 
-      - name: Train player models (Sundays + manual collect_train_predict)
+      - name: Train player models (nightly during WC, Sundays, manual)
         if: |
+          github.event.schedule == '30 23 * * *' ||
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode train
+        run: |
+          TODAY=$(date -u +%Y%m%d)
+          if [ "$TODAY" -ge "20260611" ] && [ "$TODAY" -le "20260726" ]; then
+            python -m player_model.pipeline --mode train
+          else
+            # Outside WC — only train on Sundays
+            if [ "$(date -u +%u)" = "7" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              python -m player_model.pipeline --mode train
+            else
+              echo "Outside WC2026 window, skipping nightly train."
+            fi
+          fi
         continue-on-error: true
 
       - name: Generate player prop predictions
