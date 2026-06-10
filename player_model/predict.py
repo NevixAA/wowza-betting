@@ -339,7 +339,7 @@ def run_player_predictions(
 
     output = config.OUTPUT_DIR / "player_tips.csv"
     tips_df.to_csv(output, index=False)
-    print(f"[player_model] {len(tips_df)} player prop rows → {output}")
+    print(f"[player_model] {len(tips_df)} player prop rows -> {output}")
     return tips_df
 
 

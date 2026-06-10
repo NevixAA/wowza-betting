@@ -166,24 +166,28 @@ DEFAULT_DECAY_WEIGHT = 1.0
 
 # ── Three-tier signal system ──────────────────────────────────────────────────
 #
-#  SNIPER    — meets per-league threshold (14–25%)  → full stake
-#  MARKSMAN  — edge 8% to league threshold          → 3/4 stake
-#  VALUABLE  — edge 4–8%                            → half stake / monitor
+#  SNIPER    — meets per-league threshold (10–19%)  → full stake (real tip)
+#  MARKSMAN  — edge 8% to league threshold          → 3/4 stake (real tip)
+#  VALUABLE  — edge 4–8%                            → info only, not a tip
+#
+#  EDGE_CEILING: above 19% the model is overconfident (backtest shows -20% ROI
+#  at 16-20% range). Bets above the ceiling are downgraded to MARKSMAN.
 #
 VALUABLE_THRESHOLD      = float(os.getenv("VALUABLE_THRESHOLD",      "0.04"))   # min edge to show
 MARKSMAN_THRESHOLD      = float(os.getenv("MARKSMAN_THRESHOLD",      "0.08"))   # between VALUABLE and SNIPER
-SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.15"))   # global SNIPER default
-SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.18"))   # OVER needs more edge
-SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.13"))   # UNDER more reliable
+SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.10"))   # global SNIPER floor (was 0.15)
+SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.12"))   # OVER needs a bit more edge
+SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.10"))   # UNDER reliable at 10%
+EDGE_CEILING            = float(os.getenv("EDGE_CEILING",            "0.19"))   # above this = model overconfident
 DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))
 
 # Backward-compat alias
 VALUE_THRESHOLD = VALUABLE_THRESHOLD
 
 # ── Per-league SNIPER thresholds (from backtest optimisation) ─────────────────
-# These override SNIPER_THRESHOLD for specific leagues
+# These override SNIPER_THRESHOLD for specific leagues. All capped at EDGE_CEILING.
 LEAGUE_SNIPER_THRESHOLDS: dict = {
-    # Standard format — live prediction leagues
+    # Standard format — live prediction leagues (thresholds from backtest optimisation)
     "League Two":     0.14,   # most data, reliable at 14%  → ROI +22.6%
     "Bundesliga 2":   0.20,   # needs higher bar             → ROI +22.4%
     "La Liga 2":      0.20,   # high threshold, big ROI      → ROI +53.5%

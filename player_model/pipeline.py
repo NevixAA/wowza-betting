@@ -21,7 +21,7 @@ load_dotenv(_v9 / ".env")
 sys.path.insert(0, str(_v9))
 
 from player_model import config
-from player_model.data_fetcher import collect_history, FBREF_LEAGUES
+from player_model.data_fetcher import collect_history, FBREF_LEAGUES, EUROPEAN_CUPS
 from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
 from player_model.predict import run_player_predictions
@@ -31,9 +31,11 @@ HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
 # ── Phase 2: Collect ──────────────────────────────────────────────────────────
 
-def mode_collect() -> None:
-    print("[collect] Fetching player season stats from FBref (free)...")
-    rows = collect_history(leagues=FBREF_LEAGUES)
+def mode_collect(extended: bool = False) -> None:
+    leagues = {**FBREF_LEAGUES, **EUROPEAN_CUPS} if extended else FBREF_LEAGUES
+    label = "core + European cups" if extended else "core leagues only"
+    print(f"[collect] Fetching player season stats ({label})...")
+    rows = collect_history(leagues=leagues)
     if not rows:
         print("[collect] No data — FBref may be rate-limiting. Try again in a few minutes.")
         return
@@ -44,7 +46,7 @@ def mode_collect() -> None:
         return
 
     df.to_parquet(HISTORY_CACHE, index=False)
-    print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players → {HISTORY_CACHE.name}")
+    print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players -> {HISTORY_CACHE.name}")
 
     # Summary
     for market in ["target_goals", "target_sot", "target_cards", "target_assists"]:
@@ -155,10 +157,12 @@ def _enrich_with_recent_form(history: pd.DataFrame) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
     parser.add_argument("--mode", choices=["collect", "train", "predict", "all"], required=True)
+    parser.add_argument("--extended", action="store_true",
+                        help="Also collect Champions League / Europa League / Conference League (slow, ~500 extra requests)")
     args = parser.parse_args()
 
     if args.mode == "collect" or args.mode == "all":
-        mode_collect()
+        mode_collect(extended=args.extended)
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":

@@ -122,7 +122,8 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
       VALUABLE — edge >= VALUABLE_THRESHOLD (moderate, half stake / monitor)
       AVOID    — below threshold
     """
-    if league and league in config.LEAGUE_SNIPER_THRESHOLDS:
+    has_per_league = league and league in config.LEAGUE_SNIPER_THRESHOLDS
+    if has_per_league:
         sniper_thresh = config.LEAGUE_SNIPER_THRESHOLDS[league]
     elif side == "OVER":
         sniper_thresh = config.SNIPER_THRESHOLD_OVER
@@ -133,6 +134,14 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
 
     if edge >= sniper_thresh:
         return "SNIPER"
+
+    # Ceiling only applies to leagues using the global threshold (no per-league calibration).
+    # Per-league thresholds are backtest-optimised — no ceiling needed there.
+    if not has_per_league:
+        ceiling = getattr(config, "EDGE_CEILING", 0.19)
+        if edge > ceiling:
+            return "MARKSMAN"
+
     if edge >= config.MARKSMAN_THRESHOLD:
         return "MARKSMAN"
     if edge >= config.VALUABLE_THRESHOLD:

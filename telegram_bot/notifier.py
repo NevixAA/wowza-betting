@@ -97,8 +97,10 @@ def notify_new_snipers() -> int:
         return 0
 
     df = pd.read_csv(bets_file)
+    # VALUABLE = info only (backtest shows 4-8% edge is -8% ROI).
+    # Only send SNIPER and MARKSMAN as actual tips.
     tips = df[
-        df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]) &
+        df["signal_tier"].isin(["SNIPER", "MARKSMAN"]) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
@@ -129,7 +131,7 @@ def notify_new_snipers() -> int:
         elif tier == "MARKSMAN":
             header = f"🔫 <b>MARKSMAN TIP</b> {drift}"
         else:
-            header = f"💎 <b>VALUABLE TIP</b> {drift}"
+            header = f"🔍 <b>EDGE WATCH</b> (small edge, not a tip) {drift}"
 
         msg = (
             f"{header}\n"

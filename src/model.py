@@ -61,18 +61,14 @@ FEATURE_COLS = [
     "home_attack_str",      "away_attack_str",
     "home_defense_str",     "away_defense_str",
     # Match context
-    "home_advantage",       "away_home_adv_factor",   # per-team rolling home advantage
+    "home_advantage",       "away_home_adv_factor",
     "home_rest_days",       "away_rest_days",
-    # NOTE: implied_prob_over/under removed — circular dependency (market predicts itself)
-    # Set piece proxies — rolling historical averages only (match-day actuals removed)
+    # Set piece proxies — rolling historical averages (match-day actuals removed)
     "home_corners_pg_roll", "away_corners_pg_roll",
     "home_fouls_pg_roll",   "away_fouls_pg_roll",
     "combined_sot_ratio",
-    "referee_foul_avg",
-    # Actual SP goals (Sofascore)
-    "home_sp_goals_pg",     "away_sp_goals_pg",
-    "home_pen_goals_pg",    "away_pen_goals_pg",
-    "home_fk_goals_pg",     "away_fk_goals_pg",
+    # Dropped: referee_foul_avg, *_sp_goals_pg, *_pen_goals_pg, *_fk_goals_pg
+    # All had 0% importance in both LR and GBM — pure noise (ML audit 2026-06-10)
     # Half-time rolling form (only populated for standard-format leagues)
     "home_ht_scored_last5",   "away_ht_scored_last5",
     "home_ht_conceded_last5", "away_ht_conceded_last5",
@@ -88,13 +84,8 @@ def _prep(df: pd.DataFrame, feat_cols: list[str] = None) -> tuple[pd.DataFrame, 
     """Select and impute feature columns."""
     cols = [c for c in (feat_cols or FEATURE_COLS) if c in df.columns]
     X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
-    # Fill with column median; for columns that are entirely NaN use a hard default
-    col_medians = X.median()
-    col_medians = col_medians.fillna(0.0)   # e.g. referee_foul_avg all-NaN → 0
+    col_medians = X.median().fillna(0.0)
     X = X.fillna(col_medians)
-    # Referee foul avg: use 22.0 if still NaN (global football average)
-    if "referee_foul_avg" in X.columns:
-        X["referee_foul_avg"] = X["referee_foul_avg"].fillna(22.0)
     return X, cols
 
 

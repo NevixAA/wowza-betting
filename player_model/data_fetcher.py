@@ -26,10 +26,11 @@ BASE_URL      = "https://v3.football.api-sports.io"
 CACHE_DIR     = config.BASE_DIR / "player_match_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 CACHE_DAYS    = 7
-REQUEST_DELAY = 1.2   # ~50 req/min, well within Starter rate limit
+REQUEST_DELAY = 1.2   # ~50 req/min, well within Pro rate limit
+MAX_RETRIES   = 3
 
-# API-Football league IDs for player stats collection
-# Only leagues with reliable player stat coverage
+# Core betting leagues — used by default during collect.
+# ~400 API requests total, runs in ~8 min.
 APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
     "Premier League":   (39,  "2024"),
     "Bundesliga":       (78,  "2024"),
@@ -41,10 +42,15 @@ APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
     "Bundesliga 2":     (79,  "2024"),
     "Ireland Premier":  (357, "2025"),
     "Finland Veikk":    (244, "2025"),
+    "World Cup":        (1,   "2026"),
+}
+
+# European cups — large page counts (128-250 pages each), collected separately
+# when needed. Not included in default --mode collect.
+EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
     "Champions League": (2,   "2024"),
     "Europa League":    (3,   "2024"),
     "Conference League":(848, "2024"),
-    "World Cup":        (1,   "2026"),
 }
 
 # Keep this alias so pipeline.py import doesn't break
@@ -58,19 +64,33 @@ def _api_get(endpoint: str, params: dict) -> dict:
     if not key:
         raise RuntimeError("APIFOOTBALL_KEY not set in environment")
     time.sleep(REQUEST_DELAY)
-    r = requests.get(
-        f"{BASE_URL}/{endpoint}",
-        headers={"x-apisports-key": key},
-        params=params,
-        timeout=15,
-    )
-    if r.status_code != 200:
-        raise RuntimeError(f"API-Football {r.status_code}: {r.text[:200]}")
-    d = r.json()
-    errors = d.get("errors", {})
-    if errors:
-        raise RuntimeError(f"API-Football errors: {errors}")
-    return d
+
+    last_exc: Exception = RuntimeError("no attempts made")
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            r = requests.get(
+                f"{BASE_URL}/{endpoint}",
+                headers={"x-apisports-key": key},
+                params=params,
+                timeout=20,
+            )
+            if r.status_code == 429:
+                wait = 60 * attempt
+                print(f"    [rate limit] sleeping {wait}s …")
+                time.sleep(wait)
+                continue
+            if r.status_code != 200:
+                raise RuntimeError(f"API-Football {r.status_code}: {r.text[:200]}")
+            d = r.json()
+            errors = d.get("errors", {})
+            if errors:
+                raise RuntimeError(f"API-Football errors: {errors}")
+            return d
+        except requests.exceptions.RequestException as e:
+            last_exc = RuntimeError(f"network error (attempt {attempt}/{MAX_RETRIES}): {e}")
+            if attempt < MAX_RETRIES:
+                time.sleep(5 * attempt)
+    raise last_exc
 
 
 # ── Cache ─────────────────────────────────────────────────────────────────────
@@ -163,7 +183,8 @@ def fetch_league_player_stats(
     Fetched from API-Football /players endpoint, paginated.
     Cached for CACHE_DAYS.
     """
-    info = APIFOOTBALL_LEAGUES.get(league)
+    _all_leagues = {**APIFOOTBALL_LEAGUES, **EUROPEAN_CUPS}
+    info = _all_leagues.get(league)
     if not info:
         print(f"  [fetch] Unknown league: {league}")
         return []
@@ -204,11 +225,10 @@ def fetch_league_player_stats(
             break
         page += 1
 
-    print(f"  [{league}] {len(players)} players with ≥{config.MIN_APPEARANCES} appearances")
-
     if players:
         _save_cache(cache_key, players)
 
+    print(f"  [{league}] {len(players)} players with >={config.MIN_APPEARANCES} appearances")
     return players
 
 
