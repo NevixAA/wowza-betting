@@ -21,7 +21,10 @@ load_dotenv(_v9 / ".env")
 sys.path.insert(0, str(_v9))
 
 from player_model import config
-from player_model.data_fetcher import collect_history, FBREF_LEAGUES, EUROPEAN_CUPS
+from player_model.data_fetcher import (
+    collect_history, collect_match_history,
+    FBREF_LEAGUES, EUROPEAN_CUPS, APIFOOTBALL_LEAGUES,
+)
 from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
 from player_model.predict import run_player_predictions
@@ -31,11 +34,11 @@ HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
 # ── Phase 2: Collect ──────────────────────────────────────────────────────────
 
-def mode_collect(extended: bool = False) -> None:
-    leagues = {**FBREF_LEAGUES, **EUROPEAN_CUPS} if extended else FBREF_LEAGUES
+def mode_collect(extended: bool = False, last_n: int = 100) -> None:
+    leagues = {**APIFOOTBALL_LEAGUES, **EUROPEAN_CUPS} if extended else APIFOOTBALL_LEAGUES
     label = "core + European cups" if extended else "core leagues only"
-    print(f"[collect] Fetching player season stats ({label})...")
-    rows = collect_history(leagues=leagues)
+    print(f"[collect] Fetching per-match player stats ({label}, last {last_n} fixtures/league)...")
+    rows = collect_match_history(leagues=leagues, last_n=last_n)
     if not rows:
         print("[collect] No data — FBref may be rate-limiting. Try again in a few minutes.")
         return
@@ -158,11 +161,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
     parser.add_argument("--mode", choices=["collect", "train", "predict", "all"], required=True)
     parser.add_argument("--extended", action="store_true",
-                        help="Also collect Champions League / Europa League / Conference League (slow, ~500 extra requests)")
+                        help="Also collect Champions League / Europa League / Conference League")
+    parser.add_argument("--last-n", type=int, default=100,
+                        help="Number of recent fixtures to collect per league (default: 100)")
     args = parser.parse_args()
 
     if args.mode == "collect" or args.mode == "all":
-        mode_collect(extended=args.extended)
+        mode_collect(extended=args.extended, last_n=args.last_n)
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":

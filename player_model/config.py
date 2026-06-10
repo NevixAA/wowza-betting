@@ -50,9 +50,9 @@ PLAYER_FEATURE_COLS = [
     "pos_forward", "pos_midfielder", "pos_defender",
     "rest_days",
 ]
-MIN_APPEARANCES  = 3
-MIN_GAMES_SIGNAL = 5
-MIN_GAMES_SNIPER = 10
+MIN_APPEARANCES  = 3   # season-stats fallback path
+MIN_GAMES_SIGNAL = 3   # minimum match history to generate a signal
+MIN_GAMES_SNIPER = 8
 
 # ── Leagues with player prop markets ─────────────────────────────────────────
 # IMPORTANT: Only popular leagues have SOT/Goals/Cards prop markets at bookmakers.

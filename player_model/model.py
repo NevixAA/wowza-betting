@@ -50,7 +50,10 @@ class _PlattCalibratedModel:
 
 def train(df: pd.DataFrame, market: str) -> dict:
     """Train LogReg + GradientBoosting with Platt calibration for one market."""
-    df = df[df["appearances"] >= config.MIN_APPEARANCES].copy()
+    if "n_prev_games" in df.columns:
+        df = df[df["n_prev_games"] >= 1].copy()
+    elif "appearances" in df.columns:
+        df = df[df["appearances"] >= config.MIN_APPEARANCES].copy()
     if "date" in df.columns:
         df = df.sort_values("date")
     df = df.reset_index(drop=True)

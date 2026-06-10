@@ -1,12 +1,15 @@
 """
-Player Stats Data Fetcher — API-Football (Starter plan required).
-Replaces FBref scraper. Uses /players endpoint for season stats.
+Player Stats Data Fetcher — API-Football (Pro plan required).
 
-Endpoints used:
-  GET /players?league={id}&season={year}&page={n}  — season stats per player
-  GET /fixtures/players?fixture={id}               — per-fixture stats (rolling features)
+Two collection modes:
+  1. collect_match_history()   — per-fixture player stats (PROPER training data)
+       GET /fixtures?league={id}&season={year}&last={n}  — fixture list
+       GET /fixtures/players?fixture={id}               — per-match player stats
+       ~1 + last_n requests per league. Cached permanently per fixture.
 
-Cached for 7 days. ~25 API calls per league per collection run.
+  2. collect_history() / fetch_league_player_stats()    — season aggregates (fallback)
+       GET /players?league={id}&season={year}&page={n}
+       Cached 7 days. Large page counts (50-250 pages per league).
 """
 from __future__ import annotations
 
@@ -22,38 +25,37 @@ import requests
 
 from . import config
 
-BASE_URL      = "https://v3.football.api-sports.io"
-CACHE_DIR     = config.BASE_DIR / "player_match_cache"
+BASE_URL          = "https://v3.football.api-sports.io"
+CACHE_DIR         = config.BASE_DIR / "player_match_cache"
+FIXTURE_CACHE_DIR = config.BASE_DIR / "fixture_player_cache"
 CACHE_DIR.mkdir(exist_ok=True)
+FIXTURE_CACHE_DIR.mkdir(exist_ok=True)
+
 CACHE_DAYS    = 7
-REQUEST_DELAY = 1.2   # ~50 req/min, well within Pro rate limit
+REQUEST_DELAY = 1.2
 MAX_RETRIES   = 3
 
-# Core betting leagues — used by default during collect.
-# ~400 API requests total, runs in ~8 min.
+# Core betting leagues — default for collect_match_history()
 APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
-    "Premier League":   (39,  "2024"),
-    "Bundesliga":       (78,  "2024"),
-    "La Liga":          (140, "2024"),
-    "Serie A":          (135, "2024"),
-    "Ligue 1":          (61,  "2024"),
-    "Championship":     (40,  "2024"),
-    "League One":       (41,  "2024"),
-    "Bundesliga 2":     (79,  "2024"),
-    "Ireland Premier":  (357, "2025"),
-    "Finland Veikk":    (244, "2025"),
-    "World Cup":        (1,   "2026"),
+    "Premier League":  (39,  "2024"),
+    "Bundesliga":      (78,  "2024"),
+    "La Liga":         (140, "2024"),
+    "Serie A":         (135, "2024"),
+    "Ligue 1":         (61,  "2024"),
+    "Championship":    (40,  "2024"),
+    "League One":      (41,  "2024"),
+    "Bundesliga 2":    (79,  "2024"),
+    "Ireland Premier": (357, "2025"),
+    "Finland Veikk":   (244, "2025"),
+    "World Cup":       (1,   "2026"),
 }
 
-# European cups — large page counts (128-250 pages each), collected separately
-# when needed. Not included in default --mode collect.
 EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
     "Champions League": (2,   "2024"),
     "Europa League":    (3,   "2024"),
     "Conference League":(848, "2024"),
 }
 
-# Keep this alias so pipeline.py import doesn't break
 FBREF_LEAGUES = APIFOOTBALL_LEAGUES
 
 
@@ -76,7 +78,7 @@ def _api_get(endpoint: str, params: dict) -> dict:
             )
             if r.status_code == 429:
                 wait = 60 * attempt
-                print(f"    [rate limit] sleeping {wait}s …")
+                print(f"    [rate limit] sleeping {wait}s ...")
                 time.sleep(wait)
                 continue
             if r.status_code != 200:
@@ -93,7 +95,7 @@ def _api_get(endpoint: str, params: dict) -> dict:
     raise last_exc
 
 
-# ── Cache ─────────────────────────────────────────────────────────────────────
+# ── Season-stats cache (7-day TTL) ────────────────────────────────────────────
 
 def _cache_path(key: str) -> Path:
     h = hashlib.md5(key.encode()).hexdigest()
@@ -123,66 +125,222 @@ def _save_cache(key: str, players: list) -> None:
     )
 
 
-# ── Player stats parser ───────────────────────────────────────────────────────
+# ── Fixture cache (permanent — fixture results never change) ──────────────────
+
+def _fixture_cache_path(fixture_id: int) -> Path:
+    return FIXTURE_CACHE_DIR / f"fix_{fixture_id}.json"
+
+
+def _load_fixture_cache(fixture_id: int) -> Optional[list]:
+    p = _fixture_cache_path(fixture_id)
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _save_fixture_cache(fixture_id: int, data: list) -> None:
+    p = _fixture_cache_path(fixture_id)
+    p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+
+# ── Per-fixture player stats (match-level data) ───────────────────────────────
+
+def _fetch_league_fixtures(league_id: int, season: str, last_n: int = 100) -> list[dict]:
+    """Fetch list of completed fixtures for a league. Single API call."""
+    data = _api_get("fixtures", {
+        "league": league_id,
+        "season": season,
+        "last":   last_n,
+        "status": "FT",
+    })
+    return data.get("response", [])
+
+
+def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
+    """
+    Fetch per-player stats for one fixture.
+    Cached permanently — fixture results never change.
+    Returns list of team dicts: [{"team": {...}, "players": [...]}]
+    """
+    cached = _load_fixture_cache(fixture_id)
+    if cached is not None:
+        return cached
+
+    data = _api_get("fixtures/players", {"fixture": fixture_id})
+    response = data.get("response", [])
+
+    if response:
+        _save_fixture_cache(fixture_id, response)
+
+    return response
+
+
+def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Optional[dict]:
+    """Parse one player from a /fixtures/players response entry."""
+    p = player_entry.get("player", {})
+    name = p.get("name", "").strip()
+    if not name:
+        return None
+
+    stats_list = player_entry.get("statistics", [{}])
+    if not stats_list:
+        return None
+    stats = stats_list[0]
+
+    games   = stats.get("games",   {})
+    minutes = int(games.get("minutes") or 0)
+    if minutes < 10:
+        return None
+
+    goals_d  = stats.get("goals",   {})
+    shots_d  = stats.get("shots",   {})
+    cards_d  = stats.get("cards",   {})
+    passes_d = stats.get("passes",  {})
+
+    return {
+        "player_id":       int(p.get("id", abs(hash(name)) % 10_000_000)),
+        "player_name":     name,
+        "fixture_id":      meta["fixture_id"],
+        "date":            meta["date"],
+        "league":          league,
+        "home_team":       meta["home_team"],
+        "away_team":       meta["away_team"],
+        "team":            meta["team"],
+        "is_home":         int(meta["is_home"]),
+        "position":        str(games.get("position") or p.get("position") or "").strip(),
+        "minutes":         minutes,
+        "goals":           int(goals_d.get("total")   or 0),
+        "assists":         int(goals_d.get("assists")  or 0),
+        "shots_total":     int(shots_d.get("total")   or 0),
+        "shots_on_target": int(shots_d.get("on")      or 0),
+        "yellow_cards":    int(cards_d.get("yellow")  or 0),
+        "key_passes":      int(passes_d.get("key")    or 0),
+        "rating":          float(games.get("rating")  or 0),
+    }
+
+
+def collect_match_history(
+    leagues: dict | None = None,
+    last_n:  int = 100,
+) -> list[dict]:
+    """
+    Collect per-match player stats from API-Football.
+    Returns flat list — one dict per player per match.
+
+    API cost: 1 (fixture list) + last_n (player stats) per league.
+    Fixture stats are cached permanently so re-runs are free.
+
+    With last_n=100 and 8 leagues: ~808 API requests first run,
+    ~8 requests on subsequent runs (only fixture list, rest cached).
+    """
+    if leagues is None:
+        leagues = APIFOOTBALL_LEAGUES
+
+    all_rows: list[dict] = []
+
+    for league_name, (league_id, season) in leagues.items():
+        print(f"  [{league_name}] Fetching fixture list (last {last_n})...")
+
+        try:
+            fixtures = _fetch_league_fixtures(league_id, season, last_n)
+        except RuntimeError as e:
+            print(f"  [{league_name}] fixture list error: {e}")
+            continue
+
+        if not fixtures:
+            print(f"  [{league_name}] No completed fixtures found")
+            continue
+
+        cached_count = sum(
+            1 for fix in fixtures
+            if _fixture_cache_path(fix.get("fixture", {}).get("id", 0)).exists()
+        )
+        print(f"  [{league_name}] {len(fixtures)} fixtures ({cached_count} cached, "
+              f"{len(fixtures) - cached_count} to fetch)...")
+
+        league_rows = 0
+        for fix in fixtures:
+            fixture_id = fix.get("fixture", {}).get("id")
+            if not fixture_id:
+                continue
+
+            fix_date  = fix.get("fixture", {}).get("date", "")[:10]
+            home_team = fix.get("teams", {}).get("home", {}).get("name", "")
+            away_team = fix.get("teams", {}).get("away", {}).get("name", "")
+
+            try:
+                team_data_list = _fetch_fixture_player_stats(fixture_id)
+            except RuntimeError as e:
+                print(f"    [fix {fixture_id}] error: {e}")
+                continue
+
+            for team_data in team_data_list:
+                team_name = team_data.get("team", {}).get("name", "")
+                is_home   = (team_name == home_team)
+                meta = {
+                    "fixture_id": fixture_id,
+                    "date":       fix_date,
+                    "home_team":  home_team,
+                    "away_team":  away_team,
+                    "team":       team_name,
+                    "is_home":    is_home,
+                }
+                for player_entry in team_data.get("players", []):
+                    parsed = _parse_fixture_player(player_entry, meta, league_name)
+                    if parsed:
+                        all_rows.append(parsed)
+                        league_rows += 1
+
+        print(f"  [{league_name}] {league_rows} player-match rows collected")
+
+    print(f"[DONE] {len(all_rows)} total player-match rows across {len(leagues)} leagues.")
+    return all_rows
+
+
+# ── Season-level collection (fallback / supplementary) ────────────────────────
 
 def _parse_player(entry: dict, league: str) -> Optional[dict]:
-    """Parse one player entry from /players response."""
     p    = entry.get("player", {})
     name = p.get("name", "").strip()
     if not name:
         return None
 
     stats = entry.get("statistics", [{}])[0]
-    games  = stats.get("games", {})
-    goals  = stats.get("goals", {})
-    shots  = stats.get("shots", {})
-    cards  = stats.get("cards", {})
+    games  = stats.get("games",  {})
+    goals  = stats.get("goals",  {})
+    shots  = stats.get("shots",  {})
+    cards  = stats.get("cards",  {})
     passes = stats.get("passes", {})
-    duels  = stats.get("duels", {})
-    team   = stats.get("team", {})
+    team   = stats.get("team",   {})
 
     appearances = int(games.get("appearences") or 0)
     minutes     = int(games.get("minutes")     or 0)
     if appearances < config.MIN_APPEARANCES or minutes < 1:
         return None
 
-    goals_n  = int(goals.get("total")   or 0)
-    assists_n = int(goals.get("assists") or 0)
-    shots_n  = int(shots.get("total")   or 0)
-    sot_n    = int(shots.get("on")      or 0)
-    yellow_n = int(cards.get("yellow")  or 0)
-    key_pass = int(passes.get("key")    or 0)
-    position = str(games.get("position") or p.get("position") or "").strip()
-
     return {
         "player_id":       int(p.get("id", abs(hash(name)) % 10_000_000)),
         "player_name":     name,
         "team":            team.get("name", ""),
         "league":          league,
-        "position":        position,
+        "position":        str(games.get("position") or p.get("position") or "").strip(),
         "appearances":     appearances,
         "minutes":         minutes,
-        "goals":           goals_n,
-        "assists":         assists_n,
-        "shots_total":     shots_n,
-        "shots_on_target": sot_n,
-        "yellow_cards":    yellow_n,
-        "key_passes":      key_pass,
+        "goals":           int(goals.get("total")   or 0),
+        "assists":         int(goals.get("assists")  or 0),
+        "shots_total":     int(shots.get("total")   or 0),
+        "shots_on_target": int(shots.get("on")      or 0),
+        "yellow_cards":    int(cards.get("yellow")  or 0),
+        "key_passes":      int(passes.get("key")    or 0),
         "rating":          float(games.get("rating") or 0),
     }
 
 
-# ── Public: fetch one league ──────────────────────────────────────────────────
-
-def fetch_league_player_stats(
-    league: str,
-    force_refresh: bool = False,
-) -> list[dict]:
-    """
-    Return flat list of player stat dicts for one league.
-    Fetched from API-Football /players endpoint, paginated.
-    Cached for CACHE_DAYS.
-    """
+def fetch_league_player_stats(league: str, force_refresh: bool = False) -> list[dict]:
+    """Season-aggregate player stats (fallback). Cached 7 days."""
     _all_leagues = {**APIFOOTBALL_LEAGUES, **EUROPEAN_CUPS}
     info = _all_leagues.get(league)
     if not info:
@@ -198,11 +356,10 @@ def fetch_league_player_stats(
             print(f"  [{league}] {len(cached)} players (cached)")
             return cached
 
-    print(f"  [{league}] Fetching from API-Football (league={lg_id}, season={season})...")
+    print(f"  [{league}] Fetching season stats (league={lg_id}, season={season})...")
 
     players: list[dict] = []
     page = 1
-
     while True:
         try:
             data = _api_get("players", {"league": lg_id, "season": season, "page": page})
@@ -219,7 +376,7 @@ def fetch_league_player_stats(
             if parsed:
                 players.append(parsed)
 
-        print(f"    page {page}/{total_pg} — {len(entries)} entries")
+        print(f"    page {page}/{total_pg} -- {len(entries)} entries")
 
         if page >= total_pg:
             break
@@ -232,14 +389,12 @@ def fetch_league_player_stats(
     return players
 
 
-# ── Bulk collection ───────────────────────────────────────────────────────────
-
 def collect_history(
     max_fixtures: int = 800,
     leagues: dict | None = None,
     seasons: list[str] | None = None,
 ) -> list[dict]:
-    """Collect player season stats from API-Football for all supported leagues."""
+    """Season-aggregate collection (fallback path). Prefer collect_match_history()."""
     if leagues is None:
         leagues = APIFOOTBALL_LEAGUES
 

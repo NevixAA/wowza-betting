@@ -1,16 +1,14 @@
 """
-Player Feature Engineering v2
-==============================
-Two data modes:
-  1. MATCH-LEVEL (preferred): rolling stats from API-Football match history
-  2. SEASON-LEVEL (fallback): FBref season aggregates
+Player Feature Engineering v3 — match-level rolling features
+=============================================================
+build_features(match_rows)
+  Input:  flat list of player-match dicts from collect_match_history()
+          Each dict = one player in one specific completed match.
+  Output: DataFrame with proper rolling features (shift=1, no leakage)
+          and per-match binary targets.
 
-Key improvements over v1:
-  - Referee factor (strictness z-score)
-  - Set-piece features (set_piece_shot_rate, aerial_won_rate)
-  - Proper sot_rate column
-  - team_corners_per90 feature
-  - GES (Goal Edge Score) computation
+build_upcoming_features(players, history_df)
+  Uses actual rolling history from build_features() output.
 """
 from __future__ import annotations
 
@@ -20,103 +18,113 @@ import pandas as pd
 from . import config
 
 
-def build_rolling_features(match_rows: list[dict], n: int = None) -> dict:
+def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     """
-    Build rolling feature dict from a player's last N match stats.
-    match_rows: list of per-match dicts from api_football.get_player_recent_stats()
+    Build ML training data from per-match player stats.
+
+    Features: rolling averages of player's PREVIOUS N matches (shift=1, zero leakage).
+    Targets:  actual outcome in THIS match (not the same as features).
+
+    Also computes opponent defensive rolling features per fixture.
     """
-    if n is None:
-        n = config.ROLLING_N
     if not match_rows:
-        return {}
-
-    rows = match_rows[:n]
-    df = pd.DataFrame(rows)
-    apps = len(rows)
-    total_min = df["minutes_played"].sum() if "minutes_played" in df.columns else apps * 75
-
-    def pg(col):
-        return float(df[col].sum() / apps) if col in df.columns else 0.0
-
-    goals_pg   = pg("goals")
-    assists_pg = pg("assists")
-    shots_pg   = pg("shots_total")
-    sot_pg     = pg("shots_on_target")
-    cards_pg   = pg("yellow_card")
-    kp_pg      = pg("key_passes")
-    minutes_pg = total_min / apps
-    sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
-
-    dw = df["duels_won"].sum()  if "duels_won"   in df.columns else 0
-    dt = df["duels_total"].sum() if "duels_total" in df.columns else 1
-    aerial_won_rate = dw / max(dt, 1)
-
-    return {
-        "goals_pg":            round(goals_pg, 4),
-        "assists_pg":          round(assists_pg, 4),
-        "shots_pg":            round(shots_pg, 4),
-        "sot_pg":              round(sot_pg, 4),
-        "cards_pg":            round(cards_pg, 4),
-        "minutes_pg":          round(minutes_pg, 1),
-        "key_passes_pg":       round(kp_pg, 4),
-        "sot_rate":            round(sot_rate, 4),
-        "set_piece_shot_rate": 0.10,   # requires Sofascore — placeholder
-        "touches_box_per90":   0.0,
-        "aerial_won_rate":     round(aerial_won_rate, 4),
-        "n_games":             apps,
-        "data_source":         "match_level",
-    }
-
-
-def build_features(rows: list[dict]) -> pd.DataFrame:
-    """Convert FBref season-level rows into ML feature DataFrame (training)."""
-    if not rows:
         return pd.DataFrame()
 
-    df = pd.DataFrame(rows)
-    df = df[df["appearances"] >= config.MIN_APPEARANCES].copy()
+    n = n or config.ROLLING_N
 
-    apps = df["appearances"].clip(lower=1)
+    df = pd.DataFrame(match_rows)
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
 
-    df["goals_pg"]      = df["goals"] / apps
-    df["assists_pg"]    = df["assists"] / apps
-    df["shots_pg"]      = df.get("shots_total",     pd.Series(0, index=df.index)) / apps
-    df["sot_pg"]        = df.get("shots_on_target", pd.Series(0, index=df.index)) / apps
-    df["cards_pg"]      = df.get("yellow_cards",    pd.Series(0, index=df.index)) / apps
-    df["minutes_pg"]    = df.get("minutes",         pd.Series(apps * 75, index=df.index)) / apps
-    df["key_passes_pg"] = df.get("key_passes",      pd.Series(0, index=df.index)) / apps
-    df["sot_rate"]      = (df["sot_pg"] / df["shots_pg"].replace(0, np.nan)).fillna(0.0)
+    # Drop bench/DNP rows (< 10 min)
+    df = df[df["minutes"] >= 10].copy()
 
-    df["set_piece_shot_rate"] = 0.10
-    df["touches_box_per90"]   = 0.0
-    df["aerial_won_rate"]     = 0.45
+    # ── Per-player rolling features — shift(1) prevents any leakage ──────────
+    grp = df.groupby("player_id", group_keys=False)
 
+    df["goals_pg"]    = grp["goals"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    df["assists_pg"]  = grp["assists"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    df["shots_pg"]    = grp["shots_total"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    df["sot_pg"]      = grp["shots_on_target"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    df["cards_pg"]    = grp["yellow_cards"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    df["minutes_pg"]  = grp["minutes"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    df["key_passes_pg"] = grp["key_passes"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+    df["sot_rate"] = (
+        df["sot_pg"] / df["shots_pg"].replace(0, np.nan)
+    ).fillna(0.0)
+
+    # Count of previous games this player has in the dataset
+    df["n_prev_games"] = grp["date"].transform("cumcount")
+
+    # ── Opponent defensive rolling features ───────────────────────────────────
+    # For each (fixture, team): aggregate goals scored/conceded from player rows.
+    match_agg = (
+        df.groupby(["fixture_id", "team"])
+        .agg(
+            date=("date", "first"),
+            goals_scored=("goals", "sum"),
+            sot_scored=("shots_on_target", "sum"),
+        )
+        .reset_index()
+    )
+
+    # Self-join to find opponent stats for each (fixture, team)
+    opp = match_agg[["fixture_id", "team", "goals_scored", "sot_scored"]].rename(columns={
+        "team":         "opponent_team",
+        "goals_scored": "goals_conceded_match",
+        "sot_scored":   "sot_conceded_match",
+    })
+    match_def = match_agg.merge(opp, on="fixture_id")
+    match_def = match_def[match_def["team"] != match_def["opponent_team"]].copy()
+
+    # Rolling defensive avg per team — shift(1) so it's pre-match knowledge
+    match_def = match_def.sort_values(["team", "date"])
+    tgrp = match_def.groupby("team", group_keys=False)
+    match_def["opp_goals_conceded_pg"] = tgrp["goals_conceded_match"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    match_def["opp_sot_conceded_pg"] = tgrp["sot_conceded_match"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    match_def["team_goals_pg_roll"] = tgrp["goals_scored"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+    # Join back to player rows via (fixture_id, opponent)
+    df["opponent"] = df.apply(
+        lambda r: r["away_team"] if r["is_home"] else r["home_team"], axis=1
+    )
+    opp_feats = match_def[["fixture_id", "team",
+                            "opp_goals_conceded_pg",
+                            "opp_sot_conceded_pg",
+                            "team_goals_pg_roll"]].rename(columns={"team": "opponent"})
+    df = df.merge(opp_feats, on=["fixture_id", "opponent"], how="left")
+
+    df["opp_goals_conceded_pg"] = df["opp_goals_conceded_pg"].fillna(1.3)
+    df["opp_sot_conceded_pg"]   = df["opp_sot_conceded_pg"].fillna(4.5)
+    df["team_goals_pg_roll"]    = df["team_goals_pg_roll"].fillna(1.3)
+
+    # ── Position encoding ─────────────────────────────────────────────────────
     pos = df["position"].str.upper().fillna("")
     df["pos_forward"]    = pos.str.startswith("F").astype(int)
     df["pos_midfielder"] = pos.str.startswith("M").astype(int)
     df["pos_defender"]   = pos.str.startswith("D").astype(int)
 
-    lg_avg_g = df.groupby("league")["goals_pg"].transform("mean").clip(lower=0.01)
-    df["opp_goals_conceded_pg"] = lg_avg_g
-    df["opp_shots_conceded_pg"] = df.groupby("league")["shots_pg"].transform("mean").clip(lower=1)
-    df["opp_sot_conceded_pg"]   = df.groupby("league")["sot_pg"].transform("mean").clip(lower=0.5)
+    # ── Target variables — actual outcome in THIS match ───────────────────────
+    df["target_goals"]   = (df["goals"]             >= 1).astype(int)
+    df["target_sot"]     = (df["shots_on_target"]   >= 1).astype(int)
+    df["target_cards"]   = (df["yellow_cards"]       >= 1).astype(int)
+    df["target_assists"] = (df["assists"]             >= 1).astype(int)
 
-    team_g = df.groupby(["league", "team"])["goals"].transform("sum")
-    lg_avg  = df.groupby("league")["goals"].transform("sum") / df.groupby("league")["team"].transform("nunique")
-    df["team_attack_str"]      = (team_g / lg_avg.clip(lower=1)).clip(0.1, 5.0)
-    df["team_goals_scored_pg"] = df["goals_pg"]
-    df["team_corners_per90"]   = 5.0
+    # Drop rows with no prior history (rolling features would all be NaN)
+    df = df[df["n_prev_games"] >= 1].copy()
 
-    df["referee_strictness"] = 0.0
-    df["ref_cards_per_game"] = 3.5
-    df["rest_days"]          = 6.0
-    df["is_home"]            = 0.5
-
-    df["target_goals"]   = (df["goals_pg"]   > 0).astype(int)
-    df["target_assists"] = (df["assists_pg"]  > 0).astype(int)
-    df["target_sot"]     = (df["sot_pg"]      > 0).astype(int)
-    df["target_cards"]   = (df["cards_pg"]    > 0).astype(int)
-
+    # Ensure all feature cols numeric
     for col in config.PLAYER_FEATURE_COLS:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0.0)
@@ -128,85 +136,121 @@ def build_upcoming_features(
     upcoming: list[dict],
     history: pd.DataFrame,
     referee_profile: dict | None = None,
-    match_context: dict | None = None,
+    match_context:   dict | None = None,
 ) -> pd.DataFrame:
     """
     Build feature rows for upcoming player predictions.
-    upcoming: list of player dicts with optional rolling_features key
-    history:  season-level training DataFrame (fallback)
+    Uses the player's last N matches from match-level history as rolling features.
+
+    upcoming: list of player dicts (player_id, player_name, team, opponent, is_home, ...)
+    history:  match-level DataFrame from build_features()
     """
     if not upcoming or history.empty:
         return pd.DataFrame()
 
-    ref = referee_profile or {"yellows_per_game": 3.5, "strictness_score": 0.0}
-    ctx = match_context or {}
+    n   = config.ROLLING_N
+    ref = referee_profile or {}
+    ctx = match_context   or {}
     rows = []
 
     for p in upcoming:
-        pid     = p.get("player_id")
-        name    = p.get("player_name", "")
-        rolling = p.get("rolling_features", {})
+        pid  = p.get("player_id")
+        name = p.get("player_name", "")
 
-        if not rolling:
-            hist = history[history["player_id"] == pid] if pid else pd.DataFrame()
-            if hist.empty:
-                hist = history[history["player_name"].str.lower() == name.lower()]
-            if hist.empty:
-                continue
-            rec     = hist.iloc[-1].to_dict()
-            rolling = {k: rec.get(k, 0) for k in config.PLAYER_FEATURE_COLS}
-            rolling["data_source"] = "season_fallback"
-            rolling["n_games"]     = int(rec.get("appearances", config.MIN_GAMES_SIGNAL))
+        # Find player's match history
+        if pid:
+            phist = history[history["player_id"] == pid].sort_values("date").tail(n)
+        else:
+            phist = history[history["player_name"].str.lower() == name.lower()].sort_values("date").tail(n)
 
-        pos    = p.get("position", rolling.get("position", ""))
-        pos_up = str(pos).upper()
-        n_games = int(rolling.get("n_games", config.MIN_GAMES_SIGNAL))
+        if phist.empty:
+            continue
+
+        n_games    = len(phist)
+        goals_pg   = float(phist["goals"].mean())
+        assists_pg = float(phist["assists"].mean())
+        shots_pg   = float(phist["shots_total"].mean())
+        sot_pg     = float(phist["shots_on_target"].mean())
+        cards_pg   = float(phist["yellow_cards"].mean())
+        minutes_pg = float(phist["minutes"].mean())
+        kp_pg      = float(phist["key_passes"].mean()) if "key_passes" in phist.columns else 0.0
+        sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
+
+        pos = str(p.get("position",
+                   phist["position"].iloc[-1] if "position" in phist.columns else "")).upper()
 
         rows.append({
             "player_id":   pid,
             "player_name": name,
             "team":        p.get("team", ""),
             "opponent":    p.get("opponent", ""),
-            "position":    pos,
-            "minutes_est": p.get("minutes", int(rolling.get("minutes_pg", 75))),
+            "position":    p.get("position", ""),
+            "minutes_est": p.get("minutes", int(minutes_pg)),
             "n_games":     n_games,
-            "data_quality": min(1.0, n_games / 15.0),
-            "data_source": rolling.get("data_source", "unknown"),
+            "data_source": "match_level",
             # Rolling form
-            "goals_pg":           rolling.get("goals_pg", 0),
-            "assists_pg":         rolling.get("assists_pg", 0),
-            "shots_pg":           rolling.get("shots_pg", 0),
-            "sot_pg":             rolling.get("sot_pg", 0),
-            "cards_pg":           rolling.get("cards_pg", 0),
-            "minutes_pg":         rolling.get("minutes_pg", 75),
-            "key_passes_pg":      rolling.get("key_passes_pg", 0),
-            "sot_rate":           rolling.get("sot_rate", 0),
-            "set_piece_shot_rate": rolling.get("set_piece_shot_rate", 0.10),
-            "touches_box_per90":   rolling.get("touches_box_per90", 0),
-            "aerial_won_rate":     rolling.get("aerial_won_rate", 0.45),
+            "goals_pg":            round(goals_pg,   4),
+            "assists_pg":          round(assists_pg,  4),
+            "shots_pg":            round(shots_pg,    4),
+            "sot_pg":              round(sot_pg,      4),
+            "cards_pg":            round(cards_pg,    4),
+            "minutes_pg":          round(minutes_pg,  1),
+            "key_passes_pg":       round(kp_pg,       4),
+            "sot_rate":            round(sot_rate,    4),
             # Match context
             "is_home":              float(p.get("is_home", 0.5)),
             "opp_goals_conceded_pg": ctx.get("opp_goals_conceded_pg", 1.3),
-            "opp_shots_conceded_pg": ctx.get("opp_shots_conceded_pg", 12.0),
-            "opp_sot_conceded_pg":   ctx.get("opp_sot_conceded_pg", 4.5),
-            "team_attack_str":       ctx.get("team_attack_str", 1.0),
-            "team_corners_per90":    ctx.get("team_corners_per90", 5.0),
-            "team_goals_scored_pg":  rolling.get("goals_pg", 0),
-            # Referee
-            "referee_strictness":  ref.get("strictness_score", 0.0),
-            "ref_cards_per_game":  ref.get("yellows_per_game", 3.5),
+            "opp_sot_conceded_pg":   ctx.get("opp_sot_conceded_pg",   4.5),
+            "team_goals_pg_roll":    ctx.get("team_goals_pg_roll",    1.3),
             # Position
-            "pos_forward":    int(pos_up.startswith("F")),
-            "pos_midfielder": int(pos_up.startswith("M")),
-            "pos_defender":   int(pos_up.startswith("D")),
-            "rest_days": p.get("rest_days", 6.0),
+            "pos_forward":    int(pos.startswith("F")),
+            "pos_midfielder": int(pos.startswith("M")),
+            "pos_defender":   int(pos.startswith("D")),
+            "rest_days":      p.get("rest_days", 6.0),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()
 
 
+def build_rolling_features(match_rows: list[dict], n: int = None) -> dict:
+    """Compute rolling feature dict from a player's recent match rows (predict path)."""
+    if n is None:
+        n = config.ROLLING_N
+    if not match_rows:
+        return {}
+
+    rows  = match_rows[:n]
+    df    = pd.DataFrame(rows)
+    apps  = len(rows)
+
+    def _pg(col):
+        return float(df[col].sum() / apps) if col in df.columns else 0.0
+
+    goals_pg   = _pg("goals")
+    assists_pg = _pg("assists")
+    shots_pg   = _pg("shots_total")
+    sot_pg     = _pg("shots_on_target")
+    cards_pg   = _pg("yellow_cards")
+    minutes_pg = _pg("minutes")
+    kp_pg      = _pg("key_passes")
+    sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
+
+    return {
+        "goals_pg":      round(goals_pg,   4),
+        "assists_pg":    round(assists_pg,  4),
+        "shots_pg":      round(shots_pg,    4),
+        "sot_pg":        round(sot_pg,      4),
+        "cards_pg":      round(cards_pg,    4),
+        "minutes_pg":    round(minutes_pg,  1),
+        "key_passes_pg": round(kp_pg,       4),
+        "sot_rate":      round(sot_rate,    4),
+        "n_games":       apps,
+        "data_source":   "match_level",
+    }
+
+
 def compute_ges(row: dict, opp_weakness: float = 1.0, penalty_duty: bool = False) -> float:
-    """Goal Edge Score (0.0-1.0). Gate goals/SOT signals on this."""
+    """Goal Edge Score (0.0-1.0). Gates goals/SOT signals."""
     xg_form  = min(row.get("goals_pg", 0) / 0.50, 1.0)
     shot_vol = min(row.get("shots_pg", 0) / 3.5, 1.0)
     pen      = 1.0 if penalty_duty else 0.0
