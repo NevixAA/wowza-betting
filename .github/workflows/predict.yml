@@ -54,5 +54,6 @@ jobs:
                      telegram_bot/notified.json telegram_bot/live_notified.json 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git restore . 2>/dev/null || true
           git pull --rebase origin main
           git push
