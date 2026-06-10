@@ -120,6 +120,13 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["fouls_per90"]         = 0.0
         df["foul_committer_ratio"] = 0.0
 
+    # team_corners_pg: rolling corners earned per match
+    if "team_corners" in df.columns:
+        df["team_corners_pg"] = grp["team_corners"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["team_corners_pg"] = 5.0  # league average fallback
+
     # Drop intermediate columns
     df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
 
@@ -189,6 +196,14 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     df["creative_playmaker_score"] = (
         df["kp_per90"] * (df["pos_midfielder"] + 0.5 * df["pos_forward"])
+    )
+
+    # set_piece_threat_score: aerial × corner volume × 0.30 sp rate × position weight
+    df["set_piece_threat_score"] = (
+        df["aerial_won_rate"]
+        * (df["team_corners_pg"] / 6.0).clip(upper=2.0)
+        * 0.30
+        * (df["pos_defender"] + 0.7 * df["pos_midfielder"])
     )
 
     # ── Target variables — actual outcome in THIS match ───────────────────────
@@ -299,10 +314,18 @@ def build_upcoming_features(
             fouls_per90          = 0.0
             foul_committer_ratio = 0.0
 
+        team_corners_pg = float(phist["team_corners_pg"].mean()) \
+            if "team_corners_pg" in phist.columns else \
+            float((phist["team_corners"] / phist["minutes"].replace(0, np.nan) * 90).fillna(0).mean()) \
+            if "team_corners" in phist.columns else 5.0
+
         sot_quality_score        = round(shot_accuracy_rate * sot_pg, 4)
         opp_adjusted_shot_threat = round(shots_pg * opp_sot_c, 4)
         creative_playmaker_score = round(kp_per90 * (pos_midfielder + 0.5 * pos_forward), 4)
         card_exposure_index      = round(cards_pg * (minutes_pg / 90.0) * (1 - pos_forward), 4)
+        # SET_PIECE_THREAT_SCORE: aerial ability × corner volume × 0.30 sp concession rate (league avg)
+        set_piece_threat_score   = round(aerial_won_rate * (team_corners_pg / 6.0) * 0.30
+                                         * (pos_defender + 0.7 * pos_midfielder), 4)
 
         rows.append({
             "player_id":   pid,
@@ -339,6 +362,8 @@ def build_upcoming_features(
             "opp_adjusted_shot_threat":  opp_adjusted_shot_threat,
             "creative_playmaker_score":  creative_playmaker_score,
             "card_exposure_index":       card_exposure_index,
+            "team_corners_pg":           round(team_corners_pg, 3),
+            "set_piece_threat_score":    set_piece_threat_score,
             # Match context
             "is_home":               float(p.get("is_home", 0.5)),
             "opp_goals_conceded_pg": ctx.get("opp_goals_conceded_pg", 1.3),

@@ -1,9 +1,9 @@
 """
 Player Props Dashboard
 Shows SNIPER/MARKSMAN/VALUABLE player prop signals.
+When odds aren't available yet, shows WC/PROP_LEAGUE signals by model probability.
 """
 from pathlib import Path
-from datetime import datetime
 
 import pandas as pd
 import streamlit as st
@@ -16,7 +16,7 @@ BASE_DIR   = Path(__file__).resolve().parents[1]
 TIPS_FILE  = BASE_DIR / "output" / "player_tips.csv"
 
 st.title("👤 Player Props")
-st.caption("SNIPER/MARKSMAN/VALUABLE player signals — SOT, Goals, Cards, Assists")
+st.caption("SNIPER/MARKSMAN/VALUABLE signals + WC2026 model signals — SOT, Goals, Cards, Assists")
 
 if st.button("🔄 Refresh"):
     st.cache_data.clear()
@@ -26,7 +26,7 @@ TIER_META = {
     "SNIPER":   ("🎯", "#e94560", "EV > 40% · Odds ≥ 5.0 · 2+ lazy factors"),
     "MARKSMAN": ("🔫", "#00aaff", "EV > 25% · Odds ≥ 4.0 · 1+ lazy factor"),
     "VALUABLE": ("💎", "#f5a623", "EV > 15% · Odds ≥ 3.0"),
-    "WATCH":    ("👁",  "#666",   "Below threshold — monitor only"),
+    "WATCH":    ("👁",  "#4caf50", "Model signal · add odds to compute EV"),
 }
 
 MARKET_EMOJI = {
@@ -47,57 +47,33 @@ df = load_tips()
 
 if df.empty:
     st.info("⏳ No player prop signals yet. The player props model runs 30 min after each predict.")
-    st.markdown("""
-    **What this page shows when active:**
-    - SOT, Goals, Cards, Assists signals per player per match
-    - Only for SNIPER/MARKSMAN matches (our team model already flagged the game)
-    - De-vigged EV with lazy market factor detection
-    - Signals for: Championship, League One, Bundesliga 2, Ireland, Finland
-
-    **Requires:** APIFOOTBALL_KEY set in GitHub Secrets for full rolling stats.
-    Until then, uses season-average stats from FBref.
-    """)
     st.stop()
 
-# ── KPIs ──────────────────────────────────────────────────────────────────────
-snipers   = df[df["tier"] == "SNIPER"]
-marksmen  = df[df["tier"] == "MARKSMAN"]
-valuables = df[df["tier"] == "VALUABLE"]
+# ── Split: priced signals vs model-only signals ────────────────────────────────
+has_odds  = df[df["tier"] != "WATCH"].copy()
+no_odds   = df[df["tier"] == "WATCH"].copy()
 
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("Total Signals", len(df[df["tier"] != "WATCH"]))
-c2.metric("🎯 SNIPER",    len(snipers))
-c3.metric("🔫 MARKSMAN",  len(marksmen))
-c4.metric("💎 VALUABLE",  len(valuables))
+# WC / strong model signals (≥ 55% for PROP_LEAGUE, ≥ 60% for team-model matches)
+wc_signals = no_odds[
+    ((no_odds["match_tier"] == "PROP_LEAGUE") & (no_odds["model_prob"] >= 0.55)) |
+    ((no_odds["match_tier"].isin(["SNIPER","MARKSMAN"])) & (no_odds["model_prob"] >= 0.60))
+].copy()
+
+# ── KPIs ──────────────────────────────────────────────────────────────────────
+c1, c2, c3, c4, c5 = st.columns(5)
+c1.metric("Priced signals", len(has_odds[has_odds["tier"] != "WATCH"]))
+c2.metric("🎯 SNIPER",   len(has_odds[has_odds["tier"] == "SNIPER"]))
+c3.metric("🔫 MARKSMAN", len(has_odds[has_odds["tier"] == "MARKSMAN"]))
+c4.metric("💎 VALUABLE", len(has_odds[has_odds["tier"] == "VALUABLE"]))
+c5.metric("🌍 WC signals", len(wc_signals[wc_signals["match_tier"] == "PROP_LEAGUE"]))
 
 st.markdown("---")
 
-# ── Filters ───────────────────────────────────────────────────────────────────
-col1, col2, col3 = st.columns(3)
-with col1:
-    tier_filter = st.multiselect("Tier", ["SNIPER","MARKSMAN","VALUABLE"],
-                                 default=["SNIPER","MARKSMAN"])
-with col2:
-    mkt_filter = st.multiselect("Market", sorted(df["market"].unique()),
-                                default=list(df["market"].unique()))
-with col3:
-    min_confidence = st.slider("Min confidence", 0.0, 1.0, 0.50, 0.05)
 
-filtered = df[
-    df["tier"].isin(tier_filter) &
-    df["market"].isin(mkt_filter) &
-    (df["confidence"] >= min_confidence)
-].copy()
-
-if filtered.empty:
-    st.info("No signals match filters.")
-    st.stop()
-
-st.subheader(f"📋 {len(filtered)} Signal(s)")
-
-# ── Signal cards ──────────────────────────────────────────────────────────────
-for _, row in filtered.sort_values(["tier", "model_prob"], ascending=[True, False]).iterrows():
-    emoji, color, desc = TIER_META.get(row["tier"], ("📌","#888",""))
+def _render_signal(row, *, show_tier_label=True):
+    """Render a single signal card."""
+    tier      = row.get("tier", "WATCH")
+    emoji, color, desc = TIER_META.get(tier, ("📌","#888",""))
     mkt_emoji = MARKET_EMOJI.get(row["market"], "📊")
     fair_odds = row.get("fair_odds", "—")
     mkt_odds  = row.get("market_odds")
@@ -105,20 +81,25 @@ for _, row in filtered.sort_values(["tier", "model_prob"], ascending=[True, Fals
     conf      = float(row.get("confidence", 0))
     lazy      = str(row.get("lazy_factors", ""))
     n_games   = int(row.get("n_games", 0))
+    match_tier = row.get("match_tier", "")
 
-    # EV display
-    ev_str  = f"EV: {ev_val:+.1%}" if ev_val is not None and not pd.isna(ev_val) else "EV: add odds"
-    odds_str = f"@ {mkt_odds:.2f}" if mkt_odds and not pd.isna(mkt_odds) else f"fair {fair_odds}"
+    ev_str   = f"EV: {ev_val:+.1%}" if ev_val is not None and not pd.isna(ev_val) else "EV: add odds"
+    odds_str = f"@ {mkt_odds:.2f}"  if mkt_odds and not pd.isna(mkt_odds) else f"fair {fair_odds}"
+    tier_label = f"{emoji} {tier}" if show_tier_label else f"👁 {match_tier}"
     lazy_badges = " ".join(
         f'<span style="background:#333;color:#aaa;padding:1px 6px;border-radius:8px;font-size:0.75em">{f}</span>'
         for f in lazy.split("|") if f
     )
+    ges_str = ""
+    ges_val = row.get("ges")
+    if ges_val is not None and not pd.isna(ges_val):
+        ges_str = f" · GES: {float(ges_val):.2f}"
 
     st.markdown(f"""
     <div style="border-left:4px solid {color};padding:12px 16px;margin:6px 0;
                 background:#111827;border-radius:6px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="color:{color};font-weight:bold">{emoji} {row['tier']}</span>
+            <span style="color:{color};font-weight:bold">{tier_label}</span>
             <span style="color:#aaa;font-size:0.85em">📅 {str(row['date'])[:10]}</span>
         </div>
         <b style="color:white;font-size:1.05em">{row['player_name']}</b>
@@ -129,6 +110,7 @@ for _, row in filtered.sort_values(["tier", "model_prob"], ascending=[True, Fals
             &nbsp;{odds_str}
             &nbsp;|&nbsp;<span style="color:#00cc88"><b>{ev_str}</b></span>
             &nbsp;|&nbsp;Model P: <b style="color:white">{row['model_prob']:.0%}</b>
+            {ges_str}
         </div>
         <div>{lazy_badges}</div>
         <div style="color:#555;font-size:0.8em;margin-top:4px">
@@ -137,12 +119,65 @@ for _, row in filtered.sort_values(["tier", "model_prob"], ascending=[True, Fals
     </div>
     """, unsafe_allow_html=True)
 
+
+# ── WC2026 section (always shown when WC signals exist) ───────────────────────
+if not wc_signals.empty:
+    st.subheader(f"🌍 World Cup 2026 — {len(wc_signals)} signal(s)")
+    st.caption("Model probability signals — no odds plugged in yet. Check your bookmaker for props.")
+
+    col_f1, col_f2 = st.columns(2)
+    with col_f1:
+        mkt_wc = st.multiselect("Market (WC)", sorted(wc_signals["market"].unique()),
+                                default=list(wc_signals["market"].unique()),
+                                key="mkt_wc")
+    with col_f2:
+        min_p_wc = st.slider("Min model prob (WC)", 0.50, 0.90, 0.55, 0.01, key="mp_wc")
+
+    wc_filtered = wc_signals[
+        wc_signals["market"].isin(mkt_wc) &
+        (wc_signals["model_prob"] >= min_p_wc)
+    ].sort_values("model_prob", ascending=False)
+
+    for _, row in wc_filtered.iterrows():
+        _render_signal(row, show_tier_label=False)
+
+    st.markdown("---")
+
+
+# ── Priced signals section (when odds are available) ──────────────────────────
+if not has_odds.empty:
+    st.subheader("📊 Priced Signals")
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        tier_filter = st.multiselect("Tier", ["SNIPER","MARKSMAN","VALUABLE"],
+                                     default=["SNIPER","MARKSMAN"])
+    with col2:
+        mkt_filter = st.multiselect("Market", sorted(has_odds["market"].unique()),
+                                    default=list(has_odds["market"].unique()))
+    with col3:
+        min_confidence = st.slider("Min confidence", 0.0, 1.0, 0.50, 0.05)
+
+    filtered = has_odds[
+        has_odds["tier"].isin(tier_filter) &
+        has_odds["market"].isin(mkt_filter) &
+        (has_odds["confidence"] >= min_confidence)
+    ].sort_values(["tier", "model_prob"], ascending=[True, False])
+
+    st.subheader(f"📋 {len(filtered)} signal(s)")
+    for _, row in filtered.iterrows():
+        _render_signal(row)
+
+elif wc_signals.empty:
+    st.info("No signals with odds yet. Add odds via `enrich_with_odds()` or wait for the next odds update.")
+
 st.markdown("---")
-with st.expander("📊 Raw data"):
-    show_cols = ["date","league","match","player_name","position","team",
+with st.expander("📊 Raw data — all today's signals"):
+    show_cols = ["date","league","match","match_tier","player_name","position","team",
                  "market","model_prob","fair_odds","market_odds","ev",
-                 "tier","confidence","lazy_factors","n_games"]
-    st.dataframe(filtered[[c for c in show_cols if c in filtered.columns]],
+                 "tier","confidence","lazy_factors","n_games","ges"]
+    show_df = df.sort_values("model_prob", ascending=False)
+    st.dataframe(show_df[[c for c in show_cols if c in show_df.columns]],
                  use_container_width=True, hide_index=True)
 
-st.caption("Player props · Phase 1 · FBref season stats · API-Football rolling stats (requires APIFOOTBALL_KEY)")
+st.caption("Player props · Phase 1+2 · API-Football rolling stats · WC2026 national team data")

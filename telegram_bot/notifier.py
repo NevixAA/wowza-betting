@@ -626,11 +626,11 @@ def notify_player_props() -> int:
     today_str = datetime.now().strftime("%Y-%m-%d")
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
-    # Only SNIPER-match players with high model probability
-    df = df[
-        (df["match_tier"] == "SNIPER") &
-        (df["model_prob"] >= 0.60)
-    ].sort_values("model_prob", ascending=False).head(10)
+    # SNIPER team matches: highest bar
+    sniper_match = (df["match_tier"] == "SNIPER") & (df["model_prob"] >= 0.60)
+    # Prop-league matches (WC, top-5): model probability only — no team signal required
+    prop_match   = (df["match_tier"] == "PROP_LEAGUE") & (df["model_prob"] >= 0.55)
+    df = df[sniper_match | prop_match].sort_values("model_prob", ascending=False).head(15)
 
     if df.empty:
         return 0

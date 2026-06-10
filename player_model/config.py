@@ -60,6 +60,8 @@ PLAYER_FEATURE_COLS = [
     "sot_quality_score",         # shot_accuracy_rate * sot_pg — r=0.903 combined
     "opp_adjusted_shot_threat",  # shots_pg * opp_sot_conceded_pg — r=0.237
     "creative_playmaker_score",  # kp_per90 * position weight — r=0.311
+    "team_corners_pg",           # rolling corners earned per match
+    "set_piece_threat_score",    # aerial_won_rate × (corners/6) × 0.30 sp rate × position
     # Match context
     "is_home",
     "opp_goals_conceded_pg", "opp_sot_conceded_pg",
