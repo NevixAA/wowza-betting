@@ -34,13 +34,22 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect player data (Sundays + manual collect_train_predict)
+      - name: Collect club league data (Sundays + manual collect_train_predict)
         if: |
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python -m player_model.pipeline --mode collect
+        continue-on-error: true
+
+      - name: Collect WC2026 national team data (Sundays + manual collect_train_predict)
+        if: |
+          github.event.schedule == '0 5 * * 0' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python -m player_model.pipeline --mode collect-wc --last-n 10
         continue-on-error: true
 
       - name: Train player models (Sundays + manual collect_train_predict)
