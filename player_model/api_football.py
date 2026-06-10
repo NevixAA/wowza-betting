@@ -149,7 +149,7 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
                 "team":            team_name,
                 "position":        games.get("position", ""),
                 "minutes_played":  int(games.get("minutes") or 0),
-                "started":         bool((games.get("minutes") or 0) > 45),
+                "started":         (not bool(games.get("substitute"))) if games.get("substitute") is not None else bool((games.get("minutes") or 0) > 45),
                 "goals":           goals.get("total") or 0,
                 "assists":         goals.get("assists") or 0,
                 "shots_total":     shots.get("total") or 0,

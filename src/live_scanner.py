@@ -27,6 +27,7 @@ import math
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 import requests
@@ -53,12 +54,20 @@ HT_LOCK_ELAPSED   = 35     # min minutes for HT UNDER 0.5 lock signal
 HT_MIN_FAIR_UNDER = 1.18   # fair HT UNDER price must be >= this
 HT_MIN_FAIR_OVER  = 1.55   # fair HT OVER price must be >= this
 
+# Shot gate — SLEEPING_GAME suppressed when combined shots >= this (busy 0-0 is not sleeping)
+SHOT_GATE_THRESHOLD       = 10
+# Goal recency — suppress UNDER signals if goal scored in last N minutes
+GOAL_RECENCY_SUPPRESS_MINS = 3
+
 IDLE_RECHECK_SECS   = 1800  # re-check a league with no live games every 30 min
 ACTIVE_RECHECK_SECS = 120   # re-check a league with live games every 2 min
 
 # Per-league cache — persists between calls when imported inline by master_loop
 _league_last_active:  dict = {}  # league -> datetime of last live game found
 _league_last_checked: dict = {}  # league -> datetime of last API call
+
+# API-Football live scan throttle (single call replaces per-league OddsAPI calls)
+_last_apifootball_scan: Optional[datetime] = None
 
 
 # ── Poisson helpers ───────────────────────────────────────────────────────────
@@ -165,7 +174,7 @@ def _leagues_with_games_today() -> set[str]:
         return set(config.ENABLED_LEAGUES)  # fallback: scan all
 
 
-def _fetch_live_scores() -> list[dict]:
+def _fetch_live_scores_oddsapi() -> list[dict]:
     """Fetch in-progress scores — only for leagues with games today that are due a check."""
     live = []
     seen = set()
@@ -258,6 +267,86 @@ def _fetch_live_scores() -> list[dict]:
     return live
 
 
+def _fetch_live_scores_apifootball() -> list[dict]:
+    """
+    Fetch live fixtures using API-Football /fixtures?live=all.
+    One call returns ALL live fixtures — no per-league throttling needed.
+    """
+    global _last_apifootball_scan
+
+    now = datetime.now(timezone.utc)
+    if _last_apifootball_scan is not None:
+        secs_since = (now - _last_apifootball_scan).total_seconds()
+        # Reuse result within scan interval (api_football.py has its own 90s cache)
+        if secs_since < ACTIVE_RECHECK_SECS:
+            pass  # fall through to API call; caching handled in api_football.py
+
+    _last_apifootball_scan = now
+
+    try:
+        from src.api_football import get_live_fixtures
+    except ImportError:
+        return []
+
+    league_ids = list(config.API_FOOTBALL_IDS.values())
+    id_to_name = {v: k for k, v in config.API_FOOTBALL_IDS.items()}
+
+    active_leagues = _leagues_with_games_today()
+    raw = get_live_fixtures(league_ids=league_ids)
+
+    live = []
+    seen: set[str] = set()
+
+    for fix in raw:
+        league_id   = fix.get("league_id")
+        league_name = id_to_name.get(league_id, "")
+        if not league_name:
+            continue
+        if league_name not in active_leagues:
+            continue
+
+        home   = fix["home_team"]
+        away   = fix["away_team"]
+        key    = f"{home}|{away}"
+        if key in seen:
+            continue
+        seen.add(key)
+
+        status  = fix.get("status", "1H")
+        elapsed = fix.get("elapsed_mins") or 0
+
+        # During halftime, treat elapsed as 45 so HT signals evaluate correctly
+        if status == "HT":
+            elapsed = 45
+
+        _league_last_active[league_name] = now
+
+        live.append({
+            "fixture_id":   fix.get("fixture_id"),
+            "league":       league_name,
+            "home_team":    home,
+            "away_team":    away,
+            "elapsed_mins": elapsed,
+            "home_goals":   fix.get("home_goals", 0),
+            "away_goals":   fix.get("away_goals", 0),
+            "total_goals":  fix.get("home_goals", 0) + fix.get("away_goals", 0),
+            "status":       status,
+        })
+
+    return live
+
+
+def _fetch_live_scores() -> list[dict]:
+    """Dispatch to API-Football (primary) or OddsAPI (fallback)."""
+    try:
+        from src.api_football import _APIFOOTBALL_KEY
+        if _APIFOOTBALL_KEY:
+            return _fetch_live_scores_apifootball()
+    except ImportError:
+        pass
+    return _fetch_live_scores_oddsapi()
+
+
 # ── Pre-match prediction lookup ───────────────────────────────────────────────
 
 def _load_predictions() -> pd.DataFrame:
@@ -316,6 +405,35 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]
         away_atk   = float(pred.get("away_attack_str", 1.0) or 1.0)
         league_avg = float(pred.get("league_avg_goals", 2.5) or 2.5)
 
+        # ── Pre-compute shot gate and goal recency ────────────────────────────
+        fixture_id   = game.get("fixture_id")
+        shot_gate_ok = True   # True means SLEEPING_GAME is allowed
+        recent_goal  = False  # True means suppress UNDER signals
+
+        if fixture_id and elapsed >= 60 and total_g == 0:
+            try:
+                from src.api_football import get_fixture_statistics
+                stats = get_fixture_statistics(fixture_id, cache_hours=0.025)
+                if stats:
+                    total_shots = (
+                        (stats.get("home") or {}).get("shots", 0) +
+                        (stats.get("away") or {}).get("shots", 0)
+                    )
+                    if total_shots >= SHOT_GATE_THRESHOLD:
+                        shot_gate_ok = False  # high-shot 0-0 is not sleeping
+            except Exception:
+                pass
+
+        if fixture_id and elapsed >= MIN_ELAPSED and total_g <= 2:
+            try:
+                from src.api_football import get_fixture_events, last_goal_elapsed
+                events     = get_fixture_events(fixture_id)
+                last_g_min = last_goal_elapsed(events)
+                if last_g_min is not None and (elapsed - last_g_min) <= GOAL_RECENCY_SUPPRESS_MINS:
+                    recent_goal = True
+            except Exception:
+                pass
+
         base = {
             "league":           league,
             "match":            f"{home} vs {away}",
@@ -336,6 +454,7 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]
         # Model said UNDER, game still low-scoring, time running out
         if (elapsed >= MIN_ELAPSED
                 and total_g <= 1
+                and not recent_goal
                 and p_over < 0.45
                 and probs["fair_under_odds"] >= MIN_FAIR_UNDER
                 and probs["p_under"] > (1 - p_over) * 1.1):  # live prob improved vs pre-match
@@ -352,6 +471,7 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]
         # Both teams have low attack, 0-0 late → UNDER almost certain
         elif (elapsed >= 70
                 and total_g == 0
+                and shot_gate_ok
                 and home_atk < 1.1 and away_atk < 1.1
                 and probs["fair_under_odds"] >= MIN_FAIR_UNDER):
             tips.append({**base,

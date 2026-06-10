@@ -229,9 +229,63 @@ API_HOST     = "api-football-v1.p.rapidapi.com"
 API_SEASON   = os.getenv("API_SEASON", "2025")
 
 API_FOOTBALL_IDS = {
-    "Championship": 40,
-    "League One":   41,
-    "League Two":   42,
+    # Standard format leagues
+    "Championship":             40,
+    "League One":               41,
+    "League Two":               42,
+    "Bundesliga 2":             79,
+    "Ligue 2":                  65,
+    "La Liga 2":               141,
+    "Serie B":                 136,
+    "Greek Super League":      197,
+    # New format — European winter/spring
+    "Denmark Superliga":       119,
+    "Austrian Bundesliga":     218,
+    "Romanian Superliga":      283,
+    # New format — summer / Americas / Asia
+    "Sweden Allsvenskan":      113,
+    "Norway Eliteserien":      103,
+    "Finland Veikkausliiga":   244,
+    "Ireland Premier Division": 357,
+    "Argentina Primera Division": 128,
+    "Brazil Serie A":           71,
+    "Japan J-League":           98,
+    "Mexico Liga MX":          262,
+    "China Super League":      169,
+    "USA MLS":                 253,
+    # International
+    "World Cup 2026":            1,
+}
+# IDs may need verification at dashboard.api-football.com/docs
+
+# Per-league season year (API-Football start year convention)
+API_FOOTBALL_SEASONS: dict = {
+    # Standard format — 2025/26 European season
+    "Championship":             "2025",
+    "League One":               "2025",
+    "League Two":               "2025",
+    "Bundesliga 2":             "2025",
+    "Ligue 2":                  "2025",
+    "La Liga 2":                "2025",
+    "Serie B":                  "2025",
+    "Greek Super League":       "2025",
+    "Danish Superliga":         "2025",
+    "Austrian Bundesliga":      "2025",
+    "Romanian Superliga":       "2025",
+    # Summer leagues (calendar year = season year)
+    "Sweden Allsvenskan":       "2026",
+    "Norway Eliteserien":       "2026",
+    "Finland Veikkausliiga":    "2026",
+    "Ireland Premier Division": "2026",
+    "Brazil Serie A":           "2026",
+    "Japan J-League":           "2026",
+    "Mexico Liga MX":           "2026",
+    "China Super League":       "2026",
+    "USA MLS":                  "2026",
+    # South America (starts early calendar year)
+    "Argentina Primera Division": "2025",
+    # International
+    "World Cup 2026":           "2026",
 }
 
 ODDS_API_SPORT_KEYS = {

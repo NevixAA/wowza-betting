@@ -39,3 +39,6 @@ player_match_cache/
 telegram_bot/bot_config.json
 .api_keys
 .env
+
+# API-Football response cache — regeneratable, too large for git
+api_football_cache/
