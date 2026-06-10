@@ -62,10 +62,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash --include-untracked || true
-          git pull --rebase origin main
-          git stash pop || true
-          git add output/player_tips.csv telegram_bot/notified.json || true
+          git add -f output/player_tips.csv telegram_bot/notified.json 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git pull --rebase origin main
           git push

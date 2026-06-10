@@ -47,14 +47,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash --include-untracked || true
-          git pull --rebase origin main
-          git stash pop || true
-          git add output/bets.csv output/bets_ledger.csv output/predictions.csv \
-                  output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
-                  output/live_tips.csv output/live_games.csv \
-                  output/worldcup_history.json output/sharp_history.json \
-                  telegram_bot/notified.json telegram_bot/live_notified.json || true
+          git add -f output/bets.csv output/bets_ledger.csv output/predictions.csv \
+                     output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
+                     output/live_tips.csv output/live_games.csv \
+                     output/worldcup_history.json output/sharp_history.json \
+                     telegram_bot/notified.json telegram_bot/live_notified.json 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git pull --rebase origin main
           git push
