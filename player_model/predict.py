@@ -7,11 +7,14 @@ Uses de-vigged edge, relative edge floors, and 5-component confidence scoring.
 from __future__ import annotations
 
 import math
+import os
 from pathlib import Path
 
 import pandas as pd
 
 from . import config
+
+_APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
 from .feature_engineering import build_upcoming_features, compute_ges
 from .model import load_model, predict_proba
 
