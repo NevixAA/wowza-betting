@@ -66,7 +66,7 @@ def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
     """5-component confidence score (0.0-1.0)."""
     n_games = row.get("n_games", 0)
 
-    # Data volume (0→0, 5→0.40, 10→0.70, 20→1.0)
+    # Data volume (0->0, 5->0.40, 10->0.70, 20->1.0)
     vol_score = min(1.0, n_games / 20.0) * 0.70 + (min(n_games, 5) / 5.0) * 0.30
 
     # Recency (exponential decay — most recent game weighted highest)

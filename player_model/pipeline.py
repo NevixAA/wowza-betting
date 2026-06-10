@@ -16,13 +16,17 @@ from pathlib import Path
 import pandas as pd
 from dotenv import load_dotenv
 
+# Force UTF-8 stdout so team names with non-ASCII chars (ü, é, etc.) don't crash on Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 _v9 = Path(__file__).resolve().parents[1]
 load_dotenv(_v9 / ".env")
 sys.path.insert(0, str(_v9))
 
 from player_model import config
 from player_model.data_fetcher import (
-    collect_history, collect_match_history,
+    collect_history, collect_match_history, collect_national_team_history,
     FBREF_LEAGUES, EUROPEAN_CUPS, APIFOOTBALL_LEAGUES,
 )
 from player_model.feature_engineering import build_features
@@ -56,6 +60,39 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
         if market in df.columns:
             rate = df[market].mean()
             print(f"  {market}: {rate:.1%} positive rate")
+
+
+# ── WC26 national team collect ────────────────────────────────────────────────
+
+def mode_collect_wc(last_n: int = 10) -> None:
+    print(f"[collect-wc] Fetching WC2026 national team player stats (last {last_n} fixtures/team)...")
+    rows = collect_national_team_history(last_n=last_n)
+    if not rows:
+        print("[collect-wc] No data collected.")
+        return
+
+    new_df = build_features(rows)
+    if new_df.empty:
+        print("[collect-wc] Feature engineering returned empty DataFrame.")
+        return
+
+    # Merge with existing history (club leagues) — deduplicate on fixture+player
+    if HISTORY_CACHE.exists():
+        existing = pd.read_parquet(HISTORY_CACHE)
+        combined = pd.concat([existing, new_df], ignore_index=True)
+        combined = combined.drop_duplicates(subset=["fixture_id", "player_id"])
+        combined = combined.reset_index(drop=True)
+    else:
+        combined = new_df
+
+    combined.to_parquet(HISTORY_CACHE, index=False)
+    wc_players = new_df["player_id"].nunique()
+    print(f"[collect-wc] +{len(new_df)} WC rows ({wc_players} players) merged -> {len(combined)} total rows")
+
+    for market in ["target_goals", "target_sot", "target_cards", "target_assists"]:
+        if market in new_df.columns:
+            rate = new_df[market].mean()
+            print(f"  {market}: {rate:.1%} positive rate (WC data)")
 
 
 # ── Phase 3: Train ────────────────────────────────────────────────────────────
@@ -159,7 +196,7 @@ def _enrich_with_recent_form(history: pd.DataFrame) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
-    parser.add_argument("--mode", choices=["collect", "train", "predict", "all"], required=True)
+    parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all"], required=True)
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
     parser.add_argument("--last-n", type=int, default=99,
@@ -168,6 +205,8 @@ def main() -> None:
 
     if args.mode == "collect" or args.mode == "all":
         mode_collect(extended=args.extended, last_n=args.last_n)
+    if args.mode == "collect-wc":
+        mode_collect_wc(last_n=args.last_n)
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":
