@@ -139,10 +139,9 @@ def _detect_lazy_factors(row: dict, feat_row: dict, market: str) -> list[str]:
     factors = []
 
     if market == "sot":
-        sps_rate = feat_row.get("set_piece_shot_rate", 0)
-        corners  = feat_row.get("team_corners_per90", 0)
-        pos_def  = feat_row.get("pos_defender", 0)
-        if pos_def and sps_rate > 0.15 and corners > 5.5:
+        sp_score = feat_row.get("set_piece_threat_score", 0.0)
+        # Threshold: aerial 45% × corners at league avg (6) × 0.30 sp rate = 0.135
+        if sp_score > 0.135 and (feat_row.get("pos_defender", 0) or feat_row.get("pos_midfielder", 0)):
             factors.append("SET_PIECE")
 
     if market == "cards":

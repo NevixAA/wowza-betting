@@ -130,8 +130,16 @@ def _save_cache(key: str, players: list) -> None:
 
 # ── Fixture cache (permanent — fixture results never change) ──────────────────
 
+FIXTURE_STATS_CACHE_DIR = config.BASE_DIR / "fixture_stats_cache"
+FIXTURE_STATS_CACHE_DIR.mkdir(exist_ok=True)
+
+
 def _fixture_cache_path(fixture_id: int) -> Path:
     return FIXTURE_CACHE_DIR / f"fix_{fixture_id}.json"
+
+
+def _fixture_stats_cache_path(fixture_id: int) -> Path:
+    return FIXTURE_STATS_CACHE_DIR / f"stats_{fixture_id}.json"
 
 
 def _load_fixture_cache(fixture_id: int) -> Optional[list]:
@@ -147,6 +155,39 @@ def _load_fixture_cache(fixture_id: int) -> Optional[list]:
 def _save_fixture_cache(fixture_id: int, data: list) -> None:
     p = _fixture_cache_path(fixture_id)
     p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+
+def _fetch_fixture_statistics(fixture_id: int) -> dict:
+    """
+    Fetch team-level statistics for a completed fixture.
+    Cached permanently. Returns {team_name: {corners: N, shots_total: N, possession: N}}.
+    """
+    cache_p = _fixture_stats_cache_path(fixture_id)
+    if cache_p.exists():
+        try:
+            return json.loads(cache_p.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    try:
+        data = _api_get("fixtures/statistics", {"fixture": fixture_id})
+    except RuntimeError:
+        return {}
+
+    result = {}
+    for team_data in data.get("response", []):
+        team_name = team_data.get("team", {}).get("name", "")
+        stats = {s.get("type", ""): s.get("value") for s in team_data.get("statistics", [])}
+        result[team_name] = {
+            "corners":     int(stats.get("Corner Kicks") or 0),
+            "shots_total": int(stats.get("Total Shots") or 0),
+            "possession":  float(str(stats.get("Ball Possession") or "0%").replace("%", "") or 0),
+        }
+
+    if result:
+        cache_p.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+
+    return result
 
 
 # ── Per-fixture player stats (match-level data) ───────────────────────────────
@@ -236,6 +277,7 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "fouls_drawn":     int(fouls_d.get("drawn")     or 0),
         "duels_total":     int(duels_d.get("total")     or 0),
         "duels_won":       int(duels_d.get("won")       or 0),
+        "team_corners":    int(meta.get("team_corners", 0)),
     }
 
 
@@ -294,16 +336,21 @@ def collect_match_history(
                 print(f"    [fix {fixture_id}] error: {e}")
                 continue
 
+            # Fetch team-level statistics for corners (permanently cached)
+            fix_stats = _fetch_fixture_statistics(fixture_id)
+
             for team_data in team_data_list:
                 team_name = team_data.get("team", {}).get("name", "")
                 is_home   = (team_name == home_team)
+                team_st   = fix_stats.get(team_name, {})
                 meta = {
-                    "fixture_id": fixture_id,
-                    "date":       fix_date,
-                    "home_team":  home_team,
-                    "away_team":  away_team,
-                    "team":       team_name,
-                    "is_home":    is_home,
+                    "fixture_id":    fixture_id,
+                    "date":          fix_date,
+                    "home_team":     home_team,
+                    "away_team":     away_team,
+                    "team":          team_name,
+                    "is_home":       is_home,
+                    "team_corners":  team_st.get("corners", 0),
                 }
                 for player_entry in team_data.get("players", []):
                     parsed = _parse_fixture_player(player_entry, meta, league_name)
@@ -393,16 +440,20 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                 print(f"    [fix {fixture_id}] error: {e}")
                 continue
 
+            fix_stats = _fetch_fixture_statistics(fixture_id)
+
             for team_data in team_data_list:
                 t_name  = team_data.get("team", {}).get("name", "")
                 is_home = (t_name == home_team)
+                team_st = fix_stats.get(t_name, {})
                 meta = {
-                    "fixture_id": fixture_id,
-                    "date":       fix_date,
-                    "home_team":  home_team,
-                    "away_team":  away_team,
-                    "team":       t_name,
-                    "is_home":    is_home,
+                    "fixture_id":   fixture_id,
+                    "date":         fix_date,
+                    "home_team":    home_team,
+                    "away_team":    away_team,
+                    "team":         t_name,
+                    "is_home":      is_home,
+                    "team_corners": team_st.get("corners", 0),
                 }
                 for player_entry in team_data.get("players", []):
                     parsed = _parse_fixture_player(player_entry, meta, league_name)
