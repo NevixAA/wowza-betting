@@ -31,6 +31,10 @@ odds_history_v9.json
 !output/predictions.csv
 !models/feature_importances_standard.csv
 !models/feature_importances_newformat.csv
+# Player model caches — regeneratable, too large for git
+fixture_player_cache/
+player_match_cache/
+
 # Secrets - keep locally only
 telegram_bot/bot_config.json
 .api_keys

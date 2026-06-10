@@ -58,6 +58,9 @@ EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
 
 FBREF_LEAGUES = APIFOOTBALL_LEAGUES
 
+WC26_LEAGUE_ID = 1
+WC26_SEASON    = "2026"
+
 
 # ── HTTP helper ───────────────────────────────────────────────────────────────
 
@@ -301,6 +304,105 @@ def collect_match_history(
         print(f"  [{league_name}] {league_rows} player-match rows collected")
 
     print(f"[DONE] {len(all_rows)} total player-match rows across {len(leagues)} leagues.")
+    return all_rows
+
+
+# ── World Cup 2026 national team collection ───────────────────────────────────
+
+def _fetch_wc26_teams() -> list[dict]:
+    """Fetch all 48 WC2026 teams from API-Football. Returns list of team dicts."""
+    data = _api_get("teams", {"league": WC26_LEAGUE_ID, "season": WC26_SEASON})
+    return data.get("response", [])
+
+
+def collect_national_team_history(last_n: int = 10) -> list[dict]:
+    """
+    Collect per-match player stats for all WC2026 national teams.
+
+    For each of the 48 WC teams:
+      1. GET /fixtures?team={id}&last={n}  — last N fixtures (qualifiers, NL, friendlies)
+      2. GET /fixtures/players?fixture={id} — player stats (cached permanently)
+
+    API cost: 1 (team list) + 48 (fixture lists) + up to 48*last_n (player stats, cached).
+    On first run ~529 requests; subsequent runs ~49 (everything else cached).
+    """
+    last_n = min(last_n, 99)
+    finished = {"FT", "AET", "PEN", "AWD", "WO"}
+
+    print(f"[wc26] Fetching WC2026 team list...")
+    try:
+        teams = _fetch_wc26_teams()
+    except RuntimeError as e:
+        print(f"[wc26] Failed to fetch team list: {e}")
+        return []
+
+    if not teams:
+        print("[wc26] No WC2026 teams found — tournament may not be registered yet.")
+        return []
+
+    print(f"[wc26] {len(teams)} teams found. Collecting last {last_n} fixtures each...")
+    all_rows: list[dict] = []
+
+    for entry in teams:
+        team_info = entry.get("team", {})
+        team_id   = team_info.get("id")
+        team_name = team_info.get("name", f"team_{team_id}")
+
+        try:
+            data = _api_get("fixtures", {"team": team_id, "last": last_n})
+            fixtures = [
+                f for f in data.get("response", [])
+                if f.get("fixture", {}).get("status", {}).get("short", "") in finished
+            ]
+        except RuntimeError as e:
+            print(f"  [{team_name}] fixture list error: {e}")
+            continue
+
+        if not fixtures:
+            print(f"  [{team_name}] No completed fixtures found")
+            continue
+
+        cached_count = sum(
+            1 for f in fixtures
+            if _fixture_cache_path(f.get("fixture", {}).get("id", 0)).exists()
+        )
+        team_rows = 0
+        for fix in fixtures:
+            fixture_id = fix.get("fixture", {}).get("id")
+            if not fixture_id:
+                continue
+
+            fix_date  = fix.get("fixture", {}).get("date", "")[:10]
+            home_team = fix.get("teams", {}).get("home", {}).get("name", "")
+            away_team = fix.get("teams", {}).get("away", {}).get("name", "")
+            league_name = fix.get("league", {}).get("name", "International")
+
+            try:
+                team_data_list = _fetch_fixture_player_stats(fixture_id)
+            except RuntimeError as e:
+                print(f"    [fix {fixture_id}] error: {e}")
+                continue
+
+            for team_data in team_data_list:
+                t_name  = team_data.get("team", {}).get("name", "")
+                is_home = (t_name == home_team)
+                meta = {
+                    "fixture_id": fixture_id,
+                    "date":       fix_date,
+                    "home_team":  home_team,
+                    "away_team":  away_team,
+                    "team":       t_name,
+                    "is_home":    is_home,
+                }
+                for player_entry in team_data.get("players", []):
+                    parsed = _parse_fixture_player(player_entry, meta, league_name)
+                    if parsed:
+                        all_rows.append(parsed)
+                        team_rows += 1
+
+        print(f"  [{team_name}] {len(fixtures)} fixtures ({cached_count} cached) -> {team_rows} rows")
+
+    print(f"[wc26] Done. {len(all_rows)} player-match rows across {len(teams)} national teams.")
     return all_rows
 
 
