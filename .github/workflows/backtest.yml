@@ -51,5 +51,5 @@ jobs:
                      models/feature_importances_ht_over15.csv 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: backtest results $(date -u '+%Y-%m-%d')"
-          git pull --rebase origin main
+          git pull --rebase --autostash origin main
           git push
