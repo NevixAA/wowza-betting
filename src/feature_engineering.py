@@ -613,4 +613,53 @@ def build_upcoming_features(
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
     df["implied_prob_under"] = 1.0 / df["odds_under25"].replace(0, np.nan)
 
+    # ── Optional: API-Football standings metadata (not model features) ────────
+    # Adds table position, GD/game, form pts for display in predictions.csv.
+    # Falls back silently if API key unavailable or request fails.
+    for col in ["home_table_pos", "away_table_pos", "home_gd_pg", "away_gd_pg",
+                "home_form_pts", "away_form_pts", "home_win_rate_h", "away_win_rate_a",
+                "table_pos_gap"]:
+        df[col] = np.nan
+
+    try:
+        import sys as _sys
+        _sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        from src.api_football import build_standings_map, lookup_team_standing
+        import config as _cfg
+
+        _standings_cache: dict = {}
+
+        for i, row in df.iterrows():
+            league  = row.get("league", "")
+            lg_id   = _cfg.API_FOOTBALL_IDS.get(league)
+            if not lg_id:
+                continue
+
+            season = _cfg.API_FOOTBALL_SEASONS.get(league, _cfg.API_SEASON)
+
+            if (lg_id, season) not in _standings_cache:
+                _standings_cache[(lg_id, season)] = build_standings_map(lg_id, season)
+            smap   = _standings_cache[(lg_id, season)]
+            n_teams = max(len(smap), 1)
+
+            home_s = lookup_team_standing(smap, str(row.get("home_team", "")))
+            away_s = lookup_team_standing(smap, str(row.get("away_team", "")))
+
+            if home_s:
+                df.at[i, "home_table_pos"]  = round(home_s["rank"] / n_teams, 3)
+                df.at[i, "home_gd_pg"]      = home_s["gd_per_game"]
+                df.at[i, "home_form_pts"]   = home_s["form_pts"]
+                df.at[i, "home_win_rate_h"] = home_s["home_win_rate"]
+            if away_s:
+                df.at[i, "away_table_pos"]  = round(away_s["rank"] / n_teams, 3)
+                df.at[i, "away_gd_pg"]      = away_s["gd_per_game"]
+                df.at[i, "away_form_pts"]   = away_s["form_pts"]
+                df.at[i, "away_win_rate_a"] = away_s["away_win_rate"]
+            if home_s and away_s:
+                df.at[i, "table_pos_gap"] = round(
+                    (away_s["rank"] - home_s["rank"]) / n_teams, 3
+                )
+    except Exception:
+        pass  # standings are metadata only — never break predictions
+
     return df

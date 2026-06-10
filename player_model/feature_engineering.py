@@ -63,6 +63,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # Count of previous games this player has in the dataset
     df["n_prev_games"] = grp["date"].transform("cumcount")
+    df["starter_rate"] = grp["started"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
 
     # ── Opponent defensive rolling features ───────────────────────────────────
     # For each (fixture, team): aggregate goals scored/conceded from player rows.
@@ -174,6 +176,7 @@ def build_upcoming_features(
         cards_pg   = float(phist["yellow_cards"].mean())
         minutes_pg = float(phist["minutes"].mean())
         kp_pg      = float(phist["key_passes"].mean()) if "key_passes" in phist.columns else 0.0
+        starter_rate = float(phist["started"].mean()) if "started" in phist.columns else 0.8
         sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
 
         pos = str(p.get("position",
@@ -197,6 +200,7 @@ def build_upcoming_features(
             "minutes_pg":          round(minutes_pg,  1),
             "key_passes_pg":       round(kp_pg,       4),
             "sot_rate":            round(sot_rate,    4),
+            "starter_rate":        round(starter_rate, 3),
             # Match context
             "is_home":              float(p.get("is_home", 0.5)),
             "opp_goals_conceded_pg": ctx.get("opp_goals_conceded_pg", 1.3),

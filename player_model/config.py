@@ -50,6 +50,8 @@ PLAYER_FEATURE_COLS = [
     "pos_forward", "pos_midfielder", "pos_defender",
     "rest_days",
 ]
+# starter_rate is computed but not yet in PLAYER_FEATURE_COLS — add and retrain to activate:
+#   "starter_rate",
 MIN_APPEARANCES  = 3   # season-stats fallback path
 MIN_GAMES_SIGNAL = 3   # minimum match history to generate a signal
 MIN_GAMES_SNIPER = 8
