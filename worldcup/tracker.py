@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import logging
+import statistics
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -83,31 +84,42 @@ def _fetch_wc_odds() -> list[dict]:
                 "fetched_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
             }
 
-            # Parse best available odds (first bookmaker that has the market)
+            # Collect odds from ALL bookmakers, then take median (outlier-resistant)
+            book_odds: dict[str, list[float]] = {
+                "odds_over": [], "odds_under": [],
+                "odds_over15": [], "odds_under15": [],
+                "odds_over35": [], "odds_under35": [],
+                "odds_home": [], "odds_away": [], "odds_draw": [],
+            }
             for bm in event.get("bookmakers", []):
                 for mkt in bm.get("markets", []):
                     if market == "totals" and mkt["key"] == "totals":
                         for o in mkt["outcomes"]:
                             pt = o.get("point")
                             if pt == 2.5:
-                                if o["name"] == "Over":  entry["odds_over"]   = o["price"]
-                                else:                    entry["odds_under"]  = o["price"]
+                                if o["name"] == "Over":  book_odds["odds_over"].append(o["price"])
+                                else:                    book_odds["odds_under"].append(o["price"])
                             elif pt == 1.5:
-                                if o["name"] == "Over":  entry["odds_over15"] = o["price"]
-                                else:                    entry["odds_under15"]= o["price"]
+                                if o["name"] == "Over":  book_odds["odds_over15"].append(o["price"])
+                                else:                    book_odds["odds_under15"].append(o["price"])
                             elif pt == 3.5:
-                                if o["name"] == "Over":  entry["odds_over35"] = o["price"]
-                                else:                    entry["odds_under35"]= o["price"]
+                                if o["name"] == "Over":  book_odds["odds_over35"].append(o["price"])
+                                else:                    book_odds["odds_under35"].append(o["price"])
                     elif market == "h2h" and mkt["key"] == "h2h":
                         for o in mkt["outcomes"]:
                             if o["name"] == event["home_team"]:
-                                entry["odds_home"] = o["price"]
+                                book_odds["odds_home"].append(o["price"])
                             elif o["name"] == event["away_team"]:
-                                entry["odds_away"] = o["price"]
+                                book_odds["odds_away"].append(o["price"])
                             elif o["name"] == "Draw":
-                                entry["odds_draw"] = o["price"]
-                if any(k in entry for k in ("odds_over", "odds_home")):
-                    break  # got what we need from first valid bookmaker
+                                book_odds["odds_draw"].append(o["price"])
+
+            n_books = 0
+            for k, vals in book_odds.items():
+                if vals:
+                    entry[k] = round(statistics.median(vals), 3)
+                    n_books = max(n_books, len(vals))
+            entry["n_books"] = n_books
 
             results.append(entry)
 
@@ -143,8 +155,9 @@ def _update_history(history: dict, events: list[dict]) -> dict:
                 "snapshots": [],
             }
         history[key]["snapshots"].append({
-            "at":   ev["fetched_at"],
-            "odds": _extract_odds(ev),
+            "at":      ev["fetched_at"],
+            "odds":    _extract_odds(ev),
+            "n_books": ev.get("n_books", 1),
         })
         # Keep only last 50 snapshots
         history[key]["snapshots"] = history[key]["snapshots"][-50:]
@@ -181,7 +194,8 @@ def _build_tips(history: dict) -> pd.DataFrame:
     now  = datetime.utcnow()
 
     for key, rec in history.items():
-        if not rec["snapshots"]:
+        # Need at least 2 snapshots — a single data point can't prove movement
+        if len(rec.get("snapshots", [])) < 2:
             continue
 
         match_dt = pd.to_datetime(rec["date"], errors="coerce")
@@ -191,6 +205,7 @@ def _build_tips(history: dict) -> pd.DataFrame:
         opening = rec["opening"]
         current = rec["snapshots"][-1]["odds"]
         n_snaps = len(rec["snapshots"])
+        n_books = rec["snapshots"][-1].get("n_books", 1)
 
         if rec["market"] == "totals":
             for side, ok, label in [
@@ -205,6 +220,12 @@ def _build_tips(history: dict) -> pd.DataFrame:
                 cu = current.get(ok)
                 if not op or not cu:
                     continue
+                # Plausibility guard: O/U outside 1.05-15 is garbage data
+                if not (1.05 <= op <= 15.0 and 1.05 <= cu <= 15.0):
+                    continue
+                # >70% drift in one window = almost certainly a data error
+                if abs(op - cu) / op > 0.70:
+                    continue
                 d = _drift_pct(op, cu)
                 sig = _signal_label(d)
                 if sig == "NEUTRAL":
@@ -218,6 +239,7 @@ def _build_tips(history: dict) -> pd.DataFrame:
                     "drift_pct":    round(d * 100, 1),
                     "signal":       sig,
                     "snapshots":    n_snaps,
+                    "n_books":      n_books,
                     "updated_at":   rec["snapshots"][-1]["at"],
                 })
 
@@ -232,6 +254,16 @@ def _build_tips(history: dict) -> pd.DataFrame:
                 cu = current.get(ok)
                 if not op or not cu:
                     continue
+                # Plausibility guard: draw 1.3-20, home/away 1.05-40
+                if side == "DRAW" and not (1.30 <= op <= 20.0 and 1.30 <= cu <= 20.0):
+                    continue
+                if side in ("HOME", "AWAY") and not (1.05 <= op <= 40.0 and 1.05 <= cu <= 40.0):
+                    continue
+                # >50% drift in one window from opening is almost certainly a data error
+                if abs(op - cu) / op > 0.50:
+                    log.warning(f"Implausible drift skipped: {rec['home']} vs {rec['away']} "
+                                f"{side} {op:.2f}→{cu:.2f} ({abs(op-cu)/op:.0%})")
+                    continue
                 d = _drift_pct(op, cu)
                 sig = _signal_label(d)
                 if sig == "NEUTRAL":
@@ -245,13 +277,14 @@ def _build_tips(history: dict) -> pd.DataFrame:
                     "drift_pct":    round(d * 100, 1),
                     "signal":       sig,
                     "snapshots":    n_snaps,
+                    "n_books":      n_books,
                     "updated_at":   rec["snapshots"][-1]["at"],
                 })
 
     if not rows:
         return pd.DataFrame(columns=[
             "date", "match", "market", "opening_odds", "current_odds",
-            "drift_pct", "signal", "snapshots", "updated_at"
+            "drift_pct", "signal", "snapshots", "n_books", "updated_at"
         ])
 
     df = pd.DataFrame(rows)
