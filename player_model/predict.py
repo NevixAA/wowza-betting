@@ -64,6 +64,23 @@ def _kelly_stake(ev: float, market_odds: float) -> float:
     return max(0.0, round(full_kelly * config.KELLY_FRACTION, 4))
 
 
+def _opp_weakness_mult(team_win_prob: float, market: str) -> float:
+    """
+    Upward multiplier on model probability when the player's team is a heavy favourite.
+    Captures opponent-weakness that the model underestimates (trained on balanced leagues).
+    Kicks in above 60% win probability, capped at 30% boost at 90%+.
+    Cards get no boost — strong teams don't necessarily card more.
+    Assists get 70% of the boost (less direct than goals/SOT).
+    """
+    if market == "cards" or team_win_prob < 0.60:
+        return 1.0
+    raw = min(team_win_prob - 0.60, 0.30)   # 0.0 at 60% → 0.30 at 90%+
+    boost = raw                               # max +0.30 → multiplier 1.30
+    if market == "assists":
+        boost *= 0.70                         # max +0.21 → multiplier 1.21
+    return round(1.0 + boost, 3)
+
+
 # ── Confidence scoring ────────────────────────────────────────────────────────
 
 def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
@@ -269,6 +286,10 @@ def run_player_predictions(
         ref = (referee_profiles or {}).get(match_key, {})
         ctx = (match_contexts or {}).get(match_key, {})
 
+        # Team win probabilities for opponent-weakness multiplier
+        home_win_prob = float(ctx.get("home_win_prob", 0.5))
+        away_win_prob = float(ctx.get("away_win_prob", 0.5))
+
         # ── Lineup check: build confirmed starter set for this fixture ─────────
         lineup_starters: set[str] = set()
         lineup_available = False
@@ -331,6 +352,11 @@ def run_player_predictions(
 
             for market in config.MARKETS:
                 p_model = float(feat_row.get(f"p_{market}", 0))
+                # Opponent-weakness multiplier: heavy favourites score/shoot more
+                _is_home = float(feat_row.get("is_home", 0.5)) > 0.5
+                _win_prob = home_win_prob if _is_home else away_win_prob
+                p_model = min(0.95, p_model * _opp_weakness_mult(_win_prob, market))
+
                 if p_model < 0.15:
                     continue
 

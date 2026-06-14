@@ -120,6 +120,47 @@ def mode_train() -> None:
     print("\n[train] Done.")
 
 
+# ── Match contexts (team win probs for opponent-weakness multiplier) ──────────
+
+def _build_match_contexts() -> dict:
+    """
+    Build per-match context dict with de-vigged team win probabilities.
+    Currently reads from worldcup_history.json (1X2 odds tracked by the WC drift tracker).
+    Returns {match_key: {home_win_prob, away_win_prob}}.
+    """
+    import json
+    contexts: dict = {}
+    wc_hist_file = config.OUTPUT_DIR / "worldcup_history.json"
+    if not wc_hist_file.exists():
+        return contexts
+    try:
+        hist = json.loads(wc_hist_file.read_text(encoding="utf-8"))
+        for rec in hist.values():
+            if rec.get("market") != "h2h":
+                continue
+            home = rec["home"]
+            away = rec["away"]
+            dt   = rec.get("date", "")[:10]
+            match_key = f"{home}|{away}|{dt}"
+            snaps = rec.get("snapshots", [])
+            odds  = snaps[-1]["odds"] if snaps else rec.get("opening", {})
+            oh = odds.get("odds_home")
+            oa = odds.get("odds_away")
+            od = odds.get("odds_draw", 3.0) or 3.0
+            if not oh or not oa:
+                continue
+            total = 1 / oh + 1 / oa + 1 / od
+            contexts[match_key] = {
+                "home_win_prob": round((1 / oh) / total, 3),
+                "away_win_prob": round((1 / oa) / total, 3),
+            }
+        if contexts:
+            print(f"[pipeline] Win probs loaded for {len(contexts)} WC matches")
+    except Exception as e:
+        print(f"[pipeline] Match context build failed: {e}")
+    return contexts
+
+
 # ── Referee profiles ─────────────────────────────────────────────────────────
 
 def _build_referee_profiles() -> dict:
@@ -176,6 +217,7 @@ def mode_predict() -> None:
         bets_csv=config.OUTPUT_DIR / "bets.csv",
         history_df=history,
         referee_profiles=_build_referee_profiles() if api_key else None,
+        match_contexts=_build_match_contexts(),
     )
 
     if tips.empty:
