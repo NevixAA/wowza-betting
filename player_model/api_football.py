@@ -144,6 +144,25 @@ def find_fixture_id(league_id: int, season: str, date_str: str, home: str, away:
     return None
 
 
+def get_injured_players(league_id: int, season: str, date_str: str) -> set[str]:
+    """
+    Return normalized names of players currently injured/suspended for a league on a given date.
+    Uses /injuries endpoint cached 4 hours (injury status is stable within a day).
+    Returns empty set if no key or endpoint unavailable.
+    """
+    data = _get("/injuries", {
+        "league": league_id, "season": season, "date": date_str,
+    }, cache_hours=4)
+    if not data:
+        return set()
+    injured: set[str] = set()
+    for entry in data.get("response", []):
+        name = entry.get("player", {}).get("name", "")
+        if name:
+            injured.add(_norm_name(name))
+    return injured
+
+
 def get_fixture_status(league_id: int, season: str, date_str: str, home: str, away: str) -> tuple[str, int | None]:
     """
     Check the status of any fixture (played, postponed, cancelled, etc.) regardless of completion.

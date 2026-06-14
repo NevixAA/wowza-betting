@@ -15,6 +15,7 @@ import pandas as pd
 from . import config
 
 _APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
+from .api_football import _norm_name as _norm_player_name
 from .feature_engineering import build_upcoming_features, compute_ges
 from .model import load_model, predict_proba
 
@@ -233,6 +234,22 @@ def run_player_predictions(
     import pandas as _pd
     bets = _pd.DataFrame(bets_list)
 
+    # ── Pre-fetch injury lists once per league (4 h cache) ────────────────────
+    injured_cache: dict[str, set] = {}
+    if _APIFOOTBALL_KEY:
+        try:
+            from player_model.api_football import get_injured_players as _gip
+            from datetime import date as _date
+            _today_str = _date.today().isoformat()
+            for _lg, _lg_id in config.PROP_LEAGUES.items():
+                _szn = config.PROP_SEASONS.get(_lg, "2025")
+                injured_cache[_lg] = _gip(_lg_id, _szn, _today_str)
+            _n_inj = sum(len(v) for v in injured_cache.values())
+            if _n_inj:
+                print(f"[predict] Injury filter: {_n_inj} injured/suspended players loaded")
+        except Exception as _e:
+            print(f"[predict] Injury fetch failed: {_e}")
+
     payloads = {m: load_model(m) for m in config.MARKETS}
     missing  = [m for m, p in payloads.items() if p is None]
     if missing:
@@ -250,6 +267,23 @@ def run_player_predictions(
 
         ref = (referee_profiles or {}).get(match_key, {})
         ctx = (match_contexts or {}).get(match_key, {})
+
+        # ── Lineup check: build confirmed starter set for this fixture ─────────
+        lineup_starters: set[str] = set()
+        lineup_available = False
+        fid = match_row.get("fixture_id")
+        if _APIFOOTBALL_KEY and fid and not pd.isna(fid):
+            try:
+                from player_model.api_football import get_fixture_lineup as _gfl
+                _lineup = _gfl(int(fid))
+                if _lineup:
+                    lineup_available = True
+                    for _team_players in _lineup.values():
+                        for _p in _team_players:
+                            if _p.get("started"):
+                                lineup_starters.add(_norm_player_name(_p.get("player_name", "")))
+            except Exception as _e:
+                print(f"[predict] Lineup fetch failed (fixture {fid}): {_e}")
 
         # Find players from both teams
         team_players = history_df[
@@ -284,6 +318,16 @@ def run_player_predictions(
             feat_df[f"p_{market}"] = probs.values
 
         for i, feat_row in feat_df.iterrows():
+            player_norm = _norm_player_name(str(feat_row.get("player_name", "")))
+
+            # Skip players not in confirmed starting XI when lineup is confirmed
+            if lineup_available and player_norm not in lineup_starters:
+                continue
+
+            # Skip injured / suspended players
+            if player_norm in injured_cache.get(league, set()):
+                continue
+
             for market in config.MARKETS:
                 p_model = float(feat_row.get(f"p_{market}", 0))
                 if p_model < 0.15:
@@ -305,6 +349,9 @@ def run_player_predictions(
                 lazy_factors = _detect_lazy_factors(
                     feat_row.to_dict(), feat_row.to_dict(), market
                 )
+                # Confirmed starter adds a lazy factor (confidence boost)
+                if lineup_available and player_norm in lineup_starters and "STARTER" not in lazy_factors:
+                    lazy_factors = ["STARTER"] + lazy_factors
                 confidence = _confidence_score(feat_row.to_dict(), len(lazy_factors))
 
                 all_tips.append({

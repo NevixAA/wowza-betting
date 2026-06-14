@@ -120,6 +120,39 @@ def mode_train() -> None:
     print("\n[train] Done.")
 
 
+# ── Referee profiles ─────────────────────────────────────────────────────────
+
+def _build_referee_profiles() -> dict:
+    """
+    Fetch referee names for all upcoming prop-league fixtures and build strictness profiles.
+    Returns {match_key: {yellows_per_game, strictness_score, n_games}}.
+    All underlying API calls are cached in api_football._get() — safe to call every run.
+    """
+    from player_model.api_football import (
+        get_upcoming_fixtures, get_fixture_referee, build_referee_profile,
+    )
+    profiles: dict = {}
+    try:
+        for league, lg_id in config.PROP_LEAGUES.items():
+            season = config.PROP_SEASONS.get(league, "2025")
+            fixtures = get_upcoming_fixtures(lg_id, season, next_n=5)
+            for fix in fixtures:
+                teams    = fix.get("teams", {})
+                home     = teams.get("home", {}).get("name", "")
+                away     = teams.get("away", {}).get("name", "")
+                dt       = fix.get("fixture", {}).get("date", "")[:10]
+                fid      = fix.get("fixture", {}).get("id")
+                if not fid:
+                    continue
+                match_key = f"{home}|{away}|{dt}"
+                referee   = get_fixture_referee(fid)
+                if referee:
+                    profiles[match_key] = build_referee_profile(referee, lg_id, season)
+    except Exception as e:
+        print(f"[pipeline] Referee profile build failed: {e}")
+    return profiles
+
+
 # ── Predict ───────────────────────────────────────────────────────────────────
 
 def mode_predict() -> None:
@@ -141,6 +174,7 @@ def mode_predict() -> None:
     tips = run_player_predictions(
         bets_csv=config.OUTPUT_DIR / "bets.csv",
         history_df=history,
+        referee_profiles=_build_referee_profiles() if api_key else None,
     )
 
     if tips.empty:
