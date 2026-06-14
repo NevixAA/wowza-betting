@@ -245,10 +245,22 @@ def notify_wc_strong() -> int:
 
     df = pd.read_csv(wc_file)
     strong = df[df["signal"].isin(["STRONG", "SHARP", "FADING"])].copy()
-    # Sort by absolute drift magnitude — biggest moves first
-    strong = strong.iloc[strong["drift_pct"].abs().argsort()[::-1].values]
+
+    # Only alert for matches in the next 3 days — future signals fire when relevant
+    today = datetime.utcnow().date()
+    cutoff = today + __import__("datetime").timedelta(days=3)
+    strong["_date"] = pd.to_datetime(strong["date"], errors="coerce").dt.date
+    strong = strong[strong["_date"].between(today, cutoff)]
+
+    # Priority: STRONG first, then SHARP, then FADING; within each by absolute drift
+    _sig_order = {"STRONG": 0, "SHARP": 1, "FADING": 2}
+    strong["_sig_rank"] = strong["signal"].map(_sig_order).fillna(9)
+    strong = strong.sort_values(["_sig_rank", "drift_pct"], key=lambda s: s if s.name != "drift_pct" else s.abs(), ascending=[True, False])
+
     if strong.empty:
         return 0
+
+    MAX_PER_RUN = 10
 
     notified = _load_notified()
     sent = 0
@@ -260,6 +272,9 @@ def notify_wc_strong() -> int:
     }
 
     for _, row in strong.iterrows():
+        if sent >= MAX_PER_RUN:
+            break
+
         key = f"WC|{str(row['date'])[:10]}|{row['match']}|{row['market']}"
         if key in notified:
             continue
@@ -267,6 +282,8 @@ def notify_wc_strong() -> int:
         sig = row["signal"]
         emoji, label = _WC_SIG.get(sig, ("⚪", sig))
         direction = "▼ Shortening" if row["drift_pct"] < 0 else "▲ Lengthening"
+        n_books = int(row["n_books"]) if "n_books" in row and not pd.isna(row.get("n_books")) else None
+        books_line = f" across {n_books} bookmakers" if n_books and n_books > 1 else ""
         msg = (
             f"{emoji} <b>WC {label}</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
@@ -275,7 +292,7 @@ def notify_wc_strong() -> int:
             f"📌 <b>{row['market']}</b>\n"
             f"💰 Opening: {row['opening_odds']} → Now: {row['current_odds']}\n"
             f"📉 Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
-            f"🔍 Based on {row['snapshots']} snapshots"
+            f"🔍 {row['snapshots']} snapshots{books_line}"
         )
 
         if _send(token, chat_id, msg):
