@@ -135,7 +135,8 @@ def _build_referee_profiles() -> dict:
     try:
         for league, lg_id in config.PROP_LEAGUES.items():
             season = config.PROP_SEASONS.get(league, "2025")
-            fixtures = get_upcoming_fixtures(lg_id, season, next_n=5)
+            n_fix = 20 if league == "World Cup" else 5
+            fixtures = get_upcoming_fixtures(lg_id, season, next_n=n_fix)
             for fix in fixtures:
                 teams    = fix.get("teams", {})
                 home     = teams.get("home", {}).get("name", "")
