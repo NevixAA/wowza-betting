@@ -155,16 +155,22 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
             event_id = event["id"]
             cache_f = _CACHE_DIR / f"{event_id}.json"
 
-            # Cache per event (refresh every 2 hours via mtime check)
+            # Cache per event — timestamp stored inside JSON (not file mtime, which GitHub
+            # Actions cache restore resets to extraction time, breaking the TTL check).
             import time
-            cached = None
-            if cache_f.exists() and (time.time() - cache_f.stat().st_mtime) < 7200:
+            CACHE_TTL = 7200  # 2 hours
+            bookmakers = None
+            if cache_f.exists():
                 try:
-                    cached = json.loads(cache_f.read_text(encoding="utf-8"))
+                    obj = json.loads(cache_f.read_text(encoding="utf-8"))
+                    if isinstance(obj, dict) and "bookmakers" in obj:
+                        if (time.time() - obj.get("fetched_at", 0)) < CACHE_TTL:
+                            bookmakers = obj["bookmakers"]
+                    # Old format (plain list) — treat as expired; will re-fetch below
                 except Exception:
                     pass
 
-            if cached is None:
+            if bookmakers is None:
                 api_markets = ",".join(v[0] for v in _MARKET_MAP.values())
                 data = _get(
                     f"sports/{sport_key}/events/{event_id}/odds",
@@ -173,9 +179,10 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 if data is None:
                     continue
                 bookmakers = data.get("bookmakers", [])
-                cache_f.write_text(json.dumps(bookmakers, ensure_ascii=False), encoding="utf-8")
-            else:
-                bookmakers = cached
+                cache_f.write_text(
+                    json.dumps({"fetched_at": time.time(), "bookmakers": bookmakers}, ensure_ascii=False),
+                    encoding="utf-8",
+                )
 
             # Extract best odds per market
             for our_market, (api_key, point) in _MARKET_MAP.items():

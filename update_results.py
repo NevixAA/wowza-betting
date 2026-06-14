@@ -41,7 +41,9 @@ log = logging.getLogger(__name__)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 
-LEDGER_FILE = config.OUTPUT_DIR / "bets_ledger.csv"
+LEDGER_FILE        = config.OUTPUT_DIR / "bets_ledger.csv"
+PLAYER_LEDGER_FILE = config.OUTPUT_DIR / "player_ledger.csv"
+SHARP_LEDGER_FILE  = config.OUTPUT_DIR / "sharp_ledger.csv"
 
 
 # ── Team name normalisation ───────────────────────────────────────────────────
@@ -295,6 +297,318 @@ def _find_result(
     return None
 
 
+# ── Player prop result resolver ───────────────────────────────────────────────
+
+def _resolve_player_market(market: str, stats: dict) -> str:
+    """Determine WIN/LOSS for a player prop market given their fixture stats."""
+    if market == "goals":
+        return "WIN" if int(stats.get("goals", 0)) >= 1 else "LOSS"
+    if market == "sot":
+        return "WIN" if int(stats.get("shots_on_target", 0)) >= 1 else "LOSS"
+    if market == "cards":
+        return "WIN" if int(stats.get("yellow_card", 0)) >= 1 else "LOSS"
+    if market == "assists":
+        return "WIN" if int(stats.get("assists", 0)) >= 1 else "LOSS"
+    return ""
+
+
+def _fetch_fixture_player_stats(league_id: int, season: str, date_str: str, home: str, away: str) -> dict[str, dict]:
+    """
+    Returns {norm(player_name): {goals, shots_on_target, yellow_card, assists}}
+    for one match. Uses API-Football (APIFOOTBALL_KEY env var required).
+    """
+    import os
+    api_key = os.getenv("APIFOOTBALL_KEY", "")
+    if not api_key:
+        return {}
+
+    try:
+        from player_model.api_football import find_fixture_id, get_fixture_player_stats
+    except ImportError:
+        log.debug("player_model not importable — cannot resolve player results")
+        return {}
+
+    fixture_id = find_fixture_id(league_id, season, date_str, home, away)
+    if not fixture_id:
+        log.debug(f"  fixture not found: {home} vs {away} {date_str}")
+        return {}
+
+    raw = get_fixture_player_stats(fixture_id)
+    return {_norm(p["player_name"]): p for p in raw if p.get("player_name")}
+
+
+def update_player_results(days: int = 3, dry_run: bool = False) -> None:
+    """Resolve player prop outcomes in player_ledger.csv using API-Football."""
+    if not PLAYER_LEDGER_FILE.exists():
+        log.info("player_ledger.csv not found — skipping player prop resolution")
+        return
+
+    ledger = pd.read_csv(PLAYER_LEDGER_FILE, dtype=str)
+
+    # Add new columns if missing (backward compat with ledgers written before this version)
+    for col in ("is_played", "notes"):
+        if col not in ledger.columns:
+            ledger[col] = ""
+
+    today_str = str(datetime.utcnow().date())
+    pending_mask = (
+        ledger["result"].isna() | (ledger["result"].str.strip() == "")
+    ) & (ledger["match_date"] < today_str)
+    pending = ledger[pending_mask].copy()
+
+    if pending.empty:
+        log.info("player_ledger: no pending player prop results")
+        return
+
+    log.info(f"player_ledger: {len(pending)} pending tip(s) to resolve")
+
+    try:
+        from player_model.config import PROP_LEAGUES
+        from player_model.api_football import find_fixture_id, get_fixture_player_stats, get_fixture_status
+    except ImportError:
+        log.warning("player_model not importable — cannot resolve player results")
+        return
+
+    import os
+    if not os.getenv("APIFOOTBALL_KEY", ""):
+        log.info("APIFOOTBALL_KEY not set — skipping player prop resolution")
+        return
+
+    # Cache: fixture_id and full stats per (home, away, date)
+    fixture_cache: dict[str, int | None]   = {}  # cache_key → fixture_id (None = not FT)
+    stats_cache:   dict[str, dict]         = {}  # cache_key → {norm_name: stats}
+    updates: list[dict] = []
+
+    for idx, row in pending.iterrows():
+        home      = row["home_team"]
+        away      = row["away_team"]
+        date_str  = row["match_date"]
+        league    = row["league"]
+        market    = row["market"]
+        player    = row["player_name"]
+        cache_key = f"{home}|{away}|{date_str}"
+
+        league_id = PROP_LEAGUES.get(league)
+        if not league_id:
+            log.debug(f"  {league}: no PROP_LEAGUES entry — skipping")
+            continue
+
+        yr     = int(date_str[:4])
+        season = str(yr - 1) if int(date_str[5:7]) < 7 else str(yr)
+
+        # ── Step 1: look up fixture as FT (completed) ─────────────────────────
+        if cache_key not in fixture_cache:
+            fixture_cache[cache_key] = find_fixture_id(league_id, season, date_str, home, away)
+
+        fixture_id = fixture_cache[cache_key]
+
+        if fixture_id is None:
+            # Fixture not found as FT — check actual status if match is >1 day old
+            days_since = (datetime.utcnow().date() - pd.to_datetime(date_str).date()).days
+            if days_since > 1:
+                status, _ = get_fixture_status(league_id, season, date_str, home, away)
+                if status in ("PST", "CANC", "ABD"):
+                    label = {"PST": "POSTPONED", "CANC": "CANCELLED", "ABD": "ABANDONED"}.get(status, status)
+                    log.info(f"  {home} vs {away} ({date_str}) — {label}, marking VOID")
+                    updates.append({"idx": idx, "is_played": "False", "result": "VOID",
+                                    "pnl": "0.0", "notes": label, "resolved_date": today_str})
+                else:
+                    log.debug(f"  {home} vs {away} ({date_str}) — status={status}, leaving pending")
+            continue
+
+        # ── Step 2: fetch all player stats for this fixture ───────────────────
+        if cache_key not in stats_cache:
+            raw = get_fixture_player_stats(fixture_id)
+            stats_cache[cache_key] = {_norm(p["player_name"]): p for p in raw if p.get("player_name")}
+
+        stats_map = stats_cache[cache_key]
+
+        # ── Step 3: find this player in the stats ─────────────────────────────
+        player_key = _norm(player)
+        stats = stats_map.get(player_key)
+        if stats is None:
+            # Fuzzy fallback: first-5-chars match
+            for k, v in stats_map.items():
+                if len(player_key) >= 5 and len(k) >= 5 and (player_key[:5] in k or k[:5] in player_key):
+                    stats = v
+                    break
+
+        if stats is None:
+            # Player not in fixture stats at all — did not play (DNP)
+            log.info(f"  {player} not found in stats for {home} vs {away} — DNP (VOID)")
+            updates.append({"idx": idx, "is_played": "True", "result": "VOID",
+                            "pnl": "0.0", "notes": "DNP", "resolved_date": today_str})
+            continue
+
+        # ── Step 4: check minutes played ──────────────────────────────────────
+        minutes = int(stats.get("minutes_played") or 0)
+        if minutes == 0:
+            log.info(f"  {player} had 0 minutes in {home} vs {away} — DNP (VOID)")
+            updates.append({"idx": idx, "is_played": "True", "result": "VOID",
+                            "pnl": "0.0", "notes": "DNP (0 min)", "resolved_date": today_str})
+            continue
+
+        # ── Step 5: resolve WIN/LOSS ──────────────────────────────────────────
+        result = _resolve_player_market(market, stats)
+        if not result:
+            continue
+
+        try:
+            mkt_odds = float(row["market_odds"])
+        except (TypeError, ValueError):
+            mkt_odds = 1.0
+        pnl = round(mkt_odds - 1.0, 4) if result == "WIN" else -1.0
+
+        updates.append({"idx": idx, "is_played": "True", "result": result,
+                        "pnl": pnl, "notes": "", "resolved_date": today_str})
+        log.info(
+            f"  {'[DRY]' if dry_run else '[ OK]'} "
+            f"{player} ({market}, {minutes}min) {home} vs {away} ({date_str}) → {result}  PnL={pnl:+.3f}u"
+        )
+
+    if not updates:
+        log.info("  No player prop results resolved.")
+        return
+
+    if dry_run:
+        voids   = sum(1 for u in updates if u["result"] == "VOID")
+        wins    = sum(1 for u in updates if u["result"] == "WIN")
+        losses  = sum(1 for u in updates if u["result"] == "LOSS")
+        print(f"\n  [DRY RUN] Would update {len(updates)} player prop row(s): "
+              f"{wins}W / {losses}L / {voids} VOID. No files written.")
+        return
+
+    resolved_today = today_str
+    for u in updates:
+        ledger.at[u["idx"], "is_played"]     = u["is_played"]
+        ledger.at[u["idx"], "result"]        = u["result"]
+        ledger.at[u["idx"], "pnl"]           = str(u["pnl"])
+        ledger.at[u["idx"], "notes"]         = u.get("notes", "")
+        ledger.at[u["idx"], "resolved_date"] = u["resolved_date"]
+
+    ledger.to_csv(PLAYER_LEDGER_FILE, index=False)
+
+    wins      = sum(1 for u in updates if u["result"] == "WIN")
+    losses    = sum(1 for u in updates if u["result"] == "LOSS")
+    voids     = sum(1 for u in updates if u["result"] == "VOID")
+    total_pnl = sum(float(u["pnl"]) for u in updates if u["result"] != "VOID")
+    log.info(f"player_ledger: {len(updates)} resolved — {wins}W / {losses}L / {voids} VOID — PnL={total_pnl:+.3f}u")
+    log.info(f"  Saved → {PLAYER_LEDGER_FILE}")
+
+
+# ── Sharp money result resolver ───────────────────────────────────────────────
+
+def _resolve_sharp_side(side: str, home_score: int, away_score: int) -> str:
+    """Determine WIN/LOSS for a sharp money signal given the final score."""
+    total = home_score + away_score
+    if side == "OVER":
+        return "WIN" if total > 2.5 else "LOSS"
+    if side == "UNDER":
+        return "WIN" if total <= 2.5 else "LOSS"
+    if side == "HOME":
+        return "WIN" if home_score > away_score else "LOSS"
+    if side == "AWAY":
+        return "WIN" if away_score > home_score else "LOSS"
+    if side == "DRAW":
+        return "WIN" if home_score == away_score else "LOSS"
+    return ""
+
+
+def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
+    """Resolve sharp money tip outcomes in sharp_ledger.csv."""
+    if not SHARP_LEDGER_FILE.exists():
+        log.info("sharp_ledger.csv not found — skipping sharp money resolution")
+        return
+
+    ledger = pd.read_csv(SHARP_LEDGER_FILE, dtype=str)
+    today_str = str(datetime.utcnow().date())
+    pending_mask = (
+        ledger["result"].isna() | (ledger["result"].str.strip() == "")
+    ) & (ledger["match_date"] < today_str)
+    pending = ledger[pending_mask].copy()
+
+    if pending.empty:
+        log.info("sharp_ledger: no pending sharp money results")
+        return
+
+    log.info(f"sharp_ledger: {len(pending)} pending tip(s) to resolve")
+
+    scores_cache: dict[str, list[dict]] = {}
+    updates: list[dict] = []
+
+    for idx, row in pending.iterrows():
+        league   = row["league"]
+        home     = row["home_team"]
+        away     = row["away_team"]
+        date_str = row["match_date"]
+        side     = row["side"]
+
+        if not side:
+            log.debug(f"  sharp: no side parsed for {row.get('market_label', '')} — skipping")
+            continue
+
+        if league not in scores_cache:
+            if league in _FD_SOURCES:
+                log.info(f"  Fetching scores for {league} from football-data.co.uk ...")
+                scores_cache[league] = fetch_scores_fd(league)
+            else:
+                sk = config.ODDS_API_SPORT_KEYS.get(league)
+                if sk:
+                    log.info(f"  Fetching scores for {league} ({sk}) last {days} days ...")
+                    scores_cache[league] = fetch_scores(sk, days)
+                    log.info(f"    → {len(scores_cache[league])} completed events")
+                else:
+                    scores_cache[league] = []
+
+        completed = scores_cache.get(league, [])
+        match_result = None
+        for ev in completed:
+            if ev["date_str"] != date_str:
+                continue
+            if not (_names_match(home, ev["home_team"]) and _names_match(away, ev["away_team"])):
+                continue
+            match_result = _resolve_sharp_side(side, ev["home_score"], ev["away_score"])
+            break
+
+        if match_result is None:
+            log.debug(f"  sharp: {home} vs {away} {date_str} not found in scores")
+            continue
+
+        try:
+            opening_odds = float(row["opening_odds"])
+        except (TypeError, ValueError):
+            opening_odds = 1.0
+        pnl = round(opening_odds - 1.0, 4) if match_result == "WIN" else -1.0
+
+        updates.append({"idx": idx, "result": match_result, "pnl": pnl})
+        log.info(
+            f"  {'[DRY]' if dry_run else '[ OK]'} "
+            f"{home} vs {away} ({side}) {date_str} → {match_result}  PnL={pnl:+.3f}u"
+        )
+
+    if not updates:
+        log.info("  No sharp money results found in any scores source.")
+        return
+
+    if dry_run:
+        print(f"\n  [DRY RUN] Would update {len(updates)} sharp row(s). No files written.")
+        return
+
+    resolved_today = str(datetime.utcnow().date())
+    for u in updates:
+        ledger.at[u["idx"], "result"]        = u["result"]
+        ledger.at[u["idx"], "pnl"]           = str(u["pnl"])
+        ledger.at[u["idx"], "resolved_date"] = resolved_today
+
+    ledger.to_csv(SHARP_LEDGER_FILE, index=False)
+
+    wins      = sum(1 for u in updates if u["result"] == "WIN")
+    losses    = sum(1 for u in updates if u["result"] == "LOSS")
+    total_pnl = sum(u["pnl"] for u in updates)
+    log.info(f"sharp_ledger: {len(updates)} resolved — {wins}W/{losses}L — PnL={total_pnl:+.3f}u")
+    log.info(f"  Saved → {SHARP_LEDGER_FILE}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -319,10 +633,9 @@ def main():
 
     pending = ledger[pending_mask].copy()
     if pending.empty:
-        log.info("No pending results to fill in.")
-        return
-
-    log.info(f"Found {len(pending)} tip(s) with missing results (match_date < {today_str})")
+        log.info("No pending bets_ledger results to fill in.")
+    else:
+        log.info(f"Found {len(pending)} tip(s) with missing results (match_date < {today_str})")
 
     # Fetch scores — FD first (free), OddsAPI as fallback when FD is stale
     scores_cache: dict[str, list[dict]] = {}
@@ -419,59 +732,61 @@ def main():
 
     if not updates:
         log.info("No pending matches found in any scores source. If matches were recently played, try --days with a larger value or re-run after the local CSVs are refreshed.")
-        return
-
-    if args.dry_run:
+    elif args.dry_run:
         print(f"\n  [DRY RUN] Would update {filled} row(s). No files written.")
-        return
 
     # Write back to ledger
-    if "ht_score" not in ledger.columns:
-        ledger["ht_score"] = ""
-    for u in updates:
-        ledger.at[u["idx"], "result"] = u["result"]
-        ledger.at[u["idx"], "pnl"]    = str(u["pnl"])
-        if not np.isnan(u["closing_odds"]):
-            ledger.at[u["idx"], "closing_odds"] = str(u["closing_odds"])
-        if not np.isnan(u["clv_pct"]):
-            ledger.at[u["idx"], "clv_pct"] = str(u["clv_pct"])
-        if u.get("ht_score"):
-            ledger.at[u["idx"], "ht_score"] = u["ht_score"]
+    if updates and not args.dry_run:
+        if "ht_score" not in ledger.columns:
+            ledger["ht_score"] = ""
+        for u in updates:
+            ledger.at[u["idx"], "result"] = u["result"]
+            ledger.at[u["idx"], "pnl"]    = str(u["pnl"])
+            if not np.isnan(u["closing_odds"]):
+                ledger.at[u["idx"], "closing_odds"] = str(u["closing_odds"])
+            if not np.isnan(u["clv_pct"]):
+                ledger.at[u["idx"], "clv_pct"] = str(u["clv_pct"])
+            if u.get("ht_score"):
+                ledger.at[u["idx"], "ht_score"] = u["ht_score"]
 
-    ledger.to_csv(LEDGER_FILE, index=False)
+        ledger.to_csv(LEDGER_FILE, index=False)
 
-    # Print summary
-    total_pnl  = sum(u["pnl"] for u in updates)
-    wins       = sum(1 for u in updates if u["result"] == "WIN")
-    losses     = sum(1 for u in updates if u["result"] == "LOSS")
-    clv_vals   = [u["clv_pct"] for u in updates if not np.isnan(u["clv_pct"])]
-    avg_clv    = np.mean(clv_vals) if clv_vals else np.nan
+    if updates and not args.dry_run:
+        total_pnl  = sum(u["pnl"] for u in updates)
+        wins       = sum(1 for u in updates if u["result"] == "WIN")
+        losses     = sum(1 for u in updates if u["result"] == "LOSS")
+        clv_vals   = [u["clv_pct"] for u in updates if not np.isnan(u["clv_pct"])]
+        avg_clv    = np.mean(clv_vals) if clv_vals else np.nan
 
-    print("\n" + "=" * 60)
-    print(f"  RESULTS UPDATED — {filled} bet(s)")
-    print("=" * 60)
-    print(f"  Win  : {wins}")
-    print(f"  Loss : {losses}")
-    print(f"  PnL  : {total_pnl:+.3f} units (flat 1u stakes)")
-    if not np.isnan(avg_clv):
-        verdict = "SHARP (beat closing line)" if avg_clv > 0 else "SOFT (market moved against)"
-        print(f"  CLV  : {avg_clv:+.2f}% avg  →  {verdict}")
+        print("\n" + "=" * 60)
+        print(f"  RESULTS UPDATED — {filled} bet(s)")
+        print("=" * 60)
+        print(f"  Win  : {wins}")
+        print(f"  Loss : {losses}")
+        print(f"  PnL  : {total_pnl:+.3f} units (flat 1u stakes)")
+        if not np.isnan(avg_clv):
+            verdict = "SHARP (beat closing line)" if avg_clv > 0 else "SOFT (market moved against)"
+            print(f"  CLV  : {avg_clv:+.2f}% avg  →  {verdict}")
 
-    # Full ledger P&L if any resolved rows exist
-    all_with_result = ledger[ledger["result"].isin(["WIN", "LOSS", "VOID"])].copy()
-    if not all_with_result.empty:
-        all_with_result["pnl"] = pd.to_numeric(all_with_result["pnl"], errors="coerce")
-        total_all = all_with_result["pnl"].sum()
-        w_all = (all_with_result["result"] == "WIN").sum()
-        l_all = (all_with_result["result"] == "LOSS").sum()
-        hit   = w_all / (w_all + l_all) if (w_all + l_all) > 0 else 0
+        # Full ledger P&L if any resolved rows exist
+        all_with_result = ledger[ledger["result"].isin(["WIN", "LOSS", "VOID"])].copy()
+        if not all_with_result.empty:
+            all_with_result["pnl"] = pd.to_numeric(all_with_result["pnl"], errors="coerce")
+            total_all = all_with_result["pnl"].sum()
+            w_all = (all_with_result["result"] == "WIN").sum()
+            l_all = (all_with_result["result"] == "LOSS").sum()
+            hit   = w_all / (w_all + l_all) if (w_all + l_all) > 0 else 0
+            print()
+            print(f"  LEDGER TOTALS ({len(all_with_result)} settled bets)")
+            print(f"  Win rate : {hit:.0%}  ({w_all}W / {l_all}L)")
+            print(f"  Total PnL: {total_all:+.3f} units")
+
         print()
-        print(f"  LEDGER TOTALS ({len(all_with_result)} settled bets)")
-        print(f"  Win rate : {hit:.0%}  ({w_all}W / {l_all}L)")
-        print(f"  Total PnL: {total_all:+.3f} units")
+        log.info(f"Ledger saved → {LEDGER_FILE}")
 
-    print()
-    log.info(f"Ledger saved → {LEDGER_FILE}")
+    # Also resolve player prop and sharp money ledgers
+    update_player_results(days=args.days, dry_run=args.dry_run)
+    update_sharp_results(days=args.days, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":

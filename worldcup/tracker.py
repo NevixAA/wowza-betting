@@ -23,6 +23,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from player_model.ledger import append_sharp_signals
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)-8s  %(message)s",
@@ -399,6 +400,8 @@ def run():
 
     tips = _build_tips(history)
     tips.to_csv(WC_TIPS_FILE, index=False)
+    tips["league"] = "World Cup"
+    append_sharp_signals(tips)
 
     # ML model value analysis
     log.info("Running ML model on WC fixtures...")

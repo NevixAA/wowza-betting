@@ -117,6 +117,64 @@ def get_upcoming_fixtures(league_id: int, season: str, next_n: int = 5) -> list[
     return data.get("response", [])
 
 
+def _norm_name(s: str) -> str:
+    import unicodedata
+    nfkd = unicodedata.normalize("NFKD", str(s))
+    return "".join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
+
+
+def _team_match(a: str, b: str) -> bool:
+    na, nb = _norm_name(a), _norm_name(b)
+    return na == nb or na in nb or nb in na or (len(na) >= 5 and na[:5] == nb[:5])
+
+
+def find_fixture_id(league_id: int, season: str, date_str: str, home: str, away: str) -> int | None:
+    """Find fixture ID for a completed (FT) match by league, season, date, and team names."""
+    data = _get("/fixtures", {
+        "league": league_id, "season": season, "date": date_str, "status": "FT",
+    }, cache_hours=168)  # completed fixtures cached 7 days
+    if not data:
+        return None
+
+    for fix in data.get("response", []):
+        fh = fix.get("teams", {}).get("home", {}).get("name", "")
+        fa = fix.get("teams", {}).get("away", {}).get("name", "")
+        if _team_match(home, fh) and _team_match(away, fa):
+            return fix.get("fixture", {}).get("id")
+    return None
+
+
+def get_fixture_status(league_id: int, season: str, date_str: str, home: str, away: str) -> tuple[str, int | None]:
+    """
+    Check the status of any fixture (played, postponed, cancelled, etc.) regardless of completion.
+    Returns (status_short, fixture_id).
+      "FT"        — full time (played)
+      "PST"       — postponed
+      "CANC"      — cancelled
+      "NS"        — not started yet
+      "LIVE"      — in progress
+      "NOT_FOUND" — no fixture found for this match
+
+    Used to mark player ledger rows as is_played=False when a match was called off.
+    Cached only 2 hours (status can change until the match is done).
+    """
+    data = _get("/fixtures", {
+        "league": league_id, "season": season, "date": date_str,
+    }, cache_hours=2)
+    if not data:
+        return "NOT_FOUND", None
+
+    for fix in data.get("response", []):
+        fh = fix.get("teams", {}).get("home", {}).get("name", "")
+        fa = fix.get("teams", {}).get("away", {}).get("name", "")
+        if _team_match(home, fh) and _team_match(away, fa):
+            status = fix.get("fixture", {}).get("status", {}).get("short", "")
+            fid    = fix.get("fixture", {}).get("id")
+            return status, fid
+
+    return "NOT_FOUND", None
+
+
 # ── Player match stats ────────────────────────────────────────────────────────
 
 def get_fixture_player_stats(fixture_id: int) -> list[dict]:
