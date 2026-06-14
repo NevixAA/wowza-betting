@@ -66,6 +66,13 @@ PLAYER_FEATURE_COLS = [
     "is_home",
     "opp_goals_conceded_pg", "opp_sot_conceded_pg",
     "team_goals_pg_roll",
+    # Opponent defender matchup features (Phase 2)
+    "opp_def_aerial_win_rate",    # opposing CBs' aerial duel win rate (low = weak in air)
+    "opp_def_fouls_pg",           # fouls committed per game by opposing defense
+    "opp_def_cards_pg",           # cards per game by opposing defense
+    "aerial_matchup_score",       # player aerial_won_rate × (1 - opp_def_aerial_win_rate)
+    "foul_draw_matchup_score",    # player fouls_drawn_per90 × opp_def_fouls_pg
+    "opp_def_aggression",         # opp_def_fouls_pg × (1 + opp_def_cards_pg)
     # Position encoding
     "pos_forward", "pos_midfielder", "pos_defender",
     # Playing time / match context

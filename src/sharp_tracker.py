@@ -34,6 +34,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from player_model.ledger import append_sharp_signals
 
 log = logging.getLogger(__name__)
 
@@ -254,6 +255,17 @@ def _build_tips(history: dict) -> pd.DataFrame:
             if not op or not cu:
                 continue
 
+            # Sanity: reject cross-market contamination and impossible values
+            # Draw odds < 1.3 or > 20 are physically impossible
+            if side == "DRAW" and not (1.3 <= op <= 20.0 and 1.3 <= cu <= 20.0):
+                continue
+            # Over/Under odds < 1.05 or > 15 are garbage data
+            if side in ("OVER", "UNDER") and not (1.05 <= op <= 15.0 and 1.05 <= cu <= 15.0):
+                continue
+            # >70% single-step drift is almost always a market-mix bug
+            if abs(op - cu) / op > 0.70:
+                continue
+
             d       = _drift_pct(op, cu)
             steam   = _detect_steam(snaps, ok)
             sig     = _signal_label(d, steam)
@@ -313,6 +325,7 @@ def run():
     _save_history(history)
     tips = _build_tips(history)
     tips.to_csv(SHARP_TIPS_FILE, index=False)
+    append_sharp_signals(tips)
 
     steam_strong = tips[tips["signal"] == "STEAM_STRONG"]
     steam_sharp  = tips[tips["signal"] == "STEAM_SHARP"]

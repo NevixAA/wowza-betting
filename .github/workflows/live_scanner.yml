@@ -29,6 +29,8 @@ jobs:
       - name: Run live scanner
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python src/live_scanner.py
 
       - name: Commit and push

@@ -175,6 +175,55 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["opp_sot_conceded_pg"]   = df["opp_sot_conceded_pg"].fillna(4.5)
     df["team_goals_pg_roll"]    = df["team_goals_pg_roll"].fillna(1.3)
 
+    # ── Opponent defender-level matchup features ──────────────────────────────
+    # Aggregate stats from defensive players (pos starts with 'D') per fixture/team,
+    # then roll shift(1) and join on opponent — same pattern as opp_goals_conceded_pg.
+    _pos = df["position"].str.upper().fillna("") if "position" in df.columns else pd.Series([""] * len(df), index=df.index)
+    _def_mask = _pos.str.startswith("D")
+
+    if _def_mask.any() and "duels_won" in df.columns:
+        _defs = df[_def_mask].copy()
+        _def_agg = _defs.groupby(["fixture_id", "team"]).agg(
+            _date=("date", "first"),
+            _aerial_won=("duels_won", "sum"),
+            _aerial_total=("duels_total", "sum"),
+            _fouls=("fouls_committed", "sum"),
+            _cards=("yellow_cards", "sum"),
+            _n=("player_id", "count"),
+        ).reset_index()
+
+        _def_agg["_aerial"] = (
+            _def_agg["_aerial_won"] / _def_agg["_aerial_total"].replace(0, np.nan)
+        ).fillna(0.50)
+        _def_agg["_fouls_pg"] = _def_agg["_fouls"] / _def_agg["_n"].replace(0, 1)
+        _def_agg["_cards_pg"] = _def_agg["_cards"] / _def_agg["_n"].replace(0, 1)
+
+        _def_agg = _def_agg.sort_values(["team", "_date"])
+        _dgrp = _def_agg.groupby("team", group_keys=False)
+        _def_agg["opp_def_aerial_win_rate"] = _dgrp["_aerial"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        _def_agg["opp_def_fouls_pg"] = _dgrp["_fouls_pg"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        _def_agg["opp_def_cards_pg"] = _dgrp["_cards_pg"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+        _def_feats = _def_agg[["fixture_id", "team",
+                                "opp_def_aerial_win_rate",
+                                "opp_def_fouls_pg",
+                                "opp_def_cards_pg"]].rename(columns={"team": "opponent"})
+        df = df.merge(_def_feats, on=["fixture_id", "opponent"], how="left")
+    else:
+        df["opp_def_aerial_win_rate"] = np.nan
+        df["opp_def_fouls_pg"]        = np.nan
+        df["opp_def_cards_pg"]        = np.nan
+
+    df["opp_def_aerial_win_rate"] = df["opp_def_aerial_win_rate"].fillna(0.50)
+    df["opp_def_fouls_pg"]        = df["opp_def_fouls_pg"].fillna(1.50)
+    df["opp_def_cards_pg"]        = df["opp_def_cards_pg"].fillna(0.25)
+
+    # Clean up temp columns from defender aggregation
+    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
+
     # ── Position encoding ─────────────────────────────────────────────────────
     pos = df["position"].str.upper().fillna("")
     df["pos_forward"]    = pos.str.startswith("F").astype(int)
@@ -204,6 +253,25 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         * (df["team_corners_pg"] / 6.0).clip(upper=2.0)
         * 0.30
         * (df["pos_defender"] + 0.7 * df["pos_midfielder"])
+    )
+
+    # ── Matchup composites (player strength vs specific defender weakness) ─────
+    # aerial_matchup_score: player wins aerials AND opponent CBs lose them
+    # High → aerial striker edge vs physically weak defense
+    df["aerial_matchup_score"] = (
+        df["aerial_won_rate"] * (1.0 - df["opp_def_aerial_win_rate"])
+    ).clip(lower=0.0)
+
+    # foul_draw_matchup_score: foul-drawing player vs foul-prone defense
+    # High → more free-kick and card market opportunities
+    df["foul_draw_matchup_score"] = (
+        df["fouls_drawn_per90"] * df["opp_def_fouls_pg"]
+    )
+
+    # opp_def_aggression: opponent defensive aggression index
+    # High → physical, card-prone defense = more disruption to creative players
+    df["opp_def_aggression"] = (
+        df["opp_def_fouls_pg"] * (1.0 + df["opp_def_cards_pg"])
     )
 
     # ── Target variables — actual outcome in THIS match ───────────────────────
@@ -327,6 +395,32 @@ def build_upcoming_features(
         set_piece_threat_score   = round(aerial_won_rate * (team_corners_pg / 6.0) * 0.30
                                          * (pos_defender + 0.7 * pos_midfielder), 4)
 
+        # ── Opponent defender matchup features ──────────────────────────────
+        # Look up opponent team's defenders from history directly
+        opp_team = p.get("opponent", "")
+        opp_def_aerial_win_rate = ctx.get("opp_def_aerial_win_rate", 0.50)
+        opp_def_fouls_pg        = ctx.get("opp_def_fouls_pg",        1.50)
+        opp_def_cards_pg        = ctx.get("opp_def_cards_pg",        0.25)
+
+        if opp_team and not history.empty and "position" in history.columns:
+            _opp_defs = history[
+                history["team"].str.lower().str.contains(opp_team.lower()[:6], na=False) &
+                history["position"].str.upper().str.startswith("D", na=False)
+            ].sort_values("date").tail(n * 5)
+
+            if not _opp_defs.empty:
+                if "duels_won" in _opp_defs.columns and "duels_total" in _opp_defs.columns:
+                    _awr = (_opp_defs["duels_won"] / _opp_defs["duels_total"].replace(0, np.nan)).fillna(0.5)
+                    opp_def_aerial_win_rate = float(_awr.mean())
+                if "fouls_committed" in _opp_defs.columns:
+                    opp_def_fouls_pg = float(_opp_defs["fouls_committed"].mean())
+                if "yellow_cards" in _opp_defs.columns:
+                    opp_def_cards_pg = float(_opp_defs["yellow_cards"].mean())
+
+        aerial_matchup_score    = round(max(aerial_won_rate * (1.0 - opp_def_aerial_win_rate), 0.0), 4)
+        foul_draw_matchup_score = round(fouls_drawn_per90 * opp_def_fouls_pg, 4)
+        opp_def_aggression      = round(opp_def_fouls_pg * (1.0 + opp_def_cards_pg), 4)
+
         rows.append({
             "player_id":   pid,
             "player_name": name,
@@ -369,6 +463,13 @@ def build_upcoming_features(
             "opp_goals_conceded_pg": ctx.get("opp_goals_conceded_pg", 1.3),
             "opp_sot_conceded_pg":   opp_sot_c,
             "team_goals_pg_roll":    ctx.get("team_goals_pg_roll",    1.3),
+            # Opponent defender matchup features
+            "opp_def_aerial_win_rate": round(opp_def_aerial_win_rate, 4),
+            "opp_def_fouls_pg":        round(opp_def_fouls_pg,        4),
+            "opp_def_cards_pg":        round(opp_def_cards_pg,        4),
+            "aerial_matchup_score":    aerial_matchup_score,
+            "foul_draw_matchup_score": foul_draw_matchup_score,
+            "opp_def_aggression":      opp_def_aggression,
             # Position
             "pos_forward":    pos_forward,
             "pos_midfielder": pos_midfielder,

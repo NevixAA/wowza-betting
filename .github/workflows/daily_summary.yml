@@ -1,0 +1,36 @@
+name: Daily Summary
+
+on:
+  schedule:
+    # Every day at 07:00 UTC (10:00 Israel) — after all morning predict runs have finished
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  daily_summary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send daily digest
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -c "
+          import sys; sys.path.insert(0,'.')
+          from telegram_bot.notifier import notify_daily_digest
+          sent = notify_daily_digest()
+          print(f'Daily digest: {\"sent\" if sent else \"failed\"}')
+          "

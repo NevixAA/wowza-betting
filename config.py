@@ -289,6 +289,9 @@ API_FOOTBALL_SEASONS: dict = {
 }
 
 ODDS_API_SPORT_KEYS = {
+    # World Cup
+    "World Cup":               "soccer_fifa_world_cup",
+    "World Cup 2026":          "soccer_fifa_world_cup",
     # Standard format
     "Championship":            "soccer_efl_champ",
     "League One":              "soccer_england_league1",

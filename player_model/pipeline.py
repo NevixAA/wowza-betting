@@ -33,6 +33,7 @@ from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
 from player_model.predict import run_player_predictions, enrich_with_odds
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
+from player_model.ledger import append_player_signals
 
 HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
@@ -170,6 +171,10 @@ def mode_predict() -> None:
     marksman = tips[tips["tier"] == "MARKSMAN"]
     valuable = tips[tips["tier"] == "VALUABLE"]
     print(f"[predict] SNIPER:{len(sniper)}  MARKSMAN:{len(marksman)}  VALUABLE:{len(valuable)}")
+
+    n_new = append_player_signals(tips)
+    if n_new:
+        print(f"[predict] player_ledger: +{n_new} new signal(s) recorded")
 
 
 def _enrich_with_recent_form(history: pd.DataFrame) -> None:
