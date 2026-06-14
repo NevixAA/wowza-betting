@@ -244,21 +244,31 @@ def notify_wc_strong() -> int:
         return 0
 
     df = pd.read_csv(wc_file)
-    strong = df[df["signal"] == "STRONG"].copy()
+    strong = df[df["signal"].isin(["STRONG", "SHARP", "FADING"])].copy()
+    # Sort by absolute drift magnitude — biggest moves first
+    strong = strong.iloc[strong["drift_pct"].abs().argsort()[::-1].values]
     if strong.empty:
         return 0
 
     notified = _load_notified()
     sent = 0
 
+    _WC_SIG = {
+        "STRONG": ("🔴", "STEAM — sharp money IN"),
+        "SHARP":  ("🟡", "SHARP — money moving in"),
+        "FADING": ("🔵", "FADING — sharp against this outcome"),
+    }
+
     for _, row in strong.iterrows():
         key = f"WC|{str(row['date'])[:10]}|{row['match']}|{row['market']}"
         if key in notified:
             continue
 
+        sig = row["signal"]
+        emoji, label = _WC_SIG.get(sig, ("⚪", sig))
         direction = "▼ Shortening" if row["drift_pct"] < 0 else "▲ Lengthening"
         msg = (
-            f"🌍 <b>WORLD CUP SHARP MONEY</b>\n"
+            f"{emoji} <b>WC {label}</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"📅 {str(row['date'])[:10]}\n"
             f"⚽ {row['match']}\n"
@@ -632,9 +642,9 @@ def notify_player_props() -> int:
     prop_match   = (df["match_tier"] == "PROP_LEAGUE") & (df["model_prob"] >= 0.55)
     # Any explicitly tiered signal (SNIPER/MARKSMAN/VALUABLE) — edge already validated by EV+rel_edge
     tiered       = df["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])
-    # WC: send every signal that has a positive EV (odds enriched)
-    wc_ev        = (df["league"] == "World Cup") & (df["ev"].notna()) & (df["ev"] > 0)
-    df = df[sniper_match | prop_match | tiered | wc_ev].copy()
+    # WC: alert any signal with odds >= 1.7 (below that market is too tight to act on)
+    wc_threshold = (df["league"] == "World Cup") & (df["market_odds"].notna()) & (df["market_odds"] >= 1.7)
+    df = df[sniper_match | prop_match | tiered | wc_threshold].copy()
     tier_order = {"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2, "WATCH": 3}
     df["_tier_rank"] = df["tier"].map(tier_order).fillna(3)
     # Sort: tiered signals first (by EV), then model_prob signals
