@@ -4,6 +4,8 @@ on:
   schedule:
     # Predict-only: 5x daily (30 min after main predict runs)
     - cron: '30 6,10,14,18,22 * * *'
+    # WC night coverage: 5x during Americas hours (revert after Jul 19)
+    - cron: '0 1,2,3,4,5 * * *'
     # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC
