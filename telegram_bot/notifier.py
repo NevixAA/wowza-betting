@@ -846,9 +846,11 @@ def notify_props_daily_digest() -> bool:
                         )
             lines.append("")
 
-            # ── Watch ──
+            # ── Watch — sort by EV desc (best edge first), fall back to model_prob ──
             watch = all_props[all_props["tier"] == "WATCH"].copy()
-            watch = watch.sort_values("model_prob", ascending=False)
+            watch["_sort_ev"] = watch["ev"].fillna(-9)
+            watch = watch.sort_values(["_sort_ev", "model_prob"], ascending=[False, False])
+            watch = watch.drop(columns=["_sort_ev"])
             lines.append(f"👁️ <b>WATCH</b> ({len(watch)} on radar)")
             if watch.empty:
                 lines.append("  Nothing today")
@@ -859,10 +861,14 @@ def notify_props_daily_digest() -> bool:
                         continue
                     lines.append(f"  {grp_emoji} <b>{grp_name}</b>")
                     for _, r in grp.iterrows():
-                        mkt  = MKT_LABEL.get(str(r.get("market", "")), str(r.get("market", "")))
-                        prob = float(r.get("model_prob", 0)) * 100
+                        mkt    = MKT_LABEL.get(str(r.get("market", "")), str(r.get("market", "")))
+                        prob   = float(r.get("model_prob", 0)) * 100
+                        ev     = r.get("ev")
+                        odds   = r.get("market_odds")
+                        ev_str = f"  EV {float(ev):+.0%}" if pd.notna(ev) else ""
+                        od_str = f" @ {float(odds):.2f}" if pd.notna(odds) else f" {prob:.0f}%"
                         lines.append(
-                            f"    {r['player_name']} — {mkt} {prob:.0f}%  [{r.get('league', '')}]"
+                            f"    {r['player_name']} — {mkt}{od_str}{ev_str}  [{r.get('league', '')}]"
                         )
         except Exception as e:
             lines.append(f"  error loading player_tips.csv: {e}")
