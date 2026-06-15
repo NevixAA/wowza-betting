@@ -37,6 +37,11 @@ MAX_STAKE_MARKSMAN    = 0.02
 MAX_STAKE_VALUABLE    = 0.01
 CONFIDENCE_FLOORS     = {"SNIPER": 0.72, "MARKSMAN": 0.62, "VALUABLE": 0.50}
 
+# Relative edge gates — replace hard market_odds floors (5.0 / 4.0) with model-derived edge.
+# rel_edge = (model_prob - fair_prob) / fair_prob  — odds-level-agnostic measure.
+REL_EDGE_SNIPER   = 0.20   # ≥20% relative edge required for SNIPER
+REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
+
 # ── Features ──────────────────────────────────────────────────────────────────
 ROLLING_N = 5
 PLAYER_FEATURE_COLS = [
@@ -77,6 +82,10 @@ PLAYER_FEATURE_COLS = [
     "pos_forward", "pos_midfielder", "pos_defender",
     # Playing time / match context
     "rest_days",
+    # Venue-split rates — home vs away performances differ significantly
+    "goals_home_pg", "goals_away_pg",
+    "shots_home_pg", "shots_away_pg",
+    "sot_home_pg",   "sot_away_pg",
 ]
 # Phase 2 (future — needs /fixtures/events API data):
 #   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)
