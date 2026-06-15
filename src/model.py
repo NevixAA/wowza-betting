@@ -143,7 +143,7 @@ def train(
     try:
         from lightgbm import LGBMClassifier
         models_cfg.append(("lightgbm", LGBMClassifier(
-            n_estimators=500, learning_rate=0.05, max_depth=6,
+            n_estimators=200, learning_rate=0.05, max_depth=6,
             num_leaves=31, subsample=0.8, colsample_bytree=0.8,
             min_child_samples=20, random_state=42, verbose=-1,
         )))
