@@ -94,7 +94,7 @@ def test_ht():
 
 
 def test_digest():
-    _section("notify_daily_digest() — full morning digest")
+    _section("notify_daily_digest() — model/sharp/WC morning digest")
     before = len(_sent_messages)
     ok = notifier.notify_daily_digest()
     n = len(_sent_messages) - before
@@ -102,9 +102,25 @@ def test_digest():
 
 
 def test_weekly():
-    _section("notify_weekly_summary() — weekly backtest summary")
+    _section("notify_weekly_summary() — model/sharp/WC weekly summary")
     before = len(_sent_messages)
     ok = notifier.notify_weekly_summary()
+    n = len(_sent_messages) - before
+    print(f"  → {'sent ✓' if ok or n > 0 else 'nothing to send / error'}")
+
+
+def test_props_digest():
+    _section("notify_props_daily_digest() — player props daily briefing")
+    before = len(_sent_messages)
+    ok = notifier.notify_props_daily_digest()
+    n = len(_sent_messages) - before
+    print(f"  → {'sent ✓' if ok or n > 0 else 'nothing to send / error'}")
+
+
+def test_props_weekly():
+    _section("notify_props_weekly_summary() — player props weekly summary")
+    before = len(_sent_messages)
+    ok = notifier.notify_props_weekly_summary()
     n = len(_sent_messages) - before
     print(f"  → {'sent ✓' if ok or n > 0 else 'nothing to send / error'}")
 
@@ -116,15 +132,17 @@ def test_agent():
 
 
 ALL_TESTS = {
-    "sniper":  test_sniper,
-    "props":   test_props,
-    "wc":      test_wc,
-    "sharp":   test_sharp,
-    "live":    test_live,
-    "ht":      test_ht,
-    "digest":  test_digest,
-    "weekly":  test_weekly,
-    "agent":   test_agent,
+    "sniper":        test_sniper,
+    "props":         test_props,
+    "props_digest":  test_props_digest,
+    "props_weekly":  test_props_weekly,
+    "wc":            test_wc,
+    "sharp":         test_sharp,
+    "live":          test_live,
+    "ht":            test_ht,
+    "digest":        test_digest,
+    "weekly":        test_weekly,
+    "agent":         test_agent,
 }
 
 
