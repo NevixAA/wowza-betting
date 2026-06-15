@@ -189,6 +189,24 @@ SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.12"))   
 EDGE_CEILING            = float(os.getenv("EDGE_CEILING",            "0.19"))   # above this = model overconfident
 DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))
 
+# Per-league edge ceilings — override global EDGE_CEILING for new-format leagues
+# where thinner data / noisier bookmaker prices cause the model to overfit at high edges.
+LEAGUE_EDGE_CEILING: dict = {
+    "Brazil Serie A":            0.17,
+    "Japan J-League":            0.17,
+    "China Super League":        0.15,
+    "Mexico Liga MX":            0.18,
+    "Ireland Premier Division":  0.16,
+    "Finland Veikkausliiga":     0.16,
+    "Sweden Allsvenskan":        0.17,
+    "Norway Eliteserien":        0.17,
+    "Denmark Superliga":         0.17,
+    "Austrian Bundesliga":       0.17,
+    "Romanian Superliga":        0.15,
+    "Argentina Primera Division": 0.18,
+    "USA MLS":                   0.17,
+}
+
 # Backward-compat alias
 VALUE_THRESHOLD = VALUABLE_THRESHOLD
 

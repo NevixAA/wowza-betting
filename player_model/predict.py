@@ -142,14 +142,19 @@ def _classify_tier(
     if is_goals_sot and ges < config.GES_SUPPRESS:
         return "WATCH"
 
-    if (ev >= config.SNIPER_EV and market_odds >= 5.0
+    # Use relative edge gates instead of hard market_odds floors.
+    # rel_edge = (model_prob - fair_prob) / fair_prob — odds-level-agnostic.
+    _sniper_re   = getattr(config, "REL_EDGE_SNIPER",   0.20)
+    _marksman_re = getattr(config, "REL_EDGE_MARKSMAN", 0.12)
+
+    if (ev >= config.SNIPER_EV and rel_edge >= _sniper_re
             and confidence >= config.CONFIDENCE_FLOORS["SNIPER"]
             and lazy_count >= 2
             and _edge_passes_floor(rel_edge, market_odds)
             and (not is_goals_sot or ges >= config.GES_SNIPER_MIN)):
         return "SNIPER"
 
-    if (ev >= config.MARKSMAN_EV and market_odds >= 4.0
+    if (ev >= config.MARKSMAN_EV and rel_edge >= _marksman_re
             and confidence >= config.CONFIDENCE_FLOORS["MARKSMAN"]
             and lazy_count >= 1
             and _edge_passes_floor(rel_edge, market_odds)

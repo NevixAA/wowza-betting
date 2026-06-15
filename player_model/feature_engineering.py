@@ -64,6 +64,36 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # Count of previous games this player has in the dataset
     df["n_prev_games"] = grp["date"].transform("cumcount")
 
+    # ── Venue-split rolling rates (home vs away performances differ) ──────────
+    if "is_home" in df.columns:
+        df["_idx"] = np.arange(len(df))
+        for _raw, _pref in [
+            ("goals",            "goals"),
+            ("shots_total",      "shots"),
+            ("shots_on_target",  "sot"),
+        ]:
+            if _raw not in df.columns:
+                continue
+            for _venue, _is_h in [("home", True), ("away", False)]:
+                _col      = f"{_pref}_{_venue}_pg"
+                _fallback = f"{_pref}_pg"
+                _mask     = df["is_home"].astype(bool) == _is_h
+                _vsub     = df[_mask][["_idx", "player_id", "date", _raw]].copy()
+                if not _vsub.empty:
+                    _vsub = _vsub.sort_values(["player_id", "date"])
+                    _vsub[_col] = _vsub.groupby("player_id")[_raw].transform(
+                        lambda x: x.shift(1).rolling(n, min_periods=1).mean()
+                    )
+                    df = df.merge(_vsub[["_idx", _col]], on="_idx", how="left")
+                else:
+                    df[_col] = np.nan
+                df[_col] = df[_col].fillna(df.get(_fallback, pd.Series(0.0, index=df.index)))
+        df.drop(columns=["_idx"], inplace=True, errors="ignore")
+    else:
+        for _pref, _base in [("goals", "goals_pg"), ("shots", "shots_pg"), ("sot", "sot_pg")]:
+            df[f"{_pref}_home_pg"] = df.get(_base, 0.0)
+            df[f"{_pref}_away_pg"] = df.get(_base, 0.0)
+
     if "started" in df.columns:
         df["starter_rate"] = grp["started"].transform(
             lambda x: x.shift(1).rolling(n, min_periods=1).mean())
@@ -336,6 +366,21 @@ def build_upcoming_features(
         starter_rate = float(phist["started"].mean()) if "started" in phist.columns else 0.8
         sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
 
+        # Venue-split rolling rates
+        if "is_home" in phist.columns:
+            _h = phist[phist["is_home"].astype(bool)]
+            _a = phist[~phist["is_home"].astype(bool)]
+            goals_home_pg = float(_h["goals"].mean())                              if len(_h) else goals_pg * 1.05
+            goals_away_pg = float(_a["goals"].mean())                              if len(_a) else goals_pg * 0.95
+            shots_home_pg = float(_h["shots_total"].mean())      if len(_h) and "shots_total"      in _h.columns else shots_pg * 1.05
+            shots_away_pg = float(_a["shots_total"].mean())      if len(_a) and "shots_total"      in _a.columns else shots_pg * 0.95
+            sot_home_pg   = float(_h["shots_on_target"].mean())  if len(_h) and "shots_on_target"  in _h.columns else sot_pg   * 1.05
+            sot_away_pg   = float(_a["shots_on_target"].mean())  if len(_a) and "shots_on_target"  in _a.columns else sot_pg   * 0.95
+        else:
+            goals_home_pg = goals_pg * 1.05;  goals_away_pg = goals_pg * 0.95
+            shots_home_pg = shots_pg * 1.05;  shots_away_pg = shots_pg * 0.95
+            sot_home_pg   = sot_pg   * 1.05;  sot_away_pg   = sot_pg   * 0.95
+
         pos = str(p.get("position",
                    phist["position"].iloc[-1] if "position" in phist.columns else "")).upper()
         pos_forward    = int(pos.startswith("F"))
@@ -475,6 +520,13 @@ def build_upcoming_features(
             "pos_midfielder": pos_midfielder,
             "pos_defender":   pos_defender,
             "rest_days":      p.get("rest_days", 6.0),
+            # Venue-split rates
+            "goals_home_pg":  round(goals_home_pg, 4),
+            "goals_away_pg":  round(goals_away_pg, 4),
+            "shots_home_pg":  round(shots_home_pg, 4),
+            "shots_away_pg":  round(shots_away_pg, 4),
+            "sot_home_pg":    round(sot_home_pg,   4),
+            "sot_away_pg":    round(sot_away_pg,   4),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()

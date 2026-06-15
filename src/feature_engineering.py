@@ -49,6 +49,14 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 
+try:
+    from src.poisson import dixon_coles_p_over25 as _dc_p_over25
+except ImportError:
+    try:
+        from poisson import dixon_coles_p_over25 as _dc_p_over25
+    except ImportError:
+        _dc_p_over25 = None
+
 _N = config.ROLLING_N
 
 
@@ -430,6 +438,17 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     # ── Implied probability from historical odds ────────────────────────────
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
     df["implied_prob_under"] = 1.0 / df["odds_under25"].replace(0, np.nan)
+    df["bookmaker_overround"] = (
+        df["implied_prob_over"] + df["implied_prob_under"] - 1.0
+    ).clip(lower=0.0)
+
+    # Dixon-Coles corrected P(over 2.5) using per-team rolling goal rates as lambdas
+    if _dc_p_over25 is not None and "home_scored_last5" in df.columns:
+        _lh = df["home_scored_last5"].clip(lower=0.3, upper=4.0)
+        _la = df["away_scored_last5"].clip(lower=0.3, upper=4.0)
+        df["p_over25_poisson_dc"] = [_dc_p_over25(h, a) for h, a in zip(_lh, _la)]
+    else:
+        df["p_over25_poisson_dc"] = df["implied_prob_over"].fillna(0.5)
 
     return df
 
@@ -612,6 +631,17 @@ def build_upcoming_features(
     # Implied probs
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
     df["implied_prob_under"] = 1.0 / df["odds_under25"].replace(0, np.nan)
+    df["bookmaker_overround"] = (
+        df["implied_prob_over"] + df["implied_prob_under"] - 1.0
+    ).clip(lower=0.0)
+
+    # Dixon-Coles corrected P(over 2.5)
+    if _dc_p_over25 is not None and "home_scored_last5" in df.columns:
+        _lh = df["home_scored_last5"].clip(lower=0.3, upper=4.0)
+        _la = df["away_scored_last5"].clip(lower=0.3, upper=4.0)
+        df["p_over25_poisson_dc"] = [_dc_p_over25(h, a) for h, a in zip(_lh, _la)]
+    else:
+        df["p_over25_poisson_dc"] = df["implied_prob_over"].fillna(0.5)
 
     # ── Optional: API-Football standings metadata (not model features) ────────
     # Adds table position, GD/game, form pts for display in predictions.csv.

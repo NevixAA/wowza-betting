@@ -206,21 +206,50 @@ def _detect_steam(snapshots: list[dict], odds_key: str) -> bool:
 
 def _consensus_pct(snapshots: list[dict], odds_key: str, direction: float) -> int:
     """
-    % of snapshots where odds moved in same direction as total drift.
-    direction: negative = shortening, positive = lengthening.
+    % of snapshots (time-decay weighted) where odds moved in same direction.
+
+    Recent snapshots count more: weight = e^(α × hours_since_first_snapshot).
+    This ensures a strong late move outweighs several small early counter-moves.
     """
     if len(snapshots) < 2:
         return 0
-    moves = []
+
+    import math as _math
+    _ALPHA = 0.5   # doubling weight every ~1.4 hours
+
+    try:
+        from datetime import datetime as _dt
+        t_first = _dt.fromisoformat(snapshots[0].get("at", "").replace("Z", "+00:00"))
+    except Exception:
+        t_first = None
+
+    total_w = 0.0
+    agree_w = 0.0
+
     for i in range(1, len(snapshots)):
-        prev = snapshots[i-1]["odds"].get(odds_key)
+        prev = snapshots[i - 1]["odds"].get(odds_key)
         curr = snapshots[i]["odds"].get(odds_key)
-        if prev and curr:
-            moves.append(curr - prev)
-    if not moves:
+        if not prev or not curr:
+            continue
+        move = curr - prev
+
+        if t_first is not None:
+            try:
+                t_curr = _dt.fromisoformat(snapshots[i].get("at", "").replace("Z", "+00:00"))
+                hours  = max(0.0, (t_curr - t_first).total_seconds() / 3600)
+                w      = _math.exp(_ALPHA * hours)
+            except Exception:
+                w = float(i)
+        else:
+            w = float(i)
+
+        total_w += w
+        if (move < 0) == (direction < 0):
+            agree_w += w
+
+    if total_w <= 0:
         return 0
-    agreeing = sum(1 for m in moves if (m < 0) == (direction < 0))
-    return round(agreeing / len(moves) * 100)
+    return round(agree_w / total_w * 100)
 
 
 def _build_tips(history: dict) -> pd.DataFrame:
@@ -271,6 +300,10 @@ def _build_tips(history: dict) -> pd.DataFrame:
             sig     = _signal_label(d, steam)
             if sig == "NEUTRAL":
                 continue
+
+            # Thin-market guard: STEAM requires ≥4 books to be credible
+            if n_books < 4 and sig in ("STEAM_STRONG", "STEAM_SHARP"):
+                sig = {"STEAM_STRONG": "STRONG", "STEAM_SHARP": "SHARP"}[sig]
 
             consensus = _consensus_pct(snaps, ok, d)
             label = (f"O/U 2.5 {side}" if rec["market"] == "totals"

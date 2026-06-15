@@ -137,8 +137,10 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
 
     # Ceiling only applies to leagues using the global threshold (no per-league calibration).
     # Per-league thresholds are backtest-optimised — no ceiling needed there.
+    # Per-league ceilings override global for new-format leagues with thinner data.
     if not has_per_league:
-        ceiling = getattr(config, "EDGE_CEILING", 0.19)
+        ceiling = config.LEAGUE_EDGE_CEILING.get(league, config.EDGE_CEILING) \
+                  if hasattr(config, "LEAGUE_EDGE_CEILING") else config.EDGE_CEILING
         if edge > ceiling:
             return "MARKSMAN"
 
