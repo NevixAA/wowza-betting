@@ -29,6 +29,7 @@ jobs:
         run: |
           python -c "
           import sys; sys.path.insert(0,'.')
-          from telegram_bot.notifier import notify_weekly_summary
+          from telegram_bot.notifier import notify_weekly_summary, notify_props_weekly_summary
           notify_weekly_summary()
+          notify_props_weekly_summary()
           "
