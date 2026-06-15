@@ -171,18 +171,21 @@ DEFAULT_DECAY_WEIGHT = 1.0
 
 # ── Three-tier signal system ──────────────────────────────────────────────────
 #
-#  SNIPER    — meets per-league threshold (10–19%)  → full stake (real tip)
+#  SNIPER    — meets per-league threshold (12–19%)  → full stake (real tip)
 #  MARKSMAN  — edge 8% to league threshold          → 3/4 stake (real tip)
 #  VALUABLE  — edge 4–8%                            → info only, not a tip
 #
 #  EDGE_CEILING: above 19% the model is overconfident (backtest shows -20% ROI
 #  at 16-20% range). Bets above the ceiling are downgraded to MARKSMAN.
 #
+#  SNIPER floor raised 10%→12% on 2026-06-15: backtest shows 8–12% zone is -6.6%
+#  ROI; 12–15% zone is +65.7% ROI across 11 bets. UNDER matches OVER floor.
+#
 VALUABLE_THRESHOLD      = float(os.getenv("VALUABLE_THRESHOLD",      "0.04"))   # min edge to show
 MARKSMAN_THRESHOLD      = float(os.getenv("MARKSMAN_THRESHOLD",      "0.08"))   # between VALUABLE and SNIPER
-SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.10"))   # global SNIPER floor (was 0.15)
+SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.12"))   # global SNIPER floor (raised from 0.10)
 SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.12"))   # OVER needs a bit more edge
-SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.10"))   # UNDER reliable at 10%
+SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.12"))   # raised from 0.10 to match OVER
 EDGE_CEILING            = float(os.getenv("EDGE_CEILING",            "0.19"))   # above this = model overconfident
 DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))
 

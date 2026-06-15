@@ -425,7 +425,11 @@ def run_player_predictions(
 
     tips_df = pd.DataFrame(all_tips)
     tips_df = tips_df.sort_values("model_prob", ascending=False)
-    tips_df = tips_df.drop_duplicates(subset=["match", "player_name", "market"])
+    # Dedup on normalized name so accent/hyphen variants (e.g. "Vinícius Júnior" vs
+    # "Vinicius Junior") don't produce duplicate Telegram signals for the same player.
+    tips_df["_name_norm"] = tips_df["player_name"].apply(_norm_player_name)
+    tips_df = tips_df.drop_duplicates(subset=["match", "_name_norm", "market"])
+    tips_df = tips_df.drop(columns=["_name_norm"])
 
     output = config.OUTPUT_DIR / "player_tips.csv"
     tips_df.to_csv(output, index=False)
