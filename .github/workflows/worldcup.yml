@@ -2,7 +2,7 @@ name: World Cup Tracker
 
 on:
   schedule:
-    - cron: '15 8-22 * * *'   # every hour 08:15-22:15 UTC
+    - cron: '15 * * * *'   # every hour 24h — WC2026 in Americas (revert after Jul 19)
   workflow_dispatch:
 
 jobs:
