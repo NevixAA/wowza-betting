@@ -1,7 +1,9 @@
 name: Backtest
 
 on:
-  workflow_dispatch:   # manual trigger only — takes 15-20 minutes
+  schedule:
+    - cron: '0 3 1 * *'   # 1st of every month at 03:00 UTC
+  workflow_dispatch:   # also manual trigger
 
 jobs:
   backtest:
