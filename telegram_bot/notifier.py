@@ -549,22 +549,50 @@ def notify_weekly_summary() -> bool:
     else:
         lines.append("  🌍 <b>WC Drift</b>: no signals this week")
 
-    # All-time totals
-    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time (live settled)</b>", ""]
-    at_rows = []
+    # ── All-time totals — by signal family ───────────────────────────────────
+    # Total signals ever sent for Sharp/Props/WC (not just settled)
+    sharp_all_total = int(len(pd.read_csv(sharp_file))) if sharp_file.exists() else 0
+    props_all_total = int(len(pd.read_csv(props_file))) if props_file.exists() else 0
+    wc_all_total    = int(len(pd.read_csv(wc_file)))    if wc_file.exists() else 0
+
+    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time by signal family</b>", ""]
+
+    # Prediction all-time with tier breakdown
     if pred_all and pred_all["n"] > 0:
         pnl_s = "+" if pred_all["pnl"] >= 0 else ""
-        at_rows.append(f"  🤖 Prediction: {pred_all['n']} bets | {pred_all['win']:.0%} win | PnL {pnl_s}{pred_all['pnl']:.2f}u")
+        lines.append(f"🤖 <b>Prediction Model</b> — {pred_all['n']} settled | {pred_all['win']:.0%} win | PnL {pnl_s}{pred_all['pnl']:.2f}u")
+        for tier, emj in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
+            s = pred_tier_all.get(tier)
+            if s and s["n"] > 0:
+                roi_s = "+" if s["roi"] >= 0 else ""
+                pnl_t = "+" if s["pnl"] >= 0 else ""
+                lines.append(f"  {emj} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
+    else:
+        lines.append("🤖 <b>Prediction Model</b>: no settled bets")
+
+    lines.append("")
+
+    # Sharp all-time
     if sharp_all and sharp_all["n"] > 0:
         pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
-        at_rows.append(f"  💰 Sharp: {sharp_all['n']} bets | {sharp_all['win']:.0%} win | PnL {pnl_s}{sharp_all['pnl']:.2f}u")
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | PnL {pnl_s}{sharp_all['pnl']:.2f}u")
+    elif sharp_all_total:
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⏳ awaiting results")
+    else:
+        lines.append("  💰 <b>Sharp Tracker</b>: no signals yet")
+
+    # Props all-time
     if props_all and props_all["n"] > 0:
         pnl_s = "+" if props_all["pnl"] >= 0 else ""
-        at_rows.append(f"  👤 Props: {props_all['n']} bets | {props_all['win']:.0%} win | PnL {pnl_s}{props_all['pnl']:.2f}u")
-    if not at_rows:
-        lines.append("  No settled bets recorded yet.")
+        lines.append(f"  👤 <b>Player Props</b>: {props_all['n']} settled | {props_all['win']:.0%} win | PnL {pnl_s}{props_all['pnl']:.2f}u")
+    elif props_all_total:
+        lines.append(f"  👤 <b>Player Props</b>: {props_all_total} signals total | ⏳ awaiting results")
     else:
-        lines.extend(at_rows)
+        lines.append("  👤 <b>Player Props</b>: no signals yet")
+
+    # WC drift all-time
+    if wc_all_total:
+        lines.append(f"  🌍 <b>WC Drift</b>: {wc_all_total} signals total | ⏳ no PnL tracking yet")
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
