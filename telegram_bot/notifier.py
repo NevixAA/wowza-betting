@@ -260,7 +260,7 @@ def notify_wc_strong() -> int:
     if strong.empty:
         return 0
 
-    MAX_PER_RUN = 10
+    MAX_PER_RUN = 50
 
     notified = _load_notified()
     sent = 0
@@ -431,109 +431,144 @@ def notify_ht_tips() -> int:
 
 def notify_weekly_summary() -> bool:
     """
-    Send weekly performance summary every Monday.
-    Groups results by model format (Standard / New-Format) and signal tier (SNIPER / VALUE).
+    Send weekly performance summary grouped by signal family:
+    Prediction Model / Sharp Tracker / Player Props / WC Drift.
     Returns True if message was sent.
     """
+    import datetime as _dt
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
-    if not ledger_file.exists():
-        return False
-
-    df = pd.read_csv(ledger_file)
-    df["pnl"]        = pd.to_numeric(df["pnl"],        errors="coerce")
-    df["match_date"] = pd.to_datetime(df["match_date"], errors="coerce")
-    df["generated_at"] = pd.to_datetime(df["generated_at"], errors="coerce")
-
-    # Last 7 days of settled bets
-    week_ago = datetime.now() - __import__("datetime").timedelta(days=7)
-    week = df[
-        (df["source"] == "live") &
-        df["pnl"].notna() &
-        (df["match_date"] >= week_ago)
-    ].copy()
-
-    # All-time live settled
-    alltime = df[(df["source"] == "live") & df["pnl"].notna()].copy()
-
-    def tier_stats(data, tier):
-        t = data[data["signal_tier"] == tier]
-        if t.empty:
-            return None
-        n = len(t); w = (t["pnl"] > 0).sum(); pnl = t["pnl"].sum()
-        return {"n": n, "win": w/n, "roi": pnl/n*100, "pnl": pnl}
-
-    def format_tier(label, stats, emoji):
-        if not stats or stats["n"] == 0:
-            return f"  {emoji} {label}: no bets this week"
-        roi_sign = "+" if stats["roi"] >= 0 else ""
-        pnl_sign = "+" if stats["pnl"] >= 0 else ""
-        return (f"  {emoji} {label}: <b>{stats['n']}</b> bets | "
-                f"{stats['win']:.0%} win | "
-                f"ROI <b>{roi_sign}{stats['roi']:.1f}%</b> | "
-                f"PnL {pnl_sign}{stats['pnl']:.2f}u")
-
-    week_start = (datetime.now() - __import__("datetime").timedelta(days=7)).strftime("%b %d")
+    week_ago = datetime.now() - _dt.timedelta(days=7)
+    week_start = week_ago.strftime("%b %d")
     week_end   = datetime.now().strftime("%b %d, %Y")
 
-    # Weekly section
-    std_week  = week[week["model_type"] == "standard"]    if "model_type" in week.columns else week
-    nf_week   = week[week["model_type"] == "new_format"]  if "model_type" in week.columns else pd.DataFrame()
+    def _stats(data: "pd.DataFrame") -> dict | None:
+        d = data[data["pnl"].notna()] if "pnl" in data.columns else data
+        if d.empty:
+            return None
+        n = len(d); w = (d["pnl"] > 0).sum(); pnl = d["pnl"].sum()
+        return {"n": n, "win": float(w) / n, "roi": pnl / n * 100, "pnl": pnl}
 
-    # All-time section
-    std_all   = alltime[alltime["model_type"] == "standard"]   if "model_type" in alltime.columns else alltime
-    nf_all    = alltime[alltime["model_type"] == "new_format"] if "model_type" in alltime.columns else pd.DataFrame()
+    def _fmt(label: str, emoji: str, stats: dict | None, pending_n: int = 0) -> str:
+        if stats and stats["n"] > 0:
+            roi_s = "+" if stats["roi"] >= 0 else ""
+            pnl_s = "+" if stats["pnl"] >= 0 else ""
+            return (f"  {emoji} <b>{label}</b>: {stats['n']} bets | "
+                    f"{stats['win']:.0%} win | "
+                    f"ROI <b>{roi_s}{stats['roi']:.1f}%</b> | "
+                    f"PnL {pnl_s}{stats['pnl']:.2f}u")
+        if pending_n:
+            return f"  {emoji} <b>{label}</b>: {pending_n} signals sent | ⏳ awaiting results"
+        return f"  {emoji} <b>{label}</b>: no settled bets this week"
 
-    # Build message
+    # ── 1. Prediction model (bets_ledger.csv, source=live) ──────────────────
+    pred_week: dict | None = None
+    pred_all:  dict | None = None
+    pred_tier_week: dict = {}
+    pred_tier_all:  dict = {}
+    ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
+    if ledger_file.exists():
+        bl = pd.read_csv(ledger_file)
+        bl["pnl"]        = pd.to_numeric(bl["pnl"], errors="coerce")
+        bl["match_date"] = pd.to_datetime(bl["match_date"], errors="coerce")
+        live = bl[bl["source"] == "live"].copy()
+        lw = live[live["match_date"] >= week_ago]
+        pred_week = _stats(lw)
+        pred_all  = _stats(live)
+        for tier, emj in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
+            pred_tier_week[tier] = _stats(lw[lw["signal_tier"] == tier]) if "signal_tier" in lw.columns else None
+            pred_tier_all[tier]  = _stats(live[live["signal_tier"] == tier]) if "signal_tier" in live.columns else None
+
+    # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
+    sharp_week: dict | None = None; sharp_week_pending = 0
+    sharp_all:  dict | None = None
+    sharp_file = app_config.OUTPUT_DIR / "sharp_ledger.csv"
+    if sharp_file.exists():
+        sl = pd.read_csv(sharp_file)
+        sl["pnl"]        = pd.to_numeric(sl["pnl"], errors="coerce")
+        sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
+        sw = sl[sl["signal_date"] >= week_ago]
+        sharp_week         = _stats(sw)
+        sharp_week_pending = int((sw["pnl"].isna()).sum()) if not sw.empty else 0
+        sharp_all          = _stats(sl)
+
+    # ── 3. Player props (player_ledger.csv) ──────────────────────────────────
+    props_week: dict | None = None; props_week_pending = 0
+    props_all:  dict | None = None
+    props_file = app_config.OUTPUT_DIR / "player_ledger.csv"
+    if props_file.exists():
+        pl = pd.read_csv(props_file)
+        pl["pnl"]         = pd.to_numeric(pl["pnl"], errors="coerce")
+        pl["signal_date"] = pd.to_datetime(pl["signal_date"], errors="coerce")
+        pw = pl[pl["signal_date"] >= week_ago]
+        props_week         = _stats(pw)
+        props_week_pending = int((pw["pnl"].isna()).sum()) if not pw.empty else 0
+        props_all          = _stats(pl)
+
+    # ── 4. WC drift signals (worldcup_tips.csv — no PnL yet) ─────────────────
+    wc_pending = 0
+    wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
+    if wc_file.exists():
+        wc = pd.read_csv(wc_file)
+        wc["date"] = pd.to_datetime(wc["date"], errors="coerce")
+        wc_pending = int(len(wc[wc["date"] >= week_ago]))
+
+    # ── Build message ─────────────────────────────────────────────────────────
     lines = [
-        f"📊 <b>WEEKLY SUMMARY</b>",
-        f"━━━━━━━━━━━━━━━━",
+        "📊 <b>WEEKLY SUMMARY</b>",
+        "━━━━━━━━━━━━━━━━",
         f"📅 {week_start} → {week_end}",
-        f"",
+        "",
+        "<b>This week by signal family</b>",
+        "",
     ]
 
-    # This week
-    if week.empty:
-        lines.append("  No settled bets this week.")
+    # Prediction model block
+    if pred_week and pred_week["n"] > 0:
+        pnl_s = "+" if pred_week["pnl"] >= 0 else ""
+        lines.append(f"🤖 <b>Prediction Model</b> — {pred_week['n']} bets | {pred_week['win']:.0%} win | PnL {pnl_s}{pred_week['pnl']:.2f}u")
+        for tier, emj in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
+            s = pred_tier_week.get(tier)
+            if s and s["n"] > 0:
+                roi_s = "+" if s["roi"] >= 0 else ""
+                pnl_t = "+" if s["pnl"] >= 0 else ""
+                lines.append(f"  {emj} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
     else:
-        n_w = len(week); w_w = (week["pnl"]>0).sum(); pnl_w = week["pnl"].sum()
-        lines += [
-            f"<b>This week ({n_w} bets | {w_w/n_w:.0%} win | PnL {pnl_w:+.2f}u)</b>",
-            f"",
-            f"🏴 <b>Standard Model</b>",
-            format_tier("SNIPER",   tier_stats(std_week, "SNIPER"),   "🎯"),
-            format_tier("MARKSMAN", tier_stats(std_week, "MARKSMAN"), "🔫"),
-            format_tier("VALUABLE", tier_stats(std_week, "VALUABLE"), "💎"),
-        ]
-        if not nf_week.empty:
-            lines += [
-                f"",
-                f"🌍 <b>New-Format Model</b>",
-                format_tier("SNIPER",   tier_stats(nf_week, "SNIPER"),   "🎯"),
-                format_tier("MARKSMAN", tier_stats(nf_week, "MARKSMAN"), "🔫"),
-                format_tier("VALUABLE", tier_stats(nf_week, "VALUABLE"), "💎"),
-            ]
+        lines.append("🤖 <b>Prediction Model</b>: no settled bets this week")
 
-    # All-time
-    lines += ["", "━━━━━━━━━━━━━━━━"]
-    if not alltime.empty:
-        n_a = len(alltime); w_a = (alltime["pnl"]>0).sum(); pnl_a = alltime["pnl"].sum()
-        lines += [
-            f"📈 <b>All-time live ({n_a} bets)</b>",
-            format_tier("SNIPER",   tier_stats(alltime, "SNIPER"),   "🎯"),
-            format_tier("MARKSMAN", tier_stats(alltime, "MARKSMAN"), "🔫"),
-            format_tier("VALUABLE", tier_stats(alltime, "VALUABLE"), "💎"),
-            f"  Total PnL: <b>{pnl_a:+.2f}u</b>",
-        ]
+    lines.append("")
+    lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
+    lines.append(_fmt("Player Props",  "👤", props_week, props_week_pending))
+
+    if wc_pending:
+        lines.append(f"  🌍 <b>WC Drift</b>: {wc_pending} signals active | ⏳ no PnL tracking yet")
+    else:
+        lines.append("  🌍 <b>WC Drift</b>: no signals this week")
+
+    # All-time totals
+    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time (live settled)</b>", ""]
+    at_rows = []
+    if pred_all and pred_all["n"] > 0:
+        pnl_s = "+" if pred_all["pnl"] >= 0 else ""
+        at_rows.append(f"  🤖 Prediction: {pred_all['n']} bets | {pred_all['win']:.0%} win | PnL {pnl_s}{pred_all['pnl']:.2f}u")
+    if sharp_all and sharp_all["n"] > 0:
+        pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
+        at_rows.append(f"  💰 Sharp: {sharp_all['n']} bets | {sharp_all['win']:.0%} win | PnL {pnl_s}{sharp_all['pnl']:.2f}u")
+    if props_all and props_all["n"] > 0:
+        pnl_s = "+" if props_all["pnl"] >= 0 else ""
+        at_rows.append(f"  👤 Props: {props_all['n']} bets | {props_all['win']:.0%} win | PnL {pnl_s}{props_all['pnl']:.2f}u")
+    if not at_rows:
+        lines.append("  No settled bets recorded yet.")
+    else:
+        lines.extend(at_rows)
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
-        print(f"Weekly summary sent.")
+        print("Weekly summary sent.")
         return True
     return False
 
@@ -653,10 +688,11 @@ def notify_player_props() -> int:
     today_str = datetime.now().strftime("%Y-%m-%d")
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
-    # SNIPER team matches: high probability bar
-    sniper_match = (df["match_tier"] == "SNIPER") & (df["model_prob"] >= 0.60)
-    # Prop-league matches (WC, top-5): model probability gate
-    prop_match   = (df["match_tier"] == "PROP_LEAGUE") & (df["model_prob"] >= 0.55)
+    # SNIPER team matches: high probability bar; skip if EV is known negative
+    ev_ok = df["ev"].isna() | (df["ev"] >= 0)
+    sniper_match = (df["match_tier"] == "SNIPER") & (df["model_prob"] >= 0.60) & ev_ok
+    # Prop-league matches (WC, top-5): model probability gate; skip if EV is known negative
+    prop_match   = (df["match_tier"] == "PROP_LEAGUE") & (df["model_prob"] >= 0.55) & ev_ok
     # Any explicitly tiered signal (SNIPER/MARKSMAN/VALUABLE) — edge already validated by EV+rel_edge
     tiered       = df["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])
     # WC: send every signal that has a positive EV (odds enriched)
