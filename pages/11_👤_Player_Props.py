@@ -23,9 +23,9 @@ if st.button("🔄 Refresh"):
     st.rerun()
 
 TIER_META = {
-    "SNIPER":   ("🎯", "#e94560", "EV > 40% · Odds ≥ 5.0 · 2+ lazy factors"),
-    "MARKSMAN": ("🔫", "#00aaff", "EV > 25% · Odds ≥ 4.0 · 1+ lazy factor"),
-    "VALUABLE": ("💎", "#f5a623", "EV > 15% · Odds ≥ 3.0"),
+    "SNIPER":   ("🎯", "#e94560", "EV > 40% · rel_edge ≥ 20% · 2+ lazy factors"),
+    "MARKSMAN": ("🔫", "#00aaff", "EV > 25% · rel_edge ≥ 12% · 1+ lazy factor"),
+    "VALUABLE": ("💎", "#f5a623", "EV > 15% · rel_edge > 0%"),
     "WATCH":    ("👁",  "#4caf50", "Model signal · add odds to compute EV"),
 }
 
