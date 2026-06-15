@@ -30,7 +30,9 @@ jobs:
         run: |
           python -c "
           import sys; sys.path.insert(0,'.')
-          from telegram_bot.notifier import notify_daily_digest
+          from telegram_bot.notifier import notify_daily_digest, notify_props_daily_digest
           sent = notify_daily_digest()
           print(f'Daily digest: {\"sent\" if sent else \"failed\"}')
+          props = notify_props_daily_digest()
+          print(f'Props digest: {\"sent\" if props else \"failed\"}')
           "
