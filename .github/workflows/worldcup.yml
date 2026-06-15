@@ -49,5 +49,5 @@ jobs:
             telegram_bot/notified.json telegram_bot/live_notified.json 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: worldcup $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git pull --rebase --autostash origin main
+          git pull --rebase --autostash -X ours origin main
           git push

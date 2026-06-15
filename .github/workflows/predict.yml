@@ -55,5 +55,5 @@ jobs:
           git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
           git restore . 2>/dev/null || true
-          git pull --rebase --autostash origin main
+          git pull --rebase --autostash -X ours origin main
           git push

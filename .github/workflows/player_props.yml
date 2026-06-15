@@ -128,5 +128,5 @@ jobs:
                      models/model_player_sot.pkl models/model_player_cards.pkl 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git pull --rebase --autostash origin main
+          git pull --rebase --autostash -X ours origin main
           git push
