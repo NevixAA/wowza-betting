@@ -394,7 +394,12 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
             continue
 
         yr     = int(date_str[:4])
-        season = str(yr - 1) if int(date_str[5:7]) < 7 else str(yr)
+        # Single-year tournaments (WC=1, Euros=4, Copa America=9) use the match year directly.
+        # Club leagues that span two calendar years use yr-1 for Jan-Jun matches.
+        _SINGLE_YEAR_LEAGUES = {1, 4, 9}
+        season = str(yr) if league_id in _SINGLE_YEAR_LEAGUES else (
+            str(yr - 1) if int(date_str[5:7]) < 7 else str(yr)
+        )
 
         # ── Step 1: look up fixture as FT (completed) ─────────────────────────
         if cache_key not in fixture_cache:
@@ -403,9 +408,9 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
         fixture_id = fixture_cache[cache_key]
 
         if fixture_id is None:
-            # Fixture not found as FT — check actual status if match is >1 day old
+            # Fixture not found as FT — check actual status if match is ≥1 day old
             days_since = (datetime.utcnow().date() - pd.to_datetime(date_str).date()).days
-            if days_since > 1:
+            if days_since >= 1:
                 status, _ = get_fixture_status(league_id, season, date_str, home, away)
                 if status in ("PST", "CANC", "ABD"):
                     label = {"PST": "POSTPONED", "CANC": "CANCELLED", "ABD": "ABANDONED"}.get(status, status)

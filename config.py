@@ -12,6 +12,11 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+_BASE = Path(__file__).resolve().parent
+load_dotenv(_BASE / ".env",      override=False)
+load_dotenv(_BASE / ".api_keys", override=False)
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR  = BASE_DIR.parent   # mixed/ — where historical XLSX + shared caches live
 
@@ -213,15 +218,7 @@ DRIFT_CONFLICT_THRESHOLD = 0.03
 BACKTEST_WALK_SIZE = 60
 BACKTEST_MIN_TRAIN = 400
 
-# ── APIs — loaded from environment only, never hardcoded ─────────────────────
-# Local: set in shell or .env file
-# CI: set as GitHub Actions secrets
-_KEYS_FILE = BASE_DIR / ".api_keys"   # optional local file: KEY=VALUE per line
-if _KEYS_FILE.exists():
-    for _line in _KEYS_FILE.read_text().splitlines():
-        if "=" in _line and not _line.startswith("#"):
-            _k, _v = _line.split("=", 1)
-            os.environ.setdefault(_k.strip(), _v.strip())
+# ── APIs — loaded from .env / .api_keys / GitHub Actions secrets ─────────────
 
 ODDS_API_KEY = os.getenv("ODDS_API_KEY", "")
 API_KEY      = os.getenv("API_KEY",      "")
