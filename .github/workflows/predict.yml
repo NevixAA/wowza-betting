@@ -2,13 +2,13 @@ name: Predict
 
 on:
   schedule:
-    - cron: '0 6,10,14,18,22 * * *'   # 06:00, 10:00, 14:00, 18:00, 22:00 UTC
+    - cron: '0 */4 * * *'   # every 4 hours: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC
   workflow_dispatch:
 
 jobs:
   predict:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       contents: write
 
@@ -23,11 +23,6 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Retrain models (ensures new features are compatible)
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python pipeline.py --mode train
 
       - name: Run predict
         env:
