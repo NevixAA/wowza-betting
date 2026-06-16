@@ -48,27 +48,26 @@ def _load_config() -> dict:
 
 def _send(token: str, chat_id: str, text: str) -> bool:
     import time
-    try:
-        r = requests.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            data={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
-            timeout=10,
-        )
-        if r.status_code == 429:
-            retry_after = r.json().get("parameters", {}).get("retry_after", 5)
-            print(f"Telegram rate limit — sleeping {retry_after}s")
-            time.sleep(retry_after + 1)
+    for attempt in range(10):
+        try:
             r = requests.post(
                 f"https://api.telegram.org/bot{token}/sendMessage",
                 data={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
                 timeout=10,
             )
+        except Exception as e:
+            print(f"Telegram error: {e}")
+            return False
+        if r.status_code == 429:
+            retry_after = r.json().get("parameters", {}).get("retry_after", 5)
+            print(f"Telegram rate limit — sleeping {retry_after}s (attempt {attempt + 1})")
+            time.sleep(retry_after + 1)
+            continue
         if r.status_code != 200:
             print(f"Telegram API error {r.status_code}: {r.text[:400]}")
-        return r.status_code == 200
-    except Exception as e:
-        print(f"Telegram error: {e}")
-        return False
+            return False
+        return True
+    return False
 
 
 def _load_notified() -> set:
