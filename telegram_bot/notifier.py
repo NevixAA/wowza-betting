@@ -47,12 +47,22 @@ def _load_config() -> dict:
 
 
 def _send(token: str, chat_id: str, text: str) -> bool:
+    import time
     try:
         r = requests.post(
             f"https://api.telegram.org/bot{token}/sendMessage",
             data={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
             timeout=10,
         )
+        if r.status_code == 429:
+            retry_after = r.json().get("parameters", {}).get("retry_after", 5)
+            print(f"Telegram rate limit — sleeping {retry_after}s")
+            time.sleep(retry_after + 1)
+            r = requests.post(
+                f"https://api.telegram.org/bot{token}/sendMessage",
+                data={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
+                timeout=10,
+            )
         if r.status_code != 200:
             print(f"Telegram API error {r.status_code}: {r.text[:400]}")
         return r.status_code == 200
