@@ -47,8 +47,6 @@ PROP_SPORT_KEYS = {
     "Champions League": "soccer_uefa_champs_league",
     "Europa League":    "soccer_uefa_europa_league",
     "Conference League":"soccer_uefa_europa_conference_league",
-    "Ireland Premier":  "soccer_league_of_ireland",
-    "Finland Veikk":    "soccer_finland_veikkausliiga",
 }
 
 _CACHE_DIR = Path(__file__).resolve().parents[1] / "prop_odds_cache"
