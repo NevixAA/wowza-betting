@@ -110,9 +110,6 @@ PROP_LEAGUES = {
     "Championship":    40,
     "League One":      41,
     "Bundesliga 2":    79,
-    # ── Active summer leagues ─────────────────────────────────────────────────
-    "Ireland Premier": 357,
-    "Finland Veikk":   244,
     # ── European club competitions ────────────────────────────────────────────
     "Champions League":    2,    # ⭐⭐⭐⭐⭐ Biggest club prop market
     "Europa League":       3,    # ⭐⭐⭐⭐  Active prop market
@@ -130,8 +127,6 @@ PROP_SEASONS = {
     "Championship":    "2025",
     "League One":      "2025",
     "Bundesliga 2":    "2025",
-    "Ireland Premier": "2026",
-    "Finland Veikk":   "2026",
     "Champions League":    "2025",
     "Europa League":       "2025",
     "Conference League":   "2025",
