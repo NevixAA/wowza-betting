@@ -57,6 +57,13 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["key_passes_pg"] = grp["key_passes"].transform(
         lambda x: x.shift(1).rolling(n, min_periods=1).mean())
 
+    if "rating" in df.columns:
+        df["rating_pg"] = grp["rating"].transform(
+            lambda x: x.replace(0, np.nan).shift(1).rolling(n, min_periods=1).mean()
+        ).fillna(7.0)
+    else:
+        df["rating_pg"] = 7.0
+
     df["sot_rate"] = (
         df["sot_pg"] / df["shots_pg"].replace(0, np.nan)
     ).fillna(0.0)
@@ -157,6 +164,111 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     else:
         df["team_corners_pg"] = 5.0  # league average fallback
 
+    # Career-to-date averages — stable priors complementing the volatile last-5 rolling stats
+    # Expanding (not rolling) so they capture the full career baseline rather than just last-N.
+    df["career_goals_pg"]   = grp["goals"].transform(
+        lambda x: x.shift(1).expanding().mean()).fillna(0.0)
+    df["career_sot_pg"]     = grp["shots_on_target"].transform(
+        lambda x: x.shift(1).expanding().mean()).fillna(0.0)
+    df["career_shots_pg"]   = grp["shots_total"].transform(
+        lambda x: x.shift(1).expanding().mean()).fillna(0.0)
+    df["career_assists_pg"] = grp["assists"].transform(
+        lambda x: x.shift(1).expanding().mean()).fillna(0.0)
+
+    # ── New raw rolling features from extended data fields ───────────────────
+    # Defensive actions
+    if "tackles_total" in df.columns:
+        df["tackles_pg"] = grp["tackles_total"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        df["_tack90"] = (df["tackles_total"] / mins_safe * 90).fillna(0.0)
+        df["tackles_per90"] = grp["_tack90"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["tackles_pg"] = 0.0;  df["tackles_per90"] = 0.0
+
+    if "interceptions" in df.columns:
+        df["interceptions_pg"] = grp["interceptions"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["interceptions_pg"] = 0.0
+
+    if "tackles_total" in df.columns and "interceptions" in df.columns:
+        df["_def90"] = (
+            (df["tackles_total"] + df["interceptions"]) / mins_safe * 90
+        ).fillna(0.0)
+        df["defensive_actions_per90"] = grp["_def90"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["defensive_actions_per90"] = 0.0
+
+    # Dribbles
+    if "dribbles_success" in df.columns and "dribbles_attempted" in df.columns:
+        df["dribbles_pg"] = grp["dribbles_success"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        df["_drib_acc"] = (
+            df["dribbles_success"] / df["dribbles_attempted"].replace(0, np.nan)
+        ).fillna(0.0)
+        df["dribble_success_rate"] = grp["_drib_acc"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["dribbles_pg"] = 0.0;  df["dribble_success_rate"] = 0.0
+
+    if "dribbles_past" in df.columns:
+        df["dribbled_past_pg"] = grp["dribbles_past"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["dribbled_past_pg"] = 0.0
+
+    # Red cards, pass involvement, offsides
+    if "red_cards" in df.columns:
+        df["red_cards_pg"] = grp["red_cards"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["red_cards_pg"] = 0.0
+
+    if "passes_total" in df.columns:
+        df["passes_pg"] = grp["passes_total"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["passes_pg"] = 0.0
+
+    if "offsides" in df.columns:
+        df["offsides_pg"] = grp["offsides"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["offsides_pg"] = 0.0
+
+    # Penalty stats
+    if "penalty_won" in df.columns:
+        df["penalties_won_pg"] = grp["penalty_won"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["penalties_won_pg"] = 0.0
+
+    if "penalty_scored" in df.columns and "penalty_missed" in df.columns:
+        _pen_total = (df["penalty_scored"] + df["penalty_missed"]).replace(0, np.nan)
+        df["_pen_conv"] = (df["penalty_scored"] / _pen_total).fillna(0.75)
+        df["penalty_conversion_rate"] = grp["_pen_conv"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["penalty_conversion_rate"] = 0.75
+
+    # Goalkeeper own rolling stats (meaningful for GKs; zero for others)
+    if "saves" in df.columns:
+        df["saves_pg"] = grp["saves"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        if "goals_conceded" in df.columns:
+            df["goals_conceded_gk_pg"] = grp["goals_conceded"].transform(
+                lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+            df["_gk_sr"] = df["saves"] / (df["saves"] + df["goals_conceded"] + 0.001)
+        else:
+            df["goals_conceded_gk_pg"] = 0.0
+            df["_gk_sr"] = df["saves"] / (df["saves"] + 0.001)
+        df["gk_save_rate"] = grp["_gk_sr"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    else:
+        df["saves_pg"] = 0.0;  df["goals_conceded_gk_pg"] = 0.0;  df["gk_save_rate"] = 0.72
+
     # Drop intermediate columns
     df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
 
@@ -254,6 +366,44 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # Clean up temp columns from defender aggregation
     df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
 
+    # ── Opponent goalkeeper matchup features ──────────────────────────────────
+    # Aggregate GK saves + conceded per team per fixture → roll shift(1) → join on opponent.
+    # "opponent" column already computed above.
+    _gk_pos = df["position"].str.upper().fillna("") if "position" in df.columns \
+        else pd.Series([""] * len(df), index=df.index)
+    _gk_mask = _gk_pos.str.startswith("G")
+
+    if _gk_mask.any() and "saves" in df.columns and "goals_conceded" in df.columns:
+        _gks = df[_gk_mask].copy()
+        _gk_agg = _gks.groupby(["fixture_id", "team"]).agg(
+            _date=("date", "first"),
+            _saves=("saves", "sum"),
+            _conceded=("goals_conceded", "sum"),
+        ).reset_index()
+
+        _gk_agg["_save_rate"] = (
+            _gk_agg["_saves"] / (_gk_agg["_saves"] + _gk_agg["_conceded"] + 0.001)
+        )
+        _gk_agg = _gk_agg.sort_values(["team", "_date"])
+        _gkgrp  = _gk_agg.groupby("team", group_keys=False)
+        _gk_agg["opp_gk_save_rate"] = _gkgrp["_save_rate"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        _gk_agg["opp_gk_saves_pg"]  = _gkgrp["_saves"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+
+        _gk_feats = _gk_agg[["fixture_id", "team",
+                              "opp_gk_save_rate", "opp_gk_saves_pg"]].rename(
+                                  columns={"team": "opponent"})
+        df = df.merge(_gk_feats, on=["fixture_id", "opponent"], how="left")
+    else:
+        df["opp_gk_save_rate"] = np.nan
+        df["opp_gk_saves_pg"]  = np.nan
+
+    df["opp_gk_save_rate"] = df["opp_gk_save_rate"].fillna(0.72)
+    df["opp_gk_saves_pg"]  = df["opp_gk_saves_pg"].fillna(3.0)
+
+    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
+
     # ── Position encoding ─────────────────────────────────────────────────────
     pos = df["position"].str.upper().fillna("")
     df["pos_forward"]    = pos.str.startswith("F").astype(int)
@@ -304,6 +454,107 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["opp_def_fouls_pg"] * (1.0 + df["opp_def_cards_pg"])
     )
 
+    # ── New composite features using extended stats ───────────────────────────
+    # Attacker vs GK matchup — how many SOTs actually beat this GK
+    df["att_vs_gk_threat"] = (
+        df["sot_pg"] * (1.0 - df["opp_gk_save_rate"])
+    ).clip(lower=0.0)
+
+    # Clinical advantage over GK — shot accuracy vs GK save rate
+    df["clinical_vs_gk"] = (
+        df["shot_accuracy_rate"] * (1.0 - df["opp_gk_save_rate"])
+    ).fillna(0.0).clip(lower=0.0)
+
+    # Dribble creativity — volume × quality
+    df["dribble_creativity_score"] = (
+        df["dribbles_pg"] * df["dribble_success_rate"]
+    )
+
+    # Defensive solidity — high defensive actions, rarely dribbled past
+    df["defensive_solidity"] = (
+        df["defensive_actions_per90"]
+        * (1.0 - df["dribbled_past_pg"] / (df["dribbled_past_pg"] + 1.0))
+    ).clip(lower=0.0)
+
+    # Penalty threat — direct penalty wins + foul drawing (scaled)
+    df["penalty_threat_score"] = (
+        df["penalties_won_pg"] * 3.0 + df["fouls_drawn_per90"] * 0.08
+    ).clip(upper=1.0)
+
+    # Card risk index — yellow + red cards + foul tendency (capped at 1.0 = normalized)
+    df["card_risk_index"] = (
+        df["cards_pg"] * 2.0 + df["red_cards_pg"] * 3.0 + df["foul_committer_ratio"] * 0.5
+    ).clip(upper=1.0)
+
+    # Midfield engine — pass volume + key passes + tackling, midfielder/defender weighted
+    df["midfield_engine_score"] = (
+        (df["passes_pg"] / 50.0).clip(upper=1.0) * 0.4
+        + (df["kp_per90"] / 3.0).clip(upper=1.0) * 0.4
+        + (df["tackles_per90"] / 5.0).clip(upper=1.0) * 0.2
+    ) * (df["pos_midfielder"] + 0.3 * df["pos_defender"])
+
+    # Offside aggressiveness — forwards pushing the line
+    df["offside_aggressiveness"] = (
+        df["offsides_pg"] * df["pos_forward"]
+    ).clip(upper=2.0)
+
+    # ── Agent-designed composite features ────────────────────────────────────
+    # Attacker vs GK — full conversion chain (shots × accuracy × (1 - save_rate))
+    df["volume_shot_penetration"] = (
+        df["shots_pg"] * df["shot_accuracy_rate"] * (1.0 - df["opp_gk_save_rate"])
+    ).clip(lower=0.0)
+
+    # Attacker vs GK — adds conversion quality (goals/SOT finisher rating)
+    df["finishing_threat_index"] = (
+        df["sot_pg"] * df["shooting_efficiency_index"] * (1.0 - df["opp_gk_save_rate"])
+    ).clip(lower=0.0)
+
+    # Physical box presence vs GK — dangerous actions in the area vs GK stopping power
+    df["box_dominance_vs_gk"] = (
+        (df["box_actions_per90"] + df["dribbles_pg"]) * (1.0 - df["opp_gk_save_rate"])
+    ).clip(lower=0.0)
+
+    # Penalizes wasteful aggressors — offside-discounted threat
+    df["aggression_adjusted_threat"] = (
+        df["sot_pg"] * (1.0 - df["opp_gk_save_rate"])
+        / (1.0 + df["offsides_pg"] * 0.3)
+    ).clip(lower=0.0)
+
+    # How easily a player loses the ball — positional vulnerability signal
+    df["defensive_vulnerability_index"] = (
+        (
+            df["dribbled_past_pg"] * 1.5
+            + (1.0 - df["dribble_success_rate"]) * 0.5
+            + (1.0 - df["aerial_won_rate"]) * 0.5
+        ).clip(upper=2.0)
+        * (df["pos_forward"] * 1.0 + df["pos_midfielder"] * 0.7 + df["pos_defender"] * 0.3)
+    )
+
+    # Ball-carrying and progression ability — combines dribbles + passing volume + quality
+    df["progressive_carrier_score"] = (
+        (
+            (df["dribbles_pg"] / 3.0).clip(upper=1.0) * 0.45
+            + (df["passes_pg"] / 60.0).clip(upper=1.0) * 0.35
+            + df["dribble_success_rate"] * 0.20
+        ).clip(upper=1.0)
+        * (df["pos_midfielder"] * 1.0 + df["pos_forward"] * 0.8 + df["pos_defender"] * 0.5)
+    )
+
+    # Bilateral foul involvement — player in constant friction (cards market primary target)
+    df["disciplinary_pressure_index"] = (
+        df["fouls_drawn_per90"] * 0.20
+        + df["fouls_per90"] * 0.25
+        + df["cards_pg"] * 1.5
+        + df["duel_intensity_per90"] * 0.10
+    ).clip(upper=2.0)
+
+    # Foul-drawing market composite (fouls drawn + penalty area threat + carrying)
+    df["foul_magnet_score"] = (
+        df["fouls_drawn_per90"] * 0.30
+        + df["penalty_threat_score"] * 0.40
+        + df["progressive_carrier_score"] * 0.30
+    ).clip(upper=1.0)
+
     # ── Target variables — actual outcome in THIS match ───────────────────────
     df["target_goals"]   = (df["goals"]             >= 1).astype(int)
     df["target_sot"]     = (df["shots_on_target"]   >= 1).astype(int)
@@ -346,11 +597,13 @@ def build_upcoming_features(
         pid  = p.get("player_id")
         name = p.get("player_name", "")
 
-        # Find player's match history
+        # Find player's match history — full career for priors, last-n for rolling
         if pid:
-            phist = history[history["player_id"] == pid].sort_values("date").tail(n)
+            phist_all = history[history["player_id"] == pid].sort_values("date")
         else:
-            phist = history[history["player_name"].str.lower() == name.lower()].sort_values("date").tail(n)
+            phist_all = history[history["player_name"].str.lower() == name.lower()].sort_values("date")
+
+        phist = phist_all.tail(n)
 
         if phist.empty:
             continue
@@ -432,6 +685,59 @@ def build_upcoming_features(
             float((phist["team_corners"] / phist["minutes"].replace(0, np.nan) * 90).fillna(0).mean()) \
             if "team_corners" in phist.columns else 5.0
 
+        # ── New extended rolling stats ────────────────────────────────────────
+        tackles_pg = float(phist["tackles_total"].mean()) \
+            if "tackles_total" in phist.columns else 0.0
+        tackles_per90 = float(
+            (phist["tackles_total"] / mins_s * 90).fillna(0.0).mean()
+        ) if "tackles_total" in phist.columns else 0.0
+        interceptions_pg = float(phist["interceptions"].mean()) \
+            if "interceptions" in phist.columns else 0.0
+        defensive_actions_per90 = float(
+            ((phist.get("tackles_total", pd.Series(0, index=phist.index)) +
+              phist.get("interceptions", pd.Series(0, index=phist.index))) / mins_s * 90
+             ).fillna(0.0).mean()
+        ) if "tackles_total" in phist.columns else 0.0
+
+        if "dribbles_success" in phist.columns and "dribbles_attempted" in phist.columns:
+            dribbles_pg = float(phist["dribbles_success"].mean())
+            dribble_success_rate = float(
+                (phist["dribbles_success"] /
+                 phist["dribbles_attempted"].replace(0, np.nan)).fillna(0.0).mean()
+            )
+        else:
+            dribbles_pg = 0.0;  dribble_success_rate = 0.0
+
+        dribbled_past_pg  = float(phist["dribbles_past"].mean())  if "dribbles_past"  in phist.columns else 0.0
+        red_cards_pg      = float(phist["red_cards"].mean())       if "red_cards"      in phist.columns else 0.0
+        passes_pg         = float(phist["passes_total"].mean())    if "passes_total"   in phist.columns else 0.0
+        offsides_pg       = float(phist["offsides"].mean())        if "offsides"       in phist.columns else 0.0
+        penalties_won_pg  = float(phist["penalty_won"].mean())     if "penalty_won"    in phist.columns else 0.0
+
+        if "penalty_scored" in phist.columns and "penalty_missed" in phist.columns:
+            _pen_tot = (phist["penalty_scored"] + phist["penalty_missed"]).replace(0, np.nan)
+            penalty_conversion_rate = float((phist["penalty_scored"] / _pen_tot).fillna(0.75).mean())
+        else:
+            penalty_conversion_rate = 0.75
+
+        saves_pg              = float(phist["saves"].mean())         if "saves"          in phist.columns else 0.0
+        goals_conceded_gk_pg  = float(phist["goals_conceded"].mean()) if "goals_conceded" in phist.columns else 0.0
+        if "saves" in phist.columns and "goals_conceded" in phist.columns:
+            _gk_sr = phist["saves"] / (phist["saves"] + phist["goals_conceded"] + 0.001)
+            gk_save_rate = float(_gk_sr.mean())
+        else:
+            gk_save_rate = 0.72
+
+        # Pre-compute intermediate composites needed by downstream features
+        _progressive_carrier_score = min(
+            min(dribbles_pg / 3.0, 1.0) * 0.45
+            + min(passes_pg / 60.0, 1.0) * 0.35
+            + dribble_success_rate * 0.20,
+            1.0,
+        ) * (pos_midfielder * 1.0 + pos_forward * 0.8 + pos_defender * 0.5)
+
+        _penalty_threat_score = min(penalties_won_pg * 3.0 + fouls_drawn_per90 * 0.08, 1.0)
+
         sot_quality_score        = round(shot_accuracy_rate * sot_pg, 4)
         opp_adjusted_shot_threat = round(shots_pg * opp_sot_c, 4)
         creative_playmaker_score = round(kp_per90 * (pos_midfielder + 0.5 * pos_forward), 4)
@@ -466,6 +772,36 @@ def build_upcoming_features(
         foul_draw_matchup_score = round(fouls_drawn_per90 * opp_def_fouls_pg, 4)
         opp_def_aggression      = round(opp_def_fouls_pg * (1.0 + opp_def_cards_pg), 4)
 
+        # ── Opponent GK lookup ────────────────────────────────────────────────
+        opp_gk_save_rate = ctx.get("opp_gk_save_rate", 0.72)
+        opp_gk_saves_pg  = ctx.get("opp_gk_saves_pg",  3.0)
+
+        if opp_team and not history.empty and "position" in history.columns \
+                and "saves" in history.columns:
+            _opp_gks = history[
+                history["team"].str.lower().str.contains(opp_team.lower()[:6], na=False) &
+                history["position"].str.upper().str.startswith("G", na=False)
+            ].sort_values("date").tail(n * 3)
+
+            if not _opp_gks.empty:
+                if "goals_conceded" in _opp_gks.columns:
+                    _gksr = _opp_gks["saves"] / (
+                        _opp_gks["saves"] + _opp_gks["goals_conceded"] + 0.001)
+                    opp_gk_save_rate = float(_gksr.mean())
+                opp_gk_saves_pg = float(_opp_gks["saves"].mean())
+
+        # Career-to-date averages (full history, not capped at last-n)
+        career_goals_pg   = float(phist_all["goals"].mean())             if len(phist_all) else 0.0
+        career_sot_pg     = float(phist_all["shots_on_target"].mean())   if len(phist_all) else 0.0
+        career_shots_pg   = float(phist_all["shots_total"].mean())       if len(phist_all) else 0.0
+        career_assists_pg = float(phist_all["assists"].mean())           if len(phist_all) else 0.0
+
+        # Rating (API-Football match rating — 0 means missing, use 7.0 fallback)
+        rating_pg = float(phist["rating"].replace(0, np.nan).mean()) \
+            if "rating" in phist.columns else 7.0
+        if np.isnan(rating_pg):
+            rating_pg = 7.0
+
         rows.append({
             "player_id":   pid,
             "player_name": name,
@@ -486,6 +822,12 @@ def build_upcoming_features(
             "key_passes_pg":       round(kp_pg,       4),
             "sot_rate":            round(sot_rate,    4),
             "starter_rate":        round(starter_rate, 3),
+            "rating_pg":           round(rating_pg, 3),
+            # Career-to-date priors (stable baseline; model learns to weight vs rolling)
+            "career_goals_pg":     round(career_goals_pg,   4),
+            "career_sot_pg":       round(career_sot_pg,     4),
+            "career_shots_pg":     round(career_shots_pg,   4),
+            "career_assists_pg":   round(career_assists_pg, 4),
             # Phase 1 features
             "shot_accuracy_rate":        round(shot_accuracy_rate,        4),
             "kp_per90":                  round(kp_per90,                   4),
@@ -527,6 +869,42 @@ def build_upcoming_features(
             "shots_away_pg":  round(shots_away_pg, 4),
             "sot_home_pg":    round(sot_home_pg,   4),
             "sot_away_pg":    round(sot_away_pg,   4),
+            # Extended raw rolling stats
+            "tackles_pg":               round(tackles_pg,              4),
+            "interceptions_pg":         round(interceptions_pg,        4),
+            "defensive_actions_per90":  round(defensive_actions_per90, 4),
+            "dribbles_pg":              round(dribbles_pg,             4),
+            "dribble_success_rate":     round(dribble_success_rate,    4),
+            "dribbled_past_pg":         round(dribbled_past_pg,        4),
+            "red_cards_pg":             round(red_cards_pg,            4),
+            "passes_pg":                round(passes_pg,               4),
+            "offsides_pg":              round(offsides_pg,             4),
+            "penalties_won_pg":         round(penalties_won_pg,        4),
+            "penalty_conversion_rate":  round(penalty_conversion_rate, 4),
+            "saves_pg":                 round(saves_pg,                4),
+            "goals_conceded_gk_pg":     round(goals_conceded_gk_pg,    4),
+            "gk_save_rate":             round(gk_save_rate,            4),
+            # Opponent GK matchup
+            "opp_gk_save_rate":         round(opp_gk_save_rate,        4),
+            "opp_gk_saves_pg":          round(opp_gk_saves_pg,         4),
+            # New composite features
+            "att_vs_gk_threat":         round(max(sot_pg * (1.0 - opp_gk_save_rate), 0.0), 4),
+            "clinical_vs_gk":           round(max(shot_accuracy_rate * (1.0 - opp_gk_save_rate), 0.0), 4),
+            "dribble_creativity_score": round(dribbles_pg * dribble_success_rate, 4),
+            "defensive_solidity":       round(max(defensive_actions_per90 * (1.0 - dribbled_past_pg / (dribbled_past_pg + 1.0)), 0.0), 4),
+            "penalty_threat_score":     round(min(penalties_won_pg * 3.0 + fouls_drawn_per90 * 0.08, 1.0), 4),
+            "card_risk_index":          round(min(cards_pg * 2.0 + red_cards_pg * 3.0 + foul_committer_ratio * 0.5, 1.0), 4),
+            "midfield_engine_score":    round((min(passes_pg / 50.0, 1.0) * 0.4 + min(kp_per90 / 3.0, 1.0) * 0.4 + min(tackles_per90 / 5.0, 1.0) * 0.2) * (pos_midfielder + 0.3 * pos_defender), 4),
+            "offside_aggressiveness":   round(min(offsides_pg * pos_forward, 2.0), 4),
+            # Agent-designed composites
+            "volume_shot_penetration":  round(max(shots_pg * shot_accuracy_rate * (1.0 - opp_gk_save_rate), 0.0), 4),
+            "finishing_threat_index":   round(max(sot_pg * shooting_efficiency_index * (1.0 - opp_gk_save_rate), 0.0), 4),
+            "box_dominance_vs_gk":      round(max((box_actions_per90 + dribbles_pg) * (1.0 - opp_gk_save_rate), 0.0), 4),
+            "aggression_adjusted_threat":    round(max(sot_pg * (1.0 - opp_gk_save_rate) / (1.0 + offsides_pg * 0.3), 0.0), 4),
+            "defensive_vulnerability_index": round(min(dribbled_past_pg * 1.5 + (1.0 - dribble_success_rate) * 0.5 + (1.0 - aerial_won_rate) * 0.5, 2.0) * (pos_forward * 1.0 + pos_midfielder * 0.7 + pos_defender * 0.3), 4),
+            "progressive_carrier_score":     round(_progressive_carrier_score, 4),
+            "disciplinary_pressure_index":   round(min(fouls_drawn_per90 * 0.20 + fouls_per90 * 0.25 + cards_pg * 1.5 + duel_intensity_per90 * 0.10, 2.0), 4),
+            "foul_magnet_score":             round(min(fouls_drawn_per90 * 0.30 + _penalty_threat_score * 0.40 + _progressive_carrier_score * 0.30, 1.0), 4),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()

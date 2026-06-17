@@ -25,6 +25,9 @@ import requests
 BASE_DIR   = Path(__file__).resolve().parent
 CONFIG_FILE = BASE_DIR / "bot_config.json"
 NOTIFIED_FILE = BASE_DIR / "notified.json"
+SHARP_NOTIFIED_FILE = BASE_DIR / "sharp_notified.json"
+WC_NOTIFIED_FILE = BASE_DIR / "wc_notified.json"
+PLAYER_NOTIFIED_FILE = BASE_DIR / "player_notified.json"
 
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
@@ -70,9 +73,10 @@ def _send(token: str, chat_id: str, text: str) -> bool:
     return False
 
 
-def _load_notified() -> set:
-    if NOTIFIED_FILE.exists():
-        text = NOTIFIED_FILE.read_text(encoding="utf-8-sig").strip()
+def _load_notified(path: "Path | None" = None) -> set:
+    f = path or NOTIFIED_FILE
+    if f.exists():
+        text = f.read_text(encoding="utf-8-sig").strip()
         if not text:
             return set()
         data = json.loads(text)
@@ -80,8 +84,9 @@ def _load_notified() -> set:
     return set()
 
 
-def _save_notified(keys: set) -> None:
-    NOTIFIED_FILE.write_text(json.dumps({"keys": list(keys)}, indent=2), encoding="utf-8")
+def _save_notified(keys: set, path: "Path | None" = None) -> None:
+    f = path or NOTIFIED_FILE
+    f.write_text(json.dumps({"keys": list(keys)}, indent=2), encoding="utf-8")
 
 
 def _escape_html(text: str) -> str:
@@ -273,7 +278,7 @@ def notify_wc_strong() -> int:
 
     MAX_PER_RUN = 50
 
-    notified = _load_notified()
+    notified = _load_notified(WC_NOTIFIED_FILE)
     sent = 0
 
     _WC_SIG = {
@@ -311,7 +316,7 @@ def notify_wc_strong() -> int:
             sent += 1
             print(f"  WC Sent: {row['match']} — {row['market']} {row['drift_pct']:+.1f}%")
 
-    _save_notified(notified)
+    _save_notified(notified, WC_NOTIFIED_FILE)
     return sent
 
 
@@ -332,7 +337,7 @@ def notify_sharp_strong() -> int:
     if strong.empty:
         return 0
 
-    notified = _load_notified()
+    notified = _load_notified(SHARP_NOTIFIED_FILE)
     sent = 0
 
     for _, row in strong.iterrows():
@@ -358,7 +363,7 @@ def notify_sharp_strong() -> int:
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
-            _save_notified(notified)
+            _save_notified(notified, SHARP_NOTIFIED_FILE)
             print(f"  Sharp [{sig}]: {row['match']} — {row['market']} {row['drift_pct']:+.1f}%")
 
     return sent
@@ -717,6 +722,10 @@ def notify_player_props() -> int:
     today_str = datetime.now().strftime("%Y-%m-%d")
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
+    # Only leagues with actual bookmaker player prop markets
+    from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
+    df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
+
     # SNIPER team matches: high probability bar; skip if EV is known negative
     ev_ok = df["ev"].isna() | (df["ev"] >= 0)
     sniper_match = (df["match_tier"] == "SNIPER") & (df["model_prob"] >= 0.60) & ev_ok
@@ -736,7 +745,7 @@ def notify_player_props() -> int:
     if df.empty:
         return 0
 
-    notified = _load_notified()
+    notified = _load_notified(PLAYER_NOTIFIED_FILE)
     sent = 0
 
     MARKET_EMOJI = {"goals": "⚽", "assists": "🎯", "sot": "🔫", "cards": "🟨"}
@@ -774,7 +783,7 @@ def notify_player_props() -> int:
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
-            _save_notified(notified)
+            _save_notified(notified, PLAYER_NOTIFIED_FILE)
             print(f"  Player prop: {row['player_name']} — {market_label} ({p*100:.0f}%)")
 
     return sent
@@ -800,6 +809,13 @@ def notify_props_daily_digest() -> bool:
     yest_str  = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     hdr_date  = today.strftime("%a, %b %d").replace(" 0", " ")
 
+    # Send once per day — skip if already sent today
+    notified = _load_notified(PLAYER_NOTIFIED_FILE)
+    props_digest_key = f"PROPS_DIGEST|{today_str}"
+    if props_digest_key in notified:
+        print("Player props digest already sent today — skipping.")
+        return False
+
     lines = [
         f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
         "━━━━━━━━━━━━━━━━",
@@ -824,8 +840,10 @@ def notify_props_daily_digest() -> bool:
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
+            from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
             all_props = pd.read_csv(player_file)
             all_props = all_props[all_props["date"].astype(str).str[:10] >= today_str].copy()
+            all_props = all_props[all_props["league"].isin(_PROP_LEAGUES.keys())].copy()
             all_props["_family"] = all_props.get(
                 "position", pd.Series("", index=all_props.index)
             ).fillna("").apply(_pos_family)
@@ -927,6 +945,8 @@ def notify_props_daily_digest() -> bool:
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
+        notified.add(props_digest_key)
+        _save_notified(notified, PLAYER_NOTIFIED_FILE)
         print("Player props daily digest sent.")
         return True
     return False
@@ -1070,6 +1090,13 @@ def notify_daily_digest() -> bool:
     today_str     = today.strftime("%Y-%m-%d")
     yesterday_str = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     header_date   = today.strftime("%a, %b %d").replace(" 0", " ")
+
+    # Send once per day — skip if already sent today
+    notified = _load_notified()
+    digest_key = f"DIGEST|{today_str}"
+    if digest_key in notified:
+        print("Daily digest already sent today — skipping.")
+        return False
 
     lines = [
         f"📊 <b>DAILY BRIEFING</b> — {header_date}",
@@ -1287,6 +1314,8 @@ def notify_daily_digest() -> bool:
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
+        notified.add(digest_key)
+        _save_notified(notified)
         print(f"Daily digest sent.")
         return True
     return False
@@ -1312,14 +1341,9 @@ if __name__ == "__main__":
         cfg = _load_config()
         get_chat_id(cfg["token"])
     else:
-        n      = notify_new_snipers()
-        ht     = notify_ht_tips()
-        live   = notify_live_signals()
-        wc     = notify_wc_strong()
-        sharp  = notify_sharp_strong()
-        props  = notify_player_props()
-        # agent = notify_agent_analysis()  # disabled — rebuilding with team-specific λ
-        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live + {wc} WC + {sharp} Sharp + {props} Props")
-        digest       = notify_daily_digest()
-        props_digest = notify_props_daily_digest()
-        print(f"Daily digest: {'sent' if digest else 'skipped'} | Props digest: {'sent' if props_digest else 'skipped'}")
+        # Only predict-specific notifications — sharp/WC handled by sharp_tracker,
+        # player props by player_props workflow, digests by daily_summary.
+        n    = notify_new_snipers()
+        ht   = notify_ht_tips()
+        live = notify_live_signals()
+        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live")

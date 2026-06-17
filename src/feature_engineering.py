@@ -66,13 +66,16 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
     """Explode match rows into one row per team per match. Preserves row index."""
     has_ht = "ht_home_goals" in matches.columns and matches["ht_home_goals"].notna().any()
 
-    # Include corners and fouls for rolling averages (replacing match-day actuals)
-    _corner_cols = [c for c in ["home_corners","away_corners"] if c in matches.columns]
-    _foul_cols   = [c for c in ["home_fouls",  "away_fouls"]   if c in matches.columns]
+    # Include corners, fouls, xG, and inside-box shots for rolling averages
+    _corner_cols   = [c for c in ["home_corners",   "away_corners"]   if c in matches.columns]
+    _foul_cols     = [c for c in ["home_fouls",     "away_fouls"]     if c in matches.columns]
+    _xg_cols       = [c for c in ["home_xg",        "away_xg"]        if c in matches.columns]
+    _insidebox_cols = [c for c in ["home_insidebox", "away_insidebox"] if c in matches.columns]
 
     home_cols = ["date", "league", "home_team", "away_team",
                  "home_goals", "away_goals", "over25", "home_shots", "home_sot"]
-    home_cols += [c for c in _corner_cols + _foul_cols if c in matches.columns]
+    home_cols += [c for c in _corner_cols + _foul_cols + _xg_cols + _insidebox_cols
+                  if c in matches.columns]
     if has_ht:
         home_cols += ["ht_home_goals", "ht_away_goals"]
 
@@ -83,6 +86,7 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
         "home_goals": "scored", "away_goals": "conceded",
         "home_shots": "shots", "home_sot": "sot",
         "home_corners": "corners", "home_fouls": "fouls",
+        "home_xg": "xg", "home_insidebox": "insidebox",
     })
     if has_ht:
         home = home.rename(columns={"ht_home_goals": "ht_scored", "ht_away_goals": "ht_conceded"})
@@ -90,7 +94,8 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
 
     away_cols = ["date", "league", "home_team", "away_team",
                  "home_goals", "away_goals", "over25", "away_shots", "away_sot"]
-    away_cols += [c for c in _corner_cols + _foul_cols if c in matches.columns]
+    away_cols += [c for c in _corner_cols + _foul_cols + _xg_cols + _insidebox_cols
+                  if c in matches.columns]
     if has_ht:
         away_cols += ["ht_home_goals", "ht_away_goals"]
 
@@ -101,6 +106,7 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
         "away_goals": "scored", "home_goals": "conceded",
         "away_corners": "corners", "away_fouls": "fouls",
         "away_shots": "shots", "away_sot": "sot",
+        "away_xg": "xg", "away_insidebox": "insidebox",
     })
     if has_ht:
         away = away.rename(columns={"ht_away_goals": "ht_scored", "ht_home_goals": "ht_conceded"})
@@ -191,6 +197,40 @@ def _add_rest_days(df: pd.DataFrame) -> pd.DataFrame:
     df["home_rest_days"] = [idx_map[i][0] for i in df.index]
     df["away_rest_days"] = [idx_map[i][1] for i in df.index]
     return df
+
+
+# ── Season-to-date venue stats ───────────────────────────────────────────────
+
+def _add_season_venue_stats(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Expanding season-to-date home/away goal averages and clean sheet rates.
+    Leakage-free: expanding mean shifted by 1 row within each (league, season, team, venue).
+    These complement the last-5 rolling features by capturing full-season tendencies.
+    """
+    out = df.copy()
+    for col in ["home_season_goals_h", "away_season_goals_a",
+                "home_season_conceded_h", "away_season_conceded_a",
+                "home_cs_rate_h", "away_cs_rate_a"]:
+        out[col] = np.nan
+
+    if "season" not in out.columns:
+        return out
+
+    s = out.sort_values("date")
+
+    for _, grp in s.groupby(["league", "season", "home_team"], sort=False):
+        idx = grp.index
+        out.loc[idx, "home_season_goals_h"]    = grp["home_goals"].expanding().mean().shift(1).values
+        out.loc[idx, "home_season_conceded_h"] = grp["away_goals"].expanding().mean().shift(1).values
+        out.loc[idx, "home_cs_rate_h"]         = (grp["away_goals"] == 0).astype(float).expanding().mean().shift(1).values
+
+    for _, grp in s.groupby(["league", "season", "away_team"], sort=False):
+        idx = grp.index
+        out.loc[idx, "away_season_goals_a"]    = grp["away_goals"].expanding().mean().shift(1).values
+        out.loc[idx, "away_season_conceded_a"] = grp["home_goals"].expanding().mean().shift(1).values
+        out.loc[idx, "away_cs_rate_a"]         = (grp["home_goals"] == 0).astype(float).expanding().mean().shift(1).values
+
+    return out
 
 
 # ── Referee foul avg ─────────────────────────────────────────────────────────
@@ -313,11 +353,15 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     tc["roll_over25"]   = _rolling(tc, "over25",  n)
     tc["roll_shots"]    = _rolling(tc, "shots",   n)
     tc["roll_sot"]      = _rolling(tc, "sot",     n)
-    # Rolling corners and fouls — leak-free, replaces match-day actuals
+    # Rolling corners, fouls, xG, and inside-box — leak-free, replaces match-day actuals
     if "corners" in tc.columns:
         tc["roll_corners"] = _rolling(tc, "corners", n)
     if "fouls" in tc.columns:
         tc["roll_fouls"] = _rolling(tc, "fouls", n)
+    if "xg" in tc.columns:
+        tc["roll_xg"] = _rolling(tc, "xg", n)
+    if "insidebox" in tc.columns:
+        tc["roll_insidebox"] = _rolling(tc, "insidebox", n)
 
     has_ht = "ht_scored" in tc.columns and tc["ht_scored"].notna().any()
     if has_ht:
@@ -333,14 +377,22 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     # Map back by original row index to avoid any cross-league duplicates
     home_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
     away_cols = ["_src_idx", "roll_scored", "roll_conceded", "roll_over25", "roll_shots", "roll_sot"]
-    has_corners = "roll_corners" in tc.columns
-    has_fouls   = "roll_fouls"   in tc.columns
+    has_corners   = "roll_corners"   in tc.columns
+    has_fouls     = "roll_fouls"     in tc.columns
+    has_xg        = "roll_xg"        in tc.columns
+    has_insidebox = "roll_insidebox" in tc.columns
     if has_corners:
         home_cols.append("roll_corners")
         away_cols.append("roll_corners")
     if has_fouls:
         home_cols.append("roll_fouls")
         away_cols.append("roll_fouls")
+    if has_xg:
+        home_cols.append("roll_xg")
+        away_cols.append("roll_xg")
+    if has_insidebox:
+        home_cols.append("roll_insidebox")
+        away_cols.append("roll_insidebox")
     if has_ht:
         home_cols += ["roll_ht_scored", "roll_ht_conceded", "roll_ht_over05", "roll_ht_over15"]
         away_cols += ["roll_ht_scored", "roll_ht_conceded", "roll_ht_over05", "roll_ht_over15"]
@@ -354,6 +406,8 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
         "roll_sot":          "home_sot_last5",
         "roll_corners":      "home_corners_pg_roll",
         "roll_fouls":        "home_fouls_pg_roll",
+        "roll_xg":           "home_xg_last5",
+        "roll_insidebox":    "home_insidebox_last5",
         "roll_ht_scored":    "home_ht_scored_last5",
         "roll_ht_conceded":  "home_ht_conceded_last5",
         "roll_ht_over05":    "home_ht_over05_rate",
@@ -368,6 +422,8 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
         "roll_sot":          "away_sot_last5",
         "roll_corners":      "away_corners_pg_roll",
         "roll_fouls":        "away_fouls_pg_roll",
+        "roll_xg":           "away_xg_last5",
+        "roll_insidebox":    "away_insidebox_last5",
         "roll_ht_scored":    "away_ht_scored_last5",
         "roll_ht_conceded":  "away_ht_conceded_last5",
         "roll_ht_over05":    "away_ht_over05_rate",
@@ -408,6 +464,7 @@ def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
     # = fraction of home games where team scored more than away average goals conceded
     df = _add_rest_days(df)
     df = _add_home_advantage(df)
+    df = _add_season_venue_stats(df)
 
     # ── Set piece proxies — rolling historical averages (no match-day leakage) ──
     # combined_corners_pg_roll and combined_fouls_pg_roll come from the team-centric
@@ -557,6 +614,33 @@ def build_upcoming_features(
         feat["away_corners_pg_roll"] = _team_recent(at, "home_corners", "away_corners", n, lg)
         feat["home_fouls_pg_roll"]   = _team_recent(ht, "home_fouls",   "away_fouls",   n, lg)
         feat["away_fouls_pg_roll"]   = _team_recent(at, "home_fouls",   "away_fouls",   n, lg)
+        # xG and inside-box shots (from API-Football cache — new-format leagues only)
+        feat["home_xg_last5"]        = _team_recent(ht, "home_xg",        "away_xg",        n, lg)
+        feat["away_xg_last5"]        = _team_recent(at, "home_xg",        "away_xg",        n, lg)
+        feat["home_insidebox_last5"] = _team_recent(ht, "home_insidebox", "away_insidebox", n, lg)
+        feat["away_insidebox_last5"] = _team_recent(at, "home_insidebox", "away_insidebox", n, lg)
+
+        # Season-to-date venue stats (current season from historical data — no shift needed)
+        def _venue_season_stats(team, team_col, scored_col, conceded_col, league=""):
+            rows = hist[hist[team_col] == team]
+            if league:
+                rows = rows[rows["league"] == league]
+            if rows.empty or "season" not in rows.columns:
+                return np.nan, np.nan, np.nan
+            latest_szn = rows.sort_values("date")["season"].iloc[-1]
+            rows = rows[rows["season"] == latest_szn]
+            if rows.empty:
+                return np.nan, np.nan, np.nan
+            return (
+                float(rows[scored_col].dropna().mean()),
+                float(rows[conceded_col].dropna().mean()),
+                float((rows[conceded_col] == 0).mean()),
+            )
+
+        (feat["home_season_goals_h"], feat["home_season_conceded_h"], feat["home_cs_rate_h"]) = \
+            _venue_season_stats(ht, "home_team", "home_goals", "away_goals", lg)
+        (feat["away_season_goals_a"], feat["away_season_conceded_a"], feat["away_cs_rate_a"]) = \
+            _venue_season_stats(at, "away_team", "away_goals", "home_goals", lg)
 
         # Away team's rolling home advantage (fraction of their own home games they dominate)
         at_home_rows = _find_team_rows(at, "home_team", lg).tail(n)
@@ -617,6 +701,102 @@ def build_upcoming_features(
     df["combined_sot_ratio"] = (
         df["home_sot_ratio_last5"].fillna(0.35) + df["away_sot_ratio_last5"].fillna(0.33)
     ) / 2
+
+    # ── Phase 2: Injury features — key_attacker_absent_home / _away ─────────────
+    # Pre-fetch per league (one batch per league, not per row) then apply per row.
+    # Falls back gracefully to 0 when API_KEY is absent or API returns nothing.
+    df["key_attacker_absent_home"] = 0.0
+    df["key_attacker_absent_away"] = 0.0
+    try:
+        from src.api_football_ou import get_league_injury_context, injury_features_from_context
+        _inj_ctx: dict = {}
+        for _lg in df["league"].unique():
+            _lid = config.API_FOOTBALL_IDS.get(_lg)
+            if not _lid:
+                continue
+            _szn = config.API_FOOTBALL_SEASONS.get(_lg, "2025")
+            try:
+                _inj_ctx[_lg] = get_league_injury_context(_lid, _szn)
+            except Exception:
+                pass
+
+        if _inj_ctx:
+            _inj_rows = []
+            for _, _r in df.iterrows():
+                _ctx = _inj_ctx.get(_r.get("league", ""), {})
+                _inj_rows.append(injury_features_from_context(
+                    _r["home_team"], _r["away_team"], _r["date"], _ctx
+                ))
+            _inj_df = pd.DataFrame(_inj_rows, index=df.index)
+            df["key_attacker_absent_home"] = _inj_df["key_attacker_absent_home"].fillna(0.0)
+            df["key_attacker_absent_away"] = _inj_df["key_attacker_absent_away"].fillna(0.0)
+    except Exception:
+        pass   # always safe to fall back to 0
+
+    # ── Phase 3: /teams/statistics — real-time season-to-date venue averages ────
+    # Overrides _venue_season_stats() values computed from FD historical data.
+    # Useful at season start (few FD rows) and for current-form accuracy.
+    # Skips silently when API key absent or league not in API_FOOTBALL_IDS.
+    try:
+        from src.api_football_ou import fetch_upcoming_team_stats
+        _ts = fetch_upcoming_team_stats(df)
+        if _ts:
+            for _idx, _r in df.iterrows():
+                _ht = str(_r.get("home_team", ""))
+                _at = str(_r.get("away_team", ""))
+                _hs = _ts.get(_ht, {})
+                _as = _ts.get(_at, {})
+                if _hs:
+                    if _hs.get("goals_for_h") is not None:
+                        df.at[_idx, "home_season_goals_h"]    = _hs["goals_for_h"]
+                    if _hs.get("goals_against_h") is not None:
+                        df.at[_idx, "home_season_conceded_h"] = _hs["goals_against_h"]
+                    if _hs.get("cs_rate_h") is not None:
+                        df.at[_idx, "home_cs_rate_h"]         = _hs["cs_rate_h"]
+                if _as:
+                    if _as.get("goals_for_a") is not None:
+                        df.at[_idx, "away_season_goals_a"]    = _as["goals_for_a"]
+                    if _as.get("goals_against_a") is not None:
+                        df.at[_idx, "away_season_conceded_a"] = _as["goals_against_a"]
+                    if _as.get("cs_rate_a") is not None:
+                        df.at[_idx, "away_cs_rate_a"]         = _as["cs_rate_a"]
+    except Exception:
+        pass   # always safe to fall back to FD historical values
+
+    # ── Phases 4-7: Lineup, H2H, API odds ────────────────────────────────────
+    # Defaults applied first so the model always has valid values even when
+    # API is unavailable or lineup not yet released.
+    df["home_attack_formation"]  = 0.65
+    df["away_attack_formation"]  = 0.65
+    df["combined_attack_intent"] = 1.30
+    df["home_forward_count"]     = 1.0
+    df["away_forward_count"]     = 1.0
+    df["h2h_over25_rate"]        = 0.50
+    df["h2h_avg_goals"]          = 2.60
+    df["h2h_home_win_rate"]      = 0.43
+    df["h2h_n"]                  = 0.0
+    df["api_implied_over25"]     = df["implied_prob_over"].fillna(0.5) if "implied_prob_over" in df.columns else 0.5
+    df["api_overround"]          = 0.05
+
+    try:
+        from src.api_football_ou import (
+            resolve_upcoming_fixture_ids,
+            fetch_lineup_features,
+            fetch_h2h_features,
+            fetch_prematch_odds_features,
+        )
+        _fids = resolve_upcoming_fixture_ids(df)
+        for _feat_dict in [
+            fetch_lineup_features(df, fixture_ids=_fids),
+            fetch_h2h_features(df),
+            fetch_prematch_odds_features(df, fixture_ids=_fids),
+        ]:
+            for _idx, _feats in _feat_dict.items():
+                for _k, _v in _feats.items():
+                    if _k in df.columns:
+                        df.at[_idx, _k] = _v
+    except Exception:
+        pass
 
     # Sofascore
     df = _merge_sofascore(df)

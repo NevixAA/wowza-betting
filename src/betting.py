@@ -144,7 +144,11 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
         if edge > ceiling:
             return "MARKSMAN"
 
-    if edge >= config.MARKSMAN_THRESHOLD:
+    # Per-league MARKSMAN floor overrides global (set equal to SNIPER to disable MARKSMAN)
+    league_mm_thresh = getattr(config, "LEAGUE_MARKSMAN_THRESHOLDS", {}).get(league)
+    mm_thresh = league_mm_thresh if league_mm_thresh is not None else config.MARKSMAN_THRESHOLD
+
+    if edge >= mm_thresh:
         return "MARKSMAN"
     if edge >= config.VALUABLE_THRESHOLD:
         return "VALUABLE"
