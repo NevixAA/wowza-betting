@@ -108,6 +108,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["starter_rate"] = 0.8
 
     # ── Phase 1: ratio and per-90 rolling features (zero leakage) ────────────
+    # Refresh groupby — new columns added above (venue splits, starter_rate) aren't
+    # visible in the original grp object under pandas copy-on-write semantics.
+    grp = df.groupby("player_id", group_keys=False)
+
     # Build intermediate per-game raw ratios, then roll them.
     mins_safe = df["minutes"].replace(0, np.nan)
 
