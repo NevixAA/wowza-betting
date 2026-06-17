@@ -555,9 +555,14 @@ def build_upcoming_features(
         stat_home = column when team plays AT HOME (e.g. "home_goals" for scored)
         stat_away = column when team plays AWAY    (e.g. "away_goals" for scored)
         Both represent the SAME semantic quantity (scored/conceded) from different venues.
+        Returns NaN when the column is absent (e.g. xG not available for standard-format leagues).
         """
-        h = _find_team_rows(team, "home_team", league)[stat_home].dropna().tail(nn)
-        a = _find_team_rows(team, "away_team", league)[stat_away].dropna().tail(nn)
+        home_rows = _find_team_rows(team, "home_team", league)
+        away_rows = _find_team_rows(team, "away_team", league)
+        if stat_home not in home_rows.columns or stat_away not in away_rows.columns:
+            return np.nan
+        h = home_rows[stat_home].dropna().tail(nn)
+        a = away_rows[stat_away].dropna().tail(nn)
         vals = list(h) + list(a)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
