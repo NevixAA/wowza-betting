@@ -33,10 +33,15 @@ jobs:
 
       - name: Run Telegram (WC alerts)
         env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python telegram_bot/notifier.py
+        run: |
+          python -c "
+          import sys; sys.path.insert(0,'.')
+          from telegram_bot.notifier import notify_wc_strong
+          w = notify_wc_strong()
+          print(f'WC alerts sent: {w}')
+          "
         continue-on-error: true
 
       - name: Commit and push
@@ -46,7 +51,7 @@ jobs:
           git add -f \
             output/worldcup_tips.csv output/worldcup_history.json \
             output/worldcup_model_tips.csv output/sharp_ledger.csv \
-            telegram_bot/notified.json telegram_bot/live_notified.json 2>/dev/null || true
+            telegram_bot/wc_notified.json 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: worldcup $(date -u '+%Y-%m-%d %H:%M UTC')"
           git pull --rebase --autostash -X ours origin main

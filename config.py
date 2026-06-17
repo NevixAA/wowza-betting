@@ -76,6 +76,21 @@ NEW_FORMAT_LEAGUES = {
     "Mexico Liga MX",
     "China Super League",
     "USA MLS",
+    # API-Football-only (not on football-data.co.uk) — training only until validated
+    "Saudi Pro League",
+    "K-League 1",
+}
+
+# Leagues loaded entirely from API-Football (no football-data.co.uk coverage)
+API_FOOTBALL_ONLY_LEAGUES = {
+    "Saudi Pro League",
+    "K-League 1",
+}
+
+# Historical seasons to backfill for API-Football-only leagues
+API_FOOTBALL_EXTRA_SEASONS: dict = {
+    "Saudi Pro League": ["2019", "2020", "2021", "2022", "2023", "2024"],
+    "K-League 1":       ["2020", "2021", "2022", "2023", "2024", "2025"],
 }
 
 # ── Live-prediction leagues (have OddsAPI coverage) ───────────────────────────
@@ -106,6 +121,9 @@ ENABLED_LEAGUES = {
     "USA MLS",
     # New format — training only (no OddsAPI key), kept for model quality
     "Romanian Superliga",
+    # API-Football-only — training only until 1+ seasons validated
+    # "Saudi Pro League",  # enable after ROI validation
+    # "K-League 1",        # enable after ROI validation
 }
 
 # ── football-data.co.uk league codes ─────────────────────────────────────────
@@ -171,18 +189,19 @@ DEFAULT_DECAY_WEIGHT = 1.0
 
 # ── Three-tier signal system ──────────────────────────────────────────────────
 #
-#  SNIPER    — meets per-league threshold (12–19%)  → full stake (real tip)
-#  MARKSMAN  — edge 8% to league threshold          → 3/4 stake (real tip)
-#  VALUABLE  — edge 4–8%                            → info only, not a tip
+#  SNIPER    — meets per-league threshold (12–25%)  → full stake (real tip)
+#  MARKSMAN  — edge 14% to league threshold         → 3/4 stake (real tip)
+#  VALUABLE  — edge 4–14%                           → info only, not a tip
 #
 #  EDGE_CEILING: above 19% the model is overconfident (backtest shows -20% ROI
 #  at 16-20% range). Bets above the ceiling are downgraded to MARKSMAN.
 #
-#  SNIPER floor raised 10%→12% on 2026-06-15: backtest shows 8–12% zone is -6.6%
-#  ROI; 12–15% zone is +65.7% ROI across 11 bets. UNDER matches OVER floor.
+#  MARKSMAN raised 8%→14% on 2026-06-17: sweep showed 8–14% zone is -1.6% ROI;
+#  14%+ zone is +6.5% ROI. Bundesliga 2 excluded from MARKSMAN entirely (see
+#  LEAGUE_MARKSMAN_THRESHOLDS). Combined effect: S+MM ROI 22% → ~45%+.
 #
 VALUABLE_THRESHOLD      = float(os.getenv("VALUABLE_THRESHOLD",      "0.04"))   # min edge to show
-MARKSMAN_THRESHOLD      = float(os.getenv("MARKSMAN_THRESHOLD",      "0.08"))   # between VALUABLE and SNIPER
+MARKSMAN_THRESHOLD      = float(os.getenv("MARKSMAN_THRESHOLD",      "0.14"))   # raised from 0.08 → 0.14
 SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.12"))   # global SNIPER floor (raised from 0.10)
 SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.12"))   # OVER needs a bit more edge
 SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.12"))   # raised from 0.10 to match OVER
@@ -222,6 +241,14 @@ LEAGUE_SNIPER_THRESHOLDS: dict = {
     "Championship":   0.15,   # limited edge, conservative
     "Serie B":        0.15,   # limited edge, conservative
     "Greek Super League": 0.25,  # historically weak — high bar
+}
+
+# ── Per-league MARKSMAN thresholds (override global MARKSMAN_THRESHOLD) ────────
+# Set equal to the league's SNIPER threshold to disable MARKSMAN for that league.
+# Bundesliga 2: MARKSMAN 8-20% backtest was -10.8% ROI — no MARKSMAN bets here.
+LEAGUE_MARKSMAN_THRESHOLDS: dict = {
+    "Bundesliga 2": 0.20,   # match SNIPER — no MARKSMAN; 8-20% = -10.8% ROI
+    "League Two":   0.14,   # match SNIPER — 8-14% range had low +4.3% ROI
 }
 
 KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))
@@ -271,6 +298,9 @@ API_FOOTBALL_IDS = {
     "Mexico Liga MX":          262,
     "China Super League":      169,
     "USA MLS":                 253,
+    # API-Football-only leagues (not on FD)
+    "Saudi Pro League":        307,
+    "K-League 1":              292,
     # International
     "World Cup 2026":            1,
 }
@@ -302,8 +332,11 @@ API_FOOTBALL_SEASONS: dict = {
     "USA MLS":                  "2026",
     # South America (starts early calendar year)
     "Argentina Primera Division": "2025",
+    # API-Football-only leagues (current season)
+    "Saudi Pro League":          "2025",   # 2025/26 season started Aug 2025
+    "K-League 1":                "2025",   # calendar year 2025
     # International
-    "World Cup 2026":           "2026",
+    "World Cup 2026":            "2026",
 }
 
 ODDS_API_SPORT_KEYS = {
@@ -338,6 +371,9 @@ ODDS_API_SPORT_KEYS = {
     "Scottish Premiership":     "soccer_spl",
     "Turkish Super Lig":        "soccer_turkey_super_league",
     "Poland Ekstraklasa":       "soccer_poland_ekstraklasa",
+    # API-Football-only (for future live odds when enabled)
+    "Saudi Pro League":         "soccer_saudi_professional_league",
+    "K-League 1":               "soccer_south_korea_kleague1",
 }
 
 SOFASCORE_TOURNAMENT_IDS = {

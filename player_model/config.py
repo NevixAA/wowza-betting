@@ -45,10 +45,12 @@ REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
 # ── Features ──────────────────────────────────────────────────────────────────
 ROLLING_N = 5
 PLAYER_FEATURE_COLS = [
-    # Base rolling stats
+    # Base rolling stats (last-N)
     "goals_pg", "assists_pg", "shots_pg", "sot_pg",
     "cards_pg", "minutes_pg", "key_passes_pg", "sot_rate",
-    "starter_rate", "n_prev_games",
+    "starter_rate", "n_prev_games", "rating_pg",
+    # Career-to-date stable priors (expanding average over full history)
+    "career_goals_pg", "career_sot_pg", "career_shots_pg", "career_assists_pg",
     # Phase 1: accuracy and per-90 rolling features (all computed from parquet)
     "shot_accuracy_rate",        # rolling SOT/shots — r=0.903 for target_sot
     "kp_per90",                  # rolling key_passes/90 — top assists predictor
@@ -86,6 +88,28 @@ PLAYER_FEATURE_COLS = [
     "goals_home_pg", "goals_away_pg",
     "shots_home_pg", "shots_away_pg",
     "sot_home_pg",   "sot_away_pg",
+    # Extended raw rolling stats (tackles, dribbles, discipline, passing)
+    "tackles_pg", "interceptions_pg", "defensive_actions_per90",
+    "dribbles_pg", "dribble_success_rate", "dribbled_past_pg",
+    "red_cards_pg", "passes_pg", "offsides_pg",
+    "penalties_won_pg", "penalty_conversion_rate",
+    # Opponent GK matchup
+    "opp_gk_save_rate", "opp_gk_saves_pg",
+    # Attacker vs GK composite features (agent-designed)
+    "att_vs_gk_threat", "clinical_vs_gk",
+    "volume_shot_penetration", "finishing_threat_index",
+    "box_dominance_vs_gk", "aggression_adjusted_threat",
+    # Positional composite features
+    "dribble_creativity_score", "defensive_solidity",
+    "penalty_threat_score", "card_risk_index",
+    "midfield_engine_score", "offside_aggressiveness",
+    # Agent-designed defender/midfielder composites
+    "defensive_vulnerability_index", "progressive_carrier_score",
+    "disciplinary_pressure_index", "foul_magnet_score",
+    # Season-level priors (/players/statistics — more stable than last-5 rolling)
+    "season_goals_pg", "season_assists_pg", "season_shots_pg",
+    "season_sot_pg", "season_cards_pg", "season_minutes_pg",
+    "season_appearances",
 ]
 # Phase 2 (future — needs /fixtures/events API data):
 #   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)

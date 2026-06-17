@@ -67,6 +67,13 @@ FEATURE_COLS = [
     "home_corners_pg_roll", "away_corners_pg_roll",
     "home_fouls_pg_roll",   "away_fouls_pg_roll",
     "combined_sot_ratio",
+    # xG and inside-box shots (API-Football cache; NaN for standard leagues → median-imputed)
+    "home_xg_last5",        "away_xg_last5",
+    "home_insidebox_last5", "away_insidebox_last5",
+    # Season-to-date venue splits — complements last-5 with full-season tendencies
+    "home_season_goals_h",    "away_season_goals_a",
+    "home_season_conceded_h", "away_season_conceded_a",
+    "home_cs_rate_h",         "away_cs_rate_a",
     # Dropped: referee_foul_avg, *_sp_goals_pg, *_pen_goals_pg, *_fk_goals_pg
     # All had 0% importance in both LR and GBM — pure noise (ML audit 2026-06-10)
     # Half-time rolling form (only populated for standard-format leagues)
@@ -80,6 +87,19 @@ FEATURE_COLS = [
     # Market microstructure
     "bookmaker_overround",    # over-round tightness signals market confidence
     "p_over25_poisson_dc",    # Dixon-Coles corrected Poisson P(over 2.5)
+    # Phase 5: Formation / lineup features (from /fixtures/lineups, TTL 2h)
+    "home_attack_formation",    # starting formation attacking intent 0-1
+    "away_attack_formation",
+    "combined_attack_intent",   # sum of both — overall match attacking expectation
+    "home_forward_count",       # confirmed forwards in starting XI
+    "away_forward_count",
+    # Phase 6: Head-to-head history (from /fixtures/headtohead, TTL 168h)
+    "h2h_over25_rate",          # % of last 10 H2H matches that ended over 2.5
+    "h2h_avg_goals",            # avg goals per game in last 10 H2H
+    "h2h_home_win_rate",        # % of last 10 H2H won by the home team
+    # Phase 7: API-Football cross-validated odds (Bet365 via /odds, TTL 6h)
+    "api_implied_over25",       # Bet365 implied P(over 2.5) — second bookmaker signal
+    "api_overround",            # Bet365 overround — market tightness / confidence proxy
 ]
 
 

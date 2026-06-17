@@ -129,22 +129,50 @@ def run_backtest(
     peak = results_df["cumulative_pnl"].cummax()
     results_df["drawdown"] = results_df["cumulative_pnl"] - peak
 
-    # Summary metrics
-    bet_rows     = results_df[results_df["bet"] != "AVOID"]
-    total_bets   = len(bet_rows)
-    wins         = int((bet_rows["pnl"] > 0).sum())
-    total_profit = float(results_df["pnl"].sum())
-    total_staked = float(bet_rows["bet_stake"].sum())
+    # ── Tier breakdown ────────────────────────────────────────────────────────
+    # signal_tier column: SNIPER / MARKSMAN / VALUABLE / AVOID
+    # Headline ROI uses SNIPER + MARKSMAN only (VALUABLE is info-only, not a tip).
+    # VALUABLE is reported separately so it never pollutes the performance metric.
+
+    def _tier_stats(rows: pd.DataFrame) -> dict:
+        if rows.empty:
+            return {"bets": 0, "wins": 0, "win_rate": 0.0, "profit": 0.0, "staked": 0.0, "roi_%": 0.0}
+        wins_  = int((rows["pnl"] > 0).sum())
+        profit = float(rows["pnl"].sum())
+        staked = float(rows["bet_stake"].sum())
+        return {
+            "bets":     len(rows),
+            "wins":     wins_,
+            "win_rate": round(wins_ / len(rows), 4),
+            "profit":   round(profit, 3),
+            "staked":   round(staked, 3),
+            "roi_%":    round(profit / staked * 100, 2) if staked > 0 else 0.0,
+        }
+
+    sniper_rows   = results_df[results_df["signal_tier"] == "SNIPER"]
+    marksman_rows = results_df[results_df["signal_tier"] == "MARKSMAN"]
+    valuable_rows = results_df[results_df["signal_tier"] == "VALUABLE"]
+
+    sniper_stats   = _tier_stats(sniper_rows)
+    marksman_stats = _tier_stats(marksman_rows)
+    valuable_stats = _tier_stats(valuable_rows)
+
+    # Headline = SNIPER + MARKSMAN (placed tips only)
+    placed_rows  = results_df[results_df["signal_tier"].isin(["SNIPER", "MARKSMAN"])]
+    total_bets   = len(placed_rows)
+    wins         = int((placed_rows["pnl"] > 0).sum())
+    total_profit = float(placed_rows["pnl"].sum())
+    total_staked = float(placed_rows["bet_stake"].sum())
     roi          = (total_profit / total_staked * 100) if total_staked > 0 else 0.0
     max_dd       = float(results_df["drawdown"].min())
 
-    # Sharpe (annualized from daily P&L)
-    daily = results_df.groupby("date")["pnl"].sum()
-    sharpe = float((daily.mean() / daily.std() * np.sqrt(252)) if daily.std() > 0 else 0.0)
+    # Sharpe (annualized from daily P&L — placed tips only)
+    daily  = placed_rows.groupby("date")["pnl"].sum() if not placed_rows.empty else pd.Series(dtype=float)
+    sharpe = float((daily.mean() / daily.std() * np.sqrt(252)) if len(daily) > 1 and daily.std() > 0 else 0.0)
 
-    # By-league breakdown
+    # By-league breakdown (placed tips)
     league_summary = (
-        bet_rows.groupby("league")
+        placed_rows.groupby("league")
         .apply(lambda g: pd.Series({
             "bets":   len(g),
             "wins":   int((g["pnl"] > 0).sum()),
@@ -157,6 +185,7 @@ def run_backtest(
 
     summary = {
         "total_matches_backtested": len(results_df),
+        # Placed tips (SNIPER + MARKSMAN) — headline metrics
         "total_bets":               total_bets,
         "wins":                     wins,
         "win_rate":                 round(wins / total_bets, 4) if total_bets else 0.0,
@@ -166,10 +195,19 @@ def run_backtest(
         "max_drawdown_units":       round(max_dd, 3),
         "sharpe_ratio":             round(sharpe, 3),
         "windows_trained":          window_count,
+        # Per-tier breakdown
+        "sniper_bets":              sniper_stats["bets"],
+        "sniper_roi_%":             sniper_stats["roi_%"],
+        "sniper_win_rate":          sniper_stats["win_rate"],
+        "marksman_bets":            marksman_stats["bets"],
+        "marksman_roi_%":           marksman_stats["roi_%"],
+        "marksman_win_rate":        marksman_stats["win_rate"],
+        "valuable_bets":            valuable_stats["bets"],
+        "valuable_roi_%":           valuable_stats["roi_%"],
     }
 
     log.info(
-        f"Backtest complete: {total_bets} bets | "
+        f"Backtest complete: {total_bets} placed tips (S:{sniper_stats['bets']} M:{marksman_stats['bets']}) | "
         f"WR={summary['win_rate']:.1%} | ROI={roi:.1f}% | "
         f"Sharpe={sharpe:.2f} | MaxDD={max_dd:.2f}u"
     )

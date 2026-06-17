@@ -27,6 +27,7 @@ sys.path.insert(0, str(_v9))
 from player_model import config
 from player_model.data_fetcher import (
     collect_history, collect_match_history, collect_national_team_history,
+    fetch_all_player_season_stats,
     FBREF_LEAGUES, EUROPEAN_CUPS, APIFOOTBALL_LEAGUES,
 )
 from player_model.feature_engineering import build_features
@@ -295,11 +296,47 @@ def _enrich_with_recent_form(history: pd.DataFrame) -> None:
         print(f"  [enrich] Error enriching with API-Football: {e}")
 
 
+# ── Season stats enrichment ───────────────────────────────────────────────────
+
+def mode_enrich_season() -> None:
+    """
+    Fetch /players/statistics for every unique player in the parquet and merge
+    season-level averages as new columns: season_goals_pg, season_sot_pg,
+    season_shots_pg, season_assists_pg, season_cards_pg, season_minutes_pg,
+    season_appearances.
+
+    Safe to re-run — existing values updated, missing players get NaN.
+    Run after collect to enrich the parquet before retraining.
+    Usage: python -m player_model.pipeline --mode enrich-season
+    """
+    if not HISTORY_CACHE.exists():
+        print("[enrich-season] No history. Run --mode collect first.")
+        return
+
+    df = pd.read_parquet(HISTORY_CACHE)
+    print(f"[enrich-season] Fetching season stats for {df['player_id'].nunique()} unique players...")
+
+    season_stats = fetch_all_player_season_stats(df, leagues=APIFOOTBALL_LEAGUES)
+
+    season_cols = [
+        "season_appearances", "season_goals_pg", "season_assists_pg",
+        "season_shots_pg", "season_sot_pg", "season_cards_pg", "season_minutes_pg",
+    ]
+    for col in season_cols:
+        df[col] = df["player_id"].map(
+            lambda pid, c=col: season_stats.get(pid, {}).get(c, float("nan"))
+        )
+
+    df.to_parquet(HISTORY_CACHE, index=False)
+    enriched = df["season_goals_pg"].notna().sum()
+    print(f"[enrich-season] Done. {enriched}/{len(df)} rows enriched -> {HISTORY_CACHE.name}")
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
-    parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all"], required=True)
+    parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all", "enrich-season"], required=True)
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
     parser.add_argument("--last-n", type=int, default=99,
@@ -310,6 +347,8 @@ def main() -> None:
         mode_collect(extended=args.extended, last_n=args.last_n)
     if args.mode == "collect-wc":
         mode_collect_wc(last_n=args.last_n)
+    if args.mode == "enrich-season":
+        mode_enrich_season()
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":

@@ -243,12 +243,15 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     if minutes < 10:
         return None
 
-    goals_d  = stats.get("goals",   {})
-    shots_d  = stats.get("shots",   {})
-    cards_d  = stats.get("cards",   {})
-    passes_d = stats.get("passes",  {})
-    duels_d  = stats.get("duels",   {})
-    fouls_d  = stats.get("fouls",   {})
+    goals_d    = stats.get("goals",    {})
+    shots_d    = stats.get("shots",    {})
+    cards_d    = stats.get("cards",    {})
+    passes_d   = stats.get("passes",   {})
+    duels_d    = stats.get("duels",    {})
+    fouls_d    = stats.get("fouls",    {})
+    tackles_d  = stats.get("tackles",  {})
+    dribbles_d = stats.get("dribbles", {})
+    penalty_d  = stats.get("penalty",  {})
 
     substitute = games.get("substitute")
     started = (not bool(substitute)) if substitute is not None else bool(minutes > 45)
@@ -278,6 +281,23 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "duels_total":     int(duels_d.get("total")     or 0),
         "duels_won":       int(duels_d.get("won")       or 0),
         "team_corners":    int(meta.get("team_corners", 0)),
+        # Defensive / technical
+        "red_cards":           int(cards_d.get("red")                or 0),
+        "passes_total":        int(passes_d.get("total")             or 0),
+        "offsides":            int(stats.get("offsides")             or 0),
+        "tackles_total":       int(tackles_d.get("total")            or 0),
+        "interceptions":       int(tackles_d.get("interceptions")    or 0),
+        "dribbles_attempted":  int(dribbles_d.get("attempts")        or 0),
+        "dribbles_success":    int(dribbles_d.get("success")         or 0),
+        "dribbles_past":       int(dribbles_d.get("past")            or 0),
+        # Goalkeeper
+        "goals_conceded":      int(goals_d.get("conceded")           or 0),
+        "saves":               int(goals_d.get("saves")              or 0),
+        # Penalty
+        "penalty_scored":      int(penalty_d.get("scored")           or 0),
+        "penalty_missed":      int(penalty_d.get("missed")           or 0),
+        "penalty_won":         int(penalty_d.get("won")              or 0),
+        "penalty_saved":       int(penalty_d.get("saved")            or 0),
     }
 
 
@@ -572,3 +592,117 @@ def collect_history(
 
     print(f"[DONE] {len(all_rows)} total player rows across {len(leagues)} leagues.")
     return all_rows
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Player season statistics (/players/statistics)
+# Stable season-level priors: more data than last-5 rolling, more current than
+# career averages. Used as supplementary features alongside rolling averages.
+# ~1 call per unique player per season. Cached 24h.
+# ─────────────────────────────────────────────────────────────────────────────
+
+_SEASON_STATS_CACHE_DIR = config.BASE_DIR / "player_season_stats_cache"
+_SEASON_STATS_CACHE_DIR.mkdir(exist_ok=True)
+
+
+def _season_stats_cache_path(player_id: int, league_id: int, season: str) -> Path:
+    return _SEASON_STATS_CACHE_DIR / f"ss_{player_id}_{league_id}_{season}.json"
+
+
+def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> dict:
+    """
+    Fetch season-aggregate stats for one player from /players/statistics.
+    Returns per-game averages: season_goals_pg, season_sot_pg, season_shots_pg,
+    season_assists_pg, season_cards_pg, season_minutes_pg, season_appearances.
+    Cached 24h. Returns {} on any failure.
+    """
+    key = os.getenv("APIFOOTBALL_KEY", "")
+    if not key:
+        return {}
+
+    cache_p = _season_stats_cache_path(player_id, league_id, season)
+    if cache_p.exists():
+        try:
+            data = json.loads(cache_p.read_text(encoding="utf-8"))
+            ts = datetime.fromisoformat(data.get("_cached_at", "2000-01-01"))
+            if datetime.now() - ts < timedelta(hours=24):
+                return data.get("stats", {})
+        except Exception:
+            pass
+
+    try:
+        data = _api_get("players/statistics", {
+            "id": player_id, "league": league_id, "season": season,
+        })
+    except RuntimeError:
+        return {}
+
+    resp = data.get("response", [])
+    if not resp:
+        return {}
+
+    stats_list = resp[0].get("statistics", [])
+    if not stats_list:
+        return {}
+
+    s       = stats_list[0]
+    games   = s.get("games",  {})
+    goals   = s.get("goals",  {})
+    shots   = s.get("shots",  {})
+    cards   = s.get("cards",  {})
+
+    apps = max(int(games.get("appearences") or 0), 1)
+    result = {
+        "season_appearances":  apps,
+        "season_goals_pg":     (int(goals.get("total")   or 0)) / apps,
+        "season_assists_pg":   (int(goals.get("assists")  or 0)) / apps,
+        "season_shots_pg":     (int(shots.get("total")   or 0)) / apps,
+        "season_sot_pg":       (int(shots.get("on")      or 0)) / apps,
+        "season_cards_pg":     (int(cards.get("yellow")  or 0) + int(cards.get("red") or 0)) / apps,
+        "season_minutes_pg":   (int(games.get("minutes") or 0)) / apps,
+    }
+
+    cache_p.write_text(
+        json.dumps({"_cached_at": datetime.now().isoformat(), "stats": result},
+                   ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return result
+
+
+def fetch_all_player_season_stats(
+    df: "pd.DataFrame",
+    leagues: dict | None = None,
+) -> dict[int, dict]:
+    """
+    Batch-fetch season stats for all unique player_ids in df.
+    Matches player → league via the 'league' column in df.
+    Returns {player_id: stats_dict}. Used in --mode enrich-season.
+    """
+    if leagues is None:
+        leagues = APIFOOTBALL_LEAGUES
+
+    results: dict[int, dict] = {}
+    seen: set[int] = set()
+
+    for _, row in df.iterrows():
+        pid = int(row.get("player_id", 0))
+        if not pid or pid in seen:
+            continue
+        seen.add(pid)
+
+        lg   = str(row.get("league", ""))
+        info = leagues.get(lg)
+        if not info:
+            continue
+        league_id, season = info
+
+        try:
+            stats = fetch_player_season_stats(pid, league_id, season)
+            if stats:
+                results[pid] = stats
+        except Exception:
+            pass
+
+    print(f"[season-stats] Fetched stats for {len(results)}/{len(seen)} players.")
+    return results

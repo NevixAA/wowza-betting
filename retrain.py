@@ -237,23 +237,36 @@ def _save_metrics(history: dict) -> None:
 
 def _print_comparison(label: str, prev: dict | None, curr: dict) -> None:
     keys = [
-        ("roi_%",              "ROI %"),
+        ("roi_%",              "ROI % (S+MM placed)"),
         ("sharpe_ratio",       "Sharpe"),
         ("max_drawdown_units", "Max DD (u)"),
-        ("win_rate",           "Win Rate"),
-        ("total_bets",         "Total Bets"),
+        ("win_rate",           "Win Rate (S+MM)"),
+        ("total_bets",         "Placed Bets (S+MM)"),
     ]
-    print(f"\n{'=' * 55}")
+    tier_keys = [
+        ("sniper_bets",    "sniper_roi_%",    "SNIPER"),
+        ("marksman_bets",  "marksman_roi_%",  "MARKSMAN"),
+        ("valuable_bets",  "valuable_roi_%",  "VALUABLE (info)"),
+    ]
+    print(f"\n{'=' * 60}")
     print(f"  BACKTEST COMPARISON — {label}")
-    print(f"{'=' * 55}")
-    print(f"  {'Metric':<25} {'Previous':>10} {'Current':>10}  {'Δ':>6}")
-    print("-" * 55)
+    print(f"{'=' * 60}")
+    print(f"  {'Metric':<30} {'Previous':>10} {'Current':>10}  {'Δ':>6}")
+    print("-" * 60)
     for key, lbl in keys:
         cur = curr.get(key, "—")
         prv = prev.get(key, "—") if prev else "—"
         delta = f"{cur - prv:+.3f}" if isinstance(cur, float) and isinstance(prv, float) else ""
-        print(f"  {lbl:<25} {str(prv):>10} {str(cur):>10}  {delta:>6}")
-    print("=" * 55)
+        print(f"  {lbl:<30} {str(prv):>10} {str(cur):>10}  {delta:>6}")
+    print("-" * 60)
+    print(f"  {'Tier':<14} {'Bets':>6} {'ROI%':>8}   {'Bets':>6} {'ROI%':>8}")
+    for bets_key, roi_key, tier_lbl in tier_keys:
+        pb = prev.get(bets_key, "—") if prev else "—"
+        pr = prev.get(roi_key,  "—") if prev else "—"
+        cb = curr.get(bets_key, "—")
+        cr = curr.get(roi_key,  "—")
+        print(f"  {tier_lbl:<14} {str(pb):>6} {str(pr):>8}   {str(cb):>6} {str(cr):>8}")
+    print("=" * 60)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────

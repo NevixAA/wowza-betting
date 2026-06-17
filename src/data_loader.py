@@ -170,6 +170,161 @@ def _ci_download_all() -> list[pd.DataFrame]:
     return frames
 
 
+def _load_api_football_only_leagues() -> list[pd.DataFrame]:
+    """
+    Load historical fixture results for leagues not on football-data.co.uk.
+    Uses API-Football `/fixtures` endpoint, permanently cached.
+    Returns DataFrames with the same columns as the FD loader output.
+    """
+    import os as _os
+    api_key = _os.getenv("APIFOOTBALL_KEY", "") or config.API_KEY
+    if not api_key:
+        return []
+
+    if not hasattr(config, "API_FOOTBALL_ONLY_LEAGUES"):
+        return []
+
+    try:
+        from src.api_football_ou import fetch_league_fixture_results
+    except ImportError:
+        try:
+            from api_football_ou import fetch_league_fixture_results
+        except ImportError:
+            return []
+
+    frames = []
+    for league in config.API_FOOTBALL_ONLY_LEAGUES:
+        league_id = config.API_FOOTBALL_IDS.get(league)
+        if not league_id:
+            continue
+        seasons = config.API_FOOTBALL_EXTRA_SEASONS.get(league, [])
+        for season_year in seasons:
+            try:
+                df = fetch_league_fixture_results(league_id, season_year, league)
+                if df.empty:
+                    continue
+                df["league"] = league
+                df["season"] = season_year
+                df["ftr"] = np.where(
+                    df["home_goals"] > df["away_goals"], "H",
+                    np.where(df["home_goals"] < df["away_goals"], "A", "D"),
+                )
+                for col in ["home_shots", "away_shots", "home_sot", "away_sot",
+                            "home_corners", "away_corners", "home_fouls", "away_fouls",
+                            "odds_over25", "odds_under25"]:
+                    if col not in df.columns:
+                        df[col] = np.nan
+                frames.append(df)
+            except Exception as e:
+                log.warning(f"[api_football] {league} {season_year}: {e}")
+
+    if frames:
+        log.info(f"[api_football] Loaded {sum(len(f) for f in frames)} rows "
+                 f"from {len(frames)} API-Football-only league/seasons")
+    return frames
+
+
+def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    For new-format leagues that have no shot data from football-data.co.uk,
+    fill home_shots / away_shots / home_sot / away_sot from API-Football.
+    Skips silently when API_KEY is not set or API returns nothing.
+    """
+    import os as _os
+    api_key = _os.getenv("APIFOOTBALL_KEY", "") or config.API_KEY
+    if not api_key:
+        return df
+
+    try:
+        from src.api_football_ou import fetch_shots_for_league, _norm_name
+    except ImportError:
+        return df
+
+    # Pre-initialize xG/insidebox so merge suffixes work correctly for new columns
+    for _col in ["home_xg", "away_xg", "home_insidebox", "away_insidebox"]:
+        if _col not in df.columns:
+            df[_col] = np.nan
+
+    for league in config.NEW_FORMAT_LEAGUES:
+        league_id = config.API_FOOTBALL_IDS.get(league)
+        if not league_id:
+            continue
+
+        mask = df["league"] == league
+        if not mask.any():
+            continue
+
+        # Skip if >50% of rows already have shot data (e.g. added via CSV override)
+        if df.loc[mask, "home_shots"].notna().mean() > 0.5:
+            continue
+
+        season = config.API_FOOTBALL_SEASONS.get(league, "2025")
+        # Also try the previous calendar year — many leagues span two seasons
+        # (e.g. Brazil 2026 is in-progress but 2025 is fully completed in FD)
+        prev_season = str(int(season) - 1)
+        all_shots = []
+        for s in [season, prev_season]:
+            try:
+                s_df = fetch_shots_for_league(league_id, s, league)
+                if not s_df.empty:
+                    s_df["_date_str"] = s_df["date"].dt.strftime("%Y-%m-%d")
+                    all_shots.append(s_df)
+            except Exception as e:
+                log.warning(f"[api_football_ou] {league} season {s} shots fetch failed: {e}")
+        if not all_shots:
+            continue
+        shots_df = (
+            pd.concat(all_shots, ignore_index=True)
+            .drop_duplicates(subset=["_home_norm", "_away_norm", "_date_str"])
+            if len(all_shots) > 1 else all_shots[0]
+        )
+
+        if shots_df.empty:
+            continue
+
+        # Build normalised keys for the main df rows belonging to this league
+        league_rows = df[mask].copy()
+        league_rows["_home_norm"] = league_rows["home_team"].apply(_norm_name)
+        league_rows["_away_norm"] = league_rows["away_team"].apply(_norm_name)
+        league_rows["_date_str"]  = league_rows["date"].dt.strftime("%Y-%m-%d")
+
+        api_cols = ["home_shots", "away_shots", "home_sot", "away_sot",
+                    "home_corners", "away_corners", "home_fouls", "away_fouls",
+                    "home_xg", "away_xg", "home_insidebox", "away_insidebox"]
+        avail_cols = [c for c in api_cols if c in shots_df.columns]
+        merged = league_rows.merge(
+            shots_df[["_home_norm", "_away_norm", "_date_str"] + avail_cols],
+            on=["_home_norm", "_away_norm", "_date_str"],
+            how="left",
+            suffixes=("", "_api"),
+        )
+
+        idx = df.index[mask]
+        for col in avail_cols:
+            api_col = f"{col}_api"
+            if api_col not in merged.columns:
+                continue
+            orig = df.loc[idx, col].values
+            api  = merged[api_col].values
+            filled = [float(a) if pd.isna(o) and pd.notna(a) else o
+                      for o, a in zip(orig, api)]
+            df.loc[idx, col] = filled
+
+        n_filled = int(df.loc[mask, "home_shots"].notna().sum())
+        log.info(f"[api_football_ou] {league}: {n_filled}/{int(mask.sum())} rows now have shot data")
+
+    # Recompute SOT ratios after enrichment
+    with np.errstate(divide="ignore", invalid="ignore"):
+        df["home_sot_ratio"] = np.where(
+            df["home_shots"] > 0, df["home_sot"] / df["home_shots"], np.nan
+        )
+        df["away_sot_ratio"] = np.where(
+            df["away_shots"] > 0, df["away_sot"] / df["away_shots"], np.nan
+        )
+
+    return df
+
+
 def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> pd.DataFrame:
     """Load every match sheet from the summary workbook into one clean DataFrame."""
     global _CACHE
@@ -184,6 +339,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         ci_frames = _ci_download_all()
         if not ci_frames:
             raise RuntimeError("CI download failed — no data loaded")
+        ci_frames.extend(_load_api_football_only_leagues())
         out = pd.concat(ci_frames, ignore_index=True)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
         out = out.sort_values("date").reset_index(drop=True)
@@ -199,6 +355,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 out.get("home_sot", pd.Series(dtype=float)) / out.get("home_shots", pd.Series(dtype=float)), np.nan)
             out["away_sot_ratio"] = np.where(out.get("away_shots", pd.Series(dtype=float)) > 0,
                 out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
+        out = _enrich_with_api_shots(out)
         _CACHE = out
         return out
 
@@ -381,6 +538,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     if not frames:
         raise RuntimeError(f"No match sheets found in {path}")
 
+    frames.extend(_load_api_football_only_leagues())
     out = pd.concat(frames, ignore_index=True)
     out = out[out["home_team"].notna() & out["away_team"].notna()]
     out = out.sort_values("date").reset_index(drop=True)
@@ -409,6 +567,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             out["away_sot"] / out["away_shots"],
             np.nan,
         )
+
+    # ── API-Football shot enrichment for new-format leagues ──────────────────────
+    out = _enrich_with_api_shots(out)
 
     # ── Sanity check: flag German teams appearing in Danish league slots ─────────
     _GERMAN_TEAMS = {
