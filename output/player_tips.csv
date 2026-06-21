@@ -1,10 +1,10 @@
 date,league,match,match_tier,player_name,team,position,market,model_prob,fair_odds,market_odds,fair_implied,edge_abs,edge_rel,ev,ges,confidence,lazy_factors,n_games,data_source,tier,kelly_stake
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Kylian Mbappé,France,F,sot,0.948,1.05,1.05,0.8985,0.0495,0.0551,-0.0046,0.763,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,sot,0.845,1.18,1.06,0.89,-0.045,-0.0506,-0.1043,0.671,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Kylian Mbappé,France,F,sot,0.948,1.05,1.05,0.8985,0.0495,0.0551,-0.0046,0.763,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,sot,0.845,1.18,1.16,0.8133,0.0317,0.039,-0.0198,0.671,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Lamine Yamal,Spain,F,sot,0.813,1.23,1.22,0.7733,0.0397,0.0514,-0.0081,0.728,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Mikel Oyarzabal,Spain,F,sot,0.775,1.29,1.15,0.8203,-0.0453,-0.0553,-0.1088,0.801,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Harry Kane,England,F,sot,0.743,1.35,1.16,0.8133,-0.0703,-0.0864,-0.1381,0.784,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Lionel Messi,Argentina,F,sot,0.713,1.4,1.21,0.7797,-0.0667,-0.0855,-0.1373,0.746,0.669,MINUTES,4,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Lionel Messi,Argentina,F,sot,0.713,1.4,1.21,0.7797,-0.0667,-0.0855,-0.1373,0.746,0.594,,4,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jean-Philippe Mateta,France,F,sot,0.689,1.45,1.15,0.8203,-0.1313,-0.1601,-0.2077,0.735,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jean Philippe Mateta,France,F,sot,0.689,1.45,,,,,,0.735,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Lucas Stassin,Belgium,F,sot,0.675,1.48,,,,,,0.708,0.623,,5,match_level,WATCH,
@@ -28,17 +28,18 @@ date,league,match,match_tier,player_name,team,position,market,model_prob,fair_od
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Afolabi Akinyemi,Derry City,F,sot,0.595,1.68,,,,,,0.728,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Désiré Doué,France,F,sot,0.58,1.72,1.22,0.7733,-0.1933,-0.2499,-0.2924,0.661,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Ollie Watkins,England,F,sot,0.579,1.73,1.18,0.7995,-0.2205,-0.2758,-0.3168,0.677,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Vinicius Júnior,Brazil,F,sot,0.575,1.74,1.31,0.7201,-0.1451,-0.2016,-0.2468,0.704,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Vinícius Júnior,Brazil,F,sot,0.575,1.74,1.31,0.7201,-0.1451,-0.2016,-0.2468,0.704,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Rodrygo,Brazil,F,sot,0.575,1.74,,,,,,0.715,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,sot,0.574,1.74,,,,,,0.36,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Edin Džeko,Bosnia & Herzegovina,F,sot,0.572,1.75,1.23,0.767,-0.195,-0.2542,-0.2964,0.693,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Bukayo Saka,England,F,sot,0.569,1.76,1.45,0.6506,-0.0816,-0.1254,-0.175,0.636,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Eberechi Eze,England,F,sot,0.569,1.76,1.44,0.6551,-0.0861,-0.1315,-0.1806,0.661,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Douglas James-Taylor,Bohemians,F,sot,0.567,1.76,,,,,,0.756,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Amad Diallo,Ivory Coast,F,sot,0.567,1.76,,,,,,0.623,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Bradley Barcola,France,F,sot,0.567,1.76,1.2,0.7862,-0.2192,-0.2788,-0.3196,0.606,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Alexander Sørloth,Norway,F,sot,0.566,1.77,,,,,,0.656,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jarrod Bowen,England,F,sot,0.563,1.78,,,,,,0.543,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Borja Iglesias,Spain,F,sot,0.563,1.78,1.15,0.8203,-0.2573,-0.3137,-0.3526,0.671,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jarrod Bowen,England,F,sot,0.563,1.78,,,,,,0.543,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alejandro Baena,Spain,F,sot,0.561,1.78,1.31,0.7201,-0.1591,-0.221,-0.2651,0.721,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Dayle Rooney,Bohemians,F,sot,0.561,1.78,,,,,,0.683,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Leroy Sané,Germany,F,sot,0.559,1.79,,,,,,0.423,0.623,,5,match_level,WATCH,
@@ -47,48 +48,47 @@ date,league,match,match_tier,player_name,team,position,market,model_prob,fair_od
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Afolabi Akinyemi,Derry City,F,sot,0.556,1.8,,,,,,0.728,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Breel Embolo,Switzerland,F,sot,0.553,1.81,1.36,0.6937,-0.1407,-0.2028,-0.2479,0.699,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,James Clarke,Bohemians,F,sot,0.55,1.82,,,,,,0.76,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Stephen Walsh,Galway United,F,sot,0.548,1.83,,,,,,0.767,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Douglas James-Taylor,Bohemians,F,sot,0.548,1.82,,,,,,0.756,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Stephen Walsh,Galway United,F,sot,0.548,1.83,,,,,,0.767,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Omar Marmoush,Egypt,F,sot,0.547,1.83,1.37,0.6886,-0.1416,-0.2056,-0.2506,0.477,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Anthony Gordon,England,F,sot,0.547,1.83,1.4,0.6739,-0.1269,-0.1883,-0.2342,0.676,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Omar Marmoush,Egypt,F,sot,0.547,1.83,1.36,0.6937,-0.1467,-0.2114,-0.2561,0.477,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Michael Duffy,Derry City,F,sot,0.544,1.84,,,,,,0.767,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Yan Diomande,Ivory Coast,F,sot,0.543,1.84,,,,,,0.481,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Deniz Undav,Germany,F,sot,0.54,1.85,,,,,,0.689,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Keito Nakamura,Japan,F,sot,0.539,1.86,1.75,0.5391,-0.0001,-0.0002,-0.0567,0.69,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Francisco Conceição,Portugal,F,sot,0.539,1.85,1.2,0.7862,-0.2472,-0.3144,-0.3532,0.635,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Francisco Conceição,Portugal,F,sot,0.539,1.85,1.37,0.6886,-0.1496,-0.2173,-0.2616,0.635,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Fermín López,Spain,M,sot,0.535,1.87,,,,,,0.217,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Pedro Neto,Portugal,F,sot,0.535,1.87,1.5,0.6289,-0.0939,-0.1493,-0.1975,0.642,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Pedro Neto,Portugal,F,sot,0.535,1.87,1.48,0.6374,-0.1024,-0.1607,-0.2082,0.642,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Ousmane Dembélé,France,M,sot,0.534,1.87,1.25,0.7547,-0.2207,-0.2924,-0.3325,0.325,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Jad Hakiki,Sligo Rovers,F,sot,0.534,1.87,,,,,,0.693,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Alexis Saelemaekers,Belgium,F,sot,0.534,1.87,1.91,0.4939,0.0401,0.0811,0.0199,0.64,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Julius Körkkö,AC Oulu,F,sot,0.534,1.87,,,,,,0.724,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Kerfala Cissoko,FF Jaro,F,sot,0.534,1.87,,,,,,0.687,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Jad Hakiki,Sligo Rovers,F,sot,0.534,1.87,,,,,,0.693,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Julius Körkkö,AC Oulu,F,sot,0.534,1.87,,,,,,0.724,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Alexis Saelemaekers,Belgium,F,sot,0.534,1.87,1.91,0.4939,0.0401,0.0811,0.0199,0.64,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Michael Duffy,Derry City,F,sot,0.532,1.88,,,,,,0.767,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Dan Ndoye,Switzerland,F,sot,0.531,1.88,1.57,0.6009,-0.0699,-0.1163,-0.1663,0.777,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Amine Gouiri,Algeria,F,sot,0.529,1.89,1.35,0.6988,-0.1698,-0.243,-0.2858,0.676,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Douglas James-Taylor,Drogheda United,F,sot,0.527,1.9,,,,,,0.756,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Julián Alvarez,Argentina,F,sot,0.526,1.9,1.44,0.6551,-0.1291,-0.1971,-0.2426,0.647,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Gonçalo Guedes,Portugal,F,sot,0.525,1.91,1.3,0.7257,-0.2007,-0.2765,-0.3175,0.6,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Julián Alvarez,Argentina,F,sot,0.526,1.9,1.44,0.6551,-0.1291,-0.1971,-0.2426,0.647,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Gonçalo Guedes,Portugal,F,sot,0.525,1.91,1.4,0.6739,-0.1489,-0.2209,-0.265,0.6,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Josh Thomas,Drogheda United,F,sot,0.52,1.92,,,,,,0.813,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Nick Woltemade,Germany,F,sot,0.519,1.93,,,,,,0.681,0.698,MINUTES,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rafael Leão,Portugal,F,sot,0.519,1.93,1.25,0.7547,-0.2357,-0.3123,-0.3512,0.605,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rafael Leão,Portugal,F,sot,0.519,1.93,1.3,0.7257,-0.2067,-0.2848,-0.3253,0.605,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Leandro Trossard,Belgium,F,sot,0.519,1.93,1.57,0.6009,-0.0819,-0.1363,-0.1852,0.671,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Kai Havertz,Germany,F,sot,0.51,1.96,,,,,,0.725,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Adam Hložek,Czechia,F,sot,0.508,1.97,,,,,,0.715,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Marcus Thuram,France,F,sot,0.507,1.97,1.17,0.8063,-0.2993,-0.3712,-0.4068,0.457,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Severi Kähkönen,FF Jaro,F,sot,0.507,1.97,,,,,,0.677,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Brian Gutierrez,Mexico,F,sot,0.504,1.98,,,,,,0.692,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,James Clarke,Bohemians,F,sot,0.504,1.98,,,,,,0.76,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,sot,0.503,1.99,,,,,,0.728,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Brian Gutierrez,Mexico,F,sot,0.504,1.98,,,,,,0.692,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Dayle Rooney,Bohemians,F,sot,0.503,1.99,,,,,,0.683,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,sot,0.503,1.99,,,,,,0.728,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jude Bellingham,England,M,sot,0.501,2.0,1.4,0.6739,-0.1729,-0.2565,-0.2986,0.628,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.5,2.0,2.15,0.4388,0.0612,0.1395,0.075,0.454,0.623,,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Julius Körkkö,AC Oulu,F,sot,0.499,2.0,,,,,,0.724,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Malick Fofana,Belgium,F,sot,0.496,2.01,,,,,,0.675,0.623,,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Kerfala Cissoko,FF Jaro,F,sot,0.496,2.02,,,,,,0.687,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Malick Fofana,Belgium,F,sot,0.496,2.01,,,,,,0.675,0.623,,5,match_level,WATCH,
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Owen Elding,Sligo Rovers,F,sot,0.495,2.02,,,,,,0.744,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Graham Burke,Shamrock Rovers,F,sot,0.494,2.02,,,,,,0.632,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Esmir Bajraktarević,Bosnia & Herzegovina,F,sot,0.494,2.02,1.51,0.6248,-0.1308,-0.2093,-0.2541,0.523,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Kaoru Mitoma,Japan,F,sot,0.493,2.03,,,,,,0.645,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Julián Quiñones,Mexico,F,sot,0.491,2.04,,,,,,0.754,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Graham Burke,Shamrock Rovers,F,sot,0.49,2.04,,,,,,0.632,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,João Pedro,Brazil,F,sot,0.489,2.04,,,,,,0.63,0.623,,5,match_level,WATCH,
@@ -96,106 +96,108 @@ date,league,match,match_tier,player_name,team,position,market,model_prob,fair_od
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Brahim Díaz,Morocco,M,sot,0.487,2.05,1.35,0.6988,-0.2118,-0.3031,-0.3426,0.424,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Rodrigo Aguirre,Uruguay,F,sot,0.485,2.06,,,,,,0.668,0.594,,4,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Moses Dyer,Galway United,F,sot,0.482,2.08,,,,,,0.634,0.594,,4,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Dominic Solanke,England,F,sot,0.481,2.08,,,,,,0.654,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Dani Olmo,Spain,F,sot,0.481,2.08,1.3,0.7257,-0.2447,-0.3372,-0.3747,0.677,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Takumi Minamino,Japan,F,sot,0.479,2.09,,,,,,0.696,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Dominic Solanke,England,F,sot,0.481,2.08,,,,,,0.654,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alex Baena,Spain,M,sot,0.478,2.09,,,,,,0.321,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Rayan Cherki,France,M,sot,0.477,2.09,1.29,0.7313,-0.2543,-0.3478,-0.3847,0.366,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,João Félix,Portugal,F,sot,0.473,2.11,,,,,,0.539,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Patrik Schick,Czechia,F,sot,0.473,2.11,,,,,,0.593,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Cucho Hernández,Colombia,F,sot,0.469,2.13,,,,,,0.478,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Harvey Barnes,England,M,sot,0.464,2.15,,,,,,0.296,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Koki Ogawa,Japan,F,sot,0.463,2.16,1.37,0.6886,-0.2256,-0.3276,-0.3657,0.625,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Bruno Fernandes,Portugal,M,sot,0.462,2.17,1.25,0.7547,-0.2927,-0.3879,-0.4225,0.429,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Bruno Fernandes,Portugal,M,sot,0.462,2.17,1.37,0.6886,-0.2266,-0.3291,-0.3671,0.429,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Evann Guessand,Ivory Coast,F,sot,0.462,2.17,,,,,,0.663,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Sergei Eremenko,FF Jaro,F,sot,0.462,2.16,,,,,,0.733,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Lawrence Shankland,Scotland,F,sot,0.461,2.17,2.1,0.4492,0.0118,0.0262,-0.0319,0.75,0.566,,3,match_level,WATCH,0.0
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Kingsley Coman,France,F,sot,0.459,2.18,,,,,,0.634,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Ismaïla Sarr,Senegal,F,sot,0.459,2.18,1.67,0.5649,-0.1059,-0.1875,-0.2335,0.677,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Niklas Jokelainen,AC Oulu,F,sot,0.459,2.18,,,,,,0.67,0.623,,5,match_level,WATCH,
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Ryan O'Kane,Sligo Rovers,M,sot,0.459,2.18,,,,,,0.527,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Takefusa Kubo,Japan,F,sot,0.458,2.18,1.6,0.5896,-0.1316,-0.2232,-0.2672,0.636,0.623,,5,match_level,WATCH,0.0
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Niklas Jokelainen,AC Oulu,F,sot,0.459,2.18,,,,,,0.67,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Ismaïla Sarr,Senegal,F,sot,0.459,2.18,1.67,0.5649,-0.1059,-0.1875,-0.2335,0.677,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Kingsley Coman,France,F,sot,0.459,2.18,,,,,,0.634,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Rory Gaffney,Shamrock Rovers,F,sot,0.458,2.18,,,,,,0.665,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Enner Valencia,Ecuador,F,sot,0.456,2.19,,,,,,0.779,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Assane Diao,Senegal,F,sot,0.454,2.2,1.86,0.5072,-0.0532,-0.1049,-0.1556,0.701,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Severi Kähkönen,FF Jaro,F,sot,0.454,2.2,,,,,,0.677,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Assane Diao,Senegal,F,sot,0.454,2.2,1.86,0.5072,-0.0532,-0.1049,-0.1556,0.701,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,F,sot,0.453,2.21,1.46,0.6462,-0.1932,-0.2989,-0.3386,0.656,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Raphinha,Brazil,F,sot,0.45,2.22,,,,,,0.69,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Serge Gnabry,Germany,F,sot,0.446,2.24,,,,,,0.733,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Dodi Lukebakio,Belgium,F,sot,0.446,2.24,1.44,0.6551,-0.2091,-0.3192,-0.3578,0.671,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Raúl Jiménez,Mexico,F,sot,0.445,2.25,,,,,,0.691,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Serge Gnabry,Germany,F,sot,0.446,2.24,,,,,,0.733,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Franjo Ivanović,Croatia,F,sot,0.445,2.25,,,,,,0.469,0.566,,3,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Raúl Jiménez,Mexico,F,sot,0.445,2.25,,,,,,0.691,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Johan Manzambi,Switzerland,F,sot,0.444,2.25,1.68,0.5615,-0.1175,-0.2093,-0.2541,0.635,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Matías Fernández-Pardo,Belgium,F,sot,0.444,2.25,,,,,,0.201,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Johan Manzambi,Switzerland,F,sot,0.444,2.25,1.68,0.5615,-0.1175,-0.2093,-0.2541,0.635,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Jørgen Strand Larsen,Norway,F,sot,0.443,2.26,,,,,,0.695,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Liam Boyce,Derry City,F,sot,0.441,2.27,,,,,,0.672,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,goals,0.44,2.27,1.55,0.6086,-0.1686,-0.2771,-0.318,0.671,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Danny Mullen,Derry City,F,sot,0.44,2.27,,,,,,0.662,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Hans Vanaken,Belgium,M,sot,0.438,2.28,1.91,0.4939,-0.0559,-0.1132,-0.1634,0.617,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,goals,0.44,2.27,1.55,0.6086,-0.1686,-0.2771,-0.318,0.671,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Ange-Yoan Bonny,Ivory Coast,F,sot,0.44,2.27,,,,,,0.67,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Ante Budimir,Croatia,F,sot,0.438,2.28,1.22,0.7733,-0.3353,-0.4336,-0.4656,0.694,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Hans Vanaken,Belgium,M,sot,0.438,2.28,1.91,0.4939,-0.0559,-0.1132,-0.1634,0.617,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Joshua Honohan,Shamrock Rovers,M,sot,0.436,2.29,,,,,,0.423,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Elye Wahi,Ivory Coast,F,sot,0.434,2.3,,,,,,0.439,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Rory Gaffney,Shamrock Rovers,F,sot,0.434,2.3,,,,,,0.665,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Danny Mullen,Derry City,F,sot,0.433,2.31,,,,,,0.662,0.698,MINUTES,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Danny Mullen,Derry City,F,sot,0.433,2.31,,,,,,0.662,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Rudi Vikstrom,FF Jaro,F,sot,0.433,2.31,,,,,,0.63,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Declan Rice,England,M,sot,0.432,2.31,2.0,0.4717,-0.0397,-0.0842,-0.136,0.423,0.623,,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Albin Björkskog,FF Jaro,M,sot,0.429,2.33,,,,,,0.604,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Endrick,Brazil,F,sot,0.428,2.34,,,,,,0.703,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Michael Noonan,Shamrock Rovers,F,sot,0.427,2.34,,,,,,0.238,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Daniel Mandroiu,Shamrock Rovers,F,sot,0.427,2.34,,,,,,0.756,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Federico Viñas,Uruguay,F,sot,0.426,2.34,,,,,,0.685,0.698,MINUTES,5,match_level,WATCH,
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Federico Viñas,Uruguay,F,sot,0.426,2.34,,,,,,0.685,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Liam Boyce,Derry City,F,sot,0.426,2.35,,,,,,0.672,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Simon Adingra,Ivory Coast,F,sot,0.425,2.35,,,,,,0.541,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Charles De Ketelaere,Belgium,F,sot,0.425,2.36,1.36,0.6937,-0.2687,-0.3873,-0.422,0.622,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Joshua Honohan,Shamrock Rovers,M,sot,0.421,2.38,,,,,,0.423,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Michael Noonan,Shamrock Rovers,F,sot,0.42,2.38,,,,,,0.238,0.698,MINUTES,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Michael Noonan,Shamrock Rovers,F,sot,0.42,2.38,,,,,,0.238,0.623,,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Sergei Eremenko,FF Jaro,F,sot,0.42,2.38,,,,,,0.733,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Chris Wood,New Zealand,F,sot,0.419,2.39,1.8,0.5241,-0.1051,-0.2005,-0.2458,0.747,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Maghnes Akliouche,France,M,sot,0.419,2.39,1.3,0.7257,-0.3067,-0.4226,-0.4553,0.376,0.623,,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Niklas Jokelainen,AC Oulu,F,sot,0.419,2.39,,,,,,0.67,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Petar Musa,Croatia,F,sot,0.415,2.41,1.21,0.7797,-0.3647,-0.4677,-0.4979,0.515,0.566,,3,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Bazoumana Touré,Ivory Coast,F,sot,0.418,2.39,,,,,,0.602,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Daniel Mandroiu,Shamrock Rovers,F,sot,0.415,2.41,,,,,,0.756,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Petar Musa,Croatia,F,sot,0.415,2.41,1.21,0.7797,-0.3647,-0.4677,-0.4979,0.515,0.566,,3,match_level,WATCH,0.0
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Francely Lomboto,Sligo Rovers,F,sot,0.414,2.42,,,,,,0.64,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Shuto Machino,Japan,F,sot,0.413,2.42,1.37,0.6886,-0.2756,-0.4002,-0.4342,0.583,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Karim Adeyemi,Germany,M,sot,0.413,2.42,,,,,,0.658,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Loïs Openda,Belgium,F,sot,0.412,2.43,,,,,,0.589,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,John Yeboah,Ecuador,F,sot,0.411,2.43,,,,,,0.719,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Armando González,Mexico,F,sot,0.41,2.44,,,,,,0.636,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Igor Thiago,Brazil,F,sot,0.409,2.45,,,,,,0.642,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Tuomas Kaukua,AC Oulu,F,sot,0.409,2.44,,,,,,0.521,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Haris Tabaković,Bosnia & Herzegovina,F,sot,0.409,2.44,1.23,0.767,-0.358,-0.4667,-0.4969,0.619,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Igor Thiago,Brazil,F,sot,0.409,2.45,,,,,,0.642,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Giuliano Simeone,Argentina,F,sot,0.409,2.45,1.8,0.5241,-0.1151,-0.2196,-0.2638,0.661,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,João Neves,Portugal,M,sot,0.408,2.45,,,,,,0.692,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Tuomas Kaukua,AC Oulu,F,sot,0.409,2.44,,,,,,0.521,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Jimmy Keohane,Galway United,F,sot,0.408,2.45,,,,,,0.629,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,João Neves,Portugal,M,sot,0.408,2.45,,,,,,0.692,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Malcolm Isaiah Shaw,Galway United,F,sot,0.407,2.45,,,,,,0.609,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Rubén Vargas,Switzerland,F,sot,0.407,2.46,1.71,0.5517,-0.1447,-0.2623,-0.304,0.642,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Gabriel Martinelli,Brazil,F,sot,0.406,2.46,1.52,0.6207,-0.2147,-0.3459,-0.3829,0.654,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,James Rodríguez,Colombia,F,sot,0.406,2.46,,,,,,0.658,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Gabriel Martinelli,Brazil,F,sot,0.406,2.46,1.52,0.6207,-0.2147,-0.3459,-0.3829,0.654,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Facundo Torres,Uruguay,F,sot,0.404,2.48,,,,,,0.647,0.566,,3,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jhon Córdoba,Colombia,F,sot,0.402,2.49,,,,,,0.665,0.566,,3,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jhon Córdoba,Colombia,F,sot,0.402,2.49,,,,,,0.665,0.641,MINUTES,3,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Morgan Rogers,England,F,sot,0.399,2.51,1.4,0.6739,-0.2749,-0.4079,-0.4414,0.574,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Sadio Mané,Senegal,F,sot,0.397,2.52,1.6,0.5896,-0.1926,-0.3267,-0.3648,0.699,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Albin Björkskog,FF Jaro,M,sot,0.396,2.53,,,,,,0.604,0.623,,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Rudi Vikstrom,FF Jaro,F,sot,0.395,2.53,,,,,,0.63,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Benji Michel,HJK helsinki,F,sot,0.394,2.54,,,,,,0.637,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Michel Benjamin Stanley,HJK helsinki,F,sot,0.394,2.54,,,,,,0.637,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Benji Michel,HJK helsinki,F,sot,0.394,2.54,,,,,,0.637,0.698,MINUTES,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Adam O'Reilly,Derry City,F,sot,0.394,2.54,,,,,,0.683,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Michel Benjamin Stanley,HJK helsinki,F,sot,0.394,2.54,,,,,,0.637,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Lovro Majer,Croatia,M,sot,0.392,2.55,,,,,,0.29,0.698,MINUTES,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Nicolas Jackson,Senegal,F,sot,0.391,2.56,1.48,0.6374,-0.2464,-0.3866,-0.4213,0.7,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Patrick Hickey,Galway United,F,sot,0.391,2.55,,,,,,0.629,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Dara McGuinness,Galway United,F,sot,0.391,2.56,,,,,,0.697,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Francisco Trincão,Portugal,F,sot,0.388,2.58,1.33,0.7093,-0.3213,-0.453,-0.484,0.545,0.594,,4,match_level,WATCH,0.0
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Nicolas Jackson,Senegal,F,sot,0.391,2.56,1.48,0.6374,-0.2464,-0.3866,-0.4213,0.7,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Ibrahim Mbaye,Senegal,F,sot,0.388,2.58,1.8,0.5241,-0.1361,-0.2597,-0.3016,0.624,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Francisco Trincão,Portugal,F,sot,0.388,2.58,1.4,0.6739,-0.2859,-0.4242,-0.4568,0.545,0.594,,4,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Jamal Musiala,Germany,M,sot,0.388,2.58,,,,,,0.609,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Guillermo Martínez,Mexico,F,sot,0.387,2.58,,,,,,0.565,0.566,,3,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Pavel Šulc,Czechia,F,sot,0.387,2.59,,,,,,0.657,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Tomáš Chorý,Czechia,F,sot,0.386,2.59,,,,,,0.619,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Florian Wirtz,Germany,F,sot,0.384,2.6,,,,,,0.714,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Cole Palmer,England,M,sot,0.382,2.62,,,,,,0.25,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Kylian Mbappé,France,F,goals,0.38,2.63,1.44,0.6551,-0.2751,-0.42,-0.4528,0.763,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Kylian Mbappé,France,F,goals,0.38,2.63,1.44,0.6551,-0.2751,-0.42,-0.4528,0.763,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Nicolas Pépé,Ivory Coast,F,sot,0.38,2.63,,,,,,0.592,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ayoub El Kaabi,Morocco,F,sot,0.379,2.64,1.2,0.7862,-0.4072,-0.5179,-0.5452,0.555,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Noni Madueke,England,M,sot,0.378,2.64,1.5,0.6289,-0.2509,-0.399,-0.433,0.269,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rúben Neves,Portugal,M,sot,0.376,2.66,2.6,0.3628,0.0132,0.0363,-0.0224,0.234,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Dawson Devoy,Bohemians,M,sot,0.376,2.66,,,,,,0.264,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rúben Neves,Portugal,M,sot,0.376,2.66,2.2,0.4288,-0.0528,-0.1232,-0.1728,0.234,0.623,,5,match_level,WATCH,0.0
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Adam O'Reilly,Derry City,F,sot,0.376,2.66,,,,,,0.683,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Yéremy Pino,Spain,F,sot,0.376,2.66,1.35,0.6988,-0.3228,-0.4619,-0.4924,0.529,0.623,,5,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Adam O'Reilly,Derry City,F,sot,0.376,2.66,,,,,,0.683,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Neil El Aynaoui,Morocco,M,sot,0.374,2.67,2.15,0.4388,-0.0648,-0.1477,-0.1959,0.63,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Fabián Ruiz,Spain,M,sot,0.373,2.68,1.58,0.5971,-0.2241,-0.3753,-0.4107,0.491,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Kerim Alajbegović,Bosnia & Herzegovina,F,sot,0.372,2.69,1.37,0.6886,-0.3166,-0.4598,-0.4904,0.634,0.623,,5,match_level,WATCH,0.0
@@ -204,701 +206,703 @@ date,league,match,match_tier,player_name,team,position,market,model_prob,fair_od
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Leonardo Campana,Ecuador,F,sot,0.37,2.71,,,,,,0.64,0.566,,3,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Jonathan David,Canada,F,sot,0.369,2.71,1.6,0.5896,-0.2206,-0.3742,-0.4096,0.744,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Cédric Bakambu,Congo DR,F,sot,0.369,2.71,,,,,,0.716,0.623,,5,match_level,WATCH,
+2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Tuomas Kaukua,AC Oulu,F,sot,0.368,2.72,,,,,,0.521,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Ross Tierney,Bohemians,F,sot,0.368,2.72,,,,,,0.765,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Ransford Yeboah Königsdörffer,Ghana,F,sot,0.368,2.72,,,,,,0.698,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Javier Guerra,Spain,M,sot,0.368,2.72,,,,,,0.251,0.623,,5,match_level,WATCH,
-2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Tuomas Kaukua,AC Oulu,F,sot,0.368,2.72,,,,,,0.521,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Iliman Ndiaye,Senegal,F,sot,0.367,2.72,,,,,,0.663,0.698,MINUTES,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Dare Kareem,Drogheda United,F,sot,0.365,2.74,,,,,,0.641,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Iliman Ndiaye,Senegal,F,sot,0.367,2.72,,,,,,0.663,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Dare Kareem,Drogheda United,F,sot,0.365,2.74,,,,,,0.641,0.698,MINUTES,5,match_level,WATCH,
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Antonio Nusa,Norway,F,sot,0.364,2.75,1.67,0.5649,-0.2009,-0.3556,-0.3921,0.64,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Mikel Merino,Spain,M,sot,0.363,2.76,1.35,0.6988,-0.3358,-0.4805,-0.5099,0.552,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Mikel Merino,Spain,M,sot,0.363,2.76,1.35,0.6988,-0.3358,-0.4805,-0.5099,0.552,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Tani Oluwaseyi,Canada,F,sot,0.362,2.76,1.5,0.6289,-0.2669,-0.4244,-0.457,0.669,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Martin Baturina,Croatia,F,sot,0.362,2.77,1.64,0.5752,-0.2132,-0.3707,-0.4063,0.636,0.594,,4,match_level,WATCH,0.0
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Nicolás González,Argentina,F,sot,0.362,2.77,2.15,0.4388,-0.0768,-0.175,-0.2217,0.207,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Tani Oluwaseyi,Canada,F,sot,0.362,2.76,1.5,0.6289,-0.2669,-0.4244,-0.457,0.669,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Thiago Almada,Argentina,F,sot,0.362,2.76,1.85,0.5099,-0.1479,-0.2901,-0.3303,0.623,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ayoube Amaimouni Echghouyab,Morocco,F,sot,0.361,2.77,,,,,,0.536,0.566,,3,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Ivan Perišić,Croatia,F,sot,0.36,2.78,1.68,0.5615,-0.2015,-0.3589,-0.3952,0.652,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Jayden Nelson,Canada,F,sot,0.358,2.79,1.95,0.4838,-0.1258,-0.26,-0.3019,0.621,0.566,,3,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Granit Xhaka,Switzerland,M,sot,0.357,2.8,2.4,0.3931,-0.0361,-0.0918,-0.1432,0.593,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Andrés Gómez,Colombia,F,sot,0.355,2.81,,,,,,0.545,0.594,,4,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Gonzalo Plata,Ecuador,F,sot,0.355,2.82,,,,,,0.71,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Andrés Gómez,Colombia,F,sot,0.355,2.81,,,,,,0.545,0.594,,4,match_level,WATCH,
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Baghdad Bounedjah,Algeria,F,sot,0.353,2.83,,,,,,0.574,0.566,,3,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Martin Ødegaard,Norway,M,sot,0.352,2.84,,,,,,0.602,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Santiago Giménez,Mexico,F,sot,0.352,2.84,,,,,,0.618,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Martin Ødegaard,Norway,M,sot,0.352,2.84,,,,,,0.602,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Youri Tielemans,Belgium,M,sot,0.351,2.85,2.2,0.4288,-0.0778,-0.1815,-0.2278,0.415,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Andrej Kramarić,Croatia,F,sot,0.35,2.86,1.4,0.6739,-0.3239,-0.4806,-0.51,0.432,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Ross Tierney,Bohemians,F,sot,0.35,2.85,,,,,,0.765,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Andrej Kramarić,Croatia,F,sot,0.35,2.86,1.4,0.6739,-0.3239,-0.4806,-0.51,0.432,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Shayon Harrison,AC Oulu,F,sot,0.349,2.87,,,,,,0.635,0.594,,4,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Théo Bongonda,Congo DR,M,sot,0.348,2.87,,,,,,0.29,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Daniel Grant,Shamrock Rovers,F,sot,0.348,2.88,,,,,,0.661,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Son Heung-min,South Korea,F,sot,0.348,2.87,,,,,,0.726,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Heung-min Son,South Korea,F,sot,0.348,2.87,1.27,0.7428,-0.3948,-0.5315,-0.558,0.726,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Nadiem Amiri,Germany,M,sot,0.347,2.88,,,,,,0.424,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Théo Bongonda,Congo DR,M,sot,0.348,2.87,,,,,,0.29,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Heung-min Son,South Korea,F,sot,0.348,2.87,1.27,0.7428,-0.3948,-0.5315,-0.558,0.726,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,David Hurley,Galway United,F,sot,0.347,2.88,,,,,,0.692,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Nadiem Amiri,Germany,M,sot,0.347,2.88,,,,,,0.424,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Soufiane Rahimi,Morocco,F,sot,0.345,2.9,1.27,0.7428,-0.3978,-0.5356,-0.5618,0.595,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Amine Adli,Morocco,F,sot,0.344,2.91,,,,,,0.608,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ali Olwan,Jordan,F,sot,0.342,2.92,1.74,0.5422,-0.2002,-0.3692,-0.4049,0.677,0.566,,3,match_level,WATCH,0.0
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Federico Valverde,Uruguay,M,sot,0.342,2.92,,,,,,0.47,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ali Olwan,Jordan,F,sot,0.342,2.92,1.74,0.5422,-0.2002,-0.3692,-0.4049,0.677,0.566,,3,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Daniel Grant,Shamrock Rovers,F,sot,0.341,2.93,,,,,,0.661,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Dawson Devoy,Bohemians,M,sot,0.34,2.94,,,,,,0.264,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Colm Whelan,Bohemians,F,sot,0.34,2.95,,,,,,0.604,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Connor Parsons,Bohemians,F,sot,0.34,2.94,,,,,,0.483,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Aaron McEneff,Shamrock Rovers,F,sot,0.34,2.95,,,,,,0.553,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Hannibal Mejbri,Tunisia,M,sot,0.339,2.95,3.0,0.3145,0.0245,0.078,0.017,0.31,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Toni Fruk,Croatia,M,sot,0.339,2.95,1.45,0.6506,-0.3116,-0.479,-0.5084,0.524,0.566,,3,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Vakoun Bayo,Ivory Coast,F,sot,0.338,2.96,,,,,,0.452,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Vakoun Issouf Bayo,Ivory Coast,F,sot,0.338,2.96,,,,,,0.452,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Scott McTominay,Scotland,F,sot,0.338,2.96,2.1,0.4492,-0.1112,-0.2476,-0.2902,0.72,0.623,,5,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Adam McDonnell,Bohemians,F,sot,0.337,2.97,,,,,,0.571,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Lucas Stassin,Belgium,F,goals,0.337,2.97,,,,,,0.708,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Adam McDonnell,Bohemians,F,sot,0.337,2.97,,,,,,0.571,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Lamine Yamal,Spain,M,goals,0.336,2.98,2.04,0.4624,-0.1264,-0.2734,-0.3146,0.488,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Aaron McEneff,Shamrock Rovers,F,sot,0.336,2.98,,,,,,0.553,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Anis Hadj Moussa,Algeria,F,sot,0.335,2.98,1.6,0.5896,-0.2546,-0.4318,-0.464,0.631,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Gonzalo García,Spain,F,sot,0.334,3.0,,,,,,0.181,0.566,,3,match_level,WATCH,
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Boulaye Dia,Senegal,F,sot,0.334,2.99,,,,,,0.646,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Brian Rodríguez,Uruguay,F,sot,0.332,3.01,,,,,,0.604,0.594,,4,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Gonzalo García,Spain,F,sot,0.334,3.0,,,,,,0.181,0.566,,3,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Germán Berterame,Mexico,F,sot,0.332,3.02,,,,,,0.635,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Hyeon-gyu Oh,South Korea,F,sot,0.332,3.01,1.35,0.6988,-0.3668,-0.5249,-0.5518,0.631,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Brian Rodríguez,Uruguay,F,sot,0.332,3.01,,,,,,0.604,0.594,,4,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Hyun-gyu Oh,South Korea,F,sot,0.332,3.01,,,,,,0.631,0.623,,5,match_level,WATCH,
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Wilson Waweru,Sligo Rovers,F,sot,0.33,3.03,,,,,,0.574,0.698,MINUTES,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Hyeon-gyu Oh,South Korea,F,sot,0.332,3.01,1.35,0.6988,-0.3668,-0.5249,-0.5518,0.631,0.623,,5,match_level,WATCH,0.0
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Wilson Waweru,Sligo Rovers,F,sot,0.33,3.03,,,,,,0.574,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Che Adams,Scotland,F,sot,0.33,3.03,2.0,0.4717,-0.1417,-0.3004,-0.34,0.672,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Aron Dønnum,Norway,F,sot,0.33,3.03,,,,,,0.67,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Matheus Cunha,Brazil,F,sot,0.329,3.04,1.32,0.7147,-0.3857,-0.5397,-0.5657,0.624,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Leandro Paredes,Argentina,M,sot,0.329,3.04,2.9,0.3253,0.0037,0.0113,-0.0459,0.587,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Matheus Cunha,Brazil,F,sot,0.329,3.04,1.32,0.7147,-0.3857,-0.5397,-0.5657,0.624,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ibrahim Maza,Algeria,F,sot,0.329,3.04,1.66,0.5683,-0.2393,-0.4211,-0.4539,0.248,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Alan Minda,Ecuador,F,sot,0.327,3.06,,,,,,0.6,0.594,,4,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,José Luis Rodríguez,Panama,F,sot,0.327,3.06,2.25,0.4193,-0.0923,-0.2201,-0.2642,0.68,0.669,MINUTES,4,match_level,WATCH,0.0
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,José Luis Rodríguez,Panama,F,sot,0.327,3.06,2.25,0.4193,-0.0923,-0.2201,-0.2642,0.68,0.594,,4,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Jesús Rodriguez,Spain,F,sot,0.327,3.06,,,,,,0.198,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Phil Foden,England,F,sot,0.326,3.06,,,,,,0.207,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Tommy Conway,Scotland,F,sot,0.325,3.08,,,,,,0.673,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Nico Paz,Argentina,F,sot,0.325,3.08,,,,,,0.661,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Maximilian Beier,Germany,F,sot,0.325,3.08,,,,,,0.593,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Tommy Conway,Scotland,F,sot,0.325,3.08,,,,,,0.673,0.623,,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Santeri Hostikka,HJK helsinki,M,goals,0.323,3.09,,,,,,0.469,0.623,,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Justin Rennicks,AC Oulu,F,sot,0.322,3.11,,,,,,0.525,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Ermedin Demirović,Bosnia & Herzegovina,F,goals,0.322,3.1,2.5,0.3774,-0.0554,-0.1467,-0.195,0.744,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Mohamed Amoura,Algeria,F,sot,0.321,3.12,,,,,,0.629,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pedri,Spain,M,sot,0.321,3.11,,,,,,0.275,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Fiston Mayele,Congo DR,F,sot,0.321,3.12,,,,,,0.244,0.641,MINUTES,3,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pedri,Spain,M,sot,0.321,3.11,,,,,,0.275,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Fiston Mayele,Congo DR,F,sot,0.321,3.12,,,,,,0.244,0.566,,3,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Lukáš Provod,Czechia,F,sot,0.319,3.14,,,,,,0.258,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Cecilio Waterman,Panama,F,sot,0.318,3.14,1.86,0.5072,-0.1892,-0.373,-0.4085,0.698,0.594,,4,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Lennart Karl,Germany,M,sot,0.317,3.15,,,,,,0.263,0.641,SET_PIECE,3,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Shayon Harrison,AC Oulu,F,sot,0.317,3.15,,,,,,0.635,0.594,,4,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Lennart Karl,Germany,M,sot,0.317,3.15,,,,,,0.263,0.641,SET_PIECE,3,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,sot,0.317,3.16,,,,,,0.61,0.566,,3,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Colm Whelan,Bohemians,F,sot,0.316,3.16,,,,,,0.604,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Thelonius Bair,Canada,F,sot,0.316,3.17,,,,,,0.423,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Cyle Larin,Canada,F,sot,0.315,3.17,1.58,0.5971,-0.2821,-0.4724,-0.5023,0.653,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Bernardo Silva,Portugal,F,sot,0.314,3.19,1.74,0.5422,-0.2282,-0.4209,-0.4536,0.602,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Franck Kessié,Ivory Coast,M,sot,0.314,3.18,,,,,,0.409,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Kevin Castañeda,Mexico,F,sot,0.314,3.18,,,,,,0.571,0.566,,3,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Bernardo Silva,Portugal,F,sot,0.314,3.19,1.74,0.5422,-0.2282,-0.4209,-0.4536,0.602,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Eduardo Camavinga,France,M,sot,0.313,3.2,,,,,,0.391,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Connor Parsons,Bohemians,F,sot,0.312,3.2,,,,,,0.483,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Farès Chaïbi,Algeria,F,sot,0.311,3.22,1.83,0.5155,-0.2045,-0.3967,-0.4309,0.451,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jhon Arias,Colombia,M,sot,0.311,3.21,,,,,,0.585,0.698,MINUTES,5,match_level,WATCH,
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Farès Chaïbi,Algeria,F,sot,0.311,3.22,1.83,0.5155,-0.2045,-0.3967,-0.4309,0.451,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Alexander Ring,HJK helsinki,F,goals,0.31,3.23,,,,,,0.756,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Adam McDonnell,Bohemians,F,sot,0.31,3.23,,,,,,0.571,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marko Arnautović,Austria,F,sot,0.309,3.24,1.8,0.5241,-0.2151,-0.4104,-0.4438,0.615,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Ben Gannon-Doak,Scotland,F,sot,0.309,3.23,,,,,,0.609,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marko Arnautović,Austria,F,sot,0.309,3.24,1.8,0.5241,-0.2151,-0.4104,-0.4438,0.615,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Casemiro,Brazil,M,sot,0.308,3.25,,,,,,0.431,0.698,MINUTES,5,match_level,WATCH,
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Amar Memić,Bosnia & Herzegovina,M,sot,0.308,3.25,1.6,0.5896,-0.2816,-0.4776,-0.5072,0.281,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Igor Matanović,Croatia,F,sot,0.308,3.25,1.26,0.7487,-0.4407,-0.5886,-0.6119,0.444,0.594,,4,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Junya Ito,Japan,F,sot,0.307,3.26,1.8,0.5241,-0.2171,-0.4142,-0.4474,0.603,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Amar Memić,Bosnia & Herzegovina,M,sot,0.308,3.25,1.6,0.5896,-0.2816,-0.4776,-0.5072,0.281,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Manu Koné,France,M,sot,0.307,3.26,1.8,0.5241,-0.2171,-0.4142,-0.4474,0.218,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Carlos Soler,Spain,M,sot,0.307,3.25,,,,,,0.198,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Promise David,Canada,F,sot,0.306,3.27,,,,,,0.615,0.594,,4,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Azzedine Ounahi,Morocco,M,sot,0.305,3.28,1.55,0.6086,-0.3036,-0.4989,-0.5272,0.232,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Martín Zubimendi,Spain,M,sot,0.304,3.29,,,,,,0.41,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Sontje Hansen,Curaçao,F,sot,0.305,3.28,,,,,,0.691,0.566,,3,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Ander Barrenetxea,Spain,M,sot,0.304,3.29,,,,,,0.208,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Elias Saad,Tunisia,F,sot,0.302,3.31,2.15,0.4388,-0.1368,-0.3117,-0.3507,0.474,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Ritsu Doan,Japan,F,sot,0.302,3.32,1.9,0.4965,-0.1945,-0.3918,-0.4262,0.615,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Martín Zubimendi,Spain,M,sot,0.304,3.29,,,,,,0.41,0.698,MINUTES,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Bilal El Khannouss,Morocco,M,sot,0.302,3.31,,,,,,0.395,0.698,MINUTES,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Jamie Leweling,Germany,F,sot,0.302,3.32,,,,,,0.629,0.623,,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Liam Möller,HJK helsinki,F,sot,0.301,3.33,,,,,,0.599,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Firas Chaouat,Tunisia,F,sot,0.301,3.33,1.8,0.5241,-0.2231,-0.4257,-0.4582,0.624,0.594,,4,match_level,WATCH,0.0
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Andreas Schjelderup,Norway,F,sot,0.3,3.34,1.73,0.5453,-0.2453,-0.4499,-0.481,0.596,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Ayase Ueda,Japan,F,sot,0.299,3.34,1.36,0.6937,-0.3947,-0.569,-0.5934,0.199,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Odeh Fakhoury,Jordan,F,sot,0.298,3.36,2.15,0.4388,-0.1408,-0.3209,-0.3593,0.657,0.566,,3,match_level,WATCH,0.0
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Odeh Fakhoury,Jordan,F,sot,0.298,3.36,2.15,0.4388,-0.1408,-0.3209,-0.3593,0.657,0.641,MINUTES,3,match_level,WATCH,0.0
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Mousa Tamari,Jordan,F,sot,0.297,3.36,,,,,,0.559,0.698,MINUTES,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Roberto Alvarado,Mexico,F,sot,0.297,3.37,,,,,,0.652,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Mousa Tamari,Jordan,F,sot,0.297,3.36,,,,,,0.559,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Pape Gueye,Senegal,M,sot,0.296,3.38,,,,,,0.5,0.623,,5,match_level,WATCH,
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Cian Kavanagh,Sligo Rovers,F,sot,0.296,3.38,,,,,,0.602,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Pape Gueye,Senegal,M,sot,0.296,3.38,,,,,,0.5,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Khéphren Thuram,France,M,sot,0.296,3.38,,,,,,0.447,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ruben Providence,Haiti,F,sot,0.295,3.39,2.4,0.3931,-0.0981,-0.2495,-0.292,0.62,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Vincent Sierro,Switzerland,M,sot,0.295,3.39,,,,,,0.253,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Juan Manuel Sanabria,Uruguay,F,sot,0.295,3.39,,,,,,0.615,0.594,,4,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ruben Providence,Haiti,F,sot,0.295,3.39,2.4,0.3931,-0.0981,-0.2495,-0.292,0.62,0.623,,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Justin Rennicks,AC Oulu,F,sot,0.294,3.4,,,,,,0.525,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Bruno Guimarães,Brazil,M,sot,0.293,3.41,2.3,0.4102,-0.1172,-0.2857,-0.3261,0.409,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Bruno Guimarães,Brazil,M,sot,0.293,3.41,2.3,0.4102,-0.1172,-0.2857,-0.3261,0.409,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pablo Gavi,Spain,F,sot,0.293,3.41,,,,,,0.205,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Dong-gyeong Lee,South Korea,F,sot,0.293,3.41,,,,,,0.596,0.566,,3,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Youssef En-Nesyri,Morocco,F,sot,0.292,3.43,,,,,,0.18,0.566,,3,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Meschak Elia,Congo DR,F,sot,0.291,3.44,,,,,,0.458,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Tomáš Souček,Czechia,M,sot,0.291,3.44,,,,,,0.415,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Ismael Gharbi,Tunisia,F,sot,0.29,3.44,2.9,0.3253,-0.0353,-0.1085,-0.159,0.421,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Meschak Elia,Congo DR,F,sot,0.291,3.44,,,,,,0.458,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Oswin Appollis,South Africa,F,sot,0.29,3.44,1.95,0.4838,-0.1938,-0.4006,-0.4345,0.654,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Ismael Díaz,Panama,F,sot,0.289,3.46,1.86,0.5072,-0.2182,-0.4302,-0.4625,0.703,0.641,MINUTES,3,match_level,WATCH,0.0
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Maximiliano Araújo,Uruguay,M,sot,0.289,3.46,,,,,,0.388,0.698,MINUTES,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Ismael Díaz,Panama,F,sot,0.289,3.46,1.86,0.5072,-0.2182,-0.4302,-0.4625,0.703,0.566,,3,match_level,WATCH,0.0
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Gue-sung Cho,South Korea,F,sot,0.286,3.5,,,,,,0.627,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Vitinha,Portugal,M,sot,0.286,3.49,,,,,,0.208,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Giovani Lo Celso,Argentina,M,sot,0.286,3.49,2.0,0.4717,-0.1857,-0.3937,-0.428,0.418,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Gavin Whyte,Derry City,F,sot,0.286,3.5,,,,,,0.611,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Giovani Lo Celso,Argentina,M,sot,0.286,3.49,2.0,0.4717,-0.1857,-0.3937,-0.428,0.418,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Gue-sung Cho,South Korea,F,sot,0.286,3.5,,,,,,0.627,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Edo Kayembe,Congo DR,M,sot,0.286,3.5,,,,,,0.243,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Lyle Foster,South Africa,F,sot,0.285,3.51,1.83,0.5155,-0.2305,-0.4472,-0.4785,0.565,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Vitinha,Portugal,M,sot,0.286,3.49,,,,,,0.208,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Lyle Foster,South Africa,F,sot,0.285,3.51,1.83,0.5155,-0.2305,-0.4472,-0.4785,0.565,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Vicente Besuijen,HJK helsinki,F,sot,0.285,3.51,,,,,,0.587,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Samed Baždar,Bosnia & Herzegovina,F,sot,0.284,3.52,1.26,0.7487,-0.4647,-0.6207,-0.6422,0.186,0.594,,4,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Anthony Valencia,Ecuador,F,sot,0.284,3.52,,,,,,0.645,0.566,,3,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Michal Sadílek,Czechia,M,sot,0.283,3.53,,,,,,0.461,0.594,,4,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Ernest Nuamah,Ghana,M,sot,0.282,3.55,2.9,0.3253,-0.0433,-0.1331,-0.1822,0.467,0.594,,4,match_level,WATCH,0.0
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Aleix García,Spain,M,sot,0.28,3.58,,,,,,0.236,0.698,MINUTES,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Kevin Kouassivi-Benissan,HJK helsinki,F,sot,0.28,3.57,,,,,,0.583,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Aleix García,Spain,M,sot,0.28,3.58,,,,,,0.236,0.698,MINUTES,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Felix Nmecha,Germany,M,sot,0.278,3.59,,,,,,0.48,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Relebohile Mofokeng,South Africa,F,sot,0.278,3.59,2.05,0.4602,-0.1822,-0.3959,-0.4301,0.449,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Yáser Asprilla,Colombia,M,sot,0.278,3.6,,,,,,0.252,0.698,MINUTES,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Relebohile Mofokeng,South Africa,F,sot,0.278,3.59,2.05,0.4602,-0.1822,-0.3959,-0.4301,0.449,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marcel Sabitzer,Austria,M,sot,0.277,3.62,2.25,0.4193,-0.1423,-0.3394,-0.3767,0.687,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Eldor Shomurodov,Uzbekistan,F,sot,0.277,3.61,2.25,0.4193,-0.1423,-0.3394,-0.3767,0.696,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Eldor Shomurodov,Uzbekistan,F,sot,0.277,3.61,2.15,0.4388,-0.1618,-0.3687,-0.4044,0.696,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Brandon Fleming,Derry City,M,sot,0.276,3.62,,,,,,0.47,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Andrey Santos,Brazil,M,sot,0.276,3.62,,,,,,0.493,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Ross McCrorie,Scotland,M,sot,0.276,3.62,,,,,,0.591,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Andrey Santos,Brazil,M,sot,0.276,3.62,,,,,,0.493,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Vladimír Coufal,Czechia,M,sot,0.275,3.63,,,,,,0.413,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Thapelo Maseko,South Africa,F,sot,0.275,3.64,2.35,0.4014,-0.1264,-0.315,-0.3537,0.582,0.641,MINUTES,3,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Darragh Markey,Drogheda United,F,sot,0.274,3.65,,,,,,0.253,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Armin Gigović,Bosnia & Herzegovina,M,sot,0.274,3.65,1.66,0.5683,-0.2943,-0.5179,-0.5452,0.205,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Darragh Markey,Drogheda United,F,sot,0.274,3.65,,,,,,0.253,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Seko Fofana,Ivory Coast,M,sot,0.273,3.66,,,,,,0.248,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Alexis Mac Allister,Argentina,M,sot,0.272,3.68,2.0,0.4717,-0.1997,-0.4234,-0.456,0.227,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Mario Pašalić,Croatia,M,sot,0.272,3.67,1.9,0.4965,-0.2245,-0.4522,-0.4832,0.419,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Alexis Mac Allister,Argentina,M,sot,0.272,3.68,2.0,0.4717,-0.1997,-0.4234,-0.456,0.227,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Stephen Walsh,Galway United,F,goals,0.272,3.68,,,,,,0.767,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Nilson Angulo,Ecuador,F,sot,0.271,3.68,,,,,,0.653,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Gavin Whyte,Derry City,F,sot,0.271,3.69,,,,,,0.611,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Kevin Rodriguez,Ecuador,F,sot,0.269,3.72,,,,,,0.469,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Kang-in Lee,South Korea,F,sot,0.269,3.72,,,,,,0.501,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Marco Pašalić,Croatia,F,sot,0.269,3.72,1.45,0.6506,-0.3816,-0.5865,-0.6099,0.543,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Jacob Shaffelburg,Canada,F,sot,0.269,3.72,2.25,0.4193,-0.1503,-0.3584,-0.3947,0.465,0.594,,4,match_level,WATCH,0.0
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Agustín Canobbio,Uruguay,F,sot,0.269,3.72,,,,,,0.311,0.566,,3,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Marco Pašalić,Croatia,F,sot,0.269,3.72,1.45,0.6506,-0.3816,-0.5865,-0.6099,0.543,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Diego Moreira,Belgium,F,sot,0.268,3.73,2.15,0.4388,-0.1708,-0.3892,-0.4238,0.624,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Nicolas Raskin,Belgium,M,sot,0.266,3.76,2.45,0.3851,-0.1191,-0.3092,-0.3483,0.366,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Wilson Isidor,Haiti,F,sot,0.266,3.76,1.9,0.4965,-0.2305,-0.4643,-0.4946,0.646,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Adramane Cassama,AC Oulu,M,sot,0.266,3.75,,,,,,0.259,0.594,,4,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Chemsdine Talbi,Morocco,F,sot,0.266,3.77,1.55,0.6086,-0.3426,-0.563,-0.5877,0.196,0.566,,3,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Wilson Isidor,Haiti,F,sot,0.266,3.76,1.9,0.4965,-0.2305,-0.4643,-0.4946,0.646,0.623,,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Michael Ogungbaro,FF Jaro,M,sot,0.266,3.76,,,,,,0.447,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Juninho Bacuna,Curaçao,M,sot,0.265,3.77,,,,,,0.471,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Aaron Greene,Shamrock Rovers,F,sot,0.265,3.78,,,,,,0.592,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Alexis Vega,Mexico,F,sot,0.265,3.78,,,,,,0.596,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Darwin Núñez,Uruguay,F,sot,0.265,3.77,,,,,,0.584,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Chris Führich,Germany,M,sot,0.265,3.77,,,,,,0.245,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Michael Gregoritsch,Austria,F,sot,0.264,3.78,1.8,0.5241,-0.2601,-0.4963,-0.5248,0.622,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Renato Veiga,Portugal,M,sot,0.264,3.79,3.4,0.2674,-0.0034,-0.0126,-0.1024,0.399,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Michael Gregoritsch,Austria,F,sot,0.264,3.78,1.8,0.5241,-0.2601,-0.4963,-0.5248,0.622,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Renato Veiga,Portugal,M,sot,0.264,3.79,3.05,0.2981,-0.0341,-0.1143,-0.1948,0.399,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Mostafa Mohamed,Egypt,F,sot,0.263,3.8,,,,,,0.551,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Edward McCarthy,Galway United,F,sot,0.262,3.81,,,,,,0.186,0.698,MINUTES,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Edward McCarthy,Galway United,F,sot,0.262,3.81,,,,,,0.186,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pablo Fornals,Spain,M,sot,0.262,3.82,,,,,,0.38,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Emam Ashour,Egypt,F,sot,0.261,3.83,1.9,0.4965,-0.2355,-0.4743,-0.5041,0.473,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Kenji Gorré,Curaçao,F,sot,0.261,3.84,,,,,,0.667,0.594,,4,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,James Garner,England,M,sot,0.261,3.83,,,,,,0.26,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Adam Matthews,Shamrock Rovers,M,sot,0.261,3.83,,,,,,0.423,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Brandon Fleming,Derry City,M,sot,0.261,3.84,,,,,,0.47,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Emam Ashour,Egypt,F,sot,0.261,3.83,1.8,0.5241,-0.2631,-0.502,-0.5302,0.473,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Pyry Mentu,HJK helsinki,F,sot,0.261,3.84,,,,,,0.611,0.698,MINUTES,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Warren Davis,Drogheda United,F,sot,0.26,3.85,,,,,,0.583,0.698,MINUTES,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pablo Barrios,Spain,M,sot,0.26,3.85,,,,,,0.193,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Brandon Fleming,Derry City,M,sot,0.261,3.84,,,,,,0.47,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Adam Matthews,Shamrock Rovers,M,sot,0.26,3.85,,,,,,0.423,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Aaron Greene,Shamrock Rovers,F,sot,0.26,3.85,,,,,,0.592,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pablo Barrios,Spain,M,sot,0.26,3.85,,,,,,0.193,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Warren Davis,Drogheda United,F,sot,0.26,3.85,,,,,,0.583,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Jack Byrne,Shamrock Rovers,M,sot,0.259,3.86,,,,,,0.188,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Elias Achouri,Tunisia,F,sot,0.259,3.86,,,,,,0.62,0.698,MINUTES,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Tshepang Moremi,South Africa,M,sot,0.258,3.88,2.35,0.4014,-0.1434,-0.3573,-0.3937,0.414,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Yan Diomande,Ivory Coast,M,goals,0.258,3.88,2.4,0.3931,-0.1351,-0.3436,-0.3808,0.443,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Leandro Bacuna,Curaçao,M,sot,0.258,3.88,,,,,,0.508,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Hwang In-beom,South Korea,M,sot,0.258,3.87,2.3,0.4102,-0.1522,-0.371,-0.4066,0.46,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,In-Beom Hwang,South Korea,M,sot,0.258,3.87,,,,,,0.46,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Tshepang Moremi,South Africa,M,sot,0.258,3.88,2.35,0.4014,-0.1434,-0.3573,-0.3937,0.414,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Marcos Llorente,Spain,M,sot,0.257,3.89,2.7,0.3494,-0.0924,-0.2645,-0.3061,0.225,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Lucas Lingman,HJK helsinki,M,sot,0.256,3.91,,,,,,0.551,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Evidence Makgopa,South Africa,F,sot,0.256,3.91,1.86,0.5072,-0.2512,-0.4953,-0.5238,0.619,0.623,,5,match_level,WATCH,0.0
+2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Lucas Lingman,HJK helsinki,M,sot,0.256,3.91,,,,,,0.551,0.698,MINUTES,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Hirving Lozano,Mexico,F,sot,0.256,3.91,,,,,,0.493,0.594,,4,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Antoine Semenyo,Ghana,F,sot,0.256,3.9,2.3,0.4102,-0.1542,-0.3759,-0.4112,0.671,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Mikel Oyarzabal,Spain,F,goals,0.255,3.92,2.06,0.458,-0.203,-0.4432,-0.4747,0.801,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Beñat Turrientes,Spain,M,sot,0.255,3.92,,,,,,0.204,0.594,,4,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Yuito Suzuki,Japan,F,sot,0.254,3.94,1.5,0.6289,-0.3749,-0.5961,-0.619,0.586,0.566,,3,match_level,WATCH,0.0
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jaminton Campaz,Colombia,M,sot,0.254,3.94,,,,,,0.626,0.594,,4,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Christoph Baumgartner,Austria,F,sot,0.253,3.95,,,,,,0.513,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Nathanaël Mbuku,Congo DR,F,sot,0.253,3.95,,,,,,0.557,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Michel Aebischer,Switzerland,M,sot,0.252,3.97,2.95,0.3198,-0.0678,-0.212,-0.2566,0.237,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Kobbie Mainoo,England,M,sot,0.252,3.97,3.1,0.2933,-0.0413,-0.1407,-0.2188,0.2,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Mateo Kovačić,Croatia,M,sot,0.252,3.97,2.45,0.3851,-0.1331,-0.3456,-0.3826,0.243,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Archie Meekison,Bohemians,M,sot,0.252,3.98,,,,,,0.382,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Lamine Ghezali,AC Oulu,F,sot,0.252,3.96,,,,,,0.206,0.669,MINUTES,4,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Michel Aebischer,Switzerland,M,sot,0.252,3.97,2.95,0.3198,-0.0678,-0.212,-0.2566,0.237,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Lamine Ghezali,AC Oulu,F,sot,0.252,3.96,,,,,,0.206,0.594,,4,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Mateo Kovačić,Croatia,M,sot,0.252,3.97,2.45,0.3851,-0.1331,-0.3456,-0.3826,0.243,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Kobbie Mainoo,England,M,sot,0.252,3.97,3.1,0.2933,-0.0413,-0.1407,-0.2188,0.2,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Joelinton,Brazil,M,sot,0.252,3.97,,,,,,0.243,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Zizo,Egypt,F,sot,0.251,3.98,,,,,,0.611,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Rhys Brennan,Bohemians,M,sot,0.251,3.99,,,,,,0.195,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Lautaro Martínez,Argentina,F,goals,0.251,3.98,2.3,0.4102,-0.1592,-0.3881,-0.4227,0.687,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Luis Chávez,Mexico,M,sot,0.25,4.0,,,,,,0.429,0.594,,4,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Zizo,Egypt,F,sot,0.251,3.98,,,,,,0.611,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Dženis Burnić,Bosnia & Herzegovina,M,sot,0.25,4.01,2.25,0.4193,-0.1693,-0.4037,-0.4375,0.204,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Luis Chávez,Mexico,M,sot,0.25,4.0,,,,,,0.429,0.594,,4,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Shane Farrell,Drogheda United,F,sot,0.249,4.02,,,,,,0.505,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Keisuke Goto,Japan,F,sot,0.249,4.01,1.38,0.6836,-0.4346,-0.6358,-0.6564,0.586,0.566,,3,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Guillermo Sotelo,FF Jaro,M,sot,0.249,4.02,,,,,,0.185,0.594,,4,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Luiz Henrique,Brazil,F,sot,0.248,4.03,,,,,,0.595,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,John McGovern,Shamrock Rovers,F,sot,0.247,4.06,,,,,,0.213,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Ji-sung Eom,South Korea,F,sot,0.247,4.05,,,,,,0.177,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,John McGinn,Scotland,M,sot,0.246,4.07,2.7,0.3494,-0.1034,-0.2959,-0.3358,0.406,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Enzo Fernández,Argentina,M,sot,0.246,4.07,1.86,0.5072,-0.2612,-0.515,-0.5424,0.376,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,William Fitzgerald,Sligo Rovers,M,sot,0.246,4.06,,,,,,0.23,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Max Kovaleskis,Shamrock Rovers,F,sot,0.246,4.07,,,,,,0.186,0.566,,3,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Afolabi Akinyemi,Derry City,F,goals,0.246,4.06,,,,,,0.728,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Meschack Elia,Congo DR,M,sot,0.246,4.07,,,,,,0.26,0.698,MINUTES,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,John McGinn,Scotland,M,sot,0.246,4.07,2.7,0.3494,-0.1034,-0.2959,-0.3358,0.406,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Afolabi Akinyemi,Derry City,F,goals,0.246,4.06,,,,,,0.728,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,William Fitzgerald,Sligo Rovers,M,sot,0.246,4.06,,,,,,0.23,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Enzo Fernández,Argentina,M,sot,0.246,4.07,1.86,0.5072,-0.2612,-0.515,-0.5424,0.376,0.623,,5,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Max Kovaleskis,Shamrock Rovers,F,sot,0.246,4.07,,,,,,0.186,0.566,,3,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Petar Sučić,Croatia,F,sot,0.246,4.07,1.76,0.536,-0.29,-0.5411,-0.567,0.228,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Rodri,Spain,M,sot,0.245,4.08,2.6,0.3628,-0.1178,-0.3248,-0.363,0.269,0.566,,3,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,George Hirst,Scotland,F,sot,0.245,4.08,2.0,0.4717,-0.2267,-0.4806,-0.51,0.527,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Tajon Buchanan,Canada,M,sot,0.245,4.08,2.0,0.4717,-0.2267,-0.4806,-0.51,0.242,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,José Manuel López,Argentina,F,sot,0.245,4.08,,,,,,0.164,0.566,,3,match_level,WATCH,
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Giorgian De Arrascaeta,Uruguay,F,goals,0.245,4.09,,,,,,0.779,0.594,,4,match_level,WATCH,
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Rodrigo Bentancur,Uruguay,M,sot,0.245,4.07,,,,,,0.275,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,George Hirst,Scotland,F,sot,0.245,4.08,2.0,0.4717,-0.2267,-0.4806,-0.51,0.527,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Giorgian De Arrascaeta,Uruguay,F,goals,0.245,4.09,,,,,,0.779,0.594,,4,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Adramane Cassama,AC Oulu,M,sot,0.245,4.09,,,,,,0.259,0.594,,4,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,José Manuel López,Argentina,F,sot,0.245,4.08,,,,,,0.164,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,José López,Argentina,F,sot,0.245,4.08,,,,,,0.164,0.566,,3,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,John McGovern,Shamrock Rovers,F,sot,0.244,4.1,,,,,,0.213,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Matheus Nunes,Portugal,M,sot,0.243,4.12,,,,,,0.231,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Jack Byrne,Shamrock Rovers,M,sot,0.243,4.11,,,,,,0.188,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Yoel Bárcenas,Panama,F,sot,0.241,4.15,,,,,,0.623,0.669,MINUTES,4,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Julius Paananen,AC Oulu,M,sot,0.241,4.15,,,,,,0.248,0.698,MINUTES,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Max Kovaleskis,Shamrock Rovers,F,sot,0.24,4.17,,,,,,0.186,0.566,,3,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Julius Paananen,AC Oulu,M,sot,0.241,4.15,,,,,,0.248,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Nikola Vlašić,Croatia,M,sot,0.24,4.16,1.54,0.6126,-0.3726,-0.6082,-0.6304,0.375,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Max Kovaleskis,Shamrock Rovers,F,sot,0.24,4.17,,,,,,0.186,0.566,,3,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pervis Estupiñán,Ecuador,M,sot,0.239,4.18,,,,,,0.402,0.698,MINUTES,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Michael Ogungbaro,FF Jaro,M,sot,0.239,4.18,,,,,,0.447,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pervis Estupiñán,Ecuador,M,sot,0.239,4.18,,,,,,0.402,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Sarpreet Singh,New Zealand,M,sot,0.238,4.2,2.45,0.3851,-0.1471,-0.3819,-0.4169,0.321,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Hwang Hee-chan,South Korea,F,sot,0.238,4.19,1.66,0.5683,-0.3303,-0.5812,-0.6049,0.596,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Hee-Chan Hwang,South Korea,F,sot,0.238,4.19,,,,,,0.596,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Aaron Bolger,Galway United,F,sot,0.236,4.24,,,,,,0.275,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Sarpreet Singh,New Zealand,M,sot,0.238,4.2,2.65,0.356,-0.118,-0.3315,-0.3693,0.321,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Christ Inao Oulaï,Ivory Coast,M,sot,0.237,4.21,,,,,,0.21,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Tahith Chong,Curaçao,M,sot,0.237,4.21,,,,,,0.396,0.698,MINUTES,5,match_level,WATCH,
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Thelo Aasgaard,Norway,M,sot,0.236,4.23,1.6,0.5896,-0.3536,-0.5997,-0.6224,0.163,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Cian Barrett,Shamrock Rovers,F,sot,0.236,4.25,,,,,,0.614,0.641,MINUTES,3,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Marc Cucurella,Spain,D,sot,0.235,4.25,3.1,0.2933,-0.0583,-0.1986,-0.2715,0.253,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Aaron Bolger,Galway United,F,sot,0.236,4.24,,,,,,0.275,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Nahitan Nández,Uruguay,M,sot,0.235,4.25,,,,,,0.219,0.566,,3,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Marc Cucurella,Spain,D,sot,0.235,4.25,3.1,0.2933,-0.0583,-0.1986,-0.2715,0.253,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Harry Kane,England,F,goals,0.234,4.28,1.67,0.5649,-0.3309,-0.5858,-0.6092,0.784,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Rhys Brennan,Bohemians,M,sot,0.234,4.27,,,,,,0.195,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Jack Stretton,Drogheda United,F,sot,0.234,4.27,,,,,,0.583,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Harry Kane,England,F,goals,0.234,4.28,1.67,0.5649,-0.3309,-0.5858,-0.6092,0.784,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pascal Groß,Germany,M,sot,0.233,4.29,,,,,,0.218,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Louicius Don Deedson,Haiti,F,sot,0.233,4.3,2.1,0.4492,-0.2162,-0.4813,-0.5107,0.621,0.594,,4,match_level,WATCH,0.0
-2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Archie Meekison,Bohemians,M,sot,0.233,4.29,,,,,,0.382,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Erling Haaland,Norway,F,goals,0.233,4.29,,,,,,0.739,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Cian Barrett,Shamrock Rovers,F,sot,0.233,4.28,,,,,,0.614,0.641,MINUTES,3,match_level,WATCH,
-2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Lamine Ghezali,AC Oulu,F,sot,0.233,4.29,,,,,,0.206,0.594,,4,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Filip Valenčič,FF Jaro,M,sot,0.233,4.29,,,,,,0.223,0.594,,4,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Nathan-Dylan Saliba,Canada,M,sot,0.232,4.32,2.65,0.356,-0.124,-0.3483,-0.3852,0.407,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Rodrigo Zalazar,Uruguay,M,sot,0.232,4.31,,,,,,0.225,0.594,,4,match_level,WATCH,
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Juan Sanabria,Uruguay,M,sot,0.232,4.31,,,,,,0.415,0.594,,4,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Erling Haaland,Norway,F,goals,0.233,4.29,,,,,,0.739,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Archie Meekison,Bohemians,M,sot,0.233,4.29,,,,,,0.382,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pascal Groß,Germany,M,sot,0.233,4.29,,,,,,0.218,0.623,,5,match_level,WATCH,
+2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Lamine Ghezali,AC Oulu,F,sot,0.233,4.29,,,,,,0.206,0.669,MINUTES,4,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Cian Barrett,Shamrock Rovers,F,sot,0.233,4.28,,,,,,0.614,0.641,MINUTES,3,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Louicius Don Deedson,Haiti,F,sot,0.233,4.3,2.1,0.4492,-0.2162,-0.4813,-0.5107,0.621,0.594,,4,match_level,WATCH,0.0
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Mahmoud Trézéguet,Egypt,F,sot,0.232,4.3,,,,,,0.637,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Rodrigo Zalazar,Uruguay,M,sot,0.232,4.31,,,,,,0.225,0.669,MINUTES,4,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Nathan-Dylan Saliba,Canada,M,sot,0.232,4.32,2.65,0.356,-0.124,-0.3483,-0.3852,0.407,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Juan Sanabria,Uruguay,M,sot,0.232,4.31,,,,,,0.415,0.594,,4,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Orbelín Pineda,Mexico,F,sot,0.232,4.31,,,,,,0.188,0.698,MINUTES,5,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Christian Fassnacht,Switzerland,M,sot,0.23,4.35,1.68,0.5615,-0.3315,-0.5904,-0.6136,0.46,0.566,,3,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Aleksi Paananen,AC Oulu,M,sot,0.23,4.35,,,,,,0.241,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Dylan Watts,Shamrock Rovers,M,sot,0.23,4.34,,,,,,0.395,0.698,MINUTES,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Christian Fassnacht,Switzerland,M,sot,0.23,4.35,1.68,0.5615,-0.3315,-0.5904,-0.6136,0.46,0.566,,3,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Dylan Watts,Shamrock Rovers,M,sot,0.229,4.37,,,,,,0.395,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Dylan Watts,Shamrock Rovers,M,sot,0.229,4.37,,,,,,0.395,0.698,MINUTES,5,match_level,WATCH,
 2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,João Palhinha,Portugal,M,sot,0.229,4.36,,,,,,0.195,0.594,,4,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Thomas Oluwa,Drogheda United,F,sot,0.228,4.39,,,,,,0.582,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Luis Javier Suárez,Colombia,F,sot,0.228,4.39,,,,,,0.215,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Lyndon Dykes,Scotland,F,sot,0.228,4.39,2.05,0.4602,-0.2322,-0.5046,-0.5326,0.602,0.623,,5,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Thomas Oluwa,Drogheda United,F,sot,0.228,4.39,,,,,,0.582,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Dan Agyei,Ghana,M,sot,0.228,4.39,,,,,,0.599,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Nico O'Reilly,England,D,sot,0.227,4.41,2.55,0.37,-0.143,-0.3864,-0.4212,0.271,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Enner Valencia,Ecuador,F,goals,0.227,4.41,3.0,0.3145,-0.0875,-0.2781,-0.319,0.779,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Guillermo Sotelo,FF Jaro,M,sot,0.227,4.41,,,,,,0.185,0.594,,4,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Enner Valencia,Ecuador,F,goals,0.227,4.41,,,,,,0.779,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Rafael Borré,Colombia,F,sot,0.226,4.42,,,,,,0.179,0.566,,3,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Ferran Torres,Spain,F,goals,0.225,4.45,,,,,,0.705,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Carlos Rodríguez,Mexico,M,sot,0.225,4.45,,,,,,0.226,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Ferran Torres,Spain,F,goals,0.225,4.45,,,,,,0.705,0.698,MINUTES,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Jürgen Locadia,Curaçao,F,sot,0.225,4.45,,,,,,0.641,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Cherif Ndiaye,Senegal,F,sot,0.224,4.46,1.6,0.5896,-0.3656,-0.6201,-0.6416,0.577,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Houssem Aouar,Algeria,F,sot,0.224,4.47,1.73,0.5453,-0.3213,-0.5892,-0.6125,0.221,0.566,,3,match_level,WATCH,0.0
 2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Samú Costa,Portugal,M,sot,0.224,4.47,,,,,,0.24,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Houssem Aouar,Algeria,F,sot,0.224,4.47,1.73,0.5453,-0.3213,-0.5892,-0.6125,0.221,0.566,,3,match_level,WATCH,0.0
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Lucas Paquetá,Brazil,M,sot,0.223,4.47,1.43,0.6597,-0.4367,-0.662,-0.6811,0.407,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Ryan Brennan,Drogheda United,F,sot,0.223,4.48,,,,,,0.264,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jefferson Lerma,Colombia,M,sot,0.222,4.5,,,,,,0.413,0.698,MINUTES,5,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Kamaldeen Sulemana,Ghana,F,sot,0.222,4.5,,,,,,0.674,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jordan Ayew,Ghana,F,sot,0.222,4.5,2.45,0.3851,-0.1631,-0.4235,-0.4561,0.676,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Abdul Fatawu Issahaku,Ghana,F,sot,0.222,4.5,3.15,0.2886,-0.0666,-0.2308,-0.3007,0.553,0.594,,4,match_level,WATCH,0.0
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Kamaldeen Sulemana,Ghana,F,sot,0.222,4.5,,,,,,0.674,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Daizen Maeda,Japan,F,sot,0.222,4.5,1.57,0.6009,-0.3789,-0.6305,-0.6515,0.213,0.594,,4,match_level,WATCH,0.0
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Ivan Bašić,Bosnia & Herzegovina,M,sot,0.221,4.52,2.3,0.4102,-0.1892,-0.4612,-0.4917,0.197,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Lawrence Shankland,Scotland,F,goals,0.221,4.52,4.8,0.1894,0.0316,0.1669,0.0608,0.75,0.566,,3,match_level,WATCH,0.0
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Saša Kalajdžić,Austria,F,sot,0.221,4.52,1.86,0.5072,-0.2862,-0.5643,-0.5889,0.222,0.594,,4,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Markuss Strods,Bohemians,M,sot,0.221,4.52,,,,,,0.167,0.566,,3,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Joel Lehtonen,AC Oulu,M,sot,0.221,4.52,,,,,,0.228,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rafael Leão,Portugal,F,goals,0.221,4.53,3.2,0.2841,-0.0631,-0.2221,-0.2928,0.605,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Amadou Onana,Belgium,M,sot,0.221,4.53,3.25,0.2797,-0.0587,-0.2099,-0.2817,0.392,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rafael Leão,Portugal,F,goals,0.221,4.53,3.2,0.2841,-0.0631,-0.2221,-0.2928,0.605,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Saša Kalajdžić,Austria,F,sot,0.221,4.52,1.86,0.5072,-0.2862,-0.5643,-0.5889,0.222,0.594,,4,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Lawrence Shankland,Scotland,F,goals,0.221,4.52,4.8,0.1894,0.0316,0.1669,0.0608,0.75,0.566,,3,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Markuss Strods,Bohemians,M,sot,0.221,4.52,,,,,,0.167,0.566,,3,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Frantzdy Pierrot,Haiti,F,sot,0.22,4.54,2.0,0.4717,-0.2517,-0.5336,-0.56,0.647,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Elliot Anderson,England,M,sot,0.22,4.54,2.45,0.3851,-0.1651,-0.4287,-0.461,0.203,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Aurélien Tchouaméni,France,M,sot,0.22,4.54,2.7,0.3494,-0.1294,-0.3704,-0.406,0.242,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Elliot Anderson,England,M,sot,0.22,4.54,2.45,0.3851,-0.1651,-0.4287,-0.461,0.203,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Frantzdy Pierrot,Haiti,F,sot,0.22,4.54,2.0,0.4717,-0.2517,-0.5336,-0.56,0.647,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Leon Goretzka,Germany,M,sot,0.219,4.56,,,,,,0.222,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Julius Paananen,AC Oulu,M,sot,0.219,4.57,,,,,,0.248,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Leon Goretzka,Germany,M,sot,0.219,4.56,,,,,,0.222,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Ali Al-Hamadi,Iraq,F,sot,0.219,4.56,2.7,0.3494,-0.1304,-0.3732,-0.4087,0.674,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Oumar Diakité,Ivory Coast,M,sot,0.219,4.56,,,,,,0.179,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Harry Maguire,England,D,sot,0.218,4.59,,,,,,0.274,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Achraf Hakimi,Morocco,D,sot,0.218,4.59,1.86,0.5072,-0.2892,-0.5702,-0.5945,0.294,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Gilberto Mora,Mexico,M,sot,0.218,4.58,,,,,,0.222,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Harry Maguire,England,D,sot,0.218,4.59,,,,,,0.274,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Habib Diarra,Senegal,F,sot,0.217,4.61,3.05,0.2981,-0.0811,-0.272,-0.3382,0.603,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Kai Havertz,Germany,F,goals,0.217,4.62,,,,,,0.725,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Riyad Mahrez,Algeria,F,sot,0.217,4.62,1.57,0.6009,-0.3839,-0.6389,-0.6593,0.195,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Kai Havertz,Germany,F,goals,0.217,4.62,2.8,0.3369,-0.1199,-0.3559,-0.3924,0.725,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Mehdi Taremi,Iran,F,sot,0.217,4.61,1.86,0.5072,-0.2902,-0.5722,-0.5964,0.497,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Riyad Mahrez,Algeria,F,sot,0.217,4.62,1.57,0.6009,-0.3839,-0.6389,-0.6593,0.195,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Habib Diarra,Senegal,F,sot,0.217,4.61,3.05,0.2981,-0.0811,-0.272,-0.3382,0.603,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Warren Zaïre-Emery,France,M,sot,0.216,4.62,2.0,0.4717,-0.2557,-0.5421,-0.568,0.209,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Sadou Diallo,Derry City,M,sot,0.215,4.64,,,,,,0.417,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Ryan Christie,Scotland,M,sot,0.215,4.64,2.8,0.3369,-0.1219,-0.3619,-0.398,0.461,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Kristijan Jakić,Croatia,M,sot,0.215,4.65,,,,,,0.413,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Sadou Diallo,Derry City,M,sot,0.215,4.64,,,,,,0.417,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Morten Thorsby,Norway,M,sot,0.215,4.64,2.25,0.4193,-0.2043,-0.4872,-0.5162,0.203,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,João Cancelo,Portugal,D,sot,0.215,4.65,2.3,0.4102,-0.1952,-0.4758,-0.5055,0.239,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,João Cancelo,Portugal,D,sot,0.215,4.65,2.7,0.3494,-0.1344,-0.3847,-0.4195,0.239,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Luka Modrić,Croatia,M,sot,0.215,4.65,1.86,0.5072,-0.2922,-0.5761,-0.6001,0.394,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Valentín Barco,Argentina,M,sot,0.215,4.65,2.9,0.3253,-0.1103,-0.3391,-0.3765,0.404,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Morten Thorsby,Norway,M,sot,0.215,4.64,2.25,0.4193,-0.2043,-0.4872,-0.5162,0.203,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Denis Zakaria,Switzerland,M,sot,0.214,4.68,3.65,0.2491,-0.0351,-0.1408,-0.2189,0.21,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Filip Valenčič,FF Jaro,M,sot,0.213,4.69,,,,,,0.223,0.594,,4,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Jim Myrevik,FF Jaro,M,sot,0.213,4.71,,,,,,0.217,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Maxim De Cuyper,Belgium,M,sot,0.213,4.69,2.25,0.4193,-0.2063,-0.492,-0.5208,0.213,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Danilo,Brazil,M,sot,0.212,4.72,,,,,,0.37,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Danilo Santos,Brazil,M,sot,0.212,4.72,,,,,,0.37,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Sipho Mbule,South Africa,M,sot,0.212,4.73,,,,,,0.244,0.641,MINUTES,3,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Danilo Oliveira,Brazil,M,sot,0.212,4.72,,,,,,0.37,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Danilo,Brazil,M,sot,0.212,4.72,,,,,,0.37,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Teboho Mokoena,South Africa,M,sot,0.211,4.74,,,,,,0.436,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Markuss Strods,Bohemians,M,sot,0.211,4.75,,,,,,0.167,0.566,,3,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Aleksi Paananen,AC Oulu,M,sot,0.211,4.73,,,,,,0.241,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Abbosbek Fayzullaev,Uzbekistan,F,sot,0.211,4.74,3.6,0.2525,-0.0415,-0.1644,-0.2404,0.655,0.566,,3,match_level,WATCH,0.0
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Teboho Mokoena,South Africa,M,sot,0.211,4.74,,,,,,0.436,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Abbosbek Fayzullaev,Uzbekistan,F,sot,0.211,4.74,2.6,0.3628,-0.1518,-0.4185,-0.4514,0.655,0.566,,3,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Adam Vidjeskog,FF Jaro,M,sot,0.21,4.76,,,,,,0.292,0.594,,4,match_level,WATCH,
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Rayan Aït-Nouri,Algeria,M,sot,0.21,4.75,,,,,,0.221,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Oscar Bobb,Norway,M,sot,0.209,4.78,2.0,0.4717,-0.2627,-0.5569,-0.582,0.179,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Dailon Rocha Livramento,Cape Verde Islands,F,sot,0.208,4.81,,,,,,0.173,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Gustavo Puerta,Colombia,M,sot,0.208,4.81,,,,,,0.212,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Jun-Ho Bae,South Korea,F,sot,0.208,4.82,,,,,,0.65,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Oscar Bobb,Norway,M,sot,0.209,4.78,2.0,0.4717,-0.2627,-0.5569,-0.582,0.179,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Gustavo Puerta,Colombia,M,sot,0.208,4.81,,,,,,0.212,0.698,MINUTES,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Edmilson Junior,Qatar,F,sot,0.208,4.81,2.3,0.4102,-0.2022,-0.4929,-0.5216,0.689,0.566,,3,match_level,WATCH,0.0
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Jun-Ho Bae,South Korea,F,sot,0.208,4.82,,,,,,0.65,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Adam Wharton,England,M,sot,0.208,4.81,,,,,,0.228,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Dailon Rocha Livramento,Cape Verde Islands,F,sot,0.208,4.81,,,,,,0.173,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Himad Abdelli,Algeria,M,sot,0.207,4.84,,,,,,0.299,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Ao Tanaka,Japan,M,sot,0.206,4.86,2.45,0.3851,-0.1791,-0.465,-0.4953,0.224,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Findlay Curtis,Scotland,F,sot,0.206,4.86,2.6,0.3628,-0.1568,-0.4323,-0.4644,0.585,0.566,,3,match_level,WATCH,0.0
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Matthew Garbett,New Zealand,M,sot,0.206,4.84,,,,,,0.243,0.669,MINUTES,4,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Afolabi Akinyemi,Derry City,F,goals,0.206,4.85,,,,,,0.728,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Matthew Healy,Shamrock Rovers,M,sot,0.205,4.88,,,,,,0.235,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Alexander Sørloth,Norway,F,goals,0.205,4.89,,,,,,0.656,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Jeremy Antonisse,Curaçao,F,sot,0.206,4.85,,,,,,0.603,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Matthew Garbett,New Zealand,M,sot,0.206,4.84,,,,,,0.243,0.594,,4,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Findlay Curtis,Scotland,F,sot,0.206,4.86,2.6,0.3628,-0.1568,-0.4323,-0.4644,0.585,0.566,,3,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,José Fajardo,Panama,F,sot,0.205,4.87,,,,,,0.595,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Alexander Sørloth,Norway,F,goals,0.205,4.89,,,,,,0.656,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jesurun Rak-Sakyi,Ghana,M,sot,0.205,4.88,,,,,,0.385,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Matthew Healy,Shamrock Rovers,M,sot,0.205,4.88,,,,,,0.235,0.698,MINUTES,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Jere Kallinen,HJK helsinki,M,sot,0.204,4.9,,,,,,0.418,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Matthew Healy,Shamrock Rovers,M,sot,0.204,4.91,,,,,,0.235,0.698,MINUTES,5,match_level,WATCH,
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Elijah Just,New Zealand,M,sot,0.204,4.91,2.25,0.4193,-0.2153,-0.5135,-0.541,0.578,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Rodrigo De Paul,Argentina,M,sot,0.204,4.91,,,,,,0.217,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Ben Waine,New Zealand,F,sot,0.204,4.91,2.0,0.4717,-0.2677,-0.5675,-0.592,0.584,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Ben Waine,New Zealand,F,sot,0.204,4.91,2.0,0.4717,-0.2677,-0.5675,-0.592,0.584,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Matthew Healy,Shamrock Rovers,M,sot,0.204,4.91,,,,,,0.235,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jorge Carrascal,Colombia,M,sot,0.203,4.92,,,,,,0.225,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jules Koundé,France,D,sot,0.203,4.93,3.7,0.2457,-0.0427,-0.1738,-0.2489,0.254,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Luka Sučić,Croatia,M,sot,0.203,4.91,1.68,0.5615,-0.3585,-0.6385,-0.659,0.197,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Jorge Carrascal,Colombia,M,sot,0.203,4.92,,,,,,0.225,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Theo Hernández,France,D,sot,0.202,4.96,1.91,0.4939,-0.2919,-0.591,-0.6142,0.242,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Joel Lehtonen,AC Oulu,M,sot,0.202,4.94,,,,,,0.228,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Sean Kavanagh,Shamrock Rovers,M,sot,0.201,4.98,,,,,,0.23,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Benjamin Old,New Zealand,F,sot,0.201,4.97,,,,,,0.608,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Kendry Páez,Ecuador,F,sot,0.201,4.97,,,,,,0.591,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Sean Kavanagh,Shamrock Rovers,M,sot,0.201,4.98,,,,,,0.23,0.566,,3,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Daichi Kamada,Japan,M,sot,0.2,4.99,2.6,0.3628,-0.1628,-0.4488,-0.48,0.554,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Kosta Barbarouses,New Zealand,F,sot,0.2,5.0,2.0,0.4717,-0.2717,-0.576,-0.6,0.593,0.566,,3,match_level,WATCH,0.0
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Haissem Hassan,Egypt,F,sot,0.2,5.0,1.6,0.5896,-0.3896,-0.6608,-0.68,0.594,0.594,,4,match_level,WATCH,0.0
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Matthew Wolfe,Sligo Rovers,M,sot,0.199,5.04,,,,,,0.194,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Michael Duffy,Derry City,F,goals,0.199,5.02,,,,,,0.767,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Yukinari Sugawara,Japan,M,sot,0.199,5.02,3.1,0.2933,-0.0943,-0.3214,-0.3831,0.183,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Sadou Diallo,Derry City,M,sot,0.199,5.03,,,,,,0.417,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Matthew Wolfe,Sligo Rovers,M,sot,0.199,5.04,,,,,,0.194,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Ibrahim Adel,Egypt,F,sot,0.198,5.06,1.74,0.5422,-0.3442,-0.6348,-0.6555,0.584,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Kento Shiogai,Japan,F,sot,0.198,5.05,1.5,0.6289,-0.4309,-0.6852,-0.703,0.147,0.566,,3,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Santeri Silander,AC Oulu,M,sot,0.197,5.07,,,,,,0.227,0.594,,4,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Cian Byrne,Bohemians,M,sot,0.197,5.08,,,,,,0.264,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Sean Kavanagh,Shamrock Rovers,M,sot,0.197,5.06,,,,,,0.23,0.566,,3,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Robin Le Normand,Spain,D,sot,0.197,5.07,,,,,,0.424,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ayyoub Bouaddi,Morocco,M,sot,0.196,5.11,2.5,0.3774,-0.1814,-0.4806,-0.51,0.209,0.623,,5,match_level,WATCH,0.0
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Santeri Silander,AC Oulu,M,sot,0.197,5.07,,,,,,0.227,0.594,,4,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Sean Kavanagh,Shamrock Rovers,M,sot,0.197,5.06,,,,,,0.23,0.566,,3,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Wilfried Singo,Ivory Coast,D,sot,0.196,5.1,,,,,,0.395,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jordan Henderson,England,M,sot,0.196,5.11,3.4,0.2674,-0.0714,-0.267,-0.3336,0.173,0.669,SET_PIECE,4,match_level,WATCH,0.0
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jean-Philippe Mateta,France,F,goals,0.195,5.14,1.75,0.5391,-0.3441,-0.6383,-0.6587,0.735,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Josué Casimir,Haiti,F,sot,0.195,5.13,2.6,0.3628,-0.1678,-0.4626,-0.493,0.229,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Nuno Mendes,Portugal,D,sot,0.195,5.12,2.25,0.4193,-0.2243,-0.5349,-0.5613,0.217,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jean Philippe Mateta,France,F,goals,0.195,5.14,,,,,,0.735,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Jim Myrevik,FF Jaro,M,sot,0.195,5.14,,,,,,0.217,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ayyoub Bouaddi,Morocco,M,sot,0.196,5.11,2.5,0.3774,-0.1814,-0.4806,-0.51,0.209,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Conor Keeley,Drogheda United,D,sot,0.195,5.13,,,,,,0.481,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Jae-sung Lee,South Korea,F,sot,0.195,5.12,,,,,,0.622,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,N'Golo Kanté,France,M,sot,0.195,5.13,2.6,0.3628,-0.1678,-0.4626,-0.493,0.198,0.641,MINUTES,3,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,N'Golo Kanté,France,M,sot,0.195,5.13,2.6,0.3628,-0.1678,-0.4626,-0.493,0.198,0.566,,3,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jean-Philippe Mateta,France,F,goals,0.195,5.14,1.73,0.5453,-0.3503,-0.6424,-0.6626,0.735,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Nuno Mendes,Portugal,D,sot,0.195,5.12,2.25,0.4193,-0.2243,-0.5349,-0.5613,0.217,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Josué Casimir,Haiti,F,sot,0.195,5.13,2.6,0.3628,-0.1678,-0.4626,-0.493,0.229,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Jean Philippe Mateta,France,F,goals,0.195,5.14,,,,,,0.735,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Jim Myrevik,FF Jaro,M,sot,0.195,5.14,,,,,,0.217,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Adam Frizzell,Derry City,M,sot,0.194,5.15,,,,,,0.166,0.566,,3,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Livano Comenencia,Curaçao,M,sot,0.194,5.14,,,,,,0.45,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Alex Bannon,Derry City,D,sot,0.194,5.14,,,,,,0.609,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Exequiel Palacios,Argentina,M,sot,0.194,5.16,3.1,0.2933,-0.0993,-0.3385,-0.3986,0.208,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Hazem Mastouri,Tunisia,F,sot,0.194,5.16,2.0,0.4717,-0.2777,-0.5887,-0.612,0.215,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Luke Heeney,Drogheda United,M,sot,0.193,5.18,,,,,,0.354,0.698,MINUTES,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Robbie Benson,Derry City,M,sot,0.193,5.19,,,,,,0.249,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,César Blackman,Panama,M,sot,0.193,5.19,4.5,0.202,-0.009,-0.0446,-0.1315,0.399,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Adam Vidjeskog,FF Jaro,M,sot,0.193,5.19,,,,,,0.292,0.594,,4,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Luke Heeney,Drogheda United,M,sot,0.193,5.18,,,,,,0.354,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,César Blackman,Panama,M,sot,0.193,5.19,4.5,0.202,-0.009,-0.0446,-0.1315,0.399,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Javi Rodríguez,Spain,D,sot,0.192,5.2,,,,,,0.231,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Oussama Targhalline,Morocco,M,sot,0.191,5.24,,,,,,0.164,0.566,,3,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Aymeric Laporte,Spain,D,sot,0.191,5.25,3.2,0.2841,-0.0931,-0.3277,-0.3888,0.26,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Oussama Targhalline,Morocco,M,sot,0.191,5.24,,,,,,0.164,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Malo Gusto,France,D,sot,0.191,5.23,2.9,0.3253,-0.1343,-0.4129,-0.4461,0.221,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ismael Saibari,Morocco,F,goals,0.19,5.25,1.8,0.5241,-0.3341,-0.6375,-0.658,0.716,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Ali Abdi,Tunisia,D,sot,0.19,5.26,5.75,0.1512,0.0388,0.2564,0.0925,0.459,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jarrod Bowen,England,F,goals,0.19,5.27,,,,,,0.543,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Benjamin Tahirović,Bosnia & Herzegovina,M,sot,0.19,5.27,3.0,0.3145,-0.1245,-0.3958,-0.43,0.252,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Ismael Saibari,Morocco,F,goals,0.19,5.25,1.8,0.5241,-0.3341,-0.6375,-0.658,0.716,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jarrod Bowen,England,F,goals,0.19,5.27,,,,,,0.543,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Ronan Boyce,Derry City,M,sot,0.19,5.26,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Sebastian Tounekti,Tunisia,F,sot,0.189,5.3,2.9,0.3253,-0.1363,-0.419,-0.4519,0.178,0.594,,4,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Adam Frizzell,Derry City,M,sot,0.189,5.3,,,,,,0.166,0.566,,3,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alejandro Grimaldo,Spain,D,sot,0.189,5.28,,,,,,0.233,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Michael Duffy,Derry City,F,goals,0.189,5.3,,,,,,0.767,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Ahmadou Bamba Dieng,Senegal,F,sot,0.189,5.3,,,,,,0.563,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Liam Millar,Canada,F,sot,0.189,5.29,2.05,0.4602,-0.2712,-0.5893,-0.6126,0.179,0.623,,5,match_level,WATCH,0.0
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Adam Frizzell,Derry City,M,sot,0.189,5.3,,,,,,0.166,0.566,,3,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Michael Duffy,Derry City,F,goals,0.189,5.3,,,,,,0.767,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alejandro Grimaldo,Spain,D,sot,0.189,5.28,,,,,,0.233,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Omar Marmoush,Egypt,F,goals,0.188,5.31,2.65,0.356,-0.168,-0.4719,-0.5018,0.477,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Lukáš Červ,Czechia,M,sot,0.188,5.33,,,,,,0.24,0.698,MINUTES,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Hugo Ekitiké,France,F,goals,0.188,5.32,,,,,,0.738,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Kevin De Bruyne,Belgium,F,goals,0.188,5.32,3.23,0.2815,-0.0935,-0.332,-0.3928,0.721,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Onni Tiihonen,AC Oulu,M,sot,0.187,5.36,,,,,,0.268,0.566,,3,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Djibril Sow,Switzerland,M,sot,0.187,5.34,2.75,0.3431,-0.1561,-0.4549,-0.4858,0.194,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Chris Wood,New Zealand,F,goals,0.186,5.36,4.0,0.2273,-0.0413,-0.1816,-0.256,0.747,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Mathieu Choinière,Canada,M,sot,0.186,5.36,3.5,0.2597,-0.0737,-0.2839,-0.349,0.23,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Edin Džeko,Bosnia & Herzegovina,F,goals,0.186,5.37,2.0,0.4717,-0.2857,-0.6057,-0.628,0.693,0.623,,5,match_level,WATCH,0.0
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Onni Tiihonen,AC Oulu,M,sot,0.187,5.36,,,,,,0.268,0.566,,3,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Aleksandar Pavlović,Germany,M,sot,0.186,5.38,,,,,,0.25,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Edin Džeko,Bosnia & Herzegovina,F,goals,0.186,5.37,2.0,0.4717,-0.2857,-0.6057,-0.628,0.693,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Mathieu Choinière,Canada,M,sot,0.186,5.36,3.5,0.2597,-0.0737,-0.2839,-0.349,0.23,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Chris Wood,New Zealand,F,goals,0.186,5.36,4.0,0.2273,-0.0413,-0.1816,-0.256,0.747,0.623,,5,match_level,WATCH,0.0
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Randal Kolo Muani,France,F,goals,0.186,5.39,,,,,,0.657,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Cian Byrne,Galway United,M,sot,0.185,5.42,,,,,,0.264,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Darragh Nugent,Shamrock Rovers,M,sot,0.185,5.41,,,,,,0.215,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Mikko Pitkänen,AC Oulu,D,sot,0.185,5.41,,,,,,0.253,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Manasse Kusu,FF Jaro,M,sot,0.185,5.41,,,,,,0.23,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Eric García,Spain,D,sot,0.185,5.41,,,,,,0.401,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Darragh Nugent,Shamrock Rovers,M,sot,0.185,5.41,,,,,,0.215,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Young-woo Seol,South Korea,M,sot,0.185,5.41,3.05,0.2981,-0.1131,-0.3793,-0.4358,0.232,0.623,,5,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Cian Byrne,Galway United,M,sot,0.185,5.42,,,,,,0.264,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Mikko Pitkänen,AC Oulu,D,sot,0.185,5.41,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Darragh Nugent,Shamrock Rovers,M,sot,0.185,5.41,,,,,,0.215,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Eric García,Spain,D,sot,0.185,5.41,,,,,,0.401,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Teemu Pukki,HJK helsinki,F,goals,0.184,5.45,,,,,,0.715,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Amar Dedić,Bosnia & Herzegovina,D,sot,0.184,5.45,2.9,0.3253,-0.1413,-0.4344,-0.4664,0.264,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Robbie Benson,Derry City,M,sot,0.184,5.45,,,,,,0.249,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Adam Hložek,Czechia,F,goals,0.184,5.42,,,,,,0.715,0.623,,5,match_level,WATCH,
-2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Santeri Silander,AC Oulu,M,sot,0.184,5.43,,,,,,0.227,0.594,,4,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Teemu Pukki,HJK helsinki,F,goals,0.184,5.45,,,,,,0.715,0.623,,5,match_level,WATCH,
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Jake Doyle Hayes,Sligo Rovers,M,sot,0.184,5.43,,,,,,0.23,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Ben White,England,D,sot,0.184,5.44,,,,,,0.404,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Cian Byrne,Bohemians,M,sot,0.184,5.44,,,,,,0.264,0.623,,5,match_level,WATCH,
+2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Santeri Silander,AC Oulu,M,sot,0.184,5.43,,,,,,0.227,0.594,,4,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Ben White,England,D,sot,0.184,5.44,,,,,,0.404,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Jake Doyle Hayes,Sligo Rovers,M,sot,0.184,5.43,,,,,,0.23,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Adam Hložek,Czechia,F,goals,0.184,5.42,,,,,,0.715,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Axel Witsel,Belgium,M,sot,0.183,5.47,3.7,0.2457,-0.0627,-0.2552,-0.3229,0.178,0.594,,4,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Anton Stach,Germany,M,sot,0.183,5.47,,,,,,0.249,0.623,,5,match_level,WATCH,
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Owen Elding,Sligo Rovers,F,goals,0.182,5.5,,,,,,0.744,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Josip Stanišić,Croatia,M,sot,0.182,5.49,2.4,0.3931,-0.2111,-0.537,-0.5632,0.241,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Niall Morahan,Bohemians,M,sot,0.182,5.5,,,,,,0.227,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Ibrahim Sangaré,Ivory Coast,M,sot,0.182,5.5,,,,,,0.206,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Owen Elding,Sligo Rovers,F,goals,0.182,5.5,,,,,,0.744,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alejandro Baena,Spain,M,assists,0.182,5.49,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alex Baena,Spain,M,assists,0.182,5.49,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Luis Díaz,Colombia,M,goals,0.181,5.53,,,,,,0.56,0.698,MINUTES,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Josip Stanišić,Croatia,M,sot,0.182,5.49,2.4,0.3931,-0.2111,-0.537,-0.5632,0.241,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rúben Dias,Portugal,D,sot,0.181,5.51,3.5,0.2597,-0.0787,-0.3031,-0.3665,0.243,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Jeannot Esua,Galway United,M,sot,0.181,5.52,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Connor Malley,Shamrock Rovers,M,sot,0.181,5.52,,,,,,0.201,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rúben Dias,Portugal,D,sot,0.181,5.51,3.75,0.2424,-0.0614,-0.2534,-0.3213,0.243,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Luis Díaz,Colombia,M,goals,0.181,5.53,,,,,,0.56,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Remo Freuler,Switzerland,M,sot,0.181,5.54,2.75,0.3431,-0.1621,-0.4724,-0.5023,0.223,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Georgios Kanellopoulos,HJK helsinki,M,sot,0.18,5.57,,,,,,0.237,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Connor Malley,Shamrock Rovers,M,sot,0.181,5.52,,,,,,0.201,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Diego Lainez,Mexico,F,sot,0.18,5.57,,,,,,0.179,0.566,,3,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Graham Burke,Shamrock Rovers,F,goals,0.18,5.57,,,,,,0.632,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Brandon Mechele,Belgium,D,sot,0.18,5.56,4.1,0.2217,-0.0417,-0.1882,-0.262,0.28,0.669,SET_PIECE,4,match_level,WATCH,0.0
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Aron Bjonbäck,FF Jaro,D,sot,0.18,5.55,,,,,,0.265,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Diego Lainez,Mexico,F,sot,0.18,5.57,,,,,,0.179,0.566,,3,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Vincent Borden,Galway United,M,sot,0.179,5.58,,,,,,0.179,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Jordy Alcivar,Ecuador,M,sot,0.179,5.58,,,,,,0.393,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Fabian Rieder,Switzerland,M,sot,0.179,5.59,1.9,0.4965,-0.3175,-0.6395,-0.6599,0.229,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Jon Martin,Spain,D,sot,0.179,5.59,,,,,,0.251,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Ivan Šunjić,Bosnia & Herzegovina,M,sot,0.179,5.57,2.95,0.3198,-0.1408,-0.4403,-0.4719,0.214,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Abdukodir Khusanov,Uzbekistan,D,cards,0.179,5.6,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Georgios Kanellopoulos,HJK helsinki,M,sot,0.18,5.57,,,,,,0.237,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Ahmed Alaaeldin,Qatar,F,sot,0.179,5.57,,,,,,0.46,0.566,,3,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Connor Malley,Shamrock Rovers,M,sot,0.179,5.59,,,,,,0.201,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,John Mountney,Bohemians,M,sot,0.179,5.6,,,,,,0.182,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Ivan Šunjić,Bosnia & Herzegovina,M,sot,0.179,5.57,2.95,0.3198,-0.1408,-0.4403,-0.4719,0.214,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Jordy Alcivar,Ecuador,M,sot,0.179,5.58,,,,,,0.393,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Vincent Borden,Galway United,M,sot,0.179,5.58,,,,,,0.179,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Julián Alvarez,Argentina,F,goals,0.179,5.59,2.85,0.331,-0.152,-0.4592,-0.4899,0.647,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Manuel Ugarte,Uruguay,M,sot,0.178,5.62,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Ronan Boyce,Derry City,M,sot,0.178,5.61,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Joel Chima Fujita,Japan,M,sot,0.178,5.62,,,,,,0.213,0.669,MINUTES,4,match_level,WATCH,
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Lucas Digne,France,D,sot,0.178,5.62,3.3,0.2755,-0.0975,-0.3539,-0.4126,0.224,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Boualem Khoukhi,Qatar,D,cards,0.178,5.63,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Ladislav Krejčí,Czechia,D,cards,0.178,5.61,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Guéla Doué,Ivory Coast,D,sot,0.179,5.6,,,,,,0.584,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Fabian Rieder,Switzerland,M,sot,0.179,5.59,1.9,0.4965,-0.3175,-0.6395,-0.6599,0.229,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,John Mountney,Bohemians,M,sot,0.179,5.6,,,,,,0.182,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Connor Malley,Shamrock Rovers,M,sot,0.179,5.59,,,,,,0.201,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Abdukodir Khusanov,Uzbekistan,D,cards,0.179,5.6,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Jon Martin,Spain,D,sot,0.179,5.59,,,,,,0.251,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Dan Burn,England,D,sot,0.178,5.62,3.75,0.2424,-0.0644,-0.2657,-0.3325,0.202,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Boualem Khoukhi,Qatar,D,cards,0.178,5.63,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Lucas Digne,France,D,sot,0.178,5.62,3.3,0.2755,-0.0975,-0.3539,-0.4126,0.224,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Ronan Boyce,Derry City,M,sot,0.178,5.61,,,,,,0.253,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pedro Porro,Spain,D,sot,0.178,5.63,2.45,0.3851,-0.2071,-0.5377,-0.5639,0.252,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Jaroslav Zelený,Czechia,M,sot,0.178,5.62,,,,,,0.238,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Ladislav Krejčí,Czechia,D,cards,0.178,5.61,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Manuel Ugarte,Uruguay,M,sot,0.178,5.62,,,,,,0.253,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Robert Slevin,Galway United,M,sot,0.177,5.66,,,,,,0.242,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Luis Romo,Mexico,M,sot,0.177,5.64,,,,,,0.358,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Douglas James-Taylor,Bohemians,F,goals,0.177,5.65,,,,,,0.756,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Andrey Santos,Brazil,M,cards,0.177,5.66,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pau Cubarsí,Spain,D,sot,0.177,5.64,3.4,0.2674,-0.0904,-0.338,-0.3982,0.241,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Pierre Kalulu,France,D,sot,0.177,5.66,,,,,,0.23,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Erick Sánchez,Mexico,M,sot,0.177,5.66,,,,,,0.168,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Alex Bannon,Derry City,D,sot,0.177,5.66,,,,,,0.609,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Douglas James-Taylor,Bohemians,F,goals,0.177,5.65,,,,,,0.756,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Pau Cubarsí,Spain,D,sot,0.177,5.64,3.4,0.2674,-0.0904,-0.338,-0.3982,0.241,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Andrey Santos,Brazil,M,cards,0.177,5.66,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Pierre Kalulu,France,D,sot,0.177,5.66,,,,,,0.23,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Robert Slevin,Galway United,M,sot,0.177,5.66,,,,,,0.242,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,sot,0.176,5.68,3.95,0.2301,-0.0541,-0.2353,-0.3048,0.276,0.623,,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Douglas James-Taylor,Bohemians,F,goals,0.176,5.68,,,,,,0.756,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Ko Itakura,Japan,D,sot,0.176,5.69,3.75,0.2424,-0.0664,-0.274,-0.34,0.276,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Samir El Mourabet,Morocco,M,sot,0.175,5.72,2.25,0.4193,-0.2443,-0.5826,-0.6062,0.183,0.594,,4,match_level,WATCH,0.0
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Ibrahima Konaté,France,D,sot,0.175,5.72,,,,,,0.235,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Conor Kane,Drogheda United,M,sot,0.175,5.72,,,,,,0.23,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Ibrahima Konaté,France,D,sot,0.175,5.72,,,,,,0.235,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Samir El Mourabet,Morocco,M,sot,0.175,5.72,2.25,0.4193,-0.2443,-0.5826,-0.6062,0.183,0.594,,4,match_level,WATCH,0.0
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Álvaro Fidalgo,Mexico,M,sot,0.175,5.73,,,,,,0.215,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,André,Brazil,M,sot,0.175,5.71,,,,,,0.227,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Andrew Robertson,Scotland,M,sot,0.174,5.75,6.5,0.1338,0.0402,0.3006,0.131,0.258,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Juan Fernando Quintero,Colombia,M,sot,0.174,5.74,,,,,,0.17,0.594,,4,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Akram Afif,Qatar,F,sot,0.174,5.76,1.8,0.5241,-0.3501,-0.668,-0.6868,0.238,0.566,,3,match_level,WATCH,0.0
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Juan Fernando Quintero,Colombia,M,sot,0.174,5.74,,,,,,0.17,0.594,,4,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jude Bellingham,England,M,goals,0.174,5.76,3.1,0.2933,-0.1193,-0.4067,-0.4606,0.628,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Andrew Robertson,Scotland,M,sot,0.174,5.75,6.5,0.1338,0.0402,0.3006,0.131,0.258,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Siphephelo Sithole,South Africa,M,sot,0.173,5.77,,,,,,0.228,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Keith Buckley,Bohemians,M,sot,0.173,5.78,,,,,,0.157,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Owen Lambe,Drogheda United,M,sot,0.173,5.79,,,,,,0.241,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Siphephelo Sithole,South Africa,M,sot,0.173,5.77,,,,,,0.228,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,James Clarke,Bohemians,F,goals,0.172,5.82,,,,,,0.76,0.623,,5,match_level,WATCH,
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Stephen Mallon,Sligo Rovers,M,sot,0.172,5.83,,,,,,0.167,0.594,,4,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Carl Winchester,Derry City,M,sot,0.172,5.83,,,,,,0.249,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,James Clarke,Bohemians,F,goals,0.172,5.82,,,,,,0.76,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Bobby Burns,Galway United,M,sot,0.172,5.81,,,,,,0.264,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Josh Thomas,Drogheda United,F,goals,0.172,5.81,,,,,,0.813,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Leroy Sané,Germany,M,goals,0.172,5.82,,,,,,0.418,0.698,MINUTES,5,match_level,WATCH,
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Ronan Manning,Sligo Rovers,M,sot,0.172,5.82,,,,,,0.202,0.641,MINUTES,3,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Bukayo Saka,England,F,goals,0.172,5.81,2.75,0.3431,-0.1711,-0.4986,-0.527,0.636,0.623,,5,match_level,WATCH,0.0
-2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Niall Morahan,Bohemians,M,sot,0.171,5.84,,,,,,0.227,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Ronan Manning,Sligo Rovers,M,sot,0.172,5.82,,,,,,0.202,0.566,,3,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Jearl Margaritha,Curaçao,F,sot,0.172,5.81,,,,,,0.217,0.594,,4,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Leroy Sané,Germany,M,goals,0.172,5.82,3.9,0.2331,-0.0611,-0.2621,-0.3292,0.418,0.698,MINUTES,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Marcel Ruíz,Mexico,M,sot,0.171,5.85,,,,,,0.244,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Amir Hadžiahmetović,Bosnia & Herzegovina,M,sot,0.171,5.84,3.2,0.2841,-0.1131,-0.3981,-0.4528,0.151,0.566,,3,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Jordan Flores,Bohemians,D,sot,0.171,5.85,,,,,,0.408,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Niall Morahan,Bohemians,M,sot,0.171,5.84,,,,,,0.227,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Ezri Konsa,England,D,sot,0.171,5.84,3.95,0.2301,-0.0591,-0.257,-0.3245,0.265,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Amir Hadžiahmetović,Bosnia & Herzegovina,M,sot,0.171,5.84,3.2,0.2841,-0.1131,-0.3981,-0.4528,0.151,0.566,,3,match_level,WATCH,0.0
 2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Ardon Jashari,Switzerland,M,sot,0.171,5.85,2.65,0.356,-0.185,-0.5197,-0.5469,0.175,0.594,,4,match_level,WATCH,0.0
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Graham Burke,Shamrock Rovers,F,goals,0.17,5.89,,,,,,0.632,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Diogo Dalot,Portugal,D,sot,0.17,5.89,2.4,0.3931,-0.2231,-0.5675,-0.592,0.204,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Borja Iglesias,Spain,F,goals,0.17,5.87,1.57,0.6009,-0.4309,-0.7171,-0.7331,0.671,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Manasse Kusu,FF Jaro,M,sot,0.17,5.9,,,,,,0.23,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Rodrygo,Brazil,F,goals,0.17,5.89,,,,,,0.715,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Jassem Gaber Abdulsallam,Qatar,M,cards,0.17,5.88,,,,,,,0.594,,4,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Paul Doyle,Drogheda United,M,sot,0.17,5.88,,,,,,0.465,0.566,,3,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Borja Iglesias,Spain,F,goals,0.17,5.87,1.62,0.5823,-0.4123,-0.7081,-0.7246,0.671,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Kevin Castaño,Colombia,M,sot,0.17,5.87,,,,,,0.181,0.641,MINUTES,3,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Killian Brouder,Galway United,M,sot,0.17,5.9,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Kyle McDonagh,Sligo Rovers,M,sot,0.169,5.92,,,,,,0.18,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Carlos Harvey,Panama,M,sot,0.169,5.9,3.3,0.2755,-0.1065,-0.3865,-0.4423,0.431,0.623,,5,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Rory Gaffney,Shamrock Rovers,F,goals,0.169,5.9,,,,,,0.665,0.698,MINUTES,5,match_level,WATCH,
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Callum McCowatt,New Zealand,M,sot,0.169,5.93,2.25,0.4193,-0.2503,-0.5969,-0.6198,0.213,0.698,MINUTES,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Abdullah Al-Hamdan,Saudi Arabia,F,sot,0.169,5.92,3.2,0.2841,-0.1151,-0.4051,-0.4592,0.592,0.566,,3,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Paul McMullan,Derry City,M,sot,0.169,5.93,,,,,,0.174,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alejandro Baena,Spain,F,goals,0.169,5.91,2.7,0.3494,-0.1804,-0.5163,-0.5437,0.721,0.623,,5,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Graham Burke,Shamrock Rovers,F,goals,0.17,5.89,,,,,,0.632,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Kevin Castaño,Colombia,M,sot,0.17,5.87,,,,,,0.181,0.566,,3,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Rodrygo,Brazil,F,goals,0.17,5.89,,,,,,0.715,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Diogo Dalot,Portugal,D,sot,0.17,5.89,4.2,0.2165,-0.0465,-0.2146,-0.286,0.204,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Paul Doyle,Drogheda United,M,sot,0.17,5.88,,,,,,0.465,0.641,MINUTES,3,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Mikko Pitkänen,AC Oulu,D,sot,0.169,5.93,,,,,,0.253,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Sami Sipola,FF Jaro,D,sot,0.169,5.93,,,,,,0.282,0.641,SET_PIECE,3,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Cory O'Sullivan,Shamrock Rovers,M,sot,0.169,5.9,,,,,,0.241,0.623,,5,match_level,WATCH,
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Kyle McDonagh,Sligo Rovers,M,sot,0.169,5.92,,,,,,0.18,0.623,,5,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Onni Tiihonen,AC Oulu,M,sot,0.169,5.9,,,,,,0.268,0.566,,3,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Djed Spence,England,D,sot,0.168,5.96,3.4,0.2674,-0.0994,-0.3717,-0.4288,0.221,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,John Mountney,Bohemians,M,sot,0.168,5.96,,,,,,0.182,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Ladislav Krejčí,Czechia,D,sot,0.168,5.96,,,,,,0.721,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Nélson Semedo,Portugal,D,sot,0.168,5.95,2.6,0.3628,-0.1948,-0.537,-0.5632,0.221,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Abdullah Al-Hamdan,Saudi Arabia,F,sot,0.169,5.92,3.2,0.2841,-0.1151,-0.4051,-0.4592,0.592,0.566,,3,match_level,WATCH,0.0
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Callum McCowatt,New Zealand,M,sot,0.169,5.93,2.25,0.4193,-0.2503,-0.5969,-0.6198,0.213,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Paul McMullan,Derry City,M,sot,0.169,5.93,,,,,,0.174,0.698,MINUTES,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Rory Gaffney,Shamrock Rovers,F,goals,0.169,5.9,,,,,,0.665,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Cory O'Sullivan,Shamrock Rovers,M,sot,0.169,5.9,,,,,,0.241,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Carlos Harvey,Panama,M,sot,0.169,5.9,3.3,0.2755,-0.1065,-0.3865,-0.4423,0.431,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Alejandro Baena,Spain,F,goals,0.169,5.91,2.6,0.3628,-0.1938,-0.5342,-0.5606,0.721,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Mohamed Kanno,Saudi Arabia,M,cards,0.168,5.95,4.1,0.2217,-0.0537,-0.2423,-0.3112,,0.594,,4,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Brooklyn Lyons-Foster,HJK helsinki,D,sot,0.167,5.98,,,,,,0.253,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Nélson Semedo,Portugal,D,sot,0.168,5.95,2.9,0.3253,-0.1573,-0.4836,-0.5128,0.221,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Djed Spence,England,D,sot,0.168,5.96,3.4,0.2674,-0.0994,-0.3717,-0.4288,0.221,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Ladislav Krejčí,Czechia,D,sot,0.168,5.96,,,,,,0.721,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,John Mountney,Bohemians,M,sot,0.168,5.96,,,,,,0.182,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Patrick Wimmer,Austria,M,sot,0.167,5.98,3.1,0.2933,-0.1263,-0.4305,-0.4823,0.223,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Seb Quirk,Sligo Rovers,M,sot,0.167,6.0,,,,,,0.211,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Marc Guéhi,England,D,sot,0.167,5.97,3.4,0.2674,-0.1004,-0.3754,-0.4322,0.201,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Hicham Boudaoui,Algeria,M,sot,0.167,6.0,2.6,0.3628,-0.1958,-0.5397,-0.5658,0.239,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Marc Guéhi,England,D,sot,0.167,5.97,3.4,0.2674,-0.1004,-0.3754,-0.4322,0.201,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Cory O'Sullivan,Shamrock Rovers,M,sot,0.167,5.97,,,,,,0.241,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,HJK Helsinki vs KuPS Kuopio,VALUABLE,Brooklyn Lyons-Foster,HJK helsinki,D,sot,0.167,5.98,,,,,,0.253,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Dean Huijsen,Spain,D,sot,0.167,5.98,,,,,,0.389,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Alexis Gutiérrez,Mexico,M,sot,0.166,6.03,,,,,,0.169,0.566,,3,match_level,WATCH,
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Jesse Randall,New Zealand,F,sot,0.166,6.04,2.15,0.4388,-0.2728,-0.6217,-0.6431,0.17,0.594,,4,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,goals,0.166,6.02,,,,,,0.36,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Keith Buckley,Bohemians,M,sot,0.166,6.03,,,,,,0.157,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Carl Winchester,Derry City,M,sot,0.166,6.02,,,,,,0.249,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Kaishu Sano,Japan,M,sot,0.165,6.05,3.7,0.2457,-0.0807,-0.3284,-0.3895,0.241,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Maxence Lacroix,France,D,sot,0.165,6.05,2.65,0.356,-0.191,-0.5365,-0.5627,0.214,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,goals,0.166,6.02,,,,,,0.36,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Alexis Gutiérrez,Mexico,M,sot,0.166,6.03,,,,,,0.169,0.566,,3,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Jesse Randall,New Zealand,F,sot,0.166,6.04,2.15,0.4388,-0.2728,-0.6217,-0.6431,0.17,0.594,,4,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Kadir Barría,Panama,F,sot,0.165,6.07,,,,,,0.184,0.566,,3,match_level,WATCH,
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Maxence Lacroix,France,D,sot,0.165,6.05,2.65,0.356,-0.191,-0.5365,-0.5627,0.214,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Daire Patton,Sligo Rovers,M,sot,0.165,6.06,,,,,,0.186,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Prince Kwabena Adu,Ghana,F,sot,0.165,6.04,2.7,0.3494,-0.1844,-0.5278,-0.5545,0.216,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Cristhian Mosquera,Spain,D,sot,0.165,6.07,,,,,,0.241,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Anis Ben Slimane,Tunisia,F,sot,0.165,6.07,,,,,,0.203,0.698,MINUTES,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Douglas James-Taylor,Drogheda United,F,goals,0.164,6.09,,,,,,0.756,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Sander Berge,Norway,M,sot,0.164,6.08,5.8,0.1499,0.0141,0.0939,-0.0488,0.226,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Douglas James-Taylor,Drogheda United,F,goals,0.164,6.09,,,,,,0.756,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Amad Diallo,Ivory Coast,F,goals,0.164,6.1,2.1,0.4492,-0.2852,-0.6349,-0.6556,0.623,0.623,,5,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Greg Cunningham,Galway United,M,sot,0.164,6.09,,,,,,0.222,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,William Saliba,France,D,sot,0.163,6.15,3.75,0.2424,-0.0794,-0.3276,-0.3887,0.215,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Adam Masina,Morocco,D,sot,0.163,6.15,,,,,,0.241,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Idrissa Gana Gueye,Senegal,M,cards,0.163,6.14,4.0,0.2273,-0.0643,-0.2828,-0.348,,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Idrissa Gueye,Senegal,M,cards,0.163,6.14,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ismaël Bennacer,Algeria,M,sot,0.163,6.13,,,,,,0.193,0.698,MINUTES,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Nicolas Seiwald,Austria,M,cards,0.163,6.14,5.0,0.1818,-0.0188,-0.1035,-0.185,,0.623,,5,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Axel Piesold,Galway United,M,sot,0.163,6.13,,,,,,0.179,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Yang Hyun-Jun,South Korea,F,sot,0.163,6.12,,,,,,0.579,0.594,,4,match_level,WATCH,
-2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Kerfala Cissoko,FF Jaro,F,goals,0.163,6.14,,,,,,0.687,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Nicolas Seiwald,Austria,M,cards,0.163,6.14,5.0,0.1818,-0.0188,-0.1035,-0.185,,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,William Saliba,France,D,sot,0.163,6.15,3.75,0.2424,-0.0794,-0.3276,-0.3887,0.215,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Axel Piesold,Galway United,M,sot,0.163,6.13,,,,,,0.179,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Kristian Thorstvedt,Norway,M,sot,0.163,6.12,2.0,0.4717,-0.3087,-0.6544,-0.674,0.183,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ismaël Bennacer,Algeria,M,sot,0.163,6.13,,,,,,0.193,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Myles Lewis-Skelly,England,D,sot,0.163,6.13,,,,,,0.219,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Idrissa Gueye,Senegal,M,cards,0.163,6.14,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Kerfala Cissoko,FF Jaro,F,goals,0.163,6.14,,,,,,0.687,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Idrissa Gana Gueye,Senegal,M,cards,0.163,6.14,4.0,0.2273,-0.0643,-0.2828,-0.348,,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Emiliano Martínez,Uruguay,M,sot,0.163,6.14,,,,,,0.193,0.669,MINUTES,4,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Aron Bjonbäck,FF Jaro,D,sot,0.163,6.15,,,,,,0.265,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Kristian Thorstvedt,Norway,M,sot,0.163,6.12,2.0,0.4717,-0.3087,-0.6544,-0.674,0.183,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Danley Jean Jacques,Haiti,M,cards,0.162,6.17,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Paul McMullan,Derry City,M,sot,0.162,6.18,,,,,,0.174,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Jordan Flores,Bohemians,D,sot,0.162,6.18,,,,,,0.408,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Conor Keeley,Drogheda United,D,cards,0.162,6.17,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Paul McMullan,Derry City,M,sot,0.162,6.18,,,,,,0.174,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Rafik Belghali,Algeria,M,sot,0.162,6.17,3.9,0.2331,-0.0711,-0.305,-0.3682,0.241,0.623,,5,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Danley Jean Jacques,Haiti,M,cards,0.162,6.17,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,cards,0.161,6.23,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Breel Embolo,Switzerland,F,goals,0.161,6.2,2.9,0.3253,-0.1643,-0.5051,-0.5331,0.699,0.623,,5,match_level,WATCH,0.0
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Patrick McClean,Sligo Rovers,D,sot,0.161,6.2,,,,,,0.264,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Dayot Upamecano,France,D,sot,0.161,6.22,3.3,0.2755,-0.1145,-0.4156,-0.4687,0.217,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,cards,0.161,6.23,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Thomas Partey,Ghana,M,cards,0.161,6.23,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Breel Embolo,Switzerland,F,goals,0.161,6.2,2.9,0.3253,-0.1643,-0.5051,-0.5331,0.699,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Ángelo Preciado,Ecuador,M,sot,0.161,6.21,,,,,,0.187,0.623,,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Moses Dyer,Galway United,F,goals,0.161,6.2,,,,,,0.634,0.594,,4,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Ángelo Preciado,Ecuador,M,sot,0.161,6.21,,,,,,0.187,0.698,MINUTES,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Robin Hranáč,Czechia,D,cards,0.16,6.27,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Carney Chukwuemeka,Austria,M,sot,0.16,6.26,3.1,0.2933,-0.1333,-0.4544,-0.504,0.347,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Thomas Partey,Ghana,M,cards,0.161,6.23,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Teboho Mokoena,South Africa,M,cards,0.16,6.24,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Robin Hranáč,Czechia,D,cards,0.16,6.27,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Evan Ndicka,Ivory Coast,D,sot,0.16,6.25,,,,,,0.23,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Sami Sipola,FF Jaro,D,sot,0.16,6.25,,,,,,0.282,0.641,SET_PIECE,3,match_level,WATCH,
-2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Zeno Debast,Belgium,D,sot,0.159,6.27,4.6,0.1976,-0.0386,-0.1955,-0.2686,0.435,0.594,,4,match_level,WATCH,0.0
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Patrick Berg,Norway,M,sot,0.159,6.29,2.7,0.3494,-0.1904,-0.5449,-0.5707,0.186,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Carney Chukwuemeka,Austria,M,sot,0.16,6.26,3.1,0.2933,-0.1333,-0.4544,-0.504,0.347,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Clement Akpa,Ivory Coast,D,sot,0.16,6.27,,,,,,0.229,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Moisés Caicedo,Ecuador,M,sot,0.159,6.28,,,,,,0.26,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Patrick Berg,Norway,M,sot,0.159,6.29,2.7,0.3494,-0.1904,-0.5449,-0.5707,0.186,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Ghislain Konan,Ivory Coast,D,sot,0.159,6.3,,,,,,0.217,0.698,MINUTES,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Bobby Burns,Galway United,M,cards,0.159,6.29,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Ali Ahmed,Canada,M,sot,0.159,6.31,2.0,0.4717,-0.3127,-0.6629,-0.682,0.209,0.623,,5,match_level,WATCH,0.0
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Ngal'ayel Mukau,Congo DR,M,sot,0.159,6.29,,,,,,0.214,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Éric Davis,Panama,M,sot,0.159,6.3,,,,,,0.474,0.566,,3,match_level,WATCH,
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ramy Bensebaini,Algeria,D,cards,0.159,6.29,3.8,0.2392,-0.0802,-0.3354,-0.3958,,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Zeno Debast,Belgium,D,sot,0.159,6.27,4.6,0.1976,-0.0386,-0.1955,-0.2686,0.435,0.594,,4,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Odilon Kossounou,Ivory Coast,D,sot,0.159,6.28,,,,,,0.217,0.623,,5,match_level,WATCH,
 2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Sergio Gómez,Spain,D,sot,0.159,6.3,,,,,,0.199,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Ali Ahmed,Canada,M,sot,0.159,6.31,2.0,0.4717,-0.3127,-0.6629,-0.682,0.209,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Éric Davis,Panama,M,sot,0.159,6.3,,,,,,0.474,0.566,,3,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Estêvão,Brazil,F,goals,0.159,6.29,,,,,,0.693,0.594,,4,match_level,WATCH,
 2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Mohanad Lasheen,Egypt,M,cards,0.158,6.33,5.5,0.1581,-0.0001,-0.0007,-0.131,,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Shurandy Sambo,Curaçao,D,cards,0.158,6.31,,,,,,,0.594,,4,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Themba Zwane,South Africa,M,sot,0.158,6.35,2.5,0.3774,-0.2194,-0.5813,-0.605,0.191,0.594,,4,match_level,WATCH,0.0
 2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Nabil Bentaleb,Algeria,M,sot,0.158,6.33,2.7,0.3494,-0.1914,-0.5478,-0.5734,0.245,0.623,,5,match_level,WATCH,0.0
 2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Thomas Meunier,Belgium,D,sot,0.158,6.33,3.7,0.2457,-0.0877,-0.3569,-0.4154,0.21,0.772,SET_PIECE|MINUTES,5,match_level,WATCH,0.0
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Themba Zwane,South Africa,M,sot,0.158,6.35,2.5,0.3774,-0.2194,-0.5813,-0.605,0.191,0.594,,4,match_level,WATCH,0.0
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Christopher Nkunku,France,M,goals,0.158,6.33,,,,,,0.62,0.566,,3,match_level,WATCH,
 2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Joni Remesaho,FF Jaro,M,sot,0.158,6.31,,,,,,0.146,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Juan Foyth,Argentina,D,sot,0.158,6.32,,,,,,0.264,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Jonathan Osorio,Canada,M,sot,0.157,6.36,2.75,0.3431,-0.1861,-0.5423,-0.5682,0.389,0.594,,4,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Chadi Riad,Morocco,D,sot,0.157,6.36,4.0,0.2273,-0.0703,-0.3092,-0.372,0.232,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Obed Vargas,Mexico,M,sot,0.157,6.38,,,,,,0.19,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Malick Fofana,Belgium,F,goals,0.157,6.37,,,,,,0.675,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Reece James,England,D,sot,0.157,6.38,3.1,0.2933,-0.1363,-0.4646,-0.5133,0.219,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Erik Lira,Mexico,M,sot,0.157,6.37,,,,,,0.203,0.698,MINUTES,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Duckens Nazon,Haiti,F,sot,0.157,6.36,2.0,0.4717,-0.3147,-0.6672,-0.686,0.609,0.594,,4,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Christopher Nkunku,France,M,goals,0.158,6.33,,,,,,0.62,0.566,,3,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Kevin Danso,Austria,D,cards,0.157,6.35,3.5,0.2597,-0.1027,-0.3955,-0.4505,,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Al-Hashmi Al-Hussain,Qatar,D,cards,0.157,6.35,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Duckens Nazon,Haiti,F,sot,0.157,6.36,2.0,0.4717,-0.3147,-0.6672,-0.686,0.609,0.594,,4,match_level,WATCH,0.0
 2026-06-26,Ireland Premier Division,Bohemians vs St Patricks Athletic,SNIPER,Dayle Rooney,Bohemians,F,goals,0.157,6.39,,,,,,0.683,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Al-Hashmi Al-Hussain,Qatar,D,cards,0.157,6.35,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-24,World Cup,Switzerland vs Canada,PROP_LEAGUE,Jonathan Osorio,Canada,M,sot,0.157,6.36,2.75,0.3431,-0.1861,-0.5423,-0.5682,0.389,0.594,,4,match_level,WATCH,0.0
+2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Malick Fofana,Belgium,F,goals,0.157,6.37,,,,,,0.675,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Erik Lira,Mexico,M,sot,0.157,6.37,,,,,,0.203,0.698,MINUTES,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Obed Vargas,Mexico,M,sot,0.157,6.38,,,,,,0.19,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Chadi Riad,Morocco,D,sot,0.157,6.36,4.0,0.2273,-0.0703,-0.3092,-0.372,0.232,0.698,SET_PIECE,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Gonçalo Ramos,Portugal,F,goals,0.157,6.36,,,,,,0.666,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Neil El Aynaoui,Morocco,M,cards,0.156,6.41,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Noah Sadiki,Congo DR,M,sot,0.156,6.4,,,,,,0.223,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Noussair Mazraoui,Morocco,D,sot,0.156,6.43,4.7,0.1934,-0.0374,-0.1935,-0.2668,0.224,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Reece James,England,D,sot,0.157,6.38,3.1,0.2933,-0.1363,-0.4646,-0.5133,0.219,0.623,,5,match_level,WATCH,0.0
+2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Agustín Canobbio,Uruguay,M,cards,0.156,6.42,,,,,,,0.566,,3,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Vinícius Júnior,Brazil,F,goals,0.156,6.41,2.2,0.4288,-0.2728,-0.6362,-0.6568,0.704,0.623,,5,match_level,WATCH,0.0
 2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Nikola Moro,Croatia,M,sot,0.156,6.39,2.65,0.356,-0.2,-0.5618,-0.5866,0.193,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Fabinho,Brazil,M,sot,0.156,6.4,,,,,,0.184,0.566,,3,match_level,WATCH,
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Conor Reynolds,Sligo Rovers,M,sot,0.156,6.39,,,,,,0.192,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Uruguay vs Cape Verde Islands,PROP_LEAGUE,Agustín Canobbio,Uruguay,M,cards,0.156,6.42,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Ridle Baku,Germany,D,sot,0.156,6.42,,,,,,0.538,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Fabinho,Brazil,M,sot,0.156,6.4,,,,,,0.184,0.566,,3,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Noah Sadiki,Congo DR,M,sot,0.156,6.4,,,,,,0.223,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Samuel Moutoussamy,Congo DR,M,cards,0.156,6.43,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Cucho Hernández,Colombia,F,goals,0.155,6.44,,,,,,0.478,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Neil El Aynaoui,Morocco,M,cards,0.156,6.41,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Noussair Mazraoui,Morocco,D,sot,0.156,6.43,4.7,0.1934,-0.0374,-0.1935,-0.2668,0.224,0.698,SET_PIECE,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Ridle Baku,Germany,D,sot,0.156,6.42,,,,,,0.538,0.623,,5,match_level,WATCH,
 2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Ciaron Harkin,Sligo Rovers,M,sot,0.155,6.45,,,,,,0.185,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Kevin Holt,Derry City,D,cards,0.155,6.43,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Edson Álvarez,Mexico,M,sot,0.155,6.45,,,,,,0.19,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Bremer,Brazil,D,sot,0.155,6.45,,,,,,0.505,0.641,MINUTES,3,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Joshua Kimmich,Germany,D,sot,0.155,6.47,,,,,,0.25,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Pedro Neto,Portugal,F,goals,0.155,6.46,3.7,0.2457,-0.0907,-0.3691,-0.4265,0.642,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Lee Grace,Shamrock Rovers,D,sot,0.155,6.47,,,,,,0.239,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Cucho Hernández,Colombia,F,goals,0.155,6.44,,,,,,0.478,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,goals,0.155,6.47,,,,,,0.728,0.623,,5,match_level,WATCH,
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Jean-Ricner Bellegarde,Haiti,M,sot,0.155,6.45,,,,,,0.287,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Julian Ryerson,Norway,D,sot,0.155,6.47,4.75,0.1914,-0.0364,-0.1901,-0.2638,0.231,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Štěpán Chaloupek,Czechia,D,cards,0.155,6.44,,,,,,,0.566,,3,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Ayoub Al Oui,Qatar,D,cards,0.155,6.44,,,,,,,0.594,,4,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Tarik Muharemović,Bosnia & Herzegovina,D,sot,0.155,6.44,,,,,,0.253,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Norway vs Senegal,PROP_LEAGUE,Julian Ryerson,Norway,D,sot,0.155,6.47,4.75,0.1914,-0.0364,-0.1901,-0.2638,0.231,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Joshua Kimmich,Germany,D,sot,0.155,6.47,,,,,,0.25,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Lee Grace,Shamrock Rovers,D,sot,0.155,6.47,,,,,,0.239,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Jean-Ricner Bellegarde,Haiti,M,sot,0.155,6.45,,,,,,0.287,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Edson Álvarez,Mexico,M,sot,0.155,6.45,,,,,,0.19,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Czechia vs Mexico,PROP_LEAGUE,Štěpán Chaloupek,Czechia,D,cards,0.155,6.44,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Kevin Holt,Derry City,D,cards,0.155,6.43,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Stefan Posch,Austria,D,cards,0.155,6.47,3.05,0.2981,-0.1431,-0.48,-0.5272,,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Pedro Neto,Portugal,F,goals,0.155,6.46,3.7,0.2457,-0.0907,-0.3691,-0.4265,0.642,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Marko Stamenić,New Zealand,M,cards,0.155,6.47,3.2,0.2841,-0.1291,-0.4544,-0.504,,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Bremer,Brazil,D,sot,0.155,6.45,,,,,,0.505,0.641,MINUTES,3,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Kevin Holt,Derry City,D,sot,0.155,6.46,,,,,,0.424,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,goals,0.155,6.47,,,,,,0.728,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Shane Ferguson,Derry City,M,sot,0.155,6.44,,,,,,0.168,0.594,,4,match_level,WATCH,
 2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Lucas Hernández,France,D,sot,0.155,6.44,3.3,0.2755,-0.1205,-0.4374,-0.4885,0.222,0.698,SET_PIECE,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Wataru Endo,Japan,M,sot,0.155,6.47,,,,,,0.197,0.623,,5,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Kevin Holt,Derry City,D,sot,0.155,6.46,,,,,,0.424,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Marko Stamenić,New Zealand,M,cards,0.155,6.47,3.2,0.2841,-0.1291,-0.4544,-0.504,,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Stefan Posch,Austria,D,cards,0.155,6.47,3.05,0.2981,-0.1431,-0.48,-0.5272,,0.698,MINUTES,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Shane Ferguson,Derry City,M,sot,0.155,6.44,,,,,,0.168,0.594,,4,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Felix Nmecha,Germany,M,cards,0.154,6.48,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pedro Vite,Ecuador,M,sot,0.154,6.49,,,,,,0.271,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Matias Ojala,AC Oulu,M,sot,0.154,6.48,,,,,,0.17,0.594,,4,match_level,WATCH,
+2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Arthur Masuaku,Congo DR,D,cards,0.154,6.48,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Ross Tierney,Bohemians,M,cards,0.154,6.51,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Angelo Stiller,Germany,M,sot,0.154,6.49,,,,,,0.19,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Lee Grace,Shamrock Rovers,D,sot,0.154,6.5,,,,,,0.239,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Lewis Ferguson,Scotland,M,cards,0.154,6.5,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Casemiro,Brazil,M,cards,0.154,6.5,,,,,,,0.698,MINUTES,5,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pedro Vite,Ecuador,M,sot,0.154,6.49,,,,,,0.271,0.623,,5,match_level,WATCH,
-2026-06-24,World Cup,Colombia vs Congo DR,PROP_LEAGUE,Arthur Masuaku,Congo DR,D,cards,0.154,6.48,,,,,,,0.566,,3,match_level,WATCH,
 2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Siyabonga Ngezana,South Africa,D,cards,0.154,6.51,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Felix Nmecha,Germany,M,cards,0.154,6.48,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Matias Ojala,AC Oulu,M,sot,0.154,6.48,,,,,,0.17,0.594,,4,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Ross Tierney,Bohemians,M,cards,0.154,6.51,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Khéphren Thuram,France,M,cards,0.154,6.5,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Dan Cleary,Shamrock Rovers,D,sot,0.154,6.51,,,,,,0.248,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Lee Grace,Shamrock Rovers,D,sot,0.154,6.5,,,,,,0.239,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Jonas Adjei Adjetey,Ghana,D,cards,0.154,6.5,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Angelo Stiller,Germany,M,sot,0.154,6.49,,,,,,0.19,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Onni Tiihonen,AC Oulu,M,cards,0.153,6.55,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Moisés Caicedo,Ecuador,M,cards,0.153,6.53,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Carl Winchester,Derry City,M,cards,0.153,6.54,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Romelu Lukaku,Belgium,F,goals,0.153,6.55,2.42,0.3898,-0.2368,-0.6075,-0.6297,0.629,0.623,,5,match_level,WATCH,0.0
-2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Anass Salah-Eddine,Morocco,D,sot,0.153,6.54,2.8,0.3369,-0.1839,-0.5459,-0.5716,0.185,0.669,SET_PIECE,4,match_level,WATCH,0.0
+2026-06-22,World Cup,France vs Iraq,PROP_LEAGUE,Khéphren Thuram,France,M,cards,0.154,6.5,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Issa Diop,Morocco,D,sot,0.153,6.53,4.5,0.202,-0.049,-0.2426,-0.3115,0.226,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Jackson Porozo,Ecuador,D,cards,0.153,6.54,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Saud Abdulhamid,Saudi Arabia,D,cards,0.153,6.53,4.8,0.1894,-0.0364,-0.1922,-0.2656,,0.566,,3,match_level,WATCH,0.0
+2026-06-24,World Cup,Morocco vs Haiti,PROP_LEAGUE,Anass Salah-Eddine,Morocco,D,sot,0.153,6.54,2.8,0.3369,-0.1839,-0.5459,-0.5716,0.185,0.669,SET_PIECE,4,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Moisés Caicedo,Ecuador,M,cards,0.153,6.53,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Konrad Laimer,Austria,M,sot,0.153,6.52,3.9,0.2331,-0.0801,-0.3436,-0.4033,0.232,0.623,,5,match_level,WATCH,0.0
-2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Mohamed Hany,Egypt,M,sot,0.153,6.55,4.7,0.1934,-0.0404,-0.209,-0.2809,0.228,0.623,,5,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Carl Winchester,Derry City,M,cards,0.153,6.54,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Eberechi Eze,England,F,goals,0.153,6.53,3.6,0.2525,-0.0995,-0.3941,-0.4492,0.661,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Julius Körkkö,AC Oulu,F,goals,0.152,6.56,,,,,,0.724,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Jackson Porozo,Ecuador,D,cards,0.153,6.54,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-23,Finland Veikkausliiga,VPS Vaasa vs AC Oulu,VALUABLE,Onni Tiihonen,AC Oulu,M,cards,0.153,6.55,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Saud Abdulhamid,Saudi Arabia,D,cards,0.153,6.53,4.8,0.1894,-0.0364,-0.1922,-0.2656,,0.566,,3,match_level,WATCH,0.0
+2026-06-21,World Cup,Belgium vs Iran,PROP_LEAGUE,Romelu Lukaku,Belgium,F,goals,0.153,6.55,2.42,0.3898,-0.2368,-0.6075,-0.6297,0.629,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,New Zealand vs Egypt,PROP_LEAGUE,Mohamed Hany,Egypt,M,sot,0.153,6.55,4.7,0.1934,-0.0404,-0.209,-0.2809,0.228,0.623,,5,match_level,WATCH,0.0
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Nico Schlotterbeck,Germany,D,cards,0.152,6.58,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Brandon Thomas-Asante,Ghana,F,sot,0.152,6.58,2.95,0.3198,-0.1678,-0.5247,-0.5516,0.22,0.623,,5,match_level,WATCH,0.0
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Tino Livramento,England,D,sot,0.152,6.59,,,,,,0.223,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Valentino Livramento,England,D,sot,0.152,6.59,,,,,,0.223,0.698,SET_PIECE,5,match_level,WATCH,
-2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Myeong-jae Lee,South Korea,M,cards,0.152,6.57,,,,,,,0.594,,4,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marcel Sabitzer,Austria,M,cards,0.152,6.6,4.5,0.202,-0.05,-0.2476,-0.316,,0.623,,5,match_level,WATCH,0.0
-2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pedro Vite,Ecuador,M,cards,0.152,6.58,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Dan Cleary,Shamrock Rovers,D,sot,0.152,6.58,,,,,,0.248,0.623,,5,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Ronan Boyce,Derry City,M,cards,0.152,6.58,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Kristijan Jakić,Croatia,M,cards,0.152,6.59,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,Léo Pereira,Brazil,D,cards,0.152,6.58,,,,,,,0.566,,3,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Ronan Boyce,Derry City,M,cards,0.152,6.58,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,South Africa vs South Korea,PROP_LEAGUE,Myeong-jae Lee,South Korea,M,cards,0.152,6.57,,,,,,,0.594,,4,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Evann Guessand,Ivory Coast,F,goals,0.152,6.56,1.91,0.4939,-0.3419,-0.6923,-0.7097,0.663,0.623,,5,match_level,WATCH,0.0
+2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Pedro Vite,Ecuador,M,cards,0.152,6.58,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marcel Sabitzer,Austria,M,cards,0.152,6.6,4.5,0.202,-0.05,-0.2476,-0.316,,0.623,,5,match_level,WATCH,0.0
+2026-06-26,Ireland Premier Division,Shamrock Rovers vs Galway United,VALUABLE,Dan Cleary,Shamrock Rovers,D,sot,0.152,6.58,,,,,,0.248,0.623,,5,match_level,WATCH,
 2026-06-25,World Cup,Ecuador vs Germany,PROP_LEAGUE,Anton Stach,Germany,M,cards,0.152,6.58,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Musab Al Juwayr,Saudi Arabia,M,cards,0.151,6.62,,,,,,,0.594,,4,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Dawson Devoy,Bohemians,M,cards,0.151,6.64,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Amir Murillo,Panama,M,sot,0.151,6.64,,,,,,0.248,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Paul Wanner,Austria,M,sot,0.151,6.64,2.6,0.3628,-0.2118,-0.5838,-0.6074,0.185,0.623,,5,match_level,WATCH,0.0
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Kaishu Sano,Japan,M,cards,0.151,6.62,5.75,0.1512,-0.0002,-0.0015,-0.1318,,0.623,,5,match_level,WATCH,0.0
-2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Jad Hakiki,Sligo Rovers,M,cards,0.151,6.61,,,,,,,0.623,,5,match_level,WATCH,
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Philipp Lienhart,Austria,D,cards,0.151,6.61,4.0,0.2273,-0.0763,-0.3356,-0.396,,0.623,,5,match_level,WATCH,0.0
-2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Robin Polley,FF Jaro,D,sot,0.151,6.64,,,,,,0.179,0.566,,3,match_level,WATCH,
-2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ramiz Zerrouki,Algeria,M,sot,0.151,6.6,2.7,0.3494,-0.1984,-0.5678,-0.5923,0.175,0.566,,3,match_level,WATCH,0.0
-2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marco Friedl,Austria,D,cards,0.151,6.61,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Tino Livramento,England,D,sot,0.152,6.59,,,,,,0.223,0.698,SET_PIECE,5,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Brandon Thomas-Asante,Ghana,F,sot,0.152,6.58,2.95,0.3198,-0.1678,-0.5247,-0.5516,0.22,0.623,,5,match_level,WATCH,0.0
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Kristijan Jakić,Croatia,M,cards,0.152,6.59,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-27,Finland Veikkausliiga,AC Oulu vs FC Lahti,VALUABLE,Julius Körkkö,AC Oulu,F,goals,0.152,6.56,,,,,,0.724,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,England vs Ghana,PROP_LEAGUE,Valentino Livramento,England,D,sot,0.152,6.59,,,,,,0.223,0.698,SET_PIECE,5,match_level,WATCH,
 2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Mark Connolly,Derry City,D,sot,0.151,6.63,,,,,,0.214,0.698,MINUTES,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Paul Wanner,Austria,M,sot,0.151,6.64,2.6,0.3628,-0.2118,-0.5838,-0.6074,0.185,0.623,,5,match_level,WATCH,0.0
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Marco Friedl,Austria,D,cards,0.151,6.61,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-22,Ireland Premier Division,Shelbourne Dublin vs Bohemians,SNIPER,Dawson Devoy,Bohemians,M,cards,0.151,6.64,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-22,World Cup,Argentina vs Austria,PROP_LEAGUE,Philipp Lienhart,Austria,D,cards,0.151,6.61,4.0,0.2273,-0.0763,-0.3356,-0.396,,0.623,,5,match_level,WATCH,0.0
+2026-06-27,Ireland Premier Division,Sligo Rovers vs Shelbourne Dublin,VALUABLE,Jad Hakiki,Sligo Rovers,M,cards,0.151,6.61,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Panama vs Croatia,PROP_LEAGUE,Amir Murillo,Panama,M,sot,0.151,6.64,,,,,,0.248,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Jordan vs Algeria,PROP_LEAGUE,Ramiz Zerrouki,Algeria,M,sot,0.151,6.6,2.7,0.3494,-0.1984,-0.5678,-0.5923,0.175,0.566,,3,match_level,WATCH,0.0
 2026-06-27,Finland Veikkausliiga,TPS Turku vs Jaro,VALUABLE,Kerfala Cissoko,FF Jaro,F,goals,0.151,6.64,,,,,,0.687,0.623,,5,match_level,WATCH,
-2026-06-21,World Cup,Tunisia vs Japan,PROP_LEAGUE,Koki Ogawa,Japan,F,goals,0.15,6.66,3.0,0.3145,-0.1645,-0.523,-0.55,0.625,0.623,,5,match_level,WATCH,0.0
-2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Aaron Harper-Bailey,Drogheda United,D,cards,0.15,6.65,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Sadou Diallo,Derry City,M,cards,0.15,6.65,,,,,,,0.623,,5,match_level,WATCH,
+2026-06-25,World Cup,Curaçao vs Ivory Coast,PROP_LEAGUE,Ousmane Diomande,Ivory Coast,D,sot,0.151,6.63,,,,,,0.183,0.566,,3,match_level,WATCH,
+2026-06-23,Finland Veikkausliiga,Jaro vs IF Gnistan,VALUABLE,Robin Polley,FF Jaro,D,sot,0.151,6.64,,,,,,0.179,0.566,,3,match_level,WATCH,
+2026-06-21,World Cup,Spain vs Saudi Arabia,PROP_LEAGUE,Musab Al Juwayr,Saudi Arabia,M,cards,0.151,6.62,,,,,,,0.594,,4,match_level,WATCH,
 2026-06-24,World Cup,Bosnia & Herzegovina vs Qatar,PROP_LEAGUE,Issa Laye,Qatar,M,cards,0.15,6.65,,,,,,,0.566,,3,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rustam Ashurmatov,Uzbekistan,D,cards,0.15,6.65,,,,,,,0.594,,4,match_level,WATCH,
-2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Tomás Araújo,Portugal,D,sot,0.15,6.67,3.5,0.2597,-0.1097,-0.4225,-0.475,0.197,0.594,,4,match_level,WATCH,0.0
+2026-06-22,Ireland Premier Division,Shamrock Rovers vs Derry City,SNIPER,Sadou Diallo,Derry City,M,cards,0.15,6.65,,,,,,,0.623,,5,match_level,WATCH,
 2026-06-24,World Cup,Scotland vs Brazil,PROP_LEAGUE,João Pedro,Brazil,F,goals,0.15,6.66,,,,,,0.63,0.623,,5,match_level,WATCH,
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Tomás Araújo,Portugal,D,sot,0.15,6.67,3.8,0.2392,-0.0892,-0.373,-0.43,0.197,0.594,,4,match_level,WATCH,0.0
+2026-06-23,World Cup,Portugal vs Uzbekistan,PROP_LEAGUE,Rustam Ashurmatov,Uzbekistan,D,cards,0.15,6.65,,,,,,,0.594,,4,match_level,WATCH,
+2026-06-26,Ireland Premier Division,Derry City vs Drogheda United,SNIPER,Aaron Harper-Bailey,Drogheda United,D,cards,0.15,6.65,,,,,,,0.566,,3,match_level,WATCH,
