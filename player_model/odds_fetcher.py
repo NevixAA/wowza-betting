@@ -5,9 +5,14 @@ Fetches player-level prop odds from The Odds API and returns a dict
 compatible with enrich_with_odds(): {"PlayerName|market": best_decimal_odds}
 
 Markets fetched:
-  goals  → player_goal_scorer_anytime   (anytime scorer, price > 1)
-  sot    → player_shots_on_target       (Over 0.5 = at least 1 SOT)
-  cards  → player_to_receive_card       (to receive a card)
+  goals  → player_goal_scorer_anytime   (1+ goals)
+  goals2 → player_to_score_2_or_more    (2+ goals)
+  goals3 → player_to_score_hat_trick    (hat trick, 3+ goals)
+  sot    → player_shots_on_target       (Over 0.5)
+  sot2   → player_shots_on_target       (Over 1.5)
+  sot3   → player_shots_on_target       (Over 2.5)
+  sot4   → player_shots_on_target       (Over 3.5)
+  cards  → player_to_receive_card
   assists → not available on Odds API; skipped
 
 Cost: 1 API call per event (events list is free).
@@ -26,12 +31,19 @@ import requests
 
 _BASE = "https://api.the-odds-api.com/v4"
 
-# Maps our market names → Odds API market key + how to pick the outcome
+# Maps our market names → Odds API market key + Over point (None = binary yes/no)
 _MARKET_MAP = {
-    "goals":  ("player_goal_scorer_anytime", None),       # name=Yes, use price directly
-    "sot":    ("player_shots_on_target",     0.5),        # Over point=0.5 only
-    "cards":  ("player_to_receive_card",     None),       # name=Yes
+    "goals":   ("player_goal_scorer_anytime",  None),  # 1+ goals
+    "goals2":  ("player_to_score_2_or_more",   None),  # 2+ goals
+    "goals3":  ("player_to_score_hat_trick",   None),  # hat trick
+    "sot":     ("player_shots_on_target",      0.5),   # 1+ SOT
+    "sot2":    ("player_shots_on_target",      1.5),   # 2+ SOT
+    "sot3":    ("player_shots_on_target",      2.5),   # 3+ SOT
+    "sot4":    ("player_shots_on_target",      3.5),   # 4+ SOT
+    "cards":   ("player_to_receive_card",      None),  # carded
 }
+# Unique API market keys to request in one call (avoids requesting same key multiple times)
+_API_MARKETS_STR = ",".join(dict.fromkeys(v[0] for v in _MARKET_MAP.values()))
 
 # Odds API sport keys for our prop leagues
 PROP_SPORT_KEYS = {
@@ -169,7 +181,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                     pass
 
             if bookmakers is None:
-                api_markets = ",".join(v[0] for v in _MARKET_MAP.values())
+                api_markets = _API_MARKETS_STR
                 data = _get(
                     f"sports/{sport_key}/events/{event_id}/odds",
                     {"regions": "eu", "markets": api_markets, "oddsFormat": "decimal"},

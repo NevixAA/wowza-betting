@@ -1,0 +1,27 @@
+{
+  "logistic": {
+    "accuracy": 0.7149,
+    "auc": 0.5396,
+    "log_loss": 0.59509,
+    "n_train": 20070,
+    "n_cal": 3542,
+    "n_test": 5903
+  },
+  "gradient_boost": {
+    "accuracy": 0.7095,
+    "auc": 0.5314,
+    "log_loss": 0.60321,
+    "n_train": 20070,
+    "n_cal": 3542,
+    "n_test": 5903
+  },
+  "lightgbm": {
+    "accuracy": 0.7151,
+    "auc": 0.5358,
+    "log_loss": 0.59884,
+    "n_train": 20070,
+    "n_cal": 3542,
+    "n_test": 5903
+  },
+  "__meta__": {}
+}

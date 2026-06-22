@@ -27,7 +27,7 @@ sys.path.insert(0, str(_v9))
 from player_model import config
 from player_model.data_fetcher import (
     collect_history, collect_match_history, collect_national_team_history,
-    fetch_all_player_season_stats,
+    fetch_all_player_season_stats, fetch_lineup, fetch_current_squad, fetch_league_teams,
     FBREF_LEAGUES, EUROPEAN_CUPS, APIFOOTBALL_LEAGUES,
 )
 from player_model.feature_engineering import build_features
@@ -42,10 +42,15 @@ HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 # ── Phase 2: Collect ──────────────────────────────────────────────────────────
 
 def mode_collect(extended: bool = False, last_n: int = 100) -> None:
-    leagues = {**APIFOOTBALL_LEAGUES, **EUROPEAN_CUPS} if extended else APIFOOTBALL_LEAGUES
-    label = "core + European cups" if extended else "core leagues only"
-    print(f"[collect] Fetching per-match player stats ({label}, last {last_n} fixtures/league)...")
-    rows = collect_match_history(leagues=leagues, last_n=last_n)
+    if extended:
+        # Extended mode: add European cups on top of COLLECT_SEASONS
+        print(f"[collect] Fetching per-match player stats (COLLECT_SEASONS + European cups)...")
+        rows = collect_match_history()  # core multi-season
+        extra = collect_match_history(leagues=EUROPEAN_CUPS, last_n=last_n)
+        rows = rows + extra
+    else:
+        print("[collect] Fetching per-match player stats (COLLECT_SEASONS: 2024+2025 per league)...")
+        rows = collect_match_history()  # uses COLLECT_SEASONS — no last_n needed
     if not rows:
         print("[collect] No data — FBref may be rate-limiting. Try again in a few minutes.")
         return
@@ -58,11 +63,11 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
     df.to_parquet(HISTORY_CACHE, index=False)
     print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players -> {HISTORY_CACHE.name}")
 
-    # Summary
-    for market in ["target_goals", "target_sot", "target_cards", "target_assists"]:
-        if market in df.columns:
-            rate = df[market].mean()
-            print(f"  {market}: {rate:.1%} positive rate")
+    # Summary — all markets
+    for market, target_col in config.MARKET_TARGETS.items():
+        if target_col in df.columns:
+            rate = df[target_col].mean()
+            print(f"  {market} ({target_col}): {rate:.1%} positive rate")
 
 
 # ── WC26 national team collect ────────────────────────────────────────────────
@@ -245,6 +250,10 @@ def mode_predict() -> None:
     else:
         print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay WATCH)")
 
+    # Lineup availability filter — drops confirmed bench players, flags TBC
+    if api_key:
+        tips = _filter_by_lineup(tips)
+
     sniper   = tips[tips["tier"] == "SNIPER"]
     marksman = tips[tips["tier"] == "MARKSMAN"]
     valuable = tips[tips["tier"] == "VALUABLE"]
@@ -253,6 +262,47 @@ def mode_predict() -> None:
     n_new = append_player_signals(tips)
     if n_new:
         print(f"[predict] player_ledger: +{n_new} new signal(s) recorded")
+
+
+def _filter_by_lineup(tips: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filter player tips by confirmed starting XI.
+    - Confirmed starter    → keep, lineup_status='confirmed'
+    - Confirmed benched    → drop (saves Telegram noise for DNP players)
+    - Lineup not announced → keep, lineup_status='tbc'
+    Requires fixture_id and player_id columns in tips.
+    """
+    if tips.empty or "fixture_id" not in tips.columns or "player_id" not in tips.columns:
+        return tips
+
+    fixture_ids = tips["fixture_id"].dropna().unique().astype(int)
+    lineup_map: dict[int, dict] = {}
+    for fid in fixture_ids:
+        lineup_map[int(fid)] = fetch_lineup(int(fid))
+
+    def _status(row) -> str:
+        fid = row.get("fixture_id")
+        pid = row.get("player_id")
+        if not fid or not pid:
+            return "tbc"
+        lu = lineup_map.get(int(fid), {})
+        if not lu.get("confirmed"):
+            return "tbc"
+        return "confirmed" if int(pid) in lu["starters"] else "benched"
+
+    tips = tips.copy()
+    tips["lineup_status"] = tips.apply(_status, axis=1)
+
+    before = len(tips)
+    tips = tips[tips["lineup_status"] != "benched"].copy()
+    dropped = before - len(tips)
+    if dropped:
+        print(f"[lineup] Dropped {dropped} tips — players confirmed benched/not in squad")
+
+    confirmed = (tips["lineup_status"] == "confirmed").sum()
+    tbc       = (tips["lineup_status"] == "tbc").sum()
+    print(f"[lineup] {confirmed} confirmed starters | {tbc} lineup TBC")
+    return tips
 
 
 def _enrich_with_recent_form(history: pd.DataFrame) -> None:
@@ -314,29 +364,266 @@ def mode_enrich_season() -> None:
         return
 
     df = pd.read_parquet(HISTORY_CACHE)
-    print(f"[enrich-season] Fetching season stats for {df['player_id'].nunique()} unique players...")
-
-    season_stats = fetch_all_player_season_stats(df, leagues=APIFOOTBALL_LEAGUES)
+    unique_pids = df["player_id"].dropna().unique().tolist()
+    total = len(unique_pids)
+    print(f"[enrich-season] Fetching season stats for {total} unique players (batches of 500)...")
 
     season_cols = [
         "season_appearances", "season_goals_pg", "season_assists_pg",
         "season_shots_pg", "season_sot_pg", "season_cards_pg", "season_minutes_pg",
     ]
-    for col in season_cols:
-        df[col] = df["player_id"].map(
-            lambda pid, c=col: season_stats.get(pid, {}).get(c, float("nan"))
-        )
 
-    df.to_parquet(HISTORY_CACHE, index=False)
+    BATCH_SIZE = 500
+    all_stats: dict = {}
+
+    for batch_start in range(0, total, BATCH_SIZE):
+        batch_pids = set(unique_pids[batch_start : batch_start + BATCH_SIZE])
+        batch_df   = df[df["player_id"].isin(batch_pids)]
+        batch_stats = fetch_all_player_season_stats(batch_df, leagues=APIFOOTBALL_LEAGUES)
+        all_stats.update(batch_stats)
+
+        # Checkpoint: merge what we have so far and write parquet
+        for col in season_cols:
+            df[col] = df["player_id"].map(
+                lambda pid, c=col: all_stats.get(pid, {}).get(c, float("nan"))
+            )
+        df.to_parquet(HISTORY_CACHE, index=False)
+        done = min(batch_start + BATCH_SIZE, total)
+        enriched_so_far = df["season_goals_pg"].notna().sum()
+        print(f"[enrich-season] Checkpoint {done}/{total} players | {enriched_so_far}/{len(df)} rows enriched → saved")
+
     enriched = df["season_goals_pg"].notna().sum()
     print(f"[enrich-season] Done. {enriched}/{len(df)} rows enriched -> {HISTORY_CACHE.name}")
+
+
+# ── Player profile enrichment ─────────────────────────────────────────────────
+
+def mode_enrich_profiles():
+    """Fetch player profile data (age, height, weight) for all players in parquet."""
+    from player_model.data_fetcher import fetch_all_player_profiles
+    if not HISTORY_CACHE.exists():
+        print("[enrich-profiles] No player_history.parquet found. Run --mode collect first.")
+        return
+    df = pd.read_parquet(HISTORY_CACHE)
+    unique_pids = df["player_id"].dropna().unique().tolist()
+    total = len(unique_pids)
+    print(f"[enrich-profiles] Fetching profiles for {total} unique players (batches of 1000)...")
+
+    BATCH_SIZE = 1000
+    # Initialize profile columns if missing — accumulated across batches via map-update
+    for col in ["age", "height_cm", "weight_kg"]:
+        if col not in df.columns:
+            df[col] = float("nan")
+
+    for batch_start in range(0, total, BATCH_SIZE):
+        batch_pids = set(unique_pids[batch_start : batch_start + BATCH_SIZE])
+        batch_df   = df[df["player_id"].isin(batch_pids)]
+        profiles   = fetch_all_player_profiles(batch_df)
+        if not profiles:
+            continue
+        prof_df = pd.DataFrame.from_dict(profiles, orient="index")
+        prof_df.index.name = "player_id"
+        prof_df = prof_df.reset_index()
+        # Map new values onto df rows without dropping the column (preserves prior batches)
+        for col in ["age", "height_cm", "weight_kg"]:
+            if col in prof_df.columns:
+                pid_map = prof_df.set_index("player_id")[col].to_dict()
+                df[col] = df["player_id"].map(pid_map).combine_first(df[col])
+        # Merge-on-write: re-read latest parquet to preserve columns written by parallel processes
+        latest = pd.read_parquet(HISTORY_CACHE)
+        for col in ["age", "height_cm", "weight_kg"]:
+            if col in df.columns:
+                latest[col] = df[col]
+        latest.to_parquet(HISTORY_CACHE, index=False)
+        done = min(batch_start + BATCH_SIZE, total)
+        enriched_so_far = df["age"].notna().sum() if "age" in df.columns else 0
+        print(f"[enrich-profiles] Checkpoint {done}/{total} players | {enriched_so_far}/{len(df)} rows → saved")
+
+    enriched = df["age"].notna().sum() if "age" in df.columns else 0
+    print(f"[enrich-profiles] Done. {enriched}/{len(df)} rows have age data -> {HISTORY_CACHE}")
+
+
+# ── Player sidelined enrichment ───────────────────────────────────────────────
+
+def mode_enrich_sidelined():
+    """Fetch sidelined/injury history for all players and compute chronic injury features."""
+    from player_model.data_fetcher import fetch_all_player_sidelined
+    import datetime as dt
+    if not HISTORY_CACHE.exists():
+        print("[enrich-sidelined] No player_history.parquet found.")
+        return
+    df = pd.read_parquet(HISTORY_CACHE)
+    unique_pids = df["player_id"].dropna().unique().tolist()
+    total = len(unique_pids)
+    print(f"[enrich-sidelined] Fetching sidelined history for {total} players (batches of 1000)...")
+
+    today = dt.date.today()
+
+    def _compute_injury_features(pid: int, match_date, sidelined_map: dict) -> dict:
+        entries = sidelined_map.get(int(pid), [])
+        if not entries:
+            return {"chronic_injury_risk": 0.0, "days_since_last_injury": 365.0, "return_from_injury_flag": 0.0}
+        if hasattr(match_date, "date"):
+            match_d = match_date.date()
+        else:
+            try:
+                match_d = dt.date.fromisoformat(str(match_date)[:10])
+            except Exception:
+                match_d = today
+        year_ago = match_d - dt.timedelta(days=365)
+        recent = [e for e in entries if e.get("start") and dt.date.fromisoformat(e["start"][:10]) >= year_ago]
+        past = sorted([e for e in entries if e.get("end") and dt.date.fromisoformat(e["end"][:10]) < match_d],
+                      key=lambda x: x["end"], reverse=True)
+        days_since = 365.0
+        if past:
+            last_end = dt.date.fromisoformat(past[0]["end"][:10])
+            days_since = float((match_d - last_end).days)
+        return_flag = float(0 < days_since <= 21)
+        return {
+            "chronic_injury_risk":     float(len(recent)),
+            "days_since_last_injury":  days_since,
+            "return_from_injury_flag": return_flag,
+        }
+
+    BATCH_SIZE = 1000
+    for batch_start in range(0, total, BATCH_SIZE):
+        batch_pids = set(unique_pids[batch_start : batch_start + BATCH_SIZE])
+        batch_df   = df[df["player_id"].isin(batch_pids)]
+        sidelined_map = fetch_all_player_sidelined(batch_df)
+        if not sidelined_map:
+            continue
+
+        batch_rows = df[df["player_id"].isin(batch_pids)].index
+        for idx in batch_rows:
+            row   = df.loc[idx]
+            feats = _compute_injury_features(row.get("player_id", 0), row.get("date"), sidelined_map)
+            for col, val in feats.items():
+                df.at[idx, col] = val
+
+        # Merge-on-write: re-read latest parquet to preserve columns written by parallel processes
+        latest = pd.read_parquet(HISTORY_CACHE)
+        for col in ["chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"]:
+            if col in df.columns:
+                latest[col] = df[col]
+        latest.to_parquet(HISTORY_CACHE, index=False)
+        done = min(batch_start + BATCH_SIZE, total)
+        print(f"[enrich-sidelined] Checkpoint {done}/{total} players → saved")
+
+    print(f"[enrich-sidelined] Done. {len(df)} rows updated -> {HISTORY_CACHE}")
+
+
+def mode_enrich_sidelined_live() -> None:
+    """Refresh sidelined/injury data for players active in the last 60 days — fast pre-predict refresh."""
+    from player_model.data_fetcher import fetch_all_player_sidelined
+    import datetime as dt
+
+    if not HISTORY_CACHE.exists():
+        print("[enrich-sidelined-live] No player_history.parquet found.")
+        return
+
+    df = pd.read_parquet(HISTORY_CACHE)
+    cutoff = pd.Timestamp.utcnow().normalize() - pd.Timedelta(days=60)
+    if "date" in df.columns:
+        recent_mask = pd.to_datetime(df["date"], errors="coerce", utc=True) >= cutoff
+        active_pids = df.loc[recent_mask, "player_id"].dropna().unique().tolist()
+    else:
+        active_pids = df["player_id"].dropna().unique().tolist()
+
+    # Limit to PROP_LEAGUES players only
+    prop_league_names = set(config.PROP_LEAGUES.keys())
+    if "league" in df.columns and prop_league_names:
+        league_mask = df["league"].isin(prop_league_names)
+        prop_pids = set(df.loc[league_mask, "player_id"].dropna().unique())
+        active_pids = [p for p in active_pids if p in prop_pids]
+
+    total = len(active_pids)
+    print(f"[enrich-sidelined-live] Refreshing {total} active players (last 60 days in prop leagues)...")
+
+    today = dt.date.today()
+    active_df = df[df["player_id"].isin(set(active_pids))]
+    sidelined_map = fetch_all_player_sidelined(active_df)
+    if not sidelined_map:
+        print("[enrich-sidelined-live] No sidelined data returned.")
+        return
+
+    def _compute_injury_features(pid: int, sidelined_map: dict) -> dict:
+        entries = sidelined_map.get(int(pid), [])
+        if not entries:
+            return {"chronic_injury_risk": 0.0, "days_since_last_injury": 365.0, "return_from_injury_flag": 0.0}
+        year_ago = today - dt.timedelta(days=365)
+        recent = [e for e in entries if e.get("start") and dt.date.fromisoformat(e["start"][:10]) >= year_ago]
+        past = sorted([e for e in entries if e.get("end") and dt.date.fromisoformat(e["end"][:10]) < today],
+                      key=lambda x: x["end"], reverse=True)
+        days_since = 365.0
+        if past:
+            last_end = dt.date.fromisoformat(past[0]["end"][:10])
+            days_since = float((today - last_end).days)
+        return {
+            "chronic_injury_risk":     float(len(recent)),
+            "days_since_last_injury":  days_since,
+            "return_from_injury_flag": float(0 < days_since <= 21),
+        }
+
+    active_pids_set = set(active_pids)
+    for idx in df[df["player_id"].isin(active_pids_set)].index:
+        pid = df.at[idx, "player_id"]
+        feats = _compute_injury_features(pid, sidelined_map)
+        for col, val in feats.items():
+            df.at[idx, col] = val
+
+    df.to_parquet(HISTORY_CACHE, index=False)
+    print(f"[enrich-sidelined-live] Done. {total} players refreshed -> {HISTORY_CACHE}")
+
+
+def mode_squad_sync() -> None:
+    """
+    Update player team assignments in player_history.parquet.
+    For each league in APIFOOTBALL_LEAGUES, fetches current squads and updates
+    the team field for players who have transferred since last collect.
+    Run weekly (or before predict) to keep team assignments accurate.
+    Usage: python -m player_model.pipeline --mode squad-sync
+    """
+    if not HISTORY_CACHE.exists():
+        print("[squad-sync] No player_history.parquet. Run --mode collect first.")
+        return
+
+    df = pd.read_parquet(HISTORY_CACHE)
+    current_teams: dict[int, str] = {}
+
+    for league_name, (league_id, season) in APIFOOTBALL_LEAGUES.items():
+        print(f"  [{league_name}] fetching teams...")
+        teams = fetch_league_teams(league_id, season)
+        for t in teams:
+            squad = fetch_current_squad(t["team_id"], season)
+            for p in squad:
+                pid = p["player_id"]
+                if pid and pid not in current_teams:
+                    current_teams[pid] = t["team_name"]
+
+    updates = 0
+    for pid, current_team in current_teams.items():
+        mask = df["player_id"] == pid
+        if not mask.any():
+            continue
+        last_team = df.loc[mask, "team"].iloc[-1]
+        if last_team != current_team:
+            # Update last 30 rows only (current season games)
+            idx = df[mask].tail(30).index
+            df.loc[idx, "team"] = current_team
+            updates += 1
+            print(f"  [squad-sync] player {pid}: {last_team} → {current_team}")
+
+    df.to_parquet(HISTORY_CACHE, index=False)
+    print(f"[squad-sync] Done. {updates} players updated | {len(current_teams)} players tracked.")
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
-    parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all", "enrich-season"], required=True)
+    parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all",
+                                           "enrich-season", "enrich-profiles", "enrich-sidelined",
+                                           "enrich-sidelined-live", "squad-sync"], required=True)
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
     parser.add_argument("--last-n", type=int, default=99,
@@ -349,6 +636,14 @@ def main() -> None:
         mode_collect_wc(last_n=args.last_n)
     if args.mode == "enrich-season":
         mode_enrich_season()
+    if args.mode == "enrich-profiles":
+        mode_enrich_profiles()
+    if args.mode == "enrich-sidelined":
+        mode_enrich_sidelined()
+    if args.mode == "enrich-sidelined-live":
+        mode_enrich_sidelined_live()
+    if args.mode == "squad-sync":
+        mode_squad_sync()
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":

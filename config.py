@@ -40,6 +40,24 @@ MODEL_FILE           = MODEL_FILE_STANDARD   # backward-compat alias
 HT_MODEL_FILE_05 = MODELS_DIR / "model_ht_over05.pkl"
 HT_MODEL_FILE_15 = MODELS_DIR / "model_ht_over15.pkl"
 
+# ── Side-market models (BTTS / O1.5 / O3.5) — same feature set as main model ─
+MODEL_FILE_BTTS   = MODELS_DIR / "model_v9_btts.pkl"
+MODEL_FILE_OVER15 = MODELS_DIR / "model_v9_over15.pkl"
+MODEL_FILE_OVER35 = MODELS_DIR / "model_v9_over35.pkl"
+
+# target column → model file
+SIDE_MARKETS = {
+    "btts":   MODEL_FILE_BTTS,
+    "over15": MODEL_FILE_OVER15,
+    "over35": MODEL_FILE_OVER35,
+}
+# Human-readable labels for Telegram / dashboard
+SIDE_MARKET_LABELS = {
+    "btts":   "BTTS",
+    "over15": "Over 1.5",
+    "over35": "Over 3.5",
+}
+
 # ── League format classification ──────────────────────────────────────────────
 # Standard: historical CSVs contain shots, corners, O/U odds → richer features
 STANDARD_FORMAT_LEAGUES = {
@@ -249,6 +267,14 @@ LEAGUE_SNIPER_THRESHOLDS: dict = {
 LEAGUE_MARKSMAN_THRESHOLDS: dict = {
     "Bundesliga 2": 0.20,   # match SNIPER — no MARKSMAN; 8-20% = -10.8% ROI
     "League Two":   0.14,   # match SNIPER — 8-14% range had low +4.3% ROI
+}
+
+# Leagues where significant portion of matches are played on artificial turf.
+# Artificial pitches are associated with lower goal counts (faster ball, tired legs).
+ARTIFICIAL_PITCH_LEAGUES: set = {
+    "Finland Veikkausliiga",
+    "Sweden Allsvenskan",
+    "Norway Eliteserien",
 }
 
 KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))

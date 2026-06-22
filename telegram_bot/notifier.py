@@ -533,30 +533,59 @@ def notify_weekly_summary() -> bool:
         wc["date"] = pd.to_datetime(wc["date"], errors="coerce")
         wc_pending = int(len(wc[wc["date"] >= week_ago]))
 
-    # ── Build message ─────────────────────────────────────────────────────────
+    # ── Build message — by market then tier ──────────────────────────────────
+    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+
     lines = [
         "📊 <b>WEEKLY SUMMARY</b>",
         "━━━━━━━━━━━━━━━━",
         f"📅 {week_start} → {week_end}",
         "",
-        "<b>This week by signal family</b>",
+        "<b>This week by market</b>",
         "",
     ]
 
-    # Prediction model block
+    # ── Over 2.5 — this week by tier ─────────────────────────────────────────
     if pred_week and pred_week["n"] > 0:
         pnl_s = "+" if pred_week["pnl"] >= 0 else ""
-        lines.append(f"🤖 <b>Prediction Model</b> — {pred_week['n']} bets | {pred_week['win']:.0%} win | PnL {pnl_s}{pred_week['pnl']:.2f}u")
-        for tier, emj in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
+        lines.append(f"⚽ <b>Over 2.5</b> — {pred_week['n']} bets | {pred_week['win']:.0%} win | PnL {pnl_s}{pred_week['pnl']:.2f}u")
+        for tier in TIER_ORDER:
             s = pred_tier_week.get(tier)
             if s and s["n"] > 0:
                 roi_s = "+" if s["roi"] >= 0 else ""
                 pnl_t = "+" if s["pnl"] >= 0 else ""
-                lines.append(f"  {emj} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
+                lines.append(f"  {TIER_SYM[tier]} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
     else:
-        lines.append("🤖 <b>Prediction Model</b>: no settled bets this week")
-
+        lines.append("⚽ <b>Over 2.5</b>: no settled bets this week")
     lines.append("")
+
+    # ── Side markets (BTTS / O1.5 / O3.5) — this week ────────────────────────
+    side_led = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
+    if side_led.exists():
+        try:
+            sl = pd.read_csv(side_led)
+            sl["pnl"]         = pd.to_numeric(sl["pnl"], errors="coerce")
+            sl["signal_date"] = pd.to_datetime(sl.get("signal_date", sl.get("match_date", "")), errors="coerce")
+            sl_week = sl[sl["signal_date"] >= week_ago] if "signal_date" in sl.columns else sl
+            for mkt, mkt_label in SIDE_LABELS.items():
+                ms = sl_week[sl_week["market"] == mkt] if "market" in sl_week.columns else pd.DataFrame()
+                ms = ms[ms["pnl"].notna()]
+                if ms.empty:
+                    continue
+                n = len(ms); pnl = ms["pnl"].sum(); roi = pnl / n * 100
+                lines.append(f"📌 <b>{mkt_label}</b> — {n} bets | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+                for tier in TIER_ORDER:
+                    ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
+                    if ts.empty:
+                        continue
+                    tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
+                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                lines.append("")
+        except Exception:
+            pass
+
     lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
 
     if wc_pending:
@@ -564,30 +593,49 @@ def notify_weekly_summary() -> bool:
     else:
         lines.append("  🌍 <b>WC Drift</b>: no signals this week")
 
-    lines.append(f"  👤 <b>Player Props</b>: see Player Props Weekly for details")
+    lines.append("  👤 <b>Player Props</b>: see Player Props Weekly for details")
 
-    # ── All-time totals — by signal family ───────────────────────────────────
+    # ── All-time by market then tier ──────────────────────────────────────────
     sharp_all_total = int(len(pd.read_csv(sharp_file))) if sharp_file.exists() else 0
     wc_all_total    = int(len(pd.read_csv(wc_file)))    if wc_file.exists() else 0
 
-    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time by signal family</b>", ""]
+    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time by market</b>", ""]
 
-    # Prediction all-time with tier breakdown
     if pred_all and pred_all["n"] > 0:
         pnl_s = "+" if pred_all["pnl"] >= 0 else ""
-        lines.append(f"🤖 <b>Prediction Model</b> — {pred_all['n']} settled | {pred_all['win']:.0%} win | PnL {pnl_s}{pred_all['pnl']:.2f}u")
-        for tier, emj in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
+        lines.append(f"⚽ <b>Over 2.5</b> — {pred_all['n']} settled | {pred_all['win']:.0%} win | PnL {pnl_s}{pred_all['pnl']:.2f}u")
+        for tier in TIER_ORDER:
             s = pred_tier_all.get(tier)
             if s and s["n"] > 0:
                 roi_s = "+" if s["roi"] >= 0 else ""
                 pnl_t = "+" if s["pnl"] >= 0 else ""
-                lines.append(f"  {emj} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
+                lines.append(f"  {TIER_SYM[tier]} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
     else:
-        lines.append("🤖 <b>Prediction Model</b>: no settled bets")
-
+        lines.append("⚽ <b>Over 2.5</b>: no settled bets")
     lines.append("")
 
-    # Sharp all-time
+    # Side markets all-time
+    if side_led.exists():
+        try:
+            sl = pd.read_csv(side_led)
+            sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
+            sl_all = sl[sl["pnl"].notna()]
+            for mkt, mkt_label in SIDE_LABELS.items():
+                ms = sl_all[sl_all["market"] == mkt] if "market" in sl_all.columns else pd.DataFrame()
+                if ms.empty:
+                    continue
+                n = len(ms); pnl = ms["pnl"].sum(); roi = pnl / n * 100
+                lines.append(f"📌 <b>{mkt_label}</b> — {n} bets | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+                for tier in TIER_ORDER:
+                    ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
+                    if ts.empty:
+                        continue
+                    tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
+                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                lines.append("")
+        except Exception:
+            pass
+
     if sharp_all and sharp_all["n"] > 0:
         pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
         lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | PnL {pnl_s}{sharp_all['pnl']:.2f}u")
@@ -596,7 +644,6 @@ def notify_weekly_summary() -> bool:
     else:
         lines.append("  💰 <b>Sharp Tracker</b>: no signals yet")
 
-    # WC drift all-time
     if wc_all_total:
         lines.append(f"  🌍 <b>WC Drift</b>: {wc_all_total} signals total | ⏳ no PnL tracking yet")
 
@@ -748,7 +795,12 @@ def notify_player_props() -> int:
     notified = _load_notified(PLAYER_NOTIFIED_FILE)
     sent = 0
 
-    MARKET_EMOJI = {"goals": "⚽", "assists": "🎯", "sot": "🔫", "cards": "🟨"}
+    MARKET_EMOJI = {
+        "goals": "⚽", "goals2": "⚽⚽", "goals3": "🎩",
+        "assists": "🎯",
+        "sot": "🔫", "sot2": "🔫", "sot3": "🔫", "sot4": "🔫",
+        "cards": "🟨",
+    }
 
     for _, row in df.iterrows():
         key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}"
@@ -762,8 +814,12 @@ def notify_player_props() -> int:
         mkt_odds = row.get("market_odds")
         ev_val   = row.get("ev")
         tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "👁")
-        market_label = {"goals": "Anytime Goalscorer", "assists": "Assist",
-                        "sot": "Shot on Target", "cards": "Yellow Card"}.get(row["market"], row["market"])
+        market_label = {
+            "goals": "Anytime Goalscorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+            "assists": "Assist",
+            "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+            "cards": "Yellow Card",
+        }.get(row["market"], row["market"])
 
         odds_line = f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>" \
                     if mkt_odds and not (isinstance(mkt_odds, float) and mkt_odds != mkt_odds) \
@@ -791,11 +847,10 @@ def notify_player_props() -> int:
 
 def notify_props_daily_digest() -> bool:
     """
-    Send a player-props-only daily briefing:
-      • Today's tips (SNIPER/MARKSMAN/VALUABLE) by position group
-      • Watch signals (top by model_prob)
-      • Yesterday's player prop results
-    Returns True if message sent.
+    Player props daily briefing structured by MARKET then SIGNAL TIER.
+    Msg 1: Tips grouped by market (all 9) then tier. Watch section same way.
+    Msg 2: Yesterday's results + all-time ledger by market then tier.
+    Returns True if sent.
     """
     import datetime as _dt
     cfg = _load_config()
@@ -809,12 +864,26 @@ def notify_props_daily_digest() -> bool:
     yest_str  = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     hdr_date  = today.strftime("%a, %b %d").replace(" 0", " ")
 
-    # Send once per day — skip if already sent today
     notified = _load_notified(PLAYER_NOTIFIED_FILE)
     props_digest_key = f"PROPS_DIGEST|{today_str}"
     if props_digest_key in notified:
         print("Player props digest already sent today — skipping.")
         return False
+
+    # (key, display label, emoji)
+    PLAYER_MARKETS = [
+        ("goals",   "Anytime Scorer", "⚽"),
+        ("goals2",  "Score 2+",       "⚽⚽"),
+        ("goals3",  "Hat Trick",      "🎩"),
+        ("assists", "Assist",         "🎯"),
+        ("sot",     "SOT 1+",         "🔫"),
+        ("sot2",    "SOT 2+",         "🔫"),
+        ("sot3",    "SOT 3+",         "🔫"),
+        ("sot4",    "SOT 4+",         "🔫"),
+        ("cards",   "Carded",         "🟨"),
+    ]
+    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
 
     lines = [
         f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
@@ -822,21 +891,7 @@ def notify_props_daily_digest() -> bool:
         "",
     ]
 
-    def _pos_family(pos_str: str) -> str:
-        p = str(pos_str).upper().strip()
-        if p.startswith("F") or p in ("ST", "CF", "LW", "RW", "SS", "LF", "RF"):
-            return "Attackers"
-        if p.startswith("M") or p in ("CAM", "CDM", "AM", "DM", "LAM", "RAM"):
-            return "Midfielders"
-        if p.startswith("D") or p in ("CB", "LB", "RB", "WB", "LWB", "RWB"):
-            return "Defenders"
-        return "Others"
-
-    POS_GROUPS   = [("Attackers", "⚔️"), ("Midfielders", "🎮"), ("Defenders", "🛡️"), ("Others", "📌")]
-    MKT_LABEL    = {"goals": "Goal", "assists": "Assist", "sot": "SOT", "cards": "Card"}
-    TIER_SYM     = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
-    TIER_ORDER   = {"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2}
-
+    tips_data = pd.DataFrame()
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
@@ -844,80 +899,81 @@ def notify_props_daily_digest() -> bool:
             all_props = pd.read_csv(player_file)
             all_props = all_props[all_props["date"].astype(str).str[:10] >= today_str].copy()
             all_props = all_props[all_props["league"].isin(_PROP_LEAGUES.keys())].copy()
-            all_props["_family"] = all_props.get(
-                "position", pd.Series("", index=all_props.index)
-            ).fillna("").apply(_pos_family)
-
-            # ── Tips ──
-            tips = all_props[all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
-            tips["_rank"] = tips["tier"].map(TIER_ORDER).fillna(3)
-            tips = tips.sort_values(["_rank", "ev"], ascending=[True, False])
-            lines.append(f"🎯 <b>TIPS</b> ({len(tips)} signal{'s' if len(tips) != 1 else ''})")
-            if tips.empty:
-                lines.append("  No tips today")
-            else:
-                for grp_name, grp_emoji in POS_GROUPS:
-                    grp = tips[tips["_family"] == grp_name]
-                    if grp.empty:
-                        continue
-                    lines.append(f"  {grp_emoji} <b>{grp_name}</b>")
-                    for _, r in grp.iterrows():
-                        sym    = TIER_SYM.get(r["tier"], "📌")
-                        mkt    = MKT_LABEL.get(str(r.get("market", "")), str(r.get("market", "")))
-                        ev     = r.get("ev")
-                        odds   = r.get("market_odds")
-                        ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
-                        od_str = (f" @ {float(odds):.2f}" if pd.notna(odds)
-                                  else f" {float(r.get('model_prob', 0))*100:.0f}%")
-                        lines.append(
-                            f"    {sym} <b>{r['player_name']}</b> — {mkt}{od_str}{ev_str}"
-                            f"  [{r.get('league', '')}]"
-                        )
-            lines.append("")
-
-            # ── Watch — sort by EV desc (best edge first), fall back to model_prob ──
-            watch = all_props[all_props["tier"] == "WATCH"].copy()
-            watch["_sort_ev"] = watch["ev"].fillna(-9)
-            watch = watch.sort_values(["_sort_ev", "model_prob"], ascending=[False, False])
-            watch = watch.drop(columns=["_sort_ev"])
-            lines.append(f"👁️ <b>WATCH</b> ({len(watch)} on radar)")
-            if watch.empty:
-                lines.append("  Nothing today")
-            else:
-                for grp_name, grp_emoji in POS_GROUPS:
-                    grp = watch[watch["_family"] == grp_name].head(4)
-                    if grp.empty:
-                        continue
-                    lines.append(f"  {grp_emoji} <b>{grp_name}</b>")
-                    for _, r in grp.iterrows():
-                        mkt    = MKT_LABEL.get(str(r.get("market", "")), str(r.get("market", "")))
-                        prob   = float(r.get("model_prob", 0)) * 100
-                        ev     = r.get("ev")
-                        odds   = r.get("market_odds")
-                        ev_str = f"  EV {float(ev):+.0%}" if pd.notna(ev) else ""
-                        od_str = f" @ {float(odds):.2f}" if pd.notna(odds) else f" {prob:.0f}%"
-                        lines.append(
-                            f"    {r['player_name']} — {mkt}{od_str}{ev_str}  [{r.get('league', '')}]"
-                        )
+            tips_data = all_props
         except Exception as e:
             lines.append(f"  error loading player_tips.csv: {e}")
-    else:
-        lines.append("  No player_tips.csv yet")
 
+    tips  = tips_data[tips_data["tier"].isin(TIER_ORDER)].copy() if not tips_data.empty else pd.DataFrame()
+    watch = tips_data[tips_data["tier"] == "WATCH"].copy()        if not tips_data.empty else pd.DataFrame()
+
+    total_tips = len(tips)
+    lines.append(f"🎯 <b>TIPS</b>  ({total_tips} signal{'s' if total_tips != 1 else ''})")
     lines.append("")
 
-    # ── Send message 1: Today's predictions ───────────────────────────────────
+    if tips.empty:
+        lines.append("  No tips today")
+    else:
+        for mkt_key, mkt_label, mkt_emoji in PLAYER_MARKETS:
+            mkt_tips = tips[tips["market"] == mkt_key] if "market" in tips.columns else pd.DataFrame()
+            if mkt_tips.empty:
+                continue
+            lines.append(f"── {mkt_emoji} <b>{mkt_label}</b>  ({len(mkt_tips)})")
+            for tier in TIER_ORDER:
+                tb = mkt_tips[mkt_tips["tier"] == tier]
+                if tb.empty:
+                    continue
+                sym = TIER_SYM[tier]
+                for _, r in tb.iterrows():
+                    ev = r.get("ev"); odds = r.get("market_odds")
+                    ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
+                    od_str = (f" @ {float(odds):.2f}" if pd.notna(odds)
+                              else f" {float(r.get('model_prob', 0))*100:.0f}%")
+                    lines.append(
+                        f"  {sym} <b>{r['player_name']}</b> ({r.get('team','')})"
+                        f"{od_str}{ev_str}  [{r.get('league','')}]"
+                    )
+            lines.append("")
+
+    # ── Watch section — by market ───────────────────────────────────────────────
+    lines.append(f"👁️ <b>WATCH</b>  ({len(watch)} on radar)")
+    lines.append("")
+    if watch.empty:
+        lines.append("  Nothing today")
+    else:
+        if "ev" in watch.columns:
+            watch = watch.copy()
+            watch["_sort_ev"] = watch["ev"].fillna(-9)
+            watch = watch.sort_values(["_sort_ev", "model_prob"], ascending=[False, False]).drop(columns=["_sort_ev"])
+        for mkt_key, mkt_label, mkt_emoji in PLAYER_MARKETS:
+            mw = watch[watch["market"] == mkt_key].head(3) if "market" in watch.columns else pd.DataFrame()
+            if mw.empty:
+                continue
+            lines.append(f"── {mkt_emoji} <b>{mkt_label}</b>")
+            for _, r in mw.iterrows():
+                odds = r.get("market_odds"); ev = r.get("ev")
+                od_str = f" @ {float(odds):.2f}" if pd.notna(odds) else f" {float(r.get('model_prob',0))*100:.0f}%"
+                ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
+                lines.append(
+                    f"  {r['player_name']} ({r.get('team','')}){od_str}{ev_str}  [{r.get('league','')}]"
+                )
+            lines.append("")
+
+    if not player_file.exists():
+        lines.append("  No player_tips.csv yet")
+
     msg1 = "\n".join(lines)
     sent1 = _send(token, chat_id, msg1)
     if not sent1:
         return False
 
-    # ── Message 2: Yesterday's results ────────────────────────────────────────
+    # ── Message 2: Yesterday's results + all-time by market then tier ─────────
+    MKT_LABEL_MAP = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
+
     lines2 = [
         f"📋 <b>PLAYER PROPS RESULTS</b> — {hdr_date}",
         "━━━━━━━━━━━━━━━━",
         "",
-        "<b>YESTERDAY'S RESULTS</b>",
+        "<b>Yesterday's Results</b>",
     ]
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if player_led.exists():
@@ -936,24 +992,27 @@ def notify_props_daily_digest() -> bool:
                 voids  = int(yest["result"].str.upper().eq("VOID").sum()) if "result" in yest.columns else 0
                 pnl    = yest["pnl"].sum()
                 lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  PnL <b>{pnl:+.2f}u</b>")
-                for _, r in yest.iterrows():
-                    res    = str(r.get("result", "")).upper()
-                    emoji  = {"WIN": "✅", "LOSS": "❌", "VOID": "⬜"}.get(res, "⬜")
-                    market = str(r.get("market", ""))
-                    mkt    = MKT_LABEL.get(market, market)
-                    pnl_r  = float(r["pnl"])
-                    note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
-                    lines2.append(
-                        f"  {emoji} {r['player_name']} — {mkt}{note}  <b>{pnl_r:+.2f}u</b>"
-                    )
+                # Results by market
+                for mkt_key, mkt_label, _ in PLAYER_MARKETS:
+                    ms = yest[yest["market"] == mkt_key] if "market" in yest.columns else pd.DataFrame()
+                    if ms.empty:
+                        continue
+                    for _, r in ms.iterrows():
+                        res   = str(r.get("result", "")).upper()
+                        emoji = {"WIN": "✅", "LOSS": "❌", "VOID": "⬜"}.get(res, "⬜")
+                        pnl_r = float(r["pnl"])
+                        tier_s = f"[{r['tier']}] " if "tier" in r and pd.notna(r.get("tier")) else ""
+                        note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
+                        lines2.append(
+                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{pnl_r:+.2f}u</b>"
+                        )
         except Exception as e:
             lines2.append(f"  error: {e}")
     else:
         lines2.append("  No player_ledger.csv yet")
 
-    # ── All-time player ledger ─────────────────────────────────────────────────
-    lines2.append("")
-    lines2.append("📈 <b>ALL-TIME PLAYER LEDGER</b>")
+    # ── All-time player ledger by market then tier ─────────────────────────────
+    lines2 += ["", "📈 <b>All-time Player Ledger</b>"]
     if player_led.exists():
         try:
             pled = pd.read_csv(player_led)
@@ -962,14 +1021,20 @@ def notify_props_daily_digest() -> bool:
             if not all_p.empty:
                 n = len(all_p); pnl = all_p["pnl"].sum(); roi = pnl / n * 100
                 lines2.append(f"  Total: {n} settled | PnL <b>{pnl:+.2f}u</b> | ROI {roi:+.1f}%")
-                for tier, sym in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
-                    if "tier" not in all_p.columns:
-                        break
-                    t = all_p[all_p["tier"] == tier]
-                    if t.empty:
+                lines2.append("")
+                for mkt_key, mkt_label, _ in PLAYER_MARKETS:
+                    ms = all_p[all_p["market"] == mkt_key] if "market" in all_p.columns else pd.DataFrame()
+                    if ms.empty:
                         continue
-                    tn = len(t); w = int((t["pnl"] > 0).sum()); troi = t["pnl"].sum() / tn * 100
-                    lines2.append(f"    {sym} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                    mn = len(ms); mp = ms["pnl"].sum(); mroi = mp / mn * 100
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  ({mn} bets | ROI {mroi:+.1f}%)")
+                    if "tier" in ms.columns:
+                        for tier in TIER_ORDER:
+                            ts = ms[ms["tier"] == tier]
+                            if ts.empty:
+                                continue
+                            tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
+                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
         except Exception:
             pass
 
@@ -1010,10 +1075,22 @@ def notify_props_weekly_summary() -> bool:
     settled_all  = pled[pled["pnl"].notna()].copy()
     settled_week = settled_all[settled_all["signal_date"] >= week_ago].copy()
 
-    MKT_LABEL = {"goals": "Goalscorer", "assists": "Assist", "sot": "Shot on Target", "cards": "Card"}
-    MKT_EMOJI = {"goals": "⚽", "assists": "🎯", "sot": "🔫", "cards": "🟨"}
+    # All 9 player markets in display order
+    PLAYER_MARKETS = [
+        ("goals",   "Anytime Scorer", "⚽"),
+        ("goals2",  "Score 2+",       "⚽⚽"),
+        ("goals3",  "Hat Trick",      "🎩"),
+        ("assists", "Assist",         "🎯"),
+        ("sot",     "SOT 1+",         "🔫"),
+        ("sot2",    "SOT 2+",         "🔫"),
+        ("sot3",    "SOT 3+",         "🔫"),
+        ("sot4",    "SOT 4+",         "🔫"),
+        ("cards",   "Carded",         "🟨"),
+    ]
+    MKT_LABEL = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
+    MKT_EMOJI = {k: emj for k, _, emj in PLAYER_MARKETS}
     TIER_SYM  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "WATCH": "👁"}
-    MARKETS   = ["sot", "goals", "assists", "cards"]
+    MARKETS   = [k for k, _, _ in PLAYER_MARKETS]
     TIERS     = ["SNIPER", "MARKSMAN", "VALUABLE", "WATCH"]
 
     def _row(data: "pd.DataFrame") -> tuple | None:
@@ -1105,8 +1182,10 @@ def notify_props_weekly_summary() -> bool:
 
 def notify_daily_digest() -> bool:
     """
-    Send a daily morning briefing with all active tips by model and yesterday's results.
-    Returns True if message was sent.
+    Daily morning briefing structured by market AND signal tier.
+    Msg 1: Over 2.5 (by tier) + BTTS/O1.5/O3.5 (by market then tier) + Sharp + WC.
+    Msg 2: Yesterday's results + all-time ledger (same market+tier structure).
+    Returns True if sent.
     """
     import datetime as _dt
 
@@ -1121,12 +1200,16 @@ def notify_daily_digest() -> bool:
     yesterday_str = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     header_date   = today.strftime("%a, %b %d").replace(" 0", " ")
 
-    # Send once per day — skip if already sent today
     notified = _load_notified()
     digest_key = f"DIGEST|{today_str}"
     if digest_key in notified:
         print("Daily digest already sent today — skipping.")
         return False
+
+    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    SIG_SYM     = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
 
     lines = [
         f"📊 <b>DAILY BRIEFING</b> — {header_date}",
@@ -1134,55 +1217,92 @@ def notify_daily_digest() -> bool:
         "",
     ]
 
-    # ── O/U model tips ─────────────────────────────────────────────────────────
+    # ── Over 2.5 by tier ───────────────────────────────────────────────────────
     bets_file = app_config.OUTPUT_DIR / "bets.csv"
+    ou_total = 0
     if bets_file.exists():
         try:
             bets = pd.read_csv(bets_file)
             bets = bets[
-                bets["signal_tier"].isin(["SNIPER", "MARKSMAN"]) &
+                bets["signal_tier"].isin(TIER_ORDER) &
                 bets["bet"].isin(["OVER", "UNDER"]) &
                 (bets["date"].astype(str).str[:10] >= today_str)
             ].copy()
-            tier_sym = {"SNIPER": "🎯", "MARKSMAN": "🔫"}
-            lines.append(f"⚽ <b>O/U MODEL</b> ({len(bets)} tip{'s' if len(bets) != 1 else ''})")
+            ou_total = len(bets)
+            lines.append(f"⚽ <b>Over 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
             if bets.empty:
                 lines.append("  No tips today")
             else:
-                for _, r in bets.iterrows():
-                    side  = r.get("best_side") or r.get("bet", "")
-                    odds  = r["odds_under25"] if side == "UNDER" else r["odds_over25"]
-                    edge  = float(r.get("best_edge", 0)) * 100
-                    sym   = tier_sym.get(r["signal_tier"], "📌")
-                    lines.append(
-                        f"  {sym} {r['home_team']} vs {r['away_team']} — "
-                        f"<b>{side} 2.5</b> @ {float(odds):.2f} (+{edge:.0f}%)  [{r.get('league','')}]"
-                    )
+                for tier in TIER_ORDER:
+                    tb = bets[bets["signal_tier"] == tier]
+                    if tb.empty:
+                        continue
+                    lines.append(f"  {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
+                    for _, r in tb.iterrows():
+                        side = r.get("best_side") or r.get("bet", "")
+                        odds = r["odds_under25"] if side == "UNDER" else r["odds_over25"]
+                        edge = float(r.get("best_edge", 0)) * 100
+                        lines.append(
+                            f"    {r['home_team']} vs {r['away_team']} — "
+                            f"<b>{side} 2.5</b> @ {float(odds):.2f} (+{edge:.0f}%)"
+                            f"  [{r.get('league','')}]"
+                        )
         except Exception as e:
-            lines.append(f"⚽ <b>O/U MODEL</b> — error: {e}")
+            lines.append(f"  error: {e}")
     else:
-        lines.append("⚽ <b>O/U MODEL</b> — no data yet")
+        lines.append("⚽ <b>Over 2.5</b> — no data yet")
     lines.append("")
 
-    # (Player props tips/watch moved to notify_props_daily_digest)
+    # ── Side markets: BTTS / Over 1.5 / Over 3.5 — by market then tier ────────
+    side_file = app_config.OUTPUT_DIR / "side_bets.csv"
+    if side_file.exists():
+        try:
+            side = pd.read_csv(side_file)
+            side = side[
+                side["signal_tier"].isin(TIER_ORDER) &
+                (side["date"].astype(str).str[:10] >= today_str)
+            ].copy()
+            for mkt, mkt_label in SIDE_LABELS.items():
+                ms = side[side["market"] == mkt] if "market" in side.columns else pd.DataFrame()
+                if ms.empty:
+                    continue
+                lines.append(f"📌 <b>{mkt_label}</b>  ({len(ms)} tip{'s' if len(ms) != 1 else ''})")
+                for tier in TIER_ORDER:
+                    tb = ms[ms["signal_tier"] == tier]
+                    if tb.empty:
+                        continue
+                    lines.append(f"  {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
+                    for _, r in tb.iterrows():
+                        ev_str = f" EV {float(r['ev']):+.0%}" if pd.notna(r.get("ev")) else ""
+                        lines.append(
+                            f"    {r['home_team']} vs {r['away_team']} — "
+                            f"@ {float(r['market_odds']):.2f}{ev_str}"
+                            f"  [{r.get('league','')}]"
+                        )
+                lines.append("")
+        except Exception as e:
+            lines.append(f"  Side markets error: {e}")
+            lines.append("")
+
+    # ── Player props summary line ───────────────────────────────────────────────
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
             all_props = pd.read_csv(player_file)
             all_props = all_props[all_props["date"].astype(str).str[:10] >= today_str]
-            tips_count = int(all_props["tier"].isin(["SNIPER","MARKSMAN","VALUABLE"]).sum())
+            tips_count  = int(all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]).sum())
             watch_count = int((all_props["tier"] == "WATCH").sum())
             lines.append(
-                f"👤 <b>PLAYER PROPS</b> — {tips_count} tip{'s' if tips_count != 1 else ''}, "
+                f"👤 <b>Player Props</b> — {tips_count} tip{'s' if tips_count != 1 else ''}, "
                 f"{watch_count} on watch  →  see Player Props Briefing"
-                        )
+            )
         except Exception as e:
-            lines.append(f"👤 <b>PLAYER PROPS</b> — error: {e}")
+            lines.append(f"👤 <b>Player Props</b> — error: {e}")
     else:
-        lines.append("👤 <b>PLAYER PROPS</b> — no data yet")
+        lines.append("👤 <b>Player Props</b> — no data yet")
     lines.append("")
 
-    # ── Sharp signals ──────────────────────────────────────────────────────────
+    # ── Sharp signals ───────────────────────────────────────────────────────────
     sharp_file = app_config.OUTPUT_DIR / "sharp_tips.csv"
     if sharp_file.exists():
         try:
@@ -1191,23 +1311,22 @@ def notify_daily_digest() -> bool:
                 sharp["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"]) &
                 (sharp["date"].astype(str).str[:10] >= today_str)
             ].copy()
-            lines.append(f"💰 <b>SHARP SIGNALS</b> ({len(sharp)} signal{'s' if len(sharp) != 1 else ''})")
+            lines.append(f"💰 <b>Sharp Signals</b>  ({len(sharp)} signal{'s' if len(sharp) != 1 else ''})")
             if sharp.empty:
                 lines.append("  No signals today")
             else:
-                sig_sym = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
                 for _, r in sharp.head(5).iterrows():
-                    sym = sig_sym.get(r["signal"], "📌")
+                    sym = SIG_SYM.get(r["signal"], "📌")
                     lines.append(
                         f"  {sym} {r['match']} — {r['market']} ({float(r['drift_pct']):+.1f}%)  [{r.get('league','')}]"
                     )
         except Exception as e:
-            lines.append(f"💰 <b>SHARP SIGNALS</b> — error: {e}")
+            lines.append(f"💰 <b>Sharp Signals</b> — error: {e}")
     else:
-        lines.append("💰 <b>SHARP SIGNALS</b> — no data yet")
+        lines.append("💰 <b>Sharp Signals</b> — no data yet")
     lines.append("")
 
-    # ── WC signals (only shown when there are active ones) ─────────────────────
+    # ── WC signals ──────────────────────────────────────────────────────────────
     wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
     if wc_file.exists():
         try:
@@ -1217,10 +1336,9 @@ def notify_daily_digest() -> bool:
                 (wc["date"].astype(str).str[:10] >= today_str)
             ].copy()
             if not wc.empty:
-                sig_sym = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
-                lines.append(f"🌍 <b>WC SIGNALS</b> ({len(wc)} signal{'s' if len(wc) != 1 else ''})")
+                lines.append(f"🌍 <b>WC Signals</b>  ({len(wc)} signal{'s' if len(wc) != 1 else ''})")
                 for _, r in wc.iterrows():
-                    sym = sig_sym.get(r["signal"], "📌")
+                    sym = SIG_SYM.get(r["signal"], "📌")
                     lines.append(
                         f"  {sym} {r['match']} — {r['market']} ({float(r['drift_pct']):+.1f}%)"
                     )
@@ -1228,45 +1346,54 @@ def notify_daily_digest() -> bool:
         except Exception:
             pass
 
-    # ── Send message 1: Today's predictions ───────────────────────────────────
     msg1 = "\n".join(lines)
     sent1 = _send(token, chat_id, msg1)
     if not sent1:
         return False
 
-    # ── Message 2: Yesterday's results + all-time ledger ──────────────────────
+    # ── Message 2: Yesterday's results + all-time by market then tier ─────────
     lines2 = [
         f"📋 <b>DAILY RESULTS</b> — {header_date}",
         "━━━━━━━━━━━━━━━━",
         "",
-        f"<b>YESTERDAY'S RESULTS</b>",
+        "<b>Yesterday's Results</b>",
+        "",
     ]
 
-    ledger_file  = app_config.OUTPUT_DIR / "bets_ledger.csv"
-    player_led   = app_config.OUTPUT_DIR / "player_ledger.csv"
-    sharp_led    = app_config.OUTPUT_DIR / "sharp_ledger.csv"
+    ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
+    sharp_led   = app_config.OUTPUT_DIR / "sharp_ledger.csv"
 
-    def _ledger_row(df, date_col, pnl_col, date_val):
-        df = df.copy()
-        df[pnl_col] = pd.to_numeric(df[pnl_col], errors="coerce")
-        sub = df[(df[date_col].astype(str).str[:10] == date_val) & df[pnl_col].notna()]
+    def _stats_sub(df, mask):
+        sub = df[mask & df["pnl"].notna()] if not df.empty else pd.DataFrame()
         if sub.empty:
             return None
-        n = len(sub); w = int((sub[pnl_col] > 0).sum()); pnl = sub[pnl_col].sum()
-        return n, w, pnl
+        n = len(sub); w = int((sub["pnl"] > 0).sum()); p = sub["pnl"].sum()
+        return n, w, p
 
+    # Over 2.5 yesterday by tier
     if ledger_file.exists():
         try:
             led = pd.read_csv(ledger_file)
-            r = _ledger_row(led, "match_date", "pnl", yesterday_str)
-            if r:
-                n, w, pnl = r
-                lines2.append(f"  ⚽ O/U: {n} settled | {w}W/{n-w}L | PnL <b>{pnl:+.2f}u</b>")
+            led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
+            yest_led = led[led["match_date"].astype(str).str[:10] == yesterday_str].copy()
+            live_y = yest_led[yest_led["source"] == "live"] if "source" in yest_led.columns else yest_led
+            r_all = _stats_sub(live_y, pd.Series([True] * len(live_y), index=live_y.index))
+            if r_all:
+                n, w, pnl = r_all
+                lines2.append(f"⚽ <b>Over 2.5</b>  (PnL {pnl:+.2f}u)")
+                for tier in TIER_ORDER:
+                    if "signal_tier" not in live_y.columns:
+                        break
+                    r = _stats_sub(live_y, live_y["signal_tier"] == tier)
+                    if r:
+                        tn, tw, tp = r
+                        lines2.append(f"  {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  PnL {tp:+.2f}u")
             else:
-                lines2.append("  ⚽ O/U: no settled results")
+                lines2.append("  ⚽ Over 2.5: no settled results")
         except Exception:
             pass
 
+    # Sharp/WC yesterday
     if sharp_led.exists():
         try:
             sled = pd.read_csv(sharp_led)
@@ -1289,19 +1416,9 @@ def notify_daily_digest() -> bool:
         except Exception:
             pass
 
-    lines2.append("")
+    lines2 += ["", "━━━━━━━━━━━━━━━━", "📈 <b>All-time Ledger</b>", ""]
 
-    # ── All-time ledger by model + tier ───────────────────────────────────────
-    lines2.append("📈 <b>ALL-TIME LEDGER</b>")
-
-    def _tier_line(sub, tier, sym):
-        t = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
-        if t.empty:
-            return None
-        n = len(t); w = int((t["pnl"] > 0).sum()); pnl = t["pnl"].sum()
-        roi = pnl / n * 100 if n else 0
-        return f"    {sym} {tier}: {w}W/{n-w}L | ROI {roi:+.1f}%"
-
+    # O/U 2.5 all-time — by model type, then tier
     if ledger_file.exists():
         try:
             led = pd.read_csv(ledger_file)
@@ -1310,8 +1427,8 @@ def notify_daily_digest() -> bool:
                    if "source" in led.columns else led[led["pnl"].notna()]
             has_mt = "model_type" in live.columns
             for fmt, emoji, label in [
-                ("standard",   "⚽", "Standard O/U"),
-                ("new_format", "🌍", "New-Format O/U"),
+                ("standard",   "⚽", "Over 2.5 — Standard"),
+                ("new_format", "🌍", "Over 2.5 — New-Format"),
             ]:
                 if not has_mt:
                     sub = live if fmt == "standard" else pd.DataFrame()
@@ -1323,13 +1440,40 @@ def notify_daily_digest() -> bool:
                     continue
                 n = len(sub); pnl = sub["pnl"].sum(); roi = pnl / n * 100
                 lines2.append(f"  {emoji} <b>{label}</b>  ({n} bets | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
-                for tier, sym in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
-                    ln = _tier_line(sub, tier, sym)
-                    if ln:
-                        lines2.append(ln)
+                for tier in TIER_ORDER:
+                    ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
+                    if ts.empty:
+                        continue
+                    tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
+                    lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
         except Exception:
             pass
 
+    # Side markets all-time (btts/over15/over35)
+    side_led = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
+    if side_led.exists():
+        try:
+            sl = pd.read_csv(side_led)
+            sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
+            sl_s = sl[sl["pnl"].notna()]
+            if not sl_s.empty:
+                lines2.append("")
+                for mkt, mkt_label in SIDE_LABELS.items():
+                    ms = sl_s[sl_s["market"] == mkt] if "market" in sl_s.columns else pd.DataFrame()
+                    if ms.empty:
+                        continue
+                    mn = len(ms); mp = ms["pnl"].sum(); mroi = mp / mn * 100
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  ({mn} bets | PnL {mp:+.2f}u | ROI {mroi:+.1f}%)")
+                    for tier in TIER_ORDER:
+                        ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
+                        if ts.empty:
+                            continue
+                        tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
+                        lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+        except Exception:
+            pass
+
+    # Sharp all-time
     if sharp_led.exists():
         try:
             sled = pd.read_csv(sharp_led)
@@ -1338,17 +1482,6 @@ def notify_daily_digest() -> bool:
             if not all_s.empty:
                 n = len(all_s); pnl = all_s["pnl"].sum(); roi = pnl / n * 100
                 lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
-                for sig, sym in [("STEAM_STRONG", "🔴"), ("STEAM_SHARP", "🟠"), ("STRONG", "🟡"), ("SHARP", "🟡")]:
-                    t = all_s[all_s["signal"] == sig] if "signal" in all_s.columns else pd.DataFrame()
-                    if t.empty:
-                        continue
-                    tn = len(t)
-                    affected   = int((t["pnl"] > 0).sum())
-                    inaffected = tn - affected
-                    troi = t["pnl"].sum() / tn * 100
-                    lines2.append(
-                        f"    {sym} {sig}: {affected} affected / {inaffected} inaffected | ROI {troi:+.1f}%"
-                    )
         except Exception:
             pass
 

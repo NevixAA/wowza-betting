@@ -14,12 +14,41 @@ API_KEY    = os.getenv("API_KEY",    "")
 API_SEASON = os.getenv("API_SEASON", "2025")
 
 # ── Markets ───────────────────────────────────────────────────────────────────
-MARKETS    = ["goals", "assists", "sot", "cards"]
+MARKETS    = ["goals", "goals2", "goals3", "assists", "sot", "sot2", "sot3", "sot4", "cards"]
 MODEL_FILES = {
     "goals":   MODELS_DIR / "model_player_goals.pkl",
+    "goals2":  MODELS_DIR / "model_player_goals2.pkl",
+    "goals3":  MODELS_DIR / "model_player_goals3.pkl",
     "assists": MODELS_DIR / "model_player_assists.pkl",
     "sot":     MODELS_DIR / "model_player_sot.pkl",
+    "sot2":    MODELS_DIR / "model_player_sot2.pkl",
+    "sot3":    MODELS_DIR / "model_player_sot3.pkl",
+    "sot4":    MODELS_DIR / "model_player_sot4.pkl",
     "cards":   MODELS_DIR / "model_player_cards.pkl",
+}
+# Market → target column in training data
+MARKET_TARGETS = {
+    "goals":   "target_goals",
+    "goals2":  "target_goals2",
+    "goals3":  "target_goals3",
+    "assists": "target_assists",
+    "sot":     "target_sot",
+    "sot2":    "target_sot2",
+    "sot3":    "target_sot3",
+    "sot4":    "target_sot4",
+    "cards":   "target_cards",
+}
+# Human-readable market labels for Telegram
+MARKET_LABELS = {
+    "goals":   "Anytime Scorer",
+    "goals2":  "Score 2+",
+    "goals3":  "Hat Trick",
+    "assists": "Assist",
+    "sot":     "SOT 1+",
+    "sot2":    "SOT 2+",
+    "sot3":    "SOT 3+",
+    "sot4":    "SOT 4+",
+    "cards":   "Carded",
 }
 
 # ── Signal tiers ──────────────────────────────────────────────────────────────
@@ -110,6 +139,47 @@ PLAYER_FEATURE_COLS = [
     "season_goals_pg", "season_assists_pg", "season_shots_pg",
     "season_sot_pg", "season_cards_pg", "season_minutes_pg",
     "season_appearances",
+    # Physical profile (from /players profile endpoint)
+    "age",
+    "age_peak_delta",         # abs(age - 27) — distance from peak performance age
+    "height_cm",
+    "height_aerial_interaction",  # height × aerial_won_rate composite
+    # Extended season stats (from /players/statistics, zero extra API calls)
+    "season_start_rate",      # lineups / appearances — stable role signal
+    "season_pass_accuracy",   # passing quality (0-1)
+    "season_dribble_pg",      # dribble success per game (season-level)
+    "season_fouls_pg",        # fouls committed per game (season-level prior for cards)
+    "season_fouls_drawn_pg",  # fouls drawn per game (season-level)
+    # Injury context
+    "days_since_last_injury", # days since last sidelined event (365 = healthy)
+    "return_from_injury_flag",# binary: first 3 games back from injury
+    "chronic_injury_risk",    # number of sidelined events in past 12 months
+    # Referee strictness
+    "referee_yellows_pg",     # referee's historical yellow cards per game
+    "referee_strictness",     # normalized 0-1 referee strictness score
+    # Position-split opponent concede stats (Phase 4)
+    "opp_goals_conceded_vs_fwd_pg",  # goals scored by forwards against this team
+    "opp_sot_conceded_vs_fwd_pg",    # SOT by forwards against this team
+    "opp_goals_conceded_vs_mid_pg",  # goals scored by midfielders against this team
+    "opp_sot_conceded_vs_mid_pg",    # SOT by midfielders against this team
+    "forward_matchup_score",         # sot_pg × opp_goals_conceded_vs_fwd × pos_forward
+    "mid_threat_vs_defense",         # kp_per90 × opp_goals_conceded_vs_mid × pos_midfielder
+    # Additional player-vs-player matchup formulas (Phase 3)
+    "box_threat_vs_leaky_defense",    # box_actions_per90 × opp_goals_conceded_pg
+    "efficiency_vs_leaky_keeper",     # shooting_efficiency_index × opp_sot_conceded_pg
+    "kp_vs_aggressive_defense",       # kp_per90 × opp_def_cards_pg
+    "team_momentum_forward_matchup",  # team_goals_pg_roll × opp_goals_conceded_pg × pos_forward
+    "set_piece_corner_matchup",       # set_piece_threat_score × (team_corners_pg/6)
+    "creative_pressure_matchup",      # creative_playmaker_score × opp_def_fouls_pg
+    "dribbler_vs_defensive_line",     # dribble_creativity_score × (1 - opp_def_aerial_win_rate)
+    "carrier_vs_press",               # progressive_carrier_score × opp_def_aggression
+    # Card-market features (Phase 5)
+    "opp_mid_fouls_pg",              # opponent midfielders fouls per game (card risk environment)
+    "opp_mid_cards_pg",              # opponent midfielders cards per game
+    "dribble_contact_rate",          # dribbles_pg × (1 - dribble_success_rate)
+    "tackle_dribble_clash",          # dribble_contact_rate × opp_mid_fouls_pg
+    "card_clash_index",              # (fouls_per90 + dribble_contact_rate) × opp_mid_cards_pg × referee_strictness
+    "opp_mid_discipline",            # opp_mid_fouls_pg×0.6 + opp_mid_cards_pg×2.0
 ]
 # Phase 2 (future — needs /fixtures/events API data):
 #   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)

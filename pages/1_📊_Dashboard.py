@@ -252,6 +252,63 @@ if not ht_preds.empty:
     st.dataframe(pd.DataFrame(ht_rows), use_container_width=True, hide_index=True)
     st.caption("Compare fair prices against your bookmaker's HT market to find value")
 
+# ── Side Markets: BTTS / Over 1.5 / Over 3.5 ──────────────────────────────────
+@st.cache_data(ttl=60)
+def load_side_bets():
+    f = config.OUTPUT_DIR / "side_bets.csv"
+    if not f.exists():
+        return pd.DataFrame()
+    sb = pd.read_csv(f)
+    sb["date"] = pd.to_datetime(sb["date"], errors="coerce")
+    today = pd.Timestamp.now().normalize()
+    return sb[sb["date"] >= today].copy()
+
+side_bets = load_side_bets()
+if not side_bets.empty:
+    st.markdown("---")
+    st.markdown(
+        "### 📌 Side Market Tips &nbsp;"
+        "<small style='color:#aaa'>(BTTS · Over 1.5 · Over 3.5)</small>",
+        unsafe_allow_html=True,
+    )
+    st.caption("Standard-format leagues only · Trained separately from O/U 2.5")
+
+    SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    TIER_EMOJI  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+
+    col_sb1, col_sb2 = st.columns(2)
+    with col_sb1:
+        side_tier_filter = st.multiselect(
+            "Tier (side markets)", ["SNIPER", "MARKSMAN", "VALUABLE"],
+            default=["SNIPER", "MARKSMAN", "VALUABLE"], key="sb_tier",
+        )
+    sb_filtered = side_bets[side_bets["signal_tier"].isin(side_tier_filter)].copy() \
+                  if "signal_tier" in side_bets.columns else side_bets
+
+    for mkt, mkt_label in SIDE_LABELS.items():
+        ms = sb_filtered[sb_filtered["market"] == mkt] if "market" in sb_filtered.columns else pd.DataFrame()
+        if ms.empty:
+            continue
+        with st.expander(
+            f"**{mkt_label}** — {len(ms)} tip{'s' if len(ms) != 1 else ''}",
+            expanded=len(ms) <= 5,
+        ):
+            rows = []
+            for _, row in ms.sort_values("edge", ascending=False).iterrows():
+                tier = row.get("signal_tier", "")
+                ev = row.get("ev")
+                rows.append({
+                    "Tier":    f"{TIER_EMOJI.get(tier,'')} {tier}",
+                    "Date":    str(row["date"])[:10],
+                    "League":  row.get("league", ""),
+                    "Match":   f"{row['home_team']} vs {row['away_team']}",
+                    "Odds":    f"{float(row['market_odds']):.2f}",
+                    "Model P": f"{float(row['model_prob'])*100:.0f}%",
+                    "Edge":    f"{float(row['edge'])*100:.1f}%",
+                    "EV":      f"{float(ev):+.1%}" if pd.notna(ev) else "—",
+                })
+            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
 # ── Suppressed bets note ────────────────────────────────────────────────────────
 avoided = df[df["bet"] == "AVOID"]
 if not avoided.empty:

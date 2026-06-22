@@ -54,7 +54,7 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 params={
                     "apiKey": config.ODDS_API_KEY,
                     "regions": "eu",
-                    "markets": "totals",
+                    "markets": "totals,btts",
                     "oddsFormat": "decimal",
                 },
                 timeout=15,
@@ -72,31 +72,38 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 if dt > cutoff:
                     continue
 
-                ov, un = None, None
+                ov25, un25 = None, None
+                ov15, ov35 = None, None
+                btts_yes    = None
                 for bm in event.get("bookmakers", []):
                     for mkt in bm.get("markets", []):
-                        if mkt["key"] != "totals":
-                            continue
-                        for outcome in mkt["outcomes"]:
-                            if outcome.get("point") != 2.5:
-                                continue
-                            if outcome["name"] == "Over":
-                                ov = outcome["price"]
-                            elif outcome["name"] == "Under":
-                                un = outcome["price"]
-                        if ov:
-                            break
-                    if ov:
+                        if mkt["key"] == "totals":
+                            for outcome in mkt["outcomes"]:
+                                pt = outcome.get("point")
+                                nm = outcome.get("name")
+                                pr = outcome.get("price")
+                                if pt == 2.5 and nm == "Over"  and not ov25:  ov25 = pr
+                                if pt == 2.5 and nm == "Under" and not un25:  un25 = pr
+                                if pt == 1.5 and nm == "Over"  and not ov15:  ov15 = pr
+                                if pt == 3.5 and nm == "Over"  and not ov35:  ov35 = pr
+                        elif mkt["key"] == "btts":
+                            for outcome in mkt["outcomes"]:
+                                if outcome.get("name") == "Yes" and not btts_yes:
+                                    btts_yes = outcome.get("price")
+                    if ov25:
                         break
 
-                if ov and un:
+                if ov25 and un25:
                     rows.append({
                         "league":       league,
                         "date":         dt.normalize(),
                         "home_team":    event.get("home_team", ""),
                         "away_team":    event.get("away_team", ""),
-                        "odds_over25":  float(ov),
-                        "odds_under25": float(un),
+                        "odds_over25":  float(ov25),
+                        "odds_under25": float(un25),
+                        "odds_over15":  float(ov15) if ov15 else None,
+                        "odds_over35":  float(ov35) if ov35 else None,
+                        "odds_btts":    float(btts_yes) if btts_yes else None,
                     })
         except Exception as e:
             log.debug(f"OddsAPI {league} exception: {e}")
@@ -153,10 +160,11 @@ def _detect_postponed(current_df: pd.DataFrame) -> list[dict]:
 # ── Main predict function ─────────────────────────────────────────────────────
 
 def predict_upcoming(
-    historical:       pd.DataFrame,
-    payload:          dict,
+    historical:        pd.DataFrame,
+    payload:           dict,
     payload_newformat: dict | None = None,
-    days_ahead:       int = 7,
+    side_payloads:     dict | None = None,
+    days_ahead:        int = 7,
 ) -> tuple[pd.DataFrame, list[dict]]:
     """
     Full predict pipeline for upcoming fixtures.
@@ -232,6 +240,17 @@ def predict_upcoming(
     feat["model_type"] = "unknown"
     feat.loc[std_mask, "model_type"] = "standard"
     feat.loc[nf_mask,  "model_type"] = "new_format"
+
+    # Side-market predictions (BTTS / O1.5 / O3.5) — standard leagues only
+    if side_payloads:
+        for target, sp in side_payloads.items():
+            col = f"p_{target}"
+            feat[col] = np.nan
+            if std_mask.any():
+                try:
+                    feat.loc[std_mask, col] = predict_proba(feat[std_mask], payload=sp).values
+                except Exception as e:
+                    log.warning(f"  Side-market {target} prediction failed: {e}")
 
     # 5b. HT model predictions (standard-format leagues only)
     from src.model import load_models as _load_models
