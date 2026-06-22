@@ -1052,6 +1052,53 @@ def build_upcoming_features(
         if np.isnan(rating_pg):
             rating_pg = 7.0
 
+        # ── Season stats (from enriched parquet — most recent non-null row) ────
+        def _latest(col, default=0.0):
+            if col in phist_all.columns:
+                vals = phist_all[col].dropna()
+                return float(vals.iloc[-1]) if len(vals) else default
+            return default
+
+        season_goals_pg    = _latest("season_goals_pg",   goals_pg)
+        season_assists_pg  = _latest("season_assists_pg",  assists_pg)
+        season_shots_pg    = _latest("season_shots_pg",    shots_pg)
+        season_sot_pg      = _latest("season_sot_pg",      sot_pg)
+        season_cards_pg    = _latest("season_cards_pg",    cards_pg)
+        season_minutes_pg  = _latest("season_minutes_pg",  minutes_pg)
+        season_appearances = _latest("season_appearances", float(len(phist_all)))
+        season_start_rate  = _latest("season_start_rate",  starter_rate)
+        season_pass_accuracy = _latest("season_pass_accuracy", 0.75)
+        season_dribble_pg  = _latest("season_dribble_pg",  dribbles_pg)
+        season_fouls_pg    = _latest("season_fouls_pg",    fouls_per90)
+        season_fouls_drawn_pg = _latest("season_fouls_drawn_pg", fouls_drawn_per90)
+
+        # ── Profile data (age, height) ─────────────────────────────────────────
+        age       = _latest("age",       25.0)
+        height_cm = _latest("height_cm", 180.0)
+        age_peak_delta         = abs(age - 27.0)
+        height_aerial_interaction = height_cm * aerial_won_rate
+
+        # ── Injury features ────────────────────────────────────────────────────
+        chronic_injury_risk     = _latest("chronic_injury_risk",     0.0)
+        days_since_last_injury  = _latest("days_since_last_injury",  365.0)
+        return_from_injury_flag = _latest("return_from_injury_flag", 0.0)
+
+        # ── Referee features ───────────────────────────────────────────────────
+        _ref_prof = referee_profile or {}
+        referee_yellows_pg  = float(_ref_prof.get("yellows_per_game", 4.0))
+        referee_strictness  = float(_ref_prof.get("strictness_score",  1.0))
+
+        # ── Missing composites (computed from vars already in scope) ───────────
+        carrier_vs_press          = max(_progressive_carrier_score * opp_def_aggression, 0.0)
+        box_threat_vs_leaky_defense = max(box_actions_per90 * ctx.get("opp_goals_conceded_pg", 1.3), 0.0)
+        efficiency_vs_leaky_keeper  = max(shooting_efficiency_index * (1.0 - opp_gk_save_rate), 0.0)
+        kp_vs_aggressive_defense    = max(kp_per90 * opp_def_fouls_pg, 0.0)
+        team_momentum_forward_matchup = max(ctx.get("team_goals_pg_roll", 1.3) * pos_forward, 0.0)
+        set_piece_corner_matchup    = max(set_piece_threat_score * team_corners_pg, 0.0)
+        creative_pressure_matchup   = max(creative_playmaker_score * opp_def_aggression, 0.0)
+        _dribble_creativity         = dribbles_pg * dribble_success_rate
+        dribbler_vs_defensive_line  = max(_dribble_creativity * opp_def_fouls_pg, 0.0)
+
         rows.append({
             "player_id":   pid,
             "player_name": name,
@@ -1171,6 +1218,40 @@ def build_upcoming_features(
             "tackle_dribble_clash":  round(max(dribbles_pg * (1.0 - dribble_success_rate) * opp_mid_fouls_pg, 0.0), 4),
             "card_clash_index":      round(max((fouls_per90 + dribbles_pg * (1.0 - dribble_success_rate)) * opp_mid_cards_pg * max(ctx.get("referee_strictness", 1.0), 0.1), 0.0), 4),
             "opp_mid_discipline":    round(max(opp_mid_fouls_pg * 0.6 + opp_mid_cards_pg * 2.0, 0.0), 4),
+            # Season stats (enriched — full-season aggregates)
+            "season_goals_pg":       round(season_goals_pg,       4),
+            "season_assists_pg":     round(season_assists_pg,     4),
+            "season_shots_pg":       round(season_shots_pg,       4),
+            "season_sot_pg":         round(season_sot_pg,         4),
+            "season_cards_pg":       round(season_cards_pg,       4),
+            "season_minutes_pg":     round(season_minutes_pg,     1),
+            "season_appearances":    round(season_appearances,    0),
+            "season_start_rate":     round(season_start_rate,     4),
+            "season_pass_accuracy":  round(season_pass_accuracy,  4),
+            "season_dribble_pg":     round(season_dribble_pg,     4),
+            "season_fouls_pg":       round(season_fouls_pg,       4),
+            "season_fouls_drawn_pg": round(season_fouls_drawn_pg, 4),
+            # Profile features
+            "age":                   round(age,       1),
+            "height_cm":             round(height_cm, 1),
+            "age_peak_delta":        round(age_peak_delta,             2),
+            "height_aerial_interaction": round(height_aerial_interaction, 4),
+            # Injury features
+            "chronic_injury_risk":     round(chronic_injury_risk,     4),
+            "days_since_last_injury":  round(days_since_last_injury,  1),
+            "return_from_injury_flag": round(return_from_injury_flag, 0),
+            # Referee features
+            "referee_yellows_pg":    round(referee_yellows_pg,  4),
+            "referee_strictness":    round(referee_strictness,  4),
+            # Missing composites
+            "carrier_vs_press":               round(carrier_vs_press,               4),
+            "box_threat_vs_leaky_defense":    round(box_threat_vs_leaky_defense,    4),
+            "efficiency_vs_leaky_keeper":     round(efficiency_vs_leaky_keeper,     4),
+            "kp_vs_aggressive_defense":       round(kp_vs_aggressive_defense,       4),
+            "team_momentum_forward_matchup":  round(team_momentum_forward_matchup,  4),
+            "set_piece_corner_matchup":       round(set_piece_corner_matchup,       4),
+            "creative_pressure_matchup":      round(creative_pressure_matchup,      4),
+            "dribbler_vs_defensive_line":     round(dribbler_vs_defensive_line,     4),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()

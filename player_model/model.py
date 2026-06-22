@@ -25,6 +25,14 @@ TARGETS = config.MARKET_TARGETS
 
 def _prep(df: pd.DataFrame, feat_cols: list[str] | None = None) -> tuple[pd.DataFrame, list[str]]:
     cols = feat_cols or [c for c in config.PLAYER_FEATURE_COLS if c in df.columns]
+    # Fill missing columns with 0 rather than crashing — graceful degradation at predict time
+    missing = [c for c in cols if c not in df.columns]
+    if missing:
+        import logging
+        logging.getLogger(__name__).warning(f"[predict] {len(missing)} feature cols missing from feat_df, filling 0: {missing[:8]}")
+        df = df.copy()
+        for c in missing:
+            df[c] = 0.0
     X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
     X = X.fillna(X.median().fillna(0.0))
     return X, cols
