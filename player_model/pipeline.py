@@ -522,7 +522,7 @@ def mode_enrich_sidelined_live() -> None:
         return
 
     df = pd.read_parquet(HISTORY_CACHE)
-    cutoff = pd.Timestamp.utcnow().normalize() - pd.Timedelta(days=60)
+    cutoff = pd.Timestamp.now("UTC").normalize() - pd.Timedelta(days=60)
     if "date" in df.columns:
         recent_mask = pd.to_datetime(df["date"], errors="coerce", utc=True) >= cutoff
         active_pids = df.loc[recent_mask, "player_id"].dropna().unique().tolist()
