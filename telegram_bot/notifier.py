@@ -906,9 +906,19 @@ def notify_props_daily_digest() -> bool:
 
     lines.append("")
 
-    # ── Yesterday's results ───────────────────────────────────────────────────
-    lines.append("━━━━━━━━━━━━━━━━")
-    lines.append(f"📋 <b>YESTERDAY'S PLAYER RESULTS</b>")
+    # ── Send message 1: Today's predictions ───────────────────────────────────
+    msg1 = "\n".join(lines)
+    sent1 = _send(token, chat_id, msg1)
+    if not sent1:
+        return False
+
+    # ── Message 2: Yesterday's results ────────────────────────────────────────
+    lines2 = [
+        f"📋 <b>PLAYER PROPS RESULTS</b> — {hdr_date}",
+        "━━━━━━━━━━━━━━━━",
+        "",
+        "<b>YESTERDAY'S RESULTS</b>",
+    ]
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if player_led.exists():
         try:
@@ -919,15 +929,13 @@ def notify_props_daily_digest() -> bool:
                 pled["pnl"].notna()
             ]
             if yest.empty:
-                lines.append("  No settled results yesterday")
+                lines2.append("  No settled results yesterday")
             else:
                 wins   = int((yest["pnl"] > 0).sum())
                 losses = int((yest["pnl"] < 0).sum())
                 voids  = int(yest["result"].str.upper().eq("VOID").sum()) if "result" in yest.columns else 0
                 pnl    = yest["pnl"].sum()
-                lines.append(f"  {wins}W / {losses}L / {voids} VOID  |  PnL <b>{pnl:+.2f}u</b>")
-                # Per-player detail
-                MKT_EMOJI = {"goals": "⚽", "assists": "🎯", "sot": "🔫", "cards": "🟨"}
+                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  PnL <b>{pnl:+.2f}u</b>")
                 for _, r in yest.iterrows():
                     res    = str(r.get("result", "")).upper()
                     emoji  = {"WIN": "✅", "LOSS": "❌", "VOID": "⬜"}.get(res, "⬜")
@@ -935,21 +943,43 @@ def notify_props_daily_digest() -> bool:
                     mkt    = MKT_LABEL.get(market, market)
                     pnl_r  = float(r["pnl"])
                     note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
-                    lines.append(
+                    lines2.append(
                         f"  {emoji} {r['player_name']} — {mkt}{note}  <b>{pnl_r:+.2f}u</b>"
                     )
         except Exception as e:
-            lines.append(f"  error: {e}")
+            lines2.append(f"  error: {e}")
     else:
-        lines.append("  No player_ledger.csv yet")
+        lines2.append("  No player_ledger.csv yet")
 
-    msg = "\n".join(lines)
-    if _send(token, chat_id, msg):
-        notified.add(props_digest_key)
-        _save_notified(notified, PLAYER_NOTIFIED_FILE)
-        print("Player props daily digest sent.")
-        return True
-    return False
+    # ── All-time player ledger ─────────────────────────────────────────────────
+    lines2.append("")
+    lines2.append("📈 <b>ALL-TIME PLAYER LEDGER</b>")
+    if player_led.exists():
+        try:
+            pled = pd.read_csv(player_led)
+            pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
+            all_p = pled[pled["pnl"].notna()]
+            if not all_p.empty:
+                n = len(all_p); pnl = all_p["pnl"].sum(); roi = pnl / n * 100
+                lines2.append(f"  Total: {n} settled | PnL <b>{pnl:+.2f}u</b> | ROI {roi:+.1f}%")
+                for tier, sym in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
+                    if "tier" not in all_p.columns:
+                        break
+                    t = all_p[all_p["tier"] == tier]
+                    if t.empty:
+                        continue
+                    tn = len(t); w = int((t["pnl"] > 0).sum()); troi = t["pnl"].sum() / tn * 100
+                    lines2.append(f"    {sym} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+        except Exception:
+            pass
+
+    msg2 = "\n".join(lines2)
+    _send(token, chat_id, msg2)
+
+    notified.add(props_digest_key)
+    _save_notified(notified, PLAYER_NOTIFIED_FILE)
+    print("Player props daily digest sent (2 messages).")
+    return True
 
 
 def notify_props_weekly_summary() -> bool:
@@ -1198,8 +1228,19 @@ def notify_daily_digest() -> bool:
         except Exception:
             pass
 
-    # ── Yesterday's results ────────────────────────────────────────────────────
-    lines += ["━━━━━━━━━━━━━━━━", f"📋 <b>YESTERDAY'S RESULTS</b>"]
+    # ── Send message 1: Today's predictions ───────────────────────────────────
+    msg1 = "\n".join(lines)
+    sent1 = _send(token, chat_id, msg1)
+    if not sent1:
+        return False
+
+    # ── Message 2: Yesterday's results + all-time ledger ──────────────────────
+    lines2 = [
+        f"📋 <b>DAILY RESULTS</b> — {header_date}",
+        "━━━━━━━━━━━━━━━━",
+        "",
+        f"<b>YESTERDAY'S RESULTS</b>",
+    ]
 
     ledger_file  = app_config.OUTPUT_DIR / "bets_ledger.csv"
     player_led   = app_config.OUTPUT_DIR / "player_ledger.csv"
@@ -1220,9 +1261,9 @@ def notify_daily_digest() -> bool:
             r = _ledger_row(led, "match_date", "pnl", yesterday_str)
             if r:
                 n, w, pnl = r
-                lines.append(f"  ⚽ O/U: {n} settled | {w}W/{n-w}L | PnL <b>{pnl:+.2f}u</b>")
+                lines2.append(f"  ⚽ O/U: {n} settled | {w}W/{n-w}L | PnL <b>{pnl:+.2f}u</b>")
             else:
-                lines.append("  ⚽ O/U: no settled results")
+                lines2.append("  ⚽ O/U: no settled results")
         except Exception:
             pass
 
@@ -1240,18 +1281,18 @@ def notify_daily_digest() -> bool:
                 affected   = int((yest_s["pnl"] > 0).sum())
                 inaffected = n - affected
                 pnl = yest_s["pnl"].sum()
-                lines.append(
+                lines2.append(
                     f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | PnL <b>{pnl:+.2f}u</b>"
                 )
             else:
-                lines.append("  💰 Sharp/WC: no settled results")
+                lines2.append("  💰 Sharp/WC: no settled results")
         except Exception:
             pass
 
-    lines.append("")
+    lines2.append("")
 
     # ── All-time ledger by model + tier ───────────────────────────────────────
-    lines.append("📈 <b>ALL-TIME LEDGER</b>")
+    lines2.append("📈 <b>ALL-TIME LEDGER</b>")
 
     def _tier_line(sub, tier, sym):
         t = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
@@ -1275,18 +1316,17 @@ def notify_daily_digest() -> bool:
                 if not has_mt:
                     sub = live if fmt == "standard" else pd.DataFrame()
                 elif fmt == "standard":
-                    # NaN model_type = legacy rows (all were standard before the column existed)
                     sub = live[(live["model_type"] == "standard") | live["model_type"].isna()]
                 else:
                     sub = live[live["model_type"] == fmt]
                 if sub.empty:
                     continue
                 n = len(sub); pnl = sub["pnl"].sum(); roi = pnl / n * 100
-                lines.append(f"  {emoji} <b>{label}</b>  ({n} bets | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
+                lines2.append(f"  {emoji} <b>{label}</b>  ({n} bets | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
                 for tier, sym in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
                     ln = _tier_line(sub, tier, sym)
                     if ln:
-                        lines.append(ln)
+                        lines2.append(ln)
         except Exception:
             pass
 
@@ -1297,28 +1337,28 @@ def notify_daily_digest() -> bool:
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
                 n = len(all_s); pnl = all_s["pnl"].sum(); roi = pnl / n * 100
-                lines.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
+                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
                 for sig, sym in [("STEAM_STRONG", "🔴"), ("STEAM_SHARP", "🟠"), ("STRONG", "🟡"), ("SHARP", "🟡")]:
                     t = all_s[all_s["signal"] == sig] if "signal" in all_s.columns else pd.DataFrame()
                     if t.empty:
                         continue
                     tn = len(t)
-                    affected   = int((t["pnl"] > 0).sum())   # signal proved correct
+                    affected   = int((t["pnl"] > 0).sum())
                     inaffected = tn - affected
                     troi = t["pnl"].sum() / tn * 100
-                    lines.append(
+                    lines2.append(
                         f"    {sym} {sig}: {affected} affected / {inaffected} inaffected | ROI {troi:+.1f}%"
                     )
         except Exception:
             pass
 
-    msg = "\n".join(lines)
-    if _send(token, chat_id, msg):
-        notified.add(digest_key)
-        _save_notified(notified)
-        print(f"Daily digest sent.")
-        return True
-    return False
+    msg2 = "\n".join(lines2)
+    _send(token, chat_id, msg2)
+
+    notified.add(digest_key)
+    _save_notified(notified)
+    print("Daily digest sent (2 messages).")
+    return True
 
 
 def get_chat_id(token: str) -> None:
