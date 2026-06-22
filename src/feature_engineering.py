@@ -624,6 +624,10 @@ def build_upcoming_features(
         feat["away_xg_last5"]        = _team_recent(at, "home_xg",        "away_xg",        n, lg)
         feat["home_insidebox_last5"] = _team_recent(ht, "home_insidebox", "away_insidebox", n, lg)
         feat["away_insidebox_last5"] = _team_recent(at, "home_insidebox", "away_insidebox", n, lg)
+        feat["home_possession_last5"] = _team_recent(ht, "home_possession", "away_possession", n, lg)
+        feat["away_possession_last5"] = _team_recent(at, "home_possession", "away_possession", n, lg)
+        feat["home_blocked_last5"]    = _team_recent(ht, "home_blocked",    "away_blocked",    n, lg)
+        feat["away_blocked_last5"]    = _team_recent(at, "home_blocked",    "away_blocked",    n, lg)
 
         # Season-to-date venue stats (current season from historical data — no shift needed)
         def _venue_season_stats(team, team_col, scored_col, conceded_col, league=""):
@@ -771,6 +775,12 @@ def build_upcoming_features(
     # ── Phases 4-7: Lineup, H2H, API odds ────────────────────────────────────
     # Defaults applied first so the model always has valid values even when
     # API is unavailable or lineup not yet released.
+    # Phase 7 extensions (BTTS, O/U 3.5, draw odds)
+    df["api_implied_btts"]   = 0.50
+    df["api_implied_over35"] = 0.30
+    df["api_implied_over15"] = 0.80
+    df["api_implied_draw"]   = 0.27
+
     df["home_attack_formation"]  = 0.65
     df["away_attack_formation"]  = 0.65
     df["combined_attack_intent"] = 1.30
@@ -802,6 +812,30 @@ def build_upcoming_features(
                         df.at[_idx, _k] = _v
     except Exception:
         pass
+
+    # ── Phases 9-10: Season round + coach features ────────────────────────────
+    df["season_stage_ratio"]      = 0.50
+    df["is_late_season"]          = 0.0
+    df["home_coach_tenure_days"]  = 180.0
+    df["home_coach_is_caretaker"] = 0.0
+    df["away_coach_tenure_days"]  = 180.0
+    df["away_coach_is_caretaker"] = 0.0
+    try:
+        from src.api_football_ou import fetch_season_round_features, fetch_coach_features
+        for _feat_dict in [
+            fetch_season_round_features(df),
+            fetch_coach_features(df),
+        ]:
+            for _idx, _feats in _feat_dict.items():
+                for _k, _v in _feats.items():
+                    if _k in df.columns:
+                        df.at[_idx, _k] = _v
+    except Exception:
+        pass
+
+    # Artificial pitch — static per-league flag (Finland/Sweden/Norway)
+    _art = getattr(config, "ARTIFICIAL_PITCH_LEAGUES", set())
+    df["home_pitch_artificial"] = df["league"].isin(_art).astype(float)
 
     # Sofascore
     df = _merge_sofascore(df)

@@ -2,10 +2,10 @@ name: Player Props
 
 on:
   schedule:
-    # Predict-only: 5x daily (30 min after main predict runs)
-    - cron: '30 6,10,14,18,22 * * *'
-    # WC night coverage: 5x during Americas hours (revert after Jul 19)
-    - cron: '0 1,2,3,4,5 * * *'
+    # Predict-only: every 5 min during match hours — offset :02 to stagger runners
+    - cron: '2-59/5 8-23 * * *'
+    # WC night coverage: Americas hours — revert after Jul 19 (remove this cron line)
+    - cron: '2-59/5 0-7 * * *'
     # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC
@@ -45,6 +45,13 @@ jobs:
           key: fixture-stats-${{ runner.os }}-${{ hashFiles('player_model/data_fetcher.py') }}
           restore-keys: fixture-stats-${{ runner.os }}-
 
+      - name: Cache lineup data (4h TTL — pre-match lineups)
+        uses: actions/cache@v4
+        with:
+          path: lineup_cache
+          key: lineup-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: lineup-${{ runner.os }}-
+
       - name: Cache player prop odds
         uses: actions/cache@v4
         with:
@@ -52,13 +59,20 @@ jobs:
           key: prop-odds-${{ runner.os }}-${{ github.run_id }}
           restore-keys: prop-odds-${{ runner.os }}-
 
+      - name: Cache fixture player stats (permanent — only new fixtures cost API calls)
+        uses: actions/cache@v4
+        with:
+          path: fixture_player_cache
+          key: fixture-player-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: fixture-player-${{ runner.os }}-
+
       - name: Collect club league data (Sundays + manual)
         if: |
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode collect --last-n 30
+        run: python -m player_model.pipeline --mode collect
         continue-on-error: true
 
       - name: Collect WC2026 national team data (nightly during WC, Sundays, manual)
@@ -99,11 +113,33 @@ jobs:
           fi
         continue-on-error: true
 
+      - name: Refresh injury status (today's active players only)
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          TODAY=$(date -u +%Y%m%d)
+          SCHEDULE="${{ github.event.schedule }}"
+          # Skip night runs outside WC window
+          if [[ "$SCHEDULE" == *"0-7"* ]] && [ "$TODAY" -gt "20260719" ]; then
+            echo "Outside WC2026 — skipping night sidelined refresh"
+            exit 0
+          fi
+          python -m player_model.pipeline --mode enrich-sidelined-live
+        continue-on-error: true
+
       - name: Generate player prop predictions
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python -m player_model.pipeline --mode predict
+        run: |
+          TODAY=$(date -u +%Y%m%d)
+          SCHEDULE="${{ github.event.schedule }}"
+          # Skip night runs outside WC window
+          if [[ "$SCHEDULE" == *"0-7"* ]] && [ "$TODAY" -gt "20260719" ]; then
+            echo "Outside WC2026 — skipping night predict"
+            exit 0
+          fi
+          python -m player_model.pipeline --mode predict
         continue-on-error: true
 
       - name: Send Telegram alerts for player prop signals
@@ -126,8 +162,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/player_tips.csv output/player_ledger.csv telegram_bot/player_notified.json \
                      player_history.parquet \
-                     models/model_player_goals.pkl models/model_player_assists.pkl \
-                     models/model_player_sot.pkl models/model_player_cards.pkl 2>/dev/null || true
+                     models/model_player_goals.pkl  models/model_player_goals2.pkl \
+                     models/model_player_goals3.pkl models/model_player_assists.pkl \
+                     models/model_player_sot.pkl    models/model_player_sot2.pkl \
+                     models/model_player_sot3.pkl   models/model_player_sot4.pkl \
+                     models/model_player_cards.pkl 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
           git pull --rebase --autostash -X ours origin main

@@ -2,7 +2,7 @@ name: Predict
 
 on:
   schedule:
-    - cron: '0 */4 * * *'   # every 4 hours: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC
+    - cron: '1-59/5 8-23 * * *'   # every 5 min during match hours — offset :01 to stagger runners
   workflow_dispatch:
 
 concurrency:

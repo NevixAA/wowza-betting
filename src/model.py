@@ -100,6 +100,24 @@ FEATURE_COLS = [
     # Phase 7: API-Football cross-validated odds (Bet365 via /odds, TTL 6h)
     "api_implied_over25",       # Bet365 implied P(over 2.5) — second bookmaker signal
     "api_overround",            # Bet365 overround — market tightness / confidence proxy
+    # Phase 7 extensions — additional Bet365 market signals (same /odds call)
+    "api_implied_btts",          # Bet365 implied P(BTTS) — independent O/U signal
+    "api_implied_over35",        # Bet365 implied P(over 3.5) — high-scoring confirmation
+    "api_implied_over15",        # Bet365 implied P(over 1.5) — defensive match signal
+    "api_implied_draw",          # Bet365 implied P(draw) — draw prob correlates with under
+    # Phase 9 — Season stage (from /fixtures/rounds, TTL 24h)
+    "season_stage_ratio",        # current_round / total_rounds: late-season pressure
+    "is_late_season",            # binary: stage_ratio >= 0.80
+    # Phase 10 — Coach stability (from /coachs, TTL 7d)
+    "home_coach_is_caretaker",   # binary: coach tenure < 14 days
+    "away_coach_is_caretaker",
+    # Rolling possession and blocked shots (from fixture stats backfill)
+    "home_possession_last5",     # avg ball possession % home team last 5 matches
+    "away_possession_last5",
+    "home_blocked_last5",        # avg blocked shots last 5
+    "away_blocked_last5",
+    # Pitch type — artificial turf suppresses goals (Finland/Sweden/Norway)
+    "home_pitch_artificial",
 ]
 
 
@@ -166,6 +184,7 @@ def train(
             n_estimators=200, learning_rate=0.05, max_depth=6,
             num_leaves=31, subsample=0.8, colsample_bytree=0.8,
             min_child_samples=20, random_state=42, verbose=-1,
+            n_jobs=-1,
         )))
     except ImportError:
         pass

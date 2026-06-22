@@ -16,7 +16,7 @@ BASE_DIR   = Path(__file__).resolve().parents[1]
 TIPS_FILE  = BASE_DIR / "output" / "player_tips.csv"
 
 st.title("👤 Player Props")
-st.caption("SNIPER/MARKSMAN/VALUABLE signals + WC2026 model signals — SOT, Goals, Cards, Assists")
+st.caption("SNIPER/MARKSMAN/VALUABLE signals + WC2026 model signals — Goals (1+/2+/Hat Trick) · SOT (1-4+) · Assists · Cards")
 
 if st.button("🔄 Refresh"):
     st.cache_data.clear()
@@ -30,8 +30,17 @@ TIER_META = {
 }
 
 MARKET_EMOJI = {
-    "goals":   "⚽", "sot": "🎯", "cards": "🟨",
-    "assists": "🅰️", "corners": "🔄", "fouls": "👊",
+    "goals": "⚽", "goals2": "⚽⚽", "goals3": "🎩",
+    "assists": "🎯",
+    "sot": "🔫", "sot2": "🔫", "sot3": "🔫", "sot4": "🔫",
+    "cards": "🟨",
+    "corners": "🔄", "fouls": "👊",
+}
+MARKET_LABEL = {
+    "goals": "Anytime Scorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+    "assists": "Assist",
+    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+    "cards": "Yellow Card",
 }
 
 @st.cache_data(ttl=120)
@@ -106,7 +115,7 @@ def _render_signal(row, *, show_tier_label=True):
         <span style="color:#aaa"> · {row['position']} · {row['team']}</span><br/>
         <span style="color:#90caf9">{row['league']} — {row['match']}</span><br/>
         <div style="margin:6px 0">
-            <span style="color:white">{mkt_emoji} <b>{row['market'].upper()}</b></span>
+            <span style="color:white">{mkt_emoji} <b>{MARKET_LABEL.get(row['market'], row['market'].upper())}</b></span>
             &nbsp;{odds_str}
             &nbsp;|&nbsp;<span style="color:#00cc88"><b>{ev_str}</b></span>
             &nbsp;|&nbsp;Model P: <b style="color:white">{row['model_prob']:.0%}</b>
@@ -180,4 +189,4 @@ with st.expander("📊 Raw data — all today's signals"):
     st.dataframe(show_df[[c for c in show_cols if c in show_df.columns]],
                  use_container_width=True, hide_index=True)
 
-st.caption("Player props · Phase 1+2 · API-Football rolling stats · WC2026 national team data")
+st.caption("Player props · 9 markets · API-Football rolling stats · WC2026 national team data")

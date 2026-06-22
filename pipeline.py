@@ -49,8 +49,79 @@ from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
 from src.model import train as train_model, save_models, load_models, get_feature_importances
 from src.betting import generate_bets
-from src.backtest import run_backtest
+from src.backtest import run_backtest, run_side_market_backtest, optimize_side_market_thresholds
 from src.ledger import append_tips, print_ledger
+
+
+# ── Side-market bet generation ────────────────────────────────────────────────
+
+def _load_side_market_thresholds() -> dict:
+    """Load per-league thresholds from best_params_side_markets.json if it exists."""
+    import json
+    th_file = config.MODELS_DIR / "best_params_side_markets.json"
+    if th_file.exists():
+        with open(th_file) as f:
+            return json.load(f)
+    return {}
+
+
+def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFrame":
+    """
+    Generate SNIPER/MARKSMAN/VALUABLE tips for BTTS / Over 1.5 / Over 3.5.
+    Uses per-league optimized thresholds from best_params_side_markets.json when
+    available, falling back to fixed global thresholds.
+    Leagues marked 'drop=True' in the optimizer output are suppressed entirely.
+    """
+    import pandas as pd
+    import numpy as np
+    frames = []
+    OVERROUND    = 1.08
+    league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
+
+    for target in side_markets:
+        prob_col = f"p_{target}"
+        odds_col = f"odds_{target}"
+        if prob_col not in preds.columns or odds_col not in preds.columns:
+            continue
+        df = preds[[
+            "date", "league", "home_team", "away_team", prob_col, odds_col
+        ]].dropna(subset=[prob_col, odds_col]).copy()
+        if df.empty:
+            continue
+
+        market_params = league_params.get(target, {})
+
+        df["model_prob"]  = df[prob_col]
+        df["market_odds"] = df[odds_col]
+        df["fair_prob"]   = (1.0 / df["market_odds"]) / OVERROUND
+        df["edge"]        = df["model_prob"] - df["fair_prob"]
+        df["ev"]          = df["model_prob"] * df["market_odds"] - 1.0
+        df["market"]      = target
+
+        def _tier(row):
+            lg = row["league"]
+            lp = market_params.get(lg, {})
+            # Drop leagues the optimizer flagged as unprofitable
+            if lp.get("drop", False):
+                return "AVOID"
+            sniper_th   = lp.get("sniper_th",   0.10)
+            marksman_th = lp.get("marksman_th",  0.08)
+            edge = row["edge"]
+            if edge >= sniper_th:   return "SNIPER"
+            if edge >= marksman_th: return "MARKSMAN"
+            if edge >= 0.04:        return "VALUABLE"
+            return "AVOID"
+
+        df["signal_tier"] = df.apply(_tier, axis=1)
+        df = df[df["signal_tier"] != "AVOID"]
+        df = df.sort_values("edge", ascending=False)
+        frames.append(df[["date", "league", "home_team", "away_team",
+                           "market", "market_odds", "model_prob",
+                           "fair_prob", "edge", "ev", "signal_tier"]])
+
+    if not frames:
+        return pd.DataFrame()
+    return pd.concat(frames, ignore_index=True).sort_values("edge", ascending=False)
 
 
 # ── TRAIN ─────────────────────────────────────────────────────────────────────
@@ -131,6 +202,18 @@ def mode_train() -> tuple:
     else:
         log.warning(f"  Not enough HT data ({len(ht_valid)} rows) — skipping HT models")
 
+    # ── Side-market models (BTTS / O1.5 / O3.5) — standard leagues only ────
+    log.info("\nTraining side-market models (BTTS / Over 1.5 / Over 3.5)...")
+    for target, model_file in config.SIDE_MARKETS.items():
+        sm_valid = std_valid.dropna(subset=[target])
+        if len(sm_valid) >= config.BACKTEST_MIN_TRAIN:
+            log.info(f"  [{target}] {len(sm_valid):,} rows  "
+                     f"base rate={sm_valid[target].mean():.1%}")
+            _train_one(sm_valid, target, model_file,
+                       target=target, weights=_get_weights(sm_valid))
+        else:
+            log.warning(f"  [{target}] Not enough data ({len(sm_valid)}) — skipping")
+
     return feat, None
 
 
@@ -151,9 +234,16 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     payload_nf  = load_models(model_file=config.MODEL_FILE_NEWFORMAT) \
                   if config.MODEL_FILE_NEWFORMAT.exists() else None
 
+    # Side-market payloads (BTTS / O1.5 / O3.5) — optional, skip if not trained yet
+    side_payloads = {}
+    for target, model_file in config.SIDE_MARKETS.items():
+        if model_file.exists():
+            side_payloads[target] = load_models(model_file=model_file)
+
     preds, postponed = predict_upcoming(
         historical, payload_std,
         payload_newformat=payload_nf,
+        side_payloads=side_payloads,
         days_ahead=7,
     )
 
@@ -174,6 +264,16 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
 
     # ── Generate bets (SNIPER + VALUE) ───────────────────────────────────────
     bets = generate_bets(preds)
+
+    # ── Side-market tips (BTTS / O1.5 / O3.5) ───────────────────────────────
+    side_bets = _generate_side_bets(preds, config.SIDE_MARKETS)
+    if not side_bets.empty:
+        side_bets_file = config.OUTPUT_DIR / "side_bets.csv"
+        side_bets.to_csv(side_bets_file, index=False)
+        log.info(f"Side-market tips → {side_bets_file}  ({len(side_bets)} tips)")
+        for mkt, label in config.SIDE_MARKET_LABELS.items():
+            n = (side_bets["market"] == mkt).sum()
+            log.info(f"  {label}: {n} tips")
 
     if not bets.empty:
         bets_file = config.OUTPUT_DIR / "bets.csv"
@@ -272,18 +372,159 @@ def mode_backtest(feat: "pd.DataFrame" = None) -> tuple:
     combined = pd.concat([std_results, nf_results], ignore_index=True)
     combined.to_csv(config.OUTPUT_DIR / "backtest_results.csv", index=False)
 
+    # ── Side-market backtests (BTTS / Over 1.5 / Over 3.5) ──────────────────
+    log.info("\nBacktesting side markets (BTTS / Over 1.5 / Over 3.5)...")
+    import json
+    all_side_thresholds = {}  # {target: {league: {sniper_th, marksman_th, roi, bets, drop}}}
+
+    for target, label in config.SIDE_MARKET_LABELS.items():
+        try:
+            sm_results, sm_summary, sm_league = run_side_market_backtest(
+                feat, target=target, enabled_leagues=std_leagues
+            )
+            bt_file = config.OUTPUT_DIR / f"backtest_results_{target}.csv"
+            sm_results.to_csv(bt_file, index=False)
+            lg_file = config.OUTPUT_DIR / f"backtest_by_league_{target}.csv"
+            sm_league.to_csv(lg_file, index=False)
+
+            print(f"\n{'=' * 60}")
+            print(f"  BACKTEST — {label}")
+            print(f"{'=' * 60}")
+            for k, v in sm_summary.items():
+                print(f"  {k:35s}: {v}")
+            if not sm_league.empty:
+                print(f"\n  BY LEAGUE [{label}]:")
+                print(sm_league.to_string(index=False))
+
+            # ── Per-league threshold optimization ────────────────────────────
+            log.info(f"\nOptimizing per-league thresholds for {label}...")
+            league_ths = optimize_side_market_thresholds(sm_results, target=target)
+            all_side_thresholds[target] = league_ths
+
+            print(f"\n  PER-LEAGUE THRESHOLDS [{label}]:")
+            print(f"  {'League':<30} {'SNIPER th':>10} {'MARKSMAN th':>12} {'ROI%':>8} {'Bets':>6} {'Drop':>6}")
+            print(f"  {'-'*72}")
+            for lg, v in sorted(league_ths.items()):
+                roi_str = f"{v['roi']:.1f}%" if v['roi'] is not None else "—"
+                print(f"  {lg:<30} {v['sniper_th']:>10.2f} {v['marksman_th']:>12.2f} "
+                      f"{roi_str:>8} {v['bets']:>6} {'DROP' if v['drop'] else '':>6}")
+
+        except Exception as e:
+            log.warning(f"  [{target}] Backtest failed: {e}")
+
+    # Save all side-market thresholds to JSON
+    if all_side_thresholds:
+        th_file = config.MODELS_DIR / "best_params_side_markets.json"
+        with open(th_file, "w") as f:
+            json.dump(all_side_thresholds, f, indent=2)
+        log.info(f"Side-market thresholds saved → {th_file}")
+
     return std_results, std_summary
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
+def mode_backtest_side(feat: "pd.DataFrame" = None, market: str = None) -> None:
+    """Run ONLY the side-market backtests (BTTS / Over 1.5 / Over 3.5).
+    Skips the standard 2.5 walk-forward backtest entirely.
+    market: if set, run only that one market (used for parallel dispatch).
+    """
+    import json, subprocess, sys
+    log.info("=" * 60)
+    log.info("MODE: BACKTEST-SIDE  (BTTS / Over 1.5 / Over 3.5 only)")
+    log.info("=" * 60)
+
+    # If no specific market requested, spawn 3 parallel subprocesses (3× faster)
+    if market is None:
+        procs = []
+        for t in config.SIDE_MARKET_LABELS:
+            p = subprocess.Popen(
+                [sys.executable, __file__, "--mode", "backtest-side", "--market", t],
+                cwd=Path(__file__).parent,
+            )
+            procs.append((t, p))
+            log.info(f"Spawned backtest-side --market {t} (PID {p.pid})")
+        for t, p in procs:
+            p.wait()
+            log.info(f"[{t}] subprocess finished (exit {p.returncode})")
+        # Merge per-market JSON files into one combined best_params_side_markets.json
+        all_side_thresholds = {}
+        for t in config.SIDE_MARKET_LABELS:
+            f = config.MODELS_DIR / f"best_params_{t}.json"
+            if f.exists():
+                all_side_thresholds[t] = json.loads(f.read_text())
+        if all_side_thresholds:
+            th_file = config.MODELS_DIR / "best_params_side_markets.json"
+            th_file.write_text(json.dumps(all_side_thresholds, indent=2))
+            log.info(f"Combined thresholds saved → {th_file}")
+        return
+
+    if feat is None:
+        raw  = load_all_matches()
+        feat = build_features(raw)
+
+    std_leagues = config.STANDARD_FORMAT_LEAGUES & config.ENABLED_LEAGUES
+    all_side_thresholds = {}
+    markets_to_run = {market: config.SIDE_MARKET_LABELS[market]} if market else config.SIDE_MARKET_LABELS
+
+    for target, label in markets_to_run.items():
+        try:
+            sm_results, sm_summary, sm_league = run_side_market_backtest(
+                feat, target=target, enabled_leagues=std_leagues
+            )
+            (config.OUTPUT_DIR / f"backtest_results_{target}.csv").parent.mkdir(exist_ok=True)
+            sm_results.to_csv(config.OUTPUT_DIR / f"backtest_results_{target}.csv", index=False)
+            sm_league.to_csv(config.OUTPUT_DIR / f"backtest_by_league_{target}.csv", index=False)
+
+            print(f"\n{'=' * 60}")
+            print(f"  BACKTEST — {label}")
+            print(f"{'=' * 60}")
+            for k, v in sm_summary.items():
+                print(f"  {k:35s}: {v}")
+            if not sm_league.empty:
+                print(f"\n  BY LEAGUE [{label}]:")
+                print(sm_league.to_string(index=False))
+
+            log.info(f"\nOptimizing per-league thresholds for {label}...")
+            league_ths = optimize_side_market_thresholds(sm_results, target=target)
+            all_side_thresholds[target] = league_ths
+
+            print(f"\n  PER-LEAGUE THRESHOLDS [{label}]:")
+            print(f"  {'League':<30} {'SNIPER th':>10} {'MARKSMAN th':>12} {'ROI%':>8} {'Bets':>6} {'Drop':>6}")
+            print(f"  {'-'*72}")
+            for lg, v in sorted(league_ths.items()):
+                roi_str = f"{v['roi']:.1f}%" if v['roi'] is not None else "—"
+                print(f"  {lg:<30} {v['sniper_th']:>10.2f} {v['marksman_th']:>12.2f} "
+                      f"{roi_str:>8} {v['bets']:>6} {'DROP' if v['drop'] else '':>6}")
+
+        except Exception as e:
+            log.warning(f"  [{target}] Backtest failed: {e}")
+
+    if all_side_thresholds:
+        # Save per-market file (used by parallel dispatcher to merge)
+        if market:
+            m_file = config.MODELS_DIR / f"best_params_{market}.json"
+            m_file.write_text(json.dumps(all_side_thresholds.get(market, {}), indent=2))
+        else:
+            th_file = config.MODELS_DIR / "best_params_side_markets.json"
+            with open(th_file, "w") as f:
+                json.dump(all_side_thresholds, f, indent=2)
+            log.info(f"Side-market thresholds saved → {th_file}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="v9 Football Prediction Pipeline (hybrid v7+v8)")
     parser.add_argument(
         "--mode",
-        choices=["train", "predict", "backtest", "all"],
+        choices=["train", "predict", "backtest", "backtest-side", "all"],
         default="predict",
         help="Pipeline mode (default: predict)",
+    )
+    parser.add_argument(
+        "--market",
+        choices=["btts", "over15", "over35"],
+        default=None,
+        help="Run backtest-side for a single market only (used internally for parallel dispatch)",
     )
     args = parser.parse_args()
 
@@ -293,6 +534,8 @@ def main():
         mode_predict()
     elif args.mode == "backtest":
         mode_backtest()
+    elif args.mode == "backtest-side":
+        mode_backtest_side(market=args.market)
     elif args.mode == "all":
         feat, _ = mode_train()
         mode_predict(load_all_matches())

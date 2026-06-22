@@ -20,12 +20,7 @@ from sklearn.preprocessing import StandardScaler
 
 from . import config
 
-TARGETS = {
-    "goals":   "target_goals",
-    "assists": "target_assists",
-    "sot":     "target_sot",
-    "cards":   "target_cards",
-}
+TARGETS = config.MARKET_TARGETS
 
 
 def _prep(df: pd.DataFrame, feat_cols: list[str] | None = None) -> tuple[pd.DataFrame, list[str]]:

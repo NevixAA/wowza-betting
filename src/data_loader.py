@@ -51,6 +51,11 @@ _OVER_COLS  = ["AvgC>2.5", "MaxC>2.5", "B365C>2.5", "PC>2.5",
 _UNDER_COLS = ["AvgC<2.5", "MaxC<2.5", "B365C<2.5", "PC<2.5",
                "Avg<2.5",  "Max<2.5",  "B365<2.5",  "P<2.5"]
 
+# Side-market odds (not available in all leagues/seasons — NaN where absent)
+_BTTS_COLS  = ["AvgBTSH", "MaxBTSH", "BbAvBTSH", "BBTSH"]
+_OVER15_COLS = ["Avg>1.5", "Max>1.5", "BbAv>1.5", "B365>1.5"]
+_OVER35_COLS = ["Avg>3.5", "Max>3.5", "BbAv>3.5", "B365>3.5"]
+
 # Module-level cache so we only parse the XLSX once per process
 _CACHE: Optional[pd.DataFrame] = None
 
@@ -128,6 +133,9 @@ def _ci_download_all() -> list[pd.DataFrame]:
                     df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
                 df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
                 df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+                df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
+                df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
+                df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
                 df["ftr"] = raw.get("FTR", np.nan)
                 df = df[df["home_team"].notna() & df["away_team"].notna()]
                 frames.append(df)
@@ -161,6 +169,9 @@ def _ci_download_all() -> list[pd.DataFrame]:
                 df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
             df["odds_over25"]  = _pick_odds(raw, ["AvgCH","MaxCH","B365CH"])
             df["odds_under25"] = _pick_odds(raw, ["AvgCA","MaxCA","B365CA"])
+            df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
+            df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
+            df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
             df = df[df["home_team"].notna() & df["away_team"].notna()]
             frames.append(df)
         except Exception:
@@ -211,7 +222,8 @@ def _load_api_football_only_leagues() -> list[pd.DataFrame]:
                 )
                 for col in ["home_shots", "away_shots", "home_sot", "away_sot",
                             "home_corners", "away_corners", "home_fouls", "away_fouls",
-                            "odds_over25", "odds_under25"]:
+                            "odds_over25", "odds_under25",
+                            "odds_btts", "odds_over15", "odds_over35"]:
                     if col not in df.columns:
                         df[col] = np.nan
                 frames.append(df)
@@ -345,6 +357,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         out = out.sort_values("date").reset_index(drop=True)
         out["total_goals"] = out["home_goals"] + out["away_goals"]
         out["over25"] = (out["total_goals"] > 2.5).astype(float)
+        out["over15"] = (out["total_goals"] > 1.5).astype(float)
+        out["over35"] = (out["total_goals"] > 3.5).astype(float)
         out["btts"] = ((out["home_goals"] > 0) & (out["away_goals"] > 0)).astype(float)
         if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
             out["ht_total_goals"] = out["ht_home_goals"] + out["ht_away_goals"]
@@ -404,6 +418,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         df["referee"]  = raw.get("Referee", np.nan)
         df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
         df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+        df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
+        df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
+        df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
 
         frames.append(df)
 
@@ -475,6 +492,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                     df["referee"]       = raw.get("Referee", np.nan)
                     df["odds_over25"]   = _pick_odds(raw, _OVER_COLS)
                     df["odds_under25"]  = _pick_odds(raw, _UNDER_COLS)
+                    df["odds_btts"]     = _pick_odds(raw, _BTTS_COLS)
+                    df["odds_over15"]   = _pick_odds(raw, _OVER15_COLS)
+                    df["odds_over35"]   = _pick_odds(raw, _OVER35_COLS)
                     df = df[df["home_team"].notna() & df["away_team"].notna()]
                     # Replace the matching Excel frame with this clean CSV data
                     frames = [f for f in frames if not (
@@ -529,6 +549,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             df["ftr"] = raw.get("FTR", np.nan)
             df["odds_over25"]  = _pick_odds(raw, _OVER_COLS)
             df["odds_under25"] = _pick_odds(raw, _UNDER_COLS)
+            df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
+            df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
+            df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
             df = df[df["home_team"].notna() & df["away_team"].notna()]
             frames.append(df)
             log.debug(f"HT extra: {lg_name} {len(df)} rows")
@@ -546,6 +569,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # Derived columns
     out["total_goals"] = out["home_goals"] + out["away_goals"]
     out["over25"]      = (out["total_goals"] > 2.5).astype(float)
+    out["over15"]      = (out["total_goals"] > 1.5).astype(float)
+    out["over35"]      = (out["total_goals"] > 3.5).astype(float)
     out["btts"]        = (
         (out["home_goals"] > 0) & (out["away_goals"] > 0)
     ).astype(float)

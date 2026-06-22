@@ -179,6 +179,62 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["career_assists_pg"] = grp["assists"].transform(
         lambda x: x.shift(1).expanding().mean()).fillna(0.0)
 
+    # ── Age and physical profile features ────────────────────────────────────
+    if "age" in df.columns and df["age"].gt(0).any():
+        df["age_peak_delta"] = (df["age"] - 27).abs()
+    else:
+        df["age_peak_delta"] = 0.0
+        df["age"] = 25.0  # fallback default
+
+    if "height_cm" not in df.columns:
+        df["height_cm"] = 180.0
+    if "weight_kg" not in df.columns:
+        df["weight_kg"] = 75.0
+
+    # Aerial interaction — physical build × aerial success rate
+    if "aerial_won_rate" in df.columns:
+        df["height_aerial_interaction"] = (
+            (df["height_cm"].clip(160, 200) - 160) / 40  # normalize to 0-1
+        ) * df["aerial_won_rate"]
+    else:
+        df["height_aerial_interaction"] = 0.0
+
+    # ── Season-level new fields (from extended fetch_player_season_stats) ────
+    for col, default in [
+        ("season_start_rate",     0.7),
+        ("season_pass_accuracy",  0.75),
+        ("season_dribble_pg",     0.3),
+        ("season_fouls_pg",       1.0),
+        ("season_fouls_drawn_pg", 0.8),
+    ]:
+        if col not in df.columns:
+            df[col] = default
+        else:
+            df[col] = df[col].fillna(default)
+
+    # ── Injury/sidelined features ────────────────────────────────────────────
+    # These require the sidelined data to have been pre-merged into df.
+    # If not present, default to safe neutral values.
+    for col, default in [
+        ("chronic_injury_risk",      0.0),
+        ("days_since_last_injury",   365.0),
+        ("return_from_injury_flag",  0.0),
+    ]:
+        if col not in df.columns:
+            df[col] = default
+
+    # ── Referee strictness ───────────────────────────────────────────────────
+    # referee column added by _fetch_league_fixtures(); compute per-referee avg
+    if "referee" in df.columns and df["referee"].notna().any():
+        ref_grp = df.groupby("referee")["yellow_cards"].mean()
+        df["referee_yellows_pg"] = df["referee"].map(ref_grp).fillna(df["yellow_cards"].mean())
+        ref_cards_mean = df["yellow_cards"].mean() or 0.3
+        ref_max = df.groupby("referee")["yellow_cards"].mean().max() or 1.0
+        df["referee_strictness"] = df["referee_yellows_pg"] / (ref_max or 1.0)
+    else:
+        df["referee_yellows_pg"]  = df["yellow_cards"].mean() if "yellow_cards" in df.columns else 0.3
+        df["referee_strictness"]  = 0.5
+
     # ── New raw rolling features from extended data fields ───────────────────
     # Defensive actions
     if "tackles_total" in df.columns:
@@ -408,6 +464,82 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
 
+    # ── Position-split opponent concede stats ─────────────────────────────────
+    # How many goals/SOT do FORWARDS vs MIDFIELDERS score against each team?
+    # More precise matchup signal than the team-level opp_goals_conceded_pg.
+    _pos_upper = df["position"].str.upper().fillna("") if "position" in df.columns \
+        else pd.Series([""] * len(df), index=df.index)
+    for _pp, _sfx, _g_def, _s_def in [("F", "fwd", 1.0, 3.5), ("M", "mid", 0.4, 2.0)]:
+        _pmask = _pos_upper.str.startswith(_pp)
+        if not _pmask.any():
+            df[f"opp_goals_conceded_vs_{_sfx}_pg"] = _g_def
+            df[f"opp_sot_conceded_vs_{_sfx}_pg"]   = _s_def
+            continue
+        _pagg = (
+            df[_pmask]
+            .groupby(["fixture_id", "team"])
+            .agg(_date=("date", "first"), _goals=("goals", "sum"), _sot=("shots_on_target", "sum"))
+            .reset_index()
+        )
+        _popp = _pagg[["fixture_id", "team", "_goals", "_sot"]].rename(columns={
+            "team": "opponent_team", "_goals": f"_gvs{_sfx}", "_sot": f"_svs{_sfx}",
+        })
+        _pm = _pagg[["fixture_id", "team", "_date"]].merge(_popp, on="fixture_id")
+        _pm = _pm[_pm["team"] != _pm["opponent_team"]].copy()
+        _pm = _pm.sort_values(["team", "_date"])
+        _ptg = _pm.groupby("team", group_keys=False)
+        _pm[f"opp_goals_conceded_vs_{_sfx}_pg"] = _ptg[f"_gvs{_sfx}"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        _pm[f"opp_sot_conceded_vs_{_sfx}_pg"] = _ptg[f"_svs{_sfx}"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        _pf = _pm[["fixture_id", "team",
+                    f"opp_goals_conceded_vs_{_sfx}_pg",
+                    f"opp_sot_conceded_vs_{_sfx}_pg"]].rename(columns={"team": "opponent"})
+        df = df.merge(_pf, on=["fixture_id", "opponent"], how="left")
+        df[f"opp_goals_conceded_vs_{_sfx}_pg"] = df[f"opp_goals_conceded_vs_{_sfx}_pg"].fillna(_g_def)
+        df[f"opp_sot_conceded_vs_{_sfx}_pg"]   = df[f"opp_sot_conceded_vs_{_sfx}_pg"].fillna(_s_def)
+    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
+
+    # ── Opponent midfielder discipline (cards market) ─────────────────────────
+    # How many fouls/cards do opponent MIDFIELDERS commit?
+    # Midfield battles cause the most yellows — this is the primary card matchup signal.
+    if "position" in df.columns:
+        _pos_upper2 = df["position"].str.upper().fillna("")
+        _mmask = _pos_upper2.str.startswith("M")
+        if _mmask.any():
+            _magg = (
+                df[_mmask]
+                .groupby(["fixture_id", "team"])
+                .agg(_date=("date", "first"),
+                     _fouls=("fouls_committed", "sum"),
+                     _cards=("yellow_cards", "sum"))
+                .reset_index()
+            )
+            _mopp = _magg[["fixture_id", "team", "_fouls", "_cards"]].rename(columns={
+                "team": "opponent_team",
+            })
+            _mm = _magg[["fixture_id", "team", "_date"]].merge(_mopp, on="fixture_id")
+            _mm = _mm[_mm["team"] != _mm["opponent_team"]].copy()
+            _mm = _mm.sort_values(["team", "_date"])
+            _mmg = _mm.groupby("team", group_keys=False)
+            _mm["opp_mid_fouls_pg"] = _mmg["_fouls"].transform(
+                lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+            _mm["opp_mid_cards_pg"] = _mmg["_cards"].transform(
+                lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+            _mf = _mm[["fixture_id", "team", "opp_mid_fouls_pg", "opp_mid_cards_pg"]].rename(
+                columns={"team": "opponent"})
+            df = df.merge(_mf, on=["fixture_id", "opponent"], how="left")
+        else:
+            df["opp_mid_fouls_pg"] = 2.0
+            df["opp_mid_cards_pg"] = 0.4
+    else:
+        df["opp_mid_fouls_pg"] = 2.0
+        df["opp_mid_cards_pg"] = 0.4
+    df["opp_mid_fouls_pg"] = df.get("opp_mid_fouls_pg", 2.0)
+    df["opp_mid_fouls_pg"] = pd.to_numeric(df["opp_mid_fouls_pg"], errors="coerce").fillna(2.0)
+    df["opp_mid_cards_pg"] = pd.to_numeric(df.get("opp_mid_cards_pg", 0.4), errors="coerce").fillna(0.4)
+    df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
+
     # ── Position encoding ─────────────────────────────────────────────────────
     pos = df["position"].str.upper().fillna("")
     df["pos_forward"]    = pos.str.startswith("F").astype(int)
@@ -559,11 +691,90 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         + df["progressive_carrier_score"] * 0.30
     ).clip(upper=1.0)
 
+    # ── Position-specific matchup composites ─────────────────────────────────
+    df["forward_matchup_score"] = (
+        df["sot_pg"] * df["opp_goals_conceded_vs_fwd_pg"] * df["pos_forward"]
+    ).clip(lower=0.0)
+
+    df["mid_threat_vs_defense"] = (
+        df["kp_per90"] * df["opp_goals_conceded_vs_mid_pg"] * df["pos_midfielder"]
+    ).clip(lower=0.0)
+
+    # ── Additional player-vs-player matchup formulas ─────────────────────────
+    # Box-active player vs goal-conceding defense
+    df["box_threat_vs_leaky_defense"] = (
+        df["box_actions_per90"] * df["opp_goals_conceded_pg"]
+    ).clip(lower=0.0)
+
+    # Efficient finisher vs shot-allowing GK
+    df["efficiency_vs_leaky_keeper"] = (
+        df["shooting_efficiency_index"] * df["opp_sot_conceded_pg"]
+    ).clip(lower=0.0)
+
+    # Playmaker vs card-prone defense — key passes exploit disciplinary-fragile CBs
+    df["kp_vs_aggressive_defense"] = (
+        df["kp_per90"] * df["opp_def_cards_pg"]
+    ).clip(lower=0.0)
+
+    # Team momentum × defensive weakness × forward position — three-way interaction
+    df["team_momentum_forward_matchup"] = (
+        df["team_goals_pg_roll"] * df["opp_goals_conceded_pg"] * df["pos_forward"]
+    ).clip(lower=0.0)
+
+    # Set piece aerial threat × corner delivery volume
+    df["set_piece_corner_matchup"] = (
+        df["set_piece_threat_score"] * (df["team_corners_pg"] / 6.0).clip(upper=2.0)
+    ).clip(lower=0.0)
+
+    # Creative playmaker vs foul-prone defense
+    df["creative_pressure_matchup"] = (
+        df["creative_playmaker_score"] * df["opp_def_fouls_pg"]
+    ).clip(lower=0.0)
+
+    # Dribbler vs physically dominant defensive line
+    df["dribbler_vs_defensive_line"] = (
+        df["dribble_creativity_score"] * (1.0 - df["opp_def_aerial_win_rate"])
+    ).clip(lower=0.0)
+
+    # Progressive carrier vs pressing/aggressive defense
+    df["carrier_vs_press"] = (
+        df["progressive_carrier_score"] * df["opp_def_aggression"]
+    ).clip(lower=0.0)
+
+    # ── Card-market matchup features (Phase 5) ────────────────────────────────
+    # Physical confrontations from failed dribbles — core card risk signal
+    df["dribble_contact_rate"] = (
+        df["dribbles_pg"] * (1.0 - df["dribble_success_rate"])
+    ).clip(lower=0.0)
+
+    # Dribbler vs aggressive midfield — failed dribbles into a foul-prone midfield
+    df["tackle_dribble_clash"] = (
+        df["dribble_contact_rate"] * df["opp_mid_fouls_pg"]
+    ).clip(lower=0.0)
+
+    # Full card pressure index — own discipline × opponent midfield aggression × referee
+    df["card_clash_index"] = (
+        (df["fouls_per90"] + df["dribble_contact_rate"])
+        * df["opp_mid_cards_pg"]
+        * df["referee_strictness"].clip(lower=0.1)
+    ).clip(lower=0.0)
+
+    # Opponent midfield discipline — direct opponent card signal for the match
+    df["opp_mid_discipline"] = (
+        df["opp_mid_fouls_pg"] * 0.6 + df["opp_mid_cards_pg"] * 2.0
+    ).clip(lower=0.0)
+
     # ── Target variables — actual outcome in THIS match ───────────────────────
     df["target_goals"]   = (df["goals"]             >= 1).astype(int)
     df["target_sot"]     = (df["shots_on_target"]   >= 1).astype(int)
     df["target_cards"]   = (df["yellow_cards"]       >= 1).astype(int)
     df["target_assists"] = (df["assists"]             >= 1).astype(int)
+    # Extended targets for new markets
+    df["target_goals2"]  = (df["goals"]             >= 2).astype(int)
+    df["target_goals3"]  = (df["goals"]             >= 3).astype(int)
+    df["target_sot2"]    = (df["shots_on_target"]   >= 2).astype(int)
+    df["target_sot3"]    = (df["shots_on_target"]   >= 3).astype(int)
+    df["target_sot4"]    = (df["shots_on_target"]   >= 4).astype(int)
 
     # Drop rows with no prior history (rolling features would all be NaN)
     df = df[df["n_prev_games"] >= 1].copy()
@@ -776,6 +987,26 @@ def build_upcoming_features(
         foul_draw_matchup_score = round(fouls_drawn_per90 * opp_def_fouls_pg, 4)
         opp_def_aggression      = round(opp_def_fouls_pg * (1.0 + opp_def_cards_pg), 4)
 
+        # Position-split opp concede stats — look up from history aggregates
+        opp_goals_conceded_vs_fwd_pg = 1.0
+        opp_sot_conceded_vs_fwd_pg   = 3.5
+        opp_goals_conceded_vs_mid_pg = 0.4
+        opp_sot_conceded_vs_mid_pg   = 2.0
+        if opp_team and not history.empty and "position" in history.columns:
+            _opp_hist = history[
+                history["team"].str.lower().str.contains(opp_team.lower()[:6], na=False)
+            ].sort_values("date").tail(n * 5)
+            if not _opp_hist.empty:
+                _opp_pos = _opp_hist["position"].str.upper().fillna("")
+                _fwd = _opp_hist[_opp_pos.str.startswith("F")]
+                _mid = _opp_hist[_opp_pos.str.startswith("M")]
+                if len(_fwd) >= 3:
+                    opp_goals_conceded_vs_fwd_pg = float(_fwd["goals"].mean())
+                    opp_sot_conceded_vs_fwd_pg   = float(_fwd["shots_on_target"].mean())
+                if len(_mid) >= 3:
+                    opp_goals_conceded_vs_mid_pg = float(_mid["goals"].mean())
+                    opp_sot_conceded_vs_mid_pg   = float(_mid["shots_on_target"].mean())
+
         # ── Opponent GK lookup ────────────────────────────────────────────────
         opp_gk_save_rate = ctx.get("opp_gk_save_rate", 0.72)
         opp_gk_saves_pg  = ctx.get("opp_gk_saves_pg",  3.0)
@@ -793,6 +1024,21 @@ def build_upcoming_features(
                         _opp_gks["saves"] + _opp_gks["goals_conceded"] + 0.001)
                     opp_gk_save_rate = float(_gksr.mean())
                 opp_gk_saves_pg = float(_opp_gks["saves"].mean())
+
+        # ── Opponent midfielder discipline lookup (card market) ──────────────
+        opp_mid_fouls_pg = ctx.get("opp_mid_fouls_pg", 2.0)
+        opp_mid_cards_pg = ctx.get("opp_mid_cards_pg", 0.4)
+
+        if opp_team and not history.empty and "position" in history.columns:
+            _opp_mids = history[
+                history["team"].str.lower().str.contains(opp_team.lower()[:6], na=False) &
+                history["position"].str.upper().str.startswith("M", na=False)
+            ].sort_values("date").tail(n * 5)
+            if not _opp_mids.empty:
+                if "fouls_committed" in _opp_mids.columns:
+                    opp_mid_fouls_pg = float(_opp_mids["fouls_committed"].mean())
+                if "yellow_cards" in _opp_mids.columns:
+                    opp_mid_cards_pg = float(_opp_mids["yellow_cards"].mean())
 
         # Career-to-date averages (full history, not capped at last-n)
         career_goals_pg   = float(phist_all["goals"].mean())             if len(phist_all) else 0.0
@@ -909,6 +1155,22 @@ def build_upcoming_features(
             "progressive_carrier_score":     round(_progressive_carrier_score, 4),
             "disciplinary_pressure_index":   round(min(fouls_drawn_per90 * 0.20 + fouls_per90 * 0.25 + cards_pg * 1.5 + duel_intensity_per90 * 0.10, 2.0), 4),
             "foul_magnet_score":             round(min(fouls_drawn_per90 * 0.30 + _penalty_threat_score * 0.40 + _progressive_carrier_score * 0.30, 1.0), 4),
+            # Position-split opponent concede stats
+            "opp_goals_conceded_vs_fwd_pg":  round(opp_goals_conceded_vs_fwd_pg, 4),
+            "opp_sot_conceded_vs_fwd_pg":    round(opp_sot_conceded_vs_fwd_pg,   4),
+            "opp_goals_conceded_vs_mid_pg":  round(opp_goals_conceded_vs_mid_pg, 4),
+            "opp_sot_conceded_vs_mid_pg":    round(opp_sot_conceded_vs_mid_pg,   4),
+            # Position-specific matchup composites
+            "forward_matchup_score": round(max(sot_pg * opp_goals_conceded_vs_fwd_pg * pos_forward, 0.0), 4),
+            "mid_threat_vs_defense": round(max(kp_per90 * opp_goals_conceded_vs_mid_pg * pos_midfielder, 0.0), 4),
+            # Opponent midfielder discipline (card market features)
+            "opp_mid_fouls_pg":      round(opp_mid_fouls_pg, 4),
+            "opp_mid_cards_pg":      round(opp_mid_cards_pg, 4),
+            # Card-market composites
+            "dribble_contact_rate":  round(max(dribbles_pg * (1.0 - dribble_success_rate), 0.0), 4),
+            "tackle_dribble_clash":  round(max(dribbles_pg * (1.0 - dribble_success_rate) * opp_mid_fouls_pg, 0.0), 4),
+            "card_clash_index":      round(max((fouls_per90 + dribbles_pg * (1.0 - dribble_success_rate)) * opp_mid_cards_pg * max(ctx.get("referee_strictness", 1.0), 0.1), 0.0), 4),
+            "opp_mid_discipline":    round(max(opp_mid_fouls_pg * 0.6 + opp_mid_cards_pg * 2.0, 0.0), 4),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()

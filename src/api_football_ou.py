@@ -201,6 +201,10 @@ def get_fixture_statistics(fixture_id: int) -> dict:
         "away_xg":         _to_float(away_s.get("expected_goals")),
         "home_insidebox":  _to_int(home_s.get("Shots insidebox")),
         "away_insidebox":  _to_int(away_s.get("Shots insidebox")),
+        "home_possession": _to_float(str(home_s.get("Ball Possession") or "0").replace("%", "") or None),
+        "away_possession": _to_float(str(away_s.get("Ball Possession") or "0").replace("%", "") or None),
+        "home_blocked":    _to_int(home_s.get("Blocked Shots")),
+        "away_blocked":    _to_int(away_s.get("Blocked Shots")),
     }
 
 
@@ -241,6 +245,10 @@ def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -
             "away_xg":       stats.get("away_xg"),
             "home_insidebox": stats.get("home_insidebox"),
             "away_insidebox": stats.get("away_insidebox"),
+            "home_possession": stats.get("home_possession"),
+            "away_possession": stats.get("away_possession"),
+            "home_blocked":    stats.get("home_blocked"),
+            "away_blocked":    stats.get("away_blocked"),
         })
         if (i + 1) % 50 == 0:
             print(f"  ... {i + 1}/{len(fixtures)}")
@@ -252,7 +260,8 @@ def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     for col in ["home_shots", "away_shots", "home_sot", "away_sot",
                 "home_corners", "away_corners", "home_fouls", "away_fouls",
-                "home_xg", "away_xg", "home_insidebox", "away_insidebox"]:
+                "home_xg", "away_xg", "home_insidebox", "away_insidebox",
+                "home_possession", "away_possession", "home_blocked", "away_blocked"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")
     df["_home_norm"] = df["home_team"].apply(_norm_name)
     df["_away_norm"] = df["away_team"].apply(_norm_name)
@@ -844,25 +853,193 @@ def fetch_prematch_odds_features(
             continue
 
         over_odd = under_odd = None
+        btts_yes = btts_no = None
+        over35_odd = under35_odd = None
+        over15_odd = under15_odd = None
+        draw_odd = None
+
         for entry in data["response"]:
             for bk in entry.get("bookmakers", []):
                 if bk.get("id") != BET365_ID:
                     continue
                 for bet in bk.get("bets", []):
-                    if "Over/Under" not in (bet.get("name") or ""):
-                        continue
-                    for v in bet.get("values", []):
-                        label = v.get("value", "")
-                        odd   = _to_float(v.get("odd"))
-                        if "Over 2.5" in label and odd:
-                            over_odd = odd
-                        elif "Under 2.5" in label and odd:
-                            under_odd = odd
+                    name = bet.get("name") or ""
+                    if "Both Teams Score" in name or "BTTS" in name:
+                        for v in bet.get("values", []):
+                            odd = _to_float(v.get("odd"))
+                            if v.get("value") == "Yes" and odd:
+                                btts_yes = odd
+                            elif v.get("value") == "No" and odd:
+                                btts_no = odd
+                    elif "Over/Under" in name:
+                        for v in bet.get("values", []):
+                            label = v.get("value", "")
+                            odd   = _to_float(v.get("odd"))
+                            if "Over 3.5" in label and odd:
+                                over35_odd = odd
+                            elif "Under 3.5" in label and odd:
+                                under35_odd = odd
+                            elif "Over 1.5" in label and odd:
+                                over15_odd = odd
+                            elif "Under 1.5" in label and odd:
+                                under15_odd = odd
+                            elif "Over 2.5" in label and odd:
+                                over_odd = odd
+                            elif "Under 2.5" in label and odd:
+                                under_odd = odd
+                    elif name in ("Match Winner", "1X2"):
+                        for v in bet.get("values", []):
+                            if v.get("value") == "Draw":
+                                draw_odd = _to_float(v.get("odd"))
 
-        if over_odd and under_odd:
-            results[idx] = {
-                "api_odds_over25":    over_odd,
-                "api_odds_under25":   under_odd,
-                "api_implied_over25": round(1.0 / over_odd, 4),
-                "api_overround":      round((1.0 / over_odd + 1.0 / under_odd) - 1.0, 4),
-            }
+        results[idx] = {
+            "api_odds_over25":    over_odd,
+            "api_odds_under25":   under_odd,
+            "api_implied_over25": round(1.0 / over_odd, 4) if over_odd else None,
+            "api_overround":      round((1.0 / over_odd + 1.0 / under_odd) - 1.0, 4) if over_odd and under_odd else None,
+            "api_implied_btts":   round(1.0 / btts_yes, 4) if btts_yes else None,
+            "api_implied_over35": round(1.0 / over35_odd, 4) if over35_odd else None,
+            "api_implied_over15": round(1.0 / over15_odd, 4) if over15_odd else None,
+            "api_implied_draw":   round(1.0 / draw_odd, 4) if draw_odd else None,
+        }
+
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASE 9 — Season stage (current round / total rounds)
+# Signals late-season pressure which affects team motivation and lineup rotation.
+# ~25 calls/day (1 per league). TTL 24h.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def fetch_season_round_features(
+    upcoming_df: "pd.DataFrame",
+) -> dict[int, dict]:
+    """
+    Returns {row_index: {season_stage_ratio, is_late_season}}.
+    season_stage_ratio: current_round / total_rounds (0=week1, 1=final week).
+    is_late_season: 1 if stage_ratio >= 0.80.
+    TTL: 24h (round advances weekly).
+    """
+    if not _KEY:
+        return {}
+
+    results: dict[int, dict] = {}
+
+    # cache current round per league
+    league_stage: dict[str, dict] = {}
+    for lg in upcoming_df.get("league", pd.Series(dtype=str)).unique():
+        lid = config.API_FOOTBALL_IDS.get(lg)
+        szn = config.API_FOOTBALL_SEASONS.get(lg, "2025")
+        if not lid:
+            continue
+        if lg in league_stage:
+            continue
+
+        # current round
+        curr = _get("fixtures/rounds", {"league": lid, "season": szn, "current": "true"}, ttl_h=24)
+        curr_rounds = curr.get("response", []) if curr else []
+
+        # all rounds
+        all_ = _get("fixtures/rounds", {"league": lid, "season": szn}, ttl_h=168)
+        all_rounds = all_.get("response", []) if all_ else []
+
+        if not curr_rounds or not all_rounds:
+            continue
+
+        def _parse_round_num(label: str) -> int:
+            import re
+            m = re.search(r"(\d+)", str(label))
+            return int(m.group(1)) if m else 0
+
+        current_n = _parse_round_num(curr_rounds[-1])
+        total_n   = len(all_rounds)
+        if total_n < 1:
+            continue
+
+        ratio = round(current_n / total_n, 4)
+        league_stage[lg] = {
+            "season_stage_ratio": ratio,
+            "is_late_season":     float(ratio >= 0.80),
+        }
+
+    for idx, row in upcoming_df.iterrows():
+        lg = str(row.get("league", ""))
+        stage = league_stage.get(lg)
+        if stage:
+            results[idx] = stage
+
+    return results
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASE 10 — Coach tenure & caretaker detection
+# Short tenures = instability = increased variance in team output.
+# ~4 calls/day (1 per team per week, 7-day TTL).
+# ─────────────────────────────────────────────────────────────────────────────
+
+def fetch_coach_features(
+    upcoming_df: "pd.DataFrame",
+    fixture_ids: "dict[tuple[str, str], int] | None" = None,
+    season: str | None = None,
+) -> dict[int, dict]:
+    """
+    Returns {row_index: {home_coach_tenure_days, home_coach_is_caretaker,
+                          away_coach_tenure_days, away_coach_is_caretaker}}.
+    TTL: 7 days per team (coaches rarely change mid-week).
+    """
+    if not _KEY:
+        return {}
+
+    from datetime import date as date_cls
+
+    team_coach: dict[str, dict] = {}
+
+    def _get_coach(team_name: str, league: str) -> dict:
+        if team_name in team_coach:
+            return team_coach[team_name]
+        lid = config.API_FOOTBALL_IDS.get(league)
+        szn = config.API_FOOTBALL_SEASONS.get(league, "2025")
+        if not lid:
+            return {}
+        team_id = _resolve_team_id(team_name, lid, szn)
+        if not team_id:
+            return {}
+        data = _get("coachs", {"team": team_id}, ttl_h=168)
+        if not data or not data.get("response"):
+            team_coach[team_name] = {}
+            return {}
+        for coach in data["response"]:
+            career = coach.get("career", [])
+            # find current club (no end date)
+            for c in reversed(career):
+                if c.get("team", {}).get("id") == team_id and not c.get("end"):
+                    start_str = c.get("start", "")
+                    try:
+                        start_date = date_cls.fromisoformat(str(start_str)[:10])
+                        tenure_days = (date_cls.today() - start_date).days
+                    except Exception:
+                        tenure_days = 180
+                    result = {
+                        "coach_tenure_days":  tenure_days,
+                        "coach_is_caretaker": float(tenure_days < 14),
+                    }
+                    team_coach[team_name] = result
+                    return result
+        team_coach[team_name] = {}
+        return {}
+
+    results: dict[int, dict] = {}
+    for idx, row in upcoming_df.iterrows():
+        ht = str(row.get("home_team", ""))
+        at = str(row.get("away_team", ""))
+        lg = str(row.get("league", ""))
+        hc = _get_coach(ht, lg)
+        ac = _get_coach(at, lg)
+        results[idx] = {
+            "home_coach_tenure_days":  float(hc.get("coach_tenure_days",  180)),
+            "home_coach_is_caretaker": float(hc.get("coach_is_caretaker", 0.0)),
+            "away_coach_tenure_days":  float(ac.get("coach_tenure_days",  180)),
+            "away_coach_is_caretaker": float(ac.get("coach_is_caretaker", 0.0)),
+        }
+    return results

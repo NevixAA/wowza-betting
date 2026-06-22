@@ -21,7 +21,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
+import threading
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from . import config
 
@@ -32,22 +34,58 @@ CACHE_DIR.mkdir(exist_ok=True)
 FIXTURE_CACHE_DIR.mkdir(exist_ok=True)
 
 CACHE_DAYS    = 7
-REQUEST_DELAY = 1.2
+REQUEST_DELAY = 0.5   # global rate limiter: ~2 calls/sec = 120/min — well under 75k/day Ultra limit
 MAX_RETRIES   = 3
 
+# Global rate-limiter: enforces REQUEST_DELAY between API calls across ALL threads.
+# Without this, each thread sleeps independently → no real throughput gain.
+_rate_lock      = threading.Lock()
+_last_call_time = 0.0
+
+
+def _rate_limited_sleep() -> None:
+    global _last_call_time
+    with _rate_lock:
+        now     = time.monotonic()
+        elapsed = now - _last_call_time
+        if elapsed < REQUEST_DELAY:
+            time.sleep(REQUEST_DELAY - elapsed)
+        _last_call_time = time.monotonic()
+
 # Core betting leagues — default for collect_match_history()
+# Current season per league — used for odds/predict pipeline (single season reference)
 APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
-    "Premier League":  (39,  "2024"),
-    "Bundesliga":      (78,  "2024"),
-    "La Liga":         (140, "2024"),
-    "Serie A":         (135, "2024"),
-    "Ligue 1":         (61,  "2024"),
-    "Championship":    (40,  "2024"),
-    "League One":      (41,  "2024"),
-    "Bundesliga 2":    (79,  "2024"),
-    "Ireland Premier": (357, "2025"),
-    "Finland Veikk":   (244, "2025"),
+    "Premier League":  (39,  "2025"),
+    "Bundesliga":      (78,  "2025"),
+    "La Liga":         (140, "2025"),
+    "Serie A":         (135, "2025"),
+    "Ligue 1":         (61,  "2025"),
+    "Championship":    (40,  "2025"),
+    "League One":      (41,  "2025"),
+    "Bundesliga 2":    (79,  "2025"),
+    "Ireland Premier": (357, "2026"),
+    "Finland Veikk":   (244, "2026"),
     "World Cup":       (1,   "2026"),
+}
+
+# Multi-season collect config: (league_id, season, last_n)
+# Historical seasons: large last_n to capture full season (cached — free on re-run)
+# Current season: last_n=150 so weekly runs pick up new matches automatically
+COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = {
+    # (league_id, season, last_n)
+    # last_n >= 100 → full-season fetch (all completed fixtures, for historical seasons)
+    # last_n < 100  → rolling last-N via API `last=` param (current season updates)
+    "Premier League":  [(39,  "2024", 500), (39,  "2025", 99)],
+    "Bundesliga":      [(78,  "2024", 400), (78,  "2025", 99)],
+    "La Liga":         [(140, "2024", 400), (140, "2025", 99)],
+    "Serie A":         [(135, "2024", 400), (135, "2025", 99)],
+    "Ligue 1":         [(61,  "2024", 400), (61,  "2025", 99)],
+    "Championship":    [(40,  "2024", 600), (40,  "2025", 99)],
+    "League One":      [(41,  "2024", 600), (41,  "2025", 99)],
+    "Bundesliga 2":    [(79,  "2024", 400), (79,  "2025", 99)],
+    "Ireland Premier": [(357, "2025", 300), (357, "2026", 99)],
+    "Finland Veikk":   [(244, "2025", 300), (244, "2026", 99)],
+    "World Cup":       [(1,   "2026", 99)],
 }
 
 EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
@@ -68,7 +106,7 @@ def _api_get(endpoint: str, params: dict) -> dict:
     key = os.getenv("APIFOOTBALL_KEY", "")
     if not key:
         raise RuntimeError("APIFOOTBALL_KEY not set in environment")
-    time.sleep(REQUEST_DELAY)
+    _rate_limited_sleep()
 
     last_exc: Exception = RuntimeError("no attempts made")
     for attempt in range(1, MAX_RETRIES + 1):
@@ -133,6 +171,10 @@ def _save_cache(key: str, players: list) -> None:
 FIXTURE_STATS_CACHE_DIR = config.BASE_DIR / "fixture_stats_cache"
 FIXTURE_STATS_CACHE_DIR.mkdir(exist_ok=True)
 
+LINEUP_CACHE_DIR = config.BASE_DIR / "lineup_cache"
+LINEUP_CACHE_DIR.mkdir(exist_ok=True)
+LINEUP_CACHE_TTL_HOURS = 4  # re-fetch after 4h — lineups can change until confirmed
+
 
 def _fixture_cache_path(fixture_id: int) -> Path:
     return FIXTURE_CACHE_DIR / f"fix_{fixture_id}.json"
@@ -190,21 +232,164 @@ def _fetch_fixture_statistics(fixture_id: int) -> dict:
     return result
 
 
+# ── Lineup fetch (pre-match starting XI) ─────────────────────────────────────
+
+def fetch_lineup(fixture_id: int) -> dict:
+    """
+    Fetch confirmed starting XI for a fixture.
+    Returns:
+      confirmed  : bool — True if lineup has been announced
+      starters   : set[int] — player_ids in starting XI (both teams)
+      subs       : set[int] — player_ids on bench (both teams)
+      home_starters / away_starters : set[int] — per-team splits
+    Cached for LINEUP_CACHE_TTL_HOURS — re-fetched until confirmed.
+    """
+    cache_p = LINEUP_CACHE_DIR / f"lineup_{fixture_id}.json"
+    if cache_p.exists():
+        try:
+            raw = json.loads(cache_p.read_text(encoding="utf-8"))
+            fetched = datetime.fromisoformat(raw.get("fetched_at", "2000-01-01"))
+            if datetime.now() - fetched < timedelta(hours=LINEUP_CACHE_TTL_HOURS):
+                raw["starters"]       = set(raw.get("starters", []))
+                raw["subs"]           = set(raw.get("subs", []))
+                raw["home_starters"]  = set(raw.get("home_starters", []))
+                raw["away_starters"]  = set(raw.get("away_starters", []))
+                return raw
+        except Exception:
+            pass
+
+    empty = {"confirmed": False, "starters": set(), "subs": set(),
+             "home_starters": set(), "away_starters": set(), "home_team": "", "away_team": ""}
+    try:
+        resp = _api_get("fixtures/lineups", {"fixture": fixture_id})
+    except RuntimeError:
+        return empty
+
+    lineups = resp.get("response", [])
+    if not lineups:
+        return empty
+
+    starters: set[int] = set()
+    subs:     set[int] = set()
+    home_starters: set[int] = set()
+    away_starters: set[int] = set()
+    home_team = ""
+    away_team = ""
+
+    for i, team_lu in enumerate(lineups):
+        team_name = team_lu.get("team", {}).get("name", "")
+        is_home = (i == 0)
+        if is_home:
+            home_team = team_name
+        else:
+            away_team = team_name
+        for p in team_lu.get("startXI", []):
+            pid = p.get("player", {}).get("id")
+            if pid:
+                pid = int(pid)
+                starters.add(pid)
+                (home_starters if is_home else away_starters).add(pid)
+        for p in team_lu.get("substitutes", []):
+            pid = p.get("player", {}).get("id")
+            if pid:
+                subs.add(int(pid))
+
+    confirmed = bool(starters)
+    result = {
+        "confirmed":      confirmed,
+        "home_team":      home_team,
+        "away_team":      away_team,
+        "starters":       list(starters),
+        "subs":           list(subs),
+        "home_starters":  list(home_starters),
+        "away_starters":  list(away_starters),
+        "fetched_at":     datetime.now().isoformat(),
+    }
+    if confirmed:
+        cache_p.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+
+    result["starters"]       = starters
+    result["subs"]           = subs
+    result["home_starters"]  = home_starters
+    result["away_starters"]  = away_starters
+    return result
+
+
+# ── Squad sync (transfer tracking) ───────────────────────────────────────────
+
+def fetch_current_squad(team_id: int, season: str) -> list[dict]:
+    """
+    Fetch current squad members for a team.
+    Returns list of {player_id, player_name, position}.
+    Used by squad-sync mode to detect transfers.
+    """
+    try:
+        data = _api_get("players/squads", {"team": team_id})
+        players = []
+        for squad in data.get("response", []):
+            for p in squad.get("players", []):
+                pid = p.get("id")
+                if pid:
+                    players.append({
+                        "player_id":   int(pid),
+                        "player_name": p.get("name", ""),
+                        "position":    p.get("position", ""),
+                    })
+        return players
+    except RuntimeError:
+        return []
+
+
+def fetch_league_teams(league_id: int, season: str) -> list[dict]:
+    """
+    Fetch all teams in a league season.
+    Returns list of {team_id, team_name}.
+    """
+    try:
+        data = _api_get("teams", {"league": league_id, "season": season})
+        return [
+            {
+                "team_id":   int(t.get("team", {}).get("id", 0)),
+                "team_name": t.get("team", {}).get("name", ""),
+            }
+            for t in data.get("response", [])
+            if t.get("team", {}).get("id")
+        ]
+    except RuntimeError:
+        return []
+
+
 # ── Per-fixture player stats (match-level data) ───────────────────────────────
 
 def _fetch_league_fixtures(league_id: int, season: str, last_n: int = 99) -> list[dict]:
-    """Fetch list of completed fixtures for a league. Single API call.
-    Note: API caps 'last' at 99 — values >= 100 return an error."""
-    last_n = min(last_n, 99)
-    data = _api_get("fixtures", {
-        "league": league_id,
-        "season": season,
-        "last":   last_n,
-    })
-    # Filter to only finished matches (FT, AET, PEN) in case any scheduled sneak in
+    """
+    Fetch completed fixtures for a league season.
+    - last_n < 100: uses API `last=N` (rolling update, current season).
+    - last_n >= 100: fetches all completed fixtures for the season (no `last` cap).
+      Use this for historical seasons to get the full dataset in one call.
+    """
     finished = {"FT", "AET", "PEN", "AWD", "WO"}
-    return [f for f in data.get("response", [])
-            if f.get("fixture", {}).get("status", {}).get("short", "") in finished]
+    if last_n >= 100:
+        # Full-season fetch — no `last` cap
+        data = _api_get("fixtures", {"league": league_id, "season": season})
+    else:
+        data = _api_get("fixtures", {
+            "league": league_id,
+            "season": season,
+            "last":   last_n,
+        })
+    return [
+        {
+            "id":      fix.get("fixture", {}).get("id"),
+            "date":    str(fix.get("fixture", {}).get("date", ""))[:10],
+            "home":    fix.get("teams", {}).get("home", {}).get("name", ""),
+            "away":    fix.get("teams", {}).get("away", {}).get("name", ""),
+            "referee": fix.get("fixture", {}).get("referee", "") or "",
+            "_raw":    fix,
+        }
+        for fix in data.get("response", [])
+        if fix.get("fixture", {}).get("status", {}).get("short", "") in finished
+    ]
 
 
 def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
@@ -266,6 +451,8 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "away_team":       meta["away_team"],
         "team":            meta["team"],
         "is_home":         int(meta["is_home"]),
+        "referee":         meta.get("referee", ""),
+        "season":          meta.get("season", ""),
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "minutes":         minutes,
         "started":         int(started),
@@ -301,85 +488,114 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     }
 
 
+def _collect_one_season(
+    league_name: str,
+    league_id:   int,
+    season:      str,
+    last_n:      int,
+) -> list[dict]:
+    """Collect player-match rows for a single league+season. Fixture stats are permanently cached."""
+    print(f"  [{league_name} {season}] Fetching fixture list (last {last_n})...")
+    try:
+        fixtures = _fetch_league_fixtures(league_id, season, last_n)
+    except RuntimeError as e:
+        print(f"  [{league_name} {season}] fixture list error: {e}")
+        return []
+
+    if not fixtures:
+        print(f"  [{league_name} {season}] No completed fixtures found")
+        return []
+
+    cached_count = sum(
+        1 for fix in fixtures
+        if _fixture_cache_path(fix.get("id") or fix.get("fixture", {}).get("id", 0)).exists()
+    )
+    to_fetch = len(fixtures) - cached_count
+    print(f"  [{league_name} {season}] {len(fixtures)} fixtures ({cached_count} cached, {to_fetch} to fetch)...")
+
+    rows: list[dict] = []
+    for fix in fixtures:
+        if "_raw" in fix:
+            fixture_id = fix["id"]
+            fix_date   = fix["date"]
+            home_team  = fix["home"]
+            away_team  = fix["away"]
+            referee    = fix.get("referee", "")
+        else:
+            fixture_id = fix.get("fixture", {}).get("id")
+            fix_date   = fix.get("fixture", {}).get("date", "")[:10]
+            home_team  = fix.get("teams", {}).get("home", {}).get("name", "")
+            away_team  = fix.get("teams", {}).get("away", {}).get("name", "")
+            referee    = fix.get("fixture", {}).get("referee", "") or ""
+        if not fixture_id:
+            continue
+
+        try:
+            team_data_list = _fetch_fixture_player_stats(fixture_id)
+        except RuntimeError as e:
+            print(f"    [fix {fixture_id}] error: {e}")
+            continue
+
+        fix_stats = _fetch_fixture_statistics(fixture_id)
+
+        for team_data in team_data_list:
+            team_name = team_data.get("team", {}).get("name", "")
+            team_st   = fix_stats.get(team_name, {})
+            meta = {
+                "fixture_id":  fixture_id,
+                "date":        fix_date,
+                "home_team":   home_team,
+                "away_team":   away_team,
+                "team":        team_name,
+                "is_home":     (team_name == home_team),
+                "team_corners": team_st.get("corners", 0),
+                "referee":     referee,
+                "season":      season,
+            }
+            for player_entry in team_data.get("players", []):
+                parsed = _parse_fixture_player(player_entry, meta, league_name)
+                if parsed:
+                    rows.append(parsed)
+
+    print(f"  [{league_name} {season}] {len(rows)} player-match rows collected")
+    return rows
+
+
 def collect_match_history(
     leagues: dict | None = None,
     last_n:  int = 99,
 ) -> list[dict]:
     """
-    Collect per-match player stats from API-Football.
-    Returns flat list — one dict per player per match.
+    Collect per-match player stats across ALL configured seasons per league.
 
-    API cost: 1 (fixture list) + last_n (player stats) per league.
-    Fixture stats are cached permanently so re-runs are free.
+    Uses COLLECT_SEASONS by default (multi-season: 2024 + 2025 per league).
+    Fixture stats are cached permanently — re-runs only fetch NEW fixtures,
+    making weekly updates very cheap (only current-season new games are fetched).
 
-    With last_n=100 and 8 leagues: ~808 API requests first run,
-    ~8 requests on subsequent runs (only fixture list, rest cached).
+    Pass a custom `leagues` dict (name → (id, season)) to override with a
+    single-season collection for a specific league.
     """
+    # Multi-season path (default)
     if leagues is None:
-        leagues = APIFOOTBALL_LEAGUES
+        all_rows: list[dict] = []
+        seen_fixtures: set = set()
+        for league_name, season_list in COLLECT_SEASONS.items():
+            for (league_id, season, season_last_n) in season_list:
+                rows = _collect_one_season(league_name, league_id, season, season_last_n)
+                for r in rows:
+                    key = (r.get("fixture_id"), r.get("player_id"))
+                    if key not in seen_fixtures:
+                        seen_fixtures.add(key)
+                        all_rows.append(r)
+        n_leagues = len(COLLECT_SEASONS)
+        n_seasons = sum(len(v) for v in COLLECT_SEASONS.values())
+        print(f"[DONE] {len(all_rows)} total player-match rows across {n_leagues} leagues / {n_seasons} season-slots.")
+        return all_rows
 
-    all_rows: list[dict] = []
-
+    # Single-season override path (used when caller passes explicit leagues dict)
+    all_rows = []
     for league_name, (league_id, season) in leagues.items():
-        print(f"  [{league_name}] Fetching fixture list (last {last_n})...")
-
-        try:
-            fixtures = _fetch_league_fixtures(league_id, season, last_n)
-        except RuntimeError as e:
-            print(f"  [{league_name}] fixture list error: {e}")
-            continue
-
-        if not fixtures:
-            print(f"  [{league_name}] No completed fixtures found")
-            continue
-
-        cached_count = sum(
-            1 for fix in fixtures
-            if _fixture_cache_path(fix.get("fixture", {}).get("id", 0)).exists()
-        )
-        print(f"  [{league_name}] {len(fixtures)} fixtures ({cached_count} cached, "
-              f"{len(fixtures) - cached_count} to fetch)...")
-
-        league_rows = 0
-        for fix in fixtures:
-            fixture_id = fix.get("fixture", {}).get("id")
-            if not fixture_id:
-                continue
-
-            fix_date  = fix.get("fixture", {}).get("date", "")[:10]
-            home_team = fix.get("teams", {}).get("home", {}).get("name", "")
-            away_team = fix.get("teams", {}).get("away", {}).get("name", "")
-
-            try:
-                team_data_list = _fetch_fixture_player_stats(fixture_id)
-            except RuntimeError as e:
-                print(f"    [fix {fixture_id}] error: {e}")
-                continue
-
-            # Fetch team-level statistics for corners (permanently cached)
-            fix_stats = _fetch_fixture_statistics(fixture_id)
-
-            for team_data in team_data_list:
-                team_name = team_data.get("team", {}).get("name", "")
-                is_home   = (team_name == home_team)
-                team_st   = fix_stats.get(team_name, {})
-                meta = {
-                    "fixture_id":    fixture_id,
-                    "date":          fix_date,
-                    "home_team":     home_team,
-                    "away_team":     away_team,
-                    "team":          team_name,
-                    "is_home":       is_home,
-                    "team_corners":  team_st.get("corners", 0),
-                }
-                for player_entry in team_data.get("players", []):
-                    parsed = _parse_fixture_player(player_entry, meta, league_name)
-                    if parsed:
-                        all_rows.append(parsed)
-                        league_rows += 1
-
-        print(f"  [{league_name}] {league_rows} player-match rows collected")
-
+        all_rows.extend(_collect_one_season(league_name, league_id, season, last_n))
     print(f"[DONE] {len(all_rows)} total player-match rows across {len(leagues)} leagues.")
     return all_rows
 
@@ -631,7 +847,7 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
             pass
 
     try:
-        data = _api_get("players/statistics", {
+        data = _api_get("players", {
             "id": player_id, "league": league_id, "season": season,
         })
     except RuntimeError:
@@ -640,6 +856,22 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
     resp = data.get("response", [])
     if not resp:
         return {}
+
+    # Extract and cache profile data for free — same response, zero extra calls
+    _player_obj = resp[0].get("player", {})
+    if _player_obj:
+        _profile_p = CACHE_DIR / f"profile_{player_id}.json"
+        if not _profile_p.exists():
+            try:
+                _h = _player_obj.get("height") or ""
+                _w = _player_obj.get("weight") or ""
+                _profile_p.write_text(json.dumps({
+                    "age":       int(_player_obj.get("age") or 0),
+                    "height_cm": float(str(_h).replace("cm", "").strip() or 0),
+                    "weight_kg": float(str(_w).replace("kg", "").strip() or 0),
+                }, ensure_ascii=False), encoding="utf-8")
+            except Exception:
+                pass
 
     stats_list = resp[0].get("statistics", [])
     if not stats_list:
@@ -662,6 +894,18 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
         "season_minutes_pg":   (int(games.get("minutes") or 0)) / apps,
     }
 
+    # Additional season-level fields (from same API response, zero extra calls)
+    lineups      = s.get("games", {}).get("lineups", 0) or 0
+    passes_obj   = s.get("passes",    {}) or {}
+    dribbles_obj = s.get("dribbles", {}) or {}
+    fouls_obj    = s.get("fouls",     {}) or {}
+
+    result["season_start_rate"]      = (int(lineups) / apps) if apps > 0 else 0.0
+    result["season_pass_accuracy"]   = float(passes_obj.get("accuracy") or 0) / 100.0  # convert % to 0-1
+    result["season_dribble_pg"]      = (int(dribbles_obj.get("success") or 0)) / apps
+    result["season_fouls_pg"]        = (int(fouls_obj.get("committed") or 0)) / apps
+    result["season_fouls_drawn_pg"]  = (int(fouls_obj.get("drawn") or 0)) / apps
+
     cache_p.write_text(
         json.dumps({"_cached_at": datetime.now().isoformat(), "stats": result},
                    ensure_ascii=False),
@@ -673,36 +917,193 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
 def fetch_all_player_season_stats(
     df: "pd.DataFrame",
     leagues: dict | None = None,
+    max_workers: int = 5,
 ) -> dict[int, dict]:
     """
     Batch-fetch season stats for all unique player_ids in df.
     Matches player → league via the 'league' column in df.
     Returns {player_id: stats_dict}. Used in --mode enrich-season.
+    Also caches profile data (age/height) for free from the same response.
     """
     if leagues is None:
         leagues = APIFOOTBALL_LEAGUES
 
-    results: dict[int, dict] = {}
+    # Build deduplicated task list first
+    tasks: list[tuple[int, int, str]] = []
     seen: set[int] = set()
-
     for _, row in df.iterrows():
         pid = int(row.get("player_id", 0))
         if not pid or pid in seen:
             continue
         seen.add(pid)
-
         lg   = str(row.get("league", ""))
         info = leagues.get(lg)
         if not info:
             continue
         league_id, season = info
+        tasks.append((pid, league_id, season))
 
+    results: dict[int, dict] = {}
+
+    def _fetch_one(args: tuple) -> tuple[int, dict]:
+        pid, league_id, season = args
         try:
-            stats = fetch_player_season_stats(pid, league_id, season)
+            return pid, fetch_player_season_stats(pid, league_id, season)
+        except Exception:
+            return pid, {}
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_one, t): t[0] for t in tasks}
+        for future in as_completed(futures):
+            pid, stats = future.result()
             if stats:
                 results[pid] = stats
+            done += 1
+            if done % 200 == 0:
+                print(f"[season-stats] {done}/{len(tasks)} players fetched...")
+
+    print(f"[season-stats] Fetched stats for {len(results)}/{len(seen)} players.")
+    return results
+
+
+def fetch_player_profile(player_id: int) -> dict:
+    """
+    Fetch static player profile: age, height, weight, nationality.
+    Cached indefinitely (profiles don't change meaningfully).
+    Endpoint: /players?id={player_id}&season=2025
+    """
+    cache_p = CACHE_DIR / f"profile_{player_id}.json"
+    if cache_p.exists():
+        try:
+            return json.loads(cache_p.read_text(encoding="utf-8"))
         except Exception:
             pass
 
-    print(f"[season-stats] Fetched stats for {len(results)}/{len(seen)} players.")
+    data = _api_get("players", {"id": player_id, "season": "2025"})
+    resp = data.get("response", [])
+    if not resp:
+        return {}
+
+    player = resp[0].get("player", {})
+    age_val    = player.get("age") or 0
+    height_str = player.get("height") or ""
+    weight_str = player.get("weight") or ""
+
+    def _parse_cm(s: str) -> float:
+        # "185 cm" -> 185.0
+        try:
+            return float(str(s).replace("cm", "").strip())
+        except Exception:
+            return 0.0
+
+    def _parse_kg(s: str) -> float:
+        try:
+            return float(str(s).replace("kg", "").strip())
+        except Exception:
+            return 0.0
+
+    result = {
+        "age":        int(age_val),
+        "height_cm":  _parse_cm(height_str),
+        "weight_kg":  _parse_kg(weight_str),
+    }
+
+    cache_p.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+    return result
+
+
+def fetch_all_player_profiles(df: "pd.DataFrame", max_workers: int = 5) -> dict:
+    """
+    Batch fetch profiles for all unique player_ids in df.
+    Returns {player_id: profile_dict}.
+    Note: enrich-season already caches profiles as a side-effect, so most
+    calls here will be instant cache hits after running enrich-season.
+    """
+    unique_pids = list(df["player_id"].dropna().astype(int).unique()) if "player_id" in df.columns else []
+    total = len(unique_pids)
+    results = {}
+
+    def _fetch_one(pid: int) -> tuple[int, dict]:
+        try:
+            return pid, fetch_player_profile(pid)
+        except Exception:
+            return pid, {}
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_one, int(pid)): pid for pid in unique_pids}
+        for future in as_completed(futures):
+            pid, profile = future.result()
+            results[pid] = profile
+            done += 1
+            if done % 500 == 0:
+                print(f"[profiles] {done}/{total} profiles fetched...")
+
+    print(f"[profiles] Done. {len(results)} profiles fetched.")
+    return results
+
+
+def fetch_player_sidelined(player_id: int) -> list[dict]:
+    """
+    Fetch a player's injury/sidelined history.
+    Cached 30 days (past injuries don't change, new ones are added).
+    Endpoint: /sidelined?player={player_id}
+    Returns list of {reason, start, end} dicts.
+    """
+    cache_p = CACHE_DIR / f"sidelined_{player_id}.json"
+    if cache_p.exists():
+        try:
+            cached = json.loads(cache_p.read_text(encoding="utf-8"))
+            cached_at = datetime.fromisoformat(cached.get("_cached_at", "2000-01-01"))
+            if (datetime.now() - cached_at).days < 30:
+                return cached.get("data", [])
+        except Exception:
+            pass
+
+    data = _api_get("sidelined", {"player": player_id})
+    resp = data.get("response", [])
+
+    result = []
+    for entry in resp:
+        result.append({
+            "reason": entry.get("type", ""),
+            "start":  str(entry.get("start", ""))[:10],
+            "end":    str(entry.get("end", ""))[:10] if entry.get("end") else "",
+        })
+
+    cache_p.write_text(
+        json.dumps({"_cached_at": datetime.now().isoformat(), "data": result},
+                   ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return result
+
+
+def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5) -> dict:
+    """
+    Batch fetch sidelined history for all unique player_ids in df.
+    Returns {player_id: [sidelined_entries]}.
+    """
+    unique_pids = list(df["player_id"].dropna().astype(int).unique()) if "player_id" in df.columns else []
+    total = len(unique_pids)
+    results = {}
+
+    def _fetch_one(pid: int) -> tuple[int, list]:
+        try:
+            return pid, fetch_player_sidelined(pid)
+        except Exception:
+            return pid, []
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_one, int(pid)): pid for pid in unique_pids}
+        for future in as_completed(futures):
+            pid, data = future.result()
+            results[pid] = data
+            done += 1
+            if done % 500 == 0:
+                print(f"[sidelined] {done}/{total} players fetched...")
+
+    print(f"[sidelined] Done. {len(results)} players processed.")
     return results
