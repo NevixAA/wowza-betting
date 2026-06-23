@@ -1458,6 +1458,70 @@ def notify_daily_digest() -> bool:
     return True
 
 
+def notify_side_bets() -> int:
+    """Send Telegram alerts for SNIPER/MARKSMAN BTTS / Over 1.5 / Over 3.5 tips. Returns count sent."""
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    side_file = app_config.OUTPUT_DIR / "side_bets.csv"
+    if not side_file.exists():
+        return 0
+
+    df = pd.read_csv(side_file)
+    df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN"])].copy()
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    df = df[df["date"].astype(str).str[:10] >= today_str]
+
+    if df.empty:
+        return 0
+
+    df = df.sort_values(["signal_tier", "ev"], ascending=[True, False])
+
+    MARKET_LABEL = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    MARKET_EMOJI = {"btts": "🔁", "over15": "📈", "over35": "🚀"}
+
+    notified = _load_notified()
+    sent = 0
+
+    for _, row in df.iterrows():
+        key = f"SIDE|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}|{row['market']}"
+        if key in notified:
+            continue
+
+        tier  = row["signal_tier"]
+        mkt   = row["market"]
+        edge  = float(row["edge"]) * 100
+        ev    = float(row["ev"]) * 100
+        label = MARKET_LABEL.get(mkt, mkt)
+        emoji = MARKET_EMOJI.get(mkt, "📌")
+        tier_header = f"🎯 <b>SNIPER — {label}</b>" if tier == "SNIPER" else f"🔫 <b>MARKSMAN — {label}</b>"
+
+        msg = (
+            f"{emoji} {tier_header}\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"📅 {str(row['date'])[:10]}\n"
+            f"🏆 {row.get('league', '')}\n"
+            f"⚽ {row['home_team']} vs {row['away_team']}\n"
+            f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
+            f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  P={float(row['model_prob'])*100:.0f}%\n"
+            f"⚠️ Check your bookmaker's {label} market"
+        )
+
+        if _send(token, chat_id, msg):
+            notified.add(key)
+            sent += 1
+            _save_notified(notified)
+            print(f"  Side [{tier}]: {row['home_team']} vs {row['away_team']} — {label} @ {row['market_odds']:.2f}")
+
+    if sent:
+        _send(token, chat_id, f"📋 <b>{sent} side market tip(s)</b> sent at {datetime.now().strftime('%H:%M')}")
+    return sent
+
+
 def get_chat_id(token: str) -> None:
     """Print the chat_id of the last user who messaged the bot."""
     r = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=10)
@@ -1481,6 +1545,7 @@ if __name__ == "__main__":
         # Only predict-specific notifications — sharp/WC handled by sharp_tracker,
         # player props by player_props workflow, digests by daily_summary.
         n    = notify_new_snipers()
+        side = notify_side_bets()
         ht   = notify_ht_tips()
         live = notify_live_signals()
-        print(f"Notifications sent: {n} SNIPER + {ht} HT + {live} Live")
+        print(f"Notifications sent: {n} O/U SNIPER + {side} side market + {ht} HT + {live} Live")
