@@ -244,6 +244,67 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     import os as _os
     api_key = _os.getenv("APIFOOTBALL_KEY", "") or config.API_KEY
+
+    try:
+        from src.api_football_ou import _norm_name
+    except ImportError:
+        _norm_name = lambda x: str(x).lower().strip()
+
+    # Pre-initialize xG/insidebox so merge suffixes work correctly for new columns
+    for _col in ["home_xg", "away_xg", "home_insidebox", "away_insidebox"]:
+        if _col not in df.columns:
+            df[_col] = np.nan
+
+    # ── Step 1: merge from af_history.parquet (historical backfill, one-time run) ──
+    af_history_path = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
+    if af_history_path.exists():
+        try:
+            hist = pd.read_parquet(af_history_path)
+            hist["date"] = pd.to_datetime(hist["date"], errors="coerce")
+            hist["_home_norm"] = hist["home_team"].apply(_norm_name)
+            hist["_away_norm"] = hist["away_team"].apply(_norm_name)
+            hist["_date_str"]  = hist["date"].dt.strftime("%Y-%m-%d")
+
+            # Map af_history column names → internal names
+            col_map = {
+                "HS": "home_shots", "AS": "away_shots",
+                "HST": "home_sot",  "AST": "away_sot",
+                "HC": "home_corners", "AC": "away_corners",
+                "HF": "home_fouls",   "AF": "away_fouls",
+                "HY": "home_yellows", "AY": "away_yellows",
+            }
+            hist = hist.rename(columns=col_map)
+            hist_cols = [c for c in col_map.values() if c in hist.columns]
+
+            df["_home_norm"] = df["home_team"].apply(_norm_name)
+            df["_away_norm"] = df["away_team"].apply(_norm_name)
+            df["_date_str"]  = df["date"].dt.strftime("%Y-%m-%d")
+
+            merged = df.merge(
+                hist[["_home_norm", "_away_norm", "_date_str", "league"] + hist_cols]
+                    .rename(columns={c: f"{c}_h" for c in hist_cols}),
+                on=["_home_norm", "_away_norm", "_date_str"],
+                how="left",
+                suffixes=("", "_h"),
+            )
+
+            for col in hist_cols:
+                hcol = f"{col}_h"
+                if hcol not in merged.columns:
+                    continue
+                if col not in df.columns:
+                    df[col] = np.nan
+                orig = df[col].values
+                hist_vals = merged[hcol].values
+                df[col] = [float(h) if pd.isna(o) and pd.notna(h) else o
+                           for o, h in zip(orig, hist_vals)]
+
+            df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore", inplace=True)
+            n_with_shots = int(df["home_shots"].notna().sum()) if "home_shots" in df.columns else 0
+            log.info(f"[af_history] merged backfill: {n_with_shots} rows now have shot data")
+        except Exception as e:
+            log.warning(f"[af_history] failed to merge af_history.parquet: {e}")
+
     if not api_key:
         return df
 
@@ -251,11 +312,6 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         from src.api_football_ou import fetch_shots_for_league, _norm_name
     except ImportError:
         return df
-
-    # Pre-initialize xG/insidebox so merge suffixes work correctly for new columns
-    for _col in ["home_xg", "away_xg", "home_insidebox", "away_insidebox"]:
-        if _col not in df.columns:
-            df[_col] = np.nan
 
     for league in config.NEW_FORMAT_LEAGUES:
         league_id = config.API_FOOTBALL_IDS.get(league)
