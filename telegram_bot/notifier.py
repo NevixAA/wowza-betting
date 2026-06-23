@@ -773,25 +773,9 @@ def notify_player_props() -> int:
     from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
     df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
 
-    # SNIPER team matches: high probability bar; skip if EV is known negative
-    ev_ok = df["ev"].isna() | (df["ev"] >= 0)
-    sniper_match = (df["match_tier"] == "SNIPER") & (df["model_prob"] >= 0.60) & ev_ok
-    # Prop-league matches (WC, top-5): model probability gate; skip if EV is known negative
-    prop_match   = (df["match_tier"] == "PROP_LEAGUE") & (df["model_prob"] >= 0.55) & ev_ok
-    # Any explicitly tiered signal (SNIPER/MARKSMAN/VALUABLE) — edge already validated by EV+rel_edge
-    tiered       = df["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])
-    # WC: send every signal that has a positive EV (odds enriched)
-    wc_ev = (df["league"] == "World Cup") & (df["ev"].notna()) & (df["ev"] > 0)
-    df = df[sniper_match | prop_match | tiered | wc_ev].copy()
-    tier_order = {"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2, "WATCH": 3}
-    df["_tier_rank"] = df["tier"].map(tier_order).fillna(3)
-    df = df.sort_values(["_tier_rank", "ev", "model_prob"], ascending=[True, False, False])
-    # SNIPER + MARKSMAN: all sent; VALUABLE: top 10 by EV only
-    top_tiers  = df[df["tier"].isin(["SNIPER", "MARKSMAN"])]
-    valuable   = df[df["tier"] == "VALUABLE"].head(10)
-    other      = df[~df["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])]
-    df = pd.concat([top_tiers, valuable, other], ignore_index=True)
-    df = df.drop(columns=["_tier_rank"])
+    # Only SNIPER and MARKSMAN — VALUABLE and WATCH are not sent
+    df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])].copy()
+    df = df.sort_values(["tier", "ev", "model_prob"], ascending=[True, False, False])
 
     if df.empty:
         return 0
@@ -807,7 +791,7 @@ def notify_player_props() -> int:
     }
 
     for _, row in df.iterrows():
-        key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}"
+        key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}|{row.get('match','')}"
         if key in notified:
             continue
 

@@ -13,10 +13,11 @@ import streamlit as st
 
 st.set_page_config(page_title="World Cup 2026", page_icon="🌍", layout="wide")
 
-BASE_DIR        = Path(__file__).resolve().parents[1]
-TIPS_FILE       = BASE_DIR / "output" / "worldcup_tips.csv"
-HISTORY_FILE    = BASE_DIR / "output" / "worldcup_history.json"
-MODEL_TIPS_FILE = BASE_DIR / "output" / "worldcup_model_tips.csv"
+BASE_DIR         = Path(__file__).resolve().parents[1]
+TIPS_FILE        = BASE_DIR / "output" / "worldcup_tips.csv"
+HISTORY_FILE     = BASE_DIR / "output" / "worldcup_history.json"
+MODEL_TIPS_FILE  = BASE_DIR / "output" / "worldcup_model_tips.csv"
+PLAYER_TIPS_FILE = BASE_DIR / "output" / "player_tips.csv"
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.title("🌍 World Cup 2026")
@@ -49,18 +50,20 @@ def load_history():
 tips    = load_tips()
 history = load_history()
 
-# ── Not yet available ─────────────────────────────────────────────────────────
-if tips.empty:
-    st.info("⏳ World Cup 2026 starts **June 11, 2026**. Odds tracking will begin once OddsAPI publishes fixtures (usually 2-4 weeks before kickoff).")
-    st.markdown("""
-    ### What this page will show:
-    - **Sharp money signals** — when odds move significantly, sharp bettors are positioning
-    - **O/U 2.5 drift** — is money flowing to OVER or UNDER for each match?
-    - **1X2 drift** — which team is sharp money backing?
-    - **Opening vs current odds** — see the full movement history per match
-    - **STRONG / SHARP / FADING** signals ranked by drift magnitude
-    """)
-    st.stop()
+@st.cache_data(ttl=120)
+def load_player_tips_wc():
+    if not PLAYER_TIPS_FILE.exists():
+        return pd.DataFrame()
+    df = pd.read_csv(PLAYER_TIPS_FILE)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    today = pd.Timestamp.now().normalize()
+    df = df[df["date"] >= today].copy()
+    # WC rows: league contains "World Cup" (case-insensitive)
+    if "league" in df.columns:
+        df = df[df["league"].str.contains("World Cup", case=False, na=False)]
+    return df
+
+player_tips_wc = load_player_tips_wc()
 
 @st.cache_data(ttl=120)
 def load_model_tips():
@@ -71,22 +74,101 @@ def load_model_tips():
 model_tips = load_model_tips()
 
 # ── KPIs ──────────────────────────────────────────────────────────────────────
-strong = tips[tips["signal"] == "STRONG"]
-sharp  = tips[tips["signal"] == "SHARP"]
-fading = tips[tips["signal"] == "FADING"]
-matches = tips["match"].nunique()
+if not tips.empty:
+    strong  = tips[tips["signal"] == "STRONG"]
+    sharp   = tips[tips["signal"] == "SHARP"]
+    fading  = tips[tips["signal"] == "FADING"]
+    matches = tips["match"].nunique()
+else:
+    strong = sharp = fading = pd.DataFrame()
+    matches = 0
 
-c1, c2, c3, c4, c5 = st.columns(5)
+wc_props_priced = player_tips_wc[player_tips_wc["tier"] != "WATCH"] if not player_tips_wc.empty else pd.DataFrame()
+wc_props_watch  = player_tips_wc[player_tips_wc["tier"] == "WATCH"]  if not player_tips_wc.empty else pd.DataFrame()
+
+c1, c2, c3, c4, c5, c6 = st.columns(6)
 c1.metric("Matches Tracked", matches)
-c2.metric("🔴 STRONG",       len(strong), help=">10% odds move")
-c3.metric("🟡 SHARP",        len(sharp),  help="5-10% odds move")
-c4.metric("⬆️ FADING",       len(fading))
-c5.metric("🤖 Model Tips",   len(model_tips) if not model_tips.empty else 0)
+c2.metric("🔴 STRONG",        len(strong), help=">10% odds move")
+c3.metric("🟡 SHARP",         len(sharp),  help="5-10% odds move")
+c4.metric("⬆️ FADING",        len(fading))
+c5.metric("🤖 Model Tips",    len(model_tips) if not model_tips.empty else 0)
+c6.metric("👤 Player Props",  len(wc_props_priced) + len(wc_props_watch))
+
+if tips.empty:
+    st.info("⏳ No active drift signals right now. The WC tracker runs every 5 minutes during match windows.")
 
 st.markdown("---")
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
-tab_drift, tab_model = st.tabs(["📡 Sharp Money Drift", "🤖 ML Model Value"])
+tab_props, tab_drift, tab_model = st.tabs(["👤 Player Props", "📡 Sharp Money Drift", "🤖 ML Model Value"])
+
+TIER_META = {
+    "SNIPER":   ("🎯", "#e94560"),
+    "MARKSMAN": ("🔫", "#00aaff"),
+    "VALUABLE": ("💎", "#f5a623"),
+    "WATCH":    ("👁",  "#4caf50"),
+}
+MARKET_LABEL = {
+    "goals": "Anytime Scorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+    "assists": "Assist",
+    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+    "cards": "Yellow Card",
+}
+
+with tab_props:
+    st.subheader("👤 WC 2026 Player Props")
+    if player_tips_wc.empty:
+        st.info("⏳ No WC player prop signals today. Player props run after each WC predict cycle.")
+    else:
+        col_pf1, col_pf2, col_pf3 = st.columns(3)
+        with col_pf1:
+            tier_opts = sorted(player_tips_wc["tier"].unique().tolist())
+            tier_sel  = st.multiselect("Tier", tier_opts, default=tier_opts, key="wc_tier")
+        with col_pf2:
+            mkt_opts = sorted(player_tips_wc["market"].unique().tolist())
+            mkt_sel  = st.multiselect("Market", mkt_opts, default=mkt_opts, key="wc_mkt")
+        with col_pf3:
+            min_prob = st.slider("Min model prob", 0.40, 0.90, 0.50, 0.01, key="wc_minp")
+
+        filtered_wc = player_tips_wc[
+            player_tips_wc["tier"].isin(tier_sel) &
+            player_tips_wc["market"].isin(mkt_sel) &
+            (player_tips_wc["model_prob"] >= min_prob)
+        ].sort_values(["tier", "model_prob"], ascending=[True, False])
+
+        st.caption(f"{len(filtered_wc)} signal(s)")
+        for _, row in filtered_wc.iterrows():
+            tier  = row.get("tier", "WATCH")
+            emoji, color = TIER_META.get(tier, ("📌", "#888"))
+            mkt   = row.get("market", "")
+            label = MARKET_LABEL.get(mkt, mkt.upper())
+            ev_val = row.get("ev")
+            ev_str = f"EV: {float(ev_val):+.1%}" if ev_val and not pd.isna(ev_val) else "EV: add odds"
+            mkt_odds = row.get("market_odds")
+            odds_str = f"@ {float(mkt_odds):.2f}" if mkt_odds and not pd.isna(mkt_odds) else f"fair {row.get('fair_odds','—')}"
+            lazy_badges = " ".join(
+                f'<span style="background:#333;color:#aaa;padding:1px 6px;border-radius:8px;font-size:0.75em">{f}</span>'
+                for f in str(row.get("lazy_factors", "")).split("|") if f
+            )
+            st.markdown(f"""
+            <div style="border-left:4px solid {color};padding:12px 16px;margin:6px 0;
+                        background:#111827;border-radius:6px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="color:{color};font-weight:bold">{emoji} {tier}</span>
+                    <span style="color:#aaa;font-size:0.85em">📅 {str(row['date'])[:10]}</span>
+                </div>
+                <b style="color:white;font-size:1.05em">{row.get('player_name','')}</b>
+                <span style="color:#aaa"> · {row.get('position','')} · {row.get('team','')}</span><br/>
+                <span style="color:#90caf9">{row.get('match','')}</span><br/>
+                <div style="margin:6px 0">
+                    <span style="color:white"><b>{label}</b></span>
+                    &nbsp;{odds_str}
+                    &nbsp;|&nbsp;<span style="color:#00cc88"><b>{ev_str}</b></span>
+                    &nbsp;|&nbsp;Model P: <b style="color:white">{row.get('model_prob',0):.0%}</b>
+                </div>
+                <div>{lazy_badges}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
 with tab_model:
     st.subheader("🤖 ML Model Fair Prices vs Market")
@@ -134,26 +216,30 @@ with tab_model:
 with tab_drift:
     st.subheader("📡 Sharp Money Drift Signals")
 
-    # ── Signal filter ────────────────────────────────────────────────────────
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        sig_filter = st.multiselect("Signal", ["STRONG", "SHARP", "FADING"],
-                                    default=["STRONG", "SHARP"])
-    with col2:
-        mkt_filter = st.multiselect("Market", tips["market"].str.split(" ").str[0].unique().tolist(),
-                                    default=tips["market"].str.split(" ").str[0].unique().tolist())
+    if tips.empty:
+        st.info("⏳ No drift signals right now. The WC tracker runs every 5 minutes during match windows.")
+        filtered = pd.DataFrame()
+    else:
+        # ── Signal filter ─────────────────────────────────────────────────────
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            sig_filter = st.multiselect("Signal", ["STRONG", "SHARP", "FADING"],
+                                        default=["STRONG", "SHARP"])
+        with col2:
+            mkt_opts = tips["market"].str.split(" ").str[0].unique().tolist()
+            mkt_filter = st.multiselect("Market", mkt_opts, default=mkt_opts)
 
-    filtered = tips[
-        tips["signal"].isin(sig_filter) &
-        tips["market"].str.startswith(tuple(mkt_filter))
-    ].copy() if sig_filter and mkt_filter else tips.copy()
+        filtered = tips[
+            tips["signal"].isin(sig_filter) &
+            tips["market"].str.startswith(tuple(mkt_filter) if mkt_filter else ("",))
+        ].copy() if sig_filter and mkt_filter else tips.copy()
 
-    # ── Signal cards ──────────────────────────────────────────────────────────
-    st.subheader(f"📡 Active Signals ({len(filtered)})")
+        st.subheader(f"📡 Active Signals ({len(filtered)})")
 
-if filtered.empty:
-    st.info("No signals match the current filter.")
-else:
+    if filtered.empty:
+        if not tips.empty:
+            st.info("No signals match the current filter.")
+    else:
     for _, row in filtered.iterrows():
         drift_color = "#ff4444" if row["drift_pct"] < 0 else "#44ff88"
         border_color = "#ff4444" if row["signal"] == "STRONG" else "#ffaa00" if row["signal"] == "SHARP" else "#888"
