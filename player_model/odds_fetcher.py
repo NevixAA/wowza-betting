@@ -45,6 +45,14 @@ _MARKET_MAP = {
 # Unique API market keys to request in one call (avoids requesting same key multiple times)
 _API_MARKETS_STR = ",".join(dict.fromkeys(v[0] for v in _MARKET_MAP.values()))
 
+# Markets not available for WC on OddsAPI (returns 422 if requested)
+_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more", "player_to_score_hat_trick"}
+_WC_API_MARKETS_STR = ",".join(
+    k for k in dict.fromkeys(v[0] for v in _MARKET_MAP.values())
+    if k not in _WC_EXCLUDED_API_MARKETS
+)
+_WC_SPORT_KEY = "soccer_fifa_world_cup"
+
 # Odds API sport keys for our prop leagues
 PROP_SPORT_KEYS = {
     "World Cup":        "soccer_fifa_world_cup",
@@ -181,7 +189,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                     pass
 
             if bookmakers is None:
-                api_markets = _API_MARKETS_STR
+                api_markets = _WC_API_MARKETS_STR if sport_key == _WC_SPORT_KEY else _API_MARKETS_STR
                 data = _get(
                     f"sports/{sport_key}/events/{event_id}/odds",
                     {"regions": "eu", "markets": api_markets, "oddsFormat": "decimal"},
