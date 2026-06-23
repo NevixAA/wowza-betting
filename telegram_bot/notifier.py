@@ -574,8 +574,8 @@ def notify_weekly_summary() -> bool:
                 ms = ms[ms["pnl"].notna()]
                 if ms.empty:
                     continue
-                n = len(ms); pnl = ms["pnl"].sum(); roi = pnl / n * 100
-                lines.append(f"📌 <b>{mkt_label}</b> — {n} bets | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+                n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum(); roi = pnl / n * 100
+                lines.append(f"📌 <b>{mkt_label}</b> — {mw2}W/{n-mw2}L | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
@@ -624,8 +624,8 @@ def notify_weekly_summary() -> bool:
                 ms = sl_all[sl_all["market"] == mkt] if "market" in sl_all.columns else pd.DataFrame()
                 if ms.empty:
                     continue
-                n = len(ms); pnl = ms["pnl"].sum(); roi = pnl / n * 100
-                lines.append(f"📌 <b>{mkt_label}</b> — {n} bets | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+                n = len(ms); mw3 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum(); roi = pnl / n * 100
+                lines.append(f"📌 <b>{mkt_label}</b> — {mw3}W/{n-mw3}L | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
@@ -870,8 +870,8 @@ def notify_props_daily_digest() -> bool:
         ("sot4",    "SOT 4+",         "🔫"),
         ("cards",   "Carded",         "🟨"),
     ]
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
-    TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫"}
+    TIER_ORDER = ["SNIPER", "MARKSMAN"]
 
     lines = [
         f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
@@ -891,8 +891,8 @@ def notify_props_daily_digest() -> bool:
         except Exception as e:
             lines.append(f"  error loading player_tips.csv: {e}")
 
-    tips  = tips_data[tips_data["tier"].isin(TIER_ORDER)].copy() if not tips_data.empty else pd.DataFrame()
-    watch = tips_data[tips_data["tier"] == "WATCH"].copy()        if not tips_data.empty else pd.DataFrame()
+    # SNIPER and MARKSMAN only — same rule as individual alerts
+    tips = tips_data[tips_data["tier"].isin(TIER_ORDER)].copy() if not tips_data.empty else pd.DataFrame()
 
     total_tips = len(tips)
     lines.append(f"🎯 <b>TIPS</b>  ({total_tips} signal{'s' if total_tips != 1 else ''})")
@@ -920,30 +920,6 @@ def notify_props_daily_digest() -> bool:
                         f"  {sym} <b>{r['player_name']}</b> ({r.get('team','')})"
                         f"{od_str}{ev_str}  [{r.get('league','')}]"
                     )
-            lines.append("")
-
-    # ── Watch section — by market ───────────────────────────────────────────────
-    lines.append(f"👁️ <b>WATCH</b>  ({len(watch)} on radar)")
-    lines.append("")
-    if watch.empty:
-        lines.append("  Nothing today")
-    else:
-        if "ev" in watch.columns:
-            watch = watch.copy()
-            watch["_sort_ev"] = watch["ev"].fillna(-9)
-            watch = watch.sort_values(["_sort_ev", "model_prob"], ascending=[False, False]).drop(columns=["_sort_ev"])
-        for mkt_key, mkt_label, mkt_emoji in PLAYER_MARKETS:
-            mw = watch[watch["market"] == mkt_key].head(3) if "market" in watch.columns else pd.DataFrame()
-            if mw.empty:
-                continue
-            lines.append(f"── {mkt_emoji} <b>{mkt_label}</b>")
-            for _, r in mw.iterrows():
-                odds = r.get("market_odds"); ev = r.get("ev")
-                od_str = f" @ {float(odds):.2f}" if pd.notna(odds) else f" {float(r.get('model_prob',0))*100:.0f}%"
-                ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
-                lines.append(
-                    f"  {r['player_name']} ({r.get('team','')}){od_str}{ev_str}  [{r.get('league','')}]"
-                )
             lines.append("")
 
     if not player_file.exists():
@@ -1007,15 +983,15 @@ def notify_props_daily_digest() -> bool:
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = pled[pled["pnl"].notna()]
             if not all_p.empty:
-                n = len(all_p); pnl = all_p["pnl"].sum(); roi = pnl / n * 100
-                lines2.append(f"  Total: {n} settled | PnL <b>{pnl:+.2f}u</b> | ROI {roi:+.1f}%")
+                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = all_p["pnl"].sum(); roi = pnl / n * 100
+                lines2.append(f"  Total: {w_all}W/{n-w_all}L | PnL <b>{pnl:+.2f}u</b> | ROI {roi:+.1f}%")
                 lines2.append("")
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = all_p[all_p["market"] == mkt_key] if "market" in all_p.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mp = ms["pnl"].sum(); mroi = mp / mn * 100
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  ({mn} bets | ROI {mroi:+.1f}%)")
+                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum(); mroi = mp / mn * 100
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | ROI {mroi:+.1f}% | PnL {mp:+.2f}u")
                     if "tier" in ms.columns:
                         for tier in TIER_ORDER:
                             ts = ms[ms["tier"] == tier]
@@ -1426,8 +1402,8 @@ def notify_daily_digest() -> bool:
                     sub = live[live["model_type"] == fmt]
                 if sub.empty:
                     continue
-                n = len(sub); pnl = sub["pnl"].sum(); roi = pnl / n * 100
-                lines2.append(f"  {emoji} <b>{label}</b>  ({n} bets | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
+                n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum(); roi = pnl / n * 100
+                lines2.append(f"  {emoji} <b>{label}</b>  {w_s}W/{n-w_s}L | PnL {pnl:+.2f}u | ROI {roi:+.1f}%")
                 for tier in TIER_ORDER:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
@@ -1450,8 +1426,8 @@ def notify_daily_digest() -> bool:
                     ms = sl_s[sl_s["market"] == mkt] if "market" in sl_s.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mp = ms["pnl"].sum(); mroi = mp / mn * 100
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  ({mn} bets | PnL {mp:+.2f}u | ROI {mroi:+.1f}%)")
+                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum(); mroi = mp / mn * 100
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | PnL {mp:+.2f}u | ROI {mroi:+.1f}%")
                     for tier in TIER_ORDER:
                         ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                         if ts.empty:
