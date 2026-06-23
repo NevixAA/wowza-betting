@@ -204,7 +204,9 @@ Everything runs in the cloud — PC can be completely off.
 Ireland, Finland, Denmark, Austria, Sweden, Norway, Brazil, Japan, Mexico, China, USA MLS, Argentina
 
 ### Player Props Leagues
-Championship, League One, Bundesliga 2, Ireland Premier, Finland Veikkausliiga, WC 2026 (until Jul 19)
+**Top tier:** Premier League, Bundesliga, La Liga, Serie A, Ligue 1, Champions League, Europa League, Conference League  
+**Secondary:** Championship, League One, Bundesliga 2  
+**Tournament:** World Cup 2026 (until Jul 19)
 
 ---
 
