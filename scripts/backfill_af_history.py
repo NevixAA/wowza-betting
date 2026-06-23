@@ -248,8 +248,8 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
     pct_with_shots = df["HS"].notna().mean() * 100
     print(f"\n  Saved {len(df)} rows → {OUTPUT.name}")
     print(f"  Shot data coverage: {pct_with_shots:.1f}%")
-    print(f"\n  Next step: update data_loader.py to merge af_history.parquet")
-    print(f"             then retrain team model")
+    print(f"\n  Next step: run pipeline.py --mode train to retrain team model")
+    print(f"  Note: leagues stay as NEW_FORMAT — API-Football and FD data are kept separate")
 
 
 if __name__ == "__main__":
