@@ -785,8 +785,12 @@ def notify_player_props() -> int:
     df = df[sniper_match | prop_match | tiered | wc_ev].copy()
     tier_order = {"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2, "WATCH": 3}
     df["_tier_rank"] = df["tier"].map(tier_order).fillna(3)
-    # Sort: tiered signals first (by EV), then model_prob signals
-    df = df.sort_values(["_tier_rank", "ev", "model_prob"], ascending=[True, False, False]).head(20)
+    df = df.sort_values(["_tier_rank", "ev", "model_prob"], ascending=[True, False, False])
+    # SNIPER + MARKSMAN: all sent; VALUABLE: top 10 by EV only
+    top_tiers  = df[df["tier"].isin(["SNIPER", "MARKSMAN"])]
+    valuable   = df[df["tier"] == "VALUABLE"].head(10)
+    other      = df[~df["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])]
+    df = pd.concat([top_tiers, valuable, other], ignore_index=True)
     df = df.drop(columns=["_tier_rank"])
 
     if df.empty:
