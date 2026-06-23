@@ -19,6 +19,41 @@ from .api_football import _norm_name as _norm_player_name
 from .feature_engineering import build_upcoming_features, compute_ges
 from .model import load_model, predict_proba
 
+import numpy as np
+
+
+def _compute_market_caps(history_path: Path) -> dict[str, float]:
+    """
+    Compute per-market probability caps = top-1% career rate among players
+    with >= 10 matches in player_history.parquet.
+    No model should output a probability above the best real player's career rate.
+    """
+    _COL_THRESHOLD = {
+        "goals":   ("goals",           1),
+        "goals2":  ("goals",           2),
+        "goals3":  ("goals",           3),
+        "assists": ("assists",         1),
+        "sot":     ("shots_on_target", 1),
+        "sot2":    ("shots_on_target", 2),
+        "sot3":    ("shots_on_target", 3),
+        "sot4":    ("shots_on_target", 4),
+        "cards":   ("yellow_cards",    1),
+    }
+    caps: dict[str, float] = {}
+    if not history_path.exists():
+        return {mkt: 0.95 for mkt in _COL_THRESHOLD}
+    hist = pd.read_parquet(history_path)
+    for mkt, (col, thr) in _COL_THRESHOLD.items():
+        if col not in hist.columns:
+            caps[mkt] = 0.95
+            continue
+        rates = (hist.groupby("player_name")
+                     .filter(lambda g: len(g) >= 10)
+                     .groupby("player_name")[col]
+                     .apply(lambda x: (x >= thr).mean()))
+        caps[mkt] = round(float(rates.quantile(0.99)), 4)
+    return caps
+
 
 # ── Edge calculations (v2 — proper de-vig) ────────────────────────────────────
 
@@ -216,6 +251,11 @@ def run_player_predictions(
     if history_df.empty:
         return pd.DataFrame()
 
+    # Compute caps once per run from the actual history distribution
+    _history_path = config.BASE_DIR / "player_history.parquet"
+    _MARKET_CAPS = _compute_market_caps(_history_path)
+    print(f"[player_model] market caps (top-1% real player): { {k: v for k,v in _MARKET_CAPS.items()} }")
+
     today = pd.Timestamp.now().normalize()
 
     # Primary: ALL upcoming fixtures in PROP_LEAGUES (decoupled from team model)
@@ -374,7 +414,9 @@ def run_player_predictions(
                 # Team-strength multiplier: boost for heavy favourites, penalty for underdogs
                 _is_home = float(feat_row.get("is_home", 0.5)) > 0.5
                 _win_prob = home_win_prob if _is_home else away_win_prob
-                p_model = min(0.95, p_model * _team_strength_mult(_win_prob, market))
+                p_model = p_model * _team_strength_mult(_win_prob, market)
+                # Cap at realistic maximum then absolute ceiling of 0.95
+                p_model = min(p_model, _MARKET_CAPS.get(market, 0.90), 0.95)
 
                 if p_model < 0.15:
                     continue

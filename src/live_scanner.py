@@ -394,7 +394,10 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]
 
         pred = _match_prediction(pred_df, home, away)
         if pred is None:
-            continue
+            # WC teams are not in predictions.csv — use neutral defaults so Poisson signals still fire
+            if "World Cup" not in league and "FIFA" not in league:
+                continue
+            pred = {}
 
         p_over     = float(pred.get("p_over25", 0.45))
         lam        = _lambda_from_p_over(p_over)

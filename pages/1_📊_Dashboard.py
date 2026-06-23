@@ -106,12 +106,30 @@ with col_f3:
         default=["Confirmed", "Neutral", "New", "Conflicted"]
     )
 
+col_f4, col_f5 = st.columns([2, 1])
+with col_f4:
+    all_leagues = sorted(df["league"].dropna().unique().tolist()) if "league" in df.columns else []
+    league_filter = st.multiselect("League", all_leagues, default=all_leagues, key="dash_league")
+with col_f5:
+    date_range = st.date_input(
+        "Date range",
+        value=(df["date"].min().date(), df["date"].max().date()),
+        key="dash_dates",
+    )
+    if isinstance(date_range, (list, tuple)) and len(date_range) == 2:
+        date_from, date_to = pd.Timestamp(date_range[0]), pd.Timestamp(date_range[1])
+    else:
+        date_from = date_to = pd.Timestamp(date_range[0]) if date_range else df["date"].min()
+
 # Active tips only
 tips = df[
     df["bet"].isin(["OVER", "UNDER"]) &
     df["signal_tier"].isin(tier_filter) &
     (df["model_type"].isin(model_filter) if model_filter else True) &
-    df["drift_signal"].isin(drift_filter)
+    df["drift_signal"].isin(drift_filter) &
+    (df["league"].isin(league_filter) if league_filter and "league" in df.columns else True) &
+    (df["date"] >= date_from) &
+    (df["date"] <= date_to + pd.Timedelta(days=1))
 ].copy()
 
 st.divider()

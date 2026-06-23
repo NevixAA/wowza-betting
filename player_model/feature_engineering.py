@@ -824,13 +824,15 @@ def build_upcoming_features(
             continue
 
         n_games    = len(phist)
-        goals_pg   = float(phist["goals"].mean())
-        assists_pg = float(phist["assists"].mean())
-        shots_pg   = float(phist["shots_total"].mean())
-        sot_pg     = float(phist["shots_on_target"].mean())
-        cards_pg   = float(phist["yellow_cards"].mean())
-        minutes_pg = float(phist["minutes"].mean())
-        kp_pg      = float(phist["key_passes"].mean()) if "key_passes" in phist.columns else 0.0
+        # Raw rolling means — clipped to training-observed 95th-percentile maxima to prevent
+        # out-of-distribution extrapolation when tournament players have inflated recent stats.
+        goals_pg   = min(float(phist["goals"].mean()),   0.60)
+        assists_pg = min(float(phist["assists"].mean()),  0.50)
+        shots_pg   = min(float(phist["shots_total"].mean()), 5.0)
+        sot_pg     = min(float(phist["shots_on_target"].mean()), 3.0)
+        cards_pg   = min(float(phist["yellow_cards"].mean()), 0.60)
+        minutes_pg = min(float(phist["minutes"].mean()), 90.0)
+        kp_pg      = min(float(phist["key_passes"].mean()) if "key_passes" in phist.columns else 0.0, 4.0)
         starter_rate = float(phist["started"].mean()) if "started" in phist.columns else 0.8
         sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
 

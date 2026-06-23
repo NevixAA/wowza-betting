@@ -167,10 +167,28 @@ if not has_odds.empty:
     with col3:
         min_confidence = st.slider("Min confidence", 0.0, 1.0, 0.50, 0.05)
 
+    col4, col5 = st.columns([2, 1])
+    with col4:
+        all_leagues = sorted(has_odds["league"].dropna().unique().tolist()) if "league" in has_odds.columns else []
+        league_filter = st.multiselect("League", all_leagues, default=all_leagues, key="pp_league")
+    with col5:
+        date_range = st.date_input(
+            "Date range",
+            value=(has_odds["date"].min().date(), has_odds["date"].max().date()),
+            key="pp_dates",
+        )
+        if isinstance(date_range, (list, tuple)) and len(date_range) == 2:
+            date_from, date_to = pd.Timestamp(date_range[0]), pd.Timestamp(date_range[1])
+        else:
+            date_from = date_to = pd.Timestamp(date_range[0]) if date_range else has_odds["date"].min()
+
     filtered = has_odds[
         has_odds["tier"].isin(tier_filter) &
         has_odds["market"].isin(mkt_filter) &
-        (has_odds["confidence"] >= min_confidence)
+        (has_odds["confidence"] >= min_confidence) &
+        (has_odds["league"].isin(league_filter) if league_filter and "league" in has_odds.columns else True) &
+        (has_odds["date"] >= date_from) &
+        (has_odds["date"] <= date_to + pd.Timedelta(days=1))
     ].sort_values(["tier", "model_prob"], ascending=[True, False])
 
     st.subheader(f"📋 {len(filtered)} signal(s)")
