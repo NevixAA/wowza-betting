@@ -223,7 +223,7 @@ PLAYER_FEATURE_COLS = [
 # Phase 3 (future — needs /players/statistics API data):
 #   "xg_per90", "xa_per90"    (shot location weighting — top goals feature once available)
 MIN_APPEARANCES  = 3   # season-stats fallback path
-MIN_GAMES_SIGNAL = 3   # minimum match history to generate a signal
+MIN_GAMES_SIGNAL = 5   # minimum match history to generate a signal
 MIN_GAMES_SNIPER = 8
 
 # ── Leagues with player prop markets ─────────────────────────────────────────
