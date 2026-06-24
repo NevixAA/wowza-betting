@@ -801,9 +801,9 @@ def notify_player_props() -> int:
     sent = 0
 
     MARKET_EMOJI = {
-        "goals": "⚽", "goals2": "⚽⚽", "goals3": "🎩",
+        "goals": "⚽", "goals2": "⚽⚽",
         "assists": "🎯",
-        "sot": "🔫", "sot2": "🔫", "sot3": "🔫", "sot4": "🔫",
+        "sot": "🔫", "sot2": "🔫", "sot3": "🔫",
         "cards": "🟨",
     }
 
@@ -822,9 +822,9 @@ def notify_player_props() -> int:
         ev_val   = row.get("ev")
         tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "👁")
         market_label = {
-            "goals": "Anytime Goalscorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+            "goals": "Anytime Goalscorer", "goals2": "Score 2+",
             "assists": "Assist",
-            "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+            "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+",
             "cards": "Yellow Card",
         }.get(row["market"], row["market"])
 
@@ -909,9 +909,9 @@ def notify_lineup_cashout() -> int:
         tip_lookup[k] = row.to_dict()
 
     MARKET_LABEL = {
-        "goals": "Anytime Goalscorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+        "goals": "Anytime Goalscorer", "goals2": "Score 2+",
         "assists": "Assist",
-        "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+        "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+",
         "cards": "Yellow Card",
     }
 
@@ -974,12 +974,10 @@ def notify_props_daily_digest() -> bool:
     PLAYER_MARKETS = [
         ("goals",   "Anytime Scorer", "⚽"),
         ("goals2",  "Score 2+",       "⚽⚽"),
-        ("goals3",  "Hat Trick",      "🎩"),
         ("assists", "Assist",         "🎯"),
         ("sot",     "SOT 1+",         "🔫"),
         ("sot2",    "SOT 2+",         "🔫"),
         ("sot3",    "SOT 3+",         "🔫"),
-        ("sot4",    "SOT 4+",         "🔫"),
         ("cards",   "Carded",         "🟨"),
     ]
     TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫"}
@@ -1151,16 +1149,14 @@ def notify_props_weekly_summary() -> bool:
     settled_all  = pled[pled["pnl"].notna()].copy()
     settled_week = settled_all[settled_all["signal_date"] >= week_ago].copy()
 
-    # All 9 player markets in display order
+    # Active player markets (goals3/sot4 removed — base rate too low)
     PLAYER_MARKETS = [
         ("goals",   "Anytime Scorer", "⚽"),
         ("goals2",  "Score 2+",       "⚽⚽"),
-        ("goals3",  "Hat Trick",      "🎩"),
         ("assists", "Assist",         "🎯"),
         ("sot",     "SOT 1+",         "🔫"),
         ("sot2",    "SOT 2+",         "🔫"),
         ("sot3",    "SOT 3+",         "🔫"),
-        ("sot4",    "SOT 4+",         "🔫"),
         ("cards",   "Carded",         "🟨"),
     ]
     MKT_LABEL = {k: lbl for k, lbl, _ in PLAYER_MARKETS}

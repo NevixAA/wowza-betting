@@ -31,12 +31,10 @@ def _compute_market_caps(history_path: Path) -> dict[str, float]:
     _COL_THRESHOLD = {
         "goals":   ("goals",           1),
         "goals2":  ("goals",           2),
-        "goals3":  ("goals",           3),
         "assists": ("assists",         1),
         "sot":     ("shots_on_target", 1),
         "sot2":    ("shots_on_target", 2),
         "sot3":    ("shots_on_target", 3),
-        "sot4":    ("shots_on_target", 4),
         "cards":   ("yellow_cards",    1),
     }
     caps: dict[str, float] = {}
@@ -358,11 +356,14 @@ def run_player_predictions(
                 from player_model.api_football import get_fixture_lineup as _gfl
                 _lineup = _gfl(int(fid))
                 if _lineup:
-                    lineup_available = True
                     for _team_players in _lineup.values():
                         for _p in _team_players:
                             if _p.get("started"):
                                 lineup_starters.add(_norm_player_name(_p.get("player_name", "")))
+                    # Only treat lineup as confirmed when both teams have starters posted
+                    # (empty startXI = lineup not yet submitted → don't drop any player)
+                    if len(lineup_starters) >= 18:
+                        lineup_available = True
             except Exception as _e:
                 print(f"[predict] Lineup fetch failed (fixture {fid}): {_e}")
 

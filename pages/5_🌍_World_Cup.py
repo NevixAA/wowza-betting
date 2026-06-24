@@ -109,9 +109,9 @@ TIER_META = {
     "WATCH":    ("👁",  "#4caf50"),
 }
 MARKET_LABEL = {
-    "goals": "Anytime Scorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+    "goals": "Anytime Scorer", "goals2": "Score 2+",
     "assists": "Assist",
-    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+",
     "cards": "Yellow Card",
 }
 

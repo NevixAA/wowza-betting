@@ -7,13 +7,11 @@ compatible with enrich_with_odds(): {"PlayerName|market": best_decimal_odds}
 Markets fetched:
   goals  → player_goal_scorer_anytime   (1+ goals)
   goals2 → player_to_score_2_or_more    (2+ goals)
-  goals3 → player_to_score_hat_trick    (hat trick, 3+ goals)
   sot    → player_shots_on_target       (Over 0.5)
   sot2   → player_shots_on_target       (Over 1.5)
   sot3   → player_shots_on_target       (Over 2.5)
-  sot4   → player_shots_on_target       (Over 3.5)
-  cards  → player_to_receive_card
   assists → not available on Odds API; skipped
+  (goals3/sot4/cards removed — base rate too low / too noisy)
 
 Cost: 1 API call per event (events list is free).
 Only fetches events where we have signals in player_tips.csv.
@@ -35,18 +33,16 @@ _BASE = "https://api.the-odds-api.com/v4"
 _MARKET_MAP = {
     "goals":   ("player_goal_scorer_anytime",  None),  # 1+ goals
     "goals2":  ("player_to_score_2_or_more",   None),  # 2+ goals
-    "goals3":  ("player_to_score_hat_trick",   None),  # hat trick
     "sot":     ("player_shots_on_target",      0.5),   # 1+ SOT
     "sot2":    ("player_shots_on_target",      1.5),   # 2+ SOT
     "sot3":    ("player_shots_on_target",      2.5),   # 3+ SOT
-    "sot4":    ("player_shots_on_target",      3.5),   # 4+ SOT
-    "cards":   ("player_to_receive_card",      None),  # carded
+    "cards":   ("player_to_receive_card",      None),  # yellow card
 }
 # Unique API market keys to request in one call (avoids requesting same key multiple times)
 _API_MARKETS_STR = ",".join(dict.fromkeys(v[0] for v in _MARKET_MAP.values()))
 
 # Markets not available for WC on OddsAPI (returns 422 if requested)
-_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more", "player_to_score_hat_trick"}
+_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more"}
 _WC_API_MARKETS_STR = ",".join(
     k for k in dict.fromkeys(v[0] for v in _MARKET_MAP.values())
     if k not in _WC_EXCLUDED_API_MARKETS
