@@ -80,13 +80,30 @@ def _load_notified(path: "Path | None" = None) -> set:
         if not text:
             return set()
         data = json.loads(text)
-        return set(data.get("keys", []))
+        keys = set(data.get("keys", []))
+        # Migrate old PLAYER keys that included match string (5th segment).
+        # New format is PLAYER|date|name|market (4 segments).
+        normalized: set[str] = set()
+        for k in keys:
+            parts = k.split("|")
+            if parts[0] == "PLAYER" and len(parts) == 5:
+                k = "|".join(parts[:4])  # drop the match segment
+            normalized.add(k)
+        return normalized
     return set()
 
 
 def _save_notified(keys: set, path: "Path | None" = None) -> None:
     f = path or NOTIFIED_FILE
-    f.write_text(json.dumps({"keys": list(keys)}, indent=2), encoding="utf-8")
+    # Merge with whatever is currently on disk — prevents concurrent CI runs from
+    # overwriting each other's notifications.
+    if f.exists():
+        try:
+            existing = json.loads(f.read_text(encoding="utf-8-sig"))
+            keys = keys | set(existing.get("keys", []))
+        except Exception:
+            pass
+    f.write_text(json.dumps({"keys": sorted(keys)}, indent=2), encoding="utf-8")
 
 
 def _escape_html(text: str) -> str:
@@ -791,7 +808,9 @@ def notify_player_props() -> int:
     }
 
     for _, row in df.iterrows():
-        key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}|{row.get('match','')}"
+        # Key intentionally excludes match string — match formatting varies between runs
+        # and excluding tier means SNIPER→MARKSMAN changes don't re-trigger an alert.
+        key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}"
         if key in notified:
             continue
 
@@ -829,6 +848,99 @@ def notify_player_props() -> int:
             sent += 1
             _save_notified(notified, PLAYER_NOTIFIED_FILE)
             print(f"  Player prop: {row['player_name']} — {market_label} ({p*100:.0f}%)")
+
+    return sent
+
+
+def notify_lineup_cashout() -> int:
+    """
+    Send CASHOUT alerts for players we previously tipped who are NOT in today's
+    player_tips.csv anymore — meaning confirmed lineups show they're not starting.
+
+    Logic:
+      1. Read player_notified.json — get all keys for today's date.
+      2. Read player_tips.csv — current tips after lineup filter.
+      3. Any notified key not present in current tips → player benched → send CASHOUT.
+      4. Track sent cashout alerts in cashout_notified.json (no repeat cashout per player/market).
+
+    Returns count of cashout alerts sent.
+    """
+    cfg = _load_config()
+    token   = cfg.get("token", "")
+    chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+
+    tips_file = app_config.OUTPUT_DIR / "player_tips.csv"
+    if not tips_file.exists():
+        return 0
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+
+    # Build the set of keys that are CURRENTLY active in player_tips.csv
+    df = pd.read_csv(tips_file)
+    df = df[df["date"].astype(str).str[:10] == today_str]
+    df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])]
+    active_keys = {
+        f"PLAYER|{today_str}|{r['player_name']}|{r['market']}"
+        for _, r in df.iterrows()
+    }
+
+    # All keys we notified today
+    notified_today = {
+        k for k in _load_notified(PLAYER_NOTIFIED_FILE)
+        if k.startswith(f"PLAYER|{today_str}|")
+    }
+
+    # Players whose tips disappeared (not active, not already cashed out)
+    cashout_file   = BASE_DIR / "cashout_notified.json"
+    already_cashed = _load_notified(cashout_file)
+    benched_keys   = notified_today - active_keys - already_cashed
+
+    if not benched_keys:
+        return 0
+
+    # Build lookup for player info from today's tips (including all tiers for match context)
+    df_all = pd.read_csv(tips_file)
+    df_all = df_all[df_all["date"].astype(str).str[:10] == today_str]
+    tip_lookup: dict[str, dict] = {}
+    for _, row in df_all.iterrows():
+        k = f"PLAYER|{today_str}|{row['player_name']}|{row['market']}"
+        tip_lookup[k] = row.to_dict()
+
+    MARKET_LABEL = {
+        "goals": "Anytime Goalscorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+        "assists": "Assist",
+        "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+        "cards": "Yellow Card",
+    }
+
+    sent = 0
+    for key in sorted(benched_keys):
+        parts = key.split("|")
+        if len(parts) < 4:
+            continue
+        _, date_str, player_name, market = parts[0], parts[1], parts[2], parts[3]
+        mkt_label = MARKET_LABEL.get(market, market)
+        row = tip_lookup.get(key, {})
+        match_str = row.get("match", "")
+        team_str  = row.get("team", "")
+
+        msg = (
+            f"🚨 <b>LINEUP ALERT — CASHOUT RECOMMENDED</b>\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"👤 <b>{player_name}</b> is NOT in the confirmed starting XI\n"
+            f"📌 Market: <b>{mkt_label}</b>\n"
+            f"⚽ {match_str or 'Unknown match'}  |  {team_str}\n"
+            f"📅 {date_str}\n"
+            f"━━━━━━━━━━━━━━━━\n"
+            f"⚠️ If you placed this bet, consider cashing out now."
+        )
+        if _send(token, chat_id, msg):
+            already_cashed.add(key)
+            sent += 1
+            _save_notified(already_cashed, cashout_file)
+            print(f"  CASHOUT alert: {player_name} — {mkt_label}")
 
     return sent
 

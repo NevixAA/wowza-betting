@@ -1,5 +1,11 @@
 name: Player Props
 
+# Prevent overlapping runs — wait for the previous run to finish before starting the next.
+# This is critical for player_notified.json consistency (no duplicate alerts).
+concurrency:
+  group: player-props
+  cancel-in-progress: false
+
 on:
   schedule:
     # Predict-only: every hour at :02 (24/7 during WC, night skipped after Jul 19)
@@ -148,9 +154,10 @@ jobs:
         run: |
           python -c "
           import sys; sys.path.insert(0,'.')
-          from telegram_bot.notifier import notify_player_props
+          from telegram_bot.notifier import notify_player_props, notify_lineup_cashout
           sent = notify_player_props()
-          print(f'Player prop alerts sent: {sent}')
+          cashout = notify_lineup_cashout()
+          print(f'Player prop alerts sent: {sent}  |  Cashout alerts: {cashout}')
           "
         continue-on-error: true
 
@@ -158,7 +165,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/player_tips.csv output/player_ledger.csv telegram_bot/player_notified.json \
+          git add -f output/player_tips.csv output/player_ledger.csv \
+                     telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
                      player_history.parquet \
                      models/model_player_goals.pkl  models/model_player_goals2.pkl \
                      models/model_player_goals3.pkl models/model_player_assists.pkl \
