@@ -105,27 +105,26 @@ jobs:
               exit(0)
 
           df = pd.read_parquet(hist)
-          # Walk-forward: train on all but last season, test on last season
-          seasons = sorted(df["season"].dropna().unique()) if "season" in df.columns else []
-          if len(seasons) < 2:
-              print("Not enough seasons for walk-forward calibration")
+          df["date"] = pd.to_datetime(df["date"])
+          df = df.sort_values("date").reset_index(drop=True)
+          if len(df) < 500:
+              print(f"Not enough data ({len(df)} rows)")
               exit(0)
 
-          test_season = seasons[-1]
-          test = df[df["season"] == test_season].copy()
-          print(f"Calibration test season: {test_season}  ({len(test):,} rows)")
+          cutoff_idx = int(len(df) * 0.80)
+          cutoff_date = df.iloc[cutoff_idx]["date"]
+          test = df.iloc[cutoff_idx:].copy()
+          print(f"Calibration test split (last 20%): from {cutoff_date.date()}  ({len(test):,} rows)")
 
           results = {}
           for market in config.MARKETS:
               target_col = config.MARKET_TARGETS.get(market)
               if not target_col or target_col not in test.columns:
                   continue
-              feat_cols = [c for c in config.FEATURE_COLS if c in test.columns]
-              X = test[feat_cols].fillna(0)
               y = test[target_col]
               try:
-                  model = load_model(market)
-                  probs = predict_proba(model, X)
+                  payload = load_model(market)
+                  probs = predict_proba(test, payload)
                   # Assume bookmaker overround 1.10, odds = 1/(base_rate*1.10)
                   base_rate = float(y.mean())
                   if base_rate < 0.001:

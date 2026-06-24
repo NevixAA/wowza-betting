@@ -129,6 +129,19 @@ def notify_new_snipers() -> int:
     if not bets_file.exists():
         return 0
 
+    # Load league ROI config — only alert on leagues with proven backtest edge
+    _roi_cfg_path = app_config.OUTPUT_DIR / "league_roi_config.json"
+    _approved_leagues: set[str] = set()
+    if _roi_cfg_path.exists():
+        try:
+            import json as _json
+            _roi_data = _json.loads(_roi_cfg_path.read_text())
+            for league, markets in _roi_data.get("approved_markets_by_league", {}).items():
+                if markets:  # at least one market with positive ROI
+                    _approved_leagues.add(league)
+        except Exception:
+            pass
+
     df = pd.read_csv(bets_file)
     # VALUABLE = info only (backtest shows 4-8% edge is -8% ROI).
     # Only send SNIPER and MARKSMAN as actual tips.
@@ -136,6 +149,14 @@ def notify_new_snipers() -> int:
         df["signal_tier"].isin(["SNIPER", "MARKSMAN"]) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
+
+    # Filter to approved leagues only (when ROI config exists).
+    # SNIPER tips always go through — ROI config gates MARKSMAN only.
+    if _approved_leagues:
+        tips = tips[
+            (tips["signal_tier"] == "SNIPER") |
+            (tips.get("league", pd.Series(dtype=str)).isin(_approved_leagues))
+        ]
 
     # Only upcoming games — never send finished matches
     today_str = datetime.now().strftime("%Y-%m-%d")
