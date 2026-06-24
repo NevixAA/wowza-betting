@@ -1,8 +1,12 @@
-name: Weekly Retrain
+name: Pre-season Retrain
+
+# Fires August 1st every year — one week before European leagues kick off.
+# Full collect + retrain + backtest for both main models and player props.
+# Also triggerable manually at any time (e.g. mid-season if data drifts).
 
 on:
   schedule:
-    - cron: '0 3 * * 0'   # Every Sunday at 03:00 UTC
+    - cron: '0 2 1 8 *'   # August 1st at 02:00 UTC
   workflow_dispatch:
 
 concurrency:
@@ -10,9 +14,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  retrain:
+  preseason:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     permissions:
       contents: write
 
@@ -28,21 +32,44 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Main match models ──────────────────────────────────────────────────────
+      # ── Step 1: collect fresh match data (football-data.co.uk) ───────────────
+      - name: Download latest match data
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python pipeline.py --mode collect
+        continue-on-error: true
+
+      # ── Step 2: collect fresh player stats (API-Football) ─────────────────────
+      - name: Collect player stats (full history refresh)
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python -m player_model.pipeline --mode collect
+        continue-on-error: true
+
+      # ── Step 3: train all main models ─────────────────────────────────────────
       - name: Train main models (standard + newformat + HT + side markets)
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python pipeline.py --mode train
-        continue-on-error: false
 
-      # ── Side market backtest → ROI config ─────────────────────────────────────
-      - name: Run side market backtest + generate league ROI config
+      # ── Step 4: train all player props models ─────────────────────────────────
+      - name: Train player props models (7 markets)
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python -m player_model.pipeline --mode train
+
+      # ── Step 5: full backtest → ROI config ────────────────────────────────────
+      - name: Run side market backtest
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python pipeline.py --mode backtest
+        continue-on-error: true
+
+      - name: Generate league ROI config (approved leagues for alerts)
         run: |
-          python pipeline.py --mode backtest
           python - <<'EOF'
           import json, pandas as pd
           from pathlib import Path
@@ -61,37 +88,20 @@ jobs:
                   league = row["league"]
                   roi.setdefault(league, {})[market] = round(float(row["roi_%"]), 2)
 
-          # A league is "approved" for a market if ROI > threshold
           THRESHOLDS = {"btts": 5.0, "over15": 3.0, "over35": 8.0}
           approved = {}
           for league, markets in roi.items():
-              approved[league] = {
-                  m: v for m, v in markets.items()
-                  if v >= THRESHOLDS.get(m, 5.0)
-              }
+              approved[league] = {m: v for m, v in markets.items() if v >= THRESHOLDS.get(m, 5.0)}
 
           out = {"roi_by_league": roi, "approved_markets_by_league": approved}
           Path("output/league_roi_config.json").write_text(json.dumps(out, indent=2))
           approved_count = sum(1 for v in approved.values() if v)
-          print(f"ROI config: {len(roi)} leagues evaluated, {approved_count} approved for alerts")
+          print(f"ROI config written: {len(roi)} leagues, {approved_count} approved")
           EOF
         continue-on-error: true
 
-      # ── Player props: collect fresh data + retrain ─────────────────────────────
-      - name: Collect player stats (API-Football)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode collect
-        continue-on-error: true
-
-      - name: Train player props models (7 markets)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode train
-        continue-on-error: false
-
-      # ── Player props calibration report ───────────────────────────────────────
-      - name: Player props calibration (walk-forward ROI proxy)
+      # ── Step 6: player props calibration ──────────────────────────────────────
+      - name: Player props calibration report
         run: |
           python - <<'EOF'
           import json, pandas as pd, numpy as np
@@ -101,15 +111,12 @@ jobs:
 
           hist = Path("player_history.parquet")
           if not hist.exists():
-              print("No player_history.parquet — skipping calibration")
-              exit(0)
+              print("No player_history.parquet"); exit(0)
 
           df = pd.read_parquet(hist)
-          # Walk-forward: train on all but last season, test on last season
           seasons = sorted(df["season"].dropna().unique()) if "season" in df.columns else []
           if len(seasons) < 2:
-              print("Not enough seasons for walk-forward calibration")
-              exit(0)
+              print("Not enough seasons"); exit(0)
 
           test_season = seasons[-1]
           test = df[df["season"] == test_season].copy()
@@ -123,15 +130,13 @@ jobs:
               feat_cols = [c for c in config.FEATURE_COLS if c in test.columns]
               X = test[feat_cols].fillna(0)
               y = test[target_col]
+              base_rate = float(y.mean())
+              if base_rate < 0.001:
+                  continue
               try:
                   model = load_model(market)
                   probs = predict_proba(model, X)
-                  # Assume bookmaker overround 1.10, odds = 1/(base_rate*1.10)
-                  base_rate = float(y.mean())
-                  if base_rate < 0.001:
-                      continue
                   implied_odds = round(1.0 / (base_rate * 1.10), 2)
-                  # Only bet when model exceeds implied probability by 15%+
                   edge_mask = probs > (base_rate * 1.10 * 1.15)
                   bets = int(edge_mask.sum())
                   if bets == 0:
@@ -139,11 +144,8 @@ jobs:
                   wins = int(y[edge_mask].sum())
                   profit = wins * (implied_odds - 1) - (bets - wins)
                   roi = round(profit / bets * 100, 2)
-                  results[market] = {
-                      "bets": bets, "wins": wins,
-                      "roi_%": roi, "base_rate_%": round(base_rate*100, 1),
-                      "implied_odds": implied_odds
-                  }
+                  results[market] = {"bets": bets, "wins": wins, "roi_%": roi,
+                                     "base_rate_%": round(base_rate*100,1), "implied_odds": implied_odds}
                   print(f"  {market:<10} bets={bets:4d}  wins={wins:4d}  ROI={roi:+.1f}%")
               except Exception as e:
                   print(f"  {market}: {e}")
@@ -153,7 +155,7 @@ jobs:
         continue-on-error: true
 
       # ── Commit everything ──────────────────────────────────────────────────────
-      - name: Commit all updated models and results
+      - name: Commit pre-season reset
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -182,6 +184,6 @@ jobs:
             player_history.parquet \
             2>/dev/null || true
           git diff --staged --quiet || \
-            git commit -m "auto: weekly retrain + backtest $(date -u '+%Y-%m-%d')"
+            git commit -m "auto: pre-season retrain $(date -u '+%Y-%m-%d')"
           git pull --rebase --autostash -X ours origin main
           git push

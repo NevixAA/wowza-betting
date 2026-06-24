@@ -719,9 +719,13 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             import warnings
             warnings.warn(
                 f"DATA CONTAMINATION: {dk_league} contains German teams: {contaminated}. "
-                f"Run: python download_league_data.py",
+                f"Rows auto-removed.",
                 stacklevel=2,
             )
+            out = out[~(
+                (out["league"] == dk_league) &
+                (out["home_team"].isin(contaminated) | out["away_team"].isin(contaminated))
+            )]
 
     _CACHE = out
     return out
