@@ -202,10 +202,13 @@ def mode_train() -> tuple:
     else:
         log.warning(f"  Not enough HT data ({len(ht_valid)} rows) — skipping HT models")
 
-    # ── Side-market models (BTTS / O1.5 / O3.5) — standard leagues only ────
+    # ── Side-market models (BTTS / O1.5 / O3.5) — all leagues with odds data ──
+    # nf_valid rows now have odds_btts/over15/over35 when af_odds_history.parquet
+    # has been backfilled; rows without odds simply drop out via dropna().
     log.info("\nTraining side-market models (BTTS / Over 1.5 / Over 3.5)...")
+    _sm_all = pd.concat([std_valid, nf_valid], ignore_index=True)
     for target, model_file in config.SIDE_MARKETS.items():
-        sm_valid = std_valid.dropna(subset=[target])
+        sm_valid = _sm_all.dropna(subset=[target])
         if len(sm_valid) >= config.BACKTEST_MIN_TRAIN:
             log.info(f"  [{target}] {len(sm_valid):,} rows  "
                      f"base rate={sm_valid[target].mean():.1%}")

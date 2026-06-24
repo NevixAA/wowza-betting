@@ -233,7 +233,57 @@ def _load_api_football_only_leagues() -> list[pd.DataFrame]:
     if frames:
         log.info(f"[api_football] Loaded {sum(len(f) for f in frames)} rows "
                  f"from {len(frames)} API-Football-only league/seasons")
+        # Merge historical BTTS/O1.5/O3.5 odds backfill into new-format rows
+        combined = pd.concat(frames, ignore_index=True)
+        combined = _enrich_with_af_odds(combined)
+        return [combined]
     return frames
+
+
+def _enrich_with_af_odds(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Fill odds_btts / odds_over15 / odds_over35 for new-format leagues using
+    the API-Football historical odds backfill (output/af_odds_history.parquet).
+    Only fills NaN cells — never overwrites existing odds.
+    """
+    af_odds_path = Path(__file__).resolve().parents[1] / "output" / "af_odds_history.parquet"
+    if not af_odds_path.exists():
+        return df
+
+    try:
+        from src.api_football_ou import _norm_name
+    except ImportError:
+        _norm_name = lambda x: str(x).lower().strip()
+
+    try:
+        odds_hist = pd.read_parquet(af_odds_path)
+        odds_hist["date"] = pd.to_datetime(odds_hist["date"], errors="coerce")
+        odds_hist["_h"] = odds_hist["home_team"].apply(_norm_name)
+        odds_hist["_a"] = odds_hist["away_team"].apply(_norm_name)
+        odds_hist["_d"] = odds_hist["date"].dt.strftime("%Y-%m-%d")
+
+        df["_h"] = df["home_team"].apply(_norm_name)
+        df["_a"] = df["away_team"].apply(_norm_name)
+        df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+
+        lookup = odds_hist.set_index(["_h", "_a", "_d"])[
+            ["odds_btts", "odds_over15", "odds_over35"]
+        ]
+
+        idx = pd.MultiIndex.from_arrays([df["_h"], df["_a"], df["_d"]])
+        matched = lookup.reindex(idx).reset_index(drop=True)
+
+        for col in ["odds_btts", "odds_over15", "odds_over35"]:
+            mask = df[col].isna() & matched[col].notna()
+            df.loc[mask, col] = matched.loc[mask, col].values
+            if mask.any():
+                log.info(f"  [af_odds] {col}: filled {mask.sum()} rows from af_odds_history")
+
+        df = df.drop(columns=["_h", "_a", "_d"])
+    except Exception as e:
+        log.warning(f"[af_odds] Could not merge odds history: {e}")
+
+    return df
 
 
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:

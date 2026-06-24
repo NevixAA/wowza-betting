@@ -241,14 +241,18 @@ def predict_upcoming(
     feat.loc[std_mask, "model_type"] = "standard"
     feat.loc[nf_mask,  "model_type"] = "new_format"
 
-    # Side-market predictions (BTTS / O1.5 / O3.5) — standard leagues only
+    # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues
+    # New-format leagues have odds_btts/over15/over35 after af_odds_history backfill.
     if side_payloads:
+        side_mask = std_mask | nf_mask
         for target, sp in side_payloads.items():
             col = f"p_{target}"
             feat[col] = np.nan
-            if std_mask.any():
+            if side_mask.any():
                 try:
-                    feat.loc[std_mask, col] = predict_proba(feat[std_mask], payload=sp).values
+                    feat.loc[side_mask, col] = predict_proba(feat[side_mask], payload=sp).values
+                    log.info(f"  Side-market {target}: {side_mask.sum()} fixtures "
+                             f"({std_mask.sum()} std + {nf_mask.sum()} nf)")
                 except Exception as e:
                     log.warning(f"  Side-market {target} prediction failed: {e}")
 
