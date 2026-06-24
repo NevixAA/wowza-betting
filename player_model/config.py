@@ -194,6 +194,8 @@ PLAYER_FEATURE_COLS = [
     "opp_sp_goals_conceded_pg",  # rolling SP goals conceded per game by opponent
     # ── Set piece composites ──────────────────────────────────────────────────
     "defender_sp_edge",              # aerial_won * height_adj * opp_sp_weakness * (1-taker)
+    "defender_sot_edge",             # SP aerial SOT threat — core defender-market edge (goals×5 proxy)
+    "defender_sot_role_index",       # how central this defender is to team's aerial SP attack
     "sp_threat_vs_weak_sp_defense",  # sp_goals_pg * opp_sp_goals_conceded_pg / 0.12
     "aerial_height_sp_composite",    # aerial_won * height_adj * opp_sp_pg * pos_weight
     "sp_goal_probability_composite", # career + rolling + aerial + opp weighted sum
