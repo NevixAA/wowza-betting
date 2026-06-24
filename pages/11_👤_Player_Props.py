@@ -16,7 +16,7 @@ BASE_DIR   = Path(__file__).resolve().parents[1]
 TIPS_FILE  = BASE_DIR / "output" / "player_tips.csv"
 
 st.title("👤 Player Props")
-st.caption("SNIPER/MARKSMAN/VALUABLE signals + WC2026 model signals — Goals (1+/2+/Hat Trick) · SOT (1-4+) · Assists · Cards")
+st.caption("SNIPER/MARKSMAN/VALUABLE signals + WC2026 model signals — Goals (1+/2+) · SOT (1-3+) · Assists")
 
 if st.button("🔄 Refresh"):
     st.cache_data.clear()
@@ -30,16 +30,15 @@ TIER_META = {
 }
 
 MARKET_EMOJI = {
-    "goals": "⚽", "goals2": "⚽⚽", "goals3": "🎩",
+    "goals": "⚽", "goals2": "⚽⚽",
     "assists": "🎯",
-    "sot": "🔫", "sot2": "🔫", "sot3": "🔫", "sot4": "🔫",
+    "sot": "🔫", "sot2": "🔫", "sot3": "🔫",
     "cards": "🟨",
-    "corners": "🔄", "fouls": "👊",
 }
 MARKET_LABEL = {
-    "goals": "Anytime Scorer", "goals2": "Score 2+", "goals3": "Hat Trick",
+    "goals": "Anytime Scorer", "goals2": "Score 2+",
     "assists": "Assist",
-    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+", "sot4": "SOT 4+",
+    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+",
     "cards": "Yellow Card",
 }
 

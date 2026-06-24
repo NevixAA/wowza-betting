@@ -28,8 +28,9 @@ from player_model import config
 from player_model.data_fetcher import (
     collect_history, collect_match_history, collect_national_team_history,
     fetch_all_player_season_stats, fetch_lineup, fetch_current_squad, fetch_league_teams,
-    FBREF_LEAGUES, EUROPEAN_CUPS, APIFOOTBALL_LEAGUES,
+    FBREF_LEAGUES, EUROPEAN_CUPS, APIFOOTBALL_LEAGUES, enrich_sp_events,
 )
+from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
 from player_model.predict import run_player_predictions, enrich_with_odds
@@ -55,6 +56,8 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
         print("[collect] No data — FBref may be rate-limiting. Try again in a few minutes.")
         return
 
+    rows = enrich_sp_events(rows)
+    rows = enrich_league_quality(rows)
     df = build_features(rows)
     if df.empty:
         print("[collect] Feature engineering returned empty DataFrame.")
@@ -79,6 +82,8 @@ def mode_collect_wc(last_n: int = 10) -> None:
         print("[collect-wc] No data collected.")
         return
 
+    rows = enrich_sp_events(rows)
+    rows = enrich_league_quality(rows)
     new_df = build_features(rows)
     if new_df.empty:
         print("[collect-wc] Feature engineering returned empty DataFrame.")

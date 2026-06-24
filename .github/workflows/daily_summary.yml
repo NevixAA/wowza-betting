@@ -25,6 +25,24 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Resolve yesterday's results before digest
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python update_results.py --days 2
+        continue-on-error: true
+
+      - name: Commit resolved results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/bets_ledger.csv output/player_ledger.csv output/sharp_ledger.csv 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: pre-digest results $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git pull --rebase --autostash -X ours origin main
+          git push
+        continue-on-error: true
+
       - name: Send daily digest
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}

@@ -32,6 +32,8 @@ CACHE_DIR         = config.BASE_DIR / "player_match_cache"
 FIXTURE_CACHE_DIR = config.BASE_DIR / "fixture_player_cache"
 CACHE_DIR.mkdir(exist_ok=True)
 FIXTURE_CACHE_DIR.mkdir(exist_ok=True)
+EVENTS_CACHE_DIR = config.BASE_DIR / "fixture_events_cache"
+EVENTS_CACHE_DIR.mkdir(exist_ok=True)
 
 CACHE_DAYS    = 7
 REQUEST_DELAY = 0.5   # global rate limiter: ~2 calls/sec = 120/min — well under 75k/day Ultra limit
@@ -1107,3 +1109,132 @@ def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5) -> dict
 
     print(f"[sidelined] Done. {len(results)} players processed.")
     return results
+
+
+# ── Fixture goal events (set-piece data enrichment) ──────────────────────────
+
+def _fetch_fixture_events(fixture_id: int) -> list[dict]:
+    """Fetch all goal events for one fixture. Cached permanently."""
+    cache_f = EVENTS_CACHE_DIR / f"events_{fixture_id}.json"
+    if cache_f.exists():
+        return json.loads(cache_f.read_text(encoding="utf-8"))
+    _rate_limited_sleep()
+    api_key = os.getenv("APIFOOTBALL_KEY", "")
+    if not api_key:
+        return []
+    try:
+        r = requests.get(
+            f"{BASE_URL}/fixtures/events",
+            headers={"x-apisports-key": api_key},
+            params={"fixture": fixture_id, "type": "Goal"},
+            timeout=20,
+        )
+        if r.status_code != 200:
+            return []
+        data = r.json().get("response", [])
+        cache_f.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        return data
+    except Exception:
+        return []
+
+
+def _parse_sp_events(events: list[dict], fixture_id: int) -> list[dict]:
+    """Parse goal events into per-player set piece rows for one fixture."""
+    rows = []
+    for ev in events:
+        detail     = (ev.get("detail") or "").lower()
+        is_header  = "header"    in detail
+        is_fk      = "free kick" in detail
+        is_penalty = "penalty"   in detail
+        is_sp      = (is_header or is_fk) and not is_penalty
+
+        scorer = ev.get("player") or {}
+        if scorer.get("id"):
+            rows.append({
+                "fixture_id":  fixture_id,
+                "player_id":   scorer["id"],
+                "sp_goal":     1 if is_sp     else 0,
+                "headed_goal": 1 if is_header else 0,
+                "fk_goal":     1 if is_fk     else 0,
+                "sp_assist":   0,
+                "fk_assist":   0,
+            })
+
+        assist = ev.get("assist") or {}
+        if assist.get("id"):
+            rows.append({
+                "fixture_id":  fixture_id,
+                "player_id":   assist["id"],
+                "sp_goal":     0,
+                "headed_goal": 0,
+                "fk_goal":     0,
+                "sp_assist":   1 if is_sp else 0,
+                "fk_assist":   1 if is_fk else 0,
+            })
+    return rows
+
+
+def enrich_sp_events(history: list[dict], max_workers: int = 20) -> list[dict]:
+    """
+    Enrich match history rows with set piece event data.
+    Fetches /fixtures/events for each fixture in parallel. Adds columns:
+      sp_goal, headed_goal, fk_goal, sp_assist, fk_assist  (all int, default 0)
+    Fully cached — subsequent runs cost 0 API calls.
+    """
+    import pandas as _pd
+
+    SP_COLS = ["sp_goal", "headed_goal", "fk_goal", "sp_assist", "fk_assist"]
+    fixture_ids = list({int(r["fixture_id"]) for r in history if r.get("fixture_id")})
+    uncached = sum(1 for fid in fixture_ids
+                   if not (EVENTS_CACHE_DIR / f"events_{fid}.json").exists())
+    print(f"  [sp_events] {len(fixture_ids):,} fixtures "
+          f"({uncached:,} need API calls)...")
+
+    events_by_fixture: dict[int, list[dict]] = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as pool:
+        fut_map = {pool.submit(_fetch_fixture_events, fid): fid for fid in fixture_ids}
+        for fut in as_completed(fut_map):
+            fid = fut_map[fut]
+            events_by_fixture[fid] = fut.result() or []
+
+    sp_rows: list[dict] = []
+    for fid, events in events_by_fixture.items():
+        sp_rows.extend(_parse_sp_events(events, fid))
+
+    if not sp_rows:
+        for row in history:
+            for col in SP_COLS:
+                row.setdefault(col, 0)
+        return history
+
+    sp_df = (
+        _pd.DataFrame(sp_rows)
+        .groupby(["fixture_id", "player_id"], as_index=False)
+        .sum()
+    )
+
+    hist_df = _pd.DataFrame(history)
+    if "player_id" not in hist_df.columns:
+        for row in history:
+            for col in SP_COLS:
+                row.setdefault(col, 0)
+        return history
+
+    hist_df["player_id"] = hist_df["player_id"].astype(int)
+    hist_df["fixture_id"] = hist_df["fixture_id"].astype(int)
+    sp_df["player_id"]   = sp_df["player_id"].astype(int)
+    sp_df["fixture_id"]  = sp_df["fixture_id"].astype(int)
+
+    merged = hist_df.merge(sp_df, on=["fixture_id", "player_id"], how="left")
+    for col in SP_COLS:
+        if col not in merged.columns:
+            merged[col] = 0
+        else:
+            merged[col] = merged[col].fillna(0).astype(int)
+
+    n_sp     = int((merged["sp_goal"]     > 0).sum())
+    n_header = int((merged["headed_goal"] > 0).sum())
+    n_takers = int((merged["sp_assist"]   > 0).sum())
+    print(f"  [sp_events] {n_sp} SP goals ({n_header} headers) | {n_takers} SP assist rows matched")
+
+    return merged.to_dict("records")

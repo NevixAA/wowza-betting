@@ -32,6 +32,8 @@ import logging
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 

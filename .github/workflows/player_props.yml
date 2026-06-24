@@ -168,11 +168,10 @@ jobs:
           git add -f output/player_tips.csv output/player_ledger.csv \
                      telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
                      player_history.parquet \
-                     models/model_player_goals.pkl  models/model_player_goals2.pkl \
-                     models/model_player_goals3.pkl models/model_player_assists.pkl \
-                     models/model_player_sot.pkl    models/model_player_sot2.pkl \
-                     models/model_player_sot3.pkl   models/model_player_sot4.pkl \
-                     models/model_player_cards.pkl 2>/dev/null || true
+                     models/model_player_goals.pkl   models/model_player_goals2.pkl \
+                     models/model_player_assists.pkl \
+                     models/model_player_sot.pkl     models/model_player_sot2.pkl \
+                     models/model_player_sot3.pkl    models/model_player_cards.pkl 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
           git pull --rebase --autostash -X ours origin main

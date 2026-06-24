@@ -68,6 +68,30 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["sot_pg"] / df["shots_pg"].replace(0, np.nan)
     ).fillna(0.0)
 
+    # ── League quality columns (added by enrich_league_quality preprocessing) ─
+    for _lq_col in ["league_tier", "league_quality", "player_career_avg_quality",
+                     "opp_def_player_rating_pg", "opp_top_def_rating",
+                     "opp_def_player_quality", "context_quality_discount",
+                     "quality_mismatch_goals", "quality_mismatch_sot"]:
+        if _lq_col not in df.columns:
+            _defaults = {
+                "league_tier": 3, "league_quality": 0.5,
+                "player_career_avg_quality": 0.65,
+                "opp_def_player_rating_pg": 6.8, "opp_top_def_rating": 7.0,
+                "opp_def_player_quality": 1.0,
+                "context_quality_discount": 1.0,
+                "quality_mismatch_goals": 0.0, "quality_mismatch_sot": 0.0,
+            }
+            df[_lq_col] = _defaults.get(_lq_col, 0.0)
+        else:
+            df[_lq_col] = pd.to_numeric(df[_lq_col], errors="coerce").fillna(
+                {"league_tier": 3, "league_quality": 0.5,
+                 "player_career_avg_quality": 0.65,
+                 "opp_def_player_rating_pg": 6.8, "opp_top_def_rating": 7.0,
+                 "opp_def_player_quality": 1.0, "context_quality_discount": 1.0,
+                 "quality_mismatch_goals": 0.0, "quality_mismatch_sot": 0.0,
+                }.get(_lq_col, 0.0))
+
     # Count of previous games this player has in the dataset
     df["n_prev_games"] = grp["date"].transform("cumcount")
 
@@ -423,6 +447,78 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["opp_def_fouls_pg"]        = df["opp_def_fouls_pg"].fillna(1.50)
     df["opp_def_cards_pg"]        = df["opp_def_cards_pg"].fillna(0.25)
 
+    # ── Opponent mean defender height ─────────────────────────────────────────
+    # Aggregate height of defensive players per fixture/team, join as opponent feature
+    if _def_mask.any() and "height_cm" in df.columns:
+        _height_agg = (
+            df[_def_mask]
+            .groupby(["fixture_id", "team"])["height_cm"]
+            .mean()
+            .reset_index()
+            .rename(columns={"team": "opponent", "height_cm": "opp_def_mean_height"})
+        )
+        df = df.merge(_height_agg, on=["fixture_id", "opponent"], how="left")
+    else:
+        df["opp_def_mean_height"] = np.nan
+    df["opp_def_mean_height"]   = df["opp_def_mean_height"].fillna(181.0)
+    df["height_diff_vs_opp_def"] = df["height_cm"].fillna(180.0) - df["opp_def_mean_height"]
+    df["height_advantage_score"] = (df["height_diff_vs_opp_def"] / 10.0).clip(-2.0, 2.0)
+
+    # ── Opponent set piece goals conceded ─────────────────────────────────────
+    # Only available when enrich_sp_events() was called before build_features()
+    if "sp_goal" in df.columns:
+        _sp_match = (
+            df.groupby(["fixture_id", "team"])
+            .agg(date=("date", "first"), _sp_scored=("sp_goal", "sum"))
+            .reset_index()
+        )
+        _sp_opp = _sp_match.rename(columns={
+            "team": "opponent", "_sp_scored": "_sp_against"}).drop(columns=["date"])
+        _sp_def = _sp_match.merge(_sp_opp, on="fixture_id")
+        _sp_def = _sp_def[_sp_def["team"] != _sp_def["opponent"]].copy()
+        _sp_def = _sp_def.sort_values(["team", "date"])
+        _spgrp  = _sp_def.groupby("team", group_keys=False)
+        _sp_def["opp_sp_goals_conceded_pg"] = _spgrp["_sp_against"].transform(
+            lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        _sp_opp_feats = _sp_def[["fixture_id","team","opp_sp_goals_conceded_pg"]].rename(
+            columns={"team": "opponent"})
+        df = df.merge(_sp_opp_feats, on=["fixture_id","opponent"], how="left")
+    else:
+        df["opp_sp_goals_conceded_pg"] = np.nan
+    df["opp_sp_goals_conceded_pg"] = df["opp_sp_goals_conceded_pg"].fillna(0.12)
+
+    # ── Opposition strength index (quality adjustment) ────────────────────────
+    # Each team's rolling goals conceded relative to the league average.
+    # opp_strength_index > 1 = weak defence (easy), < 1 = strong defence (hard).
+    _league_avg = (
+        match_agg.groupby("league")["goals_scored"].transform("mean")
+        if "league" in match_agg.columns
+        else match_agg["goals_scored"].mean()
+    )
+    match_agg["_league_avg"] = (
+        df.groupby(["fixture_id","team"])["league"].transform("first").map(
+            df.groupby("league")["goals"].mean()
+        ).fillna(1.3)
+        if "league" in df.columns
+        else 1.3
+    )
+    _conc_agg = match_agg.copy()
+    _conc_agg["_opp_concede"] = _conc_agg["goals_scored"]
+    _conc_agg = _conc_agg.sort_values(["team", "date"])
+    _cgrp = _conc_agg.groupby("team", group_keys=False)
+    _conc_agg["_opp_conc_roll"] = _cgrp["_opp_concede"].transform(
+        lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+    _conc_feats = _conc_agg[["fixture_id","team","_opp_conc_roll"]].rename(
+        columns={"team": "opponent"})
+    df = df.merge(_conc_feats, on=["fixture_id","opponent"], how="left")
+    _lg_mean = df.groupby("league")["goals"].transform("mean").fillna(1.3) if "league" in df.columns else 1.3
+    df["opp_strength_index"] = (
+        df["_opp_conc_roll"].fillna(1.3) / _lg_mean.replace(0, 1.3)
+    ).clip(0.3, 3.0)
+    df["quality_adj_goals_pg"] = (df["goals_pg"] * df["opp_strength_index"]).clip(0.0, 5.0)
+    df["quality_adj_sot_pg"]   = (df["sot_pg"]   * df["opp_strength_index"]).clip(0.0, 10.0)
+    df.drop(columns=[c for c in df.columns if c.startswith("_opp_conc")], inplace=True, errors="ignore")
+
     # Clean up temp columns from defender aggregation
     df.drop(columns=[c for c in df.columns if c.startswith("_")], inplace=True, errors="ignore")
 
@@ -563,13 +659,62 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["kp_per90"] * (df["pos_midfielder"] + 0.5 * df["pos_forward"])
     )
 
-    # set_piece_threat_score: aerial × corner volume × 0.30 sp rate × position weight
+    # ── Set piece event rolling features (requires enrich_sp_events preprocessing) ──
+    for _raw_col, _feat_name in [
+        ("sp_goal",    "sp_goals_pg"),
+        ("headed_goal","headed_goals_pg"),
+        ("fk_goal",    "fk_goals_pg"),
+        ("sp_assist",  "sp_assist_pg"),
+    ]:
+        if _raw_col in df.columns:
+            df[_feat_name] = grp[_raw_col].transform(
+                lambda x: x.shift(1).rolling(n, min_periods=1).mean())
+        else:
+            df[_feat_name] = 0.0
+
+    for _raw_col, _feat_name in [
+        ("sp_goal",   "career_sp_goals_rate"),
+        ("sp_assist", "career_sp_assist_rate"),
+    ]:
+        if _raw_col in df.columns:
+            df[_feat_name] = grp[_raw_col].transform(
+                lambda x: x.expanding().mean().shift(1).fillna(0.0))
+        else:
+            df[_feat_name] = 0.0
+
+    _goal_denom = df["goals_pg"].replace(0, np.nan)
+    df["sp_goals_share"]     = (df["sp_goals_pg"]     / _goal_denom).clip(0, 1).fillna(0.0)
+    df["headed_goals_share"] = (df["headed_goals_pg"] / _goal_denom).clip(0, 1).fillna(0.0)
+
+    # sp_taker_score: probability 0-1 that this player DELIVERS set pieces
+    # Signals: career SP assist rate (they created SP goals), FK goals (direct taker),
+    # position prior (wide/AM > CM > CB > GK)
+    _pos_taker = (
+        df["pos_midfielder"] * 0.45
+        + df["pos_forward"]  * 0.30
+        + df["pos_defender"] * 0.05
+    ).clip(0, 1)
+    df["sp_taker_score"] = (
+        (df["career_sp_assist_rate"].clip(0, 0.15) / 0.15) * 0.60
+        + (df["fk_goals_pg"].clip(0, 0.05)         / 0.05) * 0.25
+        + _pos_taker                                        * 0.15
+    ).clip(0, 1)
+
+    # sp_receiver_score: high when NOT a taker AND high aerial ability
+    # This is the feature for predicting defenders scoring from corners
+    df["sp_receiver_score"] = (
+        (1.0 - df["sp_taker_score"])
+        * df["aerial_won_rate"]
+        * (df["pos_defender"] + 0.6 * df["pos_midfielder"])
+    ).clip(0, 1)
+
+    # Upgraded set_piece_threat_score using real SP data where available
     df["set_piece_threat_score"] = (
         df["aerial_won_rate"]
         * (df["team_corners_pg"] / 6.0).clip(upper=2.0)
-        * 0.30
+        * df["opp_sp_goals_conceded_pg"].fillna(0.12) / 0.12
         * (df["pos_defender"] + 0.7 * df["pos_midfielder"])
-    )
+    ).clip(0, 3.0)
 
     # ── Matchup composites (player strength vs specific defender weakness) ─────
     # aerial_matchup_score: player wins aerials AND opponent CBs lose them
@@ -726,6 +871,47 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["set_piece_threat_score"] * (df["team_corners_pg"] / 6.0).clip(upper=2.0)
     ).clip(lower=0.0)
 
+    # ── Full set piece composites ─────────────────────────────────────────────
+    # defender_sp_edge: the core formula the user designed
+    #   aerial ability × height advantage × opp SP weakness × NOT taker × corner volume
+    _h_adj = (df["height_advantage_score"] + 2.0) / 4.0   # remap [-2,+2] → [0,1]
+    df["defender_sp_edge"] = (
+        df["sp_receiver_score"]
+        * _h_adj
+        * (df["opp_sp_goals_conceded_pg"] / 0.12)
+        * (df["team_corners_pg"] / 6.0).clip(0.3, 2.0)
+    ).clip(0, 4.0)
+
+    # sp_threat_vs_weak_sp_defense: historical SP rate vs weak SP defence
+    df["sp_threat_vs_weak_sp_defense"] = (
+        df["sp_goals_pg"]
+        * (df["opp_sp_goals_conceded_pg"] / 0.12)
+        * (1.0 - df["sp_taker_score"])
+    ).clip(0, 1.0)
+
+    # aerial_height_sp_composite: aerial × physical height edge × opp SP weakness
+    df["aerial_height_sp_composite"] = (
+        df["aerial_won_rate"]
+        * _h_adj.clip(0.3, 1.0)
+        * (df["opp_sp_goals_conceded_pg"] / 0.12)
+        * (df["pos_defender"] + 0.5 * df["pos_midfielder"])
+    ).clip(0, 2.0)
+
+    # sp_goal_probability_composite: all signals combined
+    df["sp_goal_probability_composite"] = (
+        df["career_sp_goals_rate"]  * 0.30
+        + df["sp_goals_pg"]         * 0.30
+        + df["aerial_won_rate"] * _h_adj * 0.20
+        + (df["opp_sp_goals_conceded_pg"] / 0.12 - 1.0).clip(-0.5, 1.0) * 0.20
+    ).clip(0, 1.0)
+
+    # sp_taker_assist_edge: probability of getting an assist via set piece
+    df["sp_taker_assist_edge"] = (
+        df["sp_taker_score"]
+        * (df["career_sp_assist_rate"].clip(0, 0.10) / 0.10)
+        * (df["team_corners_pg"] / 6.0).clip(0.3, 2.0)
+    ).clip(0, 1.0)
+
     # Creative playmaker vs foul-prone defense
     df["creative_pressure_matchup"] = (
         df["creative_playmaker_score"] * df["opp_def_fouls_pg"]
@@ -769,12 +955,9 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["target_sot"]     = (df["shots_on_target"]   >= 1).astype(int)
     df["target_cards"]   = (df["yellow_cards"]       >= 1).astype(int)
     df["target_assists"] = (df["assists"]             >= 1).astype(int)
-    # Extended targets for new markets
     df["target_goals2"]  = (df["goals"]             >= 2).astype(int)
-    df["target_goals3"]  = (df["goals"]             >= 3).astype(int)
     df["target_sot2"]    = (df["shots_on_target"]   >= 2).astype(int)
     df["target_sot3"]    = (df["shots_on_target"]   >= 3).astype(int)
-    df["target_sot4"]    = (df["shots_on_target"]   >= 4).astype(int)
 
     # Drop rows with no prior history (rolling features would all be NaN)
     df = df[df["n_prev_games"] >= 1].copy()
@@ -1254,6 +1437,44 @@ def build_upcoming_features(
             "set_piece_corner_matchup":       round(set_piece_corner_matchup,       4),
             "creative_pressure_matchup":      round(creative_pressure_matchup,      4),
             "dribbler_vs_defensive_line":     round(dribbler_vs_defensive_line,     4),
+            # ── Set piece event features ──────────────────────────────────────────
+            "sp_goals_pg":               round(float(phist["sp_goals_pg"].iloc[-1])               if "sp_goals_pg"               in phist.columns and len(phist) > 0 else 0.0, 4),
+            "headed_goals_pg":           round(float(phist["headed_goals_pg"].iloc[-1])           if "headed_goals_pg"           in phist.columns and len(phist) > 0 else 0.0, 4),
+            "fk_goals_pg":               round(float(phist["fk_goals_pg"].iloc[-1])               if "fk_goals_pg"               in phist.columns and len(phist) > 0 else 0.0, 4),
+            "sp_assist_pg":              round(float(phist["sp_assist_pg"].iloc[-1])              if "sp_assist_pg"              in phist.columns and len(phist) > 0 else 0.0, 4),
+            "career_sp_goals_rate":      round(float(phist["career_sp_goals_rate"].iloc[-1])      if "career_sp_goals_rate"      in phist.columns and len(phist) > 0 else 0.0, 4),
+            "career_sp_assist_rate":     round(float(phist["career_sp_assist_rate"].iloc[-1])     if "career_sp_assist_rate"     in phist.columns and len(phist) > 0 else 0.0, 4),
+            "sp_goals_share":            round(float(phist["sp_goals_share"].iloc[-1])            if "sp_goals_share"            in phist.columns and len(phist) > 0 else 0.0, 4),
+            "headed_goals_share":        round(float(phist["headed_goals_share"].iloc[-1])        if "headed_goals_share"        in phist.columns and len(phist) > 0 else 0.0, 4),
+            # ── SP role ───────────────────────────────────────────────────────────
+            "sp_taker_score":            round(float(phist["sp_taker_score"].iloc[-1])            if "sp_taker_score"            in phist.columns and len(phist) > 0 else 0.0, 4),
+            "sp_receiver_score":         round(float(phist["sp_receiver_score"].iloc[-1])         if "sp_receiver_score"         in phist.columns and len(phist) > 0 else 0.0, 4),
+            # ── Height matchup ────────────────────────────────────────────────────
+            "opp_def_mean_height":       round(float(phist["opp_def_mean_height"].iloc[-1])       if "opp_def_mean_height"       in phist.columns and len(phist) > 0 else 181.0, 1),
+            "height_diff_vs_opp_def":    round(float(phist["height_diff_vs_opp_def"].iloc[-1])    if "height_diff_vs_opp_def"    in phist.columns and len(phist) > 0 else 0.0, 1),
+            "height_advantage_score":    round(float(phist["height_advantage_score"].iloc[-1])    if "height_advantage_score"    in phist.columns and len(phist) > 0 else 0.0, 2),
+            # ── Opponent SP vulnerability ─────────────────────────────────────────
+            "opp_sp_goals_conceded_pg":  round(float(phist["opp_sp_goals_conceded_pg"].iloc[-1])  if "opp_sp_goals_conceded_pg"  in phist.columns and len(phist) > 0 else 0.12, 4),
+            # ── SP composites ─────────────────────────────────────────────────────
+            "defender_sp_edge":              round(float(phist["defender_sp_edge"].iloc[-1])              if "defender_sp_edge"              in phist.columns and len(phist) > 0 else 0.0, 4),
+            "sp_threat_vs_weak_sp_defense":  round(float(phist["sp_threat_vs_weak_sp_defense"].iloc[-1])  if "sp_threat_vs_weak_sp_defense"  in phist.columns and len(phist) > 0 else 0.0, 4),
+            "aerial_height_sp_composite":    round(float(phist["aerial_height_sp_composite"].iloc[-1])    if "aerial_height_sp_composite"    in phist.columns and len(phist) > 0 else 0.0, 4),
+            "sp_goal_probability_composite": round(float(phist["sp_goal_probability_composite"].iloc[-1]) if "sp_goal_probability_composite" in phist.columns and len(phist) > 0 else 0.0, 4),
+            "sp_taker_assist_edge":          round(float(phist["sp_taker_assist_edge"].iloc[-1])          if "sp_taker_assist_edge"          in phist.columns and len(phist) > 0 else 0.0, 4),
+            # ── Opposition quality adjustment ─────────────────────────────────────
+            "opp_strength_index":        round(float(phist["opp_strength_index"].iloc[-1])        if "opp_strength_index"        in phist.columns and len(phist) > 0 else 1.0, 4),
+            "quality_adj_goals_pg":      round(float(phist["quality_adj_goals_pg"].iloc[-1])      if "quality_adj_goals_pg"      in phist.columns and len(phist) > 0 else 0.0, 4),
+            "quality_adj_sot_pg":        round(float(phist["quality_adj_sot_pg"].iloc[-1])        if "quality_adj_sot_pg"        in phist.columns and len(phist) > 0 else 0.0, 4),
+            # ── League quality and player vs player ───────────────────────────────
+            "league_tier":               float(phist["league_tier"].iloc[-1])               if "league_tier"               in phist.columns and len(phist) > 0 else 3,
+            "league_quality":            round(float(phist["league_quality"].iloc[-1])            if "league_quality"            in phist.columns and len(phist) > 0 else 0.5,  4),
+            "player_career_avg_quality": round(float(phist["player_career_avg_quality"].iloc[-1]) if "player_career_avg_quality" in phist.columns and len(phist) > 0 else 0.65, 4),
+            "opp_def_player_rating_pg":  round(float(phist["opp_def_player_rating_pg"].iloc[-1])  if "opp_def_player_rating_pg"  in phist.columns and len(phist) > 0 else 6.8,  2),
+            "opp_top_def_rating":        round(float(phist["opp_top_def_rating"].iloc[-1])        if "opp_top_def_rating"        in phist.columns and len(phist) > 0 else 7.0,  2),
+            "opp_def_player_quality":    round(float(phist["opp_def_player_quality"].iloc[-1])    if "opp_def_player_quality"    in phist.columns and len(phist) > 0 else 1.0,  4),
+            "context_quality_discount":  round(float(phist["context_quality_discount"].iloc[-1])  if "context_quality_discount"  in phist.columns and len(phist) > 0 else 1.0,  4),
+            "quality_mismatch_goals":    round(float(phist["quality_mismatch_goals"].iloc[-1])    if "quality_mismatch_goals"    in phist.columns and len(phist) > 0 else 0.0,  4),
+            "quality_mismatch_sot":      round(float(phist["quality_mismatch_sot"].iloc[-1])      if "quality_mismatch_sot"      in phist.columns and len(phist) > 0 else 0.0,  4),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()

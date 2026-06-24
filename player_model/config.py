@@ -14,40 +14,34 @@ API_KEY    = os.getenv("API_KEY",    "")
 API_SEASON = os.getenv("API_SEASON", "2025")
 
 # ── Markets ───────────────────────────────────────────────────────────────────
-MARKETS    = ["goals", "goals2", "goals3", "assists", "sot", "sot2", "sot3", "sot4", "cards"]
+MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "cards"]
 MODEL_FILES = {
     "goals":   MODELS_DIR / "model_player_goals.pkl",
     "goals2":  MODELS_DIR / "model_player_goals2.pkl",
-    "goals3":  MODELS_DIR / "model_player_goals3.pkl",
     "assists": MODELS_DIR / "model_player_assists.pkl",
     "sot":     MODELS_DIR / "model_player_sot.pkl",
     "sot2":    MODELS_DIR / "model_player_sot2.pkl",
     "sot3":    MODELS_DIR / "model_player_sot3.pkl",
-    "sot4":    MODELS_DIR / "model_player_sot4.pkl",
     "cards":   MODELS_DIR / "model_player_cards.pkl",
 }
 # Market → target column in training data
 MARKET_TARGETS = {
     "goals":   "target_goals",
     "goals2":  "target_goals2",
-    "goals3":  "target_goals3",
     "assists": "target_assists",
     "sot":     "target_sot",
     "sot2":    "target_sot2",
     "sot3":    "target_sot3",
-    "sot4":    "target_sot4",
     "cards":   "target_cards",
 }
 # Human-readable market labels for Telegram
 MARKET_LABELS = {
     "goals":   "Anytime Scorer",
     "goals2":  "Score 2+",
-    "goals3":  "Hat Trick",
     "assists": "Assist",
     "sot":     "SOT 1+",
     "sot2":    "SOT 2+",
     "sot3":    "SOT 3+",
-    "sot4":    "SOT 4+",
     "cards":   "Carded",
 }
 
@@ -180,6 +174,46 @@ PLAYER_FEATURE_COLS = [
     "tackle_dribble_clash",          # dribble_contact_rate × opp_mid_fouls_pg
     "card_clash_index",              # (fouls_per90 + dribble_contact_rate) × opp_mid_cards_pg × referee_strictness
     "opp_mid_discipline",            # opp_mid_fouls_pg×0.6 + opp_mid_cards_pg×2.0
+    # ── Set piece event features (from /fixtures/events — header/FK goals) ──────
+    "sp_goals_pg",               # rolling SP goals per game (headers + FKs)
+    "headed_goals_pg",           # rolling header goals per game
+    "fk_goals_pg",               # rolling direct free kick goals per game
+    "sp_assist_pg",              # rolling SP assists per game (taker signal)
+    "career_sp_goals_rate",      # career SP goal rate (expanding window)
+    "career_sp_assist_rate",     # career SP assist rate (taker signal, expanding)
+    "sp_goals_share",            # sp_goals_pg / goals_pg capped [0,1]
+    "headed_goals_share",        # headed_goals_pg / goals_pg capped [0,1]
+    # ── Set piece role ────────────────────────────────────────────────────────
+    "sp_taker_score",            # 0-1 probability this player DELIVERS set pieces
+    "sp_receiver_score",         # aerial threat when NOT the taker (defender/CM)
+    # ── Height matchup vs opponent defenders ──────────────────────────────────
+    "opp_def_mean_height",       # mean height of opponent starting defenders (cm)
+    "height_diff_vs_opp_def",    # player height minus opp mean CB height
+    "height_advantage_score",    # normalized: +1 = 10cm taller, clipped [-2,+2]
+    # ── Opponent set piece vulnerability ──────────────────────────────────────
+    "opp_sp_goals_conceded_pg",  # rolling SP goals conceded per game by opponent
+    # ── Set piece composites ──────────────────────────────────────────────────
+    "defender_sp_edge",              # aerial_won * height_adj * opp_sp_weakness * (1-taker)
+    "sp_threat_vs_weak_sp_defense",  # sp_goals_pg * opp_sp_goals_conceded_pg / 0.12
+    "aerial_height_sp_composite",    # aerial_won * height_adj * opp_sp_pg * pos_weight
+    "sp_goal_probability_composite", # career + rolling + aerial + opp weighted sum
+    "sp_taker_assist_edge",          # taker prob * sp_assist rate * corner volume
+    # ── Opposition quality adjustment (fixes weak-league inflation) ───────────
+    "opp_strength_index",      # rolling: opp goals conceded relative to league avg
+    "quality_adj_goals_pg",    # goals_pg * (1 / opp_strength_index), league-scaled
+    "quality_adj_sot_pg",      # sot_pg * (1 / opp_strength_index), league-scaled
+    # ── League quality and player vs player strength ─────────────────────
+    "league_tier",               # tier 1-4 of league this match is played in
+    "league_quality",            # 0.30/0.50/0.75/1.0 quality score
+    "player_career_avg_quality", # career rolling average league quality
+    # Opponent defensive player individual quality
+    "opp_def_player_rating_pg",  # rolling avg rating of opponent CBs
+    "opp_top_def_rating",        # rolling avg best CB rating in opponent defence
+    "opp_def_player_quality",    # composite: aerial × rating × top_def normalized
+    # Quality mismatch — key Panama fix
+    "context_quality_discount",  # player career quality / opp def quality
+    "quality_mismatch_goals",    # goals_pg * context_quality_discount
+    "quality_mismatch_sot",      # sot_pg * context_quality_discount
 ]
 # Phase 2 (future — needs /fixtures/events API data):
 #   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)
