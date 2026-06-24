@@ -882,6 +882,29 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         * (df["team_corners_pg"] / 6.0).clip(0.3, 2.0)
     ).clip(0, 4.0)
 
+    # ── Defender SOT edge (biggest edge in player props market) ──────────────
+    # Defenders at corners/FKs put ~5x more shots ON TARGET than they score.
+    # Bookmakers price defenders on SOT at 4.0-8.0 because "defenders don't shoot"
+    # but tall aerial CBs at high-corner teams have real 20-40% SOT probability.
+    # This feature is the primary signal for the sot/sot2/sot3 defender edge.
+    _sp_sot_proxy = (df["sp_goals_pg"] * 5.0 + df["headed_goals_pg"] * 4.0).clip(0, 0.6)
+    df["defender_sot_edge"] = (
+        df["sp_receiver_score"]                              # aerial ability × not taker
+        * _h_adj                                             # height advantage vs opp CBs
+        * (df["team_corners_pg"] / 4.0).clip(0.2, 3.0)      # corner volume (more corners = more chances)
+        * (df["opp_sp_goals_conceded_pg"] / 0.12)           # opp SP vulnerability
+        * (1.0 + _sp_sot_proxy * 4.0)                       # amplify by historical SP productivity
+    ).clip(0, 5.0)
+
+    # defender_sot_role_index: how central this player is to team's SP aerial attack
+    # Primary driver of sot2/sot3 for defenders — they need to be THE aerial target
+    df["defender_sot_role_index"] = (
+        df["pos_defender"]
+        * df["aerial_won_rate"]
+        * df["sp_receiver_score"]
+        * (df["team_corners_pg"] / 5.0).clip(0.2, 2.0)
+    ).clip(0, 2.0)
+
     # sp_threat_vs_weak_sp_defense: historical SP rate vs weak SP defence
     df["sp_threat_vs_weak_sp_defense"] = (
         df["sp_goals_pg"]
