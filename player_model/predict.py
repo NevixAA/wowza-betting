@@ -103,10 +103,10 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
 
     Favourite  (win_prob > 60%): boost  — up to ×1.30 at 90%+
     Balanced   (40% – 60%)     : no change
-    Underdog   (win_prob < 40%): penalty — down to ×0.70 at 10%-
+    Underdog   (win_prob < 40%): penalty — down to ×0.40 at 5%-
 
     Cards exempt: card rate doesn't scale cleanly with team dominance.
-    Assists: 70% of the adjustment (less direct than goals/SOT).
+    Assists: 70% of the adjustment.
     """
     if market == "cards":
         return 1.0
@@ -119,11 +119,14 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
         return round(1.0 + adj, 3)
 
     if team_win_prob < 0.40:
-        raw = min(0.40 - team_win_prob, 0.30)   # 0.0 → 0.30
-        adj = raw
+        # Extended penalty for heavy underdogs (Panama vs England = ~5% win prob)
+        # Linear from 0.40 (no change) → 0.05 (×0.40 max penalty)
+        raw = min(0.40 - team_win_prob, 0.35)   # 0.0 → 0.35
+        adj = raw * (0.60 / 0.35)               # scale so 0.35 raw → 0.60 penalty
+        adj = min(adj, 0.60)                    # cap at ×0.40 floor
         if market == "assists":
             adj *= 0.70
-        return round(1.0 - adj, 3)
+        return round(max(1.0 - adj, 0.40), 3)
 
     return 1.0  # 40–60%: balanced game, no adjustment
 
@@ -416,6 +419,18 @@ def run_player_predictions(
                 _is_home = float(feat_row.get("is_home", 0.5)) > 0.5
                 _win_prob = home_win_prob if _is_home else away_win_prob
                 p_model = p_model * _team_strength_mult(_win_prob, market)
+
+                # Hard quality-mismatch cap: player career tier << opponent tier
+                # e.g. Panama striker (career_quality=0.30) vs England CBs (opp_quality=1.0)
+                # context_quality_discount = 0.30 → apply extra cap so model can't output
+                # inflated probabilities for weak-league players vs elite opposition
+                _career_q  = float(feat_row.get("player_career_avg_quality", 0.65))
+                _opp_q     = float(feat_row.get("opp_def_player_quality", 1.0))
+                _ctx_disc  = _career_q / max(_opp_q, 0.1)
+                if _ctx_disc < 0.60 and market in ("goals", "goals2", "sot", "sot2", "sot3"):
+                    # Discount scales: ctx_disc=0.50 → ×0.50, ctx_disc=0.30 → ×0.30
+                    p_model = p_model * _ctx_disc
+
                 # Cap at realistic maximum then absolute ceiling of 0.95
                 p_model = min(p_model, _MARKET_CAPS.get(market, 0.90), 0.95)
 
