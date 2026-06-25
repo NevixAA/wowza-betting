@@ -1,11 +1,13 @@
 """
 Value Betting Engine — v9
 ==========================
-v8 core + two additions from v7:
+v8 core + additions from v7:
 
-1. Both-losing guard
-   Reads the both_losing flag from v7's best_params.json.
-   If a league is flagged as both_losing → all signals set to AVOID.
+1. Both-losing guard — REMOVED (2026-06-25)
+   Was: read the both_losing flag from v7's best_params.json and force all of a
+   flagged league's signals to AVOID. Removed because it was a stale v7 artifact
+   that silently muted whole leagues (Championship, Serie B). The both_losing
+   column is still computed for visibility but no longer suppresses any bet.
 
 2. Drift tier filter (from v7 odds drift concept)
    After assigning the fixed 3-tier label, adjust using drift_signal:
@@ -254,9 +256,12 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
         ((df["edge_under"] >= config.VALUE_THRESHOLD) & ~under_odds_ok.fillna(False))
     )
 
-    # Bet direction (requires edge >= VALUE_THRESHOLD + min-odds + not both_losing)
-    over_q  = (df["edge_over"]  >= config.VALUE_THRESHOLD) & over_odds_ok.fillna(False) & ~df["both_losing"]
-    under_q = (df["edge_under"] >= config.VALUE_THRESHOLD) & under_odds_ok.fillna(False) & ~df["both_losing"]
+    # Bet direction (requires edge >= VALUE_THRESHOLD + min-odds)
+    # NOTE: both_losing guard removed — it was a stale v7 artifact that hard-muted
+    # whole leagues (e.g. Championship, Serie B). The flag is still computed below
+    # for visibility but no longer suppresses any bet.
+    over_q  = (df["edge_over"]  >= config.VALUE_THRESHOLD) & over_odds_ok.fillna(False)
+    under_q = (df["edge_under"] >= config.VALUE_THRESHOLD) & under_odds_ok.fillna(False)
 
     df["bet"] = "AVOID"
     df.loc[over_q,  "bet"] = "OVER"
@@ -280,9 +285,8 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     raw_tier = np.where(best_is_over, df["tier_over"], df["tier_under"])
     df["signal_tier"] = raw_tier
 
-    # Force AVOID when below VALUE_THRESHOLD or both_losing
+    # Force AVOID when below VALUE_THRESHOLD
     df.loc[df["best_edge"] < config.VALUE_THRESHOLD, "signal_tier"] = "AVOID"
-    df.loc[df["both_losing"], "signal_tier"] = "AVOID"
 
     # Drift adjustment (if drift_signal column exists)
     if "drift_signal" in df.columns:
