@@ -1480,6 +1480,8 @@ def build_upcoming_features(
             "opp_sp_goals_conceded_pg":  round(float(phist["opp_sp_goals_conceded_pg"].iloc[-1])  if "opp_sp_goals_conceded_pg"  in phist.columns and len(phist) > 0 else 0.12, 4),
             # ── SP composites ─────────────────────────────────────────────────────
             "defender_sp_edge":              round(float(phist["defender_sp_edge"].iloc[-1])              if "defender_sp_edge"              in phist.columns and len(phist) > 0 else 0.0, 4),
+            "defender_sot_edge":             round(float(phist["defender_sot_edge"].iloc[-1])             if "defender_sot_edge"             in phist.columns and len(phist) > 0 else 0.0, 4),
+            "defender_sot_role_index":       round(float(phist["defender_sot_role_index"].iloc[-1])       if "defender_sot_role_index"       in phist.columns and len(phist) > 0 else 0.0, 4),
             "sp_threat_vs_weak_sp_defense":  round(float(phist["sp_threat_vs_weak_sp_defense"].iloc[-1])  if "sp_threat_vs_weak_sp_defense"  in phist.columns and len(phist) > 0 else 0.0, 4),
             "aerial_height_sp_composite":    round(float(phist["aerial_height_sp_composite"].iloc[-1])    if "aerial_height_sp_composite"    in phist.columns and len(phist) > 0 else 0.0, 4),
             "sp_goal_probability_composite": round(float(phist["sp_goal_probability_composite"].iloc[-1]) if "sp_goal_probability_composite" in phist.columns and len(phist) > 0 else 0.0, 4),
