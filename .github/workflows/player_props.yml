@@ -70,6 +70,13 @@ jobs:
           key: fixture-player-${{ runner.os }}-${{ github.run_id }}
           restore-keys: fixture-player-${{ runner.os }}-
 
+      - name: Cache player injury/sidelined data (30-day TTL — fixes the slow injury refresh)
+        uses: actions/cache@v4
+        with:
+          path: player_match_cache
+          key: player-match-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: player-match-${{ runner.os }}-
+
       - name: Collect club league data (Sundays + manual)
         if: |
           github.event.schedule == '0 5 * * 0' ||
