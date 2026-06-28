@@ -43,7 +43,7 @@ _MARKET_MAP = {
 _API_MARKETS_STR = ",".join(dict.fromkeys(v[0] for v in _MARKET_MAP.values()))
 
 # Markets not available for WC on OddsAPI (returns 422 if requested)
-_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more"}
+_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more", "player_anytime_assist"}
 _WC_API_MARKETS_STR = ",".join(
     k for k in dict.fromkeys(v[0] for v in _MARKET_MAP.values())
     if k not in _WC_EXCLUDED_API_MARKETS
@@ -107,7 +107,7 @@ def _norm(name: str) -> str:
 
 
 def _load_odds_key() -> str:
-    key = os.getenv("ODDS_API_KEY", "")
+    key = os.getenv("ODDS_API_KEY", "").strip()
     if key:
         return key
     # Fallback: .api_keys file in repo root (KEY=VALUE per line)
@@ -127,6 +127,21 @@ def _get(path: str, params: dict) -> Optional[dict | list]:
     params["apiKey"] = key
     r = requests.get(f"{_BASE}/{path}", params=params, timeout=15)
     remaining = r.headers.get("x-requests-remaining", "?")
+
+    # Self-heal: if one or more requested markets aren't offered for this
+    # sport/event, OddsAPI 422s the WHOLE request. Drop the invalid market(s)
+    # named in the error and retry once so the valid markets still come back.
+    if r.status_code == 422 and params.get("markets") and "nvalid market" in r.text:
+        bad = set()
+        for grp in re.findall(r"[Ii]nvalid markets?:\s*([a-z0-9_,\s]+)", r.text):
+            bad.update(m.strip() for m in grp.split(",") if m.strip())
+        kept = [m for m in params["markets"].split(",") if m not in bad]
+        if bad and kept and len(kept) < len(params["markets"].split(",")):
+            print(f"[odds_fetcher] {path}: dropping invalid markets {sorted(bad)}, retrying with {kept}")
+            params["markets"] = ",".join(kept)
+            r = requests.get(f"{_BASE}/{path}", params=params, timeout=15)
+            remaining = r.headers.get("x-requests-remaining", "?")
+
     if r.status_code != 200:
         print(f"[odds_fetcher] {path}: HTTP {r.status_code} | {r.text[:120]}")
         return None
