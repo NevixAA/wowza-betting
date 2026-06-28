@@ -170,14 +170,19 @@ def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
 def _classify_tier(
     ev: float, market_odds: float, rel_edge: float,
     confidence: float, lazy_count: int, ges: float = 0.5,
-    market: str = ""
+    market: str = "", position: str = ""
 ) -> str:
-    """Classify signal into SNIPER/MARKSMAN/VALUABLE/WATCH."""
+    """Classify signal into SNIPER/MARKSMAN/VALUABLE/AVOID (WATCH removed).
+
+    Applies a real-odds-backtest role×market gate: clear money-losing combos
+    (defenders→goals, multi-SOT/goals2) are capped at VALUABLE (data-only) rather
+    than producing a real SNIPER/MARKSMAN tip.
+    """
     is_goals_sot = market in ("goals", "sot")
 
-    # GES gate for goals/SOT
+    # GES gate for goals/SOT — below the floor = no signal
     if is_goals_sot and ges < config.GES_SUPPRESS:
-        return "WATCH"
+        return "AVOID"
 
     # Use relative edge gates instead of hard market_odds floors.
     # rel_edge = (model_prob - fair_prob) / fair_prob — odds-level-agnostic.
@@ -189,21 +194,30 @@ def _classify_tier(
             and lazy_count >= 2
             and _edge_passes_floor(rel_edge, market_odds)
             and (not is_goals_sot or ges >= config.GES_SNIPER_MIN)):
-        return "SNIPER"
-
-    if (ev >= config.MARKSMAN_EV and rel_edge >= _marksman_re
+        tier = "SNIPER"
+    elif (ev >= config.MARKSMAN_EV and rel_edge >= _marksman_re
             and confidence >= config.CONFIDENCE_FLOORS["MARKSMAN"]
             and lazy_count >= 1
             and _edge_passes_floor(rel_edge, market_odds)
             and (not is_goals_sot or ges >= config.GES_MARKSMAN_MIN)):
-        return "MARKSMAN"
-
-    if (ev >= config.VALUABLE_EV
+        tier = "MARKSMAN"
+    elif (ev >= config.VALUABLE_EV
             and confidence >= config.CONFIDENCE_FLOORS["VALUABLE"]
             and _edge_passes_floor(rel_edge, market_odds)):
-        return "VALUABLE"
+        tier = "VALUABLE"
+    else:
+        return "AVOID"
 
-    return "WATCH"
+    # ── Role × market gate (real-odds backtest Jun 2026) ──────────────────────
+    # Cap clear money-losers at VALUABLE (data-only): multi-SOT/goals2 markets,
+    # and defenders for anytime-goalscorer.
+    pos = (position or "").strip().upper()[:1]
+    if tier in ("SNIPER", "MARKSMAN") and (
+        market in getattr(config, "VALUABLE_ONLY_MARKETS", set())
+        or (pos, market) in getattr(config, "VALUABLE_ONLY_ROLE_MARKET", set())
+    ):
+        tier = "VALUABLE"
+    return tier
 
 
 # ── Lazy market factor detection ──────────────────────────────────────────────
@@ -483,7 +497,7 @@ def run_player_predictions(
                     "lazy_factors":  "|".join(lazy_factors),
                     "n_games":       n_games,
                     "data_source":   feat_row.get("data_source", ""),
-                    "tier":          "WATCH",   # updated when market odds available
+                    "tier":          "AVOID",   # updated when market odds available
                     "kelly_stake":   None,
                 })
 
@@ -528,7 +542,7 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
         market     = row["market"]
 
-        tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market)
+        tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market, row.get("position", ""))
 
         tips_df.at[idx, "market_odds"]  = mkt_odds
         tips_df.at[idx, "fair_implied"] = round(fair_prob, 4)
@@ -536,7 +550,7 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         tips_df.at[idx, "edge_rel"]     = rel_edge
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
-        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "WATCH" else 0.0
+        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
 
     return tips_df
 
@@ -588,7 +602,7 @@ def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
         lazy_count = len(str(row.get("lazy_factors", "")).split("|")) if row.get("lazy_factors") else 0
         ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
 
-        tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market)
+        tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market, row.get("position", ""))
 
         src = str(row.get("data_source", "") or "")
         tips_df.at[idx, "market_odds"]  = mkt_odds
@@ -598,6 +612,6 @@ def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
         tips_df.at[idx, "data_source"]  = (src + "|calibration_implied").lstrip("|")
-        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "WATCH" else 0.0
+        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "AVOID" else 0.0
 
     return tips_df

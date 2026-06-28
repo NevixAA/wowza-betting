@@ -253,14 +253,14 @@ def mode_predict() -> None:
         except Exception as e:
             print(f"[predict] Odds enrichment failed: {e}")
     else:
-        print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay WATCH)")
+        print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay AVOID)")
 
     # Tier markets with no live Odds API coverage (assists) via calibration base rates
     tips = enrich_no_odds_markets(tips)
     tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
-    assists_tiered = tips[(tips["market"] == "assists") & (tips["tier"] != "WATCH")]
+    assists_tiered = tips[(tips["market"] == "assists") & (tips["tier"] != "AVOID")]
     if not assists_tiered.empty:
-        print(f"[predict] calibration-implied: {len(assists_tiered)} assists tip(s) tiered (WATCH excluded)")
+        print(f"[predict] calibration-implied: {len(assists_tiered)} assists tip(s) tiered (AVOID excluded)")
 
     # Lineup availability filter — drops confirmed bench players, flags TBC
     if api_key:

@@ -65,6 +65,15 @@ CONFIDENCE_FLOORS     = {"SNIPER": 0.72, "MARKSMAN": 0.62, "VALUABLE": 0.50}
 REL_EDGE_SNIPER   = 0.20   # ≥20% relative edge required for SNIPER
 REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
 
+# ── Role × market gate (real-odds backtest, Jun 2026) ─────────────────────────
+# Combos that were clear money-losers vs REAL odds get capped at VALUABLE
+# (data-only — tracked in the ledger, never staked as SNIPER/MARKSMAN, not sent
+# as tips). WATCH tier removed; non-qualifying signals are AVOID.
+#   - sot2/sot3 (multiple SOT) & goals2: longshot markets, negative across all roles
+#   - defenders for anytime-goalscorer: defenders ~never score (≈0-3% hit rate)
+VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "goals2"}
+VALUABLE_ONLY_ROLE_MARKET = {("D", "goals")}
+
 # ── Features ──────────────────────────────────────────────────────────────────
 ROLLING_N = 5
 PLAYER_FEATURE_COLS = [
