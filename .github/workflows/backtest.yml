@@ -8,7 +8,7 @@ on:
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 300    # heavy walk-forward (was 90 — too low); GitHub cap is 6h
     permissions:
       contents: write
 
@@ -29,10 +29,44 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python pipeline.py --mode train
 
-      - name: Run walk-forward backtest
+      - name: Run walk-forward backtest + generate league ROI config
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-        run: python pipeline.py --mode backtest
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python pipeline.py --mode backtest
+          python - <<'EOF'
+          import json, pandas as pd
+          from pathlib import Path
+
+          roi = {}
+          for market, f in [
+              ("btts",   "output/backtest_by_league_btts.csv"),
+              ("over15", "output/backtest_by_league_over15.csv"),
+              ("over35", "output/backtest_by_league_over35.csv"),
+          ]:
+              p = Path(f)
+              if not p.exists():
+                  continue
+              df = pd.read_csv(p)
+              for _, row in df.iterrows():
+                  league = row["league"]
+                  roi.setdefault(league, {})[market] = round(float(row["roi_%"]), 2)
+
+          # A league is "approved" for a market if ROI >= threshold
+          THRESHOLDS = {"btts": 5.0, "over15": 3.0, "over35": 8.0}
+          approved = {}
+          for league, markets in roi.items():
+              approved[league] = {
+                  m: v for m, v in markets.items()
+                  if v >= THRESHOLDS.get(m, 5.0)
+              }
+
+          out = {"roi_by_league": roi, "approved_markets_by_league": approved}
+          Path("output/league_roi_config.json").write_text(json.dumps(out, indent=2))
+          approved_count = sum(1 for v in approved.values() if v)
+          print(f"ROI config: {len(roi)} leagues evaluated, {approved_count} approved for alerts")
+          EOF
 
       - name: Commit and push backtest results
         run: |
@@ -43,6 +77,12 @@ jobs:
                      output/backtest_results_newformat.csv \
                      output/backtest_by_league_newformat.csv \
                      output/backtest_results.csv \
+                     output/backtest_by_league_btts.csv output/backtest_by_league_over15.csv \
+                     output/backtest_by_league_over35.csv \
+                     output/backtest_results_btts.csv output/backtest_results_over15.csv \
+                     output/backtest_results_over35.csv \
+                     output/league_roi_config.json \
+                     models/best_params_side_markets.json \
                      models/model_v9_standard.pkl models/model_v9_newformat.pkl \
                      models/model_ht_over05.pkl models/model_ht_over15.pkl \
                      models/metrics_model_v9_standard.json \

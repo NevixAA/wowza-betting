@@ -6,6 +6,7 @@ Uses de-vigged edge, relative edge floors, and 5-component confidence scoring.
 """
 from __future__ import annotations
 
+import json
 import math
 import os
 from pathlib import Path
@@ -269,13 +270,15 @@ def run_player_predictions(
                 n_fix = 20 if league == "World Cup" else 5
                 fixtures = get_upcoming_fixtures(lg_id, season, next_n=n_fix)
                 for fix in fixtures:
-                    teams = fix.get("teams", {})
-                    dt    = fix.get("fixture", {}).get("date", "")[:10]
+                    teams    = fix.get("teams", {})
+                    dt_full  = fix.get("fixture", {}).get("date", "")
+                    dt       = dt_full[:10]
                     prop_matches.append({
                         "home_team":    teams.get("home", {}).get("name", ""),
                         "away_team":    teams.get("away", {}).get("name", ""),
                         "league":       league,
                         "date":         pd.Timestamp(dt) if dt else today,
+                        "kickoff_utc":  dt_full,
                         "signal_tier":  "PROP_LEAGUE",
                         "fixture_id":   fix.get("fixture", {}).get("id"),
                     })
@@ -460,6 +463,7 @@ def run_player_predictions(
 
                 all_tips.append({
                     "date":          date_str,
+                    "kickoff_utc":   match_row.get("kickoff_utc", ""),
                     "league":        league,
                     "match":         f"{home} vs {away}",
                     "match_tier":    match_row.get("signal_tier", ""),
@@ -532,6 +536,68 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         tips_df.at[idx, "edge_rel"]     = rel_edge
         tips_df.at[idx, "ev"]           = ev_val
         tips_df.at[idx, "tier"]         = tier
+        tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "WATCH" else 0.0
+
+    return tips_df
+
+
+# Markets with no live Odds API coverage — tiered via calibration base rates.
+_NO_ODDS_MARKETS = {"assists"}
+
+
+def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Assign tier for markets that have no Odds API coverage (assists).
+    Uses calibration base rates as synthetic bookmaker odds so these tips
+    can earn VALUABLE/MARKSMAN/SNIPER tier on model confidence alone.
+
+    Synthetic price = 1 / (base_rate × 1.10)  — assumes 10% overround.
+    """
+    if tips_df.empty:
+        return tips_df
+
+    cal_path = config.OUTPUT_DIR / "player_props_calibration.json"
+    try:
+        with open(cal_path) as _f:
+            calibration = json.load(_f)
+    except Exception:
+        return tips_df
+
+    for idx, row in tips_df.iterrows():
+        market = row["market"]
+        if market not in _NO_ODDS_MARKETS:
+            continue
+        if row.get("market_odds"):   # already enriched by real Odds API
+            continue
+
+        cal       = calibration.get(market, {})
+        base_rate = cal.get("base_rate")
+        if not base_rate:
+            continue
+
+        # Synthetic market odds: base rate × 1.10 overround
+        implied_prob = base_rate * 1.10
+        mkt_odds     = round(1.0 / implied_prob, 2)
+
+        p_model    = float(row["model_prob"])
+        # Fair prob = base_rate (we know the true calibrated probability directly)
+        fair_prob  = base_rate
+        ev_val     = _ev(p_model, mkt_odds)
+        rel_edge   = _relative_edge(p_model, fair_prob)
+        confidence = float(row["confidence"])
+        lazy_count = len(str(row.get("lazy_factors", "")).split("|")) if row.get("lazy_factors") else 0
+        ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
+
+        tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market)
+
+        src = str(row.get("data_source", "") or "")
+        tips_df.at[idx, "market_odds"]  = mkt_odds
+        tips_df.at[idx, "fair_implied"] = round(fair_prob, 4)
+        tips_df.at[idx, "edge_abs"]     = round(p_model - fair_prob, 4)
+        tips_df.at[idx, "edge_rel"]     = rel_edge
+        tips_df.at[idx, "ev"]           = ev_val
+        tips_df.at[idx, "tier"]         = tier
+        tips_df.at[idx, "data_source"]  = (src + "|calibration_implied").lstrip("|")
         tips_df.at[idx, "kelly_stake"]  = _kelly_stake(ev_val, mkt_odds) if tier != "WATCH" else 0.0
 
     return tips_df

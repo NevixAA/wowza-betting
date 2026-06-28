@@ -5,12 +5,12 @@ Fetches player-level prop odds from The Odds API and returns a dict
 compatible with enrich_with_odds(): {"PlayerName|market": best_decimal_odds}
 
 Markets fetched:
-  goals  → player_goal_scorer_anytime   (1+ goals)
-  goals2 → player_to_score_2_or_more    (2+ goals)
-  sot    → player_shots_on_target       (Over 0.5)
-  sot2   → player_shots_on_target       (Over 1.5)
-  sot3   → player_shots_on_target       (Over 2.5)
-  assists → not available on Odds API; skipped
+  goals   → player_goal_scorer_anytime   (1+ goals)
+  goals2  → player_to_score_2_or_more    (2+ goals)
+  sot     → player_shots_on_target       (Over 0.5)
+  sot2    → player_shots_on_target       (Over 1.5)
+  sot3    → player_shots_on_target       (Over 2.5)
+  assists → player_anytime_assist        (1+ assist; falls back to calibration if no market)
   (goals3/sot4/cards removed — base rate too low / too noisy)
 
 Cost: 1 API call per event (events list is free).
@@ -36,6 +36,7 @@ _MARKET_MAP = {
     "sot":     ("player_shots_on_target",      0.5),   # 1+ SOT
     "sot2":    ("player_shots_on_target",      1.5),   # 2+ SOT
     "sot3":    ("player_shots_on_target",      2.5),   # 3+ SOT
+    "assists": ("player_anytime_assist",       None),  # 1+ assist
     "cards":   ("player_to_receive_card",      None),  # yellow card
 }
 # Unique API market keys to request in one call (avoids requesting same key multiple times)
@@ -67,6 +68,35 @@ PROP_SPORT_KEYS = {
 
 _CACHE_DIR = Path(__file__).resolve().parents[1] / "prop_odds_cache"
 _CACHE_DIR.mkdir(exist_ok=True)
+
+# Append-only history of every fetched player-prop odd (built forward, ~free —
+# we already fetch these). Becomes the real-odds dataset for prop backtests.
+_ODDS_HISTORY_FILE = Path(__file__).resolve().parents[1] / "output" / "player_prop_odds_history.csv"
+SPORT_KEY_TO_LEAGUE = {v: k for k, v in PROP_SPORT_KEYS.items()}
+
+
+def _append_odds_history(records: list[dict]) -> None:
+    """Append today's fetched prop odds to a permanent CSV history. One row per
+    (snapshot_date, league, match, player, market) — latest odds that day kept.
+    Callers wrap this in try/except so it can never break live odds fetching."""
+    if not records:
+        return
+    import pandas as pd
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    df = pd.DataFrame(records)
+    df["snapshot_date"] = now.strftime("%Y-%m-%d")
+    df["snapshot_ts"]   = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    cols = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "player", "market", "odds"]
+    df = df.reindex(columns=cols)
+    _ODDS_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if _ODDS_HISTORY_FILE.exists():
+        try:
+            df = pd.concat([pd.read_csv(_ODDS_HISTORY_FILE), df], ignore_index=True)
+        except Exception:
+            pass
+    df = df.drop_duplicates(subset=["snapshot_date", "league", "match", "player", "market"], keep="last")
+    df.to_csv(_ODDS_HISTORY_FILE, index=False)
 
 
 def _norm(name: str) -> str:
@@ -153,6 +183,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         return {}
 
     result: dict[str, float] = {}
+    history_records: list[dict] = []
 
     for sport_key, match_set in needed.items():
         # Get event list (free, no quota cost)
@@ -198,13 +229,26 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                     encoding="utf-8",
                 )
 
-            # Extract best odds per market
+            # Extract best odds per market (+ record every price for the history)
+            _match_str  = f'{event.get("home_team", "")} vs {event.get("away_team", "")}'
+            _match_date = str(event.get("commence_time", ""))[:10]
+            _league     = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
             for our_market, (api_key, point) in _MARKET_MAP.items():
                 prices = _best_price(bookmakers, api_key, point)
                 for player_norm, price in prices.items():
                     key = f"{player_norm}|{our_market}"
                     if price > result.get(key, 0):
                         result[key] = price
+                    history_records.append({
+                        "match_date": _match_date, "league": _league, "match": _match_str,
+                        "player": player_norm, "market": our_market, "odds": price,
+                    })
+
+    # Persist every fetched prop odd to the permanent forward-built history.
+    try:
+        _append_odds_history(history_records)
+    except Exception as e:
+        print(f"[odds_fetcher] odds-history save skipped: {e}")
 
     return result
 
