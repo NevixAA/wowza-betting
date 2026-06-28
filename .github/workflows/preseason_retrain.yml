@@ -151,6 +151,45 @@ jobs:
                   print(f"  {market}: {e}")
 
           Path("output/player_props_calibration.json").write_text(json.dumps(results, indent=2))
+
+          # ── Per-league breakdown ──────────────────────────────────────────────
+          league_roi = {}
+          for market in config.MARKETS:
+              target_col = config.MARKET_TARGETS.get(market)
+              if not target_col or target_col not in test.columns:
+                  continue
+              try:
+                  payload = load_model(market)
+                  probs = predict_proba(test, payload)
+                  y_all = test[target_col].fillna(0)
+                  base_rate = float(y_all.mean())
+                  if base_rate < 0.001:
+                      continue
+                  implied_prob = base_rate * 1.10
+                  implied_odds = round(1.0 / implied_prob, 2)
+                  edge_mask = probs > (implied_prob * 1.15)
+                  for league, grp in test[edge_mask].groupby("league"):
+                      if not league or str(league).strip() == "":
+                          continue
+                      lg_y = y_all[grp.index]
+                      bets = len(grp)
+                      if bets < 15:
+                          continue
+                      wins = int(lg_y.sum())
+                      profit = wins * (implied_odds - 1) - (bets - wins)
+                      roi = round(profit / bets * 100, 2)
+                      league_roi.setdefault(league, {})[market] = {"bets": bets, "wins": wins, "roi_%": roi}
+              except Exception as e:
+                  print(f"  league breakdown {market}: {e}")
+
+          approved = {
+              lg: [m for m, v in mkts.items() if v["roi_%"] > 0 and v["bets"] >= 15]
+              for lg, mkts in league_roi.items()
+          }
+          approved = {lg: ms for lg, ms in approved.items() if ms}
+          out_lg = {"roi_by_league_market": league_roi, "approved": approved}
+          Path("output/player_props_league_roi.json").write_text(json.dumps(out_lg, indent=2))
+          print(f"Per-league ROI written: {len(league_roi)} leagues, {len(approved)} approved")
           EOF
         continue-on-error: true
 
@@ -181,6 +220,7 @@ jobs:
             output/backtest_results_over35.csv \
             output/league_roi_config.json \
             output/player_props_calibration.json \
+            output/player_props_league_roi.json \
             player_history.parquet \
             2>/dev/null || true
           git diff --staged --quiet || \

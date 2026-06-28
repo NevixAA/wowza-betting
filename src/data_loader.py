@@ -355,6 +355,43 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         except Exception as e:
             log.warning(f"[af_history] failed to merge af_history.parquet: {e}")
 
+    # ── Step 1b: merge HT scores from af_ht_history.parquet ──────────────────
+    af_ht_path = Path(__file__).resolve().parents[1] / "output" / "af_ht_history.parquet"
+    if af_ht_path.exists():
+        try:
+            ht_hist = pd.read_parquet(af_ht_path)
+            ht_hist["date"] = pd.to_datetime(ht_hist["date"], errors="coerce")
+            ht_hist["_home_norm"] = ht_hist["home_team"].apply(_norm_name)
+            ht_hist["_away_norm"] = ht_hist["away_team"].apply(_norm_name)
+            ht_hist["_date_str"]  = ht_hist["date"].dt.strftime("%Y-%m-%d")
+
+            if "_home_norm" not in df.columns:
+                df["_home_norm"] = df["home_team"].apply(_norm_name)
+                df["_away_norm"] = df["away_team"].apply(_norm_name)
+                df["_date_str"]  = df["date"].dt.strftime("%Y-%m-%d")
+
+            ht_merged = df.merge(
+                ht_hist[["_home_norm", "_away_norm", "_date_str", "HTHG", "HTAG"]]
+                    .rename(columns={"HTHG": "HTHG_h", "HTAG": "HTAG_h"}),
+                on=["_home_norm", "_away_norm", "_date_str"],
+                how="left",
+            )
+            for src, dst in [("HTHG_h", "ht_home_goals"), ("HTAG_h", "ht_away_goals")]:
+                if src not in ht_merged.columns:
+                    continue
+                if dst not in df.columns:
+                    df[dst] = np.nan
+                orig = df[dst].values
+                fill = ht_merged[src].values
+                df[dst] = [float(h) if pd.isna(o) and pd.notna(h) else o
+                           for o, h in zip(orig, fill)]
+
+            df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore", inplace=True)
+            n_ht = int(df["ht_home_goals"].notna().sum()) if "ht_home_goals" in df.columns else 0
+            log.info(f"[af_ht_history] merged HT scores: {n_ht} rows now have halftime data")
+        except Exception as e:
+            log.warning(f"[af_ht_history] failed to merge af_ht_history.parquet: {e}")
+
     if not api_key:
         return df
 
@@ -372,8 +409,8 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         if not mask.any():
             continue
 
-        # Skip if >50% of rows already have shot data (e.g. added via CSV override)
-        if df.loc[mask, "home_shots"].notna().mean() > 0.5:
+        # Skip only if xG is already populated (shots from CSV is fine, but xG always comes from API)
+        if "home_xg" in df.columns and df.loc[mask, "home_xg"].notna().mean() > 0.5:
             continue
 
         season = config.API_FOOTBALL_SEASONS.get(league, "2025")

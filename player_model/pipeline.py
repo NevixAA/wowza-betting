@@ -33,7 +33,7 @@ from player_model.data_fetcher import (
 from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
-from player_model.predict import run_player_predictions, enrich_with_odds
+from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
 from player_model.ledger import append_player_signals
 
@@ -254,6 +254,13 @@ def mode_predict() -> None:
             print(f"[predict] Odds enrichment failed: {e}")
     else:
         print("[predict] No ODDS_API_KEY — skipping odds enrichment (tier will stay WATCH)")
+
+    # Tier markets with no live Odds API coverage (assists) via calibration base rates
+    tips = enrich_no_odds_markets(tips)
+    tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
+    assists_tiered = tips[(tips["market"] == "assists") & (tips["tier"] != "WATCH")]
+    if not assists_tiered.empty:
+        print(f"[predict] calibration-implied: {len(assists_tiered)} assists tip(s) tiered (WATCH excluded)")
 
     # Lineup availability filter — drops confirmed bench players, flags TBC
     if api_key:

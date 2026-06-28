@@ -27,7 +27,8 @@ CONFIG_FILE = BASE_DIR / "bot_config.json"
 NOTIFIED_FILE = BASE_DIR / "notified.json"
 SHARP_NOTIFIED_FILE = BASE_DIR / "sharp_notified.json"
 WC_NOTIFIED_FILE = BASE_DIR / "wc_notified.json"
-PLAYER_NOTIFIED_FILE = BASE_DIR / "player_notified.json"
+PLAYER_NOTIFIED_FILE   = BASE_DIR / "player_notified.json"
+PLAYER_KICKOFF_FILE   = BASE_DIR / "player_kickoff_cache.json"
 
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
@@ -807,6 +808,19 @@ def notify_player_props() -> int:
     today_str = datetime.now().strftime("%Y-%m-%d")
     df = df[df["date"].astype(str).str[:10] >= today_str]
 
+    # Pre-populate kickoff cache from ALL current tips (solves cold-start for cashout gate)
+    if "kickoff_utc" in df.columns:
+        try:
+            _kc = json.loads(PLAYER_KICKOFF_FILE.read_text()) if PLAYER_KICKOFF_FILE.exists() else {}
+            for _, _row in df.iterrows():
+                _ku = str(_row.get("kickoff_utc", ""))
+                if _ku and _ku not in ("nan", "None", ""):
+                    _k = f"PLAYER|{str(_row['date'])[:10]}|{_row['player_name']}|{_row['market']}"
+                    _kc[_k] = _ku
+            PLAYER_KICKOFF_FILE.write_text(json.dumps(_kc))
+        except Exception:
+            pass
+
     # Only leagues with actual bookmaker player prop markets
     from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
     df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
@@ -814,6 +828,28 @@ def notify_player_props() -> int:
     # Only SNIPER and MARKSMAN — VALUABLE and WATCH are not sent
     df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])].copy()
     df = df.sort_values(["tier", "ev", "model_prob"], ascending=[True, False, False])
+
+    if df.empty:
+        return 0
+
+    # Load per-league player props ROI config — filter MARKSMAN to approved combos only
+    _pp_roi_path = app_config.OUTPUT_DIR / "player_props_league_roi.json"
+    _approved_pp: dict[str, list] = {}
+    if _pp_roi_path.exists():
+        try:
+            import json as _json
+            _pp_approved = _json.loads(_pp_roi_path.read_text()).get("approved", {})
+            _approved_pp = _pp_approved
+        except Exception:
+            pass
+
+    if _approved_pp:
+        def _pp_allowed(row) -> bool:
+            if row["tier"] == "SNIPER":
+                return True
+            approved_markets = _approved_pp.get(row.get("league", ""), [])
+            return row["market"] in approved_markets
+        df = df[df.apply(_pp_allowed, axis=1)].copy()
 
     if df.empty:
         return 0
@@ -866,6 +902,15 @@ def notify_player_props() -> int:
 
         if _send(token, chat_id, msg):
             notified.add(key)
+            # Cache kickoff time so cashout alert can gate on the 60-min window
+            _ku = str(row.get("kickoff_utc", ""))
+            if _ku and _ku not in ("nan", "None", ""):
+                try:
+                    _kc = json.loads(PLAYER_KICKOFF_FILE.read_text()) if PLAYER_KICKOFF_FILE.exists() else {}
+                    _kc[key] = _ku
+                    PLAYER_KICKOFF_FILE.write_text(json.dumps(_kc))
+                except Exception:
+                    pass
             sent += 1
             _save_notified(notified, PLAYER_NOTIFIED_FILE)
             print(f"  Player prop: {row['player_name']} — {market_label} ({p*100:.0f}%)")
@@ -936,12 +981,38 @@ def notify_lineup_cashout() -> int:
         "cards": "Yellow Card",
     }
 
+    # Load kickoff cache so we can gate cashout on the 60-min window
+    from datetime import timezone as _tz
+    _now_utc = datetime.now(_tz.utc)
+    _kickoff_cache: dict[str, str] = {}
+    if PLAYER_KICKOFF_FILE.exists():
+        try:
+            _kickoff_cache = json.loads(PLAYER_KICKOFF_FILE.read_text())
+        except Exception:
+            pass
+
     sent = 0
     for key in sorted(benched_keys):
         parts = key.split("|")
         if len(parts) < 4:
             continue
         _, date_str, player_name, market = parts[0], parts[1], parts[2], parts[3]
+
+        # Rule: fire ONLY when kickoff is within the next 60 min (lineups are out)
+        # AND the game has not started yet — i.e. 0 < minutes_to_kickoff <= 60.
+        # If the kickoff time is unknown or unparseable we CANNOT confirm the
+        # window, so we DO NOT fire. (The bug: a missing/bad kickoff used to fall
+        # through and alert at any time — hours early or after kickoff.)
+        _ku = _kickoff_cache.get(key, "")
+        _mins_until = None
+        if _ku and _ku not in ("nan", "None"):
+            try:
+                _mins_until = (pd.Timestamp(_ku, tz="UTC") - _now_utc).total_seconds() / 60
+            except Exception:
+                _mins_until = None
+        if _mins_until is None or not (0 < _mins_until <= 60):
+            continue  # unknown timing, >60 min early, or already kicked off — skip
+
         mkt_label = MARKET_LABEL.get(market, market)
         row = tip_lookup.get(key, {})
         match_str = row.get("match", "")
