@@ -24,7 +24,7 @@ from . import config
 
 # Direct API-Football.com (api-sports.io) — different from RapidAPI
 import os as _os
-_APIFOOTBALL_KEY = _os.getenv("APIFOOTBALL_KEY", "")
+_APIFOOTBALL_KEY = _os.getenv("APIFOOTBALL_KEY", "").strip()
 HEADERS  = {"x-apisports-key": _APIFOOTBALL_KEY}
 BASE_URL = "https://v3.football.api-sports.io"
 # Use WowzaApp junction (no Hebrew path) for cache
