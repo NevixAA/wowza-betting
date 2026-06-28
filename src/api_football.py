@@ -28,7 +28,7 @@ import requests
 
 log = logging.getLogger(__name__)
 
-_APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
+_APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "").strip()
 HEADERS  = {"x-apisports-key": _APIFOOTBALL_KEY}
 BASE_URL = "https://v3.football.api-sports.io"
 

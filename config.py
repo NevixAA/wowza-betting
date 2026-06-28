@@ -294,8 +294,8 @@ BACKTEST_MIN_TRAIN = 400
 
 # ── APIs — loaded from .env / .api_keys / GitHub Actions secrets ─────────────
 
-ODDS_API_KEY = os.getenv("ODDS_API_KEY", "")
-API_KEY      = os.getenv("API_KEY",      "")
+ODDS_API_KEY = os.getenv("ODDS_API_KEY", "").strip()
+API_KEY      = os.getenv("API_KEY",      "").strip()
 API_HOST     = "api-football-v1.p.rapidapi.com"
 API_SEASON   = os.getenv("API_SEASON", "2025")
 

@@ -106,7 +106,7 @@ WC26_SEASON    = "2026"
 # ── HTTP helper ───────────────────────────────────────────────────────────────
 
 def _api_get(endpoint: str, params: dict) -> dict:
-    key = os.getenv("APIFOOTBALL_KEY", "")
+    key = os.getenv("APIFOOTBALL_KEY", "").strip()
     if not key:
         raise RuntimeError("APIFOOTBALL_KEY not set in environment")
     _rate_limited_sleep()
@@ -835,7 +835,7 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
     season_assists_pg, season_cards_pg, season_minutes_pg, season_appearances.
     Cached 24h. Returns {} on any failure.
     """
-    key = os.getenv("APIFOOTBALL_KEY", "")
+    key = os.getenv("APIFOOTBALL_KEY", "").strip()
     if not key:
         return {}
 
@@ -1120,7 +1120,7 @@ def _fetch_fixture_events(fixture_id: int) -> list[dict]:
     if cache_f.exists():
         return json.loads(cache_f.read_text(encoding="utf-8"))
     _rate_limited_sleep()
-    api_key = os.getenv("APIFOOTBALL_KEY", "")
+    api_key = os.getenv("APIFOOTBALL_KEY", "").strip()
     if not api_key:
         return []
     try:
