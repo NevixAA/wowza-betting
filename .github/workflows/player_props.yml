@@ -124,15 +124,24 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Refresh injury status (today's active players only)
+      - name: Refresh injury status (twice daily — 05:00 & 17:00 UTC)
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
           TODAY=$(date -u +%Y%m%d)
+          HOUR=$(date -u +%H)
           SCHEDULE="${{ github.event.schedule }}"
           # Skip night runs outside WC window
           if [[ "$SCHEDULE" == *"0-7"* ]] && [ "$TODAY" -gt "20260719" ]; then
             echo "Outside WC2026 — skipping night sidelined refresh"
+            exit 0
+          fi
+          # Injuries/chronic-risk move slowly, but the /sidelined crawl is ~3,600-6,300 players
+          # (global 0.15s rate-lock => ~10-16 min). Running it on every hourly predict is the bug.
+          # Refresh only at 05:00 & 17:00 UTC, plus the nightly-WC and Sunday-train triggers.
+          if [ "$HOUR" != "05" ] && [ "$HOUR" != "17" ] \
+             && [ "$SCHEDULE" != "30 23 * * *" ] && [ "$SCHEDULE" != "0 5 * * 0" ]; then
+            echo "Hourly predict run — skipping injury refresh (runs 05:00/17:00 UTC only)"
             exit 0
           fi
           python -m player_model.pipeline --mode enrich-sidelined-live
