@@ -36,7 +36,8 @@ EVENTS_CACHE_DIR = config.BASE_DIR / "fixture_events_cache"
 EVENTS_CACHE_DIR.mkdir(exist_ok=True)
 
 CACHE_DAYS    = 7
-REQUEST_DELAY = 0.5   # global rate limiter: ~2 calls/sec = 120/min — well under 75k/day Ultra limit
+REQUEST_DELAY = 0.15  # ~6.7 calls/sec = ~400/min — uses the Ultra plan's 450/min cap (was 0.5=120/min,
+                      # leaving 73% of Ultra's rate unused). 429s self-heal via the rate-limit backoff.
 MAX_RETRIES   = 3
 
 # Global rate-limiter: enforces REQUEST_DELAY between API calls across ALL threads.
