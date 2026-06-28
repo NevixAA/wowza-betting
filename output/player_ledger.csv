@@ -16,7 +16,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-23,World Cup,Portugal,Uzbekistan,Bruno Fernandes,Portugal,M,sot,VALUABLE,0.938,1.37,0.2851,0.3622,5,True,WIN,0.37,,2026-06-24
 2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Tijjani Reijnders,Netherlands,M,sot,VALUABLE,0.922,1.6,0.4752,0.5637,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Curaçao,Ivory Coast,Amad Diallo,Ivory Coast,M,sot,VALUABLE,0.912,1.31,0.1947,0.2664,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Mikel Oyarzabal,Spain,F,sot,VALUABLE,0.872,1.32,0.151,0.2201,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Mikel Oyarzabal,Spain,F,sot,VALUABLE,0.872,1.32,0.151,0.2201,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-23,World Cup,England,Ghana,Anthony Gordon,England,F,sot,VALUABLE,0.854,1.4,0.1956,0.2673,5,True,VOID,0.0,DNP,2026-06-24
 2026-06-23,2026-06-23,World Cup,England,Ghana,Bukayo Saka,England,F,sot,VALUABLE,0.847,1.45,0.2281,0.3018,5,True,VOID,0.0,DNP,2026-06-24
 2026-06-23,2026-06-23,World Cup,England,Ghana,Morgan Rogers,England,F,sot,VALUABLE,0.838,1.4,0.1732,0.2436,5,True,VOID,0.0,DNP,2026-06-24
@@ -26,7 +26,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-23,World Cup,Portugal,Uzbekistan,Francisco Conceição,Portugal,F,sot,VALUABLE,0.819,1.55,0.2694,0.3456,5,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Keito Nakamura,Japan,F,sot,VALUABLE,0.819,1.43,0.1712,0.2414,5,True,WIN,0.43,,2026-06-26
 2026-06-23,2026-06-23,World Cup,Portugal,Uzbekistan,Pedro Neto,Portugal,F,sot,VALUABLE,0.801,1.55,0.2416,0.316,5,True,LOSS,-1.0,,2026-06-24
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Lamine Yamal,Spain,M,goals,VALUABLE,0.79,2.5,0.975,1.0935,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Lamine Yamal,Spain,M,goals,VALUABLE,0.79,2.5,0.975,1.0935,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-23,World Cup,England,Ghana,Declan Rice,England,M,sot,VALUABLE,0.789,2.3,0.8147,0.9236,5,True,VOID,0.0,DNP,2026-06-24
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,Leroy Sané,Germany,F,sot,VALUABLE,0.788,1.6,0.2608,0.3364,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,Deniz Undav,Germany,F,goals,VALUABLE,0.764,2.85,1.1774,1.308,5,True,VOID,0.0,DNP,2026-06-26
@@ -90,7 +90,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,Lawrence Shankland,Scotland,F,sot,VALUABLE,0.608,2.45,0.4896,0.579,3,True,LOSS,-1.0,,2026-06-25
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,Vinícius Júnior,Brazil,M,goals,VALUABLE,0.606,2.44,0.4786,0.5674,5,True,WIN,1.44,,2026-06-25
 2026-06-23,2026-06-25,World Cup,South Africa,South Korea,Hwang In-beom,South Korea,M,sot,VALUABLE,0.604,2.45,0.4798,0.5686,5,True,LOSS,-1.0,,2026-06-26
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Mikel Oyarzabal,Spain,F,goals,VALUABLE,0.603,2.25,0.3567,0.4382,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Mikel Oyarzabal,Spain,F,goals,VALUABLE,0.603,2.25,0.3567,0.4382,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Ante Budimir,Croatia,F,goals,VALUABLE,0.601,2.43,0.4604,0.5481,5,True,VOID,0.0,DNP (0 min),2026-06-24
 2026-06-23,2026-06-26,World Cup,Senegal,Iraq,Assane Diao,Senegal,F,goals,VALUABLE,0.595,2.2,0.309,0.3875,5,True,LOSS,-1.0,,2026-06-27
 2026-06-23,2026-06-24,World Cup,Bosnia & Herzegovina,Qatar,Ermedin Demirović,Bosnia & Herzegovina,F,goals,VALUABLE,0.594,2.75,0.6335,0.7315,5,True,LOSS,-1.0,,2026-06-25
@@ -118,7 +118,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Luka Vušković,Croatia,D,sot,VALUABLE,0.561,3.2,0.7952,0.9747,3,True,VOID,0.0,DNP (0 min),2026-06-24
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,Scott McTominay,Scotland,F,sot,VALUABLE,0.558,2.1,0.1718,0.2421,5,True,WIN,1.1,,2026-06-25
 2026-06-23,2026-06-24,World Cup,Bosnia & Herzegovina,Qatar,Esmir Bajraktarević,Bosnia & Herzegovina,F,goals,VALUABLE,0.557,4.2,1.3394,1.5733,5,True,LOSS,-1.0,,2026-06-25
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Dani Olmo,Spain,F,goals,VALUABLE,0.556,3.3,0.8348,1.0183,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Dani Olmo,Spain,F,goals,VALUABLE,0.556,3.3,0.8348,1.0183,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,Nico Schlotterbeck,Germany,D,sot,VALUABLE,0.555,3.8,1.109,1.3199,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Viktor Gyökeres,Sweden,F,goals,VALUABLE,0.554,3.0,0.662,0.7617,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-24,World Cup,Bosnia & Herzegovina,Qatar,Haris Tabaković,Bosnia & Herzegovina,F,goals,VALUABLE,0.552,2.1,0.1592,0.2288,5,True,VOID,0.0,DNP (0 min),2026-06-25
@@ -131,12 +131,12 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-26,World Cup,Norway,France,Jean-Philippe Mateta,France,F,goals,VALUABLE,0.547,2.62,0.4331,0.5191,5,True,LOSS,-1.0,,2026-06-27
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,Florian Wirtz,Germany,F,goals,VALUABLE,0.546,3.7,1.0202,1.2222,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Nikola Vlašić,Croatia,M,goals,VALUABLE,0.546,3.4,0.8564,1.042,5,True,VOID,0.0,DNP (0 min),2026-06-24
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Nico Williams,Spain,F,goals,VALUABLE,0.545,3.3,0.7985,0.9784,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Nico Williams,Spain,F,goals,VALUABLE,0.545,3.3,0.7985,0.9784,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,Kai Havertz,Germany,F,goals,VALUABLE,0.544,2.9,0.5776,0.6723,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Mario Pašalić,Croatia,M,goals,VALUABLE,0.543,5.8,2.1494,2.6218,5,True,VOID,0.0,DNP (0 min),2026-06-24
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Martin Baturina,Croatia,F,goals,VALUABLE,0.541,4.5,1.4345,1.678,4,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,Pervis Estupiñán,Ecuador,M,sot,VALUABLE,0.54,3.0,0.62,0.7172,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Alejandro Baena,Spain,F,goals,MARKSMAN,0.539,3.5,0.8865,1.0752,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Alejandro Baena,Spain,F,goals,MARKSMAN,0.539,3.5,0.8865,1.0752,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,José Luis Rodríguez,Panama,F,sot,VALUABLE,0.537,2.25,0.2083,0.2807,4,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Kristijan Jakić,Croatia,M,goals,VALUABLE,0.537,7.0,2.759,3.3229,5,True,VOID,0.0,DNP (0 min),2026-06-24
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Luka Modrić,Croatia,M,goals,VALUABLE,0.537,4.81,1.583,1.8413,5,True,LOSS,-1.0,,2026-06-24
@@ -216,7 +216,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Alexander Isak,Sweden,F,goals,MARKSMAN,0.432,3.3,0.4256,0.5682,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,Scott McTominay,Scotland,F,goals,VALUABLE,0.429,7.16,2.0716,2.5324,5,True,LOSS,-1.0,,2026-06-25
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Mattias Svanberg,Sweden,F,goals,VALUABLE,0.428,5.5,1.354,1.7071,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Juan Manuel Sanabria,Uruguay,F,sot,VALUABLE,0.428,3.3,0.4124,0.5536,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Juan Manuel Sanabria,Uruguay,F,sot,VALUABLE,0.428,3.3,0.4124,0.5536,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Yasin Ayari,Sweden,M,goals,VALUABLE,0.425,9.0,2.825,3.3988,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-26,World Cup,Paraguay,Australia,Jordan Bos,Australia,M,goals,VALUABLE,0.425,12.0,4.1,4.865,5,True,LOSS,-1.0,,2026-06-27
 2026-06-23,2026-06-23,World Cup,Portugal,Uzbekistan,Abbosbek Fayzullaev,Uzbekistan,F,sot,VALUABLE,0.423,3.2,0.3536,0.489,3,True,WIN,2.2,,2026-06-24
@@ -236,7 +236,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-25,World Cup,South Africa,South Korea,Teboho Mokoena,South Africa,M,goals,VALUABLE,0.4,9.0,2.6,3.14,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,South Africa,South Korea,Evidence Makgopa,South Africa,F,goals,VALUABLE,0.399,5.3,1.1147,1.4319,5,True,LOSS,-1.0,,2026-06-26
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,Kieran Tierney,Scotland,M,sot,VALUABLE,0.399,5.8,1.3142,1.6613,5,True,LOSS,-1.0,,2026-06-25
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Federico Viñas,Uruguay,F,goals,VALUABLE,0.399,4.9,0.9551,1.1506,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Federico Viñas,Uruguay,F,goals,VALUABLE,0.399,4.9,0.9551,1.1506,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-25,World Cup,Curaçao,Ivory Coast,Sontje Hansen,Curaçao,F,goals,VALUABLE,0.398,9.2,2.6616,3.2108,3,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,José Luis Rodríguez,Panama,F,goals,MARKSMAN,0.397,8.5,2.3745,2.8807,4,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-25,World Cup,South Africa,South Korea,Tshepang Moremi,South Africa,M,goals,VALUABLE,0.397,8.0,2.176,2.6524,5,True,LOSS,-1.0,,2026-06-26
@@ -250,17 +250,17 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,César Blackman,Panama,M,goals,VALUABLE,0.391,24.0,8.384,9.7916,5,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,José Córdoba,Panama,D,sot,VALUABLE,0.388,8.0,2.104,2.5696,5,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Jiovany Ramos,Panama,D,goals,VALUABLE,0.386,20.0,6.72,7.878,3,True,LOSS,-1.0,,2026-06-24
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Agustín Canobbio,Uruguay,F,goals,VALUABLE,0.385,6.5,1.5025,1.8779,4,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Agustín Canobbio,Uruguay,F,goals,VALUABLE,0.385,6.5,1.5025,1.8779,4,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Omar Rekik,Tunisia,D,sot,VALUABLE,0.382,9.0,2.438,2.9537,4,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Brian Rodríguez,Uruguay,F,goals,VALUABLE,0.382,5.0,0.91,1.101,5,,,,,
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Federico Valverde,Uruguay,M,goals,VALUABLE,0.382,7.0,1.674,2.0751,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Brian Rodríguez,Uruguay,F,goals,VALUABLE,0.382,5.0,0.91,1.101,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Federico Valverde,Uruguay,M,goals,VALUABLE,0.382,7.0,1.674,2.0751,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Carlos Harvey,Panama,M,goals,VALUABLE,0.382,17.0,5.494,6.4681,5,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-24,World Cup,Morocco,Haiti,Ruben Providence,Haiti,F,goals,VALUABLE,0.381,9.5,2.6195,3.1624,5,True,LOSS,-1.0,,2026-06-25
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,Findlay Curtis,Scotland,F,goals,VALUABLE,0.378,7.0,1.646,2.0429,3,True,LOSS,-1.0,,2026-06-25
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,George Hirst,Scotland,F,goals,VALUABLE,0.378,5.5,1.079,1.3908,5,True,VOID,0.0,DNP (0 min),2026-06-25
 2026-06-23,2026-06-23,World Cup,England,Ghana,Antoine Semenyo,Ghana,F,goals,VALUABLE,0.378,6.51,1.4608,1.8299,5,True,VOID,0.0,DNP,2026-06-24
 2026-06-23,2026-06-24,World Cup,Scotland,Brazil,John McGinn,Scotland,M,goals,VALUABLE,0.377,8.0,2.016,2.4684,5,True,LOSS,-1.0,,2026-06-25
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Juan Manuel Sanabria,Uruguay,M,goals,VALUABLE,0.377,19.0,6.163,7.2374,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Juan Manuel Sanabria,Uruguay,M,goals,VALUABLE,0.377,19.0,6.163,7.2374,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-23,World Cup,Portugal,Uzbekistan,Diogo Dalot,Portugal,D,cards,SNIPER,0.376,6.5,1.444,1.8106,5,True,VOID,0.0,DNP (0 min),2026-06-24
 2026-06-23,2026-06-25,World Cup,Curaçao,Ivory Coast,Livano Comenencia,Curaçao,M,goals,VALUABLE,0.375,18.0,5.75,6.7625,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Curaçao,Ivory Coast,Kenji Gorré,Curaçao,F,goals,VALUABLE,0.373,9.5,2.5435,3.075,4,True,VOID,0.0,DNP,2026-06-26
@@ -307,18 +307,18 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Junya Ito,Japan,F,sot,VALUABLE,0.627,1.91,0.1976,0.2694,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Daichi Kamada,Japan,F,sot,VALUABLE,0.57,3.6,1.052,1.2572,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Japan,Sweden,Alexander Bernhardsson,Sweden,F,sot,VALUABLE,0.522,3.1,0.6182,0.78,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Yéremy Pino,Spain,F,goals,VALUABLE,0.5,3.6,0.8,0.98,5,,,,,
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mohamed Salah,Egypt,F,sot,VALUABLE,0.75,1.6,0.2,0.272,5,,,,,
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Emam Ashour,Egypt,M,sot,VALUABLE,0.727,2.0,0.454,0.5412,5,,,,,
+2026-06-23,2026-06-27,World Cup,Uruguay,Spain,Yéremy Pino,Spain,F,goals,VALUABLE,0.5,3.6,0.8,0.98,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mohamed Salah,Egypt,F,sot,VALUABLE,0.75,1.6,0.2,0.272,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Emam Ashour,Egypt,M,sot,VALUABLE,0.727,2.0,0.454,0.5412,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Luka Modrić,Croatia,M,sot,VALUABLE,0.658,1.75,0.1515,0.2206,5,True,LOSS,-1.0,,2026-06-24
 2026-06-23,2026-06-26,World Cup,Paraguay,Australia,Mohamed Touré,Australia,F,sot,VALUABLE,0.547,2.2,0.2034,0.2756,5,True,VOID,0.0,DNP (0 min),2026-06-27
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mohamed Salah,Egypt,F,goals,VALUABLE,0.5,3.2,0.6,0.76,5,,,,,
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Omar Marmoush,Egypt,F,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,,,,,
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Emam Ashour,Egypt,M,goals,VALUABLE,0.5,8.2,3.1,3.715,5,,,,,
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Ibrahim Adel,Egypt,F,goals,VALUABLE,0.5,4.8,1.4,1.64,4,,,,,
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Haissem Hassan,Egypt,F,goals,VALUABLE,0.5,8.5,3.25,3.8875,4,,,,,
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mohamed Salah,Egypt,F,goals,VALUABLE,0.5,3.2,0.6,0.76,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Omar Marmoush,Egypt,F,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Emam Ashour,Egypt,M,goals,VALUABLE,0.5,8.2,3.1,3.715,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Ibrahim Adel,Egypt,F,goals,VALUABLE,0.5,4.8,1.4,1.64,4,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Haissem Hassan,Egypt,F,goals,VALUABLE,0.5,8.5,3.25,3.8875,4,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Elias Saad,Tunisia,F,sot,VALUABLE,0.451,3.1,0.3981,0.5379,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mehdi Taremi,Iran,F,goals,VALUABLE,0.44,4.1,0.804,0.9844,5,,,,,
+2026-06-23,2026-06-27,World Cup,Egypt,Iran,Mehdi Taremi,Iran,F,goals,VALUABLE,0.44,4.1,0.804,0.9844,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-25,World Cup,South Africa,South Korea,Jae-sung Lee,South Korea,F,goals,VALUABLE,0.403,4.55,0.8337,1.017,5,True,VOID,0.0,DNP (0 min),2026-06-26
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,Martin Baturina,Croatia,F,sot,VALUABLE,0.69,1.67,0.1523,0.2214,4,True,WIN,0.67,,2026-06-24
 2026-06-23,2026-06-25,World Cup,Curaçao,Ivory Coast,Deveron Fonville,Curaçao,D,cards,MARKSMAN,0.406,3.8,0.5428,0.6971,3,True,LOSS,-1.0,,2026-06-26
@@ -332,105 +332,105 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Justin Kluivert,Netherlands,M,cards,MARKSMAN,0.168,7.5,0.26,0.449,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Micky van de Ven,Netherlands,D,cards,MARKSMAN,0.164,8.5,0.394,0.6031,5,True,VOID,0.0,DNP,2026-06-26
 2026-06-23,2026-06-25,World Cup,Tunisia,Netherlands,Virgil van Dijk,Netherlands,D,cards,MARKSMAN,0.158,8.5,0.343,0.5444,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Hans Vanaken,Belgium,M,sot,VALUABLE,0.8,1.45,0.16,0.2296,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Youri Tielemans,Belgium,M,sot,VALUABLE,0.732,1.95,0.4274,0.513,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Nicolas Raskin,Belgium,M,sot,VALUABLE,0.708,1.86,0.3169,0.3959,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Diego Moreira,Belgium,F,sot,VALUABLE,0.691,1.68,0.1609,0.2305,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Amadou Onana,Belgium,M,sot,VALUABLE,0.67,2.2,0.474,0.5624,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Hans Vanaken,Belgium,M,goals,VALUABLE,0.5,3.7,0.85,1.035,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Alexis Saelemaekers,Belgium,M,goals,VALUABLE,0.5,4.9,1.45,1.695,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Leandro Trossard,Belgium,M,goals,VALUABLE,0.5,2.8,0.4,0.484,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Kevin De Bruyne,Belgium,M,goals,VALUABLE,0.5,2.7,0.35,0.431,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Charles De Ketelaere,Belgium,F,goals,VALUABLE,0.5,2.5,0.25,0.325,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Amadou Onana,Belgium,M,goals,VALUABLE,0.5,7.5,2.75,3.3125,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Youri Tielemans,Belgium,M,goals,VALUABLE,0.5,4.5,1.25,1.475,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Nicolas Raskin,Belgium,M,goals,VALUABLE,0.5,7.0,2.5,3.025,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Dodi Lukebakio,Belgium,F,goals,VALUABLE,0.5,3.0,0.5,0.59,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Diego Moreira,Belgium,F,goals,VALUABLE,0.5,3.6,0.8,0.98,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Elijah Just,New Zealand,M,sot,VALUABLE,0.459,2.65,0.2164,0.2893,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Chris Wood,New Zealand,F,goals,VALUABLE,0.416,6.0,1.496,1.8704,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Finn Surman,New Zealand,D,sot,VALUABLE,0.397,9.5,2.7715,3.3372,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Elijah Just,New Zealand,M,goals,VALUABLE,0.363,8.0,1.904,2.3396,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Finn Surman,New Zealand,D,goals,VALUABLE,0.359,24.0,7.616,8.9084,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Ben Waine,New Zealand,F,goals,VALUABLE,0.357,6.0,1.142,1.4633,5,,,,,
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Kosta Barbarouses,New Zealand,F,goals,VALUABLE,0.352,7.5,1.64,2.036,3,,,,,
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Hans Vanaken,Belgium,M,sot,VALUABLE,0.8,1.45,0.16,0.2296,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Youri Tielemans,Belgium,M,sot,VALUABLE,0.732,1.95,0.4274,0.513,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Nicolas Raskin,Belgium,M,sot,VALUABLE,0.708,1.86,0.3169,0.3959,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Diego Moreira,Belgium,F,sot,VALUABLE,0.691,1.68,0.1609,0.2305,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Amadou Onana,Belgium,M,sot,VALUABLE,0.67,2.2,0.474,0.5624,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Hans Vanaken,Belgium,M,goals,VALUABLE,0.5,3.7,0.85,1.035,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Alexis Saelemaekers,Belgium,M,goals,VALUABLE,0.5,4.9,1.45,1.695,5,True,WIN,3.9,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Leandro Trossard,Belgium,M,goals,VALUABLE,0.5,2.8,0.4,0.484,5,True,WIN,1.8,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Kevin De Bruyne,Belgium,M,goals,VALUABLE,0.5,2.7,0.35,0.431,5,True,WIN,1.7,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Charles De Ketelaere,Belgium,F,goals,VALUABLE,0.5,2.5,0.25,0.325,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Amadou Onana,Belgium,M,goals,VALUABLE,0.5,7.5,2.75,3.3125,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Youri Tielemans,Belgium,M,goals,VALUABLE,0.5,4.5,1.25,1.475,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Nicolas Raskin,Belgium,M,goals,VALUABLE,0.5,7.0,2.5,3.025,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Dodi Lukebakio,Belgium,F,goals,VALUABLE,0.5,3.0,0.5,0.59,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Diego Moreira,Belgium,F,goals,VALUABLE,0.5,3.6,0.8,0.98,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Elijah Just,New Zealand,M,sot,VALUABLE,0.459,2.65,0.2164,0.2893,5,True,WIN,1.65,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Chris Wood,New Zealand,F,goals,VALUABLE,0.416,6.0,1.496,1.8704,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Finn Surman,New Zealand,D,sot,VALUABLE,0.397,9.5,2.7715,3.3372,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Elijah Just,New Zealand,M,goals,VALUABLE,0.363,8.0,1.904,2.3396,5,True,WIN,7.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Finn Surman,New Zealand,D,goals,VALUABLE,0.359,24.0,7.616,8.9084,5,True,LOSS,-1.0,,2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Ben Waine,New Zealand,F,goals,VALUABLE,0.357,6.0,1.142,1.4633,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Kosta Barbarouses,New Zealand,F,goals,VALUABLE,0.352,7.5,1.64,2.036,3,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-23,2026-06-24,World Cup,Switzerland,Canada,Ruben Vargas,Switzerland,F,goals,MARKSMAN,0.5,4.3,1.15,1.365,5,True,WIN,3.3,,2026-06-25
 2026-06-23,2026-06-25,World Cup,Ecuador,Germany,John Yeboah,Ecuador,F,sot,VALUABLE,0.646,1.9,0.2274,0.301,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Jérémy Doku,Belgium,F,goals,VALUABLE,0.5,2.9,0.45,0.537,5,,,,,
+2026-06-23,2026-06-27,World Cup,New Zealand,Belgium,Jérémy Doku,Belgium,F,goals,VALUABLE,0.5,2.9,0.45,0.537,5,True,LOSS,-1.0,,2026-06-28
 2026-06-23,2026-06-26,World Cup,Norway,France,Antonio Nusa,Norway,M,sot,VALUABLE,0.49,2.6,0.274,0.3504,5,True,LOSS,-1.0,,2026-06-27
 2026-06-23,2026-06-26,World Cup,Norway,France,Andreas Schjelderup,Norway,F,sot,VALUABLE,0.464,3.1,0.4384,0.5822,5,True,LOSS,-1.0,,2026-06-27
-2026-06-24,2026-06-27,World Cup,New Zealand,Belgium,Chris Wood,New Zealand,F,sot,VALUABLE,0.535,2.15,0.1502,0.2193,5,,,,,
+2026-06-24,2026-06-27,World Cup,New Zealand,Belgium,Chris Wood,New Zealand,F,sot,VALUABLE,0.535,2.15,0.1502,0.2193,5,True,LOSS,-1.0,,2026-06-28
 2026-06-24,2026-06-26,World Cup,Norway,France,Marcus Pedersen,Norway,D,sot,VALUABLE,0.415,5.0,1.075,1.2825,5,True,LOSS,-1.0,,2026-06-27
 2026-06-24,2026-06-26,World Cup,Norway,France,Marcus Pedersen,Norway,D,goals,VALUABLE,0.389,33.0,11.837,13.7625,5,True,LOSS,-1.0,,2026-06-27
 2026-06-24,2026-06-25,World Cup,South Africa,South Korea,Tshepang Moremi,South Africa,M,cards,MARKSMAN,0.222,6.0,0.332,0.5318,5,True,LOSS,-1.0,,2026-06-26
 2026-06-24,2026-06-24,World Cup,Switzerland,Canada,Liam Millar,Canada,M,cards,VALUABLE,0.19,6.5,0.235,0.4202,4,True,WIN,5.5,,2026-06-25
-2026-06-24,2026-06-27,World Cup,Panama,England,Anthony Gordon,England,M,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Jude Bellingham,England,M,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Declan Rice,England,M,goals,VALUABLE,0.5,4.6,1.3,1.53,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Marcus Rashford,England,M,goals,VALUABLE,0.5,2.45,0.225,0.2985,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Bukayo Saka,England,F,goals,VALUABLE,0.5,2.5,0.25,0.325,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Eberechi Eze,England,M,goals,VALUABLE,0.5,2.9,0.45,0.537,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Ismael Díaz,Panama,F,goals,VALUABLE,0.423,5.0,1.115,1.3265,3,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Cecilio Waterman,Panama,F,goals,VALUABLE,0.378,5.6,1.1168,1.4343,4,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,José Luis Rodríguez,Panama,F,goals,VALUABLE,0.371,8.0,1.968,2.4132,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Carlos Harvey,Panama,M,goals,VALUABLE,0.357,19.0,5.783,6.8004,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Jiovany Ramos,Panama,D,goals,VALUABLE,0.352,20.0,6.04,7.096,4,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,José Córdoba,Panama,D,goals,VALUABLE,0.348,26.0,8.048,9.4052,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,Morgan Rogers,England,F,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Modrić,Croatia,M,goals,VALUABLE,0.5,4.8,1.4,1.64,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Nikola Vlašić,Croatia,M,goals,VALUABLE,0.5,3.8,0.9,1.09,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Mario Pašalić,Croatia,M,goals,VALUABLE,0.5,6.0,2.0,2.45,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Martin Baturina,Croatia,M,goals,VALUABLE,0.5,3.7,0.85,1.035,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Toni Fruk,Croatia,M,goals,VALUABLE,0.5,3.25,0.625,0.7875,3,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Marco Pašalić,Croatia,F,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Vušković,Croatia,D,goals,VALUABLE,0.5,8.5,3.25,3.8875,3,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Petar Musa,Croatia,F,goals,VALUABLE,0.5,2.62,0.31,0.3886,4,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Kristijan Jakić,Croatia,M,goals,VALUABLE,0.5,8.5,3.25,3.8875,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ante Budimir,Croatia,F,goals,VALUABLE,0.5,2.45,0.225,0.2985,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Igor Matanović,Croatia,F,goals,VALUABLE,0.5,2.75,0.375,0.4575,4,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Abdul Fatawu Issahaku,Ghana,F,goals,VALUABLE,0.398,6.5,1.587,1.975,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Jordan Ayew,Ghana,F,goals,VALUABLE,0.397,5.8,1.3026,1.648,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ernest Nuamah,Ghana,M,goals,VALUABLE,0.397,7.0,1.779,2.1959,4,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Caleb Yirenkyi,Ghana,M,goals,VALUABLE,0.393,8.5,2.3405,2.8416,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Prince Kwabena Adu,Ghana,F,goals,VALUABLE,0.392,6.0,1.352,1.7048,5,,,,,
+2026-06-24,2026-06-27,World Cup,Panama,England,Anthony Gordon,England,M,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Jude Bellingham,England,M,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,True,WIN,1.75,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Declan Rice,England,M,goals,VALUABLE,0.5,4.6,1.3,1.53,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Marcus Rashford,England,M,goals,VALUABLE,0.5,2.45,0.225,0.2985,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Bukayo Saka,England,F,goals,VALUABLE,0.5,2.5,0.25,0.325,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Eberechi Eze,England,M,goals,VALUABLE,0.5,2.9,0.45,0.537,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Ismael Díaz,Panama,F,goals,VALUABLE,0.423,5.0,1.115,1.3265,3,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Cecilio Waterman,Panama,F,goals,VALUABLE,0.378,5.6,1.1168,1.4343,4,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,José Luis Rodríguez,Panama,F,goals,VALUABLE,0.371,8.0,1.968,2.4132,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Carlos Harvey,Panama,M,goals,VALUABLE,0.357,19.0,5.783,6.8004,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Jiovany Ramos,Panama,D,goals,VALUABLE,0.352,20.0,6.04,7.096,4,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,José Córdoba,Panama,D,goals,VALUABLE,0.348,26.0,8.048,9.4052,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,Morgan Rogers,England,F,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Modrić,Croatia,M,goals,VALUABLE,0.5,4.8,1.4,1.64,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Nikola Vlašić,Croatia,M,goals,VALUABLE,0.5,3.8,0.9,1.09,5,True,WIN,2.8,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Mario Pašalić,Croatia,M,goals,VALUABLE,0.5,6.0,2.0,2.45,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Martin Baturina,Croatia,M,goals,VALUABLE,0.5,3.7,0.85,1.035,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Toni Fruk,Croatia,M,goals,VALUABLE,0.5,3.25,0.625,0.7875,3,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Marco Pašalić,Croatia,F,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Vušković,Croatia,D,goals,VALUABLE,0.5,8.5,3.25,3.8875,3,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Petar Musa,Croatia,F,goals,VALUABLE,0.5,2.62,0.31,0.3886,4,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Kristijan Jakić,Croatia,M,goals,VALUABLE,0.5,8.5,3.25,3.8875,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ante Budimir,Croatia,F,goals,VALUABLE,0.5,2.45,0.225,0.2985,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Igor Matanović,Croatia,F,goals,VALUABLE,0.5,2.75,0.375,0.4575,4,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Abdul Fatawu Issahaku,Ghana,F,goals,VALUABLE,0.398,6.5,1.587,1.975,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Jordan Ayew,Ghana,F,goals,VALUABLE,0.397,5.8,1.3026,1.648,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ernest Nuamah,Ghana,M,goals,VALUABLE,0.397,7.0,1.779,2.1959,4,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Caleb Yirenkyi,Ghana,M,goals,VALUABLE,0.393,8.5,2.3405,2.8416,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Prince Kwabena Adu,Ghana,F,goals,VALUABLE,0.392,6.0,1.352,1.7048,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-24,2026-06-24,World Cup,Bosnia & Herzegovina,Qatar,Ermedin Demirović,Bosnia & Herzegovina,F,sot,VALUABLE,0.8,1.57,0.256,0.3314,5,True,WIN,0.57,,2026-06-25
 2026-06-24,2026-06-24,World Cup,Scotland,Brazil,Lucas Paquetá,Brazil,M,sot,VALUABLE,0.672,1.8,0.2096,0.2822,5,True,LOSS,-1.0,,2026-06-25
 2026-06-24,2026-06-24,World Cup,Scotland,Brazil,Che Adams,Scotland,F,sot,VALUABLE,0.508,2.3,0.1684,0.2385,5,True,LOSS,-1.0,,2026-06-25
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Andrej Kramarić,Croatia,F,goals,VALUABLE,0.5,2.9,0.45,0.537,5,,,,,
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Andrej Kramarić,Croatia,F,goals,VALUABLE,0.5,2.9,0.45,0.537,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-24,2026-06-25,World Cup,South Africa,South Korea,Relebohile Mofokeng,South Africa,F,sot,VALUABLE,0.486,2.55,0.2393,0.3137,5,True,LOSS,-1.0,,2026-06-26
-2026-06-24,2026-06-27,World Cup,Panama,England,Declan Rice,England,M,sot,VALUABLE,0.785,1.74,0.3659,0.4479,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ivan Perišić,Croatia,F,sot,VALUABLE,0.702,1.83,0.2847,0.3617,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Martin Baturina,Croatia,F,sot,VALUABLE,0.697,1.8,0.2546,0.3299,5,,,,,
+2026-06-24,2026-06-27,World Cup,Panama,England,Declan Rice,England,M,sot,VALUABLE,0.785,1.74,0.3659,0.4479,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Ivan Perišić,Croatia,F,sot,VALUABLE,0.702,1.83,0.2847,0.3617,5,True,WIN,0.83,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Martin Baturina,Croatia,F,sot,VALUABLE,0.697,1.8,0.2546,0.3299,5,True,LOSS,-1.0,,2026-06-28
 2026-06-24,2026-06-26,World Cup,Norway,France,Maghnes Akliouche,France,M,sot,VALUABLE,0.689,1.67,0.1506,0.2197,5,True,VOID,0.0,DNP (0 min),2026-06-27
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Modrić,Croatia,M,sot,VALUABLE,0.589,2.05,0.2074,0.2799,5,,,,,
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Kristijan Jakić,Croatia,M,sot,VALUABLE,0.557,3.1,0.7267,0.8994,5,,,,,
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Luka Modrić,Croatia,M,sot,VALUABLE,0.589,2.05,0.2074,0.2799,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Kristijan Jakić,Croatia,M,sot,VALUABLE,0.557,3.1,0.7267,0.8994,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-24,2026-06-24,World Cup,Scotland,Brazil,Vinicius Júnior,Brazil,F,goals,VALUABLE,0.5,2.33,0.165,0.2349,5,True,WIN,1.33,,2026-06-25
-2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Caleb Yirenkyi,Ghana,M,sot,VALUABLE,0.355,4.4,0.562,0.7182,5,,,,,
-2026-06-24,2026-06-27,World Cup,Panama,England,José Córdoba,Panama,D,sot,VALUABLE,0.22,10.0,1.2,1.53,5,,,,,
-2026-06-24,2026-06-27,World Cup,New Zealand,Belgium,Romelu Lukaku,Belgium,F,cards,MARKSMAN,0.371,7.0,1.597,1.9865,5,,,,,
-2026-06-24,2026-06-27,World Cup,Egypt,Iran,Mohanad Lasheen,Egypt,M,cards,MARKSMAN,0.254,5.5,0.397,0.6066,5,,,,,
+2026-06-24,2026-06-27,World Cup,Croatia,Ghana,Caleb Yirenkyi,Ghana,M,sot,VALUABLE,0.355,4.4,0.562,0.7182,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Panama,England,José Córdoba,Panama,D,sot,VALUABLE,0.22,10.0,1.2,1.53,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,New Zealand,Belgium,Romelu Lukaku,Belgium,F,cards,MARKSMAN,0.371,7.0,1.597,1.9865,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Egypt,Iran,Mohanad Lasheen,Egypt,M,cards,MARKSMAN,0.254,5.5,0.397,0.6066,5,True,WIN,4.5,,2026-06-28
 2026-06-24,2026-06-26,World Cup,Norway,France,Aurélien Tchouaméni,France,M,cards,VALUABLE,0.239,5.1,0.2189,0.4017,5,True,WIN,4.1,,2026-06-27
 2026-06-24,2026-06-26,World Cup,Norway,France,Adrien Rabiot,France,M,cards,VALUABLE,0.205,5.75,0.1787,0.3556,5,True,VOID,0.0,DNP (0 min),2026-06-27
 2026-06-24,2026-06-26,World Cup,Norway,France,Michael Olise,France,M,cards,MARKSMAN,0.166,8.0,0.328,0.5272,5,True,LOSS,-1.0,,2026-06-27
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Nuno Mendes,Portugal,D,sot,VALUABLE,0.571,2.45,0.3989,0.4829,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Bernardo Silva,Portugal,F,sot,VALUABLE,0.557,2.25,0.2533,0.3284,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Bruno Fernandes,Portugal,M,goals,VALUABLE,0.5,3.8,0.9,1.09,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Gonçalo Guedes,Portugal,F,goals,VALUABLE,0.5,3.2,0.6,0.76,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Pedro Neto,Portugal,M,goals,VALUABLE,0.5,4.9,1.45,1.695,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Francisco Conceição,Portugal,F,goals,VALUABLE,0.5,4.4,1.2,1.42,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Francisco Trincão,Portugal,F,goals,VALUABLE,0.5,4.0,1.0,1.2,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Rafael Leão,Portugal,F,goals,VALUABLE,0.5,3.6,0.8,0.98,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Nuno Mendes,Portugal,D,goals,VALUABLE,0.5,11.0,4.5,5.325,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Jefferson Lerma,Colombia,M,sot,VALUABLE,0.405,2.85,0.1543,0.2235,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Daniel Muñoz,Colombia,D,sot,VALUABLE,0.399,3.15,0.2569,0.3825,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,James Rodríguez,Colombia,F,goals,VALUABLE,0.39,6.0,1.34,1.691,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Davinson Sánchez,Colombia,D,sot,VALUABLE,0.387,4.4,0.7028,0.8731,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Yerry Mina,Colombia,D,sot,VALUABLE,0.381,3.4,0.2954,0.4249,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Jhon Arias,Colombia,M,goals,VALUABLE,0.377,7.7,1.9029,2.3383,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Daniel Muñoz,Colombia,D,goals,VALUABLE,0.367,16.5,5.0555,5.9638,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Jefferson Lerma,Colombia,M,goals,VALUABLE,0.366,13.0,3.758,4.4717,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Davinson Sánchez,Colombia,D,goals,VALUABLE,0.362,20.0,6.24,7.326,5,,,,,
-2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Yerry Mina,Colombia,D,goals,VALUABLE,0.361,17.0,5.137,6.0575,5,,,,,
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Nuno Mendes,Portugal,D,sot,VALUABLE,0.571,2.45,0.3989,0.4829,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Bernardo Silva,Portugal,F,sot,VALUABLE,0.557,2.25,0.2533,0.3284,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Bruno Fernandes,Portugal,M,goals,VALUABLE,0.5,3.8,0.9,1.09,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Gonçalo Guedes,Portugal,F,goals,VALUABLE,0.5,3.2,0.6,0.76,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Pedro Neto,Portugal,M,goals,VALUABLE,0.5,4.9,1.45,1.695,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Francisco Conceição,Portugal,F,goals,VALUABLE,0.5,4.4,1.2,1.42,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Francisco Trincão,Portugal,F,goals,VALUABLE,0.5,4.0,1.0,1.2,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Rafael Leão,Portugal,F,goals,VALUABLE,0.5,3.6,0.8,0.98,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Nuno Mendes,Portugal,D,goals,VALUABLE,0.5,11.0,4.5,5.325,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Jefferson Lerma,Colombia,M,sot,VALUABLE,0.405,2.85,0.1543,0.2235,5,True,WIN,1.85,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Daniel Muñoz,Colombia,D,sot,VALUABLE,0.399,3.15,0.2569,0.3825,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,James Rodríguez,Colombia,F,goals,VALUABLE,0.39,6.0,1.34,1.691,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Davinson Sánchez,Colombia,D,sot,VALUABLE,0.387,4.4,0.7028,0.8731,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Yerry Mina,Colombia,D,sot,VALUABLE,0.381,3.4,0.2954,0.4249,5,True,VOID,0.0,DNP (0 min),2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Jhon Arias,Colombia,M,goals,VALUABLE,0.377,7.7,1.9029,2.3383,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Daniel Muñoz,Colombia,D,goals,VALUABLE,0.367,16.5,5.0555,5.9638,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Jefferson Lerma,Colombia,M,goals,VALUABLE,0.366,13.0,3.758,4.4717,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Davinson Sánchez,Colombia,D,goals,VALUABLE,0.362,20.0,6.24,7.326,5,True,LOSS,-1.0,,2026-06-28
+2026-06-24,2026-06-27,World Cup,Colombia,Portugal,Yerry Mina,Colombia,D,goals,VALUABLE,0.361,17.0,5.137,6.0575,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Leandro Paredes,Argentina,M,sot,VALUABLE,0.8,2.05,0.64,0.7384,5,,,,,
 2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Giuliano Simeone,Argentina,M,sot,VALUABLE,0.793,1.51,0.1974,0.2693,5,,,,,
 2026-06-24,2026-06-28,World Cup,Jordan,Argentina,Valentín Barco,Argentina,M,sot,VALUABLE,0.678,2.2,0.4916,0.5811,5,,,,,
@@ -453,8 +453,8 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-24,2026-06-28,World Cup,Algeria,Austria,Anis Hadj Moussa,Algeria,F,goals,VALUABLE,0.375,5.5,1.0625,1.3719,5,,,,,
 2026-06-24,2026-06-28,World Cup,Algeria,Austria,Riyad Mahrez,Algeria,F,goals,VALUABLE,0.368,3.9,0.4352,0.5787,5,,,,,
 2026-06-24,2026-06-28,World Cup,Algeria,Austria,Zineddine Belaid,Algeria,D,goals,VALUABLE,0.366,15.0,4.49,5.3135,5,,,,,
-2026-06-25,2026-06-27,World Cup,Panama,England,Carlos Harvey,Panama,M,sot,VALUABLE,0.243,5.5,0.3365,0.537,5,,,,,
-2026-06-25,2026-06-27,World Cup,Colombia,Portugal,Bernardo Silva,Portugal,F,goals,VALUABLE,0.497,5.0,1.485,1.7335,5,,,,,
+2026-06-25,2026-06-27,World Cup,Panama,England,Carlos Harvey,Panama,M,sot,VALUABLE,0.243,5.5,0.3365,0.537,5,True,LOSS,-1.0,,2026-06-28
+2026-06-25,2026-06-27,World Cup,Colombia,Portugal,Bernardo Silva,Portugal,F,goals,VALUABLE,0.497,5.0,1.485,1.7335,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Jonathan David,Canada,F,goals,VALUABLE,0.5,2.45,0.225,0.2985,5,,,,,
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Tani Oluwaseyi,Canada,F,goals,VALUABLE,0.5,3.1,0.55,0.705,5,,,,,
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Evidence Makgopa,South Africa,F,goals,VALUABLE,0.5,5.5,1.75,2.1625,5,,,,,
@@ -464,16 +464,16 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Cyle Larin,Canada,F,goals,VALUABLE,0.5,2.75,0.375,0.4575,5,,,,,
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Teboho Mokoena,South Africa,M,goals,VALUABLE,0.5,6.5,2.25,2.7375,5,,,,,
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Relebohile Mofokeng,South Africa,F,goals,VALUABLE,0.5,8.0,3.0,3.6,5,,,,,
-2026-06-25,2026-06-27,World Cup,Croatia,Ghana,Ivan Perišić,Croatia,F,goals,VALUABLE,0.5,4.5,1.25,1.475,5,,,,,
+2026-06-25,2026-06-27,World Cup,Croatia,Ghana,Ivan Perišić,Croatia,F,goals,VALUABLE,0.5,4.5,1.25,1.475,5,True,LOSS,-1.0,,2026-06-28
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Nathan-Dylan Saliba,Canada,M,goals,VALUABLE,0.293,7.1,1.0803,1.3923,5,,,,,
-2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Kevin De Bruyne,Belgium,M,sot,VALUABLE,0.8,1.44,0.152,0.2211,5,,,,,
+2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Kevin De Bruyne,Belgium,M,sot,VALUABLE,0.8,1.44,0.152,0.2211,5,True,WIN,0.44,,2026-06-28
 2026-06-25,2026-06-26,World Cup,Senegal,Iraq,Ismaïla Sarr,Senegal,M,sot,VALUABLE,0.8,1.44,0.152,0.2211,5,True,WIN,0.44,,2026-06-27
 2026-06-25,2026-06-26,World Cup,Senegal,Iraq,Sadio Mané,Senegal,M,sot,VALUABLE,0.8,1.44,0.152,0.2211,5,True,WIN,0.44,,2026-06-27
-2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Alexis Saelemaekers,Belgium,F,sot,VALUABLE,0.8,1.61,0.288,0.3653,5,,,,,
-2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Leandro Trossard,Belgium,M,sot,VALUABLE,0.8,1.44,0.152,0.2211,5,,,,,
-2026-06-25,2026-06-27,World Cup,Panama,England,Morgan Rogers,England,F,sot,VALUABLE,0.788,1.5,0.182,0.2529,5,,,,,
+2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Alexis Saelemaekers,Belgium,F,sot,VALUABLE,0.8,1.61,0.288,0.3653,5,True,WIN,0.61,,2026-06-28
+2026-06-25,2026-06-27,World Cup,New Zealand,Belgium,Leandro Trossard,Belgium,M,sot,VALUABLE,0.8,1.44,0.152,0.2211,5,True,WIN,0.44,,2026-06-28
+2026-06-25,2026-06-27,World Cup,Panama,England,Morgan Rogers,England,F,sot,VALUABLE,0.788,1.5,0.182,0.2529,5,True,LOSS,-1.0,,2026-06-28
 2026-06-25,2026-06-25,World Cup,Ecuador,Germany,Jamal Musiala,Germany,M,sot,VALUABLE,0.745,1.55,0.1547,0.224,5,True,VOID,0.0,DNP,2026-06-26
-2026-06-25,2026-06-27,World Cup,Croatia,Ghana,Mario Pašalić,Croatia,M,sot,VALUABLE,0.628,2.25,0.413,0.4978,5,,,,,
+2026-06-25,2026-06-27,World Cup,Croatia,Ghana,Mario Pašalić,Croatia,M,sot,VALUABLE,0.628,2.25,0.413,0.4978,5,True,WIN,1.25,,2026-06-28
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Relebohile Mofokeng,South Africa,F,sot,VALUABLE,0.42,2.75,0.155,0.2243,5,,,,,
 2026-06-25,2026-06-28,World Cup,South Africa,Canada,Teboho Mokoena,South Africa,M,sot,VALUABLE,0.412,2.9,0.1948,0.2665,5,,,,,
 2026-06-26,2026-06-28,World Cup,South Africa,Canada,Mbekezeli Mbokazi,South Africa,D,goals,VALUABLE,0.311,19.0,4.909,5.7954,5,,,,,
@@ -490,7 +490,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Sergiño Dest,USA,M,goals,VALUABLE,0.5,5.0,1.5,1.75,5,,,,,
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Antonee Robinson,USA,M,goals,VALUABLE,0.5,7.0,2.5,3.025,5,,,,,
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Haji Wright,USA,F,goals,VALUABLE,0.5,2.45,0.225,0.2985,5,,,,,
-2026-06-26,2026-06-27,World Cup,Uruguay,Spain,Borja Iglesias,Spain,F,goals,VALUABLE,0.5,2.3,0.15,0.219,5,,,,,
+2026-06-26,2026-06-27,World Cup,Uruguay,Spain,Borja Iglesias,Spain,F,goals,VALUABLE,0.5,2.3,0.15,0.219,5,True,VOID,0.0,DNP (0 min),2026-06-28
 2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Achraf Hakimi,Morocco,D,goals,VALUABLE,0.5,8.0,3.0,3.6,5,,,,,
 2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Brahim Díaz,Morocco,M,goals,VALUABLE,0.5,4.5,1.25,1.475,5,,,,,
 2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Soufiane Rahimi,Morocco,F,goals,VALUABLE,0.5,4.2,1.1,1.31,5,,,,,
@@ -511,9 +511,9 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Armin Gigović,Bosnia & Herzegovina,M,goals,VALUABLE,0.304,10.0,2.04,2.496,5,,,,,
 2026-06-26,2026-06-29,World Cup,Brazil,Japan,Gabriel Martinelli,Brazil,F,goals,VALUABLE,0.291,4.2,0.2222,0.3444,5,,,,,
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Folarin Balogun,USA,F,goals,VALUABLE,0.5,2.42,0.21,0.2826,5,,,,,
-2026-06-26,2026-06-27,World Cup,Panama,England,Harry Kane,England,F,goals,VALUABLE,0.5,2.37,0.185,0.2561,5,,,,,
+2026-06-26,2026-06-27,World Cup,Panama,England,Harry Kane,England,F,goals,VALUABLE,0.5,2.37,0.185,0.2561,5,True,WIN,1.37,,2026-06-28
 2026-06-26,2026-06-30,World Cup,Netherlands,Morocco,Donyell Malen,Netherlands,F,goals,VALUABLE,0.5,3.8,0.9,1.09,5,,,,,
-2026-06-26,2026-06-27,World Cup,Colombia,Portugal,Cristiano Ronaldo,Portugal,F,goals,VALUABLE,0.5,2.31,0.155,0.2243,5,,,,,
+2026-06-26,2026-06-27,World Cup,Colombia,Portugal,Cristiano Ronaldo,Portugal,F,goals,VALUABLE,0.5,2.31,0.155,0.2243,5,True,LOSS,-1.0,,2026-06-28
 2026-06-26,2026-06-29,World Cup,Brazil,Japan,Ritsu Doan,Japan,F,goals,VALUABLE,0.332,7.5,1.49,1.8635,5,,,,,
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Malik Tillman,USA,F,goals,VALUABLE,0.5,4.4,1.2,1.42,5,,,,,
 2026-06-26,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Esmir Bajraktarević,Bosnia & Herzegovina,F,goals,VALUABLE,0.259,9.2,1.3828,1.7402,5,,,,,
