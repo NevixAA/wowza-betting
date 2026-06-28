@@ -70,13 +70,6 @@ jobs:
           key: fixture-player-${{ runner.os }}-${{ github.run_id }}
           restore-keys: fixture-player-${{ runner.os }}-
 
-      - name: Cache player injury/sidelined data (30-day TTL — fixes the slow injury refresh)
-        uses: actions/cache@v4
-        with:
-          path: player_match_cache
-          key: player-match-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: player-match-${{ runner.os }}-
-
       - name: Collect club league data (Sundays + manual)
         if: |
           github.event.schedule == '0 5 * * 0' ||
@@ -122,21 +115,6 @@ jobs:
               echo "Outside WC2026 window, skipping nightly train."
             fi
           fi
-        continue-on-error: true
-
-      - name: Refresh injury status (once daily — 05:00 UTC)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: |
-          HOUR=$(date -u +%H)
-          # Predictions run EVERY hour (odds change) — but injuries/chronic-risk move slowly and
-          # the /sidelined crawl is ~3,600-6,300 players (global 0.15s rate-lock => ~10-16 min).
-          # So the injury refresh runs ONCE a day at 05:00 UTC; every other hourly run skips it.
-          if [ "$HOUR" != "05" ]; then
-            echo "Hourly predict run — injury refresh runs once daily at 05:00 UTC, skipping"
-            exit 0
-          fi
-          python -m player_model.pipeline --mode enrich-sidelined-live
         continue-on-error: true
 
       - name: Generate player prop predictions

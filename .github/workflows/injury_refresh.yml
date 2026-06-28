@@ -1,0 +1,57 @@
+name: Injury Refresh
+
+# Daily sidelined/injury crawl, split out of player_props.yml so the hourly
+# predict workflow stays fast. The /sidelined endpoint is ~3,600-6,300 players
+# behind a global 0.15s rate-lock (~10-16 min) — far too slow to run hourly.
+# Injuries/chronic-risk move slowly, so once a day is plenty; hourly predicts
+# reuse the injury features already written into player_history.parquet.
+
+concurrency:
+  group: injury-refresh
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '0 4 * * *'   # 04:00 UTC daily (before the 05:00 Sunday train)
+  workflow_dispatch:
+
+jobs:
+  injury_refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Cache player injury/sidelined data (30-day TTL)
+        uses: actions/cache@v4
+        with:
+          path: player_match_cache
+          key: player-match-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: player-match-${{ runner.os }}-
+
+      - name: Refresh injury status (sidelined crawl for active prop-league players)
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python -m player_model.pipeline --mode enrich-sidelined-live
+
+      - name: Commit and push updated parquet
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f player_history.parquet 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: injury refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git pull --rebase --autostash -X ours origin main
+          git push
