@@ -10,7 +10,7 @@ Markets fetched:
   sot     → player_shots_on_target       (Over 0.5)
   sot2    → player_shots_on_target       (Over 1.5)
   sot3    → player_shots_on_target       (Over 2.5)
-  assists → player_anytime_assist        (1+ assist; falls back to calibration if no market)
+  assists → player_assists (Over 0.5)    (1+ assist; falls back to calibration if no market)
   (goals3/sot4/cards removed — base rate too low / too noisy)
 
 Cost: 1 API call per event (events list is free).
@@ -36,14 +36,14 @@ _MARKET_MAP = {
     "sot":     ("player_shots_on_target",      0.5),   # 1+ SOT
     "sot2":    ("player_shots_on_target",      1.5),   # 2+ SOT
     "sot3":    ("player_shots_on_target",      2.5),   # 3+ SOT
-    "assists": ("player_anytime_assist",       None),  # 1+ assist
+    "assists": ("player_assists",              0.5),   # Over 0.5 = 1+ assist (OddsAPI key is player_assists, Over/Under)
     "cards":   ("player_to_receive_card",      None),  # yellow card
 }
 # Unique API market keys to request in one call (avoids requesting same key multiple times)
 _API_MARKETS_STR = ",".join(dict.fromkeys(v[0] for v in _MARKET_MAP.values()))
 
 # Markets not available for WC on OddsAPI (returns 422 if requested)
-_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more", "player_anytime_assist"}
+_WC_EXCLUDED_API_MARKETS = {"player_to_score_2_or_more", "player_assists"}
 _WC_API_MARKETS_STR = ",".join(
     k for k in dict.fromkeys(v[0] for v in _MARKET_MAP.values())
     if k not in _WC_EXCLUDED_API_MARKETS
