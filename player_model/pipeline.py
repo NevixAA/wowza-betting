@@ -206,11 +206,51 @@ def _build_referee_profiles() -> dict:
     return profiles
 
 
+# ── Match-day gating (active only AFTER the World Cup) ──────────────────────────
+# WC2026 final ~Jul 26. During/before WC there are matches almost daily, so the
+# gate is dormant. After WC, predict + injury-refresh only run when there are
+# prop-league fixtures in the next 72h — no wasted API calls on quiet days.
+_WC_END = "20260726"
+
+
+def _match_day_gate_skips() -> bool:
+    """True => caller should skip (post-WC and no prop fixtures within 72h).
+    Fail-open: any error returns False so we never lose tips to a check bug."""
+    import datetime as _dt
+    try:
+        today = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d")
+        if today <= _WC_END:
+            return False  # dormant during/before WC
+        from player_model.api_football import get_upcoming_fixtures
+        now     = _dt.datetime.now(_dt.timezone.utc)
+        horizon = now + _dt.timedelta(hours=72)
+        for league, lg_id in config.PROP_LEAGUES.items():
+            season = config.PROP_SEASONS.get(league, "2025")
+            for fix in get_upcoming_fixtures(lg_id, season, next_n=3) or []:
+                ds = fix.get("fixture", {}).get("date", "")
+                if not ds:
+                    continue
+                try:
+                    fd = _dt.datetime.fromisoformat(ds.replace("Z", "+00:00"))
+                except Exception:
+                    continue
+                if now <= fd <= horizon:
+                    return False  # a match is coming up → run
+        return True  # post-WC and nothing within 72h → skip
+    except Exception as e:
+        print(f"[gate] fixture check failed ({e}) — running anyway")
+        return False
+
+
 # ── Predict ───────────────────────────────────────────────────────────────────
 
 def mode_predict() -> None:
     if not HISTORY_CACHE.exists():
         print("[predict] No history. Run --mode collect + train first.")
+        return
+
+    if _match_day_gate_skips():
+        print("[predict] Post-WC match-day gating: no prop fixtures in next 72h — skipping.")
         return
 
     history = pd.read_parquet(HISTORY_CACHE)
@@ -531,6 +571,10 @@ def mode_enrich_sidelined_live() -> None:
 
     if not HISTORY_CACHE.exists():
         print("[enrich-sidelined-live] No player_history.parquet found.")
+        return
+
+    if _match_day_gate_skips():
+        print("[enrich-sidelined-live] Post-WC match-day gating: no prop fixtures in next 72h — skipping.")
         return
 
     df = pd.read_parquet(HISTORY_CACHE)
