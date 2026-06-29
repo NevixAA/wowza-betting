@@ -434,17 +434,24 @@ def run_player_predictions(
             _is_wc = "world cup" in str(league).lower()
 
             for market in config.MARKETS:
-                # The cards model is well-calibrated for CLUB leagues (predicts mean ~0.13 vs the
-                # 12.8% base rate, AUC 0.69). But World Cup national-team features get imputed to
-                # league averages, which inflates card predictions to ~0.40 (all clamp to the cap
-                # → fair 2.5). So suppress cards for WC ONLY — they work for the club season and
-                # re-enable automatically in August. (For WC card tips: a GK can be legit on a
-                # bunker/time-wasting team, so don't blanket-block GK cards when WC is fixed.)
-                if market == "cards" and _is_wc:
-                    continue
-                # Goalkeepers don't score / shoot / assist — skip them for those markets.
-                if _is_gk:
-                    continue
+                if market == "cards":
+                    # The cards model is well-calibrated for CLUB leagues (mean ~0.13 vs the
+                    # 12.8% base rate, AUC 0.69). World Cup features get imputed to league
+                    # averages, inflating WC card predictions to ~0.40 for everyone. But ~0.40
+                    # is roughly CORRECT for genuinely card-prone players, so for WC we apply a
+                    # higher bar: gate on the player's REAL booking history (their true rate ≈
+                    # the prediction) and drop the rest. Club cards pass through (model is fine).
+                    if _is_wc:
+                        _real_card_rate = max(float(feat_row.get("cards_pg", 0) or 0),
+                                              float(feat_row.get("season_cards_pg", 0) or 0))
+                        if _real_card_rate < config.WC_CARD_MIN_RATE:
+                            continue
+                    # GKs allowed for cards — a bunker/time-wasting GK with real booking history
+                    # is a legitimate card tip; the history gate already filters the rest.
+                else:
+                    # Goalkeepers don't score / shoot / assist — skip them for those markets.
+                    if _is_gk:
+                        continue
                 p_model = float(feat_row.get(f"p_{market}", 0))
                 # Team-strength multiplier: boost for heavy favourites, penalty for underdogs
                 _is_home = float(feat_row.get("is_home", 0.5)) > 0.5
