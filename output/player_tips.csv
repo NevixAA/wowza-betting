@@ -6,13 +6,13 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Folarin Balogun,USA,F,sot,0.514,1.95,1.3,0.7257,-0.2117,-0.2917,-0.3318,0.74,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Marcus Thuram,France,F,sot,0.502,1.99,1.27,0.7428,-0.2408,-0.3242,-0.3625,0.727,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Victor Muñoz,Spain,F,sot,0.501,2.0,1.35,0.6988,-0.1978,-0.2831,-0.3236,0.667,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Désiré Doué,France,F,sot,0.483,2.07,1.4,0.6739,-0.1909,-0.2832,-0.3238,0.723,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,D. Doué,France,F,sot,0.483,2.07,,,,,,0.723,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,H. Kane,England,F,sot,0.479,2.09,,,,,,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Désiré Doué,France,F,sot,0.483,2.07,1.4,0.6739,-0.1909,-0.2832,-0.3238,0.723,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Harry Kane,England,F,sot,0.479,2.09,,,,,,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,H. Kane,England,F,sot,0.479,2.09,,,,,,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,sot,0.476,2.1,1.25,0.7547,-0.2787,-0.3693,-0.405,0.803,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,O. Dembélé,France,M,sot,0.475,2.1,,,,,,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Ousmane Dembélé,France,M,sot,0.475,2.1,1.26,0.7487,-0.2737,-0.3656,-0.4015,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,O. Dembélé,France,M,sot,0.475,2.1,,,,,,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,sot,0.472,2.12,,,,,,0.801,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Leroy Sané,Germany,M,sot,0.465,2.15,1.73,0.5453,-0.0803,-0.1473,-0.1956,0.619,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,L. Sané,Germany,F,sot,0.464,2.15,,,,,,0.67,0.3115,WC_LOW_CONF,5,match_level,AVOID,
@@ -25,227 +25,220 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Cucho Hernández,Colombia,F,sot,0.436,2.29,,,,,,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Julián Quiñones,Mexico,F,sot,0.428,2.34,1.57,0.6009,-0.1729,-0.2877,-0.328,0.747,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Cody Gakpo,Netherlands,M,sot,0.424,2.36,1.45,0.6506,-0.2266,-0.3483,-0.3852,0.779,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Jérémy Doku,Belgium,M,sot,0.423,2.37,1.91,0.4939,-0.0709,-0.1436,-0.1921,0.27,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Jérémy Doku,Belgium,M,sot,0.423,2.37,1.91,0.4939,-0.0709,-0.1436,-0.1921,0.27,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Cole Palmer,England,M,sot,0.423,2.36,,,,,,0.493,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Jamal Musiala,Germany,M,sot,0.422,2.37,1.45,0.6506,-0.2286,-0.3514,-0.3881,0.433,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Musiala,Germany,M,sot,0.422,2.37,,,,,,0.433,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,sot,0.421,2.38,,,,,,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,C. Gakpo,Netherlands,F,sot,0.421,2.37,,,,,,0.779,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,sot,0.421,2.38,,,,,,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Nico Paz,Argentina,F,sot,0.418,2.39,,,,,,0.458,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,J. Bellingham,England,M,sot,0.411,2.43,,,,,,0.61,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jude Bellingham,England,M,sot,0.411,2.43,,,,,,0.61,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,J. Bellingham,England,M,sot,0.411,2.43,,,,,,0.61,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Jamie Leweling,Germany,F,sot,0.405,2.47,1.5,0.6289,-0.2239,-0.356,-0.3925,0.568,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Breel Embolo,Switzerland,F,sot,0.402,2.49,1.35,0.6988,-0.2968,-0.4247,-0.4573,0.745,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Hamdy Fathy,Egypt,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Viktor Gyökeres,Sweden,F,cards,0.4,2.5,5.0,0.1818,0.2182,1.2,1.0,,0.698,REFEREE,5,match_level,MARKSMAN,0.05
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,C. Operi,Ivory Coast,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Declan Rice,England,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,cards,0.4,2.5,5.5,0.1581,0.2419,1.53,1.2,,0.698,REFEREE,5,match_level,MARKSMAN,0.0533
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Duje Ćaleta-Car,Croatia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Kalidou Koulibaly,Senegal,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Granit Xhaka,Switzerland,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jerdy Schouten,Netherlands,M,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Issa Diop,Morocco,D,cards,0.4,2.5,3.7,0.2457,0.1543,0.628,0.48,,0.623,,5,match_level,VALUABLE,0.0356
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Brian Gutierrez,Mexico,M,cards,0.4,2.5,5.8,0.1499,0.2501,1.668,1.32,,0.698,REFEREE,5,match_level,MARKSMAN,0.055
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Franck Kessié,Ivory Coast,M,cards,0.4,2.5,4.75,0.1914,0.2086,1.09,0.9,,0.698,REFEREE,5,match_level,MARKSMAN,0.048
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Nayef Aguerd,Morocco,D,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Elye Wahi,Ivory Coast,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Moustapha Mbow,Senegal,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Chancel Mbemba,Congo DR,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Hamdy Fathy,Egypt,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohanad Lasheen,Egypt,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Diego Gómez,Paraguay,M,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Declan Rice,England,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Pedro Vite,Ecuador,M,cards,0.4,2.5,5.5,0.1581,0.2419,1.53,1.2,,0.698,REFEREE,5,match_level,MARKSMAN,0.0533
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,M. Caicedo,Ecuador,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,P. Vite,Ecuador,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Tarik Muharemović,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Brian Gutiérrez,Mexico,M,cards,0.4,2.5,5.8,0.1499,0.2501,1.668,1.32,,0.698,REFEREE,5,match_level,MARKSMAN,0.055
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mathew Ryan,Australia,G,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Jacob Italiano,Australia,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Arjan Malić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Juan Cáceres,Paraguay,D,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Moisés Caicedo,Ecuador,M,cards,0.4,2.5,2.8,0.3369,0.0631,0.1872,0.12,,0.698,REFEREE,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Stjepan Radeljić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Leandro Paredes,Argentina,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Miguel Almirón,Paraguay,M,cards,0.4,2.5,5.0,0.1818,0.2182,1.2,1.0,,0.623,,5,match_level,VALUABLE,0.05
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Antonee Robinson,USA,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Haris Tabaković,Bosnia & Herzegovina,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Ermedin Demirović,Bosnia & Herzegovina,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Fikayo Tomori,England,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Dennis Hadžikadunić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,John Tolkin,USA,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Chris Richards,USA,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marcos Llorente,Spain,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Konrad Laimer,Austria,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marcel Sabitzer,Austria,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pedro Porro,Spain,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Sergio Gómez,Spain,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Christoph Baumgartner,Austria,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,V. Gyökeres,Sweden,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Patric Pfeiffer,Ghana,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Cristhian Mosquera,Spain,D,cards,0.4,2.5,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Noah Sadiki,Congo DR,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Bernal,Spain,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Viktor Gyökeres,Sweden,F,cards,0.4,2.5,5.0,0.1818,0.2182,1.2,1.0,,0.698,REFEREE,5,match_level,MARKSMAN,0.05
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,James Garner,England,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Callum Elder,Australia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,D. Rice,England,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,cards,0.4,2.5,5.5,0.1581,0.2419,1.53,1.2,,0.698,REFEREE,5,match_level,MARKSMAN,0.0533
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Rabiot,France,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Duje Ćaleta-Car,Croatia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Martin Erlić,Croatia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Palhinha,Portugal,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,C. Operi,Ivory Coast,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,E. Wahi,Ivory Coast,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Sondre Langås,Norway,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Antonee Robinson,USA,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Ermedin Demirović,Bosnia & Herzegovina,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Chris Richards,USA,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Fikayo Tomori,England,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohanad Lasheen,Egypt,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,F. Kessié,Ivory Coast,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Rabiot,France,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Moustapha Mbow,Senegal,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Diego Gómez,Paraguay,M,cards,0.4,2.5,,,,,,,0.698,MINUTES,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Nathan Ngoy,Belgium,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Granit Xhaka,Switzerland,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,D. Rice,England,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Noah Sadiki,Congo DR,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Palhinha,Portugal,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Leandro Paredes,Argentina,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Martin Erlić,Croatia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Kalidou Koulibaly,Senegal,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Juan Cáceres,Paraguay,D,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Tarik Muharemović,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marcel Sabitzer,Austria,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Konrad Laimer,Austria,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Franck Kessié,Ivory Coast,M,cards,0.4,2.5,4.75,0.1914,0.2086,1.09,0.9,,0.698,REFEREE,5,match_level,MARKSMAN,0.048
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Chancel Mbemba,Congo DR,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Moisés Caicedo,Ecuador,M,cards,0.4,2.5,2.8,0.3369,0.0631,0.1872,0.12,,0.698,REFEREE,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pedro Porro,Spain,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Arjan Malić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Elye Wahi,Ivory Coast,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marcos Llorente,Spain,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Christoph Baumgartner,Austria,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Stjepan Radeljić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Dennis Hadžikadunić,Bosnia & Herzegovina,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Nayef Aguerd,Morocco,D,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,John Tolkin,USA,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Bernal,Spain,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Eivind Helland,Norway,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Christopher Operi,Ivory Coast,D,cards,0.4,2.5,4.6,0.1976,0.2024,1.024,0.84,,0.698,REFEREE,5,match_level,MARKSMAN,0.0467
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Callum Elder,Australia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Cristhian Mosquera,Spain,D,cards,0.4,2.5,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jerdy Schouten,Netherlands,M,cards,0.4,2.5,,,,,,,0.623,,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Haris Tabaković,Bosnia & Herzegovina,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Aron Dønnum,Norway,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Jacob Italiano,Australia,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Miguel Almirón,Paraguay,M,cards,0.4,2.5,5.0,0.1818,0.2182,1.2,1.0,,0.623,,5,match_level,VALUABLE,0.05
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Christopher Operi,Ivory Coast,D,cards,0.4,2.5,4.6,0.1976,0.2024,1.024,0.84,,0.698,REFEREE,5,match_level,MARKSMAN,0.0467
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Nathan Ngoy,Belgium,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Kojo Peprah Oppong,Ghana,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,P. Vite,Ecuador,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,M. Caicedo,Ecuador,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mathew Ryan,Australia,G,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,James Garner,England,M,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Patric Pfeiffer,Ghana,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,V. Gyökeres,Sweden,F,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Sergio Gómez,Spain,D,cards,0.4,2.5,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Alejandro Grimaldo,Spain,D,sot,0.393,2.54,,,,,,0.282,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Bruno Fernandes,Portugal,M,sot,0.387,2.59,1.62,0.5823,-0.1953,-0.3354,-0.3731,0.455,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Leandro Trossard,Belgium,F,sot,0.387,2.58,1.71,0.5517,-0.1647,-0.2985,-0.3382,0.696,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Adam Wharton,England,M,goals,0.386,2.59,,,,,,0.433,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Connor Metcalfe,Australia,F,goals,0.386,2.59,,,,,,0.632,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Fabián Ruiz,Spain,M,goals,0.386,2.59,4.5,0.202,0.184,0.9107,0.737,0.305,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Yan Diomande,Ivory Coast,M,goals,0.386,2.59,5.0,0.1818,0.2042,1.123,0.93,0.29,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Julián Quiñones,Mexico,M,goals,0.386,2.59,4.35,0.209,0.177,0.847,0.6791,0.667,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Vinícius Júnior,Brazil,F,goals,0.386,2.59,2.75,0.3431,0.0429,0.1252,0.0615,0.773,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Donyell Malen,Netherlands,M,goals,0.386,2.59,3.88,0.2343,0.1517,0.6474,0.4977,0.297,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Nico Schlotterbeck,Germany,D,goals,0.386,2.59,,,,,,0.408,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Denzel Dumfries,Netherlands,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Cucurella,Spain,D,goals,0.386,2.59,10.0,0.087,0.299,3.439,2.86,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,goals,0.386,2.59,,,,,,0.675,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Samuel Moutoussamy,Congo DR,M,goals,0.386,2.59,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Harry Souttar,Australia,D,goals,0.386,2.59,18.0,0.0483,0.3377,6.9902,5.948,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Alexis Saelemaekers,Belgium,M,goals,0.386,2.59,8.5,0.1023,0.2837,2.7731,2.281,0.585,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Connor Metcalfe,Australia,F,goals,0.386,2.59,,,,,,0.632,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Alessandro Circati,Australia,D,goals,0.386,2.59,18.0,0.0483,0.3377,6.9902,5.948,0.248,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Kevin De Bruyne,Belgium,M,goals,0.386,2.59,4.33,0.21,0.176,0.8385,0.6714,0.714,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Enzo Fernández,Argentina,M,goals,0.386,2.59,,,,,,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Désiré Doué,France,M,goals,0.386,2.59,2.8,0.3369,0.0491,0.1456,0.0808,0.483,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Gabriel Magalhães,Brazil,D,goals,0.386,2.59,,,,,,0.23,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Thomas Meunier,Belgium,D,goals,0.386,2.59,7.6,0.1144,0.2716,2.3736,1.9336,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Jérémy Doku,Belgium,M,goals,0.386,2.59,5.0,0.1818,0.2042,1.123,0.93,0.27,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martial Godo,Ivory Coast,F,goals,0.386,2.59,,,,,,0.686,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jarrod Bowen,England,F,goals,0.386,2.59,,,,,,0.687,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pedri,Spain,M,goals,0.386,2.59,,,,,,0.232,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Bruno Fernandes,Portugal,M,goals,0.386,2.59,4.0,0.2273,0.1587,0.6984,0.544,0.455,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Pedro Neto,Portugal,M,goals,0.386,2.59,5.0,0.1818,0.2042,1.123,0.93,0.395,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Neves,Portugal,M,goals,0.386,2.59,,,,,,0.403,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,goals,0.386,2.59,2.17,0.4347,-0.0487,-0.1121,-0.1624,0.803,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Marcus Thuram,France,F,goals,0.386,2.59,2.1,0.4492,-0.0632,-0.1408,-0.1894,0.727,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,William Saliba,France,D,goals,0.386,2.59,13.0,0.0669,0.3191,4.7707,4.018,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,W. Saliba,France,D,goals,0.386,2.59,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Jon Martin,Spain,D,goals,0.386,2.59,,,,,,0.411,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Rodri,Spain,M,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.287,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Fabián Ruiz,Spain,M,goals,0.386,2.59,4.5,0.202,0.184,0.9107,0.737,0.305,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Cody Gakpo,Netherlands,F,goals,0.386,2.59,3.55,0.2561,0.1299,0.5073,0.3703,0.779,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ibrahim Maza,Algeria,F,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.761,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Maghnes Akliouche,France,M,goals,0.386,2.59,3.0,0.3145,0.0715,0.2275,0.158,0.273,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Nico Paz,Argentina,F,goals,0.386,2.59,,,,,,0.458,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Ayase Ueda,Japan,F,goals,0.386,2.59,5.2,0.1672,0.2188,1.3083,1.0072,0.68,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Cole Palmer,England,M,goals,0.386,2.59,,,,,,0.493,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Rodri,Spain,M,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.287,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Díaz,Colombia,F,goals,0.386,2.59,,,,,,0.697,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Chris Richards,USA,D,goals,0.386,2.59,9.5,0.0915,0.2945,3.2171,2.667,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Sadio Mané,Senegal,F,goals,0.386,2.59,4.2,0.2165,0.1695,0.7833,0.6212,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Leandro Trossard,Belgium,M,goals,0.386,2.59,4.33,0.21,0.176,0.8385,0.6714,0.696,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Folarin Balogun,USA,F,goals,0.386,2.59,2.42,0.3898,-0.0038,-0.0098,-0.0659,0.74,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Douglas Santos,Brazil,D,goals,0.386,2.59,,,,,,0.243,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Kylian Mbappé,France,F,goals,0.386,2.59,2.08,0.4536,-0.0676,-0.1489,-0.1971,0.824,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Ousmane Dembélé,France,M,goals,0.386,2.59,2.45,0.3851,0.0009,0.0024,-0.0543,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Ermedin Demirović,Bosnia & Herzegovina,F,goals,0.386,2.59,5.8,0.1499,0.2361,1.5746,1.2388,0.733,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,D. Doué,France,F,goals,0.386,2.59,,,,,,0.723,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Felix Horn Myhre,Norway,M,goals,0.386,2.59,,,,,,0.239,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Brandon Mechele,Belgium,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.292,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Noah Sadiki,Congo DR,M,goals,0.386,2.59,,,,,,0.229,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Elliot Anderson,England,M,goals,0.386,2.59,,,,,,0.273,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Bruno Guimarães,Brazil,M,goals,0.386,2.59,10.0,0.087,0.299,3.439,2.86,0.405,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Anthony Gordon,England,F,goals,0.386,2.59,,,,,,0.652,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Samuel Moutoussamy,Congo DR,M,goals,0.386,2.59,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jarrod Bowen,England,F,goals,0.386,2.59,,,,,,0.687,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jude Bellingham,England,M,goals,0.386,2.59,,,,,,0.61,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Nathanaël Mbuku,Congo DR,M,goals,0.386,2.59,,,,,,0.398,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,goals,0.386,2.59,,,,,,0.801,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Roberto Alvarado,Mexico,F,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.68,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Pico,Cape Verde Islands,D,goals,0.386,2.59,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Fredrik Aursnes,Norway,M,goals,0.386,2.59,9.6,0.0906,0.2954,3.2614,2.7056,0.222,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Cucurella,Spain,D,goals,0.386,2.59,10.0,0.087,0.299,3.439,2.86,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Michael Olise,France,M,goals,0.386,2.59,3.13,0.2904,0.0956,0.329,0.2082,0.749,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Ismaïla Sarr,Senegal,M,goals,0.386,2.59,4.8,0.1894,0.1966,1.0381,0.8528,0.734,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Brian Gutiérrez,Mexico,M,goals,0.386,2.59,5.6,0.1553,0.2307,1.4858,1.1616,0.452,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Maxim De Cuyper,Belgium,D,goals,0.386,2.59,6.5,0.1338,0.2522,1.8853,1.509,0.284,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,William Saliba,France,D,goals,0.386,2.59,13.0,0.0669,0.3191,4.7707,4.018,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Marcus Thuram,France,M,goals,0.386,2.59,2.1,0.4492,-0.0632,-0.1408,-0.1894,0.731,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,M. Olise,France,M,goals,0.386,2.59,,,,,,0.749,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Youri Tielemans,Belgium,M,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,goals,0.386,2.59,,,,,,0.675,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Arthur Theate,Belgium,D,goals,0.386,2.59,20.0,0.0435,0.3425,7.878,6.72,0.265,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Antonee Robinson,USA,M,goals,0.386,2.59,9.4,0.0925,0.2935,3.1727,2.6284,0.388,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Nathanaël Mbuku,Congo DR,M,goals,0.386,2.59,,,,,,0.398,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Solanke,England,F,goals,0.386,2.59,,,,,,0.671,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Y. Diomande,Ivory Coast,F,goals,0.386,2.59,,,,,,0.62,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Declan Rice,England,M,goals,0.386,2.59,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,O. Dembélé,France,M,goals,0.386,2.59,,,,,,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,goals,0.386,2.59,,,,,,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,W. Saliba,France,D,goals,0.386,2.59,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Nico Schlotterbeck,Germany,D,goals,0.386,2.59,,,,,,0.408,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Granit Xhaka,Switzerland,M,goals,0.386,2.59,5.2,0.1672,0.2188,1.3083,1.0072,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Breel Embolo,Switzerland,F,goals,0.386,2.59,2.62,0.3601,0.0259,0.072,0.0113,0.745,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Désiré Doué,France,M,goals,0.386,2.59,2.8,0.3369,0.0491,0.1456,0.0808,0.483,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Roberto Alvarado,Mexico,F,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.68,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,D. Doué,France,F,goals,0.386,2.59,,,,,,0.723,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Ousmane Dembélé,France,M,goals,0.386,2.59,2.45,0.3851,0.0009,0.0024,-0.0543,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Jamie Leweling,Germany,F,goals,0.386,2.59,3.5,0.2597,0.1263,0.4861,0.351,0.568,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Malick Thiaw,Germany,D,goals,0.386,2.59,10.0,0.087,0.299,3.439,2.86,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Anton Stach,Germany,M,goals,0.386,2.59,,,,,,0.426,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Enzo Fernández,Argentina,M,goals,0.386,2.59,,,,,,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Pubill,Spain,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.406,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Victor Muñoz,Spain,F,goals,0.386,2.59,3.25,0.2797,0.1063,0.3799,0.2545,0.667,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Samu Aghehowa,Spain,F,goals,0.386,2.59,,,,,,0.742,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Javier Guerra,Spain,M,goals,0.386,2.59,,,,,,0.739,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Kylian Mbappé,France,F,goals,0.386,2.59,2.08,0.4536,-0.0676,-0.1489,-0.1971,0.824,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jude Bellingham,England,M,goals,0.386,2.59,,,,,,0.61,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Denis Zakaria,Switzerland,M,goals,0.386,2.59,9.5,0.0915,0.2945,3.2171,2.667,0.243,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Joshua Kimmich,Germany,D,goals,0.386,2.59,7.0,0.1242,0.2618,2.1073,1.702,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Jamal Musiala,Germany,M,goals,0.386,2.59,3.33,0.273,0.113,0.4139,0.2854,0.433,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Nico Elvedi,Switzerland,D,goals,0.386,2.59,13.0,0.0669,0.3191,4.7707,4.018,0.234,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Denis Zakaria,Switzerland,D,goals,0.386,2.59,9.5,0.0915,0.2945,3.2171,2.667,0.243,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Farès Chaïbi,Algeria,F,goals,0.386,2.59,8.5,0.1023,0.2837,2.7731,2.281,0.719,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Florian Wirtz,Germany,F,goals,0.386,2.59,3.47,0.262,0.124,0.4734,0.3394,0.736,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Edo Kayembe,Congo DR,M,goals,0.386,2.59,,,,,,0.263,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Felix Nmecha,Germany,M,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Leroy Sané,Germany,M,goals,0.386,2.59,3.7,0.2457,0.1403,0.571,0.4282,0.619,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Lewis Miller,Australia,D,goals,0.386,2.59,,,,,,0.421,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Leroy Sané,Germany,F,goals,0.386,2.59,3.7,0.2457,0.1403,0.571,0.4282,0.67,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Elliot Anderson,England,M,goals,0.386,2.59,,,,,,0.273,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Cole Palmer,England,M,goals,0.386,2.59,,,,,,0.493,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Chris Führich,Germany,M,goals,0.386,2.59,,,,,,0.6,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Waldemar Anton,Germany,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.215,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Kai Havertz,Germany,M,goals,0.386,2.59,2.37,0.3981,-0.0121,-0.0303,-0.0852,0.712,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Neves,Portugal,M,goals,0.386,2.59,,,,,,0.403,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Kimmich,Germany,M,goals,0.386,2.59,,,,,,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Nmecha,Germany,M,goals,0.386,2.59,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,L. Sané,Germany,F,goals,0.386,2.59,,,,,,0.67,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,K. Havertz,Germany,F,goals,0.386,2.59,,,,,,0.712,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,A. Rüdiger,Germany,D,goals,0.386,2.59,,,,,,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,goals,0.386,2.59,2.17,0.4347,-0.0487,-0.1121,-0.1624,0.803,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Bruno Fernandes,Portugal,M,goals,0.386,2.59,4.0,0.2273,0.1587,0.6984,0.544,0.455,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Matheus Nunes,Portugal,M,goals,0.386,2.59,,,,,,0.211,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Gonçalo Inácio,Portugal,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.204,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,M. Thiaw,Germany,D,goals,0.386,2.59,,,,,,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Musiala,Germany,M,goals,0.386,2.59,,,,,,0.433,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Denzel Dumfries,Netherlands,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Pedro Neto,Portugal,M,goals,0.386,2.59,5.0,0.1818,0.2042,1.123,0.93,0.395,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,H. Kane,England,F,goals,0.386,2.59,,,,,,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,D. Rice,England,M,goals,0.386,2.59,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,J. Bellingham,England,M,goals,0.386,2.59,,,,,,0.61,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Harry Maguire,England,D,goals,0.386,2.59,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ricardo Rodríguez,Switzerland,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.222,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ibrahim Maza,Algeria,F,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.761,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Joshua Kimmich,Germany,D,goals,0.386,2.59,7.0,0.1242,0.2618,2.1073,1.702,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,James Garner,England,M,goals,0.386,2.59,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Antonee Robinson,USA,M,goals,0.386,2.59,9.4,0.0925,0.2935,3.1727,2.6284,0.388,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Michael Olise,France,M,goals,0.386,2.59,3.13,0.2904,0.0956,0.329,0.2082,0.749,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,M. Olise,France,M,goals,0.386,2.59,,,,,,0.749,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Ermedin Demirović,Bosnia & Herzegovina,F,goals,0.386,2.59,5.8,0.1499,0.2361,1.5746,1.2388,0.733,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Nico Elvedi,Switzerland,D,goals,0.386,2.59,13.0,0.0669,0.3191,4.7707,4.018,0.234,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Anthony Gordon,England,F,goals,0.386,2.59,,,,,,0.652,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Harry Kane,England,F,goals,0.386,2.59,,,,,,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Rayan,Brazil,F,goals,0.386,2.59,,,,,,0.667,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Antonio Rüdiger,Germany,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Micky van de Ven,Netherlands,D,goals,0.386,2.59,13.0,0.0669,0.3191,4.7707,4.018,0.248,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Cody Gakpo,Netherlands,F,goals,0.386,2.59,3.55,0.2561,0.1299,0.5073,0.3703,0.779,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ismael Saibari,Morocco,M,goals,0.386,2.59,4.19,0.217,0.169,0.7791,0.6173,0.762,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Aleix García,Spain,M,goals,0.386,2.59,,,,,,0.417,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,goals,0.386,2.59,,,,,,0.471,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Javier Guerra,Spain,M,goals,0.386,2.59,,,,,,0.739,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Lewis Miller,Australia,D,goals,0.386,2.59,,,,,,0.421,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Florian Wirtz,Germany,F,goals,0.386,2.59,3.47,0.262,0.124,0.4734,0.3394,0.736,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Edo Kayembe,Congo DR,M,goals,0.386,2.59,,,,,,0.263,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,L. Sané,Germany,F,goals,0.386,2.59,,,,,,0.67,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Brian Gutierrez,Mexico,F,goals,0.386,2.59,5.6,0.1553,0.2307,1.4858,1.1616,0.692,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Declan Rice,England,M,goals,0.386,2.59,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Julián Quiñones,Mexico,F,goals,0.386,2.59,4.35,0.209,0.177,0.847,0.6791,0.747,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Malick Thiaw,Germany,D,goals,0.386,2.59,10.0,0.087,0.299,3.439,2.86,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,James Garner,England,M,goals,0.386,2.59,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Virgil van Dijk,Netherlands,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.42,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ryan Gravenberch,Netherlands,M,goals,0.386,2.59,15.5,0.0561,0.3299,5.8804,4.983,0.28,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Lutsharel Geertruida,Netherlands,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.251,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Kimmich,Germany,M,goals,0.386,2.59,,,,,,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Ismaïla Sarr,Senegal,F,goals,0.386,2.59,4.8,0.1894,0.1966,1.0381,0.8528,0.734,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jan Paul van Hecke,Netherlands,D,goals,0.386,2.59,19.0,0.0458,0.3402,7.4341,6.334,0.424,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jurriën Timber,Netherlands,D,goals,0.386,2.59,,,,,,0.421,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pedri,Spain,M,goals,0.386,2.59,,,,,,0.232,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Pubill,Spain,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.406,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jorrel Hato,Netherlands,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.217,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ayyoub Bouaddi,Morocco,M,goals,0.386,2.59,15.0,0.058,0.328,5.6585,4.79,0.226,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Youri Tielemans,Belgium,M,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Leandro Trossard,Belgium,M,goals,0.386,2.59,4.33,0.21,0.176,0.8385,0.6714,0.696,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Folarin Balogun,USA,F,goals,0.386,2.59,2.42,0.3898,-0.0038,-0.0098,-0.0659,0.74,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,K. Havertz,Germany,F,goals,0.386,2.59,,,,,,0.712,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Nmecha,Germany,M,goals,0.386,2.59,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Musiala,Germany,M,goals,0.386,2.59,,,,,,0.433,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,M. Thiaw,Germany,D,goals,0.386,2.59,,,,,,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Anton Stach,Germany,M,goals,0.386,2.59,,,,,,0.426,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Harry Maguire,England,D,goals,0.386,2.59,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Aleix García,Spain,M,goals,0.386,2.59,,,,,,0.417,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,goals,0.386,2.59,,,,,,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Chris Richards,USA,D,goals,0.386,2.59,9.5,0.0915,0.2945,3.2171,2.667,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ricardo Rodríguez,Switzerland,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.222,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Sergio Gómez,Spain,D,goals,0.386,2.59,,,,,,0.218,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Alejandro Grimaldo,Spain,D,goals,0.386,2.59,,,,,,0.282,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pablo Gavi,Spain,F,goals,0.386,2.59,,,,,,0.221,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Neil El Aynaoui,Morocco,M,goals,0.386,2.59,9.2,0.0945,0.2915,3.0839,2.5512,0.275,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Chadi Riad,Morocco,D,goals,0.386,2.59,21.0,0.0414,0.3446,8.3219,7.106,0.243,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Bilal El Khannouss,Morocco,M,goals,0.386,2.59,,,,,,0.254,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ayyoub Bouaddi,Morocco,M,goals,0.386,2.59,15.0,0.058,0.328,5.6585,4.79,0.226,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Granit Xhaka,Switzerland,M,goals,0.386,2.59,5.2,0.1672,0.2188,1.3083,1.0072,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Micky van de Ven,Netherlands,D,goals,0.386,2.59,13.0,0.0669,0.3191,4.7707,4.018,0.248,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ismael Saibari,Morocco,F,goals,0.386,2.59,4.19,0.217,0.169,0.7791,0.6173,0.762,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Breel Embolo,Switzerland,F,goals,0.386,2.59,2.62,0.3601,0.0259,0.072,0.0113,0.745,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,D. Dumfries,Netherlands,D,goals,0.386,2.59,,,,,,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,C. Gakpo,Netherlands,F,goals,0.386,2.59,,,,,,0.779,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Alejandro Grimaldo,Spain,D,goals,0.386,2.59,,,,,,0.282,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,D. Malen,Netherlands,F,goals,0.386,2.59,,,,,,0.545,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,V. van Dijk,Netherlands,D,goals,0.386,2.59,,,,,,0.42,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,R. Gravenberch,Netherlands,M,goals,0.386,2.59,,,,,,0.28,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Farès Chaïbi,Algeria,F,goals,0.386,2.59,8.5,0.1023,0.2837,2.7731,2.281,0.719,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Arthur Theate,Belgium,D,goals,0.386,2.59,20.0,0.0435,0.3425,7.878,6.72,0.265,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Sadio Mané,Senegal,F,goals,0.386,2.59,4.2,0.2165,0.1695,0.7833,0.6212,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Kevin De Bruyne,Belgium,M,goals,0.386,2.59,4.33,0.21,0.176,0.8385,0.6714,0.714,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Thomas Meunier,Belgium,D,goals,0.386,2.59,7.6,0.1144,0.2716,2.3736,1.9336,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Alexis Saelemaekers,Belgium,F,goals,0.386,2.59,8.5,0.1023,0.2837,2.7731,2.281,0.665,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Maxim De Cuyper,Belgium,D,goals,0.386,2.59,6.5,0.1338,0.2522,1.8853,1.509,0.284,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jorrel Hato,Netherlands,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.217,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Yan Diomande,Ivory Coast,M,goals,0.386,2.59,5.0,0.1818,0.2042,1.123,0.93,0.29,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,goals,0.386,2.59,,,,,,0.801,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,N. Aké,Netherlands,D,goals,0.386,2.59,,,,,,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,J. van Hecke,Netherlands,D,goals,0.386,2.59,,,,,,0.424,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pablo Gavi,Spain,F,goals,0.386,2.59,,,,,,0.221,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Sergio Gómez,Spain,D,goals,0.386,2.59,,,,,,0.218,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Zakaria El Ouahdi,Morocco,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.658,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Victor Muñoz,Spain,F,goals,0.386,2.59,3.25,0.2797,0.1063,0.3799,0.2545,0.667,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Donyell Malen,Netherlands,F,goals,0.386,2.59,3.88,0.2343,0.1517,0.6474,0.4977,0.545,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Virgil van Dijk,Netherlands,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.42,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Palhinha,Portugal,M,goals,0.386,2.59,,,,,,0.605,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,E. Anderson,England,M,goals,0.386,2.59,,,,,,0.273,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Samu Aghehowa,Spain,F,goals,0.386,2.59,,,,,,0.742,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Lutsharel Geertruida,Netherlands,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.251,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Nathan Aké,Netherlands,D,goals,0.386,2.59,15.5,0.0561,0.3299,5.8804,4.983,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Jon Martin,Spain,D,goals,0.386,2.59,,,,,,0.411,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Matheus Cunha,Brazil,F,goals,0.385,2.6,3.22,0.2823,0.1027,0.3637,0.2397,0.659,0.386,STARTER|MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,J. van Hecke,Netherlands,D,goals,0.386,2.59,,,,,,0.424,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,goals,0.386,2.59,,,,,,0.471,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,A. Rüdiger,Germany,D,goals,0.386,2.59,,,,,,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Felix Nmecha,Germany,M,goals,0.386,2.59,6.0,0.1449,0.2411,1.6634,1.316,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Díaz,Colombia,F,goals,0.386,2.59,,,,,,0.697,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Antonio Rüdiger,Germany,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.22,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Jérémy Doku,Belgium,M,goals,0.386,2.59,5.0,0.1818,0.2042,1.123,0.93,0.27,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Kai Havertz,Germany,F,goals,0.386,2.59,2.37,0.3981,-0.0121,-0.0303,-0.0852,0.712,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Zakaria El Ouahdi,Morocco,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.658,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jurriën Timber,Netherlands,D,goals,0.386,2.59,,,,,,0.421,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Noah Sadiki,Congo DR,M,goals,0.386,2.59,,,,,,0.229,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Matheus Nunes,Portugal,M,goals,0.386,2.59,,,,,,0.211,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Y. Diomande,Ivory Coast,F,goals,0.386,2.59,,,,,,0.62,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Gonçalo Inácio,Portugal,D,goals,0.386,2.59,12.0,0.0725,0.3135,4.3268,3.632,0.204,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Fredrik Aursnes,Norway,D,goals,0.386,2.59,9.6,0.0906,0.2954,3.2614,2.7056,0.222,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Adam Wharton,England,M,goals,0.386,2.59,,,,,,0.433,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,O. Dembélé,France,M,goals,0.386,2.59,,,,,,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Palhinha,Portugal,M,goals,0.386,2.59,,,,,,0.605,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,H. Kane,England,F,goals,0.386,2.59,,,,,,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,D. Rice,England,M,goals,0.386,2.59,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Felix Horn Myhre,Norway,M,goals,0.386,2.59,,,,,,0.239,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Brandon Mechele,Belgium,D,goals,0.386,2.59,11.0,0.0791,0.3069,3.8829,3.246,0.292,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,J. Bellingham,England,M,goals,0.386,2.59,,,,,,0.61,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,E. Anderson,England,M,goals,0.386,2.59,,,,,,0.273,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martial Godo,Ivory Coast,F,goals,0.386,2.59,,,,,,0.686,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Chris Führich,Germany,M,sot,0.385,2.6,,,,,,0.6,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Martin Baturina,Croatia,F,goals,0.384,2.61,8.8,0.0988,0.2852,2.8861,2.3792,0.631,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Moussa Niakhaté,Senegal,D,goals,0.383,2.61,23.0,0.0378,0.3452,9.1303,7.809,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
@@ -253,7 +246,6 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Krépin Diatta,Senegal,D,goals,0.381,2.62,13.0,0.0669,0.3141,4.6959,3.953,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Stefan de Vrij,Netherlands,D,goals,0.378,2.65,,,,,,0.238,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Anthony Gordon,England,F,sot,0.377,2.65,,,,,,0.652,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Bruno Guimarães,Brazil,M,sot,0.376,2.66,2.8,0.3369,0.0391,0.116,0.0528,0.405,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Marcel Ruíz,Mexico,M,goals,0.376,2.66,,,,,,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Aurèle Amenda,Switzerland,D,goals,0.373,2.68,17.0,0.0512,0.3218,6.2921,5.341,0.24,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Chancel Mbemba,Congo DR,D,goals,0.372,2.69,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
@@ -261,9 +253,8 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Tijjani Reijnders,Netherlands,M,sot,0.369,2.71,2.15,0.4388,-0.0698,-0.159,-0.2067,0.318,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,T. Reijnders,Netherlands,M,sot,0.369,2.71,,,,,,0.318,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Tijjani Reijnders,Netherlands,M,goals,0.368,2.72,6.3,0.138,0.23,1.6662,1.3184,0.318,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jarell Quansah,England,D,goals,0.368,2.71,,,,,,0.396,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Keito Nakamura,Japan,F,goals,0.368,2.72,8.7,0.1,0.268,2.6818,2.2016,0.703,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,T. Reijnders,Netherlands,M,goals,0.368,2.72,,,,,,0.318,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jarell Quansah,England,D,goals,0.368,2.71,,,,,,0.396,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Isac Lidberg,Sweden,F,goals,0.367,2.73,,,,,,0.79,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Nathaniel Brown,Germany,D,goals,0.365,2.74,8.5,0.1023,0.2627,2.5679,2.1025,0.431,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pablo Fornals,Spain,M,goals,0.364,2.75,,,,,,0.593,0.3115,WC_LOW_CONF,5,match_level,AVOID,
@@ -274,61 +265,57 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Lucas Stassin,Belgium,F,sot,0.357,2.8,,,,,,0.719,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Alexander Sørloth,Norway,F,sot,0.356,2.81,,,,,,0.643,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jhon Arias,Colombia,M,goals,0.355,2.82,5.2,0.1672,0.1878,1.1229,0.846,0.46,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Idrissa Gueye,Senegal,M,goals,0.355,2.82,,,,,,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Enzo Fernández,Argentina,M,sot,0.355,2.82,,,,,,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Idrissa Gana Gueye,Senegal,M,goals,0.355,2.82,17.0,0.0512,0.3038,5.9402,5.035,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Idrissa Gueye,Senegal,M,goals,0.355,2.82,,,,,,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Donyell Malen,Netherlands,F,sot,0.354,2.82,1.55,0.6086,-0.2546,-0.4184,-0.4513,0.545,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,D. Malen,Netherlands,F,sot,0.354,2.82,,,,,,0.545,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Kerim Alajbegović,Bosnia & Herzegovina,F,goals,0.353,2.83,7.5,0.1159,0.2371,2.0446,1.6475,0.662,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Aurélien Tchouaméni,France,M,goals,0.352,2.84,8.5,0.1023,0.2497,2.4408,1.992,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Kai Havertz,Germany,F,sot,0.35,2.85,1.3,0.7257,-0.3757,-0.5177,-0.545,0.712,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,K. Havertz,Germany,F,sot,0.35,2.85,,,,,,0.712,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Rayan,Brazil,F,sot,0.343,2.92,,,,,,0.667,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ramy Bensebaini,Algeria,D,goals,0.342,2.93,17.0,0.0512,0.2908,5.6861,4.814,0.409,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Antoine Mendy,Senegal,D,goals,0.34,2.94,13.0,0.0669,0.2731,4.083,3.42,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,M. Olise,France,M,sot2,0.337,2.97,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Michael Olise,France,M,sot2,0.337,2.97,2.9,0.3253,0.0117,0.0359,-0.0227,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Kylian Mbappé,France,F,sot2,0.337,2.97,1.47,0.6418,-0.3048,-0.4749,-0.5046,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Harry Kane,England,F,sot2,0.337,2.97,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Kylian Mbappé,France,F,sot2,0.337,2.97,1.47,0.6418,-0.3048,-0.4749,-0.5046,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Kevin De Bruyne,Belgium,M,sot2,0.337,2.97,4.9,0.1855,0.1515,0.8164,0.6513,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,M. Olise,France,M,sot2,0.337,2.97,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,H. Kane,England,F,sot2,0.337,2.97,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Wilfried Singo,Ivory Coast,D,goals,0.336,2.97,,,,,,0.395,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Lucas Paquetá,Brazil,M,goals,0.336,2.98,5.0,0.1818,0.1542,0.848,0.68,0.403,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Josip Šutalo,Croatia,D,goals,0.333,3.01,25.0,0.0348,0.2982,8.5738,7.325,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pablo Fornals,Spain,M,sot,0.333,3.0,,,,,,0.593,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,James Sands,USA,M,goals,0.332,3.02,,,,,,0.233,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Solanke,England,F,sot,0.332,3.01,,,,,,0.671,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martin Ødegaard,Norway,M,goals,0.326,3.06,,,,,,0.431,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Alexander Freeman,USA,M,goals,0.326,3.07,,,,,,0.386,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Junya Ito,Japan,F,goals,0.324,3.09,7.9,0.1101,0.2139,1.9435,1.5596,0.603,0.386,STARTER|MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martin Ødegaard,Norway,M,goals,0.326,3.06,,,,,,0.431,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Nuno Mendes,Portugal,D,sot,0.324,3.09,2.1,0.4492,-0.1252,-0.2788,-0.3196,0.398,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Leandro Paredes,Argentina,M,sot,0.323,3.09,,,,,,0.593,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Petar Sučić,Croatia,F,goals,0.323,3.09,19.0,0.0458,0.2772,6.0575,5.137,0.64,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Leandro Paredes,Argentina,M,sot,0.323,3.09,,,,,,0.593,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ismael Saibari,Morocco,M,sot,0.322,3.11,1.67,0.5649,-0.2429,-0.43,-0.4623,0.762,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Charles De Ketelaere,Belgium,F,goals,0.321,3.12,3.9,0.2331,0.0879,0.3771,0.2519,0.628,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Wirtz,Germany,M,goals,0.321,3.11,,,,,,0.5,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Ismaïla Sarr,Senegal,F,sot,0.321,3.12,1.9,0.4965,-0.1755,-0.3535,-0.3901,0.734,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Wirtz,Germany,M,goals,0.321,3.11,,,,,,0.5,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Ibrahima Konaté,France,D,goals,0.319,3.13,,,,,,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Javier Suárez,Colombia,F,goals,0.317,3.15,,,,,,0.237,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,sot,0.317,3.15,,,,,,0.471,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Davinson Sánchez,Colombia,D,goals,0.317,3.15,13.5,0.0644,0.2526,3.9214,3.2795,0.434,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Javier Suárez,Colombia,F,goals,0.317,3.15,,,,,,0.237,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,sot,0.317,3.15,,,,,,0.471,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martial Godo,Ivory Coast,F,sot,0.316,3.16,,,,,,0.686,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Johan Vásquez,Mexico,D,goals,0.315,3.17,16.5,0.0527,0.2623,4.9771,4.1975,0.662,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,sot2,0.311,3.22,2.1,0.4492,-0.1382,-0.3077,-0.3469,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Casemiro,Brazil,M,goals,0.31,3.23,,,,,,0.381,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Nabil Bentaleb,Algeria,M,goals,0.308,3.25,12.0,0.0725,0.2355,3.2504,2.696,0.236,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Renato Veiga,Portugal,M,goals,0.307,3.26,13.0,0.0669,0.2401,3.5896,2.991,0.217,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Ivan Perišić,Croatia,F,goals,0.306,3.27,8.0,0.1087,0.1973,1.8152,1.448,0.65,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Luka Vušković,Croatia,D,goals,0.305,3.28,13.0,0.0669,0.2381,3.5597,2.965,0.406,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Désiré Doué,France,M,sot2,0.305,3.28,3.35,0.2714,0.0336,0.1239,0.0217,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Pedro Neto,Portugal,F,sot,0.305,3.28,1.95,0.4838,-0.1788,-0.3696,-0.4052,0.565,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Luka Vušković,Croatia,D,goals,0.305,3.28,13.0,0.0669,0.2381,3.5597,2.965,0.406,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Javier Guerra,Spain,M,sot,0.305,3.28,,,,,,0.739,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Maxim De Cuyper,Belgium,M,sot,0.304,3.29,2.45,0.3851,-0.0811,-0.2105,-0.2552,0.284,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Cucho Hernández,Colombia,F,goals,0.303,3.3,,,,,,0.73,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Yan Diomande,Ivory Coast,M,sot,0.302,3.31,2.0,0.4717,-0.1697,-0.3598,-0.396,0.29,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Ezri Konsa,England,D,goals,0.296,3.37,,,,,,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,E. Konsa,England,D,goals,0.296,3.37,,,,,,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Malik Tillman,USA,F,sot,0.296,3.38,1.73,0.5453,-0.2493,-0.4572,-0.4879,0.636,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Ezri Konsa,England,D,goals,0.296,3.37,,,,,,0.244,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Malik Tillman,USA,F,sot,0.296,3.38,1.73,0.5453,-0.2493,-0.4572,-0.4879,0.636,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Y. Diomande,Ivory Coast,F,sot,0.295,3.39,,,,,,0.62,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,D. Doué,France,F,sot2,0.294,3.41,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Sander Berge,Norway,M,goals,0.293,3.42,11.0,0.0791,0.2139,2.7064,2.223,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
@@ -337,72 +324,68 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Brian Gutierrez,Mexico,F,sot,0.291,3.44,2.05,0.4602,-0.1692,-0.3677,-0.4035,0.692,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Sadio Mané,Senegal,F,sot,0.29,3.45,1.74,0.5422,-0.2522,-0.4651,-0.4954,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Manuel Akanji,Switzerland,D,goals,0.29,3.45,11.0,0.0791,0.2109,2.6685,2.19,0.251,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Frenkie de Jong,Netherlands,M,goals,0.289,3.46,15.5,0.0561,0.2329,4.1514,3.4795,0.227,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,F. de Jong,Netherlands,M,goals,0.289,3.46,,,,,,0.227,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Frenkie de Jong,Netherlands,M,goals,0.289,3.46,15.5,0.0561,0.2329,4.1514,3.4795,0.227,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Touré,Australia,F,sot,0.287,3.49,1.66,0.5683,-0.2813,-0.495,-0.5236,0.654,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Folarin Balogun,USA,F,sot2,0.281,3.56,2.05,0.4602,-0.1792,-0.3894,-0.4239,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Pierre Kalulu,France,D,goals,0.281,3.56,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Folarin Balogun,USA,F,sot2,0.281,3.56,2.05,0.4602,-0.1792,-0.3894,-0.4239,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Alexis Saelemaekers,Belgium,F,sot,0.276,3.63,2.0,0.4717,-0.1957,-0.4149,-0.448,0.665,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Exequiel Palacios,Argentina,M,goals,0.276,3.62,,,,,,0.248,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Charles De Ketelaere,Belgium,F,sot,0.275,3.63,1.44,0.6551,-0.3801,-0.5802,-0.604,0.628,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ibrahim Maza,Algeria,F,sot,0.275,3.64,2.1,0.4492,-0.1742,-0.3878,-0.4225,0.761,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Vinícius Júnior,Brazil,M,sot,0.274,3.65,1.22,0.7733,-0.4993,-0.6457,-0.6657,0.773,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Fabian Rieder,Switzerland,M,sot,0.273,3.66,1.8,0.5241,-0.2511,-0.4791,-0.5086,0.206,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Nuno Mendes,Portugal,D,goals,0.272,3.67,11.5,0.0756,0.1964,2.5972,2.128,0.398,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Riley McGree,Australia,M,sot,0.272,3.68,,,,,,0.436,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Nuno Mendes,Portugal,D,goals,0.272,3.67,11.5,0.0756,0.1964,2.5972,2.128,0.398,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Patric Pfeiffer,Ghana,D,goals,0.271,3.69,,,,,,0.415,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Granit Xhaka,Switzerland,M,sot,0.27,3.7,2.3,0.4102,-0.1402,-0.3417,-0.379,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Malik Tillman,USA,F,goals,0.27,3.71,4.43,0.2052,0.0648,0.3157,0.1961,0.636,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,F,goals,0.27,3.7,3.1,0.2933,-0.0233,-0.0793,-0.163,0.689,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Beñat Turrientes,Spain,M,goals,0.27,3.71,,,,,,0.212,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Tino Livramento,England,D,goals,0.269,3.72,,,,,,0.208,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,F,goals,0.27,3.7,3.1,0.2933,-0.0233,-0.0793,-0.163,0.689,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Malik Tillman,USA,F,goals,0.27,3.71,4.43,0.2052,0.0648,0.3157,0.1961,0.636,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jefferson Lerma,Colombia,M,goals,0.269,3.72,10.0,0.087,0.182,2.0935,1.69,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jerome Opoku,Ghana,D,goals,0.269,3.71,19.0,0.0458,0.2232,4.8777,4.111,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,J. Opoku,Ghana,D,goals,0.269,3.71,,,,,,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Valentino Livramento,England,D,goals,0.269,3.72,,,,,,0.208,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.269,3.72,2.4,0.3931,-0.1241,-0.3157,-0.3544,0.31,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Rabiot,France,M,sot,0.269,3.72,,,,,,0.31,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.269,3.72,2.4,0.3931,-0.1241,-0.3157,-0.3544,0.31,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Tino Livramento,England,D,goals,0.269,3.72,,,,,,0.208,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Valentino Livramento,England,D,goals,0.269,3.72,,,,,,0.208,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,J. Opoku,Ghana,D,goals,0.269,3.71,,,,,,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jerome Opoku,Ghana,D,goals,0.269,3.71,19.0,0.0458,0.2232,4.8777,4.111,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Omar Marmoush,Egypt,F,goals,0.268,3.73,3.9,0.2331,0.0349,0.1497,0.0452,0.45,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Serge Gnabry,Germany,F,goals,0.266,3.76,,,,,,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Vitinha,Portugal,M,goals,0.265,3.78,,,,,,0.255,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Julián Quiñones,Mexico,M,sot2,0.265,3.77,3.7,0.2457,0.0193,0.0786,-0.0195,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Rúben Dias,Portugal,D,goals,0.264,3.78,12.0,0.0725,0.1915,2.6432,2.168,0.237,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Fermín López,Spain,M,sot2,0.259,3.86,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,sot,0.258,3.88,,,,,,0.675,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Amar Memić,Bosnia & Herzegovina,M,goals,0.258,3.88,13.0,0.0669,0.1911,2.8571,2.354,0.259,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Valentín Barco,Argentina,M,goals,0.257,3.89,,,,,,0.578,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Yoane Wissa,Congo DR,F,sot,0.258,3.88,,,,,,0.675,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Amine Gouiri,Algeria,F,sot,0.257,3.88,1.57,0.6009,-0.3439,-0.5723,-0.5965,0.664,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Matheus Cunha,Brazil,F,sot,0.256,3.91,1.43,0.6597,-0.4037,-0.612,-0.6339,0.659,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Valentín Barco,Argentina,M,goals,0.257,3.89,,,,,,0.578,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Aidan Morris,USA,M,sot,0.256,3.91,,,,,,0.264,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Julio Enciso,Paraguay,F,goals,0.255,3.92,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Alejandro Baena,Spain,F,sot,0.255,3.92,1.54,0.6126,-0.3576,-0.5837,-0.6073,0.667,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Alex Baena,Spain,F,sot,0.255,3.92,,,,,,0.667,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Nuno Mendes,Portugal,D,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Bruno Fernandes,Portugal,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Florian Wirtz,Germany,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Alejandro Baena,Spain,F,sot,0.255,3.92,1.54,0.6126,-0.3576,-0.5837,-0.6073,0.667,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Ousmane Dembélé,France,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Cancelo,Portugal,D,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Michael Olise,France,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Cody Gakpo,Netherlands,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Y. Diomande,Ivory Coast,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Vitinha,Portugal,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,goals,0.252,3.97,20.0,0.0435,0.2085,4.796,4.04,0.265,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Florian Wirtz,Germany,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Bruno Fernandes,Portugal,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Kylian Mbappé,France,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,O. Dembélé,France,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Wirtz,Germany,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Yan Diomande,Ivory Coast,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Michael Olise,France,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Nikola Katić,Bosnia & Herzegovina,D,goals,0.252,3.97,20.0,0.0435,0.2085,4.796,4.04,0.265,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Díaz,Colombia,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Rodrigo De Paul,Argentina,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,M. Olise,France,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Cancelo,Portugal,D,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Cody Gakpo,Netherlands,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Wirtz,Germany,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Y. Diomande,Ivory Coast,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Nuno Mendes,Portugal,D,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,C. Gakpo,Netherlands,F,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Nico Paz,Argentina,F,assists,0.251,3.99,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Rodrigo De Paul,Argentina,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Vitinha,Portugal,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,O. Dembélé,France,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Yan Diomande,Ivory Coast,M,assists,0.252,3.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Díaz,Colombia,F,sot,0.251,3.98,,,,,,0.697,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Lucas Paquetá,Brazil,M,sot,0.251,3.99,2.0,0.4717,-0.2207,-0.4679,-0.498,0.403,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Nico Paz,Argentina,F,assists,0.251,3.99,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Toni Fruk,Croatia,M,goals,0.25,4.0,5.0,0.1818,0.0682,0.375,0.25,0.775,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Elye Wahi,Ivory Coast,F,sot,0.249,4.02,,,,,,0.721,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,E. Wahi,Ivory Coast,F,sot,0.249,4.02,,,,,,0.721,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Ayase Ueda,Japan,F,sot,0.249,4.02,1.65,0.5718,-0.3228,-0.5645,-0.5892,0.68,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Elye Wahi,Ivory Coast,F,sot,0.249,4.02,,,,,,0.721,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,sot2,0.248,4.03,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Ahmed Fatouh,Egypt,M,goals,0.248,4.04,,,,,,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Gustavo Gómez,Paraguay,D,goals,0.247,4.04,14.0,0.0621,0.1849,2.9767,2.458,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
@@ -410,97 +393,92 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Roberto Alvarado,Mexico,M,assists,0.246,4.07,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Ryan Gravenberch,Netherlands,M,sot,0.245,4.07,3.6,0.2525,-0.0075,-0.0298,-0.118,0.28,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,R. Gravenberch,Netherlands,M,sot,0.245,4.07,,,,,,0.28,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Keito Nakamura,Japan,F,sot,0.244,4.09,2.2,0.4288,-0.1848,-0.431,-0.4632,0.703,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Fabián Ruiz,Spain,M,sot,0.244,4.09,1.8,0.5241,-0.2801,-0.5344,-0.5608,0.305,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Fabián Ruiz,Spain,M,sot,0.244,4.09,1.8,0.5241,-0.2801,-0.5344,-0.5608,0.305,0.386,SET_PIECE|MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Giuliano Simeone,Argentina,M,assists,0.244,4.09,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Kobbie Mainoo,England,M,goals,0.241,4.15,,,,,,0.254,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Frenkie de Jong,Netherlands,M,assists,0.241,4.15,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Nico Paz,Argentina,M,sot2,0.241,4.15,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Danilo,Brazil,M,sot,0.241,4.16,,,,,,0.37,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Kobbie Mainoo,England,M,goals,0.241,4.15,,,,,,0.254,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,F. de Jong,Netherlands,M,assists,0.241,4.15,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Nico Paz,Argentina,M,sot2,0.241,4.15,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Youri Tielemans,Belgium,M,sot,0.24,4.16,2.65,0.356,-0.116,-0.3258,-0.364,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Luciano Valente,Netherlands,M,assists,0.24,4.17,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Jordan Bos,Australia,M,sot,0.239,4.19,3.55,0.2561,-0.0171,-0.0667,-0.1516,0.261,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Declan Rice,England,M,sot,0.238,4.21,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Aron Dønnum,Norway,F,sot,0.238,4.21,,,,,,0.666,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pedri,Spain,M,assists,0.238,4.2,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Declan Rice,England,M,sot,0.238,4.21,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,D. Rice,England,M,sot,0.238,4.21,,,,,,0.459,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Callum Elder,Australia,D,goals,0.238,4.21,,,,,,0.23,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Samu Aghehowa,Spain,F,sot2,0.237,4.21,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Abu Francis,Ghana,M,goals,0.237,4.21,,,,,,0.221,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Weston McKennie,USA,F,goals,0.235,4.25,5.1,0.1705,0.0645,0.3783,0.1985,0.512,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Theo Hernández,France,D,goals,0.235,4.26,8.0,0.1087,0.1263,1.162,0.88,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Weston McKennie,USA,F,goals,0.235,4.25,5.1,0.1705,0.0645,0.3783,0.1985,0.512,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Kimmich,Germany,M,assists,0.234,4.27,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,A. Stiller,Germany,M,goals,0.233,4.3,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Angelo Stiller,Germany,M,goals,0.233,4.3,9.0,0.0966,0.1364,1.4116,1.097,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marc Pubill,Spain,D,sot,0.233,4.29,3.4,0.2674,-0.0344,-0.1286,-0.2078,0.406,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,A. Stiller,Germany,M,goals,0.233,4.3,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Brian Gutierrez,Mexico,M,assists,0.232,4.31,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Ransford Yeboah Königsdörffer,Ghana,F,goals,0.231,4.33,,,,,,0.71,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Nmecha,Germany,M,sot,0.231,4.33,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,David Alaba,Austria,D,goals,0.231,4.33,23.0,0.0378,0.1932,5.11,4.313,0.224,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Felix Nmecha,Germany,M,sot,0.231,4.33,2.3,0.4102,-0.1792,-0.4368,-0.4687,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Roberto Alvarado,Mexico,F,sot,0.231,4.33,2.2,0.4288,-0.1978,-0.4613,-0.4918,0.68,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Rabiot,France,M,assists,0.231,4.33,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,assists,0.231,4.33,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Hjalmar Ekdal,Sweden,D,goals,0.231,4.34,23.0,0.0378,0.1932,5.11,4.313,0.206,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,David Alaba,Austria,D,goals,0.231,4.33,23.0,0.0378,0.1932,5.11,4.313,0.224,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,assists,0.231,4.33,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Roberto Alvarado,Mexico,F,sot,0.231,4.33,2.2,0.4288,-0.1978,-0.4613,-0.4918,0.68,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Felix Nmecha,Germany,M,sot,0.231,4.33,2.3,0.4102,-0.1792,-0.4368,-0.4687,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Rabiot,France,M,assists,0.231,4.33,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Nmecha,Germany,M,sot,0.231,4.33,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Ransford Yeboah Königsdörffer,Ghana,F,goals,0.231,4.33,,,,,,0.71,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Vitinha,Portugal,M,sot,0.23,4.36,,,,,,0.255,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jan Gyamerah,Ghana,D,goals,0.229,4.37,,,,,,0.218,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Antoine Semenyo,Ghana,F,sot,0.229,4.37,2.15,0.4388,-0.2098,-0.4781,-0.5076,0.666,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Weston McKennie,USA,F,sot,0.229,4.36,2.38,0.3964,-0.1674,-0.4223,-0.455,0.512,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Antoine Semenyo,Ghana,F,sot,0.229,4.37,2.15,0.4388,-0.2098,-0.4781,-0.5076,0.666,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jan Gyamerah,Ghana,D,goals,0.229,4.37,,,,,,0.218,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Cucho Hernández,Colombia,F,sot2,0.228,4.38,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jhon Arias,Colombia,M,sot,0.227,4.41,1.76,0.536,-0.309,-0.5765,-0.6005,0.46,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,A. Semenyo,Ghana,M,sot,0.227,4.41,,,,,,0.426,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Nathanaël Mbuku,Congo DR,F,sot,0.227,4.4,,,,,,0.638,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Jhon Arias,Colombia,M,sot,0.227,4.41,1.76,0.536,-0.309,-0.5765,-0.6005,0.46,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Julio Enciso,Paraguay,M,assists,0.225,4.44,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,A. Gordon,England,M,goals,0.225,4.45,,,,,,0.412,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Julio Enciso,Paraguay,M,assists,0.225,4.44,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Anton Stach,Germany,M,sot,0.224,4.46,,,,,,0.426,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Alexander Isak,Sweden,F,goals,0.223,4.48,5.24,0.1659,0.0571,0.3438,0.1685,0.695,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Isak,Sweden,F,goals,0.223,4.48,,,,,,0.695,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Alexander Isak,Sweden,F,goals,0.223,4.48,5.24,0.1659,0.0571,0.3438,0.1685,0.695,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Youri Tielemans,Belgium,M,assists,0.222,4.51,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Miguel Almirón,Paraguay,M,goals,0.22,4.54,7.5,0.1159,0.1041,0.8975,0.65,0.219,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jorrel Hato,Netherlands,D,cards,0.22,4.54,4.5,0.202,0.018,0.089,-0.01,,0.623,,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Omar Marmoush,Egypt,F,assists,0.22,4.55,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Daichi Kamada,Japan,F,goals,0.22,4.55,10.0,0.087,0.133,1.53,1.2,0.644,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jorrel Hato,Netherlands,D,cards,0.22,4.54,4.5,0.202,0.018,0.089,-0.01,,0.623,,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Hamdy Fathy,Egypt,M,goals,0.218,4.59,10.0,0.087,0.131,1.507,1.18,0.222,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Ante Budimir,Croatia,F,goals,0.218,4.6,4.1,0.2217,-0.0037,-0.0168,-0.1062,0.686,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Nathan Ngoy,Belgium,D,goals,0.217,4.61,17.0,0.0512,0.1658,3.2423,2.689,0.272,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Phillipp Mwene,Austria,D,goals,0.217,4.62,42.0,0.0207,0.1963,9.4811,8.114,0.23,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,G. Doué,Ivory Coast,D,goals,0.217,4.6,,,,,,0.401,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Guéla Doué,Ivory Coast,D,goals,0.217,4.6,19.0,0.0458,0.1712,3.7415,3.123,0.401,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Nathan Ngoy,Belgium,D,goals,0.217,4.61,17.0,0.0512,0.1658,3.2423,2.689,0.272,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Carlos Soler,Spain,M,goals,0.215,4.64,,,,,,0.225,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Gabriel Gudmundsson,Sweden,M,goals,0.214,4.68,21.0,0.0414,0.1726,4.1681,3.494,0.223,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,João Neves,Portugal,M,sot,0.214,4.68,,,,,,0.403,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Gabriel Gudmundsson,Sweden,M,goals,0.214,4.68,21.0,0.0414,0.1726,4.1681,3.494,0.223,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,John Yeboah,Ecuador,M,assists,0.213,4.7,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,J. Yeboah,Ecuador,M,assists,0.213,4.7,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Isac Lidberg,Sweden,F,sot,0.212,4.72,,,,,,0.79,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Cameron Burgess,Australia,D,goals,0.212,4.72,19.0,0.0458,0.1662,3.6322,3.028,0.238,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Elliot Anderson,England,M,sot,0.212,4.71,,,,,,0.273,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Isac Lidberg,Sweden,F,sot,0.212,4.72,,,,,,0.79,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,E. Anderson,England,M,sot,0.212,4.71,,,,,,0.273,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Cameron Burgess,Australia,D,goals,0.212,4.72,19.0,0.0458,0.1662,3.6322,3.028,0.238,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Kees Smit,Netherlands,M,assists,0.211,4.75,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Amir Hadžiahmetović,Bosnia & Herzegovina,M,goals,0.209,4.79,17.0,0.0512,0.1578,3.0859,2.553,0.213,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Pedri,Spain,M,sot,0.209,4.79,,,,,,0.232,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Ritsu Doan,Japan,F,goals,0.209,4.78,8.0,0.1087,0.1003,0.9228,0.672,0.635,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Marcus Thuram,France,F,sot2,0.207,4.82,2.2,0.4288,-0.2218,-0.5173,-0.5446,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Amir Hadžiahmetović,Bosnia & Herzegovina,M,goals,0.209,4.79,17.0,0.0512,0.1578,3.0859,2.553,0.213,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Bilal El Khannouss,Morocco,M,sot,0.207,4.83,,,,,,0.254,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Marcus Thuram,France,F,sot2,0.207,4.82,2.2,0.4288,-0.2218,-0.5173,-0.5446,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Maghnes Akliouche,France,M,assists,0.206,4.85,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Tijjani Reijnders,Netherlands,M,assists,0.205,4.87,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Chris Führich,Germany,M,sot2,0.205,4.88,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,T. Reijnders,Netherlands,M,assists,0.205,4.87,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Keito Nakamura,Japan,M,assists,0.205,4.88,,,,,,,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Vincent Sierro,Switzerland,M,sot,0.204,4.91,,,,,,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Zeno Debast,Belgium,D,sot,0.204,4.89,7.0,0.1242,0.0798,0.6422,0.428,0.408,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Yerry Mina,Colombia,D,goals,0.204,4.91,12.0,0.0725,0.1315,1.8152,1.448,0.413,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Vincent Sierro,Switzerland,M,sot,0.204,4.91,,,,,,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martin Ødegaard,Norway,M,sot,0.203,4.92,,,,,,0.431,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,A. Rabiot,France,M,goals,0.203,4.92,,,,,,0.31,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Adrien Rabiot,France,M,goals,0.203,4.92,5.4,0.161,0.042,0.2606,0.0962,0.31,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Martin Ødegaard,Norway,M,sot,0.203,4.92,,,,,,0.431,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Nicolas Seiwald,Austria,M,goals,0.202,4.96,26.0,0.0334,0.1686,5.0398,4.252,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,assists,0.202,4.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Iliman Ndiaye,Senegal,F,sot,0.201,4.97,,,,,,0.637,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Nicolas Seiwald,Austria,M,goals,0.202,4.96,26.0,0.0334,0.1686,5.0398,4.252,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Iliman Ndiaye,Senegal,F,sot,0.201,4.97,,,,,,0.637,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Emir Karić,Bosnia & Herzegovina,D,goals,0.201,4.98,,,,,,0.263,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Ivan Bašić,Bosnia & Herzegovina,M,assists,0.2,5.0,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Michael Gregoritsch,Austria,F,goals,0.199,5.04,7.4,0.1175,0.0815,0.6935,0.4726,0.665,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,J. Musiala,Germany,M,assists,0.199,5.02,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Jamal Musiala,Germany,M,assists,0.199,5.02,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Michael Gregoritsch,Austria,F,goals,0.199,5.04,7.4,0.1175,0.0815,0.6935,0.4726,0.665,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Tyler Adams,USA,M,goals,0.198,5.05,9.4,0.0925,0.1055,1.1404,0.8612,0.232,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Valentín Barco,Argentina,M,assists,0.197,5.06,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Zakaria El Ouahdi,Morocco,D,sot,0.197,5.09,3.6,0.2525,-0.0555,-0.2199,-0.2908,0.658,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
@@ -509,108 +487,103 @@ date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Pico,Cape Verde Islands,D,sot,0.195,5.13,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Nico O'Reilly,England,D,sot,0.195,5.13,,,,,,0.285,0.386,SET_PIECE|MINUTES|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,N. O&apos;Reilly,England,D,sot,0.195,5.13,,,,,,0.285,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Daizen Maeda,Japan,F,goals,0.195,5.13,6.86,0.1268,0.0682,0.5384,0.3377,0.581,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,James Garner,England,M,sot,0.195,5.14,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Jérémy Doku,Belgium,M,assists,0.194,5.16,,,,,,,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Ermedin Demirović,Bosnia & Herzegovina,F,sot,0.194,5.16,2.25,0.4193,-0.2253,-0.5373,-0.5635,0.733,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Jérémy Doku,Belgium,M,assists,0.194,5.16,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Aron Dønnum,Norway,F,goals,0.193,5.19,,,,,,0.666,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Ibrahim Osman,Ghana,M,sot,0.191,5.24,,,,,,0.451,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Haris Tabaković,Bosnia & Herzegovina,F,sot,0.191,5.24,2.2,0.4288,-0.2378,-0.5546,-0.5798,0.744,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Konrad Laimer,Austria,M,goals,0.191,5.22,26.0,0.0334,0.1576,4.7109,3.966,0.226,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Haris Tabaković,Bosnia & Herzegovina,F,sot,0.191,5.24,2.2,0.4288,-0.2378,-0.5546,-0.5798,0.744,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Lucas Stassin,Belgium,F,goals,0.191,5.22,,,,,,0.719,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Pape Gueye,Senegal,M,sot,0.19,5.27,,,,,,0.681,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,John Tolkin,USA,M,goals,0.19,5.27,,,,,,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Edo Kayembe,Congo DR,M,sot,0.189,5.3,,,,,,0.263,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Joshua Kimmich,Germany,D,assists,0.189,5.28,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Edo Kayembe,Congo DR,M,sot,0.189,5.3,,,,,,0.263,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Gustavo Puerta,Colombia,M,sot,0.187,5.34,2.05,0.4602,-0.2732,-0.5936,-0.6167,0.306,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Nayef Aguerd,Morocco,D,goals,0.187,5.36,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,James Rodríguez,Colombia,F,sot,0.186,5.37,1.54,0.6126,-0.4266,-0.6964,-0.7136,0.65,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Sadio Mané,Senegal,M,assists,0.185,5.4,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Kai Havertz,Germany,F,assists,0.185,5.4,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,M,sot,0.185,5.39,1.76,0.536,-0.351,-0.6549,-0.6744,0.449,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Kai Havertz,Germany,F,assists,0.185,5.4,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Sadio Mané,Senegal,M,assists,0.185,5.4,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Victor Muñoz,Spain,F,sot2,0.185,5.4,2.55,0.37,-0.185,-0.4999,-0.5283,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,K. Havertz,Germany,F,assists,0.185,5.4,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Marcos Llorente,Spain,D,goals,0.182,5.51,11.0,0.0791,0.1029,1.3023,1.002,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Ismail Jakobs,Senegal,M,goals,0.182,5.49,,,,,,0.226,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Danilo,Brazil,M,goals,0.182,5.48,,,,,,0.37,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Viktor Gyökeres,Sweden,F,sot,0.181,5.54,1.8,0.5241,-0.3431,-0.6547,-0.6742,0.747,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,V. Gyökeres,Sweden,F,sot,0.181,5.54,,,,,,0.747,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Ivan Perišić,Croatia,F,sot,0.181,5.52,2.55,0.37,-0.189,-0.5108,-0.5385,0.65,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Touré,Australia,F,goals,0.179,5.58,3.75,0.2424,-0.0634,-0.2616,-0.3287,0.654,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,V. Gyökeres,Sweden,F,sot,0.181,5.54,,,,,,0.747,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohamed Touré,Australia,F,goals,0.179,5.58,3.75,0.2424,-0.0634,-0.2616,-0.3287,0.654,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Beñat Turrientes,Spain,M,sot,0.178,5.62,,,,,,0.212,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Seko Fofana,Ivory Coast,M,sot,0.177,5.65,2.9,0.3253,-0.1483,-0.4559,-0.4867,0.275,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Seko Fofana,Ivory Coast,M,sot,0.177,5.65,2.9,0.3253,-0.1483,-0.4559,-0.4867,0.275,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Granit Xhaka,Switzerland,M,assists,0.176,5.69,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Gideon Mensah,Ghana,D,goals,0.175,5.7,41.0,0.0212,0.1538,7.2512,6.175,0.23,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Charles De Ketelaere,Belgium,F,assists,0.175,5.71,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,G. Mensah,Ghana,D,goals,0.175,5.7,,,,,,0.23,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Nico O'Reilly,England,D,goals,0.174,5.76,,,,,,0.285,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,N. O&apos;Reilly,England,D,goals,0.174,5.76,,,,,,0.285,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Benjamin Nygren,Sweden,F,goals,0.173,5.77,7.5,0.1159,0.0571,0.4921,0.2975,0.227,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jude Bellingham,England,M,sot2,0.173,5.77,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,J. Bellingham,England,M,sot2,0.173,5.77,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,G. Gudmundsson,Sweden,D,goals,0.172,5.81,,,,,,0.223,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Jude Bellingham,England,M,sot2,0.173,5.77,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Benjamin Nygren,Sweden,F,goals,0.173,5.77,7.5,0.1159,0.0571,0.4921,0.2975,0.227,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Ransford Yeboah Königsdörffer,Ghana,F,sot,0.172,5.8,,,,,,0.71,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Ritsu Doan,Japan,F,sot,0.172,5.81,4.0,0.2273,-0.0553,-0.2432,-0.312,0.635,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,G. Gudmundsson,Sweden,D,goals,0.172,5.81,,,,,,0.223,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Julián Quiñones,Mexico,M,assists,0.171,5.83,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Jules Koundé,France,D,goals,0.171,5.86,11.0,0.0791,0.0919,1.1632,0.881,0.217,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,J. Koundé,France,D,goals,0.171,5.86,,,,,,0.217,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Julián Quiñones,Mexico,M,assists,0.171,5.83,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Aidan Morris,USA,M,goals,0.17,5.88,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Jamie Leweling,Germany,F,assists,0.17,5.87,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Aleksandar Pavlović,Germany,M,sot,0.169,5.93,3.6,0.2525,-0.0835,-0.3308,-0.3916,0.25,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Aidan Morris,USA,M,goals,0.17,5.88,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Joshua Kimmich,Germany,D,sot,0.169,5.9,2.5,0.3774,-0.2084,-0.5522,-0.5775,0.22,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Aleksandar Pavlović,Germany,M,sot,0.169,5.93,3.6,0.2525,-0.0835,-0.3308,-0.3916,0.25,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Kevin De Bruyne,Belgium,M,assists,0.169,5.92,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Juan Cáceres,Paraguay,D,goals,0.169,5.93,,,,,,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,A. Pavlović,Germany,M,sot,0.169,5.93,,,,,,0.25,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Julio Enciso,Paraguay,F,sot,0.168,5.96,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Mohanad Lasheen,Egypt,M,goals,0.168,5.94,,,,,,0.253,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Aleix García,Spain,M,assists,0.168,5.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Leandro Paredes,Argentina,M,goals,0.168,5.95,,,,,,0.593,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Julio Enciso,Paraguay,F,sot,0.168,5.96,,,,,,0.485,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Leandro Paredes,Argentina,M,goals,0.168,5.95,,,,,,0.593,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Christoph Baumgartner,Austria,M,goals,0.168,5.95,,,,,,0.527,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Aleix García,Spain,M,assists,0.168,5.96,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Rodri,Spain,M,sot,0.166,6.02,2.35,0.4014,-0.2354,-0.5865,-0.6099,0.287,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Virgil van Dijk,Netherlands,D,sot,0.166,6.03,3.1,0.2933,-0.1273,-0.4339,-0.4854,0.42,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,V. van Dijk,Netherlands,D,sot,0.166,6.03,,,,,,0.42,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Nico Schlotterbeck,Germany,D,sot,0.166,6.02,,,,,,0.408,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Dan Agyei,Ghana,M,sot,0.166,6.03,,,,,,0.599,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,V. van Dijk,Netherlands,D,sot,0.166,6.03,,,,,,0.42,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Virgil van Dijk,Netherlands,D,sot,0.166,6.03,3.1,0.2933,-0.1273,-0.4339,-0.4854,0.42,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Tyler Adams,USA,M,sot,0.165,6.07,4.33,0.21,-0.045,-0.2141,-0.2855,0.232,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Rodrigo De Paul,Argentina,M,goals,0.165,6.05,,,,,,0.215,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Enner Valencia,Ecuador,F,sot,0.164,6.08,1.62,0.5823,-0.4183,-0.7184,-0.7343,0.773,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Achraf Hakimi,Morocco,D,sot,0.164,6.09,2.55,0.37,-0.206,-0.5567,-0.5818,0.527,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,Enner Valencia,Ecuador,F,sot,0.164,6.08,1.62,0.5823,-0.4183,-0.7184,-0.7343,0.773,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,E. Valencia,Ecuador,F,sot,0.164,6.08,,,,,,0.773,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Malik Tillman,USA,F,assists,0.164,6.08,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Sebastian Sebulonsen,Norway,D,sot,0.164,6.08,,,,,,0.276,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-01,2026-07-01T01:00:00+00:00,World Cup,Mexico vs Ecuador,PROP_LEAGUE,E. Valencia,Ecuador,F,sot,0.164,6.08,,,,,,0.773,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Brenden Aaronson,USA,M,sot,0.163,6.12,,,,,,0.259,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Casemiro,Brazil,M,sot,0.162,6.18,,,,,,0.381,0.386,STARTER|MINUTES|WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Jerdy Schouten,Netherlands,M,goals,0.162,6.16,,,,,,0.217,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,sot2,0.162,6.18,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,assists,0.161,6.21,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Aymeric Laporte,Spain,D,sot,0.161,6.23,4.2,0.2165,-0.0555,-0.2562,-0.3238,0.248,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Abdessamad Ezzalzouli,Morocco,M,assists,0.161,6.21,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T17:00:00+00:00,World Cup,Ivory Coast vs Norway,PROP_LEAGUE,Julian Ryerson,Norway,D,assists,0.16,6.27,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Christoph Baumgartner,Austria,M,sot,0.16,6.24,,,,,,0.527,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-03,2026-07-03T18:00:00+00:00,World Cup,Australia vs Egypt,PROP_LEAGUE,Lewis Miller,Australia,D,sot,0.16,6.24,,,,,,0.421,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Martin Baturina,Croatia,F,sot,0.159,6.27,2.45,0.3851,-0.2261,-0.5871,-0.6104,0.631,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Christoph Baumgartner,Austria,M,sot,0.16,6.24,,,,,,0.527,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Ivan Perišić,Croatia,F,assists,0.159,6.29,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-02,2026-07-02T23:00:00+00:00,World Cup,Portugal vs Croatia,PROP_LEAGUE,Martin Baturina,Croatia,F,sot,0.159,6.27,2.45,0.3851,-0.2261,-0.5871,-0.6104,0.631,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Marcos Senesi,Argentina,D,assists,0.159,6.28,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Ridle Baku,Germany,D,goals,0.159,6.29,,,,,,0.413,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Chris Führich,Germany,M,assists,0.158,6.32,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Yasin Ayari,Sweden,M,goals,0.158,6.32,11.5,0.0756,0.0824,1.0896,0.817,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Lisandro Martínez,Argentina,D,goals,0.158,6.33,,,,,,0.227,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,I. Williams,Ghana,M,sot,0.158,6.34,,,,,,0.466,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Denzel Dumfries,Netherlands,D,sot,0.158,6.31,3.3,0.2755,-0.1175,-0.4265,-0.4786,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Y. Ayari,Sweden,M,goals,0.158,6.32,,,,,,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-01,2026-07-01T20:00:00+00:00,World Cup,Belgium vs Senegal,PROP_LEAGUE,Leandro Trossard,Belgium,F,assists,0.158,6.33,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,D. Dumfries,Netherlands,D,sot,0.158,6.31,,,,,,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-03,2026-07-03T22:00:00+00:00,World Cup,Argentina vs Cape Verde Islands,PROP_LEAGUE,Lisandro Martínez,Argentina,D,goals,0.158,6.33,,,,,,0.227,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Denzel Dumfries,Netherlands,D,sot,0.158,6.31,3.3,0.2755,-0.1175,-0.4265,-0.4786,0.267,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Y. Ayari,Sweden,M,goals,0.158,6.32,,,,,,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,I. Williams,Ghana,M,sot,0.158,6.34,,,,,,0.466,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Chris Führich,Germany,M,assists,0.158,6.32,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-06-30,2026-06-30T21:00:00+00:00,World Cup,France vs Sweden,PROP_LEAGUE,Yasin Ayari,Sweden,M,goals,0.158,6.32,11.5,0.0756,0.0824,1.0896,0.817,0.617,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Luis Díaz,Colombia,F,sot2,0.157,6.37,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Javier Guerra,Spain,M,assists,0.156,6.4,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Florian Wirtz,Germany,M,sot2,0.155,6.44,3.75,0.2424,-0.0874,-0.3606,-0.4187,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-02,2026-07-02T19:00:00+00:00,World Cup,Spain vs Austria,PROP_LEAGUE,Michael Gregoritsch,Austria,F,sot,0.155,6.44,2.15,0.4388,-0.2838,-0.6468,-0.6667,0.665,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Farès Chaïbi,Algeria,F,sot,0.155,6.46,2.2,0.4288,-0.2738,-0.6385,-0.659,0.719,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Ibrahim Maza,Algeria,F,sot2,0.155,6.44,7.0,0.1242,0.0308,0.2477,0.085,,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,F. Wirtz,Germany,M,sot2,0.155,6.44,,,,,,,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Farès Chaïbi,Algeria,F,sot,0.155,6.46,2.2,0.4288,-0.2738,-0.6385,-0.659,0.719,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Kerim Alajbegović,Bosnia & Herzegovina,M,sot,0.153,6.55,2.1,0.4492,-0.2962,-0.6594,-0.6787,0.422,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Kerim Alajbegović,Bosnia & Herzegovina,F,sot,0.153,6.52,2.1,0.4492,-0.2962,-0.6594,-0.6787,0.662,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-01,2026-07-01T16:00:00+00:00,World Cup,England vs Congo DR,PROP_LEAGUE,Myles Lewis-Skelly,England,D,goals,0.153,6.52,,,,,,0.215,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-06-30,2026-06-30T01:00:00+00:00,World Cup,Netherlands vs Morocco,PROP_LEAGUE,Luciano Valente,Netherlands,M,sot,0.153,6.54,,,,,,0.214,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-06-29,2026-06-29T17:00:00+00:00,World Cup,Brazil vs Japan,PROP_LEAGUE,Vinícius Júnior,Brazil,M,sot2,0.151,6.61,1.75,0.5391,-0.3881,-0.7199,-0.7358,,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Alexander Freeman,USA,M,assists,0.15,6.65,,,,,,,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
 2026-07-04,2026-07-04T01:30:00+00:00,World Cup,Colombia vs Ghana,PROP_LEAGUE,Antoine Semenyo,Ghana,F,goals,0.15,6.66,5.2,0.1672,-0.0172,-0.103,-0.22,0.666,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-06-29,2026-06-29T20:30:00+00:00,World Cup,Germany vs Paraguay,PROP_LEAGUE,Nathaniel Brown,Germany,D,sot,0.15,6.66,3.4,0.2674,-0.1174,-0.439,-0.49,0.431,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-03,2026-07-03T03:00:00+00:00,World Cup,Switzerland vs Algeria,PROP_LEAGUE,Denis Zakaria,Switzerland,M,sot,0.15,6.66,3.2,0.2841,-0.1341,-0.472,-0.52,0.243,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-02,2026-07-02T00:00:00+00:00,World Cup,USA vs Bosnia & Herzegovina,PROP_LEAGUE,Alexander Freeman,USA,M,assists,0.15,6.65,,,,,,,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
