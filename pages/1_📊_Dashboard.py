@@ -89,6 +89,12 @@ if df.empty:
     st.warning("No predictions yet. Click 'Run Predict Now' to fetch tips.")
     st.stop()
 
+# Upcoming fixtures only — hide matches that have already been played
+df = df[df["date"] >= pd.Timestamp.now().normalize()].copy()
+if df.empty:
+    st.info("No upcoming fixtures right now. (Past matches are hidden — see Live History for results.)")
+    st.stop()
+
 bets_file = config.OUTPUT_DIR / "bets.csv"
 mod_time  = datetime.fromtimestamp(bets_file.stat().st_mtime).strftime("%d/%m/%Y %H:%M")
 st.caption(f"Last updated: {mod_time}  •  {len(df)} fixtures fetched")

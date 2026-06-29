@@ -430,7 +430,19 @@ def run_player_predictions(
             if player_norm in injured_cache.get(league, set()):
                 continue
 
+            _is_gk = str(feat_row.get("position", "")).strip().upper().startswith("G")
+
             for market in config.MARKETS:
+                # Cards model is overconfident — predicts ~40% for nearly everyone, so tips
+                # clamp to the 0.40 cap (fair 2.5). Suppress card tips until it is retrained.
+                # NOTE for retrain: GKs CAN be a legit card tip (bunker/time-wasting teams,
+                # or a GK with real booking history) — re-enable cards with that filter, not a
+                # blanket GK exclusion.
+                if market == "cards":
+                    continue
+                # Goalkeepers don't score / shoot / assist — skip them for those markets.
+                if _is_gk:
+                    continue
                 p_model = float(feat_row.get(f"p_{market}", 0))
                 # Team-strength multiplier: boost for heavy favourites, penalty for underdogs
                 _is_home = float(feat_row.get("is_home", 0.5)) > 0.5

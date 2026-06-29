@@ -827,7 +827,21 @@ def notify_player_props() -> int:
 
     # Only SNIPER and MARKSMAN — VALUABLE and WATCH are not sent
     df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])].copy()
+
+    # Safety net (defense-in-depth; predict already excludes these at source):
+    #  • cards model is unreliable → never send card tips
+    #  • goalkeepers have no scoring/shooting/assist props
+    df = df[df["market"] != "cards"].copy()
+    if "position" in df.columns:
+        df = df[~df["position"].astype(str).str.strip().str.upper().str.startswith("G")].copy()
+
     df = df.sort_values(["tier", "ev", "model_prob"], ascending=[True, False, False])
+
+    # Flood circuit-breaker — a healthy slate is a handful of tips, not dozens.
+    _MAX_PROP_ALERTS = 25
+    if len(df) > _MAX_PROP_ALERTS:
+        print(f"[notify_player_props] {len(df)} tips after filters — capping to top {_MAX_PROP_ALERTS}.")
+        df = df.head(_MAX_PROP_ALERTS)
 
     if df.empty:
         return 0

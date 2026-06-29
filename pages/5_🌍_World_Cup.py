@@ -3,6 +3,7 @@ World Cup 2026 — Drift Tracker Dashboard
 Pure odds movement. No ML. Follow the sharp money.
 """
 import json
+import textwrap
 from datetime import datetime
 from pathlib import Path
 
@@ -150,7 +151,7 @@ with tab_props:
                 f'<span style="background:#333;color:#aaa;padding:1px 6px;border-radius:8px;font-size:0.75em">{f}</span>'
                 for f in str(row.get("lazy_factors", "")).split("|") if f
             )
-            st.markdown(f"""
+            st.markdown(textwrap.dedent(f"""
             <div style="border-left:4px solid {color};padding:12px 16px;margin:6px 0;
                         background:#111827;border-radius:6px">
                 <div style="display:flex;justify-content:space-between;align-items:center">
@@ -168,7 +169,7 @@ with tab_props:
                 </div>
                 <div>{lazy_badges}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """), unsafe_allow_html=True)
 
 with tab_model:
     st.subheader("🤖 ML Model Fair Prices vs Market")
@@ -193,7 +194,7 @@ with tab_model:
             ht05 = row.get("p_ht_over05")
             ht15 = row.get("p_ht_over15")
 
-            st.markdown(f"""
+            st.markdown(textwrap.dedent(f"""
             <div style="border-left:4px solid {border};padding:12px 16px;margin:6px 0;background:#111827;border-radius:6px">
                 <div style="display:flex;justify-content:space-between">
                     <b style="color:white;font-size:1.05em">{row['match']}</b>
@@ -211,7 +212,7 @@ with tab_model:
                 {f'<div style="color:#00cc88;font-size:0.85em">✅ Value: OVER 2.5 +{val_o:.1f}% vs fair</div>' if val_o > 5 else ''}
                 {f'<div style="color:#00cc88;font-size:0.85em">✅ Value: UNDER 2.5 +{val_u:.1f}% vs fair</div>' if val_u > 5 else ''}
             </div>
-            """, unsafe_allow_html=True)
+            """), unsafe_allow_html=True)
 
 with tab_drift:
     st.subheader("📡 Sharp Money Drift Signals")
@@ -240,30 +241,30 @@ with tab_drift:
         if not tips.empty:
             st.info("No signals match the current filter.")
     else:
-    for _, row in filtered.iterrows():
-        drift_color = "#ff4444" if row["drift_pct"] < 0 else "#44ff88"
-        border_color = "#ff4444" if row["signal"] == "STRONG" else "#ffaa00" if row["signal"] == "SHARP" else "#888"
-        direction = "▼ Shortening (sharp money IN)" if row["drift_pct"] < 0 else "▲ Lengthening (money fading)"
+        for _, row in filtered.iterrows():
+            drift_color = "#ff4444" if row["drift_pct"] < 0 else "#44ff88"
+            border_color = "#ff4444" if row["signal"] == "STRONG" else "#ffaa00" if row["signal"] == "SHARP" else "#888"
+            direction = "▼ Shortening (sharp money IN)" if row["drift_pct"] < 0 else "▲ Lengthening (money fading)"
 
-        st.markdown(f"""
-        <div style="border-left:4px solid {border_color}; padding:12px 16px; margin:8px 0;
-                    background:#1a1a2e; border-radius:4px;">
-            <b style="font-size:1.1em">{row['match']}</b>
-            &nbsp;&nbsp;<span style="color:#aaa; font-size:0.9em">📅 {str(row['date'])[:10]}</span>
-            <br/>
-            <span style="color:#ccc">🎯 {row['market']}</span>
-            &nbsp;&nbsp;
-            <span style="background:{border_color}22; color:{border_color}; padding:2px 8px;
-                         border-radius:10px; font-size:0.85em">{row['signal']}</span>
-            <br/>
-            <span style="color:#aaa">Opening: <b style="color:white">{row['opening_odds']}</b>
-            → Current: <b style="color:white">{row['current_odds']}</b>
-            &nbsp; <b style="color:{drift_color}">{row['drift_pct']:+.1f}%</b>
-            &nbsp; {direction}</span>
-            <br/>
-            <span style="color:#666; font-size:0.8em">Based on {row['snapshots']} snapshots · Updated {row['updated_at']}</span>
-        </div>
-        """, unsafe_allow_html=True)
+            st.markdown(textwrap.dedent(f"""
+                <div style="border-left:4px solid {border_color}; padding:12px 16px; margin:8px 0;
+                            background:#1a1a2e; border-radius:4px;">
+                    <b style="font-size:1.1em">{row['match']}</b>
+                    &nbsp;&nbsp;<span style="color:#aaa; font-size:0.9em">📅 {str(row['date'])[:10]}</span>
+                    <br/>
+                    <span style="color:#ccc">🎯 {row['market']}</span>
+                    &nbsp;&nbsp;
+                    <span style="background:{border_color}22; color:{border_color}; padding:2px 8px;
+                                 border-radius:10px; font-size:0.85em">{row['signal']}</span>
+                    <br/>
+                    <span style="color:#aaa">Opening: <b style="color:white">{row['opening_odds']}</b>
+                    → Current: <b style="color:white">{row['current_odds']}</b>
+                    &nbsp; <b style="color:{drift_color}">{row['drift_pct']:+.1f}%</b>
+                    &nbsp; {direction}</span>
+                    <br/>
+                    <span style="color:#666; font-size:0.8em">Based on {row['snapshots']} snapshots · Updated {row['updated_at']}</span>
+                </div>
+            """), unsafe_allow_html=True)
 
 st.markdown("---")
 

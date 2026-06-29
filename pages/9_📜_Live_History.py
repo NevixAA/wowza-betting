@@ -41,6 +41,14 @@ if df.empty:
     """)
     st.stop()
 
+if "result" not in df.columns and "final_score" not in df.columns:
+    st.warning(
+        "⚠️ Final results aren't tracked for live signals yet — this log only captures the "
+        "in-play snapshot when each signal fired. The **score** column is the score *at that "
+        "moment*, not full-time. Reconciling each signal to its final outcome needs a results "
+        "step that isn't wired into the live scanner yet."
+    )
+
 # ── KPIs ──────────────────────────────────────────────────────────────────────
 total     = len(df)
 matches   = df["match"].nunique() if "match" in df.columns else 0

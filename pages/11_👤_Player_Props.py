@@ -3,6 +3,7 @@ Player Props Dashboard
 Shows SNIPER/MARKSMAN/VALUABLE player prop signals.
 When odds aren't available yet, shows WC/PROP_LEAGUE signals by model probability.
 """
+import textwrap
 from pathlib import Path
 
 import pandas as pd
@@ -103,7 +104,7 @@ def _render_signal(row, *, show_tier_label=True):
     if ges_val is not None and not pd.isna(ges_val):
         ges_str = f" · GES: {float(ges_val):.2f}"
 
-    st.markdown(f"""
+    st.markdown(textwrap.dedent(f"""
     <div style="border-left:4px solid {color};padding:12px 16px;margin:6px 0;
                 background:#111827;border-radius:6px">
         <div style="display:flex;justify-content:space-between;align-items:center">
@@ -125,7 +126,7 @@ def _render_signal(row, *, show_tier_label=True):
             Confidence: {conf:.0%} · Data: {n_games} games · {row.get('data_source','')}
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
 
 # ── WC2026 section (always shown when WC signals exist) ───────────────────────
@@ -205,5 +206,45 @@ with st.expander("📊 Raw data — all today's signals"):
     show_df = df.sort_values("model_prob", ascending=False)
     st.dataframe(show_df[[c for c in show_cols if c in show_df.columns]],
                  use_container_width=True, hide_index=True)
+
+# ── Results / track record (settled bets from the ledger) ──────────────────────
+st.markdown("---")
+st.subheader("📒 Results — settled player-prop bets")
+
+LEDGER_FILE = BASE_DIR / "output" / "player_ledger.csv"
+
+
+@st.cache_data(ttl=120)
+def load_results():
+    if not LEDGER_FILE.exists():
+        return pd.DataFrame()
+    return pd.read_csv(LEDGER_FILE, low_memory=False)
+
+
+led = load_results()
+if led.empty or "result" not in led.columns:
+    st.info("No results ledger yet (`output/player_ledger.csv`). Results populate as graded bets resolve.")
+else:
+    settled = led[led["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
+    if settled.empty:
+        st.info("No settled (WIN/LOSS) bets yet — pending/void only.")
+    else:
+        wins = int((settled["result"].astype(str).str.upper() == "WIN").sum())
+        n = len(settled)
+        roi = (pd.to_numeric(settled["pnl"], errors="coerce").mean() * 100
+               if "pnl" in settled.columns else float("nan"))
+        r1, r2, r3, r4 = st.columns(4)
+        r1.metric("Settled bets", n)
+        r2.metric("Record", f"{wins}W – {n - wins}L")
+        r3.metric("Win rate", f"{wins / n * 100:.0f}%")
+        r4.metric("Flat ROI (1u)", f"{roi:+.1f}%" if roi == roi else "—")
+        st.caption("⚠️ Live props so far are mostly World Cup longshots — small, net-negative sample. "
+                   "Treat as data, not proof.")
+        cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
+                            "market_odds", "result", "pnl"] if c in settled.columns]
+        st.dataframe(
+            settled.sort_values("match_date", ascending=False)[cols].head(150),
+            use_container_width=True, hide_index=True,
+        )
 
 st.caption("Player props · 9 markets · API-Football rolling stats · WC2026 national team data")
