@@ -431,14 +431,16 @@ def run_player_predictions(
                 continue
 
             _is_gk = str(feat_row.get("position", "")).strip().upper().startswith("G")
+            _is_wc = "world cup" in str(league).lower()
 
             for market in config.MARKETS:
-                # Cards model is overconfident — predicts ~40% for nearly everyone, so tips
-                # clamp to the 0.40 cap (fair 2.5). Suppress card tips until it is retrained.
-                # NOTE for retrain: GKs CAN be a legit card tip (bunker/time-wasting teams,
-                # or a GK with real booking history) — re-enable cards with that filter, not a
-                # blanket GK exclusion.
-                if market == "cards":
+                # The cards model is well-calibrated for CLUB leagues (predicts mean ~0.13 vs the
+                # 12.8% base rate, AUC 0.69). But World Cup national-team features get imputed to
+                # league averages, which inflates card predictions to ~0.40 (all clamp to the cap
+                # → fair 2.5). So suppress cards for WC ONLY — they work for the club season and
+                # re-enable automatically in August. (For WC card tips: a GK can be legit on a
+                # bunker/time-wasting team, so don't blanket-block GK cards when WC is fixed.)
+                if market == "cards" and _is_wc:
                     continue
                 # Goalkeepers don't score / shoot / assist — skip them for those markets.
                 if _is_gk:
