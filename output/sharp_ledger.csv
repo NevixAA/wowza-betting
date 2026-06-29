@@ -7,7 +7,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-06-15,2026-06-21,World Cup,Spain,Saudi Arabia,1X2 AWAY (Saudi Arabia),AWAY,STRONG,35.0,25.0,-28.6,,23,LOSS,-1.0,2026-06-22
 2026-06-15,2026-06-21,World Cup,Tunisia,Japan,1X2 AWAY (Japan),AWAY,STRONG,1.85,1.53,-17.3,,22,WIN,0.85,2026-06-22
 2026-06-15,2026-06-25,World Cup,Curaçao,Ivory Coast,O/U 2.5 OVER,OVER,STRONG,1.79,1.495,-16.5,,4,LOSS,-1.0,2026-06-26
-2026-06-15,2026-06-28,World Cup,Jordan,Argentina,1X2 HOME (Jordan),HOME,STRONG,16.0,13.355,-16.5,,16,,,
+2026-06-15,2026-06-28,World Cup,Jordan,Argentina,1X2 HOME (Jordan),HOME,STRONG,16.0,13.355,-16.5,,16,LOSS,-1.0,2026-06-29
 2026-06-15,2026-06-18,World Cup,Czech Republic,South Africa,1X2 HOME (Czech Republic),HOME,STRONG,2.1,1.77,-15.7,,25,LOSS,-1.0,2026-06-19
 2026-06-15,2026-06-24,World Cup,Scotland,Brazil,1X2 HOME (Scotland),HOME,STRONG,8.0,6.75,-15.6,,19,LOSS,-1.0,2026-06-25
 2026-06-15,2026-06-23,World Cup,Jordan,Algeria,1X2 AWAY (Algeria),AWAY,STRONG,1.75,1.495,-14.6,,22,WIN,0.75,2026-06-24
@@ -48,7 +48,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-06-19,2026-06-26,World Cup,Turkey,USA,O/U 2.5 OVER,OVER,STRONG,2.01,1.8,-10.4,,7,WIN,1.01,2026-06-27
 2026-06-20,2026-06-26,World Cup,Paraguay,Australia,1X2 DRAW (Draw),DRAW,STRONG,3.05,2.39,-21.6,,22,WIN,2.05,2026-06-27
 2026-06-20,2026-06-26,World Cup,Paraguay,Australia,O/U 2.5 UNDER,UNDER,STRONG,1.57,1.36,-13.4,,7,WIN,0.57,2026-06-27
-2026-06-20,2026-06-28,China Super League,Qingdao West Coast FC,Zhejiang,1X2 AWAY (Zhejiang),AWAY,STEAM_STRONG,2.8,2.5,-10.7,81,10,,,
+2026-06-20,2026-06-28,China Super League,Qingdao West Coast FC,Zhejiang,1X2 AWAY (Zhejiang),AWAY,STEAM_STRONG,2.8,2.5,-10.7,81,10,LOSS,-1.0,2026-06-29
 2026-06-20,2026-06-27,China Super League,Henan FC,Shanghai SIPG FC,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.15,1.93,-10.2,81,9,LOSS,-1.0,2026-06-28
 2026-06-20,2026-06-27,China Super League,Chongqing Tonglianglong FC,Tianjin Jinmen Tiger FC,1X2 HOME (Chongqing Tonglianglong FC),HOME,STEAM_SHARP,2.1,1.935,-7.9,81,12,WIN,1.1,2026-06-28
 2026-06-20,2026-06-27,China Super League,Liaoning Tieren FC,Shandong Luneng Taishan FC,1X2 AWAY (Shandong Luneng Taishan FC),AWAY,STEAM_SHARP,2.32,2.17,-6.5,81,14,WIN,1.32,2026-06-28
@@ -66,13 +66,13 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-06-22,2026-06-26,Ireland Premier Division,Shamrock Rovers,Galway United,O/U 2.5 OVER,OVER,STEAM_SHARP,1.83,1.7,-7.1,82,8,WIN,0.83,2026-06-28
 2026-06-22,2026-06-26,Ireland Premier Division,Shamrock Rovers,Galway United,1X2 HOME (Shamrock Rovers),HOME,STEAM_SHARP,1.5,1.42,-5.3,82,15,WIN,0.5,2026-06-28
 2026-06-22,2026-06-26,Ireland Premier Division,Derry City,Drogheda United,O/U 2.5 OVER,OVER,STEAM_SHARP,1.95,1.85,-5.1,82,10,LOSS,-1.0,2026-06-28
-2026-06-23,2026-06-28,World Cup,Algeria,Austria,1X2 DRAW (Draw),DRAW,STRONG,2.95,2.4,-18.6,,21,,,
+2026-06-23,2026-06-28,World Cup,Algeria,Austria,1X2 DRAW (Draw),DRAW,STRONG,2.95,2.4,-18.6,,21,WIN,1.95,2026-06-29
 2026-06-23,2026-06-26,World Cup,Senegal,Iraq,O/U 2.5 OVER,OVER,STRONG,1.91,1.6,-16.2,,9,WIN,0.91,2026-06-27
 2026-06-23,2026-06-26,World Cup,Norway,France,O/U 2.5 OVER,OVER,STRONG,1.91,1.7,-11.0,,10,WIN,0.91,2026-06-27
 2026-06-23,2026-06-23,World Cup,Panama,Croatia,O/U 2.5 OVER,OVER,STRONG,1.89,1.69,-10.6,,11,LOSS,-1.0,2026-06-24
 2026-06-23,2026-06-27,World Cup,Egypt,Iran,O/U 2.5 UNDER,UNDER,STRONG,1.57,1.41,-10.2,,7,WIN,0.57,2026-06-28
 2026-06-23,2026-06-27,Finland Veikkausliiga,AC Oulu,FC Lahti,1X2 AWAY (FC Lahti),AWAY,STEAM_SHARP,3.4,3.12,-8.2,82,13,LOSS,-1.0,2026-06-28
-2026-06-23,2026-06-28,World Cup,Algeria,Austria,O/U 2.5 UNDER,UNDER,STRONG,1.66,1.44,-13.3,,5,,,
+2026-06-23,2026-06-28,World Cup,Algeria,Austria,O/U 2.5 UNDER,UNDER,STRONG,1.66,1.44,-13.3,,5,LOSS,-1.0,2026-06-29
 2026-06-24,2026-06-27,World Cup,Panama,England,O/U 2.5 OVER,OVER,STRONG,1.62,1.44,-11.1,,5,LOSS,-1.0,2026-06-28
 2026-06-24,2026-06-27,World Cup,DR Congo,Uzbekistan,O/U 2.5 OVER,OVER,STRONG,2.2,1.885,-14.3,,12,WIN,1.2,2026-06-28
 2026-06-24,2026-06-27,World Cup,Colombia,Portugal,1X2 AWAY (Portugal),AWAY,STRONG,2.14,1.91,-10.7,,22,LOSS,-1.0,2026-06-28
@@ -92,7 +92,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-06-27,2026-07-04,Finland Veikkausliiga,VPS Vaasa,IFK Mariehamn,1X2 HOME (VPS Vaasa),HOME,STEAM_SHARP,1.43,1.35,-5.6,100,9,,,
 2026-06-27,2026-07-03,Ireland Premier Division,Shelbourne Dublin,Dundalk,1X2 AWAY (Dundalk),AWAY,STEAM_STRONG,3.25,2.76,-15.1,61,14,,,
 2026-06-28,2026-07-04,Finland Veikkausliiga,SJK Seinäjoki,TPS Turku,1X2 HOME (SJK Seinäjoki),HOME,STEAM_SHARP,1.79,1.62,-9.5,100,13,,,
-2026-06-28,2026-06-28,China Super League,Dalian Yingbo,Shanghai Shenhua FC,1X2 HOME (Dalian Yingbo),HOME,STEAM_SHARP,2.42,2.2,-9.1,100,21,,,
-2026-06-28,2026-06-28,China Super League,Dalian Yingbo,Shanghai Shenhua FC,O/U 2.5 OVER,OVER,STRONG,1.65,1.32,-20.0,99,3,,,
+2026-06-28,2026-06-28,China Super League,Dalian Yingbo,Shanghai Shenhua FC,1X2 HOME (Dalian Yingbo),HOME,STEAM_SHARP,2.42,2.2,-9.1,100,21,LOSS,-1.0,2026-06-29
+2026-06-28,2026-06-28,China Super League,Dalian Yingbo,Shanghai Shenhua FC,O/U 2.5 OVER,OVER,STRONG,1.65,1.32,-20.0,99,3,WIN,0.65,2026-06-29
 2026-06-28,2026-07-04,China Super League,Qingdao West Coast FC,Shanghai SIPG FC,1X2 HOME (Qingdao West Coast FC),HOME,STEAM_STRONG,3.2,2.81,-12.2,100,14,,,
 2026-06-29,2026-07-02,World Cup,Spain,Austria,1X2 AWAY (Austria),AWAY,STRONG,13.5,11.25,-16.7,,25,,,
