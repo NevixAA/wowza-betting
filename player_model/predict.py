@@ -426,6 +426,13 @@ def run_player_predictions(
             if lineup_available and player_norm not in lineup_starters:
                 continue
 
+            # Starter proxy: without a confirmed lineup, only tip players who average real
+            # starter minutes — avoids tipping fringe/rotation players who may not start.
+            if not lineup_available:
+                _mpg = feat_row.get("minutes_pg", None)
+                if _mpg is not None and not pd.isna(_mpg) and float(_mpg) < config.MIN_STARTER_MINUTES:
+                    continue
+
             # Skip injured / suspended players
             if player_norm in injured_cache.get(league, set()):
                 continue
@@ -495,6 +502,11 @@ def run_player_predictions(
                 if lineup_available and player_norm in lineup_starters and "STARTER" not in lazy_factors:
                     lazy_factors = ["STARTER"] + lazy_factors
                 confidence = _confidence_score(feat_row.to_dict(), len(lazy_factors))
+                # World Cup non-card props use imputed national-team features (live ROI ~ -33%)
+                # → flag low-confidence and discount so they rank below club-league signals.
+                if _is_wc and market != "cards":
+                    confidence *= config.WC_PROP_CONF_PENALTY
+                    lazy_factors = lazy_factors + ["WC_LOW_CONF"]
 
                 all_tips.append({
                     "date":          date_str,

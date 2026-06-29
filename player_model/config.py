@@ -21,6 +21,15 @@ MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "cards"]
 # season_cards_pg) is at least this — for them, ~0.40 is roughly their true rate.
 # (Club-league cards are unaffected; the model is calibrated there.)
 WC_CARD_MIN_RATE = 0.35
+
+# Starter proxy: when a confirmed lineup isn't available yet, only tip players who
+# average at least this many minutes/game (filters fringe/rotation players who may
+# not start). Confirmed-lineup filtering still takes precedence when available.
+MIN_STARTER_MINUTES = 60.0
+
+# World Cup non-card props use imputed national-team features (live ROI ~ -33%) →
+# flag low-confidence and discount their confidence so they rank below club signals.
+WC_PROP_CONF_PENALTY = 0.5
 MODEL_FILES = {
     "goals":   MODELS_DIR / "model_player_goals.pkl",
     "goals2":  MODELS_DIR / "model_player_goals2.pkl",
