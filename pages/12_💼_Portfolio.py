@@ -61,6 +61,7 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
         return df
     out = pd.DataFrame()
     out["match_date"] = df["match_date"]
+    out["league"] = df.get("league", "").astype(str)
     if kind == "main":
         out["odds"] = pd.to_numeric(df["odds"], errors="coerce")
         out["edge"] = pd.to_numeric(df.get("edge_pct", 0), errors="coerce") / 100.0
@@ -68,6 +69,9 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
         out["result"] = df.get("result", "").astype(str).str.upper()
         out["market"] = df["league"].map(_market)
         out["source"] = df.get("source", "live").astype(str)
+        out["label"] = (df.get("home_team", "").astype(str) + " v "
+                        + df.get("away_team", "").astype(str) + " · "
+                        + df.get("side", "").astype(str))
     else:  # player props
         odds = pd.to_numeric(df["market_odds"], errors="coerce")
         mp = pd.to_numeric(df.get("model_prob", np.nan), errors="coerce")
@@ -78,6 +82,8 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
         out["result"] = df.get("result", "").astype(str).str.upper()
         out["market"] = "Player Props"
         out["source"] = "live"
+        out["label"] = (df.get("player_name", "").astype(str) + " — "
+                        + df.get("market", "").astype(str))
     return out
 
 
@@ -96,6 +102,7 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
     bank = float(start_bank)
     peak = bank
     rows = []
+    games = []
     for wk, g in b.sort_values("match_date").groupby("week"):
         wk_open = bank
         staked = pnl = 0.0
@@ -113,9 +120,14 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
             stake = wk_open * stake_frac
             if stake <= 0:
                 continue
+            g_pnl = stake * (odds - 1.0) if bt["result"] == "WIN" else -stake
             staked += stake
-            pnl += stake * (odds - 1.0) if bt["result"] == "WIN" else -stake
+            pnl += g_pnl
             n_real += 1
+            games.append({"date": bt["match_date"], "bet": bt.get("label", ""),
+                          "league": bt.get("league", ""), "tier": bt["tier"],
+                          "odds": odds, "stake": stake,
+                          "result": bt["result"], "pnl": g_pnl})
         bank += pnl
         peak = max(peak, bank)
         rows.append({"week": wk, "bets": n_real, "staked": staked,
@@ -139,7 +151,7 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
         "max_dd": eq["drawdown"].min(),
         "weeks": len(eq),
     }
-    return eq, stats
+    return eq, stats, pd.DataFrame(games)
 
 
 # ── UI ────────────────────────────────────────────────────────────────────────────
@@ -205,7 +217,7 @@ for tab, mkt in zip(tabs, MARKETS):
         if res is None:
             st.warning(f"No settled bets for {mkt} under the current tier/source filters.")
             continue
-        eq, s = res
+        eq, s, games = res
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Final bankroll", f"{s['final']:,.0f}U", f"{s['roi']*100:+.1f}%")
@@ -227,6 +239,18 @@ for tab, mkt in zip(tabs, MARKETS):
             )[["week", "bets", "staked", "pnl", "bank", "drawdown"]],
             use_container_width=True, hide_index=True,
         )
+
+        if games is not None and not games.empty:
+            with st.expander(f"🎮 Games — {len(games)} settled bets staked"):
+                gv = games.sort_values("date", ascending=False).copy()
+                gv["date"] = pd.to_datetime(gv["date"]).dt.strftime("%Y-%m-%d")
+                gv["odds"] = gv["odds"].round(2)
+                gv["stake"] = gv["stake"].round(2)
+                gv["pnl"] = gv["pnl"].round(2)
+                st.dataframe(
+                    gv[["date", "league", "bet", "tier", "odds", "stake", "result", "pnl"]],
+                    use_container_width=True, hide_index=True,
+                )
 
 st.caption("Sizing recomputed off bank at each week's open. Kelly f* = edge ÷ (odds−1), "
            "× tier fraction, capped. VALUABLE defaults to paper. "

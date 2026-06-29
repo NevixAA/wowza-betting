@@ -50,6 +50,19 @@ def _load_config() -> dict:
     return json.loads(CONFIG_FILE.read_text())
 
 
+def _settled_only(df):
+    """Rows that truly settled WIN/LOSS. VOID (stake returned, pnl=0) and pending are
+    excluded from ALL ROI / win-rate maths — a void is not a loss and not a data point.
+    (Voids store pnl=0, so a plain pnl.notna() filter wrongly keeps them.)"""
+    if df is None or len(df) == 0:
+        return df
+    if "result" in df.columns:
+        return df[df["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
+    if "pnl" in df.columns:
+        return df[df["pnl"].notna()].copy()
+    return df
+
+
 def _send(token: str, chat_id: str, text: str) -> bool:
     import time
     for attempt in range(10):
@@ -502,8 +515,8 @@ def notify_weekly_summary() -> bool:
     week_end   = datetime.now().strftime("%b %d, %Y")
 
     def _stats(data: "pd.DataFrame") -> dict | None:
-        d = data[data["pnl"].notna()] if "pnl" in data.columns else data
-        if d.empty:
+        d = _settled_only(data)
+        if d is None or d.empty:
             return None
         n = len(d); w = (d["pnl"] > 0).sum(); pnl = d["pnl"].sum()
         return {"n": n, "win": float(w) / n, "roi": pnl / n * 100, "pnl": pnl}
@@ -610,7 +623,7 @@ def notify_weekly_summary() -> bool:
             sl_week = sl[sl["signal_date"] >= week_ago] if "signal_date" in sl.columns else sl
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_week[sl_week["market"] == mkt] if "market" in sl_week.columns else pd.DataFrame()
-                ms = ms[ms["pnl"].notna()]
+                ms = _settled_only(ms)
                 if ms.empty:
                     continue
                 n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum(); roi = pnl / n * 100
@@ -658,7 +671,7 @@ def notify_weekly_summary() -> bool:
         try:
             sl = pd.read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
-            sl_all = sl[sl["pnl"].notna()]
+            sl_all = _settled_only(sl)
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_all[sl_all["market"] == mkt] if "market" in sl_all.columns else pd.DataFrame()
                 if ms.empty:
@@ -1180,7 +1193,9 @@ def notify_props_daily_digest() -> bool:
                         continue
                     for _, r in ms.iterrows():
                         res   = str(r.get("result", "")).upper()
-                        emoji = {"WIN": "✅", "LOSS": "❌", "VOID": "⬜"}.get(res, "⬜")
+                        if res == "VOID":
+                            continue  # don't list individual voided bets (shown only in the W/L/VOID count)
+                        emoji = {"WIN": "✅", "LOSS": "❌"}.get(res, "⬜")
                         pnl_r = float(r["pnl"])
                         tier_s = f"[{r['tier']}] " if "tier" in r and pd.notna(r.get("tier")) else ""
                         note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
@@ -1198,7 +1213,7 @@ def notify_props_daily_digest() -> bool:
         try:
             pled = pd.read_csv(player_led)
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
-            all_p = pled[pled["pnl"].notna()]
+            all_p = _settled_only(pled)
             if not all_p.empty:
                 n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = all_p["pnl"].sum(); roi = pnl / n * 100
                 lines2.append(f"  Total: {w_all}W/{n-w_all}L | PnL <b>{pnl:+.2f}u</b> | ROI {roi:+.1f}%")
@@ -1253,7 +1268,7 @@ def notify_props_weekly_summary() -> bool:
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
     pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
 
-    settled_all  = pled[pled["pnl"].notna()].copy()
+    settled_all  = _settled_only(pled)
     settled_week = settled_all[settled_all["signal_date"] >= week_ago].copy()
 
     # Active player markets (goals3/sot4 removed — base rate too low)
@@ -1543,8 +1558,8 @@ def notify_daily_digest() -> bool:
     sharp_led   = app_config.OUTPUT_DIR / "sharp_ledger.csv"
 
     def _stats_sub(df, mask):
-        sub = df[mask & df["pnl"].notna()] if not df.empty else pd.DataFrame()
-        if sub.empty:
+        sub = _settled_only(df[mask]) if not df.empty else pd.DataFrame()
+        if sub is None or sub.empty:
             return None
         n = len(sub); w = int((sub["pnl"] > 0).sum()); p = sub["pnl"].sum()
         return n, w, p
@@ -1634,7 +1649,7 @@ def notify_daily_digest() -> bool:
         try:
             sl = pd.read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
-            sl_s = sl[sl["pnl"].notna()]
+            sl_s = _settled_only(sl)
             if not sl_s.empty:
                 lines2.append("")
                 for mkt, mkt_label in SIDE_LABELS.items():
