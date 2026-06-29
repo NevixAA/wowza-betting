@@ -829,9 +829,11 @@ def notify_player_props() -> int:
     df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])].copy()
 
     # Safety net (defense-in-depth; predict already excludes these at source):
-    #  • cards model is unreliable → never send card tips
+    #  • World Cup card tips are inflated by imputed national-team features → never send.
+    #    (Club-league cards are well-calibrated, so they ARE allowed through.)
     #  • goalkeepers have no scoring/shooting/assist props
-    df = df[df["market"] != "cards"].copy()
+    df = df[~((df["market"] == "cards") &
+              df["league"].astype(str).str.contains("World Cup", case=False, na=False))].copy()
     if "position" in df.columns:
         df = df[~df["position"].astype(str).str.strip().str.upper().str.startswith("G")].copy()
 
