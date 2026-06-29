@@ -828,14 +828,13 @@ def notify_player_props() -> int:
     # Only SNIPER and MARKSMAN — VALUABLE and WATCH are not sent
     df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])].copy()
 
-    # Safety net (defense-in-depth; predict already excludes these at source):
-    #  • World Cup card tips are inflated by imputed national-team features → never send.
-    #    (Club-league cards are well-calibrated, so they ARE allowed through.)
-    #  • goalkeepers have no scoring/shooting/assist props
-    df = df[~((df["market"] == "cards") &
-              df["league"].astype(str).str.contains("World Cup", case=False, na=False))].copy()
+    # Safety net (defense-in-depth; predict gates WC cards by real booking history and
+    # excludes GKs from scoring markets at source):
+    #  • goalkeepers have no goals/SOT/assist props — but CAN have card props (bunker GKs),
+    #    so only drop GKs for non-card markets.
     if "position" in df.columns:
-        df = df[~df["position"].astype(str).str.strip().str.upper().str.startswith("G")].copy()
+        _gk = df["position"].astype(str).str.strip().str.upper().str.startswith("G")
+        df = df[~(_gk & (df["market"] != "cards"))].copy()
 
     df = df.sort_values(["tier", "ev", "model_prob"], ascending=[True, False, False])
 

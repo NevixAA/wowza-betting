@@ -15,6 +15,12 @@ API_SEASON = os.getenv("API_SEASON", "2025")
 
 # ── Markets ───────────────────────────────────────────────────────────────────
 MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "cards"]
+
+# World Cup cards: features are imputed → predictions inflate to ~0.40 for everyone.
+# Only emit WC card tips for players whose REAL booking rate (max of cards_pg /
+# season_cards_pg) is at least this — for them, ~0.40 is roughly their true rate.
+# (Club-league cards are unaffected; the model is calibrated there.)
+WC_CARD_MIN_RATE = 0.35
 MODEL_FILES = {
     "goals":   MODELS_DIR / "model_player_goals.pkl",
     "goals2":  MODELS_DIR / "model_player_goals2.pkl",
