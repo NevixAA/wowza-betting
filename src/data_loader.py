@@ -56,6 +56,27 @@ _BTTS_COLS  = ["AvgBTSH", "MaxBTSH", "BbAvBTSH", "BBTSH"]
 _OVER15_COLS = ["Avg>1.5", "Max>1.5", "BbAv>1.5", "B365>1.5"]
 _OVER35_COLS = ["Avg>3.5", "Max>3.5", "BbAv>3.5", "B365>3.5"]
 
+# Real historical O/U + BTTS odds for new-format leagues, backfilled from The Odds API.
+# Replaces the bug where new-format odds_over25/under25 were mapped to 1X2 home/away odds.
+from pathlib import Path as _Path
+_NF_ODDS_FILE = _Path(__file__).resolve().parents[1] / "output" / "newformat_odds_history.csv"
+_nf_odds_cache = None
+def _nf_real_odds() -> dict:
+    """Lookup {(YYYY-MM-DD, league, 'Home vs Away'): {market: odds}} from the backfill."""
+    global _nf_odds_cache
+    if _nf_odds_cache is None:
+        _nf_odds_cache = {}
+        if _NF_ODDS_FILE.exists():
+            try:
+                _o = pd.read_csv(_NF_ODDS_FILE)
+                for _r in _o.itertuples(index=False):
+                    _nf_odds_cache.setdefault(
+                        (str(_r.snapshot_date), str(_r.league), str(_r.match)), {}
+                    )[str(_r.market)] = float(_r.odds)
+            except Exception:
+                pass
+    return _nf_odds_cache
+
 # Module-level cache so we only parse the XLSX once per process
 _CACHE: Optional[pd.DataFrame] = None
 
@@ -167,11 +188,16 @@ def _ci_download_all() -> list[pd.DataFrame]:
                 ("home_goals","HG"),("away_goals","AG"),
             ]:
                 df[out_col] = pd.to_numeric(raw.get(src_col, np.nan), errors="coerce")
-            df["odds_over25"]  = _pick_odds(raw, ["AvgCH","MaxCH","B365CH"])
-            df["odds_under25"] = _pick_odds(raw, ["AvgCA","MaxCA","B365CA"])
-            df["odds_btts"]    = _pick_odds(raw, _BTTS_COLS)
-            df["odds_over15"]  = _pick_odds(raw, _OVER15_COLS)
-            df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
+            # Real O/U + BTTS odds from the historical backfill (NOT 1X2 — that was the bug).
+            _nfo   = _nf_real_odds()
+            _days  = df["date"].dt.strftime("%Y-%m-%d")
+            _mkeys = df["home_team"].astype(str) + " vs " + df["away_team"].astype(str)
+            _rws   = [_nfo.get((d, league, m), {}) for d, m in zip(_days, _mkeys)]
+            df["odds_over25"]  = [r.get("over25",   np.nan) for r in _rws]
+            df["odds_under25"] = [r.get("under25",  np.nan) for r in _rws]
+            df["odds_over15"]  = [r.get("over15",   np.nan) for r in _rws]
+            df["odds_over35"]  = [r.get("over35",   np.nan) for r in _rws]
+            df["odds_btts"]    = [r.get("btts_yes", np.nan) for r in _rws]
             df = df[df["home_team"].notna() & df["away_team"].notna()]
             frames.append(df)
         except Exception:

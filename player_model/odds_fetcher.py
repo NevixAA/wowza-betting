@@ -76,8 +76,12 @@ SPORT_KEY_TO_LEAGUE = {v: k for k, v in PROP_SPORT_KEYS.items()}
 
 
 def _append_odds_history(records: list[dict]) -> None:
-    """Append today's fetched prop odds to a permanent CSV history. One row per
-    (snapshot_date, league, match, player, market) — latest odds that day kept.
+    """Append fetched prop odds to a permanent CSV history. Keeps every distinct
+    PRICE per real fixture (match_date+match+player+market), first time seen — so the
+    full open->close line trajectory is preserved for closing-line-value (CLV) analysis.
+    (Previously deduped per snapshot_DATE keep=last, which collapsed all intraday
+    captures into one row and made CLV untestable. Fixed 2026-06-30 for forward CLV
+    data collection — the hourly match-day predict run now logs each line move.)
     Callers wrap this in try/except so it can never break live odds fetching."""
     if not records:
         return
@@ -95,7 +99,11 @@ def _append_odds_history(records: list[dict]) -> None:
             df = pd.concat([pd.read_csv(_ODDS_HISTORY_FILE), df], ignore_index=True)
         except Exception:
             pass
-    df = df.drop_duplicates(subset=["snapshot_date", "league", "match", "player", "market"], keep="last")
+    # Keep every distinct PRICE per real fixture (match_date disambiguates fixture-name
+    # collisions across seasons) -> preserves the open->close line trajectory for CLV.
+    df = df.drop_duplicates(
+        subset=["match_date", "league", "match", "player", "market", "odds"], keep="first"
+    )
     df.to_csv(_ODDS_HISTORY_FILE, index=False)
 
 

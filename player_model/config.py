@@ -241,6 +241,27 @@ PLAYER_FEATURE_COLS = [
     "quality_mismatch_goals",    # goals_pg * context_quality_discount
     "quality_mismatch_sot",      # sot_pg * context_quality_discount
 ]
+
+# Pruned 2026-06-30 (local): set-piece / goal-type features that can't be reliably populated —
+# they need header/set-piece goal data that no accessible source provides for our prop leagues
+# (API-Football goal events = "Normal Goal" only; Opta/StatsBomb-commercial = enterprise;
+# StatsBomb-open = historical seasons only; FBref = no clean headed-goals). All were 0-0.5%
+# nonzero (dead weight/noise). Removed so models train on RELIABLE features only.
+_DEAD_GOAL_TYPE_FEATURES = {
+    "sp_goals_pg", "headed_goals_pg", "fk_goals_pg", "sp_assist_pg",
+    "career_sp_goals_rate", "career_sp_assist_rate", "sp_goals_share", "headed_goals_share",
+    "sp_threat_vs_weak_sp_defense", "sp_taker_assist_edge", "opp_sp_goals_conceded_pg",
+    "sp_goal_probability_composite", "defender_sp_edge", "defender_sot_edge",
+    "aerial_height_sp_composite",
+}
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DEAD_GOAL_TYPE_FEATURES]
+
+# Understat shot-level features (xG, headed/SP/FK goals, goals-xG) were scraped + integrated
+# (3 seasons, 133k shots, 84% top-5 coverage) and tested 2026-06-30: NO measurable AUC gain
+# (deltas +/-0.002, noise) even on top-5-only rows. Reason: redundant with existing goals_pg/
+# sot_pg/shots/form. NOT added to the model. Scraper + parquet columns retained for future use.
+# _UNDERSTAT_FEATURES = ["u_xg_pg","u_xg_recent","u_goals_minus_xg","u_headed_goals_pg","u_sp_goals_pg","u_fk_goals_pg"]
+
 # Phase 2 (future — needs /fixtures/events API data):
 #   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)
 #   "referee_strictness"       (/fixtures/events fouls + /standings high-stakes flag)
