@@ -1,53 +1,67 @@
 {
   "btts": {
-    "Bundesliga 2": {
-      "sniper_th": 0.2,
-      "marksman_th": 0.18,
-      "roi": 41.47,
-      "bets": 85,
-      "drop": false
-    },
-    "Championship": {
-      "sniper_th": 0.2,
-      "marksman_th": 0.18,
-      "roi": 31.04,
-      "bets": 72,
-      "drop": false
+    "Serie B": {
+      "sniper_th": 0.05,
+      "marksman_th": 0.04,
+      "roi": 9.1,
+      "bets": 211,
+      "drop": false,
+      "oos_confirmed": true,
+      "note": "OOS-confirmed +12%/+9% -> real-money candidate"
     },
     "La Liga 2": {
       "sniper_th": 0.13,
       "marksman_th": 0.11,
-      "roi": 26.39,
-      "bets": 101,
-      "drop": false
+      "roi": 20.6,
+      "bets": 35,
+      "drop": false,
+      "oos_confirmed": true,
+      "note": "OOS-confirmed +20%/+21% -> real-money candidate"
     },
-    "League One": {
-      "sniper_th": 0.18,
-      "marksman_th": 0.16,
-      "roi": 35.75,
-      "bets": 154,
-      "drop": false
-    },
-    "League Two": {
-      "sniper_th": 0.17,
-      "marksman_th": 0.15,
-      "roi": 34.68,
-      "bets": 125,
-      "drop": false
-    },
-    "Ligue 2": {
-      "sniper_th": 0.06,
-      "marksman_th": 0.04,
-      "roi": 11.59,
-      "bets": 254,
-      "drop": false
-    },
-    "Serie B": {
+    "Championship": {
       "sniper_th": 0.15,
       "marksman_th": 0.13,
-      "roi": 23.84,
-      "bets": 121,
-      "drop": false
+      "roi": 31.9,
+      "bets": 22,
+      "drop": false,
+      "oos_confirmed": false,
+      "note": "fires for DATA/paper only \u2014 failed OOS, re-test next month"
+    },
+    "Ligue 2": {
+      "sniper_th": 0.12,
+      "marksman_th": 0.1,
+      "roi": 9.5,
+      "bets": 20,
+      "drop": false,
+      "oos_confirmed": false,
+      "note": "fires for DATA/paper only \u2014 failed OOS"
+    },
+    "League One": {
+      "sniper_th": 0.1,
+      "marksman_th": 0.08,
+      "roi": null,
+      "bets": 52,
+      "drop": false,
+      "oos_confirmed": false,
+      "note": "fires for DATA/paper only \u2014 failed OOS (+27.6->-18.9)"
+    },
+    "League Two": {
+      "sniper_th": 0.1,
+      "marksman_th": 0.08,
+      "roi": null,
+      "bets": 272,
+      "drop": false,
+      "oos_confirmed": false,
+      "note": "fires for DATA/paper only \u2014 breakeven OOS"
+    },
+    "Bundesliga 2": {
+      "sniper_th": 0.1,
+      "marksman_th": 0.08,
+      "roi": null,
+      "bets": 4,
+      "drop": false,
+      "oos_confirmed": false,
+      "note": "fires for DATA/paper only \u2014 thin"
     }
   },
   "over15": {
