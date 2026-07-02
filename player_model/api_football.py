@@ -24,6 +24,29 @@ from . import config
 
 # Direct API-Football.com (api-sports.io) — different from RapidAPI
 import os as _os
+
+
+def _load_dotenv_once() -> None:
+    """Populate os.environ from the project .env for local dev, WITHOUT overriding vars
+    already set (so CI / GitHub secrets always take precedence). Values are used silently
+    and never logged."""
+    envf = Path(__file__).resolve().parents[1] / ".env"
+    if not envf.exists():
+        return
+    try:
+        for line in envf.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, _, v = line.partition("=")
+            k = k.strip()
+            if k and k not in _os.environ:
+                _os.environ[k] = v.strip().strip('"').strip("'")
+    except Exception:
+        pass
+
+
+_load_dotenv_once()
 _APIFOOTBALL_KEY = _os.getenv("APIFOOTBALL_KEY", "").strip()
 HEADERS  = {"x-apisports-key": _APIFOOTBALL_KEY}
 BASE_URL = "https://v3.football.api-sports.io"
@@ -115,6 +138,43 @@ def get_upcoming_fixtures(league_id: int, season: str, next_n: int = 5) -> list[
     if not data:
         return []
     return data.get("response", [])
+
+
+_POS_MAP = {"Goalkeeper": "G", "Defender": "D", "Midfielder": "M", "Attacker": "F"}
+
+
+def get_league_teams(league_id: int, season: str) -> list[dict]:
+    """All teams in a league/season -> [{id, name}]. Cached 24h."""
+    data = _get("/teams", {"league": league_id, "season": season}, cache_hours=24)
+    if not data:
+        return []
+    return [{"id": t["team"]["id"], "name": t["team"]["name"]}
+            for t in data.get("response", []) if t.get("team")]
+
+
+def get_team_squad(team_id: int) -> list[dict]:
+    """Current squad for a team -> [{player_id, player_name, position, number, age}]. Cached 24h.
+    position mapped to our F/M/D/G codes."""
+    data = _get("/players/squads", {"team": team_id}, cache_hours=24)
+    if not data or not data.get("response"):
+        return []
+    players = data["response"][0].get("players", [])
+    return [{"player_id": p.get("id"), "player_name": p.get("name"),
+             "position": _POS_MAP.get(p.get("position"), p.get("position")),
+             "number": p.get("number"), "age": p.get("age")}
+            for p in players]
+
+
+def get_pl_squads(league_id: int, season: str) -> list[dict]:
+    """All squads in a league -> flat [{team, player_id, player_name, position, number, age}].
+    ~1 call for teams + 1 per team (cached 24h). Used for the fantasy daily transfer-window
+    squad overlay (output/pl_squads_official.csv)."""
+    rows = []
+    for t in get_league_teams(league_id, season):
+        for pl in get_team_squad(t["id"]):
+            pl["team"] = t["name"]
+            rows.append(pl)
+    return rows
 
 
 def _norm_name(s: str) -> str:

@@ -63,6 +63,53 @@ def _settled_only(df):
     return df
 
 
+def send_fantasy_tips(max_per_pos: int = 3) -> int:
+    """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
+    kept visibly separate from the SNIPER/MARKSMAN betting tips.
+    GUARDED: fires only when there ARE upcoming Premier League fixtures — stays silent
+    off-season so it never posts empty projections. Returns 1 if sent, else 0."""
+    from pathlib import Path as _P
+    import pandas as _pd
+    # in-season guard: no upcoming PL GW -> stay silent
+    try:
+        from player_model.api_football import get_upcoming_fixtures
+        from player_model import config as _pc
+        fx = get_upcoming_fixtures(
+            _pc.PROP_LEAGUES["Premier League"],
+            _pc.PROP_SEASONS.get("Premier League", "2025"), next_n=1)
+        if not fx:
+            print("[fantasy] no upcoming PL fixtures — skipping (off-season)")
+            return 0
+    except Exception as e:
+        print(f"[fantasy] fixture guard failed ({e}) — skipping")
+        return 0
+    f = _P(__file__).resolve().parents[1] / "output" / "fantasy_tips.csv"
+    if not f.exists():
+        return 0
+    try:
+        df = _pd.read_csv(f)
+    except Exception:
+        return 0
+    if df.empty:
+        return 0
+    cfg = _load_config()
+    token, chat_id = cfg.get("token", ""), cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+    POS = {"F": "Forwards", "M": "Midfielders", "D": "Defenders", "G": "Keepers"}
+    cap = df.iloc[0]
+    lines = ["⚽ <b>FANTASY / FPL TIPS</b>",
+             "<i>Model predictions — not betting tips</i>", "",
+             f"👑 <b>Captain:</b> {cap['player_name']} ({cap['position']}) — {cap['fantasy_pts']:.1f} pts", ""]
+    for pos in ["F", "M", "D"]:
+        sub = df[df["position"] == pos].head(max_per_pos)
+        if sub.empty:
+            continue
+        picks = ", ".join(f"{r.player_name} ({r.fantasy_pts:.1f})" for r in sub.itertuples())
+        lines.append(f"<b>{POS[pos]}:</b> {picks}")
+    return 1 if _send(token, chat_id, "\n".join(lines)) else 0
+
+
 def _send(token: str, chat_id: str, text: str) -> bool:
     import time
     for attempt in range(10):
