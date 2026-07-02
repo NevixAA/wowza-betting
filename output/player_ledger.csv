@@ -586,12 +586,12 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Sadio Mané,Senegal,M,goals,VALUABLE,0.5,4.5,1.25,1.475,5,,,,,
 2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Ibrahim Mbaye,Senegal,F,goals,VALUABLE,0.5,5.5,1.75,2.1625,5,,,,,
 2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Diego Moreira,Belgium,F,goals,VALUABLE,0.5,6.0,2.0,2.45,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Álvaro Fidalgo,Mexico,M,goals,VALUABLE,0.5,6.5,2.25,2.7375,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutiérrez,Mexico,M,goals,VALUABLE,0.5,5.0,1.5,1.75,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Santiago Giménez,Mexico,F,goals,VALUABLE,0.5,3.4,0.7,0.87,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Julián Quiñones,Mexico,F,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Raúl Jiménez,Mexico,F,goals,VALUABLE,0.5,3.0,0.5,0.59,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Roberto Alvarado,Mexico,F,goals,VALUABLE,0.5,5.5,1.75,2.1625,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Álvaro Fidalgo,Mexico,M,goals,VALUABLE,0.5,6.5,2.25,2.7375,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutiérrez,Mexico,M,goals,VALUABLE,0.5,5.0,1.5,1.75,5,True,LOSS,-1.0,,2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Santiago Giménez,Mexico,F,goals,VALUABLE,0.5,3.4,0.7,0.87,5,True,LOSS,-1.0,,2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Julián Quiñones,Mexico,F,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,True,WIN,2.75,,2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Raúl Jiménez,Mexico,F,goals,VALUABLE,0.5,3.0,0.5,0.59,5,True,WIN,2.0,,2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Roberto Alvarado,Mexico,F,goals,VALUABLE,0.5,5.5,1.75,2.1625,5,True,LOSS,-1.0,,2026-07-02
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Farès Chaïbi,Algeria,F,goals,VALUABLE,0.5,6.5,2.25,2.7375,5,,,,,
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Dan Ndoye,Switzerland,F,goals,VALUABLE,0.5,3.5,0.75,0.925,5,,,,,
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Rubén Vargas,Switzerland,M,goals,VALUABLE,0.5,3.8,0.9,1.09,5,,,,,
@@ -608,16 +608,16 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Marko Arnautović,Austria,F,goals,VALUABLE,0.5,4.6,1.3,1.53,5,,,,,
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Romano Schmid,Austria,M,goals,VALUABLE,0.5,7.5,2.75,3.3125,5,,,,,
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Alejandro Baena,Spain,M,goals,VALUABLE,0.5,3.75,0.875,1.0625,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Johan Vásquez,Mexico,D,goals,VALUABLE,0.499,13.0,5.487,6.46,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Johan Vásquez,Mexico,D,goals,VALUABLE,0.499,13.0,5.487,6.46,5,True,LOSS,-1.0,,2026-07-02
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Zineddine Belaid,Algeria,D,goals,VALUABLE,0.499,15.0,6.485,7.6078,5,,,,,
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Stefan Posch,Austria,D,goals,VALUABLE,0.497,15.0,6.455,7.5732,5,,,,,
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Nicolas Seiwald,Austria,M,goals,VALUABLE,0.495,15.0,6.425,7.5388,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Jordy Alcivar,Ecuador,M,goals,VALUABLE,0.375,10.0,2.75,3.3125,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Kendry Páez,Ecuador,F,goals,VALUABLE,0.364,6.0,1.184,1.5116,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Jordy Alcivar,Ecuador,M,goals,VALUABLE,0.375,10.0,2.75,3.3125,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Kendry Páez,Ecuador,F,goals,VALUABLE,0.364,6.0,1.184,1.5116,5,True,LOSS,-1.0,,2026-07-02
 2026-06-28,2026-06-28,World Cup,South Africa,Canada,Jayden Adams,South Africa,M,cards,VALUABLE,0.329,4.2,0.3818,0.52,5,True,VOID,0.0,DNP (0 min),2026-06-29
 2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Assane Diao,Senegal,F,goals,VALUABLE,0.274,4.33,0.1864,0.3051,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,John Yeboah,Ecuador,F,goals,VALUABLE,0.192,6.0,0.152,0.3248,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Pervis Estupiñán,Ecuador,M,goals,VALUABLE,0.183,11.0,1.013,1.3149,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,John Yeboah,Ecuador,F,goals,VALUABLE,0.192,6.0,0.152,0.3248,5,True,LOSS,-1.0,,2026-07-02
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Pervis Estupiñán,Ecuador,M,goals,VALUABLE,0.183,11.0,1.013,1.3149,5,True,VOID,0.0,DNP (0 min),2026-07-02
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Luka Modrić,Croatia,M,goals,VALUABLE,0.5,7.3,2.65,3.1975,5,,,,,
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Petar Sučić,Croatia,M,goals,VALUABLE,0.5,19.0,8.5,9.925,5,,,,,
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Pedro Neto,Portugal,M,goals,VALUABLE,0.5,4.9,1.45,1.695,5,,,,,
@@ -626,10 +626,10 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Martin Baturina,Croatia,M,goals,VALUABLE,0.5,8.8,3.4,4.06,5,,,,,
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Nikola Vlašić,Croatia,M,goals,VALUABLE,0.498,8.2,3.0836,3.6961,5,,,,,
 2026-06-28,2026-07-04,World Cup,Colombia,Ghana,Jhon Arias,Colombia,M,goals,VALUABLE,0.31,5.2,0.612,0.8538,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Enner Valencia,Ecuador,F,goals,VALUABLE,0.295,3.9,0.1505,0.2655,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Enner Valencia,Ecuador,F,goals,VALUABLE,0.295,3.9,0.1505,0.2655,5,True,LOSS,-1.0,,2026-07-02
 2026-06-28,2026-07-04,World Cup,Colombia,Ghana,James Rodríguez,Colombia,F,goals,VALUABLE,0.293,4.0,0.172,0.2892,5,,,,,
 2026-06-28,2026-07-04,World Cup,Colombia,Ghana,Davinson Sánchez,Colombia,D,goals,VALUABLE,0.292,13.5,2.942,3.5333,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Gonzalo Plata,Ecuador,F,goals,VALUABLE,0.223,6.5,0.4495,0.6669,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Gonzalo Plata,Ecuador,F,goals,VALUABLE,0.223,6.5,0.4495,0.6669,5,True,LOSS,-1.0,,2026-07-02
 2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Azzedine Ounahi,Morocco,M,cards,VALUABLE,0.4,4.5,0.8,0.98,5,,,,,
 2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Ismael Saibari,Morocco,F,cards,VALUABLE,0.4,5.8,1.32,1.668,5,,,,,
 2026-06-28,2026-06-30,World Cup,Netherlands,Morocco,Zakaria El Ouahdi,Morocco,D,cards,VALUABLE,0.4,4.0,0.6,0.76,5,,,,,
@@ -690,7 +690,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Ante Budimir,Croatia,F,goals,VALUABLE,0.386,4.1,0.5826,0.7409,5,,,,,
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Igor Matanović,Croatia,F,goals,VALUABLE,0.386,4.5,0.737,0.9107,5,,,,,
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Francisco Trincão,Portugal,F,goals,VALUABLE,0.386,3.8,0.4668,0.6135,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Jeremy Arevalo,Ecuador,F,goals,VALUABLE,0.386,4.5,0.737,0.9107,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Jeremy Arevalo,Ecuador,F,goals,VALUABLE,0.386,4.5,0.737,0.9107,5,True,VOID,0.0,DNP (0 min),2026-07-02
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Ramy Bensebaini,Algeria,D,goals,VALUABLE,0.385,17.0,5.545,6.5267,5,,,,,
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Ibrahim Maza,Algeria,F,goals,VALUABLE,0.384,5.8,1.2272,1.5613,5,,,,,
 2026-06-28,2026-07-02,World Cup,Portugal,Croatia,Ivan Perišić,Croatia,F,goals,VALUABLE,0.342,6.2,1.1204,1.4385,5,,,,,
@@ -713,7 +713,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Florian Grillitsch,Austria,M,goals,VALUABLE,0.178,21.0,2.738,3.2987,5,,,,,
 2026-06-28,2026-07-04,World Cup,Colombia,Ghana,Daniel Muñoz,Colombia,D,goals,VALUABLE,0.176,8.0,0.408,0.6192,5,,,,,
 2026-06-28,2026-07-02,World Cup,Spain,Austria,Dani Olmo,Spain,F,goals,VALUABLE,0.386,3.3,0.2738,0.4012,5,,,,,
-2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutierrez,Mexico,M,goals,VALUABLE,0.386,5.6,1.1616,1.4858,5,,,,,
+2026-06-28,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutierrez,Mexico,M,goals,VALUABLE,0.386,5.6,1.1616,1.4858,5,True,LOSS,-1.0,,2026-07-02
 2026-06-28,2026-07-01,World Cup,Belgium,Senegal,Jérémy Doku,Belgium,F,goals,VALUABLE,0.386,5.0,0.93,1.123,5,,,,,
 2026-06-28,2026-07-03,World Cup,Switzerland,Algeria,Ruben Vargas,Switzerland,F,goals,MARKSMAN,0.386,4.2,0.6212,0.7833,5,,,,,
 2026-06-28,2026-06-29,World Cup,Brazil,Japan,Matheus Cunha,Brazil,F,goals,VALUABLE,0.386,3.01,0.1619,0.278,5,True,LOSS,-1.0,,2026-06-30
@@ -744,27 +744,27 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-29,2026-06-30,World Cup,France,Sweden,Hjalmar Ekdal,Sweden,D,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,True,VOID,0.0,DNP (0 min),2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Rayan Cherki,France,M,cards,MARKSMAN,0.4,7.0,1.8,2.22,5,True,LOSS,-1.0,,2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Viktor Johansson,Sweden,G,cards,MARKSMAN,0.4,8.0,2.2,2.68,5,True,VOID,0.0,DNP (0 min),2026-07-01
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Pedro Vite,Ecuador,M,cards,MARKSMAN,0.4,5.5,1.2,1.53,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Gonzalo Plata,Ecuador,F,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Hernán Galíndez,Ecuador,G,cards,MARKSMAN,0.4,7.5,2.0,2.45,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,John Yeboah,Ecuador,M,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Julián Quiñones,Mexico,F,cards,MARKSMAN,0.4,5.0,1.0,1.2,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Enner Valencia,Ecuador,F,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Johan Vásquez,Mexico,D,cards,MARKSMAN,0.4,4.7,0.88,1.068,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Pervis Estupiñán,Ecuador,M,cards,MARKSMAN,0.4,3.9,0.56,0.716,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Santiago Giménez,Mexico,F,cards,MARKSMAN,0.4,4.2,0.68,0.848,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Piero Hincapié,Ecuador,D,cards,MARKSMAN,0.4,3.5,0.4,0.54,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Pedro Vite,Ecuador,M,cards,MARKSMAN,0.4,5.5,1.2,1.53,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Gonzalo Plata,Ecuador,F,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Hernán Galíndez,Ecuador,G,cards,MARKSMAN,0.4,7.5,2.0,2.45,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,John Yeboah,Ecuador,M,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Julián Quiñones,Mexico,F,cards,MARKSMAN,0.4,5.0,1.0,1.2,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Enner Valencia,Ecuador,F,cards,MARKSMAN,0.4,4.8,0.92,1.112,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Johan Vásquez,Mexico,D,cards,MARKSMAN,0.4,4.7,0.88,1.068,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Pervis Estupiñán,Ecuador,M,cards,MARKSMAN,0.4,3.9,0.56,0.716,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Santiago Giménez,Mexico,F,cards,MARKSMAN,0.4,4.2,0.68,0.848,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Piero Hincapié,Ecuador,D,cards,MARKSMAN,0.4,3.5,0.4,0.54,5,True,LOSS,-1.0,,2026-07-02
 2026-06-29,2026-06-30,World Cup,France,Sweden,Désiré Doué,France,M,cards,MARKSMAN,0.4,6.0,1.4,1.76,5,True,LOSS,-1.0,,2026-07-01
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Ángelo Preciado,Ecuador,D,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Ángelo Preciado,Ecuador,D,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,True,LOSS,-1.0,,2026-07-02
 2026-06-29,2026-06-30,World Cup,France,Sweden,Michael Olise,France,M,cards,MARKSMAN,0.4,7.0,1.8,2.22,5,True,LOSS,-1.0,,2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Maxence Lacroix,France,D,cards,MARKSMAN,0.4,5.5,1.2,1.53,5,True,VOID,0.0,DNP (0 min),2026-07-01
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Edson Álvarez,Mexico,M,cards,MARKSMAN,0.4,3.7,0.48,0.628,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jesús Gallardo,Mexico,D,cards,SNIPER,0.4,4.5,0.8,0.98,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Raúl Jiménez,Mexico,F,cards,SNIPER,0.4,5.8,1.32,1.668,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,César Montes,Mexico,D,cards,MARKSMAN,0.4,7.0,1.8,2.22,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutiérrez,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Erik Lira,Mexico,M,cards,SNIPER,0.4,4.8,0.92,1.112,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Álvaro Fidalgo,Mexico,M,cards,MARKSMAN,0.4,7.0,1.8,2.22,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Edson Álvarez,Mexico,M,cards,MARKSMAN,0.4,3.7,0.48,0.628,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jesús Gallardo,Mexico,D,cards,SNIPER,0.4,4.5,0.8,0.98,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Raúl Jiménez,Mexico,F,cards,SNIPER,0.4,5.8,1.32,1.668,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,César Montes,Mexico,D,cards,MARKSMAN,0.4,7.0,1.8,2.22,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutiérrez,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Erik Lira,Mexico,M,cards,SNIPER,0.4,4.8,0.92,1.112,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Álvaro Fidalgo,Mexico,M,cards,MARKSMAN,0.4,7.0,1.8,2.22,5,True,VOID,0.0,DNP (0 min),2026-07-02
 2026-06-29,2026-06-30,World Cup,France,Sweden,Maghnes Akliouche,France,M,cards,MARKSMAN,0.4,5.25,1.1,1.415,5,True,VOID,0.0,DNP (0 min),2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Warren Zaïre-Emery,France,M,cards,SNIPER,0.4,7.0,1.8,2.22,5,True,VOID,0.0,DNP (0 min),2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Lucas Bergvall,Sweden,M,cards,SNIPER,0.4,4.3,0.72,0.892,5,True,LOSS,-1.0,,2026-07-01
@@ -802,14 +802,14 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-29,2026-06-30,World Cup,France,Sweden,Mattias Svanberg,Sweden,F,cards,MARKSMAN,0.4,3.9,0.56,0.716,5,True,LOSS,-1.0,,2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Marcus Thuram,France,F,cards,MARKSMAN,0.4,6.5,1.6,1.99,5,True,VOID,0.0,DNP (0 min),2026-07-01
 2026-06-29,2026-06-30,World Cup,France,Sweden,Brice Samba,France,G,cards,MARKSMAN,0.4,8.0,2.2,2.68,5,True,VOID,0.0,DNP (0 min),2026-07-01
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jordy Alcivar,Ecuador,M,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Orbelín Pineda,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Denil Castillo,Ecuador,M,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Joel Ordóñez,Ecuador,D,cards,MARKSMAN,0.4,5.0,1.0,1.2,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jeremy Arevalo,Ecuador,F,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Kendry Páez,Ecuador,F,cards,MARKSMAN,0.4,4.4,0.76,0.936,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Obed Vargas,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Yaimar Medina,Ecuador,D,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jordy Alcivar,Ecuador,M,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Orbelín Pineda,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Denil Castillo,Ecuador,M,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Joel Ordóñez,Ecuador,D,cards,MARKSMAN,0.4,5.0,1.0,1.2,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Jeremy Arevalo,Ecuador,F,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,True,VOID,0.0,DNP (0 min),2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Kendry Páez,Ecuador,F,cards,MARKSMAN,0.4,4.4,0.76,0.936,5,True,WIN,3.4,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Obed Vargas,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,True,LOSS,-1.0,,2026-07-02
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Yaimar Medina,Ecuador,D,cards,MARKSMAN,0.4,3.4,0.36,0.496,5,True,LOSS,-1.0,,2026-07-02
 2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Orlando Gill,Paraguay,G,cards,VALUABLE,0.4,8.0,2.2,2.68,5,,,,,
 2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Jamie Leweling,Germany,F,cards,VALUABLE,0.4,4.75,0.9,1.09,5,,,,,
 2026-06-29,2026-06-29,World Cup,Germany,Paraguay,Antonio Sanabria,Paraguay,F,cards,VALUABLE,0.4,5.8,1.32,1.668,5,,,,,
@@ -852,12 +852,12 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-06-29,2026-07-02,World Cup,Portugal,Croatia,Gonçalo Guedes,Portugal,F,goals,VALUABLE,0.384,3.0,0.152,0.2211,5,,,,,
 2026-06-29,2026-06-30,World Cup,Ivory Coast,Norway,Fredrik Aursnes,Norway,M,cards,MARKSMAN,0.346,5.4,0.8684,1.1487,5,True,LOSS,-1.0,,2026-07-01
 2026-06-29,2026-07-02,World Cup,Portugal,Croatia,Marco Pašalić,Croatia,F,goals,VALUABLE,0.342,5.8,0.9836,1.2811,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Israel Reyes,Mexico,D,cards,SNIPER,0.323,5.2,0.6796,0.9315,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Israel Reyes,Mexico,D,cards,SNIPER,0.323,5.2,0.6796,0.9315,5,True,LOSS,-1.0,,2026-07-02
 2026-06-29,2026-07-02,World Cup,Portugal,Croatia,Luka Vušković,Croatia,D,goals,VALUABLE,0.308,13.0,3.004,3.6046,5,,,,,
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Roberto Alvarado,Mexico,M,cards,MARKSMAN,0.307,5.5,0.6885,0.9418,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Roberto Alvarado,Mexico,M,cards,MARKSMAN,0.307,5.5,0.6885,0.9418,5,True,LOSS,-1.0,,2026-07-02
 2026-06-29,2026-07-02,World Cup,Portugal,Croatia,Toni Fruk,Croatia,M,goals,VALUABLE,0.253,5.0,0.265,0.3915,5,,,,,
 2026-06-29,2026-06-30,World Cup,France,Sweden,Anthony Elanga,Sweden,M,cards,SNIPER,0.223,7.0,0.561,0.7952,5,True,LOSS,-1.0,,2026-07-01
-2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutierrez,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,,,,,
+2026-06-29,2026-07-01,World Cup,Mexico,Ecuador,Brian Gutierrez,Mexico,M,cards,MARKSMAN,0.4,5.8,1.32,1.668,5,True,LOSS,-1.0,,2026-07-02
 2026-06-30,2026-07-02,World Cup,USA,Bosnia & Herzegovina,Ermedin Demirović,Bosnia & Herzegovina,F,cards,VALUABLE,0.4,3.3,0.32,0.452,5,,,,,
 2026-06-30,2026-07-01,World Cup,Belgium,Senegal,Kalidou Koulibaly,Senegal,D,cards,VALUABLE,0.4,4.0,0.6,0.76,5,,,,,
 2026-06-30,2026-07-01,World Cup,Belgium,Senegal,Nathan Ngoy,Belgium,D,cards,VALUABLE,0.4,3.5,0.4,0.54,5,,,,,
