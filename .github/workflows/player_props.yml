@@ -46,7 +46,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: fixture_stats_cache
-          key: fixture-stats-${{ runner.os }}-${{ hashFiles('player_model/data_fetcher.py') }}
+          # run_id key (not hashFiles) so a data_fetcher.py edit doesn't ORPHAN the whole
+          # accumulated cache -> cold start -> thousands of re-fetches -> Sunday collect
+          # times out (bug 2026-07-05). Matches the other caches; stats are permanent.
+          key: fixture-stats-${{ runner.os }}-${{ github.run_id }}
           restore-keys: fixture-stats-${{ runner.os }}-
 
       - name: Cache lineup data (4h TTL — pre-match lineups)
