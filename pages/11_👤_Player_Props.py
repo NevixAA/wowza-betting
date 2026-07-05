@@ -222,8 +222,12 @@ def load_results():
 
 
 led = load_results()
+# VALUABLE / WATCH are NOT signals (never sent; ~-8% ROI) — the all-time track record
+# counts SNIPER + MARKSMAN only. (The raw ledger still logs all tiers for data.)
+if not led.empty and "tier" in led.columns:
+    led = led[led["tier"].astype(str).str.upper().isin(["SNIPER", "MARKSMAN"])].copy()
 if led.empty or "result" not in led.columns:
-    st.info("No results ledger yet (`output/player_ledger.csv`). Results populate as graded bets resolve.")
+    st.info("No SNIPER/MARKSMAN results yet (`output/player_ledger.csv`). Populate as graded signals resolve.")
 else:
     settled = led[led["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
     if settled.empty:
