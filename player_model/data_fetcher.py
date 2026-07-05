@@ -36,7 +36,7 @@ EVENTS_CACHE_DIR = config.BASE_DIR / "fixture_events_cache"
 EVENTS_CACHE_DIR.mkdir(exist_ok=True)
 
 CACHE_DAYS    = 7
-REQUEST_DELAY = 0.15  # ~6.7 calls/sec = ~400/min — uses the Ultra plan's 450/min cap (was 0.5=120/min,
+REQUEST_DELAY = 0.20  # ~5 calls/sec = ~300/min — headroom under Ultra's 450/min (0.15=400/min thrashed 429s)  # was 0.15  # ~6.7 calls/sec = ~400/min — uses the Ultra plan's 450/min cap (was 0.5=120/min,
                       # leaving 73% of Ultra's rate unused). 429s self-heal via the rate-limit backoff.
 MAX_RETRIES   = 3
 
@@ -78,11 +78,12 @@ COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = {
     # (league_id, season, last_n)
     # last_n >= 100 → full-season fetch (all completed fixtures, for historical seasons)
     # last_n < 100  → rolling last-N via API `last=` param (current season updates)
-    "Premier League":  [(39,  "2024", 500), (39,  "2025", 99)],
-    "Bundesliga":      [(78,  "2024", 400), (78,  "2025", 99)],
-    "La Liga":         [(140, "2024", 400), (140, "2025", 99)],
-    "Serie A":         [(135, "2024", 400), (135, "2025", 99)],
-    "Ligue 1":         [(61,  "2024", 400), (61,  "2025", 99)],
+    # top-5 deepened to 4 seasons 2026-07-05 (2022/23-2025/26) for fantasy + medium form window
+    "Premier League":  [(39,  "2022", 500), (39,  "2023", 500), (39,  "2024", 500), (39,  "2025", 99)],
+    "Bundesliga":      [(78,  "2022", 400), (78,  "2023", 400), (78,  "2024", 400), (78,  "2025", 99)],
+    "La Liga":         [(140, "2022", 400), (140, "2023", 400), (140, "2024", 400), (140, "2025", 99)],
+    "Serie A":         [(135, "2022", 400), (135, "2023", 400), (135, "2024", 400), (135, "2025", 99)],
+    "Ligue 1":         [(61,  "2022", 400), (61,  "2023", 400), (61,  "2024", 400), (61,  "2025", 99)],
     "Championship":    [(40,  "2024", 600), (40,  "2025", 99)],
     "League One":      [(41,  "2024", 600), (41,  "2025", 99)],
     "Bundesliga 2":    [(79,  "2024", 400), (79,  "2025", 99)],
