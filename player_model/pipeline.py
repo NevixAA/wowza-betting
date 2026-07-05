@@ -63,6 +63,22 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
         print("[collect] Feature engineering returned empty DataFrame.")
         return
 
+    # MERGE, don't overwrite: replace only the leagues collected this run, KEEP all others
+    # (WC/international + any league a partial/timed-out CI run didn't reach). Prevents the
+    # silent degradation where a Sunday collect that only got PL before the job timeout
+    # nuked the other 10 club leagues down to a PL-only parquet (bug found 2026-07-05).
+    if HISTORY_CACHE.exists():
+        try:
+            existing = pd.read_parquet(HISTORY_CACHE)
+            fresh_leagues = set(df["league"].dropna().unique())
+            kept = existing[~existing["league"].isin(fresh_leagues)]
+            df = pd.concat([kept, df], ignore_index=True)
+            if {"fixture_id", "player_id"}.issubset(df.columns):
+                df = df.drop_duplicates(subset=["fixture_id", "player_id"])
+            df = df.reset_index(drop=True)
+            print(f"[collect] merged: kept {len(kept)} rows from {existing['league'].nunique() - len(fresh_leagues & set(existing['league']))} untouched leagues")
+        except Exception as e:
+            print(f"[collect] merge with existing failed ({e}) — writing fresh collect only")
     df.to_parquet(HISTORY_CACHE, index=False)
     print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players -> {HISTORY_CACHE.name}")
 
