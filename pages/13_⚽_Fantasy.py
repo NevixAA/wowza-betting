@@ -85,22 +85,28 @@ st.caption(f"{len(df)} players · source: output/fantasy_tips.csv · FANTASY fam
 # ── Club squads ───────────────────────────────────────────────────────────────
 st.divider()
 st.subheader("🏟️ Club squads")
-SQ_FILE = BASE_DIR / "output" / "pl_squads.csv"
+
+# Dynamic form window — per-game stats recomputed over the last N games from raw data.
+N_OPTS = {"Current form (5)": 5, "Last 10": 10, "Last 20": 20, "Full season (38)": 38,
+          "~2 seasons (76)": 76, "~3 seasons (114)": 114, "~5 seasons (190)": 190}
 
 
-@st.cache_data(ttl=86400)  # refreshed daily (transfer window)
-def _load_squads():
-    if not SQ_FILE.exists():
-        return pd.DataFrame()
+@st.cache_data(ttl=3600, show_spinner="Recomputing form window…")
+def _squads(n):
     try:
-        return pd.read_csv(SQ_FILE)
+        from player_model.fantasy import build_squads
+        return build_squads(n)
     except Exception:
         return pd.DataFrame()
 
 
-sq = _load_squads()
+wsel = st.selectbox("Form window", list(N_OPTS.keys()), index=0,
+                    help="Per-game stats = average over each player's last N games. "
+                         "We have ~1 season/player of data, so windows beyond that show all available games.")
+n = N_OPTS[wsel]
+sq = _squads(n)
 if sq.empty:
-    st.info("Squad data not generated yet — run `python -m player_model.fantasy`.")
+    st.info("Squad data unavailable (no PL parquet / models).")
 else:
     official = (BASE_DIR / "output" / "pl_squads_official.csv").exists()
     st.caption(("✅ Official current squads — daily transfer-window refresh" if official
@@ -110,13 +116,14 @@ else:
     csq = sq[sq["team"] == club].copy()
     csq["Role"] = csq["position"].map({"G": "GK", "D": "DEF", "M": "MID", "F": "FWD"}).fillna(csq["position"])
     disp = csq.rename(columns={
-        "player_name": "Player", "minutes_pg": "Min/g", "goals_pg": "Goals/g",
+        "player_name": "Player", "games_used": "Games", "minutes_pg": "Min/g", "goals_pg": "Goals/g",
         "assists_pg": "Ast/g", "sot_pg": "SOT/g", "shots_pg": "Shots/g", "cards_pg": "Cards/g",
-        "age": "Age", "height_cm": "Ht(cm)", "rating_pg": "Rating",
-        "saves_pg": "Saves/g", "gk_save_rate": "SaveRate",
+        "rating_pg": "Rating", "saves_pg": "Saves/g",
     })
-    order = ["Player", "Role", "Min/g", "Goals/g", "Ast/g", "SOT/g", "Shots/g", "Cards/g",
-             "Age", "Ht(cm)", "Rating", "Saves/g", "SaveRate"]
+    order = ["Player", "Role", "Games", "Min/g", "Goals/g", "Ast/g", "SOT/g", "Shots/g",
+             "Cards/g", "Rating", "Saves/g"]
     st.dataframe(disp[[c for c in order if c in disp.columns]],
                  width="stretch", hide_index=True, height=520)
-    st.caption(f"{club}: {len(csq)} players · every parameter sourced from the player parquet")
+    avg_games = int(csq["games_used"].dropna().mean()) if "games_used" in csq.columns and csq["games_used"].notna().any() else 0
+    st.caption(f"{club}: {len(csq)} players · window: {wsel} · avg {avg_games} games/player used "
+               "(new signings blank until they have PL history)")

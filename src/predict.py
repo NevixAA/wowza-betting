@@ -54,7 +54,11 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 params={
                     "apiKey": config.ODDS_API_KEY,
                     "regions": "eu",
-                    "markets": "totals,btts",
+                    # BTTS is NOT supported on the /odds LIST endpoint — requesting
+                    # "totals,btts" 422s the WHOLE call ("Markets not supported: btts"),
+                    # which silently skipped every league and killed all tips since v9.2
+                    # (2026-06-22). Totals only here; BTTS odds need the per-event endpoint.
+                    "markets": "totals",
                     "oddsFormat": "decimal",
                 },
                 timeout=15,

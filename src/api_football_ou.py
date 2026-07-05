@@ -80,6 +80,15 @@ def _get(endpoint: str, params: dict, ttl_h: float = 24.0) -> Optional[dict]:
     if cached is not None:
         return cached
 
+    # Cache-only mode — set by the every-5-min predict job (env AF_OU_CACHE_ONLY=1).
+    # A cold/incomplete cache must NOT block predict with thousands of slow shot fetches
+    # (that overran the 15-min job timeout and silenced all tips since ~2026-06-30).
+    # In this mode we never make a live call here; the daily full-enrichment run
+    # (retrain / a dedicated warm-cache job, without this env) populates the cache.
+    import os as _os
+    if _os.getenv("AF_OU_CACHE_ONLY", "").strip().lower() in ("1", "true", "yes"):
+        return None
+
     if not _KEY:
         return None
 
