@@ -1,54 +1,53 @@
 date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_prob,fair_odds,market_odds,fair_implied,edge_abs,edge_rel,ev,ges,confidence,lazy_factors,n_games,data_source,tier,kelly_stake
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Kylian Mbappé,France,F,sot,0.463,2.16,,,,,,0.83,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Kylian Mbappé,France,F,sot,0.463,2.16,1.19,0.7928,-0.3298,-0.416,-0.449,0.83,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Vinícius Júnior,Brazil,M,sot,0.435,2.3,1.29,0.7313,-0.2963,-0.4052,-0.4388,0.784,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Lionel Messi,Argentina,F,sot,0.416,2.4,1.1,0.8576,-0.4416,-0.5149,-0.5424,0.812,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Michael Olise,France,M,sot,0.384,2.61,,,,,,0.352,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,M. Olise,France,M,sot,0.384,2.61,,,,,,0.352,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Harry Kane,England,F,sot,0.376,2.66,1.3,0.7257,-0.3497,-0.4819,-0.5112,0.822,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,H. Kane,England,F,sot,0.376,2.66,,,,,,0.822,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Leandro Trossard,Belgium,F,sot,0.373,2.68,1.74,0.5422,-0.1692,-0.312,-0.351,0.71,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Jude Bellingham,England,M,sot,0.366,2.73,1.6,0.5896,-0.2236,-0.3793,-0.4144,0.643,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,J. Bellingham,England,M,sot,0.366,2.73,,,,,,0.643,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Jean Philippe Mateta,France,F,sot,0.366,2.74,,,,,,0.728,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ousmane Dembélé,France,M,sot,0.354,2.83,,,,,,0.72,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,O. Dembélé,France,M,sot,0.354,2.83,,,,,,0.72,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Jérémy Doku,Belgium,F,sot,0.343,2.91,2.0,0.4717,-0.1287,-0.2728,-0.314,0.668,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Breel Embolo,Switzerland,F,sot,0.324,3.08,1.75,0.5391,-0.2151,-0.399,-0.433,0.731,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Kevin De Bruyne,Belgium,F,sot,0.316,3.17,1.74,0.5422,-0.2262,-0.4172,-0.4502,0.803,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T19:00:00+00:00,World Cup,Portugal vs Spain,PROP_LEAGUE,Mikel Oyarzabal,Spain,F,sot,0.314,3.18,1.3,0.7257,-0.4117,-0.5673,-0.5918,0.81,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Lionel Messi,Argentina,F,sot,0.418,2.39,1.1,0.8576,-0.4396,-0.5126,-0.5402,0.812,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Michael Olise,France,M,sot,0.383,2.61,1.66,0.5683,-0.1853,-0.3261,-0.3642,0.352,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,M. Olise,France,M,sot,0.383,2.61,,,,,,0.352,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Harry Kane,England,F,sot,0.377,2.65,1.3,0.7257,-0.3487,-0.4805,-0.5099,0.822,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,H. Kane,England,F,sot,0.377,2.65,,,,,,0.822,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Leandro Trossard,Belgium,F,sot,0.371,2.7,1.74,0.5422,-0.1712,-0.3157,-0.3545,0.71,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Jude Bellingham,England,M,sot,0.367,2.73,1.6,0.5896,-0.2226,-0.3776,-0.4128,0.643,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,J. Bellingham,England,M,sot,0.367,2.73,,,,,,0.643,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Jean Philippe Mateta,France,F,sot,0.365,2.74,,,,,,0.728,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ousmane Dembélé,France,M,sot,0.353,2.83,1.51,0.6248,-0.2718,-0.435,-0.467,0.72,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,O. Dembélé,France,M,sot,0.353,2.83,,,,,,0.72,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Jérémy Doku,Belgium,F,sot,0.342,2.93,2.0,0.4717,-0.1297,-0.275,-0.316,0.668,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Breel Embolo,Switzerland,F,sot,0.325,3.08,1.75,0.5391,-0.2141,-0.3971,-0.4313,0.731,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T19:00:00+00:00,World Cup,Portugal vs Spain,PROP_LEAGUE,Mikel Oyarzabal,Spain,F,sot,0.314,3.18,1.33,0.7093,-0.3953,-0.5573,-0.5824,0.81,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Kevin De Bruyne,Belgium,F,sot,0.314,3.18,1.74,0.5422,-0.2282,-0.4209,-0.4536,0.803,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,James Garner,England,M,cards,0.276,3.63,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Luis Díaz,Colombia,M,sot,0.272,3.67,,,,,,0.489,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,N. Madueke,England,M,sot,0.268,3.74,,,,,,0.271,0.386,SET_PIECE|MINUTES|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Noni Madueke,England,M,sot,0.268,3.74,2.1,0.4492,-0.1812,-0.4034,-0.4372,0.271,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,N. Madueke,England,M,sot,0.268,3.73,,,,,,0.271,0.386,SET_PIECE|MINUTES|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Noni Madueke,England,M,sot,0.268,3.73,2.1,0.4492,-0.1812,-0.4034,-0.4372,0.271,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-06,2026-07-06T19:00:00+00:00,World Cup,Portugal vs Spain,PROP_LEAGUE,Alex Baena,Spain,F,sot,0.265,3.78,,,,,,0.691,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,sot,0.262,3.82,,,,,,0.751,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Casemiro,Brazil,M,cards,0.262,3.81,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Julián Quiñones,Mexico,M,sot,0.256,3.9,1.65,0.5718,-0.3158,-0.5523,-0.5776,0.771,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Mohanad Lasheen,Egypt,M,cards,0.256,3.91,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Erling Haaland,Norway,F,sot,0.255,3.93,,,,,,0.751,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Granit Xhaka,Switzerland,M,cards,0.255,3.93,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Julián Quiñones,Mexico,M,sot,0.254,3.93,1.65,0.5718,-0.3178,-0.5558,-0.5809,0.771,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-06,2026-07-06T19:00:00+00:00,World Cup,Portugal vs Spain,PROP_LEAGUE,Alejandro Baena,Spain,M,sot,0.252,3.96,1.86,0.5072,-0.2552,-0.5032,-0.5313,0.451,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Raúl Jiménez,Mexico,F,sot,0.252,3.97,1.6,0.5896,-0.3376,-0.5726,-0.5968,0.74,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Raúl Jiménez,Mexico,F,sot,0.25,4.01,1.6,0.5896,-0.3396,-0.576,-0.6,0.74,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Yasser Ibrahim,Egypt,D,cards,0.25,4.0,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ibrahima Konaté,France,D,cards,0.249,4.01,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Redouane Halhal,Morocco,D,cards,0.247,4.05,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Hamdy Fathy,Egypt,M,cards,0.246,4.07,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Jarrod Bowen,England,F,sot,0.245,4.08,,,,,,0.64,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Jarrod Bowen,England,F,sot,0.246,4.07,,,,,,0.64,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Danilo,Brazil,D,cards,0.243,4.12,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Issa Diop,Morocco,D,cards,0.241,4.16,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-06,2026-07-06T19:00:00+00:00,World Cup,Portugal vs Spain,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,sot,0.234,4.26,1.4,0.6739,-0.4399,-0.6527,-0.6724,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Gustavo Puerta,Colombia,M,sot,0.232,4.31,2.0,0.4717,-0.2397,-0.5082,-0.536,0.316,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T19:00:00+00:00,World Cup,Portugal vs Spain,PROP_LEAGUE,Cristiano Ronaldo,Portugal,F,sot,0.232,4.32,1.4,0.6739,-0.4419,-0.6557,-0.6752,0.8,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Declan Rice,England,M,sot,0.21,4.76,2.7,0.3494,-0.1394,-0.399,-0.433,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,D. Rice,England,M,sot,0.21,4.76,,,,,,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Sergiño Dest,USA,D,sot,0.188,5.32,2.7,0.3494,-0.1614,-0.4619,-0.4924,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.182,5.5,,,,,,0.299,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Roberto Alvarado,Mexico,F,sot,0.182,5.49,2.3,0.4102,-0.2282,-0.5563,-0.5814,0.261,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,A. Rabiot,France,M,sot,0.182,5.5,,,,,,0.299,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Nico O'Reilly,England,D,sot,0.181,5.52,3.0,0.3145,-0.1335,-0.4244,-0.457,0.307,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,N. O&apos;Reilly,England,D,sot,0.181,5.52,,,,,,0.307,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,F,sot,0.174,5.76,1.83,0.5155,-0.3415,-0.6625,-0.6816,0.688,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Declan Rice,England,M,sot,0.21,4.75,2.7,0.3494,-0.1394,-0.399,-0.433,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,D. Rice,England,M,sot,0.21,4.75,,,,,,0.47,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Sergiño Dest,USA,D,sot,0.19,5.26,2.7,0.3494,-0.1594,-0.4562,-0.487,0.241,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,A. Rabiot,France,M,sot,0.182,5.51,,,,,,0.299,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.182,5.51,2.6,0.3628,-0.1808,-0.4984,-0.5268,0.299,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Nico O'Reilly,England,D,sot,0.181,5.51,3.0,0.3145,-0.1335,-0.4244,-0.457,0.307,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,N. O&apos;Reilly,England,D,sot,0.181,5.51,,,,,,0.307,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-06,2026-07-06T00:00:00+00:00,World Cup,Mexico vs England,PROP_LEAGUE,Roberto Alvarado,Mexico,F,sot,0.181,5.54,2.3,0.4102,-0.2292,-0.5587,-0.5837,0.261,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,F,sot,0.173,5.79,2.05,0.4602,-0.2872,-0.6241,-0.6454,0.688,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Jhon Arias,Colombia,M,sot,0.169,5.91,2.15,0.4388,-0.2698,-0.6148,-0.6366,0.638,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ismael Saibari,Morocco,M,sot,0.167,5.99,,,,,,0.689,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Martin Ødegaard,Norway,M,sot,0.162,6.18,,,,,,0.436,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Maxim De Cuyper,Belgium,D,sot,0.161,6.2,2.7,0.3494,-0.1884,-0.5392,-0.5653,0.286,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Folarin Balogun,USA,F,sot,0.157,6.35,,,,,,0.749,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Youri Tielemans,Belgium,M,sot,0.15,6.65,2.5,0.3774,-0.2274,-0.6025,-0.625,0.653,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ismael Saibari,Morocco,M,sot,0.161,6.21,2.3,0.4102,-0.2492,-0.6075,-0.6297,0.689,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Maxim De Cuyper,Belgium,D,sot,0.16,6.23,2.7,0.3494,-0.1894,-0.5421,-0.568,0.286,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Folarin Balogun,USA,F,sot,0.159,6.28,,,,,,0.749,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-05,2026-07-05T20:00:00+00:00,World Cup,Brazil vs Norway,PROP_LEAGUE,Martin Ødegaard,Norway,M,sot,0.158,6.34,,,,,,0.436,0.3115,WC_LOW_CONF,5,match_level,AVOID,
