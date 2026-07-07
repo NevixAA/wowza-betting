@@ -1810,6 +1810,78 @@ def get_chat_id(token: str) -> None:
     print(f"Your chat_id: {chat['id']}  (username: {chat.get('username', 'N/A')})")
 
 
+def notify_predict_health(stale_hours: float = 36.0, cooldown_hours: float = 6.0) -> bool:
+    """Alert if predict is producing 0 fixtures because of an OUTAGE (not a quiet night).
+
+    Reads output/predict_health.json (written by src.health_check.record_fetch).
+    Fires when EITHER:
+      * hard failure — every queried league returned a non-200 (the btts-422 signature
+        that silently killed all tips for ~2 weeks in Jun 2026), OR
+      * staleness   — no fixtures fetched for >= stale_hours.
+    Deduped by cooldown_hours so a persistent outage alerts at most every few hours,
+    not every 5-minute run. Returns True if an alert was sent.
+    """
+    from datetime import datetime, timezone
+
+    hf = Path(__file__).resolve().parents[1] / "output" / "predict_health.json"
+    if not hf.exists():
+        return False
+    try:
+        state = json.loads(hf.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+
+    if int(state.get("last_n_fixtures", 0)) > 0:
+        return False  # healthy — fixtures found
+
+    now   = datetime.now(timezone.utc)
+    stats = state.get("last_stats", {}) or {}
+    queried, ok, err = stats.get("queried", 0), stats.get("ok", 0), stats.get("err", 0)
+    hard_fail = queried > 0 and ok == 0 and err > 0
+
+    hours_stale = None
+    lf = state.get("last_fixtures_iso")
+    if lf:
+        try:
+            hours_stale = (now - datetime.fromisoformat(lf)).total_seconds() / 3600.0
+        except Exception:
+            hours_stale = None
+    stale = hours_stale is not None and hours_stale >= stale_hours
+
+    if not (hard_fail or stale):
+        return False
+
+    la = state.get("last_alert_iso")  # cooldown dedup
+    if la:
+        try:
+            if (now - datetime.fromisoformat(la)).total_seconds() / 3600.0 < cooldown_hours:
+                return False
+        except Exception:
+            pass
+
+    if hard_fail:
+        msg = ("⚠️ <b>Wowza health alert</b>\n"
+               f"Predict fetched <b>0 fixtures</b> and <b>every league returned an API error</b> "
+               f"({err}/{queried} failed). Signature of an OddsAPI outage "
+               f"(unsupported market / bad key / quota). <b>Tips are DOWN.</b>")
+    else:
+        stale_txt = f"{hours_stale:.0f}h" if hours_stale is not None else "a long time"
+        msg = ("⚠️ <b>Wowza health alert</b>\n"
+               f"No fixtures fetched for <b>{stale_txt}</b> (>= {stale_hours:.0f}h). "
+               f"Predict may be down (or a genuine quiet period). Last good: "
+               f"{str(lf)[:16] if lf else 'unknown'}.")
+
+    cfg = _load_config()
+    if _send(cfg["token"], cfg["chat_id"], msg):
+        state["last_alert_iso"] = now.isoformat()
+        try:
+            hf.write_text(json.dumps(state, indent=2), encoding="utf-8")
+        except Exception:
+            pass
+        return True
+    return False
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--get-chat-id", action="store_true")
@@ -1825,4 +1897,6 @@ if __name__ == "__main__":
         side = notify_side_bets()
         ht   = notify_ht_tips()
         live = notify_live_signals()
-        print(f"Notifications sent: {n} O/U SNIPER + {side} side market + {ht} HT + {live} Live")
+        health = notify_predict_health()
+        print(f"Notifications sent: {n} O/U SNIPER + {side} side market + {ht} HT + {live} Live"
+              + (" + HEALTH ALERT" if health else ""))
