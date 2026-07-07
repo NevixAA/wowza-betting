@@ -30,6 +30,38 @@ st.caption("Independent model validation using formulas.md — APPROVES or DISAG
 import streamlit.components.v1 as components
 components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
 
+# ── How to read this page ─────────────────────────────────────────────────────
+with st.expander("ℹ️ How to read this page", expanded=False):
+    st.markdown("""
+This is a **second opinion**. The betting tip comes from the **ML model**; this page
+re-derives the same match from scratch with **independent maths** (Poisson + Dixon-Coles
+scoreline model from `formulas.md`) and checks whether the two *agree*. Agreement between
+two different methods is stronger evidence than either alone.
+
+**The numbers**
+- **λ_H / λ_A (lambda)** — expected goals for the home / away team, from
+  `league_avg × attack_strength × opponent_defense_strength`. **λ_T** = total expected goals.
+  *(If team-strength data is missing, it falls back to league average = 1.0 and says so.)*
+- **Formula P** — the probability this independent model gives (e.g. P(OVER 2.5)).
+  **ML P** — the machine-learning model's probability. The `Δ vs ML` shows how far apart they are.
+- **EV** — expected value per 1 unit staked: `P × odds − 1`. Positive = +EV at that price.
+- **Kelly** — mathematically optimal stake fraction; **½-Kelly** is the recommended (safer) version.
+- **Correct scores** — most likely exact scorelines (Dixon-Coles corrects the low-scoring cells).
+
+**The verdict**
+| Badge | Meaning |
+|---|---|
+| ✅ **APPROVED** | Independent model agrees on direction AND the ML edge is solid (≥7%). Highest confidence. |
+| ⚠️ **WEAK** | Both agree on direction but the edge is thin — monitor, don't over-stake. |
+| ⚠️ **NEUTRAL** | Formula model is near 50/50 — no independent confirmation either way. |
+| ❌ **DISAGREE** | Formula model points the *opposite* way — consider skipping the tip. |
+
+**AI Context** (optional, needs a key) asks an LLM for injury/tactical/weather factors that
+stats can't see. The **9-Agent Pipeline** at the bottom runs the full multi-agent player-props
+flow (data → minutes → goal-expectancy → prop-modeling → market-intel → confidence →
+simulation → portfolio) for one match.
+""")
+
 
 # ── Math library (from formulas.md) ──────────────────────────────────────────
 

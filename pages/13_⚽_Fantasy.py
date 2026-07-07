@@ -26,35 +26,67 @@ if st.button("🔄 Refresh"):
     st.rerun()
 
 
-@st.cache_data(ttl=120)
-def _load():
-    if not TIPS_FILE.exists():
-        return pd.DataFrame()
+FIX_OPTS = {"Next 5": 5, "Next 8": 8, "Next 10": 10}
+wsel_fx = st.selectbox(
+    "Fixture window (opponent-adjusted)", list(FIX_OPTS.keys()), index=0,
+    help="Projected points are scaled by the difficulty of each team's next N fixtures "
+         "(opponent goals-conceded rate × home/away). Off-season this falls back to form-only "
+         "until fixtures publish.")
+next_n = FIX_OPTS[wsel_fx]
+
+
+@st.cache_data(ttl=600, show_spinner="Computing fixture-adjusted projections…")
+def _load(nfx):
     try:
-        return pd.read_csv(TIPS_FILE)
+        from player_model.fantasy import build_fantasy_projections_fixtures
+        d = build_fantasy_projections_fixtures(next_n=nfx)
+        if not d.empty:
+            return d
     except Exception:
-        return pd.DataFrame()
+        pass
+    if TIPS_FILE.exists():          # fallback: pre-built base CSV
+        try:
+            return pd.read_csv(TIPS_FILE)
+        except Exception:
+            return pd.DataFrame()
+    return pd.DataFrame()
 
 
-df = _load()
+df = _load(next_n)
 
 if df.empty:
     st.info("No fantasy projections yet. They populate once the model runs on Premier League "
-            "fixtures (in-season). Run `python -m player_model.fantasy` to generate.")
+            "data. Run `python -m player_model.fantasy` to generate.")
     st.stop()
 
-st.warning("**v1 (pre-season):** projections use each player's latest form and are attack-focused. "
-           "At season start these upgrade to opponent-adjusted per-GW projections, a current-squad "
-           "filter (no departed players), and clean-sheet/save points for defenders & keepers.", icon="⚠️")
+# Opponent-adjusted points when fixtures are available; else form-based. Re-rank on the shown points.
+_fx_on = bool(df["fixtures_available"].iloc[0]) if "fixtures_available" in df.columns else False
+df["disp_pts"] = (df["fixture_adj_pts"] if (_fx_on and "fixture_adj_pts" in df.columns)
+                  else df["fantasy_pts"])
+df = df.sort_values("disp_pts", ascending=False).reset_index(drop=True)
+df["overall_rank"] = range(1, len(df) + 1)
+df["pos_rank"] = df.groupby("position")["disp_pts"].rank(ascending=False, method="first").astype(int)
+df["captain_pick"] = df["overall_rank"] <= 3
+
+if _fx_on:
+    st.success(f"**Opponent-adjusted** — points scaled by each team's **{wsel_fx.lower()}** fixtures "
+               "(opponent goals-conceded × home/away). FDR > 1 = easy run, < 1 = hard run.", icon="✅")
+else:
+    st.warning("**Pre-season / no fixtures published yet:** showing form-based points. The opponent-"
+               "adjusted fixture layer is wired and engages automatically once PL fixtures publish. "
+               "(Season start also adds a current-squad filter + clean-sheet/save points for DEF/GK.)",
+               icon="⚠️")
 
 # ── Captaincy picks ───────────────────────────────────────────────────────────
 st.subheader("🏆 Captaincy picks")
 cap = df[df.get("captain_pick", False) == True] if "captain_pick" in df.columns else df.head(3)
 cols = st.columns(max(len(cap), 1))
 for c, r in zip(cols, cap.itertuples()):
-    c.metric(f"{r.player_name} ({r.position})",
-             f"{r.fantasy_pts:.2f} pts",
-             help=f"P(goal) {getattr(r,'p_goal',0):.0%} · P(assist) {getattr(r,'p_assist',0):.0%}")
+    fx = getattr(r, "next_fixtures", "") or ""
+    help_txt = f"P(goal) {getattr(r,'p_goal',0):.0%} · P(assist) {getattr(r,'p_assist',0):.0%}"
+    if fx:
+        help_txt += f" · next: {fx}"
+    c.metric(f"{r.player_name} ({r.position})", f"{r.disp_pts:.2f} pts", help=help_txt)
 
 # ── Per-position top picks ────────────────────────────────────────────────────
 st.subheader("📋 Top by position")
@@ -63,17 +95,19 @@ for col, pos in zip(pcols, ["F", "M", "D", "G"]):
     sub = df[df["position"] == pos].head(5)
     col.markdown(f"**{POS_LABEL.get(pos, pos)}**")
     for r in sub.itertuples():
-        col.write(f"{r.pos_rank}. {r.player_name} — {r.fantasy_pts:.2f}")
+        col.write(f"{r.pos_rank}. {r.player_name} — {r.disp_pts:.2f}")
 
 # ── Full ranked table ─────────────────────────────────────────────────────────
 st.subheader("📊 Full projections")
 posf = st.multiselect("Filter position", ["F", "M", "D", "G"], default=["F", "M", "D", "G"])
 show = df[df["position"].isin(posf)].copy()
 disp_cols = [c for c in ["overall_rank", "player_name", "team", "position",
-                         "p_goal", "p_assist", "p_sot2", "fantasy_pts"] if c in show.columns]
+                         "p_goal", "p_assist", "p_sot2", "disp_pts", "avg_fdr", "next_fixtures"]
+             if c in show.columns]
 show = show[disp_cols].rename(columns={
     "overall_rank": "#", "player_name": "Player", "team": "Team", "position": "Pos",
-    "p_goal": "P(goal)", "p_assist": "P(assist)", "p_sot2": "P(SOT2+)", "fantasy_pts": "Exp pts",
+    "p_goal": "P(goal)", "p_assist": "P(assist)", "p_sot2": "P(SOT2+)",
+    "disp_pts": "Exp pts", "avg_fdr": "FDR", "next_fixtures": "Next fixtures",
 })
 for c in ["P(goal)", "P(assist)", "P(SOT2+)"]:
     if c in show.columns:
