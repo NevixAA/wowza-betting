@@ -1,247 +1,199 @@
-# Wowza v9.2 — Football Betting Intelligence System
+# Wowza v9 — Football Betting Intelligence System
 
-**Version:** v9.2  
-**Status:** Production — fully automated via GitHub Actions  
+**Status:** Production — fully automated via GitHub Actions
 **Live since:** April 2026
+**Last doc update:** 2026-07-07
 
 ---
 
 ## What It Does
 
-A complete football betting intelligence platform with multiple prediction layers:
+A football betting + prediction platform with several independent signal families, all
+running automatically in the cloud (no server/PC needed).
 
-| Module | What it does |
-|---|---|
-| **O/U 2.5 Model** | Predicts Over/Under 2.5 goals — SNIPER/MARKSMAN/VALUABLE tiers |
-| **Side Markets** | BTTS, O/U 1.5, O/U 3.5 predictions with per-league walk-forward backtest |
-| **HT Model** | Half-time O/U 0.5 and 1.5 predictions |
-| **Sharp Money Tracker** | Odds drift detection — STEAM, STRONG, SHARP signals across 20 leagues |
-| **World Cup Tracker** | WC 2026 drift + ML model value on O/U 1.5/2.5/3.5 and 1X2 |
-| **Live Scanner** | In-play Poisson signals during match hours |
-| **Player Props** | 9-market ML ensemble — SOT×4, Goals×3, Cards, Assists |
+| Module | What it does | Money? |
+|---|---|---|
+| **Standard O/U 2.5** | Over/Under 2.5 goals for our 7 second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers, per-league thresholds | **Real-money candidate** |
+| **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — per-league walk-forward thresholds | Real-money candidate |
+| **HT Model** | Half-time O/U 0.5 and 1.5 | Paper |
+| **New-Format Model** | O/U for goals-only leagues (Brazil, Norway, MLS, …) — separate model, never mixed with standard | Paper |
+| **Sharp Money Tracker** | Odds-drift detection — STEAM / STRONG / SHARP across enabled leagues | Info |
+| **World Cup Tracker** | WC 2026 drift + ML value on O/U 1.5/2.5/3.5 and 1X2 | Paper |
+| **Live Scanner** | In-play Poisson signals during match hours (UNDER_HOLD, SLEEPING_GAME, STRONG_STUCK, COMEBACK, HT_*) | Info/alert |
+| **Player Props** | 7-market ML ensemble (Goals, Goals 2+, Assists, SOT 1-3+, Cards) | **Paper only — no betting edge** |
+| **Fantasy (FPL)** | Repackages the accurate props model into FPL point projections (PL to start) | Prediction product |
+| **Health Monitor** | Alerts if predict fetches 0 fixtures / all leagues error (outage detection) | Reliability |
 
-All runs automatically in the cloud — no server or PC required.
+---
+
+## Signal Tiers (betting families)
+
+| Tier | Edge | Stake | Note |
+|---|---|---|---|
+| 🎯 **SNIPER** | Per-league threshold (14–25%) | Full | Highest confidence |
+| 🔫 **MARKSMAN** | ~14% to threshold | 3/4 | Medium-high |
+| 💎 **VALUABLE** | 4–8% | Half | Side markets only (O/U 2.5 VALUABLE disabled — net-negative) |
 
 ---
 
 ## Architecture
 
 ```
-pipeline.py                ← team model: train / predict / backtest
-update_results.py          ← fill WIN/LOSS/PnL via football-data.co.uk
-config.py                  ← all thresholds, paths, API keys
+pipeline.py                ← team models: train / predict / backtest
+retrain.py                 ← full download + retrain (standard + new-format)
+update_results.py          ← fill WIN/LOSS/PnL from football-data.co.uk
+config.py                  ← paths, leagues, thresholds, MAX odds bounds
 
 src/
-  data_loader.py           ← Excel + CSV + CI download from FD
-  feature_engineering.py  ← rolling form, HT features, home advantage, league isolation
-  model.py                 ← LogisticRegression + GradientBoosting + Platt calibration
-  predict.py               ← OddsAPI fixtures → model → SNIPER/MARKSMAN/VALUABLE
-  backtest.py              ← walk-forward backtest (no leakage)
+  data_loader.py           ← Excel workbook + CSV + CI web download (last 4 seasons)
+  feature_engineering.py   ← rolling form, HT, home advantage, per-format isolation
+  model.py                 ← LogReg + GradientBoosting + Platt calibration
+  predict.py               ← OddsAPI fixtures → model → tiers  (PRE-MATCH ONLY)
   betting.py               ← 3-tier signal logic (per-league thresholds)
-  sharp_tracker.py         ← volume-weighted drift, steam detection, consensus scoring
-  live_scanner.yml         ← Poisson in-play signals + HT sub-formula
-
-side_markets/
-  config.py                ← BTTS / O1.5 / O3.5 thresholds + league list
-  predict.py               ← side market predictions → side_bets.csv
-
-worldcup/
-  tracker.py               ← WC drift + ML model value on WC fixtures
+  backtest.py              ← walk-forward backtest (no leakage)
+  sharp_tracker.py         ← volume-weighted drift, steam, consensus
+  live_scanner.py          ← in-play Poisson signals + HT sub-formula
+  health_check.py          ← records fetch health → outage alert (via notifier)
 
 player_model/
-  config.py                ← prop league/tier thresholds, PLAYER_FEATURE_COLS (132 features)
-  api_football.py          ← API-Football client (match stats, lineups, referees, injuries)
-  feature_engineering.py  ← 132-feature rolling player features (season stats, profile,
-                             injury, referee, opponent matchup composites)
-  model.py                 ← per-market Platt-calibrated ensemble; graceful feature fill
-  pipeline.py              ← collect → enrich-season → enrich-profiles → enrich-sidelined
-                             → enrich-sidelined-live → train → predict
-  predict.py               ← de-vig EV, relative edge, lazy market factors
+  config.py                ← 7 markets, prop league/tier thresholds, 139 feature cols
+  api_football.py          ← API-Football client (stats, lineups, referees, injuries, live)
+  feature_engineering.py   ← rolling player features (form / season / career)
+  model.py                 ← per-market Platt-calibrated ensemble
+  pipeline.py              ← collect → train → predict
+  predict.py               ← de-vig EV, relative edge, lazy-market factors
+  fantasy.py               ← FPL point projections + squad builder (Fantasy family)
 
-agent/
-  player-props-architecture.md  ← full player props ML architecture (v2)
-  formulas.md              ← formula library (Poisson, Dixon-Coles, Kelly, EV)
-
-output/
-  bets_ledger.csv          ← every tip + results
-  predictions.csv          ← latest prediction run (team model)
-  bets.csv                 ← latest SNIPER/MARKSMAN/VALUABLE tips (O/U 2.5)
-  side_bets.csv            ← BTTS / O1.5 / O3.5 tips
-  sharp_tips.csv           ← sharp money signals
-  worldcup_tips.csv        ← WC drift signals
-  worldcup_model_tips.csv  ← WC ML fair price vs market
-  player_tips.csv          ← player prop signals
-  live_tips.csv            ← in-play signals
-
-pages/                     ← Streamlit dashboard pages
-  1_📊_Dashboard.py
-  2_📈_Performance.py
-  3_📋_Ledger.py
-  4_ℹ️_Model_Info.py
-  5_🌍_World_Cup.py
-  6_⚡_Live.py
-  7_💰_Sharp_Money.py
-  8_⏱_HalfTime.py
-  9_📜_Live_History.py
-  10_🤖_Agent_Analysis.py
-  11_👤_Player_Props.py
-
-.github/workflows/
-  predict.yml              ← every 5min 08-23 UTC (offset :01): train + predict + Telegram
-  player_props.yml         ← every 5min 08-23 UTC (offset :02): injury refresh + props
-  live_scanner.yml         ← every 5min 08-23 UTC (offset :03): live signals
-  update_results.yml       ← every 2h: fill results from football-data.co.uk
-  sharp_tracker.yml        ← every 2h: drift signals across 20 leagues
-  worldcup.yml             ← every 1h 08-23 UTC: WC tracker (match hours only)
-  retrain.yml              ← every Sunday: full model retrain
-  backtest.yml             ← manual trigger: walk-forward validation
-  weekly_summary.yml       ← every Monday 09:00: Telegram performance summary
-  daily_summary.yml        ← 07:00 UTC daily: digest + notified.json commit
+telegram_bot/notifier.py   ← all Telegram sends + notify_predict_health()
+pages/                     ← Streamlit dashboard
 ```
 
 ---
 
-## Backtest Performance (Standard Model — post-COVID, walk-forward)
+## Models
 
-> COVID seasons (2019/20, 2020/21) excluded from training
+Every model is a **LogReg + GradientBoosting ensemble with Platt calibration**, trained
+per-market with a chronological (walk-forward) split — no random leakage.
 
-### O/U 2.5
+| Model file | Scope |
+|---|---|
+| `model_v9_standard.pkl` | O/U 2.5, standard-format (our 7 second divs, trained on the full standard pool) |
+| `model_v9_newformat.pkl` | O/U 2.5, goals-only leagues — **never mixed with standard** |
+| `model_v9_btts / over15 / over35.pkl` | Side markets |
+| `model_ht_over05 / over15.pkl` | Half-time O/U |
+| `model_player_{goals,goals2,assists,sot,sot2,sot3,cards}.pkl` | 7 player-prop markets |
 
-| Tier | Bets | Win Rate | ROI |
-|---|---|---|---|
-| 🎯 SNIPER | 1,929 | 43.6% | **+59.0%** |
-| 🔫 MARKSMAN | ~2,400 | 41.2% | **+18.4%** |
-| ~~💎 VALUABLE~~ | — | — | -8.2% (disabled) |
+### Player Props (7 markets — retrained 2026-07 on 4 seasons / 230k rows)
 
-### Side Markets (BTTS / O1.5 / O3.5)
+| Market | AUC |
+|---|---|
+| goals (1+) | 0.745 |
+| goals2 (2+) | 0.828 |
+| assists (1+) | 0.680 |
+| sot (1+) | 0.734 |
+| sot2 (2+) | 0.798 |
+| sot3 (3+) | 0.844 |
+| cards | 0.625 |
 
-| Market | Bets | ROI |
-|---|---|---|
-| BTTS Yes | ~800 | **+22–31%** |
-| Over 1.5 | ~600 | **+18–27%** |
-| Over 3.5 | ~400 | **+14–21%** |
-
-*Side market backtests are per-league optimised — ROI range across enabled leagues.*
-
----
-
-## Signal Tiers
-
-| Tier | Edge | Stake | Note |
-|---|---|---|---|
-| 🎯 **SNIPER** | Per-league threshold (14–25%) | Full stake | Highest confidence |
-| 🔫 **MARKSMAN** | 8% to threshold | 3/4 stake | Medium-high confidence |
-| 💎 **VALUABLE** | 4–8% | Half stake | Side markets only (O/U 2.5 VALUABLE disabled: -8.2% ROI) |
+- **139 feature columns** per player-match: rolling form (5-game), season aggregates,
+  career priors, opponent matchup composites, referee, injury, venue/position flags.
+- **The model is accurate but has NO betting edge** on top-5 props (rigorously confirmed
+  OOS, per league × market × role — ROI −41% to −57%, zero repeatable +EV cells).
+  Top-5 prop markets are efficiently priced → **props stay paper.** Their real home is
+  the **Fantasy** family (no bookmaker / no vig → accuracy converts to value).
 
 ---
 
 ## Automation (GitHub Actions)
 
-Everything runs in the cloud — PC can be completely off.
-
-| Workflow | Schedule | Does |
+| Workflow | Schedule (UTC) | Does |
 |---|---|---|
-| **Predict** | Every 5min 08-23 UTC (at :01) | O/U 2.5 + side markets + Telegram |
-| **Player Props** | Every 5min 08-23 UTC (at :02) | Injury refresh → 9-model props + Telegram |
-| **Live Scanner** | Every 5min 08-23 UTC (at :03) | In-play Poisson signals |
-| **Update Results** | Every 2h | Fill WIN/LOSS from football-data.co.uk |
-| **Sharp Tracker** | Every 2h | Drift signals across 20 leagues |
-| **World Cup** | Every 1h 08-23 UTC | WC drift + ML value (match hours only) |
-| **Retrain** | Sunday 04:00 | Full model retrain with latest data |
-| **Daily Summary** | 07:00 UTC | Telegram digest + commit notified.json |
-| **Weekly Summary** | Monday 09:00 | Telegram performance summary |
+| **predict** | every 5 min, 08–23 (at :01) | O/U 2.5 + side markets → Telegram + health record |
+| **player_props** | hourly (:02) + nightly 23:30 + Sun 05:00 | props predict / WC collect / Sunday club retrain |
+| **live_scanner** | every 5 min, 08–23 (at :03) | in-play Poisson signals |
+| **worldcup** | hourly, 08–23 | WC drift + ML value |
+| **sharp_tracker** | every 2 h (08–22) | drift signals |
+| **update_results** | ~every 2 h | fill WIN/LOSS from football-data.co.uk |
+| **injury_refresh** | daily 04:00 | refresh injury data |
+| **daily_summary** | 07:00 | Telegram digest + props digest |
+| **weekly_summary** | Mon 09:00 | performance summary |
+| **retrain** | **Sun 03:00** | full team + player retrain, commit + push |
+| **backtest** | monthly (1st, 03:00) | heavy walk-forward + per-league ROI |
+| **preseason_retrain** | Aug 1 | season-start retrain |
 
-*Workflows are staggered (:01/:02/:03) to avoid simultaneous GitHub Actions runner contention.*
+Predict runs are **pre-match only** — matches that have already kicked off are skipped
+(they belong to the live scanner, not the pre-match model).
 
 ---
 
-## Model Details
+## Reliability / monitoring
 
-### Team O/U 2.5 Model
-- Ensemble: LogisticRegression + GradientBoosting + Platt calibration
-- Walk-forward validation, no random splits, COVID seasons excluded
-- Time-decay: recent seasons weighted 2–4× higher
-- Per-league SNIPER thresholds (14–25%) via walk-forward optimisation
-
-### Player Props Model (v9.2)
-- **9 markets:** Goals, Goals×2, Goals×3, SOT, SOT×2, SOT×3, SOT×4, Yellow Cards, Assists
-- **AUC range:** 0.714 – 0.844 (post-retrain June 2026)
-- **132 feature columns** per player per match:
-  - Rolling form (10-game window): goals, shots, SOT, cards, key passes, ratings
-  - Season stats: full-season aggregates from API-Football enrichment
-  - Profile: age, height, peak-age delta, height × aerial interaction
-  - Injury: chronic risk, days since last injury, return-from-injury flag
-  - Referee: yellows per game, strictness z-score
-  - Opponent matchup: 8 composite scores (carrier vs press, box threat vs leaky defense, etc.)
-  - Venue splits, position flags, career priors
-- **Enrichment pipeline:**
-  - `enrich-season` — full season API stats for all 4,054 players
-  - `enrich-profiles` — age/height from player profile API
-  - `enrich-sidelined` — bulk injury history
-  - `enrich-sidelined-live` — fast pre-predict refresh for players active in last 60 days only
-
-**Key fixes (v9.2 — June 2026):**
-- `build_upcoming_features()` now emits all 132 training features at predict time (was causing CI crash with KeyError on 28 missing columns)
-- `model._prep()` fills any still-missing columns with 0 for graceful degradation
-- Merge-on-write pattern for parallel enrichment (no column clobbering)
+- **Pre-match filter** — `predict.py` skips already-started matches (an in-play match's
+  live odds would otherwise produce a false SNIPER).
+- **Outage health alert** — `health_check.py` records each fetch; `notify_predict_health()`
+  pings Telegram if every league errors (0 fixtures) or the system goes stale. Guards
+  against silent multi-day outages.
+- **Team-name matching** — identity-token match (won't confuse Manchester City with
+  Manchester United, etc.) when joining fixtures.
+- **Odds sanity** — main O/U line odds are bounded (`MAX_OU_ODDS`) to reject stale/fringe prices.
 
 ---
 
-## Enabled Leagues
+## Leagues
 
-### Standard Model (full stats + odds history)
-| League | Country | SNIPER Threshold |
-|---|---|---|
-| League One | England | 25% |
-| League Two | England | 14% |
-| Bundesliga 2 | Germany | 20% |
-| La Liga 2 | Spain | 20% |
-| Ligue 2 | France | 25% |
-| Championship | England | 15% |
-| Serie B | Italy | 15% |
+### Standard O/U — BET (our 7 second divisions)
+Championship · League One · League Two · Bundesliga 2 · La Liga 2 · Serie B · Ligue 2
 
-### New-Format Model (goals only)
-Ireland, Finland, Denmark, Austria, Sweden, Norway, Brazil, Japan, Mexico, China, USA MLS, Argentina
+*Additional full-stats leagues (Dutch, Portuguese, Greek, Turkish, Belgian, Scottish,
+National League) live in `STANDARD_FORMAT_LEAGUES` as **training-only data** — they
+improve the model but are **not bet** (not in `ENABLED_LEAGUES`).*
 
-### Player Props Leagues
-**Top tier:** Premier League, Bundesliga, La Liga, Serie A, Ligue 1, Champions League, Europa League, Conference League  
-**Secondary:** Championship, League One, Bundesliga 2  
-**Tournament:** World Cup 2026 (until Jul 19)
+### New-Format O/U (goals only)
+Denmark · Austria · Sweden · Norway · Finland · Ireland · Argentina · Brazil · Japan ·
+Mexico · China · USA MLS · Romania (+ Saudi, K-League as training-only)
+
+### Player Props / Fantasy
+Top-5 + Champions League + Europa League + World Cup. (Player-prop **odds** exist only
+for these on OddsAPI — smaller leagues return none.)
 
 ---
 
 ## Data Sources
 
-| Source | Used For | Cost |
+| Source | Used for | Notes |
 |---|---|---|
-| football-data.co.uk | Historical match data | Free |
-| OddsAPI (the-odds-api.com) | Live odds + WC odds | ~$30/month (20K credits) |
-| API-Football (api-sports.io) | Player stats, lineups, injuries, referees | 5K/day plan |
-| Sofascore (cached) | Set-piece goals per team | Free (scraping) |
-| FBref (scraping) | Player season stats for training | Free (scraping) |
+| football-data.co.uk | Historical match data | CI download = **last 4 seasons** |
+| `England_Leagues_4_Seasons_With_Summary.xlsx` | Deep English history | **Local-only, not in git** — CI never uses it |
+| OddsAPI (the-odds-api.com) | Live + WC odds, player props | credit-metered |
+| API-Football (api-sports.io) | Player stats, lineups, injuries, referees, live scores | |
+| Sofascore / FBref | set-piece + season stats | scraping |
+
+> ⚠️ **Data note:** because the deep Excel is local-only, the automated CI retrain trains
+> on the **last 4 seasons**. A local run *with* the Excel sees more history and different
+> bet counts/ROI — so treat per-league ROI as re-validated each retrain
+> (`output/backtest_by_league_standard.csv`), not as a fixed headline number.
 
 ---
 
 ## Setup
 
-### GitHub Secrets required
-```
-ODDS_API_KEY      → the-odds-api.com
-TELEGRAM_TOKEN    → @TheWowzaBot token
-TELEGRAM_CHAT_ID  → group chat ID
-APIFOOTBALL_KEY   → api-sports.io key (direct endpoint, not RapidAPI)
+**GitHub secrets:** `ODDS_API_KEY`, `TELEGRAM_TOKEN`, `TELEGRAM_CHAT_ID`, `APIFOOTBALL_KEY`.
+Local secrets live in gitignored `.env` / `.api_keys` (never committed).
+
+```bash
+python pipeline.py --mode predict                 # O/U 2.5 + side markets
+python -m player_model.pipeline --mode predict     # player props
+python retrain.py                                  # full team retrain (needs data)
+streamlit run app.py                               # dashboard
 ```
 
-### Local run
-```bash
-python pipeline.py --mode predict                          # O/U 2.5 tips
-python -m player_model.pipeline --mode predict             # player props
-python -m player_model.pipeline --mode enrich-sidelined-live  # injury refresh
-```
+**Dashboard pages:** Dashboard · Model Info · World Cup · Live · Sharp Money · HalfTime ·
+Live History · Agent Analysis · Player Props · Portfolio · Fantasy.
 
 ---
 
-## Dashboard
+## Development process
 
-Public: `https://nevixaa-wowza-betting-app-kqbjnm.streamlit.app/`  
-Local: `http://localhost:8501`
+**Big / risky changes are staged in a `v10` copy first** — build → validate → test →
+decide → then promote to live `v9`. Small validated bug fixes may go straight to `v9`.
+(See `v10\V10_STAGING_README.md`.)
