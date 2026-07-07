@@ -76756,6 +76756,14 @@
           "odds_under": 1.81
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_over": 1.95,
+          "odds_under": 1.88
+        },
+        "n_books": 13
       }
     ]
   },
@@ -76950,6 +76958,14 @@
         "odds": {
           "odds_over": 2.35,
           "odds_under": 1.61
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_over": 2.3,
+          "odds_under": 1.62
         },
         "n_books": 11
       }
@@ -77172,6 +77188,15 @@
           "odds_draw": 4.8
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_home": 1.34,
+          "odds_away": 11.0,
+          "odds_draw": 4.9
+        },
+        "n_books": 24
       }
     ]
   },
@@ -77392,6 +77417,15 @@
           "odds_draw": 3.12
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_home": 3.59,
+          "odds_away": 2.255,
+          "odds_draw": 3.13
+        },
+        "n_books": 24
       }
     ]
   },
@@ -77519,6 +77553,14 @@
       },
       {
         "at": "2026-07-07 01:08",
+        "odds": {
+          "odds_over": 1.98,
+          "odds_under": 1.83
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-07-07 11:20",
         "odds": {
           "odds_over": 1.98,
           "odds_under": 1.83
@@ -77672,6 +77714,15 @@
           "odds_draw": 3.9
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_home": 1.595,
+          "odds_away": 6.3,
+          "odds_draw": 3.9
+        },
+        "n_books": 24
       }
     ]
   },
@@ -77730,6 +77781,14 @@
         "odds": {
           "odds_over": 1.8,
           "odds_under": 2.05
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_over": 1.78,
+          "odds_under": 2.09
         },
         "n_books": 11
       }
@@ -77799,6 +77858,57 @@
           "odds_draw": 3.7
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_home": 4.1,
+          "odds_away": 1.89,
+          "odds_draw": 3.7
+        },
+        "n_books": 24
+      }
+    ]
+  },
+  "fca257de4583bd4bc592e8b2a8f24ad7_totals": {
+    "home": "Spain",
+    "away": "Belgium",
+    "date": "2026-07-10 19:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.81,
+      "odds_under": 2.01
+    },
+    "snapshots": [
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_over": 1.81,
+          "odds_under": 2.01
+        },
+        "n_books": 13
+      }
+    ]
+  },
+  "fca257de4583bd4bc592e8b2a8f24ad7_h2h": {
+    "home": "Spain",
+    "away": "Belgium",
+    "date": "2026-07-10 19:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.63,
+      "odds_away": 5.61,
+      "odds_draw": 4.0
+    },
+    "snapshots": [
+      {
+        "at": "2026-07-07 11:20",
+        "odds": {
+          "odds_home": 1.63,
+          "odds_away": 5.61,
+          "odds_draw": 4.0
+        },
+        "n_books": 24
       }
     ]
   }
