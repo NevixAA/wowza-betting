@@ -1,140 +1,149 @@
 date,kickoff_utc,league,match,match_tier,player_name,team,position,market,model_prob,fair_odds,market_odds,fair_implied,edge_abs,edge_rel,ev,ges,confidence,lazy_factors,n_games,data_source,tier,kelly_stake
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Lionel Messi,Argentina,F,sot,0.495,2.02,1.1,0.8576,-0.3626,-0.4228,-0.4555,0.81,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Lionel Messi,Argentina,F,sot,0.494,2.02,1.1,0.8576,-0.3636,-0.424,-0.4566,0.81,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Kylian Mbappé,France,F,sot,0.465,2.15,1.12,0.8423,-0.3773,-0.448,-0.4792,0.83,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Harry Kane,England,F,sot,0.428,2.34,1.22,0.7733,-0.3453,-0.4465,-0.4778,0.811,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Leandro Trossard,Belgium,F,sot,0.409,2.44,,,,,,0.71,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Jérémy Doku,Belgium,F,sot,0.374,2.67,,,,,,0.668,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Cucho Hernández,Colombia,F,sot,0.367,2.72,,,,,,0.761,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ousmane Dembélé,France,M,sot,0.359,2.79,1.67,0.5649,-0.2059,-0.3645,-0.4005,0.709,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Leandro Trossard,Belgium,F,sot,0.358,2.79,1.6,0.5896,-0.2316,-0.3928,-0.4272,0.71,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Folarin Balogun,USA,F,sot,0.353,2.83,1.35,0.6988,-0.3458,-0.4949,-0.5234,0.749,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Erling Haaland,Norway,F,sot,0.333,3.01,,,,,,0.767,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Kevin De Bruyne,Belgium,F,sot,0.363,2.76,,,,,,0.803,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ousmane Dembélé,France,M,sot,0.359,2.78,1.67,0.5649,-0.2059,-0.3645,-0.4005,0.709,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Erling Haaland,Norway,F,sot,0.334,3.0,,,,,,0.767,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Michael Olise,France,M,sot,0.328,3.05,1.73,0.5453,-0.2173,-0.3985,-0.4326,0.329,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Dodi Lukebakio,Belgium,M,sot,0.316,3.17,1.95,0.4838,-0.1678,-0.3468,-0.3838,0.672,0.386,STARTER|SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Andrej Ilić,Lille,F,sot,0.315,3.18,,,,,,0.751,0.623,,5,match_level,AVOID,
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Luis Díaz,Colombia,M,sot,0.314,3.18,,,,,,0.488,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Hugo Ekitiké,France,M,sot,0.309,3.23,,,,,,0.476,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,sot,0.307,3.25,,,,,,0.699,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Fermín López,Spain,M,sot,0.306,3.27,,,,,,0.487,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Jonathan David,Lille,M,sot,0.299,3.35,,,,,,0.767,0.623,,5,match_level,AVOID,
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Maghnes Akliouche,France,M,sot,0.294,3.4,1.6,0.5896,-0.2956,-0.5014,-0.5296,0.247,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Nico Paz,Argentina,F,sot,0.292,3.42,,,,,,0.458,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Breel Embolo,Switzerland,F,sot,0.287,3.48,1.75,0.5391,-0.2521,-0.4676,-0.4978,0.731,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Nico Paz,Argentina,F,sot,0.292,3.43,,,,,,0.458,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Cristhian Mosquera,Spain,D,cards,0.291,3.43,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
+2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Breel Embolo,Switzerland,F,sot,0.286,3.49,1.75,0.5391,-0.2531,-0.4695,-0.4995,0.731,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Mikel Oyarzabal,Spain,F,sot,0.282,3.54,,,,,,0.775,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Jude Bellingham,England,M,sot,0.278,3.6,1.53,0.6166,-0.3386,-0.5491,-0.5747,0.632,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,James Garner,England,M,cards,0.273,3.67,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Alan Virginius,Lille,M,sot,0.27,3.71,,,,,,0.256,0.623,,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Folarin Balogun,USA,F,goals,0.268,3.73,2.61,0.3615,-0.0935,-0.2586,-0.3005,0.749,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Marc Bernal,Spain,M,cards,0.268,3.74,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Sergio Gómez,Spain,D,cards,0.266,3.76,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Nabil Bentaleb,Lille,M,cards,0.264,3.79,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Carl McHugh,Sligo Rovers,M,cards,0.263,3.8,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Marcos Llorente,Spain,D,cards,0.262,3.82,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Bobby Burns,Galway United,M,cards,0.261,3.83,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Cole Palmer,England,M,sot,0.261,3.82,,,,,,0.493,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Fikayo Tomori,England,D,cards,0.26,3.85,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Patrick Hickey,Galway United,M,cards,0.254,3.93,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Leny Yoro,Lille,M,cards,0.254,3.94,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Alex Baena,Spain,F,sot,0.253,3.95,,,,,,0.687,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Seb Quirk,Sligo Rovers,M,cards,0.252,3.96,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,José Fonte,Lille,D,cards,0.252,3.96,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Yasser Ibrahim,Egypt,D,cards,0.25,4.01,5.0,0.1818,0.0682,0.375,0.25,,0.623,,5,match_level,VALUABLE,0.0125
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Patrick McClean,Sligo Rovers,D,cards,0.25,4.0,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Yasser Ibrahim,Egypt,D,cards,0.25,4.01,5.0,0.1818,0.0682,0.375,0.25,,0.623,,5,match_level,VALUABLE,0.0125
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Romain Perraud,Lille,D,cards,0.25,3.99,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Garry Buckley,Galway United,M,cards,0.25,4.0,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Moses Dyer,Galway United,M,cards,0.25,4.01,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Romain Perraud,Lille,D,cards,0.25,3.99,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jad Hakiki,Sligo Rovers,M,cards,0.249,4.01,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Carlos Baleba,Lille,M,cards,0.249,4.02,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Sean McHale,Sligo Rovers,M,cards,0.249,4.02,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jad Hakiki,Sligo Rovers,M,cards,0.249,4.01,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Lee Devitt,Galway United,M,cards,0.248,4.04,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Aïssa Mandi,Lille,D,cards,0.248,4.03,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,John Mahon,Sligo Rovers,D,cards,0.248,4.03,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Lee Devitt,Galway United,M,cards,0.248,4.04,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Granit Xhaka,Switzerland,M,cards,0.248,4.03,3.9,0.2331,0.0149,0.0639,-0.0328,,0.623,,5,match_level,AVOID,0.0
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Nathan Ngoy,Lille,D,cards,0.247,4.05,3.6,0.2525,-0.0055,-0.0219,-0.1108,,0.698,REFEREE,5,match_level,AVOID,0.0
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Alex Nolan,Sligo Rovers,F,cards,0.246,4.07,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Nathan Ngoy,Lille,D,cards,0.247,4.05,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Hakon Arnar Haraldsson,Lille,M,cards,0.246,4.07,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Akim Zedadka,Lille,D,cards,0.245,4.07,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Chris Richards,USA,D,cards,0.245,4.07,5.0,0.1818,0.0632,0.3475,0.225,,0.698,STARTER,5,match_level,VALUABLE,0.0113
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Oliver Denham,Sligo Rovers,D,cards,0.245,4.08,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Alex Nolan,Sligo Rovers,M,cards,0.246,4.06,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,James McManus,Sligo Rovers,M,cards,0.245,4.08,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Félix Correia,Lille,M,cards,0.245,4.07,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Hamdy Fathy,Egypt,D,cards,0.244,4.1,3.7,0.2457,-0.0017,-0.0069,-0.0972,,0.623,,5,match_level,AVOID,0.0
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Oliver Denham,Sligo Rovers,D,cards,0.245,4.08,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Akim Zedadka,Lille,D,cards,0.245,4.07,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Mohanad Lasheen,Egypt,M,cards,0.244,4.09,5.8,0.1499,0.0941,0.6275,0.4152,,0.623,,5,match_level,VALUABLE,0.0173
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Hamdy Fathy,Egypt,D,cards,0.244,4.1,3.7,0.2457,-0.0017,-0.0069,-0.0972,,0.623,,5,match_level,AVOID,0.0
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Chancel Mbemba,Lille,D,cards,0.244,4.09,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Gabriel Gudmundsson,Lille,M,cards,0.243,4.11,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Alan Virginius,Lille,F,cards,0.243,4.12,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Ismaily,Lille,D,cards,0.243,4.12,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Alan Virginius,Lille,F,cards,0.243,4.12,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Gabriel Gudmundsson,Lille,M,cards,0.243,4.11,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Connor Barratt,Galway United,M,cards,0.243,4.12,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Cian Kavanagh,Sligo Rovers,M,cards,0.243,4.11,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Issa Diop,Morocco,D,cards,0.242,4.14,3.3,0.2755,-0.0335,-0.1215,-0.2014,,0.698,REFEREE,5,match_level,AVOID,0.0
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Ayyoub Bouaddi,Lille,M,cards,0.242,4.13,3.4,0.2674,-0.0254,-0.0949,-0.1772,,0.698,REFEREE,5,match_level,AVOID,0.0
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Issa Diop,Morocco,D,cards,0.242,4.14,3.3,0.2755,-0.0335,-0.1215,-0.2014,,0.698,REFEREE,5,match_level,AVOID,0.0
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Sondre Langås,Norway,D,cards,0.242,4.13,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Greg Cunningham,Galway United,M,cards,0.242,4.12,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Benjamin André,Lille,M,cards,0.241,4.15,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,André Gomes,Lille,M,cards,0.241,4.16,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Dara McGuinness,Galway United,F,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Gareth McElroy,Sligo Rovers,D,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Arthur Parker,Galway United,D,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Jonathan Bamba,Lille,M,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Andrej Ilić,Lille,F,cards,0.24,4.16,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Arthur Parker,Galway United,D,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Gareth McElroy,Sligo Rovers,D,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Dominic Calvert-Lewin,England,F,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jeannot Esua,Galway United,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jake Doyle Hayes,Sligo Rovers,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Alexsandro Ribeiro,Lille,D,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Andrej Ilić,Lille,F,cards,0.24,4.16,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Dara McGuinness,Galway United,F,cards,0.24,4.17,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Gianfranco Facchineri,Galway United,D,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Bafodé Diakité,Lille,D,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Berke Özer,Lille,G,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Alexsandro Ribeiro,Lille,D,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jake Doyle Hayes,Sligo Rovers,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Aaron Bolger,Galway United,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Edwin Agbaje,Sligo Rovers,D,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Cian Byrne,Galway United,M,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Sean Stewart,Sligo Rovers,D,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Killian Brouder,Galway United,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Berke Özer,Lille,G,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Gianfranco Facchineri,Galway United,D,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Edwin Agbaje,Sligo Rovers,D,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Ryan O'Kane,Sligo Rovers,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jeannot Esua,Galway United,M,cards,0.239,4.19,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Cian Byrne,Galway United,M,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,R. O&apos;Kane,Sligo Rovers,,cards,0.239,4.18,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Léo Jardim,Lille,G,cards,0.238,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,William Fitzgerald,Sligo Rovers,M,cards,0.238,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Shane Blaney,Sligo Rovers,D,cards,0.238,4.2,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Reece Hutchinson,Sligo Rovers,D,cards,0.238,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Edward McCarthy,Galway United,M,cards,0.238,4.2,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Shane Blaney,Sligo Rovers,D,cards,0.238,4.2,,,,,,,0.772,REFEREE|MINUTES,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,David Hurley,Galway United,M,cards,0.238,4.2,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Stephen Walsh,Galway United,M,cards,0.238,4.2,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Léo Jardim,Lille,G,cards,0.238,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Edward McCarthy,Galway United,M,cards,0.238,4.2,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Daire Patton,Sligo Rovers,M,cards,0.237,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,G. McElroy,Sligo Rovers,,cards,0.237,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,S. Walsh,Galway United,,cards,0.237,4.22,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,D. Hurley,Galway United,,cards,0.237,4.22,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,W. Fitzgerald,Sligo Rovers,,cards,0.237,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Vito Mannone,Lille,G,cards,0.237,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,D. Hurley,Galway United,,cards,0.237,4.22,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,G. McElroy,Sligo Rovers,,cards,0.237,4.21,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,J. Esua,Sligo Rovers,,cards,0.237,4.22,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,W. Fitzgerald,Sligo Rovers,,cards,0.237,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Jonathan David,Lille,M,cards,0.236,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Lucas Chevalier,Lille,G,cards,0.236,4.24,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Jimmy Keohane,Galway United,M,cards,0.236,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,A. Bolger,Galway United,,cards,0.236,4.24,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,E. McCarthy,Galway United,,cards,0.236,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Brendan Clarke,Galway United,G,cards,0.236,4.24,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,J. Keohane,Galway United,,cards,0.236,4.25,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Lucas Chevalier,Lille,G,cards,0.236,4.24,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,A. Bolger,Galway United,,cards,0.236,4.24,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,E. McCarthy,Galway United,,cards,0.236,4.23,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Dominic Solanke,England,F,sot,0.235,4.26,,,,,,0.671,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,D. Patton,Sligo Rovers,,cards,0.235,4.25,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Evan Watts,Galway United,G,cards,0.235,4.26,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Dominic Solanke,England,F,sot,0.235,4.26,,,,,,0.671,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,K. Brouder,Galway United,,cards,0.235,4.25,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Sam Sargeant,Sligo Rovers,G,cards,0.234,4.27,,,,,,,0.698,REFEREE,5,match_level,AVOID,
+2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,S. Sargeant,Sligo Rovers,,cards,0.234,4.27,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,Owen Elding,Sligo Rovers,M,cards,0.234,4.28,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Ivan Toney,England,F,cards,0.234,4.27,,,,,,,0.698,REFEREE,5,match_level,AVOID,
-2026-07-11,,Ireland Premier Division,Galway United vs Sligo Rovers,SNIPER,S. Sargeant,Sligo Rovers,,cards,0.234,4.27,,,,,,,0.698,REFEREE,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Noni Madueke,England,F,sot,0.232,4.3,1.73,0.5453,-0.3133,-0.5746,-0.5986,0.655,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Alejandro Baena,Spain,M,sot,0.228,4.39,,,,,,0.447,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Félix Correia,Lille,M,sot,0.225,4.45,,,,,,0.28,0.623,,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Jonathan Bamba,Lille,M,sot,0.223,4.49,,,,,,0.266,0.623,,5,match_level,AVOID,
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Alexis Saelemaekers,Belgium,M,sot,0.206,4.86,,,,,,0.583,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Jarrod Bowen,England,F,sot,0.206,4.84,,,,,,0.687,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Sergiño Dest,USA,M,sot,0.201,4.96,2.7,0.3494,-0.1484,-0.4247,-0.4573,0.241,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Christian Pulišić,USA,M,sot,0.201,4.97,1.55,0.6086,-0.4076,-0.6698,-0.6885,0.4,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Jhon Arias,Colombia,M,sot,0.198,5.05,2.15,0.4388,-0.2408,-0.5488,-0.5743,0.616,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Victor Muñoz,Spain,F,sot,0.202,4.95,,,,,,0.667,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Jhon Arias,Colombia,M,sot,0.198,5.05,2.15,0.4388,-0.2408,-0.5488,-0.5743,0.616,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Mohamed Salah,Egypt,M,sot,0.195,5.13,1.95,0.4838,-0.2888,-0.5969,-0.6198,0.448,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Harry Kane,England,F,goals,0.193,5.17,2.0,0.4717,-0.2787,-0.5908,-0.614,0.811,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.19,5.26,2.6,0.3628,-0.1728,-0.4764,-0.506,0.299,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Malik Tillman,USA,F,sot,0.186,5.38,1.75,0.5391,-0.3531,-0.655,-0.6745,0.657,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Jørgen Strand Larsen,Norway,F,sot,0.186,5.38,,,,,,0.717,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Enzo Fernández,Argentina,M,sot,0.185,5.41,2.15,0.4388,-0.2538,-0.5784,-0.6022,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Rodri,Spain,M,sot,0.193,5.19,,,,,,0.287,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Adrien Rabiot,France,M,sot,0.19,5.25,2.6,0.3628,-0.1728,-0.4764,-0.506,0.299,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Jørgen Strand Larsen,Norway,F,sot,0.187,5.36,,,,,,0.717,0.349,MINUTES|WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Enzo Fernández,Argentina,M,sot,0.185,5.42,2.15,0.4388,-0.2538,-0.5784,-0.6022,0.264,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-09,2026-07-09T20:00:00+00:00,World Cup,France vs Morocco,PROP_LEAGUE,Ismael Saibari,Morocco,M,sot,0.183,5.48,1.95,0.4838,-0.3008,-0.6217,-0.6431,0.604,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Alexander Sørloth,Norway,M,sot,0.175,5.7,,,,,,0.249,0.3115,WC_LOW_CONF,5,match_level,AVOID,
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Alexis Mac Allister,Argentina,M,sot,0.168,5.94,2.75,0.3431,-0.1751,-0.5103,-0.538,0.252,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Leandro Paredes,Argentina,M,sot,0.167,5.98,2.45,0.3851,-0.2181,-0.5663,-0.5908,0.61,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Giuliano Simeone,Argentina,M,sot,0.166,6.03,1.4,0.6739,-0.5079,-0.7537,-0.7676,0.247,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Carlos Baleba,Lille,M,sot,0.165,6.07,,,,,,0.249,0.623,,5,match_level,AVOID,
+2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Alexander Sørloth,Norway,M,sot,0.176,5.69,,,,,,0.249,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Alexis Mac Allister,Argentina,M,sot,0.168,5.95,2.75,0.3431,-0.1751,-0.5103,-0.538,0.252,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Leandro Paredes,Argentina,M,sot,0.167,5.99,2.45,0.3851,-0.2181,-0.5663,-0.5908,0.61,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Giuliano Simeone,Argentina,M,sot,0.166,6.04,1.4,0.6739,-0.5079,-0.7537,-0.7676,0.247,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Nico O'Reilly,England,D,sot,0.165,6.06,3.0,0.3145,-0.1495,-0.4753,-0.505,0.307,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Carlos Baleba,Lille,M,sot,0.165,6.07,,,,,,0.249,0.623,,5,match_level,AVOID,
 2026-07-11,2026-07-11T21:00:00+00:00,World Cup,Norway vs England,PROP_LEAGUE,Declan Rice,England,M,sot,0.162,6.19,3.0,0.3145,-0.1525,-0.4848,-0.514,0.442,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Lucas Stassin,Belgium,F,sot,0.159,6.27,,,,,,0.472,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-07,2026-07-07T20:00:00+00:00,World Cup,Switzerland vs Colombia,PROP_LEAGUE,Gustavo Puerta,Colombia,M,sot,0.159,6.29,2.3,0.4102,-0.2512,-0.6124,-0.6343,0.315,0.3115,WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T00:00:00+00:00,World Cup,USA vs Belgium,PROP_LEAGUE,Weston McKennie,USA,M,sot,0.159,6.28,2.25,0.4193,-0.2603,-0.6208,-0.6422,0.274,0.349,STARTER|WC_LOW_CONF,5,match_level,AVOID,0.0
-2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Exequiel Palacios,Argentina,M,sot,0.158,6.32,2.7,0.3494,-0.1914,-0.5478,-0.5734,0.248,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Youri Tielemans,Belgium,M,sot,0.158,6.34,,,,,,0.653,0.3115,WC_LOW_CONF,5,match_level,AVOID,
+2026-07-07,2026-07-07T16:00:00+00:00,World Cup,Argentina vs Egypt,PROP_LEAGUE,Exequiel Palacios,Argentina,M,sot,0.158,6.34,2.7,0.3494,-0.1914,-0.5478,-0.5734,0.248,0.349,SET_PIECE|WC_LOW_CONF,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Pedri,Spain,M,sot,0.154,6.5,,,,,,0.247,0.3115,WC_LOW_CONF,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,André Gomes,Lille,M,sot,0.154,6.5,,,,,,0.249,0.623,,5,match_level,AVOID,
 2026-07-11,,Norway Eliteserien,Fredrikstad FK vs Lillestrom,SNIPER,Ayyoub Bouaddi,Lille,M,sot,0.152,6.59,5.75,0.1512,0.0008,0.0051,-0.126,0.239,0.698,SET_PIECE,5,match_level,AVOID,0.0
+2026-07-10,2026-07-10T19:00:00+00:00,World Cup,Spain vs Belgium,PROP_LEAGUE,Pablo Fornals,Spain,M,sot,0.151,6.63,,,,,,0.593,0.3115,WC_LOW_CONF,5,match_level,AVOID,
