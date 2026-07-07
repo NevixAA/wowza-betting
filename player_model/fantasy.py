@@ -72,6 +72,74 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     return out
 
 
+def _team_defense_map(pl: pd.DataFrame) -> dict:
+    """{team_name: goals-conceded-per-game} approx from the opponent-concede feature.
+    Higher = leakier defence = easier fixture for attackers."""
+    if pl.empty or "opp_goals_conceded_pg" not in pl.columns:
+        return {}
+    is_home = pd.to_numeric(pl.get("is_home", 0), errors="coerce").fillna(0)
+    opp = np.where(is_home == 1, pl.get("away_team", ""), pl.get("home_team", ""))
+    tmp = pl.assign(_opp=opp)
+    d = tmp.groupby("_opp")["opp_goals_conceded_pg"].mean()
+    return {str(k): float(v) for k, v in d.items() if pd.notna(v) and str(k).strip()}
+
+
+def build_fantasy_projections_fixtures(next_n: int = 5, parquet_path: Path | None = None) -> pd.DataFrame:
+    """Fantasy projections with an opponent-adjusted (fixture-difficulty) layer.
+
+    Base points come from build_fantasy_projections() — the model's player-vs-player matchup
+    features are already baked into p_goal/p_assist/p_sot2. This layers a TEAM-vs-TEAM
+    adjustment: each player's points are scaled by the difficulty of their team's next
+    `next_n` fixtures (opponent goals-conceded rate × home/away), so an easy run of games
+    lifts projected points and a hard run lowers them.
+
+    Adds columns: next_fixtures, avg_fdr (mean multiplier; >1 = easy run), fixture_adj_pts,
+    fixtures_available (False off-season → fixture_adj_pts == base fantasy_pts).
+    """
+    base = build_fantasy_projections(parquet_path)
+    if base.empty:
+        return base
+    base = base.copy()
+    base["next_fixtures"] = ""
+    base["avg_fdr"] = np.nan
+    base["fixture_adj_pts"] = base["fantasy_pts"]
+
+    df = pd.read_parquet(parquet_path or _PARQUET)
+    pl = df[df["league"] == FANTASY_LEAGUE].copy()
+    dmap = _team_defense_map(pl)
+    fixtures = upcoming_by_team(next_n)     # {team: ["Opp (H)", ...]} — empty off-season
+
+    if not fixtures or not dmap:
+        base["fixtures_available"] = False
+        return base
+    base["fixtures_available"] = True
+
+    lg_avg = float(np.mean(list(dmap.values()))) or 1.0
+    _norm = lambda s: "".join(c for c in str(s).lower() if c.isalnum())
+    dmap_n = {_norm(k): v for k, v in dmap.items()}
+    fix_n  = {_norm(k): v for k, v in fixtures.items()}
+
+    adj, fdr, fxs = [], [], []
+    for _, r in base.iterrows():
+        opps = fix_n.get(_norm(r.get("team", "")), [])
+        if not opps:
+            adj.append(r["fantasy_pts"]); fdr.append(np.nan); fxs.append(""); continue
+        mults = []
+        for o in opps:
+            is_h = o.strip().endswith("(H)")
+            conc = dmap_n.get(_norm(o.rsplit("(", 1)[0]), lg_avg)
+            m = (conc / lg_avg) * (1.10 if is_h else 0.92)   # leaky opp + home = easier
+            mults.append(min(max(m, 0.6), 1.5))
+        mult = float(np.mean(mults))
+        adj.append(round(r["fantasy_pts"] * mult, 3))
+        fdr.append(round(mult, 2))
+        fxs.append(" · ".join(opps))
+    base["fixture_adj_pts"] = adj
+    base["avg_fdr"] = fdr
+    base["next_fixtures"] = fxs
+    return base.sort_values("fixture_adj_pts", ascending=False).reset_index(drop=True)
+
+
 def generate_fantasy_tips(write: bool = True) -> pd.DataFrame:
     """Build projections and (optionally) write output/fantasy_tips.csv. Returns the df."""
     proj = build_fantasy_projections()
