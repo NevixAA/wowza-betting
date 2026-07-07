@@ -183,9 +183,35 @@ def _norm_name(s: str) -> str:
     return "".join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
 
 
+_GENERIC_TOKENS = {"fc", "cf", "sc", "afc", "cd", "ac", "ss", "as", "us",
+                   "if", "fk", "sk", "bk", "club", "cp", "sd"}
+
+
 def _team_match(a: str, b: str) -> bool:
+    """True if a and b name the SAME club.
+
+    The old rule ``na[:5] == nb[:5]`` collided any two clubs sharing a first
+    word — "Manchester City" vs "Manchester United" both hash to "manch", so
+    fixture lookups could return the WRONG club on a date both play. Now match
+    on IDENTITY tokens (dropping generic FC/CF/etc.): equal, or one token-set
+    contained in the other ("Arsenal" vs "Arsenal FC"). If they share a token
+    but each carries a DISTINCT identity token (city vs united) they are
+    different clubs -> reject. Fall back to a strict full-string fuzzy match
+    only when there is no shared token (spelling variants).
+    """
+    import difflib
     na, nb = _norm_name(a), _norm_name(b)
-    return na == nb or na in nb or nb in na or (len(na) >= 5 and na[:5] == nb[:5])
+    if na == nb:
+        return True
+    sa = set(na.split()) - _GENERIC_TOKENS
+    sb = set(nb.split()) - _GENERIC_TOKENS
+    if not sa or not sb:
+        return False
+    if sa <= sb or sb <= sa:            # "Arsenal" subset of "Arsenal FC"
+        return True
+    if (sa & sb) and (sa - sb) and (sb - sa):
+        return False                    # shared prefix but distinct identity -> different clubs
+    return difflib.SequenceMatcher(None, na, nb).ratio() >= 0.90
 
 
 def find_fixture_id(league_id: int, season: str, date_str: str, home: str, away: str) -> int | None:

@@ -33,6 +33,9 @@ import config
 
 log = logging.getLogger(__name__)
 
+# Populated by _fetch_odds_api each run; consumed by the outage health check.
+_LAST_FETCH_STATS: dict = {}
+
 
 # ── Fixture + odds fetching ───────────────────────────────────────────────────
 
@@ -45,9 +48,11 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
         return pd.DataFrame()
 
     rows = []
+    n_queried = n_ok = n_err = 0   # health telemetry (see _LAST_FETCH_STATS)
     for league, sport_key in config.ODDS_API_SPORT_KEYS.items():
         if league not in config.ENABLED_LEAGUES:
             continue
+        n_queried += 1
         try:
             r = requests.get(
                 f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds",
@@ -64,15 +69,25 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 timeout=15,
             )
             if r.status_code != 200:
+                n_err += 1
                 log.debug(f"OddsAPI {league}: HTTP {r.status_code}")
                 continue
+            n_ok += 1
 
             for event in r.json():
                 dt = pd.to_datetime(event.get("commence_time", ""), errors="coerce", utc=True)
                 if pd.isna(dt):
                     continue
                 dt = dt.tz_localize(None)
-                cutoff = datetime.utcnow() + timedelta(days=days_ahead)
+                now = datetime.utcnow()
+                # PRE-MATCH ONLY: skip matches that have already kicked off (live/finished).
+                # OddsAPI /odds returns IN-PLAY events with LIVE odds (e.g. Over 2.5 @ 6.0
+                # when a match sits 0-0 late) — the pre-match model has no live-score input,
+                # so it computes a huge FAKE edge -> false SNIPER (China SL bug 2026-07-05).
+                # Live betting, if ever pursued, is a SEPARATE 'live alert' product.
+                if dt <= now:
+                    continue
+                cutoff = now + timedelta(days=days_ahead)
                 if dt > cutoff:
                     continue
 
@@ -110,7 +125,13 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         "odds_btts":    float(btts_yes) if btts_yes else None,
                     })
         except Exception as e:
+            n_err += 1
             log.debug(f"OddsAPI {league} exception: {e}")
+
+    # Health telemetry: distinguishes "every league errored" (hard failure — the
+    # btts-422 signature) from "leagues OK but no games". Read by the notifier.
+    global _LAST_FETCH_STATS
+    _LAST_FETCH_STATS = {"queried": n_queried, "ok": n_ok, "err": n_err, "kept": len(rows)}
 
     if not rows:
         return pd.DataFrame()
@@ -194,6 +215,14 @@ def predict_upcoming(
     log.info("Fetching upcoming fixtures from OddsAPI...")
     upcoming = _fetch_odds_api(days_ahead)
     log.info(f"  OddsAPI: {len(upcoming)} fixtures found")
+
+    # Record fetch health so the notifier can alert on an outage (0 fixtures because
+    # every league errored — the btts-422 signature that silently killed tips ~2wk).
+    try:
+        from src.health_check import record_fetch
+        record_fetch(len(upcoming), _LAST_FETCH_STATS)
+    except Exception as e:
+        log.debug(f"health record skipped: {e}")
 
     if upcoming.empty:
         log.warning("No upcoming fixtures found")
