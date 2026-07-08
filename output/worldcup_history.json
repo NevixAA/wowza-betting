@@ -77684,6 +77684,14 @@
           "odds_under": 1.85
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_over": 1.97,
+          "odds_under": 1.85
+        },
+        "n_books": 14
       }
     ]
   },
@@ -77877,6 +77885,15 @@
           "odds_draw": 3.95
         },
         "n_books": 24
+      },
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_home": 1.59,
+          "odds_away": 6.25,
+          "odds_draw": 3.95
+        },
+        "n_books": 25
       }
     ]
   },
@@ -77975,6 +77992,14 @@
         "odds": {
           "odds_over": 1.74,
           "odds_under": 2.09
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_over": 1.73,
+          "odds_under": 2.12
         },
         "n_books": 12
       }
@@ -78089,6 +78114,15 @@
           "odds_draw": 3.75
         },
         "n_books": 24
+      },
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_home": 4.15,
+          "odds_away": 1.87,
+          "odds_draw": 3.75
+        },
+        "n_books": 25
       }
     ]
   },
@@ -78136,6 +78170,14 @@
       },
       {
         "at": "2026-07-07 22:32",
+        "odds": {
+          "odds_over": 1.825,
+          "odds_under": 2.0
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-07-08 00:13",
         "odds": {
           "odds_over": 1.825,
           "odds_under": 2.0
@@ -78199,6 +78241,57 @@
           "odds_draw": 4.0
         },
         "n_books": 24
+      },
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_home": 1.62,
+          "odds_away": 5.7,
+          "odds_draw": 4.0
+        },
+        "n_books": 25
+      }
+    ]
+  },
+  "200d9cd5eda092c7eb778cc104cd2fd2_totals": {
+    "home": "Argentina",
+    "away": "Switzerland",
+    "date": "2026-07-12 01:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.23,
+      "odds_under": 1.67
+    },
+    "snapshots": [
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_over": 2.23,
+          "odds_under": 1.67
+        },
+        "n_books": 9
+      }
+    ]
+  },
+  "200d9cd5eda092c7eb778cc104cd2fd2_h2h": {
+    "home": "Argentina",
+    "away": "Switzerland",
+    "date": "2026-07-12 01:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.73,
+      "odds_away": 5.46,
+      "odds_draw": 3.55
+    },
+    "snapshots": [
+      {
+        "at": "2026-07-08 00:13",
+        "odds": {
+          "odds_home": 1.73,
+          "odds_away": 5.46,
+          "odds_draw": 3.55
+        },
+        "n_books": 23
       }
     ]
   }
