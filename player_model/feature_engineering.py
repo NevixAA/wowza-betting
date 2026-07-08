@@ -17,6 +17,45 @@ import pandas as pd
 
 from . import config
 
+# season_* feature -> raw per-match source column, for AS-OF-DATE recomputation.
+_SEASON_SRC = {
+    "season_goals_pg":       "goals",
+    "season_assists_pg":     "assists",
+    "season_shots_pg":       "shots_total",
+    "season_sot_pg":         "shots_on_target",
+    "season_cards_pg":       "yellow_cards",
+    "season_minutes_pg":     "minutes",
+    "season_dribble_pg":     "dribbles_success",
+    "season_fouls_pg":       "fouls_committed",
+    "season_fouls_drawn_pg": "fouls_drawn",
+    "season_start_rate":     "started",
+}
+
+
+def compute_season_asof(df: pd.DataFrame) -> pd.DataFrame:
+    """Recompute season_* features AS-OF-DATE — within-season expanding mean of PRIOR
+    games only (shift(1)), mirroring the clean career_* pattern.
+
+    FIXES a data leak: season_* used to be a WHOLE-SEASON /players/statistics average
+    broadcast onto every match row (pipeline.mode_enrich_season), so a row's
+    season_goals_pg included the very match being predicted (and all later matches of
+    that season) -> inflated AUC. Caller must have df sorted by [player_id, date]
+    (build_features already is). Operates in place and returns df.
+    """
+    if "player_id" not in df.columns or "date" not in df.columns:
+        return df
+    if "season" not in df.columns:
+        df["season"] = pd.to_datetime(df["date"], errors="coerce").dt.year.astype(str)
+    g = df.groupby(["player_id", "season"], group_keys=False)
+    for feat, raw in _SEASON_SRC.items():
+        if raw in df.columns:
+            df[feat] = g[raw].transform(
+                lambda x: pd.to_numeric(x, errors="coerce").shift(1).expanding().mean()
+            ).fillna(0.0)
+    df["season_appearances"] = g.cumcount().astype(float)          # prior games this season
+    df["season_pass_accuracy"] = 0.75   # no clean per-match source; neutralize (was leaky broadcast)
+    return df
+
 
 def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     """
@@ -202,6 +241,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         lambda x: x.shift(1).expanding().mean()).fillna(0.0)
     df["career_assists_pg"] = grp["assists"].transform(
         lambda x: x.shift(1).expanding().mean()).fillna(0.0)
+
+    # ── Season-to-date features — AS-OF-DATE (fixes the whole-season broadcast leak).
+    # df is already sorted by [player_id, date]; recompute season_* from prior games only.
+    df = compute_season_asof(df)
 
     # ── Age and physical profile features ────────────────────────────────────
     if "age" in df.columns and df["age"].gt(0).any():
