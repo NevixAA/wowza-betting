@@ -460,8 +460,18 @@ def mode_enrich_season() -> None:
         enriched_so_far = df["season_goals_pg"].notna().sum()
         print(f"[enrich-season] Checkpoint {done}/{total} players | {enriched_so_far}/{len(df)} rows enriched → saved")
 
+    # LEAK FIX: the broadcast above writes a WHOLE-SEASON average onto every row (it
+    # includes the match being predicted). Overwrite with AS-OF-DATE season_* (prior
+    # games only) before the final save, so the training parquet is leak-free.
+    from player_model.feature_engineering import compute_season_asof
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
+    df = compute_season_asof(df)
+    df.to_parquet(HISTORY_CACHE, index=False)
+
     enriched = df["season_goals_pg"].notna().sum()
-    print(f"[enrich-season] Done. {enriched}/{len(df)} rows enriched -> {HISTORY_CACHE.name}")
+    print(f"[enrich-season] Done (season_* recomputed as-of-date, leak fixed). "
+          f"{enriched}/{len(df)} rows -> {HISTORY_CACHE.name}")
 
 
 # ── Player profile enrichment ─────────────────────────────────────────────────
