@@ -185,32 +185,46 @@ def _norm_name(s: str) -> str:
 
 _GENERIC_TOKENS = {"fc", "cf", "sc", "afc", "cd", "ac", "ss", "as", "us",
                    "if", "fk", "sk", "bk", "club", "cp", "sd"}
+_RESERVE_TOKENS = {"b", "c", "ii", "2", "reserve", "reserves", "u19", "u20",
+                   "u21", "u23", "academy", "youth", "castilla"}
+_TOKEN_ALIASES = {"utd": "united", "weds": "wednesday", "wed": "wednesday",
+                  "wanderers": "wanderers", "spurs": "tottenham"}
 
 
 def _team_match(a: str, b: str) -> bool:
-    """True if a and b name the SAME club.
+    """True iff a and b name the SAME senior club.
 
-    The old rule ``na[:5] == nb[:5]`` collided any two clubs sharing a first
-    word — "Manchester City" vs "Manchester United" both hash to "manch", so
-    fixture lookups could return the WRONG club on a date both play. Now match
-    on IDENTITY tokens (dropping generic FC/CF/etc.): equal, or one token-set
-    contained in the other ("Arsenal" vs "Arsenal FC"). If they share a token
-    but each carries a DISTINCT identity token (city vs united) they are
-    different clubs -> reject. Fall back to a strict full-string fuzzy match
-    only when there is no shared token (spelling variants).
+    Handles all three cases the naive matchers got wrong:
+      • abbreviations: "Man City" == "Manchester City", "Inter" == "Internazionale"
+        (token-prefix match, min length 3);
+      • distinct clubs sharing a word stay apart: "Man City" != "Man United",
+        "Real Madrid" != "Real Sociedad", "West Ham" != "West Brom";
+      • reserve/youth sides rejected: "Barcelona" != "Barcelona B".
+    Generic suffixes (FC/CF/AC/…) are ignored. Fuzzy fallback only when no token relation.
     """
     import difflib
     na, nb = _norm_name(a), _norm_name(b)
     if na == nb:
         return True
-    sa = set(na.split()) - _GENERIC_TOKENS
-    sb = set(nb.split()) - _GENERIC_TOKENS
+    _alias = lambda toks: {_TOKEN_ALIASES.get(t, t) for t in toks}
+    sa = _alias(set(na.split()) - _GENERIC_TOKENS)
+    sb = _alias(set(nb.split()) - _GENERIC_TOKENS)
     if not sa or not sb:
         return False
-    if sa <= sb or sb <= sa:            # "Arsenal" subset of "Arsenal FC"
+
+    ra, rb = sa & _RESERVE_TOKENS, sb & _RESERVE_TOKENS
+    ca, cb = sa - _RESERVE_TOKENS, sb - _RESERVE_TOKENS
+    if bool(ra) != bool(rb) and ca and cb and (ca <= cb or cb <= ca):
+        return False   # senior vs reserve of the same club -> different teams
+
+    def _tok(t, others):   # exact, or one a prefix of the other (>=3 chars) -> abbreviation
+        return any(t == o or (len(t) >= 3 and o.startswith(t)) or (len(o) >= 3 and t.startswith(o))
+                   for o in others)
+
+    if ca and all(_tok(t, cb) for t in ca):   # every identity token of A maps into B
         return True
-    if (sa & sb) and (sa - sb) and (sb - sa):
-        return False                    # shared prefix but distinct identity -> different clubs
+    if cb and all(_tok(t, ca) for t in cb):   # …or vice-versa
+        return True
     return difflib.SequenceMatcher(None, na, nb).ratio() >= 0.90
 
 

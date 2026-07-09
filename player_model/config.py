@@ -86,8 +86,12 @@ REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
 # as tips). WATCH tier removed; non-qualifying signals are AVOID.
 #   - sot2/sot3 (multiple SOT) & goals2: longshot markets, negative across all roles
 #   - defenders for anytime-goalscorer: defenders ~never score (≈0-3% hit rate)
-VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "goals2"}
+VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "goals2", "cards"}
 VALUABLE_ONLY_ROLE_MARKET = {("D", "goals")}
+# cards: the model outputs a near-constant ~0.378 for every player (referee features are
+# leaked in training + mis-scaled at predict; card_clash_index reads an unpopulated key), so
+# card "edges" are degenerate. Capped at VALUABLE (tracked, never a real SNIPER/MARKSMAN tip)
+# until the referee-feature train/serve skew is fixed + the model actually discriminates.
 
 # ── Features ──────────────────────────────────────────────────────────────────
 ROLLING_N = 5
@@ -255,6 +259,14 @@ _DEAD_GOAL_TYPE_FEATURES = {
     "aerial_height_sp_composite",
 }
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DEAD_GOAL_TYPE_FEATURES]
+
+# 2026-07-08 (full A-Z audit): the referee/quality/height/rest features had BUGS (leak,
+# train≠serve scale, call-order, wrong-opponent, unit/inversion). Those computations are now
+# FIXED in feature_engineering.py / league_quality.py — so the features stay in the model.
+# Only season_pass_accuracy is DROPPED: it's a genuine DATA GAP (no per-match pass-accuracy in
+# the API feed), so there is nothing to compute as-of-date — dropping is the only honest fix.
+_DATA_GAP_FEATURES = {"season_pass_accuracy"}
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DATA_GAP_FEATURES]
 
 # Understat shot-level features (xG, headed/SP/FK goals, goals-xG) were scraped + integrated
 # (3 seasons, 133k shots, 84% top-5 coverage) and tested 2026-06-30: NO measurable AUC gain

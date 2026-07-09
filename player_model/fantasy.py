@@ -131,7 +131,9 @@ def build_fantasy_projections_fixtures(next_n: int = 5, parquet_path: Path | Non
             m = (conc / lg_avg) * (1.10 if is_h else 0.92)   # leaky opp + home = easier
             mults.append(min(max(m, 0.6), 1.5))
         mult = float(np.mean(mults))
-        adj.append(round(r["fantasy_pts"] * mult, 3))
+        # scale ONLY the opponent-dependent expectation, NOT the fixed appearance points
+        appr = 2.0 if (pd.to_numeric(r.get("minutes_pg"), errors="coerce") or 60) >= 60 else 1.0
+        adj.append(round(appr + mult * (r["fantasy_pts"] - appr), 3))
         fdr.append(round(mult, 2))
         fxs.append(" · ".join(opps))
     base["fixture_adj_pts"] = adj

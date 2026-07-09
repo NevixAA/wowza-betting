@@ -109,7 +109,9 @@ def mode_collect_wc(last_n: int = 10) -> None:
     if HISTORY_CACHE.exists():
         existing = pd.read_parquet(HISTORY_CACHE)
         combined = pd.concat([existing, new_df], ignore_index=True)
-        combined = combined.drop_duplicates(subset=["fixture_id", "player_id"])
+        # keep="last": new_df is concatenated after existing, so a re-run REFRESHES WC rows
+        # instead of discarding the freshly-fetched ones (keep="first" froze stale WC data).
+        combined = combined.drop_duplicates(subset=["fixture_id", "player_id"], keep="last")
         combined = combined.reset_index(drop=True)
     else:
         combined = new_df
