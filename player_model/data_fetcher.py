@@ -40,6 +40,25 @@ REQUEST_DELAY = 0.20  # ~5 calls/sec = ~300/min — headroom under Ultra's 450/m
                       # leaving 73% of Ultra's rate unused). 429s self-heal via the rate-limit backoff.
 MAX_RETRIES   = 3
 
+
+def _stable_player_id(raw_id, name: str) -> int:
+    """Player id that is safe when the API id is missing OR present-but-null.
+
+    The old inline `int(p.get("id", abs(hash(name)) % 10_000_000))` broke 3 ways:
+    (a) `int(None)` crashed when the key was present but null; (b) `hash()` is salted
+    per-process (PYTHONHASHSEED) → the same unknown player got a different id each run →
+    rolling-history fragmentation; (c) `% 10_000_000` could collide with real API-Football
+    ids (< 10M) → two players merged. This uses a deterministic md5 in a high namespace.
+    """
+    if raw_id is not None:
+        try:
+            return int(raw_id)
+        except (TypeError, ValueError):
+            pass
+    import hashlib
+    h = int(hashlib.md5(str(name).encode("utf-8")).hexdigest()[:8], 16)
+    return 900_000_000 + (h % 90_000_000)   # >= 9e8, cannot collide with real ids (< 1e7)
+
 # Global rate-limiter: enforces REQUEST_DELAY between API calls across ALL threads.
 # Without this, each thread sleeps independently → no real throughput gain.
 _rate_lock      = threading.Lock()
@@ -446,7 +465,7 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     started = (not bool(substitute)) if substitute is not None else bool(minutes > 45)
 
     return {
-        "player_id":       int(p.get("id", abs(hash(name)) % 10_000_000)),
+        "player_id":       _stable_player_id(p.get("id"), name),
         "player_name":     name,
         "fixture_id":      meta["fixture_id"],
         "date":            meta["date"],
@@ -729,7 +748,7 @@ def _parse_player(entry: dict, league: str) -> Optional[dict]:
         return None
 
     return {
-        "player_id":       int(p.get("id", abs(hash(name)) % 10_000_000)),
+        "player_id":       _stable_player_id(p.get("id"), name),
         "player_name":     name,
         "team":            team.get("name", ""),
         "league":          league,

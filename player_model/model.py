@@ -104,7 +104,10 @@ def train(df: pd.DataFrame, market: str) -> dict:
         calibrated = _PlattCalibratedModel(est, platt)
         p_test = calibrated.predict_proba(X_test)[:, 1]
         auc = roc_auc_score(y_test, p_test) if y_test.nunique() > 1 else 0.5
-        ll  = log_loss(y_test, p_test)
+        # labels=[0,1] so a single-class test slice (common for rare longshot markets like
+        # sot3/goals2) does NOT raise -> otherwise train() aborts to [SKIP] and silently keeps
+        # the STALE previous model for that market.
+        ll  = log_loss(y_test, p_test, labels=[0, 1])
 
         results[name] = {
             "model":       calibrated,

@@ -571,7 +571,8 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
         ev_val     = _ev(p_model, mkt_odds)
         rel_edge   = _relative_edge(p_model, fair_prob)
         confidence = float(row["confidence"])
-        lazy_count = len(str(row.get("lazy_factors", "")).split("|")) if row.get("lazy_factors") else 0
+        lazy_count = len([f for f in str(row.get("lazy_factors", "")).split("|")
+                          if f and f != "WC_LOW_CONF"])   # WC_LOW_CONF is a PENALTY, not a positive factor
         ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
         market     = row["market"]
 
@@ -632,7 +633,8 @@ def enrich_no_odds_markets(tips_df: pd.DataFrame) -> pd.DataFrame:
         ev_val     = _ev(p_model, mkt_odds)
         rel_edge   = _relative_edge(p_model, fair_prob)
         confidence = float(row["confidence"])
-        lazy_count = len(str(row.get("lazy_factors", "")).split("|")) if row.get("lazy_factors") else 0
+        lazy_count = len([f for f in str(row.get("lazy_factors", "")).split("|")
+                          if f and f != "WC_LOW_CONF"])   # WC_LOW_CONF is a PENALTY, not a positive factor
         ges        = float(row["ges"]) if row.get("ges") is not None else 0.5
 
         tier = _classify_tier(ev_val, mkt_odds, rel_edge, confidence, lazy_count, ges, market, row.get("position", ""))

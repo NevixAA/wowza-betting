@@ -291,16 +291,46 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
             df[col] = default
 
     # ── Referee strictness ───────────────────────────────────────────────────
-    # referee column added by _fetch_league_fixtures(); compute per-referee avg
-    if "referee" in df.columns and df["referee"].notna().any():
-        ref_grp = df.groupby("referee")["yellow_cards"].mean()
-        df["referee_yellows_pg"] = df["referee"].map(ref_grp).fillna(df["yellow_cards"].mean())
-        ref_cards_mean = df["yellow_cards"].mean() or 0.3
-        ref_max = df.groupby("referee")["yellow_cards"].mean().max() or 1.0
-        df["referee_strictness"] = df["referee_yellows_pg"] / (ref_max or 1.0)
+    # referee column added by _fetch_league_fixtures().
+    # FIX (A1/A2/A3): must match the SERVE-time build_referee_profile() scale/definition:
+    #   yellows_per_game = referee's avg TOTAL yellows PER MATCH (~3.5), NOT a per-player-row
+    #   mean (~0.12); strictness = z-score (avg-3.5)/1.0. Old code (a) used a per-player-row
+    #   mean → 30× scale skew vs serve → cards saturated/degenerate, and (b) used a whole-frame
+    #   groupby that leaked the current+future matches into each row. Now computed per-match,
+    #   as-of-date (shift(1).expanding()), so it is both leak-free and scale-matched to serve.
+    if ("referee" in df.columns and df["referee"].notna().any()
+            and "fixture_id" in df.columns and "yellow_cards" in df.columns):
+        _my = (df.groupby("fixture_id")
+                 .agg(_ref=("referee", "first"), _dt=("date", "first"),
+                      _yc=("yellow_cards", "sum"))
+                 .reset_index()
+                 .sort_values("_dt"))
+        _my["_ypg"] = (_my.groupby("_ref")["_yc"]
+                          .transform(lambda s: s.shift(1).expanding().mean()))
+        _fallback = _my["_yc"].mean()
+        if not pd.notna(_fallback) or _fallback <= 0:
+            _fallback = 3.5
+        _my["_ypg"] = _my["_ypg"].fillna(_fallback)
+        _ypg_map = _my.set_index("fixture_id")["_ypg"]
+        df["referee_yellows_pg"] = pd.to_numeric(
+            df["fixture_id"].map(_ypg_map), errors="coerce").fillna(_fallback)
+        df["referee_strictness"] = (df["referee_yellows_pg"] - 3.5) / 1.0
     else:
-        df["referee_yellows_pg"]  = df["yellow_cards"].mean() if "yellow_cards" in df.columns else 0.3
-        df["referee_strictness"]  = 0.5
+        df["referee_yellows_pg"]  = 3.5
+        df["referee_strictness"]  = 0.0
+
+    # ── Rest days ─────────────────────────────────────────────────────────────
+    # FIX (D4): was never computed in training → dropped from the model entirely (constant 6.0
+    # at serve). Compute days since the player's previous match (temporal, leak-free: uses only
+    # the prior date). Order-preserving: computed on a sorted view then aligned back by index.
+    if "date" in df.columns and "player_id" in df.columns:
+        _rs = df[["player_id"]].copy()
+        _rs["_d"] = pd.to_datetime(df["date"], errors="coerce")
+        _rs = _rs.sort_values(["player_id", "_d"])
+        _rs["rest_days"] = _rs.groupby("player_id")["_d"].diff().dt.days
+        df["rest_days"] = _rs["rest_days"].reindex(df.index).fillna(6.0).clip(1, 30)
+    else:
+        df["rest_days"] = 6.0
 
     # ── New raw rolling features from extended data fields ───────────────────
     # Defensive actions
@@ -554,9 +584,17 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     _conc_feats = _conc_agg[["fixture_id","team","_opp_conc_roll"]].rename(
         columns={"team": "opponent"})
     df = df.merge(_conc_feats, on=["fixture_id","opponent"], how="left")
-    _lg_mean = df.groupby("league")["goals"].transform("mean").fillna(1.3) if "league" in df.columns else 1.3
+    # FIX (C1): divide the opponent's team-level rolling value by the league mean of the SAME
+    # team-level quantity. Was dividing a ~1.3 team rate by a ~0.12 PER-PLAYER league goal mean
+    # → ratio ~10 → clipped to a constant 3.0 (dead). Now ratio ~1.0, varying by opponent.
+    if "league" in df.columns:
+        _lg_mean = pd.to_numeric(df.groupby("league")["_opp_conc_roll"].transform("mean"),
+                                 errors="coerce")
+    else:
+        _lg_mean = pd.Series(1.3, index=df.index)
+    _lg_mean = _lg_mean.fillna(1.3).replace(0, 1.3)
     df["opp_strength_index"] = (
-        df["_opp_conc_roll"].fillna(1.3) / _lg_mean.replace(0, 1.3)
+        df["_opp_conc_roll"].fillna(1.3) / _lg_mean
     ).clip(0.3, 3.0)
     df["quality_adj_goals_pg"] = (df["goals_pg"] * df["opp_strength_index"]).clip(0.0, 5.0)
     df["quality_adj_sot_pg"]   = (df["sot_pg"]   * df["opp_strength_index"]).clip(0.0, 10.0)
@@ -1005,16 +1043,33 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     ).clip(lower=0.0)
 
     # Full card pressure index — own discipline × opponent midfield aggression × referee
+    # referee_strictness is now a z-score (can be <=0); use the positive per-match rate
+    # (referee_yellows_pg / 3.5 ~ 1.0) as the discipline multiplier so this stays meaningful.
     df["card_clash_index"] = (
         (df["fouls_per90"] + df["dribble_contact_rate"])
         * df["opp_mid_cards_pg"]
-        * df["referee_strictness"].clip(lower=0.1)
+        * (df["referee_yellows_pg"] / 3.5).clip(lower=0.1)
     ).clip(lower=0.0)
 
     # Opponent midfield discipline — direct opponent card signal for the match
     df["opp_mid_discipline"] = (
         df["opp_mid_fouls_pg"] * 0.6 + df["opp_mid_cards_pg"] * 2.0
     ).clip(lower=0.0)
+
+    # ── League-quality composites — RECOMPUTED here (call-order fix) ───────────
+    # enrich_league_quality runs BEFORE build_features, so at that point goals_pg / sot_pg /
+    # opp_def_aerial_win_rate don't exist yet → it defaulted opp_def_player_quality's aerial
+    # term to 1.0 and quality_mismatch_* to 0.0. Now that the rolling columns exist we compute
+    # them for real (base tier/quality/career/opp_def_rating come from the enrich step and are
+    # kept as-is). This restores the "Panama fix" (weak-league scoring discounted vs strong D).
+    _aer = pd.to_numeric(df.get("opp_def_aerial_win_rate", 0.50), errors="coerce").fillna(0.50)
+    _rat = pd.to_numeric(df.get("opp_def_player_rating_pg", 6.8), errors="coerce").fillna(6.8)
+    _top = pd.to_numeric(df.get("opp_top_def_rating", 7.0), errors="coerce").fillna(7.0)
+    _car = pd.to_numeric(df.get("player_career_avg_quality", 0.65), errors="coerce").fillna(0.65)
+    df["opp_def_player_quality"] = ((_rat / 6.8) * (_top / 7.0) * (_aer / 0.50)).clip(0.2, 4.0)
+    df["context_quality_discount"] = (_car / df["opp_def_player_quality"].replace(0, 0.5)).clip(0.1, 3.0)
+    df["quality_mismatch_goals"] = (df["goals_pg"] * df["context_quality_discount"]).clip(0.0, 5.0)
+    df["quality_mismatch_sot"]   = (df["sot_pg"]   * df["context_quality_discount"]).clip(0.0, 10.0)
 
     # ── Target variables — actual outcome in THIS match ───────────────────────
     df["target_goals"]   = (df["goals"]             >= 1).astype(int)
@@ -1073,15 +1128,17 @@ def build_upcoming_features(
             continue
 
         n_games    = len(phist)
-        # Raw rolling means — clipped to training-observed 95th-percentile maxima to prevent
-        # out-of-distribution extrapolation when tournament players have inflated recent stats.
-        goals_pg   = min(float(phist["goals"].mean()),   0.60)
-        assists_pg = min(float(phist["assists"].mean()),  0.50)
-        shots_pg   = min(float(phist["shots_total"].mean()), 5.0)
-        sot_pg     = min(float(phist["shots_on_target"].mean()), 3.0)
-        cards_pg   = min(float(phist["yellow_cards"].mean()), 0.60)
-        minutes_pg = min(float(phist["minutes"].mean()), 90.0)
-        kp_pg      = min(float(phist["key_passes"].mean()) if "key_passes" in phist.columns else 0.0, 4.0)
+        # Raw rolling means — NOT clipped: training (build_features) is uncapped, so capping
+        # here truncated elite scorers/shooters (e.g. a 0.9 goals/game striker → 0.60) BELOW the
+        # range the model trained on → systematic under-prediction of the best players. Small-
+        # sample tournament inflation is handled by the MIN_GAMES gate, not by clipping here.
+        goals_pg   = float(phist["goals"].mean())
+        assists_pg = float(phist["assists"].mean())
+        shots_pg   = float(phist["shots_total"].mean())
+        sot_pg     = float(phist["shots_on_target"].mean())
+        cards_pg   = float(phist["yellow_cards"].mean())
+        minutes_pg = float(phist["minutes"].mean())
+        kp_pg      = float(phist["key_passes"].mean()) if "key_passes" in phist.columns else 0.0
         starter_rate = float(phist["started"].mean()) if "started" in phist.columns else 0.8
         sot_rate   = sot_pg / shots_pg if shots_pg > 0 else 0.0
 
@@ -1327,7 +1384,11 @@ def build_upcoming_features(
         age       = _latest("age",       25.0)
         height_cm = _latest("height_cm", 180.0)
         age_peak_delta         = abs(age - 27.0)
-        height_aerial_interaction = height_cm * aerial_won_rate
+        # FIX (B1): match training normalization — ((height-160)/40) * rate, range 0-1.
+        # Was raw height_cm * rate (~0-200), a ~200x train/serve scale skew.
+        height_aerial_interaction = (
+            (min(max(height_cm, 160.0), 200.0) - 160.0) / 40.0
+        ) * aerial_won_rate
 
         # ── Injury features ────────────────────────────────────────────────────
         chronic_injury_risk     = _latest("chronic_injury_risk",     0.0)
@@ -1336,8 +1397,9 @@ def build_upcoming_features(
 
         # ── Referee features ───────────────────────────────────────────────────
         _ref_prof = referee_profile or {}
-        referee_yellows_pg  = float(_ref_prof.get("yellows_per_game", 4.0))
-        referee_strictness  = float(_ref_prof.get("strictness_score",  1.0))
+        # Defaults match the training as-of-date fallback (league-avg ~3.5/match, z-score 0.0).
+        referee_yellows_pg  = float(_ref_prof.get("yellows_per_game", 3.5))
+        referee_strictness  = float(_ref_prof.get("strictness_score",  0.0))
 
         # ── Missing composites (computed from vars already in scope) ───────────
         carrier_vs_press          = max(_progressive_carrier_score * opp_def_aggression, 0.0)
@@ -1349,6 +1411,19 @@ def build_upcoming_features(
         creative_pressure_matchup   = max(creative_playmaker_score * opp_def_aggression, 0.0)
         _dribble_creativity         = dribbles_pg * dribble_success_rate
         dribbler_vs_defensive_line  = max(_dribble_creativity * opp_def_fouls_pg, 0.0)
+
+        # ── Quality composites — recompute with the SAME fixed formula as training ──────
+        # (B4) Previously these copied phist.iloc[-1] (the PREVIOUS match's opponent, computed
+        # by the old broken formula). Recompute here for train/serve parity, feeding the
+        # UPCOMING opponent's aerial rate (opp_def_aerial_win_rate, from ctx). Opponent def
+        # ratings are carried from recent history (no upcoming-opponent rating feed exists).
+        _q_rat = float(phist["opp_def_player_rating_pg"].iloc[-1]) if "opp_def_player_rating_pg" in phist.columns and len(phist) > 0 else 6.8
+        _q_top = float(phist["opp_top_def_rating"].iloc[-1])       if "opp_top_def_rating"       in phist.columns and len(phist) > 0 else 7.0
+        _q_car = float(phist["player_career_avg_quality"].iloc[-1]) if "player_career_avg_quality" in phist.columns and len(phist) > 0 else 0.65
+        opp_def_player_quality   = min(max((_q_rat / 6.8) * (_q_top / 7.0) * (max(opp_def_aerial_win_rate, 0.0) / 0.50), 0.2), 4.0)
+        context_quality_discount = min(max(_q_car / (opp_def_player_quality or 0.5), 0.1), 3.0)
+        quality_mismatch_goals   = min(max(goals_pg * context_quality_discount, 0.0), 5.0)
+        quality_mismatch_sot     = min(max(sot_pg   * context_quality_discount, 0.0), 10.0)
 
         rows.append({
             "player_id":   pid,
@@ -1467,7 +1542,7 @@ def build_upcoming_features(
             # Card-market composites
             "dribble_contact_rate":  round(max(dribbles_pg * (1.0 - dribble_success_rate), 0.0), 4),
             "tackle_dribble_clash":  round(max(dribbles_pg * (1.0 - dribble_success_rate) * opp_mid_fouls_pg, 0.0), 4),
-            "card_clash_index":      round(max((fouls_per90 + dribbles_pg * (1.0 - dribble_success_rate)) * opp_mid_cards_pg * max(ctx.get("referee_strictness", 1.0), 0.1), 0.0), 4),
+            "card_clash_index":      round(max((fouls_per90 + dribbles_pg * (1.0 - dribble_success_rate)) * opp_mid_cards_pg * max(referee_yellows_pg / 3.5, 0.1), 0.0), 4),
             "opp_mid_discipline":    round(max(opp_mid_fouls_pg * 0.6 + opp_mid_cards_pg * 2.0, 0.0), 4),
             # Season stats (enriched — full-season aggregates)
             "season_goals_pg":       round(season_goals_pg,       4),
@@ -1539,10 +1614,10 @@ def build_upcoming_features(
             "player_career_avg_quality": round(float(phist["player_career_avg_quality"].iloc[-1]) if "player_career_avg_quality" in phist.columns and len(phist) > 0 else 0.65, 4),
             "opp_def_player_rating_pg":  round(float(phist["opp_def_player_rating_pg"].iloc[-1])  if "opp_def_player_rating_pg"  in phist.columns and len(phist) > 0 else 6.8,  2),
             "opp_top_def_rating":        round(float(phist["opp_top_def_rating"].iloc[-1])        if "opp_top_def_rating"        in phist.columns and len(phist) > 0 else 7.0,  2),
-            "opp_def_player_quality":    round(float(phist["opp_def_player_quality"].iloc[-1])    if "opp_def_player_quality"    in phist.columns and len(phist) > 0 else 1.0,  4),
-            "context_quality_discount":  round(float(phist["context_quality_discount"].iloc[-1])  if "context_quality_discount"  in phist.columns and len(phist) > 0 else 1.0,  4),
-            "quality_mismatch_goals":    round(float(phist["quality_mismatch_goals"].iloc[-1])    if "quality_mismatch_goals"    in phist.columns and len(phist) > 0 else 0.0,  4),
-            "quality_mismatch_sot":      round(float(phist["quality_mismatch_sot"].iloc[-1])      if "quality_mismatch_sot"      in phist.columns and len(phist) > 0 else 0.0,  4),
+            "opp_def_player_quality":    round(opp_def_player_quality,   4),
+            "context_quality_discount":  round(context_quality_discount, 4),
+            "quality_mismatch_goals":    round(quality_mismatch_goals,   4),
+            "quality_mismatch_sot":      round(quality_mismatch_sot,     4),
         })
 
     return pd.DataFrame(rows) if rows else pd.DataFrame()
