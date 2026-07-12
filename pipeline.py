@@ -354,9 +354,14 @@ def _run_one_backtest(feat: "pd.DataFrame", leagues: set, label: str, out_prefix
     return results_df, summary
 
 
-def mode_backtest(feat: "pd.DataFrame" = None) -> tuple:
+def mode_backtest(feat: "pd.DataFrame" = None, only: str = None) -> tuple:
+    """Walk-forward backtest, standard + new-format computed SEPARATELY (already isolated).
+    only=None      -> both (+ side markets) — default, unchanged (monthly cron behaviour).
+    only='standard'-> standard 2.5 + side markets only (new-format skipped).
+    only='newformat'-> new-format only (standard + side markets skipped; standard results
+                       CSV is NOT regenerated -> zero effect on the standard model path)."""
     log.info("=" * 60)
-    log.info("MODE: BACKTEST  (walk-forward, separate standard / new-format)")
+    log.info(f"MODE: BACKTEST  (walk-forward; only={only or 'all'})")
     log.info("=" * 60)
 
     if feat is None:
@@ -366,16 +371,23 @@ def mode_backtest(feat: "pd.DataFrame" = None) -> tuple:
     std_leagues = config.STANDARD_FORMAT_LEAGUES & config.ENABLED_LEAGUES
     nf_leagues  = config.NEW_FORMAT_LEAGUES  & config.ENABLED_LEAGUES
 
-    log.info(f"Standard leagues: {sorted(std_leagues)}")
-    std_results, std_summary = _run_one_backtest(feat, std_leagues, "STANDARD", "standard")
+    std_results = std_summary = nf_results = nf_summary = None
+    if only in (None, "standard"):
+        log.info(f"Standard leagues: {sorted(std_leagues)}")
+        std_results, std_summary = _run_one_backtest(feat, std_leagues, "STANDARD", "standard")
+    if only in (None, "newformat"):
+        log.info(f"New-format leagues: {sorted(nf_leagues)}")
+        nf_results, nf_summary = _run_one_backtest(feat, nf_leagues, "NEW-FORMAT", "newformat")
 
-    log.info(f"New-format leagues: {sorted(nf_leagues)}")
-    nf_results, nf_summary = _run_one_backtest(feat, nf_leagues, "NEW-FORMAT", "newformat")
+    # Combined ledger file only when BOTH ran (don't clobber it on a per-model run)
+    if std_results is not None and nf_results is not None:
+        import pandas as pd
+        combined = pd.concat([std_results, nf_results], ignore_index=True)
+        combined.to_csv(config.OUTPUT_DIR / "backtest_results.csv", index=False)
 
-    # Also save a combined file for the full ledger view
-    import pandas as pd
-    combined = pd.concat([std_results, nf_results], ignore_index=True)
-    combined.to_csv(config.OUTPUT_DIR / "backtest_results.csv", index=False)
+    # New-format-only run: side markets are standard-league — skip them and return now.
+    if only == "newformat":
+        return nf_results, nf_summary
 
     # ── Side-market backtests (BTTS / Over 1.5 / Over 3.5) ──────────────────
     log.info("\nBacktesting side markets (BTTS / Over 1.5 / Over 3.5)...")
@@ -531,6 +543,13 @@ def main():
         default=None,
         help="Run backtest-side for a single market only (used internally for parallel dispatch)",
     )
+    parser.add_argument(
+        "--only",
+        choices=["standard", "newformat"],
+        default=None,
+        help="Backtest ONE model family only (isolation): 'newformat' skips standard entirely "
+             "(standard results not regenerated); 'standard' skips new-format. Default: both.",
+    )
     args = parser.parse_args()
 
     if args.mode == "train":
@@ -538,7 +557,7 @@ def main():
     elif args.mode == "predict":
         mode_predict()
     elif args.mode == "backtest":
-        mode_backtest()
+        mode_backtest(only=args.only)
     elif args.mode == "backtest-side":
         mode_backtest_side(market=args.market)
     elif args.mode == "all":
