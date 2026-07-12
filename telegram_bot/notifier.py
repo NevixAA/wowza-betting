@@ -885,8 +885,9 @@ def notify_player_props() -> int:
     from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
     df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
 
-    # Only SNIPER and MARKSMAN — VALUABLE and WATCH are not sent
-    df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])].copy()
+    # SNIPER/MARKSMAN = real tips. PAPER = top-N tracking-only feed (no proven edge, never
+    # real money) — sent to the same channel, clearly labelled. VALUABLE/WATCH not sent.
+    df = df[df["tier"].isin(["SNIPER", "MARKSMAN", "PAPER"])].copy()
 
     # Safety net (defense-in-depth; predict gates WC cards by real booking history and
     # excludes GKs from scoring markets at source):
@@ -920,7 +921,7 @@ def notify_player_props() -> int:
 
     if _approved_pp:
         def _pp_allowed(row) -> bool:
-            if row["tier"] == "SNIPER":
+            if row["tier"] in ("SNIPER", "PAPER"):   # PAPER = tracking feed, always allowed
                 return True
             approved_markets = _approved_pp.get(row.get("league", ""), [])
             return row["market"] in approved_markets
@@ -952,7 +953,7 @@ def notify_player_props() -> int:
         tier   = row.get("tier", "WATCH")
         mkt_odds = row.get("market_odds")
         ev_val   = row.get("ev")
-        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "👁")
+        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📊"}.get(tier, "👁")
         market_label = {
             "goals": "Anytime Goalscorer", "goals2": "Score 2+",
             "assists": "Assist",
@@ -965,14 +966,18 @@ def notify_player_props() -> int:
                        and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
                     else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
 
+        _title = "PAPER · TRACKING" if tier == "PAPER" else tier
+        _footer = ("🧪 <i>Paper signal — no proven edge, tracking only. Do NOT bet real money.</i>"
+                   if tier == "PAPER"
+                   else "⚠️ Check your bookmaker's player props market")
         msg = (
-            f"{tier_emoji} <b>{tier} — {market_label.upper()}</b>\n"
+            f"{tier_emoji} <b>{_title} — {market_label.upper()}</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"👤 <b>{row['player_name']}</b> ({row.get('position', '')} · {row['team']})\n"
             f"⚽ {row['match']}\n"
             f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
             f"{odds_line}\n"
-            f"⚠️ Check your bookmaker's player props market"
+            f"{_footer}"
         )
 
         if _send(token, chat_id, msg):

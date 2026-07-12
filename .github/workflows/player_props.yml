@@ -155,7 +155,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/player_tips.csv output/player_ledger.csv \
-                     output/player_prop_odds_history.csv \
+                     output/player_prop_odds_history.csv output/clv_records.csv \
                      telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
                      player_history.parquet \
                      models/model_player_goals.pkl   models/model_player_goals2.pkl \

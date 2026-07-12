@@ -33,7 +33,7 @@ from player_model.data_fetcher import (
 from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
 from player_model.model import train, save_model
-from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets
+from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, tag_paper_feed
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
 from player_model.ledger import append_player_signals
 
@@ -315,7 +315,20 @@ def mode_predict() -> None:
 
     # Tier markets with no live Odds API coverage (assists) via calibration base rates
     tips = enrich_no_odds_markets(tips)
+    # PAPER feed: promote the top-N strongest AVOID picks (with odds) to tier='PAPER'
+    # so the strongest props signals are tracked live (no edge — tracking only, never real money)
+    tips = tag_paper_feed(tips)
     tips.to_csv(config.OUTPUT_DIR / "player_tips.csv", index=False)
+
+    # CLV paper tracking (year-long, no money): log entry prices for new tips, close out
+    # finished matches (last pre-kickoff snapshot = closing), print the rolling CLV report.
+    try:
+        from player_model import clv_tracker
+        clv_tracker.log_new_tips(tips)
+        clv_tracker.close_out()          # date-gated: closes records for matches now in the past
+        clv_tracker.report()
+    except Exception as _e:
+        print(f"[clv_tracker] skipped: {_e}")
     assists_tiered = tips[(tips["market"] == "assists") & (tips["tier"] != "AVOID")]
     if not assists_tiered.empty:
         print(f"[predict] calibration-implied: {len(assists_tiered)} assists tip(s) tiered (AVOID excluded)")

@@ -88,6 +88,9 @@ REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
 #   - defenders for anytime-goalscorer: defenders ~never score (≈0-3% hit rate)
 VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "goals2", "cards"}
 VALUABLE_ONLY_ROLE_MARKET = {("D", "goals")}
+# PAPER feed: send the top-N strongest props picks per run as tracking-only signals
+# (no proven edge — validation 2026-07-09 — never real money). 0 disables.
+PROPS_PAPER_FEED_N        = 5
 # cards: the model outputs a near-constant ~0.378 for every player (referee features are
 # leaked in training + mis-scaled at predict; card_clash_index reads an unpopulated key), so
 # card "edges" are degenerate. Capped at VALUABLE (tracked, never a real SNIPER/MARKSMAN tip)
