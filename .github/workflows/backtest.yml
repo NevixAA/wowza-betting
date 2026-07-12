@@ -2,8 +2,14 @@ name: Backtest
 
 on:
   schedule:
-    - cron: '0 3 1 * *'   # 1st of every month at 03:00 UTC
-  workflow_dispatch:   # also manual trigger
+    - cron: '0 3 1 * *'   # 1st of every month at 03:00 UTC (runs ALL — full retrain + backtest)
+  workflow_dispatch:      # manual trigger — pick which model to backtest
+    inputs:
+      target:
+        description: "Which model to backtest (newformat = NF only, NO retrain, standard untouched)"
+        type: choice
+        options: [all, standard, newformat]
+        default: all
 
 jobs:
   backtest:
@@ -25,6 +31,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Train models first (CI needs fresh models)
+        # Skipped for a new-format-only run — that uses the already-committed models so the
+        # standard model is NOT retrained/touched. Scheduled + 'all'/'standard' runs train.
+        if: ${{ github.event.inputs.target != 'newformat' }}
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python pipeline.py --mode train
@@ -34,7 +43,13 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          python pipeline.py --mode backtest
+          TARGET="${{ github.event.inputs.target }}"
+          if [ "$TARGET" = "standard" ] || [ "$TARGET" = "newformat" ]; then
+            echo "Per-model backtest: --only $TARGET"
+            python pipeline.py --mode backtest --only "$TARGET"
+          else
+            python pipeline.py --mode backtest
+          fi
           python - <<'EOF'
           import json, pandas as pd
           from pathlib import Path
