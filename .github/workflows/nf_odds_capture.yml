@@ -1,0 +1,55 @@
+name: New-Format Odds Capture
+
+# FORWARD capture of new-format O/U + BTTS odds (v10 NF mission 1).
+# Fixes the gap found 2026-07-09: newformat_odds_history.csv was backfill-only (no
+# scheduled append) so it stopped at 2026-06-23 while summer NF leagues keep playing.
+# This appends today's odds for upcoming NF fixtures daily -> ends the re-backfill treadmill.
+# ISOLATION: writes ONLY output/newformat_odds_history.csv (new-format team odds). It does
+# not train/predict any model and does not touch the standard model, props, or shared code.
+
+concurrency:
+  group: nf-odds-capture
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '30 5 * * *'   # 05:30 UTC daily (NF leagues are mostly evening kickoffs)
+  workflow_dispatch:
+
+jobs:
+  nf_odds_capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Capture forward new-format odds
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python scripts/capture_nf_odds_forward.py
+
+      - name: Commit and push updated NF odds history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/newformat_odds_history.csv 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: nf odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }

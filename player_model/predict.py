@@ -589,6 +589,29 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
     return tips_df
 
 
+def tag_paper_feed(tips_df: pd.DataFrame, top_n: int | None = None) -> pd.DataFrame:
+    """PAPER (tracking-only) feed: after real tiers are set, promote the top-N remaining
+    AVOID picks (that HAVE odds) by EV to tier='PAPER'. These are the model's strongest
+    picks on the efficient props markets — NO proven edge (validation 2026-07-09: props
+    have no bettable edge), so they are PAPER ONLY, never real money. Sending + logging
+    them builds a live track record to check whether live diverges from backtest.
+    config.PROPS_PAPER_FEED_N (default 5) controls how many per run; 0 disables.
+    """
+    if tips_df.empty:
+        return tips_df
+    n = int(getattr(config, "PROPS_PAPER_FEED_N", 5)) if top_n is None else int(top_n)
+    if n <= 0 or "tier" not in tips_df.columns:
+        return tips_df
+    cand = tips_df[(tips_df["tier"] == "AVOID") & tips_df["market_odds"].notna()].copy()
+    if cand.empty:
+        return tips_df
+    cand["_ev"] = pd.to_numeric(cand["ev"], errors="coerce").fillna(-999)
+    top_idx = cand.sort_values("_ev", ascending=False).head(n).index
+    tips_df.loc[top_idx, "tier"] = "PAPER"
+    print(f"[player_model] PAPER feed: promoted {len(top_idx)} top picks (tracking-only, no edge)")
+    return tips_df
+
+
 # Markets with no live Odds API coverage — tiered via calibration base rates.
 _NO_ODDS_MARKETS = {"assists"}
 
