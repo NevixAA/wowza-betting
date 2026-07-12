@@ -113,7 +113,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-03,2026-07-04,World Cup,Paraguay,France,O/U 2.5 UNDER,UNDER,STRONG,2.395,2.15,-10.2,,10,WIN,1.395,2026-07-05
 2026-07-03,2026-07-03,Sweden Allsvenskan,IK Sirius,Mjällby AIF,O/U 2.5 OVER,OVER,STEAM_SHARP,1.67,1.57,-6.0,95,9,WIN,0.67,2026-07-06
 2026-07-04,2026-07-04,China Super League,Qingdao West Coast FC,Shanghai SIPG FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.715,1.58,-7.9,99,6,WIN,0.715,2026-07-06
-2026-07-04,2026-07-11,Norway Eliteserien,Aalesund,Molde,1X2 HOME (Aalesund),HOME,STEAM_SHARP,3.35,3.1,-7.5,99,9,,,
+2026-07-04,2026-07-11,Norway Eliteserien,Aalesund,Molde,1X2 HOME (Aalesund),HOME,STEAM_SHARP,3.35,3.1,-7.5,99,9,LOSS,-1.0,2026-07-12
 2026-07-04,2026-07-05,Sweden Allsvenskan,IFK Goteborg,AIK,1X2 HOME (IFK Goteborg),HOME,STRONG,2.415,2.16,-10.6,99,20,LOSS,-1.0,2026-07-06
 2026-07-04,2026-07-04,China Super League,Dalian Yingbo,Wuhan Three Towns,O/U 2.5 OVER,OVER,STEAM_STRONG,1.735,1.55,-10.7,100,9,WIN,0.735,2026-07-06
 2026-07-04,2026-07-04,China Super League,Dalian Yingbo,Wuhan Three Towns,1X2 HOME (Dalian Yingbo),HOME,STEAM_SHARP,1.7,1.6,-5.9,100,20,WIN,0.7,2026-07-06
@@ -121,8 +121,8 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-04,2026-07-04,Sweden Allsvenskan,Degerfors IF,Malmo FF,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.385,3.2,-5.5,73,22,LOSS,-1.0,2026-07-06
 2026-07-04,2026-07-11,Ireland Premier Division,Galway United,Sligo Rovers,1X2 AWAY (Sligo Rovers),AWAY,STEAM_SHARP,4.65,4.25,-8.6,72,12,,,
 2026-07-04,2026-07-11,Ireland Premier Division,Galway United,Sligo Rovers,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.85,3.6,-6.5,63,12,,,
-2026-07-04,2026-07-11,Finland Veikkausliiga,IF Gnistan,IFK Mariehamn,1X2 HOME (IF Gnistan),HOME,STEAM_SHARP,1.51,1.42,-6.0,100,12,,,
-2026-07-04,2026-07-11,Finland Veikkausliiga,IF Gnistan,IFK Mariehamn,O/U 2.5 OVER,OVER,STEAM_SHARP,1.65,1.53,-7.3,100,6,,,
+2026-07-04,2026-07-11,Finland Veikkausliiga,IF Gnistan,IFK Mariehamn,1X2 HOME (IF Gnistan),HOME,STEAM_SHARP,1.51,1.42,-6.0,100,12,WIN,0.51,2026-07-12
+2026-07-04,2026-07-11,Finland Veikkausliiga,IF Gnistan,IFK Mariehamn,O/U 2.5 OVER,OVER,STEAM_SHARP,1.65,1.53,-7.3,100,6,WIN,0.65,2026-07-12
 2026-07-05,2026-07-12,Norway Eliteserien,Sarpsborg FK,Viking FK,O/U 2.5 UNDER,UNDER,STRONG,2.85,2.48,-13.0,99,3,,,
 2026-07-05,2026-07-09,World Cup,France,Morocco,O/U 2.5 UNDER,UNDER,STRONG,2.085,1.85,-11.3,,15,WIN,1.085,2026-07-10
 2026-07-05,2026-07-11,Sweden Allsvenskan,Mjällby AIF,AIK,1X2 HOME (Mjällby AIF),HOME,STEAM_SHARP,2.15,1.97,-8.4,100,11,,,
@@ -155,15 +155,15 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-10,2026-07-10,Finland Veikkausliiga,VPS Vaasa,SJK Seinäjoki,1X2 HOME (VPS Vaasa),HOME,STEAM_STRONG,2.175,1.79,-17.7,83,19,WIN,1.175,2026-07-11
 2026-07-10,2026-07-10,Finland Veikkausliiga,VPS Vaasa,SJK Seinäjoki,O/U 2.5 OVER,OVER,STEAM_SHARP,1.7,1.54,-9.4,100,9,LOSS,-1.0,2026-07-11
 2026-07-10,2026-07-17,Brazil Serie A,Bahia,Chapecoense,1X2 AWAY (Chapecoense),AWAY,STEAM_STRONG,8.075,6.9,-14.6,100,17,,,
-2026-07-11,2026-07-11,Finland Veikkausliiga,FC Lahti,HJK Helsinki,1X2 HOME (FC Lahti),HOME,STEAM_STRONG,3.275,2.82,-13.9,99,20,,,
-2026-07-11,2026-07-11,Finland Veikkausliiga,TPS Turku,AC Oulu,1X2 HOME (TPS Turku),HOME,STEAM_STRONG,3.0,2.54,-15.3,100,20,,,
+2026-07-11,2026-07-11,Finland Veikkausliiga,FC Lahti,HJK Helsinki,1X2 HOME (FC Lahti),HOME,STEAM_STRONG,3.275,2.82,-13.9,99,20,WIN,2.275,2026-07-12
+2026-07-11,2026-07-11,Finland Veikkausliiga,TPS Turku,AC Oulu,1X2 HOME (TPS Turku),HOME,STEAM_STRONG,3.0,2.54,-15.3,100,20,WIN,2.0,2026-07-12
 2026-07-11,2026-07-11,China Super League,Shenzhen Peng City FC,Qingdao West Coast FC,1X2 HOME (Shenzhen Peng City FC),HOME,STEAM_SHARP,2.42,2.18,-9.9,69,21,,,
 2026-07-11,2026-07-11,China Super League,Shenzhen Peng City FC,Qingdao West Coast FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.78,1.65,-7.3,100,10,,,
 2026-07-11,2026-07-11,China Super League,Chengdu Rongcheng FC,Chongqing Tonglianglong FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.635,1.545,-5.5,69,6,,,
 2026-07-11,2026-07-23,Argentina Primera Division,Belgrano de Cordoba,Rosario Central,1X2 HOME (Belgrano de Cordoba),HOME,STEAM_SHARP,2.75,2.52,-8.4,64,9,,,
 2026-07-11,2026-07-24,Argentina Primera Division,Gimnasia Mendoza,Central Córdoba,1X2 HOME (Gimnasia Mendoza),HOME,STEAM_SHARP,2.14,2.01,-6.1,64,6,,,
 2026-07-11,2026-07-25,Argentina Primera Division,Atlético Huracán,Banfield,1X2 HOME (Atlético Huracán),HOME,STEAM_SHARP,2.03,1.92,-5.4,72,9,,,
-2026-07-11,2026-07-11,World Cup,Norway,England,O/U 2.5 OVER,OVER,STRONG,1.89,1.7,-10.1,,11,,,
+2026-07-11,2026-07-11,World Cup,Norway,England,O/U 2.5 OVER,OVER,STRONG,1.89,1.7,-10.1,,11,WIN,0.89,2026-07-12
 2026-07-11,2026-07-24,Argentina Primera Division,Velez Sarsfield BA,Instituto de Córdoba,O/U 2.5 OVER,OVER,STRONG,2.85,2.48,-13.0,91,3,,,
 2026-07-11,2026-07-17,Sweden Allsvenskan,Mjällby AIF,Västerås SK,1X2 AWAY (Västerås SK),AWAY,STEAM_SHARP,4.25,3.875,-8.8,62,12,,,
 2026-07-11,2026-07-18,Finland Veikkausliiga,AC Oulu,IF Gnistan,1X2 AWAY (IF Gnistan),AWAY,STEAM_STRONG,3.375,2.95,-12.6,100,13,,,
