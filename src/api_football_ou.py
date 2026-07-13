@@ -103,7 +103,13 @@ def _get(endpoint: str, params: dict, ttl_h: float = 24.0) -> Optional[dict]:
             print(f"[api_football_ou] {endpoint}: HTTP {r.status_code} {r.text[:120]}")
             return None
         data = r.json()
-        _save_cache(ck, data)
+        # Do NOT cache error responses. API-Football returns HTTP-200 with a non-empty `errors`
+        # dict + results:0 on quota-exhaustion / rate-limit / bad params. Caching those poisons
+        # the 24h disk cache and silently breaks shot-enrichment for a full day even after the
+        # quota resets (this was the NF "No completed fixtures" gap). Legit empties (no errors)
+        # are still cached to avoid re-fetching. [v10 NF fix 2026-07-13]
+        if not data.get("errors"):
+            _save_cache(ck, data)
         time.sleep(0.4)   # courtesy delay — ~150 calls/min max
         return data
     except Exception as e:
