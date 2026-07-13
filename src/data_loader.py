@@ -312,6 +312,50 @@ def _enrich_with_af_odds(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
+    """Fill odds_btts / odds_over15 / odds_over35 for STANDARD 2nd-division leagues from the
+    real backfill output/standard_sidemarket_odds_history.csv. football-data.co.uk carries no
+    BTTS/O1.5/O3.5 columns for the 2nd-divs, so those were synthetic (a flat ~1.85) — this plugs
+    in REAL prices so the BTTS / side-market backtests reflect what a book would actually pay.
+    NaN-only fill; NEVER touches odds_over25 — the standard O/U money-market stays 100%
+    football-data, so the O/U backtest is provably unchanged. [v10 2026-07-13]"""
+    path = Path(__file__).resolve().parents[1] / "output" / "standard_sidemarket_odds_history.csv"
+    if not path.exists():
+        return df
+    try:
+        from src.api_football_ou import _norm_name
+    except ImportError:
+        _norm_name = lambda x: str(x).lower().strip()
+    try:
+        _MKT = {"btts_yes": "odds_btts", "over15": "odds_over15", "over35": "odds_over35"}
+        oh = pd.read_csv(path)
+        oh = oh[oh["market"].isin(_MKT)].copy()
+        if oh.empty:
+            return df
+        parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
+        oh["_h"] = parts[0].apply(_norm_name)
+        oh["_a"] = (parts[1] if parts.shape[1] > 1 else "").apply(_norm_name)
+        oh["_d"] = oh["match_date"].astype(str).str[:10]
+        oh["_col"] = oh["market"].map(_MKT)
+        piv = oh.pivot_table(index=["_h", "_a", "_d"], columns="_col", values="odds", aggfunc="last")
+
+        df["_h"] = df["home_team"].apply(_norm_name)
+        df["_a"] = df["away_team"].apply(_norm_name)
+        df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        idx = pd.MultiIndex.from_arrays([df["_h"], df["_a"], df["_d"]])
+        matched = piv.reindex(idx).reset_index(drop=True)
+        for col in ("odds_btts", "odds_over15", "odds_over35"):   # NOTE: over25 deliberately excluded
+            if col in matched.columns and col in df.columns:
+                mask = df[col].isna() & matched[col].notna()
+                if mask.any():
+                    df.loc[mask, col] = matched.loc[mask, col].values
+                    log.info(f"  [std_sidemarket] {col}: filled {int(mask.sum())} rows from real backfill")
+        df = df.drop(columns=["_h", "_a", "_d"])
+    except Exception as e:
+        log.warning(f"[std_sidemarket] merge failed: {e}")
+    return df
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -539,6 +583,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             out["away_sot_ratio"] = np.where(out.get("away_shots", pd.Series(dtype=float)) > 0,
                 out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
         out = _enrich_with_api_shots(out)
+        out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         _CACHE = out
         return out
 
@@ -764,6 +809,8 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
 
     # ── API-Football shot enrichment for new-format leagues ──────────────────────
     out = _enrich_with_api_shots(out)
+    # ── Real BTTS/O1.5/O3.5 odds for standard 2nd-divs (was synthetic 1.85) ───────
+    out = _enrich_with_standard_sidemarket_odds(out)
 
     # ── Sanity check: flag German teams appearing in Danish league slots ─────────
     _GERMAN_TEAMS = {
