@@ -11,7 +11,7 @@ into apifootball_ou_cache/. Stats are cached ~1 year, so after the first warm it
 Pairs with the _get cache-poisoning fix (don't cache error responses) — together they resolve
 the NF shot gap. Run daily in CI (has APIFOOTBALL_KEY + the 7,500/day Pro quota).
 """
-import os, sys, requests
+import os, sys, time, requests
 from pathlib import Path
 
 PROJ = Path(__file__).resolve().parents[1]
@@ -20,7 +20,11 @@ import config
 import src.api_football_ou as afou
 
 _BASE = "https://v3.football.api-sports.io"
-_MIN_HEADROOM = 500   # stop if fewer than this many daily requests remain
+_MIN_HEADROOM = 500      # stop if fewer than this many daily requests remain
+_MAX_RUN_SECONDS = 1500  # ~25 min: chunk the cold-cache warm so we never hit the CI timeout.
+                         # Stats are cached ~1yr, so already-warmed leagues are instant next run;
+                         # the cache (actions/cache) persists across runs -> fully warms over a
+                         # few days without any single run running long.
 
 
 def _quota_remaining() -> int:
@@ -39,8 +43,12 @@ def run() -> None:
         print("[warm_nf] APIFOOTBALL_KEY not set — skipping"); return
     leagues = sorted(config.NEW_FORMAT_LEAGUES & set(config.API_FOOTBALL_IDS))
     now_year = int(__import__("datetime").datetime.utcnow().year)
+    start = time.time()
     total = 0
     for league in leagues:
+        if time.time() - start > _MAX_RUN_SECONDS:
+            print(f"[warm_nf] hit {_MAX_RUN_SECONDS//60}min run budget — stopping; resumes next run "
+                  f"(cache persists, warmed leagues are instant)"); break
         head = _quota_remaining()
         if head < _MIN_HEADROOM:
             print(f"[warm_nf] quota headroom {head} < {_MIN_HEADROOM} — stopping early"); break
