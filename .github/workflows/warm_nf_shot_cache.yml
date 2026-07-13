@@ -1,0 +1,47 @@
+name: Warm NF Shot Cache
+
+# v10 NF UPGRADE (staged — deploy to v9 only when the no-commit hold is lifted).
+# Warms the new-format shot-stat cache (completed-fixture SOT/shots) so the NF O/U model uses
+# real rolling shot data instead of the 0.34 fallback. Pairs with the _get cache-poisoning fix.
+# Incremental after first run (stats cached ~1yr). Quota-guarded. ISOLATION: only writes the
+# apifootball_ou_cache/ (new-format shot stats) — does not touch the standard model.
+
+concurrency:
+  group: warm-nf-shot-cache
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # 03:00 UTC daily (before the 05:00 predict runs)
+  workflow_dispatch:
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Persist shot cache across runs (incremental warming)
+        uses: actions/cache@v4
+        with:
+          path: apifootball_ou_cache
+          key: af-ou-cache-${{ github.run_id }}
+          restore-keys: af-ou-cache-
+
+      - name: Warm new-format shot cache
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python scripts/warm_nf_shot_cache.py
