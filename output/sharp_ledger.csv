@@ -109,7 +109,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-02,2026-07-04,World Cup,Colombia,Ghana,1X2 HOME (Colombia),HOME,STRONG,1.61,1.44,-10.6,,24,WIN,0.61,2026-07-05
 2026-07-03,2026-07-03,China Super League,Yunnan Yukun,Henan FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.52,1.43,-5.9,99,5,WIN,0.52,2026-07-06
 2026-07-03,2026-07-04,World Cup,Colombia,Ghana,O/U 2.5 OVER,OVER,STRONG,2.32,2.08,-10.3,,11,LOSS,-1.0,2026-07-05
-2026-07-03,2026-07-12,Norway Eliteserien,SK Brann,IK Start,1X2 AWAY (IK Start),AWAY,STEAM_SHARP,7.5,7.08,-5.6,82,12,,,
+2026-07-03,2026-07-12,Norway Eliteserien,SK Brann,IK Start,1X2 AWAY (IK Start),AWAY,STEAM_SHARP,7.5,7.08,-5.6,82,12,LOSS,-1.0,2026-07-13
 2026-07-03,2026-07-04,World Cup,Paraguay,France,O/U 2.5 UNDER,UNDER,STRONG,2.395,2.15,-10.2,,10,WIN,1.395,2026-07-05
 2026-07-03,2026-07-03,Sweden Allsvenskan,IK Sirius,Mjällby AIF,O/U 2.5 OVER,OVER,STEAM_SHARP,1.67,1.57,-6.0,95,9,WIN,0.67,2026-07-06
 2026-07-04,2026-07-04,China Super League,Qingdao West Coast FC,Shanghai SIPG FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.715,1.58,-7.9,99,6,WIN,0.715,2026-07-06
@@ -123,7 +123,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-04,2026-07-11,Ireland Premier Division,Galway United,Sligo Rovers,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.85,3.6,-6.5,63,12,,,
 2026-07-04,2026-07-11,Finland Veikkausliiga,IF Gnistan,IFK Mariehamn,1X2 HOME (IF Gnistan),HOME,STEAM_SHARP,1.51,1.42,-6.0,100,12,WIN,0.51,2026-07-12
 2026-07-04,2026-07-11,Finland Veikkausliiga,IF Gnistan,IFK Mariehamn,O/U 2.5 OVER,OVER,STEAM_SHARP,1.65,1.53,-7.3,100,6,WIN,0.65,2026-07-12
-2026-07-05,2026-07-12,Norway Eliteserien,Sarpsborg FK,Viking FK,O/U 2.5 UNDER,UNDER,STRONG,2.85,2.48,-13.0,99,3,,,
+2026-07-05,2026-07-12,Norway Eliteserien,Sarpsborg FK,Viking FK,O/U 2.5 UNDER,UNDER,STRONG,2.85,2.48,-13.0,99,3,WIN,1.85,2026-07-13
 2026-07-05,2026-07-09,World Cup,France,Morocco,O/U 2.5 UNDER,UNDER,STRONG,2.085,1.85,-11.3,,15,WIN,1.085,2026-07-10
 2026-07-05,2026-07-11,Sweden Allsvenskan,Mjällby AIF,AIK,1X2 HOME (Mjällby AIF),HOME,STEAM_SHARP,2.15,1.97,-8.4,100,11,,,
 2026-07-05,2026-07-12,Sweden Allsvenskan,Västerås SK,Degerfors IF,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.98,1.85,-6.6,100,9,,,
@@ -141,7 +141,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-07,2026-07-11,China Super League,Shanghai Shenhua FC,Beijing FC,1X2 AWAY (Beijing FC),AWAY,STEAM_SHARP,2.64,2.5,-5.3,100,17,,,
 2026-07-08,2026-07-12,China Super League,Shanghai SIPG FC,Dalian Yingbo,1X2 AWAY (Dalian Yingbo),AWAY,STEAM_STRONG,4.05,3.44,-15.1,99,17,,,
 2026-07-08,2026-07-10,China Super League,Shandong Luneng Taishan FC,Yunnan Yukun,1X2 AWAY (Yunnan Yukun),AWAY,STEAM_SHARP,4.55,4.2,-7.7,100,20,,,
-2026-07-08,2026-07-12,Norway Eliteserien,KFUM,Bodø/Glimt,1X2 HOME (KFUM),HOME,STEAM_SHARP,6.1,5.565,-8.8,75,20,,,
+2026-07-08,2026-07-12,Norway Eliteserien,KFUM,Bodø/Glimt,1X2 HOME (KFUM),HOME,STEAM_SHARP,6.1,5.565,-8.8,75,20,LOSS,-1.0,2026-07-13
 2026-07-09,2026-07-16,USA MLS,CF Montreal,Toronto FC,1X2 AWAY (Toronto FC),AWAY,STEAM_SHARP,3.75,3.4,-9.3,100,13,,,
 2026-07-09,2026-07-17,USA MLS,Seattle Sounders FC,Portland Timbers,1X2 AWAY (Portland Timbers),AWAY,STEAM_SHARP,6.0,5.615,-6.4,100,14,,,
 2026-07-09,2026-07-17,USA MLS,St. Louis City SC,Sporting Kansas City,1X2 AWAY (Sporting Kansas City),AWAY,STEAM_SHARP,6.5,6.125,-5.8,100,14,,,
@@ -172,5 +172,5 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-12,2026-07-25,Argentina Primera Division,River Plate,Barracas Central,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.95,3.7,-6.3,100,10,,,
 2026-07-12,2026-07-14,China Super League,Zhejiang,Qingdao Hainiu FC,1X2 AWAY (Qingdao Hainiu FC),AWAY,STEAM_STRONG,6.0,4.65,-22.5,87,15,,,
 2026-07-12,2026-07-16,Brazil Serie A,Botafogo,Santos,1X2 AWAY (Santos),AWAY,STEAM_SHARP,3.81,3.55,-6.8,62,22,,,
-2026-07-12,2026-07-12,Norway Eliteserien,Sarpsborg FK,Viking FK,1X2 AWAY (Viking FK),AWAY,STEAM_STRONG,1.74,1.55,-10.9,100,22,,,
+2026-07-12,2026-07-12,Norway Eliteserien,Sarpsborg FK,Viking FK,1X2 AWAY (Viking FK),AWAY,STEAM_STRONG,1.74,1.55,-10.9,100,22,LOSS,-1.0,2026-07-13
 2026-07-12,2026-07-19,Sweden Allsvenskan,IF Elfsborg,IK Sirius,1X2 HOME (IF Elfsborg),HOME,STEAM_SHARP,3.2,3.0,-6.3,100,15,,,
