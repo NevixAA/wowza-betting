@@ -385,9 +385,11 @@ def mode_backtest(feat: "pd.DataFrame" = None, only: str = None) -> tuple:
         combined = pd.concat([std_results, nf_results], ignore_index=True)
         combined.to_csv(config.OUTPUT_DIR / "backtest_results.csv", index=False)
 
-    # New-format-only run: side markets are standard-league — skip them and return now.
-    if only == "newformat":
-        return nf_results, nf_summary
+    # Single-model run (only='standard' or 'newformat'): skip the side-market backtests
+    # entirely — they're a separate concern, run them alone via `--mode backtest-side --market X`.
+    # This is what makes per-model runs fast (no side-market walk-forwards bundled in).
+    if only is not None:
+        return (std_results, std_summary) if only == "standard" else (nf_results, nf_summary)
 
     # ── Side-market backtests (BTTS / Over 1.5 / Over 3.5) ──────────────────
     log.info("\nBacktesting side markets (BTTS / Over 1.5 / Over 3.5)...")
