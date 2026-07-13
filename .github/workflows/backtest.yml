@@ -1,9 +1,9 @@
 name: Backtest
 
 on:
-  schedule:
-    - cron: '0 3 1 * *'   # 1st of every month at 03:00 UTC (runs ALL — full retrain + backtest)
-  workflow_dispatch:      # manual trigger — pick which model to backtest
+  # Monthly schedule REMOVED 2026-07-13 — the monthly backtest is now backtest_matrix.yml
+  # (fast, parallel, backtest-only). This stays as a MANUAL fallback for a full train+backtest.
+  workflow_dispatch:      # manual only — full train + sequential backtest (slow fallback)
     inputs:
       target:
         description: "Which model to backtest (newformat = NF only, NO retrain, standard untouched)"

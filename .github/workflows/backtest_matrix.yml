@@ -11,6 +11,10 @@ name: Backtest (per-model, parallel)
 # the monthly full train+backtest; use THIS for fast per-model / on-demand re-backtests.
 
 on:
+  schedule:
+    - cron: '0 3 1 * *'   # monthly, 1st @ 03:00 UTC — the monthly backtest (replaces the slow
+                          # sequential backtest.yml). Models are retrained weekly by retrain.yml,
+                          # so this is backtest-only + parallel = ~30min instead of hours.
   workflow_dispatch:
     inputs:
       models:
