@@ -1,0 +1,130 @@
+name: Backtest (per-model, parallel)
+
+# v10 UPGRADE (staged): run each model's backtest as its own PARALLEL job instead of the slow
+# sequential "all". The models are independent, so wall-clock = slowest single model (~20-40min)
+# instead of the sum (hours). Backtest-only (NO --mode train — walk-forward retrains per window
+# internally, so the upfront full retrain was pure waste). Each job uploads its result CSVs as
+# artifacts; a final aggregate job rebuilds league_roi_config.json + best_params_side_markets.json
+# in ONE commit (no 5-way push race).
+#
+# vs the old backtest.yml: same outputs, but parallel + no wasted retrain. Keep backtest.yml for
+# the monthly full train+backtest; use THIS for fast per-model / on-demand re-backtests.
+
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: "Which models (comma list) — default all five"
+        default: "standard,newformat,btts,over15,over35"
+
+concurrency:
+  group: backtest-matrix
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    strategy:
+      fail-fast: false          # one model failing must not kill the others
+      matrix:
+        model: [standard, newformat, btts, over15, over35]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Backtest ${{ matrix.model }} (backtest-only, no retrain)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          M="${{ matrix.model }}"
+          case "$M" in
+            standard|newformat) python pipeline.py --mode backtest --only "$M" ;;
+            btts|over15|over35) python pipeline.py --mode backtest-side --market "$M" ;;
+            *) echo "unknown model $M"; exit 1 ;;
+          esac
+      - name: Upload ${{ matrix.model }} results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bt-${{ matrix.model }}
+          path: |
+            output/backtest_results_${{ matrix.model }}.csv
+            output/backtest_by_league_${{ matrix.model }}.csv
+            models/best_params_${{ matrix.model }}.json
+          if-no-files-found: ignore
+
+  aggregate:
+    needs: backtest
+    if: always()              # aggregate whatever succeeded
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download all model results
+        uses: actions/download-artifact@v4
+        with:
+          path: _artifacts
+      - name: Place artifacts + rebuild league ROI config + merged side thresholds
+        run: |
+          mkdir -p output models
+          # flatten artifacts (each in _artifacts/bt-<model>/...) into output/ and models/
+          find _artifacts -name 'backtest_*_*.csv' -exec cp {} output/ \; 2>/dev/null || true
+          find _artifacts -name 'best_params_*.json' -exec cp {} models/ \; 2>/dev/null || true
+          python - <<'EOF'
+          import json, glob
+          from pathlib import Path
+          # 1. league ROI config from side-market by-league files (same logic as backtest.yml)
+          roi = {}
+          for market, f in [("btts","output/backtest_by_league_btts.csv"),
+                            ("over15","output/backtest_by_league_over15.csv"),
+                            ("over35","output/backtest_by_league_over35.csv")]:
+              p = Path(f)
+              if not p.exists():
+                  continue
+              import pandas as pd
+              df = pd.read_csv(p)
+              for _, row in df.iterrows():
+                  roi.setdefault(row["league"], {})[market] = round(float(row["roi_%"]), 2)
+          THRESH = {"btts": 5.0, "over15": 3.0, "over35": 8.0}
+          approved = {lg: {m: v for m, v in mk.items() if v >= THRESH.get(m, 5.0)}
+                      for lg, mk in roi.items()}
+          Path("output/league_roi_config.json").write_text(
+              json.dumps({"roi_by_league": roi, "approved_markets_by_league": approved}, indent=2))
+          # 2. merge per-market best_params into the combined side-markets file
+          combined = {}
+          for f in glob.glob("models/best_params_*.json"):
+              if f.endswith("best_params_side_markets.json"):
+                  continue
+              key = Path(f).stem.replace("best_params_", "")
+              try:
+                  combined[key] = json.loads(Path(f).read_text())
+              except Exception:
+                  pass
+          if combined:
+              Path("models/best_params_side_markets.json").write_text(json.dumps(combined, indent=2))
+          print(f"aggregate: {len(roi)} leagues, {sum(1 for v in approved.values() if v)} approved")
+          EOF
+      - name: Commit results (single commit — no push race)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/backtest_results_*.csv output/backtest_by_league_*.csv \
+                     output/league_roi_config.json models/best_params_*.json 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: parallel backtest $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
