@@ -130,9 +130,20 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         return
 
     existing = _load_ledger()
-    existing_keys = _dedup_keys(existing)
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
-    new_rows = []
+    # Tier ranking for best-tier-wins upgrades. A fixture first appears at a low edge
+    # (usually VALUABLE) and may CLIMB to the tier it is actually SENT at. Freezing the
+    # first sighting made summaries under-count SNIPER/MARKSMAN (the MARKSMAN=4 bug), so on
+    # a re-see we UPGRADE the recorded tier/edge in place to the strongest seen.
+    _TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+
+    key_to_idx = {}
+    for i, r in existing.iterrows():
+        k = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]),
+             str(r["side"]).strip(), str(r["source"]))
+        key_to_idx[k] = i
+
+    new_rows, upgrades, batch_keys = [], 0, set()
 
     for _, row in bets_df.iterrows():
         side       = str(row.get("bet", row.get("best_side", ""))).strip()
@@ -140,12 +151,29 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         home       = str(row["home_team"])
         away       = str(row["away_team"])
         dedup_key  = (match_date, home, away, side, source)
+        tier       = str(row.get("signal_tier", ""))
+        odds       = float(row["odds_under25"] if side == "UNDER" else row["odds_over25"])
+        edge       = float(row.get("best_edge", 0.0))
 
-        if dedup_key in existing_keys:
+        if dedup_key in key_to_idx:
+            # Already logged — UPGRADE tier/edge in place if this run is a stronger tier.
+            i   = key_to_idx[dedup_key]
+            cur = str(existing.at[i, "signal_tier"])
+            if _TIER_RANK.get(tier, 0) > _TIER_RANK.get(cur, 0):
+                try:
+                    cur_odds = float(existing.at[i, "odds"])
+                except (TypeError, ValueError):
+                    cur_odds = odds
+                existing.at[i, "signal_tier"]  = tier
+                existing.at[i, "edge_pct"]     = round(edge * 100, 2)
+                existing.at[i, "kelly_pct"]    = _kelly_pct(edge, cur_odds)
+                existing.at[i, "drift_signal"] = str(row.get("drift_signal", existing.at[i, "drift_signal"]))
+                upgrades += 1
             continue
+        if dedup_key in batch_keys:
+            continue
+        batch_keys.add(dedup_key)
 
-        odds      = float(row["odds_under25"] if side == "UNDER" else row["odds_over25"])
-        edge      = float(row.get("best_edge", 0.0))
         opening   = _opening_odds(home, away, match_date, side)
         drift_val = round(float(opening) - odds, 3) if isinstance(opening, (int, float)) else ""
 
@@ -161,7 +189,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "opening_odds": opening,
             "odds_drift":   drift_val,
             "edge_pct":     round(edge * 100, 2),
-            "signal_tier":  str(row.get("signal_tier", "")),
+            "signal_tier":  tier,
             "drift_signal": str(row.get("drift_signal", "")),
             "kelly_pct":    _kelly_pct(edge, odds),
             "model_type":   str(row.get("model_type", "")),
@@ -172,14 +200,14 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "notes":        "",
         })
 
-    if not new_rows:
+    if not new_rows and not upgrades:
         log.info("Ledger: no new tips (all already logged).")
         return
 
-    appended = pd.DataFrame(new_rows, columns=LEDGER_COLS)
-    updated  = pd.concat([existing, appended], ignore_index=True)
+    updated = (pd.concat([existing, pd.DataFrame(new_rows, columns=LEDGER_COLS)], ignore_index=True)
+               if new_rows else existing)
     updated.to_csv(LEDGER_FILE, index=False)
-    log.info(f"Ledger: {len(new_rows)} new tip(s) appended → {LEDGER_FILE}")
+    log.info(f"Ledger: {len(new_rows)} new + {upgrades} tier-upgrade(s) → {LEDGER_FILE}")
 
 
 def append_backtest_results(backtest_df: pd.DataFrame, model_type: str = "") -> None:
