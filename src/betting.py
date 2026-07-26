@@ -116,6 +116,25 @@ def _stake(edge: float, p: float, odds: float, threshold: float) -> float:
     return config.FLAT_STAKE
 
 
+_STANDARD_TH_CACHE = None
+
+
+def _load_standard_thresholds() -> dict:
+    """Auto-optimized per-league standard O/U thresholds (best_params_standard.json),
+    written by optimize_standard_thresholds each backtest. Empty dict when the file is
+    absent → _base_tier falls back to the hand-set config.LEAGUE_SNIPER_THRESHOLDS
+    (i.e. identical to the old behaviour), so this can never regress an env without it."""
+    global _STANDARD_TH_CACHE
+    if _STANDARD_TH_CACHE is None:
+        import json
+        f = config.MODELS_DIR / "best_params_standard.json"
+        try:
+            _STANDARD_TH_CACHE = json.loads(f.read_text()) if f.exists() else {}
+        except Exception:
+            _STANDARD_TH_CACHE = {}
+    return _STANDARD_TH_CACHE
+
+
 def _base_tier(edge: float, side: str = "", league: str = "") -> str:
     """
     Three-tier signal system:
@@ -124,15 +143,28 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
       VALUABLE — edge >= VALUABLE_THRESHOLD (moderate, half stake / monitor)
       AVOID    — below threshold
     """
-    has_per_league = league and league in config.LEAGUE_SNIPER_THRESHOLDS
-    if has_per_league:
-        sniper_thresh = config.LEAGUE_SNIPER_THRESHOLDS[league]
+    # Prefer the AUTO-OPTIMIZED per-league threshold (best_params_standard.json) when
+    # present, else the hand-set config.LEAGUE_SNIPER_THRESHOLDS, else side-specific global.
+    # Use the auto-optimized threshold ONLY for real-money-APPROVED leagues (OOS-positive).
+    # A not-approved league's "best" threshold is merely least-bad (often very low → signal
+    # spam), so those fall back to the hand-set config value — they still send tips (paper),
+    # just at a sane volume. This is what lets every league notify without flooding the channel.
+    _opt = _load_standard_thresholds().get(str(league)) if league else None
+    if _opt and _opt.get("approved") and _opt.get("sniper_th") is not None:
+        has_per_league = True
+        sniper_thresh  = float(_opt["sniper_th"])
+    elif league and league in config.LEAGUE_SNIPER_THRESHOLDS:
+        has_per_league = True
+        sniper_thresh  = config.LEAGUE_SNIPER_THRESHOLDS[league]
     elif side == "OVER":
-        sniper_thresh = config.SNIPER_THRESHOLD_OVER
+        has_per_league = False
+        sniper_thresh  = config.SNIPER_THRESHOLD_OVER
     elif side == "UNDER":
-        sniper_thresh = config.SNIPER_THRESHOLD_UNDER
+        has_per_league = False
+        sniper_thresh  = config.SNIPER_THRESHOLD_UNDER
     else:
-        sniper_thresh = config.SNIPER_THRESHOLD
+        has_per_league = False
+        sniper_thresh  = config.SNIPER_THRESHOLD
 
     if edge >= sniper_thresh:
         return "SNIPER"
@@ -146,9 +178,13 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
         if edge > ceiling:
             return "MARKSMAN"
 
-    # Per-league MARKSMAN floor overrides global (set equal to SNIPER to disable MARKSMAN)
-    league_mm_thresh = getattr(config, "LEAGUE_MARKSMAN_THRESHOLDS", {}).get(league)
-    mm_thresh = league_mm_thresh if league_mm_thresh is not None else config.MARKSMAN_THRESHOLD
+    # MARKSMAN floor: optimized marksman_th only for APPROVED leagues, else per-league
+    # override, else global (mirrors the SNIPER logic above).
+    if _opt and _opt.get("approved") and _opt.get("marksman_th") is not None:
+        mm_thresh = float(_opt["marksman_th"])
+    else:
+        league_mm_thresh = getattr(config, "LEAGUE_MARKSMAN_THRESHOLDS", {}).get(league)
+        mm_thresh = league_mm_thresh if league_mm_thresh is not None else config.MARKSMAN_THRESHOLD
 
     if edge >= mm_thresh:
         return "MARKSMAN"

@@ -237,13 +237,11 @@ def notify_new_snipers() -> int:
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
-    # Filter to approved leagues only (when ROI config exists).
-    # SNIPER tips always go through — ROI config gates MARKSMAN only.
-    if _approved_leagues:
-        tips = tips[
-            (tips["signal_tier"] == "SNIPER") |
-            (tips.get("league", pd.Series(dtype=str)).isin(_approved_leagues))
-        ]
+    # Live-test policy (2026/27): send SNIPER + MARKSMAN for ALL leagues — including
+    # negative-ROI ("losing") ones — so every league is tracked live this season. The
+    # league-ROI approval gate that previously muted MARKSMAN on unapproved leagues is
+    # intentionally disabled; approval now informs real-money sizing only, not sending.
+    # (_approved_leagues stays available above for labelling if needed.)
 
     # Only upcoming games — never send finished matches
     today_str = datetime.now().strftime("%Y-%m-%d")

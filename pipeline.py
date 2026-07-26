@@ -51,7 +51,8 @@ from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
 from src.model import train as train_model, save_models, load_models, get_feature_importances
 from src.betting import generate_bets
-from src.backtest import run_backtest, run_side_market_backtest, optimize_side_market_thresholds
+from src.backtest import (run_backtest, run_side_market_backtest,
+                           optimize_side_market_thresholds, optimize_standard_thresholds)
 from src.ledger import append_tips, print_ledger
 
 
@@ -103,11 +104,15 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         def _tier(row):
             lg = row["league"]
             lp = market_params.get(lg, {})
-            # Drop leagues the optimizer flagged as unprofitable
+            # Live-test policy (2026/27): never suppress a league. Leagues the optimizer
+            # flagged unprofitable ("drop") still emit tips at the GLOBAL bar so every league
+            # produces signals for the season-long CLV/ROI test. Real-money gating is a
+            # separate downstream decision, not a notification filter.
             if lp.get("drop", False):
-                return "AVOID"
-            sniper_th   = lp.get("sniper_th",   0.10)
-            marksman_th = lp.get("marksman_th",  0.08)
+                sniper_th, marksman_th = 0.10, 0.08
+            else:
+                sniper_th   = lp.get("sniper_th",   0.10)
+                marksman_th = lp.get("marksman_th",  0.08)
             edge = row["edge"]
             if edge >= sniper_th:   return "SNIPER"
             if edge >= marksman_th: return "MARKSMAN"
@@ -384,6 +389,19 @@ def mode_backtest(feat: "pd.DataFrame" = None, only: str = None) -> tuple:
         import pandas as pd
         combined = pd.concat([std_results, nf_results], ignore_index=True)
         combined.to_csv(config.OUTPUT_DIR / "backtest_results.csv", index=False)
+
+    # ── Standard O/U 2.5 per-league SNIPER-threshold optimizer ─────────────────
+    # Auto-tunes per-league thresholds (the standard-model equivalent of
+    # optimize_side_market_thresholds; standard historically used hand-set constants).
+    # OOS-gated: `approved` marks real-money leagues only — signals still fire for all.
+    if std_results is not None:
+        import json
+        std_th = optimize_standard_thresholds(std_results)
+        (config.MODELS_DIR / "best_params_standard.json").write_text(
+            json.dumps(std_th, indent=2))
+        appr = [lg for lg, v in std_th.items() if v.get("approved")]
+        log.info(f"Standard per-league thresholds -> best_params_standard.json "
+                 f"({len(appr)} real-money approved: {appr or 'none'})")
 
     # Single-model run (only='standard' or 'newformat'): skip the side-market backtests
     # entirely — they're a separate concern, run them alone via `--mode backtest-side --market X`.
