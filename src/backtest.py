@@ -484,3 +484,113 @@ def optimize_side_market_thresholds(
         f"(no threshold yielded ROI > 0 with {min_bets}+ bets)"
     )
     return results
+
+
+def optimize_standard_thresholds(
+    results_df: pd.DataFrame,
+    min_bets: int = 30,
+    min_oos_bets: int = 20,
+    edge_min: float = 0.04,
+    edge_max: float = 0.25,
+    edge_step: float = 0.01,
+) -> dict:
+    """
+    Per-league SNIPER edge-threshold optimizer for the STANDARD O/U 2.5 model.
+
+    The standard model historically used HAND-SET per-league thresholds
+    (config.LEAGUE_SNIPER_THRESHOLDS, calibrated once by hand). This is the
+    auto-tuning equivalent of optimize_side_market_thresholds — which only ever
+    existed for the newer side markets (BTTS / Over1.5 / Over3.5).
+
+    Method (overfit-resistant, so an in-sample mirage is never marked real-money):
+      * Flat-stake PnL is computed directly from best_side + outcome + odds, so ANY
+        candidate threshold can be scored — independent of the tier the backtest
+        actually staked (this correctly includes leagues that a stale guard zeroed).
+      * COVID seasons are excluded (config.COVID_SEASONS).
+      * DEPLOYED `sniper_th` = grid value maximising ROI on ALL non-COVID data
+        (>= min_bets) — most data → most stable point estimate.
+      * A WALK-FORWARD out-of-sample pass (tune on prior seasons, bet the next one
+        blind) gives `roi_oos`; a league is only `approved` when that OOS ROI is
+        positive on >= min_oos_bets. Approval gates REAL MONEY only — signals for
+        every league still fire (paper/CLV), so this never silences a tip.
+
+    Returns
+    -------
+    dict: {league: {sniper_th, marksman_th, roi_insample, bets_insample,
+                    roi_oos, bets_oos, approved}}
+    """
+    df = results_df.copy()
+    ow = df["over25"] == 1
+    pnl_over  = np.where(ow,  df["odds_over25"]  - 1.0, -1.0)
+    pnl_under = np.where(~ow, df["odds_under25"] - 1.0, -1.0)
+    df["_bpnl"] = np.where(df["best_side"] == "OVER",  pnl_over,
+                  np.where(df["best_side"] == "UNDER", pnl_under, np.nan))
+
+    covid = set(getattr(config, "COVID_SEASONS", {"2019/20", "2020/21"}))
+    d = df[
+        ~df["season"].astype(str).isin(covid)
+        & df["best_side"].isin(["OVER", "UNDER"])
+        & df["best_edge"].notna()
+        & df["_bpnl"].notna()
+    ].copy()
+
+    grid    = np.round(np.arange(edge_min, edge_max + edge_step / 2, edge_step), 4)
+    seasons = sorted(d["season"].astype(str).unique())
+
+    def _best_threshold(sub: pd.DataFrame, floor_bets: int):
+        best = None
+        for th in grid:
+            sel = sub[sub["best_edge"] >= th]
+            if len(sel) < floor_bets:
+                continue
+            roi = float(sel["_bpnl"].mean() * 100)
+            if best is None or roi > best[2]:
+                best = (float(th), len(sel), roi)
+        return best  # (threshold, bets, roi) or None
+
+    results: dict = {}
+    for lg, g in d.groupby("league"):
+        ins = _best_threshold(g, min_bets)
+
+        # Walk-forward OOS: tune on prior seasons, apply to each following season.
+        oos_rows = []
+        for i in range(1, len(seasons)):
+            train = g[g["season"].astype(str).isin(seasons[:i])]
+            test  = g[g["season"].astype(str) == seasons[i]]
+            bt = _best_threshold(train, max(15, min_bets // 2))
+            if bt is None or test.empty:
+                continue
+            sel = test[test["best_edge"] >= bt[0]]
+            if len(sel):
+                oos_rows.append(sel)
+        oos      = pd.concat(oos_rows) if oos_rows else g.iloc[0:0]
+        oos_roi  = float(oos["_bpnl"].mean() * 100) if len(oos) else None
+        oos_bets = len(oos)
+
+        if ins is None:
+            results[lg] = {
+                "sniper_th": None, "marksman_th": None,
+                "roi_insample": None, "bets_insample": 0,
+                "roi_oos": round(oos_roi, 2) if oos_roi is not None else None,
+                "bets_oos": oos_bets, "approved": False,
+            }
+            continue
+
+        th, bets, roi = ins
+        approved = (oos_roi is not None and oos_roi > 0 and oos_bets >= min_oos_bets)
+        results[lg] = {
+            "sniper_th":     round(th, 4),
+            "marksman_th":   round(max(th - 0.02, edge_min), 4),
+            "roi_insample":  round(roi, 2),
+            "bets_insample": bets,
+            "roi_oos":       round(oos_roi, 2) if oos_roi is not None else None,
+            "bets_oos":      oos_bets,
+            "approved":      bool(approved),
+        }
+
+    kept = sum(1 for v in results.values() if v["approved"])
+    log.info(
+        f"[standard] Threshold opt: {len(results)} leagues, {kept} approved "
+        f"(OOS ROI > 0 on {min_oos_bets}+ out-of-sample bets)"
+    )
+    return results
