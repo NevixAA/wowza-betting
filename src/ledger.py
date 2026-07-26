@@ -210,6 +210,91 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
     log.info(f"Ledger: {len(new_rows)} new + {upgrades} tier-upgrade(s) → {LEDGER_FILE}")
 
 
+# ── Side-market ledger (BTTS / Over 1.5 / Over 3.5) ─────────────────────────────
+SIDE_LEDGER_FILE = config.OUTPUT_DIR / "side_bets_ledger.csv"
+SIDE_LEDGER_COLS = [
+    "source", "generated_at", "signal_date", "match_date", "league",
+    "home_team", "away_team", "market", "odds", "edge_pct", "ev_pct",
+    "model_prob", "signal_tier", "closing_odds", "clv_pct", "result", "pnl", "notes",
+]
+_SIDE_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+
+
+def _load_side_ledger() -> pd.DataFrame:
+    if SIDE_LEDGER_FILE.exists():
+        try:
+            return pd.read_csv(SIDE_LEDGER_FILE)
+        except Exception:
+            pass
+    return pd.DataFrame(columns=SIDE_LEDGER_COLS)
+
+
+def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None:
+    """Append BTTS / Over 1.5 / Over 3.5 tips to their OWN ledger (side_bets_ledger.csv),
+    one row per (fixture, market), ALL tiers. Same best-tier-wins upgrade as append_tips.
+
+    This is the writer the weekly summary always expected but nothing populated — so side
+    markets are now tracked for the season-long live test. result/pnl/closing_odds/clv fill
+    in when a settling pass runs; until then rows are 'pending' and readers skip them
+    (`_settled_only`), so an unsettled ledger never breaks a summary.
+    """
+    if side_df is None or side_df.empty:
+        return
+    existing = _load_side_ledger()
+    now   = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    today = now[:10]
+
+    key_to_idx = {}
+    for i, r in existing.iterrows():
+        k = (str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]),
+             str(r["market"]), str(r["source"]))
+        key_to_idx[k] = i
+
+    new_rows, upgrades, batch = [], 0, set()
+    for _, row in side_df.iterrows():
+        market     = str(row.get("market", ""))
+        match_date = str(row["date"])[:10]
+        home       = str(row["home_team"])
+        away       = str(row["away_team"])
+        tier       = str(row.get("signal_tier", ""))
+        odds       = float(row.get("market_odds", 0.0) or 0.0)
+        edge_pct   = round(float(row.get("edge", 0.0) or 0.0) * 100, 2)
+        ev_pct     = round(float(row.get("ev", 0.0) or 0.0) * 100, 2)
+        key        = (match_date, home, away, market, source)
+
+        if key in key_to_idx:
+            i   = key_to_idx[key]
+            cur = str(existing.at[i, "signal_tier"])
+            if _SIDE_RANK.get(tier, 0) > _SIDE_RANK.get(cur, 0):
+                existing.at[i, "signal_tier"] = tier
+                existing.at[i, "edge_pct"]    = edge_pct
+                existing.at[i, "ev_pct"]      = ev_pct
+                existing.at[i, "odds"]        = odds
+                upgrades += 1
+            continue
+        if key in batch:
+            continue
+        batch.add(key)
+
+        new_rows.append({
+            "source": source, "generated_at": now, "signal_date": today,
+            "match_date": match_date, "league": str(row.get("league", "")),
+            "home_team": home, "away_team": away, "market": market,
+            "odds": odds, "edge_pct": edge_pct, "ev_pct": ev_pct,
+            "model_prob": round(float(row.get("model_prob", 0.0) or 0.0), 4),
+            "signal_tier": tier,
+            "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
+        })
+
+    if not new_rows and not upgrades:
+        log.info("Side ledger: no new tips (all already logged).")
+        return
+    updated = (pd.concat([existing, pd.DataFrame(new_rows, columns=SIDE_LEDGER_COLS)], ignore_index=True)
+               if new_rows else existing)
+    updated.to_csv(SIDE_LEDGER_FILE, index=False)
+    log.info(f"Side ledger: {len(new_rows)} new + {upgrades} tier-upgrade(s) → {SIDE_LEDGER_FILE}")
+
+
 def append_backtest_results(backtest_df: pd.DataFrame, model_type: str = "") -> None:
     """
     Append walk-forward backtest bets into the ledger with source="backtest".
