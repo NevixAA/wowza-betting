@@ -53,7 +53,7 @@ from src.model import train as train_model, save_models, load_models, get_featur
 from src.betting import generate_bets
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
-from src.ledger import append_tips, print_ledger
+from src.ledger import append_tips, append_side_market_tips, print_ledger
 
 
 # ── Side-market bet generation ────────────────────────────────────────────────
@@ -280,6 +280,7 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     if not side_bets.empty:
         side_bets_file = config.OUTPUT_DIR / "side_bets.csv"
         side_bets.to_csv(side_bets_file, index=False)
+        append_side_market_tips(side_bets)   # persist to side_bets_ledger.csv (all tiers)
         log.info(f"Side-market tips → {side_bets_file}  ({len(side_bets)} tips)")
         for mkt, label in config.SIDE_MARKET_LABELS.items():
             n = (side_bets["market"] == mkt).sum()
