@@ -315,7 +315,7 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
     visible = visible.sort_values("best_edge", ascending=False)
 
     output_cols = [
-        "date", "league", "home_team", "away_team",
+        "date", "kickoff_utc", "league", "home_team", "away_team",
         "best_side", "odds_over25", "odds_under25",
         "edge_over", "edge_under", "best_edge",
         "bet", "bet_stake", "signal_tier",
