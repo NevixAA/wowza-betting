@@ -277,6 +277,50 @@ ARTIFICIAL_PITCH_LEAGUES: set = {
     "Norway Eliteserien",
 }
 
+# ── Per-league display timezones (IANA) ───────────────────────────────────────
+# Used ONLY for DISPLAY in the Telegram bot: OddsAPI commence_time is UTC, so a
+# match's local calendar day can differ from its UTC day (e.g. Japan/Argentina).
+# The stored `date` stays UTC (join key); the notifier converts kickoff_utc to the
+# league's local tz for what the user reads. Unknown leagues fall back to UTC.
+LEAGUE_TIMEZONES: dict = {
+    # Standard format
+    "League One":                "Europe/London",
+    "League Two":                "Europe/London",
+    "Championship":              "Europe/London",
+    "National League":           "Europe/London",
+    "Bundesliga 2":              "Europe/Berlin",
+    "La Liga 2":                 "Europe/Madrid",
+    "Ligue 2":                   "Europe/Paris",
+    "Serie B":                   "Europe/Rome",
+    "Greek Super League":        "Europe/Athens",
+    "Portuguese Primeira Liga":  "Europe/Lisbon",
+    "Scottish Championship":     "Europe/London",
+    "Scottish League One":       "Europe/London",
+    "Scottish League Two":       "Europe/London",
+    "Scottish Premiership":      "Europe/London",
+    "Belgian First Division A":  "Europe/Brussels",
+    "Dutch Eredivisie":          "Europe/Amsterdam",
+    "Turkish Super Lig":         "Europe/Istanbul",
+    # New format
+    "Denmark Superliga":         "Europe/Copenhagen",
+    "Austrian Bundesliga":       "Europe/Vienna",
+    "Austria Bundesliga":        "Europe/Vienna",
+    "Romanian Superliga":        "Europe/Bucharest",
+    "Sweden Allsvenskan":        "Europe/Stockholm",
+    "Norway Eliteserien":        "Europe/Oslo",
+    "Finland Veikkausliiga":     "Europe/Helsinki",
+    "Ireland Premier Division":  "Europe/Dublin",
+    "Argentina Primera Division": "America/Argentina/Buenos_Aires",
+    "Brazil Serie A":            "America/Sao_Paulo",
+    "Japan J-League":            "Asia/Tokyo",
+    "Mexico Liga MX":            "America/Mexico_City",
+    "China Super League":        "Asia/Shanghai",
+    "USA MLS":                   "America/New_York",   # MLS spans zones; ET as display proxy
+    "Saudi Pro League":          "Asia/Riyadh",
+    "K-League 1":                "Asia/Seoul",
+    "Poland Ekstraklasa":        "Europe/Warsaw",
+}
+
 KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))
 FLAT_STAKE     = float(os.getenv("FLAT_STAKE",     "1.0"))
 USE_KELLY      = os.getenv("USE_KELLY", "0") == "1"

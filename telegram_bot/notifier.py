@@ -34,6 +34,32 @@ sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
 
 
+def _fmt_kickoff(row) -> str:
+    """Display a fixture's date/time in the LEAGUE'S LOCAL timezone.
+
+    OddsAPI `commence_time` is UTC, so a match's local calendar day can differ from
+    its UTC day (Japan, Argentina, Brazil, …). We convert `kickoff_utc` to the league's
+    local tz for what the user reads. The stored `date` stays UTC (join/dedup key) and
+    is NOT touched. Falls back to the UTC date string when `kickoff_utc` is missing,
+    unparseable, or the league tz is unknown — so it can never regress the old behaviour.
+    """
+    fallback = str(row.get("date", ""))[:10]
+    ko = row.get("kickoff_utc", None)
+    if ko is None or str(ko) in ("", "nan", "NaT", "None"):
+        return fallback
+    try:
+        ts = pd.to_datetime(ko, utc=True, errors="coerce")
+        if pd.isna(ts):
+            return fallback
+        tz = app_config.LEAGUE_TIMEZONES.get(str(row.get("league", "")), "UTC")
+        local = ts.tz_convert(tz)
+        abbr = local.strftime("%Z")
+        suffix = "" if (tz == "UTC" or not abbr) else f" {abbr}"
+        return f"{local.strftime('%Y-%m-%d %H:%M')}{suffix}"
+    except Exception:
+        return fallback
+
+
 def _load_config() -> dict:
     import os
     # GitHub Actions / CI: read from environment variables
@@ -251,7 +277,7 @@ def notify_new_snipers() -> int:
         msg = (
             f"{header}\n"
             f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {str(row['date'])[:10]}\n"
+            f"📅 {_fmt_kickoff(row)}\n"
             f"🏆 {row.get('league','')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
@@ -526,7 +552,7 @@ def notify_ht_tips() -> int:
         msg = (
             f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {date}\n"
+            f"📅 {_fmt_kickoff(row)}\n"
             f"🏆 {row.get('league', '')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>HT {side} {line}</b>\n"
@@ -829,7 +855,7 @@ def notify_agent_analysis() -> int:
             f"🤖 <b>AGENT ANALYSIS</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
-            f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
+            f"🏆 {row.get('league', '')}  |  📅 {_fmt_kickoff(row)}\n"
             f"🎯 ML Signal: <b>{side} 2.5</b>  Edge: <b>{edge:.1f}%</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"<b>Strongest Signals:</b>\n"

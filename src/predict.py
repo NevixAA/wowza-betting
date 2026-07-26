@@ -115,7 +115,8 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                 if ov25 and un25:
                     rows.append({
                         "league":       league,
-                        "date":         dt.normalize(),
+                        "date":         dt.normalize(),   # UTC calendar day — JOIN KEY, do not change
+                        "kickoff_utc":  dt,                # full UTC kickoff datetime — for local-tz DISPLAY only
                         "home_team":    event.get("home_team", ""),
                         "away_team":    event.get("away_team", ""),
                         "odds_over25":  float(ov25),
