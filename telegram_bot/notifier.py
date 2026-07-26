@@ -1487,34 +1487,41 @@ def notify_daily_digest() -> bool:
         "",
     ]
 
-    # ── Over 2.5 by tier ───────────────────────────────────────────────────────
-    bets_file = app_config.OUTPUT_DIR / "bets.csv"
+    # ── Over 2.5 by tier — read from the LEDGER (best-tier == what was pinged + weekly) ──
+    ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
     ou_total = 0
-    if bets_file.exists():
+    if ledger_file.exists():
         try:
-            bets = pd.read_csv(bets_file)
-            bets = bets[
-                bets["signal_tier"].isin(TIER_ORDER) &
-                bets["bet"].isin(["OVER", "UNDER"]) &
-                (bets["date"].astype(str).str[:10] >= today_str)
+            bl = pd.read_csv(ledger_file)
+            if "source" in bl.columns:
+                bl = bl[bl["source"].astype(str) == "live"]
+            bl = bl[
+                bl["signal_tier"].isin(TIER_ORDER) &
+                (bl["match_date"].astype(str).str[:10] >= today_str)
             ].copy()
-            ou_total = len(bets)
+            ou_total = len(bl)
             lines.append(f"⚽ <b>Over 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
-            if bets.empty:
+            if bl.empty:
                 lines.append("  No tips today")
             else:
                 for tier in TIER_ORDER:
-                    tb = bets[bets["signal_tier"] == tier]
+                    tb = bl[bl["signal_tier"] == tier]
                     if tb.empty:
                         continue
                     lines.append(f"  {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
                     for _, r in tb.iterrows():
-                        side = r.get("best_side") or r.get("bet", "")
-                        odds = r["odds_under25"] if side == "UNDER" else r["odds_over25"]
-                        edge = float(r.get("best_edge", 0)) * 100
+                        side = str(r.get("side", ""))
+                        try:
+                            odds = float(r.get("odds", 0) or 0)
+                        except (TypeError, ValueError):
+                            odds = 0.0
+                        try:
+                            edge = float(r.get("edge_pct", 0) or 0)
+                        except (TypeError, ValueError):
+                            edge = 0.0
                         lines.append(
                             f"    {r['home_team']} vs {r['away_team']} — "
-                            f"<b>{side} 2.5</b> @ {float(odds):.2f} (+{edge:.0f}%)"
+                            f"<b>{side} 2.5</b> @ {odds:.2f} (+{edge:.0f}%)"
                             f"  [{r.get('league','')}]"
                         )
         except Exception as e:
@@ -1523,14 +1530,14 @@ def notify_daily_digest() -> bool:
         lines.append("⚽ <b>Over 2.5</b> — no data yet")
     lines.append("")
 
-    # ── Side markets: BTTS / Over 1.5 / Over 3.5 — by market then tier ────────
-    side_file = app_config.OUTPUT_DIR / "side_bets.csv"
+    # ── Side markets: BTTS / Over 1.5 / Over 3.5 — from the LEDGER (best-tier) ──
+    side_file = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
     if side_file.exists():
         try:
             side = pd.read_csv(side_file)
             side = side[
                 side["signal_tier"].isin(TIER_ORDER) &
-                (side["date"].astype(str).str[:10] >= today_str)
+                (side["match_date"].astype(str).str[:10] >= today_str)
             ].copy()
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = side[side["market"] == mkt] if "market" in side.columns else pd.DataFrame()
@@ -1543,10 +1550,17 @@ def notify_daily_digest() -> bool:
                         continue
                     lines.append(f"  {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
                     for _, r in tb.iterrows():
-                        ev_str = f" EV {float(r['ev']):+.0%}" if pd.notna(r.get("ev")) else ""
+                        try:
+                            ev_str = f" EV {float(r.get('ev_pct', 0) or 0):+.0f}%"
+                        except (TypeError, ValueError):
+                            ev_str = ""
+                        try:
+                            odds = float(r.get("odds", 0) or 0)
+                        except (TypeError, ValueError):
+                            odds = 0.0
                         lines.append(
                             f"    {r['home_team']} vs {r['away_team']} — "
-                            f"@ {float(r['market_odds']):.2f}{ev_str}"
+                            f"@ {odds:.2f}{ev_str}"
                             f"  [{r.get('league','')}]"
                         )
                 lines.append("")

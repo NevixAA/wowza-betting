@@ -44,6 +44,7 @@ import config
 LEDGER_FILE        = config.OUTPUT_DIR / "bets_ledger.csv"
 PLAYER_LEDGER_FILE = config.OUTPUT_DIR / "player_ledger.csv"
 SHARP_LEDGER_FILE  = config.OUTPUT_DIR / "sharp_ledger.csv"
+SIDE_LEDGER_FILE   = config.OUTPUT_DIR / "side_bets_ledger.csv"
 
 
 # ── Team name normalisation ───────────────────────────────────────────────────
@@ -614,6 +615,107 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
     log.info(f"  Saved → {SHARP_LEDGER_FILE}")
 
 
+# ── Side-market result resolver (BTTS / Over 1.5 / Over 3.5) ────────────────────
+
+def _resolve_side_market(market: str, home_score: int, away_score: int) -> str:
+    """WIN/LOSS for a side market given the final score."""
+    total = home_score + away_score
+    if market == "btts":
+        return "WIN" if (home_score > 0 and away_score > 0) else "LOSS"
+    if market == "over15":
+        return "WIN" if total > 1.5 else "LOSS"
+    if market == "over35":
+        return "WIN" if total > 3.5 else "LOSS"
+    return ""
+
+
+def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
+    """Resolve BTTS / Over 1.5 / Over 3.5 outcomes in side_bets_ledger.csv.
+
+    Reuses the same score sources as the O/U ledger (football-data first, OddsAPI fallback).
+    Fills result + pnl (flat 1u). CLV is left blank — side-market closing lines aren't
+    snapshotted yet (a separate capture would be needed for BTTS/O1.5/O3.5 CLV).
+    """
+    if not SIDE_LEDGER_FILE.exists():
+        log.info("side_bets_ledger.csv not found — skipping side-market resolution")
+        return
+
+    ledger = pd.read_csv(SIDE_LEDGER_FILE, dtype=str)
+    for col in ("result", "pnl"):
+        if col not in ledger.columns:
+            ledger[col] = ""
+
+    today_str = str(datetime.utcnow().date())
+    pending_mask = (
+        ledger["result"].isna() | (ledger["result"].str.strip() == "")
+    ) & (ledger["match_date"] < today_str)
+    pending = ledger[pending_mask].copy()
+
+    if pending.empty:
+        log.info("side_bets_ledger: no pending side-market results")
+        return
+
+    log.info(f"side_bets_ledger: {len(pending)} pending tip(s) to resolve")
+
+    scores_cache: dict[str, list[dict]] = {}
+    updates: list[dict] = []
+
+    for idx, row in pending.iterrows():
+        league   = row["league"]
+        home     = row["home_team"]
+        away     = row["away_team"]
+        date_str = row["match_date"]
+        market   = str(row.get("market", ""))
+
+        if league not in scores_cache:
+            if league in _FD_SOURCES:
+                log.info(f"  Fetching scores for {league} from football-data.co.uk ...")
+                scores_cache[league] = fetch_scores_fd(league)
+            else:
+                sk = config.ODDS_API_SPORT_KEYS.get(league)
+                scores_cache[league] = fetch_scores(sk, days) if sk else []
+
+        ev_found = None
+        for ev in scores_cache.get(league, []):
+            if ev["date_str"] == date_str and _names_match(home, ev["home_team"]) and _names_match(away, ev["away_team"]):
+                ev_found = ev
+                break
+        if ev_found is None:
+            continue
+
+        res = _resolve_side_market(market, ev_found["home_score"], ev_found["away_score"])
+        if not res:
+            continue
+        try:
+            odds = float(row["odds"])
+        except (TypeError, ValueError):
+            odds = 1.0
+        pnl = round(odds - 1.0, 4) if res == "WIN" else -1.0
+        updates.append({"idx": idx, "result": res, "pnl": pnl})
+        log.info(
+            f"  {'[DRY]' if dry_run else '[ OK]'} "
+            f"{home} vs {away} ({market}) {date_str} → {res}  PnL={pnl:+.3f}u"
+        )
+
+    if not updates:
+        log.info("  No side-market results found in any scores source.")
+        return
+    if dry_run:
+        print(f"\n  [DRY RUN] Would update {len(updates)} side-market row(s). No files written.")
+        return
+
+    for u in updates:
+        ledger.at[u["idx"], "result"] = u["result"]
+        ledger.at[u["idx"], "pnl"]    = str(u["pnl"])
+    ledger.to_csv(SIDE_LEDGER_FILE, index=False)
+
+    wins   = sum(1 for u in updates if u["result"] == "WIN")
+    losses = sum(1 for u in updates if u["result"] == "LOSS")
+    total  = sum(u["pnl"] for u in updates)
+    log.info(f"side_bets_ledger: {len(updates)} resolved — {wins}W/{losses}L — PnL={total:+.3f}u")
+    log.info(f"  Saved → {SIDE_LEDGER_FILE}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -789,9 +891,10 @@ def main():
         print()
         log.info(f"Ledger saved → {LEDGER_FILE}")
 
-    # Also resolve player prop and sharp money ledgers
+    # Also resolve player prop, sharp money, and side-market ledgers
     update_player_results(days=args.days, dry_run=args.dry_run)
     update_sharp_results(days=args.days, dry_run=args.dry_run)
+    update_side_market_results(days=args.days, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":
