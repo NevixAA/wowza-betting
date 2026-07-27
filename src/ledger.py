@@ -130,6 +130,13 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         return
 
     existing = _load_ledger()
+    # In-place tier upgrades below assign floats/strings into existing cells. CI's pandas can
+    # back CSV columns with pyarrow string dtype (future.infer_string), which rejects a float
+    # assignment (TypeError). Cast the columns we may overwrite to object so mixed assignment
+    # is always safe, regardless of the read dtype backend.
+    for _c in ("signal_tier", "edge_pct", "kelly_pct", "drift_signal"):
+        if _c in existing.columns:
+            existing[_c] = existing[_c].astype(object)
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     # Tier ranking for best-tier-wins upgrades. A fixture first appears at a low edge
     # (usually VALUABLE) and may CLIMB to the tier it is actually SENT at. Freezing the
@@ -241,6 +248,11 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
     if side_df is None or side_df.empty:
         return
     existing = _load_side_ledger()
+    # Same dtype-safety as append_tips: in-place upgrades assign floats into cells that CI's
+    # pandas may back with pyarrow string dtype — cast overwrite targets to object first.
+    for _c in ("signal_tier", "edge_pct", "ev_pct", "odds"):
+        if _c in existing.columns:
+            existing[_c] = existing[_c].astype(object)
     now   = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     today = now[:10]
 
