@@ -1,0 +1,68 @@
+name: Fantasy Refresh
+
+# Refreshes the FPL fantasy layer daily: official FPL bootstrap (live squads / injuries /
+# prices / FDR — free, no key), API-Football current squads, and regenerates fantasy_tips.csv.
+# Isolated from the betting pipeline (dashboard + fantasy tips only).
+
+on:
+  schedule:
+    - cron: '30 6 * * *'   # daily 06:30 UTC
+  workflow_dispatch:
+
+jobs:
+  fantasy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh FPL data + squads + fantasy tips
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python - <<'PY'
+          import sys; sys.path.insert(0, '.')
+          from player_model.fantasy import generate_fantasy_tips, refresh_official_squads, build_squads
+          try:
+              print(f"official squads (API-Football): {refresh_official_squads()}")
+          except Exception as e:
+              print(f"squad refresh skipped: {e}")
+          # generate_fantasy_tips -> build_fantasy_projections fetches the official FPL API
+          # (bootstrap-static + fixtures) which caches fpl_bootstrap.json / fpl_fixtures.json.
+          tips = generate_fantasy_tips(write=True)
+          print(f"fantasy tips written: {len(tips)} players")
+          if not tips.empty:
+              inj = int(tips.get("injured", tips.get("player_name")).astype(bool).sum()) if "injured" in tips.columns else 0
+              print(f"  flagged injured/unavailable: {inj}")
+          try:
+              print(f"squads view rows: {len(build_squads(write=True))}")
+          except Exception as e:
+              print(f"squads build skipped: {e}")
+          PY
+        continue-on-error: true
+
+      - name: Commit outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/fantasy_tips.csv output/fpl_bootstrap.json output/fpl_fixtures.json \
+                     output/pl_squads_official.csv output/pl_squads.csv 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: fantasy refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
