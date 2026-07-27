@@ -21,7 +21,17 @@ from player_model import config
 from player_model.model import load_model, predict_proba
 
 FANTASY_LEAGUE = "Premier League"
-GOAL_PTS = {"F": 4.0, "M": 5.0, "D": 6.0, "G": 6.0}   # FPL goal points by position
+GOAL_PTS = {"F": 4.0, "M": 5.0, "D": 6.0, "G": 6.0}   # legacy parquet-position goal pts
+# FPL goal points keyed by FPL position codes (GKP/DEF/MID/FWD)
+FPL_GOAL_PTS = {"FWD": 4.0, "MID": 5.0, "DEF": 6.0, "GKP": 6.0}
+# Clean-sheet points by position (DEF/GK 4, MID 1, FWD 0)
+FPL_CS_PTS   = {"DEF": 4.0, "GKP": 4.0, "MID": 1.0, "FWD": 0.0}
+# Defensive-contribution proxy thresholds (actions/game). APPROX: our source gives
+# tackles+interceptions+blocks+duels_won but NOT clearances or ball-recoveries, so these
+# sit below FPL's real 10 (DEF CBIT) / 12 (MID+FWD tackles+recoveries) cut-offs.
+_DC_THRESH = {"DEF": 5.0, "GKP": 999.0, "MID": 4.5, "FWD": 4.0}
+_POS_ALIAS = {"F": "FWD", "M": "MID", "D": "DEF", "G": "GKP",
+              "FWD": "FWD", "MID": "MID", "DEF": "DEF", "GKP": "GKP", "GK": "GKP"}
 _PARQUET = Path(__file__).resolve().parents[1] / "player_history.parquet"
 _OUT = Path(__file__).resolve().parents[1] / "output" / "fantasy_tips.csv"
 
@@ -30,18 +40,43 @@ def _ascii(s: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFKD", str(s)) if not unicodedata.combining(c))
 
 
-def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: float = 45.0) -> pd.DataFrame:
-    """Return per-player FPL-style expected-points projections for the fantasy league.
+def _recent_def_actions(pl_all: pd.DataFrame, n: int = 10) -> dict:
+    """Recent mean defensive actions/game per player (tackles+interceptions+blocks+duels_won).
+    Approximates FPL CBIT — source lacks clearances/ball-recoveries (flagged at call site)."""
+    cols = [c for c in ("tackles_total", "interceptions", "blocks", "duels_won") if c in pl_all.columns]
+    if not cols:
+        return {}
+    recent = pl_all.sort_values("date").groupby("player_id").tail(n)
+    da = recent.groupby("player_id")[cols].mean().sum(axis=1)
+    return {k: float(v) for k, v in da.items()}
 
-    fantasy_pts = P(goal)*GOAL_PTS[pos] + P(assist)*3 + P(sot2)*1 (bonus proxy)
-                  + appearance (2 if minutes_pg>=60 else 1)
+
+def _cs_prob(fdr_list: list) -> float:
+    """P(clean sheet) from the team's next fixtures' official FDR, via a Poisson on opponent
+    xG (harder fixture -> higher opp xG -> lower CS prob). NaN when no fixtures (off-season)."""
+    import math
+    if not fdr_list:
+        return float("nan")
+    ps = [math.exp(-(0.5 + 0.42 * float(f.get("fdr") or 3))) for f in fdr_list]
+    return float(np.mean(ps)) if ps else float("nan")
+
+
+def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: float = 45.0,
+                              use_fpl: bool = True, next_n: int = 5) -> pd.DataFrame:
+    """Per-player FPL expected-points projections.
+
+    fantasy_pts = appearance + attack (P(goal)*pos_pts + P(assist)*3 + P(sot2)*1 bonus proxy)
+                  + defensive-contribution (approx) + clean-sheet (DEF/GK/MID, from FDR).
+
+    When use_fpl, joins to the LIVE official FPL squad (transfer-accurate team/position/price)
+    and attaches availability/injury flags. Falls back to parquet team/position if the FPL API
+    is unavailable (off-network), so it never hard-fails.
     """
     df = pd.read_parquet(parquet_path or _PARQUET)
-    pl = df[df["league"] == FANTASY_LEAGUE].copy()
-    if pl.empty:
+    pl_all = df[df["league"] == FANTASY_LEAGUE].copy()
+    if pl_all.empty:
         return pd.DataFrame()
-    # latest form row per player
-    pl = pl.sort_values("date").groupby("player_id", as_index=False).tail(1)
+    pl = pl_all.sort_values("date").groupby("player_id", as_index=False).tail(1)
     mins = pd.to_numeric(pl.get("minutes_pg", 0), errors="coerce").fillna(0)
     pl = pl[mins >= min_minutes].copy()
     if pl.empty:
@@ -53,20 +88,89 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
 
     m = pd.to_numeric(pl["minutes_pg"], errors="coerce").fillna(60)
     pl["appearance"] = np.where(m >= 60, 2.0, 1.0)
-    pl["goal_pts"] = pl["position"].map(GOAL_PTS).fillna(5.0)
-    pl["fantasy_pts"] = (
-        pl["p_goal"] * pl["goal_pts"]
-        + pl["p_assist"] * 3.0
-        + pl["p_sot2"] * 1.0
-        + pl["appearance"]
-    ).round(3)
 
-    keep = [c for c in ["player_name", "team", "position", "minutes_pg",
-                        "p_goal", "p_assist", "p_sot2", "fantasy_pts"] if c in pl.columns]
+    da_map = _recent_def_actions(pl_all)
+    pl["def_actions_pg"] = pl["player_id"].map(da_map).fillna(0.0) if da_map else 0.0
+
+    # ── LIVE FPL layer: transfer-accurate team/position/price + availability + FDR ──
+    fpl, fdr_map = pd.DataFrame(), {}
+    if use_fpl:
+        try:
+            from player_model import fpl_api
+            fpl = fpl_api.players_df()
+            fdr_map = fpl_api.upcoming_fdr(next_n=next_n)
+            norm = fpl_api._norm
+        except Exception:
+            fpl, fdr_map, norm = pd.DataFrame(), {}, (lambda s: str(s).lower())
+    else:
+        norm = lambda s: str(s).lower()
+
+    # defaults from parquet (fallback when FPL unmatched / unavailable)
+    pl["live_team"]         = pl.get("team", "")
+    pl["price"]             = np.nan
+    pl["availability"]      = "unknown"
+    pl["injured"]           = False
+    pl["doubtful"]          = False
+    pl["chance_of_playing"] = np.nan
+    pl["fpl_matched"]       = False
+    pl["_fpl_pos"]          = ""
+
+    if not fpl.empty:
+        by_full = {k: r for k, r in fpl.set_index("match_key").iterrows()}
+        by_web  = {k: r for k, r in fpl.set_index("web_key").iterrows()}
+        for i, r in pl.iterrows():
+            k = norm(r.get("player_name", ""))
+            rec = by_full.get(k)
+            if rec is None:
+                rec = by_web.get(k)
+            if rec is not None:
+                pl.at[i, "live_team"]         = rec["team"]
+                pl.at[i, "price"]             = rec["price"]
+                pl.at[i, "availability"]      = rec["availability"]
+                pl.at[i, "injured"]           = bool(rec["injured"])
+                pl.at[i, "doubtful"]          = bool(rec["doubtful"])
+                pl.at[i, "chance_of_playing"] = rec["chance_of_playing"]
+                pl.at[i, "fpl_matched"]       = True
+                pl.at[i, "_fpl_pos"]          = rec["position"]
+        # A player NOT in the current FPL set has left the PL (e.g. Salah -> Besiktas) or is
+        # not fantasy-relevant -> DROP from FPL tips (never show them at a stale old club).
+        pl = pl[pl["fpl_matched"]].copy()
+        if pl.empty:
+            return pd.DataFrame()
+
+    # scoring position: FPL position if matched, else parquet position (aliased to FPL codes)
+    pos = pl["_fpl_pos"].where(pl["_fpl_pos"].astype(bool), pl.get("position", "MID").astype(str))
+    pl["position"] = pos.map(lambda p: _POS_ALIAS.get(str(p), "MID"))
+    pl["team"] = pl["live_team"]   # `team` is now the LIVE club (fixes stale Salah etc.)
+
+    pl["goal_pts"]   = pl["position"].map(FPL_GOAL_PTS).fillna(5.0)
+    pl["attack_pts"] = (pl["p_goal"] * pl["goal_pts"] + pl["p_assist"] * 3.0 + pl["p_sot2"] * 1.0).round(3)
+
+    thr = pl["position"].map(_DC_THRESH).fillna(6.0)
+    pl["dc_pts"] = (2.0 * (pl["def_actions_pg"] / thr).clip(0, 1)).round(3)
+
+    if fdr_map:
+        pl["cs_pts"] = pl.apply(
+            lambda r: 0.0 if (_p := _cs_prob(fdr_map.get(r["team"], []))) != _p
+            else round(_p * FPL_CS_PTS.get(r["position"], 0.0), 3), axis=1)
+    else:
+        pl["cs_pts"] = 0.0
+
+    pl["fantasy_pts"] = (pl["appearance"] + pl["attack_pts"] + pl["dc_pts"] + pl["cs_pts"]).round(3)
+    pl["value"] = (pl["fantasy_pts"] / pl["price"]).round(3)
+
+    keep = [c for c in ["player_name", "team", "position", "price", "minutes_pg",
+                        "p_goal", "p_assist", "p_sot2", "attack_pts", "dc_pts", "cs_pts",
+                        "def_actions_pg", "fantasy_pts", "value", "availability", "injured",
+                        "doubtful", "chance_of_playing", "fpl_matched"] if c in pl.columns]
     out = pl[keep].sort_values("fantasy_pts", ascending=False).reset_index(drop=True)
     out["overall_rank"] = np.arange(1, len(out) + 1)
     out["pos_rank"] = out.groupby("position")["fantasy_pts"].rank(ascending=False, method="first").astype(int)
-    out["captain_pick"] = out["overall_rank"] <= 3
+    # captain: top 3 among AVAILABLE players (never captain an injured one)
+    healthy = ~out["injured"].astype(bool)
+    out["captain_pick"] = False
+    top3 = out[healthy].head(3).index
+    out.loc[top3, "captain_pick"] = True
     for c in ["p_goal", "p_assist", "p_sot2"]:
         out[c] = out[c].round(3)
     return out
