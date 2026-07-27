@@ -147,6 +147,112 @@ st.caption("🚑 = injured/unavailable · ⚠️ = doubtful (from official FPL s
 
 st.caption(f"{len(df)} players · source: output/fantasy_tips.csv · FANTASY family (prediction, not betting)")
 
+# ── Advanced tools (differentials / best XI / leaderboards / fixtures / transfers) ──
+st.divider()
+st.subheader("🧰 FPL tools")
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _leaderboards():
+    from player_model.fantasy_features import market_leaderboards
+    return market_leaderboards(top_n=15)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _ticker(nfx):
+    from player_model.fantasy_features import fixture_ticker
+    return fixture_ticker(next_n=nfx)
+
+
+t_diff, t_xi, t_lead, t_fix, t_tr = st.tabs(
+    ["💎 Differentials", "⭐ Best XI", "📊 Prop leaderboards", "📅 Fixture ticker", "🔄 Transfer helper"])
+
+with t_diff:
+    st.caption("High projected points **and** low ownership — the picks that win mini-leagues.")
+    max_own = st.slider("Max ownership %", 1.0, 30.0, 10.0, 0.5)
+    try:
+        from player_model.fantasy_features import differentials
+        dd = differentials(df, max_owned=max_own, top_n=20)
+        if dd.empty:
+            st.info("Ownership data unavailable (needs the live FPL feed) — run Fantasy Refresh.")
+        else:
+            cols = [c for c in ["player_name", "team", "position", "price", "owned_pct",
+                                "fantasy_pts"] if c in dd.columns]
+            st.dataframe(dd[cols].rename(columns={"player_name": "Player", "team": "Team",
+                         "position": "Pos", "price": "£m", "owned_pct": "Owned %",
+                         "fantasy_pts": "Exp pts"}), hide_index=True, width="stretch")
+    except Exception as e:
+        st.warning(f"Differentials unavailable: {e}")
+
+with t_xi:
+    st.caption("Points-maximising legal starting XI (injured players excluded).")
+    try:
+        from player_model.fantasy_features import best_xi
+        xi = best_xi(df)
+        if not xi:
+            st.info("Not enough players to build an XI yet.")
+        else:
+            c1, c2 = st.columns(2)
+            c1.metric("Formation", xi["formation"])
+            c2.metric("Total projected pts", f"{xi['total_pts']:.1f}"
+                      + (f"  ·  £{xi['total_cost']:.1f}m" if xi.get("total_cost") else ""))
+            px = xi["players"]
+            cols = [c for c in ["player_name", "team", "position", "price", "fantasy_pts"] if c in px.columns]
+            st.dataframe(px[cols].rename(columns={"player_name": "Player", "team": "Team",
+                         "position": "Pos", "price": "£m", "fantasy_pts": "Exp pts"}),
+                         hide_index=True, width="stretch")
+    except Exception as e:
+        st.warning(f"Best XI unavailable: {e}")
+
+with t_lead:
+    st.caption("Per-market probabilities from the **calibrated** prop models (this game).")
+    try:
+        lbs = _leaderboards()
+        if not lbs:
+            st.info("No leaderboards (models/PL data unavailable).")
+        else:
+            LBL = {"goals": "⚽ Anytime scorer", "goals2": "🎯 2+ goals", "assists": "🅰️ Assist",
+                   "sot2": "🎯 2+ SOT", "cards": "🟨 Booked"}
+            lcols = st.columns(len(lbs))
+            for col, (mkt, board) in zip(lcols, lbs.items()):
+                col.markdown(f"**{LBL.get(mkt, mkt)}**")
+                for r in board.head(10).itertuples():
+                    col.write(f"{getattr(r,'player_name','')} — {r.prob:.0%}")
+    except Exception as e:
+        st.warning(f"Leaderboards unavailable: {e}")
+
+with t_fix:
+    st.caption("Each club's next fixtures + official FDR (1 = easiest, 5 = hardest). Sorted easiest run first.")
+    try:
+        tk = _ticker(next_n)
+        if tk.empty:
+            st.info("No upcoming fixtures published in FPL yet (pre-season).")
+        else:
+            st.dataframe(tk.rename(columns={"team": "Team", "avg_fdr": "Avg FDR"}),
+                         hide_index=True, width="stretch", height=520)
+    except Exception as e:
+        st.warning(f"Fixture ticker unavailable: {e}")
+
+with t_tr:
+    st.caption("Enter your FPL team ID → sell/buy suggestions by projected points + availability. "
+               "(Find it in your FPL 'Points' page URL: /entry/**ID**/event/…)")
+    tid = st.text_input("FPL team ID", placeholder="e.g. 1234567")
+    if tid.strip().isdigit():
+        try:
+            from player_model.fantasy_features import transfer_suggestions
+            res = transfer_suggestions(int(tid), df)
+            if res.get("error"):
+                st.warning(res["error"])
+            else:
+                for s in res.get("sells", []):
+                    st.markdown(f"**OUT:** {s['out']}")
+                    for opt in s["in_options"]:
+                        st.write(f"   → IN: {opt}")
+                    st.write("")
+                st.caption(res.get("note", ""))
+        except Exception as e:
+            st.warning(f"Transfer helper unavailable: {e}")
+
 # ── Club squads ───────────────────────────────────────────────────────────────
 st.divider()
 st.subheader("🏟️ Club squads")

@@ -107,6 +107,15 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "news":              (e.get("news") or "").strip(),
             "injured":           status in ("i", "s", "u"),
             "doubtful":          status == "d",
+            # FPL-native signals (for differentials / hybrid ranking / price-change context)
+            "owned_pct":         float(e.get("selected_by_percent") or 0.0),
+            "fpl_form":          float(e.get("form") or 0.0),
+            "fpl_ppg":           float(e.get("points_per_game") or 0.0),
+            "fpl_ep_next":       float(e.get("ep_next") or 0.0),   # FPL's own expected pts
+            "ict_index":         float(e.get("ict_index") or 0.0),
+            "transfers_in_gw":   int(e.get("transfers_in_event") or 0),
+            "transfers_out_gw":  int(e.get("transfers_out_event") or 0),
+            "total_points":      int(e.get("total_points") or 0),
             "match_key":         _norm(full),
             "web_key":           _norm(e.get("web_name", "")),
         })
