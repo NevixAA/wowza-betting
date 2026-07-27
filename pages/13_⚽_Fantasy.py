@@ -81,13 +81,15 @@ df["captain_pick"] = False
 df.loc[df[_healthy].head(3).index, "captain_pick"] = True
 
 if _fx_on:
-    st.success(f"**Opponent-adjusted** — points scaled by each team's **{wsel_fx.lower()}** fixtures "
-               "(opponent goals-conceded × home/away). FDR > 1 = easy run, < 1 = hard run.", icon="✅")
+    st.success(f"**Live FPL data** — current-squad only (transferred-out players removed), official "
+               f"injury flags, and clean-sheet points from each team's **{wsel_fx.lower()}** fixture "
+               "difficulty (official FDR 1–5; 1 = easiest, 5 = hardest).", icon="✅")
 else:
-    st.warning("**Pre-season / no fixtures published yet:** showing form-based points. The opponent-"
-               "adjusted fixture layer is wired and engages automatically once PL fixtures publish. "
-               "(Season start also adds a current-squad filter + clean-sheet/save points for DEF/GK.)",
-               icon="⚠️")
+    st.info("**Current-squad filter + injury flags + defensive-contribution & clean-sheet points are "
+            "live** (from the official FPL API). Showing form-based points; the per-fixture FDR layer "
+            "engages when FPL publishes upcoming fixtures. If you still see a departed player, the FPL "
+            "feed hasn't refreshed yet — run the *Fantasy Refresh* action or wait for the daily job.",
+            icon="ℹ️")
 
 # ── Captaincy picks ───────────────────────────────────────────────────────────
 st.subheader("🏆 Captaincy picks")

@@ -171,10 +171,29 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     pl["fantasy_pts"] = (pl["appearance"] + pl["attack_pts"] + pl["dc_pts"] + pl["cs_pts"]).round(3)
     pl["value"] = (pl["fantasy_pts"] / pl["price"]).round(3)
 
+    # FPL fixture context (official FDR) — drives display + the dashboard "fixtures" banner.
+    if fdr_map:
+        def _fx_str(team):
+            fl = fdr_map.get(team, [])[:next_n]
+            return " · ".join(f"{f.get('opp','')}({'H' if f.get('home') else 'A'}{f.get('fdr','')})" for f in fl)
+        def _fx_avg(team):
+            vals = [f["fdr"] for f in fdr_map.get(team, [])[:next_n] if f.get("fdr")]
+            return round(float(np.mean(vals)), 2) if vals else np.nan
+        pl["next_fixtures"]      = pl["team"].map(_fx_str)
+        pl["avg_fdr"]           = pl["team"].map(_fx_avg)
+        pl["fixtures_available"] = True
+    else:
+        pl["next_fixtures"]      = ""
+        pl["avg_fdr"]           = np.nan
+        pl["fixtures_available"] = False
+    pl["fixture_adj_pts"] = pl["fantasy_pts"]   # cs_pts already reflects FDR; keep pts stable
+
     keep = [c for c in ["player_name", "team", "position", "price", "minutes_pg",
                         "p_goal", "p_assist", "p_sot2", "attack_pts", "dc_pts", "cs_pts",
                         "def_actions_pg", "fantasy_pts", "value", "availability", "injured",
-                        "doubtful", "chance_of_playing", "fpl_matched"] if c in pl.columns]
+                        "doubtful", "chance_of_playing", "fpl_matched",
+                        "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts"]
+            if c in pl.columns]
     out = pl[keep].sort_values("fantasy_pts", ascending=False).reset_index(drop=True)
     out["overall_rank"] = np.arange(1, len(out) + 1)
     out["pos_rank"] = out.groupby("position")["fantasy_pts"].rank(ascending=False, method="first").astype(int)
@@ -212,10 +231,16 @@ def build_fantasy_projections_fixtures(next_n: int = 5, parquet_path: Path | Non
     Adds columns: next_fixtures, avg_fdr (mean multiplier; >1 = easy run), fixture_adj_pts,
     fixtures_available (False off-season → fixture_adj_pts == base fantasy_pts).
     """
-    base = build_fantasy_projections(parquet_path)
+    base = build_fantasy_projections(parquet_path, next_n=next_n)
     if base.empty:
         return base
     base = base.copy()
+    # Prefer the LIVE FPL fixtures/FDR already attached by build_fantasy_projections (official).
+    # If present, use it and skip the legacy API-Football opponent-adjustment path entirely.
+    if bool(base.get("fixtures_available", pd.Series([False])).iloc[0]):
+        return base.sort_values("fixture_adj_pts", ascending=False).reset_index(drop=True)
+
+    # ── Legacy fallback: API-Football fixtures + goals-conceded adjustment ──
     base["next_fixtures"] = ""
     base["avg_fdr"] = np.nan
     base["fixture_adj_pts"] = base["fantasy_pts"]
