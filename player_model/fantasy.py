@@ -135,17 +135,20 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                 pl.at[i, "chance_of_playing"] = rec["chance_of_playing"]
                 pl.at[i, "fpl_matched"]       = True
                 pl.at[i, "_fpl_pos"]          = rec["position"]
-        # A player NOT in the current FPL set has left the PL (e.g. Salah -> Besiktas) or is
-        # not fantasy-relevant -> DROP from FPL tips (never show them at a stale old club).
-        # BUT only trust the drop when matching clearly worked: if <40% matched, name-matching
-        # is unreliable (format mismatch) and dropping would nuke the board to empty -> keep
-        # ALL players in that case (matched ones still enriched), never return empty.
-        match_rate = float(pl["fpl_matched"].mean()) if len(pl) else 0.0
-        if match_rate >= 0.40:
+        # A player NOT in the current FPL set has LEFT the PL (e.g. Salah -> Besiktas,
+        # De Bruyne -> abroad) or isn't fantasy-relevant -> DROP them. The parquet holds many
+        # past-season players who've since transferred out, so a LOW match rate is EXPECTED and
+        # CORRECT (those are exactly the players to drop) — so we drop unmatched whenever the
+        # FPL bootstrap is valid. Only the pathological ZERO-match case (matching totally
+        # broken) keeps all, to avoid an empty board falling back to a stale CSV.
+        n_matched = int(pl["fpl_matched"].sum())
+        if n_matched > 0:
+            log.info("fantasy: %d/%d players matched current FPL squad — dropping %d departed/"
+                     "non-FPL players", n_matched, len(pl), len(pl) - n_matched)
             pl = pl[pl["fpl_matched"]].copy()
         else:
-            log.warning("fantasy: only %.0f%% of players matched FPL — keeping all (matching "
-                        "unreliable, not dropping)", match_rate * 100)
+            log.warning("fantasy: 0 players matched FPL (matching broken) — keeping all to avoid "
+                        "empty board; departed players may show until matching is fixed")
 
     # scoring position: FPL position if matched, else parquet position (aliased to FPL codes)
     pos = pl["_fpl_pos"].where(pl["_fpl_pos"].astype(bool), pl.get("position", "MID").astype(str))
