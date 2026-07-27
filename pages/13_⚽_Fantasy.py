@@ -61,6 +61,13 @@ if df.empty:
             "data. Run `python -m player_model.fantasy` to generate.")
     st.stop()
 
+# Normalise position codes to FPL (FWD/MID/DEF/GKP) so filters/tables work whether the data
+# is fresh (FPL codes) or a stale fallback CSV (old F/M/D/G codes).
+_POS_ALIAS = {"F": "FWD", "M": "MID", "D": "DEF", "G": "GKP", "GK": "GKP",
+              "FWD": "FWD", "MID": "MID", "DEF": "DEF", "GKP": "GKP"}
+if "position" in df.columns:
+    df["position"] = df["position"].map(lambda p: _POS_ALIAS.get(str(p), str(p)))
+
 # Opponent-adjusted points when fixtures are available; else form-based. Re-rank on the shown points.
 _fx_on = bool(df["fixtures_available"].iloc[0]) if "fixtures_available" in df.columns else False
 df["disp_pts"] = (df["fixture_adj_pts"] if (_fx_on and "fixture_adj_pts" in df.columns)

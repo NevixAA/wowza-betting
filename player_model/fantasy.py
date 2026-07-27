@@ -12,10 +12,13 @@ fixture / opponent-adjusted path can be layered on via build_upcoming_features.
 Enhancement TODO: clean-sheet points for DEF/GK from the team O/U model (v1 = attack only).
 """
 from __future__ import annotations
+import logging
 import unicodedata
 from pathlib import Path
 import numpy as np
 import pandas as pd
+
+log = logging.getLogger(__name__)
 
 from player_model import config
 from player_model.model import load_model, predict_proba
@@ -134,9 +137,15 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                 pl.at[i, "_fpl_pos"]          = rec["position"]
         # A player NOT in the current FPL set has left the PL (e.g. Salah -> Besiktas) or is
         # not fantasy-relevant -> DROP from FPL tips (never show them at a stale old club).
-        pl = pl[pl["fpl_matched"]].copy()
-        if pl.empty:
-            return pd.DataFrame()
+        # BUT only trust the drop when matching clearly worked: if <40% matched, name-matching
+        # is unreliable (format mismatch) and dropping would nuke the board to empty -> keep
+        # ALL players in that case (matched ones still enriched), never return empty.
+        match_rate = float(pl["fpl_matched"].mean()) if len(pl) else 0.0
+        if match_rate >= 0.40:
+            pl = pl[pl["fpl_matched"]].copy()
+        else:
+            log.warning("fantasy: only %.0f%% of players matched FPL — keeping all (matching "
+                        "unreliable, not dropping)", match_rate * 100)
 
     # scoring position: FPL position if matched, else parquet position (aliased to FPL codes)
     pos = pl["_fpl_pos"].where(pl["_fpl_pos"].astype(bool), pl.get("position", "MID").astype(str))
