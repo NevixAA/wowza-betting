@@ -86,6 +86,7 @@ def _expected_bonus(p_goal: float, p_assist: float, p_sot2: float,
     + clean sheets. We can't see rivals' BPS to rank the top-3, so this is a calibrated-ish
     heuristic on the drivers we do model."""
     b = 1.5 * p_goal + 0.9 * p_assist + 0.3 * p_sot2 + 0.8 * min(def_pg / 12.0, 1.0) + 0.25 * cs
+    b *= 0.66   # CALIBRATED to actual bonus mean (0.213) vs uncalibrated (0.321) — backtest
     return round(float(min(max(b, 0.0), 3.0)), 3)
 
 
@@ -208,7 +209,9 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     pl["team"] = pl["live_team"]   # `team` is now the LIVE club (fixes stale Salah etc.)
 
     pl["goal_pts"]   = pl["position"].map(FPL_GOAL_PTS).fillna(5.0)
-    pl["attack_pts"] = (pl["p_goal"] * pl["goal_pts"] + pl["p_assist"] * 3.0 + pl["p_sot2"] * 1.0).round(3)
+    # sot2 weight CALIBRATED 0.45 (was 1.0): backtest vs actual FPL points showed 2+SOT is worth
+    # only ~0.43 pts beyond goals/assists (they're correlated → +1 double-counted). scripts/fantasy_backtest.py
+    pl["attack_pts"] = (pl["p_goal"] * pl["goal_pts"] + pl["p_assist"] * 3.0 + pl["p_sot2"] * 0.45).round(3)
 
     # Defensive-contribution pts — Poisson P(actions >= threshold) (upgrade from linear clip)
     thr = pl["position"].map(_DC_THRESH).fillna(6.0)
