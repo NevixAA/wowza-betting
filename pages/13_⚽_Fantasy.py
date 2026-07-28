@@ -291,6 +291,104 @@ with t_tr:
         except Exception as e:
             st.warning(f"Transfer helper unavailable: {e}")
 
+# ── Planning tools (chip advisor / auto-lineup / mini-league / alerts) ──────────
+st.divider()
+st.subheader("🧭 Planning tools")
+p_chip, p_line, p_league, p_alert = st.tabs(
+    ["🃏 Chip advisor", "📋 Auto-lineup", "🏆 Mini-league", "🔔 Alerts / watchlist"])
+
+with p_chip:
+    st.caption("Wildcard / Bench Boost / Triple Captain / Free Hit timing from the fixture "
+               "calendar (double & blank gameweeks + fixture difficulty).")
+    try:
+        from player_model.fantasy_features import chip_advisor
+
+        @st.cache_data(ttl=1800, show_spinner=False)
+        def _chips():
+            return chip_advisor(df, horizon=8)
+
+        ca = _chips()
+        if not ca:
+            st.info("No fixture calendar available yet (pre-season / FPL not published).")
+        else:
+            for r in ca.get("recommendations", []):
+                st.markdown("• " + r)
+            gw = pd.DataFrame(ca.get("gameweeks", []))
+            if not gw.empty:
+                st.dataframe(gw[["gw", "n_dgw", "n_bgw", "avg_fdr"]].rename(columns={
+                    "gw": "GW", "n_dgw": "Double-GW teams", "n_bgw": "Blank teams", "avg_fdr": "Avg FDR"}),
+                    hide_index=True, width="stretch")
+            if ca.get("triple_captain"):
+                st.markdown("**Triple-captain shortlist:** " + " · ".join(ca["triple_captain"]))
+    except Exception as e:
+        st.warning(f"Chip advisor unavailable: {e}")
+
+with p_line:
+    st.caption("Enter your FPL team ID → optimal starting XI, bench order, and (vice-)captain "
+               "by projected points.")
+    ltid = st.text_input("FPL team ID ", placeholder="e.g. 1234567", key="lineup_id")
+    if ltid.strip().isdigit():
+        try:
+            from player_model.fantasy_features import auto_lineup
+            res = auto_lineup(int(ltid), df)
+            if res.get("error"):
+                st.warning(res["error"])
+            else:
+                st.success(f"**{res['formation']}**  ·  XI projected {res['xi_pts']:.1f} pts  ·  "
+                           f"(C) {res['captain']} · (VC) {res['vice_captain']}")
+                xi = res["xi"][[c for c in ["player_name", "team", "position", "fantasy_pts"] if c in res["xi"].columns]]
+                st.markdown("**Starting XI**")
+                st.dataframe(xi.rename(columns={"player_name": "Player", "team": "Team",
+                             "position": "Pos", "fantasy_pts": "xPts"}), hide_index=True, width="stretch")
+                st.markdown("**Bench** (autosub order)")
+                bn = res["bench"][[c for c in ["player_name", "team", "position", "fantasy_pts"] if c in res["bench"].columns]]
+                st.dataframe(bn.rename(columns={"player_name": "Player", "team": "Team",
+                             "position": "Pos", "fantasy_pts": "xPts"}), hide_index=True, width="stretch")
+        except Exception as e:
+            st.warning(f"Auto-lineup unavailable: {e}")
+
+with p_league:
+    st.caption("Enter your classic mini-league ID → the league template (most-owned) + "
+               "differentials (high projected points, low ownership *in your league*).")
+    lid = st.text_input("Mini-league ID", placeholder="e.g. 314", key="league_id_in")
+    if lid.strip().isdigit():
+        try:
+            from player_model.fantasy_features import mini_league_analysis
+            res = mini_league_analysis(int(lid), df)
+            if res.get("error"):
+                st.warning(res["error"])
+            else:
+                st.caption(f"{res['n_managers']} managers · GW{res['gw']}")
+                c1, c2 = st.columns(2)
+                c1.markdown("**League template (most-owned)**")
+                c1.dataframe(res["template"][["player", "team", "league_own_pct", "xpts"]].rename(
+                    columns={"player": "Player", "team": "Team", "league_own_pct": "Own %", "xpts": "xPts"}),
+                    hide_index=True, width="stretch")
+                c2.markdown("**Differentials (≤25% owned)**")
+                c2.dataframe(res["differentials"][["player", "team", "league_own_pct", "xpts"]].rename(
+                    columns={"player": "Player", "team": "Team", "league_own_pct": "Own %", "xpts": "xPts"}),
+                    hide_index=True, width="stretch")
+        except Exception as e:
+            st.warning(f"Mini-league unavailable: {e}")
+
+with p_alert:
+    st.caption("Movers to act on: injuries/doubts, and price-change candidates (net FPL "
+               "transfers this gameweek). Optionally filter to a watchlist.")
+    wl_txt = st.text_input("Watchlist (comma-separated names, optional)", key="watchlist_in")
+    wl = [w.strip() for w in wl_txt.split(",") if w.strip()] or None
+    try:
+        from player_model.fantasy_features import fantasy_alerts
+        al = fantasy_alerts(df, watchlist=wl)
+        a1, a2, a3 = st.columns(3)
+        a1.markdown("**🚑 Injuries / doubts**")
+        a1.dataframe(al["injuries"], hide_index=True, width="stretch", height=320)
+        a2.markdown("**📈 Likely price risers**")
+        a2.dataframe(al["price_risers"], hide_index=True, width="stretch", height=320)
+        a3.markdown("**📉 Likely price fallers**")
+        a3.dataframe(al["price_fallers"], hide_index=True, width="stretch", height=320)
+    except Exception as e:
+        st.warning(f"Alerts unavailable: {e}")
+
 # ── Club squads ───────────────────────────────────────────────────────────────
 st.divider()
 st.subheader("🏟️ Club squads")
