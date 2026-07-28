@@ -122,28 +122,33 @@ for col, pos in zip(pcols, POS_CODES):
 st.subheader("📊 Full projections")
 posf = st.multiselect("Filter position", POS_CODES, default=POS_CODES)
 show = df[df["position"].isin(posf)].copy()
-# injury/doubt badge prefixed to the player name
+# injury/doubt badge + penalty-taker (⚽) marker prefixed to the player name
 if "player_name" in show.columns:
-    show["Player"] = show.apply(
-        lambda r: ("🚑 " if r.get("injured") else "⚠️ " if r.get("doubtful") else "") + str(r["player_name"]),
-        axis=1)
+    def _badge(r):
+        pre = "🚑 " if r.get("injured") else "⚠️ " if r.get("doubtful") else ""
+        pen = " ⚽" if r.get("is_pen_taker") else ""
+        return pre + str(r["player_name"]) + pen
+    show["Player"] = show.apply(_badge, axis=1)
 disp_cols = [c for c in ["overall_rank", "Player", "team", "position", "price", "value",
-                         "p_goal", "p_assist", "p_sot2", "dc_pts", "cs_pts", "disp_pts",
-                         "avg_fdr", "next_fixtures"]
+                         "p_goal", "p_assist", "p_sot2", "dc_pts", "cs_pts", "bonus_pts",
+                         "disp_pts", "p_start", "xpts_rot", "avg_fdr", "next_fixtures"]
              if c in show.columns]
 show = show[disp_cols].rename(columns={
     "overall_rank": "#", "team": "Team", "position": "Pos", "price": "£m", "value": "Pts/£",
     "p_goal": "P(goal)", "p_assist": "P(assist)", "p_sot2": "P(SOT2+)",
-    "dc_pts": "Def", "cs_pts": "CS", "disp_pts": "Exp pts", "avg_fdr": "FDR",
-    "next_fixtures": "Next fixtures",
+    "dc_pts": "Def", "cs_pts": "CS", "bonus_pts": "Bon", "disp_pts": "Exp pts",
+    "p_start": "Start%", "xpts_rot": "xPts·rot", "avg_fdr": "FDR", "next_fixtures": "Next fixtures",
 })
 for c in ["P(goal)", "P(assist)", "P(SOT2+)"]:
     if c in show.columns:
         show[c] = (show[c] * 100).round(0).astype("Int64").astype(str) + "%"
+if "Start%" in show.columns:
+    show["Start%"] = (show["Start%"] * 100).round(0).astype("Int64").astype(str) + "%"
 st.dataframe(show, width="stretch", hide_index=True, height=560)
-st.caption("🚑 = injured/unavailable · ⚠️ = doubtful (from official FPL status). "
-           "Def = defensive-contribution pts (approx — source lacks clearances/recoveries). "
-           "CS = expected clean-sheet pts (DEF/GK/MID, from fixture difficulty).")
+st.caption("🚑 = injured/unavailable · ⚠️ = doubtful · ⚽ = penalty taker. "
+           "Def = defensive-contribution pts (approx — source lacks clearances/recoveries) · "
+           "CS = clean-sheet pts (DEF/GK/MID) · Bon = expected bonus (BPS drivers) · "
+           "Start% = P(start) · xPts·rot = rotation-adjusted expected points (Exp pts × Start%).")
 
 st.caption(f"{len(df)} players · source: output/fantasy_tips.csv · FANTASY family (prediction, not betting)")
 
@@ -164,8 +169,9 @@ def _ticker(nfx):
     return fixture_ticker(next_n=nfx)
 
 
-t_diff, t_xi, t_lead, t_fix, t_tr = st.tabs(
-    ["💎 Differentials", "⭐ Best XI", "📊 Prop leaderboards", "📅 Fixture ticker", "🔄 Transfer helper"])
+t_diff, t_xi, t_lead, t_fix, t_sp, t_tr = st.tabs(
+    ["💎 Differentials", "⭐ Best XI", "📊 Prop leaderboards", "📅 Fixture ticker",
+     "🎯 Set-pieces & pens", "🔄 Transfer helper"])
 
 with t_diff:
     st.caption("High projected points **and** low ownership — the picks that win mini-leagues.")
@@ -232,6 +238,29 @@ with t_fix:
                          hide_index=True, width="stretch", height=520)
     except Exception as e:
         st.warning(f"Fixture ticker unavailable: {e}")
+
+with t_sp:
+    st.caption("Likely **penalty takers** + **set-piece goal threats** per club (from career "
+               "penalties won/scored + set-piece/free-kick/headed goals). Current squad only.")
+    try:
+        from player_model.fantasy_features import set_piece_penalty_takers
+
+        @st.cache_data(ttl=1800, show_spinner=False)
+        def _spt():
+            return set_piece_penalty_takers()
+
+        sp = _spt()
+        if sp.empty:
+            st.info("No set-piece data (needs the live FPL feed + parquet history).")
+        else:
+            clubs = sorted(sp["team"].dropna().unique())
+            pick = st.selectbox("Club", ["All"] + clubs)
+            view = sp if pick == "All" else sp[sp["team"] == pick]
+            st.dataframe(view.rename(columns={"player_name": "Player", "team": "Team",
+                         "position": "Pos", "pens": "Pens (career)", "sp_goals": "Set-piece goals"}),
+                         hide_index=True, width="stretch", height=480)
+    except Exception as e:
+        st.warning(f"Set-pieces unavailable: {e}")
 
 with t_tr:
     st.caption("Enter your FPL team ID → sell/buy suggestions by projected points + availability. "
