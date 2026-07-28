@@ -99,6 +99,23 @@ def _pen_taker_ids(pl_all: pd.DataFrame, min_pens: float = 2.0) -> set:
     return set(pens[pens >= min_pens].index)
 
 
+def _norm_team(s: str) -> str:
+    return "".join(c for c in str(s).lower() if c.isalnum())
+
+
+def _team_conceded_map(pl_all: pd.DataFrame, n: int = 8) -> dict:
+    """{normalized team name: recent mean goals-conceded/game} — the team clean-sheet model
+    input. One value per team per fixture, then the team's last-n mean."""
+    if "goals_conceded" not in pl_all.columns or "team" not in pl_all.columns:
+        return {}
+    key = ["team", "fixture_id"] if "fixture_id" in pl_all.columns else ["team", "date"]
+    fx = pl_all.groupby(key, as_index=False).agg(date=("date", "first"),
+                                                 gc=("goals_conceded", "first"))
+    fx = fx.sort_values(["team", "date"])
+    m = fx.groupby("team").tail(n).groupby("team")["gc"].mean()
+    return {_norm_team(k): float(v) for k, v in m.items() if pd.notna(v)}
+
+
 def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: float = 45.0,
                               use_fpl: bool = True, next_n: int = 5) -> pd.DataFrame:
     """Per-player FPL expected-points projections.
@@ -197,13 +214,34 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     thr = pl["position"].map(_DC_THRESH).fillna(6.0)
     pl["dc_pts"] = [_poisson_dc_pts(float(a or 0), float(t)) for a, t in zip(pl["def_actions_pg"], thr)]
 
-    # Clean-sheet pts — from official FDR (a team goals-conceded model is a future upgrade)
-    if fdr_map:
-        pl["cs_pts"] = pl.apply(
-            lambda r: 0.0 if (_p := _cs_prob(fdr_map.get(r["team"], []))) != _p
-            else round(_p * FPL_CS_PTS.get(r["position"], 0.0), 3), axis=1)
-    else:
-        pl["cs_pts"] = 0.0
+    # Clean-sheet pts — TEAM goals-conceded model blended with fixture difficulty.
+    # P(CS) = exp(-lambda); lambda = 0.6·(team recent conceded/game) + 0.4·(FDR-implied opp xG).
+    # Falls back to pure FDR when the club isn't matched in the parquet, then to 0.
+    conc_map = _team_conceded_map(pl_all)
+
+    def _cs_row(r):
+        fl = fdr_map.get(r["team"], []) if fdr_map else []
+        avg_fdr = np.mean([f["fdr"] for f in fl[:next_n] if f.get("fdr")]) if fl else np.nan
+        fdr_xg  = (0.5 + 0.42 * avg_fdr) if avg_fdr == avg_fdr else np.nan   # NaN-safe
+        tk = _norm_team(r["team"])
+        conc = conc_map.get(tk)
+        if conc is None and conc_map:                       # fuzzy team-name fallback
+            conc = next((v for k, v in conc_map.items() if k and (k in tk or tk in k)), None)
+        # Reject implausible conceded rates (missing/zero-filled goals_conceded -> would
+        # inflate CS). No PL side truly concedes <0.3 or >3.5/game over a window -> use FDR.
+        if conc is not None and not (0.3 <= conc <= 3.5):
+            conc = None
+        if conc is not None and fdr_xg == fdr_xg:
+            lam = 0.6 * conc + 0.4 * fdr_xg
+        elif conc is not None:
+            lam = conc
+        elif fdr_xg == fdr_xg:
+            lam = fdr_xg
+        else:
+            return 0.0
+        return round(float(np.exp(-lam)) * FPL_CS_PTS.get(r["position"], 0.0), 3)
+
+    pl["cs_pts"] = pl.apply(_cs_row, axis=1)
 
     # Expected bonus (from BPS drivers)
     pl["bonus_pts"] = [_expected_bonus(g, a, s, float(d or 0), c) for g, a, s, d, c in
@@ -246,12 +284,22 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
         pl["fixtures_available"] = False
     pl["fixture_adj_pts"] = pl["fantasy_pts"]   # cs_pts already reflects FDR; keep pts stable
 
+    # Multi-GW planner — actual # of upcoming fixtures in the window (captures DOUBLE / BLANK
+    # gameweeks), and total expected points across them (per-game and rotation-adjusted).
+    if fdr_map:
+        pl["n_fixtures_next"] = pl["team"].map(lambda t: len(fdr_map.get(t, [])[:next_n]))
+    else:
+        pl["n_fixtures_next"] = 1
+    pl["total_xpts_next"] = (pl["fantasy_pts"] * pl["n_fixtures_next"]).round(2)
+    pl["total_xpts_rot"]  = (pl["xpts_rot"] * pl["n_fixtures_next"]).round(2)
+
     keep = [c for c in ["player_name", "team", "position", "price", "minutes_pg",
                         "p_goal", "p_assist", "p_sot2", "attack_pts", "dc_pts", "cs_pts",
                         "bonus_pts", "def_actions_pg", "fantasy_pts", "xpts_rot", "p_start",
                         "is_pen_taker", "value", "availability", "injured",
                         "doubtful", "chance_of_playing", "fpl_matched",
-                        "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts"]
+                        "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts",
+                        "n_fixtures_next", "total_xpts_next", "total_xpts_rot"]
             if c in pl.columns]
     out = pl[keep].sort_values("fantasy_pts", ascending=False).reset_index(drop=True)
     out["overall_rank"] = np.arange(1, len(out) + 1)

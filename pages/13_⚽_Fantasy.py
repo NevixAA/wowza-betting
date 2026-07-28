@@ -70,8 +70,17 @@ if "position" in df.columns:
 
 # Opponent-adjusted points when fixtures are available; else form-based. Re-rank on the shown points.
 _fx_on = bool(df["fixtures_available"].iloc[0]) if "fixtures_available" in df.columns else False
-df["disp_pts"] = (df["fixture_adj_pts"] if (_fx_on and "fixture_adj_pts" in df.columns)
-                  else df["fantasy_pts"])
+
+# Points view: per single game, or TOTAL across the next-N fixtures (double/blank-GW aware).
+_view = st.radio("Points view", ["Per game", f"Total next {next_n}"], horizontal=True,
+                 help="Per game = one match. Total next N = summed across each team's actual "
+                      "upcoming fixtures in the window (a double gameweek ~doubles it, a blank = 0).")
+if _view.startswith("Total") and "total_xpts_next" in df.columns:
+    df["disp_pts"] = df["total_xpts_next"]
+elif _fx_on and "fixture_adj_pts" in df.columns:
+    df["disp_pts"] = df["fixture_adj_pts"]
+else:
+    df["disp_pts"] = df["fantasy_pts"]
 df = df.sort_values("disp_pts", ascending=False).reset_index(drop=True)
 df["overall_rank"] = range(1, len(df) + 1)
 df["pos_rank"] = df.groupby("position")["disp_pts"].rank(ascending=False, method="first").astype(int)
