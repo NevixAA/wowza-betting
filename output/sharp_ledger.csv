@@ -178,7 +178,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-13,2026-07-26,Argentina Primera Division,Atlético Tucuman,Independiente Rivadavia,1X2 AWAY (Independiente Rivadavia),AWAY,STEAM_SHARP,2.95,2.765,-6.3,100,10,LOSS,-1.0,2026-07-27
 2026-07-13,2026-07-18,Norway Eliteserien,Viking FK,Sandefjord,1X2 AWAY (Sandefjord),AWAY,STEAM_SHARP,8.2,7.75,-5.5,100,14,LOSS,-1.0,2026-07-19
 2026-07-13,2026-07-18,Norway Eliteserien,HamKam,Tromso,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.275,3.1,-5.3,100,15,LOSS,-1.0,2026-07-19
-2026-07-13,2026-07-27,Mexico Liga MX,Pachuca,Querétaro,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.95,3.75,-5.1,100,9,,,
+2026-07-13,2026-07-27,Mexico Liga MX,Pachuca,Querétaro,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.95,3.75,-5.1,100,9,LOSS,-1.0,2026-07-28
 2026-07-13,2026-07-17,Norway Eliteserien,Bodø/Glimt,Fredrikstad FK,1X2 AWAY (Fredrikstad FK),AWAY,STEAM_SHARP,14.0,13.0,-7.1,77,17,LOSS,-1.0,2026-07-18
 2026-07-13,2026-07-13,Sweden Allsvenskan,Djurgardens IF,Halmstads BK,O/U 2.5 OVER,OVER,STRONG,1.49,1.32,-11.4,100,3,WIN,0.49,2026-07-14
 2026-07-13,2026-07-27,Denmark Superliga,Randers FC,Silkeborg IF,1X2 AWAY (Silkeborg IF),AWAY,STEAM_SHARP,4.4,4.125,-6.3,100,18,,,
@@ -232,7 +232,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-21,2026-07-25,China Super League,Shanghai SIPG FC,Shanghai Shenhua FC,1X2 AWAY (Shanghai Shenhua FC),AWAY,STEAM_STRONG,2.98,2.68,-10.1,99,17,,,
 2026-07-21,2026-07-25,China Super League,Liaoning Tieren FC,Qingdao West Coast FC,1X2 AWAY (Qingdao West Coast FC),AWAY,STEAM_SHARP,3.375,3.1,-8.1,99,16,,,
 2026-07-21,2026-07-25,Finland Veikkausliiga,KuPS Kuopio,VPS Vaasa,1X2 AWAY (VPS Vaasa),AWAY,STEAM_SHARP,4.1,3.795,-7.4,99,18,LOSS,-1.0,2026-07-26
-2026-07-21,2026-07-27,Mexico Liga MX,Pachuca,Querétaro,1X2 AWAY (Querétaro),AWAY,STEAM_SHARP,5.4,4.95,-8.3,100,16,,,
+2026-07-21,2026-07-27,Mexico Liga MX,Pachuca,Querétaro,1X2 AWAY (Querétaro),AWAY,STEAM_SHARP,5.4,4.95,-8.3,100,16,WIN,4.4,2026-07-28
 2026-07-21,2026-07-24,Argentina Primera Division,Velez Sarsfield BA,Instituto de Córdoba,1X2 AWAY (Instituto de Córdoba),AWAY,STEAM_SHARP,3.92,3.7,-5.6,82,14,LOSS,-1.0,2026-07-25
 2026-07-21,2026-07-26,Finland Veikkausliiga,Ilves Tampere,FC Lahti,1X2 AWAY (FC Lahti),AWAY,STEAM_SHARP,3.135,2.94,-6.2,72,15,LOSS,-1.0,2026-07-27
 2026-07-21,2026-07-22,Brazil Serie A,Coritiba,Palmeiras,1X2 AWAY (Palmeiras),AWAY,STEAM_SHARP,2.04,1.85,-9.3,64,22,WIN,1.04,2026-07-23
@@ -300,13 +300,13 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-07-26,2026-07-26,Brazil Serie A,Cruzeiro,Botafogo,O/U 2.5 OVER,OVER,STEAM_SHARP,1.915,1.735,-9.4,66,14,LOSS,-1.0,2026-07-27
 2026-07-27,2026-08-02,USA MLS,Portland Timbers,Seattle Sounders FC,1X2 HOME (Portland Timbers),HOME,STEAM_SHARP,2.33,2.15,-7.7,100,21,,,
 2026-07-27,2026-08-02,Mexico Liga MX,Atlas,Monterrey,O/U 2.5 OVER,OVER,STEAM_SHARP,1.97,1.82,-7.6,100,9,,,
-2026-07-27,2026-07-27,Norway Eliteserien,Rosenborg,Fredrikstad FK,1X2 HOME (Rosenborg),HOME,STEAM_SHARP,1.67,1.56,-6.6,100,23,,,
+2026-07-27,2026-07-27,Norway Eliteserien,Rosenborg,Fredrikstad FK,1X2 HOME (Rosenborg),HOME,STEAM_SHARP,1.67,1.56,-6.6,100,23,WIN,0.67,2026-07-28
 2026-07-27,2026-07-29,Brazil Serie A,Chapecoense,Vasco da Gama,1X2 AWAY (Vasco da Gama),AWAY,STRONG,2.41,2.16,-10.4,100,9,,,
 2026-07-27,2026-08-01,Norway Eliteserien,IK Start,Viking FK,1X2 HOME (IK Start),HOME,STEAM_STRONG,6.45,5.2,-19.4,100,19,,,
 2026-07-27,2026-08-02,Norway Eliteserien,KFUM,Kristiansund BK,1X2 AWAY (Kristiansund BK),AWAY,STEAM_STRONG,5.25,4.65,-11.4,100,18,,,
 2026-07-27,2026-08-01,China Super League,Tianjin Jinmen Tiger FC,Yunnan Yukun,1X2 AWAY (Yunnan Yukun),AWAY,STEAM_SHARP,2.75,2.5,-9.1,82,19,,,
 2026-07-27,2026-08-01,USA MLS,Inter Miami CF,Columbus Crew SC,1X2 HOME (Inter Miami CF),HOME,STEAM_SHARP,1.78,1.65,-7.3,100,21,,,
-2026-07-27,2026-07-27,Norway Eliteserien,Rosenborg,Fredrikstad FK,O/U 2.5 OVER,OVER,STEAM_SHARP,1.75,1.63,-6.9,100,11,,,
+2026-07-27,2026-07-27,Norway Eliteserien,Rosenborg,Fredrikstad FK,O/U 2.5 OVER,OVER,STEAM_SHARP,1.75,1.63,-6.9,100,11,WIN,0.75,2026-07-28
 2026-07-27,2026-08-02,Norway Eliteserien,KFUM,Kristiansund BK,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.925,3.66,-6.8,100,18,,,
 2026-07-27,2026-08-01,Norway Eliteserien,IK Start,Viking FK,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.6,4.3,-6.5,100,19,,,
 2026-07-27,2026-08-01,Sweden Allsvenskan,BK Hacken,Kalmar FF,1X2 AWAY (Kalmar FF),AWAY,STEAM_STRONG,4.4,3.85,-12.5,85,19,,,
