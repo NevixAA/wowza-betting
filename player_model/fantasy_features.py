@@ -266,3 +266,172 @@ def transfer_suggestions(team_id: int, proj: pd.DataFrame | None = None,
         })
     return {"squad": squad, "sells": suggestions,
             "note": "Prediction-based suggestions; verify price/availability in the FPL app."}
+
+
+# ── Chip strategy advisor ────────────────────────────────────────────────────
+
+def chip_advisor(proj: pd.DataFrame | None = None, horizon: int = 8) -> dict:
+    """Suggest Wildcard / Bench Boost / Triple Captain / Free Hit timing from the fixture
+    calendar: per upcoming GW count DOUBLE (2 fixtures) and BLANK (0) teams + avg FDR, then
+    flag chip windows. Triple-captain shortlist = top healthy projected players (easy fixtures)."""
+    boot = fpl_api.fetch_bootstrap()
+    fx   = fpl_api.fetch_fixtures()
+    if not boot or not fx:
+        return {}
+    teams  = {t["id"]: t.get("short_name", "") for t in boot.get("teams", [])}
+    events = boot.get("events", [])
+    cur = next((e["id"] for e in events if e.get("is_current")), None)
+    if cur is None:
+        nxt = next((e["id"] for e in events if e.get("is_next")), 1)
+        cur = nxt - 1
+
+    gw_team: dict = {}
+    for f in fx:
+        ev = f.get("event")
+        if ev is None or f.get("finished") or ev <= cur:
+            continue
+        gw_team.setdefault(ev, {}).setdefault(f.get("team_h"), []).append(f.get("team_h_difficulty"))
+        gw_team[ev].setdefault(f.get("team_a"), []).append(f.get("team_a_difficulty"))
+
+    rows, recs = [], []
+    for gw in sorted(gw_team)[:horizon]:
+        tm = gw_team[gw]
+        dgw = sorted(teams.get(t, "") for t, fl in tm.items() if len(fl) >= 2)
+        bgw = sorted(teams.get(t, "") for t in teams if t not in tm)
+        all_fdr = [d for fl in tm.values() for d in fl if d]
+        rows.append({"gw": gw, "n_dgw": len(dgw), "dgw_teams": dgw,
+                     "n_bgw": len(bgw), "bgw_teams": bgw,
+                     "avg_fdr": round(float(np.mean(all_fdr)), 2) if all_fdr else None})
+        if len(dgw) >= 4:
+            recs.append(f"GW{gw}: **Bench Boost / Triple Captain** window — {len(dgw)} teams double ({', '.join(dgw[:8])})")
+        if len(bgw) >= 6:
+            recs.append(f"GW{gw}: **Blank** — {len(bgw)} teams idle; Free Hit or navigate with a Wildcard")
+
+    tc = []
+    if proj is not None and not proj.empty:
+        p = proj.copy()
+        if "injured" in p.columns:
+            p = p[~p["injured"].astype(bool)]
+        for _, r in p.sort_values("fantasy_pts", ascending=False).head(5).iterrows():
+            tc.append(f"{r['player_name']} ({r.get('team','')}) — {r['fantasy_pts']:.1f} pts"
+                      + (f", FDR {r['avg_fdr']}" if "avg_fdr" in r and r["avg_fdr"] == r["avg_fdr"] else ""))
+    return {"gameweeks": rows, "recommendations": recs or ["No standout chip windows in range."],
+            "triple_captain": tc}
+
+
+# ── Auto lineup + bench order ────────────────────────────────────────────────
+
+def auto_lineup(team_id: int, proj: pd.DataFrame | None = None) -> dict:
+    """Given an FPL team id, pick the optimal starting XI + bench order + (vice-)captain from
+    the manager's 15 by projected points. Needs the live FPL entry API."""
+    squad = _fetch_entry_squad(team_id)
+    if squad.empty:
+        return {"error": "Could not fetch that FPL team (check the ID / FPL reachable)."}
+    df = _proj(proj)
+    if df.empty:
+        return {"error": "No projections available."}
+    df = df.copy()
+    df["_key"] = df["player_name"].map(_norm)
+    proj_by = {r["_key"]: r for _, r in df.set_index("_key").iterrows()}
+    fpl = fpl_api.players_df()
+    web2key = {int(r["fpl_id"]): r["match_key"] for _, r in fpl.iterrows()} if not fpl.empty else {}
+
+    rows = []
+    for _, s in squad.iterrows():
+        k = web2key.get(int(s["fpl_id"]))
+        rec = proj_by.get(k) if k else None
+        rows.append({"player_name": s["web_name"], "position": s["position"], "team": s["team"],
+                     "fantasy_pts": float(rec["fantasy_pts"]) if rec is not None else 0.0,
+                     "injured": bool(rec["injured"]) if (rec is not None and "injured" in rec) else False,
+                     "price": s.get("price", np.nan)})
+    sq = pd.DataFrame(rows)
+    xi = best_xi(sq)                       # points-max legal XI from the 15
+    if not xi:
+        return {"error": "Could not form a legal XI from that squad."}
+    xi_names = set(xi["players"]["player_name"])
+    bench = (sq[~sq["player_name"].isin(xi_names)]
+             .assign(_gk=lambda d: (d["position"] == "GKP").astype(int))   # bench GK last
+             .sort_values(["_gk", "fantasy_pts"], ascending=[True, False]))
+    starters = xi["players"].sort_values("fantasy_pts", ascending=False)
+    cap = starters.iloc[0]["player_name"] if len(starters) else None
+    vc  = starters.iloc[1]["player_name"] if len(starters) > 1 else None
+    return {"formation": xi["formation"], "xi": xi["players"], "bench": bench,
+            "captain": cap, "vice_captain": vc,
+            "xi_pts": xi["total_pts"], "note": "Projected-points optimal; check price/availability."}
+
+
+# ── Mini-league mode (rivals + effective ownership + differentials) ──────────
+
+def mini_league_analysis(league_id: int, proj: pd.DataFrame | None = None,
+                         top_managers: int = 30) -> dict:
+    """Pull a classic mini-league's top managers, aggregate LEAGUE ownership, and surface the
+    template (most-owned) + differentials (high projected pts, low league ownership). Live FPL."""
+    from collections import Counter
+    try:
+        st = fpl_api._get_json(f"{fpl_api._BASE}/leagues-classic/{int(league_id)}/standings/")
+        entries = [e["entry"] for e in st.get("standings", {}).get("results", [])[:top_managers]]
+    except Exception:
+        return {"error": "Could not fetch that league (check the ID / FPL reachable)."}
+    if not entries:
+        return {"error": "No managers found in that league."}
+    boot = fpl_api.fetch_bootstrap()
+    gw = next((e["id"] for e in boot.get("events", []) if e.get("is_current")), None)
+    if gw is None:
+        gw = max(1, next((e["id"] for e in boot.get("events", []) if e.get("is_next")), 2) - 1)
+    own = Counter()
+    for eid in entries:
+        try:
+            picks = fpl_api._get_json(f"{fpl_api._BASE}/entry/{eid}/event/{gw}/picks/")
+            for p in picks.get("picks", []):
+                own[p["element"]] += 1
+        except Exception:
+            continue
+    n = len(entries)
+    if not own:
+        return {"error": "Could not read any squads in that league."}
+    fpl = fpl_api.players_df()
+    id2name = {int(r["fpl_id"]): r["match_key"] for _, r in fpl.iterrows()} if not fpl.empty else {}
+    id2disp = {int(r["fpl_id"]): (r["web_name"], r["team"]) for _, r in fpl.iterrows()} if not fpl.empty else {}
+    df = _proj(proj).copy()
+    df["_key"] = df["player_name"].map(_norm)
+    pj = {r["_key"]: float(r["fantasy_pts"]) for _, r in df.set_index("_key").iterrows()}
+
+    recs = []
+    for eid, cnt in own.items():
+        nm, tm = id2disp.get(eid, ("", ""))
+        key = id2name.get(eid)
+        xp = pj.get(key, np.nan)
+        recs.append({"player": nm, "team": tm, "league_own_pct": round(100 * cnt / n, 1),
+                     "xpts": xp})
+    r = pd.DataFrame(recs)
+    template = r.sort_values("league_own_pct", ascending=False).head(15)
+    diffs = r[(r["league_own_pct"] <= 25) & r["xpts"].notna()].sort_values("xpts", ascending=False).head(15)
+    return {"n_managers": n, "gw": gw, "template": template, "differentials": diffs}
+
+
+# ── Fantasy alerts / watchlist ───────────────────────────────────────────────
+
+def fantasy_alerts(proj: pd.DataFrame | None = None, watchlist: list | None = None) -> dict:
+    """Actionable movers: injuries/doubts, price-change candidates (net FPL transfers), and top
+    projected players. `watchlist` (list of names) filters to tracked players if given."""
+    df = _proj(proj).copy()
+    fpl = fpl_api.players_df()
+    wl = {_norm(w) for w in (watchlist or [])}
+
+    def _filt(d, col="player_name"):
+        if not wl or col not in d.columns:
+            return d
+        return d[d[col].map(_norm).isin(wl)]
+
+    injuries = pd.DataFrame()
+    if "injured" in df.columns:
+        inj = df[df["injured"].astype(bool) | df.get("doubtful", False).astype(bool)]
+        injuries = _filt(inj)[[c for c in ["player_name", "team", "position", "availability",
+                                           "chance_of_playing"] if c in inj.columns]]
+    risers = fallers = pd.DataFrame()
+    if not fpl.empty and "transfers_in_gw" in fpl.columns:
+        fpl = fpl.assign(net=fpl["transfers_in_gw"] - fpl["transfers_out_gw"])
+        cols = ["web_name", "team", "position", "price", "owned_pct", "net"]
+        risers = _filt(fpl.sort_values("net", ascending=False).head(12), "web_name")[cols]
+        fallers = _filt(fpl.sort_values("net").head(12), "web_name")[cols]
+    return {"injuries": injuries, "price_risers": risers, "price_fallers": fallers}
