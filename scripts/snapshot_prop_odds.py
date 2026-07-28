@@ -63,9 +63,13 @@ def run() -> None:
     # Close out CLV for finished matches + print rolling CLV (read CLV, not P/L)
     try:
         clv_tracker.close_out()
+        # Grade the RESULT of each closed-out prop from actual stats (once in the parquet) so
+        # every CLV pairs with WIN/LOSS -> the analyzable open->close->CLV->result dataset.
+        graded = clv_tracker.settle_results()
+        print(f"[snapshot] graded {graded} prop result(s)")
         clv_tracker.report()
     except Exception as e:
-        print(f"[snapshot] clv close/report skipped: {e}")
+        print(f"[snapshot] clv close/settle/report skipped: {e}")
 
 
 if __name__ == "__main__":
