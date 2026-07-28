@@ -109,3 +109,88 @@ def report() -> dict:
     rep = clv_capture.clv_report()
     print(f"[clv_tracker] CLV report: {rep}")
     return rep
+
+
+# ── Result grading — turns captured CLV into an open→close→CLV→RESULT dataset ────
+_MARKET_HIT = {
+    "goals":   lambda s: s["goals"] >= 1,
+    "goals2":  lambda s: s["goals"] >= 2,
+    "goals3":  lambda s: s["goals"] >= 3,
+    "assists": lambda s: s["assists"] >= 1,
+    "sot":     lambda s: s["sot"] >= 1,
+    "sot2":    lambda s: s["sot"] >= 2,
+    "sot3":    lambda s: s["sot"] >= 3,
+    "cards":   lambda s: (s["yc"] >= 1) or (s["rc"] >= 1),
+}
+
+
+def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
+    """Grade pending clv_records against ACTUAL player stats (player_history.parquet).
+
+    Fills `result` (WIN/LOSS/VOID) + `pnl` (flat 1u on the entry price — PAPER only). A player
+    not found for a match played more than `void_after_days` ago = DNP/uncovered → VOID.
+    Props-only; touches only output/clv_records.csv. Returns the number graded.
+    """
+    from datetime import datetime as _dt
+    from pathlib import Path
+    f = config.OUTPUT_DIR / "clv_records.csv"
+    if not f.exists():
+        return 0
+    clv = pd.read_csv(f)
+    if clv.empty:
+        return 0
+    for c in ("result", "pnl"):
+        if c not in clv.columns:
+            clv[c] = ""
+    # avoid float64/arrow-string columns rejecting mixed str/float writes
+    clv["result"] = clv["result"].astype(object)
+    clv["pnl"]    = clv["pnl"].astype(object)
+    pending = clv["result"].isna() | (clv["result"].astype(str).str.strip() == "")
+    if not pending.any():
+        print("[clv_tracker] settle: no pending records")
+        return 0
+
+    pqp = Path(parquet_path) if parquet_path else (config.OUTPUT_DIR.parent / "player_history.parquet")
+    if not pqp.exists():
+        print(f"[clv_tracker] settle: parquet not found ({pqp})")
+        return 0
+    pq = pd.read_parquet(pqp, columns=["player_name", "date", "goals", "assists",
+                                       "shots_on_target", "yellow_cards", "red_cards"])
+    pq["pk"]   = pq["player_name"].astype(str).map(_norm)
+    pq["dkey"] = pq["date"].astype(str).str[:10]
+    idx = {(r.pk, r.dkey): r for r in pq.itertuples()}
+
+    today = str(_dt.utcnow().date())
+    graded = 0
+    for i in clv[pending].index:
+        try:
+            _, d, player, market = str(clv.at[i, "bet_id"]).split("|", 3)
+        except ValueError:
+            continue
+        d = d[:10]
+        if d >= today:                      # not played yet
+            continue
+        rec = idx.get((_norm(player), d))
+        hit = _MARKET_HIT.get(market)
+        if hit is None:
+            continue
+        if rec is None:
+            # Match not in our player-stats parquet yet (data gap / not collected) -> leave
+            # PENDING; it grades once the fixture's stats land in the parquet. Never guess a VOID.
+            continue
+        s = {"goals":   float(rec.goals or 0),      "assists": float(rec.assists or 0),
+             "sot":     float(rec.shots_on_target or 0),
+             "yc":      float(rec.yellow_cards or 0), "rc":     float(rec.red_cards or 0)}
+        won = bool(hit(s))
+        try:
+            odds = float(clv.at[i, "odds_bet"])
+        except (TypeError, ValueError):
+            odds = 0.0
+        clv.at[i, "result"] = "WIN" if won else "LOSS"
+        clv.at[i, "pnl"] = round(odds - 1.0, 3) if won else -1.0
+        graded += 1
+
+    if graded:
+        clv.to_csv(f, index=False)
+    print(f"[clv_tracker] settle: {graded} record(s) graded")
+    return graded
