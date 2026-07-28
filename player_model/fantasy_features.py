@@ -177,6 +177,43 @@ def _fetch_entry_squad(team_id: int) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def set_piece_penalty_takers(parquet_path: Path | None = None, top_per_team: int = 3) -> pd.DataFrame:
+    """Per current-FPL club: likely penalty taker + set-piece goal threats, from historical
+    involvement (penalties won/scored + set-piece/free-kick/headed goals). Current squad only
+    (joined to live FPL). A top-3 FPL edge that's otherwise invisible."""
+    df = pd.read_parquet(parquet_path or _PARQUET)
+    pl = df[df["league"] == FANTASY_LEAGUE]
+    if pl.empty:
+        return pd.DataFrame()
+    pen_cols = [c for c in ("penalty_scored", "penalty_won") if c in pl.columns]
+    sp_cols  = [c for c in ("sp_goal", "fk_goal", "headed_goal") if c in pl.columns]
+    g = pl.groupby("player_id")
+    tot = pd.DataFrame({"player_name": g["player_name"].last()})
+    tot["pens"]     = g[pen_cols].sum().sum(axis=1) if pen_cols else 0.0
+    tot["sp_goals"] = g[sp_cols].sum().sum(axis=1) if sp_cols else 0.0
+    tot = tot.reset_index()
+
+    fpl = fpl_api.players_df()
+    if fpl.empty:
+        return pd.DataFrame()
+    own_full = {r["match_key"]: (r["team"], r["position"]) for _, r in fpl.iterrows()}
+    own_web  = {r["web_key"]:  (r["team"], r["position"]) for _, r in fpl.iterrows()}
+    rows = []
+    for _, r in tot.iterrows():
+        k = _norm(r["player_name"])
+        tp = own_full.get(k) or own_web.get(k)
+        if not tp:
+            continue
+        rows.append({"player_name": r["player_name"], "team": tp[0], "position": tp[1],
+                     "pens": float(r["pens"]), "sp_goals": float(r["sp_goals"])})
+    out = pd.DataFrame(rows)
+    if out.empty:
+        return out
+    out = out[(out["pens"] > 0) | (out["sp_goals"] > 0)]
+    return (out.sort_values(["team", "pens", "sp_goals"], ascending=[True, False, False])
+               .groupby("team").head(top_per_team).reset_index(drop=True))
+
+
 def transfer_suggestions(team_id: int, proj: pd.DataFrame | None = None,
                          n: int = 3) -> dict:
     """Given an FPL manager id, suggest the N weakest sells and best same-position buys.

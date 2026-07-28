@@ -64,6 +64,41 @@ def _cs_prob(fdr_list: list) -> float:
     return float(np.mean(ps)) if ps else float("nan")
 
 
+def _poisson_dc_pts(mean_actions: float, threshold: float) -> float:
+    """Expected defensive-contribution pts = 2 · P(actions >= threshold), actions ~ Poisson(mean).
+    Better than a linear clip: a player averaging near the bar hits it ~half the time. (APPROX —
+    our action count lacks clearances/ball-recoveries, so thresholds are pre-lowered.)"""
+    import math
+    if mean_actions <= 0 or threshold >= 900:
+        return 0.0
+    k = int(math.ceil(threshold))
+    term = math.exp(-mean_actions)
+    cdf = term
+    for i in range(1, k):
+        term *= mean_actions / i
+        cdf += term
+    return round(2.0 * max(0.0, min(1.0, 1.0 - cdf)), 3)
+
+
+def _expected_bonus(p_goal: float, p_assist: float, p_sot2: float,
+                    def_pg: float, cs: float) -> float:
+    """Rough expected FPL BONUS (0-3). BPS is dominated by goals/assists, then defensive volume
+    + clean sheets. We can't see rivals' BPS to rank the top-3, so this is a calibrated-ish
+    heuristic on the drivers we do model."""
+    b = 1.5 * p_goal + 0.9 * p_assist + 0.3 * p_sot2 + 0.8 * min(def_pg / 12.0, 1.0) + 0.25 * cs
+    return round(float(min(max(b, 0.0), 3.0)), 3)
+
+
+def _pen_taker_ids(pl_all: pd.DataFrame, min_pens: float = 2.0) -> set:
+    """player_ids with real penalty history (won+scored over their record) — likely pen takers.
+    A pen taker's goal expectation is materially higher; flagged for display."""
+    cols = [c for c in ("penalty_scored", "penalty_won") if c in pl_all.columns]
+    if not cols:
+        return set()
+    pens = pl_all.groupby("player_id")[cols].sum().sum(axis=1)
+    return set(pens[pens >= min_pens].index)
+
+
 def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: float = 45.0,
                               use_fpl: bool = True, next_n: int = 5) -> pd.DataFrame:
     """Per-player FPL expected-points projections.
@@ -158,9 +193,11 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     pl["goal_pts"]   = pl["position"].map(FPL_GOAL_PTS).fillna(5.0)
     pl["attack_pts"] = (pl["p_goal"] * pl["goal_pts"] + pl["p_assist"] * 3.0 + pl["p_sot2"] * 1.0).round(3)
 
+    # Defensive-contribution pts — Poisson P(actions >= threshold) (upgrade from linear clip)
     thr = pl["position"].map(_DC_THRESH).fillna(6.0)
-    pl["dc_pts"] = (2.0 * (pl["def_actions_pg"] / thr).clip(0, 1)).round(3)
+    pl["dc_pts"] = [_poisson_dc_pts(float(a or 0), float(t)) for a, t in zip(pl["def_actions_pg"], thr)]
 
+    # Clean-sheet pts — from official FDR (a team goals-conceded model is a future upgrade)
     if fdr_map:
         pl["cs_pts"] = pl.apply(
             lambda r: 0.0 if (_p := _cs_prob(fdr_map.get(r["team"], []))) != _p
@@ -168,7 +205,28 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     else:
         pl["cs_pts"] = 0.0
 
-    pl["fantasy_pts"] = (pl["appearance"] + pl["attack_pts"] + pl["dc_pts"] + pl["cs_pts"]).round(3)
+    # Expected bonus (from BPS drivers)
+    pl["bonus_pts"] = [_expected_bonus(g, a, s, float(d or 0), c) for g, a, s, d, c in
+                       zip(pl["p_goal"], pl["p_assist"], pl["p_sot2"], pl["def_actions_pg"], pl["cs_pts"])]
+
+    pl["fantasy_pts"] = (pl["appearance"] + pl["attack_pts"] + pl["dc_pts"]
+                         + pl["cs_pts"] + pl["bonus_pts"]).round(3)
+
+    # Minutes / rotation risk — P(start) from recent + season start rates, killed by injury
+    _sr  = pd.to_numeric(pl.get("starter_rate", np.nan), errors="coerce")
+    _ssr = pd.to_numeric(pl.get("season_start_rate", np.nan), errors="coerce")
+    pl["p_start"] = (0.6 * _sr.fillna(_ssr) + 0.4 * _ssr.fillna(_sr)).clip(0, 1).fillna(0.6)
+    pl.loc[pl["injured"] == True, "p_start"] = 0.0                                    # noqa: E712
+    _chance = pd.to_numeric(pl.get("chance_of_playing", np.nan), errors="coerce")
+    _dmask = (pl["doubtful"] == True) & _chance.notna()                              # noqa: E712
+    pl.loc[_dmask, "p_start"] = (pl.loc[_dmask, "p_start"] * _chance[_dmask] / 100.0)
+    pl["p_start"] = pl["p_start"].round(2)
+    pl["xpts_rot"] = (pl["fantasy_pts"] * pl["p_start"]).round(3)   # rotation-adjusted (uncond.)
+
+    # Penalty-taker flag — materially higher goal expectation
+    pen_ids = _pen_taker_ids(pl_all)
+    pl["is_pen_taker"] = pl["player_id"].isin(pen_ids) if "player_id" in pl.columns else False
+
     pl["value"] = (pl["fantasy_pts"] / pl["price"]).round(3)
 
     # FPL fixture context (official FDR) — drives display + the dashboard "fixtures" banner.
@@ -190,7 +248,8 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
 
     keep = [c for c in ["player_name", "team", "position", "price", "minutes_pg",
                         "p_goal", "p_assist", "p_sot2", "attack_pts", "dc_pts", "cs_pts",
-                        "def_actions_pg", "fantasy_pts", "value", "availability", "injured",
+                        "bonus_pts", "def_actions_pg", "fantasy_pts", "xpts_rot", "p_start",
+                        "is_pen_taker", "value", "availability", "injured",
                         "doubtful", "chance_of_playing", "fpl_matched",
                         "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts"]
             if c in pl.columns]
