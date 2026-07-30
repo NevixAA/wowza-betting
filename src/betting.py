@@ -356,7 +356,7 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
         "edge_over", "edge_under", "best_edge",
         "bet", "bet_stake", "signal_tier",
         "drift_signal", "over_drift", "under_drift", "odds_snapshots",
-        "both_losing", "min_odds_blocked",
+        "both_losing", "min_odds_blocked", "model_type",
     ]
     output_cols = [c for c in output_cols if c in visible.columns]
     return visible[output_cols].reset_index(drop=True)
