@@ -30,6 +30,12 @@ def load_bets():
         if col not in df.columns:
             df[col] = ""
     df["model_type"]  = df["model_type"].fillna("").astype(str)
+    # A blank tag must never default to one model — derive it from the league so new-format
+    # rows can't show up under 'standard' (canonical map in config.model_type_for_league).
+    _blank_mt = df["model_type"].str.strip().isin(["", "nan"])
+    if _blank_mt.any() and "league" in df.columns:
+        import config as _cfg
+        df.loc[_blank_mt, "model_type"] = df.loc[_blank_mt, "league"].map(_cfg.model_type_for_league)
     df["drift_signal"] = df["drift_signal"].fillna("New").astype(str)
     df["signal_tier"]  = df["signal_tier"].fillna("").astype(str)
     return df

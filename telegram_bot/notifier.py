@@ -1709,17 +1709,18 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             live = led[(led["source"] == "live") & led["pnl"].notna()] \
                    if "source" in led.columns else led[led["pnl"].notna()]
-            has_mt = "model_type" in live.columns
+            # Never treat a blank tag as 'standard' — derive it from the league so new-format
+            # bets can't leak into the standard column (canonical map in app_config).
+            live = live.copy()
+            if "model_type" not in live.columns:
+                live["model_type"] = ""
+            _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip() == "")
+            live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(app_config.model_type_for_league)
             for fmt, emoji, label in [
                 ("standard",   "⚽", "Over 2.5 — Standard"),
                 ("new_format", "🌍", "Over 2.5 — New-Format"),
             ]:
-                if not has_mt:
-                    sub = live if fmt == "standard" else pd.DataFrame()
-                elif fmt == "standard":
-                    sub = live[(live["model_type"] == "standard") | live["model_type"].isna()]
-                else:
-                    sub = live[live["model_type"] == fmt]
+                sub = live[live["model_type"] == fmt]
                 if sub.empty:
                     continue
                 n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum(); roi = pnl / n * 100

@@ -222,7 +222,7 @@ SIDE_LEDGER_FILE = config.OUTPUT_DIR / "side_bets_ledger.csv"
 SIDE_LEDGER_COLS = [
     "source", "generated_at", "signal_date", "match_date", "league",
     "home_team", "away_team", "market", "odds", "edge_pct", "ev_pct",
-    "model_prob", "signal_tier", "closing_odds", "clv_pct", "result", "pnl", "notes",
+    "model_prob", "signal_tier", "model_type", "closing_odds", "clv_pct", "result", "pnl", "notes",
 ]
 _SIDE_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
 
@@ -295,6 +295,7 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "odds": odds, "edge_pct": edge_pct, "ev_pct": ev_pct,
             "model_prob": round(float(row.get("model_prob", 0.0) or 0.0), 4),
             "signal_tier": tier,
+            "model_type": str(row.get("model_type", "")) or config.model_type_for_league(row.get("league", "")),
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
         })
 

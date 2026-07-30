@@ -99,6 +99,21 @@ NEW_FORMAT_LEAGUES = {
     "K-League 1",
 }
 
+def model_type_for_league(league) -> str:
+    """Canonical model tag for a league: 'standard' | 'new_format' | 'unknown'.
+
+    Single source of truth so the ledger, digest, and dashboard never disagree on which
+    model a bet belongs to. Reporting was previously treating an untagged (blank) row as
+    'standard', which let new-format bets leak into the standard column.
+    """
+    lg = str(league).strip()
+    if lg in STANDARD_FORMAT_LEAGUES:
+        return "standard"
+    if lg in NEW_FORMAT_LEAGUES:
+        return "new_format"
+    return "unknown"
+
+
 # Leagues loaded entirely from API-Football (no football-data.co.uk coverage)
 API_FOOTBALL_ONLY_LEAGUES = {
     "Saudi Pro League",
