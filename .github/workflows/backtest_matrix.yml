@@ -74,6 +74,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pandas          # aggregate rebuilds ROI config from CSVs (pandas only)
       - name: Download all model results
         uses: actions/download-artifact@v4
         with:
