@@ -107,7 +107,11 @@ def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
             continue
         match = f"{str(row.get('home_team', '')).strip()} vs {str(row.get('away_team', '')).strip()}"
         md = str(row.get("date", ""))[:10]
-        for mkt, col in (("over25", "odds_over25"), ("under25", "odds_under25")):
+        # O/U 2.5 (over+under) + O/U 1.5/3.5 Over — all already fetched by predict's `totals`
+        # call, so capturing them here is FREE + dense (every predict run). BTTS is NOT in the
+        # totals response (needs the per-event endpoint) -> it stays on std_odds_capture.yml.
+        for mkt, col in (("over25", "odds_over25"), ("under25", "odds_under25"),
+                         ("over15", "odds_over15"), ("over35", "odds_over35")):
             try:
                 o = float(row.get(col))
             except (TypeError, ValueError):
