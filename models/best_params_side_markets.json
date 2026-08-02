@@ -1,168 +1,219 @@
 {
-  "btts": {
-    "Serie B": {
-      "sniper_th": 0.05,
-      "marksman_th": 0.04,
-      "roi": 9.1,
-      "bets": 211,
-      "drop": false,
-      "oos_confirmed": true,
-      "note": "OOS-confirmed +12%/+9% -> real-money candidate"
-    },
-    "La Liga 2": {
-      "sniper_th": 0.13,
-      "marksman_th": 0.11,
-      "roi": 20.6,
-      "bets": 35,
-      "drop": false,
-      "oos_confirmed": true,
-      "note": "OOS-confirmed +20%/+21% -> real-money candidate"
+  "standard": {
+    "Bundesliga 2": {
+      "sniper_th": 0.19,
+      "marksman_th": 0.17,
+      "roi_insample": 2.3,
+      "bets_insample": 30,
+      "roi_oos": 4.57,
+      "bets_oos": 7,
+      "approved": false
     },
     "Championship": {
-      "sniper_th": 0.15,
-      "marksman_th": 0.13,
-      "roi": 31.9,
-      "bets": 22,
-      "drop": false,
-      "oos_confirmed": false,
-      "note": "fires for DATA/paper only \u2014 failed OOS, re-test next month"
+      "sniper_th": 0.08,
+      "marksman_th": 0.06,
+      "roi_insample": 1.96,
+      "bets_insample": 233,
+      "roi_oos": -7.9,
+      "bets_oos": 311,
+      "approved": false
+    },
+    "La Liga 2": {
+      "sniper_th": 0.17,
+      "marksman_th": 0.15,
+      "roi_insample": 10.81,
+      "bets_insample": 32,
+      "roi_oos": -12.88,
+      "bets_oos": 290,
+      "approved": false
+    },
+    "League One": {
+      "sniper_th": 0.14,
+      "marksman_th": 0.12,
+      "roi_insample": 6.79,
+      "bets_insample": 39,
+      "roi_oos": -27.75,
+      "bets_oos": 8,
+      "approved": false
+    },
+    "League Two": {
+      "sniper_th": 0.07,
+      "marksman_th": 0.05,
+      "roi_insample": -1.6,
+      "bets_insample": 188,
+      "roi_oos": -19.07,
+      "bets_oos": 42,
+      "approved": false
     },
     "Ligue 2": {
       "sniper_th": 0.12,
       "marksman_th": 0.1,
-      "roi": 9.5,
-      "bets": 20,
-      "drop": false,
-      "oos_confirmed": false,
-      "note": "fires for DATA/paper only \u2014 failed OOS"
-    },
-    "League One": {
-      "sniper_th": 0.1,
-      "marksman_th": 0.08,
-      "roi": null,
-      "bets": 52,
-      "drop": false,
-      "oos_confirmed": false,
-      "note": "fires for DATA/paper only \u2014 failed OOS (+27.6->-18.9)"
-    },
-    "League Two": {
-      "sniper_th": 0.1,
-      "marksman_th": 0.08,
-      "roi": null,
-      "bets": 272,
-      "drop": false,
-      "oos_confirmed": false,
-      "note": "fires for DATA/paper only \u2014 breakeven OOS"
-    },
-    "Bundesliga 2": {
-      "sniper_th": 0.1,
-      "marksman_th": 0.08,
-      "roi": null,
-      "bets": 4,
-      "drop": false,
-      "oos_confirmed": false,
-      "note": "fires for DATA/paper only \u2014 thin"
-    }
-  },
-  "over15": {
-    "Bundesliga 2": {
-      "sniper_th": 0.16,
-      "marksman_th": 0.14,
-      "roi": 31.46,
-      "bets": 82,
-      "drop": false
-    },
-    "Championship": {
-      "sniper_th": 0.19,
-      "marksman_th": 0.17,
-      "roi": 28.33,
-      "bets": 24,
-      "drop": false
-    },
-    "La Liga 2": {
-      "sniper_th": 0.16,
-      "marksman_th": 0.14,
-      "roi": 30.18,
-      "bets": 57,
-      "drop": false
-    },
-    "League One": {
-      "sniper_th": 0.13,
-      "marksman_th": 0.11,
-      "roi": 15.44,
-      "bets": 228,
-      "drop": false
-    },
-    "League Two": {
-      "sniper_th": 0.16,
-      "marksman_th": 0.14,
-      "roi": 20.4,
-      "bets": 50,
-      "drop": false
-    },
-    "Ligue 2": {
-      "sniper_th": 0.15,
-      "marksman_th": 0.13,
-      "roi": 11.09,
-      "bets": 92,
-      "drop": false
+      "roi_insample": 2.03,
+      "bets_insample": 61,
+      "roi_oos": 1.72,
+      "bets_oos": 93,
+      "approved": true
     },
     "Serie B": {
-      "sniper_th": 0.16,
-      "marksman_th": 0.14,
-      "roi": 25.76,
-      "bets": 59,
-      "drop": false
+      "sniper_th": 0.13,
+      "marksman_th": 0.11,
+      "roi_insample": 42.27,
+      "bets_insample": 33,
+      "roi_oos": 13.01,
+      "bets_oos": 99,
+      "approved": true
     }
   },
   "over35": {
     "Bundesliga 2": {
-      "sniper_th": 0.18,
-      "marksman_th": 0.16,
-      "roi": 71.22,
-      "bets": 41,
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    },
+    "Championship": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    },
+    "La Liga 2": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    },
+    "League One": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    },
+    "League Two": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    },
+    "Ligue 2": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    },
+    "Serie B": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 0,
+      "drop": true
+    }
+  },
+  "btts": {
+    "Bundesliga 2": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": 3.24,
+      "bets": 152,
       "drop": false
     },
     "Championship": {
-      "sniper_th": 0.19,
-      "marksman_th": 0.17,
-      "roi": 41.82,
-      "bets": 22,
+      "sniper_th": 0.13,
+      "marksman_th": 0.11,
+      "roi": 28.54,
+      "bets": 26,
       "drop": false
     },
     "La Liga 2": {
-      "sniper_th": 0.06,
-      "marksman_th": 0.04,
-      "roi": 70.99,
-      "bets": 31,
+      "sniper_th": 0.13,
+      "marksman_th": 0.11,
+      "roi": 33.68,
+      "bets": 66,
       "drop": false
     },
     "League One": {
-      "sniper_th": 0.16,
-      "marksman_th": 0.14,
-      "roi": 77.02,
-      "bets": 47,
-      "drop": false
+      "sniper_th": 0.11,
+      "marksman_th": 0.09,
+      "roi": null,
+      "bets": 40,
+      "drop": true
     },
     "League Two": {
-      "sniper_th": 0.2,
-      "marksman_th": 0.18,
-      "roi": 56.0,
-      "bets": 20,
+      "sniper_th": 0.1,
+      "marksman_th": 0.08,
+      "roi": 12.33,
+      "bets": 39,
       "drop": false
     },
     "Ligue 2": {
-      "sniper_th": 0.16,
-      "marksman_th": 0.14,
-      "roi": 48.57,
-      "bets": 21,
-      "drop": false
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 433,
+      "drop": true
     },
     "Serie B": {
-      "sniper_th": 0.19,
-      "marksman_th": 0.17,
-      "roi": 95.0,
-      "bets": 20,
+      "sniper_th": 0.11,
+      "marksman_th": 0.09,
+      "roi": 15.13,
+      "bets": 23,
+      "drop": false
+    }
+  },
+  "over15": {
+    "Bundesliga 2": {
+      "sniper_th": 0.09,
+      "marksman_th": 0.07,
+      "roi": 14.49,
+      "bets": 129,
+      "drop": false
+    },
+    "Championship": {
+      "sniper_th": 0.07,
+      "marksman_th": 0.05,
+      "roi": 7.3,
+      "bets": 723,
+      "drop": false
+    },
+    "La Liga 2": {
+      "sniper_th": 0.07,
+      "marksman_th": 0.05,
+      "roi": null,
+      "bets": 533,
+      "drop": true
+    },
+    "League One": {
+      "sniper_th": 0.1,
+      "marksman_th": 0.08,
+      "roi": 7.36,
+      "bets": 193,
+      "drop": false
+    },
+    "League Two": {
+      "sniper_th": 0.1,
+      "marksman_th": 0.08,
+      "roi": 13.11,
+      "bets": 177,
+      "drop": false
+    },
+    "Ligue 2": {
+      "sniper_th": 0.04,
+      "marksman_th": 0.04,
+      "roi": null,
+      "bets": 1096,
+      "drop": true
+    },
+    "Serie B": {
+      "sniper_th": 0.07,
+      "marksman_th": 0.05,
+      "roi": 5.17,
+      "bets": 437,
       "drop": false
     }
   }
