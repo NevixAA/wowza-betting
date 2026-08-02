@@ -95,10 +95,14 @@ jobs:
                             ("over15","output/backtest_by_league_over15.csv"),
                             ("over35","output/backtest_by_league_over35.csv")]:
               p = Path(f)
-              if not p.exists():
+              if not p.exists() or p.stat().st_size == 0:
                   continue
               import pandas as pd
-              df = pd.read_csv(p)
+              try:
+                  df = pd.read_csv(p)
+              except pd.errors.EmptyDataError:
+                  print(f"aggregate: {f} has no columns - skipping")
+                  continue
               for _, row in df.iterrows():
                   roi.setdefault(row["league"], {})[market] = round(float(row["roi_%"]), 2)
           THRESH = {"btts": 5.0, "over15": 3.0, "over35": 8.0}

@@ -1,0 +1,49 @@
+name: API-Football Usage Monitor
+
+# MEASURE-before-trim (task A). Polls API-Football /status (FREE — does not count against
+# the daily limit) every 30 min and logs the cumulative daily usage curve to
+# output/api_usage_log.csv. We correlate the curve against workflow cron times to size the
+# fleet for the 7,500/day Pro cap (post-2026-08-10), then trim cadences (task B).
+# Single-owner of the log file -> no push race. Isolated: writes only the usage log.
+
+concurrency:
+  group: af-usage-monitor
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # every 30 min
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install minimal deps
+        run: pip install requests pandas
+      - name: Poll API-Football status
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python scripts/af_usage_log.py poll
+      - name: Commit usage log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/api_usage_log.csv 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: af usage $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
