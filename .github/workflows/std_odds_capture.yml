@@ -1,0 +1,55 @@
+name: Standard Side-Market Odds Capture
+
+# FORWARD capture of STANDARD 2nd-div side-market odds (BTTS + O/U 1.5/2.5/3.5).
+# standard_sidemarket_odds_history.csv was BACKFILL-ONLY (static since 2026-05-18) -> standard
+# BTTS/O1.5/O3.5 had NO forward open->moving->closing capture. This appends today's odds for
+# upcoming standard fixtures daily. FREE: API-Football (Bet365), NO OddsAPI credits.
+# ISOLATION: writes ONLY output/standard_sidemarket_odds_history.csv. No model touched.
+# Cost: self-gating (off match-days -> no upcoming fixtures -> ~free); NEXT_N=12, quota-guarded.
+
+concurrency:
+  group: std-odds-capture
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC daily (staggered from injury 04:00 / nf 05:30 / fantasy 06:30)
+  workflow_dispatch:
+
+jobs:
+  std_odds_capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Capture forward standard side-market odds
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python scripts/capture_std_sidemarket_odds_forward.py
+
+      - name: Commit and push updated standard side-market odds history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/standard_sidemarket_odds_history.csv 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: std side-market odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
