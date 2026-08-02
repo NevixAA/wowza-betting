@@ -48,6 +48,12 @@ import config
 
 HISTORY_FILE = config.ODDS_HISTORY_JSON
 
+# Persistent, NEVER-purged open->close archive for STANDARD-format O/U 2.5 (mirrors
+# newformat_odds_history.csv). The JSON above is purged after 10 days, so closing-odds
+# lookups race the purge; this CSV is the durable record update_results falls back to.
+STD_ARCHIVE_FILE = config.OUTPUT_DIR / "standard_odds_history.csv"
+_ARCHIVE_COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market", "odds"]
+
 DRIFT_COLS = [
     "first_over_odds", "first_under_odds",
     "over_drift", "under_drift",
@@ -88,6 +94,39 @@ def _save(data: dict) -> None:
         json.dumps(data, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+
+
+def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
+    """Append STANDARD-format O/U 2.5 snapshots to STD_ARCHIVE_FILE (distinct-price append).
+    Isolation: standard leagues only (config.model_type_for_league); NF/props untouched."""
+    rows = []
+    today = ts[:10]
+    for _, row in df.iterrows():
+        lg = row.get("league", "")
+        if config.model_type_for_league(lg) != "standard":
+            continue
+        match = f"{str(row.get('home_team', '')).strip()} vs {str(row.get('away_team', '')).strip()}"
+        md = str(row.get("date", ""))[:10]
+        for mkt, col in (("over25", "odds_over25"), ("under25", "odds_under25")):
+            try:
+                o = float(row.get(col))
+            except (TypeError, ValueError):
+                continue
+            if np.isnan(o) or o <= 1.0:
+                continue
+            rows.append({"snapshot_date": today, "snapshot_ts": ts, "match_date": md,
+                         "league": str(lg), "match": match, "market": mkt, "odds": round(o, 3)})
+    if not rows:
+        return
+    new = pd.DataFrame(rows, columns=_ARCHIVE_COLS)
+    if STD_ARCHIVE_FILE.exists():
+        try:
+            new = pd.concat([pd.read_csv(STD_ARCHIVE_FILE), new], ignore_index=True)
+        except Exception:
+            pass
+    # keep first occurrence of each distinct price per fixture+market -> open..close curve
+    new = new.drop_duplicates(subset=["match_date", "match", "market", "odds"], keep="first")
+    new.to_csv(STD_ARCHIVE_FILE, index=False)
 
 
 def _classify(side: str, over_drift: float, under_drift: float, n: int) -> str:
@@ -145,6 +184,13 @@ def snapshot(df: pd.DataFrame) -> None:
         history.setdefault(k, []).append(snap)
 
     _save(history)
+
+    # Durable open->close archive for standard (survives the 10-day JSON purge). Never let a
+    # failure here break the JSON snapshot, which drives the live drift signal.
+    try:
+        _append_persistent_archive(df, ts)
+    except Exception as e:
+        print(f"[drift] persistent standard archive skipped: {e}")
 
 
 def enrich(df: pd.DataFrame) -> pd.DataFrame:

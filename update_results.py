@@ -219,7 +219,52 @@ def fetch_scores(sport_key: str, days_from: int) -> list[dict]:
 
 # ── CLV lookup ───────────────────────────────────────────────────────────────
 
+_CSV_ARCHIVES = None
+
+
+def _closing_from_csv(home: str, away: str, match_date: str, side: str) -> float:
+    """Fallback closing price from the persistent per-model odds archives (newformat_ +
+    standard_odds_history.csv). Used when the ephemeral odds_history_v9.json has already
+    rolled the fixture out (10-day purge) — the cause of new-format's 9% closing coverage."""
+    global _CSV_ARCHIVES
+    if _CSV_ARCHIVES is None:
+        _CSV_ARCHIVES = []
+        for name in ("newformat_odds_history.csv", "standard_odds_history.csv"):
+            p = config.OUTPUT_DIR / name
+            if not p.exists():
+                continue
+            try:
+                d = pd.read_csv(p)
+                mm = d["match"].astype(str)
+                d["_hk"] = mm.apply(lambda m: _norm(m.split(" vs ")[0]) if " vs " in m else "")
+                d["_ak"] = mm.apply(lambda m: _norm(m.split(" vs ")[1]) if " vs " in m else "")
+                d["_dk"] = d["match_date"].astype(str).str[:10]
+                _CSV_ARCHIVES.append(d)
+            except Exception:
+                pass
+    mkt = "under25" if side == "UNDER" else "over25"
+    hk, ak, dk = _norm(home), _norm(away), str(match_date)[:10]
+    for arch in _CSV_ARCHIVES:
+        m = arch[(arch["_hk"] == hk) & (arch["_ak"] == ak) & (arch["_dk"] == dk)
+                 & (arch["market"].astype(str) == mkt)]
+        if not m.empty:
+            try:
+                return float(m.sort_values("snapshot_ts").iloc[-1]["odds"])
+            except Exception:
+                pass
+    return np.nan
+
+
 def _closing_odds(home: str, away: str, match_date: str, side: str) -> float:
+    """Closing (last pre-KO) odds: try the ephemeral JSON first, then fall back to the
+    persistent CSV archives so a fixture purged from the JSON still gets a closing price."""
+    val = _closing_odds_json(home, away, match_date, side)
+    if val is None or (isinstance(val, float) and np.isnan(val)):
+        val = _closing_from_csv(home, away, match_date, side)
+    return val
+
+
+def _closing_odds_json(home: str, away: str, match_date: str, side: str) -> float:
     """
     Return the LAST recorded odds snapshot before kick-off from odds_history_v9.json.
     This approximates the closing line.
