@@ -1,8 +1,14 @@
 name: Pre-season Retrain
 
 # Fires August 1st every year — one week before European leagues kick off.
-# Full collect + retrain + backtest for both main models and player props.
-# Also triggerable manually at any time (e.g. mid-season if data drifts).
+# Full match-data collect + retrain of the MAIN models. Also triggerable manually.
+#
+# SCOPE (2026-08-02): main models ONLY (standard + newformat + HT + side markets).
+#   - Player props are owned by player_props.yml (cached, Sunday 05:00 + WC nightly).
+#   - The full walk-forward backtest + league ROI config are owned by backtest_matrix.yml
+#     (parallel, monthly on the 1st — same day as this).
+# Doing props + backtest inline here (uncached, sequential) blew the 3h cap, so both were
+# moved to their dedicated workflows. This job now finishes well inside the timeout.
 
 on:
   schedule:
@@ -16,7 +22,7 @@ concurrency:
 jobs:
   preseason:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 120
     permissions:
       contents: write
 
@@ -40,160 +46,14 @@ jobs:
         run: python pipeline.py --mode collect
         continue-on-error: true
 
-      # ── Step 2: collect fresh player stats (API-Football) ─────────────────────
-      - name: Collect player stats (full history refresh)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode collect
-        continue-on-error: true
-
-      # ── Step 3: train all main models ─────────────────────────────────────────
+      # ── Step 2: train all main models ─────────────────────────────────────────
       - name: Train main models (standard + newformat + HT + side markets)
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python pipeline.py --mode train
 
-      # ── Step 4: train all player props models ─────────────────────────────────
-      - name: Train player props models (7 markets)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode train
-
-      # ── Step 5: full backtest → ROI config ────────────────────────────────────
-      - name: Run side market backtest
-        env:
-          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python pipeline.py --mode backtest
-        continue-on-error: true
-
-      - name: Generate league ROI config (approved leagues for alerts)
-        run: |
-          python - <<'EOF'
-          import json, pandas as pd
-          from pathlib import Path
-
-          roi = {}
-          for market, f in [
-              ("btts",   "output/backtest_by_league_btts.csv"),
-              ("over15", "output/backtest_by_league_over15.csv"),
-              ("over35", "output/backtest_by_league_over35.csv"),
-          ]:
-              p = Path(f)
-              if not p.exists():
-                  continue
-              df = pd.read_csv(p)
-              for _, row in df.iterrows():
-                  league = row["league"]
-                  roi.setdefault(league, {})[market] = round(float(row["roi_%"]), 2)
-
-          THRESHOLDS = {"btts": 5.0, "over15": 3.0, "over35": 8.0}
-          approved = {}
-          for league, markets in roi.items():
-              approved[league] = {m: v for m, v in markets.items() if v >= THRESHOLDS.get(m, 5.0)}
-
-          out = {"roi_by_league": roi, "approved_markets_by_league": approved}
-          Path("output/league_roi_config.json").write_text(json.dumps(out, indent=2))
-          approved_count = sum(1 for v in approved.values() if v)
-          print(f"ROI config written: {len(roi)} leagues, {approved_count} approved")
-          EOF
-        continue-on-error: true
-
-      # ── Step 6: player props calibration ──────────────────────────────────────
-      - name: Player props calibration report
-        run: |
-          python - <<'EOF'
-          import json, pandas as pd, numpy as np
-          from pathlib import Path
-          from player_model.model import load_model, predict_proba
-          from player_model import config
-
-          hist = Path("player_history.parquet")
-          if not hist.exists():
-              print("No player_history.parquet"); exit(0)
-
-          df = pd.read_parquet(hist)
-          df["date"] = pd.to_datetime(df["date"])
-          df = df.sort_values("date").reset_index(drop=True)
-          if len(df) < 500:
-              print(f"Not enough data ({len(df)} rows)"); exit(0)
-
-          cutoff_idx = int(len(df) * 0.80)
-          cutoff_date = df.iloc[cutoff_idx]["date"]
-          test = df.iloc[cutoff_idx:].copy()
-          print(f"Calibration test split (last 20%): from {cutoff_date.date()}  ({len(test):,} rows)")
-
-          results = {}
-          for market in config.MARKETS:
-              target_col = config.MARKET_TARGETS.get(market)
-              if not target_col or target_col not in test.columns:
-                  continue
-              y = test[target_col]
-              base_rate = float(y.mean())
-              if base_rate < 0.001:
-                  continue
-              try:
-                  payload = load_model(market)
-                  probs = predict_proba(test, payload)
-                  implied_odds = round(1.0 / (base_rate * 1.10), 2)
-                  edge_mask = probs > (base_rate * 1.10 * 1.15)
-                  bets = int(edge_mask.sum())
-                  if bets == 0:
-                      continue
-                  wins = int(y[edge_mask].sum())
-                  profit = wins * (implied_odds - 1) - (bets - wins)
-                  roi = round(profit / bets * 100, 2)
-                  results[market] = {"bets": bets, "wins": wins, "roi_%": roi,
-                                     "base_rate_%": round(base_rate*100,1), "implied_odds": implied_odds}
-                  print(f"  {market:<10} bets={bets:4d}  wins={wins:4d}  ROI={roi:+.1f}%")
-              except Exception as e:
-                  print(f"  {market}: {e}")
-
-          Path("output/player_props_calibration.json").write_text(json.dumps(results, indent=2))
-
-          # ── Per-league breakdown ──────────────────────────────────────────────
-          league_roi = {}
-          for market in config.MARKETS:
-              target_col = config.MARKET_TARGETS.get(market)
-              if not target_col or target_col not in test.columns:
-                  continue
-              try:
-                  payload = load_model(market)
-                  probs = predict_proba(test, payload)
-                  y_all = test[target_col].fillna(0)
-                  base_rate = float(y_all.mean())
-                  if base_rate < 0.001:
-                      continue
-                  implied_prob = base_rate * 1.10
-                  implied_odds = round(1.0 / implied_prob, 2)
-                  edge_mask = probs > (implied_prob * 1.15)
-                  for league, grp in test[edge_mask].groupby("league"):
-                      if not league or str(league).strip() == "":
-                          continue
-                      lg_y = y_all[grp.index]
-                      bets = len(grp)
-                      if bets < 15:
-                          continue
-                      wins = int(lg_y.sum())
-                      profit = wins * (implied_odds - 1) - (bets - wins)
-                      roi = round(profit / bets * 100, 2)
-                      league_roi.setdefault(league, {})[market] = {"bets": bets, "wins": wins, "roi_%": roi}
-              except Exception as e:
-                  print(f"  league breakdown {market}: {e}")
-
-          approved = {
-              lg: [m for m, v in mkts.items() if v["roi_%"] > 0 and v["bets"] >= 15]
-              for lg, mkts in league_roi.items()
-          }
-          approved = {lg: ms for lg, ms in approved.items() if ms}
-          out_lg = {"roi_by_league_market": league_roi, "approved": approved}
-          Path("output/player_props_league_roi.json").write_text(json.dumps(out_lg, indent=2))
-          print(f"Per-league ROI written: {len(league_roi)} leagues, {len(approved)} approved")
-          EOF
-        continue-on-error: true
-
-      # ── Commit everything ──────────────────────────────────────────────────────
+      # ── Commit pre-season main-model reset ──────────────────────────────────────
       - name: Commit pre-season reset
         run: |
           git config user.name "github-actions[bot]"
@@ -202,10 +62,6 @@ jobs:
             models/model_v9_standard.pkl models/model_v9_newformat.pkl \
             models/model_v9_btts.pkl models/model_v9_over15.pkl models/model_v9_over35.pkl \
             models/model_ht_over05.pkl models/model_ht_over15.pkl \
-            models/model_player_goals.pkl models/model_player_goals2.pkl \
-            models/model_player_assists.pkl \
-            models/model_player_sot.pkl models/model_player_sot2.pkl \
-            models/model_player_sot3.pkl models/model_player_cards.pkl \
             models/metrics_model_v9_standard.json models/metrics_model_v9_newformat.json \
             models/metrics_model_v9_btts.json models/metrics_model_v9_over15.json \
             models/metrics_model_v9_over35.json \
@@ -214,17 +70,9 @@ jobs:
             models/feature_importances_btts.csv models/feature_importances_over15.csv \
             models/feature_importances_over35.csv \
             models/feature_importances_ht_over05.csv models/feature_importances_ht_over15.csv \
-            output/backtest_by_league_btts.csv output/backtest_by_league_over15.csv \
-            output/backtest_by_league_over35.csv \
-            output/backtest_results_btts.csv output/backtest_results_over15.csv \
-            output/backtest_results_over35.csv \
-            output/league_roi_config.json \
-            output/player_props_calibration.json \
-            output/player_props_league_roi.json \
-            player_history.parquet \
             2>/dev/null || true
           git diff --staged --quiet || \
-            git commit -m "auto: pre-season retrain $(date -u '+%Y-%m-%d')"
+            git commit -m "auto: pre-season main-model retrain $(date -u '+%Y-%m-%d')"
           pushed=0
           for i in 1 2 3 4 5; do
             git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }

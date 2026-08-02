@@ -9,6 +9,14 @@ concurrency:
   group: retrain
   cancel-in-progress: false
 
+# SCOPE (2026-08-02): this job trains ONLY the main match models
+# (standard + newformat + HT + side markets). It is intentionally lean:
+#   - Player props (collect + train + calibration) are owned by player_props.yml,
+#     which has the fixture/player caches and runs Sunday 05:00 (2h after this) + WC
+#     nightly. Training them here too ran COLD (no caches) and blew the 2h cap.
+#   - The heavy walk-forward backtest + league ROI config are owned by backtest_matrix.yml
+#     (parallel, monthly). Doing it here was the original cause of the 2h timeout.
+
 jobs:
   retrain:
     runs-on: ubuntu-latest
@@ -28,133 +36,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Main match models ──────────────────────────────────────────────────────
-      - name: Train main models (standard + newformat + HT + side markets)
+      # ── Main match models (standard + newformat + HT + side markets) ────────────
+      - name: Train main models
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python pipeline.py --mode train
         continue-on-error: false
 
-      # NOTE: the heavy walk-forward backtest (pipeline.py --mode backtest) + league
-      # ROI config moved to backtest.yml (monthly, 300-min timeout). It was the cause
-      # of this weekly job hitting the 2h cap. Weekly retrain now only trains models.
-
-      # ── Player props: collect fresh data + retrain ─────────────────────────────
-      - name: Collect player stats (API-Football)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode collect
-        continue-on-error: true
-
-      - name: Train player props models (7 markets)
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python -m player_model.pipeline --mode train
-        continue-on-error: false
-
-      # ── Player props calibration report ───────────────────────────────────────
-      - name: Player props calibration (walk-forward ROI proxy)
-        run: |
-          python - <<'EOF'
-          import json, pandas as pd, numpy as np
-          from pathlib import Path
-          from player_model.model import load_model, predict_proba
-          from player_model import config
-
-          hist = Path("player_history.parquet")
-          if not hist.exists():
-              print("No player_history.parquet — skipping calibration")
-              exit(0)
-
-          df = pd.read_parquet(hist)
-          df["date"] = pd.to_datetime(df["date"])
-          df = df.sort_values("date").reset_index(drop=True)
-          if len(df) < 500:
-              print(f"Not enough data ({len(df)} rows)")
-              exit(0)
-
-          cutoff_idx = int(len(df) * 0.80)
-          cutoff_date = df.iloc[cutoff_idx]["date"]
-          test = df.iloc[cutoff_idx:].copy()
-          print(f"Calibration test split (last 20%): from {cutoff_date.date()}  ({len(test):,} rows)")
-
-          results = {}
-          for market in config.MARKETS:
-              target_col = config.MARKET_TARGETS.get(market)
-              if not target_col or target_col not in test.columns:
-                  continue
-              y = test[target_col]
-              try:
-                  payload = load_model(market)
-                  probs = predict_proba(test, payload)
-                  # Assume bookmaker overround 1.10, odds = 1/(base_rate*1.10)
-                  base_rate = float(y.mean())
-                  if base_rate < 0.001:
-                      continue
-                  implied_odds = round(1.0 / (base_rate * 1.10), 2)
-                  # Only bet when model exceeds implied probability by 15%+
-                  edge_mask = probs > (base_rate * 1.10 * 1.15)
-                  bets = int(edge_mask.sum())
-                  if bets == 0:
-                      continue
-                  wins = int(y[edge_mask].sum())
-                  profit = wins * (implied_odds - 1) - (bets - wins)
-                  roi = round(profit / bets * 100, 2)
-                  results[market] = {
-                      "bets": bets, "wins": wins,
-                      "roi_%": roi, "base_rate_%": round(base_rate*100, 1),
-                      "implied_odds": implied_odds
-                  }
-                  print(f"  {market:<10} bets={bets:4d}  wins={wins:4d}  ROI={roi:+.1f}%")
-              except Exception as e:
-                  print(f"  {market}: {e}")
-
-          Path("output/player_props_calibration.json").write_text(json.dumps(results, indent=2))
-
-          # ── Per-league breakdown ──────────────────────────────────────────────
-          league_roi = {}
-          for market in config.MARKETS:
-              target_col = config.MARKET_TARGETS.get(market)
-              if not target_col or target_col not in test.columns:
-                  continue
-              try:
-                  payload = load_model(market)
-                  probs = predict_proba(test, payload)
-                  y_all = test[target_col].fillna(0)
-                  base_rate = float(y_all.mean())
-                  if base_rate < 0.001:
-                      continue
-                  implied_prob = base_rate * 1.10
-                  implied_odds = round(1.0 / implied_prob, 2)
-                  edge_mask = probs > (implied_prob * 1.15)
-                  for league, grp in test[edge_mask].groupby("league"):
-                      if not league or str(league).strip() == "":
-                          continue
-                      lg_y = y_all[grp.index]
-                      bets = len(grp)
-                      if bets < 15:
-                          continue
-                      wins = int(lg_y.sum())
-                      profit = wins * (implied_odds - 1) - (bets - wins)
-                      roi = round(profit / bets * 100, 2)
-                      league_roi.setdefault(league, {})[market] = {"bets": bets, "wins": wins, "roi_%": roi}
-              except Exception as e:
-                  print(f"  league breakdown {market}: {e}")
-
-          approved = {
-              lg: [m for m, v in mkts.items() if v["roi_%"] > 0 and v["bets"] >= 15]
-              for lg, mkts in league_roi.items()
-          }
-          approved = {lg: ms for lg, ms in approved.items() if ms}
-          out_lg = {"roi_by_league_market": league_roi, "approved": approved}
-          Path("output/player_props_league_roi.json").write_text(json.dumps(out_lg, indent=2))
-          print(f"Per-league ROI written: {len(league_roi)} leagues, {len(approved)} approved")
-          EOF
-        continue-on-error: true
-
-      # ── Commit everything ──────────────────────────────────────────────────────
-      - name: Commit all updated models and results
+      # ── Commit updated main models ──────────────────────────────────────────────
+      - name: Commit updated main models
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -162,10 +53,6 @@ jobs:
             models/model_v9_standard.pkl models/model_v9_newformat.pkl \
             models/model_v9_btts.pkl models/model_v9_over15.pkl models/model_v9_over35.pkl \
             models/model_ht_over05.pkl models/model_ht_over15.pkl \
-            models/model_player_goals.pkl models/model_player_goals2.pkl \
-            models/model_player_assists.pkl \
-            models/model_player_sot.pkl models/model_player_sot2.pkl \
-            models/model_player_sot3.pkl models/model_player_cards.pkl \
             models/metrics_model_v9_standard.json models/metrics_model_v9_newformat.json \
             models/metrics_model_v9_btts.json models/metrics_model_v9_over15.json \
             models/metrics_model_v9_over35.json \
@@ -174,12 +61,9 @@ jobs:
             models/feature_importances_btts.csv models/feature_importances_over15.csv \
             models/feature_importances_over35.csv \
             models/feature_importances_ht_over05.csv models/feature_importances_ht_over15.csv \
-            output/player_props_calibration.json \
-            output/player_props_league_roi.json \
-            player_history.parquet \
             2>/dev/null || true
           git diff --staged --quiet || \
-            git commit -m "auto: weekly retrain + backtest $(date -u '+%Y-%m-%d')"
+            git commit -m "auto: weekly main-model retrain $(date -u '+%Y-%m-%d')"
           pushed=0
           for i in 1 2 3 4 5; do
             git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }

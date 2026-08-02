@@ -136,7 +136,38 @@ def send_fantasy_tips(max_per_pos: int = 3) -> int:
     return 1 if _send(token, chat_id, "\n".join(lines)) else 0
 
 
+def _split_for_telegram(text: str, max_len: int = 4000) -> list:
+    """Split a message on line boundaries to stay under Telegram's 4096-char limit.
+    Each digest line closes its own HTML tags, so per-chunk HTML stays balanced.
+    (Fix for 'Bad Request: message is too long' on the daily digest.)"""
+    if len(text) <= max_len:
+        return [text]
+    chunks, cur = [], ""
+    for line in text.split("\n"):
+        if len(line) > max_len:                      # pathological single long line
+            if cur:
+                chunks.append(cur); cur = ""
+            for i in range(0, len(line), max_len):
+                chunks.append(line[i:i + max_len])
+            continue
+        if cur and len(cur) + len(line) + 1 > max_len:
+            chunks.append(cur); cur = line
+        else:
+            cur = line if not cur else cur + "\n" + line
+    if cur:
+        chunks.append(cur)
+    return chunks
+
+
 def _send(token: str, chat_id: str, text: str) -> bool:
+    """Send a message, auto-splitting anything over the Telegram length limit."""
+    ok = True
+    for chunk in _split_for_telegram(text):
+        ok = _send_one(token, chat_id, chunk) and ok
+    return ok
+
+
+def _send_one(token: str, chat_id: str, text: str) -> bool:
     import time
     for attempt in range(10):
         try:
