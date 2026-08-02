@@ -13,7 +13,7 @@ concurrency:
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # 06:00 UTC daily (staggered from injury 04:00 / nf 05:30 / fantasy 06:30)
+    - cron: '0 6,12,18 * * *'   # 3x/day (06:00/12:00/18:00 UTC) -> open->moving->closing curve
   workflow_dispatch:
 
 jobs:
