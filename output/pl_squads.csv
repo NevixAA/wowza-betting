@@ -162,11 +162,9 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 276184,M. Sarr,Chelsea,D,,,,,,,,,,
 10329,João Pedro,Chelsea,F,0.2,0.0,0.4,1.6,0.2,85.8,6.92,0.0,5.0,1.0
 161948,L. Delap,Chelsea,F,0.0,0.0,0.0,0.6,0.4,63.0,6.34,0.0,5.0,1.0
-425733,Estêvão,Chelsea,F,0.0,0.0,0.5,1.0,0.5,41.5,6.3,0.0,2.0,1.0
 392270,Marc Guiu,Chelsea,F,0.0,0.0,0.0,0.0,0.0,26.67,6.47,0.0,3.0,1.0
 1864,Pedro Neto,Chelsea,F,0.0,0.4,0.4,0.4,0.0,84.8,6.74,0.0,5.0,1.0
 203762,E. Emegha,Chelsea,F,,,,,,,,,,
-286894,J. Bynoe-Gittens,Chelsea,F,,,,,,,,,,
 359117,Shumaira Mheuka,Chelsea,F,,,,,,,,,,
 419582,Geovany Tcherno Quenda,Chelsea,F,,,,,,,,,,
 286616,F. Jörgensen,Chelsea,G,0.0,0.0,0.0,0.0,0.0,76.8,6.56,2.2,5.0,1.0
@@ -180,10 +178,12 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 116117,M. Caicedo,Chelsea,M,0.0,0.0,0.0,0.0,0.4,89.0,7.0,0.0,5.0,1.0
 308678,Dário Essugo,Chelsea,M,0.0,0.0,0.0,0.0,0.0,17.0,6.6,0.0,1.0,1.0
 282125,R. Lavia,Chelsea,M,0.0,0.0,0.0,0.4,0.0,48.0,6.78,0.0,5.0,1.0
+425733,Estêvão,Chelsea,M,0.0,0.0,0.5,1.0,0.5,41.5,6.3,0.0,2.0,1.0
 568950,Harrison Bettoni,Chelsea,M,,,,,,,,,,
 568066,M. Eboue,Chelsea,M,,,,,,,,,,
 610563,C. Holland,Chelsea,M,,,,,,,,,,
 557379,R. Kavuma McQueen,Chelsea,M,,,,,,,,,,
+286894,J. Bynoe-Gittens,Chelsea,M,,,,,,,,,,
 17714,L. Woolfenden,Coventry,D,0.0,0.0,0.0,0.0,0.0,81.0,6.7,0.0,5.0,1.0
 162414,A. Amenda,Coventry,D,,,,,,,,,,
 19574,J. Bidwell,Coventry,D,,,,,,,,,,
@@ -421,15 +421,14 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 1100,E. Haaland,Manchester City,F,1.0,0.2,1.8,3.0,0.2,90.0,7.28,0.0,5.0,1.0
 1422,J. Doku,Manchester City,F,0.6,0.0,1.0,1.2,0.0,60.0,7.94,0.0,5.0,1.0
 81573,Omar Marmoush,Manchester City,F,0.4,0.2,0.4,1.0,0.4,38.8,6.9,0.0,5.0,1.0
-19281,A. Semenyo,Manchester City,F,0.4,0.0,0.6,1.2,0.0,73.6,7.18,0.0,5.0,1.0
-266657,Sávio,Manchester City,F,0.2,0.0,0.4,1.0,0.0,49.8,6.86,0.0,5.0,1.0
 460853,J. Monga,Manchester City,F,0.0,0.0,0.2,0.4,0.0,17.8,6.74,0.0,5.0,1.0
-380681,D. Mukasa,Manchester City,F,,,,,,,,,,
 1622,G. Donnarumma,Manchester City,G,0.0,0.0,0.0,0.0,0.4,90.0,7.04,2.0,5.0,1.0
 162489,J. Trafford,Manchester City,G,0.0,0.0,0.0,0.0,0.0,90.0,6.06,2.2,5.0,0.85
 19012,M. Bettinelli,Manchester City,G,,,,,,,,,,
 138908,E. Anderson,Manchester City,M,0.4,0.4,0.4,1.0,0.4,76.0,7.78,0.0,5.0,1.0
+19281,A. Semenyo,Manchester City,M,0.4,0.0,0.6,1.2,0.0,73.6,7.18,0.0,5.0,1.0
 44,Rodri,Manchester City,M,0.2,0.0,0.4,1.0,0.2,89.6,7.44,0.0,5.0,1.0
+266657,Sávio,Manchester City,M,0.2,0.0,0.4,1.0,0.0,49.8,6.86,0.0,5.0,1.0
 156477,R. Cherki,Manchester City,M,0.0,0.4,0.2,1.2,0.0,45.4,6.72,0.0,5.0,1.0
 631,P. Foden,Manchester City,M,0.0,0.4,0.4,0.8,0.0,50.4,7.06,0.0,5.0,1.0
 2291,M. Kovačić,Manchester City,M,0.0,0.4,0.0,0.4,0.0,36.0,6.9,0.0,5.0,1.0
@@ -439,6 +438,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 36902,T. Reijnders,Manchester City,M,0.0,0.0,0.67,2.0,0.0,50.67,6.7,0.0,3.0,1.0
 389034,Charlie Gray,Manchester City,M,,,,,,,,,,
 442048,R. McAidoo,Manchester City,M,,,,,,,,,,
+380681,D. Mukasa,Manchester City,M,,,,,,,,,,
 382452,P. Dorgu,Manchester United,D,0.2,0.2,0.8,1.2,0.0,40.4,7.1,0.0,5.0,1.0
 891,L. Shaw,Manchester United,D,0.2,0.0,0.2,0.8,0.6,85.0,7.08,0.0,5.0,1.0
 403064,H. Amass,Manchester United,D,0.0,0.0,0.0,0.5,0.0,81.25,6.62,0.0,4.0,1.0
@@ -606,7 +606,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 162552,D. Scarlett,Tottenham,F,0.0,0.25,0.25,0.25,0.0,12.0,6.55,0.0,4.0,0.8
 18883,D. Solanke,Tottenham,F,0.0,0.0,1.0,1.2,0.0,80.0,7.02,0.0,5.0,1.0
 697,M. Solomon,Tottenham,F,0.0,0.4,0.2,0.8,0.2,41.6,7.2,0.0,5.0,1.0
-293163,J. Donley,Tottenham,F,,,,,,,,,,
+361734,D. Ajayi,Tottenham,F,,,,,,,,,,
 394935,M. Melia,Tottenham,F,,,,,,,,,,
 465310,L. Williams-Barnett,Tottenham,F,,,,,,,,,,
 423708,Yang Min-Hyeok,Tottenham,F,,,,,,,,,,
@@ -622,8 +622,8 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 18784,J. Maddison,Tottenham,M,0.0,0.4,0.0,0.4,0.0,48.4,7.18,0.0,5.0,1.0
 237129,P. Sarr,Tottenham,M,0.0,0.2,0.0,0.2,0.2,49.4,6.66,0.0,5.0,1.0
 31146,S. Tonali,Tottenham,M,0.0,0.0,0.2,0.8,0.2,81.8,6.88,0.0,5.0,1.0
-361734,D. Ajayi,Tottenham,M,,,,,,,,,,
 584077,T. Hall,Tottenham,M,,,,,,,,,,
 349384,T. Hall,Tottenham,M,,,,,,,,,,
 310531,Rio Kyerematen,Tottenham,M,,,,,,,,,,
 380689,C. Olusesi,Tottenham,M,,,,,,,,,,
+293163,J. Donley,Tottenham,M,,,,,,,,,,
