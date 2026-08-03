@@ -66,6 +66,19 @@ def _parse_all_odds(data: dict) -> dict:
                                 out[f"over{key}"] = odd
                             elif f"Under {ln}" in label:
                                 out[f"under{key}"] = odd
+                elif name == "Match Winner":            # 1X2 (h2h) — free, same /odds call
+                    for v in vals:
+                        try:
+                            odd = float(v["odd"])
+                        except (TypeError, ValueError, KeyError):
+                            continue
+                        val = v.get("value")
+                        if val == "Home":
+                            out["h2h_home"] = odd
+                        elif val == "Draw":
+                            out["h2h_draw"] = odd
+                        elif val == "Away":
+                            out["h2h_away"] = odd
     return out
 
 
