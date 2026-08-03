@@ -636,22 +636,21 @@ def notify_weekly_summary() -> bool:
         return f"  {emoji} <b>{label}</b>: no settled bets this week"
 
     # ── 1. Prediction model (bets_ledger.csv, source=live) ──────────────────
-    pred_week: dict | None = None
-    pred_all:  dict | None = None
-    pred_tier_week: dict = {}
-    pred_tier_all:  dict = {}
+    live = pd.DataFrame(columns=["pnl", "signal_tier", "model_type", "match_date"])
+    lw = live.copy()
     ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
     if ledger_file.exists():
         bl = pd.read_csv(ledger_file)
         bl["pnl"]        = pd.to_numeric(bl["pnl"], errors="coerce")
         bl["match_date"] = pd.to_datetime(bl["match_date"], errors="coerce")
         live = bl[bl["source"] == "live"].copy()
+        # Split standard vs new-format (same as the daily digest); a blank tag is classified
+        # by league so new-format bets never leak into the Standard column.
+        if "model_type" not in live.columns:
+            live["model_type"] = ""
+        _blk = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
+        live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(app_config.model_type_for_league)
         lw = live[live["match_date"] >= week_ago]
-        pred_week = _stats(lw)
-        pred_all  = _stats(live)
-        for tier, emj in [("SNIPER", "🎯"), ("MARKSMAN", "🔫"), ("VALUABLE", "💎")]:
-            pred_tier_week[tier] = _stats(lw[lw["signal_tier"] == tier]) if "signal_tier" in lw.columns else None
-            pred_tier_all[tier]  = _stats(live[live["signal_tier"] == tier]) if "signal_tier" in live.columns else None
 
     # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
     sharp_week: dict | None = None; sharp_week_pending = 0
@@ -701,18 +700,30 @@ def notify_weekly_summary() -> bool:
         "",
     ]
 
-    # ── Over 2.5 — this week by tier ─────────────────────────────────────────
-    if pred_week and pred_week["n"] > 0:
-        pnl_s = "+" if pred_week["pnl"] >= 0 else ""
-        lines.append(f"⚽ <b>Over 2.5</b> — {pred_week['n']} bets | {pred_week['win']:.0%} win | PnL {pnl_s}{pred_week['pnl']:.2f}u")
-        for tier in TIER_ORDER:
-            s = pred_tier_week.get(tier)
-            if s and s["n"] > 0:
-                roi_s = "+" if s["roi"] >= 0 else ""
-                pnl_t = "+" if s["pnl"] >= 0 else ""
-                lines.append(f"  {TIER_SYM[tier]} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
-    else:
-        lines.append("⚽ <b>Over 2.5</b>: no settled bets this week")
+    # ── Over 2.5 — this week, by MODEL then tier (matches the daily digest) ──
+    MODELS = [("standard", "⚽", "Over 2.5 — Standard"),
+              ("new_format", "🌍", "Over 2.5 — New-Format")]
+
+    def _pred_block(frame, settled_word):
+        any_shown = False
+        for fmt, emoji, label in MODELS:
+            sub = _settled_only(frame[frame["model_type"] == fmt]) if "model_type" in frame.columns else None
+            if sub is None or sub.empty:
+                continue
+            any_shown = True
+            n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
+            lines.append(f"{emoji} <b>{label}</b> — {n} {settled_word} | {w/n:.0%} win | PnL {pnl:+.2f}u")
+            for tier in TIER_ORDER:
+                ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
+                if ts.empty:
+                    continue
+                tn = len(ts); tw = int((ts["pnl"] > 0).sum())
+                lines.append(f"  {TIER_SYM[tier]} {tier}: {tn} bets | {tw/tn:.0%} win | "
+                             f"ROI <b>{ts['pnl'].sum()/tn*100:+.1f}%</b>")
+        if not any_shown:
+            lines.append("⚽ <b>Over 2.5</b>: no settled bets")
+
+    _pred_block(lw, "bets")
     lines.append("")
 
     # ── Side markets (BTTS / O1.5 / O3.5) — this week ────────────────────────
@@ -755,17 +766,7 @@ def notify_weekly_summary() -> bool:
 
     lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time by market</b>", ""]
 
-    if pred_all and pred_all["n"] > 0:
-        pnl_s = "+" if pred_all["pnl"] >= 0 else ""
-        lines.append(f"⚽ <b>Over 2.5</b> — {pred_all['n']} settled | {pred_all['win']:.0%} win | PnL {pnl_s}{pred_all['pnl']:.2f}u")
-        for tier in TIER_ORDER:
-            s = pred_tier_all.get(tier)
-            if s and s["n"] > 0:
-                roi_s = "+" if s["roi"] >= 0 else ""
-                pnl_t = "+" if s["pnl"] >= 0 else ""
-                lines.append(f"  {TIER_SYM[tier]} {tier}: {s['n']} bets | {s['win']:.0%} win | ROI <b>{roi_s}{s['roi']:.1f}%</b> | PnL {pnl_t}{s['pnl']:.2f}u")
-    else:
-        lines.append("⚽ <b>Over 2.5</b>: no settled bets")
+    _pred_block(live, "settled")
     lines.append("")
 
     # Side markets all-time
