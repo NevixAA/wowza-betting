@@ -599,6 +599,105 @@ def notify_ht_tips() -> int:
     return sent
 
 
+_SHARP_MOVE_FILE = app_config.OUTPUT_DIR / "sharp_move_notified.json"
+
+
+def _load_sharp_move_notified() -> set:
+    if _SHARP_MOVE_FILE.exists():
+        try:
+            return set(json.loads(_SHARP_MOVE_FILE.read_text(encoding="utf-8")).get("keys", []))
+        except Exception:
+            return set()
+    return set()
+
+
+def _save_sharp_move_notified(keys: set) -> None:
+    try:
+        _SHARP_MOVE_FILE.write_text(json.dumps({"keys": sorted(keys)}, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
+
+def notify_sharp_movement(move_thresh: float = 0.03) -> int:
+    """LIVE sharp-movement alert. For tips already sent (bets_ledger, source=live, not yet
+    kicked off), compare the CURRENT captured odds to our ENTRY (opening) price. If our side's
+    line has moved >= move_thresh since we tipped, ping it:
+        line moved TOWARD our side (odds shortened) -> sharp CONFIRM
+        line moved AGAINST our side (odds drifted)  -> sharp DISAGREE
+    Dedup per (fixture, side, direction) so each move alerts once (and again only if it flips).
+    Reads the odds curves we already capture — no API calls, no model/betting logic touched."""
+    import re
+    cfg = _load_config()
+    token = cfg.get("token", ""); chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return 0
+    led = app_config.OUTPUT_DIR / "bets_ledger.csv"
+    if not led.exists():
+        return 0
+    bl = pd.read_csv(led)
+    if "source" not in bl.columns:
+        return 0
+    live = bl[bl["source"] == "live"].copy()
+    today = datetime.now().strftime("%Y-%m-%d")
+    live = live[live["match_date"].astype(str).str[:10] >= today]      # upcoming only
+    if live.empty:
+        return 0
+
+    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
+    snaps: dict = {}
+    for f in ("standard_sidemarket_odds_history.csv", "newformat_odds_history.csv",
+              "standard_odds_history.csv"):
+        p = app_config.OUTPUT_DIR / f
+        if not p.exists():
+            continue
+        try:
+            oh = pd.read_csv(p).sort_values("snapshot_ts")
+        except Exception:
+            continue
+        for r in oh.itertuples(index=False):
+            m = str(getattr(r, "match", ""))
+            if " vs " not in m:
+                continue
+            h, a = m.split(" vs ", 1)
+            snaps[(_norm(h), _norm(a), str(r.match_date)[:10], str(r.market))] = float(r.odds)
+
+    notified = _load_sharp_move_notified()
+    sent = 0
+    for r in live.itertuples(index=False):
+        side = str(r.side).upper()
+        if side not in ("OVER", "UNDER"):
+            continue
+        mkt = "under25" if side == "UNDER" else "over25"
+        cur = snaps.get((_norm(r.home_team), _norm(r.away_team), str(r.match_date)[:10], mkt))
+        try:
+            entry = float(r.opening_odds)
+        except (TypeError, ValueError):
+            entry = None
+        if not cur or not entry or entry <= 1.0:
+            continue
+        move = cur / entry - 1.0                 # <0 = our side shortened (confirm); >0 = drifted
+        if abs(move) < move_thresh:
+            continue
+        direction = "confirm" if move < 0 else "disagree"
+        dkey = f"{r.home_team}|{r.away_team}|{str(r.match_date)[:10]}|{side}|{direction}"
+        if dkey in notified:
+            continue
+        sym = "✅" if direction == "confirm" else "⚠️"
+        verb = ("TOWARD your tip — sharp CONFIRM" if direction == "confirm"
+                else "AGAINST your tip — sharp DISAGREE")
+        tier = getattr(r, "signal_tier", "")
+        msg = (f"⚡ <b>Sharp movement on your tip</b>\n"
+               f"{r.home_team} vs {r.away_team}\n"
+               f"<b>{side} 2.5</b> ({tier}) — you got {entry:.2f}, now {cur:.2f}\n"
+               f"{sym} line moved {verb} ({abs(move)*100:.1f}%)")
+        if _send(token, chat_id, msg):
+            notified.add(dkey); sent += 1
+    _save_sharp_move_notified(notified)
+    if sent:
+        print(f"Sharp-movement alerts sent: {sent}")
+    return sent
+
+
 def notify_weekly_summary() -> bool:
     """
     Send weekly performance summary grouped by signal family:

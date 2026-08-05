@@ -1,0 +1,54 @@
+name: Sharp Movement Alert
+
+# LIVE alert: when a tip we already sent shows fresh sharp line movement (toward = confirm,
+# against = disagree) vs our entry price, ping Telegram. Runs a few times/day AFTER the odds
+# captures land (nf 05:30/11:30/17:30, std 06/12/18). Reads only the committed odds-history
+# CSVs + bets_ledger — NO API calls, NO model/tip/betting logic touched.
+
+concurrency:
+  group: sharp-move-alert
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '0 7,13,19 * * *'   # after each odds-capture window
+  workflow_dispatch:
+
+jobs:
+  sharp_move_alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install minimal deps
+        run: pip install pandas requests
+      - name: Alert on sharp movement over sent tips
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -c "
+          import sys; sys.path.insert(0,'.')
+          from telegram_bot.notifier import notify_sharp_movement
+          print('Sharp-movement alerts sent:', notify_sharp_movement())
+          "
+      - name: Commit dedup file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/sharp_move_notified.json 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: sharp-move alert dedup $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
