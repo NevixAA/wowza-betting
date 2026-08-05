@@ -1,9 +1,11 @@
 name: Live Scanner
 
+# DISABLED 2026-08-03: in-play / live-betting alerts are a SEPARATE product, not part of the
+# pre-match O/U/BTTS/props strategy. Was auto-running ~190x/day (every 5 min) + draining OddsAPI.
+# Schedule commented out so it no longer auto-runs; kept as workflow_dispatch to re-enable later.
 on:
-  schedule:
-    # Every 5 min during match hours (08:00-23:55 UTC) — offset :03 to stagger runners
-    - cron: '3-59/5 8-23 * * *'
+  # schedule:
+  #   - cron: '3-59/5 8-23 * * *'   # (disabled — re-enable by uncommenting)
   workflow_dispatch:
 
 jobs:
