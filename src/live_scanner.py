@@ -41,6 +41,13 @@ LIVE_TIPS_FILE    = config.OUTPUT_DIR / "live_tips.csv"
 LIVE_GAMES_FILE   = config.OUTPUT_DIR / "live_games.csv"
 LIVE_HISTORY_FILE = config.OUTPUT_DIR / "live_signals_history.csv"
 LIVE_NOTIFIED     = Path(__file__).resolve().parents[1] / "telegram_bot" / "live_notified.json"
+INPLAY_LOG_FILE   = config.OUTPUT_DIR / "inplay_snapshots.csv"   # v2: Phase-1 collection
+
+# v2 live-lambda blend constants. SOT_TO_GOAL is EMPIRICAL (our parquet: goals/SOT = 0.311,
+# corr(SOT,goals)=0.58). K + the game-state multipliers are HEURISTIC PLACEHOLDERS — to be
+# FITTED from the in-play snapshots we start collecting (Phase 2). Do not treat as calibrated.
+SOT_TO_GOAL   = 0.311
+BLEND_K_MINS  = 30.0
 
 MIN_FAIR_UNDER    = 1.28   # only alert if fair UNDER odds >= this (meaningful value)
 MIN_FAIR_OVER     = 2.00   # only alert OVER if fair odds >= this
@@ -102,13 +109,48 @@ def _lambda_from_p_over(p_over: float) -> float:
     return round((lo + hi) / 2, 3)
 
 
-def _live_probs(goals_scored: int, elapsed_mins: float, lam_total: float) -> dict:
+def _live_lambda_remaining(prior_lambda: float, elapsed: float, live_sot: float,
+                           home_g: int, away_g: int) -> float:
+    """v2 — LIVE-adjusted expected goals for the REMAINING time. Blends our pre-match prior
+    with in-play evidence (accumulated shots-on-target), time-weighted, plus a game-state
+    multiplier. This is the upgrade over the naive `prior * remaining/90` (which ignores the
+    live match). Grounded in SOT_TO_GOAL=0.311 (our data); K + multipliers are heuristic until
+    fitted on collected in-play snapshots.
+
+      r_prior = prior/90                         pre-match scoring rate per minute
+      r_live  = (0.311 * SOT_so_far) / elapsed   in-play rate implied by shots on target
+      w       = elapsed / (elapsed + K)          trust live more as the game unfolds
+      r_blend = w*r_live + (1-w)*r_prior
+      lambda_remaining = r_blend * remaining * game_state_multiplier
+    """
+    elapsed = max(1.0, min(float(elapsed), 90.0))
+    remaining = max(0.0, 90.0 - elapsed)
+    r_prior = max(prior_lambda, 0.05) / 90.0
+    r_live = (SOT_TO_GOAL * float(live_sot or 0)) / elapsed
+    w = elapsed / (elapsed + BLEND_K_MINS)
+    r_blend = w * r_live + (1.0 - w) * r_prior
+    margin = abs(int(home_g) - int(away_g))
+    if remaining <= 30 and margin >= 2:
+        gs = 0.85          # comfortable lead late -> game slows
+    elif remaining <= 30 and margin == 1:
+        gs = 1.12          # one-goal game late -> chasing side pushes
+    elif margin == 0 and remaining <= 20:
+        gs = 0.92          # cagey late level game
+    else:
+        gs = 1.0
+    return max(0.05, r_blend * remaining * gs)
+
+
+def _live_probs(goals_scored: int, elapsed_mins: float, lam_total: float,
+                lam_remaining_override: float | None = None) -> dict:
     """
     Calculate live probabilities given current state.
     Returns dict with p_under, p_over, fair_under_odds, fair_over_odds.
     """
     remaining_frac = max(0.0, (90.0 - elapsed_mins) / 90.0)
-    lam_remaining  = lam_total * remaining_frac
+    # v2: use the live-adjusted remaining lambda when supplied; else the naive time-decay.
+    lam_remaining  = (lam_remaining_override if lam_remaining_override is not None
+                      else lam_total * remaining_frac)
 
     goals_for_over = max(0, 3 - goals_scored)  # goals still needed to go OVER 2.5
 
@@ -380,7 +422,8 @@ def _match_prediction(pred_df: pd.DataFrame, home: str, away: str) -> dict | Non
 
 # ── Signal detection ──────────────────────────────────────────────────────────
 
-def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]:
+def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame,
+                    sot_by_fixture: dict | None = None) -> list[dict]:
     tips = []
 
     for game in live_games:
@@ -401,7 +444,11 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame) -> list[dict]
 
         p_over     = float(pred.get("p_over25", 0.45))
         lam        = _lambda_from_p_over(p_over)
-        probs      = _live_probs(total_g, elapsed, lam)
+        # v2: live-adjust the remaining lambda from in-play SOT (falls back to naive if no SOT)
+        _sot_live  = (sot_by_fixture or {}).get(game.get("fixture_id"))
+        _lam_rem   = (_live_lambda_remaining(lam, elapsed, _sot_live, home_g, away_g)
+                      if _sot_live is not None else None)
+        probs      = _live_probs(total_g, elapsed, lam, lam_remaining_override=_lam_rem)
         pre_signal = str(pred.get("signal_tier", "AVOID"))
 
         home_atk   = float(pred.get("home_attack_str", 1.0) or 1.0)
@@ -658,7 +705,23 @@ def run() -> list[dict]:
         _save_empty()
         return []
 
-    tips = _detect_signals(live_games, pred_df)
+    # v2: fetch live SOT per game -> feeds the live-lambda AND the in-play collection log
+    sot_by_fixture: dict = {}
+    for _g in live_games:
+        _fid = _g.get("fixture_id")
+        if not _fid:
+            continue
+        try:
+            from src.api_football import get_fixture_statistics
+            _st = get_fixture_statistics(_fid, cache_hours=0.025)
+            if _st:
+                sot_by_fixture[_fid] = ((_st.get("home") or {}).get("shots_on_target", 0)
+                                        + (_st.get("away") or {}).get("shots_on_target", 0))
+        except Exception:
+            pass
+    _log_inplay_snapshot(live_games, sot_by_fixture)   # Phase-1 in-play dataset
+
+    tips = _detect_signals(live_games, pred_df, sot_by_fixture)
 
     if tips:
         df = pd.DataFrame(tips)
@@ -688,6 +751,33 @@ def run() -> list[dict]:
         _save_empty()
 
     return tips
+
+
+def _log_inplay_snapshot(live_games: list[dict], sot_by_fixture: dict | None = None) -> None:
+    """v2 Phase-1 COLLECTION: append one row per in-progress game each scan (score, elapsed,
+    SOT) -> builds the in-play dataset we currently lack, so the live-lambda model can be
+    FITTED later. The final result is joined post-match by fixture_id. This is the data
+    architecture step that makes the whole v2 upgrade possible."""
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    rows = []
+    for g in live_games:
+        fid = g.get("fixture_id")
+        rows.append({
+            "snapshot_ts": ts, "fixture_id": fid, "league": g["league"],
+            "match": f"{g['home_team']} vs {g['away_team']}",
+            "elapsed": g["elapsed_mins"], "home_g": g["home_goals"],
+            "away_g": g["away_goals"], "total_g": g["total_goals"],
+            "sot": (sot_by_fixture or {}).get(fid),
+        })
+    if not rows:
+        return
+    new = pd.DataFrame(rows)
+    if INPLAY_LOG_FILE.exists():
+        try:
+            new = pd.concat([pd.read_csv(INPLAY_LOG_FILE), new], ignore_index=True)
+        except Exception:
+            pass
+    new.to_csv(INPLAY_LOG_FILE, index=False)
 
 
 def _append_to_history(df: pd.DataFrame) -> None:
@@ -724,7 +814,54 @@ def _save_empty():
     ]).to_csv(LIVE_TIPS_FILE, index=False)
 
 
+def grade_live_signals(parquet_path: str | None = None) -> dict:
+    """v2 VALIDATION: grade past O/U 2.5 live signals in live_signals_history.csv against the
+    ACTUAL final total goals (from player_history.parquet, summed per fixture). Answers the
+    question the old scanner never did: do these signals actually hit? Returns a per-signal-type
+    hit-rate report. (HT signals need HT scores -> skipped here.) Read the hit rate, not vibes."""
+    import re
+    hist = LIVE_HISTORY_FILE
+    if not hist.exists():
+        print("[grade] no live_signals_history.csv yet"); return {}
+    sig = pd.read_csv(hist)
+    if sig.empty:
+        return {}
+    pqp = Path(parquet_path) if parquet_path else (config.OUTPUT_DIR.parent / "player_history.parquet")
+    if not pqp.exists():
+        print(f"[grade] parquet not found ({pqp})"); return {}
+    pq = pd.read_parquet(pqp, columns=["home_team", "away_team", "date", "goals", "fixture_id"])
+    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
+    tot = pq.groupby("fixture_id").agg(h=("home_team", "first"), a=("away_team", "first"),
+                                       d=("date", "first"), g=("goals", "sum")).reset_index()
+    finals = {(_norm(r.h), _norm(r.a), str(r.d)[:10]): r.g for r in tot.itertuples(index=False)}
+
+    rows = []
+    for s in sig.itertuples(index=False):
+        m = str(getattr(s, "match", ""))
+        if " vs " not in m or "UNDER 2.5" not in str(getattr(s, "bet", "")) and "OVER 2.5" not in str(getattr(s, "bet", "")):
+            continue
+        h, a = m.split(" vs ", 1)
+        fg = finals.get((_norm(h), _norm(a), str(getattr(s, "date", ""))[:10]))
+        if fg is None:
+            continue
+        under = fg < 2.5
+        won = under if "UNDER" in str(s.bet) else (not under)
+        rows.append({"signal_type": getattr(s, "signal_type", "?"), "won": bool(won)})
+    if not rows:
+        print("[grade] no gradable O/U 2.5 signals matched to results yet"); return {}
+    gdf = pd.DataFrame(rows)
+    print(f"[grade] {len(gdf)} live O/U 2.5 signals graded")
+    rep = {}
+    for st, sub in gdf.groupby("signal_type"):
+        rep[st] = {"n": len(sub), "hit_%": round(sub["won"].mean() * 100, 1)}
+        print(f"  {st:16} n={len(sub):3d}  hit={sub['won'].mean()*100:.1f}%")
+    print(f"  {'ALL':16} n={len(gdf):3d}  hit={gdf['won'].mean()*100:.1f}%")
+    return rep
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--grade":
+        grade_live_signals(); sys.exit(0)
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s  %(levelname)-8s  %(message)s",
