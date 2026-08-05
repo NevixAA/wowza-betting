@@ -599,6 +599,22 @@ def notify_ht_tips() -> int:
     return sent
 
 
+def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
+    """Under a model×tier, split settled bets by SHARP MOVEMENT and append confirm/disagree
+    lines. clv_pct > 0 = our side's odds SHORTENED (sharp confirmed the tip); < 0 = drifted
+    (sharp disagreed). Reporting only — skips silently until CLV is populated."""
+    if ts is None or ts.empty or "clv_pct" not in ts.columns:
+        return
+    clv = pd.to_numeric(ts["clv_pct"], errors="coerce")
+    pnl = pd.to_numeric(ts["pnl"], errors="coerce")
+    for tag, sym, mask in (("confirm", "✅", clv > 0), ("disagree", "⚠️", clv < 0)):
+        seg = pnl[mask & pnl.notna()]
+        if seg.empty:
+            continue
+        n = len(seg); w = int((seg > 0).sum())
+        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | ROI {seg.sum()/n*100:+.1f}%")
+
+
 _SHARP_MOVE_FILE = app_config.OUTPUT_DIR / "sharp_move_notified.json"
 
 
@@ -819,6 +835,7 @@ def notify_weekly_summary() -> bool:
                 tn = len(ts); tw = int((ts["pnl"] > 0).sum())
                 lines.append(f"  {TIER_SYM[tier]} {tier}: {tn} bets | {tw/tn:.0%} win | "
                              f"ROI <b>{ts['pnl'].sum()/tn*100:+.1f}%</b>")
+                _sharp_split_lines(ts, lines, "      ")
         if not any_shown:
             lines.append("⚽ <b>Over 2.5</b>: no settled bets")
 
@@ -1862,6 +1879,7 @@ def notify_daily_digest() -> bool:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
                     lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                    _sharp_split_lines(ts, lines2, "        ")
         except Exception:
             pass
 
