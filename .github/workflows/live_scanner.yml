@@ -1,11 +1,14 @@
 name: Live Scanner
 
-# DISABLED 2026-08-03: in-play / live-betting alerts are a SEPARATE product, not part of the
-# pre-match O/U/BTTS/props strategy. Was auto-running ~190x/day (every 5 min) + draining OddsAPI.
-# Schedule commented out so it no longer auto-runs; kept as workflow_dispatch to re-enable later.
+# REACTIVATED 2026-08-05 as the v2 in-play COLLECTOR + improved live-lambda alerter:
+#   - live-adjusted lambda from in-play SOT (SOT->goal 0.311) + game state, not flat time-decay
+#   - logs an in-play snapshot every scan (output/inplay_snapshots.csv) -> the Phase-1 dataset
+#     that a FITTED live model needs; grade with `python src/live_scanner.py --grade`
+# Cadence 5->10 min to respect the API-Football budget (internal throttle + 90s stats cache also
+# bound cost). Isolated outputs; degrades to the old naive lambda if live SOT is unavailable.
 on:
-  # schedule:
-  #   - cron: '3-59/5 8-23 * * *'   # (disabled — re-enable by uncommenting)
+  schedule:
+    - cron: '3-59/10 8-23 * * *'
   workflow_dispatch:
 
 jobs:
