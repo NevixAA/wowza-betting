@@ -27,8 +27,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install minimal deps
-        run: pip install pandas requests
+      - name: Install dependencies
+        run: pip install -r requirements.txt   # notifier -> config imports python-dotenv etc.
       - name: Alert on sharp movement over sent tips
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
