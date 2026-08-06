@@ -675,7 +675,13 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
             if " vs " not in m:
                 continue
             h, a = m.split(" vs ", 1)
-            snaps[(_norm(h), _norm(a), str(r.match_date)[:10], str(r.market))] = float(r.odds)
+            key = (_norm(h), _norm(a), str(r.match_date)[:10], str(r.market))
+            od = float(r.odds)
+            # store (first-seen, latest) from the SAME source -> a valid open->close move.
+            if key not in snaps:
+                snaps[key] = [od, od]
+            else:
+                snaps[key][1] = od
 
     notified = _load_sharp_move_notified()
     sent = 0
@@ -684,15 +690,16 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         if side not in ("OVER", "UNDER"):
             continue
         mkt = "under25" if side == "UNDER" else "over25"
-        cur = snaps.get((_norm(r.home_team), _norm(r.away_team), str(r.match_date)[:10], mkt))
-        try:
-            entry = float(r.opening_odds)
-        except (TypeError, ValueError):
-            entry = None
-        if not cur or not entry or entry <= 1.0:
+        pair = snaps.get((_norm(r.home_team), _norm(r.away_team), str(r.match_date)[:10], mkt))
+        if not pair:
+            continue
+        # SAME source, open->close (NOT the OddsAPI ledger entry vs Bet365 current — that
+        # cross-source mismatch produced fake "moves", e.g. Botafogo 1.86 vs 1.17).
+        entry, cur = pair
+        if not entry or not cur or entry <= 1.0:
             continue
         move = cur / entry - 1.0                 # <0 = our side shortened (confirm); >0 = drifted
-        if abs(move) < move_thresh:
+        if abs(move) < move_thresh or abs(move) > 0.50:   # cap implausible (in-play / glitch)
             continue
         direction = "confirm" if move < 0 else "disagree"
         dkey = f"{r.home_team}|{r.away_team}|{str(r.match_date)[:10]}|{side}|{direction}"
@@ -704,7 +711,8 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         tier = getattr(r, "signal_tier", "")
         msg = (f"⚡ <b>Sharp movement on your tip</b>\n"
                f"{r.home_team} vs {r.away_team}\n"
-               f"<b>{side} 2.5</b> ({tier}) — you got {entry:.2f}, now {cur:.2f}\n"
+               f"<b>{side} 2.5</b> ({tier})\n"
+               f"market opened {entry:.2f}, now {cur:.2f}\n"
                f"{sym} line moved {verb} ({abs(move)*100:.1f}%)")
         if _send(token, chat_id, msg):
             notified.add(dkey); sent += 1
