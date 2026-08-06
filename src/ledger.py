@@ -308,6 +308,66 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
     log.info(f"Side ledger: {len(new_rows)} new + {upgrades} tier-upgrade(s) → {SIDE_LEDGER_FILE}")
 
 
+# ── HT (half-time O/U) ledger ───────────────────────────────────────────────────
+HT_LEDGER_FILE = config.OUTPUT_DIR / "ht_ledger.csv"
+HT_LEDGER_COLS = [
+    "source", "generated_at", "match_date", "league", "home_team", "away_team",
+    "market", "side", "model_prob", "fair_odds",
+    "entry_odds", "closing_odds", "clv_pct", "result", "pnl", "notes",
+]
+
+
+def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
+    """Log half-time O/U tips (HT model) to ht_ledger.csv — one row per (fixture, HT line).
+    Tip thresholds mirror notifier.notify_ht_tips. entry/closing/clv/result fill in when
+    update_results settles against captured HT odds (standard_sidemarket_odds_history: the
+    ht_* markets) + HT scores. HT is standard-only. Completes open->close->CLV for every model."""
+    if preds_df is None or preds_df.empty or "p_ht_over05" not in preds_df.columns:
+        return
+    existing = pd.read_csv(HT_LEDGER_FILE) if HT_LEDGER_FILE.exists() else pd.DataFrame(columns=HT_LEDGER_COLS)
+    seen = {(str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]),
+             str(r["market"]), str(r["source"])) for _, r in existing.iterrows()} if not existing.empty else set()
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    new_rows = []
+    for _, row in preds_df.iterrows():
+        try:
+            p05 = float(row.get("p_ht_over05"))
+        except (TypeError, ValueError):
+            continue
+        if pd.isna(p05):
+            continue
+        p15 = row.get("p_ht_over15")
+        p15 = float(p15) if pd.notna(p15) else None
+        if p05 >= 0.75:
+            market, side, prob = "ht_over05", "OVER", p05
+        elif p05 <= 0.30:
+            market, side, prob = "ht_under05", "UNDER", 1 - p05
+        elif p15 is not None and p15 >= 0.60:
+            market, side, prob = "ht_over15", "OVER", p15
+        elif p15 is not None and p15 <= 0.25:
+            market, side, prob = "ht_under15", "UNDER", 1 - p15
+        else:
+            continue
+        md = str(row.get("date", ""))[:10]
+        home = str(row.get("home_team", "")); away = str(row.get("away_team", ""))
+        key = (md, home, away, market, source)
+        if key in seen:
+            continue
+        seen.add(key)
+        new_rows.append({
+            "source": source, "generated_at": now, "match_date": md,
+            "league": str(row.get("league", "")), "home_team": home, "away_team": away,
+            "market": market, "side": side, "model_prob": round(prob, 4),
+            "fair_odds": round(1.0 / max(prob, 0.01), 2),
+            "entry_odds": "", "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
+        })
+    if not new_rows:
+        return
+    updated = pd.concat([existing, pd.DataFrame(new_rows, columns=HT_LEDGER_COLS)], ignore_index=True)
+    updated.to_csv(HT_LEDGER_FILE, index=False)
+    log.info(f"HT ledger: {len(new_rows)} new tip(s) → {HT_LEDGER_FILE}")
+
+
 def append_backtest_results(backtest_df: pd.DataFrame, model_type: str = "") -> None:
     """
     Append walk-forward backtest bets into the ledger with source="backtest".
