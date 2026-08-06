@@ -393,18 +393,21 @@ API_FOOTBALL_IDS = {
 
 # Per-league season year (API-Football start year convention)
 API_FOOTBALL_SEASONS: dict = {
-    # Standard format — 2025/26 European season
-    "Championship":             "2025",
-    "League One":               "2025",
-    "League Two":               "2025",
-    "Bundesliga 2":             "2025",
-    "Ligue 2":                  "2025",
-    "La Liga 2":                "2025",
-    "Serie B":                  "2025",
-    "Greek Super League":       "2025",
-    "Danish Superliga":         "2025",
-    "Austrian Bundesliga":      "2025",
-    "Romanian Superliga":       "2025",
+    # Standard format — 2026/27 European season (API-Football season = start year 2026).
+    # ROLLED 2025->2026 on 2026-08-05: the 2025/26 season ended (~May 2026); on "2025" the
+    # capture looked in the finished season and found NO upcoming fixtures -> zero standard
+    # odds/1X2/HT/CLV collection for the whole 2026/27 season. New-format was already 2026.
+    "Championship":             "2026",
+    "League One":               "2026",
+    "League Two":               "2026",
+    "Bundesliga 2":             "2026",
+    "Ligue 2":                  "2026",
+    "La Liga 2":                "2026",
+    "Serie B":                  "2026",
+    "Greek Super League":       "2026",
+    "Danish Superliga":         "2026",
+    "Austrian Bundesliga":      "2026",
+    "Romanian Superliga":       "2026",
     # Summer leagues (calendar year = season year)
     "Sweden Allsvenskan":       "2026",
     "Norway Eliteserien":       "2026",
@@ -415,11 +418,11 @@ API_FOOTBALL_SEASONS: dict = {
     "Mexico Liga MX":           "2026",
     "China Super League":       "2026",
     "USA MLS":                  "2026",
-    # South America (starts early calendar year)
-    "Argentina Primera Division": "2025",
+    # South America (2026 season under way by Aug)
+    "Argentina Primera Division": "2026",
     # API-Football-only leagues (current season)
-    "Saudi Pro League":          "2025",   # 2025/26 season started Aug 2025
-    "K-League 1":                "2025",   # calendar year 2025
+    "Saudi Pro League":          "2026",   # 2026/27 season starts Aug 2026
+    "K-League 1":                "2026",   # calendar year 2026
     # International
     "World Cup 2026":            "2026",
 }

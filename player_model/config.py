@@ -309,17 +309,20 @@ PROP_LEAGUES = {
 }
 # Season year for each league (API-Football uses start year of season)
 PROP_SEASONS = {
-    "Premier League":  "2025",
-    "Bundesliga":      "2025",
-    "La Liga":         "2025",
-    "Serie A":         "2025",
-    "Ligue 1":         "2025",
-    "Championship":    "2025",
-    "League One":      "2025",
-    "Bundesliga 2":    "2025",
-    "Champions League":    "2025",
-    "Europa League":       "2025",
-    "Conference League":   "2025",
+    # 2026/27 season (API-Football season = start year 2026). ROLLED 2025->2026 on 2026-08-05:
+    # on "2025" the prop capture looked in the finished 2025/26 season and found no upcoming
+    # club fixtures -> zero club-league prop-odds/CLV collection once club props start (~mid-Aug).
+    "Premier League":  "2026",
+    "Bundesliga":      "2026",
+    "La Liga":         "2026",
+    "Serie A":         "2026",
+    "Ligue 1":         "2026",
+    "Championship":    "2026",
+    "League One":      "2026",
+    "Bundesliga 2":    "2026",
+    "Champions League":    "2026",
+    "Europa League":       "2026",
+    "Conference League":   "2026",
     "World Cup":       "2026",
 }
 FBREF_LEAGUES = {
