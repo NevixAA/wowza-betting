@@ -261,10 +261,19 @@ def notify_new_snipers() -> int:
             pass
 
     df = pd.read_csv(bets_file)
-    # VALUABLE = info only (backtest shows 4-8% edge is -8% ROI).
-    # Only send SNIPER and MARKSMAN as actual tips.
+    # Classify model (blanks -> by league) so VALUABLE can be gated to the standard model only.
+    if "model_type" not in df.columns:
+        df["model_type"] = ""
+    _blk = df["model_type"].isna() | (df["model_type"].astype(str).str.strip().isin(["", "nan"]))
+    df.loc[_blk, "model_type"] = df.loc[_blk, "league"].map(app_config.model_type_for_league)
+    # Send SNIPER + MARKSMAN for all models; ALSO send VALUABLE for the STANDARD model only
+    # (Nevo 2026-08-05: wants standard VALUABLE live too; new-format VALUABLE stays digest-only
+    # to avoid flooding — NF has far more volume).
     tips = df[
-        df["signal_tier"].isin(["SNIPER", "MARKSMAN"]) &
+        (
+            df["signal_tier"].isin(["SNIPER", "MARKSMAN"]) |
+            ((df["signal_tier"] == "VALUABLE") & (df["model_type"] == "standard"))
+        ) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
@@ -300,6 +309,8 @@ def notify_new_snipers() -> int:
             header = f"🎯 <b>SNIPER TIP</b> {drift}"
         elif tier == "MARKSMAN":
             header = f"🔫 <b>MARKSMAN TIP</b> {drift}"
+        elif tier == "VALUABLE":
+            header = f"💎 <b>VALUABLE TIP</b> (standard) {drift}"
         else:
             header = f"🔍 <b>EDGE WATCH</b> (small edge, not a tip) {drift}"
 
