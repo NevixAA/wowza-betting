@@ -761,6 +761,94 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
     log.info(f"  Saved → {SIDE_LEDGER_FILE}")
 
 
+def _resolve_ht(market: str, ht_home: int, ht_away: int) -> str:
+    """WIN/LOSS for a half-time O/U market given the HT score."""
+    tot = int(ht_home or 0) + int(ht_away or 0)
+    line = 1 if "05" in market else 2          # over0.5 needs >=1 ; over1.5 needs >=2
+    over_hit = tot >= line
+    if market.startswith("ht_over"):
+        return "WIN" if over_hit else "LOSS"
+    if market.startswith("ht_under"):
+        return "WIN" if not over_hit else "LOSS"
+    return ""
+
+
+def update_ht_results(days: int = 3) -> None:
+    """Grade ht_ledger.csv against actual HT scores (af_ht_history.parquet: HTHG/HTAG) and fill
+    entry/closing/CLV from the captured HT odds (standard_sidemarket_odds_history ht_* markets).
+    Completes the open->close->CLV->result loop for the HT model. HT closing odds may be absent
+    (books don't always post 2nd-div HT O/U) -> CLV stays blank there, result still grades."""
+    import re
+    f = config.OUTPUT_DIR / "ht_ledger.csv"
+    if not f.exists():
+        log.info("ht_ledger.csv not found — skipping HT resolution"); return
+    led = pd.read_csv(f)
+    for c in ("entry_odds", "closing_odds", "clv_pct", "result", "pnl"):
+        if c not in led.columns:
+            led[c] = ""
+        led[c] = led[c].astype(object)           # avoid pyarrow-string write crash
+    today = str(datetime.utcnow().date())
+    pending = led[(led["result"].isna() | (led["result"].astype(str).str.strip() == ""))
+                  & (led["match_date"].astype(str) < today)]
+    if pending.empty:
+        log.info("ht_ledger: no pending HT results"); return
+
+    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
+    htp = config.OUTPUT_DIR / "af_ht_history.parquet"
+    if not htp.exists():
+        log.info("ht_ledger: af_ht_history.parquet not found — cannot grade yet"); return
+    ht = pd.read_parquet(htp, columns=["home_team", "away_team", "date", "HTHG", "HTAG"])
+    ht_idx = {(_norm(r.home_team), _norm(r.away_team), str(r.date)[:10]): (r.HTHG, r.HTAG)
+              for r in ht.itertuples(index=False)}
+
+    ohp = config.OUTPUT_DIR / "standard_sidemarket_odds_history.csv"
+    oh = None
+    if ohp.exists():
+        try:
+            oh = pd.read_csv(ohp).sort_values("snapshot_ts")
+            mm = oh["match"].astype(str)
+            oh["_hk"] = mm.apply(lambda m: _norm(m.split(" vs ")[0]) if " vs " in m else "")
+            oh["_ak"] = mm.apply(lambda m: _norm(m.split(" vs ")[1]) if " vs " in m else "")
+            oh["_dk"] = oh["match_date"].astype(str).str[:10]
+        except Exception:
+            oh = None
+
+    graded = 0
+    for i in pending.index:
+        home = led.at[i, "home_team"]; away = led.at[i, "away_team"]
+        d = str(led.at[i, "match_date"])[:10]; mkt = str(led.at[i, "market"])
+        sc = ht_idx.get((_norm(home), _norm(away), d))
+        if sc is None:
+            continue
+        res = _resolve_ht(mkt, sc[0], sc[1])
+        if not res:
+            continue
+        entry = close = None
+        if oh is not None:
+            m = oh[(oh["_hk"] == _norm(home)) & (oh["_ak"] == _norm(away))
+                   & (oh["_dk"] == d) & (oh["market"].astype(str) == mkt)]
+            if not m.empty:
+                entry = float(m.iloc[0]["odds"]); close = float(m.iloc[-1]["odds"])
+        try:
+            fair = float(led.at[i, "fair_odds"])
+        except (TypeError, ValueError):
+            fair = 1.0
+        stake_odds = close or entry or fair or 1.0
+        led.at[i, "result"] = res
+        led.at[i, "pnl"] = round(stake_odds - 1.0, 3) if res == "WIN" else -1.0
+        if entry:
+            led.at[i, "entry_odds"] = entry
+        if close:
+            led.at[i, "closing_odds"] = close
+        if entry and close and close > 1.0:
+            led.at[i, "clv_pct"] = round(entry / close - 1.0, 4)
+        graded += 1
+
+    if graded:
+        led.to_csv(f, index=False)
+    log.info(f"ht_ledger: graded {graded} HT tip(s) → {f}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -940,6 +1028,7 @@ def main():
     update_player_results(days=args.days, dry_run=args.dry_run)
     update_sharp_results(days=args.days, dry_run=args.dry_run)
     update_side_market_results(days=args.days, dry_run=args.dry_run)
+    update_ht_results(days=args.days)
 
 
 if __name__ == "__main__":
