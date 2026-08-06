@@ -54,7 +54,20 @@ def _parse_all_odds(data: dict) -> dict:
                                 out["btts_no"] = float(v["odd"])
                         except (TypeError, ValueError, KeyError):
                             pass
-                elif "Over/Under" in name:
+                elif "Over/Under" in name and ("First Half" in name or "1st Half" in name):
+                    # HT model: first-half O/U 0.5 / 1.5 -> open->moving->closing capture
+                    for v in vals:
+                        label = v.get("value", "")
+                        try:
+                            odd = float(v["odd"])
+                        except (TypeError, ValueError, KeyError):
+                            continue
+                        for ln, key in (("0.5", "05"), ("1.5", "15")):
+                            if f"Over {ln}" in label:
+                                out[f"ht_over{key}"] = odd
+                            elif f"Under {ln}" in label:
+                                out[f"ht_under{key}"] = odd
+                elif "Over/Under" in name and "Half" not in name:   # full-time O/U (not HT)
                     for v in vals:
                         label = v.get("value", "")
                         try:
