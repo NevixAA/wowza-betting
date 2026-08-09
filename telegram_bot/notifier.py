@@ -2108,7 +2108,9 @@ if __name__ == "__main__":
         n    = notify_new_snipers()
         side = notify_side_bets()
         ht   = notify_ht_tips()
-        live = notify_live_signals()
+        # notify_live_signals() is owned by live_scanner.py + its own workflow. Calling it here
+        # too (predict runs every 5 min) raced live_scanner's dedup -> DUPLICATE live alerts.
+        # Removed 2026-08-09 so live signals have exactly ONE sender.
         health = notify_predict_health()
-        print(f"Notifications sent: {n} O/U SNIPER + {side} side market + {ht} HT + {live} Live"
+        print(f"Notifications sent: {n} O/U SNIPER + {side} side market + {ht} HT"
               + (" + HEALTH ALERT" if health else ""))

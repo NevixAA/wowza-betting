@@ -33,6 +33,10 @@ jobs:
 
       - name: Run live scanner
         env:
+          # APIFOOTBALL_KEY is REQUIRED: without it _fetch_live_scores falls back to OddsAPI
+          # /scores, which has DELAYED scores + an APPROXIMATED clock -> wrong live state
+          # (e.g. "0-0 at 72'" when it was really 3-1). API-Football gives real score + elapsed.
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
