@@ -49,7 +49,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
-from src.model import train as train_model, save_models, load_models, get_feature_importances
+from src.model import (train as train_model, save_models, load_models,
+                        get_feature_importances, FEATURE_COLS as MODEL_FEATURE_COLS)
 from src.betting import generate_bets
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
@@ -134,10 +135,11 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
 # ── TRAIN ─────────────────────────────────────────────────────────────────────
 
 def _train_one(valid: "pd.DataFrame", label: str, model_file,
-               target: str = "over25", weights=None) -> dict:
-    """Train one model and save it. target specifies which column to predict."""
+               target: str = "over25", weights=None, feature_cols=None) -> dict:
+    """Train one model and save it. target specifies which column to predict.
+    feature_cols: restrict the model to a subset of FEATURE_COLS (None = full set)."""
     log.info(f"  [{label}] {len(valid):,} rows — training ensemble (target={target})...")
-    results = train_model(valid, target=target, sample_weight=weights)
+    results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
     save_models(results, model_file=model_file)
 
     payload = load_models(model_file=model_file)
@@ -192,8 +194,24 @@ def mode_train() -> tuple:
     nf_valid = valid[valid["league"].isin(config.NEW_FORMAT_LEAGUES)]
     nf_weights = _get_weights(nf_valid)
     log.info(f"  New-format leagues: {sorted(nf_valid['league'].unique())}")
+    # NF-ONLY feature drop (isolation: standard model keeps the full FEATURE_COLS).
+    # These features are populated in NF TRAINING data but absent for NF UPCOMING fixtures
+    # (xG/inside-box come from a cold API cache; HT rolling stats are standard-oriented). At
+    # predict _prep imputes an all-NaN column to 0.0, the scaler turns 0.0 into z~-37, and the
+    # logistic base model collapses -> NF P(over) crushed to ~0.36 (should be ~0.51). Removing
+    # them from the NF model restores calibration (validated: fresh 27-feat model -> 0.53).
+    _NF_DROP = {
+        "home_xg_last5", "away_xg_last5", "home_insidebox_last5", "away_insidebox_last5",
+        "home_ht_scored_last5", "away_ht_scored_last5",
+        "home_ht_conceded_last5", "away_ht_conceded_last5",
+        "home_ht_attack_str", "away_ht_attack_str", "combined_ht_goals_avg",
+        "home_ht_over05_rate", "away_ht_over05_rate",
+        "home_ht_over15_rate", "away_ht_over15_rate",
+    }
+    nf_features = [c for c in MODEL_FEATURE_COLS if c not in _NF_DROP]
     if len(nf_valid) >= config.BACKTEST_MIN_TRAIN:
-        _train_one(nf_valid, "newformat", config.MODEL_FILE_NEWFORMAT, weights=nf_weights)
+        _train_one(nf_valid, "newformat", config.MODEL_FILE_NEWFORMAT,
+                   weights=nf_weights, feature_cols=nf_features)
     else:
         log.warning(f"  Not enough new-format data ({len(nf_valid)} rows) — skipping new-format model")
 

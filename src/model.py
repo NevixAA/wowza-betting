@@ -137,6 +137,7 @@ def train(
     target: str = "over25",
     train_ratio: float = 0.8,
     sample_weight=None,
+    feature_cols: "list[str] | None" = None,
 ) -> dict:
     """
     Train on the chronological training split, calibrate on the test split.
@@ -149,7 +150,10 @@ def train(
     train_df = df.iloc[:split]
     test_df  = df.iloc[split:]
 
-    X_train, feat_cols = _prep(train_df)
+    # feature_cols=None -> full FEATURE_COLS (standard model, unchanged). A caller can pass a
+    # reduced list (e.g. the new-format model drops features that are populated at train but
+    # absent at predict, which _prep would otherwise impute to 0.0 and the scaler would blow up).
+    X_train, feat_cols = _prep(train_df, feature_cols)
     X_test,  _         = _prep(test_df, feat_cols)
     y_train = train_df[target].values
     y_test  = test_df[target].values
