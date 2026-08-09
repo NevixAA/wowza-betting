@@ -719,7 +719,10 @@ def run() -> list[dict]:
                                         + (_st.get("away") or {}).get("shots_on_target", 0))
         except Exception:
             pass
-    _log_inplay_snapshot(live_games, sot_by_fixture)   # Phase-1 in-play dataset
+    try:
+        _log_inplay_snapshot(live_games, sot_by_fixture)   # Phase-1 in-play dataset
+    except Exception as e:
+        log.debug(f"inplay snapshot log skipped: {e}")   # never abort the scan over logging
 
     tips = _detect_signals(live_games, pred_df, sot_by_fixture)
 
@@ -763,10 +766,10 @@ def _log_inplay_snapshot(live_games: list[dict], sot_by_fixture: dict | None = N
     for g in live_games:
         fid = g.get("fixture_id")
         rows.append({
-            "snapshot_ts": ts, "fixture_id": fid, "league": g["league"],
-            "match": f"{g['home_team']} vs {g['away_team']}",
-            "elapsed": g["elapsed_mins"], "home_g": g["home_goals"],
-            "away_g": g["away_goals"], "total_g": g["total_goals"],
+            "snapshot_ts": ts, "fixture_id": fid, "league": g.get("league", ""),
+            "match": f"{g.get('home_team', '')} vs {g.get('away_team', '')}",
+            "elapsed": g.get("elapsed_mins"), "home_g": g.get("home_goals"),
+            "away_g": g.get("away_goals"), "total_g": g.get("total_goals"),
             "sot": (sot_by_fixture or {}).get(fid),
         })
     if not rows:

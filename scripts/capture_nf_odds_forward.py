@@ -53,7 +53,7 @@ def _parse_all_odds(data: dict) -> dict:
                                 out["btts_no"] = float(v["odd"])
                         except (TypeError, ValueError, KeyError):
                             pass
-                elif "Over/Under" in name:
+                elif "Over/Under" in name and "Half" not in name:   # FT only — NOT half-time O/U
                     for v in vals:
                         label = v.get("value", "")
                         try:
@@ -149,9 +149,12 @@ def run() -> int:
         combined = pd.concat([old, new], ignore_index=True)
     else:
         combined = new
-    # idempotent: one row per (snapshot_date, match, market) — keep latest snapshot_ts
-    combined = combined.sort_values("snapshot_ts").drop_duplicates(
-        subset=["snapshot_date", "match", "market"], keep="last")
+    # keep price CHANGES per (fixture, market) -> full open..moving..close curve. Was one row
+    # per DAY (dropped intraday moves); consecutive-distinct keeps every change AND the true
+    # last snapshot even when the line reverts to an earlier value.
+    combined = combined.sort_values(["match_date", "match", "market", "snapshot_ts"])
+    _prev = combined.groupby(["match_date", "match", "market"])["odds"].shift()
+    combined = combined[combined["odds"].ne(_prev)].sort_values("snapshot_ts")
     combined.to_csv(OUT, index=False)
     print(f"[nf_odds] appended {len(new)} rows -> {OUT.name} (total {len(combined):,})")
     return len(new)

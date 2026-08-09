@@ -128,8 +128,11 @@ def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
             new = pd.concat([pd.read_csv(STD_ARCHIVE_FILE), new], ignore_index=True)
         except Exception:
             pass
-    # keep first occurrence of each distinct price per fixture+market -> open..close curve
-    new = new.drop_duplicates(subset=["match_date", "match", "market", "odds"], keep="first")
+    # keep price CHANGES (consecutive-distinct) per fixture+market -> open..close curve that
+    # preserves the true last snapshot even when the line reverts (plain distinct-dedup drops it).
+    new = new.sort_values(["match_date", "match", "market", "snapshot_ts"])
+    _prev = new.groupby(["match_date", "match", "market"])["odds"].shift()
+    new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts")
     new.to_csv(STD_ARCHIVE_FILE, index=False)
 
 
