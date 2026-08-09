@@ -1,24 +1,24 @@
 {
   "logistic": {
-    "accuracy": 0.5393,
-    "auc": 0.5493,
-    "log_loss": 0.68825,
+    "accuracy": 0.5364,
+    "auc": 0.5488,
+    "log_loss": 0.68828,
     "n_train": 15130,
     "n_cal": 2670,
     "n_test": 4450
   },
   "gradient_boost": {
-    "accuracy": 0.52,
-    "auc": 0.5121,
-    "log_loss": 0.6924,
+    "accuracy": 0.5189,
+    "auc": 0.5151,
+    "log_loss": 0.69222,
     "n_train": 15130,
     "n_cal": 2670,
     "n_test": 4450
   },
   "lightgbm": {
-    "accuracy": 0.5272,
-    "auc": 0.5245,
-    "log_loss": 0.69086,
+    "accuracy": 0.5274,
+    "auc": 0.526,
+    "log_loss": 0.69071,
     "n_train": 15130,
     "n_cal": 2670,
     "n_test": 4450
