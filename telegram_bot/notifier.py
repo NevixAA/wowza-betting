@@ -266,14 +266,11 @@ def notify_new_snipers() -> int:
         df["model_type"] = ""
     _blk = df["model_type"].isna() | (df["model_type"].astype(str).str.strip().isin(["", "nan"]))
     df.loc[_blk, "model_type"] = df.loc[_blk, "league"].map(app_config.model_type_for_league)
-    # Send SNIPER + MARKSMAN for all models; ALSO send VALUABLE for the STANDARD model only
-    # (Nevo 2026-08-05: wants standard VALUABLE live too; new-format VALUABLE stays digest-only
-    # to avoid flooding — NF has far more volume).
+    # Send SNIPER + MARKSMAN + VALUABLE for ALL models (Nevo 2026-08-09: enable new-format
+    # VALUABLE live too, now that the NF model is recalibrated). Dedup (notified.json) sends
+    # each fixture+side once, so the higher NF volume won't re-flood.
     tips = df[
-        (
-            df["signal_tier"].isin(["SNIPER", "MARKSMAN"]) |
-            ((df["signal_tier"] == "VALUABLE") & (df["model_type"] == "standard"))
-        ) &
+        df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]) &
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
