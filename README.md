@@ -205,3 +205,12 @@ History) · 🤖 Agent Analysis · 👤 Player Props · 💼 Portfolio · ⚽ Fa
 **Big / risky changes are staged in a `v10` copy first** — build → validate → test →
 decide → then promote to live `v9`. Small validated bug fixes may go straight to `v9`.
 (See `v10\V10_STAGING_README.md`.)
+
+---
+
+## Disclaimer
+
+Informational & entertainment purposes only — **not** financial, betting, legal, or
+investment advice. No guarantees; past results do not predict future outcomes. 18+, bet
+responsibly, and only wager what you can afford to lose. Full terms: **[DISCLAIMER.md](DISCLAIMER.md)**
+(also shown on every dashboard page).

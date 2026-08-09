@@ -426,3 +426,8 @@ with tab_ht:
     render_ht()
 with tab_hist:
     render_history()
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()

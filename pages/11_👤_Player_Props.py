@@ -252,3 +252,8 @@ else:
         )
 
 st.caption("Player props · 9 markets · API-Football rolling stats · WC2026 national team data")
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()
