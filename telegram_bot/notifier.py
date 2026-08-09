@@ -773,12 +773,10 @@ def notify_weekly_summary() -> bool:
 
     def _fmt(label: str, emoji: str, stats: dict | None, pending_n: int = 0) -> str:
         if stats and stats["n"] > 0:
-            roi_s = "+" if stats["roi"] >= 0 else ""
             pnl_s = "+" if stats["pnl"] >= 0 else ""
             return (f"  {emoji} <b>{label}</b>: {stats['n']} bets | "
                     f"{stats['win']:.0%} win | "
-                    f"ROI <b>{roi_s}{stats['roi']:.1f}%</b> | "
-                    f"PnL {pnl_s}{stats['pnl']:.2f}u")
+                    f"P/L <b>{pnl_s}{stats['pnl']:.2f}u</b>")
         if pending_n:
             return f"  {emoji} <b>{label}</b>: {pending_n} signals sent | ⏳ awaiting results"
         return f"  {emoji} <b>{label}</b>: no settled bets this week"
@@ -798,6 +796,8 @@ def notify_weekly_summary() -> bool:
             live["model_type"] = ""
         _blk = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
         live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(app_config.model_type_for_league)
+        if "generated_at" in live.columns:   # count only tips generated on/after the cutoff
+            live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
         lw = live[live["match_date"] >= week_ago]
 
     # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
@@ -826,7 +826,7 @@ def notify_weekly_summary() -> bool:
         props_week_pending = int((pw["pnl"].isna()).sum()) if not pw.empty else 0
         props_all          = _stats(pl)
 
-    # ── 4. WC drift signals (worldcup_tips.csv — no PnL yet) ─────────────────
+    # ── 4. WC drift signals (worldcup_tips.csv — no P/L yet) ─────────────────
     wc_pending = 0
     wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
     if wc_file.exists():
@@ -860,14 +860,14 @@ def notify_weekly_summary() -> bool:
                 continue
             any_shown = True
             n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
-            lines.append(f"{emoji} <b>{label}</b> — {n} {settled_word} | {w/n:.0%} win | PnL {pnl:+.2f}u")
+            lines.append(f"{emoji} <b>{label}</b> — {n} {settled_word} | {w/n:.0%} win | P/L {pnl:+.2f}u")
             for tier in TIER_ORDER:
                 ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                 if ts.empty:
                     continue
                 tn = len(ts); tw = int((ts["pnl"] > 0).sum())
                 lines.append(f"  {TIER_SYM[tier]} {tier}: {tn} bets | {tw/tn:.0%} win | "
-                             f"ROI <b>{ts['pnl'].sum()/tn*100:+.1f}%</b>")
+                             f"P/L <b>{ts['pnl'].sum():+.2f}u</b>")
                 _sharp_split_lines(ts, lines, "      ")
         if not any_shown:
             lines.append("⚽ <b>Over 2.5</b>: no settled bets")
@@ -888,14 +888,14 @@ def notify_weekly_summary() -> bool:
                 ms = _settled_only(ms)
                 if ms.empty:
                     continue
-                n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum(); roi = pnl / n * 100
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw2}W/{n-mw2}L | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+                n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
+                lines.append(f"📌 <b>{mkt_label}</b> — {mw2}W/{n-mw2}L | P/L {pnl:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
                         continue
-                    tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
-                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                    tn = len(ts); w = int((ts["pnl"] > 0).sum())
+                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
                 lines.append("")
         except Exception:
             pass
@@ -903,7 +903,7 @@ def notify_weekly_summary() -> bool:
     lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
 
     if wc_pending:
-        lines.append(f"  🌍 <b>WC Drift</b>: {wc_pending} signals active | ⏳ no PnL tracking yet")
+        lines.append(f"  🌍 <b>WC Drift</b>: {wc_pending} signals active | ⏳ no P/L tracking yet")
     else:
         lines.append("  🌍 <b>WC Drift</b>: no signals this week")
 
@@ -928,28 +928,28 @@ def notify_weekly_summary() -> bool:
                 ms = sl_all[sl_all["market"] == mkt] if "market" in sl_all.columns else pd.DataFrame()
                 if ms.empty:
                     continue
-                n = len(ms); mw3 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum(); roi = pnl / n * 100
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw3}W/{n-mw3}L | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+                n = len(ms); mw3 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
+                lines.append(f"📌 <b>{mkt_label}</b> — {mw3}W/{n-mw3}L | P/L {pnl:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
                         continue
-                    tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
-                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                    tn = len(ts); w = int((ts["pnl"] > 0).sum())
+                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
                 lines.append("")
         except Exception:
             pass
 
     if sharp_all and sharp_all["n"] > 0:
         pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
-        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | PnL {pnl_s}{sharp_all['pnl']:.2f}u")
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {pnl_s}{sharp_all['pnl']:.2f}u")
     elif sharp_all_total:
         lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⏳ awaiting results")
     else:
         lines.append("  💰 <b>Sharp Tracker</b>: no signals yet")
 
     if wc_all_total:
-        lines.append(f"  🌍 <b>WC Drift</b>: {wc_all_total} signals total | ⏳ no PnL tracking yet")
+        lines.append(f"  🌍 <b>WC Drift</b>: {wc_all_total} signals total | ⏳ no P/L tracking yet")
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
@@ -1442,7 +1442,7 @@ def notify_props_daily_digest() -> bool:
                 losses = int((yest["pnl"] < 0).sum())
                 voids  = int(yest["result"].str.upper().eq("VOID").sum()) if "result" in yest.columns else 0
                 pnl    = yest["pnl"].sum()
-                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  PnL <b>{pnl:+.2f}u</b>")
+                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  P/L <b>{pnl:+.2f}u</b>")
                 # Results by market
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = yest[yest["market"] == mkt_key] if "market" in yest.columns else pd.DataFrame()
@@ -1472,22 +1472,22 @@ def notify_props_daily_digest() -> bool:
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
-                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = all_p["pnl"].sum(); roi = pnl / n * 100
-                lines2.append(f"  Total: {w_all}W/{n-w_all}L | PnL <b>{pnl:+.2f}u</b> | ROI {roi:+.1f}%")
+                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = all_p["pnl"].sum()
+                lines2.append(f"  Total: {w_all}W/{n-w_all}L | P/L <b>{pnl:+.2f}u</b>")
                 lines2.append("")
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = all_p[all_p["market"] == mkt_key] if "market" in all_p.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum(); mroi = mp / mn * 100
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | ROI {mroi:+.1f}% | PnL {mp:+.2f}u")
+                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
                     if "tier" in ms.columns:
                         for tier in TIER_ORDER:
                             ts = ms[ms["tier"] == tier]
                             if ts.empty:
                                 continue
-                            tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
-                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                            tn = len(ts); w = int((ts["pnl"] > 0).sum())
+                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
         except Exception:
             pass
 
@@ -1564,7 +1564,7 @@ def notify_props_weekly_summary() -> bool:
     r = _row(settled_week)
     if r:
         n, w, pnl = r
-        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | PnL {pnl:+.2f}u</b>")
+        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | P/L {pnl:+.2f}u</b>")
         lines.append("")
         # By market
         for mkt in MARKETS:
@@ -1573,12 +1573,10 @@ def notify_props_weekly_summary() -> bool:
             if not mr:
                 continue
             mn, mw, mp = mr
-            roi = mp / mn * 100
-            roi_s = "+" if roi >= 0 else ""
             pnl_s = "+" if mp >= 0 else ""
             lines.append(
                 f"  {MKT_EMOJI.get(mkt, '📌')} <b>{MKT_LABEL.get(mkt, mkt)}</b>: "
-                f"{mn} bets | {mw}W/{mn-mw}L | ROI <b>{roi_s}{roi:.1f}%</b> | PnL {pnl_s}{mp:.2f}u"
+                f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{pnl_s}{mp:.2f}u</b>"
             )
         lines.append("")
         # By tier
@@ -1589,9 +1587,8 @@ def notify_props_weekly_summary() -> bool:
             if not tr:
                 continue
             tn, tw, tp = tr
-            roi = tp / tn * 100
             lines.append(
-                f"  {TIER_SYM.get(tier, '📌')} {tier}: {tw}W/{tn-tw}L | ROI {roi:+.1f}% | PnL {tp:+.2f}u"
+                f"  {TIER_SYM.get(tier, '📌')} {tier}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
             )
     else:
         pending = int(settled_week["pnl"].isna().sum()) if not settled_week.empty else 0
@@ -1606,8 +1603,7 @@ def notify_props_weekly_summary() -> bool:
     r_all = _row(settled_all)
     if r_all:
         n, w, pnl = r_all
-        roi = pnl / n * 100
-        lines.append(f"  Total: {n} bets | {w}W/{n-w}L | ROI {roi:+.1f}% | PnL {pnl:+.2f}u")
+        lines.append(f"  Total: {n} bets | {w}W/{n-w}L | P/L {pnl:+.2f}u")
         lines.append("")
         for mkt in MARKETS:
             sub = settled_all[settled_all["market"] == mkt] if "market" in settled_all.columns else pd.DataFrame()
@@ -1615,10 +1611,9 @@ def notify_props_weekly_summary() -> bool:
             if not mr:
                 continue
             mn, mw, mp = mr
-            roi_m = mp / mn * 100
             lines.append(
                 f"  {MKT_EMOJI.get(mkt, '📌')} {MKT_LABEL.get(mkt, mkt)}: "
-                f"{mw}W/{mn-mw}L | ROI {roi_m:+.1f}% | PnL {mp:+.2f}u"
+                f"{mw}W/{mn-mw}L | P/L {mp:+.2f}u"
             )
     else:
         total_all = len(pled)
@@ -1898,7 +1893,7 @@ def notify_daily_digest() -> bool:
             r_all = _stats_sub(live_y, pd.Series([True] * len(live_y), index=live_y.index))
             if r_all:
                 n, w, pnl = r_all
-                lines2.append(f"⚽ <b>O/U 2.5</b>  (PnL {pnl:+.2f}u)")
+                lines2.append(f"⚽ <b>O/U 2.5</b>  (P/L {pnl:+.2f}u)")
                 for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
                                             ("new_format", "🌍", "New-Format")]:
                     fb = live_y[live_y["model_type"] == fmt]
@@ -1908,20 +1903,20 @@ def notify_daily_digest() -> bool:
                     if not rf:
                         continue
                     fn, fw, fp = rf
-                    lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  PnL {fp:+.2f}u")
+                    lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {fp:+.2f}u")
                     if "side" in fb.columns:
                         for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
                             r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
                             if r:
                                 sn, sw, sp = r
-                                lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  PnL {sp:+.2f}u")
+                                lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {sp:+.2f}u")
                     for tier in TIER_ORDER:
                         if "signal_tier" not in fb.columns:
                             break
                         r = _stats_sub(fb, fb["signal_tier"] == tier)
                         if r:
                             tn, tw, tp = r
-                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  PnL {tp:+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
             else:
                 lines2.append("  ⚽ O/U 2.5: no settled results")
         except Exception:
@@ -1943,7 +1938,7 @@ def notify_daily_digest() -> bool:
                 inaffected = n - affected
                 pnl = yest_s["pnl"].sum()
                 lines2.append(
-                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | PnL <b>{pnl:+.2f}u</b>"
+                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{pnl:+.2f}u</b>"
                 )
             else:
                 lines2.append("  💰 Sharp/WC: no settled results")
