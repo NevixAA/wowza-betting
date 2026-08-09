@@ -623,7 +623,7 @@ def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
         if seg.empty:
             continue
         n = len(seg); w = int((seg > 0).sum())
-        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | ROI {seg.sum()/n*100:+.1f}%")
+        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | P/L {seg.sum():+.2f}u")
 
 
 _SHARP_MOVE_FILE = app_config.OUTPUT_DIR / "sharp_move_notified.json"
@@ -1631,6 +1631,40 @@ def notify_props_weekly_summary() -> bool:
     return False
 
 
+def notify_bug_announcement() -> bool:
+    """One-time notice: the New-Format O/U model had a calibration bug (fixed 2026-08-09) that
+    under-predicted goals and produced one-sided UNDER tips. Performance counting restarts at
+    PERFORMANCE_CUTOFF_DATE for BOTH models; historical rows are kept for CLV. A dedup key makes
+    this send exactly once, ever (safe to wire into a recurring workflow)."""
+    cfg = _load_config()
+    token = cfg.get("token", ""); chat_id = cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return False
+    notified = _load_notified()
+    key = "ANNOUNCE|nf_calibration_bug_v1"
+    if key in notified:
+        print("Bug announcement already sent — skipping.")
+        return False
+    cutoff = getattr(app_config, "PERFORMANCE_CUTOFF_DATE", "")
+    msg = (
+        "📢 <b>System Notice — Model Fix</b>\n"
+        "━━━━━━━━━━━━━━━━\n"
+        "We found and fixed a calibration bug in the <b>New-Format</b> Over/Under model. It was "
+        "under-predicting goals, so it sent one-sided UNDER tips that are not reliable.\n\n"
+        f"✅ <b>Fixed.</b> From <b>{cutoff}</b>, only tips generated after the fix count towards "
+        "results — for <b>both</b> the Standard and New-Format models.\n"
+        "🗂 Earlier tips are <b>not deleted</b> — we keep them for closing-line-value (CLV) "
+        "analysis; they're just excluded from win/loss and P/L totals.\n\n"
+        "Thanks for your patience."
+    )
+    if _send(token, chat_id, msg):
+        notified.add(key)
+        _save_notified(notified)
+        print("Bug announcement sent.")
+        return True
+    return False
+
+
 def notify_daily_digest() -> bool:
     """
     Daily morning briefing structured by market AND signal tier.
@@ -1855,6 +1889,8 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             yest_led = led[led["match_date"].astype(str).str[:10] == yesterday_str].copy()
             live_y = yest_led[yest_led["source"] == "live"] if "source" in yest_led.columns else yest_led
+            if "generated_at" in live_y.columns:   # count only tips generated on/after the cutoff
+                live_y = live_y[live_y["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
             if "model_type" not in live_y.columns:
                 live_y["model_type"] = ""
             _blk = live_y["model_type"].isna() | (live_y["model_type"].astype(str).str.strip().isin(["", "nan"]))
@@ -1914,15 +1950,18 @@ def notify_daily_digest() -> bool:
         except Exception:
             pass
 
-    lines2 += ["", "━━━━━━━━━━━━━━━━", "📈 <b>All-time Ledger</b>", ""]
+    lines2 += ["", "━━━━━━━━━━━━━━━━",
+               f"📈 <b>Ledger — since {app_config.PERFORMANCE_CUTOFF_DATE}</b>", ""]
 
-    # O/U 2.5 all-time — by model type, then tier
+    # O/U 2.5 — by model type, then tier (counts tips generated on/after the cutoff only)
     if ledger_file.exists():
         try:
             led = pd.read_csv(ledger_file)
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             live = led[(led["source"] == "live") & led["pnl"].notna()] \
                    if "source" in led.columns else led[led["pnl"].notna()]
+            if "generated_at" in live.columns:
+                live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
             # Never treat a blank tag as 'standard' — derive it from the league so new-format
             # bets can't leak into the standard column (canonical map in app_config).
             live = live.copy()
@@ -1937,21 +1976,21 @@ def notify_daily_digest() -> bool:
                 sub = live[live["model_type"] == fmt]
                 if sub.empty:
                     continue
-                n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum(); roi = pnl / n * 100
-                lines2.append(f"  {emoji} <b>{label}</b>  {w_s}W/{n-w_s}L | PnL {pnl:+.2f}u | ROI {roi:+.1f}%")
+                n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
+                lines2.append(f"  {emoji} <b>{label}</b>  {w_s}W/{n-w_s}L | P/L {pnl:+.2f}u")
                 if "side" in sub.columns:
                     for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
                         ss = sub[sub["side"].astype(str).str.upper() == sd]
                         if ss.empty:
                             continue
-                        sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum(); sroi = sp / sn * 100
-                        lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | PnL {sp:+.2f}u | ROI {sroi:+.1f}%")
+                        sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum()
+                        lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {sp:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
                         continue
-                    tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
-                    lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                    tn = len(ts); w = int((ts["pnl"] > 0).sum())
+                    lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
                     _sharp_split_lines(ts, lines2, "        ")
         except Exception:
             pass
@@ -1969,14 +2008,14 @@ def notify_daily_digest() -> bool:
                     ms = sl_s[sl_s["market"] == mkt] if "market" in sl_s.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum(); mroi = mp / mn * 100
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | PnL {mp:+.2f}u | ROI {mroi:+.1f}%")
+                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
                     for tier in TIER_ORDER:
                         ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                         if ts.empty:
                             continue
-                        tn = len(ts); w = int((ts["pnl"] > 0).sum()); troi = ts["pnl"].sum() / tn * 100
-                        lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | ROI {troi:+.1f}%")
+                        tn = len(ts); w = int((ts["pnl"] > 0).sum())
+                        lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
         except Exception:
             pass
 
@@ -1987,8 +2026,8 @@ def notify_daily_digest() -> bool:
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
-                n = len(all_s); pnl = all_s["pnl"].sum(); roi = pnl / n * 100
-                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | PnL {pnl:+.2f}u | ROI {roi:+.1f}%)")
+                n = len(all_s); pnl = all_s["pnl"].sum()
+                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {pnl:+.2f}u)")
         except Exception:
             pass
 

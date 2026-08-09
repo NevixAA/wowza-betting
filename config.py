@@ -353,7 +353,9 @@ DRIFT_CONFLICT_THRESHOLD = 0.03
 # bug (fixed 2026-08-09) that produced garbage UNDER tips, so pre-fix results are not
 # representative. The rows are NOT deleted: they stay in the ledgers/odds-history so
 # CLV analysis keeps every data point. Only performance AGGREGATES honour this cutoff.
-PERFORMANCE_CUTOFF_DATE = "2026-08-09"
+# SET THIS to the date predict is re-enabled with the fixed new-format model. 2026-08-10
+# excludes the buggy tips generated on 2026-08-09 (before the retrain lands).
+PERFORMANCE_CUTOFF_DATE = "2026-08-10"
 
 # ── Backtesting ───────────────────────────────────────────────────────────────
 BACKTEST_WALK_SIZE = 60
