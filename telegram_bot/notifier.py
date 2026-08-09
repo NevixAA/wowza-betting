@@ -1873,6 +1873,12 @@ def notify_daily_digest() -> bool:
                         continue
                     fn, fw, fp = rf
                     lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  PnL {fp:+.2f}u")
+                    if "side" in fb.columns:
+                        for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
+                            r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
+                            if r:
+                                sn, sw, sp = r
+                                lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  PnL {sp:+.2f}u")
                     for tier in TIER_ORDER:
                         if "signal_tier" not in fb.columns:
                             break
@@ -1933,6 +1939,13 @@ def notify_daily_digest() -> bool:
                     continue
                 n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum(); roi = pnl / n * 100
                 lines2.append(f"  {emoji} <b>{label}</b>  {w_s}W/{n-w_s}L | PnL {pnl:+.2f}u | ROI {roi:+.1f}%")
+                if "side" in sub.columns:
+                    for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
+                        ss = sub[sub["side"].astype(str).str.upper() == sd]
+                        if ss.empty:
+                            continue
+                        sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum(); sroi = sp / sn * 100
+                        lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | PnL {sp:+.2f}u | ROI {sroi:+.1f}%")
                 for tier in TIER_ORDER:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
