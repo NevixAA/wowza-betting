@@ -485,3 +485,8 @@ with st.expander("🤖 9-Agent Player Props Pipeline", expanded=False):
                             st.markdown(result["stages"].get(stage, "No output"))
                 except Exception as e:
                     st.error(f"Pipeline error: {e}")
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()

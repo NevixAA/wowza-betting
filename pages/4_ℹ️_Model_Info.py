@@ -312,3 +312,8 @@ with tab_bt:
 
 st.divider()
 st.caption("v9 · GitHub Actions CI · live P/L in units (paper) · Streamlit Cloud")
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()

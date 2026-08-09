@@ -273,3 +273,8 @@ for tab, mkt in zip(tabs, MARKETS):
 st.caption("Sizing recomputed off bank at each week's open. Kelly f* = edge ÷ (odds−1), "
            "× tier fraction, capped. VALUABLE defaults to paper. "
            "Edge is unproven live (n small) — this is a testing tool, not a guarantee.")
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()

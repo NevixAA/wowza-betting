@@ -347,3 +347,8 @@ if not avoided.empty:
             avoided[["date", "league", "home_team", "away_team", "signal_tier", "model_type"]],
             use_container_width=True, hide_index=True
         )
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()

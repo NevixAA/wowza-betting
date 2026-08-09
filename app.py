@@ -143,6 +143,11 @@ st.markdown("""
 | 📊 Dashboard | Today's tips by **model** (Standard / New-Format) and **tier** with drift signals |
 | ⚡ Live | In-play, half-time and live-signal history (all live views) |
 | 👤 Player Props · ⚽ Fantasy | Player-prop tips and FPL layer |
-| 💼 Portfolio | ROI / PnL by model, tier and league (post-cutoff) |
+| 💼 Portfolio | P/L by model, tier and league (post-cutoff) · bankroll sim |
 | ℹ️ Model Info | How the Standard and New-Format models work |
 """)
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()

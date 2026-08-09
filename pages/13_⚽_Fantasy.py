@@ -434,3 +434,8 @@ else:
     avg_games = int(csq["games_used"].dropna().mean()) if "games_used" in csq.columns and csq["games_used"].notna().any() else 0
     st.caption(f"{club}: {len(csq)} players · window: {wsel} · avg {avg_games} games/player used "
                "(new signings blank until they have PL history)")
+
+
+# ── Disclaimer & Terms (shown on every dashboard page) ──
+from utils.disclaimer import disclaimer_footer  # noqa: E402
+disclaimer_footer()
