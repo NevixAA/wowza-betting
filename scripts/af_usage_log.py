@@ -32,6 +32,11 @@ def poll(label: str = "poll") -> dict:
     except Exception as e:
         print(f"[af_usage] status fetch failed: {e}")
         return {}
+    # /status returns response={} normally, but an ERROR/rate-limited call returns
+    # response=[] (a list) -> .get() would crash. Treat any non-dict as empty.
+    if not isinstance(data, dict):
+        print("[af_usage] status response not a dict (likely rate-limited/error) - skipping")
+        return {}
     reqs = data.get("requests", {}) or {}
     sub = data.get("subscription", {}) or {}
     now = datetime.now(timezone.utc)
