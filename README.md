@@ -37,7 +37,7 @@ running automatically in the cloud (no server/PC needed).
 |---|---|---|---|
 | 🎯 **SNIPER** | Per-league threshold (14–25%) | Full | Highest confidence |
 | 🔫 **MARKSMAN** | ~14% to threshold | 3/4 | Medium-high |
-| 💎 **VALUABLE** | 4–8% | Half | Standard O/U 2.5 VALUABLE sent live; new-format VALUABLE is digest-only (volume) |
+| 💎 **VALUABLE** | 4–8% | Half | Sent live for **both** Standard and New-Format (NF VALUABLE enabled 2026-08-09; dedup prevents re-flood) |
 
 ---
 
