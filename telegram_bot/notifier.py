@@ -1881,7 +1881,7 @@ def notify_daily_digest() -> bool:
             live = live.copy()
             if "model_type" not in live.columns:
                 live["model_type"] = ""
-            _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip() == "")
+            _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
             live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(app_config.model_type_for_league)
             for fmt, emoji, label in [
                 ("standard",   "⚽", "Over 2.5 — Standard"),

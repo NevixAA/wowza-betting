@@ -160,9 +160,12 @@ def run() -> int:
     new = pd.DataFrame(rows, columns=COLS)
     if OUT.exists():
         new = pd.concat([pd.read_csv(OUT), new], ignore_index=True)
-    # keep every DISTINCT price per (fixture, market) -> open..moving..close curve
-    new = new.sort_values("snapshot_ts").drop_duplicates(
-        subset=["match_date", "match", "market", "odds"], keep="first")
+    # keep price CHANGES (consecutive-distinct) per (fixture, market) -> open..moving..close
+    # curve. A plain distinct-dedup would drop a reverted closing price (1.90->1.95->1.90 loses
+    # the true 1.90 close); this keeps every change AND the true last snapshot.
+    new = new.sort_values(["match_date", "match", "market", "snapshot_ts"])
+    _prev = new.groupby(["match_date", "match", "market"])["odds"].shift()
+    new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts")
     new.to_csv(OUT, index=False)
     print(f"[std_odds] appended -> {OUT.name} (total {len(new):,})")
     return len(rows)

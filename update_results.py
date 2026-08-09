@@ -833,7 +833,7 @@ def update_ht_results(days: int = 3) -> None:
             fair = float(led.at[i, "fair_odds"])
         except (TypeError, ValueError):
             fair = 1.0
-        stake_odds = close or entry or fair or 1.0
+        stake_odds = entry or close or fair or 1.0   # settle at ENTRY (open), like main/side ledgers
         led.at[i, "result"] = res
         led.at[i, "pnl"] = round(stake_odds - 1.0, 3) if res == "WIN" else -1.0
         if entry:
@@ -841,7 +841,7 @@ def update_ht_results(days: int = 3) -> None:
         if close:
             led.at[i, "closing_odds"] = close
         if entry and close and close > 1.0:
-            led.at[i, "clv_pct"] = round(entry / close - 1.0, 4)
+            led.at[i, "clv_pct"] = round((entry / close - 1.0) * 100.0, 2)   # PERCENT, like bets_ledger
         graded += 1
 
     if graded:
