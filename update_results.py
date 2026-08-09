@@ -828,7 +828,10 @@ def update_ht_results(days: int = 3) -> None:
             m = oh[(oh["_hk"] == _norm(home)) & (oh["_ak"] == _norm(away))
                    & (oh["_dk"] == d) & (oh["market"].astype(str) == mkt)]
             if not m.empty:
-                entry = float(m.iloc[0]["odds"]); close = float(m.iloc[-1]["odds"])
+                try:
+                    entry = float(m.iloc[0]["odds"]); close = float(m.iloc[-1]["odds"])
+                except (TypeError, ValueError):
+                    entry = close = None    # bad odds cell -> grade result, skip CLV
         try:
             fair = float(led.at[i, "fair_odds"])
         except (TypeError, ValueError):
@@ -936,7 +939,13 @@ def main():
             continue
 
         result_str, total_goals, extras = found
-        odds = float(row["odds"])
+        try:
+            odds = float(row["odds"])
+        except (TypeError, ValueError):
+            # one malformed odds cell must not abort settlement for every other bet + the
+            # downstream side/HT/sharp/player CLV passes that run after this loop.
+            log.debug(f"  bad odds ({row.get('odds')!r}) for {row['home_team']} vs {row['away_team']} — skipping")
+            continue
 
         if result_str == "WIN":
             pnl = round(odds - 1.0, 4)

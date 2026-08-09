@@ -671,9 +671,14 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         return 0
 
     _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
+    # SRC in the key + priority lookup: over25/under25 for standard fixtures live in BOTH
+    # standard_odds_history (OddsAPI) AND standard_sidemarket (Bet365). Keying without the
+    # source would pair a first-seen from one book with a latest from the other -> a fake
+    # cross-source "move" (the Botafogo 1.86 vs 1.17 class of bug). Keep each curve isolated.
+    _SRC_PRIORITY = ("standard_odds_history.csv", "newformat_odds_history.csv",
+                     "standard_sidemarket_odds_history.csv")
     snaps: dict = {}
-    for f in ("standard_sidemarket_odds_history.csv", "newformat_odds_history.csv",
-              "standard_odds_history.csv"):
+    for f in _SRC_PRIORITY:
         p = app_config.OUTPUT_DIR / f
         if not p.exists():
             continue
@@ -686,8 +691,11 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
             if " vs " not in m:
                 continue
             h, a = m.split(" vs ", 1)
-            key = (_norm(h), _norm(a), str(r.match_date)[:10], str(r.market))
-            od = float(r.odds)
+            try:
+                od = float(r.odds)
+            except (TypeError, ValueError):
+                continue
+            key = (_norm(h), _norm(a), str(r.match_date)[:10], str(r.market), f)
             # store (first-seen, latest) from the SAME source -> a valid open->close move.
             if key not in snaps:
                 snaps[key] = [od, od]
@@ -701,7 +709,13 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         if side not in ("OVER", "UNDER"):
             continue
         mkt = "under25" if side == "UNDER" else "over25"
-        pair = snaps.get((_norm(r.home_team), _norm(r.away_team), str(r.match_date)[:10], mkt))
+        pair = None
+        for f in _SRC_PRIORITY:                       # first source with a same-source curve wins
+            cand = snaps.get((_norm(r.home_team), _norm(r.away_team),
+                              str(r.match_date)[:10], mkt, f))
+            if cand:
+                pair = cand
+                break
         if not pair:
             continue
         # SAME source, open->close (NOT the OddsAPI ledger entry vs Bet365 current — that
