@@ -24,11 +24,10 @@ def load_backtest():
     f = config.OUTPUT_DIR / "backtest_by_league_standard.csv"
     return pd.read_csv(f) if f.exists() else pd.DataFrame()
 
-tabs = st.tabs([
+tab_pred, tab_ht, tab_sharp, tab_live, tab_thr, tab_fi, tab_bt = st.tabs([
     "🎯 Prediction Model",
     "⏱ HT Model",
     "💰 Sharp Money",
-    "🌍 World Cup",
     "⚡ Live Scanner",
     "🎚 Thresholds",
     "📊 Feature Importances",
@@ -36,7 +35,7 @@ tabs = st.tabs([
 ])
 
 # ── Tab 1: Prediction Model ────────────────────────────────────────────────────
-with tabs[0]:
+with tab_pred:
     st.markdown("### 🎯 Pre-Match Prediction Model (O/U 2.5 FT)")
     col1, col2 = st.columns(2)
     with col1:
@@ -55,7 +54,8 @@ with tabs[0]:
         **Training:** COVID excluded (2019/20, 2020/21).
         Recent seasons weighted 2-4× (time-decay).
 
-        **Backtest ROI:** +13–18% per league (walk-forward, post-COVID) ✅
+        **Performance:** live P/L is the real test (2026/27 season = the QA).
+        Backtest figures run hot vs live — treat as directional, not a promise.
         """)
     with col2:
         st.markdown("""
@@ -63,14 +63,16 @@ with tabs[0]:
         **Leagues:** Brazil, Japan, Ireland, Austria, Denmark,
         Sweden, Norway, Finland, Argentina, Mexico, China, USA MLS
 
-        **Features:**
-        - Goals (scored / conceded last 5)
-        - Attack / defense strength
-        - Rest days
-        - ❌ No shots / corners / historical odds
+        **Features:** same rich feature set as Standard (goals, shots,
+        corners, attack/defense strength, season splits, H2H) from the
+        API-Football backfill — **minus** xG, inside-box and half-time
+        features, which are populated in training but absent for upcoming
+        fixtures (dropped 2026-08-09 to fix a calibration bug).
 
-        **Backtest:** Not possible — no historical O/U odds in CSV.
-        Performance tracked via live results only.
+        **⚠️ Aug 2026 fix:** the model was under-predicting goals
+        (P(over)≈0.36 vs ~0.51 real) → one-sided UNDER tips. Retrained
+        without the mismatched features → P(over)≈0.50, balanced. Live
+        results counted from the cutoff onward.
         """)
     st.divider()
     st.markdown("""
@@ -80,14 +82,14 @@ with tabs[0]:
     2. Features → form, strength, HT rates, market implied prob
     3. Model    → predict p(over 2.5)
     4. Edge     = p_model − p_implied   (p_implied = 1/odds)
-    5. Tier     → SNIPER / VALUE / AVOID  (per-league thresholds)
+    5. Tier     → SNIPER / MARKSMAN / VALUABLE  (per-league thresholds)
     6. Guard    → both-losing filter suppresses conflicting bets
-    7. Drift    → market movement confirms or conflicts the signal
+    7. Drift    → market movement (sharp money) confirms or conflicts the signal
     ```
     """)
 
 # ── Tab 2: HT Model ────────────────────────────────────────────────────────────
-with tabs[1]:
+with tab_ht:
     st.markdown("### ⏱ Half-Time O/U Prediction Model")
     col1, col2 = st.columns(2)
     with col1:
@@ -126,7 +128,7 @@ with tabs[1]:
         """)
 
 # ── Tab 3: Sharp Money ─────────────────────────────────────────────────────────
-with tabs[2]:
+with tab_sharp:
     st.markdown("### 💰 Sharp Money Tracker")
     col1, col2 = st.columns(2)
     with col1:
@@ -172,44 +174,8 @@ with tabs[2]:
         FADING signals shown on dashboard but not alerted.
         """)
 
-# ── Tab 4: World Cup ───────────────────────────────────────────────────────────
-with tabs[3]:
-    st.markdown("### 🌍 World Cup 2026 Tracker")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        #### Drift tracking (same as Sharp Money)
-        - Tracks **O/U 1.5, O/U 2.5, O/U 3.5** and **1X2** drift
-        - Every **1 hour** (more frequent than regular leagues)
-        - STRONG / SHARP / FADING signals
-        - Telegram alerts for STRONG only
-
-        #### ML Model value signals
-        Our FT and HT models applied to every WC fixture:
-        - **P(FT OVER 2.5)** — from standard model
-        - **P(HT OVER 0.5/1.5)** — from HT model
-        - **Fair price** calculated from probabilities
-        - Compare to bookmaker's offered price → find value
-        """)
-    with col2:
-        st.markdown("""
-        #### Limitations
-        ⚠️ Our model was trained on **club league data**, not
-        international football. National team dynamics differ
-        (player availability, motivation, tournament pressure).
-
-        Use WC ML values as **directional guidance**, not
-        high-confidence betting signals. The drift tracker
-        (sharp money) is more reliable for WC since it
-        reflects real market positioning.
-
-        #### Dashboard tabs
-        - 📡 **Sharp Money Drift** — odds movement signals
-        - 🤖 **ML Model Value** — fair price vs market comparison
-        """)
-
-# ── Tab 5: Live Scanner ────────────────────────────────────────────────────────
-with tabs[4]:
+# ── Tab 4: Live Scanner ────────────────────────────────────────────────────────
+with tab_live:
     st.markdown("### ⚡ Live Scanner (In-Play)")
     col1, col2 = st.columns(2)
     with col1:
@@ -244,17 +210,17 @@ with tabs[4]:
         If bookmaker offers **more** than our fair price → value.
 
         #### Schedule
-        - Every **30 minutes** during match hours (11:00–23:30 UTC)
+        - Every **~10 minutes** during match hours (live_scanner cron)
         - Smart cache: only calls leagues with games today
-        - Active league (live games): re-checks every 2 min
-        - Idle league (no games): skips for 30 min
+        - Live-adjusted λ from in-play shots-on-target (v2)
+        - Results graded post-match; see the **⚡ Live Center → History** tab
 
-        #### World Cup
-        WC games are also scanned during match hours.
+        _All live views (in-play, half-time, history) now live on the
+        single **⚡ Live Center** page._
         """)
 
-# ── Tab 6: Thresholds ──────────────────────────────────────────────────────────
-with tabs[5]:
+# ── Tab 5: Thresholds ──────────────────────────────────────────────────────────
+with tab_thr:
     st.markdown("### 🎚 Signal Thresholds & Calibration")
 
     col1, col2, col3 = st.columns(3)
@@ -293,8 +259,8 @@ with tabs[5]:
         ])
         st.dataframe(decay_df, use_container_width=True, hide_index=True)
 
-# ── Tab 7: Feature Importances ─────────────────────────────────────────────────
-with tabs[6]:
+# ── Tab 6: Feature Importances ─────────────────────────────────────────────────
+with tab_fi:
     st.markdown("### 📊 Feature Importances")
     col_std, col_nf = st.columns(2)
     for col, name, title, color in [
@@ -317,8 +283,8 @@ with tabs[6]:
             else:
                 st.info("Run retrain to generate feature importances.")
 
-# ── Tab 8: Backtest ────────────────────────────────────────────────────────────
-with tabs[7]:
+# ── Tab 7: Backtest ────────────────────────────────────────────────────────────
+with tab_bt:
     st.markdown("### 🏆 Backtest Results")
     df = load_backtest()
     if not df.empty:
@@ -340,8 +306,9 @@ with tabs[7]:
         st.info("Run retrain to generate backtest results.")
 
     st.markdown("#### New-Format Model")
-    st.info("Backtest not available — no historical O/U odds in CSV data. "
-            "Performance tracked via live results in the Ledger page.")
+    st.info("New-format now has full historical stats + odds via the API-Football backfill "
+            "(20k+ matches). After the 2026-08-09 calibration fix, live P/L from the cutoff "
+            "onward is the real test — see the 💼 Portfolio page.")
 
 st.divider()
-st.caption("v9.1 · GitHub Actions CI · OddsAPI 20K plan · Streamlit Cloud")
+st.caption("v9 · GitHub Actions CI · live P/L in units (paper) · Streamlit Cloud")
