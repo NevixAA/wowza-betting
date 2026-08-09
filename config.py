@@ -347,6 +347,14 @@ MIN_UNDER_ODDS = float(os.getenv("MIN_UNDER_ODDS", "1.75"))
 DRIFT_CONFIRM_THRESHOLD  = 0.03
 DRIFT_CONFLICT_THRESHOLD = 0.03
 
+# ── Performance counting cutoff ───────────────────────────────────────────────
+# Tips generated BEFORE this date are excluded from win/loss/ROI/PnL COUNTS shown
+# on the dashboard and in Telegram digests — the new-format model had a calibration
+# bug (fixed 2026-08-09) that produced garbage UNDER tips, so pre-fix results are not
+# representative. The rows are NOT deleted: they stay in the ledgers/odds-history so
+# CLV analysis keeps every data point. Only performance AGGREGATES honour this cutoff.
+PERFORMANCE_CUTOFF_DATE = "2026-08-09"
+
 # ── Backtesting ───────────────────────────────────────────────────────────────
 BACKTEST_WALK_SIZE = 60
 BACKTEST_MIN_TRAIN = 400

@@ -94,8 +94,17 @@ bets    = load_bets()
 ledger  = load_ledger()
 
 live = ledger[ledger["source"] == "live"] if not ledger.empty else pd.DataFrame()
-scored = live[live["pnl"].notna()] if not live.empty else pd.DataFrame()
 
+# Performance COUNTS start at the cutoff (pre-fix new-format tips were garbage). Rows before
+# the cutoff stay in the ledger for CLV — they're just excluded from these aggregates.
+_cut = config.PERFORMANCE_CUTOFF_DATE
+if not live.empty and "generated_at" in live.columns:
+    counted = live[live["generated_at"].astype(str).str[:10] >= _cut]
+else:
+    counted = live
+scored = counted[counted["pnl"].notna()] if not counted.empty else pd.DataFrame()
+
+# Tiers are SNIPER / MARKSMAN / VALUABLE (not "VALUE").
 c1, c2, c3, c4, c5 = st.columns(5)
 
 with c1:
@@ -103,8 +112,8 @@ with c1:
     st.metric("🎯 Live SNIPERs", n_sniper)
 
 with c2:
-    n_value = len(bets[(bets["signal_tier"] == "VALUE") & (bets["bet"].isin(["OVER","UNDER"]))]) if not bets.empty else 0
-    st.metric("💡 Live VALUE", n_value)
+    n_value = len(bets[(bets["signal_tier"] == "VALUABLE") & (bets["bet"].isin(["OVER", "UNDER"]))]) if not bets.empty else 0
+    st.metric("💎 Live VALUABLE", n_value)
 
 with c3:
     if not scored.empty:
@@ -121,18 +130,18 @@ with c4:
         st.metric("✅ Win Rate", "—")
 
 with c5:
-    if not scored.empty:
-        st.metric("📊 Resolved Bets", len(scored))
-    else:
-        st.metric("📊 Resolved Bets", "0")
+    st.metric("📊 Resolved Bets", len(scored) if not scored.empty else 0)
+
+st.caption(f"📅 Performance counts tips generated on/after {_cut} (pre-fix new-format tips excluded; kept in CLV data).")
 
 st.divider()
 st.markdown("### Navigate using the sidebar →")
 st.markdown("""
 | Page | What you'll find |
 |---|---|
-| 📊 Dashboard | Today's SNIPER & VALUE tips with drift signals |
-| 📈 Performance | ROI charts, SNIPER vs VALUE breakdown, by league |
-| 📋 Ledger | Full bet history — filter, search, export |
-| ℹ️ Model Info | How the two models work, feature importances |
+| 📊 Dashboard | Today's tips by **model** (Standard / New-Format) and **tier** with drift signals |
+| ⚡ Live | In-play, half-time and live-signal history (all live views) |
+| 👤 Player Props · ⚽ Fantasy | Player-prop tips and FPL layer |
+| 💼 Portfolio | ROI / PnL by model, tier and league (post-cutoff) |
+| ℹ️ Model Info | How the Standard and New-Format models work |
 """)
