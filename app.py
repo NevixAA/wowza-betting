@@ -116,11 +116,12 @@ with c2:
     st.metric("💎 Live VALUABLE", n_value)
 
 with c3:
+    # P/L in UNITS on flat 1u paper stakes — NOT "ROI" (no real capital/staking).
     if not scored.empty:
-        roi = scored["pnl"].sum() / len(scored) * 100
-        st.metric("📈 Live ROI", f"{roi:+.1f}%")
+        pl = scored["pnl"].sum()
+        st.metric("📈 Live P/L (u)", f"{pl:+.2f}u")
     else:
-        st.metric("📈 Live ROI", "—")
+        st.metric("📈 Live P/L (u)", "—")
 
 with c4:
     if not scored.empty:
