@@ -2,7 +2,13 @@
 
 **Status:** Production — fully automated via GitHub Actions
 **Live since:** April 2026
-**Last doc update:** 2026-07-07
+**Last doc update:** 2026-08-09
+
+> **2026-08-09 update:** fixed a new-format model calibration bug (it under-predicted goals →
+> one-sided UNDER tips); fixed a workflow git-add bug that caused duplicate Telegram tips;
+> consolidated the dashboard (11 → 7 pages); switched performance language from "ROI" to
+> **P/L (units)** (flat 1u paper stakes — not real ROI); added a **performance cutoff**
+> (`PERFORMANCE_CUTOFF_DATE`) so pre-fix tips are excluded from win/P/L counts but kept for CLV.
 
 ---
 
@@ -16,10 +22,9 @@ running automatically in the cloud (no server/PC needed).
 | **Standard O/U 2.5** | Over/Under 2.5 goals for our 7 second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers, per-league thresholds | **Real-money candidate** |
 | **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — per-league walk-forward thresholds | Real-money candidate |
 | **HT Model** | Half-time O/U 0.5 and 1.5 | Paper |
-| **New-Format Model** | O/U for goals-only leagues (Brazil, Norway, MLS, …) — separate model, never mixed with standard | Paper |
-| **Sharp Money Tracker** | Odds-drift detection — STEAM / STRONG / SHARP across enabled leagues | Info |
-| **World Cup Tracker** | WC 2026 drift + ML value on O/U 1.5/2.5/3.5 and 1X2 | Paper |
-| **Live Scanner** | In-play Poisson signals during match hours (UNDER_HOLD, SLEEPING_GAME, STRONG_STUCK, COMEBACK, HT_*) | Info/alert |
+| **New-Format Model** | O/U for goals-only leagues (Brazil, Norway, MLS, …) — separate model, never mixed with standard. **Recalibrated 2026-08-09** (dropped train/predict-mismatched xG/inside-box/HT features that were crushing P(over)) | Paper |
+| **Sharp Money Tracker** | Odds-drift detection — STEAM / STRONG / SHARP. Feeds Telegram alerts + the drift/confirm signal on tips (standalone dashboard page removed 2026-08-09) | Info |
+| **Live Scanner** | In-play Poisson signals during match hours (UNDER_HOLD, SLEEPING_GAME, STRONG_STUCK, COMEBACK, HT_*) — shown on the **⚡ Live Center** page | Info/alert |
 | **Player Props** | 7-market ML ensemble (Goals, Goals 2+, Assists, SOT 1-3+, Cards) | **Paper only — no betting edge** |
 | **Fantasy (FPL)** | Repackages the accurate props model into FPL point projections (PL to start) | Prediction product |
 | **Health Monitor** | Alerts if predict fetches 0 fixtures / all leagues error (outage detection) | Reliability |
@@ -32,7 +37,7 @@ running automatically in the cloud (no server/PC needed).
 |---|---|---|---|
 | 🎯 **SNIPER** | Per-league threshold (14–25%) | Full | Highest confidence |
 | 🔫 **MARKSMAN** | ~14% to threshold | 3/4 | Medium-high |
-| 💎 **VALUABLE** | 4–8% | Half | Side markets only (O/U 2.5 VALUABLE disabled — net-negative) |
+| 💎 **VALUABLE** | 4–8% | Half | Standard O/U 2.5 VALUABLE sent live; new-format VALUABLE is digest-only (volume) |
 
 ---
 
@@ -78,7 +83,7 @@ per-market with a chronological (walk-forward) split — no random leakage.
 | Model file | Scope |
 |---|---|
 | `model_v9_standard.pkl` | O/U 2.5, standard-format (our 7 second divs, trained on the full standard pool) |
-| `model_v9_newformat.pkl` | O/U 2.5, goals-only leagues — **never mixed with standard** |
+| `model_v9_newformat.pkl` | O/U 2.5, goals-only leagues — **never mixed with standard**. Uses the full feature set **minus** xG / inside-box / half-time features (populated at train but absent for upcoming fixtures → recalibrated 2026-08-09) |
 | `model_v9_btts / over15 / over35.pkl` | Side markets |
 | `model_ht_over05 / over15.pkl` | Half-time O/U |
 | `model_player_{goals,goals2,assists,sot,sot2,sot3,cards}.pkl` | 7 player-prop markets |
@@ -108,18 +113,19 @@ per-market with a chronological (walk-forward) split — no random leakage.
 
 | Workflow | Schedule (UTC) | Does |
 |---|---|---|
-| **predict** | every 5 min, 08–23 (at :01) | O/U 2.5 + side markets → Telegram + health record |
-| **player_props** | hourly (:02) + nightly 23:30 + Sun 05:00 | props predict / WC collect / Sunday club retrain |
-| **live_scanner** | every 5 min, 08–23 (at :03) | in-play Poisson signals |
-| **worldcup** | hourly, 08–23 | WC drift + ML value |
-| **sharp_tracker** | every 2 h (08–22) | drift signals |
-| **update_results** | ~every 2 h | fill WIN/LOSS from football-data.co.uk |
-| **injury_refresh** | daily 04:00 | refresh injury data |
-| **daily_summary** | 07:00 | Telegram digest + props digest |
-| **weekly_summary** | Mon 09:00 | performance summary |
+| **predict** | every 5 min, 08–23 (at :01) | O/U 2.5 + side markets → Telegram + health record. Commits each file individually so one missing output can't abort the commit (the duplicate-flood fix) |
+| **player_props** | hourly (:02) + nightly 23:30 + Sun 05:00 | props predict / Sunday club retrain |
+| **live_scanner** | ~every 10 min, 08–23 | in-play Poisson signals (live-adjusted λ from in-play SOT) |
+| **sharp_tracker** | every 2 h (08–22) | drift signals → Telegram |
+| **sharp_move_alert** | 07/13/19 | alert when sharp money moves on a tip we already sent |
+| **update_results** | ~every 2 h | fill WIN/LOSS from football-data.co.uk + closing odds → CLV |
+| **injury_refresh** | daily | refresh injury data |
+| **daily_summary** | 07:00 | Telegram digest (by model/tier, **P/L units**) + props digest + one-time NF-bug announcement |
+| **weekly_summary** | Mon 09:00 | performance summary (by model/tier, P/L units) |
 | **retrain** | **Sun 03:00** | full team + player retrain, commit + push |
-| **backtest** | monthly (1st, 03:00) | heavy walk-forward + per-league ROI |
-| **preseason_retrain** | Aug 1 | season-start retrain |
+| **backtest** | monthly (1st, 03:00) | heavy walk-forward + per-league backtest return |
+
+*(worldcup workflow disabled — WC2026 over.)*
 
 Predict runs are **pre-match only** — matches that have already kicked off are skipped
 (they belong to the live scanner, not the pre-match model).
@@ -170,8 +176,9 @@ for these on OddsAPI — smaller leagues return none.)
 
 > ⚠️ **Data note:** because the deep Excel is local-only, the automated CI retrain trains
 > on the **last 4 seasons**. A local run *with* the Excel sees more history and different
-> bet counts/ROI — so treat per-league ROI as re-validated each retrain
-> (`output/backtest_by_league_standard.csv`), not as a fixed headline number.
+> bet counts/P&L — so treat per-league backtest return as re-validated each retrain
+> (`output/backtest_by_league_standard.csv`), not as a fixed headline number. Live results
+> use **P/L in units** (flat 1u paper stakes), counted from `PERFORMANCE_CUTOFF_DATE` onward.
 
 ---
 
@@ -187,8 +194,9 @@ python retrain.py                                  # full team retrain (needs da
 streamlit run app.py                               # dashboard
 ```
 
-**Dashboard pages:** Dashboard · Model Info · World Cup · Live · Sharp Money · HalfTime ·
-Live History · Agent Analysis · Player Props · Portfolio · Fantasy.
+**Dashboard pages (7):** 📊 Dashboard · ℹ️ Model Info · ⚡ Live Center (Live Now / Half-Time /
+History) · 🤖 Agent Analysis · 👤 Player Props · 💼 Portfolio · ⚽ Fantasy.
+*(World Cup, standalone Sharp Money, HalfTime and Live History pages removed/merged 2026-08-09.)*
 
 ---
 
