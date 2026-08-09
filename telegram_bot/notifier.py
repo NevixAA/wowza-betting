@@ -661,13 +661,51 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
     bl = pd.read_csv(led)
     if "source" not in bl.columns:
         return 0
+    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
     live = bl[bl["source"] == "live"].copy()
     today = datetime.now().strftime("%Y-%m-%d")
-    live = live[live["match_date"].astype(str).str[:10] >= today]      # upcoming only
+    live = live[live["match_date"].astype(str).str[:10] >= today]
+    # A sharp-move alert is only actionable BEFORE kickoff — never alert on a match that has
+    # already started. The ledger stores only the date, so: (1) drop already-settled rows, and
+    # (2) use kickoff_utc from bets.csv / predictions.csv to keep only fixtures whose kickoff
+    # is still in the future (this is what stopped alerts firing on matches played earlier today).
+    if "result" in live.columns:
+        live = live[live["result"].isna() | (live["result"].astype(str).str.strip().isin(["", "nan"]))]
+    _ko: dict = {}
+    for _src in ("bets.csv", "predictions.csv"):
+        _p = app_config.OUTPUT_DIR / _src
+        if not _p.exists():
+            continue
+        try:
+            _b = pd.read_csv(_p)
+        except Exception:
+            continue
+        if "kickoff_utc" not in _b.columns:
+            continue
+        for _r in _b.itertuples(index=False):
+            _k = (_norm(getattr(_r, "home_team", "")), _norm(getattr(_r, "away_team", "")),
+                  str(getattr(_r, "date", ""))[:10])
+            _ko.setdefault(_k, str(getattr(_r, "kickoff_utc", "")))
+    _now_ts = pd.Timestamp.utcnow()
+
+    def _upcoming(row) -> bool:
+        kt = _ko.get((_norm(row["home_team"]), _norm(row["away_team"]), str(row["match_date"])[:10]))
+        if kt:
+            t = pd.to_datetime(kt, utc=True, errors="coerce")
+            if pd.notna(t):
+                return bool(t > _now_ts)
+        # kickoff unknown -> conservative: only keep matches dated strictly after today
+        return str(row["match_date"])[:10] > today
+
+    live = live[live.apply(_upcoming, axis=1)]
+    # Keep only the LATEST tip per fixture. The model can flip a side (e.g. UNDER -> OVER after
+    # the 2026-08-09 recalibration), leaving a stale opposite-side row in the ledger — without
+    # this we'd alert on BOTH sides of the same match (the Palmeiras UNDER+OVER case).
+    if "generated_at" in live.columns and not live.empty:
+        live = live.sort_values("generated_at").drop_duplicates(
+            subset=["home_team", "away_team", "match_date"], keep="last")
     if live.empty:
         return 0
-
-    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
     # SRC in the key + priority lookup: over25/under25 for standard fixtures live in BOTH
     # standard_odds_history (OddsAPI) AND standard_sidemarket (Bet365). Keying without the
     # source would pair a first-seen from one book with a latest from the other -> a fake
@@ -721,7 +759,9 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         if not entry or not cur or entry <= 1.0:
             continue
         move = cur / entry - 1.0                 # <0 = our side shortened (confirm); >0 = drifted
-        if abs(move) < move_thresh or abs(move) > 0.50:   # cap implausible (in-play / glitch)
+        # Real O/U 2.5 line moves are small (a few %). Anything beyond ~20% is a data artifact
+        # (stale/outlier first snapshot, or a residual cross-source pairing), not a sharp move.
+        if abs(move) < move_thresh or abs(move) > 0.20:
             continue
         direction = "confirm" if move < 0 else "disagree"
         dkey = f"{r.home_team}|{r.away_team}|{str(r.match_date)[:10]}|{side}|{direction}"
