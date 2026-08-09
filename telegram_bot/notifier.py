@@ -1681,34 +1681,47 @@ def notify_daily_digest() -> bool:
                 (bl["match_date"].astype(str).str[:10] >= today_str)
             ].copy()
             ou_total = len(bl)
-            lines.append(f"⚽ <b>Over 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
+            # derive model_type from league for blanks so new-format tips can't show as standard
+            if "model_type" not in bl.columns:
+                bl["model_type"] = ""
+            _blk = bl["model_type"].isna() | (bl["model_type"].astype(str).str.strip().isin(["", "nan"]))
+            bl.loc[_blk, "model_type"] = bl.loc[_blk, "league"].map(app_config.model_type_for_league)
+            # Market is O/U 2.5 (tips can be OVER or UNDER) — NOT "Over 2.5". Group by model
+            # then tier; the per-tip line shows the actual side.
+            lines.append(f"⚽ <b>O/U 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
             if bl.empty:
                 lines.append("  No tips today")
             else:
-                for tier in TIER_ORDER:
-                    tb = bl[bl["signal_tier"] == tier]
-                    if tb.empty:
+                for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
+                                            ("new_format", "🌍", "New-Format")]:
+                    fb = bl[bl["model_type"] == fmt]
+                    if fb.empty:
                         continue
-                    lines.append(f"  {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
-                    for _, r in tb.iterrows():
-                        side = str(r.get("side", ""))
-                        try:
-                            odds = float(r.get("odds", 0) or 0)
-                        except (TypeError, ValueError):
-                            odds = 0.0
-                        try:
-                            edge = float(r.get("edge_pct", 0) or 0)
-                        except (TypeError, ValueError):
-                            edge = 0.0
-                        lines.append(
-                            f"    {r['home_team']} vs {r['away_team']} — "
-                            f"<b>{side} 2.5</b> @ {odds:.2f} (+{edge:.0f}%)"
-                            f"  [{r.get('league','')}]"
-                        )
+                    lines.append(f"  {femoji} <b>{flabel}</b> ({len(fb)})")
+                    for tier in TIER_ORDER:
+                        tb = fb[fb["signal_tier"] == tier]
+                        if tb.empty:
+                            continue
+                        lines.append(f"    {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
+                        for _, r in tb.iterrows():
+                            side = str(r.get("side", ""))
+                            try:
+                                odds = float(r.get("odds", 0) or 0)
+                            except (TypeError, ValueError):
+                                odds = 0.0
+                            try:
+                                edge = float(r.get("edge_pct", 0) or 0)
+                            except (TypeError, ValueError):
+                                edge = 0.0
+                            lines.append(
+                                f"      {r['home_team']} vs {r['away_team']} — "
+                                f"<b>{side} 2.5</b> @ {odds:.2f} (+{edge:.0f}%)"
+                                f"  [{r.get('league','')}]"
+                            )
         except Exception as e:
             lines.append(f"  error: {e}")
     else:
-        lines.append("⚽ <b>Over 2.5</b> — no data yet")
+        lines.append("⚽ <b>O/U 2.5</b> — no data yet")
     lines.append("")
 
     # ── Side markets: BTTS / Over 1.5 / Over 3.5 — from the LEDGER (best-tier) ──
@@ -1842,19 +1855,33 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             yest_led = led[led["match_date"].astype(str).str[:10] == yesterday_str].copy()
             live_y = yest_led[yest_led["source"] == "live"] if "source" in yest_led.columns else yest_led
+            if "model_type" not in live_y.columns:
+                live_y["model_type"] = ""
+            _blk = live_y["model_type"].isna() | (live_y["model_type"].astype(str).str.strip().isin(["", "nan"]))
+            live_y.loc[_blk, "model_type"] = live_y.loc[_blk, "league"].map(app_config.model_type_for_league)
             r_all = _stats_sub(live_y, pd.Series([True] * len(live_y), index=live_y.index))
             if r_all:
                 n, w, pnl = r_all
-                lines2.append(f"⚽ <b>Over 2.5</b>  (PnL {pnl:+.2f}u)")
-                for tier in TIER_ORDER:
-                    if "signal_tier" not in live_y.columns:
-                        break
-                    r = _stats_sub(live_y, live_y["signal_tier"] == tier)
-                    if r:
-                        tn, tw, tp = r
-                        lines2.append(f"  {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  PnL {tp:+.2f}u")
+                lines2.append(f"⚽ <b>O/U 2.5</b>  (PnL {pnl:+.2f}u)")
+                for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
+                                            ("new_format", "🌍", "New-Format")]:
+                    fb = live_y[live_y["model_type"] == fmt]
+                    if fb.empty:
+                        continue
+                    rf = _stats_sub(fb, pd.Series([True] * len(fb), index=fb.index))
+                    if not rf:
+                        continue
+                    fn, fw, fp = rf
+                    lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  PnL {fp:+.2f}u")
+                    for tier in TIER_ORDER:
+                        if "signal_tier" not in fb.columns:
+                            break
+                        r = _stats_sub(fb, fb["signal_tier"] == tier)
+                        if r:
+                            tn, tw, tp = r
+                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  PnL {tp:+.2f}u")
             else:
-                lines2.append("  ⚽ Over 2.5: no settled results")
+                lines2.append("  ⚽ O/U 2.5: no settled results")
         except Exception:
             pass
 
@@ -1898,8 +1925,8 @@ def notify_daily_digest() -> bool:
             _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
             live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(app_config.model_type_for_league)
             for fmt, emoji, label in [
-                ("standard",   "⚽", "Over 2.5 — Standard"),
-                ("new_format", "🌍", "Over 2.5 — New-Format"),
+                ("standard",   "⚽", "O/U 2.5 — Standard"),
+                ("new_format", "🌍", "O/U 2.5 — New-Format"),
             ]:
                 sub = live[live["model_type"] == fmt]
                 if sub.empty:
