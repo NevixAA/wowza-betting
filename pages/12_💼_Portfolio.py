@@ -21,9 +21,6 @@ import config
 st.set_page_config(page_title="Portfolio | Wowza", page_icon="💼", layout="wide")
 
 OUT = config.OUTPUT_DIR
-NF_LEAGUES = set(getattr(config, "NEW_FORMAT_LEAGUES", []))
-STD_LEAGUES = {"Championship", "League One", "League Two",
-               "Bundesliga 2", "Ligue 2", "La Liga 2", "Serie B"}
 
 
 # ── Data loading ────────────────────────────────────────────────────────────────
@@ -48,9 +45,13 @@ def load_player_ledger() -> pd.DataFrame:
 
 
 def _market(league: str) -> str:
-    if league in NF_LEAGUES:
+    # Classify via the canonical config map so ALL standard leagues (incl. Greek / Danish /
+    # Austrian / Romanian) are captured — the old hardcoded STD_LEAGUES set silently dropped
+    # several standard leagues to "Other", excluding them from the Standard O/U track.
+    mt = config.model_type_for_league(league)
+    if mt == "new_format":
         return "New-Format"
-    if league in STD_LEAGUES:
+    if mt == "standard":
         return "Standard O/U"
     return "Other"
 
@@ -62,6 +63,13 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
     out = pd.DataFrame()
     out["match_date"] = df["match_date"]
     out["league"] = df.get("league", "").astype(str)
+    # when the tip was GENERATED (for the post-fix cutoff). main: generated_at; props: signal_date.
+    if kind == "main":
+        out["generated_at"] = df.get("generated_at", pd.Series([""] * len(df))).astype(str).str[:10]
+    else:
+        out["generated_at"] = pd.to_datetime(
+            df.get("signal_date", df.get("match_date")), errors="coerce"
+        ).dt.strftime("%Y-%m-%d").fillna("")
     if kind == "main":
         out["odds"] = pd.to_numeric(df["odds"], errors="coerce")
         out["edge"] = pd.to_numeric(df.get("edge_pct", 0), errors="coerce") / 100.0
@@ -174,6 +182,10 @@ with st.sidebar:
     src = st.radio("Data source", ["Live only", "Backtest (⚠ inflated)", "Live + Backtest"], index=0)
     discount = st.checkbox("Reality-discount edges (÷5)", value=False,
                            help="Backtest edges run ~5× hot vs live — discount to approximate reality.")
+    _cut = config.PERFORMANCE_CUTOFF_DATE
+    post_fix_only = st.checkbox(f"Count only post-fix tips (from {_cut})", value=True,
+                                help="The new-format model had a calibration bug fixed 2026-08-09. "
+                                     "Pre-fix tips are excluded by default; untick to explore full history.")
 
 tier_frac = {"SNIPER": sniper, "MARKSMAN": marksman, "VALUABLE": valuable}
 
@@ -195,12 +207,18 @@ if discount:
     allbets = allbets.copy()
     allbets["edge"] = allbets["edge"] / 5.0
 
+# Post-fix cutoff (new-format calibration bug fixed 2026-08-09). Default ON so the sim reflects
+# only trustworthy tips; the rows themselves stay in the ledger for CLV.
+if post_fix_only and "generated_at" in allbets.columns:
+    allbets = allbets[allbets["generated_at"].astype(str) >= _cut]
+
 # Honesty banner
 n_live = (allbets["result"].isin(["WIN", "LOSS"])).sum()
 st.info(
-    f"**{n_live} settled bets** in this view. ⚠️ Live samples are thin "
-    f"(Standard ~17, New-format ~56, Props ~247 mostly losing/void, Side/BTTS = none yet). "
-    "Treat curves as illustrative, not proof. Backtest data runs ~5× hot — use the discount toggle."
+    f"**{n_live} settled bets** in this view"
+    + (f" (post-fix, from {_cut})" if post_fix_only else " (full history)")
+    + ". ⚠️ Live samples are thin — treat curves as illustrative, not proof. "
+    "Backtest data runs ~5× hot; use the discount toggle."
 )
 
 MARKETS = ["Standard O/U", "New-Format", "Player Props", "Side/BTTS"]
