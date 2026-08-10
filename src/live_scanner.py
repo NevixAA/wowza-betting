@@ -50,7 +50,11 @@ SOT_TO_GOAL   = 0.311
 BLEND_K_MINS  = 30.0
 
 MIN_FAIR_UNDER    = 1.28   # only alert if fair UNDER odds >= this (meaningful value)
-MIN_FAIR_OVER     = 2.00   # only alert OVER if fair odds >= this
+MIN_FAIR_OVER     = 2.00   # only alert OVER if fair odds >= this  (p_over <= 0.50)
+MAX_FAIR_OVER     = 3.30   # AND fair odds <= this (p_over >= ~0.30). Without an upper bound the
+                           # STRONG_STUCK/COMEBACK signals fired on 0-0 games late where live
+                           # P(over) was 1-8% (fair 12-100) -> no book offers value, guaranteed
+                           # loser. This band keeps only actionable OVER situations. (audit C1)
 MIN_ELAPSED       = 45     # don't alert before half-time
 MIN_LIVE_EDGE     = 0.12   # 12% edge threshold for live alerts (higher bar than pre-match)
 ATTACK_STR_HIGH   = 1.25   # threshold for "strong attack" signal
@@ -553,7 +557,7 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame,
                 and elapsed <= 80
                 and total_g <= 1
                 and (home_atk >= ATTACK_STR_HIGH or away_atk >= ATTACK_STR_HIGH)
-                and probs["fair_over_odds"] >= MIN_FAIR_OVER):
+                and MIN_FAIR_OVER <= probs["fair_over_odds"] <= MAX_FAIR_OVER):
             stronger = home if home_atk >= away_atk else away
             atk_val  = max(home_atk, away_atk)
             tips.append({**base,
@@ -568,7 +572,8 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame,
         # Team losing at 60+ min with strong attack → push for goals → OVER value
         elif (elapsed >= 60
                 and elapsed <= 82
-                and total_g <= 2):
+                and total_g <= 2
+                and MIN_FAIR_OVER <= probs["fair_over_odds"] <= MAX_FAIR_OVER):
             if home_g < away_g and home_atk >= ATTACK_STR_HIGH:
                 tips.append({**base,
                     "signal_type": "COMEBACK",
