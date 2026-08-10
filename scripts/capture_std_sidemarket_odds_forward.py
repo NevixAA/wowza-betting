@@ -35,6 +35,23 @@ NEXT_N = 12          # look-ahead fixtures per league
 _MIN_QUOTA = 300     # stop if API-Football quota gets low (Pro tier is 7,500/day)
 
 
+_OU_EXCLUDE = ("Corner", "Card", "Team", "Player", "Shot", "Foul", "Handicap")
+
+
+def _sanitize_ou(out: dict) -> dict:
+    """Drop FT GOAL O/U odds that are internally impossible (a non-goal O/U market leaked in,
+    a line was mislabelled, or a BTTS price was copied). Keeps btts / ht_* / h2h. Guards CLV:
+    the std side-market archive had 21.9% of fixtures with over25>=over35 (audit H3)."""
+    for ok, bk in (("over25", "btts_yes"), ("under25", "btts_no")):
+        if ok in out and bk in out and out[ok] == out[bk]:
+            out.pop(ok, None)
+    ov = [out[k] for k in ("over15", "over25", "over35") if k in out]
+    if len(ov) >= 2 and any(ov[i] >= ov[i + 1] for i in range(len(ov) - 1)):
+        for k in ("over15", "over25", "over35", "under15", "under25", "under35"):
+            out.pop(k, None)
+    return out
+
+
 def _parse_all_odds(data: dict) -> dict:
     """Bet365 BTTS yes/no + O/U 1.5/2.5/3.5 (over+under) -> {market: odds}."""
     out = {}
@@ -54,8 +71,9 @@ def _parse_all_odds(data: dict) -> dict:
                                 out["btts_no"] = float(v["odd"])
                         except (TypeError, ValueError, KeyError):
                             pass
-                elif "Over/Under" in name and ("First Half" in name or "1st Half" in name):
-                    # HT model: first-half O/U 0.5 / 1.5 -> open->moving->closing capture
+                elif ("Over/Under" in name and ("First Half" in name or "1st Half" in name)
+                        and not any(x in name for x in _OU_EXCLUDE)):
+                    # HT model: first-half GOALS O/U 0.5 / 1.5 -> open->moving->closing capture
                     for v in vals:
                         label = v.get("value", "")
                         try:
@@ -67,7 +85,8 @@ def _parse_all_odds(data: dict) -> dict:
                                 out[f"ht_over{key}"] = odd
                             elif f"Under {ln}" in label:
                                 out[f"ht_under{key}"] = odd
-                elif "Over/Under" in name and "Half" not in name:   # full-time O/U (not HT)
+                elif ("Over/Under" in name and "Half" not in name
+                        and not any(x in name for x in _OU_EXCLUDE)):   # FT GOALS O/U only
                     for v in vals:
                         label = v.get("value", "")
                         try:
@@ -92,7 +111,7 @@ def _parse_all_odds(data: dict) -> dict:
                             out["h2h_draw"] = odd
                         elif val == "Away":
                             out["h2h_away"] = odd
-    return out
+    return _sanitize_ou(out)
 
 
 def _fetch_odds(fixture_id: int) -> dict:

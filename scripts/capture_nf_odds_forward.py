@@ -34,6 +34,23 @@ NEXT_N = 20          # look-ahead fixtures per league
 _MIN_QUOTA = 200     # stop if API quota gets low
 
 
+def _sanitize_ou(out: dict) -> dict:
+    """Drop GOAL O/U odds that are internally impossible (a non-goal O/U market such as
+    corners/cards leaked in, a line was mislabelled, or a BTTS price was copied). Keeps
+    btts / h2h untouched. Guards CLV: ~1/3 of NF closings failed O/U monotonicity (audit H3)."""
+    # (1) BTTS price copied into O/U (identical float = the same market wrote both keys).
+    for ok, bk in (("over25", "btts_yes"), ("under25", "btts_no")):
+        if ok in out and bk in out and out[ok] == out[bk]:
+            out.pop(ok, None)
+    # (2) Monotonicity: P(over1.5) > P(over2.5) > P(over3.5)  =>  odds over15 < over25 < over35.
+    #     Any violation means the goal-O/U parse is corrupt -> drop the whole O/U set for safety.
+    ov = [out[k] for k in ("over15", "over25", "over35") if k in out]
+    if len(ov) >= 2 and any(ov[i] >= ov[i + 1] for i in range(len(ov) - 1)):
+        for k in ("over15", "over25", "over35", "under15", "under25", "under35"):
+            out.pop(k, None)
+    return out
+
+
 def _parse_all_odds(data: dict) -> dict:
     """Bet365 O/U 2.5/1.5/3.5 (over+under) + BTTS yes/no -> {market: odds}."""
     out = {}
@@ -53,7 +70,11 @@ def _parse_all_odds(data: dict) -> dict:
                                 out["btts_no"] = float(v["odd"])
                         except (TypeError, ValueError, KeyError):
                             pass
-                elif "Over/Under" in name and "Half" not in name:   # FT only — NOT half-time O/U
+                elif ("Over/Under" in name and not any(
+                        x in name for x in ("Half", "Corner", "Card", "Team",
+                                            "Player", "Shot", "Foul", "Handicap"))):
+                    # FT GOALS O/U only — the keyword exclusions stop corner/card/team O/U
+                    # markets (which also contain "Over/Under") from leaking into goal lines.
                     for v in vals:
                         label = v.get("value", "")
                         try:
@@ -78,7 +99,7 @@ def _parse_all_odds(data: dict) -> dict:
                             out["h2h_draw"] = odd
                         elif val == "Away":
                             out["h2h_away"] = odd
-    return out
+    return _sanitize_ou(out)
 
 
 def _fetch_odds(fixture_id: int) -> dict:
