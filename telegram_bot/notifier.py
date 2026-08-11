@@ -300,14 +300,16 @@ def notify_new_snipers() -> int:
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
         edge  = float(row.get("best_edge", 0)) * 100
         drift = _drift_emoji(row.get("drift_signal", "New"))
-        model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if row.get("model_type") == "standard" else "🌍 New-Format"
+        _is_std = row.get("model_type") == "standard"
+        model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
+        mtag  = "standard" if _is_std else "new-format"
 
         if tier == "SNIPER":
             header = f"🎯 <b>SNIPER TIP</b> {drift}"
         elif tier == "MARKSMAN":
             header = f"🔫 <b>MARKSMAN TIP</b> {drift}"
         elif tier == "VALUABLE":
-            header = f"💎 <b>VALUABLE TIP</b> (standard) {drift}"
+            header = f"💎 <b>VALUABLE TIP</b> ({mtag}) {drift}"   # dynamic — NF VALUABLE now sent too
         else:
             header = f"🔍 <b>EDGE WATCH</b> (small edge, not a tip) {drift}"
 
