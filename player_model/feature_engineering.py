@@ -1091,11 +1091,26 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     return df.reset_index(drop=True)
 
 
+def _build_history_index(history: pd.DataFrame):
+    """Index match-history ONCE for O(1) per-player lookup in build_upcoming_features.
+    Returns (by_player_id, by_name_lower) dicts of date-sorted per-player frames. Replaces the
+    full 230k-row scan that ran once PER PLAYER PER MATCH — the O(matches x players x rows)
+    blowup that timed the predict step out. Behaviour-identical: same rows, same date order."""
+    if history is None or history.empty:
+        return {}, {}
+    h = history.sort_values("date")
+    by_pid  = {pid: g for pid, g in h.groupby("player_id")} if "player_id" in h.columns else {}
+    by_name = ({nm: g for nm, g in h.groupby(h["player_name"].astype(str).str.lower())}
+               if "player_name" in h.columns else {})
+    return by_pid, by_name
+
+
 def build_upcoming_features(
     upcoming: list[dict],
     history: pd.DataFrame,
     referee_profile: dict | None = None,
     match_context:   dict | None = None,
+    history_index: tuple | None = None,
 ) -> pd.DataFrame:
     """
     Build feature rows for upcoming player predictions.
@@ -1103,9 +1118,14 @@ def build_upcoming_features(
 
     upcoming: list of player dicts (player_id, player_name, team, opponent, is_home, ...)
     history:  match-level DataFrame from build_features()
+    history_index: optional pre-built (by_pid, by_name) from _build_history_index(history);
+                   pass it once from the caller so it isn't rebuilt per match.
     """
     if not upcoming or history.empty:
         return pd.DataFrame()
+
+    by_pid, by_name = history_index if history_index is not None else _build_history_index(history)
+    _empty = history.iloc[0:0]
 
     n   = config.ROLLING_N
     ref = referee_profile or {}
@@ -1116,11 +1136,12 @@ def build_upcoming_features(
         pid  = p.get("player_id")
         name = p.get("player_name", "")
 
-        # Find player's match history — full career for priors, last-n for rolling
+        # Find player's match history — full career for priors, last-n for rolling.
+        # O(1) dict lookup into the pre-indexed, date-sorted history (was a full scan per player).
         if pid:
-            phist_all = history[history["player_id"] == pid].sort_values("date")
+            phist_all = by_pid.get(pid, _empty)          # NaN/unknown pid -> empty (as before)
         else:
-            phist_all = history[history["player_name"].str.lower() == name.lower()].sort_values("date")
+            phist_all = by_name.get(str(name).lower(), _empty)
 
         phist = phist_all.tail(n)
 

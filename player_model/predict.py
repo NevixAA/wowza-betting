@@ -17,7 +17,7 @@ from . import config
 
 _APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
 from .api_football import _norm_name as _norm_player_name
-from .feature_engineering import build_upcoming_features, compute_ges
+from .feature_engineering import build_upcoming_features, compute_ges, _build_history_index
 from .model import load_model, predict_proba
 
 import numpy as np
@@ -336,7 +336,12 @@ def run_player_predictions(
             from player_model.api_football import get_injured_players as _gip
             from datetime import date as _date
             _today_str = _date.today().isoformat()
+            # Only leagues that actually have upcoming matches this run — skip the off-season
+            # ones so we don't burn API calls (and time) on leagues with zero fixtures.
+            _bet_leagues = set(bets["league"].astype(str).unique()) if not bets.empty else set()
             for _lg, _lg_id in config.PROP_LEAGUES.items():
+                if _bet_leagues and _lg not in _bet_leagues:
+                    continue
                 _szn = config.PROP_SEASONS.get(_lg, "2025")
                 injured_cache[_lg] = _gip(_lg_id, _szn, _today_str)
             _n_inj = sum(len(v) for v in injured_cache.values())
@@ -352,6 +357,12 @@ def run_player_predictions(
         return pd.DataFrame()
 
     all_tips = []
+
+    # Perf: index the history ONCE and lowercase the team column ONCE. Previously every match
+    # re-scanned the full 230k-row history per player (O(matches x players x rows)) which pushed
+    # the CI predict past its 60-min timeout → cancelled → zero tips. Behaviour is unchanged.
+    _hist_index = _build_history_index(history_df)
+    _team_lc    = history_df["team"].astype(str).str.lower()
 
     for _, match_row in bets.iterrows():
         home      = match_row["home_team"]
@@ -389,12 +400,12 @@ def run_player_predictions(
 
         # Find players from both teams
         team_players = history_df[
-            history_df["team"].str.lower().isin([home.lower(), away.lower()])
+            _team_lc.isin([home.lower(), away.lower()])
         ].copy()
         if team_players.empty:
             mask = (
-                history_df["team"].str.lower().str.contains(home.lower()[:5], na=False) |
-                history_df["team"].str.lower().str.contains(away.lower()[:5], na=False)
+                _team_lc.str.contains(home.lower()[:5], na=False) |
+                _team_lc.str.contains(away.lower()[:5], na=False)
             )
             team_players = history_df[mask].copy()
         if team_players.empty:
@@ -409,7 +420,7 @@ def run_player_predictions(
         )
 
         upcoming_list = team_players.to_dict("records")
-        feat_df = build_upcoming_features(upcoming_list, history_df, ref, ctx)
+        feat_df = build_upcoming_features(upcoming_list, history_df, ref, ctx, history_index=_hist_index)
 
         if feat_df.empty:
             continue

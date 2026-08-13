@@ -26,7 +26,7 @@ on:
 jobs:
   player_props:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120   # predict enrichment can exceed 60m on a full slate; give it room to finish
     permissions:
       contents: write
 
