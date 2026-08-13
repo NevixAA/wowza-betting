@@ -273,6 +273,10 @@ def run_player_predictions(
     print(f"[player_model] market caps (top-1% real player): { {k: v for k,v in _MARKET_CAPS.items()} }")
 
     today = pd.Timestamp.now().normalize()
+    # Only the near-term slate. next_n pulls the next N fixtures per league even if weeks away
+    # (off-season leagues), which balloons the per-match lineup/feature work — the main reason
+    # a club-season run crawled to ~60 min while WC (one league, few games) ran in ~2 min.
+    _horizon = today + pd.Timedelta(days=4)
 
     # Primary: ALL upcoming fixtures in PROP_LEAGUES (decoupled from team model)
     prop_matches = []
@@ -287,6 +291,10 @@ def run_player_predictions(
                     teams    = fix.get("teams", {})
                     dt_full  = fix.get("fixture", {}).get("date", "")
                     dt       = dt_full[:10]
+                    if dt:
+                        _fd = pd.Timestamp(dt)
+                        if _fd < today or _fd > _horizon:
+                            continue   # skip weeks-away fixtures — only the near-term slate
                     prop_matches.append({
                         "home_team":    teams.get("home", {}).get("name", ""),
                         "away_team":    teams.get("away", {}).get("name", ""),
