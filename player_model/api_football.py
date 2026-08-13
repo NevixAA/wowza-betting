@@ -244,6 +244,32 @@ def find_fixture_id(league_id: int, season: str, date_str: str, home: str, away:
     return None
 
 
+def get_fixture_goals(league_id: int, season: str, date_str: str, home: str, away: str):
+    """Final + half-time goals for a completed match, by league/season/date/team names.
+    Returns (ft_home, ft_away, ht_home, ht_away), or None if the fixture isn't found / not FT.
+    ht_home/ht_away are None when the API carries no half-time score for that fixture. Used to
+    grade the live-signal history; reuses the same cached /fixtures call as find_fixture_id."""
+    data = _get("/fixtures", {
+        "league": league_id, "season": season, "date": date_str, "status": "FT",
+    }, cache_hours=168)  # completed fixtures cached 7 days
+    if not data:
+        return None
+    for fix in data.get("response", []):
+        fh = fix.get("teams", {}).get("home", {}).get("name", "")
+        fa = fix.get("teams", {}).get("away", {}).get("name", "")
+        if _team_match(home, fh) and _team_match(away, fa):
+            g  = fix.get("goals", {}) or {}
+            ht = (fix.get("score", {}) or {}).get("halftime", {}) or {}
+            fth, fta = g.get("home"), g.get("away")
+            if fth is None or fta is None:
+                return None
+            hth, hta = ht.get("home"), ht.get("away")
+            return (int(fth), int(fta),
+                    int(hth) if hth is not None else None,
+                    int(hta) if hta is not None else None)
+    return None
+
+
 def get_injured_players(league_id: int, season: str, date_str: str) -> set[str]:
     """
     Return normalized names of players currently injured/suspended for a league on a given date.
