@@ -1129,48 +1129,36 @@ def notify_player_props() -> int:
     from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
     df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
 
-    # SNIPER/MARKSMAN = real tips. PAPER = top-N tracking-only feed (no proven edge, never
-    # real money) — sent to the same channel, clearly labelled. VALUABLE/WATCH not sent.
-    df = df[df["tier"].isin(["SNIPER", "MARKSMAN", "PAPER"])].copy()
-
-    # Safety net (defense-in-depth; predict gates WC cards by real booking history and
-    # excludes GKs from scoring markets at source):
-    #  • goalkeepers have no goals/SOT/assist props — but CAN have card props (bunker GKs),
-    #    so only drop GKs for non-card markets.
+    # ── WEEKEND "MEAT" FEED (props are a calibrated-but-unproven TEST model) ─────────
+    # Props have no proven market edge, so this is NOT an edge-gated send: we surface a fixed
+    # weekly slate for tracking — the strongest 20 priced picks by model EV, bucketed
+    # 5 SNIPER / 5 MARKSMAN / 10 VALUABLE. Here the tier labels are STRENGTH RANKS, not
+    # real-money tiers. EVERY pick is tracked in player_ledger + clv_records regardless of
+    # whether it's sent — this only decides what goes to Telegram.
+    #
+    # GK safety net: keepers have no goals/SOT/assist props (but can have card props).
     if "position" in df.columns:
         _gk = df["position"].astype(str).str.strip().str.upper().str.startswith("G")
         df = df[~(_gk & (df["market"] != "cards"))].copy()
 
-    df = df.sort_values(["tier", "ev", "model_prob"], ascending=[True, False, False])
-
-    # Flood circuit-breaker — a healthy slate is a handful of tips, not dozens.
-    _MAX_PROP_ALERTS = 25
-    if len(df) > _MAX_PROP_ALERTS:
-        print(f"[notify_player_props] {len(df)} tips after filters — capping to top {_MAX_PROP_ALERTS}.")
-        df = df.head(_MAX_PROP_ALERTS)
-
+    # Only priced picks can be a sendable "bet option" (need odds for EV).
+    df["_mkt_odds_num"] = pd.to_numeric(df.get("market_odds"), errors="coerce")
+    df = df[df["_mkt_odds_num"] > 1.0].copy()
     if df.empty:
         return 0
 
-    # Load per-league player props ROI config — filter MARKSMAN to approved combos only
-    _pp_roi_path = app_config.OUTPUT_DIR / "player_props_league_roi.json"
-    _approved_pp: dict[str, list] = {}
-    if _pp_roi_path.exists():
-        try:
-            import json as _json
-            _pp_approved = _json.loads(_pp_roi_path.read_text()).get("approved", {})
-            _approved_pp = _pp_approved
-        except Exception:
-            pass
+    # Rank by model EV (fallbacks edge_rel, model_prob); one row per player/market/date.
+    df["_ev_rank"]   = pd.to_numeric(df.get("ev"), errors="coerce")
+    df["_edge_rank"] = pd.to_numeric(df.get("edge_rel"), errors="coerce")
+    df["_prob_rank"] = pd.to_numeric(df.get("model_prob"), errors="coerce")
+    df = (df.sort_values(["_ev_rank", "_edge_rank", "_prob_rank"], ascending=False)
+            .drop_duplicates(subset=["date", "player_name", "market"], keep="first"))
 
-    if _approved_pp:
-        def _pp_allowed(row) -> bool:
-            if row["tier"] in ("SNIPER", "PAPER"):   # PAPER = tracking feed, always allowed
-                return True
-            approved_markets = _approved_pp.get(row.get("league", ""), [])
-            return row["market"] in approved_markets
-        df = df[df.apply(_pp_allowed, axis=1)].copy()
-
+    # Bucket the top 20: ranks 1-5 SNIPER, 6-10 MARKSMAN, 11-20 VALUABLE.
+    FEED_SNIPER, FEED_MM, FEED_TOTAL = 5, 10, 20
+    df = df.head(FEED_TOTAL).reset_index(drop=True)
+    df["feed_tier"] = ["SNIPER" if i < FEED_SNIPER else ("MARKSMAN" if i < FEED_MM else "VALUABLE")
+                       for i in range(len(df))]
     if df.empty:
         return 0
 
@@ -1194,10 +1182,10 @@ def notify_player_props() -> int:
         emoji  = MARKET_EMOJI.get(row["market"], "📌")
         p      = float(row["model_prob"])
         fair   = float(row["fair_odds"])
-        tier   = row.get("tier", "WATCH")
+        tier   = row.get("feed_tier", "VALUABLE")   # strength-rank bucket, not a real-money tier
         mkt_odds = row.get("market_odds")
         ev_val   = row.get("ev")
-        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📊"}.get(tier, "👁")
+        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "💎")
         market_label = {
             "goals": "Anytime Goalscorer", "goals2": "Score 2+",
             "assists": "Assist",
@@ -1210,10 +1198,9 @@ def notify_player_props() -> int:
                        and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
                     else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
 
-        _title = "PAPER · TRACKING" if tier == "PAPER" else tier
-        _footer = ("🧪 <i>Paper signal — no proven edge, tracking only. Do NOT bet real money.</i>"
-                   if tier == "PAPER"
-                   else "⚠️ Check your bookmaker's player props market")
+        _title = f"{tier} · TEST"
+        _footer = ("🧪 <i>Test model — calibrated & strong at predicting, but NOT proven vs the "
+                   "market. Tracking only — do NOT bet real money.</i>")
         msg = (
             f"{tier_emoji} <b>{_title} — {market_label.upper()}</b>\n"
             f"━━━━━━━━━━━━━━━━\n"

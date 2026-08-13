@@ -19,7 +19,9 @@ from src import clv_capture
 from player_model import config
 from player_model.odds_fetcher import _norm
 
-_TRACK_TIERS = {"PAPER", "SNIPER", "MARKSMAN"}
+# Track CLV for EVERY tier that has odds (2026/27: keep the full open->close->CLV record for
+# the whole test slate, not just the sent feed). Rows without odds are skipped inside log_new_tips.
+_TRACK_TIERS = {"PAPER", "SNIPER", "MARKSMAN", "VALUABLE", "WATCH", "AVOID"}
 
 
 def _bet_id(date, player, market) -> str:
