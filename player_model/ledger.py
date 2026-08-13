@@ -34,7 +34,9 @@ SHARP_LEDGER_COLS = [
     "result", "pnl", "resolved_date",
 ]
 
-PLAYER_TRACKED_TIERS  = {"SNIPER", "MARKSMAN", "VALUABLE"}
+# Track EVERY pick the model produces (2026/27: props are a calibrated-but-unproven TEST
+# model — keep the whole prediction record for calibration/accuracy, not just the top tiers).
+PLAYER_TRACKED_TIERS  = {"SNIPER", "MARKSMAN", "VALUABLE", "WATCH", "PAPER", "AVOID"}
 SHARP_TRACKED_SIGNALS = {"STEAM_STRONG", "STEAM_SHARP", "STRONG"}
 
 
