@@ -338,10 +338,26 @@ def render_history():
                 return lookup[key]
         return (None, None)
 
+    # Prefer scores/results written by the grader (update_results.py) — the match DB has no
+    # current-season new-format scores, so the on-the-fly join below is only a fallback.
     _res = df.apply(_lookup_result, axis=1, result_type="expand")
-    df["final_total"] = _res[0]
-    _ht = _res[1]
-    df["result"] = [_settle(b, t, h) for b, t, h in zip(df["bet"], df["final_total"], _ht)]
+    join_ft = pd.to_numeric(pd.Series(list(_res[0]), index=df.index), errors="coerce")
+    join_ht = pd.to_numeric(pd.Series(list(_res[1]), index=df.index), errors="coerce")
+
+    ft = pd.to_numeric(df["final_total"], errors="coerce") if "final_total" in df.columns \
+        else pd.Series(pd.NA, index=df.index)
+    ft = ft.where(ft.notna(), join_ft)
+    ht = pd.to_numeric(df["ht_total"], errors="coerce") if "ht_total" in df.columns \
+        else pd.Series(pd.NA, index=df.index)
+    ht = ht.where(ht.notna(), join_ht)
+    df["final_total"] = ft
+
+    computed = [_settle(b, t, h) for b, t, h in zip(df["bet"], ft, ht)]
+    if "result" in df.columns:
+        stored = df["result"].astype(str).str.strip().str.upper()
+        df["result"] = [s if s in ("WIN", "LOSS") else c for s, c in zip(stored, computed)]
+    else:
+        df["result"] = computed
 
     settled = df[df["result"].isin(["WIN", "LOSS"])]
     pending = int((~df["result"].isin(["WIN", "LOSS"])).sum())

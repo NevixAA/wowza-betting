@@ -852,6 +852,176 @@ def update_ht_results(days: int = 3) -> None:
     log.info(f"ht_ledger: graded {graded} HT tip(s) → {f}")
 
 
+# ── Live in-play signal grader ────────────────────────────────────────────────
+# The Live Center "History" tab shows the scanner's in-play signals and whether they'd have
+# won. Nothing was writing those results back — the page tried to settle on-the-fly against the
+# match DB, which has no current-season new-format scores (af_history.parquet stops 2025). This
+# grader fills result/final_total/ht_total into output/live_signals_history.csv. ISOLATION:
+# touches only that file + its own score fetches; no model, no other ledger.
+
+def _live_side_from_bet(bet: str):
+    """Map a live-signal bet string -> settlement side (OVER/UNDER/HT_*), or None."""
+    b = str(bet).upper()
+    if "HT" in b:
+        if "OVER 0.5"  in b: return "HT_OVER_0.5"
+        if "UNDER 0.5" in b: return "HT_UNDER_0.5"
+        if "OVER 1.5"  in b: return "HT_OVER_1.5"
+        if "UNDER 1.5" in b: return "HT_UNDER_1.5"
+        return None
+    if "OVER 2.5"  in b: return "OVER"
+    if "UNDER 2.5" in b: return "UNDER"
+    return None
+
+
+def _settle_live(side, ft_total, ht_total):
+    """WIN/LOSS for a live signal given final + half-time totals (None if not gradable yet)."""
+    if side is None:
+        return None
+    if side.startswith("HT_"):
+        if ht_total is None or pd.isna(ht_total):
+            return None
+        if side == "HT_OVER_0.5":  return "WIN" if ht_total >= 1 else "LOSS"
+        if side == "HT_UNDER_0.5": return "WIN" if ht_total < 1  else "LOSS"
+        if side == "HT_OVER_1.5":  return "WIN" if ht_total >= 2 else "LOSS"
+        if side == "HT_UNDER_1.5": return "WIN" if ht_total <= 1 else "LOSS"
+        return None
+    if ft_total is None or pd.isna(ft_total):
+        return None
+    if side == "OVER":  return "WIN" if ft_total > 2.5  else "LOSS"
+    if side == "UNDER": return "WIN" if ft_total <= 2.5 else "LOSS"
+    return None
+
+
+def _date_variants(d: str) -> list:
+    """[d, d-1, d+1] — kickoffs can land a day either side of the signal date in UTC."""
+    try:
+        base = datetime.strptime(str(d)[:10], "%Y-%m-%d")
+    except (TypeError, ValueError):
+        return [str(d)[:10]]
+    from datetime import timedelta
+    return [(base + timedelta(days=off)).strftime("%Y-%m-%d") for off in (0, -1, 1)]
+
+
+def update_live_signal_results(days: int = 3, dry_run: bool = False) -> None:
+    """Grade output/live_signals_history.csv so the Live Center History tab shows win/loss.
+    Sources, cheap-first: football-data.co.uk (free, FT + HT for standard) and af_ht_history
+    (free HT) -> API-Football per fixture for whatever's still missing (the only current source
+    for Argentina/Brazil FT+HT). Writes final_total/ht_total/result. Idempotent: only rows
+    without a WIN/LOSS and with a past date are (re)graded."""
+    f = config.OUTPUT_DIR / "live_signals_history.csv"
+    if not f.exists():
+        log.info("live_signals_history.csv not found — skipping live-signal resolution"); return
+    hist = pd.read_csv(f)
+    if hist.empty or "match" not in hist.columns:
+        log.info("live_signals: nothing to grade"); return
+    for c in ("final_total", "ht_total", "result"):
+        if c not in hist.columns:
+            hist[c] = ""
+        hist[c] = hist[c].astype(object)          # avoid pyarrow-string write crash
+
+    today_str = str(datetime.utcnow().date())
+    def _pending(r):
+        res = str(r.get("result", "")).strip().upper()
+        return res not in ("WIN", "LOSS") and str(r.get("date", ""))[:10] < today_str
+    pending_idx = [i for i in hist.index if _pending(hist.loc[i])]
+    if not pending_idx:
+        log.info("live_signals: no pending results"); return
+    log.info(f"live_signals: {len(pending_idx)} pending signal(s) to resolve")
+
+    # free source 1: football-data.co.uk (per league, cached in-memory this run)
+    fd_cache: dict = {}
+    def _fd_completed(league):
+        if league not in _FD_SOURCES:
+            return []
+        if league not in fd_cache:
+            fd_cache[league] = fetch_scores_fd(league)
+        return fd_cache[league]
+
+    # free source 2: af_ht_history.parquet (half-time totals, mostly older new-format matches)
+    ht_idx: dict = {}
+    htp = config.OUTPUT_DIR / "af_ht_history.parquet"
+    if htp.exists():
+        try:
+            _ht = pd.read_parquet(htp, columns=["home_team", "away_team", "date", "HTHG", "HTAG"])
+            ht_idx = {(_norm(r.home_team), _norm(r.away_team), str(r.date)[:10]): (r.HTHG, r.HTAG)
+                      for r in _ht.itertuples(index=False)}
+        except Exception as e:
+            log.debug(f"live_signals: HT parquet read failed: {e}")
+
+    # paid source: API-Football per-fixture (current FT + HT for all leagues)
+    import os
+    af_ok = bool(os.getenv("APIFOOTBALL_KEY", ""))
+    try:
+        from player_model.api_football import get_fixture_goals
+    except Exception:
+        get_fixture_goals = None
+
+    graded = 0
+    for i in pending_idx:
+        row = hist.loc[i]
+        m = str(row.get("match", ""))
+        if " vs " not in m:
+            continue
+        home, away = [s.strip() for s in m.split(" vs ", 1)]
+        d = str(row.get("date", ""))[:10]
+        league = str(row.get("league", ""))
+        side = _live_side_from_bet(row.get("bet", ""))
+        if side is None:
+            continue
+        variants = _date_variants(d)
+
+        ft_total = ht_total = None
+        # 1) football-data (free) — FT (+HT for standard leagues)
+        for ev in _fd_completed(league):
+            if ev["date_str"] in variants and _names_match(home, ev["home_team"]) and _names_match(away, ev["away_team"]):
+                ft_total = ev["home_score"] + ev["away_score"]
+                if "ht_home" in ev:
+                    ht_total = ev.get("ht_home", 0) + ev.get("ht_away", 0)
+                break
+        # 2) HT parquet (free) — new-format half-time fallback
+        if ht_total is None:
+            for dd in variants:
+                sc = ht_idx.get((_norm(home), _norm(away), dd))
+                if sc is not None and pd.notna(sc[0]) and pd.notna(sc[1]):
+                    ht_total = int(sc[0]) + int(sc[1]); break
+        # 3) API-Football — the only current source for Argentina/Brazil FT+HT
+        need_ft = ft_total is None and not side.startswith("HT_")
+        need_ht = ht_total is None and side.startswith("HT_")
+        if (need_ft or need_ht) and af_ok and get_fixture_goals is not None:
+            lg_id  = config.API_FOOTBALL_IDS.get(league)
+            season = config.API_FOOTBALL_SEASONS.get(league)
+            if lg_id and season:
+                for dd in variants:
+                    try:
+                        g = get_fixture_goals(lg_id, season, dd, home, away)
+                    except Exception as e:
+                        g = None
+                        log.debug(f"live_signals: AF fetch failed {home} v {away} {dd}: {e}")
+                    if g is not None:
+                        fth, fta, hth, hta = g
+                        if ft_total is None:
+                            ft_total = fth + fta
+                        if ht_total is None and hth is not None and hta is not None:
+                            ht_total = hth + hta
+                        break
+
+        res = _settle_live(side, ft_total, ht_total)
+        if res is None:
+            continue
+        if ft_total is not None:
+            hist.at[i, "final_total"] = int(ft_total)
+        if ht_total is not None:
+            hist.at[i, "ht_total"] = int(ht_total)
+        hist.at[i, "result"] = res
+        graded += 1
+        log.info(f"  {'[DRY]' if dry_run else '[ OK]'} {home} vs {away} ({d}) "
+                 f"{row.get('bet')}  FT={ft_total} HT={ht_total}  → {res}")
+
+    if graded and not dry_run:
+        hist.to_csv(f, index=False)
+    log.info(f"live_signals: graded {graded} signal(s) → {f}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -1038,6 +1208,7 @@ def main():
     update_sharp_results(days=args.days, dry_run=args.dry_run)
     update_side_market_results(days=args.days, dry_run=args.dry_run)
     update_ht_results(days=args.days)
+    update_live_signal_results(days=args.days, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":
