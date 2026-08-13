@@ -97,17 +97,24 @@ def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
         return cached
 
     url = f"{BASE_URL}{endpoint}"
-    try:
-        r = requests.get(url, headers=HEADERS, params=params, timeout=15)
+    for attempt in range(4):
+        try:
+            r = requests.get(url, headers=HEADERS, params=params, timeout=15)
+        except Exception as e:
+            print(f"[api_football] Error {endpoint}: {e}")
+            return None
+        if r.status_code == 429:            # rate-limited → back off and retry (self-heal)
+            time.sleep(1.5 * (attempt + 1))
+            continue
         if r.status_code != 200:
             return None
         data = r.json()
         _save_cache(cache_key, data)
-        time.sleep(0.5)  # polite delay
+        # ~400/min (Ultra plan allows 450). Was 0.5s=120/min — the same 0.5→0.15 speed-up
+        # already applied to data_fetcher.py in commit 16fb189; this path had been left behind.
+        time.sleep(0.15)
         return data
-    except Exception as e:
-        print(f"[api_football] Error {endpoint}: {e}")
-        return None
+    return None
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
