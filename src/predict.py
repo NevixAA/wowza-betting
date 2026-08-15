@@ -109,7 +109,13 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                             for outcome in mkt["outcomes"]:
                                 if outcome.get("name") == "Yes" and not btts_yes:
                                     btts_yes = outcome.get("price")
-                    if ov25:
+                    # Stop only once EVERY price we want is in hand. This used to break as
+                    # soon as Over 2.5 was found, so if that first bookmaker didn't quote
+                    # 1.5/3.5 those prices were silently lost — odds_over15 and odds_over35
+                    # were 100% blank for standard fixtures, which is why the side-market
+                    # ledger has almost no rows. Bookmakers are already ordered by
+                    # preference, so the 2.5 price still comes from the same book as before.
+                    if ov25 and un25 and ov15 and ov35:
                         break
 
                 if ov25 and un25:
