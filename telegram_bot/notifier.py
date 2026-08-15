@@ -89,6 +89,27 @@ def _settled_only(df):
     return df
 
 
+# Prop tiers that are NOT picks. We deliberately TRACK every tier in player_ledger.csv +
+# clv_records.csv (the 2026-08-13 "track everything" change), but an AVOID is the model
+# saying "no bet here" — counting it as a settled bet is a category error.
+NON_BET_TIERS = {"AVOID", "WATCH"}
+
+
+def _bet_tiers_only(df):
+    """Drop non-bet prop rows (AVOID/WATCH) before ANY count / P&L / digest line.
+
+    Tracking and reporting are different jobs: the ledger keeps everything so the model can
+    be evaluated on its full output, while the digests must only ever report things we
+    actually called a pick. Without this, 2026-08-14 reported 101 'results' of which all 101
+    were AVOID. Keyed on the props `tier` column; the team ledgers use `signal_tier` and are
+    already tier-filtered at write time by generate_bets(), so they don't need this.
+    """
+    if df is None or len(df) == 0 or "tier" not in df.columns:
+        return df
+    keep = ~df["tier"].astype(str).str.strip().str.upper().isin(NON_BET_TIERS)
+    return df[keep].copy()
+
+
 def send_fantasy_tips(max_per_pos: int = 3) -> int:
     """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
     kept visibly separate from the SNIPER/MARKSMAN betting tips.
@@ -857,7 +878,7 @@ def notify_weekly_summary() -> bool:
     props_all:  dict | None = None
     props_file = app_config.OUTPUT_DIR / "player_ledger.csv"
     if props_file.exists():
-        pl = pd.read_csv(props_file)
+        pl = _bet_tiers_only(pd.read_csv(props_file))   # AVOID/WATCH: tracked, never counted
         pl["pnl"]         = pd.to_numeric(pl["pnl"], errors="coerce")
         pl["signal_date"] = pd.to_datetime(pl["signal_date"], errors="coerce")
         pw = pl[pl["signal_date"] >= week_ago]
@@ -1383,8 +1404,12 @@ def notify_props_daily_digest() -> bool:
         ("sot3",    "SOT 3+",         "🔫"),
         ("cards",   "Carded",         "🟨"),
     ]
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫"}
-    TIER_ORDER = ["SNIPER", "MARKSMAN"]
+    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📄"}
+    TIER_ORDER = ["SNIPER", "MARKSMAN"]                            # what gets SENT as a tip
+    # What gets COUNTED in results. Wider than TIER_ORDER because VALUABLE/PAPER picks are
+    # real tracked positions even though they don't trigger an individual alert. AVOID/WATCH
+    # are excluded upstream by _bet_tiers_only, so they can never appear here.
+    LEDGER_TIERS = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
     lines = [
         f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
@@ -1455,7 +1480,7 @@ def notify_props_daily_digest() -> bool:
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if player_led.exists():
         try:
-            pled = pd.read_csv(player_led)
+            pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             yest = pled[
                 (pled["match_date"].astype(str).str[:10] == yest_str) &
@@ -1494,7 +1519,7 @@ def notify_props_daily_digest() -> bool:
     lines2 += ["", "📈 <b>All-time Player Ledger</b>"]
     if player_led.exists():
         try:
-            pled = pd.read_csv(player_led)
+            pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
@@ -1508,7 +1533,7 @@ def notify_props_daily_digest() -> bool:
                     mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
                     lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
                     if "tier" in ms.columns:
-                        for tier in TIER_ORDER:
+                        for tier in LEDGER_TIERS:
                             ts = ms[ms["tier"] == tier]
                             if ts.empty:
                                 continue
@@ -1547,7 +1572,7 @@ def notify_props_weekly_summary() -> bool:
     if not player_led.exists():
         return False
 
-    pled = pd.read_csv(player_led)
+    pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
     pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
 
@@ -1566,9 +1591,11 @@ def notify_props_weekly_summary() -> bool:
     ]
     MKT_LABEL = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
     MKT_EMOJI = {k: emj for k, _, emj in PLAYER_MARKETS}
-    TIER_SYM  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "WATCH": "👁"}
+    TIER_SYM  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📄"}
     MARKETS   = [k for k, _, _ in PLAYER_MARKETS]
-    TIERS     = ["SNIPER", "MARKSMAN", "VALUABLE", "WATCH"]
+    # WATCH dropped: it's a watchlist, not a position — _bet_tiers_only filters it out with
+    # AVOID, so listing it here would only ever render an empty row.
+    TIERS     = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
     def _row(data: "pd.DataFrame") -> tuple | None:
         d = data[data["result"].str.upper().isin(["WIN", "LOSS"])] if "result" in data.columns else data

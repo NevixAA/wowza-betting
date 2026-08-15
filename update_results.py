@@ -222,14 +222,21 @@ def fetch_scores(sport_key: str, days_from: int) -> list[dict]:
 _CSV_ARCHIVES = None
 
 
-def _closing_from_csv(home: str, away: str, match_date: str, side: str) -> float:
-    """Fallback closing price from the persistent per-model odds archives (newformat_ +
-    standard_odds_history.csv). Used when the ephemeral odds_history_v9.json has already
-    rolled the fixture out (10-day purge) — the cause of new-format's 9% closing coverage."""
+# Every persistent odds archive we can pull a closing price out of. All share the schema
+# snapshot_date,snapshot_ts,match_date,league,match,market,odds.
+_ARCHIVE_FILES = (
+    "newformat_odds_history.csv",             # new-format: O/U 2.5 + BTTS + O/U 1.5/3.5
+    "standard_odds_history.csv",              # standard O/U 2.5/1.5/3.5, every predict run
+    "standard_sidemarket_odds_history.csv",   # standard BTTS + O/U 1.5/3.5 (std_odds_capture)
+)
+
+
+def _load_archives() -> list:
+    """Load + key the odds archives once per process."""
     global _CSV_ARCHIVES
     if _CSV_ARCHIVES is None:
         _CSV_ARCHIVES = []
-        for name in ("newformat_odds_history.csv", "standard_odds_history.csv"):
+        for name in _ARCHIVE_FILES:
             p = config.OUTPUT_DIR / name
             if not p.exists():
                 continue
@@ -242,17 +249,47 @@ def _closing_from_csv(home: str, away: str, match_date: str, side: str) -> float
                 _CSV_ARCHIVES.append(d)
             except Exception:
                 pass
-    mkt = "under25" if side == "UNDER" else "over25"
+    return _CSV_ARCHIVES
+
+
+def _closing_for_market(home: str, away: str, match_date: str, mkt: str) -> float:
+    """Last archived price for an explicit archive market key
+    (over25 / under25 / btts_yes / over15 / over35 / ...). np.nan when not found."""
     hk, ak, dk = _norm(home), _norm(away), str(match_date)[:10]
-    for arch in _CSV_ARCHIVES:
-        m = arch[(arch["_hk"] == hk) & (arch["_ak"] == ak) & (arch["_dk"] == dk)
-                 & (arch["market"].astype(str) == mkt)]
+    for arch in _load_archives():
+        same = arch[(arch["_dk"] == dk) & (arch["market"].astype(str) == mkt)]
+        if same.empty:
+            continue
+        m = same[(same["_hk"] == hk) & (same["_ak"] == ak)]
+        if m.empty:
+            # The ledger carries ODDSAPI team names; these archives carry API-FOOTBALL ones,
+            # and the two spell clubs differently ("Viborg FF"/"Viborg", "OB Odense BK"/
+            # "Odense", "Tijuana"/"Club Tijuana", "Galway United"/"Galway"). Exact equality
+            # therefore silently dropped 126 of 283 recoverable closing prices (CLV coverage
+            # stuck at 23.5%). Fall back to the same identity matcher _find_result already
+            # uses — it is substring/first-word based, so the suffix differences resolve.
+            # _names_match re-normalises internally and _norm is idempotent, so passing the
+            # already-normalised keys is safe.
+            m = same[[_names_match(hk, h) and _names_match(ak, a)
+                      for h, a in zip(same["_hk"], same["_ak"])]]
         if not m.empty:
             try:
                 return float(m.sort_values("snapshot_ts").iloc[-1]["odds"])
             except Exception:
                 pass
     return np.nan
+
+
+def _closing_from_csv(home: str, away: str, match_date: str, side: str) -> float:
+    """O/U 2.5 closing price from the archives. Used when odds_history_v9.json has already
+    rolled the fixture out (10-day purge) — the cause of new-format's 9% closing coverage."""
+    return _closing_for_market(home, away, match_date,
+                               "under25" if side == "UNDER" else "over25")
+
+
+# side_bets_ledger market key -> the market key used inside the odds archives.
+# The ledger stores the BTTS *Yes* price, which the archives call btts_yes.
+_SIDE_ARCHIVE_MARKET = {"btts": "btts_yes", "over15": "over15", "over35": "over35"}
 
 
 def _closing_odds(home: str, away: str, match_date: str, side: str) -> float:
@@ -678,15 +715,20 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
     """Resolve BTTS / Over 1.5 / Over 3.5 outcomes in side_bets_ledger.csv.
 
     Reuses the same score sources as the O/U ledger (football-data first, OddsAPI fallback).
-    Fills result + pnl (flat 1u). CLV is left blank — side-market closing lines aren't
-    snapshotted yet (a separate capture would be needed for BTTS/O1.5/O3.5 CLV).
+    Fills result + pnl (flat 1u) AND closing_odds + clv_pct.
+
+    CLV used to be left blank here because side-market closing lines weren't captured. They
+    are now: std_odds_capture.yml writes standard BTTS/O1.5/O3.5 into
+    standard_sidemarket_odds_history.csv 3x/day, and new-format side prices land in
+    newformat_odds_history.csv — so the archives can be read the same way the O/U 2.5 path
+    reads them (2026-08-15).
     """
     if not SIDE_LEDGER_FILE.exists():
         log.info("side_bets_ledger.csv not found — skipping side-market resolution")
         return
 
     ledger = pd.read_csv(SIDE_LEDGER_FILE, dtype=str)
-    for col in ("result", "pnl"):
+    for col in ("result", "pnl", "closing_odds", "clv_pct"):
         if col not in ledger.columns:
             ledger[col] = ""
 
@@ -736,10 +778,22 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
         except (TypeError, ValueError):
             odds = 1.0
         pnl = round(odds - 1.0, 4) if res == "WIN" else -1.0
-        updates.append({"idx": idx, "result": res, "pnl": pnl})
+
+        # Closing line -> CLV, same percent convention as bets_ledger/ht_ledger.
+        # A missing closing price is normal (thin 2nd-div side markets); grade the result
+        # anyway and leave CLV blank rather than dropping the row.
+        close = _closing_for_market(home, away, date_str,
+                                    _SIDE_ARCHIVE_MARKET.get(market, market))
+        clv = np.nan
+        if not np.isnan(close) and close > 0 and odds > 0:
+            clv = round((odds - close) / close * 100.0, 2)
+
+        updates.append({"idx": idx, "result": res, "pnl": pnl,
+                        "closing_odds": close, "clv_pct": clv})
+        clv_str = f"  CLV={clv:+.1f}%" if not np.isnan(clv) else ""
         log.info(
             f"  {'[DRY]' if dry_run else '[ OK]'} "
-            f"{home} vs {away} ({market}) {date_str} → {res}  PnL={pnl:+.3f}u"
+            f"{home} vs {away} ({market}) {date_str} → {res}  PnL={pnl:+.3f}u{clv_str}"
         )
 
     if not updates:
@@ -752,6 +806,10 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
     for u in updates:
         ledger.at[u["idx"], "result"] = u["result"]
         ledger.at[u["idx"], "pnl"]    = str(u["pnl"])
+        if not np.isnan(u["closing_odds"]):
+            ledger.at[u["idx"], "closing_odds"] = str(u["closing_odds"])
+        if not np.isnan(u["clv_pct"]):
+            ledger.at[u["idx"], "clv_pct"] = str(u["clv_pct"])
     ledger.to_csv(SIDE_LEDGER_FILE, index=False)
 
     wins   = sum(1 for u in updates if u["result"] == "WIN")

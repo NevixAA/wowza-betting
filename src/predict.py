@@ -275,6 +275,18 @@ def predict_upcoming(
     feat.loc[std_mask, "model_type"] = "standard"
     feat.loc[nf_mask,  "model_type"] = "new_format"
 
+    # How much of each model's input actually arrived? Blank/constant features are imputed
+    # silently and skew the calibrated logistic member — the new-format bug in one line.
+    # Diagnostic only; never alters a prediction.
+    try:
+        from src.health_check import record_feature_health
+        _cols = {"standard": payload.get("feature_cols", [])}
+        if payload_newformat is not None:
+            _cols["new_format"] = payload_newformat.get("feature_cols", [])
+        record_feature_health(feat, _cols)
+    except Exception as e:
+        log.debug(f"feature health skipped: {e}")
+
     # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues
     # New-format leagues have odds_btts/over15/over35 after af_odds_history backfill.
     if side_payloads:

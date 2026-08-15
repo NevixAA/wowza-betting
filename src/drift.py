@@ -14,14 +14,27 @@ shortens to re-balance. So:
 
 Storage
 -------
-  v9/odds_history_v9.json
+  v9/odds_history_v9.json   -- MUST be committed by predict.yml, see below
   {
     "Home vs Away | YYYY-MM-DD": [
       {"ts": "2026-04-12T14:00:00", "over": 1.85, "under": 1.92},
-      {"ts": "2026-04-13T09:00:00", "over": 1.80, "under": 1.97},
+      {"ts": "2026-04-13T09:00:00", "over": 1.80, "under": 1.97, "n": 4,
+       "ts_last": "2026-04-13T11:00:00"},
       ...
     ]
   }
+
+Only PRICE CHANGES are appended. Re-seeing a fixture at an unchanged price bumps `n` and
+`ts_last` on the last entry instead of adding a row, so `snapshots[0]` is still the opening
+price, `snapshots[-1]` is still the latest/closing price, and the file stays small enough to
+commit every predict run.
+
+WHY THAT MATTERS (fixed 2026-08-15): this file used to be gitignored and untracked, so in CI
+every predict run started with NO history, wrote exactly one snapshot, and read back n=1.
+Result: drift_signal was "New" and over/under_drift were 0.0 for 100% of rows, forever — the
+entire drift feature, including the tier upgrade/downgrade in betting.py, was inert, and
+opening_odds in the ledger always equalled the current price. Drift only works if the history
+survives between runs, which means it has to be committed.
 
 Drift columns added to predictions DataFrame
 --------------------------------------------
@@ -136,13 +149,19 @@ def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
     new.to_csv(STD_ARCHIVE_FILE, index=False)
 
 
-def _classify(side: str, over_drift: float, under_drift: float, n: int) -> str:
+def _classify(side: str, over_drift: float, under_drift: float,
+              n_distinct: int, n_seen: int = 1) -> str:
     """
     Classify whether market movement confirms or conflicts with the model signal.
     side: 'OVER' | 'UNDER' | anything else → Neutral
+
+    n_distinct = how many different PRICES we've stored; n_seen = how many times we've
+    observed the fixture. With only one price there is no movement to classify — but that
+    means two different things: seen once = genuinely "New", seen many times at a flat price
+    = "Neutral" (the market has had chances to move and didn't).
     """
-    if n <= 1:
-        return "New"
+    if n_distinct <= 1:
+        return "New" if n_seen <= 1 else "Neutral"
 
     ct = config.DRIFT_CONFIRM_THRESHOLD
     cf = config.DRIFT_CONFLICT_THRESHOLD
@@ -188,7 +207,18 @@ def snapshot(df: pd.DataFrame) -> None:
         if not np.isnan(un_f):
             snap["under"] = round(un_f, 3)
 
-        history.setdefault(k, []).append(snap)
+        prev = history.setdefault(k, [])
+        if prev:
+            last = prev[-1]
+            if last.get("over") == snap.get("over") and last.get("under") == snap.get("under"):
+                # Unchanged price: record that we saw it again rather than appending a
+                # duplicate. predict runs every 5 min, so appending blindly would add ~30k
+                # entries/day and make this file far too big to commit — and it MUST be
+                # committed or drift dies (see module docstring).
+                last["n"] = int(last.get("n", 1)) + 1
+                last["ts_last"] = ts
+                continue
+        prev.append(snap)
 
     _save(history)
 
@@ -213,7 +243,8 @@ def enrich(df: pd.DataFrame) -> pd.DataFrame:
     for _, row in df.iterrows():
         k    = _key(row.get("home_team", ""), row.get("away_team", ""), row.get("date", ""))
         snaps = history.get(k, [])
-        n     = len(snaps)
+        n     = len(snaps)                                        # distinct PRICES stored
+        n_seen = sum(int(s.get("n", 1)) for s in snaps)            # times the fixture was seen
 
         if n == 0:
             rows_drift.append(_empty())
@@ -240,7 +271,7 @@ def enrich(df: pd.DataFrame) -> pd.DataFrame:
         if bet in ("OVER", "UNDER"):
             side = bet
 
-        sig = _classify(side, od, ud, n)
+        sig = _classify(side, od, ud, n, n_seen)
 
         rows_drift.append({
             "first_over_odds":  round(first_ov, 3) if not np.isnan(first_ov) else np.nan,
@@ -248,7 +279,7 @@ def enrich(df: pd.DataFrame) -> pd.DataFrame:
             "over_drift":       od,
             "under_drift":      ud,
             "drift_signal":     sig,
-            "odds_snapshots":   n,
+            "odds_snapshots":   n_seen,
         })
 
     drift_df = pd.DataFrame(rows_drift, index=df.index)
