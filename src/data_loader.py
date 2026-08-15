@@ -160,7 +160,10 @@ def _ci_download_all() -> list[pd.DataFrame]:
                 df["ftr"] = raw.get("FTR", np.nan)
                 df = df[df["home_team"].notna() & df["away_team"].notna()]
                 frames.append(df)
-            except Exception:
+            except Exception as e:
+                # Silently skipping here means a league-season quietly vanishes from TRAINING
+                # data and the model is refit on less history with nothing to show for it.
+                log.warning(f"[data] {league} {season_label} skipped ({type(e).__name__}: {e})")
                 continue
 
     # New format (single file, all seasons)
@@ -200,7 +203,10 @@ def _ci_download_all() -> list[pd.DataFrame]:
             df["odds_btts"]    = [r.get("btts_yes", np.nan) for r in _rws]
             df = df[df["home_team"].notna() & df["away_team"].notna()]
             frames.append(df)
-        except Exception:
+        except Exception as e:
+            # Same trap as the standard loop above: a new-format league dropping out of
+            # training used to be completely invisible.
+            log.warning(f"[data] {league} (new-format) skipped ({type(e).__name__}: {e})")
             continue
 
     log.info(f"CI download: {len(frames)} league/season files loaded")
