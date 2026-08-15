@@ -353,10 +353,13 @@ DRIFT_CONFLICT_THRESHOLD = 0.03
 # bug (fixed 2026-08-09) that produced garbage UNDER tips, so pre-fix results are not
 # representative. The rows are NOT deleted: they stay in the ledgers/odds-history so
 # CLV analysis keeps every data point. Only performance AGGREGATES honour this cutoff.
-# Set to the date predict was re-enabled with the fixed new-format model (2026-08-09).
-# NOTE: the ~64 pre-fix tips generated earlier on 2026-08-09 share this date, so they will
-# also count once they settle. Bump to 2026-08-10 if you want to exclude them entirely.
-PERFORMANCE_CUTOFF_DATE = "2026-08-09"
+# Set to 2026-08-10 (2026-08-15): the fix landed ON 2026-08-09, so a plain date cutoff of
+# "2026-08-09" still ADMITTED that day's pre-fix tips — the 10:55 batch of 64 one-sided
+# new-format UNDERs. They settled days later and surfaced in the digest as 8 phantom "bets"
+# for 2026-08-14 (7L/1W). Bumping to 2026-08-10 drops the whole pre-fix day, which is what
+# the previous note here recommended and what wowza-v11/config.py already uses — keep the
+# two in sync. Rows are NOT deleted: they stay in the ledgers so CLV keeps every data point.
+PERFORMANCE_CUTOFF_DATE = "2026-08-10"
 
 # ── Backtesting ───────────────────────────────────────────────────────────────
 BACKTEST_WALK_SIZE = 60

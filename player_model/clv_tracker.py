@@ -162,8 +162,10 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     pq["dkey"] = pq["date"].astype(str).str[:10]
     idx = {(r.pk, r.dkey): r for r in pq.itertuples()}
 
+    pq_max = str(pq["dkey"].max()) if len(pq) else "(empty)"
     today = str(_dt.utcnow().date())
     graded = 0
+    no_stats: list[str] = []   # played, but the parquet has no stats row -> can't grade
     for i in clv[pending].index:
         try:
             _, d, player, market = str(clv.at[i, "bet_id"]).split("|", 3)
@@ -179,6 +181,7 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
         if rec is None:
             # Match not in our player-stats parquet yet (data gap / not collected) -> leave
             # PENDING; it grades once the fixture's stats land in the parquet. Never guess a VOID.
+            no_stats.append(d)
             continue
         s = {"goals":   float(rec.goals or 0),      "assists": float(rec.assists or 0),
              "sot":     float(rec.shots_on_target or 0),
@@ -195,4 +198,15 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     if graded:
         clv.to_csv(f, index=False)
     print(f"[clv_tracker] settle: {graded} record(s) graded")
+    if no_stats:
+        # Be LOUD about this. A silent "0 graded" looks like "nothing to do", but the real
+        # cause is upstream: player_history.parquet has no rows for those match dates, so the
+        # collect step is behind. That is what kept clv_records.result 100% empty while CLV
+        # itself was being captured fine (found 2026-08-15: parquet ended 2026-07-04 while
+        # bets ran to 2026-08-17 — 26 played bets, 0 gradeable).
+        print(f"[clv_tracker] settle: WARNING — {len(no_stats)} played bet(s) have NO player "
+              f"stats and cannot grade. player_history.parquet ends {pq_max}; earliest "
+              f"ungradeable match is {min(no_stats)}. Run `python -m player_model.pipeline "
+              f"--mode collect` (or check the Sunday collect step) — the grader is fine, "
+              f"its input is stale.")
     return graded

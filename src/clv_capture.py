@@ -24,9 +24,14 @@ from pathlib import Path
 from src.edge_engine import power_devig, proportional_devig
 
 CLV_FILE = Path(__file__).resolve().parents[1] / "output" / "clv_records.csv"
+# NOTE: "pnl" must stay in this list. clv_tracker.settle_results() writes a pnl column into
+# clv_records.csv; _save() below uses csv.DictWriter(fieldnames=_FIELDS), which RAISES
+# ValueError("dict contains fields not in fieldnames") on any key it doesn't know. So the
+# first time grading actually filled pnl, every later log_bet()/capture_close() would have
+# crashed. Dormant until now only because grading has never succeeded (2026-08-15).
 _FIELDS = ["bet_id", "ts_bet", "market", "player", "match", "side",
            "odds_bet", "under_odds_bet", "odds_close", "under_odds_close",
-           "p_bet_novig", "p_close_novig", "clv_pct", "clv_prob", "result", "notes"]
+           "p_bet_novig", "p_close_novig", "clv_pct", "clv_prob", "result", "pnl", "notes"]
 
 
 def _novig(over_odds, under_odds):

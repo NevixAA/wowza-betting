@@ -19,8 +19,12 @@ data/
 scheduler/logs/
 
 # Secrets
-odds_history_v9.json
 .streamlit/secrets.toml
+
+# NOT ignored (2026-08-15): odds_history_v9.json. It was listed under "Secrets" but holds no
+# secret — only O/U price snapshots. Ignoring it meant CI started every predict run with an
+# empty history, so drift_signal was permanently "New" and over/under_drift permanently 0.0.
+# drift.py now stores only price CHANGES, which keeps it small enough to commit each run.
 
 # Keep output CSVs (needed by Streamlit Cloud)
 !output/bets.csv

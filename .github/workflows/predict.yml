@@ -51,12 +51,17 @@ jobs:
           # Add each file INDIVIDUALLY: a single missing pathspec makes `git add a b missing`
           # abort and stage NOTHING (the `|| true` then hides it) -> no commit -> notified.json
           # dedup never persists -> every 5-min run re-sends the same tips (the duplicate flood).
+          # odds_history_v9.json drives the ENTIRE drift feature. It is per-run state, so if
+          # it isn't committed the next run starts blank -> drift_signal stuck on "New" and
+          # the tier upgrade/downgrade in betting.py never fires. It was gitignored until
+          # 2026-08-15; drift.py now stores price CHANGES only, so it stays small.
           for f in output/bets.csv output/bets_ledger.csv output/predictions.csv \
+                   odds_history_v9.json \
                    output/side_bets_ledger.csv output/standard_odds_history.csv output/ht_ledger.csv \
                    output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
                    output/live_tips.csv output/live_games.csv \
                    output/worldcup_history.json output/sharp_history.json \
-                   output/predict_health.json \
+                   output/predict_health.json output/feature_health.json \
                    telegram_bot/notified.json telegram_bot/live_notified.json; do
             git add -f "$f" 2>/dev/null || true
           done
