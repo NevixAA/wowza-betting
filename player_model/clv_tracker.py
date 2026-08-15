@@ -156,11 +156,34 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     if not pqp.exists():
         print(f"[clv_tracker] settle: parquet not found ({pqp})")
         return 0
-    pq = pd.read_parquet(pqp, columns=["player_name", "date", "goals", "assists",
-                                       "shots_on_target", "yellow_cards", "red_cards"])
+    _cols = ["player_name", "date", "goals", "assists",
+             "shots_on_target", "yellow_cards", "red_cards"]
+    try:                       # player_id landed 2026-08-15; tolerate older parquets
+        pq = pd.read_parquet(pqp, columns=_cols + ["player_id"])
+    except Exception:
+        pq = pd.read_parquet(pqp, columns=_cols)
+        pq["player_id"] = None
     pq["pk"]   = pq["player_name"].astype(str).map(_norm)
     pq["dkey"] = pq["date"].astype(str).str[:10]
     idx = {(r.pk, r.dkey): r for r in pq.itertuples()}
+    # Exact index. Joining players by NAME is the weak link that has kept props ungraded:
+    # any spelling variance between the tip and the stats row silently drops the record.
+    # player_ledger now carries player_id, so resolve it and match on (id, date) first.
+    idx_by_id = {(str(r.player_id), r.dkey): r for r in pq.itertuples()
+                 if r.player_id is not None and str(r.player_id) not in ("", "nan", "None")}
+
+    pid_lookup: dict = {}
+    try:
+        _led = pd.read_csv(config.OUTPUT_DIR / "player_ledger.csv", dtype=str)
+        if "player_id" in _led.columns:
+            for _, _r in _led.iterrows():
+                _pid = str(_r.get("player_id", "")).strip()
+                if _pid and _pid not in ("nan", "None"):
+                    pid_lookup[(_norm(_r.get("player_name", "")),
+                                str(_r.get("market", "")),
+                                str(_r.get("match_date", ""))[:10])] = _pid
+    except Exception:
+        pass
 
     pq_max = str(pq["dkey"].max()) if len(pq) else "(empty)"
     today = str(_dt.utcnow().date())
@@ -174,7 +197,14 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
         d = d[:10]
         if d >= today:                      # not played yet
             continue
-        rec = idx.get((_norm(player), d))
+        # Prefer the exact (player_id, date) match; fall back to the name for rows written
+        # before player_id existed.
+        rec = None
+        _pid = pid_lookup.get((_norm(player), market, d))
+        if _pid:
+            rec = idx_by_id.get((_pid, d))
+        if rec is None:
+            rec = idx.get((_norm(player), d))
         hit = _MARKET_HIT.get(market)
         if hit is None:
             continue
