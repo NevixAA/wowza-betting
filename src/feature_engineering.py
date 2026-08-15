@@ -39,12 +39,15 @@ Odds-derived:
 from __future__ import annotations
 
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Optional
 
 import numpy as np
 import pandas as pd
+
+log = logging.getLogger(__name__)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
@@ -739,8 +742,11 @@ def build_upcoming_features(
             _inj_df = pd.DataFrame(_inj_rows, index=df.index)
             df["key_attacker_absent_home"] = _inj_df["key_attacker_absent_home"].fillna(0.0)
             df["key_attacker_absent_away"] = _inj_df["key_attacker_absent_away"].fillna(0.0)
-    except Exception:
-        pass   # always safe to fall back to 0
+    except Exception as e:
+        # Falling back to 0 is safe, but SAY SO. A missing APIFOOTBALL_KEY (which is exactly
+        # what happened in predict.yml for months) looks identical to a quiet run when this
+        # is a bare `pass`. output/feature_health.json records the resulting degeneracy.
+        log.warning(f"[enrich] injury features unavailable, using defaults: {e}")
 
     # ── Phase 3: /teams/statistics — real-time season-to-date venue averages ────
     # Overrides _venue_season_stats() values computed from FD historical data.
@@ -769,8 +775,10 @@ def build_upcoming_features(
                         df.at[_idx, "away_season_conceded_a"] = _as["goals_against_a"]
                     if _as.get("cs_rate_a") is not None:
                         df.at[_idx, "away_cs_rate_a"]         = _as["cs_rate_a"]
-    except Exception:
-        pass   # always safe to fall back to FD historical values
+    except Exception as e:
+        # These override REAL model inputs (season venue goals/conceded/clean-sheet rates),
+        # so a silent failure means predict quietly scores on stale football-data values.
+        log.warning(f"[enrich] /teams/statistics unavailable, keeping FD historical: {e}")
 
     # ── Phases 4-7: Lineup, H2H, API odds ────────────────────────────────────
     # Defaults applied first so the model always has valid values even when
@@ -810,8 +818,10 @@ def build_upcoming_features(
                 for _k, _v in _feats.items():
                     if _k in df.columns:
                         df.at[_idx, _k] = _v
-    except Exception:
-        pass
+    except Exception as e:
+        # Lineup / H2H / Bet365 pre-match odds all share this handler, so ONE failure here
+        # pinned all 14 of those columns to their hardcoded defaults at once.
+        log.warning(f"[enrich] lineup/H2H/odds features unavailable, using defaults: {e}")
 
     # ── Phases 9-10: Season round + coach features ────────────────────────────
     df["season_stage_ratio"]      = 0.50
@@ -830,8 +840,8 @@ def build_upcoming_features(
                 for _k, _v in _feats.items():
                     if _k in df.columns:
                         df.at[_idx, _k] = _v
-    except Exception:
-        pass
+    except Exception as e:
+        log.warning(f"[enrich] season-round/coach features unavailable, using defaults: {e}")
 
     # Artificial pitch — static per-league flag (Finland/Sweden/Norway)
     _art = getattr(config, "ARTIFICIAL_PITCH_LEAGUES", set())
