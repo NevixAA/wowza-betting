@@ -65,6 +65,20 @@ HISTORY_FILE = config.ODDS_HISTORY_JSON
 # newformat_odds_history.csv). The JSON above is purged after 10 days, so closing-odds
 # lookups race the purge; this CSV is the durable record update_results falls back to.
 STD_ARCHIVE_FILE = config.OUTPUT_DIR / "standard_odds_history.csv"
+
+# New-format dense archive. nf_odds_capture.yml already writes newformat_odds_history.csv
+# 3x/day, which yields only ~1.2 snapshots per fixture — an entry price, NOT an
+# open->moving->close curve. Predict runs every 5 minutes and ALREADY downloads new-format
+# odds in the same OddsAPI payload as standard; we were simply discarding them. Archiving
+# them here gives new-format the same density standard enjoys (~4.9 price changes/fixture)
+# at ZERO extra API cost, which matters because new-format carries most live signals and its
+# CLV was unreliable precisely because its "closing" price was often a lone early snapshot.
+#
+# Deliberately a SEPARATE file from newformat_odds_history.csv: that one is owned by
+# nf_odds_capture.yml, and having two workflows write the same CSV would race on the git
+# push. update_results reads both.
+NF_ARCHIVE_FILE = config.OUTPUT_DIR / "newformat_odds_dense.csv"
+
 _ARCHIVE_COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market", "odds"]
 
 DRIFT_COLS = [
@@ -110,19 +124,24 @@ def _save(data: dict) -> None:
 
 
 def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
-    """Append STANDARD-format O/U 2.5 snapshots to STD_ARCHIVE_FILE (distinct-price append).
-    Isolation: standard leagues only (config.model_type_for_league); NF/props untouched."""
-    rows = []
+    """Append O/U snapshots to the per-model dense archives (distinct-price append).
+
+    Standard rows -> standard_odds_history.csv, new-format rows -> newformat_odds_dense.csv.
+    Both are written on EVERY predict run, which is what turns a lone entry price into a
+    real open->moving->close curve. Props are untouched (own capture).
+    """
+    buckets: dict = {"standard": [], "new_format": []}
     today = ts[:10]
     for _, row in df.iterrows():
         lg = row.get("league", "")
-        if config.model_type_for_league(lg) != "standard":
-            continue
+        mt = config.model_type_for_league(lg)
+        if mt not in buckets:
+            continue                      # unknown league -> not archived
         match = f"{str(row.get('home_team', '')).strip()} vs {str(row.get('away_team', '')).strip()}"
         md = str(row.get("date", ""))[:10]
-        # O/U 2.5 (over+under) + O/U 1.5/3.5 Over — all already fetched by predict's `totals`
+        # O/U 2.5 (over+under) + O/U 1.5/3.5 — all already fetched by predict's `totals`
         # call, so capturing them here is FREE + dense (every predict run). BTTS is NOT in the
-        # totals response (needs the per-event endpoint) -> it stays on std_odds_capture.yml.
+        # totals response (needs the per-event endpoint) -> it stays on the 3x/day captures.
         for mkt, col in (("over25", "odds_over25"), ("under25", "odds_under25"),
                          ("over15", "odds_over15"), ("over35", "odds_over35")):
             try:
@@ -131,14 +150,21 @@ def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
                 continue
             if np.isnan(o) or o <= 1.0:
                 continue
-            rows.append({"snapshot_date": today, "snapshot_ts": ts, "match_date": md,
-                         "league": str(lg), "match": match, "market": mkt, "odds": round(o, 3)})
-    if not rows:
-        return
-    new = pd.DataFrame(rows, columns=_ARCHIVE_COLS)
-    if STD_ARCHIVE_FILE.exists():
+            buckets[mt].append({"snapshot_date": today, "snapshot_ts": ts, "match_date": md,
+                                "league": str(lg), "match": match, "market": mkt,
+                                "odds": round(o, 3)})
+
+    for mt, path in (("standard", STD_ARCHIVE_FILE), ("new_format", NF_ARCHIVE_FILE)):
+        rows = buckets[mt]
+        if not rows:
+            continue
+        _write_archive(pd.DataFrame(rows, columns=_ARCHIVE_COLS), path)
+
+
+def _write_archive(new: pd.DataFrame, path) -> None:
+    if path.exists():
         try:
-            new = pd.concat([pd.read_csv(STD_ARCHIVE_FILE), new], ignore_index=True)
+            new = pd.concat([pd.read_csv(path), new], ignore_index=True)
         except Exception:
             pass
     # keep price CHANGES (consecutive-distinct) per fixture+market -> open..close curve that
@@ -146,7 +172,7 @@ def _append_persistent_archive(df: pd.DataFrame, ts: str) -> None:
     new = new.sort_values(["match_date", "match", "market", "snapshot_ts"])
     _prev = new.groupby(["match_date", "match", "market"])["odds"].shift()
     new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts")
-    new.to_csv(STD_ARCHIVE_FILE, index=False)
+    new.to_csv(path, index=False)
 
 
 def _classify(side: str, over_drift: float, under_drift: float,
