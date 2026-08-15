@@ -91,7 +91,16 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
           TODAY=$(date -u +%Y%m%d)
-          if [ "$TODAY" -ge "20260611" ] && [ "$TODAY" -le "20260726" ]; then
+          # A MANUAL run ignores the tournament window. The window is right for the cron
+          # (don't burn API quota on WC endpoints year-round), but it also made backfilling
+          # impossible: WC player stats stopped landing in player_history.parquet on
+          # 2026-07-04 while the tournament ran to 07-26, so 20 settled prop bets from the
+          # knockout rounds can never be graded — and after 07-26 even a manual dispatch
+          # skipped this step. workflow_dispatch now forces it so the gap can be filled.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual dispatch — collecting WC national team data regardless of date."
+            python -m player_model.pipeline --mode collect-wc --last-n 10
+          elif [ "$TODAY" -ge "20260611" ] && [ "$TODAY" -le "20260726" ]; then
             echo "WC2026 active — collecting national team data..."
             python -m player_model.pipeline --mode collect-wc --last-n 10
           else
