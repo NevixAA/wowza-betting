@@ -110,6 +110,64 @@ def _bet_tiers_only(df):
     return df[keep].copy()
 
 
+_TEAM_LEAGUES = None
+
+
+def _team_league_map() -> dict:
+    """club -> set of competitions we hold player history for (cached per process)."""
+    global _TEAM_LEAGUES
+    if _TEAM_LEAGUES is None:
+        try:
+            pq = pd.read_parquet(app_config.BASE_DIR / "player_history.parquet",
+                                 columns=["team", "league"])
+            _TEAM_LEAGUES = (pq.assign(_t=pq["team"].astype(str))
+                             .groupby("_t")["league"].agg(set).to_dict())
+        except Exception:
+            _TEAM_LEAGUES = {}
+    return _TEAM_LEAGUES
+
+
+def _valid_fixture_rows(df):
+    """Drop prop rows whose player belongs to NEITHER team in the fixture.
+
+    Until 2026-08-15 the squad lookup fell back to a 5-character substring match, so players
+    were attached to unrelated matches - Real Madrid names in an MLS fixture (Real Salt
+    Lake), Messi in Sarmiento vs Argentinos Juniors, Monchengladbach in a China Super League
+    game. 207 of 1983 player_ledger rows (10%) are wrong that way. predict.py no longer
+    creates them, but they are already written into the ledger and clv_records, so every
+    performance number computed from that history would stay polluted. Filtering here cleans
+    the reporting without deleting the tracking rows.
+    """
+    if df is None or len(df) == 0:
+        return df
+    if not {"team", "home_team", "away_team"}.issubset(df.columns):
+        return df
+    from player_model.api_football import _same_club, _club_name_subset
+    tl = _team_league_map()
+
+    def _ok(team, home, away, league) -> bool:
+        team, home, away = str(team), str(home), str(away)
+        if _same_club(team, home) or _same_club(team, away):
+            return True
+        # Ambiguous subset ("Plymouth" vs "Plymouth Argyle" = same club, "Inter" vs
+        # "Inter Club d'Escaldes" = not): trust it only where we hold history for that
+        # club in THIS competition. Same rule predict.py now applies.
+        if _club_name_subset(team, home) or _club_name_subset(team, away):
+            return str(league) in tl.get(team, ())
+        return False
+
+    leagues = df["league"] if "league" in df.columns else pd.Series([""] * len(df), index=df.index)
+    keep = [_ok(t, h, a, lg) for t, h, a, lg in
+            zip(df["team"], df["home_team"], df["away_team"], leagues)]
+    return df[pd.Series(keep, index=df.index)].copy()
+
+
+def _countable_props(df):
+    """Prop ledger rows that may enter a count, a P/L figure, or a digest line:
+    a real pick (not AVOID/WATCH) on a fixture the player was actually in."""
+    return _valid_fixture_rows(_bet_tiers_only(df))
+
+
 def send_fantasy_tips(max_per_pos: int = 3) -> int:
     """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
     kept visibly separate from the SNIPER/MARKSMAN betting tips.
@@ -878,7 +936,7 @@ def notify_weekly_summary() -> bool:
     props_all:  dict | None = None
     props_file = app_config.OUTPUT_DIR / "player_ledger.csv"
     if props_file.exists():
-        pl = _bet_tiers_only(pd.read_csv(props_file))   # AVOID/WATCH: tracked, never counted
+        pl = _countable_props(pd.read_csv(props_file))  # AVOID/WATCH + wrong-fixture: never counted
         pl["pnl"]         = pd.to_numeric(pl["pnl"], errors="coerce")
         pl["signal_date"] = pd.to_datetime(pl["signal_date"], errors="coerce")
         pw = pl[pl["signal_date"] >= week_ago]
@@ -1480,7 +1538,7 @@ def notify_props_daily_digest() -> bool:
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if player_led.exists():
         try:
-            pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
+            pled = _countable_props(pd.read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             yest = pled[
                 (pled["match_date"].astype(str).str[:10] == yest_str) &
@@ -1519,7 +1577,7 @@ def notify_props_daily_digest() -> bool:
     lines2 += ["", "📈 <b>All-time Player Ledger</b>"]
     if player_led.exists():
         try:
-            pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
+            pled = _countable_props(pd.read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
@@ -1572,7 +1630,7 @@ def notify_props_weekly_summary() -> bool:
     if not player_led.exists():
         return False
 
-    pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
+    pled = _countable_props(pd.read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
     pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
 
