@@ -47,6 +47,8 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from src.team_names import resolve as resolve_team
+
 log = logging.getLogger(__name__)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -533,23 +535,49 @@ def build_upcoming_features(
 
     hist = historical.sort_values("date").copy()
 
-    def _find_team_rows(team: str, col: str, league: str = "") -> pd.Series:
-        """Find rows for a team with fuzzy name fallback (OddsAPI vs FD name differences)."""
+    _league_clubs: dict = {}
+    _resolved: dict = {}
+
+    def _clubs_in(league: str) -> list:
+        """Every club name football-data uses in this league (cached)."""
+        if league not in _league_clubs:
+            h = hist[hist["league"] == league] if league else hist
+            _league_clubs[league] = sorted(
+                set(h["home_team"].dropna().astype(str)) |
+                set(h["away_team"].dropna().astype(str))
+            )
+        return _league_clubs[league]
+
+    def _find_team_rows(team: str, col: str, league: str = "") -> pd.DataFrame:
+        """Rows for a team, reconciling OddsAPI spelling against football-data spelling.
+
+        The old fallback was `hist[col].str.lower().str.startswith(team.split()[0].lower())`,
+        which BOTH missed most real differences and was unsafe. It failed on "1. FC
+        Kaiserslautern" (first word "1."), "Cadiz CF" (accent), "QPR" (initialism) and
+        "Karlsruher SC" (stem) — 46% of standard fixtures resolved to nothing and got a full
+        set of median-imputed form features — while "Real Valladolid CF" would have matched
+        ANY club starting "Real". src.team_names.resolve is league-scoped and refuses an
+        ambiguous match instead of guessing.
+        """
         mask = hist[col] == team
-        if league:
-            rows = hist[mask & (hist["league"] == league)]
-        else:
-            rows = hist[mask]
+        rows = hist[mask & (hist["league"] == league)] if league else hist[mask]
         if not rows.empty:
             return rows
-        # Fuzzy fallback: try first word or prefix match (e.g. "Shelbourne Dublin" → "Shelbourne")
-        first_word = team.split()[0].lower()
-        mask_fuzzy = hist[col].str.lower().str.startswith(first_word)
-        if league:
-            rows = hist[mask_fuzzy & (hist["league"] == league)]
-        else:
-            rows = hist[mask_fuzzy]
-        return rows
+
+        key = (str(team), str(league))
+        if key not in _resolved:
+            hit = resolve_team(team, _clubs_in(league))
+            _resolved[key] = hit
+            if hit:
+                log.info(f"[names] {league}: '{team}' -> '{hit}'")
+            else:
+                log.warning(f"[names] {league}: no history club matches '{team}' — "
+                            f"its form features will be imputed")
+        hit = _resolved[key]
+        if not hit:
+            return hist.iloc[0:0]          # explicit miss, never a loose guess
+        m = hist[col] == hit
+        return hist[m & (hist["league"] == league)] if league else hist[m]
 
     def _team_recent(team: str, stat_home: str, stat_away: str, nn: int,
                      league: str = "") -> float:
