@@ -64,7 +64,7 @@ jobs:
           # the tier upgrade/downgrade in betting.py never fires. It was gitignored until
           # 2026-08-15; drift.py now stores price CHANGES only, so it stays small.
           for f in output/bets.csv output/bets_ledger.csv output/predictions.csv \
-                   odds_history_v9.json \
+                   odds_history_v9.json team_id_cache.json \
                    output/side_bets_ledger.csv output/standard_odds_history.csv output/ht_ledger.csv \
                    output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
                    output/live_tips.csv output/live_games.csv \

@@ -166,6 +166,7 @@ jobs:
           git add -f output/player_tips.csv output/player_ledger.csv \
                      output/player_prop_odds_history.csv output/clv_records.csv \
                      telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
+                     telegram_bot/player_kickoff_cache.json team_id_cache.json \
                      player_history.parquet \
                      models/model_player_goals.pkl   models/model_player_goals2.pkl \
                      models/model_player_assists.pkl \
