@@ -1,8 +1,8 @@
-"""
-Telegram Notifier — sends SNIPER alerts after each predict run.
+﻿"""
+Telegram Notifier â€” sends SNIPER alerts after each predict run.
 
 Setup:
-  1. Message @BotFather on Telegram → /newbot → copy token
+  1. Message @BotFather on Telegram â†’ /newbot â†’ copy token
   2. Message your bot once, then run:
        python notifier.py --get-chat-id
   3. Edit bot_config.json with your token and chat_id
@@ -38,10 +38,10 @@ def _fmt_kickoff(row) -> str:
     """Display a fixture's date/time in the LEAGUE'S LOCAL timezone.
 
     OddsAPI `commence_time` is UTC, so a match's local calendar day can differ from
-    its UTC day (Japan, Argentina, Brazil, …). We convert `kickoff_utc` to the league's
+    its UTC day (Japan, Argentina, Brazil, â€¦). We convert `kickoff_utc` to the league's
     local tz for what the user reads. The stored `date` stays UTC (join/dedup key) and
     is NOT touched. Falls back to the UTC date string when `kickoff_utc` is missing,
-    unparseable, or the league tz is unknown — so it can never regress the old behaviour.
+    unparseable, or the league tz is unknown â€” so it can never regress the old behaviour.
     """
     fallback = str(row.get("date", ""))[:10]
     ko = row.get("kickoff_utc", None)
@@ -71,14 +71,14 @@ def _load_config() -> dict:
     if not CONFIG_FILE.exists():
         default = {"token": "YOUR_BOT_TOKEN", "chat_id": "YOUR_CHAT_ID"}
         CONFIG_FILE.write_text(json.dumps(default, indent=2))
-        print(f"Created {CONFIG_FILE} — fill in your token and chat_id.")
+        print(f"Created {CONFIG_FILE} â€” fill in your token and chat_id.")
         sys.exit(1)
     return json.loads(CONFIG_FILE.read_text())
 
 
 def _settled_only(df):
     """Rows that truly settled WIN/LOSS. VOID (stake returned, pnl=0) and pending are
-    excluded from ALL ROI / win-rate maths — a void is not a loss and not a data point.
+    excluded from ALL ROI / win-rate maths â€” a void is not a loss and not a data point.
     (Voids store pnl=0, so a plain pnl.notna() filter wrongly keeps them.)"""
     if df is None or len(df) == 0:
         return df
@@ -91,7 +91,7 @@ def _settled_only(df):
 
 # Prop tiers that are NOT picks. We deliberately TRACK every tier in player_ledger.csv +
 # clv_records.csv (the 2026-08-13 "track everything" change), but an AVOID is the model
-# saying "no bet here" — counting it as a settled bet is a category error.
+# saying "no bet here" â€” counting it as a settled bet is a category error.
 NON_BET_TIERS = {"AVOID", "WATCH"}
 
 
@@ -110,10 +110,68 @@ def _bet_tiers_only(df):
     return df[keep].copy()
 
 
+_TEAM_LEAGUES = None
+
+
+def _team_league_map() -> dict:
+    """club -> set of competitions we hold player history for (cached per process)."""
+    global _TEAM_LEAGUES
+    if _TEAM_LEAGUES is None:
+        try:
+            pq = pd.read_parquet(app_config.BASE_DIR / "player_history.parquet",
+                                 columns=["team", "league"])
+            _TEAM_LEAGUES = (pq.assign(_t=pq["team"].astype(str))
+                             .groupby("_t")["league"].agg(set).to_dict())
+        except Exception:
+            _TEAM_LEAGUES = {}
+    return _TEAM_LEAGUES
+
+
+def _valid_fixture_rows(df):
+    """Drop prop rows whose player belongs to NEITHER team in the fixture.
+
+    Until 2026-08-15 the squad lookup fell back to a 5-character substring match, so players
+    were attached to unrelated matches â€” Real Madrid names in an MLS fixture (Real Salt Lake),
+    Messi in Sarmiento vs Argentinos Juniors, Monchengladbach in a China Super League game.
+    207 of 1983 player_ledger rows (10%) are wrong that way. predict.py no longer creates
+    them, but they are already written into the ledger and clv_records, so every performance
+    number computed from that history would stay polluted. Filtering here cleans the reporting
+    without deleting the tracking rows, and self-heals for anything already recorded.
+    """
+    if df is None or len(df) == 0:
+        return df
+    if not {"team", "home_team", "away_team"}.issubset(df.columns):
+        return df
+    from player_model.api_football import _same_club, _club_name_subset
+    tl = _team_league_map()
+
+    def _ok(team, home, away, league) -> bool:
+        team, home, away = str(team), str(home), str(away)
+        if _same_club(team, home) or _same_club(team, away):
+            return True
+        # Ambiguous subset ("Plymouth" vs "Plymouth Argyle" = same club, "Inter" vs
+        # "Inter Club d'Escaldes" = not): trust it only where we hold history for that
+        # club in THIS competition. Same rule predict.py now applies.
+        if _club_name_subset(team, home) or _club_name_subset(team, away):
+            return str(league) in tl.get(team, ())
+        return False
+
+    leagues = df["league"] if "league" in df.columns else pd.Series([""] * len(df), index=df.index)
+    keep = [_ok(t, h, a, lg) for t, h, a, lg in
+            zip(df["team"], df["home_team"], df["away_team"], leagues)]
+    return df[pd.Series(keep, index=df.index)].copy()
+
+
+def _countable_props(df):
+    """Prop ledger rows that may enter a count, a P/L figure, or a digest line:
+    a real pick (not AVOID/WATCH) on a fixture the player was actually in."""
+    return _valid_fixture_rows(_bet_tiers_only(df))
+
+
 def send_fantasy_tips(max_per_pos: int = 3) -> int:
-    """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
+    """FANTASY (FPL) family â€” captaincy + top picks per position. PREDICTIONS, not bets;
     kept visibly separate from the SNIPER/MARKSMAN betting tips.
-    GUARDED: fires only when there ARE upcoming Premier League fixtures — stays silent
+    GUARDED: fires only when there ARE upcoming Premier League fixtures â€” stays silent
     off-season so it never posts empty projections. Returns 1 if sent, else 0."""
     from pathlib import Path as _P
     import pandas as _pd
@@ -125,10 +183,10 @@ def send_fantasy_tips(max_per_pos: int = 3) -> int:
             _pc.PROP_LEAGUES["Premier League"],
             _pc.PROP_SEASONS.get("Premier League", "2025"), next_n=1)
         if not fx:
-            print("[fantasy] no upcoming PL fixtures — skipping (off-season)")
+            print("[fantasy] no upcoming PL fixtures â€” skipping (off-season)")
             return 0
     except Exception as e:
-        print(f"[fantasy] fixture guard failed ({e}) — skipping")
+        print(f"[fantasy] fixture guard failed ({e}) â€” skipping")
         return 0
     f = _P(__file__).resolve().parents[1] / "output" / "fantasy_tips.csv"
     if not f.exists():
@@ -145,9 +203,9 @@ def send_fantasy_tips(max_per_pos: int = 3) -> int:
         return 0
     POS = {"F": "Forwards", "M": "Midfielders", "D": "Defenders", "G": "Keepers"}
     cap = df.iloc[0]
-    lines = ["⚽ <b>FANTASY / FPL TIPS</b>",
-             "<i>Model predictions — not betting tips</i>", "",
-             f"👑 <b>Captain:</b> {cap['player_name']} ({cap['position']}) — {cap['fantasy_pts']:.1f} pts", ""]
+    lines = ["âš½ <b>FANTASY / FPL TIPS</b>",
+             "<i>Model predictions â€” not betting tips</i>", "",
+             f"ðŸ‘‘ <b>Captain:</b> {cap['player_name']} ({cap['position']}) â€” {cap['fantasy_pts']:.1f} pts", ""]
     for pos in ["F", "M", "D"]:
         sub = df[df["position"] == pos].head(max_per_pos)
         if sub.empty:
@@ -202,7 +260,7 @@ def _send_one(token: str, chat_id: str, text: str) -> bool:
             return False
         if r.status_code == 429:
             retry_after = r.json().get("parameters", {}).get("retry_after", 5)
-            print(f"Telegram rate limit — sleeping {retry_after}s (attempt {attempt + 1})")
+            print(f"Telegram rate limit â€” sleeping {retry_after}s (attempt {attempt + 1})")
             time.sleep(retry_after + 1)
             continue
         if r.status_code != 200:
@@ -234,7 +292,7 @@ def _load_notified(path: "Path | None" = None) -> set:
 
 def _save_notified(keys: set, path: "Path | None" = None) -> None:
     f = path or NOTIFIED_FILE
-    # Merge with whatever is currently on disk — prevents concurrent CI runs from
+    # Merge with whatever is currently on disk â€” prevents concurrent CI runs from
     # overwriting each other's notifications.
     if f.exists():
         try:
@@ -251,7 +309,7 @@ def _escape_html(text: str) -> str:
 
 
 def _drift_emoji(signal: str) -> str:
-    return {"Confirmed": "✅", "Conflicted": "⚠️", "Neutral": "➡️", "New": "🆕"}.get(str(signal), "")
+    return {"Confirmed": "âœ…", "Conflicted": "âš ï¸", "Neutral": "âž¡ï¸", "New": "ðŸ†•"}.get(str(signal), "")
 
 
 def notify_new_snipers() -> int:
@@ -261,14 +319,14 @@ def notify_new_snipers() -> int:
     chat_id = cfg.get("chat_id", "")
 
     if not token or token == "YOUR_BOT_TOKEN":
-        print("Telegram not configured — skipping notifications.")
+        print("Telegram not configured â€” skipping notifications.")
         return 0
 
     bets_file = app_config.OUTPUT_DIR / "bets.csv"
     if not bets_file.exists():
         return 0
 
-    # Load league ROI config — only alert on leagues with proven backtest edge
+    # Load league ROI config â€” only alert on leagues with proven backtest edge
     _roi_cfg_path = app_config.OUTPUT_DIR / "league_roi_config.json"
     _approved_leagues: set[str] = set()
     if _roi_cfg_path.exists():
@@ -295,13 +353,13 @@ def notify_new_snipers() -> int:
         df["bet"].isin(["UNDER", "OVER"])
     ].copy()
 
-    # Live-test policy (2026/27): send SNIPER + MARKSMAN for ALL leagues — including
-    # negative-ROI ("losing") ones — so every league is tracked live this season. The
+    # Live-test policy (2026/27): send SNIPER + MARKSMAN for ALL leagues â€” including
+    # negative-ROI ("losing") ones â€” so every league is tracked live this season. The
     # league-ROI approval gate that previously muted MARKSMAN on unapproved leagues is
     # intentionally disabled; approval now informs real-money sizing only, not sending.
     # (_approved_leagues stays available above for labelling if needed.)
 
-    # Only upcoming games — never send finished matches
+    # Only upcoming games â€” never send finished matches
     today_str = datetime.now().strftime("%Y-%m-%d")
     tips = tips[tips["date"].astype(str).str[:10] >= today_str]
 
@@ -322,38 +380,38 @@ def notify_new_snipers() -> int:
         edge  = float(row.get("best_edge", 0)) * 100
         drift = _drift_emoji(row.get("drift_signal", "New"))
         _is_std = row.get("model_type") == "standard"
-        model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
+        model = "ðŸ´ó §ó ¢ó ¥ó ®ó §ó ¿ Standard" if _is_std else "ðŸŒ New-Format"
         mtag  = "standard" if _is_std else "new-format"
 
         if tier == "SNIPER":
-            header = f"🎯 <b>SNIPER TIP</b> {drift}"
+            header = f"ðŸŽ¯ <b>SNIPER TIP</b> {drift}"
         elif tier == "MARKSMAN":
-            header = f"🔫 <b>MARKSMAN TIP</b> {drift}"
+            header = f"ðŸ”« <b>MARKSMAN TIP</b> {drift}"
         elif tier == "VALUABLE":
-            header = f"💎 <b>VALUABLE TIP</b> ({mtag}) {drift}"   # dynamic — NF VALUABLE now sent too
+            header = f"ðŸ’Ž <b>VALUABLE TIP</b> ({mtag}) {drift}"   # dynamic â€” NF VALUABLE now sent too
         else:
-            header = f"🔍 <b>EDGE WATCH</b> (small edge, not a tip) {drift}"
+            header = f"ðŸ” <b>EDGE WATCH</b> (small edge, not a tip) {drift}"
 
         msg = (
             f"{header}\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {_fmt_kickoff(row)}\n"
-            f"🏆 {row.get('league','')}\n"
-            f"⚽ {row['home_team']} vs {row['away_team']}\n"
-            f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n"
-            f"🔀 Drift: {row.get('drift_signal','New')} {drift}"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ“… {_fmt_kickoff(row)}\n"
+            f"ðŸ† {row.get('league','')}\n"
+            f"âš½ {row['home_team']} vs {row['away_team']}\n"
+            f"ðŸ“Œ <b>{side} 2.5</b>  @ {odds:.2f}\n"
+            f"ðŸ“Š Edge: <b>{edge:.1f}%</b>  |  {model}\n"
+            f"ðŸ”€ Drift: {row.get('drift_signal','New')} {drift}"
         )
 
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
             _save_notified(notified)  # save after each send so crashes don't cause duplicates
-            print(f"  Sent [{tier}]: {row['home_team']} vs {row['away_team']} — {side}")
+            print(f"  Sent [{tier}]: {row['home_team']} vs {row['away_team']} â€” {side}")
 
     if sent:
         _send(token, chat_id,
-              f"📋 <b>{sent} new tip(s)</b> sent at {datetime.now().strftime('%H:%M')}")
+              f"ðŸ“‹ <b>{sent} new tip(s)</b> sent at {datetime.now().strftime('%H:%M')}")
     return sent
 
 
@@ -386,11 +444,11 @@ def notify_live_signals() -> int:
             pass
 
     SIGNAL_EMOJI = {
-        "UNDER_HOLD":     "🔒",
-        "SLEEPING_GAME":  "😴",
-        "UNDER_RECOVERY": "📉",
-        "STRONG_STUCK":   "💪",
-        "COMEBACK":       "🔥",
+        "UNDER_HOLD":     "ðŸ”’",
+        "SLEEPING_GAME":  "ðŸ˜´",
+        "UNDER_RECOVERY": "ðŸ“‰",
+        "STRONG_STUCK":   "ðŸ’ª",
+        "COMEBACK":       "ðŸ”¥",
     }
 
     sent = 0
@@ -403,21 +461,21 @@ def notify_live_signals() -> int:
         if key in live_notified:
             continue
 
-        emoji   = SIGNAL_EMOJI.get(row["signal_type"], "📌")
+        emoji   = SIGNAL_EMOJI.get(row["signal_type"], "ðŸ“Œ")
         is_under = "UNDER" in str(row["bet"])
         fair    = row["fair_under_odds"] if is_under else row["fair_over_odds"]
         live_p  = row["live_p_under"] if is_under else row["live_p_over"]
 
         msg = (
-            f"{emoji} <b>LIVE VALUE — {row['signal_type']}</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"🏆 {row['league']}\n"
-            f"⚽ {row['match']}\n"
-            f"⏱ {row['elapsed_mins']}' | Score: <b>{row['score']}</b>\n"
-            f"📌 Bet: <b>{row['bet']}</b>\n"
-            f"💰 Fair price: <b>{fair}</b> | P={live_p*100:.0f}%\n"
-            f"📋 {row['reason'][:120]}\n"
-            f"⚠️ Check your bookmaker live screen!"
+            f"{emoji} <b>LIVE VALUE â€” {row['signal_type']}</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ† {row['league']}\n"
+            f"âš½ {row['match']}\n"
+            f"â± {row['elapsed_mins']}' | Score: <b>{row['score']}</b>\n"
+            f"ðŸ“Œ Bet: <b>{row['bet']}</b>\n"
+            f"ðŸ’° Fair price: <b>{fair}</b> | P={live_p*100:.0f}%\n"
+            f"ðŸ“‹ {row['reason'][:120]}\n"
+            f"âš ï¸ Check your bookmaker live screen!"
         )
 
         if _send(token, chat_id, msg):
@@ -447,7 +505,7 @@ def notify_wc_strong() -> int:
     df = pd.read_csv(wc_file)
     strong = df[df["signal"].isin(["STRONG", "SHARP", "FADING"])].copy()
 
-    # Only alert for matches in the next 3 days — future signals fire when relevant
+    # Only alert for matches in the next 3 days â€” future signals fire when relevant
     today = datetime.utcnow().date()
     cutoff = today + __import__("datetime").timedelta(days=3)
     strong["_date"] = pd.to_datetime(strong["date"], errors="coerce").dt.date
@@ -467,9 +525,9 @@ def notify_wc_strong() -> int:
     sent = 0
 
     _WC_SIG = {
-        "STRONG": ("🔴", "STEAM — sharp money IN"),
-        "SHARP":  ("🟡", "SHARP — money moving in"),
-        "FADING": ("🔵", "FADING — sharp against this outcome"),
+        "STRONG": ("ðŸ”´", "STEAM â€” sharp money IN"),
+        "SHARP":  ("ðŸŸ¡", "SHARP â€” money moving in"),
+        "FADING": ("ðŸ”µ", "FADING â€” sharp against this outcome"),
     }
 
     for _, row in strong.iterrows():
@@ -481,25 +539,25 @@ def notify_wc_strong() -> int:
             continue
 
         sig = row["signal"]
-        emoji, label = _WC_SIG.get(sig, ("⚪", sig))
-        direction = "▼ Shortening" if row["drift_pct"] < 0 else "▲ Lengthening"
+        emoji, label = _WC_SIG.get(sig, ("âšª", sig))
+        direction = "â–¼ Shortening" if row["drift_pct"] < 0 else "â–² Lengthening"
         n_books = int(row["n_books"]) if "n_books" in row and not pd.isna(row.get("n_books")) else None
         books_line = f" across {n_books} bookmakers" if n_books and n_books > 1 else ""
         msg = (
             f"{emoji} <b>WC {label}</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {str(row['date'])[:10]}\n"
-            f"⚽ {row['match']}\n"
-            f"📌 <b>{row['market']}</b>\n"
-            f"💰 Opening: {row['opening_odds']} → Now: {row['current_odds']}\n"
-            f"📉 Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
-            f"🔍 {row['snapshots']} snapshots{books_line}"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ“… {str(row['date'])[:10]}\n"
+            f"âš½ {row['match']}\n"
+            f"ðŸ“Œ <b>{row['market']}</b>\n"
+            f"ðŸ’° Opening: {row['opening_odds']} â†’ Now: {row['current_odds']}\n"
+            f"ðŸ“‰ Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
+            f"ðŸ” {row['snapshots']} snapshots{books_line}"
         )
 
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
-            print(f"  WC Sent: {row['match']} — {row['market']} {row['drift_pct']:+.1f}%")
+            print(f"  WC Sent: {row['match']} â€” {row['market']} {row['drift_pct']:+.1f}%")
 
     _save_notified(notified, WC_NOTIFIED_FILE)
     return sent
@@ -531,25 +589,25 @@ def notify_sharp_strong() -> int:
             continue
 
         sig       = row["signal"]
-        emoji     = "🔴" if sig == "STRONG" else "🟡"
-        direction = "▼ Sharp money IN" if row["drift_pct"] < 0 else "▲ Money moving OUT"
+        emoji     = "ðŸ”´" if sig == "STRONG" else "ðŸŸ¡"
+        direction = "â–¼ Sharp money IN" if row["drift_pct"] < 0 else "â–² Money moving OUT"
         msg = (
-            f"{emoji} <b>SHARP MONEY — {sig}</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {str(row['date'])[:10]}\n"
-            f"🏆 {row.get('league','')}\n"
-            f"⚽ {row['match']}\n"
-            f"📌 <b>{row['market']}</b>\n"
-            f"💰 Opening: {row['opening_odds']} → Now: {row['current_odds']}\n"
-            f"📉 Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
-            f"🔍 Based on {row['snapshots']} snapshots"
+            f"{emoji} <b>SHARP MONEY â€” {sig}</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ“… {str(row['date'])[:10]}\n"
+            f"ðŸ† {row.get('league','')}\n"
+            f"âš½ {row['match']}\n"
+            f"ðŸ“Œ <b>{row['market']}</b>\n"
+            f"ðŸ’° Opening: {row['opening_odds']} â†’ Now: {row['current_odds']}\n"
+            f"ðŸ“‰ Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
+            f"ðŸ” Based on {row['snapshots']} snapshots"
         )
 
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
             _save_notified(notified, SHARP_NOTIFIED_FILE)
-            print(f"  Sharp [{sig}]: {row['match']} — {row['market']} {row['drift_pct']:+.1f}%")
+            print(f"  Sharp [{sig}]: {row['match']} â€” {row['market']} {row['drift_pct']:+.1f}%")
 
     return sent
 
@@ -589,19 +647,19 @@ def notify_ht_tips() -> int:
         if p05 >= 0.75:
             side, prob, line = "OVER", p05, "0.5"
             fair = round(1 / max(p05, 0.01), 2)
-            emoji = "⚡"
+            emoji = "âš¡"
         elif p05 <= 0.30:
             side, prob, line = "UNDER", 1 - p05, "0.5"
             fair = round(1 / max(1 - p05, 0.01), 2)
-            emoji = "🧊"
+            emoji = "ðŸ§Š"
         elif p15 is not None and p15 >= 0.60:
             side, prob, line = "OVER", p15, "1.5"
             fair = round(1 / max(p15, 0.01), 2)
-            emoji = "🔥"
+            emoji = "ðŸ”¥"
         elif p15 is not None and p15 <= 0.25:
             side, prob, line = "UNDER", 1 - p15, "1.5"
             fair = round(1 / max(1 - p15, 0.01), 2)
-            emoji = "🔒"
+            emoji = "ðŸ”’"
         else:
             continue
 
@@ -610,35 +668,35 @@ def notify_ht_tips() -> int:
             continue
 
         msg = (
-            f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {_fmt_kickoff(row)}\n"
-            f"🏆 {row.get('league', '')}\n"
-            f"⚽ {row['home_team']} vs {row['away_team']}\n"
-            f"📌 <b>HT {side} {line}</b>\n"
-            f"📊 P(HT {side} {line}) = <b>{prob*100:.0f}%</b>\n"
-            f"💰 Fair price: <b>{fair}</b>\n"
-            f"⚠️ Check your bookmaker's HT market"
+            f"{emoji} <b>HT {side} {line} â€” MODEL TIP</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ“… {_fmt_kickoff(row)}\n"
+            f"ðŸ† {row.get('league', '')}\n"
+            f"âš½ {row['home_team']} vs {row['away_team']}\n"
+            f"ðŸ“Œ <b>HT {side} {line}</b>\n"
+            f"ðŸ“Š P(HT {side} {line}) = <b>{prob*100:.0f}%</b>\n"
+            f"ðŸ’° Fair price: <b>{fair}</b>\n"
+            f"âš ï¸ Check your bookmaker's HT market"
         )
 
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
             _save_notified(notified)
-            print(f"  HT tip: {row['home_team']} vs {row['away_team']} — HT {side} {line} ({prob*100:.0f}%)")
+            print(f"  HT tip: {row['home_team']} vs {row['away_team']} â€” HT {side} {line} ({prob*100:.0f}%)")
 
     return sent
 
 
 def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
-    """Under a model×tier, split settled bets by SHARP MOVEMENT and append confirm/disagree
+    """Under a modelÃ—tier, split settled bets by SHARP MOVEMENT and append confirm/disagree
     lines. clv_pct > 0 = our side's odds SHORTENED (sharp confirmed the tip); < 0 = drifted
-    (sharp disagreed). Reporting only — skips silently until CLV is populated."""
+    (sharp disagreed). Reporting only â€” skips silently until CLV is populated."""
     if ts is None or ts.empty or "clv_pct" not in ts.columns:
         return
     clv = pd.to_numeric(ts["clv_pct"], errors="coerce")
     pnl = pd.to_numeric(ts["pnl"], errors="coerce")
-    for tag, sym, mask in (("confirm", "✅", clv > 0), ("disagree", "⚠️", clv < 0)):
+    for tag, sym, mask in (("confirm", "âœ…", clv > 0), ("disagree", "âš ï¸", clv < 0)):
         seg = pnl[mask & pnl.notna()]
         if seg.empty:
             continue
@@ -672,7 +730,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         line moved TOWARD our side (odds shortened) -> sharp CONFIRM
         line moved AGAINST our side (odds drifted)  -> sharp DISAGREE
     Dedup per (fixture, side, direction) so each move alerts once (and again only if it flips).
-    Reads the odds curves we already capture — no API calls, no model/betting logic touched."""
+    Reads the odds curves we already capture â€” no API calls, no model/betting logic touched."""
     import re
     cfg = _load_config()
     token = cfg.get("token", ""); chat_id = cfg.get("chat_id", "")
@@ -688,7 +746,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
     live = bl[bl["source"] == "live"].copy()
     today = datetime.now().strftime("%Y-%m-%d")
     live = live[live["match_date"].astype(str).str[:10] >= today]
-    # A sharp-move alert is only actionable BEFORE kickoff — never alert on a match that has
+    # A sharp-move alert is only actionable BEFORE kickoff â€” never alert on a match that has
     # already started. The ledger stores only the date, so: (1) drop already-settled rows, and
     # (2) use kickoff_utc from bets.csv / predictions.csv to keep only fixtures whose kickoff
     # is still in the future (this is what stopped alerts firing on matches played earlier today).
@@ -722,7 +780,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
 
     live = live[live.apply(_upcoming, axis=1)]
     # Keep only the LATEST tip per fixture. The model can flip a side (e.g. UNDER -> OVER after
-    # the 2026-08-09 recalibration), leaving a stale opposite-side row in the ledger — without
+    # the 2026-08-09 recalibration), leaving a stale opposite-side row in the ledger â€” without
     # this we'd alert on BOTH sides of the same match (the Palmeiras UNDER+OVER case).
     if "generated_at" in live.columns and not live.empty:
         live = live.sort_values("generated_at").drop_duplicates(
@@ -776,7 +834,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
                 break
         if not pair:
             continue
-        # SAME source, open->close (NOT the OddsAPI ledger entry vs Bet365 current — that
+        # SAME source, open->close (NOT the OddsAPI ledger entry vs Bet365 current â€” that
         # cross-source mismatch produced fake "moves", e.g. Botafogo 1.86 vs 1.17).
         entry, cur = pair
         if not entry or not cur or entry <= 1.0:
@@ -790,11 +848,11 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         dkey = f"{r.home_team}|{r.away_team}|{str(r.match_date)[:10]}|{side}|{direction}"
         if dkey in notified:
             continue
-        sym = "✅" if direction == "confirm" else "⚠️"
-        verb = ("TOWARD your tip — sharp CONFIRM" if direction == "confirm"
-                else "AGAINST your tip — sharp DISAGREE")
+        sym = "âœ…" if direction == "confirm" else "âš ï¸"
+        verb = ("TOWARD your tip â€” sharp CONFIRM" if direction == "confirm"
+                else "AGAINST your tip â€” sharp DISAGREE")
         tier = getattr(r, "signal_tier", "")
-        msg = (f"⚡ <b>Sharp movement on your tip</b>\n"
+        msg = (f"âš¡ <b>Sharp movement on your tip</b>\n"
                f"{r.home_team} vs {r.away_team}\n"
                f"<b>{side} 2.5</b> ({tier})\n"
                f"market opened {entry:.2f}, now {cur:.2f}\n"
@@ -838,10 +896,10 @@ def notify_weekly_summary() -> bool:
                     f"{stats['win']:.0%} win | "
                     f"P/L <b>{pnl_s}{stats['pnl']:.2f}u</b>")
         if pending_n:
-            return f"  {emoji} <b>{label}</b>: {pending_n} signals sent | ⏳ awaiting results"
+            return f"  {emoji} <b>{label}</b>: {pending_n} signals sent | â³ awaiting results"
         return f"  {emoji} <b>{label}</b>: no settled bets this week"
 
-    # ── 1. Prediction model (bets_ledger.csv, source=live) ──────────────────
+    # â”€â”€ 1. Prediction model (bets_ledger.csv, source=live) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     live = pd.DataFrame(columns=["pnl", "signal_tier", "model_type", "match_date"])
     lw = live.copy()
     ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
@@ -860,7 +918,7 @@ def notify_weekly_summary() -> bool:
             live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
         lw = live[live["match_date"] >= week_ago]
 
-    # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
+    # â”€â”€ 2. Sharp tracker (sharp_ledger.csv) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     sharp_week: dict | None = None; sharp_week_pending = 0
     sharp_all:  dict | None = None
     sharp_file = app_config.OUTPUT_DIR / "sharp_ledger.csv"
@@ -873,12 +931,12 @@ def notify_weekly_summary() -> bool:
         sharp_week_pending = int((sw["pnl"].isna()).sum()) if not sw.empty else 0
         sharp_all          = _stats(sl)
 
-    # ── 3. Player props (player_ledger.csv) ──────────────────────────────────
+    # â”€â”€ 3. Player props (player_ledger.csv) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     props_week: dict | None = None; props_week_pending = 0
     props_all:  dict | None = None
     props_file = app_config.OUTPUT_DIR / "player_ledger.csv"
     if props_file.exists():
-        pl = _bet_tiers_only(pd.read_csv(props_file))   # AVOID/WATCH: tracked, never counted
+        pl = _countable_props(pd.read_csv(props_file))   # AVOID/WATCH + wrong-fixture rows: tracked, never counted
         pl["pnl"]         = pd.to_numeric(pl["pnl"], errors="coerce")
         pl["signal_date"] = pd.to_datetime(pl["signal_date"], errors="coerce")
         pw = pl[pl["signal_date"] >= week_ago]
@@ -886,7 +944,7 @@ def notify_weekly_summary() -> bool:
         props_week_pending = int((pw["pnl"].isna()).sum()) if not pw.empty else 0
         props_all          = _stats(pl)
 
-    # ── 4. WC drift signals (worldcup_tips.csv — no P/L yet) ─────────────────
+    # â”€â”€ 4. WC drift signals (worldcup_tips.csv â€” no P/L yet) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     wc_pending = 0
     wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
     if wc_file.exists():
@@ -894,23 +952,23 @@ def notify_weekly_summary() -> bool:
         wc["date"] = pd.to_datetime(wc["date"], errors="coerce")
         wc_pending = int(len(wc[wc["date"] >= week_ago]))
 
-    # ── Build message — by market then tier ──────────────────────────────────
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    # â”€â”€ Build message â€” by market then tier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    TIER_SYM   = {"SNIPER": "ðŸŽ¯", "MARKSMAN": "ðŸ”«", "VALUABLE": "ðŸ’Ž"}
     TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
     SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
 
     lines = [
-        "📊 <b>WEEKLY SUMMARY</b>",
-        "━━━━━━━━━━━━━━━━",
-        f"📅 {week_start} → {week_end}",
+        "ðŸ“Š <b>WEEKLY SUMMARY</b>",
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
+        f"ðŸ“… {week_start} â†’ {week_end}",
         "",
         "<b>This week by market</b>",
         "",
     ]
 
-    # ── Over 2.5 — this week, by MODEL then tier (matches the daily digest) ──
-    MODELS = [("standard", "⚽", "Over 2.5 — Standard"),
-              ("new_format", "🌍", "Over 2.5 — New-Format")]
+    # â”€â”€ Over 2.5 â€” this week, by MODEL then tier (matches the daily digest) â”€â”€
+    MODELS = [("standard", "âš½", "Over 2.5 â€” Standard"),
+              ("new_format", "ðŸŒ", "Over 2.5 â€” New-Format")]
 
     def _pred_block(frame, settled_word):
         any_shown = False
@@ -920,7 +978,7 @@ def notify_weekly_summary() -> bool:
                 continue
             any_shown = True
             n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
-            lines.append(f"{emoji} <b>{label}</b> — {n} {settled_word} | {w/n:.0%} win | P/L {pnl:+.2f}u")
+            lines.append(f"{emoji} <b>{label}</b> â€” {n} {settled_word} | {w/n:.0%} win | P/L {pnl:+.2f}u")
             for tier in TIER_ORDER:
                 ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                 if ts.empty:
@@ -930,12 +988,12 @@ def notify_weekly_summary() -> bool:
                              f"P/L <b>{ts['pnl'].sum():+.2f}u</b>")
                 _sharp_split_lines(ts, lines, "      ")
         if not any_shown:
-            lines.append("⚽ <b>Over 2.5</b>: no settled bets")
+            lines.append("âš½ <b>Over 2.5</b>: no settled bets")
 
     _pred_block(lw, "bets")
     lines.append("")
 
-    # ── Side markets (BTTS / O1.5 / O3.5) — this week ────────────────────────
+    # â”€â”€ Side markets (BTTS / O1.5 / O3.5) â€” this week â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     side_led = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
     if side_led.exists():
         try:
@@ -949,7 +1007,7 @@ def notify_weekly_summary() -> bool:
                 if ms.empty:
                     continue
                 n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw2}W/{n-mw2}L | P/L {pnl:+.2f}u")
+                lines.append(f"ðŸ“Œ <b>{mkt_label}</b> â€” {mw2}W/{n-mw2}L | P/L {pnl:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
@@ -960,20 +1018,20 @@ def notify_weekly_summary() -> bool:
         except Exception:
             pass
 
-    lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
+    lines.append(_fmt("Sharp Tracker", "ðŸ’°", sharp_week, sharp_week_pending))
 
     if wc_pending:
-        lines.append(f"  🌍 <b>WC Drift</b>: {wc_pending} signals active | ⏳ no P/L tracking yet")
+        lines.append(f"  ðŸŒ <b>WC Drift</b>: {wc_pending} signals active | â³ no P/L tracking yet")
     else:
-        lines.append("  🌍 <b>WC Drift</b>: no signals this week")
+        lines.append("  ðŸŒ <b>WC Drift</b>: no signals this week")
 
-    lines.append("  👤 <b>Player Props</b>: see Player Props Weekly for details")
+    lines.append("  ðŸ‘¤ <b>Player Props</b>: see Player Props Weekly for details")
 
-    # ── All-time by market then tier ──────────────────────────────────────────
+    # â”€â”€ All-time by market then tier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     sharp_all_total = int(len(pd.read_csv(sharp_file))) if sharp_file.exists() else 0
     wc_all_total    = int(len(pd.read_csv(wc_file)))    if wc_file.exists() else 0
 
-    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time by market</b>", ""]
+    lines += ["", "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”", "<b>All-time by market</b>", ""]
 
     _pred_block(live, "settled")
     lines.append("")
@@ -989,7 +1047,7 @@ def notify_weekly_summary() -> bool:
                 if ms.empty:
                     continue
                 n = len(ms); mw3 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw3}W/{n-mw3}L | P/L {pnl:+.2f}u")
+                lines.append(f"ðŸ“Œ <b>{mkt_label}</b> â€” {mw3}W/{n-mw3}L | P/L {pnl:+.2f}u")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
@@ -1002,14 +1060,14 @@ def notify_weekly_summary() -> bool:
 
     if sharp_all and sharp_all["n"] > 0:
         pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
-        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {pnl_s}{sharp_all['pnl']:.2f}u")
+        lines.append(f"  ðŸ’° <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {pnl_s}{sharp_all['pnl']:.2f}u")
     elif sharp_all_total:
-        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⏳ awaiting results")
+        lines.append(f"  ðŸ’° <b>Sharp Tracker</b>: {sharp_all_total} signals total | â³ awaiting results")
     else:
-        lines.append("  💰 <b>Sharp Tracker</b>: no signals yet")
+        lines.append("  ðŸ’° <b>Sharp Tracker</b>: no signals yet")
 
     if wc_all_total:
-        lines.append(f"  🌍 <b>WC Drift</b>: {wc_all_total} signals total | ⏳ no P/L tracking yet")
+        lines.append(f"  ðŸŒ <b>WC Drift</b>: {wc_all_total} signals total | â³ no P/L tracking yet")
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
@@ -1022,7 +1080,7 @@ def notify_agent_analysis() -> int:
     """
     For each new SNIPER pick, run the agent and send a follow-up Telegram message
     with the Strongest Signals shortlist extracted from the analysis.
-    Requires GOOGLE_API_KEY (or ANTHROPIC_API_KEY) to be set — skips silently if not.
+    Requires GOOGLE_API_KEY (or ANTHROPIC_API_KEY) to be set â€” skips silently if not.
     Returns count of agent analyses sent.
     """
     import os
@@ -1091,16 +1149,16 @@ def notify_agent_analysis() -> int:
         edge = float(row.get("best_edge", 0)) * 100
 
         msg = (
-            f"🤖 <b>AGENT ANALYSIS</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"⚽ {row['home_team']} vs {row['away_team']}\n"
-            f"🏆 {row.get('league', '')}  |  📅 {_fmt_kickoff(row)}\n"
-            f"🎯 ML Signal: <b>{side} 2.5</b>  Edge: <b>{edge:.1f}%</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
+            f"ðŸ¤– <b>AGENT ANALYSIS</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"âš½ {row['home_team']} vs {row['away_team']}\n"
+            f"ðŸ† {row.get('league', '')}  |  ðŸ“… {_fmt_kickoff(row)}\n"
+            f"ðŸŽ¯ ML Signal: <b>{side} 2.5</b>  Edge: <b>{edge:.1f}%</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
             f"<b>Strongest Signals:</b>\n"
             f"{strongest}\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"Powered by {'Gemini' if result['mode'] == 'gemini' else 'Claude'} · Full analysis in dashboard"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"Powered by {'Gemini' if result['mode'] == 'gemini' else 'Claude'} Â· Full analysis in dashboard"
         )
 
         if _send(token, chat_id, msg):
@@ -1150,12 +1208,12 @@ def notify_player_props() -> int:
     from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
     df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
 
-    # ── WEEKEND "MEAT" FEED (props are a calibrated-but-unproven TEST model) ─────────
+    # â”€â”€ WEEKEND "MEAT" FEED (props are a calibrated-but-unproven TEST model) â”€â”€â”€â”€â”€â”€â”€â”€â”€
     # Props have no proven market edge, so this is NOT an edge-gated send: we surface a fixed
-    # weekly slate for tracking — the strongest 20 priced picks by model EV, bucketed
+    # weekly slate for tracking â€” the strongest 20 priced picks by model EV, bucketed
     # 5 SNIPER / 5 MARKSMAN / 10 VALUABLE. Here the tier labels are STRENGTH RANKS, not
     # real-money tiers. EVERY pick is tracked in player_ledger + clv_records regardless of
-    # whether it's sent — this only decides what goes to Telegram.
+    # whether it's sent â€” this only decides what goes to Telegram.
     #
     # GK safety net: keepers have no goals/SOT/assist props (but can have card props).
     if "position" in df.columns:
@@ -1187,26 +1245,26 @@ def notify_player_props() -> int:
     sent = 0
 
     MARKET_EMOJI = {
-        "goals": "⚽", "goals2": "⚽⚽",
-        "assists": "🎯",
-        "sot": "🔫", "sot2": "🔫", "sot3": "🔫",
-        "cards": "🟨",
+        "goals": "âš½", "goals2": "âš½âš½",
+        "assists": "ðŸŽ¯",
+        "sot": "ðŸ”«", "sot2": "ðŸ”«", "sot3": "ðŸ”«",
+        "cards": "ðŸŸ¨",
     }
 
     for _, row in df.iterrows():
-        # Key intentionally excludes match string — match formatting varies between runs
-        # and excluding tier means SNIPER→MARKSMAN changes don't re-trigger an alert.
+        # Key intentionally excludes match string â€” match formatting varies between runs
+        # and excluding tier means SNIPERâ†’MARKSMAN changes don't re-trigger an alert.
         key = f"PLAYER|{str(row['date'])[:10]}|{row['player_name']}|{row['market']}"
         if key in notified:
             continue
 
-        emoji  = MARKET_EMOJI.get(row["market"], "📌")
+        emoji  = MARKET_EMOJI.get(row["market"], "ðŸ“Œ")
         p      = float(row["model_prob"])
         fair   = float(row["fair_odds"])
         tier   = row.get("feed_tier", "VALUABLE")   # strength-rank bucket, not a real-money tier
         mkt_odds = row.get("market_odds")
         ev_val   = row.get("ev")
-        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "💎")
+        tier_emoji = {"SNIPER": "ðŸŽ¯", "MARKSMAN": "ðŸ”«", "VALUABLE": "ðŸ’Ž"}.get(tier, "ðŸ’Ž")
         market_label = {
             "goals": "Anytime Goalscorer", "goals2": "Score 2+",
             "assists": "Assist",
@@ -1214,20 +1272,20 @@ def notify_player_props() -> int:
             "cards": "Yellow Card",
         }.get(row["market"], row["market"])
 
-        odds_line = f"📈 Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>" \
+        odds_line = f"ðŸ“ˆ Odds: <b>{mkt_odds:.2f}</b>  |  Fair: <b>{fair:.2f}</b>  |  EV: <b>{ev_val:+.1%}</b>" \
                     if mkt_odds and not (isinstance(mkt_odds, float) and mkt_odds != mkt_odds) \
                        and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
-                    else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
+                    else f"ðŸ“Š Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
 
-        _title = f"{tier} · TEST"
-        _footer = ("🧪 <i>Test model — calibrated & strong at predicting, but NOT proven vs the "
-                   "market. Tracking only — do NOT bet real money.</i>")
+        _title = f"{tier} Â· TEST"
+        _footer = ("ðŸ§ª <i>Test model â€” calibrated & strong at predicting, but NOT proven vs the "
+                   "market. Tracking only â€” do NOT bet real money.</i>")
         msg = (
-            f"{tier_emoji} <b>{_title} — {market_label.upper()}</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"👤 <b>{row['player_name']}</b> ({row.get('position', '')} · {row['team']})\n"
-            f"⚽ {row['match']}\n"
-            f"🏆 {row.get('league', '')}  |  📅 {str(row['date'])[:10]}\n"
+            f"{tier_emoji} <b>{_title} â€” {market_label.upper()}</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ‘¤ <b>{row['player_name']}</b> ({row.get('position', '')} Â· {row['team']})\n"
+            f"âš½ {row['match']}\n"
+            f"ðŸ† {row.get('league', '')}  |  ðŸ“… {str(row['date'])[:10]}\n"
             f"{odds_line}\n"
             f"{_footer}"
         )
@@ -1245,7 +1303,7 @@ def notify_player_props() -> int:
                     pass
             sent += 1
             _save_notified(notified, PLAYER_NOTIFIED_FILE)
-            print(f"  Player prop: {row['player_name']} — {market_label} ({p*100:.0f}%)")
+            print(f"  Player prop: {row['player_name']} â€” {market_label} ({p*100:.0f}%)")
 
     return sent
 
@@ -1253,12 +1311,12 @@ def notify_player_props() -> int:
 def notify_lineup_cashout() -> int:
     """
     Send CASHOUT alerts for players we previously tipped who are NOT in today's
-    player_tips.csv anymore — meaning confirmed lineups show they're not starting.
+    player_tips.csv anymore â€” meaning confirmed lineups show they're not starting.
 
     Logic:
-      1. Read player_notified.json — get all keys for today's date.
-      2. Read player_tips.csv — current tips after lineup filter.
-      3. Any notified key not present in current tips → player benched → send CASHOUT.
+      1. Read player_notified.json â€” get all keys for today's date.
+      2. Read player_tips.csv â€” current tips after lineup filter.
+      3. Any notified key not present in current tips â†’ player benched â†’ send CASHOUT.
       4. Track sent cashout alerts in cashout_notified.json (no repeat cashout per player/market).
 
     Returns count of cashout alerts sent.
@@ -1331,10 +1389,10 @@ def notify_lineup_cashout() -> int:
         _, date_str, player_name, market = parts[0], parts[1], parts[2], parts[3]
 
         # Rule: fire ONLY when kickoff is within the next 60 min (lineups are out)
-        # AND the game has not started yet — i.e. 0 < minutes_to_kickoff <= 60.
+        # AND the game has not started yet â€” i.e. 0 < minutes_to_kickoff <= 60.
         # If the kickoff time is unknown or unparseable we CANNOT confirm the
         # window, so we DO NOT fire. (The bug: a missing/bad kickoff used to fall
-        # through and alert at any time — hours early or after kickoff.)
+        # through and alert at any time â€” hours early or after kickoff.)
         _ku = _kickoff_cache.get(key, "")
         _mins_until = None
         if _ku and _ku not in ("nan", "None"):
@@ -1343,7 +1401,7 @@ def notify_lineup_cashout() -> int:
             except Exception:
                 _mins_until = None
         if _mins_until is None or not (0 < _mins_until <= 60):
-            continue  # unknown timing, >60 min early, or already kicked off — skip
+            continue  # unknown timing, >60 min early, or already kicked off â€” skip
 
         mkt_label = MARKET_LABEL.get(market, market)
         row = tip_lookup.get(key, {})
@@ -1351,20 +1409,20 @@ def notify_lineup_cashout() -> int:
         team_str  = row.get("team", "")
 
         msg = (
-            f"🚨 <b>LINEUP ALERT — CASHOUT RECOMMENDED</b>\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"👤 <b>{player_name}</b> is NOT in the confirmed starting XI\n"
-            f"📌 Market: <b>{mkt_label}</b>\n"
-            f"⚽ {match_str or 'Unknown match'}  |  {team_str}\n"
-            f"📅 {date_str}\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"⚠️ If you placed this bet, consider cashing out now."
+            f"ðŸš¨ <b>LINEUP ALERT â€” CASHOUT RECOMMENDED</b>\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ‘¤ <b>{player_name}</b> is NOT in the confirmed starting XI\n"
+            f"ðŸ“Œ Market: <b>{mkt_label}</b>\n"
+            f"âš½ {match_str or 'Unknown match'}  |  {team_str}\n"
+            f"ðŸ“… {date_str}\n"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"âš ï¸ If you placed this bet, consider cashing out now."
         )
         if _send(token, chat_id, msg):
             already_cashed.add(key)
             sent += 1
             _save_notified(already_cashed, cashout_file)
-            print(f"  CASHOUT alert: {player_name} — {mkt_label}")
+            print(f"  CASHOUT alert: {player_name} â€” {mkt_label}")
 
     return sent
 
@@ -1391,20 +1449,20 @@ def notify_props_daily_digest() -> bool:
     notified = _load_notified(PLAYER_NOTIFIED_FILE)
     props_digest_key = f"PROPS_DIGEST|{today_str}"
     if props_digest_key in notified:
-        print("Player props digest already sent today — skipping.")
+        print("Player props digest already sent today â€” skipping.")
         return False
 
     # (key, display label, emoji)
     PLAYER_MARKETS = [
-        ("goals",   "Anytime Scorer", "⚽"),
-        ("goals2",  "Score 2+",       "⚽⚽"),
-        ("assists", "Assist",         "🎯"),
-        ("sot",     "SOT 1+",         "🔫"),
-        ("sot2",    "SOT 2+",         "🔫"),
-        ("sot3",    "SOT 3+",         "🔫"),
-        ("cards",   "Carded",         "🟨"),
+        ("goals",   "Anytime Scorer", "âš½"),
+        ("goals2",  "Score 2+",       "âš½âš½"),
+        ("assists", "Assist",         "ðŸŽ¯"),
+        ("sot",     "SOT 1+",         "ðŸ”«"),
+        ("sot2",    "SOT 2+",         "ðŸ”«"),
+        ("sot3",    "SOT 3+",         "ðŸ”«"),
+        ("cards",   "Carded",         "ðŸŸ¨"),
     ]
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📄"}
+    TIER_SYM   = {"SNIPER": "ðŸŽ¯", "MARKSMAN": "ðŸ”«", "VALUABLE": "ðŸ’Ž", "PAPER": "ðŸ“„"}
     TIER_ORDER = ["SNIPER", "MARKSMAN"]                            # what gets SENT as a tip
     # What gets COUNTED in results. Wider than TIER_ORDER because VALUABLE/PAPER picks are
     # real tracked positions even though they don't trigger an individual alert. AVOID/WATCH
@@ -1412,8 +1470,8 @@ def notify_props_daily_digest() -> bool:
     LEDGER_TIERS = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
     lines = [
-        f"👤 <b>PLAYER PROPS BRIEFING</b> — {hdr_date}",
-        "━━━━━━━━━━━━━━━━",
+        f"ðŸ‘¤ <b>PLAYER PROPS BRIEFING</b> â€” {hdr_date}",
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
         "",
     ]
 
@@ -1429,11 +1487,11 @@ def notify_props_daily_digest() -> bool:
         except Exception as e:
             lines.append(f"  error loading player_tips.csv: {e}")
 
-    # SNIPER and MARKSMAN only — same rule as individual alerts
+    # SNIPER and MARKSMAN only â€” same rule as individual alerts
     tips = tips_data[tips_data["tier"].isin(TIER_ORDER)].copy() if not tips_data.empty else pd.DataFrame()
 
     total_tips = len(tips)
-    lines.append(f"🎯 <b>TIPS</b>  ({total_tips} signal{'s' if total_tips != 1 else ''})")
+    lines.append(f"ðŸŽ¯ <b>TIPS</b>  ({total_tips} signal{'s' if total_tips != 1 else ''})")
     lines.append("")
 
     if tips.empty:
@@ -1443,7 +1501,7 @@ def notify_props_daily_digest() -> bool:
             mkt_tips = tips[tips["market"] == mkt_key] if "market" in tips.columns else pd.DataFrame()
             if mkt_tips.empty:
                 continue
-            lines.append(f"── {mkt_emoji} <b>{mkt_label}</b>  ({len(mkt_tips)})")
+            lines.append(f"â”€â”€ {mkt_emoji} <b>{mkt_label}</b>  ({len(mkt_tips)})")
             for tier in TIER_ORDER:
                 tb = mkt_tips[mkt_tips["tier"] == tier]
                 if tb.empty:
@@ -1468,19 +1526,19 @@ def notify_props_daily_digest() -> bool:
     if not sent1:
         return False
 
-    # ── Message 2: Yesterday's results + all-time by market then tier ─────────
+    # â”€â”€ Message 2: Yesterday's results + all-time by market then tier â”€â”€â”€â”€â”€â”€â”€â”€â”€
     MKT_LABEL_MAP = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
 
     lines2 = [
-        f"📋 <b>PLAYER PROPS RESULTS</b> — {hdr_date}",
-        "━━━━━━━━━━━━━━━━",
+        f"ðŸ“‹ <b>PLAYER PROPS RESULTS</b> â€” {hdr_date}",
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
         "",
         "<b>Yesterday's Results</b>",
     ]
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if player_led.exists():
         try:
-            pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
+            pled = _countable_props(pd.read_csv(player_led))   # AVOID/WATCH + wrong-fixture rows: tracked, never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             yest = pled[
                 (pled["match_date"].astype(str).str[:10] == yest_str) &
@@ -1503,23 +1561,23 @@ def notify_props_daily_digest() -> bool:
                         res   = str(r.get("result", "")).upper()
                         if res == "VOID":
                             continue  # don't list individual voided bets (shown only in the W/L/VOID count)
-                        emoji = {"WIN": "✅", "LOSS": "❌"}.get(res, "⬜")
+                        emoji = {"WIN": "âœ…", "LOSS": "âŒ"}.get(res, "â¬œ")
                         pnl_r = float(r["pnl"])
                         tier_s = f"[{r['tier']}] " if "tier" in r and pd.notna(r.get("tier")) else ""
                         note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
                         lines2.append(
-                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{pnl_r:+.2f}u</b>"
+                            f"  {emoji} {tier_s}{r['player_name']} â€” {mkt_label}{note}  <b>{pnl_r:+.2f}u</b>"
                         )
         except Exception as e:
             lines2.append(f"  error: {e}")
     else:
         lines2.append("  No player_ledger.csv yet")
 
-    # ── All-time player ledger by market then tier ─────────────────────────────
-    lines2 += ["", "📈 <b>All-time Player Ledger</b>"]
+    # â”€â”€ All-time player ledger by market then tier â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    lines2 += ["", "ðŸ“ˆ <b>All-time Player Ledger</b>"]
     if player_led.exists():
         try:
-            pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
+            pled = _countable_props(pd.read_csv(player_led))   # AVOID/WATCH + wrong-fixture rows: tracked, never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
@@ -1531,7 +1589,7 @@ def notify_props_daily_digest() -> bool:
                     if ms.empty:
                         continue
                     mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                    lines2.append(f"  ðŸ“Œ <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
                     if "tier" in ms.columns:
                         for tier in LEDGER_TIERS:
                             ts = ms[ms["tier"] == tier]
@@ -1572,28 +1630,28 @@ def notify_props_weekly_summary() -> bool:
     if not player_led.exists():
         return False
 
-    pled = _bet_tiers_only(pd.read_csv(player_led))   # AVOID/WATCH: tracked, never counted
+    pled = _countable_props(pd.read_csv(player_led))   # AVOID/WATCH + wrong-fixture rows: tracked, never counted
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
     pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
 
     settled_all  = _settled_only(pled)
     settled_week = settled_all[settled_all["signal_date"] >= week_ago].copy()
 
-    # Active player markets (goals3/sot4 removed — base rate too low)
+    # Active player markets (goals3/sot4 removed â€” base rate too low)
     PLAYER_MARKETS = [
-        ("goals",   "Anytime Scorer", "⚽"),
-        ("goals2",  "Score 2+",       "⚽⚽"),
-        ("assists", "Assist",         "🎯"),
-        ("sot",     "SOT 1+",         "🔫"),
-        ("sot2",    "SOT 2+",         "🔫"),
-        ("sot3",    "SOT 3+",         "🔫"),
-        ("cards",   "Carded",         "🟨"),
+        ("goals",   "Anytime Scorer", "âš½"),
+        ("goals2",  "Score 2+",       "âš½âš½"),
+        ("assists", "Assist",         "ðŸŽ¯"),
+        ("sot",     "SOT 1+",         "ðŸ”«"),
+        ("sot2",    "SOT 2+",         "ðŸ”«"),
+        ("sot3",    "SOT 3+",         "ðŸ”«"),
+        ("cards",   "Carded",         "ðŸŸ¨"),
     ]
     MKT_LABEL = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
     MKT_EMOJI = {k: emj for k, _, emj in PLAYER_MARKETS}
-    TIER_SYM  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📄"}
+    TIER_SYM  = {"SNIPER": "ðŸŽ¯", "MARKSMAN": "ðŸ”«", "VALUABLE": "ðŸ’Ž", "PAPER": "ðŸ“„"}
     MARKETS   = [k for k, _, _ in PLAYER_MARKETS]
-    # WATCH dropped: it's a watchlist, not a position — _bet_tiers_only filters it out with
+    # WATCH dropped: it's a watchlist, not a position â€” _bet_tiers_only filters it out with
     # AVOID, so listing it here would only ever render an empty row.
     TIERS     = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
 
@@ -1607,17 +1665,17 @@ def notify_props_weekly_summary() -> bool:
         return n, w, pnl
 
     lines = [
-        "👤 <b>PLAYER PROPS WEEKLY</b>",
-        "━━━━━━━━━━━━━━━━",
-        f"📅 {week_start} → {week_end}",
+        "ðŸ‘¤ <b>PLAYER PROPS WEEKLY</b>",
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
+        f"ðŸ“… {week_start} â†’ {week_end}",
         "",
     ]
 
-    # ── This week ────────────────────────────────────────────────────────────
+    # â”€â”€ This week â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     r = _row(settled_week)
     if r:
         n, w, pnl = r
-        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | P/L {pnl:+.2f}u</b>")
+        lines.append(f"<b>This week â€” {n} settled | {w}W/{n-w}L | P/L {pnl:+.2f}u</b>")
         lines.append("")
         # By market
         for mkt in MARKETS:
@@ -1628,7 +1686,7 @@ def notify_props_weekly_summary() -> bool:
             mn, mw, mp = mr
             pnl_s = "+" if mp >= 0 else ""
             lines.append(
-                f"  {MKT_EMOJI.get(mkt, '📌')} <b>{MKT_LABEL.get(mkt, mkt)}</b>: "
+                f"  {MKT_EMOJI.get(mkt, 'ðŸ“Œ')} <b>{MKT_LABEL.get(mkt, mkt)}</b>: "
                 f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{pnl_s}{mp:.2f}u</b>"
             )
         lines.append("")
@@ -1641,7 +1699,7 @@ def notify_props_weekly_summary() -> bool:
                 continue
             tn, tw, tp = tr
             lines.append(
-                f"  {TIER_SYM.get(tier, '📌')} {tier}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
+                f"  {TIER_SYM.get(tier, 'ðŸ“Œ')} {tier}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
             )
     else:
         pending = int(settled_week["pnl"].isna().sum()) if not settled_week.empty else 0
@@ -1651,8 +1709,8 @@ def notify_props_weekly_summary() -> bool:
         else:
             lines.append("  No signals this week")
 
-    # ── All-time ─────────────────────────────────────────────────────────────
-    lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time</b>", ""]
+    # â”€â”€ All-time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    lines += ["", "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”", "<b>All-time</b>", ""]
     r_all = _row(settled_all)
     if r_all:
         n, w, pnl = r_all
@@ -1665,12 +1723,12 @@ def notify_props_weekly_summary() -> bool:
                 continue
             mn, mw, mp = mr
             lines.append(
-                f"  {MKT_EMOJI.get(mkt, '📌')} {MKT_LABEL.get(mkt, mkt)}: "
+                f"  {MKT_EMOJI.get(mkt, 'ðŸ“Œ')} {MKT_LABEL.get(mkt, mkt)}: "
                 f"{mw}W/{mn-mw}L | P/L {mp:+.2f}u"
             )
     else:
         total_all = len(pled)
-        lines.append(f"  {total_all} signals tracked — no settled results yet")
+        lines.append(f"  {total_all} signals tracked â€” no settled results yet")
 
     msg = "\n".join(lines)
     if _send(token, chat_id, msg):
@@ -1691,17 +1749,17 @@ def notify_bug_announcement() -> bool:
     notified = _load_notified()
     key = "ANNOUNCE|nf_calibration_bug_v1"
     if key in notified:
-        print("Bug announcement already sent — skipping.")
+        print("Bug announcement already sent â€” skipping.")
         return False
     cutoff = getattr(app_config, "PERFORMANCE_CUTOFF_DATE", "")
     msg = (
-        "📢 <b>System Notice — Model Fix</b>\n"
-        "━━━━━━━━━━━━━━━━\n"
+        "ðŸ“¢ <b>System Notice â€” Model Fix</b>\n"
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
         "We found and fixed a calibration bug in the <b>New-Format</b> Over/Under model. It was "
         "under-predicting goals, so it sent one-sided UNDER tips that are not reliable.\n\n"
-        f"✅ <b>Fixed.</b> From <b>{cutoff}</b>, only tips generated after the fix count towards "
-        "results — for <b>both</b> the Standard and New-Format models.\n"
-        "🗂 Earlier tips are <b>not deleted</b> — we keep them for closing-line-value (CLV) "
+        f"âœ… <b>Fixed.</b> From <b>{cutoff}</b>, only tips generated after the fix count towards "
+        "results â€” for <b>both</b> the Standard and New-Format models.\n"
+        "ðŸ—‚ Earlier tips are <b>not deleted</b> â€” we keep them for closing-line-value (CLV) "
         "analysis; they're just excluded from win/loss and P/L totals.\n\n"
         "Thanks for your patience."
     )
@@ -1736,21 +1794,21 @@ def notify_daily_digest() -> bool:
     notified = _load_notified()
     digest_key = f"DIGEST|{today_str}"
     if digest_key in notified:
-        print("Daily digest already sent today — skipping.")
+        print("Daily digest already sent today â€” skipping.")
         return False
 
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    TIER_SYM   = {"SNIPER": "ðŸŽ¯", "MARKSMAN": "ðŸ”«", "VALUABLE": "ðŸ’Ž"}
     TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
     SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
-    SIG_SYM     = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
+    SIG_SYM     = {"STEAM_STRONG": "ðŸ”´", "STEAM_SHARP": "ðŸŸ ", "STRONG": "ðŸŸ¡"}
 
     lines = [
-        f"📊 <b>DAILY BRIEFING</b> — {header_date}",
-        "━━━━━━━━━━━━━━━━",
+        f"ðŸ“Š <b>DAILY BRIEFING</b> â€” {header_date}",
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
         "",
     ]
 
-    # ── Over 2.5 by tier — read from the LEDGER (best-tier == what was pinged + weekly) ──
+    # â”€â”€ Over 2.5 by tier â€” read from the LEDGER (best-tier == what was pinged + weekly) â”€â”€
     ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
     ou_total = 0
     if ledger_file.exists():
@@ -1768,14 +1826,14 @@ def notify_daily_digest() -> bool:
                 bl["model_type"] = ""
             _blk = bl["model_type"].isna() | (bl["model_type"].astype(str).str.strip().isin(["", "nan"]))
             bl.loc[_blk, "model_type"] = bl.loc[_blk, "league"].map(app_config.model_type_for_league)
-            # Market is O/U 2.5 (tips can be OVER or UNDER) — NOT "Over 2.5". Group by model
+            # Market is O/U 2.5 (tips can be OVER or UNDER) â€” NOT "Over 2.5". Group by model
             # then tier; the per-tip line shows the actual side.
-            lines.append(f"⚽ <b>O/U 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
+            lines.append(f"âš½ <b>O/U 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
             if bl.empty:
                 lines.append("  No tips today")
             else:
-                for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
-                                            ("new_format", "🌍", "New-Format")]:
+                for fmt, femoji, flabel in [("standard", "âš½", "Standard"),
+                                            ("new_format", "ðŸŒ", "New-Format")]:
                     fb = bl[bl["model_type"] == fmt]
                     if fb.empty:
                         continue
@@ -1796,17 +1854,17 @@ def notify_daily_digest() -> bool:
                             except (TypeError, ValueError):
                                 edge = 0.0
                             lines.append(
-                                f"      {r['home_team']} vs {r['away_team']} — "
+                                f"      {r['home_team']} vs {r['away_team']} â€” "
                                 f"<b>{side} 2.5</b> @ {odds:.2f} (+{edge:.0f}%)"
                                 f"  [{r.get('league','')}]"
                             )
         except Exception as e:
             lines.append(f"  error: {e}")
     else:
-        lines.append("⚽ <b>O/U 2.5</b> — no data yet")
+        lines.append("âš½ <b>O/U 2.5</b> â€” no data yet")
     lines.append("")
 
-    # ── Side markets: BTTS / Over 1.5 / Over 3.5 — from the LEDGER (best-tier) ──
+    # â”€â”€ Side markets: BTTS / Over 1.5 / Over 3.5 â€” from the LEDGER (best-tier) â”€â”€
     side_file = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
     if side_file.exists():
         try:
@@ -1819,7 +1877,7 @@ def notify_daily_digest() -> bool:
                 ms = side[side["market"] == mkt] if "market" in side.columns else pd.DataFrame()
                 if ms.empty:
                     continue
-                lines.append(f"📌 <b>{mkt_label}</b>  ({len(ms)} tip{'s' if len(ms) != 1 else ''})")
+                lines.append(f"ðŸ“Œ <b>{mkt_label}</b>  ({len(ms)} tip{'s' if len(ms) != 1 else ''})")
                 for tier in TIER_ORDER:
                     tb = ms[ms["signal_tier"] == tier]
                     if tb.empty:
@@ -1835,7 +1893,7 @@ def notify_daily_digest() -> bool:
                         except (TypeError, ValueError):
                             odds = 0.0
                         lines.append(
-                            f"    {r['home_team']} vs {r['away_team']} — "
+                            f"    {r['home_team']} vs {r['away_team']} â€” "
                             f"@ {odds:.2f}{ev_str}"
                             f"  [{r.get('league','')}]"
                         )
@@ -1844,7 +1902,7 @@ def notify_daily_digest() -> bool:
             lines.append(f"  Side markets error: {e}")
             lines.append("")
 
-    # ── Player props summary line ───────────────────────────────────────────────
+    # â”€â”€ Player props summary line â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
@@ -1853,16 +1911,16 @@ def notify_daily_digest() -> bool:
             tips_count  = int(all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]).sum())
             watch_count = int((all_props["tier"] == "WATCH").sum())
             lines.append(
-                f"👤 <b>Player Props</b> — {tips_count} tip{'s' if tips_count != 1 else ''}, "
-                f"{watch_count} on watch  →  see Player Props Briefing"
+                f"ðŸ‘¤ <b>Player Props</b> â€” {tips_count} tip{'s' if tips_count != 1 else ''}, "
+                f"{watch_count} on watch  â†’  see Player Props Briefing"
             )
         except Exception as e:
-            lines.append(f"👤 <b>Player Props</b> — error: {e}")
+            lines.append(f"ðŸ‘¤ <b>Player Props</b> â€” error: {e}")
     else:
-        lines.append("👤 <b>Player Props</b> — no data yet")
+        lines.append("ðŸ‘¤ <b>Player Props</b> â€” no data yet")
     lines.append("")
 
-    # ── Sharp signals ───────────────────────────────────────────────────────────
+    # â”€â”€ Sharp signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     sharp_file = app_config.OUTPUT_DIR / "sharp_tips.csv"
     if sharp_file.exists():
         try:
@@ -1871,22 +1929,22 @@ def notify_daily_digest() -> bool:
                 sharp["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"]) &
                 (sharp["date"].astype(str).str[:10] >= today_str)
             ].copy()
-            lines.append(f"💰 <b>Sharp Signals</b>  ({len(sharp)} signal{'s' if len(sharp) != 1 else ''})")
+            lines.append(f"ðŸ’° <b>Sharp Signals</b>  ({len(sharp)} signal{'s' if len(sharp) != 1 else ''})")
             if sharp.empty:
                 lines.append("  No signals today")
             else:
                 for _, r in sharp.head(5).iterrows():
-                    sym = SIG_SYM.get(r["signal"], "📌")
+                    sym = SIG_SYM.get(r["signal"], "ðŸ“Œ")
                     lines.append(
-                        f"  {sym} {r['match']} — {r['market']} ({float(r['drift_pct']):+.1f}%)  [{r.get('league','')}]"
+                        f"  {sym} {r['match']} â€” {r['market']} ({float(r['drift_pct']):+.1f}%)  [{r.get('league','')}]"
                     )
         except Exception as e:
-            lines.append(f"💰 <b>Sharp Signals</b> — error: {e}")
+            lines.append(f"ðŸ’° <b>Sharp Signals</b> â€” error: {e}")
     else:
-        lines.append("💰 <b>Sharp Signals</b> — no data yet")
+        lines.append("ðŸ’° <b>Sharp Signals</b> â€” no data yet")
     lines.append("")
 
-    # ── WC signals ──────────────────────────────────────────────────────────────
+    # â”€â”€ WC signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
     if wc_file.exists():
         try:
@@ -1896,11 +1954,11 @@ def notify_daily_digest() -> bool:
                 (wc["date"].astype(str).str[:10] >= today_str)
             ].copy()
             if not wc.empty:
-                lines.append(f"🌍 <b>WC Signals</b>  ({len(wc)} signal{'s' if len(wc) != 1 else ''})")
+                lines.append(f"ðŸŒ <b>WC Signals</b>  ({len(wc)} signal{'s' if len(wc) != 1 else ''})")
                 for _, r in wc.iterrows():
-                    sym = SIG_SYM.get(r["signal"], "📌")
+                    sym = SIG_SYM.get(r["signal"], "ðŸ“Œ")
                     lines.append(
-                        f"  {sym} {r['match']} — {r['market']} ({float(r['drift_pct']):+.1f}%)"
+                        f"  {sym} {r['match']} â€” {r['market']} ({float(r['drift_pct']):+.1f}%)"
                     )
                 lines.append("")
         except Exception:
@@ -1911,10 +1969,10 @@ def notify_daily_digest() -> bool:
     if not sent1:
         return False
 
-    # ── Message 2: Yesterday's results + all-time by market then tier ─────────
+    # â”€â”€ Message 2: Yesterday's results + all-time by market then tier â”€â”€â”€â”€â”€â”€â”€â”€â”€
     lines2 = [
-        f"📋 <b>DAILY RESULTS</b> — {header_date}",
-        "━━━━━━━━━━━━━━━━",
+        f"ðŸ“‹ <b>DAILY RESULTS</b> â€” {header_date}",
+        "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
         "",
         "<b>Yesterday's Results</b>",
         "",
@@ -1946,9 +2004,9 @@ def notify_daily_digest() -> bool:
             r_all = _stats_sub(live_y, pd.Series([True] * len(live_y), index=live_y.index))
             if r_all:
                 n, w, pnl = r_all
-                lines2.append(f"⚽ <b>O/U 2.5</b>  (P/L {pnl:+.2f}u)")
-                for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
-                                            ("new_format", "🌍", "New-Format")]:
+                lines2.append(f"âš½ <b>O/U 2.5</b>  (P/L {pnl:+.2f}u)")
+                for fmt, femoji, flabel in [("standard", "âš½", "Standard"),
+                                            ("new_format", "ðŸŒ", "New-Format")]:
                     fb = live_y[live_y["model_type"] == fmt]
                     if fb.empty:
                         continue
@@ -1958,7 +2016,7 @@ def notify_daily_digest() -> bool:
                     fn, fw, fp = rf
                     lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {fp:+.2f}u")
                     if "side" in fb.columns:
-                        for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
+                        for sd, ssym in (("OVER", "â–²"), ("UNDER", "â–¼")):
                             r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
                             if r:
                                 sn, sw, sp = r
@@ -1971,7 +2029,7 @@ def notify_daily_digest() -> bool:
                             tn, tw, tp = r
                             lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
             else:
-                lines2.append("  ⚽ O/U 2.5: no settled results")
+                lines2.append("  âš½ O/U 2.5: no settled results")
         except Exception:
             pass
 
@@ -1991,17 +2049,17 @@ def notify_daily_digest() -> bool:
                 inaffected = n - affected
                 pnl = yest_s["pnl"].sum()
                 lines2.append(
-                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{pnl:+.2f}u</b>"
+                    f"  ðŸ’° Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{pnl:+.2f}u</b>"
                 )
             else:
-                lines2.append("  💰 Sharp/WC: no settled results")
+                lines2.append("  ðŸ’° Sharp/WC: no settled results")
         except Exception:
             pass
 
-    lines2 += ["", "━━━━━━━━━━━━━━━━",
-               f"📈 <b>Ledger — since {app_config.PERFORMANCE_CUTOFF_DATE}</b>", ""]
+    lines2 += ["", "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”",
+               f"ðŸ“ˆ <b>Ledger â€” since {app_config.PERFORMANCE_CUTOFF_DATE}</b>", ""]
 
-    # O/U 2.5 — by model type, then tier (counts tips generated on/after the cutoff only)
+    # O/U 2.5 â€” by model type, then tier (counts tips generated on/after the cutoff only)
     if ledger_file.exists():
         try:
             led = pd.read_csv(ledger_file)
@@ -2010,7 +2068,7 @@ def notify_daily_digest() -> bool:
                    if "source" in led.columns else led[led["pnl"].notna()]
             if "generated_at" in live.columns:
                 live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
-            # Never treat a blank tag as 'standard' — derive it from the league so new-format
+            # Never treat a blank tag as 'standard' â€” derive it from the league so new-format
             # bets can't leak into the standard column (canonical map in app_config).
             live = live.copy()
             if "model_type" not in live.columns:
@@ -2018,8 +2076,8 @@ def notify_daily_digest() -> bool:
             _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
             live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(app_config.model_type_for_league)
             for fmt, emoji, label in [
-                ("standard",   "⚽", "O/U 2.5 — Standard"),
-                ("new_format", "🌍", "O/U 2.5 — New-Format"),
+                ("standard",   "âš½", "O/U 2.5 â€” Standard"),
+                ("new_format", "ðŸŒ", "O/U 2.5 â€” New-Format"),
             ]:
                 sub = live[live["model_type"] == fmt]
                 if sub.empty:
@@ -2027,7 +2085,7 @@ def notify_daily_digest() -> bool:
                 n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
                 lines2.append(f"  {emoji} <b>{label}</b>  {w_s}W/{n-w_s}L | P/L {pnl:+.2f}u")
                 if "side" in sub.columns:
-                    for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
+                    for sd, ssym in (("OVER", "â–²"), ("UNDER", "â–¼")):
                         ss = sub[sub["side"].astype(str).str.upper() == sd]
                         if ss.empty:
                             continue
@@ -2057,7 +2115,7 @@ def notify_daily_digest() -> bool:
                     if ms.empty:
                         continue
                     mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                    lines2.append(f"  ðŸ“Œ <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
                     for tier in TIER_ORDER:
                         ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                         if ts.empty:
@@ -2075,7 +2133,7 @@ def notify_daily_digest() -> bool:
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
                 n = len(all_s); pnl = all_s["pnl"].sum()
-                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {pnl:+.2f}u)")
+                lines2.append(f"  ðŸ’° <b>Sharp/WC</b>  ({n} signals | P/L {pnl:+.2f}u)")
         except Exception:
             pass
 
@@ -2112,7 +2170,7 @@ def notify_side_bets() -> int:
     df = df.sort_values(["signal_tier", "ev"], ascending=[True, False])
 
     MARKET_LABEL = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
-    MARKET_EMOJI = {"btts": "🔁", "over15": "📈", "over35": "🚀"}
+    MARKET_EMOJI = {"btts": "ðŸ”", "over15": "ðŸ“ˆ", "over35": "ðŸš€"}
 
     notified = _load_notified()
     sent = 0
@@ -2127,28 +2185,28 @@ def notify_side_bets() -> int:
         edge  = float(row["edge"]) * 100
         ev    = float(row["ev"]) * 100
         label = MARKET_LABEL.get(mkt, mkt)
-        emoji = MARKET_EMOJI.get(mkt, "📌")
-        tier_header = f"🎯 <b>SNIPER — {label}</b>" if tier == "SNIPER" else f"🔫 <b>MARKSMAN — {label}</b>"
+        emoji = MARKET_EMOJI.get(mkt, "ðŸ“Œ")
+        tier_header = f"ðŸŽ¯ <b>SNIPER â€” {label}</b>" if tier == "SNIPER" else f"ðŸ”« <b>MARKSMAN â€” {label}</b>"
 
         msg = (
             f"{emoji} {tier_header}\n"
-            f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {str(row['date'])[:10]}\n"
-            f"🏆 {row.get('league', '')}\n"
-            f"⚽ {row['home_team']} vs {row['away_team']}\n"
-            f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  P={float(row['model_prob'])*100:.0f}%\n"
-            f"⚠️ Check your bookmaker's {label} market"
+            f"â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n"
+            f"ðŸ“… {str(row['date'])[:10]}\n"
+            f"ðŸ† {row.get('league', '')}\n"
+            f"âš½ {row['home_team']} vs {row['away_team']}\n"
+            f"ðŸ“Œ <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
+            f"ðŸ“Š Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  P={float(row['model_prob'])*100:.0f}%\n"
+            f"âš ï¸ Check your bookmaker's {label} market"
         )
 
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
             _save_notified(notified)
-            print(f"  Side [{tier}]: {row['home_team']} vs {row['away_team']} — {label} @ {row['market_odds']:.2f}")
+            print(f"  Side [{tier}]: {row['home_team']} vs {row['away_team']} â€” {label} @ {row['market_odds']:.2f}")
 
     if sent:
-        _send(token, chat_id, f"📋 <b>{sent} side market tip(s)</b> sent at {datetime.now().strftime('%H:%M')}")
+        _send(token, chat_id, f"ðŸ“‹ <b>{sent} side market tip(s)</b> sent at {datetime.now().strftime('%H:%M')}")
     return sent
 
 
@@ -2168,9 +2226,9 @@ def notify_predict_health(stale_hours: float = 36.0, cooldown_hours: float = 6.0
 
     Reads output/predict_health.json (written by src.health_check.record_fetch).
     Fires when EITHER:
-      * hard failure — every queried league returned a non-200 (the btts-422 signature
+      * hard failure â€” every queried league returned a non-200 (the btts-422 signature
         that silently killed all tips for ~2 weeks in Jun 2026), OR
-      * staleness   — no fixtures fetched for >= stale_hours.
+      * staleness   â€” no fixtures fetched for >= stale_hours.
     Deduped by cooldown_hours so a persistent outage alerts at most every few hours,
     not every 5-minute run. Returns True if an alert was sent.
     """
@@ -2185,7 +2243,7 @@ def notify_predict_health(stale_hours: float = 36.0, cooldown_hours: float = 6.0
         return False
 
     if int(state.get("last_n_fixtures", 0)) > 0:
-        return False  # healthy — fixtures found
+        return False  # healthy â€” fixtures found
 
     now   = datetime.now(timezone.utc)
     stats = state.get("last_stats", {}) or {}
@@ -2213,13 +2271,13 @@ def notify_predict_health(stale_hours: float = 36.0, cooldown_hours: float = 6.0
             pass
 
     if hard_fail:
-        msg = ("⚠️ <b>Wowza health alert</b>\n"
+        msg = ("âš ï¸ <b>Wowza health alert</b>\n"
                f"Predict fetched <b>0 fixtures</b> and <b>every league returned an API error</b> "
                f"({err}/{queried} failed). Signature of an OddsAPI outage "
                f"(unsupported market / bad key / quota). <b>Tips are DOWN.</b>")
     else:
         stale_txt = f"{hours_stale:.0f}h" if hours_stale is not None else "a long time"
-        msg = ("⚠️ <b>Wowza health alert</b>\n"
+        msg = ("âš ï¸ <b>Wowza health alert</b>\n"
                f"No fixtures fetched for <b>{stale_txt}</b> (>= {stale_hours:.0f}h). "
                f"Predict may be down (or a genuine quiet period). Last good: "
                f"{str(lf)[:16] if lf else 'unknown'}.")
@@ -2244,7 +2302,7 @@ if __name__ == "__main__":
         cfg = _load_config()
         get_chat_id(cfg["token"])
     else:
-        # Only predict-specific notifications — sharp/WC handled by sharp_tracker,
+        # Only predict-specific notifications â€” sharp/WC handled by sharp_tracker,
         # player props by player_props workflow, digests by daily_summary.
         n    = notify_new_snipers()
         side = notify_side_bets()
