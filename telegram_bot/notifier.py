@@ -1333,10 +1333,25 @@ def notify_lineup_cashout() -> int:
 
     today_str = datetime.now().strftime("%Y-%m-%d")
 
-    # Build the set of keys that are CURRENTLY active in player_tips.csv
+    # Build the set of keys that are CURRENTLY active in player_tips.csv.
+    #
+    # DELIBERATELY NOT tier-filtered (fixed 2026-08-15). This used to keep only
+    # SNIPER/MARKSMAN rows, which made the cashout alert fire on a TIER CHANGE rather than
+    # on a lineup change — and it claimed "X is NOT in the confirmed starting XI" while X
+    # was in the XI and still sitting in this very file.
+    #
+    # It became routine once the weekend feed (c622d60) made those tiers pure EV RANKS:
+    # top 5 SNIPER, next 5 MARKSMAN, next 10 VALUABLE, re-ranked every hourly run. A player
+    # slipping from rank 5 to rank 11 left the SNIPER/MARKSMAN set and was reported benched.
+    # A run where the odds fetch returned nothing had the same effect.
+    #
+    # Presence in player_tips.csv at ANY tier is the real signal: player_model.predict
+    # already drops non-starters when a confirmed lineup is available (>=18 starters
+    # posted), so a player who is genuinely benched disappears from the file entirely.
+    # Anything still in the file is still in the XI as far as we know, and we must not
+    # assert otherwise.
     df = pd.read_csv(tips_file)
     df = df[df["date"].astype(str).str[:10] == today_str]
-    df = df[df["tier"].isin(["SNIPER", "MARKSMAN"])]
     active_keys = {
         f"PLAYER|{today_str}|{r['player_name']}|{r['market']}"
         for _, r in df.iterrows()
