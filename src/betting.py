@@ -324,6 +324,32 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     # Force AVOID when below VALUE_THRESHOLD
     df.loc[df["best_edge"] < config.VALUE_THRESHOLD, "signal_tier"] = "AVOID"
 
+    # ── Blind-fixture guard ───────────────────────────────────────────────────
+    # A fixture with no rolling-form history does NOT produce a cautious prediction — it
+    # produces a confident-looking wrong one. _prep() median-imputes the missing features,
+    # the model scores the league average, and the edge calculation cannot tell that apart
+    # from a real disagreement with the book. Live example 2026-08-15: York City (promoted
+    # from the National League, zero history in the 4-season window) v Bristol Rovers showed
+    # the second-strongest EFL edge on the board at 4.4% — built entirely on imputed values.
+    #
+    # These are mostly cup ties, where OddsAPI tags the fixture with the home club's domestic
+    # league so the opponent has no history in that competition, plus newly promoted clubs.
+    # Refusing to bet them is the correct answer; guessing is not.
+    _CORE_FORM = ["home_scored_last5", "away_scored_last5",
+                  "home_conceded_last5", "away_conceded_last5"]
+    _present = [c for c in _CORE_FORM if c in df.columns]
+    if _present:
+        _blind = df[_present].isna().any(axis=1)
+        df["no_form_data"] = _blind
+        if _blind.any():
+            df.loc[_blind, "signal_tier"] = "AVOID"
+            df.loc[_blind, "bet"]         = "AVOID"
+            df.loc[_blind, "bet_stake"]   = 0.0
+            log.info(f"Blind-fixture guard: {int(_blind.sum())} fixture(s) forced to AVOID "
+                     f"(no rolling-form history)")
+    else:
+        df["no_form_data"] = False
+
     # Drift adjustment (if drift_signal column exists)
     if "drift_signal" in df.columns:
         adjusted = []
