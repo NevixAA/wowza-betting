@@ -291,31 +291,41 @@ _ss_cache_loaded: Optional[dict] = None
 
 
 def _ss_lookup(league: str, team: str, stat: str) -> float:
+    """Sofascore set-piece stat for a team, or NaN when we simply don't have it.
+
+    Returns NaN rather than _SS_DEFAULTS (2026-08-15). sofascore_cache.json is not present
+    in the repo at all, so every lookup fell through to the stand-in and stamped an
+    identical 0.30 / 0.07 / 0.03 onto EVERY row of every league — numbers that look like
+    per-team measurements and are nothing of the sort. These columns were already dropped
+    from FEATURE_COLS as 0% importance (ML audit 2026-06-10), so nothing consumes them;
+    they only ever misled whoever read the CSV. _SS_DEFAULTS is kept as documentation of
+    the league-average priors in case the cache is ever populated.
+    """
     global _ss_cache_loaded
     if _ss_cache_loaded is None:
         _ss_cache_loaded = _load_sofascore_cache()
 
     teams_dict = _ss_cache_loaded.get(league, {}).get("teams", {})
     if not teams_dict:
-        return _SS_DEFAULTS[stat]
+        return np.nan
 
     if team in teams_dict:
-        return teams_dict[team].get(stat, _SS_DEFAULTS[stat])
+        return teams_dict[team].get(stat, np.nan)
 
     # Fuzzy match
     try:
         from rapidfuzz import process as fp
         hit = fp.extractOne(team, list(teams_dict.keys()), score_cutoff=75)
         if hit:
-            return teams_dict[hit[0]].get(stat, _SS_DEFAULTS[stat])
+            return teams_dict[hit[0]].get(stat, np.nan)
     except ImportError:
         # Simple substring fallback
         tl = team.lower()
         for name in teams_dict:
             if tl in name.lower() or name.lower() in tl:
-                return teams_dict[name].get(stat, _SS_DEFAULTS[stat])
+                return teams_dict[name].get(stat, np.nan)
 
-    return _SS_DEFAULTS[stat]
+    return np.nan
 
 
 def _merge_sofascore(df: pd.DataFrame) -> pd.DataFrame:
@@ -745,8 +755,10 @@ def build_upcoming_features(
     # ── Phase 2: Injury features — key_attacker_absent_home / _away ─────────────
     # Pre-fetch per league (one batch per league, not per row) then apply per row.
     # Falls back gracefully to 0 when API_KEY is absent or API returns nothing.
-    df["key_attacker_absent_home"] = 0.0
-    df["key_attacker_absent_away"] = 0.0
+    # NaN = "injury data not fetched". 0.0 would assert "we checked and nobody is out",
+    # which is a different and unsupported claim.
+    df["key_attacker_absent_home"] = np.nan
+    df["key_attacker_absent_away"] = np.nan
     try:
         from src.api_football_ou import get_league_injury_context, injury_features_from_context
         _inj_ctx: dict = {}
@@ -812,22 +824,35 @@ def build_upcoming_features(
     # Defaults applied first so the model always has valid values even when
     # API is unavailable or lineup not yet released.
     # Phase 7 extensions (BTTS, O/U 3.5, draw odds)
-    df["api_implied_btts"]   = 0.50
-    df["api_implied_over35"] = 0.30
-    df["api_implied_over15"] = 0.80
-    df["api_implied_draw"]   = 0.27
+    # UNKNOWN, not invented (2026-08-15). These used to be seeded with hardcoded stand-ins
+    # (0.50 BTTS, 2.60 h2h goals, 0.65 formation, 0.05 overround...). When the API-Football
+    # call below failed — which it always did, because predict.yml never passed
+    # APIFOOTBALL_KEY — those literals survived into predictions.csv and READ AS DATA. Every
+    # standard fixture carried the same fabricated numbers.
+    #
+    # NaN is the truthful value for "we did not fetch this". Verified safe: nothing consumes
+    # these columns. They are absent from the trained model's 42 features (build_features
+    # never produces them, so _prep dropped them), and the only code referencing them is the
+    # api_football_ou fetcher that WRITES them. If a future retrain ever admits them, _prep
+    # median-imputes NaN, which is a far better default than a made-up constant.
+    df["api_implied_btts"]   = np.nan
+    df["api_implied_over35"] = np.nan
+    df["api_implied_over15"] = np.nan
+    df["api_implied_draw"]   = np.nan
 
-    df["home_attack_formation"]  = 0.65
-    df["away_attack_formation"]  = 0.65
-    df["combined_attack_intent"] = 1.30
-    df["home_forward_count"]     = 1.0
-    df["away_forward_count"]     = 1.0
-    df["h2h_over25_rate"]        = 0.50
-    df["h2h_avg_goals"]          = 2.60
-    df["h2h_home_win_rate"]      = 0.43
-    df["h2h_n"]                  = 0.0
-    df["api_implied_over25"]     = df["implied_prob_over"].fillna(0.5) if "implied_prob_over" in df.columns else 0.5
-    df["api_overround"]          = 0.05
+    df["home_attack_formation"]  = np.nan
+    df["away_attack_formation"]  = np.nan
+    df["combined_attack_intent"] = np.nan
+    df["home_forward_count"]     = np.nan
+    df["away_forward_count"]     = np.nan
+    df["h2h_over25_rate"]        = np.nan
+    df["h2h_avg_goals"]          = np.nan
+    df["h2h_home_win_rate"]      = np.nan
+    df["h2h_n"]                  = np.nan
+    # NB: implied_prob_over is not computed until ~70 lines below, so this always took the
+    # `else` branch and pinned every row to 0.5. Left as NaN for the fetcher to fill.
+    df["api_implied_over25"]     = np.nan
+    df["api_overround"]          = np.nan
 
     try:
         from src.api_football_ou import (
@@ -852,12 +877,14 @@ def build_upcoming_features(
         log.warning(f"[enrich] lineup/H2H/odds features unavailable, using defaults: {e}")
 
     # ── Phases 9-10: Season round + coach features ────────────────────────────
-    df["season_stage_ratio"]      = 0.50
-    df["is_late_season"]          = 0.0
-    df["home_coach_tenure_days"]  = 180.0
-    df["home_coach_is_caretaker"] = 0.0
-    df["away_coach_tenure_days"]  = 180.0
-    df["away_coach_is_caretaker"] = 0.0
+    # Same rule as above: unknown is NaN, not a plausible-looking stand-in. 180 days of coach
+    # tenure and "halfway through the season" were pure fiction on every row.
+    df["season_stage_ratio"]      = np.nan
+    df["is_late_season"]          = np.nan
+    df["home_coach_tenure_days"]  = np.nan
+    df["home_coach_is_caretaker"] = np.nan
+    df["away_coach_tenure_days"]  = np.nan
+    df["away_coach_is_caretaker"] = np.nan
     try:
         from src.api_football_ou import fetch_season_round_features, fetch_coach_features
         for _feat_dict in [
