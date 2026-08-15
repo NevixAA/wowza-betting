@@ -73,6 +73,7 @@ jobs:
           for f in output/bets.csv output/bets_ledger.csv output/predictions.csv \
                    odds_history_v9.json team_id_cache.json \
                    output/side_bets_ledger.csv output/standard_odds_history.csv output/ht_ledger.csv \
+                   output/newformat_odds_dense.csv \
                    output/postponed.csv output/worldcup_tips.csv output/sharp_tips.csv \
                    output/live_tips.csv output/live_games.csv \
                    output/worldcup_history.json output/sharp_history.json \

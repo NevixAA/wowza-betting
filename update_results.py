@@ -225,10 +225,13 @@ _CSV_ARCHIVES = None
 # Every persistent odds archive we can pull a closing price out of. All share the schema
 # snapshot_date,snapshot_ts,match_date,league,match,market,odds.
 _ARCHIVE_FILES = (
-    "newformat_odds_history.csv",             # new-format: O/U 2.5 + BTTS + O/U 1.5/3.5
+    "newformat_odds_dense.csv",               # new-format O/U, EVERY predict run (densest NF)
+    "newformat_odds_history.csv",             # new-format: O/U 2.5 + BTTS + O/U 1.5/3.5, 3x/day
     "standard_odds_history.csv",              # standard O/U 2.5/1.5/3.5, every predict run
     "standard_sidemarket_odds_history.csv",   # standard BTTS + O/U 1.5/3.5 (std_odds_capture)
 )
+# Order matters: the dense archives come first so a fixture present in both resolves against
+# the finer-grained curve, whose last snapshot is much closer to the true closing line.
 
 
 def _load_archives() -> list:
