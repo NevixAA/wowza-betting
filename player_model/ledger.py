@@ -22,6 +22,10 @@ SHARP_LEDGER_FILE  = config.OUTPUT_DIR / "sharp_ledger.csv"
 
 PLAYER_LEDGER_COLS = [
     "signal_date", "match_date", "league", "home_team", "away_team",
+    # player_id / fixture_id carried from the tip so this ledger can be joined EXACTLY to
+    # player_history.parquet (which has both) instead of on normalised player names. Rows
+    # written before 2026-08-15 have them blank; readers must fall back to the name.
+    "player_id", "fixture_id",
     "player_name", "team", "position", "market", "tier",
     "model_prob", "market_odds", "ev", "edge_rel", "n_games",
     "is_played", "result", "pnl", "notes", "resolved_date",
@@ -94,6 +98,8 @@ def append_player_signals(
             "league":        r.get("league", ""),
             "home_team":     home,
             "away_team":     away,
+            "player_id":     r.get("player_id", ""),
+            "fixture_id":    r.get("fixture_id", ""),
             "player_name":   r.get("player_name", ""),
             "team":          r.get("team", ""),
             "position":      r.get("position", ""),

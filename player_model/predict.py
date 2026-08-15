@@ -573,6 +573,14 @@ def run_player_predictions(
                     "league":        league,
                     "match":         f"{home} vs {away}",
                     "match_tier":    match_row.get("signal_tier", ""),
+                    # Stable identifiers, carried so downstream files can join EXACTLY
+                    # instead of on normalised names. player_history.parquet has both, but
+                    # they were dropped here, so player_ledger / player_prop_odds_history /
+                    # clv_records could only ever be reconciled by (name, date) — the same
+                    # fuzzy-key weakness that put Real Madrid players in an MLS fixture.
+                    # settle_results uses player_id first and falls back to the name.
+                    "player_id":     feat_row.get("player_id"),
+                    "fixture_id":    match_row.get("fixture_id"),
                     "player_name":   feat_row.get("player_name", ""),
                     "team":          feat_row.get("team", ""),
                     "position":      feat_row.get("position", ""),
