@@ -211,7 +211,19 @@ def _ht_probs(ht_goals: int, elapsed_h1: float, lam_total: float) -> dict:
 # ── Live scores fetch ─────────────────────────────────────────────────────────
 
 def _leagues_with_games_today() -> set[str]:
-    """Return leagues that have at least one prediction for today (saves API credits)."""
+    """Leagues with at least one PRE-MATCH prediction for today (saves API credits).
+
+    CAVEAT — do not use this to decide which LIVE fixtures to keep. predictions.csv holds
+    only fixtures that have NOT kicked off (predict.py skips started matches so in-play odds
+    cannot manufacture a false SNIPER), so a league whose games have all started is absent
+    here even though that is exactly when it has live matches. Using it as a live filter
+    silently emptied the scanner for six days (see the note in
+    _fetch_live_scores_apifootball).
+
+    It remains in the OddsAPI fallback only because that path costs one call PER LEAGUE, so
+    some narrowing is worth the incomplete coverage. The API-Football path makes a single
+    league-scoped call and needs no gate at all.
+    """
     try:
         preds = pd.read_csv(config.OUTPUT_DIR / "predictions.csv")
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -337,7 +349,17 @@ def _fetch_live_scores_apifootball() -> list[dict]:
     league_ids = list(config.API_FOOTBALL_IDS.values())
     id_to_name = {v: k for k, v in config.API_FOOTBALL_IDS.items()}
 
-    active_leagues = _leagues_with_games_today()
+    # NO _leagues_with_games_today() gate here (removed 2026-08-15). That helper derives its
+    # whitelist from predictions.csv — which by design holds ONLY pre-match fixtures, because
+    # predict.py skips anything already kicked off (the guard against in-play odds producing
+    # false SNIPERs). So a match DISAPPEARS from predictions.csv the moment it goes live, and
+    # on a slate where a league's games all kick off together the whole league left the
+    # whitelist. This filter therefore discarded exactly the fixtures the scanner exists to
+    # watch: live_games.csv had not changed since 2026-08-09 08:55 — the day predict was
+    # re-enabled — because every scan found "no in-progress games".
+    #
+    # It also bought nothing: get_live_fixtures is ALREADY scoped to league_ids above, so one
+    # call returns only our leagues. The gate saved no credits on this path; it only lost data.
     raw = get_live_fixtures(league_ids=league_ids)
 
     live = []
@@ -347,8 +369,6 @@ def _fetch_live_scores_apifootball() -> list[dict]:
         league_id   = fix.get("league_id")
         league_name = id_to_name.get(league_id, "")
         if not league_name:
-            continue
-        if league_name not in active_leagues:
             continue
 
         home   = fix["home_team"]
