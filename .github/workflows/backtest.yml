@@ -36,6 +36,11 @@ jobs:
         if: ${{ github.event.inputs.target != 'newformat' }}
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          # Needed by data_loader: _load_api_football_only_leagues() reads APIFOOTBALL_KEY to
+          # pull the API-Football-only leagues, and _enrich_with_api_shots() adds the shot/xG
+          # columns. Without it this step trains on LESS data than retrain.yml does, so the
+          # model committed by a manual backtest run would differ from the weekly one.
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python pipeline.py --mode train
 
       - name: Run walk-forward backtest + generate league ROI config
