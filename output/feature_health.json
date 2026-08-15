@@ -1,0 +1,30 @@
+{
+  "ts": "2026-08-15T15:31:32.651532+00:00",
+  "models": {
+    "standard": {
+      "fixtures": 34,
+      "n_features": 42,
+      "blank": [
+        "away_insidebox_last5",
+        "away_xg_last5",
+        "home_insidebox_last5",
+        "home_xg_last5"
+      ],
+      "constant": [
+        "home_advantage"
+      ],
+      "degenerate": 5,
+      "degenerate_pct": 11.9
+    },
+    "new_format": {
+      "fixtures": 110,
+      "n_features": 27,
+      "blank": [],
+      "constant": [
+        "home_advantage"
+      ],
+      "degenerate": 1,
+      "degenerate_pct": 3.7
+    }
+  }
+}
