@@ -74,6 +74,7 @@ jobs:
           restore-keys: fixture-player-${{ runner.os }}-
 
       - name: Collect club league data (Sundays + manual)
+        id: collect_club
         if: |
           github.event.schedule == '0 5 * * 0' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
@@ -83,6 +84,7 @@ jobs:
         continue-on-error: true
 
       - name: Collect WC2026 national team data (nightly during WC, Sundays, manual)
+        id: collect_wc
         if: |
           github.event.schedule == '30 23 * * *' ||
           github.event.schedule == '0 5 * * 0' ||
@@ -127,6 +129,43 @@ jobs:
               echo "Outside WC2026 window, skipping nightly train."
             fi
           fi
+        continue-on-error: true
+
+      # The collect steps are continue-on-error so a bad collect can't block predict. That is
+      # the right call, but it also made failure INVISIBLE: player_history.parquet quietly
+      # stopped advancing on 2026-07-04 while bets ran to 08-17, and the only symptom was
+      # clv_records.result staying empty. This step turns both failure modes into GitHub
+      # annotations. It never fails the job.
+      - name: Report collect health (parquet freshness)
+        if: always()
+        run: |
+          echo "collect(club) outcome : ${{ steps.collect_club.outcome }}"
+          echo "collect(wc)   outcome : ${{ steps.collect_wc.outcome }}"
+          if [ "${{ steps.collect_club.outcome }}" = "failure" ]; then
+            echo "::error title=Player collect failed::--mode collect failed. player_history.parquet will not advance, so prop CLV records cannot grade."
+          fi
+          if [ "${{ steps.collect_wc.outcome }}" = "failure" ]; then
+            echo "::error title=WC collect failed::--mode collect-wc failed."
+          fi
+          python - <<'PY'
+          import datetime as dt
+          from pathlib import Path
+          try:
+              import pandas as pd
+              p = Path("player_history.parquet")
+              if not p.exists():
+                  print("::error title=No player history::player_history.parquet is missing")
+              else:
+                  d = pd.read_parquet(p, columns=["date"])
+                  mx = str(pd.to_datetime(d["date"]).max())[:10]
+                  age = (dt.date.today() - dt.date.fromisoformat(mx)).days
+                  print(f"player_history.parquet newest match: {mx}  ({age} days old)")
+                  if age > 14:
+                      print(f"::warning title=Stale player history::newest match is {mx}, "
+                            f"{age} days old - collect is not advancing and prop CLV cannot grade")
+          except Exception as e:
+              print(f"::warning title=Freshness check failed::{e}")
+          PY
         continue-on-error: true
 
       - name: Generate player prop predictions
