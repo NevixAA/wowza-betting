@@ -335,6 +335,65 @@ def _closing_odds_json(home: str, away: str, match_date: str, side: str) -> floa
         return np.nan
 
 
+# ── API-Football results (last-resort settlement source) ─────────────────────
+
+_AF_RESULTS_CACHE: dict = {}
+
+
+def fetch_scores_apifootball(league: str) -> list[dict]:
+    """Completed fixtures for a league from API-Football, in fetch_scores() shape.
+
+    WHY THIS EXISTS: leagues without a football-data source (Argentina, Brazil, Finland,
+    Norway, Mexico) fall back to the OddsAPI scores endpoint, whose lookback is capped at
+    THREE DAYS (`min(days_from, 3)` — an OddsAPI limit, not ours). A tip in one of those
+    leagues that is not settled within 3 days can therefore NEVER be settled, and 89 such
+    rows had been stranded since May 2026 with no result and no P/L. Another 60 sat in
+    football-data leagues where the fixture or the team names did not reconcile.
+
+    API-Football has all of them and `fetch_league_fixture_results` is cached for a YEAR
+    (completed results never change), so this is one call per league per season.
+
+    Called LAZILY — only for a row the primary source could not resolve — so a healthy run
+    where everything settles normally makes no extra API calls at all. That matters: this
+    job runs every 2 hours and has no actions/cache step.
+    """
+    if league in _AF_RESULTS_CACHE:
+        return _AF_RESULTS_CACHE[league]
+
+    out: list[dict] = []
+    lid = config.API_FOOTBALL_IDS.get(league)
+    if lid:
+        season = config.API_FOOTBALL_SEASONS.get(league, config.API_SEASON)
+        try:
+            from src.api_football_ou import fetch_league_fixture_results
+            df = fetch_league_fixture_results(lid, season, league)
+            for _, r in df.iterrows():
+                try:
+                    hg, ag = int(r["home_goals"]), int(r["away_goals"])
+                except (TypeError, ValueError, KeyError):
+                    continue
+                ev = {
+                    "home_team":  str(r.get("home_team", "")),
+                    "away_team":  str(r.get("away_team", "")),
+                    "home_score": hg,
+                    "away_score": ag,
+                    "date_str":   str(r.get("date", ""))[:10],
+                }
+                hh, ha = r.get("ht_home_goals"), r.get("ht_away_goals")
+                if pd.notna(hh) and pd.notna(ha):
+                    ev["ht_home"], ev["ht_away"] = int(hh), int(ha)
+                out.append(ev)
+            log.info(f"  [api-football] {league}: {len(out)} completed fixtures "
+                     f"(season {season}) for fallback settlement")
+        except Exception as e:
+            log.warning(f"  [api-football] {league}: results fetch failed ({e})")
+    else:
+        log.debug(f"  [api-football] {league}: no API_FOOTBALL_IDS entry")
+
+    _AF_RESULTS_CACHE[league] = out
+    return out
+
+
 # ── Result lookup ─────────────────────────────────────────────────────────────
 
 def _find_result(
@@ -1164,6 +1223,19 @@ def main():
             side=row["side"],
             completed=completed,
         )
+
+        if found is None:
+            # LAST RESORT: API-Football. Only reached when the primary source could not
+            # resolve this fixture, so a healthy run costs nothing. This is what finally
+            # settles leagues with no football-data feed once they age past OddsAPI's
+            # 3-day scores window.
+            found = _find_result(
+                home=row["home_team"],
+                away=row["away_team"],
+                date_str=row["match_date"],
+                side=row["side"],
+                completed=fetch_scores_apifootball(league),
+            )
 
         if found is None:
             log.debug(f"  Not found: {row['home_team']} vs {row['away_team']} ({row['match_date']})")
