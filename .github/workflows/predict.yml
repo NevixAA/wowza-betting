@@ -33,6 +33,14 @@ jobs:
       - name: Run predict
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          # APIFOOTBALL_KEY was MISSING here while every other workflow passed it. The secret
+          # exists; this step just never mapped it, so os.getenv("APIFOOTBALL_KEY") was "" and
+          # every API-Football enrichment in build_upcoming_features silently no-opped inside
+          # its `except: pass` — injuries, /teams/statistics season venue stats, lineups, H2H,
+          # Bet365 pre-match odds, season round, coach, standings. The season venue stats are
+          # real model inputs, so predict was running on stale football-data values instead of
+          # current-season ones; the rest degraded predictions.csv and the dashboard.
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python pipeline.py --mode predict
 
       - name: Run Telegram notifier
