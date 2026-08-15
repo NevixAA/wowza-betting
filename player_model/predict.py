@@ -23,6 +23,69 @@ from .model import load_model, predict_proba
 import numpy as np
 
 
+def _same_club(a: str, b: str) -> bool:
+    """Strict same-club test for looking a fixture's squads up in the player history.
+
+    api_football._team_match is deliberately generous (it accepts "Inter"=="Internazionale"
+    via token prefixes) because it compares two names already known to describe the SAME
+    fixture. Here we scan ~230k history rows spanning every league we've ever collected, so
+    that generosity produces false positives across competitions:
+        Lille        vs Lillestrom              (prefix)
+        Inter        vs Inter Club d'Escaldes   (token subset)
+        Real Madrid  vs Real Salt Lake          (shared token)
+    all of which put a player in a match they had nothing to do with.
+
+    Rule: compare identity-token SETS (generic FC/CF/AC/… suffixes dropped).
+      * equal sets                        -> same club   ("Girona" == "Girona FC")
+      * same size >= 2 with a token-prefix -> same club   ("Man City" == "Manchester City")
+      * anything else                      -> different
+    Single-token names must match exactly, which is what separates Lille from Lillestrom.
+    Precision over recall on purpose: a missed prop tip costs nothing, a tip on a player who
+    isn't in the fixture is garbage in the ledger and the CLV record.
+
+    Strict SUBSET cases ("Plymouth" vs "Plymouth Argyle") are NOT decided here — see
+    _club_name_subset, which needs league corroboration.
+    """
+    from .api_football import _norm_name, _GENERIC_TOKENS
+    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
+    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
+    if not sa or not sb:
+        return False
+    if sa == sb:
+        return True
+    if len(sa) != len(sb) or len(sa) < 2:
+        return False
+    # every token on one side must pair with a distinct prefix-compatible token on the other
+    remaining = set(sb)
+    for t in sa:
+        hit = next((o for o in remaining
+                    if t == o
+                    or (len(t) >= 3 and o.startswith(t))
+                    or (len(o) >= 3 and t.startswith(o))), None)
+        if hit is None:
+            return False
+        remaining.discard(hit)
+    return True
+
+
+def _club_name_subset(a: str, b: str) -> bool:
+    """True when one name's identity tokens strictly contain the other's.
+
+    This case is genuinely ambiguous from names alone:
+        "Plymouth" vs "Plymouth Argyle"        -> SAME club
+        "Inter"    vs "Inter Club d'Escaldes"  -> DIFFERENT clubs
+        "Lincoln"  vs "Lincoln Red Imps FC"    -> DIFFERENT clubs (England vs Gibraltar)
+    So this is only half a decision — the caller must corroborate it with the fixture's
+    competition (a club we hold history for in THIS competition is the real thing).
+    """
+    from .api_football import _norm_name, _GENERIC_TOKENS
+    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
+    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
+    if not sa or not sb:
+        return False
+    return sa < sb or sb < sa
+
+
 def _compute_market_caps(history_path: Path) -> dict[str, float]:
     """
     Compute per-market probability caps = top-1% career rate among players
@@ -371,6 +434,15 @@ def run_player_predictions(
     # the CI predict past its 60-min timeout → cancelled → zero tips. Behaviour is unchanged.
     _hist_index = _build_history_index(history_df)
     _team_lc    = history_df["team"].astype(str).str.lower()
+    # Unique club names once, so the identity-matched fallback below costs O(teams) per
+    # fixture instead of O(rows) — history_df is ~230k rows but only a few hundred clubs.
+    _uniq_teams = history_df["team"].astype(str).unique()
+    # team -> competitions we actually hold history for. This is what disambiguates a strict
+    # name subset: "Plymouth" has League One history so it IS Plymouth Argyle in a League One
+    # fixture, while Inter Milan has no Conference League history and so is NOT the
+    # "Inter Club d'Escaldes" playing Flora Tallinn.
+    _team_leagues = (history_df.assign(_t=history_df["team"].astype(str))
+                     .groupby("_t")["league"].agg(set).to_dict())
 
     for _, match_row in bets.iterrows():
         home      = match_row["home_team"]
@@ -411,20 +483,48 @@ def run_player_predictions(
             _team_lc.isin([home.lower(), away.lower()])
         ].copy()
         if team_players.empty:
-            mask = (
-                _team_lc.str.contains(home.lower()[:5], na=False) |
-                _team_lc.str.contains(away.lower()[:5], na=False)
-            )
-            team_players = history_df[mask].copy()
+            # Fallback for spelling variants ("Girona" vs "Girona FC"). This used to be a
+            # 5-CHARACTER SUBSTRING test, which silently attached players to fixtures they
+            # had nothing to do with, because a 5-char prefix collides constantly:
+            #   "Lillestrom"[:5]     == "lille" -> pulled in Lille
+            #   "Real Salt Lake"[:5] == "real " -> pulled in Real Madrid
+            #   "Atletico Mineiro"   -> "atlet" -> pulled in Atletico Madrid
+            #   "Chengdu Rongcheng"  -> "cheng" -> pulled in Monchengladbach
+            #   "Wolfsberger AC"     -> "wolfs" -> pulled in VfL Wolfsburg
+            # 287 of 1983 player_ledger rows (14%) named a player from neither team, e.g.
+            # Messi tipped in Sarmiento vs Argentinos Juniors (audit 2026-08-15).
+            # _team_match is the identity-token matcher that keeps "Real Madrid" and
+            # "Real Sociedad" apart while still accepting "Man City"=="Manchester City".
+            # When nothing matches we now correctly produce NO tips for that fixture, which
+            # is right: leagues outside PROP_LEAGUES have no player history to tip from.
+            def _belongs(t: str, name: str) -> bool:
+                if _same_club(t, name):
+                    return True
+                # Ambiguous subset -> only if we hold history for this club in THIS competition.
+                return (_club_name_subset(t, name)
+                        and league in _team_leagues.get(t, ()))
+
+            _ok = {t for t in _uniq_teams if _belongs(t, home) or _belongs(t, away)}
+            if not _ok:
+                continue
+            team_players = history_df[history_df["team"].astype(str).isin(_ok)].copy()
         if team_players.empty:
             continue
 
-        # Add match context
-        team_players["is_home"] = team_players["team"].str.lower().apply(
-            lambda t: 1.0 if home.lower()[:5] in t or t[:5] in home.lower() else 0.0
+        # Add match context — same strict rule, so a player can never be labelled home (or
+        # handed the wrong opponent) on the strength of a shared name fragment.
+        def _is_home_team(t: str) -> bool:
+            if _same_club(t, home):
+                return True
+            if _same_club(t, away):
+                return False
+            return _club_name_subset(t, home) and league in _team_leagues.get(t, ())
+
+        team_players["is_home"] = team_players["team"].astype(str).apply(
+            lambda t: 1.0 if _is_home_team(t) else 0.0
         )
-        team_players["opponent"] = team_players["team"].apply(
-            lambda t: away if home.lower()[:5] in t.lower() else home
+        team_players["opponent"] = team_players["team"].astype(str).apply(
+            lambda t: away if _is_home_team(t) else home
         )
 
         upcoming_list = team_players.to_dict("records")
