@@ -33,14 +33,21 @@ jobs:
       - name: Run predict
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-          # APIFOOTBALL_KEY was MISSING here while every other workflow passed it. The secret
-          # exists; this step just never mapped it, so os.getenv("APIFOOTBALL_KEY") was "" and
-          # every API-Football enrichment in build_upcoming_features silently no-opped inside
-          # its `except: pass` — injuries, /teams/statistics season venue stats, lineups, H2H,
-          # Bet365 pre-match odds, season round, coach, standings. The season venue stats are
-          # real model inputs, so predict was running on stale football-data values instead of
-          # current-season ones; the rest degraded predictions.csv and the dashboard.
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # APIFOOTBALL_KEY is deliberately NOT passed here (reverted 2026-08-15).
+          #
+          # It was missing originally, which meant every API-Football enrichment in
+          # build_upcoming_features silently no-opped inside its `except: pass` — injuries,
+          # /teams/statistics, lineups, H2H, Bet365 odds, season round, coach, standings.
+          # Supplying the key switched all eight back on AT ONCE, and predict has NO
+          # actions/cache step, so every run starts with a cold api_football_cache and
+          # re-fetches the lot. Runtime went from ~2-3 min to 10+ against a 15 min timeout,
+          # and at 12 runs/hour that is an enormous draw on the 7,500/day API-Football cap
+          # that af_usage_monitor exists to watch. A timed-out predict means NO TIPS.
+          #
+          # Re-enabling this needs the cost controlled FIRST: cache api_football_cache/ in
+          # this workflow, and/or move the enrichments onto a slower schedule that writes
+          # them for predict to read. Only /teams/statistics feeds real model inputs; the
+          # rest populate predictions.csv columns and the dashboard.
         run: python pipeline.py --mode predict
 
       - name: Run Telegram notifier
