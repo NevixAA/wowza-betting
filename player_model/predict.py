@@ -17,73 +17,13 @@ from . import config
 
 _APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
 from .api_football import _norm_name as _norm_player_name
+# Strict club matchers live in api_football so predict and the Telegram reporting
+# share one definition (see the note above _same_club there).
+from .api_football import _same_club, _club_name_subset
 from .feature_engineering import build_upcoming_features, compute_ges, _build_history_index
 from .model import load_model, predict_proba
 
 import numpy as np
-
-
-def _same_club(a: str, b: str) -> bool:
-    """Strict same-club test for looking a fixture's squads up in the player history.
-
-    api_football._team_match is deliberately generous (it accepts "Inter"=="Internazionale"
-    via token prefixes) because it compares two names already known to describe the SAME
-    fixture. Here we scan ~230k history rows spanning every league we've ever collected, so
-    that generosity produces false positives across competitions:
-        Lille        vs Lillestrom              (prefix)
-        Inter        vs Inter Club d'Escaldes   (token subset)
-        Real Madrid  vs Real Salt Lake          (shared token)
-    all of which put a player in a match they had nothing to do with.
-
-    Rule: compare identity-token SETS (generic FC/CF/AC/… suffixes dropped).
-      * equal sets                        -> same club   ("Girona" == "Girona FC")
-      * same size >= 2 with a token-prefix -> same club   ("Man City" == "Manchester City")
-      * anything else                      -> different
-    Single-token names must match exactly, which is what separates Lille from Lillestrom.
-    Precision over recall on purpose: a missed prop tip costs nothing, a tip on a player who
-    isn't in the fixture is garbage in the ledger and the CLV record.
-
-    Strict SUBSET cases ("Plymouth" vs "Plymouth Argyle") are NOT decided here — see
-    _club_name_subset, which needs league corroboration.
-    """
-    from .api_football import _norm_name, _GENERIC_TOKENS
-    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
-    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
-    if not sa or not sb:
-        return False
-    if sa == sb:
-        return True
-    if len(sa) != len(sb) or len(sa) < 2:
-        return False
-    # every token on one side must pair with a distinct prefix-compatible token on the other
-    remaining = set(sb)
-    for t in sa:
-        hit = next((o for o in remaining
-                    if t == o
-                    or (len(t) >= 3 and o.startswith(t))
-                    or (len(o) >= 3 and t.startswith(o))), None)
-        if hit is None:
-            return False
-        remaining.discard(hit)
-    return True
-
-
-def _club_name_subset(a: str, b: str) -> bool:
-    """True when one name's identity tokens strictly contain the other's.
-
-    This case is genuinely ambiguous from names alone:
-        "Plymouth" vs "Plymouth Argyle"        -> SAME club
-        "Inter"    vs "Inter Club d'Escaldes"  -> DIFFERENT clubs
-        "Lincoln"  vs "Lincoln Red Imps FC"    -> DIFFERENT clubs (England vs Gibraltar)
-    So this is only half a decision — the caller must corroborate it with the fixture's
-    competition (a club we hold history for in THIS competition is the real thing).
-    """
-    from .api_football import _norm_name, _GENERIC_TOKENS
-    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
-    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
-    if not sa or not sb:
-        return False
-    return sa < sb or sb < sa
 
 
 def _compute_market_caps(history_path: Path) -> dict[str, float]:

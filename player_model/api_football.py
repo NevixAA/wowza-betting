@@ -235,6 +235,55 @@ def _team_match(a: str, b: str) -> bool:
     return difflib.SequenceMatcher(None, na, nb).ratio() >= 0.90
 
 
+# ── Strict variants, for SEARCHING a multi-league history ─────────────────────────────
+# _team_match above is deliberately generous (token prefixes, 0.90 fuzzy fallback) because it
+# compares two names already known to describe the SAME fixture. When instead you scan every
+# club we have ever collected, that generosity attaches players to unrelated matches — Lille
+# to Lillestrom, Real Madrid to Real Salt Lake, Monchengladbach to Chengdu Rongcheng. Use
+# these two for that job. They live here so predict.py and the Telegram reporting share one
+# definition and can never drift apart.
+
+def _same_club(a: str, b: str) -> bool:
+    """Identity-token sets are equal, or same size >= 2 with a token-prefix pairing.
+
+    Accepts "Girona" == "Girona FC" and "Man City" == "Manchester City". Single-token names
+    must match EXACTLY, which is what keeps "Lille" out of "Lillestrom".
+    Strict-subset cases are not decided here — see _club_name_subset.
+    """
+    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
+    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
+    if not sa or not sb:
+        return False
+    if sa == sb:
+        return True
+    if len(sa) != len(sb) or len(sa) < 2:
+        return False
+    remaining = set(sb)
+    for t in sa:
+        hit = next((o for o in remaining
+                    if t == o
+                    or (len(t) >= 3 and o.startswith(t))
+                    or (len(o) >= 3 and t.startswith(o))), None)
+        if hit is None:
+            return False
+        remaining.discard(hit)
+    return True
+
+
+def _club_name_subset(a: str, b: str) -> bool:
+    """One name's identity tokens strictly contain the other's.
+
+    Ambiguous on its own — "Plymouth" vs "Plymouth Argyle" is the SAME club, while "Inter"
+    vs "Inter Club d'Escaldes" and "Lincoln" vs "Lincoln Red Imps" are DIFFERENT ones. The
+    caller must corroborate with the competition we hold history for.
+    """
+    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
+    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
+    if not sa or not sb:
+        return False
+    return sa < sb or sb < sa
+
+
 def find_fixture_id(league_id: int, season: str, date_str: str, home: str, away: str) -> int | None:
     """Find fixture ID for a completed (FT) match by league, season, date, and team names."""
     data = _get("/fixtures", {
