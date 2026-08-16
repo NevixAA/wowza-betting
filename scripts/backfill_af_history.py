@@ -196,6 +196,43 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
 
     leagues_to_run = [(n, i, s) for n, i, s in LEAGUES if target_league is None or n == target_league]
 
+    # ── Keep the CURRENT season in scope ──────────────────────────────────────
+    # The season lists above were written for the one-time pre-season backfill and stop at
+    # 2024/2025. Nothing added the live season, so current-season fixtures never entered
+    # af_history.parquet — which is exactly why data_loader's step 2 kept trying to fetch
+    # them from the API on EVERY predict run (~3 min per league, forever).
+    try:
+        sys.path.insert(0, str(ROOT))
+        import config as _cfg
+        _current = {n: str(_cfg.API_FOOTBALL_SEASONS.get(n, "")) for n, _, _ in leagues_to_run}
+    except Exception:
+        _current = {n: str(datetime.now().year) for n, _, _ in leagues_to_run}
+    leagues_to_run = [
+        (n, i, s + ([_current[n]] if _current.get(n) and _current[n] not in s else []))
+        for n, i, s in leagues_to_run
+    ]
+
+    # ── Use the COMMITTED parquet as memory ───────────────────────────────────
+    # scripts/af_history_cache/ is untracked, so in CI it starts empty and an uncached run
+    # would re-fetch all ~20,000 historical fixtures. af_history.parquet IS committed, so
+    # treat it as the record of what we already have and skip those fixtures entirely.
+    # That is what makes this safe to run on a schedule: the first run collects the current
+    # season, every later run collects only what is genuinely new.
+    existing_keys: set = set()
+    if OUTPUT.exists():
+        try:
+            _ex = pd.read_parquet(OUTPUT, columns=["league", "date", "home_team", "away_team"])
+            _ex["date"] = pd.to_datetime(_ex["date"], errors="coerce")
+            existing_keys = {
+                (str(r.league), str(r.date)[:10], str(r.home_team), str(r.away_team))
+                for r in _ex.itertuples()
+            }
+            print(f"  af_history.parquet already holds {len(existing_keys):,} fixtures — "
+                  f"these will be skipped, not re-fetched")
+        except Exception as e:
+            print(f"  [warn] could not read existing af_history ({e}) — no skip list")
+    skipped = 0
+
     for league_name, league_id, seasons in leagues_to_run:
         print(f"\n{'='*60}")
         print(f"  {league_name}  (AF id={league_id})")
@@ -206,6 +243,18 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
             total_api_calls += 1  # fixtures list call
 
             for i, f in enumerate(fixtures):
+                # Already in the committed parquet? Then we have this fixture's stats and
+                # must not spend a call on it again. This is the whole point of the skip
+                # list — completed results never change.
+                _tm = f.get("teams", {}) or {}
+                _key = (league_name,
+                        str((f.get("fixture", {}) or {}).get("date", ""))[:10],
+                        str((_tm.get("home") or {}).get("name", "")),
+                        str((_tm.get("away") or {}).get("name", "")))
+                if _key in existing_keys:
+                    skipped += 1
+                    continue
+
                 fix_id = f["fixture"]["id"]
                 stats_resp = fetch_stats(fix_id, dry_run)
                 total_api_calls += 1
@@ -222,7 +271,12 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
     print(f"\n{'='*60}")
     print(f"  Total API calls: {total_api_calls}")
     print(f"  Total fixtures:  {total_fixtures}")
+    print(f"  Skipped (already in af_history.parquet): {skipped}")
     print(f"  Total rows:      {len(all_rows)}")
+
+    if not all_rows and skipped:
+        print("  Nothing new to collect — af_history.parquet is already current.")
+        return
 
     if dry_run:
         print("  [dry-run] no data saved")

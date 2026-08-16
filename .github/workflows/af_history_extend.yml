@@ -1,0 +1,91 @@
+name: Extend AF History (current season)
+
+# Keeps output/af_history.parquet — the COMMITTED match-stats backfill — up to date with the
+# season in progress, and commits it.
+#
+# WHY THIS EXISTS
+# The backfill was a one-time pre-season job: scripts/backfill_af_history.py had hardcoded
+# season lists ending at 2024/2025, and nothing ever ran it again. So current-season fixtures
+# were missing from af_history.parquet, and data_loader's step 2 tried to fetch them LIVE
+# from API-Football on every predict run:
+#
+#   [af_history] merged backfill: 26460 rows now have shot data
+#   [api_football_ou] Ireland Premier Division: 258/857 rows now have shot data   (~3 min)
+#   [api_football_ou] Austrian Bundesliga:      130/981 rows now have shot data   (~3 min)
+#
+# Predict reached 11m52s and was still going, re-deriving four seasons twelve times an hour
+# and throwing the answer away, because apifootball_ou_cache/ is untracked and starts empty
+# in CI. That is the "burning API calls for nothing" problem.
+#
+# The fix is to collect ONCE, into a file that is committed, and let everything read it.
+# backfill_af_history.py now skips any fixture already present in af_history.parquet, so this
+# job costs only the genuinely new fixtures — a handful per league per week.
+#
+# Weekly on Monday: the weekend's results are settled by then, and it lands well before the
+# Sunday retrain that consumes the data.
+
+concurrency:
+  group: af-history-extend
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Monday 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      league:
+        description: "Single league only (blank = all)"
+        required: false
+        default: ""
+
+jobs:
+  extend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Not required for correctness — af_history.parquet is the real memory — but it saves
+      # repeat calls within a run and across runs when the cache survives.
+      - name: Cache AF history fixture cache
+        uses: actions/cache@v4
+        with:
+          path: scripts/af_history_cache
+          key: af-history-${{ github.run_id }}
+          restore-keys: af-history-
+
+      - name: Extend af_history.parquet with the current season
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.league }}" ]; then
+            python scripts/backfill_af_history.py --league "${{ github.event.inputs.league }}"
+          else
+            python scripts/backfill_af_history.py
+          fi
+
+      - name: Commit updated backfill
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/af_history.parquet 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "auto: af_history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
