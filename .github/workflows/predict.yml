@@ -14,7 +14,10 @@ concurrency:
 jobs:
   predict:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 25 not 15: enrichment is back on (see the APIFOOTBALL_KEY note below) and the FIRST
+    # run after a cache miss legitimately takes longer while it refills api_football_cache.
+    # A timed-out predict sends no tips at all, so the margin is deliberate.
+    timeout-minutes: 25
     permissions:
       contents: write
 
@@ -30,24 +33,40 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # THE reason the first attempt at enabling enrichment failed. Without this the cache
+      # is cold on every 5-minute run, so all eight API-Football enrichments re-fetch from
+      # scratch: runtime went 2-3 min -> 10+ against the timeout, and ~4,600 calls burned in
+      # 90 minutes. The TTLs are hours to days (lineups 2h, odds 6h, H2H 168h, coach 7d), so
+      # a warm cache makes the steady-state cost a small fraction of a cold run.
+      - name: Cache API-Football responses (makes enrichment affordable)
+        uses: actions/cache@v4
+        with:
+          path: api_football_cache
+          key: af-cache-${{ github.run_id }}
+          restore-keys: af-cache-
+
       - name: Run predict
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
-          # APIFOOTBALL_KEY is deliberately NOT passed here (reverted 2026-08-15).
+          # RE-ENABLED 2026-08-16, after the two preconditions were met: the API-Football
+          # plan moved to 75,000/day, and the cache step above now persists
+          # api_football_cache/ between runs.
           #
-          # It was missing originally, which meant every API-Football enrichment in
+          # History: this key was missing originally, so every enrichment in
           # build_upcoming_features silently no-opped inside its `except: pass` — injuries,
-          # /teams/statistics, lineups, H2H, Bet365 odds, season round, coach, standings.
-          # Supplying the key switched all eight back on AT ONCE, and predict has NO
-          # actions/cache step, so every run starts with a cold api_football_cache and
-          # re-fetches the lot. Runtime went from ~2-3 min to 10+ against a 15 min timeout,
-          # and at 12 runs/hour that is an enormous draw on the 7,500/day API-Football cap
-          # that af_usage_monitor exists to watch. A timed-out predict means NO TIPS.
+          # /teams/statistics, lineups, H2H, Bet365 odds, season round, coach, standings —
+          # and 33 columns of predictions.csv were pinned to hardcoded defaults. Enabling it
+          # on 2026-08-15 WITHOUT the cache pushed runtime from 2-3 min to 10+ against the
+          # timeout and burned ~4,600 calls in 90 minutes, so it was reverted.
           #
-          # Re-enabling this needs the cost controlled FIRST: cache api_football_cache/ in
-          # this workflow, and/or move the enrichments onto a slower schedule that writes
-          # them for predict to read. Only /teams/statistics feeds real model inputs; the
-          # rest populate predictions.csv columns and the dashboard.
+          # What this buys: /teams/statistics supplies current-season venue goals, conceded
+          # and clean-sheet rates, which ARE real model inputs — predict has been scoring on
+          # stale football-data values instead. The rest populate predictions.csv and the
+          # dashboard.
+          #
+          # ROLLBACK: if predict runtime climbs toward the timeout, delete this one line.
+          # Everything else degrades gracefully to the old no-op behaviour.
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python pipeline.py --mode predict
 
       - name: Run Telegram notifier

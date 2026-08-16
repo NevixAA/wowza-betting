@@ -13,7 +13,11 @@ concurrency:
 
 on:
   schedule:
-    - cron: '0 6,12,18 * * *'   # 3x/day (06:00/12:00/18:00 UTC) -> open->moving->closing curve
+    # 8x/day, every 3h (2026-08-16, after the quota upgrade to 75,000/day).
+    # 3x/day yielded only ~1.1 snapshots per fixture — an ENTRY PRICE, not a curve — which
+    # is why standard BTTS / O-U 1.5 / 3.5 CLV was unusable. Each window costs ~330-380
+    # calls, so 8 windows is ~2,900/day: 4% of the new cap, against 39% of the old one.
+    - cron: '0 0,3,6,9,12,15,18,21 * * *'
   workflow_dispatch:
 
 jobs:
