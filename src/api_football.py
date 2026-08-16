@@ -80,15 +80,30 @@ def _get(endpoint: str, params: dict, cache_hours: float = 24) -> Optional[dict]
     try:
         r = requests.get(url, headers=HEADERS, params=params, timeout=15)
         if r.status_code != 200:
-            log.debug(f"[api_football] HTTP {r.status_code} for {endpoint} params={params}")
+            # WARNING, not debug. Every caller turns a None from here into an empty list,
+            # which downstream reads as "there is nothing" rather than "the API refused".
+            # On 2026-08-16 the daily quota was exhausted by 06:00 and the whole
+            # API-Football surface went dark — live scanner, props gate, prop odds,
+            # collect, settlement fallback — and NOT ONE log line said so, because this
+            # was log.debug. 429 is called out explicitly since quota is the usual cause.
+            _why = "QUOTA/RATE LIMIT" if r.status_code == 429 else f"HTTP {r.status_code}"
+            log.warning(f"[api_football] {_why} on {endpoint} — returning no data "
+                        f"(caller will see an empty result). body={r.text[:160]}")
             return None
         data = r.json()
+        # API-Football answers 200 with an `errors` payload for plan/quota/parameter
+        # problems, so a 200 is NOT proof of success.
+        errs = data.get("errors") if isinstance(data, dict) else None
+        if errs:
+            log.warning(f"[api_football] {endpoint} returned errors={errs} — treating as "
+                        f"no data (this is what an exhausted daily quota looks like)")
+            return None
         if cache_hours > 0:
             _save_cache(cache_key, data)
         time.sleep(0.3)
         return data
     except Exception as e:
-        log.debug(f"[api_football] Error {endpoint}: {e}")
+        log.warning(f"[api_football] {endpoint} failed: {type(e).__name__}: {e}")
         return None
 
 
