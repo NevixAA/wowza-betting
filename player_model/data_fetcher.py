@@ -1103,12 +1103,33 @@ def fetch_player_sidelined(player_id: int) -> list[dict]:
     return result
 
 
-def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5) -> dict:
+def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5,
+                               max_players: int | None = None) -> dict:
     """
     Batch fetch sidelined history for all unique player_ids in df.
     Returns {player_id: [sidelined_entries]}.
+
+    max_players caps how many are fetched in ONE run. This is a per-player endpoint with no
+    bulk equivalent, so an uncapped crawl of every active prop-league player cost ~6,545
+    API-Football calls — 87% of the 7,500/day quota, burned before 05:00, which starved the
+    Sunday collect and left the props fixture gate seeing an empty API (it then disabled the
+    whole props pipeline on a matchday).
+
+    When the cap bites, the slice ROTATES by ISO week so every player is still refreshed
+    within a few weeks. That is ample: the features derived from this
+    (chronic_injury_risk, days_since_last_injury, return_from_injury_flag) are all rolling
+    365-DAY aggregates, so a fortnight of staleness is immaterial.
     """
     unique_pids = list(df["player_id"].dropna().astype(int).unique()) if "player_id" in df.columns else []
+    _available = len(unique_pids)
+    if max_players and _available > max_players:
+        import datetime as _dt
+        _week   = _dt.date.today().isocalendar()[1]
+        _offset = (_week * max_players) % _available
+        unique_pids = (unique_pids + unique_pids)[_offset:_offset + max_players]
+        print(f"[sidelined] quota cap: fetching {len(unique_pids)}/{_available} players "
+              f"(ISO week {_week} slice; full coverage rotates over "
+              f"{-(-_available // max_players)} weeks)")
     total = len(unique_pids)
     results = {}
 

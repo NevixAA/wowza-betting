@@ -12,7 +12,22 @@ concurrency:
 
 on:
   schedule:
-    - cron: '0 4 * * *'   # 04:00 UTC daily (before the 05:00 Sunday train)
+    # WEEKLY, Tuesday 04:00 UTC (was daily — changed 2026-08-16).
+    #
+    # This step is by far the biggest consumer of the 7,500/day API-Football quota: the
+    # usage curve shows it burning ~6,545 calls between 04:05 and 04:56, i.e. 87% of the
+    # entire day, every day, before 05:00. It starved everything downstream — the Sunday
+    # 05:00 club collect, the hourly props predict (whose fixture gate then saw an empty
+    # API and disabled itself), and the odds captures.
+    #
+    # It is also unnecessary at that cadence. --mode enrich-sidelined-live computes
+    # chronic_injury_risk, days_since_last_injury and return_from_injury_flag, all derived
+    # from a ROLLING 365-DAY window. Those move imperceptibly day to day; a week of
+    # staleness is irrelevant to a year-long aggregate.
+    #
+    # Tuesday because it is the quietest fixture day — the crawl no longer competes with a
+    # Saturday/Sunday matchday slate for quota.
+    - cron: '0 4 * * 2'
   workflow_dispatch:
 
 jobs:
