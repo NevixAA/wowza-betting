@@ -94,6 +94,14 @@ def _settled_only(df):
 # saying "no bet here" — counting it as a settled bet is a category error.
 NON_BET_TIERS = {"AVOID", "WATCH"}
 
+# Tiers that are actually STAKED. VALUABLE is sent live on purpose — as a "flash" that
+# accumulates outcome data for the model to learn from — but NO MONEY goes on it. Folding it
+# into headline P/L inverts the conclusion: weekend 2026-08-14..16 read as 15W/30L −12.31u
+# across all tiers, and 14W/15L +0.47u on staked tiers alone. Summaries must therefore lead
+# with staked P/L and show VALUABLE separately, labelled as collection.
+STAKED_TIERS = ["SNIPER", "MARKSMAN"]
+COLLECT_TIERS = ["VALUABLE"]
+
 
 def _bet_tiers_only(df):
     """Drop non-bet prop rows (AVOID/WATCH) before ANY count / P&L / digest line.
@@ -973,13 +981,21 @@ def notify_weekly_summary() -> bool:
     def _pred_block(frame, settled_word):
         any_shown = False
         for fmt, emoji, label in MODELS:
-            sub = _settled_only(frame[frame["model_type"] == fmt]) if "model_type" in frame.columns else None
-            if sub is None or sub.empty:
+            sub_all = _settled_only(frame[frame["model_type"] == fmt]) if "model_type" in frame.columns else None
+            if sub_all is None or sub_all.empty:
                 continue
             any_shown = True
-            n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
-            lines.append(f"{emoji} <b>{label}</b> — {n} {settled_word} | {w/n:.0%} win | P/L {pnl:+.2f}u")
-            for tier in TIER_ORDER:
+            # Headline = STAKED tiers only. VALUABLE is a data-collection flash with no money
+            # on it, so including it in P/L misrepresents the week.
+            sub = sub_all[sub_all["signal_tier"].isin(STAKED_TIERS)] \
+                  if "signal_tier" in sub_all.columns else sub_all
+            if not sub.empty:
+                n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
+                lines.append(f"{emoji} <b>{label}</b> — 💰 {n} {settled_word} | {w/n:.0%} win | "
+                             f"P/L {pnl:+.2f}u")
+            else:
+                lines.append(f"{emoji} <b>{label}</b> — no staked bets settled")
+            for tier in STAKED_TIERS:
                 ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                 if ts.empty:
                     continue
@@ -987,6 +1003,13 @@ def notify_weekly_summary() -> bool:
                 lines.append(f"  {TIER_SYM[tier]} {tier}: {tn} bets | {tw/tn:.0%} win | "
                              f"P/L <b>{ts['pnl'].sum():+.2f}u</b>")
                 _sharp_split_lines(ts, lines, "      ")
+            for tier in COLLECT_TIERS:
+                cs = sub_all[sub_all["signal_tier"] == tier] if "signal_tier" in sub_all.columns else pd.DataFrame()
+                if cs.empty:
+                    continue
+                cn = len(cs); cw = int((cs["pnl"] > 0).sum())
+                lines.append(f"  {TIER_SYM.get(tier, '💎')} {tier}: {cn} signals | {cw/cn:.0%} win | "
+                             f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
         if not any_shown:
             lines.append("⚽ <b>Over 2.5</b>: no settled bets")
 
@@ -2016,35 +2039,48 @@ def notify_daily_digest() -> bool:
                 live_y["model_type"] = ""
             _blk = live_y["model_type"].isna() | (live_y["model_type"].astype(str).str.strip().isin(["", "nan"]))
             live_y.loc[_blk, "model_type"] = live_y.loc[_blk, "league"].map(app_config.model_type_for_league)
-            r_all = _stats_sub(live_y, pd.Series([True] * len(live_y), index=live_y.index))
+            # STAKED only in every headline. VALUABLE is shown, but never counted as money.
+            _stk = live_y[live_y["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in live_y.columns else live_y
+            r_all = _stats_sub(_stk, pd.Series([True] * len(_stk), index=_stk.index))
             if r_all:
                 n, w, pnl = r_all
-                lines2.append(f"⚽ <b>O/U 2.5</b>  (P/L {pnl:+.2f}u)")
+                lines2.append(f"⚽ <b>O/U 2.5</b>  💰 staked {w}W/{n-w}L  P/L {pnl:+.2f}u")
                 for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
                                             ("new_format", "🌍", "New-Format")]:
-                    fb = live_y[live_y["model_type"] == fmt]
-                    if fb.empty:
+                    fb_all = live_y[live_y["model_type"] == fmt]
+                    fb = fb_all[fb_all["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in fb_all.columns else fb_all
+                    if fb_all.empty:
                         continue
                     rf = _stats_sub(fb, pd.Series([True] * len(fb), index=fb.index))
-                    if not rf:
-                        continue
-                    fn, fw, fp = rf
-                    lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {fp:+.2f}u")
-                    if "side" in fb.columns:
-                        for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
-                            r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
+                    if rf:
+                        fn, fw, fp = rf
+                        lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {fp:+.2f}u")
+                        if "side" in fb.columns:
+                            for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
+                                r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
+                                if r:
+                                    sn, sw, sp = r
+                                    lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {sp:+.2f}u")
+                        for tier in STAKED_TIERS:
+                            r = _stats_sub(fb, fb["signal_tier"] == tier)
                             if r:
-                                sn, sw, sp = r
-                                lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {sp:+.2f}u")
-                    for tier in TIER_ORDER:
-                        if "signal_tier" not in fb.columns:
-                            break
-                        r = _stats_sub(fb, fb["signal_tier"] == tier)
+                                tn, tw, tp = r
+                                lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                    # Collection tiers: visible, but explicitly not money.
+                    for tier in COLLECT_TIERS:
+                        r = _stats_sub(fb_all, fb_all["signal_tier"] == tier)
                         if r:
                             tn, tw, tp = r
-                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                            lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {tw}W/{tn-tw}L "
+                                          f"({tp:+.2f}u) — 📊 data only, not staked")
             else:
-                lines2.append("  ⚽ O/U 2.5: no settled results")
+                lines2.append("  ⚽ O/U 2.5: no settled staked bets")
+                for tier in COLLECT_TIERS:
+                    r = _stats_sub(live_y, live_y["signal_tier"] == tier) if "signal_tier" in live_y.columns else None
+                    if r:
+                        tn, tw, tp = r
+                        lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {tw}W/{tn-tw}L "
+                                      f"({tp:+.2f}u) — 📊 data only, not staked")
         except Exception:
             pass
 
@@ -2094,19 +2130,33 @@ def notify_daily_digest() -> bool:
                 ("standard",   "⚽", "O/U 2.5 — Standard"),
                 ("new_format", "🌍", "O/U 2.5 — New-Format"),
             ]:
-                sub = live[live["model_type"] == fmt]
-                if sub.empty:
+                sub_all = live[live["model_type"] == fmt]
+                if sub_all.empty:
                     continue
-                n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
-                lines2.append(f"  {emoji} <b>{label}</b>  {w_s}W/{n-w_s}L | P/L {pnl:+.2f}u")
-                if "side" in sub.columns:
-                    for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
-                        ss = sub[sub["side"].astype(str).str.upper() == sd]
-                        if ss.empty:
-                            continue
-                        sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum()
-                        lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {sp:+.2f}u")
-                for tier in TIER_ORDER:
+                # Headline + side splits use STAKED tiers only (VALUABLE carries no money).
+                sub = sub_all[sub_all["signal_tier"].isin(STAKED_TIERS)] \
+                      if "signal_tier" in sub_all.columns else sub_all
+                if not sub.empty:
+                    n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
+                    lines2.append(f"  {emoji} <b>{label}</b>  💰 {w_s}W/{n-w_s}L | P/L {pnl:+.2f}u")
+                    if "side" in sub.columns:
+                        for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
+                            ss = sub[sub["side"].astype(str).str.upper() == sd]
+                            if ss.empty:
+                                continue
+                            sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum()
+                            lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {sp:+.2f}u")
+                else:
+                    lines2.append(f"  {emoji} <b>{label}</b>  no staked bets settled")
+                # Collection tiers listed after, clearly not money.
+                for tier in COLLECT_TIERS:
+                    cs = sub_all[sub_all["signal_tier"] == tier] if "signal_tier" in sub_all.columns else pd.DataFrame()
+                    if cs.empty:
+                        continue
+                    cn = len(cs); cw = int((cs["pnl"] > 0).sum())
+                    lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {cw}W/{cn-cw}L "
+                                  f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
+                for tier in STAKED_TIERS:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
                         continue
