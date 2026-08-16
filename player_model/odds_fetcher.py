@@ -132,6 +132,25 @@ def _coverage_parked(cov: dict, sport_key: str, today: str) -> bool:
         return False
 
 
+def _coverage_fixtures(cov: dict, sport_key: str, today: str,
+                       wanted: int, matched: int, unmatched: list[str]) -> None:
+    """Record how many of the fixtures we wanted were even FOUND in OddsAPI's event
+    list. Without this, 'no odds' has two indistinguishable causes: the book offers
+    no props (empty bookmakers, an odds call is spent) or our fixture name never
+    matched an event (no call is made at all, because the event loop just skips).
+    Those need opposite fixes, so never let the second masquerade as the first."""
+    c = cov.setdefault(sport_key, {})
+    c["league"] = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
+    c["wanted_fixtures"] = wanted
+    c["matched_events"] = matched
+    c["unmatched_sample"] = unmatched
+    if wanted and not matched:
+        c["last_all_unmatched"] = today
+        print(f"[odds_fetcher] {sport_key}: NAME MISMATCH — {wanted} fixture(s) wanted, "
+              f"0 found in the event list, so no odds call was made. "
+              f"Unmatched: {unmatched}")
+
+
 def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool) -> None:
     c = cov.setdefault(sport_key, {})
     c["league"] = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
@@ -262,15 +281,29 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
 
     # Build set of (league, home, away) we need odds for
     needed: dict[str, set[tuple[str, str]]] = {}  # sport_key → set of (home_norm, away_norm)
+    unmapped: dict[str, int] = {}
     for _, row in signals_df.drop_duplicates(["league", "match"]).iterrows():
         league = row.get("league", "")
         sport_key = PROP_SPORT_KEYS.get(league)
         if not sport_key:
+            # No sport key = we never ask, so these players can NEVER be priced and are
+            # AVOID by construction. On 2026-08-16 player_tips.csv carried Argentina
+            # Primera, Austrian Bundesliga, China Super League, La Liga 2 and MLS — none
+            # of them in PROP_SPORT_KEYS and none in config.PROP_LEAGUES either. They
+            # arrive via the bets.csv supplement in predict, which is not restricted to
+            # prop leagues. Surfacing the count makes that visible instead of silent.
+            unmapped[str(league)] = unmapped.get(str(league), 0) + 1
             continue
         parts = str(row.get("match", "")).split(" vs ")
         if len(parts) != 2:
             continue
         needed.setdefault(sport_key, set()).add((_norm(parts[0]), _norm(parts[1])))
+
+    if unmapped:
+        _n = sum(unmapped.values())
+        print(f"[odds_fetcher] {_n} fixture(s) in leagues with no OddsAPI sport key — "
+              f"never asked, so their players stay AVOID by construction: "
+              f"{dict(sorted(unmapped.items(), key=lambda kv: -kv[1]))}")
 
     if not needed:
         return {}
@@ -295,10 +328,16 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         if not events:
             continue
 
+        _matched_pairs: set[tuple[str, str]] = set()
+
         for event in events:
             h = _norm(event.get("home_team", ""))
             a = _norm(event.get("away_team", ""))
-            if (h, a) not in match_set and (a, h) not in match_set:
+            if (h, a) in match_set:
+                _matched_pairs.add((h, a))
+            elif (a, h) in match_set:
+                _matched_pairs.add((a, h))
+            else:
                 continue
 
             event_id = event["id"]
@@ -352,6 +391,11 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                         "match_date": _match_date, "league": _league, "match": _match_str,
                         "player": player_norm, "market": our_market, "odds": price,
                     })
+
+        _coverage_fixtures(
+            cov, sport_key, today, len(match_set), len(_matched_pairs),
+            [f"{x} vs {y}" for x, y in sorted(match_set - _matched_pairs)][:6],
+        )
 
     # Persist every fetched prop odd to the permanent forward-built history.
     try:
