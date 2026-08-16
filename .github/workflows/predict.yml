@@ -64,9 +64,22 @@ jobs:
           # stale football-data values instead. The rest populate predictions.csv and the
           # dashboard.
           #
-          # ROLLBACK: if predict runtime climbs toward the timeout, delete this one line.
-          # Everything else degrades gracefully to the old no-op behaviour.
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # REVERTED AGAIN 2026-08-16, immediately. Caching the API responses was NOT the
+          # missing piece. With the key present, load_all_matches() runs
+          # _enrich_with_api_shots over the ENTIRE HISTORY on every 5-minute run:
+          #
+          #   [af_history] merged backfill: 26460 rows now have shot data
+          #   [api_football_ou] Ireland Premier Division: 258/857 rows now have shot data
+          #   [api_football_ou] Austrian Bundesliga: 130/981 rows now have shot data
+          #
+          # ~3 minutes PER LEAGUE, and the run was at 11m52s and still going. It is
+          # re-deriving historical shot data that is already backfilled and committed in
+          # output/af_history.parquet and the odds-history CSVs. Predict needs new fixtures,
+          # not a rebuild of four seasons of history.
+          #
+          # The enrichment cannot be switched on here until load_all_matches stops re-doing
+          # historical work per run — it must read the committed backfill and fetch only
+          # what is genuinely new. That is a code fix, not a quota or cache problem.
         run: python pipeline.py --mode predict
 
       - name: Run Telegram notifier
