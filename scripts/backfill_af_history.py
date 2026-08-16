@@ -61,6 +61,15 @@ LEAGUES = [
     # European winter/spring — split year (season = start year)
     ("Denmark Superliga",       119,  ["2019","2020","2021","2022","2023","2024"]),
     ("Austrian Bundesliga",     218,  ["2019","2020","2021","2022","2023","2024"]),
+    # Added 2026-08-16 — these were missing from the original backfill.
+    # Romanian Superliga is the important one: it is in ENABLED_LEAGUES, so it produces REAL
+    # TIPS, yet it had no shot data at all and was training and predicting on goals only
+    # while every other new-format league had the full feature set.
+    ("Romanian Superliga",      283,  ["2019","2020","2021","2022","2023","2024","2025"]),
+    # API-Football-only leagues: training pool only (not in ENABLED_LEAGUES), but they are
+    # in STANDARD_FORMAT_LEAGUES' training data, so shot coverage improves model quality.
+    ("Saudi Pro League",        307,  ["2019","2020","2021","2022","2023","2024","2025"]),
+    ("K-League 1",              292,  ["2020","2021","2022","2023","2024","2025"]),
 ]
 
 
