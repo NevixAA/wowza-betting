@@ -658,10 +658,13 @@ def mode_enrich_sidelined_live() -> None:
 
     today = dt.date.today()
     active_df = df[df["player_id"].isin(set(active_pids))]
-    # Hard quota cap. /sidelined is per-player with no bulk endpoint, and an uncapped crawl
-    # took ~6,545 calls of the 7,500/day budget. 2,500 keeps this comfortably inside one
-    # day's quota while the weekly ISO rotation still covers everyone within a few weeks.
-    sidelined_map = fetch_all_player_sidelined(active_df, max_players=2500)
+    # Safety rail, not a limiter. /sidelined is per-player with no bulk endpoint, so an
+    # unbounded crawl is precisely what took out the old 7,500/day quota (~6,545 calls before
+    # 05:00, which blinded the props gate and starved the Sunday collect). At 75,000/day the
+    # full set is ~9% of budget, so 8,000 sits above the real player count (~3,600-6,300) and
+    # only engages if that population unexpectedly explodes. The ISO-week rotation inside
+    # fetch_all_player_sidelined still applies if it ever does.
+    sidelined_map = fetch_all_player_sidelined(active_df, max_players=8000)
     if not sidelined_map:
         print("[enrich-sidelined-live] No sidelined data returned.")
         return

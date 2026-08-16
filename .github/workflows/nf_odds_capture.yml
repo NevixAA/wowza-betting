@@ -13,7 +13,11 @@ concurrency:
 
 on:
   schedule:
-    - cron: '30 5,11,17 * * *'   # 3x/day (05:30/11:30/17:30 UTC) -> open->moving->closing curve
+    # 8x/day, every 3h (2026-08-16, after the quota upgrade to 75,000/day). Offset :30 from
+    # std_odds_capture so the two never contend. New-format O/U 2.5 already rides on predict
+    # for free via newformat_odds_dense.csv; this run is what gives BTTS and O/U 1.5/3.5 a
+    # real open->moving->close curve instead of the ~1.2 snapshots/fixture it had.
+    - cron: '30 1,4,7,10,13,16,19,22 * * *'
   workflow_dispatch:
 
 jobs:
