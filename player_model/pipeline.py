@@ -242,9 +242,13 @@ def _match_day_gate_skips() -> bool:
         from player_model.api_football import get_upcoming_fixtures
         now     = _dt.datetime.now(_dt.timezone.utc)
         horizon = now + _dt.timedelta(hours=72)
+        any_data = False          # did ANY league return fixtures at all?
         for league, lg_id in config.PROP_LEAGUES.items():
             season = config.PROP_SEASONS.get(league, "2025")
-            for fix in get_upcoming_fixtures(lg_id, season, next_n=3) or []:
+            fixtures = get_upcoming_fixtures(lg_id, season, next_n=3) or []
+            if fixtures:
+                any_data = True
+            for fix in fixtures:
                 ds = fix.get("fixture", {}).get("date", "")
                 if not ds:
                     continue
@@ -254,7 +258,23 @@ def _match_day_gate_skips() -> bool:
                     continue
                 if now <= fd <= horizon:
                     return False  # a match is coming up → run
-        return True  # post-WC and nothing within 72h → skip
+
+        if not any_data:
+            # Every one of the prop leagues returned NOTHING. That is not a quiet week —
+            # it is the signature of an API failure, and the commonest cause is an
+            # exhausted daily quota, which returns an EMPTY body rather than raising. The
+            # old code could not tell those apart and returned True, so the whole props
+            # pipeline silently disabled itself on a matchday: on 2026-08-16 it logged
+            # "no prop fixtures in next 72h" while La Liga was playing, because
+            # injury_refresh had consumed 87% of the quota before 05:00.
+            #
+            # This handler is documented as fail-open, but only an EXCEPTION reached it.
+            # Empty responses must fail open too.
+            print("[gate] no fixture data returned for ANY prop league — treating as an "
+                  "API/quota failure rather than an empty calendar; running anyway")
+            return False
+
+        return True  # post-WC, real data came back, and nothing is within 72h → skip
     except Exception as e:
         print(f"[gate] fixture check failed ({e}) — running anyway")
         return False
@@ -638,7 +658,10 @@ def mode_enrich_sidelined_live() -> None:
 
     today = dt.date.today()
     active_df = df[df["player_id"].isin(set(active_pids))]
-    sidelined_map = fetch_all_player_sidelined(active_df)
+    # Hard quota cap. /sidelined is per-player with no bulk endpoint, and an uncapped crawl
+    # took ~6,545 calls of the 7,500/day budget. 2,500 keeps this comfortably inside one
+    # day's quota while the weekly ISO rotation still covers everyone within a few weeks.
+    sidelined_map = fetch_all_player_sidelined(active_df, max_players=2500)
     if not sidelined_map:
         print("[enrich-sidelined-live] No sidelined data returned.")
         return
