@@ -38,11 +38,27 @@ _BASE = "https://api.the-odds-api.com/v4"
 # cost; at our volume (a few hundred calls in seven weeks) that is immaterial.
 _REGIONS = os.getenv("PROP_ODDS_REGIONS", "uk,eu").strip() or "uk,eu"
 
-# An empty bookmaker list means no book priced THIS event. That does not change
-# within the hour, so it is cached far longer than a real price. At the old flat
-# 2h TTL we re-probed — and re-paid for — the same dead leagues all day long.
-CACHE_TTL_PRICED = 7200    # 2h  — live prices move, keep it short
-CACHE_TTL_EMPTY = 86400    # 24h — nobody priced it; don't keep asking
+# How long to trust a cached response. An empty bookmaker list is NOT proof the
+# fixture will never be priced: books post prop markets progressively as kickoff
+# approaches. Hull City v Man United carried only anytime-goalscorer 7 days out,
+# while Espanyol v Levante carried all 6 markets 3 days out. So an early empty
+# means "not posted yet" and can be held a long time, but once the fixture is
+# close an empty must be re-checked often or we miss the window entirely.
+CACHE_TTL_PRICED = 7200       # 2h  — live prices move, keep it short
+CACHE_TTL_EMPTY_NEAR = 7200   # 2h  — inside 48h of kickoff, markets are appearing
+CACHE_TTL_EMPTY_FAR = 86400   # 24h — days out, an empty list says "too early"
+_NEAR_KICKOFF_HOURS = 48
+
+
+def _empty_ttl_for(commence_time: str) -> int:
+    """TTL for an empty bookmaker list, scaled by time to kickoff."""
+    from datetime import datetime, timezone
+    try:
+        ko = datetime.fromisoformat(str(commence_time).replace("Z", "+00:00"))
+        hours = (ko - datetime.now(timezone.utc)).total_seconds() / 3600.0
+    except Exception:
+        return CACHE_TTL_EMPTY_NEAR      # unknown kickoff -> re-check sooner
+    return CACHE_TTL_EMPTY_NEAR if hours <= _NEAR_KICKOFF_HOURS else CACHE_TTL_EMPTY_FAR
 
 # Maps our market names → Odds API market key + Over point (None = binary yes/no)
 _MARKET_MAP = {
@@ -351,7 +367,8 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 try:
                     obj = json.loads(cache_f.read_text(encoding="utf-8"))
                     if isinstance(obj, dict) and "bookmakers" in obj:
-                        ttl = CACHE_TTL_PRICED if obj["bookmakers"] else CACHE_TTL_EMPTY
+                        ttl = (CACHE_TTL_PRICED if obj["bookmakers"]
+                               else _empty_ttl_for(event.get("commence_time", "")))
                         if (time.time() - obj.get("fetched_at", 0)) < ttl:
                             bookmakers = obj["bookmakers"]
                     # Old format (plain list) — treat as expired; will re-fetch below
