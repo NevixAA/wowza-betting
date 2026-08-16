@@ -373,15 +373,47 @@ def run_player_predictions(
     # re-scanned the full 230k-row history per player (O(matches x players x rows)) which pushed
     # the CI predict past its 60-min timeout → cancelled → zero tips. Behaviour is unchanged.
     _hist_index = _build_history_index(history_df)
-    _team_lc    = history_df["team"].astype(str).str.lower()
+
+    # A player belongs to the club he plays for NOW — not to every club he has ever
+    # played for. Selecting on ANY historical row put Tyrhys Dolan in both
+    # "Espanyol v Levante" (correct: he moved there in 2025) and "Wolves v Blackburn"
+    # (a ghost — he had left Blackburn) on the same weekend of 2026-08-16, and the
+    # grader then settled the ghost row off a goal he scored for Espanyol. Villarreal's
+    # roster picked up Matteo Gabbia (Milan) and Yerson Mosquera (Wolves) the same way.
+    # It also defeated the end-of-run dedup, whose key includes `match`: the same
+    # player+market in two different fixtures reads as two distinct tips, which is the
+    # duplicate Telegram notification reported on 2026-08-15.
+    # Resolve every player_id to the team on his most recent dated row instead.
+    # NOTE: history currently ends 2026-07-04, so a transfer completed after that date
+    # is still invisible here — that needs player_history.parquet to advance (or a
+    # /players/squads overlay), not a change to this rule.
+    #
+    # Club rows ONLY. History also holds internationals, where `team` is the player's
+    # COUNTRY, so a plain latest-row rule resolved Raúl Jiménez to "Mexico" and Rúben
+    # Neves to "Portugal" and then dropped them from their clubs. (Same root cause as
+    # the "Australia"/"Austria" teams that surfaced in player_tips.csv.) Players with
+    # no club row at all fall back to their latest row of any kind.
+    _intl = history_df["league"].astype(str).str.contains(
+        r"world cup|friendl|africa cup|nations|qualification|euro 20", case=False, na=False
+    )
+    _club_hist = history_df[~_intl]
+    _latest_team = (_club_hist.sort_values("date")
+                    .drop_duplicates("player_id", keep="last")
+                    .set_index("player_id")["team"].astype(str))
+    _latest_any = (history_df.sort_values("date")
+                   .drop_duplicates("player_id", keep="last")
+                   .set_index("player_id")["team"].astype(str))
+    _latest_team = _latest_team.reindex(_latest_any.index).fillna(_latest_any)
+    _club       = history_df["player_id"].map(_latest_team).fillna(history_df["team"].astype(str))
+    _team_lc    = _club.str.lower()
     # Unique club names once, so the identity-matched fallback below costs O(teams) per
     # fixture instead of O(rows) — history_df is ~230k rows but only a few hundred clubs.
-    _uniq_teams = history_df["team"].astype(str).unique()
+    _uniq_teams = _club.unique()
     # team -> competitions we actually hold history for. This is what disambiguates a strict
     # name subset: "Plymouth" has League One history so it IS Plymouth Argyle in a League One
     # fixture, while Inter Milan has no Conference League history and so is NOT the
     # "Inter Club d'Escaldes" playing Flora Tallinn.
-    _team_leagues = (history_df.assign(_t=history_df["team"].astype(str))
+    _team_leagues = (history_df.assign(_t=_club)
                      .groupby("_t")["league"].agg(set).to_dict())
 
     for _, match_row in bets.iterrows():
@@ -447,9 +479,19 @@ def run_player_predictions(
             _ok = {t for t in _uniq_teams if _belongs(t, home) or _belongs(t, away)}
             if not _ok:
                 continue
-            team_players = history_df[history_df["team"].astype(str).isin(_ok)].copy()
+            team_players = history_df[_club.isin(_ok)].copy()
         if team_players.empty:
             continue
+
+        # Carry the CURRENT club, so a tip names the club the player actually plays
+        # for and is_home/opponent below are decided on it rather than on whichever
+        # club happened to be on the historical row.
+        team_players["team"] = _club.loc[team_players.index]
+        # One record per player. build_upcoming_features looks history up by
+        # player_id, so every additional historical row was duplicated feature work
+        # that the end-of-run drop_duplicates discarded anyway.
+        team_players = (team_players.sort_values("date")
+                        .drop_duplicates("player_id", keep="last"))
 
         # Add match context — same strict rule, so a player can never be labelled home (or
         # handed the wrong opponent) on the strength of a shared name fragment.
