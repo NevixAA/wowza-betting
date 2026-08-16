@@ -93,11 +93,13 @@ APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
 # Multi-season collect config: (league_id, season, last_n)
 # Historical seasons: large last_n to capture full season (cached — free on re-run)
 # Current season: last_n=150 so weekly runs pick up new matches automatically
-COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = {
+_COLLECT_SEASONS_BASE: dict[str, list[tuple[int, str, int]]] = {
     # (league_id, season, last_n)
     # last_n >= 100 → full-season fetch (all completed fixtures, for historical seasons)
     # last_n < 100  → rolling last-N via API `last=` param (current season updates)
     # top-5 deepened to 4 seasons 2026-07-05 (2022/23-2025/26) for fantasy + medium form window
+    # The LIVE season is appended automatically by _with_current_season below — do not
+    # hardcode it here, that is exactly what went stale.
     "Premier League":  [(39,  "2022", 500), (39,  "2023", 500), (39,  "2024", 500), (39,  "2025", 99)],
     "Bundesliga":      [(78,  "2022", 400), (78,  "2023", 400), (78,  "2024", 400), (78,  "2025", 99)],
     "La Liga":         [(140, "2022", 400), (140, "2023", 400), (140, "2024", 400), (140, "2025", 99)],
@@ -106,10 +108,48 @@ COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = {
     "Championship":    [(40,  "2024", 600), (40,  "2025", 99)],
     "League One":      [(41,  "2024", 600), (41,  "2025", 99)],
     "Bundesliga 2":    [(79,  "2024", 400), (79,  "2025", 99)],
-    "Ireland Premier": [(357, "2025", 300), (357, "2026", 99)],
-    "Finland Veikk":   [(244, "2025", 300), (244, "2026", 99)],
-    "World Cup":       [(1,   "2026", 99)],
+    "Ireland Premier": [(357, "2025", 300)],
+    "Finland Veikk":   [(244, "2025", 300)],
+    "World Cup":       [],
 }
+
+# Leagues played inside one calendar year (spring→autumn), so the API season IS the year.
+_CALENDAR_YEAR_LEAGUES = {"Ireland Premier", "Finland Veikk", "World Cup"}
+_WC_LEAGUE_IDS = {"World Cup": 1}
+
+
+def _current_season(league: str, today=None) -> str:
+    """API-Football keys a season by its START year."""
+    from datetime import date as _date
+    d = today or _date.today()
+    if league in _CALENDAR_YEAR_LEAGUES:
+        return str(d.year)
+    # European seasons start in July/August.
+    return str(d.year if d.month >= 7 else d.year - 1)
+
+
+def _with_current_season(base: dict, today=None) -> dict:
+    """Append the LIVE season to every league so a daily collect actually extends history.
+
+    Without this the table froze at season 2025 while PROP_SEASONS had already been
+    rolled to 2026 on 2026-08-05 — so predict scored 2026/27 fixtures while
+    player_history.parquet stopped dead at 2026-07-04. Six weeks of the new season were
+    never collected, which blocked every prop CLV grade, left summer transfers invisible
+    to the current-club rule in predict, and trained the props models on a finished
+    season. The daily collect ran the whole time and looked healthy.
+
+    Deriving the live season from the date means the August roll happens by itself.
+    """
+    out: dict[str, list[tuple[int, str, int]]] = {}
+    for lg, seasons in base.items():
+        cur = _current_season(lg, today)
+        lid = seasons[0][0] if seasons else _WC_LEAGUE_IDS.get(lg)
+        have = {s for (_, s, _) in seasons}
+        out[lg] = list(seasons) + ([] if cur in have or lid is None else [(lid, cur, 99)])
+    return out
+
+
+COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = _with_current_season(_COLLECT_SEASONS_BASE)
 
 EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
     "Champions League": (2,   "2024"),
