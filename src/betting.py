@@ -324,6 +324,19 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     # Force AVOID when below VALUE_THRESHOLD
     df.loc[df["best_edge"] < config.VALUE_THRESHOLD, "signal_tier"] = "AVOID"
 
+    # A tier with no bettable side is a contradiction — force AVOID (fixed 2026-08-16).
+    # `bet` additionally requires the side to clear MIN_OVER_ODDS / MIN_UNDER_ODDS, whereas
+    # signal_tier is derived from best_edge alone. A fixture priced below the minimum
+    # therefore kept a live tier while `bet` stayed at its "AVOID" default, and
+    # generate_bets — which filters on signal_tier only — published it as a tip.
+    #
+    # The result was 122 ledger rows with side="AVOID", going back to 2026-04-28: 90
+    # VALUABLE, 30 SNIPER, 2 MARKSMAN. EVERY ONE is still pending and always will be,
+    # because _find_result can only grade OVER or UNDER. They inflate tip counts, never
+    # settle, and quietly distort win-rate denominators.
+    # Example: Molde v Tromso @1.71 with MIN_OVER_ODDS=1.75 — tagged MARKSMAN, unbettable.
+    df.loc[~df["bet"].isin(["OVER", "UNDER"]), "signal_tier"] = "AVOID"
+
     # ── Blind-fixture guard ───────────────────────────────────────────────────
     # A fixture with no rolling-form history does NOT produce a cautious prediction — it
     # produces a confident-looking wrong one. _prep() median-imputes the missing features,
