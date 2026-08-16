@@ -29,6 +29,21 @@ import requests
 
 _BASE = "https://api.the-odds-api.com/v4"
 
+# Bookmaker regions to request. EU books barely price player props outside the top
+# five leagues — the deep prop market for English and German football is the UK
+# books (bet365, Sky Bet, William Hill, Paddy Power). Asking for "eu" alone is why
+# 9 of the 12 leagues in PROP_SPORT_KEYS had never returned a single price by
+# 2026-08-16, and why the World Cup accounted for 91% of all prop odds ever fetched.
+# OddsAPI bills [markets x regions], so adding a region roughly doubles per-event
+# cost; at our volume (a few hundred calls in seven weeks) that is immaterial.
+_REGIONS = os.getenv("PROP_ODDS_REGIONS", "uk,eu").strip() or "uk,eu"
+
+# An empty bookmaker list means no book priced THIS event. That does not change
+# within the hour, so it is cached far longer than a real price. At the old flat
+# 2h TTL we re-probed — and re-paid for — the same dead leagues all day long.
+CACHE_TTL_PRICED = 7200    # 2h  — live prices move, keep it short
+CACHE_TTL_EMPTY = 86400    # 24h — nobody priced it; don't keep asking
+
 # Maps our market names → Odds API market key + Over point (None = binary yes/no)
 _MARKET_MAP = {
     "goals":   ("player_goal_scorer_anytime",  None),  # 1+ goals
@@ -73,6 +88,61 @@ _CACHE_DIR.mkdir(exist_ok=True)
 # we already fetch these). Becomes the real-odds dataset for prop backtests.
 _ODDS_HISTORY_FILE = Path(__file__).resolve().parents[1] / "output" / "player_prop_odds_history.csv"
 SPORT_KEY_TO_LEAGUE = {v: k for k, v in PROP_SPORT_KEYS.items()}
+
+# Learned per-league prop-market coverage. Rather than hardcoding a guess about
+# which competitions offer player props, record what OddsAPI actually returns and
+# park the leagues that never price anything. Committed by the props workflow so
+# the knowledge survives across CI runs (the repo is the database).
+_COVERAGE_FILE = Path(__file__).resolve().parents[1] / "output" / "prop_odds_coverage.json"
+_COVERAGE_MIN_PROBES = 12   # consecutive events with no bookmaker before parking
+_COVERAGE_RETRY_DAYS = 7    # ...and how long before we probe it again anyway
+
+
+def _load_coverage() -> dict:
+    try:
+        return json.loads(_COVERAGE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _save_coverage(cov: dict) -> None:
+    try:
+        _COVERAGE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        _COVERAGE_FILE.write_text(
+            json.dumps(cov, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception as e:
+        print(f"[odds_fetcher] coverage save skipped: {e}")
+
+
+def _coverage_parked(cov: dict, sport_key: str, today: str) -> bool:
+    """True when a league has returned nothing but empty bookmaker lists for
+    _COVERAGE_MIN_PROBES straight events and we last probed it under
+    _COVERAGE_RETRY_DAYS ago. Parking is never permanent: a book that adds the
+    market is picked up on the next weekly retry, so this answers 'does the
+    Championship have props?' from evidence instead of assumption."""
+    from datetime import date
+    c = cov.get(sport_key)
+    if not c or int(c.get("empty_streak", 0)) < _COVERAGE_MIN_PROBES:
+        return False
+    last = str(c.get("last_probe") or "")[:10]
+    try:
+        return (date.fromisoformat(today) - date.fromisoformat(last)).days < _COVERAGE_RETRY_DAYS
+    except Exception:
+        return False
+
+
+def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool) -> None:
+    c = cov.setdefault(sport_key, {})
+    c["league"] = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
+    c["probes"] = int(c.get("probes", 0)) + 1
+    c["last_probe"] = today
+    if priced:
+        c["empty_streak"] = 0
+        c["last_priced"] = today
+        c["priced_events"] = int(c.get("priced_events", 0)) + 1
+    else:
+        c["empty_streak"] = int(c.get("empty_streak", 0)) + 1
 
 
 def _append_odds_history(records: list[dict]) -> None:
@@ -208,7 +278,18 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
     result: dict[str, float] = {}
     history_records: list[dict] = []
 
+    from datetime import datetime as _dt, timezone as _tz
+    today = _dt.now(_tz.utc).strftime("%Y-%m-%d")
+    cov = _load_coverage()
+
     for sport_key, match_set in needed.items():
+        if _coverage_parked(cov, sport_key, today):
+            print(f"[odds_fetcher] {sport_key}: parked — "
+                  f"{cov[sport_key]['empty_streak']} consecutive events with no bookmaker, "
+                  f"last probed {cov[sport_key]['last_probe']}; retries every "
+                  f"{_COVERAGE_RETRY_DAYS}d")
+            continue
+
         # Get event list (free, no quota cost)
         events = _get(f"sports/{sport_key}/events", {})
         if not events:
@@ -226,13 +307,13 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
             # Cache per event — timestamp stored inside JSON (not file mtime, which GitHub
             # Actions cache restore resets to extraction time, breaking the TTL check).
             import time
-            CACHE_TTL = 7200  # 2 hours
             bookmakers = None
             if cache_f.exists():
                 try:
                     obj = json.loads(cache_f.read_text(encoding="utf-8"))
                     if isinstance(obj, dict) and "bookmakers" in obj:
-                        if (time.time() - obj.get("fetched_at", 0)) < CACHE_TTL:
+                        ttl = CACHE_TTL_PRICED if obj["bookmakers"] else CACHE_TTL_EMPTY
+                        if (time.time() - obj.get("fetched_at", 0)) < ttl:
                             bookmakers = obj["bookmakers"]
                     # Old format (plain list) — treat as expired; will re-fetch below
                 except Exception:
@@ -242,11 +323,16 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 api_markets = _WC_API_MARKETS_STR if sport_key == _WC_SPORT_KEY else _API_MARKETS_STR
                 data = _get(
                     f"sports/{sport_key}/events/{event_id}/odds",
-                    {"regions": "eu", "markets": api_markets, "oddsFormat": "decimal"},
+                    {"regions": _REGIONS, "markets": api_markets, "oddsFormat": "decimal"},
                 )
                 if data is None:
                     continue
                 bookmakers = data.get("bookmakers", [])
+                _coverage_record(cov, sport_key, today, bool(bookmakers))
+                if not bookmakers:
+                    print(f"[odds_fetcher] {sport_key}: no bookmaker priced "
+                          f'{event.get("home_team","")} v {event.get("away_team","")} '
+                          f"(regions={_REGIONS})")
                 cache_f.write_text(
                     json.dumps({"fetched_at": time.time(), "bookmakers": bookmakers}, ensure_ascii=False),
                     encoding="utf-8",
@@ -272,6 +358,11 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         _append_odds_history(history_records)
     except Exception as e:
         print(f"[odds_fetcher] odds-history save skipped: {e}")
+
+    _save_coverage(cov)
+    _live = sorted(k for k, c in cov.items() if c.get("priced_events"))
+    print(f"[odds_fetcher] {len(result)} player-market prices | "
+          f"leagues with any prop coverage: {[SPORT_KEY_TO_LEAGUE.get(k, k) for k in _live] or 'none'}")
 
     return result
 
