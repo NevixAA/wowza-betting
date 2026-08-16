@@ -30,7 +30,11 @@ concurrency:
 
 on:
   schedule:
-    - cron: '0 6 * * 1'   # Monday 06:00 UTC
+    # DAILY 06:00 UTC. The skip-list means a run costs only fixtures completed since the
+    # last one — a handful per league per day — so daily keeps the committed history within
+    # 24h of live instead of up to a week behind. Never let this file fall behind again:
+    # every day it lags is a day predict tries to re-fetch the gap on every 5-minute run.
+    - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
       league:

@@ -14,6 +14,12 @@ on:
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC
     - cron: '0 5 * * 0'
+    # DAILY collect, Mon-Sat 05:00 UTC (added 2026-08-16). player_history.parquet is the
+    # player-side equivalent of af_history.parquet, and it was only ever extended on the
+    # Sunday run — so it sat 43 days stale, which is why clv_records.result was 100% empty
+    # and props CLV could not grade at all. Same principle as af_history_extend: keep the
+    # committed history within a day of live. Sunday keeps the retrain; these days collect only.
+    - cron: '0 5 * * 1-6'
   workflow_dispatch:
     inputs:
       mode:
@@ -73,10 +79,11 @@ jobs:
           key: fixture-player-${{ runner.os }}-${{ github.run_id }}
           restore-keys: fixture-player-${{ runner.os }}-
 
-      - name: Collect club league data (Sundays + manual)
+      - name: Collect club league data (daily + manual)
         id: collect_club
         if: |
           github.event.schedule == '0 5 * * 0' ||
+          github.event.schedule == '0 5 * * 1-6' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
