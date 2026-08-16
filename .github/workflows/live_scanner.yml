@@ -8,7 +8,18 @@ name: Live Scanner
 # bound cost). Isolated outputs; degrades to the old naive lambda if live SOT is unavailable.
 on:
   schedule:
-    - cron: '3-59/10 8-23 * * *'
+    # Every 5 minutes during match hours (was 10 — changed 2026-08-16 after the quota went
+    # to 75,000/day). 5 is GitHub's floor: Actions will not schedule more often than that,
+    # so anything finer is silently throttled and only makes the cron a lie.
+    #
+    # The cadence was 10 to respect the old 7,500 budget, but a scan is ONE
+    # /fixtures?live=all call plus per-live-game stats — ~180 runs/day is a few hundred calls.
+    #
+    # The point is the DATASET. output/inplay_snapshots.csv is the Phase-1 collection a
+    # fitted live model needs and it holds 128 rows; doubling the scan rate is the cheapest
+    # way to grow it, and it also tightens the in-play signals themselves (a goal is picked
+    # up within 5 minutes instead of 10).
+    - cron: '1-59/5 8-23 * * *'
   workflow_dispatch:
 
 jobs:
