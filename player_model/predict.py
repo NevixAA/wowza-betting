@@ -310,6 +310,8 @@ def run_player_predictions(
         except Exception as e:
             print(f"[predict] API-Football fixtures fetch failed: {e}")
 
+    _n_from_api = len(prop_matches)
+
     # Fallback / supplement: our team model matches (bets.csv)
     if bets_csv and bets_csv.exists():
         bets_df = pd.read_csv(bets_csv)
@@ -325,7 +327,18 @@ def run_player_predictions(
                 "fixture_id":  None,
             })
 
+    # Where the fixture slate came from. Until now an EMPTY API response was completely
+    # silent — only an exception printed anything — so "no player tips generated" gave no clue
+    # whether the cause was zero fixtures, zero squads or zero odds. player_props.yml reported
+    # SUCCESS on every hourly run from 2026-08-15 to 08-17 while writing nothing, and this is
+    # the line that would have identified it on day one.
+    print(f"[predict] fixture slate: {_n_from_api} from PROP_LEAGUES via API-Football, "
+          f"{len(prop_matches) - _n_from_api} from bets.csv supplement")
+
     if not prop_matches:
+        print("[predict] NO FIXTURES AT ALL — API-Football returned nothing for every prop "
+              "league and bets.csv contributed none. Zero tips is a data-availability "
+              "failure here, not a model decision.")
         return pd.DataFrame()
 
     # Deduplicate
