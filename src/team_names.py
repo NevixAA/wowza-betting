@@ -62,6 +62,10 @@ _ALIASES = {
     "deportivo la coruna": "la coruna",
     "racing santander": "santander",
     "real sporting de gijon": "sp gijon",
+    # German endonym/exonym pairs no token or stem rule can bridge. Added 2026-08-17 when
+    # prop-odds matching showed Bayern and Koln failing against OddsAPI's English spellings.
+    "bayern munich": "bayern munchen",
+    "cologne": "koln",
 }
 
 
