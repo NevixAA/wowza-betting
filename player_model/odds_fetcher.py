@@ -219,6 +219,55 @@ def _norm(name: str) -> str:
     return re.sub(r"\s+", " ", ascii_name.lower().strip())
 
 
+# Club-name resolution for matching OUR fixture names onto OddsAPI events. This used to be
+# plain equality on _norm(), which failed on every spelling variant and silently skipped the
+# event — no odds call, no data, and indistinguishable from "no bookmaker offers props".
+# Measured 2026-08-17 from prop_odds_coverage.json: 35 of 56 wanted fixtures (63%) never
+# matched, including Bundesliga 2 at 0 of 8, which would have been parked as "no coverage"
+# when in truth it was never asked. src/team_names.resolve is the same league-scoped,
+# ambiguity-refusing matcher the team model already uses.
+try:
+    import sys as _sys
+    if str(Path(__file__).resolve().parents[1]) not in _sys.path:
+        _sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from src.team_names import resolve as _resolve_club
+except Exception as _e:                                      # pragma: no cover
+    print(f"[odds_fetcher] team_names unavailable ({_e}); falling back to exact matching")
+    _resolve_club = None
+
+
+def _resolve_event(ev_home: str, ev_away: str,
+                   wanted: set[tuple[str, str]]) -> Optional[tuple[str, str]]:
+    """Map one OddsAPI event onto a fixture we want, or None.
+
+    `wanted` holds ORIGINAL (home, away) names for a single league, so resolution is
+    league-scoped exactly as team_names.resolve expects, and an ambiguous club is rejected
+    rather than guessed. The (home, away) pair is re-checked after resolving each side so
+    two clubs from *different* fixtures can never combine into a false match.
+    """
+    if not wanted:
+        return None
+    if _resolve_club is None:
+        h, a = _norm(ev_home), _norm(ev_away)
+        for (wh, wa) in wanted:
+            if (_norm(wh), _norm(wa)) in {(h, a), (a, h)}:
+                return (wh, wa)
+        return None
+
+    homes = [h for h, _ in wanted]
+    aways = [a for _, a in wanted]
+
+    rh, ra = _resolve_club(ev_home, homes), _resolve_club(ev_away, aways)
+    if rh and ra and (rh, ra) in wanted:
+        return (rh, ra)
+
+    # OddsAPI occasionally lists a tie with the sides swapped relative to our fixture.
+    rh2, ra2 = _resolve_club(ev_home, aways), _resolve_club(ev_away, homes)
+    if rh2 and ra2 and (ra2, rh2) in wanted:
+        return (ra2, rh2)
+    return None
+
+
 def _load_odds_key() -> str:
     key = os.getenv("ODDS_API_KEY", "").strip()
     if key:
@@ -313,7 +362,8 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         parts = str(row.get("match", "")).split(" vs ")
         if len(parts) != 2:
             continue
-        needed.setdefault(sport_key, set()).add((_norm(parts[0]), _norm(parts[1])))
+        # Keep the ORIGINAL names — _resolve_event needs them for club-name resolution.
+        needed.setdefault(sport_key, set()).add((parts[0].strip(), parts[1].strip()))
 
     if unmapped:
         _n = sum(unmapped.values())
@@ -347,14 +397,11 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         _matched_pairs: set[tuple[str, str]] = set()
 
         for event in events:
-            h = _norm(event.get("home_team", ""))
-            a = _norm(event.get("away_team", ""))
-            if (h, a) in match_set:
-                _matched_pairs.add((h, a))
-            elif (a, h) in match_set:
-                _matched_pairs.add((a, h))
-            else:
+            _hit = _resolve_event(event.get("home_team", ""), event.get("away_team", ""),
+                                  match_set)
+            if _hit is None:
                 continue
+            _matched_pairs.add(_hit)
 
             event_id = event["id"]
             cache_f = _CACHE_DIR / f"{event_id}.json"
@@ -411,7 +458,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
 
         _coverage_fixtures(
             cov, sport_key, today, len(match_set), len(_matched_pairs),
-            [f"{x} vs {y}" for x, y in sorted(match_set - _matched_pairs)][:6],
+            [f"{x} vs {y}" for x, y in sorted(match_set - _matched_pairs)][:8],
         )
 
     # Persist every fetched prop odd to the permanent forward-built history.

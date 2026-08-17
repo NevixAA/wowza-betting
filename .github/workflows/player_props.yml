@@ -176,6 +176,7 @@ jobs:
         continue-on-error: true
 
       - name: Generate player prop predictions
+        id: predict_props
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
@@ -191,6 +192,7 @@ jobs:
         continue-on-error: true
 
       - name: Send Telegram alerts for player prop signals
+        id: notify_props
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -227,3 +229,30 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+
+      # Every functional step above is continue-on-error so one failure cannot stop the
+      # others' outputs from being committed. That is the right trade, but the cost was that
+      # a broken predict produced a GREEN run with no commit at all: player_tips.csv sat
+      # unchanged from 2026-08-15 14:29 to 2026-08-17 and nothing ever surfaced it. The
+      # existing health step only emits annotations, which nobody reads.
+      #
+      # This runs AFTER the commit, so outputs are still saved, but the job goes RED when a
+      # step actually failed — which is visible in the Actions list and triggers GitHub's
+      # failure notification.
+      - name: Fail the run if a functional step failed
+        if: always()
+        run: |
+          fail=0
+          for pair in "collect_club:${{ steps.collect_club.outcome }}" \
+                      "collect_wc:${{ steps.collect_wc.outcome }}" \
+                      "predict:${{ steps.predict_props.outcome }}" \
+                      "notify:${{ steps.notify_props.outcome }}"; do
+            name="${pair%%:*}"; outcome="${pair#*:}"
+            echo "${name} -> ${outcome:-skipped}"
+            if [ "$outcome" = "failure" ]; then
+              echo "::error title=player-props ${name} failed::See that step's log. A silent \
+          failure here stops player_tips.csv and player_history.parquet from advancing."
+              fail=1
+            fi
+          done
+          [ "$fail" = "0" ] || exit 1
