@@ -378,20 +378,30 @@ def _filter_by_lineup(tips: pd.DataFrame) -> pd.DataFrame:
     if tips.empty or "fixture_id" not in tips.columns or "player_id" not in tips.columns:
         return tips
 
-    fixture_ids = tips["fixture_id"].dropna().unique().astype(int)
+    # Coerce rather than cast: dropna() alone still let a non-numeric id through to
+    # .astype(int) and raised. Anything unparseable is simply not looked up.
+    fixture_ids = (pd.to_numeric(tips["fixture_id"], errors="coerce")
+                   .dropna().astype(int).unique())
     lineup_map: dict[int, dict] = {}
     for fid in fixture_ids:
         lineup_map[int(fid)] = fetch_lineup(int(fid))
 
     def _status(row) -> str:
-        fid = row.get("fixture_id")
-        pid = row.get("player_id")
-        if not fid or not pid:
-            return "tbc"
-        lu = lineup_map.get(int(fid), {})
+        # NaN is TRUTHY in Python, so the old `if not fid or not pid` guard did NOT catch a
+        # missing fixture_id — int(NaN) raised ValueError and killed the entire predict run.
+        # Tips reaching here via the bets.csv supplement carry no API-Football fixture_id at
+        # all (Ireland Premier, La Liga 2, Finland Veikkausliiga on 2026-08-17), so this
+        # crashed on every run from 2026-08-15 14:29 onward. Because the workflow step is
+        # continue-on-error, it reported success the whole time.
+        try:
+            fid = int(row.get("fixture_id"))
+            pid = int(row.get("player_id"))
+        except (TypeError, ValueError):
+            return "tbc"                       # no fixture/player id -> cannot check a lineup
+        lu = lineup_map.get(fid, {})
         if not lu.get("confirmed"):
             return "tbc"
-        return "confirmed" if int(pid) in lu["starters"] else "benched"
+        return "confirmed" if pid in lu["starters"] else "benched"
 
     tips = tips.copy()
     tips["lineup_status"] = tips.apply(_status, axis=1)
