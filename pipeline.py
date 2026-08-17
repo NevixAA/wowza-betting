@@ -280,6 +280,13 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         return preds
 
     # ── Save full predictions ────────────────────────────────────────────────
+    # Stamp WHEN and by WHAT this board was produced. predictions.csv is overwritten every
+    # 5 minutes, so without this the model's path toward kickoff (T-7d ... T-1h) can only be
+    # recovered by walking git history, and no row can say which model version made it.
+    # Additive columns only — every reader accesses this file by name. Cannot raise.
+    from src.provenance import stamp as _stamp_provenance
+    preds = _stamp_provenance(preds)
+
     pred_file = config.OUTPUT_DIR / "predictions.csv"
     preds.to_csv(pred_file, index=False)
     log.info(f"Predictions saved → {pred_file}  ({len(preds)} fixtures)")
