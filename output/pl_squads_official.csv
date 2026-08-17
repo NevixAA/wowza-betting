@@ -1,10 +1,10 @@
 player_id,player_name,team,position,number,age
 18885,K. Darlow,Manchester United,G,26.0,35.0
 2931,T. Heaton,Manchester United,G,22.0,39.0
-162511,S. Lammens,Manchester United,G,31.0,23.0
-284382,Dermot William Mee,Manchester United,G,1.0,23.0
-403064,H. Amass,Manchester United,D,99.0,18.0
-546704,D. Armer,Manchester United,D,4.0,17.0
+162511,S. Lammens,Manchester United,G,1.0,23.0
+284382,Dermot William Mee,Manchester United,G,45.0,23.0
+403064,H. Amass,Manchester United,D,41.0,18.0
+546704,D. Armer,Manchester United,D,69.0,17.0
 886,Diogo Dalot,Manchester United,D,2.0,26.0
 382452,P. Dorgu,Manchester United,D,13.0,21.0
 402329,A. Heaven,Manchester United,D,26.0,19.0
@@ -16,21 +16,21 @@ player_id,player_name,team,position,number,age
 891,L. Shaw,Manchester United,D,23.0,30.0
 342970,L. Yoro,Manchester United,D,15.0,20.0
 305834,Andrey Santos,Manchester United,M,17.0,21.0
-284400,Tobias Christopher Collyer,Manchester United,M,33.0,21.0
+284400,Tobias Christopher Collyer,Manchester United,M,43.0,21.0
 408896,J. Devaney,Manchester United,M,8.0,18.0
 1485,Bruno Fernandes,Manchester United,M,8.0,31.0
-383770,J. Fletcher,Manchester United,M,10.0,18.0
+383770,J. Fletcher,Manchester United,M,38.0,18.0
 557460,T. Fletcher,Manchester United,M,39.0,18.0
 303010,Daniel Gore,Manchester United,M,8.0,21.0
 284322,K. Mainoo,Manchester United,M,37.0,20.0
 344229,J. Moorhouse,Manchester United,M,8.0,20.0
 19220,M. Mount,Manchester United,M,7.0,26.0
-2926,Y. Tielemans,Manchester United,M,8.0,28.0
+2926,Y. Tielemans,Manchester United,M,18.0,28.0
 51494,M. Ugarte,Manchester United,M,25.0,24.0
 1165,Matheus Cunha,Manchester United,F,10.0,26.0
 157997,A. Diallo,Manchester United,F,16.0,23.0
-588436,Joseph Gabriel,Manchester United,F,10.0,15.0
-557462,S. Lacey,Manchester United,F,61.0,18.0
+588436,Joseph Gabriel,Manchester United,F,77.0,15.0
+557462,S. Lacey,Manchester United,F,46.0,18.0
 20589,B. Mbeumo,Manchester United,F,19.0,26.0
 389309,O. Martin,Manchester United,F,16.0,18.0
 115589,B. Šeško,Manchester United,F,30.0,22.0
@@ -38,8 +38,8 @@ player_id,player_name,team,position,number,age
 365664,Ethan Williams,Manchester United,F,24.0,20.0
 70100,J. Zirkzee,Manchester United,F,11.0,24.0
 44912,M. Gillespie,Newcastle,G,29.0,33.0
-365988,Aidan Harris,Newcastle,G,1.0,19.0
-269349,L. Horníček,Newcastle,G,,23.0
+365988,Aidan Harris,Newcastle,G,31.0,19.0
+269349,L. Horníček,Newcastle,G,21.0,23.0
 329640,E. Jaouen,Newcastle,G,29.0,20.0
 18911,N. Pope,Newcastle,G,1.0,33.0
 38734,S. Botman,Newcastle,D,4.0,25.0
@@ -47,9 +47,9 @@ player_id,player_name,team,position,number,age
 284492,L. Hall,Newcastle,D,3.0,21.0
 158694,T. Livramento,Newcastle,D,21.0,23.0
 2806,F. Schär,Newcastle,D,5.0,34.0
-337934,L. Shahar,Newcastle,D,61.0,18.0
+337934,L. Shahar,Newcastle,D,51.0,18.0
 163189,M. Thiaw,Newcastle,D,12.0,24.0
-453792,A. Bamba,Newcastle,M,23.0,19.0
+453792,A. Bamba,Newcastle,M,8.0,19.0
 723,Joelinton,Newcastle,M,7.0,29.0
 328105,L. Miley,Newcastle,M,67.0,19.0
 382344,A. Munda,Newcastle,M,10.0,19.0
@@ -57,12 +57,12 @@ player_id,player_name,team,position,number,age
 394165,S. Neave,Newcastle,M,62.0,18.0
 423714,Park Seung-Soo,Newcastle,M,11.0,18.0
 19192,J. Ramsey,Newcastle,M,41.0,24.0
-469321,Sean Steur,Newcastle,M,48.0,17.0
-387643,B. Touré,Newcastle,M,29.0,19.0
+469321,Sean Steur,Newcastle,M,14.0,17.0
+387643,B. Touré,Newcastle,M,17.0,19.0
 1463,J. Willock,Newcastle,M,28.0,26.0
 18778,H. Barnes,Newcastle,F,11.0,28.0
-153430,A. Elanga,Newcastle,F,20.0,23.0
-315237,W. Osula,Newcastle,F,18.0,22.0
+153430,A. Elanga,Newcastle,F,19.0,23.0
+315237,W. Osula,Newcastle,F,10.0,22.0
 560496,V. Salia,Newcastle,F,16.0,18.0
 401389,T. Sanusi,Newcastle,F,14.0,18.0
 20649,Y. Wissa,Newcastle,F,9.0,29.0
@@ -115,10 +115,10 @@ player_id,player_name,team,position,number,age
 1934,S. Berge,Fulham,M,16.0,27.0
 278133,Oscar Bobb,Fulham,M,14.0,22.0
 19025,T. Cairney,Fulham,M,10.0,34.0
+284356,S. Charles,Fulham,M,24.0,22.0
 284475,L. Harris,Fulham,M,28.0,20.0
 1455,A. Iwobi,Fulham,M,17.0,29.0
 389315,Joshua King,Fulham,M,24.0,18.0
-2823,S. Lukić,Fulham,M,20.0,29.0
 349684,C. Nwoko,Fulham,M,26.0,20.0
 386306,César Palacios,Fulham,M,10.0,21.0
 19480,H. Reed,Fulham,M,6.0,30.0
@@ -162,12 +162,12 @@ player_id,player_name,team,position,number,age
 247,C. Gakpo,Liverpool,F,18.0,26.0
 2864,A. Isak,Liverpool,F,9.0,26.0
 328107,L. Koumas,Liverpool,F,67.0,20.0
-338751,Víctor Muñoz,Liverpool,F,21.0,22.0
+338751,Víctor Muñoz,Liverpool,F,23.0,22.0
 452685,R. Ngumoha,Liverpool,F,73.0,17.0
 437561,J. Lambie,Liverpool,F,82.0,18.0
 498377,W. Wright,Liverpool,F,79.0,17.0
 2273,Kepa,Arsenal,G,13.0,31.0
-20619,I. Meslier,Arsenal,G,1.0,25.0
+20619,I. Meslier,Arsenal,G,30.0,25.0
 403221,K. Ranson,Arsenal,G,1.0,18.0
 19465,David Raya,Arsenal,G,1.0,30.0
 342243,T. Setford,Arsenal,G,35.0,19.0
@@ -176,7 +176,7 @@ player_id,player_name,team,position,number,age
 418403,Jaden Dixon,Arsenal,D,2.0,18.0
 22224,Gabriel Magalhães,Arsenal,D,6.0,28.0
 127817,P. Hincapié,Arsenal,D,5.0,23.0
-313245,M. Lewis-Skelly,Arsenal,D,49.0,19.0
+313245,M. Lewis-Skelly,Arsenal,M,49.0,19.0
 333682,Cristhian Mosquera,Arsenal,D,3.0,21.0
 22090,W. Saliba,Arsenal,D,2.0,24.0
 482903,M. Salmon,Arsenal,D,89.0,16.0
@@ -186,23 +186,23 @@ player_id,player_name,team,position,number,age
 409798,Louie George Copley,Arsenal,M,30.0,19.0
 442044,M. Dowman,Arsenal,M,56.0,16.0
 19586,E. Eze,Arsenal,M,10.0,27.0
-553530,I. Ibrahim,Arsenal,M,6.0,17.0
+553530,I. Ibrahim,Arsenal,M,44.0,17.0
 47311,Mikel Merino,Arsenal,M,23.0,29.0
-313236,E. Nwaneri,Arsenal,M,11.0,18.0
+313236,E. Nwaneri,Arsenal,M,22.0,18.0
 37127,M. Ødegaard,Arsenal,M,8.0,27.0
 2937,D. Rice,Arsenal,M,41.0,26.0
-41725,Fábio Vieira,Arsenal,M,20.0,25.0
+41725,Fábio Vieira,Arsenal,M,21.0,25.0
 47315,Martín Zubimendi,Arsenal,M,36.0,26.0
 643,Gabriel Jesus,Arsenal,F,9.0,28.0
 18979,V. Gyökeres,Arsenal,F,14.0,27.0
 457731,A. Annous,Arsenal,F,11.0,18.0
 978,K. Havertz,Arsenal,F,29.0,26.0
-407033,Ismeal Kabia,Arsenal,F,20.0,20.0
-136723,N. Madueke,Arsenal,F,20.0,23.0
+407033,Ismeal Kabia,Arsenal,F,46.0,20.0
+136723,N. Madueke,Arsenal,M,20.0,23.0
 127769,Gabriel Martinelli,Arsenal,F,11.0,24.0
-727,R. Nelson,Arsenal,F,11.0,26.0
+727,R. Nelson,Arsenal,F,24.0,26.0
 1460,B. Saka,Arsenal,F,7.0,24.0
-161800,C. Tzolis,Arsenal,F,8.0,23.0
+161800,C. Tzolis,Arsenal,M,17.0,23.0
 82855,T. King,Everton,G,31.0,30.0
 2932,J. Pickford,Everton,G,1.0,31.0
 18860,M. Travers,Everton,G,12.0,26.0
@@ -217,10 +217,10 @@ player_id,player_name,team,position,number,age
 2936,J. Tarkowski,Everton,D,6.0,33.0
 195993,C. Alcaraz,Everton,M,24.0,23.0
 405360,H. Armstrong,Everton,M,45.0,18.0
-148099,K. Dewsbury-Hall,Everton,M,22.0,27.0
-410423,H. Foster,Everton,M,6.0,18.0
+148099,K. Dewsbury-Hall,Everton,M,8.0,27.0
+410423,H. Foster,Everton,M,81.0,18.0
 895,J. Garner,Everton,M,37.0,24.0
-179685,H. Hackney,Everton,M,7.0,23.0
+179685,H. Hackney,Everton,M,30.0,23.0
 284500,T. Iroegbunam,Everton,M,42.0,22.0
 30407,C. Nørgaard,Everton,M,23.0,31.0
 588468,Malik Olayiwola,Everton,M,14.0,16.0
@@ -229,7 +229,7 @@ player_id,player_name,team,position,number,age
 125743,Beto,Everton,F,9.0,27.0
 304317,T. Dibling,Everton,F,20.0,19.0
 334037,Tyrique George,Everton,F,19.0,19.0
-413034,B. Graham,Everton,F,11.0,18.0
+413034,B. Graham,Everton,F,58.0,18.0
 129711,B. Johnson,Everton,F,11.0,24.0
 18592,I. Ndiaye,Everton,F,10.0,25.0
 156428,B. Austin,Tottenham,G,40.0,26.0
@@ -271,7 +271,7 @@ player_id,player_name,team,position,number,age
 18883,D. Solanke,Tottenham,F,19.0,28.0
 270510,M. Tel,Tottenham,F,11.0,20.0
 465310,L. Williams-Barnett,Tottenham,F,68.0,17.0
-298061,Ted Curd,Chelsea,G,22.0,19.0
+298061,Ted Curd,Chelsea,G,35.0,19.0
 340151,M. Penders,Chelsea,G,39.0,20.0
 18959,Robert Sánchez,Chelsea,G,1.0,28.0
 180940,T. Sharman-Lowe,Chelsea,G,28.0,22.0
@@ -279,7 +279,7 @@ player_id,player_name,team,position,number,age
 366735,Joshua Kofi Acheampong,Chelsea,D,34.0,19.0
 19145,T. Adarabioyo,Chelsea,D,4.0,28.0
 609590,Denner,Chelsea,D,,18.0
-422780,A. Anselmino,Chelsea,D,5.0,20.0
+422780,A. Anselmino,Chelsea,D,30.0,20.0
 95,B. Badiashile,Chelsea,D,5.0,24.0
 181734,Pep Chavarría,Chelsea,D,3.0,27.0
 152953,L. Colwill,Chelsea,D,6.0,22.0
@@ -302,20 +302,20 @@ player_id,player_name,team,position,number,age
 282125,R. Lavia,Chelsea,M,45.0,21.0
 152982,C. Palmer,Chelsea,M,10.0,23.0
 19170,M. Rogers,Chelsea,M,17.0,23.0
-482888,R. Walsh,Chelsea,M,10.0,17.0
+482888,R. Walsh,Chelsea,M,46.0,17.0
 161948,L. Delap,Chelsea,F,9.0,22.0
 203762,E. Emegha,Chelsea,F,10.0,22.0
 425733,Estêvão,Chelsea,F,41.0,18.0
 286894,J. Bynoe-Gittens,Chelsea,F,11.0,21.0
 392270,Marc Guiu,Chelsea,F,38.0,19.0
-283058,N. Jackson,Chelsea,F,11.0,24.0
+283058,N. Jackson,Chelsea,F,15.0,24.0
 10329,João Pedro,Chelsea,F,20.0,24.0
 329347,O. Kellyman,Chelsea,F,8.0,20.0
 359117,Shumaira Mheuka,Chelsea,F,62.0,18.0
-63577,M. Mudryk,Chelsea,F,,24.0
+63577,M. Mudryk,Chelsea,F,43.0,24.0
 1864,Pedro Neto,Chelsea,F,7.0,25.0
-419582,Geovany Tcherno Quenda,Chelsea,F,57.0,18.0
-445472,D. Satpaev,Chelsea,F,10.0,17.0
+419582,Geovany Tcherno Quenda,Chelsea,F,47.0,18.0
+445472,D. Satpaev,Chelsea,F,36.0,17.0
 1469,D. Welbeck,Chelsea,F,18.0,35.0
 19012,M. Bettinelli,Manchester City,G,13.0,33.0
 1622,G. Donnarumma,Manchester City,G,25.0,26.0
@@ -327,13 +327,13 @@ player_id,player_name,team,position,number,age
 129033,J. Gvardiol,Manchester City,D,24.0,23.0
 360114,A. Khusanov,Manchester City,D,45.0,21.0
 284230,R. Lewis,Manchester City,D,82.0,21.0
-382358,S. Mfuni,Manchester City,D,21.0,17.0
-414359,Vitor Nunes,Manchester City,D,12.0,19.0
+382358,S. Mfuni,Manchester City,D,91.0,17.0
+414359,Vitor Nunes,Manchester City,D,22.0,19.0
 138908,E. Anderson,Manchester City,M,8.0,23.0
 156477,R. Cherki,Manchester City,M,10.0,22.0
-414385,C. Echeverri,Manchester City,M,14.0,19.0
+414385,C. Echeverri,Manchester City,M,30.0,19.0
 631,P. Foden,Manchester City,M,47.0,25.0
-347305,Jaden Heskey,Manchester City,M,24.0,20.0
+347305,Jaden Heskey,Manchester City,M,81.0,20.0
 2291,M. Kovačić,Manchester City,M,8.0,31.0
 442048,R. McAidoo,Manchester City,M,7.0,17.0
 161933,Nico González,Manchester City,M,14.0,23.0
@@ -344,8 +344,8 @@ player_id,player_name,team,position,number,age
 1422,J. Doku,Manchester City,F,11.0,23.0
 1100,E. Haaland,Manchester City,F,9.0,25.0
 81573,Omar Marmoush,Manchester City,F,7.0,26.0
-460853,J. Monga,Manchester City,F,28.0,16.0
-380681,D. Mukasa,Manchester City,F,29.0,18.0
+460853,J. Monga,Manchester City,F,40.0,16.0
+380681,D. Mukasa,Manchester City,F,63.0,18.0
 266657,Sávio,Manchester City,F,26.0,21.0
 19281,A. Semenyo,Manchester City,F,42.0,25.0
 167663,T. McGill,Brighton,G,38.0,25.0
@@ -413,7 +413,6 @@ player_id,player_name,team,position,number,age
 184226,Yeremy Pino,Crystal Palace,F,10.0,23.0
 2218,I. Sarr,Crystal Palace,F,7.0,27.0
 19340,E. Balcombe,Brentford,G,31.0,26.0
-389579,J. Eyestone,Brentford,G,41.0,19.0
 281,C. Kelleher,Brentford,G,1.0,27.0
 363998,A. Stokes,Brentford,G,21.0,17.0
 61742,H. Valdimarsson,Brentford,G,12.0,24.0
@@ -477,7 +476,7 @@ player_id,player_name,team,position,number,age
 138931,J. Philogene,Ipswich,F,11.0,23.0
 20068,A. Cairns,Leeds,G,21.0,32.0
 80296,Lucas Perri,Leeds,G,1.0,28.0
-538541,R. Mahady,Leeds,G,48.0,19.0
+538541,R. Mahady,Leeds,G,49.0,19.0
 328116,Darryl Merveil Ombang,Leeds,G,49.0,20.0
 162489,J. Trafford,Leeds,G,1.0,23.0
 2279,E. Ampadu,Leeds,D,4.0,25.0
@@ -485,7 +484,7 @@ player_id,player_name,team,position,number,age
 19201,J. Bogle,Leeds,D,2.0,25.0
 1408,S. Bornauw,Leeds,D,33.0,26.0
 19287,S. Byram,Leeds,D,25.0,32.0
-557342,A. Cresswell,Leeds,D,51.0,18.0
+557342,A. Cresswell,Leeds,D,50.0,18.0
 47969,G. Gudmundsson,Leeds,D,3.0,26.0
 19760,J. Justin,Leeds,D,24.0,27.0
 545996,J. Lienou,Leeds,D,65.0,17.0
@@ -521,20 +520,22 @@ player_id,player_name,team,position,number,age
 129713,M. Jacob,Hull City,D,16.0,24.0
 467176,C. McCarthy,Hull City,D,58.0,19.0
 19242,P. McNair,Hull City,D,37.0,30.0
+358431,N. Mendy,Hull City,D,32.0,21.0
 581989,C. Okike,Hull City,D,39.0,18.0
 18941,M. Targett,Hull City,D,3.0,30.0
 19666,M. Crooks,Hull City,M,25.0,31.0
 19100,K. Dowell,Hull City,M,26.0,28.0
 282124,D. Gyabi,Hull City,M,24.0,21.0
+396407,J. Hjertø-Dahl,Hull City,M,6.0,20.0
 162991,E. Matazo,Hull City,M,8.0,23.0
 32960,H. Morita,Hull City,M,5.0,30.0
 49883,A. Ömür,Hull City,M,10.0,26.0
 17670,R. Slater,Hull City,M,27.0,26.0
+226765,E. Stroud,Hull City,M,17.0,23.0
 338046,Óscar Steven Zambrano Preciado,Hull City,M,18.0,21.0
 1186,D. Akintola,Hull City,F,11.0,30.0
 299923,M. Belloumi,Hull City,F,10.0,23.0
 182422,E. Destan,Hull City,F,94.0,23.0
-284441,A. Kamara,Hull City,F,11.0,22.0
 19337,O. McBurnie,Hull City,F,9.0,29.0
 44798,L. Millar,Hull City,F,7.0,26.0
 366630,T. Sellars-Fleming,Hull City,F,40.0,20.0
@@ -546,7 +547,7 @@ player_id,player_name,team,position,number,age
 2771,O. Aina,Nottingham Forest,D,34.0,29.0
 430835,Tyler Bindon,Nottingham Forest,D,6.0,20.0
 362711,Jair,Nottingham Forest,D,23.0,20.0
-354753,O. Diomande,Nottingham Forest,D,26.0,22.0
+354753,O. Diomande,Nottingham Forest,D,2.0,22.0
 334369,Justin Thomas Hanks,Nottingham Forest,D,65.0,21.0
 2817,N. Milenković,Nottingham Forest,D,31.0,28.0
 67943,Morato,Nottingham Forest,D,4.0,24.0
@@ -562,7 +563,7 @@ player_id,player_name,team,position,number,age
 158697,J. McAtee,Nottingham Forest,M,24.0,23.0
 551288,G. McDonnell,Nottingham Forest,M,60.0,17.0
 22149,I. Sangaré,Nottingham Forest,M,6.0,28.0
-1095,X. Schlager,Nottingham Forest,M,24.0,28.0
+1095,X. Schlager,Nottingham Forest,M,21.0,28.0
 353968,A. Whitehall,Nottingham Forest,M,51.0,19.0
 19305,R. Yates,Nottingham Forest,M,22.0,28.0
 380492,Eric Emanuel da Silva Moreira,Nottingham Forest,M,17.0,19.0
@@ -578,7 +579,7 @@ player_id,player_name,team,position,number,age
 36878,M. Bizot,Aston Villa,G,40.0,34.0
 19599,E. Martínez,Aston Villa,G,23.0,33.0
 284390,J. Wright,Aston Villa,G,42.0,21.0
-284457,L. Bogarde,Aston Villa,D,26.0,21.0
+284457,L. Bogarde,Aston Villa,M,26.0,21.0
 19298,M. Cash,Aston Villa,D,2.0,28.0
 478441,M. Cissé,Aston Villa,D,48.0,20.0
 19354,E. Konsa,Aston Villa,D,4.0,28.0
