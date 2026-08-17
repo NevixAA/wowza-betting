@@ -188,7 +188,12 @@ jobs:
             echo "Outside WC2026 — skipping night predict"
             exit 0
           fi
-          python -m player_model.pipeline --mode predict
+          # Tee to a log so the health step below can commit the tail. Without a valid API
+          # token the run logs are unreadable from outside CI, and this workflow has reported
+          # SUCCESS on every hourly run since 2026-08-15 while player_tips.csv never changed.
+          # Committed evidence beats log archaeology.
+          set -o pipefail
+          python -m player_model.pipeline --mode predict 2>&1 | tee /tmp/props_predict.log
         continue-on-error: true
 
       - name: Send Telegram alerts for player prop signals
@@ -207,13 +212,73 @@ jobs:
           "
         continue-on-error: true
 
+      # Why this exists: player_props has reported SUCCESS on every hourly run since
+      # 2026-08-15 14:29 while output/player_tips.csv was never committed. Every step shows
+      # ok, including the predict step's pre-continue-on-error `outcome`. Run logs are not
+      # readable without a valid token, so this records what actually happened INTO A
+      # COMMITTED FILE. Cheap, permanent, and needs no credential to read.
+      - name: Record props health (observable without log access)
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os, subprocess, datetime
+          h = {
+              "checked_at": datetime.datetime.now(datetime.timezone.utc)
+                              .strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "run_id": os.getenv("GITHUB_RUN_ID"),
+              "run_number": os.getenv("GITHUB_RUN_NUMBER"),
+              "event": os.getenv("GITHUB_EVENT_NAME"),
+              "schedule": os.getenv("PROPS_SCHEDULE", ""),
+              "sha": (os.getenv("GITHUB_SHA") or "")[:12],
+              "step_outcomes": {
+                  "collect_club": "${{ steps.collect_club.outcome }}",
+                  "predict": "${{ steps.predict_props.outcome }}",
+                  "notify": "${{ steps.notify_props.outcome }}",
+              },
+          }
+          try:
+              import pandas as pd
+              for f in ("output/player_tips.csv", "output/player_ledger.csv"):
+                  try:
+                      d = pd.read_csv(f, dtype=str)
+                      h[f] = {
+                          "rows": len(d),
+                          "fixtures": int(d["match"].nunique()) if "match" in d else None,
+                          "mtime": datetime.datetime.utcfromtimestamp(
+                              os.path.getmtime(f)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                      }
+                  except Exception as e:
+                      h[f] = {"error": f"{type(e).__name__}: {e}"}
+          except Exception as e:
+              h["pandas_error"] = str(e)
+          # Did git actually see a change? This is the question the last two days hinged on.
+          try:
+              h["git_dirty_outputs"] = subprocess.run(
+                  ["git", "status", "--porcelain", "output", "player_history.parquet"],
+                  capture_output=True, text=True, timeout=60).stdout.strip().splitlines()
+          except Exception as e:
+              h["git_dirty_outputs"] = [f"error: {e}"]
+          # Tail of the predict run — the actual missing evidence.
+          try:
+              with open("/tmp/props_predict.log", encoding="utf-8", errors="replace") as fh:
+                  h["predict_log_tail"] = fh.read().splitlines()[-40:]
+          except Exception as e:
+              h["predict_log_tail"] = [f"no log: {e}"]
+          os.makedirs("output", exist_ok=True)
+          with open("output/props_health.json", "w", encoding="utf-8") as fh:
+              json.dump(h, fh, indent=2)
+          print(json.dumps({k: v for k, v in h.items()
+                            if k != "predict_log_tail"}, indent=2))
+          PY
+        continue-on-error: true
+
       - name: Commit and push outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/player_tips.csv output/player_ledger.csv \
                      output/player_prop_odds_history.csv output/clv_records.csv \
-                     output/prop_odds_coverage.json \
+                     output/prop_odds_coverage.json output/props_health.json \
                      telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
                      telegram_bot/player_kickoff_cache.json team_id_cache.json \
                      player_history.parquet \
