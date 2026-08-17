@@ -1,88 +1,70 @@
 {
   "soccer_efl_champ": {
+    "empty_streak": 7,
+    "last_probe": "2026-08-17",
     "league": "Championship",
-    "matched_events": 1,
-    "unmatched_sample": [
-      "birmingham vs bristol city",
-      "blackburn vs middlesbrough",
-      "cardiff vs wrexham",
-      "lincoln vs portsmouth",
-      "millwall vs norwich",
-      "preston vs wolves"
-    ],
+    "matched_events": 8,
+    "probes": 7,
+    "unmatched_sample": [],
     "wanted_fixtures": 8
   },
   "soccer_england_league1": {
+    "empty_streak": 7,
+    "last_probe": "2026-08-17",
     "league": "League One",
-    "matched_events": 1,
-    "unmatched_sample": [
-      "afc wimbledon vs reading",
-      "doncaster vs barnsley",
-      "leicester vs burton albion",
-      "milton keynes dons vs huddersfield",
-      "peterborough vs mansfield town",
-      "sheffield wednesday vs bradford"
-    ],
+    "matched_events": 8,
+    "probes": 7,
+    "unmatched_sample": [],
     "wanted_fixtures": 8
   },
   "soccer_epl": {
-    "league": "Premier League",
-    "matched_events": 3,
-    "unmatched_sample": [
-      "arsenal vs coventry",
-      "brentford vs tottenham",
-      "brighton vs aston villa",
-      "ipswich vs sunderland",
-      "nottingham forest vs leeds"
-    ],
-    "wanted_fixtures": 8
-  },
-  "soccer_germany_bundesliga": {
-    "league": "Bundesliga",
-    "matched_events": 4,
-    "unmatched_sample": [
-      "1. fc koln vs 1899 hoffenheim",
-      "bayern munchen vs vfb stuttgart",
-      "fsv mainz 05 vs sc paderborn 07",
-      "sv elversberg vs bayer leverkusen"
-    ],
-    "wanted_fixtures": 8
-  },
-  "soccer_germany_bundesliga2": {
-    "last_all_unmatched": "2026-08-17",
-    "league": "Bundesliga 2",
-    "matched_events": 0,
-    "unmatched_sample": [
-      "1. fc heidenheim vs dynamo dresden",
-      "1. fc magdeburg vs holstein kiel",
-      "1. fc nurnberg vs arminia bielefeld",
-      "eintracht braunschweig vs hertha bsc",
-      "energie cottbus vs spvgg greuther furth",
-      "karlsruher sc vs vfl wolfsburg"
-    ],
-    "wanted_fixtures": 8
-  },
-  "soccer_italy_serie_a": {
-    "league": "Serie A",
-    "matched_events": 6,
-    "unmatched_sample": [
-      "atalanta vs sassuolo",
-      "inter vs monza"
-    ],
-    "wanted_fixtures": 8
-  },
-  "soccer_spain_la_liga": {
     "empty_streak": 0,
     "last_priced": "2026-08-17",
     "last_probe": "2026-08-17",
-    "league": "La Liga",
-    "matched_events": 6,
+    "league": "Premier League",
+    "matched_events": 8,
     "priced_events": 5,
     "probes": 5,
-    "unmatched_sample": [
-      "athletic club vs sevilla",
-      "deportivo la coruna vs elche"
-    ],
+    "unmatched_sample": [],
+    "wanted_fixtures": 8
+  },
+  "soccer_germany_bundesliga": {
+    "empty_streak": 4,
+    "last_probe": "2026-08-17",
+    "league": "Bundesliga",
+    "matched_events": 8,
+    "probes": 4,
+    "unmatched_sample": [],
+    "wanted_fixtures": 8
+  },
+  "soccer_germany_bundesliga2": {
+    "empty_streak": 8,
+    "last_all_unmatched": "2026-08-17",
+    "last_probe": "2026-08-17",
+    "league": "Bundesliga 2",
+    "matched_events": 8,
+    "probes": 8,
+    "unmatched_sample": [],
+    "wanted_fixtures": 8
+  },
+  "soccer_italy_serie_a": {
+    "empty_streak": 2,
+    "last_probe": "2026-08-17",
+    "league": "Serie A",
+    "matched_events": 8,
+    "probes": 2,
+    "unmatched_sample": [],
+    "wanted_fixtures": 8
+  },
+  "soccer_spain_la_liga": {
+    "empty_streak": 1,
+    "last_priced": "2026-08-17",
+    "last_probe": "2026-08-17",
+    "league": "La Liga",
+    "matched_events": 8,
+    "priced_events": 7,
+    "probes": 8,
+    "unmatched_sample": [],
     "wanted_fixtures": 8
   }
 }
