@@ -1,0 +1,177 @@
+name: Player History Extend
+
+# Owns player_history.parquet. Split out of player_props.yml on 2026-08-18.
+#
+# WHY IT IS SEPARATE: a full collect takes ~60 minutes. While it ran inside player_props it
+# held the `player-props` concurrency group, so the hourly predict could not run — observed on
+# 2026-08-18 when dispatch run #914 blocked #915 (cancelled) and #916 (queued). An hour of
+# collection cost an hour of tips.
+#
+# It also removes a hazard in the freshness gate: the gate asks "is the newest match older
+# than 2 days", which is legitimately TRUE between rounds and during international breaks. In
+# player_props (hourly) that would have fired an hour-long collect every hour. Here the
+# cadence is daily and a cooldown makes a repeat impossible.
+
+on:
+  schedule:
+    - cron: '40 3 * * *'      # daily, well before the 05:00 props window
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Ignore the cooldown and collect now'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+concurrency:
+  group: player-history-extend   # deliberately NOT player-props
+  cancel-in-progress: false
+
+jobs:
+  extend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100      # measured ~60 min for a full backfill; headroom, not hope
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Permanent — only genuinely new fixtures cost an API call. This is what makes the
+      # steady-state run minutes instead of an hour.
+      - name: Cache fixture player stats
+        uses: actions/cache@v4
+        with:
+          path: fixture_player_cache
+          key: fixture-player-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: fixture-player-${{ runner.os }}-
+
+      - name: Should we collect?
+        id: gate
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import datetime as dt, json, subprocess
+          from pathlib import Path
+
+          # Cooldown: when did a collect last actually change the parquet? Read from git
+          # rather than a marker file, so it cannot drift out of sync with reality.
+          hours = 999.0
+          try:
+              out = subprocess.run(
+                  ["git", "log", "-1", "--format=%cI", "--", "player_history.parquet"],
+                  capture_output=True, text=True, timeout=120).stdout.strip()
+              if out:
+                  last = dt.datetime.fromisoformat(out)
+                  hours = (dt.datetime.now(dt.timezone.utc) - last).total_seconds() / 3600
+          except Exception as e:
+              print(f"# cooldown check failed ({e}) -> treating as stale")
+
+          newest, age = "missing", 9999
+          try:
+              import pandas as pd
+              p = Path("player_history.parquet")
+              if p.exists():
+                  d = pd.read_parquet(p, columns=["date"])
+                  newest = str(pd.to_datetime(d["date"]).max())[:10]
+                  age = (dt.date.today() - dt.date.fromisoformat(newest)).days
+          except Exception as e:
+              print(f"# freshness check failed ({e})")
+
+          forced = "${{ github.event.inputs.force }}" == "true"
+          # A full collect is an hour of runtime and ~4,300 API calls, so never more than
+          # once a day unless forced. `age` alone is not a sufficient trigger: it is
+          # legitimately > 2 between rounds, and would otherwise loop forever.
+          go = forced or (age > 2 and hours >= 20)
+          print(f"collect={'true' if go else 'false'}")
+          print(f"newest={newest}")
+          print(f"age_days={age}")
+          print(f"hours_since_commit={hours:.1f}")
+          if not go:
+              print(f"# skipping: age={age}d, last parquet commit {hours:.1f}h ago")
+          PY
+
+      - name: Report gate
+        run: |
+          echo "newest match      : ${{ steps.gate.outputs.newest }}"
+          echo "age (days)        : ${{ steps.gate.outputs.age_days }}"
+          echo "last commit (hrs) : ${{ steps.gate.outputs.hours_since_commit }}"
+          echo "collecting        : ${{ steps.gate.outputs.collect }}"
+
+      - name: Collect club league data
+        id: collect
+        if: steps.gate.outputs.collect == 'true'
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python -m player_model.pipeline --mode collect 2>&1 | tee /tmp/collect.log
+
+      - name: Record health
+        if: always()
+        run: |
+          python - <<'PY'
+          import datetime as dt, json, os
+          h = {
+              "checked_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "run_number": os.getenv("GITHUB_RUN_NUMBER"),
+              "gate": {
+                  "collect": "${{ steps.gate.outputs.collect }}",
+                  "newest_before": "${{ steps.gate.outputs.newest }}",
+                  "age_days": "${{ steps.gate.outputs.age_days }}",
+                  "hours_since_commit": "${{ steps.gate.outputs.hours_since_commit }}",
+              },
+              "collect_outcome": "${{ steps.collect.outcome }}",
+          }
+          try:
+              import pandas as pd
+              d = pd.read_parquet("player_history.parquet", columns=["date"])
+              h["parquet"] = {"rows": len(d),
+                              "newest_after": str(pd.to_datetime(d["date"]).max())[:10]}
+          except Exception as e:
+              h["parquet"] = {"error": str(e)}
+          try:
+              with open("/tmp/collect.log", encoding="utf-8", errors="replace") as fh:
+                  h["collect_log_tail"] = fh.read().splitlines()[-30:]
+          except Exception:
+              h["collect_log_tail"] = ["(no collect this run)"]
+          os.makedirs("output", exist_ok=True)
+          with open("output/history_extend_health.json", "w", encoding="utf-8") as fh:
+              json.dump(h, fh, indent=2)
+          print(json.dumps({k: v for k, v in h.items() if k != "collect_log_tail"}, indent=2))
+          PY
+        continue-on-error: true
+
+      - name: Commit and push
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Per-file, so one absent path cannot stage nothing (see player_props.yml).
+          for f in player_history.parquet output/history_extend_health.json; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
+          git diff --staged --quiet || \
+            git commit -m "auto: player history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X ours origin main && git push && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          echo "::error title=history extend push failed::Collected but not persisted."
+          exit 1
+
+      - name: Fail if the collect failed
+        if: always()
+        run: |
+          if [ "${{ steps.collect.outcome }}" = "failure" ]; then
+            echo "::error title=collect failed::player_history.parquet did not advance."
+            exit 1
+          fi

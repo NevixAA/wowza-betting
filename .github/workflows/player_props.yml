@@ -118,13 +118,23 @@ jobs:
           echo "history newest=$(grep '^newest=' "$GITHUB_OUTPUT" | tail -1 | cut -d= -f2)"
         continue-on-error: true
 
-      - name: Collect club league data (when history is stale, on the daily cron, or manual)
+      # Collect now lives in .github/workflows/player_history_extend.yml, which owns
+      # player_history.parquet and has its own concurrency group.
+      #
+      # It ran here until 2026-08-18 and cost tips: a full collect takes ~60 minutes and held
+      # the `player-props` group for the duration, so the hourly predict could not run. Run
+      # #914 (dispatch) blocked #915 — cancelled — and #916 — queued. Gating it on freshness
+      # made that worse rather than better, because "newest match older than 2 days" is
+      # legitimately true between rounds, so an hourly workflow would have launched an
+      # hour-long collect every hour.
+      #
+      # Kept here for EXPLICIT manual dispatch only, as an escape hatch. The freshness step
+      # above still runs and still records the numbers in props_health.json, so staleness stays
+      # visible from this workflow even though it no longer acts on it.
+      - name: Collect club league data (manual dispatch only — see player_history_extend.yml)
         id: collect_club
         if: |
-          steps.freshness.outputs.stale == 'true' ||
-          github.event.schedule == '0 5 * * 0' ||
-          github.event.schedule == '0 5 * * 1-6' ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
+          github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict'
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python -m player_model.pipeline --mode collect
