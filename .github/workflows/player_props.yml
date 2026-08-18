@@ -276,16 +276,31 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/player_tips.csv output/player_ledger.csv \
-                     output/player_prop_odds_history.csv output/clv_records.csv \
-                     output/prop_odds_coverage.json output/props_health.json \
-                     telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
-                     telegram_bot/player_kickoff_cache.json team_id_cache.json \
-                     player_history.parquet \
-                     models/model_player_goals.pkl   models/model_player_goals2.pkl \
-                     models/model_player_assists.pkl \
-                     models/model_player_sot.pkl     models/model_player_sot2.pkl \
-                     models/model_player_sot3.pkl    models/model_player_cards.pkl 2>/dev/null || true
+          # Add each file INDIVIDUALLY. `git add -f a b missing` validates every pathspec
+          # first and ABORTS, staging NOTHING — and `2>/dev/null || true` then hides it. Two
+          # of the paths below (telegram_bot/player_kickoff_cache.json, team_id_cache.json)
+          # do not exist in the repo, so from 2026-08-15 14:29 to 2026-08-18 this staged
+          # nothing on EVERY hourly run: no commit, no error, and ten consecutive green runs
+          # while player_tips.csv stayed frozen. Confirmed by experiment: one missing
+          # pathspec => 0 files staged.
+          #
+          # predict.yml was already fixed this way (its comment cites the same bug causing
+          # the duplicate Telegram-tip flood); the fix was never carried over to this file.
+          # Missing paths are kept in the list on purpose — a loop skips them harmlessly and
+          # picks them up automatically if they are ever created.
+          for f in output/player_tips.csv output/player_ledger.csv \
+                   output/player_prop_odds_history.csv output/clv_records.csv \
+                   output/prop_odds_coverage.json output/props_health.json \
+                   telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
+                   telegram_bot/player_kickoff_cache.json team_id_cache.json \
+                   player_history.parquet \
+                   models/model_player_goals.pkl   models/model_player_goals2.pkl \
+                   models/model_player_assists.pkl \
+                   models/model_player_sot.pkl     models/model_player_sot2.pkl \
+                   models/model_player_sot3.pkl    models/model_player_cards.pkl; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
