@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-18T23:24:27Z",
-  "run_id": "32196537888",
-  "run_number": "928",
+  "checked_at": "2026-08-18T23:49:05Z",
+  "run_id": "32198298854",
+  "run_number": "929",
   "event": "schedule",
   "schedule": "",
-  "sha": "8e8d5ffcd8f1",
+  "sha": "ff318be0f3e3",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "1",
@@ -18,15 +18,17 @@
   "output/player_tips.csv": {
     "rows": 407,
     "fixtures": 34,
-    "mtime": "2026-08-18T23:24:20Z"
+    "mtime": "2026-08-18T23:48:58Z"
   },
   "output/player_ledger.csv": {
     "rows": 2617,
     "fixtures": null,
-    "mtime": "2026-08-18T23:17:36Z"
+    "mtime": "2026-08-18T23:42:41Z"
   },
   "git_dirty_outputs": [
-    "M output/prop_odds_coverage.json"
+    "M output/player_prop_odds_history.csv",
+    " M output/player_tips.csv",
+    " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
@@ -40,12 +42,21 @@
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 3 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 1, 'Finland Veikkausliiga': 1, 'Ireland Premier Division': 1}",
     "[odds_fetcher] sports/soccer_france_ligue_1/events: HTTP 404 | {\"message\":\"Unknown sport\",\"error_code\":\"UNKNOWN_SPORT\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-er",
-    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 83479",
+    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 83449",
+    "[odds_fetcher] sports/soccer_epl/events/cd1f0173ec061d9b8a8b22ab8f2f8393/odds OK | quota remaining: 83447",
+    "[odds_fetcher] sports/soccer_epl/events/01615d9573ef1e5aa8c09eb32a4a983b/odds OK | quota remaining: 83445",
+    "[odds_fetcher] sports/soccer_epl/events/ee99154f8db029efcf567c5f7f7a0c0b/odds OK | quota remaining: 83441",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 17 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
     "[odds_fetcher] soccer_england_league1: parked \u2014 15 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 83479",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 83479",
-    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 83479",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 83441",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/857e387be2e9f73e825ad02a2ec74cc3/odds OK | quota remaining: 83433",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/4feb0ef58a41849f92fcc270268734d4/odds OK | quota remaining: 83429",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 83429",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/ed57c6f67558fabe25c4634ca959ee01/odds OK | quota remaining: 83425",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/ef8a47c3c8c0f71a251e2efcbf84854a/odds OK | quota remaining: 83421",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/7d4101254957e46d6037bd1d8f268a0e/odds OK | quota remaining: 83417",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/c123d013c16bf22279a1fdf1248c4afb/odds OK | quota remaining: 83413",
+    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 83413",
     "[odds_fetcher] 913 player-market prices | leagues with any prop coverage: ['Premier League', 'Serie A', 'La Liga']",
     "[predict] Odds enriched for 53 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
