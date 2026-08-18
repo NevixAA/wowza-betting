@@ -63,22 +63,54 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
         print("[collect] Feature engineering returned empty DataFrame.")
         return
 
-    # MERGE, don't overwrite: replace only the leagues collected this run, KEEP all others
-    # (WC/international + any league a partial/timed-out CI run didn't reach). Prevents the
-    # silent degradation where a Sunday collect that only got PL before the job timeout
-    # nuked the other 10 club leagues down to a PL-only parquet (bug found 2026-07-05).
+    # UNION, never replace. A collect can only ADD rows and refresh values on rows it
+    # re-fetched; it can never remove a row that already existed.
+    #
+    # The previous version merged at LEAGUE granularity: it discarded every existing row for
+    # any league this run touched and kept only what the run fetched. That was safe purely
+    # because each last_n happened to exceed the stored fixture count — so `last_n` was
+    # silently load-bearing. Lowering one, or a league outgrowing its last_n, would have
+    # deleted real history with no error. It also meant a PARTIAL fetch of a league (timeout,
+    # API hiccup, rate limit) shrank that league to whatever arrived.
+    #
+    # combine_first gives refresh-without-loss: aligned on (fixture_id, player_id), the fresh
+    # value wins wherever it is non-null, the existing value fills every gap, and rows present
+    # only in the existing file are carried through untouched. That last property also protects
+    # the enrichment columns (chronic_injury_risk, days_since_last_injury) that
+    # enrich-sidelined-live writes but a collect does not produce — under the old
+    # concat+drop_duplicates(keep="last") those would have been overwritten with NaN.
+    #
+    # A hard guard refuses to write a smaller file than we started with, so no future change
+    # to last_n or to the fetchers can quietly lose data.
+    _before = 0
     if HISTORY_CACHE.exists():
         try:
             existing = pd.read_parquet(HISTORY_CACHE)
-            fresh_leagues = set(df["league"].dropna().unique())
-            kept = existing[~existing["league"].isin(fresh_leagues)]
-            df = pd.concat([kept, df], ignore_index=True)
-            if {"fixture_id", "player_id"}.issubset(df.columns):
-                df = df.drop_duplicates(subset=["fixture_id", "player_id"])
-            df = df.reset_index(drop=True)
-            print(f"[collect] merged: kept {len(kept)} rows from {existing['league'].nunique() - len(fresh_leagues & set(existing['league']))} untouched leagues")
+            _before = len(existing)
+            key = ["fixture_id", "player_id"]
+            if set(key).issubset(df.columns) and set(key).issubset(existing.columns):
+                a = existing.drop_duplicates(subset=key, keep="last").set_index(key)
+                b = df.drop_duplicates(subset=key, keep="last").set_index(key)
+                merged = b.combine_first(a)           # fresh wins; existing fills gaps
+                df = merged.reset_index()
+                added = len(df) - len(a)
+                refreshed = len(b.index.intersection(a.index))
+                print(f"[collect] union: {len(a)} existing + {len(b)} fetched -> {len(df)} rows "
+                      f"(+{added} new, {refreshed} refreshed, 0 removed)")
+            else:
+                df = pd.concat([existing, df], ignore_index=True)
+                print(f"[collect] union without key columns -> {len(df)} rows")
         except Exception as e:
-            print(f"[collect] merge with existing failed ({e}) — writing fresh collect only")
+            print(f"[collect] merge with existing FAILED ({e}) — refusing to overwrite "
+                  f"player_history.parquet with a partial collect")
+            return
+
+    if _before and len(df) < _before:
+        print(f"[collect] ABORT: merge produced {len(df)} rows, fewer than the {_before} "
+              f"already stored. Refusing to write — this should be impossible with a union "
+              f"and means something upstream is wrong.")
+        return
+
     df.to_parquet(HISTORY_CACHE, index=False)
     print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players -> {HISTORY_CACHE.name}")
 
@@ -105,16 +137,29 @@ def mode_collect_wc(last_n: int = 10) -> None:
         print("[collect-wc] Feature engineering returned empty DataFrame.")
         return
 
-    # Merge with existing history (club leagues) — deduplicate on fixture+player
+    # Union with existing history, same rule as mode_collect: refresh without loss.
+    # concat + drop_duplicates(keep="last") kept every existing ROW, but for a re-fetched row
+    # it replaced the whole record — so any column the WC collect does not produce (the
+    # injury enrichment columns, for instance) was overwritten with NaN. combine_first keeps
+    # the fresh value only where there IS one.
+    _before = 0
     if HISTORY_CACHE.exists():
         existing = pd.read_parquet(HISTORY_CACHE)
-        combined = pd.concat([existing, new_df], ignore_index=True)
-        # keep="last": new_df is concatenated after existing, so a re-run REFRESHES WC rows
-        # instead of discarding the freshly-fetched ones (keep="first" froze stale WC data).
-        combined = combined.drop_duplicates(subset=["fixture_id", "player_id"], keep="last")
-        combined = combined.reset_index(drop=True)
+        _before = len(existing)
+        key = ["fixture_id", "player_id"]
+        if set(key).issubset(new_df.columns) and set(key).issubset(existing.columns):
+            a = existing.drop_duplicates(subset=key, keep="last").set_index(key)
+            b = new_df.drop_duplicates(subset=key, keep="last").set_index(key)
+            combined = b.combine_first(a).reset_index()
+        else:
+            combined = pd.concat([existing, new_df], ignore_index=True)
     else:
         combined = new_df
+
+    if _before and len(combined) < _before:
+        print(f"[collect-wc] ABORT: {len(combined)} rows < {_before} already stored. "
+              f"Refusing to write.")
+        return
 
     combined.to_parquet(HISTORY_CACHE, index=False)
     wc_players = new_df["player_id"].nunique()
