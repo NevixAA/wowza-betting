@@ -24,7 +24,11 @@ def git_push():
         "output/worldcup_tips.csv",
         "output/worldcup_history.json",
         "output/sharp_tips.csv",
+        # sharp_history is month-partitioned (src/sharp_tracker.py). The legacy monolith is
+        # kept in the list because it is renamed to .json.migrated rather than deleted, and
+        # this helper already skips paths that do not exist.
         "output/sharp_history.json",
+        "output/sharp_history",
         "output/live_tips.csv",
         "output/live_games.csv",
         "models/feature_importances_standard.csv",
