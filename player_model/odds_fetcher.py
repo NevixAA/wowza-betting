@@ -63,7 +63,10 @@ def _empty_ttl_for(commence_time: str) -> int:
 # Maps our market names → Odds API market key + Over point (None = binary yes/no)
 _MARKET_MAP = {
     "goals":   ("player_goal_scorer_anytime",  None),  # 1+ goals
-    "goals2":  ("player_to_score_2_or_more",   None),  # 2+ goals
+    # goals2 / `player_to_score_2_or_more` RETIRED 2026-08-18. OddsAPI rejects it as an
+    # invalid market on every soccer event — 0 prices in the entire odds history — and the
+    # self-heal below then dropped it and re-requested, costing an extra call per event.
+    # Its model cap (0.0878) was also below config.MIN_SIGNAL_PROB, so it could never tip.
     "sot":     ("player_shots_on_target",      0.5),   # 1+ SOT
     "sot2":    ("player_shots_on_target",      1.5),   # 2+ SOT
     "sot3":    ("player_shots_on_target",      2.5),   # 3+ SOT

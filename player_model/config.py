@@ -16,6 +16,31 @@ API_SEASON = os.getenv("API_SEASON", "2025")
 # ── Markets ───────────────────────────────────────────────────────────────────
 MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "cards"]
 
+# goals2 (2+ goals / brace) is MODELLED but no longer requested from OddsAPI (2026-08-18).
+# The two sides of it fail for different reasons and deserve different treatment:
+#   * ODDS: OddsAPI rejects `player_to_score_2_or_more` as an invalid market on every soccer
+#     event — 0 prices in the entire history — and the fetcher's self-heal then dropped it
+#     and re-requested, costing an extra API call per event. Removed from odds_fetcher.
+#   * MODEL: it stays in MARKETS because the FANTASY family consumes it as "2+ goals
+#     (brace)" (fantasy_features.market_leaderboards) and needs no bookmaker price at all.
+#     Invariant 2: prop accuracy is monetised through no-vig Fantasy, not through betting.
+# It could never emit anything before today regardless, because its cap was computed at
+# 0.0878 — below MIN_SIGNAL_PROB. That was a cap bug, now fixed (see _compute_market_caps).
+
+# Below this, a prediction is not emitted at all. Named rather than inlined because it
+# interacts with the per-market caps in predict._compute_market_caps: when a market's cap
+# falls BELOW this floor the market silently cannot produce anything, which is exactly how
+# sot3 (cap 0.1288) and goals2 (cap 0.0878) became dead code unnoticed. predict.py now logs
+# that condition loudly at startup.
+#
+# sot3 is deliberately LEFT in MARKETS despite being unable to clear the floor today: it is
+# in VALUABLE_ONLY_MARKETS (collection, never staked), bookmakers do price it (311 prices in
+# 5 days), and the odds cost nothing extra because they arrive on the same
+# `player_shots_on_target` response as sot and sot2. It stays as research data. Lowering the
+# floor to chase it would push tips into exactly the longshot band where prop ROI was measured
+# at -41% to -57%.
+MIN_SIGNAL_PROB = 0.15
+
 # World Cup cards: features are imputed → predictions inflate to ~0.40 for everyone.
 # Only emit WC card tips for players whose REAL booking rate (max of cards_pg /
 # season_cards_pg) is at least this — for them, ~0.40 is roughly their true rate.
