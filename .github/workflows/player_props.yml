@@ -79,9 +79,49 @@ jobs:
           key: fixture-player-${{ runner.os }}-${{ github.run_id }}
           restore-keys: fixture-player-${{ runner.os }}-
 
-      - name: Collect club league data (daily + manual)
+      # Is the training history actually stale? Collect is gated on DATA FRESHNESS, not only
+      # on a cron string.
+      #
+      # Why: collect used to run only when github.event.schedule matched '0 5 * * 1-6' or
+      # '0 5 * * 0'. That value holds whichever cron fired, so on the hourly '2 * * * *' runs
+      # collect is correctly skipped — but it meant a single missed or undelivered 05:00 run
+      # silently cost a whole day of collection. player_history.parquet sat at 2026-07-04 with
+      # ZERO rows after it while props predict ran hourly and reported success, which blocked
+      # every prop CLV grade, left summer transfers resolving to old clubs (Aubameyang still
+      # showing as Marseille), and starved the PL/Serie A squads that OddsAPI was pricing.
+      #
+      # Freshness is the thing we actually care about, so gate on it directly: any hourly run
+      # will pick the collect up within the hour if history has fallen behind. A collect that
+      # keeps failing now retries visibly instead of waiting a day, and its outcome is recorded
+      # in output/props_health.json either way.
+      - name: Check training-history freshness
+        id: freshness
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import datetime as dt
+          from pathlib import Path
+          stale, newest, age = "true", "missing", 9999
+          try:
+              import pandas as pd
+              p = Path("player_history.parquet")
+              if p.exists():
+                  d = pd.read_parquet(p, columns=["date"])
+                  newest = str(pd.to_datetime(d["date"]).max())[:10]
+                  age = (dt.date.today() - dt.date.fromisoformat(newest)).days
+                  stale = "true" if age > 2 else "false"
+          except Exception as e:
+              print(f"# freshness check failed ({e}) -> assuming stale")
+          print(f"stale={stale}")
+          print(f"newest={newest}")
+          print(f"age_days={age}")
+          PY
+          echo "history newest=$(grep '^newest=' "$GITHUB_OUTPUT" | tail -1 | cut -d= -f2)"
+        continue-on-error: true
+
+      - name: Collect club league data (when history is stale, on the daily cron, or manual)
         id: collect_club
         if: |
+          steps.freshness.outputs.stale == 'true' ||
           github.event.schedule == '0 5 * * 0' ||
           github.event.schedule == '0 5 * * 1-6' ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
@@ -230,6 +270,11 @@ jobs:
               "event": os.getenv("GITHUB_EVENT_NAME"),
               "schedule": os.getenv("PROPS_SCHEDULE", ""),
               "sha": (os.getenv("GITHUB_SHA") or "")[:12],
+              "history_freshness": {
+                  "newest_match": "${{ steps.freshness.outputs.newest }}",
+                  "age_days": "${{ steps.freshness.outputs.age_days }}",
+                  "stale": "${{ steps.freshness.outputs.stale }}",
+              },
               "step_outcomes": {
                   "collect_club": "${{ steps.collect_club.outcome }}",
                   "predict": "${{ steps.predict_props.outcome }}",

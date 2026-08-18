@@ -49,11 +49,47 @@ def _compute_market_caps(history_path: Path) -> dict[str, float]:
         if col not in hist.columns:
             caps[mkt] = 0.95
             continue
-        rates = (hist.groupby("player_name")
-                     .filter(lambda g: len(g) >= 10)
-                     .groupby("player_name")[col]
-                     .apply(lambda x: (x >= thr).mean()))
-        caps[mkt] = round(float(rates.quantile(0.99)), 4)
+        # Rate among STARTS, and the BEST player's rate — not the 99th percentile of all
+        # appearances. The old version was wrong twice over, against its own docstring:
+        #
+        #   1. It took rates.quantile(0.99), which by construction sits BELOW the best 1% of
+        #      players. "No probability above the best real player's rate" needs the max.
+        #   2. It counted every appearance including substitute cameos — 11.1% of rows are
+        #      under 20 minutes, and a striker who plays 10 minutes almost never records 3
+        #      shots on target, which drags his career rate down.
+        #
+        # Measured 2026-08-18 the two errors compounded badly:
+        #     sot3    old cap 0.1288   true best starter 0.5000  (Mbappé, 3+ SOT in half his starts)
+        #     goals2  old cap 0.0878   true best starter 0.2755  (Mbappé)
+        #
+        # Both caps landed BELOW config.MIN_SIGNAL_PROB (0.15), so every prediction in those
+        # markets was discarded and neither had produced a single row in player_tips.csv or
+        # player_ledger.csv, ever — while bookmakers priced sot3 311 times in five days.
+        #
+        # Starts only, and at least MIN_STARTS_FOR_CAP of them.
+        #
+        # Taking the max makes the threshold matter: at >= 10 starts the caps were being set
+        # by hot streaks rather than sustained ability —
+        #     goals   0.7273 from Robert Glatzel on 11 starts  (0.6762 at >= 20)
+        #     assists 0.4545 from Teemu Pukki on 11 starts     (0.4167 at >= 20)
+        #     cards   0.6000 from Diego González on 10 starts  (0.5517 at >= 20)
+        # while the caps that actually bind (sot2/sot3/goals2, all Mbappé on 98 starts) do not
+        # move at all. So 20 trims noise without tightening anything real, and every market
+        # stays comfortably above config.MIN_SIGNAL_PROB.
+        MIN_STARTS_FOR_CAP = 20
+        starts = hist
+        if "minutes" in hist.columns:
+            starts = hist[pd.to_numeric(hist["minutes"], errors="coerce").fillna(0) >= 60.0]
+        if starts.empty:
+            starts = hist
+        rates = (starts.groupby("player_name")
+                       .filter(lambda g: len(g) >= MIN_STARTS_FOR_CAP)
+                       .groupby("player_name")[col]
+                       .apply(lambda x: (x >= thr).mean()))
+        if rates.empty:
+            caps[mkt] = 0.95
+            continue
+        caps[mkt] = round(min(float(rates.max()), 0.95), 4)
     return caps
 
 
@@ -274,6 +310,25 @@ def run_player_predictions(
     _history_path = config.BASE_DIR / "player_history.parquet"
     _MARKET_CAPS = _compute_market_caps(_history_path)
     print(f"[player_model] market caps (top-1% real player): { {k: v for k,v in _MARKET_CAPS.items()} }")
+
+    # STRUCTURALLY DEAD MARKET GUARD.
+    #
+    # Two independent safety mechanisms can silently cancel each other out: p_model is capped
+    # at the top-1% real-player rate, and then dropped if it falls below MIN_SIGNAL_PROB. When
+    # a market's cap is BELOW the floor, every prediction in that market is discarded and the
+    # market can never emit a single tip — with no error anywhere.
+    #
+    # Measured 2026-08-18: sot3 cap 0.1288 and goals2 cap 0.0878 against a 0.15 floor. Neither
+    # market has produced one row in player_tips.csv or player_ledger.csv, ever, while
+    # bookmakers priced sot3 311 times in five days. This log makes that visible instead of
+    # leaving it to be rediscovered by hand.
+    _dead = {m: c for m, c in _MARKET_CAPS.items()
+             if m in config.MARKETS and c < config.MIN_SIGNAL_PROB}
+    if _dead:
+        print(f"[player_model] WARNING: market(s) cannot emit ANY tip — cap below the "
+              f"{config.MIN_SIGNAL_PROB} probability floor: "
+              f"{ {m: round(c, 4) for m, c in _dead.items()} }. "
+              f"Either the floor is wrong for them or they should be retired.")
 
     today = pd.Timestamp.now().normalize()
     # Only the near-term slate. next_n pulls the next N fixtures per league even if weeks away
@@ -593,7 +648,7 @@ def run_player_predictions(
                 # Cap at realistic maximum then absolute ceiling of 0.95
                 p_model = min(p_model, _MARKET_CAPS.get(market, 0.90), 0.95)
 
-                if p_model < 0.15:
+                if p_model < config.MIN_SIGNAL_PROB:
                     continue
 
                 n_games = int(feat_row.get("n_games", 0))
