@@ -2,8 +2,8 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-21,2026-08-21T18:45:00+00:00,Ligue 1,Marseille vs Strasbourg,PROP_LEAGUE,897,1552733.0,Mason Greenwood,Marseille,M,sot,0.688,1.45,,,,,,0.517,0.623,,5,match_level,AVOID,
 2026-08-18,2026-08-18T19:00:00+00:00,Champions League,Fenerbahçe vs Lyon,PROP_LEAGUE,1467,1622621.0,Alexandre Lacazette,Lyon,F,sot,0.657,1.52,,,,,,0.767,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Toulouse vs Lyon,PROP_LEAGUE,1467,1552736.0,Alexandre Lacazette,Lyon,F,sot,0.644,1.55,,,,,,0.767,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,978,1557367.0,Kai Havertz,Arsenal,F,sot,0.629,1.59,1.25,0.7547,-0.1257,-0.1666,-0.2137,0.742,0.623,,5,match_level,PAPER,0.0
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18979,1557367.0,Viktor Gyökeres,Arsenal,F,sot,0.621,1.61,1.22,0.7733,-0.1523,-0.1969,-0.2424,0.767,0.623,,5,match_level,AVOID,0.0
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,978,1557367.0,Kai Havertz,Arsenal,F,sot,0.629,1.59,1.3,0.7257,-0.0967,-0.1332,-0.1823,0.742,0.623,,5,match_level,PAPER,0.0
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18979,1557367.0,Viktor Gyökeres,Arsenal,F,sot,0.621,1.61,1.29,0.7313,-0.1103,-0.1508,-0.1989,0.767,0.623,,5,match_level,PAPER,0.0
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Nice vs Lorient,PROP_LEAGUE,21592,1552734.0,Gaëtan Laborde,Nice,F,sot,0.606,1.65,,,,,,0.673,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Premier League,Everton vs Crystal Palace,PROP_LEAGUE,2218,1557369.0,Ismaïla Sarr,Crystal Palace,F,sot,0.604,1.66,,,,,,0.775,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Millwall vs Norwich,PROP_LEAGUE,133453,1563099.0,Borja Sainz,Norwich,M,sot,0.596,1.68,,,,,,0.458,0.623,,5,match_level,AVOID,
@@ -94,7 +94,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Millwall vs Norwich,PROP_LEAGUE,272553,1563099.0,Josh Coburn,Millwall,F,sot,0.327,3.06,,,,,,0.691,0.623,,5,match_level,AVOID,
 2026-08-23,,Finland Veikkausliiga,HJK Helsinki vs IF Gnistan,VALUABLE,40577,,Santeri Hostikka,HJK helsinki,M,sot,0.327,3.06,,,,,,0.469,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Toulouse vs Lyon,PROP_LEAGUE,362741,1552736.0,Santiago Hidalgo,Toulouse,F,sot,0.327,3.06,,,,,,0.658,0.623,,5,match_level,AVOID,
-2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,541,1550095.0,Jürgen Ekkelenkamp,Udinese,F,sot,0.327,3.06,2.4,0.3931,-0.0661,-0.1681,-0.2152,0.69,0.623,,5,match_level,PAPER,0.0
+2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,541,1550095.0,Jürgen Ekkelenkamp,Udinese,F,sot,0.327,3.06,2.4,0.3931,-0.0661,-0.1681,-0.2152,0.69,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T15:00:00+00:00,La Liga,Athletic Club vs Sevilla,PROP_LEAGUE,19364,1570343.0,Neal Maupay,Sevilla,F,sot,0.326,3.07,,,,,,0.676,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Toulouse vs Lyon,PROP_LEAGUE,519,1552736.0,Corentin Tolisso,Lyon,M,sot,0.325,3.08,,,,,,0.726,0.623,,5,match_level,AVOID,
 2026-08-20,2026-08-20T17:00:00+00:00,Conference League,Tromso vs Brighton,PROP_LEAGUE,305730,1623406.0,Jack Hinshelwood,Brighton,M,sot,0.322,3.11,,,,,,0.743,0.623,,5,match_level,AVOID,
@@ -116,7 +116,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Millwall vs Norwich,PROP_LEAGUE,25332,1563099.0,Josh Sargent,Norwich,F,sot,0.287,3.49,,,,,,0.722,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Inter vs Monza,PROP_LEAGUE,1854,1550092.0,Joaquín Correa,Inter,F,sot,0.283,3.54,,,,,,0.661,0.698,MINUTES,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,350037,1550095.0,Nico Paz,Como,M,sot,0.281,3.56,,,,,,0.26,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,978,1557367.0,Kai Havertz,Arsenal,F,goals,0.281,3.56,2.4,0.3931,-0.1121,-0.2851,-0.3256,0.742,0.623,,5,match_level,AVOID,0.0
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,978,1557367.0,Kai Havertz,Arsenal,F,goals,0.281,3.56,2.31,0.4084,-0.1274,-0.3119,-0.3509,0.742,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T14:00:00+00:00,League One,Leicester vs Burton Albion,PROP_LEAGUE,3428,1564250.0,Jordan Ayew,Leicester,F,sot,0.28,3.57,,,,,,0.642,0.623,,5,match_level,AVOID,
 2026-08-20,2026-08-20T19:00:00+00:00,League One,Sheffield Wednesday vs Bradford,PROP_LEAGUE,19744,1564254.0,Kayden Jackson,Bradford,F,sot,0.28,3.57,,,,,,0.667,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,2475,1550095.0,Roberto Pereyra,Udinese,M,sot,0.278,3.6,,,,,,0.409,0.623,,5,match_level,AVOID,
@@ -147,7 +147,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Toulouse vs Lyon,PROP_LEAGUE,66387,1552736.0,Pavel Šulc,Lyon,F,sot,0.252,3.97,,,,,,0.565,0.698,MINUTES,5,match_level,AVOID,
 2026-08-22,2026-08-22T15:15:00+00:00,Ligue 1,Lens vs Auxerre,PROP_LEAGUE,129169,1552732.0,Anass Zaroury,Lens,M,sot,0.252,3.98,,,,,,0.614,0.698,MINUTES,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,400948,1550095.0,Assane Diao,Como,F,sot,0.249,4.01,1.74,0.5422,-0.2932,-0.5407,-0.5667,0.647,0.623,,5,match_level,AVOID,0.0
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,2937,1557367.0,Declan Rice,Arsenal,M,sot,0.249,4.01,2.2,0.4288,-0.1798,-0.4193,-0.4522,0.409,0.623,,5,match_level,AVOID,0.0
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,2937,1557367.0,Declan Rice,Arsenal,M,sot,0.249,4.01,2.25,0.4193,-0.1703,-0.4061,-0.4397,0.409,0.623,,5,match_level,AVOID,0.0
 2026-08-20,2026-08-20T19:00:00+00:00,La Liga,Rayo Vallecano vs Alaves,PROP_LEAGUE,122657,1570351.0,Randy Nteka,Rayo Vallecano,F,sot,0.248,4.03,1.57,0.6009,-0.3529,-0.5873,-0.6106,0.707,0.623,,5,match_level,AVOID,0.0
 2026-08-20,2026-08-20T19:00:00+00:00,La Liga,Rayo Vallecano vs Alaves,PROP_LEAGUE,517,1570351.0,James Rodríguez,Rayo Vallecano,F,sot,0.247,4.05,,,,,,0.639,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,League One,Leicester vs Burton Albion,PROP_LEAGUE,19004,1564250.0,Bobby De Cordova-Reid,Leicester,F,sot,0.247,4.05,,,,,,0.649,0.623,,5,match_level,AVOID,
@@ -207,7 +207,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-20,2026-08-20T16:00:00+00:00,Conference League,Inter Turku vs FC Copenhagen,PROP_LEAGUE,293747,1623395.0,Christian Ouguehi Legbo,Inter Turku,M,sot,0.209,4.8,,,,,,0.614,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Serie A,Parma vs Cagliari,PROP_LEAGUE,43056,1550093.0,Valentin Mihăilă,Parma,M,sot,0.208,4.81,,,,,,0.273,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Serie A,Parma vs Cagliari,PROP_LEAGUE,91358,1550093.0,Emanuele Valeri,Parma,M,sot,0.207,4.83,3.2,0.2841,-0.0771,-0.2714,-0.3376,0.257,0.623,,5,match_level,AVOID,0.0
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18979,1557367.0,Viktor Gyökeres,Arsenal,F,goals,0.206,4.87,1.94,0.4863,-0.2803,-0.5764,-0.6004,0.767,0.623,,5,match_level,AVOID,0.0
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18979,1557367.0,Viktor Gyökeres,Arsenal,F,goals,0.206,4.87,1.92,0.4914,-0.2854,-0.5807,-0.6045,0.767,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T15:15:00+00:00,Ligue 1,Lens vs Auxerre,PROP_LEAGUE,20633,1552732.0,Jimmy Cabot,Lens,M,sot,0.206,4.86,,,,,,0.261,0.623,,5,match_level,AVOID,
 2026-08-20,2026-08-20T19:00:00+00:00,League One,Sheffield Wednesday vs Bradford,PROP_LEAGUE,19866,1564254.0,Jamal Lowe,Sheffield Wednesday,F,sot,0.205,4.88,,,,,,0.699,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Estac Troyes vs Paris FC,PROP_LEAGUE,22229,1552737.0,Jonathan Ikoné,Paris FC,M,sot,0.205,4.87,,,,,,0.581,0.623,,5,match_level,AVOID,
