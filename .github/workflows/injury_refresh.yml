@@ -54,10 +54,43 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python -m player_model.pipeline --mode enrich-sidelined-live
 
-      - name: Commit and push updated parquet
+      # Commit the 59MB parquet WEEKLY, not daily.
+      #
+      # Measured 2026-08-18: this workflow committed player_history.parquet every day, and the
+      # file content changed by 6-198 BYTES each time — yet parquet is a binary container git
+      # cannot delta-compress, so every commit stored a fresh 58.78 MB blob. 96 commits had
+      # accumulated ~2,785 MB of blob history, ~59 MB/day, and .git had reached 1,299 MB.
+      # GitHub had begun showing "Cannot retrieve latest commit at this time".
+      #
+      # Where that churn comes from, per 24h across 230,216 rows:
+      #     days_since_last_injury   36,525 rows changed (15.87%)
+      #     chronic_injury_risk          94 rows changed (0.041%)
+      #     return_from_injury_flag       0 rows changed
+      #
+      # So almost all of it is days_since_last_injury, which is a pure function of
+      # (last injury date, today) — a derived day counter, not an observation. Storing it
+      # per-row and rewriting the whole file daily is the wrong trade. The right fix is to
+      # keep a small last-injury-date table and compute the delta at read time, but that
+      # changes how a MODEL FEATURE is derived and belongs behind validation, not in a
+      # storage cleanup.
+      #
+      # Committing on SATURDAY is the safe interim: the enrichment still runs daily (keeping
+      # the API cache warm and surfacing failures), chronic_injury_risk's ~660 weekly row
+      # changes are still captured, and Sunday 03:00 retrain reads a parquet refreshed hours
+      # earlier. The only cost is that days_since_last_injury can be up to 6 days stale, which
+      # on a counter usually measured in tens-to-hundreds of days is a small relative error.
+      # Saves roughly 51 MB/day of repository growth.
+      - name: Commit and push updated parquet (Saturdays only)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          DOW=$(date -u +%u)   # 1=Mon .. 6=Sat, 7=Sun
+          if [ "$DOW" != "6" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "Day $DOW — enrichment ran, but the 59MB parquet is only committed on"
+            echo "Saturdays (and on manual dispatch). Skipping commit; nothing is lost that"
+            echo "the next Saturday run will not re-derive."
+            exit 0
+          fi
           git add -f player_history.parquet 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: injury refresh $(date -u '+%Y-%m-%d %H:%M UTC')"

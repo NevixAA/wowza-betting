@@ -133,19 +133,88 @@ def _fetch_odds_for_league(sport_key: str, league: str) -> list[dict]:
 
 # ── History management ────────────────────────────────────────────────────────
 
+# Month-partitioned history.
+#
+# The single monolithic sharp_history.json had reached 12.7 MB and was rewritten in FULL on
+# every run — 8 runs/day, ~91 MB/day of git blobs, ~2,009 MB of history across 514 commits.
+# Combined with player_history.parquet that pushed .git to 1,299 MB and GitHub began showing
+# "Cannot retrieve latest commit at this time".
+#
+# The fix uses a property of the data: a settled fixture's snapshots NEVER change again. Only
+# the current month is still being written, so partitioning by month means the other months
+# stop being rewritten and stop generating blobs. Expected steady state is roughly one ~1 MB
+# partition churning instead of 12.7 MB.
+#
+# The in-memory shape is unchanged — callers still see one flat dict keyed by
+# "{event_id}_{market}" — so nothing downstream needs to know about partitions.
+SHARP_HISTORY_DIR = config.OUTPUT_DIR / "sharp_history"
+
+
+def _partition_key(entry: dict) -> str:
+    """YYYY-MM from the fixture date, or 'unknown' when absent. Never guess a date: a wrong
+    partition would silently split one fixture's snapshots across two files."""
+    d = str((entry or {}).get("date") or "")[:7]
+    return d if len(d) == 7 and d[4] == "-" else "unknown"
+
+
 def _load_history() -> dict:
+    """Merge every month partition, plus the legacy monolith if it is still present.
+
+    Reading both means the migration needs no flag day: the legacy file is consumed here and
+    simply stops being written by _save_history below.
+    """
+    merged: dict = {}
     if SHARP_HISTORY_FILE.exists():
         try:
-            return json.loads(SHARP_HISTORY_FILE.read_text(encoding="utf-8"))
+            merged.update(json.loads(SHARP_HISTORY_FILE.read_text(encoding="utf-8")))
         except Exception:
-            return {}
-    return {}
+            pass
+    if SHARP_HISTORY_DIR.exists():
+        for p in sorted(SHARP_HISTORY_DIR.glob("*.json")):
+            try:
+                merged.update(json.loads(p.read_text(encoding="utf-8")))
+            except Exception:
+                log.warning(f"[sharp] unreadable partition {p.name} — skipped, not deleted")
+    return merged
 
 
 def _save_history(history: dict) -> None:
-    SHARP_HISTORY_FILE.write_text(
-        json.dumps(history, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
+    """Write each month partition only when its content actually changed.
+
+    An unchanged partition is left byte-identical so git sees no diff and stores no blob —
+    that is the entire saving. Nothing is ever deleted.
+    """
+    SHARP_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
+    buckets: dict[str, dict] = {}
+    for k, v in history.items():
+        buckets.setdefault(_partition_key(v), {})[k] = v
+
+    written = 0
+    for month, entries in buckets.items():
+        p = SHARP_HISTORY_DIR / f"{month}.json"
+        payload = json.dumps(dict(sorted(entries.items())), indent=2, ensure_ascii=False)
+        if p.exists():
+            try:
+                if p.read_text(encoding="utf-8") == payload:
+                    continue          # byte-identical -> no write, no git diff, no blob
+            except Exception:
+                pass
+        p.write_text(payload, encoding="utf-8")
+        written += 1
+
+    # Retire the monolith once its contents are safely partitioned. Renamed rather than
+    # deleted — Prompt 2 section 3 / invariant: legacy outputs are research assets.
+    if SHARP_HISTORY_FILE.exists():
+        legacy = SHARP_HISTORY_FILE.with_suffix(".json.migrated")
+        try:
+            SHARP_HISTORY_FILE.replace(legacy)
+            log.info(f"[sharp] migrated monolith -> {len(buckets)} month partition(s); "
+                     f"old file kept as {legacy.name}")
+        except Exception as e:
+            log.warning(f"[sharp] could not retire monolith: {e}")
+
+    log.info(f"[sharp] history: {len(history)} entries across {len(buckets)} month(s); "
+             f"{written} partition(s) rewritten, {len(buckets) - written} unchanged")
 
 
 def _extract_odds(ev: dict) -> dict:

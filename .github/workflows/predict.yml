@@ -113,6 +113,10 @@ jobs:
                    telegram_bot/notified.json telegram_bot/live_notified.json; do
             git add -f "$f" 2>/dev/null || true
           done
+          # sharp_history is now month-partitioned (src/sharp_tracker.py): settled fixtures
+          # never change, so only the current month is rewritten. The 12.7 MB monolith was
+          # costing ~91 MB/day of git blobs.
+          git add -f output/sharp_history/ 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: predict $(date -u '+%Y-%m-%d %H:%M UTC')"
           git restore . 2>/dev/null || true
