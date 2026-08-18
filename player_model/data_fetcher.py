@@ -113,6 +113,11 @@ _COLLECT_SEASONS_BASE: dict[str, list[tuple[int, str, int]]] = {
     "World Cup":       [],
 }
 
+# Enough to cover any domestic season in one fetch (a 20-team league is 380 fixtures; the
+# 24-team EFL divisions are 552). Used when a season has finished and should no longer be
+# fetched as a rolling last-N window.
+FULL_SEASON_LAST_N = 600
+
 # Leagues played inside one calendar year (spring→autumn), so the API season IS the year.
 _CALENDAR_YEAR_LEAGUES = {"Ireland Premier", "Finland Veikk", "World Cup"}
 _WC_LEAGUE_IDS = {"World Cup": 1}
@@ -144,8 +149,26 @@ def _with_current_season(base: dict, today=None) -> dict:
     for lg, seasons in base.items():
         cur = _current_season(lg, today)
         lid = seasons[0][0] if seasons else _WC_LEAGUE_IDS.get(lg)
-        have = {s for (_, s, _) in seasons}
-        out[lg] = list(seasons) + ([] if cur in have or lid is None else [(lid, cur, 99)])
+
+        # Promote FINISHED seasons to a full-season fetch.
+        #
+        # last_n < 100 means "rolling last-N via the API `last=` param", which is right for a
+        # season still in progress and wrong the moment it ends: the slot keeps fetching only
+        # the last 99 fixtures forever, so a completed 380-fixture season is stored as 99.
+        # Measured 2026-08-18 — every top-five league held exactly 99 fixtures for season
+        # 2025 (Championship 98), about a quarter of the real season, and the props models
+        # were training on that. Nobody raised it when 2025/26 finished because the value is
+        # only correct while the season is live.
+        #
+        # Cheap to correct: fixture stats are cached permanently, so this refetches the
+        # missing fixtures once and is free thereafter.
+        promoted = [
+            (lid_, s, (FULL_SEASON_LAST_N if (s != cur and n < 100) else n))
+            for (lid_, s, n) in seasons
+        ]
+
+        have = {s for (_, s, _) in promoted}
+        out[lg] = promoted + ([] if cur in have or lid is None else [(lid, cur, 99)])
     return out
 
 
