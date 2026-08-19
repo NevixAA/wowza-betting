@@ -13,11 +13,23 @@ concurrency:
 
 on:
   schedule:
-    # 8x/day, every 3h (2026-08-16, after the quota upgrade to 75,000/day).
-    # 3x/day yielded only ~1.1 snapshots per fixture — an ENTRY PRICE, not a curve — which
-    # is why standard BTTS / O-U 1.5 / 3.5 CLV was unusable. Each window costs ~330-380
-    # calls, so 8 windows is ~2,900/day: 4% of the new cap, against 39% of the old one.
-    - cron: '0 0,3,6,9,12,15,18,21 * * *'
+    # HOURLY during football hours, 3-hourly overnight (2026-08-19).
+    #
+    # History: 3x/day gave ~1.1 snapshots per fixture — an ENTRY PRICE, not a curve — which is
+    # why standard BTTS / O-U 1.5 / 3.5 CLV was unusable. 8x/day (2026-08-16) helped but still
+    # cannot produce the horizons the research plan needs: T-1h, T-30m and T-10m simply do not
+    # exist at 3-hourly spacing, and those are exactly where the closing line forms.
+    #
+    # Why this is the right place to spend: CLV is the single measurement that decides whether
+    # any model here is real, and CLV is ENTIRELY a function of snapshot density. More
+    # predictions of the same fixture add nothing — the price is what moves. Measured usage is
+    # ~10-11k/day against a 75,000 cap, so this is funded out of existing headroom and requires
+    # no cut elsewhere.
+    #
+    # Cost: ~330-380 calls per window. 19 windows is ~6,600/day, taking the total to roughly
+    # 17k — still under 25% of the cap. Self-gating: no upcoming fixtures means a near-free run.
+    - cron: '0 6-23 * * *'      # hourly through the match day
+    - cron: '0 0,3 * * *'       # overnight, where prices barely move
   workflow_dispatch:
 
 jobs:
