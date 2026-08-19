@@ -91,7 +91,14 @@ PROP_SPORT_KEYS = {
     "Bundesliga":       "soccer_germany_bundesliga",
     "La Liga":          "soccer_spain_la_liga",
     "Serie A":          "soccer_italy_serie_a",
-    "Ligue 1":          "soccer_france_ligue_1",
+    # FIXED 2026-08-19. Was "soccer_france_ligue_1", which OddsAPI answers with
+    # 404 UNKNOWN_SPORT — so Ligue 1 player props have NEVER been fetchable, silently, since
+    # the key was written. The real key is "ligue_one". Confirmed against the free /v4/sports
+    # endpoint (no quota cost), which lists soccer_france_ligue_one / soccer_france_ligue_two.
+    "Ligue 1":          "soccer_france_ligue_one",
+    # UCL group stage has not started; the qualifiers are being played NOW and are a separate
+    # sport key. Without this the competition is invisible until the group stage.
+    "Champions League Qualifying": "soccer_uefa_champs_league_qualification",
     "Championship":     "soccer_efl_champ",
     "League One":       "soccer_england_league1",
     "Bundesliga 2":     "soccer_germany_bundesliga2",
@@ -115,6 +122,49 @@ SPORT_KEY_TO_LEAGUE = {v: k for k, v in PROP_SPORT_KEYS.items()}
 _COVERAGE_FILE = Path(__file__).resolve().parents[1] / "output" / "prop_odds_coverage.json"
 _COVERAGE_MIN_PROBES = 12   # consecutive events with no bookmaker before parking
 _COVERAGE_RETRY_DAYS = 7    # ...and how long before we probe it again anyway
+
+
+def validate_sport_keys(*, quiet: bool = False) -> dict[str, str]:
+    """Check every PROP_SPORT_KEYS value against OddsAPI's own catalogue.
+
+    Exists because a wrong key fails SILENTLY in the worst possible way: the events call
+    returns 404 UNKNOWN_SPORT, the fetcher logs one line and moves on, and the league simply
+    never has props. "Ligue 1" carried soccer_france_ligue_1 — a key that does not exist —
+    for the entire life of the file, and nothing surfaced it. A key that is merely
+    out of season is DIFFERENT and fine: it is valid with active=False, which is how the
+    World Cup and the UEFA competitions look right now.
+
+    The /v4/sports endpoint is FREE and does not consume quota, so this can run on every
+    props run without cost.
+
+    Returns {league: verdict} where verdict is VALID_ACTIVE / VALID_INACTIVE / UNKNOWN_KEY.
+    """
+    key = _load_odds_key()
+    if not key:
+        return {}
+    try:
+        r = requests.get(f"{_BASE}/sports", params={"apiKey": key, "all": "true"}, timeout=30)
+        if r.status_code != 200:
+            return {}
+        catalogue = {s["key"]: s for s in r.json()}
+    except Exception as e:
+        if not quiet:
+            print(f"[odds_fetcher] sport-key validation skipped ({e})")
+        return {}
+
+    out: dict[str, str] = {}
+    bad: list[str] = []
+    for league, sk in PROP_SPORT_KEYS.items():
+        entry = catalogue.get(sk)
+        if entry is None:
+            out[league] = "UNKNOWN_KEY"
+            bad.append(f"{league} -> {sk}")
+        else:
+            out[league] = "VALID_ACTIVE" if entry.get("active") else "VALID_INACTIVE"
+    if bad and not quiet:
+        print(f"[odds_fetcher] *** {len(bad)} sport key(s) DO NOT EXIST in OddsAPI — these "
+              f"leagues can never return props: {bad} ***")
+    return out
 
 
 def _load_coverage() -> dict:
@@ -383,6 +433,16 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
     from datetime import datetime as _dt, timezone as _tz
     today = _dt.now(_tz.utc).strftime("%Y-%m-%d")
     cov = _load_coverage()
+
+    # Free check, so a typo can never again cost a league months of silence.
+    _verdicts = validate_sport_keys()
+    if _verdicts:
+        _unknown = [lg for lg, v in _verdicts.items() if v == "UNKNOWN_KEY"]
+        _inactive = [lg for lg, v in _verdicts.items() if v == "VALID_INACTIVE"]
+        if _unknown:
+            print(f"[odds_fetcher] BROKEN sport key(s): {_unknown}")
+        if _inactive:
+            print(f"[odds_fetcher] out of season (valid key, nothing to fetch): {_inactive}")
 
     for sport_key, match_set in needed.items():
         if _coverage_parked(cov, sport_key, today):
