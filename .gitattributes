@@ -37,4 +37,21 @@ output/api_usage_log.csv                     merge=union
 
 # Keep line endings stable so a Windows local checkout and a Linux runner cannot produce a
 # whole-file diff (which would turn every append into a maximal conflict).
-*.csv text eol=lf
+#
+# SCOPED TO THESE FILES ONLY. This was `*.csv text eol=lf` for about 40 minutes and it BROKE
+# PREDICT. Of 48 tracked CSVs exactly one, output/clv_records.csv, is stored in git with CRLF
+# (all 142 lines). A blanket eol=lf makes git normalise it to LF, so its normalised form no
+# longer matches the index and it shows as MODIFIED on every checkout, forever. predict.yml does
+# not stage that file, so it stayed unstaged and `git pull --rebase` aborted with "cannot rebase:
+# You have unstaged changes" — even with --autostash, because a pure renormalisation diff is not
+# something stash can take away. Run 32234409801 captured 3,480 quotes from 17 bookmakers and
+# then threw them away on the push.
+#
+# Listing the files individually keeps the protection exactly where it is needed (all five are
+# already stored LF, so declaring it is a no-op today) and leaves clv_records.csv alone rather
+# than rewriting a production data file to satisfy a rule it never needed.
+output/standard_sidemarket_odds_history.csv  text eol=lf
+output/newformat_odds_history.csv            text eol=lf
+output/newformat_odds_dense.csv              text eol=lf
+output/book_odds_snapshots.csv               text eol=lf
+output/api_usage_log.csv                     text eol=lf
