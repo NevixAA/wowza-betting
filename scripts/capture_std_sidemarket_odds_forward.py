@@ -30,7 +30,8 @@ _BASE = "https://v3.football.api-sports.io"
 _HEADERS = {"x-apisports-key": _KEY}
 BET365 = 8
 OUT = PROJ / "output" / "standard_sidemarket_odds_history.csv"
-COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market", "odds"]
+COLS = ["snapshot_date", "snapshot_ts", "match_date", "kickoff_utc", "league",
+        "match", "market", "odds"]
 NEXT_N = 12          # look-ahead fixtures per league
 _MIN_QUOTA = int(os.getenv("MIN_QUOTA", "5000"))
 # Floor below which this capture stops and leaves the rest of the day's quota alone.
@@ -41,6 +42,19 @@ _MIN_QUOTA = int(os.getenv("MIN_QUOTA", "5000"))
 # consumers that actually send tips. 5,000 is ~7% of the Ultra cap and comfortably more than a
 # full day of predict enrichment, so the tip path can always finish.
 
+
+
+def _ordered(df):
+    """Write COLS in their declared order, keeping any unexpected column rather than dropping it.
+
+    pd.concat appends a NEW column at the END, so adding kickoff_utc to an existing 7-column
+    archive would leave the file's order permanently out of step with COLS. No reader depends on
+    position — they all select by name — but a declared schema that does not match the file is a
+    trap for the next person, and dropping unknown columns would silently lose data someone else
+    added. So: COLS first, extras after.
+    """
+    cols = [c for c in COLS if c in df.columns] + [c for c in df.columns if c not in COLS]
+    return df[cols]
 
 # Only price fixtures kicking off within this many hours. None = no filter (the WIDE run).
 # Set from --max-hours / MAX_HOURS so one script serves both cadences.
@@ -73,6 +87,28 @@ def _hours_to_kickoff(raw_ko: str, now) -> float | None:
     except Exception:
         return None
 
+
+def _iso_kickoff(raw_ko: str) -> str:
+    """Kickoff as a normalised UTC ISO timestamp, or "" when unusable.
+
+    WHY THIS COLUMN EXISTS. These archives recorded only `match_date`, i.e. the DAY. So the whole
+    reason the NEAR capture exists — T-1h / T-30m / T-10m resolution into kickoff — was
+    UNVERIFIABLE: you could count snapshots but never measure how close to kickoff any of them
+    landed. On 2026-08-19 an attempt to check near-kickoff coverage had to be abandoned because the
+    only archive carrying a kickoff time was one day old (a single kicked-off fixture in it).
+
+    Empty string, never a guess: an invented kickoff would produce a confident wrong lead time,
+    which is worse than a blank one (invariant 9 — write NaN, never an invented number).
+    """
+    if not raw_ko:
+        return ""
+    try:
+        ko = datetime.fromisoformat(str(raw_ko).replace("Z", "+00:00"))
+        if ko.tzinfo is None:
+            ko = ko.replace(tzinfo=timezone.utc)
+        return ko.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return ""
 
 _OU_EXCLUDE = ("Corner", "Card", "Team", "Player", "Shot", "Foul", "Handicap")
 
@@ -232,7 +268,9 @@ def run() -> int:
                 stop = True; break
             for market, odd in odds.items():
                 rows.append({"snapshot_date": snap_date, "snapshot_ts": snap_ts,
-                             "match_date": mdate, "league": league,
+                             "match_date": mdate,
+                             "kickoff_utc": _iso_kickoff(raw_ko),
+                             "league": league,
                              "match": f"{home} vs {away}", "market": market, "odds": odd})
             n_lg += 1
         _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
@@ -248,7 +286,7 @@ def run() -> int:
     new = new.sort_values(["match_date", "match", "market", "snapshot_ts"])
     _prev = new.groupby(["match_date", "match", "market"])["odds"].shift()
     new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts")
-    new.to_csv(OUT, index=False)
+    _ordered(new).to_csv(OUT, index=False)
     print(f"[std_odds] appended -> {OUT.name} (total {len(new):,})")
     return len(rows)
 

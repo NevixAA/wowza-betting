@@ -29,13 +29,27 @@ _BASE = "https://v3.football.api-sports.io"
 _HEADERS = {"x-apisports-key": _KEY}
 BET365 = 8
 OUT = PROJ / "output" / "newformat_odds_history.csv"
-COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market", "odds"]
+COLS = ["snapshot_date", "snapshot_ts", "match_date", "kickoff_utc", "league",
+        "match", "market", "odds"]
 NEXT_N = 20          # look-ahead fixtures per league
 _MIN_QUOTA = int(os.getenv("MIN_QUOTA", "5000"))
 # See capture_std_sidemarket_odds_forward.py: was 200, sized for the 7,500/day Pro tier. On the
 # 75,000/day Ultra plan, and with this script now able to run in a loop, a 200 floor would let a
 # capture drain the day and starve the tip path. 5,000 keeps predict/props always able to finish.
 
+
+
+def _ordered(df):
+    """Write COLS in their declared order, keeping any unexpected column rather than dropping it.
+
+    pd.concat appends a NEW column at the END, so adding kickoff_utc to an existing 7-column
+    archive would leave the file's order permanently out of step with COLS. No reader depends on
+    position — they all select by name — but a declared schema that does not match the file is a
+    trap for the next person, and dropping unknown columns would silently lose data someone else
+    added. So: COLS first, extras after.
+    """
+    cols = [c for c in COLS if c in df.columns] + [c for c in df.columns if c not in COLS]
+    return df[cols]
 
 # Only price fixtures kicking off within this many hours. None = no filter (the WIDE run).
 # One script serves both cadences: a WIDE run covers the far horizon a few times a day, a NEAR
@@ -199,7 +213,9 @@ def run() -> int:
                 stop = True; break
             for market, odd in odds.items():
                 rows.append({"snapshot_date": snap_date, "snapshot_ts": snap_ts,
-                             "match_date": mdate, "league": league,
+                             "match_date": mdate,
+                             "kickoff_utc": _iso_kickoff(raw_ko),
+                             "league": league,
                              "match": f"{home} vs {away}", "market": market, "odds": odd})
             n_lg += 1
         _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
@@ -218,7 +234,7 @@ def run() -> int:
     combined = combined.sort_values(["match_date", "match", "market", "snapshot_ts"])
     _prev = combined.groupby(["match_date", "match", "market"])["odds"].shift()
     combined = combined[combined["odds"].ne(_prev)].sort_values("snapshot_ts")
-    combined.to_csv(OUT, index=False)
+    _ordered(combined).to_csv(OUT, index=False)
     print(f"[nf_odds] appended {len(new)} rows -> {OUT.name} (total {len(combined):,})")
     return len(new)
 
