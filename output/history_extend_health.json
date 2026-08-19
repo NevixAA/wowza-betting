@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-08-19T04:21:45Z",
+  "run_number": "1",
+  "gate": {
+    "collect": "false",
+    "newest_before": "2026-08-17",
+    "age_days": "2",
+    "hours_since_commit": "0.3"
+  },
+  "collect_outcome": "skipped",
+  "parquet": {
+    "rows": 302456,
+    "newest_after": "2026-08-17"
+  },
+  "collect_log_tail": [
+    "(no collect this run)"
+  ]
+}
