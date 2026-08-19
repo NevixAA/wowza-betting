@@ -34,6 +34,37 @@ COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market
 NEXT_N = 12          # look-ahead fixtures per league
 _MIN_QUOTA = 300     # stop if API-Football quota gets low (Pro tier is 7,500/day)
 
+# Only price fixtures kicking off within this many hours. None = no filter (the WIDE run).
+# Set from --max-hours / MAX_HOURS so one script serves both cadences.
+MAX_HOURS: float | None = None
+if "--max-hours" in sys.argv:
+    try:
+        MAX_HOURS = float(sys.argv[sys.argv.index("--max-hours") + 1])
+    except (IndexError, ValueError):
+        MAX_HOURS = None
+elif os.getenv("MAX_HOURS"):
+    try:
+        MAX_HOURS = float(os.environ["MAX_HOURS"])
+    except ValueError:
+        MAX_HOURS = None
+
+
+def _hours_to_kickoff(raw_ko: str, now) -> float | None:
+    """Hours until kickoff, or None when the timestamp is unusable.
+
+    None means "cannot tell", and the caller keeps such a fixture rather than dropping it: a
+    wasted odds call costs one credit, a silently missing curve costs the fixture.
+    """
+    if not raw_ko:
+        return None
+    try:
+        ko = datetime.fromisoformat(str(raw_ko).replace("Z", "+00:00"))
+        if ko.tzinfo is None:
+            ko = ko.replace(tzinfo=timezone.utc)
+        return (ko - now).total_seconds() / 3600.0
+    except Exception:
+        return None
+
 
 _OU_EXCLUDE = ("Corner", "Card", "Team", "Player", "Shot", "Foul", "Handicap")
 
@@ -157,14 +188,37 @@ def run() -> int:
         except Exception as e:
             print(f"  {league}: fixtures fetch failed ({e})"); continue
         n_lg = 0
+        n_skipped_far = 0
         for fx in fixtures:
             fid = fx.get("fixture", {}).get("id")
-            mdate = (fx.get("fixture", {}).get("date", "") or "")[:10]
+            raw_ko = fx.get("fixture", {}).get("date", "") or ""
+            mdate = raw_ko[:10]
             teams = fx.get("teams", {})
             home = teams.get("home", {}).get("name", "")
             away = teams.get("away", {}).get("name", "")
             if not (fid and home and away):
                 continue
+
+            # KICKOFF-PROXIMITY FILTER (--max-hours).
+            #
+            # A window costs ~350 calls because it prices NEXT_N fixtures per league regardless
+            # of kickoff, and a fixture ten days out has not moved. Nearly all of that spend
+            # buys nothing. The fixtures that matter are the imminent ones, and there are very
+            # few of them — roughly 24 kick off per day across all leagues, so about 12 inside
+            # any 12-hour window.
+            #
+            # So the same budget buys two different runs:
+            #   WIDE  no filter, a few times a day  -> the far horizon (T-7d, T-3d, T-24h)
+            #   NEAR  --max-hours 12, frequently    -> T-6h ... T-30m, T-10m, close
+            # The near run is cheap precisely because it is selective, which is what makes
+            # 10-minute resolution into kickoff affordable at all.
+            if MAX_HOURS is not None:
+                hrs = _hours_to_kickoff(raw_ko, now)
+                # Unknown kickoff is KEPT: dropping it would silently lose a fixture, and a
+                # wasted odds call is cheaper than a missing curve.
+                if hrs is not None and not (0 <= hrs <= MAX_HOURS):
+                    n_skipped_far += 1
+                    continue
             odds = _fetch_odds(fid)
             if odds.get("_stop"):
                 stop = True; break
@@ -173,7 +227,8 @@ def run() -> int:
                              "match_date": mdate, "league": league,
                              "match": f"{home} vs {away}", "market": market, "odds": odd})
             n_lg += 1
-        print(f"  {league}: {n_lg} upcoming fixtures priced")
+        _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
+        print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
     if not rows:
         print("[std_odds] no rows captured"); return 0
     new = pd.DataFrame(rows, columns=COLS)
