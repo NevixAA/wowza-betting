@@ -43,22 +43,25 @@ on:
         required: false
         default: ''
       loop_minutes:
-        description: 'NEAR only: keep sampling for N minutes (blank = 100)'
+        description: 'NEAR only: keep sampling for N minutes (blank = 25)'
         required: false
         default: ''
       loop_every:
-        description: 'NEAR only: minutes between passes (blank = 10)'
+        description: 'NEAR only: minutes between passes (blank = 5)'
         required: false
         default: ''
 
 jobs:
   std_odds_capture:
     runs-on: ubuntu-latest
-    # Must exceed LOOP_MINUTES (100) plus checkout/pip/commit, or the timeout kills the loop
-    # mid-window and the whole run commits nothing. GitHub's own ceiling is 6h, and minutes are
-    # free on a public repo, so a long-held runner costs nothing but must not overlap the next
-    # firing — the concurrency group above makes an overlap queue rather than double-spend.
-    timeout-minutes: 120
+    # Must exceed LOOP_MINUTES (25) plus checkout/pip/commit, or the timeout kills the loop
+    # mid-window and the whole run commits nothing.
+    # NOT just "long runs are free because minutes are free on a public repo" — that was the
+    # reasoning that produced the 100-minute loop, and it was wrong. The concurrency group holds
+    # only ONE pending run, so a long run does not make later firings queue politely: each new
+    # firing CANCELS the one waiting behind it. The run length must therefore stay well under the
+    # real delivery interval, not merely under the timeout.
+    timeout-minutes: 40
     permissions:
       contents: write
 
@@ -101,14 +104,27 @@ jobs:
           # is the exact defect the NEAR run was added to fix.
           #
           # So take the density inside ONE run, which the scheduler cannot throttle. Each firing
-          # now samples repeatedly for LOOP_MINUTES, turning ~9 firings/day into ~100 captures.
+          # now samples repeatedly for LOOP_MINUTES: 5 passes per firing, so ~9 firings/day give
+          # ~45 captures instead of 9 — fewer than the 100 the first attempt claimed, but they
+          # actually land instead of being cancelled.
           # Safe to do because the script keeps only CONSECUTIVE-DISTINCT prices: a pass where
           # nothing moved writes NO row, so extra passes can only add real movements, never bloat.
           # The commit still happens ONCE after the loop, so this adds no push-race risk.
           LOOP_MIN="${{ github.event.inputs.loop_minutes }}"
           LOOP_EVERY="${{ github.event.inputs.loop_every }}"
-          [ -n "$LOOP_MIN" ]   || LOOP_MIN=100
-          [ -n "$LOOP_EVERY" ] || LOOP_EVERY=10
+          # SIZED TO FIT THE DELIVERY INTERVAL (fixed 2026-08-19, second attempt).
+          # The first version looped for 100 minutes. That was wrong: this workflow's concurrency
+          # group only allows ONE pending run, so while a 100-120 minute loop held the group every
+          # subsequent cron firing queued and was then CANCELLED by the firing after it. Measured:
+          # 7 of 22 runs cancelled after sitting queued 15-44 minutes, and the successful loops ran
+          # 99-122 minutes against a 120-minute timeout, i.e. no margin at all.
+          # No data was lost - the long runs did commit - but most firings were wasted and the run
+          # list looked broken.
+          # 25 minutes at 5-minute spacing gives 5 passes, FINER near-kickoff resolution than the
+          # old 10-minute spacing, and finishes well inside the ~30-45 minute real delivery gap so
+          # runs stop piling up.
+          [ -n "$LOOP_MIN" ]   || LOOP_MIN=25
+          [ -n "$LOOP_EVERY" ] || LOOP_EVERY=5
 
           if [ -z "$MH" ]; then
             echo "WIDE run: all fixtures in the look-ahead window (single pass)"
