@@ -13,7 +13,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T11:30:00+00:00,League One,Luton vs Notts County,PROP_LEAGUE,19274,1564251.0,Kasey Palmer,Luton,M,sot,0.572,1.75,,,,,,0.79,0.623,,5,match_level,AVOID,
 2026-08-22,,La Liga 2,Oviedo vs Leganés,VALUABLE,266202,,Ilyas Chaira,Oviedo,M,sot,0.568,1.76,,,,,,0.313,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Premier League,Nottingham Forest vs Leeds,PROP_LEAGUE,18931,1557371.0,Chris Wood,Nottingham Forest,F,sot,0.56,1.78,,,,,,0.699,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18404,1557367.0,Ephron Mason-Clark,Coventry,F,sot,0.56,1.79,,,,,,0.71,0.623,,5,match_level,AVOID,
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18404,1557367.0,Ephron Mason-Clark,Coventry,F,sot,0.56,1.79,3.05,0.2981,0.2619,0.8788,0.708,0.71,0.623,,5,match_level,VALUABLE,0.0691
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Birmingham vs Bristol City,PROP_LEAGUE,25464,1563095.0,Marvin Ducksch,Birmingham,F,sot,0.556,1.8,,,,,,0.742,0.623,,5,match_level,AVOID,
 2026-08-21,2026-08-21T18:45:00+00:00,Ligue 1,Marseille vs Strasbourg,PROP_LEAGUE,785,1552733.0,Cengiz Ünder,Marseille,F,sot,0.554,1.8,,,,,,0.733,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T15:00:00+00:00,La Liga,Athletic Club vs Sevilla,PROP_LEAGUE,47291,1570343.0,Gorka Guruzeta,Athletic Club,F,sot,0.531,1.88,,,,,,0.683,0.623,,5,match_level,AVOID,
@@ -98,7 +98,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-20,2026-08-20T17:00:00+00:00,Conference League,Tromso vs Brighton,PROP_LEAGUE,305730,1623406.0,Jack Hinshelwood,Brighton,M,sot,0.322,3.11,,,,,,0.743,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Championship,West Ham vs Charlton,PROP_LEAGUE,19428,1563105.0,Jarrod Bowen,West Ham,M,sot,0.319,3.13,,,,,,0.436,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Championship,Southampton vs Stoke City,PROP_LEAGUE,153425,1563102.0,Lewis Dobbin,Southampton,M,sot,0.318,3.15,,,,,,0.672,0.623,,5,match_level,AVOID,
-2026-08-22,2026-08-22T11:30:00+00:00,Premier League,Hull City vs Manchester United,PROP_LEAGUE,1485,1557368.0,Bruno Fernandes,Manchester United,M,sot,0.317,3.15,1.44,0.6551,-0.3381,-0.5161,-0.5435,0.299,0.623,,5,match_level,AVOID,0.0
+2026-08-22,2026-08-22T11:30:00+00:00,Premier League,Hull City vs Manchester United,PROP_LEAGUE,1485,1557368.0,Bruno Fernandes,Manchester United,M,sot,0.317,3.15,1.46,0.6462,-0.3292,-0.5094,-0.5372,0.299,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Millwall vs Norwich,PROP_LEAGUE,152950,1563099.0,Thierno Ballo,Millwall,M,sot,0.314,3.19,,,,,,0.314,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Lincoln vs Portsmouth,PROP_LEAGUE,304769,1563098.0,Adrian Segečić,Portsmouth,M,sot,0.312,3.2,,,,,,0.767,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Inter vs Monza,PROP_LEAGUE,1640,1550092.0,Hakan Çalhanoğlu,Inter,M,sot,0.306,3.26,,,,,,0.309,0.623,,5,match_level,AVOID,
@@ -163,7 +163,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Millwall vs Norwich,PROP_LEAGUE,290635,1563099.0,Camiel Neghli,Millwall,M,sot,0.234,4.27,,,,,,0.31,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T11:30:00+00:00,Championship,Lincoln vs Portsmouth,PROP_LEAGUE,20007,1563098.0,Conor Chaplin,Portsmouth,F,sot,0.233,4.3,,,,,,0.689,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Nice vs Lorient,PROP_LEAGUE,25008,1552734.0,Jonathan Clauss,Nice,M,sot,0.231,4.33,,,,,,0.413,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,33462,1557367.0,Tatsuhiro Sakamoto,Coventry,M,sot,0.228,4.39,,,,,,0.598,0.623,,5,match_level,AVOID,
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,33462,1557367.0,Tatsuhiro Sakamoto,Coventry,M,sot,0.228,4.39,3.5,0.2597,-0.0317,-0.1222,-0.202,0.598,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T14:00:00+00:00,Championship,Southampton vs Stoke City,PROP_LEAGUE,284356,1563102.0,Shea Charles,Southampton,M,sot,0.227,4.4,,,,,,0.455,0.698,SET_PIECE,5,match_level,AVOID,
 2026-08-21,2026-08-21T18:45:00+00:00,Ligue 1,Marseille vs Strasbourg,PROP_LEAGUE,897,1552733.0,Mason Greenwood,Marseille,M,sot2,0.226,4.43,,,,,,,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Serie A,Genoa vs Napoli,PROP_LEAGUE,248,1550091.0,Hirving Lozano,Napoli,F,sot,0.225,4.44,,,,,,0.613,0.623,,5,match_level,AVOID,
@@ -225,7 +225,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Inter vs Monza,PROP_LEAGUE,201,1550092.0,Marcelo Brozović,Inter,M,sot,0.198,5.05,,,,,,0.405,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T11:30:00+00:00,Premier League,Hull City vs Manchester United,PROP_LEAGUE,19337,1557368.0,Oli McBurnie,Hull City,F,goals,0.197,5.07,,,,,,0.767,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Premier League,Everton vs Crystal Palace,PROP_LEAGUE,13736,1557369.0,Daniel Muñoz,Crystal Palace,D,cards,0.195,5.13,,,,,,,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18404,1557367.0,Ephron Mason-Clark,Coventry,F,goals,0.195,5.14,,,,,,0.71,0.623,,5,match_level,AVOID,
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,18404,1557367.0,Ephron Mason-Clark,Coventry,F,goals,0.195,5.14,9.5,0.0915,0.1035,1.1304,0.8525,0.71,0.623,,5,match_level,VALUABLE,0.0201
 2026-08-22,2026-08-22T18:45:00+00:00,Serie A,Genoa vs Napoli,PROP_LEAGUE,2780,1550091.0,Victor Osimhen,Napoli,F,sot,0.195,5.13,,,,,,0.791,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T11:30:00+00:00,League One,Luton vs Notts County,PROP_LEAGUE,280685,1564251.0,Nigel Cello Lonwijk,Luton,D,sot,0.195,5.13,,,,,,0.241,0.698,SET_PIECE,5,match_level,AVOID,
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Nice vs Lorient,PROP_LEAGUE,23363,1552734.0,Noah Cadiou,Lorient,M,sot,0.195,5.12,,,,,,0.607,0.623,,5,match_level,AVOID,
@@ -241,7 +241,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,157052,1557367.0,Riccardo Calafiori,Arsenal,D,sot,0.188,5.31,2.45,0.3851,-0.1971,-0.5118,-0.5394,0.264,0.698,SET_PIECE,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T14:00:00+00:00,League One,Leicester vs Burton Albion,PROP_LEAGUE,380681,1564250.0,Divine Mukasa,Leicester,M,sot,0.188,5.32,,,,,,0.26,0.623,,5,match_level,AVOID,
 2026-08-20,2026-08-20T19:00:00+00:00,League One,Sheffield Wednesday vs Bradford,PROP_LEAGUE,18942,1564254.0,Y. Valery,Sheffield Wednesday,D,cards,0.187,5.35,,,,,,,0.623,,5,match_level,AVOID,
-2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,22007,1550095.0,Hassane Kamara,Udinese,M,sot,0.187,5.34,4.7,0.1934,-0.0064,-0.0332,-0.1211,0.237,0.623,,5,match_level,PAPER,0.0
+2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,22007,1550095.0,Hassane Kamara,Udinese,M,sot,0.187,5.34,4.7,0.1934,-0.0064,-0.0332,-0.1211,0.237,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,162907,1550095.0,Alessandro Zanoli,Udinese,M,sot,0.187,5.35,,,,,,0.406,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Udinese vs Como,PROP_LEAGUE,36916,1550095.0,Kingsley Ehizibue,Udinese,M,sot,0.186,5.39,,,,,,0.59,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T17:30:00+00:00,La Liga,Valencia vs Celta Vigo,PROP_LEAGUE,2476,1570352.0,Guido Rodríguez,Valencia,M,sot,0.186,5.38,,,,,,0.596,0.623,,5,match_level,AVOID,
@@ -315,7 +315,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-21,2026-08-21T19:00:00+00:00,La Liga,Real Betis vs Real Sociedad,PROP_LEAGUE,1631,1570345.0,Ricardo Rodríguez,Real Betis,D,cards,0.166,6.02,,,,,,,0.623,,5,match_level,AVOID,
 2026-08-23,2026-08-23T16:30:00+00:00,Serie A,Frosinone vs Juventus,PROP_LEAGUE,127011,1550090.0,Andrea Cambiaso,Juventus,M,sot,0.165,6.08,2.7,0.3494,-0.1844,-0.5278,-0.5545,0.261,0.623,,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Toulouse vs Lyon,PROP_LEAGUE,18881,1552736.0,Joshua King,Toulouse,F,goals,0.165,6.06,,,,,,0.76,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,264437,1557367.0,Bobby Thomas,Coventry,D,sot,0.165,6.08,,,,,,0.436,0.698,SET_PIECE,5,match_level,AVOID,
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,264437,1557367.0,Bobby Thomas,Coventry,D,sot,0.165,6.08,4.8,0.1894,-0.0244,-0.1288,-0.208,0.436,0.698,SET_PIECE,5,match_level,AVOID,0.0
 2026-08-22,2026-08-22T17:30:00+00:00,La Liga,Valencia vs Celta Vigo,PROP_LEAGUE,313651,1570352.0,Hugo Sotelo,Celta Vigo,M,cards,0.165,6.07,,,,,,,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T16:30:00+00:00,Serie A,Inter vs Monza,PROP_LEAGUE,21509,1550092.0,Marcus Thuram,Inter,M,cards,0.164,6.11,,,,,,,0.623,,5,match_level,AVOID,
 2026-08-20,2026-08-20T19:00:00+00:00,La Liga,Rayo Vallecano vs Alaves,PROP_LEAGUE,18895,1570351.0,Florian Lejeune,Rayo Vallecano,D,sot,0.164,6.09,2.25,0.4193,-0.2553,-0.6089,-0.631,0.47,0.698,SET_PIECE,5,match_level,AVOID,0.0
@@ -360,7 +360,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-08-22,2026-08-22T18:45:00+00:00,Ligue 1,Estac Troyes vs Paris FC,PROP_LEAGUE,22170,1552737.0,Pierre Lees Melou,Paris FC,M,sot,0.159,6.28,,,,,,0.253,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Premier League,Nottingham Forest vs Leeds,PROP_LEAGUE,47969,1557371.0,Gabriel Gudmundsson,Leeds,D,cards,0.159,6.28,,,,,,,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T15:15:00+00:00,Ligue 1,Lens vs Auxerre,PROP_LEAGUE,323625,1552732.0,Kévin Danois,Auxerre,M,sot,0.159,6.28,,,,,,0.424,0.623,,5,match_level,AVOID,
-2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,19328,1557367.0,Matt Grimes,Coventry,M,sot,0.158,6.32,,,,,,0.241,0.698,SET_PIECE,5,match_level,AVOID,
+2026-08-21,2026-08-21T19:00:00+00:00,Premier League,Arsenal vs Coventry,PROP_LEAGUE,19328,1557367.0,Matt Grimes,Coventry,M,sot,0.158,6.32,7.5,0.1159,0.0421,0.3628,0.185,0.241,0.698,SET_PIECE,5,match_level,PAPER,0.0
 2026-08-21,2026-08-21T18:45:00+00:00,Ligue 1,Marseille vs Strasbourg,PROP_LEAGUE,288055,1552733.0,Ângelo,Strasbourg,M,sot,0.158,6.34,,,,,,0.213,0.623,,5,match_level,AVOID,
 2026-08-20,2026-08-20T19:00:00+00:00,League One,Sheffield Wednesday vs Bradford,PROP_LEAGUE,19682,1564254.0,Jerry Yates,Sheffield Wednesday,F,sot,0.158,6.34,,,,,,0.287,0.623,,5,match_level,AVOID,
 2026-08-22,2026-08-22T14:00:00+00:00,Premier League,Everton vs Crystal Palace,PROP_LEAGUE,2490,1557369.0,Jefferson Lerma,Crystal Palace,M,sot,0.158,6.35,,,,,,0.261,0.623,,5,match_level,AVOID,
