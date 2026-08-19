@@ -49,6 +49,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
 
     rows = []
     n_queried = n_ok = n_err = 0   # health telemetry (see _LAST_FETCH_STATS)
+    # Per-book prices already present in the OddsAPI response. Collected here and written to
+    # output/book_odds_snapshots.csv below; see the note at the capture site.
+    _book_rows: list[dict] = []
+    _snap_ts = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ")
     for league, sport_key in config.ODDS_API_SPORT_KEYS.items():
         if league not in config.ENABLED_LEAGUES:
             continue
@@ -101,6 +105,33 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                                 pt = outcome.get("point")
                                 nm = outcome.get("name")
                                 pr = outcome.get("price")
+                                # PER-BOOK CAPTURE (added 2026-08-19, additive only).
+                                #
+                                # OddsAPI returns EVERY bookmaker's price in this response and
+                                # we already pay for it, but the `not ov25` guards below keep
+                                # only the FIRST book and discard the rest. That discard is why
+                                # multi-book consensus looked like it needed a new data source:
+                                # v11 calls market_baseline({}, None) with an empty dict, so its
+                                # "consensus" is one book's de-vig, and Prompt 3 section 7 calls
+                                # that its highest-priority gap.
+                                #
+                                # Recording what is already in hand costs ZERO extra API calls
+                                # and gives v11 and Pro a real cross-book median, dispersion and
+                                # best-executable price. Nothing here alters ov25/un25/ov15/ov35
+                                # or any model input — the selection logic below is untouched.
+                                if pt in (1.5, 2.5, 3.5) and nm in ("Over", "Under") and pr:
+                                    _book_rows.append({
+                                        "snapshot_ts":  _snap_ts,
+                                        "league":       league,
+                                        "match_date":   dt.strftime("%Y-%m-%d"),
+                                        "kickoff_utc":  dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                                        "match":        f"{event.get('home_team','')} vs "
+                                                        f"{event.get('away_team','')}",
+                                        "bookmaker":    bm.get("key", ""),
+                                        "market":       f"OU{str(pt).replace('.', '')}",
+                                        "side":         nm.upper(),
+                                        "odds":         float(pr),
+                                    })
                                 if pt == 2.5 and nm == "Over"  and not ov25:  ov25 = pr
                                 if pt == 2.5 and nm == "Under" and not un25:  un25 = pr
                                 if pt == 1.5 and nm == "Over"  and not ov15:  ov15 = pr
@@ -139,6 +170,27 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
     # btts-422 signature) from "leagues OK but no games". Read by the notifier.
     global _LAST_FETCH_STATS
     _LAST_FETCH_STATS = {"queried": n_queried, "ok": n_ok, "err": n_err, "kept": len(rows)}
+
+    # Persist the per-book prices. Wrapped so it can NEVER affect predict: a timed-out or
+    # crashed predict sends zero tips, which is far worse than a missing research file.
+    # Stores price CHANGES only, like drift.py — an unchanged book rewrites nothing, so git
+    # sees no diff and the file grows with real market movement rather than with run count.
+    if _book_rows:
+        try:
+            _bp = config.OUTPUT_DIR / "book_odds_snapshots.csv"
+            _bn = pd.DataFrame(_book_rows)
+            if _bp.exists():
+                _bn = pd.concat([pd.read_csv(_bp), _bn], ignore_index=True)
+            _key = ["match_date", "match", "market", "side", "bookmaker"]
+            _bn = _bn.sort_values(_key + ["snapshot_ts"])
+            _prev = _bn.groupby(_key)["odds"].shift()
+            _bn = _bn[_bn["odds"].ne(_prev)].sort_values("snapshot_ts")
+            _bn.to_csv(_bp, index=False)
+            log.info(f"[book_odds] {len(_book_rows)} quote(s) from "
+                     f"{_bn['bookmaker'].nunique()} bookmaker(s) -> {_bp.name} "
+                     f"(total {len(_bn):,})")
+        except Exception as e:
+            log.warning(f"[book_odds] per-book capture skipped ({e})")
 
     if not rows:
         return pd.DataFrame()

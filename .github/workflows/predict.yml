@@ -110,6 +110,7 @@ jobs:
                    output/live_tips.csv output/live_games.csv \
                    output/worldcup_history.json output/sharp_history.json \
                    output/predict_health.json output/feature_health.json \
+                   output/book_odds_snapshots.csv \
                    telegram_bot/notified.json telegram_bot/live_notified.json; do
             git add -f "$f" 2>/dev/null || true
           done
