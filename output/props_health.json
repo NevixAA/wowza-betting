@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-19T05:30:20Z",
-  "run_id": "32219317638",
-  "run_number": "934",
+  "checked_at": "2026-08-19T05:41:27Z",
+  "run_id": "32219934276",
+  "run_number": "935",
   "event": "schedule",
   "schedule": "",
-  "sha": "79f01d893910",
+  "sha": "5464d0288d64",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "2",
@@ -18,16 +18,15 @@
   "output/player_tips.csv": {
     "rows": 413,
     "fixtures": 35,
-    "mtime": "2026-08-19T05:30:13Z"
+    "mtime": "2026-08-19T05:41:18Z"
   },
   "output/player_ledger.csv": {
     "rows": 2623,
     "fixtures": null,
-    "mtime": "2026-08-19T05:24:54Z"
+    "mtime": "2026-08-19T05:34:40Z"
   },
   "git_dirty_outputs": [
-    "M output/player_tips.csv",
-    " M output/prop_odds_coverage.json"
+    "M output/player_tips.csv"
   ],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
