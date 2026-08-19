@@ -32,7 +32,15 @@ BET365 = 8
 OUT = PROJ / "output" / "standard_sidemarket_odds_history.csv"
 COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market", "odds"]
 NEXT_N = 12          # look-ahead fixtures per league
-_MIN_QUOTA = 300     # stop if API-Football quota gets low (Pro tier is 7,500/day)
+_MIN_QUOTA = int(os.getenv("MIN_QUOTA", "5000"))
+# Floor below which this capture stops and leaves the rest of the day's quota alone.
+#
+# Was 300, sized for the old Pro tier (7,500/day) where 300 was a sensible 4% reserve. The plan
+# is now Ultra (75,000/day) and this script may run in a LOOP, so 300 would let a capture drain
+# the day to within 0.4% of the cap and starve predict, player_props and live_scanner — the
+# consumers that actually send tips. 5,000 is ~7% of the Ultra cap and comfortably more than a
+# full day of predict enrichment, so the tip path can always finish.
+
 
 # Only price fixtures kicking off within this many hours. None = no filter (the WIDE run).
 # Set from --max-hours / MAX_HOURS so one script serves both cadences.
