@@ -12,6 +12,7 @@ Endpoints used:
 """
 from __future__ import annotations
 
+import atexit
 import json
 import time
 from datetime import datetime, timedelta
@@ -87,6 +88,50 @@ def _save_cache(key: str, data: dict) -> None:
     )
 
 
+# ── per-run call accounting (added 2026-08-19) ────────────────────────────────
+# WHY: API-Football usage went 11.5k -> 42.6k/day of a 75,000 cap over 08-16..08-18 and NOTHING
+# could say which workflow was responsible. output/api_usage_log.csv records only the account-wide
+# cumulative counter with a single label ("poll"), so it shows the total moving and nothing else.
+# Attributing it by regressing usage deltas on which workflows were running gave R^2=0.125 and
+# assigned 217 calls/run to the usage monitor, which makes exactly ONE call — i.e. collinearity
+# noise, not an answer.
+#
+# Every API-Football response already carries x-ratelimit-requests-remaining, so exact accounting
+# is FREE — no extra request. Counted at this one choke point, which every endpoint helper below
+# routes through.
+#
+# Deliberately PRINT-ONLY rather than writing a CSV: a committed file would need per-workflow
+# staging plumbing, would grow the repo, and would add another concurrent writer to race on. The
+# workflow log is already durable and readable via the Actions API, which is enough to attribute.
+_STATS = {"calls": 0, "cache_hits": 0, "first_remaining": None, "last_remaining": None,
+          "errors": 0}
+
+
+def _report_usage() -> None:
+    """One-line per-run summary, printed at process exit. Must never raise."""
+    try:
+        s = _STATS
+        if not s["calls"] and not s["cache_hits"]:
+            return
+        label = _os.getenv("GITHUB_WORKFLOW") or "local"
+        spent = ""
+        if s["first_remaining"] is not None and s["last_remaining"] is not None:
+            # Quota actually consumed account-wide during this run. Can exceed our own `calls`
+            # when another workflow overlaps, so both numbers are reported rather than one.
+            spent = (f"  quota_remaining {s['first_remaining']}->{s['last_remaining']} "
+                     f"(account-wide delta {s['first_remaining'] - s['last_remaining']})")
+        total = s["calls"] + s["cache_hits"]
+        hit = 100.0 * s["cache_hits"] / total if total else 0.0
+        print(f"[api_usage] workflow={label} af_calls={s['calls']} "
+              f"cache_hits={s['cache_hits']} cache_hit_rate={hit:.0f}% "
+              f"errors={s['errors']}{spent}")
+    except Exception:
+        pass
+
+
+atexit.register(_report_usage)
+
+
 def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
     """Make one API-Football call with caching."""
     if not _APIFOOTBALL_KEY:
@@ -94,6 +139,7 @@ def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
     cache_key = f"{endpoint}_{json.dumps(params, sort_keys=True)}"
     cached = _load_cache(cache_key, max_age_h=cache_hours)
     if cached:
+        _STATS["cache_hits"] += 1
         return cached
 
     url = f"{BASE_URL}{endpoint}"
@@ -101,8 +147,21 @@ def _get(endpoint: str, params: dict, cache_hours: int = 24) -> Optional[dict]:
         try:
             r = requests.get(url, headers=HEADERS, params=params, timeout=15)
         except Exception as e:
+            _STATS["errors"] += 1
             print(f"[api_football] Error {endpoint}: {e}")
             return None
+        # Count every response that reached the API, including 429/non-200: they consume quota
+        # too, so counting only successes would under-report exactly when we are in trouble.
+        _STATS["calls"] += 1
+        try:
+            rem = r.headers.get("x-ratelimit-requests-remaining")
+            if rem is not None:
+                rem = int(rem)
+                if _STATS["first_remaining"] is None:
+                    _STATS["first_remaining"] = rem
+                _STATS["last_remaining"] = rem
+        except (TypeError, ValueError):
+            pass
         if r.status_code == 429:            # rate-limited → back off and retry (self-heal)
             time.sleep(1.5 * (attempt + 1))
             continue
