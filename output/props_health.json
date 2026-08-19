@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-19T03:48:38Z",
-  "run_id": "32213042727",
-  "run_number": "932",
+  "checked_at": "2026-08-19T04:38:48Z",
+  "run_id": "32216112696",
+  "run_number": "933",
   "event": "schedule",
   "schedule": "",
-  "sha": "019886e1d74b",
+  "sha": "1bad5db9df9f",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "2",
@@ -18,16 +18,15 @@
   "output/player_tips.csv": {
     "rows": 413,
     "fixtures": 35,
-    "mtime": "2026-08-19T03:48:29Z"
+    "mtime": "2026-08-19T04:38:40Z"
   },
   "output/player_ledger.csv": {
     "rows": 2623,
     "fixtures": null,
-    "mtime": "2026-08-19T03:41:42Z"
+    "mtime": "2026-08-19T04:32:21Z"
   },
   "git_dirty_outputs": [
-    "M output/clv_records.csv",
-    " M output/player_prop_odds_history.csv",
+    "M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
@@ -43,20 +42,24 @@
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 3 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 1, 'Finland Veikkausliiga': 1, 'Ireland Premier Division': 1}",
     "[odds_fetcher] sports/soccer_france_ligue_1/events: HTTP 404 | {\"message\":\"Unknown sport\",\"error_code\":\"UNKNOWN_SPORT\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-er",
-    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 83255",
-    "[odds_fetcher] sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds OK | quota remaining: 83249",
-    "[odds_fetcher] sports/soccer_epl/events/95bb16d19debff3ec39919f361f072a4/odds OK | quota remaining: 83247",
+    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 83239",
+    "[odds_fetcher] sports/soccer_epl/events/cd1f0173ec061d9b8a8b22ab8f2f8393/odds OK | quota remaining: 83237",
+    "[odds_fetcher] sports/soccer_epl/events/01615d9573ef1e5aa8c09eb32a4a983b/odds OK | quota remaining: 83235",
+    "[odds_fetcher] sports/soccer_epl/events/ee99154f8db029efcf567c5f7f7a0c0b/odds OK | quota remaining: 83231",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 17 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 83247",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/be3b0694068c114eda8d252c66210b11/odds OK | quota remaining: 83243",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 83231",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/ed57c6f67558fabe25c4634ca959ee01/odds OK | quota remaining: 83227",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/ef8a47c3c8c0f71a251e2efcbf84854a/odds OK | quota remaining: 83223",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/7d4101254957e46d6037bd1d8f268a0e/odds OK | quota remaining: 83219",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/c123d013c16bf22279a1fdf1248c4afb/odds OK | quota remaining: 83215",
     "[odds_fetcher] soccer_england_league1: parked \u2014 15 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 83243",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events/623ff84505dae8a0598eefd6a15b5e14/odds OK | quota remaining: 83239",
-    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 83239",
-    "[odds_fetcher] 1070 player-market prices | leagues with any prop coverage: ['Premier League', 'Serie A', 'La Liga']",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 83215",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/857e387be2e9f73e825ad02a2ec74cc3/odds OK | quota remaining: 83207",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/4feb0ef58a41849f92fcc270268734d4/odds OK | quota remaining: 83203",
+    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 83203",
+    "[odds_fetcher] 1103 player-market prices | leagues with any prop coverage: ['Premier League', 'Serie A', 'La Liga']",
     "[predict] Odds enriched for 64 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
-    "[clv_tracker] logged 5 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 42, 'mean_clv_pct': -0.0393, 'mean_clv_prob': None, 'beat_close_rate': 0.214, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
     "[lineup] 0 confirmed starters | 413 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:2"
