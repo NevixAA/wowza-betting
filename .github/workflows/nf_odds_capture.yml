@@ -13,11 +13,17 @@ concurrency:
 
 on:
   schedule:
-    # 8x/day, every 3h (2026-08-16, after the quota upgrade to 75,000/day). Offset :30 from
-    # std_odds_capture so the two never contend. New-format O/U 2.5 already rides on predict
-    # for free via newformat_odds_dense.csv; this run is what gives BTTS and O/U 1.5/3.5 a
-    # real open->moving->close curve instead of the ~1.2 snapshots/fixture it had.
-    - cron: '30 1,4,7,10,13,16,19,22 * * *'
+    # HOURLY during football hours, 3-hourly overnight (2026-08-19). Offset :30 from
+    # std_odds_capture so the two never contend for the runner or the quota.
+    #
+    # New-format O/U 2.5 already rides on predict for free via newformat_odds_dense.csv; this
+    # run is what gives BTTS and O/U 1.5/3.5 a real open->moving->close curve instead of the
+    # ~1.2 snapshots/fixture it had. At 3-hourly spacing the T-1h / T-30m / T-10m horizons the
+    # research plan asks for do not exist, and those are where the closing line forms.
+    #
+    # Funded from existing headroom: measured usage is ~10-11k/day against a 75,000 cap.
+    - cron: '30 6-23 * * *'
+    - cron: '30 0,3 * * *'
   workflow_dispatch:
 
 jobs:
