@@ -33,6 +33,36 @@ COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market
 NEXT_N = 20          # look-ahead fixtures per league
 _MIN_QUOTA = 200     # stop if API quota gets low
 
+# Only price fixtures kicking off within this many hours. None = no filter (the WIDE run).
+# One script serves both cadences: a WIDE run covers the far horizon a few times a day, a NEAR
+# run (--max-hours 12) covers T-6h..close frequently and cheaply, because only a handful of
+# fixtures are ever imminent.
+MAX_HOURS: float | None = None
+if "--max-hours" in sys.argv:
+    try:
+        MAX_HOURS = float(sys.argv[sys.argv.index("--max-hours") + 1])
+    except (IndexError, ValueError):
+        MAX_HOURS = None
+elif os.getenv("MAX_HOURS"):
+    try:
+        MAX_HOURS = float(os.environ["MAX_HOURS"])
+    except ValueError:
+        MAX_HOURS = None
+
+
+def _hours_to_kickoff(raw_ko: str, now) -> float | None:
+    """Hours until kickoff, or None when unusable. None is KEPT by the caller: a wasted odds
+    call costs one credit, a silently missing curve costs the fixture."""
+    if not raw_ko:
+        return None
+    try:
+        ko = datetime.fromisoformat(str(raw_ko).replace("Z", "+00:00"))
+        if ko.tzinfo is None:
+            ko = ko.replace(tzinfo=timezone.utc)
+        return (ko - now).total_seconds() / 3600.0
+    except Exception:
+        return None
+
 
 def _sanitize_ou(out: dict) -> dict:
     """Drop GOAL O/U odds that are internally impossible (a non-goal O/U market such as
@@ -145,9 +175,16 @@ def run() -> int:
         except Exception as e:
             print(f"  {league}: fixtures fetch failed ({e})"); continue
         n_lg = 0
+        n_skipped_far = 0
         for fx in fixtures:
             fid = fx.get("fixture", {}).get("id")
-            mdate = (fx.get("fixture", {}).get("date", "") or "")[:10]
+            raw_ko = fx.get("fixture", {}).get("date", "") or ""
+            mdate = raw_ko[:10]
+            if MAX_HOURS is not None and fid:
+                _h = _hours_to_kickoff(raw_ko, now)
+                if _h is not None and not (0 <= _h <= MAX_HOURS):
+                    n_skipped_far += 1
+                    continue
             teams = fx.get("teams", {})
             home = teams.get("home", {}).get("name", "")
             away = teams.get("away", {}).get("name", "")
@@ -161,7 +198,8 @@ def run() -> int:
                              "match_date": mdate, "league": league,
                              "match": f"{home} vs {away}", "market": market, "odds": odd})
             n_lg += 1
-        print(f"  {league}: {n_lg} upcoming fixtures priced")
+        _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
+        print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
     if not rows:
         print("[nf_odds] no rows captured"); return 0
     new = pd.DataFrame(rows, columns=COLS)

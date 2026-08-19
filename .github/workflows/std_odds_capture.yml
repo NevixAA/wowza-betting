@@ -28,9 +28,20 @@ on:
     #
     # Cost: ~330-380 calls per window. 19 windows is ~6,600/day, taking the total to roughly
     # 17k — still under 25% of the cap. Self-gating: no upcoming fixtures means a near-free run.
-    - cron: '0 6-23 * * *'      # hourly through the match day
-    - cron: '0 0,3 * * *'       # overnight, where prices barely move
+    # WIDE — every fixture in the look-ahead window, 4x/day. Covers the far horizon
+    # (T-7d, T-3d, T-24h) where prices move slowly. ~350 calls each = ~1,400/day.
+    - cron: '5 0,6,12,18 * * *'
+    # NEAR — only fixtures kicking off within 12h, every 15 minutes. This is where the closing
+    # line actually forms, and it is CHEAP because only a handful of fixtures are ever imminent:
+    # about 24 kick off per day across all leagues, so ~12 inside any 12h window. ~40 calls
+    # each = ~3,800/day, and it is what makes T-1h / T-30m / T-10m exist at all.
+    - cron: '*/15 * * * *'
   workflow_dispatch:
+    inputs:
+      max_hours:
+        description: 'Only price fixtures within N hours (blank = all)'
+        required: false
+        default: ''
 
 jobs:
   std_odds_capture:
@@ -54,7 +65,21 @@ jobs:
       - name: Capture forward standard side-market odds
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python scripts/capture_std_sidemarket_odds_forward.py
+        run: |
+          # The 15-minute cron is the NEAR run and prices only imminent fixtures; the 4x/day
+          # cron is WIDE and prices everything. One script, one flag, so the two cadences cannot
+          # drift apart in behaviour.
+          MH="${{ github.event.inputs.max_hours }}"
+          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '*/15 * * * *' ]; then
+            MH=12
+          fi
+          if [ -n "$MH" ]; then
+            echo "NEAR run: only fixtures within ${MH}h of kickoff"
+            python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH"
+          else
+            echo "WIDE run: all fixtures in the look-ahead window"
+            python scripts/capture_std_sidemarket_odds_forward.py
+          fi
 
       - name: Commit and push updated standard side-market odds history
         run: |

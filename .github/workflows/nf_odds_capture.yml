@@ -22,9 +22,17 @@ on:
     # research plan asks for do not exist, and those are where the closing line forms.
     #
     # Funded from existing headroom: measured usage is ~10-11k/day against a 75,000 cap.
-    - cron: '30 6-23 * * *'
-    - cron: '30 0,3 * * *'
+    # WIDE — all look-ahead fixtures, 4x/day, offset from std so the two never contend.
+    - cron: '35 1,7,13,19 * * *'
+    # NEAR — only fixtures within 12h, every 15 minutes, offset :07 from std_odds_capture.
+    # Cheap because few fixtures are ever imminent; this is what creates T-1h/T-30m/T-10m.
+    - cron: '7-59/15 * * * *'
   workflow_dispatch:
+    inputs:
+      max_hours:
+        description: 'Only price fixtures within N hours (blank = all)'
+        required: false
+        default: ''
 
 jobs:
   nf_odds_capture:
@@ -48,7 +56,19 @@ jobs:
       - name: Capture forward new-format odds
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python scripts/capture_nf_odds_forward.py
+        run: |
+          # NEAR on the 15-minute cron, WIDE on the 4x/day cron. One script, one flag.
+          MH="${{ github.event.inputs.max_hours }}"
+          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '7-59/15 * * * *' ]; then
+            MH=12
+          fi
+          if [ -n "$MH" ]; then
+            echo "NEAR run: only fixtures within ${MH}h of kickoff"
+            python scripts/capture_nf_odds_forward.py --max-hours "$MH"
+          else
+            echo "WIDE run: all fixtures in the look-ahead window"
+            python scripts/capture_nf_odds_forward.py
+          fi
 
       - name: Commit and push updated NF odds history
         run: |
