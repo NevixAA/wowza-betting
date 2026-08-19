@@ -1,13 +1,13 @@
 {
-  "checked_at": "2026-08-18T23:49:05Z",
-  "run_id": "32198298854",
-  "run_number": "929",
+  "checked_at": "2026-08-19T01:04:45Z",
+  "run_id": "32203257383",
+  "run_number": "930",
   "event": "schedule",
   "schedule": "",
-  "sha": "ff318be0f3e3",
+  "sha": "7e92389c6a8a",
   "history_freshness": {
     "newest_match": "2026-08-17",
-    "age_days": "1",
+    "age_days": "2",
     "stale": "false"
   },
   "step_outcomes": {
@@ -16,17 +16,18 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 407,
-    "fixtures": 34,
-    "mtime": "2026-08-18T23:48:58Z"
+    "rows": 413,
+    "fixtures": 35,
+    "mtime": "2026-08-19T01:04:37Z"
   },
   "output/player_ledger.csv": {
-    "rows": 2617,
+    "rows": 2623,
     "fixtures": null,
-    "mtime": "2026-08-18T23:42:41Z"
+    "mtime": "2026-08-19T01:04:44Z"
   },
   "git_dirty_outputs": [
-    "M output/player_prop_odds_history.csv",
+    "M output/clv_records.csv",
+    " M output/player_ledger.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
@@ -36,32 +37,33 @@
     "  [Serie A] 0 recent fixtures fetched",
     "[pipeline] Win probs loaded for 102 WC matches",
     "[player_model] market caps (top-1% real player): {'goals': 0.6875, 'goals2': 0.2661, 'assists': 0.4167, 'sot': 0.95, 'sot2': 0.7581, 'sot3': 0.4839, 'cards': 0.5517}",
-    "[predict] fixture slate: 43 from PROP_LEAGUES via API-Football, 23 from bets.csv supplement",
-    "[predict] Injury filter: 20 injured/suspended players loaded",
-    "[player_model] 407 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
+    "[predict] fixture slate: 44 from PROP_LEAGUES via API-Football, 23 from bets.csv supplement",
+    "[predict] Injury filter: 31 injured/suspended players loaded",
+    "[player_model] 413 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 3 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 1, 'Finland Veikkausliiga': 1, 'Ireland Premier Division': 1}",
     "[odds_fetcher] sports/soccer_france_ligue_1/events: HTTP 404 | {\"message\":\"Unknown sport\",\"error_code\":\"UNKNOWN_SPORT\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-er",
-    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 83449",
-    "[odds_fetcher] sports/soccer_epl/events/cd1f0173ec061d9b8a8b22ab8f2f8393/odds OK | quota remaining: 83447",
-    "[odds_fetcher] sports/soccer_epl/events/01615d9573ef1e5aa8c09eb32a4a983b/odds OK | quota remaining: 83445",
-    "[odds_fetcher] sports/soccer_epl/events/ee99154f8db029efcf567c5f7f7a0c0b/odds OK | quota remaining: 83441",
+    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 83395",
+    "[odds_fetcher] sports/soccer_epl/events/eb2553d10d63dc912b99f8fd0d675721/odds OK | quota remaining: 83389",
+    "[odds_fetcher] sports/soccer_epl/events/95bb16d19debff3ec39919f361f072a4/odds OK | quota remaining: 83387",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 17 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 83387",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/be3b0694068c114eda8d252c66210b11/odds OK | quota remaining: 83383",
     "[odds_fetcher] soccer_england_league1: parked \u2014 15 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 83441",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events/857e387be2e9f73e825ad02a2ec74cc3/odds OK | quota remaining: 83433",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events/4feb0ef58a41849f92fcc270268734d4/odds OK | quota remaining: 83429",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 83429",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/ed57c6f67558fabe25c4634ca959ee01/odds OK | quota remaining: 83425",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/ef8a47c3c8c0f71a251e2efcbf84854a/odds OK | quota remaining: 83421",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/7d4101254957e46d6037bd1d8f268a0e/odds OK | quota remaining: 83417",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/c123d013c16bf22279a1fdf1248c4afb/odds OK | quota remaining: 83413",
-    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 83413",
-    "[odds_fetcher] 913 player-market prices | leagues with any prop coverage: ['Premier League', 'Serie A', 'La Liga']",
-    "[predict] Odds enriched for 53 player/market pairs",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 83383",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/623ff84505dae8a0598eefd6a15b5e14/odds OK | quota remaining: 83379",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/382e164289b17ff11f658279d77c1c1d/odds OK | quota remaining: 83379",
+    "[odds_fetcher] soccer_spain_la_liga: no bookmaker priced Athletic Bilbao v Sevilla (regions=uk,eu)",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/1fd2c356ef34923d9cf24e2cb6933770/odds OK | quota remaining: 83379",
+    "[odds_fetcher] soccer_spain_la_liga: no bookmaker priced Valencia v Celta Vigo (regions=uk,eu)",
+    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 83379",
+    "[odds_fetcher] 975 player-market prices | leagues with any prop coverage: ['Premier League', 'Serie A', 'La Liga']",
+    "[predict] Odds enriched for 59 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
+    "[clv_tracker] logged 6 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 42, 'mean_clv_pct': -0.0393, 'mean_clv_prob': None, 'beat_close_rate': 0.214, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
-    "[lineup] 0 confirmed starters | 407 lineup TBC",
-    "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0"
+    "[lineup] 0 confirmed starters | 413 lineup TBC",
+    "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
+    "[predict] player_ledger: +6 new signal(s) recorded"
   ]
 }
