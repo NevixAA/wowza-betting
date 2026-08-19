@@ -24,20 +24,31 @@ on:
     # Funded from existing headroom: measured usage is ~10-11k/day against a 75,000 cap.
     # WIDE — all look-ahead fixtures, 4x/day, offset from std so the two never contend.
     - cron: '35 1,7,13,19 * * *'
-    # NEAR — only fixtures within 12h, every 30 minutes, offset from std_odds_capture.
+    # NEAR — only fixtures within 12h, every 15 minutes, offset from std_odds_capture.
     # Cheap because few fixtures are ever imminent; this is what creates T-1h/T-30m/T-10m.
-    - cron: '17-59/30 * * * *'
+    - cron: '7-59/15 * * * *'
   workflow_dispatch:
     inputs:
       max_hours:
-        description: 'Only price fixtures within N hours (blank = all)'
+        description: 'Only price fixtures within N hours (blank = all/WIDE)'
+        required: false
+        default: ''
+      loop_minutes:
+        description: 'NEAR only: keep sampling for N minutes (blank = 100)'
+        required: false
+        default: ''
+      loop_every:
+        description: 'NEAR only: minutes between passes (blank = 10)'
         required: false
         default: ''
 
 jobs:
   nf_odds_capture:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Must exceed LOOP_MINUTES (100) plus checkout/pip/commit, or the timeout kills the
+    # loop mid-window and the run commits nothing. Minutes are free on a public repo; the
+    # concurrency group prevents a long run overlapping the next firing.
+    timeout-minutes: 120
     permissions:
       contents: write
 
@@ -57,18 +68,42 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          # NEAR on the 30-minute cron, WIDE on the 4x/day cron. One script, one flag.
+          # NEAR on the 15-minute cron, WIDE on the 4x/day cron. One script, one flag.
           MH="${{ github.event.inputs.max_hours }}"
-          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '17-59/30 * * * *' ]; then
+          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '7-59/15 * * * *' ]; then
             MH=12
           fi
-          if [ -n "$MH" ]; then
-            echo "NEAR run: only fixtures within ${MH}h of kickoff"
-            python scripts/capture_nf_odds_forward.py --max-hours "$MH"
-          else
-            echo "WIDE run: all fixtures in the look-ahead window"
+
+          # The NEAR run LOOPS — see std_odds_capture.yml for the measurement. Short version:
+          # GitHub delivered this workflow's '*/15' cron every 174 minutes (21 runs in 2.3 days),
+          # and queue wait was 0s, so the events are dropped by GitHub's shared scheduler rather
+          # than delayed by busy runners. No plan changes it. Taking the density inside one run is
+          # the only thing that works, and it is safe because the script keeps consecutive-distinct
+          # prices only: a pass where nothing moved writes no row.
+          LOOP_MIN="${{ github.event.inputs.loop_minutes }}"
+          LOOP_EVERY="${{ github.event.inputs.loop_every }}"
+          [ -n "$LOOP_MIN" ]   || LOOP_MIN=100
+          [ -n "$LOOP_EVERY" ] || LOOP_EVERY=10
+
+          if [ -z "$MH" ]; then
+            echo "WIDE run: all fixtures in the look-ahead window (single pass)"
             python scripts/capture_nf_odds_forward.py
+            exit 0
           fi
+
+          echo "NEAR run: fixtures within ${MH}h, sampling every ${LOOP_EVERY}m for ${LOOP_MIN}m"
+          END=$(( $(date -u +%s) + LOOP_MIN * 60 ))
+          i=0
+          while : ; do
+            i=$((i + 1))
+            echo "--- pass $i  $(date -u '+%H:%M:%S') ---"
+            python scripts/capture_nf_odds_forward.py --max-hours "$MH" \
+              || echo "  (pass $i failed - continuing)"
+            NEXT=$(( $(date -u +%s) + LOOP_EVERY * 60 ))
+            [ "$NEXT" -lt "$END" ] || break
+            sleep $(( LOOP_EVERY * 60 ))
+          done
+          echo "completed $i passes over ${LOOP_MIN}m"
 
       - name: Commit and push updated NF odds history
         run: |
@@ -79,7 +114,10 @@ jobs:
             git commit -m "auto: nf odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
           for i in 1 2 3 4 5; do
-            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            # No `-X ours` — see std_odds_capture.yml. In a rebase `ours` is upstream, so it threw
+            # away this run's own appended rows on every push race. merge=union in .gitattributes
+            # keeps both sides.
+            git pull --rebase --autostash origin main && git push && { pushed=1; break; }
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }

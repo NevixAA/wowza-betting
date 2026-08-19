@@ -1,0 +1,40 @@
+# Append-only history files: merge by UNION, never by picking a side.
+# =====================================================================
+# WHY (measured experimentally 2026-08-19):
+#
+# Every workflow in this repo reconciles with `git pull --rebase --autostash -X ours`. During a
+# REBASE the meaning of "ours" INVERTS: our commits are replayed onto upstream, so `ours` is
+# UPSTREAM and `theirs` is the work being replayed. `-X ours` therefore resolves every conflict
+# in favour of whoever pushed first and DISCARDS the pushing run's own rows.
+#
+# Reproduced in a scratch repo. Upstream appended 1 row, our run appended 3:
+#
+#     -X ours    -> our 3 rows LOST, upstream's kept   (git: "dropping <sha> -- patch
+#                                                        contents already upstream")
+#     -X theirs  -> our 3 rows kept, upstream's LOST
+#     merge=union-> BOTH kept                           <-- correct for append-only
+#
+# The workflow reports SUCCESS in every case, which is why this was invisible. It matters much
+# more now that the NEAR odds captures loop: a lost push used to cost one snapshot, it now costs
+# ~100 minutes of closing-line curve, which is the single measurement CLV depends on.
+#
+# SCOPE — deliberately narrow. `union` concatenates both sides' lines, so it is correct ONLY for
+# line-oriented, append-only text. It would produce a syntactically INVALID file if applied to
+# JSON (two merged objects) or a binary parquet, and it would DUPLICATE rows in a ledger whose
+# existing rows get edited in place — which is why output/bets_ledger.csv is NOT listed here
+# despite having three concurrent writers: update_results.py rewrites its rows to fill
+# WIN/LOSS/PnL, so union would keep the pre- and post-settlement copy of the same bet.
+#
+# Safe for the files below because each is written by a script that re-reads the whole file,
+# re-sorts chronologically and collapses consecutive-duplicate prices. Any interleaving or
+# duplicate line that union creates is therefore normalised on the very next pass.
+
+output/standard_sidemarket_odds_history.csv  merge=union
+output/newformat_odds_history.csv            merge=union
+output/newformat_odds_dense.csv              merge=union
+output/book_odds_snapshots.csv               merge=union
+output/api_usage_log.csv                     merge=union
+
+# Keep line endings stable so a Windows local checkout and a Linux runner cannot produce a
+# whole-file diff (which would turn every append into a maximal conflict).
+*.csv text eol=lf

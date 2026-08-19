@@ -31,7 +31,11 @@ BET365 = 8
 OUT = PROJ / "output" / "newformat_odds_history.csv"
 COLS = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "market", "odds"]
 NEXT_N = 20          # look-ahead fixtures per league
-_MIN_QUOTA = 200     # stop if API quota gets low
+_MIN_QUOTA = int(os.getenv("MIN_QUOTA", "5000"))
+# See capture_std_sidemarket_odds_forward.py: was 200, sized for the 7,500/day Pro tier. On the
+# 75,000/day Ultra plan, and with this script now able to run in a loop, a 200 floor would let a
+# capture drain the day and starve the tip path. 5,000 keeps predict/props always able to finish.
+
 
 # Only price fixtures kicking off within this many hours. None = no filter (the WIDE run).
 # One script serves both cadences: a WIDE run covers the far horizon a few times a day, a NEAR

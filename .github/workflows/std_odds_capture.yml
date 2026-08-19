@@ -31,22 +31,34 @@ on:
     # WIDE — every fixture in the look-ahead window, 4x/day. Covers the far horizon
     # (T-7d, T-3d, T-24h) where prices move slowly. ~350 calls each = ~1,400/day.
     - cron: '5 0,6,12,18 * * *'
-    # NEAR — only fixtures kicking off within 12h, every 30 minutes. This is where the closing
+    # NEAR — only fixtures kicking off within 12h, every 15 minutes. This is where the closing
     # line actually forms, and it is CHEAP because only a handful of fixtures are ever imminent:
     # about 24 kick off per day across all leagues, so ~12 inside any 12h window. ~40 calls
     # each = ~3,800/day, and it is what makes T-1h / T-30m / T-10m exist at all.
-    - cron: '*/30 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       max_hours:
-        description: 'Only price fixtures within N hours (blank = all)'
+        description: 'Only price fixtures within N hours (blank = all/WIDE)'
+        required: false
+        default: ''
+      loop_minutes:
+        description: 'NEAR only: keep sampling for N minutes (blank = 100)'
+        required: false
+        default: ''
+      loop_every:
+        description: 'NEAR only: minutes between passes (blank = 10)'
         required: false
         default: ''
 
 jobs:
   std_odds_capture:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # Must exceed LOOP_MINUTES (100) plus checkout/pip/commit, or the timeout kills the loop
+    # mid-window and the whole run commits nothing. GitHub's own ceiling is 6h, and minutes are
+    # free on a public repo, so a long-held runner costs nothing but must not overlap the next
+    # firing — the concurrency group above makes an overlap queue rather than double-spend.
+    timeout-minutes: 120
     permissions:
       contents: write
 
@@ -66,20 +78,59 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          # The 30-minute cron is the NEAR run and prices only imminent fixtures; the 4x/day
+          # The 15-minute cron is the NEAR run and prices only imminent fixtures; the 4x/day
           # cron is WIDE and prices everything. One script, one flag, so the two cadences cannot
           # drift apart in behaviour.
           MH="${{ github.event.inputs.max_hours }}"
-          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '*/30 * * * *' ]; then
+          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '*/15 * * * *' ]; then
             MH=12
           fi
-          if [ -n "$MH" ]; then
-            echo "NEAR run: only fixtures within ${MH}h of kickoff"
-            python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH"
-          else
-            echo "WIDE run: all fixtures in the look-ahead window"
+
+          # ── Why the NEAR run LOOPS instead of relying on the cron ───────────────────────
+          # MEASURED 2026-08-19: this workflow's '*/15' cron asks for 96 runs/day and GitHub
+          # delivered 20 runs in 2.3 days — a median interval of 179 minutes, 12x under the
+          # request. predict is the same story (5-minute cron, 34-minute median). The cause is
+          # NOT runner contention: queue wait created->started was 0s at median, p90 AND max, so
+          # runs start instantly when they exist. GitHub's shared cron scheduler simply drops
+          # most high-frequency schedule events, and no plan or setting changes that — Actions
+          # minutes are already free and unlimited on this public repo.
+          #
+          # The consequence was that the whole point of the NEAR cadence was lost: since it went
+          # live only 11 distinct snapshot minutes were recorded, with a median 1,996 minutes
+          # between consecutive price changes. That is an entry price, not a closing curve, which
+          # is the exact defect the NEAR run was added to fix.
+          #
+          # So take the density inside ONE run, which the scheduler cannot throttle. Each firing
+          # now samples repeatedly for LOOP_MINUTES, turning ~9 firings/day into ~100 captures.
+          # Safe to do because the script keeps only CONSECUTIVE-DISTINCT prices: a pass where
+          # nothing moved writes NO row, so extra passes can only add real movements, never bloat.
+          # The commit still happens ONCE after the loop, so this adds no push-race risk.
+          LOOP_MIN="${{ github.event.inputs.loop_minutes }}"
+          LOOP_EVERY="${{ github.event.inputs.loop_every }}"
+          [ -n "$LOOP_MIN" ]   || LOOP_MIN=100
+          [ -n "$LOOP_EVERY" ] || LOOP_EVERY=10
+
+          if [ -z "$MH" ]; then
+            echo "WIDE run: all fixtures in the look-ahead window (single pass)"
             python scripts/capture_std_sidemarket_odds_forward.py
+            exit 0
           fi
+
+          echo "NEAR run: fixtures within ${MH}h, sampling every ${LOOP_EVERY}m for ${LOOP_MIN}m"
+          END=$(( $(date -u +%s) + LOOP_MIN * 60 ))
+          i=0
+          while : ; do
+            i=$((i + 1))
+            echo "--- pass $i  $(date -u '+%H:%M:%S') ---"
+            # A failed pass must not abandon the remaining window; the script's own quota guard
+            # (MIN_QUOTA, now 5,000) is what stops the loop spending into the tip path.
+            python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH" \
+              || echo "  (pass $i failed - continuing)"
+            NEXT=$(( $(date -u +%s) + LOOP_EVERY * 60 ))
+            [ "$NEXT" -lt "$END" ] || break
+            sleep $(( LOOP_EVERY * 60 ))
+          done
+          echo "completed $i passes over ${LOOP_MIN}m"
 
       - name: Commit and push updated standard side-market odds history
         run: |
@@ -90,7 +141,12 @@ jobs:
             git commit -m "auto: std side-market odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
           for i in 1 2 3 4 5; do
-            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            # NO `-X ours` here. During a rebase `ours` is UPSTREAM, so `-X ours` resolved every
+            # push race in favour of whoever pushed first and silently dropped THIS run's rows
+            # (verified in a scratch repo: 3 appended rows lost, git reporting "dropping <sha> --
+            # patch contents already upstream", workflow still green). With this file declared
+            # merge=union in .gitattributes, a plain rebase keeps BOTH sides' appends instead.
+            git pull --rebase --autostash origin main && git push && { pushed=1; break; }
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
