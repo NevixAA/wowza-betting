@@ -24,9 +24,9 @@ on:
     # Funded from existing headroom: measured usage is ~10-11k/day against a 75,000 cap.
     # WIDE — all look-ahead fixtures, 4x/day, offset from std so the two never contend.
     - cron: '35 1,7,13,19 * * *'
-    # NEAR — only fixtures within 12h, every 15 minutes, offset :07 from std_odds_capture.
+    # NEAR — only fixtures within 12h, every 30 minutes, offset from std_odds_capture.
     # Cheap because few fixtures are ever imminent; this is what creates T-1h/T-30m/T-10m.
-    - cron: '7-59/15 * * * *'
+    - cron: '17-59/30 * * * *'
   workflow_dispatch:
     inputs:
       max_hours:
@@ -57,9 +57,9 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          # NEAR on the 15-minute cron, WIDE on the 4x/day cron. One script, one flag.
+          # NEAR on the 30-minute cron, WIDE on the 4x/day cron. One script, one flag.
           MH="${{ github.event.inputs.max_hours }}"
-          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '7-59/15 * * * *' ]; then
+          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '17-59/30 * * * *' ]; then
             MH=12
           fi
           if [ -n "$MH" ]; then
