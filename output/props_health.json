@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-20T05:32:26Z",
-  "run_id": "32335539617",
-  "run_number": "959",
+  "checked_at": "2026-08-20T05:42:30Z",
+  "run_id": "32336148535",
+  "run_number": "960",
   "event": "schedule",
   "schedule": "",
-  "sha": "ecf40fb4f30b",
+  "sha": "eec2909a4bd7",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "3",
@@ -18,17 +18,14 @@
   "output/player_tips.csv": {
     "rows": 427,
     "fixtures": 35,
-    "mtime": "2026-08-20T05:32:16Z"
+    "mtime": "2026-08-20T05:42:22Z"
   },
   "output/player_ledger.csv": {
     "rows": 2650,
     "fixtures": null,
-    "mtime": "2026-08-20T05:25:39Z"
+    "mtime": "2026-08-20T05:35:11Z"
   },
-  "git_dirty_outputs": [
-    "M output/player_tips.csv",
-    " M output/prop_odds_coverage.json"
-  ],
+  "git_dirty_outputs": [],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
     "  [La Liga] 5 recent fixtures fetched",
@@ -54,6 +51,6 @@
     "[clv_tracker] CLV report: {'n': 49, 'mean_clv_pct': -0.036, 'mean_clv_prob': None, 'beat_close_rate': 0.245, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
     "[lineup] 0 confirmed starters | 427 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:2",
-    "[api_usage] workflow=Player Props af_calls=125 cache_hits=34 cache_hit_rate=21% errors=0  quota_remaining 74099->73988 (account-wide delta 111)"
+    "[api_usage] workflow=Player Props af_calls=125 cache_hits=34 cache_hit_rate=21% errors=0  quota_remaining 73942->73815 (account-wide delta 127)"
   ]
 }
