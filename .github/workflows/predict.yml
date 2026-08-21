@@ -80,6 +80,27 @@ jobs:
           # ANALYSIS WARNING: from 2026-08-21 the ledger mixes TWO tier regimes. Any ROI or CLV
           # comparison spanning this date must split on it, or it averages a 0.25 SNIPER against
           # a 0.12 one and calls the difference a trend.
+          # Blind-fixture guard OFF for the early season (owner, 2026-08-21). Invariant 8
+          # normally forces AVOID when 5-game rolling form is missing, because absent features are
+          # MEDIAN-IMPUTED and produce confident WRONG edges (York City, no history, once showed
+          # the second-strongest EFL edge at 4.4% on nothing). Right now form is missing for a
+          # benign reason — the second divisions started mid-August, so no club HAS five games in
+          # its division yet, and promoted/relegated clubs have none in their new pool at all.
+          #
+          # Blocking those fixtures costs 10 real edges on the current board, the largest being
+          # Sturm Graz v Austria Lustenau UNDER at 15.6%. With nominal stakes and Pro recording
+          # every signal, they are worth more as observations than as discards.
+          #
+          # SELF-EXPIRING: REQUIRE_FORM_DATA_UNTIL re-arms the guard on 2026-09-15 (~GW5) whatever
+          # this flag says. By then form exists naturally and a still-blind fixture means a real
+          # data problem — a mid-season promotion, a name-resolution miss, a collection gap —
+          # which is precisely what the guard should catch. The override cannot outlive its reason.
+          #
+          # `no_form_data` is still written to every row either way. Without it there is no way to
+          # separate a tip backed by history from one backed by a median, and any later ROI or CLV
+          # comparison would pool the two silently.
+          REQUIRE_FORM_DATA: "0"
+          REQUIRE_FORM_DATA_UNTIL: "2026-09-15"
           LEAGUE_SNIPER_CAP: "0.12"
           MARKSMAN_THRESHOLD: "0.08"
           VALUABLE_THRESHOLD: "0.03"
