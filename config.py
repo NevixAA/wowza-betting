@@ -264,7 +264,13 @@ VALUE_THRESHOLD = VALUABLE_THRESHOLD
 
 # ── Per-league SNIPER thresholds (from backtest optimisation) ─────────────────
 # These override SNIPER_THRESHOLD for specific leagues. All capped at EDGE_CEILING.
-LEAGUE_SNIPER_THRESHOLDS: dict = {
+#
+# LEAGUE_SNIPER_CAP (env, default 1.0 = no cap) clamps every value below. Set it to widen the
+# SNIPER tier without editing these numbers, which are backtest-optimised and are kept here as the
+# documented reference — the ROI beside each one is why it is what it is. A cap is reversible by
+# deleting one env line; overwriting them would lose the calibration.
+_SNIPER_CAP = float(os.getenv("LEAGUE_SNIPER_CAP", "1.0"))
+_LEAGUE_SNIPER_CALIBRATED: dict = {
     # Standard format — live prediction leagues (thresholds from backtest optimisation)
     "League Two":     0.14,   # most data, reliable at 14%  → ROI +22.6%
     "Bundesliga 2":   0.20,   # needs higher bar             → ROI +22.4%
@@ -275,14 +281,21 @@ LEAGUE_SNIPER_THRESHOLDS: dict = {
     "Serie B":        0.15,   # limited edge, conservative
     "Greek Super League": 0.25,  # historically weak — high bar
 }
+LEAGUE_SNIPER_THRESHOLDS: dict = {k: min(v, _SNIPER_CAP)
+                                  for k, v in _LEAGUE_SNIPER_CALIBRATED.items()}
 
 # ── Per-league MARKSMAN thresholds (override global MARKSMAN_THRESHOLD) ────────
 # Set equal to the league's SNIPER threshold to disable MARKSMAN for that league.
 # Bundesliga 2: MARKSMAN 8-20% backtest was -10.8% ROI — no MARKSMAN bets here.
-LEAGUE_MARKSMAN_THRESHOLDS: dict = {
+_LEAGUE_MARKSMAN_CALIBRATED: dict = {
     "Bundesliga 2": 0.20,   # match SNIPER — no MARKSMAN; 8-20% = -10.8% ROI
     "League Two":   0.14,   # match SNIPER — 8-14% range had low +4.3% ROI
 }
+# Capped by the same env knob. Without this a lowered SNIPER cap would leave a per-league MARKSMAN
+# floor ABOVE its own SNIPER threshold, so MARKSMAN could never fire in that league — the tier
+# would vanish silently rather than widen.
+LEAGUE_MARKSMAN_THRESHOLDS: dict = {k: min(v, _SNIPER_CAP)
+                                    for k, v in _LEAGUE_MARKSMAN_CALIBRATED.items()}
 
 # Leagues where significant portion of matches are played on artificial turf.
 # Artificial pitches are associated with lower goal counts (faster ball, tired legs).

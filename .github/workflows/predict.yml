@@ -48,6 +48,41 @@ jobs:
       - name: Run predict
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          # ── TEST-SEASON GATE WIDENING (2026-08-21, owner decision) ───────────────────
+          # "This season is a big test" — the owner wants signal VOLUME to learn from, with
+          # little or no real money behind the tips. Set as ENV rather than by editing the
+          # numbers: config keeps the backtest-calibrated values as the documented reference,
+          # and this whole block is reversible by deleting it.
+          #
+          #   SNIPER    per-league 0.14-0.25  ->  capped at 0.12
+          #   MARKSMAN  0.14                  ->  0.08
+          #   VALUABLE  0.04                  ->  0.03
+          #
+          # WHAT IT REVERSES, recorded because these are measurements and not guesses:
+          #   * config: "MARKSMAN raised 8%->14% on 2026-06-17: sweep showed 8-14% zone is
+          #     -1.6% ROI; 14%+ zone is +6.5% ROI." 0.08 is exactly the band moved away from.
+          #   * per-league SNIPER carries its own ROI (League Two 0.14 -> +22.6%, La Liga 2
+          #     0.20 -> +53.5%, League One 0.25 -> +21.4%, Ligue 2 0.25 -> +45.2%). Capping to
+          #     0.12 relabels sub-threshold edges as full stake in leagues measured to lose there.
+          #   * measured on 740 settled ledger rows before the change:
+          #        3-8%   n=405  ROI  -9.5%   8-12%  n=119  ROI -11.5%   12%+  n=216  ROI -4.2%
+          #     Post-cutoff (n=108) every CI spans +/-30pp, so the data cannot distinguish any
+          #     threshold from any other. EXPECT MORE TIPS, NOT BETTER ONES.
+          #
+          # WHY THE VIG MATTERS HERE. edge = p_model - 1/odds uses the RAW price, and the
+          # standard-league overround is ~8%, so ~4% is subtracted from every edge before the
+          # model is consulted. A perfectly calibrated model reports about -4% on both sides. A
+          # reported 8% edge is therefore a ~12% disagreement with the fair price, which happens
+          # on 1.8% of fixtures. Lowering the gate does not make the model better at clearing a
+          # margin; taking the best of ~12 books halves the margin (7.74% -> 3.19%) and is the
+          # intervention that actually helps. That is being built in Pro.
+          #
+          # ANALYSIS WARNING: from 2026-08-21 the ledger mixes TWO tier regimes. Any ROI or CLV
+          # comparison spanning this date must split on it, or it averages a 0.25 SNIPER against
+          # a 0.12 one and calls the difference a trend.
+          LEAGUE_SNIPER_CAP: "0.12"
+          MARKSMAN_THRESHOLD: "0.08"
+          VALUABLE_THRESHOLD: "0.03"
           # RE-ENABLED 2026-08-16, after the two preconditions were met: the API-Football
           # plan moved to 75,000/day, and the cache step above now persists
           # api_football_cache/ between runs.
