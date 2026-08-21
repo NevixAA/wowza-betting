@@ -450,7 +450,7 @@ ODDS_API_SPORT_KEYS = {
     "League One":              "soccer_england_league1",
     "League Two":              "soccer_england_league2",
     "Bundesliga 2":            "soccer_germany_bundesliga2",
-    "Ligue 2":                 "soccer_france_ligue_2",
+    "Ligue 2":                 "soccer_france_ligue_two",
     "La Liga 2":               "soccer_spain_segunda_division",
     "Serie B":                 "soccer_italy_serie_b",
     "Greek Super League":      "soccer_greece_super_league",
@@ -474,8 +474,8 @@ ODDS_API_SPORT_KEYS = {
     "Turkish Super Lig":        "soccer_turkey_super_league",
     "Poland Ekstraklasa":       "soccer_poland_ekstraklasa",
     # API-Football-only (for future live odds when enabled)
-    "Saudi Pro League":         "soccer_saudi_professional_league",
-    "K-League 1":               "soccer_south_korea_kleague1",
+    "Saudi Pro League":         "soccer_saudi_arabia_pro_league",
+    "K-League 1":               "soccer_korea_kleague1",
 }
 
 SOFASCORE_TOURNAMENT_IDS = {
