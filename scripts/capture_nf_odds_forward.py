@@ -82,6 +82,29 @@ def _hours_to_kickoff(raw_ko: str, now) -> float | None:
         return None
 
 
+def _iso_kickoff(raw_ko: str) -> str:
+    """Kickoff as a normalised UTC ISO timestamp, or "" when unusable.
+
+    WHY THIS COLUMN EXISTS. These archives recorded only `match_date`, i.e. the DAY. So the whole
+    reason the NEAR capture exists — T-1h / T-30m / T-10m resolution into kickoff — was
+    UNVERIFIABLE: you could count snapshots but never measure how close to kickoff any of them
+    landed. On 2026-08-19 an attempt to check near-kickoff coverage had to be abandoned because the
+    only archive carrying a kickoff time was one day old (a single kicked-off fixture in it).
+
+    Empty string, never a guess: an invented kickoff would produce a confident wrong lead time,
+    which is worse than a blank one (invariant 9 — write NaN, never an invented number).
+    """
+    if not raw_ko:
+        return ""
+    try:
+        ko = datetime.fromisoformat(str(raw_ko).replace("Z", "+00:00"))
+        if ko.tzinfo is None:
+            ko = ko.replace(tzinfo=timezone.utc)
+        return ko.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return ""
+
+
 def _sanitize_ou(out: dict) -> dict:
     """Drop GOAL O/U odds that are internally impossible (a non-goal O/U market such as
     corners/cards leaked in, a line was mislabelled, or a BTTS price was copied). Keeps
