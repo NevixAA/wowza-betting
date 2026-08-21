@@ -23,6 +23,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+from datetime import datetime, timezone
 import sys
 from pathlib import Path
 from typing import Optional
@@ -354,12 +356,56 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     if _present:
         _blind = df[_present].isna().any(axis=1)
         df["no_form_data"] = _blind
-        if _blind.any():
+        # REQUIRE_FORM_DATA (env, default "1") is the blind-fixture guard of invariant 8.
+        #
+        # It exists because missing features are MEDIAN-IMPUTED, so a fixture with no history
+        # produces a confident-looking WRONG edge rather than a cautious one: York City, with no
+        # rolling form at all, once showed the second-strongest EFL edge on the board at 4.4%,
+        # built on nothing. The imputed median is by construction an average team, so any fixture
+        # whose real teams differ from average gets a spurious edge in whichever direction the
+        # opponent's real features point.
+        #
+        # Disabled for the 2026/27 test season by owner decision (2026-08-21): the season is
+        # explicitly a data-gathering exercise, stakes are nominal or zero, and Pro records every
+        # signal regardless of tier, so these fixtures become training observations instead of
+        # being discarded. On the board at the time this unblocked 10 fixtures carrying a real
+        # edge, including Sturm Graz v Austria Lustenau UNDER at 15.6% — a SNIPER-sized number
+        # standing on imputed features.
+        #
+        # The FLAG IS STILL RECORDED either way. That is the part that must not be lost: without
+        # `no_form_data` in the output there is no way to separate a tip backed by history from one
+        # backed by a median, and any later ROI or CLV comparison would silently pool the two.
+        # SELF-EXPIRING OVERRIDE. The disable is only defensible while the season is too young
+        # for 5-game rolling form to exist at all. From roughly GW5 every club has five matches in
+        # its own division, `_blind` empties by itself, and the guard costs nothing — while a
+        # STILL-blind fixture after that point is a genuine data problem (a mid-season promotion, a
+        # name-resolution miss, a collection gap) and is exactly what the guard should catch.
+        #
+        # So the override carries a hard expiry rather than trusting anyone to remember. After
+        # REQUIRE_FORM_DATA_UNTIL the guard is active again regardless of the env flag. 2026-09-15
+        # is ~GW5 across the standard divisions (they started mid-August) with margin for the
+        # staggered starts in La Liga 2 and Serie B.
+        _guard_off_until = os.getenv("REQUIRE_FORM_DATA_UNTIL", "2026-09-15")
+        _today = datetime.now(timezone.utc).date().isoformat()
+        _expired = _today >= _guard_off_until
+        _require_form = (
+            os.getenv("REQUIRE_FORM_DATA", "1").strip().lower() not in ("0", "false", "no")
+            or _expired
+        )
+        if _expired and os.getenv("REQUIRE_FORM_DATA", "1").strip().lower() in ("0", "false", "no"):
+            log.info(f"Blind-fixture guard RE-ENABLED automatically: {_today} >= "
+                     f"{_guard_off_until} (REQUIRE_FORM_DATA=0 has expired)")
+        if _blind.any() and _require_form:
             df.loc[_blind, "signal_tier"] = "AVOID"
             df.loc[_blind, "bet"]         = "AVOID"
             df.loc[_blind, "bet_stake"]   = 0.0
             log.info(f"Blind-fixture guard: {int(_blind.sum())} fixture(s) forced to AVOID "
                      f"(no rolling-form history)")
+        elif _blind.any():
+            log.warning(f"Blind-fixture guard DISABLED (REQUIRE_FORM_DATA=0): "
+                        f"{int(_blind.sum())} fixture(s) with NO rolling-form history are being "
+                        f"tiered on MEDIAN-IMPUTED features. Their edges are not backed by "
+                        f"history — see no_form_data in the output.")
     else:
         df["no_form_data"] = False
 
