@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-21T03:55:10Z",
-  "run_id": "32444700649",
-  "run_number": "982",
+  "checked_at": "2026-08-21T04:39:48Z",
+  "run_id": "32447344808",
+  "run_number": "983",
   "event": "schedule",
   "schedule": "",
-  "sha": "6e72fc2d148b",
+  "sha": "5e79e78abe00",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "4",
@@ -18,17 +18,14 @@
   "output/player_tips.csv": {
     "rows": 415,
     "fixtures": 32,
-    "mtime": "2026-08-21T03:55:03Z"
+    "mtime": "2026-08-21T04:39:41Z"
   },
   "output/player_ledger.csv": {
     "rows": 2688,
     "fixtures": null,
-    "mtime": "2026-08-21T03:48:55Z"
+    "mtime": "2026-08-21T04:33:16Z"
   },
-  "git_dirty_outputs": [
-    "M output/player_prop_odds_history.csv",
-    " M output/prop_odds_coverage.json"
-  ],
+  "git_dirty_outputs": [],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
     "  [La Liga] 5 recent fixtures fetched",
@@ -41,8 +38,7 @@
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 2 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 1, 'Finland Veikkausliiga': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League', 'Europa League', 'Conference League']",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 77619",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events/4290b7b558285b2ec3a5ed42feca310d/odds OK | quota remaining: 77615",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 77615",
     "[odds_fetcher] sports/soccer_france_ligue_one/events OK | quota remaining: 77615",
     "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 77615",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 17 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
@@ -54,6 +50,6 @@
     "[clv_tracker] CLV report: {'n': 57, 'mean_clv_pct': -0.0384, 'mean_clv_prob': None, 'beat_close_rate': 0.246, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
     "[lineup] 0 confirmed starters | 415 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:4",
-    "[api_usage] workflow=Player Props af_calls=118 cache_hits=34 cache_hit_rate=22% errors=0  quota_remaining 74517->74400 (account-wide delta 117)"
+    "[api_usage] workflow=Player Props af_calls=118 cache_hits=34 cache_hit_rate=22% errors=0  quota_remaining 74303->74185 (account-wide delta 118)"
   ]
 }
