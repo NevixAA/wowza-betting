@@ -161,10 +161,24 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         "odds_over15":  float(ov15) if ov15 else None,
                         "odds_over35":  float(ov35) if ov35 else None,
                         "odds_btts":    float(btts_yes) if btts_yes else None,
+                        # Kept so BTTS can be fetched per-event afterwards. Free: both come from
+                        # the response we already paid for.
+                        "_oa_event_id": event.get("id", ""),
+                        "_oa_sport_key": sport_key,
                     })
         except Exception as e:
             n_err += 1
             log.debug(f"OddsAPI {league} exception: {e}")
+
+    # ── BTTS: per-event, whole board ─────────────────────────────────────────────────
+    # BTTS is unavailable on the bulk /odds endpoint (asking for it 422s the ENTIRE call, which is
+    # what silently wiped every tip in v9.2), so it needs one credit per event. See src/btts_odds.py
+    # for the cost arithmetic and why the API-Football archives were rejected as the source.
+    try:
+        from src.btts_odds import fetch as _fetch_btts
+        rows = _fetch_btts(rows)
+    except Exception as e:
+        log.warning(f"[btts] per-event fetch skipped ({e})")
 
     # Health telemetry: distinguishes "every league errored" (hard failure — the
     # btts-422 signature) from "leagues OK but no games". Read by the notifier.
