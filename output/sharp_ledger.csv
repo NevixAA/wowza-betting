@@ -527,7 +527,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-11,2026-08-15,Argentina Primera Division,San Lorenzo,Union Santa Fe,O/U 2.5 OVER,OVER,STRONG,2.82,2.48,-12.1,75,3,LOSS,-1.0,2026-08-16
 2026-08-11,2026-08-15,League One,Barnsley,Bromley FC,1X2 AWAY (Bromley FC),AWAY,STEAM_SHARP,3.8,3.5,-7.9,66,15,,,
 2026-08-11,2026-08-16,USA MLS,Los Angeles FC,San Diego FC,O/U 2.5 UNDER,UNDER,STRONG,2.95,2.62,-11.2,64,3,WIN,1.95,2026-08-18
-2026-08-11,2026-08-21,Argentina Primera Division,Aldosivi Mar del Plata,Union Santa Fe,1X2 HOME (Aldosivi Mar del Plata),HOME,STEAM_SHARP,3.015,2.815,-6.6,63,4,,,
+2026-08-11,2026-08-21,Argentina Primera Division,Aldosivi Mar del Plata,Union Santa Fe,1X2 HOME (Aldosivi Mar del Plata),HOME,STEAM_SHARP,3.015,2.815,-6.6,63,4,LOSS,-1.0,2026-08-22
 2026-08-11,2026-08-16,Argentina Primera Division,River Plate,Argentinos Juniors,1X2 HOME (River Plate),HOME,STEAM_SHARP,2.275,2.08,-8.6,87,13,WIN,1.275,2026-08-17
 2026-08-12,2026-08-14,Japan J-League,Tokyo Verdy,Kashiwa Reysol,1X2 HOME (Tokyo Verdy),HOME,STEAM_STRONG,4.65,4.15,-10.8,99,16,LOSS,-1.0,2026-08-18
 2026-08-12,2026-08-22,Argentina Primera Division,Atlético Tucuman,Instituto de Córdoba,1X2 HOME (Atlético Tucuman),HOME,STEAM_SHARP,2.535,2.3,-9.3,99,7,,,
@@ -584,7 +584,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-15,2026-08-22,Championship,Lincoln City,Portsmouth,1X2 HOME (Lincoln City),HOME,STEAM_SHARP,2.75,2.565,-6.7,73,12,,,
 2026-08-15,2026-08-15,La Liga 2,Oviedo,Granada CF,1X2 DRAW (Draw),DRAW,STRONG,3.45,3.1,-10.1,97,21,,,
 2026-08-15,2026-08-22,Championship,Millwall,Norwich City,1X2 AWAY (Norwich City),AWAY,STEAM_STRONG,4.0,3.45,-13.7,91,14,,,
-2026-08-15,2026-08-21,Argentina Primera Division,Aldosivi Mar del Plata,Union Santa Fe,1X2 AWAY (Union Santa Fe),AWAY,STEAM_SHARP,2.555,2.32,-9.2,64,12,,,
+2026-08-15,2026-08-21,Argentina Primera Division,Aldosivi Mar del Plata,Union Santa Fe,1X2 AWAY (Union Santa Fe),AWAY,STEAM_SHARP,2.555,2.32,-9.2,64,12,WIN,1.555,2026-08-22
 2026-08-15,2026-08-22,Championship,Swansea City,Sheffield United,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.18,2.02,-7.3,67,7,,,
 2026-08-15,2026-08-22,Championship,Blackburn Rovers,Middlesbrough,1X2 AWAY (Middlesbrough),AWAY,STEAM_SHARP,2.25,2.105,-6.4,67,14,,,
 2026-08-15,2026-08-22,Championship,Queens Park Rangers,Bolton Wanderers,1X2 AWAY (Bolton Wanderers),AWAY,STEAM_SHARP,3.9,3.675,-5.8,67,14,,,
@@ -644,7 +644,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-17,2026-08-23,USA MLS,Austin FC,Philadelphia Union,1X2 AWAY (Philadelphia Union),AWAY,STEAM_SHARP,2.375,2.23,-6.1,72,15,,,
 2026-08-17,2026-08-22,USA MLS,Inter Miami CF,Toronto FC,1X2 HOME (Inter Miami CF),HOME,STEAM_SHARP,1.42,1.34,-5.6,95,19,,,
 2026-08-17,2026-08-23,La Liga 2,CD Castellón,Sabadell FC,1X2 AWAY (Sabadell FC),AWAY,STEAM_SHARP,6.2,5.69,-8.2,74,13,,,
-2026-08-17,2026-08-21,Argentina Primera Division,Estudiantes de Río Cuarto,San Lorenzo,1X2 AWAY (San Lorenzo),AWAY,STEAM_SHARP,2.885,2.65,-8.1,65,11,,,
+2026-08-17,2026-08-21,Argentina Primera Division,Estudiantes de Río Cuarto,San Lorenzo,1X2 AWAY (San Lorenzo),AWAY,STEAM_SHARP,2.885,2.65,-8.1,65,11,LOSS,-1.0,2026-08-22
 2026-08-17,2026-08-22,Sweden Allsvenskan,Örgryte IS,Halmstads BK,1X2 HOME (Örgryte IS),HOME,STEAM_SHARP,2.2,2.05,-6.8,65,18,,,
 2026-08-17,2026-08-23,La Liga 2,CD Castellón,Sabadell FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.75,1.65,-5.7,74,5,,,
 2026-08-17,2026-08-18,Argentina Primera Division,Gimnasia Mendoza,Talleres,O/U 2.5 OVER,OVER,STRONG,2.95,2.62,-11.2,74,2,WIN,1.95,2026-08-19
@@ -707,7 +707,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-21,2026-08-24,Brazil Serie A,Botafogo,Atletico Paranaense,1X2 AWAY (Atletico Paranaense),AWAY,STEAM_SHARP,3.4,3.2,-5.9,72,21,,,
 2026-08-21,2026-08-30,Austrian Bundesliga,RB Salzburg,Austria Wien,1X2 AWAY (Austria Wien),AWAY,STEAM_SHARP,4.25,4.0,-5.9,100,7,,,
 2026-08-21,2026-08-29,Mexico Liga MX,Atlante FC,León,1X2 HOME (Atlante FC),HOME,STEAM_SHARP,3.0,2.8,-6.7,88,10,,,
-2026-08-21,2026-08-21,Finland Veikkausliiga,SJK Seinäjoki,FC Lahti,1X2 AWAY (FC Lahti),AWAY,STEAM_SHARP,2.6,2.44,-6.2,76,19,,,
+2026-08-21,2026-08-21,Finland Veikkausliiga,SJK Seinäjoki,FC Lahti,1X2 AWAY (FC Lahti),AWAY,STEAM_SHARP,2.6,2.44,-6.2,76,19,WIN,1.6,2026-08-22
 2026-08-21,2026-08-30,Denmark Superliga,Silkeborg IF,FC Midtjylland,1X2 HOME (Silkeborg IF),HOME,STEAM_SHARP,5.2,4.9,-5.8,72,9,,,
 2026-08-21,2026-08-23,China Super League,Chongqing Tonglianglong FC,Dalian Yingbo,1X2 HOME (Chongqing Tonglianglong FC),HOME,STEAM_STRONG,2.505,2.22,-11.4,64,19,,,
 2026-08-21,2026-08-22,Serie B,Vicenza,US Catanzaro 1929,1X2 HOME (Vicenza),HOME,STEAM_SHARP,2.5,2.3,-8.0,77,15,,,
