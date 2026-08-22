@@ -15,6 +15,7 @@ from __future__ import annotations
 import logging
 import unicodedata
 from pathlib import Path
+import os as _os
 import numpy as np
 import pandas as pd
 
@@ -285,16 +286,78 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
         pl["next_fixtures"]      = ""
         pl["avg_fdr"]           = np.nan
         pl["fixtures_available"] = False
-    pl["fixture_adj_pts"] = pl["fantasy_pts"]   # cs_pts already reflects FDR; keep pts stable
+    # ── PER-FIXTURE opponent adjustment ──────────────────────────────────────────────────
+    # These two lines used to be:
+    #     fixture_adj_pts = fantasy_pts                     # i.e. no adjustment at all
+    #     total_xpts_next = fantasy_pts * n_fixtures_next    # i.e. per-game points x N
+    #
+    # So the "opponent-adjusted" projection was IDENTICAL to the unadjusted one — FDR was fetched,
+    # averaged into avg_fdr for display, and then never applied to any number — and the multi-GW
+    # total was a flat multiplication. Selecting "Total next 5" simply showed one game's points
+    # five times over, regardless of whether a club faced the top four or the bottom four.
+    #
+    # WHY ONLY attack_pts IS SCALED. fantasy_pts = appearance + attack_pts + dc_pts + cs_pts +
+    # bonus_pts, and cs_pts is ALREADY FDR-adjusted inside _cs_row — which is exactly why the
+    # original author left the total alone rather than risk double-counting. Scaling the whole
+    # figure would count opponent difficulty twice for the clean-sheet component. So:
+    #   appearance  FDR-independent: you are paid for minutes whoever you play
+    #   attack_pts  FDR-sensitive: goals and assists are harder against better defences  <- scaled
+    #   dc_pts      ambiguous: a harder opponent means MORE defending to do, not less. Left neutral
+    #   cs_pts      already FDR-adjusted per _cs_row. NOT scaled again
+    #   bonus_pts   derived from the components above; left with them
+    #
+    # THE COEFFICIENTS ARE A CONVENTION, NOT A FIT. 0.10 per FDR step from neutral (FDR 3) and a
+    # 5% home edge are conventional FPL values, not values estimated from our own data. They are
+    # env-overridable and should be replaced by a fitted mapping once enough gameweeks of
+    # projected-vs-actual exist to estimate them. Stated plainly so nobody mistakes the shape of
+    # this curve for something measured.
+    _FDR_STEP = float(_os.getenv("FANTASY_FDR_STEP", "0.10"))
+    _HOME_EDGE = float(_os.getenv("FANTASY_HOME_EDGE", "0.05"))
 
-    # Multi-GW planner — actual # of upcoming fixtures in the window (captures DOUBLE / BLANK
-    # gameweeks), and total expected points across them (per-game and rotation-adjusted).
+    def _fx_mult(f: dict) -> float:
+        try:
+            fdr = float(f.get("fdr") or 3.0)
+        except (TypeError, ValueError):
+            fdr = 3.0
+        m = 1.0 + (3.0 - fdr) * _FDR_STEP
+        m *= (1.0 + _HOME_EDGE) if f.get("home") else (1.0 - _HOME_EDGE)
+        return max(0.60, min(1.40, m))       # never invert or double a projection
+
+    def _fixture_list(team):
+        return fdr_map.get(team, [])[:next_n] if fdr_map else []
+
+    _atk = pl["attack_pts"].astype(float)
+    _fixed = pl["fantasy_pts"].astype(float) - _atk          # the FDR-neutral remainder
+
+    def _per_game(i, team):
+        fl = _fixture_list(team)
+        if not fl:
+            return float(pl["fantasy_pts"].iloc[i])
+        mults = [_fx_mult(f) for f in fl]
+        return float(_fixed.iloc[i] + _atk.iloc[i] * (sum(mults) / len(mults)))
+
+    def _total(i, team):
+        fl = _fixture_list(team)
+        if not fl:
+            # No fixture list: one notional game. A BLANK gameweek legitimately totals 0, but an
+            # ABSENT fixture map is missing data — reporting 0 there would look like a blank.
+            return float(pl["fantasy_pts"].iloc[i])
+        return float(sum(_fixed.iloc[i] + _atk.iloc[i] * _fx_mult(f) for f in fl))
+
+    _teams = pl["team"].tolist()
+    pl["fixture_adj_pts"] = [round(_per_game(i, tm), 3) for i, tm in enumerate(_teams)]
+    pl["total_xpts_next"] = [round(_total(i, tm), 2) for i, tm in enumerate(_teams)]
+
+    # Multi-GW planner — actual # of upcoming fixtures in the window, which is what captures
+    # DOUBLE and BLANK gameweeks.
     if fdr_map:
         pl["n_fixtures_next"] = pl["team"].map(lambda t: len(fdr_map.get(t, [])[:next_n]))
     else:
         pl["n_fixtures_next"] = 1
-    pl["total_xpts_next"] = (pl["fantasy_pts"] * pl["n_fixtures_next"]).round(2)
-    pl["total_xpts_rot"]  = (pl["xpts_rot"] * pl["n_fixtures_next"]).round(2)
+    # Rotation-adjusted total: same per-fixture weighting, scaled by P(start).
+    _pstart = pl["p_start"].astype(float) if "p_start" in pl.columns else 1.0
+    pl["total_xpts_rot"] = (pd.Series(pl["total_xpts_next"], index=pl.index)
+                            .astype(float) * _pstart).round(2)
 
     keep = [c for c in ["player_name", "team", "position", "price", "minutes_pg",
                         "p_goal", "p_assist", "p_sot2", "attack_pts", "dc_pts", "cs_pts",
