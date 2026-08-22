@@ -18,26 +18,29 @@
     "wanted_fixtures": 8
   },
   "soccer_epl": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-08-22",
     "last_probe": "2026-08-22",
     "league": "Premier League",
-    "matched_events": 5,
+    "matched_events": 6,
     "priced_events": 502,
-    "probes": 503,
-    "unmatched_sample": [],
-    "wanted_fixtures": 5
+    "probes": 504,
+    "unmatched_sample": [
+      "Crystal Palace vs Manchester City",
+      "Liverpool vs Nottingham Forest"
+    ],
+    "wanted_fixtures": 8
   },
   "soccer_france_ligue_one": {
     "empty_streak": 0,
     "last_priced": "2026-08-22",
     "last_probe": "2026-08-22",
     "league": "Ligue 1",
-    "matched_events": 5,
+    "matched_events": 8,
     "priced_events": 366,
     "probes": 366,
     "unmatched_sample": [],
-    "wanted_fixtures": 5
+    "wanted_fixtures": 8
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 12,
@@ -63,21 +66,21 @@
     "last_priced": "2026-08-22",
     "last_probe": "2026-08-22",
     "league": "Serie A",
-    "matched_events": 5,
+    "matched_events": 8,
     "priced_events": 476,
     "probes": 479,
     "unmatched_sample": [],
-    "wanted_fixtures": 5
+    "wanted_fixtures": 8
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
     "last_priced": "2026-08-22",
     "last_probe": "2026-08-22",
     "league": "La Liga",
-    "matched_events": 5,
+    "matched_events": 8,
     "priced_events": 393,
     "probes": 406,
     "unmatched_sample": [],
-    "wanted_fixtures": 5
+    "wanted_fixtures": 8
   }
 }
