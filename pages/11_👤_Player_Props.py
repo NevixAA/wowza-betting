@@ -59,8 +59,38 @@ if df.empty:
     st.stop()
 
 # ── Split: priced signals vs model-only signals ────────────────────────────────
-has_odds  = df[df["tier"] != "WATCH"].copy()
-no_odds   = df[df["tier"] == "WATCH"].copy()
+# SPLIT ON THE PRICE, not on a tier name. This was `df["tier"] != "WATCH"`, and "WATCH" is not a
+# tier this pipeline ever emits — the values are AVOID / PAPER / VALUABLE. So has_odds captured
+# EVERY row and no_odds was always empty, which is why the priced/unpriced distinction never
+# appeared and the page looked broken.
+#
+# The distinction is the whole point, per invariant 13: an unpriced prop is AVOID **by
+# construction** because `enrich_with_odds` does `if not mkt_odds: continue`, so no edge is ever
+# computed for it. Reading those AVOIDs as model rejections is wrong, and on 2026-08-16 only 5 of
+# 213 scored players had a price at all.
+_mo = pd.to_numeric(df.get("market_odds"), errors="coerce")
+df["_priced"] = _mo.notna() & (_mo > 1.0)
+has_odds  = df[df["_priced"]].copy()
+no_odds   = df[~df["_priced"]].copy()
+
+# Say it before anything else, so an empty table is never mistaken for a broken page.
+_c1, _c2, _c3 = st.columns(3)
+_c1.metric("Prop rows upcoming", f"{len(df):,}")
+_c2.metric("Priced by the market", f"{len(has_odds):,}",
+           help="Only these can have an edge computed at all.")
+_c3.metric("Never priced", f"{len(no_odds):,}",
+           help="AVOID by construction, not a model rejection (invariant 13).")
+if has_odds.empty:
+    st.warning(
+        f"**No prop is priced right now** — all {len(df):,} upcoming rows are unpriced, so no edge "
+        f"can be computed for any of them. This is a COVERAGE state, not a model opinion. Coverage "
+        f"is per FIXTURE rather than per league and deepens toward kickoff, so an empty board days "
+        f"out is normal. See output/prop_odds_coverage.json for what the bookmakers actually "
+        f"returned per league.")
+elif len(no_odds):
+    st.caption(
+        f"{100*len(no_odds)/max(1,len(df)):.0f}% of upcoming props carry no price. Those rows are "
+        f"AVOID by construction and are excluded from everything below — they are not rejections.")
 
 # WC / strong model signals (≥ 55% for PROP_LEAGUE, ≥ 60% for team-model matches)
 wc_signals = no_odds[
@@ -159,8 +189,16 @@ if not has_odds.empty:
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        tier_filter = st.multiselect("Tier", ["SNIPER","MARKSMAN","VALUABLE"],
-                                     default=["SNIPER","MARKSMAN"])
+        # Options and defaults come from the DATA, not a hardcoded list. The default was
+        # ["SNIPER","MARKSMAN"] — tiers the props pipeline never emits (it produces PAPER /
+        # VALUABLE / AVOID), so the table was empty even when priced signals existed.
+        _tiers_present = [x for x in ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
+                          if x in set(has_odds["tier"].dropna())]
+        tier_filter = st.multiselect(
+            "Tier", _tiers_present or sorted(has_odds["tier"].dropna().unique()),
+            default=_tiers_present or None,
+            help="Props are PAPER-only permanently (invariant 2): the model is accurate but has no "
+                 "betting edge, so these are research signals, never staked.")
     with col2:
         mkt_filter = st.multiselect("Market", sorted(has_odds["market"].unique()),
                                     default=list(has_odds["market"].unique()))
