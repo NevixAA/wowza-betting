@@ -34,6 +34,10 @@ output/newformat_odds_history.csv            merge=union
 output/newformat_odds_dense.csv              merge=union
 output/book_odds_snapshots.csv               merge=union
 output/api_usage_log.csv                     merge=union
+# Append-only projection log: one row per player per day, so "projected vs actual" is answerable
+# later. Union-merged for the same reason as the odds histories — two writers must never discard
+# each other's days, and a lost day of projections cannot be reconstructed.
+output/fantasy_projection_log.csv            merge=union
 
 # Keep line endings stable so a Windows local checkout and a Linux runner cannot produce a
 # whole-file diff (which would turn every append into a maximal conflict).

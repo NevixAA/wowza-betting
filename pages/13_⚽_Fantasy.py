@@ -439,3 +439,69 @@ else:
 # ── Disclaimer & Terms (shown on every dashboard page) ──
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()
+
+# ── Projected vs actual ────────────────────────────────────────────────────────
+st.markdown("---")
+st.subheader("🎯 Projected vs actual")
+st.caption("Is the projection any good — and does it beat the number FPL publishes for free?")
+
+_have_ep = "fpl_ep_next" in df.columns and "fpl_ppg" in df.columns
+if not _have_ep:
+    st.info("Actuals not in this projection frame yet. They appear once the fantasy refresh runs "
+            "on the current code (fpl_ep_next / fpl_ppg are now retained).")
+else:
+    _c = df.copy()
+    for _col in ("fantasy_pts", "fpl_ep_next", "fpl_ppg", "minutes_pg"):
+        _c[_col] = pd.to_numeric(_c.get(_col), errors="coerce")
+    # Players who barely feature are untestable and drag both error terms toward zero for the
+    # wrong reason, so they are excluded rather than quietly averaged in.
+    _c = _c[_c["minutes_pg"].fillna(0) >= 30].dropna(subset=["fantasy_pts", "fpl_ppg"])
+    if _c.empty:
+        st.info("No player with 30+ minutes per game and an actual PPG yet.")
+    else:
+        _c["err_ours"] = (_c["fantasy_pts"] - _c["fpl_ppg"]).abs()
+        _c["err_fpl"] = (_c["fpl_ep_next"] - _c["fpl_ppg"]).abs()
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Players compared", f"{len(_c):,}",
+                  help="30+ minutes per game. Fringe players are untestable.")
+        m2.metric("Our MAE", f"{_c['err_ours'].mean():.2f}",
+                  help="Mean absolute error vs actual points per game, in FPL points.")
+        _fpl_mae = _c["err_fpl"].mean()
+        _delta = _fpl_mae - _c["err_ours"].mean()
+        m3.metric("FPL's own MAE", f"{_fpl_mae:.2f}",
+                  delta=f"{_delta:+.2f} vs ours", delta_color="normal",
+                  help="FPL publishes ep_next free. If we are not closer than this, the model "
+                       "adds nothing over a number anyone can read off their website.")
+        m4.metric("Mean bias", f"{(_c['fantasy_pts'] - _c['fpl_ppg']).mean():+.2f}",
+                  help="Positive = we project higher than players actually score.")
+        if _delta > 0:
+            st.success(f"Our projection is **{_delta:.2f} points closer** to actual PPG than "
+                       f"FPL's own expected points.")
+        else:
+            st.warning(f"**FPL's free number is {-_delta:.2f} points closer** than ours. Until "
+                       f"that flips, the projection is not earning its keep — the honest baseline "
+                       f"for any fantasy model is the one the platform already gives you.")
+        st.caption("`fpl_ppg` is season-to-date ACTUAL points per game, so comparing it to a "
+                   "forward projection is only fair in aggregate and only once several gameweeks "
+                   "exist. Early season it will look worse than it is.")
+        with st.expander("Biggest misses"):
+            _cols = [c for c in ["player_name", "team", "position", "fantasy_pts",
+                                 "fpl_ep_next", "fpl_ppg", "err_ours", "err_fpl"]
+                     if c in _c.columns]
+            st.dataframe(_c.nlargest(15, "err_ours")[_cols].round(2),
+                         use_container_width=True, hide_index=True)
+
+    # History, once the append-only log has more than one day in it.
+    try:
+        from player_model.fantasy_log import calibration
+        _hist = calibration()
+        if len(_hist) > 1:
+            st.markdown("**Calibration over time** — one row per day the projections ran")
+            st.dataframe(_hist, use_container_width=True, hide_index=True)
+            st.caption("`ours_beats_fpl` positive means our projection was closer to actual PPG "
+                       "than FPL's ep_next that day.")
+        elif len(_hist) == 1:
+            st.caption("Projection log has one day so far. A trend needs several — it accumulates "
+                       "one row per player per day from now on.")
+    except Exception:
+        pass

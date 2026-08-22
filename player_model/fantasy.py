@@ -189,6 +189,17 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                 pl.at[i, "chance_of_playing"] = rec["chance_of_playing"]
                 pl.at[i, "fpl_matched"]       = True
                 pl.at[i, "_fpl_pos"]          = rec["position"]
+                # FPL's own published numbers. players_df already fetches these; they were
+                # being discarded. fpl_ep_next is the BENCHMARK THAT MATTERS: a projection that
+                # cannot beat the expected-points figure printed free on the FPL website adds
+                # nothing, however well calibrated it looks against itself. fpl_ppg is actual
+                # points per game to date, i.e. the only "real score" available without pulling
+                # per-gameweek history.
+                pl.at[i, "fpl_ep_next"]       = rec.get("fpl_ep_next")
+                pl.at[i, "fpl_ppg"]           = rec.get("fpl_ppg")
+                pl.at[i, "fpl_form"]          = rec.get("fpl_form")
+                pl.at[i, "total_points"]      = rec.get("total_points")
+                pl.at[i, "owned_pct"]         = rec.get("owned_pct")
         # A player NOT in the current FPL set has LEFT the PL (e.g. Salah -> Besiktas,
         # De Bruyne -> abroad) or isn't fantasy-relevant -> DROP them. The parquet holds many
         # past-season players who've since transferred out, so a LOW match rate is EXPECTED and
@@ -364,6 +375,7 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                         "bonus_pts", "def_actions_pg", "fantasy_pts", "xpts_rot", "p_start",
                         "is_pen_taker", "value", "availability", "injured",
                         "doubtful", "chance_of_playing", "fpl_matched",
+                        "fpl_ep_next", "fpl_ppg", "fpl_form", "total_points", "owned_pct",
                         "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts",
                         "n_fixtures_next", "total_xpts_next", "total_xpts_rot"]
             if c in pl.columns]
@@ -462,6 +474,22 @@ def generate_fantasy_tips(write: bool = True) -> pd.DataFrame:
     if write and not proj.empty:
         _OUT.parent.mkdir(parents=True, exist_ok=True)
         proj.to_csv(_OUT, index=False)
+
+        # Append-only projection log, so "projected vs actual" is answerable later.
+
+        # fantasy_tips.csv is OVERWRITTEN each run and carries no date or gameweek,
+
+        # so without this there is no record of what was projected WHEN.
+
+        try:
+
+            from player_model.fantasy_log import append as _log_proj
+
+            _log_proj(out)
+
+        except Exception as _e:
+
+            log.warning(f"[fantasy_log] skipped ({_e})")
     return proj
 
 
