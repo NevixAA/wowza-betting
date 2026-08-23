@@ -205,7 +205,7 @@ player_id,player_name,team,position,number,age
 2932,J. Pickford,Everton,G,1.0,31.0
 18860,M. Travers,Everton,G,12.0,26.0
 431921,Adam Aznou Ben Cheikh,Everton,D,39.0,19.0
-17661,J. Branthwaite,Everton,D,32.0,23.0
+17661,J. Branthwaite,Everton,D,4.0,23.0
 284385,Elijah Xavier Campbell,Everton,D,27.0,21.0
 410421,G. Finney,Everton,D,55.0,18.0
 2934,M. Keane,Everton,D,5.0,32.0
@@ -223,16 +223,16 @@ player_id,player_name,team,position,number,age
 284500,T. Iroegbunam,Everton,M,42.0,22.0
 30407,C. Nørgaard,Everton,M,23.0,31.0
 588468,Malik Olayiwola,Everton,M,14.0,16.0
-202854,M. Röhl,Everton,M,34.0,23.0
+202854,M. Röhl,Everton,D,34.0,23.0
 343684,T. Barry,Everton,F,11.0,23.0
 125743,Beto,Everton,F,9.0,27.0
 304317,T. Dibling,Everton,F,20.0,19.0
-334037,Tyrique George,Everton,F,19.0,19.0
+334037,Tyrique George,Everton,M,19.0,19.0
 413034,B. Graham,Everton,F,58.0,18.0
-129711,B. Johnson,Everton,F,11.0,24.0
-18592,I. Ndiaye,Everton,F,10.0,25.0
+129711,B. Johnson,Everton,F,22.0,24.0
+18592,I. Ndiaye,Everton,M,10.0,25.0
 156428,B. Austin,Tottenham,G,40.0,26.0
-18886,M. Dúbravka,Tottenham,G,,36.0
+18886,M. Dúbravka,Tottenham,G,39.0,36.0
 265826,A. Kinský,Tottenham,G,31.0,22.0
 31354,G. Vicario,Tottenham,G,1.0,29.0
 25287,K. Danso,Tottenham,D,4.0,27.0
@@ -262,12 +262,12 @@ player_id,player_name,team,position,number,age
 162016,X. Simons,Tottenham,M,7.0,22.0
 31146,S. Tonali,Tottenham,M,16.0,25.0
 293163,J. Donley,Tottenham,F,43.0,20.0
-380690,M. Moore,Tottenham,F,47.0,18.0
+380690,M. Moore,Tottenham,M,47.0,18.0
 2413,Richarlison,Tottenham,F,9.0,28.0
 162552,D. Scarlett,Tottenham,F,44.0,21.0
 18883,D. Solanke,Tottenham,F,19.0,28.0
-270510,M. Tel,Tottenham,F,11.0,20.0
-465310,L. Williams-Barnett,Tottenham,F,68.0,17.0
+270510,M. Tel,Tottenham,M,11.0,20.0
+465310,L. Williams-Barnett,Tottenham,M,68.0,17.0
 298061,Ted Curd,Chelsea,G,22.0,19.0
 340151,M. Penders,Chelsea,G,39.0,20.0
 18959,Robert Sánchez,Chelsea,G,1.0,28.0
@@ -352,25 +352,25 @@ player_id,player_name,team,position,number,age
 162007,M. De Cuyper,Brighton,D,29.0,25.0
 7600,Igor,Brighton,D,3.0,27.0
 1361,F. Kadıoğlu,Brighton,D,24.0,26.0
-64003,P. Struijk,Brighton,D,5.0,26.0
+64003,P. Struijk,Brighton,D,4.0,26.0
 7090,M. Svoboda,Brighton,D,30.0,27.0
 328076,C. Tasker,Brighton,D,2.0,19.0
-387521,L. Vušković,Brighton,D,,18.0
+387521,L. Vušković,Brighton,D,44.0,18.0
 265820,Y. Ayari,Brighton,M,26.0,22.0
 356041,C. Baleba,Brighton,M,17.0,21.0
-309501,A. Cozier-Duberry,Brighton,M,19.0,20.0
+309501,A. Cozier-Duberry,Brighton,M,22.0,20.0
 278370,D. Gómez,Brighton,M,25.0,22.0
-18970,P. Groß,Brighton,M,30.0,34.0
-305730,J. Hinshelwood,Brighton,M,13.0,20.0
+18970,P. Groß,Brighton,M,13.0,34.0
+305730,J. Hinshelwood,Brighton,M,8.0,20.0
 570150,J. Middleton,Brighton,M,6.0,17.0
 19030,M. O&apos;Riley,Brighton,M,33.0,25.0
-92993,M. Wieffer,Brighton,M,27.0,26.0
-410125,M. Yalcouyé,Brighton,M,8.0,20.0
+92993,M. Wieffer,Brighton,D,27.0,26.0
+410125,M. Yalcouyé,Brighton,M,35.0,20.0
 392482,C. Kostoulas,Brighton,F,19.0,18.0
 383685,Y. Minteh,Brighton,F,11.0,21.0
 106835,K. Mitoma,Brighton,F,22.0,28.0
 340135,Mark O’Mahony,Brighton,F,20.0,20.0
-293643,I. Osman,Brighton,F,17.0,21.0
+293643,I. Osman,Brighton,M,15.0,21.0
 90590,G. Rutter,Brighton,F,10.0,23.0
 524411,Z. Yohanna,Brighton,F,36.0,18.0
 22157,W. Benítez,Crystal Palace,G,44.0,32.0
@@ -447,7 +447,7 @@ player_id,player_name,team,position,number,age
 328669,K. van Oevelen,Ipswich,G,31.0,22.0
 19119,L. Davis,Ipswich,D,3.0,26.0
 18814,I. Diop,Ipswich,D,6.0,28.0
-19577,D. Furlong,Ipswich,D,19.0,30.0
+19577,D. Furlong,Ipswich,D,2.0,30.0
 127579,J. Greaves,Ipswich,D,24.0,25.0
 18823,B. Johnson,Ipswich,D,18.0,25.0
 19546,C. Kipré,Ipswich,D,4.0,29.0
@@ -461,11 +461,11 @@ player_id,player_name,team,position,number,age
 2380,C. Akpom,Ipswich,F,29.0,30.0
 19136,J. Clarke,Ipswich,F,47.0,25.0
 342654,S. Egeli,Ipswich,F,8.0,19.0
-321648,Emersonn,Ipswich,F,15.0,21.0
-303467,A. Fatawu,Ipswich,F,7.0,21.0
+321648,Emersonn,Ipswich,F,19.0,21.0
+303467,A. Fatawu,Ipswich,M,7.0,21.0
 8794,G. Hirst,Ipswich,F,9.0,26.0
-33224,D. Maeda,Ipswich,F,38.0,28.0
-283290,K. McAteer,Ipswich,F,20.0,24.0
+33224,D. Maeda,Ipswich,M,38.0,28.0
+283290,K. McAteer,Ipswich,M,20.0,24.0
 286349,A. Mehmeti,Ipswich,F,33.0,24.0
 19365,C. Ogbene,Ipswich,F,21.0,28.0
 138931,J. Philogene,Ipswich,F,11.0,23.0
@@ -648,7 +648,7 @@ player_id,player_name,team,position,number,age
 47899,O. Dovin,Coventry,G,1.0,23.0
 278088,C. Rushworth,Coventry,G,19.0,24.0
 20484,B. Wilson,Coventry,G,13.0,33.0
-162414,A. Amenda,Coventry,D,5.0,22.0
+162414,A. Amenda,Coventry,D,24.0,22.0
 19574,J. Bidwell,Coventry,D,21.0,32.0
 291147,Miguel Brau,Coventry,D,33.0,24.0
 19260,J. Dasilva,Coventry,D,3.0,27.0
@@ -660,16 +660,16 @@ player_id,player_name,team,position,number,age
 431884,Kai Andrews,Coventry,M,28.0,19.0
 19984,J. Eccles,Coventry,M,28.0,25.0
 19328,M. Grimes,Coventry,M,6.0,30.0
-36929,G. Hamer,Coventry,M,8.0,28.0
-145538,J. Latibeaudiere,Coventry,M,22.0,25.0
+36929,G. Hamer,Coventry,M,38.0,28.0
+145538,J. Latibeaudiere,Coventry,D,22.0,25.0
 15799,F. Onyeka,Coventry,M,16.0,27.0
 20372,J. Rudoni,Coventry,M,5.0,24.0
 33462,T. Sakamoto,Coventry,M,7.0,29.0
-138786,E. Simms,Coventry,M,9.0,24.0
+138786,E. Simms,Coventry,F,9.0,24.0
 16046,V. Torp,Coventry,M,29.0,26.0
-475575,Caleb Marfo Yirenkyi,Coventry,M,36.0,19.0
+475575,Caleb Marfo Yirenkyi,Coventry,M,8.0,19.0
 153626,R. Borges Rodrigues,Coventry,F,21.0,22.0
 18404,E. Mason-Clark,Coventry,F,10.0,26.0
-161621,L. Tchaouna,Coventry,F,17.0,22.0
-82090,B. Thomas-Asante,Coventry,F,23.0,27.0
+161621,L. Tchaouna,Coventry,M,18.0,22.0
+82090,B. Thomas-Asante,Coventry,M,23.0,27.0
 427,H. Wright,Coventry,F,11.0,27.0
