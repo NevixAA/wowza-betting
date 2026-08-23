@@ -28,12 +28,12 @@ date,league,match,score,elapsed_mins,signal_type,bet,fair_under_odds,fair_over_o
 2026-08-03,Argentina Primera Division,Platense vs Talleres,0-1,45,UNDER_HOLD,UNDER 2.5,1.41,3.45,0.7102,0.2898,0.361,22:45,4.0,1.0,LOSS
 2026-08-04,Argentina Primera Division,Central Córdoba vs San Lorenzo,1-0,55,UNDER_HOLD,UNDER 2.5,1.29,4.48,0.7768,0.2232,0.4,01:10,1.0,1.0,WIN
 2026-08-07,Japan J-League,Gamba Osaka vs Urawa Red Diamonds,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.24,5.17,0.8066,0.1934,0.522,11:08,,,
-2026-08-07,Japan J-League,Yokohama F Marinos vs Kashima Antlers,0-0,77,STRONG_STUCK,OVER 2.5,1.01,100.0,0.9934,0.0066,0.479,11:57,7,,WIN
-2026-08-07,Japan J-League,Gamba Osaka vs Urawa Red Diamonds,0-0,72,STRONG_STUCK,OVER 2.5,1.02,53.45,0.9813,0.0187,0.522,11:57,7,,WIN
-2026-08-08,Japan J-League,FC Tokyo vs FC Machida Zelvia,1-1,51,UNDER_RECOVERY,UNDER 2.5,2.8,1.55,0.3565,0.6435,0.425,10:51,6,,LOSS
-2026-08-08,Japan J-League,Kashiwa Reysol vs Mito HollyHock,2-0,51,UNDER_RECOVERY,UNDER 2.5,3.05,1.49,0.3279,0.6721,0.475,10:51,3,,LOSS
+2026-08-07,Japan J-League,Yokohama F Marinos vs Kashima Antlers,0-0,77,STRONG_STUCK,OVER 2.5,1.01,100.0,0.9934,0.0066,0.479,11:57,7.0,,WIN
+2026-08-07,Japan J-League,Gamba Osaka vs Urawa Red Diamonds,0-0,72,STRONG_STUCK,OVER 2.5,1.02,53.45,0.9813,0.0187,0.522,11:57,7.0,,WIN
+2026-08-08,Japan J-League,FC Tokyo vs FC Machida Zelvia,1-1,51,UNDER_RECOVERY,UNDER 2.5,2.8,1.55,0.3565,0.6435,0.425,10:51,6.0,,LOSS
+2026-08-08,Japan J-League,Kashiwa Reysol vs Mito HollyHock,2-0,51,UNDER_RECOVERY,UNDER 2.5,3.05,1.49,0.3279,0.6721,0.475,10:51,3.0,,LOSS
 2026-08-08,Japan J-League,Hiroshima Sanfrecce FC vs JEF United Chiba,0-0,36,HT_UNDER_0.5,HT UNDER 0.5,1.28,4.57,0.7814,0.2186,0.448,10:51,,,
-2026-08-08,Japan J-League,Kashiwa Reysol vs Mito HollyHock,2-0,64,UNDER_RECOVERY,UNDER 2.5,2.1,1.91,0.4755,0.5245,0.475,11:18,3,,LOSS
+2026-08-08,Japan J-League,Kashiwa Reysol vs Mito HollyHock,2-0,64,UNDER_RECOVERY,UNDER 2.5,2.1,1.91,0.4755,0.5245,0.475,11:18,3.0,,LOSS
 2026-08-08,Norway Eliteserien,IK Start vs Fredrikstad FK,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.2,5.92,0.831,0.169,0.522,16:21,1.0,1.0,WIN
 2026-08-08,Austrian Bundesliga,Hartberg vs Sturm Graz,0-0,34,HT_OVER_0.5,HT OVER 0.5,1.37,3.67,0.7278,0.2722,0.482,18:03,2.0,0.0,LOSS
 2026-08-08,Austrian Bundesliga,Hartberg vs Sturm Graz,0-0,70,STRONG_STUCK,OVER 2.5,1.02,47.67,0.979,0.021,0.482,18:54,2.0,,LOSS
@@ -43,3 +43,6 @@ date,league,match,score,elapsed_mins,signal_type,bet,fair_under_odds,fair_over_o
 2026-08-08,Argentina Primera Division,Boca Juniors vs Velez Sarsfield BA,0-1,38,HT_UNDER_1.5,HT UNDER 1.5,1.19,6.35,0.8425,0.1575,0.378,22:52,2.0,2.0,LOSS
 2026-08-08,Argentina Primera Division,Boca Juniors vs Velez Sarsfield BA,1-1,51,UNDER_RECOVERY,UNDER 2.5,2.6,1.63,0.3848,0.6152,0.378,23:21,2.0,2.0,WIN
 2026-08-09,Brazil Serie A,Coritiba vs Chapecoense,1-0,56,UNDER_HOLD,UNDER 2.5,1.31,4.19,0.7612,0.2388,0.447,00:40,3.0,1.0,LOSS
+2026-08-23,Brazil Serie A,Palmeiras vs Vasco DA Gama,0-0,30,HT_OVER_0.5,HT OVER 0.5,1.55,2.81,0.6436,0.3564,0.493,19:30,,,
+2026-08-23,Brazil Serie A,Vitoria vs Bahia,0-0,29,HT_OVER_0.5,HT OVER 0.5,1.61,2.64,0.6214,0.3786,0.5,19:30,,,
+2026-08-23,Serie B,Palermo vs Juve Stabia,1-0,29,HT_UNDER_1.5,HT UNDER 1.5,1.61,2.64,0.6215,0.3785,0.5,19:30,,,
