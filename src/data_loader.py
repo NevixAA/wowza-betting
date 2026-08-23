@@ -69,6 +69,34 @@ def _nf_real_odds() -> dict:
         if _NF_ODDS_FILE.exists():
             try:
                 _o = pd.read_csv(_NF_ODDS_FILE)
+                # ── DROP FIRST-HALF BTTS MISLABELLED AS FULL-MATCH (found 2026-08-23) ──────
+                #
+                # capture_nf_odds_forward.py carried the identical substring-matching defect as
+                # the standard capture: `"Both Teams Score" in name` also matches bet 34, "Both
+                # Teams Score - First Half" (Yes ~5.50), and the parse loop assigned on every
+                # match so the last one won. Both parsers are fixed, so no NEW contamination
+                # arrives.
+                #
+                # THE NEW-FORMAT DAMAGE IS FAR WORSE THAN THE STANDARD TRACK'S and was missed on
+                # the first pass because only the standard file was measured:
+                #     standard_sidemarket_odds_history.csv    271 / 6,358 btts_yes  =  4.3%
+                #     newformat_odds_history.csv              931 / 3,778 btts_yes  = 24.6%
+                #
+                # A quarter of new-format BTTS training prices were first-half quotes. Left in,
+                # they teach the model that BTTS pays ~6.0 in leagues where it pays ~1.9 — which
+                # is not noise, it is a systematic bias toward a fictional longshot edge.
+                #
+                # Threshold and evidence: see _enrich_with_standard_sidemarket_odds. The two
+                # populations do not overlap, so this cannot discard a genuine price.
+                # DROPPED FROM THIS READ ONLY — the raw capture file is left untouched so the
+                # contamination stays auditable.
+                _bad = ((_o["market"].astype(str) == "btts_yes")
+                        & (pd.to_numeric(_o["odds"], errors="coerce") > 3.20))
+                if _bad.any():
+                    log.warning(f"[nf_odds] dropped {int(_bad.sum())} btts_yes row(s) with odds "
+                                f"> 3.20 — first-half BTTS mislabelled as full-match "
+                                f"(2026-08-23 parser fix). Raw file unchanged.")
+                    _o = _o[~_bad]
                 for _r in _o.itertuples(index=False):
                     _nf_odds_cache.setdefault(
                         (str(_r.snapshot_date), str(_r.league), str(_r.match)), {}
@@ -336,6 +364,36 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
         _MKT = {"btts_yes": "odds_btts", "over15": "odds_over15", "over35": "odds_over35"}
         oh = pd.read_csv(path)
         oh = oh[oh["market"].isin(_MKT)].copy()
+        if oh.empty:
+            return df
+
+        # ── DROP FIRST-HALF BTTS PRICES MISLABELLED AS FULL-MATCH (found 2026-08-23) ──────
+        #
+        # The capture parser matched the bet NAME by substring, so "Both Teams Score - First
+        # Half" (bet 34, Yes ~5.50) overwrote "Both Teams Score" (bet 8, Yes ~1.91) whenever
+        # Bet365 offered both. The parser is fixed, so no NEW contamination arrives — but 271 of
+        # 6,358 historical btts_yes rows (4.3%, 2026-08-06 to 08-23) are first-half prices, and
+        # `aggfunc="last"` below would feed them straight into odds_btts for training and the
+        # BTTS backtest. A 6.0 price where the truth is 1.9 does not look like an outlier to any
+        # downstream check; it looks like a longshot with a huge edge.
+        #
+        # THE TWO POPULATIONS DO NOT OVERLAP, so this filter cannot catch a real price:
+        #     clean full-match btts_yes   1.34 - 2.97
+        #     contaminated (first half)   3.40 - 7.00
+        #     observations in 0.31-0.33 implied (odds 3.03-3.22):  ZERO
+        # 3.20 sits inside that empty gap. A full-match BTTS-YES at 3.20 implies a 31% chance
+        # both teams score across 90 minutes, which does not occur in professional football.
+        #
+        # Rows are DROPPED FROM THIS READ ONLY. Nothing is deleted from the CSV — the raw
+        # capture stays intact so the contamination remains auditable.
+        _BTTS_YES_MAX = 3.20
+        _bad = (oh["market"] == "btts_yes") & (pd.to_numeric(oh["odds"], errors="coerce")
+                                               > _BTTS_YES_MAX)
+        if _bad.any():
+            log.warning(f"  [std_sidemarket] dropped {int(_bad.sum())} btts_yes row(s) with "
+                        f"odds > {_BTTS_YES_MAX} — first-half BTTS mislabelled as full-match "
+                        f"(see 2026-08-23 parser fix). Raw file unchanged.")
+            oh = oh[~_bad].copy()
         if oh.empty:
             return df
         parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
