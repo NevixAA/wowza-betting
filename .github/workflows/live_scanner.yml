@@ -57,14 +57,25 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/live_tips.csv output/live_games.csv \
-                     output/live_signals_history.csv output/inplay_snapshots.csv \
-                     telegram_bot/live_notified.json 2>/dev/null || true
+          # PER-FILE. `git add -f a b missing` ABORTS and stages NOTHING — one absent path loses
+          # the whole list and `|| true` then hides it. All five paths happen to exist today, so
+          # this is a latent trap rather than an active one, but it is the same defect that
+          # silenced player_props for three days and inplay_snapshots.csv is created lazily.
+          for f in output/live_tips.csv output/live_games.csv \
+                   output/live_signals_history.csv output/inplay_snapshots.csv \
+                   telegram_bot/live_notified.json; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: live $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
           for i in 1 2 3 4 5; do
-            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            # No `-X ours`: during a REBASE `ours` is UPSTREAM, so it resolves every conflict in
+            # favour of whoever pushed first and discards THIS run's rows. inplay_snapshots.csv
+            # and live_signals_history.csv are append-only records of a moment that cannot be
+            # re-observed — an in-play state at 63' is gone once the match moves on.
+            git pull --rebase --autostash origin main && git push && { pushed=1; break; }
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }

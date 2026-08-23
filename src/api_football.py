@@ -95,8 +95,21 @@ def _get(endpoint: str, params: dict, cache_hours: float = 24) -> Optional[dict]
         # problems, so a 200 is NOT proof of success.
         errs = data.get("errors") if isinstance(data, dict) else None
         if errs:
-            log.warning(f"[api_football] {endpoint} returned errors={errs} — treating as "
-                        f"no data (this is what an exhausted daily quota looks like)")
+            # A PARAMETER error is a permanent bug in our request — it will fail identically on
+            # every future call and no amount of waiting fixes it. A quota/plan error is
+            # transient. The old message called every error "an exhausted daily quota", which is
+            # how a malformed `league` param masqueraded as a quiet day and killed the live
+            # scanner for 14 days. Same return value (no data), very different severity.
+            param_keys = {"league", "season", "team", "fixture", "date", "ids", "live",
+                          "player", "bookmaker", "bet", "page", "timezone"}
+            bad_params = sorted(param_keys & set(errs)) if isinstance(errs, dict) else []
+            if bad_params:
+                log.error(f"[api_football] {endpoint} REJECTED OUR PARAMETERS: {errs} — this is "
+                          f"a permanent client bug in {bad_params}, not a quota problem. It "
+                          f"will return no data on every call until the request is fixed.")
+            else:
+                log.warning(f"[api_football] {endpoint} returned errors={errs} — treating as "
+                            f"no data (plan/quota shape: transient, retry later)")
             return None
         if cache_hours > 0:
             _save_cache(cache_key, data)
@@ -417,16 +430,42 @@ def get_live_fixtures(league_ids: list[int] = None) -> list[dict]:
     Returns list of dicts: fixture_id, league_id, league_name, home_team,
     away_team, home_goals, away_goals, status, elapsed_mins.
     """
+    # LEAGUE FILTERING IS CLIENT-SIDE, DELIBERATELY (fixed 2026-08-23).
+    #
+    # This used to send `live=all&league=39-140-135-...`. API-Football rejects that with
+    # HTTP 200 and errors={'league': 'The League field must contain an integer.'} — the
+    # dash-separated list is valid for `ids`/`live`, but `league` takes ONE integer. `_get`
+    # treats any `errors` payload as no-data, so the call returned [] on EVERY scan.
+    #
+    # It killed the live scanner silently for 14 days: last real output 2026-08-09 00:40 UTC,
+    # live_tips.csv and live_games.csv left header-only, inplay_snapshots.csv frozen at 129
+    # rows. The workflow went green every 5 minutes throughout, because "no live games" is a
+    # completely normal answer and nothing distinguished it from "the request was malformed".
+    # Measured the same day: this call returned 0 fixtures while the unscoped call returned 9.
+    #
+    # Filtering here rather than server-side because:
+    #   * it costs exactly the same — one /fixtures call either way, `live=all` is not billed
+    #     per league;
+    #   * live_scanner ALREADY re-filters by `id_to_name.get(league_id)`, so the server-side
+    #     filter was duplicating a client-side one that is authoritative anyway;
+    #   * it makes a zero self-diagnosing. `live=<dash list>` (the documented alternative) is
+    #     accepted but also returns 0 when our leagues are quiet, which is indistinguishable
+    #     from the malformed case — and being unable to tell those apart is what hid this for
+    #     two weeks. Now the log prints both counts, so "9 live worldwide, 0 in our leagues"
+    #     reads very differently from "0 live worldwide".
     params: dict = {"live": "all"}
-    if league_ids:
-        params["league"] = "-".join(str(lid) for lid in league_ids)
 
     data = _get("/fixtures", params, cache_hours=0.025)  # ~90s
     if not data:
         return []
 
+    wanted = {int(l) for l in league_ids} if league_ids else None
     fixtures = []
+    n_raw = 0
     for fix in data.get("response", []):
+        n_raw += 1
+        if wanted is not None and (fix.get("league") or {}).get("id") not in wanted:
+            continue
         status_obj = fix.get("fixture", {}).get("status", {})
         short      = status_obj.get("short", "")
         elapsed    = status_obj.get("elapsed") or 0
@@ -451,4 +490,8 @@ def get_live_fixtures(league_ids: list[int] = None) -> list[dict]:
             "status":       short,
             "elapsed_mins": elapsed,
         })
+    # Both counts, always. A bare "0 live games" is the exact message that made a broken
+    # request look like a quiet Sunday for two weeks.
+    log.info(f"[api_football] live: {n_raw} in-play worldwide, {len(fixtures)} in our "
+             f"{len(wanted) if wanted else 'all'} league(s)")
     return fixtures
