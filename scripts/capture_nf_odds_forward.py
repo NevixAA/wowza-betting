@@ -24,6 +24,31 @@ sys.path.insert(0, str(PROJ))
 import config
 from player_model.api_football import get_upcoming_fixtures
 
+# FULL-MATCH BTTS ONLY. Duplicated verbatim from
+# scripts/capture_std_sidemarket_odds_forward.py, which carries the full explanation; all four
+# sites had the same substring-matching defect and must not diverge.
+#
+# The short version: `"Both Teams Score" in name` also matches bet 34, "Both Teams Score -
+# First Half" (Yes=5.50 vs the real 1.91), and the parse loop assigns on every match so the
+# last one wins. The corrupted pair looks perfect — overround 1.04, stable to kickoff — it
+# just answers a different question.
+_BTTS_BET_ID = 8
+_BTTS_DISQUALIFY = ("Half", "1st", "2nd", "/", "Total Goals", "Corner", "Card",
+                    "Player", "Shot", "Foul", "Handicap", "Minute")
+_BTTS_EXACT = ("Both Teams Score", "Both Teams To Score", "BTTS")
+
+
+def _is_fullmatch_btts(bet: dict) -> bool:
+    """True only for the 90-minute Both-Teams-To-Score market."""
+    if bet.get("id") == _BTTS_BET_ID:
+        return True
+    name = (bet.get("name") or "").strip()
+    if any(x in name for x in _BTTS_DISQUALIFY):
+        return False
+    return name in _BTTS_EXACT
+
+
+
 _KEY = os.getenv("APIFOOTBALL_KEY", "")
 _BASE = "https://v3.football.api-sports.io"
 _HEADERS = {"x-apisports-key": _KEY}
@@ -132,7 +157,7 @@ def _parse_all_odds(data: dict) -> dict:
             for bet in bk.get("bets", []):
                 name = bet.get("name", "")
                 vals = bet.get("values", [])
-                if "Both Teams Score" in name or "BTTS" in name:
+                if _is_fullmatch_btts(bet):
                     for v in vals:
                         try:
                             if v.get("value") == "Yes":
