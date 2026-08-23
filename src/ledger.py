@@ -221,7 +221,10 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
 SIDE_LEDGER_FILE = config.OUTPUT_DIR / "side_bets_ledger.csv"
 SIDE_LEDGER_COLS = [
     "source", "generated_at", "signal_date", "match_date", "league",
-    "home_team", "away_team", "market", "odds", "edge_pct", "ev_pct",
+    # `side` added 2026-08-22: a stored "btts" row did not say YES or NO, so a settled BTTS tip
+    # could not be graded unambiguously from the ledger alone. Every existing row is YES, since the
+    # generator has always been one-sided.
+    "home_team", "away_team", "market", "side", "odds", "edge_pct", "ev_pct",
     "model_prob", "signal_tier", "model_type", "closing_odds", "clv_pct", "result", "pnl", "notes",
 ]
 _SIDE_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}

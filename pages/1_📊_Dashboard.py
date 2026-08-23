@@ -303,7 +303,8 @@ if not side_bets.empty:
     )
     st.caption("Standard-format leagues only · Trained separately from O/U 2.5")
 
-    SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    # "BTTS" alone is ambiguous about the side; this path only ever produces YES.
+    SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
     TIER_EMOJI  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
 
     col_sb1, col_sb2 = st.columns(2)

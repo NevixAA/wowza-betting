@@ -963,7 +963,8 @@ def notify_weekly_summary() -> bool:
     # ── Build message — by market then tier ──────────────────────────────────
     TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
     TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
-    SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    # BTTS alone does not say which side; this path only ever produces YES.
+    SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
 
     lines = [
         "📊 <b>WEEKLY SUMMARY</b>",
@@ -1837,7 +1838,8 @@ def notify_daily_digest() -> bool:
 
     TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
     TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
-    SIDE_LABELS = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    # BTTS alone does not say which side; this path only ever produces YES.
+    SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
     SIG_SYM     = {"STEAM_STRONG": "🔴", "STEAM_SHARP": "🟠", "STRONG": "🟡"}
 
     lines = [
@@ -2234,14 +2236,24 @@ def notify_side_bets() -> int:
 
     df = df.sort_values(["signal_tier", "ev"], ascending=[True, False])
 
-    MARKET_LABEL = {"btts": "BTTS", "over15": "Over 1.5", "over35": "Over 3.5"}
+    # NAME THE SIDE. "BTTS" alone is ambiguous — a reader cannot tell whether the tip is that
+    # both teams DO score or that they do not. "Over 1.5" and "Over 3.5" already state their side
+    # in the name; BTTS did not. The side-market pipeline is one-sided by construction (it uses
+    # p_{market} and odds_{market} with no side concept), so every BTTS signal is implicitly YES.
+    # Saying so is the difference between a tip and a guess about what the tip meant.
+    MARKET_LABEL = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
     MARKET_EMOJI = {"btts": "🔁", "over15": "📈", "over35": "🚀"}
 
     notified = _load_notified()
     sent = 0
 
     for _, row in df.iterrows():
-        key = f"SIDE|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}|{row['market']}"
+        # Side is part of the dedup key so a future BTTS-NO signal cannot be suppressed by an
+        # already-sent BTTS-YES on the same fixture. Falls back to "" for existing keys, so no
+        # previously notified tip is re-sent by this change.
+        _sd = str(row.get("side", "") or "")
+        key = (f"SIDE|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}"
+               f"|{row['market']}" + (f"|{_sd}" if _sd and _sd.upper() not in ("YES", "OVER") else ""))
         if key in notified:
             continue
 

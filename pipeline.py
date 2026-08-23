@@ -101,6 +101,19 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["edge"]        = df["model_prob"] - df["fair_prob"]
         df["ev"]          = df["model_prob"] * df["market_odds"] - 1.0
         df["market"]      = target
+        # EXPLICIT SIDE. This path is one-sided by construction: it reads p_{target} and
+        # odds_{target}, so "btts" means BTTS-YES and "over15"/"over35" mean the OVER side.
+        # Recording it removes the ambiguity from the ledger as well as the alert, and makes the
+        # column exist for the day the opposite side becomes reachable.
+        #
+        # BTTS-NO IS DELIBERATELY NOT ENABLED. Measured 2026-08-22: the NO side shows a median
+        # +2.66% edge with 61 of 138 fixtures over 3%, against YES at median -2.56% with 18. That
+        # asymmetry is NOT opportunity — it is model bias. True BTTS base rate is 0.5283 (n=14,586),
+        # p_btts averages 0.5134 (-1.49pp LOW) while the market sits at 0.5416 (+1.33pp high), so
+        # the MARKET is closer to truth than the model. The 2.82pp model-market gap manufactures a
+        # NO edge on every fixture before any fixture-specific information exists. Enabling NO
+        # would systematically bet a calibration error 61 times. Recalibrate p_btts first.
+        df["side"]        = {"btts": "YES", "over15": "OVER", "over35": "OVER"}.get(target, "")
 
         def _tier(row):
             lg = row["league"]
