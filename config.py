@@ -53,7 +53,10 @@ SIDE_MARKETS = {
 }
 # Human-readable labels for Telegram / dashboard
 SIDE_MARKET_LABELS = {
-    "btts":   "BTTS",
+    # "BTTS" alone does not say whether the tip is that both teams DO score or that they do not.
+    # The side-market generator is one-sided by construction (it reads p_{market}/odds_{market}),
+    # so every BTTS signal is YES. "Over 1.5"/"Over 3.5" already state their side in the name.
+    "btts":   "BTTS — YES",
     "over15": "Over 1.5",
     "over35": "Over 3.5",
 }
