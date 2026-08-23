@@ -472,7 +472,51 @@ def run_player_predictions(
                    .drop_duplicates("player_id", keep="last")
                    .set_index("player_id")["team"].astype(str))
     _latest_team = _latest_team.reindex(_latest_any.index).fillna(_latest_any)
-    _club       = history_df["player_id"].map(_latest_team).fillna(history_df["team"].astype(str))
+
+    # ── LIVE SQUAD OVERLAY — authoritative for CURRENT club ──────────────────────────────
+    # This is the "/players/squads overlay" the note above asks for. A historical appearance
+    # cannot know about a transfer completed AFTER it, so the latest-club rule is correct and
+    # still wrong for anyone who moved in the window: Víctor Muñoz (id 338751) last appeared
+    # for Osasuna on 2026-05-17, signed for Liverpool over the summer, and was therefore being
+    # tipped as an Osasuna player against Osasuna fixtures he will not play in.
+    #
+    # SCALE, measured 2026-08-22: of 526 Premier League squad players who join to club history,
+    # 131 (25%) have a live club that differs from their latest club appearance — Rashford shown
+    # at Barcelona, Tielemans at Aston Villa, Aarons at Valencia, Andrey Santos at Chelsea. A
+    # quarter of the squad, not an edge case.
+    #
+    # The join is on player_id, not name, so accents and abbreviations ("Víctor Muñoz" vs
+    # "Victor Munoz") cannot break it — the exact failure mode that made club matching hard
+    # everywhere else in this codebase. 534 of 674 squad ids (79%) are present in history.
+    #
+    # PRECEDENCE: live squad > latest club appearance > latest appearance of any kind > the row's
+    # own team. Each step is strictly less current than the one before it.
+    #
+    # COVERAGE LIMIT, stated because it is not a bug: pl_squads_official.csv is PREMIER LEAGUE
+    # only. A player who left the PL this summer is absent from it, so he still falls back to his
+    # last PL appearance. No source we hold knows better, and inventing one would be worse than
+    # being out of date. The overlay fires only where it genuinely knows.
+    _live_squad = {}
+    try:
+        _sqf = config.OUTPUT_DIR / "pl_squads_official.csv"
+        if _sqf.exists():
+            _sq = pd.read_csv(_sqf, usecols=["player_id", "team"])
+            _sq = _sq.dropna(subset=["player_id", "team"])
+            _live_squad = dict(zip(_sq["player_id"].astype("int64"),
+                                   _sq["team"].astype(str)))
+    except Exception as _e:
+        print(f"[squad_overlay] skipped ({_e}); falling back to appearance history")
+
+    _from_live = history_df["player_id"].map(_live_squad)
+    _from_hist = history_df["player_id"].map(_latest_team)
+    _club = _from_live.fillna(_from_hist).fillna(history_df["team"].astype(str))
+    if _live_squad:
+        _corrected = int((_from_live.notna() & _from_hist.notna()
+                          & (_from_live != _from_hist)).sum())
+        _n_players = history_df.loc[_from_live.notna(), "player_id"].nunique()
+        print(f"[squad_overlay] {len(_live_squad)} live squad entries; current club taken "
+              f"from the live squad for {_n_players} player(s); {_corrected} history row(s) "
+              f"corrected where the latest appearance was a former club")
     _team_lc    = _club.str.lower()
     # Unique club names once, so the identity-matched fallback below costs O(teams) per
     # fixture instead of O(rows) — history_df is ~230k rows but only a few hundred clubs.
