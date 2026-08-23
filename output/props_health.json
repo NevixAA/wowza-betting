@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-23T20:21:59Z",
-  "run_id": "32663917651",
-  "run_number": "1050",
+  "checked_at": "2026-08-23T21:22:18Z",
+  "run_id": "32667023821",
+  "run_number": "1051",
   "event": "schedule",
   "schedule": "",
-  "sha": "5b84bc989e5b",
+  "sha": "961d8c51db33",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "6",
@@ -18,16 +18,15 @@
   "output/player_tips.csv": {
     "rows": 330,
     "fixtures": 28,
-    "mtime": "2026-08-23T20:21:56Z"
+    "mtime": "2026-08-23T21:22:14Z"
   },
   "output/player_ledger.csv": {
     "rows": 3464,
     "fixtures": null,
-    "mtime": "2026-08-23T20:21:58Z"
+    "mtime": "2026-08-23T21:16:51Z"
   },
   "git_dirty_outputs": [
-    "M output/clv_records.csv",
-    " M output/player_ledger.csv",
+    "M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
@@ -41,31 +40,31 @@
     "  [Bundesliga 2] 5 recent fixtures fetched",
     "[pipeline] Win probs loaded for 102 WC matches",
     "[player_model] market caps (top-1% real player): {'goals': 0.6875, 'goals2': 0.2661, 'assists': 0.4167, 'sot': 0.95, 'sot2': 0.7581, 'sot3': 0.4839, 'cards': 0.5517}",
-    "[predict] fixture slate: 23 from PROP_LEAGUES via API-Football, 53 from bets.csv supplement",
+    "[predict] fixture slate: 23 from PROP_LEAGUES via API-Football, 52 from bets.csv supplement",
     "[predict] Injury filter: 87 injured/suspended players loaded",
     "[squad_overlay] 674 live squad entries; current club taken from the live squad for 534 player(s); 7232 history row(s) corrected where the latest appearance was a former club",
     "[player_model] 330 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 5 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 2, 'Ireland Premier Division': 2, 'Serie B': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League', 'Europa League', 'Conference League']",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 58443",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events/0b765da573acccbad3b07923f279c567/odds OK | quota remaining: 58443",
-    "[odds_fetcher] soccer_spain_la_liga: no bookmaker priced Celta Vigo v CA Osasuna (regions=uk,eu)",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 57963",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/b86f1854fe9f0915d4f9ee47f23a14bf/odds OK | quota remaining: 57955",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/030285b126b6a2f7e022261006ed770e/odds OK | quota remaining: 57947",
     "[odds_fetcher] soccer_germany_bundesliga2: parked \u2014 16 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_uefa_champs_league/events OK | quota remaining: 58443",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 58443",
-    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 58443",
+    "[odds_fetcher] sports/soccer_uefa_champs_league/events OK | quota remaining: 57947",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 57947",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/c23c70e25e6253ea30f33add6c73d299/odds OK | quota remaining: 57939",
+    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 57939",
+    "[odds_fetcher] sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds OK | quota remaining: 57931",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 17 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
     "[odds_fetcher] soccer_england_league1: parked \u2014 15 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 58443",
-    "[odds_fetcher] 824 player-market prices | leagues with any prop coverage: ['Premier League', 'Ligue 1', 'Serie A', 'La Liga']",
+    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 57931",
+    "[odds_fetcher] 820 player-market prices | leagues with any prop coverage: ['Premier League', 'Ligue 1', 'Serie A', 'La Liga']",
     "[predict] Odds enriched for 31 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
-    "[clv_tracker] logged 4 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 226, 'mean_clv_pct': -0.0184, 'mean_clv_prob': None, 'beat_close_rate': 0.327, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
     "[lineup] 0 confirmed starters | 330 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[predict] player_ledger: +15 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=123 cache_hits=18 cache_hit_rate=13% errors=0  quota_remaining 57851->57729 (account-wide delta 122)"
+    "[api_usage] workflow=Player Props af_calls=123 cache_hits=18 cache_hit_rate=13% errors=0  quota_remaining 57546->57440 (account-wide delta 106)"
   ]
 }
