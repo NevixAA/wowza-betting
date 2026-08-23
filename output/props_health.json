@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-23T17:21:58Z",
-  "run_id": "32654290261",
-  "run_number": "1047",
+  "checked_at": "2026-08-23T18:27:48Z",
+  "run_id": "32657793392",
+  "run_number": "1048",
   "event": "schedule",
   "schedule": "",
-  "sha": "b3fa20f8a599",
+  "sha": "1d816343ac60",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "6",
@@ -16,14 +16,14 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 348,
-    "fixtures": 28,
-    "mtime": "2026-08-23T17:21:53Z"
+    "rows": 342,
+    "fixtures": 27,
+    "mtime": "2026-08-23T18:27:36Z"
   },
   "output/player_ledger.csv": {
-    "rows": 3401,
+    "rows": 3442,
     "fixtures": null,
-    "mtime": "2026-08-23T17:21:56Z"
+    "mtime": "2026-08-23T18:27:39Z"
   },
   "git_dirty_outputs": [
     "M output/clv_records.csv",
@@ -33,40 +33,45 @@
     " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
-    "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
-    "  [Bundesliga] 0 recent fixtures fetched",
-    "  [La Liga] 5 recent fixtures fetched",
-    "  [Serie A] 4 recent fixtures fetched",
     "  [Championship] 5 recent fixtures fetched",
     "  [League One] 5 recent fixtures fetched",
     "  [Bundesliga 2] 5 recent fixtures fetched",
     "[pipeline] Win probs loaded for 102 WC matches",
     "[player_model] market caps (top-1% real player): {'goals': 0.6875, 'goals2': 0.2661, 'assists': 0.4167, 'sot': 0.95, 'sot2': 0.7581, 'sot3': 0.4839, 'cards': 0.5517}",
     "[predict] fixture slate: 26 from PROP_LEAGUES via API-Football, 48 from bets.csv supplement",
-    "[predict] Injury filter: 108 injured/suspended players loaded",
+    "[predict] Injury filter: 109 injured/suspended players loaded",
     "[squad_overlay] 674 live squad entries; current club taken from the live squad for 534 player(s); 7232 history row(s) corrected where the latest appearance was a former club",
-    "[player_model] 348 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
+    "[player_model] 342 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 2 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 1, 'Ireland Premier Division': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League', 'Europa League', 'Conference League']",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 59511",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/b06b6cc4d9eaea1fe78adf24afa350a3/odds OK | quota remaining: 59503",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/b86f1854fe9f0915d4f9ee47f23a14bf/odds OK | quota remaining: 59495",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/030285b126b6a2f7e022261006ed770e/odds OK | quota remaining: 59487",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events/a979daf40170f19586fa4e8682ba698d/odds OK | quota remaining: 59487",
+    "[odds_fetcher] soccer_spain_la_liga: no bookmaker priced Real Madrid v Real Sociedad (regions=uk,eu)",
     "[odds_fetcher] soccer_germany_bundesliga2: parked \u2014 16 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_france_ligue_one/events OK | quota remaining: 60371",
-    "[odds_fetcher] sports/soccer_uefa_champs_league/events OK | quota remaining: 60371",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 60371",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/4164b325d120b7310921429a21496210/odds OK | quota remaining: 60365",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 60365",
-    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 60365",
+    "[odds_fetcher] sports/soccer_france_ligue_one/events OK | quota remaining: 59487",
+    "[odds_fetcher] sports/soccer_france_ligue_one/events/0a88bfab377a4bbddf8aec2983bf4c15/odds OK | quota remaining: 59481",
+    "[odds_fetcher] sports/soccer_uefa_champs_league/events OK | quota remaining: 59481",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 59481",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/fbea45a1e53e07faac0027ac5d233587/odds OK | quota remaining: 59475",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/d44b7b56dadba2e7606cdceec655e62f/odds OK | quota remaining: 59469",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events/c23c70e25e6253ea30f33add6c73d299/odds OK | quota remaining: 59461",
+    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 59461",
+    "[odds_fetcher] sports/soccer_epl/events/4e4a813bf4218cc527e6f8ef2351170d/odds OK | quota remaining: 59453",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 17 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
     "[odds_fetcher] soccer_england_league1: parked \u2014 15 consecutive events with no bookmaker, last probed 2026-08-18; retries every 7d",
-    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 60365",
+    "[odds_fetcher] sports/soccer_uefa_europa_conference_league/events OK | quota remaining: 59453",
     "[odds_fetcher] 1344 player-market prices | leagues with any prop coverage: ['Premier League', 'Ligue 1', 'Serie A', 'La Liga']",
-    "[predict] Odds enriched for 63 player/market pairs",
+    "[predict] Odds enriched for 55 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
-    "[clv_tracker] logged 12 new tip entry prices",
+    "[clv_tracker] logged 7 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 226, 'mean_clv_pct': -0.0184, 'mean_clv_prob': None, 'beat_close_rate': 0.327, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
-    "[lineup] 8 confirmed starters | 340 lineup TBC",
+    "[lineup] 36 confirmed starters | 306 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[predict] player_ledger: +34 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=128 cache_hits=20 cache_hit_rate=14% errors=0  quota_remaining 59250->59108 (account-wide delta 142)"
+    "[predict] player_ledger: +41 new signal(s) recorded",
+    "[api_usage] workflow=Player Props af_calls=128 cache_hits=20 cache_hit_rate=14% errors=0  quota_remaining 58693->58558 (account-wide delta 135)"
   ]
 }
