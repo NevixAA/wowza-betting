@@ -32,6 +32,31 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 
+# FULL-MATCH BTTS ONLY. Duplicated verbatim from
+# scripts/capture_std_sidemarket_odds_forward.py, which carries the full explanation; all four
+# sites had the same substring-matching defect and must not diverge.
+#
+# The short version: `"Both Teams Score" in name` also matches bet 34, "Both Teams Score -
+# First Half" (Yes=5.50 vs the real 1.91), and the parse loop assigns on every match so the
+# last one wins. The corrupted pair looks perfect — overround 1.04, stable to kickoff — it
+# just answers a different question.
+_BTTS_BET_ID = 8
+_BTTS_DISQUALIFY = ("Half", "1st", "2nd", "/", "Total Goals", "Corner", "Card",
+                    "Player", "Shot", "Foul", "Handicap", "Minute")
+_BTTS_EXACT = ("Both Teams Score", "Both Teams To Score", "BTTS")
+
+
+def _is_fullmatch_btts(bet: dict) -> bool:
+    """True only for the 90-minute Both-Teams-To-Score market."""
+    if bet.get("id") == _BTTS_BET_ID:
+        return True
+    name = (bet.get("name") or "").strip()
+    if any(x in name for x in _BTTS_DISQUALIFY):
+        return False
+    return name in _BTTS_EXACT
+
+
+
 # ── API credentials ───────────────────────────────────────────────────────────
 # Direct api-sports.io service — same key/endpoint as player_model/api_football.py
 _KEY     = os.getenv("APIFOOTBALL_KEY", "")
@@ -879,7 +904,7 @@ def fetch_prematch_odds_features(
                     continue
                 for bet in bk.get("bets", []):
                     name = bet.get("name") or ""
-                    if "Both Teams Score" in name or "BTTS" in name:
+                    if _is_fullmatch_btts(bet):
                         for v in bet.get("values", []):
                             odd = _to_float(v.get("odd"))
                             if v.get("value") == "Yes" and odd:

@@ -112,6 +112,47 @@ def _iso_kickoff(raw_ko: str) -> str:
 
 _OU_EXCLUDE = ("Corner", "Card", "Team", "Player", "Shot", "Foul", "Handicap")
 
+# FULL-MATCH BTTS ONLY — see _is_fullmatch_btts. Duplicated verbatim in
+# scripts/capture_nf_odds_forward.py, src/api_football_ou.py and scripts/backfill_af_odds.py;
+# all four had the same defect and must not diverge.
+_BTTS_BET_ID = 8
+_BTTS_DISQUALIFY = ("Half", "1st", "2nd", "/", "Total Goals", "Corner", "Card",
+                    "Player", "Shot", "Foul", "Handicap", "Minute")
+_BTTS_EXACT = ("Both Teams Score", "Both Teams To Score", "BTTS")
+
+
+def _is_fullmatch_btts(bet: dict) -> bool:
+    """True only for the 90-minute Both-Teams-To-Score market.
+
+    THE BUG THIS REPLACES (found 2026-08-23). The test was:
+
+        if "Both Teams Score" in name or "BTTS" in name:
+
+    a bare substring match. Bet365 offers at least three bets containing that substring, and
+    the parse loop assigns on EVERY match, so the LAST one in the payload wins:
+
+        id  8  Both Teams Score                 Yes=1.91  No=1.80   <- what we want
+        id 34  Both Teams Score - First Half    Yes=5.50  No=1.14   <- overwrote it
+        id 24  Results/Both Teams Score         Home/Yes=5.00 ...    <- harmless, compound labels
+
+    So `btts_yes` was silently the FIRST-HALF price whenever bet 34 was offered. It is hard to
+    catch by eye because the pair is internally perfect — the yes/no overround on the corrupted
+    rows is a textbook 1.04, identical to the clean rows — and the price is real and stable all
+    the way to kickoff. It just answers a different question. 271 of 6,358 btts_yes rows (4.3%)
+    sit at >= 3.0, i.e. an implied <= 33% chance both teams score across 90 minutes, which does
+    not occur in professional football; first-half BTTS at ~15% is exactly that shape.
+
+    Matching on the numeric bet id is the primary test because it cannot be broken by a rename.
+    The name test is a fallback for payloads without ids, and requires an EXACT match after
+    disqualifying every qualifier ("Half", "/", "Total Goals", ...) rather than a substring.
+    """
+    if bet.get("id") == _BTTS_BET_ID:
+        return True
+    name = (bet.get("name") or "").strip()
+    if any(x in name for x in _BTTS_DISQUALIFY):
+        return False
+    return name in _BTTS_EXACT
+
 
 def _sanitize_ou(out: dict) -> dict:
     """Drop FT GOAL O/U odds that are internally impossible (a non-goal O/U market leaked in,
@@ -137,7 +178,7 @@ def _parse_all_odds(data: dict) -> dict:
             for bet in bk.get("bets", []):
                 name = bet.get("name", "")
                 vals = bet.get("values", [])
-                if "Both Teams Score" in name or "BTTS" in name:
+                if _is_fullmatch_btts(bet):
                     for v in vals:
                         try:
                             if v.get("value") == "Yes":
