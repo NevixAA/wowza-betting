@@ -61,6 +61,48 @@ SIDE_MARKET_LABELS = {
     "over35": "Over 3.5",
 }
 
+# ── Provider coverage: enabled leagues the odds provider does NOT carry ───────
+# An enabled league with no sport key is one of two completely different things, and they need
+# opposite responses:
+#
+#   CONFIG_BROKEN         we mapped it wrong, or forgot to map it. A BUG. Fix the mapping.
+#   PROVIDER_UNSUPPORTED  the provider does not sell this competition. Not a bug. Nothing to fix.
+#
+# Both look identical from outside — the league simply returns zero fixtures forever — which is how
+# Ligue 2 stayed dark for three months on an invalid key. Declaring the second case explicitly is
+# what lets an audit FAIL the first and merely note the second, instead of either crying wolf or
+# staying silent.
+#
+# Each entry must record the EVIDENCE, so nobody re-litigates it from memory.
+PROVIDER_UNSUPPORTED: dict = {
+    # Verified 2026-08-22 against the FULL OddsAPI catalogue (`/sports?all=true`, 67 soccer
+    # competitions enumerated in the commit message). No Romanian competition exists at any tier,
+    # under any of: romania / roman / liga_i / liga1 / superliga / super_liga / fcsb / cfr. The only
+    # "superliga" hit is Denmark. So this is provider coverage, not a naming mismatch, and a key
+    # cannot be invented for it.
+    #
+    # Kept in ENABLED_LEAGUES deliberately rather than removed: the intent to bet it is real, and
+    # deleting the row would erase the record of why it produces nothing. It has 0 ledger rows and
+    # has never appeared on a board.
+    "Romanian Superliga": {
+        "reason":   "NO_ODDSAPI_SPORT_KEY",
+        "provider": "oddsapi",
+        "verified": "2026-08-22",
+        "evidence": "full /sports?all=true catalogue enumerated; no Romanian competition at any tier",
+    },
+}
+
+
+def provider_supported(league: str) -> bool:
+    """False when the odds provider does not carry this competition at all."""
+    return league not in PROVIDER_UNSUPPORTED
+
+
+def unsupported_reason(league: str) -> str:
+    """Machine-readable reason, or "" when the league IS supported."""
+    return str(PROVIDER_UNSUPPORTED.get(league, {}).get("reason", ""))
+
+
 # ── League format classification ──────────────────────────────────────────────
 # Standard: historical CSVs contain shots, corners, O/U odds → richer features
 STANDARD_FORMAT_LEAGUES = {
