@@ -7,7 +7,7 @@
   "sha": "5ee8cdefe510",
   "history_freshness": {
     "newest_match": "2026-08-17",
-    "age_days": "6",
+    "age_days": "7",
     "stale": "true"
   },
   "step_outcomes": {
@@ -39,7 +39,7 @@
     "[squad_overlay] 674 live squad entries; current club taken from the live squad for 534 player(s); 7232 history row(s) corrected where the latest appearance was a former club",
     "[player_model] 465 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
-    "[odds_fetcher] 5 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 2, 'Ireland Premier Division': 2, 'Serie B': 1}",
+    "[odds_fetcher] 4 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 2, 'Serie B': 1, 'Ireland Premier Division': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League', 'Europa League', 'Conference League']",
     "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 56013",
     "[odds_fetcher] sports/soccer_spain_la_liga/events/b86f1854fe9f0915d4f9ee47f23a14bf/odds OK | quota remaining: 56005",
