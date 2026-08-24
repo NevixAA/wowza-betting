@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-08-24T05:39:26Z",
-  "run_id": "32693970391",
-  "run_number": "1059",
+  "checked_at": "2026-08-24T05:48:59Z",
+  "run_id": "32694448612",
+  "run_number": "1060",
   "event": "schedule",
   "schedule": "",
-  "sha": "70d3b6428a88",
+  "sha": "8cf4fcb2866b",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "7",
@@ -18,17 +18,14 @@
   "output/player_tips.csv": {
     "rows": 457,
     "fixtures": 34,
-    "mtime": "2026-08-24T05:39:22Z"
+    "mtime": "2026-08-24T05:48:54Z"
   },
   "output/player_ledger.csv": {
     "rows": 3587,
     "fixtures": null,
-    "mtime": "2026-08-24T05:34:00Z"
+    "mtime": "2026-08-24T05:42:01Z"
   },
-  "git_dirty_outputs": [
-    "M output/player_tips.csv",
-    " M output/prop_odds_coverage.json"
-  ],
+  "git_dirty_outputs": [],
   "predict_log_tail": [
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
     "  [Bundesliga] 0 recent fixtures fetched",
@@ -62,6 +59,6 @@
     "[clv_tracker] CLV report: {'n': 345, 'mean_clv_pct': -0.0293, 'mean_clv_prob': None, 'beat_close_rate': 0.296, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
     "[lineup] 0 confirmed starters | 457 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[api_usage] workflow=Player Props af_calls=132 cache_hits=18 cache_hit_rate=12% errors=0  quota_remaining 73626->73504 (account-wide delta 122)"
+    "[api_usage] workflow=Player Props af_calls=132 cache_hits=18 cache_hit_rate=12% errors=0  quota_remaining 73464->73334 (account-wide delta 130)"
   ]
 }
