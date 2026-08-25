@@ -1,73 +1,80 @@
 {
   "soccer_efl_champ": {
-    "empty_streak": 17,
-    "last_probe": "2026-08-18",
+    "empty_streak": 24,
+    "last_probe": "2026-08-25",
     "league": "Championship",
-    "matched_events": 8,
-    "probes": 17,
+    "matched_events": 7,
+    "probes": 24,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 7
   },
   "soccer_england_league1": {
-    "empty_streak": 15,
-    "last_probe": "2026-08-18",
+    "empty_streak": 22,
+    "last_probe": "2026-08-25",
     "league": "League One",
-    "matched_events": 8,
-    "probes": 15,
-    "unmatched_sample": [],
+    "matched_events": 7,
+    "probes": 22,
+    "unmatched_sample": [
+      "Blackpool vs Peterborough"
+    ],
     "wanted_fixtures": 8
   },
   "soccer_epl": {
     "empty_streak": 0,
-    "last_priced": "2026-08-24",
-    "last_probe": "2026-08-24",
+    "last_priced": "2026-08-25",
+    "last_probe": "2026-08-25",
     "league": "Premier League",
-    "matched_events": 1,
-    "priced_events": 594,
-    "probes": 612,
+    "matched_events": 5,
+    "priced_events": 598,
+    "probes": 616,
     "unmatched_sample": [],
-    "wanted_fixtures": 1
+    "wanted_fixtures": 5
   },
   "soccer_france_ligue_one": {
     "empty_streak": 0,
-    "last_priced": "2026-08-24",
-    "last_probe": "2026-08-24",
+    "last_priced": "2026-08-25",
+    "last_probe": "2026-08-25",
     "league": "Ligue 1",
-    "matched_events": 1,
-    "priced_events": 447,
-    "probes": 456,
+    "matched_events": 5,
+    "priced_events": 451,
+    "probes": 460,
     "unmatched_sample": [],
-    "wanted_fixtures": 1
+    "wanted_fixtures": 5
   },
   "soccer_germany_bundesliga": {
-    "empty_streak": 12,
-    "last_probe": "2026-08-18",
+    "empty_streak": 0,
+    "last_priced": "2026-08-25",
+    "last_probe": "2026-08-25",
     "league": "Bundesliga",
-    "matched_events": 8,
-    "probes": 12,
+    "matched_events": 5,
+    "priced_events": 5,
+    "probes": 17,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_germany_bundesliga2": {
-    "empty_streak": 16,
+    "empty_streak": 24,
     "last_all_unmatched": "2026-08-17",
-    "last_probe": "2026-08-18",
+    "last_probe": "2026-08-25",
     "league": "Bundesliga 2",
     "matched_events": 8,
-    "probes": 16,
-    "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "probes": 24,
+    "unmatched_sample": [
+      "Eintracht Braunschweig vs Hertha BSC",
+      "Energie Cottbus vs SpVgg Greuther F\u00fcrth"
+    ],
+    "wanted_fixtures": 10
   },
   "soccer_italy_serie_a": {
     "empty_streak": 0,
-    "last_priced": "2026-08-24",
-    "last_probe": "2026-08-24",
+    "last_priced": "2026-08-25",
+    "last_probe": "2026-08-25",
     "league": "Serie A",
-    "matched_events": 1,
-    "priced_events": 625,
-    "probes": 637,
+    "matched_events": 5,
+    "priced_events": 629,
+    "probes": 641,
     "unmatched_sample": [],
-    "wanted_fixtures": 1
+    "wanted_fixtures": 5
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
