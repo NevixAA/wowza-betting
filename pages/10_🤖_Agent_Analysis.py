@@ -16,6 +16,8 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
+
+import dashboard_ui as ui
 from dotenv import load_dotenv
 
 V9_DIR = Path(__file__).resolve().parents[1]
@@ -27,9 +29,10 @@ st.set_page_config(page_title="Match Validator | Wowza", page_icon="🔬", layou
 st.markdown("## 🔬 Match Validation Agent")
 st.caption("Independent model validation using formulas.md — APPROVES or DISAGREES with each signal.")
 
-import streamlit.components.v1 as components
-components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
-
+# Was components.v1.html with a JS reload: an API whose announced removal date
+# (2026-06-01) has passed, and which reloaded the whole browser tab and so DISCARDED
+# every filter the user had set.
+ui.autorefresh(minutes=2, key="10_agent_analysis_refresh")
 # ── How to read this page ─────────────────────────────────────────────────────
 with st.expander("ℹ️ How to read this page", expanded=False):
     st.markdown("""
@@ -239,7 +242,7 @@ col_sel, col_all = st.columns([4, 1])
 with col_sel:
     selected_label = st.selectbox("Select pick:", filtered["label"].tolist())
 with col_all:
-    run_all = st.button("▶ Validate All", use_container_width=True)
+    run_all = st.button("▶ Validate All", width="stretch")
 
 def _safe_float(val, default=1.0):
     """Return float or default if NaN/None/missing."""
@@ -383,7 +386,7 @@ def render_analysis(row, data):
         {"Market": "HT OVER 0.5", "Formula P": f"{mkts['p_ht_over05']:.1%}",
          "Fair odds": fair(mkts["p_ht_over05"]), "Market odds": "—", "EV": "—", "Edge vs fair": "—"},
     ]
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 
 # ── Single match view ─────────────────────────────────────────────────────────

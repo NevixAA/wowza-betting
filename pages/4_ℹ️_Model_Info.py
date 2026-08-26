@@ -243,7 +243,7 @@ with tab_thr:
                          else "Good density" if thresh <= 0.18
                          else "High confidence only",
         })
-    st.dataframe(pd.DataFrame(thresh_data), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(thresh_data), width="stretch", hide_index=True)
 
     st.markdown("#### Training Configuration")
     c1, c2 = st.columns(2)
@@ -257,7 +257,7 @@ with tab_thr:
             for s, w in sorted(config.TRAINING_DECAY_WEIGHTS.items(), reverse=True)
             if w > 0 or s in config.COVID_SEASONS
         ])
-        st.dataframe(decay_df, use_container_width=True, hide_index=True)
+        st.dataframe(decay_df, width="stretch", hide_index=True)
 
 # ── Tab 6: Feature Importances ─────────────────────────────────────────────────
 with tab_fi:
@@ -279,7 +279,7 @@ with tab_fi:
                 fig.update_layout(plot_bgcolor="#0e1117", paper_bgcolor="#0e1117",
                                   font_color="white", coloraxis_showscale=False,
                                   height=420, yaxis_title="", xaxis_title="Importance")
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             else:
                 st.info("Run retrain to generate feature importances.")
 
@@ -289,7 +289,7 @@ with tab_bt:
     df = load_backtest()
     if not df.empty:
         df_sorted = df.sort_values("roi_%", ascending=False)
-        st.dataframe(df_sorted, use_container_width=True, hide_index=True)
+        st.dataframe(df_sorted, width="stretch", hide_index=True)
         fig = px.bar(df_sorted, x="league", y="roi_%",
                      color="roi_%",
                      color_continuous_scale=["#e94560", "#555", "#00c896"],
@@ -301,7 +301,7 @@ with tab_bt:
                           font_color="white", coloraxis_showscale=False,
                           height=400, xaxis_tickangle=-20)
         fig.add_hline(y=0, line_color="#555")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     else:
         st.info("Run retrain to generate backtest results.")
 

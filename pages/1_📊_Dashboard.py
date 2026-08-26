@@ -63,7 +63,7 @@ from utils.access import is_public
 col_run, col_upd, col_time = st.columns([2, 2, 6])
 
 with col_run:
-    if not is_public() and st.button("🔄 Run Predict Now", use_container_width=True):
+    if not is_public() and st.button("🔄 Run Predict Now", width="stretch"):
         with st.spinner("Fetching fixtures & computing predictions..."):
             result = subprocess.run(
                 [PYTHON, "pipeline.py", "--mode", "predict"],
@@ -76,7 +76,7 @@ with col_run:
             st.error(f"Error: {result.stderr[-500:]}")
 
 with col_upd:
-    if not is_public() and st.button("📥 Update Results Now", use_container_width=True):
+    if not is_public() and st.button("📥 Update Results Now", width="stretch"):
         with st.spinner("Fetching match results..."):
             result = subprocess.run(
                 [PYTHON, "update_results.py"],
@@ -201,7 +201,7 @@ if not marksmen.empty:
             "Side": side, "Odds": f"{odds:.2f}", "Edge": f"{edge:.1f}%",
             "Drift": drift, "Model": model,
         })
-    st.dataframe(pd.DataFrame(marksman_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(marksman_rows), width="stretch", hide_index=True)
 else:
     if "MARKSMAN" in tier_filter:
         st.info("No MARKSMAN tips matching current filters.")
@@ -231,7 +231,7 @@ if not valuables.empty:
 
     st.dataframe(
         pd.DataFrame(rows_display),
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         column_config={
             "Odds":  st.column_config.NumberColumn(format="%.2f"),
@@ -279,7 +279,7 @@ if not ht_preds.empty:
             "P(HT OVER 1.5)":  f"{p15*100:.0f}%" if p15 else "—",
             "Fair OVER 1.5":   fair15,
         })
-    st.dataframe(pd.DataFrame(ht_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(ht_rows), width="stretch", hide_index=True)
     st.caption("Compare fair prices against your bookmaker's HT market to find value")
 
 # ── Side Markets: BTTS / Over 1.5 / Over 3.5 ──────────────────────────────────
@@ -338,7 +338,7 @@ if not side_bets.empty:
                     "Edge":    f"{float(row['edge'])*100:.1f}%",
                     "EV":      f"{float(ev):+.1%}" if pd.notna(ev) else "—",
                 })
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 # ── Suppressed bets note ────────────────────────────────────────────────────────
 avoided = df[df["bet"] == "AVOID"]
@@ -346,7 +346,7 @@ if not avoided.empty:
     with st.expander(f"🚫 {len(avoided)} fixtures suppressed (AVOID / both-losing guard)"):
         st.dataframe(
             avoided[["date", "league", "home_team", "away_team", "signal_tier", "model_type"]],
-            use_container_width=True, hide_index=True
+            width="stretch", hide_index=True
         )
 
 

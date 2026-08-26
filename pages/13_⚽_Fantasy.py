@@ -7,10 +7,13 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
+
+import dashboard_ui as ui
 
 st.set_page_config(page_title="Fantasy | Wowza", page_icon="⚽", layout="wide")
-components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
+# Was components.v1.html with a JS reload — an API whose announced removal date (2026-06-01) has
+# passed, and which reloaded the whole tab and so DISCARDED every filter the user had set.
+ui.autorefresh(minutes=2, key="fantasy_refresh")
 
 BASE_DIR  = Path(__file__).resolve().parents[1]
 TIPS_FILE = BASE_DIR / "output" / "fantasy_tips.csv"
@@ -103,29 +106,52 @@ else:
 # ── Captaincy picks ───────────────────────────────────────────────────────────
 st.subheader("🏆 Captaincy picks")
 cap = df[df.get("captain_pick", False) == True] if "captain_pick" in df.columns else df.head(3)
+st.caption("Top three available players by expected points. Injured players are never suggested "
+           "as captain.")
 cols = st.columns(max(len(cap), 1))
 for c, r in zip(cols, cap.itertuples()):
-    fx = getattr(r, "next_fixtures", "") or ""
-    price = getattr(r, "price", None)
     avail = getattr(r, "availability", "") or ""
-    help_txt = f"P(goal) {getattr(r,'p_goal',0):.0%} · P(assist) {getattr(r,'p_assist',0):.0%}"
-    if price is not None and price == price:
-        help_txt += f" · £{price}m"
+    ui.player_card(
+        c,
+        name=r.player_name,
+        position=getattr(r, "position", ""),
+        points=float(r.disp_pts),
+        team=getattr(r, "team", "") or "",
+        price=getattr(r, "price", None),
+        fixture=getattr(r, "next_fixtures", "") or "",
+        p_goal=getattr(r, "p_goal", None),
+        p_assist=getattr(r, "p_assist", None),
+        flag=("🚑 " if getattr(r, "injured", False)
+              else "⚠️ " if getattr(r, "doubtful", False) else ""),
+    )
     if avail and avail not in ("available", "unknown"):
-        help_txt += f" · ⚠️ {avail}"
-    if fx:
-        help_txt += f" · next: {fx}"
-    c.metric(f"{r.player_name} ({r.position})", f"{r.disp_pts:.2f} pts", help=help_txt)
+        c.caption(f"⚠️ {avail}")
 
 # ── Per-position top picks ────────────────────────────────────────────────────
 st.subheader("📋 Top by position")
+# A compact table per position rather than `col.write(f"{rank}. {name} — {pts}")`, which gave
+# four columns of unformatted text with no team, no price and no way to compare down a column.
 pcols = st.columns(4)
 for col, pos in zip(pcols, POS_CODES):
-    sub = df[df["position"] == pos].head(5)
+    sub = df[df["position"] == pos].head(5).copy()
     col.markdown(f"**{POS_LABEL.get(pos, pos)}**")
-    for r in sub.itertuples():
-        flag = "🚑 " if getattr(r, "injured", False) else ("⚠️ " if getattr(r, "doubtful", False) else "")
-        col.write(f"{r.pos_rank}. {flag}{r.player_name} — {r.disp_pts:.2f}")
+    if sub.empty:
+        col.caption("—")
+        continue
+    sub["Player"] = [
+        ("🚑 " if r.get("injured") else "⚠️ " if r.get("doubtful") else "") + str(r["player_name"])
+        for _, r in sub.iterrows()]
+    cols_show = ["Player"] + [c for c in ("team", "price", "disp_pts") if c in sub.columns]
+    tbl = sub[cols_show].rename(columns={"team": "Team", "price": "£m", "disp_pts": "Pts"})
+    _pmax = float(tbl["Pts"].max()) if "Pts" in tbl.columns and len(tbl) else 1.0
+    col.dataframe(
+        tbl, hide_index=True, width="stretch",
+        column_config={
+            "Player": st.column_config.TextColumn("Player", width="medium"),
+            "Team": st.column_config.TextColumn("Team", width="small"),
+            "£m": ui.money_col(),
+            "Pts": ui.bar_col("Pts", max_value=max(_pmax, 0.1)),
+        })
 
 # ── Full ranked table ─────────────────────────────────────────────────────────
 st.subheader("📊 Full projections")
@@ -148,16 +174,43 @@ show = show[disp_cols].rename(columns={
     "dc_pts": "Def", "cs_pts": "CS", "bonus_pts": "Bon", "disp_pts": "Exp pts",
     "p_start": "Start%", "xpts_rot": "xPts·rot", "avg_fdr": "FDR", "next_fixtures": "Next fixtures",
 })
-for c in ["P(goal)", "P(assist)", "P(SOT2+)"]:
-    if c in show.columns:
-        show[c] = (show[c] * 100).round(0).astype("Int64").astype(str) + "%"
-if "Start%" in show.columns:
-    show["Start%"] = (show["Start%"] * 100).round(0).astype("Int64").astype(str) + "%"
-st.dataframe(show, width="stretch", hide_index=True, height=560)
-st.caption("🚑 = injured/unavailable · ⚠️ = doubtful · ⚽ = penalty taker. "
-           "Def = defensive-contribution pts (approx — source lacks clearances/recoveries) · "
-           "CS = clean-sheet pts (DEF/GK/MID) · Bon = expected bonus (BPS drivers) · "
-           "Start% = P(start) · xPts·rot = rotation-adjusted expected points (Exp pts × Start%).")
+
+# NUMBERS STAY NUMBERS. This block used to do
+#     show[c] = (show[c] * 100).round(0).astype(str) + "%"
+# which rendered "73%" and silently BROKE SORTING: strings sort lexicographically, so clicking
+# P(goal) descending gave 9%, 8%, 73%, 45%, 100% in that order. The most useful sort on the page
+# did not work. Formatting now happens at RENDER time through column_config, so the stored value
+# stays numeric and the header sorts correctly.
+#
+# Bars need an explicit max_value. An auto-scaled bar changes meaning as the filter changes — the
+# same player would render half-full or full depending on who else is on screen — so the scale is
+# pinned to the data actually being shown.
+_pts_max = float(show["Exp pts"].max()) if "Exp pts" in show.columns and len(show) else 1.0
+_colcfg = {
+    "#": st.column_config.NumberColumn("#", width="small"),
+    "Player": st.column_config.TextColumn("Player", width="medium"),
+    "£m": ui.money_col(help="FPL price"),
+    "Pts/£": ui.num_col("Pts/£", fmt="%.2f", help="Expected points per £m — value, not raw points"),
+    "P(goal)": ui.pct_col("P(goal)", help="Calibrated probability of scoring"),
+    "P(assist)": ui.pct_col("P(assist)"),
+    "P(SOT2+)": ui.pct_col("P(SOT2+)", help="Two or more shots on target"),
+    "Def": ui.num_col("Def", fmt="%.2f",
+                      help="Defensive-contribution points (approximate — the source lacks "
+                           "clearances and recoveries)"),
+    "CS": ui.num_col("CS", fmt="%.2f", help="Clean-sheet points (DEF/GK/MID)"),
+    "Bon": ui.num_col("Bon", fmt="%.2f", help="Expected bonus from BPS drivers"),
+    "Exp pts": ui.bar_col("Exp pts", max_value=max(_pts_max, 0.1),
+                          help="The headline projection — bar is relative to the top player shown"),
+    "Start%": ui.pct_col("Start%", help="Probability of starting"),
+    "xPts·rot": ui.num_col("xPts·rot", fmt="%.2f",
+                           help="Rotation-adjusted: Exp pts × P(start)"),
+    "FDR": ui.num_col("FDR", fmt="%.1f", help="Fixture difficulty, 1 easiest to 5 hardest"),
+    "Next fixtures": st.column_config.TextColumn("Next fixtures", width="medium"),
+}
+st.dataframe(show, width="stretch", hide_index=True, height=560,
+             column_config={k: v for k, v in _colcfg.items() if k in show.columns})
+st.caption("🚑 injured/unavailable · ⚠️ doubtful · ⚽ penalty taker — "
+           "hover any column header for what it means.")
 
 st.caption(f"{len(df)} players · source: output/fantasy_tips.csv · FANTASY family (prediction, not betting)")
 
@@ -489,7 +542,7 @@ else:
                                  "fpl_ep_next", "fpl_ppg", "err_ours", "err_fpl"]
                      if c in _c.columns]
             st.dataframe(_c.nlargest(15, "err_ours")[_cols].round(2),
-                         use_container_width=True, hide_index=True)
+                         width="stretch", hide_index=True)
 
     # History, once the append-only log has more than one day in it.
     try:
@@ -497,7 +550,7 @@ else:
         _hist = calibration()
         if len(_hist) > 1:
             st.markdown("**Calibration over time** — one row per day the projections ran")
-            st.dataframe(_hist, use_container_width=True, hide_index=True)
+            st.dataframe(_hist, width="stretch", hide_index=True)
             st.caption("`ours_beats_fpl` positive means our projection was closer to actual PPG "
                        "than FPL's ep_next that day.")
         elif len(_hist) == 1:

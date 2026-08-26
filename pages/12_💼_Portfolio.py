@@ -255,7 +255,7 @@ for tab, mkt in zip(tabs, MARKETS):
                 bank=eq["bank"].round(0),
                 drawdown=(eq["drawdown"] * 100).round(1),
             )[["week", "bets", "staked", "pnl", "bank", "drawdown"]],
-            use_container_width=True, hide_index=True,
+            width="stretch", hide_index=True,
         )
 
         if games is not None and not games.empty:
@@ -267,7 +267,7 @@ for tab, mkt in zip(tabs, MARKETS):
                 gv["pnl"] = gv["pnl"].round(2)
                 st.dataframe(
                     gv[["date", "league", "bet", "tier", "odds", "stake", "result", "pnl"]],
-                    use_container_width=True, hide_index=True,
+                    width="stretch", hide_index=True,
                 )
 
 st.caption("Sizing recomputed off bank at each week's open. Kelly f* = edge ÷ (odds−1), "
