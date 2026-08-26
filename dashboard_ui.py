@@ -97,8 +97,18 @@ def money_col(label: str = "£m", *, help: str = ""):
 # apart, which is how the dashboard came to look like seven different products. Anything not
 # recognised here simply renders as Streamlit's default, so an unknown column is never hidden or
 # mangled — it just misses out on formatting.
-_PCT = ("Owned %", "Own %", "League own %", "Start%", "P(goal)", "P(assist)", "P(SOT2+)",
-        "Hit %", "Win %", "P(start)")
+# Percentage columns, split by the CONVENTION OF THEIR SOURCE rather than detected from the
+# data. Both conventions genuinely exist here: the prop models emit 0-1 probabilities, while
+# FPL's ownership figures arrive as 0-100.
+#
+# I tried detecting the scale from the values (max > 1.5 => already a percentage) and it is
+# WRONG, because a filter can move the max. The Differentials tab has a max-ownership slider
+# starting at 1.0, so a user narrowing it to 1% leaves a column whose maximum is below the
+# threshold — and 0.8% would then render as 80%. A format that changes when you move a slider is
+# worse than one that is merely inconvenient to maintain.
+_PCT_FRACTION = ("Start%", "P(goal)", "P(assist)", "P(SOT2+)", "P(start)", "Hit %", "Win %")
+_PCT_OF_100 = ("Owned %", "Own %", "League own %", "Selected %")
+_PCT = _PCT_FRACTION + _PCT_OF_100
 _MONEY = ("£m", "Price")
 _POINTS = ("Exp pts", "Pts", "xPts", "Projected", "Total pts", "xpts")
 _PLAIN2 = ("Pts/£", "Def", "CS", "Bon", "xPts·rot", "Avg FDR", "FDR", "MAE", "Bias",
@@ -122,7 +132,11 @@ def auto_config(df, *, bars: tuple[str, ...] = ()) -> dict:
             except Exception:
                 mx = 1.0
             cfg[c] = bar_col(c, max_value=max(mx, 0.1))
-        elif c in _PCT:
+        elif c in _PCT_OF_100:
+            # Already a percentage: show the number with a % suffix. Using format="percent" here
+            # multiplies by 100 again and renders FPL's 74.9% ownership as 7,490%.
+            cfg[c] = num_col(c, fmt="%.1f%%")
+        elif c in _PCT_FRACTION:
             cfg[c] = pct_col(c)
         elif c in _MONEY:
             cfg[c] = money_col(c)
