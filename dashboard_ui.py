@@ -89,6 +89,68 @@ def money_col(label: str = "£m", *, help: str = ""):
     return st.column_config.NumberColumn(label, help=help or None, format="£%.1f")
 
 
+# Column-name -> how to render it. Keyed on the DISPLAY label, because every page renames
+# columns for display before calling st.dataframe.
+#
+# One shared map rather than a hand-written config per table. There are 15 tables on the Fantasy
+# page alone and 11 more across the other pages; configuring each by hand guarantees they drift
+# apart, which is how the dashboard came to look like seven different products. Anything not
+# recognised here simply renders as Streamlit's default, so an unknown column is never hidden or
+# mangled — it just misses out on formatting.
+_PCT = ("Owned %", "Own %", "League own %", "Start%", "P(goal)", "P(assist)", "P(SOT2+)",
+        "Hit %", "Win %", "P(start)")
+_MONEY = ("£m", "Price")
+_POINTS = ("Exp pts", "Pts", "xPts", "Projected", "Total pts", "xpts")
+_PLAIN2 = ("Pts/£", "Def", "CS", "Bon", "xPts·rot", "Avg FDR", "FDR", "MAE", "Bias",
+           "err_ours", "err_fpl", "mae_ours", "mae_fpl")
+_INT = ("#", "GW", "gw", "Pens (career)", "Set-piece goals", "n_dgw", "n_bgw", "players")
+
+
+def auto_config(df, *, bars: tuple[str, ...] = ()) -> dict:
+    """A column_config for whatever recognised columns `df` has.
+
+    `bars` names columns to render as ProgressColumn; their max is taken from the data actually
+    being shown, so the bar is a comparison within this table rather than against an arbitrary
+    constant.
+    """
+    import pandas as pd
+    cfg: dict = {}
+    for c in df.columns:
+        if c in bars:
+            try:
+                mx = float(pd.to_numeric(df[c], errors="coerce").max())
+            except Exception:
+                mx = 1.0
+            cfg[c] = bar_col(c, max_value=max(mx, 0.1))
+        elif c in _PCT:
+            cfg[c] = pct_col(c)
+        elif c in _MONEY:
+            cfg[c] = money_col(c)
+        elif c in _POINTS or c in _PLAIN2:
+            cfg[c] = num_col(c, fmt="%.2f")
+        elif c in _INT:
+            cfg[c] = st.column_config.NumberColumn(c, format="%d", width="small")
+    return cfg
+
+
+def table(df, *, bars: tuple[str, ...] = (), height: int | None = None,
+          container=None, **kw) -> None:
+    """`st.dataframe` with shared formatting applied. Drop-in for the raw calls.
+
+    `height` is OMITTED when None rather than passed through. Streamlit rejects
+    `height=None` with "Height must be either a positive integer, 'stretch', or 'content'",
+    and because most of these tables sit inside a `try/except` that shows a warning, the first
+    version failed SILENTLY on two of them — the page still rendered, with two sections replaced
+    by "Differentials unavailable: Invalid height value: None". What caught it was the dataframe
+    count dropping from 15 to 13, not any error surfacing.
+    """
+    target = container if container is not None else st
+    if height is not None:
+        kw["height"] = height
+    target.dataframe(df, hide_index=True, width="stretch",
+                     column_config=auto_config(df, bars=bars), **kw)
+
+
 def metric_row(items: list[dict], *, per_row: int = 4) -> None:
     """Metrics laid out in rows of `per_row`.
 
