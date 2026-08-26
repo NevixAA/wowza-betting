@@ -8,11 +8,14 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
+
+import dashboard_ui as ui
 
 st.set_page_config(page_title="Player Props | Wowza", page_icon="👤", layout="wide")
-components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
-
+# Was components.v1.html with a JS reload: an API whose announced removal date
+# (2026-06-01) has passed, and which reloaded the whole browser tab and so DISCARDED
+# every filter the user had set.
+ui.autorefresh(minutes=2, key="11_player_props_refresh")
 BASE_DIR   = Path(__file__).resolve().parents[1]
 TIPS_FILE  = BASE_DIR / "output" / "player_tips.csv"
 
@@ -243,7 +246,7 @@ with st.expander("📊 Raw data — all today's signals"):
                  "tier","confidence","lazy_factors","n_games","ges"]
     show_df = df.sort_values("model_prob", ascending=False)
     st.dataframe(show_df[[c for c in show_cols if c in show_df.columns]],
-                 use_container_width=True, hide_index=True)
+                 width="stretch", hide_index=True)
 
 # ── Results / track record (settled bets from the ledger) ──────────────────────
 st.markdown("---")
@@ -286,7 +289,7 @@ else:
                             "market_odds", "result", "pnl"] if c in settled.columns]
         st.dataframe(
             settled.sort_values("match_date", ascending=False)[cols].head(150),
-            use_container_width=True, hide_index=True,
+            width="stretch", hide_index=True,
         )
 
 st.caption("Player props · 9 markets · API-Football rolling stats · WC2026 national team data")

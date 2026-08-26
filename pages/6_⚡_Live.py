@@ -7,7 +7,8 @@ import sys
 
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
+
+import dashboard_ui as ui
 
 st.set_page_config(page_title="Live Center | Wowza", page_icon="⚡", layout="wide")
 
@@ -21,8 +22,10 @@ PREDS_FILE   = BASE_DIR / "output" / "predictions.csv"
 HISTORY_FILE = BASE_DIR / "output" / "live_signals_history.csv"
 
 # Auto-refresh every 2 minutes (in-play data moves fast)
-components.html("<script>setTimeout(()=>window.location.reload(),120000)</script>", height=0)
-
+# Was components.v1.html with a JS reload: an API whose announced removal date
+# (2026-06-01) has passed, and which reloaded the whole browser tab and so DISCARDED
+# every filter the user had set.
+ui.autorefresh(minutes=2, key="6_live_refresh")
 SIGNAL_META = {
     "UNDER_HOLD":     ("🔒", "#00cc88", "UNDER 2.5 — model prediction holding, time running out"),
     "SLEEPING_GAME":  ("😴", "#44aaff", "UNDER 2.5 — both teams low scoring, game going nowhere"),
@@ -200,7 +203,7 @@ def render_live():
         cols = ["league", "match", "score", "elapsed_mins", "signal_type", "bet",
                 "fair_under_odds", "fair_over_odds", "live_p_under", "live_p_over",
                 "pre_p_over", "lam_remaining"]
-        st.dataframe(df[[c for c in cols if c in df.columns]], use_container_width=True)
+        st.dataframe(df[[c for c in cols if c in df.columns]], width="stretch")
 
     st.markdown("---")
     st.subheader(f"👁 All Monitored Games ({len(games)})")
@@ -374,7 +377,7 @@ def render_history():
         by_type = (settled.assign(win=(settled["result"] == "WIN").astype(int))
                    .groupby("signal_type").agg(bets=("win", "size"), wins=("win", "sum")).reset_index())
         by_type["hit_rate_%"] = (by_type["wins"] / by_type["bets"] * 100).round(0)
-        st.dataframe(by_type.sort_values("bets", ascending=False), use_container_width=True, hide_index=True)
+        st.dataframe(by_type.sort_values("bets", ascending=False), width="stretch", hide_index=True)
         st.caption("⚠️ Small sample — directional only. U/O 2.5 settled on full-time; HT bets on half-time goals.")
 
     st.markdown("---")
@@ -392,7 +395,7 @@ def render_history():
         sig_counts.columns = ["Signal Type", "Count"]
         col1, col2 = st.columns([1, 2])
         with col1:
-            st.dataframe(sig_counts, use_container_width=True, hide_index=True)
+            st.dataframe(sig_counts, width="stretch", hide_index=True)
         with col2:
             try:
                 import plotly.express as px
@@ -400,7 +403,7 @@ def render_history():
                              color_continuous_scale=["#1a1a2e", "#e94560"], title="Signal Frequency")
                 fig.update_layout(template="plotly_dark", coloraxis_showscale=False,
                                   plot_bgcolor="#0e1117", paper_bgcolor="#0e1117", font_color="white")
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             except Exception:
                 st.bar_chart(sig_counts.set_index("Signal Type")["Count"])
     st.markdown("---")
@@ -429,7 +432,7 @@ def render_history():
             "fair_under_odds": "fair_U", "fair_over_odds": "fair_O",
             "live_p_under": "P(U)", "live_p_over": "P(O)", "pre_p_over": "pre P(O)",
         }),
-        use_container_width=True, hide_index=True,
+        width="stretch", hide_index=True,
     )
 
 

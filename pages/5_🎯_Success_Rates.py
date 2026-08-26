@@ -143,7 +143,7 @@ shown = full[full["n"] >= min_n]
 hidden = full[full["n"] < min_n]
 
 st.subheader("Model × market × tier")
-st.dataframe(shown, use_container_width=True, hide_index=True,
+st.dataframe(shown, width="stretch", hide_index=True,
              column_config={
                  "win_pct": st.column_config.NumberColumn("win %", format="%.1f"),
                  "pl_u": st.column_config.NumberColumn("P/L (u)", format="%.1f"),
@@ -156,7 +156,7 @@ if not hidden.empty:
                f"({int(hidden['n'].sum())} observations). Hidden rather than shown at zero — an "
                f"empty cell reads as 'no data', a 0% reads as 'it lost'.")
     with st.expander("Show the thin cells anyway"):
-        st.dataframe(hidden, use_container_width=True, hide_index=True)
+        st.dataframe(hidden, width="stretch", hide_index=True)
 
 # The CI column is the point of the page, so say what it means rather than assuming it is read.
 _wide = shown[shown["roi_ci95"].str.contains("…", na=False)]
@@ -174,7 +174,7 @@ with r1:
     m["win_pct"] = (100 * m["win_pct"]).round(1)
     m["roi_pct"] = (100 * m["roi"]).round(1)
     st.dataframe(m[["_market", "n", "win_pct", "pl_u", "roi_pct"]].sort_values("n", ascending=False),
-                 use_container_width=True, hide_index=True)
+                 width="stretch", hide_index=True)
 with r2:
     st.markdown("**By tier**")
     t = d.groupby("_tier").agg(n=("win", "size"), win_pct=("win", "mean"),
@@ -182,7 +182,7 @@ with r2:
     t["win_pct"] = (100 * t["win_pct"]).round(1)
     t["roi_pct"] = (100 * t["roi"]).round(1)
     st.dataframe(t[["_tier", "n", "win_pct", "pl_u", "roi_pct"]].sort_values("n", ascending=False),
-                 use_container_width=True, hide_index=True)
+                 width="stretch", hide_index=True)
 
 st.caption(
     "Flat 1u stakes, matching v9's 'P/L in units' convention. Player props are labelled PAPER: "
