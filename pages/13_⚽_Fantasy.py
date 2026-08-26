@@ -246,9 +246,9 @@ with t_diff:
         else:
             cols = [c for c in ["player_name", "team", "position", "price", "owned_pct",
                                 "fantasy_pts"] if c in dd.columns]
-            st.dataframe(dd[cols].rename(columns={"player_name": "Player", "team": "Team",
-                         "position": "Pos", "price": "£m", "owned_pct": "Owned %",
-                         "fantasy_pts": "Exp pts"}), hide_index=True, width="stretch")
+            ui.table(dd[cols].rename(columns={"player_name": "Player", "team": "Team",
+                     "position": "Pos", "price": "£m", "owned_pct": "Owned %",
+                     "fantasy_pts": "Exp pts"}), bars=("Exp pts",))
     except Exception as e:
         st.warning(f"Differentials unavailable: {e}")
 
@@ -266,9 +266,9 @@ with t_xi:
                       + (f"  ·  £{xi['total_cost']:.1f}m" if xi.get("total_cost") else ""))
             px = xi["players"]
             cols = [c for c in ["player_name", "team", "position", "price", "fantasy_pts"] if c in px.columns]
-            st.dataframe(px[cols].rename(columns={"player_name": "Player", "team": "Team",
-                         "position": "Pos", "price": "£m", "fantasy_pts": "Exp pts"}),
-                         hide_index=True, width="stretch")
+            ui.table(px[cols].rename(columns={"player_name": "Player", "team": "Team",
+                     "position": "Pos", "price": "£m", "fantasy_pts": "Exp pts"}),
+                     bars=("Exp pts",))
     except Exception as e:
         st.warning(f"Best XI unavailable: {e}")
 
@@ -296,8 +296,8 @@ with t_fix:
         if tk.empty:
             st.info("No upcoming fixtures published in FPL yet (pre-season).")
         else:
-            st.dataframe(tk.rename(columns={"team": "Team", "avg_fdr": "Avg FDR"}),
-                         hide_index=True, width="stretch", height=520)
+            ui.table(tk.rename(columns={"team": "Team", "avg_fdr": "Avg FDR"}),
+                     height=520)
     except Exception as e:
         st.warning(f"Fixture ticker unavailable: {e}")
 
@@ -318,9 +318,9 @@ with t_sp:
             clubs = sorted(sp["team"].dropna().unique())
             pick = st.selectbox("Club", ["All"] + clubs)
             view = sp if pick == "All" else sp[sp["team"] == pick]
-            st.dataframe(view.rename(columns={"player_name": "Player", "team": "Team",
-                         "position": "Pos", "pens": "Pens (career)", "sp_goals": "Set-piece goals"}),
-                         hide_index=True, width="stretch", height=480)
+            ui.table(view.rename(columns={"player_name": "Player", "team": "Team",
+                     "position": "Pos", "pens": "Pens (career)",
+                     "sp_goals": "Set-piece goals"}), height=480)
     except Exception as e:
         st.warning(f"Set-pieces unavailable: {e}")
 
@@ -368,9 +368,9 @@ with p_chip:
                 st.markdown("• " + r)
             gw = pd.DataFrame(ca.get("gameweeks", []))
             if not gw.empty:
-                st.dataframe(gw[["gw", "n_dgw", "n_bgw", "avg_fdr"]].rename(columns={
-                    "gw": "GW", "n_dgw": "Double-GW teams", "n_bgw": "Blank teams", "avg_fdr": "Avg FDR"}),
-                    hide_index=True, width="stretch")
+                ui.table(gw[["gw", "n_dgw", "n_bgw", "avg_fdr"]].rename(columns={
+                    "gw": "GW", "n_dgw": "Double-GW teams", "n_bgw": "Blank teams",
+                    "avg_fdr": "Avg FDR"}))
             if ca.get("triple_captain"):
                 st.markdown("**Triple-captain shortlist:** " + " · ".join(ca["triple_captain"]))
     except Exception as e:
@@ -391,12 +391,12 @@ with p_line:
                            f"(C) {res['captain']} · (VC) {res['vice_captain']}")
                 xi = res["xi"][[c for c in ["player_name", "team", "position", "fantasy_pts"] if c in res["xi"].columns]]
                 st.markdown("**Starting XI**")
-                st.dataframe(xi.rename(columns={"player_name": "Player", "team": "Team",
-                             "position": "Pos", "fantasy_pts": "xPts"}), hide_index=True, width="stretch")
+                ui.table(xi.rename(columns={"player_name": "Player", "team": "Team",
+                         "position": "Pos", "fantasy_pts": "xPts"}), bars=("xPts",))
                 st.markdown("**Bench** (autosub order)")
                 bn = res["bench"][[c for c in ["player_name", "team", "position", "fantasy_pts"] if c in res["bench"].columns]]
-                st.dataframe(bn.rename(columns={"player_name": "Player", "team": "Team",
-                             "position": "Pos", "fantasy_pts": "xPts"}), hide_index=True, width="stretch")
+                ui.table(bn.rename(columns={"player_name": "Player", "team": "Team",
+                         "position": "Pos", "fantasy_pts": "xPts"}), bars=("xPts",))
         except Exception as e:
             st.warning(f"Auto-lineup unavailable: {e}")
 
@@ -414,13 +414,13 @@ with p_league:
                 st.caption(f"{res['n_managers']} managers · GW{res['gw']}")
                 c1, c2 = st.columns(2)
                 c1.markdown("**League template (most-owned)**")
-                c1.dataframe(res["template"][["player", "team", "league_own_pct", "xpts"]].rename(
-                    columns={"player": "Player", "team": "Team", "league_own_pct": "Own %", "xpts": "xPts"}),
-                    hide_index=True, width="stretch")
+                ui.table(res["template"][["player", "team", "league_own_pct", "xpts"]].rename(
+                    columns={"player": "Player", "team": "Team", "league_own_pct": "Own %",
+                             "xpts": "xPts"}), container=c1, bars=("xPts",))
                 c2.markdown("**Differentials (≤25% owned)**")
-                c2.dataframe(res["differentials"][["player", "team", "league_own_pct", "xpts"]].rename(
-                    columns={"player": "Player", "team": "Team", "league_own_pct": "Own %", "xpts": "xPts"}),
-                    hide_index=True, width="stretch")
+                ui.table(res["differentials"][["player", "team", "league_own_pct", "xpts"]].rename(
+                    columns={"player": "Player", "team": "Team", "league_own_pct": "Own %",
+                             "xpts": "xPts"}), container=c2, bars=("xPts",))
         except Exception as e:
             st.warning(f"Mini-league unavailable: {e}")
 
@@ -434,11 +434,11 @@ with p_alert:
         al = fantasy_alerts(df, watchlist=wl)
         a1, a2, a3 = st.columns(3)
         a1.markdown("**🚑 Injuries / doubts**")
-        a1.dataframe(al["injuries"], hide_index=True, width="stretch", height=320)
+        ui.table(al["injuries"], container=a1, height=320)
         a2.markdown("**📈 Likely price risers**")
-        a2.dataframe(al["price_risers"], hide_index=True, width="stretch", height=320)
+        ui.table(al["price_risers"], container=a2, height=320)
         a3.markdown("**📉 Likely price fallers**")
-        a3.dataframe(al["price_fallers"], hide_index=True, width="stretch", height=320)
+        ui.table(al["price_fallers"], container=a3, height=320)
     except Exception as e:
         st.warning(f"Alerts unavailable: {e}")
 
