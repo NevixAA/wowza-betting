@@ -263,6 +263,7 @@ def run() -> int:
     snap_ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     leagues = sorted(set(config.STANDARD_FORMAT_LEAGUES) & set(config.API_FOOTBALL_IDS))
     rows, stop = [], False
+    nearest_ko_h = None
     for league in leagues:
         if stop:
             break
@@ -297,8 +298,16 @@ def run() -> int:
             #   NEAR  --max-hours 12, frequently    -> T-6h ... T-30m, T-10m, close
             # The near run is cheap precisely because it is selective, which is what makes
             # 10-minute resolution into kickoff affordable at all.
+            hrs = _hours_to_kickoff(raw_ko, now)
+            # NEAREST KICKOFF, tracked for the caller and costing NOTHING extra: the value is
+            # already computed for the window filter. The NEAR loop uses it to tighten its
+            # sampling interval when a match is imminent, which is the only place the closing
+            # curve can still be improved -- side markets reach T-10m on 0.8% of fixture-market
+            # series against the main market's 35.4%, from files deduped the same way, so the gap
+            # is real and it is specifically at the near end.
+            if hrs is not None and hrs >= 0:
+                nearest_ko_h = hrs if nearest_ko_h is None else min(nearest_ko_h, hrs)
             if MAX_HOURS is not None:
-                hrs = _hours_to_kickoff(raw_ko, now)
                 # Unknown kickoff is KEPT: dropping it would silently lose a fixture, and a
                 # wasted odds call is cheaper than a missing curve.
                 if hrs is not None and not (0 <= hrs <= MAX_HOURS):
@@ -317,7 +326,10 @@ def run() -> int:
         _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
         print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
     if not rows:
-        print("[std_odds] no rows captured"); return 0
+        print("[std_odds] no rows captured")
+        if nearest_ko_h is not None:
+            print(f"NEXT_KO_MIN={int(nearest_ko_h * 60)}")
+        return 0
     new = pd.DataFrame(rows, columns=COLS)
     if OUT.exists():
         new = pd.concat([pd.read_csv(OUT), new], ignore_index=True)
@@ -329,6 +341,11 @@ def run() -> int:
     new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts")
     _ordered(new).to_csv(OUT, index=False)
     print(f"[std_odds] appended -> {OUT.name} (total {len(new):,})")
+    # Machine-readable, on its own line, so the NEAR loop can adapt its sleep WITHOUT a second
+    # invocation — which would cost a fresh round of odds calls to learn a fact this pass already
+    # knows.
+    if nearest_ko_h is not None:
+        print(f"NEXT_KO_MIN={int(nearest_ko_h * 60)}")
     return len(rows)
 
 

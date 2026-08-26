@@ -132,19 +132,50 @@ jobs:
             exit 0
           fi
 
-          echo "NEAR run: fixtures within ${MH}h, sampling every ${LOOP_EVERY}m for ${LOOP_MIN}m"
+          # ADAPTIVE SPACING (added 2026-08-26). LOOP_MIN stays at 25 deliberately — it was sized
+          # to finish inside the real ~30-45 minute delivery gap, and the previous 100-minute loop
+          # held the concurrency group until every subsequent firing was cancelled. So the loop
+          # DURATION is not the lever.
+          #
+          # The measured gap is specifically at the near end: side markets reach T-10m on 0.8% of
+          # fixture-market series against the main market's 35.4%, from files deduped the same way,
+          # so a 44x difference cannot be explained by dedup. Uniform 5-minute spacing gives 5
+          # passes spread across 25 minutes wherever they happen to land, so hitting a given
+          # fixture's final ten minutes is chance.
+          #
+          # Tightening the interval only when a kickoff is imminent concentrates sampling exactly
+          # where the gap is, WITHOUT extending the loop — so no concurrency risk and no timeout
+          # risk. The script reports NEXT_KO_MIN from the kickoff times it has already fetched, so
+          # deciding the cadence costs no extra API calls.
+          #
+          # Quota impact is small and bounded: the tighter cadence applies only inside the ~40
+          # minutes before a kickoff, and only to fixtures already inside the 12h window. The
+          # script's own MIN_QUOTA=5000 floor still stops it spending into the tip path.
+          echo "NEAR run: fixtures within ${MH}h, adaptive sampling for ${LOOP_MIN}m"
           END=$(( $(date -u +%s) + LOOP_MIN * 60 ))
           i=0
+          SLEEP_S=$(( LOOP_EVERY * 60 ))
           while : ; do
             i=$((i + 1))
-            echo "--- pass $i  $(date -u '+%H:%M:%S') ---"
+            echo "--- pass $i  $(date -u '+%H:%M:%S')  (next gap ${SLEEP_S}s) ---"
             # A failed pass must not abandon the remaining window; the script's own quota guard
             # (MIN_QUOTA, now 5,000) is what stops the loop spending into the tip path.
-            python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH" \
+            OUT_TXT=$(python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH" 2>&1) \
               || echo "  (pass $i failed - continuing)"
-            NEXT=$(( $(date -u +%s) + LOOP_EVERY * 60 ))
+            echo "$OUT_TXT"
+            # Nearest kickoff among the fixtures this pass looked at. Absent (no parseable
+            # kickoff, or a failed pass) -> keep the default spacing rather than guessing.
+            KO_MIN=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^NEXT_KO_MIN=\([0-9][0-9]*\)$/\1/p' | head -1)
+            if [ -n "$KO_MIN" ]; then
+              if   [ "$KO_MIN" -le 20 ]; then SLEEP_S=120
+              elif [ "$KO_MIN" -le 45 ]; then SLEEP_S=180
+              else                            SLEEP_S=$(( LOOP_EVERY * 60 ))
+              fi
+              echo "  nearest kickoff ${KO_MIN}m away -> next pass in ${SLEEP_S}s"
+            fi
+            NEXT=$(( $(date -u +%s) + SLEEP_S ))
             [ "$NEXT" -lt "$END" ] || break
-            sleep $(( LOOP_EVERY * 60 ))
+            sleep "$SLEEP_S"
           done
           echo "completed $i passes over ${LOOP_MIN}m"
 
