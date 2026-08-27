@@ -175,7 +175,7 @@ except Exception as _e:                                     # noqa: BLE001
     st.caption(f"Settled performance unavailable ({type(_e).__name__}: {_e})")
 
 if len(_s):
-    st.markdown("## 📈 Settled performance")
+    st.markdown("## 📈 Settled performance — main O/U 2.5")
     _tot = float(_s["_pnl"].sum())
     _hit = float((_s["_pnl"] > 0).mean())
     ui.metric_row([
@@ -194,13 +194,48 @@ if len(_s):
               .reset_index().rename(columns={"_dt": "Date"}))
     st.line_chart(_curve, x="Date", y="Cumulative units", height=260)
     st.caption(f"Cumulative units, flat 1u stakes, **staked tiers only** "
-               f"(SNIPER + MARKSMAN), settled bets from {_cut.date()}. "
+               f"(SNIPER + MARKSMAN), settled bets from {_cut.date()}, "
+               f"**`bets_ledger.csv` only — the main O/U 2.5 market**. "
                f"n = {len(_s)} — a curve this short is a sample, not a track record.")
 
     _by = (_s.groupby("signal_tier")["_pnl"].agg(Bets="size", **{"P/L": "sum"})
            .reset_index().rename(columns={"signal_tier": "Tier"}))
     _by["Per bet"] = (_by["P/L"] / _by["Bets"]).round(3)
     ui.table(_by)
+
+    # Side markets, stated SEPARATELY and never folded into the headline above.
+    #
+    # This block reads bets_ledger.csv alone, and the caption used to name only three of its four
+    # filters — tier, cutoff, settled — while silently omitting the market. A reader took the
+    # headline as the system's record when it was the main O/U line only.
+    #
+    # Kept as its own row rather than merged, because merging would let a 9-bet btts sample at
+    # +9.08u swing the front-page number from negative to positive. Nine bets is not a result, and
+    # the fastest way to make a dashboard lie is to average a thin sample into a thick one.
+    try:
+        _sb = pd.read_csv(config.OUTPUT_DIR / "side_bets_ledger.csv", low_memory=False)
+        _sb["_dt"] = pd.to_datetime(_sb.get("match_date"), errors="coerce")
+        _sb["_pnl"] = pd.to_numeric(_sb.get("pnl"), errors="coerce")
+        _sb = _sb[_sb.get("signal_tier").isin(_STAKED_TIERS)
+                  & (_sb["_dt"] >= _cut) & _sb["_pnl"].notna()]
+        if len(_sb):
+            _srows = (_sb.groupby("market")["_pnl"]
+                      .agg(Bets="size", **{"P/L": "sum"}).reset_index()
+                      .rename(columns={"market": "Side market"}).sort_values("Bets",
+                                                                             ascending=False))
+            _srows["Per bet"] = (_srows["P/L"] / _srows["Bets"]).round(3)
+            with st.expander(f"Side markets — {len(_sb)} settled, "
+                             f"{float(_sb['_pnl'].sum()):+.2f}u (NOT in the figures above)"):
+                ui.table(_srows)
+                _thin = _srows[_srows["Bets"] < 20]
+                if not _thin.empty:
+                    st.caption(
+                        "Thin: " + ", ".join(f"{r['Side market']} n={int(r['Bets'])}"
+                                             for _, r in _thin.iterrows())
+                        + ". At these counts a single result moves P/L by a full unit, so read "
+                          "the bet count before the return.")
+    except Exception as _e:                                  # noqa: BLE001
+        st.caption(f"Side-market summary unavailable ({type(_e).__name__})")
     st.divider()
 
 # ── SNIPER section ─────────────────────────────────────────────────────────────
