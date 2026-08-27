@@ -336,6 +336,37 @@ PROP_LEAGUES = {
     "Conference League":   848,  # ⭐⭐⭐   Growing prop market
     # ── World Cup 2026 — biggest event globally ───────────────────────────────
     "World Cup":       1,
+    # ── Bet leagues, ADDED 2026-08-27 after probing API-Football per league ───
+    #
+    # Every one of these is a league we BET on that had no prop coverage at all: not in
+    # PROP_LEAGUES, so the second source could not reach it, and its players were AVOID by
+    # construction. 13 of the 16 uncovered bet leagues returned real player-prop markets on a
+    # one-fixture probe each, with the markets found listed below.
+    #
+    # USA MLS matters most: it is our largest single league by settled bets, and OddsAPI
+    # OFFICIALLY supports MLS props (their docs list it, and a probe returned 133 quotes), so it
+    # gets an OddsAPI sport key too and will draw on both sources.
+    "USA MLS":                    253,  # goals, sot, assists  (+ OddsAPI: 133 quotes)
+    "Mexico Liga MX":             262,  # goals, sot, assists, cards
+    "Denmark Superliga":          119,  # goals, sot, assists, cards
+    "Romanian Superliga":         283,  # goals, sot, assists, cards
+    "Brazil Serie A":              71,  # goals, sot, assists
+    "Argentina Primera Division": 128,  # goals, sot, assists
+    "La Liga 2":                  141,  # goals, sot, assists — we already send tips here
+    "Serie B":                    136,  # goals, sot, assists — we already send tips here
+    "Sweden Allsvenskan":         113,  # goals, assists
+    "Norway Eliteserien":         103,  # goals, assists
+    "Austrian Bundesliga":        218,  # goals, assists
+    "China Super League":         169,  # goals, assists
+    "Ireland Premier Division":   357,  # goals, assists — we already send tips here
+    # Bet leagues with NO fixtures scheduled at probe time, so availability is UNKNOWN rather
+    # than absent. Listed so they are covered the moment fixtures appear; the coverage ledger
+    # will record what they actually return.
+    "Japan J-League":              98,  # no upcoming fixtures at probe time
+    "Ligue 2":                     65,  # no upcoming fixtures at probe time
+    # Probed and returned ZERO player-prop markets. Kept so the ledger records that from
+    # evidence rather than the league silently never being asked.
+    "Finland Veikkausliiga":      244,  # 11 books, 0 player-prop markets
 }
 # Season year for each league (API-Football uses start year of season)
 def _prop_season_now() -> str:
