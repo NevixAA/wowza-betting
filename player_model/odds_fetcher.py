@@ -36,7 +36,20 @@ _BASE = "https://api.the-odds-api.com/v4"
 # 2026-08-16, and why the World Cup accounted for 91% of all prop odds ever fetched.
 # OddsAPI bills [markets x regions], so adding a region roughly doubles per-event
 # cost; at our volume (a few hundred calls in seven weeks) that is immaterial.
-_REGIONS = os.getenv("PROP_ODDS_REGIONS", "uk,eu").strip() or "uk,eu"
+#
+# WIDENED TO uk,eu,us,us2 ON 2026-08-27, because "uk,eu" was collecting under half of what is
+# available. OddsAPI's own documentation says prop coverage is "currently limited to US
+# bookmakers", and measuring one Premier League fixture confirms it:
+#
+#     uk,eu          ->  4 books,   459 player quotes   <- what we were asking for
+#     us             ->  8 books,   478
+#     uk,eu,us,us2   -> 15 books, 1,155                 <- 2.5x the prices
+#
+# More books is not just more rows: it is the difference between a single price and an actual
+# consensus, which is what any no-vig or best-executable-price calculation needs. Cost roughly
+# doubles per event and the monthly plan is at 67.9% with 4 days left, so there is headroom;
+# revert via the env var if usage tightens.
+_REGIONS = os.getenv("PROP_ODDS_REGIONS", "uk,eu,us,us2").strip() or "uk,eu,us,us2"
 
 # How long to trust a cached response. An empty bookmaker list is NOT proof the
 # fixture will never be priced: books post prop markets progressively as kickoff
@@ -50,13 +63,24 @@ CACHE_TTL_EMPTY_FAR = 86400   # 24h — days out, an empty list says "too early"
 _NEAR_KICKOFF_HOURS = 48
 
 
-def _empty_ttl_for(commence_time: str) -> int:
-    """TTL for an empty bookmaker list, scaled by time to kickoff."""
+def hours_to_kickoff(commence_time: str) -> float | None:
+    """Hours until kickoff, or None when the timestamp is unusable.
+
+    Shared by the cache TTL and the coverage park streak so the two cannot disagree about how
+    far out a probe was. None means UNKNOWN and callers must treat it as such — never as zero.
+    """
     from datetime import datetime, timezone
     try:
         ko = datetime.fromisoformat(str(commence_time).replace("Z", "+00:00"))
-        hours = (ko - datetime.now(timezone.utc)).total_seconds() / 3600.0
     except Exception:
+        return None
+    return (ko - datetime.now(timezone.utc)).total_seconds() / 3600.0
+
+
+def _empty_ttl_for(commence_time: str) -> int:
+    """TTL for an empty bookmaker list, scaled by time to kickoff."""
+    hours = hours_to_kickoff(commence_time)
+    if hours is None:
         return CACHE_TTL_EMPTY_NEAR      # unknown kickoff -> re-check sooner
     return CACHE_TTL_EMPTY_NEAR if hours <= _NEAR_KICKOFF_HOURS else CACHE_TTL_EMPTY_FAR
 
@@ -220,7 +244,32 @@ def _coverage_fixtures(cov: dict, sport_key: str, today: str,
               f"Unmatched: {unmatched}")
 
 
-def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool) -> None:
+# An empty probe only counts toward PARKING if it was taken close enough to kickoff that a
+# real market should already exist. See _coverage_record.
+_COVERAGE_STREAK_WINDOW_H = 24.0
+
+
+def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool,
+                     hours_to_kickoff: float | None = None) -> None:
+    """Record one probe. An empty result only extends the PARK STREAK when it was taken
+    inside `_COVERAGE_STREAK_WINDOW_H` of kickoff.
+
+    WHY, because this was a self-fulfilling gap. Parking counted 12 consecutive empty probes
+    with no notion of time-to-kickoff. Lower divisions post player props late, so probes taken
+    three to five days out come back empty CORRECTLY — the market is not open yet. Twelve of
+    those parked the league for seven days, parking skips it entirely (the `continue` in the
+    fetch loop happens before the event call), and the weekly retry lands on whatever day it
+    lands. Once parked, a league could never be probed on a match day again.
+
+    Measured on 2026-08-27: Championship 24 empty probes and PARKED until 2026-09-01, with
+    fixtures being played on 08-28. Premier League, which prices early, had 807 probes and had
+    never parked. So the ledger was recording OUR PROBING SCHEDULE and presenting it as the
+    market's behaviour — the opposite of what it exists for.
+
+    Probes further out are still counted in `probes` and still logged; they just cannot park a
+    league. `far_empty_probes` keeps them visible so "we looked 40 times, all of them early" is
+    distinguishable from "we never looked".
+    """
     c = cov.setdefault(sport_key, {})
     c["league"] = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
     c["probes"] = int(c.get("probes", 0)) + 1
@@ -229,8 +278,15 @@ def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool) -> Non
         c["empty_streak"] = 0
         c["last_priced"] = today
         c["priced_events"] = int(c.get("priced_events", 0)) + 1
-    else:
+        return
+    # Unknown time-to-kickoff is treated as TOO FAR: it must not be able to park a league,
+    # because an unknown is not evidence that the market was open.
+    near = hours_to_kickoff is not None and hours_to_kickoff <= _COVERAGE_STREAK_WINDOW_H
+    if near:
         c["empty_streak"] = int(c.get("empty_streak", 0)) + 1
+        c["last_near_empty"] = today
+    else:
+        c["far_empty_probes"] = int(c.get("far_empty_probes", 0)) + 1
 
 
 def _append_odds_history(records: list[dict]) -> None:
@@ -249,12 +305,31 @@ def _append_odds_history(records: list[dict]) -> None:
     df = pd.DataFrame(records)
     df["snapshot_date"] = now.strftime("%Y-%m-%d")
     df["snapshot_ts"]   = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    cols = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "player", "market", "odds"]
+    # `source` and `bookmaker` are carried so the two price sources can be told apart after the
+    # fact — the one thing that would otherwise be unrecoverable once the rows are merged. Rows
+    # from OddsAPI arrive without them, so they default rather than becoming NaN: 38,189 existing
+    # rows predate the second source and are all OddsAPI by definition.
+    cols = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "player", "market",
+            "odds", "source", "bookmaker"]
+    if "source" not in df.columns:
+        df["source"] = "oddsapi"
+    else:
+        df["source"] = df["source"].fillna("oddsapi")
     df = df.reindex(columns=cols)
     _ODDS_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
     if _ODDS_HISTORY_FILE.exists():
         try:
-            df = pd.concat([pd.read_csv(_ODDS_HISTORY_FILE), df], ignore_index=True)
+            prev = pd.read_csv(_ODDS_HISTORY_FILE)
+            # Rows written before the second source existed carry no `source`. Stamped on READ
+            # as oddsapi — true by construction, since API-Football was not a price source then.
+            # Without this the dedup below (keep="first") lets the older blank-source row win and
+            # every row in the file reads as unknown provenance, which is what happened on the
+            # first attempt: 38,494 rows, all blank.
+            if "source" not in prev.columns:
+                prev["source"] = "oddsapi"
+            else:
+                prev["source"] = prev["source"].fillna("oddsapi")
+            df = pd.concat([prev, df], ignore_index=True)
         except Exception:
             pass
     # Keep every distinct PRICE per real fixture (match_date disambiguates fixture-name
@@ -494,7 +569,9 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 if data is None:
                     continue
                 bookmakers = data.get("bookmakers", [])
-                _coverage_record(cov, sport_key, today, bool(bookmakers))
+                _coverage_record(cov, sport_key, today, bool(bookmakers),
+                                 hours_to_kickoff=hours_to_kickoff(
+                                     event.get("commence_time", "")))
                 if not bookmakers:
                     print(f"[odds_fetcher] {sport_key}: no bookmaker priced "
                           f'{event.get("home_team","")} v {event.get("away_team","")} '
@@ -524,6 +601,29 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
             [f"{x} vs {y}" for x, y in sorted(match_set - _matched_pairs)][:8],
         )
 
+    # ── SECOND SOURCE: API-Football, for the leagues OddsAPI does not sell props for ──────
+    #
+    # TWO SOURCES, ONE SET OF FILES. This fills the same `result` lookup and the same
+    # `history_records` list, so player_prop_odds_history.csv, prop_odds_coverage.json and every
+    # downstream consumer are unchanged. Same rule ARCHITECTURE.md sets for the main odds layer:
+    # sources normalise to an identical shape, parsing differences live in the client module.
+    #
+    # OddsAPI's documented soccer prop coverage is EPL, Ligue 1, Bundesliga, Serie A, La Liga and
+    # MLS — nothing else. Championship, League One, League Two and EFL Cup return zero prop books
+    # on any region while returning 36-38 books for h2h, so the markets simply are not sourced.
+    # API-Football carries them (Championship 22 prop markets, Bet365, 52 priced players on one
+    # fixture) and its daily quota sits ~74,000/75,000 unused.
+    #
+    # Runs LAST and only for leagues OddsAPI left unpriced, so the primary source keeps priority
+    # and the top five cost nothing extra.
+    try:
+        _af_added = _fill_from_api_football(signals_df, result, history_records, cov, today)
+        if _af_added:
+            print(f"[odds_fetcher] api-football second source: +{_af_added} quote(s)")
+    except Exception as e:                                       # noqa: BLE001
+        # Never take the primary source down: a failure here must leave OddsAPI's result intact.
+        print(f"[odds_fetcher] api-football second source skipped ({type(e).__name__}: {e})")
+
     # Persist every fetched prop odd to the permanent forward-built history.
     try:
         _append_odds_history(history_records)
@@ -536,6 +636,91 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
           f"leagues with any prop coverage: {[SPORT_KEY_TO_LEAGUE.get(k, k) for k in _live] or 'none'}")
 
     return result
+
+
+def _fill_from_api_football(signals_df, result: dict[str, float],
+                            history_records: list[dict], cov: dict, today: str) -> int:
+    """Top up `result` and `history_records` from API-Football. Returns quotes added.
+
+    Only touches leagues OddsAPI did NOT price. `result` keys stay in OddsAPI's normalised form
+    (`_norm(player)|market`) so `match_odds_to_tips` keeps working untouched, and a price is only
+    written when it BEATS what OddsAPI already found — the contract everywhere here is best
+    available price, and a second source must not quietly lower one.
+    """
+    import pandas as pd
+
+    from player_model import prop_odds_af as af
+
+    if signals_df is None or getattr(signals_df, "empty", True):
+        return 0
+    if "league" not in signals_df.columns or "match" not in signals_df.columns:
+        return 0
+
+    priced_by_oddsapi = {SPORT_KEY_TO_LEAGUE.get(k, k) for k, c in cov.items()
+                         if c.get("priced_events")}
+    af_leagues = af.leagues_without_oddsapi(signals_df["league"].astype(str).unique(),
+                                            priced_by_oddsapi)
+    if not af_leagues:
+        return 0
+
+    # From player_model/config.py, not the repo-root `config` imported above — see
+    # prop_odds_af._prop_leagues for why that distinction silently broke the first version.
+    seasons = af._prop_seasons()
+    ids = af._prop_leagues()
+    wanted = signals_df[signals_df["league"].astype(str).isin(af_leagues)]
+    date_col = next((c for c in ("match_date", "date") if c in wanted.columns), None)
+
+    fixtures, seen = [], set()
+    for _, row in wanted.iterrows():
+        league = str(row["league"])
+        match = str(row["match"])
+        if " vs " not in match:
+            continue
+        home, away = match.split(" vs ", 1)
+        md = str(row[date_col])[:10] if date_col else ""
+        if (league, match, md) in seen:
+            continue
+        seen.add((league, match, md))
+        lid = ids.get(league)
+        if not lid or not md:
+            continue
+        # NOT api_football.find_fixture_id: that one filters status=FT for grading settled
+        # matches, so it can never resolve a pre-match fixture. See the docstring there.
+        fid = af.find_upcoming_fixture_id(int(lid), str(seasons.get(league, "")), md, home, away)
+        if fid:
+            fixtures.append({"fixture_id": fid, "league": league, "match": match,
+                             "match_date": md})
+
+    if not fixtures:
+        print(f"[odds_fetcher] api-football: no fixture id resolved for {af_leagues}")
+        return 0
+
+    best, records = af.fetch(fixtures, verbose=False)
+    added = 0
+    for k, odd in best.items():
+        player, _, market = k.rpartition("|")
+        norm_key = f"{_norm(player)}|{market}"
+        if odd > result.get(norm_key, 0.0):
+            result[norm_key] = odd
+            added += 1
+    history_records.extend(records)
+
+    # Same ledger, so coverage is answered from evidence for BOTH sources. Keyed by league name
+    # rather than an OddsAPI sport key, because that is what this source is addressed by.
+    for lg in af_leagues:
+        got = sum(1 for r in records if r.get("league") == lg)
+        c = cov.setdefault(f"apifootball:{lg}", {})
+        c["league"] = lg
+        c["source"] = "api_football"
+        c["probes"] = int(c.get("probes", 0)) + 1
+        c["last_probe"] = today
+        if got:
+            c["priced_events"] = int(c.get("priced_events", 0)) + 1
+            c["last_priced"] = today
+            c["empty_streak"] = 0
+        else:
+            c["empty_streak"] = int(c.get("empty_streak", 0)) + 1
+    return added
 
 
 def match_odds_to_tips(tips_df, odds_raw: dict[str, float]) -> dict[str, float]:

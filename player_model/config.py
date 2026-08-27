@@ -324,6 +324,11 @@ PROP_LEAGUES = {
     # ── Our standard model leagues — moderate prop coverage ───────────────────
     "Championship":    40,
     "League One":      41,
+    # League Two ADDED 2026-08-27. It was in neither PROP_LEAGUES nor PROP_SPORT_KEYS, so its
+    # players were AVOID by construction — the "no sport key, never asked" case. OddsAPI does not
+    # sell props for it, but API-Football does (13 books, 11 prop markets, 127 quotes on one
+    # probe fixture), and the second source can only reach leagues listed here.
+    "League Two":      42,
     "Bundesliga 2":    79,
     # ── European club competitions ────────────────────────────────────────────
     "Champions League":    2,    # ⭐⭐⭐⭐⭐ Biggest club prop market
@@ -333,23 +338,28 @@ PROP_LEAGUES = {
     "World Cup":       1,
 }
 # Season year for each league (API-Football uses start year of season)
-PROP_SEASONS = {
-    # 2026/27 season (API-Football season = start year 2026). ROLLED 2025->2026 on 2026-08-05:
-    # on "2025" the prop capture looked in the finished 2025/26 season and found no upcoming
-    # club fixtures -> zero club-league prop-odds/CLV collection once club props start (~mid-Aug).
-    "Premier League":  "2026",
-    "Bundesliga":      "2026",
-    "La Liga":         "2026",
-    "Serie A":         "2026",
-    "Ligue 1":         "2026",
-    "Championship":    "2026",
-    "League One":      "2026",
-    "Bundesliga 2":    "2026",
-    "Champions League":    "2026",
-    "Europa League":       "2026",
-    "Conference League":   "2026",
-    "World Cup":       "2026",
-}
+def _prop_season_now() -> str:
+    """API-Football season (its start year) for the campaign in progress.
+
+    DERIVED, NOT TYPED. The old PROP_SEASONS was a hand-maintained dict listing each league
+    explicitly, which broke twice in the same way:
+      * frozen at "2025" while PROP_SEASONS said "2026" — six weeks uncollected (2026-08-16), and
+      * a league added to PROP_LEAGUES with no matching PROP_SEASONS entry gets season None and
+        is silently skipped, which is what happened to League Two on 2026-08-27.
+    A parallel list of the same leagues is a bug waiting for the next edit, so the season is now
+    computed and every league in PROP_LEAGUES gets one automatically.
+
+    European seasons start in July, so months 7-12 belong to the year that has just begun and
+    months 1-6 to the campaign that started the previous year.
+    """
+    from datetime import date
+    t = date.today()
+    return str(t.year if t.month >= 7 else t.year - 1)
+
+
+# One entry per league in PROP_LEAGUES, always. Never edit this by hand — add the league to
+# PROP_LEAGUES and its season appears here.
+PROP_SEASONS = {league: _prop_season_now() for league in PROP_LEAGUES}
 FBREF_LEAGUES = {
     "Championship": (10, "Championship"), "League One": (15, "League-One"),
     "League Two": (16, "League-Two"),     "Bundesliga 2": (33, "2-Bundesliga"),
