@@ -236,6 +236,97 @@ if len(_s):
                           "the bet count before the return.")
     except Exception as _e:                                  # noqa: BLE001
         st.caption(f"Side-market summary unavailable ({type(_e).__name__})")
+
+    # ── Closing line value ────────────────────────────────────────────────────
+    # CLV was displayed NOWHERE in the dashboard, while three separate places carried comments
+    # promising that rows excluded from P&L "still contribute to CLV" and ARCHITECTURE.md calls it
+    # the real measure of whether the model knows something the market doesn't. The promise was
+    # kept in the data and broken in the presentation.
+    #
+    # Reported as a MEDIAN, and this is the whole reason the panel is written carefully.
+    # Raw mean CLV over this ledger is +17.94%. The median is +0.96%. The mean is fiction: 37% of
+    # rows carry a closing price that cannot belong to the same selection - 128 rows close BELOW
+    # 1.60 (median 1.28) against entry prices near 2.50, and 47 close near 4.33 against entries
+    # near 2.00. An O/U 2.5 line does not travel that far. Reporting the mean would advertise a
+    # 40% edge on top of a losing P/L.
+    #
+    # |CLV| <= 25% is the same cut v11 applies (CLV_PLAUSIBLE_ABS in scripts/v11_shadow.py), and
+    # it is used here deliberately so the two repos cannot quote different CLV for the same rows.
+    # On this ledger it rejects all 175 implausible rows with nothing left over.
+    #
+    # The exact-zero share is shown rather than hidden. 28% of surviving rows have
+    # closing_odds == odds exactly. Because drift.py stores price CHANGES only, that reads as "no
+    # change was ever recorded" - which is a genuine flat line for a fixture that was polled and a
+    # missing observation for one that wasn't. I tried to separate them against
+    # odds_history_v9.json and could not: the file is pruned (only 90 of 210 NON-zero rows appear
+    # in it either), so absence proves nothing. Stripping the zeros moves the positive rate from
+    # 36.5% to 51.0%, which is too large a swing to resolve silently in either direction.
+    try:
+        _cl = pd.read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+        _cl["_clv"] = pd.to_numeric(_cl.get("clv_pct"), errors="coerce")
+        _cl["_o"] = pd.to_numeric(_cl.get("odds"), errors="coerce")
+        _cl["_c"] = pd.to_numeric(_cl.get("closing_odds"), errors="coerce")
+        _cl["_dt"] = pd.to_datetime(_cl.get("match_date"), errors="coerce")
+        _raw = _cl[_cl["_clv"].notna()]
+        _PLAUS = 25.0
+        _ok = _raw[_raw["_clv"].abs() <= _PLAUS].copy()
+        if len(_ok):
+            _flat = (_ok["_c"] == _ok["_o"])
+            _moved = _ok[~_flat]
+            st.markdown("## 🎯 Closing line value")
+            ui.metric_row([
+                {"label": "Median CLV", "value": f"{_ok['_clv'].median():+.2f}%",
+                 "help": "Median, not mean. The mean over these rows is "
+                         f"{_ok['_clv'].mean():+.2f}% and the raw unfiltered mean is "
+                         f"{_raw['_clv'].mean():+.2f}% — inflated by impossible closing prices."},
+                {"label": "Clean observations", "value": f"{len(_ok):,}",
+                 "delta": f"−{len(_raw) - len(_ok)} rejected",
+                 "delta_color": "off",
+                 "help": f"Of {len(_raw):,} rows with a CLV. Rejected where |CLV| > {_PLAUS:.0f}% "
+                         "— the same cut v11 uses."},
+                {"label": "Beat the close", "value": f"{100 * (_moved['_clv'] > 0).mean():.1f}%",
+                 "help": f"Share of the {len(_moved):,} rows that actually moved. Including the "
+                         f"{int(_flat.sum())} flat rows it reads "
+                         f"{100 * (_ok['_clv'] > 0).mean():.1f}%."},
+                {"label": "No recorded move", "value": f"{100 * _flat.mean():.0f}%",
+                 "help": f"{int(_flat.sum())} rows where closing == entry. drift.py stores price "
+                         "CHANGES only, so this is a genuine flat line for a polled fixture and a "
+                         "missing observation for an unpolled one. Not separable from the "
+                         "committed data."},
+            ])
+            # Per-league, with the trend as a line so a direction is visible at all.
+            _wk = (_moved.dropna(subset=["_dt"])
+                   .assign(_w=lambda x: x["_dt"].dt.to_period("W").dt.start_time)
+                   .groupby(["league", "_w"])["_clv"].median().reset_index())
+            # Coerced to a real list, and only where there are enough points to BE a trend.
+            # groupby-apply hands back numpy arrays, and a 1-point series renders as a flat line
+            # that reads identically to "this league has been steady" when it means "we have one
+            # week of data". Blank is the honest cell there; 3 weeks is the floor for a direction.
+            _MIN_PTS = 3
+            _tr = _wk.groupby("league")["_clv"].apply(
+                lambda s: [float(round(v, 2)) for v in s] if len(s) >= _MIN_PTS else None)
+            _lg = (_moved.groupby("league")["_clv"]
+                   .agg(**{"n": "size", "Median CLV %": "median",
+                           "Beat close %": lambda s: 100 * (s > 0).mean()})
+                   .reset_index().rename(columns={"league": "League"}))
+            _lg["Trend"] = _lg["League"].map(_tr)
+            _lg = _lg[_lg["n"] >= 5].sort_values("Median CLV %", ascending=False)
+            if len(_lg):
+                # A SHARED y-scale: per-cell autoscaling would draw a league moving between
+                # -1% and +1% with the same dramatic zigzag as one swinging -40% to +40%.
+                _lim = float(max(5.0, _wk["_clv"].abs().max()))
+                ui.table(_lg.round(2),
+                         sparks={"Trend": {"y_min": -_lim, "y_max": _lim,
+                                           "help": "Weekly median CLV %, blank under "
+                                                   f"{_MIN_PTS} weeks of data. Shared scale "
+                                                   f"±{_lim:.0f}% across all rows."}})
+                st.caption(
+                    f"Leagues with at least 5 rows that moved, of {_moved['league'].nunique()} "
+                    f"with any. Flat rows excluded from these figures — see 'no recorded move'. "
+                    f"n is small everywhere (largest {int(_lg['n'].max())}), and v11 wants 150 "
+                    f"per segment before CLV gates a bet, so nothing here is settled.")
+    except Exception as _e:                                  # noqa: BLE001
+        st.caption(f"CLV panel unavailable ({type(_e).__name__}: {_e})")
     st.divider()
 
 # ── SNIPER section ─────────────────────────────────────────────────────────────
