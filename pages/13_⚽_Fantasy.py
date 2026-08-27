@@ -153,6 +153,86 @@ for col, pos in zip(pcols, POS_CODES):
             "Pts": ui.bar_col("Pts", max_value=max(_pmax, 0.1)),
         })
 
+# ── Minutes history, for the sparkline in the projections table ───────────────
+# The table shows Start% — the model's probability that a player starts — with nothing behind it.
+# Two players on 70% look identical when one has played 90 minutes eight times running and the
+# other alternates 90 and 12. That difference is the whole of rotation risk, and it is the FPL
+# decision this page exists to inform.
+#
+# MINUTES, not goals or points. Measured on the 480-day club window: minutes has 0% zero rows
+# (mean 73), while goals are 91.7% zeros and goals+assists 86.5%. A returns sparkline would be a
+# flat line at zero for six cells in seven — decoration that looks like information.
+#
+# CLUB ROWS ONLY, which is invariant 12 and not optional. player_history is a match-level log
+# where `team` is whoever the player turned out for that day, INCLUDING internationals: the most
+# recent row for Saka is England, for Doku is Belgium, for Haaland is Norway. Joining on name
+# alone and taking the latest rows agreed with the player's FPL club for only 37.5% of the squad.
+# Joining on (name, resolved FPL club) is club-only and current-club by construction.
+#
+# Club names are resolved through src/team_names.resolve (invariant 11), which handles
+# Coventry City->Coventry, Ipswich Town->Ipswich, Man City->Manchester City and
+# Nott'm Forest->Nottingham Forest, and correctly REFUSES 'Man Utd' and 'Spurs' rather than
+# guessing. Those two are the only hardcoded aliases, and both targets were checked to exist.
+_FPL_TEAM_ALIAS = {"Man Utd": "Manchester United", "Spurs": "Tottenham"}
+_MINS_WINDOW_DAYS = 365      # genuine recency: the unbounded window reached back to 2023
+_MINS_POINTS = 8
+_MINS_MIN_POINTS = 3         # below this the cell stays blank rather than drawing a fake trend
+
+
+@st.cache_data(ttl=1800, show_spinner=False)
+def _minutes_history(pairs: tuple) -> dict:
+    """{(normalised name, fpl team): [minutes, oldest->newest]} for recent CLUB matches."""
+    import unicodedata as _ud
+    import re as _re
+    from src.team_names import resolve as _resolve
+
+    # BASE_DIR is this page's own (v9 root), not config's — this page never imports config, and
+    # the first version referenced config.BASE_DIR and failed with a NameError that the caller's
+    # except swallowed, leaving an empty column that looked exactly like "no history exists".
+    fp = BASE_DIR / "player_history.parquet"
+    if not fp.exists():
+        return {}
+    h = pd.read_parquet(fp, columns=["player_name", "team", "date", "minutes"])
+    h["date"] = pd.to_datetime(h["date"], errors="coerce")
+    h = h.dropna(subset=["date"])
+    if h.empty:
+        return {}
+
+    def _n(x):
+        nf = _ud.normalize("NFKD", str(x or ""))
+        a = "".join(c for c in nf if not _ud.combining(c)).lower()
+        return _re.sub(r"[^a-z ]", "", a).strip()
+
+    cands = sorted(h["team"].dropna().astype(str).unique())
+    tmap = {}
+    for _, t in pairs:
+        if t not in tmap:
+            tmap[t] = _FPL_TEAM_ALIAS.get(t) or _resolve(t, cands)
+    # Key on the HISTORY club name; an unresolved club simply yields no sparkline.
+    want = {(_n(nm), tmap.get(t)) for nm, t in pairs if tmap.get(t)}
+    h["_n"] = h["player_name"].map(_n)
+    h = h[[(n, t) in want for n, t in zip(h["_n"], h["team"])]]
+    if h.empty:
+        return {}
+    h = h[h["date"] >= h["date"].max() - pd.Timedelta(days=_MINS_WINDOW_DAYS)]
+    h = h.sort_values("date").groupby(["_n", "team"]).tail(_MINS_POINTS)
+    out = {}
+    back = {v: k for k, v in tmap.items() if v}
+    for (n, t), g in h.groupby(["_n", "team"]):
+        if len(g) >= _MINS_MIN_POINTS:
+            out[(n, back.get(t, t))] = [float(x) for x in
+                                        pd.to_numeric(g["minutes"], errors="coerce").fillna(0)]
+    return out
+
+
+def _norm_name(x):
+    import unicodedata as _ud
+    import re as _re
+    nf = _ud.normalize("NFKD", str(x or ""))
+    a = "".join(c for c in nf if not _ud.combining(c)).lower()
+    return _re.sub(r"[^a-z ]", "", a).strip()
+
+
 # ── Full ranked table ─────────────────────────────────────────────────────────
 st.subheader("📊 Full projections")
 posf = st.multiselect("Filter position", POS_CODES, default=POS_CODES)
@@ -168,7 +248,27 @@ disp_cols = [c for c in ["overall_rank", "Player", "team", "position", "price", 
                          "p_goal", "p_assist", "p_sot2", "dc_pts", "cs_pts", "bonus_pts",
                          "disp_pts", "p_start", "xpts_rot", "avg_fdr", "next_fixtures"]
              if c in show.columns]
+_mins_map = {}
+try:
+    _pairs = tuple(sorted({(str(a), str(b)) for a, b in
+                           zip(show.get("player_name", pd.Series(dtype=str)),
+                               show.get("team", pd.Series(dtype=str)))}))
+    if _pairs:
+        _mins_map = _minutes_history(_pairs)
+except Exception as _e:                                      # noqa: BLE001
+    # Surfaced, not swallowed. A silently-empty sparkline column looks identical to "no history
+    # exists", which is how the first version of this appeared to work while doing nothing.
+    _mins_map = {}
+    st.caption(f"Minutes history unavailable ({type(_e).__name__}: {_e})")
+if _mins_map and "player_name" in show.columns and "team" in show.columns:
+    show["_mins"] = [
+        _mins_map.get((_norm_name(a), str(b)))
+        for a, b in zip(show["player_name"], show["team"])
+    ]
+    disp_cols = disp_cols + ["_mins"]
+
 show = show[disp_cols].rename(columns={
+    "_mins": "Minutes (last 8)",
     "overall_rank": "#", "team": "Team", "position": "Pos", "price": "£m", "value": "Pts/£",
     "p_goal": "P(goal)", "p_assist": "P(assist)", "p_sot2": "P(SOT2+)",
     "dc_pts": "Def", "cs_pts": "CS", "bonus_pts": "Bon", "disp_pts": "Exp pts",
@@ -206,6 +306,16 @@ _colcfg = {
                            help="Rotation-adjusted: Exp pts × P(start)"),
     "FDR": ui.num_col("FDR", fmt="%.1f", help="Fixture difficulty, 1 easiest to 5 hardest"),
     "Next fixtures": st.column_config.TextColumn("Next fixtures", width="medium"),
+    # Fixed 0-90 scale, NOT autoscaled per row. Left to autoscale, a player who went
+    # 88-90-89 draws the same alarming zigzag as one who went 12-90-9, because each cell
+    # would be normalised to its own range — turning the most useful column on the page into
+    # the most misleading one.
+    "Minutes (last 8)": ui.spark_col(
+        "Minutes (last 8)", y_min=0, y_max=90,
+        help="Minutes in the last 8 CLUB matches within a year, oldest to newest. Fixed 0-90 "
+             "scale, so rows are comparable. Blank where fewer than 3 such matches exist. "
+             "Read it next to Start%: a flat line near 90 is a nailed-on starter, a sawtooth "
+             "is rotation risk."),
 }
 st.dataframe(show, width="stretch", hide_index=True, height=560,
              column_config={k: v for k, v in _colcfg.items() if k in show.columns})
