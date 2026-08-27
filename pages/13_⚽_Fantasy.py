@@ -342,8 +342,8 @@ def _ticker(nfx):
 
 
 t_diff, t_xi, t_lead, t_fix, t_sp, t_tr = st.tabs(
-    ["💎 Differentials", "⭐ Best XI", "📊 Prop leaderboards", "📅 Fixture ticker",
-     "🎯 Set-pieces & pens", "🔄 Transfer helper"])
+    ["💎 Differentials", "⭐ Dream XI · all players", "📊 Prop leaderboards",
+     "📅 Fixture ticker", "🎯 Set-pieces & pens", "🔄 Transfer helper"])
 
 with t_diff:
     st.caption("High projected points **and** low ownership — the picks that win mini-leagues.")
@@ -363,7 +363,9 @@ with t_diff:
         st.warning(f"Differentials unavailable: {e}")
 
 with t_xi:
-    st.caption("Points-maximising legal starting XI (injured players excluded).")
+    st.caption("Points-maximising legal starting XI from **every** player in the projections — "
+               "a target squad, not your current one. Injured players excluded. To optimise the "
+               "squad you already own, use **📋 My lineup** under Planning tools.")
     try:
         from player_model.fantasy_features import best_xi
         xi = best_xi(df)
@@ -458,7 +460,12 @@ with t_tr:
 st.divider()
 st.subheader("🧭 Planning tools")
 p_chip, p_line, p_league, p_alert = st.tabs(
-    ["🃏 Chip advisor", "📋 Auto-lineup", "🏆 Mini-league", "🔔 Alerts / watchlist"])
+    # "Best XI" and "Auto-lineup" both read as "pick my XI", which is why they looked like two
+    # tools in the wrong groups. They answer different questions and the grouping is right: Dream
+    # XI picks from EVERY player (who to own), My lineup picks from YOUR squad (who to start this
+    # week). The labels now say which pool each one draws from.
+    ["🃏 Chip advisor", "📋 My lineup · your squad", "🏆 Mini-league",
+     "🔔 Alerts / watchlist"])
 
 with p_chip:
     st.caption("Wildcard / Bench Boost / Triple Captain / Free Hit timing from the fixture "
@@ -487,8 +494,9 @@ with p_chip:
         st.warning(f"Chip advisor unavailable: {e}")
 
 with p_line:
-    st.caption("Enter your FPL team ID → optimal starting XI, bench order, and (vice-)captain "
-               "by projected points.")
+    st.caption("Enter your FPL team ID → the best XI, bench order and (vice-)captain from **the "
+               "players you already own**. For the best XI in the game regardless of ownership, "
+               "use **⭐ Dream XI** under FPL tools.")
     ltid = st.text_input("FPL team ID ", placeholder="e.g. 1234567", key="lineup_id")
     if ltid.strip().isdigit():
         try:
@@ -655,16 +663,45 @@ else:
                          width="stretch", hide_index=True)
 
     # History, once the append-only log has more than one day in it.
+    #
+    # The empty case USED TO RENDER NOTHING. With zero rows neither branch fired and the except
+    # swallowed anything else, so the section just ended — indistinguishable from a broken page.
+    # That is the state it is actually in right now, and for a reason worth naming on screen:
+    # append() was called as `_log_proj(out)` where the variable is `proj`, so it raised NameError
+    # into a handler that logged a warning nobody read, and the log wrote zero rows across three
+    # days of green workflow runs. Fixed 2026-08-27; the first rows land on the next daily
+    # fantasy_refresh, which the workflow does commit per-file.
+    st.markdown("**Calibration over time** — one row per day the projections ran")
     try:
         from player_model.fantasy_log import calibration
         _hist = calibration()
         if len(_hist) > 1:
-            st.markdown("**Calibration over time** — one row per day the projections ran")
-            st.dataframe(_hist, width="stretch", hide_index=True)
-            st.caption("`ours_beats_fpl` positive means our projection was closer to actual PPG "
-                       "than FPL's ep_next that day.")
+            # Charted, not tabulated. The question is whether the gap to FPL's free number is
+            # closing or widening, and that is a direction — a table of daily MAEs makes the
+            # reader compute differences in their head.
+            _h = _hist.copy()
+            _h["snapshot_date"] = pd.to_datetime(_h["snapshot_date"], errors="coerce")
+            _h = _h.dropna(subset=["snapshot_date"]).sort_values("snapshot_date")
+            st.line_chart(_h.set_index("snapshot_date")[["mae_ours", "mae_fpl"]],
+                          height=260)
+            st.caption("Mean absolute error against actual PPG, in FPL points. **Lower is "
+                       "better**, and the line that matters is whether `mae_ours` sits below "
+                       "`mae_fpl` — FPL publishes ep_next for free, so that is the baseline the "
+                       "model has to beat to be worth running.")
+            _last = _h.iloc[-1]
+            _won = int((_h["ours_beats_fpl"] > 0).sum())
+            st.caption(f"Ours closer on {_won} of {len(_h)} day(s). Latest: ours "
+                       f"{_last['mae_ours']:.2f} vs FPL {_last['mae_fpl']:.2f} "
+                       f"({_last['ours_beats_fpl']:+.2f}).")
+            ui.table(_hist)
         elif len(_hist) == 1:
-            st.caption("Projection log has one day so far. A trend needs several — it accumulates "
-                       "one row per player per day from now on.")
-    except Exception:
-        pass
+            st.info("Projection log has **one day** so far, so there is no trend to draw yet. "
+                    "It accumulates one row per player per day from here.")
+        else:
+            st.info("**No projection history yet.** The log is written by `fantasy_log.append` "
+                    "during the daily `fantasy_refresh` workflow and committed per-file. It "
+                    "recorded zero rows until 2026-08-27 because `append` was called with an "
+                    "undefined name, so the first rows arrive on the next scheduled run.")
+    except Exception as _e:                                  # noqa: BLE001
+        # Surfaced. A bare `pass` here is what let the empty log look like a design choice.
+        st.caption(f"Calibration history unavailable ({type(_e).__name__}: {_e})")
