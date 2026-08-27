@@ -129,6 +129,12 @@ PROP_SPORT_KEYS = {
     "Champions League": "soccer_uefa_champs_league",
     "Europa League":    "soccer_uefa_europa_league",
     "Conference League":"soccer_uefa_europa_conference_league",
+    # ADDED 2026-08-27. OddsAPI's documentation lists MLS as one of only six competitions it
+    # sells soccer player props for -- "EPL, French Ligue 1, German Bundesliga, Italian Serie A,
+    # Spanish La Liga, and MLS" -- and it was the one of those six we never asked for. A probe
+    # returned 133 player quotes across 2 books on a single fixture. MLS is also our largest
+    # league by settled bets, so this was the most expensive omission in the file.
+    "USA MLS":          "soccer_usa_mls",
 }
 
 _CACHE_DIR = Path(__file__).resolve().parents[1] / "prop_odds_cache"

@@ -32,8 +32,20 @@ def build_upcoming_signals() -> pd.DataFrame:
     """All upcoming fixtures for prop-covered leagues -> (league, match, date)."""
     rows = []
     for league, lg_id in config.PROP_LEAGUES.items():
-        if league not in PROP_SPORT_KEYS:      # only leagues with OddsAPI prop markets
-            continue
+        # NO OddsAPI-KEY FILTER. This used to `continue` unless the league had an OddsAPI sport
+        # key, which was right when OddsAPI was the only price source and is wrong now.
+        #
+        # This loop is what builds the open -> move -> close trajectory, running every ~1.5h. A
+        # league excluded here gets priced at predict time and then NEVER TRACKED, so it can have
+        # prop odds and still have no CLV — the trajectory is the whole product of this script.
+        # League Two has no OddsAPI key at all, and OddsAPI sells no props for Championship /
+        # League One / Bundesliga 2 either, so under the old filter every division this system
+        # actually targets was either skipped or probed against a source that returns nothing.
+        #
+        # `fetch_prop_odds` now handles both sources internally and returns nothing gracefully
+        # for a league neither can price, so membership in PROP_LEAGUES is the correct gate:
+        # that dict IS the set of leagues we want props for.
+        pass
         season = config.PROP_SEASONS.get(league, str(pd.Timestamp.utcnow().year))
         n_fix = 20 if league == "World Cup" else 8
         try:
