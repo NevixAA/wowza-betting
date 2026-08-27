@@ -85,7 +85,9 @@ _BET_TO_MARKET = {
 _PREFIXES = ("home ", "away ")
 
 # Which of our sot buckets a parsed Over line belongs to.
-_SOT_LINE = {0.5: "sot", 1.5: "sot2", 2.5: "sot3"}
+# 3.5 (i.e. "4+") was ABSENT here, so every 4+ quote the book offered was silently
+# dropped by the "a line we do not model" branch.
+_SOT_LINE = {0.5: "sot", 1.5: "sot2", 2.5: "sot3", 3.5: "sot4"}
 
 # "2+" style thresholds, the form API-Football actually uses for per-player lines.
 _PLUS_RE = re.compile(r"(\d+(?:\.\d+)?)\+")

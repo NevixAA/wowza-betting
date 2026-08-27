@@ -1079,6 +1079,7 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["target_goals2"]  = (df["goals"]             >= 2).astype(int)
     df["target_sot2"]    = (df["shots_on_target"]   >= 2).astype(int)
     df["target_sot3"]    = (df["shots_on_target"]   >= 3).astype(int)
+    df["target_sot4"]    = (df["shots_on_target"]   >= 4).astype(int)
 
     # Drop rows with no prior history (rolling features would all be NaN)
     df = df[df["n_prev_games"] >= 1].copy()

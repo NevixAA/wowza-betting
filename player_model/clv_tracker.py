@@ -122,6 +122,7 @@ _MARKET_HIT = {
     "sot":     lambda s: s["sot"] >= 1,
     "sot2":    lambda s: s["sot"] >= 2,
     "sot3":    lambda s: s["sot"] >= 3,
+    "sot4":    lambda s: s["sot"] >= 4,
     "cards":   lambda s: (s["yc"] >= 1) or (s["rc"] >= 1),
 }
 
