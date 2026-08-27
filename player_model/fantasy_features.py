@@ -26,7 +26,7 @@ from player_model.model import load_model, predict_proba
 # Legal FPL starting-XI formations: (DEF, MID, FWD) — always 1 GKP.
 _FORMATIONS = [(3, 4, 3), (3, 5, 2), (4, 4, 2), (4, 3, 3), (4, 5, 1), (5, 4, 1), (5, 3, 2)]
 _MARKET_LABEL = {"goals": "Anytime scorer", "goals2": "2+ goals (brace)", "assists": "Assist",
-                 "sot2": "2+ shots on target", "sot3": "3+ shots on target", "cards": "Booked"}
+                 "sot2": "2+ shots on target", "sot3": "3+ shots on target", "sot4": "4+ shots on target", "cards": "Booked"}
 
 
 def _norm(s: str) -> str:

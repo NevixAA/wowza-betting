@@ -14,7 +14,23 @@ API_KEY    = os.getenv("API_KEY",    "")
 API_SEASON = os.getenv("API_SEASON", "2025")
 
 # ── Markets ───────────────────────────────────────────────────────────────────
-MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "cards"]
+MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "sot4", "cards"]
+
+# sot4 (4+ shots on target) ADDED 2026-08-27, on the same footing as sot3 and goals2: RESEARCH
+# DATA, never a tip source. The base rate makes that unavoidable rather than a policy choice --
+# measured over 302,456 player-matches in player_history.parquet:
+#
+#     1+ SOT  22.48%   (starters 25.51%)
+#     2+ SOT   5.24%   (starters  6.57%)
+#     3+ SOT   1.21%   (starters  1.61%)
+#     4+ SOT   0.27%   (starters  0.38%)   <- sot4
+#
+# MIN_SIGNAL_PROB is 0.15, so emitting a sot4 tip would need a ~40x lift over the base rate on
+# a calibrated model. It will not clear the floor, and it is in VALUABLE_ONLY_MARKETS so it
+# could not be staked even if it did. What it IS for: bookmakers price 4+ (8 quotes on the probe
+# fixture) and those prices arrive on the SAME `player_shots_on_target` response as sot/sot2/sot3
+# at no extra API cost, and a prop price is pre-match only so an uncaptured one is gone forever.
+# Capturing the ladder complete costs nothing and cannot be done retroactively.
 
 # goals2 (2+ goals / brace) is MODELLED but no longer requested from OddsAPI (2026-08-18).
 # The two sides of it fail for different reasons and deserve different treatment:
@@ -62,6 +78,7 @@ MODEL_FILES = {
     "sot":     MODELS_DIR / "model_player_sot.pkl",
     "sot2":    MODELS_DIR / "model_player_sot2.pkl",
     "sot3":    MODELS_DIR / "model_player_sot3.pkl",
+    "sot4":    MODELS_DIR / "model_player_sot4.pkl",
     "cards":   MODELS_DIR / "model_player_cards.pkl",
 }
 # Market → target column in training data
@@ -72,6 +89,7 @@ MARKET_TARGETS = {
     "sot":     "target_sot",
     "sot2":    "target_sot2",
     "sot3":    "target_sot3",
+    "sot4":    "target_sot4",
     "cards":   "target_cards",
 }
 # Human-readable market labels for Telegram
@@ -82,6 +100,7 @@ MARKET_LABELS = {
     "sot":     "SOT 1+",
     "sot2":    "SOT 2+",
     "sot3":    "SOT 3+",
+    "sot4":    "SOT 4+",
     "cards":   "Carded",
 }
 
@@ -111,7 +130,7 @@ REL_EDGE_MARKSMAN = 0.12   # ≥12% relative edge required for MARKSMAN
 # as tips). WATCH tier removed; non-qualifying signals are AVOID.
 #   - sot2/sot3 (multiple SOT) & goals2: longshot markets, negative across all roles
 #   - defenders for anytime-goalscorer: defenders ~never score (≈0-3% hit rate)
-VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "goals2", "cards"}
+VALUABLE_ONLY_MARKETS     = {"sot2", "sot3", "sot4", "goals2", "cards"}
 VALUABLE_ONLY_ROLE_MARKET = {("D", "goals")}
 # PAPER feed: send the top-N strongest props picks per run as tracking-only signals
 # (no proven edge — validation 2026-07-09 — never real money). 0 disables.

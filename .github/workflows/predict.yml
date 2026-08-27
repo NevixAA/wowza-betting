@@ -4,7 +4,26 @@ on:
   # RE-ENABLED 2026-08-09 after the new-format calibration bug was fixed + retrained
   # (NF p_over25 0.36 -> 0.50, balanced over/under). See PERFORMANCE_CUTOFF_DATE in config.
   schedule:
-    - cron: '1-59/5 8-23 * * *'   # every 5 min during match hours — offset :01 to stagger runners
+    # CADENCE 5 -> 10 MIN (2026-08-27). Asking for less delivers MORE, and the reason is
+    # measured, not guessed.
+    #
+    # Predict takes median 3.0 min, p90 3.9, max 6.3 (last 30 successful runs). The concurrency
+    # group below SERIALISES runs (cancel-in-progress: false), and GitHub allows only one PENDING
+    # run per group -- so at a 5-minute cadence a firing that lands while the previous run is
+    # still going can only queue, and GitHub's documented behaviour is that "if the load is
+    # sufficiently high enough, some queued jobs may be dropped". A max runtime of 6.3 min
+    # against a 5-minute interval guarantees that state regularly.
+    #
+    # What actually got delivered at 5 min: 32 / 24 / 25 / 13 runs on 08-23..08-26 against ~180
+    # requested -- about 14%, i.e. one run every ~36 minutes in practice. Requesting 90/day with
+    # comfortable headroom over p90 should deliver a far higher fraction, so effective coverage
+    # improves even though the cron number looks worse.
+    #
+    # This does NOT fix the 2026-08-27 outage, and that is worth being clear about: on that day
+    # Sharp Money Tracker asked for 3 runs and got 0, so cadence was not the discriminator --
+    # GitHub simply stopped dispatching schedules repo-wide. Nothing here prevents that; use
+    # workflow_dispatch when it happens.
+    - cron: '1-59/10 8-23 * * *'   # every 10 min during match hours — offset :01 to stagger
   workflow_dispatch:
 
 concurrency:

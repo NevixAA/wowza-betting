@@ -9,9 +9,16 @@ Markets fetched:
   goals2  → player_to_score_2_or_more    (2+ goals)
   sot     → player_shots_on_target       (Over 0.5)
   sot2    → player_shots_on_target       (Over 1.5)
-  sot3    → player_shots_on_target       (Over 2.5)
+  sot3    → player_shots_on_target       (Over 2.5 = 3+ SOT)
+  sot4    → player_shots_on_target       (Over 3.5 = 4+ SOT; research only, 0.27% base rate)
   assists → player_assists (Over 0.5)    (1+ assist; falls back to calibration if no market)
-  (goals3/sot4/cards removed — base rate too low / too noisy)
+  cards   → player_to_receive_card
+  (goals3 removed — base rate too low. sot4 RESTORED 2026-08-27: it rides the same
+   player_shots_on_target response, so the price costs nothing, and a prop price is pre-match
+   only. goals2 stays MODELLED but unpriceable — no source sells a player 2+ goals market.)
+
+Two price sources, one set of files: OddsAPI first, then player_model/prop_odds_af for the
+leagues OddsAPI does not sell props for. See that module's docstring.
 
 Cost: 1 API call per event (events list is free).
 Only fetches events where we have signals in player_tips.csv.
@@ -94,6 +101,10 @@ _MARKET_MAP = {
     "sot":     ("player_shots_on_target",      0.5),   # 1+ SOT
     "sot2":    ("player_shots_on_target",      1.5),   # 2+ SOT
     "sot3":    ("player_shots_on_target",      2.5),   # 3+ SOT
+    # 4+ SOT. Arrives on the SAME player_shots_on_target response as the lines above,
+    # so it costs no extra API call. Research data only -- see the base rates in
+    # player_model/config.py next to MARKETS.
+    "sot4":    ("player_shots_on_target",      3.5),   # 4+ SOT
     "assists": ("player_assists",              0.5),   # Over 0.5 = 1+ assist (OddsAPI key is player_assists, Over/Under)
     "cards":   ("player_to_receive_card",      None),  # yellow card
 }
