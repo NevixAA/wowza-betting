@@ -162,80 +162,119 @@ st.divider()
 #
 # And n is displayed next to the total, because 88 bets over 13 days is not a track record and a
 # curve drawn without its sample size invites exactly that reading.
+#   4. WHICH MARKET. This was the filter the first version left unstated, and it is the one that
+#      changes the answer most. Reading bets_ledger.csv alone reports the main O/U 2.5 line only,
+#      so -4.42u sat on the front page looking like the system's record while over15 (+1.48u) and
+#      btts (+9.07u) were not in it at all. Every staked market is now loaded and broken out
+#      per market, because a single blended number cannot be right here: the total across all
+#      three is +6.14u, and +9.07u of that is btts on NINE bets. Ex-btts it is -2.94u. One
+#      headline figure would be either the wrong sign or the wrong story, whichever way it went.
 _STAKED_TIERS = ("SNIPER", "MARKSMAN")
-try:
-    _led = pd.read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
-    _led["_dt"] = pd.to_datetime(_led.get("match_date"), errors="coerce")
-    _led["_pnl"] = pd.to_numeric(_led.get("pnl"), errors="coerce")
-    _cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
-    _s = _led[_led.get("signal_tier").isin(_STAKED_TIERS)
-              & _led["_pnl"].notna() & (_led["_dt"] >= _cut)].sort_values("_dt")
-except Exception as _e:                                     # noqa: BLE001
-    _s = pd.DataFrame()
-    st.caption(f"Settled performance unavailable ({type(_e).__name__}: {_e})")
+# (ledger file, column holding the market name, constant market name when there is no column)
+_MKT_SOURCES = [("bets_ledger.csv", None, "O/U 2.5"),
+                ("side_bets_ledger.csv", "market", None),
+                ("ht_ledger.csv", None, "HT O/U")]
+_cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
+_parts, _missing = [], []
+for _f, _mkc, _const in _MKT_SOURCES:
+    _fp = config.OUTPUT_DIR / _f
+    if not _fp.exists():
+        _missing.append(_f)
+        continue
+    try:
+        _d = pd.read_csv(_fp, low_memory=False)
+        _d["_dt"] = pd.to_datetime(_d.get("match_date"), errors="coerce")
+        _d["_pnl"] = pd.to_numeric(_d.get("pnl"), errors="coerce")
+        _oc = "odds" if "odds" in _d.columns else "entry_odds"
+        _d["_odds"] = pd.to_numeric(_d.get(_oc), errors="coerce")
+        _d["_mkt"] = (_d[_mkc].astype(str) if _mkc and _mkc in _d.columns else _const)
+        _keep = (_d.get("signal_tier").isin(_STAKED_TIERS)
+                 & _d["_pnl"].notna() & (_d["_dt"] >= _cut))
+        if _keep.any():
+            _parts.append(_d[_keep][["_mkt", "_dt", "_pnl", "_odds", "signal_tier"]])
+    except Exception as _e:                                 # noqa: BLE001
+        st.caption(f"{_f} unreadable ({type(_e).__name__}: {_e})")
+_s = (pd.concat(_parts, ignore_index=True).sort_values("_dt")
+      if _parts else pd.DataFrame())
 
 if len(_s):
-    st.markdown("## 📈 Settled performance — main O/U 2.5")
+    st.markdown("## 📈 Settled performance by market")
     _tot = float(_s["_pnl"].sum())
     _hit = float((_s["_pnl"] > 0).mean())
+
+    # Per-market first, because the blend is not a fact about the system. Ordered by bet count so
+    # the market with something to say about it is at the top and the 9-bet one is at the bottom.
+    _THIN = 20
+    _m = (_s.groupby("_mkt")
+          .agg(Bets=("_pnl", "size"), PL=("_pnl", "sum"),
+               Hit=("_pnl", lambda x: 100.0 * (x > 0).mean()),
+               _avg_odds=("_odds", "mean"), _n_odds=("_odds", "count"))
+          .reset_index().rename(columns={"_mkt": "Market"}))
+    _m["Per bet"] = _m["PL"] / _m["Bets"]
+    # Break-even at the price actually paid. Suppressed when prices are missing for a fifth of
+    # the market's bets, since a mean over the priced fraction is not the level these bets faced.
+    _m["Need"] = (100.0 / _m["_avg_odds"]).where(_m["_n_odds"] >= 0.8 * _m["Bets"])
+    # Sparkline over the BET SEQUENCE, not weekly buckets: 15 days gives 2-3 weekly points,
+    # which is not a line, whereas the running total has one point per bet (88 / 33 / 9).
+    _seq = {k: [round(v, 3) for v in g.sort_values("_dt")["_pnl"].cumsum()]
+            for k, g in _s.groupby("_mkt")}
+    _m["Run"] = _m["Market"].map(lambda k: _seq.get(k) if len(_seq.get(k, [])) >= 3 else None)
+    _m = _m.sort_values("Bets", ascending=False)
+
+    _biggest = _m.iloc[_m["PL"].abs().values.argmax()]
+    _ex = _s[_s["_mkt"] != _biggest["Market"]]
     ui.metric_row([
-        {"label": "P/L (units)", "value": f"{_tot:+.2f}u",
+        {"label": "P/L — all staked markets", "value": f"{_tot:+.2f}u",
          "delta": f"{_tot / len(_s):+.3f}u per bet",
-         "help": "Flat 1u stakes. SNIPER + MARKSMAN only — VALUABLE is not staked."},
+         "help": "Flat 1u stakes, SNIPER + MARKSMAN only. Read the per-market table below "
+                 "before this number — it is a sum of very unequal samples."},
+        {"label": f"Excluding {_biggest['Market']}",
+         "value": f"{float(_ex['_pnl'].sum()):+.2f}u" if len(_ex) else "—",
+         "delta": f"{len(_ex)} bets", "delta_color": "off",
+         "help": f"{_biggest['Market']} carries {float(_biggest['PL']):+.2f}u on "
+                 f"{int(_biggest['Bets'])} bets — the largest single contribution. Shown so the "
+                 "total cannot be read as broad-based when it is not."},
         {"label": "Settled bets", "value": f"{len(_s):,}",
          "help": f"Since {_cut.date()} (PERFORMANCE_CUTOFF_DATE). Small samples move a lot."},
-        {"label": "Hit rate", "value": f"{_hit:.1%}",
-         "help": "Share of settled bets with positive P/L. Not comparable to a 50% coin flip — "
-                 "these are priced markets."},
-        {"label": "Days covered", "value": f"{_s['_dt'].dt.date.nunique()}"},
+        {"label": "Days covered", "value": f"{_s['_dt'].dt.date.nunique()}",
+         "help": f"{_s['_dt'].min().date()} to {_s['_dt'].max().date()}. Hit rate across all "
+                 f"markets is {_hit:.1%}, but it is only meaningful per market — each has a "
+                 f"different break-even price."},
     ])
 
-    _curve = (_s.set_index("_dt")["_pnl"].cumsum().rename("Cumulative units")
-              .reset_index().rename(columns={"_dt": "Date"}))
-    st.line_chart(_curve, x="Date", y="Cumulative units", height=260)
-    st.caption(f"Cumulative units, flat 1u stakes, **staked tiers only** "
-               f"(SNIPER + MARKSMAN), settled bets from {_cut.date()}, "
-               f"**`bets_ledger.csv` only — the main O/U 2.5 market**. "
-               f"n = {len(_s)} — a curve this short is a sample, not a track record.")
+    ui.table(_m[["Market", "Bets", "PL", "Per bet", "Hit", "Need", "Run"]].round(2),
+             sparks={"Run": {"help": "Running total in units, one point per settled bet, oldest "
+                                     "to newest. Each row is scaled to its own range — compare "
+                                     "the SHAPE, not the height, and read P/L for the level."}})
+    st.caption(
+        f"Flat 1u stakes · **staked tiers only** (SNIPER + MARKSMAN — VALUABLE is not a bet) · "
+        f"settled only · from {_cut.date()}. **Hit** is the share won; **Need** is the "
+        f"break-even rate implied by the average price paid, so Hit above Need is a profitable "
+        f"market and below it is not."
+        + (f" Thin: " + ", ".join(f"{r['Market']} n={int(r['Bets'])}"
+                                  for _, r in _m[_m['Bets'] < _THIN].iterrows())
+           + " — at these counts one result moves P/L by a whole unit."
+           if (_m["Bets"] < _THIN).any() else ""))
 
-    _by = (_s.groupby("signal_tier")["_pnl"].agg(Bets="size", **{"P/L": "sum"})
-           .reset_index().rename(columns={"signal_tier": "Tier"}))
+    # Cumulative curve per market rather than one blended line, for the same reason the table is
+    # split: a single curve here averaged a 39.8% market with an 88.9% one and showed neither.
+    _cur = (_s.assign(_c=_s.groupby("_mkt")["_pnl"].cumsum())
+            .pivot_table(index="_dt", columns="_mkt", values="_c", aggfunc="last")
+            .ffill())
+    if len(_cur) > 1:
+        st.line_chart(_cur, height=280)
+        st.caption(f"Cumulative units by market. Flat after a market's last settled bet — the "
+                   f"line is carried forward, not still running. n = {len(_s)} across "
+                   f"{_s['_mkt'].nunique()} markets over {_s['_dt'].dt.date.nunique()} days, "
+                   f"which is a sample and not a track record.")
+
+    _by = (_s.groupby(["signal_tier", "_mkt"])["_pnl"].agg(Bets="size", **{"P/L": "sum"})
+           .reset_index().rename(columns={"signal_tier": "Tier", "_mkt": "Market"}))
     _by["Per bet"] = (_by["P/L"] / _by["Bets"]).round(3)
-    ui.table(_by)
-
-    # Side markets, stated SEPARATELY and never folded into the headline above.
-    #
-    # This block reads bets_ledger.csv alone, and the caption used to name only three of its four
-    # filters — tier, cutoff, settled — while silently omitting the market. A reader took the
-    # headline as the system's record when it was the main O/U line only.
-    #
-    # Kept as its own row rather than merged, because merging would let a 9-bet btts sample at
-    # +9.08u swing the front-page number from negative to positive. Nine bets is not a result, and
-    # the fastest way to make a dashboard lie is to average a thin sample into a thick one.
-    try:
-        _sb = pd.read_csv(config.OUTPUT_DIR / "side_bets_ledger.csv", low_memory=False)
-        _sb["_dt"] = pd.to_datetime(_sb.get("match_date"), errors="coerce")
-        _sb["_pnl"] = pd.to_numeric(_sb.get("pnl"), errors="coerce")
-        _sb = _sb[_sb.get("signal_tier").isin(_STAKED_TIERS)
-                  & (_sb["_dt"] >= _cut) & _sb["_pnl"].notna()]
-        if len(_sb):
-            _srows = (_sb.groupby("market")["_pnl"]
-                      .agg(Bets="size", **{"P/L": "sum"}).reset_index()
-                      .rename(columns={"market": "Side market"}).sort_values("Bets",
-                                                                             ascending=False))
-            _srows["Per bet"] = (_srows["P/L"] / _srows["Bets"]).round(3)
-            with st.expander(f"Side markets — {len(_sb)} settled, "
-                             f"{float(_sb['_pnl'].sum()):+.2f}u (NOT in the figures above)"):
-                ui.table(_srows)
-                _thin = _srows[_srows["Bets"] < 20]
-                if not _thin.empty:
-                    st.caption(
-                        "Thin: " + ", ".join(f"{r['Side market']} n={int(r['Bets'])}"
-                                             for _, r in _thin.iterrows())
-                        + ". At these counts a single result moves P/L by a full unit, so read "
-                          "the bet count before the return.")
-    except Exception as _e:                                  # noqa: BLE001
-        st.caption(f"Side-market summary unavailable ({type(_e).__name__})")
+    with st.expander("By tier and market"):
+        ui.table(_by.sort_values("Bets", ascending=False))
+        if _missing:
+            st.caption("Not present, so contributing nothing: " + ", ".join(_missing) + ".")
 
     # ── Closing line value ────────────────────────────────────────────────────
     # CLV was displayed NOWHERE in the dashboard, while three separate places carried comments
