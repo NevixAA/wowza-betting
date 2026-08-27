@@ -485,11 +485,19 @@ def generate_fantasy_tips(write: bool = True) -> pd.DataFrame:
 
             from player_model.fantasy_log import append as _log_proj
 
-            _log_proj(out)
+            # `proj`, not `out`. This said `_log_proj(out)` -- a name that does not exist in
+            # this function -- so every run raised NameError, the except below swallowed it,
+            # and output/fantasy_projection_log.csv was NEVER written. Three days of daily
+            # runs, each reporting success, with the file absent from the repo entirely.
+            #
+            # The dashboard's 'Projected vs actual' section reads that log, so the one
+            # question the feature exists to answer -- is this projection better than FPL's
+            # free number -- was unanswerable, and it looked like missing data, not a typo.
+            _log_proj(proj)
 
         except Exception as _e:
 
-            log.warning(f"[fantasy_log] skipped ({_e})")
+            log.warning(f"[fantasy_log] skipped ({type(_e).__name__}: {_e})")
     return proj
 
 
