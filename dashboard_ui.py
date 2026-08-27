@@ -116,17 +116,41 @@ _PLAIN2 = ("Pts/£", "Def", "CS", "Bon", "xPts·rot", "Avg FDR", "FDR", "MAE", "
 _INT = ("#", "GW", "gw", "Pens (career)", "Set-piece goals", "n_dgw", "n_bgw", "players")
 
 
-def auto_config(df, *, bars: tuple[str, ...] = ()) -> dict:
+def spark_col(label: str, *, help: str = "", y_min=None, y_max=None):
+    """A per-row trend, drawn as a line inside the cell.
+
+    Takes a column whose every value is a LIST of numbers. Nothing in the dashboard used this,
+    which is why every table read as a flat snapshot: a league's CLV or a player's form is a
+    direction, and a single averaged number cannot show a direction.
+
+    `y_min`/`y_max` are worth setting whenever the rows are meant to be compared against each
+    other. Left unset, Streamlit scales each cell independently, so a league drifting between
+    -1% and +1% draws the same dramatic zigzag as one swinging -40% to +40% — which makes the
+    column actively misleading rather than merely uninformative.
+    """
+    return st.column_config.LineChartColumn(label, help=help or None,
+                                            y_min=y_min, y_max=y_max)
+
+
+def auto_config(df, *, bars: tuple[str, ...] = (),
+                sparks: dict[str, dict] | tuple[str, ...] = ()) -> dict:
     """A column_config for whatever recognised columns `df` has.
 
     `bars` names columns to render as ProgressColumn; their max is taken from the data actually
     being shown, so the bar is a comparison within this table rather than against an arbitrary
     constant.
+
+    `sparks` names columns holding a list per row, to draw as a line. Either a tuple of names or
+    a {name: {y_min, y_max, help}} mapping when the scale must be shared across rows.
     """
     import pandas as pd
+    _spark_opts = ({k: {} for k in sparks} if isinstance(sparks, (tuple, list))
+                   else dict(sparks))
     cfg: dict = {}
     for c in df.columns:
-        if c in bars:
+        if c in _spark_opts:
+            cfg[c] = spark_col(c, **_spark_opts[c])
+        elif c in bars:
             try:
                 mx = float(pd.to_numeric(df[c], errors="coerce").max())
             except Exception:
@@ -147,8 +171,9 @@ def auto_config(df, *, bars: tuple[str, ...] = ()) -> dict:
     return cfg
 
 
-def table(df, *, bars: tuple[str, ...] = (), height: int | None = None,
-          container=None, **kw) -> None:
+def table(df, *, bars: tuple[str, ...] = (),
+          sparks: dict[str, dict] | tuple[str, ...] = (),
+          height: int | None = None, container=None, **kw) -> None:
     """`st.dataframe` with shared formatting applied. Drop-in for the raw calls.
 
     `height` is OMITTED when None rather than passed through. Streamlit rejects
@@ -162,7 +187,7 @@ def table(df, *, bars: tuple[str, ...] = (), height: int | None = None,
     if height is not None:
         kw["height"] = height
     target.dataframe(df, hide_index=True, width="stretch",
-                     column_config=auto_config(df, bars=bars), **kw)
+                     column_config=auto_config(df, bars=bars, sparks=sparks), **kw)
 
 
 def metric_row(items: list[dict], *, per_row: int = 4) -> None:
