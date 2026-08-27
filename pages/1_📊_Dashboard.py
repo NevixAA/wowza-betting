@@ -10,6 +10,7 @@ from streamlit_autorefresh import st_autorefresh
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+import dashboard_ui as ui
 
 st.set_page_config(page_title="Dashboard | Wowza", page_icon="📊", layout="wide")
 st_autorefresh(interval=5 * 60 * 1000, key="dash_refresh")
@@ -145,6 +146,62 @@ tips = df[
 ].copy()
 
 st.divider()
+
+# ── Settled performance ───────────────────────────────────────────────────────
+# The dashboard had NO performance display at all: five tables, no chart, no metric. The one
+# number a betting dashboard exists to show — are we up or down — was nowhere on the front page.
+#
+# THREE FILTERS, EACH OF WHICH CHANGES THE ANSWER, so all three are stated on screen:
+#
+#   1. STAKED TIERS ONLY. VALUABLE is not a bet. Including it here would report -28.30u instead
+#      of -4.42u, because 123 unstaked VALUABLE rows carry -23.88u of notional loss. That single
+#      filter is the difference between a small loss and a disaster.
+#   2. FROM PERFORMANCE_CUTOFF_DATE. Earlier rows predate fixes and are excluded from P&L by
+#      design (they still contribute to CLV).
+#   3. SETTLED ONLY. An unsettled bet has no pnl and must not read as a zero.
+#
+# And n is displayed next to the total, because 88 bets over 13 days is not a track record and a
+# curve drawn without its sample size invites exactly that reading.
+_STAKED_TIERS = ("SNIPER", "MARKSMAN")
+try:
+    _led = pd.read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+    _led["_dt"] = pd.to_datetime(_led.get("match_date"), errors="coerce")
+    _led["_pnl"] = pd.to_numeric(_led.get("pnl"), errors="coerce")
+    _cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
+    _s = _led[_led.get("signal_tier").isin(_STAKED_TIERS)
+              & _led["_pnl"].notna() & (_led["_dt"] >= _cut)].sort_values("_dt")
+except Exception as _e:                                     # noqa: BLE001
+    _s = pd.DataFrame()
+    st.caption(f"Settled performance unavailable ({type(_e).__name__}: {_e})")
+
+if len(_s):
+    st.markdown("## 📈 Settled performance")
+    _tot = float(_s["_pnl"].sum())
+    _hit = float((_s["_pnl"] > 0).mean())
+    ui.metric_row([
+        {"label": "P/L (units)", "value": f"{_tot:+.2f}u",
+         "delta": f"{_tot / len(_s):+.3f}u per bet",
+         "help": "Flat 1u stakes. SNIPER + MARKSMAN only — VALUABLE is not staked."},
+        {"label": "Settled bets", "value": f"{len(_s):,}",
+         "help": f"Since {_cut.date()} (PERFORMANCE_CUTOFF_DATE). Small samples move a lot."},
+        {"label": "Hit rate", "value": f"{_hit:.1%}",
+         "help": "Share of settled bets with positive P/L. Not comparable to a 50% coin flip — "
+                 "these are priced markets."},
+        {"label": "Days covered", "value": f"{_s['_dt'].dt.date.nunique()}"},
+    ])
+
+    _curve = (_s.set_index("_dt")["_pnl"].cumsum().rename("Cumulative units")
+              .reset_index().rename(columns={"_dt": "Date"}))
+    st.line_chart(_curve, x="Date", y="Cumulative units", height=260)
+    st.caption(f"Cumulative units, flat 1u stakes, **staked tiers only** "
+               f"(SNIPER + MARKSMAN), settled bets from {_cut.date()}. "
+               f"n = {len(_s)} — a curve this short is a sample, not a track record.")
+
+    _by = (_s.groupby("signal_tier")["_pnl"].agg(Bets="size", **{"P/L": "sum"})
+           .reset_index().rename(columns={"signal_tier": "Tier"}))
+    _by["Per bet"] = (_by["P/L"] / _by["Bets"]).round(3)
+    ui.table(_by)
+    st.divider()
 
 # ── SNIPER section ─────────────────────────────────────────────────────────────
 snipers   = tips[tips["signal_tier"] == "SNIPER"].sort_values("best_edge", ascending=False)
