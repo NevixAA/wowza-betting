@@ -3181,18 +3181,18 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-22,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Gbemi Arubi,Dundalk,F,sot,AVOID,0.166,,,,5,,,,,,359459,
 2026-08-22,2026-08-28,Ireland Premier Division,Galway United,Shelbourne Dublin,Moses Dyer,Galway United,F,sot,AVOID,0.178,,,,5,,,,,,94382,
 2026-08-22,2026-08-28,Ireland Premier Division,Galway United,Shelbourne Dublin,Moses Dyer,Galway United,F,cards,AVOID,0.154,,,,5,,,,,,94382,
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,sot,AVOID,0.301,,,,5,,,,,,52727,1623420.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Mohamed Toure,KuPS,M,sot,AVOID,0.292,,,,5,,,,,,489935,1623420.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,sot2,AVOID,0.206,,,,5,,,,,,52727,1623420.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,cards,AVOID,0.192,,,,5,,,,,,52727,1623420.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,goals,AVOID,0.191,,,,5,,,,,,52727,1623420.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,B. Armah,KuPS,M,sot,AVOID,0.19,,,,5,,,,,,434046,1623420.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,G. Engvall,KuPS,M,sot,AVOID,0.169,,,,5,,,,,,8944,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,sot,AVOID,0.301,,,,5,True,VOID,0.0,DNP,2026-08-28,52727,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Mohamed Toure,KuPS,M,sot,AVOID,0.292,,,,5,True,VOID,0.0,DNP,2026-08-28,489935,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,sot2,AVOID,0.206,,,,5,True,VOID,0.0,DNP,2026-08-28,52727,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,cards,AVOID,0.192,,,,5,True,VOID,0.0,DNP,2026-08-28,52727,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,goals,AVOID,0.191,,,,5,True,VOID,0.0,DNP,2026-08-28,52727,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,B. Armah,KuPS,M,sot,AVOID,0.19,,,,5,True,VOID,0.0,DNP,2026-08-28,434046,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,G. Engvall,KuPS,M,sot,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-08-28,8944,1623420.0
 2026-08-23,2026-08-23,Serie A,Atalanta,Sassuolo,Mateo Retegui,Atalanta,F,goals,AVOID,0.273,,,,5,True,VOID,0.0,DNP,2026-08-24,6420,1550088.0
 2026-08-23,2026-08-29,Bundesliga 2,1. FC Nürnberg,Arminia Bielefeld,Mohamed Ali Zoma,1. FC Nürnberg,M,assists,AVOID,0.234,,,,5,,,,,,338355,
 2026-08-23,2026-08-23,Championship,West Brom,Burnley,Zian Flemming,Burnley,F,goals,AVOID,0.212,,,,5,True,VOID,0.0,DNP,2026-08-24,36927,1563104.0
 2026-08-23,2026-08-23,La Liga,Getafe,Racing Santander,Martín Satriano,Getafe,F,goals,AVOID,0.206,4.1,-0.1554,-0.0709,5,True,LOSS,-1.0,,2026-08-24,195512,1570348.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Tunmise Sobowale,Shamrock Rovers,D,cards,AVOID,0.193,,,,5,,,,,,267859,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Tunmise Sobowale,Shamrock Rovers,D,cards,AVOID,0.193,,,,5,True,VOID,0.0,DNP,2026-08-28,267859,1623420.0
 2026-08-23,2026-08-28,Ireland Premier Division,St Patricks Athletic,Waterford FC,Andy Boyle,Waterford,D,cards,AVOID,0.192,,,,5,,,,,,45053,
 2026-08-23,2026-08-23,Finland Veikkausliiga,HJK Helsinki,IF Gnistan,Santeri Hostikka,HJK helsinki,M,assists,AVOID,0.192,,,,5,True,VOID,0.0,DNP,2026-08-27,40577,
 2026-08-23,2026-08-23,Ligue 1,Le Havre,Monaco,Folarin Balogun,Monaco,F,sot2,AVOID,0.19,2.25,-0.5725,-0.5468,5,True,VOID,0.0,DNP,2026-08-24,138835,1552730.0
@@ -3203,7 +3203,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-23,2026-08-29,Bundesliga 2,Karlsruher SC,VfL Wolfsburg,Dženan Pejčinović,VfL Wolfsburg,F,goals,AVOID,0.179,,,,5,,,,,,342188,
 2026-08-23,2026-08-23,Serie A,Torino,AC Milan,Emerson Royal,AC Milan,D,cards,AVOID,0.175,,,,5,True,VOID,0.0,DNP,2026-08-24,1566,1550094.0
 2026-08-23,2026-08-23,Championship,West Brom,Burnley,Florentino Luís,Burnley,M,cards,AVOID,0.175,,,,5,True,VOID,0.0,DNP,2026-08-24,575,1563104.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Matthew Healy,Shamrock Rovers,M,cards,AVOID,0.174,,,,5,,,,,,290999,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Matthew Healy,Shamrock Rovers,M,cards,AVOID,0.174,,,,5,True,VOID,0.0,DNP,2026-08-28,290999,1623420.0
 2026-08-23,2026-08-28,Ireland Premier Division,St Patricks Athletic,Waterford FC,Jesse Dempsey,Waterford,D,cards,AVOID,0.173,,,,5,,,,,,407941,
 2026-08-23,2026-08-28,Ireland Premier Division,St Patricks Athletic,Waterford FC,Jordan Houston,Waterford,M,cards,AVOID,0.173,,,,5,,,,,,107093,
 2026-08-23,2026-08-23,Serie A,Atalanta,Sassuolo,Armand Laurienté,Sassuolo,F,goals,PAPER,0.173,6.0,0.038,0.1937,5,True,LOSS,-1.0,,2026-08-24,2215,1550088.0
@@ -3232,9 +3232,9 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-23,2026-08-29,Championship,Charlton Athletic,Preston North End,Nathaniel Chalobah,Charlton,M,sot,AVOID,0.155,,,,5,,,,,,18803,
 2026-08-23,2026-08-23,Championship,West Brom,Burnley,Ousmane Diakité,West Brom,M,sot,AVOID,0.154,,,,5,True,WIN,,,2026-08-24,7338,1563104.0
 2026-08-23,2026-08-23,Serie A,Atalanta,Sassuolo,Mateo Retegui,Atalanta,F,sot2,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-08-24,6420,1550088.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Lee Grace,Shamrock Rovers,D,cards,AVOID,0.153,,,,5,,,,,,69258,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Lee Grace,Shamrock Rovers,D,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-08-28,69258,1623420.0
 2026-08-23,2026-08-23,Premier League,Brighton,Aston Villa,Lewis Dunk,Brighton,D,sot,AVOID,0.152,5.25,-0.202,-0.0823,5,True,LOSS,-1.0,,2026-08-24,18963,1557373.0
-2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Ibrahim Cissé,KuPS,D,cards,AVOID,0.151,,,,5,,,,,,129635,1623420.0
+2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Ibrahim Cissé,KuPS,D,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-08-28,129635,1623420.0
 2026-08-23,2026-08-23,Championship,West Brom,Burnley,Hjalmar Ekdal,Burnley,D,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-08-24,47903,1563104.0
 2026-08-23,2026-08-29,Bundesliga 2,Karlsruher SC,VfL Wolfsburg,David Herold,Karlsruher SC,M,sot,AVOID,0.151,,,,5,,,,,,162536,
 2026-08-23,2026-08-23,Premier League,Newcastle,Liverpool,Victor Muñoz,Liverpool,M,sot,AVOID,0.44,1.55,-0.318,-0.2771,5,True,LOSS,-1.0,,2026-08-24,338751,1557375.0
@@ -3450,19 +3450,19 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-23,2026-08-30,La Liga 2,Cádiz CF,Real Valladolid CF,Rominigue Kouamé,Cadiz,M,sot,AVOID,0.156,,,,5,,,,,,20608,
 2026-08-23,2026-08-29,Serie B,Sampdoria,Juve Stabia,Manolo Gabbiadini,Sampdoria,M,sot,AVOID,0.486,,,,5,,,,,,30462,
 2026-08-23,2026-08-29,Serie B,Sampdoria,Juve Stabia,Fabio Quagliarella,Sampdoria,F,sot,AVOID,0.391,,,,5,,,,,,30463,
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Gabri Veiga,Celta Vigo,M,sot,AVOID,0.346,,,,5,,,,,,182504,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Jonathan Bamba,Celta Vigo,M,sot,AVOID,0.285,,,,5,,,,,,22235,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Gabri Veiga,Celta Vigo,M,sot,AVOID,0.346,,,,5,True,VOID,0.0,DNP,2026-08-28,182504,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Jonathan Bamba,Celta Vigo,M,sot,AVOID,0.285,,,,5,True,LOSS,-1.0,,2026-08-28,22235,1570336.0
 2026-08-23,2026-08-29,Serie B,Sampdoria,Juve Stabia,Filip Đuričić,Sampdoria,M,sot,AVOID,0.24,,,,5,,,,,,30536,
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Rubén García,Osasuna,M,sot,AVOID,0.218,1.71,-0.6272,-0.6049,5,,,,,,46658,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Lucas Torró,Osasuna,M,sot,AVOID,0.186,2.7,-0.4978,-0.4677,5,,,,,,1825,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Ilaix Moriba,Celta Vigo,M,sot,AVOID,0.173,,,,5,,,,,,162123,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Sergio Carreira,Celta Vigo,M,sot,AVOID,0.167,,,,5,,,,,,157988,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Javier Rueda,Celta Vigo,M,sot,AVOID,0.163,,,,5,,,,,,179955,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Hugo Mallo,Celta Vigo,D,sot,AVOID,0.162,,,,5,,,,,,47432,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Yoel Lago,Celta Vigo,D,cards,AVOID,0.159,,,,5,,,,,,329722,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Ilaix Moriba,Celta Vigo,M,cards,AVOID,0.158,,,,5,,,,,,162123,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Hugo Sotelo,Celta Vigo,M,cards,AVOID,0.154,1.01,-0.8445,-0.8351,5,,,,,,313651,1570336.0
-2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Lucas Torró,Osasuna,M,cards,AVOID,0.152,1.01,-0.8465,-0.8373,5,,,,,,1825,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Rubén García,Osasuna,M,sot,AVOID,0.218,1.71,-0.6272,-0.6049,5,True,LOSS,-1.0,,2026-08-28,46658,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Lucas Torró,Osasuna,M,sot,AVOID,0.186,2.7,-0.4978,-0.4677,5,True,LOSS,-1.0,,2026-08-28,1825,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Ilaix Moriba,Celta Vigo,M,sot,AVOID,0.173,,,,5,True,LOSS,-1.0,,2026-08-28,162123,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Sergio Carreira,Celta Vigo,M,sot,AVOID,0.167,,,,5,True,LOSS,-1.0,,2026-08-28,157988,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Javier Rueda,Celta Vigo,M,sot,AVOID,0.163,,,,5,True,LOSS,-1.0,,2026-08-28,179955,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Hugo Mallo,Celta Vigo,D,sot,AVOID,0.162,,,,5,True,LOSS,-1.0,,2026-08-28,47432,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Yoel Lago,Celta Vigo,D,cards,AVOID,0.159,,,,5,True,LOSS,-1.0,,2026-08-28,329722,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Ilaix Moriba,Celta Vigo,M,cards,AVOID,0.158,,,,5,True,LOSS,-1.0,,2026-08-28,162123,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Hugo Sotelo,Celta Vigo,M,cards,AVOID,0.154,1.01,-0.8445,-0.8351,5,True,LOSS,-1.0,,2026-08-28,313651,1570336.0
+2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Lucas Torró,Osasuna,M,cards,AVOID,0.152,1.01,-0.8465,-0.8373,5,True,LOSS,-1.0,,2026-08-28,1825,1570336.0
 2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,sot,AVOID,0.79,,,,5,,,,,,154,1552746.0
 2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,sot,AVOID,0.778,,,,5,,,,,,1100,1557381.0
 2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Harry Kane,Bayern München,F,sot,AVOID,0.766,,,,5,,,,,,184,1575140.0
@@ -3648,29 +3648,29 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-24,2026-08-30,La Liga 2,Córdoba,Granada CF,Raúl Torrente,Granada CF,D,cards,AVOID,0.155,,,,5,,,,,,290215,
 2026-08-24,2026-08-31,Finland Veikkausliiga,FC Inter Turku,KuPS Kuopio,Christian Ouguehi Legbo,Inter Turku,M,sot,AVOID,0.153,,,,5,,,,,,293747,
 2026-08-24,2026-08-31,Finland Veikkausliiga,FC Inter Turku,KuPS Kuopio,Florian Krebs,Inter Turku,M,sot,AVOID,0.153,,,,5,,,,,,162735,
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Lamine Yamal,Barcelona,M,sot,AVOID,0.718,1.19,-0.1456,-0.0943,5,,,,,,386828,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Lewandowski,Barcelona,F,sot,AVOID,0.647,,,,5,,,,,,521,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Lamine Yamal,Barcelona,M,sot,AVOID,0.718,1.19,-0.1456,-0.0943,5,True,WIN,0.19,,2026-08-28,386828,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Lewandowski,Barcelona,F,sot,AVOID,0.647,,,,5,True,LOSS,-1.0,,2026-08-28,521,1570335.0
 2026-08-24,2026-08-24,Serie A,AS Roma,Fiorentina,Paulo Dybala,AS Roma,F,sot,AVOID,0.554,1.36,-0.2466,-0.2014,5,True,WIN,0.36,,2026-08-25,875,1550087.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Fermín López,Barcelona,F,sot,AVOID,0.53,,,,5,,,,,,340626,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Raphinha,Barcelona,F,sot,AVOID,0.495,,,,5,,,,,,1496,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Gorka Guruzeta,Athletic Club,F,sot,AVOID,0.483,1.66,-0.1982,-0.1501,5,,,,,,47291,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Dani Olmo,Barcelona,M,sot,AVOID,0.408,1.52,-0.3798,-0.3426,5,,,,,,1323,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Iñaki Williams,Athletic Club,M,sot,AVOID,0.379,2.0,-0.242,-0.1965,5,,,,,,47294,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Lewandowski,Barcelona,F,goals,AVOID,0.309,,,,5,,,,,,521,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Fermín López,Barcelona,F,sot,AVOID,0.53,,,,5,True,WIN,nan,,2026-08-28,340626,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Raphinha,Barcelona,F,sot,AVOID,0.495,,,,5,True,WIN,nan,,2026-08-28,1496,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Gorka Guruzeta,Athletic Club,F,sot,AVOID,0.483,1.66,-0.1982,-0.1501,5,True,LOSS,-1.0,,2026-08-28,47291,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Dani Olmo,Barcelona,M,sot,AVOID,0.408,1.52,-0.3798,-0.3426,5,True,WIN,0.52,,2026-08-28,1323,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Iñaki Williams,Athletic Club,M,sot,AVOID,0.379,2.0,-0.242,-0.1965,5,True,LOSS,-1.0,,2026-08-28,47294,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Lewandowski,Barcelona,F,goals,AVOID,0.309,,,,5,True,LOSS,-1.0,,2026-08-28,521,1570335.0
 2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Lamine Yamal,Barcelona,M,sot2,AVOID,0.271,1.86,-0.4959,-0.4657,5,,,,,,386828,1570335.0
 2026-08-24,2026-08-24,Serie A,AS Roma,Fiorentina,Paulo Dybala,AS Roma,F,goals,AVOID,0.246,3.45,-0.1513,-0.0664,5,True,LOSS,-1.0,,2026-08-25,875,1550087.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Navarro,Athletic Club,M,sot,AVOID,0.239,2.3,-0.4503,-0.4173,5,,,,,,84086,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Lamine Yamal,Barcelona,M,goals,AVOID,0.206,2.1,-0.5674,-0.5414,5,,,,,,386828,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Raphinha,Barcelona,F,goals,AVOID,0.193,,,,5,,,,,,1496,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Navarro,Athletic Club,M,sot,AVOID,0.239,2.3,-0.4503,-0.4173,5,True,LOSS,-1.0,,2026-08-28,84086,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Lamine Yamal,Barcelona,M,goals,AVOID,0.206,2.1,-0.5674,-0.5414,5,True,LOSS,-1.0,,2026-08-28,386828,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Raphinha,Barcelona,F,goals,AVOID,0.193,,,,5,True,WIN,nan,,2026-08-28,1496,1570335.0
 2026-08-24,2026-08-24,Serie A,AS Roma,Fiorentina,Paulo Dybala,AS Roma,F,assists,AVOID,0.192,3.2,-0.3856,-0.3242,5,True,WIN,2.2,,2026-08-25,875,1550087.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Franck Kessié,Barcelona,M,sot,AVOID,0.19,,,,5,,,,,,1642,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Franck Kessié,Barcelona,M,sot,AVOID,0.19,,,,5,True,VOID,0.0,DNP,2026-08-28,1642,1570335.0
 2026-08-24,2026-08-24,Serie A,AS Roma,Fiorentina,Paulo Dybala,AS Roma,F,sot2,AVOID,0.179,2.62,-0.531,-0.5029,5,,,,,,875,1550087.0
 2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Robert Lewandowski,Barcelona,F,sot2,AVOID,0.178,,,,5,,,,,,521,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Mikel Jauregizar,Athletic Club,M,sot,AVOID,0.166,,,,5,,,,,,383780,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Mikel Jauregizar,Athletic Club,M,sot,AVOID,0.166,,,,5,True,LOSS,-1.0,,2026-08-28,383780,1570335.0
 2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Raphinha,Barcelona,F,sot2,AVOID,0.166,,,,5,,,,,,1496,1570335.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Pablo Gavi,Barcelona,M,sot,AVOID,0.162,,,,5,,,,,,296667,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Pablo Gavi,Barcelona,M,sot,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-08-28,296667,1570335.0
 2026-08-24,2026-08-24,Serie A,AS Roma,Fiorentina,Marco Brescianini,Fiorentina,M,sot,AVOID,0.153,,,,5,True,WIN,,,2026-08-25,1639,1550087.0
-2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Franck Kessié,Barcelona,M,cards,AVOID,0.151,,,,5,,,,,,1642,1570335.0
+2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Franck Kessié,Barcelona,M,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-08-28,1642,1570335.0
 2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,André Silva,Elche,F,sot,AVOID,0.428,,,,5,,,,,,2063,1570359.0
 2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Rafa Mir,Elche,F,sot,AVOID,0.404,,,,5,,,,,,47013,1570359.0
 2026-08-24,2026-08-31,Finland Veikkausliiga,AC Oulu,SJK Seinäjoki,R. Karjalainen,AC Oulu,F,sot,AVOID,0.256,,,,5,,,,,,55383,
@@ -4069,21 +4069,21 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Pau Navarro,Villarreal,D,cards,AVOID,0.167,,,,5,,,,,,435552,1570353.0
 2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Santiago Mouriño,Villarreal,D,cards,AVOID,0.155,,,,5,,,,,,311773,1570353.0
 2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Moussa Diarra,Alaves,D,cards,AVOID,0.154,,,,5,,,,,,70476,1570353.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,sot,AVOID,0.735,,,,5,,,,,,138835,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,sot,AVOID,0.725,,,,5,,,,,,2059,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,goals,AVOID,0.511,,,,5,,,,,,138835,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,goals,AVOID,0.48,,,,5,,,,,,2059,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,sot2,AVOID,0.404,,,,5,,,,,,2059,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,sot2,AVOID,0.384,,,,5,,,,,,138835,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Takumi Minamino,Monaco,M,sot,AVOID,0.348,,,,5,,,,,,1101,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Maghnes Akliouche,Monaco,M,sot,AVOID,0.292,,,,5,,,,,,274300,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,sot,AVOID,0.735,,,,5,True,VOID,0.0,DNP,2026-08-28,138835,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,sot,AVOID,0.725,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,2059,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,goals,AVOID,0.511,,,,5,True,VOID,0.0,DNP,2026-08-28,138835,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,goals,AVOID,0.48,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,2059,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,sot2,AVOID,0.404,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,2059,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,sot2,AVOID,0.384,,,,5,True,VOID,0.0,DNP,2026-08-28,138835,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Takumi Minamino,Monaco,M,sot,AVOID,0.348,,,,5,True,VOID,0.0,DNP,2026-08-28,1101,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Maghnes Akliouche,Monaco,M,sot,AVOID,0.292,,,,5,True,VOID,0.0,DNP,2026-08-28,274300,1623423.0
 2026-08-26,2026-08-26,Champions League,Lyon,Fenerbahçe,Malick Fofana,Lyon,F,sot,AVOID,0.242,,,,5,True,WIN,,,2026-08-27,361348,1622630.0
 2026-08-26,2026-08-26,Champions League,Lyon,Fenerbahçe,Ernest Nuamah,Lyon,F,sot,AVOID,0.236,1.39,-0.672,-0.6523,5,True,LOSS,-1.0,,2026-08-27,350856,1622630.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Maghnes Akliouche,Monaco,M,assists,AVOID,0.211,,,,5,,,,,,274300,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Maghnes Akliouche,Monaco,M,assists,AVOID,0.211,,,,5,True,VOID,0.0,DNP,2026-08-28,274300,1623423.0
 2026-08-26,2026-08-26,Champions League,Lyon,Fenerbahçe,Tanner Tessmann,Lyon,M,sot,AVOID,0.21,2.3,-0.517,-0.488,5,True,LOSS,-1.0,,2026-08-27,80752,1622630.0
 2026-08-26,2026-08-26,La Liga,Real Madrid,Real Sociedad,Luka Sučić,Real Sociedad,M,sot,AVOID,0.194,2.62,-0.4917,-0.4612,5,True,WIN,1.62,,2026-08-27,7332,1570340.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Jordan Teze,Monaco,M,sot,AVOID,0.191,,,,5,,,,,,231,1623423.0
-2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Denis Zakaria,Monaco,D,sot,AVOID,0.153,,,,5,,,,,,2810,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Jordan Teze,Monaco,M,sot,AVOID,0.191,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,231,1623423.0
+2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Denis Zakaria,Monaco,D,sot,AVOID,0.153,,,,5,True,LOSS,-1.0,,2026-08-28,2810,1623423.0
 2026-08-26,2026-08-29,La Liga,Levante,Real Betis,Carlos Espí,Levante,F,sot,AVOID,0.657,,,,5,,,,,,450497,1570357.0
 2026-08-26,2026-08-29,La Liga,Levante,Real Betis,Cucho Hernández,Real Betis,F,sot,AVOID,0.432,,,,5,,,,,,47582,1570357.0
 2026-08-26,2026-08-29,La Liga,Levante,Real Betis,Antony,Real Betis,M,sot,AVOID,0.413,,,,5,,,,,,9971,1570357.0
@@ -4097,7 +4097,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-26,2026-08-29,La Liga,Levante,Real Betis,Ricardo Rodríguez,Real Betis,D,cards,AVOID,0.169,,,,5,,,,,,1631,1570357.0
 2026-08-26,2026-08-29,La Liga,Levante,Real Betis,Jon Ander Olasagasti,Levante,M,sot,AVOID,0.155,2.85,-0.5582,-0.5317,5,,,,,,182603,1570357.0
 2026-08-26,2026-08-29,La Liga,Levante,Real Betis,Martín Montoya,Real Betis,D,cards,AVOID,0.153,,,,5,,,,,,18965,1570357.0
-2026-08-27,2026-08-27,Conference League,KuPS,Shamrock Rovers,John O'Sullivan,Shamrock Rovers,M,cards,AVOID,0.157,,,,5,,,,,,371615,1623420.0
+2026-08-27,2026-08-27,Conference League,KuPS,Shamrock Rovers,John O'Sullivan,Shamrock Rovers,M,cards,AVOID,0.157,,,,5,True,VOID,0.0,DNP,2026-08-28,371615,1623420.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,Korede Adedoyin,Mariehamn,F,sot,AVOID,0.801,,,,5,,,,,,135528,1495773.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,Korede Adedoyin,Mariehamn,F,goals,AVOID,0.621,,,,5,,,,,,135528,1495773.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,Korede Adedoyin,Mariehamn,F,sot2,AVOID,0.592,,,,5,,,,,,135528,1495773.0
@@ -4105,11 +4105,11 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,Santeri Hostikka,HJK helsinki,M,sot,AVOID,0.535,,,,5,,,,,,40577,1495771.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,T. Pukki,HJK Helsinki,F,sot,AVOID,0.465,,,,5,,,,,,19085,1495771.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Viktor Tsygankov,Girona,F,sot,AVOID,0.465,1.4,-0.349,-0.3099,5,,,,,,2182,1569899.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Daniel-Kofi Kyereh,SC Freiburg,F,sot,AVOID,0.422,,,,5,,,,,,25530,1623415.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Daniel-Kofi Kyereh,SC Freiburg,F,sot,AVOID,0.422,,,,5,True,VOID,0.0,DNP,2026-08-28,25530,1623415.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Joel Roca,Girona,M,sot,AVOID,0.402,,,,5,,,,,,339105,1569899.0
 2026-08-27,2026-08-29,League Two,Rotherham,Chesterfield,Mallik Wilks,Rotherham,F,sot,AVOID,0.369,,,,5,,,,,,19948,1563715.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,A. Larsson,Mariehamn,F,goals,AVOID,0.357,,,,5,,,,,,107249,1495773.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Lucas Höler,SC Freiburg,F,sot,AVOID,0.352,,,,5,,,,,,26255,1623415.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Lucas Höler,SC Freiburg,F,sot,AVOID,0.352,,,,5,True,LOSS,-1.0,,2026-08-28,26255,1623415.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,Teemu Hytönen,Ilves,F,sot,AVOID,0.343,,,,5,,,,,,264539,1495771.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,Michel Benjamin Stanley,HJK helsinki,F,sot,AVOID,0.332,,,,5,,,,,,50942,1495771.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,A. Ring,HJK Helsinki,M,sot,AVOID,0.322,,,,5,,,,,,50861,1495771.0
@@ -4117,7 +4117,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,Jaime Moreno,KuPS,F,sot,AVOID,0.319,,,,5,,,,,,52727,1495772.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,Mohamed Toure,KuPS,M,sot,AVOID,0.311,1.4,-0.5646,-0.5385,5,,,,,,489935,1495772.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Azzedine Ounahi,Girona,M,sot,AVOID,0.291,,,,5,,,,,,129678,1569899.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Vincenzo Grifo,SC Freiburg,M,sot,AVOID,0.287,,,,5,,,,,,26248,1623415.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Vincenzo Grifo,SC Freiburg,M,sot,AVOID,0.287,,,,5,True,WIN,nan,,2026-08-28,26248,1623415.0
 2026-08-27,2026-08-29,La Liga 2,Leganes,Eldense,Juan Cruz,Leganes,M,sot,AVOID,0.282,,,,5,,,,,,185202,1569900.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Vladyslav Vanat,Girona,F,sot,AVOID,0.275,1.2,-0.67,-0.6502,5,,,,,,161670,1569899.0
 2026-08-27,2026-08-29,League Two,Rotherham,Chesterfield,Duncan Watmore,Rotherham,F,sot,AVOID,0.273,,,,5,,,,,,19913,1563715.0
@@ -4147,7 +4147,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-29,La Liga 2,Leganes,Eldense,Renato Tapia,Leganes,M,sot,AVOID,0.194,,,,5,,,,,,2433,1569900.0
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Adam O'Reilly,Derry City,M,cards,AVOID,0.193,,,,5,,,,,,19453,1492757.0
 2026-08-27,2026-08-29,La Liga 2,Leganes,Eldense,Javier Hernández,Leganes,D,sot,AVOID,0.19,5.5,0.045,0.2017,5,,,,,,46849,1569900.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Maximilian Eggestein,SC Freiburg,M,sot,AVOID,0.185,,,,5,,,,,,2917,1623415.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Maximilian Eggestein,SC Freiburg,M,sot,AVOID,0.185,,,,5,True,WIN,nan,,2026-08-28,2917,1623415.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Kirian Rodríguez,Las Palmas,M,sot,AVOID,0.184,,,,5,,,,,,70315,1569899.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,AC Oulu,SJK,T. Kaukua,AC Oulu,M,sot,AVOID,0.184,,,,5,,,,,,55528,1495769.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,AC Oulu,SJK,Iiro Mendolin,AC Oulu,M,sot,AVOID,0.181,,,,5,,,,,,366131,1495769.0
@@ -4193,17 +4193,17 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,B. Armah,KuPS,M,sot,AVOID,0.151,,,,5,,,,,,434046,1495772.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Viktor Tsygankov,Girona,F,goals,AVOID,0.15,2.75,-0.5875,-0.5627,5,,,,,,2182,1569899.0
 2026-08-27,2026-08-29,La Liga 2,Leganes,Eldense,Renato Tapia,Leganes,M,cards,AVOID,0.15,,,,5,,,,,,2433,1569900.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Igor Matanović,SC Freiburg,F,sot,AVOID,0.378,,,,5,,,,,,202696,1623415.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Derry Scherhant,SC Freiburg,M,sot,AVOID,0.342,,,,5,,,,,,286710,1623415.0
-2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Aleksandr Golovin,Monaco,F,sot,AVOID,0.334,,,,5,,,,,,109,1623423.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Yuito Suzuki,SC Freiburg,M,sot,AVOID,0.24,,,,5,,,,,,199143,1623415.0
-2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Cyriaque Irié,SC Freiburg,F,sot,AVOID,0.239,,,,5,,,,,,431149,1623415.0
-2026-08-27,2026-08-27,Conference League,FC Copenhagen,Inter Turku,Axel Kouame,Inter Turku,M,assists,AVOID,0.224,,,,5,,,,,,432823,1623414.0
-2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Mamadou Coulibaly,Monaco,M,sot,AVOID,0.208,,,,5,,,,,,419035,1623423.0
-2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Lamine Camara,Monaco,M,sot,AVOID,0.202,,,,5,,,,,,374058,1623423.0
-2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Paris Brunner,Monaco,F,sot,AVOID,0.198,,,,5,,,,,,386276,1623423.0
-2026-08-27,2026-08-27,Conference League,FC Copenhagen,Inter Turku,Axel Kouame,Inter Turku,M,sot,AVOID,0.18,,,,5,,,,,,432823,1623414.0
-2026-08-27,2026-08-27,Conference League,FC Copenhagen,Inter Turku,Florian Krebs,Inter Turku,M,cards,AVOID,0.154,,,,5,,,,,,162735,1623414.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Igor Matanović,SC Freiburg,F,sot,AVOID,0.378,,,,5,True,WIN,nan,,2026-08-28,202696,1623415.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Derry Scherhant,SC Freiburg,M,sot,AVOID,0.342,,,,5,True,WIN,nan,,2026-08-28,286710,1623415.0
+2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Aleksandr Golovin,Monaco,F,sot,AVOID,0.334,,,,5,True,WIN,nan,,2026-08-28,109,1623423.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Yuito Suzuki,SC Freiburg,M,sot,AVOID,0.24,,,,5,True,WIN,nan,,2026-08-28,199143,1623415.0
+2026-08-27,2026-08-27,Conference League,SC Freiburg,Motherwell,Cyriaque Irié,SC Freiburg,F,sot,AVOID,0.239,,,,5,True,WIN,nan,,2026-08-28,431149,1623415.0
+2026-08-27,2026-08-27,Conference League,FC Copenhagen,Inter Turku,Axel Kouame,Inter Turku,M,assists,AVOID,0.224,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,432823,1623414.0
+2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Mamadou Coulibaly,Monaco,M,sot,AVOID,0.208,,,,5,True,WIN,nan,,2026-08-28,419035,1623423.0
+2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Lamine Camara,Monaco,M,sot,AVOID,0.202,,,,5,True,LOSS,-1.0,,2026-08-28,374058,1623423.0
+2026-08-27,2026-08-27,Conference League,Monaco,Gornik Zabrze,Paris Brunner,Monaco,F,sot,AVOID,0.198,,,,5,True,WIN,nan,,2026-08-28,386276,1623423.0
+2026-08-27,2026-08-27,Conference League,FC Copenhagen,Inter Turku,Axel Kouame,Inter Turku,M,sot,AVOID,0.18,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,432823,1623414.0
+2026-08-27,2026-08-27,Conference League,FC Copenhagen,Inter Turku,Florian Krebs,Inter Turku,M,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-08-28,162735,1623414.0
 2026-08-27,2026-08-29,La Liga,Sevilla,Atletico Madrid,Youssef En-Nesyri,Sevilla,F,sot,AVOID,0.605,,,,5,,,,,,47422,1570362.0
 2026-08-27,2026-08-29,La Liga,Real Sociedad,Espanyol,Mikel Oyarzabal,Real Sociedad,F,sot,AVOID,0.58,1.3,-0.246,-0.2008,5,,,,,,47323,1570361.0
 2026-08-27,2026-08-29,La Liga,Sevilla,Atletico Madrid,Lucas Ocampos,Sevilla,F,sot,AVOID,0.479,,,,5,,,,,,1911,1570362.0
