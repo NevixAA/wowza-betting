@@ -98,10 +98,18 @@ else:
          "help": "Staked at OUR fair price. No bookmaker builder price exists, so this measures "
                  "whether the probabilities were right — not what anyone could have won."},
     ])
-    exp = pd.to_numeric(settled.get("joint_probability"), errors="coerce").mean()
-    if decided and exp == exp:
+    # THE EXPECTATION MUST COME FROM THE DECIDED ROWS ONLY. Averaging joint_probability over the
+    # whole file compares two different populations: the undecided rows are mostly 3- and 4-leg
+    # combos, which are far less likely by construction, while the hit rate can only be measured
+    # on the settled ones. Taken over everything it read "expected 26.4%, 50.3% did" — a model
+    # apparently twice as good as it is, produced entirely by mixing the groups.
+    exp = pd.to_numeric(settled.loc[r.isin(["WON", "LOST"]), "joint_probability"],
+                        errors="coerce").mean() if "joint_probability" in settled.columns else None
+    if decided and exp is not None and exp == exp:
         st.caption(f"Model expected **{100*exp:.1f}%** of these to win; **{100*won/decided:.1f}%** "
-                   f"did. Void {int((r=='VOID').sum())}, unverifiable {int((r=='UNKNOWN').sum())}.")
+                   f"did — measured on the {decided:,} DECIDED combos only, since the "
+                   f"{int((r=='UNKNOWN').sum()):,} unverifiable ones skew longer and less likely. "
+                   f"Void {int((r=='VOID').sum())}.")
     ui.table(settled.sort_values("combo_result").head(60)[
         [c for c in ("match", "legs", "leg_probs", "joint_probability", "fair_odds",
                      "final_score", "combo_result", "leg_results") if c in settled.columns]])
