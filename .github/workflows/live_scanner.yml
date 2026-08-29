@@ -19,7 +19,19 @@ on:
     # fitted live model needs and it holds 128 rows; doubling the scan rate is the cheapest
     # way to grow it, and it also tightens the in-play signals themselves (a goal is picked
     # up within 5 minutes instead of 10).
-    - cron: '1-59/5 8-23 * * *'
+    # UTC, not local — GitHub cron has no timezone support. 8-23 UTC is 11:00-02:59 Israel.
+    #
+    # SAME GAP PREDICT HAD, and it bites harder here. 55 of 392 observed fixtures (14.0%) kick
+    # off between 00:00 and 07:59 UTC -- MLS 23, Liga MX 21, Argentina 10, Brazil 1 -- and a LIVE
+    # scanner is worthless for a match it is not awake for. There is no catching up later: an
+    # in-play state that was not sampled is simply never recorded, and output/inplay_snapshots.csv
+    # is the Phase-1 dataset a fitted live model needs.
+    #
+    # Overnight runs at 15 min rather than 5: only the Americas are playing, so the fixture count
+    # is low, and the repo already requests ~605 scheduled events/day against a scheduler that
+    # drops queued jobs under load. 192 + 32 = 224/day.
+    - cron: '1-59/5 8-23 * * *'    # 5-min:  08:00-23:59 UTC = 11:00-02:59 Israel
+    - cron: '1-59/15 0-7 * * *'    # 15-min: 00:00-07:59 UTC = 03:00-10:59 Israel (Americas)
   workflow_dispatch:
 
 jobs:
