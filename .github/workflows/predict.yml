@@ -23,7 +23,25 @@ on:
     # Sharp Money Tracker asked for 3 runs and got 0, so cadence was not the discriminator --
     # GitHub simply stopped dispatching schedules repo-wide. Nothing here prevents that; use
     # workflow_dispatch when it happens.
-    - cron: '1-59/10 8-23 * * *'   # every 10 min during match hours — offset :01 to stagger
+    # HOURS. GitHub cron is UTC ONLY — it has no timezone support, so "8-23" is 08:00-23:59 UTC,
+    # which is 11:00-02:59 in Israel (UTC+3 summer, UTC+2 winter). Do not read these as local
+    # hours; the workflow has no idea where anyone is.
+    #
+    # The window used to stop at 23:59 UTC and that was a REAL GAP, not a preference: our leagues
+    # span the globe and fixtures kick off in every hour of the day. Measured over 392 observed
+    # fixtures, 55 of them (14.0%) start between 00:00 and 07:59 UTC —
+    #
+    #     USA MLS 23 · Mexico Liga MX 21 · Argentina Primera 10 · Brazil Serie A 1
+    #
+    # — and MLS is our largest league by settled bets. Predict is pre-match only (invariant 5),
+    # so for those fixtures the last run before kickoff was 23:51 UTC, hours stale or absent.
+    #
+    # Split cadence keeps the SCHEDULER LOAD FLAT while closing the gap: 10-minute coverage when
+    # most fixtures are, 20-minute overnight when only the Americas are playing. 96 + 24 = 120
+    # events/day. That matters because the repo already requests ~605 scheduled events/day and
+    # GitHub drops queued jobs under load, so every added firing is paid for by the others.
+    - cron: '1-59/10 8-23 * * *'   # 10-min: 08:00-23:59 UTC = 11:00-02:59 Israel
+    - cron: '1-59/20 0-7 * * *'    # 20-min: 00:00-07:59 UTC = 03:00-10:59 Israel (Americas)
   workflow_dispatch:
 
 concurrency:
