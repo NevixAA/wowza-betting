@@ -50,3 +50,7 @@ api_football_cache/
 # Player prop caches — regeneratable, not needed in git
 fixture_stats_cache/
 prop_odds_cache/
+# Not covered by api_football_cache/ above — the name differs (no underscore after "api").
+# 44,453 untracked files were sitting here unignored; nothing under it is tracked, so adding
+# this un-tracks nothing and cannot produce a renormalisation diff.
+apifootball_ou_cache/
