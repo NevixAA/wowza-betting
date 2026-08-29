@@ -30,8 +30,22 @@ on:
     # Overnight runs at 15 min rather than 5: only the Americas are playing, so the fixture count
     # is low, and the repo already requests ~605 scheduled events/day against a scheduler that
     # drops queued jobs under load. 192 + 32 = 224/day.
-    - cron: '1-59/5 8-23 * * *'    # 5-min:  08:00-23:59 UTC = 11:00-02:59 Israel
-    - cron: '1-59/15 0-7 * * *'    # 15-min: 00:00-07:59 UTC = 03:00-10:59 Israel (Americas)
+    # CUT 2026-08-29: 224 firings/day -> 40. This was the single largest consumer of the repo's
+    # scheduler budget and it was getting almost nothing for it. Measured over 12 hours it asked
+    # for ~90 runs and GitHub delivered 1, while workflows asking for 4 got 3 — the repo's total
+    # ask (696 on a Saturday) is over GitHub's drop threshold and the heaviest workflows starve
+    # first, including this one.
+    #
+    # So 5-minute scanning was never actually happening. The choice is not "5 minutes vs 30
+    # minutes", it is "30 minutes that runs vs 5 minutes that does not": a scan every ~35 minutes
+    # in practice, versus a requested 30 that should now mostly land. The dataset this exists to
+    # grow (output/inplay_snapshots.csv) grows faster at 30 requested than at 5 dropped.
+    #
+    # The better fix is one firing that samples internally for an hour, the pattern
+    # std_odds_capture already uses and the live-odds collector in Pro was built around. That
+    # needs a change to the scanner script itself, which is v9 logic and out of scope here.
+    - cron: '4-59/30 8-23 * * *'   # 30-min: 08:00-23:59 UTC = 11:00-02:59 Israel  (32/day)
+    - cron: '4 0-7 * * *'          # hourly: 00:00-07:59 UTC = 03:00-10:59 Israel  (8/day)
   workflow_dispatch:
 
 jobs:

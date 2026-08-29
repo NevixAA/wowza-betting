@@ -26,7 +26,13 @@ on:
     - cron: '35 1,7,13,19 * * *'
     # NEAR — only fixtures within 12h, every 15 minutes, offset from std_odds_capture.
     # Cheap because few fixtures are ever imminent; this is what creates T-1h/T-30m/T-10m.
-    - cron: '7-59/15 * * * *'
+    # CUT 2026-08-29: every 15 min (96/day) -> hourly (24/day), same reasoning as
+    # std_odds_capture. A scheduled NEAR run already samples internally for ~25 minutes, so four
+    # firings an hour requested four overlapping loops; and with the repo asking 696 scheduled
+    # runs a Saturday against ~4% delivery, this workflow received 3 runs in 12 hours. 24
+    # requested that land beat 96 that are dropped.
+    # :47 keeps it clear of std_odds_capture at :23 so the two never contend, and off :00.
+    - cron: '47 * * * *'
   workflow_dispatch:
     inputs:
       max_hours:

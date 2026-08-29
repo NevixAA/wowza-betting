@@ -35,7 +35,15 @@ on:
     # line actually forms, and it is CHEAP because only a handful of fixtures are ever imminent:
     # about 24 kick off per day across all leagues, so ~12 inside any 12h window. ~40 calls
     # each = ~3,800/day, and it is what makes T-1h / T-30m / T-10m exist at all.
-    - cron: '*/15 * * * *'
+    # CUT 2026-08-29: every 15 min (96/day) -> hourly (24/day). Two reasons, and the first is that
+    # this cron was largely redundant with itself: a scheduled NEAR run ALREADY samples internally
+    # for LOOP_MIN=25 minutes, so firing four times an hour asked for four overlapping 25-minute
+    # loops. Second, the repo was asking for 696 scheduled runs on a Saturday and GitHub delivered
+    # about 4%; this workflow got 3 of its runs in 12 hours. Requesting 24 that land beats
+    # requesting 96 that are dropped, and one hourly firing plus its internal loop covers 25 of
+    # every 60 minutes rather than the ~3 windows a day actually being delivered.
+    # :23 deliberately — not :00 or :15, which are GitHub's most contended minutes.
+    - cron: '23 * * * *'
   workflow_dispatch:
     inputs:
       max_hours:

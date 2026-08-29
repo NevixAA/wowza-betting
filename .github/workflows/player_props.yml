@@ -30,9 +30,14 @@ on:
     # in), so 30 min is chosen to leave roughly 2x headroom on a plausible run length rather than
     # tuned to a number. IF props runs start queueing or delivery drops on Fri-Sun, this goes
     # back to hourly first — verify against real workflow runs, not local checks.
-    - cron: '2 * * * 1-4'          # Mon-Thu: hourly, unchanged
-    - cron: '2 0-8,23 * * 5,6,0'   # Fri-Sun: hourly outside the kickoff window
-    - cron: '2,32 9-22 * * 5,6,0'  # Fri-Sun 09:00-22:59 UTC (12:00-01:59 IL): every 30 min
+    # REVERTED 2026-08-29, hours after adding it. The half-hourly Fri-Sun window was reasoned from
+    # where the fixtures are (Fri-Sun carries 79% of them) while ignoring what actually limits
+    # delivery. The repo was asking for 696 scheduled runs on a Saturday and GitHub was honouring
+    # about 4%; this workflow received 2 runs in 12 hours against ~12 requested. Adding 14 more
+    # firings a day to a workflow already being dropped makes it less likely to run, not more.
+    # Back to hourly everywhere — 24/day, and the weekend question gets revisited only once
+    # delivery is healthy enough to measure the difference.
+    - cron: '2 * * * *'
     # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC
