@@ -3178,9 +3178,9 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-22,2026-08-23,Ligue 1,Rennes,Paris Saint Germain,Vitinha,Paris Saint Germain,M,cards,AVOID,0.151,,,,5,True,LOSS,-1.0,,2026-08-24,128384,1552735.0
 2026-08-22,2026-08-24,La Liga,Malaga,Deportivo La Coruna,Pierre-Emerick Aubameyang,Deportivo La Coruna,F,sot,AVOID,0.503,1.48,-0.2556,-0.2109,5,True,WIN,0.48,,2026-08-25,1465,1570349.0
 2026-08-22,2026-08-24,La Liga,Malaga,Deportivo La Coruna,Pierre-Emerick Aubameyang,Deportivo La Coruna,F,goals,AVOID,0.157,3.6,-0.4348,-0.3783,5,True,WIN,2.6,,2026-08-25,1465,1570349.0
-2026-08-22,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Gbemi Arubi,Dundalk,F,sot,AVOID,0.166,,,,5,,,,,,359459,
-2026-08-22,2026-08-28,Ireland Premier Division,Galway United,Shelbourne Dublin,Moses Dyer,Galway United,F,sot,AVOID,0.178,,,,5,,,,,,94382,
-2026-08-22,2026-08-28,Ireland Premier Division,Galway United,Shelbourne Dublin,Moses Dyer,Galway United,F,cards,AVOID,0.154,,,,5,,,,,,94382,
+2026-08-22,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Gbemi Arubi,Dundalk,F,sot,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-08-29,359459,
+2026-08-22,2026-08-28,Ireland Premier Division,Galway United,Shelbourne Dublin,Moses Dyer,Galway United,F,sot,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-08-29,94382,
+2026-08-22,2026-08-28,Ireland Premier Division,Galway United,Shelbourne Dublin,Moses Dyer,Galway United,F,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-08-29,94382,
 2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,sot,AVOID,0.301,,,,5,True,VOID,0.0,DNP,2026-08-28,52727,1623420.0
 2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Mohamed Toure,KuPS,M,sot,AVOID,0.292,,,,5,True,VOID,0.0,DNP,2026-08-28,489935,1623420.0
 2026-08-23,2026-08-27,Conference League,KuPS,Shamrock Rovers,Jaime Moreno,KuPS,F,sot2,AVOID,0.206,,,,5,True,VOID,0.0,DNP,2026-08-28,52727,1623420.0
@@ -3261,13 +3261,13 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-23,2026-08-29,Championship,Norwich City,Burnley,Hannibal Mejbri,Burnley,M,sot,AVOID,0.177,,,,5,,,,,,180560,
 2026-08-23,2026-08-29,Championship,Norwich City,Burnley,Hannibal Mejbri,Burnley,M,cards,AVOID,0.166,,,,5,,,,,,180560,
 2026-08-23,2026-08-29,Championship,Norwich City,Burnley,Vitinho,Burnley,M,cards,AVOID,0.159,,,,5,,,,,,8661,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Aodh Dervin,Dundalk,M,cards,AVOID,0.23,,,,5,,,,,,69559,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Bobby Burns,Dundalk,M,cards,AVOID,0.202,,,,5,,,,,,44867,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Tom Grivosti,Dundalk,D,cards,AVOID,0.199,,,,5,,,,,,45056,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Mayowa Animasahun,Dundalk,D,cards,AVOID,0.186,,,,5,,,,,,308535,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Robert Cornwall,Dundalk,D,cards,AVOID,0.161,,,,5,,,,,,69284,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Elicha Ahui,Drogheda United,D,cards,AVOID,0.158,,,,5,,,,,,377799,
-2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Shane Farell,Drogheda United,M,cards,AVOID,0.152,,,,5,,,,,,69526,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Aodh Dervin,Dundalk,M,cards,AVOID,0.23,,,,5,True,LOSS,-1.0,,2026-08-29,69559,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Bobby Burns,Dundalk,M,cards,AVOID,0.202,,,,5,True,WIN,nan,,2026-08-29,44867,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Tom Grivosti,Dundalk,D,cards,AVOID,0.199,,,,5,True,WIN,nan,,2026-08-29,45056,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Mayowa Animasahun,Dundalk,D,cards,AVOID,0.186,,,,5,True,LOSS,-1.0,,2026-08-29,308535,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Robert Cornwall,Dundalk,D,cards,AVOID,0.161,,,,5,True,LOSS,-1.0,,2026-08-29,69284,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Elicha Ahui,Drogheda United,D,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-08-29,377799,
+2026-08-23,2026-08-28,Ireland Premier Division,Drogheda United,Dundalk,Shane Farell,Drogheda United,M,cards,AVOID,0.152,,,,5,True,WIN,nan,,2026-08-29,69526,
 2026-08-23,2026-08-30,Bundesliga 2,1. FC Magdeburg,Holstein Kiel,Mateusz Żukowski,1. FC Magdeburg,F,sot,AVOID,0.787,,,,5,,,,,,40460,
 2026-08-23,2026-08-30,Bundesliga 2,1. FC Magdeburg,Holstein Kiel,Phil Harres,Holstein Kiel,F,sot,AVOID,0.709,,,,5,,,,,,202514,
 2026-08-23,2026-08-30,Bundesliga 2,SV Darmstadt 98,Hannover 96,Isac Lidberg,SV Darmstadt 98,F,sot,AVOID,0.672,,,,5,,,,,,47895,
@@ -3463,154 +3463,154 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Ilaix Moriba,Celta Vigo,M,cards,AVOID,0.158,,,,5,True,LOSS,-1.0,,2026-08-28,162123,1570336.0
 2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Hugo Sotelo,Celta Vigo,M,cards,AVOID,0.154,1.01,-0.8445,-0.8351,5,True,LOSS,-1.0,,2026-08-28,313651,1570336.0
 2026-08-23,2026-08-27,La Liga,Celta Vigo,Osasuna,Lucas Torró,Osasuna,M,cards,AVOID,0.152,1.01,-0.8465,-0.8373,5,True,LOSS,-1.0,,2026-08-28,1825,1570336.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,sot,AVOID,0.79,,,,5,,,,,,154,1552746.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,sot,AVOID,0.778,,,,5,,,,,,1100,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Harry Kane,Bayern München,F,sot,AVOID,0.766,,,,5,,,,,,184,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Ismaïla Sarr,Crystal Palace,F,sot,AVOID,0.69,,,,5,,,,,,2218,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Luis Díaz,Bayern München,M,sot,AVOID,0.657,,,,5,,,,,,2489,1575140.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Serge Gnabry,Bayern München,F,sot,AVOID,0.605,,,,5,,,,,,510,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,goals,AVOID,0.583,,,,5,,,,,,1100,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,sot,AVOID,0.579,,,,5,,,,,,19617,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ousmane Dembélé,Paris Saint Germain,F,sot,AVOID,0.577,,,,5,,,,,,153,1552746.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,sot,AVOID,0.79,,,,5,True,VOID,0.0,DNP,2026-08-29,154,1552746.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,sot,AVOID,0.778,,,,5,True,WIN,nan,,2026-08-29,1100,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Harry Kane,Bayern München,F,sot,AVOID,0.766,,,,5,True,LOSS,-1.0,,2026-08-29,184,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Ismaïla Sarr,Crystal Palace,F,sot,AVOID,0.69,,,,5,True,VOID,0.0,DNP,2026-08-29,2218,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Luis Díaz,Bayern München,M,sot,AVOID,0.657,,,,5,True,WIN,nan,,2026-08-29,2489,1575140.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Serge Gnabry,Bayern München,F,sot,AVOID,0.605,,,,5,True,VOID,0.0,DNP,2026-08-29,510,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,goals,AVOID,0.583,,,,5,True,WIN,nan,,2026-08-29,1100,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,sot,AVOID,0.579,,,,5,True,WIN,nan,,2026-08-29,19617,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ousmane Dembélé,Paris Saint Germain,F,sot,AVOID,0.577,,,,5,True,VOID,0.0,DNP,2026-08-29,153,1552746.0
 2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Harry Kane,Bayern München,F,sot2,AVOID,0.568,,,,5,,,,,,184,1575140.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Hofmann,VfL Bochum,F,sot,AVOID,0.543,,,,5,,,,,,26287,1576152.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Leroy Sané,Bayern München,M,sot,AVOID,0.537,,,,5,,,,,,644,1575140.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Giorgos Masouras,VfL Bochum,F,sot,AVOID,0.517,,,,5,,,,,,1610,1576152.0
-2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Marvin Ducksch,Birmingham,F,sot,AVOID,0.514,,,,5,,,,,,25464,1563118.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Myron Boadu,VfL Bochum,F,sot,AVOID,0.51,,,,5,,,,,,36907,1576152.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Harry Kane,Bayern München,F,goals,AVOID,0.502,,,,5,,,,,,184,1575140.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Jamal Musiala,Bayern München,M,sot,AVOID,0.491,,,,5,,,,,,181812,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,goals,AVOID,0.488,,,,5,,,,,,154,1552746.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,sot2,AVOID,0.455,,,,5,,,,,,154,1552746.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Joel Pohjanpalo,Venezia,F,sot,AVOID,0.432,,,,5,,,,,,986,1550097.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,assists,AVOID,0.417,,,,5,,,,,,154,1552746.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Hofmann,VfL Bochum,F,sot,AVOID,0.543,,,,5,True,LOSS,-1.0,,2026-08-29,26287,1576152.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Leroy Sané,Bayern München,M,sot,AVOID,0.537,,,,5,True,VOID,0.0,DNP,2026-08-29,644,1575140.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Giorgos Masouras,VfL Bochum,F,sot,AVOID,0.517,,,,5,True,VOID,0.0,DNP,2026-08-29,1610,1576152.0
+2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Marvin Ducksch,Birmingham,F,sot,AVOID,0.514,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,25464,1563118.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Myron Boadu,VfL Bochum,F,sot,AVOID,0.51,,,,5,True,VOID,0.0,DNP,2026-08-29,36907,1576152.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Harry Kane,Bayern München,F,goals,AVOID,0.502,,,,5,True,LOSS,-1.0,,2026-08-29,184,1575140.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Jamal Musiala,Bayern München,M,sot,AVOID,0.491,,,,5,True,VOID,0.0,DNP,2026-08-29,181812,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,goals,AVOID,0.488,,,,5,True,VOID,0.0,DNP,2026-08-29,154,1552746.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,sot2,AVOID,0.455,,,,5,True,VOID,0.0,DNP,2026-08-29,154,1552746.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Joel Pohjanpalo,Venezia,F,sot,AVOID,0.432,,,,5,True,LOSS,-1.0,,2026-08-29,986,1550097.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Lionel Messi,Paris Saint Germain,F,assists,AVOID,0.417,,,,5,True,VOID,0.0,DNP,2026-08-29,154,1552746.0
 2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,sot2,AVOID,0.416,,,,5,,,,,,1100,1557381.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Omar Marmoush,Manchester City,F,sot,AVOID,0.409,,,,5,,,,,,81573,1557381.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Marten Winkler,Hertha BSC,F,sot,AVOID,0.391,,,,5,,,,,,202614,1576153.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Ermedin Demirović,VfB Stuttgart,F,sot,AVOID,0.377,,,,5,,,,,,46930,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,T. Reijnders,Manchester City,M,sot,AVOID,0.371,,,,5,,,,,,36902,1557381.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Antoine Semenyo,Manchester City,M,sot,AVOID,0.369,,,,5,,,,,,19281,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Chris Führich,VfB Stuttgart,M,sot,AVOID,0.364,,,,5,,,,,,24798,1575140.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Giorgos Masouras,VfL Bochum,F,goals,AVOID,0.355,,,,5,,,,,,1610,1576152.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Francis Onyeka,VfL Bochum,M,sot,AVOID,0.334,,,,5,,,,,,392254,1576152.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Nikolas Nartey,VfB Stuttgart,F,sot,AVOID,0.32,,,,5,,,,,,24806,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Riyad Mahrez,Manchester City,F,sot,AVOID,0.32,,,,5,,,,,,635,1557381.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Michaël Cuisance,Hertha BSC,M,sot,AVOID,0.32,,,,5,,,,,,25634,1576153.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Ismaïla Sarr,Crystal Palace,F,goals,AVOID,0.316,,,,5,,,,,,2218,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Enzo Millot,VfB Stuttgart,M,sot,AVOID,0.315,,,,5,,,,,,162887,1575140.0
-2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Josh Windass,Wrexham,F,sot,AVOID,0.312,,,,5,,,,,,19566,1563118.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Adrien Rabiot,AC Milan,M,sot,AVOID,0.312,,,,5,,,,,,272,1550097.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Kang-in Lee,Paris Saint Germain,F,sot,AVOID,0.311,,,,5,,,,,,927,1552746.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,İlkay Gündoğan,Manchester City,M,sot,AVOID,0.29,,,,5,,,,,,633,1557381.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Achraf Hakimi,Paris Saint Germain,D,sot,AVOID,0.288,,,,5,,,,,,9,1552746.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Myron Boadu,VfL Bochum,F,goals,AVOID,0.286,,,,5,,,,,,36907,1576152.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Josip Brekalo,Hertha BSC,F,sot,AVOID,0.281,,,,5,,,,,,2762,1576153.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Koji Miyoshi,VfL Bochum,M,sot,AVOID,0.275,,,,5,,,,,,33019,1576152.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Ismaïla Sarr,Crystal Palace,F,sot2,AVOID,0.273,,,,5,,,,,,2218,1557381.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Omar Marmoush,Manchester City,F,sot,AVOID,0.409,,,,5,True,VOID,0.0,DNP,2026-08-29,81573,1557381.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Marten Winkler,Hertha BSC,F,sot,AVOID,0.391,,,,5,True,VOID,0.0,DNP,2026-08-29,202614,1576153.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Ermedin Demirović,VfB Stuttgart,F,sot,AVOID,0.377,,,,5,True,LOSS,-1.0,,2026-08-29,46930,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,T. Reijnders,Manchester City,M,sot,AVOID,0.371,,,,5,True,VOID,0.0,DNP,2026-08-29,36902,1557381.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Antoine Semenyo,Manchester City,M,sot,AVOID,0.369,,,,5,True,WIN,nan,,2026-08-29,19281,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Chris Führich,VfB Stuttgart,M,sot,AVOID,0.364,,,,5,True,VOID,0.0,DNP,2026-08-29,24798,1575140.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Giorgos Masouras,VfL Bochum,F,goals,AVOID,0.355,,,,5,True,VOID,0.0,DNP,2026-08-29,1610,1576152.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Francis Onyeka,VfL Bochum,M,sot,AVOID,0.334,,,,5,True,VOID,0.0,DNP,2026-08-29,392254,1576152.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Nikolas Nartey,VfB Stuttgart,F,sot,AVOID,0.32,,,,5,True,VOID,0.0,DNP,2026-08-29,24806,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Riyad Mahrez,Manchester City,F,sot,AVOID,0.32,,,,5,True,VOID,0.0,DNP,2026-08-29,635,1557381.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Michaël Cuisance,Hertha BSC,M,sot,AVOID,0.32,,,,5,True,VOID,0.0,DNP,2026-08-29,25634,1576153.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Ismaïla Sarr,Crystal Palace,F,goals,AVOID,0.316,,,,5,True,VOID,0.0,DNP,2026-08-29,2218,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Enzo Millot,VfB Stuttgart,M,sot,AVOID,0.315,,,,5,True,VOID,0.0,DNP,2026-08-29,162887,1575140.0
+2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Josh Windass,Wrexham,F,sot,AVOID,0.312,,,,5,True,LOSS,-1.0,,2026-08-29,19566,1563118.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Adrien Rabiot,AC Milan,M,sot,AVOID,0.312,,,,5,True,LOSS,-1.0,,2026-08-29,272,1550097.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Kang-in Lee,Paris Saint Germain,F,sot,AVOID,0.311,,,,5,True,VOID,0.0,DNP,2026-08-29,927,1552746.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,İlkay Gündoğan,Manchester City,M,sot,AVOID,0.29,,,,5,True,VOID,0.0,DNP,2026-08-29,633,1557381.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Achraf Hakimi,Paris Saint Germain,D,sot,AVOID,0.288,,,,5,True,LOSS,-1.0,,2026-08-29,9,1552746.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Myron Boadu,VfL Bochum,F,goals,AVOID,0.286,,,,5,True,VOID,0.0,DNP,2026-08-29,36907,1576152.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Josip Brekalo,Hertha BSC,F,sot,AVOID,0.281,,,,5,True,WIN,nan,,2026-08-29,2762,1576153.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Koji Miyoshi,VfL Bochum,M,sot,AVOID,0.275,,,,5,True,LOSS,-1.0,,2026-08-29,33019,1576152.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Ismaïla Sarr,Crystal Palace,F,sot2,AVOID,0.273,,,,5,True,VOID,0.0,DNP,2026-08-29,2218,1557381.0
 2026-08-24,2026-08-29,League One,Leyton Orient,Barnsley,Aaron Connolly,Leyton Orient,M,sot,AVOID,0.263,,,,5,,,,,,19772,
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Divine Mukasa,Manchester City,M,sot,AVOID,0.262,,,,5,,,,,,380681,1557381.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Divine Mukasa,Manchester City,M,sot,AVOID,0.262,,,,5,True,VOID,0.0,DNP,2026-08-29,380681,1557381.0
 2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Luis Díaz,Bayern München,M,sot2,AVOID,0.26,,,,5,,,,,,2489,1575140.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Alessandro Florenzi,AC Milan,M,sot,AVOID,0.259,,,,5,,,,,,769,1550097.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jérémy Doku,Manchester City,M,sot,AVOID,0.259,,,,5,,,,,,1422,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Bilal El Khannouss,VfB Stuttgart,F,sot,AVOID,0.253,,,,5,,,,,,340573,1575140.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Alessandro Florenzi,AC Milan,M,sot,AVOID,0.259,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,769,1550097.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jérémy Doku,Manchester City,M,sot,AVOID,0.259,,,,5,True,VOID,0.0,DNP,2026-08-29,1422,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Bilal El Khannouss,VfB Stuttgart,F,sot,AVOID,0.253,,,,5,True,LOSS,-1.0,,2026-08-29,340573,1575140.0
 2026-08-24,2026-08-29,League One,Leyton Orient,Barnsley,David McGoldrick,Barnsley,M,sot,AVOID,0.252,,,,5,,,,,,19108,
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jack Grealish,Manchester City,M,sot,AVOID,0.248,,,,5,,,,,,19187,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Jamie Leweling,VfB Stuttgart,F,sot,AVOID,0.244,,,,5,,,,,,128533,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Senny Mayulu,Paris Saint Germain,M,sot,AVOID,0.243,,,,5,,,,,,409216,1552746.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,John Yeboah,Venezia,M,sot,AVOID,0.241,,,,5,,,,,,25414,1550097.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jack Grealish,Manchester City,M,sot,AVOID,0.248,,,,5,True,VOID,0.0,DNP,2026-08-29,19187,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Jamie Leweling,VfB Stuttgart,F,sot,AVOID,0.244,,,,5,True,LOSS,-1.0,,2026-08-29,128533,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Senny Mayulu,Paris Saint Germain,M,sot,AVOID,0.243,,,,5,True,LOSS,-1.0,,2026-08-29,409216,1552746.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,John Yeboah,Venezia,M,sot,AVOID,0.241,,,,5,True,WIN,nan,,2026-08-29,25414,1550097.0
 2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,sot2,AVOID,0.238,,,,5,,,,,,19617,1575140.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Serge Gnabry,Bayern München,F,goals,AVOID,0.237,,,,5,,,,,,510,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Dwight McNeil,Crystal Palace,M,sot,AVOID,0.233,,,,5,,,,,,18929,1557381.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jaden Heskey,Manchester City,M,cards,AVOID,0.231,,,,5,,,,,,347305,1557381.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Félix Correia,Lille,M,sot,AVOID,0.231,,,,5,,,,,,135749,1552746.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,assists,AVOID,0.228,,,,5,,,,,,19617,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,assists,AVOID,0.226,,,,5,,,,,,1100,1557381.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ousmane Dembélé,Paris Saint Germain,F,goals,AVOID,0.22,,,,5,,,,,,153,1552746.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Gianluca Busio,Venezia,M,sot,AVOID,0.217,,,,5,,,,,,51266,1550097.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Tom Bischof,Bayern München,D,sot,AVOID,0.214,,,,5,,,,,,325975,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Vitinha,Paris Saint Germain,M,sot,AVOID,0.206,,,,5,,,,,,128384,1552746.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Daichi Kamada,Crystal Palace,M,sot,AVOID,0.202,,,,5,,,,,,2601,1557381.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Oliver Olsen,VfL Bochum,D,cards,AVOID,0.198,,,,5,,,,,,15794,1576152.0
-2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Carlos Vicente,Birmingham,M,sot,AVOID,0.197,,,,5,,,,,,187214,1563118.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jefferson Lerma,Crystal Palace,M,sot,AVOID,0.197,,,,5,,,,,,2490,1557381.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Matúš Bero,VfL Bochum,M,cards,AVOID,0.196,,,,5,,,,,,37122,1576152.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Luis Díaz,Bayern München,M,goals,AVOID,0.195,,,,5,,,,,,2489,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,João Neves,Paris Saint Germain,M,sot,AVOID,0.194,,,,5,,,,,,335051,1552746.0
-2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Marvin Ducksch,Birmingham,F,goals,AVOID,0.191,,,,5,,,,,,25464,1563118.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Chema Andrés,VfB Stuttgart,M,sot,AVOID,0.19,,,,5,,,,,,388871,1575140.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Hofmann,VfL Bochum,F,cards,AVOID,0.189,,,,5,,,,,,26287,1576152.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Serge Gnabry,Bayern München,F,sot2,AVOID,0.187,,,,5,,,,,,510,1575140.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Linus Gechter,Hertha BSC,D,cards,AVOID,0.186,,,,5,,,,,,286711,1576153.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Benjamin André,Lille,M,sot,AVOID,0.182,,,,5,,,,,,2204,1552746.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Deyovaisio Zeefuik,Hertha BSC,D,cards,AVOID,0.181,,,,5,,,,,,38120,1576153.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Giorgos Masouras,VfL Bochum,F,sot2,AVOID,0.181,,,,5,,,,,,1610,1576152.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Emerson Royal,AC Milan,D,cards,AVOID,0.18,,,,5,,,,,,1566,1550097.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Justin Devenny,Crystal Palace,F,sot,AVOID,0.18,,,,5,,,,,,286458,1557381.0
-2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Issa Kaboré,Wrexham,M,sot,AVOID,0.18,,,,5,,,,,,140947,1563118.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,goals,AVOID,0.178,,,,5,,,,,,19617,1575140.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Leroy Sané,Bayern München,M,goals,AVOID,0.178,,,,5,,,,,,644,1575140.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Rodri,Manchester City,M,sot,AVOID,0.177,,,,5,,,,,,44,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Aleksandar Pavlović,Bayern München,M,cards,AVOID,0.173,,,,5,,,,,,328033,1575140.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Aleksandar Pavlović,Bayern München,M,sot,AVOID,0.172,,,,5,,,,,,328033,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Nuno Mendes,Paris Saint Germain,D,sot,AVOID,0.172,,,,5,,,,,,263482,1552746.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Luka Modrić,AC Milan,M,sot,AVOID,0.172,,,,5,,,,,,754,1550097.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Marco Verratti,Paris Saint Germain,M,cards,AVOID,0.171,,,,5,,,,,,273,1552746.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Davide Bartesaghi,AC Milan,M,sot,AVOID,0.171,,,,5,,,,,,374359,1550097.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Maximilian Wittek,VfL Bochum,D,cards,AVOID,0.168,,,,5,,,,,,25151,1576152.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ousmane Dembélé,Paris Saint Germain,F,assists,AVOID,0.167,,,,5,,,,,,153,1552746.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Hofmann,VfL Bochum,F,goals,AVOID,0.166,,,,5,,,,,,26287,1576152.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Achraf Hakimi,Paris Saint Germain,D,cards,AVOID,0.165,,,,5,,,,,,9,1552746.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Nico O'Reilly,Manchester City,D,sot,AVOID,0.164,,,,5,,,,,,307123,1557381.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Nathan Aké,Manchester City,D,cards,AVOID,0.163,,,,5,,,,,,18861,1557381.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Paul Seguin,Hertha BSC,M,cards,AVOID,0.162,,,,5,,,,,,25161,1576153.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Chris Richards,Crystal Palace,D,cards,AVOID,0.161,,,,5,,,,,,126949,1557381.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Rúben Dias,Manchester City,D,cards,AVOID,0.16,,,,5,,,,,,567,1557381.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Leroy Sané,Bayern München,M,sot2,AVOID,0.16,,,,5,,,,,,644,1575140.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Joshua Kimmich,Bayern München,D,sot,AVOID,0.16,,,,5,,,,,,502,1575140.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Strahinja Pavlović,AC Milan,D,sot,AVOID,0.159,,,,5,,,,,,45826,1550097.0
-2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Daniel Muñoz,Crystal Palace,D,sot,AVOID,0.159,,,,5,,,,,,13736,1557381.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Josip Brekalo,Hertha BSC,F,cards,AVOID,0.156,,,,5,,,,,,2762,1576153.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Jonjoe Kenny,Hertha BSC,M,sot,AVOID,0.156,,,,5,,,,,,18760,1576153.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Leon Jensen,Hertha BSC,M,cards,AVOID,0.155,,,,5,,,,,,1665,1576153.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Hakon Arnar Haraldsson,Lille,F,sot,AVOID,0.155,,,,5,,,,,,67889,1552746.0
-2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Joel Pohjanpalo,Venezia,F,goals,AVOID,0.155,,,,5,,,,,,986,1550097.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Myron Boadu,VfL Bochum,F,sot2,AVOID,0.154,,,,5,,,,,,36907,1576152.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Niklas Kolbe,Hertha BSC,D,cards,AVOID,0.153,,,,5,,,,,,90813,1576153.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Jonjoe Kenny,Hertha BSC,M,cards,AVOID,0.153,,,,5,,,,,,18760,1576153.0
-2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,August Priske,Birmingham,F,sot,AVOID,0.153,,,,5,,,,,,344816,1563118.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Matúš Bero,VfL Bochum,M,sot,AVOID,0.153,,,,5,,,,,,37122,1576152.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Romain Perraud,Lille,D,sot,AVOID,0.153,,,,5,,,,,,20600,1552746.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Jamal Musiala,Bayern München,M,goals,AVOID,0.153,,,,5,,,,,,181812,1575140.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Benjamin André,Lille,M,cards,AVOID,0.153,,,,5,,,,,,2204,1552746.0
-2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Nabil Bentaleb,Lille,M,sot,AVOID,0.153,,,,5,,,,,,409,1552746.0
-2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Maximilian Mittelstädt,VfB Stuttgart,D,sot,AVOID,0.152,,,,5,,,,,,25342,1575140.0
-2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Strompf,VfL Bochum,D,cards,AVOID,0.152,,,,5,,,,,,178169,1576152.0
-2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Kennet Eichhorn,Hertha BSC,M,sot,AVOID,0.151,,,,5,,,,,,503467,1576153.0
-2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,Carl McHugh,Sligo Rovers,M,cards,AVOID,0.258,,,,5,,,,,,44927,
-2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,Dawson Devoy,Bohemians,M,assists,AVOID,0.181,,,,5,,,,,,69275,
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Serge Gnabry,Bayern München,F,goals,AVOID,0.237,,,,5,True,VOID,0.0,DNP,2026-08-29,510,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Dwight McNeil,Crystal Palace,M,sot,AVOID,0.233,,,,5,True,LOSS,-1.0,,2026-08-29,18929,1557381.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jaden Heskey,Manchester City,M,cards,AVOID,0.231,,,,5,True,VOID,0.0,DNP,2026-08-29,347305,1557381.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Félix Correia,Lille,M,sot,AVOID,0.231,,,,5,True,LOSS,-1.0,,2026-08-29,135749,1552746.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,assists,AVOID,0.228,,,,5,True,LOSS,-1.0,,2026-08-29,19617,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Erling Haaland,Manchester City,F,assists,AVOID,0.226,,,,5,True,LOSS,-1.0,,2026-08-29,1100,1557381.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ousmane Dembélé,Paris Saint Germain,F,goals,AVOID,0.22,,,,5,True,VOID,0.0,DNP,2026-08-29,153,1552746.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Gianluca Busio,Venezia,M,sot,AVOID,0.217,,,,5,True,LOSS,-1.0,,2026-08-29,51266,1550097.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Tom Bischof,Bayern München,D,sot,AVOID,0.214,,,,5,True,LOSS,-1.0,,2026-08-29,325975,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Vitinha,Paris Saint Germain,M,sot,AVOID,0.206,,,,5,True,WIN,nan,,2026-08-29,128384,1552746.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Daichi Kamada,Crystal Palace,M,sot,AVOID,0.202,,,,5,True,LOSS,-1.0,,2026-08-29,2601,1557381.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Oliver Olsen,VfL Bochum,D,cards,AVOID,0.198,,,,5,True,LOSS,-1.0,,2026-08-29,15794,1576152.0
+2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Carlos Vicente,Birmingham,M,sot,AVOID,0.197,,,,5,True,LOSS,-1.0,,2026-08-29,187214,1563118.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Jefferson Lerma,Crystal Palace,M,sot,AVOID,0.197,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,2490,1557381.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Matúš Bero,VfL Bochum,M,cards,AVOID,0.196,,,,5,True,VOID,0.0,DNP,2026-08-29,37122,1576152.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Luis Díaz,Bayern München,M,goals,AVOID,0.195,,,,5,True,WIN,nan,,2026-08-29,2489,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,João Neves,Paris Saint Germain,M,sot,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-08-29,335051,1552746.0
+2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Marvin Ducksch,Birmingham,F,goals,AVOID,0.191,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,25464,1563118.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Chema Andrés,VfB Stuttgart,M,sot,AVOID,0.19,,,,5,True,LOSS,-1.0,,2026-08-29,388871,1575140.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Hofmann,VfL Bochum,F,cards,AVOID,0.189,,,,5,True,WIN,nan,,2026-08-29,26287,1576152.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Serge Gnabry,Bayern München,F,sot2,AVOID,0.187,,,,5,True,VOID,0.0,DNP,2026-08-29,510,1575140.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Linus Gechter,Hertha BSC,D,cards,AVOID,0.186,,,,5,True,WIN,nan,,2026-08-29,286711,1576153.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Benjamin André,Lille,M,sot,AVOID,0.182,,,,5,True,LOSS,-1.0,,2026-08-29,2204,1552746.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Deyovaisio Zeefuik,Hertha BSC,D,cards,AVOID,0.181,,,,5,True,VOID,0.0,DNP,2026-08-29,38120,1576153.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Giorgos Masouras,VfL Bochum,F,sot2,AVOID,0.181,,,,5,True,VOID,0.0,DNP,2026-08-29,1610,1576152.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Emerson Royal,AC Milan,D,cards,AVOID,0.18,,,,5,True,VOID,0.0,DNP,2026-08-29,1566,1550097.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Justin Devenny,Crystal Palace,F,sot,AVOID,0.18,,,,5,True,VOID,0.0,DNP,2026-08-29,286458,1557381.0
+2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,Issa Kaboré,Wrexham,M,sot,AVOID,0.18,,,,5,True,LOSS,-1.0,,2026-08-29,140947,1563118.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Michael Olise,Bayern München,M,goals,AVOID,0.178,,,,5,True,WIN,nan,,2026-08-29,19617,1575140.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Leroy Sané,Bayern München,M,goals,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-08-29,644,1575140.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Rodri,Manchester City,M,sot,AVOID,0.177,,,,5,True,VOID,0.0,DNP,2026-08-29,44,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Aleksandar Pavlović,Bayern München,M,cards,AVOID,0.173,,,,5,True,LOSS,-1.0,,2026-08-29,328033,1575140.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Aleksandar Pavlović,Bayern München,M,sot,AVOID,0.172,,,,5,True,WIN,nan,,2026-08-29,328033,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Nuno Mendes,Paris Saint Germain,D,sot,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-08-29,263482,1552746.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Luka Modrić,AC Milan,M,sot,AVOID,0.172,,,,5,True,LOSS,-1.0,,2026-08-29,754,1550097.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Marco Verratti,Paris Saint Germain,M,cards,AVOID,0.171,,,,5,True,VOID,0.0,DNP,2026-08-29,273,1552746.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Davide Bartesaghi,AC Milan,M,sot,AVOID,0.171,,,,5,True,LOSS,-1.0,,2026-08-29,374359,1550097.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Maximilian Wittek,VfL Bochum,D,cards,AVOID,0.168,,,,5,True,LOSS,-1.0,,2026-08-29,25151,1576152.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ousmane Dembélé,Paris Saint Germain,F,assists,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-08-29,153,1552746.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Hofmann,VfL Bochum,F,goals,AVOID,0.166,,,,5,True,LOSS,-1.0,,2026-08-29,26287,1576152.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Achraf Hakimi,Paris Saint Germain,D,cards,AVOID,0.165,,,,5,True,LOSS,-1.0,,2026-08-29,9,1552746.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Nico O'Reilly,Manchester City,D,sot,AVOID,0.164,,,,5,True,LOSS,-1.0,,2026-08-29,307123,1557381.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Nathan Aké,Manchester City,D,cards,AVOID,0.163,,,,5,True,VOID,0.0,DNP,2026-08-29,18861,1557381.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Paul Seguin,Hertha BSC,M,cards,AVOID,0.162,,,,5,True,WIN,nan,,2026-08-29,25161,1576153.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Chris Richards,Crystal Palace,D,cards,AVOID,0.161,,,,5,True,LOSS,-1.0,,2026-08-29,126949,1557381.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Rúben Dias,Manchester City,D,cards,AVOID,0.16,,,,5,True,LOSS,-1.0,,2026-08-29,567,1557381.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Leroy Sané,Bayern München,M,sot2,AVOID,0.16,,,,5,True,VOID,0.0,DNP,2026-08-29,644,1575140.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Joshua Kimmich,Bayern München,D,sot,AVOID,0.16,,,,5,True,LOSS,-1.0,,2026-08-29,502,1575140.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Strahinja Pavlović,AC Milan,D,sot,AVOID,0.159,,,,5,True,LOSS,-1.0,,2026-08-29,45826,1550097.0
+2026-08-24,2026-08-28,Premier League,Crystal Palace,Manchester City,Daniel Muñoz,Crystal Palace,D,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,13736,1557381.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Josip Brekalo,Hertha BSC,F,cards,AVOID,0.156,,,,5,True,LOSS,-1.0,,2026-08-29,2762,1576153.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Jonjoe Kenny,Hertha BSC,M,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-08-29,18760,1576153.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Leon Jensen,Hertha BSC,M,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-08-29,1665,1576153.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Hakon Arnar Haraldsson,Lille,F,sot,AVOID,0.155,,,,5,True,WIN,nan,,2026-08-29,67889,1552746.0
+2026-08-24,2026-08-28,Serie A,AC Milan,Venezia,Joel Pohjanpalo,Venezia,F,goals,AVOID,0.155,,,,5,True,LOSS,-1.0,,2026-08-29,986,1550097.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Myron Boadu,VfL Bochum,F,sot2,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-08-29,36907,1576152.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Niklas Kolbe,Hertha BSC,D,cards,AVOID,0.153,,,,5,True,LOSS,-1.0,,2026-08-29,90813,1576153.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Jonjoe Kenny,Hertha BSC,M,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-08-29,18760,1576153.0
+2026-08-24,2026-08-28,Championship,Wrexham,Birmingham,August Priske,Birmingham,F,sot,AVOID,0.153,,,,5,True,WIN,nan,,2026-08-29,344816,1563118.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Matúš Bero,VfL Bochum,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-08-29,37122,1576152.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Romain Perraud,Lille,D,sot,AVOID,0.153,,,,5,True,LOSS,-1.0,,2026-08-29,20600,1552746.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Jamal Musiala,Bayern München,M,goals,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-08-29,181812,1575140.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Benjamin André,Lille,M,cards,AVOID,0.153,,,,5,True,WIN,nan,,2026-08-29,2204,1552746.0
+2026-08-24,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Nabil Bentaleb,Lille,M,sot,AVOID,0.153,,,,5,True,LOSS,-1.0,,2026-08-29,409,1552746.0
+2026-08-24,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Maximilian Mittelstädt,VfB Stuttgart,D,sot,AVOID,0.152,,,,5,True,LOSS,-1.0,,2026-08-29,25342,1575140.0
+2026-08-24,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Philipp Strompf,VfL Bochum,D,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,178169,1576152.0
+2026-08-24,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Kennet Eichhorn,Hertha BSC,M,sot,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-08-29,503467,1576153.0
+2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,Carl McHugh,Sligo Rovers,M,cards,AVOID,0.258,,,,5,True,WIN,nan,,2026-08-29,44927,
+2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,Dawson Devoy,Bohemians,M,assists,AVOID,0.181,,,,5,True,LOSS,-1.0,,2026-08-29,69275,
 2026-08-24,2026-08-29,League One,Plymouth Argyle,Bradford City,Aribim Pepple,Plymouth,F,sot,AVOID,0.161,,,,5,,,,,,146325,
-2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,Gareth McElroy,Sligo Rovers,D,cards,AVOID,0.16,,,,5,,,,,,424326,
+2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,Gareth McElroy,Sligo Rovers,D,cards,AVOID,0.16,,,,5,True,LOSS,-1.0,,2026-08-29,424326,
 2026-08-24,2026-08-29,League One,Plymouth Argyle,Bradford City,Brad Halliday,Bradford,M,cards,AVOID,0.159,,,,5,,,,,,17953,
 2026-08-24,2026-08-29,League One,Plymouth Argyle,Bradford City,Kayden Jackson,Bradford,F,sot,AVOID,0.158,,,,5,,,,,,19744,
-2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,James McManus,Sligo Rovers,M,cards,AVOID,0.151,,,,5,,,,,,331906,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Federico Bonazzoli,Cremonese,F,sot,AVOID,0.516,,,,5,,,,,,31436,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jamie Vardy,Cremonese,F,sot,AVOID,0.47,,,,5,,,,,,18788,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Frank Tsadjout,Cremonese,F,sot,AVOID,0.462,,,,5,,,,,,1652,
+2026-08-24,2026-08-28,Ireland Premier Division,Bohemians,Sligo Rovers,James McManus,Sligo Rovers,M,cards,AVOID,0.151,,,,5,True,LOSS,-1.0,,2026-08-29,331906,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Federico Bonazzoli,Cremonese,F,sot,AVOID,0.516,,,,5,True,LOSS,-1.0,,2026-08-29,31436,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jamie Vardy,Cremonese,F,sot,AVOID,0.47,,,,5,True,VOID,0.0,DNP,2026-08-29,18788,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Frank Tsadjout,Cremonese,F,sot,AVOID,0.462,,,,5,True,VOID,0.0,DNP,2026-08-29,1652,
 2026-08-24,2026-08-30,Serie B,Pisa,US Catanzaro 1929,Stefano Moreo,Pisa,F,sot,AVOID,0.45,,,,5,,,,,,31560,
 2026-08-24,2026-08-30,Serie B,Pisa,US Catanzaro 1929,Matteo Tramoni,Pisa,F,sot,AVOID,0.309,,,,5,,,,,,20959,
 2026-08-24,2026-08-30,Serie B,Pisa,US Catanzaro 1929,Filip Stojilković,Pisa,F,sot,AVOID,0.299,,,,5,,,,,,123476,
 2026-08-24,2026-08-30,Serie B,Pisa,US Catanzaro 1929,Mehdi Léris,Pisa,M,sot,AVOID,0.216,,,,5,,,,,,30753,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Federico Bonazzoli,Cremonese,F,goals,AVOID,0.207,,,,5,,,,,,31436,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jamie Vardy,Cremonese,F,goals,AVOID,0.201,,,,5,,,,,,18788,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jari Vandeputte,Cremonese,M,sot,AVOID,0.177,,,,5,,,,,,31211,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Federico Bonazzoli,Cremonese,F,goals,AVOID,0.207,,,,5,True,LOSS,-1.0,,2026-08-29,31436,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jamie Vardy,Cremonese,F,goals,AVOID,0.201,,,,5,True,VOID,0.0,DNP,2026-08-29,18788,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jari Vandeputte,Cremonese,M,sot,AVOID,0.177,,,,5,True,LOSS,-1.0,,2026-08-29,31211,
 2026-08-24,2026-08-30,Serie B,Pisa,US Catanzaro 1929,Ebenezer Akinsanmiro,Pisa,M,sot,AVOID,0.164,,,,5,,,,,,408635,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Frank Tsadjout,Cremonese,F,goals,AVOID,0.158,,,,5,,,,,,1652,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Alberto Grassi,Cremonese,M,sot,AVOID,0.158,,,,5,,,,,,31021,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Frank Tsadjout,Cremonese,F,goals,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-08-29,1652,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Alberto Grassi,Cremonese,M,sot,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-08-29,31021,
 2026-08-24,2026-08-30,Serie B,Pisa,US Catanzaro 1929,Samuele Angori,Pisa,M,sot,AVOID,0.157,,,,5,,,,,,302069,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Santiago Ascacibar,Cremonese,M,sot,AVOID,0.156,,,,5,,,,,,26305,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Youssef Maleh,Cremonese,M,sot,AVOID,0.155,,,,5,,,,,,56560,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Giuseppe Pezzella,Cremonese,M,sot,AVOID,0.155,,,,5,,,,,,30775,
-2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jamie Vardy,Cremonese,F,sot2,AVOID,0.153,,,,5,,,,,,18788,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Santiago Ascacibar,Cremonese,M,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-08-29,26305,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Youssef Maleh,Cremonese,M,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-08-29,56560,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Giuseppe Pezzella,Cremonese,M,sot,AVOID,0.155,,,,5,True,LOSS,-1.0,,2026-08-29,30775,
+2026-08-24,2026-08-28,Serie B,Cremonese,Modena,Jamie Vardy,Cremonese,F,sot2,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-08-29,18788,
 2026-08-24,2026-08-29,Serie B,Padova,Hellas Verona,Kieron Bowie,Hellas Verona,F,sot,AVOID,0.526,,,,5,,,,,,126690,
 2026-08-24,2026-08-29,Serie B,Padova,Hellas Verona,Gift Orban,Hellas Verona,F,sot,AVOID,0.457,,,,5,,,,,,368260,
 2026-08-24,2026-08-29,Serie B,Padova,Hellas Verona,Tomáš Suslov,Hellas Verona,F,sot,AVOID,0.225,,,,5,,,,,,194837,
@@ -3671,19 +3671,19 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Pablo Gavi,Barcelona,M,sot,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-08-28,296667,1570335.0
 2026-08-24,2026-08-24,Serie A,AS Roma,Fiorentina,Marco Brescianini,Fiorentina,M,sot,AVOID,0.153,,,,5,True,WIN,,,2026-08-25,1639,1550087.0
 2026-08-24,2026-08-27,La Liga,Barcelona,Athletic Club,Franck Kessié,Barcelona,M,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-08-28,1642,1570335.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,André Silva,Elche,F,sot,AVOID,0.428,,,,5,,,,,,2063,1570359.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Rafa Mir,Elche,F,sot,AVOID,0.404,,,,5,,,,,,47013,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,André Silva,Elche,F,sot,AVOID,0.428,,,,5,True,LOSS,-1.0,,2026-08-29,2063,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Rafa Mir,Elche,F,sot,AVOID,0.404,,,,5,True,VOID,0.0,DNP,2026-08-29,47013,1570359.0
 2026-08-24,2026-08-31,Finland Veikkausliiga,AC Oulu,SJK Seinäjoki,R. Karjalainen,AC Oulu,F,sot,AVOID,0.256,,,,5,,,,,,55383,
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Tete Morente,Elche,F,sot,AVOID,0.204,,,,5,,,,,,47182,1570359.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Fidel,Elche,M,sot,AVOID,0.192,,,,5,,,,,,47002,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Tete Morente,Elche,F,sot,AVOID,0.204,,,,5,True,LOSS,-1.0,,2026-08-29,47182,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Fidel,Elche,M,sot,AVOID,0.192,,,,5,True,VOID,0.0,DNP,2026-08-29,47002,1570359.0
 2026-08-24,2026-08-31,Finland Veikkausliiga,AC Oulu,SJK Seinäjoki,Julius Körkkö,AC Oulu,F,sot,AVOID,0.174,,,,5,,,,,,392480,
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Sergio Canales,Racing Santander,M,sot,AVOID,0.173,,,,5,,,,,,1570,1570359.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Gustavo Puerta,Racing Santander,M,sot,AVOID,0.169,,,,5,,,,,,324034,1570359.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,André Silva,Elche,F,goals,AVOID,0.169,,,,5,,,,,,2063,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Sergio Canales,Racing Santander,M,sot,AVOID,0.173,,,,5,True,WIN,nan,,2026-08-29,1570,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Gustavo Puerta,Racing Santander,M,sot,AVOID,0.169,,,,5,True,LOSS,-1.0,,2026-08-29,324034,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,André Silva,Elche,F,goals,AVOID,0.169,,,,5,True,LOSS,-1.0,,2026-08-29,2063,1570359.0
 2026-08-24,2026-08-31,Finland Veikkausliiga,AC Oulu,SJK Seinäjoki,R. Karjalainen,AC Oulu,F,goals,AVOID,0.159,,,,5,,,,,,55383,
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Gustavo Puerta,Racing Santander,M,cards,AVOID,0.158,,,,5,,,,,,324034,1570359.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Pedro Bigas,Elche,D,cards,AVOID,0.154,,,,5,,,,,,47378,1570359.0
-2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Aleix Febas,Elche,M,sot,AVOID,0.153,,,,5,,,,,,46711,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Gustavo Puerta,Racing Santander,M,cards,AVOID,0.158,,,,5,True,LOSS,-1.0,,2026-08-29,324034,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Pedro Bigas,Elche,D,cards,AVOID,0.154,,,,5,True,LOSS,-1.0,,2026-08-29,47378,1570359.0
+2026-08-24,2026-08-28,La Liga,Racing Santander,Elche,Aleix Febas,Elche,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-08-29,46711,1570359.0
 2026-08-25,2026-08-29,Bundesliga,1. FC Köln,1899 Hoffenheim,Ragnar Ache,1. FC Köln,F,sot,AVOID,0.707,1.33,-0.0597,-0.0033,5,,,,,,37439,1575144.0
 2026-08-25,2026-08-29,Ligue 1,Lyon,Le Havre,Alexandre Lacazette,Lyon,F,sot,AVOID,0.707,,,,5,,,,,,1467,1552741.0
 2026-08-25,2026-08-29,Serie A,Fiorentina,Frosinone,Moise Kean,Fiorentina,F,sot,AVOID,0.692,,,,5,,,,,,877,1550100.0
@@ -4053,22 +4053,22 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-25,2026-08-25,La Liga,Valencia,Real Betis,Arnaut Danjuma,Valencia,F,sot,AVOID,0.292,,,,5,True,WIN,,,2026-08-26,83,1570342.0
 2026-08-25,2026-08-25,La Liga,Valencia,Real Betis,Rodrigo Riquelme,Real Betis,M,sot,AVOID,0.198,,,,5,True,LOSS,-1.0,,2026-08-26,136117,1570342.0
 2026-08-25,2026-08-25,La Liga,Valencia,Real Betis,Nelson Deossa,Real Betis,M,sot,AVOID,0.165,2.1,-0.6535,-0.6327,5,True,LOSS,-1.0,,2026-08-26,300885,1570342.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Toni Martínez,Alaves,F,sot,AVOID,0.51,,,,5,,,,,,47181,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Georges Mikautadze,Villarreal,F,sot,AVOID,0.473,,,,5,,,,,,180496,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Ayoze Pérez,Villarreal,F,sot,AVOID,0.331,,,,5,,,,,,18906,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Lucas Boyé,Alaves,F,sot,AVOID,0.307,,,,5,,,,,,608,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Nicolas Pépé,Villarreal,M,sot,AVOID,0.293,,,,5,,,,,,3246,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Toni Martínez,Alaves,F,goals,AVOID,0.273,,,,5,,,,,,47181,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Pape Gueye,Villarreal,M,sot,AVOID,0.267,,,,5,,,,,,20696,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Tajon Buchanan,Villarreal,F,sot,AVOID,0.199,,,,5,,,,,,51016,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Abderrahman Rebbach,Alaves,M,sot,AVOID,0.195,,,,5,,,,,,183751,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Alberto Moleiro,Villarreal,M,sot,AVOID,0.194,,,,5,,,,,,182519,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Ángel Pérez,Alaves,M,sot,AVOID,0.188,,,,5,,,,,,331369,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Georges Mikautadze,Villarreal,F,goals,AVOID,0.185,,,,5,,,,,,180496,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Antonio Blanco,Alaves,M,sot,AVOID,0.17,,,,5,,,,,,162686,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Pau Navarro,Villarreal,D,cards,AVOID,0.167,,,,5,,,,,,435552,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Santiago Mouriño,Villarreal,D,cards,AVOID,0.155,,,,5,,,,,,311773,1570353.0
-2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Moussa Diarra,Alaves,D,cards,AVOID,0.154,,,,5,,,,,,70476,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Toni Martínez,Alaves,F,sot,AVOID,0.51,,,,5,True,LOSS,-1.0,,2026-08-29,47181,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Georges Mikautadze,Villarreal,F,sot,AVOID,0.473,,,,5,True,LOSS,-1.0,,2026-08-29,180496,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Ayoze Pérez,Villarreal,F,sot,AVOID,0.331,,,,5,True,WIN,nan,,2026-08-29,18906,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Lucas Boyé,Alaves,F,sot,AVOID,0.307,,,,5,True,WIN,nan,,2026-08-29,608,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Nicolas Pépé,Villarreal,M,sot,AVOID,0.293,,,,5,True,WIN,nan,,2026-08-29,3246,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Toni Martínez,Alaves,F,goals,AVOID,0.273,,,,5,True,LOSS,-1.0,,2026-08-29,47181,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Pape Gueye,Villarreal,M,sot,AVOID,0.267,,,,5,True,LOSS,-1.0,,2026-08-29,20696,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Tajon Buchanan,Villarreal,F,sot,AVOID,0.199,,,,5,True,WIN,nan,,2026-08-29,51016,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Abderrahman Rebbach,Alaves,M,sot,AVOID,0.195,,,,5,True,LOSS,-1.0,,2026-08-29,183751,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Alberto Moleiro,Villarreal,M,sot,AVOID,0.194,,,,5,True,LOSS,-1.0,,2026-08-29,182519,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Ángel Pérez,Alaves,M,sot,AVOID,0.188,,,,5,True,LOSS,-1.0,,2026-08-29,331369,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Georges Mikautadze,Villarreal,F,goals,AVOID,0.185,,,,5,True,LOSS,-1.0,,2026-08-29,180496,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Antonio Blanco,Alaves,M,sot,AVOID,0.17,,,,5,True,LOSS,-1.0,,2026-08-29,162686,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Pau Navarro,Villarreal,D,cards,AVOID,0.167,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,435552,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Santiago Mouriño,Villarreal,D,cards,AVOID,0.155,,,,5,True,LOSS,-1.0,,2026-08-29,311773,1570353.0
+2026-08-25,2026-08-28,La Liga,Alaves,Villarreal,Moussa Diarra,Alaves,D,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-08-29,70476,1570353.0
 2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,sot,AVOID,0.735,,,,5,True,VOID,0.0,DNP,2026-08-28,138835,1623423.0
 2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Wissam Ben Yedder,Monaco,F,sot,AVOID,0.725,,,,5,True,VOID,0.0,DNP (0 min),2026-08-28,2059,1623423.0
 2026-08-26,2026-08-27,Conference League,Monaco,Gornik Zabrze,Folarin Balogun,Monaco,F,goals,AVOID,0.511,,,,5,True,VOID,0.0,DNP,2026-08-28,138835,1623423.0
@@ -4156,7 +4156,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Matthew Healy,Shamrock Rovers,M,cards,AVOID,0.175,,,,5,,,,,,290999,1492757.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,VPS,Lahti,Martim Ferreira,Lahti,F,sot,AVOID,0.173,,,,5,,,,,,335052,1495774.0
 2026-08-27,2026-08-29,League Two,Port Vale,Crewe,Ruari Paton,Port Vale,M,sot,AVOID,0.172,,,,5,,,,,,138524,1563714.0
-2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Gianfranco Facchineri,Galway United,D,cards,AVOID,0.172,,,,5,,,,,,199405,1492759.0
+2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Gianfranco Facchineri,Galway United,D,cards,AVOID,0.172,,,,5,True,LOSS,-1.0,,2026-08-29,199405,1492759.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,L. Lingman,HJK Helsinki,M,sot,AVOID,0.168,,,,5,,,,,,55529,1495771.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,Pyry Mentu,HJK Helsinki,M,sot,AVOID,0.168,,,,5,,,,,,425780,1495771.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,J. van der Heyden,Mariehamn,M,sot,AVOID,0.167,,,,5,,,,,,36844,1495773.0
@@ -4164,7 +4164,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,Ibrahim Cissé,KuPS,D,cards,AVOID,0.167,,,,5,,,,,,129635,1495772.0
 2026-08-27,2026-08-29,League Two,Gillingham,Northampton,Jake Evans,Northampton,F,sot,AVOID,0.165,,,,5,,,,,,434183,1563710.0
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Cameron Dummigan,Derry City,D,cards,AVOID,0.163,,,,5,,,,,,69230,1492757.0
-2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Evan Caffrey,Shelbourne,M,cards,AVOID,0.163,,,,5,,,,,,201380,1492759.0
+2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Evan Caffrey,Shelbourne,M,cards,AVOID,0.163,,,,5,True,LOSS,-1.0,,2026-08-29,201380,1492759.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,Prosper Ahiabu,Inter Turku,M,cards,AVOID,0.163,,,,5,,,,,,214279,1495772.0
 2026-08-27,2026-08-29,League Two,Rotherham,Chesterfield,Mallik Wilks,Rotherham,F,goals,AVOID,0.163,,,,5,,,,,,19948,1563715.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,VPS,Lahti,Pedro Justiniano,VPS,D,cards,AVOID,0.162,,,,5,,,,,,41717,1495774.0
@@ -4172,21 +4172,21 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,T. Pukki,HJK Helsinki,F,goals,AVOID,0.16,,,,5,,,,,,19085,1495771.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,G. Engvall,KuPS,M,sot,AVOID,0.16,,,,5,,,,,,8944,1495772.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,Daniel Enqvist,Mariehamn,D,sot,AVOID,0.16,,,,5,,,,,,239376,1495773.0
-2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Paddy Barrett,Shelbourne,D,cards,AVOID,0.16,,,,5,,,,,,70913,1492759.0
+2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Paddy Barrett,Shelbourne,D,cards,AVOID,0.16,,,,5,True,VOID,0.0,DNP,2026-08-29,70913,1492759.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,T. Koivisto,Mariehamn,D,sot,AVOID,0.159,,,,5,,,,,,314118,1495773.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Inter Turku,KuPS,Florian Krebs,Inter Turku,M,cards,AVOID,0.159,,,,5,,,,,,162735,1495772.0
-2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,John Martin,Shelbourne,F,cards,AVOID,0.159,,,,5,,,,,,69407,1492759.0
+2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,John Martin,Shelbourne,F,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-08-29,69407,1492759.0
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Joshua Honohan,Shamrock Rovers,M,cards,AVOID,0.158,,,,5,,,,,,133200,1492757.0
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Lee Grace,Shamrock Rovers,D,cards,AVOID,0.156,,,,5,,,,,,69258,1492757.0
 2026-08-27,2026-08-29,La Liga 2,Leganes,Eldense,Jorge Sáenz,Leganes,D,sot,AVOID,0.156,,,,5,,,,,,47080,1569900.0
-2026-08-27,2026-08-28,Ireland Premier Division,St Patrick's Athl.,Waterford,Aidan Keena,St Patrick's Athl.,F,sot,AVOID,0.156,,,,5,,,,,,44878,1492760.0
+2026-08-27,2026-08-28,Ireland Premier Division,St Patrick's Athl.,Waterford,Aidan Keena,St Patrick's Athl.,F,sot,AVOID,0.156,,,,5,True,WIN,nan,,2026-08-29,44878,1492760.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Mariehamn,FF Jaro,Albin Björkskog,FF Jaro,M,sot,AVOID,0.155,,,,5,,,,,,268448,1495773.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,VPS,Lahti,Olli Jakonen,VPS,F,sot,AVOID,0.155,,,,5,,,,,,173789,1495774.0
 2026-08-27,2026-08-31,Finland Veikkausliiga,Ilves,HJK Helsinki,Georgios Kanellopoulos,HJK helsinki,M,sot,AVOID,0.155,,,,5,,,,,,135853,1495771.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Iván Martín,Girona,M,sot,AVOID,0.155,,,,5,,,,,,1700,1569899.0
 2026-08-27,2026-08-29,La Liga 2,Girona,Las Palmas,Bernardo Espinosa,Girona,D,sot,AVOID,0.155,,,,5,,,,,,47505,1569899.0
-2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Jack Henry-Francis,Shelbourne,M,cards,AVOID,0.155,,,,5,,,,,,284463,1492759.0
-2026-08-27,2026-08-28,Ireland Premier Division,St Patrick's Athl.,Waterford,Ryan Edmondson,St Patrick's Athl.,F,sot,AVOID,0.154,,,,5,,,,,,19137,1492760.0
+2026-08-27,2026-08-28,Ireland Premier Division,Galway United,Shelbourne,Jack Henry-Francis,Shelbourne,M,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP (0 min),2026-08-29,284463,1492759.0
+2026-08-27,2026-08-28,Ireland Premier Division,St Patrick's Athl.,Waterford,Ryan Edmondson,St Patrick's Athl.,F,sot,AVOID,0.154,,,,5,True,LOSS,-1.0,,2026-08-29,19137,1492760.0
 2026-08-27,2026-08-29,League Two,Gillingham,Northampton,Sam Hoskins,Northampton,F,sot,AVOID,0.153,,,,5,,,,,,17790,1563710.0
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Daniel Grant,Shamrock Rovers,M,cards,AVOID,0.152,,,,5,,,,,,69304,1492757.0
 2026-08-27,2026-08-30,Ireland Premier Division,Derry City,Shamrock Rovers,Patrick McClean,Derry City,D,cards,AVOID,0.151,,,,5,,,,,,69316,1492757.0
@@ -4238,12 +4238,12 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-27,2026-08-29,La Liga,Sevilla,Atletico Madrid,Pablo Barrios,Atletico Madrid,M,sot,AVOID,0.167,,,,5,,,,,,336594,1570362.0
 2026-08-27,2026-08-29,La Liga,Real Sociedad,Espanyol,Óscar Gil,Espanyol,D,cards,AVOID,0.156,,,,5,,,,,,46968,1570361.0
 2026-08-27,2026-08-29,La Liga,Sevilla,Atletico Madrid,Óliver Torres,Sevilla,M,sot,AVOID,0.154,,,,5,,,,,,385,1570362.0
-2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Aaron Opoku,Eintracht Braunschweig,M,sot,AVOID,0.358,,,,5,,,,,,24884,1576153.0
-2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Sebastian Grønning,Hertha BSC,F,sot,AVOID,0.328,,,,5,,,,,,15776,1576153.0
-2026-08-28,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Gerrit Holtmann,VfL Bochum,M,sot,AVOID,0.312,,,,5,,,,,,25919,1576152.0
-2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Jón Dagur Þórsteinsson,Hertha BSC,F,sot,AVOID,0.193,,,,5,,,,,,15755,1576153.0
-2026-08-28,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Mats Pannewig,VfL Bochum,M,sot,AVOID,0.165,,,,5,,,,,,336224,1576152.0
-2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Kevin Sessa,Hertha BSC,M,sot,AVOID,0.153,,,,5,,,,,,24909,1576153.0
+2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Aaron Opoku,Eintracht Braunschweig,M,sot,AVOID,0.358,,,,5,True,WIN,nan,,2026-08-29,24884,1576153.0
+2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Sebastian Grønning,Hertha BSC,F,sot,AVOID,0.328,,,,5,True,WIN,nan,,2026-08-29,15776,1576153.0
+2026-08-28,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Gerrit Holtmann,VfL Bochum,M,sot,AVOID,0.312,,,,5,True,LOSS,-1.0,,2026-08-29,25919,1576152.0
+2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Jón Dagur Þórsteinsson,Hertha BSC,F,sot,AVOID,0.193,,,,5,True,WIN,nan,,2026-08-29,15755,1576153.0
+2026-08-28,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,Mats Pannewig,VfL Bochum,M,sot,AVOID,0.165,,,,5,True,LOSS,-1.0,,2026-08-29,336224,1576152.0
+2026-08-28,2026-08-28,Bundesliga 2,Eintracht Braunschweig,Hertha BSC,Kevin Sessa,Hertha BSC,M,sot,AVOID,0.153,,,,5,True,LOSS,-1.0,,2026-08-29,24909,1576153.0
 2026-08-28,2026-08-30,La Liga,Real Madrid,Malaga,Kylian Mbappé,Real Madrid,F,sot,AVOID,0.882,1.04,-0.0827,-0.0277,5,,,,,,278,1570360.0
 2026-08-28,2026-08-30,La Liga,Real Madrid,Malaga,Karim Benzema,Real Madrid,F,sot,AVOID,0.804,,,,5,,,,,,759,1570360.0
 2026-08-28,2026-08-30,La Liga,Real Madrid,Malaga,Kylian Mbappé,Real Madrid,F,sot2,AVOID,0.758,1.23,-0.0677,-0.0117,5,,,,,,278,1570360.0
@@ -4273,19 +4273,19 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-28,2026-08-30,La Liga,Real Madrid,Malaga,Trent Alexander-Arnold,Real Madrid,D,sot,AVOID,0.155,2.95,-0.5427,-0.5153,5,,,,,,283,1570360.0
 2026-08-28,2026-08-30,La Liga,Real Madrid,Malaga,Karim Benzema,Real Madrid,F,assists,AVOID,0.153,,,,5,,,,,,759,1570360.0
 2026-08-28,2026-08-30,La Liga,Real Madrid,Malaga,Thiago Pitarch,Real Madrid,M,sot,AVOID,0.151,,,,5,,,,,,509470,1570360.0
-2026-08-28,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Deniz Undav,VfB Stuttgart,F,sot,AVOID,0.557,1.54,-0.1422,-0.0908,5,,,,,,26475,1575140.0
-2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Olivier Giroud,Lille,F,sot,AVOID,0.389,1.59,-0.3815,-0.3444,5,,,,,,2295,1552746.0
-2026-08-28,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Deniz Undav,VfB Stuttgart,F,goals,MARKSMAN,0.337,4.0,0.348,0.4828,5,,,,,,26475,1575140.0
-2026-08-28,2026-08-28,Championship,Wrexham,Birmingham,Kieffer Moore,Wrexham,F,sot,AVOID,0.308,1.33,-0.5904,-0.5658,5,,,,,,19804,1563118.0
-2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Désiré Doué,Paris Saint Germain,M,sot,AVOID,0.306,1.45,-0.5563,-0.5297,5,,,,,,343027,1552746.0
-2026-08-28,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Tiago Tomás,VfB Stuttgart,F,sot,AVOID,0.276,,,,5,,,,,,265363,1575140.0
-2026-08-28,2026-08-28,Championship,Wrexham,Birmingham,Demarai Gray,Birmingham,F,sot,AVOID,0.256,,,,5,,,,,,18781,1563118.0
-2026-08-28,2026-08-28,Championship,Wrexham,Birmingham,Nathan Broadhead,Wrexham,F,sot,AVOID,0.24,1.62,-0.6112,-0.5879,5,,,,,,126791,1563118.0
-2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ethan Mbappé,Lille,M,sot,AVOID,0.192,2.25,-0.568,-0.5421,5,,,,,,386287,1552746.0
-2026-08-28,2026-08-28,Serie A,AC Milan,Venezia,Kike Pérez,Venezia,M,cards,AVOID,0.176,,,,5,,,,,,107153,1550097.0
-2026-08-28,2026-08-28,Serie A,AC Milan,Venezia,Ruben Loftus-Cheek,AC Milan,M,sot,AVOID,0.173,1.89,-0.673,-0.6534,5,,,,,,2292,1550097.0
-2026-08-28,2026-08-28,Serie A,AC Milan,Venezia,Kike Pérez,Venezia,M,sot,AVOID,0.154,,,,5,,,,,,107153,1550097.0
-2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Fabián Ruiz,Paris Saint Germain,M,sot,AVOID,0.152,3.2,-0.5136,-0.465,5,,,,,,328,1552746.0
+2026-08-28,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Deniz Undav,VfB Stuttgart,F,sot,AVOID,0.557,1.54,-0.1422,-0.0908,5,True,LOSS,-1.0,,2026-08-29,26475,1575140.0
+2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Olivier Giroud,Lille,F,sot,AVOID,0.389,1.59,-0.3815,-0.3444,5,True,WIN,0.59,,2026-08-29,2295,1552746.0
+2026-08-28,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Deniz Undav,VfB Stuttgart,F,goals,MARKSMAN,0.337,4.0,0.348,0.4828,5,True,LOSS,-1.0,,2026-08-29,26475,1575140.0
+2026-08-28,2026-08-28,Championship,Wrexham,Birmingham,Kieffer Moore,Wrexham,F,sot,AVOID,0.308,1.33,-0.5904,-0.5658,5,True,WIN,0.33,,2026-08-29,19804,1563118.0
+2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Désiré Doué,Paris Saint Germain,M,sot,AVOID,0.306,1.45,-0.5563,-0.5297,5,True,LOSS,-1.0,,2026-08-29,343027,1552746.0
+2026-08-28,2026-08-28,Bundesliga,Bayern München,VfB Stuttgart,Tiago Tomás,VfB Stuttgart,F,sot,AVOID,0.276,,,,5,True,WIN,nan,,2026-08-29,265363,1575140.0
+2026-08-28,2026-08-28,Championship,Wrexham,Birmingham,Demarai Gray,Birmingham,F,sot,AVOID,0.256,,,,5,True,LOSS,-1.0,,2026-08-29,18781,1563118.0
+2026-08-28,2026-08-28,Championship,Wrexham,Birmingham,Nathan Broadhead,Wrexham,F,sot,AVOID,0.24,1.62,-0.6112,-0.5879,5,True,LOSS,-1.0,,2026-08-29,126791,1563118.0
+2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Ethan Mbappé,Lille,M,sot,AVOID,0.192,2.25,-0.568,-0.5421,5,True,WIN,1.25,,2026-08-29,386287,1552746.0
+2026-08-28,2026-08-28,Serie A,AC Milan,Venezia,Kike Pérez,Venezia,M,cards,AVOID,0.176,,,,5,True,WIN,nan,,2026-08-29,107153,1550097.0
+2026-08-28,2026-08-28,Serie A,AC Milan,Venezia,Ruben Loftus-Cheek,AC Milan,M,sot,AVOID,0.173,1.89,-0.673,-0.6534,5,True,LOSS,-1.0,,2026-08-29,2292,1550097.0
+2026-08-28,2026-08-28,Serie A,AC Milan,Venezia,Kike Pérez,Venezia,M,sot,AVOID,0.154,,,,5,True,LOSS,-1.0,,2026-08-29,107153,1550097.0
+2026-08-28,2026-08-28,Ligue 1,Lille,Paris Saint Germain,Fabián Ruiz,Paris Saint Germain,M,sot,AVOID,0.152,3.2,-0.5136,-0.465,5,True,WIN,2.2,,2026-08-29,328,1552746.0
 2026-08-28,2026-08-30,Premier League,Chelsea,Brighton,Cole Palmer,Chelsea,F,sot,AVOID,0.661,1.39,-0.0812,-0.0261,5,,,,,,152982,1557379.0
 2026-08-28,2026-08-29,Bundesliga,SV Elversberg,Bayer Leverkusen,Lukas Petkov,SV Elversberg,M,sot,AVOID,0.615,,,,5,,,,,,177452,1575143.0
 2026-08-28,2026-08-30,La Liga,Deportivo La Coruna,Valencia,Pierre-Emerick Aubameyang,Deportivo La Coruna,F,sot,AVOID,0.593,1.57,-0.069,-0.0131,5,,,,,,1465,1570356.0
