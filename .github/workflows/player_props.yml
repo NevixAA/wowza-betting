@@ -9,7 +9,30 @@ concurrency:
 on:
   schedule:
     # Predict-only: every hour at :02 (24/7 during WC, night skipped after Jul 19)
-    - cron: '2 * * * *'
+    #
+    # WEEKEND WEIGHTING (2026-08-29). Hourly was flat across the week while the fixtures are not:
+    # measured on 414 unique fixtures, Fri-Sun carries 327 of them (79.0%) — 109/day against
+    # 22/day Mon-Thu. Sampling a Tuesday as often as a Saturday spends the scheduler where there
+    # is nothing to price.
+    #
+    # Cadence matters MORE for props than for team markets, because a prop price is not simply
+    # sitting there waiting: coverage is per fixture, markets are posted late and DEEPEN toward
+    # kickoff (Hull v Man United carried only anytime-scorer 7 days out; Espanyol v Levante
+    # carried all 6 markets at 3 days), which is why the empty-response TTL already scales with
+    # time to kickoff. Opening -> moving -> closing can only be observed by sampling inside that
+    # final window, and it CANNOT be backfilled — a closing price not captured is gone.
+    # So the extra firings go in the Fri-Sun daytime window, where the kickoffs actually are.
+    #
+    # HALF-HOURLY, NOT FINER, AND DELIBERATELY CONSERVATIVE. This group serialises
+    # (cancel-in-progress: false) and GitHub keeps one pending run per group, so an interval
+    # under the run time queues and then gets dropped — the failure predict.yml was just fixed
+    # for. Props runtime is NOT measured here (no authenticated gh in the shell this was written
+    # in), so 30 min is chosen to leave roughly 2x headroom on a plausible run length rather than
+    # tuned to a number. IF props runs start queueing or delivery drops on Fri-Sun, this goes
+    # back to hourly first — verify against real workflow runs, not local checks.
+    - cron: '2 * * * 1-4'          # Mon-Thu: hourly, unchanged
+    - cron: '2 0-8,23 * * 5,6,0'   # Fri-Sun: hourly outside the kickoff window
+    - cron: '2,32 9-22 * * 5,6,0'  # Fri-Sun 09:00-22:59 UTC (12:00-01:59 IL): every 30 min
     # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC

@@ -40,8 +40,34 @@ on:
     # most fixtures are, 20-minute overnight when only the Americas are playing. 96 + 24 = 120
     # events/day. That matters because the repo already requests ~605 scheduled events/day and
     # GitHub drops queued jobs under load, so every added firing is paid for by the others.
-    - cron: '1-59/10 8-23 * * *'   # 10-min: 08:00-23:59 UTC = 11:00-02:59 Israel
-    - cron: '1-59/20 0-7 * * *'    # 20-min: 00:00-07:59 UTC = 03:00-10:59 Israel (Americas)
+    # DAY-OF-WEEK WEIGHTING (2026-08-29). The split above was time-of-day only — the DOW field
+    # was `*`, so a dead Tuesday got exactly the cadence of a Saturday. Measured on 414 unique
+    # fixtures (kickoff_utc, 2026-08-17..09-05):
+    #
+    #     Sat 181 (3.06x an average day) · Sun 106 · Fri 40 · Mon 39 · Wed 21 · Thu 10 · Tue 9
+    #     Fri-Sun 327 = 79.0% of all fixtures — 109/day against 22/day Mon-Thu, a 5.0x ratio.
+    #
+    # THE WEEKEND FIX IS *NOT* "RUN PREDICT MORE OFTEN ON SATURDAY", and that is the whole point.
+    # 10 minutes is already the collision floor: p90 is 3.9 min and max 6.3, the group serialises
+    # (cancel-in-progress: false), and GitHub keeps only ONE pending run per group. Saturday is
+    # also when a run is SLOWEST, because it prices the most fixtures. Asking for 5-minute firings
+    # on the busiest day would recreate exactly the queue-and-drop failure this cadence was raised
+    # to fix — 14% delivery — and would cost tips on the day they matter most. So Fri-Sun keeps
+    # 10 min in the main window; the weighting is spent where there IS headroom instead:
+    #
+    #   * Fri-Sun overnight 20 -> 10 min. 39 of the 60 overnight kickoffs fall on Fri-Sun, and
+    #     predict is pre-match only (invariant 5), so a 20-minute gap there is a genuinely stale
+    #     last-look at an MLS/Liga MX price.
+    #   * Mon-Thu relaxed 10 -> 15 min and 20 -> 30 min. 22 fixtures a day does not justify 96
+    #     firings; the repo already requests ~605 scheduled events/day and GitHub drops queued
+    #     jobs under load, so every firing spent on a quiet Tuesday is paid for by a busy Sunday.
+    #
+    # Net scheduler load falls (120/day flat -> ~101/day averaged) while Fri-Sun coverage rises.
+    # DOW field: 0=Sun, 5=Fri, 6=Sat. Israel is UTC+3 summer / UTC+2 winter — cron is UTC ONLY.
+    - cron: '1-59/10 8-23 * * 5,6,0'  # Fri-Sun busy window, 10-min (collision floor, unchanged)
+    - cron: '1-59/10 0-7 * * 5,6,0'   # Fri-Sun overnight, tightened 20 -> 10 (Americas)
+    - cron: '1-59/15 8-23 * * 1-4'    # Mon-Thu busy window, relaxed 10 -> 15
+    - cron: '1-59/30 0-7 * * 1-4'     # Mon-Thu overnight, relaxed 20 -> 30
   workflow_dispatch:
 
 concurrency:
