@@ -12,7 +12,13 @@ concurrency:
 
 on:
   schedule:
-    - cron: '*/30 * * * *'   # every 30 min
+    # CUT 2026-08-29: every 30 min (48/day) -> every 3h (8/day). This polls a usage counter; the
+    # question "are we near the 75,000/day cap" does not change on a 30-minute scale, and measured
+    # usage is ~10-14k against that cap. It was spending 48 firings of a scheduler budget that
+    # GitHub was only honouring ~4% of, and delivering 2 runs in 12 hours anyway.
+    # :51 rather than :00 or :30 — GitHub documents those as its most contended minutes, and
+    # `*/30` landed on both of them.
+    - cron: '51 1,4,7,10,13,16,19,22 * * *'   # every 3h, off the hour
   workflow_dispatch:
 
 jobs:

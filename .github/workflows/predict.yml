@@ -64,10 +64,26 @@ on:
     #
     # Net scheduler load falls (120/day flat -> ~101/day averaged) while Fri-Sun coverage rises.
     # DOW field: 0=Sun, 5=Fri, 6=Sat. Israel is UTC+3 summer / UTC+2 winter — cron is UTC ONLY.
-    - cron: '1-59/10 8-23 * * 5,6,0'  # Fri-Sun busy window, 10-min (collision floor, unchanged)
-    - cron: '1-59/10 0-7 * * 5,6,0'   # Fri-Sun overnight, tightened 20 -> 10 (Americas)
-    - cron: '1-59/15 8-23 * * 1-4'    # Mon-Thu busy window, relaxed 10 -> 15
-    - cron: '1-59/30 0-7 * * 1-4'     # Mon-Thu overnight, relaxed 20 -> 30
+    # CUT AGAIN 2026-08-29, and the earlier reasoning on this line was wrong. Weighting toward
+    # Fri-Sun was right about WHERE the fixtures are and wrong about what limits delivery. The
+    # binding constraint is not this workflow's cadence, it is the REPO'S TOTAL ASK: 696 scheduled
+    # firings on a Saturday, of which GitHub delivered about 4%. Measured over 12 hours:
+    #
+    #     live_scanner  224 requested -> 1 delivered      nf_odds_capture  100 -> 3
+    #     predict       144 requested -> 1 delivered      std_odds_capture 100 -> 3
+    #
+    # The relationship is inverse: the workflows asking for LEAST got 3 of 4, the ones asking for
+    # most got ~1%. Raising Fri-Sun from 120 to 144 therefore made predict less likely to run, not
+    # more. Asking for less genuinely delivers more, and this is the second time that has been
+    # measured here.
+    #
+    # 80 firings on a Saturday (was 144). Minutes are :09/:39 rather than :00 or :01 — GitHub
+    # documents the start of the hour as its busiest scheduling slot, so landing there competes
+    # with every other repo on the platform.
+    - cron: '9-59/15 8-23 * * 5,6,0'  # Fri-Sun busy window, 15-min  (64/day)
+    - cron: '9-59/30 0-7 * * 5,6,0'   # Fri-Sun overnight, 30-min    (16/day)
+    - cron: '9-59/30 8-23 * * 1-4'    # Mon-Thu busy window, 30-min  (32/day)
+    - cron: '9 0-7 * * 1-4'           # Mon-Thu overnight, hourly    (8/day)
   workflow_dispatch:
 
 concurrency:
