@@ -31,8 +31,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Bundesliga 2",
-    "priced_events": 32,
-    "probes": 32,
+    "priced_events": 33,
+    "probes": 33,
     "source": "api_football"
   },
   "apifootball:Champions League": {
@@ -47,8 +47,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Championship",
-    "priced_events": 31,
-    "probes": 35,
+    "priced_events": 32,
+    "probes": 36,
     "source": "api_football"
   },
   "apifootball:China Super League": {
@@ -88,10 +88,10 @@
     "source": "api_football"
   },
   "apifootball:Finland Veikkausliiga": {
-    "empty_streak": 32,
+    "empty_streak": 33,
     "last_probe": "2026-08-30",
     "league": "Finland Veikkausliiga",
-    "probes": 32,
+    "probes": 33,
     "source": "api_football"
   },
   "apifootball:Ireland Premier Division": {
@@ -99,8 +99,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Ireland Premier Division",
-    "priced_events": 32,
-    "probes": 32,
+    "priced_events": 33,
+    "probes": 33,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
@@ -108,8 +108,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "La Liga 2",
-    "priced_events": 32,
-    "probes": 32,
+    "priced_events": 33,
+    "probes": 33,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -117,8 +117,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "League One",
-    "priced_events": 34,
-    "probes": 34,
+    "priced_events": 35,
+    "probes": 35,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -126,8 +126,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "League Two",
-    "priced_events": 24,
-    "probes": 33,
+    "priced_events": 25,
+    "probes": 34,
     "source": "api_football"
   },
   "apifootball:Mexico Liga MX": {
@@ -162,8 +162,8 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Serie B",
-    "priced_events": 32,
-    "probes": 32,
+    "priced_events": 33,
+    "probes": 33,
     "source": "api_football"
   },
   "apifootball:Sweden Allsvenskan": {
@@ -206,40 +206,35 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Premier League",
-    "matched_events": 8,
-    "priced_events": 943,
-    "probes": 961,
+    "matched_events": 5,
+    "priced_events": 948,
+    "probes": 966,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_france_ligue_one": {
     "empty_streak": 0,
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Ligue 1",
-    "matched_events": 2,
-    "priced_events": 799,
-    "probes": 808,
+    "matched_events": 3,
+    "priced_events": 802,
+    "probes": 811,
     "unmatched_sample": [
-      "Lens vs Lorient",
-      "Lyon vs Auxerre",
-      "Nice vs Le Mans",
-      "Paris Saint Germain vs Monaco",
-      "Rennes vs Le Mans",
       "Toulouse vs Lille"
     ],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 4
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 0,
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Bundesliga",
-    "matched_events": 8,
-    "priced_events": 359,
-    "probes": 372,
+    "matched_events": 2,
+    "priced_events": 361,
+    "probes": 374,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 2
   },
   "soccer_germany_bundesliga2": {
     "empty_streak": 24,
@@ -259,11 +254,11 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "Serie A",
-    "matched_events": 8,
-    "priced_events": 991,
-    "probes": 1003,
+    "matched_events": 5,
+    "priced_events": 996,
+    "probes": 1008,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
@@ -271,13 +266,11 @@
     "last_priced": "2026-08-30",
     "last_probe": "2026-08-30",
     "league": "La Liga",
-    "matched_events": 7,
-    "priced_events": 822,
-    "probes": 872,
-    "unmatched_sample": [
-      "Athletic Club vs Atletico Madrid"
-    ],
-    "wanted_fixtures": 8
+    "matched_events": 5,
+    "priced_events": 827,
+    "probes": 877,
+    "unmatched_sample": [],
+    "wanted_fixtures": 5
   },
   "soccer_uefa_champs_league": {
     "far_empty_probes": 10,
