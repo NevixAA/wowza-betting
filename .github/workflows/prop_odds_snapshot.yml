@@ -12,7 +12,11 @@ concurrency:
 
 on:
   schedule:
-    - cron: '20 */2 * * *'   # every 2 hours (matches the odds-fetch cache TTL -> near-free)
+    # 12/day -> 6/day on 2026-08-30. Near-free in API terms, but NOT free in scheduling terms:
+    # every scheduled run competes for the same throttled budget as predict and the odds captures,
+    # and this one feeds the permanently-paper props product (root invariant 2). Delivered 3.3/day
+    # against 12 requested; at 6 requested it should deliver most of them.
+    - cron: '20 */4 * * *'   # every 4 hours (still within the odds-fetch cache TTL -> near-free)
   workflow_dispatch:
 
 jobs:

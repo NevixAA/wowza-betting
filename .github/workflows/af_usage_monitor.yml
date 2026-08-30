@@ -18,7 +18,11 @@ on:
     # GitHub was only honouring ~4% of, and delivering 2 runs in 12 hours anyway.
     # :51 rather than :00 or :30 — GitHub documents those as its most contended minutes, and
     # `*/30` landed on both of them.
-    - cron: '51 1,4,7,10,13,16,19,22 * * *'   # every 3h, off the hour
+    # 8/day -> 4/day on 2026-08-30. This only READS the quota meter; it collects nothing that can
+    # be lost. Usage runs ~10-14k against a 75,000/day ceiling, so four readings a day is ample to
+    # catch a runaway path well before it matters, and the four runs given up go to workflows whose
+    # dropped runs are permanent losses.
+    - cron: '51 1,7,13,19 * * *'   # every 6h, off the hour
   workflow_dispatch:
 
 jobs:
