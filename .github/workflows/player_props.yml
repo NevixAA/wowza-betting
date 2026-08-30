@@ -37,7 +37,23 @@ on:
     # firings a day to a workflow already being dropped makes it less likely to run, not more.
     # Back to hourly everywhere — 24/day, and the weekend question gets revisited only once
     # delivery is healthy enough to measure the difference.
-    - cron: '2 * * * *'
+    # CUT hourly -> every 3h on 2026-08-30 (24/day -> 8/day). The note above already reached the
+    # right conclusion once and stopped one step short: asking for less DELIVERS more, and hourly
+    # is still more than this workflow earns.
+    #
+    # Two reasons it is the right place to take the cut:
+    #
+    #   1. Player props are PAPER ONLY, PERMANENTLY (root CLAUDE.md invariant 2). Confirmed across
+    #      8 tests on the bug-fixed model: the market's AUC matches or beats ours and every oracle
+    #      framework with a real bet count is negative. No amount of refresh frequency turns a
+    #      paper product into money, so its runs are the cheapest in the estate to give up.
+    #   2. It was delivering 10/day against 26 requested (38%) while std_odds_capture and
+    #      nf_odds_capture — whose prices are pre-match only and CANNOT be backfilled — were being
+    #      dropped down to 18-21%. Props competing with the closing price is a bad trade.
+    #
+    # Prop markets deepen toward kickoff, so what matters is being sampled at all in the last few
+    # hours, not being sampled every hour for three days.
+    - cron: '2 */3 * * *'
     # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC

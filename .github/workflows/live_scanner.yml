@@ -44,8 +44,24 @@ on:
     # The better fix is one firing that samples internally for an hour, the pattern
     # std_odds_capture already uses and the live-odds collector in Pro was built around. That
     # needs a change to the scanner script itself, which is v9 logic and out of scope here.
-    - cron: '4-59/30 8-23 * * *'   # 30-min: 08:00-23:59 UTC = 11:00-02:59 Israel  (32/day)
-    - cron: '4 0-7 * * *'          # hourly: 00:00-07:59 UTC = 03:00-10:59 Israel  (8/day)
+    # CUT 40/day -> 16/day on 2026-08-30. Asking for less here should DELIVER MORE.
+    #
+    # Measured across all three repos over 72h, configured rate vs what actually ran:
+    #
+    #     <= 8 runs/day configured   ->  42-158% delivered   (i.e. essentially all of them)
+    #     >= 26 runs/day configured  ->    8-38% delivered
+    #
+    # This workflow asked for 40/day and delivered 3 — 8%, the worst ratio in the estate.
+    # GitHub does not guarantee `schedule`; it drops scheduled events under load, and the whole
+    # account was asking for 398 runs/day across v9, Pro and v11. Asking harder made it worse.
+    #
+    # 16/day, hourly across the match window only. Overnight hourly is dropped entirely: 00:00-08:00
+    # UTC is 03:00-11:00 Israel and there is nothing in play in our leagues then.
+    #
+    # The headroom this frees is FOR predict and the two odds captures, which are deliberately
+    # untouched — their prices are pre-match only and cannot be backfilled, so a dropped run there
+    # is a permanent loss and a dropped run here is not.
+    - cron: '4 8-23 * * *'         # hourly: 08:00-23:59 UTC = 11:00-02:59 Israel  (16/day)
   workflow_dispatch:
 
 jobs:
