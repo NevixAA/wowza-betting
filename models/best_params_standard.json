@@ -1,65 +1,65 @@
 {
   "Bundesliga 2": {
-    "sniper_th": 0.19,
-    "marksman_th": 0.17,
-    "roi_insample": 2.3,
-    "bets_insample": 30,
-    "roi_oos": 4.57,
-    "bets_oos": 7,
+    "sniper_th": 0.18,
+    "marksman_th": 0.16,
+    "roi_insample": 1.09,
+    "bets_insample": 35,
+    "roi_oos": -8.5,
+    "bets_oos": 8,
     "approved": false
   },
   "Championship": {
-    "sniper_th": 0.08,
-    "marksman_th": 0.06,
-    "roi_insample": 1.96,
-    "bets_insample": 233,
-    "roi_oos": -7.9,
-    "bets_oos": 311,
-    "approved": false
+    "sniper_th": 0.07,
+    "marksman_th": 0.05,
+    "roi_insample": 2.59,
+    "bets_insample": 308,
+    "roi_oos": 3.32,
+    "bets_oos": 164,
+    "approved": true
   },
   "La Liga 2": {
     "sniper_th": 0.17,
     "marksman_th": 0.15,
-    "roi_insample": 10.81,
-    "bets_insample": 32,
-    "roi_oos": -12.88,
-    "bets_oos": 290,
+    "roi_insample": 14.39,
+    "bets_insample": 31,
+    "roi_oos": -5.84,
+    "bets_oos": 94,
     "approved": false
   },
   "League One": {
     "sniper_th": 0.14,
     "marksman_th": 0.12,
-    "roi_insample": 6.79,
-    "bets_insample": 39,
-    "roi_oos": -27.75,
-    "bets_oos": 8,
+    "roi_insample": 4.11,
+    "bets_insample": 36,
+    "roi_oos": -59.0,
+    "bets_oos": 7,
     "approved": false
   },
   "League Two": {
     "sniper_th": 0.07,
     "marksman_th": 0.05,
-    "roi_insample": -1.6,
-    "bets_insample": 188,
-    "roi_oos": -19.07,
-    "bets_oos": 42,
+    "roi_insample": -1.33,
+    "bets_insample": 175,
+    "roi_oos": -19.15,
+    "bets_oos": 54,
     "approved": false
   },
   "Ligue 2": {
     "sniper_th": 0.12,
     "marksman_th": 0.1,
-    "roi_insample": 2.03,
+    "roi_insample": 7.61,
     "bets_insample": 61,
-    "roi_oos": 1.72,
-    "bets_oos": 93,
-    "approved": true
+    "roi_oos": -5.27,
+    "bets_oos": 77,
+    "approved": false
   },
   "Serie B": {
-    "sniper_th": 0.13,
-    "marksman_th": 0.11,
-    "roi_insample": 42.27,
-    "bets_insample": 33,
-    "roi_oos": 13.01,
-    "bets_oos": 99,
+    "sniper_th": 0.12,
+    "marksman_th": 0.1,
+    "roi_insample": 45.67,
+    "bets_insample": 52,
+    "roi_oos": 17.02,
+    "bets_oos": 100,
     "approved": true
   }
 }
