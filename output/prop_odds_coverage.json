@@ -31,8 +31,8 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Bundesliga 2",
-    "priced_events": 36,
-    "probes": 50,
+    "priced_events": 37,
+    "probes": 51,
     "source": "api_football"
   },
   "apifootball:Champions League": {
@@ -47,8 +47,8 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Championship",
-    "priced_events": 50,
-    "probes": 54,
+    "priced_events": 51,
+    "probes": 55,
     "source": "api_football"
   },
   "apifootball:China Super League": {
@@ -99,17 +99,17 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Ireland Premier Division",
-    "priced_events": 49,
-    "probes": 49,
+    "priced_events": 50,
+    "probes": 50,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "La Liga 2",
     "priced_events": 47,
-    "probes": 50,
+    "probes": 51,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -117,8 +117,8 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "League One",
-    "priced_events": 53,
-    "probes": 53,
+    "priced_events": 54,
+    "probes": 54,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -126,8 +126,8 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "League Two",
-    "priced_events": 43,
-    "probes": 52,
+    "priced_events": 44,
+    "probes": 53,
     "source": "api_football"
   },
   "apifootball:Mexico Liga MX": {
@@ -158,12 +158,12 @@
     "source": "api_football"
   },
   "apifootball:Serie B": {
-    "empty_streak": 8,
+    "empty_streak": 9,
     "last_priced": "2026-08-30",
     "last_probe": "2026-09-01",
     "league": "Serie B",
     "priced_events": 37,
-    "probes": 45,
+    "probes": 46,
     "source": "api_football"
   },
   "apifootball:Sweden Allsvenskan": {
@@ -206,11 +206,11 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Premier League",
-    "matched_events": 8,
-    "priced_events": 1001,
-    "probes": 1019,
+    "matched_events": 5,
+    "priced_events": 1006,
+    "probes": 1024,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_france_ligue_one": {
     "empty_streak": 0,
@@ -218,22 +218,22 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Ligue 1",
-    "matched_events": 8,
-    "priced_events": 835,
-    "probes": 851,
+    "matched_events": 5,
+    "priced_events": 840,
+    "probes": 856,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 0,
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Bundesliga",
-    "matched_events": 8,
-    "priced_events": 409,
-    "probes": 422,
+    "matched_events": 5,
+    "priced_events": 414,
+    "probes": 427,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_germany_bundesliga2": {
     "empty_streak": 24,
@@ -254,11 +254,11 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "Serie A",
-    "matched_events": 8,
-    "priced_events": 1051,
-    "probes": 1065,
+    "matched_events": 4,
+    "priced_events": 1055,
+    "probes": 1069,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 4
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
@@ -266,11 +266,11 @@
     "last_priced": "2026-09-01",
     "last_probe": "2026-09-01",
     "league": "La Liga",
-    "matched_events": 8,
-    "priced_events": 892,
-    "probes": 942,
+    "matched_events": 5,
+    "priced_events": 897,
+    "probes": 947,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_uefa_champs_league": {
     "far_empty_probes": 18,
