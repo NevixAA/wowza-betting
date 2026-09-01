@@ -71,7 +71,6 @@ player_id,player_name,team,position,number,age
 20649,Y. Wissa,Newcastle,F,9.0,29.0
 158054,N. Woltemade,Newcastle,F,27.0,23.0
 407034,K. Crampton,Bournemouth,G,1.0,18.0
-151756,W. Dennis,Bournemouth,G,40.0,25.0
 30670,M. Di Gregorio,Bournemouth,G,20.0,28.0
 18932,F. Forster,Bournemouth,G,17.0,37.0
 118307,Đ. Petrović,Bournemouth,G,1.0,26.0
@@ -80,7 +79,7 @@ player_id,player_name,team,position,number,age
 22136,B. Diakité,Bournemouth,D,18.0,24.0
 20093,J. Hill,Bournemouth,D,5.0,23.0
 412719,Veljko Milosavljević,Bournemouth,D,44.0,18.0
-182772,Juanlu Sánchez,Bournemouth,M,24.0,22.0
+182772,Juanlu Sánchez,Bournemouth,D,24.0,22.0
 331832,António Silva,Bournemouth,D,14.0,22.0
 18869,A. Smith,Bournemouth,D,15.0,34.0
 363333,J. Soler,Bournemouth,D,6.0,20.0
@@ -95,13 +94,13 @@ player_id,player_name,team,position,number,age
 573755,C. Stevens,Bournemouth,M,7.0,18.0
 19245,M. Tavernier,Bournemouth,M,16.0,26.0
 361485,A. Tóth,Bournemouth,M,27.0,20.0
-18870,D. Brooks,Bournemouth,M,7.0,28.0
+18870,D. Brooks,Bournemouth,F,7.0,28.0
 152856,Evanilson,Bournemouth,F,9.0,26.0
 343576,B. Doak,Bournemouth,F,11.0,20.0
 296458,D. Jebbison,Bournemouth,F,29.0,22.0
-792,J. Kluivert,Bournemouth,M,19.0,26.0
+792,J. Kluivert,Bournemouth,F,19.0,26.0
 368030,E. Kroupi,Bournemouth,F,22.0,19.0
-407806,Rayan,Bournemouth,M,37.0,19.0
+407806,Rayan,Bournemouth,F,37.0,19.0
 402434,Remy Rees-Dottin,Bournemouth,F,11.0,19.0
 343202,Á. Rodríguez,Bournemouth,F,30.0,21.0
 21566,B. Lecomte,Fulham,G,23.0,34.0
@@ -406,29 +405,28 @@ player_id,player_name,team,position,number,age
 61742,H. Valdimarsson,Brentford,G,12.0,24.0
 1119,K. Ajer,Brentford,D,20.0,27.0
 19495,N. Collins,Brentford,D,22.0,24.0
+409303,E. Diouf,Brentford,D,25.0,21.0
 19346,R. Henry,Brentford,D,3.0,28.0
 44871,A. Hickey,Brentford,D,2.0,23.0
 342022,M. Kayode,Brentford,D,33.0,21.0
 350625,J. Meghoma,Brentford,D,3.0,19.0
-19789,E. Pinnock,Brentford,D,5.0,32.0
 36922,S. van den Berg,Brentford,D,4.0,24.0
 513316,Luka Bentt,Brentford,M,48.0,18.0
 153066,Fábio Carvalho,Brentford,M,14.0,23.0
 15908,M. Damsgaard,Brentford,M,24.0,25.0
 19362,J. Dasilva,Brentford,M,10.0,27.0
-540961,M. Lawrence,Brentford,M,55.0,26.0
 427736,Gustavo Gomes,Brentford,M,18.0,20.0
 25073,V. Janelt,Brentford,M,27.0,27.0
 47438,M. Jensen,Brentford,M,8.0,29.0
-106725,K. Lewis-Potter,Brentford,F,23.0,24.0
+106725,K. Lewis-Potter,Brentford,M,23.0,24.0
 327726,R. Owen,Brentford,M,8.0,20.0
 277306,M. Sangaré,Brentford,M,18.0,23.0
 178077,K. Schade,Brentford,M,7.0,24.0
-441271,Jannik Schuster,Brentford,D,44.0,19.0
+441271,Jannik Schuster,Brentford,M,44.0,19.0
 263538,Y. Yarmolyuk,Brentford,M,6.0,21.0
-196855,J. Anthony,Brentford,M,19.0,26.0
+196855,J. Anthony,Brentford,F,19.0,26.0
 393193,Kaye Iyowuna Furo,Brentford,F,9.0,18.0
-284797,D. Ouattara,Brentford,M,11.0,23.0
+284797,D. Ouattara,Brentford,F,11.0,23.0
 624708,O. Shield,Brentford,F,49.0,19.0
 196156,Thiago,Brentford,F,9.0,24.0
 2939,C. Wilson,Brentford,F,13.0,33.0
@@ -506,7 +504,6 @@ player_id,player_name,team,position,number,age
 426480,L. Herrington,Hull City,D,22.0,18.0
 331551,C. Hughes,Hull City,D,4.0,22.0
 129713,M. Jacob,Hull City,D,16.0,24.0
-467176,C. McCarthy,Hull City,D,58.0,19.0
 19242,P. McNair,Hull City,D,17.0,30.0
 358431,N. Mendy,Hull City,D,32.0,21.0
 581989,C. Okike,Hull City,D,39.0,18.0
@@ -523,11 +520,12 @@ player_id,player_name,team,position,number,age
 226765,E. Stroud,Hull City,M,21.0,23.0
 338046,Óscar Steven Zambrano Preciado,Hull City,M,18.0,21.0
 1186,D. Akintola,Hull City,F,30.0,30.0
-299923,M. Belloumi,Hull City,M,10.0,24.0
+299923,M. Belloumi,Hull City,F,10.0,24.0
+274312,M. Cho,Hull City,F,50.0,21.0
 557455,D. Daley,Hull City,F,16.0,18.0
 19569,J. Gelhardt,Hull City,F,21.0,23.0
 19337,O. McBurnie,Hull City,F,9.0,29.0
-44798,L. Millar,Hull City,F,7.0,26.0
+44798,L. Millar,Hull City,M,7.0,26.0
 366630,T. Sellars-Fleming,Hull City,F,41.0,20.0
 19312,S. Benda,Nottingham Forest,G,13.0,27.0
 329358,Aaron Bott,Nottingham Forest,G,1.0,21.0
