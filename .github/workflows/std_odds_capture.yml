@@ -43,7 +43,27 @@ on:
     # requesting 96 that are dropped, and one hourly firing plus its internal loop covers 25 of
     # every 60 minutes rather than the ~3 windows a day actually being delivered.
     # :23 deliberately — not :00 or :15, which are GitHub's most contended minutes.
-    - cron: '23 * * * *'
+    #
+    # ALIGNED TO THE KICKOFF CLOCK, 2026-09-02. Measured over 594 fixtures in the canonical
+    # store, kickoff minute-of-hour is not uniform at all:
+    #
+    #     :00  60.6%      :30  25.9%      :45  8.1%      everything else  5.4%
+    #
+    # So 86.5% of kickoffs land on :00 or :30, and a capture's distance to the close is decided
+    # by which minute it fires, not by how often. :23 was already well placed for the :30 group
+    # (T-7m) and badly placed for the :00 group (T-37m) — which is the larger half.
+    #
+    # :52 closes that gap at T-8m for a :00 kickoff. Together the two slots put a capture inside
+    # T-10m for 86.5% of fixtures, against a measured T-10m coverage of 8.7% today.
+    #
+    # And the window is trimmed: hours 04:00-08:00 UTC contain ZERO kickoffs in the entire store,
+    # so five firings a day were being spent where nothing could be near its close. Dropping them
+    # pays for most of the second slot.
+    #
+    # Net 24/day -> 36/day, funded from the 165 runs/day freed across the estate on 2026-08-30.
+    # This is the single highest-value use of that headroom: /odds is pre-match only, so a close
+    # not captured is gone permanently.
+    - cron: '23,52 0-3,9-23 * * *'
   workflow_dispatch:
     inputs:
       max_hours:

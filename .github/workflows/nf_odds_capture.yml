@@ -31,8 +31,18 @@ on:
     # firings an hour requested four overlapping loops; and with the repo asking 696 scheduled
     # runs a Saturday against ~4% delivery, this workflow received 3 runs in 12 hours. 24
     # requested that land beat 96 that are dropped.
-    # :47 keeps it clear of std_odds_capture at :23 so the two never contend, and off :00.
-    - cron: '47 * * * *'
+    # ALIGNED TO THE KICKOFF CLOCK, 2026-09-02 — same reasoning as std_odds_capture, which
+    # carries the full measurement. In short: 86.5% of the 594 fixtures in the canonical store
+    # kick off at :00 (60.6%) or :30 (25.9%), so a capture's distance to the close is set by the
+    # minute it fires. :47 sat at T-13m for the :00 group and T-43m for the :30 group.
+    #
+    # :20 and :50 put a capture inside T-10m for both groups. Still clear of std_odds_capture's
+    # :23 and :52 by three minutes, so the two never contend for a runner, and both stay off :00
+    # and :15 — GitHub's most contended minutes.
+    #
+    # Hours 04:00-08:00 UTC hold zero kickoffs in the store and are dropped, which pays for most
+    # of the second slot. Net 24/day -> 36/day.
+    - cron: '20,50 0-3,9-23 * * *'
   workflow_dispatch:
     inputs:
       max_hours:
