@@ -28,11 +28,11 @@
   },
   "apifootball:Bundesliga 2": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Bundesliga 2",
-    "priced_events": 56,
-    "probes": 70,
+    "priced_events": 57,
+    "probes": 71,
     "source": "api_football"
   },
   "apifootball:Champions League": {
@@ -44,11 +44,11 @@
   },
   "apifootball:Championship": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Championship",
-    "priced_events": 70,
-    "probes": 74,
+    "priced_events": 71,
+    "probes": 75,
     "source": "api_football"
   },
   "apifootball:China Super League": {
@@ -88,46 +88,46 @@
     "source": "api_football"
   },
   "apifootball:Finland Veikkausliiga": {
-    "empty_streak": 49,
-    "last_probe": "2026-09-02",
+    "empty_streak": 50,
+    "last_probe": "2026-09-03",
     "league": "Finland Veikkausliiga",
-    "probes": 49,
+    "probes": 50,
     "source": "api_football"
   },
   "apifootball:Ireland Premier Division": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Ireland Premier Division",
-    "priced_events": 69,
-    "probes": 69,
+    "priced_events": 70,
+    "probes": 70,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "La Liga 2",
-    "priced_events": 66,
-    "probes": 70,
+    "priced_events": 67,
+    "probes": 71,
     "source": "api_football"
   },
   "apifootball:League One": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "League One",
-    "priced_events": 73,
-    "probes": 73,
+    "priced_events": 74,
+    "probes": 74,
     "source": "api_football"
   },
   "apifootball:League Two": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "League Two",
-    "priced_events": 63,
-    "probes": 72,
+    "priced_events": 64,
+    "probes": 73,
     "source": "api_football"
   },
   "apifootball:Mexico Liga MX": {
@@ -158,12 +158,12 @@
     "source": "api_football"
   },
   "apifootball:Serie B": {
-    "empty_streak": 28,
+    "empty_streak": 29,
     "last_priced": "2026-08-30",
-    "last_probe": "2026-09-02",
+    "last_probe": "2026-09-03",
     "league": "Serie B",
     "priced_events": 37,
-    "probes": 65,
+    "probes": 66,
     "source": "api_football"
   },
   "apifootball:Sweden Allsvenskan": {
@@ -177,98 +177,100 @@
   },
   "soccer_efl_champ": {
     "empty_streak": 24,
-    "far_empty_probes": 31,
-    "last_probe": "2026-08-27",
+    "far_empty_probes": 37,
+    "last_probe": "2026-09-03",
     "league": "Championship",
-    "matched_events": 7,
-    "probes": 31,
-    "streak_reset_on": "2026-08-27",
-    "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
-    "unmatched_sample": [
-      "Cardiff vs Sheffield Utd"
-    ],
-    "wanted_fixtures": 8
-  },
-  "soccer_england_league1": {
-    "empty_streak": 22,
-    "far_empty_probes": 30,
-    "last_probe": "2026-08-27",
-    "league": "League One",
-    "matched_events": 8,
-    "probes": 30,
+    "matched_events": 6,
+    "probes": 37,
     "streak_reset_on": "2026-08-27",
     "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 6
+  },
+  "soccer_england_league1": {
+    "empty_streak": 22,
+    "far_empty_probes": 35,
+    "last_probe": "2026-09-03",
+    "league": "League One",
+    "matched_events": 5,
+    "probes": 35,
+    "streak_reset_on": "2026-08-27",
+    "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
+    "unmatched_sample": [
+      "Peterborough vs Sheffield Wednesday"
+    ],
+    "wanted_fixtures": 6
   },
   "soccer_epl": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Premier League",
     "matched_events": 5,
-    "priced_events": 1102,
-    "probes": 1120,
+    "priced_events": 1107,
+    "probes": 1125,
     "unmatched_sample": [],
     "wanted_fixtures": 5
   },
   "soccer_france_ligue_one": {
     "empty_streak": 0,
     "far_empty_probes": 7,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Ligue 1",
     "matched_events": 5,
-    "priced_events": 936,
-    "probes": 952,
+    "priced_events": 941,
+    "probes": 957,
     "unmatched_sample": [],
     "wanted_fixtures": 5
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 0,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Bundesliga",
     "matched_events": 5,
-    "priced_events": 510,
-    "probes": 523,
+    "priced_events": 515,
+    "probes": 528,
     "unmatched_sample": [],
     "wanted_fixtures": 5
   },
   "soccer_germany_bundesliga2": {
     "empty_streak": 24,
-    "far_empty_probes": 32,
+    "far_empty_probes": 40,
     "last_all_unmatched": "2026-08-17",
-    "last_probe": "2026-08-27",
+    "last_probe": "2026-09-03",
     "league": "Bundesliga 2",
     "matched_events": 8,
-    "probes": 32,
+    "probes": 40,
     "streak_reset_on": "2026-08-27",
     "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
-    "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "unmatched_sample": [
+      "VfL Wolfsburg vs Energie Cottbus"
+    ],
+    "wanted_fixtures": 9
   },
   "soccer_italy_serie_a": {
     "empty_streak": 0,
     "far_empty_probes": 4,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "Serie A",
     "matched_events": 5,
-    "priced_events": 1136,
-    "probes": 1152,
+    "priced_events": 1141,
+    "probes": 1157,
     "unmatched_sample": [],
     "wanted_fixtures": 5
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
     "far_empty_probes": 2,
-    "last_priced": "2026-09-02",
-    "last_probe": "2026-09-02",
+    "last_priced": "2026-09-03",
+    "last_probe": "2026-09-03",
     "league": "La Liga",
     "matched_events": 5,
-    "priced_events": 993,
-    "probes": 1043,
+    "priced_events": 998,
+    "probes": 1048,
     "unmatched_sample": [],
     "wanted_fixtures": 5
   },
