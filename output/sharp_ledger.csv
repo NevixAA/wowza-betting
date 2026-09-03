@@ -858,10 +858,10 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-25,2026-08-29,Serie B,Ascoli,Carrarese,1X2 AWAY (Carrarese),AWAY,STEAM_SHARP,4.15,3.9,-6.0,99,19,LOSS,-1.0,2026-08-30
 2026-08-25,2026-08-30,La Liga 2,Córdoba,Granada CF,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.08,1.86,-10.6,100,11,,,
 2026-08-25,2026-08-28,Bundesliga 2,VfL Bochum,VfL Osnabrück,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.15,3.87,-6.7,66,21,,,
-2026-08-25,2026-09-02,Brazil Serie A,Flamengo,Mirassol,1X2 DRAW (Draw),DRAW,STEAM_SHARP,5.4,5.0,-7.4,100,13,,,
+2026-08-25,2026-09-02,Brazil Serie A,Flamengo,Mirassol,1X2 DRAW (Draw),DRAW,STEAM_SHARP,5.4,5.0,-7.4,100,13,LOSS,-1.0,2026-09-03
 2026-08-25,2026-08-29,Ligue 2,Annecy FC,Metz,O/U 2.5 OVER,OVER,STEAM_SHARP,2.15,2.0,-7.0,97,11,,,
 2026-08-25,2026-08-29,Mexico Liga MX,Pachuca,Guadalajara,1X2 AWAY (Guadalajara),AWAY,STEAM_SHARP,2.315,2.12,-8.4,63,17,LOSS,-1.0,2026-08-30
-2026-08-25,2026-09-02,Brazil Serie A,Flamengo,Mirassol,1X2 AWAY (Mirassol),AWAY,STEAM_SHARP,10.2,9.35,-8.3,100,14,,,
+2026-08-25,2026-09-02,Brazil Serie A,Flamengo,Mirassol,1X2 AWAY (Mirassol),AWAY,STEAM_SHARP,10.2,9.35,-8.3,100,14,LOSS,-1.0,2026-09-03
 2026-08-26,2026-08-29,La Liga 2,Girona FC,Las Palmas,O/U 2.5 OVER,OVER,STEAM_STRONG,2.0,1.77,-11.5,99,11,,,
 2026-08-26,2026-09-04,USA MLS,New York City FC,Nashville SC,1X2 AWAY (Nashville SC),AWAY,STEAM_SHARP,2.8,2.65,-5.4,99,15,,,
 2026-08-26,2026-09-05,Brazil Serie A,Bragantino-SP,Bahia,1X2 HOME (Bragantino-SP),HOME,STEAM_SHARP,2.135,2.0,-6.3,73,17,,,
@@ -916,12 +916,12 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-29,2026-09-02,Japan J-League,Mito HollyHock,Kashima Antlers,1X2 HOME (Mito HollyHock),HOME,STEAM_SHARP,3.8,3.6,-5.3,100,17,,,
 2026-08-29,2026-08-29,League One,Leyton Orient,Barnsley,O/U 2.5 OVER,OVER,STEAM_SHARP,1.72,1.63,-5.2,100,10,,,
 2026-08-29,2026-09-01,Championship,Sheffield United,Bolton Wanderers,1X2 AWAY (Bolton Wanderers),AWAY,STEAM_STRONG,5.9,4.675,-20.8,100,14,LOSS,-1.0,2026-09-02
-2026-08-29,2026-09-02,Championship,Burnley,Middlesbrough,1X2 AWAY (Middlesbrough),AWAY,STEAM_STRONG,3.1,2.675,-13.7,100,14,,,
+2026-08-29,2026-09-02,Championship,Burnley,Middlesbrough,1X2 AWAY (Middlesbrough),AWAY,STEAM_STRONG,3.1,2.675,-13.7,100,14,LOSS,-1.0,2026-09-03
 2026-08-29,2026-09-01,Championship,Portsmouth,Derby County,1X2 HOME (Portsmouth),HOME,STEAM_STRONG,2.615,2.29,-12.4,100,14,LOSS,-1.0,2026-09-02
 2026-08-29,2026-09-01,Championship,Lincoln City,Blackburn Rovers,1X2 HOME (Lincoln City),HOME,STEAM_STRONG,2.545,2.25,-11.6,100,14,LOSS,-1.0,2026-09-02
 2026-08-29,2026-09-01,Championship,Swansea City,Watford,1X2 HOME (Swansea City),HOME,STEAM_STRONG,2.1,1.89,-10.0,100,13,WIN,1.1,2026-09-02
 2026-08-29,2026-09-01,Championship,West Ham United,Wolverhampton Wanderers,1X2 AWAY (Wolverhampton Wanderers),AWAY,STEAM_SHARP,3.995,3.6,-9.9,100,13,LOSS,-1.0,2026-09-02
-2026-08-29,2026-09-02,Championship,Millwall,Wrexham AFC,1X2 AWAY (Wrexham AFC),AWAY,STEAM_SHARP,3.77,3.4,-9.8,100,14,,,
+2026-08-29,2026-09-02,Championship,Millwall,Wrexham AFC,1X2 AWAY (Wrexham AFC),AWAY,STEAM_SHARP,3.77,3.4,-9.8,100,14,WIN,2.77,2026-09-03
 2026-08-29,2026-09-01,Championship,Stoke City,Norwich City,1X2 AWAY (Norwich City),AWAY,STEAM_SHARP,2.57,2.36,-8.2,100,14,LOSS,-1.0,2026-09-02
 2026-08-29,2026-09-01,League Two,Cheltenham Town,York City,1X2 AWAY (York City),AWAY,STEAM_STRONG,2.2,1.95,-11.4,100,10,,,
 2026-08-29,2026-09-01,League Two,Fleetwood Town,Oldham Athletic,1X2 AWAY (Oldham Athletic),AWAY,STEAM_SHARP,2.975,2.75,-7.6,100,10,,,
@@ -946,7 +946,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-30,2026-08-30,Brazil Serie A,Flamengo,Botafogo,1X2 HOME (Flamengo),HOME,STEAM_SHARP,1.44,1.335,-7.3,100,24,WIN,0.44,2026-08-31
 2026-08-30,2026-09-06,Mexico Liga MX,América,Tijuana,1X2 HOME (América),HOME,STEAM_SHARP,1.67,1.55,-7.2,100,14,,,
 2026-08-30,2026-09-06,USA MLS,Portland Timbers,Minnesota United FC,1X2 AWAY (Minnesota United FC),AWAY,STEAM_SHARP,3.325,3.1,-6.8,100,13,,,
-2026-08-30,2026-09-02,Championship,Queens Park Rangers,Cardiff City,O/U 2.5 OVER,OVER,STEAM_SHARP,1.94,1.82,-6.2,100,13,,,
+2026-08-30,2026-09-02,Championship,Queens Park Rangers,Cardiff City,O/U 2.5 OVER,OVER,STEAM_SHARP,1.94,1.82,-6.2,100,13,WIN,0.94,2026-09-03
 2026-08-30,2026-08-30,Denmark Superliga,Randers FC,AGF Aarhus,1X2 HOME (Randers FC),HOME,STEAM_SHARP,3.1,2.92,-5.8,100,24,WIN,2.1,2026-09-01
 2026-08-30,2026-08-30,Argentina Primera Division,Banfield,River Plate,1X2 AWAY (River Plate),AWAY,STEAM_SHARP,1.72,1.62,-5.8,100,15,WIN,0.72,2026-08-31
 2026-08-30,2026-08-30,Argentina Primera Division,Independiente,Gimnasia Mendoza,O/U 2.5 OVER,OVER,STEAM_SHARP,2.21,2.09,-5.4,100,8,WIN,1.21,2026-08-31
@@ -968,7 +968,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-08-31,2026-09-05,Brazil Serie A,Bragantino-SP,Bahia,O/U 2.5 OVER,OVER,STEAM_SHARP,1.95,1.85,-5.1,84,12,,,
 2026-09-01,2026-09-05,Argentina Primera Division,Gimnasia Mendoza,Boca Juniors,1X2 HOME (Gimnasia Mendoza),HOME,STEAM_STRONG,5.35,4.2,-21.5,100,11,,,
 2026-09-01,2026-09-06,USA MLS,LA Galaxy,New England Revolution,1X2 AWAY (New England Revolution),AWAY,STEAM_STRONG,3.3,2.76,-16.4,100,22,,,
-2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,O/U 2.5 OVER,OVER,STEAM_STRONG,1.99,1.745,-12.3,100,14,,,
+2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,O/U 2.5 OVER,OVER,STEAM_STRONG,1.99,1.745,-12.3,100,14,LOSS,-1.0,2026-09-03
 2026-09-01,2026-09-04,Norway Eliteserien,Aalesund,IK Start,1X2 AWAY (IK Start),AWAY,STEAM_STRONG,3.375,2.995,-11.3,100,20,,,
 2026-09-01,2026-09-10,USA MLS,Vancouver Whitecaps FC,LA Galaxy,1X2 AWAY (LA Galaxy),AWAY,STEAM_STRONG,9.0,8.0,-11.1,100,13,,,
 2026-09-01,2026-09-05,League Two,Swindon Town,Colchester United,1X2 AWAY (Colchester United),AWAY,STEAM_STRONG,3.03,2.7,-10.9,100,10,,,
@@ -1026,3 +1026,52 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-09-01,2026-09-05,League Two,Tranmere Rovers,Oldham Athletic,1X2 AWAY (Oldham Athletic),AWAY,STEAM_SHARP,2.525,2.305,-8.7,96,14,,,
 2026-09-01,2026-09-05,League Two,Chesterfield FC,Barnet,1X2 HOME (Chesterfield FC),HOME,STEAM_SHARP,2.295,2.095,-8.7,100,14,,,
 2026-09-01,2026-09-05,League Two,Crewe Alexandra,York City,1X2 AWAY (York City),AWAY,STRONG,2.7,2.4,-11.1,100,14,,,
+2026-09-02,2026-09-02,League One,Luton,Stockport County FC,1X2 AWAY (Stockport County FC),AWAY,STEAM_STRONG,3.1,2.6,-16.1,100,16,,,
+2026-09-02,2026-09-05,Japan J-League,Avispa Fukuoka,Mito HollyHock,1X2 HOME (Avispa Fukuoka),HOME,STEAM_STRONG,2.25,1.975,-12.2,100,16,,,
+2026-09-02,2026-09-15,Argentina Primera Division,Instituto de Córdoba,Estudiantes de Río Cuarto,1X2 AWAY (Estudiantes de Río Cuarto),AWAY,STEAM_STRONG,9.95,8.75,-12.1,100,4,,,
+2026-09-02,2026-09-06,Japan J-League,Vissel Kobe,V-Varen Nagasaki,1X2 AWAY (V-Varen Nagasaki),AWAY,STEAM_STRONG,5.5,4.86,-11.6,100,15,,,
+2026-09-02,2026-09-06,Japan J-League,Kawasaki Frontale,Shimizu S Pulse,1X2 HOME (Kawasaki Frontale),HOME,STEAM_STRONG,2.02,1.79,-11.4,100,15,,,
+2026-09-02,2026-09-05,League Two,Cheltenham Town,Grimsby Town,1X2 AWAY (Grimsby Town),AWAY,STEAM_STRONG,2.195,1.95,-11.2,100,14,,,
+2026-09-02,2026-09-12,Brazil Serie A,Coritiba,Atletico Paranaense,O/U 2.5 OVER,OVER,STEAM_STRONG,2.4,2.14,-10.8,100,5,,,
+2026-09-02,2026-09-06,Japan J-League,Nagoya Grampus,FC Machida Zelvia,O/U 2.5 OVER,OVER,STEAM_SHARP,2.04,1.85,-9.3,100,9,,,
+2026-09-02,2026-09-05,Championship,Sheffield United,Norwich City,1X2 AWAY (Norwich City),AWAY,STEAM_SHARP,2.89,2.63,-9.0,100,21,,,
+2026-09-02,2026-09-02,League One,Barnsley,Blackpool,1X2 HOME (Barnsley),HOME,STEAM_SHARP,2.3,2.1,-8.7,100,16,,,
+2026-09-02,2026-09-15,Argentina Primera Division,Instituto de Córdoba,Estudiantes de Río Cuarto,1X2 HOME (Instituto de Córdoba),HOME,STEAM_SHARP,1.43,1.305,-8.7,100,4,,,
+2026-09-02,2026-09-05,League Two,Salford City,Port Vale,O/U 2.5 OVER,OVER,STEAM_SHARP,2.05,1.875,-8.5,100,12,,,
+2026-09-02,2026-09-06,Brazil Serie A,Remo,Flamengo,1X2 AWAY (Flamengo),AWAY,STEAM_SHARP,1.57,1.44,-8.3,100,19,,,
+2026-09-02,2026-09-02,Championship,West Bromwich Albion,Charlton Athletic,O/U 2.5 OVER,OVER,STEAM_SHARP,2.1,1.93,-8.1,100,15,LOSS,-1.0,2026-09-03
+2026-09-02,2026-09-06,Japan J-League,Kawasaki Frontale,Shimizu S Pulse,O/U 2.5 OVER,OVER,STEAM_SHARP,1.74,1.61,-7.5,100,7,,,
+2026-09-02,2026-09-06,Japan J-League,Fagiano Okayama,Hiroshima Sanfrecce FC,1X2 HOME (Fagiano Okayama),HOME,STEAM_SHARP,3.8,3.55,-6.6,100,15,,,
+2026-09-02,2026-09-06,Japan J-League,Kashima Antlers,Urawa Red Diamonds,O/U 2.5 OVER,OVER,STEAM_SHARP,2.0,1.87,-6.5,100,9,,,
+2026-09-02,2026-09-06,Japan J-League,Nagoya Grampus,FC Machida Zelvia,1X2 HOME (Nagoya Grampus),HOME,STEAM_SHARP,3.4,3.2,-5.9,100,15,,,
+2026-09-02,2026-09-05,Championship,Sheffield United,Norwich City,O/U 2.5 OVER,OVER,STEAM_SHARP,1.86,1.75,-5.9,100,13,,,
+2026-09-02,2026-09-03,Sweden Allsvenskan,Mjällby AIF,Djurgardens IF,1X2 AWAY (Djurgardens IF),AWAY,STEAM_SHARP,1.795,1.7,-5.3,100,19,,,
+2026-09-02,2026-09-07,League One,Bromley FC,Wimbledon,1X2 AWAY (Wimbledon),AWAY,STEAM_SHARP,3.275,3.1,-5.3,100,12,,,
+2026-09-02,2026-09-06,Japan J-League,Kashima Antlers,Urawa Red Diamonds,1X2 HOME (Kashima Antlers),HOME,STEAM_SHARP,1.88,1.78,-5.3,100,15,,,
+2026-09-02,2026-09-05,League Two,Swindon Town,Colchester United,O/U 2.5 OVER,OVER,STEAM_SHARP,1.95,1.85,-5.1,100,10,,,
+2026-09-02,2026-09-05,Mexico Liga MX,FC Juárez,Pachuca,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.225,1.88,-15.5,93,14,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,IF Gnistan,KuPS Kuopio,1X2 AWAY (KuPS Kuopio),AWAY,STEAM_STRONG,2.12,1.905,-10.1,100,4,,,
+2026-09-02,2026-09-02,League One,Wigan Athletic,Milton Keynes Dons,O/U 2.5 OVER,OVER,STEAM_SHARP,1.92,1.75,-8.9,100,11,,,
+2026-09-02,2026-09-05,League Two,Accrington Stanley,Crawley Town,O/U 2.5 OVER,OVER,STEAM_SHARP,1.9,1.74,-8.4,93,10,,,
+2026-09-02,2026-09-02,League One,Luton,Stockport County FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.625,1.54,-5.2,100,6,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,VPS Vaasa,AC Oulu,O/U 2.5 OVER,OVER,STEAM_STRONG,2.02,1.73,-14.4,100,7,,,
+2026-09-02,2026-09-05,Championship,Millwall,Bolton Wanderers,1X2 AWAY (Bolton Wanderers),AWAY,STEAM_STRONG,5.5,4.825,-12.3,78,20,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,TPS Turku,SJK Seinäjoki,O/U 2.5 OVER,OVER,STEAM_STRONG,1.74,1.53,-12.1,100,6,,,
+2026-09-02,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,O/U 2.5 OVER,OVER,STEAM_STRONG,1.91,1.68,-12.0,100,7,,,
+2026-09-02,2026-09-05,Championship,Portsmouth,Cardiff City,O/U 2.5 OVER,OVER,STEAM_STRONG,1.965,1.75,-10.9,100,12,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,TPS Turku,SJK Seinäjoki,1X2 AWAY (SJK Seinäjoki),AWAY,STEAM_SHARP,2.82,2.595,-8.0,100,10,,,
+2026-09-02,2026-09-05,League One,Wigan Athletic,Stockport County FC,1X2 HOME (Wigan Athletic),HOME,STEAM_SHARP,3.25,3.01,-7.4,78,14,,,
+2026-09-02,2026-09-12,Brazil Serie A,Grêmio,Vasco da Gama,O/U 2.5 OVER,OVER,STEAM_SHARP,2.125,1.97,-7.3,98,7,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,FC Lahti,IFK Mariehamn,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.7,4.4,-6.4,80,12,,,
+2026-09-02,2026-09-05,League One,Burton Albion,Cambridge United,1X2 AWAY (Cambridge United),AWAY,STEAM_SHARP,2.775,2.6,-6.3,80,14,,,
+2026-09-02,2026-09-05,League One,Barnsley,Stevenage,1X2 HOME (Barnsley),HOME,STEAM_SHARP,2.46,2.32,-5.7,80,14,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,FC Lahti,IFK Mariehamn,O/U 2.5 OVER,OVER,STEAM_SHARP,1.705,1.61,-5.6,80,7,,,
+2026-09-02,2026-09-05,League One,Reading,Blackpool,1X2 HOME (Reading),HOME,STEAM_SHARP,2.14,2.02,-5.6,98,14,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,FC Lahti,IFK Mariehamn,1X2 AWAY (IFK Mariehamn),AWAY,STEAM_SHARP,7.39,7.0,-5.3,80,12,,,
+2026-09-02,2026-09-05,League One,Luton,Leyton Orient,1X2 AWAY (Leyton Orient),AWAY,STEAM_SHARP,4.8,4.55,-5.2,78,13,,,
+2026-09-02,2026-09-08,Finland Veikkausliiga,Ilves Tampere,Jaro,1X2 AWAY (Jaro),AWAY,STEAM_SHARP,5.79,5.5,-5.0,80,11,,,
+2026-09-02,2026-09-12,Argentina Primera Division,Independiente Rivadavia,Aldosivi Mar del Plata,1X2 AWAY (Aldosivi Mar del Plata),AWAY,STRONG,7.8,6.0,-23.1,80,3,,,
+2026-09-02,2026-09-12,Argentina Primera Division,Estudiantes,Platense,1X2 AWAY (Platense),AWAY,STRONG,5.45,4.35,-20.2,98,3,,,
+2026-09-02,2026-09-05,Championship,Millwall,Bolton Wanderers,1X2 DRAW (Draw),DRAW,STEAM_STRONG,3.75,3.32,-11.5,100,22,,,
+2026-09-02,2026-09-13,Brazil Serie A,Botafogo,Bragantino-SP,O/U 2.5 OVER,OVER,STEAM_STRONG,2.005,1.79,-10.7,81,7,,,
+2026-09-02,2026-09-06,Brazil Serie A,Coritiba,Mirassol,1X2 AWAY (Mirassol),AWAY,STEAM_SHARP,3.2,2.985,-6.7,81,20,,,
