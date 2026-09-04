@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-09-04T09:34:50Z",
-  "run_id": "33858173816",
-  "run_number": "1188",
+  "checked_at": "2026-09-04T11:15:07Z",
+  "run_id": "33866325482",
+  "run_number": "1189",
   "event": "schedule",
   "schedule": "",
-  "sha": "6c7c2caad824",
+  "sha": "f789d25b8352",
   "history_freshness": {
     "newest_match": "2026-08-17",
     "age_days": "18",
@@ -18,15 +18,16 @@
   "output/player_tips.csv": {
     "rows": 771,
     "fixtures": 62,
-    "mtime": "2026-09-04T09:34:37Z"
+    "mtime": "2026-09-04T11:14:54Z"
   },
   "output/player_ledger.csv": {
     "rows": 5788,
     "fixtures": null,
-    "mtime": "2026-09-04T09:24:33Z"
+    "mtime": "2026-09-04T11:06:05Z"
   },
   "git_dirty_outputs": [
-    "M output/player_tips.csv",
+    "M output/player_prop_odds_history.csv",
+    " M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
@@ -69,6 +70,6 @@
     "[clv_tracker] CLV report: {'n': 934, 'mean_clv_pct': -0.0349, 'mean_clv_prob': None, 'beat_close_rate': 0.261, 'verdict': 'non-positive CLV \u2014 no edge; do not stake real money'}",
     "[lineup] 0 confirmed starters | 771 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:1",
-    "[api_usage] workflow=Player Props af_calls=352 cache_hits=89 cache_hit_rate=20% errors=0  quota_remaining 71968->71617 (account-wide delta 351)"
+    "[api_usage] workflow=Player Props af_calls=352 cache_hits=89 cache_hit_rate=20% errors=0  quota_remaining 71466->71175 (account-wide delta 291)"
   ]
 }
