@@ -89,7 +89,11 @@ jobs:
     # only ONE pending run, so a long run does not make later firings queue politely: each new
     # firing CANCELS the one waiting behind it. The run length must therefore stay well under the
     # real delivery interval, not merely under the timeout.
-    timeout-minutes: 40
+    # 40 -> 65. The loop base is 40 minutes and a kickoff extension can carry it to
+    # MAX_LOOP_MIN=50; checkout, pip and the commit add several more. A timeout below the
+    # loop cap does not shorten the loop, it KILLS the run mid-window and commits nothing —
+    # which is the failure this capture exists to avoid.
+    timeout-minutes: 65
     permissions:
       contents: write
 
@@ -151,7 +155,8 @@ jobs:
           # 25 minutes at 5-minute spacing gives 5 passes, FINER near-kickoff resolution than the
           # old 10-minute spacing, and finishes well inside the ~30-45 minute real delivery gap so
           # runs stop piling up.
-          [ -n "$LOOP_MIN" ]   || LOOP_MIN=25
+          # 25 -> 40 (2026-09-05). See the loop below for the coverage arithmetic.
+          [ -n "$LOOP_MIN" ]   || LOOP_MIN=40
           [ -n "$LOOP_EVERY" ] || LOOP_EVERY=5
 
           if [ -z "$MH" ]; then
@@ -180,7 +185,19 @@ jobs:
           # minutes before a kickoff, and only to fixtures already inside the 12h window. The
           # script's own MIN_QUOTA=5000 floor still stops it spending into the tip path.
           echo "NEAR run: fixtures within ${MH}h, adaptive sampling for ${LOOP_MIN}m"
-          END=$(( $(date -u +%s) + LOOP_MIN * 60 ))
+          # BASE 25 -> 40 minutes (2026-09-05). Coverage of the final ten minutes before kickoff
+          # is a function of delivery x loop length, and delivery is not ours to raise: this
+          # workflow asks for ~36 runs/day and GitHub delivers ~9.7 (27%). Simulated against that
+          # measured rate, P(a capture lands inside T-10m) is 25% at a 25-minute loop, 34% at 40
+          # and 42% at 55 — and the observed figure is 17-33%, so the model matches reality.
+          #
+          # 40 rather than 55 because the concurrency group holds one pending run: a loop long
+          # enough to still be running when the next firing arrives cancels it. At ~2h between
+          # DELIVERED runs, 40 minutes leaves comfortable room; MAX_LOOP_MIN below bounds the
+          # kickoff extension on top of it.
+          START_S=$(date -u +%s)
+          MAX_LOOP_MIN=${MAX_LOOP_MIN:-50}
+          END=$(( START_S + LOOP_MIN * 60 ))
           i=0
           SLEEP_S=$(( LOOP_EVERY * 60 ))
           while : ; do
@@ -201,11 +218,35 @@ jobs:
               fi
               echo "  nearest kickoff ${KO_MIN}m away -> next pass in ${SLEEP_S}s"
             fi
+            # KICKOFF-AWARE DURATION (2026-09-05). Spacing was already kickoff-aware; the DURATION
+            # was not, and that is where the remaining gap lives. A run that lands at T-40m samples
+            # until T-15m and stops — missing precisely the ten minutes the capture exists for.
+            #
+            # Why not simply set a longer LOOP_MIN: the note above is right that duration is not a
+            # free lever. A 100-minute loop held the concurrency group until later firings were
+            # cancelled (7 of 22). So the loop is extended ONLY when a kickoff is actually within
+            # reach, and never past MAX_LOOP_MIN.
+            #
+            # Aiming at a cron minute cannot solve this. Measured over 33 scheduled runs since
+            # 2026-09-02, this workflow asks for :23 and :52 and fired at neither — 0 runs at :23,
+            # 2 at :52, and the rest scattered across every minute of the hour. GitHub's delay is
+            # effectively random, so the only thing we control is how long a run stays alive once
+            # it starts.
+            NOW_S=$(date -u +%s)
+            if [ -n "$KO_MIN" ] && [ "$NEXT" -ge "$END" ]; then
+              KO_AT=$(( NOW_S + KO_MIN * 60 ))
+              HARD_END=$(( START_S + MAX_LOOP_MIN * 60 ))
+              WANT_END=$(( KO_AT + 120 ))          # two minutes past kickoff: the closing price
+              if [ "$WANT_END" -gt "$END" ] && [ "$WANT_END" -le "$HARD_END" ]; then
+                END=$WANT_END
+                echo "  extending loop to cover a kickoff ${KO_MIN}m away (cap ${MAX_LOOP_MIN}m)"
+              fi
+            fi
             NEXT=$(( $(date -u +%s) + SLEEP_S ))
             [ "$NEXT" -lt "$END" ] || break
             sleep "$SLEEP_S"
           done
-          echo "completed $i passes over ${LOOP_MIN}m"
+          echo "completed $i passes over $(( ( $(date -u +%s) - START_S ) / 60 ))m"
 
       - name: Commit and push updated standard side-market odds history
         run: |
