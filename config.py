@@ -460,6 +460,65 @@ API_FOOTBALL_IDS = {
     "K-League 1":              292,
     # International
     "World Cup 2026":            1,
+    # UEFA club competitions (added 2026-09-05). COLLECTION ONLY — deliberately NOT added to
+    # ENABLED_LEAGUES or ODDS_API_SPORT_KEYS, and that ordering is the whole point.
+    #
+    # There is currently ZERO history for these competitions: af_history holds 15 leagues and
+    # none of them is UEFA, and football-data.co.uk does not cover them at all. A fixture with no
+    # rolling-form history is refused by invariant 8 (`no_form_data` -> AVOID), and rightly so —
+    # median-imputed features produce a confident-looking wrong edge, which is how York City once
+    # showed the second-strongest EFL edge on the board built on nothing.
+    #
+    # So wiring these into predict TODAY would spend OddsAPI credits — the pool that was exhausted
+    # on 09-04 and took every real tip down with it — to generate AVOID rows. Adding them here
+    # instead collects fixtures, results and team stats through API-Football, which has roughly
+    # 60,000/day of unused headroom, and BUILDS the history that any future model needs.
+    #
+    # Pricing and prediction come later, once there is a season of history to train on and the
+    # OddsAPI plan has proven stable across a full billing cycle.
+    "Champions League":          2,
+    "Europa League":             3,
+    "Conference League":       848,
+    # TOP DIVISIONS — COLLECTION ONLY, and they are the missing input for the tournaments above.
+    #
+    # A European tie is decided by the two clubs' CURRENT DOMESTIC FORM, not by their history in
+    # that competition; the tournament's own past carries almost no weight when the sides come
+    # from different leagues and meet twice a decade. That framing is right, and it is why the
+    # blocker here was never "no UEFA history" — it is that we do not collect the leagues those
+    # clubs actually play in. Measured against the real 2026 fixture lists:
+    #
+    #     Champions League   81 clubs,  12 with domestic form (15%)
+    #     Europa League      76 clubs,  17 (22%)
+    #     Conference League 165 clubs,  26 (16%)
+    #
+    # and a fixture needs BOTH sides, so joint coverage was ~2%. Our 23 leagues are second
+    # divisions — Championship, Bundesliga 2, Ligue 2, La Liga 2, Serie B — while UEFA clubs are
+    # top-flight. Arsenal, Atletico, Milan and Ajax simply had no form with us.
+    #
+    # Every id below was READ FROM THE API (/leagues, season 2026, matched on country + name),
+    # not typed from memory. Greece is absent only because "Greek Super League" is already above.
+    #
+    # Cost is one-time and affordable: ~6,500 finished fixtures across these leagues at roughly
+    # one /fixtures/statistics call each, against ~60,000/day of unused API-Football headroom.
+    # None of them is added to ENABLED_LEAGUES or ODDS_API_SPORT_KEYS, so this spends no OddsAPI
+    # credit and produces no tips — it builds the form table the tournaments need.
+    "Premier League":           39,
+    "La Liga":                 140,
+    "Serie A":                 135,
+    "Bundesliga":               78,
+    "Ligue 1":                  61,
+    "Eredivisie":               88,
+    "Primeira Liga":            94,
+    "Belgian Pro League":      144,
+    "Scottish Premiership":    179,
+    "Turkish Super Lig":       203,
+    "Swiss Super League":      207,
+    "Czech Liga":              345,
+    "Croatia HNL":             210,
+    "Serbia Super Liga":       286,
+    "Ukraine Premier League":  333,
+    "Poland Ekstraklasa":      106,
+    "Cyprus First Division":   318,
 }
 # IDs may need verification at dashboard.api-football.com/docs
 
