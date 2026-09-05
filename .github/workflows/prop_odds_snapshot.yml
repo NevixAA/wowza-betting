@@ -49,7 +49,27 @@ jobs:
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: python scripts/snapshot_prop_odds.py
+        run: |
+          # OUTPUT CAPTURED, INCLUDING STDERR. This step failed on 2026-09-05 04:36 after five
+          # clean runs and the cause could not be read from outside: the script has two broad
+          # `except` blocks and the workflow published nothing, so a failure said only that it
+          # had failed. The identical blindness cost four wrong diagnoses on pro_team_stats
+          # before the traceback was finally captured and named the real cause in one line.
+          # `2>&1` is the whole point — a traceback goes to stderr; and pipefail because a pipe
+          # to tee otherwise reports TEE's exit code and a crash would read as success.
+          set -o pipefail
+          python scripts/snapshot_prop_odds.py 2>&1 | tee snap.txt
+
+      - name: Publish the snapshot output
+        if: always()
+        run: |
+          {
+            echo "## Prop odds snapshot"
+            echo ""
+            echo '```'
+            tail -n 40 snap.txt 2>/dev/null || echo "(no output captured — it failed before printing)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Commit and push odds history + CLV records
         run: |
