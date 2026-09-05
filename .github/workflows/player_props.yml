@@ -53,7 +53,20 @@ on:
     #
     # Prop markets deepen toward kickoff, so what matters is being sampled at all in the last few
     # hours, not being sampled every hour for three days.
-    - cron: '2 */3 * * *'
+    # WEEKEND-WEIGHTED WITHOUT ASKING FOR MORE (2026-09-05). The 3-hourly cut above is right about
+    # delivery and right about priority, and nothing here reverses it — the flat cadence was still
+    # spending the same number of runs on a Tuesday as on a Saturday while Fri-Sun carries 79.0%
+    # of fixtures (327 of 414 measured). This REDISTRIBUTES rather than adds:
+    #
+    #     Fri-Sun  every 2h = 12/day        Mon-Thu  every 6h = 4/day
+    #     week total 52, DOWN from 56 — so it cannot crowd out std/nf odds capture, whose
+    #     pre-match prices cannot be backfilled and which must keep winning that contest.
+    #
+    # An earlier attempt at this on 2026-08-29 was reverted within hours because it ADDED 14
+    # firings a day to a workflow already being dropped. The lesson taken then still holds: asking
+    # for more delivers less. Weighting is free only when the total does not rise.
+    - cron: '2 */2 * * 5,6,0'   # Fri-Sun: every 2h  (12/day)
+    - cron: '2 */6 * * 1-4'     # Mon-Thu: every 6h  (4/day)
     # WC retrain: nightly at 23:30 UTC (after all WC matches finish)
     - cron: '30 23 * * *'
     # Full club-league retrain: every Sunday at 05:00 UTC
