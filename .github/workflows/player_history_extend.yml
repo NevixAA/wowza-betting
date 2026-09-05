@@ -162,7 +162,14 @@ jobs:
           git diff --staged --quiet || \
             git commit -m "auto: player history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
-            git pull --rebase --autostash -X ours origin main && git push && exit 0
+            # `-X ours` -> `-X theirs`. In a REBASE the labels are inverted from a merge:
+            # `ours` is UPSTREAM and `theirs` is the commit being replayed, i.e. THIS run.
+            # `-X ours` therefore resolved every conflict in favour of what was already on
+            # origin and silently threw away the rows this run had just fetched, while still
+            # reporting success -- exactly how af_history.parquet went 18 days without moving.
+            # `-X theirs` keeps this run's data and still never fails the pull, so nothing is
+            # lost and no job starts going red.
+            git pull --rebase --autostash -X theirs origin main && git push && exit 0
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           echo "::error title=history extend push failed::Collected but not persisted."
