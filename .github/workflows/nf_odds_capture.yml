@@ -64,7 +64,10 @@ jobs:
     # Must exceed LOOP_MINUTES (25) plus checkout/pip/commit, or the timeout kills the
     # loop mid-window and the run commits nothing. Minutes are free on a public repo; the
     # concurrency group prevents a long run overlapping the next firing.
-    timeout-minutes: 40
+    # 40 -> 55: the loop base is now 40 minutes and checkout, pip and the commit add more.
+    # A timeout below the loop length does not shorten the loop, it kills the run
+    # mid-window and commits nothing.
+    timeout-minutes: 55
     permissions:
       contents: write
 
@@ -109,7 +112,22 @@ jobs:
           # 25 minutes at 5-minute spacing gives 5 passes, FINER near-kickoff resolution than the
           # old 10-minute spacing, and finishes well inside the ~30-45 minute real delivery gap so
           # runs stop piling up.
-          [ -n "$LOOP_MIN" ]   || LOOP_MIN=25
+          # 25 -> 40 (2026-09-05), same arithmetic as std_odds_capture. Coverage of the final
+          # ten minutes is delivery x loop length, and delivery is not ours to raise: this
+          # workflow gets ~10 runs/day against ~28 requested (36%). Simulated at that rate,
+          # P(landing inside T-10m) is 25% at a 25-minute loop and 34% at 40.
+          #
+          # The kickoff-aware EXTENSION that std_odds_capture now has is NOT applied here, and
+          # deliberately not faked: it keys on a NEXT_KO_MIN line that only
+          # capture_std_sidemarket_odds_forward.py prints. capture_nf_odds_forward.py emits no
+          # such signal, so a run here cannot know whether a kickoff is imminent. Adding that
+          # print is the follow-up; guessing a duration without it would just be a longer loop
+          # wearing the word "adaptive".
+          #
+          # This matters most here: new-format side markets have the WORST measured closing
+          # coverage of anything in the store — btts_yes/no, over15 and under35 reach T-10m on
+          # 17.6% of fixtures against 63.6% for the main market.
+          [ -n "$LOOP_MIN" ]   || LOOP_MIN=40
           [ -n "$LOOP_EVERY" ] || LOOP_EVERY=5
 
           if [ -z "$MH" ]; then
