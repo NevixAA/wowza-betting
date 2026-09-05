@@ -262,7 +262,14 @@ jobs:
             # (verified in a scratch repo: 3 appended rows lost, git reporting "dropping <sha> --
             # patch contents already upstream", workflow still green). With this file declared
             # merge=union in .gitattributes, a plain rebase keeps BOTH sides' appends instead.
-            git pull --rebase --autostash origin main && git push && { pushed=1; break; }
+            # `-X ours` -> `-X theirs`. In a REBASE the labels are inverted from a merge:
+            # `ours` is UPSTREAM and `theirs` is the commit being replayed, i.e. THIS run.
+            # `-X ours` therefore resolved every conflict in favour of what was already on
+            # origin and silently threw away the rows this run had just fetched, while still
+            # reporting success -- exactly how af_history.parquet went 18 days without moving.
+            # `-X theirs` keeps this run's data and still never fails the pull, so nothing is
+            # lost and no job starts going red.
+            git pull --rebase --autostash -X theirs origin main && git push && { pushed=1; break; }
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
