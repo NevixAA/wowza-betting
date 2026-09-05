@@ -75,10 +75,30 @@ LEAGUES = [
 
 # ── API helpers ───────────────────────────────────────────────────────────────
 
-def _get(endpoint: str, params: dict, cache_key: str, dry_run: bool = False) -> dict | None:
+def _get(endpoint: str, params: dict, cache_key: str, dry_run: bool = False,
+         max_age_h: float | None = None) -> dict | None:
+    """Cached GET. `max_age_h=None` caches FOREVER; a number expires the entry.
+
+    WHY AN EXPIRY EXISTS AT ALL. This cache had none, and the workflow restores it on every run
+    (`restore-keys: af-history-`). So the FIXTURES LIST for each league-season was fetched once,
+    around 2026-08-18, and replayed unchanged ever since — it contained only the matches finished
+    on that date, every one of which was already in the parquet. Result: zero new rows, no diff,
+    no commit, and a green job every morning for 18 days while af_history.parquet stayed frozen
+    at 2026-08-18. The classic shape here — the workflow was never failing, it was succeeding at
+    doing nothing.
+
+    The distinction that matters: a FINISHED fixture's statistics never change, so those stay
+    cached permanently and cost nothing. A season's fixture LIST changes every time a match is
+    played, so it must expire.
+    """
     cache_f = CACHE_DIR / f"{cache_key}.json"
     if cache_f.exists():
-        return json.loads(cache_f.read_text(encoding="utf-8"))
+        fresh = True
+        if max_age_h is not None:
+            age_h = (time.time() - cache_f.stat().st_mtime) / 3600.0
+            fresh = age_h < max_age_h
+        if fresh:
+            return json.loads(cache_f.read_text(encoding="utf-8"))
 
     if dry_run:
         return None
@@ -147,7 +167,11 @@ def _statf(stats_list: list, stat_type: str) -> float | None:
 
 def fetch_season(league_name: str, league_id: int, season: str, dry_run: bool) -> list[dict]:
     ck = f"fixtures_{league_id}_{season}"
-    data = _get("fixtures", {"league": league_id, "season": season}, ck, dry_run)
+    # SIX HOURS, not forever. This is the list of matches in a season and it grows every matchday;
+    # caching it permanently is what froze af_history.parquet for 18 days. Six hours still spares
+    # the repeated calls inside one run and across the same morning, while guaranteeing a daily
+    # job sees yesterday's results. One call per league-season per run — 16 leagues is 16 calls.
+    data = _get("fixtures", {"league": league_id, "season": season}, ck, dry_run, max_age_h=6.0)
 
     if data is None:
         return []
