@@ -456,6 +456,13 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
                 "HC": "home_corners", "AC": "away_corners",
                 "HF": "home_fouls",   "AF": "away_fouls",
                 "HY": "home_yellows", "AY": "away_yellows",
+                # THE MISSING LINK for the four xG features. They were pre-initialised as NaN a
+                # few lines above and this map had no entry to fill them, so every merge left
+                # them empty and the model median-imputed a constant — 0 of 27,610 rows non-null
+                # in the live store. backfill_af_history.py now writes HXG/AXG/HIB/AIB from the
+                # same API response it already fetches; this is what carries them across.
+                "HXG": "home_xg", "AXG": "away_xg",
+                "HIB": "home_insidebox", "AIB": "away_insidebox",
             }
             hist = hist.rename(columns=col_map)
             hist_cols = [c for c in col_map.values() if c in hist.columns]
