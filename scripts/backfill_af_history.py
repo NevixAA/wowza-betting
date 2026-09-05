@@ -119,6 +119,30 @@ def _stat(stats_list: list, stat_type: str) -> int | None:
     return None
 
 
+def _statf(stats_list: list, stat_type: str) -> float | None:
+    """Float version of _stat, for statistics that are NOT counts.
+
+    `_stat` casts with int(), so int("0.33") raises and returns None. Every statistic it was
+    written for is a count, so that was correct — but expected_goals is 0.33, and reading it
+    through _stat would have silently produced None for EVERY fixture while looking wired.
+    That is the same failure as the columns this is meant to fix: present, plausible, empty.
+
+    Deliberately a second function rather than a change to _stat: a dozen call sites depend on
+    getting an int back, and widening the shared helper to satisfy one caller would quietly
+    change the type of everything else.
+    """
+    for s in stats_list:
+        if s.get("type") == stat_type:
+            val = s.get("value")
+            if val is None or val == "None":
+                return None
+            try:
+                return float(str(val).replace("%", "").strip())
+            except (ValueError, TypeError):
+                return None
+    return None
+
+
 # ── Fetch season fixtures ─────────────────────────────────────────────────────
 
 def fetch_season(league_name: str, league_id: int, season: str, dry_run: bool) -> list[dict]:
@@ -174,6 +198,11 @@ def parse_fixture(league_name: str, season: str, f: dict, stats_resp) -> dict | 
         "HF":  None, "AF":  None,
         "HY":  None, "AY":  None,
         "HR":  None, "AR":  None,
+        # Declared here too, not only in the stats branch: a fixture with no statistics response
+        # must still produce these keys, or the rows would have ragged columns and the parquet
+        # schema would depend on which fixture happened to be first.
+        "HXG": None, "AXG": None,
+        "HIB": None, "AIB": None,
     }
 
     if stats_resp and len(stats_resp) >= 2:
@@ -192,6 +221,23 @@ def parse_fixture(league_name: str, season: str, f: dict, stats_resp) -> dict | 
         row["AY"]  = _stat(a_stats, "Yellow Cards")
         row["HR"]  = _stat(h_stats, "Red Cards")
         row["AR"]  = _stat(a_stats, "Red Cards")
+        # xG AND INSIDE-BOX SHOTS. Both arrive in the SAME response already being fetched and
+        # paid for, and were simply never read out of it. The model has declared
+        # home_xg_last5 / away_xg_last5 / home_insidebox_last5 / away_insidebox_last5 in
+        # FEATURE_COLS all along; verified in the live store, all four were 100% NULL — 0 of
+        # 27,610 rows — because af_history.parquet carried no such columns, so data_loader's
+        # merge had nothing to fill them with and the model median-imputed a constant.
+        #
+        # Names are exactly as the API returns them ('expected_goals' lowercase with an
+        # underscore, 'Shots insidebox' with no space in "insidebox") — read off a live
+        # response rather than guessed, because _stat matches the type string exactly.
+        #
+        # Costs nothing: no extra call, no extra credit. Rows already in the parquet keep NaN,
+        # so coverage builds forward from the next af_history_extend run.
+        row["HXG"] = _statf(h_stats, "expected_goals")   # float, not a count
+        row["AXG"] = _statf(a_stats, "expected_goals")
+        row["HIB"] = _stat(h_stats, "Shots insidebox")
+        row["AIB"] = _stat(a_stats, "Shots insidebox")
 
     return row
 
