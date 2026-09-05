@@ -137,18 +137,47 @@ jobs:
           fi
 
           echo "NEAR run: fixtures within ${MH}h, sampling every ${LOOP_EVERY}m for ${LOOP_MIN}m"
-          END=$(( $(date -u +%s) + LOOP_MIN * 60 ))
+          START_S=$(date -u +%s)
+          MAX_LOOP_MIN=${MAX_LOOP_MIN:-50}
+          END=$(( START_S + LOOP_MIN * 60 ))
           i=0
+          SLEEP_S=$(( LOOP_EVERY * 60 ))
           while : ; do
             i=$((i + 1))
-            echo "--- pass $i  $(date -u '+%H:%M:%S') ---"
-            python scripts/capture_nf_odds_forward.py --max-hours "$MH" \
-              || echo "  (pass $i failed - continuing)"
-            NEXT=$(( $(date -u +%s) + LOOP_EVERY * 60 ))
+            echo "--- pass $i  $(date -u '+%H:%M:%S')  (next gap ${SLEEP_S}s) ---"
+            OUT_TXT=$(python scripts/capture_nf_odds_forward.py --max-hours "$MH" 2>&1) || echo "  (pass $i failed - continuing)"
+            echo "$OUT_TXT"
+            # capture_nf_odds_forward.py now prints NEXT_KO_MIN, so this loop can behave like
+            # std_odds_capture instead of running blind for a fixed length. Reading it costs
+            # nothing: the pass already computed the value to filter its own window.
+            KO_MIN=$(printf '%s\n' "$OUT_TXT" | grep -o 'NEXT_KO_MIN=[0-9][0-9]*' | head -1 | cut -d= -f2)
+            if [ -n "$KO_MIN" ]; then
+              # Tighten spacing as kickoff nears: the close is where the curve is thin. New-format
+              # side markets reach T-10m on 17.6% of fixtures against 63.6% for the main market.
+              if   [ "$KO_MIN" -le 20 ]; then SLEEP_S=120
+              elif [ "$KO_MIN" -le 45 ]; then SLEEP_S=180
+              else                            SLEEP_S=$(( LOOP_EVERY * 60 ))
+              fi
+              echo "  nearest kickoff ${KO_MIN}m away -> next pass in ${SLEEP_S}s"
+            fi
+            NEXT=$(( $(date -u +%s) + SLEEP_S ))
+            # Stay alive for a kickoff falling just past the base window — the case that made a
+            # run landing at T-40m stop at T-15m and miss the close entirely. Never past
+            # MAX_LOOP_MIN, because a loop still running when the next firing arrives cancels it.
+            if [ -n "$KO_MIN" ] && [ "$NEXT" -ge "$END" ]; then
+              NOW_S=$(date -u +%s)
+              WANT_END=$(( NOW_S + KO_MIN * 60 + 120 ))
+              HARD_END=$(( START_S + MAX_LOOP_MIN * 60 ))
+              if [ "$WANT_END" -gt "$END" ] && [ "$WANT_END" -le "$HARD_END" ]; then
+                END=$WANT_END
+                echo "  extending loop to cover a kickoff ${KO_MIN}m away (cap ${MAX_LOOP_MIN}m)"
+              fi
+            fi
+            NEXT=$(( $(date -u +%s) + SLEEP_S ))
             [ "$NEXT" -lt "$END" ] || break
-            sleep $(( LOOP_EVERY * 60 ))
+            sleep "$SLEEP_S"
           done
-          echo "completed $i passes over ${LOOP_MIN}m"
+          echo "completed $i passes over $(( ( $(date -u +%s) - START_S ) / 60 ))m"
 
       - name: Commit and push updated NF odds history
         run: |

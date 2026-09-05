@@ -231,6 +231,12 @@ def run() -> int:
     snap_ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     leagues = sorted(config.NEW_FORMAT_LEAGUES & set(config.API_FOOTBALL_IDS))
     rows, stop = [], False
+    # NEAREST KICKOFF ACROSS EVERYTHING THIS PASS SEES, for the NEAR loop in nf_odds_capture.yml.
+    # Costs nothing: the hours-to-kickoff value is computed per fixture anyway. Without it the
+    # loop cannot know whether a match is imminent, so it can only run a fixed length and stop —
+    # which is how a run landing at T-40m sampled until T-15m and missed the close entirely.
+    # std_odds_capture has printed this since 2026-08-26; this is the same signal for new-format.
+    nearest_ko_h = None
     for league in leagues:
         if stop:
             break
@@ -246,8 +252,16 @@ def run() -> int:
             fid = fx.get("fixture", {}).get("id")
             raw_ko = fx.get("fixture", {}).get("date", "") or ""
             mdate = raw_ko[:10]
+            # Computed UNCONDITIONALLY now, not only when MAX_HOURS is set: a WIDE run
+            # (no --max-hours) skipped this branch entirely and therefore reported no nearest
+            # kickoff at all, so the loop could never adapt on the runs that see the most
+            # fixtures. The filtering behaviour below is unchanged.
+            _h = _hours_to_kickoff(raw_ko, now) if fid else None
+            if _h is not None and _h >= 0:
+                nearest_ko_h = _h if nearest_ko_h is None else min(nearest_ko_h, _h)
             if MAX_HOURS is not None and fid:
-                _h = _hours_to_kickoff(raw_ko, now)
+                # Unknown kickoff is KEPT: dropping it would silently lose a fixture, and a
+                # wasted odds call is cheaper than a missing curve.
                 if _h is not None and not (0 <= _h <= MAX_HOURS):
                     n_skipped_far += 1
                     continue
@@ -269,7 +283,12 @@ def run() -> int:
         _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
         print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
     if not rows:
-        print("[nf_odds] no rows captured"); return 0
+        print("[nf_odds] no rows captured")
+        # Emitted even with no rows: "nothing priced" and "nothing is near kickoff" are
+        # different facts, and the loop needs the second one to decide whether to stay alive.
+        if nearest_ko_h is not None:
+            print(f"NEXT_KO_MIN={int(nearest_ko_h * 60)}")
+        return 0
     new = pd.DataFrame(rows, columns=COLS)
     if OUT.exists():
         old = pd.read_csv(OUT)
@@ -284,6 +303,11 @@ def run() -> int:
     combined = combined[combined["odds"].ne(_prev)].sort_values("snapshot_ts")
     _ordered(combined).to_csv(OUT, index=False)
     print(f"[nf_odds] appended {len(new)} rows -> {OUT.name} (total {len(combined):,})")
+    # Machine-readable, on its own line, so the NEAR loop can extend itself WITHOUT a second
+    # invocation — which would cost a fresh round of odds calls to learn a fact this pass
+    # already knows.
+    if nearest_ko_h is not None:
+        print(f"NEXT_KO_MIN={int(nearest_ko_h * 60)}")
     return len(new)
 
 
