@@ -56,7 +56,28 @@ _BASE = "https://api.the-odds-api.com/v4"
 # consensus, which is what any no-vig or best-executable-price calculation needs. Cost roughly
 # doubles per event and the monthly plan is at 67.9% with 4 days left, so there is headroom;
 # revert via the env var if usage tightens.
-_REGIONS = os.getenv("PROP_ODDS_REGIONS", "uk,eu,us,us2").strip() or "uk,eu,us,us2"
+#
+# NARROWED BACK TO uk,eu ON 2026-09-05, AFTER IT COST THE REAL TIPS. The measurement above is
+# correct and the headroom reasoning was correct FOR THAT MONTH — it was taken with the plan at
+# 67.9% and four days left, so the wider ask never had to survive a full cycle. On the fresh
+# September quota it did: OddsAPI credits were exhausted by 09-04, predict went from 19/19
+# leagues and 195 fixtures at 04:26 to 0/19 and zero fixtures by 09:56, and NO TIPS WERE SENT
+# until the plan was topped up.
+#
+# The deciding argument is not the price count, it is what the two products are worth:
+#
+#   * Player props are PAPER ONLY, PERMANENTLY (root CLAUDE.md invariant 2). Their accuracy is
+#     real and their betting edge is not; they are monetised through the no-vig Fantasy family.
+#   * The 2nd-division O/U market is where actual money goes, and it depends on the SAME
+#     OddsAPI quota.
+#
+# So a paper product quadrupled the burn rate on the credit pool the staked product needs. More
+# books buys a better consensus for research; running out of credits buys nothing and stops the
+# tips. That is not a trade worth making, however good the coverage numbers look in isolation.
+#
+# Widen again deliberately — PROP_ODDS_REGIONS=uk,eu,us,us2 — when the plan has measured headroom
+# across a WHOLE billing cycle, not the tail of one.
+_REGIONS = os.getenv("PROP_ODDS_REGIONS", "uk,eu").strip() or "uk,eu"
 
 # How long to trust a cached response. An empty bookmaker list is NOT proof the
 # fixture will never be priced: books post prop markets progressively as kickoff
