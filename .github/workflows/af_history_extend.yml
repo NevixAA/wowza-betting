@@ -89,7 +89,16 @@ jobs:
             git commit -m "auto: af_history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
           for i in 1 2 3 4 5; do
-            git pull --rebase --autostash -X ours origin main && git push && { pushed=1; break; }
+            # `-X ours` REMOVED. In a rebase `ours` is UPSTREAM, not this run — so on any
+            # conflict it resolves in favour of what is already on origin and silently discards
+            # the rows this run just fetched. For an append-only history that is the worst
+            # possible default: the job still succeeds, still pushes, and quietly persists
+            # nothing. Root CLAUDE.md calls this out by name.
+            #
+            # Without it a genuine conflict FAILS the pull, the loop retries, and after five
+            # attempts the step exits non-zero and is visible. Losing data silently is worse than
+            # failing loudly.
+            git pull --rebase --autostash origin main && git push && { pushed=1; break; }
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
