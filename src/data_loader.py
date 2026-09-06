@@ -142,7 +142,18 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
     HEADERS = {"User-Agent": "Mozilla/5.0"}
     STD_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
     NEW_URL = "https://www.football-data.co.uk/new/{code}.csv"
-    SEASONS = ["2526", "2425", "2324", "2223"]  # last 4 seasons
+    # DERIVED, NOT HARDCODED. This list was ["2526","2425","2324","2223"], so its newest season
+    # was 2025/26 — while the live season is 2026/27. retrain.py already auto-detects the season
+    # from the date (_auto_season, "month >= 7 -> new season"); this did not, so the loader could
+    # never fetch the season currently being played, and its "current season" branch was really
+    # refreshing last year's finished data.
+    #
+    # Same failure shape as COLLECT_SEASONS freezing at "2025" while PROP_SEASONS rolled to
+    # "2026" (root CLAUDE.md): a season-keyed constant that someone must remember to bump, and
+    # nobody does. Derive it and the July roll happens by itself.
+    _now = __import__("datetime").datetime.now()
+    _start = _now.year if _now.month >= 7 else _now.year - 1
+    SEASONS = [f"{str(y)[2:]}{str(y + 1)[2:]}" for y in range(_start, _start - 4, -1)]
 
     std_leagues = {
         "League One": "E2", "League Two": "E3", "Championship": "E1",
