@@ -511,6 +511,14 @@ _RAW_MAP = {  # display "_pg" stat -> raw per-game source column
 }
 _SQUADS_OUT = Path(__file__).resolve().parents[1] / "output" / "pl_squads.csv"
 _OFFICIAL_SQUADS = Path(__file__).resolve().parents[1] / "output" / "pl_squads_official.csv"
+# ALL leagues we tip in, for predict.py's current-club overlay. Deliberately separate from
+# _OFFICIAL_SQUADS, which build_squads() uses as the Premier League roster universe.
+_ALL_SQUADS = Path(__file__).resolve().parents[1] / "output" / "squads_official.csv"
+# Competitions whose "teams" are countries. A squad row from one of these says nothing about
+# which CLUB a player belongs to, so they never enter the current-club overlay.
+_NATIONAL_TEAM_COMPS = {"World Cup", "Euro Championship", "Copa America",
+                        "Africa Cup of Nations", "Nations League",
+                        "World Cup - Qualification", "Friendlies"}
 
 
 def build_squads(n: int = 5, parquet_path: Path | None = None, write: bool = False) -> pd.DataFrame:
@@ -607,6 +615,92 @@ def refresh_official_squads(league_id: int | None = None, seasons=("2026", "2025
     df = pd.DataFrame(rows)[["player_id", "player_name", "team", "position", "number", "age"]]
     _OFFICIAL_SQUADS.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(_OFFICIAL_SQUADS, index=False)
+    return len(df)
+
+
+def refresh_all_squads(leagues: dict | None = None,
+                       seasons=("2026", "2025")) -> int:
+    """Official current squads for EVERY league we tip in -> output/squads_official.csv.
+
+    WHY A SECOND FILE AND NOT A WIDER pl_squads_official.csv. That file is the PREMIER LEAGUE
+    ROSTER UNIVERSE for `build_squads()` (line ~538: it is read as `base`, the list of players
+    the FPL squad view is built from). Widening it in place would take pl_squads.csv from ~674
+    Premier League players to ~10,000 across 26 competitions and put every league on the Fantasy
+    dashboard page. Different consumers, different files.
+
+    WHAT IT FIXES. `predict.py` resolves a player's current club from his latest appearance, and
+    an appearance is only evidence of where he played THAT DAY. The live-squad overlay corrects
+    that, but it has only ever been fed a Premier League file, so a summer transfer inside the
+    EFL, Bundesliga 2, La Liga 2 or Serie B stayed invisible and the player kept being tipped for
+    a club he had left. The join is on `player_id`, so it is immune to the club-name spelling
+    differences that break everything else here.
+
+    COST. One teams call plus one squad call per team, per league, all cached 24h in
+    api_football. 26 leagues x ~19 clubs is roughly 500 calls — daily, against ~60,000/day of
+    headroom. Do not move this into a 5-minute loop; it belongs in a daily batch job.
+
+    A league that returns nothing is SKIPPED, not fatal: off-season, or a competition whose
+    squads API-Football has not populated yet. Returns the total player count written.
+    """
+    from player_model.api_football import get_league_teams, get_pl_squads
+    # PROP_LEAGUES is already name -> API-Football id for all 29 competitions the prop model
+    # scores, and it is the map the rest of this module resolves ids through. Deriving the list
+    # from anywhere else would let the two drift.
+    if leagues is None:
+        leagues = dict(sorted((config.PROP_LEAGUES or {}).items()))
+    # NATIONAL-TEAM COMPETITIONS ARE NOT CLUBS, and including them re-creates the exact bug the
+    # current-club rule exists to prevent. Measured on the first full fetch: the World Cup entry
+    # contributed 1,013 players whose "team" is Algeria, Argentina, Australia, Austria, Brazil...
+    # Feeding that into the overlay would set a player's CURRENT CLUB to his country — which is
+    # where the `Australia`/`Austria` teams in an earlier player_tips.csv came from.
+    leagues = {n: i for n, i in leagues.items() if n not in _NATIONAL_TEAM_COMPS}
+
+    frames, skipped = [], []
+    for name, lid in leagues.items():
+        try:
+            season = next((s for s in seasons if len(get_league_teams(lid, s)) >= 8), None)
+            rows = get_pl_squads(lid, season) if season else []
+        except Exception as e:                                   # noqa: BLE001
+            print(f"[squads] {name} ({lid}) failed: {type(e).__name__}: {e}")
+            rows = []
+        if not rows:
+            skipped.append(name)
+            continue
+        f = pd.DataFrame(rows)[["player_id", "player_name", "team", "position", "number", "age"]]
+        f["league"] = name
+        f["league_id"] = lid
+        f["season"] = season
+        frames.append(f)
+        print(f"[squads] {name}: {len(f)} player(s) across "
+              f"{f['team'].nunique()} club(s) (season {season})")
+
+    if not frames:
+        print("[squads] nothing fetched — file left untouched")
+        return 0
+    df = pd.concat(frames, ignore_index=True)
+    # A ZERO OR NEGATIVE ID IS NOT AN ID. API-Football returned one squad row as player_id 0
+    # ("Guillem Badia", Girona), and player_history.parquet holds 9 rows with the same non-id.
+    # Joining them would map all 9 to Girona — one club, chosen by a collision, presented with
+    # exactly as much confidence as a real answer.
+    df["player_id"] = pd.to_numeric(df["player_id"], errors="coerce")
+    bad = df["player_id"].isna() | (df["player_id"] <= 0)
+    if bad.any():
+        print(f"[squads] dropped {int(bad.sum())} row(s) with a non-id player_id")
+        df = df[~bad]
+    df["player_id"] = df["player_id"].astype("int64")
+    # A player can appear in a domestic league AND a UEFA competition. Keep the DOMESTIC row:
+    # the club is the same either way, but the domestic entry is the one that gets refreshed
+    # every day of the season. Sorting UEFA last makes keep="first" do that.
+    df["_uefa"] = df["league"].isin({"Champions League", "Europa League",
+                                     "Europa Conference League"}).astype(int)
+    df = (df.sort_values(["_uefa"]).drop_duplicates("player_id", keep="first")
+            .drop(columns="_uefa").sort_values(["league", "team", "player_name"]))
+    _ALL_SQUADS.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(_ALL_SQUADS, index=False)
+    if skipped:
+        print(f"[squads] no squads returned for {len(skipped)}: {', '.join(skipped)}")
+    print(f"[squads] wrote {_ALL_SQUADS.name}: {len(df):,} player(s), "
+          f"{df['team'].nunique()} club(s), {df['league'].nunique()} league(s)")
     return len(df)
 
 

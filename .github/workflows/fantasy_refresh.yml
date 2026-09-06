@@ -33,11 +33,21 @@ jobs:
         run: |
           python - <<'PY'
           import sys; sys.path.insert(0, '.')
-          from player_model.fantasy import generate_fantasy_tips, refresh_official_squads, build_squads
+          from player_model.fantasy import (generate_fantasy_tips, refresh_official_squads,
+                                            refresh_all_squads, build_squads)
           try:
               print(f"official squads (API-Football): {refresh_official_squads()}")
           except Exception as e:
               print(f"squad refresh skipped: {e}")
+          # ALL prop leagues, for predict.py's current-club overlay. Separate file and separate
+          # call from the line above: pl_squads_official.csv is the Premier League ROSTER
+          # UNIVERSE that build_squads() reads, so it must stay PL-only or the Fantasy page grows
+          # to every competition. ~660 API-Football calls on a cold cache, 24h-cached, once a
+          # day — it belongs in this daily job and nowhere near the 5-minute predict loop.
+          try:
+              print(f"all-league squads: {refresh_all_squads()}")
+          except Exception as e:
+              print(f"all-league squad refresh skipped: {e}")
           # generate_fantasy_tips -> build_fantasy_projections fetches the official FPL API
           # (bootstrap-static + fixtures) which caches fpl_bootstrap.json / fpl_fixtures.json.
           tips = generate_fantasy_tips(write=True)
@@ -61,7 +71,8 @@ jobs:
           # player_props for three days. A loop degrades to "one file skipped" instead.
           for f in output/fantasy_tips.csv output/fantasy_projection_log.csv \
                    output/fpl_bootstrap.json output/fpl_fixtures.json \
-                   output/pl_squads_official.csv output/pl_squads.csv; do
+                   output/pl_squads_official.csv output/pl_squads.csv \
+                   output/squads_official.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
