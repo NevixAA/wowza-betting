@@ -452,6 +452,86 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
+    """Fill odds_over25 / odds_under25 from OUR OWN forward odds captures, NaN-only.
+
+    WHY THIS EXISTS. odds_over25 was deliberately excluded from every other enrichment so the
+    O/U money-market stayed 100% football-data and its backtest was provably unchanged. That was
+    the right call while football-data worked. On 2026-09-05 it returned 503 for many hours, the
+    loader fell back to a cache with no prices, and retrain found 0 of 31,068 rows priced — it
+    could not backtest at all, so it could not safely retrain.
+
+    Meanwhile we hold the prices ourselves. The three forward captures carry over25 AND under25
+    for 4,280 distinct fixtures, from 2024-08 up to the current board:
+
+        newformat_odds_history.csv             3,610 fixtures
+        standard_sidemarket_odds_history.csv     391
+        standard_odds_history.csv                365
+
+    These are the LATEST fixtures — the ones retrain most needs to learn from. football-data's
+    unique contribution is old prices for old matches: volume, not signal.
+
+    NaN-ONLY, deliberately. Where football-data has a price it still wins, so when the site
+    returns the O/U backtest reverts to exactly what it was and remains comparable across runs.
+    This only ever fills gaps that would otherwise drop the row entirely.
+
+    The LAST snapshot per fixture is taken — the closest thing to a closing price we captured.
+    """
+    paths = [Path(__file__).resolve().parents[1] / "output" / n for n in
+             ("standard_odds_history.csv", "standard_sidemarket_odds_history.csv",
+              "newformat_odds_history.csv")]
+    frames = []
+    for p in paths:
+        if not p.exists():
+            continue
+        try:
+            o = pd.read_csv(p, low_memory=False)
+        except Exception:                                        # noqa: BLE001
+            continue
+        if not {"market", "odds", "match", "match_date"}.issubset(o.columns):
+            continue
+        o = o[o["market"].isin(("over25", "under25"))]
+        if len(o):
+            frames.append(o)
+    if not frames:
+        return df
+    try:
+        from src.api_football_ou import _norm_name
+    except ImportError:
+        _norm_name = lambda x: str(x).lower().strip()
+    try:
+        oh = pd.concat(frames, ignore_index=True)
+        # Sort so aggfunc="last" really means the latest snapshot we hold for that fixture.
+        if "snapshot_ts" in oh.columns:
+            oh = oh.sort_values("snapshot_ts")
+        parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
+        oh["_h"] = parts[0].apply(_norm_name)
+        oh["_a"] = (parts[1] if parts.shape[1] > 1 else "").apply(_norm_name)
+        oh["_d"] = oh["match_date"].astype(str).str[:10]
+        oh["_col"] = oh["market"].map({"over25": "odds_over25", "under25": "odds_under25"})
+        piv = oh.pivot_table(index=["_h", "_a", "_d"], columns="_col",
+                             values="odds", aggfunc="last")
+
+        df["_h"] = df["home_team"].apply(_norm_name)
+        df["_a"] = df["away_team"].apply(_norm_name)
+        df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        matched = piv.reindex(pd.MultiIndex.from_arrays(
+            [df["_h"], df["_a"], df["_d"]])).reset_index(drop=True)
+        for col in ("odds_over25", "odds_under25"):
+            if col not in df.columns:
+                df[col] = np.nan
+            if col in matched.columns:
+                mask = df[col].isna() & matched[col].notna()
+                if mask.any():
+                    df.loc[mask, col] = matched.loc[mask, col].values
+                    log.info(f"  [ou25_captures] {col}: filled {int(mask.sum())} row(s) from our "
+                             f"own forward captures")
+        df = df.drop(columns=["_h", "_a", "_d"])
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[ou25_captures] merge failed: {e}")
+    return df
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -796,6 +876,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
+        out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only
         _CACHE = out
         return out
 
@@ -1023,6 +1104,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     out = _enrich_with_api_shots(out)
     # ── Real BTTS/O1.5/O3.5 odds for standard 2nd-divs (was synthetic 1.85) ───────
     out = _enrich_with_standard_sidemarket_odds(out)
+    out = _enrich_ou25_from_captures(out)
 
     # ── Sanity check: flag German teams appearing in Danish league slots ─────────
     _GERMAN_TEAMS = {
