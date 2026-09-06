@@ -44,6 +44,8 @@ jobs:
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # Full xG/inside-box enrichment: weekly job, no tip deadline. Predict leaves this unset.
+          WOWZA_FULL_ENRICH: '1'
         run: |
           M="${{ matrix.model }}"
           case "$M" in
