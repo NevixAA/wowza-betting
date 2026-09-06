@@ -541,7 +541,26 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     except ImportError:
         return df
 
-    for league in config.NEW_FORMAT_LEAGUES:
+    # ALL LEAGUES PRESENT, NOT ONLY NEW-FORMAT. This loop was `for league in
+    # config.NEW_FORMAT_LEAGUES`, which is why home_xg_last5 / away_xg_last5 /
+    # home_insidebox_last5 / away_insidebox_last5 are 100% NULL in the live store — 0 of 27,610
+    # rows. The standard-format second divisions are the market that actually takes money, and
+    # they were the ones being skipped. FEATURE_COLS has declared those four features all along
+    # and model.py median-imputes them, so the model has four constant inputs.
+    #
+    # Nothing else about the enrichment needed changing: api_football_ou already reads
+    # expected_goals and 'Shots insidebox' correctly, and af_history supplies the historical half.
+    # History and live were already combined; the live half just never looked at these leagues.
+    #
+    # RUNTIME RISK, STATED RATHER THAN DISCOVERED. On 2026-08-15 switching on dormant
+    # API-Football enrichments took predict from 2-3 min to 10+ against its timeout. Two things
+    # bound it here: the skip-if-populated guard below, and apifootball_ou_cache/ (44,453 files),
+    # so a league-season is fetched once and then read from disk. Watch predict's runtime after
+    # this ships; if it climbs, gate this loop to the train/backtest path rather than reverting
+    # the fix.
+    _leagues = [l for l in df["league"].dropna().unique()
+                if config.API_FOOTBALL_IDS.get(l)]
+    for league in _leagues:
         league_id = config.API_FOOTBALL_IDS.get(league)
         if not league_id:
             continue
