@@ -24,6 +24,7 @@ from __future__ import annotations
 import json
 import logging
 import math
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -768,12 +769,37 @@ def run() -> list[dict]:
             log.info(f"    Bet: {t['bet']} | Fair odds: {t['fair_under_odds'] if 'UNDER' in t['bet'] else t['fair_over_odds']}")
             log.info(f"    {t['reason']}")
 
-        # Send Telegram alerts for new signals
-        try:
-            from telegram_bot.notifier import notify_live_signals
-            notify_live_signals()
-        except Exception as e:
-            log.error(f"Telegram live alert error: {e}")
+        # ALERTS ARE OFF BY DEFAULT (2026-09-06). The signals are recorded, graded and collected
+        # exactly as before — only the Telegram send is gated. The record is why:
+        #
+        #     HT_UNDER_1.5   11W  4L        UNDER_HOLD      2W  2L
+        #     HT_UNDER_0.5    3W  5L        STRONG_STUCK    2W  4L
+        #     HT_OVER_0.5     1W  4L        UNDER_RECOVERY  2W  8L
+        #
+        # 21W-27L overall on a lambda that is not yet FITTED — that is what this scanner's real
+        # job, growing output/inplay_snapshots.csv, exists to make possible. UNDER_RECOVERY is
+        # the worst of it: on 2026-09-05 it tipped UNDER 2.5 on Gimnasia v Boca at 1-1 in the
+        # 26th minute at a fair price of 19.50, and the match finished with four goals.
+        #
+        # COLLECTION IS DELIBERATELY UNTOUCHED. An in-play state that is not sampled is gone for
+        # good, the same as a closing price, so silencing the tips must not cost a single row.
+        # Set LIVE_ALERTS=1 in the workflow to turn sending back on.
+        #
+        # Gated HERE rather than by dropping TELEGRAM_TOKEN from the workflow, which looks like
+        # the smaller change and is not: with no env credentials `_load_config()` falls through
+        # to telegram_bot/bot_config.json, which is gitignored and absent from the repo, and then
+        # calls sys.exit(1). SystemExit does not inherit from Exception, so the try/except below
+        # would NOT catch it — the run would die before `Commit and push`, which has no
+        # `if: always()`, and every scan would lose its snapshots. Exactly what we are protecting.
+        if os.getenv("LIVE_ALERTS", "").strip() == "1":
+            try:
+                from telegram_bot.notifier import notify_live_signals
+                notify_live_signals()
+            except Exception as e:
+                log.error(f"Telegram live alert error: {e}")
+        else:
+            log.info(f"  live alerts OFF (LIVE_ALERTS != 1) — {len(tips)} signal(s) recorded "
+                     f"and collected, none sent")
     else:
         log.info("  No live value signals detected.")
         _save_empty()

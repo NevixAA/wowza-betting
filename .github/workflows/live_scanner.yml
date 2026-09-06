@@ -91,8 +91,19 @@ jobs:
           # (e.g. "0-0 at 72'" when it was really 3-1). API-Football gives real score + elapsed.
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          # Kept even though alerts are OFF. The scanner gates sending on LIVE_ALERTS (below),
+          # NOT on the presence of these — removing them would send `_load_config()` down its
+          # bot_config.json path, which is gitignored and absent in CI, and that path ends in
+          # sys.exit(1). SystemExit is not an Exception, so nothing catches it and the run would
+          # die before `Commit and push`, losing that scan's snapshots.
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # ALERTS OFF 2026-09-06 — signals still computed, graded and collected; only the
+          # Telegram send is suppressed. The record was 21W-27L across six signal types on a
+          # lambda that has not been fitted yet, and UNDER_RECOVERY alone was 2W-8L. Collection
+          # is the reason this workflow exists and is deliberately unaffected.
+          # Set LIVE_ALERTS: '1' to resume sending.
+          LIVE_ALERTS: ''
         run: python src/live_scanner.py
 
       - name: Commit and push
