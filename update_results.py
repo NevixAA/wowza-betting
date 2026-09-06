@@ -603,14 +603,33 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
         if not result:
             continue
 
+        # AN UNPRICED ROW HAS NO P&L, BECAUSE THERE WAS NO BET. This fell back to
+        # `mkt_odds = 1.0`, which prices a win at 0.0 and a loss at -1.0 — so a prop nobody
+        # could have backed lost a unit and could never gain one. Invariant 13: most AVOID rows
+        # are "never priced", not "rejected", and `enrich_with_odds` skips them before an edge is
+        # ever computed. Measured on player_ledger since 2026-08-10: 1,158 graded losses carried
+        # a pnl but only 343 of them had a price, against 175 wins that all did — 815 rows
+        # charged a unit on a bet that did not exist, and the file reported AVOID at -967u.
+        #
+        # It never touched real P&L (AVOID is not staked, and props are paper by invariant 2),
+        # but it makes the ledger useless for the one question it could answer: how the model
+        # did on the props it rejected.
+        #
+        # The RESULT is still recorded — whether the prop hit is real information and costs
+        # nothing to keep. Only the money column is left empty, per invariant 9: write NaN,
+        # never an invented number.
         try:
             mkt_odds = float(row["market_odds"])
         except (TypeError, ValueError):
-            mkt_odds = 1.0
-        pnl = round(mkt_odds - 1.0, 4) if result == "WIN" else -1.0
+            mkt_odds = None
+        if mkt_odds is None or not mkt_odds > 1.0:
+            pnl, note = "", "unpriced — result only, no stake"
+        else:
+            pnl = round(mkt_odds - 1.0, 4) if result == "WIN" else -1.0
+            note = ""
 
         updates.append({"idx": idx, "is_played": "True", "result": result,
-                        "pnl": pnl, "notes": "", "resolved_date": today_str})
+                        "pnl": pnl, "notes": note, "resolved_date": today_str})
         log.info(
             f"  {'[DRY]' if dry_run else '[ OK]'} "
             f"{player} ({market}, {minutes}min) {home} vs {away} ({date_str}) → {result}  PnL={pnl:+.3f}u"
@@ -641,8 +660,14 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
     wins      = sum(1 for u in updates if u["result"] == "WIN")
     losses    = sum(1 for u in updates if u["result"] == "LOSS")
     voids     = sum(1 for u in updates if u["result"] == "VOID")
-    total_pnl = sum(float(u["pnl"]) for u in updates if u["result"] != "VOID")
-    log.info(f"player_ledger: {len(updates)} resolved — {wins}W / {losses}L / {voids} VOID — PnL={total_pnl:+.3f}u")
+    # Unpriced rows carry pnl "" and are excluded from the total — summing them as 0.0 would
+    # quietly restate "no bet existed" as "a bet that broke even".
+    staked    = [u for u in updates if u["result"] != "VOID" and str(u["pnl"]) != ""]
+    unpriced  = sum(1 for u in updates if str(u["pnl"]) == "")
+    total_pnl = sum(float(u["pnl"]) for u in staked)
+    log.info(f"player_ledger: {len(updates)} resolved — {wins}W / {losses}L / {voids} VOID — "
+             f"PnL={total_pnl:+.3f}u over {len(staked)} priced row(s)"
+             + (f"; {unpriced} unpriced row(s) graded with no P&L" if unpriced else ""))
     log.info(f"  Saved → {PLAYER_LEDGER_FILE}")
 
 
