@@ -496,16 +496,28 @@ def run_player_predictions(
     # only. A player who left the PL this summer is absent from it, so he still falls back to his
     # last PL appearance. No source we hold knows better, and inventing one would be worse than
     # being out of date. The overlay fires only where it genuinely knows.
+    # COVERAGE IS NO LONGER PREMIER LEAGUE ONLY. squads_official.csv carries every league we tip
+    # in (written daily by fantasy_refresh); pl_squads_official.csv is read AFTER it and only
+    # fills ids the wide file does not have, so the overlay degrades to the old PL-only behaviour
+    # if the wide file is missing rather than disappearing. Order matters — the wide file is the
+    # more current of the two for a player who moved between leagues.
     _live_squad = {}
-    try:
-        _sqf = config.OUTPUT_DIR / "pl_squads_official.csv"
-        if _sqf.exists():
+    for _name in ("squads_official.csv", "pl_squads_official.csv"):
+        try:
+            _sqf = config.OUTPUT_DIR / _name
+            if not _sqf.exists():
+                continue
             _sq = pd.read_csv(_sqf, usecols=["player_id", "team"])
             _sq = _sq.dropna(subset=["player_id", "team"])
-            _live_squad = dict(zip(_sq["player_id"].astype("int64"),
-                                   _sq["team"].astype(str)))
-    except Exception as _e:
-        print(f"[squad_overlay] skipped ({_e}); falling back to appearance history")
+            # Guarded here too, not only in the writer: this file arrives from CI and a zero id
+            # would silently give every id-less history row the same club.
+            _sq = _sq[pd.to_numeric(_sq["player_id"], errors="coerce").fillna(0) > 0]
+            for _pid, _tm in zip(_sq["player_id"].astype("int64"), _sq["team"].astype(str)):
+                _live_squad.setdefault(_pid, _tm)          # first file wins
+        except Exception as _e:
+            print(f"[squad_overlay] {_name} skipped ({_e})")
+    if not _live_squad:
+        print("[squad_overlay] no squad file readable; falling back to appearance history")
 
     _from_live = history_df["player_id"].map(_live_squad)
     _from_hist = history_df["player_id"].map(_latest_team)
