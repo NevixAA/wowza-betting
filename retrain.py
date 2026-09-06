@@ -378,26 +378,34 @@ def main():
 
     std_leagues = config.STANDARD_FORMAT_LEAGUES & config.ENABLED_LEAGUES
     if std_results is None:
-        # The track was skipped above for want of data. Backtesting an empty frame would crash
-        # here instead, which tells nobody anything — the useful message was already printed.
-        log.error("SKIPPING STANDARD backtest: the model was not retrained this run.")
-        return
-    std_df, std_summary, std_lg = run_backtest(std_valid, enabled_leagues=std_leagues)
-    std_df.to_csv(config.OUTPUT_DIR / "backtest_results_standard.csv", index=False)
-    std_lg.to_csv(config.OUTPUT_DIR / "backtest_by_league_standard.csv", index=False)
+        # SKIP THE STANDARD BACKTEST, DO NOT RETURN. This was `return`, and it returned from
+        # retrain() entirely — so a standard track with no prices did not merely skip its own
+        # model, it silently took the NEW-FORMAT model down with it, along with the side-market
+        # backtests below. Sections 4+ are dead code whenever football-data is unreachable.
+        #
+        # That is why "retrain doesn't work" was the whole run and not one track: the new-format
+        # data was complete the entire time (priced by our own captures) and never got the chance
+        # to train. The two tracks are independent by invariant 1 and must fail independently.
+        log.error("SKIPPING STANDARD backtest: the model was not retrained this run. "
+                  "Continuing to the NEW-FORMAT track, which has its own data and its own "
+                  "price coverage.")
+    else:
+        std_df, std_summary, std_lg = run_backtest(std_valid, enabled_leagues=std_leagues)
+        std_df.to_csv(config.OUTPUT_DIR / "backtest_results_standard.csv", index=False)
+        std_lg.to_csv(config.OUTPUT_DIR / "backtest_by_league_standard.csv", index=False)
 
-    print("\n" + "=" * 60)
-    print("  BACKTEST — STANDARD MODEL")
-    print("=" * 60)
-    for k, v in std_summary.items():
-        print(f"  {k:35s}: {v}")
-    print("\n  BY LEAGUE:"); print(std_lg.to_string(index=False))
+        print("\n" + "=" * 60)
+        print("  BACKTEST — STANDARD MODEL")
+        print("=" * 60)
+        for k, v in std_summary.items():
+            print(f"  {k:35s}: {v}")
+        print("\n  BY LEAGUE:"); print(std_lg.to_string(index=False))
 
-    prev_std = history.get(f"{run_key}_standard") or \
-               next((v for k, v in sorted(history.items(), reverse=True)
-                     if "_standard" in k), None)
-    _print_comparison("STANDARD", prev_std, std_summary)
-    history[f"{run_key}_standard"] = {**std_summary, "season": season}
+        prev_std = history.get(f"{run_key}_standard") or \
+                   next((v for k, v in sorted(history.items(), reverse=True)
+                         if "_standard" in k), None)
+        _print_comparison("STANDARD", prev_std, std_summary)
+        history[f"{run_key}_standard"] = {**std_summary, "season": season}
 
     # ── 4. Train + backtest NEW-FORMAT model ──────────────────────────────────
     nf_valid = valid[valid["league"].isin(config.NEW_FORMAT_LEAGUES)]
