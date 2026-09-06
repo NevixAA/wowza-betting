@@ -350,11 +350,20 @@ def main():
     # Refusing here says WHICH track has no data and leaves that model on disk untouched, rather
     # than crashing the whole run — the new-format model can still retrain when the standard one
     # cannot, and vice versa.
-    if len(std_valid) < config.BACKTEST_MIN_TRAIN:
-        log.error(f"SKIPPING STANDARD model: only {len(std_valid):,} rows "
-                  f"(need >= {config.BACKTEST_MIN_TRAIN:,}). "
-                  f"{config.MODEL_FILE_STANDARD.name} is LEFT UNTOUCHED. "
-                  f"Leagues present in the frame: {sorted(valid['league'].unique())[:8]}")
+    # PER-TRACK, NOT GLOBAL. The earlier guard counted priced rows across the WHOLE frame and
+    # passed at 1,430 — but almost all of those are new-format, priced by our own nf captures.
+    # The STANDARD subset had 224, and run_backtest needs 460, so training "succeeded" and then
+    # died in the backtest. A model that cannot be backtested must not be saved, and the two
+    # tracks have completely different price coverage, so the question has to be asked per track.
+    _std_priced = int(std_valid[["odds_over25", "odds_under25"]].notna().all(axis=1).sum()) \
+        if {"odds_over25", "odds_under25"} <= set(std_valid.columns) else 0
+    if len(std_valid) < config.BACKTEST_MIN_TRAIN or _std_priced < (config.BACKTEST_MIN_TRAIN + config.BACKTEST_WALK_SIZE):
+        log.error(f"SKIPPING STANDARD model: {len(std_valid):,} rows, of which {_std_priced:,} "
+                  f"carry odds (need >= {config.BACKTEST_MIN_TRAIN + config.BACKTEST_WALK_SIZE:,} priced to backtest). "
+                  f"{config.MODEL_FILE_STANDARD.name} is LEFT UNTOUCHED.\n"
+                  f"  Standard-format historical PRICES come from football-data.co.uk, which is "
+                  f"unreachable; our own forward captures cover the new-format leagues far better "
+                  f"than the second divisions. The new-format model below still retrains.")
         std_results = None
     else:
         std_results = train_model(std_valid)
