@@ -505,8 +505,10 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
         if "snapshot_ts" in oh.columns:
             oh = oh.sort_values("snapshot_ts")
         parts = oh["match"].astype(str).str.split(" vs ", n=1, expand=True)
-        oh["_h"] = parts[0].apply(_norm_name)
-        oh["_a"] = (parts[1] if parts.shape[1] > 1 else "").apply(_norm_name)
+        oh["_hraw"] = parts[0].astype(str)
+        oh["_araw"] = (parts[1] if parts.shape[1] > 1 else "").astype(str)
+        oh["_h"] = oh["_hraw"].apply(_norm_name)
+        oh["_a"] = oh["_araw"].apply(_norm_name)
         oh["_d"] = oh["match_date"].astype(str).str[:10]
         oh["_col"] = oh["market"].map({"over25": "odds_over25", "under25": "odds_under25"})
         piv = oh.pivot_table(index=["_h", "_a", "_d"], columns="_col",
@@ -526,6 +528,69 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
                     df.loc[mask, col] = matched.loc[mask, col].values
                     log.info(f"  [ou25_captures] {col}: filled {int(mask.sum())} row(s) from our "
                              f"own forward captures")
+
+        # SECOND PASS, league-scoped, through the canonical resolver (invariant 11). `_norm_name`
+        # lower-cases and strips punctuation but knows nothing about club naming: it cannot see
+        # that OddsAPI's "Colchester United" and football-data's "Colchester" are one club, and
+        # this join is exactly the OddsAPI-vs-history boundary team_names.resolve exists for.
+        #
+        # Measured on the standard + enabled leagues: 521 playable capture fixtures, of which the
+        # exact key above finds 232 and this pass lifts it to 388. The standard track needs 460
+        # priced rows to backtest, so this does not unblock it TODAY — but it is the difference
+        # between a track that gets there as the captures grow and one that never does.
+        #
+        # `resolve` is league-scoped and REFUSES an ambiguous match, returning None, so a club it
+        # cannot pin down is skipped rather than guessed at. It runs on the CAPTURES (a few
+        # thousand) rather than the history rows (40k), and only fills values still NaN, so it
+        # can add a price and never change one.
+        try:
+            from src.team_names import resolve as _resolve
+            cap = piv.dropna(how="all").reset_index()
+            # The captures carry their own `league`, so resolve within THAT league only. Scanning
+            # every league instead would be ~46x the work and would also let a club name match
+            # the wrong competition — the failure mode team_names.resolve is built to refuse.
+            raw_by_key = {(h, a, d): (hr, ar, lg) for h, a, d, hr, ar, lg in zip(
+                oh["_h"], oh["_a"], oh["_d"], oh["_hraw"], oh["_araw"],
+                oh["league"] if "league" in oh.columns else [""] * len(oh))}
+            by_league = {l: sorted(set(g["home_team"].dropna().astype(str))
+                                   | set(g["away_team"].dropna().astype(str)))
+                         for l, g in df.groupby("league")} if "league" in df.columns else {}
+            # (league, raw name) -> history name. The same clubs recur constantly and resolve()
+            # is a tiered scan over every candidate in the league, so memoise it.
+            memo: dict = {}
+
+            def _r(league, nm):
+                k = (league, nm)
+                if k not in memo:
+                    memo[k] = _resolve(nm, by_league.get(league, []))
+                return memo[k]
+
+            # Where a history row still has no price, index it so a resolved capture can find it.
+            miss = df[df["odds_over25"].isna() | df["odds_under25"].isna()]
+            slot = {(str(l), str(h), str(a), str(d)): i for i, l, h, a, d in zip(
+                miss.index, miss.get("league", ""), miss["home_team"],
+                miss["away_team"], miss["_d"])}
+            added = 0
+            for _, c in cap.iterrows():
+                hr, ar, lg = raw_by_key.get((c["_h"], c["_a"], c["_d"]), (None, None, None))
+                if hr is None or not lg:
+                    continue
+                rh, ra = _r(lg, hr), _r(lg, ar)
+                if not rh or not ra:
+                    continue
+                i = slot.get((str(lg), str(rh), str(ra), str(c["_d"])))
+                if i is None:
+                    continue
+                for col in ("odds_over25", "odds_under25"):
+                    if col in cap.columns and pd.notna(c.get(col)) and pd.isna(df.at[i, col]):
+                        df.at[i, col] = float(c[col])
+                        added += 1
+            if added:
+                log.info(f"  [ou25_captures] team_names.resolve added {added} price(s) the exact "
+                         f"name key missed")
+        except Exception as _e:                                  # noqa: BLE001
+            log.warning(f"[ou25_captures] resolver pass skipped: {type(_e).__name__}: {_e}")
+
         df = df.drop(columns=["_h", "_a", "_d"])
     except Exception as e:                                       # noqa: BLE001
         log.warning(f"[ou25_captures] merge failed: {e}")
