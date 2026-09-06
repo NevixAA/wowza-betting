@@ -640,6 +640,14 @@ def build_upcoming_features(
             if league:
                 h = h[h["league"] == league]
                 a = a[a["league"] == league]
+            # HALF-TIME COLUMNS ARE OPTIONAL. Indexing them directly crashed predict with
+            # KeyError: 'ht_home_goals' the moment the history frame came from a source without
+            # them — which is exactly what happened when the football-data.co.uk outage forced a
+            # fallback to a cache built from API-Football data, where HT scores live in a separate
+            # file. A missing OPTIONAL feature must degrade to NaN, the way every other absent
+            # feature here does; it must not take the whole tip run down.
+            if not {"ht_home_goals", "ht_away_goals"} <= set(hist.columns):
+                return float("nan")
             hm   = h["ht_home_goals"].dropna()
             hm_t = h["ht_away_goals"].dropna()
             aw   = a["ht_away_goals"].dropna()
