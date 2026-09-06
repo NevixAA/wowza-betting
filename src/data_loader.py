@@ -118,11 +118,24 @@ def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
     return pd.Series(np.nan, index=raw.index)
 
 
-def _ci_download_all() -> list[pd.DataFrame]:
+def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
     """
     CI / GitHub Actions fallback: download current + recent seasons directly
     from football-data.co.uk when local Excel/CSV files are not available.
     Returns list of DataFrames (one per league/season).
+
+    `have` is a set of (league, season_label) pairs ALREADY in the committed cache. Those are
+    skipped outright rather than re-downloaded.
+
+    WHY: a finished season is immutable. The 2023/24 Championship has a final table, final
+    scores and closing prices that will never change again — yet this function re-downloaded
+    four seasons of ~27 leagues on EVERY CI run, several hundred requests to a free third-party
+    server every few minutes, to rebuild a frame identical to the previous one. On 2026-09-05
+    that server returned 503 and predict failed for 12+ hours with no tips, because the pipeline
+    depended on re-fetching data it already had.
+
+    Fetch once, keep it, and only ask for what is genuinely new. The CURRENT season is still
+    downloaded every time (it gains fixtures weekly); everything older comes from the cache.
     """
     import requests
     from io import StringIO
@@ -152,9 +165,16 @@ def _ci_download_all() -> list[pd.DataFrame]:
     frames = []
 
     # Standard format (multiple seasons)
+    have = have or set()
+    skipped = 0
+    # CURRENT season only is ever re-fetched; SEASONS[0] is the live one.
     for league, code in std_leagues.items():
         for season in SEASONS:
             season_label = f"20{season[:2]}/{season[2:]}"
+            # Already cached AND finished -> never ask again. The live season is always fetched.
+            if season != SEASONS[0] and (league, season_label) in have:
+                skipped += 1
+                continue
             url = STD_URL.format(season=season, code=code)
             try:
                 r = requests.get(url, timeout=15, headers=HEADERS)
@@ -237,7 +257,8 @@ def _ci_download_all() -> list[pd.DataFrame]:
             log.warning(f"[data] {league} (new-format) skipped ({type(e).__name__}: {e})")
             continue
 
-    log.info(f"CI download: {len(frames)} league/season files loaded")
+    log.info(f"CI download: {len(frames)} league/season file(s) loaded, "
+             f"{skipped} finished season(s) served from cache instead of re-fetched")
     return frames
 
 
@@ -651,9 +672,79 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # ── CI / GitHub Actions fallback ─────────────────────────────────────────
     if not path.exists():
         log.info("Local Excel not found — downloading data from football-data.co.uk (CI mode)...")
-        ci_frames = _ci_download_all()
+        # What is already banked? Finished seasons in the cache are never re-requested.
+        _cache_p = Path(__file__).resolve().parents[1] / "output" / "fd_history.parquet"
+        _cached = None
+        _have: set = set()
+        if _cache_p.exists():
+            try:
+                _cached = pd.read_parquet(_cache_p)
+                if {"league", "season"}.issubset(_cached.columns):
+                    _have = set(zip(_cached["league"].astype(str),
+                                    _cached["season"].astype(str)))
+                log.info(f"[fd_cache] {len(_cached):,} cached rows covering "
+                         f"{len(_have)} league-season(s)")
+            except Exception as e:                                   # noqa: BLE001
+                log.warning(f"[fd_cache] cache unreadable, will re-download: {e}")
+        # Kept SEPARATE from the cached rows: only genuinely-downloaded frames may update the
+        # cache, or the refresh would merge the cache into itself and report rows it never
+        # fetched.
+        _downloaded = _ci_download_all(_have)
+        ci_frames = list(_downloaded)
+        # The cached rows ARE part of the answer, not just a fallback — they are the seasons the
+        # download deliberately skipped.
+        if _cached is not None and len(_cached):
+            ci_frames.append(_cached)
+
+        # ── FALL BACK TO THE COMMITTED CACHE ──────────────────────────────────────────
+        # On 2026-09-05 football-data.co.uk returned HTTP 503 on every URL including its own
+        # homepage. This branch downloaded 0 files, raised, and predict failed every run for
+        # 12+ hours — no tips at all, because a third-party server was unavailable.
+        #
+        # It should never have been able to do that. Almost everything fetched here is
+        # IMMUTABLE: a match played in 2023 has a final score and a closing price that will
+        # never change again. We were re-downloading four seasons of every league on every CI
+        # run — several hundred requests to someone else's free server, every few minutes — to
+        # rebuild a frame identical to the last one.
+        #
+        # So the download result is now CACHED and committed, and the cache is the fallback when
+        # the site is unreachable. The current season still refreshes normally whenever the site
+        # is up; only the dependency on it being up disappears.
+        cache_p = Path(__file__).resolve().parents[1] / "output" / "fd_history.parquet"
+        if _downloaded:
+            try:
+                fresh = pd.concat(_downloaded, ignore_index=True)
+                prev = pd.read_parquet(cache_p) if cache_p.exists() else None
+                merged = (pd.concat([prev, fresh], ignore_index=True)
+                          if prev is not None else fresh)
+                # A re-download of the same fixture supersedes the cached copy (scores get
+                # corrected, odds columns get filled in later), so the NEWEST row wins.
+                merged = merged.drop_duplicates(
+                    subset=[c for c in ("date", "league", "home_team", "away_team")
+                            if c in merged.columns], keep="last")
+                cache_p.parent.mkdir(exist_ok=True)
+                merged.to_parquet(cache_p, index=False)
+                log.info(f"[fd_cache] refreshed {cache_p.name}: {len(merged):,} rows "
+                         f"({len(fresh):,} downloaded this run)")
+            except Exception as e:                                   # noqa: BLE001
+                log.warning(f"[fd_cache] could not update the cache: {e}")
+        elif not ci_frames:
+            if cache_p.exists():
+                try:
+                    cached = pd.read_parquet(cache_p)
+                    if len(cached):
+                        log.warning(
+                            f"[fd_cache] football-data.co.uk returned NOTHING — serving "
+                            f"{len(cached):,} cached rows instead. Historical data does not "
+                            f"change, so this is complete except for fixtures played since the "
+                            f"last successful download.")
+                        ci_frames = [cached]
+                except Exception as e:                               # noqa: BLE001
+                    log.warning(f"[fd_cache] cache unreadable: {e}")
         if not ci_frames:
-            raise RuntimeError("CI download failed — no data loaded")
+            raise RuntimeError(
+                "CI download failed and no cached history is available "
+                f"({cache_p.name} missing or empty) — no data loaded")
         ci_frames.extend(_load_api_football_only_leagues())
         out = pd.concat(ci_frames, ignore_index=True)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
