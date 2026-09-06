@@ -304,6 +304,32 @@ def main():
     log.info(f"Loaded {len(raw):,} matches | {raw['league'].nunique()} leagues | "
              f"{raw['date'].min().date()} → {raw['date'].max().date()}")
 
+    # ── REFUSE TO RETRAIN WITHOUT HISTORICAL ODDS ────────────────────────────────
+    # A retrain that cannot BACKTEST is more dangerous than no retrain at all: it would happily
+    # overwrite the production models and then be unable to validate a single per-league
+    # threshold, because src/backtest.py drops every row missing odds_over25/odds_under25.
+    #
+    # This became reachable on 2026-09-05, when football-data.co.uk returned 503 for many hours
+    # and the loader fell back to a cache seeded from API-Football data — which carries results
+    # and shots but NO PRICES. Training would have "succeeded" on 28,179 rows and silently
+    # shipped a model nobody could measure.
+    #
+    # football-data is the only source of historical closing odds: API-Football's /odds is
+    # pre-match only (proven at ~830 calls — 0 of 3 fixtures in every season 2019-2025). So when
+    # the prices are absent the correct action is to STOP and keep yesterday's validated model.
+    _price_cols = [c for c in ("odds_over25", "odds_under25") if c in raw.columns]
+    _priced = int(raw[_price_cols].notna().all(axis=1).sum()) if len(_price_cols) == 2 else 0
+    if _priced < config.BACKTEST_MIN_TRAIN:
+        log.error(
+            f"ABORTING RETRAIN: only {_priced:,} of {len(raw):,} rows carry historical odds "
+            f"(need >= {config.BACKTEST_MIN_TRAIN:,}). The models on disk are LEFT UNTOUCHED.\n"
+            f"  Cause is almost certainly football-data.co.uk being unreachable — it is the only "
+            f"source of historical closing prices, and the loader falls back to an odds-less "
+            f"cache when it is down.\n"
+            f"  Retraining now would overwrite a validated model with one that cannot be "
+            f"backtested. Re-run once the source returns.")
+        return
+
     feat  = build_features(raw)
     valid = feat.dropna(subset=["over25", "home_scored_last5"])
     log.info(f"{len(valid):,} rows with full features")
