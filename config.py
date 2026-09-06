@@ -519,6 +519,21 @@ API_FOOTBALL_IDS = {
     "Ukraine Premier League":  333,
     "Poland Ekstraklasa":      106,
     "Cyprus First Division":   318,
+    # THE LAST TWO football-data.co.uk-ONLY TRAINING LEAGUES (added 2026-09-05).
+    #
+    # I claimed five training leagues had "no API-Football id" and were therefore a hard blocker
+    # on ever dropping football-data.co.uk. That was wrong, and it was wrong in a lazy way: I
+    # compared football-data's SPELLINGS against our config keys instead of asking the API.
+    # Three of the five were already here under different names — Belgian First Division A is
+    # `Belgian Pro League` (144), Dutch Eredivisie is `Eredivisie` (88), Portuguese Primeira Liga
+    # is `Primeira Liga` (94). Only these two were genuinely absent.
+    #
+    # Read from /leagues?country=... on the live API, not guessed. With them, every one of the 27
+    # leagues football-data supplies is coverable by API-Football, so the free source is no longer
+    # structurally required for CURRENT-season results or stats — only for HISTORICAL closing
+    # odds, which no API-Football plan sells.
+    "Scottish Championship":   180,
+    "National League":          43,
 }
 # IDs may need verification at dashboard.api-football.com/docs
 
