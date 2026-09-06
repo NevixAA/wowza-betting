@@ -1,30 +1,20 @@
 {
-  "ts": "2026-09-06T10:21:54.899922+00:00",
+  "ts": "2026-09-06T12:08:26.820505+00:00",
   "models": {
     "standard": {
-      "fixtures": 71,
+      "fixtures": 70,
       "n_features": 42,
       "blank": [
-        "away_attack_str",
-        "away_conceded_last5",
         "away_corners_pg_roll",
-        "away_cs_rate_a",
-        "away_defense_str",
         "away_fouls_pg_roll",
         "away_ht_attack_str",
+        "away_ht_conceded_last5",
         "away_ht_over05_rate",
         "away_ht_over15_rate",
+        "away_ht_scored_last5",
         "away_insidebox_last5",
-        "away_over25_last5",
-        "away_scored_last5",
-        "away_season_conceded_a",
-        "away_season_goals_a",
         "away_xg_last5",
-        "home_attack_str",
-        "home_conceded_last5",
         "home_corners_pg_roll",
-        "home_cs_rate_h",
-        "home_defense_str",
         "home_fouls_pg_roll",
         "home_ht_attack_str",
         "home_ht_conceded_last5",
@@ -32,25 +22,17 @@
         "home_ht_over15_rate",
         "home_ht_scored_last5",
         "home_insidebox_last5",
-        "home_over25_last5",
-        "home_scored_last5",
-        "home_season_conceded_h",
-        "home_season_goals_h",
         "home_xg_last5"
       ],
       "constant": [
-        "away_home_adv_factor",
-        "away_ht_conceded_last5",
-        "away_ht_scored_last5",
-        "combined_sot_ratio",
-        "home_advantage",
-        "p_over25_poisson_dc"
+        "combined_ht_goals_avg",
+        "home_advantage"
       ],
-      "degenerate": 38,
-      "degenerate_pct": 90.5
+      "degenerate": 20,
+      "degenerate_pct": 47.6
     },
     "new_format": {
-      "fixtures": 96,
+      "fixtures": 98,
       "n_features": 27,
       "blank": [],
       "constant": [
