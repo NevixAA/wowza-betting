@@ -120,7 +120,14 @@ jobs:
       - name: Cache API-Football responses (makes enrichment affordable)
         uses: actions/cache@v4
         with:
-          path: api_football_cache
+          # apifootball_ou_cache ADDED 2026-09-06. It was cached by warm_nf_shot_cache.yml and by
+          # nothing else, so predict started COLD every run and re-fetched new-format shot data
+          # from scratch — "Ireland Premier Division: 560/1318 rows now have shot data" on a job
+          # that runs every 15 minutes. That is the same waste af_history_extend was created to
+          # end: deriving an answer we already computed, then throwing it away.
+          path: |
+            api_football_cache
+            apifootball_ou_cache
           key: af-cache-${{ github.run_id }}
           restore-keys: af-cache-
 
