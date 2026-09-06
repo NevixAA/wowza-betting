@@ -579,8 +579,28 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     # so a league-season is fetched once and then read from disk. Watch predict's runtime after
     # this ships; if it climbs, gate this loop to the train/backtest path rather than reverting
     # the fix.
-    _leagues = [l for l in df["league"].dropna().unique()
-                if config.API_FOOTBALL_IDS.get(l)]
+    # GATED TO TRAIN/BACKTEST — NOT PREDICT.
+    #
+    # Expanding this loop to every league is right for the MODEL and wrong for PREDICT. It fetches
+    # /fixtures/statistics per fixture, so covering ~10 extra standard leagues adds thousands of
+    # calls to a job that runs every 15 minutes against a 25-minute timeout. Observed directly: a
+    # predict run walking Championship, League One, League Two and the rest, hundreds of calls
+    # deep, exactly the failure root CLAUDE.md records from 2026-08-15 when enrichment took
+    # predict from 2-3 minutes to over 10.
+    #
+    # Predict does not need it: it scores TODAY's fixtures with an already-trained model, and its
+    # xG features come from whatever the training data carried. Training and backtesting DO need
+    # it, and they run weekly with no tip deadline.
+    #
+    # Opt in with WOWZA_FULL_ENRICH=1 (set by retrain/backtest workflows). Default is the old
+    # new-format-only behaviour, which is what predict has always done.
+    import os as _os
+    if _os.getenv("WOWZA_FULL_ENRICH", "").strip() == "1":
+        _leagues = [l for l in df["league"].dropna().unique()
+                    if config.API_FOOTBALL_IDS.get(l)]
+        log.info(f"[api_football_ou] FULL enrichment: {len(_leagues)} league(s)")
+    else:
+        _leagues = [l for l in config.NEW_FORMAT_LEAGUES if config.API_FOOTBALL_IDS.get(l)]
     for league in _leagues:
         league_id = config.API_FOOTBALL_IDS.get(league)
         if not league_id:
