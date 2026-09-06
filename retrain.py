@@ -342,8 +342,23 @@ def main():
     log.info(f"\nTraining STANDARD model on {len(std_valid):,} rows ...")
     log.info(f"  Leagues: {sorted(std_valid['league'].unique())}")
 
-    std_results = train_model(std_valid)
-    save_models(std_results, model_file=config.MODEL_FILE_STANDARD)
+    # AN EMPTY TRACK IS A DATA FAULT, NOT A TRAINING TASK. Observed today: the loader fell back
+    # to a cache built from af_history.parquet, which is a NEW-FORMAT-only backfill, so not one
+    # standard-format league was present and this line read "Training STANDARD model on 0 rows"
+    # before dying inside sklearn with an unhelpful error.
+    #
+    # Refusing here says WHICH track has no data and leaves that model on disk untouched, rather
+    # than crashing the whole run — the new-format model can still retrain when the standard one
+    # cannot, and vice versa.
+    if len(std_valid) < config.BACKTEST_MIN_TRAIN:
+        log.error(f"SKIPPING STANDARD model: only {len(std_valid):,} rows "
+                  f"(need >= {config.BACKTEST_MIN_TRAIN:,}). "
+                  f"{config.MODEL_FILE_STANDARD.name} is LEFT UNTOUCHED. "
+                  f"Leagues present in the frame: {sorted(valid['league'].unique())[:8]}")
+        std_results = None
+    else:
+        std_results = train_model(std_valid)
+        save_models(std_results, model_file=config.MODEL_FILE_STANDARD)
 
     payload_std = load_models(model_file=config.MODEL_FILE_STANDARD)
     fi = get_feature_importances(payload_std)
@@ -353,6 +368,11 @@ def main():
         print(fi.head(10).to_string(index=False))
 
     std_leagues = config.STANDARD_FORMAT_LEAGUES & config.ENABLED_LEAGUES
+    if std_results is None:
+        # The track was skipped above for want of data. Backtesting an empty frame would crash
+        # here instead, which tells nobody anything — the useful message was already printed.
+        log.error("SKIPPING STANDARD backtest: the model was not retrained this run.")
+        return
     std_df, std_summary, std_lg = run_backtest(std_valid, enabled_leagues=std_leagues)
     std_df.to_csv(config.OUTPUT_DIR / "backtest_results_standard.csv", index=False)
     std_lg.to_csv(config.OUTPUT_DIR / "backtest_by_league_standard.csv", index=False)
