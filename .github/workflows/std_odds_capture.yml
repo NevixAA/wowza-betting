@@ -116,9 +116,41 @@ jobs:
           # The 15-minute cron is the NEAR run and prices only imminent fixtures; the 4x/day
           # cron is WIDE and prices everything. One script, one flag, so the two cadences cannot
           # drift apart in behaviour.
+          # ── NEAR vs WIDE: MATCH THE WIDE CRON, DEFAULT TO NEAR ─────────────────────────
+          # THIS WAS BROKEN FOR TWO WEEKS AND IT COST THE CLOSING LINE.
+          #
+          # The test used to be `schedule == '*/15 * * * *'` -> NEAR. That cron was replaced on
+          # 2026-08-29 (96/day -> hourly) and again on 2026-09-02 (kickoff-aligned), and the
+          # comparison string was never updated. GitHub sets github.event.schedule to the EXACT
+          # cron that fired, so once the string stopped existing the test could never be true:
+          # MH stayed empty, every scheduled run took the WIDE branch, and the NEAR loop below —
+          # the only thing that produces T-1h / T-30m / T-10m density — became unreachable.
+          #
+          # Confirmed in the data: standard_sidemarket_odds_history.csv has NO loop-spaced
+          # capture (<=10 min apart) since 2026-08-23. Measured effect on fixtures kicking off
+          # after 2026-09-03, against those before it:
+          #
+          #     T-10m coverage   8.7%  ->  3.2%
+          #     T-1h  coverage  34.0%  -> 32.3%
+          #
+          # It also explains where the budget went: WIDE prices every look-ahead fixture, which
+          # is why 81.0% of all market observations sit on fixtures more than 24h out and 0.6%
+          # fall in the final hour.
+          #
+          # The test is now INVERTED: match the WIDE cron explicitly, and treat every other
+          # scheduled firing as NEAR. That fails SAFE — if the wide cron is edited, runs become
+          # NEAR and only the far horizon thins, instead of the close disappearing. And the mode
+          # is echoed, so the next person can see which branch ran without reading the YAML.
           MH="${{ github.event.inputs.max_hours }}"
-          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '*/15 * * * *' ]; then
+          SCHED="${{ github.event.schedule }}"
+          WIDE_CRON='5 0,6,12,18 * * *'
+          if [ -z "$MH" ] && [ -n "$SCHED" ] && [ "$SCHED" != "$WIDE_CRON" ]; then
             MH=12
+          fi
+          if [ -n "$MH" ]; then
+            echo "mode=NEAR (within ${MH}h)  schedule='${SCHED:-manual}'"
+          else
+            echo "mode=WIDE (all look-ahead fixtures)  schedule='${SCHED:-manual}'"
           fi
 
           # ── Why the NEAR run LOOPS instead of relying on the cron ───────────────────────

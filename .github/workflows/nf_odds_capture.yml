@@ -88,9 +88,30 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
           # NEAR on the 15-minute cron, WIDE on the 4x/day cron. One script, one flag.
+          # ── NEAR vs WIDE: MATCH THE WIDE CRON, DEFAULT TO NEAR ─────────────────────────
+          # Same bug as std_odds_capture.yml, which carries the full write-up. Short version:
+          # the test was `schedule == '7-59/15 * * * *'`, that cron was replaced on 2026-08-29
+          # and again on 2026-09-02, and the comparison string was never updated — so MH stayed
+          # empty on every scheduled run and the NEAR loop below has been unreachable since.
+          #
+          # This one matters more than std's. New-format side markets already have the WORST
+          # measured closing coverage in the store: btts_yes/no, over15 and under35 reach T-10m
+          # on 17.6% of fixtures against 63.6% for the main market. The loop that was supposed to
+          # fix that never ran, and the 2026-09-05 change raising LOOP_MIN from 25 to 40 was
+          # tuning a branch nothing could reach.
+          #
+          # Inverted: match the WIDE cron, everything else scheduled is NEAR. Fails safe — editing
+          # the wide cron thins the far horizon rather than deleting the close.
           MH="${{ github.event.inputs.max_hours }}"
-          if [ -z "$MH" ] && [ "${{ github.event.schedule }}" = '7-59/15 * * * *' ]; then
+          SCHED="${{ github.event.schedule }}"
+          WIDE_CRON='35 1,7,13,19 * * *'
+          if [ -z "$MH" ] && [ -n "$SCHED" ] && [ "$SCHED" != "$WIDE_CRON" ]; then
             MH=12
+          fi
+          if [ -n "$MH" ]; then
+            echo "mode=NEAR (within ${MH}h)  schedule='${SCHED:-manual}'"
+          else
+            echo "mode=WIDE (all look-ahead fixtures)  schedule='${SCHED:-manual}'"
           fi
 
           # The NEAR run LOOPS — see std_odds_capture.yml for the measurement. Short version:
