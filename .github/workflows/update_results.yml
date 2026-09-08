@@ -31,7 +31,28 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python update_results.py --days 3
 
+      # `if: always()` ADDED 2026-09-08, and this is the half of the incident that actually cost
+      # data. update_results.py settles FIVE ledgers in sequence — O/U, side markets, HT, player
+      # props, sharp — writing each to disk as it finishes. When the props section raised
+      # (ValueError on formatting an unpriced row's empty pnl, see update_results.py), the process
+      # exited 1 and this step was SKIPPED, so the O/U ledger it had already saved was destroyed
+      # with the runner.
+      #
+      # Measured: 10 consecutive failed runs between 2026-09-06 19:26 and 2026-09-08. The final
+      # one had already logged "RESULTS UPDATED — 7 bet(s), PnL +1.490u, CLV +1.46%" and
+      # "Ledger saved" before the crash. All of it was thrown away, ten times, while the sections
+      # that worked kept working.
+      #
+      # Safe to commit on failure: each ledger is written with a complete `to_csv`, so a file is
+      # either the previous version or a whole new one, never a half-row. And the staging below is
+      # per-file with `|| true`, followed by `git diff --staged --quiet ||`, so a run that wrote
+      # nothing commits nothing rather than creating an empty commit.
+      #
+      # This is the same lesson as v9's predict committing each output file individually, and as
+      # pro_bet_builder.yml omitting `git add -A data`: work completed and then discarded is the
+      # failure mode this estate keeps repeating.
       - name: Commit and push
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
