@@ -4908,15 +4908,15 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-30,2026-09-05,Championship,West Ham United,Derby County,Jaydon Banel,Derby,M,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-09-06,336578,
 2026-08-30,2026-09-03,La Liga,Real Sociedad,Celta Vigo,Hugo Sotelo,Celta Vigo,M,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP (0 min),2026-09-04,313651,1570392.0
 2026-08-30,2026-09-05,Championship,West Ham United,Derby County,Alex Mowatt,Derby,M,sot,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-06,19799,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,sot,AVOID,0.646,,,,5,,,,,,24641,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Marvin Pieringer,1. FC Heidenheim,M,sot,AVOID,0.405,,,,5,,,,,,178106,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,sot,AVOID,0.646,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,24641,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Marvin Pieringer,1. FC Heidenheim,M,sot,AVOID,0.405,,,,5,True,VOID,0.0,DNP,2026-09-08,178106,
 2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,sot2,AVOID,0.383,,,,5,,,,,,24641,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,goals,AVOID,0.332,,,,5,,,,,,24641,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Eren Dinkçi,1. FC Heidenheim,M,sot,AVOID,0.276,,,,5,,,,,,202526,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Arijon Ibrahimović,1. FC Heidenheim,M,sot,AVOID,0.274,,,,5,,,,,,327897,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Jan Schöppner,1. FC Heidenheim,M,sot,AVOID,0.237,,,,5,,,,,,127619,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Jan Schöppner,1. FC Heidenheim,M,cards,AVOID,0.163,,,,5,,,,,,127619,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Frans Krätzig,1. FC Heidenheim,M,sot,AVOID,0.154,,,,5,,,,,,280335,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,goals,AVOID,0.332,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,24641,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Eren Dinkçi,1. FC Heidenheim,M,sot,AVOID,0.276,,,,5,True,VOID,0.0,DNP,2026-09-08,202526,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Arijon Ibrahimović,1. FC Heidenheim,M,sot,AVOID,0.274,,,,5,True,VOID,0.0,DNP,2026-09-08,327897,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Jan Schöppner,1. FC Heidenheim,M,sot,AVOID,0.237,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,127619,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Jan Schöppner,1. FC Heidenheim,M,cards,AVOID,0.163,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,127619,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Frans Krätzig,1. FC Heidenheim,M,sot,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,280335,
 2026-08-31,2026-09-04,La Liga,Real Betis,Real Madrid,Kylian Mbappé,Real Madrid,F,sot,AVOID,0.867,,,,5,True,WIN,,,2026-09-05,278,1570365.0
 2026-08-31,2026-09-04,Ligue 1,Paris Saint Germain,Monaco,Lionel Messi,Paris Saint Germain,F,sot,AVOID,0.79,,,,5,True,VOID,0.0,DNP,2026-09-05,154,1552753.0
 2026-08-31,2026-09-04,La Liga,Real Betis,Real Madrid,Karim Benzema,Real Madrid,F,sot,AVOID,0.783,,,,5,True,VOID,0.0,DNP,2026-09-05,759,1570365.0
@@ -5188,7 +5188,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-31,2026-09-05,Bundesliga 2,1. FC Kaiserslautern,SV Darmstadt 98,Naatan Skyttä,1. FC Kaiserslautern,F,goals,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-06,55319,
 2026-08-31,2026-09-05,Bundesliga 2,Holstein Kiel,1. FC Nürnberg,David Zec,Holstein Kiel,D,sot,AVOID,0.158,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-09-06,41578,
 2026-08-31,2026-09-05,Bundesliga 2,Dynamo Dresden,VfL Bochum,Robert Wagner,Dynamo Dresden,M,sot,AVOID,0.157,,,,5,True,VOID,0.0,DNP,2026-09-06,280024,
-2026-08-31,2026-09-06,La Liga 2,SD Eibar,Granada CF,Raúl Torrente,Granada CF,D,cards,AVOID,0.154,,,,5,,,,,,290215,
+2026-08-31,2026-09-06,La Liga 2,SD Eibar,Granada CF,Raúl Torrente,Granada CF,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,290215,
 2026-08-31,2026-09-05,Bundesliga 2,Holstein Kiel,1. FC Nürnberg,Umut Tohumcu,Holstein Kiel,M,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-06,279907,
 2026-08-31,2026-09-05,Bundesliga 2,Dynamo Dresden,VfL Bochum,Vasilis Lampropoulos,VfL BOCHUM,D,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-06,594,
 2026-08-31,2026-09-05,Bundesliga 2,Dynamo Dresden,VfL Bochum,Alexander Rossipal,Dynamo Dresden,D,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-06,25179,
@@ -5448,7 +5448,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-01,2026-09-05,Serie A,Inter,Napoli,Rasmus Højlund,Napoli,F,goals,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-09-06,288006,1550113.0
 2026-09-01,2026-09-05,Premier League,Brighton,Leeds,Ethan Ampadu,Leeds,M,cards,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-09-06,2279,1557389.0
 2026-09-01,2026-09-05,Premier League,Manchester City,Coventry,Bobby Thomas,Coventry,D,sot,AVOID,0.165,3.9,-0.3565,-0.2922,5,True,VOID,0.0,DNP,2026-09-06,264437,1557394.0
-2026-09-01,2026-09-05,Serie A,AS Roma,Atalanta,D. Malen,AS Roma,F,sot2,AVOID,0.165,,,,5,,,,,,249,1550107.0
+2026-09-01,2026-09-05,Serie A,AS Roma,Atalanta,D. Malen,AS Roma,F,sot2,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-09-08,249,1550107.0
 2026-09-01,2026-09-05,Premier League,Fulham,Crystal Palace,Daichi Kamada,Crystal Palace,M,sot,AVOID,0.164,4.1,-0.3276,-0.2604,5,True,VOID,0.0,DNP,2026-09-06,2601,1557391.0
 2026-09-01,2026-09-05,Premier League,Manchester City,Coventry,Caleb Yirenkyi,Coventry,M,cards,AVOID,0.164,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-09-06,475575,1557394.0
 2026-09-01,2026-09-05,Serie B,Carrarese,Empoli,Liam Henderson,Empoli,M,cards,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-06,30932,1601514.0
@@ -5497,44 +5497,44 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-01,2026-09-05,Ligue 1,Lens,Lorient,Panos Katseris,Lorient,M,cards,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-09-06,384112,1552749.0
 2026-09-01,2026-09-05,Bundesliga,Borussia Mönchengladbach,SV Elversberg,Haris Tabaković,Borussia Mönchengladbach,F,goals,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-09-06,28382,1575153.0
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Zian Flemming,Burnley,F,sot,AVOID,0.523,,,,5,True,VOID,0.0,DNP,2026-09-03,36927,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Ilyas Chaira,Oviedo,M,sot,AVOID,0.515,,,,5,,,,,,266202,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Ilyas Chaira,Oviedo,M,sot,AVOID,0.515,,,,5,True,VOID,0.0,DNP,2026-09-08,266202,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Emmanuel Latte Lath,Middlesbrough,F,sot,AVOID,0.504,,,,5,True,VOID,0.0,DNP,2026-09-03,32137,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Federico Viñas,Oviedo,F,sot,AVOID,0.492,,,,5,,,,,,51530,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Federico Viñas,Oviedo,F,sot,AVOID,0.492,,,,5,True,VOID,0.0,DNP,2026-09-08,51530,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Josh Brownhill,Burnley,M,sot,AVOID,0.445,,,,5,True,VOID,0.0,DNP,2026-09-03,19268,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Salomón Rondón,Oviedo,F,sot,AVOID,0.441,,,,5,,,,,,2461,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Salomón Rondón,Oviedo,F,sot,AVOID,0.441,,,,5,True,VOID,0.0,DNP,2026-09-08,2461,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,David Strelec,Middlesbrough,F,sot,AVOID,0.377,,,,5,True,VOID,0.0,DNP,2026-09-03,61156,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Tommy Conway,Middlesbrough,F,sot,AVOID,0.375,,,,5,True,VOID,0.0,DNP,2026-09-03,282767,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Will Lankshear,Middlesbrough,F,sot,AVOID,0.322,,,,5,True,VOID,0.0,DNP,2026-09-03,393195,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Zian Flemming,Burnley,F,goals,AVOID,0.273,2.5,-0.3175,-0.2766,5,True,VOID,0.0,DNP,2026-09-03,36927,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Morgan Whittaker,Middlesbrough,M,sot,AVOID,0.25,,,,5,True,VOID,0.0,DNP,2026-09-03,129709,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Alberto Reina,Oviedo,M,sot,AVOID,0.234,,,,5,,,,,,182486,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Alberto Reina,Oviedo,M,sot,AVOID,0.234,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,182486,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Vitinho,Burnley,M,sot,AVOID,0.225,,,,5,True,VOID,0.0,DNP,2026-09-03,8661,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Hannibal Mejbri,Burnley,M,sot,AVOID,0.219,,,,5,True,VOID,0.0,DNP,2026-09-03,180560,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Riley McGree,Middlesbrough,M,sot,AVOID,0.186,,,,5,True,VOID,0.0,DNP,2026-09-03,6913,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Lesley Ugochukwu,Burnley,M,sot,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-09-03,270508,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Salomón Rondón,Oviedo,F,goals,AVOID,0.165,,,,5,,,,,,2461,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Salomón Rondón,Oviedo,F,goals,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-09-08,2461,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Aidan Morris,Middlesbrough,M,sot,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-03,201714,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Emmanuel Latte Lath,Middlesbrough,F,goals,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-09-03,32137,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Nicolas Fonseca,Oviedo,M,cards,AVOID,0.154,,,,5,,,,,,30690,
-2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Ilyas Chaira,Oviedo,M,goals,AVOID,0.152,,,,5,,,,,,266202,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Nicolas Fonseca,Oviedo,M,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,30690,
+2026-09-01,2026-09-06,La Liga 2,Oviedo,Burgos CF,Ilyas Chaira,Oviedo,M,goals,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,266202,
 2026-09-01,2026-09-02,Championship,Burnley,Middlesbrough,Josh Cullen,Burnley,M,sot,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-09-03,19827,
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Kieron Bowie,Hellas Verona,F,sot,AVOID,0.599,,,,5,,,,,,126690,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Kieron Bowie,Hellas Verona,F,sot,AVOID,0.599,,,,5,True,VOID,0.0,DNP,2026-09-08,126690,
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,Marvin Ducksch,Birmingham,F,sot,AVOID,0.581,,,,5,,,,,,25464,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Chris Ramos,Cadiz,F,sot,AVOID,0.575,,,,5,,,,,,104792,
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Gift Orban,Hellas Verona,F,sot,AVOID,0.528,,,,5,,,,,,368260,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Anthony Lozano,Almeria,F,sot,AVOID,0.449,,,,5,,,,,,47525,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Luis Javier Suárez,Almeria,F,sot,AVOID,0.438,,,,5,,,,,,47237,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Chris Ramos,Cadiz,F,sot,AVOID,0.575,,,,5,True,VOID,0.0,DNP,2026-09-08,104792,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Gift Orban,Hellas Verona,F,sot,AVOID,0.528,,,,5,True,VOID,0.0,DNP,2026-09-08,368260,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Anthony Lozano,Almeria,F,sot,AVOID,0.449,,,,5,True,VOID,0.0,DNP,2026-09-08,47525,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Luis Javier Suárez,Almeria,F,sot,AVOID,0.438,,,,5,True,VOID,0.0,DNP,2026-09-08,47237,
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Femi Azeez,Millwall,F,sot,AVOID,0.385,,,,5,True,VOID,0.0,DNP,2026-09-03,282637,1563128.0
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Josh Coburn,Millwall,F,sot,AVOID,0.381,,,,5,True,VOID,0.0,DNP,2026-09-03,272553,1563128.0
 2026-09-01,2026-09-02,Championship,QPR,Cardiff,Rayan Kolli,QPR,F,sot,AVOID,0.369,,,,5,True,VOID,0.0,DNP,2026-09-03,431885,1563129.0
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Jonathan Viera,Almeria,M,sot,AVOID,0.349,,,,5,,,,,,12667,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Jonathan Viera,Almeria,M,sot,AVOID,0.349,,,,5,True,VOID,0.0,DNP,2026-09-08,12667,
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Yuki Ohashi,Blackburn,F,sot,AVOID,0.344,,,,5,True,VOID,0.0,DNP,2026-09-06,33147,1563136.0
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Tairyk Arconte,Millwall,F,sot,AVOID,0.327,,,,5,True,VOID,0.0,DNP,2026-09-03,305959,1563128.0
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,August Priske,Birmingham,F,sot,AVOID,0.322,,,,5,,,,,,344816,
 2026-09-01,2026-09-02,Championship,West Brom,Charlton,Aune Selland Heggebø,West Brom,F,sot,AVOID,0.317,,,,5,True,VOID,0.0,DNP,2026-09-03,133916,1563130.0
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Tomáš Suslov,Hellas Verona,F,sot,AVOID,0.273,,,,5,,,,,,194837,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Tomáš Suslov,Hellas Verona,F,sot,AVOID,0.273,,,,5,True,VOID,0.0,DNP,2026-09-08,194837,
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,Marvin Ducksch,Birmingham,F,sot2,AVOID,0.269,,,,5,,,,,,25464,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Lucas Robertone,Almeria,M,sot,AVOID,0.266,,,,5,,,,,,6065,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Lucas Robertone,Almeria,M,sot,AVOID,0.266,,,,5,True,VOID,0.0,DNP,2026-09-08,6065,
 2026-09-01,2026-09-05,League Two,Bristol Rovers,Rotherham,Mallik Wilks,Rotherham,F,sot,AVOID,0.263,,,,5,True,VOID,0.0,DNP,2026-09-06,19948,1563732.0
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Josh Windass,Wrexham,F,sot,AVOID,0.26,,,,5,True,VOID,0.0,DNP,2026-09-03,19566,1563128.0
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Ryoya Morishita,Blackburn,M,sot,AVOID,0.26,,,,5,True,VOID,0.0,DNP,2026-09-06,199150,1563136.0
@@ -5542,32 +5542,32 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-01,2026-09-02,League One,Burton Albion,AFC Wimbledon,Tyrese Shade,Burton Albion,F,sot,AVOID,0.25,,,,5,True,VOID,0.0,DNP,2026-09-03,82967,1564274.0
 2026-09-01,2026-09-02,Championship,West Brom,Charlton,Isaac Price,West Brom,M,sot,AVOID,0.249,,,,5,True,VOID,0.0,DNP,2026-09-03,284267,1563130.0
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Alfie Devine,Preston,M,sot,AVOID,0.246,,,,5,True,VOID,0.0,DNP,2026-09-06,273757,1563136.0
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Rubén Alcaraz,Cadiz,M,sot,AVOID,0.245,,,,5,,,,,,47485,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Jonathan Viera,Almeria,M,assists,AVOID,0.237,,,,5,,,,,,12667,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Rubén Alcaraz,Cadiz,M,sot,AVOID,0.245,,,,5,True,VOID,0.0,DNP,2026-09-08,47485,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Jonathan Viera,Almeria,M,assists,AVOID,0.237,,,,5,True,VOID,0.0,DNP,2026-09-08,12667,
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,Patrick Roberts,Birmingham,M,sot,AVOID,0.237,,,,5,,,,,,47521,
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,Carlos Vicente,Birmingham,M,sot,AVOID,0.236,,,,5,,,,,,187214,
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Camiel Neghli,Millwall,M,sot,AVOID,0.236,,,,5,True,VOID,0.0,DNP,2026-09-03,290635,1563128.0
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Rubén Alcaraz,Cadiz,M,cards,AVOID,0.231,,,,5,,,,,,47485,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Rubén Alcaraz,Cadiz,M,cards,AVOID,0.231,,,,5,True,VOID,0.0,DNP,2026-09-08,47485,
 2026-09-01,2026-09-02,Championship,QPR,Cardiff,Richard Kone,QPR,F,sot,AVOID,0.229,,,,5,True,VOID,0.0,DNP,2026-09-03,453043,1563129.0
 2026-09-01,2026-09-02,Championship,QPR,Cardiff,Cian Ashford,Cardiff,M,sot,AVOID,0.228,,,,5,True,VOID,0.0,DNP,2026-09-03,383815,1563129.0
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Delano Burgzorg,Preston,M,sot,AVOID,0.224,,,,5,True,VOID,0.0,DNP,2026-09-06,37242,1563136.0
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Gift Orban,Hellas Verona,F,goals,AVOID,0.215,,,,5,,,,,,368260,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Gift Orban,Hellas Verona,F,goals,AVOID,0.215,,,,5,True,VOID,0.0,DNP,2026-09-08,368260,
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Brad Potts,Preston,M,sot,AVOID,0.212,,,,5,True,VOID,0.0,DNP,2026-09-06,19455,1563136.0
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Chris Ramos,Cadiz,F,goals,AVOID,0.208,,,,5,,,,,,104792,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Chris Ramos,Cadiz,F,goals,AVOID,0.208,,,,5,True,VOID,0.0,DNP,2026-09-08,104792,
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Moussa Baradji,Blackburn,M,sot,AVOID,0.196,,,,5,True,VOID,0.0,DNP,2026-09-06,429613,1563136.0
 2026-09-01,2026-09-05,League Two,Fleetwood Town,Shrewsbury,John Marquis,Shrewsbury,F,sot,AVOID,0.192,,,,5,True,VOID,0.0,DNP,2026-09-06,19946,1563737.0
 2026-09-01,2026-09-05,League Two,Northampton,Newport County,Jake Evans,Northampton,F,sot,AVOID,0.187,,,,5,True,VOID,0.0,DNP,2026-09-06,434183,1563738.0
 2026-09-01,2026-09-05,League Two,Northampton,Newport County,Liam Shaw,Northampton,M,cards,AVOID,0.183,,,,5,True,VOID,0.0,DNP,2026-09-06,19396,1563738.0
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Gift Orban,Hellas Verona,F,sot2,AVOID,0.182,,,,5,,,,,,368260,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Gonzalo Escalante,Cadiz,M,sot,AVOID,0.18,,,,5,,,,,,47388,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Gift Orban,Hellas Verona,F,sot2,AVOID,0.182,,,,5,True,VOID,0.0,DNP,2026-09-08,368260,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Gonzalo Escalante,Cadiz,M,sot,AVOID,0.18,,,,5,True,VOID,0.0,DNP,2026-09-08,47388,
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Thierno Ballo,Millwall,M,sot,AVOID,0.179,,,,5,True,VOID,0.0,DNP,2026-09-03,152950,1563128.0
 2026-09-01,2026-09-05,League Two,Northampton,Newport County,Sam Hoskins,Northampton,F,sot,AVOID,0.177,,,,5,True,VOID,0.0,DNP,2026-09-06,17790,1563738.0
 2026-09-01,2026-09-05,League Two,Fleetwood Town,Shrewsbury,Aaron Pierre,Shrewsbury,D,cards,AVOID,0.176,,,,5,True,VOID,0.0,DNP,2026-09-06,17775,1563737.0
 2026-09-01,2026-09-02,League One,Wigan,Milton Keynes Dons,Callum Wright,Wigan,F,sot,AVOID,0.173,,,,5,True,VOID,0.0,DNP,2026-09-03,152948,1564280.0
 2026-09-01,2026-09-05,League Two,Northampton,Newport County,Liam Shaw,Northampton,M,sot,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-09-06,19396,1563738.0
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Álex Centelles,Almeria,M,sot,AVOID,0.169,,,,5,,,,,,914,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Álex Centelles,Almeria,M,sot,AVOID,0.169,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,914,
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Massimo Luongo,Millwall,M,cards,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-09-03,2752,1563128.0
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Martin Frese,Hellas Verona,M,sot,AVOID,0.169,,,,5,,,,,,15909,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Martin Frese,Hellas Verona,M,sot,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-09-08,15909,
 2026-09-01,2026-09-02,Championship,QPR,Cardiff,Yousef Salech,Cardiff,F,goals,AVOID,0.168,3.1,-0.4792,-0.4271,5,True,VOID,0.0,DNP,2026-09-03,320017,1563129.0
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Jake Cooper,Millwall,D,sot,AVOID,0.168,,,,5,True,VOID,0.0,DNP,2026-09-03,19631,1563128.0
 2026-09-01,2026-09-05,League Two,Salford City,Port Vale,Martin Sherif,Port Vale,F,sot,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-09-06,328115,1563740.0
@@ -5578,22 +5578,22 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Axel Henriksson,Blackburn,M,sot,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-06,306954,1563136.0
 2026-09-01,2026-09-05,Championship,Preston,Blackburn,Andrew Moran,Preston,M,sot,AVOID,0.163,,,,5,True,VOID,0.0,DNP,2026-09-06,137220,1563136.0
 2026-09-01,2026-09-02,Championship,QPR,Cardiff,Harvey Vale,QPR,M,sot,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-09-03,274550,1563129.0
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Jean Daniel Akpa-Akpro,Hellas Verona,M,sot,AVOID,0.159,,,,5,,,,,,31678,
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Kieron Bowie,Hellas Verona,F,goals,AVOID,0.157,,,,5,,,,,,126690,
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Mamadou Mbaye,Cadiz,D,cards,AVOID,0.156,,,,5,,,,,,14444,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Jean Daniel Akpa-Akpro,Hellas Verona,M,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-09-08,31678,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Kieron Bowie,Hellas Verona,F,goals,AVOID,0.157,,,,5,True,VOID,0.0,DNP,2026-09-08,126690,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Mamadou Mbaye,Cadiz,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-09-08,14444,
 2026-09-01,2026-09-02,Championship,West Brom,Charlton,Jayson Molumby,West Brom,M,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-09-03,18974,1563130.0
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,Jay Stansfield,Birmingham,M,sot,AVOID,0.154,,,,5,,,,,,191971,
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Cheikh Niasse,Hellas Verona,M,sot,AVOID,0.154,,,,5,,,,,,22239,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Cheikh Niasse,Hellas Verona,M,sot,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,22239,
 2026-09-01,2026-09-02,Championship,Millwall,Wrexham,Josh Coburn,Millwall,F,goals,AVOID,0.153,2.5,-0.6175,-0.5946,5,True,VOID,0.0,DNP,2026-09-03,272553,1563128.0
-2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Edgar González,Almeria,M,sot,AVOID,0.152,,,,5,,,,,,1565,
+2026-09-01,2026-09-06,La Liga 2,Almería,Cádiz CF,Edgar González,Almeria,M,sot,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,1565,
 2026-09-01,2026-09-02,League One,Burton Albion,AFC Wimbledon,Charlie Webster,Burton Albion,F,sot,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-03,284442,1564274.0
-2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Martin Frese,Hellas Verona,M,cards,AVOID,0.152,,,,5,,,,,,15909,
+2026-09-01,2026-09-06,Serie B,Hellas Verona,Arezzo,Martin Frese,Hellas Verona,M,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,15909,
 2026-09-01,2026-09-06,Championship,Birmingham City,Wolverhampton Wanderers,Jhon Solís,Birmingham,M,sot,AVOID,0.151,,,,5,,,,,,306727,
 2026-09-01,2026-09-02,League One,Luton,Stockport County,Adama Sidibeh,Stockport County,F,sot,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-09-03,456025,1564278.0
-2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,Joel Pohjanpalo,Venezia,F,sot,AVOID,0.429,,,,5,,,,,,986,1550111.0
-2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,John Yeboah,Venezia,M,sot,AVOID,0.25,,,,5,,,,,,25414,1550111.0
-2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,Gianluca Busio,Venezia,M,sot,AVOID,0.219,,,,5,,,,,,51266,1550111.0
-2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,Joel Pohjanpalo,Venezia,F,goals,AVOID,0.153,,,,5,,,,,,986,1550111.0
+2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,Joel Pohjanpalo,Venezia,F,sot,AVOID,0.429,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,986,1550111.0
+2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,John Yeboah,Venezia,M,sot,AVOID,0.25,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,25414,1550111.0
+2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,Gianluca Busio,Venezia,M,sot,AVOID,0.219,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,51266,1550111.0
+2026-09-02,2026-09-06,Serie A,Frosinone,Venezia,Joel Pohjanpalo,Venezia,F,goals,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,986,1550111.0
 2026-09-02,2026-09-08,Finland Veikkausliiga,VPS Vaasa,AC Oulu,R. Karjalainen,AC Oulu,F,sot,AVOID,0.227,,,,5,,,,,,55383,
 2026-09-02,2026-09-05,League One,Huddersfield,Notts County,Joe Taylor,Huddersfield,F,sot,AVOID,0.592,,,,5,True,VOID,0.0,DNP,2026-09-06,179651,1564288.0
 2026-09-02,2026-09-05,League One,Huddersfield,Notts County,Bojan Radulović,Huddersfield,F,sot,AVOID,0.535,,,,5,True,VOID,0.0,DNP,2026-09-06,138792,1564288.0
@@ -5663,43 +5663,43 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-03,2026-09-08,Championship,Wrexham AFC,Burnley,Vitinho,Burnley,M,cards,AVOID,0.156,,,,5,,,,,,8661,
 2026-09-03,2026-09-08,Championship,Cardiff City,Stoke City,Steven​ N'Zonzi,Stoke City,M,sot,AVOID,0.152,,,,5,,,,,,780,
 2026-09-03,2026-09-08,Championship,Wrexham AFC,Burnley,Hjalmar Ekdal,Burnley,D,cards,AVOID,0.151,,,,5,,,,,,47903,
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Lamine Yamal,Barcelona,M,sot,AVOID,0.646,1.19,-0.2313,-0.1851,5,,,,,,386828,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Robert Lewandowski,Barcelona,F,sot,AVOID,0.562,,,,5,,,,,,521,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Lamine Yamal,Barcelona,M,sot,AVOID,0.646,1.19,-0.2313,-0.1851,5,True,WIN,0.19,,2026-09-08,386828,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Robert Lewandowski,Barcelona,F,sot,AVOID,0.562,,,,5,True,VOID,0.0,DNP,2026-09-08,521,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Issa Soumaré,Le Havre,M,sot,AVOID,0.522,,,,5,True,VOID,0.0,DNP,2026-09-06,156465,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Ludovic Ajorque,Stade Brestois 29,F,sot,AVOID,0.489,1.57,-0.2323,-0.1862,5,True,VOID,0.0,DNP,2026-09-06,22264,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Ally Samatta,Le Havre,F,sot,AVOID,0.463,,,,5,True,VOID,0.0,DNP,2026-09-06,1945,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Edinson Cavani,Valencia,F,sot,AVOID,0.457,,,,5,,,,,,274,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Fermín López,Barcelona,F,sot,AVOID,0.442,,,,5,,,,,,340626,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Raphinha,Barcelona,F,sot,AVOID,0.401,,,,5,,,,,,1496,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Edinson Cavani,Valencia,F,sot,AVOID,0.457,,,,5,True,VOID,0.0,DNP,2026-09-08,274,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Fermín López,Barcelona,F,sot,AVOID,0.442,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,340626,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Raphinha,Barcelona,F,sot,AVOID,0.401,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,1496,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Sofiane Boufal,Le Havre,M,sot,AVOID,0.378,,,,5,True,VOID,0.0,DNP,2026-09-06,2710,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Hugo Duro,Valencia,F,sot,AVOID,0.372,,,,5,,,,,,47264,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Dani Olmo,Barcelona,M,sot,AVOID,0.35,1.56,-0.454,-0.4212,5,,,,,,1323,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Hugo Duro,Valencia,F,sot,AVOID,0.372,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,47264,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Dani Olmo,Barcelona,M,sot,AVOID,0.35,1.56,-0.454,-0.4212,5,True,LOSS,-1.0,,2026-09-08,1323,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Kamory Doumbia,Stade Brestois 29,M,sot,AVOID,0.268,2.15,-0.4238,-0.3892,5,True,VOID,0.0,DNP,2026-09-06,326068,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Romain Del Castillo,Stade Brestois 29,M,sot,AVOID,0.262,,,,5,True,VOID,0.0,DNP,2026-09-06,2214,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Emmanuel Sabbi,Le Havre,M,sot,AVOID,0.246,,,,5,True,VOID,0.0,DNP,2026-09-06,15783,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Diego López,Valencia,M,sot,AVOID,0.245,,,,5,,,,,,162127,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Luis Rioja,Valencia,M,sot,AVOID,0.23,3.8,-0.126,-0.0386,5,,,,,,46933,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Diego López,Valencia,M,sot,AVOID,0.245,,,,5,True,VOID,0.0,DNP,2026-09-08,162127,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Luis Rioja,Valencia,M,sot,AVOID,0.23,3.8,-0.126,-0.0386,5,True,LOSS,-1.0,,2026-09-08,46933,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Eric Ebimbe,Stade Brestois 29,M,sot,AVOID,0.227,,,,5,True,VOID,0.0,DNP,2026-09-06,90594,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Robert Lewandowski,Barcelona,F,goals,AVOID,0.215,,,,5,,,,,,521,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Robert Lewandowski,Barcelona,F,goals,AVOID,0.215,,,,5,True,VOID,0.0,DNP,2026-09-08,521,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Abdoulaye Touré,Le Havre,M,sot,AVOID,0.212,,,,5,True,VOID,0.0,DNP,2026-09-06,21103,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Luc Zogbé,Stade Brestois 29,D,cards,AVOID,0.192,,,,5,True,VOID,0.0,DNP,2026-09-06,422595,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Guido Rodríguez,Valencia,M,sot,AVOID,0.188,,,,5,,,,,,2476,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Guido Rodríguez,Valencia,M,sot,AVOID,0.188,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,2476,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Rassoul Ndiaye,Le Havre,M,sot,AVOID,0.188,2.8,-0.4736,-0.442,5,True,VOID,0.0,DNP,2026-09-06,128342,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Ludovic Ajorque,Stade Brestois 29,F,goals,AVOID,0.181,3.9,-0.2941,-0.2235,5,True,VOID,0.0,DNP,2026-09-06,22264,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Lucas Tousart,Stade Brestois 29,M,sot,AVOID,0.179,2.75,-0.5078,-0.4782,5,True,VOID,0.0,DNP,2026-09-06,664,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Fodé Doucouré,Le Havre,M,sot,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-09-06,174625,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Ludovic Ajorque,Stade Brestois 29,F,cards,AVOID,0.168,3.85,-0.3532,-0.2885,5,True,VOID,0.0,DNP,2026-09-06,22264,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Raphinha,Barcelona,F,goals,AVOID,0.167,,,,5,,,,,,1496,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Javier Guerra,Valencia,M,sot,AVOID,0.164,3.5,-0.426,-0.3686,5,,,,,,315699,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Raphinha,Barcelona,F,goals,AVOID,0.167,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,1496,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Javier Guerra,Valencia,M,sot,AVOID,0.164,3.5,-0.426,-0.3686,5,True,LOSS,-1.0,,2026-09-08,315699,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Soumaila Coulibaly,Stade Brestois 29,D,cards,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-06,162568,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Franck Kessié,Barcelona,M,cards,AVOID,0.163,,,,5,,,,,,1642,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Franck Kessié,Barcelona,M,sot,AVOID,0.158,,,,5,,,,,,1642,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Franck Kessié,Barcelona,M,cards,AVOID,0.163,,,,5,True,VOID,0.0,DNP,2026-09-08,1642,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Franck Kessié,Barcelona,M,sot,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-08,1642,1570371.0
 2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Lamine Yamal,Barcelona,M,sot2,AVOID,0.158,1.87,-0.7045,-0.6868,5,,,,,,386828,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Lamine Yamal,Barcelona,M,goals,AVOID,0.156,2.15,-0.6646,-0.6445,5,,,,,,386828,1570371.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Edinson Cavani,Valencia,F,goals,AVOID,0.156,,,,5,,,,,,274,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Lamine Yamal,Barcelona,M,goals,AVOID,0.156,2.15,-0.6646,-0.6445,5,True,WIN,1.15,,2026-09-08,386828,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Edinson Cavani,Valencia,F,goals,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-09-08,274,1570371.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Hugo Magnetti,Stade Brestois 29,M,sot,AVOID,0.153,6.5,-0.0055,0.1437,5,True,VOID,0.0,DNP,2026-09-06,20558,1552748.0
 2026-09-03,2026-09-05,Ligue 1,Le Havre,Stade Brestois 29,Brendan Chardonnet,Stade Brestois 29,D,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-06,20546,1552748.0
-2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Enzo Barrenechea,Valencia,M,sot,AVOID,0.15,,,,5,,,,,,158378,1570371.0
+2026-09-03,2026-09-06,La Liga,Valencia,Barcelona,Enzo Barrenechea,Valencia,M,sot,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-09-08,158378,1570371.0
 2026-09-04,2026-09-08,Champions League,FC Porto,Manchester City,Erling Haaland,Manchester City,F,sot,AVOID,0.796,,,,5,,,,,,1100,1635654.0
 2026-09-04,2026-09-08,Champions League,Borussia Dortmund,Villarreal,Serhou Guirassy,Borussia Dortmund,F,sot,AVOID,0.696,1.25,-0.13,-0.0778,5,,,,,,21393,1635652.0
 2026-09-04,2026-09-08,Champions League,FC Porto,Manchester City,Erling Haaland,Manchester City,F,goals,AVOID,0.602,,,,5,,,,,,1100,1635654.0
@@ -5793,57 +5793,57 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-04,2026-09-05,La Liga 2,Eldense,Mallorca,Vedat Muriqi,Mallorca,F,sot,AVOID,0.719,,,,5,True,VOID,0.0,DNP,2026-09-06,50048,1569908.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Mohamed Ali Zoma,1. FC Nürnberg,M,sot,AVOID,0.696,,,,5,,,,,,338355,
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Isac Lidberg,SV Darmstadt 98,F,sot,AVOID,0.682,,,,5,,,,,,47895,
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Esteban Lepaul,Rennes,F,sot,AVOID,0.634,1.26,-0.2012,-0.1532,5,,,,,,163004,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Esteban Lepaul,Rennes,F,sot,AVOID,0.634,1.26,-0.2012,-0.1532,5,True,VOID,0.0,DNP,2026-09-08,163004,1552747.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Filip Bilbija,SC Paderborn 07,F,sot,AVOID,0.605,,,,5,True,VOID,0.0,DNP,2026-09-06,125726,1575157.0
-2026-09-04,2026-09-06,La Liga,Malaga,Levante,Carlos Espí,Levante,F,sot,AVOID,0.591,,,,5,,,,,,450497,1570369.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Joaquin Panichelli,Strasbourg,F,sot,AVOID,0.582,,,,5,,,,,,390742,1552755.0
+2026-09-04,2026-09-06,La Liga,Malaga,Levante,Carlos Espí,Levante,F,sot,AVOID,0.591,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,450497,1570369.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Joaquin Panichelli,Strasbourg,F,sot,AVOID,0.582,,,,5,True,VOID,0.0,DNP,2026-09-08,390742,1552755.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Killian Corredor,SV Darmstadt 98,F,sot,AVOID,0.581,,,,5,,,,,,191250,
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Marco Richter,SV Darmstadt 98,F,sot,AVOID,0.565,,,,5,,,,,,25307,
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Stefano Marino,SC Paderborn 07,F,sot,AVOID,0.52,1.66,-0.1368,-0.085,5,True,VOID,0.0,DNP,2026-09-06,328235,1575157.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Dango Ouattara,Brentford,M,sot,AVOID,0.511,1.8,-0.0802,-0.025,5,True,VOID,0.0,DNP,2026-09-06,284797,1557388.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Mateo Pellegrino,Parma,F,sot,AVOID,0.51,1.37,-0.3013,-0.2594,5,,,,,,292172,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Mateo Pellegrino,Parma,F,sot,AVOID,0.51,1.37,-0.3013,-0.2594,5,True,VOID,0.0,DNP,2026-09-08,292172,1550115.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Ivan Toney,Brentford,F,sot,AVOID,0.499,,,,5,True,VOID,0.0,DNP,2026-09-06,19974,1557388.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Janis Antiste,1. FC Nürnberg,F,sot,AVOID,0.492,,,,5,,,,,,193870,
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Martial Godo,Strasbourg,M,sot,AVOID,0.49,1.6,-0.216,-0.169,5,,,,,,359386,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Martial Godo,Strasbourg,M,sot,AVOID,0.49,1.6,-0.216,-0.169,5,True,VOID,0.0,DNP,2026-09-08,359386,1552755.0
 2026-09-04,2026-09-05,La Liga 2,Eldense,Mallorca,Vedat Muriqi,Mallorca,F,goals,AVOID,0.489,,,,5,True,VOID,0.0,DNP,2026-09-06,50048,1569908.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Jaidon Anthony,Brentford,M,sot,AVOID,0.465,1.94,-0.0979,-0.0438,5,True,VOID,0.0,DNP,2026-09-06,196855,1557388.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Mousa Tamari,Rennes,F,sot,AVOID,0.456,,,,5,,,,,,15286,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Mousa Tamari,Rennes,F,sot,AVOID,0.456,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,15286,1552747.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Lars Timo Gindorf,Hannover 96,F,sot,AVOID,0.455,,,,5,,,,,,202771,
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Rony Lopes,Estac Troyes,F,sot,AVOID,0.451,,,,5,,,,,,111,1552755.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Marten Winkler,Hertha BSC,F,sot,AVOID,0.45,,,,5,,,,,,202614,1576164.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Gabriel Strefezza,Parma,F,sot,AVOID,0.43,,,,5,,,,,,31624,1550115.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Rony Lopes,Estac Troyes,F,sot,AVOID,0.451,,,,5,True,VOID,0.0,DNP,2026-09-08,111,1552755.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Marten Winkler,Hertha BSC,F,sot,AVOID,0.45,,,,5,True,VOID,0.0,DNP,2026-09-08,202614,1576164.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Gabriel Strefezza,Parma,F,sot,AVOID,0.43,,,,5,True,VOID,0.0,DNP,2026-09-08,31624,1550115.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Igor Thiago,Brentford,F,sot,AVOID,0.42,,,,5,True,WIN,,,2026-09-06,196156,1557388.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Karl Toko Ekambi,Rennes,F,sot,AVOID,0.408,,,,5,,,,,,1709,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Karl Toko Ekambi,Rennes,F,sot,AVOID,0.408,,,,5,True,VOID,0.0,DNP,2026-09-08,1709,1552747.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Joel Grodowski,Arminia Bielefeld,F,sot,AVOID,0.404,,,,5,,,,,,87801,
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Laurin Curda,SC Paderborn 07,M,sot,VALUABLE,0.401,3.1,0.2431,0.3674,5,True,VOID,0.0,DNP,2026-09-06,163078,1575157.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Nicolò Tresoldi,Hannover 96,F,sot,AVOID,0.401,1.41,-0.4346,-0.4007,5,,,,,,287923,
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Breel Embolo,Rennes,F,sot,AVOID,0.396,,,,5,,,,,,421,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Breel Embolo,Rennes,F,sot,AVOID,0.396,,,,5,True,VOID,0.0,DNP,2026-09-08,421,1552747.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Mustapha Bundu,Hannover 96,F,sot,AVOID,0.395,,,,5,,,,,,15595,
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Julian Justvan,1. FC Nürnberg,M,sot,AVOID,0.375,,,,5,,,,,,177661,
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Kevin Schade,Brentford,M,sot,AVOID,0.365,1.63,-0.4051,-0.3694,5,True,VOID,0.0,DNP,2026-09-06,178077,1557388.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Filip Bilbija,SC Paderborn 07,F,goals,VALUABLE,0.361,5.5,0.9855,1.2833,5,True,VOID,0.0,DNP,2026-09-06,125726,1575157.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Dany Mota,Monza,F,sot,AVOID,0.359,,,,5,,,,,,30603,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Dany Mota,Monza,F,sot,AVOID,0.359,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,30603,1550115.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Daisuke Yokota,Hannover 96,F,sot,AVOID,0.359,,,,5,,,,,,260798,
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Koen Kostons,SC Paderborn 07,F,sot,AVOID,0.354,,,,5,True,VOID,0.0,DNP,2026-09-06,38780,1575157.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Isac Lidberg,SV Darmstadt 98,F,goals,AVOID,0.341,,,,5,,,,,,47895,
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Michaël Cuisance,Hertha BSC,M,sot,AVOID,0.334,1.6,-0.4656,-0.4335,5,,,,,,25634,1576164.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Michaël Cuisance,Hertha BSC,M,sot,AVOID,0.334,1.6,-0.4656,-0.4335,5,True,VOID,0.0,DNP,2026-09-08,25634,1576164.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Kolja Oudenne,Hannover 96,F,sot,AVOID,0.333,,,,5,,,,,,322221,
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Javier Fernandez,1. FC Nürnberg,M,sot,AVOID,0.333,,,,5,,,,,,618443,
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Esteban Lepaul,Rennes,F,goals,AVOID,0.329,2.75,-0.0952,-0.041,5,,,,,,163004,1552747.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Joaquin Panichelli,Strasbourg,F,goals,AVOID,0.319,,,,5,,,,,,390742,1552755.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Samuel Amo-Ameyaw,Strasbourg,F,sot,AVOID,0.319,2.7,-0.1387,-0.087,5,,,,,,334035,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Esteban Lepaul,Rennes,F,goals,AVOID,0.329,2.75,-0.0952,-0.041,5,True,VOID,0.0,DNP,2026-09-08,163004,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Joaquin Panichelli,Strasbourg,F,goals,AVOID,0.319,,,,5,True,VOID,0.0,DNP,2026-09-08,390742,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Samuel Amo-Ameyaw,Strasbourg,F,sot,AVOID,0.319,2.7,-0.1387,-0.087,5,True,WIN,1.7,,2026-09-08,334035,1552755.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Daniel-Kofi Kyereh,SC Freiburg,F,sot,AVOID,0.305,,,,5,True,VOID,0.0,DNP,2026-09-06,25530,1575157.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Josip Brekalo,Hertha BSC,F,sot,AVOID,0.3,,,,5,,,,,,2762,1576164.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Josip Brekalo,Hertha BSC,F,sot,AVOID,0.3,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,2762,1576164.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Mohamed Ali Zoma,1. FC Nürnberg,M,sot2,AVOID,0.298,,,,5,,,,,,338355,
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Mael Corboz,Arminia Bielefeld,M,sot,AVOID,0.278,,,,5,,,,,,88126,
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Gianluca Caprari,Monza,F,sot,AVOID,0.274,,,,5,,,,,,30460,1550115.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Ludovic Blas,Rennes,M,sot,AVOID,0.273,2.15,-0.4131,-0.3778,5,,,,,,21497,1552747.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Gianluca Caprari,Monza,F,sot,AVOID,0.274,,,,5,True,VOID,0.0,DNP,2026-09-08,30460,1550115.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Ludovic Blas,Rennes,M,sot,AVOID,0.273,2.15,-0.4131,-0.3778,5,True,VOID,0.0,DNP,2026-09-08,21497,1552747.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Mika Baur,SC Paderborn 07,M,sot,AVOID,0.273,,,,5,True,VOID,0.0,DNP,2026-09-06,328035,1575157.0
 2026-09-04,2026-09-05,La Liga 2,Eldense,Mallorca,Vedat Muriqi,Mallorca,F,sot2,AVOID,0.27,,,,5,True,VOID,0.0,DNP,2026-09-06,50048,1569908.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Lucas Höler,SC Freiburg,F,sot,AVOID,0.269,1.75,-0.5292,-0.501,5,True,VOID,0.0,DNP,2026-09-06,26255,1575157.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Branco Van den Boomen,Angers,M,sot,AVOID,0.259,2.6,-0.3266,-0.2862,5,,,,,,37652,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Branco Van den Boomen,Angers,M,sot,AVOID,0.259,2.6,-0.3266,-0.2862,5,True,VOID,0.0,DNP,2026-09-08,37652,1552747.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Mamadou Sangare,Brentford,M,sot,AVOID,0.253,3.2,-0.1904,-0.1094,5,True,VOID,0.0,DNP,2026-09-06,277306,1557388.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Amine Sbai,Angers,F,sot,AVOID,0.246,,,,5,,,,,,191289,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Amine Sbai,Angers,F,sot,AVOID,0.246,,,,5,True,VOID,0.0,DNP,2026-09-08,191289,1552747.0
 2026-09-04,2026-09-05,La Liga 2,Eldense,Mallorca,Mateo Joseph,Mallorca,F,sot,AVOID,0.244,,,,5,True,WIN,,,2026-09-06,313059,1569908.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Finn Ole Becker,1. FC Nürnberg,M,sot,AVOID,0.241,,,,5,,,,,,24932,
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Filip Bilbija,SC Paderborn 07,F,sot2,AVOID,0.235,,,,5,True,VOID,0.0,DNP,2026-09-06,125726,1575157.0
@@ -5851,54 +5851,54 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Niklas Schmidt,SV Darmstadt 98,M,sot,AVOID,0.226,,,,5,,,,,,25533,
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Enzo Le Fée,Sunderland,M,sot,AVOID,0.226,2.6,-0.4124,-0.3771,5,True,VOID,0.0,DNP,2026-09-06,20638,1557388.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Ivan Toney,Brentford,F,goals,AVOID,0.226,,,,5,True,VOID,0.0,DNP,2026-09-06,19974,1557388.0
-2026-09-04,2026-09-06,La Liga,Malaga,Levante,Kervin Arriaga,Levante,M,sot,AVOID,0.225,,,,5,,,,,,125239,1570369.0
+2026-09-04,2026-09-06,La Liga,Malaga,Levante,Kervin Arriaga,Levante,M,sot,AVOID,0.225,,,,5,True,VOID,0.0,DNP,2026-09-08,125239,1570369.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Vincenzo Grifo,SC Freiburg,M,sot,AVOID,0.224,1.6,-0.6416,-0.6201,5,True,VOID,0.0,DNP,2026-09-06,26248,1575157.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Mahdi Camara,Rennes,M,sot,AVOID,0.223,,,,5,,,,,,24147,1552747.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Hans Nicolussi Caviglia,Parma,M,sot,AVOID,0.22,,,,5,,,,,,881,1550115.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Valentin Mihăilă,Parma,M,sot,AVOID,0.22,,,,5,,,,,,43056,1550115.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Mahdi Camara,Rennes,M,sot,AVOID,0.223,,,,5,True,VOID,0.0,DNP,2026-09-08,24147,1552747.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Hans Nicolussi Caviglia,Parma,M,sot,AVOID,0.22,,,,5,True,VOID,0.0,DNP,2026-09-08,881,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Valentin Mihăilă,Parma,M,sot,AVOID,0.22,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,43056,1550115.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Luca Marseiler,SV Darmstadt 98,M,sot,AVOID,0.219,,,,5,,,,,,26523,
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Benjamin Bourigeaud,Rennes,M,sot,AVOID,0.213,,,,5,,,,,,2206,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Benjamin Bourigeaud,Rennes,M,sot,AVOID,0.213,,,,5,True,VOID,0.0,DNP,2026-09-08,2206,1552747.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Calvin Brackelmann,SC Paderborn 07,D,sot,AVOID,0.212,,,,5,True,VOID,0.0,DNP,2026-09-06,178403,1575157.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Igor Thiago,Brentford,F,goals,AVOID,0.21,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-09-06,196156,1557388.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Isac Lidberg,SV Darmstadt 98,F,sot2,AVOID,0.209,,,,5,,,,,,47895,
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Granit Xhaka,Sunderland,M,sot,AVOID,0.207,3.8,-0.2134,-0.1347,5,True,VOID,0.0,DNP,2026-09-06,1464,1557388.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Jean-Eudes Aholou,Angers,M,sot,AVOID,0.203,,,,5,,,,,,103,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Jean-Eudes Aholou,Angers,M,sot,AVOID,0.203,,,,5,True,VOID,0.0,DNP,2026-09-08,103,1552747.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Kai Klefisch,SV Darmstadt 98,M,sot,AVOID,0.202,,,,5,,,,,,26073,
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Adam Markhiev,1. FC Nürnberg,M,cards,AVOID,0.201,,,,5,,,,,,387361,
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Stefano Marino,SC Paderborn 07,F,goals,AVOID,0.2,3.9,-0.22,-0.142,5,True,VOID,0.0,DNP,2026-09-06,328235,1575157.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Xavier Chavalerin,Estac Troyes,M,sot,AVOID,0.199,,,,5,,,,,,22005,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Xavier Chavalerin,Estac Troyes,M,sot,AVOID,0.199,,,,5,True,VOID,0.0,DNP,2026-09-08,22005,1552755.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Raphael Obermair,SC Paderborn 07,D,sot,AVOID,0.198,3.45,-0.3169,-0.2486,5,True,VOID,0.0,DNP,2026-09-06,7592,1575157.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Santiago Castañeda,SC Paderborn 07,M,sot,AVOID,0.196,4.0,-0.216,-0.1376,5,True,VOID,0.0,DNP,2026-09-06,363156,1575157.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Killian Corredor,SV Darmstadt 98,F,goals,AVOID,0.196,,,,5,,,,,,191250,
 2026-09-04,2026-09-05,La Liga 2,Eldense,Mallorca,Sergi Darder,Mallorca,M,sot,AVOID,0.195,,,,5,True,WIN,,,2026-09-06,47336,1569908.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Emanuele Valeri,Parma,M,sot,AVOID,0.194,5.6,0.0864,0.2494,5,,,,,,91358,1550115.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Yassin Belkhdim,Angers,M,sot,AVOID,0.194,2.4,-0.5344,-0.5065,5,,,,,,174708,1552747.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Emanuele Valeri,Parma,M,sot,AVOID,0.194,5.6,0.0864,0.2494,5,True,LOSS,-1.0,,2026-09-08,91358,1550115.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Yassin Belkhdim,Angers,M,sot,AVOID,0.194,2.4,-0.5344,-0.5065,5,True,VOID,0.0,DNP,2026-09-08,174708,1552747.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Monju Momuluh,Arminia Bielefeld,M,sot,AVOID,0.193,,,,5,,,,,,202616,
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Mateo Pellegrino,Parma,F,goals,AVOID,0.191,2.95,-0.4365,-0.4027,5,,,,,,292172,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Mateo Pellegrino,Parma,F,goals,AVOID,0.191,2.95,-0.4365,-0.4027,5,True,VOID,0.0,DNP,2026-09-08,292172,1550115.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Noël Aséko,Hannover 96,M,sot,AVOID,0.19,,,,5,,,,,,342171,
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Adrián Bernabé,Parma,M,sot,AVOID,0.185,2.65,-0.5098,-0.4803,5,,,,,,628,1550115.0
-2026-09-04,2026-09-06,La Liga,Malaga,Levante,Víctor García,Levante,M,sot,AVOID,0.185,,,,5,,,,,,46790,1570369.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Armando Izzo,Monza,D,cards,AVOID,0.185,,,,5,,,,,,30501,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Adrián Bernabé,Parma,M,sot,AVOID,0.185,2.65,-0.5098,-0.4803,5,True,VOID,0.0,DNP,2026-09-08,628,1550115.0
+2026-09-04,2026-09-06,La Liga,Malaga,Levante,Víctor García,Levante,M,sot,AVOID,0.185,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,46790,1570369.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Armando Izzo,Monza,D,cards,AVOID,0.185,,,,5,True,VOID,0.0,DNP,2026-09-08,30501,1550115.0
 2026-09-04,2026-09-05,La Liga 2,Eldense,Mallorca,Pablo Torre,Mallorca,M,sot,AVOID,0.184,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-09-06,285909,1569908.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Jonjoe Kenny,Hertha BSC,M,sot,AVOID,0.182,,,,5,,,,,,18760,1576164.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Jonjoe Kenny,Hertha BSC,M,sot,AVOID,0.182,,,,5,True,VOID,0.0,DNP,2026-09-08,18760,1576164.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Mikkel Damsgaard,Brentford,M,sot,AVOID,0.182,2.05,-0.6269,-0.6045,5,True,VOID,0.0,DNP,2026-09-06,15908,1557388.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Kennet Eichhorn,Hertha BSC,M,sot,AVOID,0.182,,,,5,,,,,,503467,1576164.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Guéla Doué,Strasbourg,D,cards,AVOID,0.18,5.25,-0.055,0.0867,5,,,,,,161747,1552755.0
-2026-09-04,2026-09-06,La Liga,Malaga,Levante,Pablo Martínez,Levante,M,sot,AVOID,0.18,,,,5,,,,,,104949,1570369.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Kennet Eichhorn,Hertha BSC,M,sot,AVOID,0.182,,,,5,True,VOID,0.0,DNP,2026-09-08,503467,1576164.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Guéla Doué,Strasbourg,D,cards,AVOID,0.18,5.25,-0.055,0.0867,5,True,VOID,0.0,DNP,2026-09-08,161747,1552755.0
+2026-09-04,2026-09-06,La Liga,Malaga,Levante,Pablo Martínez,Levante,M,sot,AVOID,0.18,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,104949,1570369.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Adam Markhiev,1. FC Nürnberg,M,sot,AVOID,0.179,,,,5,,,,,,387361,
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Stefán Teitur Þórðarson,Hannover 96,M,sot,AVOID,0.179,,,,5,,,,,,28714,
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Maurice Neubauer,Hannover 96,M,sot,AVOID,0.179,,,,5,,,,,,88074,
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Pierrick Capelle,Angers,M,sot,AVOID,0.178,,,,5,,,,,,21145,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Pierrick Capelle,Angers,M,sot,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-09-08,21145,1552747.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Florian Kleinhansl,SV Darmstadt 98,D,cards,AVOID,0.177,,,,5,,,,,,260773,
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Maxi Oyedele,Strasbourg,M,cards,AVOID,0.175,,,,5,,,,,,303016,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Maxi Oyedele,Strasbourg,M,cards,AVOID,0.175,,,,5,True,VOID,0.0,DNP,2026-09-08,303016,1552755.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Laurin Curda,SC Paderborn 07,M,cards,AVOID,0.172,3.95,-0.3206,-0.2527,5,True,VOID,0.0,DNP,2026-09-06,163078,1575157.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Granit Xhaka,Sunderland,M,cards,AVOID,0.171,5.0,-0.145,-0.0595,5,True,VOID,0.0,DNP,2026-09-06,1464,1557388.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Stefano Russo,Arminia Bielefeld,M,cards,AVOID,0.171,,,,5,,,,,,67860,
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Keane Lewis-Potter,Brentford,D,sot,AVOID,0.171,2.95,-0.4955,-0.4653,5,True,VOID,0.0,DNP,2026-09-06,106725,1557388.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Samuele Birindelli,Monza,M,sot,AVOID,0.171,,,,5,,,,,,30708,1550115.0
-2026-09-04,2026-09-06,La Liga,Malaga,Levante,Carlos Espí,Levante,F,goals,AVOID,0.17,,,,5,,,,,,450497,1570369.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Joaquin Panichelli,Strasbourg,F,sot2,AVOID,0.169,,,,5,,,,,,390742,1552755.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Enrico Delprato,Parma,M,sot,AVOID,0.169,,,,5,,,,,,30420,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Samuele Birindelli,Monza,M,sot,AVOID,0.171,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,30708,1550115.0
+2026-09-04,2026-09-06,La Liga,Malaga,Levante,Carlos Espí,Levante,F,goals,AVOID,0.17,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,450497,1570369.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Joaquin Panichelli,Strasbourg,F,sot2,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-09-08,390742,1552755.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Enrico Delprato,Parma,M,sot,AVOID,0.169,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,30420,1550115.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Reinildo Mandava,Sunderland,D,cards,AVOID,0.168,3.9,-0.3448,-0.2793,5,True,LOSS,-1.0,,2026-09-06,22225,1557388.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Aleksandar Vukotić,SV Darmstadt 98,D,sot,AVOID,0.166,,,,5,,,,,,8725,
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Jean Hugonet,Hannover 96,D,cards,AVOID,0.165,,,,5,,,,,,128343,
@@ -5906,32 +5906,32 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Trai Hume,Sunderland,M,sot,AVOID,0.164,3.5,-0.426,-0.3686,5,True,VOID,0.0,DNP,2026-09-06,119121,1557388.0
 2026-09-04,2026-09-05,Premier League,Brentford,Sunderland,Mathias Jensen,Brentford,M,sot,AVOID,0.163,2.0,-0.674,-0.6544,5,True,VOID,0.0,DNP,2026-09-06,47438,1557388.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Mohamed Ali Zoma,1. FC Nürnberg,M,assists,AVOID,0.163,,,,5,,,,,,338355,
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Maxime Le Marchand,Strasbourg,D,cards,AVOID,0.162,,,,5,,,,,,19019,1552755.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Jackson Porozo,Estac Troyes,D,sot,AVOID,0.161,,,,5,,,,,,2575,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Maxime Le Marchand,Strasbourg,D,cards,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-09-08,19019,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Jackson Porozo,Estac Troyes,D,sot,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-09-08,2575,1552755.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Jannik Rochelt,Arminia Bielefeld,M,sot,AVOID,0.16,,,,5,,,,,,125712,
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Lilian Raolisoa,Angers,M,sot,AVOID,0.16,,,,5,,,,,,174660,1552747.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Deyovaisio Zeefuik,Hertha BSC,D,cards,AVOID,0.159,,,,5,,,,,,38120,1576164.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Paul Seguin,Hertha BSC,M,sot,AVOID,0.158,,,,5,,,,,,25161,1576164.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Lilian Raolisoa,Angers,M,sot,AVOID,0.16,,,,5,True,VOID,0.0,DNP,2026-09-08,174660,1552747.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Deyovaisio Zeefuik,Hertha BSC,D,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-09-08,38120,1576164.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Paul Seguin,Hertha BSC,M,sot,AVOID,0.158,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,25161,1576164.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Stefano Marino,SC Paderborn 07,F,sot2,AVOID,0.158,4.2,-0.3364,-0.27,5,True,VOID,0.0,DNP,2026-09-06,328235,1575157.0
-2026-09-04,2026-09-06,La Liga,Malaga,Levante,Diego Pampín,Levante,D,cards,AVOID,0.158,,,,5,,,,,,104832,1570369.0
+2026-09-04,2026-09-06,La Liga,Malaga,Levante,Diego Pampín,Levante,D,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-08,104832,1570369.0
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Stefano Russo,Arminia Bielefeld,M,sot,AVOID,0.158,,,,5,,,,,,67860,
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Alessandro Circati,Parma,D,cards,AVOID,0.158,,,,5,,,,,,348568,1550115.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Andrea Carboni,Monza,D,cards,AVOID,0.156,,,,5,,,,,,193270,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Alessandro Circati,Parma,D,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-08,348568,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Andrea Carboni,Monza,D,cards,AVOID,0.156,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,193270,1550115.0
 2026-09-04,2026-09-11,Bundesliga 2,1. FC Nürnberg,Hannover 96,Enzo Leopold,Hannover 96,M,sot,AVOID,0.154,,,,5,,,,,,178250,
 2026-09-04,2026-09-11,Bundesliga 2,SV Darmstadt 98,Arminia Bielefeld,Killian Corredor,SV Darmstadt 98,F,sot2,AVOID,0.154,,,,5,,,,,,191250,
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Georgios Kyriakopoulos,Monza,M,sot,AVOID,0.154,,,,5,,,,,,26828,1550115.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Alessandro Bianco,Monza,M,cards,AVOID,0.154,,,,5,,,,,,302432,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Georgios Kyriakopoulos,Monza,M,sot,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,26828,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Alessandro Bianco,Monza,M,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,302432,1550115.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Marcel Hoffmeier,SC Paderborn 07,D,sot,AVOID,0.153,5.75,-0.1202,0.0117,5,True,VOID,0.0,DNP,2026-09-06,119173,1575157.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Kevin Zeroli,Monza,M,sot,AVOID,0.153,,,,5,,,,,,382945,1550115.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Ângelo,Strasbourg,M,sot,AVOID,0.153,,,,5,,,,,,288055,1552755.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Abdelhamid Ait Boudlal,Rennes,D,sot,AVOID,0.152,4.8,-0.2704,-0.1974,5,,,,,,417830,1552747.0
-2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Linus Gechter,Hertha BSC,D,cards,AVOID,0.152,,,,5,,,,,,286711,1576164.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Jean-Eudes Aholou,Angers,M,cards,AVOID,0.152,,,,5,,,,,,103,1552747.0
-2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Martial Godo,Strasbourg,M,goals,AVOID,0.151,3.6,-0.4564,-0.402,5,,,,,,359386,1552755.0
-2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Esteban Lepaul,Rennes,F,sot2,AVOID,0.151,2.2,-0.6678,-0.6479,5,,,,,,163004,1552747.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Kevin Zeroli,Monza,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-08,382945,1550115.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Ângelo,Strasbourg,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-08,288055,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Abdelhamid Ait Boudlal,Rennes,D,sot,AVOID,0.152,4.8,-0.2704,-0.1974,5,True,VOID,0.0,DNP,2026-09-08,417830,1552747.0
+2026-09-04,2026-09-06,Bundesliga 2,Hertha BSC,1. FC Magdeburg,Linus Gechter,Hertha BSC,D,cards,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,286711,1576164.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Jean-Eudes Aholou,Angers,M,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,103,1552747.0
+2026-09-04,2026-09-06,Ligue 1,Estac Troyes,Strasbourg,Martial Godo,Strasbourg,M,goals,AVOID,0.151,3.6,-0.4564,-0.402,5,True,VOID,0.0,DNP,2026-09-08,359386,1552755.0
+2026-09-04,2026-09-06,Ligue 1,Angers,Rennes,Esteban Lepaul,Rennes,F,sot2,AVOID,0.151,2.2,-0.6678,-0.6479,5,True,VOID,0.0,DNP,2026-09-08,163004,1552747.0
 2026-09-04,2026-09-05,Bundesliga,SC Paderborn 07,SC Freiburg,Jonah Sticker,SC Paderborn 07,M,sot,AVOID,0.151,4.3,-0.3507,-0.2858,5,True,LOSS,-1.0,,2026-09-06,334146,1575157.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Danilo D'Ambrosio,Monza,D,cards,AVOID,0.151,,,,5,,,,,,193,1550115.0
-2026-09-04,2026-09-06,Serie A,Parma,Monza,Pedro Pereira,Monza,D,cards,AVOID,0.151,,,,5,,,,,,30768,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Danilo D'Ambrosio,Monza,D,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-09-08,193,1550115.0
+2026-09-04,2026-09-06,Serie A,Parma,Monza,Pedro Pereira,Monza,D,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-09-08,30768,1550115.0
 2026-09-04,2026-09-11,Ireland Premier Division,Waterford FC,Dundalk,Tom Grivosti,Dundalk,D,cards,AVOID,0.199,,,,5,,,,,,45056,
 2026-09-04,2026-09-11,Ireland Premier Division,Waterford FC,Dundalk,Aodh Dervin,Dundalk,M,cards,AVOID,0.191,,,,5,,,,,,69559,
 2026-09-04,2026-09-11,Ireland Premier Division,Waterford FC,Dundalk,Mayowa Animasahun,Dundalk,D,cards,AVOID,0.174,,,,5,,,,,,308535,
@@ -5941,64 +5941,64 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-05,2026-09-05,League One,Wycombe Wanderers,Milton Keynes Dons,Sam Nombe,Milton Keynes Dons,F,sot,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-09-06,18572,
 2026-09-05,2026-09-05,League One,Wycombe Wanderers,Milton Keynes Dons,Callum Paterson,Milton Keynes Dons,F,sot,AVOID,0.168,,,,5,True,VOID,0.0,DNP,2026-09-06,18993,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mateusz Żukowski,1. FC Magdeburg,F,sot,AVOID,0.783,,,,5,,,,,,40460,
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,sot,AVOID,0.76,,,,5,,,,,,25411,1576162.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Noel Futkeu,SpVgg Greuther Fürth,F,sot,AVOID,0.629,1.44,-0.0942,-0.0399,5,,,,,,196500,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,sot,AVOID,0.76,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,25411,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Noel Futkeu,SpVgg Greuther Fürth,F,sot,AVOID,0.629,1.44,-0.0942,-0.0399,5,True,VOID,0.0,DNP,2026-09-08,196500,1576162.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Myron Boadu,VfL Bochum,F,sot,AVOID,0.594,,,,5,,,,,,36907,
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Riccardo Orsolini,Bologna,F,sot,AVOID,0.577,,,,5,,,,,,30488,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Riccardo Orsolini,Bologna,F,sot,AVOID,0.577,,,,5,True,VOID,0.0,DNP,2026-09-08,30488,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mateusz Żukowski,1. FC Magdeburg,F,sot2,AVOID,0.572,,,,5,,,,,,40460,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Morgan Gibbs-White,Nottingham Forest,M,sot,AVOID,0.556,1.71,-0.0492,0.0078,5,True,VOID,0.0,DNP,2026-09-06,18746,1557396.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Armand Laurienté,Sassuolo,F,sot,AVOID,0.532,1.83,-0.0264,0.032,5,,,,,,2215,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Armand Laurienté,Sassuolo,F,sot,AVOID,0.532,1.83,-0.0264,0.032,5,True,LOSS,-1.0,,2026-09-08,2215,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Philipp Hofmann,VfL Bochum,F,sot,AVOID,0.52,,,,5,,,,,,26287,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Giorgos Masouras,VfL Bochum,F,sot,AVOID,0.516,,,,5,,,,,,1610,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Vincent Vermeij,Dynamo Dresden,F,sot,AVOID,0.489,,,,5,,,,,,37473,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Barış Atik,1. FC Magdeburg,F,sot,AVOID,0.471,,,,5,,,,,,25126,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Marlon Ritter,1. FC Kaiserslautern,F,sot,AVOID,0.451,,,,5,,,,,,24833,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Liam Delap,Nottingham Forest,F,sot,AVOID,0.441,,,,5,True,VOID,0.0,DNP,2026-09-06,161948,1557396.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Musa Barrow,Bologna,M,sot,AVOID,0.44,,,,5,,,,,,30437,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Musa Barrow,Bologna,M,sot,AVOID,0.44,,,,5,True,VOID,0.0,DNP,2026-09-08,30437,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Naatan Skyttä,1. FC Kaiserslautern,F,sot,AVOID,0.432,,,,5,,,,,,55319,
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Jonathan Rowe,Bologna,F,sot,AVOID,0.423,,,,5,,,,,,278095,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Jonathan Rowe,Bologna,F,sot,AVOID,0.423,,,,5,True,VOID,0.0,DNP,2026-09-08,278095,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mateusz Żukowski,1. FC Magdeburg,F,goals,AVOID,0.409,2.38,-0.0266,0.0318,5,,,,,,40460,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Dan Ndoye,Nottingham Forest,M,sot,AVOID,0.398,1.85,-0.2637,-0.2195,5,True,VOID,0.0,DNP,2026-09-06,48648,1557396.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Santiago Castro,Bologna,F,sot,AVOID,0.392,1.3,-0.4904,-0.4598,5,,,,,,311067,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Santiago Castro,Bologna,F,sot,AVOID,0.392,1.3,-0.4904,-0.4598,5,True,VOID,0.0,DNP,2026-09-08,311067,1550108.0
 2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,sot2,AVOID,0.389,,,,5,,,,,,25411,1576162.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mo El Hankouri,1. FC Magdeburg,F,sot,AVOID,0.385,,,,5,,,,,,38128,
-2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Stefano Moreo,Pisa,F,sot,AVOID,0.38,,,,5,,,,,,31560,1601518.0
+2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Stefano Moreo,Pisa,F,sot,AVOID,0.38,,,,5,True,VOID,0.0,DNP,2026-09-08,31560,1601518.0
 2026-09-05,2026-09-05,Championship,Sheffield Utd,Norwich,Patrick Bamford,Sheffield Utd,F,sot,AVOID,0.379,,,,5,True,VOID,0.0,DNP,2026-09-06,19134,1563138.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Jovan Mijatović,Eintracht Braunschweig,F,sot,AVOID,0.367,,,,5,,,,,,361358,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Ben Bobzien,Dynamo Dresden,M,sot,AVOID,0.355,,,,5,,,,,,287932,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Giorgos Masouras,VfL Bochum,F,goals,AVOID,0.353,,,,5,,,,,,1610,
 2026-09-05,2026-09-05,Championship,Millwall,Bolton,Tairyk Arconte,Millwall,F,sot,AVOID,0.344,,,,5,True,VOID,0.0,DNP,2026-09-06,305959,1563134.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Francis Onyeka,VfL Bochum,M,sot,AVOID,0.334,2.0,-0.332,-0.2919,5,,,,,,392254,
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,goals,PAPER,0.334,3.2,0.0688,0.1757,5,,,,,,25411,1576162.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Federico Bernardeschi,Bologna,F,sot,AVOID,0.333,1.4,-0.5338,-0.5058,5,,,,,,873,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,goals,PAPER,0.334,3.2,0.0688,0.1757,5,True,LOSS,-1.0,,2026-09-08,25411,1576162.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Federico Bernardeschi,Bologna,F,sot,AVOID,0.333,1.4,-0.5338,-0.5058,5,True,WIN,0.4,,2026-09-08,873,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Max Marie,Eintracht Braunschweig,M,sot,AVOID,0.333,,,,5,,,,,,327935,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Emmanuel Iyoha,1. FC Magdeburg,F,sot,AVOID,0.329,,,,5,,,,,,25108,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Laurin Ulrich,1. FC Magdeburg,M,sot,AVOID,0.328,,,,5,,,,,,342268,
 2026-09-05,2026-09-05,Championship,West Brom,Watford,Aune Selland Heggebø,West Brom,F,sot,AVOID,0.327,,,,5,True,VOID,0.0,DNP,2026-09-06,133916,1563141.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Dennis Srbeny,SpVgg Greuther Fürth,F,sot,AVOID,0.317,,,,5,,,,,,19087,1576162.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Noel Futkeu,SpVgg Greuther Fürth,F,goals,AVOID,0.313,3.0,-0.061,-0.0047,5,,,,,,196500,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Dennis Srbeny,SpVgg Greuther Fürth,F,sot,AVOID,0.317,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,19087,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Noel Futkeu,SpVgg Greuther Fürth,F,goals,AVOID,0.313,3.0,-0.061,-0.0047,5,True,VOID,0.0,DNP,2026-09-08,196500,1576162.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Myron Boadu,VfL Bochum,F,goals,VALUABLE,0.311,4.0,0.244,0.3684,5,,,,,,36907,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Myron Boadu,VfL Bochum,F,sot2,AVOID,0.307,,,,5,,,,,,36907,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Luka Hyryläinen,1. FC Magdeburg,M,cards,AVOID,0.304,,,,5,,,,,,328213,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Mathys Tel,Tottenham,M,sot,AVOID,0.302,1.83,-0.4473,-0.4142,5,True,VOID,0.0,DNP,2026-09-06,270510,1557396.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Koji Miyoshi,VfL Bochum,M,sot,AVOID,0.283,,,,5,,,,,,33019,
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Jovan Mijatović,Eintracht Braunschweig,F,sot,AVOID,0.283,,,,5,,,,,,361358,1576168.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Jovan Mijatović,Eintracht Braunschweig,F,sot,AVOID,0.283,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,361358,1576168.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Mehmet Aydın,Eintracht Braunschweig,D,sot,AVOID,0.281,,,,5,,,,,,203018,
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Noel Futkeu,SpVgg Greuther Fürth,F,sot2,AVOID,0.273,3.1,-0.1537,-0.0691,5,,,,,,196500,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Noel Futkeu,SpVgg Greuther Fürth,F,sot2,AVOID,0.273,3.1,-0.1537,-0.0691,5,True,VOID,0.0,DNP,2026-09-08,196500,1576162.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mergim Berisha,1. FC Kaiserslautern,F,sot,AVOID,0.255,,,,5,,,,,,7691,
 2026-09-05,2026-09-05,Championship,West Brom,Watford,Isaac Price,West Brom,M,sot,AVOID,0.255,,,,5,True,VOID,0.0,DNP,2026-09-06,284267,1563141.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,David Abrangao,SpVgg Greuther Fürth,F,sot,AVOID,0.254,,,,5,,,,,,561825,1576162.0
-2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Matteo Tramoni,Pisa,F,sot,AVOID,0.25,,,,5,,,,,,20959,1601518.0
-2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Filip Stojilković,Pisa,F,sot,AVOID,0.249,,,,5,,,,,,123476,1601518.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Lewis Ferguson,Bologna,M,cards,VALUABLE,0.246,6.0,0.476,0.6974,5,,,,,,44814,1550108.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Max Marie,Eintracht Braunschweig,M,sot,AVOID,0.245,,,,5,,,,,,327935,1576168.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,David Abrangao,SpVgg Greuther Fürth,F,sot,AVOID,0.254,,,,5,True,VOID,0.0,DNP,2026-09-08,561825,1576162.0
+2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Matteo Tramoni,Pisa,F,sot,AVOID,0.25,,,,5,True,VOID,0.0,DNP,2026-09-08,20959,1601518.0
+2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Filip Stojilković,Pisa,F,sot,AVOID,0.249,,,,5,True,VOID,0.0,DNP,2026-09-08,123476,1601518.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Lewis Ferguson,Bologna,M,cards,VALUABLE,0.246,6.0,0.476,0.6974,5,True,LOSS,-1.0,,2026-09-08,44814,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Max Marie,Eintracht Braunschweig,M,sot,AVOID,0.245,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,327935,1576168.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Giorgos Masouras,VfL Bochum,F,sot2,AVOID,0.238,,,,5,,,,,,1610,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Lino Tempelmann,Eintracht Braunschweig,M,sot,AVOID,0.237,,,,5,,,,,,127928,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Fabian Kunze,1. FC Kaiserslautern,M,cards,AVOID,0.232,,,,5,,,,,,25499,
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Riccardo Orsolini,Bologna,F,goals,AVOID,0.231,2.9,-0.3301,-0.2899,5,,,,,,30488,1550108.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Mehmet Aydın,Eintracht Braunschweig,D,sot,AVOID,0.228,,,,5,,,,,,203018,1576168.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Riccardo Orsolini,Bologna,F,goals,AVOID,0.231,2.9,-0.3301,-0.2899,5,True,VOID,0.0,DNP,2026-09-08,30488,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Mehmet Aydın,Eintracht Braunschweig,D,sot,AVOID,0.228,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,203018,1576168.0
 2026-09-05,2026-09-05,Bundesliga,1899 Hoffenheim,Borussia Dortmund,M. Beier,Borussia Dortmund,F,sot,AVOID,0.227,,,,5,True,WIN,,,2026-09-06,158644,1575150.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Florian Flick,Eintracht Braunschweig,M,cards,AVOID,0.225,,,,5,,,,,,119771,1576168.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Florian Flick,Eintracht Braunschweig,M,cards,AVOID,0.225,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,119771,1576168.0
 2026-09-05,2026-09-05,Championship,West Brom,Watford,Othmane Maamma,Watford,M,sot,AVOID,0.224,,,,5,True,VOID,0.0,DNP,2026-09-06,399906,1563141.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Niklas Hauptmann,Dynamo Dresden,M,sot,AVOID,0.223,,,,5,,,,,,24800,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Filip Kaloč,1. FC Kaiserslautern,M,sot,AVOID,0.217,,,,5,,,,,,66531,
@@ -6007,16 +6007,16 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Oliver Olsen,VfL Bochum,D,cards,AVOID,0.21,,,,5,,,,,,15794,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Alexander Nollenberger,1. FC Magdeburg,D,sot,AVOID,0.208,,,,5,,,,,,125714,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Matúš Bero,VfL Bochum,M,cards,AVOID,0.206,,,,5,,,,,,37122,
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Lewis Ferguson,Bologna,M,sot,AVOID,0.205,2.7,-0.4465,-0.4133,5,,,,,,44814,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Lewis Ferguson,Bologna,M,sot,AVOID,0.205,2.7,-0.4465,-0.4133,5,True,LOSS,-1.0,,2026-09-08,44814,1550108.0
 2026-09-05,2026-09-05,Bundesliga,Bayer Leverkusen,Union Berlin,Livan Burcu,Union Berlin,M,sot,AVOID,0.204,1.8,-0.6328,-0.6108,5,True,LOSS,-1.0,,2026-09-06,430354,1575151.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Shinta Appelkamp,SpVgg Greuther Fürth,M,sot,AVOID,0.202,,,,5,,,,,,127885,1576162.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Grégoire Defrel,Sassuolo,F,sot,AVOID,0.202,,,,5,,,,,,30461,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Shinta Appelkamp,SpVgg Greuther Fürth,M,sot,AVOID,0.202,,,,5,True,VOID,0.0,DNP,2026-09-08,127885,1576162.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Grégoire Defrel,Sassuolo,F,sot,AVOID,0.202,,,,5,True,VOID,0.0,DNP,2026-09-08,30461,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Philipp Hofmann,VfL Bochum,F,cards,AVOID,0.2,,,,5,,,,,,26287,
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Lino Tempelmann,Eintracht Braunschweig,M,sot,AVOID,0.198,,,,5,,,,,,127928,1576168.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Lino Tempelmann,Eintracht Braunschweig,M,sot,AVOID,0.198,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,127928,1576168.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Florian Flick,Eintracht Braunschweig,M,sot,AVOID,0.196,,,,5,,,,,,119771,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Neco Williams,Nottingham Forest,D,sot,AVOID,0.192,2.95,-0.4336,-0.3996,5,True,VOID,0.0,DNP,2026-09-06,138780,1557396.0
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Conor Gallagher,Tottenham,M,sot,AVOID,0.191,2.45,-0.532,-0.504,5,True,VOID,0.0,DNP,2026-09-06,67972,1557396.0
-2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Mehdi Léris,Pisa,M,sot,AVOID,0.189,,,,5,,,,,,30753,1601518.0
+2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Mehdi Léris,Pisa,M,sot,AVOID,0.189,,,,5,True,VOID,0.0,DNP,2026-09-08,30753,1601518.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Semih Şahin,1. FC Kaiserslautern,M,sot,AVOID,0.189,,,,5,,,,,,178089,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Pedro Porro,Tottenham,D,sot,AVOID,0.189,2.45,-0.537,-0.5092,5,True,LOSS,-1.0,,2026-09-06,47519,1557396.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Robert Wagner,Dynamo Dresden,M,cards,AVOID,0.187,,,,5,,,,,,280024,
@@ -6024,16 +6024,16 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Falko Michel,1. FC Magdeburg,M,sot,AVOID,0.184,,,,5,,,,,,202841,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Philipp Hofmann,VfL Bochum,F,goals,AVOID,0.181,2.88,-0.4787,-0.4474,5,,,,,,26287,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mika Haas,1. FC Kaiserslautern,M,sot,AVOID,0.177,,,,5,,,,,,432336,
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Armand Laurienté,Sassuolo,F,goals,AVOID,0.176,5.6,-0.0144,0.1334,5,,,,,,2215,1550108.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Florian Flick,Eintracht Braunschweig,M,sot,AVOID,0.175,,,,5,,,,,,119771,1576168.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Armand Laurienté,Sassuolo,F,goals,AVOID,0.176,5.6,-0.0144,0.1334,5,True,LOSS,-1.0,,2026-09-08,2215,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Florian Flick,Eintracht Braunschweig,M,sot,AVOID,0.175,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,119771,1576168.0
 2026-09-05,2026-09-05,Championship,Sheffield Utd,Norwich,Andre Brooks,Norwich,M,sot,AVOID,0.174,,,,5,True,VOID,0.0,DNP,2026-09-06,379150,1563138.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Robin Krausse,Eintracht Braunschweig,M,sot,AVOID,0.173,,,,5,,,,,,25214,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Marvin Rittmüller,Eintracht Braunschweig,M,sot,AVOID,0.173,,,,5,,,,,,178370,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Lukas Frenkert,Eintracht Braunschweig,D,sot,AVOID,0.172,,,,5,,,,,,260894,
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Johan Gomez,Eintracht Braunschweig,F,sot,AVOID,0.171,,,,5,,,,,,161584,1576168.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Remo Freuler,Bologna,M,cards,AVOID,0.171,,,,5,,,,,,2807,1550108.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Jannis Nikolaou,Eintracht Braunschweig,M,cards,AVOID,0.171,,,,5,,,,,,25122,1576168.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Riccardo Orsolini,Bologna,F,sot2,AVOID,0.168,,,,5,,,,,,30488,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Johan Gomez,Eintracht Braunschweig,F,sot,AVOID,0.171,,,,5,True,VOID,0.0,DNP,2026-09-08,161584,1576168.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Remo Freuler,Bologna,M,cards,AVOID,0.171,,,,5,True,VOID,0.0,DNP,2026-09-08,2807,1550108.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Jannis Nikolaou,Eintracht Braunschweig,M,cards,AVOID,0.171,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,25122,1576168.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Riccardo Orsolini,Bologna,F,sot2,AVOID,0.168,,,,5,True,VOID,0.0,DNP,2026-09-08,30488,1550108.0
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Maximilian Wittek,VfL Bochum,D,cards,AVOID,0.167,,,,5,,,,,,25151,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Sven Köhler,Eintracht Braunschweig,M,sot,AVOID,0.164,,,,5,,,,,,113584,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Simon Asta,1. FC Kaiserslautern,M,sot,AVOID,0.164,,,,5,,,,,,25285,
@@ -6041,24 +6041,24 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Matúš Bero,VfL Bochum,M,sot,AVOID,0.163,,,,5,,,,,,37122,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Lubambo Musonda,1. FC Magdeburg,D,sot,AVOID,0.162,,,,5,,,,,,40345,
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Jannis Nikolaou,Eintracht Braunschweig,M,cards,AVOID,0.159,,,,5,,,,,,25122,
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Paul Will,SpVgg Greuther Fürth,M,sot,AVOID,0.159,,,,5,,,,,,520,1576162.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Robin Krausse,Eintracht Braunschweig,M,cards,AVOID,0.159,,,,5,,,,,,25214,1576168.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Paul Will,SpVgg Greuther Fürth,M,sot,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,520,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Robin Krausse,Eintracht Braunschweig,M,cards,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,25214,1576168.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mika Haas,1. FC Kaiserslautern,M,cards,AVOID,0.158,,,,5,,,,,,432336,
 2026-09-05,2026-09-05,Championship,Millwall,Bolton,Camiel Neghli,Millwall,M,sot,AVOID,0.157,,,,5,True,VOID,0.0,DNP,2026-09-06,290635,1563134.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Salomon Patrick Amougou Nkoa,Eintracht Braunschweig,D,sot,AVOID,0.157,,,,5,,,,,,374779,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Philipp Strompf,VfL Bochum,D,cards,AVOID,0.157,,,,5,,,,,,178169,
 2026-09-05,2026-09-05,Championship,Sheffield Utd,Norwich,Sydie Peck,Sheffield Utd,M,sot,AVOID,0.156,,,,5,True,WIN,,,2026-09-06,312256,1563138.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Matheus Henrique,Sassuolo,M,sot,AVOID,0.156,,,,5,,,,,,10494,1550108.0
-2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Simon Sohm,Bologna,M,sot,AVOID,0.156,2.4,-0.6256,-0.6031,5,,,,,,1014,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Matheus Henrique,Sassuolo,M,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-09-08,10494,1550108.0
+2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Simon Sohm,Bologna,M,sot,AVOID,0.156,2.4,-0.6256,-0.6031,5,True,LOSS,-1.0,,2026-09-08,1014,1550108.0
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Jan Paul van Hecke,Tottenham,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-09-06,38695,1557396.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Vincent Vermeij,Dynamo Dresden,F,goals,AVOID,0.156,2.62,-0.5913,-0.5668,5,,,,,,37473,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Marlon Ritter,1. FC Kaiserslautern,F,goals,AVOID,0.156,,,,5,,,,,,24833,
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Jannik Dehm,SpVgg Greuther Fürth,D,sot,AVOID,0.155,,,,5,,,,,,24954,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Jannik Dehm,SpVgg Greuther Fürth,D,sot,AVOID,0.155,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,24954,1576162.0
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Rodrigo Bentancur,Tottenham,M,sot,AVOID,0.155,3.7,-0.4265,-0.3691,5,True,VOID,0.0,DNP,2026-09-06,863,1557396.0
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Sandro Tonali,Tottenham,M,sot,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-06,31146,1557396.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Marco John,SpVgg Greuther Fürth,D,sot,AVOID,0.154,,,,5,,,,,,162723,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Marco John,SpVgg Greuther Fürth,D,sot,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,162723,1576162.0
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Xaver Schlager,Nottingham Forest,M,cards,AVOID,0.152,6.0,-0.088,0.0488,5,True,VOID,0.0,DNP,2026-09-06,1095,1557396.0
-2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Marvin Rittmüller,Eintracht Braunschweig,M,sot,AVOID,0.151,,,,5,,,,,,178370,1576168.0
+2026-09-05,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Marvin Rittmüller,Eintracht Braunschweig,M,sot,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-09-08,178370,1576168.0
 2026-09-05,2026-09-12,Bundesliga 2,Eintracht Braunschweig,Dynamo Dresden,Robin Krausse,Eintracht Braunschweig,M,cards,AVOID,0.15,,,,5,,,,,,25214,
 2026-09-05,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Philipp Strompf,VfL Bochum,D,sot,AVOID,0.15,,,,5,,,,,,178169,
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Filip Kaloč,1. FC Kaiserslautern,M,cards,AVOID,0.15,,,,5,,,,,,66531,
@@ -6066,261 +6066,261 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Harry Kane,Bayern München,F,sot,AVOID,0.741,1.07,-0.2071,-0.1596,5,True,VOID,0.0,DNP,2026-09-06,184,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Moussa Sylla,FC Schalke 04,F,sot,VALUABLE,0.705,1.75,0.2337,0.3078,5,True,VOID,0.0,DNP,2026-09-06,115,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Kenan Karaman,FC Schalke 04,F,sot,VALUABLE,0.692,2.0,0.384,0.467,5,True,VOID,0.0,DNP,2026-09-06,25466,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Davie Selke,Hamburger SV,F,sot,AVOID,0.69,,,,5,,,,,,25362,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Younes Ebnoutalib,Eintracht Frankfurt,F,sot,AVOID,0.592,,,,5,,,,,,409190,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Davie Selke,Hamburger SV,F,sot,AVOID,0.69,,,,5,True,VOID,0.0,DNP,2026-09-08,25362,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Younes Ebnoutalib,Eintracht Frankfurt,F,sot,AVOID,0.592,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,409190,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Luis Díaz,Bayern München,M,sot,AVOID,0.589,1.22,-0.2814,-0.2383,5,True,VOID,0.0,DNP,2026-09-06,2489,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ransford Yeboah Königsdörffer,Hamburger SV,F,sot,AVOID,0.555,,,,5,,,,,,162773,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Jonathan Burkardt,Eintracht Frankfurt,F,sot,AVOID,0.539,1.28,-0.3101,-0.2687,5,,,,,,25926,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ransford Yeboah Königsdörffer,Hamburger SV,F,sot,AVOID,0.555,,,,5,True,VOID,0.0,DNP,2026-09-08,162773,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Jonathan Burkardt,Eintracht Frankfurt,F,sot,AVOID,0.539,1.28,-0.3101,-0.2687,5,True,WIN,0.28,,2026-09-08,25926,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Adil Aouchiche,FC Schalke 04,M,sot,PAPER,0.534,2.0,0.068,0.1321,5,True,VOID,0.0,DNP,2026-09-06,137129,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Serge Gnabry,Bayern München,F,sot,AVOID,0.531,1.2,-0.3628,-0.3246,5,True,VOID,0.0,DNP,2026-09-06,510,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Simon Terodde,FC Schalke 04,F,sot,AVOID,0.504,,,,5,True,VOID,0.0,DNP,2026-09-06,24812,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Dejan Ljubičić,FC Schalke 04,F,sot,VALUABLE,0.498,3.0,0.494,0.5836,5,True,VOID,0.0,DNP,2026-09-06,1725,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Anton Kade,FC Augsburg,F,sot,AVOID,0.494,1.6,-0.2096,-0.1622,5,,,,,,279993,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Anton Kade,FC Augsburg,F,sot,AVOID,0.494,1.6,-0.2096,-0.1622,5,True,VOID,0.0,DNP,2026-09-08,279993,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Michael Olise,Bayern München,M,sot,AVOID,0.492,1.2,-0.4096,-0.3742,5,True,VOID,0.0,DNP,2026-09-06,19617,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Davie Selke,Hamburger SV,F,goals,AVOID,0.466,,,,5,,,,,,25362,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Davie Selke,Hamburger SV,F,goals,AVOID,0.466,,,,5,True,VOID,0.0,DNP,2026-09-08,25362,1575154.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Leroy Sané,Bayern München,M,sot,AVOID,0.454,,,,5,True,VOID,0.0,DNP,2026-09-06,644,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Phillip Tietz,FSV Mainz 05,F,sot,AVOID,0.448,,,,5,,,,,,26171,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Alexis Claude-Maurice,FC Augsburg,M,sot,AVOID,0.405,,,,5,,,,,,20634,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Phillip Tietz,FSV Mainz 05,F,sot,AVOID,0.448,,,,5,True,VOID,0.0,DNP,2026-09-08,26171,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Alexis Claude-Maurice,FC Augsburg,M,sot,AVOID,0.405,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,20634,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Jamal Musiala,Bayern München,M,sot,AVOID,0.398,1.26,-0.4985,-0.4684,5,True,VOID,0.0,DNP,2026-09-06,181812,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Sheraldo Becker,FSV Mainz 05,F,sot,AVOID,0.375,,,,5,,,,,,37938,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Benedict Hollerbach,FSV Mainz 05,F,sot,AVOID,0.37,,,,5,,,,,,162946,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Sheraldo Becker,FSV Mainz 05,F,sot,AVOID,0.375,,,,5,True,VOID,0.0,DNP,2026-09-08,37938,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Benedict Hollerbach,FSV Mainz 05,F,sot,AVOID,0.37,,,,5,True,VOID,0.0,DNP,2026-09-08,162946,1575154.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Harry Kane,Bayern München,F,goals,AVOID,0.362,2.33,-0.1565,-0.1059,5,True,VOID,0.0,DNP,2026-09-06,184,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Kenan Karaman,FC Schalke 04,F,goals,VALUABLE,0.342,4.0,0.368,0.5048,5,True,VOID,0.0,DNP,2026-09-06,25466,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Davie Selke,Hamburger SV,F,sot2,AVOID,0.341,,,,5,,,,,,25362,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Davie Selke,Hamburger SV,F,sot2,AVOID,0.341,,,,5,True,VOID,0.0,DNP,2026-09-08,25362,1575154.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Moussa Sylla,FC Schalke 04,F,sot2,VALUABLE,0.338,4.0,0.352,0.4872,5,True,VOID,0.0,DNP,2026-09-06,115,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Younes Ebnoutalib,Eintracht Frankfurt,F,goals,AVOID,0.337,,,,5,,,,,,409190,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Younes Ebnoutalib,Eintracht Frankfurt,F,goals,AVOID,0.337,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,409190,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Harry Kane,Bayern München,F,sot2,AVOID,0.336,1.35,-0.5464,-0.5192,5,True,VOID,0.0,DNP,2026-09-06,184,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Moussa Sylla,FC Schalke 04,F,goals,VALUABLE,0.336,4.3,0.4448,0.5893,5,True,VOID,0.0,DNP,2026-09-06,115,1575156.0
 2026-09-05,2026-09-05,La Liga,Athletic Club,Atletico Madrid,Nico Williams,Athletic Club,F,sot,AVOID,0.319,1.8,-0.4258,-0.3913,5,True,WIN,0.8,,2026-09-06,183799,1570364.0
 2026-09-05,2026-09-05,La Liga,Athletic Club,Atletico Madrid,Oihan Sancet,Athletic Club,M,sot,AVOID,0.313,1.66,-0.4804,-0.4492,5,True,WIN,0.66,,2026-09-06,128398,1570364.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Farès Chaïbi,Eintracht Frankfurt,M,sot,AVOID,0.308,1.76,-0.4579,-0.4254,5,,,,,,276670,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Farès Chaïbi,Eintracht Frankfurt,M,sot,AVOID,0.308,1.76,-0.4579,-0.4254,5,True,LOSS,-1.0,,2026-09-08,276670,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Soufiane El-Faouzi,FC Schalke 04,M,sot,AVOID,0.289,,,,5,True,VOID,0.0,DNP,2026-09-06,280090,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Michael Gregoritsch,FC Augsburg,F,sot,AVOID,0.286,,,,5,,,,,,25297,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ludovit Reis,Hamburger SV,M,sot,AVOID,0.278,,,,5,,,,,,38124,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Michael Gregoritsch,FC Augsburg,F,sot,AVOID,0.286,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,25297,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ludovit Reis,Hamburger SV,M,sot,AVOID,0.278,,,,5,True,VOID,0.0,DNP,2026-09-08,38124,1575154.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Kenan Karaman,FC Schalke 04,F,sot2,VALUABLE,0.247,5.5,0.3585,0.5623,5,True,VOID,0.0,DNP,2026-09-06,25466,1575156.0
 2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Younes Ebnoutalib,Eintracht Frankfurt,F,sot2,AVOID,0.245,,,,5,,,,,,409190,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Paul Nebel,FSV Mainz 05,M,sot,AVOID,0.238,,,,5,,,,,,202736,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Ritsu Doan,Eintracht Frankfurt,M,sot,AVOID,0.238,1.58,-0.624,-0.6014,5,,,,,,2598,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Paul Nebel,FSV Mainz 05,M,sot,AVOID,0.238,,,,5,True,VOID,0.0,DNP,2026-09-08,202736,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Ritsu Doan,Eintracht Frankfurt,M,sot,AVOID,0.238,1.58,-0.624,-0.6014,5,True,LOSS,-1.0,,2026-09-08,2598,1575152.0
 2026-09-05,2026-09-05,La Liga 2,Sporting Gijon,Girona,Bryan Gil,Girona,M,sot,AVOID,0.232,,,,5,True,WIN,,,2026-09-06,2061,1569909.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Aymen Barkok,FC Schalke 04,M,sot,AVOID,0.224,,,,5,True,VOID,0.0,DNP,2026-09-06,25455,1575156.0
 2026-09-05,2026-09-05,La Liga 2,Sporting Gijon,Girona,Abel Ruíz,Girona,F,sot,AVOID,0.218,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-09-06,155,1569909.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Jonathan Burkardt,Eintracht Frankfurt,F,goals,AVOID,0.217,2.4,-0.4792,-0.448,5,,,,,,25926,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Leandro Barreiro,FSV Mainz 05,M,sot,AVOID,0.216,,,,5,,,,,,25918,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Robin Fellhauer,FC Augsburg,M,sot,AVOID,0.213,3.1,-0.3397,-0.2737,5,,,,,,143831,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Albert Grønbæk,Hamburger SV,M,sot,AVOID,0.213,,,,5,,,,,,263177,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ransford Yeboah Königsdörffer,Hamburger SV,F,goals,AVOID,0.197,,,,5,,,,,,162773,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolás Capaldo,Hamburger SV,M,sot,AVOID,0.196,3.2,-0.3728,-0.3101,5,,,,,,5973,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Jonathan Burkardt,Eintracht Frankfurt,F,goals,AVOID,0.217,2.4,-0.4792,-0.448,5,True,WIN,1.4,,2026-09-08,25926,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Leandro Barreiro,FSV Mainz 05,M,sot,AVOID,0.216,,,,5,True,VOID,0.0,DNP,2026-09-08,25918,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Robin Fellhauer,FC Augsburg,M,sot,AVOID,0.213,3.1,-0.3397,-0.2737,5,True,WIN,2.1,,2026-09-08,143831,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Albert Grønbæk,Hamburger SV,M,sot,AVOID,0.213,,,,5,True,VOID,0.0,DNP,2026-09-08,263177,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ransford Yeboah Königsdörffer,Hamburger SV,F,goals,AVOID,0.197,,,,5,True,VOID,0.0,DNP,2026-09-08,162773,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolás Capaldo,Hamburger SV,M,sot,AVOID,0.196,3.2,-0.3728,-0.3101,5,True,VOID,0.0,DNP,2026-09-08,5973,1575154.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Simon Terodde,FC Schalke 04,F,goals,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-09-06,24812,1575156.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Tobias Mohr,FC Schalke 04,M,sot,AVOID,0.193,,,,5,True,VOID,0.0,DNP,2026-09-06,25155,1575156.0
 2026-09-05,2026-09-05,Premier League,Fulham,Crystal Palace,Joshua King,Fulham,M,sot,AVOID,0.191,,,,5,True,WIN,,,2026-09-06,389315,1557391.0
 2026-09-05,2026-09-05,Premier League,Fulham,Crystal Palace,Yéremy Pino,Crystal Palace,M,sot,AVOID,0.19,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-09-06,184226,1557391.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Fabian Rieder,FC Augsburg,M,sot,AVOID,0.189,1.95,-0.6315,-0.6093,5,,,,,,163032,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Fabian Rieder,FC Augsburg,M,sot,AVOID,0.189,1.95,-0.6315,-0.6093,5,True,WIN,0.95,,2026-09-08,163032,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Aleksandar Pavlović,Bayern München,M,cards,AVOID,0.185,4.4,-0.186,-0.1046,5,True,VOID,0.0,DNP,2026-09-06,328033,1575156.0
 2026-09-05,2026-09-05,Premier League,Fulham,Crystal Palace,Oscar Bobb,Fulham,M,sot,AVOID,0.181,1.95,-0.6471,-0.6259,5,True,WIN,0.95,,2026-09-06,278133,1557391.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Tom Bischof,Bayern München,D,sot,AVOID,0.18,2.0,-0.64,-0.6184,5,True,VOID,0.0,DNP,2026-09-06,325975,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Albert Sambi Lokonga,Hamburger SV,M,sot,AVOID,0.179,2.8,-0.4988,-0.4687,5,,,,,,1427,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Stefan Posch,FSV Mainz 05,D,cards,AVOID,0.177,,,,5,,,,,,711,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,André Hahn,FC Augsburg,M,sot,AVOID,0.175,,,,5,,,,,,25298,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Leandro Barreiro,FSV Mainz 05,M,cards,AVOID,0.171,,,,5,,,,,,25918,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Albert Sambi Lokonga,Hamburger SV,M,sot,AVOID,0.179,2.8,-0.4988,-0.4687,5,True,VOID,0.0,DNP,2026-09-08,1427,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Stefan Posch,FSV Mainz 05,D,cards,AVOID,0.177,,,,5,True,VOID,0.0,DNP,2026-09-08,711,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,André Hahn,FC Augsburg,M,sot,AVOID,0.175,,,,5,True,VOID,0.0,DNP,2026-09-08,25298,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Leandro Barreiro,FSV Mainz 05,M,cards,AVOID,0.171,,,,5,True,VOID,0.0,DNP,2026-09-08,25918,1575154.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Serge Gnabry,Bayern München,F,goals,AVOID,0.169,2.38,-0.5978,-0.5736,5,True,VOID,0.0,DNP,2026-09-06,510,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Hugo Larsson,Eintracht Frankfurt,M,sot,AVOID,0.169,3.05,-0.4846,-0.433,5,,,,,,335094,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolai Remberg,Hamburger SV,M,sot,AVOID,0.169,3.7,-0.3747,-0.3122,5,,,,,,260898,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Oscar Højlund,Eintracht Frankfurt,M,sot,AVOID,0.165,,,,5,,,,,,339874,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Hugo Larsson,Eintracht Frankfurt,M,sot,AVOID,0.169,3.05,-0.4846,-0.433,5,True,VOID,0.0,DNP,2026-09-08,335094,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolai Remberg,Hamburger SV,M,sot,AVOID,0.169,3.7,-0.3747,-0.3122,5,True,VOID,0.0,DNP,2026-09-08,260898,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Oscar Højlund,Eintracht Frankfurt,M,sot,AVOID,0.165,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,339874,1575152.0
 2026-09-05,2026-09-05,Bundesliga,FC Schalke 04,Bayern München,Ron Schallenberg,FC Schalke 04,M,cards,AVOID,0.163,,,,5,True,VOID,0.0,DNP,2026-09-06,88140,1575156.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ransford Yeboah Königsdörffer,Hamburger SV,F,sot2,AVOID,0.161,,,,5,,,,,,162773,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolás Capaldo,Hamburger SV,M,cards,AVOID,0.159,2.8,-0.5548,-0.5281,5,,,,,,5973,1575154.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Nathaniel Brown,Eintracht Frankfurt,D,sot,AVOID,0.158,1.8,-0.7156,-0.6985,5,,,,,,280074,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,André Hahn,FC Augsburg,M,cards,AVOID,0.158,,,,5,,,,,,25298,1575152.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Dominik Kohr,FSV Mainz 05,D,cards,AVOID,0.156,,,,5,,,,,,979,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Ransford Yeboah Königsdörffer,Hamburger SV,F,sot2,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-09-08,162773,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolás Capaldo,Hamburger SV,M,cards,AVOID,0.159,2.8,-0.5548,-0.5281,5,True,VOID,0.0,DNP,2026-09-08,5973,1575154.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Nathaniel Brown,Eintracht Frankfurt,D,sot,AVOID,0.158,1.8,-0.7156,-0.6985,5,True,WIN,0.8,,2026-09-08,280074,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,André Hahn,FC Augsburg,M,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-08,25298,1575152.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Dominik Kohr,FSV Mainz 05,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-09-08,979,1575154.0
 2026-09-05,2026-09-05,Premier League,Fulham,Crystal Palace,Gonzalo García,Fulham,F,sot,AVOID,0.154,1.48,-0.7721,-0.7584,5,True,LOSS,-1.0,,2026-09-06,336711,1557391.0
-2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolai Remberg,Hamburger SV,M,cards,AVOID,0.153,3.9,-0.4033,-0.3436,5,,,,,,260898,1575154.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Jonathan David,Juventus,F,sot,AVOID,0.668,,,,5,,,,,,8489,1550114.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Kai Havertz,Arsenal,F,sot,AVOID,0.667,1.4,-0.0662,-0.0102,5,,,,,,978,1557387.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Mason Greenwood,Marseille,M,sot,AVOID,0.665,,,,5,,,,,,897,1552751.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Viktor Gyökeres,Arsenal,F,sot,AVOID,0.654,1.39,-0.0909,-0.0364,5,,,,,,18979,1557387.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,sot,AVOID,0.604,,,,5,,,,,,785,1552751.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Cristiano Ronaldo,Manchester United,F,sot,AVOID,0.598,,,,5,,,,,,874,1557390.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Cole Palmer,Chelsea,F,sot,AVOID,0.58,1.67,-0.0314,0.0267,5,,,,,,152982,1557387.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Raúl Jiménez,Wolves,F,sot,AVOID,0.571,,,,5,,,,,,2887,1563131.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Toni Martínez,Alaves,F,sot,AVOID,0.515,,,,5,,,,,,47181,1570363.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Youssef En-Nesyri,Sevilla,F,sot,AVOID,0.51,,,,5,,,,,,47422,1570367.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Bukayo Saka,Arsenal,M,sot,AVOID,0.477,1.41,-0.3274,-0.2871,5,,,,,,1460,1557387.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,João Pedro,Chelsea,F,sot,AVOID,0.472,,,,5,,,,,,10329,1557387.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Fábio Vieira,Arsenal,F,sot,AVOID,0.471,1.83,-0.1381,-0.0864,5,,,,,,41725,1557387.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Bryan Mbeumo,Manchester United,F,sot,AVOID,0.468,1.5,-0.298,-0.2559,5,,,,,,20589,1557390.0
+2026-09-05,2026-09-06,Bundesliga,Hamburger SV,FSV Mainz 05,Nicolai Remberg,Hamburger SV,M,cards,AVOID,0.153,3.9,-0.4033,-0.3436,5,True,VOID,0.0,DNP,2026-09-08,260898,1575154.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Jonathan David,Juventus,F,sot,AVOID,0.668,,,,5,True,VOID,0.0,DNP,2026-09-08,8489,1550114.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Kai Havertz,Arsenal,F,sot,AVOID,0.667,1.4,-0.0662,-0.0102,5,True,WIN,0.4,,2026-09-08,978,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Mason Greenwood,Marseille,M,sot,AVOID,0.665,,,,5,True,VOID,0.0,DNP,2026-09-08,897,1552751.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Viktor Gyökeres,Arsenal,F,sot,AVOID,0.654,1.39,-0.0909,-0.0364,5,True,LOSS,-1.0,,2026-09-08,18979,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,sot,AVOID,0.604,,,,5,True,VOID,0.0,DNP,2026-09-08,785,1552751.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Cristiano Ronaldo,Manchester United,F,sot,AVOID,0.598,,,,5,True,VOID,0.0,DNP,2026-09-08,874,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Cole Palmer,Chelsea,F,sot,AVOID,0.58,1.67,-0.0314,0.0267,5,True,WIN,0.67,,2026-09-08,152982,1557387.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Raúl Jiménez,Wolves,F,sot,AVOID,0.571,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,2887,1563131.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Toni Martínez,Alaves,F,sot,AVOID,0.515,,,,5,True,VOID,0.0,DNP,2026-09-08,47181,1570363.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Youssef En-Nesyri,Sevilla,F,sot,AVOID,0.51,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,47422,1570367.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Bukayo Saka,Arsenal,M,sot,AVOID,0.477,1.41,-0.3274,-0.2871,5,True,WIN,0.41,,2026-09-08,1460,1557387.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,João Pedro,Chelsea,F,sot,AVOID,0.472,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,10329,1557387.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Fábio Vieira,Arsenal,F,sot,AVOID,0.471,1.83,-0.1381,-0.0864,5,True,VOID,0.0,DNP,2026-09-08,41725,1557387.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Bryan Mbeumo,Manchester United,F,sot,AVOID,0.468,1.5,-0.298,-0.2559,5,True,WIN,0.5,,2026-09-08,20589,1557390.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Leo Scienza,Southampton,M,sot,AVOID,0.465,,,,5,,,,,,283323,1563148.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Igor Paixão,Marseille,M,sot,AVOID,0.459,1.4,-0.3574,-0.3188,5,,,,,,9363,1552751.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Kenan Yıldız,Juventus,F,sot,AVOID,0.456,,,,5,,,,,,339883,1550114.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Benjamin Šeško,Manchester United,F,sot,AVOID,0.445,1.32,-0.4126,-0.3774,5,,,,,,115589,1557390.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Javi Puado,Espanyol,M,sot,AVOID,0.444,,,,5,,,,,,47349,1570367.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Mateus Mané,Wolves,F,sot,AVOID,0.42,,,,5,,,,,,456206,1563131.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Martin Ødegaard,Arsenal,M,sot,AVOID,0.409,,,,5,,,,,,37127,1557387.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Kai Havertz,Arsenal,F,goals,PAPER,0.407,2.7,0.0989,0.1648,5,,,,,,978,1557387.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Leandro Trossard,Arsenal,M,sot,AVOID,0.398,,,,5,,,,,,1946,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Igor Paixão,Marseille,M,sot,AVOID,0.459,1.4,-0.3574,-0.3188,5,True,LOSS,-1.0,,2026-09-08,9363,1552751.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Kenan Yıldız,Juventus,F,sot,AVOID,0.456,,,,5,True,VOID,0.0,DNP,2026-09-08,339883,1550114.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Benjamin Šeško,Manchester United,F,sot,AVOID,0.445,1.32,-0.4126,-0.3774,5,True,WIN,0.32,,2026-09-08,115589,1557390.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Javi Puado,Espanyol,M,sot,AVOID,0.444,,,,5,True,VOID,0.0,DNP,2026-09-08,47349,1570367.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Mateus Mané,Wolves,F,sot,AVOID,0.42,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,456206,1563131.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Martin Ødegaard,Arsenal,M,sot,AVOID,0.409,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,37127,1557387.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Kai Havertz,Arsenal,F,goals,PAPER,0.407,2.7,0.0989,0.1648,5,True,WIN,1.7,,2026-09-08,978,1557387.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Leandro Trossard,Arsenal,M,sot,AVOID,0.398,,,,5,True,VOID,0.0,DNP,2026-09-08,1946,1557387.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Nestory Irankunda,Watford,F,sot,AVOID,0.393,,,,5,,,,,,338014,1563149.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Lucas Ocampos,Sevilla,F,sot,AVOID,0.384,,,,5,,,,,,1911,1570367.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Hamed Junior Traorè,Marseille,M,sot,AVOID,0.373,,,,5,,,,,,31057,1552751.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Amine Gouiri,Marseille,F,sot,AVOID,0.371,1.13,-0.5808,-0.5556,5,,,,,,85041,1552751.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Lucas Ocampos,Sevilla,F,sot,AVOID,0.384,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,1911,1570367.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Hamed Junior Traorè,Marseille,M,sot,AVOID,0.373,,,,5,True,VOID,0.0,DNP,2026-09-08,31057,1552751.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Amine Gouiri,Marseille,F,sot,AVOID,0.371,1.13,-0.5808,-0.5556,5,True,VOID,0.0,DNP,2026-09-08,85041,1552751.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Lewis Dobbin,Southampton,M,sot,AVOID,0.365,,,,5,,,,,,153425,1563148.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Adam Armstrong,Wolves,F,sot,AVOID,0.36,,,,5,,,,,,19484,1563131.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Adam Armstrong,Wolves,F,sot,AVOID,0.36,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,19484,1563131.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Finn Azaz,Southampton,M,sot,AVOID,0.355,,,,5,,,,,,231039,1563148.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Bruno Fernandes,Manchester United,M,sot,AVOID,0.353,1.74,-0.3858,-0.3489,5,,,,,,1485,1557390.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Roberto Fernández,Espanyol,F,sot,AVOID,0.346,,,,5,,,,,,312990,1570367.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Brennan Johnson,Everton,F,sot,AVOID,0.341,1.86,-0.3657,-0.3277,5,,,,,,129711,1557390.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Enzo Fernández,Chelsea,M,sot,AVOID,0.34,,,,5,,,,,,5996,1557387.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Lucas Boyé,Alaves,F,sot,AVOID,0.331,1.44,-0.5234,-0.4948,5,,,,,,608,1570363.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Diego Costa,Wolves,F,sot,AVOID,0.329,,,,5,,,,,,54,1563131.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Marshall Munetsi,Wolves,M,sot,AVOID,0.324,,,,5,,,,,,3080,1563131.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Neal Maupay,Sevilla,F,sot,AVOID,0.322,1.25,-0.5975,-0.5734,5,,,,,,19364,1570367.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Bruno Fernandes,Manchester United,M,sot,AVOID,0.353,1.74,-0.3858,-0.3489,5,True,LOSS,-1.0,,2026-09-08,1485,1557390.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Roberto Fernández,Espanyol,F,sot,AVOID,0.346,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,312990,1570367.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Brennan Johnson,Everton,F,sot,AVOID,0.341,1.86,-0.3657,-0.3277,5,True,LOSS,-1.0,,2026-09-08,129711,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Enzo Fernández,Chelsea,M,sot,AVOID,0.34,,,,5,True,VOID,0.0,DNP,2026-09-08,5996,1557387.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Lucas Boyé,Alaves,F,sot,AVOID,0.331,1.44,-0.5234,-0.4948,5,True,WIN,0.44,,2026-09-08,608,1570363.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Diego Costa,Wolves,F,sot,AVOID,0.329,,,,5,True,VOID,0.0,DNP,2026-09-08,54,1563131.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Marshall Munetsi,Wolves,M,sot,AVOID,0.324,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,3080,1563131.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Neal Maupay,Sevilla,F,sot,AVOID,0.322,1.25,-0.5975,-0.5734,5,True,VOID,0.0,DNP,2026-09-08,19364,1570367.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Imrân Louza,Watford,M,sot,AVOID,0.311,,,,5,,,,,,21100,1563149.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Bruno Guimarães,Arsenal,M,sot,AVOID,0.308,,,,5,,,,,,10135,1557387.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Nicolás Melamed,Espanyol,M,sot,AVOID,0.302,,,,5,,,,,,128581,1570367.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Kiernan Dewsbury-Hall,Everton,M,sot,AVOID,0.302,1.95,-0.4111,-0.3758,5,,,,,,148099,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Bruno Guimarães,Arsenal,M,sot,AVOID,0.308,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,10135,1557387.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Nicolás Melamed,Espanyol,M,sot,AVOID,0.302,,,,5,True,VOID,0.0,DNP,2026-09-08,128581,1570367.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Kiernan Dewsbury-Hall,Everton,M,sot,AVOID,0.302,1.95,-0.4111,-0.3758,5,True,WIN,0.95,,2026-09-08,148099,1557390.0
 2026-09-05,2026-09-05,Championship,Swansea,Wrexham,Ronald,Swansea,M,sot,AVOID,0.3,,,,5,True,VOID,0.0,DNP (0 min),2026-09-06,70886,1563140.0
 2026-09-05,2026-09-05,Championship,Swansea,Wrexham,Elijah Just,Swansea,M,sot,AVOID,0.293,,,,5,True,VOID,0.0,DNP,2026-09-06,94333,1563140.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Jonathan David,Juventus,F,goals,AVOID,0.291,,,,5,,,,,,8489,1550114.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Raúl Jiménez,Wolves,F,goals,AVOID,0.291,2.75,-0.1998,-0.1517,5,,,,,,2887,1563131.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Jonathan David,Juventus,F,goals,AVOID,0.291,,,,5,True,VOID,0.0,DNP,2026-09-08,8489,1550114.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Raúl Jiménez,Wolves,F,goals,AVOID,0.291,2.75,-0.1998,-0.1517,5,True,LOSS,-1.0,,2026-09-08,2887,1563131.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Giorgi Chakvetadze,Watford,F,sot,AVOID,0.285,,,,5,,,,,,8481,1563149.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Hayden Hackney,Everton,M,sot,AVOID,0.278,2.88,-0.1994,-0.1513,5,,,,,,179685,1557390.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,goals,AVOID,0.276,,,,5,,,,,,785,1552751.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Toni Martínez,Alaves,F,goals,AVOID,0.272,,,,5,,,,,,47181,1570363.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Hayden Hackney,Everton,M,sot,AVOID,0.278,2.88,-0.1994,-0.1513,5,True,LOSS,-1.0,,2026-09-08,179685,1557390.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,goals,AVOID,0.276,,,,5,True,VOID,0.0,DNP,2026-09-08,785,1552751.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Toni Martínez,Alaves,F,goals,AVOID,0.272,,,,5,True,VOID,0.0,DNP,2026-09-08,47181,1570363.0
 2026-09-05,2026-09-05,Championship,Swansea,Wrexham,Josh Windass,Wrexham,F,sot,AVOID,0.27,,,,5,True,VOID,0.0,DNP,2026-09-06,19566,1563140.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Pierre-Emile Højbjerg,Marseille,M,sot,AVOID,0.266,,,,5,,,,,,2735,1552751.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Mason Greenwood,Marseille,M,sot2,AVOID,0.266,,,,5,,,,,,897,1552751.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Declan Rice,Arsenal,M,sot,AVOID,0.264,2.7,-0.2872,-0.2444,5,,,,,,2937,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Pierre-Emile Højbjerg,Marseille,M,sot,AVOID,0.266,,,,5,True,VOID,0.0,DNP,2026-09-08,2735,1552751.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Mason Greenwood,Marseille,M,sot2,AVOID,0.266,,,,5,True,VOID,0.0,DNP,2026-09-08,897,1552751.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Declan Rice,Arsenal,M,sot,AVOID,0.264,2.7,-0.2872,-0.2444,5,True,LOSS,-1.0,,2026-09-08,2937,1557387.0
 2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Viktor Gyökeres,Arsenal,F,sot2,AVOID,0.264,2.75,-0.274,-0.2304,5,,,,,,18979,1557387.0
 2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Kai Havertz,Arsenal,F,sot2,AVOID,0.26,2.85,-0.259,-0.2145,5,,,,,,978,1557387.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Adrien Rabiot,AC Milan,M,sot,AVOID,0.256,2.63,-0.3267,-0.2863,5,,,,,,272,1550114.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Youri Tielemans,Manchester United,M,sot,AVOID,0.256,,,,5,,,,,,2926,1557390.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Adrien Rabiot,AC Milan,M,sot,AVOID,0.256,2.63,-0.3267,-0.2863,5,True,VOID,0.0,DNP,2026-09-08,272,1550114.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Youri Tielemans,Manchester United,M,sot,AVOID,0.256,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,2926,1557390.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Othmane Maamma,Watford,M,sot,AVOID,0.256,,,,5,,,,,,399906,1563149.0
 2026-09-05,2026-09-12,League One,Plymouth Argyle,Barnsley,David McGoldrick,Barnsley,M,sot,AVOID,0.252,,,,5,,,,,,19108,
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Abdoulaye Doucouré,Everton,M,sot,AVOID,0.251,,,,5,,,,,,18805,1557390.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Morgan Rogers,Chelsea,M,sot,AVOID,0.251,,,,5,,,,,,19170,1557387.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Abdoulaye Doucouré,Everton,M,sot,AVOID,0.251,,,,5,True,VOID,0.0,DNP,2026-09-08,18805,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Morgan Rogers,Chelsea,M,sot,AVOID,0.251,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,19170,1557387.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Ronald,Swansea,M,sot,AVOID,0.245,,,,5,,,,,,70886,1563148.0
 2026-09-05,2026-09-08,Championship,Cardiff,Stoke City,Yousef Salech,Cardiff,F,sot,AVOID,0.243,,,,5,,,,,,320017,1563146.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Jonathan David,Juventus,F,sot2,AVOID,0.241,,,,5,,,,,,8489,1550114.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Jonathan David,Juventus,F,sot2,AVOID,0.241,,,,5,True,VOID,0.0,DNP,2026-09-08,8489,1550114.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Elijah Just,Swansea,M,sot,AVOID,0.24,,,,5,,,,,,94333,1563148.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Theo Walcott,Southampton,M,sot,AVOID,0.237,,,,5,,,,,,18769,1563148.0
 2026-09-05,2026-09-05,Championship,Swansea,Wrexham,Gonçalo Franco,Swansea,M,sot,AVOID,0.235,,,,5,True,VOID,0.0,DNP,2026-09-06,68441,1563140.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,James Garner,Everton,M,sot,AVOID,0.226,2.7,-0.3898,-0.3532,5,,,,,,895,1557390.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Cole Palmer,Chelsea,F,goals,AVOID,0.223,3.85,-0.1414,-0.0556,5,,,,,,152982,1557387.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Mason Greenwood,Marseille,M,goals,AVOID,0.223,,,,5,,,,,,897,1552751.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Rubén García,Osasuna,M,sot,AVOID,0.223,2.3,-0.4871,-0.4563,5,,,,,,46658,1570363.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,sot2,AVOID,0.216,,,,5,,,,,,785,1552751.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Manuel Locatelli,Juventus,M,sot,AVOID,0.215,3.3,-0.2905,-0.2196,5,,,,,,30533,1550114.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,James Garner,Everton,M,sot,AVOID,0.226,2.7,-0.3898,-0.3532,5,True,LOSS,-1.0,,2026-09-08,895,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Cole Palmer,Chelsea,F,goals,AVOID,0.223,3.85,-0.1414,-0.0556,5,True,LOSS,-1.0,,2026-09-08,152982,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Mason Greenwood,Marseille,M,goals,AVOID,0.223,,,,5,True,VOID,0.0,DNP,2026-09-08,897,1552751.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Rubén García,Osasuna,M,sot,AVOID,0.223,2.3,-0.4871,-0.4563,5,True,LOSS,-1.0,,2026-09-08,46658,1570363.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,sot2,AVOID,0.216,,,,5,True,VOID,0.0,DNP,2026-09-08,785,1552751.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Manuel Locatelli,Juventus,M,sot,AVOID,0.215,3.3,-0.2905,-0.2196,5,True,VOID,0.0,DNP,2026-09-08,30533,1550114.0
 2026-09-05,2026-09-08,League One,Oxford United,Reading,Cameron Brannagan,Oxford United,M,sot,AVOID,0.213,,,,5,,,,,,20111,1564266.0
 2026-09-05,2026-09-08,Championship,Cardiff,Stoke City,Rubin Colwill,Cardiff,M,sot,AVOID,0.213,,,,5,,,,,,301184,1563146.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Ivan Rakitić,Sevilla,M,sot,AVOID,0.211,,,,5,,,,,,149,1570367.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Jhon Arias,Wolves,M,sot,AVOID,0.21,,,,5,,,,,,13708,1563131.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Tyrhys Dolan,Espanyol,M,sot,AVOID,0.208,1.86,-0.6131,-0.5899,5,,,,,,273732,1570367.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Ivan Rakitić,Sevilla,M,sot,AVOID,0.211,,,,5,True,VOID,0.0,DNP,2026-09-08,149,1570367.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Jhon Arias,Wolves,M,sot,AVOID,0.21,,,,5,True,VOID,0.0,DNP,2026-09-08,13708,1563131.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Tyrhys Dolan,Espanyol,M,sot,AVOID,0.208,1.86,-0.6131,-0.5899,5,True,LOSS,-1.0,,2026-09-08,273732,1570367.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Tom Fellows,Southampton,M,sot,AVOID,0.206,,,,5,,,,,,283278,1563148.0
 2026-09-05,2026-09-08,League One,Oxford United,Reading,Tyler Goodrham,Oxford United,M,sot,AVOID,0.205,,,,5,,,,,,138918,1564266.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Suso,Sevilla,M,sot,AVOID,0.204,,,,5,,,,,,1650,1570367.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Rodrigo Gomes,Wolves,F,sot,AVOID,0.204,,,,5,,,,,,282770,1563131.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Alessandro Florenzi,AC Milan,M,sot,AVOID,0.204,,,,5,,,,,,769,1550114.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Ladislav Krejčí,Wolves,D,cards,AVOID,0.201,,,,5,,,,,,66407,1563131.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Jean-Ricner Bellegarde,Wolves,M,sot,AVOID,0.199,,,,5,,,,,,20665,1563131.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Casemiro,Manchester United,M,sot,AVOID,0.198,,,,5,,,,,,747,1557390.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Suso,Sevilla,M,sot,AVOID,0.204,,,,5,True,VOID,0.0,DNP,2026-09-08,1650,1570367.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Rodrigo Gomes,Wolves,F,sot,AVOID,0.204,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,282770,1563131.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Alessandro Florenzi,AC Milan,M,sot,AVOID,0.204,,,,5,True,VOID,0.0,DNP,2026-09-08,769,1550114.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Ladislav Krejčí,Wolves,D,cards,AVOID,0.201,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,66407,1563131.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Jean-Ricner Bellegarde,Wolves,M,sot,AVOID,0.199,,,,5,True,VOID,0.0,DNP,2026-09-08,20665,1563131.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Casemiro,Manchester United,M,sot,AVOID,0.198,,,,5,True,VOID,0.0,DNP,2026-09-08,747,1557390.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Delano Burgzorg,Preston,M,sot,AVOID,0.198,,,,5,,,,,,37242,1563149.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Viktor Gyökeres,Arsenal,F,goals,AVOID,0.197,2.42,-0.5233,-0.4947,5,,,,,,18979,1557387.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Lucas Torró,Osasuna,M,sot,AVOID,0.197,3.85,-0.2415,-0.1657,5,,,,,,1825,1570363.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Weston McKennie,Juventus,M,sot,AVOID,0.195,2.1,-0.5905,-0.5659,5,,,,,,415,1550114.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Emerson Royal,AC Milan,D,cards,AVOID,0.193,,,,5,,,,,,1566,1550114.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Abderrahman Rebbach,Alaves,M,sot,AVOID,0.192,,,,5,,,,,,183751,1570363.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Viktor Gyökeres,Arsenal,F,goals,AVOID,0.197,2.42,-0.5233,-0.4947,5,True,LOSS,-1.0,,2026-09-08,18979,1557387.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Lucas Torró,Osasuna,M,sot,AVOID,0.197,3.85,-0.2415,-0.1657,5,True,VOID,0.0,DNP (0 min),2026-09-08,1825,1570363.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Weston McKennie,Juventus,M,sot,AVOID,0.195,2.1,-0.5905,-0.5659,5,True,VOID,0.0,DNP,2026-09-08,415,1550114.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Emerson Royal,AC Milan,D,cards,AVOID,0.193,,,,5,True,VOID,0.0,DNP,2026-09-08,1566,1550114.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Abderrahman Rebbach,Alaves,M,sot,AVOID,0.192,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,183751,1570363.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Gonçalo Franco,Swansea,M,sot,AVOID,0.192,,,,5,,,,,,68441,1563148.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Ángel Pérez,Alaves,M,sot,AVOID,0.191,,,,5,,,,,,331369,1570363.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Ángel Pérez,Alaves,M,sot,AVOID,0.191,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,331369,1570363.0
 2026-09-05,2026-09-08,Championship,Cardiff,Stoke City,Jack Moylan,Cardiff,M,sot,AVOID,0.191,,,,5,,,,,,161803,1563146.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Fer López,Wolves,M,sot,AVOID,0.19,,,,5,,,,,,391822,1563131.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Riccardo Calafiori,Arsenal,D,sot,AVOID,0.19,2.7,-0.487,-0.4562,5,,,,,,157052,1557387.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,assists,AVOID,0.188,,,,5,,,,,,785,1552751.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Fer López,Wolves,M,sot,AVOID,0.19,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,391822,1563131.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Riccardo Calafiori,Arsenal,D,sot,AVOID,0.19,2.7,-0.487,-0.4562,5,True,WIN,1.7,,2026-09-08,157052,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Cengiz Ünder,Marseille,F,assists,AVOID,0.188,,,,5,True,VOID,0.0,DNP,2026-09-08,785,1552751.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Taylor Harwood-Bellis,Southampton,D,sot,AVOID,0.187,,,,5,,,,,,144729,1563148.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Andrea Cambiaso,Juventus,M,sot,AVOID,0.185,3.3,-0.3895,-0.3285,5,,,,,,127011,1550114.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Andrea Cambiaso,Juventus,M,sot,AVOID,0.185,3.3,-0.3895,-0.3285,5,True,VOID,0.0,DNP,2026-09-08,127011,1550114.0
 2026-09-05,2026-09-08,League One,Oxford United,Reading,Stanley Mills,Oxford United,M,sot,AVOID,0.184,,,,5,,,,,,284187,1564266.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Pedro Neto,Chelsea,M,sot,AVOID,0.183,2.75,-0.4968,-0.4666,5,,,,,,1864,1557387.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Jonathan Ikoné,Paris FC,M,sot,AVOID,0.182,,,,5,,,,,,22229,1552751.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Renan Lodi,Marseille,M,cards,AVOID,0.181,,,,5,,,,,,10122,1552751.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Merlin Röhl,Everton,M,sot,AVOID,0.181,2.75,-0.5023,-0.4724,5,,,,,,202854,1557390.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Idrissa Gana Gueye,Everton,M,sot,AVOID,0.178,,,,5,,,,,,2990,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Pedro Neto,Chelsea,M,sot,AVOID,0.183,2.75,-0.4968,-0.4666,5,True,LOSS,-1.0,,2026-09-08,1864,1557387.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Jonathan Ikoné,Paris FC,M,sot,AVOID,0.182,,,,5,True,VOID,0.0,DNP,2026-09-08,22229,1552751.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Renan Lodi,Marseille,M,cards,AVOID,0.181,,,,5,True,VOID,0.0,DNP,2026-09-08,10122,1552751.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Merlin Röhl,Everton,M,sot,AVOID,0.181,2.75,-0.5023,-0.4724,5,True,LOSS,-1.0,,2026-09-08,202854,1557390.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Idrissa Gana Gueye,Everton,M,sot,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-09-08,2990,1557390.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Marko Stamenić,Swansea,M,cards,AVOID,0.178,,,,5,,,,,,179862,1563148.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Cristiano Ronaldo,Manchester United,F,goals,AVOID,0.177,,,,5,,,,,,874,1557390.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Daniel Gore,Manchester United,M,cards,AVOID,0.177,,,,5,,,,,,303010,1557390.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Cristiano Ronaldo,Manchester United,F,goals,AVOID,0.177,,,,5,True,VOID,0.0,DNP,2026-09-08,874,1557390.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Daniel Gore,Manchester United,M,cards,AVOID,0.177,,,,5,True,VOID,0.0,DNP,2026-09-08,303010,1557390.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Ryan Manning,Southampton,D,sot,AVOID,0.176,,,,5,,,,,,19587,1563148.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Antonio Blanco,Alaves,M,sot,AVOID,0.174,3.1,-0.4606,-0.4067,5,,,,,,162686,1570363.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Moisés Caicedo,Chelsea,M,cards,AVOID,0.173,2.88,-0.5018,-0.4719,5,,,,,,116117,1557387.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Adam Aznou,Everton,M,sot,AVOID,0.172,,,,5,,,,,,431921,1557390.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Antonio Blanco,Alaves,M,sot,AVOID,0.174,3.1,-0.4606,-0.4067,5,True,LOSS,-1.0,,2026-09-08,162686,1570363.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Moisés Caicedo,Chelsea,M,cards,AVOID,0.173,2.88,-0.5018,-0.4719,5,True,VOID,0.0,DNP,2026-09-08,116117,1557387.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Adam Aznou,Everton,M,sot,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-09-08,431921,1557390.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Ryan Porteous,Preston,D,cards,AVOID,0.171,,,,5,,,,,,44836,1563149.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Andrey Santos,Manchester United,M,sot,AVOID,0.17,3.15,-0.4645,-0.4109,5,,,,,,305834,1557390.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Andrey Santos,Manchester United,M,sot,AVOID,0.17,3.15,-0.4645,-0.4109,5,True,LOSS,-1.0,,2026-09-08,305834,1557390.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Kuryu Matsuki,Southampton,M,sot,AVOID,0.17,,,,5,,,,,,351013,1563148.0
 2026-09-05,2026-09-08,League One,Oxford United,Reading,Ashqar Ahmed,Reading,D,cards,AVOID,0.168,,,,5,,,,,,437566,1564266.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Youri Tielemans,Manchester United,M,cards,AVOID,0.168,,,,5,,,,,,2926,1557390.0
-2026-09-05,2026-09-06,La Liga 2,Almeria,Cadiz,Bruno Langa,Almeria,D,sot,AVOID,0.168,,,,5,,,,,,126901,1569904.0
-2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Pierre Lees Melou,Paris FC,M,sot,AVOID,0.167,,,,5,,,,,,22170,1552751.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Tomoki Iwata,Birmingham,M,sot,AVOID,0.167,,,,5,,,,,,32938,1563131.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Oso,Sevilla,M,sot,AVOID,0.167,,,,5,,,,,,341453,1570367.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Youri Tielemans,Manchester United,M,cards,AVOID,0.168,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,2926,1557390.0
+2026-09-05,2026-09-06,La Liga 2,Almeria,Cadiz,Bruno Langa,Almeria,D,sot,AVOID,0.168,,,,5,True,VOID,0.0,DNP,2026-09-08,126901,1569904.0
+2026-09-05,2026-09-06,Ligue 1,Marseille,Paris FC,Pierre Lees Melou,Paris FC,M,sot,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-09-08,22170,1552751.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Tomoki Iwata,Birmingham,M,sot,AVOID,0.167,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,32938,1563131.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Oso,Sevilla,M,sot,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-09-08,341453,1570367.0
 2026-09-05,2026-09-08,League One,Oxford United,Reading,Aidomo Emakhu,Oxford United,M,sot,AVOID,0.166,,,,5,,,,,,199856,1564266.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Youssef En-Nesyri,Sevilla,F,goals,AVOID,0.166,,,,5,,,,,,47422,1570367.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,João Pedro,Chelsea,F,goals,AVOID,0.166,,,,5,,,,,,10329,1557387.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Casemiro,Manchester United,M,cards,AVOID,0.166,,,,5,,,,,,747,1557390.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Youssef En-Nesyri,Sevilla,F,goals,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,47422,1570367.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,João Pedro,Chelsea,F,goals,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,10329,1557387.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Casemiro,Manchester United,M,cards,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-09-08,747,1557390.0
 2026-09-05,2026-09-08,Championship,Cardiff,Stoke City,Cian Ashford,Cardiff,M,sot,AVOID,0.164,,,,5,,,,,,383815,1563146.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,César Azpilicueta,Sevilla,D,cards,AVOID,0.164,,,,5,,,,,,2280,1570367.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Marcos Acuña,Sevilla,M,sot,AVOID,0.162,,,,5,,,,,,1493,1570367.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,César Azpilicueta,Sevilla,D,cards,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-08,2280,1570367.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Marcos Acuña,Sevilla,M,sot,AVOID,0.162,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,1493,1570367.0
 2026-09-05,2026-09-08,League One,Oxford United,Reading,Brian De Keersmaecker,Oxford United,M,sot,AVOID,0.162,,,,5,,,,,,8902,1564266.0
 2026-09-05,2026-09-08,Championship,Southampton,Swansea,Leo Scienza,Southampton,M,assists,AVOID,0.162,,,,5,,,,,,283323,1563148.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Michael Keane,Everton,D,sot,AVOID,0.159,4.8,-0.2368,-0.1605,5,,,,,,2934,1557390.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Yerson Mosquera,Wolves,D,cards,AVOID,0.158,,,,5,,,,,,195717,1563131.0
-2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Moussa Diarra,Alaves,D,cards,AVOID,0.157,,,,5,,,,,,70476,1570363.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Michael Keane,Everton,D,sot,AVOID,0.159,4.8,-0.2368,-0.1605,5,True,VOID,0.0,DNP (0 min),2026-09-08,2934,1557390.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Yerson Mosquera,Wolves,D,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-08,195717,1563131.0
+2026-09-05,2026-09-06,La Liga,Alaves,Osasuna,Moussa Diarra,Alaves,D,cards,AVOID,0.157,,,,5,True,VOID,0.0,DNP,2026-09-08,70476,1570363.0
 2026-09-05,2026-09-08,Championship,Watford,Preston,Jeremy Ngakia,Watford,M,sot,AVOID,0.156,,,,5,,,,,,193296,1563149.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Mario Lemina,Wolves,M,sot,AVOID,0.155,,,,5,,,,,,18947,1563131.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Ladislav Krejčí,Wolves,D,sot,AVOID,0.154,,,,5,,,,,,66407,1563131.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Mario Lemina,Wolves,M,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-09-08,18947,1563131.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Ladislav Krejčí,Wolves,D,sot,AVOID,0.154,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,66407,1563131.0
 2026-09-05,2026-09-05,Championship,Swansea,Wrexham,Marko Stamenić,Swansea,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-06,179862,1563140.0
-2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Leandro Trossard,Arsenal,M,assists,AVOID,0.153,,,,5,,,,,,1946,1557387.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Edu Expósito,Espanyol,M,sot,AVOID,0.152,,,,5,,,,,,46799,1570367.0
-2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Jon Guridi,Sevilla,M,sot,AVOID,0.152,2.3,-0.6504,-0.6294,5,,,,,,104821,1570367.0
-2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Matt Doherty,Wolves,D,cards,AVOID,0.152,,,,5,,,,,,18742,1563131.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Luka Modrić,AC Milan,M,sot,AVOID,0.152,3.6,-0.4528,-0.3981,5,,,,,,754,1550114.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Carlos Baleba,Manchester United,M,sot,AVOID,0.151,,,,5,,,,,,356041,1557390.0
-2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Davide Bartesaghi,AC Milan,M,sot,AVOID,0.151,4.5,-0.3205,-0.2525,5,,,,,,374359,1550114.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Luke Shaw,Manchester United,D,cards,AVOID,0.15,3.6,-0.46,-0.406,5,,,,,,891,1557390.0
+2026-09-05,2026-09-06,Premier League,Arsenal,Chelsea,Leandro Trossard,Arsenal,M,assists,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-08,1946,1557387.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Edu Expósito,Espanyol,M,sot,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,46799,1570367.0
+2026-09-05,2026-09-06,La Liga,Espanyol,Sevilla,Jon Guridi,Sevilla,M,sot,AVOID,0.152,2.3,-0.6504,-0.6294,5,True,LOSS,-1.0,,2026-09-08,104821,1570367.0
+2026-09-05,2026-09-06,Championship,Birmingham,Wolves,Matt Doherty,Wolves,D,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,18742,1563131.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Luka Modrić,AC Milan,M,sot,AVOID,0.152,3.6,-0.4528,-0.3981,5,True,VOID,0.0,DNP,2026-09-08,754,1550114.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Carlos Baleba,Manchester United,M,sot,AVOID,0.151,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,356041,1557390.0
+2026-09-05,2026-09-06,Serie A,Juventus,AC Milan,Davide Bartesaghi,AC Milan,M,sot,AVOID,0.151,4.5,-0.3205,-0.2525,5,True,VOID,0.0,DNP,2026-09-08,374359,1550114.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Luke Shaw,Manchester United,D,cards,AVOID,0.15,3.6,-0.46,-0.406,5,True,WIN,2.6,,2026-09-08,891,1557390.0
 2026-09-05,2026-09-05,Championship,Swansea,Wrexham,Issa Kaboré,Wrexham,M,sot,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-09-06,140947,1563140.0
-2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Benjamin Šeško,Manchester United,F,goals,AVOID,0.15,2.76,-0.586,-0.5612,5,,,,,,115589,1557390.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Sebastiano Esposito,Cagliari,F,sot,AVOID,0.463,1.73,-0.199,-0.151,5,,,,,,215,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Walid Cheddira,Lecce,F,sot,AVOID,0.422,,,,5,,,,,,128478,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Lameck Banda,Lecce,M,sot,AVOID,0.399,,,,5,,,,,,118956,1550109.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Martín Satriano,Getafe,F,sot,AVOID,0.397,1.58,-0.3727,-0.3351,5,,,,,,195512,1570368.0
+2026-09-05,2026-09-06,Premier League,Everton,Manchester United,Benjamin Šeško,Manchester United,F,goals,AVOID,0.15,2.76,-0.586,-0.5612,5,True,WIN,1.76,,2026-09-08,115589,1557390.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Sebastiano Esposito,Cagliari,F,sot,AVOID,0.463,1.73,-0.199,-0.151,5,True,VOID,0.0,DNP,2026-09-08,215,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Walid Cheddira,Lecce,F,sot,AVOID,0.422,,,,5,True,VOID,0.0,DNP,2026-09-08,128478,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Lameck Banda,Lecce,M,sot,AVOID,0.399,,,,5,True,VOID,0.0,DNP,2026-09-08,118956,1550109.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Martín Satriano,Getafe,F,sot,AVOID,0.397,1.58,-0.3727,-0.3351,5,True,WIN,0.58,,2026-09-08,195512,1570368.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Yuki Ohashi,Blackburn,F,sot,AVOID,0.383,,,,5,,,,,,33147,1563143.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Mauro Arambarri,Getafe,M,sot,AVOID,0.366,,,,5,,,,,,47258,1570368.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Mauro Arambarri,Getafe,M,sot,AVOID,0.366,,,,5,True,VOID,0.0,DNP,2026-09-08,47258,1570368.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Patrick Bamford,Sheffield Utd,F,sot,AVOID,0.334,,,,5,,,,,,19134,1563143.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Thomas Cannon,Sheffield Utd,F,sot,AVOID,0.302,,,,5,,,,,,215874,1563143.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Gabri Veiga,Celta Vigo,M,sot,AVOID,0.275,,,,5,,,,,,182504,1570368.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Gianluca Gaetano,Cagliari,M,sot,AVOID,0.273,,,,5,,,,,,325,1550109.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Gabri Veiga,Celta Vigo,M,sot,AVOID,0.275,,,,5,True,VOID,0.0,DNP,2026-09-08,182504,1570368.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Gianluca Gaetano,Cagliari,M,sot,AVOID,0.273,,,,5,True,VOID,0.0,DNP,2026-09-08,325,1550109.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Ryoya Morishita,Blackburn,M,sot,AVOID,0.257,,,,5,,,,,,199150,1563143.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Riccardo Sottil,Lecce,F,sot,AVOID,0.241,,,,5,,,,,,31507,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Medon Berisha,Lecce,M,sot,AVOID,0.24,2.1,-0.496,-0.4658,5,,,,,,335071,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Santiago Pierotti,Lecce,M,sot,AVOID,0.233,2.5,-0.4175,-0.3826,5,,,,,,6662,1550109.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Jonathan Bamba,Celta Vigo,M,sot,AVOID,0.23,,,,5,,,,,,22235,1570368.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Luis Milla,Getafe,M,sot,AVOID,0.196,,,,5,,,,,,47085,1570368.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Nemanja Maksimović,Getafe,M,sot,AVOID,0.19,,,,5,,,,,,2824,1570368.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Yoel Lago,Celta Vigo,D,cards,AVOID,0.188,,,,5,,,,,,329722,1570368.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Riccardo Sottil,Lecce,F,sot,AVOID,0.241,,,,5,True,VOID,0.0,DNP,2026-09-08,31507,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Medon Berisha,Lecce,M,sot,AVOID,0.24,2.1,-0.496,-0.4658,5,True,VOID,0.0,DNP,2026-09-08,335071,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Santiago Pierotti,Lecce,M,sot,AVOID,0.233,2.5,-0.4175,-0.3826,5,True,LOSS,-1.0,,2026-09-08,6662,1550109.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Jonathan Bamba,Celta Vigo,M,sot,AVOID,0.23,,,,5,True,VOID,0.0,DNP,2026-09-08,22235,1570368.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Luis Milla,Getafe,M,sot,AVOID,0.196,,,,5,True,VOID,0.0,DNP,2026-09-08,47085,1570368.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Nemanja Maksimović,Getafe,M,sot,AVOID,0.19,,,,5,True,VOID,0.0,DNP,2026-09-08,2824,1570368.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Yoel Lago,Celta Vigo,D,cards,AVOID,0.188,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,329722,1570368.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,George Baldock,Sheffield Utd,D,cards,AVOID,0.187,,,,5,,,,,,19090,1563143.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Lassana Coulibaly,Lecce,M,sot,AVOID,0.186,2.8,-0.4792,-0.448,5,,,,,,1748,1550109.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Martín Satriano,Getafe,F,goals,AVOID,0.176,3.95,-0.3048,-0.2353,5,,,,,,195512,1570368.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Lassana Coulibaly,Lecce,M,sot,AVOID,0.186,2.8,-0.4792,-0.448,5,True,VOID,0.0,DNP,2026-09-08,1748,1550109.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Martín Satriano,Getafe,F,goals,AVOID,0.176,3.95,-0.3048,-0.2353,5,True,LOSS,-1.0,,2026-09-08,195512,1570368.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Callum O'Hare,Sheffield Utd,M,sot,AVOID,0.174,,,,5,,,,,,17668,1563143.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Ilaix Moriba,Celta Vigo,M,cards,AVOID,0.173,,,,5,,,,,,162123,1570368.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Ilaix Moriba,Celta Vigo,M,cards,AVOID,0.173,,,,5,True,VOID,0.0,DNP,2026-09-08,162123,1570368.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Axel Henriksson,Blackburn,M,sot,AVOID,0.173,,,,5,,,,,,306954,1563143.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Yuki Ohashi,Blackburn,F,goals,AVOID,0.171,,,,5,,,,,,33147,1563143.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Ylber Ramadani,Lecce,M,cards,AVOID,0.169,,,,5,,,,,,15673,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Ylber Ramadani,Lecce,M,cards,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-09-08,15673,1550109.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Tahith Chong,Sheffield Utd,M,sot,AVOID,0.169,,,,5,,,,,,906,1563143.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Sebastiano Esposito,Cagliari,F,goals,AVOID,0.167,3.9,-0.3487,-0.2836,5,,,,,,215,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Michel Adopo,Cagliari,M,sot,AVOID,0.166,2.63,-0.5634,-0.5372,5,,,,,,30505,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Paulo Azzi,Cagliari,M,sot,AVOID,0.164,,,,5,,,,,,56207,1550109.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Hugo Sotelo,Celta Vigo,M,cards,AVOID,0.159,,,,5,,,,,,313651,1570368.0
-2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Mario Martín,Getafe,M,sot,AVOID,0.159,,,,5,,,,,,343205,1570368.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Santiago Pierotti,Lecce,M,cards,AVOID,0.159,5.7,-0.0937,0.0422,5,,,,,,6662,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Hamza Rafia,Lecce,M,cards,AVOID,0.157,,,,5,,,,,,136016,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Sebastiano Esposito,Cagliari,F,goals,AVOID,0.167,3.9,-0.3487,-0.2836,5,True,VOID,0.0,DNP,2026-09-08,215,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Michel Adopo,Cagliari,M,sot,AVOID,0.166,2.63,-0.5634,-0.5372,5,True,VOID,0.0,DNP,2026-09-08,30505,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Paulo Azzi,Cagliari,M,sot,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-08,56207,1550109.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Hugo Sotelo,Celta Vigo,M,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,313651,1570368.0
+2026-09-05,2026-09-07,La Liga,Getafe,Celta Vigo,Mario Martín,Getafe,M,sot,AVOID,0.159,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,343205,1570368.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Santiago Pierotti,Lecce,M,cards,AVOID,0.159,5.7,-0.0937,0.0422,5,True,LOSS,-1.0,,2026-09-08,6662,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Hamza Rafia,Lecce,M,cards,AVOID,0.157,,,,5,True,VOID,0.0,DNP,2026-09-08,136016,1550109.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Sondre Tronstad,Blackburn,M,sot,AVOID,0.156,,,,5,,,,,,39243,1563143.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Ylber Ramadani,Lecce,M,sot,AVOID,0.153,,,,5,,,,,,15673,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Walid Cheddira,Lecce,F,goals,AVOID,0.153,,,,5,,,,,,128478,1550109.0
-2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Danilo Veiga,Lecce,D,cards,AVOID,0.151,,,,5,,,,,,161702,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Ylber Ramadani,Lecce,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-08,15673,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Walid Cheddira,Lecce,F,goals,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-08,128478,1550109.0
+2026-09-05,2026-09-07,Serie A,Cagliari,Lecce,Danilo Veiga,Lecce,D,cards,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,161702,1550109.0
 2026-09-05,2026-09-08,Championship,Blackburn,Sheffield Utd,Sydie Peck,Sheffield Utd,M,sot,AVOID,0.151,,,,5,,,,,,312256,1563143.0
 2026-09-06,2026-09-10,League One,Stevenage,Luton,Jordan Clark,Luton,M,sot,AVOID,0.266,,,,5,,,,,,20189,1564305.0
 2026-09-06,2026-09-10,League One,Stevenage,Luton,Kasey Palmer,Luton,M,sot,AVOID,0.216,,,,5,,,,,,19274,1564305.0
@@ -6329,23 +6329,23 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-06,2026-09-08,Finland Veikkausliiga,Ilves,FF Jaro,J. Kanga,Ilves,,sot,AVOID,0.159,,,,5,,,,,,308815,1638077.0
 2026-09-06,2026-09-08,Championship,Cardiff,Stoke City,Dylan Lawlor,Cardiff,D,sot,AVOID,0.154,,,,5,,,,,,394973,1563146.0
 2026-09-06,2026-09-08,Finland Veikkausliiga,VPS,AC Oulu,Iiro Mendolin,AC Oulu,M,sot,AVOID,0.154,,,,5,,,,,,366131,1638092.0
-2026-09-06,2026-09-06,La Liga 2,Almeria,Cadiz,Lucas Robertone,Almeria,M,cards,AVOID,0.154,,,,5,,,,,,6065,1569904.0
-2026-09-06,2026-09-06,Premier League,Everton,Manchester United,James Garner,Everton,M,cards,AVOID,0.153,4.6,-0.2962,-0.2258,5,,,,,,895,1557390.0
-2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos CF,Ilyas Chaira,Oviedo,M,sot2,AVOID,0.152,,,,5,,,,,,266202,
+2026-09-06,2026-09-06,La Liga 2,Almeria,Cadiz,Lucas Robertone,Almeria,M,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-09-08,6065,1569904.0
+2026-09-06,2026-09-06,Premier League,Everton,Manchester United,James Garner,Everton,M,cards,AVOID,0.153,4.6,-0.2962,-0.2258,5,True,LOSS,-1.0,,2026-09-08,895,1557390.0
+2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos CF,Ilyas Chaira,Oviedo,M,sot2,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,266202,
 2026-09-06,2026-09-08,Championship,Southampton,Swansea,Flynn Downes,Southampton,M,sot,AVOID,0.152,,,,5,,,,,,19733,1563148.0
-2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Marco Palestra,Chelsea,D,sot,AVOID,0.152,3.8,-0.4224,-0.3646,5,,,,,,383018,1557387.0
-2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Moisés Caicedo,Chelsea,M,sot,AVOID,0.152,5.0,-0.24,-0.164,5,,,,,,116117,1557387.0
+2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Marco Palestra,Chelsea,D,sot,AVOID,0.152,3.8,-0.4224,-0.3646,5,True,VOID,0.0,DNP,2026-09-08,383018,1557387.0
+2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Moisés Caicedo,Chelsea,M,sot,AVOID,0.152,5.0,-0.24,-0.164,5,True,VOID,0.0,DNP,2026-09-08,116117,1557387.0
 2026-09-06,2026-09-08,Champions League,Borussia Dortmund,Villarreal,Marco Reus,Borussia Dortmund,M,goals,AVOID,0.152,,,,5,,,,,,25,1635652.0
-2026-09-06,2026-09-06,La Liga,Malaga,Levante,Jon Ander Olasagasti,Levante,M,sot,AVOID,0.152,2.7,-0.5896,-0.565,5,,,,,,182603,1570369.0
-2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Valentin Rongier,Rennes,M,sot,AVOID,0.152,2.7,-0.5896,-0.565,5,,,,,,21102,1552747.0
-2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos,Ilyas Chaira,Oviedo,M,sot2,AVOID,0.152,,,,5,,,,,,266202,1569911.0
-2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Myles Lewis-Skelly,Arsenal,M,sot,AVOID,0.151,3.6,-0.4564,-0.402,5,,,,,,313245,1557387.0
-2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Maxence Lacroix,Chelsea,D,cards,AVOID,0.151,3.95,-0.4035,-0.3439,5,,,,,,20995,1557387.0
-2026-09-06,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Robin Krausse,Eintracht Braunschweig,M,sot,AVOID,0.151,,,,5,,,,,,25214,1576168.0
+2026-09-06,2026-09-06,La Liga,Malaga,Levante,Jon Ander Olasagasti,Levante,M,sot,AVOID,0.152,2.7,-0.5896,-0.565,5,True,LOSS,-1.0,,2026-09-08,182603,1570369.0
+2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Valentin Rongier,Rennes,M,sot,AVOID,0.152,2.7,-0.5896,-0.565,5,True,VOID,0.0,DNP,2026-09-08,21102,1552747.0
+2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos,Ilyas Chaira,Oviedo,M,sot2,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-08,266202,1569911.0
+2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Myles Lewis-Skelly,Arsenal,M,sot,AVOID,0.151,3.6,-0.4564,-0.402,5,True,LOSS,-1.0,,2026-09-08,313245,1557387.0
+2026-09-06,2026-09-06,Premier League,Arsenal,Chelsea,Maxence Lacroix,Chelsea,D,cards,AVOID,0.151,3.95,-0.4035,-0.3439,5,True,WIN,2.95,,2026-09-08,20995,1557387.0
+2026-09-06,2026-09-06,Bundesliga 2,VfL Osnabrück,Eintracht Braunschweig,Robin Krausse,Eintracht Braunschweig,M,sot,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,25214,1576168.0
 2026-09-06,2026-09-12,Bundesliga 2,VfL Bochum,Greuther Fürth,Maximilian Wittek,VfL Bochum,D,sot,AVOID,0.15,,,,5,,,,,,25151,
-2026-09-06,2026-09-06,La Liga,Alaves,Osasuna,Lucas Torró,Osasuna,M,cards,AVOID,0.15,,,,5,,,,,,1825,1570363.0
+2026-09-06,2026-09-06,La Liga,Alaves,Osasuna,Lucas Torró,Osasuna,M,cards,AVOID,0.15,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,1825,1570363.0
 2026-09-06,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Silas Gnaka,1. FC Magdeburg,M,sot,AVOID,0.15,,,,5,,,,,,8636,
-2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Timothée Kolodziejczak,Paris FC,D,cards,AVOID,0.15,,,,5,,,,,,22086,1552751.0
+2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Timothée Kolodziejczak,Paris FC,D,cards,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-09-08,22086,1552751.0
 2026-09-06,2026-09-10,League One,Stevenage,Luton,Tom Lockyer,Luton,D,cards,AVOID,0.15,,,,5,,,,,,20203,1564305.0
 2026-09-06,2026-09-08,Champions League,Club Brugge KV,Aston Villa,Boubacar Kamara,Aston Villa,M,sot,AVOID,0.15,4.2,-0.37,-0.307,5,,,,,,1904,1635643.0
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Marvin Wanitzek,Karlsruher SC,M,sot,AVOID,0.734,,,,5,,,,,,26107,
@@ -6353,55 +6353,55 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Borja Sainz,FC Porto,M,sot,AVOID,0.685,,,,5,,,,,,133453,1635654.0
 2026-09-06,2026-09-10,USA MLS,Chicago Fire,Inter Miami CF,Robert Lewandowski,Chicago Fire,F,sot,AVOID,0.636,,,,5,,,,,,521,
 2026-09-06,2026-09-09,USA MLS,Toronto FC,Nashville SC,Josh Sargent,Toronto FC,F,sot,AVOID,0.592,,,,5,,,,,,25332,1490453.0
-2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Roberto Piccoli,Bologna,F,sot,AVOID,0.538,1.36,-0.2683,-0.2244,5,,,,,,30440,1550108.0
+2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Roberto Piccoli,Bologna,F,sot,AVOID,0.538,1.36,-0.2683,-0.2244,5,True,WIN,0.36,,2026-09-08,30440,1550108.0
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Josh Windass,Wrexham,F,sot,AVOID,0.537,,,,5,,,,,,19566,1563154.0
 2026-09-06,2026-09-08,Champions League,Club Brugge KV,Aston Villa,Nicolò Tresoldi,Club Brugge KV,F,sot,AVOID,0.525,1.35,-0.2912,-0.2487,5,,,,,,287923,1635643.0
 2026-09-06,2026-09-09,USA MLS,Atlanta United FC,Orlando City SC,Breel Embolo,Atlanta United FC,F,sot,AVOID,0.522,,,,5,,,,,,421,1490452.0
-2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Lassine Sinayoko,Paris FC,M,sot,AVOID,0.52,1.53,-0.2044,-0.1567,5,,,,,,90617,1552751.0
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Federico Bonazzoli,Cremonese,F,sot,AVOID,0.512,,,,5,,,,,,31436,1601516.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Tijjani Noslin,Lazio,F,sot,AVOID,0.507,,,,5,,,,,,133729,1550116.0
+2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Lassine Sinayoko,Paris FC,M,sot,AVOID,0.52,1.53,-0.2044,-0.1567,5,True,VOID,0.0,DNP,2026-09-08,90617,1552751.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Federico Bonazzoli,Cremonese,F,sot,AVOID,0.512,,,,5,True,VOID,0.0,DNP,2026-09-08,31436,1601516.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Tijjani Noslin,Lazio,F,sot,AVOID,0.507,,,,5,True,VOID,0.0,DNP,2026-09-08,133729,1550116.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,André Silva,FC Porto,F,sot,AVOID,0.504,,,,5,,,,,,2063,1635654.0
-2026-09-06,2026-09-06,Brazil Serie A,Botafogo,Palmeiras,Arthur Cabral,Botafogo,F,sot,AVOID,0.499,,,,5,,,,,,9938,1492360.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Joel Pohjanpalo,Palermo,F,sot,AVOID,0.496,,,,5,,,,,,986,1601520.0
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Jamie Vardy,Cremonese,F,sot,AVOID,0.482,,,,5,,,,,,18788,1601516.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Nicolò Zaniolo,Udinese,F,sot,AVOID,0.481,,,,5,,,,,,786,1550116.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Keinan Davis,Udinese,F,sot,AVOID,0.457,1.44,-0.3419,-0.3024,5,,,,,,19185,1550116.0
-2026-09-06,2026-09-06,Denmark Superliga,Odense,FC Copenhagen,Noah Ganaus,Odense,F,sot,AVOID,0.457,,,,5,,,,,,203253,1549013.0
-2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Pablo Pagis,Paris FC,F,sot,AVOID,0.447,1.86,-0.1686,-0.1187,5,,,,,,276662,1552751.0
-2026-09-06,2026-09-06,La Liga,Espanyol,Sevilla,Bryan Zaragoza,Espanyol,F,sot,AVOID,0.445,,,,5,,,,,,286639,1570367.0
+2026-09-06,2026-09-06,Brazil Serie A,Botafogo,Palmeiras,Arthur Cabral,Botafogo,F,sot,AVOID,0.499,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,9938,1492360.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Joel Pohjanpalo,Palermo,F,sot,AVOID,0.496,,,,5,True,VOID,0.0,DNP,2026-09-08,986,1601520.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Jamie Vardy,Cremonese,F,sot,AVOID,0.482,,,,5,True,VOID,0.0,DNP,2026-09-08,18788,1601516.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Nicolò Zaniolo,Udinese,F,sot,AVOID,0.481,,,,5,True,VOID,0.0,DNP,2026-09-08,786,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Keinan Davis,Udinese,F,sot,AVOID,0.457,1.44,-0.3419,-0.3024,5,True,VOID,0.0,DNP,2026-09-08,19185,1550116.0
+2026-09-06,2026-09-06,Denmark Superliga,Odense,FC Copenhagen,Noah Ganaus,Odense,F,sot,AVOID,0.457,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,203253,1549013.0
+2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Pablo Pagis,Paris FC,F,sot,AVOID,0.447,1.86,-0.1686,-0.1187,5,True,VOID,0.0,DNP,2026-09-08,276662,1552751.0
+2026-09-06,2026-09-06,La Liga,Espanyol,Sevilla,Bryan Zaragoza,Espanyol,F,sot,AVOID,0.445,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,286639,1570367.0
 2026-09-06,2026-09-12,USA MLS,D.C. United,Atlanta United FC,Breel Embolo,Atlanta United FC,F,sot,AVOID,0.436,,,,5,,,,,,421,
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Gabriel Strefezza,Palermo,F,sot,AVOID,0.429,,,,5,,,,,,31624,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Gabriel Strefezza,Palermo,F,sot,AVOID,0.429,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,31624,1601520.0
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Shio Fukuda,Karlsruher SC,F,sot,AVOID,0.429,,,,5,,,,,,405112,
-2026-09-06,2026-09-06,Serie B,Modena,Avellino,Walid Cheddira,Avellino,F,sot,AVOID,0.427,,,,5,,,,,,128478,
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Manolo Gabbiadini,Sampdoria,M,sot,AVOID,0.427,,,,5,,,,,,30462,1601520.0
-2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Issa Soumaré,Rennes,M,sot,AVOID,0.425,1.39,-0.4093,-0.3738,5,,,,,,156465,1552747.0
-2026-09-06,2026-09-06,Argentina Primera Division,River Plate,Independ. Rivadavia,Mauro Arambarri,River Plate,M,sot,AVOID,0.397,,,,5,,,,,,47258,1493117.0
+2026-09-06,2026-09-06,Serie B,Modena,Avellino,Walid Cheddira,Avellino,F,sot,AVOID,0.427,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,128478,
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Manolo Gabbiadini,Sampdoria,M,sot,AVOID,0.427,,,,5,True,VOID,0.0,DNP,2026-09-08,30462,1601520.0
+2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Issa Soumaré,Rennes,M,sot,AVOID,0.425,1.39,-0.4093,-0.3738,5,True,VOID,0.0,DNP (0 min),2026-09-08,156465,1552747.0
+2026-09-06,2026-09-06,Argentina Primera Division,River Plate,Independ. Rivadavia,Mauro Arambarri,River Plate,M,sot,AVOID,0.397,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,47258,1493117.0
 2026-09-06,2026-09-12,Mexico Liga MX,Atlante FC,Pachuca,Salomón Rondón,CF Pachuca,F,sot,AVOID,0.377,,,,5,,,,,,2461,
 2026-09-06,2026-09-09,USA MLS,Atlanta United FC,Orlando City SC,Antoine Griezmann,Orlando City SC,F,sot,AVOID,0.374,,,,5,,,,,,56,1490452.0
-2026-09-06,2026-09-06,La Liga,Valencia,Barcelona,Anthony Gordon,Barcelona,M,sot,AVOID,0.36,,,,5,,,,,,138787,1570371.0
-2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Sebastiano Esposito,Sassuolo,F,sot,AVOID,0.359,1.73,-0.3789,-0.3417,5,,,,,,215,1550108.0
-2026-09-06,2026-09-06,Serie A,Juventus,AC Milan,Kerim Alajbegović,Juventus,M,sot,AVOID,0.356,1.62,-0.4233,-0.3887,5,,,,,,395559,1550114.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Fabio Quagliarella,Sampdoria,F,sot,AVOID,0.344,,,,5,,,,,,30463,1601520.0
+2026-09-06,2026-09-06,La Liga,Valencia,Barcelona,Anthony Gordon,Barcelona,M,sot,AVOID,0.36,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,138787,1570371.0
+2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Sebastiano Esposito,Sassuolo,F,sot,AVOID,0.359,1.73,-0.3789,-0.3417,5,True,VOID,0.0,DNP (0 min),2026-09-08,215,1550108.0
+2026-09-06,2026-09-06,Serie A,Juventus,AC Milan,Kerim Alajbegović,Juventus,M,sot,AVOID,0.356,1.62,-0.4233,-0.3887,5,True,LOSS,-1.0,,2026-09-08,395559,1550114.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Fabio Quagliarella,Sampdoria,F,sot,AVOID,0.344,,,,5,True,VOID,0.0,DNP,2026-09-08,30463,1601520.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Gabri Veiga,FC Porto,M,sot,AVOID,0.343,,,,5,,,,,,182504,1635654.0
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Kevin Lasagna,Padova,M,sot,AVOID,0.333,,,,5,,,,,,30815,1601516.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Kevin Lasagna,Padova,M,sot,AVOID,0.333,,,,5,True,VOID,0.0,DNP,2026-09-08,30815,1601516.0
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Marvin Wanitzek,Karlsruher SC,M,sot2,AVOID,0.33,,,,5,,,,,,26107,
-2026-09-06,2026-09-07,Romanian Superliga,Universitatea Craiova,Universitatea Cluj,Simon Elisor,Universitatea Craiova,F,sot,AVOID,0.327,,,,5,,,,,,190985,1565245.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Jürgen Ekkelenkamp,Udinese,F,sot,AVOID,0.327,2.0,-0.346,-0.3068,5,,,,,,541,1550116.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Danel Sinani,Sampdoria,F,sot,AVOID,0.324,,,,5,,,,,,1672,1601520.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Matteo Cancellieri,Lazio,F,sot,AVOID,0.308,1.57,-0.5164,-0.4874,5,,,,,,286474,1550116.0
+2026-09-06,2026-09-07,Romanian Superliga,Universitatea Craiova,Universitatea Cluj,Simon Elisor,Universitatea Craiova,F,sot,AVOID,0.327,,,,5,True,VOID,0.0,DNP,2026-09-08,190985,1565245.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Jürgen Ekkelenkamp,Udinese,F,sot,AVOID,0.327,2.0,-0.346,-0.3068,5,True,VOID,0.0,DNP,2026-09-08,541,1550116.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Danel Sinani,Sampdoria,F,sot,AVOID,0.324,,,,5,True,VOID,0.0,DNP,2026-09-08,1672,1601520.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Matteo Cancellieri,Lazio,F,sot,AVOID,0.308,1.57,-0.5164,-0.4874,5,True,VOID,0.0,DNP,2026-09-08,286474,1550116.0
 2026-09-06,2026-09-08,Champions League,Club Brugge KV,Aston Villa,Hans Vanaken,Club Brugge KV,M,sot,AVOID,0.304,2.3,-0.3008,-0.2588,5,,,,,,78,1635643.0
 2026-09-06,2026-09-12,La Liga 2,Granada CF,Albacete,Rubén Alcaraz,Granada CF,M,sot,AVOID,0.303,,,,5,,,,,,47485,
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Marvin Wanitzek,Karlsruher SC,M,goals,AVOID,0.302,,,,5,,,,,,26107,
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Mattia Zaccagni,Lazio,F,sot,AVOID,0.301,1.83,-0.4492,-0.4161,5,,,,,,30937,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Mattia Zaccagni,Lazio,F,sot,AVOID,0.301,1.83,-0.4492,-0.4161,5,True,VOID,0.0,DNP,2026-09-08,30937,1550116.0
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Andreas Hountondji,Burnley,F,sot,AVOID,0.301,,,,5,,,,,,178921,1563154.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Borja Sainz,FC Porto,M,sot2,AVOID,0.3,,,,5,,,,,,133453,1635654.0
-2026-09-06,2026-09-06,Serie A,Juventus,AC Milan,Jeff Ekhator,Juventus,F,sot,AVOID,0.293,,,,5,,,,,,451504,1550114.0
-2026-09-06,2026-09-06,La Liga,Malaga,Levante,Juan Cruz,Malaga,M,sot,AVOID,0.289,1.68,-0.5145,-0.4853,5,,,,,,185202,1570369.0
+2026-09-06,2026-09-06,Serie A,Juventus,AC Milan,Jeff Ekhator,Juventus,F,sot,AVOID,0.293,,,,5,True,VOID,0.0,DNP,2026-09-08,451504,1550114.0
+2026-09-06,2026-09-06,La Liga,Malaga,Levante,Juan Cruz,Malaga,M,sot,AVOID,0.289,1.68,-0.5145,-0.4853,5,True,LOSS,-1.0,,2026-09-08,185202,1570369.0
 2026-09-06,2026-09-10,USA MLS,Chicago Fire,Inter Miami CF,Robert Lewandowski,Chicago Fire,F,goals,AVOID,0.286,,,,5,,,,,,521,
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Roberto Pereyra,Udinese,M,sot,AVOID,0.284,,,,5,,,,,,2475,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Roberto Pereyra,Udinese,M,sot,AVOID,0.284,,,,5,True,VOID,0.0,DNP,2026-09-08,2475,1550116.0
 2026-09-06,2026-09-08,Champions League,AEK Athens FC,Lask Linz,Kervin Arriaga,AEK Athens FC,M,sot,AVOID,0.276,,,,5,,,,,,125239,1635609.0
 2026-09-06,2026-09-10,USA MLS,Chicago Fire,Inter Miami CF,Jonathan Bamba,Chicago Fire,M,sot,AVOID,0.276,,,,5,,,,,,22235,
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Giorgi Chakvetadze,Udinese,F,sot,AVOID,0.275,1.85,-0.4912,-0.4607,5,,,,,,8481,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Giorgi Chakvetadze,Udinese,F,sot,AVOID,0.275,1.85,-0.4912,-0.4607,5,True,VOID,0.0,DNP,2026-09-08,8481,1550116.0
 2026-09-06,2026-09-09,USA MLS,Toronto FC,Nashville SC,Josh Sargent,Toronto FC,F,goals,AVOID,0.269,,,,5,,,,,,25332,1490453.0
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Marvin Wanitzek,Karlsruher SC,M,assists,AVOID,0.269,,,,5,,,,,,26107,
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Borja Sainz,FC Porto,M,goals,AVOID,0.268,,,,5,,,,,,133453,1635654.0
@@ -6409,117 +6409,117 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-06,2026-09-12,La Liga 2,Granada CF,Albacete,Gerard Gumbau,Granada CF,M,sot,AVOID,0.255,,,,5,,,,,,47414,
 2026-09-06,2026-09-12,Argentina Primera Division,Boca Juniors,Central Córdoba,Enner Valencia,Boca Juniors,F,sot2,AVOID,0.253,,,,5,,,,,,35533,
 2026-09-06,2026-09-12,Argentina Primera Division,Boca Juniors,Central Córdoba,Enner Valencia,Boca Juniors,F,goals,AVOID,0.25,2.1,-0.475,-0.4435,5,,,,,,35533,
-2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Noël Aséko,Eintracht Frankfurt,M,sot,AVOID,0.249,,,,5,,,,,,342171,1575152.0
-2026-09-06,2026-09-07,Sweden Allsvenskan,Malmo FF,AIK Stockholm,Axel Kouame,AIK Stockholm,M,assists,AVOID,0.248,,,,5,,,,,,432823,1494269.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Luis Alberto,Lazio,M,sot,AVOID,0.246,,,,5,,,,,,1859,1550116.0
+2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Noël Aséko,Eintracht Frankfurt,M,sot,AVOID,0.249,,,,5,True,VOID,0.0,DNP (0 min),2026-09-08,342171,1575152.0
+2026-09-06,2026-09-07,Sweden Allsvenskan,Malmo FF,AIK Stockholm,Axel Kouame,AIK Stockholm,M,assists,AVOID,0.248,,,,5,True,VOID,0.0,DNP,2026-09-08,432823,1494269.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Luis Alberto,Lazio,M,sot,AVOID,0.246,,,,5,True,VOID,0.0,DNP,2026-09-08,1859,1550116.0
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,T. Pukki,HJK Helsinki,F,sot,AVOID,0.231,,,,5,,,,,,19085,
-2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos CF,Chris Ramos,Oviedo,F,sot2,AVOID,0.231,,,,5,,,,,,104792,
-2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos,Chris Ramos,Oviedo,F,sot2,AVOID,0.231,,,,5,,,,,,104792,1569911.0
-2026-09-06,2026-09-06,Brazil Serie A,Botafogo,Palmeiras,Arthur Cabral,Botafogo,F,goals,AVOID,0.23,3.4,-0.218,-0.1398,5,,,,,,9938,1492360.0
+2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos CF,Chris Ramos,Oviedo,F,sot2,AVOID,0.231,,,,5,True,VOID,0.0,DNP,2026-09-08,104792,
+2026-09-06,2026-09-06,La Liga 2,Oviedo,Burgos,Chris Ramos,Oviedo,F,sot2,AVOID,0.231,,,,5,True,VOID,0.0,DNP,2026-09-08,104792,1569911.0
+2026-09-06,2026-09-06,Brazil Serie A,Botafogo,Palmeiras,Arthur Cabral,Botafogo,F,goals,AVOID,0.23,3.4,-0.218,-0.1398,5,True,LOSS,-1.0,,2026-09-08,9938,1492360.0
 2026-09-06,2026-09-09,USA MLS,Philadelphia Union,FC Cincinnati,Danley Jean Jacques,Philadelphia Union,M,cards,AVOID,0.228,,,,5,,,,,,338367,1490451.0
 2026-09-06,2026-09-08,Championship,Blackburn,Sheffield Utd,Ben Brereton Díaz,Sheffield Utd,M,sot,AVOID,0.224,,,,5,,,,,,19485,1563143.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Joel Pohjanpalo,Palermo,F,goals,AVOID,0.222,2.3,-0.4894,-0.4588,5,,,,,,986,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Joel Pohjanpalo,Palermo,F,goals,AVOID,0.222,2.3,-0.4894,-0.4588,5,True,VOID,0.0,DNP,2026-09-08,986,1601520.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,André Silva,FC Porto,F,goals,AVOID,0.217,,,,5,,,,,,2063,1635654.0
-2026-09-06,2026-09-07,Serie A,Cagliari,Lecce,Harry Winks,Cagliari,M,sot,AVOID,0.215,3.25,-0.3013,-0.2314,5,,,,,,182,1550109.0
-2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Adrien Thomasson,Rennes,M,sot,AVOID,0.214,2.05,-0.5613,-0.535,5,,,,,,22261,1552747.0
+2026-09-06,2026-09-07,Serie A,Cagliari,Lecce,Harry Winks,Cagliari,M,sot,AVOID,0.215,3.25,-0.3013,-0.2314,5,True,VOID,0.0,DNP,2026-09-08,182,1550109.0
+2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Adrien Thomasson,Rennes,M,sot,AVOID,0.214,2.05,-0.5613,-0.535,5,True,VOID,0.0,DNP,2026-09-08,22261,1552747.0
 2026-09-06,2026-09-12,La Liga 2,Granada CF,Albacete,Rubén Alcaraz,Granada CF,M,cards,AVOID,0.213,,,,5,,,,,,47485,
 2026-09-06,2026-09-09,USA MLS,Atlanta United FC,Orlando City SC,Miguel Almirón,Atlanta United FC,M,sot,AVOID,0.21,,,,5,,,,,,2507,1490452.0
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,Santeri Hostikka,HJK helsinki,M,sot,AVOID,0.209,,,,5,,,,,,40577,
-2026-09-06,2026-09-06,Brazil Serie A,Botafogo,Palmeiras,Andreas Pereira,Palmeiras,M,sot,AVOID,0.209,,,,5,,,,,,899,1492360.0
+2026-09-06,2026-09-06,Brazil Serie A,Botafogo,Palmeiras,Andreas Pereira,Palmeiras,M,sot,AVOID,0.209,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,899,1492360.0
 2026-09-06,2026-09-09,USA MLS,Toronto FC,Nashville SC,Josh Sargent,Toronto FC,F,sot2,AVOID,0.207,,,,5,,,,,,25332,1490453.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Salvatore Esposito,Sampdoria,M,sot,AVOID,0.207,,,,5,,,,,,56558,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Salvatore Esposito,Sampdoria,M,sot,AVOID,0.207,,,,5,True,VOID,0.0,DNP,2026-09-08,56558,1601520.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Borja Sainz,FC Porto,M,assists,AVOID,0.206,,,,5,,,,,,133453,1635654.0
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Philipp Förster,Karlsruher SC,M,sot,AVOID,0.206,,,,5,,,,,,25183,
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Emmanuel Gyasi,Palermo,M,sot,AVOID,0.205,,,,5,,,,,,30845,1601520.0
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Federico Bonazzoli,Cremonese,F,goals,AVOID,0.203,2.62,-0.4681,-0.4362,5,,,,,,31436,1601516.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Emmanuel Gyasi,Palermo,M,sot,AVOID,0.205,,,,5,True,VOID,0.0,DNP,2026-09-08,30845,1601520.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Federico Bonazzoli,Cremonese,F,goals,AVOID,0.203,2.62,-0.4681,-0.4362,5,True,VOID,0.0,DNP,2026-09-08,31436,1601516.0
 2026-09-06,2026-09-09,USA MLS,Atlanta United FC,Orlando City SC,Breel Embolo,Atlanta United FC,F,goals,AVOID,0.202,,,,5,,,,,,421,1490452.0
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Jamie Vardy,Cremonese,F,goals,AVOID,0.201,,,,5,,,,,,18788,1601516.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Jamie Vardy,Cremonese,F,goals,AVOID,0.201,,,,5,True,VOID,0.0,DNP,2026-09-08,18788,1601516.0
 2026-09-06,2026-09-12,Argentina Primera Division,Boca Juniors,Central Córdoba,Leandro Paredes,Boca Juniors,M,sot,AVOID,0.199,,,,5,,,,,,271,
 2026-09-06,2026-09-12,La Liga 2,Cádiz CF,Las Palmas,Kirian Rodríguez,Las Palmas,M,sot,AVOID,0.198,,,,5,,,,,,70315,
-2026-09-06,2026-09-06,Brazil Serie A,Internacional,Santos,Gustavo Caballero,Santos,F,sot,AVOID,0.198,,,,5,,,,,,119128,1492366.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Filip Đuričić,Sampdoria,M,sot,AVOID,0.197,,,,5,,,,,,30536,1601520.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Niccolò Pierozzi,Palermo,D,cards,AVOID,0.193,,,,5,,,,,,325388,1601520.0
+2026-09-06,2026-09-06,Brazil Serie A,Internacional,Santos,Gustavo Caballero,Santos,F,sot,AVOID,0.198,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,119128,1492366.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Filip Đuričić,Sampdoria,M,sot,AVOID,0.197,,,,5,True,VOID,0.0,DNP,2026-09-08,30536,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Niccolò Pierozzi,Palermo,D,cards,AVOID,0.193,,,,5,True,VOID,0.0,DNP,2026-09-08,325388,1601520.0
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,A. Ring,HJK Helsinki,M,sot,AVOID,0.192,,,,5,,,,,,50861,
-2026-09-06,2026-09-06,Mexico Liga MX,Cruz Azul,Santos Laguna,Bruno Amione,Santos Laguna,D,cards,AVOID,0.192,,,,5,,,,,,126741,1550956.0
-2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Roberto Piccoli,Bologna,F,goals,AVOID,0.188,2.9,-0.4548,-0.4221,5,,,,,,30440,1550108.0
+2026-09-06,2026-09-06,Mexico Liga MX,Cruz Azul,Santos Laguna,Bruno Amione,Santos Laguna,D,cards,AVOID,0.192,,,,5,True,VOID,0.0,DNP,2026-09-08,126741,1550956.0
+2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Roberto Piccoli,Bologna,F,goals,AVOID,0.188,2.9,-0.4548,-0.4221,5,True,WIN,1.9,,2026-09-08,30440,1550108.0
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Marcel Franke,Karlsruher SC,D,sot,AVOID,0.186,,,,5,,,,,,25036,
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,Santeri Hostikka,HJK helsinki,M,assists,AVOID,0.186,,,,5,,,,,,40577,
 2026-09-06,2026-09-11,Ireland Premier Division,Galway United,Bohemians,Gianfranco Facchineri,Galway United,D,cards,AVOID,0.185,,,,5,,,,,,199405,
-2026-09-06,2026-09-06,Serie B,Modena,Avellino,Alessandro Bianco,Modena,M,sot,AVOID,0.185,,,,5,,,,,,302432,
-2026-09-06,2026-09-06,La Liga,Valencia,Barcelona,Rodri,Barcelona,M,sot,AVOID,0.185,,,,5,,,,,,44,1570371.0
+2026-09-06,2026-09-06,Serie B,Modena,Avellino,Alessandro Bianco,Modena,M,sot,AVOID,0.185,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,302432,
+2026-09-06,2026-09-06,La Liga,Valencia,Barcelona,Rodri,Barcelona,M,sot,AVOID,0.185,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,44,1570371.0
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Elliott Lee,Wrexham,M,sot,AVOID,0.185,,,,5,,,,,,19776,1563154.0
-2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Nathanaël Mbuku,FC Augsburg,F,cards,AVOID,0.184,,,,5,,,,,,129670,1575152.0
+2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Nathanaël Mbuku,FC Augsburg,F,cards,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,129670,1575152.0
 2026-09-06,2026-09-12,Mexico Liga MX,Tijuana,Querétaro,Jackson Porozo,Club Tijuana,D,sot,AVOID,0.184,,,,5,,,,,,2575,
 2026-09-06,2026-09-12,League One,Blackpool,Bromley FC,Dale Taylor,Blackpool,F,sot,AVOID,0.184,,,,5,,,,,,339138,
-2026-09-06,2026-09-07,Sweden Allsvenskan,Malmo FF,AIK Stockholm,Axel Kouame,AIK Stockholm,M,sot,AVOID,0.183,,,,5,,,,,,432823,1494269.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Tijjani Noslin,Lazio,F,goals,AVOID,0.182,,,,5,,,,,,133729,1550116.0
+2026-09-06,2026-09-07,Sweden Allsvenskan,Malmo FF,AIK Stockholm,Axel Kouame,AIK Stockholm,M,sot,AVOID,0.183,,,,5,True,VOID,0.0,DNP,2026-09-08,432823,1494269.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Tijjani Noslin,Lazio,F,goals,AVOID,0.182,,,,5,True,VOID,0.0,DNP,2026-09-08,133729,1550116.0
 2026-09-06,2026-09-12,La Liga 2,Cádiz CF,Las Palmas,Stefan Bajčetić,Las Palmas,M,cards,AVOID,0.181,,,,5,,,,,,310187,
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Jari Vandeputte,Cremonese,M,sot,AVOID,0.181,,,,5,,,,,,31211,1601516.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Jari Vandeputte,Cremonese,M,sot,AVOID,0.181,,,,5,True,VOID,0.0,DNP,2026-09-08,31211,1601516.0
 2026-09-06,2026-09-08,Champions League,Club Brugge KV,Aston Villa,Han-Beom Lee,Club Brugge KV,D,cards,AVOID,0.18,,,,5,,,,,,237218,1635643.0
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,Santeri Hostikka,HJK helsinki,M,goals,AVOID,0.179,,,,5,,,,,,40577,
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Hassane Kamara,Udinese,M,sot,AVOID,0.179,3.4,-0.3914,-0.3305,5,,,,,,22007,1550116.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Alessandro Zanoli,Udinese,M,sot,AVOID,0.179,,,,5,,,,,,162907,1550116.0
-2026-09-06,2026-09-07,Serie A,Cagliari,Lecce,Mohamed Kaba,Lecce,M,sot,AVOID,0.178,,,,5,,,,,,197779,1550109.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Hassane Kamara,Udinese,M,sot,AVOID,0.179,3.4,-0.3914,-0.3305,5,True,VOID,0.0,DNP,2026-09-08,22007,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Alessandro Zanoli,Udinese,M,sot,AVOID,0.179,,,,5,True,VOID,0.0,DNP,2026-09-08,162907,1550116.0
+2026-09-06,2026-09-07,Serie A,Cagliari,Lecce,Mohamed Kaba,Lecce,M,sot,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-09-08,197779,1550109.0
 2026-09-06,2026-09-10,USA MLS,Chicago Fire,Inter Miami CF,Robert Lewandowski,Chicago Fire,F,sot2,AVOID,0.178,,,,5,,,,,,521,
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Kingsley Ehizibue,Udinese,M,sot,AVOID,0.178,,,,5,,,,,,36916,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Kingsley Ehizibue,Udinese,M,sot,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-09-08,36916,1550116.0
 2026-09-06,2026-09-08,Champions League,Club Brugge KV,Aston Villa,Nicolò Tresoldi,Club Brugge KV,F,goals,AVOID,0.177,2.3,-0.5929,-0.5685,5,,,,,,287923,1635643.0
-2026-09-06,2026-09-06,La Liga,Espanyol,Sevilla,Bryan Zaragoza,Espanyol,F,goals,AVOID,0.177,,,,5,,,,,,286639,1570367.0
-2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Nathanaël Mbuku,FC Augsburg,F,sot,AVOID,0.177,,,,5,,,,,,129670,1575152.0
+2026-09-06,2026-09-06,La Liga,Espanyol,Sevilla,Bryan Zaragoza,Espanyol,F,goals,AVOID,0.177,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,286639,1570367.0
+2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Nathanaël Mbuku,FC Augsburg,F,sot,AVOID,0.177,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,129670,1575152.0
 2026-09-06,2026-09-12,USA MLS,D.C. United,Atlanta United FC,Miguel Almirón,Atlanta United FC,M,sot,AVOID,0.177,,,,5,,,,,,2507,
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,Michel Benjamin Stanley,HJK helsinki,F,sot,AVOID,0.176,,,,5,,,,,,50942,
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Jordan Ferri,Sampdoria,M,cards,AVOID,0.176,,,,5,,,,,,21439,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Jordan Ferri,Sampdoria,M,cards,AVOID,0.176,,,,5,True,VOID,0.0,DNP,2026-09-08,21439,1601520.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Nehuén Pérez,FC Porto,D,cards,AVOID,0.175,,,,5,,,,,,37,1635654.0
-2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Calvin Brackelmann,FC Augsburg,D,sot,AVOID,0.173,,,,5,,,,,,178403,1575152.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Nicolò Zaniolo,Udinese,F,goals,AVOID,0.172,,,,5,,,,,,786,1550116.0
-2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Pablo Pagis,Paris FC,F,goals,AVOID,0.171,3.7,-0.3673,-0.304,5,,,,,,276662,1552751.0
-2026-09-06,2026-09-07,La Liga,Getafe,Celta Vigo,Abdoulaye Faye,Celta Vigo,D,cards,AVOID,0.17,,,,5,,,,,,437776,1570368.0
-2026-09-06,2026-09-06,Denmark Superliga,Odense,FC Copenhagen,Noah Ganaus,Odense,F,goals,AVOID,0.169,3.4,-0.4254,-0.3679,5,,,,,,203253,1549013.0
-2026-09-06,2026-09-06,Denmark Superliga,Brondby,Randers FC,Axel Henriksson,Randers FC,M,sot,AVOID,0.168,,,,5,,,,,,306954,1549014.0
+2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Calvin Brackelmann,FC Augsburg,D,sot,AVOID,0.173,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,178403,1575152.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Nicolò Zaniolo,Udinese,F,goals,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-09-08,786,1550116.0
+2026-09-06,2026-09-06,Ligue 1,Marseille,Paris FC,Pablo Pagis,Paris FC,F,goals,AVOID,0.171,3.7,-0.3673,-0.304,5,True,VOID,0.0,DNP,2026-09-08,276662,1552751.0
+2026-09-06,2026-09-07,La Liga,Getafe,Celta Vigo,Abdoulaye Faye,Celta Vigo,D,cards,AVOID,0.17,,,,5,True,VOID,0.0,DNP,2026-09-08,437776,1570368.0
+2026-09-06,2026-09-06,Denmark Superliga,Odense,FC Copenhagen,Noah Ganaus,Odense,F,goals,AVOID,0.169,3.4,-0.4254,-0.3679,5,True,VOID,0.0,DNP (0 min),2026-09-08,203253,1549013.0
+2026-09-06,2026-09-06,Denmark Superliga,Brondby,Randers FC,Axel Henriksson,Randers FC,M,sot,AVOID,0.168,,,,5,True,VOID,0.0,DNP,2026-09-08,306954,1549014.0
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Conor Coady,Wrexham,M,sot,AVOID,0.166,,,,5,,,,,,18741,1563154.0
 2026-09-06,2026-09-12,Japan J-League,Hiroshima Sanfrecce FC,Cerezo Osaka,Javier Hernández,Cerezo Osaka,D,sot,AVOID,0.166,1.68,-0.7211,-0.7044,5,,,,,,46849,
-2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Young-woo Seol,FC Augsburg,M,sot,AVOID,0.165,,,,5,,,,,,197985,1575152.0
+2026-09-06,2026-09-06,Bundesliga,Eintracht Frankfurt,FC Augsburg,Young-woo Seol,FC Augsburg,M,sot,AVOID,0.165,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,197985,1575152.0
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Issa Kaboré,Wrexham,M,sot,AVOID,0.165,,,,5,,,,,,140947,1563154.0
 2026-09-06,2026-09-09,USA MLS,Philadelphia Union,FC Cincinnati,Danley Jean Jacques,Philadelphia Union,M,sot,AVOID,0.164,,,,5,,,,,,338367,1490451.0
 2026-09-06,2026-09-11,Ireland Premier Division,Galway United,Bohemians,Moses Dyer,Galway United,F,sot,AVOID,0.163,,,,5,,,,,,94382,
 2026-09-06,2026-09-11,Ireland Premier Division,Galway United,Bohemians,Moses Dyer,Galway United,F,cards,AVOID,0.162,,,,5,,,,,,94382,
 2026-09-06,2026-09-12,League One,Blackpool,Bromley FC,Jerry Yates,Blackpool,F,sot,AVOID,0.162,,,,5,,,,,,19682,
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Liam Henderson,Sampdoria,M,cards,AVOID,0.162,,,,5,,,,,,30932,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Liam Henderson,Sampdoria,M,cards,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-09-08,30932,1601520.0
 2026-09-06,2026-09-12,La Liga 2,Cádiz CF,Las Palmas,Enzo Loiodice,Las Palmas,M,sot,AVOID,0.161,,,,5,,,,,,21709,
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Christoph Kobald,Karlsruher SC,D,cards,AVOID,0.161,,,,5,,,,,,26091,
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Alberto Grassi,Cremonese,M,sot,AVOID,0.16,,,,5,,,,,,31021,1601516.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Alberto Grassi,Cremonese,M,sot,AVOID,0.16,,,,5,True,VOID,0.0,DNP,2026-09-08,31021,1601516.0
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,Mihailo Bogićević,HJK Helsinki,D,cards,AVOID,0.16,,,,5,,,,,,270584,
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Josh Windass,Wrexham,F,goals,AVOID,0.159,,,,5,,,,,,19566,1563154.0
-2026-09-06,2026-09-06,Serie B,Modena,Avellino,Walid Cheddira,Avellino,F,goals,AVOID,0.159,4.75,-0.2448,-0.1692,5,,,,,,128478,
+2026-09-06,2026-09-06,Serie B,Modena,Avellino,Walid Cheddira,Avellino,F,goals,AVOID,0.159,4.75,-0.2448,-0.1692,5,True,LOSS,-1.0,,2026-09-08,128478,
 2026-09-06,2026-09-08,Champions League,Club Brugge KV,Aston Villa,Brandon Mechele,Club Brugge KV,D,cards,AVOID,0.159,,,,5,,,,,,69,1635643.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Alexis Blin,Palermo,M,sot,AVOID,0.159,,,,5,,,,,,21384,1601520.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Tomás Rincón,Sampdoria,M,cards,AVOID,0.158,,,,5,,,,,,2452,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Alexis Blin,Palermo,M,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-09-08,21384,1601520.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Tomás Rincón,Sampdoria,M,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-09-08,2452,1601520.0
 2026-09-06,2026-09-08,Championship,Blackburn,Sheffield Utd,Matt Doherty,Sheffield Utd,D,cards,AVOID,0.158,,,,5,,,,,,18742,1563143.0
 2026-09-06,2026-09-12,Argentina Primera Division,Boca Juniors,Central Córdoba,Santiago Ascacibar,Boca Juniors,M,sot,AVOID,0.158,,,,5,,,,,,26305,
 2026-09-06,2026-09-09,USA MLS,Toronto FC,Nashville SC,Niklas Dorsch,Toronto FC,M,sot,AVOID,0.157,,,,5,,,,,,24904,1490453.0
-2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Issa Soumaré,Rennes,M,cards,VALUABLE,0.157,7.4,0.1618,0.3361,5,,,,,,156465,1552747.0
+2026-09-06,2026-09-06,Ligue 1,Angers,Rennes,Issa Soumaré,Rennes,M,cards,VALUABLE,0.157,7.4,0.1618,0.3361,5,True,VOID,0.0,DNP (0 min),2026-09-08,156465,1552747.0
 2026-09-06,2026-09-08,Championship,Wrexham,Burnley,Sam Smith,Wrexham,F,sot,AVOID,0.157,,,,5,,,,,,20316,1563154.0
-2026-09-06,2026-09-07,La Liga,Getafe,Celta Vigo,Aleix Febas,Celta Vigo,M,cards,AVOID,0.155,,,,5,,,,,,46711,1570368.0
-2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Giuseppe Pezzella,Cremonese,M,sot,AVOID,0.155,,,,5,,,,,,30775,1601516.0
-2026-09-06,2026-09-07,Sweden Allsvenskan,Malmo FF,AIK Stockholm,Ibrahim Cissé,AIK Stockholm,D,cards,AVOID,0.155,,,,5,,,,,,129635,1494269.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Nicolò Zaniolo,Udinese,F,cards,AVOID,0.155,,,,5,,,,,,786,1550116.0
-2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Oumar Solet,Udinese,D,sot,AVOID,0.155,4.5,-0.3025,-0.2327,5,,,,,,656,1550116.0
+2026-09-06,2026-09-07,La Liga,Getafe,Celta Vigo,Aleix Febas,Celta Vigo,M,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-09-08,46711,1570368.0
+2026-09-06,2026-09-06,Serie B,Cremonese,Padova,Giuseppe Pezzella,Cremonese,M,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-09-08,30775,1601516.0
+2026-09-06,2026-09-07,Sweden Allsvenskan,Malmo FF,AIK Stockholm,Ibrahim Cissé,AIK Stockholm,D,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-09-08,129635,1494269.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Nicolò Zaniolo,Udinese,F,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-09-08,786,1550116.0
+2026-09-06,2026-09-07,Serie A,Udinese,Lazio,Oumar Solet,Udinese,D,sot,AVOID,0.155,4.5,-0.3025,-0.2327,5,True,VOID,0.0,DNP,2026-09-08,656,1550116.0
 2026-09-06,2026-09-08,Championship,Cardiff,Stoke City,Freddie Anderson,Stoke City,D,cards,AVOID,0.155,,,,5,,,,,,432436,1563146.0
-2026-09-06,2026-09-06,La Liga,Malaga,Levante,Hugo Sotelo,Levante,M,cards,AVOID,0.154,4.0,-0.384,-0.3224,5,,,,,,313651,1570369.0
-2026-09-06,2026-09-07,La Liga 2,Sabadell,Cordoba,Edgar González,Sabadell,M,sot,AVOID,0.154,,,,5,,,,,,1565,1569913.0
+2026-09-06,2026-09-06,La Liga,Malaga,Levante,Hugo Sotelo,Levante,M,cards,AVOID,0.154,4.0,-0.384,-0.3224,5,True,LOSS,-1.0,,2026-09-08,313651,1570369.0
+2026-09-06,2026-09-07,La Liga 2,Sabadell,Cordoba,Edgar González,Sabadell,M,sot,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,1565,1569913.0
 2026-09-06,2026-09-09,USA MLS,DC United,Columbus Crew,Andre Dozzell,DC United,M,sot,AVOID,0.153,,,,5,,,,,,19734,1490454.0
 2026-09-06,2026-09-08,Championship,Blackburn,Sheffield Utd,Jamal Baptiste,Sheffield Utd,D,cards,AVOID,0.153,,,,5,,,,,,171059,1563143.0
-2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Fabio Depaoli,Sampdoria,M,sot,AVOID,0.153,,,,5,,,,,,30747,1601520.0
-2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Rafael Obrador,Sassuolo,M,sot,AVOID,0.153,5.5,-0.1585,-0.0323,5,,,,,,265722,1550108.0
+2026-09-06,2026-09-07,Serie B,Palermo,Sampdoria,Fabio Depaoli,Sampdoria,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-09-08,30747,1601520.0
+2026-09-06,2026-09-06,Serie A,Bologna,Sassuolo,Rafael Obrador,Sassuolo,M,sot,AVOID,0.153,5.5,-0.1585,-0.0323,5,True,LOSS,-1.0,,2026-09-08,265722,1550108.0
 2026-09-06,2026-09-08,Champions League,FC Porto,Manchester City,Pablo Rosario,FC Porto,M,sot,AVOID,0.152,,,,5,,,,,,240,1635654.0
-2026-09-06,2026-09-07,Serie A,Cagliari,Lecce,Youssef Maleh,Lecce,M,cards,AVOID,0.152,4.3,-0.3464,-0.281,5,,,,,,56560,1550109.0
+2026-09-06,2026-09-07,Serie A,Cagliari,Lecce,Youssef Maleh,Lecce,M,cards,AVOID,0.152,4.3,-0.3464,-0.281,5,True,VOID,0.0,DNP,2026-09-08,56560,1550109.0
 2026-09-06,2026-09-09,Finland Veikkausliiga,HJK Helsinki,FC Inter Turku,V. Tikkanen,HJK Helsinki,D,cards,AVOID,0.152,,,,5,,,,,,55339,
 2026-09-06,2026-09-13,Bundesliga 2,Karlsruher SC,FC Energie Cottbus,Christoph Kobald,Karlsruher SC,D,sot,AVOID,0.151,,,,5,,,,,,26091,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Filip Bilbija,Derby,F,sot,AVOID,0.616,,,,5,,,,,,125726,
 2026-09-06,2026-09-11,Championship,West Ham United,Wrexham AFC,Valentín Castellanos,West Ham,F,sot,AVOID,0.59,,,,5,,,,,,50856,
 2026-09-06,2026-09-13,La Liga 2,Real Valladolid CF,Oviedo,Chris Ramos,Oviedo,F,sot,AVOID,0.573,,,,5,,,,,,104792,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Mikel Oyarzabal,Real Sociedad,F,sot,AVOID,0.525,1.38,-0.2755,-0.232,5,,,,,,47323,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Mikel Oyarzabal,Real Sociedad,F,sot,AVOID,0.525,1.38,-0.2755,-0.232,5,True,LOSS,-1.0,,2026-09-08,47323,1570366.0
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Marvin Ducksch,Birmingham,F,sot,AVOID,0.507,,,,5,,,,,,25464,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Rafa Mir,Elche,F,sot,AVOID,0.481,,,,5,,,,,,47013,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Rafa Mir,Elche,F,sot,AVOID,0.481,,,,5,True,VOID,0.0,DNP,2026-09-08,47013,1570366.0
 2026-09-06,2026-09-11,Championship,West Ham United,Wrexham AFC,Josh Windass,Wrexham,F,sot,AVOID,0.455,,,,5,,,,,,19566,
 2026-09-06,2026-09-13,La Liga 2,Real Valladolid CF,Oviedo,Ilyas Chaira,Oviedo,M,sot,AVOID,0.443,,,,5,,,,,,266202,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Sammie Szmodics,Derby,F,sot,AVOID,0.432,,,,5,,,,,,17579,
@@ -6540,26 +6540,26 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Bobby Clark,Derby,M,sot,AVOID,0.226,,,,5,,,,,,334729,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Marvin Ducksch,Birmingham,F,goals,AVOID,0.216,,,,5,,,,,,25464,
 2026-09-06,2026-09-13,La Liga 2,Real Valladolid CF,Oviedo,Chris Ramos,Oviedo,F,goals,AVOID,0.215,,,,5,,,,,,104792,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Tete Morente,Elche,F,sot,AVOID,0.215,,,,5,,,,,,47182,1570366.0
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Takefusa Kubo,Real Sociedad,F,sot,AVOID,0.215,1.74,-0.6259,-0.6035,5,,,,,,32862,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Tete Morente,Elche,F,sot,AVOID,0.215,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,47182,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Takefusa Kubo,Real Sociedad,F,sot,AVOID,0.215,1.74,-0.6259,-0.6035,5,True,VOID,0.0,DNP,2026-09-08,32862,1570366.0
 2026-09-06,2026-09-11,Championship,West Ham United,Wrexham AFC,Manor Solomon,West Ham,M,sot,AVOID,0.215,,,,5,,,,,,697,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Orri Óskarsson,Real Sociedad,F,sot,AVOID,0.213,,,,5,,,,,,61774,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Orri Óskarsson,Real Sociedad,F,sot,AVOID,0.213,,,,5,True,VOID,0.0,DNP,2026-09-08,61774,1570366.0
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Carlos Vicente,Birmingham,M,sot,AVOID,0.213,,,,5,,,,,,187214,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Patrick Roberts,Birmingham,M,sot,AVOID,0.208,,,,5,,,,,,47521,
 2026-09-06,2026-09-12,Championship,Blackburn Rovers,Millwall,Massimo Luongo,Millwall,M,cards,AVOID,0.208,,,,5,,,,,,2752,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Yangel Herrera,Real Sociedad,M,sot,AVOID,0.207,,,,5,,,,,,2449,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Yangel Herrera,Real Sociedad,M,sot,AVOID,0.207,,,,5,True,VOID,0.0,DNP,2026-09-08,2449,1570366.0
 2026-09-06,2026-09-13,La Liga 2,Real Valladolid CF,Oviedo,Alberto Reina,Oviedo,M,sot,AVOID,0.201,,,,5,,,,,,182486,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Kane Wilson,Derby,M,sot,AVOID,0.188,,,,5,,,,,,17599,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Sammie Szmodics,Derby,F,goals,AVOID,0.186,,,,5,,,,,,17579,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Alex Mowatt,Derby,M,sot,AVOID,0.181,,,,5,,,,,,19799,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Carlos Soler,Real Sociedad,F,sot,AVOID,0.181,1.9,-0.6561,-0.6355,5,,,,,,930,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Carlos Soler,Real Sociedad,F,sot,AVOID,0.181,1.9,-0.6561,-0.6355,5,True,LOSS,-1.0,,2026-09-08,930,1570366.0
 2026-09-06,2026-09-13,La Liga 2,Real Valladolid CF,Oviedo,Nicolas Fonseca,Oviedo,M,cards,AVOID,0.18,,,,5,,,,,,30690,
 2026-09-06,2026-09-12,Championship,Derby County,Birmingham City,Carlton Morris,Derby,F,goals,AVOID,0.176,,,,5,,,,,,19083,
 2026-09-06,2026-09-12,League One,Wimbledon,Doncaster Rovers,Omar Bugiel,AFC Wimbledon,F,sot,AVOID,0.171,,,,5,,,,,,18369,
 2026-09-06,2026-09-11,Championship,West Ham United,Wrexham AFC,Divine Mukasa,West Ham,M,sot,AVOID,0.167,,,,5,,,,,,380681,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Igor Zubeldia,Real Sociedad,D,cards,AVOID,0.167,,,,5,,,,,,47314,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,Igor Zubeldia,Real Sociedad,D,cards,AVOID,0.167,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-09-08,47314,1570366.0
 2026-09-06,2026-09-12,League One,Wimbledon,Doncaster Rovers,Marcus Browne,AFC Wimbledon,F,sot,AVOID,0.166,,,,5,,,,,,20112,
-2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,David Silva,Real Sociedad,M,sot,AVOID,0.164,,,,5,,,,,,634,1570366.0
+2026-09-06,2026-09-07,La Liga,Elche,Real Sociedad,David Silva,Real Sociedad,M,sot,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-09-08,634,1570366.0
 2026-09-06,2026-09-11,Championship,West Ham United,Wrexham AFC,Valentín Castellanos,West Ham,F,sot2,AVOID,0.163,,,,5,,,,,,50856,
 2026-09-06,2026-09-11,Championship,West Ham United,Wrexham AFC,Konstantinos Mavropanos,West Ham,D,sot,AVOID,0.156,,,,5,,,,,,1445,
 2026-09-06,2026-09-12,Serie B,Südtirol,Modena,Alessandro Bianco,Modena,M,sot,AVOID,0.155,,,,5,,,,,,302432,
@@ -6574,7 +6574,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-06,2026-09-13,La Liga 2,Mallorca,Sabadell FC,Sergi Darder,Mallorca,M,sot,AVOID,0.232,,,,5,,,,,,47336,
 2026-09-06,2026-09-13,La Liga 2,Mallorca,Sabadell FC,Pablo Torre,Mallorca,M,sot,AVOID,0.224,,,,5,,,,,,285909,
 2026-09-06,2026-09-12,USA MLS,Orlando City SC,Toronto FC,Josh Sargent,Toronto FC,F,goals,AVOID,0.202,,,,5,,,,,,25332,
-2026-09-06,2026-09-07,Brazil Serie A,Vitoria,Gremio,Walace,Vitoria,M,sot,AVOID,0.2,,,,5,,,,,,25387,1492369.0
+2026-09-06,2026-09-07,Brazil Serie A,Vitoria,Gremio,Walace,Vitoria,M,sot,AVOID,0.2,,,,5,True,VOID,0.0,DNP,2026-09-08,25387,1492369.0
 2026-09-06,2026-09-09,Championship,Charlton Athletic,Queens Park Rangers,Tyreece Campbell,Charlton,F,sot,AVOID,0.187,,,,5,,,,,,356419,
 2026-09-06,2026-09-13,La Liga 2,Mallorca,Sabadell FC,Manu Morlanes,Mallorca,M,sot,AVOID,0.176,,,,5,,,,,,1701,
 2026-09-06,2026-09-09,Championship,Charlton Athletic,Queens Park Rangers,Millenic Alli,Charlton,F,sot,AVOID,0.169,,,,5,,,,,,180997,
