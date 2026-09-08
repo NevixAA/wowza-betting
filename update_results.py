@@ -630,9 +630,23 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
 
         updates.append({"idx": idx, "is_played": "True", "result": result,
                         "pnl": pnl, "notes": note, "resolved_date": today_str})
+        # `pnl` is DELIBERATELY "" for an unpriced row (see the note above — invariant 9, write
+        # nothing rather than an invented number). This log line still formatted it with
+        # `:+.3f`, so the first unpriced prop raised
+        #     ValueError: Unknown format code 'f' for object of type 'str'
+        # and killed the whole process. Per invariant 13 most props are never priced, so it hit
+        # on essentially every run: update_results failed 10 times consecutively between
+        # 2026-09-06 19:26 and 2026-09-08, and because the commit step had no `if: always()` the
+        # O/U settlements that had ALREADY succeeded in the same run were discarded with the
+        # runner each time.
+        #
+        # Formatted defensively rather than by reverting the "" — the data decision was right;
+        # only its rendering was wrong.
+        pnl_txt = f"{pnl:+.3f}u" if isinstance(pnl, (int, float)) else "n/a (unpriced)"
         log.info(
             f"  {'[DRY]' if dry_run else '[ OK]'} "
-            f"{player} ({market}, {minutes}min) {home} vs {away} ({date_str}) → {result}  PnL={pnl:+.3f}u"
+            f"{player} ({market}, {minutes}min) {home} vs {away} ({date_str}) → {result}  "
+            f"PnL={pnl_txt}"
         )
 
     if not updates:
