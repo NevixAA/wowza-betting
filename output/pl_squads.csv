@@ -75,16 +75,15 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 162267,A. Truffert,Bournemouth,D,0.0,0.4,0.6,0.6,0.2,90.0,7.42,0.0,5.0,1.0
 331832,António Silva,Bournemouth,D,,,,,,,,,,
 368030,E. Kroupi,Bournemouth,F,0.6,0.0,1.0,1.6,0.2,74.2,7.04,0.0,5.0,1.0
+407806,Rayan,Bournemouth,F,0.6,0.0,0.8,1.8,0.0,69.0,7.1,0.0,5.0,1.0
 296458,D. Jebbison,Bournemouth,F,0.2,0.0,0.2,0.4,0.0,14.6,6.64,0.0,5.0,0.86
 152856,Evanilson,Bournemouth,F,0.0,0.0,0.0,1.2,0.2,75.0,6.7,0.0,5.0,1.0
-343576,B. Doak,Bournemouth,F,0.0,0.0,0.2,0.4,0.0,15.8,6.32,0.0,5.0,0.82
 402434,Remy Rees-Dottin,Bournemouth,F,,,,,,,,,,
 343202,Á. Rodríguez,Bournemouth,F,,,,,,,,,,
 18932,F. Forster,Bournemouth,G,0.0,0.0,0.0,0.0,0.0,90.0,6.9,3.4,5.0,1.0
 118307,Đ. Petrović,Bournemouth,G,0.0,0.0,0.0,0.0,0.0,90.0,6.86,2.2,5.0,1.0
 407034,K. Crampton,Bournemouth,G,,,,,,,,,,
 30670,M. Di Gregorio,Bournemouth,G,,,,,,,,,,
-407806,Rayan,Bournemouth,M,0.6,0.0,0.8,1.8,0.0,69.0,7.1,0.0,5.0,1.0
 19245,M. Tavernier,Bournemouth,M,0.2,0.0,0.8,1.2,0.2,86.6,7.26,0.0,5.0,1.0
 792,J. Kluivert,Bournemouth,M,0.2,0.0,0.4,1.0,0.4,47.8,6.62,0.0,5.0,1.0
 1150,T. Adams,Bournemouth,M,0.0,0.2,0.0,0.2,0.2,62.6,6.96,0.0,5.0,1.0
@@ -94,6 +93,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 304853,A. Scott,Bournemouth,M,0.0,0.0,0.4,0.6,0.4,89.8,7.44,0.0,5.0,1.0
 361485,A. Tóth,Bournemouth,M,0.0,0.0,0.0,0.2,0.2,31.0,6.46,0.0,5.0,1.0
 18870,D. Brooks,Bournemouth,M,0.0,0.2,0.2,0.6,0.0,27.0,6.46,0.0,5.0,1.0
+343576,B. Doak,Bournemouth,M,0.0,0.0,0.2,0.4,0.0,15.8,6.32,0.0,5.0,0.82
 182772,Juanlu Sánchez,Bournemouth,M,,,,,,,,,,
 671665,Z. Christie,Bournemouth,M,,,,,,,,,,
 626383,Malcom Dacosta,Bournemouth,M,,,,,,,,,,
@@ -106,7 +106,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 342022,M. Kayode,Brentford,D,0.0,0.0,0.2,0.2,0.4,90.0,6.66,0.0,5.0,1.0
 36922,S. van den Berg,Brentford,D,0.0,0.0,0.2,0.4,0.2,90.0,7.02,0.0,5.0,1.0
 106725,K. Lewis-Potter,Brentford,D,0.0,0.2,0.4,0.6,0.0,89.6,6.44,0.0,5.0,1.0
-350625,J. Meghoma,Brentford,D,,,,,,,,,,
 441271,Jannik Schuster,Brentford,D,,,,,,,,,,
 196855,J. Anthony,Brentford,F,0.2,0.2,0.8,1.4,0.0,87.8,6.48,0.0,5.0,0.9
 196156,Thiago,Brentford,F,0.2,0.0,0.8,1.2,0.2,90.0,6.42,0.0,5.0,1.0
@@ -293,8 +292,9 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 2920,T. Castagne,Fulham,D,0.0,0.0,0.2,0.4,0.2,88.6,7.2,0.0,5.0,1.0
 131,Jorge Cuenca,Fulham,D,0.0,0.0,0.0,0.2,0.4,58.2,6.86,0.0,5.0,1.0
 657,K. Tete,Fulham,D,0.0,0.0,0.0,0.6,0.0,88.0,6.86,0.0,5.0,1.0
-384981,S. Amissah,Fulham,D,,,,,,,,,,
+126640,D. Affengruber,Fulham,D,,,,,,,,,,
 327738,L. De Fougerolles,Fulham,D,,,,,,,,,,
+380678,B. Slade,Fulham,D,,,,,,,,,,
 237819,Kevin,Fulham,F,0.0,0.0,0.2,0.8,0.0,41.4,6.7,0.0,5.0,1.0
 436443,J. Kusi-Asare,Fulham,F,0.0,0.0,0.0,0.0,0.0,14.0,6.46,0.0,5.0,1.0
 195106,Rodrigo Muniz,Fulham,F,0.0,0.0,0.2,0.8,0.2,54.0,6.52,0.0,5.0,1.0
@@ -311,6 +311,8 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 19480,H. Reed,Fulham,M,0.0,0.0,0.2,0.2,0.0,22.8,6.8,0.0,5.0,1.0
 1161,E. Smith Rowe,Fulham,M,0.0,0.0,0.4,0.6,0.0,70.0,6.62,0.0,5.0,1.0
 284356,S. Charles,Fulham,M,,,,,,,,,,
+335094,H. Larsson,Fulham,M,,,,,,,,,,
+313167,Manuel Ángel,Fulham,M,,,,,,,,,,
 349684,C. Nwoko,Fulham,M,,,,,,,,,,
 386306,César Palacios,Fulham,M,,,,,,,,,,
 19093,J. Egan,Hull City,D,0.0,0.0,0.2,0.2,0.4,78.8,6.24,0.0,5.0,1.0
@@ -319,24 +321,23 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 2769,S. Ajayi,Hull City,D,,,,,,,,,,
 395025,S. Ashbee,Hull City,D,,,,,,,,,,
 20073,L. Coyle,Hull City,D,,,,,,,,,,
-153411,C. Drameh,Hull City,D,,,,,,,,,,
 426480,L. Herrington,Hull City,D,,,,,,,,,,
 331551,C. Hughes,Hull City,D,,,,,,,,,,
-129713,M. Jacob,Hull City,D,,,,,,,,,,
 19242,P. McNair,Hull City,D,,,,,,,,,,
 358431,N. Mendy,Hull City,D,,,,,,,,,,
-581989,C. Okike,Hull City,D,,,,,,,,,,
+284570,B. Norton-Cuffy,Hull City,D,,,,,,,,,,
 19337,O. McBurnie,Hull City,F,0.4,0.2,0.8,1.4,0.2,74.8,7.24,0.0,5.0,1.0
 19569,J. Gelhardt,Hull City,F,0.0,0.4,0.0,0.2,0.0,13.6,6.84,0.0,5.0,1.0
 1186,D. Akintola,Hull City,F,,,,,,,,,,
-274312,M. Cho,Hull City,F,,,,,,,,,,
+380873,Ilyas  Ansah,Hull City,F,,,,,,,,,,
 557455,D. Daley,Hull City,F,,,,,,,,,,
-44798,L. Millar,Hull City,F,,,,,,,,,,
 366630,T. Sellars-Fleming,Hull City,F,,,,,,,,,,
+435482,R. Vaz,Hull City,F,,,,,,,,,,
 2930,J. Butland,Hull City,G,,,,,,,,,,
 615629,Archie Howard,Hull City,G,,,,,,,,,,
 19811,D. Phillips,Hull City,G,,,,,,,,,,
 1591,K. Tzolakis,Hull City,G,,,,,,,,,,
+284500,T. Iroegbunam,Hull City,M,0.0,0.0,0.0,0.4,0.2,72.2,6.56,0.0,5.0,1.0
 19666,M. Crooks,Hull City,M,,,,,,,,,,
 19100,K. Dowell,Hull City,M,,,,,,,,,,
 179843,L. Gourna-Douath,Hull City,M,,,,,,,,,,
@@ -344,11 +345,14 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 396407,J. Hjertø-Dahl,Hull City,M,,,,,,,,,,
 162991,E. Matazo,Hull City,M,,,,,,,,,,
 32960,H. Morita,Hull City,M,,,,,,,,,,
+392514,C. Mouzakitis,Hull City,M,,,,,,,,,,
 49883,A. Ömür,Hull City,M,,,,,,,,,,
 17670,R. Slater,Hull City,M,,,,,,,,,,
 226765,E. Stroud,Hull City,M,,,,,,,,,,
 338046,Óscar Steven Zambrano Preciado,Hull City,M,,,,,,,,,,
 299923,M. Belloumi,Hull City,M,,,,,,,,,,
+274312,M. Cho,Hull City,M,,,,,,,,,,
+18599,S. Thomas,Hull City,M,,,,,,,,,,
 18814,I. Diop,Ipswich,D,0.2,0.0,0.2,0.2,0.2,80.2,6.92,0.0,5.0,1.0
 19119,L. Davis,Ipswich,D,0.0,0.0,0.0,0.4,0.0,72.8,6.44,0.0,5.0,1.0
 127579,J. Greaves,Ipswich,D,0.0,0.0,0.0,0.4,0.2,90.0,7.2,0.0,5.0,1.0
