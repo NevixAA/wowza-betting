@@ -47,23 +47,91 @@ def _get_json(url: str, timeout: int = 20):
     return r.json()
 
 
+_CACHE_META = _OUT / "fpl_cache_meta.json"
+
+
+def _meta() -> dict:
+    try:
+        return json.loads(_CACHE_META.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _cache_age_h(cache: Path) -> float:
+    """Hours since this cache was FETCHED, from a recorded timestamp — not from file mtime.
+
+    WHY NOT MTIME. `git checkout` on a CI runner sets every file's mtime to checkout time, so a
+    freshly cloned cache always looked ~0 hours old, always passed the TTL test, and the FPL API
+    was therefore NEVER called. The committed snapshot was returned forever.
+
+    Measured 2026-09-09: output/fpl_bootstrap.json had not changed content since 2026-07-27
+    despite fantasy_refresh.yml running daily and explicitly staging it. Inside it, the "next"
+    gameweek was GW1 with a 2026-08-21 deadline — a pre-season snapshot being served in
+    September. Two visible consequences on the Fantasy page, both from this one cause:
+
+      * Jeremy Doku was offered as a captaincy pick while injured, because the stale payload
+        says status='a' with no news. The page's injury filter was working correctly on data
+        that claimed he was fine.
+      * "Next 5 fixtures" listed games already played, because the snapshot's idea of "next"
+        was still GW1.
+
+    This is the third instance of the same defect class in this repo. v9's provenance._model_sha
+    hashed size+mtime and so changed on every run; registry.age_hours documents the identical
+    trap and avoids it by reading a recorded timestamp. Same fix here.
+
+    Falls back to mtime only when no timestamp has been recorded yet, so a cache written by an
+    older version still expires rather than being treated as ageless.
+    """
+    rec = _meta().get(cache.name)
+    if rec:
+        try:
+            return (time.time() - float(rec)) / 3600.0
+        except (TypeError, ValueError):
+            pass
+    try:
+        return (time.time() - cache.stat().st_mtime) / 3600.0
+    except OSError:
+        return float("inf")
+
+
+def _record_fetch(cache: Path) -> None:
+    """Stamp the fetch time in a SIDECAR, never inside the payload.
+
+    The payload shape is the provider's and is read directly by the dashboard — bootstrap is a
+    dict, fixtures is a list — so injecting a key would break one of them and change a file other
+    code parses. A sidecar keeps both intact.
+    """
+    m = _meta()
+    m[cache.name] = time.time()
+    try:
+        _OUT.mkdir(parents=True, exist_ok=True)
+        _CACHE_META.write_text(json.dumps(m, indent=2, sort_keys=True), encoding="utf-8")
+    except Exception:
+        pass
+
+
 def _cached_fetch(url: str, cache: Path, ttl_h: float, force: bool):
     """Return fresh JSON (and refresh cache), else cache, else None — never raises."""
-    if not force and cache.exists():
-        age_h = (time.time() - cache.stat().st_mtime) / 3600.0
-        if age_h < ttl_h:
-            try:
-                return json.loads(cache.read_text(encoding="utf-8"))
-            except Exception:
-                pass
+    if not force and cache.exists() and _cache_age_h(cache) < ttl_h:
+        try:
+            return json.loads(cache.read_text(encoding="utf-8"))
+        except Exception:
+            pass
     try:
         data = _get_json(url)
         _OUT.mkdir(parents=True, exist_ok=True)
         cache.write_text(json.dumps(data), encoding="utf-8")
+        _record_fetch(cache)
         return data
     except Exception:
+        # A FAILED fetch still falls back to the cache, deliberately — a stale page beats a broken
+        # one. But it must be VISIBLE, because this silent path is why a two-month-old snapshot
+        # was served without a single error anywhere.
         if cache.exists():
             try:
+                age = _cache_age_h(cache)
+                print(f"[fpl_api] fetch FAILED for {url} — serving {cache.name} "
+                      f"aged {age:.1f}h (ttl {ttl_h}h)")
                 return json.loads(cache.read_text(encoding="utf-8"))
             except Exception:
                 pass
