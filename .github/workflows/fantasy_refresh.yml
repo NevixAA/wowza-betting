@@ -69,8 +69,13 @@ jobs:
           # PER-FILE, because `git add -f a b missing` ABORTS and stages NOTHING — one absent path
           # loses the whole list, and the `|| true` then hides it. That exact defect silenced
           # player_props for three days. A loop degrades to "one file skipped" instead.
+          # fpl_cache_meta.json records WHEN each FPL cache was fetched. It must be committed or
+          # the TTL cannot work: the file is written on the runner and destroyed with it, so every
+          # run would see "no recorded age" and refetch. That degrades safely (always fresh, two
+          # extra free API calls a day) but the TTL is the point, so persist it.
           for f in output/fantasy_tips.csv output/fantasy_projection_log.csv \
                    output/fpl_bootstrap.json output/fpl_fixtures.json \
+                   output/fpl_cache_meta.json \
                    output/pl_squads_official.csv output/pl_squads.csv \
                    output/squads_official.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
