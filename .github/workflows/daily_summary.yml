@@ -2,8 +2,31 @@ name: Daily Summary
 
 on:
   schedule:
-    # Every day at 07:00 UTC (10:00 Israel) — after all morning predict runs have finished
+    # FIVE early slots, not one, and a window guard below decides which one actually sends.
+    #
+    # WHY. A single '0 7 * * *' did NOT send at 07:00 UTC. Measured over 09-01..09-10 it sent at
+    # 11:06-13:12 UTC — 14:00-16:12 Israel, i.e. mid-afternoon, not morning. The delay is in
+    # GitHub's scheduler, not in the job: this workflow has timeout-minutes: 10, so a commit at
+    # 12:01 proves it STARTED at 11:51 at the earliest. Every once-daily workflow in this repo
+    # shows the same thing — player_history_extend 03:40 -> ~08:20, injury_refresh 04:00 -> 07:56,
+    # af_history_extend 06:00 -> ~11:00, fantasy_refresh 06:30 -> ~11:40. A consistent +4 to +5h.
+    #
+    # It is not top-of-hour contention: fantasy_refresh is on minute 30 and is delayed the same.
+    # It is the cost of being low-frequency. Measured across 1,367 runs on 2026-09-10, GitHub
+    # gives this repo a scheduling budget: high-frequency workflows fire near their slot (predict
+    # median +10 min) but 75-87% of their slots are DROPPED, while once-daily workflows are
+    # delivered ~100% of the time but hours late. Neither cadence alone yields a morning send.
+    #
+    # So: ask early and often, and let a guard pick the first fire that lands in the morning
+    # window. This is safe because the send is already idempotent — notify_daily_digest records
+    # DIGEST|<utc-date> in telegram_bot/notified.json and returns early if it is present, so
+    # extra slots no-op rather than re-sending. That dedup is why this approach is available at
+    # all; do not remove it.
+    - cron: '0 1 * * *'
+    - cron: '0 3 * * *'
+    - cron: '0 5 * * *'
     - cron: '0 7 * * *'
+    - cron: '0 9 * * *'
   workflow_dispatch:
 
 jobs:
@@ -18,14 +41,51 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Decide whether THIS fire is the one that sends. Runs before pip install so a skipped
+      # slot costs seconds, not minutes.
+      #
+      # Preference order:
+      #   1. already sent today            -> skip (a later slot firing is normal, not an error)
+      #   2. inside 05:00-11:00 UTC        -> SEND. That is 08:00-14:00 Israel, the morning
+      #                                       window this digest is for.
+      #   3. at or past 12:00 UTC          -> SEND anyway. Fallback so a badly delayed day gets
+      #                                       an afternoon digest rather than none. That is no
+      #                                       worse than the behaviour this replaces.
+      #   4. before 05:00 UTC              -> skip. Too early to be useful: 08:00 Israel is the
+      #                                       floor, and the morning predict runs have not
+      #                                       refined today's board yet.
+      # Net effect: whichever slot first lands in the morning window wins; if GitHub is punctual
+      # the 05:00 slot wins, if it is 5h late the 01:00 slot wins. Both are mornings.
+      - name: Decide whether to send now
+        id: gate
+        run: |
+          H=$(date -u +%H)
+          KEY="DIGEST|$(date -u +%F)"
+          if grep -qF "$KEY" telegram_bot/notified.json 2>/dev/null; then
+            echo "send=false" >> "$GITHUB_OUTPUT"
+            echo "already sent today ($KEY) — skipping this slot"
+          elif [ "$H" -ge 05 ] && [ "$H" -le 11 ]; then
+            echo "send=true"  >> "$GITHUB_OUTPUT"
+            echo "hour ${H}:00 UTC is inside the morning window — sending"
+          elif [ "$H" -ge 12 ]; then
+            echo "send=true"  >> "$GITHUB_OUTPUT"
+            echo "hour ${H}:00 UTC is past the window and nothing sent today — sending as fallback"
+          else
+            echo "send=false" >> "$GITHUB_OUTPUT"
+            echo "hour ${H}:00 UTC is too early — waiting for a later slot"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.send == 'true'
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: steps.gate.outputs.send == 'true'
         run: pip install -r requirements.txt
 
       - name: Resolve yesterday's results before digest
+        if: steps.gate.outputs.send == 'true'
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
@@ -33,6 +93,7 @@ jobs:
         continue-on-error: true
 
       - name: Commit resolved results
+        if: steps.gate.outputs.send == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -55,6 +116,7 @@ jobs:
         continue-on-error: true
 
       - name: Send daily digest
+        if: steps.gate.outputs.send == 'true'
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -71,6 +133,7 @@ jobs:
           "
 
       - name: Commit dedup keys so digest isn't re-sent today
+        if: steps.gate.outputs.send == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
