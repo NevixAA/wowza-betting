@@ -1480,10 +1480,14 @@ def notify_props_daily_digest() -> bool:
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    today     = datetime.now()
+    # TODAY ONLY, UTC — same rule and same reasoning as notify_daily_digest. Both are sent by
+    # the same 07:00 UTC job, so they must agree on what "today" means or the two morning
+    # messages will disagree with each other about the same board.
+    today     = datetime.now(_dt.timezone.utc)
     today_str = today.strftime("%Y-%m-%d")
     yest_str  = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     hdr_date  = today.strftime("%a, %b %d").replace(" 0", " ")
+    props_upcoming = 0   # future-dated prop rows, for the footer line
 
     notified = _load_notified(PLAYER_NOTIFIED_FILE)
     props_digest_key = f"PROPS_DIGEST|{today_str}"
@@ -1520,7 +1524,18 @@ def notify_props_daily_digest() -> bool:
         try:
             from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
             all_props = pd.read_csv(player_file)
-            all_props = all_props[all_props["date"].astype(str).str[:10] >= today_str].copy()
+            _dates = all_props["date"].astype(str).str[:10]
+            # Count the footer with the SAME two filters this briefing applies below — prop
+            # leagues, and only tiers that would actually be sent. An unfiltered count is
+            # dominated by AVOID rows in leagues we never price, and AVOID on a prop usually
+            # means "never priced" rather than "rejected", so the raw number advertises a board
+            # that does not exist: 787 rows against 3 real ones when this was written.
+            props_upcoming = int((
+                (_dates > today_str)
+                & all_props["league"].isin(_PROP_LEAGUES.keys())
+                & all_props["tier"].isin(TIER_ORDER)
+            ).sum())
+            all_props = all_props[_dates == today_str].copy()
             all_props = all_props[all_props["league"].isin(_PROP_LEAGUES.keys())].copy()
             tips_data = all_props
         except Exception as e:
@@ -1559,6 +1574,12 @@ def notify_props_daily_digest() -> bool:
 
     if not player_file.exists():
         lines.append("  No player_tips.csv yet")
+
+    # Same reason as notify_daily_digest: under a `== today` filter, "nothing today" and "the
+    # date filter broke" look identical. Say what is on the board beyond today.
+    if props_upcoming:
+        lines.append(f"🗓 <b>Beyond today</b> — {props_upcoming} prop row(s) on the board")
+        lines.append("")
 
     msg1 = "\n".join(lines)
     sent1 = _send(token, chat_id, msg1)
@@ -1825,10 +1846,27 @@ def notify_daily_digest() -> bool:
     if not token or token == "YOUR_BOT_TOKEN":
         return False
 
-    today         = datetime.now()
+    # TODAY ONLY. Every upcoming-tip section below filters `== today_str`, not `>= today_str`.
+    # The old `>=` made this a "everything on the board" dump rather than a daily briefing: on
+    # 2026-09-10 it listed 225 items spanning six days (112 O/U + 73 side + 3 props + 37 sharp)
+    # when only 13 were actually today's. At 4,000 chars per Telegram message that is several
+    # screens of fixtures you cannot bet yet, which buries the ones you can.
+    #
+    # UTC, explicitly, and that matters more than it looks. `match_date` / `date` are UTC
+    # calendar days BY DESIGN — see _fmt_kickoff: display is converted to the league's local
+    # tz, the stored join/dedup key deliberately is not. A naive datetime.now() happens to be
+    # UTC on a GitHub runner but is Israel time when run by hand, and under `>=` that mismatch
+    # was harmless (you just got extra rows). Under `==` an off-by-one day silently matches
+    # NOTHING, so the basis has to be pinned. UTC is also the better betting-day boundary here:
+    # UTC midnight is 03:00 in Israel, so tonight's late kickoffs stay on today's list instead
+    # of jumping to tomorrow's digest.
+    today         = datetime.now(_dt.timezone.utc)
     today_str     = today.strftime("%Y-%m-%d")
     yesterday_str = (today - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     header_date   = today.strftime("%a, %b %d").replace(" 0", " ")
+    # What each section dropped as future-dated, for the one-line footer. A today-only digest
+    # makes "no tips" ambiguous — quiet day, or broken date filter? This distinguishes them.
+    upcoming: dict[str, int] = {}
 
     notified = _load_notified()
     digest_key = f"DIGEST|{today_str}"
@@ -1856,10 +1894,10 @@ def notify_daily_digest() -> bool:
             bl = pd.read_csv(ledger_file)
             if "source" in bl.columns:
                 bl = bl[bl["source"].astype(str) == "live"]
-            bl = bl[
-                bl["signal_tier"].isin(TIER_ORDER) &
-                (bl["match_date"].astype(str).str[:10] >= today_str)
-            ].copy()
+            _tier_ok = bl["signal_tier"].isin(TIER_ORDER)
+            _dates   = bl["match_date"].astype(str).str[:10]
+            upcoming["O/U 2.5"] = int((_tier_ok & (_dates > today_str)).sum())
+            bl = bl[_tier_ok & (_dates == today_str)].copy()
             ou_total = len(bl)
             # derive model_type from league for blanks so new-format tips can't show as standard
             if "model_type" not in bl.columns:
@@ -1909,10 +1947,10 @@ def notify_daily_digest() -> bool:
     if side_file.exists():
         try:
             side = pd.read_csv(side_file)
-            side = side[
-                side["signal_tier"].isin(TIER_ORDER) &
-                (side["match_date"].astype(str).str[:10] >= today_str)
-            ].copy()
+            _tier_ok = side["signal_tier"].isin(TIER_ORDER)
+            _dates   = side["match_date"].astype(str).str[:10]
+            upcoming["side markets"] = int((_tier_ok & (_dates > today_str)).sum())
+            side = side[_tier_ok & (_dates == today_str)].copy()
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = side[side["market"] == mkt] if "market" in side.columns else pd.DataFrame()
                 if ms.empty:
@@ -1947,7 +1985,15 @@ def notify_daily_digest() -> bool:
     if player_file.exists():
         try:
             all_props = pd.read_csv(player_file)
-            all_props = all_props[all_props["date"].astype(str).str[:10] >= today_str]
+            _dates = all_props["date"].astype(str).str[:10]
+            # Count only tiers this section actually reports. An unfiltered count is dominated
+            # by AVOID rows, and AVOID on a prop usually means "never priced" rather than
+            # "rejected" (enrich_with_odds skips unpriced rows before any edge is computed), so
+            # a raw total advertises a board of opportunities that does not exist — 787 rows
+            # against 3 real ones when this was written.
+            _rated = all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE", "WATCH"])
+            upcoming["player props"] = int((_rated & (_dates > today_str)).sum())
+            all_props = all_props[_dates == today_str]
             tips_count  = int(all_props["tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]).sum())
             watch_count = int((all_props["tier"] == "WATCH").sum())
             lines.append(
@@ -1965,10 +2011,10 @@ def notify_daily_digest() -> bool:
     if sharp_file.exists():
         try:
             sharp = pd.read_csv(sharp_file)
-            sharp = sharp[
-                sharp["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"]) &
-                (sharp["date"].astype(str).str[:10] >= today_str)
-            ].copy()
+            _sig_ok = sharp["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"])
+            _dates  = sharp["date"].astype(str).str[:10]
+            upcoming["sharp signals"] = int((_sig_ok & (_dates > today_str)).sum())
+            sharp = sharp[_sig_ok & (_dates == today_str)].copy()
             lines.append(f"💰 <b>Sharp Signals</b>  ({len(sharp)} signal{'s' if len(sharp) != 1 else ''})")
             if sharp.empty:
                 lines.append("  No signals today")
@@ -1989,10 +2035,10 @@ def notify_daily_digest() -> bool:
     if wc_file.exists():
         try:
             wc = pd.read_csv(wc_file)
-            wc = wc[
-                wc["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"]) &
-                (wc["date"].astype(str).str[:10] >= today_str)
-            ].copy()
+            _sig_ok = wc["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"])
+            _dates  = wc["date"].astype(str).str[:10]
+            upcoming["WC signals"] = int((_sig_ok & (_dates > today_str)).sum())
+            wc = wc[_sig_ok & (_dates == today_str)].copy()
             if not wc.empty:
                 lines.append(f"🌍 <b>WC Signals</b>  ({len(wc)} signal{'s' if len(wc) != 1 else ''})")
                 for _, r in wc.iterrows():
@@ -2003,6 +2049,16 @@ def notify_daily_digest() -> bool:
                 lines.append("")
         except Exception:
             pass
+
+    # One line for what is on the board beyond today. This exists so that "No tips today" can
+    # never be confused with a date filter that has quietly stopped matching — under `==` those
+    # two failure modes render identically, and that class of silent failure has burned this
+    # repo repeatedly. If this line disappears while fixtures obviously exist, suspect the date
+    # basis (UTC vs local) before suspecting the model.
+    _later = ", ".join(f"{n} {k}" for k, n in upcoming.items() if n)
+    if _later:
+        lines.append(f"🗓 <b>Beyond today</b> — {_later} on the board (not bettable yet)")
+        lines.append("")
 
     msg1 = "\n".join(lines)
     sent1 = _send(token, chat_id, msg1)
