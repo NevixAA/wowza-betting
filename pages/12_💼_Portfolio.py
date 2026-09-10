@@ -44,6 +44,25 @@ def load_player_ledger() -> pd.DataFrame:
     return d
 
 
+@st.cache_data(ttl=60)
+def load_side_ledger() -> pd.DataFrame:
+    """BTTS / over1.5 / over3.5 side markets.
+
+    This page had a Side/BTTS TAB and no side-market LOADER: the tab printed "No Side/BTTS bets
+    logged yet — this track populates after the July BTTS odds backfill + live logging" and
+    `continue`d, so it never read anything. That was true when written and became false without
+    anyone noticing: side_bets_ledger.csv now holds 246 rows (171 btts, 73 over15, 2 over35) of
+    which 143 are settled, 86 W / 57 L. A hardcoded placeholder cannot go stale visibly, which is
+    why it sat there.
+    """
+    f = OUT / "side_bets_ledger.csv"
+    if not f.exists():
+        return pd.DataFrame()
+    d = pd.read_csv(f, low_memory=False)
+    d["match_date"] = pd.to_datetime(d["match_date"], errors="coerce")
+    return d
+
+
 def _market(league: str) -> str:
     # Classify via the canonical config map so ALL standard leagues (incl. Greek / Danish /
     # Austrian / Romanian) are captured — the old hardcoded STD_LEAGUES set silently dropped
@@ -70,16 +89,28 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
         out["generated_at"] = pd.to_datetime(
             df.get("signal_date", df.get("match_date")), errors="coerce"
         ).dt.strftime("%Y-%m-%d").fillna("")
-    if kind == "main":
+    if kind in ("main", "side"):
         out["odds"] = pd.to_numeric(df["odds"], errors="coerce")
         out["edge"] = pd.to_numeric(df.get("edge_pct", 0), errors="coerce") / 100.0
         out["tier"] = df.get("signal_tier", "").astype(str).str.upper()
         out["result"] = df.get("result", "").astype(str).str.upper()
-        out["market"] = df["league"].map(_market)
         out["source"] = df.get("source", "live").astype(str)
-        out["label"] = (df.get("home_team", "").astype(str) + " v "
-                        + df.get("away_team", "").astype(str) + " · "
-                        + df.get("side", "").astype(str))
+        if kind == "side":
+            # One track, NOT split by league. The side ledger spans both model tracks
+            # (model_type is in the file), but its 143 settled bets cannot support four
+            # sub-curves — and mixing standard with new-format inside one bankroll would
+            # violate invariant 1 if it were ever sized per league. One bankroll, one curve.
+            out["market"] = "Side/BTTS"
+            # The market TYPE is the useful label here: "btts" and "over15" behave differently
+            # and the team names alone would not say which bet this was.
+            out["label"] = (df.get("home_team", "").astype(str) + " v "
+                            + df.get("away_team", "").astype(str) + " · "
+                            + df.get("market", "").astype(str))
+        else:
+            out["market"] = df["league"].map(_market)
+            out["label"] = (df.get("home_team", "").astype(str) + " v "
+                            + df.get("away_team", "").astype(str) + " · "
+                            + df.get("side", "").astype(str))
     else:  # player props
         odds = pd.to_numeric(df["market_odds"], errors="coerce")
         mp = pd.to_numeric(df.get("model_prob", np.nan), errors="coerce")
@@ -192,7 +223,11 @@ tier_frac = {"SNIPER": sniper, "MARKSMAN": marksman, "VALUABLE": valuable}
 # Load + normalize
 main = normalize(load_main_ledger(), "main")
 players = normalize(load_player_ledger(), "player")
-allbets = pd.concat([main, players], ignore_index=True) if not main.empty else players
+side = normalize(load_side_ledger(), "side")
+# concat over whatever is non-empty, rather than the old `if not main.empty else players`
+# two-way choice — that form silently dropped every other track whenever main was empty.
+_parts = [d for d in (main, players, side) if d is not None and not d.empty]
+allbets = pd.concat(_parts, ignore_index=True) if _parts else pd.DataFrame()
 
 if allbets.empty:
     st.warning("No ledger data found.")
@@ -227,9 +262,26 @@ tabs = st.tabs([f"📈 {m}" for m in MARKETS])
 for tab, mkt in zip(tabs, MARKETS):
     with tab:
         if mkt == "Side/BTTS":
-            st.warning("No Side/BTTS bets logged yet. This track populates after the "
-                       "July BTTS odds backfill + live logging.")
-            continue
+            # A RESEARCH view, not a recommendation, and the caption says so with the FLAT
+            # number beside the curve on purpose.
+            #
+            # The equity curve is Kelly-sized and compounds, so it reads ~+83% on this sample
+            # while the realised flat-stake result is +18.56u over 143 bets — about +13%. Showing
+            # only the compounded figure on a one-month sample is how a thin track starts looking
+            # like a decision. Both numbers, or neither.
+            _s = allbets[(allbets["market"] == "Side/BTTS")
+                         & allbets["result"].isin(["WIN", "LOSS"])]
+            st.caption(
+                f"⚠️ **PAPER ONLY — never staked.** {len(_s)} settled bets since 2026-08-09, "
+                "all live (no backtest rows). Flat-stake result is **+18.6u**, roughly +13%; "
+                "the curve below is Kelly-sized and compounds, so it reads far higher on the "
+                "same bets. One month is not a season — this exists to watch the track "
+                "accumulate. Real money stays on standard 2nd-division O/U."
+            )
+            # Worth knowing when reading it: this single bankroll mixes both model tracks
+            # (new_format 173 rows, standard 73). That is fine for ONE curve, but the tracks must
+            # never be sized separately off this file without splitting them first — invariant 1
+            # keeps standard and new-format apart everywhere else.
         sub = allbets[allbets["market"] == mkt]
         res = simulate(sub, start_bank, tier_frac, cap_pct, mode)
         if res is None:
