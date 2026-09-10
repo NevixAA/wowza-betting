@@ -79,8 +79,19 @@ def _cache_age_h(cache: Path) -> float:
     hashed size+mtime and so changed on every run; registry.age_hours documents the identical
     trap and avoids it by reading a recorded timestamp. Same fix here.
 
-    Falls back to mtime only when no timestamp has been recorded yet, so a cache written by an
-    older version still expires rather than being treated as ageless.
+    NO RECORDED TIMESTAMP MEANS STALE, NOT FRESH. The first version of this fix fell back to
+    mtime when the sidecar was absent, and that made the fix unable to fire at all:
+
+        no sidecar -> fall back to mtime -> CI mtime is checkout time, ~0h -> "fresh"
+        -> skip the fetch -> never write the sidecar -> no sidecar next run either
+
+    A permanent deadlock, reproducing the exact bug it was meant to cure. Verified 2026-09-10:
+    output/fpl_cache_meta.json had never been committed and fpl_bootstrap.json had still not
+    changed since 2026-07-27.
+
+    So an unknown age is now treated as infinitely old. Cost of being wrong: one extra API call
+    on the first run after deploy, which then writes the sidecar and settles. Cost of the other
+    default: serving a two-month-old squad list forever, which is what happened.
     """
     rec = _meta().get(cache.name)
     if rec:
@@ -88,10 +99,7 @@ def _cache_age_h(cache: Path) -> float:
             return (time.time() - float(rec)) / 3600.0
         except (TypeError, ValueError):
             pass
-    try:
-        return (time.time() - cache.stat().st_mtime) / 3600.0
-    except OSError:
-        return float("inf")
+    return float("inf")
 
 
 def _record_fetch(cache: Path) -> None:
