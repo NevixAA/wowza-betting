@@ -148,7 +148,7 @@ player_id,player_name,team,position,number,age
 161904,B. Barcola,Liverpool,M,29.0,23.0
 30410,F. Chiesa,Liverpool,F,14.0,28.0
 174565,H. Ekitike,Liverpool,F,22.0,23.0
-247,C. Gakpo,Liverpool,M,18.0,26.0
+247,C. Gakpo,Liverpool,F,18.0,26.0
 2864,A. Isak,Liverpool,F,9.0,26.0
 328107,L. Koumas,Liverpool,F,67.0,20.0
 338751,Víctor Muñoz,Liverpool,F,23.0,22.0
@@ -185,7 +185,7 @@ player_id,player_name,team,position,number,age
 978,K. Havertz,Arsenal,F,29.0,26.0
 136723,N. Madueke,Arsenal,F,20.0,23.0
 1460,B. Saka,Arsenal,M,7.0,24.0
-161800,C. Tzolis,Arsenal,F,17.0,23.0
+161800,C. Tzolis,Arsenal,M,17.0,23.0
 82855,T. King,Everton,G,31.0,30.0
 2932,J. Pickford,Everton,G,1.0,31.0
 18860,M. Travers,Everton,G,12.0,26.0
@@ -193,7 +193,7 @@ player_id,player_name,team,position,number,age
 284385,Elijah Xavier Campbell,Everton,D,5.0,21.0
 410421,G. Finney,Everton,D,16.0,18.0
 2934,M. Keane,Everton,D,5.0,32.0
-1456,A. Maitland-Niles,Everton,M,2.0,28.0
+1456,A. Maitland-Niles,Everton,D,2.0,28.0
 2165,V. Mykolenko,Everton,D,16.0,26.0
 270139,J. O&apos;Brien,Everton,D,15.0,24.0
 403066,W. Tamen,Everton,D,4.0,19.0
@@ -216,9 +216,9 @@ player_id,player_name,team,position,number,age
 156428,B. Austin,Tottenham,G,40.0,26.0
 18886,M. Dúbravka,Tottenham,G,39.0,36.0
 265826,A. Kinský,Tottenham,G,31.0,22.0
-19145,T. Adarabioyo,Tottenham,D,38.0,28.0
+19145,T. Adarabioyo,Tottenham,D,4.0,28.0
 164,B. Davies,Tottenham,D,33.0,32.0
-328089,A. Gray,Tottenham,M,14.0,19.0
+328089,A. Gray,Tottenham,D,14.0,19.0
 459203,M. Hardy,Tottenham,D,4.0,17.0
 47519,Pedro Porro,Tottenham,D,23.0,26.0
 289,A. Robertson,Tottenham,D,3.0,31.0
@@ -240,12 +240,12 @@ player_id,player_name,team,position,number,age
 380689,C. Olusesi,Tottenham,M,8.0,18.0
 162016,X. Simons,Tottenham,M,7.0,22.0
 31146,S. Tonali,Tottenham,M,16.0,25.0
-81573,Omar Marmoush,Tottenham,F,22.0,26.0
+81573,Omar Marmoush,Tottenham,M,22.0,26.0
 63577,M. Mudryk,Tottenham,M,27.0,24.0
 2413,Richarlison,Tottenham,F,9.0,28.0
 266657,Sávio,Tottenham,M,17.0,21.0
 18883,D. Solanke,Tottenham,F,19.0,28.0
-270510,M. Tel,Tottenham,M,11.0,20.0
+270510,M. Tel,Tottenham,F,11.0,20.0
 465310,L. Williams-Barnett,Tottenham,F,68.0,17.0
 19599,E. Martínez,Chelsea,G,1.0,33.0
 340151,M. Penders,Chelsea,G,39.0,20.0
@@ -345,7 +345,7 @@ player_id,player_name,team,position,number,age
 21998,A. Disasi,Crystal Palace,D,5.0,27.0
 557584,G. King,Crystal Palace,D,5.0,18.0
 162712,Óscar Mingueza,Crystal Palace,D,30.0,26.0
-182201,T. Mitchell,Crystal Palace,D,3.0,26.0
+182201,T. Mitchell,Crystal Palace,M,3.0,26.0
 278898,C. Riad,Crystal Palace,D,4.0,22.0
 126949,C. Richards,Crystal Palace,D,26.0,25.0
 2597,T. Tomiyasu,Crystal Palace,D,17.0,27.0
@@ -359,7 +359,7 @@ player_id,player_name,team,position,number,age
 288102,A. Wharton,Crystal Palace,M,20.0,21.0
 412227,Z. Gozo,Crystal Palace,F,12.0,18.0
 137303,E. Guessand,Crystal Palace,F,29.0,24.0
-338735,A. Khalaili,Crystal Palace,D,25.0,21.0
+338735,A. Khalaili,Crystal Palace,M,25.0,21.0
 2032,J. Strand Larsen,Crystal Palace,F,22.0,25.0
 25927,J. Mateta,Crystal Palace,F,14.0,28.0
 1468,E. Nketiah,Crystal Palace,F,9.0,26.0
@@ -417,11 +417,11 @@ player_id,player_name,team,position,number,age
 6002,E. Palacios,Ipswich,M,25.0,27.0
 18397,J. Taylor,Ipswich,M,14.0,27.0
 2380,C. Akpom,Ipswich,F,29.0,30.0
-19136,J. Clarke,Ipswich,F,47.0,25.0
+19136,J. Clarke,Ipswich,M,47.0,25.0
 342654,S. Egeli,Ipswich,F,8.0,19.0
 321648,Emersonn,Ipswich,F,19.0,21.0
 303467,A. Fatawu,Ipswich,M,7.0,22.0
-33224,D. Maeda,Ipswich,M,38.0,28.0
+33224,D. Maeda,Ipswich,F,38.0,28.0
 283290,K. McAteer,Ipswich,M,20.0,24.0
 286349,A. Mehmeti,Ipswich,F,33.0,24.0
 138931,J. Philogene,Ipswich,F,11.0,23.0
@@ -499,18 +499,18 @@ player_id,player_name,team,position,number,age
 70366,John,Nottingham Forest,G,12.0,29.0
 2919,M. Sels,Nottingham Forest,G,26.0,33.0
 357238,Keehan Willows,Nottingham Forest,G,1.0,20.0
-2771,O. Aina,Nottingham Forest,M,34.0,29.0
+2771,O. Aina,Nottingham Forest,D,34.0,29.0
 362711,Jair,Nottingham Forest,D,23.0,20.0
 354753,O. Diomande,Nottingham Forest,D,2.0,22.0
 2817,N. Milenković,Nottingham Forest,D,31.0,28.0
-13736,D. Muñoz,Nottingham Forest,D,27.0,29.0
+13736,D. Muñoz,Nottingham Forest,M,27.0,29.0
 363695,Murillo,Nottingham Forest,D,5.0,23.0
 163069,L. Netz,Nottingham Forest,D,25.0,22.0
 380663,J. Sinclair,Nottingham Forest,D,2.0,19.0
 329345,Jack Ethan Thompson,Nottingham Forest,D,26.0,20.0
 138780,N. Williams,Nottingham Forest,M,3.0,24.0
 6056,N. Domínguez,Nottingham Forest,M,8.0,27.0
-18746,M. Gibbs-White,Nottingham Forest,F,10.0,25.0
+18746,M. Gibbs-White,Nottingham Forest,M,10.0,25.0
 2298,C. Hudson-Odoi,Nottingham Forest,F,7.0,25.0
 158697,J. McAtee,Nottingham Forest,M,24.0,23.0
 444508,G. McDonnell,Nottingham Forest,M,10.0,17.0
@@ -522,7 +522,7 @@ player_id,player_name,team,position,number,age
 161948,L. Delap,Nottingham Forest,F,19.0,22.0
 9366,Igor Jesus,Nottingham Forest,F,11.0,24.0
 147831,A. Kalimuendo,Nottingham Forest,F,15.0,23.0
-48648,D. Ndoye,Nottingham Forest,F,14.0,25.0
+48648,D. Ndoye,Nottingham Forest,M,14.0,25.0
 18931,C. Wood,Nottingham Forest,F,9.0,34.0
 36878,M. Bizot,Aston Villa,G,40.0,34.0
 199578,Z. Suzuki,Aston Villa,G,1.0,23.0
@@ -572,9 +572,9 @@ player_id,player_name,team,position,number,age
 144753,T. Laplacette,Sunderland,D,77.0,25.0
 22225,Reinildo,Sunderland,D,17.0,32.0
 452697,D. Methalie,Sunderland,D,6.0,19.0
-264,T. Meunier,Sunderland,D,12.0,34.0
+264,T. Meunier,Sunderland,M,12.0,34.0
 1146,N. Mukiele,Sunderland,D,20.0,28.0
-19911,L. O&apos;Nien,Sunderland,D,13.0,31.0
+19911,L. O&apos;Nien,Sunderland,M,13.0,31.0
 662488,Jules Ahoka,Sunderland,M,29.0,20.0
 19446,A. Browne,Sunderland,M,8.0,30.0
 327631,H. Diarra,Sunderland,M,19.0,21.0
@@ -590,13 +590,13 @@ player_id,player_name,team,position,number,age
 646252,J. Angulo,Sunderland,F,50.0,18.0
 311543,N. Angulo,Sunderland,M,10.0,22.0
 38750,B. Brobbey,Sunderland,F,9.0,23.0
-361348,M. Fofana,Sunderland,M,39.0,20.0
+361348,M. Fofana,Sunderland,F,39.0,20.0
 553701,F. Geragusian,Sunderland,F,46.0,18.0
 84087,W. Isidor,Sunderland,F,18.0,25.0
 284414,R. Mundle,Sunderland,F,14.0,22.0
 400739,T. Ogunsuyi,Sunderland,F,9.0,19.0
 553730,F. Scott,Sunderland,F,15.0,18.0
-336659,C. Talbi,Sunderland,M,7.0,20.0
+336659,C. Talbi,Sunderland,F,7.0,20.0
 553665,T. Tuterov,Sunderland,M,57.0,20.0
 19341,D. Bentley,Coventry,G,25.0,32.0
 278088,C. Rushworth,Coventry,G,19.0,24.0
