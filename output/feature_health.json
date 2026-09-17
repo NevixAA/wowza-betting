@@ -1,34 +1,20 @@
 {
-  "ts": "2026-09-17T13:24:53.935202+00:00",
+  "ts": "2026-09-17T17:48:17.014017+00:00",
   "models": {
     "standard": {
       "fixtures": 75,
       "n_features": 42,
       "blank": [
-        "away_corners_pg_roll",
-        "away_fouls_pg_roll",
-        "away_ht_attack_str",
-        "away_ht_over05_rate",
-        "away_ht_over15_rate",
         "away_insidebox_last5",
         "away_xg_last5",
-        "home_corners_pg_roll",
-        "home_fouls_pg_roll",
-        "home_ht_attack_str",
-        "home_ht_conceded_last5",
-        "home_ht_over05_rate",
-        "home_ht_over15_rate",
-        "home_ht_scored_last5",
         "home_insidebox_last5",
         "home_xg_last5"
       ],
       "constant": [
-        "away_ht_conceded_last5",
-        "away_ht_scored_last5",
         "home_advantage"
       ],
-      "degenerate": 19,
-      "degenerate_pct": 45.2
+      "degenerate": 5,
+      "degenerate_pct": 11.9
     },
     "new_format": {
       "fixtures": 100,
