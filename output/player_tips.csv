@@ -1,106 +1,44 @@
 date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,position,market,model_prob,fair_odds,market_odds,fair_implied,edge_abs,edge_rel,ev,ges,confidence,lazy_factors,n_games,data_source,tier,kelly_stake
 2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,154,1490495.0,Lionel Messi,Inter Miami,F,goals,0.688,1.45,1.47,0.6418,0.0462,0.072,0.0114,0.779,0.623,,5,match_level,PAPER,0.0
 2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,154,,Lionel Messi,Inter Miami,F,goals,0.688,1.45,1.47,0.6418,0.0462,0.072,0.0114,0.779,0.623,,5,match_level,PAPER,0.0
-2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,154,,Lionel Messi,Inter Miami,F,sot,0.683,1.46,1.03,0.9159,-0.2329,-0.2543,-0.2965,0.779,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,154,1490495.0,Lionel Messi,Inter Miami,F,sot,0.683,1.46,1.03,0.9159,-0.2329,-0.2543,-0.2965,0.779,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,785,1552773.0,Cengiz Ünder,Marseille,F,sot,0.623,1.61,,,,,,0.733,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T17:45:00+00:00,Argentina Primera Division,San Lorenzo vs Boca Juniors,PROP_LEAGUE,35533,1493149.0,Enner Valencia,Boca Juniors,F,sot,0.615,1.63,,,,,,0.758,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,153,1552773.0,Ousmane Dembélé,Paris Saint Germain,F,sot,0.552,1.81,1.15,0.8203,-0.2683,-0.3271,-0.3652,0.723,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,47323,1570401.0,Mikel Oyarzabal,Real Sociedad,F,sot,0.527,1.9,1.43,0.6597,-0.1327,-0.2012,-0.2464,0.748,0.623,,5,match_level,PAPER,0.0
+2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,154,1490495.0,Lionel Messi,Inter Miami,F,sot,0.683,1.46,1.03,0.9159,-0.2329,-0.2543,-0.2965,0.779,0.623,,5,match_level,PAPER,0.0
+2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,154,,Lionel Messi,Inter Miami,F,sot,0.683,1.46,1.03,0.9159,-0.2329,-0.2543,-0.2965,0.779,0.623,,5,match_level,PAPER,0.0
 2026-09-21,2026-09-21T00:00:00+00:00,Mexico Liga MX,Toluca vs Santos Laguna,PROP_LEAGUE,51530,1550973.0,Federico Viñas,Toluca,F,sot,0.494,2.03,,,,,,0.695,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,154,1490495.0,Lionel Messi,Inter Miami,F,sot2,0.472,2.12,1.17,0.8063,-0.3343,-0.4146,-0.4478,,0.623,,5,match_level,AVOID,0.0
-2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,154,,Lionel Messi,Inter Miami,F,sot2,0.472,2.12,1.17,0.8063,-0.3343,-0.4146,-0.4478,,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,9363,1552773.0,Igor Paixão,Marseille,M,sot,0.46,2.18,1.61,0.586,-0.126,-0.215,-0.2594,0.485,0.623,,5,match_level,AVOID,0.0
+2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,154,1490495.0,Lionel Messi,Inter Miami,F,sot2,0.472,2.12,1.14,0.8275,-0.3555,-0.4296,-0.4619,,0.623,,5,match_level,PAPER,0.0
+2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,154,,Lionel Messi,Inter Miami,F,sot2,0.472,2.12,1.14,0.8275,-0.3555,-0.4296,-0.4619,,0.623,,5,match_level,AVOID,0.0
 2026-09-21,2026-09-21T00:00:00+00:00,Mexico Liga MX,CF Pachuca vs Club Tijuana,PROP_LEAGUE,2461,1550972.0,Salomón Rondón,CF Pachuca,F,sot,0.442,2.26,,,,,,0.45,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,274,1570401.0,Edinson Cavani,Valencia,F,sot,0.418,2.39,,,,,,0.499,0.623,,5,match_level,AVOID,
 2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,154,,Lionel Messi,Inter Miami,F,assists,0.417,2.4,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,154,1490495.0,Lionel Messi,Inter Miami,F,assists,0.417,2.4,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-20,2026-09-20T21:30:00+00:00,Brazil Serie A,Flamengo vs RB Bragantino,PROP_LEAGUE,16369,1492383.0,Gonzalo Plata,Flamengo,F,sot,0.413,2.42,,,,,,0.711,0.623,,5,match_level,AVOID,
 2026-09-20,,Brazil Serie A,Flamengo vs Bragantino-SP,MARKSMAN,16369,,Gonzalo Plata,Flamengo,F,sot,0.413,2.42,,,,,,0.711,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,19364,1552773.0,Neal Maupay,Marseille,F,sot,0.408,2.45,1.61,0.586,-0.178,-0.3037,-0.3431,0.676,0.623,,5,match_level,AVOID,0.0
 2026-09-26,,Mexico Liga MX,Atlante FC vs Monterrey,MARKSMAN,1911,,Lucas Ocampos,Monterrey,F,sot,0.403,2.48,,,,,,0.71,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,85041,1552773.0,Amine Gouiri,Marseille,F,sot,0.383,2.61,1.55,0.6086,-0.2256,-0.3707,-0.4063,0.639,0.623,,5,match_level,AVOID,0.0
 2026-09-26,,USA MLS,Philadelphia Union vs Orlando City SC,VALUABLE,56,,Antoine Griezmann,Orlando City SC,F,sot,0.37,2.7,,,,,,0.715,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,47264,1570401.0,Hugo Duro,Valencia,F,sot,0.357,2.8,,,,,,0.65,0.698,MINUTES,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,118956,1550127.0,Lameck Banda,Lecce,M,sot,0.33,3.03,,,,,,0.625,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,272,1550127.0,Adrien Rabiot,AC Milan,M,sot,0.325,3.07,1.67,0.5649,-0.2399,-0.4247,-0.4573,0.308,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,785,1552773.0,Cengiz Ünder,Marseille,F,goals,0.28,3.58,,,,,,0.733,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,2735,1552773.0,Pierre-Emile Højbjerg,Marseille,M,sot,0.27,3.71,,,,,,0.63,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,9,1552773.0,Achraf Hakimi,Paris Saint Germain,D,sot,0.267,3.74,1.73,0.5453,-0.2783,-0.5104,-0.5381,0.481,0.698,SET_PIECE,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,274300,1552773.0,Maghnes Akliouche,Paris Saint Germain,M,sot,0.267,3.74,1.22,0.7733,-0.5063,-0.6547,-0.6743,0.247,0.698,SET_PIECE,5,match_level,AVOID,0.0
+2026-09-26,,League One,Stevenage vs Sheffield Wednesday,VALUABLE,19866,,Jamal Lowe,Sheffield Wednesday,F,sot,0.339,2.95,,,,,,0.699,0.623,,5,match_level,AVOID,
 2026-09-20,2026-09-20T22:30:00+00:00,Brazil Serie A,Atletico Paranaense vs Bahia,PROP_LEAGUE,47319,1492380.0,Willian José,Bahia,F,sot,0.265,3.77,,,,,,0.631,0.623,,5,match_level,AVOID,
 2026-09-21,2026-09-21T00:30:00+00:00,Argentina Primera Division,Velez Sarsfield vs Tigre,PROP_LEAGUE,6065,1493151.0,Lucas Robertone,Velez Sarsfield,M,sot,0.263,3.8,,,,,,0.294,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,769,1550127.0,Alessandro Florenzi,AC Milan,M,sot,0.261,3.83,,,,,,0.453,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,409216,1552773.0,Senny Mayulu,Paris Saint Germain,M,sot,0.249,4.01,1.33,0.7093,-0.4603,-0.649,-0.6688,0.469,0.623,,5,match_level,AVOID,0.0
-2026-09-20,,La Liga 2,Leganés vs Granada CF,MARKSMAN,47485,,Rubén Alcaraz,Granada CF,M,sot,0.248,4.04,,,,,,0.47,0.623,,5,match_level,AVOID,
+2026-09-22,2026-09-22T00:15:00+00:00,Argentina Primera Division,Lanus vs Estudiantes L.P.,PROP_LEAGUE,1854,1493144.0,Joaquín Correa,Estudiantes L.P.,F,sot,0.249,4.01,,,,,,0.661,0.698,MINUTES,5,match_level,AVOID,
 2026-09-20,2026-09-20T23:00:00+00:00,USA MLS,Inter Miami vs San Diego,PROP_LEAGUE,747,1490495.0,Casemiro,Inter Miami,M,sot,0.248,4.04,,,,,,0.402,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,153,1552773.0,Ousmane Dembélé,Paris Saint Germain,F,goals,0.248,4.04,2.0,0.4717,-0.2237,-0.4742,-0.504,0.723,0.623,,5,match_level,AVOID,0.0
 2026-09-20,,USA MLS,Inter Miami CF vs San Diego FC,MARKSMAN,747,,Casemiro,Inter Miami,M,sot,0.248,4.04,,,,,,0.402,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,47485,1569934.0,Rubén Alcaraz,Granada CF,M,cards,0.239,4.18,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-26,,USA MLS,Philadelphia Union vs Orlando City SC,VALUABLE,338367,,Danley Jean Jacques,Philadelphia Union,M,cards,0.233,4.28,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,,La Liga 2,Leganés vs Granada CF,MARKSMAN,47485,,Rubén Alcaraz,Granada CF,M,cards,0.232,4.32,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,,La Liga 2,Leganés vs Granada CF,MARKSMAN,47414,,Gerard Gumbau,Granada CF,M,sot,0.227,4.4,,,,,,0.258,0.698,MINUTES,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,162127,1570401.0,Diego López,Valencia,M,sot,0.226,4.42,,,,,,0.41,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,302051,1569934.0,Seydouba Cisse,Leganes,M,sot,0.222,4.5,,,,,,0.455,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,32862,1570401.0,Takefusa Kubo,Real Sociedad,F,sot,0.221,4.53,2.05,0.4602,-0.2392,-0.5198,-0.547,0.624,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,785,1552773.0,Cengiz Ünder,Marseille,F,sot2,0.221,4.52,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,47485,1569934.0,Rubén Alcaraz,Granada CF,M,sot,0.22,4.55,,,,,,0.47,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,46933,1570401.0,Luis Rioja,Valencia,M,sot,0.216,4.63,2.88,0.3276,-0.1116,-0.3406,-0.3779,0.396,0.623,,5,match_level,AVOID,0.0
+2026-09-26,,League One,Stevenage vs Sheffield Wednesday,VALUABLE,347305,,Jaden Heskey,Sheffield Wednesday,M,cards,0.231,4.33,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-26,,League One,Stockport County FC vs Peterborough United,MARKSMAN,278391,,Oscar Wallin,Peterborough,D,cards,0.216,4.63,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,31507,1550127.0,Riccardo Sottil,Lecce,F,sot,0.215,4.66,,,,,,0.237,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,2449,1570401.0,Yangel Herrera,Real Sociedad,M,sot,0.212,4.73,,,,,,0.203,0.698,MINUTES,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,335071,1550127.0,Medon Berisha,Lecce,M,sot,0.208,4.81,2.3,0.4102,-0.2022,-0.4929,-0.5216,0.269,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,128384,1552773.0,Vitinha,Paris Saint Germain,M,sot,0.206,4.86,,,,,,0.231,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,335051,1552773.0,João Neves,Paris Saint Germain,M,sot,0.202,4.94,,,,,,0.417,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,6662,1550127.0,Santiago Pierotti,Lecce,M,sot,0.202,4.95,2.7,0.3494,-0.1474,-0.4219,-0.4546,0.276,0.623,,5,match_level,AVOID,0.0
 2026-09-26,,League One,Stockport County FC vs Peterborough United,MARKSMAN,284191,,Harry Leonard,Peterborough,F,sot,0.194,5.16,,,,,,0.744,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T17:45:00+00:00,Argentina Primera Division,San Lorenzo vs Boca Juniors,PROP_LEAGUE,35533,1493149.0,Enner Valencia,Boca Juniors,F,goals,0.193,5.18,3.1,0.2933,-0.1003,-0.3419,-0.4017,0.758,0.623,,5,match_level,AVOID,0.0
 2026-09-21,2026-09-21T00:00:00+00:00,Mexico Liga MX,Toluca vs Santos Laguna,PROP_LEAGUE,126741,1550973.0,Bruno Amione,Santos Laguna,D,cards,0.192,5.21,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,785,1552773.0,Cengiz Ünder,Marseille,F,assists,0.192,5.21,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,930,1570401.0,Carlos Soler,Real Sociedad,F,sot,0.186,5.39,2.38,0.3964,-0.2104,-0.5308,-0.5573,0.225,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,61774,1570401.0,Orri Óskarsson,Real Sociedad,F,sot,0.185,5.4,,,,,,0.755,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,754,1550127.0,Luka Modrić,AC Milan,M,sot,0.183,5.48,2.2,0.4288,-0.2458,-0.5732,-0.5974,0.394,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,153,1552773.0,Ousmane Dembélé,Paris Saint Germain,F,assists,0.183,5.48,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-24,2026-09-24T01:30:00+00:00,USA MLS,Seattle Sounders vs Real Salt Lake,PROP_LEAGUE,36868,1490209.0,Stijn Spierings,Real Salt Lake,M,cards,0.183,5.45,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-24,,USA MLS,Seattle Sounders FC vs Real Salt Lake,VALUABLE,36868,,Stijn Spierings,Real Salt Lake,M,cards,0.183,5.45,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-26,,League One,Stockport County FC vs Peterborough United,MARKSMAN,456025,,Adama Sidibeh,Stockport County,F,sot,0.179,5.57,,,,,,0.686,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,2433,1569934.0,Renato Tapia,Leganes,M,sot,0.178,5.6,,,,,,0.287,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,374359,1550127.0,Davide Bartesaghi,AC Milan,M,sot,0.178,5.63,2.88,0.3276,-0.1496,-0.4566,-0.4874,0.246,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,1748,1550127.0,Lassana Coulibaly,Lecce,M,sot,0.178,5.62,4.33,0.21,-0.032,-0.1522,-0.2293,0.276,0.623,,5,match_level,PAPER,0.0
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,2476,1570401.0,Guido Rodríguez,Valencia,M,sot,0.176,5.67,,,,,,0.596,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,634,1570401.0,David Silva,Real Sociedad,M,sot,0.175,5.72,,,,,,0.419,0.623,,5,match_level,AVOID,
-2026-09-20,,Brazil Serie A,Flamengo vs Bragantino-SP,MARKSMAN,1566,,Emerson Royal,Flamengo,D,cards,0.174,5.76,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-20,2026-09-20T21:30:00+00:00,Brazil Serie A,Flamengo vs RB Bragantino,PROP_LEAGUE,1566,1492383.0,Emerson Royal,Flamengo,D,cards,0.174,5.76,,,,,,,0.623,,5,match_level,AVOID,
+2026-09-20,,Brazil Serie A,Flamengo vs Bragantino-SP,MARKSMAN,1566,,Emerson Royal,Flamengo,D,cards,0.174,5.76,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-25,,Ireland Premier Division,Galway United vs Shelbourne Dublin,VALUABLE,94382,,Moses Dyer,Galway United,F,sot,0.173,5.77,,,,,,0.685,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,47314,1570401.0,Igor Zubeldia,Real Sociedad,D,cards,0.172,5.83,3.75,0.2424,-0.0704,-0.2905,-0.355,,0.623,,5,match_level,AVOID,0.0
 2026-09-26,,League One,Wycombe Wanderers vs Reading,VALUABLE,437566,,Ashqar Ahmed,Reading,D,cards,0.171,5.84,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,,Norway Eliteserien,SK Brann vs Bodø/Glimt,MARKSMAN,39243,,Sondre Tronstad,Brann,M,sot,0.17,5.89,,,,,,0.26,0.623,,5,match_level,AVOID,
 2026-09-25,,Ireland Premier Division,Galway United vs Shelbourne Dublin,VALUABLE,199405,,Gianfranco Facchineri,Galway United,D,cards,0.17,5.87,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,15673,1550127.0,Ylber Ramadani,Lecce,M,cards,0.169,5.93,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-21,2026-09-21T00:00:00+00:00,Mexico Liga MX,CF Pachuca vs Club Tijuana,PROP_LEAGUE,2461,1550972.0,Salomón Rondón,CF Pachuca,F,goals,0.168,5.97,2.1,0.4492,-0.2812,-0.626,-0.6472,0.45,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,2433,1569934.0,Renato Tapia,Leganes,M,cards,0.167,5.99,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-27,,USA MLS,San Jose Earthquakes vs Portland Timbers,MARKSMAN,210165,,Finn Surman,Portland Timbers,D,cards,0.166,6.04,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,197779,1550127.0,Mohamed Kaba,Lecce,M,sot,0.166,6.01,4.4,0.2066,-0.0406,-0.1966,-0.2696,0.287,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T17:30:00+00:00,Bundesliga,SC Paderborn 07 vs 1899 Hoffenheim,PROP_LEAGUE,387973,1575175.0,Max Moerstedt,1899 Hoffenheim,F,sot,0.166,6.01,1.36,0.6937,-0.5277,-0.7607,-0.7742,0.166,0.698,STARTER,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T17:45:00+00:00,Argentina Primera Division,San Lorenzo vs Boca Juniors,PROP_LEAGUE,35533,1493149.0,Enner Valencia,Boca Juniors,F,sot2,0.165,6.08,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,Brazil Serie A,Vitoria vs Cruzeiro,PROP_LEAGUE,10494,1492389.0,Matheus Henrique,Cruzeiro,M,sot,0.164,6.09,,,,,,0.231,0.698,SET_PIECE,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,45826,1550127.0,Strahinja Pavlović,AC Milan,D,sot,0.164,6.08,3.75,0.2424,-0.0784,-0.3235,-0.385,0.424,0.623,,5,match_level,AVOID,0.0
 2026-09-26,,USA MLS,Philadelphia Union vs Orlando City SC,VALUABLE,338367,,Danley Jean Jacques,Philadelphia Union,M,sot,0.163,6.15,,,,,,0.253,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,273,1552773.0,Marco Verratti,Paris Saint Germain,M,cards,0.162,6.16,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T17:45:00+00:00,Argentina Primera Division,San Lorenzo vs Boca Juniors,PROP_LEAGUE,271,1493149.0,Leandro Paredes,Boca Juniors,M,sot,0.162,6.17,,,,,,0.253,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,104832,1569934.0,Diego Pampín,Granada CF,D,cards,0.161,6.2,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,274300,1552773.0,Maghnes Akliouche,Paris Saint Germain,M,assists,0.161,6.22,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-27,,USA MLS,FC Dallas vs Los Angeles FC,VALUABLE,44836,,Ryan Porteous,Los Angeles FC,D,cards,0.161,6.2,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,263482,1552773.0,Nuno Mendes,Paris Saint Germain,D,sot,0.16,6.24,1.65,0.5718,-0.4118,-0.7202,-0.736,0.396,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,9,1552773.0,Achraf Hakimi,Paris Saint Germain,D,cards,0.159,6.29,3.7,0.2457,-0.0867,-0.3529,-0.4117,,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga,Valencia vs Real Sociedad,PROP_LEAGUE,47323,1570401.0,Mikel Oyarzabal,Real Sociedad,F,goals,0.158,6.33,3.0,0.3145,-0.1565,-0.4976,-0.526,0.748,0.623,,5,match_level,AVOID,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,136016,1550127.0,Hamza Rafia,Lecce,M,cards,0.158,6.31,,,,,,,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,491087,1552773.0,Dro Fernández,Paris Saint Germain,M,sot,0.158,6.32,,,,,,0.26,0.698,SET_PIECE,5,match_level,AVOID,
-2026-09-20,2026-09-20T19:00:00+00:00,La Liga 2,Leganes vs Granada CF,PROP_LEAGUE,47414,1569934.0,Gerard Gumbau,Granada CF,M,sot,0.158,6.32,,,,,,0.258,0.698,MINUTES,5,match_level,AVOID,
-2026-09-20,,La Liga 2,Leganés vs Granada CF,MARKSMAN,104832,,Diego Pampín,Granada CF,D,cards,0.157,6.36,,,,,,,0.623,,5,match_level,AVOID,
 2026-09-26,,League One,Stockport County FC vs Peterborough United,MARKSMAN,20481,,Kyle Wootton,Stockport County,F,sot,0.157,6.38,,,,,,0.699,0.623,,5,match_level,AVOID,
 2026-09-21,2026-09-21T00:00:00+00:00,Mexico Liga MX,CF Pachuca vs Club Tijuana,PROP_LEAGUE,2575,1550972.0,Jackson Porozo,Club Tijuana,D,sot,0.156,6.41,,,,,,0.416,0.623,,5,match_level,AVOID,
-2026-09-20,2026-09-20T17:30:00+00:00,Serie B,Modena vs Empoli,PROP_LEAGUE,56207,1601539.0,Paulo Azzi,Modena,M,sot,0.155,6.47,,,,,,0.289,0.698,STARTER,5,match_level,AVOID,
-2026-09-20,2026-09-20T18:45:00+00:00,Serie A,AC Milan vs Lecce,PROP_LEAGUE,6662,1550127.0,Santiago Pierotti,Lecce,M,cards,0.153,6.53,5.8,0.1499,0.0031,0.0205,-0.1126,,0.623,,5,match_level,PAPER,0.0
-2026-09-20,2026-09-20T18:45:00+00:00,Ligue 1,Marseille vs Paris Saint Germain,PROP_LEAGUE,307835,1552773.0,Lucas Beraldo,Paris Saint Germain,M,sot,0.153,6.55,,,,,,0.424,0.623,,5,match_level,AVOID,
 2026-09-25,,Ireland Premier Division,Galway United vs Shelbourne Dublin,VALUABLE,94382,,Moses Dyer,Galway United,F,cards,0.153,6.54,,,,,,,0.623,,5,match_level,AVOID,
+2026-09-26,,League One,Stevenage vs Sheffield Wednesday,VALUABLE,44809,,Max Lowe,Sheffield Wednesday,M,cards,0.153,6.53,,,,,,,0.623,,5,match_level,AVOID,
+2026-09-26,,League One,Stevenage vs Sheffield Wednesday,VALUABLE,162168,,Louie Barry,Sheffield Wednesday,F,sot,0.152,6.6,,,,,,0.641,0.623,,5,match_level,AVOID,
+2026-09-26,,League One,Stevenage vs Sheffield Wednesday,VALUABLE,331563,,Mason Burstow,Sheffield Wednesday,F,sot,0.151,6.6,,,,,,0.688,0.623,,5,match_level,AVOID,
