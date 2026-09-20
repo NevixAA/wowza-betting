@@ -4,8 +4,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Argentina Primera Division",
-    "priced_events": 171,
-    "probes": 172,
+    "priced_events": 172,
+    "probes": 173,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -13,8 +13,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Austrian Bundesliga",
-    "priced_events": 185,
-    "probes": 185,
+    "priced_events": 186,
+    "probes": 186,
     "source": "api_football"
   },
   "apifootball:Brazil Serie A": {
@@ -22,8 +22,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Brazil Serie A",
-    "priced_events": 194,
-    "probes": 194,
+    "priced_events": 195,
+    "probes": 195,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -99,8 +99,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Ireland Premier Division",
-    "priced_events": 212,
-    "probes": 266,
+    "priced_events": 213,
+    "probes": 267,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -115,8 +115,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "La Liga 2",
-    "priced_events": 264,
-    "probes": 268,
+    "priced_events": 265,
+    "probes": 269,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -124,8 +124,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "League One",
-    "priced_events": 254,
-    "probes": 271,
+    "priced_events": 255,
+    "probes": 272,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -149,8 +149,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Mexico Liga MX",
-    "priced_events": 193,
-    "probes": 194,
+    "priced_events": 194,
+    "probes": 195,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -158,8 +158,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Norway Eliteserien",
-    "priced_events": 138,
-    "probes": 158,
+    "priced_events": 139,
+    "probes": 159,
     "source": "api_football"
   },
   "apifootball:Romanian Superliga": {
@@ -176,8 +176,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Serie B",
-    "priced_events": 198,
-    "probes": 263,
+    "priced_events": 199,
+    "probes": 264,
     "source": "api_football"
   },
   "apifootball:Sweden Allsvenskan": {
@@ -226,11 +226,11 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Premier League",
-    "matched_events": 8,
-    "priced_events": 1883,
-    "probes": 1931,
+    "matched_events": 1,
+    "priced_events": 1884,
+    "probes": 1932,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 1
   },
   "soccer_france_ligue_one": {
     "empty_streak": 0,
@@ -238,11 +238,11 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Ligue 1",
-    "matched_events": 8,
-    "priced_events": 1693,
-    "probes": 1744,
+    "matched_events": 2,
+    "priced_events": 1695,
+    "probes": 1746,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 2
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 0,
@@ -250,14 +250,11 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Bundesliga",
-    "matched_events": 6,
-    "priced_events": 1116,
-    "probes": 1189,
-    "unmatched_sample": [
-      "FC Schalke 04 vs SV Elversberg",
-      "Union Berlin vs SV Elversberg"
-    ],
-    "wanted_fixtures": 8
+    "matched_events": 2,
+    "priced_events": 1118,
+    "probes": 1191,
+    "unmatched_sample": [],
+    "wanted_fixtures": 2
   },
   "soccer_germany_bundesliga2": {
     "empty_streak": 24,
@@ -278,13 +275,11 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Serie A",
-    "matched_events": 7,
-    "priced_events": 1948,
-    "probes": 1999,
-    "unmatched_sample": [
-      "Inter vs Parma"
-    ],
-    "wanted_fixtures": 8
+    "matched_events": 2,
+    "priced_events": 1950,
+    "probes": 2001,
+    "unmatched_sample": [],
+    "wanted_fixtures": 2
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
@@ -292,11 +287,11 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "La Liga",
-    "matched_events": 8,
-    "priced_events": 1733,
-    "probes": 1853,
+    "matched_events": 4,
+    "priced_events": 1737,
+    "probes": 1857,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 4
   },
   "soccer_uefa_champs_league": {
     "empty_streak": 0,
@@ -347,13 +342,13 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "USA MLS",
-    "matched_events": 6,
-    "priced_events": 959,
-    "probes": 1026,
+    "matched_events": 5,
+    "priced_events": 961,
+    "probes": 1028,
     "unmatched_sample": [
-      "Seattle Sounders vs Minnesota United FC",
+      "Inter Miami vs San Diego",
       "Seattle Sounders vs Real Salt Lake"
     ],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 7
   }
 }
