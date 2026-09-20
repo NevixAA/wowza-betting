@@ -4,8 +4,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Argentina Primera Division",
-    "priced_events": 176,
-    "probes": 177,
+    "priced_events": 177,
+    "probes": 178,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -99,8 +99,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Ireland Premier Division",
-    "priced_events": 217,
-    "probes": 271,
+    "priced_events": 218,
+    "probes": 272,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -111,12 +111,12 @@
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "La Liga 2",
     "priced_events": 268,
-    "probes": 272,
+    "probes": 273,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -124,8 +124,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "League One",
-    "priced_events": 259,
-    "probes": 276,
+    "priced_events": 260,
+    "probes": 277,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -149,8 +149,8 @@
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "Mexico Liga MX",
-    "priced_events": 198,
-    "probes": 199,
+    "priced_events": 199,
+    "probes": 200,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -337,18 +337,17 @@
   },
   "soccer_usa_mls": {
     "empty_streak": 0,
-    "far_empty_probes": 60,
+    "far_empty_probes": 61,
     "last_near_empty": "2026-09-20",
     "last_priced": "2026-09-20",
     "last_probe": "2026-09-20",
     "league": "USA MLS",
-    "matched_events": 6,
-    "priced_events": 967,
-    "probes": 1035,
+    "matched_events": 5,
+    "priced_events": 968,
+    "probes": 1037,
     "unmatched_sample": [
-      "Seattle Sounders vs Minnesota United FC",
       "Seattle Sounders vs Real Salt Lake"
     ],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 6
   }
 }
