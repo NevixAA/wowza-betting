@@ -8,27 +8,27 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 333682,Cristhian Mosquera,Arsenal,D,0.0,0.0,0.0,0.2,0.4,62.2,6.86,0.0,5.0,1.0
 22090,W. Saliba,Arsenal,D,0.0,0.0,0.0,0.0,0.2,90.0,7.3,0.0,5.0,1.0
 19959,B. White,Arsenal,D,0.0,0.0,0.0,0.0,0.0,58.6,6.88,0.0,5.0,1.0
-47315,Martín Zubimendi,Arsenal,D,0.0,0.0,0.0,0.0,0.0,64.0,6.78,0.0,5.0,1.0
 348818,B. Clarke,Arsenal,D,,,,,,,,,,
 482903,M. Salmon,Arsenal,D,,,,,,,,,,
 18979,V. Gyökeres,Arsenal,F,0.4,0.2,0.8,1.2,0.0,48.6,6.84,0.0,5.0,1.0
 978,K. Havertz,Arsenal,F,0.4,0.4,0.6,1.2,0.2,53.0,6.88,0.0,5.0,1.0
-1460,B. Saka,Arsenal,F,0.4,0.4,0.6,2.0,0.2,79.0,7.38,0.0,5.0,1.0
+136723,N. Madueke,Arsenal,F,0.2,0.0,0.6,0.6,0.0,52.8,6.7,0.0,5.0,1.0
 457731,A. Annous,Arsenal,F,,,,,,,,,,
-161800,C. Tzolis,Arsenal,F,,,,,,,,,,
 2273,Kepa,Arsenal,G,0.0,0.0,0.0,0.0,0.0,90.0,6.86,1.8,5.0,1.0
 20619,I. Meslier,Arsenal,G,0.0,0.0,0.0,0.0,0.0,90.0,5.48,2.2,5.0,1.0
 19465,David Raya,Arsenal,G,0.0,0.0,0.0,0.0,0.0,90.0,6.94,1.8,5.0,1.0
 403221,K. Ranson,Arsenal,G,,,,,,,,,,
+1460,B. Saka,Arsenal,M,0.4,0.4,0.6,2.0,0.2,79.0,7.38,0.0,5.0,1.0
 442044,M. Dowman,Arsenal,M,0.2,0.0,0.2,0.6,0.0,27.2,6.68,0.0,5.0,1.0
 19586,E. Eze,Arsenal,M,0.2,0.0,0.8,1.6,0.0,57.2,7.0,0.0,5.0,1.0
 47311,Mikel Merino,Arsenal,M,0.2,0.0,0.6,1.2,0.2,35.2,6.88,0.0,5.0,1.0
-136723,N. Madueke,Arsenal,M,0.2,0.0,0.6,0.6,0.0,52.8,6.7,0.0,5.0,1.0
 10135,Bruno Guimarães,Arsenal,M,0.0,0.2,1.0,1.6,0.2,81.8,7.3,0.0,5.0,1.0
 37127,M. Ødegaard,Arsenal,M,0.0,0.4,0.2,0.2,0.0,61.0,7.0,0.0,5.0,1.0
 2937,D. Rice,Arsenal,M,0.0,0.0,0.0,0.0,0.2,84.8,7.2,0.0,5.0,1.0
+47315,Martín Zubimendi,Arsenal,M,0.0,0.0,0.0,0.0,0.0,64.0,6.78,0.0,5.0,1.0
 409798,Louie George Copley,Arsenal,M,,,,,,,,,,
 457730,I. Ibrahim,Arsenal,M,,,,,,,,,,
+161800,C. Tzolis,Arsenal,M,,,,,,,,,,
 19298,M. Cash,Aston Villa,D,0.0,0.2,0.0,0.0,0.2,79.0,6.38,0.0,5.0,1.0
 144729,T. Harwood-Bellis,Aston Villa,D,0.0,0.0,0.2,0.2,0.2,87.4,6.94,0.0,5.0,1.0
 889,V. Lindelöf,Aston Villa,D,0.0,0.0,0.0,0.4,0.0,74.4,6.56,0.0,5.0,1.0
@@ -102,8 +102,9 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 44871,A. Hickey,Brentford,D,0.0,0.0,0.0,0.2,0.0,35.0,6.78,0.0,5.0,1.0
 342022,M. Kayode,Brentford,D,0.0,0.0,0.2,0.2,0.4,90.0,6.66,0.0,5.0,1.0
 36922,S. van den Berg,Brentford,D,0.0,0.0,0.2,0.4,0.2,90.0,7.02,0.0,5.0,1.0
+106725,K. Lewis-Potter,Brentford,D,0.0,0.2,0.4,0.6,0.0,89.6,6.44,0.0,5.0,1.0
 441271,Jannik Schuster,Brentford,D,,,,,,,,,,
-196855,J. Anthony,Brentford,F,0.2,0.2,0.8,1.4,0.0,87.8,6.48,0.0,5.0,0.9
+284797,D. Ouattara,Brentford,F,0.4,0.0,0.8,2.6,0.2,76.2,7.08,0.0,5.0,1.0
 196156,Thiago,Brentford,F,0.2,0.0,0.8,1.2,0.2,90.0,6.42,0.0,5.0,1.0
 2939,C. Wilson,Brentford,F,0.2,0.0,0.6,0.6,0.0,38.4,6.84,0.0,5.0,1.0
 427736,Gustavo Gomes,Brentford,F,,,,,,,,,,
@@ -113,14 +114,13 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 61742,H. Valdimarsson,Brentford,G,0.0,0.0,0.0,0.0,0.0,90.0,6.25,1.0,2.0,1.0
 19340,E. Balcombe,Brentford,G,,,,,,,,,,
 363998,A. Stokes,Brentford,G,,,,,,,,,,
-284797,D. Ouattara,Brentford,M,0.4,0.0,0.8,2.6,0.2,76.2,7.08,0.0,5.0,1.0
 153066,Fábio Carvalho,Brentford,M,0.2,0.0,0.4,0.6,0.0,28.0,6.66,0.0,5.0,1.0
 15908,M. Damsgaard,Brentford,M,0.2,0.0,0.4,1.0,0.0,71.0,7.32,0.0,5.0,1.0
 47438,M. Jensen,Brentford,M,0.2,0.0,0.2,0.6,0.0,83.2,6.98,0.0,5.0,1.0
 178077,K. Schade,Brentford,M,0.2,0.0,0.4,0.8,0.0,72.0,6.42,0.0,5.0,1.0
+196855,J. Anthony,Brentford,M,0.2,0.2,0.8,1.4,0.0,87.8,6.48,0.0,5.0,0.9
 19362,J. Dasilva,Brentford,M,0.0,0.0,0.0,0.2,0.0,13.2,6.5,0.0,5.0,1.0
 25073,V. Janelt,Brentford,M,0.0,0.0,0.0,0.4,0.4,63.4,6.66,0.0,5.0,1.0
-106725,K. Lewis-Potter,Brentford,M,0.0,0.2,0.4,0.6,0.0,89.6,6.44,0.0,5.0,1.0
 263538,Y. Yarmolyuk,Brentford,M,0.0,0.0,0.0,0.2,0.0,87.6,7.08,0.0,5.0,1.0
 513316,Luka Bentt,Brentford,M,,,,,,,,,,
 327726,R. Owen,Brentford,M,,,,,,,,,,
@@ -128,8 +128,9 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 18963,L. Dunk,Brighton,D,0.2,0.0,0.2,1.0,0.2,90.0,7.24,0.0,5.0,1.0
 1361,F. Kadıoğlu,Brighton,D,0.2,0.0,0.8,1.0,0.0,90.0,6.88,0.0,5.0,1.0
 22160,O. Boscagli,Brighton,D,0.0,0.0,0.0,0.0,0.2,90.0,7.1,0.0,5.0,1.0
-162007,M. De Cuyper,Brighton,D,0.0,0.6,0.0,0.2,0.0,50.2,7.34,0.0,5.0,1.0
 64003,P. Struijk,Brighton,D,0.0,0.0,0.0,0.8,0.2,83.2,6.74,0.0,5.0,0.91
+204037,Costinha,Brighton,D,,,,,,,,,,
+271539,J. Hadjam,Brighton,D,,,,,,,,,,
 7090,M. Svoboda,Brighton,D,,,,,,,,,,
 387521,L. Vušković,Brighton,D,,,,,,,,,,
 383685,Y. Minteh,Brighton,F,0.2,0.0,0.2,0.6,0.2,78.2,6.8,0.0,5.0,1.0
@@ -146,11 +147,10 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 305730,J. Hinshelwood,Brighton,M,0.6,0.0,1.4,2.0,0.0,84.2,7.04,0.0,5.0,1.0
 19030,M. O&apos;Riley,Brighton,M,0.4,0.2,0.6,1.0,0.0,44.8,6.88,0.0,5.0,1.0
 92993,M. Wieffer,Brighton,M,0.4,0.0,0.4,0.4,0.2,66.6,6.94,0.0,5.0,1.0
+162007,M. De Cuyper,Brighton,M,0.0,0.6,0.0,0.2,0.0,50.2,7.34,0.0,5.0,1.0
 265820,Y. Ayari,Brighton,M,0.0,0.2,0.0,0.0,0.0,42.4,6.68,0.0,5.0,1.0
 278370,D. Gómez,Brighton,M,0.0,0.2,0.2,1.6,0.2,56.2,6.66,0.0,5.0,1.0
 18970,P. Groß,Brighton,M,0.0,0.0,1.0,1.0,0.0,90.0,6.88,0.0,5.0,1.0
-204037,Costinha,Brighton,M,,,,,,,,,,
-271539,J. Hadjam,Brighton,M,,,,,,,,,,
 388871,José María Andrés Baixauli,Brighton,M,,,,,,,,,,
 282637,O. Azeez,Brighton,M,,,,,,,,,,
 579114,Y. Ibrahim,Brighton,M,,,,,,,,,,
@@ -164,7 +164,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 341642,J. Hato,Chelsea,D,0.0,0.0,0.0,0.0,0.6,82.4,6.66,0.0,5.0,1.0
 20995,M. Lacroix,Chelsea,D,0.0,0.0,0.6,0.6,0.2,84.2,6.72,0.0,5.0,1.0
 422780,A. Anselmino,Chelsea,D,,,,,,,,,,
-181734,Pep Chavarría,Chelsea,D,,,,,,,,,,
 383018,M. Palestra,Chelsea,D,,,,,,,,,,
 425733,Estêvão,Chelsea,F,0.2,0.2,0.6,1.4,0.2,48.2,6.68,0.0,5.0,1.0
 10329,João Pedro,Chelsea,F,0.2,0.0,0.4,1.6,0.2,85.8,6.92,0.0,5.0,1.0
@@ -183,6 +182,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 292,J. Henderson,Chelsea,M,0.0,0.0,0.0,0.0,0.4,55.6,6.7,0.0,5.0,1.0
 282125,R. Lavia,Chelsea,M,0.0,0.0,0.0,0.4,0.0,48.0,6.78,0.0,5.0,1.0
 1864,Pedro Neto,Chelsea,M,0.0,0.4,0.4,0.4,0.0,84.8,6.74,0.0,5.0,1.0
+181734,Pep Chavarría,Chelsea,M,,,,,,,,,,
 586131,R. Watson,Chelsea,M,,,,,,,,,,
 419582,Geovany Tcherno Quenda,Chelsea,M,,,,,,,,,,
 19789,E. Pinnock,Coventry,D,0.0,0.0,0.2,0.4,0.2,80.8,6.78,0.0,5.0,1.0
@@ -196,8 +196,8 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 8598,T. Awoniyi,Coventry,F,0.4,0.2,0.6,1.0,0.2,44.2,6.96,0.0,5.0,1.0
 138786,E. Simms,Coventry,F,0.2,0.0,0.2,0.6,0.0,24.8,6.74,0.0,5.0,1.0
 161621,L. Tchaouna,Coventry,F,0.2,0.2,0.4,0.4,0.2,81.8,6.62,0.0,5.0,1.0
-20372,J. Rudoni,Coventry,F,,,,,,,,,,
 421875,S. Cherif,Coventry,F,,,,,,,,,,
+84128,Y. Gboho,Coventry,F,,,,,,,,,,
 82090,B. Thomas-Asante,Coventry,F,,,,,,,,,,
 427,H. Wright,Coventry,F,,,,,,,,,,
 19341,D. Bentley,Coventry,G,0.0,0.0,0.0,0.0,0.0,90.0,7.06,3.0,5.0,1.0
@@ -209,10 +209,10 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 37961,M. van Ewijk,Coventry,M,,,,,,,,,,
 19984,J. Eccles,Coventry,M,,,,,,,,,,
 19328,M. Grimes,Coventry,M,,,,,,,,,,
+20372,J. Rudoni,Coventry,M,,,,,,,,,,
 33462,T. Sakamoto,Coventry,M,,,,,,,,,,
 16046,V. Torp,Coventry,M,,,,,,,,,,
 475575,Caleb Marfo Yirenkyi,Coventry,M,,,,,,,,,,
-84128,Y. Gboho,Coventry,M,,,,,,,,,,
 18404,E. Mason-Clark,Coventry,M,,,,,,,,,,
 2933,B. Chilwell,Crystal Palace,D,0.2,0.0,0.4,0.8,0.0,41.0,7.06,0.0,5.0,1.0
 2597,T. Tomiyasu,Crystal Palace,D,0.2,0.0,0.2,1.0,0.0,75.2,6.98,0.0,5.0,1.0
@@ -254,8 +254,8 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 410421,G. Finney,Everton,D,,,,,,,,,,
 403066,W. Tamen,Everton,D,,,,,,,,,,
 343684,T. Barry,Everton,F,0.4,0.0,0.8,1.2,0.0,47.4,6.9,0.0,5.0,1.0
+304317,T. Dibling,Everton,F,0.0,0.0,0.0,0.2,0.2,50.4,6.5,0.0,5.0,1.0
 334037,Tyrique George,Everton,F,0.0,0.0,0.2,0.4,0.0,18.0,6.8,0.0,5.0,1.0
-129711,B. Johnson,Everton,F,0.0,0.0,0.0,0.4,0.0,69.8,6.62,0.0,5.0,1.0
 413034,B. Graham,Everton,F,,,,,,,,,,
 2932,J. Pickford,Everton,G,0.0,0.0,0.0,0.0,0.0,90.0,6.9,1.8,5.0,1.0
 18860,M. Travers,Everton,G,0.0,0.0,0.0,0.0,0.0,90.0,7.64,4.0,5.0,1.0
@@ -267,7 +267,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 895,J. Garner,Everton,M,0.0,0.2,0.4,0.6,0.6,90.0,7.14,0.0,5.0,1.0
 19187,J. Grealish,Everton,M,0.0,0.4,0.0,0.4,0.4,75.6,6.84,0.0,5.0,1.0
 30407,C. Nørgaard,Everton,M,0.0,0.0,0.2,0.4,0.0,19.8,6.5,0.0,5.0,1.0
-304317,T. Dibling,Everton,M,0.0,0.0,0.0,0.2,0.2,50.4,6.5,0.0,5.0,1.0
+129711,B. Johnson,Everton,M,0.0,0.0,0.0,0.4,0.0,69.8,6.62,0.0,5.0,1.0
 410423,H. Foster,Everton,M,,,,,,,,,,
 179685,H. Hackney,Everton,M,,,,,,,,,,
 588468,Malik Olayiwola,Everton,M,,,,,,,,,,
@@ -315,7 +315,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 380873,Ilyas  Ansah,Hull City,F,,,,,,,,,,
 274312,M. Cho,Hull City,F,,,,,,,,,,
 557455,D. Daley,Hull City,F,,,,,,,,,,
-18599,S. Thomas,Hull City,F,,,,,,,,,,
 435482,R. Vaz,Hull City,F,,,,,,,,,,
 2930,J. Butland,Hull City,G,,,,,,,,,,
 615629,Archie Howard,Hull City,G,,,,,,,,,,
@@ -335,6 +334,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 226765,E. Stroud,Hull City,M,,,,,,,,,,
 338046,Óscar Steven Zambrano Preciado,Hull City,M,,,,,,,,,,
 299923,M. Belloumi,Hull City,M,,,,,,,,,,
+18599,S. Thomas,Hull City,M,,,,,,,,,,
 18814,I. Diop,Ipswich,D,0.2,0.0,0.2,0.2,0.2,80.2,6.92,0.0,5.0,1.0
 19119,L. Davis,Ipswich,D,0.0,0.0,0.0,0.4,0.0,72.8,6.44,0.0,5.0,1.0
 127579,J. Greaves,Ipswich,D,0.0,0.0,0.0,0.4,0.2,90.0,7.2,0.0,5.0,1.0
@@ -343,7 +343,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 19546,C. Kipré,Ipswich,D,,,,,,,,,,
 358166,A. Ouattara,Ipswich,D,,,,,,,,,,
 36927,Z. Flemming,Ipswich,F,0.4,0.0,0.4,1.2,0.4,82.4,6.88,0.0,5.0,0.86
-19136,J. Clarke,Ipswich,F,0.0,0.0,0.0,0.2,0.0,37.2,6.6,0.0,5.0,0.98
+138931,J. Philogene,Ipswich,F,0.4,0.0,1.2,1.8,0.0,70.8,6.96,0.0,5.0,1.0
 2380,C. Akpom,Ipswich,F,,,,,,,,,,
 342654,S. Egeli,Ipswich,F,,,,,,,,,,
 321648,Emersonn,Ipswich,F,,,,,,,,,,
@@ -353,12 +353,12 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 18958,D. Button,Ipswich,G,,,,,,,,,,
 482073,Alex Noonan,Ipswich,G,,,,,,,,,,
 37276,K. Scherpen,Ipswich,G,,,,,,,,,,
-138931,J. Philogene,Ipswich,M,0.4,0.0,1.2,1.8,0.0,70.8,6.96,0.0,5.0,1.0
 70747,J. Enciso,Ipswich,M,0.2,0.0,0.8,2.2,0.0,73.2,6.72,0.0,5.0,1.0
 283290,K. McAteer,Ipswich,M,0.2,0.0,0.8,1.0,0.4,74.4,6.86,0.0,5.0,1.0
 575,Florentino,Ipswich,M,0.0,0.0,0.2,0.6,0.2,72.6,6.6,0.0,5.0,1.0
 2823,S. Lukić,Ipswich,M,0.0,0.0,0.6,0.8,0.6,90.0,6.68,0.0,5.0,1.0
 18397,J. Taylor,Ipswich,M,0.0,0.0,0.0,0.2,0.2,52.0,6.44,0.0,5.0,1.0
+19136,J. Clarke,Ipswich,M,0.0,0.0,0.0,0.2,0.0,37.2,6.6,0.0,5.0,0.98
 303467,A. Fatawu,Ipswich,M,0.0,0.2,0.6,1.2,0.0,63.8,7.08,0.0,5.0,1.0
 646285,C. Compton,Ipswich,M,,,,,,,,,,
 37236,A. Matusiwa,Ipswich,M,,,,,,,,,,
@@ -492,6 +492,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 158694,T. Livramento,Newcastle,D,0.0,0.0,0.0,0.0,0.0,64.8,6.74,0.0,5.0,1.0
 2806,F. Schär,Newcastle,D,0.0,0.0,0.6,1.4,0.2,87.2,7.1,0.0,5.0,1.0
 163189,M. Thiaw,Newcastle,D,0.0,0.0,0.2,0.2,0.0,90.0,6.92,0.0,5.0,1.0
+328105,L. Miley,Newcastle,D,0.0,0.2,0.2,0.2,0.0,90.0,6.86,0.0,5.0,1.0
 7318,A. Dedić,Newcastle,D,,,,,,,,,,
 315237,W. Osula,Newcastle,F,0.6,0.0,1.0,1.6,0.0,71.2,7.3,0.0,5.0,1.0
 153430,A. Elanga,Newcastle,F,0.0,0.0,0.0,0.6,0.0,35.2,6.42,0.0,5.0,1.0
@@ -506,7 +507,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 329640,E. Jaouen,Newcastle,G,,,,,,,,,,
 18778,H. Barnes,Newcastle,M,0.4,0.2,0.6,0.8,0.0,39.0,7.02,0.0,5.0,1.0
 723,Joelinton,Newcastle,M,0.0,0.0,0.2,0.8,0.4,75.4,6.58,0.0,5.0,1.0
-328105,L. Miley,Newcastle,M,0.0,0.2,0.2,0.2,0.0,90.0,6.86,0.0,5.0,1.0
 19163,J. Murphy,Newcastle,M,0.0,0.2,0.2,0.2,0.0,51.0,6.62,0.0,5.0,1.0
 161933,Nico González,Newcastle,M,0.0,0.0,0.0,0.2,0.2,43.8,6.8,0.0,5.0,1.0
 19192,J. Ramsey,Newcastle,M,0.0,0.4,0.0,0.2,0.0,72.2,6.84,0.0,5.0,1.0
@@ -523,25 +523,25 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 354753,O. Diomande,Nottingham Forest,D,,,,,,,,,,
 380663,J. Sinclair,Nottingham Forest,D,,,,,,,,,,
 329345,Jack Ethan Thompson,Nottingham Forest,D,,,,,,,,,,
-18746,M. Gibbs-White,Nottingham Forest,F,1.2,0.4,1.6,2.2,0.0,76.0,8.04,0.0,5.0,1.0
 9366,Igor Jesus,Nottingham Forest,F,0.4,0.2,1.4,1.4,0.4,73.8,6.78,0.0,5.0,1.0
 18931,C. Wood,Nottingham Forest,F,0.2,0.0,0.6,1.0,0.0,52.2,6.76,0.0,5.0,1.0
 2298,C. Hudson-Odoi,Nottingham Forest,F,0.0,0.6,0.0,0.0,0.0,61.2,6.96,0.0,5.0,1.0
 161948,L. Delap,Nottingham Forest,F,0.0,0.0,0.0,0.6,0.4,63.0,6.34,0.0,5.0,1.0
 147831,A. Kalimuendo,Nottingham Forest,F,0.0,0.0,0.2,0.2,0.0,16.8,6.28,0.0,5.0,1.0
-48648,D. Ndoye,Nottingham Forest,F,0.0,0.0,0.2,0.8,0.0,25.4,6.54,0.0,5.0,1.0
 383771,Z. Blake,Nottingham Forest,F,,,,,,,,,,
 70366,John,Nottingham Forest,G,0.0,0.0,0.0,0.0,0.25,87.0,6.0,1.25,4.0,1.0
 2919,M. Sels,Nottingham Forest,G,0.0,0.0,0.0,0.0,0.0,90.0,6.94,4.2,5.0,1.0
 19312,S. Benda,Nottingham Forest,G,,,,,,,,,,
 329358,Aaron Bott,Nottingham Forest,G,,,,,,,,,,
 357238,Keehan Willows,Nottingham Forest,G,,,,,,,,,,
+18746,M. Gibbs-White,Nottingham Forest,M,1.2,0.4,1.6,2.2,0.0,76.0,8.04,0.0,5.0,1.0
 13736,D. Muñoz,Nottingham Forest,M,0.0,0.2,0.4,0.6,0.0,70.4,6.8,0.0,5.0,1.0
 138780,N. Williams,Nottingham Forest,M,0.0,0.0,0.2,0.6,0.2,81.2,6.56,0.0,5.0,1.0
 6056,N. Domínguez,Nottingham Forest,M,0.0,0.0,0.0,0.2,0.2,46.0,6.86,0.0,5.0,1.0
 158697,J. McAtee,Nottingham Forest,M,0.0,0.2,0.0,0.4,0.2,30.6,6.56,0.0,5.0,1.0
 22149,I. Sangaré,Nottingham Forest,M,0.0,0.0,0.0,0.0,0.0,62.0,6.88,0.0,5.0,1.0
 19305,R. Yates,Nottingham Forest,M,0.0,0.2,0.2,0.4,0.4,39.4,6.88,0.0,5.0,1.0
+48648,D. Ndoye,Nottingham Forest,M,0.0,0.0,0.2,0.8,0.0,25.4,6.54,0.0,5.0,1.0
 444508,Grady Mcdonnell,Nottingham Forest,M,,,,,,,,,,
 1095,X. Schlager,Nottingham Forest,M,,,,,,,,,,
 353968,A. Whitehall,Nottingham Forest,M,,,,,,,,,,
@@ -586,7 +586,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 164,B. Davies,Tottenham,D,0.2,0.0,0.4,0.4,0.4,50.4,6.68,0.0,5.0,1.0
 289,A. Robertson,Tottenham,D,0.2,0.0,0.4,0.6,0.0,81.0,6.9,0.0,5.0,1.0
 19145,T. Adarabioyo,Tottenham,D,0.0,0.0,0.0,0.0,0.0,28.2,6.66,0.0,5.0,1.0
-328089,A. Gray,Tottenham,D,0.0,0.2,0.2,0.4,0.0,71.6,6.7,0.0,5.0,1.0
 47519,Pedro Porro,Tottenham,D,0.0,0.0,0.2,1.0,0.6,90.0,7.22,0.0,5.0,1.0
 6610,M. Senesi,Tottenham,D,0.0,0.2,0.0,0.2,0.0,90.0,7.66,0.0,5.0,1.0
 204039,D. Udogie,Tottenham,D,0.0,0.0,0.0,0.0,0.2,81.8,6.56,0.0,5.0,1.0
@@ -594,18 +593,19 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 152849,M. van de Ven,Tottenham,D,0.0,0.0,0.0,0.2,0.2,90.0,6.8,0.0,5.0,1.0
 459203,M. Hardy,Tottenham,D,,,,,,,,,,
 361735,James Rowswell,Tottenham,D,,,,,,,,,,
-81573,Omar Marmoush,Tottenham,F,0.4,0.2,0.4,1.0,0.4,38.8,6.9,0.0,5.0,1.0
 2413,Richarlison,Tottenham,F,0.4,0.2,0.8,2.2,0.0,78.4,6.78,0.0,5.0,1.0
-266657,Sávio,Tottenham,F,0.2,0.0,0.4,1.0,0.0,49.8,6.86,0.0,5.0,1.0
 63577,M. Mudryk,Tottenham,F,0.0,0.0,0.2,0.2,0.0,19.4,6.62,0.0,5.0,1.0
 18883,D. Solanke,Tottenham,F,0.0,0.0,1.0,1.2,0.0,80.0,7.02,0.0,5.0,1.0
 465310,L. Williams-Barnett,Tottenham,F,,,,,,,,,,
 18886,M. Dúbravka,Tottenham,G,0.0,0.0,0.0,0.0,0.0,90.0,7.28,3.8,5.0,1.0
 265826,A. Kinský,Tottenham,G,0.0,0.0,0.0,0.0,0.2,90.0,7.06,1.6,5.0,1.0
 156428,B. Austin,Tottenham,G,,,,,,,,,,
+81573,Omar Marmoush,Tottenham,M,0.4,0.2,0.4,1.0,0.4,38.8,6.9,0.0,5.0,1.0
 67972,C. Gallagher,Tottenham,M,0.2,0.0,0.4,0.8,0.4,88.2,7.06,0.0,5.0,1.0
 162016,X. Simons,Tottenham,M,0.2,0.2,0.4,1.2,0.2,45.4,6.96,0.0,5.0,1.0
+266657,Sávio,Tottenham,M,0.2,0.0,0.4,1.0,0.0,49.8,6.86,0.0,5.0,1.0
 270510,M. Tel,Tottenham,M,0.2,0.2,0.2,0.8,0.2,76.4,6.76,0.0,5.0,1.0
+328089,A. Gray,Tottenham,M,0.0,0.2,0.2,0.4,0.0,71.6,6.7,0.0,5.0,1.0
 863,R. Bentancur,Tottenham,M,0.0,0.0,0.2,0.4,0.4,82.0,6.84,0.0,5.0,1.0
 347316,L. Bergvall,Tottenham,M,0.0,0.2,0.2,0.6,0.0,40.8,6.26,0.0,5.0,1.0
 336585,Mateus Fernandes,Tottenham,M,0.0,0.2,0.6,0.6,0.0,90.0,7.34,0.0,5.0,0.99

@@ -46,7 +46,7 @@ player_id,player_name,team,position,number,age
 163189,M. Thiaw,Newcastle,D,12,24.0
 453792,A. Bamba,Newcastle,M,8,19.0
 723,Joelinton,Newcastle,M,7,29.0
-328105,L. Miley,Newcastle,M,67,19.0
+328105,L. Miley,Newcastle,D,67,19.0
 19163,J. Murphy,Newcastle,M,23,30.0
 161933,Nico González,Newcastle,M,6,24.0
 423714,Park Seung-Soo,Newcastle,M,16,18.0
@@ -177,13 +177,13 @@ player_id,player_name,team,position,number,age
 47311,Mikel Merino,Arsenal,M,23,29.0
 37127,M. Ødegaard,Arsenal,M,8,27.0
 2937,D. Rice,Arsenal,M,41,26.0
-47315,Martín Zubimendi,Arsenal,D,36,26.0
+47315,Martín Zubimendi,Arsenal,M,36,26.0
 18979,V. Gyökeres,Arsenal,F,14,28.0
 457731,A. Annous,Arsenal,F,9,18.0
 978,K. Havertz,Arsenal,F,29,26.0
-136723,N. Madueke,Arsenal,M,20,23.0
-1460,B. Saka,Arsenal,F,7,24.0
-161800,C. Tzolis,Arsenal,F,17,23.0
+136723,N. Madueke,Arsenal,F,20,23.0
+1460,B. Saka,Arsenal,M,7,24.0
+161800,C. Tzolis,Arsenal,M,17,23.0
 82855,T. King,Everton,G,31,30.0
 2932,J. Pickford,Everton,G,1,31.0
 18860,M. Travers,Everton,G,12,26.0
@@ -206,16 +206,16 @@ player_id,player_name,team,position,number,age
 588468,Malik Olayiwola,Everton,M,16,16.0
 202854,M. Röhl,Everton,M,34,23.0
 343684,T. Barry,Everton,F,11,23.0
-304317,T. Dibling,Everton,M,20,19.0
+304317,T. Dibling,Everton,F,20,19.0
 334037,Tyrique George,Everton,F,19,19.0
 413034,B. Graham,Everton,F,58,18.0
-129711,B. Johnson,Everton,F,22,24.0
+129711,B. Johnson,Everton,M,22,24.0
 156428,B. Austin,Tottenham,G,40,26.0
 18886,M. Dúbravka,Tottenham,G,39,36.0
 265826,A. Kinský,Tottenham,G,31,22.0
 19145,T. Adarabioyo,Tottenham,D,4,28.0
 164,B. Davies,Tottenham,D,33,32.0
-328089,A. Gray,Tottenham,D,14,19.0
+328089,A. Gray,Tottenham,M,14,19.0
 459203,M. Hardy,Tottenham,D,4,17.0
 47519,Pedro Porro,Tottenham,D,23,26.0
 289,A. Robertson,Tottenham,D,3,31.0
@@ -236,10 +236,10 @@ player_id,player_name,team,position,number,age
 380689,C. Olusesi,Tottenham,M,10,18.0
 162016,X. Simons,Tottenham,M,7,22.0
 31146,S. Tonali,Tottenham,M,16,25.0
-81573,Omar Marmoush,Tottenham,F,22,26.0
+81573,Omar Marmoush,Tottenham,M,22,26.0
 63577,M. Mudryk,Tottenham,F,27,24.0
 2413,Richarlison,Tottenham,F,9,28.0
-266657,Sávio,Tottenham,F,17,21.0
+266657,Sávio,Tottenham,M,17,21.0
 18883,D. Solanke,Tottenham,F,19,28.0
 270510,M. Tel,Tottenham,M,11,20.0
 465310,L. Williams-Barnett,Tottenham,F,68,17.0
@@ -249,7 +249,7 @@ player_id,player_name,team,position,number,age
 64167,G. Słonina,Chelsea,G,44,21.0
 366735,Joshua Kofi Acheampong,Chelsea,D,34,19.0
 422780,A. Anselmino,Chelsea,D,30,20.0
-181734,Pep Chavarría,Chelsea,D,29,27.0
+181734,Pep Chavarría,Chelsea,M,29,27.0
 152953,L. Colwill,Chelsea,D,6,22.0
 22094,W. Fofana,Chelsea,D,3,25.0
 161907,M. Gusto,Chelsea,D,27,22.0
@@ -300,10 +300,10 @@ player_id,player_name,team,position,number,age
 18960,J. Steele,Brighton,G,23,35.0
 129058,B. Verbruggen,Brighton,G,1,23.0
 22160,O. Boscagli,Brighton,D,21,28.0
-204037,Costinha,Brighton,M,20,26.0
-162007,M. De Cuyper,Brighton,D,29,25.0
+204037,Costinha,Brighton,D,20,26.0
+162007,M. De Cuyper,Brighton,M,29,25.0
 18963,L. Dunk,Brighton,D,5,34.0
-271539,J. Hadjam,Brighton,M,3,22.0
+271539,J. Hadjam,Brighton,D,3,22.0
 1361,F. Kadıoğlu,Brighton,D,24,26.0
 64003,P. Struijk,Brighton,D,4,26.0
 7090,M. Svoboda,Brighton,D,30,27.0
@@ -377,15 +377,15 @@ player_id,player_name,team,position,number,age
 427736,Gustavo Gomes,Brentford,F,39,20.0
 25073,V. Janelt,Brentford,M,27,27.0
 47438,M. Jensen,Brentford,M,8,29.0
-106725,K. Lewis-Potter,Brentford,M,23,24.0
+106725,K. Lewis-Potter,Brentford,D,23,24.0
 327726,R. Owen,Brentford,M,8,20.0
 277306,M. Sangaré,Brentford,M,18,23.0
 178077,K. Schade,Brentford,M,7,24.0
 441271,Jannik Schuster,Brentford,D,44,19.0
 263538,Y. Yarmolyuk,Brentford,M,6,21.0
-196855,J. Anthony,Brentford,F,19,26.0
+196855,J. Anthony,Brentford,M,19,26.0
 393193,Kaye Iyowuna Furo,Brentford,F,9,18.0
-284797,D. Ouattara,Brentford,M,11,23.0
+284797,D. Ouattara,Brentford,F,11,23.0
 624708,O. Shield,Brentford,F,7,19.0
 196156,Thiago,Brentford,F,9,24.0
 2939,C. Wilson,Brentford,F,13,33.0
@@ -411,14 +411,14 @@ player_id,player_name,team,position,number,age
 6002,E. Palacios,Ipswich,M,25,27.0
 18397,J. Taylor,Ipswich,M,14,27.0
 2380,C. Akpom,Ipswich,F,29,30.0
-19136,J. Clarke,Ipswich,F,47,25.0
+19136,J. Clarke,Ipswich,M,47,25.0
 342654,S. Egeli,Ipswich,F,8,19.0
 321648,Emersonn,Ipswich,F,19,21.0
 303467,A. Fatawu,Ipswich,M,7,22.0
 33224,D. Maeda,Ipswich,F,38,28.0
 283290,K. McAteer,Ipswich,M,20,24.0
 286349,A. Mehmeti,Ipswich,M,33,24.0
-138931,J. Philogene,Ipswich,M,11,23.0
+138931,J. Philogene,Ipswich,F,11,23.0
 20068,A. Cairns,Leeds,G,21,32.0
 538541,R. Mahady,Leeds,G,1,19.0
 328116,Darryl Merveil Ombang,Leeds,G,1,20.0
@@ -484,7 +484,7 @@ player_id,player_name,team,position,number,age
 557455,D. Daley,Hull City,F,16,18.0
 19569,J. Gelhardt,Hull City,F,11,23.0
 19337,O. McBurnie,Hull City,F,9,29.0
-18599,S. Thomas,Hull City,F,7,26.0
+18599,S. Thomas,Hull City,M,7,26.0
 435482,R. Vaz,Hull City,F,47,18.0
 19312,S. Benda,Nottingham Forest,G,13,27.0
 329358,Aaron Bott,Nottingham Forest,G,12,21.0
@@ -502,7 +502,7 @@ player_id,player_name,team,position,number,age
 329345,Jack Ethan Thompson,Nottingham Forest,D,26,20.0
 138780,N. Williams,Nottingham Forest,M,3,24.0
 6056,N. Domínguez,Nottingham Forest,M,8,27.0
-18746,M. Gibbs-White,Nottingham Forest,F,10,25.0
+18746,M. Gibbs-White,Nottingham Forest,M,10,25.0
 2298,C. Hudson-Odoi,Nottingham Forest,F,7,25.0
 158697,J. McAtee,Nottingham Forest,M,24,23.0
 444508,Grady Mcdonnell,Nottingham Forest,M,10,17.0
@@ -514,7 +514,7 @@ player_id,player_name,team,position,number,age
 161948,L. Delap,Nottingham Forest,F,19,22.0
 9366,Igor Jesus,Nottingham Forest,F,11,24.0
 147831,A. Kalimuendo,Nottingham Forest,F,15,23.0
-48648,D. Ndoye,Nottingham Forest,F,14,25.0
+48648,D. Ndoye,Nottingham Forest,M,14,25.0
 18931,C. Wood,Nottingham Forest,F,9,34.0
 36878,M. Bizot,Aston Villa,G,40,34.0
 199578,Z. Suzuki,Aston Villa,G,1,23.0
@@ -604,14 +604,14 @@ player_id,player_name,team,position,number,age
 36929,G. Hamer,Coventry,M,38,28.0
 145538,J. Latibeaudiere,Coventry,D,22,25.0
 15799,F. Onyeka,Coventry,M,16,27.0
-20372,J. Rudoni,Coventry,F,5,24.0
+20372,J. Rudoni,Coventry,M,5,24.0
 33462,T. Sakamoto,Coventry,M,7,29.0
 138786,E. Simms,Coventry,F,9,24.0
 16046,V. Torp,Coventry,M,29,26.0
 475575,Caleb Marfo Yirenkyi,Coventry,M,8,19.0
 8598,T. Awoniyi,Coventry,F,14,28.0
 421875,S. Cherif,Coventry,F,49,19.0
-84128,Y. Gboho,Coventry,M,34,24.0
+84128,Y. Gboho,Coventry,F,34,24.0
 18404,E. Mason-Clark,Coventry,M,10,26.0
 161621,L. Tchaouna,Coventry,F,17,22.0
 82090,B. Thomas-Asante,Coventry,F,23,27.0
