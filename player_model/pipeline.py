@@ -10,7 +10,9 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -32,7 +34,7 @@ from player_model.data_fetcher import (
 )
 from player_model.league_quality import enrich_league_quality
 from player_model.feature_engineering import build_features
-from player_model.model import train, save_model
+from player_model.model import train, save_model, load_model
 from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, tag_paper_feed
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
 from player_model.ledger import append_player_signals
@@ -173,6 +175,50 @@ def mode_collect_wc(last_n: int = 10) -> None:
 
 # ── Phase 3: Train ────────────────────────────────────────────────────────────
 
+
+def _incumbent_metrics(market: str) -> dict:
+    """The currently-deployed model's own held-out metrics, read before it is overwritten."""
+    try:
+        payload = load_model(market)
+        return (payload or {}).get("metrics", {}) or {}
+    except Exception:
+        return {}
+
+
+def _mean_logloss(metrics: dict) -> float:
+    """Mean held-out log loss across the base models. Lower is better; NaN when unknown."""
+    vals = [m["log_loss"] for m in metrics.values()
+            if isinstance(m, dict) and isinstance(m.get("log_loss"), (int, float))]
+    return float(sum(vals) / len(vals)) if vals else float("nan")
+
+
+def _props_gate(old_ll: float, new_ll: float) -> tuple:
+    """May this candidate replace the incumbent? Mirrors pipeline._train_one's gate exactly.
+
+    Props had NO gate at all: mode_train called train() then save_model() unconditionally, so a
+    worse model shipped as readily as a better one and nothing recorded which had happened. That
+    is the same defect fixed for the team models on 2026-09-22, and it mattered more here,
+    because props were retraining weekly on a training set whose newest match was 36 days old —
+    re-fitting identical data and overwriting the artifact every Sunday.
+
+    Log loss, not accuracy: a proper scoring rule that punishes overconfidence. An unknown
+    incumbent score promotes, loudly, rather than freezing the model forever — failing closed on
+    a missing metric is the bug class this whole pass exists to remove.
+    """
+    tol = float(os.getenv("PROPS_MAX_LOGLOSS_RISE", "0.005"))
+    if os.getenv("PROPS_FORCE_PROMOTE", "").strip() == "1":
+        return True, "PROPS_FORCE_PROMOTE=1 — gate bypassed by hand"
+    if not (old_ll == old_ll):
+        return True, "no incumbent metrics on record — first model for this market"
+    if not (new_ll == new_ll):
+        return False, "candidate produced no usable log loss — refusing to ship it blind"
+    if new_ll > old_ll + tol:
+        return False, (f"log loss ROSE {new_ll - old_ll:+.5f} ({old_ll:.5f} -> {new_ll:.5f}), "
+                       f"beyond the {tol:.5f} tolerance")
+    return True, (f"log loss {old_ll:.5f} -> {new_ll:.5f} ({new_ll - old_ll:+.5f}), "
+                  f"within the {tol:.5f} tolerance")
+
+
 def mode_train() -> None:
     if not HISTORY_CACHE.exists():
         print("[train] No history. Run --mode collect first.")
@@ -181,17 +227,65 @@ def mode_train() -> None:
     df = pd.read_parquet(HISTORY_CACHE)
     print(f"[train] Training on {len(df)} rows, {df['player_id'].nunique()} players.")
 
+    # HOW MUCH OF THIS IS NEW? A retrain that consumes zero new observations is not learning,
+    # it is churn — and props had exactly that: player_history.parquet's newest match was
+    # 2026-08-17 while the Sunday retrain kept firing and kept overwriting the models. Printed
+    # first so the answer is at the top of the log rather than inferred from it.
+    try:
+        _d = pd.to_datetime(df["date"], errors="coerce")
+        _newest = _d.max()
+        _age = (pd.Timestamp.utcnow().tz_localize(None).normalize() - _newest.normalize()).days
+        print(f"[train] newest match in training data: {str(_newest)[:10]} ({_age}d old)"
+              f"{'   <-- STALE, this retrain cannot learn anything new' if _age > 10 else ''}")
+    except Exception:
+        pass
+
+    log_path = config.OUTPUT_DIR / "props_retrain_log.json" \
+        if hasattr(config, "OUTPUT_DIR") else Path("output/props_retrain_log.json")
+    decisions: dict = {}
+
     for market in config.MARKETS:
         print(f"\n  Training market: {market}")
         try:
+            # THE INCUMBENT'S SCORE, read before anything overwrites it. props save_model stores
+            # metrics inside the pickle rather than in a sidecar, so the previous model carries
+            # its own held-out numbers.
+            old_ll = _mean_logloss(_incumbent_metrics(market))
             results = train(df, market)
-            save_model(results, market)
+            new_ll = _mean_logloss({k: v.get("metrics", {}) for k, v in results.items()})
+
+            promote, why = _props_gate(old_ll, new_ll)
+            if promote:
+                save_model(results, market)
+                print(f"  [{market}] PROMOTED — {why}")
+            else:
+                print(f"  [{market}] NOT PROMOTED — {why}. Incumbent left untouched.")
+            decisions[market] = {
+                "promoted": promote, "why": why, "rows": int(len(df)),
+                "logloss_old": None if old_ll != old_ll else round(old_ll, 5),
+                "logloss_new": None if new_ll != new_ll else round(new_ll, 5),
+            }
         except ValueError as e:
             print(f"  [SKIP] {market}: {e}")
+            decisions[market] = {"promoted": False, "why": f"skipped: {e}"}
         except Exception as e:
             print(f"  [ERROR] {market}: {e}")
+            decisions[market] = {"promoted": False, "why": f"error: {type(e).__name__}: {e}"}
 
-    print("\n[train] Done.")
+    try:
+        import json as _json
+        blob = _json.loads(log_path.read_text(encoding="utf-8")) if log_path.exists() else {}
+        run = datetime.utcnow().strftime("%Y-%m-%d")
+        blob.setdefault("runs", {})[run] = decisions
+        blob["latest_run"] = run
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text(_json.dumps(blob, indent=2), encoding="utf-8")
+        print(f"\n[train] decisions -> {log_path.name}")
+    except Exception as e:
+        print(f"[train] could not write the decision log: {e}")
+
+    n_prom = sum(1 for v in decisions.values() if v.get("promoted"))
+    print(f"\n[train] Done. {n_prom}/{len(decisions)} market(s) promoted.")
 
 
 # ── Match contexts (team win probs for opponent-weakness multiplier) ──────────
