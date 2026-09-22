@@ -150,7 +150,7 @@ jobs:
       # Freshness is the thing we actually care about, so gate on it directly: any hourly run
       # will pick the collect up within the hour if history has fallen behind. A collect that
       # keeps failing now retries visibly instead of waiting a day, and its outcome is recorded
-      # in output/props_health.json either way.
+      # in output/props_health.json output/props_retrain_log.json either way.
       - name: Check training-history freshness
         id: freshness
         run: |
