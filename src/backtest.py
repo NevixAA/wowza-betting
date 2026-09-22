@@ -455,65 +455,111 @@ def optimize_side_market_thresholds(
     results_df: pd.DataFrame,
     target: str,
     min_bets: int = 20,
+    min_oos_bets: int = 20,
     edge_min: float = 0.04,
     edge_max: float = 0.20,
     edge_step: float = 0.01,
 ) -> dict:
     """
-    Per-league edge threshold optimizer for a side market.
+    Per-league edge threshold optimizer for a side market — now with an out-of-sample gate.
 
-    For each league in results_df, grid-searches edge thresholds to find
-    the cutoff that maximizes ROI (minimum `min_bets` bets required).
+    WHAT WAS WRONG. This function used to be a pure in-sample grid search: for each league, pick
+    the threshold with the best ROI over ALL the data, and mark `drop` only when no threshold
+    cleared zero. Nothing was ever held back, so the number it produced was the best of ~17
+    candidates chosen on the same rows it was scored on. That is retrospective tuning, which
+    invariant 6 forbids, and `optimize_standard_thresholds` had a walk-forward pass for exactly
+    this reason while this one did not.
+
+    It is not a theoretical concern. Pro's threshold study (2026-09-22) fitted per-league bars on
+    an earlier slice and applied them to a later one: of the four cells with enough data to
+    check, THREE got worse out of sample — Norway -29.7pp, China -40.9pp, Finland -61.6pp. An
+    in-sample-optimal threshold is not merely unproven, it actively cost money on fresh fixtures.
+
+    THE FIX, mirroring the standard optimizer exactly so the two behave alike:
+      * `sniper_th` is still the all-data best — it remains the most stable point estimate, and
+        it is what gets used once a league is approved.
+      * A WALK-FORWARD pass now tunes on prior seasons and bets the next one blind, producing
+        `roi_oos` / `bets_oos`.
+      * `approved` is True only when that out-of-sample ROI is positive on >= min_oos_bets.
+
+    APPROVAL NEVER SILENCES A LEAGUE. Per the 2026/27 live-test policy, an unapproved league
+    still emits tips at the GLOBAL bar so it keeps generating a CLV/ROI record — the whole point
+    is to learn about it, and a league you stopped tipping is a league you can never learn about.
+    Approval decides whether its OWN learned threshold is trusted over the global one, nothing
+    more.
+
+    `drop` is kept for backward compatibility with the merged best_params_side_markets.json that
+    pipeline._generate_side_bets already reads, and it keeps its old in-sample meaning. Read
+    `approved` for the question "has this threshold been shown to work on data it was not fitted
+    to".
 
     Returns
     -------
-    dict: {
-        league: {
-            "sniper_th":  float,   # optimal threshold (use as SNIPER cutoff)
-            "marksman_th": float,  # sniper_th - 0.02 (minimum 0.04)
-            "roi":        float,   # ROI at optimal threshold
-            "bets":       int,
-            "drop":       bool,    # True if no threshold yields ROI > 0
-        }
-    }
+    dict: {league: {sniper_th, marksman_th, roi, bets, drop, roi_oos, bets_oos, approved}}
     """
-    import json
-
     thresholds = np.arange(edge_min, edge_max + edge_step / 2, edge_step)
     results = {}
 
-    for league, grp in results_df.groupby("league"):
-        best_roi   = -999.0
-        best_th    = edge_min
-        best_bets  = 0
-
+    def _best(sub: pd.DataFrame, floor: int):
+        """(threshold, bets, roi) maximising ROI on `sub`, or None if never enough bets."""
+        best = None
         for th in thresholds:
-            bets = grp[grp["edge"] >= th]
-            if len(bets) < min_bets:
+            sel = sub[sub["edge"] >= th]
+            if len(sel) < floor:
                 continue
-            staked = float(bets["bet_stake"].sum())
+            staked = float(sel["bet_stake"].sum())
             if staked <= 0:
                 continue
-            roi = float(bets["pnl"].sum() / staked * 100)
-            if roi > best_roi:
-                best_roi  = roi
-                best_th   = float(round(th, 4))
-                best_bets = len(bets)
+            roi = float(sel["pnl"].sum() / staked * 100)
+            if best is None or roi > best[2]:
+                best = (float(round(th, 4)), len(sel), roi)
+        return best
+
+    has_season = "season" in results_df.columns
+    seasons = sorted(results_df["season"].astype(str).unique()) if has_season else []
+
+    for league, grp in results_df.groupby("league"):
+        ins = _best(grp, min_bets)
+        best_th = ins[0] if ins else edge_min
+        best_bets = ins[1] if ins else 0
+        best_roi = ins[2] if ins else -999.0
+
+        # Walk-forward: tune on the seasons before, bet the next one blind. Identical shape to
+        # optimize_standard_thresholds so a reader comparing the two sees one method, not two.
+        oos_rows = []
+        for i in range(1, len(seasons)):
+            train = grp[grp["season"].astype(str).isin(seasons[:i])]
+            test = grp[grp["season"].astype(str) == seasons[i]]
+            bt = _best(train, max(10, min_bets // 2))
+            if bt is None or test.empty:
+                continue
+            sel = test[test["edge"] >= bt[0]]
+            if len(sel):
+                oos_rows.append(sel)
+        oos = pd.concat(oos_rows) if oos_rows else grp.iloc[0:0]
+        oos_staked = float(oos["bet_stake"].sum()) if len(oos) else 0.0
+        oos_roi = float(oos["pnl"].sum() / oos_staked * 100) if oos_staked > 0 else None
+        oos_bets = len(oos)
 
         drop = (best_roi <= 0 or best_bets < min_bets)
+        approved = bool(oos_roi is not None and oos_roi > 0 and oos_bets >= min_oos_bets)
         results[league] = {
             "sniper_th":   best_th,
             "marksman_th": max(round(best_th - 0.02, 4), edge_min),
             "roi":         round(best_roi, 2) if not drop else None,
             "bets":        best_bets,
             "drop":        drop,
+            "roi_oos":     round(oos_roi, 2) if oos_roi is not None else None,
+            "bets_oos":    oos_bets,
+            "approved":    approved,
         }
 
-    kept    = sum(1 for v in results.values() if not v["drop"])
-    dropped = sum(1 for v in results.values() if v["drop"])
+    kept     = sum(1 for v in results.values() if not v["drop"])
+    approved = sum(1 for v in results.values() if v["approved"])
     log.info(
-        f"[{target}] Threshold opt: {kept} leagues kept, {dropped} dropped "
-        f"(no threshold yielded ROI > 0 with {min_bets}+ bets)"
+        f"[{target}] Threshold opt: {len(results)} leagues, {kept} profitable in-sample, "
+        f"{approved} APPROVED out-of-sample (OOS ROI > 0 on {min_oos_bets}+ blind bets). "
+        f"Unapproved leagues still tip at the global bar."
     )
     return results
 

@@ -75,9 +75,13 @@ def _load_side_market_thresholds() -> dict:
 def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFrame":
     """
     Generate SNIPER/MARKSMAN/VALUABLE tips for BTTS / Over 1.5 / Over 3.5.
-    Uses per-league optimized thresholds from best_params_side_markets.json when
-    available, falling back to fixed global thresholds.
-    Leagues marked 'drop=True' in the optimizer output are suppressed entirely.
+    Uses per-league optimized thresholds from best_params_side_markets.json when that league's
+    threshold has been APPROVED out of sample, falling back to the fixed global bar otherwise.
+
+    NO LEAGUE IS EVER SUPPRESSED. This docstring used to say "leagues marked 'drop=True' are
+    suppressed entirely", which has not been true since the 2026/27 live-test policy — the code
+    below has emitted tips for every league all along. Corrected 2026-09-22 rather than left to
+    mislead the next reader into thinking leagues go dark.
     """
     import pandas as pd
     import numpy as np
@@ -121,15 +125,32 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         def _tier(row):
             lg = row["league"]
             lp = market_params.get(lg, {})
-            # Live-test policy (2026/27): never suppress a league. Leagues the optimizer
-            # flagged unprofitable ("drop") still emit tips at the GLOBAL bar so every league
-            # produces signals for the season-long CLV/ROI test. Real-money gating is a
-            # separate downstream decision, not a notification filter.
-            if lp.get("drop", False):
-                sniper_th, marksman_th = 0.10, 0.08
-            else:
+            # Live-test policy (2026/27): NEVER SUPPRESS A LEAGUE. Every league emits signals
+            # all season so it builds a CLV/ROI record — a league you stopped tipping is a
+            # league you can never learn about. Real-money gating is a separate downstream
+            # decision, not a notification filter.
+            #
+            # What the gate decides is narrower: whether to trust THIS league's own learned
+            # threshold, or fall back to the global bar. A league's threshold is used only once
+            # `approved` — meaning a walk-forward pass tuned it on earlier seasons, bet the next
+            # one blind, and came out positive (src/backtest.optimize_side_market_thresholds).
+            #
+            # Before 2026-09-22 that optimizer had no out-of-sample pass at all: it grid-searched
+            # ~17 thresholds on all the data and shipped the winner. Pro's threshold study then
+            # showed what that costs — of the four cells with enough data to check, THREE were
+            # worse out of sample (Norway -29.7pp, China -40.9pp, Finland -61.6pp). An
+            # in-sample-optimal bar is not just unproven, it lost money on fresh fixtures.
+            #
+            # `approved` missing (an older best_params file) falls back to the previous rule, so
+            # this can never regress an environment that has not rerun the optimizer yet.
+            _approved = lp.get("approved")
+            _use_own = (lp.get("approved", not lp.get("drop", False))
+                        if _approved is not None else not lp.get("drop", False))
+            if _use_own:
                 sniper_th   = lp.get("sniper_th",   0.10)
                 marksman_th = lp.get("marksman_th",  0.08)
+            else:
+                sniper_th, marksman_th = 0.10, 0.08
             edge = row["edge"]
             if edge >= sniper_th:   return "SNIPER"
             if edge >= marksman_th: return "MARKSMAN"
