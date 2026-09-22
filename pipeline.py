@@ -28,8 +28,11 @@ v9 additions over v8
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -147,13 +150,92 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
 
 # ── TRAIN ─────────────────────────────────────────────────────────────────────
 
+TRAIN_LOG = config.OUTPUT_DIR / "retrain_log.json"
+
+
+def _mean_logloss(metrics: dict) -> float:
+    """Mean held-out log loss across the base models. Lower is better."""
+    vals = [m["log_loss"] for m in metrics.values()
+            if isinstance(m, dict) and isinstance(m.get("log_loss"), (int, float))]
+    return float(sum(vals) / len(vals)) if vals else float("nan")
+
+
+def _record_retrain(label: str, entry: dict) -> None:
+    """Append one model's outcome to the run record the Telegram notice reads."""
+    try:
+        blob = json.loads(TRAIN_LOG.read_text(encoding="utf-8")) if TRAIN_LOG.exists() else {}
+    except Exception:
+        blob = {}
+    run = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    blob.setdefault("runs", {}).setdefault(run[:10], {})[label] = {**entry, "at": run}
+    blob["latest_run"] = run[:10]
+    try:
+        TRAIN_LOG.parent.mkdir(parents=True, exist_ok=True)
+        TRAIN_LOG.write_text(json.dumps(blob, indent=2), encoding="utf-8")
+    except Exception as e:
+        log.warning(f"  [{label}] could not write {TRAIN_LOG.name}: {e}")
+
+
 def _train_one(valid: "pd.DataFrame", label: str, model_file,
                target: str = "over25", weights=None, feature_cols=None) -> dict:
-    """Train one model and save it. target specifies which column to predict.
-    feature_cols: restrict the model to a subset of FEATURE_COLS (None = full set)."""
+    """Train one model and save it IF it is not materially worse than the incumbent.
+
+    THE GATE. This path — `pipeline.py --mode train`, which is what retrain.yml actually runs —
+    used to call `save_models()` unconditionally, so every retrain overwrote the live model with
+    no comparison of any kind. `mode_train` runs no backtest (those live in backtest_matrix.yml,
+    monthly), so there was nothing to validate against at the moment of overwriting, and a model
+    that had got worse shipped exactly as readily as one that had improved.
+
+    That is tolerable at weekly cadence and not at daily, which is the cadence from 2026-09-22
+    to 2026-10-05. Daily overwriting with no gate is not learning; it is a random walk on the
+    live model.
+
+    WHAT IT COMPARES. `train_model` already produces held-out metrics on a chronological
+    train/cal/test split, and `save_models` writes them to `models/metrics_<stem>.json`. So the
+    incumbent's score is already on disk and the comparison is free — no second training, no
+    extra minutes against the 120-minute cap.
+
+    Log loss is the metric, not accuracy or AUC: it is a proper scoring rule and it punishes
+    overconfidence, which is this estate's measured defect (+13.64pp on the O/U track).
+
+    THE CAVEAT, stated because it is real: the test slice grows as data arrives, so consecutive
+    runs are not scored on identical rows. Day to day the drift is a handful of fixtures and the
+    comparison is sound; across months the test set genuinely changes and a harder set can look
+    like a worse model. That is what the tolerance absorbs, and it is why this gate is a floor
+    against regression rather than a proof of improvement.
+    """
     log.info(f"  [{label}] {len(valid):,} rows — training ensemble (target={target})...")
+    metrics_file = config.MODELS_DIR / f"metrics_{Path(model_file).stem}.json"
+    try:
+        incumbent = json.loads(metrics_file.read_text(encoding="utf-8"))
+    except Exception:
+        incumbent = {}
+    old_ll = _mean_logloss(incumbent)
+
     results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
-    save_models(results, model_file=model_file)
+    new_ll = _mean_logloss({k: v["metrics"] for k, v in results.items()})
+
+    tol = float(os.getenv("TRAIN_MAX_LOGLOSS_RISE", "0.005"))
+    if not (old_ll == old_ll):          # NaN — no incumbent on record
+        promote, why = True, "no incumbent metrics on record — first model for this track"
+    elif not (new_ll == new_ll):
+        promote, why = False, "candidate produced no usable log loss — refusing to ship it blind"
+    elif new_ll > old_ll + tol:
+        promote, why = False, (f"log loss ROSE {new_ll - old_ll:+.5f} ({old_ll:.5f} -> "
+                               f"{new_ll:.5f}), beyond the {tol:.5f} tolerance")
+    else:
+        promote, why = True, (f"log loss {old_ll:.5f} -> {new_ll:.5f} ({new_ll - old_ll:+.5f}), "
+                              f"within the {tol:.5f} tolerance")
+
+    if promote:
+        save_models(results, model_file=model_file)
+        log.info(f"  [{label}] PROMOTED — {why}")
+    else:
+        log.error(f"  [{label}] NOT PROMOTED — {why}. {Path(model_file).name} left untouched; "
+                  f"the incumbent keeps serving.")
+    _record_retrain(label, {"promoted": promote, "why": why, "rows": int(len(valid)),
+                            "logloss_old": None if old_ll != old_ll else round(old_ll, 5),
+                            "logloss_new": None if new_ll != new_ll else round(new_ll, 5)})
 
     payload = load_models(model_file=model_file)
     fi = get_feature_importances(payload)

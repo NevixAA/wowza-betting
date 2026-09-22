@@ -2269,6 +2269,85 @@ def notify_daily_digest() -> bool:
     return True
 
 
+def notify_retrain_result() -> bool:
+    """Tell Nevo whether the models actually got better this retrain. Returns True if sent.
+
+    Requested 2026-09-22: "i will want to get notice if the models become better and better from
+    the retrain and backtesting". Before this, a retrain's outcome existed only in a CI log
+    nobody reads, so "are the models improving" was unanswerable in practice even when the data
+    to answer it was being produced.
+
+    Reads `output/retrain_log.json`, which `pipeline._train_one` writes per model per run: the
+    gate decision, and the held-out mean log loss before and after.
+
+    LOG LOSS, AND LOWER IS BETTER. It is a proper scoring rule and it punishes overconfidence,
+    which is the measured defect on the O/U track. A model can raise its accuracy while getting
+    worse at this, which is exactly the kind of "improvement" not worth being told about. The
+    message says "sharper"/"duller" rather than the metric name, and prints the number anyway.
+    """
+    cfg = _load_config()
+    token, chat_id = cfg.get("token", ""), cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return False
+
+    path = app_config.OUTPUT_DIR / "retrain_log.json"
+    if not path.exists():
+        print("No retrain_log.json — nothing to report.")
+        return False
+    try:
+        blob = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"retrain_log.json unreadable: {e}")
+        return False
+
+    run = blob.get("latest_run")
+    models = (blob.get("runs") or {}).get(run) or {}
+    if not models:
+        print("retrain_log.json has no models for the latest run.")
+        return False
+
+    notified = _load_notified()
+    key = f"RETRAIN|{run}"
+    if key in notified:
+        print(f"Retrain digest for {run} already sent — skipping.")
+        return False
+
+    better = [m for m, v in models.items()
+              if v.get("promoted") and isinstance(v.get("logloss_old"), (int, float))
+              and isinstance(v.get("logloss_new"), (int, float))
+              and v["logloss_new"] < v["logloss_old"]]
+    blocked = [m for m, v in models.items() if not v.get("promoted")]
+
+    lines = [f"🔁 <b>RETRAIN</b> — {run}", "━━━━━━━━━━━━━━━━", ""]
+    for m, v in sorted(models.items()):
+        old, new = v.get("logloss_old"), v.get("logloss_new")
+        if isinstance(old, (int, float)) and isinstance(new, (int, float)):
+            d = new - old
+            sym = "✅" if d < -1e-6 else ("➖" if abs(d) <= 1e-6 else "⚠️")
+            word = "sharper" if d < -1e-6 else ("unchanged" if abs(d) <= 1e-6 else "duller")
+            score = f"{old:.5f} → {new:.5f} ({d:+.5f}, {word})"
+        else:
+            sym, score = "🆕", "no previous score on record"
+        if not v.get("promoted"):
+            sym = "⛔"
+        lines.append(f"{sym} <b>{_escape_html(m)}</b>  {score}")
+        lines.append(f"     {_escape_html(str(v.get('rows', '?')))} rows · "
+                     f"{'PROMOTED' if v.get('promoted') else 'BLOCKED — incumbent kept'}")
+        if not v.get("promoted"):
+            lines.append(f"     <i>{_escape_html(str(v.get('why', ''))[:140])}</i>")
+    lines += ["", f"📈 <b>{len(better)} of {len(models)}</b> model(s) got sharper"
+                  + (f" · ⛔ {len(blocked)} blocked" if blocked else ""),
+              "", "<i>Log loss on a held-out chronological slice — lower is better. It punishes "
+                  "overconfidence, which raw accuracy does not.</i>"]
+
+    if not _send(token, chat_id, "\n".join(lines)):
+        return False
+    notified.add(key)
+    _save_notified(notified)
+    print(f"Retrain digest sent ({len(better)}/{len(models)} sharper, {len(blocked)} blocked).")
+    return True
+
+
 def notify_side_bets() -> int:
     """Send Telegram alerts for SNIPER/MARKSMAN BTTS / Over 1.5 / Over 3.5 tips. Returns count sent."""
     cfg = _load_config()
@@ -2282,7 +2361,16 @@ def notify_side_bets() -> int:
         return 0
 
     df = pd.read_csv(side_file)
-    df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN"])].copy()
+    # VALUABLE now sends too (Nevo, 2026-09-22: "the tips should be valueables as well, i will
+    # choose if i want to bet or not"). The main O/U path has sent VALUABLE since 2026-08-09;
+    # side markets never did, and that asymmetry was hiding the single best-performing cell in
+    # the estate: BTTS VALUABLE is +18.39u over 76 settled bets at +24.2% ROI with a bootstrap
+    # CI of [+0.033, +0.437] — significantly winning, and never once sent.
+    #
+    # Sending is not staking. These arrive labelled VALUABLE for a human to judge; real money
+    # stays where the season-start plan put it. Volume is bounded by notified.json, which sends
+    # each fixture+market once.
+    df = df[df["signal_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"])].copy()
 
     today_str = datetime.now().strftime("%Y-%m-%d")
     df = df[df["date"].astype(str).str[:10] >= today_str]
@@ -2319,7 +2407,14 @@ def notify_side_bets() -> int:
         ev    = float(row["ev"]) * 100
         label = MARKET_LABEL.get(mkt, mkt)
         emoji = MARKET_EMOJI.get(mkt, "📌")
-        tier_header = f"🎯 <b>SNIPER — {label}</b>" if tier == "SNIPER" else f"🔫 <b>MARKSMAN — {label}</b>"
+        # LOOK UP the tier, never infer it. This was
+        #     "SNIPER" if tier == "SNIPER" else "MARKSMAN"
+        # a binary that was correct only while exactly two tiers could reach here. Adding
+        # VALUABLE to the filter above would have silently relabelled every VALUABLE side-market
+        # tip as MARKSMAN — a wrong tier on a live alert, which is precisely the number the
+        # reader uses to size. Same shape as the tier symbols used everywhere else in this file.
+        _TIER_HDR = {"SNIPER": "🎯 SNIPER", "MARKSMAN": "🔫 MARKSMAN", "VALUABLE": "💎 VALUABLE"}
+        tier_header = f"{_TIER_HDR.get(tier, f'📌 {tier}')} — <b>{label}</b>"
 
         msg = (
             f"{emoji} {tier_header}\n"
