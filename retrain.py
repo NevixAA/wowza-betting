@@ -236,6 +236,32 @@ def _save_metrics(history: dict) -> None:
     )
 
 
+def _baseline(history: dict, track: str, k: int = 6) -> dict | None:
+    """The bar a new model must clear: the BEST of the last `k` recorded runs on this track.
+
+    NOT simply the previous run. That distinction is cheap under weekly retraining and load-
+    bearing under daily, which is the cadence from 2026-09-22 to 2026-10-05.
+
+    THE RATCHET. `_promotion_gate` allows a drop of up to RETRAIN_MAX_ROI_DROP_PP against its
+    baseline. If the baseline is "yesterday", every day may legally lose the full tolerance and
+    each step passes on its own: 10.0 -> 8.1 -> 6.2 -> 4.3 clears a 2pp gate four days running
+    while shedding 5.7 points. Holding the baseline at the best of a recent window makes the bar
+    stop moving down with you, so cumulative drift is measured against where the model actually
+    was rather than against its own decline.
+
+    Bounded to `k` runs rather than all time on purpose: football changes, and a model should not
+    be held forever against a number produced in a different scoring environment. Six is roughly
+    six weeks weekly, or a week daily.
+    """
+    runs = [v for key, v in sorted(history.items(), reverse=True)
+            if key.endswith(f"_{track}") and isinstance(v, dict)]
+    recent = runs[:k]
+    scored = [r for r in recent if isinstance(r.get("roi_%"), (int, float))]
+    if not scored:
+        return recent[0] if recent else None
+    return max(scored, key=lambda r: r["roi_%"])
+
+
 def _promotion_gate(label: str, prev: dict | None, curr: dict) -> tuple[bool, str]:
     """May this freshly trained model replace the incumbent? Returns (promote, reason).
 
@@ -446,7 +472,7 @@ def main():
         _print_comparison("STANDARD", prev_std, std_summary)
 
         # ── THE GATE ──────────────────────────────────────────────────────────
-        promote, why = _promotion_gate("STANDARD", prev_std, std_summary)
+        promote, why = _promotion_gate("STANDARD", _baseline(history, "standard"), std_summary)
         if promote:
             save_models(std_results, model_file=config.MODEL_FILE_STANDARD)
             log.info(f"STANDARD model PROMOTED — {why}")
@@ -499,7 +525,8 @@ def main():
         _print_comparison("NEW-FORMAT", prev_nf, nf_summary)
 
         # ── THE GATE (new-format's own, independent of standard's) ────────────
-        nf_promote, nf_why = _promotion_gate("NEW-FORMAT", prev_nf, nf_summary)
+        nf_promote, nf_why = _promotion_gate("NEW-FORMAT", _baseline(history, "newformat"),
+                                             nf_summary)
         if nf_promote:
             save_models(nf_results, model_file=config.MODEL_FILE_NEWFORMAT)
             log.info(f"NEW-FORMAT model PROMOTED — {nf_why}")

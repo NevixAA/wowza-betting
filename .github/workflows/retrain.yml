@@ -1,8 +1,22 @@
-name: Weekly Retrain
+name: Retrain (daily to 2026-10-05, weekly after)
 
 on:
   schedule:
-    - cron: '0 3 * * 0'   # Every Sunday at 03:00 UTC
+    # DAILY until 2026-10-05, then automatically back to Sundays only. The cron fires every day
+    # and the guard step below decides; it expires by DATE so nobody has to remember to change
+    # it back, and forgetting is the failure mode that actually happens.
+    #
+    # Requested 2026-09-22: "on the upcoming 3 weeks (until oct 5) i want daily retrain" and
+    # "they must retrain any week". Weekly is the floor after the burst.
+    #
+    # Worth knowing what daily buys and what it does not. Retraining adds information only when
+    # new SETTLED results arrive, and those land at the rate fixtures finish — roughly 40-60 a
+    # week across our leagues. A daily run therefore re-fits on about 1% more data than the day
+    # before, so most of the day-to-day movement in the backtest is fitting noise rather than
+    # learning. That is exactly why the promotion gate in retrain.py holds its bar at the BEST
+    # of the last 6 runs instead of yesterday: without that, daily retraining can walk the model
+    # down a tolerance-sized step at a time, every step passing on its own.
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -29,15 +43,39 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Daily through 2026-10-05, Sundays after. Runs before any setup so a skipped day costs
+      # seconds. A manual workflow_dispatch always runs, whatever the date.
+      - name: Retrain today?
+        id: gate
+        run: |
+          TODAY=$(date -u +%F)
+          DOW=$(date -u +%u)          # 1=Mon .. 7=Sun
+          UNTIL="2026-10-05"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; echo "manual dispatch — running"
+          elif [ "$TODAY" \< "$UNTIL" ] || [ "$TODAY" = "$UNTIL" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "$TODAY is within the daily window (through $UNTIL) — running"
+          elif [ "$DOW" = "7" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "$TODAY is a Sunday and the daily window has expired — running weekly"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "$TODAY is past $UNTIL and not a Sunday — skipping (weekly cadence resumed)"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
         with:
           python-version: '3.11'
 
       - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
         run: pip install -r requirements.txt
 
       # ── Main match models (standard + newformat + HT + side markets) ────────────
       - name: Train main models
+        if: steps.gate.outputs.run == 'true'
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
@@ -46,8 +84,26 @@ jobs:
         run: python pipeline.py --mode train
         continue-on-error: false
 
+      # Tell Nevo whether the models actually got better. Requested 2026-09-22. Reads
+      # output/retrain_log.json, which _train_one writes per model with the gate decision and
+      # the held-out log loss before and after. Deduped on RETRAIN|<date> in notified.json, so
+      # the daily cadence cannot double-send.
+      - name: Send retrain result
+        if: steps.gate.outputs.run == 'true'
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -c "
+          import sys; sys.path.insert(0,'.')
+          from telegram_bot.notifier import notify_retrain_result
+          print('retrain digest:', 'sent' if notify_retrain_result() else 'skipped')
+          "
+        continue-on-error: true
+
       # ── Commit updated main models ──────────────────────────────────────────────
       - name: Commit updated main models
+        if: steps.gate.outputs.run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -81,13 +137,15 @@ jobs:
                    models/feature_importances_standard.csv \
                    models/feature_importances_newformat.csv \
                    output/backtest_metrics_history.json \
+                   output/retrain_log.json \
+                   telegram_bot/notified.json \
                    output/backtest_results_standard.csv output/backtest_by_league_standard.csv \
                    output/backtest_results_newformat.csv output/backtest_by_league_newformat.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
-            git commit -m "auto: weekly main-model retrain $(date -u '+%Y-%m-%d')"
+            git commit -m "auto: main-model retrain $(date -u '+%Y-%m-%d')"
           pushed=0
           for i in 1 2 3 4 5; do
             # `-X ours` -> `-X theirs`. In a REBASE the labels are inverted from a merge:
