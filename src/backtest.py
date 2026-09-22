@@ -265,14 +265,39 @@ def run_side_market_backtest(
     df = df.dropna(subset=[target]).copy()
     if odds_col not in df.columns:
         df[odds_col] = np.nan
-    missing_odds = df[odds_col].isna().sum()
+    # A FILLED PRICE IS NOT A PRICE. The fill stays — the model still scores these rows and
+    # they still contribute to TRAINING, which needs no odds — but they are flagged and can
+    # never be counted as bets, because an "edge" against a constant is not an edge.
+    #
+    # WHY THIS MATTERED. With a constant price, fair_prob = (1/1.40)/1.08 = 0.6614 is also
+    # constant, so `edge = p_model - 0.6614` and the tier is a bare model-probability threshold
+    # with no market in it. The reported ROI was the payout of an invented number. Measured on
+    # the committed outputs: over15 was 12,186/12,187 rows (100.0%) at the 1.40 default, and
+    # 2,121 of its 2,122 placed SNIPER+MARKSMAN tips sat on that constant. Those numbers went on
+    # to certify over15 as an approved market for Bundesliga 2 (+13.5%), Championship (+7.86%),
+    # League Two (+9.97%) and Serie B (+4.21%) in output/league_roi_config.json, which
+    # telegram_bot/notifier.py reads to decide what to send.
+    #
+    # The contrast is the argument: btts was certified on real prices (0 of its 925 placed tips
+    # used the default) and is running at +27.3% ROI live over 167 settled bets, while over15 was
+    # certified entirely on the constant and is running at -1.0% over 63. Honest certification
+    # and live performance agree; fabricated certification and live performance do not.
+    df["price_synthetic"] = df[odds_col].isna()
+    missing_odds = int(df["price_synthetic"].sum())
     if missing_odds > 0:
         fallback = _DEFAULT_ODDS.get(target, 2.00)
         df[odds_col] = df[odds_col].fillna(fallback)
-        log.info(
-            f"[{target}] {missing_odds}/{len(df)} rows missing {odds_col} — "
-            f"filled with market default {fallback}"
+        pct = 100.0 * missing_odds / max(len(df), 1)
+        log.warning(
+            f"[{target}] {missing_odds}/{len(df)} rows ({pct:.1f}%) have NO real {odds_col} — "
+            f"filled with {fallback} for scoring only and EXCLUDED from bets/ROI"
         )
+        if missing_odds == len(df):
+            log.error(
+                f"[{target}] NO PRICED DATA AT ALL — 100% of rows are synthetic. This market "
+                f"cannot be backtested and must not be certified. Any ROI reported for it "
+                f"previously was the payout of a constant."
+            )
     df = df.sort_values("date").reset_index(drop=True)
 
     if enabled_leagues:
@@ -318,8 +343,15 @@ def run_side_market_backtest(
         test_df["fair_prob"]  = (1.0 / test_df[odds_col]) / _OVERROUND
         test_df["edge"]       = test_df[f"p_{target}"] - test_df["fair_prob"]
         test_df["signal_tier"] = test_df["edge"].apply(_side_tier)
+        # Synthetic-priced rows can never be bets. NO_PRICE is deliberately a distinct label
+        # from AVOID: AVOID means the edge was measured and rejected, NO_PRICE means there was
+        # nothing to measure against. Collapsing the two is how 2,121 unpriced rows became
+        # "placed tips" with a reported ROI.
+        _synth = test_df["price_synthetic"].fillna(False).astype(bool)
+        test_df.loc[_synth, "signal_tier"] = "NO_PRICE"
+        test_df.loc[_synth, "edge"] = np.nan
         test_df["bet"]        = test_df["signal_tier"].apply(
-            lambda t: "BET" if t != "AVOID" else "AVOID"
+            lambda t: "BET" if t not in ("AVOID", "NO_PRICE") else "AVOID"
         )
 
         # P&L — 1 unit stake for SNIPER/MARKSMAN, 0.5 for VALUABLE
