@@ -825,6 +825,52 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         n_filled = int(df.loc[mask, "home_shots"].notna().sum())
         log.info(f"[api_football_ou] {league}: {n_filled}/{int(mask.sum())} rows now have shot data")
 
+    # ── BANK THE ENRICHMENT, or pay for it again tomorrow ───────────────────────────────
+    # Everything above this line fetched shot and xG data for FINISHED matches — a game played
+    # in March 2024 has a final shot count that will never change. Until 2026-09-22 that result
+    # was used for training and then THROWN AWAY: nothing wrote it back to af_history.parquet,
+    # which is the committed bank the merge at the top of this function reads from. So every
+    # retrain re-derived the same immutable numbers from scratch, and on 2026-09-22 that cost
+    # TWO HOURS of a single run — 30 leagues at ~4 minutes each.
+    #
+    # apifootball_ou_cache/ (44,453 files) was the only thing standing between this and a full
+    # API re-fetch, and retrain.yml had no actions/cache step until the same day, so even that
+    # started empty on every run.
+    #
+    # Writing the result back means the next run's merge already has these rows and the
+    # skip-if-populated guard above (xG > 50% for a league) short-circuits the whole fetch. The
+    # cost goes from "every run, forever" to "once per genuinely new match".
+    #
+    # ONLY rows that actually gained data are written, and only the columns af_history owns, so
+    # this cannot widen the schema or overwrite a real value with a null.
+    try:
+        _hist_p = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
+        _COLMAP = {"home_shots": "HS", "away_shots": "AS", "home_sot": "HST", "away_sot": "AST",
+                   "home_xg": "HXG", "away_xg": "AXG",
+                   "home_insidebox": "HIB", "away_insidebox": "AIB"}
+        _have = [c for c in _COLMAP if c in df.columns]
+        if _have:
+            _new = df[df[_have].notna().any(axis=1)][
+                ["league", "season", "date", "home_team", "away_team"] + _have].copy()
+            _new = _new.rename(columns={k: v for k, v in _COLMAP.items() if k in _have})
+            _prev = pd.read_parquet(_hist_p) if _hist_p.exists() else None
+            _merged = pd.concat([_prev, _new], ignore_index=True) if _prev is not None else _new
+            # Newest row wins: a later fetch may fill a column an earlier one left null.
+            _merged = _merged.drop_duplicates(
+                subset=[c for c in ("date", "league", "home_team", "away_team")
+                        if c in _merged.columns], keep="last")
+            for _c in ("league", "season", "home_team", "away_team"):
+                if _c in _merged.columns:
+                    _merged[_c] = _merged[_c].astype(str)
+            _hist_p.parent.mkdir(exist_ok=True)
+            _merged.to_parquet(_hist_p, index=False)
+            log.info(f"[af_history] BANKED enrichment: {len(_merged):,} rows "
+                     f"({len(_merged) - (len(_prev) if _prev is not None else 0):+,} this run). "
+                     f"Next run merges these instead of re-fetching them.")
+    except Exception as e:                                       # noqa: BLE001
+        # Never fail a training run over the cache. Losing the bank costs time, not correctness.
+        log.warning(f"[af_history] could not bank the enrichment: {e}")
+
     # Recompute SOT ratios after enrichment
     with np.errstate(divide="ignore", invalid="ignore"):
         df["home_sot_ratio"] = np.where(
