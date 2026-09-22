@@ -51,19 +51,41 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f \
-            models/model_v9_standard.pkl models/model_v9_newformat.pkl \
-            models/model_v9_btts.pkl models/model_v9_over15.pkl models/model_v9_over35.pkl \
-            models/model_ht_over05.pkl models/model_ht_over15.pkl \
-            models/metrics_model_v9_standard.json models/metrics_model_v9_newformat.json \
-            models/metrics_model_v9_btts.json models/metrics_model_v9_over15.json \
-            models/metrics_model_v9_over35.json \
-            models/metrics_model_ht_over05.json models/metrics_model_ht_over15.json \
-            models/best_params_btts.json models/best_params_over15.json models/best_params_over35.json \
-            models/feature_importances_btts.csv models/feature_importances_over15.csv \
-            models/feature_importances_over35.csv \
-            models/feature_importances_ht_over05.csv models/feature_importances_ht_over15.csv \
-            2>/dev/null || true
+          # PER-FILE, because `git add -f a b missing` ABORTS and stages NOTHING — one absent
+          # path loses the whole list, and the `2>/dev/null || true` that used to wrap this
+          # swallowed both the abort and the error, so the job went green having persisted
+          # nothing. Verified in a scratch repo: `git add -f a.txt missing.txt` leaves the index
+          # empty; `git add -f a.txt` alone stages a.txt. This is the same defect that silenced
+          # player_props for three days and it was still here.
+          #
+          # output/backtest_metrics_history.json IS THE LEARNING RECORD and was never staged.
+          # retrain.py's `_save_metrics()` wrote it on the runner and the runner took it away, so
+          # the file in git has been frozen at 2026-06-17 while every run compared itself to that
+          # June snapshot. The promotion gate added in retrain.py reads this file to decide
+          # whether a new model regressed — without it committed, the gate has no memory and
+          # week-to-week improvement cannot be measured at all. Same failure shape as the FPL
+          # cache sidecar.
+          for f in models/model_v9_standard.pkl models/model_v9_newformat.pkl \
+                   models/model_v9_btts.pkl models/model_v9_over15.pkl models/model_v9_over35.pkl \
+                   models/model_ht_over05.pkl models/model_ht_over15.pkl \
+                   models/metrics_model_v9_standard.json models/metrics_model_v9_newformat.json \
+                   models/metrics_model_v9_btts.json models/metrics_model_v9_over15.json \
+                   models/metrics_model_v9_over35.json \
+                   models/metrics_model_ht_over05.json models/metrics_model_ht_over15.json \
+                   models/best_params_btts.json models/best_params_over15.json \
+                   models/best_params_over35.json \
+                   models/feature_importances_btts.csv models/feature_importances_over15.csv \
+                   models/feature_importances_over35.csv \
+                   models/feature_importances_ht_over05.csv \
+                   models/feature_importances_ht_over15.csv \
+                   models/feature_importances_standard.csv \
+                   models/feature_importances_newformat.csv \
+                   output/backtest_metrics_history.json \
+                   output/backtest_results_standard.csv output/backtest_by_league_standard.csv \
+                   output/backtest_results_newformat.csv output/backtest_by_league_newformat.csv; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: weekly main-model retrain $(date -u '+%Y-%m-%d')"
           pushed=0
