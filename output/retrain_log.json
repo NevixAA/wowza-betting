@@ -1,0 +1,63 @@
+{
+  "runs": {
+    "2026-09-22": {
+      "standard": {
+        "promoted": true,
+        "why": "log loss 0.69013 -> 0.68885 (-0.00127), within the 0.00500 tolerance",
+        "rows": 17846,
+        "logloss_old": 0.69013,
+        "logloss_new": 0.68885,
+        "at": "2026-09-22T11:09:48Z"
+      },
+      "newformat": {
+        "promoted": true,
+        "why": "log loss 0.68106 -> 0.65773 (-0.02333), within the 0.00500 tolerance",
+        "rows": 48211,
+        "logloss_old": 0.68106,
+        "logloss_new": 0.65773,
+        "at": "2026-09-22T11:10:30Z"
+      },
+      "ht_over05": {
+        "promoted": false,
+        "why": "log loss ROSE +0.08861 (0.60431 -> 0.69292), beyond the 0.00500 tolerance",
+        "rows": 28496,
+        "logloss_old": 0.60431,
+        "logloss_new": 0.69292,
+        "at": "2026-09-22T11:11:01Z"
+      },
+      "ht_over15": {
+        "promoted": true,
+        "why": "log loss 0.64741 -> 0.55207 (-0.09534), within the 0.00500 tolerance",
+        "rows": 28496,
+        "logloss_old": 0.64741,
+        "logloss_new": 0.55207,
+        "at": "2026-09-22T11:11:31Z"
+      },
+      "btts": {
+        "promoted": true,
+        "why": "log loss 0.68742 -> 0.68064 (-0.00678), within the 0.00500 tolerance",
+        "rows": 66057,
+        "logloss_old": 0.68742,
+        "logloss_new": 0.68064,
+        "at": "2026-09-22T11:12:36Z"
+      },
+      "over15": {
+        "promoted": true,
+        "why": "log loss 0.55078 -> 0.54054 (-0.01024), within the 0.00500 tolerance",
+        "rows": 66057,
+        "logloss_old": 0.55078,
+        "logloss_new": 0.54054,
+        "at": "2026-09-22T11:13:42Z"
+      },
+      "over35": {
+        "promoted": true,
+        "why": "log loss 0.59823 -> 0.59620 (-0.00202), within the 0.00500 tolerance",
+        "rows": 66057,
+        "logloss_old": 0.59823,
+        "logloss_new": 0.5962,
+        "at": "2026-09-22T11:14:47Z"
+      }
+    }
+  },
+  "latest_run": "2026-09-22"
+}
