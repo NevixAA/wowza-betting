@@ -57,8 +57,30 @@ MAX_FAIR_OVER     = 3.30   # AND fair odds <= this (p_over >= ~0.30). Without an
                            # P(over) was 1-8% (fair 12-100) -> no book offers value, guaranteed
                            # loser. This band keeps only actionable OVER situations. (audit C1)
 MIN_ELAPSED       = 45     # don't alert before half-time
-MIN_LIVE_EDGE     = 0.12   # 12% edge threshold for live alerts (higher bar than pre-match)
 ATTACK_STR_HIGH   = 1.25   # threshold for "strong attack" signal
+
+# `MIN_LIVE_EDGE = 0.12` used to sit here, commented "12% edge threshold for live alerts
+# (higher bar than pre-match)". IT WAS REFERENCED NOWHERE. Grep confirmed exactly one
+# occurrence in the file: its own definition. There was no 12% gate, and there could not have
+# been one, because THIS SCANNER NEVER FETCHES A MARKET PRICE — see the module docstring, which
+# says so plainly: "No live odds API needed — we calculate the FAIR live price and alert the user
+# to check their bookmaker's live screen."
+#
+# An edge is model probability minus market probability. With no market price there is no edge to
+# threshold, so the constant was not a loosened gate or a disabled one; it described a mechanism
+# that does not exist. Removed rather than implemented, because implementing it honestly means
+# fetching live odds in v9 — a new API path with per-call cost, inside a frozen repo, when Pro
+# already collects live market snapshots (`v10/.github/workflows/pro_live_odds.yml`). That is a
+# design decision, not a cleanup.
+#
+# WHAT THE SIGNALS ACTUALLY ARE: fair-price SITUATIONS. "Live P(over) is 34%, fair price 2.94,
+# go look at your book." Whether value exists is the reader's judgement at their screen, not
+# something this file has established. The only value-shaped filters here are MAX_FAIR_OVER
+# (audit C1 — reject situations so unlikely no book would price them) and the elapsed-time
+# bounds. Those are sanity bounds, not an edge test.
+#
+# If a real gate is wanted: the missing pieces are a live odds source, a de-vig step, and a
+# measured threshold. Do not reintroduce a bare constant.
 
 # Half-time signal thresholds
 HT_MIN_ELAPSED    = 20     # min first-half minutes for HT signals
@@ -692,6 +714,11 @@ def _save_live_notified(keys: set) -> None:
 
 def run() -> list[dict]:
     log.info("Live Scanner — scanning in-progress matches...")
+    # Say it every run, in the run log, so a reader of the output can never mistake these for
+    # edge-filtered signals. A phantom MIN_LIVE_EDGE = 0.12 sat in this file unreferenced for
+    # months and that is exactly the impression it gave.
+    log.info("  NOTE: no market price is fetched. Signals are FAIR-PRICE SITUATIONS, not "
+             "measured edges — compare against your book yourself.")
 
     live_games = _fetch_live_scores()
     if not live_games:
