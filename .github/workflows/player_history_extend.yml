@@ -60,8 +60,18 @@ jobs:
         id: gate
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import datetime as dt, json, subprocess
+          import datetime as dt, json, subprocess, sys
           from pathlib import Path
+
+          # DIAGNOSTICS GO TO STDERR, NEVER TO $GITHUB_OUTPUT. This whole heredoc is
+          # redirected into the output file, which parses `key=value` lines ONLY. A
+          # human-readable line there fails the step with
+          #     Error: Unable to process file command 'output' successfully
+          # which is exactly what happened on run #36 — the gate died, so Report gate and
+          # Collect were both skipped and the collect still did not happen. stderr is
+          # captured in the run log and parsed by nothing.
+          def _note(msg):
+              print(msg, file=sys.stderr)
 
           # Cooldown: when did a collect LAST ACTUALLY RUN? Read from the committed health
           # record, never from git log.
@@ -95,9 +105,9 @@ jobs:
                       last = dt.datetime.fromisoformat(rec.replace("Z", "+00:00"))
                       hours = (dt.datetime.now(dt.timezone.utc) - last).total_seconds() / 3600
                   else:
-                      print("# no last_collect_at recorded -> treating as infinitely old")
+                      _note("no last_collect_at recorded -> treating as infinitely old")
           except Exception as e:
-              print(f"# cooldown check failed ({e}) -> treating as infinitely old")
+              _note(f"cooldown check failed ({e}) -> treating as infinitely old")
 
           newest, age = "missing", 9999
           try:
@@ -108,7 +118,7 @@ jobs:
                   newest = str(pd.to_datetime(d["date"]).max())[:10]
                   age = (dt.date.today() - dt.date.fromisoformat(newest)).days
           except Exception as e:
-              print(f"# freshness check failed ({e})")
+              _note(f"freshness check failed ({e})")
 
           forced = "${{ github.event.inputs.force }}" == "true"
           # A full collect is an hour of runtime and ~4,300 API calls, so never more than
@@ -120,7 +130,7 @@ jobs:
           print(f"age_days={age}")
           print(f"hours_since_commit={hours:.1f}")
           if not go:
-              print(f"# skipping: age={age}d, last parquet commit {hours:.1f}h ago")
+              _note(f"skipping: age={age}d, last collect {hours:.1f}h ago")
           PY
 
       - name: Report gate
