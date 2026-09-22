@@ -99,8 +99,8 @@
     "last_priced": "2026-09-22",
     "last_probe": "2026-09-22",
     "league": "Ireland Premier Division",
-    "priced_events": 233,
-    "probes": 287,
+    "priced_events": 234,
+    "probes": 288,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -115,8 +115,8 @@
     "last_priced": "2026-09-22",
     "last_probe": "2026-09-22",
     "league": "La Liga 2",
-    "priced_events": 283,
-    "probes": 288,
+    "priced_events": 284,
+    "probes": 289,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -124,8 +124,8 @@
     "last_priced": "2026-09-22",
     "last_probe": "2026-09-22",
     "league": "League One",
-    "priced_events": 275,
-    "probes": 292,
+    "priced_events": 276,
+    "probes": 293,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -133,8 +133,8 @@
     "last_priced": "2026-09-22",
     "last_probe": "2026-09-22",
     "league": "League Two",
-    "priced_events": 215,
-    "probes": 257,
+    "priced_events": 216,
+    "probes": 258,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -149,8 +149,8 @@
     "last_priced": "2026-09-22",
     "last_probe": "2026-09-22",
     "league": "Mexico Liga MX",
-    "priced_events": 214,
-    "probes": 215,
+    "priced_events": 215,
+    "probes": 216,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -341,18 +341,17 @@
   },
   "soccer_usa_mls": {
     "empty_streak": 0,
-    "far_empty_probes": 62,
+    "far_empty_probes": 63,
     "last_near_empty": "2026-09-20",
     "last_priced": "2026-09-22",
     "last_probe": "2026-09-22",
     "league": "USA MLS",
-    "matched_events": 6,
-    "priced_events": 1019,
-    "probes": 1089,
+    "matched_events": 5,
+    "priced_events": 1023,
+    "probes": 1094,
     "unmatched_sample": [
-      "Seattle Sounders vs Minnesota United FC",
       "Seattle Sounders vs Real Salt Lake"
     ],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 6
   }
 }
