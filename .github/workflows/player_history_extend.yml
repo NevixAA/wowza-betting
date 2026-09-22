@@ -63,18 +63,41 @@ jobs:
           import datetime as dt, json, subprocess
           from pathlib import Path
 
-          # Cooldown: when did a collect last actually change the parquet? Read from git
-          # rather than a marker file, so it cannot drift out of sync with reality.
+          # Cooldown: when did a collect LAST ACTUALLY RUN? Read from the committed health
+          # record, never from git log.
+          #
+          # THIS IS WHY PLAYER HISTORY FROZE FOR 35 DAYS. The old version ran
+          #     git log -1 --format=%cI -- player_history.parquet
+          # and called it "read from git rather than a marker file, so it cannot drift out of
+          # sync with reality". But actions/checkout@v4 defaults to fetch-depth: 1 — a SHALLOW
+          # clone containing only HEAD. In a shallow clone that command cannot see the commit
+          # that last touched the file; it returns HEAD's own timestamp, which is always minutes
+          # old. So `hours` was always ~0-3, `hours >= 20` was always False, and the collect step
+          # never ran. Observed in history_extend_health.json every single day:
+          #     "collect": "false", "age_days": "35", "hours_since_commit": "2.1"
+          # while the real gap between commits touching that file was 168 hours.
+          #
+          # The gate was introduced 2026-08-18. player_history.parquet's newest match is
+          # 2026-08-17. It has not advanced once since the gate landed, while the workflow ran
+          # daily, committed daily, and reported success daily.
+          #
+          # This is the same defect class as the three mtime-on-CI-checkout bugs in CLAUDE.md:
+          # a freshness signal that the CI checkout itself destroys. The prescribed fix is the
+          # same — a recorded timestamp in a committed sidecar — and, as with the FPL cache, an
+          # UNKNOWN age must mean INFINITELY OLD. Failing the other way is what produced a
+          # 35-day silence.
           hours = 999.0
           try:
-              out = subprocess.run(
-                  ["git", "log", "-1", "--format=%cI", "--", "player_history.parquet"],
-                  capture_output=True, text=True, timeout=120).stdout.strip()
-              if out:
-                  last = dt.datetime.fromisoformat(out)
-                  hours = (dt.datetime.now(dt.timezone.utc) - last).total_seconds() / 3600
+              hp = Path("output/history_extend_health.json")
+              if hp.exists():
+                  rec = json.loads(hp.read_text(encoding="utf-8")).get("last_collect_at")
+                  if rec:
+                      last = dt.datetime.fromisoformat(rec.replace("Z", "+00:00"))
+                      hours = (dt.datetime.now(dt.timezone.utc) - last).total_seconds() / 3600
+                  else:
+                      print("# no last_collect_at recorded -> treating as infinitely old")
           except Exception as e:
-              print(f"# cooldown check failed ({e}) -> treating as stale")
+              print(f"# cooldown check failed ({e}) -> treating as infinitely old")
 
           newest, age = "missing", 9999
           try:
@@ -130,6 +153,21 @@ jobs:
               },
               "collect_outcome": "${{ steps.collect.outcome }}",
           }
+          # THE COOLDOWN SIDECAR. The gate above reads this field and nothing else; it must be
+          # carried forward when no collect ran, or every run would look like "never collected"
+          # and the cooldown would stop existing. It is only ADVANCED when a collect actually
+          # executed — a skipped run must not reset the clock, which is the whole point.
+          prev = {}
+          try:
+              with open("output/history_extend_health.json", encoding="utf-8") as fh:
+                  prev = json.load(fh)
+          except Exception:
+              pass
+          if "${{ steps.collect.outcome }}" in ("success", "failure"):
+              h["last_collect_at"] = h["checked_at"]      # it ran; start the cooldown now
+          elif prev.get("last_collect_at"):
+              h["last_collect_at"] = prev["last_collect_at"]   # carry the old stamp forward
+          # else: leave it absent -> the gate reads that as infinitely old and collects.
           try:
               import pandas as pd
               d = pd.read_parquet("player_history.parquet", columns=["date"])
