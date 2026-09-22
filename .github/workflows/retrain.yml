@@ -151,6 +151,21 @@ jobs:
           # empty; `git add -f a.txt` alone stages a.txt. This is the same defect that silenced
           # player_props for three days and it was still here.
           #
+          # THE TWO DATA BANKS, and neither was staged until 2026-09-22. Both are written on the
+          # runner and both were destroyed with it, so neither could ever accumulate:
+          #
+          #   output/fd_history.parquet  — the football-data history cache. The run on
+          #     2026-09-22 grew it 37,623 -> 58,156 rows and that growth would have been thrown
+          #     away, leaving the next run to re-download the same finished seasons.
+          #   output/af_history.parquet  — the shot/xG bank that data_loader now writes back
+          #     after enrichment. Unstaged it is pointless: the whole purpose is that the NEXT
+          #     run merges these rows instead of spending two hours re-fetching them.
+          #
+          # Both hold data about FINISHED matches, which cannot change, so they only grow when
+          # genuinely new fixtures settle — `git diff --staged --quiet` below means an unchanged
+          # file costs no commit. The alternative is paying for immutable history every run,
+          # forever, which is what has been happening.
+          #
           # output/backtest_metrics_history.json IS THE LEARNING RECORD and was never staged.
           # retrain.py's `_save_metrics()` wrote it on the runner and the runner took it away, so
           # the file in git has been frozen at 2026-06-17 while every run compared itself to that
@@ -176,6 +191,8 @@ jobs:
                    output/backtest_metrics_history.json \
                    output/retrain_log.json \
                    telegram_bot/notified.json \
+                   output/fd_history.parquet \
+                   output/af_history.parquet \
                    output/backtest_results_standard.csv output/backtest_by_league_standard.csv \
                    output/backtest_results_newformat.csv output/backtest_by_league_newformat.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
