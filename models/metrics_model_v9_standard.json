@@ -1,27 +1,27 @@
 {
   "logistic": {
-    "accuracy": 0.5364,
-    "auc": 0.5484,
-    "log_loss": 0.68833,
-    "n_train": 15130,
-    "n_cal": 2670,
-    "n_test": 4450
+    "accuracy": 0.5454,
+    "auc": 0.5533,
+    "log_loss": 0.68826,
+    "n_train": 12134,
+    "n_cal": 2142,
+    "n_test": 3570
   },
   "gradient_boost": {
-    "accuracy": 0.5272,
-    "auc": 0.5232,
-    "log_loss": 0.69153,
-    "n_train": 15130,
-    "n_cal": 2670,
-    "n_test": 4450
+    "accuracy": 0.5359,
+    "auc": 0.5339,
+    "log_loss": 0.68943,
+    "n_train": 12134,
+    "n_cal": 2142,
+    "n_test": 3570
   },
   "lightgbm": {
-    "accuracy": 0.529,
-    "auc": 0.5288,
-    "log_loss": 0.69052,
-    "n_train": 15130,
-    "n_cal": 2670,
-    "n_test": 4450
+    "accuracy": 0.5395,
+    "auc": 0.5438,
+    "log_loss": 0.68887,
+    "n_train": 12134,
+    "n_cal": 2142,
+    "n_test": 3570
   },
   "__meta__": {}
 }
