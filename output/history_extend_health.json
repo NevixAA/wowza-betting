@@ -1,18 +1,48 @@
 {
-  "checked_at": "2026-09-22T11:38:32Z",
-  "run_number": "37",
+  "checked_at": "2026-09-22T13:00:23Z",
+  "run_number": "38",
   "gate": {
-    "collect": "",
-    "newest_before": "",
-    "age_days": "",
-    "hours_since_commit": ""
+    "collect": "true",
+    "newest_before": "2026-08-17",
+    "age_days": "36",
+    "hours_since_commit": "999.0"
   },
-  "collect_outcome": "skipped",
+  "collect_outcome": "success",
+  "last_collect_at": "2026-09-22T13:00:23Z",
   "parquet": {
-    "rows": 302456,
-    "newest_after": "2026-08-17"
+    "rows": 316157,
+    "newest_after": "2026-09-20"
   },
   "collect_log_tail": [
-    "(no collect this run)"
+    "  [Bundesliga 2 2026] 54 fixtures (18 cached, 36 to fetch)...",
+    "  [Bundesliga 2 2026] 1581 player-match rows collected",
+    "  [Ireland Premier 2025] Fetching fixture list (last 300)...",
+    "  [Ireland Premier 2025] 181 fixtures (169 cached, 12 to fetch)...",
+    "  [Ireland Premier 2025] 4892 player-match rows collected",
+    "  [Ireland Premier 2026] Fetching fixture list (last 99)...",
+    "  [Ireland Premier 2026] 99 fixtures (70 cached, 29 to fetch)...",
+    "  [Ireland Premier 2026] 2733 player-match rows collected",
+    "  [Finland Veikk 2025] Fetching fixture list (last 300)...",
+    "  [Finland Veikk 2025] 179 fixtures (68 cached, 111 to fetch)...",
+    "  [Finland Veikk 2025] 2017 player-match rows collected",
+    "  [Finland Veikk 2026] Fetching fixture list (last 99)...",
+    "  [Finland Veikk 2026] 99 fixtures (22 cached, 77 to fetch)...",
+    "  [Finland Veikk 2026] 1000 player-match rows collected",
+    "  [World Cup 2026] Fetching fixture list (last 99)...",
+    "  [World Cup 2026] 99 fixtures (99 cached, 0 to fetch)...",
+    "  [World Cup 2026] 2990 player-match rows collected",
+    "[DONE] 319397 total player-match rows across 11 leagues / 39 season-slots.",
+    "  [sp_events] 10,893 fixtures (10,893 need API calls)...",
+    "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
+    "[collect] union: 302456 existing + 310651 fetched -> 316157 rows (+13701 new, 296950 refreshed, 0 removed)",
+    "[collect] Saved 316157 player rows, 8447 players -> player_history.parquet",
+    "  goals (target_goals): 8.3% positive rate",
+    "  goals2 (target_goals2): 0.8% positive rate",
+    "  assists (target_assists): 6.0% positive rate",
+    "  sot (target_sot): 22.5% positive rate",
+    "  sot2 (target_sot2): 5.3% positive rate",
+    "  sot3 (target_sot3): 1.2% positive rate",
+    "  sot4 (target_sot4): 0.3% positive rate",
+    "  cards (target_cards): 13.4% positive rate"
   ]
 }
