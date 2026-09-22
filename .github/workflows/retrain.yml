@@ -34,7 +34,15 @@ concurrency:
 jobs:
   retrain:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # 120 -> 240 for the COLD run. The cache added below only helps once something has populated
+    # it, and the first run after 2026-09-06's full-enrichment switch has to fetch all 46 leagues
+    # from scratch. If that run hits the cap it is killed, the cache never gets written, and the
+    # next run is cold again — a deadlock with exactly the shape of the FPL sidecar bug, where
+    # the fetch that would have written the state was the one being skipped.
+    #
+    # Steady state should be far under this: TTLs are hours to days, so a warm run re-fetches
+    # only what expired. If runs settle well below 120 minutes this can come back down.
+    timeout-minutes: 240
     permissions:
       contents: write
 
@@ -72,6 +80,35 @@ jobs:
       - name: Install dependencies
         if: steps.gate.outputs.run == 'true'
         run: pip install -r requirements.txt
+
+      # THE MISSING PIECE, and the reason the models have not retrained since 2026-08-30.
+      #
+      # On 2026-09-06, d4a29b58 set WOWZA_FULL_ENRICH: '1' on the train step below. That flips
+      # src/data_loader from enriching the 15 new-format leagues to enriching EVERY league with
+      # an API-Football id — 46 of them, a 3.1x increase — across every season in the training
+      # frame. This workflow had no actions/cache step, so each run started COLD and refetched
+      # all of it against a 120-minute cap. No retrain has committed since.
+      #
+      # This is the SAME mistake CLAUDE.md already documents from 2026-08-15, in a different
+      # workflow: "Wiring APIFOOTBALL_KEY into predict.yml switched on eight API-Football
+      # enrichments... predict.yml has no actions/cache step, so every 5-minute run refetched
+      # from cold: runtime went 2-3 min -> 10+ against a 15-minute timeout. Reverted.
+      # Re-enabling requires caching api_football_cache/ first." predict.yml got its cache on
+      # 2026-09-06. retrain.yml got the enrichment switch on the same day and not the cache.
+      #
+      # Same paths and the same key strategy as predict.yml: a per-run key so each run writes a
+      # fresh entry, and a restore-key prefix so it starts from the most recent one. TTLs are
+      # hours to days, so a warm cache makes the steady-state cost a fraction of a cold run —
+      # which matters far more now that this job runs DAILY to 2026-10-05.
+      - name: Cache API-Football responses (makes full enrichment affordable)
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            api_football_cache
+            apifootball_ou_cache
+          key: af-cache-retrain-${{ github.run_id }}
+          restore-keys: af-cache-retrain-
 
       # ── Main match models (standard + newformat + HT + side markets) ────────────
       - name: Train main models
