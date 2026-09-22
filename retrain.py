@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from datetime import date, datetime
@@ -235,6 +236,51 @@ def _save_metrics(history: dict) -> None:
     )
 
 
+def _promotion_gate(label: str, prev: dict | None, curr: dict) -> tuple[bool, str]:
+    """May this freshly trained model replace the incumbent? Returns (promote, reason).
+
+    WHY THIS EXISTS. `save_models()` used to run immediately after `train_model()` and BEFORE
+    `run_backtest()`, with `_print_comparison()` afterwards only printing. So every retrain went
+    live unconditionally and the comparison was decoration — a model that backtested worse
+    replaced a better one and nothing stopped it, or even recorded that it had happened.
+
+    Note what the backtest is and is not. `run_backtest` walk-forward-retrains inside each fold,
+    so it measures the PROCEDURE on history, not the specific pickle just fitted. That is still
+    the right gate input — if the procedure has degraded on history, the artifact it produced is
+    not one to ship — but it is not a test of that artifact, and this gate should not be
+    described as one.
+
+    Deliberately conservative and deliberately simple. Pro has the real thing
+    (`v10/src/models/registry.py::evaluate_gate()` — chronological_4block, logloss/brier, ECE,
+    clv_n); v9 is frozen and cannot import it. This is a floor, not a substitute.
+
+    ON UNMEASURABLE CASES: promote, loudly. The instinct is to fail closed, but the cost
+    asymmetry runs the other way here. Failing closed on a missing metric key freezes the model
+    forever, silently — exactly the class of bug this whole pass is cleaning up. Failing open is
+    no worse than the behaviour being replaced, and it says so on stdout.
+    """
+    if os.getenv("RETRAIN_FORCE_PROMOTE", "").strip() == "1":
+        return True, "RETRAIN_FORCE_PROMOTE=1 set — gate bypassed by hand"
+
+    curr_bets = curr.get("total_bets")
+    if isinstance(curr_bets, (int, float)) and curr_bets <= 0:
+        return False, "the new model placed 0 backtest bets — nothing was measured, so nothing is proven"
+
+    if not prev:
+        return True, "no previous backtest on record — nothing to regress against"
+
+    tol = float(os.getenv("RETRAIN_MAX_ROI_DROP_PP", "2.0"))
+    p_roi, c_roi = prev.get("roi_%"), curr.get("roi_%")
+    if not (isinstance(p_roi, (int, float)) and isinstance(c_roi, (int, float))):
+        return True, f"roi_% missing on one side (prev={p_roi!r}, curr={c_roi!r}) — cannot compare"
+
+    drop = p_roi - c_roi
+    if drop > tol:
+        return False, (f"ROI fell {drop:.2f}pp ({p_roi:.2f} -> {c_roi:.2f}), beyond the "
+                       f"{tol:.2f}pp tolerance")
+    return True, f"ROI {p_roi:.2f} -> {c_roi:.2f} ({-drop:+.2f}pp), within the {tol:.2f}pp tolerance"
+
+
 def _print_comparison(label: str, prev: dict | None, curr: dict) -> None:
     keys = [
         ("roi_%",              "ROI % (S+MM placed)"),
@@ -366,15 +412,8 @@ def main():
                   f"than the second divisions. The new-format model below still retrains.")
         std_results = None
     else:
+        # TRAIN INTO MEMORY ONLY. The save now happens after the backtest, behind the gate.
         std_results = train_model(std_valid)
-        save_models(std_results, model_file=config.MODEL_FILE_STANDARD)
-
-    payload_std = load_models(model_file=config.MODEL_FILE_STANDARD)
-    fi = get_feature_importances(payload_std)
-    if not fi.empty:
-        fi.to_csv(config.MODELS_DIR / "feature_importances_standard.csv", index=False)
-        print("\nTop 10 features [STANDARD]:")
-        print(fi.head(10).to_string(index=False))
 
     std_leagues = config.STANDARD_FORMAT_LEAGUES & config.ENABLED_LEAGUES
     if std_results is None:
@@ -405,7 +444,32 @@ def main():
                    next((v for k, v in sorted(history.items(), reverse=True)
                          if "_standard" in k), None)
         _print_comparison("STANDARD", prev_std, std_summary)
-        history[f"{run_key}_standard"] = {**std_summary, "season": season}
+
+        # ── THE GATE ──────────────────────────────────────────────────────────
+        promote, why = _promotion_gate("STANDARD", prev_std, std_summary)
+        if promote:
+            save_models(std_results, model_file=config.MODEL_FILE_STANDARD)
+            log.info(f"STANDARD model PROMOTED — {why}")
+        else:
+            log.error(f"STANDARD model NOT PROMOTED — {why}. "
+                      f"{config.MODEL_FILE_STANDARD.name} is LEFT UNTOUCHED; the incumbent "
+                      f"keeps serving. Set RETRAIN_FORCE_PROMOTE=1 to override by hand.")
+
+        # Feature importances describe whatever is ACTUALLY live, which after a blocked
+        # promotion is the incumbent, not what was just fitted. Reading the file rather than
+        # `std_results` is what keeps those two from drifting apart.
+        try:
+            fi = get_feature_importances(load_models(model_file=config.MODEL_FILE_STANDARD))
+            if not fi.empty:
+                fi.to_csv(config.MODELS_DIR / "feature_importances_standard.csv", index=False)
+                print("\nTop 10 features [STANDARD — the LIVE model]:")
+                print(fi.head(10).to_string(index=False))
+        except FileNotFoundError:
+            log.warning(f"No {config.MODEL_FILE_STANDARD.name} on disk — skipping "
+                        f"feature importances.")
+
+        history[f"{run_key}_standard"] = {**std_summary, "season": season,
+                                          "promoted": promote, "gate_reason": why}
 
     # ── 4. Train + backtest NEW-FORMAT model ──────────────────────────────────
     nf_valid = valid[valid["league"].isin(config.NEW_FORMAT_LEAGUES)]
@@ -413,15 +477,9 @@ def main():
     log.info(f"  Leagues: {sorted(nf_valid['league'].unique())}")
 
     if len(nf_valid) >= config.BACKTEST_MIN_TRAIN:
+        # TRAIN INTO MEMORY ONLY — save is gated below, same as the standard track. The two
+        # gates are SEPARATE and neither can block or promote the other (invariant 1).
         nf_results = train_model(nf_valid)
-        save_models(nf_results, model_file=config.MODEL_FILE_NEWFORMAT)
-
-        payload_nf = load_models(model_file=config.MODEL_FILE_NEWFORMAT)
-        fi_nf = get_feature_importances(payload_nf)
-        if not fi_nf.empty:
-            fi_nf.to_csv(config.MODELS_DIR / "feature_importances_newformat.csv", index=False)
-            print("\nTop 10 features [NEW-FORMAT]:")
-            print(fi_nf.head(10).to_string(index=False))
 
         nf_leagues = config.NEW_FORMAT_LEAGUES & config.ENABLED_LEAGUES
         nf_df, nf_summary, nf_lg = run_backtest(nf_valid, enabled_leagues=nf_leagues)
@@ -439,7 +497,30 @@ def main():
                   next((v for k, v in sorted(history.items(), reverse=True)
                         if "_newformat" in k), None)
         _print_comparison("NEW-FORMAT", prev_nf, nf_summary)
-        history[f"{run_key}_newformat"] = {**nf_summary, "season": season}
+
+        # ── THE GATE (new-format's own, independent of standard's) ────────────
+        nf_promote, nf_why = _promotion_gate("NEW-FORMAT", prev_nf, nf_summary)
+        if nf_promote:
+            save_models(nf_results, model_file=config.MODEL_FILE_NEWFORMAT)
+            log.info(f"NEW-FORMAT model PROMOTED — {nf_why}")
+        else:
+            log.error(f"NEW-FORMAT model NOT PROMOTED — {nf_why}. "
+                      f"{config.MODEL_FILE_NEWFORMAT.name} is LEFT UNTOUCHED; the incumbent "
+                      f"keeps serving. Set RETRAIN_FORCE_PROMOTE=1 to override by hand.")
+
+        try:
+            fi_nf = get_feature_importances(load_models(model_file=config.MODEL_FILE_NEWFORMAT))
+            if not fi_nf.empty:
+                fi_nf.to_csv(config.MODELS_DIR / "feature_importances_newformat.csv",
+                             index=False)
+                print("\nTop 10 features [NEW-FORMAT — the LIVE model]:")
+                print(fi_nf.head(10).to_string(index=False))
+        except FileNotFoundError:
+            log.warning(f"No {config.MODEL_FILE_NEWFORMAT.name} on disk — skipping "
+                        f"feature importances.")
+
+        history[f"{run_key}_newformat"] = {**nf_summary, "season": season,
+                                           "promoted": nf_promote, "gate_reason": nf_why}
     else:
         log.warning(f"Not enough new-format data ({len(nf_valid)} rows < "
                     f"{config.BACKTEST_MIN_TRAIN}) — new-format model not trained")
