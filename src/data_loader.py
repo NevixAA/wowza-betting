@@ -858,8 +858,32 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 if {"league", "season"}.issubset(_cached.columns):
                     _have = set(zip(_cached["league"].astype(str),
                                     _cached["season"].astype(str)))
+                # ALSO KEY BY THE DATE-DERIVED LABEL, because the stored `season` is not in one
+                # convention and the lookup below is.
+                #
+                # The downloader probes (league, "2024/25") for standard-format leagues. The
+                # cache stores standard rows under a calendar YEAR — '2023'..'2026' — because
+                # they were seeded from the new-format path, where a calendar year is correct
+                # (Brazil, Japan, MLS run Feb-Nov). So the probe could never hit: the cache held
+                # 138 league-seasons and served ZERO of them, and every CI run re-downloaded all
+                # 72 files from football-data.co.uk. Observed 2026-09-22:
+                #   "[fd_cache] 37,623 cached rows covering 138 league-season(s)"
+                #   "CI download: 72 file(s) loaded, 0 finished season(s) served from cache"
+                #
+                # A standard season runs Aug-May, so its label is recoverable from any match
+                # date in it — the same rule retrain._auto_season uses. Adding the derived key
+                # ALONGSIDE the stored one means the lookup works whichever convention a row was
+                # written under, and cannot regress a cache that was already correct.
+                if {"league", "date"}.issubset(_cached.columns):
+                    _dt = pd.to_datetime(_cached["date"], errors="coerce")
+                    _ok = _dt.notna()
+                    if _ok.any():
+                        _start = _dt[_ok].dt.year.where(_dt[_ok].dt.month >= 7,
+                                                        _dt[_ok].dt.year - 1)
+                        _lbl = _start.astype(str) + "/" + ((_start + 1) % 100).map("{:02d}".format)
+                        _have |= set(zip(_cached.loc[_ok, "league"].astype(str), _lbl))
                 log.info(f"[fd_cache] {len(_cached):,} cached rows covering "
-                         f"{len(_have)} league-season(s)")
+                         f"{len(_have)} league-season key(s)")
             except Exception as e:                                   # noqa: BLE001
                 log.warning(f"[fd_cache] cache unreadable, will re-download: {e}")
         # Kept SEPARATE from the cached rows: only genuinely-downloaded frames may update the
@@ -898,6 +922,22 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 merged = merged.drop_duplicates(
                     subset=[c for c in ("date", "league", "home_team", "away_team")
                             if c in merged.columns], keep="last")
+                # ONE DTYPE PER COLUMN BEFORE PARQUET, or the write dies and the cache is never
+                # refreshed. `season` is a calendar YEAR for new-format leagues and a "2024/25"
+                # LABEL for standard ones, and concatenating the two conventions produced an
+                # object column holding both ints and strings. pyarrow cannot infer a type for
+                # that and threw:
+                #   "Expected bytes, got a 'int' object / Conversion failed for column season"
+                # The exception was swallowed into a warning, so every run logged
+                # "could not update the cache" and carried on — the cache could never grow, and
+                # the next run re-downloaded everything again. Observed 2026-09-22.
+                #
+                # Cast rather than unify the conventions: a calendar year is genuinely right for
+                # Brazil/Japan/MLS and a split label is genuinely right for the Championship.
+                # The lookup above now keys on both, so they no longer need to agree.
+                for _c in ("season", "league", "home_team", "away_team"):
+                    if _c in merged.columns:
+                        merged[_c] = merged[_c].astype(str)
                 cache_p.parent.mkdir(exist_ok=True)
                 merged.to_parquet(cache_p, index=False)
                 log.info(f"[fd_cache] refreshed {cache_p.name}: {len(merged):,} rows "
