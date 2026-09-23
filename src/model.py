@@ -287,6 +287,47 @@ def load_models(model_file: Optional[Path] = None) -> dict:
         return pickle.load(f)
 
 
+def chronological_split(df: pd.DataFrame, target: str, train_ratio: float = 0.8):
+    """The exact split `train_model` will use. Exposed so the promotion gate can score the
+    INCUMBENT on the same rows the candidate is scored on."""
+    d = df.dropna(subset=[target]).copy().sort_values("date").reset_index(drop=True)
+    return d.iloc[:int(len(d) * train_ratio)], d.iloc[int(len(d) * train_ratio):]
+
+
+def score_payload(payload: dict, df: pd.DataFrame, target: str) -> float:
+    """Mean per-sub-model log loss of an already-trained payload on `df`.
+
+    WHY THIS EXISTS. The promotion gate used to compare the incumbent's log loss AS RECORDED
+    WHEN IT WAS TRAINED against the candidate's log loss on today's holdout. Those are two
+    different test sets, and on 2026-09-23 the difference stopped being academic: a data fix grew
+    the training frame 33-56% overnight and every model reported a large "improvement"
+    (standard 0.68885 -> 0.64066) that was really a different, larger holdout. A controlled
+    experiment on IDENTICAL test fixtures the same day found no improvement at all from the extra
+    data, so the two cannot both be measuring model quality.
+
+    Scoring the incumbent here, on the candidate's own holdout, makes the comparison mean what it
+    appears to mean. It costs one prediction pass and no retraining.
+
+    Deliberately the MEAN OF SUB-MODEL log losses rather than the ensemble's, because that is
+    what the candidate side reports; comparing a mean against an ensemble would swap one
+    apples-to-oranges problem for another.
+    """
+    import numpy as np
+    from sklearn.metrics import log_loss as _ll
+    X, _ = _prep(df, payload.get("feature_cols"))
+    y = df[target].values
+    out = []
+    for name, m in (payload.get("models") or {}).items():
+        if name == "__meta__":
+            continue
+        try:
+            p = np.clip(m.predict_proba(X)[:, 1], 1e-15, 1 - 1e-15)
+            out.append(_ll(y, p))
+        except Exception:                                            # noqa: BLE001
+            continue
+    return float(np.mean(out)) if out else float("nan")
+
+
 # ── Inference ─────────────────────────────────────────────────────────────────
 
 def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
