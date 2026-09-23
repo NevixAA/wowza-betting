@@ -57,7 +57,65 @@
         "logloss_new": 0.5962,
         "at": "2026-09-22T11:14:47Z"
       }
+    },
+    "2026-09-23": {
+      "standard": {
+        "promoted": true,
+        "why": "log loss 0.68885 -> 0.64066 (-0.04819), within the 0.00500 tolerance",
+        "rows": 27789,
+        "logloss_old": 0.68885,
+        "logloss_new": 0.64066,
+        "at": "2026-09-23T08:26:54Z"
+      },
+      "newformat": {
+        "promoted": true,
+        "why": "log loss 0.65773 -> 0.59551 (-0.06222), within the 0.00500 tolerance",
+        "rows": 60243,
+        "logloss_old": 0.65773,
+        "logloss_new": 0.59551,
+        "at": "2026-09-23T08:27:47Z"
+      },
+      "ht_over05": {
+        "promoted": false,
+        "why": "log loss ROSE +0.10319 (0.60431 -> 0.70750), beyond the 0.00500 tolerance",
+        "rows": 40371,
+        "logloss_old": 0.60431,
+        "logloss_new": 0.7075,
+        "at": "2026-09-23T08:28:31Z"
+      },
+      "ht_over15": {
+        "promoted": true,
+        "why": "log loss 0.55207 -> 0.54504 (-0.00703), within the 0.00500 tolerance",
+        "rows": 40371,
+        "logloss_old": 0.55207,
+        "logloss_new": 0.54504,
+        "at": "2026-09-23T08:29:15Z"
+      },
+      "btts": {
+        "promoted": true,
+        "why": "log loss 0.68064 -> 0.64519 (-0.03546), within the 0.00500 tolerance",
+        "rows": 88032,
+        "logloss_old": 0.68064,
+        "logloss_new": 0.64519,
+        "at": "2026-09-23T08:30:45Z"
+      },
+      "over15": {
+        "promoted": true,
+        "why": "log loss 0.54054 -> 0.51597 (-0.02456), within the 0.00500 tolerance",
+        "rows": 88032,
+        "logloss_old": 0.54054,
+        "logloss_new": 0.51597,
+        "at": "2026-09-23T08:32:16Z"
+      },
+      "over35": {
+        "promoted": true,
+        "why": "log loss 0.59620 -> 0.56740 (-0.02880), within the 0.00500 tolerance",
+        "rows": 88032,
+        "logloss_old": 0.5962,
+        "logloss_new": 0.5674,
+        "at": "2026-09-23T08:33:48Z"
+      }
     }
   },
-  "latest_run": "2026-09-22"
+  "latest_run": "2026-09-23"
 }
