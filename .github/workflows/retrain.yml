@@ -190,6 +190,7 @@ jobs:
                    models/feature_importances_newformat.csv \
                    output/backtest_metrics_history.json \
                    output/retrain_log.json \
+                   output/training_coverage.json \
                    telegram_bot/notified.json \
                    output/fd_history.parquet \
                    output/af_history.parquet \
