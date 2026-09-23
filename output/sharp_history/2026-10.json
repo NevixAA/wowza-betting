@@ -82,6 +82,15 @@
           "odds_draw": 3.36
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 2.03,
+          "odds_away": 3.4,
+          "odds_draw": 3.36
+        },
+        "n_books": 15
       }
     ]
   },
@@ -154,6 +163,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 1.93,
+          "odds_under": 1.82
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 1.93,
           "odds_under": 1.82
@@ -254,6 +271,15 @@
           "odds_draw": 3.6
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.56,
+          "odds_away": 5.6,
+          "odds_draw": 3.6
+        },
+        "n_books": 11
       }
     ]
   },
@@ -334,6 +360,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 2.09,
+          "odds_under": 1.72
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 2.09,
           "odds_under": 1.72
@@ -497,6 +531,15 @@
           "odds_draw": 2.845
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 2.22,
+          "odds_away": 3.55,
+          "odds_draw": 2.85
+        },
+        "n_books": 11
       }
     ]
   },
@@ -638,6 +681,14 @@
           "odds_under": 1.46
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.68,
+          "odds_under": 1.46
+        },
+        "n_books": 2
       }
     ]
   },
@@ -661,6 +712,15 @@
           "odds_draw": 3.8
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 3.3,
+          "odds_away": 1.86,
+          "odds_draw": 3.8
+        },
+        "n_books": 11
       }
     ]
   },
@@ -677,6 +737,14 @@
     "snapshots": [
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.75
+        },
+        "n_books": 1
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 1.4,
           "odds_under": 2.75
@@ -831,6 +899,15 @@
           "odds_draw": 2.875
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 2.83,
+          "odds_away": 2.6,
+          "odds_draw": 2.9
+        },
+        "n_books": 11
       }
     ]
   },
@@ -964,6 +1041,14 @@
           "odds_under": 1.46
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.68,
+          "odds_under": 1.46
+        },
+        "n_books": 2
       }
     ]
   },
@@ -1032,6 +1117,15 @@
           "odds_draw": 3.45
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.95,
+          "odds_draw": 3.45
+        },
+        "n_books": 10
       }
     ]
   },
@@ -1093,6 +1187,58 @@
           "odds_under": 1.65
         },
         "n_books": 5
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.22,
+          "odds_under": 1.65
+        },
+        "n_books": 5
+      }
+    ]
+  },
+  "6e8c3d1d5ffa2608ba4a8dad9d8b3d68_h2h": {
+    "league": "Finland Veikkausliiga",
+    "home": "IF Gnistan",
+    "away": "FC Inter Turku",
+    "date": "2026-10-07 16:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 4.1,
+      "odds_away": 1.8,
+      "odds_draw": 3.72
+    },
+    "snapshots": [
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 4.1,
+          "odds_away": 1.8,
+          "odds_draw": 3.72
+        },
+        "n_books": 7
+      }
+    ]
+  },
+  "6e8c3d1d5ffa2608ba4a8dad9d8b3d68_totals": {
+    "league": "Finland Veikkausliiga",
+    "home": "IF Gnistan",
+    "away": "FC Inter Turku",
+    "date": "2026-10-07 16:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.76,
+      "odds_under": 1.98
+    },
+    "snapshots": [
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 1.76,
+          "odds_under": 1.98
+        },
+        "n_books": 4
       }
     ]
   },
@@ -1179,6 +1325,15 @@
           "odds_draw": 3.49
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 5.36,
+          "odds_away": 1.71,
+          "odds_draw": 3.41
+        },
+        "n_books": 3
       }
     ]
   },
@@ -1254,6 +1409,14 @@
         "odds": {
           "odds_over": 2.31,
           "odds_under": 1.61
+        },
+        "n_books": 1
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.29,
+          "odds_under": 1.62
         },
         "n_books": 1
       }
@@ -1441,6 +1604,15 @@
           "odds_draw": 2.935
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 2.3,
+          "odds_away": 3.2,
+          "odds_draw": 2.94
+        },
+        "n_books": 11
       }
     ]
   },
@@ -1606,6 +1778,14 @@
           "odds_under": 1.49
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.58,
+          "odds_under": 1.49
+        },
+        "n_books": 2
       }
     ]
   },
@@ -1692,6 +1872,15 @@
           "odds_draw": 2.9
         },
         "n_books": 7
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 3.85,
+          "odds_away": 2.01,
+          "odds_draw": 2.94
+        },
+        "n_books": 8
       }
     ]
   },
@@ -1760,6 +1949,15 @@
           "odds_draw": 3.1
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 4.0,
+          "odds_away": 1.86,
+          "odds_draw": 3.1
+        },
+        "n_books": 9
       }
     ]
   },
@@ -1816,6 +2014,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 2.23,
+          "odds_under": 1.62
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 2.23,
           "odds_under": 1.62
@@ -2041,6 +2247,15 @@
           "odds_draw": 3.425
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.74,
+          "odds_away": 4.4,
+          "odds_draw": 3.45
+        },
+        "n_books": 11
       }
     ]
   },
@@ -2198,6 +2413,14 @@
           "odds_under": 1.82
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 1.98,
+          "odds_under": 1.82
+        },
+        "n_books": 6
       }
     ]
   },
@@ -2266,6 +2489,15 @@
           "odds_draw": 2.975
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.87,
+          "odds_away": 4.5,
+          "odds_draw": 3.0
+        },
+        "n_books": 11
       }
     ]
   },
@@ -2322,6 +2554,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 3.05,
+          "odds_under": 1.37
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 3.05,
           "odds_under": 1.37
@@ -2458,6 +2698,15 @@
           "odds_draw": 3.275
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.61,
+          "odds_away": 5.7,
+          "odds_draw": 3.3
+        },
+        "n_books": 11
       }
     ]
   },
@@ -2575,6 +2824,14 @@
           "odds_under": 1.49
         },
         "n_books": 5
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.54,
+          "odds_under": 1.49
+        },
+        "n_books": 5
       }
     ]
   },
@@ -2679,6 +2936,15 @@
           "odds_draw": 2.975
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 2.52,
+          "odds_away": 2.9,
+          "odds_draw": 2.96
+        },
+        "n_books": 11
       }
     ]
   },
@@ -2772,6 +3038,14 @@
           "odds_under": 1.52
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.48,
+          "odds_under": 1.52
+        },
+        "n_books": 2
       }
     ]
   },
@@ -2858,6 +3132,15 @@
           "odds_draw": 3.28
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 2.0,
+          "odds_away": 3.55,
+          "odds_draw": 3.28
+        },
+        "n_books": 15
       }
     ]
   },
@@ -2930,6 +3213,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 1.99,
+          "odds_under": 1.75
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 1.99,
           "odds_under": 1.75
@@ -3021,6 +3312,15 @@
           "odds_draw": 4.6
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.43,
+          "odds_away": 5.5,
+          "odds_draw": 4.6
+        },
+        "n_books": 11
       }
     ]
   },
@@ -3093,6 +3393,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 1.34,
+          "odds_under": 3.2
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 1.34,
           "odds_under": 3.2
@@ -3247,6 +3555,15 @@
           "odds_draw": 2.95
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.88,
+          "odds_away": 4.5,
+          "odds_draw": 2.97
+        },
+        "n_books": 11
       }
     ]
   },
@@ -3380,6 +3697,14 @@
           "odds_under": 1.41
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_over": 2.85,
+          "odds_under": 1.41
+        },
+        "n_books": 2
       }
     ]
   },
@@ -3457,6 +3782,15 @@
           "odds_draw": 2.89
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.78,
+          "odds_away": 4.6,
+          "odds_draw": 2.9
+        },
+        "n_books": 9
       }
     ]
   },
@@ -3597,6 +3931,15 @@
           "odds_draw": 3.125
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-09-23 18:02",
+        "odds": {
+          "odds_home": 1.8,
+          "odds_away": 4.55,
+          "odds_draw": 3.15
+        },
+        "n_books": 11
       }
     ]
   },
@@ -3717,6 +4060,14 @@
       },
       {
         "at": "2026-09-23 13:05",
+        "odds": {
+          "odds_over": 2.58,
+          "odds_under": 1.49
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-09-23 18:02",
         "odds": {
           "odds_over": 2.58,
           "odds_under": 1.49
