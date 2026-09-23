@@ -53,7 +53,8 @@ import config
 from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
 from src.model import (train as train_model, save_models, load_models,
-                        get_feature_importances, FEATURE_COLS as MODEL_FEATURE_COLS)
+                        get_feature_importances, chronological_split, score_payload,
+                        FEATURE_COLS as MODEL_FEATURE_COLS)
 from src.betting import generate_bets
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
@@ -226,12 +227,39 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
     against regression rather than a proof of improvement.
     """
     log.info(f"  [{label}] {len(valid):,} rows — training ensemble (target={target})...")
-    metrics_file = config.MODELS_DIR / f"metrics_{Path(model_file).stem}.json"
+
+    # SCORE THE INCUMBENT ON THE CANDIDATE'S OWN HOLDOUT.
+    #
+    # This gate used to read the incumbent's log loss from the metrics file written WHEN IT WAS
+    # TRAINED, and compare it against the candidate's log loss on today's holdout. Two different
+    # test sets. That was tolerable while the training frame barely moved between runs, and it
+    # stopped being tolerable on 2026-09-23: a data fix grew the frame 33-56% overnight and every
+    # model reported a large improvement (standard 0.68885 -> 0.64066) that was really a
+    # different, larger holdout. A controlled experiment on IDENTICAL test fixtures the same day
+    # found NO improvement from the extra data, so both numbers cannot be measuring model
+    # quality — and the one with a fixed test set is the one to believe.
+    #
+    # So: recreate the exact split train_model will use, and score the incumbent on it. One
+    # prediction pass, no retraining. The stored-metrics path survives ONLY as a fallback for
+    # when the incumbent cannot be scored at all (no file yet, or a feature-set change), and the
+    # reason string says which basis was used so a promotion can never silently rest on the weak
+    # comparison.
+    basis = "same_holdout"
+    old_ll = float("nan")
     try:
-        incumbent = json.loads(metrics_file.read_text(encoding="utf-8"))
-    except Exception:
-        incumbent = {}
-    old_ll = _mean_logloss(incumbent)
+        _, _test_df = chronological_split(valid, target)
+        if len(_test_df) >= 50:
+            old_ll = score_payload(load_models(model_file=model_file), _test_df, target)
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"  [{label}] could not score the incumbent on today's holdout ({e}); "
+                    f"falling back to its stored metrics")
+    if old_ll != old_ll:
+        metrics_file = config.MODELS_DIR / f"metrics_{Path(model_file).stem}.json"
+        try:
+            old_ll = _mean_logloss(json.loads(metrics_file.read_text(encoding="utf-8")))
+            basis = "stored_metrics_FALLBACK"
+        except Exception:
+            basis = "no_incumbent"
 
     results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
     new_ll = _mean_logloss({k: v["metrics"] for k, v in results.items()})
@@ -246,7 +274,9 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
                                f"{new_ll:.5f}), beyond the {tol:.5f} tolerance")
     else:
         promote, why = True, (f"log loss {old_ll:.5f} -> {new_ll:.5f} ({new_ll - old_ll:+.5f}), "
-                              f"within the {tol:.5f} tolerance")
+                              f"within the {tol:.5f} tolerance"
+                              + ("" if basis == "same_holdout"
+                                 else f" [WEAK COMPARISON: {basis}]"))
 
     if promote:
         save_models(results, model_file=model_file)
@@ -255,6 +285,7 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
         log.error(f"  [{label}] NOT PROMOTED — {why}. {Path(model_file).name} left untouched; "
                   f"the incumbent keeps serving.")
     _record_retrain(label, {"promoted": promote, "why": why, "rows": int(len(valid)),
+                            "comparison_basis": basis,
                             "logloss_old": None if old_ll != old_ll else round(old_ll, 5),
                             "logloss_new": None if new_ll != new_ll else round(new_ll, 5)})
 
