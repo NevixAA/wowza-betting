@@ -19,6 +19,7 @@ referee
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -116,6 +117,49 @@ def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
             if s.notna().sum() > len(raw) * 0.1:   # at least 10% coverage
                 return s
     return pd.Series(np.nan, index=raw.index)
+
+
+def _report_training_coverage(out: pd.DataFrame) -> None:
+    """Write output/training_coverage.json — what the models are actually about to train on.
+
+    THIS EXISTS BECAUSE THE GAP WAS INVISIBLE FOR FOUR SEASONS. Corners, half-time goals and the
+    O/U 2.5 price were all missing from every finished season of the seven leagues we bet, and
+    nothing failed: the download succeeded, the retrain succeeded, the gate promoted models, and
+    the coverage was simply never looked at. A silent absence is worse than an error because
+    there is nothing to notice.
+
+    So: one small committed file per run, per league, per column. A regression shows up as a
+    number that fell, and the half-time markets in particular have somewhere to point when they
+    behave oddly -- ht_over05 was rejected by the promotion gate on 2026-09-22 with log loss
+    rising 0.0886, on a track whose training data was missing half-time scores for four seasons
+    of seven leagues.
+    """
+    try:
+        cols = [c for c in ("home_corners", "ht_home_goals", "odds_over25", "odds_btts",
+                            "odds_over15", "odds_over35", "home_shots", "home_sot",
+                            "home_fouls") if c in out.columns]
+        rows = {}
+        for lg, g in out.groupby("league"):
+            rows[str(lg)] = {"rows": int(len(g)),
+                             "first": str(pd.to_datetime(g["date"]).min())[:10],
+                             "last": str(pd.to_datetime(g["date"]).max())[:10],
+                             **{c: round(float(g[c].notna().mean()), 4) for c in cols}}
+        thin = sorted(lg for lg, r in rows.items()
+                      if r.get("home_corners", 1.0) < 0.5 or r.get("ht_home_goals", 1.0) < 0.5)
+        payload = {"generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
+                   "total_rows": int(len(out)), "leagues": rows,
+                   "thin_on_corners_or_halftime": thin}
+        p = Path(__file__).resolve().parents[1] / "output" / "training_coverage.json"
+        p.parent.mkdir(exist_ok=True)
+        p.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        if thin:
+            log.warning(f"[coverage] {len(thin)} league(s) below 50% on corners or half-time "
+                        f"goals: {thin[:8]}")
+        log.info(f"[coverage] wrote training_coverage.json ({len(rows)} leagues, "
+                 f"{len(out):,} rows)")
+    except Exception as e:                                           # noqa: BLE001
+        # Never fatal: a missing report is a missing report, not a failed training run.
+        log.warning(f"[coverage] could not write training_coverage.json: {e}")
 
 
 def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
@@ -928,8 +972,65 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                                                         _dt[_ok].dt.year - 1)
                         _lbl = _start.astype(str) + "/" + ((_start + 1) % 100).map("{:02d}".format)
                         _have |= set(zip(_cached.loc[_ok, "league"].astype(str), _lbl))
+
+                # A SEASON COUNTS AS BANKED ONLY IF ITS CACHED ROWS CARRY WHAT THIS PARSER
+                # EXTRACTS. Otherwise "already cached" freezes a thin old copy forever.
+                #
+                # This is the other half of the fix above, and without it that fix made things
+                # worse. Before it, the (league, "2024/25") probe never matched the cache's
+                # (league, "2024") rows, so every finished season was re-downloaded on every run
+                # — wasteful, but the re-download carried corners, half-time goals and O/U
+                # prices, and `keep="last"` let the fresh copy win. Adding the derived key made
+                # the probe hit, so the download started SKIPPING those seasons — and the rows
+                # left standing were the old corner-less ones. Measured on 2026-09-23: every
+                # finished season of the Championship, League One, League Two, La Liga 2,
+                # Serie B, Bundesliga 2 and the Greek Super League sat at 0% corners, 0%
+                # half-time goals and 0% O/U 2.5 price, while 2026/27 — the one season always
+                # re-fetched — sat at 100% on all three. Four seasons of three columns, on
+                # exactly the leagues we bet, invisible because nothing ever failed.
+                #
+                # So skip a season only when the cache proves it was parsed by a version that
+                # understood these columns. A league that genuinely has none of them (the
+                # National League publishes no corners) still banks on the strength of the
+                # others, which is why this is an OR and not an AND.
+                _PROOF = ("home_corners", "ht_home_goals", "odds_over25")
+                _present = [c for c in _PROOF if c in _cached.columns]
+                if _present and "league" in _cached.columns:
+                    _rich = _cached[_present].notna().any(axis=1)
+                    _thin = set()
+                    for _key_season in ("season", "_derived"):
+                        if _key_season == "season" and "season" not in _cached.columns:
+                            continue
+                        if _key_season == "_derived":
+                            if not {"league", "date"}.issubset(_cached.columns):
+                                continue
+                            _dt2 = pd.to_datetime(_cached["date"], errors="coerce")
+                            _m = _dt2.notna()
+                            if not _m.any():
+                                continue
+                            _s2 = _dt2[_m].dt.year.where(_dt2[_m].dt.month >= 7,
+                                                         _dt2[_m].dt.year - 1)
+                            _keys = pd.Series(
+                                list(zip(_cached.loc[_m, "league"].astype(str),
+                                         _s2.astype(str) + "/"
+                                         + ((_s2 + 1) % 100).map("{:02d}".format))),
+                                index=_cached.index[_m])
+                        else:
+                            _keys = pd.Series(
+                                list(zip(_cached["league"].astype(str),
+                                         _cached["season"].astype(str))),
+                                index=_cached.index)
+                        _any_rich = _rich.reindex(_keys.index).groupby(_keys).any()
+                        _thin |= set(_any_rich[~_any_rich].index)
+                    if _thin:
+                        _have -= _thin
+                        log.warning(
+                            f"[fd_cache] {len(_thin)} cached league-season(s) are missing "
+                            f"corners/half-time goals/O-U price — re-downloading them rather "
+                            f"than serving a thin copy: "
+                            f"{sorted(f'{a} {b}' for a, b in _thin)[:6]}")
                 log.info(f"[fd_cache] {len(_cached):,} cached rows covering "
-                         f"{len(_have)} league-season key(s)")
+                         f"{len(_have)} banked league-season key(s)")
             except Exception as e:                                   # noqa: BLE001
                 log.warning(f"[fd_cache] cache unreadable, will re-download: {e}")
         # Kept SEPARATE from the cached rows: only genuinely-downloaded frames may update the
@@ -1028,6 +1129,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only
+        _report_training_coverage(out)
         _CACHE = out
         return out
 
