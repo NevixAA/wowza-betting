@@ -1,19 +1,48 @@
 {
-  "checked_at": "2026-09-23T08:50:21Z",
-  "run_number": "39",
+  "checked_at": "2026-09-24T09:52:13Z",
+  "run_number": "40",
   "gate": {
-    "collect": "false",
+    "collect": "true",
     "newest_before": "2026-09-20",
-    "age_days": "3",
-    "hours_since_commit": "19.8"
+    "age_days": "4",
+    "hours_since_commit": "43.8"
   },
-  "collect_outcome": "skipped",
-  "last_collect_at": "2026-09-22T13:00:23Z",
+  "collect_outcome": "success",
+  "last_collect_at": "2026-09-24T09:52:13Z",
   "parquet": {
     "rows": 316157,
     "newest_after": "2026-09-20"
   },
   "collect_log_tail": [
-    "(no collect this run)"
+    "  [League One 2026] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Bundesliga 2 2024] Fetching fixture list (last 400)...",
+    "  [Bundesliga 2 2024] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Bundesliga 2 2025] Fetching fixture list (last 600)...",
+    "  [Bundesliga 2 2025] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Bundesliga 2 2026] Fetching fixture list (last 99)...",
+    "  [Bundesliga 2 2026] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Ireland Premier 2025] Fetching fixture list (last 300)...",
+    "  [Ireland Premier 2025] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Ireland Premier 2026] Fetching fixture list (last 99)...",
+    "  [Ireland Premier 2026] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Finland Veikk 2025] Fetching fixture list (last 300)...",
+    "  [Finland Veikk 2025] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [Finland Veikk 2026] Fetching fixture list (last 99)...",
+    "  [Finland Veikk 2026] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "  [World Cup 2026] Fetching fixture list (last 99)...",
+    "  [World Cup 2026] fixture list error: API-Football errors: {'rateLimit': 'Too many requests. Your rate limit is 450 requests per minute.'}",
+    "[DONE] 267454 total player-match rows across 11 leagues / 39 season-slots.",
+    "  [sp_events] 9,113 fixtures (9,113 need API calls)...",
+    "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
+    "[collect] union: 316157 existing + 260859 fetched -> 316157 rows (+0 new, 260859 refreshed, 0 removed)",
+    "[collect] Saved 316157 player rows, 8447 players -> player_history.parquet",
+    "  goals (target_goals): 8.3% positive rate",
+    "  goals2 (target_goals2): 0.8% positive rate",
+    "  assists (target_assists): 6.0% positive rate",
+    "  sot (target_sot): 22.5% positive rate",
+    "  sot2 (target_sot2): 5.3% positive rate",
+    "  sot3 (target_sot3): 1.2% positive rate",
+    "  sot4 (target_sot4): 0.3% positive rate",
+    "  cards (target_cards): 13.4% positive rate"
   ]
 }
