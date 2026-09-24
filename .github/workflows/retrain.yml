@@ -118,6 +118,20 @@ jobs:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
           # Full xG/inside-box enrichment: weekly job, no tip deadline. Predict leaves this unset.
           WOWZA_FULL_ENRICH: '1'
+          # HOLD, 2026-09-24. f34d39ce adds +24,190 archive fixtures to training. The previous
+          # data change (d25ff411, which un-froze four seasons of corners and half-time goals)
+          # went live one retrain earlier and moved the model enormously: p(over 2.5) spread
+          # doubled, 19 of 57 upcoming fixtures crossed the Over/Under boundary, and one
+          # predict run produced five real-money SNIPER tips with edges up to 29.5% where the
+          # week before had nothing above 11%. That change has NOT been validated yet.
+          #
+          # Landing a second data shift on top of an unvalidated first one destroys any
+          # ability to attribute what happened to which. This holds the archive out of
+          # training until the old-vs-new walk-forward comes back, so the next retrain stays
+          # comparable to the current champion.
+          #
+          # REMOVE THIS LINE once the comparison is in — that is the whole revert.
+          WOWZA_USE_BACKTEST_ARCHIVE: '0'
         run: python pipeline.py --mode train
         continue-on-error: false
 

@@ -382,6 +382,32 @@ def notify_new_snipers() -> int:
         if key in notified:
             continue
 
+        # NEVER TIP BOTH SIDES OF THE SAME FIXTURE.
+        #
+        # The dedup key above ends in the side, so a fixture already tipped OVER does not
+        # match when the model later says UNDER -- different key, straight through the gate.
+        # 2026-09-26 Shrewsbury Town v Colchester United went out as OVER MARKSMAN on 09-22
+        # and UNDER VALUABLE on 09-23, after a retrain moved p(over) from 0.557 to 0.360.
+        #
+        # Two tips that contradict each other are worse than either one alone: backing both
+        # sides of the same match is a guaranteed loss of the vig, and it destroys any
+        # reading of the ledger, because the fixture now appears as two bets that cannot
+        # both be right. This is not a model question -- it is wrong under whichever model
+        # turns out to be better.
+        #
+        # The FIRST opinion stands. A model that changes its mind after a fixture has been
+        # tipped is telling us something about the model, not offering a second bet. The
+        # place to act on that is the retrain canary, not another Telegram message.
+        _side_now = str(row.get("best_side", "") or "")
+        _opposite = {"OVER": "UNDER", "UNDER": "OVER"}.get(_side_now)
+        if _opposite:
+            _opp_key = (f"{str(row['date'])[:10]}|{row['home_team']}|"
+                        f"{row['away_team']}|{_opposite}")
+            if _opp_key in notified:
+                print(f"  SKIP both-sides: {row['home_team']} vs {row['away_team']} — "
+                      f"already tipped {_opposite}, model now says {_side_now}")
+                continue
+
         tier  = row["signal_tier"]
         side  = row.get("best_side") or row.get("bet", "")
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
