@@ -119,6 +119,115 @@ def _pick_odds(raw: pd.DataFrame, cols: list[str]) -> pd.Series:
     return pd.Series(np.nan, index=raw.index)
 
 
+_AFFIX_RE = re.compile(
+    r"^(1\.?\s*)?(fc|cf|sc|ac|as|ss|ssc|us|usc|rc|cd|ud|sv|tsv|vfl|vfb|fk|nk|bk|if|ik|afc|cfc)\b"
+    r"|\b(fc|cf|sc|ac|afc|cfc|sk|sv|bk|if|ik|kv|vv)$")
+
+
+def _norm_club(s: str) -> str:
+    """Accent-, punctuation- and affix-insensitive club key. Used ONLY to spot the same club
+    written two ways within one league -- never to match across different clubs."""
+    import unicodedata
+    t = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode().lower().strip()
+    t = re.sub(r"[^a-z0-9 ]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    prev = None
+    while prev != t:
+        prev = t
+        t = _AFFIX_RE.sub("", t).strip()
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
+    """One spelling per club per league, then a real de-duplication.
+
+    WHY THIS EXISTS, AND IT IS A BUG I CAUSED. The cache-skip fix (2026-09-23) made the loader
+    re-download finished seasons it had been serving from a stale cache. That was right -- it
+    recovered four seasons of corners, half-time goals and prices. What it also did was bring
+    football-data's club names in ALONGSIDE the API-Football names already cached, so the same
+    match now appears twice:
+
+        2023-07-29  FC Kaiserslautern  v  FC St. Pauli   1-2   season "2023"
+        2023-07-29     Kaiserslautern  v      St Pauli   1-2   season "2023/24"
+
+    Measured on the committed cache: 2,040 fixtures duplicated this way, 4,080 rows, and the
+    scores AGREE on all 2,040 -- so they are unambiguously the same matches. The existing
+    de-duplication keys on (date, league, home_team, away_team) and therefore never saw them,
+    because the team strings differ.
+
+    The damage is not the duplicate rows. It is that ONE CLUB BECOMES TWO TEAMS, so its rolling
+    form is computed over half its matches -- invariant 11, the failure that once left 46% of
+    standard fixtures with no form data at all. 50 clubs across 30 leagues, ~10,500 team-match
+    rows, including Kaiserslautern, Koln, Magdeburg, Nurnberg and Schalke in Bundesliga 2 and
+    Granada, Cartagena and Castellon in La Liga 2.
+
+    THE MERGE IS EVIDENCE-BASED, NOT FUZZY. Two spellings are merged only when they normalise to
+    the same key WITHIN THE SAME LEAGUE. The winner is the spelling seen most recently, because
+    that is what future downloads will keep producing, so the vocabulary converges rather than
+    oscillating. Ambiguity is impossible here by construction: the merge is within one league and
+    one normalised key, and the duplicated fixtures it resolves agree on every score.
+    """
+    if not {"league", "home_team", "away_team"}.issubset(df.columns):
+        return df
+    d = df.copy()
+    for c in ("home_team", "away_team"):
+        d[c] = d[c].astype(str).str.strip()
+    long = pd.concat([d[["league", "home_team", "date"]].rename(columns={"home_team": "t"}),
+                      d[["league", "away_team", "date"]].rename(columns={"away_team": "t"})])
+    long["k"] = long["t"].map(_norm_club)
+    long["date"] = pd.to_datetime(long["date"], errors="coerce")
+    # Most recently seen spelling wins; frequency breaks a tie.
+    agg = (long.groupby(["league", "k", "t"])
+               .agg(last=("date", "max"), n=("t", "size")).reset_index()
+               .sort_values(["league", "k", "last", "n"], ascending=[True, True, False, False]))
+    winner = agg.drop_duplicates(["league", "k"], keep="first")
+    mapping = {(lg, k): t for lg, k, t in zip(winner["league"], winner["k"], winner["t"])}
+    n_multi = int((agg.groupby(["league", "k"])["t"].transform("size") > 1).sum())
+
+    for c in ("home_team", "away_team"):
+        keys = list(zip(d["league"].astype(str), d[c].map(_norm_club)))
+        d[c] = [mapping.get(kk, orig) for kk, orig in zip(keys, d[c])]
+
+    # CONFLICTING SCORES ARE DROPPED, NOT GUESSED.
+    #
+    # Unifying the spellings exposes duplicates that were previously invisible, and almost all of
+    # them agree: 2,039 of 2,040. One does not -- Orlando City v Columbus Crew, 2023-11-25, is
+    # 0-2 in one source and 0-0 in the other. Keeping whichever row happens to sort last would
+    # ship a coin-flip scoreline into the training targets. One fixture out of 60,281 is not
+    # worth guessing on, so the whole fixture is dropped and named in the log.
+    #
+    # (My first check on this compared only home_goals and reported "2,040 of 2,040 agree".
+    # It missed this one, which differs on the away side. Hence both columns here.)
+    key = (d["date"].astype(str).str.slice(0, 10) + "|" + d["league"].astype(str) + "|"
+           + d["home_team"] + "|" + d["away_team"])
+    conflict = key.isin(
+        key[d.groupby(key)[["home_goals", "away_goals"]].transform("nunique").max(axis=1) > 1])
+    n_conflict = int(key[conflict].nunique())
+    if n_conflict:
+        for k in sorted(key[conflict].unique())[:5]:
+            log.warning(f"[clubs] sources disagree on the score for {k} — fixture dropped")
+        d = d[~conflict]
+
+    # KEEP THE RICHEST ROW, NOT THE LAST ONE.
+    #
+    # `keep="last"` after a date sort is arbitrary among duplicates, and arbitrary is not free:
+    # one copy of a fixture may carry corners, half-time goals and a price while the other has
+    # only the score, and the conflict check above cannot see the difference because
+    # `nunique()` ignores NaN -- a row with 2.0 and a row with NaN look like agreement. Ranking
+    # by how many fields are populated keeps the informative copy every time and makes the
+    # choice deterministic rather than incidental.
+    before = len(d)
+    d = d.assign(_completeness=d.notna().sum(axis=1))
+    d = (d.sort_values(["date", "_completeness"], kind="mergesort")
+           .drop_duplicates(["date", "league", "home_team", "away_team"], keep="last")
+           .drop(columns=["_completeness"]))
+    if n_multi or before != len(d) or n_conflict:
+        log.info(f"[clubs] unified {n_multi} alternate club spelling(s); removed "
+                 f"{before - len(d):,} duplicate fixture row(s) the old key missed; "
+                 f"quarantined {n_conflict} fixture(s) whose sources disagree on the score")
+    return d
+
+
 def _report_training_coverage(out: pd.DataFrame) -> None:
     """Write output/training_coverage.json — what the models are actually about to train on.
 
@@ -1126,6 +1235,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 out.get("home_sot", pd.Series(dtype=float)) / out.get("home_shots", pd.Series(dtype=float)), np.nan)
             out["away_sot_ratio"] = np.where(out.get("away_shots", pd.Series(dtype=float)) > 0,
                 out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
+        # Club identity BEFORE any enrichment or feature work: a club split across two
+        # spellings is two teams to everything downstream.
+        out = _canonicalise_clubs(out)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only
