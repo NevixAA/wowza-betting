@@ -20,6 +20,7 @@ referee
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -225,6 +226,57 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
         log.info(f"[clubs] unified {n_multi} alternate club spelling(s); removed "
                  f"{before - len(d):,} duplicate fixture row(s) the old key missed; "
                  f"quarantined {n_conflict} fixture(s) whose sources disagree on the score")
+    return d
+
+
+def _load_backtest_archive() -> pd.DataFrame:
+    """Three extra seasons we already own, in a file nothing has ever read.
+
+    `output/backtest_all_leagues.csv` is written by the monthly backtest and, until now, read by
+    no line of code in any of the three repos -- a plain text search returns zero matches. It
+    holds 36,796 completed fixtures back to 2020 with corners, fouls, shots and O/U prices at
+    100%, against a loader whose standard-format leagues only reach 2023-08. Roughly 20,600 of
+    those fixtures are in no other source.
+
+    Measured before adding it (Pro's shadow-learning study, identical test fixtures): the extra
+    history significantly improves Over 2.5 and Over 3.5 and significantly HURTS BTTS, and every
+    attempt to shrink or down-weight history lost. The net is small and positive. It is added
+    because it is free, already paid for, and makes the history complete -- not because it will
+    transform prediction.
+
+    WHY THIS IS SAFE NOW AND WAS NOT AN HOUR AGO. The file names clubs differently ("FC Koln"
+    where football-data says "1. FC Köln"), so merging it used to mean either a fuzzy match in
+    production -- forbidden -- or a hand-maintained mapping table. `_canonicalise_clubs` now runs
+    over the merged frame and resolves those within-league spelling variants on evidence, so the
+    archive can simply be appended and the unifier absorbs the vocabulary. Anything it cannot
+    resolve stays a separate team, which is the old behaviour, not a regression.
+
+    Set WOWZA_USE_BACKTEST_ARCHIVE=0 to turn this off; it is one variable to revert.
+    """
+    if os.getenv("WOWZA_USE_BACKTEST_ARCHIVE", "1") != "1":
+        log.info("[archive] disabled by WOWZA_USE_BACKTEST_ARCHIVE=0")
+        return pd.DataFrame()
+    p = Path(__file__).resolve().parents[1] / "output" / "backtest_all_leagues.csv"
+    if not p.exists():
+        return pd.DataFrame()
+    try:
+        raw = pd.read_csv(p, low_memory=False)
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"[archive] could not read {p.name}: {e}")
+        return pd.DataFrame()
+    keep = ["date", "league", "season", "home_team", "away_team", "home_goals", "away_goals",
+            "home_shots", "away_shots", "home_sot", "away_sot", "home_corners", "away_corners",
+            "home_fouls", "away_fouls", "ftr", "odds_over25", "odds_under25"]
+    cols = [c for c in keep if c in raw.columns]
+    d = raw[cols].copy()
+    d["date"] = pd.to_datetime(d["date"], errors="coerce")
+    d = d.dropna(subset=["date", "home_goals", "away_goals", "home_team", "away_team"])
+    for c in cols:
+        if c not in ("date", "league", "season", "home_team", "away_team", "ftr"):
+            d[c] = pd.to_numeric(d[c], errors="coerce")
+    log.info(f"[archive] {len(d):,} rows from backtest_all_leagues.csv "
+             f"({d['date'].min().date()}..{d['date'].max().date()}, "
+             f"{d['league'].nunique()} leagues)")
     return d
 
 
@@ -1218,6 +1270,11 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 "CI download failed and no cached history is available "
                 f"({cache_p.name} missing or empty) — no data loaded")
         ci_frames.extend(_load_api_football_only_leagues())
+        # The archive goes in BEFORE club canonicalisation, which is the whole reason it can go
+        # in at all: the unifier resolves its club vocabulary against football-data's.
+        _arch = _load_backtest_archive()
+        if len(_arch):
+            ci_frames.append(_arch)
         out = pd.concat(ci_frames, ignore_index=True)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
         out = out.sort_values("date").reset_index(drop=True)
