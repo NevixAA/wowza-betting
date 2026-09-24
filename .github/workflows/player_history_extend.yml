@@ -31,7 +31,11 @@ concurrency:
 jobs:
   extend:
     runs-on: ubuntu-latest
-    timeout-minutes: 100      # measured ~60 min for a full backfill; headroom, not hope
+    timeout-minutes: 150      # was 100 (measured ~60 min at 11 leagues). 26 leagues from
+                              # 2026-09-24: the first run is cold on both fixture caches and
+                              # the live season alone is ~5,500 fixtures x 2 calls ~= 37 min
+                              # of API time. Headroom, not hope — a timeout here writes no
+                              # parquet AND banks no cache, so it repeats nightly.
     permissions:
       contents: write
 
@@ -55,6 +59,19 @@ jobs:
           path: fixture_player_cache
           key: fixture-player-${{ runner.os }}-${{ github.run_id }}
           restore-keys: fixture-player-${{ runner.os }}-
+
+      # enrich_sp_events() calls /fixtures/events for EVERY fixture in the collected set and
+      # dedupes on this directory alone. It was the only cache in the collect path with no
+      # restore step, so each run started cold and re-fetched the lot — one call per fixture,
+      # per run, for data that never changes once a match has finished. Harmless while the
+      # collected set was ~11k fixtures and the job usually skipped on its cooldown gate;
+      # not harmless now the set is ~37k.
+      - name: Cache fixture events (set-piece enrichment)
+        uses: actions/cache@v4
+        with:
+          path: fixture_events_cache
+          key: fixture-events-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: fixture-events-${{ runner.os }}-
 
       - name: Should we collect?
         id: gate
@@ -121,10 +138,24 @@ jobs:
               _note(f"freshness check failed ({e})")
 
           forced = "${{ github.event.inputs.force }}" == "true"
-          # A full collect is an hour of runtime and ~4,300 API calls, so never more than
-          # once a day unless forced. `age` alone is not a sufficient trigger: it is
-          # legitimately > 2 between rounds, and would otherwise loop forever.
-          go = forced or (age > 2 and hours >= 20)
+          # COOLDOWN ONLY — once a day unless forced. `age` is still computed and reported,
+          # but it must NOT gate the run.
+          #
+          # It used to: `age > 2 and hours >= 20`. That worked while collect covered 11
+          # leagues, because the top five plus the EFL plus Ireland/Finland do go quiet for
+          # three days at a stretch, so `age` climbed past 2 and let the job through. On
+          # 2026-09-24 collect widened to 26 leagues — MLS, Brazil, Argentina, Mexico, Japan,
+          # Sweden, Norway, Denmark, Romania. Between them there is no three-day gap anywhere
+          # in the calendar, so `age` would sit at 0-2 forever and the collect would simply
+          # never fire again. The widening would have silently switched off the very job that
+          # feeds it.
+          #
+          # Dropping the age term is safe because the run is cheap and idempotent: the live
+          # season only (WOWZA_COLLECT_SEASONS_BACK below), permanently cached fixtures, and
+          # a union merge that can add rows but never remove them. Steady state is roughly
+          # one fixture-list call per league plus the handful of matches played since
+          # yesterday — a few hundred calls, not the ~4,300 the old comment assumed.
+          go = forced or hours >= 20
           print(f"collect={'true' if go else 'false'}")
           print(f"newest={newest}")
           print(f"age_days={age}")
@@ -145,6 +176,15 @@ jobs:
         if: steps.gate.outputs.collect == 'true'
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # LIVE SEASON ONLY. Deep history is a one-time local backfill that ships inside the
+          # committed player_history.parquet; finished seasons never change, so re-deriving
+          # them here would buy nothing and cost everything. Without this the collect widening
+          # from 11 leagues to 26 (2026-09-24) needs ~25,000 uncached fixtures at two calls
+          # each — ~166 min against the timeout below. A run killed by its timeout writes no
+          # parquet and skips the post-job cache save, so it would repeat that every night.
+          # Raise it (or unset it) only for a deliberate manual catch-up, and raise the
+          # timeout with it.
+          WOWZA_COLLECT_SEASONS_BACK: "1"
         run: python -m player_model.pipeline --mode collect 2>&1 | tee /tmp/collect.log
 
       - name: Record health

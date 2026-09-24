@@ -54,3 +54,11 @@ prop_odds_cache/
 # 44,453 untracked files were sitting here unignored; nothing under it is tracked, so adding
 # this un-tracks nothing and cannot produce a renormalisation diff.
 apifootball_ou_cache/
+
+# The last three prop caches that were never listed here (found 2026-09-24). 15,330 untracked
+# files — 11,049 + 4,277 + 4 — that a single `git add -A` would have committed. Verified with
+# `git ls-files` that NOTHING under any of them is tracked, so adding these un-tracks nothing
+# and cannot produce the renormalisation diff that broke v9's push loop on 2026-08-19.
+fixture_events_cache/
+player_season_stats_cache/
+lineup_cache/

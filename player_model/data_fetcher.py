@@ -36,8 +36,18 @@ EVENTS_CACHE_DIR = config.BASE_DIR / "fixture_events_cache"
 EVENTS_CACHE_DIR.mkdir(exist_ok=True)
 
 CACHE_DAYS    = 7
-REQUEST_DELAY = 0.20  # ~5 calls/sec = ~300/min — headroom under Ultra's 450/min (0.15=400/min thrashed 429s)  # was 0.15  # ~6.7 calls/sec = ~400/min — uses the Ultra plan's 450/min cap (was 0.5=120/min,
-                      # leaving 73% of Ultra's rate unused). 429s self-heal via the rate-limit backoff.
+REQUEST_DELAY = float(os.getenv("WOWZA_API_REQUEST_DELAY", "0.20"))
+# 0.20 = ~5 calls/sec = ~300/min — headroom under Ultra's 450/min (0.15=400/min thrashed 429s).
+# 429s self-heal via the rate-limit backoff, but they are NOT free: a rejected call still
+# counts against the daily quota, so thrashing inflates cost as well as wall-clock. Measured
+# 2026-09-24 on a cold League Two 2025 collect: 553 fixtures cost 2,960 calls — 5.35 per
+# fixture against a floor of about 2.2 (one /fixtures/players + one /fixtures/statistics).
+#
+# The cause is that 450/min is an ACCOUNT limit, not a per-process one. A local backfill at
+# 300/min runs on top of predict, props, the live scanner and the odds capture workflows all
+# hitting the same account from CI, so the ceiling is breached by the total, not by either
+# side alone. Hence the env override: a local backfill sets WOWZA_API_REQUEST_DELAY to about
+# 0.35 (~170/min) to leave room for production. CI leaves it unset.
 MAX_RETRIES   = 3
 
 
@@ -74,20 +84,61 @@ def _rate_limited_sleep() -> None:
             time.sleep(REQUEST_DELAY - elapsed)
         _last_call_time = time.monotonic()
 
+# Leagues played inside one calendar year (spring→autumn), so the API season IS the year.
+# Everything else starts in July/August and the API keys it by that START year.
+_CALENDAR_YEAR_LEAGUES = {
+    "Ireland Premier Division", "Finland Veikkausliiga", "World Cup",
+    # Added 2026-09-24 with the rest of the bet leagues. Each of these runs Feb/Apr→Nov/Dec
+    # inside a single calendar year, so asking for season 2025 in September 2026 would fetch
+    # a finished campaign and silently miss the live one.
+    "USA MLS", "Brazil Serie A", "Argentina Primera Division",
+    "Sweden Allsvenskan", "Norway Eliteserien", "China Super League", "Japan J-League",
+}
+_WC_LEAGUE_IDS = {"World Cup": 1}
+
+
+def _current_season(league: str, today=None) -> str:
+    """API-Football keys a season by its START year."""
+    from datetime import date as _date
+    d = today or _date.today()
+    if league in _CALENDAR_YEAR_LEAGUES:
+        return str(d.year)
+    # European seasons start in July/August.
+    return str(d.year if d.month >= 7 else d.year - 1)
+
+
 # Core betting leagues — default for collect_match_history()
-# Current season per league — used for odds/predict pipeline (single season reference)
+#
+# SINGLE SOURCE OF TRUTH: this table is DERIVED from player_model.config.PROP_LEAGUES. It is
+# never typed by hand, because a hand-maintained second copy is exactly what broke props for
+# four weeks. On 2026-08-27 eighteen leagues were added to PROP_LEAGUES — League Two, La Liga
+# 2, Serie B, MLS, Liga MX, Ligue 2 and the rest — so predict began TIPPING them, while this
+# table still listed eleven, so collect never fetched one row for any of them.
+#
+# The failure did not look like missing tips. predict found those players in history under
+# whatever league they USED to play in and scored them off it: Lewandowski tipped for Chicago
+# Fire on Barcelona's La Liga form, Lucas Ocampos for Monterrey on Sevilla rows 762 days old,
+# Federico Viñas for Toluca on Uruguay World Cup rows. Median staleness reached 336 days in
+# La Liga 2 against 5 days in League One, the one league that was in both lists.
+#
+# The tell that nobody had read both files together: the two lists spelled the same league
+# differently — "Ireland Premier" here against "Ireland Premier Division" there.
+#
+# European club competitions are deliberately EXCLUDED — we do not bet them, so their player
+# rows would be cost with no consumer (the only-our-leagues rule).
+_CUP_COMPETITIONS = {"Champions League", "Europa League", "Conference League"}
+
 APIFOOTBALL_LEAGUES: dict[str, tuple[int, str]] = {
-    "Premier League":  (39,  "2025"),
-    "Bundesliga":      (78,  "2025"),
-    "La Liga":         (140, "2025"),
-    "Serie A":         (135, "2025"),
-    "Ligue 1":         (61,  "2025"),
-    "Championship":    (40,  "2025"),
-    "League One":      (41,  "2025"),
-    "Bundesliga 2":    (79,  "2025"),
-    "Ireland Premier": (357, "2026"),
-    "Finland Veikk":   (244, "2026"),
-    "World Cup":       (1,   "2026"),
+    name: (lid, _current_season(name))
+    for name, lid in config.PROP_LEAGUES.items()
+    if name not in _CUP_COMPETITIONS
+}
+
+# Rows collected before 2026-09-24 carry the OLD short spellings. Renaming them on load keeps
+# one league from counting as two once the derived names take over.
+LEGACY_LEAGUE_ALIASES: dict[str, str] = {
+    "Ireland Premier": "Ireland Premier Division",
+    "Finland Veikk":   "Finland Veikkausliiga",
 }
 
 # Multi-season collect config: (league_id, season, last_n)
@@ -105,11 +156,17 @@ _COLLECT_SEASONS_BASE: dict[str, list[tuple[int, str, int]]] = {
     "La Liga":         [(140, "2022", 400), (140, "2023", 400), (140, "2024", 400), (140, "2025", 99)],
     "Serie A":         [(135, "2022", 400), (135, "2023", 400), (135, "2024", 400), (135, "2025", 99)],
     "Ligue 1":         [(61,  "2022", 400), (61,  "2023", 400), (61,  "2024", 400), (61,  "2025", 99)],
-    "Championship":    [(40,  "2024", 600), (40,  "2025", 99)],
-    "League One":      [(41,  "2024", 600), (41,  "2025", 99)],
-    "Bundesliga 2":    [(79,  "2024", 400), (79,  "2025", 99)],
-    "Ireland Premier": [(357, "2025", 300)],
-    "Finland Veikk":   [(244, "2025", 300)],
+    # Our own bet leagues, deepened to the same four seasons as the top five on 2026-09-24.
+    # They had been the SHALLOWEST in the table (two seasons, and one apiece for Ireland and
+    # Finland) despite being the leagues we actually stake, purely because they were added
+    # later and nobody went back.
+    "Championship":    [(40,  "2023", 600), (40,  "2024", 600), (40,  "2025", 99)],
+    "League One":      [(41,  "2023", 600), (41,  "2024", 600), (41,  "2025", 99)],
+    "Bundesliga 2":            [(79,  "2023", 400), (79,  "2024", 400), (79,  "2025", 99)],
+    "Ireland Premier Division": [(357, "2023", 300), (357, "2024", 300), (357, "2025", 300)],
+    "Finland Veikkausliiga":   [(244, "2023", 300), (244, "2024", 300), (244, "2025", 300)],
+    # A tournament, not a league — it exists in 2022 and 2026 only, so it is never
+    # backfilled by season arithmetic. mode_collect_wc handles it.
     "World Cup":       [],
 }
 
@@ -118,19 +175,33 @@ _COLLECT_SEASONS_BASE: dict[str, list[tuple[int, str, int]]] = {
 # fetched as a rolling last-N window.
 FULL_SEASON_LAST_N = 600
 
-# Leagues played inside one calendar year (spring→autumn), so the API season IS the year.
-_CALENDAR_YEAR_LEAGUES = {"Ireland Premier", "Finland Veikk", "World Cup"}
-_WC_LEAGUE_IDS = {"World Cup": 1}
+# How far back a league with no explicit entry above is collected, counting the live season.
+HISTORY_SEASONS_BACK = 4
 
 
-def _current_season(league: str, today=None) -> str:
-    """API-Football keys a season by its START year."""
-    from datetime import date as _date
-    d = today or _date.today()
-    if league in _CALENDAR_YEAR_LEAGUES:
-        return str(d.year)
-    # European seasons start in July/August.
-    return str(d.year if d.month >= 7 else d.year - 1)
+def _autofill_missing_leagues(base: dict, today=None) -> dict:
+    """Give every bet league a collect plan, so adding one to PROP_LEAGUES is enough.
+
+    THIS IS THE ACTUAL FIX for the 2026-08-27 divergence. Eighteen leagues were added to
+    PROP_LEAGUES and began receiving tips, but a league only gets COLLECTED if it appears in
+    the table above — so for four weeks predict scored MLS and Liga MX players off whatever
+    top-five history they happened to have. Deriving the plan means a league can no longer be
+    tippable and uncollectable at the same time.
+
+    Explicit entries above are kept exactly as they are: they carry per-league tuning and
+    reach further back than the default, and dropping a season would delete history we hold.
+    Only leagues MISSING from the table are filled in, with the live season left to
+    _with_current_season so there is still one place that decides what "now" is.
+    """
+    out = dict(base)
+    for lg in APIFOOTBALL_LEAGUES:
+        if lg in out:
+            continue
+        lid = APIFOOTBALL_LEAGUES[lg][0]
+        cur = int(_current_season(lg, today))
+        out[lg] = [(lid, str(cur - k), FULL_SEASON_LAST_N)
+                   for k in range(HISTORY_SEASONS_BACK - 1, 0, -1)]
+    return out
 
 
 def _with_current_season(base: dict, today=None) -> dict:
@@ -172,7 +243,37 @@ def _with_current_season(base: dict, today=None) -> dict:
     return out
 
 
-COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = _with_current_season(_COLLECT_SEASONS_BASE)
+def _limit_seasons_back(plan: dict, n: int) -> dict:
+    """Keep only the newest `n` seasons per league. n <= 0 means no limit.
+
+    WHY CI NEEDS THIS. Deep history is a ONE-TIME backfill; a finished season never changes,
+    and the result is committed in player_history.parquet. CI does not need to re-derive it —
+    it only needs to extend the live season.
+
+    Without a cap the nightly job cannot survive the widening. collect grew from 11 leagues to
+    26 on 2026-09-24, so a cold runner would need roughly 25,000 uncached fixtures at one
+    /fixtures/players plus one /fixtures/events each: about 166 minutes against a 100-minute
+    timeout. And mode_collect writes the parquet only at the very end, while a job killed by
+    its timeout does not run the post-job cache save — so the run would write no data AND
+    bank no cache, then do exactly the same thing again the next night, burning quota forever
+    and never finishing. A cap turns that into a job that always completes.
+
+    Local runs leave this unset and collect the full depth.
+    """
+    if n <= 0:
+        return plan
+    return {lg: sorted(v, key=lambda t: t[1])[-n:] for lg, v in plan.items()}
+
+
+# Seasons of history a collect reaches back, counting the live one. Unset = full depth
+# (HISTORY_SEASONS_BACK), which is what a local backfill wants. player_history_extend.yml
+# sets it to 1 so the nightly CI job only ever extends the current season.
+_SEASONS_BACK_ENV = int(os.getenv("WOWZA_COLLECT_SEASONS_BACK", "0") or 0)
+
+COLLECT_SEASONS: dict[str, list[tuple[int, str, int]]] = _limit_seasons_back(
+    _with_current_season(_autofill_missing_leagues(_COLLECT_SEASONS_BASE)),
+    _SEASONS_BACK_ENV,
+)
 
 EUROPEAN_CUPS: dict[str, tuple[int, str]] = {
     "Champions League": (2,   "2024"),
@@ -647,6 +748,42 @@ def _collect_one_season(
     return rows
 
 
+_API_SEASON_CACHE: dict[int, str] = {}
+
+
+def api_current_season(league_id: int) -> str | None:
+    """Ask API-Football which season it considers CURRENT. None on any failure.
+
+    NO DATE ARITHMETIC CAN GET THIS RIGHT. _current_season() guesses from the calendar —
+    July-start for Europe, the year itself for the spring-autumn leagues — and a guess breaks
+    the moment a league moves its calendar. Japan's J1 League did exactly that: season "2026"
+    ran 2026-02-06 to 2026-06-06 as a shortened transition, and the LIVE season is keyed
+    "2027" (2026-08-07 to 2027-06-06). The heuristic returns 2026, so collect was fetching a
+    finished season and missing all 80 played fixtures of the real one — silently, because an
+    empty-ish result from a finished season looks exactly like a quiet week.
+
+    Asking is one call per league per run, cached for the process: about 26 calls against a
+    75,000/day budget, which buys immunity to every future calendar change in any league.
+    Purely ADDITIVE at the call site — the answer is appended to the season list, never
+    substituted for one, so a wrong or missing answer can only fail to add, never remove.
+    """
+    if league_id in _API_SEASON_CACHE:
+        return _API_SEASON_CACHE[league_id]
+    try:
+        data = _api_get("leagues", {"id": league_id})
+    except Exception as e:
+        print(f"  [season] league {league_id}: current-season lookup failed ({e})")
+        return None
+    for it in data.get("response", []):
+        for s in it.get("seasons", []):
+            if s.get("current"):
+                year = str(s.get("year") or "").strip()
+                if year:
+                    _API_SEASON_CACHE[league_id] = year
+                    return year
+    return None
+
+
 def collect_match_history(
     leagues: dict | None = None,
     last_n:  int = 99,
@@ -666,6 +803,17 @@ def collect_match_history(
         all_rows: list[dict] = []
         seen_fixtures: set = set()
         for league_name, season_list in COLLECT_SEASONS.items():
+            # Append the season the API itself calls current, if our date guess missed it.
+            # Additive only — see api_current_season(). Never replaces a planned slot, so
+            # this cannot drop history; the worst case is one redundant fixture-list call.
+            if season_list:
+                lid0 = season_list[0][0]
+                api_cur = api_current_season(lid0)
+                if api_cur and api_cur not in {s for (_, s, _) in season_list}:
+                    print(f"  [{league_name}] API reports season {api_cur} current; our "
+                          f"calendar guess said {[s for (_, s, _) in season_list][-1]} — "
+                          f"collecting both")
+                    season_list = list(season_list) + [(lid0, api_cur, 99)]
             for (league_id, season, season_last_n) in season_list:
                 rows = _collect_one_season(league_name, league_id, season, season_last_n)
                 for r in rows:
