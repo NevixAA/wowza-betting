@@ -264,7 +264,26 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
     results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
     new_ll = _mean_logloss({k: v["metrics"] for k, v in results.items()})
 
-    tol = float(os.getenv("TRAIN_MAX_LOGLOSS_RISE", "0.005"))
+    # THE GATE IS A CRASH BARRIER, NOT A JUDGE. Tolerance derived from 1,568 simulated
+    # challenger-vs-champion comparisons across a 50-month walk-forward, not chosen by feel:
+    #
+    #   worst rise by a HEALTHY challenger (100th pct)   +0.022
+    #   99th percentile                                  +0.010
+    #   95th percentile                                  +0.005   <- the old tolerance
+    #
+    # So 0.005 sat at the 95th percentile of NORMAL variation and blocked 5.6% of perfectly
+    # good models. Backtesting eight promotion rules on the realised performance of whatever
+    # model was actually live found that NO rule beat having no gate at all, v9's included, and
+    # that the ordering was monotone in how much a rule blocked: every rejection cost on average.
+    #
+    # 0.030 sits above every healthy challenger ever observed, so a normal retrain always passes,
+    # while still catching a genuinely broken run -- ht_over05 was rejected at +0.089 and +0.103,
+    # an order of magnitude beyond anything normal, and would still be rejected here.
+    #
+    # Deliberately NOT removed. The backtest only ever produced healthy challengers, so it cannot
+    # price insurance against a corrupt-data or buggy-code run, which is the case a gate exists
+    # for. Loosened to its real job; not deleted on evidence that never tested the risk.
+    tol = float(os.getenv("TRAIN_MAX_LOGLOSS_RISE", "0.030"))
     if not (old_ll == old_ll):          # NaN — no incumbent on record
         promote, why = True, "no incumbent metrics on record — first model for this track"
     elif not (new_ll == new_ll):

@@ -205,7 +205,11 @@ def _props_gate(old_ll: float, new_ll: float) -> tuple:
     incumbent score promotes, loudly, rather than freezing the model forever — failing closed on
     a missing metric is the bug class this whole pass exists to remove.
     """
-    tol = float(os.getenv("PROPS_MAX_LOGLOSS_RISE", "0.005"))
+    # Same reasoning as the match gate (see pipeline.py): 0.005 sat at the 95th percentile of
+    # normal challenger variation and blocked good models. The props track has far less
+    # retraining history to derive its own percentile from, so it inherits the match track's
+    # bar rather than inventing a separate number from a thin sample.
+    tol = float(os.getenv("PROPS_MAX_LOGLOSS_RISE", "0.030"))
     if os.getenv("PROPS_FORCE_PROMOTE", "").strip() == "1":
         return True, "PROPS_FORCE_PROMOTE=1 — gate bypassed by hand"
     if not (old_ll == old_ll):
