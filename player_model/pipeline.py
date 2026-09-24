@@ -41,6 +41,50 @@ from player_model.ledger import append_player_signals
 
 HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
+# Columns whose exact integer value is an identity, never a measurement. Never downcast these.
+_ID_COLS = {"fixture_id", "player_id", "team_id", "opponent_id", "league_id"}
+
+
+def _save_history(df: "pd.DataFrame", path=None) -> None:
+    """Write player_history.parquet small enough for GitHub to accept it.
+
+    GITHUB REFUSES FILES OVER 100 MB, and this one crossed the line. After the 2026-09-24
+    backfill took it from 316,157 to 501,474 rows it reached 135 MB with the default snappy
+    codec, and `git push` was rejected outright: "GH001: Large files detected". Recompression
+    alone does not save it -- measured on the real file, zstd gives 117.5 MB, gzip 112.3 and
+    brotli 109.8, all still over.
+
+    What does save it is storing measurements at the precision they actually carry. 155 of the
+    212 columns were float64 holding goals, shots, cards and rolling means; 45 more were int64
+    holding small counts. Downcast to float32/int32 and written with zstd the file is 90.6 MB.
+    Worst relative error introduced across every float column, measured rather than assumed:
+    5.96e-08 -- float32 epsilon, and about eight orders of magnitude below anything that could
+    move a prediction.
+
+    ID columns are excluded by name. They are identities, not quantities, and _stable_player_id
+    deliberately mints synthetic ids above 9e8, which is close enough to the int32 ceiling that
+    downcasting them would be asking for a silent overflow one day.
+
+    THIS IS A STOPGAP, NOT A SOLUTION. It buys about 9 MB of headroom on a file that grew 48 MB
+    in one afternoon, and seasons 2023-2024 are still to be collected. The real choice -- Git
+    LFS, splitting the file, or not committing it at all -- is an architecture decision, and it
+    needs making before the next depth increase rather than after the next rejected push.
+    """
+    import numpy as np
+    out = df
+    cast = {c: ("float32" if out[c].dtype == np.float64 else "int32")
+            for c in out.columns
+            if c not in _ID_COLS and out[c].dtype in (np.float64, np.int64)}
+    # int32 only where the range genuinely fits; a column that does not fit stays int64.
+    for c, t in list(cast.items()):
+        if t == "int32":
+            lo, hi = out[c].min(), out[c].max()
+            if not (np.iinfo(np.int32).min <= lo and hi <= np.iinfo(np.int32).max):
+                cast.pop(c)
+    if cast:
+        out = out.astype(cast)
+    out.to_parquet(path or HISTORY_CACHE, index=False, compression="zstd")
+
 
 # ── Phase 2: Collect ──────────────────────────────────────────────────────────
 
@@ -93,7 +137,38 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
             if set(key).issubset(df.columns) and set(key).issubset(existing.columns):
                 a = existing.drop_duplicates(subset=key, keep="last").set_index(key)
                 b = df.drop_duplicates(subset=key, keep="last").set_index(key)
-                merged = b.combine_first(a)           # fresh wins; existing fills gaps
+
+                # SAME SEMANTICS AS combine_first, A FRACTION OF THE MEMORY.
+                #
+                # `b.combine_first(a)` reindexes BOTH frames onto the union of their keys and
+                # then selects, so peak memory is roughly two full union-sized frames. At 200
+                # columns that is 765 MiB per float64 block, and on 2026-09-24 it raised
+                # MemoryError outright: "Unable to allocate 765. MiB for an array with shape
+                # (200, 501474)". The guard below caught it and refused to write, so nothing
+                # was corrupted -- but the collect silently achieved nothing, and CI would hit
+                # the same wall as the file grows.
+                #
+                # The observation that fixes it: only the OVERLAP needs a per-column combine.
+                # Keys present in just one side are already final and can be passed through
+                # untouched. Overlap is the small part -- a nightly collect re-fetches a
+                # handful of fixtures against a third of a million stored rows -- so the
+                # expensive operation now runs on thousands of rows instead of half a million.
+                #
+                # Result is identical to combine_first: fresh value wins wherever it is
+                # non-null, existing fills every gap, and rows present only in `existing` are
+                # carried through -- which is what protects the enrichment columns
+                # (chronic_injury_risk, days_since_last_injury) that enrich-sidelined-live
+                # writes but a collect does not produce.
+                both = a.index.intersection(b.index)
+                if len(both):
+                    fixed = b.loc[both].combine_first(a.loc[both])
+                    parts = [a.drop(index=both), b.drop(index=both), fixed]
+                else:
+                    parts = [a, b]
+                # sort_index so the output is byte-for-byte what combine_first produced;
+                # combine_first returns a sorted index and downstream steps have been reading
+                # that order for months.
+                merged = pd.concat([p for p in parts if len(p)]).sort_index()
                 df = merged.reset_index()
                 added = len(df) - len(a)
                 refreshed = len(b.index.intersection(a.index))
@@ -113,7 +188,7 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
               f"and means something upstream is wrong.")
         return
 
-    df.to_parquet(HISTORY_CACHE, index=False)
+    _save_history(df)
     print(f"[collect] Saved {len(df)} player rows, {df['player_id'].nunique()} players -> {HISTORY_CACHE.name}")
 
     # Summary — all markets
@@ -163,7 +238,7 @@ def mode_collect_wc(last_n: int = 10) -> None:
               f"Refusing to write.")
         return
 
-    combined.to_parquet(HISTORY_CACHE, index=False)
+    _save_history(combined)
     wc_players = new_df["player_id"].nunique()
     print(f"[collect-wc] +{len(new_df)} WC rows ({wc_players} players) merged -> {len(combined)} total rows")
 
@@ -643,7 +718,7 @@ def mode_enrich_season() -> None:
             df[col] = df["player_id"].map(
                 lambda pid, c=col: all_stats.get(pid, {}).get(c, float("nan"))
             )
-        df.to_parquet(HISTORY_CACHE, index=False)
+        _save_history(df)
         done = min(batch_start + BATCH_SIZE, total)
         enriched_so_far = df["season_goals_pg"].notna().sum()
         print(f"[enrich-season] Checkpoint {done}/{total} players | {enriched_so_far}/{len(df)} rows enriched → saved")
@@ -655,7 +730,7 @@ def mode_enrich_season() -> None:
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
     df = compute_season_asof(df)
-    df.to_parquet(HISTORY_CACHE, index=False)
+    _save_history(df)
 
     enriched = df["season_goals_pg"].notna().sum()
     print(f"[enrich-season] Done (season_* recomputed as-of-date, leak fixed). "
@@ -700,7 +775,7 @@ def mode_enrich_profiles():
         for col in ["age", "height_cm", "weight_kg"]:
             if col in df.columns:
                 latest[col] = df[col]
-        latest.to_parquet(HISTORY_CACHE, index=False)
+        _save_history(latest)
         done = min(batch_start + BATCH_SIZE, total)
         enriched_so_far = df["age"].notna().sum() if "age" in df.columns else 0
         print(f"[enrich-profiles] Checkpoint {done}/{total} players | {enriched_so_far}/{len(df)} rows → saved")
@@ -771,7 +846,7 @@ def mode_enrich_sidelined():
         for col in ["chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"]:
             if col in df.columns:
                 latest[col] = df[col]
-        latest.to_parquet(HISTORY_CACHE, index=False)
+        _save_history(latest)
         done = min(batch_start + BATCH_SIZE, total)
         print(f"[enrich-sidelined] Checkpoint {done}/{total} players → saved")
 
@@ -847,7 +922,7 @@ def mode_enrich_sidelined_live() -> None:
         for col, val in feats.items():
             df.at[idx, col] = val
 
-    df.to_parquet(HISTORY_CACHE, index=False)
+    _save_history(df)
     print(f"[enrich-sidelined-live] Done. {total} players refreshed -> {HISTORY_CACHE}")
 
 
@@ -889,7 +964,7 @@ def mode_squad_sync() -> None:
             updates += 1
             print(f"  [squad-sync] player {pid}: {last_team} → {current_team}")
 
-    df.to_parquet(HISTORY_CACHE, index=False)
+    _save_history(df)
     print(f"[squad-sync] Done. {updates} players updated | {len(current_teams)} players tracked.")
 
 
