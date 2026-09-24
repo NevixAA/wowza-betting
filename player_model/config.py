@@ -382,7 +382,14 @@ PROP_LEAGUES = {
     # than absent. Listed so they are covered the moment fixtures appear; the coverage ledger
     # will record what they actually return.
     "Japan J-League":              98,  # no upcoming fixtures at probe time
-    "Ligue 2":                     65,  # no upcoming fixtures at probe time
+    # WAS 65, WHICH IS NOT LIGUE 2. Id 65 is `Coupe de la Ligue`, a French league cup whose
+    # last season was 2019 — so every fixture list came back empty and the league looked like
+    # it simply had no matches. That is why the 2026-08-27 probe recorded "no upcoming
+    # fixtures at probe time" rather than a wrong id. Verified 2026-09-24 against
+    # /leagues?country=France&type=League: Ligue 1 is 61, Ligue 2 is 62, Ligue 3 is 63.
+    # All 29 ids in this dict were re-validated against the API in the same pass; this was
+    # the only wrong one.
+    "Ligue 2":                     62,
     # Probed and returned ZERO player-prop markets. Kept so the ledger records that from
     # evidence rather than the league silently never being asked.
     "Finland Veikkausliiga":      244,  # 11 books, 0 player-prop markets
