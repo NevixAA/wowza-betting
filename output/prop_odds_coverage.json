@@ -95,12 +95,12 @@
     "source": "api_football"
   },
   "apifootball:Ireland Premier Division": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-09-26",
     "last_probe": "2026-09-26",
     "league": "Ireland Premier Division",
     "priced_events": 268,
-    "probes": 324,
+    "probes": 325,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -115,26 +115,26 @@
     "last_priced": "2026-09-26",
     "last_probe": "2026-09-26",
     "league": "La Liga 2",
-    "priced_events": 327,
-    "probes": 332,
+    "priced_events": 328,
+    "probes": 333,
     "source": "api_football"
   },
   "apifootball:League One": {
-    "empty_streak": 2,
+    "empty_streak": 3,
     "last_priced": "2026-09-26",
     "last_probe": "2026-09-26",
     "league": "League One",
     "priced_events": 317,
-    "probes": 336,
+    "probes": 337,
     "source": "api_football"
   },
   "apifootball:League Two": {
-    "empty_streak": 1,
+    "empty_streak": 2,
     "last_priced": "2026-09-26",
     "last_probe": "2026-09-26",
     "league": "League Two",
     "priced_events": 257,
-    "probes": 300,
+    "probes": 301,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -149,8 +149,8 @@
     "last_priced": "2026-09-26",
     "last_probe": "2026-09-26",
     "league": "Mexico Liga MX",
-    "priced_events": 258,
-    "probes": 259,
+    "priced_events": 259,
+    "probes": 260,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -342,10 +342,13 @@
     "last_priced": "2026-09-26",
     "last_probe": "2026-09-26",
     "league": "USA MLS",
-    "matched_events": 8,
-    "priced_events": 1239,
-    "probes": 1326,
-    "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "matched_events": 10,
+    "priced_events": 1246,
+    "probes": 1335,
+    "unmatched_sample": [
+      "Charlotte vs Chicago Fire",
+      "New York Red Bulls vs St. Louis City"
+    ],
+    "wanted_fixtures": 12
   }
 }
