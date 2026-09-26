@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-09-26T03:15:50Z",
-  "run_id": "36213734578",
-  "run_number": "1347",
+  "checked_at": "2026-09-26T09:09:54Z",
+  "run_id": "36231417526",
+  "run_number": "1348",
   "event": "schedule",
   "schedule": "",
-  "sha": "80fbfafce62a",
+  "sha": "937ec2d1ed82",
   "history_freshness": {
     "newest_match": "2026-09-24",
     "age_days": "2",
@@ -16,28 +16,23 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 321,
+    "rows": 317,
     "fixtures": 35,
-    "mtime": "2026-09-26T03:15:42Z"
+    "mtime": "2026-09-26T09:09:44Z"
   },
   "output/player_ledger.csv": {
-    "rows": 10068,
+    "rows": 10081,
     "fixtures": null,
-    "mtime": "2026-09-26T03:15:49Z"
+    "mtime": "2026-09-26T09:09:51Z"
   },
   "git_dirty_outputs": [
-    "M output/player_ledger.csv",
+    "M output/clv_records.csv",
+    " M output/player_ledger.csv",
     " M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
-    "  warnings.warn(",
-    "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
-    "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
-    "  warnings.warn(",
-    "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator DummyClassifier from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
-    "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
     "  warnings.warn(",
     "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator DecisionTreeRegressor from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
     "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
@@ -50,27 +45,33 @@
     "  [League One] 5 recent fixtures fetched",
     "  [League Two] 5 recent fixtures fetched",
     "  [USA MLS] 5 recent fixtures fetched",
-    "  [Mexico Liga MX] 5 recent fixtures fetched",
     "  [La Liga 2] 5 recent fixtures fetched",
     "[pipeline] Win probs loaded for 102 WC matches",
     "[player_model] market caps (top-1% real player): {'goals': 0.6846, 'goals2': 0.2672, 'assists': 0.4839, 'sot': 0.95, 'sot2': 0.7557, 'sot3': 0.4962, 'cards': 0.6087}",
     "[predict] fixture slate: 25 from PROP_LEAGUES via API-Football, 12 from bets.csv supplement",
     "[predict] Injury filter: 74 injured/suspended players loaded",
     "[squad_overlay] 19538 live squad entries; current club taken from the live squad for 11983 player(s); 33295 history row(s) corrected where the latest appearance was a former club",
-    "[player_model] 321 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
+    "[player_model] 317 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
-    "[odds_fetcher] 22 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 9, 'Mexico Liga MX': 7, 'League Two': 6}",
+    "[odds_fetcher] 21 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 9, 'League Two': 7, 'Mexico Liga MX': 5}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League Qualifying']",
-    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 19057",
+    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 18894",
+    "[odds_fetcher] sports/soccer_usa_mls/events/fc27ddecdbf725e6878b23d2fbac96d9/odds OK | quota remaining: 18892",
+    "[odds_fetcher] sports/soccer_usa_mls/events/249e21ae92c7049220cee334c4fd6868/odds OK | quota remaining: 18890",
+    "[odds_fetcher] sports/soccer_usa_mls/events/2a754d105ccf495bfaaef9a83c6d59fc/odds OK | quota remaining: 18888",
+    "[odds_fetcher] sports/soccer_usa_mls/events/100d634ff8a0f99befe1dd72ab97c506/odds OK | quota remaining: 18886",
+    "[odds_fetcher] sports/soccer_usa_mls/events/a52987908b4656274e814c7d2579b9ca/odds OK | quota remaining: 18882",
+    "[odds_fetcher] sports/soccer_usa_mls/events/6cdd0470f4d9a8203545204db4fb70fa/odds OK | quota remaining: 18878",
     "[odds_fetcher] soccer_england_league1: parked \u2014 24 consecutive events with no bookmaker, last probed 2026-09-24; retries every 7d",
-    "[odds_fetcher] api-football second source: +1228 quote(s)",
-    "[odds_fetcher] 1551 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
-    "[predict] Odds enriched for 11 player/market pairs",
+    "[odds_fetcher] api-football second source: +1134 quote(s)",
+    "[odds_fetcher] 1538 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
+    "[predict] Odds enriched for 14 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
+    "[clv_tracker] logged 3 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 2530, 'mean_clv_pct': 0.0031, 'mean_clv_prob': None, 'beat_close_rate': 0.325, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
-    "[lineup] 0 confirmed starters | 321 lineup TBC",
+    "[lineup] 0 confirmed starters | 317 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[predict] player_ledger: +8 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=259 cache_hits=65 cache_hit_rate=20% errors=0  quota_remaining 74460->74202 (account-wide delta 258)"
+    "[predict] player_ledger: +13 new signal(s) recorded",
+    "[api_usage] workflow=Player Props af_calls=255 cache_hits=63 cache_hit_rate=20% errors=0  quota_remaining 69937->68079 (account-wide delta 1858)"
   ]
 }
