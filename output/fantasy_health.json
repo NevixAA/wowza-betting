@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-09-27T12:10:23Z",
+  "thresholds_hours": {
+    "fpl_bootstrap": {
+      "aging": 12,
+      "stale": 36
+    },
+    "fpl_fixtures": {
+      "aging": 12,
+      "stale": 36
+    },
+    "projection": {
+      "aging": 30,
+      "stale": 72
+    },
+    "official_squads": {
+      "aging": 72,
+      "stale": 240
+    }
+  },
+  "feeds": {
+    "fpl_bootstrap": {
+      "file": "fpl_bootstrap.json",
+      "exists": true,
+      "age_hours": 24.4,
+      "state": "AGING"
+    },
+    "fpl_fixtures": {
+      "file": "fpl_fixtures.json",
+      "exists": true,
+      "age_hours": 24.4,
+      "state": "AGING"
+    },
+    "official_squads": {
+      "file": "pl_squads_official.csv",
+      "exists": true,
+      "age_hours": null,
+      "state": "UNKNOWN_AGE"
+    }
+  },
+  "coverage": {
+    "projection_players": 170,
+    "clubs": 20,
+    "available": 97,
+    "doubtful": 8,
+    "unavailable": 65,
+    "availability_breakdown": {
+      "available": 97,
+      "injured": 33,
+      "unavailable": 30,
+      "doubtful": 8,
+      "suspended": 2
+    },
+    "p_start_zero": 66,
+    "fpl_match_rate": 1.0,
+    "fixture_coverage": 1.0
+  },
+  "projection_log": {
+    "rows": 8366,
+    "distinct_days": 31,
+    "rows_with_gameweek": 0,
+    "settleable": false,
+    "gameweeks_logged": []
+  },
+  "notes": [
+    "projection log has rows but NONE carry a gameweek \u2014 forecasts cannot be settled against actual results until new rows are written with gw stamped"
+  ],
+  "current_gameweek": 6,
+  "deadline_utc": "2026-10-10T10:00:00Z",
+  "live_gameweek": 5,
+  "last_finished_gameweek": 5,
+  "season_complete": false,
+  "hours_to_deadline": 309.8,
+  "status": "AGING",
+  "settlement_ready": false
+}
