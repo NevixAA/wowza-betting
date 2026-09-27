@@ -493,7 +493,20 @@ def generate_fantasy_tips(write: bool = True) -> pd.DataFrame:
             # The dashboard's 'Projected vs actual' section reads that log, so the one
             # question the feature exists to answer -- is this projection better than FPL's
             # free number -- was unanswerable, and it looked like missing data, not a typo.
-            _log_proj(proj)
+            # STAMP THE GAMEWEEK. This said `_log_proj(proj)`, with no gw=, so every one of the
+            # 8,366 rows written across 31 days carried an empty `gw` -- append() defaults the
+            # keyword to None and writes "". Without that tag a projection cannot be joined to
+            # the points actually scored, so settling forecasts against real gameweeks, and
+            # therefore answering "is Wowza better than FPL's own ep_next", was impossible no
+            # matter how long the log ran. The previous fix here got the file written at all
+            # (it used to raise NameError); this makes what it writes usable.
+            from player_model.fpl_api import gameweek_context as _gw_ctx
+            _ctx = _gw_ctx()
+            _log_proj(proj, gw=_ctx.get("gw"))
+            if _ctx.get("gw") is None:
+                log.warning("[fantasy_log] no target gameweek resolved "
+                            f"({'season complete' if _ctx.get('season_complete') else 'FPL events unavailable'})"
+                            " — rows logged without a gw tag and cannot be settled")
 
         except Exception as _e:
 

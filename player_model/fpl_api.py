@@ -156,6 +156,54 @@ def fetch_fixtures(ttl_h: float = 6.0, force: bool = False) -> list:
     return _cached_fetch(f"{_BASE}/fixtures/", _FIX_CACHE, ttl_h, force) or []
 
 
+def gameweek_context(bootstrap: dict | None = None) -> dict:
+    """Which gameweek a projection made RIGHT NOW is actually predicting, and its deadline.
+
+    WHY THIS EXISTS. fantasy_projection_log.csv had 8,366 rows across 31 days and every one of
+    them carried an empty `gw`. fantasy_log.append() takes `gw` as a keyword defaulting to None
+    and the caller never passed it, so the column was written as "" every time.
+
+    That is the reason projections cannot be settled against real results. A projection is only
+    a forecast if you know WHICH gameweek it forecast; without that tag there is no key to join
+    it to the points that were actually scored, so "is Wowza better than FPL's own ep_next"
+    stays unanswerable no matter how much history accumulates.
+
+    THE TARGET IS `is_next`, NOT `is_current`. Once a deadline passes, the current gameweek is
+    locked -- no transfer or captain choice can change it -- so a projection generated now is
+    advice for the NEXT one. FPL marks exactly one event `is_next`, including while `is_current`
+    is still being played, which is the behaviour we want in both cases.
+
+    Returns keys: gw, deadline_utc, current_gw, last_finished_gw, season_complete. Every value
+    may be None; this must never raise, because it is called from a logging path that a
+    projection run should survive without.
+    """
+    out = {"gw": None, "deadline_utc": None, "current_gw": None,
+           "last_finished_gw": None, "season_complete": False}
+    try:
+        b = bootstrap if bootstrap is not None else fetch_bootstrap()
+        events = (b or {}).get("events") or []
+        if not events:
+            return out
+        nxt = next((e for e in events if e.get("is_next")), None)
+        cur = next((e for e in events if e.get("is_current")), None)
+        finished = [e for e in events if e.get("finished")]
+        out["current_gw"] = cur.get("id") if cur else None
+        out["last_finished_gw"] = finished[-1].get("id") if finished else None
+        if nxt:
+            out["gw"] = nxt.get("id")
+            out["deadline_utc"] = nxt.get("deadline_time")
+        elif finished and len(finished) == len(events):
+            # Season over: there is no next gameweek to predict. Say so rather than silently
+            # tagging rows with the last one, which would corrupt the ledger at season end.
+            out["season_complete"] = True
+        elif cur:
+            out["gw"] = cur.get("id")
+            out["deadline_utc"] = cur.get("deadline_time")
+    except Exception:                                                # noqa: BLE001
+        pass
+    return out
+
+
 def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
     """Tidy player table from bootstrap elements: LIVE team, position, price, availability,
     injury flags, and name-match keys (match_key = full name, web_key = FPL short name)."""
