@@ -45,30 +45,49 @@ HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 _ID_COLS = {"fixture_id", "player_id", "team_id", "opponent_id", "league_id"}
 
 
+def _history_season(dates: "pd.Series") -> "pd.Series":
+    """Season a fixture belongs to, by the European Jul-Jun convention. NaT -> <NA>."""
+    d = pd.to_datetime(dates, errors="coerce")
+    return (d.dt.year - (d.dt.month < 7)).astype("Int64")
+
+
 def _save_history(df: "pd.DataFrame", path=None) -> None:
-    """Write player_history.parquet small enough for GitHub to accept it.
+    """Write player_history as a DIRECTORY of one parquet part per season.
 
-    GITHUB REFUSES FILES OVER 100 MB, and this one crossed the line. After the 2026-09-24
-    backfill took it from 316,157 to 501,474 rows it reached 135 MB with the default snappy
-    codec, and `git push` was rejected outright: "GH001: Large files detected". Recompression
-    alone does not save it -- measured on the real file, zstd gives 117.5 MB, gzip 112.3 and
-    brotli 109.8, all still over.
+    WHY IT IS A DIRECTORY, AND WHY IT KEPT THE .parquet NAME.
 
-    What does save it is storing measurements at the precision they actually carry. 155 of the
-    212 columns were float64 holding goals, shots, cards and rolling means; 45 more were int64
-    holding small counts. Downcast to float32/int32 and written with zstd the file is 90.6 MB.
-    Worst relative error introduced across every float column, measured rather than assumed:
-    5.96e-08 -- float32 epsilon, and about eight orders of magnitude below anything that could
-    move a prediction.
+    Git stores a complete new copy of a binary file every time it changes. This file had 219
+    stored versions and .git had reached 3.4 GB, growing about 900 MB a month from this one
+    path -- and on 2026-09-24 it crossed GitHub's 100 MB per-file limit and a push was rejected
+    outright ("GH001: Large files detected"). Recompression does not fix that and neither does
+    a paid plan: the 100 MB limit is identical on Free, Pro, Team and Enterprise Cloud. Git LFS
+    only relocates the same pattern and bills for it.
 
-    ID columns are excluded by name. They are identities, not quantities, and _stable_player_id
-    deliberately mints synthetic ids above 9e8, which is close enough to the int32 ceiling that
-    downcasting them would be asking for a silent overflow one day.
+    Splitting by season fixes the cause rather than the symptom. A FINISHED SEASON NEVER CHANGES
+    AGAIN, so git stores it once and never again; only the live season's part is rewritten by a
+    nightly collect. Measured on the real 501,602 rows: parts of 9.5 / 9.7 / 23.1 / 41.1 / 8.9
+    MB, so the largest is 41 MB against a 100 MB limit, and daily churn falls from 90 MB to 9.
 
-    THIS IS A STOPGAP, NOT A SOLUTION. It buys about 9 MB of headroom on a file that grew 48 MB
-    in one afternoon, and seasons 2023-2024 are still to be collected. The real choice -- Git
-    LFS, splitting the file, or not committing it at all -- is an architecture decision, and it
-    needs making before the next depth increase rather than after the next rejected push.
+    The directory deliberately keeps the name `player_history.parquet`, which is the Spark and
+    Hive convention, because pandas and pyarrow read a directory of parts exactly as they read
+    one file. That means all EIGHT python read sites and all EIGHT workflow references keep
+    working untouched -- `pd.read_parquet(path)`, `columns=` pruning, `Path(path).exists()`,
+    `git add`, `git add -f` and `git status --porcelain <path>` are all directory-safe, which
+    was verified before this was written rather than assumed. Sixteen edits in production paths
+    would have been sixteen chances to break the thing this is trying to protect.
+
+    Parts are FLAT files inside the directory, not Hive-style `season=YYYY/` subdirectories,
+    because pyarrow infers a partition column from those and would silently add a `season`
+    column that was never in the schema.
+
+    Rows with an unparseable date go to season_unknown.parquet rather than being dropped.
+
+    Also writes at the precision the data carries, which is what got the single file under the
+    limit in the first place: 155 float64 columns held goals, shots, cards and rolling means,
+    45 more int64 held small counts. float32/int32 plus zstd, worst relative error measured at
+    5.96e-08 -- float32 epsilon, eight orders of magnitude below anything that moves a
+    prediction. ID columns are excluded by name because _stable_player_id mints synthetic ids
+    above 9e8, close enough to the int32 ceiling to invite a silent overflow.
     """
     import numpy as np
     out = df
@@ -83,7 +102,43 @@ def _save_history(df: "pd.DataFrame", path=None) -> None:
                 cast.pop(c)
     if cast:
         out = out.astype(cast)
-    out.to_parquet(path or HISTORY_CACHE, index=False, compression="zstd")
+
+    root = Path(path or HISTORY_CACHE)
+    # Transition: the path used to be a single file. Remove it before creating the directory,
+    # so a checkout that still has the old layout self-migrates instead of raising.
+    if root.exists() and root.is_file():
+        root.unlink()
+    root.mkdir(parents=True, exist_ok=True)
+
+    season = _history_season(out["date"]) if "date" in out.columns else None
+    if season is None:
+        out.to_parquet(root / "season_unknown.parquet", index=False, compression="zstd")
+        return
+
+    written = set()
+    for key, idx in out.groupby(season.fillna(-1), sort=True).groups.items():
+        name = "season_unknown.parquet" if int(key) == -1 else f"season_{int(key)}.parquet"
+        out.loc[idx].to_parquet(root / name, index=False, compression="zstd")
+        written.add(name)
+    # Every caller passes the COMPLETE frame, so a part with no rows this time is stale and
+    # must go -- otherwise a season that lost its rows would linger and be read back forever.
+    for f in root.glob("*.parquet"):
+        if f.name not in written:
+            f.unlink()
+
+    # Say something BEFORE a part gets near the limit, not after a push is rejected.
+    # Splitting by season buys a lot of room -- the largest part is 41 MB today -- but a season
+    # does not have a fixed size: it grows every time a league is added to PROP_LEAGUES. The
+    # single-file layout gave no warning at all, and the first sign of trouble was GH001 on a
+    # push that had already done the work.
+    for f in sorted(root.glob("*.parquet")):
+        mb = f.stat().st_size / 1e6
+        if mb > 100:
+            print(f"[history] ERROR {f.name} is {mb:.0f} MB — GitHub will REJECT this push. "
+                  f"That season needs splitting further (by league, or half-season).")
+        elif mb > 70:
+            print(f"[history] WARNING {f.name} is {mb:.0f} MB, approaching GitHub's 100 MB "
+                  f"limit. Plan the next split before it lands, not after.")
 
 
 # ── Phase 2: Collect ──────────────────────────────────────────────────────────
