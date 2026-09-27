@@ -54,6 +54,7 @@ from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
 from src.model import (train as train_model, save_models, load_models,
                         get_feature_importances, chronological_split, score_payload,
+                        predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
 from src.betting import generate_bets
 from src.backtest import (run_backtest, run_side_market_backtest,
@@ -182,6 +183,79 @@ def _mean_logloss(metrics: dict) -> float:
     return float(sum(vals) / len(vals)) if vals else float("nan")
 
 
+def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: str) -> dict:
+    """Did the challenger merely get better, or did it start behaving like a different model?
+
+    WHY LOG LOSS IS NOT ENOUGH. The promotion gate asks one question -- did the average get
+    worse -- and on 2026-09-23 the answer was an emphatic no: log loss improved 0.68885 ->
+    0.64066, so the model promoted correctly and by a wide margin. What the gate could not see
+    is that the SHAPE of its output had changed completely. On the upcoming board the spread of
+    p(over 2.5) doubled (std 0.109 -> 0.207), 19 of 57 fixtures crossed the Over/Under boundary,
+    and a single predict run produced five real-money SNIPER tips with edges to 29.5% where the
+    week before had nothing above 11%. A mean can improve while every individual number moves.
+
+    This measures the shape, on the SAME holdout the gate already built, from two models it has
+    already loaded. One extra prediction pass, no refit, no new data.
+
+    IT NEVER BLOCKS. Promotion stays the gate's decision; this only records and warns. A
+    behaviour check that can stop a retrain is a new way for production to break, and the whole
+    estate's health design is that nothing gates v9. What it buys is that the next 2026-09-23
+    shows up in the retrain log and the Telegram digest the moment it happens, instead of being
+    found days later by reading a ledger.
+
+    Thresholds are set from that incident, which is the only real example available: it would
+    have tripped all three.
+    """
+    out = {"available": False}
+    if old_payload is None or test_df is None or len(test_df) < 50:
+        return out
+    try:
+        import numpy as np
+        payload_new = {
+            "target": target,
+            "models": {k: v["model"] for k, v in results.items()},
+            "feature_cols": results[next(iter(results))]["feature_cols"],
+            "metrics": {k: v["metrics"] for k, v in results.items()},
+        }
+        p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
+        p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
+        m = np.isfinite(p_old) & np.isfinite(p_new)
+        if m.sum() < 50:
+            return out
+        p_old, p_new = p_old[m], p_new[m]
+        delta = p_new - p_old
+        crossed = ((p_old > 0.5) & (p_new < 0.5)) | ((p_old < 0.5) & (p_new > 0.5))
+        spread_ratio = float(p_new.std() / p_old.std()) if p_old.std() > 1e-9 else float("nan")
+        out = {
+            "available": True, "n": int(m.sum()),
+            "std_old": round(float(p_old.std()), 5), "std_new": round(float(p_new.std()), 5),
+            "spread_ratio": round(spread_ratio, 3) if spread_ratio == spread_ratio else None,
+            "mean_old": round(float(p_old.mean()), 5), "mean_new": round(float(p_new.mean()), 5),
+            "frac_crossed_half": round(float(crossed.mean()), 4),
+            "frac_moved_gt_10pp": round(float((np.abs(delta) > 0.10).mean()), 4),
+            "max_abs_move": round(float(np.abs(delta).max()), 4),
+        }
+        flags = []
+        if spread_ratio == spread_ratio and (spread_ratio > 1.5 or spread_ratio < 1 / 1.5):
+            flags.append(f"spread x{spread_ratio:.2f}")
+        if out["frac_crossed_half"] > 0.20:
+            flags.append(f"{out['frac_crossed_half']:.0%} crossed the 0.5 boundary")
+        if out["frac_moved_gt_10pp"] > 0.25:
+            flags.append(f"{out['frac_moved_gt_10pp']:.0%} moved >10pp")
+        out["flags"] = flags
+        if flags:
+            log.warning(f"  [{label}] BEHAVIOUR CANARY: {'; '.join(flags)}. The average may have "
+                        f"improved while the shape of the output changed — check the board "
+                        f"before trusting today's tiers. (This does NOT block promotion.)")
+        else:
+            log.info(f"  [{label}] behaviour canary clean (spread x{spread_ratio:.2f}, "
+                     f"{out['frac_crossed_half']:.0%} crossed)")
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"  [{label}] behaviour canary failed ({e}) — promotion is unaffected")
+        return {"available": False, "error": str(e)[:200]}
+    return out
+
+
 def _record_retrain(label: str, entry: dict) -> None:
     """Append one model's outcome to the run record the Telegram notice reads."""
     try:
@@ -246,10 +320,13 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
     # comparison.
     basis = "same_holdout"
     old_ll = float("nan")
+    _test_df = None
+    _old_payload = None
     try:
         _, _test_df = chronological_split(valid, target)
         if len(_test_df) >= 50:
-            old_ll = score_payload(load_models(model_file=model_file), _test_df, target)
+            _old_payload = load_models(model_file=model_file)
+            old_ll = score_payload(_old_payload, _test_df, target)
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"  [{label}] could not score the incumbent on today's holdout ({e}); "
                     f"falling back to its stored metrics")
@@ -263,6 +340,7 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
 
     results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
     new_ll = _mean_logloss({k: v["metrics"] for k, v in results.items()})
+    canary = _behaviour_canary(label, _old_payload, results, _test_df, target)
 
     # THE GATE IS A CRASH BARRIER, NOT A JUDGE. Tolerance derived from 1,568 simulated
     # challenger-vs-champion comparisons across a 50-month walk-forward, not chosen by feel:
@@ -306,7 +384,8 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
     _record_retrain(label, {"promoted": promote, "why": why, "rows": int(len(valid)),
                             "comparison_basis": basis,
                             "logloss_old": None if old_ll != old_ll else round(old_ll, 5),
-                            "logloss_new": None if new_ll != new_ll else round(new_ll, 5)})
+                            "logloss_new": None if new_ll != new_ll else round(new_ll, 5),
+                            "canary": canary})
 
     payload = load_models(model_file=model_file)
     fi = get_feature_importances(payload)
