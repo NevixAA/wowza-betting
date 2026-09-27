@@ -310,7 +310,72 @@
         "logloss_new": 0.59951,
         "at": "2026-09-26T08:32:16Z"
       }
+    },
+    "2026-09-27": {
+      "standard": {
+        "promoted": true,
+        "why": "log loss 0.68781 -> 0.68797 (+0.00016), within the 0.03000 tolerance",
+        "rows": 21388,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.68781,
+        "logloss_new": 0.68797,
+        "at": "2026-09-27T09:06:56Z"
+      },
+      "newformat": {
+        "promoted": true,
+        "why": "log loss 0.67972 -> 0.67989 (+0.00016), within the 0.03000 tolerance",
+        "rows": 38428,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.67972,
+        "logloss_new": 0.67989,
+        "at": "2026-09-27T09:07:30Z"
+      },
+      "ht_over05": {
+        "promoted": true,
+        "why": "log loss 0.66761 -> 0.67033 (+0.00272), within the 0.03000 tolerance",
+        "rows": 30199,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.66761,
+        "logloss_new": 0.67033,
+        "at": "2026-09-27T09:08:07Z"
+      },
+      "ht_over15": {
+        "promoted": true,
+        "why": "log loss 0.57128 -> 0.57088 (-0.00040), within the 0.03000 tolerance",
+        "rows": 30199,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.57128,
+        "logloss_new": 0.57088,
+        "at": "2026-09-27T09:08:42Z"
+      },
+      "btts": {
+        "promoted": true,
+        "why": "log loss 0.68559 -> 0.68542 (-0.00017), within the 0.03000 tolerance",
+        "rows": 59816,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.68559,
+        "logloss_new": 0.68542,
+        "at": "2026-09-27T09:09:48Z"
+      },
+      "over15": {
+        "promoted": true,
+        "why": "log loss 0.54570 -> 0.54603 (+0.00033), within the 0.03000 tolerance",
+        "rows": 59816,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.5457,
+        "logloss_new": 0.54603,
+        "at": "2026-09-27T09:10:53Z"
+      },
+      "over35": {
+        "promoted": true,
+        "why": "log loss 0.59950 -> 0.59888 (-0.00062), within the 0.03000 tolerance",
+        "rows": 59816,
+        "comparison_basis": "same_holdout",
+        "logloss_old": 0.5995,
+        "logloss_new": 0.59888,
+        "at": "2026-09-27T09:11:59Z"
+      }
     }
   },
-  "latest_run": "2026-09-26"
+  "latest_run": "2026-09-27"
 }
