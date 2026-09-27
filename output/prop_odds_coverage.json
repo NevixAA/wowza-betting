@@ -4,8 +4,8 @@
     "last_priced": "2026-09-27",
     "last_probe": "2026-09-27",
     "league": "Argentina Primera Division",
-    "priced_events": 209,
-    "probes": 210,
+    "priced_events": 210,
+    "probes": 211,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -115,8 +115,8 @@
     "last_priced": "2026-09-27",
     "last_probe": "2026-09-27",
     "league": "La Liga 2",
-    "priced_events": 332,
-    "probes": 337,
+    "priced_events": 333,
+    "probes": 338,
     "source": "api_football"
   },
   "apifootball:League One": {
@@ -124,8 +124,8 @@
     "last_priced": "2026-09-27",
     "last_probe": "2026-09-27",
     "league": "League One",
-    "priced_events": 319,
-    "probes": 341,
+    "priced_events": 320,
+    "probes": 342,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -133,8 +133,8 @@
     "last_priced": "2026-09-27",
     "last_probe": "2026-09-27",
     "league": "League Two",
-    "priced_events": 258,
-    "probes": 304,
+    "priced_events": 259,
+    "probes": 305,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -149,8 +149,8 @@
     "last_priced": "2026-09-27",
     "last_probe": "2026-09-27",
     "league": "Mexico Liga MX",
-    "priced_events": 263,
-    "probes": 264,
+    "priced_events": 264,
+    "probes": 265,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -337,17 +337,18 @@
   },
   "soccer_usa_mls": {
     "empty_streak": 0,
-    "far_empty_probes": 76,
+    "far_empty_probes": 77,
     "last_near_empty": "2026-09-27",
     "last_priced": "2026-09-27",
     "last_probe": "2026-09-27",
     "league": "USA MLS",
     "matched_events": 3,
-    "priced_events": 1256,
-    "probes": 1356,
+    "priced_events": 1257,
+    "probes": 1358,
     "unmatched_sample": [
-      "Columbus Crew vs Inter Miami"
+      "Columbus Crew vs Inter Miami",
+      "New York Red Bulls vs St. Louis City"
     ],
-    "wanted_fixtures": 4
+    "wanted_fixtures": 5
   }
 }
