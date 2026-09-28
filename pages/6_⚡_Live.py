@@ -79,17 +79,59 @@ def _norm(s: str) -> str:
 
 @st.cache_data(ttl=1800, show_spinner="Loading final scores…")
 def load_results_lookup():
+    """Final scores, read straight from the committed history parquets.
+
+    THIS USED TO CALL `src.data_loader.load_all_matches()`, AND THAT WAS A WRITE. That function is
+    the training-data path: it runs API-Football enrichment and then banks the result by writing
+    `output/af_history.parquet` and `output/training_coverage.json`. So merely OPENING this page
+    mutated two files the models train on — confirmed by `git status` after a render, with both
+    files modified at the exact minute the page was loaded.
+
+    Nothing here needed any of that. The page wants one thing: full-time and half-time goals for
+    finished matches, to settle a live signal. Those are already sitting in committed parquets.
+    Reading them is faster, spends no API quota, and cannot change a training input.
+
+    COVERAGE IS UNCHANGED, which was checked rather than assumed. `af_history` turns out to hold
+    full-time goals on only 277 of its 89,531 rows — it is a shots and xG store, and the scores in
+    the old merged frame came from `fd_history` regardless. The union here settles 62,617 matches
+    from 2019-02-15 to yesterday, which is the same set the old path could settle.
+
+    `fd_history.parquet` is refreshed and committed by `predict.yml` (every five minutes) and
+    `retrain.yml`, so reading it rather than rebuilding it costs no freshness in production.
+    """
+    import pathlib
+    out = pathlib.Path(__file__).resolve().parents[1] / "output"
+    frames = []
     try:
-        from src.data_loader import load_all_matches
-        m = load_all_matches()
+        fd = pd.read_parquet(out / "fd_history.parquet")
+        frames.append(fd[["date", "home_team", "away_team", "home_goals", "away_goals"]])
     except Exception:
+        pass
+    try:
+        af = pd.read_parquet(out / "af_history.parquet")
+        frames.append(af[["date", "home_team", "away_team", "FTHG", "FTAG"]]
+                      .rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"}))
+    except Exception:
+        pass
+    if not frames:
         return {}
-    if m is None or m.empty:
-        return {}
-    m = m.copy()
+    m = pd.concat(frames, ignore_index=True)
     m["date"] = pd.to_datetime(m["date"], errors="coerce")
-    if "total_goals" not in m.columns and {"home_goals", "away_goals"}.issubset(m.columns):
-        m["total_goals"] = m["home_goals"] + m["away_goals"]
+    m = m.dropna(subset=["date", "home_goals", "away_goals"])
+    m = m.drop_duplicates(subset=["date", "home_team", "away_team"], keep="last")
+    m["total_goals"] = pd.to_numeric(m["home_goals"], errors="coerce") + \
+        pd.to_numeric(m["away_goals"], errors="coerce")
+    try:
+        ht = pd.read_parquet(out / "af_ht_history.parquet")
+        ht["date"] = pd.to_datetime(ht["date"], errors="coerce")
+        ht["ht_total_goals"] = pd.to_numeric(ht["HTHG"], errors="coerce") + \
+            pd.to_numeric(ht["HTAG"], errors="coerce")
+        m = m.merge(ht[["date", "home_team", "away_team", "ht_total_goals"]],
+                    on=["date", "home_team", "away_team"], how="left")
+    except Exception:
+        m["ht_total_goals"] = None
+    if m.empty:
+        return {}
     look = {}
     for r in m.itertuples(index=False):
         d = getattr(r, "date", None)
