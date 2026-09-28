@@ -37,6 +37,83 @@ _DC_THRESH = {"DEF": 5.0, "GKP": 999.0, "MID": 4.5, "FWD": 4.0}
 _POS_ALIAS = {"F": "FWD", "M": "MID", "D": "DEF", "G": "GKP",
               "FWD": "FWD", "MID": "MID", "DEF": "DEF", "GKP": "GKP", "GK": "GKP"}
 _PARQUET = Path(__file__).resolve().parents[1] / "player_history.parquet"
+
+# ── Availability-aware ranking and captaincy ─────────────────────────────────
+# A player who will not play is worth ZERO points, however good he is. Ranking by CONDITIONAL
+# points -- what he scores IF he plays -- therefore puts men who cannot kick a ball at the top
+# of the board. Measured on the 2026-09-27 projection: 8 of the top 20 could not play, including
+# Ekitiké at #2 and Romero at #3, both with p_start 0.00; and 65 of 170 players with p_start=0
+# outranked someone fully available.
+#
+# The correct number already existed and nothing used it. `xpts_rot` is exactly
+# fantasy_pts x p_start -- the UNCONDITIONAL expectation -- so this is a change of which column
+# decides the order, not new modelling.
+#
+# Conditional points are KEPT, not deleted. They are the right number for "how good is he when
+# he plays", which is a real question; they are simply the wrong number for "who should I pick".
+
+#: p_start at or above which a player is treated as a dependable starter.
+NAILED_START = 0.85
+#: p_start below which a player is a rotation risk and must never be a captain suggestion.
+MIN_CAPTAIN_START = 0.60
+_OUT_STATUSES = ("injured", "unavailable", "suspended")
+
+
+def start_confidence(p_start, availability=None, chance_of_playing=None) -> str:
+    """An interpretable label, not an invented 0-100 score.
+
+    The brief is explicit that a number like "AI confidence 92%" is worthless unless it is
+    calibrated, so this says only what the data supports: a status, a start probability, and
+    FPL's own published chance of playing.
+    """
+    av = str(availability or "").lower()
+    p = float(p_start) if p_start == p_start and p_start is not None else 0.0
+    if av in _OUT_STATUSES or p <= 0:
+        return "Unavailable"
+    if av == "doubtful":
+        return "Doubtful"
+    if p < MIN_CAPTAIN_START:
+        return "Rotation risk"
+    if p < NAILED_START:
+        return "Likely starter"
+    return "Nailed"
+
+
+def rank_and_captains(df, base_col: str = "fantasy_pts", n_captains: int = 3):
+    """Sort by UNCONDITIONAL expected points and pick captains who will actually start.
+
+    Adds/overwrites: xpts_uncond, start_confidence, overall_rank, pos_rank, captain_pick.
+    `base_col` is the conditional per-game number to discount, so the dashboard can rank a
+    fixture-adjusted or multi-gameweek view through the same rule.
+    """
+    import numpy as _np
+    import pandas as _pd
+    d = df.copy()
+    base = _pd.to_numeric(d.get(base_col), errors="coerce").fillna(0.0)
+    p = _pd.to_numeric(d.get("p_start"), errors="coerce").fillna(0.0).clip(0, 1)
+    av = d.get("availability", _pd.Series("", index=d.index)).astype(str).str.lower()
+
+    # Unconditional = conditional x P(start), and hard zero for anyone ruled out, so an
+    # "available" flag and a stale non-zero p_start cannot resurrect a ruled-out player.
+    d["xpts_uncond"] = (base * p).where(~av.isin(_OUT_STATUSES), 0.0).round(3)
+    d["start_confidence"] = [
+        start_confidence(pp, aa, cc)
+        for pp, aa, cc in zip(p, av, d.get("chance_of_playing", _pd.Series(None, index=d.index)))
+    ]
+
+    d = d.sort_values(["xpts_uncond", base_col], ascending=False).reset_index(drop=True)
+    d["overall_rank"] = _np.arange(1, len(d) + 1)
+    d["pos_rank"] = (d.groupby("position")["xpts_uncond"]
+                     .rank(ascending=False, method="first").astype(int))
+
+    # CAPTAINCY IS ITS OWN DECISION, not "the top of the list". Excluding only `injured` let
+    # doubtful players through -- on 2026-09-27 both João Pedro and Pedro Porro were suggested
+    # as captain at a 75% chance of playing. A captain is doubled, so a blank costs twice.
+    eligible = (~av.isin(_OUT_STATUSES)) & (av != "doubtful") & (p >= MIN_CAPTAIN_START)
+    d["captain_pick"] = False
+    if eligible.any():
+        d.loc[d[eligible].head(n_captains).index, "captain_pick"] = True
+    return d
 _OUT = Path(__file__).resolve().parents[1] / "output" / "fantasy_tips.csv"
 
 
@@ -379,14 +456,8 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                         "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts",
                         "n_fixtures_next", "total_xpts_next", "total_xpts_rot"]
             if c in pl.columns]
-    out = pl[keep].sort_values("fantasy_pts", ascending=False).reset_index(drop=True)
-    out["overall_rank"] = np.arange(1, len(out) + 1)
-    out["pos_rank"] = out.groupby("position")["fantasy_pts"].rank(ascending=False, method="first").astype(int)
-    # captain: top 3 among AVAILABLE players (never captain an injured one)
-    healthy = ~out["injured"].astype(bool)
-    out["captain_pick"] = False
-    top3 = out[healthy].head(3).index
-    out.loc[top3, "captain_pick"] = True
+    out = pl[keep].reset_index(drop=True)
+    out = rank_and_captains(out, base_col="fantasy_pts")
     for c in ["p_goal", "p_assist", "p_sot2"]:
         out[c] = out[c].round(3)
     return out
