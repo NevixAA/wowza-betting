@@ -465,12 +465,49 @@ with t_xi:
                         f"doubles to **{sq['captain_points'] * 2:.1f}** pts"
                         + (f"  ·  **(VC) {_vc['player_name']}**" if _vc is not None else ""))
 
+            # ── The pitch ────────────────────────────────────────────────────
+            # A lineup is a shape, and a table cannot show a shape. Reading "5-3-2" off a
+            # formation cell is not the same as seeing five across the back. Rows are laid out
+            # keeper-at-the-bottom the way a team sheet is drawn, and each tile carries only
+            # what you decide on: who, where, and what he is worth.
+            _cap_name = str(_cap.get("player_name", ""))
+            _vc_name = str(_vc["player_name"]) if _vc is not None else ""
+
+            def _tile(r):
+                mark = " **(C)**" if r["player_name"] == _cap_name else (
+                       " **(VC)**" if r["player_name"] == _vc_name else "")
+                conf = str(r.get("start_confidence", "") or "")
+                dot = {"Nailed": "🟢", "Likely starter": "🟡", "Rotation risk": "🟠",
+                       "Doubtful": "🔴", "Unavailable": "⚫"}.get(conf, "")
+                return (f"<div style='text-align:center;padding:6px 2px;line-height:1.25'>"
+                        f"<b>{r['player_name']}</b>{mark}<br>"
+                        f"<span style='opacity:.65;font-size:.85em'>{r.get('team','')} · "
+                        f"£{float(r.get('price',0)):.1f}m</span><br>"
+                        f"<span style='font-size:1.05em'><b>{float(r['xpts']):.2f}</b></span> "
+                        f"<span style='font-size:.85em'>{dot}</span></div>")
+
+            st.markdown("**Starting XI**")
+            _xi = sq["xi"]
+            for _pos in ("FWD", "MID", "DEF", "GKP"):
+                _row = _xi[_xi["position"] == _pos]
+                if _row.empty:
+                    continue
+                # Pad each row so it stays centred regardless of how many play there.
+                _pad = max(0, (5 - len(_row)))
+                _cols_row = st.columns([1] * (_pad // 2) + [2] * len(_row) + [1] * (_pad - _pad // 2))
+                _slots = [c for c, w in zip(_cols_row, [1] * (_pad // 2) + [2] * len(_row)
+                                            + [1] * (_pad - _pad // 2)) if w == 2]
+                for _c, (_, _r) in zip(_slots, _row.iterrows()):
+                    _c.markdown(_tile(_r), unsafe_allow_html=True)
+            st.caption("🟢 nailed · 🟡 likely · 🟠 rotation risk — from start probability, "
+                       "not a vibe. (C) captain, (VC) vice.")
+
             _cols = [c for c in ["player_name", "team", "position", "price", "xpts",
                                  "start_confidence"] if c in sq["xi"].columns]
             _ren = {"player_name": "Player", "team": "Team", "position": "Pos",
                     "price": "£m", "xpts": "xPts", "start_confidence": "Minutes"}
-            st.markdown("**Starting XI**")
-            ui.table(sq["xi"][_cols].rename(columns=_ren), bars=("xPts",))
+            with st.expander("Starting XI as a table"):
+                ui.table(sq["xi"][_cols].rename(columns=_ren), bars=("xPts",))
             st.markdown("**Bench** — outfield in order, keeper last (that is how FPL autosubs).")
             ui.table(sq["bench"][_cols].rename(columns=_ren))
     except Exception as e:
@@ -707,6 +744,65 @@ disclaimer_footer()
 st.markdown("---")
 st.subheader("🎯 Projected vs actual")
 st.caption("Is the projection any good — and does it beat the number FPL publishes for free?")
+
+# ── REAL SETTLEMENT: pre-deadline forecast vs the points actually scored ──────
+# The section below this one compares a forward projection against SEASON-TO-DATE points per
+# game, which is not a settlement -- it scores a forecast against an average that already
+# contains the matches being forecast. This block is the real test: what was projected before
+# the deadline, against what the player went on to score that gameweek.
+try:
+    import json as _json3
+    _perf_p = BASE_DIR / "output" / "fantasy_performance.json"
+    _perf = _json3.loads(_perf_p.read_text(encoding="utf-8")) if _perf_p.exists() else {}
+except Exception:
+    _perf = {}
+
+_ov = (_perf or {}).get("overall") or {}
+if _ov:
+    _gws = (_perf.get("meta") or {}).get("settled_gameweeks") or []
+    st.markdown(f"**Settled gameweeks: {', '.join('GW'+str(g) for g in _gws)}** — "
+                f"pre-deadline forecast against points actually scored.")
+    _w, _f = _ov.get("wowza", {}), _ov.get("fpl_ep_next", {})
+    _wc = _ov.get("wowza_conditional", {})
+    s1, s2, s3, s4 = st.columns(4)
+    s1.metric("Player-gameweeks", f"{_w.get('n', 0):,}")
+    s2.metric("Wowza MAE", f"{_w.get('mae', float('nan')):.3f}",
+              help="Mean absolute error in FPL points, on the unconditional projection "
+                   "(points × start probability) — the number the board now ranks by.")
+    s3.metric("FPL ep_next MAE", f"{_f.get('mae', float('nan')):.3f}",
+              delta=f"{_w.get('mae', 0) - _f.get('mae', 0):+.3f} vs Wowza",
+              delta_color="inverse")
+    s4.metric("Rank correlation", f"{_w.get('spearman', float('nan')):.3f}",
+              help=f"FPL's is {_f.get('spearman', float('nan')):.3f}. Spearman on actual points.")
+
+    if _w.get("mae", 9e9) < _f.get("mae", 9e9):
+        st.success(f"Wowza beats FPL's free number by "
+                   f"{_f['mae'] - _w['mae']:.3f} MAE on settled gameweeks.", icon="✅")
+    else:
+        st.warning(f"**FPL's free number is still {_w.get('mae', 0) - _f.get('mae', 0):.3f} MAE "
+                   f"closer.** That is the honest state of it, and it stays on this page until "
+                   f"it flips.", icon="⚠️")
+
+    if _wc:
+        st.caption(f"Scoring the CONDITIONAL projection instead gives MAE "
+                   f"{_wc.get('mae', float('nan')):.3f} and rank correlation "
+                   f"{_wc.get('spearman', float('nan')):.3f} — much worse, because "
+                   f"{_perf.get('actual_zero_share', 0):.0%} of real gameweek scores are zero "
+                   f"(the player did not play) and a conditional number never claimed to "
+                   f"predict those. Both are shown so the choice is not a silent one.")
+
+    _un = (_perf.get("meta") or {}).get("unsettleable") or []
+    if _un:
+        with st.expander(f"Why {len(_un)} gameweek(s) are not counted"):
+            for _u in _un:
+                st.write(f"**GW{_u.get('gw')}** — {_u.get('why')}")
+else:
+    st.info("No settled gameweeks yet. Projections began carrying a gameweek tag on "
+            "2026-09-27; settlement needs a snapshot either side of a deadline.", icon="ℹ️")
+
+st.markdown("##### Proxy check — projection vs season-to-date PPG")
+st.caption("Kept because it covers every player every day, but it is a PROXY, not a settlement: "
+           "season-to-date PPG includes the matches being forecast.")
 
 _have_ep = "fpl_ep_next" in df.columns and "fpl_ppg" in df.columns
 if not _have_ep:
