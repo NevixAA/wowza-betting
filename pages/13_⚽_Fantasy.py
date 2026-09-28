@@ -9,6 +9,9 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+# The shared three-repo chart grammar. Imported under a separate name because this page
+# already binds `ui` to the legacy dashboard_ui helper.
+from dashboard_data import fantasy as _fdata, ui as dui
 # One shared ranking rule for the page and the CSV. The page used to recompute its own ordering
 # and captain picks, which silently overrode whatever fantasy.py had written, so the two could
 # disagree and a fix in one place did nothing in the other.
@@ -161,6 +164,39 @@ else:
             "engages when FPL publishes upcoming fixtures. If you still see a departed player, the FPL "
             "feed hasn't refreshed yet — run the *Fantasy Refresh* action or wait for the daily job.",
             icon="ℹ️")
+
+# ── Who is actually startable ─────────────────────────────────────────────────
+# SHOWN, NOT ASSUMED. "Nobody is unavailable" and "the availability check returned nothing" look
+# identical on a page that only renders the survivors — and the board did once carry eight
+# unplayable players in its top twenty. The split is published so the check is visibly alive.
+_split = _fdata.availability_split()
+if _split.get("available"):
+    _sd = pd.DataFrame([
+        {"group": "Nailed (start ≥ 85%)", "players": _split["nailed"]},
+        {"group": "Rotation risk (60–85%)", "players": _split["rotation_risk"]},
+        {"group": "Doubtful (< 60%)", "players": _split["doubtful"]},
+        {"group": "Ruled out (0%)", "players": _split["unavailable"]},
+    ])
+    _a1, _a2 = st.columns([3, 2])
+    with _a1:
+        st.altair_chart(dui.coverage_bars(_sd, "group", "players", h=150,
+                                          title=f"Startability of all {_split['total']} "
+                                                f"ranked players"),
+                        use_container_width=False)
+    with _a2:
+        _bad = _split.get("unavailable_in_top20")
+        if _bad == 0:
+            st.success(f"**0 unplayable players in the top 20.** The ranking is the "
+                       f"availability-gated one (points × start probability, hard zero for "
+                       f"anyone ruled out), not the raw projection.", icon="✅")
+        elif _bad:
+            st.error(f"**{_bad} unplayable player(s) in the top 20.** The board is being sorted "
+                     f"on a conditional points column somewhere. Ranking must use overall_rank.",
+                     icon="🚨")
+        st.caption(f"{_split['unavailable']} of {_split['total']} ranked players are ruled out "
+                   f"entirely. They stay in the file — a projection for an injured player is "
+                   f"still correct about what he would score if he played — but they cannot "
+                   f"reach the top of a list that is meant to be picked from.")
 
 # ── Captaincy picks ───────────────────────────────────────────────────────────
 st.subheader("🏆 Captaincy picks")
@@ -809,6 +845,38 @@ if _ov:
         st.warning(f"**FPL's free number is still {_w.get('mae', 0) - _f.get('mae', 0):.3f} MAE "
                    f"closer.** That is the honest state of it, and it stays on this page until "
                    f"it flips.", icon="⚠️")
+
+    # A chart, not another row of metrics. Two gameweeks of MAE side by side on ONE scale says
+    # "we lose, consistently" in a glance; four st.metric tiles make the reader do the compare.
+    _bm = _fdata.benchmark()
+    if _bm.get("available") and len(_bm.get("table") or []):
+        _bd = pd.DataFrame(_bm["table"])
+        _long = _bd.melt(id_vars=["gw", "n"], value_vars=["wowza_mae", "fpl_mae"],
+                         var_name="series", value_name="value")
+        _c1, _c2 = st.columns(2)
+        with _c1:
+            st.altair_chart(
+                dui.compare_bars(_long, "gw", "value", "series",
+                                 order=["wowza_mae", "fpl_mae"],
+                                 title="Error by gameweek — lower is better",
+                                 y_title="points of error"),
+                use_container_width=False)
+        with _c2:
+            _lr = _bd.melt(id_vars=["gw", "n"],
+                           value_vars=["wowza_spearman", "fpl_spearman"],
+                           var_name="series", value_name="value")
+            # Rank correlation gets its OWN chart rather than a second axis on the one above.
+            # Error and correlation are different scales pointing in opposite directions, and a
+            # twin axis would let the picture be tuned to say whatever the author wanted.
+            st.altair_chart(
+                dui.compare_bars(_lr, "gw", "value", "series",
+                                 order=["wowza_spearman", "fpl_spearman"],
+                                 title="Rank correlation — higher is better (separate scale)",
+                                 y_title="Spearman"),
+                use_container_width=False)
+        st.caption(f"Sample: " + " · ".join(f"GW{int(r['gw'])} n={int(r['n']):,}"
+                                            for _, r in _bd.iterrows()) +
+                   ". Every point on both charts is the same set of players in the same week.")
 
     if _wc:
         st.caption(f"Scoring the CONDITIONAL projection instead gives MAE "
