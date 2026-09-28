@@ -1285,8 +1285,21 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         out["btts"] = ((out["home_goals"] > 0) & (out["away_goals"] > 0)).astype(float)
         if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
             out["ht_total_goals"] = out["ht_home_goals"] + out["ht_away_goals"]
-            out["ht_over05"] = (out["ht_total_goals"] >= 1).astype(float)
-            out["ht_over15"] = (out["ht_total_goals"] >= 2).astype(float)
+            # MASK THE MISSING ONES. `(NaN >= 1).astype(float)` is 0.0, not NaN, so every
+            # fixture with no half-time score was silently labelled "no half-time goal" — a
+            # fabricated negative, which invariant 9 exists to forbid. The guard above only
+            # asks whether ANY row has HT data, then applies the label to ALL rows.
+            #
+            # Measured cost: the HT training frame showed Brazil Serie A at an 8.6% half-time
+            # scoring rate, USA MLS 11.4%, Japan 11.7%. Both source stores are correct
+            # (af_ht_history 68.8%, fd_history 70.2%) — the zeros were manufactured here. About
+            # 37% of the HT training rows were invented negatives, and dropna() could not
+            # remove them because the column was never null.
+            #
+            # src/feature_engineering.py:387 has always done this correctly; this line did not.
+            _htn = out["ht_total_goals"].notna()
+            out["ht_over05"] = (out["ht_total_goals"] >= 1).astype(float).where(_htn)
+            out["ht_over15"] = (out["ht_total_goals"] >= 2).astype(float).where(_htn)
         with np.errstate(divide="ignore", invalid="ignore"):
             out["home_sot_ratio"] = np.where(out.get("home_shots", pd.Series(dtype=float)) > 0,
                 out.get("home_sot", pd.Series(dtype=float)) / out.get("home_shots", pd.Series(dtype=float)), np.nan)
@@ -1507,8 +1520,11 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     # HT targets (only populated when HTHG/HTAG available)
     if "ht_home_goals" in out.columns and out["ht_home_goals"].notna().any():
         out["ht_total_goals"] = out["ht_home_goals"] + out["ht_away_goals"]
-        out["ht_over05"]      = (out["ht_total_goals"] >= 1).astype(float)
-        out["ht_over15"]      = (out["ht_total_goals"] >= 2).astype(float)
+        # Same masking as the other construction site — see the note there. A missing half-time
+        # score must stay NaN so dropna() can remove it, never become a fabricated 0.
+        _htn = out["ht_total_goals"].notna()
+        out["ht_over05"]      = (out["ht_total_goals"] >= 1).astype(float).where(_htn)
+        out["ht_over15"]      = (out["ht_total_goals"] >= 2).astype(float).where(_htn)
 
     with np.errstate(divide="ignore", invalid="ignore"):
         out["home_sot_ratio"] = np.where(
