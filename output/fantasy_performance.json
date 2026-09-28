@@ -1,0 +1,98 @@
+{
+  "comparable": true,
+  "by_gameweek": [
+    {
+      "gw": 4,
+      "n": 287,
+      "wowza": {
+        "n": 287,
+        "mae": 2.245,
+        "rmse": 3.0005,
+        "spearman": 0.5486,
+        "bias": 1.0495
+      },
+      "fpl_ep_next": {
+        "n": 287,
+        "mae": 1.5373,
+        "rmse": 2.5988,
+        "spearman": 0.7057,
+        "bias": -0.0704
+      },
+      "wowza_better_mae": false,
+      "top10_overlap_wowza": 3,
+      "top10_overlap_fpl": 4,
+      "top10_of": 10
+    },
+    {
+      "gw": 5,
+      "n": 288,
+      "wowza": {
+        "n": 288,
+        "mae": 2.0837,
+        "rmse": 2.9307,
+        "spearman": 0.5386,
+        "bias": 0.9365
+      },
+      "fpl_ep_next": {
+        "n": 288,
+        "mae": 1.533,
+        "rmse": 2.578,
+        "spearman": 0.7036,
+        "bias": -0.1663
+      },
+      "wowza_better_mae": false,
+      "top10_overlap_wowza": 1,
+      "top10_overlap_fpl": 3,
+      "top10_of": 10
+    }
+  ],
+  "overall": {
+    "wowza": {
+      "n": 575,
+      "mae": 2.1642,
+      "rmse": 2.9658,
+      "spearman": 0.5429,
+      "bias": 0.9929
+    },
+    "wowza_conditional": {
+      "n": 575,
+      "mae": 3.4303,
+      "rmse": 3.8669,
+      "spearman": 0.1945,
+      "bias": 2.4391
+    },
+    "fpl_ep_next": {
+      "n": 575,
+      "mae": 1.5351,
+      "rmse": 2.5884,
+      "spearman": 0.705,
+      "bias": -0.1184
+    }
+  },
+  "wowza_column": "proj_uncond",
+  "wowza_conditional_column": "proj_fixture_adj",
+  "actual_zero_share": 0.4626,
+  "verdict": "FPL ep_next beats Wowza on MAE",
+  "mae_gap": 0.6291,
+  "meta": {
+    "settled_gameweeks": [
+      4,
+      5
+    ],
+    "unsettleable": [
+      {
+        "gw": 1,
+        "why": "no snapshot on one side of the deadline"
+      },
+      {
+        "gw": 2,
+        "why": "every player scored exactly 0 \u2014 both snapshots fall on the same side of scoring, so nothing was actually measured"
+      },
+      {
+        "gw": 3,
+        "why": "91% of players show a NEGATIVE cumulative change \u2014 the window spans a season rollover in fpl_total_points, so these actuals are not real gameweek scores"
+      }
+    ],
+    "notes": []
+  }
+}
