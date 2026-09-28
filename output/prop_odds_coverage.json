@@ -1,11 +1,11 @@
 {
   "apifootball:Argentina Primera Division": {
     "empty_streak": 0,
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "Argentina Primera Division",
-    "priced_events": 215,
-    "probes": 216,
+    "priced_events": 216,
+    "probes": 217,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -19,11 +19,11 @@
   },
   "apifootball:Brazil Serie A": {
     "empty_streak": 0,
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "Brazil Serie A",
-    "priced_events": 226,
-    "probes": 226,
+    "priced_events": 227,
+    "probes": 227,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -112,29 +112,29 @@
   },
   "apifootball:La Liga 2": {
     "empty_streak": 0,
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "La Liga 2",
-    "priced_events": 338,
-    "probes": 343,
+    "priced_events": 339,
+    "probes": 344,
     "source": "api_football"
   },
   "apifootball:League One": {
     "empty_streak": 0,
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "League One",
-    "priced_events": 325,
-    "probes": 347,
+    "priced_events": 326,
+    "probes": 348,
     "source": "api_football"
   },
   "apifootball:League Two": {
     "empty_streak": 0,
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "League Two",
-    "priced_events": 264,
-    "probes": 310,
+    "priced_events": 265,
+    "probes": 311,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -146,11 +146,11 @@
   },
   "apifootball:Mexico Liga MX": {
     "empty_streak": 0,
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "Mexico Liga MX",
-    "priced_events": 269,
-    "probes": 270,
+    "priced_events": 270,
+    "probes": 271,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -339,13 +339,16 @@
     "empty_streak": 0,
     "far_empty_probes": 77,
     "last_near_empty": "2026-09-27",
-    "last_priced": "2026-09-27",
-    "last_probe": "2026-09-27",
+    "last_priced": "2026-09-28",
+    "last_probe": "2026-09-28",
     "league": "USA MLS",
-    "matched_events": 8,
-    "priced_events": 1265,
-    "probes": 1366,
-    "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "matched_events": 2,
+    "priced_events": 1266,
+    "probes": 1367,
+    "unmatched_sample": [
+      "New York Red Bulls vs St. Louis City",
+      "Seattle Sounders vs Sporting Kansas City"
+    ],
+    "wanted_fixtures": 4
   }
 }
