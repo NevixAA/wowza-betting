@@ -62,6 +62,15 @@ jobs:
           PY
         continue-on-error: true
 
+      # Settle yesterday's forecasts and publish what Fantasy knows about itself. Both read
+      # files already on disk -- no API calls -- and both are non-fatal: a failure here must
+      # never cost the refresh that already succeeded above.
+      - name: Settle forecasts + Fantasy health
+        continue-on-error: true
+        run: |
+          python -m player_model.fantasy_settle || echo "::warning::settlement failed"
+          python -m player_model.fantasy_health || echo "::warning::health failed"
+
       - name: Commit outputs
         run: |
           git config user.name "github-actions[bot]"
@@ -77,7 +86,9 @@ jobs:
                    output/fpl_bootstrap.json output/fpl_fixtures.json \
                    output/fpl_cache_meta.json \
                    output/pl_squads_official.csv output/pl_squads.csv \
-                   output/squads_official.csv; do
+                   output/squads_official.csv \
+                   output/fantasy_ledger.csv output/fantasy_performance.json \
+                   output/fantasy_health.json; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
