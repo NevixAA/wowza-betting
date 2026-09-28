@@ -422,26 +422,59 @@ with t_diff:
         st.warning(f"Differentials unavailable: {e}")
 
 with t_xi:
-    st.caption("Points-maximising legal starting XI from **every** player in the projections — "
-               "a target squad, not your current one. Injured players excluded. To optimise the "
-               "squad you already own, use **📋 My lineup** under Planning tools.")
+    st.caption("The best **legal 15** from every player in the projections — a target squad, not "
+               "your current one. Budget, the 2-5-5-3 split and the three-per-club rule are all "
+               "hard constraints, solved together. Ranked on points a player can actually score "
+               "(projection × start probability), so nobody unavailable is picked. To optimise "
+               "the squad you already own, use **📋 My lineup** under Planning tools.")
+    # A REAL SQUAD, SOLVED RATHER THAN SORTED.
+    #
+    # This used best_xi(), which takes the top N per position and tries each formation. Its own
+    # docstring admitted "budget is reported (not hard-constrained)", and it had no per-club
+    # limit at all -- so what it returned could not be called a legal FPL team. On 2026-09-27 it
+    # came in at £60.4m with at most three per club by luck, not because anything stopped it,
+    # and it started two doubtful players plus a keeper with a 30% start probability.
+    #
+    # Budget and the three-per-club rule are COUPLING constraints -- whether a £12m forward
+    # belongs depends on what the other fourteen cost -- which no per-position ranking can see.
+    # That is what integer programming is for. Solves in ~0.03s.
     try:
-        from player_model.fantasy_features import best_xi
-        xi = best_xi(df)
-        if not xi:
-            st.info("Not enough players to build an XI yet.")
+        from player_model.fantasy_optimizer import (optimal_squad, verify_legal,
+                                                    BUDGET, MAX_PER_CLUB)
+        _bud = st.slider("Budget (£m)", 70.0, 110.0, float(BUDGET), 0.5,
+                         help="FPL's own budget is £100m. Squeeze it to see what the model "
+                              "gives up first.")
+        sq = optimal_squad(df, budget=_bud)
+        if not sq.get("feasible"):
+            st.warning(f"No legal squad possible: {sq.get('reason', 'infeasible')}")
         else:
-            c1, c2 = st.columns(2)
-            c1.metric("Formation", xi["formation"])
-            c2.metric("Total projected pts", f"{xi['total_pts']:.1f}"
-                      + (f"  ·  £{xi['total_cost']:.1f}m" if xi.get("total_cost") else ""))
-            px = xi["players"]
-            cols = [c for c in ["player_name", "team", "position", "price", "fantasy_pts"] if c in px.columns]
-            ui.table(px[cols].rename(columns={"player_name": "Player", "team": "Team",
-                     "position": "Pos", "price": "£m", "fantasy_pts": "Exp pts"}),
-                     bars=("Exp pts",))
+            bad = verify_legal(sq, _bud)
+            if bad:
+                st.error("Solver returned an ILLEGAL squad — " + "; ".join(bad))
+            else:
+                st.success(f"Legal FPL squad · 15 players · 2-5-5-3 · ≤£{_bud:.0f}m · "
+                           f"max {MAX_PER_CLUB} per club — all enforced, not assumed.", icon="✅")
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("Formation", sq["formation"])
+            m2.metric("XI points", f"{sq['xi_points']:.1f}")
+            m3.metric("Cost", f"£{sq['total_cost']:.1f}m")
+            m4.metric("In the bank", f"£{sq['money_remaining']:.1f}m")
+
+            _cap = sq["captain"]; _vc = sq["vice_captain"]
+            st.markdown(f"**(C) {_cap['player_name']}** · {_cap.get('team','')} — "
+                        f"doubles to **{sq['captain_points'] * 2:.1f}** pts"
+                        + (f"  ·  **(VC) {_vc['player_name']}**" if _vc is not None else ""))
+
+            _cols = [c for c in ["player_name", "team", "position", "price", "xpts",
+                                 "start_confidence"] if c in sq["xi"].columns]
+            _ren = {"player_name": "Player", "team": "Team", "position": "Pos",
+                    "price": "£m", "xpts": "xPts", "start_confidence": "Minutes"}
+            st.markdown("**Starting XI**")
+            ui.table(sq["xi"][_cols].rename(columns=_ren), bars=("xPts",))
+            st.markdown("**Bench** — outfield in order, keeper last (that is how FPL autosubs).")
+            ui.table(sq["bench"][_cols].rename(columns=_ren))
     except Exception as e:
-        st.warning(f"Best XI unavailable: {e}")
+        st.warning(f"Squad optimiser unavailable: {e}")
 
 with t_lead:
     st.caption("Per-market probabilities from the **calibrated** prop models (this game).")
