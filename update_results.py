@@ -933,7 +933,7 @@ def _resolve_ht(market: str, ht_home: int, ht_away: int) -> str:
 
 
 def update_ht_results(days: int = 3) -> None:
-    """Grade ht_ledger.csv against actual HT scores (af_ht_history.parquet: HTHG/HTAG) and fill
+    """Grade ht_ledger.csv against actual HT scores and fill
     entry/closing/CLV from the captured HT odds (standard_sidemarket_odds_history ht_* markets).
     Completes the open->close->CLV->result loop for the HT model. HT closing odds may be absent
     (books don't always post 2nd-div HT O/U) -> CLV stays blank there, result still grades."""
@@ -942,7 +942,10 @@ def update_ht_results(days: int = 3) -> None:
     if not f.exists():
         log.info("ht_ledger.csv not found — skipping HT resolution"); return
     led = pd.read_csv(f)
-    for c in ("entry_odds", "closing_odds", "clv_pct", "result", "pnl"):
+    # `notes` belongs in this list too. An all-empty column reads back as float64, so writing a
+    # string into it raises TypeError and the whole grading run dies after doing its work but
+    # before saving -- which looks exactly like "nothing to grade".
+    for c in ("entry_odds", "closing_odds", "clv_pct", "result", "pnl", "notes"):
         if c not in led.columns:
             led[c] = ""
         led[c] = led[c].astype(object)           # avoid pyarrow-string write crash
@@ -953,44 +956,120 @@ def update_ht_results(days: int = 3) -> None:
         log.info("ht_ledger: no pending HT results"); return
 
     _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
-    htp = config.OUTPUT_DIR / "af_ht_history.parquet"
-    if not htp.exists():
-        log.info("ht_ledger: af_ht_history.parquet not found — cannot grade yet"); return
-    ht = pd.read_parquet(htp, columns=["home_team", "away_team", "date", "HTHG", "HTAG"])
-    ht_idx = {(_norm(r.home_team), _norm(r.away_team), str(r.date)[:10]): (r.HTHG, r.HTAG)
-              for r in ht.itertuples(index=False)}
 
+    # ── HT SCORES COME FROM BOTH STORES, AND THE STANDARD ONE IS THE IMPORTANT ONE ──────
+    # This used to read af_ht_history.parquet ALONE and match on a bare alphanumeric key. Both
+    # halves of that were wrong, and together they meant the HT model was NEVER GRADED ONCE:
+    #
+    #   * af_ht_history holds only NEW-FORMAT leagues — MLS, Argentina, Brazil, Japan, K-League
+    #     and so on. HT tips are STANDARD-only (League One, League Two, La Liga 2). The league
+    #     overlap between the two sets is EMPTY, so no row could ever match. It was also stale
+    #     from 2026-06-23, but that was the lesser problem: fixing the date would have fixed
+    #     nothing.
+    #   * fd_history.parquet has carried `ht_home_goals` / `ht_away_goals` all along — 21,840
+    #     rows, current to yesterday, covering exactly Championship / League One / League Two /
+    #     La Liga 2. The data was sitting there the whole time.
+    #   * And a bare `_norm` key cannot join these sources anyway, because club names differ
+    #     between them (invariant 11): the ledger says `Plymouth Argyle`, `Wycombe Wanderers`,
+    #     `Accrington Stanley`; football-data says `Plymouth`, `Wycombe`, `Accrington`. Swapping
+    #     the source alone lifted matching only 0 -> 2 of 47. Resolving names LEAGUE-SCOPED with
+    #     team_names.resolve lifts it to 38 of 47; the remaining 9 are fixtures football-data has
+    #     not published yet and they grade on the next run.
+    #
+    # Both stores are read, so new-format HT coverage keeps working if it is ever tipped.
+    from src.team_names import resolve as _resolve_team
+
+    _frames = []
+    _fdp = config.OUTPUT_DIR / "fd_history.parquet"
+    if _fdp.exists():
+        try:
+            _fd = pd.read_parquet(_fdp, columns=["league", "date", "home_team", "away_team",
+                                                 "ht_home_goals", "ht_away_goals"])
+            _frames.append(_fd.rename(columns={"ht_home_goals": "hh", "ht_away_goals": "ha"}))
+        except Exception as e:                                        # noqa: BLE001
+            log.warning(f"ht_ledger: could not read fd_history.parquet ({e})")
+    _afp = config.OUTPUT_DIR / "af_ht_history.parquet"
+    if _afp.exists():
+        try:
+            _af = pd.read_parquet(_afp, columns=["league", "date", "home_team", "away_team",
+                                                 "HTHG", "HTAG"])
+            _frames.append(_af.rename(columns={"HTHG": "hh", "HTAG": "ha"}))
+        except Exception as e:                                        # noqa: BLE001
+            log.warning(f"ht_ledger: could not read af_ht_history.parquet ({e})")
+    if not _frames:
+        log.info("ht_ledger: no HT score source available — cannot grade yet"); return
+
+    ht = pd.concat(_frames, ignore_index=True).dropna(subset=["hh", "ha"])
+    ht["_d"] = ht["date"].astype(str).str[:10]
+    # Group once, so the per-row lookup is a dict hit and not a scan of 21,000 rows.
+    _by_day = {k: g for k, g in ht.groupby(["_d", "league"], sort=False)}
+
+    def _ht_score(league: str, home: str, away: str, day: str):
+        """HT goals for one fixture, or None. League-scoped so a name can't cross competitions."""
+        g = _by_day.get((day, str(league)))
+        if g is None or g.empty:
+            return None
+        h = _resolve_team(home, list(g["home_team"]))
+        a = _resolve_team(away, list(g["away_team"]))
+        if not h or not a:
+            return None
+        m = g[(g["home_team"] == h) & (g["away_team"] == a)]
+        # Exactly one, or nothing. An ambiguous match is not graded — a wrong settlement is far
+        # worse than a late one.
+        return (m.iloc[0]["hh"], m.iloc[0]["ha"]) if len(m) == 1 else None
+
+    # ── THE ODDS JOIN NEEDS THE SAME NAME RESOLUTION, for the same reason ───────────────
+    # The captured prices are real and plentiful — 4,478 ht_* rows, all four lines, 250 on a
+    # single match day — but they are written from the OddsAPI event name while the ledger
+    # carries the predict-side name, and the two disagree exactly as invariant 11 says they
+    # will: `Accrington ST` against `Accrington Stanley`, `Cheltenham` against `Cheltenham
+    # Town`. Matching those with `_norm` found entry odds for 4 of 38 graded tips, so almost
+    # every settlement fell back to the model's OWN fair odds — which makes the P/L circular
+    # and close to meaningless. Resolve league-scoped, like the scores above.
     ohp = config.OUTPUT_DIR / "standard_sidemarket_odds_history.csv"
-    oh = None
+    oh_by_day: dict = {}
     if ohp.exists():
         try:
             oh = pd.read_csv(ohp).sort_values("snapshot_ts")
+            oh = oh[oh["market"].astype(str).str.startswith("ht_")]
             mm = oh["match"].astype(str)
-            oh["_hk"] = mm.apply(lambda m: _norm(m.split(" vs ")[0]) if " vs " in m else "")
-            oh["_ak"] = mm.apply(lambda m: _norm(m.split(" vs ")[1]) if " vs " in m else "")
+            oh["_h"] = mm.apply(lambda m: m.split(" vs ")[0].strip() if " vs " in m else "")
+            oh["_a"] = mm.apply(lambda m: m.split(" vs ")[1].strip() if " vs " in m else "")
             oh["_dk"] = oh["match_date"].astype(str).str[:10]
-        except Exception:
-            oh = None
+            oh_by_day = {k: g for k, g in oh.groupby(["_dk", "league"], sort=False)}
+        except Exception as e:                                        # noqa: BLE001
+            log.warning(f"ht_ledger: could not read side-market odds ({e})")
+            oh_by_day = {}
+
+    def _ht_odds(league: str, home: str, away: str, day: str, market: str):
+        """(entry, close) for one fixture+line, or (None, None). Opening and closing price."""
+        g = oh_by_day.get((day, str(league)))
+        if g is None or g.empty:
+            return None, None
+        h = _resolve_team(home, list(g["_h"]))
+        a = _resolve_team(away, list(g["_a"]))
+        if not h or not a:
+            return None, None
+        m = g[(g["_h"] == h) & (g["_a"] == a) & (g["market"].astype(str) == market)]
+        if m.empty:
+            return None, None
+        try:
+            # Already sorted by snapshot_ts: first row is the open, last is the close.
+            return float(m.iloc[0]["odds"]), float(m.iloc[-1]["odds"])
+        except (TypeError, ValueError):
+            return None, None
 
     graded = 0
     for i in pending.index:
         home = led.at[i, "home_team"]; away = led.at[i, "away_team"]
         d = str(led.at[i, "match_date"])[:10]; mkt = str(led.at[i, "market"])
-        sc = ht_idx.get((_norm(home), _norm(away), d))
+        sc = _ht_score(led.at[i, "league"], home, away, d)
         if sc is None:
             continue
         res = _resolve_ht(mkt, sc[0], sc[1])
         if not res:
             continue
-        entry = close = None
-        if oh is not None:
-            m = oh[(oh["_hk"] == _norm(home)) & (oh["_ak"] == _norm(away))
-                   & (oh["_dk"] == d) & (oh["market"].astype(str) == mkt)]
-            if not m.empty:
-                try:
-                    entry = float(m.iloc[0]["odds"]); close = float(m.iloc[-1]["odds"])
-                except (TypeError, ValueError):
-                    entry = close = None    # bad odds cell -> grade result, skip CLV
+        entry, close = _ht_odds(led.at[i, "league"], home, away, d, mkt)
         try:
             fair = float(led.at[i, "fair_odds"])
         except (TypeError, ValueError):
@@ -998,6 +1077,13 @@ def update_ht_results(days: int = 3) -> None:
         stake_odds = entry or close or fair or 1.0   # settle at ENTRY (open), like main/side ledgers
         led.at[i, "result"] = res
         led.at[i, "pnl"] = round(stake_odds - 1.0, 3) if res == "WIN" else -1.0
+        # MARK THE CIRCULAR ONES. With no captured price this settles at the model's OWN fair
+        # odds (1/p), so a win returns exactly what the model implied and the P/L measures
+        # nothing about the market — it only restates the model's confidence. Summing those
+        # rows into a headline P/L would invent a market result that was never available. The
+        # flag lets a reader split real-price rows from fair-price ones instead of guessing.
+        if not entry and not close:
+            led.at[i, "notes"] = "settled_at_fair_odds_no_market_price"
         if entry:
             led.at[i, "entry_odds"] = entry
         if close:
