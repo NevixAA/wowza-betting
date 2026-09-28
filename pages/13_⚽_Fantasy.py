@@ -9,6 +9,10 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+# One shared ranking rule for the page and the CSV. The page used to recompute its own ordering
+# and captain picks, which silently overrode whatever fantasy.py had written, so the two could
+# disagree and a fix in one place did nothing in the other.
+from player_model.fantasy import rank_and_captains, MIN_CAPTAIN_START
 
 st.set_page_config(page_title="Fantasy | Wowza", page_icon="⚽", layout="wide")
 # Was components.v1.html with a JS reload — an API whose announced removal date (2026-06-01) has
@@ -84,13 +88,68 @@ elif _fx_on and "fixture_adj_pts" in df.columns:
     df["disp_pts"] = df["fixture_adj_pts"]
 else:
     df["disp_pts"] = df["fantasy_pts"]
-df = df.sort_values("disp_pts", ascending=False).reset_index(drop=True)
-df["overall_rank"] = range(1, len(df) + 1)
-df["pos_rank"] = df.groupby("position")["disp_pts"].rank(ascending=False, method="first").astype(int)
-# captain = top 3 among AVAILABLE players (never captain an injured one)
-_healthy = ~df["injured"].astype(bool) if "injured" in df.columns else pd.Series(True, index=df.index)
-df["captain_pick"] = False
-df.loc[df[_healthy].head(3).index, "captain_pick"] = True
+# RANK BY UNCONDITIONAL POINTS, and pick captains who will actually start.
+#
+# This block used to sort by `disp_pts` -- CONDITIONAL points, what a player scores IF he plays
+# -- and mark the top three as captains after excluding only `injured`. Two consequences,
+# measured on the 2026-09-27 board: 8 of the top 20 could not play (Ekitiké #2, Romero #3, both
+# p_start 0.00), and BOTH captain suggestions, João Pedro and Pedro Porro, were `doubtful` at a
+# 75% chance of playing. A captain is doubled, so a blank costs twice.
+#
+# It also silently overrode the ranking fantasy.py had already written, so fixing the CSV alone
+# would have changed nothing on the page. One shared rule now serves both.
+df = rank_and_captains(df, base_col="disp_pts")
+
+# ── Data freshness, stated rather than assumed ───────────────────────────────
+# Departed players are already filtered out by fantasy.py, which keeps only rows matching the
+# current FPL squad. That filter is only as current as the FPL snapshot behind it, so the one
+# way a player who has left can still appear is a STALE bootstrap -- which is exactly how a
+# two-month-old snapshot once offered an injured Doku as a captaincy pick with nothing saying so.
+# Age is read from output/fantasy_health.json, which derives it from the recorded-fetch sidecar
+# and never from file mtime (git checkout resets mtime, so mtime always reads as fresh).
+_health = {}
+try:
+    import json as _json
+    _hp = BASE_DIR / "output" / "fantasy_health.json"
+    if _hp.exists():
+        _health = _json.loads(_hp.read_text(encoding="utf-8"))
+except Exception:
+    _health = {}
+
+if _health:
+    # AGE IS RECOMPUTED HERE, NOT READ FROM THE HEALTH FILE. fantasy_health.json records the age
+    # AT THE MOMENT IT WAS GENERATED; reading that field later and showing it as "now" is the
+    # same stale-number-presented-as-live bug this banner exists to warn about. Caught in
+    # testing: the file said 24h while the feed was actually 43.5h old. The gameweek and
+    # coverage fields are safe to reuse -- they do not decay by the hour -- but the age is not.
+    _feeds = _health.get("feeds", {})
+    _boot = _feeds.get("fpl_bootstrap", {})
+    _age = _boot.get("age_hours")
+    try:
+        import json as _json2, time as _time
+        _meta = _json2.loads((BASE_DIR / "output" / "fpl_cache_meta.json").read_text(encoding="utf-8"))
+        _ts = _meta.get("fpl_bootstrap.json")
+        if _ts:
+            _age = (_time.time() - float(_ts)) / 3600.0
+    except Exception:
+        pass  # keep whatever the health file said; an unknown age is handled below
+    _state = ("UNAVAILABLE" if _age is None
+              else "CURRENT" if _age <= 12 else "AGING" if _age <= 36 else "STALE")
+    _gw = _health.get("current_gameweek")
+    _age_txt = f"{_age:.0f}h old" if isinstance(_age, (int, float)) else "age unknown"
+    _hdr = f"**Gameweek {_gw}**" if _gw else "**Gameweek unknown**"
+    if _state == "CURRENT":
+        st.success(f"{_hdr} · FPL data {_age_txt} · squad filter current", icon="✅")
+    elif _state == "AGING":
+        st.warning(f"{_hdr} · FPL data **{_age_txt}** — past its 12h refresh window. A player who "
+                   "has since left a club may still appear.", icon="⚠️")
+    else:
+        st.error(f"{_hdr} · FPL data **{_state}** ({_age_txt}). Treat the squad list as unreliable: "
+                 "departed players are filtered using this snapshot, so a stale one lets them "
+                 "through.", icon="🚨")
+    if not _health.get("settlement_ready", False):
+        st.caption("Forecast accuracy cannot be measured yet — projections only began carrying a "
+                   "gameweek tag on 2026-09-27, so there is no settled history to score against.")
 
 if _fx_on:
     st.success(f"**Live FPL data** — current-squad only (transferred-out players removed), official "
