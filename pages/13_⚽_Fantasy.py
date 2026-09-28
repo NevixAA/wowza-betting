@@ -165,8 +165,22 @@ else:
 # ── Captaincy picks ───────────────────────────────────────────────────────────
 st.subheader("🏆 Captaincy picks")
 cap = df[df.get("captain_pick", False) == True] if "captain_pick" in df.columns else df.head(3)
-st.caption("Top three available players by expected points. Injured players are never suggested "
-           "as captain.")
+st.caption("Ranked on points a player can actually score — projection × start probability. "
+           "Anyone doubtful, injured or under a 60% chance of starting is never suggested: "
+           "a captain is doubled, so a blank costs twice.")
+
+# SAFE FLOOR OR HIGH CEILING — a mean cannot tell them apart. Two players on 5.5 xPts can be
+# completely different bets: a nailed defender is appearance points plus a clean sheet, while a
+# forward is a 45% chance of a goal and a long tail. The distribution is SIMULATED from the
+# model's own event probabilities under FPL's scoring rules, never assumed — there is no normal
+# approximation and no invented standard deviation here.
+_dist = None
+try:
+    from player_model.fantasy_distribution import simulate as _simulate
+    _dist = _simulate(df, n_sims=8000).set_index("player_name")
+except Exception:
+    _dist = None
+
 cols = st.columns(max(len(cap), 1))
 for c, r in zip(cols, cap.itertuples()):
     avail = getattr(r, "availability", "") or ""
@@ -185,6 +199,19 @@ for c, r in zip(cols, cap.itertuples()):
     )
     if avail and avail not in ("available", "unknown"):
         c.caption(f"⚠️ {avail}")
+    _conf = getattr(r, "start_confidence", "") or ""
+    if _conf:
+        _dot = {"Nailed": "🟢", "Likely starter": "🟡", "Rotation risk": "🟠",
+                "Doubtful": "🔴", "Unavailable": "⚫"}.get(_conf, "")
+        c.caption(f"{_dot} {_conf} · {float(getattr(r, 'p_start', 0)):.0%} start")
+    if _dist is not None and r.player_name in _dist.index:
+        _d = _dist.loc[r.player_name]
+        _style = ("🚀 high ceiling" if float(_d.get("p_10plus", 0)) >= 0.15
+                  else "🛡️ safe floor" if float(_d.get("p_blank", 1)) <= 0.10
+                  else "balanced")
+        c.caption(f"**{_style}** — median {float(_d['sim_median']):.0f}, "
+                  f"ceiling {float(_d['sim_ceiling']):.0f} · "
+                  f"blank {float(_d['p_blank']):.0%} · 10+ {float(_d['p_10plus']):.0%}")
 
 # ── Per-position top picks ────────────────────────────────────────────────────
 st.subheader("📋 Top by position")
