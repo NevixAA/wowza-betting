@@ -3,6 +3,7 @@ Fantasy (FPL) Dashboard — the FANTASY signal family.
 Model expected-points projections for Premier League players. This is a PREDICTION
 product (no odds / no betting edge) — separate from the SNIPER/MARKSMAN betting tips.
 """
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -47,20 +48,44 @@ wsel_fx = st.selectbox(
 next_n = FIX_OPTS[wsel_fx]
 
 
-@st.cache_data(ttl=600, show_spinner="Computing fixture-adjusted projections…")
+#: Rebuilding projections inside the dashboard is opt-in and OFF by default. See _load().
+_ALLOW_LIVE_BUILD = os.getenv("FANTASY_DASHBOARD_LIVE_BUILD", "").lower() in {"1", "true", "yes"}
+
+
+@st.cache_data(ttl=600, show_spinner="Loading projections…")
 def _load(nfx):
-    try:
-        from player_model.fantasy import build_fantasy_projections_fixtures
-        d = build_fantasy_projections_fixtures(next_n=nfx)
-        if not d.empty:
-            return d
-    except Exception:
-        pass
-    if TIPS_FILE.exists():          # fallback: pre-built base CSV
+    """Read the precomputed board. Do NOT rebuild projections in the dashboard.
+
+    THIS ORDER USED TO BE REVERSED, and it exhausted the deployment's memory. The page called
+    `build_fantasy_projections_fixtures()` first, which reads `player_history.parquet` — 152 MB
+    on disk across five committed season parts, several times that once pandas decompresses it —
+    and unpickles ~13 MB of models on top, all inside an `@st.cache_data` that then stays
+    resident. Streamlit Cloud caps at about 1 GB, and the app went over it: "This app has gone
+    over its resource limits."
+
+    The board is already computed daily by `fantasy_refresh.yml` into `fantasy_tips.csv`, which
+    is 47 KB. A dashboard is a viewer; the pipeline is what computes. Reading the artifact is
+    both correct and roughly four orders of magnitude cheaper.
+
+    The fixture-window selector therefore describes the window the CSV was BUILT with, not one
+    recomputed on demand — the caption says so rather than silently ignoring the control. Set
+    FANTASY_DASHBOARD_LIVE_BUILD=1 to restore the old behaviour locally, where memory is free.
+    """
+    if TIPS_FILE.exists():
         try:
-            return pd.read_csv(TIPS_FILE)
+            d = pd.read_csv(TIPS_FILE)
+            if not d.empty:
+                return d
         except Exception:
-            return pd.DataFrame()
+            pass
+    if _ALLOW_LIVE_BUILD:
+        try:
+            from player_model.fantasy import build_fantasy_projections_fixtures
+            d = build_fantasy_projections_fixtures(next_n=nfx)
+            if not d.empty:
+                return d
+        except Exception:
+            pass
     return pd.DataFrame()
 
 
@@ -314,7 +339,16 @@ def _minutes_history(pairs: tuple) -> dict:
     fp = BASE_DIR / "player_history.parquet"
     if not fp.exists():
         return {}
-    h = pd.read_parquet(fp, columns=["player_name", "team", "date", "minutes"])
+    # ONLY THE RECENT SEASONS. player_history.parquet is a DIRECTORY of one part per season;
+    # all of it is 849,283 rows and 44 MB even projected to four columns, and this function only
+    # draws a sparkline of recent minutes. Reading the two newest parts answers the same question
+    # for a fraction of the memory — which matters because the deployment has ~1 GB in total and
+    # has already been knocked over once by loading more of this file than it needed.
+    _parts = sorted(fp.glob("season_*.parquet")) if fp.is_dir() else []
+    _src = _parts[-2:] if len(_parts) >= 2 else (_parts or [fp])
+    h = pd.concat(
+        [pd.read_parquet(x, columns=["player_name", "team", "date", "minutes"]) for x in _src],
+        ignore_index=True)
     h["date"] = pd.to_datetime(h["date"], errors="coerce")
     h = h.dropna(subset=["date"])
     if h.empty:
