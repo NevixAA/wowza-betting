@@ -932,6 +932,78 @@ def _resolve_ht(market: str, ht_home: int, ht_away: int) -> str:
     return ""
 
 
+def update_ht_observations() -> None:
+    """Fill half-time scores into output/ht_observations.csv. Idempotent.
+
+    The observation log is the forward evidence base for the half-time question: model belief +
+    market price at scoring time, and what actually happened. It reuses the same score sources
+    and the same league-scoped name resolution as update_ht_results, because the two must never
+    disagree about what a fixture's half-time score was.
+    """
+    f = config.OUTPUT_DIR / "ht_observations.csv"
+    if not f.exists():
+        return
+    obs = pd.read_csv(f)
+    if obs.empty:
+        return
+    for c in ("ht_home_goals", "ht_away_goals", "ht_total_goals", "ht_over05", "ht_over15"):
+        if c not in obs.columns:
+            obs[c] = ""
+        obs[c] = obs[c].astype(object)
+    today = str(datetime.utcnow().date())
+    pending = obs[(obs["ht_total_goals"].isna()
+                   | (obs["ht_total_goals"].astype(str).str.strip() == ""))
+                  & (obs["match_date"].astype(str) < today)]
+    if pending.empty:
+        log.info("ht_observations: nothing pending")
+        return
+
+    from src.team_names import resolve as _resolve_team
+    frames = []
+    for path, ren in ((config.OUTPUT_DIR / "fd_history.parquet",
+                       {"ht_home_goals": "hh", "ht_away_goals": "ha"}),
+                      (config.OUTPUT_DIR / "af_ht_history.parquet",
+                       {"HTHG": "hh", "HTAG": "ha"})):
+        if not path.exists():
+            continue
+        try:
+            d = pd.read_parquet(path, columns=["league", "date", "home_team", "away_team",
+                                               *ren.keys()])
+            frames.append(d.rename(columns=ren))
+        except Exception:                                             # noqa: BLE001
+            pass
+    if not frames:
+        log.info("ht_observations: no score source available")
+        return
+    ht = pd.concat(frames, ignore_index=True).dropna(subset=["hh", "ha"])
+    ht["_d"] = ht["date"].astype(str).str[:10]
+    by = {k: g for k, g in ht.groupby(["_d", "league"], sort=False)}
+
+    filled = 0
+    for i in pending.index:
+        g = by.get((str(obs.at[i, "match_date"])[:10], str(obs.at[i, "league"])))
+        if g is None or g.empty:
+            continue
+        h = _resolve_team(str(obs.at[i, "home_team"]), list(g["home_team"]))
+        a = _resolve_team(str(obs.at[i, "away_team"]), list(g["away_team"]))
+        if not h or not a:
+            continue
+        m = g[(g["home_team"] == h) & (g["away_team"] == a)]
+        if len(m) != 1:
+            continue          # ambiguous -> leave it, a wrong score is worse than a late one
+        hh, ha = float(m.iloc[0]["hh"]), float(m.iloc[0]["ha"])
+        obs.at[i, "ht_home_goals"] = hh
+        obs.at[i, "ht_away_goals"] = ha
+        obs.at[i, "ht_total_goals"] = hh + ha
+        obs.at[i, "ht_over05"] = 1.0 if (hh + ha) >= 1 else 0.0
+        obs.at[i, "ht_over15"] = 1.0 if (hh + ha) >= 2 else 0.0
+        filled += 1
+
+    if filled:
+        obs.to_csv(f, index=False)
+    log.info(f"ht_observations: filled {filled} of {len(pending)} pending -> {f.name}")
+
+
 def update_ht_results(days: int = 3) -> None:
     """Grade ht_ledger.csv against actual HT scores and fill
     entry/closing/CLV from the captured HT odds (standard_sidemarket_odds_history ht_* markets).
@@ -1466,6 +1538,13 @@ def main():
     update_sharp_results(days=args.days, dry_run=args.dry_run)
     update_side_market_results(days=args.days, dry_run=args.dry_run)
     update_ht_results(days=args.days)
+    # Guarded: this is an EVIDENCE log, not a tipping path. If it ever throws it must not take
+    # the live-signal resolution down with it — the workflow comment above records that a crash
+    # mid-sequence leaves later ledgers ungraded.
+    try:
+        update_ht_observations()
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"ht_observations update skipped: {e}")
     update_live_signal_results(days=args.days, dry_run=args.dry_run)
 
 

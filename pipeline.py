@@ -59,7 +59,8 @@ from src.model import (train as train_model, save_models, load_models,
 from src.betting import generate_bets
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
-from src.ledger import append_tips, append_side_market_tips, append_ht_tips, print_ledger
+from src.ledger import (append_tips, append_side_market_tips, append_ht_tips,
+                        append_ht_observations, print_ledger)
 
 
 # ── Side-market bet generation ────────────────────────────────────────────────
@@ -587,6 +588,11 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     # ── HT (half-time O/U) tips -> ht_ledger.csv (open->close->CLV->result) ──
     try:
         append_ht_tips(preds)
+        # EVERY scored fixture, not only the tipped ones. A tip fires on ~14% of fixtures, so
+        # a tips-only record reaches a thousand evaluable rows in about 20 months; logging all
+        # of them takes about 12 weeks — and keeps the fixtures that test whether the tip
+        # threshold means anything, which filtering first throws away.
+        append_ht_observations(preds)
     except Exception as e:
         log.warning(f"append_ht_tips skipped: {e}")
 
