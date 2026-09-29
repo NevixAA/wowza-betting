@@ -32,7 +32,18 @@ BET365 = 8
 OUT = PROJ / "output" / "standard_sidemarket_odds_history.csv"
 COLS = ["snapshot_date", "snapshot_ts", "match_date", "kickoff_utc", "league",
         "match", "market", "odds"]
-NEXT_N = 12          # look-ahead fixtures per league
+# LOOK-AHEAD FIXTURES PER LEAGUE. Raised 12 -> 28 on 2026-09-29 because 12 was starving the
+# half-time evidence: of 80 HT tips, 64 were for fixtures the capture NEVER SAW. Not a bookmaker
+# problem — of the 16 fixtures it did capture, all 16 carried the first-half market. League One
+# and League Two have 24 teams, so a single round IS 12 fixtures, while tips go out up to a week
+# ahead and span two rounds. The window covered barely half of what we tip on.
+#
+# Cost, measured: 15 leagues x (1 fixture-list + NEXT_N odds calls). 12 -> ~195 calls/window,
+# 28 -> ~435. Four full windows a day makes that roughly +1,000/day against ~64,000 of unused
+# Ultra headroom (daily usage runs ~11,000 of 75,000). Wall-clock adds ~80s to a job with a
+# 65-minute timeout. Neither constraint binds — and per CLAUDE.md the real test is whether a
+# CONSUMER exists: it does, the forward HT evidence log.
+NEXT_N = int(os.getenv("STD_CAPTURE_NEXT_N", "28"))
 _MIN_QUOTA = int(os.getenv("MIN_QUOTA", "5000"))
 # Floor below which this capture stops and leaves the rest of the day's quota alone.
 #

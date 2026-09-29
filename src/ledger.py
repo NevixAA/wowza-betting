@@ -502,3 +502,91 @@ def print_ledger() -> None:
             wins = (t["pnl"] > 0).sum()
             pnl  = t["pnl"].sum()
             print(f"    {tier:6s}: {n:4d} bets | WR={wins/n:.1%} | ROI={pnl/n*100:.1f}%")
+
+
+HT_OBS_FILE = config.OUTPUT_DIR / "ht_observations.csv"
+HT_OBS_COLS = [
+    "first_seen", "match_date", "league", "home_team", "away_team",
+    "p_ht_over05", "p_ht_over15",
+    "odds_ht_over05", "odds_ht_under05", "odds_ht_over15", "odds_ht_under15",
+    "would_tip", "tip_market",
+    "ht_home_goals", "ht_away_goals", "ht_total_goals", "ht_over05", "ht_over15",
+]
+
+
+def append_ht_observations(preds_df: pd.DataFrame) -> None:
+    """Log EVERY scored half-time fixture, not only the ones that cross a tip threshold.
+
+    WHY THIS EXISTS. `ht_ledger.csv` records tips, and a tip only happens when the model clears
+    0.75 / 0.30 / 0.60 / 0.25. On the upgraded model that fires on 14.1% of fixtures, which
+    means roughly 12 priced records a week and about **20 MONTHS** to reach a thousand. Logging
+    every scored fixture instead gives ~83 a week and reaches a thousand in about **12 weeks**.
+
+    It is also the better sample, not merely the bigger one. Filtering by the threshold before
+    measuring throws away exactly the fixtures that would tell you whether the threshold means
+    anything — you can never learn that the model is wrong at p=0.80 by only ever looking at
+    p>=0.75. `would_tip` is recorded per row, so the tips-only view is still one filter away,
+    while the full distribution stays available for calibration and edge analysis.
+
+    ONE ROW PER FIXTURE, written the first time it is seen. The full open->close price curve
+    already lives in standard_sidemarket_odds_history.csv; this captures the model's belief and
+    the market price AT THE MOMENT WE SCORED IT, which is the pair an edge is computed from and
+    the thing that cannot be reconstructed afterwards.
+    """
+    if preds_df is None or preds_df.empty or "p_ht_over05" not in preds_df.columns:
+        return
+    existing = pd.read_csv(HT_OBS_FILE) if HT_OBS_FILE.exists() else pd.DataFrame(columns=HT_OBS_COLS)
+    seen = {(str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]))
+            for _, r in existing.iterrows()} if not existing.empty else set()
+
+    price = _ht_price_lookup()
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    rows = []
+    for _, row in preds_df.iterrows():
+        try:
+            p05 = float(row.get("p_ht_over05"))
+        except (TypeError, ValueError):
+            continue
+        if pd.isna(p05):
+            continue
+        md = str(row.get("date", ""))[:10]
+        home, away = str(row.get("home_team", "")), str(row.get("away_team", ""))
+        key = (md, home, away)
+        if key in seen:
+            continue
+        seen.add(key)
+        p15 = row.get("p_ht_over15")
+        p15 = float(p15) if pd.notna(p15) else None
+        lg = str(row.get("league", ""))
+
+        odds = {}
+        for mkt in ("ht_over05", "ht_under05", "ht_over15", "ht_under15"):
+            o = price(md, lg, home, away, mkt) if price else None
+            odds[f"odds_{mkt}"] = round(o, 3) if o else ""
+
+        # Mirror notifier.notify_ht_tips exactly, so `would_tip` means what it says.
+        if p05 >= 0.75:
+            wt, tm = True, "ht_over05"
+        elif p05 <= 0.30:
+            wt, tm = True, "ht_under05"
+        elif p15 is not None and p15 >= 0.60:
+            wt, tm = True, "ht_over15"
+        elif p15 is not None and p15 <= 0.25:
+            wt, tm = True, "ht_under15"
+        else:
+            wt, tm = False, ""
+
+        rows.append({"first_seen": now, "match_date": md, "league": lg,
+                     "home_team": home, "away_team": away,
+                     "p_ht_over05": round(p05, 4),
+                     "p_ht_over15": round(p15, 4) if p15 is not None else "",
+                     **odds, "would_tip": wt, "tip_market": tm,
+                     "ht_home_goals": "", "ht_away_goals": "", "ht_total_goals": "",
+                     "ht_over05": "", "ht_over15": ""})
+    if not rows:
+        return
+    out = pd.concat([existing, pd.DataFrame(rows, columns=HT_OBS_COLS)], ignore_index=True)
+    HT_OBS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(HT_OBS_FILE, index=False)
+    log.info(f"HT observations: {len(rows)} new fixture(s) -> {HT_OBS_FILE.name} "
+             f"({int(sum(r['would_tip'] for r in rows))} would tip)")
