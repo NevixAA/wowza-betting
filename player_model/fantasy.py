@@ -22,7 +22,12 @@ import pandas as pd
 log = logging.getLogger(__name__)
 
 from player_model import config
-from player_model.model import load_model, predict_proba
+# NOT IMPORTED AT MODULE LEVEL ON PURPOSE. player_model.model pulls in scikit-learn (and
+# lightgbm once a model is unpickled), and the Streamlit dashboard imports THIS module only for
+# `rank_and_captains` / `MIN_CAPTAIN_START`, which are pure pandas. Loading the model stack for
+# that cost the deployment tens of megabytes of module code it never used, on a host capped at
+# about 1 GB that had already gone over. The import now happens inside the one function that
+# scores players, so the pipeline pays for it and the viewer does not.
 
 FANTASY_LEAGUE = "Premier League"
 GOAL_PTS = {"F": 4.0, "M": 5.0, "D": 6.0, "G": 6.0}   # legacy parquet-position goal pts
@@ -217,6 +222,7 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
         return pd.DataFrame()
 
     for market, col in [("goals", "p_goal"), ("assists", "p_assist"), ("sot2", "p_sot2")]:
+        from player_model.model import load_model, predict_proba
         payload = load_model(market)
         pl[col] = predict_proba(pl, payload).values if payload is not None else 0.0
 

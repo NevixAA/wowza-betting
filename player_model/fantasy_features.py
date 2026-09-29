@@ -21,7 +21,9 @@ import pandas as pd
 
 from player_model import fpl_api
 from player_model.fantasy import build_fantasy_projections, FANTASY_LEAGUE, _PARQUET
-from player_model.model import load_model, predict_proba
+# Imported lazily inside the scoring function — see the note in player_model/fantasy.py.
+# player_model.model pulls scikit-learn, and the Streamlit dashboard reaches this package only
+# for pure-pandas helpers. The viewer should not pay for the model stack.
 
 # Legal FPL starting-XI formations: (DEF, MID, FWD) — always 1 GKP.
 _FORMATIONS = [(3, 4, 3), (3, 5, 2), (4, 4, 2), (4, 3, 3), (4, 5, 1), (5, 4, 1), (5, 3, 2)]
@@ -110,6 +112,7 @@ def market_leaderboards(markets=("goals", "goals2", "assists", "sot2", "cards"),
         return {}
     out = {}
     for mkt in markets:
+        from player_model.model import load_model, predict_proba
         payload = load_model(mkt)
         if payload is None:
             continue
