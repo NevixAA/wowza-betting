@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-09-29T11:31:58Z",
-  "run_id": "36560322078",
-  "run_number": "1368",
+  "checked_at": "2026-09-29T12:20:56Z",
+  "run_id": "36565570919",
+  "run_number": "1369",
   "event": "schedule",
   "schedule": "",
-  "sha": "2b2a1f1c01b3",
+  "sha": "38a67793aade",
   "history_freshness": {
     "newest_match": "2026-09-28",
     "age_days": "1",
@@ -18,20 +18,21 @@
   "output/player_tips.csv": {
     "rows": 336,
     "fixtures": 33,
-    "mtime": "2026-09-29T11:31:50Z"
+    "mtime": "2026-09-29T12:20:48Z"
   },
   "output/player_ledger.csv": {
     "rows": 10552,
     "fixtures": null,
-    "mtime": "2026-09-29T11:31:58Z"
+    "mtime": "2026-09-29T12:03:20Z"
   },
   "git_dirty_outputs": [
-    "M output/player_ledger.csv",
-    " M output/player_prop_odds_history.csv",
-    " M output/player_tips.csv",
+    "M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
+    "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+    "  warnings.warn(",
+    "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
     "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
     "  warnings.warn(",
     "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator DummyClassifier from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
@@ -59,9 +60,7 @@
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 23 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 8, 'Argentina Primera Division': 7, 'League Two': 5, 'Brazil Serie A': 2, 'Ireland Premier Division': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League Qualifying']",
-    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 15830",
-    "[odds_fetcher] sports/soccer_usa_mls/events/49ef4ef7906ae352c937b46ce34a5493/odds OK | quota remaining: 15826",
-    "[odds_fetcher] sports/soccer_usa_mls/events/c68442e0bfc400d8e7ee97ec662e13e0/odds OK | quota remaining: 15824",
+    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 15824",
     "[odds_fetcher] soccer_england_league1: parked \u2014 24 consecutive events with no bookmaker, last probed 2026-09-24; retries every 7d",
     "[odds_fetcher] api-football second source: +1069 quote(s)",
     "[odds_fetcher] 1249 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
@@ -70,7 +69,6 @@
     "[clv_tracker] CLV report: {'n': 2570, 'mean_clv_pct': 0.0033, 'mean_clv_prob': None, 'beat_close_rate': 0.325, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
     "[lineup] 0 confirmed starters | 336 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[predict] player_ledger: +14 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=276 cache_hits=51 cache_hit_rate=16% errors=0  quota_remaining 69301->69026 (account-wide delta 275)"
+    "[api_usage] workflow=Player Props af_calls=276 cache_hits=51 cache_hit_rate=16% errors=0  quota_remaining 69000->68725 (account-wide delta 275)"
   ]
 }
