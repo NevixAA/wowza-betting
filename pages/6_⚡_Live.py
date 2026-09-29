@@ -103,14 +103,19 @@ def load_results_lookup():
     out = pathlib.Path(__file__).resolve().parents[1] / "output"
     frames = []
     try:
-        fd = pd.read_parquet(out / "fd_history.parquet")
-        frames.append(fd[["date", "home_team", "away_team", "home_goals", "away_goals"]])
+        # COLUMN-PROJECTED ON READ, not after. Reading the frame whole and slicing costs
+        # 14 MB for fd and 21 MB for af that are then thrown away — and this is a cached
+        # function, so the peak is what the deployment pays for the rest of its life.
+        fd = pd.read_parquet(out / "fd_history.parquet",
+                             columns=["date", "home_team", "away_team",
+                                      "home_goals", "away_goals"])
+        frames.append(fd)
     except Exception:
         pass
     try:
-        af = pd.read_parquet(out / "af_history.parquet")
-        frames.append(af[["date", "home_team", "away_team", "FTHG", "FTAG"]]
-                      .rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"}))
+        af = pd.read_parquet(out / "af_history.parquet",
+                             columns=["date", "home_team", "away_team", "FTHG", "FTAG"])
+        frames.append(af.rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"}))
     except Exception:
         pass
     if not frames:
@@ -122,7 +127,8 @@ def load_results_lookup():
     m["total_goals"] = pd.to_numeric(m["home_goals"], errors="coerce") + \
         pd.to_numeric(m["away_goals"], errors="coerce")
     try:
-        ht = pd.read_parquet(out / "af_ht_history.parquet")
+        ht = pd.read_parquet(out / "af_ht_history.parquet",
+                             columns=["date", "home_team", "away_team", "HTHG", "HTAG"])
         ht["date"] = pd.to_datetime(ht["date"], errors="coerce")
         ht["ht_total_goals"] = pd.to_numeric(ht["HTHG"], errors="coerce") + \
             pd.to_numeric(ht["HTAG"], errors="coerce")
