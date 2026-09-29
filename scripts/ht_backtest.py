@@ -86,7 +86,11 @@ def _load_features() -> pd.DataFrame:
         _dl._report_training_coverage = lambda *a, **k: None
     try:
         raw = _dl.load_all_matches()
-        return build_features(raw)
+        # Measure what actually SHIPS: since 2026-09-29 the HT models train on the dedicated
+        # half-time feature set, so a backtest built on the standard set alone would be
+        # measuring a model nobody runs.
+        from src.ht_features import build_ht_features
+        return build_ht_features(build_features(raw))
     finally:
         if _saved is not None:
             _dl._report_training_coverage = _saved
@@ -173,6 +177,14 @@ def _calib_report(p: pd.Series, y: pd.Series, label: str, bins=None) -> pd.DataF
     return g
 
 
+def _feature_cols(df: pd.DataFrame) -> list[str]:
+    """The same columns pipeline.py trains the HT models on — standard set plus HT-specific."""
+    from src.model import FEATURE_COLS
+    from src.ht_features import HT_FEATURE_COLS
+    return ([c for c in FEATURE_COLS if c in df.columns]
+            + [c for c in HT_FEATURE_COLS if c in df.columns])
+
+
 def run(line: str, df: pd.DataFrame, walk: int, min_train: int) -> pd.DataFrame:
     """Walk forward over one HT line and return the scored out-of-sample frame."""
     target = f"ht_over{line}"
@@ -192,7 +204,8 @@ def run(line: str, df: pd.DataFrame, walk: int, min_train: int) -> pd.DataFrame:
         if test_df.empty:
             break
         try:
-            res = train_model(train_df, target=target, train_ratio=0.85)
+            res = train_model(train_df, target=target, train_ratio=0.85,
+                              feature_cols=_feature_cols(train_df))
         except Exception as e:                                        # noqa: BLE001
             log.warning(f"[ht_over{line}] window {w}: training failed — {e}")
             continue

@@ -383,6 +383,38 @@ def predict_upcoming(
             ht_payload_05 = _load_models(model_file=config.HT_MODEL_FILE_05)
             ht_payload_15 = _load_models(model_file=config.HT_MODEL_FILE_15) \
                             if config.HT_MODEL_FILE_15.exists() else None
+
+            # THE HT MODELS NOW TRAIN ON THEIR OWN FEATURES, SO PREDICT MUST BUILD THEM TOO.
+            # Training goes through feature_engineering.build_features; this path goes through
+            # build_upcoming_features. A column present in one and missing in the other is the
+            # most dangerous shape in this codebase: model._prep imputes an all-NaN column to
+            # 0.0, the scaler maps that to roughly z=-37 and the logistic collapses. That is
+            # what pipeline.py's _NF_DROP block records, where it crushed new-format P(over)
+            # from ~0.51 to ~0.36.
+            #
+            # attach_ht_features rebuilds the accumulators over `historical` and emits the
+            # upcoming rows only. Upcoming fixtures carry no half-time score, so they receive
+            # features and update nothing — every one sees the full history, none sees another.
+            _ht_scored = feat
+            try:
+                from src.ht_features import attach_ht_features, HT_FEATURE_COLS
+                _ht = attach_ht_features(historical, feat)
+                if len(_ht) == len(feat):
+                    for _c in HT_FEATURE_COLS:
+                        if _c in _ht.columns:
+                            feat[_c] = _ht[_c].to_numpy()
+                    _cov = float(np.mean([feat[c].notna().mean() for c in HT_FEATURE_COLS
+                                          if c in feat.columns]))
+                    log.info(f"  HT features attached: {_cov:.0%} populated")
+                    # AN ALL-EMPTY FEATURE SET IS WORSE THAN NONE. If the build produced
+                    # nothing usable, say so loudly rather than scoring against imputed zeros.
+                    if _cov < 0.5:
+                        log.warning("  HT features are mostly empty — scores will be unreliable")
+                else:
+                    log.warning(f"  HT feature rows {len(_ht)} != fixtures {len(feat)} — skipped")
+            except Exception as _e:                                   # noqa: BLE001
+                log.warning(f"  HT feature attach failed ({_e}) — model may be degraded")
+
             feat.loc[std_mask, "p_ht_over05"] = predict_proba(feat[std_mask], payload=ht_payload_05).values
             if ht_payload_15:
                 feat.loc[std_mask, "p_ht_over15"] = predict_proba(feat[std_mask], payload=ht_payload_15).values
