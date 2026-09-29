@@ -487,6 +487,20 @@ st.subheader("🧰 FPL tools")
 
 @st.cache_data(ttl=600, show_spinner=False)
 def _leaderboards():
+    """Per-market prop leaderboards — OFF unless explicitly enabled. See _load().
+
+    This was the second live model build on this page, and the more expensive of the two:
+    `market_leaderboards()` reads player_history.parquet with ALL 139 feature columns (152 MB on
+    disk, several times that in pandas), unpickles five calibrated prop models and scores every
+    Premier League player — inside an @st.cache_data that then stays resident. Fixing _load()
+    alone did not bring the deployment back under its limit because this path was still running.
+
+    Nothing precomputes these today, so the tab reports that honestly rather than rendering an
+    empty table that reads as "no players qualified". Set FANTASY_DASHBOARD_LIVE_BUILD=1 to
+    compute them locally, where memory is free.
+    """
+    if not _ALLOW_LIVE_BUILD:
+        return {}
     from player_model.fantasy_features import market_leaderboards
     return market_leaderboards(top_n=15)
 
@@ -615,7 +629,10 @@ with t_lead:
     try:
         lbs = _leaderboards()
         if not lbs:
-            st.info("No leaderboards (models/PL data unavailable).")
+            st.info("Leaderboards are computed by the pipeline, not the dashboard — scoring "
+                    "every PL player here needs the 152 MB player history and five prop models, "
+                    "which exceeded the deployment's memory. Run locally with "
+                    "`FANTASY_DASHBOARD_LIVE_BUILD=1` to see them.")
         else:
             LBL = {"goals": "⚽ Anytime scorer", "goals2": "🎯 2+ goals", "assists": "🅰️ Assist",
                    "sot2": "🎯 2+ SOT", "cards": "🟨 Booked"}
