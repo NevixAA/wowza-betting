@@ -701,16 +701,42 @@ def notify_ht_tips() -> int:
         if key in notified:
             continue
 
+        # SHOW THE MARKET PRICE AND THE EDGE, not just our own fair odds. A tip that quotes
+        # only `1/p` tells the reader what we believe and nothing about whether it is worth
+        # taking — and a fair price always looks attractive next to no price at all. The
+        # captured HT market is used when we have it; when we do not, that is stated rather
+        # than hidden, because "no price" and "no edge" call for opposite reactions.
+        _mkt, _edge = None, None
+        try:
+            from src.ledger import _ht_price_lookup as _hpl
+            global _HT_PRICE_FN
+            if "_HT_PRICE_FN" not in globals() or _HT_PRICE_FN is None:
+                _HT_PRICE_FN = _hpl()
+            if _HT_PRICE_FN:
+                _mktname = f"ht_{'over' if side == 'OVER' else 'under'}{line.replace('.', '')}"
+                _mkt = _HT_PRICE_FN(date, row.get("league", ""), row["home_team"],
+                                    row["away_team"], _mktname)
+                if _mkt:
+                    _edge = prob - 1.0 / _mkt
+        except Exception:
+            _mkt = _edge = None
+
+        if _mkt:
+            _price_line = (f"💰 Market: <b>{_mkt:.2f}</b> | fair {fair} | "
+                           f"edge <b>{_edge*100:+.1f}%</b>\n")
+        else:
+            _price_line = f"💰 Fair price: <b>{fair}</b> | ⚠️ no market price captured\n"
+
         msg = (
-            f"{emoji} <b>HT {side} {line} — MODEL TIP</b>\n"
+            f"{emoji} <b>HT {side} {line} — MODEL TIP</b> <i>(PAPER)</i>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"📅 {_fmt_kickoff(row)}\n"
             f"🏆 {row.get('league', '')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>HT {side} {line}</b>\n"
             f"📊 P(HT {side} {line}) = <b>{prob*100:.0f}%</b>\n"
-            f"💰 Fair price: <b>{fair}</b>\n"
-            f"⚠️ Check your bookmaker's HT market"
+            f"{_price_line}"
+            f"⚠️ Paper only — the HT market has beaten this model in testing"
         )
 
         if _send(token, chat_id, msg):
@@ -1064,6 +1090,56 @@ def notify_weekly_summary() -> bool:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
                     lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                lines.append("")
+        except Exception:
+            pass
+
+    # ── Half-time O/U (ht_ledger.csv) — this week ────────────────────────────
+    # HT WAS THE ONLY TIPPING TRACK ABSENT FROM THIS DIGEST. It has sent 80 Telegram tips
+    # across all four lines while reporting into nothing, so its results were invisible unless
+    # somebody opened the CSV. Added 2026-09-29.
+    #
+    # It is labelled PAPER on purpose. Measured against captured closing prices the half-time
+    # market beats the model (market Brier 0.1972 vs 0.1994, AUC 0.568 vs 0.533) and the vig is
+    # ~7%, so these tips are informational. Rows settled without a captured price are excluded
+    # from the P/L line rather than averaged in: they settle at the model's OWN fair odds, which
+    # pays back exactly what the model claimed and measures nothing about the market.
+    ht_led = app_config.OUTPUT_DIR / "ht_ledger.csv"
+    if ht_led.exists():
+        try:
+            hl = pd.read_csv(ht_led)
+            hl["pnl"] = pd.to_numeric(hl["pnl"], errors="coerce")
+            hl["_d"] = pd.to_datetime(hl.get("match_date"), errors="coerce")
+            hw = _settled_only(hl[hl["_d"] >= week_ago]) if "_d" in hl.columns else pd.DataFrame()
+            pend = int(((hl["result"].isna() | (hl["result"].astype(str).str.strip() == ""))
+                        & (hl["_d"] >= week_ago)).sum())
+            if not hw.empty or pend:
+                lines.append("⏱️ <b>Half-time O/U</b> <i>(PAPER)</i>")
+                if hw.empty:
+                    lines.append(f"  ⏳ {pend} tip(s) awaiting results")
+                else:
+                    # `odds` is recorded at TIP time (new); `entry_odds` is filled at settlement
+                    # from the captured history. Either is a real market price, so either counts
+                    # — otherwise every row logged before `odds` existed reads as unpriced when
+                    # we do in fact know what it went off at.
+                    _px = pd.to_numeric(hw["odds"], errors="coerce") if "odds" in hw.columns \
+                        else pd.Series(index=hw.index, dtype=float)
+                    if "entry_odds" in hw.columns:
+                        _px = _px.fillna(pd.to_numeric(hw["entry_odds"], errors="coerce"))
+                    real = hw[_px.notna()]
+                    n = len(hw); w = int((hw["pnl"] > 0).sum())
+                    lines.append(f"  {w}W/{n-w}L across {hw['market'].nunique()} line(s)"
+                                 + (f" | ⏳ {pend} pending" if pend else ""))
+                    if not real.empty:
+                        lines.append(f"  💵 priced only: {len(real)} bet(s) | "
+                                     f"P/L {real['pnl'].sum():+.2f}u")
+                    unp = n - len(real)
+                    if unp:
+                        lines.append(f"  ⚠️ {unp} settled with no market price — excluded from P/L")
+                    for mkt in sorted(hw["market"].dropna().unique()):
+                        ms = hw[hw["market"] == mkt]
+                        mw = int((ms["pnl"] > 0).sum())
+                        lines.append(f"    · {mkt}: {mw}W/{len(ms)-mw}L")
                 lines.append("")
         except Exception:
             pass
