@@ -98,7 +98,14 @@ def evaluate(line: str, d: pd.DataFrame, rule: dict, force: bool) -> dict:
           + ("" if passed else "  (needs mean > 0 AND the CI to exclude zero)"))
 
     # SECONDARY — cannot rescue a failed primary, can only sink a passing one.
-    print("\n  SECONDARY")
+    #
+    # AND THEY ARE MEANINGLESS WHEN THE PRIMARY FAILS, which is easy to misread. On the
+    # 332-fixture dry run the placebo came back p=0.0175, "beats placebo" — while the paired
+    # difference was NEGATIVE. All that says is that a shuffled model is even worse than a bad
+    # one. Printed without the caveat, it hands a future reader an encouraging-looking number
+    # attached to a failing result.
+    print("\n  SECONDARY" + ("" if passed else
+          "   [primary FAILED — diagnostic only, cannot change the verdict]"))
     mid = len(q) // 2
     h1, h2 = diff[:mid], diff[mid:]
     same_sign = bool(len(h1) and len(h2) and np.sign(h1.mean()) == np.sign(h2.mean()))
