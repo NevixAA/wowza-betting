@@ -461,14 +461,42 @@ def mode_train() -> tuple:
         log.warning(f"  Not enough new-format data ({len(nf_valid)} rows) — skipping new-format model")
 
     # ── HT models — all leagues with HT data (not just std_valid) ───────────
+    # THE HT MODELS GET THEIR OWN FEATURE SET (added 2026-09-29). They used to train on the
+    # STANDARD set, which is built for full-time Over/Under 2.5: corners, fouls, shot ratios,
+    # full-time O/U implied probabilities, and exactly four genuinely half-time columns — each a
+    # 5-match rolling binary rate with only eleven possible values. A 5-match rolling average of
+    # a near-coin-flip is mostly noise; measured alone it reaches AUC 0.522.
+    #
+    # src/ht_features.py replaces that with a multiplicative Poisson rate model on FIRST-HALF
+    # goals (league baseline x team attack x opponent defence), empirical-Bayes shrunk and
+    # recency-weighted. Walk-forward on 14,041 out-of-sample fixtures it roughly DOUBLES the
+    # Brier skill over the standard set (+0.53% vs +0.26% on the 0.5 line, +0.33% vs +0.22% on
+    # 1.5) and lands calibration honestly: claimed 0.6975 against realised 0.7000.
+    #
+    # It does NOT create a bet and is not meant to. The bookmaker's own price still beats it
+    # (market AUC 0.568 vs model 0.533) and blending the model into that price adds nothing.
+    # See docs/HT_MODEL_UPGRADE.md.
     log.info("\nTraining HT models (all leagues with HTHG/HTAG data)...")
+    try:
+        from src.ht_features import build_ht_features, HT_FEATURE_COLS
+        valid = build_ht_features(valid)
+        _ht_cols = ([c for c in MODEL_FEATURE_COLS if c in valid.columns]
+                    + [c for c in HT_FEATURE_COLS if c in valid.columns])
+        log.info(f"  HT feature set: {len(_ht_cols)} columns "
+                 f"({len(HT_FEATURE_COLS)} half-time specific)")
+    except Exception as e:                                            # noqa: BLE001
+        # Falling back keeps a retrain alive rather than shipping no HT model at all.
+        log.warning(f"  HT feature build failed ({e}) — falling back to the standard set")
+        _ht_cols = None
     ht_valid = valid.dropna(subset=["ht_over05", "home_ht_over05_rate"])
     log.info(f"  HT leagues: {sorted(ht_valid['league'].unique())}")
     if len(ht_valid) >= config.BACKTEST_MIN_TRAIN:
         log.info(f"  HT data: {len(ht_valid):,} rows with HT scores")
-        _train_one(ht_valid, "ht_over05", config.HT_MODEL_FILE_05, target="ht_over05")
+        _train_one(ht_valid, "ht_over05", config.HT_MODEL_FILE_05, target="ht_over05",
+                   feature_cols=_ht_cols)
         ht_valid15 = valid.dropna(subset=["ht_over15", "home_ht_over15_rate"])
-        _train_one(ht_valid15, "ht_over15", config.HT_MODEL_FILE_15, target="ht_over15")
+        _train_one(ht_valid15, "ht_over15", config.HT_MODEL_FILE_15, target="ht_over15",
+                   feature_cols=_ht_cols)
     else:
         log.warning(f"  Not enough HT data ({len(ht_valid)} rows) — skipping HT models")
 
