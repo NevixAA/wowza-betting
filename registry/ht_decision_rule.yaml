@@ -1,0 +1,106 @@
+decision_name: frozen_ht_verdict_v1
+version: 1
+frozen_at_utc: "2026-09-29T12:20:00Z"
+frozen_by: Nevo (agreed 2026-09-29), written before any qualifying data existed
+
+purpose: |
+  Decide, ONCE, whether the half-time Over/Under models earn a place beyond paper.
+
+  This file is written BEFORE the evidence exists. That is the whole point. Invariant 6 says the
+  strategy is frozen before the backtest and thresholds are never changed after seeing results —
+  and the half-time question has already produced two reversals under looser discipline:
+
+    * an apparent AUC of 0.663 that turned out to be the model learning WHICH LEAGUES HAD
+      MISSING DATA, once 73.9% of its training labels were found to be fabricated;
+    * a "blend beats the market by +0.0086 Brier, +8.8% ROI over 226 bets" result that failed
+      its split-half (sign flip), its bootstrap (CI spanned zero) and a shuffled placebo.
+
+  Both looked convincing at the moment they were produced. A rule agreed afterwards would have
+  been argued into agreeing with them.
+
+status_at_freeze:
+  evidence_on_hand: 332 priced fixtures (2026-08-21 -> 2026-09-27)
+  observed_so_far:
+    market_brier: 0.1972
+    model_brier: 0.1994          # market ahead by 0.0022
+    market_auc: 0.5680
+    model_auc: 0.5327
+    vig_ou05: 0.0694
+    vig_ou15: 0.0719
+  prior: |
+    On the evidence at freeze time the market is ahead. This rule is written expecting the
+    model to FAIL it. Saying so now is part of the freeze — it removes the temptation to read
+    an ambiguous result as encouraging.
+
+# ── what counts as data ───────────────────────────────────────────────────────────────────────
+sample:
+  source: output/ht_observations.csv
+  unit: one settled fixture with a captured closing price, per line
+  include: every scored fixture, NOT only fixtures that crossed a tip threshold
+  why: |
+    Filtering on the tip threshold before measuring discards exactly the fixtures that test
+    whether the threshold means anything. A model cannot be shown wrong at p=0.80 by a sample
+    that only ever contains p>=0.75.
+  required_fields: [p_ht_over05, p_ht_over15, odds_ht_over05, odds_ht_under05,
+                    odds_ht_over15, odds_ht_under15, ht_over05, ht_over15]
+  exclude:
+    - rows with no captured market price (an edge against no price is not an edge)
+    - rows whose half-time score could not be resolved unambiguously
+  trigger_n: 1000          # per line, priced AND settled
+  expected_date: "2026-11-24"   # ~8 weeks at ~83 priced fixtures/week
+
+# ── the test ──────────────────────────────────────────────────────────────────────────────────
+primary_test:
+  name: paired Brier against the de-vigged closing price
+  devig: proportional            # p_over = (1/o_over) / (1/o_over + 1/o_under)
+  statistic: mean per-fixture (market_sq_error - model_sq_error)
+  interval: BCa bootstrap, 10000 resamples, 95%
+  pass_condition: |
+    The model beats the de-vigged closing price AND the 95% CI of the paired difference
+    EXCLUDES ZERO. A point estimate in our favour with a CI spanning zero is a FAIL.
+  why_this_and_not_roi: |
+    Judging by ROI at these prices needs a sample we will not have for years: detecting a true
+    +3% ROI needs ~1,568 bets at odds 1.35, ~2,098 at 1.47, and ~9,644 at 3.25, because a
+    single bet at 3.25 swings +/-1.5u. The paired Brier test uses the whole probability rather
+    than win/lose and settles the same question at 550-1,500 fixtures.
+
+secondary_tests:
+  # Reported alongside. They cannot rescue a failed primary; they can only sink a passing one.
+  - name: split-half by date
+    pass_condition: the paired difference has the SAME SIGN in both halves
+  - name: shuffled-probability placebo
+    pass_condition: real result beats the placebo distribution at p < 0.05
+  - name: calibration in the tip band
+    pass_condition: |
+      |claimed - realised| <= 5pp in the bands the notifier tips from
+      (p05>=0.75, p05<=0.30, p15>=0.60, p15<=0.25)
+
+# ── what happens next, decided now ────────────────────────────────────────────────────────────
+outcomes:
+  FAIL:
+    verdict: Half-time O/U stays PAPER permanently.
+    actions:
+      - stop spending research effort on an HT betting edge
+      - keep collecting (it is nearly free and feeds calibration monitoring)
+      - record it in memory as closed, alongside props and weather and xG
+    note: |
+      A third independent failure would make this a settled negative, not an open question.
+      Two have already been recorded.
+  PASS:
+    verdict: Promising, NOT actionable.
+    actions:
+      - re-test at n = 2000 before any money moves
+      - require the CLV gate that v11 uses (segment clean CLV count >= 150 and positive)
+      - only then discuss real money, and only under the existing staking plan
+    note: |
+      A single passing test does not authorise a stake. The estate's own record is that a
+      result which survives one test and not a second is the normal case, not the exception.
+
+# ── anti-tamper ───────────────────────────────────────────────────────────────────────────────
+amendment_policy: |
+  This file may be READ freely and must not be EDITED once qualifying data starts arriving.
+  Changing trigger_n, the pass condition, the devig method or the excluded rows after results
+  are visible voids the test entirely — at which point say so plainly rather than reporting a
+  number. If the rule turns out to be wrong in a way that matters, supersede it with a NEW
+  versioned file that states what changed and why, and keep this one.
+evaluator: scripts/ht_decision.py
