@@ -117,3 +117,102 @@ def newest_date(df: pd.DataFrame, *cols: str):
         m = s.max()
         best = m if best is None or m > best else best
     return best
+
+
+# ── REMOTE FALLBACK ───────────────────────────────────────────────────────────────────────────
+# The dashboard deploys from the v9 repo ALONE, so ../wowzaV9-Pro and ../wowza-v11 exist on a
+# developer machine and nowhere else. Deployed, the Pro and V11 pages showed "Not connected" —
+# correct behaviour, but it meant two thirds of the estate were invisible wherever the dashboard
+# is actually read.
+#
+# All three repos are public, and Pro already reads v9's committed output over raw HTTP
+# (v10/src/data/v9_source.py). This is the same pattern pointed the other way: when a sibling
+# checkout is absent, fetch the file from GitHub instead. Local always wins when present, so a
+# developer sees their working tree and never a stale copy of it.
+RAW_BASE = {
+    "pro": "https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main",
+    "v11": "https://raw.githubusercontent.com/NevixAA/wowza_v11/main",
+}
+API_BASE = {
+    "pro": "https://api.github.com/repos/NevixAA/wowzaV9-Pro",
+    "v11": "https://api.github.com/repos/NevixAA/wowza_v11",
+}
+
+#: Downloads land here. raw.githubusercontent rate-limits unauthenticated requests, so a fetched
+#: file is reused for this long rather than re-pulled on every Streamlit rerun — and a rerun
+#: happens on every widget interaction.
+_REMOTE_TTL_SECONDS = 30 * 60
+_CACHE_DIR = Path(__file__).resolve().parent / "_remote_cache"
+
+
+def _cache_path(repo: str, rel: str) -> Path:
+    return _CACHE_DIR / repo / rel.replace("\\", "/")
+
+
+def resolve_file(repo: str, rel: str) -> Path | None:
+    """Local path for `rel` inside `repo`, fetching it over HTTP if the repo is not checked out.
+
+    Returns None when the file cannot be reached either way — never a placeholder, so callers
+    keep reporting "not connected" rather than rendering an empty chart that reads as
+    "measured, found nothing".
+    """
+    local = repo_path(repo)
+    if local is not None:
+        p = local / rel
+        return p if p.exists() else None
+    base = RAW_BASE.get(repo)
+    if not base:
+        return None
+
+    cached = _cache_path(repo, rel)
+    if cached.exists():
+        import time
+        if (time.time() - cached.stat().st_mtime) < _REMOTE_TTL_SECONDS:
+            return cached
+    try:
+        import urllib.request
+        req = urllib.request.Request(f"{base}/{rel}",
+                                     headers={"User-Agent": "wowza-dashboard"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            if r.status != 200:
+                return cached if cached.exists() else None
+            body = r.read()
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        cached.write_bytes(body)
+        return cached
+    except Exception:
+        # A stale cached copy beats nothing, and the freshness shown to the reader still comes
+        # from the file's CONTENT, so an old fetch cannot masquerade as current data.
+        return cached if cached.exists() else None
+
+
+def remote_listing(repo: str, rel_dir: str) -> list[str]:
+    """Directory entry names inside a remote repo, via the GitHub contents API.
+
+    Needed because the Pro season store is a directory of date partitions and raw HTTP cannot
+    list a directory. Returns [] on any failure; callers treat that as "cannot enumerate",
+    not as "empty".
+    """
+    local = repo_path(repo)
+    if local is not None:
+        d = local / rel_dir
+        return sorted(x.name for x in d.iterdir()) if d.exists() else []
+    base = API_BASE.get(repo)
+    if not base:
+        return []
+    try:
+        import json as _json
+        import urllib.request
+        req = urllib.request.Request(f"{base}/contents/{rel_dir}",
+                                     headers={"User-Agent": "wowza-dashboard"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return sorted(e["name"] for e in _json.loads(r.read()))
+    except Exception:
+        return []
+
+
+def reachable(repo: str) -> bool:
+    """True when the repo can be read at all — checked out locally OR fetchable over HTTP."""
+    if repo_path(repo) is not None:
+        return True
+    return repo in RAW_BASE

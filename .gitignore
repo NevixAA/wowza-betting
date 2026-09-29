@@ -62,3 +62,7 @@ apifootball_ou_cache/
 fixture_events_cache/
 player_season_stats_cache/
 lineup_cache/
+
+# Dashboard remote-read cache: fetched copies of Pro/v11 output when they are not checked
+# out beside v9. Regenerable and per-deploy, so it must never be committed.
+dashboard_data/_remote_cache/
