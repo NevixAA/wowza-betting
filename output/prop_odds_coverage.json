@@ -4,8 +4,8 @@
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "Argentina Primera Division",
-    "priced_events": 230,
-    "probes": 231,
+    "priced_events": 231,
+    "probes": 232,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -22,8 +22,8 @@
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "Brazil Serie A",
-    "priced_events": 241,
-    "probes": 241,
+    "priced_events": 242,
+    "probes": 242,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -99,8 +99,8 @@
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "Ireland Premier Division",
-    "priced_events": 280,
-    "probes": 342,
+    "priced_events": 281,
+    "probes": 343,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -115,17 +115,17 @@
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "La Liga 2",
-    "priced_events": 353,
-    "probes": 358,
+    "priced_events": 354,
+    "probes": 359,
     "source": "api_football"
   },
   "apifootball:League One": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "League One",
     "priced_events": 337,
-    "probes": 362,
+    "probes": 363,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -133,8 +133,8 @@
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "League Two",
-    "priced_events": 279,
-    "probes": 325,
+    "priced_events": 280,
+    "probes": 326,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -339,10 +339,13 @@
     "last_priced": "2026-09-29",
     "last_probe": "2026-09-29",
     "league": "USA MLS",
-    "matched_events": 8,
-    "priced_events": 1284,
-    "probes": 1397,
-    "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "matched_events": 2,
+    "priced_events": 1286,
+    "probes": 1399,
+    "unmatched_sample": [
+      "New York Red Bulls vs St. Louis City",
+      "Seattle Sounders vs Sporting Kansas City"
+    ],
+    "wanted_fixtures": 4
   }
 }
