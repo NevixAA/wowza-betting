@@ -316,8 +316,73 @@ HT_LEDGER_FILE = config.OUTPUT_DIR / "ht_ledger.csv"
 HT_LEDGER_COLS = [
     "source", "generated_at", "match_date", "league", "home_team", "away_team",
     "market", "side", "model_prob", "fair_odds",
+    # PARITY WITH bets_ledger (added 2026-09-29). HT tips were logged with no PRICE at tip
+    # time, so nothing downstream could compute an edge, and settlement fell back to the
+    # model's own fair odds on 29 of 38 graded rows — a P/L that restates the model's
+    # confidence instead of measuring the market. These four close that gap.
+    "odds", "edge_pct", "signal_tier", "model_type",
     "entry_odds", "closing_odds", "clv_pct", "result", "pnl", "notes",
 ]
+
+#: Informational only. HT is PAPER — these labels let HT be read on the same axis as the other
+#: ledgers; they do NOT authorise a stake, and nothing reads them to size one.
+def _ht_tier(edge: float | None) -> str:
+    if edge is None or pd.isna(edge):
+        return "NO_PRICE"
+    if edge >= 0.10:
+        return "SNIPER"
+    if edge >= 0.05:
+        return "MARKSMAN"
+    if edge >= 0.02:
+        return "VALUABLE"
+    return "AVOID"
+
+
+def _ht_price_lookup():
+    """Latest captured price per (date, league, home, away, market) for the ht_* markets.
+
+    Returns a callable, or None when no capture file exists. Club names are resolved
+    LEAGUE-SCOPED via src.team_names (invariant 11): the ledger carries the predict-side name
+    while the capture carries the OddsAPI event name, and they disagree — `Accrington ST`
+    against `Accrington Stanley`, `Cheltenham` against `Cheltenham Town`. A bare key match
+    finds almost nothing.
+    """
+    p = config.OUTPUT_DIR / "standard_sidemarket_odds_history.csv"
+    if not p.exists():
+        return None
+    try:
+        from src.team_names import resolve
+        oh = pd.read_csv(p).sort_values("snapshot_ts")
+        oh = oh[oh["market"].astype(str).str.startswith("ht_")]
+        if oh.empty:
+            return None
+        mm = oh["match"].astype(str)
+        oh = oh.assign(
+            _h=mm.apply(lambda m: m.split(" vs ")[0].strip() if " vs " in m else ""),
+            _a=mm.apply(lambda m: m.split(" vs ")[1].strip() if " vs " in m else ""),
+            _dk=oh["match_date"].astype(str).str[:10])
+        by = {k: g for k, g in oh.groupby(["_dk", "league"], sort=False)}
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"HT ledger: could not read side-market odds ({e})")
+        return None
+
+    def _get(day: str, league: str, home: str, away: str, market: str):
+        g = by.get((str(day)[:10], str(league)))
+        if g is None or g.empty:
+            return None
+        h = resolve(str(home), list(g["_h"]))
+        a = resolve(str(away), list(g["_a"]))
+        if not h or not a:
+            return None
+        m = g[(g["_h"] == h) & (g["_a"] == a) & (g["market"].astype(str) == market)]
+        if m.empty:
+            return None
+        try:
+            o = float(m.iloc[-1]["odds"])          # most recent snapshot = price now
+            return o if o > 1.0 else None
+        except (TypeError, ValueError):
+            return None
+    return _get
 
 
 def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
@@ -331,6 +396,7 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
     seen = {(str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"]),
              str(r["market"]), str(r["source"])) for _, r in existing.iterrows()} if not existing.empty else set()
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+    price = _ht_price_lookup()
     new_rows = []
     for _, row in preds_df.iterrows():
         try:
@@ -357,12 +423,22 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
         if key in seen:
             continue
         seen.add(key)
+        # PRICE AT TIP TIME. Without it there is no edge and no honest P/L — settlement falls
+        # back to the model's own fair odds, which pays exactly what the model implied and so
+        # measures nothing about the market.
+        lg = str(row.get("league", ""))
+        mkt_odds = price(md, lg, home, away, market) if price else None
+        edge = (prob - 1.0 / mkt_odds) if mkt_odds else None
         new_rows.append({
             "source": source, "generated_at": now, "match_date": md,
-            "league": str(row.get("league", "")), "home_team": home, "away_team": away,
+            "league": lg, "home_team": home, "away_team": away,
             "market": market, "side": side, "model_prob": round(prob, 4),
             "fair_odds": round(1.0 / max(prob, 0.01), 2),
-            "entry_odds": "", "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
+            "odds": round(mkt_odds, 3) if mkt_odds else "",
+            "edge_pct": round(edge * 100, 2) if edge is not None else "",
+            "signal_tier": _ht_tier(edge), "model_type": "ht",
+            "entry_odds": round(mkt_odds, 3) if mkt_odds else "",
+            "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
         })
     if not new_rows:
         return
