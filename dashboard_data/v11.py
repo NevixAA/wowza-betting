@@ -4,34 +4,37 @@ from __future__ import annotations
 import pandas as pd
 
 from dashboard_data.core import (freshness_from_timestamp, newest_date, read_csv,
-                                 read_json, repo_path)
+                                 read_json, reachable, resolve_file)
 
 #: Never let a v11 number reach the page without this attached.
 STATE = "SHADOW / RESEARCH ONLY"
 
 
 def available() -> bool:
-    return repo_path("v11") is not None
+    """Reachable at all — a local checkout OR the public repo over HTTP.
+
+    The dashboard deploys from the v9 repo alone, so ../wowza-v11 exists on a developer machine
+    and nowhere else. Reading it over HTTP is the same pattern Pro already uses to read v9.
+    """
+    return reachable("v11")
 
 
-def _out():
-    p = repo_path("v11")
-    return (p / "output") if p else None
+def _f(rel: str):
+    """Resolve one file: local checkout if present, else fetched from the public repo."""
+    return resolve_file("v11", rel)
 
 
 def absent_reason() -> str:
-    return ("V11 is not checked out beside v9. Expected at ../wowza-v11. "
-            "Market-lab panels are hidden rather than shown empty.")
+    return ("V11 could not be reached — no local checkout at ../wowza-v11 and the public "
+            "repo did not respond. Market-lab panels are hidden rather than shown empty.")
 
 
 def shadow_log() -> pd.DataFrame:
-    o = _out()
-    return read_csv(o / "v11_shadow_log.csv") if o else pd.DataFrame()
+    return read_csv(_f("output/v11_shadow_log.csv"))
 
 
 def scoreboard() -> pd.DataFrame:
-    o = _out()
-    return read_csv(o / "v11_scoreboard.csv") if o else pd.DataFrame()
+    return read_csv(_f("output/v11_scoreboard.csv"))
 
 
 def residual() -> dict:
@@ -40,10 +43,7 @@ def residual() -> dict:
     Reported as MARKET vs MARKET+WOWZA on Brier and log loss. Standalone AUC is deliberately
     not the headline here -- it is not what v11 is testing.
     """
-    o = _out()
-    if o is None:
-        return {"available": False, "why": absent_reason()}
-    d = read_csv(o / "v11_residual.csv")
+    d = read_csv(_f("output/v11_residual.csv"))
     if d.empty:
         return {"available": False, "why": "no residual results yet in v11/output"}
     keep = [c for c in d.columns if any(k in c.lower() for k in
@@ -54,11 +54,8 @@ def residual() -> dict:
 
 def movement() -> dict:
     """Price movement, plus the coverage that says whether the instrument measured anything."""
-    o = _out()
-    if o is None:
-        return {"available": False, "why": absent_reason()}
-    det = read_csv(o / "v11_market_movement_detail.csv")
-    health = read_json(o / "v11_research_health.json")
+    det = read_csv(_f("output/v11_market_movement_detail.csv"))
+    health = read_json(_f("output/v11_research_health.json"))
     if det.empty and not health:
         return {"available": False, "why": "no movement detail or research health in v11/output"}
     return {
@@ -80,10 +77,7 @@ def momentum() -> dict:
     2026-09-10 and the artifacts were regenerated on 09-22, so what is on disk now is post-fix;
     the adapter carries that provenance so a reader never has to guess which era a number is from.
     """
-    o = _out()
-    if o is None:
-        return {"available": False, "why": absent_reason()}
-    d = read_csv(o / "v11_momentum_control.csv")
+    d = read_csv(_f("output/v11_momentum_control.csv"))
     if d.empty:
         return {"available": False, "why": "no momentum control results"}
     sig = d[d.get("excludes_zero") == True] if "excludes_zero" in d.columns else d  # noqa: E712
@@ -97,13 +91,10 @@ def momentum() -> dict:
 
 
 def health() -> dict:
-    o = _out()
-    if o is None:
-        return {"available": False, "why": absent_reason()}
     sl = shadow_log()
     return {"available": True, "state": STATE,
             "shadow_rows": int(len(sl)),
             "freshness": freshness_from_timestamp(
                 newest_date(sl, "snapshot_ts", "entry_ts", "date", "kickoff_utc", "kickoff_ts"), "fast",
                 "v11_shadow_log.csv"),
-            "research_health": read_json(o / "v11_research_health.json")}
+            "research_health": read_json(_f("output/v11_research_health.json"))}

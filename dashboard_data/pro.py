@@ -4,44 +4,43 @@ from __future__ import annotations
 import pandas as pd
 
 from dashboard_data.core import (Freshness, freshness_from_timestamp, newest_date,
-                                 read_csv, read_json, repo_path)
+                                 read_csv, read_json, reachable, remote_listing,
+                                 repo_path, resolve_file)
 
 
 def available() -> bool:
-    return repo_path("pro") is not None
+    """Reachable at all — a local checkout OR the public repo over HTTP.
+
+    The dashboard deploys from the v9 repo alone, so ../wowzaV9-Pro exists on a developer
+    machine and nowhere else. Reading it over HTTP mirrors what Pro already does to read v9.
+    """
+    return reachable("pro")
 
 
-def _out():
-    p = repo_path("pro")
-    return (p / "output") if p else None
-
-
-def _reg():
-    p = repo_path("pro")
-    return (p / "registry") if p else None
+def _f(rel: str):
+    """Resolve one file: local checkout if present, else fetched from the public repo."""
+    return resolve_file("pro", rel)
 
 
 def absent_reason() -> str:
-    return ("Pro is not checked out beside v9. Expected at ../wowzaV9-Pro or ../v10. "
-            "The dashboard shows what it can reach rather than failing.")
+    return ("Pro could not be reached — no local checkout at ../wowzaV9-Pro or ../v10, and the "
+            "public repo did not respond. The dashboard shows what it can reach rather than "
+            "failing.")
 
 
 def system_contract() -> dict:
     """The governance contract, if Pro is present. Its SHAs say what it was verified against."""
-    r = _reg()
-    return read_json(r / "WOWZA_SYSTEM_CONTRACT.json") if r else {}
+    return read_json(_f("registry/WOWZA_SYSTEM_CONTRACT.json"))
 
 
-def _season_dirs():
-    """Season stores, newest season first. The season is in the DIRECTORY NAME, not a mtime."""
-    p = repo_path("pro")
-    if p is None:
-        return []
-    d = p / "data"
-    if not d.exists():
-        return []
-    return sorted((x for x in d.iterdir() if x.is_dir() and x.name.startswith("season_")),
-                  key=lambda x: x.name, reverse=True)
+def _season_names() -> list[str]:
+    """Season store names, newest first. The season is in the DIRECTORY NAME, not a mtime.
+
+    Works locally and remotely: raw HTTP cannot list a directory, so the remote path goes
+    through the GitHub contents API.
+    """
+    return sorted((n for n in remote_listing("pro", "data") if n.startswith("season_")),
+                  reverse=True)
 
 
 def canonical_stores() -> dict:
@@ -52,39 +51,40 @@ def canonical_stores() -> dict:
     without splitting a table by hand. It also means the newest partition NAME is the data's own
     date, which is a content-derived age -- exactly what is wanted, and what a file mtime is not.
     """
-    seasons = _season_dirs()
+    seasons = _season_names()
     if not seasons:
         return {"available": False,
-                "why": absent_reason() if repo_path("pro") is None
-                       else "Pro is present but has no data/season_* store"}
+                "why": absent_reason() if not reachable("pro")
+                       else "Pro is reachable but has no data/season_* store"}
     latest = seasons[0]
     stores: dict[str, dict] = {}
-    for store in sorted(x for x in latest.iterdir() if x.is_dir()):
-        parts = [d.name[3:] for d in store.iterdir() if d.is_dir() and d.name.startswith("dt=")]
+    # Listing every store's partitions costs one API call per store when remote, so the store
+    # list is walked once and each store enumerated once -- never per partition.
+    for store in sorted(remote_listing("pro", f"data/{latest}")):
+        parts = [n[3:] for n in remote_listing("pro", f"data/{latest}/{store}")
+                 if n.startswith("dt=")]
         if not parts:
-            files = list(store.glob("*.parquet"))
-            stores[store.name] = {"partitioned": False, "files": len(files)}
+            stores[store] = {"partitioned": False, "files": None}
             continue
         parts.sort()
-        stores[store.name] = {
+        stores[store] = {
             "partitioned": True, "partitions": len(parts),
             "first_date": parts[0], "last_date": parts[-1],
             "freshness": freshness_from_timestamp(parts[-1] + "T23:59:59Z", "daily",
-                                                  f"{store.name}/dt=*")}
-    return {"available": True, "season": latest.name,
-            "seasons_on_disk": [s.name for s in seasons],
+                                                  f"{store}/dt=*")}
+    return {"available": True, "season": latest,
+            "seasons_on_disk": seasons,
             "stores": stores}
 
 
 def health_artifacts() -> dict:
     """Pro's own health files — the canary among them."""
-    o = _out()
-    if o is None:
+    if not reachable("pro"):
         return {"available": False, "why": absent_reason()}
     res = {"available": True, "files": {}}
     for f in ("collect_health.json", "predict_health.json", "scheduler_health.json",
               "ml_learning_health.json", "combo_import_health.json"):
-        j = read_json(o / f)
+        j = read_json(_f(f"output/{f}"))
         if j:
             ts = j.get("generated_at") or j.get("asof") or j.get("timestamp")
             res["files"][f] = {"status": j.get("status") or j.get("state"),
@@ -94,11 +94,9 @@ def health_artifacts() -> dict:
 
 def shadow_learning() -> dict:
     """The walk-forward evidence: does retraining beat a frozen model?"""
-    o = _out()
-    if o is None:
+    if not reachable("pro"):
         return {"available": False, "why": absent_reason()}
-    f = o / "shadow_learning" / "player_walkforward_performance.csv"
-    d = read_csv(f)
+    d = read_csv(_f("output/shadow_learning/player_walkforward_performance.csv"))
     if d.empty:
         return {"available": False, "why": "no player walk-forward results in Pro"}
     g = d.groupby("variant")[[c for c in ("log_loss", "auc", "pr_auc") if c in d.columns]].mean()
