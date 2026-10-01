@@ -1,0 +1,20 @@
+track,model_type,market,league,odds_band,entry_time_band,movement_signal,n,hit_rate,pnl_per_bet,pnl,mean_clv,median_clv,positive_clv_rate,ci_lo,ci_hi,excludes_zero
+side,new_format,btts,Argentina Primera Division,1.8-2.2,>48h,NO_CURVE,30,0.6333,0.3257,9.77,,,,-0.0288,0.6537,False
+main_ou,standard,main_ou,League One,1.8-2.2,<3h,NO_CURVE,24,0.5833,0.2196,5.27,,,,-0.22,0.4692,False
+main_ou,standard,main_ou,La Liga 2,1.8-2.2,<3h,NO_CURVE,16,0.5625,0.1681,2.69,,,,-0.2263,0.4406,False
+main_ou,standard,main_ou,Bundesliga 2,2.2-3.0,<3h,NO_CURVE,29,0.4828,0.1466,4.25,,,,-0.1907,0.6031,False
+main_ou,standard,main_ou,League Two,2.2-3.0,<3h,NO_CURVE,16,0.4375,0.105,1.68,,,,-0.5438,0.6287,False
+main_ou,new_format,main_ou,USA MLS,2.2-3.0,>48h,CONFLICTED,26,0.3846,0.0288,0.75,-5.735,-6.365,0.038,-0.3793,0.6034,False
+side,new_format,over15,Argentina Primera Division,<1.8,>48h,CONFIRMED,16,0.625,-0.0031,-0.05,5.368,6.165,0.875,-0.2212,0.4576,False
+main_ou,standard,main_ou,Ligue 2,1.8-2.2,<3h,NO_CURVE,17,0.4706,-0.0176,-0.3,,,,-0.3794,0.4759,False
+main_ou,standard,main_ou,League One,2.2-3.0,<3h,NO_CURVE,32,0.4062,-0.0222,-0.71,,,,-0.3181,0.4581,False
+main_ou,new_format,main_ou,Sweden Allsvenskan,2.2-3.0,>48h,NO_CURVE,18,0.3889,-0.0556,-1.0,,,,-0.4523,0.3822,False
+side,new_format,over15,Argentina Primera Division,<1.8,>48h,NEUTRAL,30,0.6,-0.061,-1.83,1.183,0.66,0.6,-0.327,0.154,False
+main_ou,new_format,main_ou,USA MLS,2.2-3.0,>48h,NEUTRAL,37,0.3784,-0.0649,-2.4,19.391,0.45,0.514,-0.5319,0.2668,False
+main_ou,new_format,main_ou,China Super League,2.2-3.0,>48h,NO_CURVE,23,0.3478,-0.0722,-1.66,,,,-0.5348,0.6122,False
+main_ou,standard,main_ou,League Two,1.8-2.2,<3h,NO_CURVE,20,0.45,-0.1045,-2.09,,,,-0.5055,0.1151,False
+main_ou,standard,main_ou,La Liga 2,2.2-3.0,<3h,NO_CURVE,59,0.339,-0.1529,-9.02,,,,-0.4233,0.2282,False
+main_ou,new_format,main_ou,Norway Eliteserien,2.2-3.0,>48h,NO_CURVE,15,0.3333,-0.1667,-2.5,,,,-0.6787,0.3696,False
+main_ou,standard,main_ou,La Liga 2,1.8-2.2,>48h,NEUTRAL,15,0.4,-0.18,-2.7,1.993,0.92,0.667,-0.7247,0.1516,False
+main_ou,new_format,main_ou,USA MLS,2.2-3.0,>48h,CONFIRMED,17,0.2941,-0.2729,-4.64,13.552,7.41,0.882,-0.8529,0.1753,False
+main_ou,standard,main_ou,Ligue 2,2.2-3.0,<3h,NO_CURVE,16,0.125,-0.6875,-11.0,,,,-1.0,-0.2319,True
