@@ -61,8 +61,23 @@ def main() -> int:
                      ("over15", "hgb_over15"), ("over35", "hgb_over35")):
         r[key] = _gate(tgt)
 
-    r["goal_distribution"] = {"status": "RESEARCH",
-                              "reason": "coherent score-distribution challenger not yet built"}
+    gdp = config.OUTPUT_DIR / "goal_distribution_eval.csv"
+    if gdp.exists():
+        g = pd.read_csv(gdp)
+        wins = g[g["delta_ll"] < 0]["market"].tolist()
+        r["goal_distribution"] = {
+            "status": "CHALLENGER",
+            "markets_better": wins,
+            "markets_worse": g[g["delta_ll"] >= 0]["market"].tolist(),
+            "reason": ("coherence is perfect (0 violations in 11,835 fixtures) and 1X2 comes "
+                       "free with RPS 0.2199 vs 0.2279 base rate, but forecast quality beats "
+                       "the separate binary classifiers on only 2 of 4 markets and only Over 3.5 "
+                       "(-0.00215) clears the 0.001 material floor"),
+            "caveat": ("this is a shrunk-ratio Dixon-Coles, not an MLE fit; a jointly optimised "
+                       "version may do better and has not been tried")}
+    else:
+        r["goal_distribution"] = {"status": "RESEARCH",
+                                  "reason": "coherent score-distribution challenger not yet built"}
 
     b = config.OUTPUT_DIR / "pro_btts_validation.csv"
     if b.exists():
