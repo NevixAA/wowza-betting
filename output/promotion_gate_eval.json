@@ -1,0 +1,229 @@
+{
+  "over25": {
+    "status": "CHALLENGER",
+    "reasons": [
+      "second_period: not run"
+    ],
+    "checks": {
+      "same_dataset": {
+        "pass": true,
+        "detail": "identical dataset id"
+      },
+      "min_sample": {
+        "pass": true,
+        "detail": "n=11836 (need >= 1000)"
+      },
+      "log_loss_not_worse": {
+        "pass": true,
+        "detail": "delta -0.002420 (0.68751 -> 0.68509)"
+      },
+      "brier_not_worse": {
+        "pass": true,
+        "detail": "delta -0.001183"
+      },
+      "ci_excludes_zero": {
+        "pass": true,
+        "detail": "95% block-bootstrap CI [-0.004445, -0.000383] excludes zero"
+      },
+      "material_improvement": {
+        "pass": true,
+        "detail": "delta -0.002420 vs required <= -0.001000"
+      },
+      "calibration_held": {
+        "pass": true,
+        "detail": "ECE 0.0150 -> 0.0183 (+0.0033)"
+      },
+      "prediction_canary": {
+        "pass": true,
+        "detail": "spread sd 0.0637 -> 0.0752, 0.0% pinned"
+      },
+      "no_league_regression": {
+        "pass": true,
+        "detail": "worst league Mexico Liga MX delta +0.00760 on n=342"
+      },
+      "second_period": {
+        "pass": false,
+        "detail": "not run"
+      }
+    },
+    "delta_log_loss": -0.00242,
+    "delta_brier": -0.001183,
+    "ci_log_loss": [
+      -0.004445,
+      -0.000383
+    ],
+    "n": 11836
+  },
+  "btts": {
+    "status": "CHALLENGER",
+    "reasons": [
+      "ci_excludes_zero: 95% block-bootstrap CI [-0.002814, +0.000226] includes zero",
+      "calibration_held: ECE 0.0140 -> 0.0250 (+0.0110)",
+      "second_period: not run"
+    ],
+    "checks": {
+      "same_dataset": {
+        "pass": true,
+        "detail": "identical dataset id"
+      },
+      "min_sample": {
+        "pass": true,
+        "detail": "n=11836 (need >= 1000)"
+      },
+      "log_loss_not_worse": {
+        "pass": true,
+        "detail": "delta -0.001306 (0.68726 -> 0.68595)"
+      },
+      "brier_not_worse": {
+        "pass": true,
+        "detail": "delta -0.000645"
+      },
+      "ci_excludes_zero": {
+        "pass": false,
+        "detail": "95% block-bootstrap CI [-0.002814, +0.000226] includes zero"
+      },
+      "material_improvement": {
+        "pass": true,
+        "detail": "delta -0.001306 vs required <= -0.001000"
+      },
+      "calibration_held": {
+        "pass": false,
+        "detail": "ECE 0.0140 -> 0.0250 (+0.0110)"
+      },
+      "prediction_canary": {
+        "pass": true,
+        "detail": "spread sd 0.0332 -> 0.0398, 0.0% pinned"
+      },
+      "no_league_regression": {
+        "pass": true,
+        "detail": "worst league Denmark Superliga delta +0.00886 on n=179"
+      },
+      "second_period": {
+        "pass": false,
+        "detail": "not run"
+      }
+    },
+    "delta_log_loss": -0.001306,
+    "delta_brier": -0.000645,
+    "ci_log_loss": [
+      -0.002814,
+      0.000226
+    ],
+    "n": 11836
+  },
+  "over15": {
+    "status": "REJECTED",
+    "reasons": [
+      "log_loss_not_worse: delta +0.001708 (0.54242 -> 0.54413)",
+      "brier_not_worse: delta +0.000660",
+      "ci_excludes_zero: 95% block-bootstrap CI [+0.000107, +0.003443] includes zero",
+      "material_improvement: delta +0.001708 vs required <= -0.001000",
+      "second_period: not run"
+    ],
+    "checks": {
+      "same_dataset": {
+        "pass": true,
+        "detail": "identical dataset id"
+      },
+      "min_sample": {
+        "pass": true,
+        "detail": "n=11836 (need >= 1000)"
+      },
+      "log_loss_not_worse": {
+        "pass": false,
+        "detail": "delta +0.001708 (0.54242 -> 0.54413)"
+      },
+      "brier_not_worse": {
+        "pass": false,
+        "detail": "delta +0.000660"
+      },
+      "ci_excludes_zero": {
+        "pass": false,
+        "detail": "95% block-bootstrap CI [+0.000107, +0.003443] includes zero"
+      },
+      "material_improvement": {
+        "pass": false,
+        "detail": "delta +0.001708 vs required <= -0.001000"
+      },
+      "calibration_held": {
+        "pass": true,
+        "detail": "ECE 0.0087 -> 0.0179 (+0.0091)"
+      },
+      "prediction_canary": {
+        "pass": true,
+        "detail": "spread sd 0.0487 -> 0.0629, 0.0% pinned"
+      },
+      "no_league_regression": {
+        "pass": true,
+        "detail": "worst league League Two delta +0.00920 on n=694"
+      },
+      "second_period": {
+        "pass": false,
+        "detail": "not run"
+      }
+    },
+    "delta_log_loss": 0.001708,
+    "delta_brier": 0.00066,
+    "ci_log_loss": [
+      0.000107,
+      0.003443
+    ],
+    "n": 11836
+  },
+  "over35": {
+    "status": "CHALLENGER",
+    "reasons": [
+      "ci_excludes_zero: 95% block-bootstrap CI [-0.003739, +0.000253] includes zero",
+      "second_period: not run"
+    ],
+    "checks": {
+      "same_dataset": {
+        "pass": true,
+        "detail": "identical dataset id"
+      },
+      "min_sample": {
+        "pass": true,
+        "detail": "n=11836 (need >= 1000)"
+      },
+      "log_loss_not_worse": {
+        "pass": true,
+        "detail": "delta -0.001796 (0.60628 -> 0.60448)"
+      },
+      "brier_not_worse": {
+        "pass": true,
+        "detail": "delta -0.000638"
+      },
+      "ci_excludes_zero": {
+        "pass": false,
+        "detail": "95% block-bootstrap CI [-0.003739, +0.000253] includes zero"
+      },
+      "material_improvement": {
+        "pass": true,
+        "detail": "delta -0.001796 vs required <= -0.001000"
+      },
+      "calibration_held": {
+        "pass": true,
+        "detail": "ECE 0.0167 -> 0.0255 (+0.0088)"
+      },
+      "prediction_canary": {
+        "pass": true,
+        "detail": "spread sd 0.0555 -> 0.0674, 0.0% pinned"
+      },
+      "no_league_regression": {
+        "pass": true,
+        "detail": "worst league Denmark Superliga delta +0.01825 on n=179"
+      },
+      "second_period": {
+        "pass": false,
+        "detail": "not run"
+      }
+    },
+    "delta_log_loss": -0.001796,
+    "delta_brier": -0.000638,
+    "ci_log_loss": [
+      -0.003739,
+      0.000253
+    ],
+    "n": 11836
+  }
+}
