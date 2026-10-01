@@ -1,11 +1,11 @@
 {
   "apifootball:Argentina Primera Division": {
     "empty_streak": 0,
-    "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_priced": "2026-10-01",
+    "last_probe": "2026-10-01",
     "league": "Argentina Primera Division",
-    "priced_events": 241,
-    "probes": 242,
+    "priced_events": 242,
+    "probes": 243,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -19,11 +19,11 @@
   },
   "apifootball:Brazil Serie A": {
     "empty_streak": 0,
-    "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_priced": "2026-10-01",
+    "last_probe": "2026-10-01",
     "league": "Brazil Serie A",
-    "priced_events": 252,
-    "probes": 252,
+    "priced_events": 253,
+    "probes": 253,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -96,11 +96,11 @@
   },
   "apifootball:Ireland Premier Division": {
     "empty_streak": 0,
-    "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_priced": "2026-10-01",
+    "last_probe": "2026-10-01",
     "league": "Ireland Premier Division",
-    "priced_events": 291,
-    "probes": 353,
+    "priced_events": 292,
+    "probes": 354,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -112,29 +112,29 @@
   },
   "apifootball:La Liga 2": {
     "empty_streak": 0,
-    "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_priced": "2026-10-01",
+    "last_probe": "2026-10-01",
     "league": "La Liga 2",
-    "priced_events": 364,
-    "probes": 369,
+    "priced_events": 365,
+    "probes": 370,
     "source": "api_football"
   },
   "apifootball:League One": {
-    "empty_streak": 1,
+    "empty_streak": 2,
     "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_probe": "2026-10-01",
     "league": "League One",
     "priced_events": 341,
-    "probes": 373,
+    "probes": 374,
     "source": "api_football"
   },
   "apifootball:League Two": {
     "empty_streak": 0,
-    "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_priced": "2026-10-01",
+    "last_probe": "2026-10-01",
     "league": "League Two",
-    "priced_events": 290,
-    "probes": 336,
+    "priced_events": 291,
+    "probes": 337,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -205,15 +205,18 @@
   },
   "soccer_england_league1": {
     "empty_streak": 24,
-    "far_empty_probes": 52,
+    "far_empty_probes": 57,
     "last_near_empty": "2026-09-17",
-    "last_probe": "2026-09-24",
+    "last_probe": "2026-10-01",
     "league": "League One",
-    "matched_events": 7,
-    "probes": 54,
+    "matched_events": 5,
+    "probes": 59,
     "streak_reset_on": "2026-08-27",
     "streak_reset_reason": "empty_streak accumulated before the park rule required a probe inside 24h of kickoff; count preserved in far_empty_probes",
-    "unmatched_sample": [],
+    "unmatched_sample": [
+      "AFC Wimbledon vs Stevenage",
+      "Peterborough vs Notts County"
+    ],
     "wanted_fixtures": 7
   },
   "soccer_epl": {
@@ -336,16 +339,15 @@
     "empty_streak": 0,
     "far_empty_probes": 94,
     "last_near_empty": "2026-09-27",
-    "last_priced": "2026-09-30",
-    "last_probe": "2026-09-30",
+    "last_priced": "2026-10-01",
+    "last_probe": "2026-10-01",
     "league": "USA MLS",
-    "matched_events": 3,
-    "priced_events": 1308,
-    "probes": 1426,
+    "matched_events": 2,
+    "priced_events": 1310,
+    "probes": 1428,
     "unmatched_sample": [
-      "New York Red Bulls vs St. Louis City",
       "Seattle Sounders vs Sporting Kansas City"
     ],
-    "wanted_fixtures": 5
+    "wanted_fixtures": 3
   }
 }
