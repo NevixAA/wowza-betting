@@ -1232,7 +1232,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-13,2026-08-15,La Liga,Alaves,Getafe,Toni Martínez,Alaves,F,goals,AVOID,0.312,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-08-16,,
 2026-08-13,2026-08-15,Championship,Norwich,West Brom,Borja Sainz,Norwich,F,sot2,AVOID,0.311,,,,5,True,VOID,0.0,DNP,2026-08-16,,
 2026-08-13,2026-08-15,Bundesliga 2,Hertha BSC,1. FC Heidenheim,Fabian Reese,Hertha BSC,F,sot2,AVOID,0.311,,,,5,True,VOID,0.0,DNP,2026-08-16,,
-2026-08-13,2026-08-15,Bundesliga 2,SpVgg Greuther Fürth,1. FC Nürnberg,Felix Klaus,SpVgg Greuther Fürth,F,sot2,AVOID,0.311,,,,5,,,,,,,
+2026-08-13,2026-08-15,Bundesliga 2,SpVgg Greuther Fürth,1. FC Nürnberg,Felix Klaus,SpVgg Greuther Fürth,F,sot2,AVOID,0.311,,,,5,True,VOID,0.0,DNP,2026-09-30,,
 2026-08-13,2026-08-16,La Liga,Espanyol,Levante,Javi Puado,Espanyol,F,sot2,AVOID,0.311,,,,5,True,VOID,0.0,DNP,2026-08-17,,
 2026-08-13,2026-08-15,China Super League,Zhejiang,Chengdu Rongcheng FC,Jordan Siebatcheu,Borussia Monchengladbach,F,sot,AVOID,0.311,,,,5,,,,,,,
 2026-08-13,2026-08-15,La Liga,Alaves,Getafe,Mason Greenwood,Getafe,F,sot2,AVOID,0.311,,,,5,True,VOID,0.0,DNP,2026-08-16,,
@@ -1513,7 +1513,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-13,2026-08-15,La Liga,Sevilla,Rayo Vallecano,Florian Lejeune,Rayo Vallecano,D,sot,AVOID,0.195,2.3,-0.5515,-0.5246,5,True,WIN,1.3,,2026-08-16,,
 2026-08-13,2026-08-14,Bundesliga 2,Eintracht Braunschweig,VfL Bochum,Johan Gomez,Eintracht Braunschweig,F,goals,AVOID,0.195,,,,5,True,VOID,0.0,DNP (0 min),2026-08-15,,
 2026-08-13,2026-08-14,Bundesliga 2,Eintracht Braunschweig,VfL Bochum,Philipp Strompf,VfL Bochum,D,cards,AVOID,0.194,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-08-15,,
-2026-08-13,2026-08-15,Bundesliga 2,VfL Osnabrück,1. FC Magdeburg,Mateusz Żukowski,1. FC Magdeburg,F,sot2,AVOID,0.194,,,,5,,,,,,,
+2026-08-13,2026-08-15,Bundesliga 2,VfL Osnabrück,1. FC Magdeburg,Mateusz Żukowski,1. FC Magdeburg,F,sot2,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-09-30,,
 2026-08-13,2026-08-15,La Liga,Sevilla,Rayo Vallecano,Lucas Ocampos,Sevilla,D,goals,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-08-16,,
 2026-08-13,2026-08-15,Championship,Bristol City,Millwall,Camiel Neghli,Millwall,F,goals,AVOID,0.194,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-08-16,,
 2026-08-13,2026-08-14,Championship,Wolves,Blackburn,Adam Armstrong,Wolves,F,goals,AVOID,0.194,,,,5,True,LOSS,,"unpriced - result only, no stake",2026-08-15,,
@@ -4910,7 +4910,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-08-30,2026-09-05,Championship,West Ham United,Derby County,Alex Mowatt,Derby,M,sot,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-09-06,19799,
 2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,sot,AVOID,0.646,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,24641,
 2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Marvin Pieringer,1. FC Heidenheim,M,sot,AVOID,0.405,,,,5,True,VOID,0.0,DNP,2026-09-08,178106,
-2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,sot2,AVOID,0.383,,,,5,,,,,,24641,
+2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,sot2,AVOID,0.383,,,,5,True,VOID,0.0,DNP,2026-09-30,24641,
 2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Budu Zivzivadze,1. FC Heidenheim,F,goals,AVOID,0.332,,,,5,True,WIN,,"unpriced — result only, no stake",2026-09-08,24641,
 2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Eren Dinkçi,1. FC Heidenheim,M,sot,AVOID,0.276,,,,5,True,VOID,0.0,DNP,2026-09-08,202526,
 2026-08-30,2026-09-06,Bundesliga 2,Greuther Fürth,1. FC Heidenheim,Arijon Ibrahimović,1. FC Heidenheim,M,sot,AVOID,0.274,,,,5,True,VOID,0.0,DNP,2026-09-08,327897,
@@ -5960,7 +5960,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mateusz Żukowski,1. FC Magdeburg,F,goals,AVOID,0.409,2.38,-0.0266,0.0318,5,True,VOID,0.0,DNP,2026-09-13,40460,
 2026-09-05,2026-09-05,Premier League,Nottingham Forest,Tottenham,Dan Ndoye,Nottingham Forest,M,sot,AVOID,0.398,1.85,-0.2637,-0.2195,5,True,VOID,0.0,DNP,2026-09-06,48648,1557396.0
 2026-09-05,2026-09-06,Serie A,Bologna,Sassuolo,Santiago Castro,Bologna,F,sot,AVOID,0.392,1.3,-0.4904,-0.4598,5,True,VOID,0.0,DNP,2026-09-08,311067,1550108.0
-2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,sot2,AVOID,0.389,,,,5,,,,,,25411,1576162.0
+2026-09-05,2026-09-06,Bundesliga 2,SpVgg Greuther Fürth,1. FC Heidenheim,Felix Klaus,SpVgg Greuther Fürth,F,sot2,AVOID,0.389,,,,5,True,VOID,0.0,DNP,2026-09-30,25411,1576162.0
 2026-09-05,2026-09-12,Bundesliga 2,1. FC Magdeburg,1. FC Kaiserslautern,Mo El Hankouri,1. FC Magdeburg,F,sot,AVOID,0.385,,,,5,True,VOID,0.0,DNP,2026-09-13,38128,
 2026-09-05,2026-09-06,Serie B,Juve Stabia,Pisa,Stefano Moreo,Pisa,F,sot,AVOID,0.38,,,,5,True,VOID,0.0,DNP,2026-09-08,31560,1601518.0
 2026-09-05,2026-09-05,Championship,Sheffield Utd,Norwich,Patrick Bamford,Sheffield Utd,F,sot,AVOID,0.379,,,,5,True,VOID,0.0,DNP,2026-09-06,19134,1563138.0
@@ -10551,3 +10551,48 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-29,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,Milton Delgado,Boca Juniors,M,cards,AVOID,0.155,,,,5,,,,,,459876,1493155.0
 2026-09-29,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,Miguel Merentiel,Boca Juniors,F,sot,AVOID,0.154,,,,5,,,,,,6327,1493155.0
 2026-09-29,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,J. Ludueña,Union Santa Fe,D,cards,AVOID,0.15,,,,5,,,,,,376599,1493155.0
+2026-09-29,2026-10-05,Argentina Primera Division,Estudiantes de Río Cuarto,Racing Club,A. Martínez,Racing Club,F,sot,AVOID,0.204,,,,5,,,,,,70749,
+2026-09-29,2026-10-05,Argentina Primera Division,Estudiantes de Río Cuarto,Racing Club,Nicolás Reniero,Racing Club,F,sot,AVOID,0.198,,,,5,,,,,,6631,
+2026-09-29,2026-10-05,Argentina Primera Division,Estudiantes de Río Cuarto,Racing Club,D. Ortegoza,Racing Club,M,cards,AVOID,0.176,,,,5,,,,,,5887,
+2026-09-29,2026-10-05,Argentina Primera Division,Estudiantes de Río Cuarto,Racing Club,E. Cannavo,Racing Club,D,cards,AVOID,0.175,,,,5,,,,,,295508,
+2026-09-29,2026-10-05,Argentina Primera Division,Estudiantes de Río Cuarto,Racing Club,L. Pérez,Racing Club,M,cards,AVOID,0.16,,,,5,,,,,,408342,
+2026-09-30,2026-10-07,USA MLS,Chicago Fire,Vancouver Whitecaps FC,Robert Lewandowski,Chicago Fire,F,sot,AVOID,0.293,1.19,-0.6513,-0.6304,5,,,,,,521,
+2026-09-30,2026-10-07,USA MLS,Chicago Fire,Vancouver Whitecaps FC,P. Zinckernagel,Chicago Fire,M,sot,AVOID,0.212,,,,5,,,,,,39080,
+2026-09-30,2026-10-07,USA MLS,Chicago Fire,Vancouver Whitecaps FC,Robert Lewandowski,Chicago Fire,F,sot2,AVOID,0.202,1.86,-0.6243,-0.6017,5,,,,,,521,
+2026-09-30,2026-10-07,USA MLS,Chicago Fire,Vancouver Whitecaps FC,Robert Lewandowski,Chicago Fire,F,goals,AVOID,0.191,,,,5,,,,,,521,
+2026-09-30,2026-10-07,USA MLS,Chicago Fire,Vancouver Whitecaps FC,Ousmane Doumbia,Chicago Fire,M,cards,AVOID,0.162,,,,5,,,,,,48693,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Rene,Vitoria,F,sot,AVOID,0.652,,,,5,,,,,,442404,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Arthur Cabral,Botafogo,F,sot,AVOID,0.534,,,,5,,,,,,9938,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Facundo Colidio,Vasco DA Gama,F,sot,AVOID,0.525,,,,5,,,,,,214,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Andrés Gómez,Vasco DA Gama,F,sot,AVOID,0.404,,,,5,,,,,,345748,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Danilo,Botafogo,F,sot,AVOID,0.341,,,,5,,,,,,553,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Álvaro Montoro,Botafogo,M,sot,AVOID,0.289,,,,5,,,,,,455130,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Janderson,Vitoria,F,sot,AVOID,0.275,,,,5,,,,,,353394,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Gregore,Botafogo,M,cards,AVOID,0.269,,,,5,,,,,,10031,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Matheuzinho,Vitoria,M,sot,AVOID,0.266,,,,5,,,,,,114436,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Danilo Santos,Botafogo,M,sot,AVOID,0.261,,,,5,,,,,,275170,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Gabriel Baralhas,Vitoria,M,sot,AVOID,0.225,,,,5,,,,,,9460,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Ignacio Laquintana,Vitoria,M,sot,AVOID,0.217,,,,5,,,,,,51464,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Rene,Vitoria,F,goals,AVOID,0.216,,,,5,,,,,,442404,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,D. Tarzia,Vitoria,M,sot,AVOID,0.204,,,,5,,,,,,455047,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Zé Vitor,Vitoria,M,sot,AVOID,0.199,,,,5,,,,,,288230,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Willian Oliveira,Vitoria,M,sot,AVOID,0.193,,,,5,,,,,,9208,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Arthur Cabral,Botafogo,F,goals,PAPER,0.191,3.2,-0.3888,-0.3277,5,,,,,,9938,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Santiago Sosa,Vasco DA Gama,M,cards,AVOID,0.187,,,,5,,,,,,6006,
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Rene,Vitoria,F,sot2,AVOID,0.185,,,,5,,,,,,442404,
+2026-10-01,2026-10-03,League One,Wigan,Mansfield Town,M. Smith,Mansfield Town,F,sot,AVOID,0.184,,,,5,,,,,,19680,1564342.0
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Huguinho,Botafogo,M,sot,AVOID,0.184,,,,5,,,,,,505409,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Tchê Tchê,Vasco DA Gama,M,sot,AVOID,0.184,,,,5,,,,,,9958,
+2026-10-01,2026-10-03,League One,Wigan,Mansfield Town,S. Perkins,Wigan,F,sot,AVOID,0.184,,,,5,,,,,,284408,1564342.0
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Mateus Carvalho,Vasco DA Gama,M,cards,AVOID,0.181,,,,5,,,,,,375565,
+2026-10-01,2026-10-03,League One,Wigan,Mansfield Town,R. Walsh,Wigan,M,sot,AVOID,0.179,,,,5,,,,,,482888,1564342.0
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Zé Vitor,Vitoria,M,cards,AVOID,0.179,,,,5,,,,,,288230,
+2026-10-01,2026-10-03,League One,Wigan,Mansfield Town,R. Sweeney,Mansfield Town,D,cards,AVOID,0.173,,,,5,,,,,,17453,1564342.0
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Mateus Carvalho,Vasco DA Gama,M,sot,AVOID,0.164,,,,5,,,,,,375565,
+2026-10-01,2026-10-03,League One,Wigan,Mansfield Town,L. Akins,Mansfield Town,F,sot,AVOID,0.159,,,,5,,,,,,20035,1564342.0
+2026-10-01,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,Ronald,Vitoria,M,sot,AVOID,0.158,,,,5,,,,,,64363,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,G. Justino,Botafogo,D,sot,AVOID,0.155,,,,5,,,,,,544707,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,N. Ferraresi,Botafogo,D,cards,AVOID,0.154,,,,5,,,,,,2440,
+2026-10-01,2026-10-03,League One,Wigan,Mansfield Town,Keanu Baccus,Mansfield Town,M,cards,AVOID,0.153,,,,5,,,,,,6984,1564342.0
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Huguinho,Botafogo,M,cards,AVOID,0.151,,,,5,,,,,,505409,
+2026-10-01,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,Thiago Mendes,Vasco DA Gama,M,sot,AVOID,0.151,,,,5,,,,,,22232,
