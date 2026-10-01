@@ -1,0 +1,135 @@
+{
+  "generated_at": "2026-10-01T07:47:43+00:00",
+  "production_baseline": "v9",
+  "evidence_sources": {
+    "model_candidate_eval": "model_candidate_eval.csv"
+  },
+  "meta_stack": {
+    "status": "SHADOW",
+    "reason": "production fits the stacker on the block it is scored on (src/model.py:240-245); the corrected FIT|CAL|META|HOLDOUT build is measured but not wired into production",
+    "measured_leak_logloss": 0.000878,
+    "note": "the leak inflates log loss by ~0.001, which is LARGER than the deltas the production promotion gate decides on (0.00004-0.003)"
+  },
+  "hgb_over25": {
+    "status": "CHALLENGER",
+    "n": 11836,
+    "delta_logloss": -0.00242,
+    "delta_brier": -0.001183,
+    "ci_logloss": [
+      -0.004445,
+      -0.000383
+    ],
+    "failed_checks": [
+      "second_period"
+    ],
+    "reason": "second_period: not run"
+  },
+  "hgb_btts": {
+    "status": "CHALLENGER",
+    "n": 11836,
+    "delta_logloss": -0.001306,
+    "delta_brier": -0.000645,
+    "ci_logloss": [
+      -0.002814,
+      0.000226
+    ],
+    "failed_checks": [
+      "ci_excludes_zero",
+      "calibration_held",
+      "second_period"
+    ],
+    "reason": "ci_excludes_zero: 95% block-bootstrap CI [-0.002814, +0.000226] includes zero; calibration_held: ECE 0.0140 -> 0.0250 (+0.0110); second_period: not run"
+  },
+  "hgb_over15": {
+    "status": "REJECTED",
+    "n": 11836,
+    "delta_logloss": 0.001708,
+    "delta_brier": 0.00066,
+    "ci_logloss": [
+      0.000107,
+      0.003443
+    ],
+    "failed_checks": [
+      "log_loss_not_worse",
+      "brier_not_worse",
+      "ci_excludes_zero",
+      "material_improvement",
+      "second_period"
+    ],
+    "reason": "log_loss_not_worse: delta +0.001708 (0.54242 -> 0.54413); brier_not_worse: delta +0.000660; ci_excludes_zero: 95% block-bootstrap CI [+0.000107, +0.003443] includes zero; material_improvement: delta +0.001708 vs required <= -0.001000; second_period: not run"
+  },
+  "hgb_over35": {
+    "status": "CHALLENGER",
+    "n": 11836,
+    "delta_logloss": -0.001796,
+    "delta_brier": -0.000638,
+    "ci_logloss": [
+      -0.003739,
+      0.000253
+    ],
+    "failed_checks": [
+      "ci_excludes_zero",
+      "second_period"
+    ],
+    "reason": "ci_excludes_zero: 95% block-bootstrap CI [-0.003739, +0.000253] includes zero; second_period: not run"
+  },
+  "goal_distribution": {
+    "status": "RESEARCH",
+    "reason": "coherent score-distribution challenger not yet built"
+  },
+  "btts_edge": {
+    "status": "RESEARCH",
+    "reason": "+30.60u on 100 staked bets, but 85% of P/L is Argentina (64 bets); ex-Argentina CI includes zero. Five weeks of data.",
+    "argentina_roi": 0.4064,
+    "preregistered": [
+      "H-BTTS-01",
+      "H-BTTS-02"
+    ]
+  },
+  "movement_segmentation": {
+    "status": "RESEARCH",
+    "cells": 19,
+    "cells_excluding_zero": 1,
+    "expected_by_chance": 1.0,
+    "reason": "at league x odds x timing x signal granularity the data is too thin: cells clearing at 5% match the number expected by chance",
+    "preregistered": [
+      "H-MOVE-01",
+      "H-MOVE-02"
+    ]
+  },
+  "v11_market_residual": {
+    "status": "RESEARCH",
+    "reason": "no incremental value over the market baseline: Brier 0.2405 vs 0.2404, delta +0.00006, and Wowza helps in only 10 of 20 segments",
+    "bet_eligible_selections": 0,
+    "preregistered": [
+      "H-V11-01"
+    ]
+  },
+  "canonical_training_source": {
+    "status": "SHADOW",
+    "reason": "23,169 stranded fixtures (28.65%) and ~2.9k duplicate rows are a real lineage defect, but swapping production training to the canonical set improved OOS log loss only marginally. Clean the lineage; do not repoint production because the row count is larger.",
+    "available_fixtures": 80868,
+    "v9_training_fixtures": 57699,
+    "stranded": 23169
+  },
+  "promotion_gate": {
+    "status": "SAFE_NOW",
+    "reason": "src/promotion_gate.py replaces a tolerance band that promoted 17 of 56 logged decisions on models that got WORSE. Not yet wired into pipeline.py.",
+    "historical_bad_promotions": 17,
+    "historical_decisions": 56
+  },
+  "safe_to_replace_v9": false,
+  "blocking": [
+    "btts_edge",
+    "canonical_training_source",
+    "goal_distribution",
+    "hgb_btts",
+    "hgb_over15",
+    "hgb_over25",
+    "hgb_over35",
+    "meta_stack",
+    "movement_segmentation",
+    "promotion_gate",
+    "v11_market_residual"
+  ]
+}
