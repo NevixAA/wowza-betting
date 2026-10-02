@@ -1,13 +1,13 @@
 {
-  "checked_at": "2026-10-01T22:32:36Z",
-  "run_id": "36934134851",
-  "run_number": "1381",
+  "checked_at": "2026-10-02T02:38:30Z",
+  "run_id": "36955191502",
+  "run_number": "1382",
   "event": "schedule",
   "schedule": "",
-  "sha": "858f7d5b25eb",
+  "sha": "1e12fa99f9dc",
   "history_freshness": {
     "newest_match": "2026-09-28",
-    "age_days": "3",
+    "age_days": "4",
     "stale": "true"
   },
   "step_outcomes": {
@@ -17,23 +17,20 @@
   },
   "output/player_tips.csv": {
     "rows": 331,
-    "fixtures": 33,
-    "mtime": "2026-10-01T22:32:26Z"
+    "fixtures": 34,
+    "mtime": "2026-10-02T02:38:23Z"
   },
   "output/player_ledger.csv": {
     "rows": 10629,
     "fixtures": null,
-    "mtime": "2026-10-01T22:32:35Z"
+    "mtime": "2026-10-02T02:21:02Z"
   },
   "git_dirty_outputs": [
-    "M output/player_ledger.csv",
-    " M output/player_prop_odds_history.csv",
+    "M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
-    "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
-    "  warnings.warn(",
     "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator DummyClassifier from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
     "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
     "  warnings.warn(",
@@ -45,32 +42,34 @@
     "  warnings.warn(",
     "[predict] API-Football key found \u2014 will fetch recent match stats for rolling features.",
     "  [La Liga] 5 recent fixtures fetched",
+    "  [Serie A] 5 recent fixtures fetched",
     "  [USA MLS] 5 recent fixtures fetched",
+    "  [Brazil Serie A] 5 recent fixtures fetched",
     "  [Argentina Primera Division] 5 recent fixtures fetched",
     "  [La Liga 2] 5 recent fixtures fetched",
     "  [Ireland Premier Division] 5 recent fixtures fetched",
     "  [Finland Veikkausliiga] 5 recent fixtures fetched",
     "[pipeline] Win probs loaded for 102 WC matches",
     "[player_model] market caps (top-1% real player): {'goals': 0.6846, 'goals2': 0.2679, 'assists': 0.4667, 'sot': 0.95, 'sot2': 0.7557, 'sot3': 0.4962, 'cards': 0.6087}",
-    "[predict] fixture slate: 24 from PROP_LEAGUES via API-Football, 10 from bets.csv supplement",
+    "[predict] fixture slate: 23 from PROP_LEAGUES via API-Football, 11 from bets.csv supplement",
+    "[predict] Injury filter: 26 injured/suspended players loaded",
     "[squad_overlay] 19566 live squad entries; current club taken from the live squad for 12406 player(s); 52792 history row(s) corrected where the latest appearance was a former club",
     "[player_model] 331 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
     "[predict] Fetching player prop odds from The Odds API...",
-    "[odds_fetcher] 25 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'Argentina Primera Division': 8, 'La Liga 2': 7, 'League Two': 5, 'Brazil Serie A': 2, 'Ireland Premier Division': 2, 'Finland Veikkausliiga': 1}",
+    "[odds_fetcher] 27 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 8, 'Argentina Primera Division': 8, 'League Two': 5, 'Brazil Serie A': 3, 'Ireland Premier Division': 2, 'Finland Veikkausliiga': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League Qualifying']",
-    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 99282",
-    "[odds_fetcher] sports/soccer_usa_mls/events/c68442e0bfc400d8e7ee97ec662e13e0/odds OK | quota remaining: 99282",
+    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 99097",
+    "[odds_fetcher] sports/soccer_usa_mls/events/c68442e0bfc400d8e7ee97ec662e13e0/odds OK | quota remaining: 99097",
     "[odds_fetcher] soccer_usa_mls: no bookmaker priced Seattle Sounders FC v Sporting Kansas City (regions=uk,eu)",
-    "[odds_fetcher] sports/soccer_usa_mls/events/0d9ff865c4599c72a746da08260279b3/odds OK | quota remaining: 99280",
+    "[odds_fetcher] sports/soccer_usa_mls/events/0d9ff865c4599c72a746da08260279b3/odds OK | quota remaining: 99095",
     "[odds_fetcher] soccer_england_league1: parked \u2014 24 consecutive events with no bookmaker, last probed 2026-10-01; retries every 7d",
-    "[odds_fetcher] api-football second source: +1217 quote(s)",
-    "[odds_fetcher] 1284 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
+    "[odds_fetcher] api-football second source: +1345 quote(s)",
+    "[odds_fetcher] 1412 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
     "[predict] Odds enriched for 7 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
     "[clv_tracker] CLV report: {'n': 2571, 'mean_clv_pct': 0.0033, 'mean_clv_prob': None, 'beat_close_rate': 0.325, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
     "[lineup] 0 confirmed starters | 331 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[predict] player_ledger: +9 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=268 cache_hits=54 cache_hit_rate=17% errors=0  quota_remaining 18229->17740 (account-wide delta 489)"
+    "[api_usage] workflow=Player Props af_calls=278 cache_hits=56 cache_hit_rate=17% errors=0  quota_remaining 74660->74383 (account-wide delta 277)"
   ]
 }

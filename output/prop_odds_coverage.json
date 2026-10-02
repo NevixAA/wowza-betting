@@ -1,11 +1,11 @@
 {
   "apifootball:Argentina Primera Division": {
     "empty_streak": 0,
-    "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_priced": "2026-10-02",
+    "last_probe": "2026-10-02",
     "league": "Argentina Primera Division",
-    "priced_events": 249,
-    "probes": 250,
+    "priced_events": 250,
+    "probes": 251,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -19,11 +19,11 @@
   },
   "apifootball:Brazil Serie A": {
     "empty_streak": 0,
-    "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_priced": "2026-10-02",
+    "last_probe": "2026-10-02",
     "league": "Brazil Serie A",
-    "priced_events": 260,
-    "probes": 260,
+    "priced_events": 261,
+    "probes": 261,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -88,19 +88,19 @@
     "source": "api_football"
   },
   "apifootball:Finland Veikkausliiga": {
-    "empty_streak": 281,
-    "last_probe": "2026-10-01",
+    "empty_streak": 282,
+    "last_probe": "2026-10-02",
     "league": "Finland Veikkausliiga",
-    "probes": 281,
+    "probes": 282,
     "source": "api_football"
   },
   "apifootball:Ireland Premier Division": {
     "empty_streak": 0,
-    "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_priced": "2026-10-02",
+    "last_probe": "2026-10-02",
     "league": "Ireland Premier Division",
-    "priced_events": 299,
-    "probes": 361,
+    "priced_events": 300,
+    "probes": 362,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -112,29 +112,29 @@
   },
   "apifootball:La Liga 2": {
     "empty_streak": 0,
-    "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_priced": "2026-10-02",
+    "last_probe": "2026-10-02",
     "league": "La Liga 2",
-    "priced_events": 372,
-    "probes": 377,
+    "priced_events": 373,
+    "probes": 378,
     "source": "api_football"
   },
   "apifootball:League One": {
-    "empty_streak": 1,
+    "empty_streak": 2,
     "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_probe": "2026-10-02",
     "league": "League One",
     "priced_events": 344,
-    "probes": 381,
+    "probes": 382,
     "source": "api_football"
   },
   "apifootball:League Two": {
     "empty_streak": 0,
-    "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_priced": "2026-10-02",
+    "last_probe": "2026-10-02",
     "league": "League Two",
-    "priced_events": 298,
-    "probes": 344,
+    "priced_events": 299,
+    "probes": 345,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -338,16 +338,14 @@
   "soccer_usa_mls": {
     "empty_streak": 0,
     "far_empty_probes": 100,
-    "last_near_empty": "2026-10-01",
-    "last_priced": "2026-10-01",
-    "last_probe": "2026-10-01",
+    "last_near_empty": "2026-10-02",
+    "last_priced": "2026-10-02",
+    "last_probe": "2026-10-02",
     "league": "USA MLS",
     "matched_events": 2,
-    "priced_events": 1318,
-    "probes": 1444,
-    "unmatched_sample": [
-      "Seattle Sounders vs Sporting Kansas City"
-    ],
-    "wanted_fixtures": 3
+    "priced_events": 1319,
+    "probes": 1446,
+    "unmatched_sample": [],
+    "wanted_fixtures": 2
   }
 }
