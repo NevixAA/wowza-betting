@@ -4,8 +4,8 @@
     "last_priced": "2026-10-02",
     "last_probe": "2026-10-02",
     "league": "Argentina Primera Division",
-    "priced_events": 250,
-    "probes": 251,
+    "priced_events": 251,
+    "probes": 252,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -22,8 +22,8 @@
     "last_priced": "2026-10-02",
     "last_probe": "2026-10-02",
     "league": "Brazil Serie A",
-    "priced_events": 261,
-    "probes": 261,
+    "priced_events": 262,
+    "probes": 262,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
@@ -88,10 +88,10 @@
     "source": "api_football"
   },
   "apifootball:Finland Veikkausliiga": {
-    "empty_streak": 282,
+    "empty_streak": 283,
     "last_probe": "2026-10-02",
     "league": "Finland Veikkausliiga",
-    "probes": 282,
+    "probes": 283,
     "source": "api_football"
   },
   "apifootball:Ireland Premier Division": {
@@ -99,8 +99,8 @@
     "last_priced": "2026-10-02",
     "last_probe": "2026-10-02",
     "league": "Ireland Premier Division",
-    "priced_events": 300,
-    "probes": 362,
+    "priced_events": 301,
+    "probes": 363,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
@@ -115,17 +115,17 @@
     "last_priced": "2026-10-02",
     "last_probe": "2026-10-02",
     "league": "La Liga 2",
-    "priced_events": 373,
-    "probes": 378,
+    "priced_events": 374,
+    "probes": 379,
     "source": "api_football"
   },
   "apifootball:League One": {
-    "empty_streak": 2,
+    "empty_streak": 3,
     "last_priced": "2026-10-01",
     "last_probe": "2026-10-02",
     "league": "League One",
     "priced_events": 344,
-    "probes": 382,
+    "probes": 383,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -133,8 +133,8 @@
     "last_priced": "2026-10-02",
     "last_probe": "2026-10-02",
     "league": "League Two",
-    "priced_events": 299,
-    "probes": 345,
+    "priced_events": 300,
+    "probes": 346,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -342,10 +342,12 @@
     "last_priced": "2026-10-02",
     "last_probe": "2026-10-02",
     "league": "USA MLS",
-    "matched_events": 2,
+    "matched_events": 1,
     "priced_events": 1319,
     "probes": 1446,
-    "unmatched_sample": [],
+    "unmatched_sample": [
+      "Seattle Sounders FC vs Sporting Kansas City"
+    ],
     "wanted_fixtures": 2
   }
 }

@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-10-02T02:38:30Z",
-  "run_id": "36955191502",
-  "run_number": "1382",
+  "checked_at": "2026-10-02T03:57:42Z",
+  "run_id": "36961161785",
+  "run_number": "1383",
   "event": "schedule",
   "schedule": "",
-  "sha": "1e12fa99f9dc",
+  "sha": "d649ffc264a2",
   "history_freshness": {
     "newest_match": "2026-09-28",
     "age_days": "4",
@@ -18,19 +18,20 @@
   "output/player_tips.csv": {
     "rows": 331,
     "fixtures": 34,
-    "mtime": "2026-10-02T02:38:23Z"
+    "mtime": "2026-10-02T03:57:34Z"
   },
   "output/player_ledger.csv": {
     "rows": 10629,
     "fixtures": null,
-    "mtime": "2026-10-02T02:21:02Z"
+    "mtime": "2026-10-02T03:40:18Z"
   },
   "git_dirty_outputs": [
-    "M output/player_prop_odds_history.csv",
-    " M output/player_tips.csv",
-    " M output/prop_odds_coverage.json"
+    "M output/prop_odds_coverage.json"
   ],
   "predict_log_tail": [
+    "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
+    "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
+    "  warnings.warn(",
     "/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages/sklearn/base.py:525: InconsistentVersionWarning: Trying to unpickle estimator DummyClassifier from version 1.9.0 when using version 1.9.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:",
     "https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations",
     "  warnings.warn(",
@@ -58,10 +59,7 @@
     "[predict] Fetching player prop odds from The Odds API...",
     "[odds_fetcher] 27 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'La Liga 2': 8, 'Argentina Primera Division': 8, 'League Two': 5, 'Brazil Serie A': 3, 'Ireland Premier Division': 2, 'Finland Veikkausliiga': 1}",
     "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League Qualifying']",
-    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 99097",
-    "[odds_fetcher] sports/soccer_usa_mls/events/c68442e0bfc400d8e7ee97ec662e13e0/odds OK | quota remaining: 99097",
-    "[odds_fetcher] soccer_usa_mls: no bookmaker priced Seattle Sounders FC v Sporting Kansas City (regions=uk,eu)",
-    "[odds_fetcher] sports/soccer_usa_mls/events/0d9ff865c4599c72a746da08260279b3/odds OK | quota remaining: 99095",
+    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 99095",
     "[odds_fetcher] soccer_england_league1: parked \u2014 24 consecutive events with no bookmaker, last probed 2026-10-01; retries every 7d",
     "[odds_fetcher] api-football second source: +1345 quote(s)",
     "[odds_fetcher] 1412 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
@@ -70,6 +68,6 @@
     "[clv_tracker] CLV report: {'n': 2571, 'mean_clv_pct': 0.0033, 'mean_clv_prob': None, 'beat_close_rate': 0.325, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
     "[lineup] 0 confirmed starters | 331 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:0  VALUABLE:0",
-    "[api_usage] workflow=Player Props af_calls=278 cache_hits=56 cache_hit_rate=17% errors=0  quota_remaining 74660->74383 (account-wide delta 277)"
+    "[api_usage] workflow=Player Props af_calls=278 cache_hits=56 cache_hit_rate=17% errors=0  quota_remaining 74359->74082 (account-wide delta 277)"
   ]
 }
