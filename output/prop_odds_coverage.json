@@ -4,8 +4,8 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Argentina Primera Division",
-    "priced_events": 261,
-    "probes": 262,
+    "priced_events": 262,
+    "probes": 263,
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
@@ -22,17 +22,17 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Brazil Serie A",
-    "priced_events": 272,
-    "probes": 272,
+    "priced_events": 273,
+    "probes": 273,
     "source": "api_football"
   },
   "apifootball:Bundesliga 2": {
-    "empty_streak": 49,
+    "empty_streak": 50,
     "last_priced": "2026-09-20",
     "last_probe": "2026-10-03",
     "league": "Bundesliga 2",
     "priced_events": 229,
-    "probes": 312,
+    "probes": 313,
     "source": "api_football"
   },
   "apifootball:Champions League": {
@@ -52,12 +52,12 @@
     "source": "api_football"
   },
   "apifootball:China Super League": {
-    "empty_streak": 57,
+    "empty_streak": 58,
     "last_priced": "2026-09-18",
     "last_probe": "2026-10-03",
     "league": "China Super League",
     "priced_events": 60,
-    "probes": 144,
+    "probes": 145,
     "source": "api_football"
   },
   "apifootball:Conference League": {
@@ -74,8 +74,8 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Denmark Superliga",
-    "priced_events": 177,
-    "probes": 229,
+    "priced_events": 178,
+    "probes": 230,
     "source": "api_football"
   },
   "apifootball:Europa League": {
@@ -88,10 +88,10 @@
     "source": "api_football"
   },
   "apifootball:Finland Veikkausliiga": {
-    "empty_streak": 293,
+    "empty_streak": 294,
     "last_probe": "2026-10-03",
     "league": "Finland Veikkausliiga",
-    "probes": 293,
+    "probes": 294,
     "source": "api_football"
   },
   "apifootball:Ireland Premier Division": {
@@ -99,15 +99,15 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Ireland Premier Division",
-    "priced_events": 311,
-    "probes": 373,
+    "priced_events": 312,
+    "probes": 374,
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
-    "empty_streak": 54,
+    "empty_streak": 55,
     "last_probe": "2026-10-03",
     "league": "Japan J-League",
-    "probes": 54,
+    "probes": 55,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
@@ -115,17 +115,17 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "La Liga 2",
-    "priced_events": 384,
-    "probes": 389,
+    "priced_events": 385,
+    "probes": 390,
     "source": "api_football"
   },
   "apifootball:League One": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "League One",
     "priced_events": 348,
-    "probes": 393,
+    "probes": 394,
     "source": "api_football"
   },
   "apifootball:League Two": {
@@ -133,8 +133,8 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "League Two",
-    "priced_events": 310,
-    "probes": 356,
+    "priced_events": 311,
+    "probes": 357,
     "source": "api_football"
   },
   "apifootball:Ligue 2": {
@@ -142,8 +142,8 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Ligue 2",
-    "priced_events": 1,
-    "probes": 61,
+    "priced_events": 2,
+    "probes": 62,
     "source": "api_football"
   },
   "apifootball:Mexico Liga MX": {
@@ -151,8 +151,8 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Mexico Liga MX",
-    "priced_events": 272,
-    "probes": 288,
+    "priced_events": 273,
+    "probes": 289,
     "source": "api_football"
   },
   "apifootball:Norway Eliteserien": {
@@ -160,8 +160,8 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "Norway Eliteserien",
-    "priced_events": 141,
-    "probes": 208,
+    "priced_events": 142,
+    "probes": 209,
     "source": "api_football"
   },
   "apifootball:Romanian Superliga": {
@@ -344,10 +344,12 @@
     "last_priced": "2026-10-03",
     "last_probe": "2026-10-03",
     "league": "USA MLS",
-    "matched_events": 8,
-    "priced_events": 1327,
-    "probes": 1461,
-    "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "matched_events": 1,
+    "priced_events": 1328,
+    "probes": 1462,
+    "unmatched_sample": [
+      "Chicago Fire vs Vancouver Whitecaps"
+    ],
+    "wanted_fixtures": 2
   }
 }
