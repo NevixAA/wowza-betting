@@ -10283,15 +10283,15 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-27,2026-10-04,La Liga 2,Real Sociedad B,Granada CF,Gumbau,Granada CF,M,cards,AVOID,0.173,,,,5,,,,,,47414,
 2026-09-27,2026-10-04,La Liga 2,Real Sociedad B,Granada CF,Rubén Alcaraz,Granada CF,M,cards,AVOID,0.173,,,,5,,,,,,47485,
 2026-09-27,2026-10-04,La Liga 2,Real Sociedad B,Granada CF,Manu Lama,Granada CF,D,cards,AVOID,0.162,,,,5,,,,,,162545,
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Neymar,Santos,M,sot,AVOID,0.643,,,,5,,,,,,276,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Luciano,Sao Paulo,M,sot,AVOID,0.555,,,,5,,,,,,10323,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gabriel Barbosa,Santos,F,sot,AVOID,0.501,,,,5,,,,,,10174,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,J. Calleri,Sao Paulo,F,sot,AVOID,0.415,,,,5,,,,,,47368,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Artur,Sao Paulo,M,sot,AVOID,0.394,,,,5,,,,,,10040,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Philippe Coutinho,Santos,M,sot,AVOID,0.324,,,,5,,,,,,147,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Neymar,Santos,M,sot,AVOID,0.643,,,,5,True,VOID,0.0,DNP,2026-10-03,276,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Luciano,Sao Paulo,M,sot,AVOID,0.555,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,10323,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gabriel Barbosa,Santos,F,sot,AVOID,0.501,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,10174,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,J. Calleri,Sao Paulo,F,sot,AVOID,0.415,,,,5,True,VOID,0.0,DNP,2026-10-03,47368,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Artur,Sao Paulo,M,sot,AVOID,0.394,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,10040,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Philippe Coutinho,Santos,M,sot,AVOID,0.324,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,147,1492318.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,Dejan Joveljić,Seattle Sounders,F,sot,AVOID,0.321,,,,5,True,VOID,0.0,DNP,2026-10-03,364,1490463.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Roberto López,Eldense,M,sot,AVOID,0.286,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,47321,1569953.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Álvaro Barreal,Santos,M,sot,AVOID,0.263,,,,5,,,,,,6052,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Álvaro Barreal,Santos,M,sot,AVOID,0.263,,,,5,True,VOID,0.0,DNP,2026-10-03,6052,1492318.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Lucas Román,Independiente,F,sot,AVOID,0.259,,,,5,True,VOID,0.0,DNP (0 min),2026-10-03,356797,1493161.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,A. Luna,Instituto Cordoba,F,sot,AVOID,0.257,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,294787,1493161.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,A. Rusnák,Seattle Sounders,M,sot,AVOID,0.247,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,51212,1490463.0
@@ -10301,48 +10301,48 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Fidel,Eldense,M,sot,AVOID,0.215,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,47002,1569953.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,D. Musovski,Seattle Sounders,F,sot,AVOID,0.206,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,102373,1490463.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Diego Mendez,Eldense,M,sot,AVOID,0.205,,,,5,True,VOID,0.0,DNP,2026-10-03,333378,1569953.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gabriel Barbosa,Santos,F,goals,PAPER,0.202,3.6,-0.2728,-0.2001,5,,,,,,10174,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gabriel Barbosa,Santos,F,goals,PAPER,0.202,3.6,-0.2728,-0.2001,5,True,WIN,2.6,,2026-10-03,10174,1492318.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Gabriel Ávalos,Independiente,F,sot,AVOID,0.198,,,,5,True,VOID,0.0,DNP,2026-10-03,6483,1493161.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Luan Peres,Santos,D,cards,AVOID,0.194,,,,5,,,,,,71,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Enzo Díaz,Sao Paulo,M,sot,AVOID,0.193,,,,5,,,,,,6237,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Luan Peres,Santos,D,cards,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-10-03,71,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Enzo Díaz,Sao Paulo,M,sot,AVOID,0.193,,,,5,True,VOID,0.0,DNP,2026-10-03,6237,1492318.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,Dejan Joveljić,Seattle Sounders,F,goals,AVOID,0.19,,,,5,True,VOID,0.0,DNP,2026-10-03,364,1490463.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Santiago Montiel,Independiente,F,sot,AVOID,0.186,,,,5,True,VOID,0.0,DNP,2026-10-03,265973,1493161.0
 2026-09-28,2026-10-03,League Two,Walsall,Crawley Town,Klaidi Lolos,Crawley Town,F,sot,AVOID,0.186,,,,5,,,,,,20416,
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gustavo Henrique Pereira,Santos,M,cards,AVOID,0.184,,,,5,,,,,,506480,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gustavo Henrique Pereira,Santos,M,cards,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,506480,1492318.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,A. Rusnák,Seattle Sounders,M,assists,AVOID,0.182,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,51212,1490463.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gabriel Bontempo,Santos,M,sot,AVOID,0.178,,,,5,,,,,,506275,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Iago,Sao Paulo,M,sot,AVOID,0.177,,,,5,,,,,,10375,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gabriel Bontempo,Santos,M,sot,AVOID,0.178,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,506275,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Iago,Sao Paulo,M,sot,AVOID,0.177,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,10375,1492318.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,David Ruiz Montero,Eldense,D,sot,AVOID,0.174,,,,5,True,VOID,0.0,DNP (0 min),2026-10-03,548656,1569953.0
 2026-09-28,2026-10-03,League Two,Walsall,Crawley Town,Priestley Farquharson,Crawley Town,D,cards,AVOID,0.173,,,,5,,,,,,53187,
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Neymar,Santos,M,sot2,AVOID,0.172,,,,5,,,,,,276,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Neymar,Santos,M,sot2,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-10-03,276,1492318.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,Paul Rothrock,Seattle Sounders,M,cards,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-10-03,103203,1490463.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Justin Smith,Eldense,M,cards,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-10-03,325140,1569953.0
 2026-09-28,2026-10-03,League Two,Walsall,Crawley Town,Harry McKirdy,Crawley Town,F,sot,AVOID,0.168,,,,5,,,,,,82068,
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,M. Gallardo,Instituto Cordoba,M,cards,AVOID,0.167,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,413142,1493161.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Maik,Sao Paulo,M,sot,AVOID,0.167,,,,5,,,,,,505991,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Neymar,Santos,M,goals,PAPER,0.166,3.1,-0.4854,-0.4339,5,,,,,,276,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Luciano,Sao Paulo,M,goals,AVOID,0.164,,,,5,,,,,,10323,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Enzo Díaz,Sao Paulo,M,cards,AVOID,0.162,,,,5,,,,,,6237,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Maik,Sao Paulo,M,sot,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-10-03,505991,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Neymar,Santos,M,goals,PAPER,0.166,3.1,-0.4854,-0.4339,5,True,VOID,0.0,DNP,2026-10-03,276,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Luciano,Sao Paulo,M,goals,AVOID,0.164,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,10323,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Enzo Díaz,Sao Paulo,M,cards,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-10-03,6237,1492318.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,C. Roldan,Seattle Sounders,M,cards,AVOID,0.158,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,51114,1490463.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Imanol Machuca,Independiente,M,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-03,6121,1493161.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Ezequiel Parnisiari,Instituto Cordoba,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-03,5487,1493161.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Damián Bobadilla,Sao Paulo,M,sot,AVOID,0.156,,,,5,,,,,,195107,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Damián Bobadilla,Sao Paulo,M,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-03,195107,1492318.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Justin Smith,Eldense,M,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-03,325140,1569953.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Lucas Veríssimo,Santos,D,cards,AVOID,0.155,,,,5,,,,,,9991,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Lucas Veríssimo,Santos,D,cards,AVOID,0.155,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,9991,1492318.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Martín Cauteruccio,Independiente,F,sot,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,35579,1493161.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Víctor Camarasa,Eldense,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-03,18998,1569953.0
 2026-09-28,2026-10-03,League Two,Walsall,Crawley Town,S. Sprangler,Walsall,M,cards,AVOID,0.152,,,,5,,,,,,7564,
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,Jesús Ferreira,Seattle Sounders,M,sot,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-10-03,51142,1490463.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,João Basso,Santos,D,cards,AVOID,0.152,,,,5,,,,,,41609,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Alex Nascimento,Santos,D,cards,AVOID,0.15,,,,5,,,,,,80538,1492318.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gustavo Henrique Pereira,Santos,M,sot,AVOID,0.15,,,,5,,,,,,506480,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,João Basso,Santos,D,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP (0 min),2026-10-03,41609,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Alex Nascimento,Santos,D,cards,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-10-03,80538,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,Gustavo Henrique Pereira,Santos,M,sot,AVOID,0.15,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,506480,1492318.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Gabriel Ávalos,Independiente,F,goals,PAPER,0.353,2.77,-0.0222,0.0365,5,True,VOID,0.0,DNP,2026-10-03,6483,1493161.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,Aingeru Olabarrieta,Eldense,M,sot,AVOID,0.273,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-03,440413,1569953.0
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,Gabriel Ávalos,Independiente,F,sot2,AVOID,0.246,,,,5,True,VOID,0.0,DNP,2026-10-03,6483,1493161.0
 2026-09-28,2026-10-03,Argentina Primera Division,Newells Old Boys,Lanus,M. Cóccaro,Newells Old Boys,F,sot,AVOID,0.221,,,,5,,,,,,51892,
 2026-09-28,2026-10-03,Argentina Primera Division,Newells Old Boys,Lanus,A. Wlk,Lanus,F,sot,AVOID,0.193,,,,5,,,,,,281355,
 2026-09-28,2026-10-02,Argentina Primera Division,Independiente,Instituto Cordoba,S. Montiel,Independiente,F,sot,AVOID,0.189,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,265973,1493161.0
-2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,C. Oliva,Santos,M,sot,AVOID,0.175,,,,5,,,,,,30568,1492318.0
+2026-09-28,2026-10-02,Brazil Serie A,Sao Paulo,Santos,C. Oliva,Santos,M,sot,AVOID,0.175,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-03,30568,1492318.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,J. Smith,Eldense,M,cards,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-10-03,325140,1569953.0
 2026-09-28,2026-10-02,La Liga 2,Eldense,Oviedo,J. Smith,Eldense,M,sot,AVOID,0.169,,,,5,True,VOID,0.0,DNP,2026-10-03,325140,1569953.0
 2026-09-28,2026-10-02,USA MLS,Seattle Sounders,Sporting Kansas City,Paul Rothrock,Seattle Sounders,M,sot,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-10-03,103203,1490463.0
