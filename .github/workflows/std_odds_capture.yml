@@ -112,6 +112,16 @@ jobs:
       - name: Capture forward standard side-market odds
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # PER-BOOKMAKER RETENTION, ON since 2026-10-04. This drops the `bookmaker=8` filter
+          # so the SAME request returns every book instead of one -- identical call count,
+          # identical quota, and the consensus archive this workflow already writes is byte
+          # for byte unchanged. Nothing reads book_quotes yet; it is collection only.
+          #
+          # Turned on now rather than "when something needs it" because /odds is PRE-MATCH ONLY
+          # (established 2026-08-19 over ~830 calls: 0 of 3 FT fixtures returned odds in every
+          # season 2019-2025, and 770 consecutive Brazil fetches came back 100% empty). A
+          # closing line not captured today cannot be bought back at any price.
+          CAPTURE_BOOK_QUOTES: "1"
         run: |
           # The 15-minute cron is the NEAR run and prices only imminent fixtures; the 4x/day
           # cron is WIDE and prices everything. One script, one flag, so the two cadences cannot
@@ -285,6 +295,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/standard_sidemarket_odds_history.csv 2>/dev/null || true
+          # STAGE THE BOOK QUOTES TOO. Omitting this is the exact failure that killed `predict`
+          # on 2026-08-15: every functional step green, the data captured, and nothing persisted
+          # because the commit never included it. A directory of monthly parts, so only the
+          # current month's file is ever modified.
+          git add -f output/book_quotes 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: std side-market odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

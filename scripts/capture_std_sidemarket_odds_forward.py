@@ -373,10 +373,11 @@ def run() -> int:
         print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
     if CAPTURE_BOOK_QUOTES and book_rows:
         try:
-            from src.book_quotes import append_quotes, QUOTES_FILE
+            from src.book_quotes import append_quotes, QUOTES_DIR
             n_q = append_quotes(book_rows)
-            print(f"[book_quotes] +{n_q} changed quotes from {len(book_rows)} parsed "
-                  f"-> {QUOTES_FILE.name}")
+            n_books = len({r.get("bookmaker_id") for r in book_rows})
+            print(f"[book_quotes] +{n_q} changed quotes from {len(book_rows)} parsed across "
+                  f"{n_books} bookmakers -> {QUOTES_DIR.name}/")
         except Exception as _e:                                       # noqa: BLE001
             print(f"[book_quotes] write failed: {_e}")
 

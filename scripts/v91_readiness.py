@@ -128,7 +128,7 @@ def main() -> int:
         "historical_bad_promotions": 17, "historical_decisions": 56}
 
     # §10 per-book capture + kickoff ladder
-    bq = config.OUTPUT_DIR / "book_quotes.csv"
+    bq = config.OUTPUT_DIR / "book_quotes"
     r["book_quotes_ladder"] = {
         "status": "SAFE_NOW",
         "enabled": bq.exists(),
