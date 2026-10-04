@@ -1491,11 +1491,11 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-09-21,2026-09-26,Mexico Liga MX,Atlante FC,Monterrey,O/U 2.5 UNDER,UNDER,STEAM_STRONG,2.315,2.08,-10.2,100,11,LOSS,-1.0,2026-09-27
 2026-09-21,2026-10-04,Argentina Primera Division,Atlético Huracán,Aldosivi Mar del Plata,1X2 AWAY (Aldosivi Mar del Plata),AWAY,STEAM_SHARP,6.275,5.9,-6.0,94,11,,,
 2026-09-21,2026-09-28,La Liga 2,Leganés,CD Castellón,1X2 AWAY (CD Castellón),AWAY,STEAM_SHARP,2.44,2.3,-5.7,100,15,,,
-2026-09-22,2026-10-03,Argentina Primera Division,Independiente Rivadavia,Gimnasia La Plata,1X2 AWAY (Gimnasia La Plata),AWAY,STEAM_STRONG,5.05,4.4,-12.9,88,11,,,
+2026-09-22,2026-10-03,Argentina Primera Division,Independiente Rivadavia,Gimnasia La Plata,1X2 AWAY (Gimnasia La Plata),AWAY,STEAM_STRONG,5.05,4.4,-12.9,88,11,LOSS,-1.0,2026-10-04
 2026-09-22,2026-10-05,Argentina Primera Division,Estudiantes,Gimnasia Mendoza,1X2 AWAY (Gimnasia Mendoza),AWAY,STEAM_SHARP,5.55,5.035,-9.3,100,8,,,
 2026-09-22,2026-09-26,League Two,Port Vale,Northampton Town,1X2 HOME (Port Vale),HOME,STEAM_SHARP,2.1,1.93,-8.1,100,5,,,
 2026-09-22,2026-09-26,League Two,Crawley Town,Barnet,1X2 HOME (Crawley Town),HOME,STEAM_SHARP,4.07,3.85,-5.4,100,4,,,
-2026-09-22,2026-10-03,Argentina Primera Division,Atlético Tucuman,Barracas Central,1X2 AWAY (Barracas Central),AWAY,STEAM_SHARP,4.475,4.25,-5.0,100,9,,,
+2026-09-22,2026-10-03,Argentina Primera Division,Atlético Tucuman,Barracas Central,1X2 AWAY (Barracas Central),AWAY,STEAM_SHARP,4.475,4.25,-5.0,100,9,WIN,3.475,2026-10-04
 2026-09-22,2026-09-26,League Two,Rotherham United,Crewe Alexandra,1X2 HOME (Rotherham United),HOME,STEAM_SHARP,2.2,2.05,-6.8,92,15,,,
 2026-09-23,2026-09-27,USA MLS,LA Galaxy,Colorado Rapids,O/U 2.5 OVER,OVER,STEAM_SHARP,1.62,1.49,-8.0,92,7,,,
 2026-09-23,2026-09-26,League Two,Fleetwood Town,Rochdale,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.95,1.85,-5.1,100,13,,,
@@ -1559,10 +1559,10 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-02,2026-10-10,USA MLS,Toronto FC,CF Montreal,1X2 AWAY (CF Montreal),AWAY,STEAM_STRONG,3.8,3.4,-10.5,100,15,,,
 2026-10-02,2026-10-10,USA MLS,Orlando City SC,Columbus Crew SC,1X2 AWAY (Columbus Crew SC),AWAY,STEAM_STRONG,3.1,2.79,-10.0,100,15,,,
 2026-10-02,2026-10-11,USA MLS,Colorado Rapids,San Jose Earthquakes,1X2 AWAY (San Jose Earthquakes),AWAY,STEAM_SHARP,3.9,3.55,-9.0,100,15,,,
-2026-10-02,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,O/U 2.5 OVER,OVER,STEAM_SHARP,2.09,1.93,-7.7,100,8,,,
-2026-10-02,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,1X2 HOME (Boca Juniors),HOME,STEAM_SHARP,1.6,1.48,-7.5,100,13,,,
-2026-10-02,2026-10-03,Argentina Primera Division,Independiente Rivadavia,Gimnasia La Plata,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.75,1.62,-7.4,100,5,,,
-2026-10-02,2026-10-03,Argentina Primera Division,Independiente Rivadavia,Gimnasia La Plata,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.44,3.2,-7.0,100,13,,,
+2026-10-02,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,O/U 2.5 OVER,OVER,STEAM_SHARP,2.09,1.93,-7.7,100,8,WIN,1.09,2026-10-04
+2026-10-02,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,1X2 HOME (Boca Juniors),HOME,STEAM_SHARP,1.6,1.48,-7.5,100,13,WIN,0.6,2026-10-04
+2026-10-02,2026-10-03,Argentina Primera Division,Independiente Rivadavia,Gimnasia La Plata,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.75,1.62,-7.4,100,5,WIN,0.75,2026-10-04
+2026-10-02,2026-10-03,Argentina Primera Division,Independiente Rivadavia,Gimnasia La Plata,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.44,3.2,-7.0,100,13,WIN,2.44,2026-10-04
 2026-10-02,2026-10-10,League One,Mansfield Town,Bromley FC,1X2 HOME (Mansfield Town),HOME,STEAM_SHARP,1.84,1.72,-6.5,100,9,,,
 2026-10-02,2026-10-10,USA MLS,Inter Miami CF,D.C. United,1X2 AWAY (D.C. United),AWAY,STEAM_SHARP,6.5,6.1,-6.2,100,15,,,
 2026-10-02,2026-10-10,League One,Mansfield Town,Bromley FC,O/U 2.5 OVER,OVER,STEAM_SHARP,1.7,1.6,-5.9,100,5,,,
@@ -1581,7 +1581,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-03,2026-10-10,League One,Huddersfield Town,Sheffield Wednesday,1X2 HOME (Huddersfield Town),HOME,STEAM_STRONG,2.035,1.8,-11.5,92,11,,,
 2026-10-03,2026-10-10,League One,Stockport County FC,Barnsley,1X2 AWAY (Barnsley),AWAY,STEAM_SHARP,6.6,6.01,-8.9,92,13,,,
 2026-10-03,2026-10-10,League One,Huddersfield Town,Sheffield Wednesday,O/U 2.5 OVER,OVER,STEAM_SHARP,1.68,1.555,-7.4,92,6,,,
-2026-10-03,2026-10-03,Argentina Primera Division,Defensa y Justicia,San Lorenzo,1X2 HOME (Defensa y Justicia),HOME,STEAM_SHARP,2.145,1.99,-7.2,92,15,,,
+2026-10-03,2026-10-03,Argentina Primera Division,Defensa y Justicia,San Lorenzo,1X2 HOME (Defensa y Justicia),HOME,STEAM_SHARP,2.145,1.99,-7.2,92,15,WIN,1.145,2026-10-04
 2026-10-03,2026-10-10,China Super League,Chengdu Rongcheng FC,Tianjin Jinmen Tiger FC,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.3,4.0,-7.0,100,11,,,
 2026-10-03,2026-10-10,China Super League,Qingdao Hainiu FC,Beijing FC,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.8,4.5,-6.2,100,5,,,
 2026-10-03,2026-10-10,League One,Doncaster Rovers,Burton Albion,1X2 HOME (Doncaster Rovers),HOME,STEAM_SHARP,1.76,1.66,-5.7,92,13,,,
