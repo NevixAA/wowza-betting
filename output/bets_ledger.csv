@@ -5347,28 +5347,90 @@ live,2026-09-24 17:58,2026-09-27,USA MLS,Nashville SC,Toronto FC,UNDER,2.5,2.62,
 live,2026-09-24 17:58,2026-09-26,League One,Stevenage,Sheffield Wednesday,UNDER,1.81,1.82,0.01,3.47,VALUABLE,Neutral,1.07,,,,,,standard,,1.82,1.81,2.0,0.55,0.0,NEUTRAL,standard_odds_history.csv
 live,2026-09-24 21:30,2026-09-26,League Two,Swindon Town,Accrington Stanley,UNDER,1.97,2.17,0.2,3.93,MARKSMAN,Confirmed,1.01,WIN,0.97,,1.99,-1.01,standard,,2.17,1.99,13.0,8.29,-1.01,CONFIRMED,standard_odds_history.csv
 live,2026-09-25 00:00,2026-09-26,League One,Mansfield Town,Leyton Orient,UNDER,1.95,1.95,0.0,3.52,VALUABLE,Neutral,0.93,,,,,,standard,,1.95,1.95,1.0,0.0,0.0,NEUTRAL,standard_odds_history.csv
-live,2026-09-25 04:52,2026-10-02,USA MLS,Seattle Sounders FC,Sporting Kansas City,UNDER,3.2,3.2,0.0,36.95,SNIPER,New,4.2,,,,,,new_format,,3.2,3.05,4.0,4.69,4.92,CONFIRMED,newformat_odds_dense.csv
-live,2026-09-25 21:36,2026-10-02,La Liga 2,CD Eldense,Oviedo,OVER,2.2,2.2,0.0,10.9,MARKSMAN,New,2.27,,,,,,standard,,2.2,2.2,3.0,0.0,0.0,NEUTRAL,standard_odds_history.csv
-live,2026-09-26 09:52,2026-10-02,Ireland Premier Division,Dundalk,Bohemians,UNDER,2.22,2.22,0.0,4.76,VALUABLE,Neutral,0.98,,,,,,new_format,,2.22,2.22,1.0,0.0,0.0,NEUTRAL,newformat_odds_dense.csv
+live,2026-09-25 04:52,2026-10-02,USA MLS,Seattle Sounders FC,Sporting Kansas City,UNDER,3.2,3.2,0.0,36.95,SNIPER,New,4.2,LOSS,-1.0,,3.35,-4.48,new_format,,3.2,3.05,4.0,4.69,4.92,CONFIRMED,newformat_odds_dense.csv
+live,2026-09-25 21:36,2026-10-02,La Liga 2,CD Eldense,Oviedo,OVER,2.2,2.2,0.0,10.9,MARKSMAN,New,2.27,WIN,1.2,,2.3,-4.35,standard,,2.2,2.2,3.0,0.0,0.0,NEUTRAL,standard_odds_history.csv
+live,2026-09-26 09:52,2026-10-02,Ireland Premier Division,Dundalk,Bohemians,UNDER,2.22,2.22,0.0,9.98,MARKSMAN,Conflicted,2.05,LOSS,-1.0,,2.52,-11.9,new_format,,2.22,2.22,1.0,0.0,0.0,NEUTRAL,newformat_odds_dense.csv
 live,2026-09-26 17:09,2026-09-26,USA MLS,Charlotte FC,Chicago Fire,UNDER,2.85,2.82,-0.03,4.65,VALUABLE,Neutral,0.63,WIN,1.85,,2.85,0.0,new_format,,2.82,2.85,9.0,-1.06,0.0,NEUTRAL,newformat_odds_dense.csv
 live,2026-09-26 17:09,2026-10-03,League One,Wimbledon,Stevenage,OVER,2.2,2.2,0.0,4.05,VALUABLE,New,0.84,,,,,,standard,,2.2,2.2,1.0,0.0,0.0,NEUTRAL,standard_odds_history.csv
 live,2026-09-26 19:52,2026-09-27,USA MLS,FC Dallas,Los Angeles FC,OVER,1.75,1.55,-0.2,3.93,VALUABLE,Conflicted,1.31,LOSS,-1.0,,1.85,-5.41,new_format,,1.53,1.85,14.0,-20.92,-5.41,CONFLICTED,newformat_odds_history.csv
-live,2026-09-26 19:52,2026-10-03,League Two,Crewe Alexandra,Bristol Rovers,UNDER,2.08,1.95,-0.13,3.44,VALUABLE,Conflicted,0.8,,,,,,standard,,1.95,1.99,4.0,-2.05,4.52,NEUTRAL,standard_odds_history.csv
-live,2026-09-26 22:20,2026-10-03,Argentina Primera Division,Newells Old Boys,Lanus,OVER,2.68,2.68,0.0,4.84,MARKSMAN,Confirmed,0.72,,,,,,new_format,,2.7,2.68,2.0,0.74,0.0,NEUTRAL,newformat_odds_history.csv
+live,2026-09-26 19:52,2026-10-03,League Two,Crewe Alexandra,Bristol Rovers,UNDER,2.08,1.95,-0.13,3.44,VALUABLE,Conflicted,0.8,LOSS,-1.0,,1.94,7.22,standard,,1.95,1.99,4.0,-2.05,4.52,NEUTRAL,standard_odds_history.csv
+live,2026-09-26 22:20,2026-10-03,Argentina Primera Division,Newells Old Boys,Lanus,OVER,2.68,2.68,0.0,4.84,MARKSMAN,Confirmed,0.72,LOSS,-1.0,,2.62,2.29,new_format,,2.7,2.68,2.0,0.74,0.0,NEUTRAL,newformat_odds_history.csv
 live,2026-09-27 00:45,2026-09-30,USA MLS,New York Red Bulls,St. Louis City SC,UNDER,2.75,2.75,0.0,12.72,SNIPER,Neutral,1.82,LOSS,-1.0,,2.62,4.96,new_format,,2.75,2.75,1.0,0.0,0.0,NEUTRAL,newformat_odds_dense.csv
-live,2026-09-27 10:44,2026-10-03,La Liga 2,Cádiz CF,Leganés,OVER,2.07,2.07,0.0,3.71,VALUABLE,Neutral,0.87,,,,,,standard,,,,,,,NO_CURVE,
-live,2026-09-27 10:44,2026-10-03,League Two,Gillingham,Newport County,OVER,1.92,1.92,0.0,3.43,VALUABLE,Neutral,0.93,,,,,,standard,,2.0,1.92,6.0,4.0,0.0,CONFIRMED,standard_sidemarket_odds_history.csv
-live,2026-09-27 13:56,2026-10-04,La Liga 2,Real Sociedad B,Granada CF,OVER,1.97,1.97,0.0,3.12,VALUABLE,New,0.81,,,,,,standard,,1.97,1.96,2.0,0.51,0.51,NEUTRAL,standard_odds_history.csv
+live,2026-09-27 10:44,2026-10-03,La Liga 2,Cádiz CF,Leganés,OVER,2.07,2.07,0.0,3.71,VALUABLE,Neutral,0.87,WIN,1.07,,2.08,-0.48,standard,,,,,,,NO_CURVE,
+live,2026-09-27 10:44,2026-10-03,League Two,Gillingham,Newport County,OVER,1.92,1.92,0.0,3.43,VALUABLE,Neutral,0.93,LOSS,-1.0,,1.94,-1.03,standard,,2.0,1.92,6.0,4.0,0.0,CONFIRMED,standard_sidemarket_odds_history.csv
+live,2026-09-27 13:56,2026-10-04,La Liga 2,Real Sociedad B,Granada CF,OVER,1.97,1.97,0.0,9.4,MARKSMAN,Neutral,2.42,,,,,,standard,,1.97,1.96,2.0,0.51,0.51,NEUTRAL,standard_odds_history.csv
 live,2026-09-27 23:59,2026-10-03,League Two,Walsall,Crawley Town,UNDER,2.4,2.4,0.0,3.75,VALUABLE,Neutral,0.67,,,,,,standard,,2.4,2.4,1.0,0.0,0.0,NEUTRAL,standard_odds_history.csv
 live,2026-09-28 13:47,2026-10-04,La Liga 2,CD Castellón,AD Ceuta FC,UNDER,2.68,2.68,0.0,12.21,MARKSMAN,Conflicted,1.82,,,,,,standard,,2.68,2.92,3.0,-8.96,-8.22,CONFLICTED,standard_odds_history.csv
 live,2026-09-28 13:47,2026-10-03,League Two,Northampton Town,Oldham Athletic,OVER,1.99,1.95,-0.04,4.73,VALUABLE,Conflicted,1.19,,,,,,standard,,1.95,1.99,2.0,-2.05,0.0,NEUTRAL,standard_odds_history.csv
-live,2026-09-28 13:47,2026-10-03,League Two,Rochdale,Swindon Town,OVER,1.78,1.76,-0.02,3.37,VALUABLE,Neutral,1.08,,,,,,standard,,1.8,1.8,7.0,0.0,-1.11,NEUTRAL,standard_sidemarket_odds_history.csv
+live,2026-09-28 13:47,2026-10-03,League Two,Rochdale,Swindon Town,OVER,1.78,1.76,-0.02,3.37,VALUABLE,Neutral,1.08,LOSS,-1.0,,1.59,11.95,standard,,1.8,1.8,7.0,0.0,-1.11,NEUTRAL,standard_sidemarket_odds_history.csv
 live,2026-09-28 13:47,2026-10-03,League One,Peterborough United,Notts County,UNDER,2.1,2.1,0.0,3.18,VALUABLE,Neutral,0.72,,,,,,standard,,2.1,2.1,1.0,0.0,0.0,NEUTRAL,standard_odds_history.csv
-live,2026-09-28 22:31,2026-10-05,Argentina Primera Division,Velez Sarsfield BA,Platense,OVER,3.05,3.05,0.0,3.4,VALUABLE,New,0.42,,,,,,new_format,,3.05,3.05,1.0,0.0,0.0,NEUTRAL,newformat_odds_dense.csv
+live,2026-09-28 22:31,2026-10-05,Argentina Primera Division,Velez Sarsfield BA,Platense,OVER,3.05,3.05,0.0,7.05,MARKSMAN,Confirmed,0.86,,,,,,new_format,,3.05,3.05,1.0,0.0,0.0,NEUTRAL,newformat_odds_dense.csv
 live,2026-09-29 12:45,2026-10-05,Argentina Primera Division,Estudiantes de Río Cuarto,Racing Club,OVER,2.68,2.68,0.0,9.13,MARKSMAN,Conflicted,1.36,,,,,,new_format,,,,,,,,
 live,2026-09-29 19:58,2026-10-03,League Two,Colchester United,Port Vale,OVER,2.04,1.82,-0.22,4.5,VALUABLE,Conflicted,1.08,,,,,,standard,,,,,,,,
 live,2026-09-30 02:22,2026-10-07,USA MLS,Chicago Fire,Vancouver Whitecaps FC,UNDER,2.6,2.6,0.0,9.26,MARKSMAN,Neutral,1.45,,,,,,new_format,,,,,,,,
 live,2026-09-30 23:42,2026-10-07,Brazil Serie A,Botafogo,Vasco da Gama,UNDER,1.93,1.93,0.0,3.11,VALUABLE,New,0.84,,,,,,new_format,,,,,,,,
-live,2026-09-30 23:42,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,UNDER,1.88,1.88,0.0,3.04,VALUABLE,New,0.86,,,,,,new_format,,,,,,,,
+live,2026-09-30 23:42,2026-10-07,Brazil Serie A,Vitoria,Chapecoense,UNDER,1.88,1.88,0.0,9.93,MARKSMAN,Neutral,2.82,,,,,,new_format,,,,,,,,
 live,2026-10-01 05:45,2026-10-03,League One,Barnsley,Milton Keynes Dons,UNDER,2.2,2.2,0.0,3.25,VALUABLE,Neutral,0.68,,,,,,standard,,,,,,,,
 live,2026-10-01 05:45,2026-10-08,Brazil Serie A,Cruzeiro,Sao Paulo,OVER,2.0,2.0,0.0,3.21,VALUABLE,New,0.8,,,,,,new_format,,,,,,,,
+live,2026-10-01 20:29,2026-10-08,Finland Veikkausliiga,KuPS Kuopio,AC Oulu,UNDER,1.95,1.95,0.0,8.24,MARKSMAN,Neutral,2.17,,,,,,new_format,,,,,,,,
+live,2026-10-01 20:29,2026-10-08,Ireland Premier Division,Shamrock Rovers,Drogheda United,UNDER,2.05,2.05,0.0,3.64,VALUABLE,New,0.87,,,,,,new_format,,,,,,,,
+live,2026-10-02 05:30,2026-10-09,Brazil Serie A,Fluminense,Coritiba,OVER,1.83,1.83,0.0,5.23,VALUABLE,New,1.57,,,,,,new_format,,,,,,,,
+live,2026-10-02 05:30,2026-10-04,Argentina Primera Division,Atlético Huracán,Aldosivi Mar del Plata,OVER,2.52,2.54,0.02,3.88,MARKSMAN,Confirmed,0.64,,,,,,new_format,,,,,,,,
+live,2026-10-02 11:21,2026-10-09,Brazil Serie A,Palmeiras,Bahia,UNDER,2.11,2.11,0.0,8.52,MARKSMAN,Neutral,1.92,,,,,,new_format,,,,,,,,
+live,2026-10-02 11:21,2026-10-08,Finland Veikkausliiga,HJK Helsinki,VPS Vaasa,UNDER,2.15,2.15,0.0,3.42,VALUABLE,Neutral,0.74,,,,,,new_format,,,,,,,,
+live,2026-10-02 11:21,2026-10-07,Finland Veikkausliiga,IF Gnistan,FC Inter Turku,UNDER,1.99,1.99,0.0,3.37,VALUABLE,Neutral,0.85,,,,,,new_format,,,,,,,,
+live,2026-10-02 14:44,2026-10-09,Japan J-League,Kashima Antlers,Gamba Osaka,UNDER,2.28,2.28,0.0,6.24,VALUABLE,New,1.22,,,,,,new_format,,,,,,,,
+live,2026-10-02 14:44,2026-10-03,Argentina Primera Division,Atlético Tucuman,Barracas Central,OVER,2.75,2.85,0.1,3.33,MARKSMAN,Confirmed,0.48,WIN,1.75,,2.85,-3.51,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Denmark Superliga,FC Nordsjaelland,OB Odense BK,UNDER,2.75,2.75,0.0,17.53,SNIPER,New,2.5,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,China Super League,Zhejiang,Shanghai SIPG FC,UNDER,3.0,3.0,0.0,13.43,SNIPER,New,1.68,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Finland Veikkausliiga,SJK Seinäjoki,FC Lahti,UNDER,2.09,2.09,0.0,12.72,SNIPER,New,2.92,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Ireland Premier Division,Waterford FC,Galway United,UNDER,2.32,2.32,0.0,12.67,SNIPER,New,2.4,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Ireland Premier Division,Shelbourne Dublin,Sligo Rovers,UNDER,2.18,2.18,0.0,12.33,SNIPER,Neutral,2.61,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Norway Eliteserien,SK Brann,Viking FK,UNDER,2.7,2.7,0.0,8.92,MARKSMAN,Neutral,1.31,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Ligue 2,Montpellier,Grenoble,OVER,2.0,2.0,0.0,6.79,VALUABLE,New,1.7,,,,,,standard,,,,,,,,
+live,2026-10-02 19:40,2026-10-07,Brazil Serie A,Remo,Grêmio,UNDER,1.85,1.93,0.08,5.51,MARKSMAN,Confirmed,1.62,,,,,,new_format,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Ligue 2,Sochaux,Boulogne,OVER,2.22,2.22,0.0,5.5,VALUABLE,New,1.13,,,,,,standard,,,,,,,,
+live,2026-10-02 19:40,2026-10-09,Bundesliga 2,Eintracht Braunschweig,Holstein Kiel,UNDER,2.32,2.32,0.0,3.97,VALUABLE,New,0.75,,,,,,standard,,,,,,,,
+live,2026-10-02 23:18,2026-10-03,Argentina Primera Division,Boca Juniors,Union Santa Fe,UNDER,1.85,1.63,-0.22,9.53,MARKSMAN,Conflicted,2.8,LOSS,-1.0,,1.85,0.0,new_format,,,,,,,,
+live,2026-10-03 02:11,2026-10-10,Mexico Liga MX,Puebla,León,UNDER,1.85,1.85,0.0,4.96,VALUABLE,New,1.46,,,,,,new_format,,,,,,,,
+live,2026-10-03 05:14,2026-10-10,Mexico Liga MX,Tigres,Toluca,UNDER,2.05,2.05,0.0,5.15,VALUABLE,New,1.23,,,,,,new_format,,,,,,,,
+live,2026-10-03 05:14,2026-10-03,League Two,Salford City,Fleetwood Town,UNDER,2.21,1.98,-0.23,3.72,VALUABLE,Conflicted,0.77,WIN,1.21,,2.11,4.74,standard,,,,,,,,
+live,2026-10-03 10:37,2026-10-10,Japan J-League,Cerezo Osaka,Yokohama F Marinos,UNDER,2.12,2.12,0.0,12.88,SNIPER,New,2.87,,,,,,new_format,,,,,,,,
+live,2026-10-03 10:37,2026-10-10,Japan J-League,Avispa Fukuoka,Fagiano Okayama,OVER,2.25,2.25,0.0,6.54,VALUABLE,New,1.31,,,,,,new_format,,,,,,,,
+live,2026-10-03 10:37,2026-10-03,La Liga 2,Sabadell FC,Andorra CF,OVER,1.96,1.88,-0.08,4.51,VALUABLE,Conflicted,1.18,,,,,,standard,,,,,,,,
+live,2026-10-03 10:37,2026-10-04,La Liga 2,Las Palmas,Real Valladolid CF,OVER,1.96,1.87,-0.09,4.5,VALUABLE,Conflicted,1.17,,,,,,standard,,,,,,,,
+live,2026-10-03 10:37,2026-10-03,League One,Reading,Bradford City,OVER,1.88,1.88,0.0,3.98,VALUABLE,Neutral,1.13,LOSS,-1.0,,1.88,0.0,standard,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,China Super League,Shanghai Shenhua FC,Yunnan Yukun,UNDER,3.8,3.8,0.0,19.21,SNIPER,New,1.72,,,,,,new_format,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,China Super League,Chengdu Rongcheng FC,Tianjin Jinmen Tiger FC,UNDER,2.2,2.2,0.0,15.47,SNIPER,New,3.22,,,,,,new_format,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,Bundesliga 2,1. FC Magdeburg,Hannover 96,UNDER,2.82,2.82,0.0,9.05,VALUABLE,New,1.24,,,,,,standard,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,Bundesliga 2,SV Darmstadt 98,FC Energie Cottbus,UNDER,2.72,2.72,0.0,6.9,VALUABLE,New,1.0,,,,,,standard,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,Sweden Allsvenskan,GAIS,IK Sirius,UNDER,2.05,2.05,0.0,9.65,MARKSMAN,Neutral,2.3,,,,,,new_format,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,Championship,Charlton Athletic,Bristol City,OVER,2.0,2.0,0.0,5.9,MARKSMAN,New,1.47,,,,,,standard,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,Bundesliga 2,VfL Osnabrück,Dynamo Dresden,UNDER,2.35,2.35,0.0,4.61,VALUABLE,New,0.85,,,,,,standard,,,,,,,,
+live,2026-10-03 13:22,2026-10-10,Sweden Allsvenskan,AIK,IF Brommapojkarna,UNDER,2.25,2.25,0.0,3.28,VALUABLE,New,0.66,,,,,,new_format,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Norway Eliteserien,Bodø/Glimt,Kristiansund BK,UNDER,5.0,5.0,0.0,21.26,SNIPER,New,1.33,,,,,,new_format,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Austrian Bundesliga,Grazer AK,RB Salzburg,UNDER,2.62,2.62,0.0,12.42,SNIPER,New,1.92,,,,,,new_format,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,League One,Stockport County FC,Barnsley,UNDER,2.8,2.8,0.0,11.99,MARKSMAN,New,1.67,,,,,,standard,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,League One,Leicester City,Peterborough United,UNDER,2.7,2.7,0.0,11.86,MARKSMAN,New,1.74,,,,,,standard,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Finland Veikkausliiga,IFK Mariehamn,Ilves Tampere,UNDER,2.24,2.24,0.0,8.56,MARKSMAN,New,1.72,,,,,,new_format,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Norway Eliteserien,Rosenborg,Sandefjord,UNDER,2.8,2.8,0.0,5.68,VALUABLE,New,0.79,,,,,,new_format,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Sweden Allsvenskan,Mjällby AIF,Degerfors IF,UNDER,1.97,1.97,0.0,5.58,VALUABLE,New,1.44,,,,,,new_format,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Serie B,Arezzo,Cremonese,OVER,2.02,2.02,0.0,4.68,VALUABLE,New,1.15,,,,,,standard,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,La Liga 2,AD Ceuta FC,Sabadell FC,OVER,1.88,1.88,0.0,3.99,VALUABLE,New,1.13,,,,,,standard,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,League Two,Oldham Athletic,Accrington Stanley,UNDER,2.06,2.06,0.0,3.64,VALUABLE,New,0.86,,,,,,standard,,,,,,,,
+live,2026-10-03 17:30,2026-10-10,Ligue 2,Clermont,Red Star,OVER,2.05,2.05,0.0,3.08,VALUABLE,Neutral,0.73,,,,,,standard,,,,,,,,
+live,2026-10-03 20:14,2026-10-10,USA MLS,Chicago Fire,New York City FC,UNDER,2.38,2.38,0.0,10.71,MARKSMAN,New,1.94,,,,,,new_format,,,,,,,,
+live,2026-10-03 20:14,2026-10-10,Bundesliga 2,1. FC Nürnberg,VfL Wolfsburg,UNDER,2.82,2.82,0.0,7.43,VALUABLE,New,1.02,,,,,,standard,,,,,,,,
+live,2026-10-03 20:14,2026-10-10,Brazil Serie A,Vasco da Gama,Remo,UNDER,2.28,2.28,0.0,4.71,VALUABLE,New,0.92,,,,,,new_format,,,,,,,,
+live,2026-10-03 20:14,2026-10-09,Argentina Primera Division,Aldosivi Mar del Plata,Sarmiento de Junin,OVER,2.37,2.37,0.0,3.24,VALUABLE,Neutral,0.59,,,,,,new_format,,,,,,,,
+live,2026-10-03 23:14,2026-10-10,Mexico Liga MX,Querétaro,Atlante FC,UNDER,1.91,1.91,0.0,5.71,VALUABLE,New,1.57,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-10,USA MLS,Orlando City SC,Columbus Crew SC,UNDER,2.75,2.75,0.0,14.65,SNIPER,New,2.09,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-10,USA MLS,New York Red Bulls,San Diego FC,UNDER,2.8,2.8,0.0,12.02,SNIPER,Neutral,1.67,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-10,USA MLS,Atlanta United FC,FC Cincinnati,UNDER,2.85,2.85,0.0,9.42,MARKSMAN,New,1.27,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-11,Argentina Primera Division,River Plate,Estudiantes de Río Cuarto,UNDER,1.9,1.9,0.0,9.1,MARKSMAN,New,2.53,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-11,USA MLS,Sporting Kansas City,Portland Timbers,UNDER,2.9,2.9,0.0,8.42,MARKSMAN,New,1.11,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-11,Mexico Liga MX,Atlas,Guadalajara,UNDER,2.05,2.05,0.0,5.97,VALUABLE,New,1.42,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-10,Mexico Liga MX,FC Juárez,Tijuana,UNDER,1.91,1.91,0.0,8.73,MARKSMAN,Neutral,2.4,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-11,USA MLS,Colorado Rapids,San Jose Earthquakes,UNDER,2.38,2.38,0.0,4.81,VALUABLE,New,0.87,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-11,USA MLS,Austin FC,Nashville SC,UNDER,2.05,2.05,0.0,4.62,VALUABLE,New,1.1,,,,,,new_format,,,,,,,,
+live,2026-10-04 02:48,2026-10-11,USA MLS,Los Angeles FC,Vancouver Whitecaps FC,UNDER,2.31,2.31,0.0,3.24,VALUABLE,New,0.62,,,,,,new_format,,,,,,,,
