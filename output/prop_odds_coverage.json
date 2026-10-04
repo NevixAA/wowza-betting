@@ -9,11 +9,11 @@
     "source": "api_football"
   },
   "apifootball:Austrian Bundesliga": {
-    "empty_streak": 2,
+    "empty_streak": 0,
     "last_priced": "2026-10-04",
     "last_probe": "2026-10-04",
     "league": "Austrian Bundesliga",
-    "priced_events": 235,
+    "priced_events": 236,
     "probes": 240,
     "source": "api_football"
   },
@@ -61,12 +61,12 @@
     "source": "api_football"
   },
   "apifootball:Conference League": {
-    "empty_streak": 142,
+    "empty_streak": 143,
     "last_priced": "2026-08-27",
     "last_probe": "2026-10-04",
     "league": "Conference League",
     "priced_events": 3,
-    "probes": 145,
+    "probes": 146,
     "source": "api_football"
   },
   "apifootball:Denmark Superliga": {
@@ -79,12 +79,12 @@
     "source": "api_football"
   },
   "apifootball:Europa League": {
-    "empty_streak": 61,
+    "empty_streak": 62,
     "last_priced": "2026-09-17",
     "last_probe": "2026-10-04",
     "league": "Europa League",
     "priced_events": 69,
-    "probes": 180,
+    "probes": 181,
     "source": "api_football"
   },
   "apifootball:Finland Veikkausliiga": {
@@ -129,11 +129,11 @@
     "source": "api_football"
   },
   "apifootball:League Two": {
-    "empty_streak": 2,
+    "empty_streak": 0,
     "last_priced": "2026-10-04",
     "last_probe": "2026-10-04",
     "league": "League Two",
-    "priced_events": 315,
+    "priced_events": 316,
     "probes": 368,
     "source": "api_football"
   },
@@ -228,8 +228,8 @@
     "last_probe": "2026-10-04",
     "league": "Premier League",
     "matched_events": 8,
-    "priced_events": 1896,
-    "probes": 2039,
+    "priced_events": 1902,
+    "probes": 2045,
     "unmatched_sample": [],
     "wanted_fixtures": 8
   },
@@ -344,12 +344,10 @@
     "last_priced": "2026-10-04",
     "last_probe": "2026-10-04",
     "league": "USA MLS",
-    "matched_events": 9,
-    "priced_events": 1353,
-    "probes": 1495,
-    "unmatched_sample": [
-      "Chicago Fire vs Vancouver Whitecaps"
-    ],
-    "wanted_fixtures": 10
+    "matched_events": 8,
+    "priced_events": 1349,
+    "probes": 1491,
+    "unmatched_sample": [],
+    "wanted_fixtures": 8
   }
 }
