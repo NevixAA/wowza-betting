@@ -86,6 +86,16 @@ jobs:
       - name: Capture forward new-format odds
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # PER-BOOKMAKER RETENTION, ON since 2026-10-04 -- same flag, same semantics and the
+          # same zero quota cost as the standard capture: dropping the bookmaker filter makes
+          # the SAME request return every book. The consensus archive below is unchanged,
+          # because _parse_all_odds keeps Bet365 only regardless of what the payload carries.
+          #
+          # This track matters most. New-format main O/U is -16.12u over 30 days against
+          # standard's +1.41u, and the odds>3.0 band holding 35.5% of the net loss is 100%
+          # new_format. Any fix there will be argued from closing lines, and /odds is pre-match
+          # only -- so the evidence has to exist before the question is asked.
+          CAPTURE_BOOK_QUOTES: "1"
         run: |
           # NEAR on the 15-minute cron, WIDE on the 4x/day cron. One script, one flag.
           # ── NEAR vs WIDE: MATCH THE WIDE CRON, DEFAULT TO NEAR ─────────────────────────
@@ -205,6 +215,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/newformat_odds_history.csv 2>/dev/null || true
+          # Stage the per-book quotes too. Omitting this is the 2026-08-15 failure shape:
+          # every step green, the data captured, nothing persisted.
+          git add -f output/book_quotes 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: nf odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

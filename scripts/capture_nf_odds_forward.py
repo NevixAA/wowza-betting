@@ -198,11 +198,29 @@ def _parse_all_odds(data: dict) -> dict:
     return _sanitize_ou(out)
 
 
-def _fetch_odds(fixture_id: int) -> dict:
+# PER-BOOKMAKER RETENTION (§10), same flag and same semantics as the standard capture.
+#
+# Worth doing HERE in particular. New-format main O/U is where the money is being lost --
+# -16.12u over 30 days against standard's +1.41u -- and the odds>3.0 band that accounts for
+# 35.5% of the net loss is 100% new_format. Any eventual fix on that track will be argued from
+# closing lines, and /odds is pre-match only, so the evidence has to be collected BEFORE the
+# question is asked. Rows go to output/book_quotes/; the consensus archive is unchanged.
+CAPTURE_BOOK_QUOTES = os.getenv("CAPTURE_BOOK_QUOTES", "").lower() in {"1", "true", "yes"}
+
+
+def _fetch_odds(fixture_id: int, want_raw: bool = False) -> dict:
+    """Parsed Bet365 markets. With `want_raw`, also returns the whole payload under `_raw`.
+
+    The bookmaker filter is dropped only when per-book capture is on, so the default request is
+    byte-for-byte what it has always been -- and dropping it costs no extra calls, because the
+    same request simply returns every book instead of one.
+    """
     for attempt in range(3):
         try:
-            r = requests.get(f"{_BASE}/odds", headers=_HEADERS,
-                             params={"fixture": fixture_id, "bookmaker": BET365}, timeout=20)
+            params = {"fixture": fixture_id}
+            if not want_raw:
+                params["bookmaker"] = BET365
+            r = requests.get(f"{_BASE}/odds", headers=_HEADERS, params=params, timeout=20)
             if r.status_code == 429:
                 time.sleep(15); continue
             remaining = int(r.headers.get("x-ratelimit-requests-remaining", 9999))
@@ -215,7 +233,10 @@ def _fetch_odds(fixture_id: int) -> dict:
                 if "rateLimit" in str(data["errors"]) or "requests" in str(data["errors"]).lower():
                     time.sleep(15); continue
                 return {}
-            return _parse_all_odds(data)
+            parsed = _parse_all_odds(data)
+            if want_raw:
+                parsed["_raw"] = data
+            return parsed
         except Exception:
             if attempt == 2:
                 return {}
@@ -231,6 +252,7 @@ def run() -> int:
     snap_ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     leagues = sorted(config.NEW_FORMAT_LEAGUES & set(config.API_FOOTBALL_IDS))
     rows, stop = [], False
+    book_rows: list[dict] = []   # per-book quotes, only populated when CAPTURE_BOOK_QUOTES
     # NEAREST KICKOFF ACROSS EVERYTHING THIS PASS SEES, for the NEAR loop in nf_odds_capture.yml.
     # Costs nothing: the hours-to-kickoff value is computed per fixture anyway. Without it the
     # loop cannot know whether a match is imminent, so it can only run a fixed length and stop —
@@ -270,9 +292,20 @@ def run() -> int:
             away = teams.get("away", {}).get("name", "")
             if not (fid and home and away):
                 continue
-            odds = _fetch_odds(fid)
+            odds = _fetch_odds(fid, want_raw=CAPTURE_BOOK_QUOTES)
             if odds.get("_stop"):
                 stop = True; break
+            raw_payload = odds.pop("_raw", None)
+            if raw_payload is not None:
+                try:
+                    from src.book_quotes import parse_books
+                    book_rows.extend(parse_books(
+                        raw_payload, fixture_id=fid, kickoff_utc=_iso_kickoff(raw_ko),
+                        league=league, home=home, away=away, snapshot_ts=snap_ts,
+                        model_type="new_format"))
+                except Exception as _e:                               # noqa: BLE001
+                    # Per-book capture must never take the main archive down with it.
+                    print(f"  [book_quotes] skipped fixture {fid}: {_e}")
             for market, odd in odds.items():
                 rows.append({"snapshot_date": snap_date, "snapshot_ts": snap_ts,
                              "match_date": mdate,
@@ -282,6 +315,20 @@ def run() -> int:
             n_lg += 1
         _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
         print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
+    if CAPTURE_BOOK_QUOTES and book_rows:
+        try:
+            from src.book_quotes import append_quotes, QUOTES_DIR
+            n_q = append_quotes(book_rows)
+            n_books = len({r.get("bookmaker_id") for r in book_rows})
+            print(f"[book_quotes] +{n_q} changed quotes from {len(book_rows)} parsed across "
+                  f"{n_books} bookmakers -> {QUOTES_DIR.name}/")
+        except Exception as _e:                                       # noqa: BLE001
+            print(f"[book_quotes] write failed: {_e}")
+
+    # DELIBERATELY AFTER THE BOOK-QUOTE WRITE. `rows` holds Bet365 only, and Bet365's coverage
+    # of new-format side markets is thin, so a fixture priced by eight other books yields ZERO
+    # consensus rows and eight books of quotes. Returning first would discard exactly the
+    # fixtures where per-book capture adds the most.
     if not rows:
         print("[nf_odds] no rows captured")
         # Emitted even with no rows: "nothing priced" and "nothing is near kickoff" are
