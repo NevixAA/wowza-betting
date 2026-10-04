@@ -127,7 +127,43 @@ def main() -> int:
                    "logged decisions on models that got WORSE. Not yet wired into pipeline.py."),
         "historical_bad_promotions": 17, "historical_decisions": 56}
 
+    # §10 per-book capture + kickoff ladder
+    bq = config.OUTPUT_DIR / "book_quotes.csv"
+    r["book_quotes_ladder"] = {
+        "status": "SAFE_NOW",
+        "enabled": bq.exists(),
+        "reason": ("per-bookmaker retention costs the SAME number of API calls (the bookmaker "
+                   "filter is simply dropped); a live probe returned 9 books including Pinnacle "
+                   "and Betfair. OFF by default via CAPTURE_BOOK_QUOTES; production capture is "
+                   "byte-identical until enabled."),
+        "closing_rule": ("closing_quote() returns the last quote inside T-30m or NOTHING — it "
+                         "never substitutes an earlier price, and POST-kickoff quotes are never "
+                         "eligible")}
+
+    # §15 settlement alignment
+    sa = Path(__file__).resolve().parents[1] / "registry" / "settlement_alignment.json"
+    if sa.exists():
+        j = json.loads(sa.read_text(encoding="utf-8"))
+        r["settlement_alignment"] = {
+            "status": "SAFE_NOW",
+            "aligned": j["summary"]["aligned"],
+            "blocked": j["summary"]["unverified_and_therefore_blocked"],
+            "reason": ("every BLOCKED market is a player prop, already PAPER under invariant 2, "
+                       "so nothing bettable is blocked — the effect is that prop EV/ROI/CLV "
+                       "figures must not be quoted as measured against the paying event")}
+
+    # §17 fantasy
+    r["fantasy_challenger"] = {
+        "status": "REJECTED",
+        "reason": ("the optimal blend weight on Wowza is 0.0 — any Wowza makes it worse. On 575 "
+                   "settled player-gameweeks FPL ep_next alone gives MAE 1.535 / rho 0.705 "
+                   "against Wowza's 2.164 / 0.543, and Wowza projects +0.993 points high. Do "
+                   "not replace ep_next and do not blend."),
+        "n": 575, "gameweeks": 2}
+
     statuses = {k: v.get("status") for k, v in r.items() if isinstance(v, dict) and "status" in v}
+    # SAFE_NOW items are correctness fixes, not model replacements, so they do not
+    # block — but no component being CHAMPION means v9 stays champion regardless.
     r["safe_to_replace_v9"] = all(s == "CHAMPION" for s in statuses.values())
     r["blocking"] = sorted(k for k, s in statuses.items() if s != "CHAMPION")
 

@@ -1,0 +1,115 @@
+{
+  "registry_name": "wowza_settlement_alignment",
+  "version": 1,
+  "generated_at_utc": "2026-10-04T00:00:00Z",
+  "purpose": "§15. For every player/prop/stat market, record whether OUR outcome label is defined the same way the BOOKMAKER settles it. Where they differ, no EV, ROI or CLV figure for that market can be trusted, because the model is being graded against a different event from the one that pays.",
+
+  "why_this_matters_concretely": "A shot that deflects, a tackle logged as a block, an assist awarded after a deflection, a card shown after the whistle — each provider rules differently. If Opta says 3 shots on target and the bookmaker's provider says 2, our 'win' is their 'loss'. The model can be perfectly calibrated against our label and still lose money against theirs, and no amount of backtesting reveals it because the backtest grades against our own definition.",
+
+  "statuses": {
+    "ALIGNED": "our provider and the settlement provider are the same, or definitions verified equivalent",
+    "UNVERIFIED": "we have not checked. Treat exactly as BLOCKED until checked.",
+    "MISALIGNED": "definitions known to differ",
+    "BLOCKED": "deployment_mode for anything not ALIGNED"
+  },
+
+  "policy": "deployment_mode = BLOCKED unless alignment_status == ALIGNED. BLOCKED means: collect, model, report accuracy — but publish no EV, no ROI, no CLV and no edge for that market. Props are PAPER regardless (invariant 2), so nothing here authorises a stake; this governs whether the NUMBERS are quotable.",
+
+  "our_stat_provider": {
+    "source": "API-Football (api-sports.io) fixture statistics and player statistics",
+    "note": "player_history.parquet is built from this. Our labels are therefore API-Football's definitions, whatever the bookmaker uses."
+  },
+
+  "markets": [
+    {
+      "market": "goals",
+      "our_definition": "API-Football player goals in the fixture; penalties included, own goals excluded",
+      "bookmaker": "OddsAPI aggregate (multiple books)",
+      "settlement_provider": "UNKNOWN — OddsAPI does not expose the settling source per book",
+      "alignment_status": "UNVERIFIED",
+      "deployment_mode": "BLOCKED",
+      "risk": "LOW — anytime-scorer is the least ambiguous prop; own goals are the main edge case and are rare"
+    },
+    {
+      "market": "assists",
+      "our_definition": "API-Football assists",
+      "bookmaker": "OddsAPI aggregate",
+      "settlement_provider": "UNKNOWN",
+      "alignment_status": "UNVERIFIED",
+      "deployment_mode": "BLOCKED",
+      "risk": "HIGH — assist definitions differ materially between Opta, Sportradar and API-Football, especially on deflections, rebounds and won free kicks. Disagreement rates in the 5-15% range are normal."
+    },
+    {
+      "market": "sot",
+      "our_definition": "API-Football shots on goal for the player",
+      "bookmaker": "OddsAPI aggregate",
+      "settlement_provider": "UNKNOWN",
+      "alignment_status": "UNVERIFIED",
+      "deployment_mode": "BLOCKED",
+      "risk": "HIGH — whether a blocked shot counts as on target is the single largest source of provider disagreement in player props, and sot is our highest-volume prop market (1,694 of 2,570 CLV records)."
+    },
+    {
+      "market": "sot2",
+      "our_definition": "API-Football shots on goal >= 2",
+      "bookmaker": "OddsAPI aggregate",
+      "settlement_provider": "UNKNOWN",
+      "alignment_status": "UNVERIFIED",
+      "deployment_mode": "BLOCKED",
+      "risk": "HIGH — inherits sot's definition risk, amplified: a single disputed shot flips the whole line."
+    },
+    {
+      "market": "sot3",
+      "our_definition": "API-Football shots on goal >= 3",
+      "bookmaker": "OddsAPI aggregate",
+      "settlement_provider": "UNKNOWN",
+      "alignment_status": "UNVERIFIED",
+      "deployment_mode": "BLOCKED",
+      "risk": "HIGH — as sot2"
+    },
+    {
+      "market": "cards",
+      "our_definition": "API-Football yellow or red card shown to the player during the fixture",
+      "bookmaker": "OddsAPI aggregate",
+      "settlement_provider": "UNKNOWN",
+      "alignment_status": "UNVERIFIED",
+      "deployment_mode": "BLOCKED",
+      "risk": "HIGH — books differ on cards shown after the final whistle, to unused substitutes and to staff. Several void rather than settle."
+    },
+    {
+      "market": "ou",
+      "our_definition": "full-time goals from football-data.co.uk / API-Football, 90 minutes plus stoppage, extra time excluded",
+      "bookmaker": "Bet365 and others via API-Football",
+      "settlement_provider": "bookmaker's own; full-time goals is a near-universal definition",
+      "alignment_status": "ALIGNED",
+      "deployment_mode": "ACTIVE",
+      "risk": "LOW — 90-minute goals is the least ambiguous market in football and is where real money sits"
+    },
+    {
+      "market": "btts",
+      "our_definition": "both teams scored >= 1 in 90 minutes plus stoppage",
+      "bookmaker": "Bet365 and others",
+      "settlement_provider": "bookmaker's own",
+      "alignment_status": "ALIGNED",
+      "deployment_mode": "ACTIVE",
+      "risk": "LOW — own goals count for the scoring team under essentially every book's rules and under ours"
+    },
+    {
+      "market": "ht_ou",
+      "our_definition": "half-time goals from fd_history ht_home_goals + ht_away_goals",
+      "bookmaker": "Bet365",
+      "settlement_provider": "bookmaker's own",
+      "alignment_status": "ALIGNED",
+      "deployment_mode": "ACTIVE",
+      "risk": "LOW — but note half-time is PAPER on its own evidence, not on alignment grounds"
+    }
+  ],
+
+  "summary": {
+    "aligned": 3,
+    "unverified_and_therefore_blocked": 6,
+    "misaligned": 0,
+    "note": "Every BLOCKED market is a player prop, and player props are already PAPER under invariant 2. So this registry currently blocks nothing that was going to be bet — its effect is that prop EV/ROI/CLV figures must not be quoted as if they were measured against the paying event."
+  },
+
+  "how_to_verify": "Pick 50 settled selections per market. Compare our label against the book's published settlement for the same selection. Record the disagreement rate. Below ~1% and the definitions are equivalent in practice; above that, record MISALIGNED with the rate. This has not been done for any market."
+}

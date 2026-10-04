@@ -117,14 +117,17 @@ CONTROL  BH-FDR q=0.10 + White's Reality Check + preregistration registry
 | `scripts/v91_readiness.py` | generates `output/v91_readiness.json` from evidence |
 | `registry/preregistered_hypotheses.json` | 6 frozen hypotheses |
 | `docs/BTTS_EDGE_VALIDATION.md`, `docs/V9_1_UPGRADE_ROADMAP.md`, this file | |
-| `tests/` ×5 | 51 tests |
+| `src/book_quotes.py` | §10 per-book quotes, kickoff ladder, honest close |
+| `scripts/fantasy_challenger.py` | §17 blend sweep against FPL `ep_next` |
+| `registry/settlement_alignment.json` | §15 our label vs the book's settlement, per market |
+| `tests/` ×6 | 63 tests |
 
 **Pro (`wowzaV9-Pro`)** — read only; its research was reproduced, not modified.
 **V11 (`wowza_v11`)** — untouched; conclusion is "keep collecting", which needs no change.
 
 ---
 
-## F. Tests — 51 passing
+## F. Tests — 63 passing
 
 Leakage (a model fitted on its own scoring block must score better on pure noise) ·
 chronological order · determinism over tied dates · dataset identity · ECE and calibration
@@ -179,19 +182,69 @@ or measurement fix that cannot change a bet.
 
 ---
 
-## Not done — stated plainly
+## §10, §15, §17 — closed since the first draft
 
-- **§10 closing-line ladder** (T-6h/3h/1h/30m/10m) and **per-bookmaker quote retention**.
-  Capture was widened 12→28 fixtures per league earlier this session, but the time ladder and
-  per-book persistence are not built. **This is the highest-value remaining item**: without it
-  CLV is measured against a "last snapshot" that may be hours before kickoff, and the anchor
-  hierarchy cannot reach its cross-book tier.
-- **§15 settlement-provider alignment** for prop markets. Not built. Until it is, no prop
-  EV/ROI/CLV conclusion should be trusted.
-- **§17 Fantasy challenger.** Not built. Current state unchanged: Wowza MAE 2.16 vs FPL
-  `ep_next` 1.54, 0 of 2 gameweeks won.
+**§10 — per-bookmaker quotes on a kickoff ladder.** `src/book_quotes.py`. The side-market
+capture asked API-Football for **one** bookmaker and stored one price, discarding every other
+book at the request. Dropping that filter costs **the same number of API calls** — the response
+simply carries all of them. A live probe returned **9 books including Pinnacle and Betfair**.
+Every quote is tagged T-6h / T-3h / T-1h / T-30m / T-10m / FAR / POST, and `closing_quote()`
+returns the last quote inside T-30m **or nothing** — it never substitutes an earlier price, so
+coverage can be measured instead of assumed. POST is its own band and is never eligible as a
+close: an in-play price treated as a closing line manufactures enormous fake CLV.
+
+Two bugs found while building it, both the kind that produce a confident wrong number:
+
+* **The first classifier matched any bet whose NAME contained "over/under"** and swallowed seven
+  unrelated bets — 26 second-half, 57/58 corners, 197/198 time windows. On a live fixture that
+  produced "O/U 2.5" quotes from 1.25 to 3.50 and a cross-book anchor of **p=0.254 where the real
+  market was 0.63**. Now keyed on numeric bet ids (`{5, 6, 8, 1}`), which a rename cannot break.
+  After the fix: over 1.50–1.57, p=0.6185, Betfair 0.6311.
+* **The dedup key contained `line`, which is NaN for BTTS and 1X2 — and NaN never equals
+  itself**, so those rows could never match their own earlier row and were rewritten every run.
+  Caught by the test asserting a re-append writes nothing: it let exactly the 2 line-less rows
+  through out of 8.
+
+OFF by default (`CAPTURE_BOOK_QUOTES`); production capture is byte-identical until enabled.
+
+**§15 — settlement-provider alignment.** `registry/settlement_alignment.json`. For each market,
+is our outcome label defined the way the bookmaker *settles*? **3 ALIGNED** (ou, btts, ht_ou —
+90-minute goals is the least ambiguous definition in football) and **6 UNVERIFIED, therefore
+BLOCKED** (goals, assists, sot, sot2, sot3, cards). `sot` is the one that matters: whether a
+blocked shot counts as on target is the largest source of provider disagreement in player props,
+and sot is our highest-volume prop market — **1,694 of 2,570 CLV records**. Every BLOCKED market
+is already PAPER under invariant 2, so this blocks nothing that was going to be bet; its effect
+is that **prop EV, ROI and CLV figures must not be quoted as measured against the paying event.**
+
+**§17 — Fantasy challenger. REJECTED.** `scripts/fantasy_challenger.py`, 575 settled
+player-gameweeks across GW4–5:
+
+| projection | MAE | RMSE | rank rho | bias |
+|---|---|---|---|---|
+| Wowza × p_start | 2.164 | 2.966 | 0.543 | +0.993 |
+| **FPL `ep_next`** | **1.535** | **2.588** | **0.705** | −0.118 |
+| Wowza conditional (ref) | 3.430 | 3.867 | 0.195 | +2.439 |
+
+The brief allowed a third answer — a blend better than either source alone. **The optimal blend
+weight on Wowza is 0.0.** Any Wowza makes it worse. Do not replace `ep_next` and do not blend.
+
+The third row is the diagnostic. Start-weighting lifts rank correlation **0.195 → 0.543**, so
+almost everything Wowza contributes here is *who plays*, not *how many points he scores when he
+does* — and "who plays" is exactly what `ep_next` already prices. Two gameweeks is a reading,
+not a conclusion, but it points at the points head, not the availability head.
+
+---
+
+## Still not done — stated plainly
+
+- **Ladder scheduling.** `book_quotes.py` tags whatever rung a quote lands on; nothing yet
+  *aims* a capture at T-30m or T-10m. Per the estate's own measurement, cron cannot hit a clock
+  — so this must be an in-run adaptive loop sampling against real kickoff time, not a new cron.
 - **Gate not yet wired into `pipeline.py`.** It exists and is tested; the retrain still uses the
   old tolerance. Wiring it log-only is the first October task.
+- **No prospective period exists yet.** `v91_shadow.csv` starts accumulating now. Until a real
+  forward window exists, every challenger stays CHALLENGER by construction — which is the
+  harness working, not a shortage of candidates.
 
 ## The one correction worth repeating
 
