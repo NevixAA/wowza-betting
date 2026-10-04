@@ -1,12 +1,11 @@
 {
   "registry_name": "wowza_preregistered_hypotheses",
-  "version": 1,
+  "version": 2,
   "registered_at_utc": "2026-10-01T00:00:00Z",
   "purpose": "Freeze hypotheses BEFORE the data that will test them exists. Every entry below was written on 2026-10-01; its confirmation window opens on 2026-10-02. A result found by slicing existing data is a DISCOVERY and appears here only as a hypothesis, never as evidence.",
   "why_this_exists": "The estate has repeatedly produced findings that looked strong and did not survive: an HT model AUC of 0.663 that was learning which leagues had missing data; a 'blend beats the market, +8.8% ROI over 226 bets' result that failed split-half, its bootstrap CI and a shuffled placebo; per-league threshold tuning where 10 of 10 genuinely-tested cells came back UNCHANGED. Each was discovered by searching. None was preregistered.",
   "multiple_comparisons_policy": "Benjamini-Hochberg FDR at q=0.10 across all hypotheses confirmed in the same review. A single cell clearing p<0.05 in isolation is not sufficient when many were examined.",
   "amendment_policy": "An entry may be READ freely and must not be EDITED once its confirmation window opens. Changing n_min, the metric, the test or the rejection criterion after seeing data voids that hypothesis; supersede it with a new versioned entry stating what changed and why, and keep the original.",
-
   "hypotheses": [
     {
       "id": "H-BTTS-01",
@@ -42,7 +41,7 @@
       "id": "H-MOVE-01",
       "title": "Market movement carries information per model track, not globally",
       "definition": "On main O/U staked bets with a captured price curve, ROI for mv_signal=CONFIRMED differs between new_format and standard tracks.",
-      "discovery_evidence": "Full-curve read: new-format CONFIRMED +6.8%, standard CONFIRMED -12.7%. But at league x odds x timing x signal granularity only 19 cells reach n>=15, and exactly 1.0 of 19 would clear at a 5% threshold by chance — which is exactly how many did. The fine-grained cut is currently UNINFORMATIVE.",
+      "discovery_evidence": "Full-curve read: new-format CONFIRMED +6.8%, standard CONFIRMED -12.7%. But at league x odds x timing x signal granularity only 19 cells reach n>=15, and exactly 1.0 of 19 would clear at a 5% threshold by chance \u2014 which is exactly how many did. The fine-grained cut is currently UNINFORMATIVE.",
       "development_period": "2026-08-21 to 2026-10-01",
       "confirmation_starts": "2026-10-02",
       "n_min": 200,
@@ -86,7 +85,7 @@
       "id": "H-V11-01",
       "title": "V11 market+Wowza beats market alone in a defined segment",
       "definition": "Within segments having >= 3 bookmakers and entry 12-48h before kickoff, market+Wowza Brier is lower than market-alone Brier.",
-      "discovery_evidence": "Globally market 0.2405 vs market+Wowza 0.2404, delta +0.00006, and Wowza helps in only 10 of 20 segments — a coin flip. No segment has yet been shown to differ.",
+      "discovery_evidence": "Globally market 0.2405 vs market+Wowza 0.2404, delta +0.00006, and Wowza helps in only 10 of 20 segments \u2014 a coin flip. No segment has yet been shown to differ.",
       "development_period": "to 2026-09-22",
       "confirmation_starts": "2026-10-02",
       "n_min": 500,
@@ -95,6 +94,57 @@
       "statistical_test": "block bootstrap, 95% CI excluding zero, plus a shuffled-probability placebo at p<0.05",
       "rejection_criterion": "CI includes zero or the placebo is indistinguishable",
       "status": "REGISTERED"
+    },
+    {
+      "id": "H-BTTS-03",
+      "title": "Argentina BTTS beats the CLOSING price, not just the result",
+      "definition": "Staked BTTS selections in Argentina Primera Division, measured as consensus_clv (src/clv_types.consensus_clv): entry probability against the cross-book median de-vigged close, >= 3 two-sided books.",
+      "why_separate": "ROI can be positive because the model is right OR because the bets were lucky. CLV cannot be lucky in the same way -- beating the close means the market agreed with us after we bet. If H-BTTS-01 confirms on ROI while this fails, the edge is variance in outcomes rather than in pricing, and it will not persist.",
+      "development_period": "none -- registered before any CLV data is available for this cell",
+      "confirmation_starts": "2026-10-05",
+      "n_min": 150,
+      "primary_metric": "mean consensus_clv in probability points",
+      "secondary_metric": "share of selections with consensus_clv > 0",
+      "expected_sign": "positive",
+      "statistical_test": "block bootstrap by matchday, 10000 resamples, 95% CI",
+      "rejection_criterion": "CI lower bound <= 0 on >= 150 post-registration settled bets WITH a usable consensus close. Selections with status INSUFFICIENT_BOOKS / NO_CLOSE are excluded from n, not counted as zero.",
+      "status": "REGISTERED"
+    },
+    {
+      "id": "H-BTTS-04",
+      "title": "Argentina BTTS probabilities are better calibrated than the market's",
+      "definition": "Staked BTTS selections in Argentina Primera Division: model probability vs the de-vigged market probability at entry, scored on realised outcomes.",
+      "why_separate": "A forecasting claim, not a betting claim. The estate's load-bearing negative result is that the bookmaker's own VIGGED price beats the model on Brier (0.2368 vs 0.2583) on the model's own selected bets. If that holds here too, any Argentina ROI is market mispricing we happened to sit on, not knowledge -- and it cannot be extended to new leagues.",
+      "development_period": "none -- registered before this comparison has been run for this cell",
+      "confirmation_starts": "2026-10-05",
+      "n_min": 150,
+      "primary_metric": "Brier score, model vs de-vigged market, same selections",
+      "secondary_metric": "log loss, and ECE over 10 bins",
+      "expected_sign": "model Brier < market Brier",
+      "statistical_test": "paired block bootstrap by matchday on the per-bet Brier difference",
+      "rejection_criterion": "CI for (model - market) Brier includes or exceeds zero",
+      "status": "REGISTERED"
     }
-  ]
+  ],
+  "frozen_families": {
+    "BTTS_ARGENTINA": {
+      "frozen_at_utc": "2026-10-04T00:00:00Z",
+      "covers": [
+        "H-BTTS-01",
+        "H-BTTS-02",
+        "H-BTTS-03",
+        "H-BTTS-04"
+      ],
+      "rule": "NO further tuning of anything that selects or sizes a BTTS bet: no threshold change, no league multiplier, no edge-floor optimisation, no odds-band mining, no re-segmentation. The discovery period is closed. Any such change restarts the confirmation window from zero and supersedes every entry above.",
+      "why": "The effect was FOUND by looking across leagues, markets, bands and tiers. Continuing to adjust selection while the confirmation sample accrues makes the confirmation a second discovery pass, which is the failure this registry exists to prevent. The estate has already paid for this once: per-league threshold tuning held out-of-sample in 0 of 23 cells.",
+      "reproduced_2026_10_04": {
+        "btts_total": "n=105, +31.91u, roi/bet +0.3040, CI [+0.1293, +0.4751]",
+        "argentina": "n=68, +26.46u, roi/bet +0.3891, CI [+0.1505, +0.6371] POSITIVE_SIGNAL",
+        "ex_argentina": "n=37, +5.45u, roi/bet +0.1474, CI [-0.1176, +0.4150] NEUTRAL",
+        "note": "Argentina is 83% of the profit on 65% of the bets and is 100% new_format. ex-Argentina shows NO demonstrated edge -- its CI includes zero, and its largest contributor (Brazil, +4.39u on 14) is itself within noise.",
+        "confirmation_progress": "n=4 of 150 since the window opened 2026-10-02"
+      }
+    }
+  },
+  "independence_rule": "Two periods are independent only if they do not share the same underlying regime. Two calendar months inside one short window -- the same season phase, the same squads, the same model artefact lineage -- are NOT independent, and labelling them so is how a single lucky run gets counted twice. A confirmation window must also span a genuine break: for Argentina that means at least one international break or transfer window, not merely 150 more bets drawn from the same eight weeks."
 }
