@@ -254,6 +254,7 @@ jobs:
                    output/predict_health.json output/feature_health.json \
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv \
+                   output/v91_shadow.csv \
                    telegram_bot/notified.json telegram_bot/live_notified.json; do
             git add -f "$f" 2>/dev/null || true
           done

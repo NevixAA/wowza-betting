@@ -32,7 +32,7 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -182,6 +182,82 @@ def _mean_logloss(metrics: dict) -> float:
     vals = [m["log_loss"] for m in metrics.values()
             if isinstance(m, dict) and isinstance(m.get("log_loss"), (int, float))]
     return float(sum(vals) / len(vals)) if vals else float("nan")
+
+
+def _log_shadow(preds: "pd.DataFrame") -> None:
+    """§3/§18 — record what every model believed about every upcoming fixture, BEFORE kickoff.
+
+    THIS IS THE FILE THAT UNBLOCKS EVERY CHALLENGER. The promotion gate's `second_period` check
+    requires an INDEPENDENT forward period: fixtures that had not been played, and whose prices
+    had not formed, when the prediction was written. Nothing in the estate recorded that, so the
+    check could never pass and every challenger was pinned at CHALLENGER by construction rather
+    than by evidence. It is not a backlog problem -- no amount of history can create a
+    prospective record retrospectively, so the clock starts when this first runs and not before.
+
+    FROZEN AT FIRST SIGHT. predict runs every 5-15 minutes, so a fixture is scored ~100 times
+    before kickoff and the later runs see more of the price curve and more team news. Keeping
+    the latest would quietly convert a prospective log into a retrospective one -- the model
+    would be judged on its best-informed opinion while appearing to be judged on its first.
+    `append_shadow` dedups on (fixture_id, match_date) and keeps the EARLIEST, so a logged
+    opinion cannot be revised once the world has moved.
+
+    Every scored fixture is logged, not only the tipped ones. Tips fire on ~14% of the board, so
+    a tips-only record would need years to reach a usable n -- and it would throw away exactly
+    the fixtures that test whether the tier threshold separates anything.
+
+    Cannot raise: this is a recorder, and a recorder must never be able to stop tips going out.
+    """
+    try:
+        import numpy as np
+        from src.shadow_compare import append_shadow
+
+        d = preds.copy()
+        # A stable identity. `_oa_event_id` is present only when the fixture matched an OddsAPI
+        # event, so fall back to the natural key rather than dropping the row -- an unmatched
+        # fixture is still a prediction worth grading.
+        fid = d["_oa_event_id"] if "_oa_event_id" in d.columns else pd.Series(index=d.index,
+                                                                             dtype=object)
+        natural = (d["date"].astype(str) + "|" + d["home_team"].astype(str) + "|"
+                   + d["away_team"].astype(str))
+        d["fixture_id"] = fid.where(fid.notna() & (fid.astype(str) != ""), natural)
+
+        now = datetime.now(timezone.utc).isoformat()
+        rows = pd.DataFrame({
+            "fixture_id": d["fixture_id"],
+            "logged_at": now,
+            "match_date": d["date"],
+            "kickoff_utc": d.get("kickoff_utc", pd.NA),
+            "league": d["league"],
+            "model_type": d.get("model_type", pd.NA),
+            # What each model believed. p_v91/p_pro_hgb/p_goal_distribution stay NaN until those
+            # challengers are wired -- a column that exists and is empty is honest; a column
+            # filled with the champion's number would silently fake agreement.
+            "p_v9": d.get("p_over25", pd.NA),
+            "p_v91": pd.NA,
+            "p_pro_hgb": pd.NA,
+            "p_goal_distribution": d.get("p_over25_poisson_dc", pd.NA),
+            "p_market": d.get("impl_prob_over", d.get("implied_prob_over", pd.NA)),
+            "v9_side": d.get("best_side", pd.NA),
+            "v91_side": pd.NA,
+            "v9_tier": d.get("signal_tier", pd.NA),
+            "v91_tier": pd.NA,
+            "v9_edge": d.get("best_edge", pd.NA),
+            "v91_edge": pd.NA,
+            "entry_odds": np.where(d.get("best_side", "").astype(str).str.upper() == "UNDER",
+                                   d.get("odds_under25", np.nan), d.get("odds_over25", np.nan)),
+            "closing_odds": pd.NA,
+            "clv": pd.NA,
+            "result": pd.NA,
+            # Provenance. Without these a row cannot be tied to the artefact that wrote it, and
+            # a forward period that cannot name its model proves nothing about that model.
+            "v9_model_sha": d.get("model_sha", pd.NA),
+            "v91_model_sha": pd.NA,
+            "dataset_id": d.get("git_sha", pd.NA),
+        })
+        n = append_shadow(rows)
+        log.info(f"shadow: logged {n} new fixture(s) of {len(rows)} scored")
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"shadow log skipped ({e}) — predictions and tips are unaffected")
 
 
 def _shadow_gate(label: str, old_payload, results: dict, test_df, target: str,
@@ -664,6 +740,9 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     pred_file = config.OUTPUT_DIR / "predictions.csv"
     preds.to_csv(pred_file, index=False)
     log.info(f"Predictions saved → {pred_file}  ({len(preds)} fixtures)")
+
+    # BEFORE tips are generated, so the record is of what was believed, not what was acted on.
+    _log_shadow(preds)
 
     # ── Save postponed list ──────────────────────────────────────────────────
     if postponed:
