@@ -132,14 +132,14 @@ def _q(ts, odds, fid=1, book=8):
             "market": "ou", "side": "over", "line": 2.5, "odds": odds, "source": "t"}
 
 
-def test_rows_are_filed_by_their_own_month_not_todays(tmp_path, monkeypatch):
+def test_rows_are_filed_by_their_own_day_not_todays(tmp_path, monkeypatch):
     monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
     bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90), _q("2026-10-01T00:10:00Z", 1.95)])
-    assert {f.name for f in tmp_path.glob("*.csv")} == {"2026-09.csv", "2026-10.csv"}
+    assert {f.name for f in tmp_path.glob("*.csv")} == {"2026-09-30.csv", "2026-10-01.csv"}
 
 
-def test_dedup_spans_the_month_boundary(tmp_path, monkeypatch):
-    """A price unchanged across midnight on the 1st must not be rewritten into the new part."""
+def test_dedup_spans_the_part_boundary(tmp_path, monkeypatch):
+    """A price unchanged across midnight must not be rewritten into the new part."""
     monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
     bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90)])
     assert bq.append_quotes([_q("2026-10-01T00:10:00Z", 1.90)]) == 0
@@ -150,7 +150,7 @@ def test_a_finished_part_is_never_rewritten(tmp_path, monkeypatch):
     """Git stores a changed file in full, so an immutable finished month is the whole point."""
     monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
     bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90)])
-    sept = tmp_path / "2026-09.csv"
+    sept = tmp_path / "2026-09-30.csv"
     before = sept.read_bytes()
     bq.append_quotes([_q("2026-10-01T00:20:00Z", 1.95), _q("2026-10-02T00:20:00Z", 2.00)])
     assert sept.read_bytes() == before
@@ -229,3 +229,30 @@ def test_a_missing_t30_close_stays_missing(tmp_path, monkeypatch):
     monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
     bq.append_quotes([_qb("2026-10-04T12:00:00Z", 1.90, "T-6h", 360.0)])
     assert bq.closing_quote(bq.load_quotes(), 1, "ou", "over", 2.5) is None
+
+
+# ── volume control (measured on the first real CI runs, 2026-10-04) ───────────────────────────
+def test_unmodelled_ou_lines_are_dropped():
+    """The API returns THIRTY O/U lines; we model three. Keeping the rest made 72% of the
+    archive markets nothing reads, at 40 MB/day against a 100 MB per-file limit."""
+    assert bq._classify(5, "Goals Over/Under", "Over 2.5") == ("ou", "over", 2.5)
+    for bad in ("Over 4.5", "Over 2.75", "Under 0.5", "Over 6.5"):
+        assert bq._classify(5, "Goals Over/Under", bad) is None, bad
+
+
+def test_h2h_is_no_longer_captured():
+    """1X2 is a research track with no bet and no consumer — 9% of rows for nothing."""
+    assert bq._classify(1, "Match Winner", "Home") is None
+    assert 1 not in bq.BET_IDS
+
+
+def test_far_is_kept_once_as_an_opening_price_not_change_tracked(tmp_path, monkeypatch):
+    """97.8% of captured rows were FAR and nothing is ever certified against one. What FAR is
+    for is the OPENING line — one row, not a week of slow drift."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    assert bq.append_quotes([_qb("2026-10-01T06:00:00Z", 1.90, "FAR", 4000.0)]) == 1
+    assert bq.load_quotes().iloc[0]["obs_reason"] == "open"
+    # a genuine FAR price move is NOT stored — it is drift nobody reads
+    assert bq.append_quotes([_qb("2026-10-02T06:00:00Z", 2.10, "FAR", 3000.0)]) == 0
+    # but the near rungs still capture everything
+    assert bq.append_quotes([_qb("2026-10-04T17:30:00Z", 2.10, "T-30m", 30.0)]) == 1

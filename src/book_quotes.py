@@ -85,6 +85,14 @@ CLOSING_WINDOW_MIN = 30
 #: three rungs where proof-of-close actually matters get the heartbeat.
 HEARTBEAT_BANDS = {"T-1h", "T-30m", "T-10m"}
 
+#: Bands kept as a SINGLE first observation per entity, never change-tracked.
+#:
+#: MEASURED 2026-10-04 on the first real CI runs: 97.8% of captured rows were FAR (more than six
+#: hours out), and nothing is ever certified against a FAR price. What FAR is needed for is the
+#: OPENING line, which is one row per entity, not a running log of slow drift across a week.
+#: Tracking FAR changes is what turned a projected 1 MB/day into a measured 142 MB/day.
+OPEN_ONLY_BANDS = {"FAR"}
+
 
 def ladder_band(minutes_to_kickoff: float | None) -> str:
     """Which rung of the ladder a quote sits on.
@@ -134,7 +142,15 @@ def minutes_to_kickoff(kickoff_utc, snapshot_ts) -> float | None:
 #: p=0.254 where the real market was ~0.63. The capture script already learned this the hard
 #: way -- 21.9% of its archive once had over25 >= over35, which is impossible -- and its own
 #: comment says the numeric id is the primary test "because it cannot be broken by a rename".
-BET_IDS = {5: "ou", 6: "ht_ou", 8: "btts", 1: "h2h"}
+BET_IDS = {5: "ou", 6: "ht_ou", 8: "btts"}
+
+#: Lines we actually model. MEASURED 2026-10-04: the API returns THIRTY distinct O/U lines
+#: (0.5 through 6.5 in quarter steps) and we model three. Keeping all of them made 72% of the
+#: archive markets nothing reads -- 40 MB/day against a 100 MB per-file limit.
+#:
+#: h2h was dropped from BET_IDS for the same reason: 1X2 is a research track with no bet and no
+#: consumer, and it was 9% of rows. Data no model reads is cost, not value.
+MODELLED_LINES = {"ou": {1.5, 2.5, 3.5}, "ht_ou": {0.5, 1.5}}
 
 
 def _classify(bet_id, bet_name: str, value: str) -> tuple[str, str, float | None] | None:
@@ -163,6 +179,8 @@ def _classify(bet_id, bet_name: str, value: str) -> tuple[str, str, float | None
     try:
         line = float(parts[1])
     except ValueError:
+        return None
+    if line not in MODELLED_LINES.get(market, set()):
         return None
     return (market, parts[0].lower(), line)
 
@@ -220,7 +238,10 @@ def part_path(snapshot_ts) -> Path:
             raise ValueError
     except Exception:                                                 # noqa: BLE001
         return QUOTES_DIR / "unknown.csv"
-    return QUOTES_DIR / f"{ts.year:04d}-{ts.month:02d}.csv"
+    # DAILY, not monthly. Measured volume put a monthly part far past the 100 MB hard limit even
+    # after filtering; a daily part is a few MB and a finished day is never rewritten, so git
+    # stores each one once instead of re-storing a growing monolith on every run.
+    return QUOTES_DIR / f"{ts.year:04d}-{ts.month:02d}-{ts.day:02d}.csv"
 
 
 def load_quotes(path: Path | None = None) -> pd.DataFrame:
@@ -327,8 +348,17 @@ def _append_one(df: pd.DataFrame, p: Path) -> int:
              for k, b in band_key], index=df.index)
         # A row already being written as a change is not also a heartbeat.
         heartbeat &= ~changed
-        df = df.assign(obs_reason=np.where(changed, "change", "heartbeat"))
-        df = df[changed | heartbeat].drop(columns="_k")
+
+        # FAR is kept once per entity -- the OPENING price -- and never change-tracked.
+        # Without this the far horizon dominates the file: a week-long look-ahead across nine
+        # books drifts constantly, and none of that drift is used for anything.
+        seen_ents = set(prior["_k"]) if len(prior) else set()
+        far = df["ladder_band"].isin(OPEN_ONLY_BANDS)
+        far_first = far & ~df["_k"].isin(seen_ents)
+        keep = (changed & ~far) | heartbeat | far_first
+        df = df.assign(obs_reason=np.where(far_first & ~changed, "open",
+                                           np.where(changed, "change", "heartbeat")))
+        df = df[keep].drop(columns="_k")
         if df.empty:
             return 0
         # Append to THIS part only. `old` may span two parts for dedup purposes; writing it back
@@ -336,10 +366,11 @@ def _append_one(df: pd.DataFrame, p: Path) -> int:
         existing = pd.read_csv(p) if p.exists() else pd.DataFrame(columns=COLUMNS)
         out = pd.concat([existing, df], ignore_index=True) if len(existing) else df
     else:
-        # FIRST EVER WRITE to this part. Every row is new information, so every row is a
-        # "change" -- but obs_reason must still be populated, or the column arrives as NaN and
-        # the heartbeat/change split is unreadable for the whole first file.
-        out = df.assign(obs_reason="change")
+        # FIRST EVER WRITE to this part. Every row is new information, but the LABEL still has
+        # to match the band: a first FAR sighting is an opening price, not a change. Labelling
+        # it "change" made the very first row of each part misreport its own reason.
+        out = df.assign(obs_reason=np.where(df["ladder_band"].isin(OPEN_ONLY_BANDS),
+                                            "open", "change"))
     p.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(p, index=False)
 
