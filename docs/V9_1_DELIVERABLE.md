@@ -182,6 +182,33 @@ or measurement fix that cannot change a bet.
 
 ---
 
+## §2 — the brief's numbers, recalculated from current repo state
+
+The brief said "do not blindly accept these numbers". Recomputed 2026-10-04 from
+`output/bets_ledger.csv` and `output/side_bets_ledger.csv`, SNIPER+MARKSMAN, settled only,
+since the 2026-08-10 performance cutoff. **Every claim holds.**
+
+| claim in the brief | recalculated | verdict |
+|---|---|---|
+| main O/U ≈ −26u / 333 | **−28.40u / 340** | holds |
+| side markets ≈ +29u / 177 | **+31.02u / 186** | holds |
+| main O/U last 30d ≈ −14u | **−14.71u / 195** | holds |
+| main O/U last 14d ≈ −10u | **−6.87u / 69** | holds, slightly improved |
+| standard vs new-format diverged | **std +1.41u/30d, +5.26u/14d; NF −16.12u, −12.13u** | holds, and it is stark |
+| USA MLS a poor recent contributor | **−9.32u on 19 bets — the single worst league** | holds |
+| BTTS ≈ +30u / ~100 staked | **+31.92u / 105** | holds |
+
+And the concentration warning the brief asked about is confirmed: **Argentina alone is +26.46u of
+the +31.92u BTTS total — 83% of the profit from one league on 68 of 105 selections.** Brazil adds
++4.39u; every other league is noise or negative. So BTTS is **league-specific, not broad** —
+answer 2 of the four the brief offered, not answer 1.
+
+The new-format split is the actionable one. Over 30 days, standard main O/U is slightly positive
+and new-format is −16.12u. That is the same track the odds>3.0 finding isolated, and per
+invariant 1 any fix belongs on the new-format track alone.
+
+---
+
 ## §10, §15, §17 — closed since the first draft
 
 **§10 — per-bookmaker quotes on a kickoff ladder.** `src/book_quotes.py`. The side-market
