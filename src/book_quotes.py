@@ -57,6 +57,10 @@ COLUMNS = [
     "snapshot_ts", "fixture_id", "kickoff_utc", "minutes_to_kickoff", "ladder_band",
     "league", "model_type", "home_team", "away_team",
     "bookmaker_id", "bookmaker", "market", "side", "line", "odds", "source",
+    # §6. WHY a row exists: "change" = the price moved, "heartbeat" = the price did NOT move but
+    # this rung was observed. Without this column the two are indistinguishable and the archive
+    # cannot certify observation, only movement.
+    "obs_reason",
 ]
 
 #: Upper edge of each band, in minutes before kickoff. Ordered tightest-first.
@@ -64,6 +68,22 @@ LADDER = [("T-10m", 10), ("T-30m", 30), ("T-1h", 60), ("T-3h", 180), ("T-6h", 36
 
 #: A quote inside this window is eligible to be the closing line.
 CLOSING_WINDOW_MIN = 30
+
+#: §6 — rungs that get an OBSERVATION HEARTBEAT as well as change events.
+#:
+#: THE PROBLEM THIS SOLVES. Storing only consecutive-distinct prices is right for movement and
+#: wrong for coverage. A book quoting 1.90 at T-3h and still 1.90 at T-10m writes ONE row, at
+#: T-3h, so the archive cannot distinguish "the price never moved" from "we never looked again".
+#: A CLV measured against that row is measured against a three-hour-old price while appearing to
+#: be a close.
+#:
+#: WHY ONLY THE NEAR RUNGS. A heartbeat per (fixture, book, market, side, line, band) multiplies
+#: storage by the number of bands. With ~9 books and ~15 market/side/line combinations that is
+#: ~135 keys per fixture per band; across all seven bands it would dominate the file and push a
+#: monthly part past the 100 MB limit the partitioning exists to avoid. The far rungs do not need
+#: it -- nothing is certified against a T-6h price -- so they keep change-only semantics, and the
+#: three rungs where proof-of-close actually matters get the heartbeat.
+HEARTBEAT_BANDS = {"T-1h", "T-30m", "T-10m"}
 
 
 def ladder_band(minutes_to_kickoff: float | None) -> str:
@@ -283,15 +303,32 @@ def _append_one(df: pd.DataFrame, p: Path) -> int:
         pd.read_csv(p) if p.exists() else pd.DataFrame(columns=COLUMNS))
     if len(old) or p.exists():
         if len(old):
-            o = old.sort_values("snapshot_ts").copy()
-            o["_k"] = _k(o)
-            last = o.groupby("_k")["odds"].last()
+            prior = old.sort_values("snapshot_ts").copy()
+            prior["_k"] = _k(prior)
+            last = prior.groupby("_k")["odds"].last()
         else:
+            # An existing-but-empty file. `prior` must still be a frame with the right columns,
+            # or the heartbeat lookup below raises NameError on the first write into it.
+            prior = pd.DataFrame(columns=list(COLUMNS) + ["_k"])
             last = pd.Series(dtype=float)
         df = df.assign(_k=_k(df))
         prev = df["_k"].map(last)
-        df = df[prev.isna() | ~np.isclose(prev.fillna(-1).astype(float),
-                                          df["odds"].astype(float))].drop(columns="_k")
+        changed = prev.isna() | ~np.isclose(prev.fillna(-1).astype(float),
+                                            df["odds"].astype(float))
+
+        # §6 HEARTBEAT: an unchanged price on a near rung is still kept, ONCE per rung, so the
+        # archive records that the market was observed there. Keyed on (entity, band), so a run
+        # that samples the same rung five times adds one row, not five -- the loop's density is
+        # for catching movement, not for proving the rung twice.
+        seen_bands = set(zip(prior["_k"], prior["ladder_band"])) if len(prior) else set()
+        band_key = list(zip(df["_k"], df["ladder_band"]))
+        heartbeat = pd.Series(
+            [b in HEARTBEAT_BANDS and (k, b) not in seen_bands
+             for k, b in band_key], index=df.index)
+        # A row already being written as a change is not also a heartbeat.
+        heartbeat &= ~changed
+        df = df.assign(obs_reason=np.where(changed, "change", "heartbeat"))
+        df = df[changed | heartbeat].drop(columns="_k")
         if df.empty:
             return 0
         # Append to THIS part only. `old` may span two parts for dedup purposes; writing it back
@@ -299,7 +336,10 @@ def _append_one(df: pd.DataFrame, p: Path) -> int:
         existing = pd.read_csv(p) if p.exists() else pd.DataFrame(columns=COLUMNS)
         out = pd.concat([existing, df], ignore_index=True) if len(existing) else df
     else:
-        out = df
+        # FIRST EVER WRITE to this part. Every row is new information, so every row is a
+        # "change" -- but obs_reason must still be populated, or the column arrives as NaN and
+        # the heartbeat/change split is unreadable for the whole first file.
+        out = df.assign(obs_reason="change")
     p.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(p, index=False)
 
