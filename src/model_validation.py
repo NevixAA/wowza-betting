@@ -212,7 +212,8 @@ def _hgb():
 
 def evaluate_candidates(df: pd.DataFrame, target: str = "over25",
                         feature_cols: list[str] | None = None,
-                        blocks=BLOCKS) -> tuple[pd.DataFrame, Split]:
+                        blocks=BLOCKS,
+                        score_mask: np.ndarray | None = None) -> tuple[pd.DataFrame, Split]:
     """Score every candidate architecture on ONE untouched chronological holdout.
 
     Candidates, as §3 of the upgrade brief requires:
@@ -225,6 +226,13 @@ def evaluate_candidates(df: pd.DataFrame, target: str = "over25",
 
     Every candidate sees the same FIT and CAL blocks and is judged on the same HOLDOUT, so the
     differences are architecture and nothing else.
+
+    `score_mask` is a boolean over the HOLDOUT rows. Pass it to score every candidate on a SUBSET
+    — in practice the rows carrying a two-sided market price, so the market baseline and the
+    models are compared on identical rows. Without it the market is necessarily scored on fewer
+    rows than the models (only ~60-85% of fixtures are priced both ways), and comparing a model
+    on 5,882 rows against a market on 5,018 is comparing test sets, not forecasts. Training is
+    unaffected: the mask narrows what is SCORED, never what is fitted.
     """
     from sklearn.calibration import CalibratedClassifierCV
     # sklearn >= 1.6 removed cv='prefit'; a pre-fitted estimator is wrapped instead. Using
@@ -267,10 +275,23 @@ def evaluate_candidates(df: pd.DataFrame, target: str = "over25",
     P_meta = np.column_stack([m.predict_proba(X_meta)[:, 1] for m in calibrated.values()])
     P_hold = np.column_stack([m.predict_proba(X_hold)[:, 1] for m in calibrated.values()])
 
+    # The stackers below are still FITTED on the full block — masking the fit would change the
+    # architecture being tested. Only the scoring is narrowed.
+    if score_mask is None:
+        msk = np.ones(len(y_hold), dtype=bool)
+    else:
+        msk = np.asarray(score_mask, dtype=bool)
+        if len(msk) != len(y_hold):
+            raise ValueError(f"score_mask has {len(msk)} rows, holdout has {len(y_hold)}")
+
+    def sc(p):
+        """Score on the masked subset, so every candidate is judged on identical rows."""
+        return score(y_hold[msk], np.asarray(p)[msk])
+
     rows = []
 
     # 2. mean blend — no stacker, nothing to leak
-    rows.append({"candidate": "mean_blend", **score(y_hold, P_hold.mean(axis=1)),
+    rows.append({"candidate": "mean_blend", **sc(P_hold.mean(axis=1)),
                  "model_sha": "-", "note": "unweighted mean of calibrated base learners"})
 
     # 3. best single learner, chosen ON THE META BLOCK so the holdout stays untouched.
@@ -280,13 +301,13 @@ def evaluate_candidates(df: pd.DataFrame, target: str = "over25",
           for n in calibrated}
     best = min(ll, key=ll.get)
     rows.append({"candidate": f"best_single[{best}]",
-                 **score(y_hold, calibrated[best].predict_proba(X_hold)[:, 1]),
+                 **sc(calibrated[best].predict_proba(X_hold)[:, 1]),
                  "model_sha": shas[best], "note": "selected on META block, scored on HOLDOUT"})
 
     # 4. corrected meta stack — trained on META, scored on HOLDOUT. This is the fix.
     meta = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs").fit(P_meta, y_meta)
     rows.append({"candidate": "meta_corrected",
-                 **score(y_hold, meta.predict_proba(P_hold)[:, 1]),
+                 **sc(meta.predict_proba(P_hold)[:, 1]),
                  "model_sha": model_sha(meta),
                  "note": "stacker fitted on META block only"})
 
@@ -294,14 +315,14 @@ def evaluate_candidates(df: pd.DataFrame, target: str = "over25",
     #    Reported so the gap between this and meta_corrected IS the size of the illusion.
     leaky = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs").fit(P_hold, y_hold)
     rows.append({"candidate": "v9_meta_leaky",
-                 **score(y_hold, leaky.predict_proba(P_hold)[:, 1]),
+                 **sc(leaky.predict_proba(P_hold)[:, 1]),
                  "model_sha": model_sha(leaky),
                  "note": "REPRODUCES THE BUG — fitted on the block it is scored on"})
 
     # 6. Pro's HGB challenger, same fit/cal discipline
     h = _hgb().fit(X_fit, y_fit)
     hc = CalibratedClassifierCV(FrozenEstimator(h), method="sigmoid").fit(X_cal, y_cal)
-    rows.append({"candidate": "pro_hgb", **score(y_hold, hc.predict_proba(X_hold)[:, 1]),
+    rows.append({"candidate": "pro_hgb", **sc(hc.predict_proba(X_hold)[:, 1]),
                  "model_sha": model_sha(h), "note": "Pro's strongest single learner"})
 
     out = pd.DataFrame(rows)
@@ -309,6 +330,7 @@ def evaluate_candidates(df: pd.DataFrame, target: str = "over25",
     out["dataset_id"] = sp.dataset_id
     out["n_fit"], out["n_cal"] = sp.sizes()["fit"], sp.sizes()["cal"]
     out["n_meta"], out["n_holdout"] = sp.sizes()["meta"], sp.sizes()["holdout"]
+    out["n_scored"] = int(msk.sum())
     out["holdout_from"] = sp.date_min
     out["holdout_to"] = sp.date_max
     return out.sort_values("log_loss").reset_index(drop=True), sp
