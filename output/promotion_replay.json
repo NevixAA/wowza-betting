@@ -1,0 +1,1175 @@
+{
+  "generated_from": "retrain_log.json",
+  "caveat": "UPPER BOUND. Only log_loss_not_worse, material_improvement and the canary are replayable from stored aggregates; the other seven strict checks need per-row probabilities and can only ever reject, so the true strict-promote count is at most this one.",
+  "n_decisions": 91,
+  "live_promoted": 88,
+  "candidate_worse": 32,
+  "promoted_while_worse": 29,
+  "strict_pass_replayable_upper_bound": 26,
+  "strict_would_block_live_promotion": 62,
+  "decisions": [
+    {
+      "day": "2026-09-22",
+      "track": "standard",
+      "old": 0.69013,
+      "new": 0.68885,
+      "delta": -0.00128,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-22",
+      "track": "newformat",
+      "old": 0.68106,
+      "new": 0.65773,
+      "delta": -0.02333,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-22",
+      "track": "ht_over05",
+      "old": 0.60431,
+      "new": 0.69292,
+      "delta": 0.08861,
+      "live_promoted": false,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.08861 \u2014 candidate is not better",
+        "material_improvement: delta +0.08861 vs required <= -0.00100"
+      ],
+      "basis": null
+    },
+    {
+      "day": "2026-09-22",
+      "track": "ht_over15",
+      "old": 0.64741,
+      "new": 0.55207,
+      "delta": -0.09534,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-22",
+      "track": "btts",
+      "old": 0.68742,
+      "new": 0.68064,
+      "delta": -0.00678,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-22",
+      "track": "over15",
+      "old": 0.55078,
+      "new": 0.54054,
+      "delta": -0.01024,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-22",
+      "track": "over35",
+      "old": 0.59823,
+      "new": 0.5962,
+      "delta": -0.00203,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "standard",
+      "old": 0.68885,
+      "new": 0.64066,
+      "delta": -0.04819,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "newformat",
+      "old": 0.65773,
+      "new": 0.59551,
+      "delta": -0.06222,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "ht_over05",
+      "old": 0.60431,
+      "new": 0.7075,
+      "delta": 0.10319,
+      "live_promoted": false,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.10319 \u2014 candidate is not better",
+        "material_improvement: delta +0.10319 vs required <= -0.00100"
+      ],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "ht_over15",
+      "old": 0.55207,
+      "new": 0.54504,
+      "delta": -0.00703,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "btts",
+      "old": 0.68064,
+      "new": 0.64519,
+      "delta": -0.03545,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "over15",
+      "old": 0.54054,
+      "new": 0.51597,
+      "delta": -0.02457,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-23",
+      "track": "over35",
+      "old": 0.5962,
+      "new": 0.5674,
+      "delta": -0.0288,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": null
+    },
+    {
+      "day": "2026-09-24",
+      "track": "standard",
+      "old": 0.67539,
+      "new": 0.68072,
+      "delta": 0.00533,
+      "live_promoted": false,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00533 \u2014 candidate is not better",
+        "material_improvement: delta +0.00533 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-24",
+      "track": "newformat",
+      "old": 0.59537,
+      "new": 0.59656,
+      "delta": 0.00119,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00119 \u2014 candidate is not better",
+        "material_improvement: delta +0.00119 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-24",
+      "track": "ht_over05",
+      "old": 0.71551,
+      "new": 0.65671,
+      "delta": -0.0588,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-24",
+      "track": "ht_over15",
+      "old": 0.58993,
+      "new": 0.57626,
+      "delta": -0.01367,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-24",
+      "track": "btts",
+      "old": 0.65603,
+      "new": 0.65634,
+      "delta": 0.00031,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00031 \u2014 candidate is not better",
+        "material_improvement: delta +0.00031 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-24",
+      "track": "over15",
+      "old": 0.52223,
+      "new": 0.52211,
+      "delta": -0.00012,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00012 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-24",
+      "track": "over35",
+      "old": 0.57797,
+      "new": 0.57656,
+      "delta": -0.00141,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "standard",
+      "old": 0.70641,
+      "new": 0.68744,
+      "delta": -0.01897,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "newformat",
+      "old": 0.70902,
+      "new": 0.67998,
+      "delta": -0.02904,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "ht_over05",
+      "old": 0.68751,
+      "new": 0.64722,
+      "delta": -0.04029,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "ht_over15",
+      "old": 0.57151,
+      "new": 0.56737,
+      "delta": -0.00414,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "btts",
+      "old": 0.68904,
+      "new": 0.68513,
+      "delta": -0.00391,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "over15",
+      "old": 0.54509,
+      "new": 0.54586,
+      "delta": 0.00077,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00077 \u2014 candidate is not better",
+        "material_improvement: delta +0.00077 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-25",
+      "track": "over35",
+      "old": 0.60261,
+      "new": 0.59836,
+      "delta": -0.00425,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "standard",
+      "old": 0.68753,
+      "new": 0.68785,
+      "delta": 0.00032,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00032 \u2014 candidate is not better",
+        "material_improvement: delta +0.00032 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "newformat",
+      "old": 0.67959,
+      "new": 0.67994,
+      "delta": 0.00035,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00035 \u2014 candidate is not better",
+        "material_improvement: delta +0.00035 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "ht_over05",
+      "old": 0.64789,
+      "new": 0.66716,
+      "delta": 0.01927,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.01927 \u2014 candidate is not better",
+        "material_improvement: delta +0.01927 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "ht_over15",
+      "old": 0.56759,
+      "new": 0.57152,
+      "delta": 0.00393,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00393 \u2014 candidate is not better",
+        "material_improvement: delta +0.00393 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "btts",
+      "old": 0.68565,
+      "new": 0.68564,
+      "delta": -1e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00001 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "over15",
+      "old": 0.54637,
+      "new": 0.54567,
+      "delta": -0.0007,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00070 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-26",
+      "track": "over35",
+      "old": 0.59826,
+      "new": 0.59951,
+      "delta": 0.00125,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00125 \u2014 candidate is not better",
+        "material_improvement: delta +0.00125 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "standard",
+      "old": 0.68781,
+      "new": 0.68797,
+      "delta": 0.00016,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00016 \u2014 candidate is not better",
+        "material_improvement: delta +0.00016 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "newformat",
+      "old": 0.67972,
+      "new": 0.67989,
+      "delta": 0.00017,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00017 \u2014 candidate is not better",
+        "material_improvement: delta +0.00017 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "ht_over05",
+      "old": 0.66761,
+      "new": 0.67033,
+      "delta": 0.00272,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00272 \u2014 candidate is not better",
+        "material_improvement: delta +0.00272 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "ht_over15",
+      "old": 0.57128,
+      "new": 0.57088,
+      "delta": -0.0004,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00040 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "btts",
+      "old": 0.68559,
+      "new": 0.68542,
+      "delta": -0.00017,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00017 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "over15",
+      "old": 0.5457,
+      "new": 0.54603,
+      "delta": 0.00033,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00033 \u2014 candidate is not better",
+        "material_improvement: delta +0.00033 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-27",
+      "track": "over35",
+      "old": 0.5995,
+      "new": 0.59888,
+      "delta": -0.00062,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00062 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "standard",
+      "old": 0.6881,
+      "new": 0.6871,
+      "delta": -0.001,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "newformat",
+      "old": 0.67941,
+      "new": 0.68029,
+      "delta": 0.00088,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00088 \u2014 candidate is not better",
+        "material_improvement: delta +0.00088 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "ht_over05",
+      "old": 0.6712,
+      "new": 0.64746,
+      "delta": -0.02374,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "ht_over15",
+      "old": 0.57216,
+      "new": 0.56697,
+      "delta": -0.00519,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "btts",
+      "old": 0.68576,
+      "new": 0.68622,
+      "delta": 0.00046,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00046 \u2014 candidate is not better",
+        "material_improvement: delta +0.00046 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "over15",
+      "old": 0.54591,
+      "new": 0.54646,
+      "delta": 0.00055,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00055 \u2014 candidate is not better",
+        "material_improvement: delta +0.00055 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-28",
+      "track": "over35",
+      "old": 0.59979,
+      "new": 0.59957,
+      "delta": -0.00022,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00022 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "standard",
+      "old": 0.68778,
+      "new": 0.68782,
+      "delta": 4e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00004 \u2014 candidate is not better",
+        "material_improvement: delta +0.00004 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "newformat",
+      "old": 0.68064,
+      "new": 0.68362,
+      "delta": 0.00298,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00298 \u2014 candidate is not better",
+        "material_improvement: delta +0.00298 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "ht_over05",
+      "old": 0.64594,
+      "new": 0.60595,
+      "delta": -0.03999,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "prediction_canary: probability spread COLLAPSED (ratio 0.077)"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "ht_over15",
+      "old": 0.66289,
+      "new": 0.64905,
+      "delta": -0.01384,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "prediction_canary: probability spread COLLAPSED (ratio 0.246)"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "btts",
+      "old": 0.68644,
+      "new": 0.68584,
+      "delta": -0.0006,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00060 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "over15",
+      "old": 0.54576,
+      "new": 0.54569,
+      "delta": -7e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00007 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-29",
+      "track": "over35",
+      "old": 0.59973,
+      "new": 0.59932,
+      "delta": -0.00041,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00041 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "standard",
+      "old": 0.68738,
+      "new": 0.68847,
+      "delta": 0.00109,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00109 \u2014 candidate is not better",
+        "material_improvement: delta +0.00109 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "newformat",
+      "old": 0.68289,
+      "new": 0.68112,
+      "delta": -0.00177,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "ht_over05",
+      "old": 0.6057,
+      "new": 0.60567,
+      "delta": -3e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00003 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "ht_over15",
+      "old": 0.64857,
+      "new": 0.64882,
+      "delta": 0.00025,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00025 \u2014 candidate is not better",
+        "material_improvement: delta +0.00025 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "btts",
+      "old": 0.68576,
+      "new": 0.68538,
+      "delta": -0.00038,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00038 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "over15",
+      "old": 0.54562,
+      "new": 0.54538,
+      "delta": -0.00024,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00024 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-09-30",
+      "track": "over35",
+      "old": 0.59904,
+      "new": 0.59958,
+      "delta": 0.00054,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00054 \u2014 candidate is not better",
+        "material_improvement: delta +0.00054 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "standard",
+      "old": 0.68803,
+      "new": 0.6879,
+      "delta": -0.00013,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00013 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "newformat",
+      "old": 0.68149,
+      "new": 0.67937,
+      "delta": -0.00212,
+      "live_promoted": true,
+      "strict_pass_replayable": true,
+      "strict_reasons": [],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "ht_over05",
+      "old": 0.6061,
+      "new": 0.6059,
+      "delta": -0.0002,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00020 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "ht_over15",
+      "old": 0.64884,
+      "new": 0.64873,
+      "delta": -0.00011,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00011 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "btts",
+      "old": 0.68538,
+      "new": 0.68614,
+      "delta": 0.00076,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00076 \u2014 candidate is not better",
+        "material_improvement: delta +0.00076 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "over15",
+      "old": 0.54566,
+      "new": 0.54591,
+      "delta": 0.00025,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00025 \u2014 candidate is not better",
+        "material_improvement: delta +0.00025 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-01",
+      "track": "over35",
+      "old": 0.59964,
+      "new": 0.59941,
+      "delta": -0.00023,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00023 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "standard",
+      "old": 0.68923,
+      "new": 0.68839,
+      "delta": -0.00084,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00084 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "newformat",
+      "old": 0.68004,
+      "new": 0.68134,
+      "delta": 0.0013,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00130 \u2014 candidate is not better",
+        "material_improvement: delta +0.00130 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "ht_over05",
+      "old": 0.60596,
+      "new": 0.60544,
+      "delta": -0.00052,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00052 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "ht_over15",
+      "old": 0.64892,
+      "new": 0.64912,
+      "delta": 0.0002,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00020 \u2014 candidate is not better",
+        "material_improvement: delta +0.00020 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "btts",
+      "old": 0.68607,
+      "new": 0.68585,
+      "delta": -0.00022,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00022 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "over15",
+      "old": 0.54522,
+      "new": 0.54591,
+      "delta": 0.00069,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00069 \u2014 candidate is not better",
+        "material_improvement: delta +0.00069 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-02",
+      "track": "over35",
+      "old": 0.59953,
+      "new": 0.5989,
+      "delta": -0.00063,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00063 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "standard",
+      "old": 0.68801,
+      "new": 0.68793,
+      "delta": -8e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00008 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "newformat",
+      "old": 0.68154,
+      "new": 0.68105,
+      "delta": -0.00049,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00049 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "ht_over05",
+      "old": 0.60561,
+      "new": 0.60558,
+      "delta": -3e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00003 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "ht_over15",
+      "old": 0.64877,
+      "new": 0.64914,
+      "delta": 0.00037,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00037 \u2014 candidate is not better",
+        "material_improvement: delta +0.00037 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "btts",
+      "old": 0.68587,
+      "new": 0.68578,
+      "delta": -9e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00009 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "over15",
+      "old": 0.54577,
+      "new": 0.54565,
+      "delta": -0.00012,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00012 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-03",
+      "track": "over35",
+      "old": 0.59912,
+      "new": 0.59919,
+      "delta": 7e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00007 \u2014 candidate is not better",
+        "material_improvement: delta +0.00007 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "standard",
+      "old": 0.68785,
+      "new": 0.68774,
+      "delta": -0.00011,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00011 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "newformat",
+      "old": 0.6811,
+      "new": 0.68142,
+      "delta": 0.00032,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00032 \u2014 candidate is not better",
+        "material_improvement: delta +0.00032 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "ht_over05",
+      "old": 0.60543,
+      "new": 0.60569,
+      "delta": 0.00026,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "log_loss_not_worse: delta +0.00026 \u2014 candidate is not better",
+        "material_improvement: delta +0.00026 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "ht_over15",
+      "old": 0.64896,
+      "new": 0.64871,
+      "delta": -0.00025,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00025 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "btts",
+      "old": 0.68571,
+      "new": 0.68557,
+      "delta": -0.00014,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00014 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "over15",
+      "old": 0.54573,
+      "new": 0.54572,
+      "delta": -1e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00001 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    },
+    {
+      "day": "2026-10-04",
+      "track": "over35",
+      "old": 0.59921,
+      "new": 0.59913,
+      "delta": -8e-05,
+      "live_promoted": true,
+      "strict_pass_replayable": false,
+      "strict_reasons": [
+        "material_improvement: delta -0.00008 vs required <= -0.00100"
+      ],
+      "basis": "same_holdout"
+    }
+  ]
+}

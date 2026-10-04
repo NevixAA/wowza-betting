@@ -433,10 +433,39 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
     # price insurance against a corrupt-data or buggy-code run, which is the case a gate exists
     # for. Loosened to its real job; not deleted on evidence that never tested the risk.
     tol = float(os.getenv("TRAIN_MAX_LOGLOSS_RISE", "0.030"))
+    #: Never promote a candidate that is measurably worse on the same holdout. Set to "0" to
+    #: restore the pure-tolerance behaviour in one environment variable.
+    BLOCK_WORSE_CANDIDATE = os.getenv("TRAIN_BLOCK_WORSE_CANDIDATE", "1").strip() != "0"
     if not (old_ll == old_ll):          # NaN — no incumbent on record
         promote, why = True, "no incumbent metrics on record — first model for this track"
     elif not (new_ll == new_ll):
         promote, why = False, "candidate produced no usable log loss — refusing to ship it blind"
+    elif (BLOCK_WORSE_CANDIDATE and basis == "same_holdout" and new_ll > old_ll):
+        # ── DO NO HARM (2026-10-04) ────────────────────────────────────────────────────────
+        # A candidate that scores WORSE than the incumbent ON THE INCUMBENT'S OWN HOLDOUT does
+        # not replace it, however small the gap. Replayed over 91 recorded decisions, the old
+        # tolerance promoted 88 and 29 of those were measurably worse -- including ht_over05 at
+        # +0.019 and newformat at +0.00298. Every one passed only because it degraded by less
+        # than 0.030.
+        #
+        # WHY THIS RULE AND NOT THE FULL STRICT GATE. The strict gate also demands a MATERIAL
+        # improvement of 0.001, and on the same 91 decisions that floor would have blocked 62 of
+        # the 88 live promotions -- over15 would have updated twice in thirteen days. There is no
+        # evidence that is good: 1,568 simulated comparisons found no promotion rule beat having
+        # no gate at all, every rejection costing on average, and retraining is separately proven
+        # to beat freezing. So the material floor stays in LOG-ONLY (`v91_gate`) until a forward
+        # period says otherwise. This rule is the part that needs no such evidence.
+        #
+        # The asymmetry that justifies it: on a tie or a loss, the incumbent is a known quantity
+        # serving in production and the challenger is not. Preferring the incumbent costs nothing
+        # -- tomorrow's retrain tries again on one more day of data, so nothing can deadlock.
+        #
+        # ONLY on `same_holdout`. Under the stored-metrics fallback the two numbers come from
+        # different test sets and a sub-tolerance difference is meaningless, so blocking there
+        # would reject good models on an artefact. That branch keeps the old behaviour.
+        promote, why = False, (f"log loss ROSE {new_ll - old_ll:+.5f} ({old_ll:.5f} -> "
+                               f"{new_ll:.5f}) on the incumbent's own holdout — a worse "
+                               f"candidate does not replace a serving champion")
     elif new_ll > old_ll + tol:
         promote, why = False, (f"log loss ROSE {new_ll - old_ll:+.5f} ({old_ll:.5f} -> "
                                f"{new_ll:.5f}), beyond the {tol:.5f} tolerance")
