@@ -1,0 +1,933 @@
+{
+  "generated_for": "2026-10-04",
+  "min_n": 30,
+  "note": "Retrospective only. CONFIRMED is never assigned here \u2014 it requires a preregistered forward period. Nothing in this file changes a threshold, a stake or a league.",
+  "windows": {
+    "since_cutoff": {
+      "btts|standard|staked": {
+        "n": 10,
+        "pnl": -0.07,
+        "roi_per_bet": -0.007,
+        "hit_rate": 0.5,
+        "break_even": 0.4942,
+        "ci_lo": -0.5422,
+        "ci_hi": 0.5278,
+        "clv_available": 10,
+        "status": "INSUFFICIENT"
+      },
+      "btts|new_format|staked": {
+        "n": 95,
+        "pnl": 31.98,
+        "roi_per_bet": 0.3367,
+        "hit_rate": 0.6211,
+        "break_even": 0.4715,
+        "ci_lo": 0.1395,
+        "ci_hi": 0.52,
+        "clv_available": 84,
+        "status": "POSITIVE_SIGNAL"
+      },
+      "ou25|standard|staked": {
+        "n": 103,
+        "pnl": -12.0,
+        "roi_per_bet": -0.1165,
+        "hit_rate": 0.4175,
+        "break_even": 0.4692,
+        "ci_lo": -0.3532,
+        "ci_hi": 0.08,
+        "clv_available": 103,
+        "status": "NEUTRAL"
+      },
+      "ou25|new_format|staked": {
+        "n": 237,
+        "pnl": -16.4,
+        "roi_per_bet": -0.0692,
+        "hit_rate": 0.3882,
+        "break_even": 0.4073,
+        "ci_lo": -0.2208,
+        "ci_hi": 0.0876,
+        "clv_available": 231,
+        "status": "NEUTRAL"
+      },
+      "over15|standard|staked": {
+        "n": 1,
+        "pnl": -1.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.6897,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      },
+      "over15|new_format|staked": {
+        "n": 78,
+        "pnl": 2.1,
+        "roi_per_bet": 0.0269,
+        "hit_rate": 0.6538,
+        "break_even": 0.6366,
+        "ci_lo": -0.1539,
+        "ci_hi": 0.1875,
+        "clv_available": 78,
+        "status": "NEUTRAL"
+      },
+      "over35|new_format|staked": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4357,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      }
+    },
+    "last_60d": {
+      "btts|standard|staked": {
+        "n": 10,
+        "pnl": -0.07,
+        "roi_per_bet": -0.007,
+        "hit_rate": 0.5,
+        "break_even": 0.4942,
+        "ci_lo": -0.5422,
+        "ci_hi": 0.5278,
+        "clv_available": 10,
+        "status": "INSUFFICIENT"
+      },
+      "btts|new_format|staked": {
+        "n": 95,
+        "pnl": 31.98,
+        "roi_per_bet": 0.3367,
+        "hit_rate": 0.6211,
+        "break_even": 0.4715,
+        "ci_lo": 0.1395,
+        "ci_hi": 0.52,
+        "clv_available": 84,
+        "status": "POSITIVE_SIGNAL"
+      },
+      "ou25|standard|staked": {
+        "n": 103,
+        "pnl": -12.0,
+        "roi_per_bet": -0.1165,
+        "hit_rate": 0.4175,
+        "break_even": 0.4692,
+        "ci_lo": -0.3532,
+        "ci_hi": 0.08,
+        "clv_available": 103,
+        "status": "NEUTRAL"
+      },
+      "ou25|new_format|staked": {
+        "n": 237,
+        "pnl": -16.4,
+        "roi_per_bet": -0.0692,
+        "hit_rate": 0.3882,
+        "break_even": 0.4073,
+        "ci_lo": -0.2208,
+        "ci_hi": 0.0876,
+        "clv_available": 231,
+        "status": "NEUTRAL"
+      },
+      "over15|standard|staked": {
+        "n": 1,
+        "pnl": -1.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.6897,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      },
+      "over15|new_format|staked": {
+        "n": 78,
+        "pnl": 2.1,
+        "roi_per_bet": 0.0269,
+        "hit_rate": 0.6538,
+        "break_even": 0.6366,
+        "ci_lo": -0.1539,
+        "ci_hi": 0.1875,
+        "clv_available": 78,
+        "status": "NEUTRAL"
+      },
+      "over35|new_format|staked": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4357,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      }
+    },
+    "last_30d": {
+      "btts|standard|staked": {
+        "n": 9,
+        "pnl": 0.93,
+        "roi_per_bet": 0.1033,
+        "hit_rate": 0.5556,
+        "break_even": 0.4975,
+        "ci_lo": -0.4288,
+        "ci_hi": 0.6947,
+        "clv_available": 9,
+        "status": "INSUFFICIENT"
+      },
+      "btts|new_format|staked": {
+        "n": 69,
+        "pnl": 25.93,
+        "roi_per_bet": 0.3758,
+        "hit_rate": 0.6522,
+        "break_even": 0.4825,
+        "ci_lo": 0.1949,
+        "ci_hi": 0.5528,
+        "clv_available": 61,
+        "status": "POSITIVE_SIGNAL"
+      },
+      "ou25|standard|staked": {
+        "n": 76,
+        "pnl": 1.41,
+        "roi_per_bet": 0.0186,
+        "hit_rate": 0.4868,
+        "break_even": 0.478,
+        "ci_lo": -0.1874,
+        "ci_hi": 0.2222,
+        "clv_available": 76,
+        "status": "NEUTRAL"
+      },
+      "ou25|new_format|staked": {
+        "n": 119,
+        "pnl": -16.12,
+        "roi_per_bet": -0.1355,
+        "hit_rate": 0.3529,
+        "break_even": 0.4024,
+        "ci_lo": -0.3729,
+        "ci_hi": 0.1298,
+        "clv_available": 119,
+        "status": "NEUTRAL"
+      },
+      "over15|new_format|staked": {
+        "n": 37,
+        "pnl": 2.17,
+        "roi_per_bet": 0.0586,
+        "hit_rate": 0.6757,
+        "break_even": 0.6384,
+        "ci_lo": -0.18,
+        "ci_hi": 0.3108,
+        "clv_available": 37,
+        "status": "NEUTRAL"
+      },
+      "over35|new_format|staked": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4357,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      }
+    },
+    "last_14d": {
+      "btts|standard|staked": {
+        "n": 1,
+        "pnl": 0.93,
+        "roi_per_bet": 0.93,
+        "hit_rate": 1.0,
+        "break_even": 0.5181,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      },
+      "btts|new_format|staked": {
+        "n": 23,
+        "pnl": 2.51,
+        "roi_per_bet": 0.1091,
+        "hit_rate": 0.5652,
+        "break_even": 0.516,
+        "ci_lo": -0.1491,
+        "ci_hi": 0.4736,
+        "clv_available": 22,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|standard|staked": {
+        "n": 28,
+        "pnl": 5.26,
+        "roi_per_bet": 0.1879,
+        "hit_rate": 0.5714,
+        "break_even": 0.4941,
+        "ci_lo": 0.0156,
+        "ci_hi": 0.498,
+        "clv_available": 28,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|new_format|staked": {
+        "n": 41,
+        "pnl": -12.13,
+        "roi_per_bet": -0.2959,
+        "hit_rate": 0.2927,
+        "break_even": 0.4015,
+        "ci_lo": -0.6142,
+        "ci_hi": 0.1758,
+        "clv_available": 41,
+        "status": "NEUTRAL"
+      },
+      "over15|new_format|staked": {
+        "n": 13,
+        "pnl": -0.61,
+        "roi_per_bet": -0.0469,
+        "hit_rate": 0.6154,
+        "break_even": 0.6449,
+        "ci_lo": -0.2831,
+        "ci_hi": 0.3343,
+        "clv_available": 13,
+        "status": "INSUFFICIENT"
+      },
+      "over35|new_format|staked": {
+        "n": 1,
+        "pnl": -1.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4329,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      }
+    },
+    "last_7d": {
+      "btts|new_format|staked": {
+        "n": 9,
+        "pnl": 0.47,
+        "roi_per_bet": 0.0517,
+        "hit_rate": 0.5556,
+        "break_even": 0.5568,
+        "ci_lo": -0.3695,
+        "ci_hi": 0.8383,
+        "clv_available": 9,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|standard|staked": {
+        "n": 5,
+        "pnl": 1.03,
+        "roi_per_bet": 0.206,
+        "hit_rate": 0.6,
+        "break_even": 0.494,
+        "ci_lo": -0.0425,
+        "ci_hi": 1.2,
+        "clv_available": 5,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|new_format|staked": {
+        "n": 16,
+        "pnl": -1.53,
+        "roi_per_bet": -0.0956,
+        "hit_rate": 0.375,
+        "break_even": 0.41,
+        "ci_lo": -1.0,
+        "ci_hi": 0.2229,
+        "clv_available": 16,
+        "status": "INSUFFICIENT"
+      },
+      "over15|new_format|staked": {
+        "n": 4,
+        "pnl": 0.7,
+        "roi_per_bet": 0.175,
+        "hit_rate": 0.75,
+        "break_even": 0.6392,
+        "ci_lo": 0.06,
+        "ci_hi": 0.52,
+        "clv_available": 4,
+        "status": "INSUFFICIENT"
+      },
+      "over35|new_format|staked": {
+        "n": 1,
+        "pnl": -1.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4329,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      }
+    }
+  },
+  "breakdowns": {
+    "market": {
+      "btts": {
+        "n": 105,
+        "pnl": 31.91,
+        "roi_per_bet": 0.304,
+        "hit_rate": 0.6095,
+        "break_even": 0.4736,
+        "ci_lo": 0.1293,
+        "ci_hi": 0.4751,
+        "clv_available": 94,
+        "status": "VALIDATABLE"
+      },
+      "ou25": {
+        "n": 340,
+        "pnl": -28.4,
+        "roi_per_bet": -0.0835,
+        "hit_rate": 0.3971,
+        "break_even": 0.4261,
+        "ci_lo": -0.1934,
+        "ci_hi": 0.0363,
+        "clv_available": 334,
+        "status": "NEUTRAL"
+      },
+      "over15": {
+        "n": 79,
+        "pnl": 1.1,
+        "roi_per_bet": 0.0139,
+        "hit_rate": 0.6456,
+        "break_even": 0.6372,
+        "ci_lo": -0.1779,
+        "ci_hi": 0.1837,
+        "clv_available": 79,
+        "status": "NEUTRAL"
+      },
+      "over35": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4357,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      }
+    },
+    "tier": {
+      "MARKSMAN": {
+        "n": 278,
+        "pnl": -12.1,
+        "roi_per_bet": -0.0435,
+        "hit_rate": 0.4281,
+        "break_even": 0.4416,
+        "ci_lo": -0.1642,
+        "ci_hi": 0.0982,
+        "clv_available": 272,
+        "status": "NEUTRAL"
+      },
+      "SNIPER": {
+        "n": 248,
+        "pnl": 14.71,
+        "roi_per_bet": 0.0593,
+        "hit_rate": 0.5282,
+        "break_even": 0.4961,
+        "ci_lo": -0.065,
+        "ci_hi": 0.1725,
+        "clv_available": 237,
+        "status": "NEUTRAL"
+      }
+    },
+    "side": {
+      "OVER": {
+        "n": 107,
+        "pnl": 8.77,
+        "roi_per_bet": 0.082,
+        "hit_rate": 0.486,
+        "break_even": 0.453,
+        "ci_lo": -0.1527,
+        "ci_hi": 0.3481,
+        "clv_available": 107,
+        "status": "NEUTRAL"
+      },
+      "UNDER": {
+        "n": 233,
+        "pnl": -37.17,
+        "roi_per_bet": -0.1595,
+        "hit_rate": 0.3562,
+        "break_even": 0.4137,
+        "ci_lo": -0.3062,
+        "ci_hi": -0.0116,
+        "clv_available": 227,
+        "status": "NEGATIVE_SIGNAL"
+      }
+    },
+    "league": {
+      "Argentina Primera Division": {
+        "n": 166,
+        "pnl": 29.93,
+        "roi_per_bet": 0.1803,
+        "hit_rate": 0.5964,
+        "break_even": 0.5201,
+        "ci_lo": 0.0015,
+        "ci_hi": 0.357,
+        "clv_available": 163,
+        "status": "VALIDATABLE"
+      },
+      "Austrian Bundesliga": {
+        "n": 13,
+        "pnl": -2.54,
+        "roi_per_bet": -0.1954,
+        "hit_rate": 0.3846,
+        "break_even": 0.4542,
+        "ci_lo": -0.67,
+        "ci_hi": 0.4255,
+        "clv_available": 13,
+        "status": "INSUFFICIENT"
+      },
+      "Brazil Serie A": {
+        "n": 26,
+        "pnl": 11.53,
+        "roi_per_bet": 0.4435,
+        "hit_rate": 0.6923,
+        "break_even": 0.4867,
+        "ci_lo": 0.085,
+        "ci_hi": 0.8018,
+        "clv_available": 23,
+        "status": "INSUFFICIENT"
+      },
+      "Bundesliga 2": {
+        "n": 11,
+        "pnl": -3.88,
+        "roi_per_bet": -0.3527,
+        "hit_rate": 0.2727,
+        "break_even": 0.4175,
+        "ci_lo": -0.8387,
+        "ci_hi": 0.4775,
+        "clv_available": 11,
+        "status": "INSUFFICIENT"
+      },
+      "Championship": {
+        "n": 19,
+        "pnl": -4.66,
+        "roi_per_bet": -0.2453,
+        "hit_rate": 0.3684,
+        "break_even": 0.4825,
+        "ci_lo": -0.6507,
+        "ci_hi": 0.153,
+        "clv_available": 19,
+        "status": "INSUFFICIENT"
+      },
+      "China Super League": {
+        "n": 18,
+        "pnl": -5.2,
+        "roi_per_bet": -0.2889,
+        "hit_rate": 0.2778,
+        "break_even": 0.366,
+        "ci_lo": -1.0,
+        "ci_hi": 0.3476,
+        "clv_available": 16,
+        "status": "INSUFFICIENT"
+      },
+      "Denmark Superliga": {
+        "n": 13,
+        "pnl": 0.69,
+        "roi_per_bet": 0.0531,
+        "hit_rate": 0.4615,
+        "break_even": 0.4281,
+        "ci_lo": -0.435,
+        "ci_hi": 0.69,
+        "clv_available": 13,
+        "status": "INSUFFICIENT"
+      },
+      "Finland Veikkausliiga": {
+        "n": 9,
+        "pnl": -0.45,
+        "roi_per_bet": -0.05,
+        "hit_rate": 0.4444,
+        "break_even": 0.4781,
+        "ci_lo": -0.7071,
+        "ci_hi": 0.53,
+        "clv_available": 8,
+        "status": "INSUFFICIENT"
+      },
+      "Ireland Premier Division": {
+        "n": 11,
+        "pnl": -0.78,
+        "roi_per_bet": -0.0709,
+        "hit_rate": 0.4545,
+        "break_even": 0.4864,
+        "ci_lo": -0.5856,
+        "ci_hi": 0.4626,
+        "clv_available": 11,
+        "status": "INSUFFICIENT"
+      },
+      "Japan J-League": {
+        "n": 26,
+        "pnl": -1.52,
+        "roi_per_bet": -0.0585,
+        "hit_rate": 0.4615,
+        "break_even": 0.4857,
+        "ci_lo": -0.334,
+        "ci_hi": 0.1641,
+        "clv_available": 18,
+        "status": "INSUFFICIENT"
+      },
+      "La Liga 2": {
+        "n": 27,
+        "pnl": -1.55,
+        "roi_per_bet": -0.0574,
+        "hit_rate": 0.4444,
+        "break_even": 0.4607,
+        "ci_lo": -0.5058,
+        "ci_hi": 0.3356,
+        "clv_available": 27,
+        "status": "INSUFFICIENT"
+      },
+      "League One": {
+        "n": 14,
+        "pnl": -4.92,
+        "roi_per_bet": -0.3514,
+        "hit_rate": 0.2857,
+        "break_even": 0.4734,
+        "ci_lo": -0.7584,
+        "ci_hi": 0.0809,
+        "clv_available": 14,
+        "status": "INSUFFICIENT"
+      },
+      "League Two": {
+        "n": 12,
+        "pnl": -0.45,
+        "roi_per_bet": -0.0375,
+        "hit_rate": 0.5,
+        "break_even": 0.5142,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 12,
+        "status": "INSUFFICIENT"
+      },
+      "Ligue 2": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4366,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      },
+      "Mexico Liga MX": {
+        "n": 23,
+        "pnl": 1.89,
+        "roi_per_bet": 0.0824,
+        "hit_rate": 0.5217,
+        "break_even": 0.4613,
+        "ci_lo": -0.3951,
+        "ci_hi": 0.5492,
+        "clv_available": 23,
+        "status": "INSUFFICIENT"
+      },
+      "Norway Eliteserien": {
+        "n": 13,
+        "pnl": -11.03,
+        "roi_per_bet": -0.8485,
+        "hit_rate": 0.0769,
+        "break_even": 0.3587,
+        "ci_lo": -1.0,
+        "ci_hi": -0.4627,
+        "clv_available": 13,
+        "status": "INSUFFICIENT"
+      },
+      "Serie B": {
+        "n": 29,
+        "pnl": 4.39,
+        "roi_per_bet": 0.1514,
+        "hit_rate": 0.5517,
+        "break_even": 0.4859,
+        "ci_lo": -0.2661,
+        "ci_hi": 0.51,
+        "clv_available": 29,
+        "status": "INSUFFICIENT"
+      },
+      "Sweden Allsvenskan": {
+        "n": 22,
+        "pnl": 6.11,
+        "roi_per_bet": 0.2777,
+        "hit_rate": 0.5455,
+        "break_even": 0.4106,
+        "ci_lo": -0.1364,
+        "ci_hi": 0.7677,
+        "clv_available": 22,
+        "status": "INSUFFICIENT"
+      },
+      "USA MLS": {
+        "n": 72,
+        "pnl": -12.95,
+        "roi_per_bet": -0.1799,
+        "hit_rate": 0.3194,
+        "break_even": 0.3918,
+        "ci_lo": -0.43,
+        "ci_hi": 0.0439,
+        "clv_available": 72,
+        "status": "NEUTRAL"
+      }
+    },
+    "odds_band": {
+      "1.80-2.00": {
+        "n": 55,
+        "pnl": 1.72,
+        "roi_per_bet": 0.0313,
+        "hit_rate": 0.5455,
+        "break_even": 0.527,
+        "ci_lo": -0.2216,
+        "ci_hi": 0.2418,
+        "clv_available": 50,
+        "status": "NEUTRAL"
+      },
+      "2.00-2.50": {
+        "n": 262,
+        "pnl": 28.43,
+        "roi_per_bet": 0.1085,
+        "hit_rate": 0.4962,
+        "break_even": 0.4488,
+        "ci_lo": 0.0185,
+        "ci_hi": 0.1965,
+        "clv_available": 251,
+        "status": "VALIDATABLE"
+      },
+      "2.50-3.00": {
+        "n": 84,
+        "pnl": -5.34,
+        "roi_per_bet": -0.0635,
+        "hit_rate": 0.3452,
+        "break_even": 0.3703,
+        "ci_lo": -0.3141,
+        "ci_hi": 0.2691,
+        "clv_available": 83,
+        "status": "NEUTRAL"
+      },
+      "<1.80": {
+        "n": 91,
+        "pnl": -0.94,
+        "roi_per_bet": -0.0104,
+        "hit_rate": 0.6264,
+        "break_even": 0.6329,
+        "ci_lo": -0.1722,
+        "ci_hi": 0.1581,
+        "clv_available": 91,
+        "status": "NEUTRAL"
+      },
+      ">3.00": {
+        "n": 34,
+        "pnl": -21.25,
+        "roi_per_bet": -0.625,
+        "hit_rate": 0.1176,
+        "break_even": 0.3099,
+        "ci_lo": -0.9153,
+        "ci_hi": -0.2069,
+        "clv_available": 34,
+        "status": "NEGATIVE_SIGNAL"
+      }
+    },
+    "odds_band_by_track": {
+      "btts|new_format|1.80-2.00": {
+        "n": 7,
+        "pnl": 0.53,
+        "roi_per_bet": 0.0757,
+        "hit_rate": 0.5714,
+        "break_even": 0.5229,
+        "ci_lo": -0.7271,
+        "ci_hi": 0.6257,
+        "clv_available": 4,
+        "status": "INSUFFICIENT"
+      },
+      "btts|new_format|2.00-2.50": {
+        "n": 75,
+        "pnl": 25.98,
+        "roi_per_bet": 0.3463,
+        "hit_rate": 0.6133,
+        "break_even": 0.4581,
+        "ci_lo": 0.1073,
+        "ci_hi": 0.5802,
+        "clv_available": 67,
+        "status": "POSITIVE_SIGNAL"
+      },
+      "btts|new_format|2.50-3.00": {
+        "n": 6,
+        "pnl": 4.29,
+        "roi_per_bet": 0.7158,
+        "hit_rate": 0.6667,
+        "break_even": 0.3924,
+        "ci_lo": -0.1542,
+        "ci_hi": 1.5842,
+        "clv_available": 6,
+        "status": "INSUFFICIENT"
+      },
+      "btts|new_format|<1.80": {
+        "n": 7,
+        "pnl": 1.19,
+        "roi_per_bet": 0.1693,
+        "hit_rate": 0.7143,
+        "break_even": 0.6313,
+        "ci_lo": -0.2727,
+        "ci_hi": 0.72,
+        "clv_available": 7,
+        "status": "INSUFFICIENT"
+      },
+      "btts|standard|1.80-2.00": {
+        "n": 6,
+        "pnl": -0.22,
+        "roi_per_bet": -0.0367,
+        "hit_rate": 0.5,
+        "break_even": 0.5187,
+        "ci_lo": -0.606,
+        "ci_hi": 0.534,
+        "clv_available": 6,
+        "status": "INSUFFICIENT"
+      },
+      "btts|standard|2.00-2.50": {
+        "n": 3,
+        "pnl": 1.15,
+        "roi_per_bet": 0.3833,
+        "hit_rate": 0.6667,
+        "break_even": 0.4767,
+        "ci_lo": -1.0,
+        "ci_hi": 1.15,
+        "clv_available": 3,
+        "status": "INSUFFICIENT"
+      },
+      "btts|standard|2.50-3.00": {
+        "n": 1,
+        "pnl": -1.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|new_format|1.80-2.00": {
+        "n": 15,
+        "pnl": 1.93,
+        "roi_per_bet": 0.1287,
+        "hit_rate": 0.6,
+        "break_even": 0.5266,
+        "ci_lo": -0.5292,
+        "ci_hi": 0.5906,
+        "clv_available": 13,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|new_format|2.00-2.50": {
+        "n": 113,
+        "pnl": 10.68,
+        "roi_per_bet": 0.0945,
+        "hit_rate": 0.4779,
+        "break_even": 0.4419,
+        "ci_lo": -0.1119,
+        "ci_hi": 0.2976,
+        "clv_available": 110,
+        "status": "NEUTRAL"
+      },
+      "ou25|new_format|2.50-3.00": {
+        "n": 72,
+        "pnl": -6.53,
+        "roi_per_bet": -0.0907,
+        "hit_rate": 0.3333,
+        "break_even": 0.3676,
+        "ci_lo": -0.3788,
+        "ci_hi": 0.2792,
+        "clv_available": 71,
+        "status": "NEUTRAL"
+      },
+      "ou25|new_format|<1.80": {
+        "n": 3,
+        "pnl": -1.23,
+        "roi_per_bet": -0.41,
+        "hit_rate": 0.3333,
+        "break_even": 0.565,
+        "ci_lo": -1.0,
+        "ci_hi": -0.115,
+        "clv_available": 3,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|new_format|>3.00": {
+        "n": 34,
+        "pnl": -21.25,
+        "roi_per_bet": -0.625,
+        "hit_rate": 0.1176,
+        "break_even": 0.3099,
+        "ci_lo": -0.9153,
+        "ci_hi": -0.2069,
+        "clv_available": 34,
+        "status": "NEGATIVE_SIGNAL"
+      },
+      "ou25|standard|1.80-2.00": {
+        "n": 27,
+        "pnl": -0.52,
+        "roi_per_bet": -0.0193,
+        "hit_rate": 0.5185,
+        "break_even": 0.5301,
+        "ci_lo": -0.2753,
+        "ci_hi": 0.1722,
+        "clv_available": 27,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|standard|2.00-2.50": {
+        "n": 69,
+        "pnl": -7.38,
+        "roi_per_bet": -0.107,
+        "hit_rate": 0.4058,
+        "break_even": 0.4493,
+        "ci_lo": -0.3932,
+        "ci_hi": 0.2366,
+        "clv_available": 69,
+        "status": "NEUTRAL"
+      },
+      "ou25|standard|2.50-3.00": {
+        "n": 5,
+        "pnl": -2.1,
+        "roi_per_bet": -0.42,
+        "hit_rate": 0.2,
+        "break_even": 0.3768,
+        "ci_lo": -1.0,
+        "ci_hi": 0.74,
+        "clv_available": 5,
+        "status": "INSUFFICIENT"
+      },
+      "ou25|standard|<1.80": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.5666,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      },
+      "over15|new_format|<1.80": {
+        "n": 78,
+        "pnl": 2.1,
+        "roi_per_bet": 0.0269,
+        "hit_rate": 0.6538,
+        "break_even": 0.6366,
+        "ci_lo": -0.1539,
+        "ci_hi": 0.1875,
+        "clv_available": 78,
+        "status": "NEUTRAL"
+      },
+      "over15|standard|<1.80": {
+        "n": 1,
+        "pnl": -1.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.6897,
+        "ci_lo": null,
+        "ci_hi": null,
+        "clv_available": 1,
+        "status": "INSUFFICIENT"
+      },
+      "over35|new_format|2.00-2.50": {
+        "n": 2,
+        "pnl": -2.0,
+        "roi_per_bet": -1.0,
+        "hit_rate": 0.0,
+        "break_even": 0.4357,
+        "ci_lo": -1.0,
+        "ci_hi": -1.0,
+        "clv_available": 2,
+        "status": "INSUFFICIENT"
+      }
+    }
+  }
+}
