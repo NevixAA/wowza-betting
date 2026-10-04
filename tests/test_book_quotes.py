@@ -122,3 +122,42 @@ def test_append_keeps_only_changed_prices(tmp_path):
                           "2026-10-05T18:50:00Z")
     assert bq.append_quotes(rows, p) == len(rows)
     assert bq.append_quotes(rows, p) == 0, "an unchanged price is not new information"
+
+
+# ── monthly partitioning ──────────────────────────────────────────────────────────────────────
+def _q(ts, odds, fid=1, book=8):
+    return {"snapshot_ts": ts, "fixture_id": fid, "kickoff_utc": "2026-10-04T18:00:00Z",
+            "minutes_to_kickoff": 30.0, "ladder_band": "T-30m", "league": "L", "model_type": "std",
+            "home_team": "A", "away_team": "B", "bookmaker_id": book, "bookmaker": "Bet365",
+            "market": "ou", "side": "over", "line": 2.5, "odds": odds, "source": "t"}
+
+
+def test_rows_are_filed_by_their_own_month_not_todays(tmp_path, monkeypatch):
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90), _q("2026-10-01T00:10:00Z", 1.95)])
+    assert {f.name for f in tmp_path.glob("*.csv")} == {"2026-09.csv", "2026-10.csv"}
+
+
+def test_dedup_spans_the_month_boundary(tmp_path, monkeypatch):
+    """A price unchanged across midnight on the 1st must not be rewritten into the new part."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90)])
+    assert bq.append_quotes([_q("2026-10-01T00:10:00Z", 1.90)]) == 0
+    assert bq.append_quotes([_q("2026-10-01T00:20:00Z", 1.95)]) == 1
+
+
+def test_a_finished_part_is_never_rewritten(tmp_path, monkeypatch):
+    """Git stores a changed file in full, so an immutable finished month is the whole point."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90)])
+    sept = tmp_path / "2026-09.csv"
+    before = sept.read_bytes()
+    bq.append_quotes([_q("2026-10-01T00:20:00Z", 1.95), _q("2026-10-02T00:20:00Z", 2.00)])
+    assert sept.read_bytes() == before
+
+
+def test_load_quotes_reads_every_part(tmp_path, monkeypatch):
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    monkeypatch.setattr(bq, "LEGACY_FILE", tmp_path / "nonexistent.csv")
+    bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90), _q("2026-10-01T00:10:00Z", 1.95)])
+    assert len(bq.load_quotes()) == 2

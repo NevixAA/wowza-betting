@@ -184,6 +184,76 @@ def _mean_logloss(metrics: dict) -> float:
     return float(sum(vals) / len(vals)) if vals else float("nan")
 
 
+def _shadow_gate(label: str, old_payload, results: dict, test_df, target: str,
+                 promoted_by_live_gate: bool, live_reason: str) -> dict:
+    """Run the v9.1 promotion gate alongside the live one and WRITE DOWN what it would decide.
+
+    LOG-ONLY. It never changes `promote`, never touches a .pkl, and a failure here is swallowed:
+    a measurement must not be able to break a retrain.
+
+    WHY LOG-ONLY RATHER THAN SIMPLY SWITCHING. The live tolerance is not arbitrary and the
+    comment above records why: 0.030 sits above every healthy challenger seen across 1,568
+    simulated comparisons, and backtesting eight promotion rules on realised performance found
+    that NO rule beat having no gate at all -- the ordering was monotone in how much a rule
+    blocked, so every rejection cost on average. That is evidence AGAINST tightening, and it
+    would be careless to override it with a gate that has never been run on this estate.
+
+    But that backtest only ever produced healthy challengers, so it priced the cost of blocking
+    and never the cost of shipping a quietly worse model. The live gate asks one question -- did
+    it collapse -- and 27 of 84 logged decisions promoted a model that scored worse than the one
+    it replaced. Most of those are inside noise; the point is that the gate cannot tell which.
+
+    So this records both verdicts side by side for a month. If the strict gate would mostly have
+    blocked models that went on to perform fine, that is the answer and the gate stays off. If it
+    would have caught real degradation the live one waved through, that is the answer too. Either
+    way the decision is made on this estate's own evidence rather than on a borrowed prior.
+    """
+    out = {"available": False}
+    if old_payload is None or test_df is None or len(test_df) < 50:
+        return out
+    try:
+        import numpy as np
+        from src.model_validation import score as mv_score, dataset_id
+        from src.promotion_gate import evaluate_promotion
+
+        payload_new = {
+            "target": target,
+            "models": {k: v["model"] for k, v in results.items()},
+            "feature_cols": results[next(iter(results))]["feature_cols"],
+            "metrics": {k: v["metrics"] for k, v in results.items()},
+        }
+        p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
+        p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
+        y = pd.to_numeric(test_df[target], errors="coerce").to_numpy(dtype=float)
+        m = np.isfinite(p_old) & np.isfinite(p_new) & np.isfinite(y)
+        if m.sum() < 50:
+            return out
+        y, p_old, p_new = y[m], p_old[m], p_new[m]
+        leagues = (test_df.loc[m, "league"] if "league" in test_df.columns else None)
+
+        # Same holdout, same rows, so the dataset id is identical by construction. Passed
+        # explicitly anyway so the check is exercised rather than skipped.
+        did = dataset_id(test_df.loc[m], target, list(payload_new["feature_cols"]))
+        v = evaluate_promotion(mv_score(y, p_old), mv_score(y, p_new), y, p_old, p_new,
+                               leagues=leagues, dataset_id_inc=did, dataset_id_cand=did)
+        out = {"available": True, "status": v.status, "n": v.n,
+               "delta_log_loss": v.delta_log_loss, "delta_brier": v.delta_brier,
+               "ci_log_loss": v.ci_log_loss, "reasons": v.reasons,
+               "checks": {k: bool(c["pass"]) for k, c in v.checks.items()},
+               "live_gate_promoted": bool(promoted_by_live_gate),
+               "live_gate_reason": live_reason,
+               # The number this whole exercise exists to produce.
+               "agrees_with_live_gate": bool(promoted_by_live_gate) == (v.status == "CHAMPION")}
+        verb = "would PROMOTE" if v.status == "CHAMPION" else f"would HOLD ({v.status})"
+        log.info(f"  [{label}] v9.1 gate (log-only): {verb}; live gate "
+                 f"{'promoted' if promoted_by_live_gate else 'blocked'}"
+                 + (f" — {v.reasons[0]}" if v.reasons else ""))
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"  [{label}] v9.1 shadow gate did not run ({e}) — live gate unaffected")
+        out = {"available": False, "error": str(e)[:200]}
+    return out
+
+
 def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: str) -> dict:
     """Did the challenger merely get better, or did it start behaving like a different model?
 
@@ -382,8 +452,9 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
     else:
         log.error(f"  [{label}] NOT PROMOTED — {why}. {Path(model_file).name} left untouched; "
                   f"the incumbent keeps serving.")
+    shadow = _shadow_gate(label, _old_payload, results, _test_df, target, promote, why)
     _record_retrain(label, {"promoted": promote, "why": why, "rows": int(len(valid)),
-                            "comparison_basis": basis,
+                            "comparison_basis": basis, "v91_gate": shadow,
                             "logloss_old": None if old_ll != old_ll else round(old_ll, 5),
                             "logloss_new": None if new_ll != new_ll else round(new_ll, 5),
                             "canary": canary})

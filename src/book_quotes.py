@@ -33,7 +33,22 @@ import config
 
 log = logging.getLogger(__name__)
 
-QUOTES_FILE = config.OUTPUT_DIR / "book_quotes.csv"
+#: A DIRECTORY of one CSV per calendar month, not a single file.
+#:
+#: WHY, BEFORE IT IS A PROBLEM. The existing one-bookmaker archive is 4.4 MB / 42,699 rows over
+#: 46 days. This file keeps NINE books across four markets, so it accrues roughly an order of
+#: magnitude faster — about 1 MB/day, which reaches GitHub's hard 100 MB per-file limit around
+#: mid-January. That limit rejects the push outright (GH001) and is identical on Free, Pro, Team
+#: and Enterprise; `player_history.parquet` already hit it once and had to be split after the
+#: fact, with `.git` at 3.4 GB by then. Monthly parts cost nothing now and make that impossible.
+#:
+#: A finished month is never rewritten, so git stores each part once.
+QUOTES_DIR = config.OUTPUT_DIR / "book_quotes"
+#: Pre-partition single file. Still READ if present so no captured row is orphaned; never written.
+LEGACY_FILE = config.OUTPUT_DIR / "book_quotes.csv"
+#: Per-part size guard, mirroring the player-history guard. A monthly part should land near
+#: 30 MB; 70 means the growth model is wrong and 100 is the limit that rejects the push.
+WARN_MB, MAX_MB = 70, 100
 
 #: §10's required fields. `line` is separate from `market` so Over 2.5 and Over 3.5 are the same
 #: market at different lines rather than two unrelated strings — which is what lets a future
@@ -173,6 +188,51 @@ def parse_books(payload: dict, fixture_id: int, kickoff_utc: str, league: str,
     return rows
 
 
+def part_path(snapshot_ts) -> Path:
+    """The monthly part a quote belongs in, from its OWN timestamp — not from today.
+
+    Keyed on the row rather than the clock so a backfill or a run straddling midnight on the 1st
+    files each row where it belongs instead of dumping the lot into the current month.
+    """
+    try:
+        ts = pd.Timestamp(snapshot_ts)
+        if pd.isna(ts):
+            raise ValueError
+    except Exception:                                                 # noqa: BLE001
+        return QUOTES_DIR / "unknown.csv"
+    return QUOTES_DIR / f"{ts.year:04d}-{ts.month:02d}.csv"
+
+
+def load_quotes(path: Path | None = None) -> pd.DataFrame:
+    """Every captured quote, across all monthly parts plus the pre-partition file."""
+    if path is not None:
+        return pd.read_csv(path) if Path(path).exists() else pd.DataFrame(columns=COLUMNS)
+    frames = []
+    if LEGACY_FILE.exists():
+        frames.append(pd.read_csv(LEGACY_FILE))
+    if QUOTES_DIR.exists():
+        frames += [pd.read_csv(f) for f in sorted(QUOTES_DIR.glob("*.csv"))]
+    frames = [f for f in frames if len(f)]
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=COLUMNS)
+
+
+def _dedup_baseline(target: Path) -> pd.DataFrame:
+    """Rows to compare against for consecutive-distinct dedup: this part and the one before it.
+
+    Not every part. Reading the whole archive to decide one append would grow without bound, and
+    reading only the current part would rewrite every unchanged price on the 1st of each month.
+    Two parts bounds the work and spans the boundary. The residual cost is that a price which has
+    not moved in over a month is written once more — which is harmless and arguably informative.
+    """
+    parts = sorted(QUOTES_DIR.glob("*.csv")) if QUOTES_DIR.exists() else []
+    keep = [f for f in parts if f.name <= target.name][-2:]
+    if target.exists() and target not in keep:
+        keep.append(target)
+    frames = [pd.read_csv(f) for f in keep if f.exists()]
+    frames = [f for f in frames if len(f)]
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(columns=COLUMNS)
+
+
 def append_quotes(rows: list[dict], path: Path | None = None) -> int:
     """Append, keeping only DISTINCT consecutive prices per (fixture, book, market, side, line).
 
@@ -184,12 +244,24 @@ def append_quotes(rows: list[dict], path: Path | None = None) -> int:
     """
     if not rows:
         return 0
-    p = path or QUOTES_FILE
     df = pd.DataFrame(rows)
     for c in COLUMNS:
         if c not in df.columns:
             df[c] = np.nan
     df = df[COLUMNS]
+
+    # An explicit path keeps the whole frame in one file (tests, ad-hoc use). Otherwise split by
+    # the month each row belongs to and append to each part independently.
+    if path is None:
+        total = 0
+        for part, chunk in df.groupby(df["snapshot_ts"].map(part_path)):
+            total += _append_one(chunk, Path(part))
+        return total
+    return _append_one(df, Path(path))
+
+
+def _append_one(df: pd.DataFrame, p: Path) -> int:
+    """Append one frame to one file, keeping only consecutive-DISTINCT prices."""
 
     key = ["fixture_id", "bookmaker_id", "market", "side", "line"]
 
@@ -207,8 +279,9 @@ def append_quotes(rows: list[dict], path: Path | None = None) -> int:
                 + frame["side"].astype(str) + "|"
                 + frame["line"].fillna(-1).astype(str))
 
-    if p.exists():
-        old = pd.read_csv(p)
+    old = _dedup_baseline(p) if p.parent == QUOTES_DIR else (
+        pd.read_csv(p) if p.exists() else pd.DataFrame(columns=COLUMNS))
+    if len(old) or p.exists():
         if len(old):
             o = old.sort_values("snapshot_ts").copy()
             o["_k"] = _k(o)
@@ -221,11 +294,21 @@ def append_quotes(rows: list[dict], path: Path | None = None) -> int:
                                           df["odds"].astype(float))].drop(columns="_k")
         if df.empty:
             return 0
-        out = pd.concat([old, df], ignore_index=True)
+        # Append to THIS part only. `old` may span two parts for dedup purposes; writing it back
+        # would duplicate the previous month into this one.
+        existing = pd.read_csv(p) if p.exists() else pd.DataFrame(columns=COLUMNS)
+        out = pd.concat([existing, df], ignore_index=True) if len(existing) else df
     else:
         out = df
     p.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(p, index=False)
+
+    mb = p.stat().st_size / 1e6
+    if mb >= MAX_MB:
+        log.error(f"{p.name} is {mb:.1f} MB — at or past GitHub's {MAX_MB} MB hard limit; "
+                  f"the next push of this file will be REJECTED. Split it.")
+    elif mb >= WARN_MB:
+        log.warning(f"{p.name} is {mb:.1f} MB — approaching the {MAX_MB} MB limit.")
     return int(len(df))
 
 
