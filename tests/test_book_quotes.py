@@ -161,3 +161,71 @@ def test_load_quotes_reads_every_part(tmp_path, monkeypatch):
     monkeypatch.setattr(bq, "LEGACY_FILE", tmp_path / "nonexistent.csv")
     bq.append_quotes([_q("2026-09-30T23:50:00Z", 1.90), _q("2026-10-01T00:10:00Z", 1.95)])
     assert len(bq.load_quotes()) == 2
+
+
+# ── §6 observation heartbeat ──────────────────────────────────────────────────────────────────
+def _qb(ts, odds, band, mins, fid=1, book=8):
+    return {"snapshot_ts": ts, "fixture_id": fid, "kickoff_utc": "2026-10-04T18:00:00Z",
+            "minutes_to_kickoff": mins, "ladder_band": band, "league": "L", "model_type": "std",
+            "home_team": "A", "away_team": "B", "bookmaker_id": book, "bookmaker": "Bet365",
+            "market": "ou", "side": "over", "line": 2.5, "odds": odds, "source": "t"}
+
+
+def test_the_briefs_exact_scenario_an_unchanged_price_is_still_provably_observed(tmp_path,
+                                                                                monkeypatch):
+    """T-3h 1.90, T-1h 1.90, T-30m 1.90, T-10m 1.90.
+
+    Under change-only storage the archive keeps ONE row at T-3h and cannot show the price was
+    ever seen near kickoff. The near rungs must each leave a record.
+    """
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_qb("2026-10-04T15:00:00Z", 1.90, "T-3h", 180.0)])
+    for ts, band, mins in [("2026-10-04T17:00:00Z", "T-1h", 60.0),
+                           ("2026-10-04T17:30:00Z", "T-30m", 30.0),
+                           ("2026-10-04T17:50:00Z", "T-10m", 10.0)]:
+        assert bq.append_quotes([_qb(ts, 1.90, band, mins)]) == 1, f"{band} left no record"
+    d = bq.load_quotes()
+    assert set(d["ladder_band"]) == {"T-3h", "T-1h", "T-30m", "T-10m"}
+    assert set(d[d.ladder_band != "T-3h"]["obs_reason"]) == {"heartbeat"}
+    assert bq.closing_quote(d, 1, "ou", "over", 2.5)["odds"] == 1.90
+
+
+def test_resampling_one_rung_does_not_explode_storage(tmp_path, monkeypatch):
+    """The NEAR loop samples the same rung repeatedly to catch MOVEMENT. An unchanged price
+    must leave one heartbeat for that rung, not one per pass."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    assert bq.append_quotes([_qb("2026-10-04T17:30:00Z", 1.90, "T-30m", 30.0)]) == 1
+    for i in range(5):
+        assert bq.append_quotes([_qb(f"2026-10-04T17:3{i+1}:00Z", 1.90, "T-30m", 29.0 - i)]) == 0
+    assert len(bq.load_quotes()) == 1
+
+
+def test_a_real_move_inside_a_rung_is_always_kept(tmp_path, monkeypatch):
+    """The heartbeat must not suppress movement -- that is the other half of the file's job."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_qb("2026-10-04T17:30:00Z", 1.90, "T-30m", 30.0)])
+    assert bq.append_quotes([_qb("2026-10-04T17:35:00Z", 1.95, "T-30m", 25.0)]) == 1
+    d = bq.load_quotes()
+    assert list(d["obs_reason"]) == ["change", "change"]
+
+
+def test_far_rungs_stay_change_only(tmp_path, monkeypatch):
+    """Nothing is certified against a T-6h price, and a heartbeat on every band would push a
+    monthly part past the size limit the partitioning exists to avoid."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_qb("2026-10-04T06:00:00Z", 1.90, "FAR", 720.0)])
+    assert bq.append_quotes([_qb("2026-10-04T12:00:00Z", 1.90, "T-6h", 360.0)]) == 0
+    assert bq.append_quotes([_qb("2026-10-04T15:00:00Z", 1.90, "T-3h", 180.0)]) == 0
+
+
+def test_a_post_kickoff_heartbeat_can_never_become_a_close(tmp_path, monkeypatch):
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_qb("2026-10-04T18:05:00Z", 1.90, "POST", -5.0)])
+    assert bq.closing_quote(bq.load_quotes(), 1, "ou", "over", 2.5) is None
+
+
+def test_a_missing_t30_close_stays_missing(tmp_path, monkeypatch):
+    """Never substitute an earlier quote. The honest answer is that there is no close."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_qb("2026-10-04T12:00:00Z", 1.90, "T-6h", 360.0)])
+    assert bq.closing_quote(bq.load_quotes(), 1, "ou", "over", 2.5) is None
