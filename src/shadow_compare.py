@@ -89,8 +89,14 @@ def prospective_window(since: str) -> pd.DataFrame:
     d = pd.read_csv(SHADOW_FILE)
     if d.empty:
         return d
-    d["logged_at"] = pd.to_datetime(d["logged_at"], errors="coerce")
-    out = d[(d["logged_at"] >= pd.Timestamp(since))
+    # UTC ON BOTH SIDES. `logged_at` is written tz-aware, and comparing a tz-aware column
+    # against a naive Timestamp raises TypeError in pandas rather than coercing — so the
+    # forward-period check would have crashed the first time it was ever run, months from now,
+    # with no data lost but the whole promotion path blocked.
+    d["logged_at"] = pd.to_datetime(d["logged_at"], errors="coerce", utc=True)
+    since_ts = pd.Timestamp(since)
+    since_ts = since_ts.tz_localize("UTC") if since_ts.tzinfo is None else since_ts.tz_convert("UTC")
+    out = d[(d["logged_at"] >= since_ts)
             & (d["result"].astype(str).str.upper().isin(["WIN", "LOSS"]))]
     return out.reset_index(drop=True)
 
