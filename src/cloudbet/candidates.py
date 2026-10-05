@@ -47,6 +47,10 @@ PROP_MARKETS = ("goals", "assists", "sot", "sot2", "sot3", "cards")
 
 _REG = Path(__file__).resolve().parents[2] / "registry" / "settlement_alignment.json"
 
+#: The side each market implies when the ledger does not record one. These paths only ever
+#: produce one side by construction, which is why the column was left blank.
+_IMPLIED_SIDE = {"btts": "YES", "over15": "OVER", "over35": "OVER", "ou25": "OVER"}
+
 
 def _settlement() -> dict:
     """market -> alignment_status. Unknown markets are UNVERIFIED, not ALIGNED."""
@@ -58,47 +62,83 @@ def _settlement() -> dict:
         return {}
 
 
-def team_candidates() -> pd.DataFrame:
-    """Current team-market tips from the live board."""
-    f = config.OUTPUT_DIR / "bets.csv"
-    s = config.OUTPUT_DIR / "side_bets.csv"
+def team_candidates(days_ahead: int = 0) -> pd.DataFrame:
+    """Team-market tips from the LEDGER, which is what the Telegram digest reports.
+
+    READ THE LEDGER, NOT bets.csv. This was wrong in the first version and the discrepancy was
+    caught by the owner comparing a dry run against his own digest. The two sources answer
+    different questions:
+
+        bets.csv          the CURRENT board — every fixture in the 7-day look-ahead, rewritten
+                          every predict run. On 2026-10-05 it held 76 tips dated Oct 7-11 and
+                          ZERO for today.
+        bets_ledger.csv   what was actually tipped and persisted, deduped per fixture. The
+                          digest sends `source == "live"` filtered to match_date == today, and
+                          on the same morning that was 3 tips, all OVER.
+
+    Both were correct and they described different days. A bot reading bets.csv would place
+    bets on fixtures up to six days out that the owner has never been shown in any digest —
+    so "what I see in Telegram" and "what the bot bets" could diverge silently, which is the
+    one property an automated placer must not have.
+
+    `days_ahead=0` means today only, matching the digest exactly. Raise it deliberately.
+    """
+    f = config.OUTPUT_DIR / "bets_ledger.csv"
+    s = config.OUTPUT_DIR / "side_bets_ledger.csv"
     rows = []
+    today = pd.Timestamp.now(tz="UTC").normalize()
+    horizon = today + pd.Timedelta(days=max(0, int(days_ahead)))
 
-    if f.exists():
-        d = pd.read_csv(f)
-        if len(d):
-            side = d.get("best_side", pd.Series(dtype=object)).astype(str).str.upper()
-            rows.append(pd.DataFrame({
-                "fixture_id": (d["date"].astype(str) + "|" + d["home_team"].astype(str)
-                               + "|" + d["away_team"].astype(str)),
-                "date": d["date"], "league": d["league"],
-                "home_team": d["home_team"], "away_team": d["away_team"],
-                "kickoff_utc": d.get("kickoff_utc"),
-                "market": "ou25", "side": side,
-                "edge": pd.to_numeric(d.get("best_edge"), errors="coerce"),
-                "signal_tier": d.get("signal_tier"),
-                "model_type": d.get("model_type"),
-                "our_odds": np.where(side == "UNDER", d.get("odds_under25"),
-                                     d.get("odds_over25")),
-                "selection_label": d["home_team"].astype(str) + " v " + d["away_team"].astype(str),
-            }))
+    def _window(d: pd.DataFrame) -> pd.DataFrame:
+        """Live rows, not yet settled, kicking off between today and the horizon."""
+        if "source" in d.columns:
+            d = d[d["source"].astype(str) == "live"]
+        # An already-settled row is history, not a candidate.
+        d = d[~d["result"].astype(str).str.upper().isin(["WIN", "LOSS"])]
+        md = pd.to_datetime(d["match_date"], errors="coerce", utc=True).dt.normalize()
+        return d[(md >= today) & (md <= horizon)]
 
-    if s.exists():
-        d = pd.read_csv(s)
-        if len(d):
-            rows.append(pd.DataFrame({
-                "fixture_id": (d["date"].astype(str) + "|" + d["home_team"].astype(str)
-                               + "|" + d["away_team"].astype(str)),
-                "date": d["date"], "league": d["league"],
-                "home_team": d["home_team"], "away_team": d["away_team"],
-                "kickoff_utc": d.get("kickoff_utc"),
-                "market": d["market"], "side": d.get("side", "YES"),
-                "edge": pd.to_numeric(d.get("edge"), errors="coerce"),
-                "signal_tier": d.get("signal_tier"),
-                "model_type": d.get("model_type"),
-                "our_odds": pd.to_numeric(d.get("market_odds"), errors="coerce"),
-                "selection_label": d["home_team"].astype(str) + " v " + d["away_team"].astype(str),
-            }))
+    for path, market in ((f, "ou25"), (s, None)):
+        if not path.exists():
+            continue
+        d = pd.read_csv(path)
+        if d.empty:
+            continue
+        d = _window(d)
+        if d.empty:
+            continue
+        # edge_pct is in PERCENT in the ledger; the team bar and the prop bar are both in
+        # probability points, so it is converted here rather than at the comparison.
+        edge = pd.to_numeric(d.get("edge_pct"), errors="coerce") / 100.0
+        rows.append(pd.DataFrame({
+            "fixture_id": (d["match_date"].astype(str).str[:10] + "|"
+                           + d["home_team"].astype(str) + "|" + d["away_team"].astype(str)
+                           + "|" + (market or d["market"]).astype(str)
+                           if market is None else
+                           d["match_date"].astype(str).str[:10] + "|"
+                           + d["home_team"].astype(str) + "|" + d["away_team"].astype(str)),
+            "date": d["match_date"].astype(str).str[:10], "league": d["league"],
+            "home_team": d["home_team"], "away_team": d["away_team"],
+            "kickoff_utc": d.get("kickoff_utc"),
+            "market": market if market else d["market"],
+            # SIDE IS NaN ON EVERY SIDE-MARKET LEDGER ROW (435 of 435). The ledger never
+            # stores it because those paths only ever produce one side, so for reporting it is
+            # implied. A bot cannot work from an implication: a NaN side builds a broken
+            # marketUrl and would either fail or, worse, place the wrong side. Derived here
+            # from the market, which is the same rule the tip generator applies.
+            "side": (pd.Series(d.get("side")).astype(str).str.upper()
+                     .where(lambda x: x.isin(["OVER", "UNDER", "YES", "NO"]),
+                            (market if market else d["market"]).map(_IMPLIED_SIDE)
+                            if market is None else _IMPLIED_SIDE.get(market, "OVER"))),
+            "edge": edge,
+            "signal_tier": d.get("signal_tier"),
+            "model_type": d.get("model_type"),
+            "our_odds": pd.to_numeric(d.get("odds"), errors="coerce"),
+            "selection_label": d["home_team"].astype(str) + " v " + d["away_team"].astype(str),
+            # The MATCH, independent of market — what the correlation cap groups on.
+            "match_key": (d["match_date"].astype(str).str[:10] + "|"
+                          + d["home_team"].astype(str) + "|" + d["away_team"].astype(str)),
+        }))
 
     if not rows:
         return pd.DataFrame()
@@ -158,6 +198,9 @@ def prop_candidates(min_ev: float = 0.0) -> pd.DataFrame:
         "ev": ev,
         "implied_prob": implied.round(4),
         "prob_ratio": (p / implied).round(2),
+        # A prop's "match" is the fixture it is in, so several props on one game are capped the
+        # same way several markets on one game are.
+        "match_key": "prop|" + d.get("fixture_id", d["date"]).astype(str),
     })
     out["bet_kind"] = "prop"
     out["settlement_status"] = out["market"].map(align).fillna("UNVERIFIED")
@@ -172,13 +215,14 @@ def prop_candidates(min_ev: float = 0.0) -> pd.DataFrame:
     return out
 
 
-def build_candidates(team_min_edge: float = 0.05, prop_min_ev: float = 0.0) -> pd.DataFrame:
+def build_candidates(team_min_edge: float = 0.05, prop_min_ev: float = 0.0,
+                     days_ahead: int = 0) -> pd.DataFrame:
     """Everything bettable today, on one scale, ready for the selector.
 
     The edge filters live in the selector, not here — this builds the universe and the selector
     decides. Keeping the two apart is what lets the selector be tested without any files.
     """
-    t, p = team_candidates(), prop_candidates(min_ev=prop_min_ev)
+    t, p = team_candidates(days_ahead=days_ahead), prop_candidates(min_ev=prop_min_ev)
     frames = [f for f in (t, p) if len(f)]
     if not frames:
         return pd.DataFrame()

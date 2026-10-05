@@ -64,6 +64,14 @@ class SelectionRules:
     apply_tier_filter_to_props: bool = False
     max_bets_per_day: int = 20        # "up to 20 bets a day (no more)"
     one_side_per_fixture: bool = True
+    #: How many bets may land on ONE match across different markets.
+    #:
+    #: BTTS YES, Over 1.5 and Over 2.5 on the same fixture are close to the same bet: if the
+    #: match finishes 0-0 all three lose together. Observed on the 2026-10-05 board, two
+    #: fixtures each attracted three markets, which at 4.5% a bet is 13.5% of bankroll on one
+    #: 90-minute event. The daily exposure cap does not catch this, because it limits the DAY
+    #: and this is concentration within it. None means no limit.
+    max_bets_per_fixture: int | None = 2
     require_cloudbet_price: bool = True
 
 
@@ -159,6 +167,13 @@ def select(candidates: pd.DataFrame, rules: SelectionRules | None = None,
         n0 = len(d)
         d = d.drop_duplicates(subset=["fixture_id"], keep="first")
         rej.add("second_side_same_fixture", n0 - len(d))
+
+    # CORRELATION CAP: at most N markets on one match, keeping the highest-edge ones. Applied
+    # before the daily cap so the day's 20 slots are not spent on a handful of matches.
+    if r.max_bets_per_fixture is not None and "match_key" in d.columns:
+        n0 = len(d)
+        d = d.groupby("match_key", sort=False).head(r.max_bets_per_fixture)
+        rej.add("over_fixture_cap", n0 - len(d))
 
     # THE HARD DAILY CAP, applied last so it trims the weakest survivors.
     n0 = len(d)

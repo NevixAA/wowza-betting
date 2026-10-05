@@ -182,3 +182,25 @@ def test_props_can_be_turned_off_entirely():
 def test_an_unpriced_prop_is_dropped_like_any_other():
     d, _ = select(frame([prop(1, 0.5, px=float("nan")), prop(2, 0.1)]))
     assert len(d) == 1 and d.iloc[0]["fixture_id"].startswith("prop|2|")
+
+
+def test_the_bot_and_the_digest_must_read_the_same_source():
+    """Caught by the owner comparing a dry run against his own Telegram digest.
+
+    bets.csv is the CURRENT 7-day board; bets_ledger.csv is what was actually tipped and is
+    what the digest reports. On 2026-10-05 the board held 76 tips dated Oct 7-11 and ZERO for
+    today, while the digest sent 3 tips, all OVER. Both correct, different days — and a bot on
+    the board would place bets the owner has never been shown, which is the one property an
+    automated placer must not have.
+    """
+    import inspect
+    from src.cloudbet import candidates
+    src = inspect.getsource(candidates.team_candidates)
+    assert 'OUTPUT_DIR / "bets_ledger.csv"' in src
+    assert 'OUTPUT_DIR / "bets.csv"' not in src, "reading the board again instead of the ledger"
+
+
+def test_settled_rows_are_never_candidates():
+    import inspect
+    from src.cloudbet import candidates
+    assert '["WIN", "LOSS"]' in inspect.getsource(candidates.team_candidates)
