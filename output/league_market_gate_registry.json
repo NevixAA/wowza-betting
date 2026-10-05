@@ -1,0 +1,3360 @@
+{
+  "generated_at_utc": "2026-10-05T09:38:35.755243+00:00",
+  "regime_id": "0fc4f3056ea1",
+  "unit": "league x market x model_type",
+  "windows": "fit 50% / validation 20% / holdout 30% by date, then live since 2026-08-10",
+  "hypotheses_examined": 1653,
+  "caveats": [
+    "The live ledger is selection-biased: only fixtures clearing the production gate are in it, so any candidate BELOW that gate is LEDGER_CENSORED and unevaluable.",
+    "CONFIRMED is unreachable here. FORWARD_TEST is the ceiling for retrospective code.",
+    "Markets and model types are never pooled."
+  ],
+  "cells": [
+    {
+      "league": "Argentina Primera Division",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 54,
+      "live_only": true,
+      "live_evaluable_from": 0.1,
+      "live_note": "no backtest for this cell; graded on live bets only, and only at or above the production gate \u2014 the ledger cannot see below it",
+      "live_matchdays": 21,
+      "live_pnl": 21.75,
+      "live_roi": 0.4029,
+      "live_hit": 0.6111,
+      "live_break_even": 0.4406,
+      "live_excess_hit": 0.1705,
+      "live_mean_price": 2.279,
+      "live_ci_lo": 0.1534,
+      "live_ci_hi": 0.6627,
+      "live_clv_n": 51,
+      "live_mean_clv": -2.0447,
+      "live_median_clv": -1.26,
+      "live_positive_clv_rate": 0.3529,
+      "live_clv_ci_lo": -4.9419,
+      "live_clv_ci_hi": 0.1125,
+      "roi_live": 0.4029,
+      "concentration": {
+        "top_month": "2026-09",
+        "top_month_share": 0.595,
+        "top_league": "Argentina Primera Division",
+        "top_league_share": 1.0,
+        "top5_winners_share": 0.358,
+        "roi_excl_top5": 0.2851
+      },
+      "evidence_grade": "FORWARD_TEST",
+      "reason": "live-only: positive with a matchday-block CI excluding zero. Not CONFIRMED \u2014 no preregistered forward window."
+    },
+    {
+      "league": "Argentina Primera Division",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 318,
+      "live_n": 62,
+      "windows": {
+        "fit": [
+          "2025-08-09",
+          "2026-01-29",
+          159
+        ],
+        "validation": [
+          "2026-01-31",
+          "2026-03-11",
+          63
+        ],
+        "holdout": [
+          "2026-03-12",
+          "2026-08-23",
+          96
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 157,
+          "roi": 0.0013
+        },
+        {
+          "threshold": 0.03,
+          "n": 155,
+          "roi": 0.0013
+        },
+        {
+          "threshold": 0.04,
+          "n": 154,
+          "roi": 0.0013
+        },
+        {
+          "threshold": 0.05,
+          "n": 153,
+          "roi": 0.0078
+        },
+        {
+          "threshold": 0.06,
+          "n": 153,
+          "roi": 0.0078
+        },
+        {
+          "threshold": 0.07,
+          "n": 153,
+          "roi": 0.0078
+        },
+        {
+          "threshold": 0.08,
+          "n": 150,
+          "roi": 0.028
+        },
+        {
+          "threshold": 0.09,
+          "n": 147,
+          "roi": -0.0033
+        },
+        {
+          "threshold": 0.1,
+          "n": 145,
+          "roi": 0.0104
+        },
+        {
+          "threshold": 0.11,
+          "n": 137,
+          "roi": 0.0142
+        },
+        {
+          "threshold": 0.12,
+          "n": 130,
+          "roi": 0.0489
+        },
+        {
+          "threshold": 0.13,
+          "n": 122,
+          "roi": 0.0503
+        },
+        {
+          "threshold": 0.14,
+          "n": 117,
+          "roi": 0.0507
+        },
+        {
+          "threshold": 0.15,
+          "n": 110,
+          "roi": 0.0022
+        },
+        {
+          "threshold": 0.16,
+          "n": 95,
+          "roi": -0.0109
+        },
+        {
+          "threshold": 0.17,
+          "n": 88,
+          "roi": 0.038
+        },
+        {
+          "threshold": 0.18,
+          "n": 80,
+          "roi": 0.0361
+        },
+        {
+          "threshold": 0.19,
+          "n": 70,
+          "roi": 0.0863
+        },
+        {
+          "threshold": 0.2,
+          "n": 64,
+          "roi": 0.0644
+        },
+        {
+          "threshold": 0.21,
+          "n": 56,
+          "roi": 0.1048
+        },
+        {
+          "threshold": 0.22,
+          "n": 48,
+          "roi": 0.1123
+        }
+      ],
+      "edge_roi_monotonicity": 0.757,
+      "candidate_sniper": 0.22,
+      "fit_roi": 0.1123,
+      "fit_n": 48,
+      "candidate_marksman": 0.165,
+      "candidate_valuable": 0.088,
+      "validation_n": 12,
+      "roi_validation": null,
+      "holdout_n": 5,
+      "roi_holdout": null,
+      "live_n_at_candidate": 0,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Argentina Primera Division",
+      "market": "over15",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 67,
+      "live_only": true,
+      "live_evaluable_from": 0.1,
+      "live_note": "no backtest for this cell; graded on live bets only, and only at or above the production gate \u2014 the ledger cannot see below it",
+      "live_matchdays": 31,
+      "live_pnl": 2.6,
+      "live_roi": 0.0388,
+      "live_hit": 0.6567,
+      "live_break_even": 0.6326,
+      "live_excess_hit": 0.0242,
+      "live_mean_price": 1.583,
+      "live_ci_lo": -0.1103,
+      "live_ci_hi": 0.189,
+      "live_clv_n": 67,
+      "live_mean_clv": 1.0642,
+      "live_median_clv": 0.65,
+      "live_positive_clv_rate": 0.5373,
+      "live_clv_ci_lo": -0.2146,
+      "live_clv_ci_hi": 2.2323,
+      "roi_live": 0.0388,
+      "concentration": {
+        "top_month": "2026-08",
+        "top_month_share": 0.742,
+        "top_league": "Argentina Primera Division",
+        "top_league_share": 1.0,
+        "top5_winners_share": 1.381,
+        "roi_excl_top5": -0.016
+      },
+      "evidence_grade": "CANDIDATE",
+      "reason": "live-only: positive but the CI spans zero"
+    },
+    {
+      "league": "Austrian Bundesliga",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 2,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 2 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Austrian Bundesliga",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 184,
+      "live_n": 21,
+      "windows": {
+        "fit": [
+          "2025-08-09",
+          "2025-12-14",
+          93
+        ],
+        "validation": [
+          "2026-02-06",
+          "2026-03-15",
+          36
+        ],
+        "holdout": [
+          "2026-03-20",
+          "2026-08-21",
+          55
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 78,
+          "roi": 0.0499
+        },
+        {
+          "threshold": 0.03,
+          "n": 73,
+          "roi": 0.0533
+        },
+        {
+          "threshold": 0.04,
+          "n": 69,
+          "roi": 0.0564
+        },
+        {
+          "threshold": 0.05,
+          "n": 56,
+          "roi": 0.1211
+        },
+        {
+          "threshold": 0.06,
+          "n": 46,
+          "roi": 0.148
+        },
+        {
+          "threshold": 0.07,
+          "n": 41,
+          "roi": 0.2368
+        }
+      ],
+      "edge_roi_monotonicity": 0.928,
+      "candidate_sniper": 0.07,
+      "fit_roi": 0.2368,
+      "fit_n": 41,
+      "candidate_marksman": 0.053,
+      "candidate_valuable": 0.028,
+      "validation_n": 17,
+      "roi_validation": -0.1429,
+      "holdout_n": 21,
+      "roi_holdout": 0.039,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.07 is BELOW the production gate 0.12; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "CANDIDATE",
+      "reason": "survives at least one out-of-sample window; live CI spans zero or is thin"
+    },
+    {
+      "league": "Brazil Serie A",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 7,
+      "live_only": true,
+      "live_evaluable_from": 0.1,
+      "live_note": "no backtest for this cell; graded on live bets only, and only at or above the production gate \u2014 the ledger cannot see below it",
+      "live_matchdays": 7,
+      "live_pnl": 1.65,
+      "live_roi": 0.2357,
+      "live_hit": 0.5714,
+      "live_break_even": 0.4752,
+      "live_excess_hit": 0.0962,
+      "live_mean_price": 2.107,
+      "live_ci_lo": -0.3871,
+      "live_ci_hi": 0.8686,
+      "live_clv_n": 7,
+      "live_mean_clv": -7.6857,
+      "live_median_clv": 0.0,
+      "live_positive_clv_rate": 0.4286,
+      "live_clv_ci_lo": -27.1737,
+      "live_clv_ci_hi": 3.2157,
+      "roi_live": 0.2357,
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "only 7 live bets at or above the production gate"
+    },
+    {
+      "league": "Brazil Serie A",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 352,
+      "live_n": 38,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2025-12-03",
+          176
+        ],
+        "validation": [
+          "2025-12-04",
+          "2026-03-19",
+          70
+        ],
+        "holdout": [
+          "2026-03-20",
+          "2026-08-23",
+          106
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 160,
+          "roi": 0.1704
+        },
+        {
+          "threshold": 0.03,
+          "n": 152,
+          "roi": 0.1794
+        },
+        {
+          "threshold": 0.04,
+          "n": 143,
+          "roi": 0.1907
+        },
+        {
+          "threshold": 0.05,
+          "n": 137,
+          "roi": 0.1955
+        },
+        {
+          "threshold": 0.06,
+          "n": 127,
+          "roi": 0.1601
+        },
+        {
+          "threshold": 0.07,
+          "n": 117,
+          "roi": 0.1314
+        },
+        {
+          "threshold": 0.08,
+          "n": 104,
+          "roi": 0.1476
+        },
+        {
+          "threshold": 0.09,
+          "n": 89,
+          "roi": 0.1252
+        },
+        {
+          "threshold": 0.1,
+          "n": 76,
+          "roi": 0.1074
+        },
+        {
+          "threshold": 0.11,
+          "n": 64,
+          "roi": 0.0364
+        },
+        {
+          "threshold": 0.12,
+          "n": 59,
+          "roi": 0.0456
+        },
+        {
+          "threshold": 0.13,
+          "n": 47,
+          "roi": 0.0628
+        },
+        {
+          "threshold": 0.14,
+          "n": 40,
+          "roi": 0.015
+        }
+      ],
+      "edge_roi_monotonicity": -0.925,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.93). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Brazil Serie A",
+      "market": "over15",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Bundesliga 2",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.04,
+      "production_sniper": 0.06,
+      "production_sniper_source": "best_params_side_markets[btts][Bundesliga 2] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1170,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-25",
+          585
+        ],
+        "validation": [
+          "2024-08-30",
+          "2025-04-13",
+          234
+        ],
+        "holdout": [
+          "2025-04-19",
+          "2026-05-17",
+          351
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 241,
+          "roi": 0.0092
+        },
+        {
+          "threshold": 0.03,
+          "n": 205,
+          "roi": 0.0109
+        },
+        {
+          "threshold": 0.04,
+          "n": 138,
+          "roi": 0.0161
+        },
+        {
+          "threshold": 0.05,
+          "n": 88,
+          "roi": 0.0571
+        },
+        {
+          "threshold": 0.06,
+          "n": 47,
+          "roi": 0.0904
+        }
+      ],
+      "edge_roi_monotonicity": 0.92,
+      "candidate_sniper": 0.06,
+      "fit_roi": 0.0904,
+      "fit_n": 47,
+      "candidate_marksman": 0.045,
+      "candidate_valuable": 0.024,
+      "validation_n": 0,
+      "roi_validation": null,
+      "holdout_n": 3,
+      "roi_holdout": null,
+      "live_n_at_candidate": 0,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Bundesliga 2",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.12,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.20, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": true,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": true,
+      "backtest_n": 1170,
+      "live_n": 27,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-25",
+          585
+        ],
+        "validation": [
+          "2024-08-30",
+          "2025-04-13",
+          234
+        ],
+        "holdout": [
+          "2025-04-19",
+          "2026-05-17",
+          351
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 483,
+          "roi": -0.0617
+        },
+        {
+          "threshold": 0.03,
+          "n": 449,
+          "roi": -0.0663
+        },
+        {
+          "threshold": 0.04,
+          "n": 419,
+          "roi": -0.0711
+        },
+        {
+          "threshold": 0.05,
+          "n": 383,
+          "roi": -0.0613
+        },
+        {
+          "threshold": 0.06,
+          "n": 333,
+          "roi": -0.0629
+        },
+        {
+          "threshold": 0.07,
+          "n": 295,
+          "roi": -0.048
+        },
+        {
+          "threshold": 0.08,
+          "n": 248,
+          "roi": -0.0249
+        },
+        {
+          "threshold": 0.09,
+          "n": 220,
+          "roi": -0.0619
+        },
+        {
+          "threshold": 0.1,
+          "n": 186,
+          "roi": -0.0806
+        },
+        {
+          "threshold": 0.11,
+          "n": 162,
+          "roi": -0.0918
+        },
+        {
+          "threshold": 0.12,
+          "n": 141,
+          "roi": -0.0901
+        },
+        {
+          "threshold": 0.13,
+          "n": 110,
+          "roi": -0.1591
+        },
+        {
+          "threshold": 0.14,
+          "n": 87,
+          "roi": -0.1551
+        },
+        {
+          "threshold": 0.15,
+          "n": 69,
+          "roi": -0.1555
+        },
+        {
+          "threshold": 0.16,
+          "n": 57,
+          "roi": -0.1663
+        },
+        {
+          "threshold": 0.17,
+          "n": 42,
+          "roi": 0.0245
+        }
+      ],
+      "edge_roi_monotonicity": -0.383,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.38). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Bundesliga 2",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "best_params_side_markets[over15][Bundesliga 2] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1170,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-25",
+          585
+        ],
+        "validation": [
+          "2024-08-30",
+          "2025-04-13",
+          234
+        ],
+        "holdout": [
+          "2025-04-19",
+          "2026-05-17",
+          351
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 487,
+          "roi": 0.0772
+        },
+        {
+          "threshold": 0.03,
+          "n": 473,
+          "roi": 0.0795
+        },
+        {
+          "threshold": 0.04,
+          "n": 427,
+          "roi": 0.0881
+        },
+        {
+          "threshold": 0.05,
+          "n": 402,
+          "roi": 0.0915
+        },
+        {
+          "threshold": 0.06,
+          "n": 337,
+          "roi": 0.0893
+        },
+        {
+          "threshold": 0.07,
+          "n": 248,
+          "roi": 0.1004
+        },
+        {
+          "threshold": 0.08,
+          "n": 184,
+          "roi": 0.119
+        },
+        {
+          "threshold": 0.09,
+          "n": 146,
+          "roi": 0.1438
+        },
+        {
+          "threshold": 0.1,
+          "n": 80,
+          "roi": 0.1725
+        }
+      ],
+      "edge_roi_monotonicity": 0.909,
+      "candidate_sniper": 0.1,
+      "fit_roi": 0.1725,
+      "fit_n": 80,
+      "candidate_marksman": 0.075,
+      "candidate_valuable": 0.04,
+      "validation_n": 0,
+      "roi_validation": null,
+      "holdout_n": 0,
+      "roi_holdout": null,
+      "live_n_at_candidate": 0,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Bundesliga 2",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1170,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-25",
+          585
+        ],
+        "validation": [
+          "2024-08-30",
+          "2025-04-13",
+          234
+        ],
+        "holdout": [
+          "2025-04-19",
+          "2026-05-17",
+          351
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "Championship",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.1,
+      "production_sniper": 0.12,
+      "production_sniper_source": "best_params_side_markets[btts][Championship] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2127,
+      "live_n": 12,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-31",
+          1070
+        ],
+        "validation": [
+          "2024-09-01",
+          "2025-03-29",
+          420
+        ],
+        "holdout": [
+          "2025-04-02",
+          "2026-05-02",
+          637
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 403,
+          "roi": 0.0163
+        },
+        {
+          "threshold": 0.03,
+          "n": 352,
+          "roi": 0.0187
+        },
+        {
+          "threshold": 0.04,
+          "n": 204,
+          "roi": 0.0322
+        },
+        {
+          "threshold": 0.05,
+          "n": 115,
+          "roi": 0.0902
+        },
+        {
+          "threshold": 0.06,
+          "n": 56,
+          "roi": 0.0663
+        }
+      ],
+      "edge_roi_monotonicity": 0.839,
+      "candidate_sniper": 0.05,
+      "fit_roi": 0.0902,
+      "fit_n": 115,
+      "candidate_marksman": 0.038,
+      "candidate_valuable": 0.02,
+      "validation_n": 104,
+      "roi_validation": -0.0968,
+      "holdout_n": 313,
+      "roi_holdout": 0.0632,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.05 is BELOW the production gate 0.12; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "CANDIDATE",
+      "reason": "survives at least one out-of-sample window; live CI spans zero or is thin"
+    },
+    {
+      "league": "Championship",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.05,
+      "production_sniper": 0.07,
+      "production_sniper_source": "best_params_standard[Championship] (approved, OOS-positive)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2127,
+      "live_n": 36,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-31",
+          1070
+        ],
+        "validation": [
+          "2024-09-01",
+          "2025-03-29",
+          420
+        ],
+        "holdout": [
+          "2025-04-02",
+          "2026-05-02",
+          637
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 545,
+          "roi": -0.0383
+        },
+        {
+          "threshold": 0.03,
+          "n": 456,
+          "roi": -0.0457
+        },
+        {
+          "threshold": 0.04,
+          "n": 373,
+          "roi": -0.0559
+        },
+        {
+          "threshold": 0.05,
+          "n": 293,
+          "roi": -0.0489
+        },
+        {
+          "threshold": 0.06,
+          "n": 232,
+          "roi": -0.0244
+        },
+        {
+          "threshold": 0.07,
+          "n": 196,
+          "roi": 0.0108
+        },
+        {
+          "threshold": 0.08,
+          "n": 142,
+          "roi": -0.0111
+        },
+        {
+          "threshold": 0.09,
+          "n": 114,
+          "roi": -0.0091
+        },
+        {
+          "threshold": 0.1,
+          "n": 86,
+          "roi": -0.0867
+        },
+        {
+          "threshold": 0.11,
+          "n": 66,
+          "roi": -0.0788
+        },
+        {
+          "threshold": 0.12,
+          "n": 40,
+          "roi": -0.1195
+        }
+      ],
+      "edge_roi_monotonicity": -0.425,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.42). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Championship",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.09,
+      "production_sniper": 0.11,
+      "production_sniper_source": "best_params_side_markets[over15][Championship] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2127,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-31",
+          1070
+        ],
+        "validation": [
+          "2024-09-01",
+          "2025-03-29",
+          420
+        ],
+        "holdout": [
+          "2025-04-02",
+          "2026-05-02",
+          637
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 826,
+          "roi": 0.0296
+        },
+        {
+          "threshold": 0.03,
+          "n": 776,
+          "roi": 0.0315
+        },
+        {
+          "threshold": 0.04,
+          "n": 682,
+          "roi": 0.0359
+        },
+        {
+          "threshold": 0.05,
+          "n": 647,
+          "roi": 0.0367
+        },
+        {
+          "threshold": 0.06,
+          "n": 524,
+          "roi": 0.0491
+        },
+        {
+          "threshold": 0.07,
+          "n": 429,
+          "roi": 0.0533
+        },
+        {
+          "threshold": 0.08,
+          "n": 328,
+          "roi": 0.0657
+        },
+        {
+          "threshold": 0.09,
+          "n": 262,
+          "roi": 0.0548
+        },
+        {
+          "threshold": 0.1,
+          "n": 180,
+          "roi": 0.0422
+        }
+      ],
+      "edge_roi_monotonicity": 0.737,
+      "candidate_sniper": 0.08,
+      "fit_roi": 0.0657,
+      "fit_n": 328,
+      "candidate_marksman": 0.06,
+      "candidate_valuable": 0.032,
+      "validation_n": 0,
+      "roi_validation": null,
+      "holdout_n": 49,
+      "roi_holdout": 0.0857,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.08 is BELOW the production gate 0.11; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "CANDIDATE",
+      "reason": "survives at least one out-of-sample window; live CI spans zero or is thin"
+    },
+    {
+      "league": "Championship",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2127,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-31",
+          1070
+        ],
+        "validation": [
+          "2024-09-01",
+          "2025-03-29",
+          420
+        ],
+        "holdout": [
+          "2025-04-02",
+          "2026-05-02",
+          637
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "China Super League",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 197,
+      "live_n": 31,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2026-03-21",
+          104
+        ],
+        "validation": [
+          "2026-04-03",
+          "2026-04-25",
+          34
+        ],
+        "holdout": [
+          "2026-04-26",
+          "2026-05-31",
+          59
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 81,
+          "roi": -0.0042
+        },
+        {
+          "threshold": 0.03,
+          "n": 73,
+          "roi": -0.0047
+        },
+        {
+          "threshold": 0.04,
+          "n": 68,
+          "roi": -0.005
+        },
+        {
+          "threshold": 0.05,
+          "n": 57,
+          "roi": -0.016
+        },
+        {
+          "threshold": 0.06,
+          "n": 53,
+          "roi": -0.0455
+        },
+        {
+          "threshold": 0.07,
+          "n": 48,
+          "roi": 0.0154
+        },
+        {
+          "threshold": 0.08,
+          "n": 44,
+          "roi": -0.0095
+        },
+        {
+          "threshold": 0.09,
+          "n": 41,
+          "roi": -0.0346
+        }
+      ],
+      "edge_roi_monotonicity": -0.313,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.31). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Denmark Superliga",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 1,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 1 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Denmark Superliga",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 180,
+      "live_n": 25,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2026-02-08",
+          92
+        ],
+        "validation": [
+          "2026-02-09",
+          "2026-04-05",
+          34
+        ],
+        "holdout": [
+          "2026-04-06",
+          "2026-08-24",
+          54
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 67,
+          "roi": -0.123
+        },
+        {
+          "threshold": 0.03,
+          "n": 57,
+          "roi": -0.1446
+        },
+        {
+          "threshold": 0.04,
+          "n": 47,
+          "roi": -0.1753
+        },
+        {
+          "threshold": 0.05,
+          "n": 40,
+          "roi": -0.2535
+        }
+      ],
+      "edge_roi_monotonicity": -0.954,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.95). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Finland Veikkausliiga",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Finland Veikkausliiga",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 143,
+      "live_n": 21,
+      "windows": {
+        "fit": [
+          "2025-08-09",
+          "2026-04-10",
+          74
+        ],
+        "validation": [
+          "2026-04-11",
+          "2026-05-08",
+          26
+        ],
+        "holdout": [
+          "2026-05-09",
+          "2026-08-22",
+          43
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 59,
+          "roi": -0.2247
+        },
+        {
+          "threshold": 0.03,
+          "n": 52,
+          "roi": -0.255
+        },
+        {
+          "threshold": 0.04,
+          "n": 48,
+          "roi": -0.2762
+        },
+        {
+          "threshold": 0.05,
+          "n": 41,
+          "roi": -0.3288
+        }
+      ],
+      "edge_roi_monotonicity": -0.982,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.98). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Ireland Premier Division",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 4,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 4 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Ireland Premier Division",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 157,
+      "live_n": 17,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2026-03-16",
+          82
+        ],
+        "validation": [
+          "2026-03-20",
+          "2026-04-25",
+          28
+        ],
+        "holdout": [
+          "2026-05-01",
+          "2026-08-21",
+          47
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 67,
+          "roi": -0.0094
+        },
+        {
+          "threshold": 0.03,
+          "n": 58,
+          "roi": -0.0109
+        },
+        {
+          "threshold": 0.04,
+          "n": 52,
+          "roi": -0.0121
+        },
+        {
+          "threshold": 0.05,
+          "n": 41,
+          "roi": 0.038
+        }
+      ],
+      "edge_roi_monotonicity": 0.745,
+      "candidate_sniper": 0.05,
+      "fit_roi": 0.038,
+      "fit_n": 41,
+      "candidate_marksman": 0.038,
+      "candidate_valuable": 0.02,
+      "validation_n": 17,
+      "roi_validation": 0.3606,
+      "holdout_n": 20,
+      "roi_holdout": -0.004,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.05 is BELOW the production gate 0.12; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "CANDIDATE",
+      "reason": "survives at least one out-of-sample window; live CI spans zero or is thin"
+    },
+    {
+      "league": "Japan J-League",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 2,
+      "live_only": true,
+      "live_evaluable_from": 0.1,
+      "live_note": "no backtest for this cell; graded on live bets only, and only at or above the production gate \u2014 the ledger cannot see below it",
+      "live_matchdays": 2,
+      "live_pnl": -2.0,
+      "live_roi": -1.0,
+      "live_hit": 0.0,
+      "live_break_even": 0.4826,
+      "live_excess_hit": -0.4826,
+      "live_mean_price": 2.075,
+      "live_ci_lo": null,
+      "live_ci_hi": null,
+      "roi_live": -1.0,
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "only 2 live bets at or above the production gate"
+    },
+    {
+      "league": "Japan J-League",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 104,
+      "live_n": 46,
+      "windows": {
+        "fit": [
+          "2025-08-09",
+          "2025-09-20",
+          58
+        ],
+        "validation": [
+          "2025-09-23",
+          "2025-09-27",
+          16
+        ],
+        "holdout": [
+          "2025-09-28",
+          "2025-12-06",
+          30
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 54,
+          "roi": 0.0348
+        },
+        {
+          "threshold": 0.03,
+          "n": 52,
+          "roi": 0.0362
+        },
+        {
+          "threshold": 0.04,
+          "n": 47,
+          "roi": 0.04
+        },
+        {
+          "threshold": 0.05,
+          "n": 44,
+          "roi": 0.0577
+        }
+      ],
+      "edge_roi_monotonicity": 0.885,
+      "candidate_sniper": 0.05,
+      "fit_roi": 0.0577,
+      "fit_n": 44,
+      "candidate_marksman": 0.038,
+      "candidate_valuable": 0.02,
+      "validation_n": 9,
+      "roi_validation": null,
+      "holdout_n": 14,
+      "roi_holdout": null,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.05 is BELOW the production gate 0.12; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Japan J-League",
+      "market": "over15",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "La Liga 2",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.11,
+      "production_sniper": 0.13,
+      "production_sniper_source": "best_params_side_markets[btts][La Liga 2] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1815,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          909
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-12",
+          361
+        ],
+        "holdout": [
+          "2025-04-13",
+          "2026-05-31",
+          545
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 359,
+          "roi": -0.0471
+        },
+        {
+          "threshold": 0.03,
+          "n": 285,
+          "roi": -0.0594
+        },
+        {
+          "threshold": 0.04,
+          "n": 173,
+          "roi": -0.0978
+        },
+        {
+          "threshold": 0.05,
+          "n": 92,
+          "roi": -0.0978
+        },
+        {
+          "threshold": 0.06,
+          "n": 46,
+          "roi": -0.0777
+        }
+      ],
+      "edge_roi_monotonicity": -0.693,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.69). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "La Liga 2",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.20, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": true,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1815,
+      "live_n": 62,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          909
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-12",
+          361
+        ],
+        "holdout": [
+          "2025-04-13",
+          "2026-05-31",
+          545
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 639,
+          "roi": -0.0713
+        },
+        {
+          "threshold": 0.03,
+          "n": 593,
+          "roi": -0.0769
+        },
+        {
+          "threshold": 0.04,
+          "n": 525,
+          "roi": -0.0868
+        },
+        {
+          "threshold": 0.05,
+          "n": 479,
+          "roi": -0.1069
+        },
+        {
+          "threshold": 0.06,
+          "n": 425,
+          "roi": -0.122
+        },
+        {
+          "threshold": 0.07,
+          "n": 369,
+          "roi": -0.1284
+        },
+        {
+          "threshold": 0.08,
+          "n": 318,
+          "roi": -0.1507
+        },
+        {
+          "threshold": 0.09,
+          "n": 279,
+          "roi": -0.1425
+        },
+        {
+          "threshold": 0.1,
+          "n": 224,
+          "roi": -0.2087
+        },
+        {
+          "threshold": 0.11,
+          "n": 183,
+          "roi": -0.1774
+        },
+        {
+          "threshold": 0.12,
+          "n": 132,
+          "roi": -0.1279
+        },
+        {
+          "threshold": 0.13,
+          "n": 103,
+          "roi": -0.0729
+        },
+        {
+          "threshold": 0.14,
+          "n": 78,
+          "roi": -0.0369
+        },
+        {
+          "threshold": 0.15,
+          "n": 59,
+          "roi": 0.0358
+        },
+        {
+          "threshold": 0.16,
+          "n": 41,
+          "roi": -0.0134
+        }
+      ],
+      "edge_roi_monotonicity": 0.325,
+      "candidate_sniper": 0.15,
+      "fit_roi": 0.0358,
+      "fit_n": 59,
+      "candidate_marksman": 0.112,
+      "candidate_valuable": 0.06,
+      "validation_n": 14,
+      "roi_validation": null,
+      "holdout_n": 9,
+      "roi_holdout": null,
+      "live_n_at_candidate": 3,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "La Liga 2",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1815,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          909
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-12",
+          361
+        ],
+        "holdout": [
+          "2025-04-13",
+          "2026-05-31",
+          545
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 728,
+          "roi": -0.0331
+        },
+        {
+          "threshold": 0.03,
+          "n": 675,
+          "roi": -0.0357
+        },
+        {
+          "threshold": 0.04,
+          "n": 618,
+          "roi": -0.039
+        },
+        {
+          "threshold": 0.05,
+          "n": 581,
+          "roi": -0.0349
+        },
+        {
+          "threshold": 0.06,
+          "n": 438,
+          "roi": -0.0301
+        },
+        {
+          "threshold": 0.07,
+          "n": 342,
+          "roi": -0.0251
+        },
+        {
+          "threshold": 0.08,
+          "n": 252,
+          "roi": -0.0222
+        },
+        {
+          "threshold": 0.09,
+          "n": 208,
+          "roi": -0.0248
+        },
+        {
+          "threshold": 0.1,
+          "n": 105,
+          "roi": -0.0533
+        }
+      ],
+      "edge_roi_monotonicity": -0.023,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.02). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "La Liga 2",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1815,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          909
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-12",
+          361
+        ],
+        "holdout": [
+          "2025-04-13",
+          "2026-05-31",
+          545
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "League One",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.09,
+      "production_sniper": 0.11,
+      "production_sniper_source": "best_params_side_markets[btts][League One] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-04-01",
+          436
+        ],
+        "holdout": [
+          "2025-04-05",
+          "2026-05-02",
+          632
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 437,
+          "roi": -0.0196
+        },
+        {
+          "threshold": 0.03,
+          "n": 372,
+          "roi": -0.0231
+        },
+        {
+          "threshold": 0.04,
+          "n": 242,
+          "roi": -0.0354
+        },
+        {
+          "threshold": 0.05,
+          "n": 128,
+          "roi": -0.0264
+        },
+        {
+          "threshold": 0.06,
+          "n": 44,
+          "roi": -0.0699
+        }
+      ],
+      "edge_roi_monotonicity": -0.804,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.80). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "League One",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": true,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 46,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-04-01",
+          436
+        ],
+        "holdout": [
+          "2025-04-05",
+          "2026-05-02",
+          632
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 490,
+          "roi": -0.0146
+        },
+        {
+          "threshold": 0.03,
+          "n": 413,
+          "roi": -0.0174
+        },
+        {
+          "threshold": 0.04,
+          "n": 336,
+          "roi": -0.0213
+        },
+        {
+          "threshold": 0.05,
+          "n": 278,
+          "roi": -0.056
+        },
+        {
+          "threshold": 0.06,
+          "n": 227,
+          "roi": -0.0209
+        },
+        {
+          "threshold": 0.07,
+          "n": 178,
+          "roi": 0.0353
+        },
+        {
+          "threshold": 0.08,
+          "n": 137,
+          "roi": 0.0504
+        },
+        {
+          "threshold": 0.09,
+          "n": 100,
+          "roi": 0.0447
+        },
+        {
+          "threshold": 0.1,
+          "n": 81,
+          "roi": 0.0964
+        },
+        {
+          "threshold": 0.11,
+          "n": 58,
+          "roi": 0.0978
+        },
+        {
+          "threshold": 0.12,
+          "n": 44,
+          "roi": 0.1466
+        }
+      ],
+      "edge_roi_monotonicity": 0.901,
+      "candidate_sniper": 0.12,
+      "fit_roi": 0.1466,
+      "fit_n": 44,
+      "candidate_marksman": 0.09,
+      "candidate_valuable": 0.048,
+      "validation_n": 6,
+      "roi_validation": null,
+      "holdout_n": 16,
+      "roi_holdout": null,
+      "live_n_at_candidate": 3,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "League One",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.07,
+      "production_sniper": 0.09,
+      "production_sniper_source": "best_params_side_markets[over15][League One] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-04-01",
+          436
+        ],
+        "holdout": [
+          "2025-04-05",
+          "2026-05-02",
+          632
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 860,
+          "roi": 0.0172
+        },
+        {
+          "threshold": 0.03,
+          "n": 801,
+          "roi": 0.0184
+        },
+        {
+          "threshold": 0.04,
+          "n": 705,
+          "roi": 0.0209
+        },
+        {
+          "threshold": 0.05,
+          "n": 667,
+          "roi": 0.0254
+        },
+        {
+          "threshold": 0.06,
+          "n": 519,
+          "roi": 0.0228
+        },
+        {
+          "threshold": 0.07,
+          "n": 424,
+          "roi": 0.031
+        },
+        {
+          "threshold": 0.08,
+          "n": 325,
+          "roi": 0.0118
+        },
+        {
+          "threshold": 0.09,
+          "n": 240,
+          "roi": 0.041
+        },
+        {
+          "threshold": 0.1,
+          "n": 180,
+          "roi": 0.0189
+        }
+      ],
+      "edge_roi_monotonicity": 0.328,
+      "candidate_sniper": 0.09,
+      "fit_roi": 0.041,
+      "fit_n": 240,
+      "candidate_marksman": 0.068,
+      "candidate_valuable": 0.036,
+      "validation_n": 0,
+      "roi_validation": null,
+      "holdout_n": 2,
+      "roi_holdout": null,
+      "live_n_at_candidate": 0,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "League One",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-04-01",
+          436
+        ],
+        "holdout": [
+          "2025-04-05",
+          "2026-05-02",
+          632
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "League Two",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "best_params_side_markets[btts][League Two] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-03-29",
+          430
+        ],
+        "holdout": [
+          "2025-04-01",
+          "2026-05-02",
+          638
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 418,
+          "roi": 0.0019
+        },
+        {
+          "threshold": 0.03,
+          "n": 350,
+          "roi": 0.0023
+        },
+        {
+          "threshold": 0.04,
+          "n": 213,
+          "roi": 0.0038
+        },
+        {
+          "threshold": 0.05,
+          "n": 124,
+          "roi": 0.0222
+        },
+        {
+          "threshold": 0.06,
+          "n": 41,
+          "roi": -0.0713
+        }
+      ],
+      "edge_roi_monotonicity": -0.551,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.55). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "League Two",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.12,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.14, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": true,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": true,
+      "backtest_n": 2137,
+      "live_n": 39,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-03-29",
+          430
+        ],
+        "holdout": [
+          "2025-04-01",
+          "2026-05-02",
+          638
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 423,
+          "roi": -0.0759
+        },
+        {
+          "threshold": 0.03,
+          "n": 333,
+          "roi": -0.0964
+        },
+        {
+          "threshold": 0.04,
+          "n": 272,
+          "roi": -0.1181
+        },
+        {
+          "threshold": 0.05,
+          "n": 203,
+          "roi": -0.099
+        },
+        {
+          "threshold": 0.06,
+          "n": 154,
+          "roi": -0.1228
+        },
+        {
+          "threshold": 0.07,
+          "n": 112,
+          "roi": -0.0641
+        },
+        {
+          "threshold": 0.08,
+          "n": 81,
+          "roi": -0.0858
+        },
+        {
+          "threshold": 0.09,
+          "n": 56,
+          "roi": -0.1345
+        }
+      ],
+      "edge_roi_monotonicity": -0.263,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.26). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "League Two",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "best_params_side_markets[over15][League Two] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-03-29",
+          430
+        ],
+        "holdout": [
+          "2025-04-01",
+          "2026-05-02",
+          638
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 815,
+          "roi": 0.0483
+        },
+        {
+          "threshold": 0.03,
+          "n": 755,
+          "roi": 0.0522
+        },
+        {
+          "threshold": 0.04,
+          "n": 692,
+          "roi": 0.0569
+        },
+        {
+          "threshold": 0.05,
+          "n": 645,
+          "roi": 0.0606
+        },
+        {
+          "threshold": 0.06,
+          "n": 511,
+          "roi": 0.0624
+        },
+        {
+          "threshold": 0.07,
+          "n": 410,
+          "roi": 0.0746
+        },
+        {
+          "threshold": 0.08,
+          "n": 305,
+          "roi": 0.0774
+        },
+        {
+          "threshold": 0.09,
+          "n": 234,
+          "roi": 0.0861
+        },
+        {
+          "threshold": 0.1,
+          "n": 161,
+          "roi": 0.113
+        }
+      ],
+      "edge_roi_monotonicity": 0.935,
+      "candidate_sniper": 0.1,
+      "fit_roi": 0.113,
+      "fit_n": 161,
+      "candidate_marksman": 0.075,
+      "candidate_valuable": 0.04,
+      "validation_n": 0,
+      "roi_validation": null,
+      "holdout_n": 0,
+      "roi_holdout": null,
+      "live_n_at_candidate": 0,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "League Two",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 2137,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-03",
+          "2024-08-24",
+          1069
+        ],
+        "validation": [
+          "2024-08-31",
+          "2025-03-29",
+          430
+        ],
+        "holdout": [
+          "2025-04-01",
+          "2026-05-02",
+          638
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "Ligue 2",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1311,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-04-23",
+          660
+        ],
+        "validation": [
+          "2024-04-27",
+          "2025-02-28",
+          260
+        ],
+        "holdout": [
+          "2025-03-01",
+          "2026-05-09",
+          391
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 299,
+          "roi": -0.0463
+        },
+        {
+          "threshold": 0.03,
+          "n": 260,
+          "roi": -0.0533
+        },
+        {
+          "threshold": 0.04,
+          "n": 172,
+          "roi": -0.0805
+        },
+        {
+          "threshold": 0.05,
+          "n": 102,
+          "roi": -0.11
+        },
+        {
+          "threshold": 0.06,
+          "n": 51,
+          "roi": -0.0828
+        }
+      ],
+      "edge_roi_monotonicity": -0.803,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.80). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Ligue 2",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": true,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1311,
+      "live_n": 17,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-04-23",
+          660
+        ],
+        "validation": [
+          "2024-04-27",
+          "2025-02-28",
+          260
+        ],
+        "holdout": [
+          "2025-03-01",
+          "2026-05-09",
+          391
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 373,
+          "roi": 0.0029
+        },
+        {
+          "threshold": 0.03,
+          "n": 320,
+          "roi": 0.0034
+        },
+        {
+          "threshold": 0.04,
+          "n": 250,
+          "roi": 0.0044
+        },
+        {
+          "threshold": 0.05,
+          "n": 200,
+          "roi": -0.0139
+        },
+        {
+          "threshold": 0.06,
+          "n": 158,
+          "roi": 0.0041
+        },
+        {
+          "threshold": 0.07,
+          "n": 130,
+          "roi": 0.0223
+        },
+        {
+          "threshold": 0.08,
+          "n": 99,
+          "roi": 0.0375
+        },
+        {
+          "threshold": 0.09,
+          "n": 76,
+          "roi": 0.0854
+        },
+        {
+          "threshold": 0.1,
+          "n": 58,
+          "roi": 0.1303
+        },
+        {
+          "threshold": 0.11,
+          "n": 50,
+          "roi": 0.208
+        },
+        {
+          "threshold": 0.12,
+          "n": 41,
+          "roi": 0.3027
+        }
+      ],
+      "edge_roi_monotonicity": 0.861,
+      "candidate_sniper": 0.12,
+      "fit_roi": 0.3027,
+      "fit_n": 41,
+      "candidate_marksman": 0.09,
+      "candidate_valuable": 0.048,
+      "validation_n": 13,
+      "roi_validation": null,
+      "holdout_n": 7,
+      "roi_holdout": null,
+      "live_n_at_candidate": 0,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Ligue 2",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.09,
+      "production_sniper": 0.11,
+      "production_sniper_source": "best_params_side_markets[over15][Ligue 2] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1311,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-04-23",
+          660
+        ],
+        "validation": [
+          "2024-04-27",
+          "2025-02-28",
+          260
+        ],
+        "holdout": [
+          "2025-03-01",
+          "2026-05-09",
+          391
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 518,
+          "roi": -0.0386
+        },
+        {
+          "threshold": 0.03,
+          "n": 492,
+          "roi": -0.0407
+        },
+        {
+          "threshold": 0.04,
+          "n": 439,
+          "roi": -0.0456
+        },
+        {
+          "threshold": 0.05,
+          "n": 415,
+          "roi": -0.0496
+        },
+        {
+          "threshold": 0.06,
+          "n": 343,
+          "roi": -0.0612
+        },
+        {
+          "threshold": 0.07,
+          "n": 317,
+          "roi": -0.065
+        },
+        {
+          "threshold": 0.08,
+          "n": 230,
+          "roi": -0.0709
+        },
+        {
+          "threshold": 0.09,
+          "n": 177,
+          "roi": -0.0573
+        },
+        {
+          "threshold": 0.1,
+          "n": 92,
+          "roi": -0.0109
+        }
+      ],
+      "edge_roi_monotonicity": -0.013,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.01). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Ligue 2",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1311,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-04-23",
+          660
+        ],
+        "validation": [
+          "2024-04-27",
+          "2025-02-28",
+          260
+        ],
+        "holdout": [
+          "2025-03-01",
+          "2026-05-09",
+          391
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "Mexico Liga MX",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 9,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 9 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Mexico Liga MX",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 171,
+      "live_n": 34,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2026-01-14",
+          87
+        ],
+        "validation": [
+          "2026-01-17",
+          "2026-03-04",
+          34
+        ],
+        "holdout": [
+          "2026-03-05",
+          "2026-05-25",
+          50
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 62,
+          "roi": -0.1216
+        },
+        {
+          "threshold": 0.03,
+          "n": 55,
+          "roi": -0.1371
+        },
+        {
+          "threshold": 0.04,
+          "n": 45,
+          "roi": -0.1676
+        },
+        {
+          "threshold": 0.05,
+          "n": 40,
+          "roi": -0.12
+        }
+      ],
+      "edge_roi_monotonicity": -0.15,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.15). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Mexico Liga MX",
+      "market": "over35",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Norway Eliteserien",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 201,
+      "live_n": 20,
+      "windows": {
+        "fit": [
+          "2025-08-09",
+          "2025-11-30",
+          106
+        ],
+        "validation": [
+          "2026-03-14",
+          "2026-04-19",
+          39
+        ],
+        "holdout": [
+          "2026-04-25",
+          "2026-08-16",
+          56
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 89,
+          "roi": -0.2998
+        },
+        {
+          "threshold": 0.03,
+          "n": 80,
+          "roi": -0.3335
+        },
+        {
+          "threshold": 0.04,
+          "n": 70,
+          "roi": -0.3811
+        },
+        {
+          "threshold": 0.05,
+          "n": 61,
+          "roi": -0.4766
+        },
+        {
+          "threshold": 0.06,
+          "n": 52,
+          "roi": -0.524
+        },
+        {
+          "threshold": 0.07,
+          "n": 45,
+          "roi": -0.5664
+        }
+      ],
+      "edge_roi_monotonicity": -0.99,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.99). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Norway Eliteserien",
+      "market": "over35",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Serie B",
+      "market": "btts",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.07,
+      "production_sniper": 0.09,
+      "production_sniper_source": "best_params_side_markets[btts][Serie B] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1490,
+      "live_n": 29,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          748
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-05",
+          299
+        ],
+        "holdout": [
+          "2025-04-06",
+          "2026-05-08",
+          443
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 307,
+          "roi": 0.016
+        },
+        {
+          "threshold": 0.03,
+          "n": 252,
+          "roi": 0.0195
+        },
+        {
+          "threshold": 0.04,
+          "n": 146,
+          "roi": 0.0336
+        },
+        {
+          "threshold": 0.05,
+          "n": 79,
+          "roi": 0.0881
+        },
+        {
+          "threshold": 0.06,
+          "n": 45,
+          "roi": 0.1385
+        }
+      ],
+      "edge_roi_monotonicity": 0.936,
+      "candidate_sniper": 0.06,
+      "fit_roi": 0.1385,
+      "fit_n": 45,
+      "candidate_marksman": 0.045,
+      "candidate_valuable": 0.024,
+      "validation_n": 53,
+      "roi_validation": 0.0767,
+      "holdout_n": 195,
+      "roi_holdout": 0.072,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.06 is BELOW the production gate 0.09; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "CANDIDATE",
+      "reason": "survives at least one out-of-sample window; live CI spans zero or is thin"
+    },
+    {
+      "league": "Serie B",
+      "market": "ou25",
+      "model_type": "standard",
+      "production_valuable": 0.03,
+      "production_marksman": 0.1,
+      "production_sniper": 0.12,
+      "production_sniper_source": "best_params_standard[Serie B] (approved, OOS-positive)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1490,
+      "live_n": 36,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          748
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-05",
+          299
+        ],
+        "holdout": [
+          "2025-04-06",
+          "2026-05-08",
+          443
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 406,
+          "roi": 0.0634
+        },
+        {
+          "threshold": 0.03,
+          "n": 333,
+          "roi": 0.0773
+        },
+        {
+          "threshold": 0.04,
+          "n": 282,
+          "roi": 0.0912
+        },
+        {
+          "threshold": 0.05,
+          "n": 234,
+          "roi": 0.0953
+        },
+        {
+          "threshold": 0.06,
+          "n": 182,
+          "roi": 0.1366
+        },
+        {
+          "threshold": 0.07,
+          "n": 140,
+          "roi": 0.1444
+        },
+        {
+          "threshold": 0.08,
+          "n": 117,
+          "roi": 0.2011
+        },
+        {
+          "threshold": 0.09,
+          "n": 93,
+          "roi": 0.1831
+        },
+        {
+          "threshold": 0.1,
+          "n": 69,
+          "roi": 0.1345
+        },
+        {
+          "threshold": 0.11,
+          "n": 54,
+          "roi": 0.1507
+        }
+      ],
+      "edge_roi_monotonicity": 0.799,
+      "candidate_sniper": 0.08,
+      "fit_roi": 0.2011,
+      "fit_n": 117,
+      "candidate_marksman": 0.06,
+      "candidate_valuable": 0.032,
+      "validation_n": 31,
+      "roi_validation": 0.2755,
+      "holdout_n": 42,
+      "roi_holdout": -0.0612,
+      "live_status": "LEDGER_CENSORED",
+      "live_note": "candidate 0.08 is BELOW the production gate 0.12; fixtures under the live floor never entered the ledger, so the ledger cannot evaluate lowering the bar",
+      "roi_live": null,
+      "evidence_grade": "CANDIDATE",
+      "reason": "survives at least one out-of-sample window; live CI spans zero or is thin"
+    },
+    {
+      "league": "Serie B",
+      "market": "over15",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.05,
+      "production_sniper": 0.07,
+      "production_sniper_source": "best_params_side_markets[over15][Serie B] (approved)",
+      "approved_optimizer_applied": true,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1490,
+      "live_n": 1,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          748
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-05",
+          299
+        ],
+        "holdout": [
+          "2025-04-06",
+          "2026-05-08",
+          443
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 590,
+          "roi": 0.0104
+        },
+        {
+          "threshold": 0.03,
+          "n": 542,
+          "roi": 0.0113
+        },
+        {
+          "threshold": 0.04,
+          "n": 507,
+          "roi": 0.0121
+        },
+        {
+          "threshold": 0.05,
+          "n": 484,
+          "roi": 0.0119
+        },
+        {
+          "threshold": 0.06,
+          "n": 375,
+          "roi": 0.0169
+        },
+        {
+          "threshold": 0.07,
+          "n": 295,
+          "roi": 0.0314
+        },
+        {
+          "threshold": 0.08,
+          "n": 207,
+          "roi": 0.0374
+        },
+        {
+          "threshold": 0.09,
+          "n": 170,
+          "roi": 0.0297
+        },
+        {
+          "threshold": 0.1,
+          "n": 111,
+          "roi": 0.0468
+        }
+      ],
+      "edge_roi_monotonicity": 0.914,
+      "candidate_sniper": 0.1,
+      "fit_roi": 0.0468,
+      "fit_n": 111,
+      "candidate_marksman": 0.075,
+      "candidate_valuable": 0.04,
+      "validation_n": 0,
+      "roi_validation": null,
+      "holdout_n": 0,
+      "roi_holdout": null,
+      "live_n_at_candidate": 1,
+      "roi_live": null,
+      "live_status": "INSUFFICIENT",
+      "evidence_grade": "DISCOVERY",
+      "reason": "fitted; no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Serie B",
+      "market": "over35",
+      "model_type": "standard",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 1490,
+      "live_n": 0,
+      "windows": {
+        "fit": [
+          "2022-09-02",
+          "2024-08-24",
+          748
+        ],
+        "validation": [
+          "2024-08-25",
+          "2025-04-05",
+          299
+        ],
+        "holdout": [
+          "2025-04-06",
+          "2026-05-08",
+          443
+        ]
+      },
+      "evidence_grade": "INSUFFICIENT",
+      "reason": "no threshold reaches 40 bets in the fit window"
+    },
+    {
+      "league": "Sweden Allsvenskan",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "Sweden Allsvenskan",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 173,
+      "live_n": 33,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2025-11-09",
+          93
+        ],
+        "validation": [
+          "2026-04-04",
+          "2026-04-22",
+          28
+        ],
+        "holdout": [
+          "2026-04-23",
+          "2026-05-31",
+          52
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 61,
+          "roi": -0.031
+        },
+        {
+          "threshold": 0.03,
+          "n": 54,
+          "roi": -0.035
+        },
+        {
+          "threshold": 0.04,
+          "n": 45,
+          "roi": -0.042
+        }
+      ],
+      "edge_roi_monotonicity": -0.988,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.99). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "Sweden Allsvenskan",
+      "market": "over35",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 2,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 2 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "USA MLS",
+      "market": "btts",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 3,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 3 live bets \u2014 neither is enough"
+    },
+    {
+      "league": "USA MLS",
+      "market": "ou25",
+      "model_type": "new_format",
+      "production_valuable": 0.03,
+      "production_marksman": 0.08,
+      "production_sniper": 0.12,
+      "production_sniper_source": "config.SNIPER_THRESHOLD (global)",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 234,
+      "live_n": 104,
+      "windows": {
+        "fit": [
+          "2025-08-10",
+          "2026-03-07",
+          117
+        ],
+        "validation": [
+          "2026-03-08",
+          "2026-04-18",
+          49
+        ],
+        "holdout": [
+          "2026-04-19",
+          "2026-08-23",
+          68
+        ]
+      },
+      "fit_curve": [
+        {
+          "threshold": 0.02,
+          "n": 100,
+          "roi": -0.0412
+        },
+        {
+          "threshold": 0.03,
+          "n": 85,
+          "roi": -0.0485
+        },
+        {
+          "threshold": 0.04,
+          "n": 78,
+          "roi": -0.0528
+        },
+        {
+          "threshold": 0.05,
+          "n": 59,
+          "roi": -0.0293
+        },
+        {
+          "threshold": 0.06,
+          "n": 56,
+          "roi": -0.0952
+        },
+        {
+          "threshold": 0.07,
+          "n": 50,
+          "roi": -0.1346
+        },
+        {
+          "threshold": 0.08,
+          "n": 41,
+          "roi": -0.1871
+        }
+      ],
+      "edge_roi_monotonicity": -0.864,
+      "evidence_grade": "EDGE_NOT_RANKING_OUTCOMES",
+      "reason": "ROI falls as the threshold rises (corr -0.86). No threshold repairs an edge measure that does not rank outcomes."
+    },
+    {
+      "league": "USA MLS",
+      "market": "over35",
+      "model_type": "new_format",
+      "production_valuable": 0.04,
+      "production_marksman": 0.08,
+      "production_sniper": 0.1,
+      "production_sniper_source": "pipeline.py fixed side-market global",
+      "approved_optimizer_applied": false,
+      "league_cap_applied": false,
+      "regime_id": "0fc4f3056ea1",
+      "marksman_disabled": false,
+      "backtest_n": 0,
+      "live_n": 1,
+      "evidence_grade": "NO_DATA",
+      "reason": "0 backtest rows and 1 live bets \u2014 neither is enough"
+    }
+  ]
+}
