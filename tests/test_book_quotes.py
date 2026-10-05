@@ -256,3 +256,13 @@ def test_far_is_kept_once_as_an_opening_price_not_change_tracked(tmp_path, monke
     assert bq.append_quotes([_qb("2026-10-02T06:00:00Z", 2.10, "FAR", 3000.0)]) == 0
     # but the near rungs still capture everything
     assert bq.append_quotes([_qb("2026-10-04T17:30:00Z", 2.10, "T-30m", 30.0)]) == 1
+
+
+def test_a_first_far_sighting_is_labelled_open_not_change(tmp_path, monkeypatch):
+    """A first sighting has no prior price, so `changed` is True for exactly the rows that are
+    opens. Testing `far_first & ~changed` mislabelled every one of them."""
+    monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
+    bq.append_quotes([_qb("2026-10-04T06:00:00Z", 1.90, "FAR", 4000.0, fid=1)])
+    bq.append_quotes([_qb("2026-10-05T06:00:00Z", 1.95, "FAR", 4000.0, fid=2)])
+    d = bq.load_quotes()
+    assert set(d["obs_reason"]) == {"open"}, d["obs_reason"].tolist()
