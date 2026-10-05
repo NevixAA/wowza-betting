@@ -125,3 +125,60 @@ def test_reference_id_differs_across_selections():
     b = Selection(**{**a.__dict__, "side": "UNDER",
                      "market_url": "soccer.total_goals/under?total=2.5"})
     assert a.reference_id != b.reference_id
+
+
+# ── player props (enabled 2026-10-05: any POSITIVE edge, not the team 5% bar) ──────────────────
+def prop(pid, edge, market="goals", tier="PAPER", px=13.0):
+    return {"fixture_id": f"prop|{pid}|{market}|2026-10-08", "market": market, "side": "YES",
+            "edge": edge, "signal_tier": tier, "cloudbet_price": px,
+            "reference_id": f"ref-prop-{pid}-{market}"}
+
+
+def test_a_prop_needs_only_positive_edge_not_five_percent():
+    d, _ = select(frame([prop(1, 0.02), cand(9, 0.02)]))
+    assert list(d.fixture_id) == ["prop|1|goals|2026-10-08"], "the 2% team bet should be cut"
+
+
+def test_a_zero_edge_prop_is_not_bet():
+    """Exactly zero edge is the market's own price; after vig that is a losing bet."""
+    d, _ = select(frame([prop(1, 0.0), prop(2, 0.0001)]))
+    assert len(d) == 1 and d.iloc[0]["fixture_id"].startswith("prop|2|")
+
+
+def test_props_are_not_rejected_by_the_team_tier_ladder():
+    """Props carry PAPER/VALUABLE from a different scheme. Applying SNIPER/MARKSMAN to them
+    would reject every prop for the wrong reason — it reads as 'the model said no' when the
+    model was never asked this question."""
+    d, _ = select(frame([prop(1, 0.10, tier="PAPER"), prop(2, 0.10, tier="VALUABLE")]))
+    assert len(d) == 2
+
+
+def test_several_props_on_one_match_all_survive():
+    """Props are keyed per (player, market, date), not per match. Keying them by fixture would
+    silently keep only one prop per game."""
+    d, _ = select(frame([prop(1, 0.10), prop(2, 0.09), prop(3, 0.08)]))
+    assert len(d) == 3
+
+
+def test_props_and_team_bets_compete_for_the_same_cap_by_edge():
+    rows = [cand(i, 0.06 + i / 1000) for i in range(1, 19)] + [prop(99, 0.50), prop(98, 0.40)]
+    d, _ = select(frame(rows))
+    assert len(d) == 20
+    assert d.iloc[0]["fixture_id"].startswith("prop|99|"), "highest edge must be placed first"
+    assert d.iloc[1]["fixture_id"].startswith("prop|98|")
+
+
+def test_prop_markets_are_configurable():
+    d, _ = select(frame([prop(1, 0.2, market="sot"), prop(2, 0.2, market="goals")]),
+                  SelectionRules(prop_markets=("goals",)))
+    assert len(d) == 1 and "goals" in d.iloc[0]["fixture_id"]
+
+
+def test_props_can_be_turned_off_entirely():
+    d, _ = select(frame([prop(1, 0.5), cand(2, 0.20)]), SelectionRules(prop_markets=()))
+    assert list(d.fixture_id) == [2]
+
+
+def test_an_unpriced_prop_is_dropped_like_any_other():
+    d, _ = select(frame([prop(1, 0.5, px=float("nan")), prop(2, 0.1)]))
+    assert len(d) == 1 and d.iloc[0]["fixture_id"].startswith("prop|2|")

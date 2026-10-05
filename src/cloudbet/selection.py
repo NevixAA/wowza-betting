@@ -43,13 +43,25 @@ log = logging.getLogger(__name__)
 
 STAKED_TIERS = ("SNIPER", "MARKSMAN")
 DEFAULT_MARKETS = ("ou25", "btts", "over15", "over35")
+#: Player props, enabled by the owner on 2026-10-05 with a different bar: any POSITIVE edge,
+#: not the 5% the team markets must clear. They compete for the same daily cap, so a prop only
+#: displaces a team bet when its edge is larger.
+PROP_MARKETS = ("goals", "assists", "sot", "sot2", "sot3", "cards")
 
 
 @dataclass
 class SelectionRules:
-    min_edge: float = 0.05            # "only above 5% edge"
+    min_edge: float = 0.05            # "only above 5% edge" — team markets
+    #: Props clear a POSITIVE edge instead. Strictly greater than zero: an edge of exactly 0.0
+    #: is the market's own price, which after vig is a losing bet.
+    prop_min_edge: float = 0.0
     tiers: tuple = STAKED_TIERS
     markets: tuple = DEFAULT_MARKETS
+    prop_markets: tuple = PROP_MARKETS
+    #: Props are not tier-gated. The team tier ladder (SNIPER/MARKSMAN) is not computed for
+    #: props — their `tier` column carries PAPER/VALUABLE from a different scheme entirely, so
+    #: applying the team filter to them would reject every prop for the wrong reason.
+    apply_tier_filter_to_props: bool = False
     max_bets_per_day: int = 20        # "up to 20 bets a day (no more)"
     one_side_per_fixture: bool = True
     require_cloudbet_price: bool = True
@@ -94,17 +106,27 @@ def select(candidates: pd.DataFrame, rules: SelectionRules | None = None,
     if d.empty:
         return d, rej
 
+    is_prop = d["market"].astype(str).isin(r.prop_markets)
+
+    # TIER: team markets only. Props carry a different tier vocabulary (PAPER/VALUABLE) from a
+    # separate scheme, so applying the team ladder to them rejects every prop for the wrong
+    # reason — it would read as "the model said no" when the model was never asked this question.
     n0 = len(d)
-    d = d[d["signal_tier"].astype(str).str.upper().isin([t.upper() for t in r.tiers])]
+    tier_ok = d["signal_tier"].astype(str).str.upper().isin([t.upper() for t in r.tiers])
+    d = d[tier_ok | (is_prop if not r.apply_tier_filter_to_props else False)]
     rej.add("tier", n0 - len(d))
 
     n0 = len(d)
-    d = d[d["market"].astype(str).isin(r.markets)]
+    enabled = tuple(r.markets) + tuple(r.prop_markets)
+    d = d[d["market"].astype(str).isin(enabled)]
     rej.add("market_not_enabled", n0 - len(d))
 
+    # EDGE: two bars. Team markets must clear min_edge; props need only be positive.
     n0 = len(d)
-    d = d[pd.to_numeric(d["edge"], errors="coerce") > r.min_edge]
-    rej.add(f"edge_below_{r.min_edge:.0%}", n0 - len(d))
+    e = pd.to_numeric(d["edge"], errors="coerce")
+    prop_row = d["market"].astype(str).isin(r.prop_markets)
+    d = d[(prop_row & (e > r.prop_min_edge)) | (~prop_row & (e > r.min_edge))]
+    rej.add(f"edge_below_bar(team>{r.min_edge:.0%},prop>{r.prop_min_edge:.0%})", n0 - len(d))
 
     if r.require_cloudbet_price:
         n0 = len(d)
@@ -130,6 +152,10 @@ def select(candidates: pd.DataFrame, rules: SelectionRules | None = None,
         n0 = len(d)
         d = d[~d["fixture_id"].astype(str).isin({str(f) for f in placed_fixtures})]
         rej.add("fixture_already_bet", n0 - len(d))
+        # One row per fixture_id. Props are keyed per (player, market, date) rather than per
+        # match, so several props on one fixture all survive — only a second SIDE of the same
+        # team market is dropped. Keying props by match would have silently kept one prop per
+        # game.
         n0 = len(d)
         d = d.drop_duplicates(subset=["fixture_id"], keep="first")
         rej.add("second_side_same_fixture", n0 - len(d))
