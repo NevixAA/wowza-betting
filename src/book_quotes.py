@@ -356,7 +356,12 @@ def _append_one(df: pd.DataFrame, p: Path) -> int:
         far = df["ladder_band"].isin(OPEN_ONLY_BANDS)
         far_first = far & ~df["_k"].isin(seen_ents)
         keep = (changed & ~far) | heartbeat | far_first
-        df = df.assign(obs_reason=np.where(far_first & ~changed, "open",
+        # A FAR row that survives `keep` is ALWAYS an opening price, because FAR is never
+        # change-tracked. The first version tested `far_first & ~changed`, but a first sighting
+        # has no prior price, so `changed` is True for exactly the rows that are opens — every
+        # one was mislabelled "change". Caught on the first real capture under the new rules:
+        # 582 of 582 FAR rows said "change".
+        df = df.assign(obs_reason=np.where(far, "open",
                                            np.where(changed, "change", "heartbeat")))
         df = df[keep].drop(columns="_k")
         if df.empty:
