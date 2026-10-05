@@ -1,0 +1,597 @@
+{
+  "generated_at_utc": "2026-10-05T07:39:59.612967+00:00",
+  "method": "fitted on the first 70% of each league's backtest by date, tested on the remaining 30%, and tested again on live settled bets since 2026-08-10. A threshold is USE only when the live CI excludes zero.",
+  "caveat": "840 league x threshold cells were examined. Without the out-of-sample requirement a table of apparent winners is guaranteed; a previous per-league tuning on this estate held out-of-sample in 0 of 23 cells.",
+  "grid": [
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.06,
+    0.07,
+    0.08,
+    0.09,
+    0.1,
+    0.11,
+    0.12,
+    0.13,
+    0.14,
+    0.15,
+    0.16,
+    0.17,
+    0.18,
+    0.19,
+    0.2,
+    0.21,
+    0.22,
+    0.23,
+    0.24,
+    0.25,
+    0.26,
+    0.27,
+    0.28,
+    0.29,
+    0.3
+  ],
+  "leagues": [
+    {
+      "league": "Mexico Liga MX",
+      "model_type": "new_format",
+      "n_backtest": 171,
+      "n_live": 34,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-03-04"
+      ],
+      "test_span": [
+        "2026-03-05",
+        "2026-05-25"
+      ],
+      "fitted_threshold": 0.06,
+      "fit_roi": -0.0617,
+      "fit_n": 40,
+      "roi_edge_correlation": 0.502,
+      "test_n": 28,
+      "test_roi": 0.4243,
+      "live_n": 15,
+      "live_roi": 0.3287,
+      "live_ci": [
+        -0.151,
+        0.8793
+      ],
+      "live_break_even": 0.448,
+      "live_hit": 0.6,
+      "status": "CANDIDATE",
+      "reason": "survives out of sample but its live CI still spans zero"
+    },
+    {
+      "league": "Japan J-League",
+      "model_type": "new_format",
+      "n_backtest": 104,
+      "n_live": 46,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-09",
+        "2025-09-27"
+      ],
+      "test_span": [
+        "2025-09-28",
+        "2025-12-06"
+      ],
+      "fitted_threshold": 0.08,
+      "fit_roi": 0.1124,
+      "fit_n": 41,
+      "roi_edge_correlation": 0.926,
+      "test_n": 11,
+      "test_roi": null,
+      "live_n": 14,
+      "live_roi": 0.0671,
+      "live_ci": [
+        -0.2618,
+        0.4509
+      ],
+      "live_break_even": 0.4733,
+      "live_hit": 0.5,
+      "status": "CANDIDATE",
+      "reason": "survives out of sample but its live CI still spans zero"
+    },
+    {
+      "league": "Ireland Premier Division",
+      "model_type": "new_format",
+      "n_backtest": 157,
+      "n_live": 17,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-04-25"
+      ],
+      "test_span": [
+        "2026-05-01",
+        "2026-08-21"
+      ],
+      "fitted_threshold": 0.07,
+      "fit_roi": 0.1467,
+      "fit_n": 40,
+      "roi_edge_correlation": 0.276,
+      "test_n": 10,
+      "test_roi": null,
+      "live_n": 10,
+      "live_roi": -0.134,
+      "live_ci": [
+        -0.7389,
+        0.4467
+      ],
+      "live_break_even": 0.471,
+      "live_hit": 0.4,
+      "status": "CANDIDATE",
+      "reason": "survives out of sample but its live CI still spans zero"
+    },
+    {
+      "league": "Austrian Bundesliga",
+      "model_type": "new_format",
+      "n_backtest": 184,
+      "n_live": 21,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-09",
+        "2026-03-15"
+      ],
+      "test_span": [
+        "2026-03-20",
+        "2026-08-21"
+      ],
+      "fitted_threshold": 0.08,
+      "fit_roi": 0.2376,
+      "fit_n": 51,
+      "roi_edge_correlation": 0.813,
+      "test_n": 15,
+      "test_roi": -0.0013,
+      "live_n": 12,
+      "live_roi": -0.2817,
+      "live_ci": [
+        -0.8034,
+        0.417
+      ],
+      "live_break_even": 0.4468,
+      "live_hit": 0.3333,
+      "status": "FAILED_OOS",
+      "reason": "the fitted threshold does not hold out of sample"
+    },
+    {
+      "league": "League One",
+      "model_type": "standard",
+      "n_backtest": 2137,
+      "n_live": 46,
+      "current_threshold": 0.25,
+      "fit_span": [
+        "2022-09-03",
+        "2025-04-01"
+      ],
+      "test_span": [
+        "2025-04-05",
+        "2026-05-02"
+      ],
+      "fitted_threshold": 0.12,
+      "fit_roi": 0.0608,
+      "fit_n": 50,
+      "roi_edge_correlation": 0.685,
+      "test_n": 16,
+      "test_roi": -0.3144,
+      "live_n": 3,
+      "live_roi": null,
+      "live_ci": null,
+      "status": "FAILED_OOS",
+      "reason": "the fitted threshold does not hold out of sample"
+    },
+    {
+      "league": "Denmark Superliga",
+      "model_type": "new_format",
+      "n_backtest": 180,
+      "n_live": 25,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-04-05"
+      ],
+      "test_span": [
+        "2026-04-06",
+        "2026-08-24"
+      ],
+      "fitted_threshold": 0.06,
+      "fit_roi": -0.0833,
+      "fit_n": 55,
+      "roi_edge_correlation": -0.008,
+      "test_n": 34,
+      "test_roi": 0.1097,
+      "live_n": 12,
+      "live_roi": 0.3475,
+      "live_ci": [
+        -0.1808,
+        0.9718
+      ],
+      "live_break_even": 0.4297,
+      "live_hit": 0.5833,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.01) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "Brazil Serie A",
+      "model_type": "new_format",
+      "n_backtest": 352,
+      "n_live": 38,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-03-19"
+      ],
+      "test_span": [
+        "2026-03-20",
+        "2026-08-23"
+      ],
+      "fitted_threshold": 0.04,
+      "fit_roi": 0.1786,
+      "fit_n": 194,
+      "roi_edge_correlation": -0.912,
+      "test_n": 66,
+      "test_roi": 0.0595,
+      "live_n": 22,
+      "live_roi": 0.245,
+      "live_ci": [
+        -0.2336,
+        0.6588
+      ],
+      "live_break_even": 0.4827,
+      "live_hit": 0.5909,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.91) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "Sweden Allsvenskan",
+      "model_type": "new_format",
+      "n_backtest": 173,
+      "n_live": 33,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-04-22"
+      ],
+      "test_span": [
+        "2026-04-23",
+        "2026-05-31"
+      ],
+      "fitted_threshold": 0.02,
+      "fit_roi": -0.036,
+      "fit_n": 82,
+      "roi_edge_correlation": -0.93,
+      "test_n": 41,
+      "test_roi": -0.1976,
+      "live_n": 33,
+      "live_roi": 0.1406,
+      "live_ci": [
+        -0.2714,
+        0.5369
+      ],
+      "live_break_even": 0.4307,
+      "live_hit": 0.4848,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.93) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "Finland Veikkausliiga",
+      "model_type": "new_format",
+      "n_backtest": 143,
+      "n_live": 21,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-09",
+        "2026-05-08"
+      ],
+      "test_span": [
+        "2026-05-09",
+        "2026-08-22"
+      ],
+      "fitted_threshold": 0.04,
+      "fit_roi": 0.0041,
+      "fit_n": 63,
+      "roi_edge_correlation": -0.905,
+      "test_n": 22,
+      "test_roi": 0.2336,
+      "live_n": 17,
+      "live_roi": 0.1024,
+      "live_ci": [
+        -0.3732,
+        0.4901
+      ],
+      "live_break_even": 0.4743,
+      "live_hit": 0.5294,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.91) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "USA MLS",
+      "model_type": "new_format",
+      "n_backtest": 234,
+      "n_live": 104,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-04-18"
+      ],
+      "test_span": [
+        "2026-04-19",
+        "2026-08-23"
+      ],
+      "fitted_threshold": 0.02,
+      "fit_roi": -0.0899,
+      "fit_n": 148,
+      "roi_edge_correlation": -0.946,
+      "test_n": 65,
+      "test_roi": 0.0298,
+      "live_n": 104,
+      "live_roi": -0.2134,
+      "live_ci": [
+        -0.4161,
+        -0.0217
+      ],
+      "live_break_even": 0.3896,
+      "live_hit": 0.3077,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.95) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "Championship",
+      "model_type": "standard",
+      "n_backtest": 2127,
+      "n_live": 36,
+      "current_threshold": 0.15,
+      "fit_span": [
+        "2022-09-02",
+        "2025-03-29"
+      ],
+      "test_span": [
+        "2025-04-02",
+        "2026-05-02"
+      ],
+      "fitted_threshold": 0.07,
+      "fit_roi": -0.0152,
+      "fit_n": 248,
+      "roi_edge_correlation": -0.539,
+      "test_n": 60,
+      "test_roi": 0.1657,
+      "live_n": 11,
+      "live_roi": -0.2591,
+      "live_ci": [
+        -0.8092,
+        0.318
+      ],
+      "live_break_even": 0.4709,
+      "live_hit": 0.3636,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.54) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "Norway Eliteserien",
+      "model_type": "new_format",
+      "n_backtest": 201,
+      "n_live": 20,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-09",
+        "2026-04-19"
+      ],
+      "test_span": [
+        "2026-04-25",
+        "2026-08-16"
+      ],
+      "fitted_threshold": 0.02,
+      "fit_roi": -0.1196,
+      "fit_n": 120,
+      "roi_edge_correlation": -0.904,
+      "test_n": 49,
+      "test_roi": -0.1978,
+      "live_n": 20,
+      "live_roi": -0.383,
+      "live_ci": [
+        -0.762,
+        0.1401
+      ],
+      "live_break_even": 0.3678,
+      "live_hit": 0.25,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.90) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "China Super League",
+      "model_type": "new_format",
+      "n_backtest": 197,
+      "n_live": 31,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-10",
+        "2026-04-25"
+      ],
+      "test_span": [
+        "2026-04-26",
+        "2026-05-31"
+      ],
+      "fitted_threshold": 0.05,
+      "fit_roi": 0.0688,
+      "fit_n": 83,
+      "roi_edge_correlation": -0.805,
+      "test_n": 40,
+      "test_roi": -0.2015,
+      "live_n": 17,
+      "live_roi": -0.4288,
+      "live_ci": [
+        -1.0,
+        0.0221
+      ],
+      "live_break_even": 0.3701,
+      "live_hit": 0.2353,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.81) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "League Two",
+      "model_type": "standard",
+      "n_backtest": 2137,
+      "n_live": 39,
+      "current_threshold": 0.14,
+      "fit_span": [
+        "2022-09-03",
+        "2025-03-29"
+      ],
+      "test_span": [
+        "2025-04-01",
+        "2026-05-02"
+      ],
+      "fitted_threshold": 0.07,
+      "fit_roi": 0.0342,
+      "fit_n": 142,
+      "roi_edge_correlation": -0.066,
+      "test_n": 33,
+      "test_roi": -0.25,
+      "live_n": 15,
+      "live_roi": -0.4947,
+      "live_ci": [
+        -1.0,
+        -0.3109
+      ],
+      "live_break_even": 0.5096,
+      "live_hit": 0.2667,
+      "status": "NO_SIGNAL",
+      "reason": "ROI falls as the threshold rises (corr -0.07) \u2014 the edge measure carries no information in this league, so no threshold fixes it"
+    },
+    {
+      "league": "Argentina Primera Division",
+      "model_type": "new_format",
+      "n_backtest": 318,
+      "n_live": 62,
+      "current_threshold": 0.12,
+      "fit_span": [
+        "2025-08-09",
+        "2026-03-11"
+      ],
+      "test_span": [
+        "2026-03-12",
+        "2026-08-23"
+      ],
+      "fitted_threshold": 0.24,
+      "fit_roi": 0.0822,
+      "fit_n": 41,
+      "roi_edge_correlation": 0.272,
+      "test_n": 3,
+      "test_roi": null,
+      "live_n": 0,
+      "live_roi": null,
+      "live_ci": null,
+      "status": "UNTESTED",
+      "reason": "fitted, but no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Bundesliga 2",
+      "model_type": "standard",
+      "n_backtest": 1170,
+      "n_live": 27,
+      "current_threshold": 0.2,
+      "fit_span": [
+        "2022-09-02",
+        "2025-04-13"
+      ],
+      "test_span": [
+        "2025-04-19",
+        "2026-05-17"
+      ],
+      "fitted_threshold": 0.17,
+      "fit_roi": 0.0633,
+      "fit_n": 46,
+      "roi_edge_correlation": -0.278,
+      "test_n": 7,
+      "test_roi": null,
+      "live_n": 0,
+      "live_roi": null,
+      "live_ci": null,
+      "status": "UNTESTED",
+      "reason": "fitted, but no out-of-sample window has enough bets"
+    },
+    {
+      "league": "La Liga 2",
+      "model_type": "standard",
+      "n_backtest": 1815,
+      "n_live": 62,
+      "current_threshold": 0.2,
+      "fit_span": [
+        "2022-09-02",
+        "2025-04-12"
+      ],
+      "test_span": [
+        "2025-04-13",
+        "2026-05-31"
+      ],
+      "fitted_threshold": 0.16,
+      "fit_roi": 0.019,
+      "fit_n": 52,
+      "roi_edge_correlation": 0.311,
+      "test_n": 6,
+      "test_roi": null,
+      "live_n": 3,
+      "live_roi": null,
+      "live_ci": null,
+      "status": "UNTESTED",
+      "reason": "fitted, but no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Ligue 2",
+      "model_type": "standard",
+      "n_backtest": 1311,
+      "n_live": 17,
+      "current_threshold": 0.25,
+      "fit_span": [
+        "2022-09-02",
+        "2025-02-28"
+      ],
+      "test_span": [
+        "2025-03-01",
+        "2026-05-09"
+      ],
+      "fitted_threshold": 0.12,
+      "fit_roi": 0.1839,
+      "fit_n": 54,
+      "roi_edge_correlation": 0.663,
+      "test_n": 7,
+      "test_roi": null,
+      "live_n": 0,
+      "live_roi": null,
+      "live_ci": null,
+      "status": "UNTESTED",
+      "reason": "fitted, but no out-of-sample window has enough bets"
+    },
+    {
+      "league": "Serie B",
+      "model_type": "standard",
+      "n_backtest": 1490,
+      "n_live": 36,
+      "current_threshold": 0.15,
+      "fit_span": [
+        "2022-09-02",
+        "2025-04-05"
+      ],
+      "test_span": [
+        "2025-04-06",
+        "2026-05-08"
+      ],
+      "fitted_threshold": 0.12,
+      "fit_roi": 0.4413,
+      "fit_n": 47,
+      "roi_edge_correlation": 0.946,
+      "test_n": 5,
+      "test_roi": null,
+      "live_n": 2,
+      "live_roi": null,
+      "live_ci": null,
+      "status": "UNTESTED",
+      "reason": "fitted, but no out-of-sample window has enough bets"
+    }
+  ]
+}
