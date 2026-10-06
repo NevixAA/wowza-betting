@@ -1,3 +1,51 @@
+> **SUPERSEDED IN PART — regenerated 2026-10-06 on fresh artifacts.**
+>
+> The version below was computed on 2026-09-01 backtest artifacts, which were frozen by a
+> workflow timeout (see `docs/HANDOVER_2026_10_06.md` §3). The backtest was re-run on
+> 2026-10-06 and the picture changed materially:
+>
+> | grade | stale 09-01 | fresh 10-06 |
+> |---|---|---|
+> | EDGE_NOT_RANKING_OUTCOMES | 17 | **9** |
+> | CANDIDATE | 7 | **14** |
+> | DISCOVERY | 10 | 1 |
+> | FORWARD_TEST | 1 | 1 |
+> | CONFIRMED | 0 | **0** |
+>
+> The backtest grew from 14,601 rows (2022-09-02 onward) to **24,889 rows back to 2020-10-20** —
+> the +24,190 archive fixtures finally reaching the walk-forward. "Edge does not rank outcomes"
+> HALVED, which says the data fixes materially improved how well the edge measure orders results;
+> the old figure was partly measuring a model that had since been repaired.
+>
+> **Two production gates changed automatically when the workflow committed**, which is the refit
+> working as designed and is still a live selection change nobody approved case by case:
+>
+> * **Championship lost its approval** — SNIPER 0.07 → **0.12**, MARKSMAN 0.05 → 0.08
+> * **League Two gained one** — SNIPER 0.12 → **0.13**, MARKSMAN 0.08 → 0.11
+> * Serie B unchanged at 0.12 / 0.10
+>
+> One refit on better data flipped two of seven approvals. That is exactly the churn risk flagged
+> when retrain was wired to refit, and it is why every change is logged.
+>
+> **Cells positive in ALL THREE backtest windows on fresh data** (fit / validation / holdout):
+>
+> | cell | fit | validation | holdout |
+> |---|---|---|---|
+> | Ireland Premier Division · ou25 | +0.298 | +0.324 | +0.375 |
+> | Serie B · btts | +0.146 | +0.081 | +0.216 |
+> | League One · btts | +0.241 | +0.238 | +0.056 |
+> | Finland Veikkausliiga · ou25 | +0.137 | +0.064 | +0.266 |
+>
+> Still CANDIDATE, not confirmed: every one of those windows is retrospective. The stricter
+> three-window test in `league_thresholds.py` — which additionally requires the LIVE CI to exclude
+> zero — passes **0 of 19 leagues**, unchanged. Current numbers are in
+> `output/league_market_gate_registry.json`.
+>
+> Everything below this line is the 2026-09-01 version, kept for comparison. Its LIVE figures
+> stand; its backtest-derived figures do not.
+
+---
+
 # League × market × model tier-gate study
 
 Date **2026-10-05**. HEAD `wowza-betting 2c2380af`, `wowzaV9-Pro ef8c7b9`, `wowza_v11 6d3d699`.
