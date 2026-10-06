@@ -32,7 +32,22 @@ jobs:
       matrix:
         model: [standard, newformat, btts, over15, over35]
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # 120 -> 240. MEASURED, not guessed: the 2026-10-01 run took 2h 1m 56s against a 120-minute
+    # cap and was killed. fail-fast is false, so the three side-market jobs finished and
+    # committed while `standard` and `newformat` were terminated having written nothing — which
+    # is why best_params_side_markets.json updated on 10-01 and backtest_results_standard.csv
+    # still dates from 09-01.
+    #
+    # The cause is the data fix that made the model better: +24,190 fixtures on 2026-09-24 took
+    # fd_history from 37,623 to 58,156 rows, and the walk-forward grew with it (Sep 1: 1h 40m).
+    # So the improvement froze the gates that decide which bets fire, and nothing reported it —
+    # the run shows as a grey partial, not a red failure.
+    #
+    # 240 leaves real headroom rather than clearing the measured time by minutes: the frame will
+    # keep growing, and a cap that only just fits is one good season from silently doing this
+    # again. Actions minutes are free on a public repo, so the only cost of a longer cap is a
+    # slower failure when something genuinely hangs.
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,6 +55,39 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      # ── THE REASON THIS WORKFLOW STOPPED COMMITTING ──────────────────────────────────
+      # WOWZA_FULL_ENRICH='1' and APIFOOTBALL_KEY are set below, so every job performs the
+      # full xG / inside-box enrichment. There was no cache, so all five started COLD and
+      # refetched the entire history. On 2026-10-01 all five exceeded the 120-minute cap and
+      # were cancelled; the Sep 1 run, which predates the enrichment being wired in on
+      # 2026-09-05, finished the whole matrix in 1h 40m.
+      #
+      # THIS IS THE THIRD TIME. CLAUDE.md records it for predict.yml on 2026-08-15 (2-3 min
+      # -> 10+ against a 15-minute timeout) and retrain.yml carries the same note for itself
+      # on 2026-09-06: "retrain.yml got the enrichment switch on the same day and not the
+      # cache." predict and retrain were fixed; this workflow was not, and nothing noticed
+      # because a timed-out matrix reports as a grey partial rather than a red failure.
+      #
+      # The consequence was not a slow job, it was FROZEN GATES: best_params_standard.json
+      # and backtest_results_standard.csv have not moved since 2026-09-01, so the thresholds
+      # deciding which bets fire were still fitted to a model that has since gained xG,
+      # +24,190 fixtures and four restored seasons.
+      #
+      # Same paths and key strategy as retrain.yml: a per-run key so each run writes a fresh
+      # entry, and a restore-key prefix so it starts from the most recent one. Scoped per
+      # model so the five parallel jobs do not race for one key.
+      - name: Cache API-Football responses (makes full enrichment affordable)
+        uses: actions/cache@v4
+        with:
+          path: |
+            api_football_cache
+            apifootball_ou_cache
+          key: af-cache-backtest-${{ matrix.model }}-${{ github.run_id }}
+          restore-keys: |
+            af-cache-backtest-${{ matrix.model }}-
+            af-cache-retrain-
+
       - name: Backtest ${{ matrix.model }} (backtest-only, no retrain)
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}

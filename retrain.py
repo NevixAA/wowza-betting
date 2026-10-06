@@ -459,6 +459,49 @@ def main():
         std_df.to_csv(config.OUTPUT_DIR / "backtest_results_standard.csv", index=False)
         std_lg.to_csv(config.OUTPUT_DIR / "backtest_by_league_standard.csv", index=False)
 
+        # ── REFIT THE GATES WITH THE MODEL ────────────────────────────────────────────────
+        # WHY THIS IS HERE AND NOT ONLY IN pipeline.py --mode backtest.
+        #
+        # `optimize_standard_thresholds` was called from exactly one place: the MONTHLY
+        # backtest_matrix workflow. So the model relearned every day while the gates deciding
+        # which bets fire were refitted at most monthly — and in practice far less. Measured
+        # 2026-10-06: best_params_standard.json last changed 2026-09-01, the hand-calibrated
+        # table last changed 2026-06-04, and backtest_metrics_history.json last changed
+        # 2026-06-17.
+        #
+        # That gap let June thresholds survive every data fix that followed: xG and inside-box
+        # joining the feature set (09-05), 37,623 cached rows that had never been served
+        # (09-22), four seasons of corners/HT/O-U restored (09-23), +24,190 fixtures (09-24),
+        # a club splitting into two teams (09-24). The model those gates were fitted for no
+        # longer exists, so the gates were tuned for a system that had been replaced.
+        #
+        # Refitting here keeps the two in step. It does NOT widen anything by itself: the
+        # `approved` flag still requires an out-of-sample-positive result before
+        # src/betting.py will deploy a value, and an unapproved league keeps falling back to
+        # the hand-set config table exactly as before.
+        try:
+            from src.backtest import optimize_standard_thresholds
+            _th_file = config.MODELS_DIR / "best_params_standard.json"
+            _prev = json.loads(_th_file.read_text(encoding="utf-8")) if _th_file.exists() else {}
+            _new = optimize_standard_thresholds(std_df)
+            _th_file.write_text(json.dumps(_new, indent=2), encoding="utf-8")
+
+            # CHURN IS THE RISK THIS INTRODUCES, so it is logged rather than left to be noticed.
+            # A gate that flips approval every week is not a calibration, it is noise, and the
+            # only way to see that is to record each change as it happens.
+            for lg in sorted(set(_prev) | set(_new)):
+                a, b = _prev.get(lg) or {}, _new.get(lg) or {}
+                if a.get("approved") != b.get("approved") or a.get("sniper_th") != b.get("sniper_th"):
+                    log.info(f"  [gate] {lg}: sniper {a.get('sniper_th')} -> {b.get('sniper_th')}, "
+                             f"approved {a.get('approved')} -> {b.get('approved')}")
+            _appr = [lg for lg, v in _new.items() if v.get("approved")]
+            log.info(f"  [gate] refit from this run's backtest — "
+                     f"{len(_appr)} real-money approved: {_appr or 'none'}")
+        except Exception as _e:                                       # noqa: BLE001
+            # A gate refit must never take the retrain down with it. The previous file stays,
+            # which is the same state as before this block existed.
+            log.warning(f"  [gate] threshold refit skipped ({_e}) — previous thresholds kept")
+
         print("\n" + "=" * 60)
         print("  BACKTEST — STANDARD MODEL")
         print("=" * 60)
