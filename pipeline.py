@@ -221,9 +221,25 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
                    + d["away_team"].astype(str))
         d["fixture_id"] = fid.where(fid.notna() & (fid.astype(str) != ""), natural)
 
+        from src.gate_resolver import resolve_effective_tier_gates, regime_id
         now = datetime.now(timezone.utc).isoformat()
+        rid = regime_id()
+
+        # THE GATES THAT WERE IN FORCE, resolved per league from what production actually
+        # reads — not from config.py, which disagrees with it for any league carrying an
+        # approved optimiser value. Cached per league so 150 fixtures do not re-read the
+        # artifacts 150 times.
+        _gcache: dict = {}
+
+        def _gate(league, market, which):
+            k = (str(league), market)
+            if k not in _gcache:
+                _gcache[k] = resolve_effective_tier_gates(str(league), market)
+            return getattr(_gcache[k], which)
+
         rows = pd.DataFrame({
             "fixture_id": d["fixture_id"],
+            "market": "ou25",
             "logged_at": now,
             "match_date": d["date"],
             "kickoff_utc": d.get("kickoff_utc", pd.NA),
@@ -250,6 +266,17 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
             "result": pd.NA,
             # Provenance. Without these a row cannot be tied to the artefact that wrote it, and
             # a forward period that cannot name its model proves nothing about that model.
+            "production_valuable_gate": d["league"].map(lambda l: _gate(l, "ou25", "valuable")),
+            "production_marksman_gate": d["league"].map(lambda l: _gate(l, "ou25", "marksman")),
+            "production_sniper_gate": d["league"].map(lambda l: _gate(l, "ou25", "sniper")),
+            "threshold_regime_id": rid,
+            # Opening price, so open->current movement is reconstructable later. Grading fields
+            # (closing_odds, clv, result) stay empty here by design — §6 forbids a future value
+            # ever reaching a selection rule, and the only way to guarantee that is for the
+            # prediction-time writer never to populate one.
+            "opening_odds": d.get("first_over_odds", pd.NA),
+            "book_count": pd.NA,
+            "market_dispersion": pd.NA,
             "v9_model_sha": d.get("model_sha", pd.NA),
             "v91_model_sha": pd.NA,
             "dataset_id": d.get("git_sha", pd.NA),
