@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import pandas as pd
 
+import config
+
 from dashboard_data.core import (V9_DIR, Freshness, freshness_from_timestamp,
                                  newest_date, read_csv, read_json)
 
@@ -13,14 +15,47 @@ def predictions() -> pd.DataFrame:
     return read_csv(OUT / "predictions.csv")
 
 
-def ledger() -> pd.DataFrame:
-    """Settled + open bets. `model_type` separates the two tracks and must never be pooled."""
-    d = read_csv(OUT / "bets_ledger.csv")
-    if not d.empty:
-        for c in ("generated_at", "match_date"):
-            if c in d.columns:
-                d[c] = pd.to_datetime(d[c], errors="coerce", utc=True)
-    return d
+def ledger(include_side_markets: bool = True,
+           since_cutoff: bool = True) -> pd.DataFrame:
+    """Settled + open bets. `model_type` separates the two tracks and must never be pooled.
+
+    TWO DEFECTS FIXED HERE, 2026-10-06. Together they inverted the headline: the dashboard
+    reported a staked P/L of -35.66u when the honest figure is +10.71u.
+
+    1. SIDE MARKETS WERE MISSING ENTIRELY. This read `bets_ledger.csv` only, i.e. main O/U, so
+       BTTS / Over 1.5 / Over 3.5 never reached any dashboard number. They are not a rounding
+       error — staked side markets are +33.73u since the cutoff and are the profitable part of
+       the book. A "Staked P/L" that omits the winning markets is not a P/L.
+
+    2. PRE-CUTOFF BETS WERE COUNTED. 216 staked bets going back to 2025-08-09, worth -12.64u,
+       were being mixed into the headline. CLAUDE.md is explicit: performance is "counted only
+       from PERFORMANCE_CUTOFF_DATE onward so pre-fix tips are excluded from win/P&L while
+       still contributing to CLV". Those are tips from before the fixes that produced the
+       current system.
+
+    Both default to the corrected behaviour; pass False to see the raw history.
+    """
+    frames = []
+    main = read_csv(OUT / "bets_ledger.csv")
+    if not main.empty:
+        main = main.copy()
+        main["market"] = "ou25"
+        frames.append(main)
+    if include_side_markets:
+        side = read_csv(OUT / "side_bets_ledger.csv")
+        if not side.empty:
+            frames.append(side)
+    if not frames:
+        return pd.DataFrame()
+    d = pd.concat(frames, ignore_index=True)
+    for c in ("generated_at", "match_date"):
+        if c in d.columns:
+            d[c] = pd.to_datetime(d[c], errors="coerce", utc=True)
+    if since_cutoff and "match_date" in d.columns:
+        cut = pd.Timestamp(str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "2026-08-10")),
+                           tz="UTC")
+        d = d[d["match_date"].isna() | (d["match_date"] >= cut)]
+    return d.reset_index(drop=True)
 
 
 def retrain_log() -> dict:

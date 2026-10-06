@@ -71,3 +71,46 @@ def test_the_league_chart_no_longer_compares_against_an_estate_mean():
     src = PAGE.read_text(encoding="utf-8")
     assert "estate mean" not in src
     assert "excess_hit" in src
+
+
+# ── the ledger itself: two defects that together inverted the headline ─────────────────────────
+def test_the_ledger_includes_side_markets():
+    """It read bets_ledger.csv only, so BTTS / Over 1.5 / Over 3.5 reached NO dashboard number.
+    They are not a rounding error: staked side markets are +33.73u since the cutoff and are the
+    profitable part of the book. A P/L that omits the winning markets is not a P/L."""
+    d = v9.ledger()
+    if d.empty:
+        return
+    assert "market" in d.columns
+    assert set(d["market"].dropna().unique()) > {"ou25"}, "only main O/U is reaching the dashboard"
+
+
+def test_the_ledger_respects_the_performance_cutoff():
+    """216 staked bets going back to 2025-08-09, worth -12.64u, were being counted. CLAUDE.md:
+    performance is counted only from PERFORMANCE_CUTOFF_DATE onward so pre-fix tips are excluded
+    from win/P&L while still contributing to CLV."""
+    import config
+    d = v9.ledger()
+    if d.empty or "match_date" not in d.columns:
+        return
+    cut = pd.Timestamp(str(config.PERFORMANCE_CUTOFF_DATE), tz="UTC")
+    md = d["match_date"].dropna()
+    assert (md >= cut).all(), f"{int((md < cut).sum())} pre-cutoff bets are still counted"
+
+
+def test_the_raw_history_is_still_reachable():
+    """Excluding by default must not mean the data is gone — CLV still needs the old rows."""
+    assert len(v9.ledger(since_cutoff=False)) >= len(v9.ledger())
+
+
+def test_the_two_defects_together_flipped_the_sign():
+    """Regression guard on the headline itself. Reading main-O/U-only, all-time, gave -35.66u;
+    all markets since the cutoff gives +10.71u. A dashboard that reports a losing book as the
+    headline when the staked book is profitable is worse than no dashboard."""
+    d = v9.ledger()
+    if d.empty:
+        return
+    st = d[d["result"].isin(["WIN", "LOSS"])]
+    st = st[st["signal_tier"].astype(str).str.upper().isin(("SNIPER", "MARKSMAN"))]
+    pnl = pd.to_numeric(st["pnl"], errors="coerce").sum()
+    assert pnl > 0, f"staked P/L is {pnl:+.2f}u — expected the corrected basis to be positive"
