@@ -75,17 +75,30 @@ def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
             df[c] = np.nan
     df = df[COLUMNS]
 
+    # MARKET IS PART OF THE KEY. Without it the first market logged for a fixture would block
+    # every other market on the same fixture, so BTTS and Over 1.5 would silently never be
+    # recorded.
+    #
+    # A MISSING OR BLANK MARKET NORMALISES TO "ou25", on BOTH sides. Rows written before the
+    # column existed are main O/U by construction, and a caller that omits it means the same
+    # thing. Doing this with `.get("market", "ou25")` alone is not enough and was the bug: when
+    # the column EXISTS but holds NaN the default never fires, both sides stringify to "nan",
+    # and whether they compare equal depends on dtype — so the freeze silently stopped holding.
+    def _mkt(series):
+        return (series.astype("object").where(series.notna(), "ou25").astype(str)
+                .str.strip().replace({"": "ou25", "nan": "ou25", "None": "ou25"}))
+
     if SHADOW_FILE.exists():
         old = pd.read_csv(SHADOW_FILE)
-        # MARKET IS PART OF THE KEY. Without it the first market logged for a fixture would
-        # block every other market on the same fixture, so BTTS and Over 1.5 would silently
-        # never be recorded. Rows written before `market` existed are main O/U by construction.
         if "market" not in old.columns:
             old["market"] = "ou25"
-        seen = set(zip(old["fixture_id"].astype(str), old["market"].astype(str),
+        seen = set(zip(old["fixture_id"].astype(str), _mkt(old["market"]),
                        old["match_date"].astype(str).str[:10]))
-        keep = ~df.apply(lambda r: (str(r["fixture_id"]), str(r.get("market", "ou25")),
-                                    str(r["match_date"])[:10]) in seen, axis=1)
+        new_mkt = _mkt(df["market"])
+        keep = ~pd.Series(
+            [(str(f), m, str(d)[:10]) in seen
+             for f, m, d in zip(df["fixture_id"], new_mkt, df["match_date"])],
+            index=df.index)
         df = df[keep]
         if df.empty:
             return 0

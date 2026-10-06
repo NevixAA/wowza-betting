@@ -168,3 +168,24 @@ def test_an_old_row_without_a_market_column_still_dedups(shadow):
     d.to_csv(shadow.SHADOW_FILE, index=False)
     pipeline._log_shadow(_preds(p_over=0.91))
     assert len(pd.read_csv(shadow.SHADOW_FILE)) == 1
+
+
+def test_a_blank_or_missing_market_normalises_to_ou25_on_both_sides(shadow):
+    """The NaN-key trap, for the second time in this estate.
+
+    `.get("market", "ou25")` does not fire when the column EXISTS but holds NaN — the default
+    only applies to a missing key. Both sides then stringify to "nan" and whether they compare
+    equal depends on dtype, so the first-sight freeze stopped holding and every fixture was
+    re-logged on every predict run. Same shape as the book_quotes line-is-NaN bug.
+    """
+    import numpy as np
+    r = _preds()
+    r2 = r.copy()
+    pipeline._log_shadow(r)
+    d = pd.read_csv(shadow.SHADOW_FILE)
+    assert len(d) == 1
+    # a second write whose market is explicitly NaN must still be recognised as the same row
+    d2 = d.copy(); d2["market"] = np.nan
+    assert shadow.append_shadow(d2) == 0
+    d3 = d.copy(); d3["market"] = ""
+    assert shadow.append_shadow(d3) == 0
