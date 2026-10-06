@@ -2,50 +2,71 @@
   "Bundesliga 2": {
     "sniper_th": 0.06,
     "marksman_th": 0.04,
-    "roi": 17.47,
-    "bets": 50,
-    "drop": false
+    "roi": 47.59,
+    "bets": 40,
+    "drop": false,
+    "roi_oos": 34.53,
+    "bets_oos": 36,
+    "approved": true
   },
   "Championship": {
-    "sniper_th": 0.12,
-    "marksman_th": 0.1,
-    "roi": 26.52,
-    "bets": 42,
-    "drop": false
-  },
-  "La Liga 2": {
-    "sniper_th": 0.13,
-    "marksman_th": 0.11,
-    "roi": 33.78,
-    "bets": 64,
-    "drop": false
-  },
-  "League One": {
-    "sniper_th": 0.11,
-    "marksman_th": 0.09,
-    "roi": 0.73,
-    "bets": 37,
-    "drop": false
-  },
-  "League Two": {
-    "sniper_th": 0.1,
-    "marksman_th": 0.08,
-    "roi": 17.64,
-    "bets": 39,
-    "drop": false
-  },
-  "Ligue 2": {
-    "sniper_th": 0.04,
-    "marksman_th": 0.04,
-    "roi": null,
-    "bets": 430,
-    "drop": true
-  },
-  "Serie B": {
     "sniper_th": 0.09,
     "marksman_th": 0.07,
-    "roi": 13.99,
-    "bets": 83,
-    "drop": false
+    "roi": 13.68,
+    "bets": 21,
+    "drop": false,
+    "roi_oos": 12.73,
+    "bets_oos": 68,
+    "approved": true
+  },
+  "La Liga 2": {
+    "sniper_th": 0.1,
+    "marksman_th": 0.08,
+    "roi": 31.29,
+    "bets": 21,
+    "drop": false,
+    "roi_oos": 19.67,
+    "bets_oos": 6,
+    "approved": false
+  },
+  "League One": {
+    "sniper_th": 0.09,
+    "marksman_th": 0.07,
+    "roi": 70.98,
+    "bets": 29,
+    "drop": false,
+    "roi_oos": 55.11,
+    "bets_oos": 7,
+    "approved": false
+  },
+  "League Two": {
+    "sniper_th": 0.05,
+    "marksman_th": 0.04,
+    "roi": 12.97,
+    "bets": 74,
+    "drop": false,
+    "roi_oos": -11.03,
+    "bets_oos": 29,
+    "approved": false
+  },
+  "Ligue 2": {
+    "sniper_th": 0.07,
+    "marksman_th": 0.05,
+    "roi": 28.12,
+    "bets": 27,
+    "drop": false,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
+  },
+  "Serie B": {
+    "sniper_th": 0.08,
+    "marksman_th": 0.06,
+    "roi": 51.01,
+    "bets": 22,
+    "drop": false,
+    "roi_oos": null,
+    "bets_oos": 0,
+    "approved": false
   }
 }
