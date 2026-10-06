@@ -74,7 +74,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-10,2026-10-10T19:00:00+00:00,La Liga,Real Madrid vs Villarreal,PROP_LEAGUE,278,1570411.0,Kylian Mbappé,Real Madrid,F,goals,0.611,1.64,,,,,,0.83,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T13:30:00+00:00,Bundesliga,FC Augsburg vs Bayern München,PROP_LEAGUE,184,1575180.0,H. Kane,Bayern München,F,goals,0.608,1.65,,,,,,0.735,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T13:00:00+00:00,Sweden Allsvenskan,Gais vs Sirius,PROP_LEAGUE,335097,1494291.0,I. Bjerkebo,Sirius,M,sot,0.602,1.66,,,,,,0.321,0.623,,5,match_level,AVOID,
-2026-10-09,2026-10-09T16:30:00+00:00,Bundesliga 2,Eintracht Braunschweig vs Holstein Kiel,PROP_LEAGUE,362619,1576189.0,Yann Sturm,Eintracht Braunschweig,F,goals,0.601,1.66,,,,,,0.789,0.623,,5,match_level,AVOID,
+2026-10-09,2026-10-09T16:30:00+00:00,Bundesliga 2,Eintracht Braunschweig vs Holstein Kiel,PROP_LEAGUE,362619,1576189.0,Yann Sturm,Eintracht Braunschweig,F,goals,0.601,1.66,4.0,0.2273,0.3737,1.6444,1.404,0.789,0.623,,5,match_level,VALUABLE,0.0936
 2026-10-10,2026-10-10T13:30:00+00:00,Bundesliga,FC Augsburg vs Bayern München,PROP_LEAGUE,25297,1575180.0,M. Gregoritsch,FC Augsburg,F,sot,0.6,1.67,,,,,,0.716,0.623,,5,match_level,AVOID,
 2026-10-12,,La Liga 2,Oviedo vs SD Eibar,SNIPER,182490,,Jacobo González,Oviedo,F,sot,0.6,1.67,,,,,,0.714,0.698,MINUTES,5,match_level,AVOID,
 2026-10-09,2026-10-09T18:45:00+00:00,Ligue 1,Lens vs Lyon,PROP_LEAGUE,86,1552775.0,L. Openda,Lyon,F,sot,0.6,1.67,,,,,,0.761,0.623,,5,match_level,AVOID,
@@ -980,7 +980,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-11,,Austrian Bundesliga,LASK vs Rapid Wien,VALUABLE,50873,,George Bello,Lask Linz,M,sot,0.215,4.66,,,,,,0.267,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-10,2026-10-10T16:00:00+00:00,Norway Eliteserien,Rosenborg vs Sandefjord,PROP_LEAGUE,410604,1494778.0,Oscar Kapskarmo,Sandefjord,F,sot,0.215,4.65,,,,,,0.714,0.623,,5,match_level,AVOID,
 2026-10-08,2026-10-08T17:30:00+00:00,Romanian Superliga,CFR 1907 Cluj vs Universitatea Cluj,PROP_LEAGUE,28455,1565207.0,Stefan Dražić,CFR 1907 Cluj,F,sot,0.215,4.65,,,,,,0.693,0.623,,5,match_level,AVOID,
-2026-10-09,2026-10-09T18:00:00+00:00,Ligue 2,Nancy vs Guingamp,PROP_LEAGUE,190829,1552490.0,Amine Hemia,Guingamp,F,goals,0.215,4.66,3.4,0.2674,-0.0524,-0.1959,-0.269,0.687,0.623,,5,match_level,AVOID,0.0
+2026-10-09,2026-10-09T18:00:00+00:00,Ligue 2,Nancy vs Guingamp,PROP_LEAGUE,190829,1552490.0,Amine Hemia,Guingamp,F,goals,0.215,4.66,3.75,0.2424,-0.0274,-0.1131,-0.1937,0.687,0.623,,5,match_level,AVOID,0.0
 2026-10-07,,Brazil Serie A,Vitoria vs Chapecoense,VALUABLE,442404,,Rene,Vitoria,F,goals,0.215,4.65,1.91,0.4939,-0.2789,-0.5647,-0.5894,0.753,0.623,,5,match_level,AVOID,0.0
 2026-10-07,2026-10-07T23:00:00+00:00,Brazil Serie A,Vitoria vs Chapecoense-sc,PROP_LEAGUE,442404,1492399.0,Rene,Vitoria,F,goals,0.215,4.65,1.91,0.4939,-0.2789,-0.5647,-0.5894,0.753,0.623,,5,match_level,AVOID,0.0
 2026-10-07,2026-10-07T22:30:00+00:00,Brazil Serie A,Remo vs Gremio,PROP_LEAGUE,405703,1492397.0,Diego Caito,Gremio,D,sot,0.215,4.65,,,,,,0.31,0.698,SET_PIECE,5,match_level,AVOID,
@@ -990,7 +990,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-12,,La Liga 2,Tenerife vs Girona FC,VALUABLE,47581,,Enric Gallego,Tenerife,F,sot2,0.214,4.68,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,,Bundesliga 2,SV Darmstadt 98 vs FC Energie Cottbus,VALUABLE,26523,,Luca Marseiler,SV Darmstadt 98,M,sot,0.214,4.68,,,,,,0.221,0.623,,5,match_level,AVOID,
 2026-10-09,2026-10-09T19:00:00+00:00,Championship,West Ham vs QPR,PROP_LEAGUE,19428,1563190.0,J. Bowen,West Ham,M,assists,0.214,4.68,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-11,,Serie B,Modena vs Hellas Verona,VALUABLE,341912,,Giuseppe Ambrosino,Modena,F,goals,0.214,4.68,,,,,,0.798,0.623,,5,match_level,AVOID,
+2026-10-11,,Serie B,Modena vs Hellas Verona,VALUABLE,341912,,Giuseppe Ambrosino,Modena,F,goals,0.214,4.68,3.25,0.2797,-0.0657,-0.235,-0.3045,0.798,0.623,,5,match_level,AVOID,0.0
 2026-10-10,,Championship,Derby County vs Wrexham AFC,VALUABLE,196856,,Daniel Imray,Wrexham,M,sot,0.214,4.67,,,,,,0.418,0.623,,5,match_level,AVOID,
 2026-10-12,,La Liga 2,Oviedo vs SD Eibar,SNIPER,182486,,Alberto Reina,Oviedo,M,sot,0.214,4.68,,,,,,0.417,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T18:45:00+00:00,Serie A,Napoli vs Frosinone,PROP_LEAGUE,3406,1550144.0,Frank Anguissa,Napoli,M,sot,0.213,4.71,,,,,,0.249,0.698,MINUTES,5,match_level,AVOID,
@@ -1079,7 +1079,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-10,2026-10-10T11:30:00+00:00,Championship,Swansea vs Norwich,PROP_LEAGUE,18843,1563187.0,Jeffrey Schlupp,Norwich,M,sot,0.206,4.85,,,,,,0.227,0.698,MINUTES,5,match_level,AVOID,
 2026-10-09,2026-10-09T18:30:00+00:00,Serie B,Avellino vs Sampdoria,PROP_LEAGUE,30932,1601544.0,L. Henderson,Sampdoria,M,sot,0.206,4.86,,,,,,0.538,0.623,,5,match_level,AVOID,
 2026-10-09,2026-10-09T18:30:00+00:00,Serie B,Avellino vs Sampdoria,PROP_LEAGUE,364224,1601544.0,Francesco Conti,Sampdoria,M,sot,0.206,4.86,,,,,,0.429,0.623,,5,match_level,AVOID,
-2026-10-09,,Brazil Serie A,Palmeiras vs Bahia,MARKSMAN,340279,,Vitor Roque,Palmeiras,F,goals,0.206,4.85,2.1,0.4492,-0.2432,-0.5414,-0.5674,0.734,0.623,,5,match_level,AVOID,0.0
+2026-10-09,,Brazil Serie A,Palmeiras vs Bahia,MARKSMAN,340279,,Vitor Roque,Palmeiras,F,goals,0.206,4.85,2.0,0.4717,-0.2657,-0.5633,-0.588,0.734,0.623,,5,match_level,AVOID,0.0
 2026-10-09,,Norway Eliteserien,SK Brann vs Viking FK,MARKSMAN,15644,,Sivert Heltne Nilsen,Brann,M,sot,0.206,4.84,,,,,,0.393,0.623,,5,match_level,AVOID,
 2026-10-11,,Norway Eliteserien,Aalesund vs Sarpsborg FK,MARKSMAN,39213,,Kristoffer Barmen,Aalesund,M,sot,0.206,4.86,,,,,,0.271,0.623,,5,match_level,AVOID,
 2026-10-11,,Austrian Bundesliga,LASK vs Rapid Wien,VALUABLE,367672,,Moses Usor,Lask Linz,F,goals,0.206,4.85,,,,,,0.731,0.623,,5,match_level,AVOID,
@@ -1286,9 +1286,9 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-09,2026-10-09T17:00:00+00:00,Denmark Superliga,FC Nordsjaelland vs Odense,PROP_LEAGUE,475394,1549031.0,Justin Janssen,FC Nordsjaelland,M,sot,0.19,5.26,,,,,,0.424,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T15:30:00+00:00,Sweden Allsvenskan,Mjallby AIF vs Degerfors IF,PROP_LEAGUE,329165,1494296.0,Kazper Karlsson,Degerfors IF,M,cards,0.19,5.27,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T15:15:00+00:00,Ligue 1,Lille vs Le Havre,PROP_LEAGUE,314231,1552776.0,A. Richardson,Le Havre,M,sot,0.19,5.26,,,,,,0.321,0.623,,5,match_level,AVOID,
-2026-10-07,2026-10-07T23:30:00+00:00,Brazil Serie A,Botafogo vs Vasco DA Gama,PROP_LEAGUE,9938,1492391.0,Arthur Cabral,Botafogo,F,goals,0.19,5.25,2.75,0.3431,-0.1531,-0.4461,-0.4775,0.758,0.623,,5,match_level,AVOID,0.0
+2026-10-07,2026-10-07T23:30:00+00:00,Brazil Serie A,Botafogo vs Vasco DA Gama,PROP_LEAGUE,9938,1492391.0,Arthur Cabral,Botafogo,F,goals,0.19,5.25,3.2,0.2841,-0.0941,-0.3312,-0.392,0.758,0.623,,5,match_level,AVOID,0.0
 2026-10-10,,Finland Veikkausliiga,IFK Mariehamn vs Ilves Tampere,VALUABLE,55403,,S. Dahlström,Mariehamn,M,cards,0.19,5.25,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-07,,Brazil Serie A,Botafogo vs Vasco da Gama,VALUABLE,9938,,Arthur Cabral,Botafogo,F,goals,0.19,5.25,2.75,0.3431,-0.1531,-0.4461,-0.4775,0.758,0.623,,5,match_level,AVOID,0.0
+2026-10-07,,Brazil Serie A,Botafogo vs Vasco da Gama,VALUABLE,9938,,Arthur Cabral,Botafogo,F,goals,0.19,5.25,3.2,0.2841,-0.0941,-0.3312,-0.392,0.758,0.623,,5,match_level,AVOID,0.0
 2026-10-10,2026-10-10T17:00:00+00:00,Romanian Superliga,Arges Pitesti vs CFR 1907 Cluj,PROP_LEAGUE,174795,1565266.0,Taylor Luvambo,Arges Pitesti,F,sot,0.189,5.28,,,,,,0.655,0.623,,5,match_level,AVOID,
 2026-10-09,2026-10-09T18:30:00+00:00,Serie B,Avellino vs Sampdoria,PROP_LEAGUE,30536,1601544.0,Filip Đuričić,Sampdoria,M,sot,0.189,5.3,,,,,,0.228,0.698,MINUTES,5,match_level,AVOID,
 2026-10-10,2026-10-10T18:45:00+00:00,Serie A,Napoli vs Frosinone,PROP_LEAGUE,288006,1550144.0,Rasmus Højlund,Napoli,F,sot2,0.189,5.29,,,,,,,0.623,,5,match_level,AVOID,
@@ -1518,7 +1518,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-11,,Denmark Superliga,Brondby IF vs Lyngby,VALUABLE,47508,,Marc Muniesa,Lyngby,D,cards,0.178,5.63,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T00:45:00+00:00,Argentina Primera Division,Union Santa Fe vs Defensa Y Justicia,PROP_LEAGUE,51441,1493181.0,J. Gutiérrez,Defensa Y Justicia,M,sot,0.178,5.62,,,,,,0.344,0.623,,5,match_level,AVOID,
 2026-10-11,,China Super League,Liaoning Tieren FC vs Wuhan Three Towns,VALUABLE,43257,,Alexandru Tudorie,Wuhan Three Towns,F,sot,0.178,5.61,,,,,,0.517,0.698,MINUTES,5,match_level,AVOID,
-2026-10-12,,Brazil Serie A,Coritiba vs Botafogo,VALUABLE,10106,,Pedro Rocha,Coritiba,F,goals,0.178,5.63,,,,,,0.764,0.623,,5,match_level,AVOID,
+2026-10-12,,Brazil Serie A,Coritiba vs Botafogo,VALUABLE,10106,,Pedro Rocha,Coritiba,F,goals,0.178,5.63,2.75,0.3431,-0.1651,-0.4811,-0.5105,0.764,0.623,,5,match_level,AVOID,0.0
 2026-10-07,2026-10-07T22:30:00+00:00,Brazil Serie A,Remo vs Gremio,PROP_LEAGUE,96,1492397.0,Jemerson,Gremio,D,cards,0.178,5.62,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T17:00:00+00:00,Romanian Superliga,Arges Pitesti vs CFR 1907 Cluj,PROP_LEAGUE,31227,1565266.0,Anton Krešić,CFR 1907 Cluj,D,cards,0.178,5.61,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-09,2026-10-09T18:30:00+00:00,Bundesliga,Borussia Dortmund vs Werder Bremen,PROP_LEAGUE,48642,1575176.0,Cameron Puertas,Werder Bremen,M,sot,0.178,5.63,,,,,,0.461,0.623,,5,match_level,AVOID,
@@ -1538,7 +1538,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-10,2026-10-10T14:00:00+00:00,Premier League,Sunderland vs Brighton,PROP_LEAGUE,282637,1557426.0,Femi Azeez,Brighton,F,sot,0.177,5.64,,,,,,0.72,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T15:30:00+00:00,Sweden Allsvenskan,Mjallby AIF vs Degerfors IF,PROP_LEAGUE,48003,1494296.0,S. Ohlsson,Degerfors IF,D,cards,0.177,5.65,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-12,,La Liga 2,Tenerife vs Girona FC,VALUABLE,70498,,Jesús Álvarez,Tenerife,M,sot,0.177,5.64,,,,,,0.434,0.623,,5,match_level,AVOID,
-2026-10-11,,Serie B,Modena vs Hellas Verona,VALUABLE,263480,,Giacomo Olzer,Modena,F,goals,0.177,5.66,,,,,,0.709,0.623,,5,match_level,AVOID,
+2026-10-11,,Serie B,Modena vs Hellas Verona,VALUABLE,263480,,Giacomo Olzer,Modena,F,goals,0.177,5.66,4.0,0.2273,-0.0503,-0.2212,-0.292,0.709,0.623,,5,match_level,AVOID,0.0
 2026-10-09,2026-10-09T11:35:00+00:00,China Super League,Sichuan Jiuniu vs Henan Jianye,PROP_LEAGUE,353728,1523267.0,Gabriel Xavier,Sichuan Jiuniu,D,cards,0.177,5.66,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,,Finland Veikkausliiga,IFK Mariehamn vs Ilves Tampere,VALUABLE,264539,,T. Hytönen,Ilves,F,goals,0.177,5.66,,,,,,0.781,0.623,,5,match_level,AVOID,
 2026-10-09,2026-10-09T18:45:00+00:00,Ireland Premier Division,Derry City vs St Patrick's Athl.,PROP_LEAGUE,44878,1492776.0,A. Keena,St Patrick's Athl.,F,sot,0.177,5.66,,,,,,0.816,0.623,,5,match_level,AVOID,
@@ -1550,7 +1550,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-10,2026-10-10T13:00:00+00:00,Serie B,Benevento vs Cesena,PROP_LEAGUE,343383,1601545.0,R. Pagano,Cesena,M,cards,0.177,5.66,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T16:00:00+00:00,Norway Eliteserien,Rosenborg vs Sandefjord,PROP_LEAGUE,1189,1494778.0,Emil Konradsen Ceide,Rosenborg,F,assists,0.177,5.66,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T18:45:00+00:00,Ligue 1,Monaco vs Toulouse,PROP_LEAGUE,50956,1552778.0,C. Cásseres,Toulouse,M,sot,0.177,5.65,,,,,,0.276,0.623,,5,match_level,AVOID,
-2026-10-11,,Brazil Serie A,Bahia vs Mirassol,MARKSMAN,67902,,Cristian Olivera,Bahia,F,goals,0.177,5.65,7.9,0.1101,0.0669,0.608,0.3983,0.679,0.623,,5,match_level,VALUABLE,0.0115
+2026-10-11,,Brazil Serie A,Bahia vs Mirassol,MARKSMAN,67902,,Cristian Olivera,Bahia,F,goals,0.177,5.65,4.75,0.1914,-0.0144,-0.0752,-0.1593,0.679,0.623,,5,match_level,AVOID,0.0
 2026-10-11,,Norway Eliteserien,Aalesund vs Sarpsborg FK,MARKSMAN,564536,,M. Christensen,Aalesund,M,cards,0.177,5.64,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-10,2026-10-10T11:30:00+00:00,Championship,Charlton vs Bristol City,PROP_LEAGUE,394294,1563181.0,Tyreece Campbell,Charlton,M,sot,0.176,5.69,,,,,,0.586,0.623,,5,match_level,AVOID,
 2026-10-11,,La Liga 2,Andorra CF vs CD Castellón,VALUABLE,105020,,Oscar Gil,Castellón,D,cards,0.176,5.68,,,,,,,0.623,,5,match_level,AVOID,
