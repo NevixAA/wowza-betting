@@ -196,7 +196,17 @@ ENABLED_LEAGUES = {
     "Japan J-League",
     "Mexico Liga MX",
     "China Super League",
-    "USA MLS",
+    # "USA MLS",   # PAPER-ONLY from 2026-10-06 — owner decision, evidence below.
+    #   Live since the 2026-08-10 cutoff: 108 settled bets, -24.72u, hit 33.8% against a
+    #   40.0% break-even. Over the last 21 days alone: 30 bets, -13.50u, and a
+    #   matchday-block CI of [-0.84, -0.03] that EXCLUDES ZERO — almost nothing else in
+    #   this estate does. Independently, the league x market gate study graded it
+    #   EDGE_NOT_RANKING_OUTCOMES on 104 live bets: raising the threshold makes it WORSE,
+    #   so no gate repairs it. Two separate lines of evidence, same conclusion.
+    #
+    #   REMOVED FROM PREDICTION ONLY. It stays in NEW_FORMAT_LEAGUES, so it still trains
+    #   the model, still collects odds and results, and still appears in the data. What
+    #   stops is tips and therefore stakes. Re-enable by uncommenting this one line.
     # New format — training only (no OddsAPI key), kept for model quality
     "Romanian Superliga",
     # API-Football-only — training only until 1+ seasons validated
