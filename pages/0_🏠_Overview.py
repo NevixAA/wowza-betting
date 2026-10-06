@@ -66,14 +66,26 @@ else:
         ui.kpi("Staked P/L", ui.units(staked_pnl),
                f"{staked_n:,} staked bets · SNIPER + MARKSMAN only",
                tone=ui.polarity()[0] if staked_pnl >= 0 else ui.polarity()[1])
+    # SAME BASIS AS THE HEADLINE. These cards used to show ALL tips, VALUABLE included, while
+    # sitting beside a card labelled "SNIPER + MARKSMAN only" — so three numbers that looked
+    # comparable were not, and the track cards read about 3x larger than the money they
+    # represent. VALUABLE is a paper tier; it belongs in the caption, not in a P/L headline.
     for c, (name, t) in zip(k[1:], sorted(tracks.items())):
+        s_ = t["staked_only"]
         with c:
-            ui.kpi(name.replace("_", "-"), ui.units(t["pnl"]),
-                   f"{t['n']:,} tips · hit {ui.pct(t['hit'], None)} · ROI {ui.pct(t['roi'], None)}",
-                   tone=ui.polarity()[0] if t["pnl"] >= 0 else ui.polarity()[1])
+            be = s_.get("break_even")
+            hit_txt = ui.pct(s_.get("hit"), None)
+            # The hit rate is meaningless without the bar it must clear, so they travel together.
+            be_txt = f" vs {ui.pct(be, None)} break-even" if be is not None else ""
+            ui.kpi(name.replace("_", "-"), ui.units(s_["pnl"]),
+                   f"{s_['n']:,} staked · hit {hit_txt}{be_txt} · ROI {ui.pct(s_.get('roi'), None)}",
+                   tone=ui.polarity()[0] if s_["pnl"] >= 0 else ui.polarity()[1])
 
-    st.caption(f"All tips including the paper VALUABLE tier: {total_n:,}. "
-               "The two are kept apart deliberately — a paper tier is not a result.")
+    st.caption(
+        f"Every card above is SNIPER + MARKSMAN only — the tiers that carry money. "
+        f"Including the paper VALUABLE tier there are {total_n:,} tips worth "
+        f"{sum(t['pnl'] for t in tracks.values()):+.2f}u, but a paper tier is not a result and "
+        f"is kept out of every P/L headline on this page.")
 
     # per-track, per-tier P/L. One chart, one scale, n in every tooltip.
     rows = [{"track_tier": f"{tr} · {ti}", "pnl": v["pnl"], "n": v["n"], "roi": v["roi"]}
@@ -102,7 +114,8 @@ st.divider()
 
 # ── league detail, with small samples flagged rather than hidden ───────────────────────────────
 st.subheader("Where the money went, by league")
-bl = v9.by_league(days=None)
+# Staked tiers only — this section is titled "where the money went", and VALUABLE is paper.
+bl = v9.by_league(days=None, staked_only=True)
 if bl.empty:
     st.caption("No settled bets grouped by league yet.")
 else:
@@ -113,10 +126,17 @@ else:
         st.altair_chart(ui.pnl_bars(bl, "label", "pnl", "n", h=26 * len(bl) + 60,
                                     title="P/L by league (units)"), width='stretch')
     with c2:
-        st.altair_chart(ui.rate_bars(bl, "label", "hit", "n", ref=float(bl["hit"].mean()),
-                                     h=26 * len(bl) + 60,
-                                     title="Hit rate by league (dashed = estate mean)"),
+        # EXCESS OVER EACH LEAGUE'S OWN BREAK-EVEN, not a hit rate against an estate-wide mean.
+        # A 45% hit rate is excellent at 2.40 and a disaster at 1.70, so one shared reference
+        # line compares every league against a bar none of them actually has to clear — and
+        # makes a short-priced league look strong and a long-priced one look weak purely from
+        # its prices.
+        st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
+                                    title="Hit rate minus that league's own break-even"),
                         width='stretch')
+    st.caption("Staked tiers only (SNIPER + MARKSMAN). Including the paper VALUABLE tier the "
+               "same chart reads -123.16u across 1,350 tips instead of -35.66u across 561 — "
+               "three and a half times larger, and none of the difference is money.")
     thin = int((~bl["reliable"]).sum())
     if thin:
         st.caption(f"⚠ {thin} league(s) marked thin — fewer than 30 settled bets. They are shown "

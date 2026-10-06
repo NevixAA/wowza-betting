@@ -31,6 +31,20 @@ def training_coverage() -> dict:
     return read_json(OUT / "training_coverage.json")
 
 
+def _break_even(frame) -> float | None:
+    """Break-even hit rate implied by the prices actually taken: mean(1/odds).
+
+    NOT 1/mean(odds). They differ by Jensen's inequality, and the wrong one previously
+    flattered the SNIPER tier by 1.5 percentage points on this estate.
+    """
+    import numpy as np
+    if frame is None or not len(frame) or "odds" not in frame.columns:
+        return None
+    o = pd.to_numeric(frame["odds"], errors="coerce").to_numpy(dtype=float)
+    ok = np.isfinite(o) & (o > 1)
+    return round(float(np.mean(1.0 / o[ok])), 4) if ok.any() else None
+
+
 def performance(days: int | None = None) -> dict:
     """P&L split by track and tier. NEVER one blended total across unrelated markets.
 
@@ -63,27 +77,51 @@ def performance(days: int | None = None) -> dict:
             "n": int(len(g)), "pnl": round(float(pnl.sum()), 2),
             "roi": round(float(pnl.sum() / len(g)), 4) if len(g) else None,
             "hit": round(float((g["result"] == "WIN").mean()), 4),
-            "staked_only": {"n": int(len(staked)), "pnl": round(float(spnl.sum()), 2),
-                            "roi": round(float(spnl.sum() / len(staked)), 4) if len(staked) else None},
+            # BREAK-EVEN TRAVELS WITH THE HIT RATE. A 45% hit rate is excellent at 2.40 and a
+            # disaster at 1.70, so a hit rate shown without the bar it has to clear invites
+            # exactly the wrong read. mean(1/odds), never 1/mean(odds).
+            "staked_only": {
+                "n": int(len(staked)), "pnl": round(float(spnl.sum()), 2),
+                "roi": round(float(spnl.sum() / len(staked)), 4) if len(staked) else None,
+                "hit": (round(float((staked["result"] == "WIN").mean()), 4)
+                        if len(staked) else None),
+                "break_even": _break_even(staked)},
             "by_tier": tiers,
         }
     return out
 
 
-def by_league(days: int | None = 30, min_n: int = 5) -> pd.DataFrame:
-    """Per-league performance. Rows under `min_n` are KEPT but flagged, never hidden or greened."""
+def by_league(days: int | None = 30, min_n: int = 5,
+              staked_only: bool = True) -> pd.DataFrame:
+    """Per-league performance. Rows under `min_n` are KEPT but flagged, never hidden or greened.
+
+    STAKED TIERS ONLY BY DEFAULT. This pooled VALUABLE with SNIPER and MARKSMAN, so a chart
+    titled "where the money went" was showing a paper tier as money. The distortion is not
+    cosmetic: on 2026-10-06 the standard track read -65.11u across 553 tips while the staked
+    loss was -9.17u across 133 — seven times larger. Pass staked_only=False to see every tip.
+    """
     d = ledger()
     if d.empty or "result" not in d.columns:
         return pd.DataFrame()
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
+    if staked_only and "signal_tier" in s.columns:
+        s = s[s["signal_tier"].astype(str).str.upper().isin(("SNIPER", "MARKSMAN"))]
     if days and "generated_at" in s.columns:
         s = s[s["generated_at"] >= pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=days)]
     if s.empty:
         return pd.DataFrame()
     s["pnl"] = pd.to_numeric(s.get("pnl"), errors="coerce").fillna(0)
+    s["_inv"] = 1.0 / pd.to_numeric(s.get("odds"), errors="coerce").where(
+        lambda x: x > 1)
     g = s.groupby(["league", s.get("model_type", "unknown")]).agg(
         n=("result", "size"), pnl=("pnl", "sum"),
-        hit=("result", lambda x: (x == "WIN").mean())).reset_index()
+        hit=("result", lambda x: (x == "WIN").mean()),
+        # Each league's OWN bar. A 45% hit rate is excellent at 2.40 and a disaster at 1.70,
+        # so comparing every league against one estate-wide mean compares them against a line
+        # none of them actually has to clear.
+        break_even=("_inv", "mean")).reset_index()
+    g["break_even"] = g["break_even"].round(4)
+    g["excess_hit"] = (g["hit"] - g["break_even"]).round(4)
     g["roi"] = (g["pnl"] / g["n"]).round(4)
     g["reliable"] = g["n"] >= min_n
     return g.sort_values("n", ascending=False).reset_index(drop=True)
