@@ -90,6 +90,50 @@ the edge lives at books we are not betting.
 
 ## 2. Ordered tasks after the probe
 
+### Task 2b — CLOUDBET AGAINST THE CONSENSUS (added 2026-10-06, owner's idea)
+
+`src/cloudbet/consensus.py` is built and tested (12 tests). It answers a **different question**
+from Task 2 and the two must never be summed:
+
+```
+edge_vs_model      p_model      - 1/cloudbet_odds    "our model disagrees with them"
+edge_vs_consensus  p_consensus  - 1/cloudbet_odds    "they are cheap against the market"
+```
+
+The second does not depend on the model being right. Given that the de-vigged market beats every
+model this estate has (log loss 0.67702 vs 0.68752 standard, 0.67899 vs 0.68714 new-format, on
+identical rows), an edge from Cloudbet being soft has a better-founded mechanism than one from
+the model disagreeing with the market: a smaller book pricing a thin second division more slowly.
+
+**Leave-one-out is mandatory and the effect is measured, not assumed.** Simulated over 400
+markets per book count, books scattered N(0.50, 0.03), Cloudbet soft by 6pp — the shift in the
+consensus from including Cloudbet in its own comparison:
+
+| other books | median | p95 |
+|---|---|---|
+| 3 | 1.11pp | 3.49pp |
+| 6 (our typical) | 0.52pp | 1.80pp |
+| 8 | 0.39pp | 1.34pp |
+
+A soft-price edge worth betting is roughly 3–5pp, so self-comparison eats 10–17% of it at six
+books and can eat all of it at three — and it bites hardest on thin markets, which is exactly
+where softness is most likely. `soft_price_edge()` always excludes the book it is pricing.
+
+Our existing coverage supports this today: **293 of 297 fixtures already have ≥3 two-sided
+books, median 6.**
+
+**Task:** record `edge_vs_model`, `edge_vs_consensus`, `consensus_books`, `consensus_dispersion`
+and `agree` on every row of `output/cloudbet_bets.csv` via `consensus.both_edges()`.
+
+**Do NOT filter on `agree` yet.** Which of model-only / market-only / both actually performs is
+an empirical question, and there is no data to answer it. Record all three cases and let the
+play period decide. A test asserts `selection.py` does not reference `agree`, so switching it on
+is a deliberate act rather than a drift.
+
+Adding Cloudbet to the consensus for *other* purposes (a better market anchor for research) is
+fine and `consensus_probability(..., exclude=())` does it — but that number must never be the
+one used to price Cloudbet.
+
 ### Task 3 — wire the event feed into the runner
 
 `bot.run()` takes `events_by_league` and currently warns and drops everything when it is absent.
