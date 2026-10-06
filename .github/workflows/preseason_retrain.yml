@@ -38,6 +38,22 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Full enrichment without a cache starts every run COLD and refetches the entire
+      # history. That defect has now cost this estate four times: predict.yml 2026-08-15,
+      # retrain.yml 2026-09-06, and backtest_matrix.yml 2026-10-01, where all five jobs were
+      # cancelled on the timeout and the per-league gates stayed frozen at 2026-09-01 as a
+      # result. Added here before it does it a fifth.
+      - name: Cache API-Football responses (makes full enrichment affordable)
+        uses: actions/cache@v4
+        with:
+          path: |
+            api_football_cache
+            apifootball_ou_cache
+          key: af-cache-preseason-${{ github.run_id }}
+          restore-keys: |
+            af-cache-preseason-
+            af-cache-retrain-
+
       # ── Step 1: collect fresh match data (football-data.co.uk) ───────────────
       - name: Download latest match data
         env:
