@@ -107,3 +107,64 @@ def test_the_workflow_commits_the_shadow_log():
     from pathlib import Path
     wf = (Path(__file__).resolve().parents[1] / ".github" / "workflows" / "predict.yml")
     assert "output/v91_shadow.csv" in wf.read_text(encoding="utf-8")
+
+
+# ── §5/§6: the prospective gate dataset ───────────────────────────────────────────────────────
+def test_the_gates_in_force_are_recorded_with_every_prediction(shadow):
+    """Without them the log records what was decided but not the RULE it was decided under, so
+    a later threshold change silently re-interprets every historical row."""
+    pipeline._log_shadow(_preds(n=2))
+    d = pd.read_csv(shadow.SHADOW_FILE)
+    for c in ("production_valuable_gate", "production_marksman_gate",
+              "production_sniper_gate", "threshold_regime_id"):
+        assert d[c].notna().all(), f"{c} was not captured"
+
+
+def test_gates_come_from_the_resolver_not_from_config(shadow):
+    """config.py disagrees with production for any league carrying an approved optimiser
+    value — Championship runs 0.07, config says 0.15."""
+    import inspect
+    assert "resolve_effective_tier_gates" in inspect.getsource(pipeline._log_shadow)
+
+
+def test_market_is_part_of_the_dedup_key(shadow):
+    """Without it the first market logged for a fixture blocks every other market on the same
+    fixture, so BTTS and Over 1.5 would silently never be recorded."""
+    p = _preds()
+    pipeline._log_shadow(p)
+    d = pd.read_csv(shadow.SHADOW_FILE)
+    d2 = d.copy(); d2["market"] = "btts"
+    shadow.append_shadow(d2)
+    out = pd.read_csv(shadow.SHADOW_FILE)
+    assert set(out["market"]) == {"ou25", "btts"} and len(out) == 2
+
+
+def test_grading_fields_are_never_populated_at_prediction_time(shadow):
+    """§6 is absolute: a future value must not be reachable by a selection rule, and the only
+    way to guarantee that is for the prediction-time writer never to set one."""
+    pipeline._log_shadow(_preds(n=3))
+    d = pd.read_csv(shadow.SHADOW_FILE)
+    for c in shadow.GRADING_ONLY:
+        assert d[c].isna().all(), f"{c} was populated before the match was played"
+
+
+def test_every_scored_fixture_is_captured_including_below_the_gate(shadow):
+    """THE WHOLE POINT. The ledger holds only fixtures that cleared the live floor, so it can
+    never answer 'what if the bar were lower'. This log must hold the ones that failed it."""
+    rows = pd.concat([_preds(p_over=0.55, tier="AVOID", n=4),
+                      _preds(p_over=0.55, tier="SNIPER", n=2)], ignore_index=True)
+    rows["_oa_event_id"] = [f"e{i}" for i in range(len(rows))]
+    rows["home_team"] = [f"H{i}" for i in range(len(rows))]
+    pipeline._log_shadow(rows)
+    d = pd.read_csv(shadow.SHADOW_FILE)
+    assert (d["v9_tier"] == "AVOID").sum() == 4, "below-gate fixtures were dropped"
+
+
+def test_an_old_row_without_a_market_column_still_dedups(shadow):
+    """Rows written before `market` existed are main O/U by construction. If the dedup could
+    not read them, every one would be re-logged and the first-sight freeze would break."""
+    pipeline._log_shadow(_preds())
+    d = pd.read_csv(shadow.SHADOW_FILE).drop(columns=["market"])
+    d.to_csv(shadow.SHADOW_FILE, index=False)
+    pipeline._log_shadow(_preds(p_over=0.91))
+    assert len(pd.read_csv(shadow.SHADOW_FILE)) == 1

@@ -31,16 +31,31 @@ SHADOW_FILE = config.OUTPUT_DIR / "v91_shadow.csv"
 #: The schema §18 asks for. Fixed so the file stays readable as challengers come and go — a new
 #: model adds a column, it does not restructure the file.
 COLUMNS = [
-    "fixture_id", "logged_at", "match_date", "kickoff_utc", "league", "model_type",
+    # §5. `market` makes the unit (fixture x market x model), matching the gate study and
+    # production itself — Championship runs SNIPER 0.07 on O/U and 0.12 on BTTS, so one row
+    # per fixture cannot describe what was decided.
+    "fixture_id", "market", "logged_at", "match_date", "kickoff_utc", "league", "model_type",
     # what each model believed, before kickoff
     "p_v9", "p_v91", "p_pro_hgb", "p_goal_distribution", "p_market",
     # what each would have done
     "v9_side", "v91_side", "v9_tier", "v91_tier", "v9_edge", "v91_edge",
     # execution and outcome, filled at settlement
     "entry_odds", "closing_odds", "clv", "result",
+    # THE GATES IN FORCE AT FIRST SIGHT. Without these the log records what was decided but
+    # not the rule it was decided under, so a later threshold change silently re-interprets
+    # every historical row. `threshold_regime_id` hashes every input that determines a gate;
+    # two rows with different regime ids are not comparable.
+    "production_valuable_gate", "production_marksman_gate", "production_sniper_gate",
+    "threshold_regime_id",
+    # Market microstructure at prediction time. SELECTION-TIME ONLY — closing_odds and clv
+    # below are grading fields and must never enter a selection rule.
+    "opening_odds", "book_count", "market_dispersion",
     # provenance — without these a row cannot be tied to the model that wrote it
     "v9_model_sha", "v91_model_sha", "dataset_id",
 ]
+
+#: Columns that are knowable only AFTER the bet. §6: they may grade a signal, never select one.
+GRADING_ONLY = ("closing_odds", "clv", "result")
 
 
 def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
@@ -62,9 +77,14 @@ def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
 
     if SHADOW_FILE.exists():
         old = pd.read_csv(SHADOW_FILE)
-        seen = set(zip(old["fixture_id"].astype(str),
+        # MARKET IS PART OF THE KEY. Without it the first market logged for a fixture would
+        # block every other market on the same fixture, so BTTS and Over 1.5 would silently
+        # never be recorded. Rows written before `market` existed are main O/U by construction.
+        if "market" not in old.columns:
+            old["market"] = "ou25"
+        seen = set(zip(old["fixture_id"].astype(str), old["market"].astype(str),
                        old["match_date"].astype(str).str[:10]))
-        keep = ~df.apply(lambda r: (str(r["fixture_id"]),
+        keep = ~df.apply(lambda r: (str(r["fixture_id"]), str(r.get("market", "ou25")),
                                     str(r["match_date"])[:10]) in seen, axis=1)
         df = df[keep]
         if df.empty:
