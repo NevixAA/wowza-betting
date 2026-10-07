@@ -16,7 +16,8 @@ def predictions() -> pd.DataFrame:
 
 
 def ledger(include_side_markets: bool = True,
-           since_cutoff: bool = True) -> pd.DataFrame:
+           since_cutoff: bool = True,
+           include_paper_leagues: bool = False) -> pd.DataFrame:
     """Settled + open bets. `model_type` separates the two tracks and must never be pooled.
 
     TWO DEFECTS FIXED HERE, 2026-10-06. Together they inverted the headline: the dashboard
@@ -55,6 +56,10 @@ def ledger(include_side_markets: bool = True,
         cut = pd.Timestamp(str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "2026-08-10")),
                            tz="UTC")
         d = d[d["match_date"].isna() | (d["match_date"] >= cut)]
+    if not include_paper_leagues:
+        # Paper leagues are collected and settled but never counted (config.PAPER_LEAGUES).
+        # Every dashboard KPI reads through here, so this is the one place it has to happen.
+        d = config.drop_paper_leagues(d)
     return d.reset_index(drop=True)
 
 

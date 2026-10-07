@@ -196,23 +196,68 @@ ENABLED_LEAGUES = {
     "Japan J-League",
     "Mexico Liga MX",
     "China Super League",
-    # "USA MLS",   # PAPER-ONLY from 2026-10-06 — owner decision, evidence below.
-    #   Live since the 2026-08-10 cutoff: 108 settled bets, -24.72u, hit 33.8% against a
-    #   40.0% break-even. Over the last 21 days alone: 30 bets, -13.50u, and a
-    #   matchday-block CI of [-0.84, -0.03] that EXCLUDES ZERO — almost nothing else in
-    #   this estate does. Independently, the league x market gate study graded it
-    #   EDGE_NOT_RANKING_OUTCOMES on 104 live bets: raising the threshold makes it WORSE,
-    #   so no gate repairs it. Two separate lines of evidence, same conclusion.
-    #
-    #   REMOVED FROM PREDICTION ONLY. It stays in NEW_FORMAT_LEAGUES, so it still trains
-    #   the model, still collects odds and results, and still appears in the data. What
-    #   stops is tips and therefore stakes. Re-enable by uncommenting this one line.
+    "USA MLS",     # PAPER LEAGUE — see PAPER_LEAGUES below. Predicted and collected, never
+                   # sent, never counted, never bet.
     # New format — training only (no OddsAPI key), kept for model quality
     "Romanian Superliga",
     # API-Football-only — training only until 1+ seasons validated
     # "Saudi Pro League",  # enable after ROI validation
     # "K-League 1",        # enable after ROI validation
 }
+
+# ── Paper leagues: collect EVERYTHING, send nothing, count nothing, bet nothing ─
+#
+# A paper league stays in ENABLED_LEAGUES so the whole collection machinery keeps running for
+# it — predictions, the prospective shadow log, odds movement and drift, per-book quotes, sharp
+# tracking, the live scanner, settlement and CLV. Its tips are generated and written to the
+# ledgers exactly like any other league's. What it does NOT do:
+#
+#   * reach Telegram  — stripped from bets.csv / side_bets.csv (the send sources), and filtered
+#                       out of HT, sharp-movement, live and sharp alerts
+#   * count in a KPI  — excluded from the daily digest, weekly summary and dashboard
+#   * reach the bot   — the Cloudbet candidate builder drops it
+#
+# WHY NOT SIMPLY DROP IT FROM ENABLED_LEAGUES. That was tried on 2026-10-06 and it stopped far
+# more than tips: sharp_tracker and live_scanner both iterate ENABLED_LEAGUES, so MLS movement
+# and in-play data stopped being collected too, and with no tips there was no CLV or shadow-log
+# record either. Owner instruction 2026-10-07: keep collecting all of it so the league can be
+# upgraded later on evidence.
+#
+# USA MLS — owner decision 2026-10-06/07. Evidence, stated on the STAKED basis (an earlier
+# version of this comment quoted all-tier figures, which overstated it):
+#   staked since the 2026-08-10 cutoff   72 bets over 20 matchdays, -12.95u,
+#                                        hit 31.9% vs 39.2% break-even,
+#                                        CI [-0.430, +0.044]  — includes zero, so NOT proven bad
+#   diagnosis (scripts/allocation_registry.py --diagnose):
+#     ONE_SIDED                 100% of staked O/U bets are UNDER
+#     LONGSHOT_DRAG             the 2.80-3.50 band is 85% of the loss on 18 of 69 bets
+#     MARKET_PRICES_IT_BETTER   hit rate 5pp below the break-even its prices imply
+#   Pro and v9 independently flag it negative (docs/PRO_V9_CROSSCHECK_2026_10_07.md).
+# The longshot drag is fixable without a model change — which is why the data is kept.
+#
+# UPGRADING A PAPER LEAGUE LATER: remove it from this set. Note its paper-period rows are
+# already in the ledgers, so they will start counting in KPIs from that moment; decide then
+# whether to count from the upgrade date instead.
+PAPER_LEAGUES: set = {
+    "USA MLS",
+}
+
+
+def is_paper_league(league) -> bool:
+    """True for a league that is collected and settled but never sent, counted or bet."""
+    return str(league).strip() in PAPER_LEAGUES
+
+
+def drop_paper_leagues(df, col: str = "league"):
+    """Remove paper-league rows from a frame. The ONE filter every send path and KPI uses.
+
+    Kept as a single function so a paper league cannot leak through a path that reimplemented
+    the rule slightly differently — the same failure shape as reading thresholds from config.py
+    while production read them from somewhere else.
+    """
+    if df is None or not hasattr(df, "columns") or col not in df.columns or len(df) == 0:
+        return df
+    return df[~df[col].astype(str).str.strip().isin(PAPER_LEAGUES)]
 
 # ── football-data.co.uk league codes ─────────────────────────────────────────
 FOOTBALL_DATA_LEAGUES = {

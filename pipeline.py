@@ -784,7 +784,10 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     side_bets = _generate_side_bets(preds, config.SIDE_MARKETS)
     if not side_bets.empty:
         side_bets_file = config.OUTPUT_DIR / "side_bets.csv"
-        side_bets.to_csv(side_bets_file, index=False)
+        # LEDGER GETS EVERYTHING, THE SEND SOURCE DOES NOT. side_bets.csv is what
+        # notify_side_bets reads, so a paper league is stripped from it; the ledger keeps the
+        # row so the tip is still settled, graded and CLV-tracked (config.PAPER_LEAGUES).
+        config.drop_paper_leagues(side_bets).to_csv(side_bets_file, index=False)
         append_side_market_tips(side_bets)   # persist to side_bets_ledger.csv (all tiers)
         log.info(f"Side-market tips → {side_bets_file}  ({len(side_bets)} tips)")
         for mkt, label in config.SIDE_MARKET_LABELS.items():
@@ -804,8 +807,14 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
 
     if not bets.empty:
         bets_file = config.OUTPUT_DIR / "bets.csv"
-        bets.to_csv(bets_file, index=False)
-        log.info(f"Tips saved → {bets_file}  ({len(bets)} tips)")
+        # bets.csv is the SEND SOURCE (notify_new_snipers, agent analysis, dashboard live tips,
+        # the props supplement), so paper leagues are stripped from it. The ledger below still
+        # receives every row, paper leagues included, so they settle and accrue CLV.
+        _send = config.drop_paper_leagues(bets)
+        _send.to_csv(bets_file, index=False)
+        log.info(f"Tips saved → {bets_file}  ({len(_send)} tips"
+                 + (f", {len(bets) - len(_send)} paper-league tip(s) ledgered only"
+                    if len(bets) != len(_send) else "") + ")")
 
         # Append to persistent ledger (never overwrites, deduped per fixture)
         append_tips(bets)

@@ -34,6 +34,22 @@ sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
 
 
+def _read_csv(*args, **kwargs):
+    """Every CSV this module reads, with paper leagues removed.
+
+    PAPER LEAGUES ARE COLLECTED, NEVER SENT AND NEVER COUNTED (config.PAPER_LEAGUES). The
+    files this module reads -- predictions, the ledgers, live and sharp tips -- all still
+    contain paper-league rows, because they are the collection record. So the filter has to
+    happen here, at the point of reading, not at the point of writing.
+
+    ONE READER RATHER THAN ~37 SEPARATE FILTERS. Filtering inside each send and KPI function
+    would mean 37 places to get right and one forgotten path leaking a paper league into a
+    Telegram tip or a digest total. Routing every read through one function makes the rule
+    impossible to forget. A frame with no `league` column passes through unchanged.
+    """
+    return app_config.drop_paper_leagues(pd.read_csv(*args, **kwargs))
+
+
 def _fmt_kickoff(row) -> str:
     """Display a fixture's date/time in the LEAGUE'S LOCAL timezone.
 
@@ -200,7 +216,7 @@ def send_fantasy_tips(max_per_pos: int = 3) -> int:
     if not f.exists():
         return 0
     try:
-        df = _pd.read_csv(f)
+        df = __read_csv(f)
     except Exception:
         return 0
     if df.empty:
@@ -347,7 +363,7 @@ def notify_new_snipers() -> int:
         except Exception:
             pass
 
-    df = pd.read_csv(bets_file)
+    df = _read_csv(bets_file)
     # Classify model (blanks -> by league) so VALUABLE can be gated to the standard model only.
     if "model_type" not in df.columns:
         df["model_type"] = ""
@@ -461,7 +477,7 @@ def notify_live_signals() -> int:
     if not live_file.exists():
         return 0
 
-    df = pd.read_csv(live_file)
+    df = _read_csv(live_file)
     if df.empty or "signal_type" not in df.columns:
         return 0
 
@@ -536,7 +552,7 @@ def notify_wc_strong() -> int:
     if not wc_file.exists():
         return 0
 
-    df = pd.read_csv(wc_file)
+    df = _read_csv(wc_file)
     strong = df[df["signal"].isin(["STRONG", "SHARP", "FADING"])].copy()
 
     # Only alert for matches in the next 3 days — future signals fire when relevant
@@ -609,7 +625,7 @@ def notify_sharp_strong() -> int:
     if not sharp_file.exists():
         return 0
 
-    df = pd.read_csv(sharp_file)
+    df = _read_csv(sharp_file)
     strong = df[df["signal"].isin(["STRONG", "SHARP"])].copy()
     if strong.empty:
         return 0
@@ -658,7 +674,7 @@ def notify_ht_tips() -> int:
     if not preds_file.exists():
         return 0
 
-    df = pd.read_csv(preds_file)
+    df = _read_csv(preds_file)
     if "p_ht_over05" not in df.columns:
         return 0
 
@@ -799,7 +815,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
     led = app_config.OUTPUT_DIR / "bets_ledger.csv"
     if not led.exists():
         return 0
-    bl = pd.read_csv(led)
+    bl = _read_csv(led)
     if "source" not in bl.columns:
         return 0
     _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
@@ -818,7 +834,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         if not _p.exists():
             continue
         try:
-            _b = pd.read_csv(_p)
+            _b = _read_csv(_p)
         except Exception:
             continue
         if "kickoff_utc" not in _b.columns:
@@ -859,7 +875,7 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         if not p.exists():
             continue
         try:
-            oh = pd.read_csv(p).sort_values("snapshot_ts")
+            oh = _read_csv(p).sort_values("snapshot_ts")
         except Exception:
             continue
         for r in oh.itertuples(index=False):
@@ -964,7 +980,7 @@ def notify_weekly_summary() -> bool:
     lw = live.copy()
     ledger_file = app_config.OUTPUT_DIR / "bets_ledger.csv"
     if ledger_file.exists():
-        bl = pd.read_csv(ledger_file)
+        bl = _read_csv(ledger_file)
         bl["pnl"]        = pd.to_numeric(bl["pnl"], errors="coerce")
         bl["match_date"] = pd.to_datetime(bl["match_date"], errors="coerce")
         live = bl[bl["source"] == "live"].copy()
@@ -983,7 +999,7 @@ def notify_weekly_summary() -> bool:
     sharp_all:  dict | None = None
     sharp_file = app_config.OUTPUT_DIR / "sharp_ledger.csv"
     if sharp_file.exists():
-        sl = pd.read_csv(sharp_file)
+        sl = _read_csv(sharp_file)
         sl["pnl"]        = pd.to_numeric(sl["pnl"], errors="coerce")
         sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
         sw = sl[sl["signal_date"] >= week_ago]
@@ -996,7 +1012,7 @@ def notify_weekly_summary() -> bool:
     props_all:  dict | None = None
     props_file = app_config.OUTPUT_DIR / "player_ledger.csv"
     if props_file.exists():
-        pl = _countable_props(pd.read_csv(props_file))  # AVOID/WATCH + wrong-fixture: never counted
+        pl = _countable_props(_read_csv(props_file))  # AVOID/WATCH + wrong-fixture: never counted
         pl["pnl"]         = pd.to_numeric(pl["pnl"], errors="coerce")
         pl["signal_date"] = pd.to_datetime(pl["signal_date"], errors="coerce")
         pw = pl[pl["signal_date"] >= week_ago]
@@ -1008,7 +1024,7 @@ def notify_weekly_summary() -> bool:
     wc_pending = 0
     wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
     if wc_file.exists():
-        wc = pd.read_csv(wc_file)
+        wc = _read_csv(wc_file)
         wc["date"] = pd.to_datetime(wc["date"], errors="coerce")
         wc_pending = int(len(wc[wc["date"] >= week_ago]))
 
@@ -1073,7 +1089,7 @@ def notify_weekly_summary() -> bool:
     side_led = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
     if side_led.exists():
         try:
-            sl = pd.read_csv(side_led)
+            sl = _read_csv(side_led)
             sl["pnl"]         = pd.to_numeric(sl["pnl"], errors="coerce")
             sl["signal_date"] = pd.to_datetime(sl.get("signal_date", sl.get("match_date", "")), errors="coerce")
             sl_week = sl[sl["signal_date"] >= week_ago] if "signal_date" in sl.columns else sl
@@ -1107,7 +1123,7 @@ def notify_weekly_summary() -> bool:
     ht_led = app_config.OUTPUT_DIR / "ht_ledger.csv"
     if ht_led.exists():
         try:
-            hl = pd.read_csv(ht_led)
+            hl = _read_csv(ht_led)
             hl["pnl"] = pd.to_numeric(hl["pnl"], errors="coerce")
             hl["_d"] = pd.to_datetime(hl.get("match_date"), errors="coerce")
             hw = _settled_only(hl[hl["_d"] >= week_ago]) if "_d" in hl.columns else pd.DataFrame()
@@ -1154,8 +1170,8 @@ def notify_weekly_summary() -> bool:
     lines.append("  👤 <b>Player Props</b>: see Player Props Weekly for details")
 
     # ── All-time by market then tier ──────────────────────────────────────────
-    sharp_all_total = int(len(pd.read_csv(sharp_file))) if sharp_file.exists() else 0
-    wc_all_total    = int(len(pd.read_csv(wc_file)))    if wc_file.exists() else 0
+    sharp_all_total = int(len(_read_csv(sharp_file))) if sharp_file.exists() else 0
+    wc_all_total    = int(len(_read_csv(wc_file)))    if wc_file.exists() else 0
 
     lines += ["", "━━━━━━━━━━━━━━━━", "<b>All-time by market</b>", ""]
 
@@ -1165,7 +1181,7 @@ def notify_weekly_summary() -> bool:
     # Side markets all-time
     if side_led.exists():
         try:
-            sl = pd.read_csv(side_led)
+            sl = _read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
             sl_all = _settled_only(sl)
             for mkt, mkt_label in SIDE_LABELS.items():
@@ -1223,7 +1239,7 @@ def notify_agent_analysis() -> int:
     if not bets_file.exists():
         return 0
 
-    df = pd.read_csv(bets_file)
+    df = _read_csv(bets_file)
     snipers = df[
         (df["signal_tier"] == "SNIPER") &
         (df["bet"].isin(["OVER", "UNDER"]))
@@ -1310,7 +1326,7 @@ def notify_player_props() -> int:
     if not tips_file.exists():
         return 0
 
-    df = pd.read_csv(tips_file)
+    df = _read_csv(tips_file)
     if df.empty:
         return 0
 
@@ -1476,7 +1492,7 @@ def notify_lineup_cashout() -> int:
     # posted), so a player who is genuinely benched disappears from the file entirely.
     # Anything still in the file is still in the XI as far as we know, and we must not
     # assert otherwise.
-    df = pd.read_csv(tips_file)
+    df = _read_csv(tips_file)
     df = df[df["date"].astype(str).str[:10] == today_str]
     active_keys = {
         f"PLAYER|{today_str}|{r['player_name']}|{r['market']}"
@@ -1498,7 +1514,7 @@ def notify_lineup_cashout() -> int:
         return 0
 
     # Build lookup for player info from today's tips (including all tiers for match context)
-    df_all = pd.read_csv(tips_file)
+    df_all = _read_csv(tips_file)
     df_all = df_all[df_all["date"].astype(str).str[:10] == today_str]
     tip_lookup: dict[str, dict] = {}
     for _, row in df_all.iterrows():
@@ -1625,7 +1641,7 @@ def notify_props_daily_digest() -> bool:
     if player_file.exists():
         try:
             from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
-            all_props = pd.read_csv(player_file)
+            all_props = _read_csv(player_file)
             _dates = all_props["date"].astype(str).str[:10]
             # Count the footer with the SAME two filters this briefing applies below — prop
             # leagues, and only tiers that would actually be sent. An unfiltered count is
@@ -1700,7 +1716,7 @@ def notify_props_daily_digest() -> bool:
     player_led = app_config.OUTPUT_DIR / "player_ledger.csv"
     if player_led.exists():
         try:
-            pled = _countable_props(pd.read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
+            pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             yest = pled[
                 (pled["match_date"].astype(str).str[:10] == yest_str) &
@@ -1739,7 +1755,7 @@ def notify_props_daily_digest() -> bool:
     lines2 += ["", "📈 <b>All-time Player Ledger</b>"]
     if player_led.exists():
         try:
-            pled = _countable_props(pd.read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
+            pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
@@ -1792,7 +1808,7 @@ def notify_props_weekly_summary() -> bool:
     if not player_led.exists():
         return False
 
-    pled = _countable_props(pd.read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
+    pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
     pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
 
@@ -1993,7 +2009,7 @@ def notify_daily_digest() -> bool:
     ou_total = 0
     if ledger_file.exists():
         try:
-            bl = pd.read_csv(ledger_file)
+            bl = _read_csv(ledger_file)
             if "source" in bl.columns:
                 bl = bl[bl["source"].astype(str) == "live"]
             _tier_ok = bl["signal_tier"].isin(TIER_ORDER)
@@ -2048,7 +2064,7 @@ def notify_daily_digest() -> bool:
     side_file = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
     if side_file.exists():
         try:
-            side = pd.read_csv(side_file)
+            side = _read_csv(side_file)
             _tier_ok = side["signal_tier"].isin(TIER_ORDER)
             _dates   = side["match_date"].astype(str).str[:10]
             upcoming["side markets"] = int((_tier_ok & (_dates > today_str)).sum())
@@ -2086,7 +2102,7 @@ def notify_daily_digest() -> bool:
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
-            all_props = pd.read_csv(player_file)
+            all_props = _read_csv(player_file)
             _dates = all_props["date"].astype(str).str[:10]
             # Count only tiers this section actually reports. An unfiltered count is dominated
             # by AVOID rows, and AVOID on a prop usually means "never priced" rather than
@@ -2112,7 +2128,7 @@ def notify_daily_digest() -> bool:
     sharp_file = app_config.OUTPUT_DIR / "sharp_tips.csv"
     if sharp_file.exists():
         try:
-            sharp = pd.read_csv(sharp_file)
+            sharp = _read_csv(sharp_file)
             _sig_ok = sharp["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"])
             _dates  = sharp["date"].astype(str).str[:10]
             upcoming["sharp signals"] = int((_sig_ok & (_dates > today_str)).sum())
@@ -2136,7 +2152,7 @@ def notify_daily_digest() -> bool:
     wc_file = app_config.OUTPUT_DIR / "worldcup_tips.csv"
     if wc_file.exists():
         try:
-            wc = pd.read_csv(wc_file)
+            wc = _read_csv(wc_file)
             _sig_ok = wc["signal"].isin(["STEAM_STRONG", "STEAM_SHARP", "STRONG"])
             _dates  = wc["date"].astype(str).str[:10]
             upcoming["WC signals"] = int((_sig_ok & (_dates > today_str)).sum())
@@ -2189,7 +2205,7 @@ def notify_daily_digest() -> bool:
     # Over 2.5 yesterday by tier
     if ledger_file.exists():
         try:
-            led = pd.read_csv(ledger_file)
+            led = _read_csv(ledger_file)
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             yest_led = led[led["match_date"].astype(str).str[:10] == yesterday_str].copy()
             live_y = yest_led[yest_led["source"] == "live"] if "source" in yest_led.columns else yest_led
@@ -2247,7 +2263,7 @@ def notify_daily_digest() -> bool:
     # Sharp/WC yesterday
     if sharp_led.exists():
         try:
-            sled = pd.read_csv(sharp_led)
+            sled = _read_csv(sharp_led)
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             yest_s = sled[
                 (sled["match_date"].astype(str).str[:10] == yesterday_str) &
@@ -2273,7 +2289,7 @@ def notify_daily_digest() -> bool:
     # O/U 2.5 — by model type, then tier (counts tips generated on/after the cutoff only)
     if ledger_file.exists():
         try:
-            led = pd.read_csv(ledger_file)
+            led = _read_csv(ledger_file)
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             live = led[(led["source"] == "live") & led["pnl"].notna()] \
                    if "source" in led.columns else led[led["pnl"].notna()]
@@ -2330,7 +2346,7 @@ def notify_daily_digest() -> bool:
     side_led = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
     if side_led.exists():
         try:
-            sl = pd.read_csv(side_led)
+            sl = _read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
             sl_s = _settled_only(sl)
             if not sl_s.empty:
@@ -2353,7 +2369,7 @@ def notify_daily_digest() -> bool:
     # Sharp all-time
     if sharp_led.exists():
         try:
-            sled = pd.read_csv(sharp_led)
+            sled = _read_csv(sharp_led)
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
@@ -2462,7 +2478,7 @@ def notify_side_bets() -> int:
     if not side_file.exists():
         return 0
 
-    df = pd.read_csv(side_file)
+    df = _read_csv(side_file)
     # VALUABLE now sends too (Nevo, 2026-09-22: "the tips should be valueables as well, i will
     # choose if i want to bet or not"). The main O/U path has sent VALUABLE since 2026-08-09;
     # side markets never did, and that asymmetry was hiding the single best-performing cell in

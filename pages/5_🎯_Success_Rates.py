@@ -24,6 +24,16 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+
+def _read_csv(*args, **kwargs):
+    """pd.read_csv with paper leagues removed — they are collected, never counted.
+
+    See config.PAPER_LEAGUES. Every KPI on this page reads through here so a paper
+    league cannot reach a total by way of a path that forgot the rule.
+    """
+    import config as _cfg
+    return _cfg.drop_paper_leagues(pd.read_csv(*args, **kwargs))
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -48,7 +58,7 @@ def _load() -> pd.DataFrame:
         if not p.exists():
             return
         try:
-            d = pd.read_csv(p, low_memory=False)
+            d = _read_csv(p, low_memory=False)
         except Exception:
             return
         if tier_col not in d.columns or "result" not in d.columns:

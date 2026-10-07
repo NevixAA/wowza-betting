@@ -21,7 +21,9 @@
 > * **Predict cadence.** Was "every 5 min"; it is 15-minute Fri–Sun and 30-minute Mon–Thu. Note
 >   that **cron minutes do not survive GitHub's dispatcher** — never rely on a run landing near
 >   its slot.
-> * **USA MLS is paper-only** since 2026-10-06 (owner decision, evidence in `config.py`).
+> * **USA MLS is a paper league** (owner decision, evidence in `config.py`): fully collected —
+>   predictions, tips, movement, CLV, shadow log — but never sent, never counted in any KPI and
+>   never bet. See *Paper leagues* below.
 
 ---
 
@@ -209,9 +211,26 @@ Championship · League One · League Two · Bundesliga 2 · La Liga 2 · Serie B
 Denmark · Austria · Sweden · Norway · Finland · Ireland · Argentina · Brazil · Japan ·
 Mexico · China · Romania
 
-**Paper-only** (collected and trained on, not tipped): USA MLS, Saudi Pro League, K-League 1,
-and the training-only standard leagues (Dutch, Portuguese, Greek, Turkish, Belgian, Scottish,
-National League).
+**Training-only** (in the training pools, not predicted): Saudi Pro League, K-League 1, and the
+training-only standard leagues (Dutch, Portuguese, Greek, Turkish, Belgian, Scottish, National
+League).
+
+### Paper leagues — collect everything, send nothing, count nothing, bet nothing
+
+`config.PAPER_LEAGUES` (currently **USA MLS**). A paper league stays in `ENABLED_LEAGUES` so the
+whole collection machinery keeps running for it — predictions, the prospective shadow log, odds
+movement and drift, per-book quotes, sharp tracking, the live scanner, settlement and CLV. Its
+tips are generated and written to the ledgers like any other league's. It never reaches Telegram
+(stripped from `bets.csv` / `side_bets.csv` and filtered from every notifier read), never counts
+in a KPI (digest, weekly summary, every dashboard page), and never reaches the Cloudbet bot.
+
+**Do not remove a league from `ENABLED_LEAGUES` to stop betting it.** That was tried on
+2026-10-06 and silently stopped its sharp and in-play collection as well, because
+`sharp_tracker` and `live_scanner` iterate that set. Add it to `PAPER_LEAGUES` instead.
+
+All filtering goes through one function, `config.drop_paper_leagues()`, so the rule cannot be
+re-implemented slightly differently somewhere and leak. To upgrade a paper league later, remove
+it from the set — its paper-period rows are already ledgered and will start counting from then.
 
 ---
 
