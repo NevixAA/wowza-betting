@@ -6,6 +6,16 @@ import sys
 from pathlib import Path
 import streamlit as st
 import pandas as pd
+
+
+def _read_csv(*args, **kwargs):
+    """pd.read_csv with paper leagues removed — they are collected, never counted.
+
+    See config.PAPER_LEAGUES. Every KPI on this page reads through here so a paper
+    league cannot reach a total by way of a path that forgot the rule.
+    """
+    import config as _cfg
+    return _cfg.drop_paper_leagues(pd.read_csv(*args, **kwargs))
 from streamlit_autorefresh import st_autorefresh
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -55,7 +65,7 @@ def load_bets():
     f = config.OUTPUT_DIR / "bets.csv"
     if not f.exists():
         return pd.DataFrame()
-    df = pd.read_csv(f)
+    df = _read_csv(f)
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
     return df
@@ -66,7 +76,7 @@ def load_ledger():
     f = config.OUTPUT_DIR / "bets_ledger.csv"
     if not f.exists():
         return pd.DataFrame()
-    df = pd.read_csv(f, dtype=str)
+    df = _read_csv(f, dtype=str)
     if "source" not in df.columns:
         df["source"] = "live"
     else:

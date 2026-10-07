@@ -5,6 +5,16 @@ from pathlib import Path
 from datetime import datetime
 
 import pandas as pd
+
+
+def _read_csv(*args, **kwargs):
+    """pd.read_csv with paper leagues removed — they are collected, never counted.
+
+    See config.PAPER_LEAGUES. Every KPI on this page reads through here so a paper
+    league cannot reach a total by way of a path that forgot the rule.
+    """
+    import config as _cfg
+    return _cfg.drop_paper_leagues(pd.read_csv(*args, **kwargs))
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
@@ -24,7 +34,7 @@ def load_bets():
     f = config.OUTPUT_DIR / "bets.csv"
     if not f.exists():
         return pd.DataFrame()
-    df = pd.read_csv(f)
+    df = _read_csv(f)
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     # Ensure optional columns exist
     for col in ["model_type", "drift_signal", "signal_tier", "best_edge", "best_side"]:
@@ -182,7 +192,7 @@ for _f, _mkc, _const in _MKT_SOURCES:
         _missing.append(_f)
         continue
     try:
-        _d = pd.read_csv(_fp, low_memory=False)
+        _d = _read_csv(_fp, low_memory=False)
         _d["_dt"] = pd.to_datetime(_d.get("match_date"), errors="coerce")
         _d["_pnl"] = pd.to_numeric(_d.get("pnl"), errors="coerce")
         _oc = "odds" if "odds" in _d.columns else "entry_odds"
@@ -301,7 +311,7 @@ if len(_s):
     # in it either), so absence proves nothing. Stripping the zeros moves the positive rate from
     # 36.5% to 51.0%, which is too large a swing to resolve silently in either direction.
     try:
-        _cl = pd.read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+        _cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
         _cl["_clv"] = pd.to_numeric(_cl.get("clv_pct"), errors="coerce")
         _cl["_o"] = pd.to_numeric(_cl.get("odds"), errors="coerce")
         _cl["_c"] = pd.to_numeric(_cl.get("closing_odds"), errors="coerce")
@@ -469,7 +479,7 @@ def load_predictions_ht():
     f = config.OUTPUT_DIR / "predictions.csv"
     if not f.exists():
         return pd.DataFrame()
-    preds = pd.read_csv(f)
+    preds = _read_csv(f)
     if "p_ht_over05" not in preds.columns:
         return pd.DataFrame()
     preds["date"] = pd.to_datetime(preds["date"], errors="coerce")
@@ -510,7 +520,7 @@ def load_side_bets():
     f = config.OUTPUT_DIR / "side_bets.csv"
     if not f.exists():
         return pd.DataFrame()
-    sb = pd.read_csv(f)
+    sb = _read_csv(f)
     sb["date"] = pd.to_datetime(sb["date"], errors="coerce")
     today = pd.Timestamp.now().normalize()
     return sb[sb["date"] >= today].copy()

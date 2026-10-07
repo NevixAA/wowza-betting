@@ -227,6 +227,12 @@ def build_candidates(team_min_edge: float = 0.05, prop_min_ev: float = 0.0,
     if not frames:
         return pd.DataFrame()
     out = pd.concat(frames, ignore_index=True)
+    # A PAPER LEAGUE IS NEVER BET. It is collected and its tips are ledgered precisely so it
+    # can be judged later — and the bot reads the ledger, so without this line a paper league
+    # would reach real money by the one path that bypasses the Telegram filters.
+    out = config.drop_paper_leagues(out)
+    if out.empty:
+        return out
     out["edge"] = pd.to_numeric(out["edge"], errors="coerce")
     out = out[out["edge"].notna()]
     log.info(f"candidates: {len(t)} team, {len(p)} prop ({len(out)} total)")

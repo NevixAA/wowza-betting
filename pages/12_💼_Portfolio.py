@@ -13,6 +13,16 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+
+def _read_csv(*args, **kwargs):
+    """pd.read_csv with paper leagues removed — they are collected, never counted.
+
+    See config.PAPER_LEAGUES. Every KPI on this page reads through here so a paper
+    league cannot reach a total by way of a path that forgot the rule.
+    """
+    import config as _cfg
+    return _cfg.drop_paper_leagues(pd.read_csv(*args, **kwargs))
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -29,7 +39,7 @@ def load_main_ledger() -> pd.DataFrame:
     f = OUT / "bets_ledger.csv"
     if not f.exists():
         return pd.DataFrame()
-    d = pd.read_csv(f, low_memory=False)
+    d = _read_csv(f, low_memory=False)
     d["match_date"] = pd.to_datetime(d["match_date"], errors="coerce")
     return d
 
@@ -39,7 +49,7 @@ def load_player_ledger() -> pd.DataFrame:
     f = OUT / "player_ledger.csv"
     if not f.exists():
         return pd.DataFrame()
-    d = pd.read_csv(f, low_memory=False)
+    d = _read_csv(f, low_memory=False)
     d["match_date"] = pd.to_datetime(d["match_date"], errors="coerce")
     return d
 
@@ -58,7 +68,7 @@ def load_side_ledger() -> pd.DataFrame:
     f = OUT / "side_bets_ledger.csv"
     if not f.exists():
         return pd.DataFrame()
-    d = pd.read_csv(f, low_memory=False)
+    d = _read_csv(f, low_memory=False)
     d["match_date"] = pd.to_datetime(d["match_date"], errors="coerce")
     return d
 
