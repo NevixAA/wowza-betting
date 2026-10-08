@@ -537,8 +537,41 @@ def run_player_predictions(
     # name subset: "Plymouth" has League One history so it IS Plymouth Argyle in a League One
     # fixture, while Inter Milan has no Conference League history and so is NOT the
     # "Inter Club d'Escaldes" playing Flora Tallinn.
-    _team_leagues = (history_df.assign(_t=_club)
+    #
+    # KEYED ON THE ROW'S OWN TEAM, NOT ON THE PLAYER'S CURRENT CLUB (fixed 2026-10-08). Keyed on
+    # `_club`, a club inherited every competition its CURRENT players had ever played in for
+    # OTHER clubs — one Sporting CP signing with Spanish second-division appearances made
+    # "Sporting CP" look like a La Liga 2 club, so the subset rule accepted it as "Sporting Gijón"
+    # and tipped Luis Suárez, Maxi Araújo, Issa Doumbia and Irankunda in Cádiz v Sporting Gijón.
+    # A club's competitions are the ones IT played in.
+    _team_leagues = (history_df.assign(_t=history_df["team"].astype(str))
                      .groupby("_t")["league"].agg(set).to_dict())
+
+    # ── STALE-CLUB GUARD (2026-10-08) ─────────────────────────────────────────────────────────
+    # The latest-club rule can only see clubs we collect. A player who left for a league we do
+    # not collect keeps his last collected club forever: on 2026-10-08 the board tipped Benzema
+    # for Real Madrid (last appearance 2023), Verratti for PSG, Brozović for Inter, Wijnaldum for
+    # Roma — 357 rows, 14% of the board, all for players in NO current squad list and unseen for
+    # 120+ days. A player is eligible only if
+    #   (a) he is in a live squad list (then `_club` already IS that squad's club), or
+    #   (b) his club publishes no squad list we hold AND he appeared within STALE_DAYS.
+    # A club whose live squad we DO hold and that does not list him has told us he is not there.
+    _squad_clubs = set(_live_squad.values())
+    _last_seen = (history_df.assign(_d=pd.to_datetime(history_df["date"], errors="coerce"))
+                  .groupby("player_id")["_d"].max())
+    _cutoff = pd.Timestamp.now() - pd.Timedelta(days=config.STALE_DAYS)
+
+    def _eligible(pid, club) -> bool:
+        try:
+            if int(pid) in _live_squad:
+                return True
+        except (TypeError, ValueError):
+            return False
+        if str(club) in _squad_clubs:
+            return False
+        seen = _last_seen.get(pid)
+        return seen is not None and pd.notna(seen) and seen >= _cutoff
+    _stale_dropped = set()
 
     for _, match_row in bets.iterrows():
         home      = match_row["home_team"]
@@ -616,6 +649,11 @@ def run_player_predictions(
         # that the end-of-run drop_duplicates discarded anyway.
         team_players = (team_players.sort_values("date")
                         .drop_duplicates("player_id", keep="last"))
+        _keep = [_eligible(p, c) for p, c in zip(team_players["player_id"], team_players["team"])]
+        _stale_dropped.update(team_players.loc[[not k for k in _keep], "player_id"].tolist())
+        team_players = team_players[_keep]
+        if team_players.empty:
+            continue
 
         # Add match context — same strict rule, so a player can never be labelled home (or
         # handed the wrong opponent) on the strength of a shared name fragment.
@@ -767,6 +805,9 @@ def run_player_predictions(
                     "kelly_stake":   None,
                 })
 
+    if _stale_dropped:
+        print(f"[stale_club] {len(_stale_dropped)} player(s) dropped: not in their club's current "
+              f"squad list, or unseen for {config.STALE_DAYS}+ days where no list exists")
     if not all_tips:
         return pd.DataFrame()
 

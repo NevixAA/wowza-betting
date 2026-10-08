@@ -340,6 +340,10 @@ def _club_name_subset(a: str, b: str) -> bool:
     sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
     if not sa or not sb:
         return False
+    # A senior side is never a subset-match for its own reserve side: "Real Sociedad" vs
+    # "Real Sociedad II" are two teams in two divisions (fixed 2026-10-08).
+    if bool(sa & _RESERVE_TOKENS) != bool(sb & _RESERVE_TOKENS):
+        return False
     return sa < sb or sb < sa
 
 
