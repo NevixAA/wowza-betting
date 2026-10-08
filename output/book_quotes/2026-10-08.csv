@@ -18836,3 +18836,413 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-08T19:24:48Z,1603038,2026-10-11T13:40:00Z,3975.2,FAR,Saudi Pro League,new_format,Al-Fayha,Al Riyadh,3,Betfair,ou,under,2.5,1.8,api_football,open
 2026-10-08T19:24:48Z,1490513,2026-10-10T23:30:00Z,3125.2,FAR,USA MLS,new_format,Inter Miami,DC United,3,Betfair,btts,yes,,1.44,api_football,open
 2026-10-08T19:24:48Z,1490513,2026-10-10T23:30:00Z,3125.2,FAR,USA MLS,new_format,Inter Miami,DC United,3,Betfair,btts,no,,2.7,api_football,open
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,over,1.5,2.45,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,under,1.5,1.44,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,under,0.5,3.2,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,btts,yes,,1.6,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,btts,no,,2.2,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,over,2.5,1.65,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,under,2.5,2.2,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,over,3.5,2.62,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,under,3.5,1.5,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,over,1.5,2.5,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,btts,yes,,1.67,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,btts,no,,2.1,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,over,1.5,1.16,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,under,1.5,4.15,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,over,2.5,1.63,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,under,2.5,2.19,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,over,3.5,2.43,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,under,3.5,1.44,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,over,1.5,2.23,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,under,1.5,1.56,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,btts,yes,,1.59,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,btts,no,,2.18,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,over,2.5,1.62,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,under,2.5,2.2,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,over,3.5,2.63,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,under,3.5,1.47,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,over,1.5,2.4,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,under,0.5,3.6,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,btts,yes,,1.57,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,btts,no,,2.38,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,over,1.5,1.17,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,under,1.5,4.5,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,over,2.5,1.61,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,under,2.5,2.13,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,over,3.5,2.6,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,under,3.5,1.45,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,over,1.5,2.31,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,under,1.5,1.52,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,over,0.5,1.29,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,btts,yes,,1.57,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,btts,no,,2.25,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,over,1.5,1.21,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,under,1.5,4.66,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,over,2.5,1.65,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,under,2.5,2.3,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,over,3.5,2.64,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,under,3.5,1.51,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,over,1.5,2.52,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,under,1.5,1.53,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,over,0.5,1.35,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,under,0.5,3.26,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,5,SBO,ou,over,2.5,1.74,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,5,SBO,ou,under,2.5,2.08,api_football,heartbeat
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,over,1.5,1.16,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,under,1.5,4.15,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,over,2.5,1.67,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,under,2.5,2.25,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,over,3.5,2.43,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,under,3.5,1.44,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,over,1.5,2.23,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,under,1.5,1.56,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,btts,yes,,1.59,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,btts,no,,2.21,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,over,1.5,1.22,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,under,1.5,4.3,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,over,2.5,1.67,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,under,2.5,2.25,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,over,3.5,2.62,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,under,3.5,1.52,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,over,1.5,2.52,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,under,1.5,1.53,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,over,0.5,1.35,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,under,0.5,3.1,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,btts,yes,,1.6,api_football,change
+2026-10-08T21:32:30Z,1492398,2026-10-08T22:30:00Z,57.5,T-1h,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,btts,no,,2.25,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,over,1.5,1.3,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,under,1.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ht_ou,over,1.5,2.88,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ht_ou,under,1.5,1.36,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,btts,yes,,1.73,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,btts,no,,2.1,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ht_ou,over,1.5,2.74,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,over,2.5,2.04,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,over,3.5,3.52,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,over,1.5,3.01,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,under,1.5,1.39,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,under,0.5,2.96,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,over,2.5,2.05,api_football,change
+2026-10-08T21:32:30Z,1492390,2026-10-08T23:00:00Z,87.5,T-3h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,btts,no,,1.98,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,btts,yes,,1.67,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,btts,no,,2.1,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,over,1.5,1.13,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,under,1.5,4.5,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,over,2.5,1.55,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,under,2.5,2.35,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,over,3.5,2.26,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,under,3.5,1.51,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,over,1.5,2.23,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,under,1.5,1.59,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,over,0.5,1.24,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,btts,yes,,1.61,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,btts,no,,2.15,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,over,2.5,1.57,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,under,2.5,2.38,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,btts,yes,,1.62,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,btts,no,,2.25,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,over,1.5,1.14,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,under,1.5,5.0,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,over,2.5,1.54,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,under,2.5,2.27,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,over,3.5,2.29,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,under,3.5,1.53,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,over,1.5,2.19,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,under,1.5,1.58,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,over,0.5,1.25,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,under,0.5,3.6,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,btts,yes,,1.6,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,under,1.5,4.99,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,over,2.5,1.59,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,under,2.5,2.45,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,over,3.5,2.49,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,under,3.5,1.57,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,over,1.5,1.13,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,under,1.5,4.5,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,over,2.5,1.59,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,under,2.5,2.42,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,over,3.5,2.26,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,under,3.5,1.51,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,over,1.5,2.23,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,under,1.5,1.59,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,over,0.5,1.24,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,btts,yes,,1.61,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,btts,no,,2.18,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,over,1.5,1.19,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,under,1.5,4.7,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,over,2.5,1.6,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,under,2.5,2.42,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,over,3.5,2.42,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,under,3.5,1.6,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,over,1.5,2.4,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,under,1.5,1.57,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,over,0.5,1.32,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,under,0.5,3.3,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,btts,yes,,1.62,api_football,change
+2026-10-08T21:32:30Z,1492396,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,btts,no,,2.2,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,btts,yes,,1.75,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,btts,no,,1.95,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,over,1.5,1.2,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,under,1.5,4.5,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,over,2.5,1.62,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,under,2.5,2.25,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,over,3.5,2.62,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,under,3.5,1.5,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,over,1.5,2.5,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,under,1.5,1.5,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,over,0.5,1.3,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,btts,yes,,1.8,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,btts,no,,1.95,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,over,1.5,1.17,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,under,1.5,4.0,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,over,2.5,1.65,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,under,2.5,2.15,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,over,3.5,2.49,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,under,3.5,1.42,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,over,1.5,2.29,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,under,1.5,1.53,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,btts,yes,,1.82,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,btts,no,,1.86,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,over,2.5,1.73,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,under,2.5,2.1,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,under,1.5,4.1,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,over,2.5,1.67,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,under,2.5,2.04,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ht_ou,over,1.5,2.36,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ht_ou,under,1.5,1.5,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,btts,no,,1.85,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,over,1.5,1.24,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,under,1.5,4.23,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,over,2.5,1.74,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,under,2.5,2.16,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,over,3.5,2.91,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,under,3.5,1.43,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,over,1.5,2.64,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,under,1.5,1.49,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,over,0.5,1.33,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,under,0.5,3.34,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,over,1.5,1.17,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,under,1.5,4.0,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,over,2.5,1.7,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,under,2.5,2.21,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,over,3.5,2.49,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,under,3.5,1.42,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,over,1.5,2.29,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,under,1.5,1.53,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,btts,yes,,1.82,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,btts,no,,1.88,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,over,1.5,1.24,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,under,1.5,4.05,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,over,2.5,1.75,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,under,2.5,2.15,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,over,3.5,2.8,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,under,3.5,1.47,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,over,1.5,2.52,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,under,1.5,1.53,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,over,0.5,1.34,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,under,0.5,3.2,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,btts,yes,,1.88,api_football,change
+2026-10-08T21:32:30Z,1492394,2026-10-09T00:30:00Z,177.5,T-3h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,btts,no,,1.87,api_football,change
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,over,1.5,2.45,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,under,1.5,1.44,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,ht_ou,under,0.5,3.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,btts,yes,,1.6,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,7,William Hill,btts,no,,2.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,over,2.5,1.65,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,under,2.5,2.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,over,3.5,2.62,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ou,under,3.5,1.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,over,1.5,2.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,btts,yes,,1.67,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,8,Bet365,btts,no,,2.1,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,over,1.5,1.16,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,under,1.5,4.15,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,over,2.5,1.63,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,under,2.5,2.19,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,over,3.5,2.43,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ou,under,3.5,1.44,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,over,1.5,2.23,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,under,1.5,1.56,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,btts,yes,,1.59,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,2,Marathonbet,btts,no,,2.18,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,over,2.5,1.62,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,under,2.5,2.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,over,3.5,2.63,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ou,under,3.5,1.47,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,over,1.5,2.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,ht_ou,under,0.5,3.6,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,btts,yes,,1.57,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,3,Betfair,btts,no,,2.38,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,over,2.5,1.61,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,under,2.5,2.13,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,over,3.5,2.6,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ou,under,3.5,1.45,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,over,1.5,2.31,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,under,1.5,1.52,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,over,0.5,1.29,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,btts,yes,,1.57,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,36,BetVictor,btts,no,,2.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,over,1.5,1.21,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,under,1.5,4.66,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,over,2.5,1.65,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,under,2.5,2.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,over,3.5,2.64,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ou,under,3.5,1.51,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,over,1.5,2.52,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,under,1.5,1.53,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,over,0.5,1.35,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,4,Pinnacle,ht_ou,under,0.5,3.26,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,5,SBO,ou,over,2.5,1.74,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,5,SBO,ou,under,2.5,2.08,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,over,1.5,1.16,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,under,1.5,4.15,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,over,2.5,1.67,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,under,2.5,2.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,over,3.5,2.43,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ou,under,3.5,1.44,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,over,1.5,2.23,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,under,1.5,1.56,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,over,0.5,1.26,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,btts,yes,,1.59,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,11,1xBet,btts,no,,2.21,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,over,1.5,1.22,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,under,1.5,4.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,over,2.5,1.67,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,under,2.5,2.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,over,3.5,2.62,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ou,under,3.5,1.52,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,over,1.5,2.52,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,under,1.5,1.53,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,over,0.5,1.35,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,ht_ou,under,0.5,3.1,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,btts,yes,,1.6,api_football,heartbeat
+2026-10-08T22:02:53Z,1492398,2026-10-08T22:30:00Z,27.1,T-30m,Brazil Serie A,new_format,Santos,Flamengo,32,Betano,btts,no,,2.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,7,William Hill,ht_ou,over,1.5,2.8,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,7,William Hill,ht_ou,under,1.5,1.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,7,William Hill,ht_ou,over,0.5,1.36,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,7,William Hill,ht_ou,under,0.5,2.9,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,7,William Hill,btts,yes,,1.8,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,7,William Hill,btts,no,,1.95,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ou,over,1.5,1.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ou,under,1.5,3.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ou,over,2.5,2.0,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ou,under,2.5,1.8,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ou,over,3.5,3.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ou,under,3.5,1.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ht_ou,over,1.5,3.0,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ht_ou,over,0.5,1.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,ht_ou,under,0.5,2.75,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,btts,yes,,1.8,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,8,Bet365,btts,no,,1.95,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ou,over,1.5,1.28,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ou,under,1.5,3.05,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ou,over,2.5,1.99,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ou,under,2.5,1.76,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ou,over,3.5,3.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ou,under,3.5,1.26,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ht_ou,over,1.5,2.82,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,ht_ou,under,0.5,2.53,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,btts,yes,,1.78,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,2,Marathonbet,btts,no,,1.9,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,over,1.5,1.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,under,1.5,3.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,over,2.5,2.0,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,under,2.5,1.8,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,over,3.5,3.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ou,under,3.5,1.29,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ht_ou,over,1.5,2.88,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ht_ou,over,0.5,1.36,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,ht_ou,under,0.5,2.88,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,btts,yes,,1.73,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,3,Betfair,btts,no,,2.1,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ou,over,1.5,1.3,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ou,under,1.5,3.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ou,over,2.5,1.93,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ou,under,2.5,1.75,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ou,over,3.5,3.6,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ou,under,3.5,1.25,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ht_ou,over,1.5,2.74,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ht_ou,under,1.5,1.38,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ht_ou,over,0.5,1.42,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,ht_ou,under,0.5,2.59,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,btts,yes,,1.78,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,36,BetVictor,btts,no,,1.93,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,over,1.5,1.32,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,under,1.5,3.53,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,over,2.5,2.04,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,under,2.5,1.85,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,over,3.5,3.52,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ou,under,3.5,1.32,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,over,1.5,3.01,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,under,1.5,1.39,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,over,0.5,1.4,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,4,Pinnacle,ht_ou,under,0.5,2.96,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,5,SBO,ou,over,2.5,1.99,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,5,SBO,ou,under,2.5,1.83,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ou,over,1.5,1.28,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ou,under,1.5,3.05,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ou,over,2.5,2.04,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ou,under,2.5,1.81,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ou,over,3.5,3.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ou,under,3.5,1.26,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ht_ou,over,1.5,2.82,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,ht_ou,under,0.5,2.53,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,btts,yes,,1.78,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,11,1xBet,btts,no,,1.93,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,over,1.5,1.35,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,under,1.5,3.2,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,over,2.5,2.05,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,under,2.5,1.8,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,over,3.5,3.5,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ou,under,3.5,1.31,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ht_ou,over,1.5,3.05,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ht_ou,under,1.5,1.38,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,ht_ou,under,0.5,2.67,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,btts,yes,,1.78,api_football,heartbeat
+2026-10-08T22:02:53Z,1492390,2026-10-08T23:00:00Z,57.1,T-1h,Brazil Serie A,new_format,Atletico Paranaense,Atletico-MG,32,Betano,btts,no,,1.98,api_football,heartbeat
