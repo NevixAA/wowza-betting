@@ -68,6 +68,11 @@ WC_CARD_MIN_RATE = 0.35
 # not start). Confirmed-lineup filtering still takes precedence when available.
 MIN_STARTER_MINUTES = 60.0
 
+# A player outside every live squad list is only tipped if he appeared within this many days.
+# Covers clubs we hold no squad list for; guards against players who moved to a league we do
+# not collect and stay attached to their last collected club (Benzema at Real Madrid, 2026-10-08).
+STALE_DAYS = 120
+
 # World Cup non-card props use imputed national-team features (live ROI ~ -33%) →
 # flag low-confidence and discount their confidence so they rank below club signals.
 WC_PROP_CONF_PENALTY = 0.5
