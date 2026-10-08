@@ -2,7 +2,31 @@
 
 **Status:** Production — fully automated via GitHub Actions
 **Live since:** April 2026
-**Last doc update:** 2026-10-07
+**Last doc update:** 2026-10-08
+
+> **2026-10-08 update.**
+>
+> * **Player props named players at clubs they had left.** Benzema was tipped for Real Madrid
+>   (last appearance 2023), Verratti for PSG, Brozović and Taremi for Inter — 400 of 2,581 board
+>   rows. A player is now tipped only if he is in his club's live squad list, or (where no list
+>   exists) appeared within `STALE_DAYS` = 120. Separately, Sporting CP players were tipped in
+>   Cádiz v Sporting Gijón because a club inherited every competition its signings had played in;
+>   a club's competitions now come from its own rows (`player_model/predict.py`).
+> * **Ligue 2 was the wrong API-Football league.** `API_FOOTBALL_IDS["Ligue 2"]` was 65 (the
+>   defunct Coupe de la Ligue); it is 62. Ligue 2 had no per-book quotes and no side-market odds
+>   from 2026-05-09 to 2026-10-08. That gap is permanent — odds cannot be backfilled.
+> * **New research, in Pro** (`wowzaV9-Pro/output/studies/REPORT.md`, refreshed twice a week):
+>   Argentina BTTS is a **league scoring regime** the market prices slowly (BTTS 38% in 2025 →
+>   56% since August; blind YES matched Wowza's picks), not model selection. v9's O/U 2.5
+>   probability is **compressed near 52%** — its UNDER "edges" are matches the market rates
+>   high-scoring, and the market is right. Adding the model to the market improves no market
+>   out of sample. A market-anchored O/U challenger is being recorded forward; **owner decision:
+>   no change to v9's O/U probability before ~2026-10-29.**
+> * **New repos and pages.** `wowza-exec` (private) holds the Cloudbet execution layer — PAPER_ONLY,
+>   fail-closed; v9's own `src/cloudbet/` is dormant and must never run outside DRY. Pro now runs a
+>   **League Scout** over ~200 leagues Wowza does not bet, and a **tip scoreboard** for the 1X2 and
+>   Bet Builder tips it sends. Dashboard: new 🔭 League Scout page; the 🔬 Pro page gained
+>   *Tips sent* and *Studies* tabs.
 
 > **2026-10-07 update.** The previous version of this file was from 2026-08-09 and several of
 > its numbers had stopped being true. Corrected below, with the wrong claims named rather than
@@ -34,7 +58,7 @@ running automatically in the cloud (no server/PC needed).
 
 | Module | What it does | Money? |
 |---|---|---|
-| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers | **Real-money candidate** |
+| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers | **Real-money candidate** — but the 2026-10-08 studies found no evidence the model adds to the market (see update above) |
 | **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — per-league walk-forward thresholds | Real-money candidate |
 | **HT Model** | Half-time O/U 0.5 and 1.5 | Paper — **no edge** (see below) |
 | **New-Format Model** | O/U for goals-only leagues — separate model, never mixed with standard | Paper |
@@ -120,7 +144,7 @@ src/
 
 player_model/              ← 7 prop markets, 139 features, Fantasy projections
 telegram_bot/notifier.py   ← all Telegram sends
-pages/                     ← Streamlit dashboard (13 pages)
+pages/                     ← Streamlit dashboard (14 pages, incl. 🔭 League Scout)
 tests/                     ← 306 tests
 ```
 
@@ -288,8 +312,17 @@ Always set the production environment before reasoning about a threshold:
 | `NevixAA/wowza-betting` | **this one.** Production: predict, tips, notifications, dashboard |
 | `NevixAA/wowzaV9-Pro` | canonical evidence store, independent validation, Bet Builder |
 | `NevixAA/wowza_v11` | market-first / microstructure / CLV research |
+| `NevixAA/wowza-exec` | **private.** Cloudbet execution control: fail-closed modes, execution policy (PAPER_ONLY), market-anchored eligibility, candidate log. Reads v9's output; never writes into it |
 
-Pro and v11 **read v9's committed output over HTTP and never write into it.** New ideas go
+What lives where in Pro, for the things v9's dashboard shows:
+
+| Pro path | What |
+|---|---|
+| `src/scout/` · `output/scout/` | League Scout: odds, results and a baseline model for ~200 leagues; `league_status.json` per league |
+| `src/studies/` · `output/studies/REPORT.md` | Argentina BTTS controls, UNDER diagnosis, model-vs-market residual test, per-cell evidence (shrinkage, FDR, sequential CLV), O/U challenger |
+| `src/pipelines/tip_scoreboard.py` · `output/TIP_SCOREBOARD.md` | how the 1X2 and Bet Builder tips Pro sends are doing; daily Telegram recap |
+
+Pro, v11 and wowza-exec **read v9's committed output and never write into it.** New ideas go
 through Pro and v11 — chronological evidence, a challenger, repeated validation, owner approval
 — then a deliberate v9 upgrade.
 
