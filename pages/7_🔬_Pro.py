@@ -37,8 +37,8 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-tab_learn, tab_store, tab_gov, tab_health = st.tabs(
-    ["Does it learn?", "Canonical store", "Governance", "Health"])
+tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
+    ["Does it learn?", "Tips sent (1X2 · Bet Builder)", "Studies", "Canonical store", "Governance", "Health"])
 
 # ── the load-bearing positive result ──────────────────────────────────────────────────────────
 with tab_learn:
@@ -200,3 +200,111 @@ with tab_health:
             with c2:
                 ui.freshness_chip(meta["freshness"],
                                   f"status: {meta.get('status') or 'not reported'}")
+
+# ── how the tips Pro SENDS are doing (src/pipelines/tip_scoreboard.py) ───────────────────────
+with tab_tips:
+    sb = pro.tip_scoreboard()
+    if not sb:
+        st.info("No tip scoreboard yet — it is written by `pro_tip_scoreboard.yml` each morning.")
+    else:
+        if sb.get("freshness"):
+            ui.freshness_chip(sb["freshness"], "tip scoreboard")
+        st.caption("Graded only on tips that were actually SENT to Telegram. Paper leagues (USA MLS) excluded.")
+        a, b = sb.get("one_x_two", {}), sb.get("bet_builder", {})
+        h, bh = a.get("headline", {}), b.get("headline", {})
+        st.subheader("1X2 tips")
+        if h.get("settled"):
+            c = st.columns(4)
+            with c[0]:
+                ui.kpi("Won", f"{h['won']} / {h['settled']}", f"{a.get('pending', 0)} pending")
+            with c[1]:
+                ui.kpi("Hit rate", ui.pct(h["hit_rate"]), f"break-even {ui.pct(h['break_even'])}")
+            with c[2]:
+                ui.kpi("Flat stakes", ui.units(h["units"]), f"ROI {ui.pct(h['roi'])}")
+            with c[3]:
+                ci = h.get("roi_ci90") or [None, None]
+                ui.kpi("ROI 90% range", "–" if ci[0] is None else f"{ci[0]:+.0%} … {ci[1]:+.0%}",
+                       "too few tips to judge" if h["settled"] < 50 else "")
+            last = pd.DataFrame(a.get("last_10", []))
+            if not last.empty:
+                ui.table(last)
+        else:
+            st.info("No settled 1X2 tips yet.")
+        st.subheader("Bet Builder combos")
+        if bh.get("settled"):
+            c = st.columns(3)
+            with c[0]:
+                ui.kpi("Won (fully graded)", f"{bh['won']} / {bh['settled']}", ui.pct(bh["hit_rate"]))
+            with c[1]:
+                ui.kpi("Model expected", f"{bh['expected_wins']:.1f} wins", f"z = {bh['z_actual_vs_claimed']}")
+            with c[2]:
+                v = b.get("with_voided_legs", {})
+                ui.kpi("With a voided leg", str(v.get("settled", 0)), f"{v.get('won', 0)} 'won' on the remaining legs")
+            st.caption("Combos with a voided player leg are settled on the remaining legs, so they are kept out of "
+                       "the hit rate. No bookmaker builder price is recorded, so builder P/L cannot be measured.")
+        else:
+            st.info("No fully graded combos yet.")
+
+# ── the October 2026 upgrade studies (src/studies) ───────────────────────────────────────────
+with tab_studies:
+    S = pro.studies()
+    if not any(S.values()):
+        st.info("No studies yet — `pro_studies.yml` writes them on Mondays and Thursdays.")
+    else:
+        st.caption("Research only. Refreshed twice a week. Full write-up: `output/studies/REPORT.md` in Pro.")
+        ab = S.get("argentina_btts") or {}
+        if ab:
+            st.subheader("1 · Argentina BTTS — model, league, bookmaker, or luck?")
+            rates = ab.get("btts_rate_all_matches", {})
+            t = ab.get("tip_period", {})
+            reg = (ab.get("regime_by_period") or {}).get("2026 since Aug 10 (tip period)", {})
+            c = st.columns(4)
+            with c[0]:
+                ui.kpi("BTTS rate 2025", ui.pct(rates.get("2025", {}).get("rate")),
+                       f"since 10 Aug: {ui.pct(rates.get('2026 since Aug 10', {}).get('rate'))}")
+            with c[1]:
+                ui.kpi("Price implied", ui.pct(reg.get("bet365_fair_yes_close")),
+                       f"realised {ui.pct(reg.get('btts_rate'))} · gap {reg.get('gap_pp')} pts")
+            with c[2]:
+                bb = t.get("B_blind_yes_all", {})
+                ui.kpi("Blind YES, every match", ui.pct(bb.get("roi")), f"n {bb.get('n')}")
+            with c[3]:
+                ui.kpi("Wowza picks minus the rest", ui.pct(t.get("A_minus_not_selected_roi")),
+                       "range includes zero" if (t.get("A_minus_not_selected_ci90") or [0])[0] < 0 else "")
+            st.markdown("**Reading:** the profit is a league scoring regime the market prices slowly, not model "
+                        "selection. If the league calms down, the edge goes.")
+        ch = S.get("ou_challenger") or {}
+        if ch.get("probabilistic_oos"):
+            st.subheader("2 · O/U 2.5 — v9 vs the market-anchored challenger")
+            tv, tc = ch["tips_at_5pct_edge"]["v9"], ch["tips_at_5pct_edge"]["challenger"]
+            c = st.columns(4)
+            with c[0]:
+                ui.kpi("v9 tips (5% edge)", str(tv.get("n")), f"{ui.pct(tv.get('under_share'))} UNDER")
+            with c[1]:
+                ui.kpi("v9 result", ui.units(tv.get("units", 0)), f"ROI {ui.pct(tv.get('roi'))}")
+            with c[2]:
+                ui.kpi("Challenger tips", str(tc.get("n")), "anchored on the market")
+            with c[3]:
+                w = ch.get("current_weights", {})
+                ui.kpi("Model weight", str(w.get("c_model")), f"unconstrained {w.get('c_model_unconstrained')}")
+            st.markdown("**Reading:** v9's O/U probability is squashed near 52%, so 'UNDER edges' are matches the "
+                        "market rates high-scoring — and the market is right. Owner decision 2026-10-08: wait 2–3 weeks "
+                        "of the challenger's forward record before any change to v9.")
+        ou = S.get("ou_studies") or {}
+        if ou.get("residual"):
+            st.subheader("3 · Does the model add anything once the price is known?")
+            rows = [{"Market": m, "Track": tr, "n": x.get("n"), "Δ log loss (out of sample)": x.get("oos_delta_logloss"),
+                     "90% range": str(x.get("oos_delta_logloss_ci90")), "Verdict": x.get("verdict")}
+                    for m, by in ou["residual"].items() for tr, x in by.items() if x.get("n_oos")]
+            ui.table(pd.DataFrame(rows))
+            st.caption("Negative Δ = adding the model improved the forecast. None does.")
+        ev = S.get("evidence") or {}
+        if ev.get("cells"):
+            st.subheader("4 · Which league × market has earned money?")
+            st.caption(f"{ev.get('n_cells_searched')} cells tested · reality-check p for the best cell "
+                       f"{ev.get('reality_check_p_best_cell')} · gates: n ≥ 150, P(edge>0) ≥ 0.80, FDR q ≤ 0.10")
+            rows = [{"League": c["league"], "Market": c["market"], "n": c["n"], "Raw ROI": c["roi"],
+                     "Shrunk ROI": c.get("posterior_mean"), "P(edge>0)": c.get("p_edge_gt_0"),
+                     "FDR q": c.get("q_bh"), "Recommendation": c.get("recommendation")}
+                    for c in ev["cells"] if c.get("testable")]
+            ui.table(pd.DataFrame(rows))

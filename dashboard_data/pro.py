@@ -109,3 +109,51 @@ def research_validity() -> list[dict]:
     """Which conclusions are CURRENT and which are INVALIDATED — so dead numbers stop circulating."""
     c = system_contract()
     return c.get("research_validity_registry", []) or []
+
+
+# ── League scout (Pro src/scout) ─────────────────────────────────────────────────────────────
+def scout_status() -> dict:
+    """Every watched league with its stage. Small JSON written by the scout report; the
+    dashboard never reads the scout's parquet partitions.
+
+    Before the first scout run the status file does not exist yet, so the watch list itself is
+    shown with every league NOT_STARTED — the page is never blank and never pretends to data.
+    """
+    if not reachable("pro"):
+        return {"available": False, "why": absent_reason()}
+    j = read_json(_f("output/scout/league_status.json"))
+    if j.get("leagues"):
+        j["available"] = True
+        j["freshness"] = freshness_from_timestamp(j.get("generated_at"), "fast", "scout report")
+        return j
+    reg = read_json(_f("registry/scout_leagues.json"))
+    rows = [{"league_id": x["id"], "country": x["country"], "league": x["name"],
+             "priority": x["priority"], "status": "NOT_STARTED", "history_seasons": 0, "results": 0,
+             "fixtures_priced": 0, "upcoming_priced": 0, "model_frozen": 0,
+             "settled_with_close": 0, "last_price_seen": None, "markets": {}}
+            for x in reg.get("leagues", [])]
+    if not rows:
+        return {"available": False, "why": "the scout watch list is not in Pro yet"}
+    return {"available": True, "leagues": rows, "n_leagues": len(rows),
+            "status_counts": {"NOT_STARTED": len(rows)}, "freshness": None,
+            "status_meaning": {"NOT_STARTED": "the scout has not completed a run yet"}}
+
+
+def scout_last_run() -> dict:
+    return read_json(_f("output/scout/last_run.json"))
+
+
+# ── Tips Pro sends (1X2, Bet Builder) ─────────────────────────────────────────────────────────
+def tip_scoreboard() -> dict:
+    j = read_json(_f("output/tip_scoreboard.json"))
+    if j:
+        j["freshness"] = freshness_from_timestamp(j.get("generated_at"), "daily", "tip scoreboard")
+    return j
+
+
+# ── Upgrade studies (Pro src/studies) ─────────────────────────────────────────────────────────
+def studies() -> dict:
+    out = {}
+    for name in ("argentina_btts", "ou_studies", "evidence", "ou_challenger"):
+        out[name] = read_json(_f(f"output/studies/{name}.json"))
+    return out

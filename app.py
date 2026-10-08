@@ -155,6 +155,10 @@ st.markdown("""
 | 👤 Player Props · ⚽ Fantasy | Player-prop tips and FPL layer |
 | 💼 Portfolio | P/L by model, tier and league (post-cutoff) · bankroll sim |
 | ℹ️ Model Info | How the Standard and New-Format models work |
+| 🧩 Bet Builder | Same-match combos generated in Pro |
+| 🔬 Pro | Evidence layer: does retraining help, **tips sent** (1X2 · Bet Builder scoreboard), **studies** (Argentina BTTS, O/U challenger, per-league evidence) |
+| 🛰️ V11 Market | Market-first shadow research |
+| 🔭 League Scout | ~200 leagues Wowza watches but does not bet — what is collected and how far each has got |
 """)
 
 
