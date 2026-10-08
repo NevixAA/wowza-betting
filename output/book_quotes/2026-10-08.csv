@@ -19776,3 +19776,370 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-08T23:07:19Z,1584428,2026-10-10T16:00:00Z,2452.7,FAR,Turkish Super Lig,standard,Rizespor,Fenerbahçe,3,Betfair,ou,under,3.5,1.44,api_football,open
 2026-10-08T23:07:19Z,1584428,2026-10-10T16:00:00Z,2452.7,FAR,Turkish Super Lig,standard,Rizespor,Fenerbahçe,3,Betfair,btts,yes,,1.65,api_football,open
 2026-10-08T23:07:19Z,1584428,2026-10-10T16:00:00Z,2452.7,FAR,Turkish Super Lig,standard,Rizespor,Fenerbahçe,3,Betfair,btts,no,,2.2,api_football,open
+2026-10-08T23:55:48Z,1493178,2026-10-11T17:45:00Z,3949.2,FAR,Argentina Primera Division,new_format,San Lorenzo,Deportivo Riestra,7,William Hill,ht_ou,over,1.5,4.2,api_football,open
+2026-10-08T23:55:48Z,1493178,2026-10-11T17:45:00Z,3949.2,FAR,Argentina Primera Division,new_format,San Lorenzo,Deportivo Riestra,7,William Hill,ht_ou,under,1.5,1.2,api_football,open
+2026-10-08T23:55:48Z,1493178,2026-10-11T17:45:00Z,3949.2,FAR,Argentina Primera Division,new_format,San Lorenzo,Deportivo Riestra,7,William Hill,ht_ou,over,0.5,1.65,api_football,open
+2026-10-08T23:55:48Z,1493178,2026-10-11T17:45:00Z,3949.2,FAR,Argentina Primera Division,new_format,San Lorenzo,Deportivo Riestra,7,William Hill,ht_ou,under,0.5,2.15,api_football,open
+2026-10-08T23:55:48Z,1493178,2026-10-11T17:45:00Z,3949.2,FAR,Argentina Primera Division,new_format,San Lorenzo,Deportivo Riestra,7,William Hill,btts,yes,,2.25,api_football,open
+2026-10-08T23:55:48Z,1493178,2026-10-11T17:45:00Z,3949.2,FAR,Argentina Primera Division,new_format,San Lorenzo,Deportivo Riestra,7,William Hill,btts,no,,1.57,api_football,open
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,7,William Hill,ht_ou,over,1.5,2.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,7,William Hill,ht_ou,under,1.5,1.55,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,7,William Hill,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,7,William Hill,ht_ou,under,0.5,3.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,7,William Hill,btts,yes,,1.62,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,7,William Hill,btts,no,,2.2,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ou,under,1.5,5.0,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ou,over,2.5,1.57,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ou,under,2.5,2.35,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ou,over,3.5,2.38,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ou,under,3.5,1.57,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ht_ou,over,1.5,2.38,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ht_ou,under,1.5,1.53,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,btts,yes,,1.67,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,8,Bet365,btts,no,,2.1,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,over,1.5,1.13,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,over,2.5,1.55,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,under,2.5,2.35,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,over,3.5,2.26,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ou,under,3.5,1.51,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,over,1.5,2.23,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,under,1.5,1.59,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,over,0.5,1.24,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,btts,yes,,1.61,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,2,Marathonbet,btts,no,,2.15,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,under,1.5,5.0,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,over,2.5,1.57,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,under,2.5,2.38,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,over,3.5,2.45,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ou,under,3.5,1.53,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ht_ou,over,1.5,2.25,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ht_ou,under,1.5,1.57,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ht_ou,over,0.5,1.22,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,ht_ou,under,0.5,3.8,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,btts,yes,,1.62,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,3,Betfair,btts,no,,2.25,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,over,1.5,1.14,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,under,1.5,5.0,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,over,2.5,1.54,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,under,2.5,2.27,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,over,3.5,2.29,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ou,under,3.5,1.53,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,over,1.5,2.19,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,under,1.5,1.58,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,ht_ou,under,0.5,3.6,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,btts,yes,,1.6,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,36,BetVictor,btts,no,,2.15,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,over,1.5,1.19,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,under,1.5,4.99,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,over,2.5,1.59,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,under,2.5,2.45,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,over,3.5,2.49,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ou,under,3.5,1.57,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ht_ou,over,1.5,2.38,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,4,Pinnacle,ht_ou,under,1.5,1.58,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,over,1.5,1.13,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,over,2.5,1.59,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,under,2.5,2.42,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,over,3.5,2.26,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ou,under,3.5,1.51,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,over,1.5,2.23,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,under,1.5,1.59,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,over,0.5,1.24,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,btts,yes,,1.61,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,11,1xBet,btts,no,,2.18,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,over,1.5,1.19,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,under,1.5,4.7,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,over,2.5,1.6,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,under,2.5,2.42,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,over,3.5,2.42,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ou,under,3.5,1.6,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,over,1.5,2.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,under,1.5,1.57,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,over,0.5,1.32,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,ht_ou,under,0.5,3.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,btts,yes,,1.62,api_football,heartbeat
+2026-10-08T23:55:48Z,1492396,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Palmeiras,Bahia,32,Betano,btts,no,,2.2,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,ht_ou,over,1.5,2.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,ht_ou,under,1.5,1.44,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,ht_ou,under,0.5,3.1,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,btts,yes,,1.75,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,7,William Hill,btts,no,,1.95,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,over,2.5,1.62,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,under,2.5,2.25,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,over,3.5,2.62,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ou,under,3.5,1.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,over,1.5,2.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,btts,yes,,1.8,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,8,Bet365,btts,no,,1.95,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,under,1.5,4.0,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,over,2.5,1.65,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,under,2.5,2.15,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,over,3.5,2.49,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ou,under,3.5,1.42,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,over,1.5,2.29,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,under,1.5,1.53,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,btts,yes,,1.82,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,2,Marathonbet,btts,no,,1.86,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,under,1.5,4.33,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,over,2.5,1.73,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,under,2.5,2.1,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,over,3.5,2.88,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ou,under,3.5,1.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ht_ou,over,1.5,2.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ht_ou,over,0.5,1.29,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,ht_ou,under,0.5,3.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,btts,yes,,1.87,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,3,Betfair,btts,no,,1.9,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,over,1.5,1.2,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,under,1.5,4.1,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,over,2.5,1.67,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,under,2.5,2.04,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,over,3.5,2.75,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ou,under,3.5,1.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ht_ou,over,1.5,2.36,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ht_ou,under,1.5,1.5,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ht_ou,over,0.5,1.3,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,ht_ou,under,0.5,3.25,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,btts,yes,,1.83,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,36,BetVictor,btts,no,,1.85,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,over,1.5,1.24,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,under,1.5,4.23,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,over,2.5,1.74,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,under,2.5,2.16,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,over,3.5,2.91,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ou,under,3.5,1.43,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,over,1.5,2.64,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,under,1.5,1.49,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,over,0.5,1.33,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,4,Pinnacle,ht_ou,under,0.5,3.34,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,5,SBO,ou,over,2.5,1.86,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,5,SBO,ou,under,2.5,1.96,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,under,1.5,4.0,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,over,2.5,1.7,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,under,2.5,2.21,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,over,3.5,2.49,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ou,under,3.5,1.42,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,over,1.5,2.29,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,under,1.5,1.53,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,over,0.5,1.26,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,ht_ou,under,0.5,3.4,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,btts,yes,,1.82,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,11,1xBet,btts,no,,1.88,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,over,1.5,1.24,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,under,1.5,4.05,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,over,2.5,1.75,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,under,2.5,2.15,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,over,3.5,2.8,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ou,under,3.5,1.47,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,over,1.5,2.52,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,under,1.5,1.53,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,over,0.5,1.34,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,ht_ou,under,0.5,3.2,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,btts,yes,,1.88,api_football,heartbeat
+2026-10-08T23:55:48Z,1492394,2026-10-09T00:30:00Z,34.2,T-1h,Brazil Serie A,new_format,Fluminense,Coritiba,32,Betano,btts,no,,1.87,api_football,heartbeat
+2026-10-08T23:55:48Z,1492400,2026-10-11T19:00:00Z,4024.2,FAR,Brazil Serie A,new_format,Atletico-MG,Santos,3,Betfair,ou,over,2.5,1.9,api_football,open
+2026-10-08T23:55:48Z,1492400,2026-10-11T19:00:00Z,4024.2,FAR,Brazil Serie A,new_format,Atletico-MG,Santos,3,Betfair,ou,under,2.5,1.87,api_football,open
+2026-10-08T23:55:48Z,1549032,2026-10-11T12:00:00Z,3604.2,FAR,Denmark Superliga,new_format,Randers FC,Viborg,3,Betfair,ou,over,2.5,1.65,api_football,open
+2026-10-08T23:55:48Z,1549032,2026-10-11T12:00:00Z,3604.2,FAR,Denmark Superliga,new_format,Randers FC,Viborg,3,Betfair,ou,under,2.5,2.2,api_football,open
+2026-10-08T23:55:48Z,1549033,2026-10-11T12:00:00Z,3604.2,FAR,Denmark Superliga,new_format,Silkeborg,AC Horsens,3,Betfair,ou,over,2.5,1.8,api_football,open
+2026-10-08T23:55:48Z,1549033,2026-10-11T12:00:00Z,3604.2,FAR,Denmark Superliga,new_format,Silkeborg,AC Horsens,3,Betfair,ou,under,2.5,2.0,api_football,open
+2026-10-08T23:55:48Z,1549029,2026-10-11T14:00:00Z,3724.2,FAR,Denmark Superliga,new_format,Brondby,Lyngby,3,Betfair,ou,over,2.5,1.57,api_football,open
+2026-10-08T23:55:48Z,1549029,2026-10-11T14:00:00Z,3724.2,FAR,Denmark Superliga,new_format,Brondby,Lyngby,3,Betfair,ou,under,2.5,2.38,api_football,open
+2026-10-08T23:55:48Z,1549030,2026-10-11T16:00:00Z,3844.2,FAR,Denmark Superliga,new_format,FC Midtjylland,FC Copenhagen,3,Betfair,ou,over,2.5,1.65,api_football,open
+2026-10-08T23:55:48Z,1549030,2026-10-11T16:00:00Z,3844.2,FAR,Denmark Superliga,new_format,FC Midtjylland,FC Copenhagen,3,Betfair,ou,under,2.5,2.2,api_football,open
+2026-10-08T23:55:48Z,1638088,2026-10-10T16:00:00Z,2404.2,FAR,Finland Veikkausliiga,new_format,Mariehamn,Ilves,3,Betfair,ou,over,1.5,1.17,api_football,open
+2026-10-08T23:55:48Z,1638088,2026-10-10T16:00:00Z,2404.2,FAR,Finland Veikkausliiga,new_format,Mariehamn,Ilves,3,Betfair,ou,under,1.5,5.0,api_football,open
+2026-10-08T23:55:48Z,1638088,2026-10-10T16:00:00Z,2404.2,FAR,Finland Veikkausliiga,new_format,Mariehamn,Ilves,3,Betfair,ou,over,3.5,2.45,api_football,open
+2026-10-08T23:55:48Z,1638088,2026-10-10T16:00:00Z,2404.2,FAR,Finland Veikkausliiga,new_format,Mariehamn,Ilves,3,Betfair,ou,under,3.5,1.53,api_football,open
+2026-10-08T23:55:48Z,1638088,2026-10-10T16:00:00Z,2404.2,FAR,Finland Veikkausliiga,new_format,Mariehamn,Ilves,3,Betfair,btts,yes,,1.44,api_football,open
+2026-10-08T23:55:48Z,1638088,2026-10-10T16:00:00Z,2404.2,FAR,Finland Veikkausliiga,new_format,Mariehamn,Ilves,3,Betfair,btts,no,,2.63,api_football,open
+2026-10-08T23:55:48Z,1638105,2026-10-12T15:00:00Z,5224.2,FAR,Finland Veikkausliiga,new_format,VPS,Gnistan,7,William Hill,ht_ou,over,1.5,2.5,api_football,open
+2026-10-08T23:55:48Z,1638105,2026-10-12T15:00:00Z,5224.2,FAR,Finland Veikkausliiga,new_format,VPS,Gnistan,7,William Hill,ht_ou,under,1.5,1.44,api_football,open
+2026-10-08T23:55:48Z,1638105,2026-10-12T15:00:00Z,5224.2,FAR,Finland Veikkausliiga,new_format,VPS,Gnistan,7,William Hill,ht_ou,over,0.5,1.3,api_football,open
+2026-10-08T23:55:48Z,1638105,2026-10-12T15:00:00Z,5224.2,FAR,Finland Veikkausliiga,new_format,VPS,Gnistan,7,William Hill,ht_ou,under,0.5,3.1,api_football,open
+2026-10-08T23:55:48Z,1638105,2026-10-12T15:00:00Z,5224.2,FAR,Finland Veikkausliiga,new_format,VPS,Gnistan,7,William Hill,btts,yes,,1.62,api_football,open
+2026-10-08T23:55:48Z,1638105,2026-10-12T15:00:00Z,5224.2,FAR,Finland Veikkausliiga,new_format,VPS,Gnistan,7,William Hill,btts,no,,2.15,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,7,William Hill,ht_ou,over,1.5,2.4,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,7,William Hill,ht_ou,under,1.5,1.5,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,7,William Hill,ht_ou,over,0.5,1.3,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,7,William Hill,ht_ou,under,0.5,3.3,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,7,William Hill,btts,yes,,1.65,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,7,William Hill,btts,no,,2.15,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ou,over,1.5,1.17,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ou,under,1.5,4.0,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ou,over,2.5,1.68,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ou,under,2.5,2.11,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ou,over,3.5,2.59,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ou,under,3.5,1.39,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ht_ou,over,1.5,2.45,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ht_ou,under,1.5,1.47,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ht_ou,over,0.5,1.29,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,ht_ou,under,0.5,3.18,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,btts,yes,,1.64,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,2,Marathonbet,btts,no,,2.1,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,3,Betfair,ht_ou,over,1.5,2.5,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,3,Betfair,ht_ou,under,1.5,1.5,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,3,Betfair,ht_ou,over,0.5,1.29,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,3,Betfair,ht_ou,under,0.5,3.25,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ou,over,1.5,1.22,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ou,under,1.5,4.3,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ou,over,2.5,1.7,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ou,under,2.5,2.18,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ou,over,3.5,2.72,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ou,under,3.5,1.46,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ht_ou,over,1.5,2.51,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,4,Pinnacle,ht_ou,under,1.5,1.51,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ou,over,1.5,1.17,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ou,under,1.5,4.0,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ou,over,2.5,1.68,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ou,under,2.5,2.11,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ou,over,3.5,2.59,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ou,under,3.5,1.39,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ht_ou,over,1.5,2.45,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ht_ou,under,1.5,1.47,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ht_ou,over,0.5,1.29,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,ht_ou,under,0.5,3.18,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,btts,yes,,1.64,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,11,1xBet,btts,no,,2.13,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ou,over,1.5,1.22,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ou,under,1.5,4.0,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ou,over,2.5,1.67,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ou,under,2.5,2.15,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ou,over,3.5,2.57,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ou,under,3.5,1.47,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ht_ou,over,1.5,2.52,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ht_ou,under,1.5,1.5,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ht_ou,over,0.5,1.36,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,ht_ou,under,0.5,3.1,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,btts,yes,,1.65,api_football,open
+2026-10-08T23:55:48Z,1638106,2026-10-12T16:00:00Z,5284.2,FAR,Finland Veikkausliiga,new_format,AC Oulu,HJK Helsinki,32,Betano,btts,no,,2.12,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ou,over,1.5,1.23,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ou,under,1.5,3.89,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ou,over,2.5,1.77,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ou,under,2.5,2.02,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ou,over,3.5,2.88,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ou,under,3.5,1.39,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ht_ou,over,1.5,2.6,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ht_ou,under,1.5,1.44,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ht_ou,over,0.5,1.31,api_football,open
+2026-10-08T23:55:48Z,1492764,2026-10-12T19:00:00Z,5464.2,FAR,Ireland Premier Division,new_format,Shamrock Rovers,Bohemians,4,Pinnacle,ht_ou,under,0.5,3.2,api_football,open
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,8,Bet365,ou,over,2.5,1.75,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,8,Bet365,ou,under,2.5,2.05,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,36,BetVictor,ou,over,2.5,1.72,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,36,BetVictor,ou,under,2.5,1.97,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,36,BetVictor,ht_ou,over,0.5,1.35,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,36,BetVictor,ht_ou,under,0.5,2.86,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,36,BetVictor,btts,no,,2.2,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ou,over,1.5,1.24,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ou,under,1.5,4.25,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ou,over,2.5,1.78,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ou,under,2.5,2.12,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ou,over,3.5,2.92,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ou,under,3.5,1.43,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ht_ou,over,1.5,2.64,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ht_ou,under,1.5,1.5,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ht_ou,over,0.5,1.34,api_football,change
+2026-10-08T23:55:48Z,1507076,2026-10-09T05:00:00Z,304.2,T-6h,K-League 1,new_format,Daejeon Citizen,Jeonbuk Motors,4,Pinnacle,ht_ou,under,0.5,3.27,api_football,change
+2026-10-08T23:55:48Z,1494773,2026-10-10T14:00:00Z,2284.2,FAR,Norway Eliteserien,new_format,Bodo/Glimt,Kristiansund BK,3,Betfair,ou,over,1.5,1.02,api_football,open
+2026-10-08T23:55:48Z,1494773,2026-10-10T14:00:00Z,2284.2,FAR,Norway Eliteserien,new_format,Bodo/Glimt,Kristiansund BK,3,Betfair,ou,under,1.5,13.0,api_football,open
+2026-10-08T23:55:48Z,1494773,2026-10-10T14:00:00Z,2284.2,FAR,Norway Eliteserien,new_format,Bodo/Glimt,Kristiansund BK,3,Betfair,ou,over,3.5,1.4,api_football,open
+2026-10-08T23:55:48Z,1494773,2026-10-10T14:00:00Z,2284.2,FAR,Norway Eliteserien,new_format,Bodo/Glimt,Kristiansund BK,3,Betfair,ou,under,3.5,2.88,api_football,open
+2026-10-08T23:55:48Z,1494773,2026-10-10T14:00:00Z,2284.2,FAR,Norway Eliteserien,new_format,Bodo/Glimt,Kristiansund BK,3,Betfair,btts,yes,,1.87,api_football,open
+2026-10-08T23:55:48Z,1494773,2026-10-10T14:00:00Z,2284.2,FAR,Norway Eliteserien,new_format,Bodo/Glimt,Kristiansund BK,3,Betfair,btts,no,,1.9,api_football,open
+2026-10-08T23:55:48Z,1494778,2026-10-10T16:00:00Z,2404.2,FAR,Norway Eliteserien,new_format,Rosenborg,Sandefjord,3,Betfair,ou,over,1.5,1.1,api_football,open
+2026-10-08T23:55:48Z,1494778,2026-10-10T16:00:00Z,2404.2,FAR,Norway Eliteserien,new_format,Rosenborg,Sandefjord,3,Betfair,ou,under,1.5,6.5,api_football,open
+2026-10-08T23:55:48Z,1494778,2026-10-10T16:00:00Z,2404.2,FAR,Norway Eliteserien,new_format,Rosenborg,Sandefjord,3,Betfair,ou,over,3.5,2.05,api_football,open
+2026-10-08T23:55:48Z,1494778,2026-10-10T16:00:00Z,2404.2,FAR,Norway Eliteserien,new_format,Rosenborg,Sandefjord,3,Betfair,ou,under,3.5,1.75,api_football,open
+2026-10-08T23:55:48Z,1494778,2026-10-10T16:00:00Z,2404.2,FAR,Norway Eliteserien,new_format,Rosenborg,Sandefjord,3,Betfair,btts,yes,,1.62,api_football,open
+2026-10-08T23:55:48Z,1494778,2026-10-10T16:00:00Z,2404.2,FAR,Norway Eliteserien,new_format,Rosenborg,Sandefjord,3,Betfair,btts,no,,2.25,api_football,open
+2026-10-08T23:55:48Z,1494775,2026-10-11T12:30:00Z,3634.2,FAR,Norway Eliteserien,new_format,Fredrikstad,Tromso,3,Betfair,ou,over,2.5,1.8,api_football,open
+2026-10-08T23:55:48Z,1494775,2026-10-11T12:30:00Z,3634.2,FAR,Norway Eliteserien,new_format,Fredrikstad,Tromso,3,Betfair,ou,under,2.5,2.0,api_football,open
+2026-10-08T23:55:48Z,1494779,2026-10-11T15:00:00Z,3784.2,FAR,Norway Eliteserien,new_format,Start,Ham-Kam,3,Betfair,ou,over,2.5,1.6,api_football,open
+2026-10-08T23:55:48Z,1494779,2026-10-11T15:00:00Z,3784.2,FAR,Norway Eliteserien,new_format,Start,Ham-Kam,3,Betfair,ou,under,2.5,2.3,api_football,open
+2026-10-08T23:55:48Z,1494772,2026-10-11T15:00:00Z,3784.2,FAR,Norway Eliteserien,new_format,Aalesund,Sarpsborg 08 FF,3,Betfair,ou,over,2.5,1.4,api_football,open
+2026-10-08T23:55:48Z,1494772,2026-10-11T15:00:00Z,3784.2,FAR,Norway Eliteserien,new_format,Aalesund,Sarpsborg 08 FF,3,Betfair,ou,under,2.5,2.88,api_football,open
+2026-10-08T23:55:48Z,1494777,2026-10-11T17:15:00Z,3919.2,FAR,Norway Eliteserien,new_format,Lillestrom,Molde,3,Betfair,ou,over,2.5,1.36,api_football,open
+2026-10-08T23:55:48Z,1494777,2026-10-11T17:15:00Z,3919.2,FAR,Norway Eliteserien,new_format,Lillestrom,Molde,3,Betfair,ou,under,2.5,3.1,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,7,William Hill,ht_ou,over,1.5,2.75,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,7,William Hill,ht_ou,under,1.5,1.4,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,7,William Hill,ht_ou,over,0.5,1.36,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,7,William Hill,ht_ou,under,0.5,2.9,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,7,William Hill,btts,yes,,1.73,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,7,William Hill,btts,no,,2.05,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ou,over,1.5,1.29,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ou,under,1.5,3.3,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ou,over,2.5,1.89,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ou,under,2.5,1.78,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ou,over,3.5,3.3,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ou,under,3.5,1.29,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ht_ou,over,1.5,2.64,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ht_ou,under,1.5,1.4,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ht_ou,over,0.5,1.4,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,ht_ou,under,0.5,2.66,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,btts,yes,,1.7,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,36,BetVictor,btts,no,,2.0,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ou,over,1.5,1.31,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ou,under,1.5,3.34,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ou,over,2.5,1.98,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ou,under,2.5,1.81,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ou,over,3.5,3.36,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ou,under,3.5,1.3,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ht_ou,over,1.5,2.93,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ht_ou,over,0.5,1.38,api_football,open
+2026-10-08T23:55:48Z,1565270,2026-10-10T17:00:00Z,2464.2,FAR,Romanian Superliga,new_format,Universitatea Cluj,Rapid,4,Pinnacle,ht_ou,under,0.5,2.91,api_football,open
+2026-10-08T23:55:48Z,1565268,2026-10-10T18:30:00Z,2554.2,FAR,Romanian Superliga,new_format,FCSB,Oţelul,3,Betfair,ou,over,1.5,1.17,api_football,open
+2026-10-08T23:55:48Z,1565268,2026-10-10T18:30:00Z,2554.2,FAR,Romanian Superliga,new_format,FCSB,Oţelul,3,Betfair,ou,under,1.5,5.0,api_football,open
+2026-10-08T23:55:48Z,1565268,2026-10-10T18:30:00Z,2554.2,FAR,Romanian Superliga,new_format,FCSB,Oţelul,3,Betfair,ou,over,3.5,2.55,api_football,open
+2026-10-08T23:55:48Z,1565268,2026-10-10T18:30:00Z,2554.2,FAR,Romanian Superliga,new_format,FCSB,Oţelul,3,Betfair,ou,under,3.5,1.5,api_football,open
+2026-10-08T23:55:48Z,1565268,2026-10-10T18:30:00Z,2554.2,FAR,Romanian Superliga,new_format,FCSB,Oţelul,3,Betfair,btts,yes,,1.8,api_football,open
+2026-10-08T23:55:48Z,1565268,2026-10-10T18:30:00Z,2554.2,FAR,Romanian Superliga,new_format,FCSB,Oţelul,3,Betfair,btts,no,,2.0,api_football,open
+2026-10-08T23:55:48Z,1494289,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,AIK Stockholm,IF Brommapojkarna,3,Betfair,ou,over,1.5,1.17,api_football,open
+2026-10-08T23:55:48Z,1494289,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,AIK Stockholm,IF Brommapojkarna,3,Betfair,ou,under,1.5,5.0,api_football,open
+2026-10-08T23:55:48Z,1494289,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,AIK Stockholm,IF Brommapojkarna,3,Betfair,ou,over,3.5,2.55,api_football,open
+2026-10-08T23:55:48Z,1494289,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,AIK Stockholm,IF Brommapojkarna,3,Betfair,ou,under,3.5,1.5,api_football,open
+2026-10-08T23:55:48Z,1494289,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,AIK Stockholm,IF Brommapojkarna,3,Betfair,btts,yes,,1.53,api_football,open
+2026-10-08T23:55:48Z,1494289,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,AIK Stockholm,IF Brommapojkarna,3,Betfair,btts,no,,2.45,api_football,open
+2026-10-08T23:55:48Z,1494291,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,Gais,Sirius,3,Betfair,ou,over,1.5,1.22,api_football,open
+2026-10-08T23:55:48Z,1494291,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,Gais,Sirius,3,Betfair,ou,under,1.5,4.2,api_football,open
+2026-10-08T23:55:48Z,1494291,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,Gais,Sirius,3,Betfair,ou,over,3.5,2.88,api_football,open
+2026-10-08T23:55:48Z,1494291,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,Gais,Sirius,3,Betfair,ou,under,3.5,1.4,api_football,open
+2026-10-08T23:55:48Z,1494291,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,Gais,Sirius,3,Betfair,btts,yes,,1.6,api_football,open
+2026-10-08T23:55:48Z,1494291,2026-10-10T13:00:00Z,2224.2,FAR,Sweden Allsvenskan,new_format,Gais,Sirius,3,Betfair,btts,no,,2.3,api_football,open
+2026-10-08T23:55:48Z,1494296,2026-10-10T15:30:00Z,2374.2,FAR,Sweden Allsvenskan,new_format,Mjallby AIF,Degerfors IF,3,Betfair,ou,over,1.5,1.29,api_football,open
+2026-10-08T23:55:48Z,1494296,2026-10-10T15:30:00Z,2374.2,FAR,Sweden Allsvenskan,new_format,Mjallby AIF,Degerfors IF,3,Betfair,ou,under,1.5,3.5,api_football,open
+2026-10-08T23:55:48Z,1494296,2026-10-10T15:30:00Z,2374.2,FAR,Sweden Allsvenskan,new_format,Mjallby AIF,Degerfors IF,3,Betfair,ou,over,3.5,3.25,api_football,open
+2026-10-08T23:55:48Z,1494296,2026-10-10T15:30:00Z,2374.2,FAR,Sweden Allsvenskan,new_format,Mjallby AIF,Degerfors IF,3,Betfair,ou,under,3.5,1.33,api_football,open
+2026-10-08T23:55:48Z,1494296,2026-10-10T15:30:00Z,2374.2,FAR,Sweden Allsvenskan,new_format,Mjallby AIF,Degerfors IF,3,Betfair,btts,yes,,1.75,api_football,open
+2026-10-08T23:55:48Z,1494296,2026-10-10T15:30:00Z,2374.2,FAR,Sweden Allsvenskan,new_format,Mjallby AIF,Degerfors IF,3,Betfair,btts,no,,2.05,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,7,William Hill,ht_ou,over,1.5,2.2,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,7,William Hill,ht_ou,under,1.5,1.62,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,7,William Hill,ht_ou,over,0.5,1.25,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,7,William Hill,ht_ou,under,0.5,3.7,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,7,William Hill,btts,yes,,1.5,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,7,William Hill,btts,no,,2.45,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,3,Betfair,ou,over,2.5,1.47,api_football,open
+2026-10-08T23:55:48Z,1494294,2026-10-11T12:00:00Z,3604.2,FAR,Sweden Allsvenskan,new_format,Hammarby FF,Djurgardens IF,3,Betfair,ou,under,2.5,2.63,api_football,open
+2026-10-08T23:55:48Z,1494293,2026-10-11T14:30:00Z,3754.2,FAR,Sweden Allsvenskan,new_format,BK Hacken,Orgryte IS,3,Betfair,ou,over,2.5,1.36,api_football,open
+2026-10-08T23:55:48Z,1494293,2026-10-11T14:30:00Z,3754.2,FAR,Sweden Allsvenskan,new_format,BK Hacken,Orgryte IS,3,Betfair,ou,under,2.5,3.1,api_football,open
