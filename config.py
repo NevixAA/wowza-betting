@@ -491,7 +491,13 @@ API_FOOTBALL_IDS = {
     "League One":               41,
     "League Two":               42,
     "Bundesliga 2":             79,
-    "Ligue 2":                  65,
+    # WAS 65 — the defunct Coupe de la Ligue, not Ligue 2. Fixed 2026-10-08: with 65 every
+    # API-Football consumer (per-book odds capture, side-market capture, xG/shot enrichment,
+    # results fallback, live scanner) asked for a competition with no fixtures, so Ligue 2 had
+    # zero per-book quotes and no side-market odds since 2026-05-09 while 9 fixtures sat on the
+    # board. player_model/config.py had the same bug and was fixed to 62 earlier; this copy was
+    # missed. Verified on /leagues: Ligue 1 = 61, Ligue 2 = 62, Ligue 3 = 63.
+    "Ligue 2":                  62,
     "La Liga 2":               141,
     "Serie B":                 136,
     "Greek Super League":      197,
