@@ -18,6 +18,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from dashboard_data import pro, ui
 
+# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same
+# commit, and the server ran the NEW page against the OLD dashboard_data.pro still in memory:
+# AttributeError on pro.tip_scoreboard (2026-10-08). Reloading this small module on every run
+# makes the page and its helper always the same version.
+import importlib  # noqa: E402
+pro = importlib.reload(pro)
+
 st.set_page_config(page_title="Wowza | Pro", page_icon="🔬", layout="wide")
 st.title("🔬 Wowza Pro — evidence & validation")
 
