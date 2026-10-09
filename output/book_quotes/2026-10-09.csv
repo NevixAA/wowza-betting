@@ -5061,3 +5061,795 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-09T08:08:40Z,1576189,2026-10-09T16:30:00Z,501.3,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,5,SBO,ht_ou,under,1.5,1.6,api_football,open
 2026-10-09T08:13:49Z,1563190,2026-10-09T19:00:00Z,646.2,FAR,Championship,standard,West Ham,QPR,5,SBO,ht_ou,over,1.5,2.29,api_football,open
 2026-10-09T08:13:49Z,1563190,2026-10-09T19:00:00Z,646.2,FAR,Championship,standard,West Ham,QPR,5,SBO,ht_ou,under,1.5,1.61,api_football,open
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,7,William Hill,ht_ou,over,1.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,7,William Hill,ht_ou,under,1.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,7,William Hill,ht_ou,over,0.5,1.25,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,7,William Hill,ht_ou,under,0.5,3.5,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,7,William Hill,btts,yes,,1.55,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,7,William Hill,btts,no,,2.3,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,8,Bet365,ou,over,1.5,1.17,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,8,Bet365,ou,under,1.5,5.0,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,8,Bet365,ou,over,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,8,Bet365,ou,under,2.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,8,Bet365,ou,over,3.5,2.38,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,8,Bet365,ou,under,3.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ou,over,1.5,1.12,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ou,under,1.5,4.8,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ou,over,2.5,1.54,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ou,under,2.5,2.38,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ou,over,3.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ou,under,3.5,1.49,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ht_ou,over,1.5,2.27,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ht_ou,under,1.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ht_ou,over,0.5,1.23,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,ht_ou,under,0.5,3.48,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,btts,yes,,1.53,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,2,Marathonbet,btts,no,,2.31,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ou,over,1.5,1.17,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ou,under,1.5,5.0,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ou,over,2.5,1.5,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ou,under,2.5,2.4,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ou,over,3.5,2.45,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ou,under,3.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ht_ou,over,1.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ht_ou,under,1.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ht_ou,over,0.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,ht_ou,under,0.5,3.75,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,btts,yes,,1.5,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,3,Betfair,btts,no,,2.5,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ou,over,1.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ou,under,1.5,5.0,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ou,over,2.5,1.54,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ou,under,2.5,2.27,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ou,over,3.5,2.28,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ou,under,3.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ht_ou,over,1.5,2.24,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,ht_ou,under,1.5,1.56,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,btts,yes,,1.5,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,36,BetVictor,btts,no,,2.4,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ou,over,1.5,1.17,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ou,under,1.5,5.37,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ou,over,2.5,1.56,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ou,under,2.5,2.52,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ou,over,3.5,2.45,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ou,under,3.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ht_ou,over,1.5,2.35,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,4,Pinnacle,ht_ou,under,1.5,1.61,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ou,over,1.5,1.13,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ou,under,1.5,4.6,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ou,over,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ou,under,2.5,2.36,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ou,over,3.5,2.38,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ou,under,3.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ht_ou,over,1.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ht_ou,under,1.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ht_ou,over,0.5,1.25,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,ht_ou,under,0.5,3.45,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,btts,yes,,1.54,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,11,1xBet,btts,no,,2.32,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ou,over,1.5,1.21,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ou,under,1.5,4.55,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ou,over,2.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ou,under,2.5,2.35,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ou,over,3.5,2.52,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ou,under,3.5,1.55,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ht_ou,over,1.5,2.45,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ht_ou,under,1.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ht_ou,over,0.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1558644,2026-10-09T18:45:00Z,352.6,T-6h,Belgian First Division A,standard,SK Beveren,Lommel United,32,Betano,ht_ou,under,0.5,3.25,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,7,William Hill,ht_ou,over,1.5,2.15,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,7,William Hill,ht_ou,under,1.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,7,William Hill,ht_ou,over,0.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,7,William Hill,ht_ou,under,0.5,3.8,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,7,William Hill,btts,yes,,1.44,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,7,William Hill,btts,no,,2.5,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,ou,over,1.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,ou,under,1.5,5.5,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,ou,over,2.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,ou,under,2.5,2.4,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,ou,over,3.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,ou,under,3.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,btts,yes,,1.5,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,8,Bet365,btts,no,,2.5,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ou,over,1.5,1.09,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ou,under,1.5,5.3,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ou,over,2.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ou,under,2.5,2.49,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ou,over,3.5,2.19,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ou,under,3.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ht_ou,over,1.5,2.16,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ht_ou,under,1.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ht_ou,over,0.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,ht_ou,under,0.5,3.74,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,btts,yes,,1.44,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,2,Marathonbet,btts,no,,2.55,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ou,over,1.5,1.13,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ou,under,1.5,6.0,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ou,over,2.5,1.47,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ou,under,2.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ou,over,3.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ou,under,3.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ht_ou,over,1.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ht_ou,under,1.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ht_ou,over,0.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,ht_ou,under,0.5,4.0,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,btts,yes,,1.4,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,3,Betfair,btts,no,,2.88,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ou,over,1.5,1.13,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ou,under,1.5,5.25,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ou,over,2.5,1.47,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ou,under,2.5,2.44,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ou,over,3.5,2.12,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ou,under,3.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ht_ou,over,1.5,2.12,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,ht_ou,under,1.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,btts,yes,,1.44,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,36,BetVictor,btts,no,,2.6,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ou,over,1.5,1.15,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ou,under,1.5,5.83,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ou,over,2.5,1.51,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ou,under,2.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ou,over,3.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ou,under,3.5,1.68,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ht_ou,over,1.5,2.24,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,4,Pinnacle,ht_ou,under,1.5,1.68,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,5,SBO,ht_ou,over,1.5,2.31,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,5,SBO,ht_ou,under,1.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ou,over,1.5,1.09,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ou,under,1.5,5.3,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ou,over,2.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ou,under,2.5,2.49,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ou,over,3.5,2.19,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ou,under,3.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ht_ou,over,1.5,2.16,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ht_ou,under,1.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ht_ou,over,0.5,1.21,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,ht_ou,under,0.5,3.64,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,btts,yes,,1.44,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,11,1xBet,btts,no,,2.6,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ou,over,1.5,1.17,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ou,under,1.5,5.1,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ou,over,2.5,1.55,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ou,under,2.5,2.55,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ou,over,3.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ht_ou,over,1.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ht_ou,under,1.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ht_ou,over,0.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,ht_ou,under,0.5,3.45,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,btts,yes,,1.47,api_football,change
+2026-10-09T12:52:24Z,1576191,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,1. FC Heidenheim,1. FC Kaiserslautern,32,Betano,btts,no,,2.55,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,7,William Hill,ht_ou,over,1.5,2.1,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,7,William Hill,ht_ou,under,1.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,7,William Hill,ht_ou,over,0.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,7,William Hill,ht_ou,under,0.5,3.9,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ou,over,1.5,1.12,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ou,under,1.5,6.0,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ou,over,2.5,1.48,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ou,under,2.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ou,over,3.5,2.1,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ou,under,3.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ht_ou,over,1.5,2.1,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,8,Bet365,ht_ou,under,1.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ou,under,1.5,5.2,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ou,over,2.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ou,under,2.5,2.49,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ou,over,3.5,2.15,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ht_ou,over,1.5,2.14,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ht_ou,under,1.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ht_ou,over,0.5,1.21,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,ht_ou,under,0.5,3.64,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,btts,yes,,1.4,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,2,Marathonbet,btts,no,,2.68,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ou,over,1.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ou,under,1.5,5.5,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ou,over,2.5,1.47,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ou,under,2.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ou,over,3.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ht_ou,over,1.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,3,Betfair,ht_ou,under,1.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ou,over,1.5,1.11,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ou,under,1.5,5.5,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ou,over,2.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ou,under,2.5,2.47,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ou,over,3.5,2.09,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ou,under,3.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ht_ou,over,1.5,2.08,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,ht_ou,under,1.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,36,BetVictor,btts,no,,2.75,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ou,under,1.5,6.18,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ou,over,2.5,1.49,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ou,under,2.5,2.71,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ou,over,3.5,2.24,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ou,under,3.5,1.69,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ht_ou,over,1.5,2.21,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,4,Pinnacle,ht_ou,under,1.5,1.69,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,5,SBO,ou,over,3.5,2.23,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,5,SBO,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,5,SBO,ht_ou,over,1.5,2.26,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,5,SBO,ht_ou,under,1.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ou,under,1.5,5.2,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ou,over,2.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ou,under,2.5,2.49,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ou,over,3.5,2.15,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ht_ou,over,1.5,2.14,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ht_ou,under,1.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ht_ou,over,0.5,1.21,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,ht_ou,under,0.5,3.64,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,btts,yes,,1.4,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,11,1xBet,btts,no,,2.73,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ou,over,1.5,1.16,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ou,under,1.5,5.3,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ou,over,2.5,1.5,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ou,under,2.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ou,over,3.5,2.22,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ou,under,3.5,1.7,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ht_ou,over,1.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ht_ou,under,1.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ht_ou,over,0.5,1.28,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,ht_ou,under,0.5,3.55,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,btts,yes,,1.44,api_football,change
+2026-10-09T12:52:24Z,1576189,2026-10-09T16:30:00Z,217.6,T-6h,Bundesliga 2,standard,Eintracht Braunschweig,Holstein Kiel,32,Betano,btts,no,,2.67,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,7,William Hill,btts,no,,2.88,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ou,over,1.5,1.04,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ou,under,1.5,13.0,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ou,over,2.5,1.18,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ou,under,2.5,4.5,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ou,over,3.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ou,under,3.5,2.62,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ht_ou,over,1.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ht_ou,under,1.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ht_ou,over,0.5,1.11,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,ht_ou,under,0.5,6.5,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,btts,yes,,1.4,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,8,Bet365,btts,no,,2.75,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,ou,over,2.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,ou,under,2.5,4.4,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,ou,over,3.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,ou,under,3.5,2.43,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,ht_ou,over,1.5,1.59,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,ht_ou,under,1.5,2.17,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,btts,yes,,1.37,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,2,Marathonbet,btts,no,,2.8,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ou,over,1.5,1.03,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ou,under,1.5,12.0,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ou,over,2.5,1.17,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ou,under,2.5,5.0,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ou,over,3.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ou,under,3.5,2.7,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ht_ou,over,1.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ht_ou,under,1.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ht_ou,over,0.5,1.07,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,3,Betfair,ht_ou,under,0.5,7.0,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,ou,over,2.5,1.15,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,ou,under,2.5,4.8,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,ou,over,3.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,ou,under,3.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,ht_ou,over,1.5,1.56,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,ht_ou,under,1.5,2.23,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,btts,yes,,1.36,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,36,BetVictor,btts,no,,2.88,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,4,Pinnacle,ou,over,2.5,1.17,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,4,Pinnacle,ou,under,2.5,5.15,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,4,Pinnacle,ou,over,3.5,1.47,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,4,Pinnacle,ou,under,3.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,4,Pinnacle,ht_ou,over,1.5,1.59,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,4,Pinnacle,ht_ou,under,1.5,2.34,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ou,under,1.5,15.0,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ou,over,2.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ou,under,2.5,5.5,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ht_ou,over,1.5,1.55,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ht_ou,under,1.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ht_ou,over,0.5,1.09,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,ht_ou,under,0.5,5.7,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,btts,yes,,1.37,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,11,1xBet,btts,no,,2.9,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ou,over,1.5,1.06,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ou,under,1.5,9.75,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ou,over,2.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ou,under,2.5,4.7,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ou,over,3.5,1.5,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ou,under,3.5,2.7,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ht_ou,over,1.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ht_ou,under,1.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ht_ou,over,0.5,1.16,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,ht_ou,under,0.5,5.1,api_football,change
+2026-10-09T12:52:24Z,1552180,2026-10-09T18:00:00Z,307.6,T-6h,Dutch Eredivisie,standard,PSV Eindhoven,Heerenveen,32,Betano,btts,no,,2.95,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,ou,over,1.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,ou,under,1.5,3.4,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,ou,over,2.5,2.0,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,ou,under,2.5,1.8,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,ou,over,3.5,3.5,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,ou,under,3.5,1.28,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,btts,yes,,2.0,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,8,Bet365,btts,no,,1.73,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ou,under,1.5,3.08,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ou,over,2.5,1.95,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ou,under,2.5,1.79,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ou,over,3.5,3.2,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ou,under,3.5,1.26,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ht_ou,over,1.5,2.71,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ht_ou,under,1.5,1.39,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,ht_ou,under,0.5,2.83,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,btts,yes,,1.97,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,2,Marathonbet,btts,no,,1.73,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,36,BetVictor,ou,over,2.5,1.93,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,36,BetVictor,ou,under,2.5,1.75,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,36,BetVictor,ht_ou,over,1.5,2.7,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,36,BetVictor,ht_ou,under,1.5,1.39,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,36,BetVictor,ht_ou,over,0.5,1.41,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,36,BetVictor,ht_ou,under,0.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ou,over,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ou,under,1.5,3.43,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ou,under,2.5,1.85,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ou,over,3.5,3.56,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ou,under,3.5,1.31,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ht_ou,over,1.5,3.04,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,4,Pinnacle,ht_ou,under,0.5,2.92,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,5,SBO,ou,over,2.5,2.06,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,5,SBO,ou,under,2.5,1.78,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,32,Betano,ou,under,2.5,1.78,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,32,Betano,ht_ou,over,1.5,3.1,api_football,change
+2026-10-09T12:52:24Z,1552489,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Montpellier,Grenoble,32,Betano,btts,yes,,2.02,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,7,William Hill,btts,yes,,1.67,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,7,William Hill,btts,no,,2.1,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,8,Bet365,ht_ou,over,1.5,2.62,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,8,Bet365,ht_ou,under,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,8,Bet365,btts,yes,,1.67,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,8,Bet365,btts,no,,2.1,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,ou,over,1.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,ou,under,1.5,3.68,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,ou,over,2.5,1.79,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,ou,under,2.5,1.95,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,ht_ou,over,0.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,ht_ou,under,0.5,3.14,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,btts,yes,,1.67,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,2,Marathonbet,btts,no,,2.05,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,3,Betfair,ou,under,2.5,1.9,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ou,over,1.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ou,under,1.5,3.8,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ou,over,2.5,1.76,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ou,under,2.5,1.92,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ht_ou,over,1.5,2.47,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ht_ou,under,1.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ht_ou,over,0.5,1.35,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,36,BetVictor,ht_ou,under,0.5,2.85,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ou,over,1.5,1.26,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ou,under,1.5,4.01,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ou,over,2.5,1.85,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ou,under,2.5,2.03,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ou,over,3.5,3.17,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ou,under,3.5,1.37,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ht_ou,over,1.5,2.69,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ht_ou,under,1.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,4,Pinnacle,ht_ou,under,0.5,3.24,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,5,SBO,ou,over,2.5,1.84,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,5,SBO,ou,under,2.5,2.0,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,ou,over,1.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,ou,under,1.5,3.68,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,ou,over,2.5,1.79,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,ou,under,2.5,1.95,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,ht_ou,over,0.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,ht_ou,under,0.5,3.14,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,btts,yes,,1.67,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,11,1xBet,btts,no,,2.08,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,32,Betano,btts,yes,,1.67,api_football,change
+2026-10-09T12:52:24Z,1552490,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Nancy,Guingamp,32,Betano,btts,no,,2.1,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,7,William Hill,btts,yes,,1.85,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,7,William Hill,btts,no,,1.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,ou,over,1.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,ou,under,1.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,ou,over,2.5,2.15,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,ou,under,2.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,ou,over,3.5,3.75,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,ou,under,3.5,1.25,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,btts,yes,,1.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,8,Bet365,btts,no,,1.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ou,over,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ou,under,1.5,2.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ou,over,2.5,2.17,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ou,under,2.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ou,over,3.5,3.92,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ou,under,3.5,1.18,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ht_ou,over,1.5,2.97,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ht_ou,over,0.5,1.4,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,ht_ou,under,0.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,btts,yes,,1.87,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,2,Marathonbet,btts,no,,1.81,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,3,Betfair,ou,over,2.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,3,Betfair,ou,under,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ou,over,1.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ou,under,1.5,2.9,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ou,over,2.5,2.08,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ou,under,2.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ou,over,3.5,4.1,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ou,under,3.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ht_ou,over,0.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,ht_ou,under,0.5,2.47,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,btts,yes,,1.85,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,36,BetVictor,btts,no,,1.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ou,under,1.5,2.93,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ou,over,2.5,2.33,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ou,under,2.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ou,under,3.5,1.23,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ht_ou,over,1.5,3.37,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ht_ou,under,1.5,1.32,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,4,Pinnacle,ht_ou,under,0.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ou,over,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ou,under,1.5,2.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ou,over,2.5,2.17,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ou,under,2.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ou,over,3.5,3.92,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ou,under,3.5,1.18,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ht_ou,over,1.5,2.97,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ht_ou,over,0.5,1.4,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,ht_ou,under,0.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,btts,yes,,1.87,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,11,1xBet,btts,no,,1.83,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ou,over,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ou,under,1.5,2.92,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ou,over,2.5,2.27,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ou,under,2.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ou,over,3.5,4.1,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ou,under,3.5,1.24,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ht_ou,over,1.5,3.35,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ht_ou,over,0.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,ht_ou,under,0.5,2.5,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,btts,yes,,1.91,api_football,change
+2026-10-09T12:52:24Z,1552493,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Sochaux,Boulogne,32,Betano,btts,no,,1.83,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,8,Bet365,ou,over,1.5,1.25,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,8,Bet365,ou,under,1.5,3.75,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,8,Bet365,ou,over,2.5,1.9,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,8,Bet365,ou,under,2.5,1.9,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,8,Bet365,ht_ou,over,0.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,8,Bet365,ht_ou,under,0.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ou,over,1.5,1.24,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ou,under,1.5,3.34,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ou,over,2.5,1.9,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ou,under,2.5,1.84,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ou,over,3.5,3.2,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ou,under,3.5,1.26,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ht_ou,over,1.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,ht_ou,under,1.5,1.4,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,btts,yes,,1.72,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,2,Marathonbet,btts,no,,1.98,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,ou,over,1.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,ou,under,1.5,3.4,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,ou,over,3.5,3.4,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,ou,under,3.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,ht_ou,over,1.5,2.88,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,ht_ou,under,1.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,btts,yes,,1.75,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,3,Betfair,btts,no,,2.05,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,36,BetVictor,ou,under,2.5,1.81,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,36,BetVictor,ou,over,3.5,3.4,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,36,BetVictor,ou,under,3.5,1.29,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,36,BetVictor,ht_ou,over,1.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,36,BetVictor,ht_ou,under,1.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ou,over,1.5,1.32,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ou,under,1.5,3.48,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ou,over,2.5,2.01,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ou,under,2.5,1.86,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ou,over,3.5,3.47,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ou,under,3.5,1.32,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ht_ou,over,1.5,2.95,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ht_ou,over,0.5,1.39,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,4,Pinnacle,ht_ou,under,0.5,2.98,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,5,SBO,ou,over,2.5,1.98,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,5,SBO,ou,under,2.5,1.86,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ou,over,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ou,under,1.5,3.4,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ou,over,2.5,1.98,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ou,under,2.5,1.87,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ou,over,3.5,3.35,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ou,under,3.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ht_ou,over,1.5,2.95,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ht_ou,over,0.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1552492,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,PAU,Laval,32,Betano,ht_ou,under,0.5,2.75,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,36,BetVictor,ou,over,2.5,1.75,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,36,BetVictor,ou,under,3.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,36,BetVictor,ht_ou,under,0.5,2.83,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,36,BetVictor,btts,yes,,1.62,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ou,under,1.5,4.04,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ou,over,2.5,1.81,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ou,under,2.5,2.05,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ou,over,3.5,3.11,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ou,under,3.5,1.38,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ht_ou,over,1.5,2.72,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ht_ou,under,1.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ht_ou,over,0.5,1.35,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,4,Pinnacle,ht_ou,under,0.5,3.21,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,5,SBO,ou,over,2.5,1.8,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,5,SBO,ou,under,2.5,2.04,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,11,1xBet,ou,over,2.5,1.78,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,11,1xBet,ou,under,2.5,1.97,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,11,1xBet,ht_ou,over,1.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,11,1xBet,ht_ou,under,1.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,11,1xBet,ht_ou,over,0.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,11,1xBet,ht_ou,under,0.5,2.96,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,ou,over,1.5,1.26,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,ou,under,1.5,3.85,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,ou,over,2.5,1.8,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,ou,under,2.5,2.07,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,ou,over,3.5,2.95,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,ht_ou,over,1.5,2.7,api_football,change
+2026-10-09T12:52:24Z,1552488,2026-10-09T18:00:00Z,307.6,T-6h,Ligue 2,standard,Dunkerque,Annecy,32,Betano,btts,no,,2.22,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,7,William Hill,ht_ou,over,1.5,2.5,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,7,William Hill,ht_ou,under,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,7,William Hill,ht_ou,over,0.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,7,William Hill,ht_ou,under,0.5,3.2,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,7,William Hill,btts,yes,,1.75,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,7,William Hill,btts,no,,2.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ou,over,1.5,1.25,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ou,under,1.5,3.75,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ou,over,2.5,1.8,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ou,under,2.5,2.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ou,over,3.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ou,under,3.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ht_ou,over,0.5,1.28,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,ht_ou,under,0.5,3.5,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,btts,yes,,1.75,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,8,Bet365,btts,no,,2.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ou,over,1.5,1.19,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ou,under,1.5,3.74,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ou,over,2.5,1.74,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ou,under,2.5,1.94,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ou,over,3.5,2.83,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ou,under,3.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ht_ou,over,1.5,2.45,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ht_ou,under,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ht_ou,over,0.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,ht_ou,under,0.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,btts,yes,,1.66,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,2,Marathonbet,btts,no,,2.04,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ou,over,1.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ou,under,1.5,4.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ou,over,2.5,1.73,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ou,under,2.5,2.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ou,over,3.5,2.88,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ht_ou,over,1.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ht_ou,under,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ht_ou,over,0.5,1.29,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,ht_ou,under,0.5,3.3,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,btts,yes,,1.65,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,3,Betfair,btts,no,,2.1,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ou,over,1.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ou,under,1.5,3.8,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ou,over,2.5,1.77,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ou,under,2.5,1.91,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ou,over,3.5,3.1,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ou,under,3.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ht_ou,over,1.5,2.49,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ht_ou,under,1.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,ht_ou,under,0.5,2.82,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,btts,yes,,1.67,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,36,BetVictor,btts,no,,2.05,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ou,over,1.5,1.25,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ou,under,1.5,3.92,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ou,over,2.5,1.81,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ou,under,2.5,2.02,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ou,over,3.5,2.95,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ou,under,3.5,1.4,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ht_ou,over,1.5,2.7,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ht_ou,under,1.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ht_ou,over,0.5,1.34,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,4,Pinnacle,ht_ou,under,0.5,3.23,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ou,over,1.5,1.19,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ou,under,1.5,3.74,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ou,over,2.5,1.74,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ou,under,2.5,1.94,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ou,over,3.5,2.83,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ou,under,3.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ht_ou,over,1.5,2.45,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ht_ou,under,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ht_ou,over,0.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,ht_ou,under,0.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,btts,yes,,1.66,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,11,1xBet,btts,no,,2.07,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ou,over,1.5,1.27,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ou,under,1.5,3.55,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ou,over,2.5,1.8,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ou,under,2.5,1.98,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ou,over,3.5,2.9,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ou,under,3.5,1.38,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ht_ou,over,1.5,2.7,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ht_ou,under,1.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ht_ou,over,0.5,1.39,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,ht_ou,under,0.5,2.92,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,btts,yes,,1.7,api_football,change
+2026-10-09T12:52:24Z,1585281,2026-10-09T18:45:00Z,352.6,T-6h,National League,standard,Sutton Utd,Boreham Wood,32,Betano,btts,no,,2.05,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,7,William Hill,ht_ou,over,1.5,3.1,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,7,William Hill,ht_ou,under,0.5,2.62,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,7,William Hill,btts,yes,,2.0,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,7,William Hill,btts,no,,1.73,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ou,over,1.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ou,under,1.5,2.62,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ou,over,2.5,2.4,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ou,under,2.5,1.53,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ou,over,3.5,4.5,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ou,under,3.5,1.18,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ht_ou,over,1.5,3.25,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ht_ou,over,0.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,ht_ou,under,0.5,2.62,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,btts,yes,,2.0,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,8,Bet365,btts,no,,1.75,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ou,over,1.5,1.4,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ou,under,1.5,2.56,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ou,over,2.5,2.35,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ou,under,2.5,1.55,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ou,over,3.5,4.33,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ou,under,3.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ht_ou,over,1.5,3.14,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ht_ou,under,1.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ht_ou,over,0.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,ht_ou,under,0.5,2.51,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,btts,yes,,1.99,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,2,Marathonbet,btts,no,,1.71,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,3,Betfair,ou,over,2.5,2.3,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,3,Betfair,ou,under,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,3,Betfair,ht_ou,over,0.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,3,Betfair,ht_ou,under,0.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ou,over,1.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ou,under,1.5,2.5,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ou,over,2.5,2.27,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ou,under,2.5,1.54,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ou,over,3.5,4.75,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ou,under,3.5,1.15,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ht_ou,over,1.5,2.95,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ht_ou,over,0.5,1.5,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,ht_ou,under,0.5,2.37,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,btts,yes,,2.0,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,36,BetVictor,btts,no,,1.73,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ou,over,1.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ou,under,1.5,2.84,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ou,over,2.5,2.46,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ou,under,2.5,1.59,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ou,over,3.5,4.71,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ou,under,3.5,1.21,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ht_ou,over,1.5,3.33,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ht_ou,over,0.5,1.5,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,4,Pinnacle,ht_ou,under,0.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,5,SBO,ou,over,2.5,2.31,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,5,SBO,ou,under,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ou,over,1.5,1.41,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ou,under,1.5,2.52,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ou,over,2.5,2.47,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ou,under,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ou,over,3.5,4.4,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ou,under,3.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ht_ou,over,1.5,3.2,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ht_ou,under,1.5,1.29,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ht_ou,over,0.5,1.46,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,ht_ou,under,0.5,2.48,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,btts,yes,,1.99,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,11,1xBet,btts,no,,1.73,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ou,over,1.5,1.47,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ou,under,1.5,2.75,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ou,over,2.5,2.42,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ou,under,2.5,1.6,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ou,over,3.5,4.4,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ou,under,3.5,1.21,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ht_ou,over,1.5,3.5,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ht_ou,under,1.5,1.31,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ht_ou,over,0.5,1.57,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,ht_ou,under,0.5,2.42,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,btts,yes,,2.0,api_football,change
+2026-10-09T12:52:24Z,1575516,2026-10-09T17:45:00Z,292.6,T-6h,Portuguese Primeira Liga,standard,Moreirense,GIL Vicente,32,Betano,btts,no,,1.75,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,8,Bet365,ou,over,2.5,2.05,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,8,Bet365,ou,under,2.5,1.75,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,8,Bet365,ht_ou,over,1.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,8,Bet365,ht_ou,under,1.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,8,Bet365,btts,yes,,1.8,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,8,Bet365,btts,no,,1.95,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,3,Betfair,ou,over,1.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,3,Betfair,ou,under,1.5,3.4,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,3,Betfair,ht_ou,over,1.5,3.0,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,3,Betfair,ht_ou,under,1.5,1.33,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,3,Betfair,btts,yes,,1.62,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,3,Betfair,btts,no,,2.25,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,36,BetVictor,ou,over,2.5,1.94,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,36,BetVictor,ou,under,2.5,1.74,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,36,BetVictor,ht_ou,under,0.5,2.62,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ou,under,1.5,3.44,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ou,over,2.5,2.11,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ou,over,3.5,3.68,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ou,under,3.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ht_ou,over,1.5,3.09,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ht_ou,over,0.5,1.42,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,4,Pinnacle,ht_ou,under,0.5,2.89,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,5,SBO,ou,over,2.5,2.06,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,5,SBO,ou,under,2.5,1.78,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ou,over,1.5,1.36,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ou,under,1.5,3.3,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ou,over,2.5,2.07,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ou,under,2.5,1.8,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ou,over,3.5,3.55,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ou,under,3.5,1.3,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ht_ou,over,1.5,3.05,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ht_ou,under,1.5,1.38,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,ht_ou,under,0.5,2.67,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,btts,yes,,1.78,api_football,change
+2026-10-09T12:52:24Z,1601544,2026-10-09T18:30:00Z,337.6,T-6h,Serie B,standard,Avellino,Sampdoria,32,Betano,btts,no,,1.98,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,7,William Hill,btts,yes,,1.83,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,7,William Hill,btts,no,,1.91,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,8,Bet365,ou,over,1.5,1.14,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,8,Bet365,ou,under,1.5,5.5,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,8,Bet365,ou,over,2.5,1.48,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,8,Bet365,ou,under,2.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,8,Bet365,ht_ou,over,1.5,2.1,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,8,Bet365,ht_ou,under,1.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ou,over,1.5,1.11,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ou,under,1.5,4.95,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ou,over,2.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ou,under,2.5,2.43,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ou,over,3.5,2.19,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ou,under,3.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ht_ou,over,1.5,2.16,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ht_ou,under,1.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ht_ou,over,0.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,2,Marathonbet,ht_ou,under,0.5,3.55,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ou,over,1.5,1.13,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ou,under,1.5,6.0,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ou,over,2.5,1.47,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ou,under,2.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ou,over,3.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ht_ou,over,1.5,2.1,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ht_ou,under,1.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ht_ou,over,0.5,1.2,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,ht_ou,under,0.5,4.0,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,3,Betfair,btts,yes,,1.9,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ou,over,1.5,1.11,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ou,under,1.5,5.75,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ou,over,2.5,1.45,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ou,under,2.5,2.6,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ou,over,3.5,2.12,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ou,under,3.5,1.62,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ht_ou,over,1.5,2.09,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,ht_ou,under,1.5,1.64,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,btts,yes,,1.85,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,36,BetVictor,btts,no,,1.83,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ou,over,1.5,1.16,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ou,under,1.5,5.47,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ou,over,2.5,1.5,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ou,under,2.5,2.63,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ou,over,3.5,2.28,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ou,under,3.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ht_ou,over,1.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,4,Pinnacle,ht_ou,under,1.5,1.66,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,5,SBO,ou,over,3.5,2.17,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,5,SBO,ou,under,3.5,1.69,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,5,SBO,ht_ou,over,1.5,2.2,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,5,SBO,ht_ou,under,1.5,1.67,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ou,over,1.5,1.11,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ou,under,1.5,4.95,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ou,over,2.5,1.44,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ou,under,2.5,2.43,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ou,over,3.5,2.27,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ou,under,3.5,1.69,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ht_ou,over,1.5,2.16,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ht_ou,under,1.5,1.63,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ht_ou,over,0.5,1.22,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,ht_ou,under,0.5,3.55,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,11,1xBet,btts,no,,1.86,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,32,Betano,ht_ou,over,1.5,2.25,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,32,Betano,ht_ou,under,1.5,1.65,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,32,Betano,ht_ou,under,0.5,3.65,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,32,Betano,btts,yes,,1.9,api_football,change
+2026-10-09T12:52:24Z,1584424,2026-10-09T17:00:00Z,247.6,T-6h,Turkish Super Lig,standard,Galatasaray,Kasımpaşa,32,Betano,btts,no,,1.85,api_football,change
