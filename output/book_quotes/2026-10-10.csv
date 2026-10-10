@@ -24869,3 +24869,737 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-10T17:58:45Z,1490526,2026-10-14T23:30:00Z,6091.2,FAR,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ht_ou,under,0.5,4.05,api_football,open
 2026-10-10T17:58:45Z,1490526,2026-10-14T23:30:00Z,6091.2,FAR,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,btts,yes,,1.47,api_football,open
 2026-10-10T17:58:45Z,1490526,2026-10-14T23:30:00Z,6091.2,FAR,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,btts,no,,2.57,api_football,open
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,over,1.5,3.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,under,0.5,2.4,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,btts,yes,,2.1,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,btts,no,,1.67,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,under,1.5,2.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,over,2.5,2.6,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,under,2.5,1.48,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,over,3.5,5.0,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,over,1.5,3.75,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,btts,yes,,2.05,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,btts,no,,1.7,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,under,1.5,2.48,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,over,3.5,4.95,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,under,3.5,1.11,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,btts,yes,,2.06,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,btts,no,,1.66,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,1.5,1.47,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,1.5,2.63,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,2.5,2.55,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,2.5,1.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,3.5,5.0,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,under,0.5,2.4,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,btts,yes,,2.0,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,btts,no,,1.8,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,under,1.5,2.36,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,2.5,2.42,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,under,2.5,1.48,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,3.5,5.75,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,under,3.5,1.13,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,btts,yes,,2.05,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,btts,no,,1.67,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,over,1.5,1.53,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,under,1.5,2.61,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,over,2.5,2.67,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,under,2.5,1.51,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,over,3.5,5.3,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ht_ou,under,0.5,2.43,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,5,SBO,ht_ou,over,0.5,1.56,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,5,SBO,ht_ou,under,0.5,2.38,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,over,1.5,1.52,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,under,1.5,2.52,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,over,3.5,4.95,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,under,3.5,1.11,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,btts,yes,,2.06,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,btts,no,,1.68,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,over,1.5,1.55,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,under,1.5,2.52,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,over,2.5,2.65,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,under,2.5,1.52,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,over,3.5,4.9,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,under,3.5,1.18,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,under,1.5,1.27,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,over,0.5,1.65,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,btts,yes,,2.05,api_football,heartbeat
+2026-10-10T19:33:11Z,1493169,2026-10-10T20:00:00Z,26.8,T-30m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,btts,no,,1.72,api_football,heartbeat
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,over,1.5,2.5,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,under,1.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,under,0.5,3.1,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,ou,over,1.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,ou,under,1.5,3.75,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,ou,over,2.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,ou,under,2.5,1.95,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,ou,over,3.5,3.0,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,ou,under,3.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,btts,yes,,3.0,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,8,Bet365,btts,no,,1.36,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,1.5,3.48,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,2.5,1.81,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,2.5,1.93,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,3.5,2.88,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,3.5,1.32,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,over,1.5,2.57,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,under,1.5,1.43,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,under,0.5,2.96,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,btts,yes,,3.08,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,2,Marathonbet,btts,no,,1.31,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ou,over,1.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ou,under,1.5,3.8,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ou,over,2.5,1.87,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ou,under,2.5,1.9,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ou,over,3.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ou,under,3.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,over,0.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,under,0.5,3.2,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,btts,yes,,3.1,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,3,Betfair,btts,no,,1.36,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,1.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,1.5,3.8,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,2.5,1.79,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,2.5,1.88,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,3.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,3.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,over,1.5,2.53,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,under,1.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,under,0.5,2.82,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,5,SBO,ou,over,2.5,1.89,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,5,SBO,ou,under,2.5,1.95,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ou,under,1.5,3.48,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ou,over,2.5,1.84,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ou,under,2.5,1.96,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ou,over,3.5,2.88,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ou,under,3.5,1.32,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,over,1.5,2.57,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,under,1.5,1.43,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,under,0.5,2.96,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,btts,yes,,3.08,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,11,1xBet,btts,no,,1.32,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ou,over,1.5,1.28,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ou,under,1.5,3.7,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ou,over,2.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ou,under,2.5,2.0,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ou,over,3.5,3.1,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ou,under,3.5,1.39,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ht_ou,over,1.5,2.77,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ht_ou,under,1.5,1.45,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ht_ou,over,0.5,1.4,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,ht_ou,under,0.5,2.95,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,btts,yes,,2.92,api_football,change
+2026-10-10T19:33:11Z,1493176,2026-10-11T00:30:00Z,296.8,T-6h,Argentina Primera Division,new_format,River Plate,Estudiantes de Rio Cuarto,32,Betano,btts,no,,1.37,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,ou,over,2.5,2.0,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,ou,under,2.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,ou,over,3.5,3.5,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,ou,under,3.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,ht_ou,over,1.5,3.0,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,ht_ou,under,1.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,btts,yes,,2.0,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,8,Bet365,btts,no,,1.75,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,2,Marathonbet,ou,over,2.5,1.93,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,2,Marathonbet,ou,under,2.5,1.81,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,2,Marathonbet,ht_ou,over,0.5,1.37,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,2,Marathonbet,ht_ou,under,0.5,2.78,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,3,Betfair,ou,over,1.5,1.29,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,3,Betfair,ou,under,1.5,3.5,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,3,Betfair,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,3,Betfair,ht_ou,under,0.5,3.0,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ou,over,1.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ou,under,1.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ou,over,2.5,1.92,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ou,under,2.5,1.75,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ou,over,3.5,3.6,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ou,under,3.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ht_ou,over,1.5,2.69,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,ht_ou,under,1.5,1.39,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,btts,yes,,1.93,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,36,BetVictor,btts,no,,1.78,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ou,over,1.5,1.34,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ou,under,1.5,3.37,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ou,over,2.5,2.07,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ou,under,2.5,1.83,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ou,over,3.5,3.68,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ou,under,3.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ht_ou,over,1.5,3.06,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ht_ou,over,0.5,1.41,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,4,Pinnacle,ht_ou,under,0.5,2.92,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,5,SBO,ou,over,2.5,2.04,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,5,SBO,ou,under,2.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,11,1xBet,ou,over,2.5,1.98,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,11,1xBet,ou,under,2.5,1.86,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,11,1xBet,ht_ou,over,0.5,1.37,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,11,1xBet,ht_ou,under,0.5,2.78,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,32,Betano,ht_ou,over,0.5,1.47,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,32,Betano,ht_ou,under,0.5,2.72,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,32,Betano,btts,yes,,1.9,api_football,change
+2026-10-10T19:33:11Z,1492408,2026-10-11T00:00:00Z,266.8,T-6h,Brazil Serie A,new_format,Sao Paulo,Vitoria,32,Betano,btts,no,,1.85,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,8,Bet365,ou,over,3.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,8,Bet365,ou,under,3.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,8,Bet365,ht_ou,over,1.5,2.75,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,8,Bet365,ht_ou,under,1.5,1.4,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,3,Betfair,btts,yes,,1.67,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,3,Betfair,btts,no,,2.15,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,36,BetVictor,ht_ou,over,1.5,2.53,api_football,change
+2026-10-10T19:33:11Z,1550987,2026-10-10T23:00:00Z,206.8,T-6h,Mexico Liga MX,new_format,FC Juarez,Club Tijuana,36,BetVictor,ht_ou,under,1.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,7,William Hill,btts,yes,,1.62,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,7,William Hill,btts,no,,2.15,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ou,over,1.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ou,under,1.5,3.75,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ou,over,2.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ou,under,2.5,2.0,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ou,over,3.5,3.0,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ou,under,3.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ht_ou,over,0.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,ht_ou,under,0.5,3.4,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,btts,yes,,1.67,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,8,Bet365,btts,no,,2.1,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ou,over,1.5,1.21,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ou,under,1.5,3.58,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ou,over,2.5,1.75,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ou,under,2.5,1.99,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ou,over,3.5,2.7,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ou,under,3.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ht_ou,over,1.5,2.4,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ht_ou,under,1.5,1.49,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ht_ou,over,0.5,1.32,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,ht_ou,under,0.5,3.02,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,btts,yes,,1.61,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,2,Marathonbet,btts,no,,2.15,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,3,Betfair,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,3,Betfair,ou,under,1.5,4.2,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,3,Betfair,ou,over,2.5,1.75,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,3,Betfair,ou,under,2.5,2.05,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,3,Betfair,ht_ou,over,1.5,2.6,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,3,Betfair,ht_ou,under,1.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ou,under,1.5,3.9,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ou,over,2.5,1.72,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ou,under,2.5,1.97,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ou,over,3.5,2.7,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ou,under,3.5,1.39,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,ht_ou,over,1.5,2.4,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,btts,yes,,1.6,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,36,BetVictor,btts,no,,2.15,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ou,over,1.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ou,under,1.5,4.12,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ou,over,2.5,1.83,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ou,under,2.5,2.06,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ou,over,3.5,2.99,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ou,under,3.5,1.41,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ht_ou,over,1.5,2.69,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ht_ou,under,1.5,1.47,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ht_ou,over,0.5,1.34,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,4,Pinnacle,ht_ou,under,0.5,3.28,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,5,SBO,ou,over,2.5,1.73,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,5,SBO,ou,under,2.5,2.12,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ou,over,1.5,1.21,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ou,under,1.5,3.58,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ou,over,2.5,1.75,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ou,under,2.5,1.99,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ou,over,3.5,2.7,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ou,under,3.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ht_ou,over,1.5,2.4,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ht_ou,under,1.5,1.49,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ht_ou,over,0.5,1.32,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,ht_ou,under,0.5,3.02,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,btts,yes,,1.61,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,11,1xBet,btts,no,,2.18,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ou,over,1.5,1.28,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ou,under,1.5,3.75,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ou,over,2.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ou,under,2.5,2.0,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ou,over,3.5,3.05,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ou,under,3.5,1.4,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ht_ou,over,1.5,2.75,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ht_ou,under,1.5,1.45,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ht_ou,over,0.5,1.42,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,ht_ou,under,0.5,2.92,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,btts,yes,,1.67,api_football,change
+2026-10-10T19:33:11Z,1550988,2026-10-11T01:00:00Z,326.8,T-6h,Mexico Liga MX,new_format,Atlas,Guadalajara Chivas,32,Betano,btts,no,,2.12,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,7,William Hill,ht_ou,over,1.5,1.95,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,7,William Hill,ht_ou,under,1.5,1.75,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,7,William Hill,ht_ou,over,0.5,1.18,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,7,William Hill,ht_ou,under,0.5,4.4,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,7,William Hill,btts,yes,,1.3,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,7,William Hill,btts,no,,3.2,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ou,over,1.5,1.08,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ou,under,1.5,8.0,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ou,over,2.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ou,under,2.5,3.4,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ou,over,3.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ou,under,3.5,1.91,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ht_ou,over,1.5,1.91,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,ht_ou,under,1.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,btts,yes,,1.33,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,8,Bet365,btts,no,,3.25,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ou,over,1.5,1.05,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ou,under,1.5,6.4,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ou,over,2.5,1.31,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ou,under,2.5,2.92,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ou,over,3.5,1.86,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ou,under,3.5,1.88,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ht_ou,over,1.5,1.88,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ht_ou,under,1.5,1.84,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ht_ou,over,0.5,1.14,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,ht_ou,under,0.5,4.45,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,btts,yes,,1.31,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,2,Marathonbet,btts,no,,3.08,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ou,over,1.5,1.07,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ou,under,1.5,8.0,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ou,over,2.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ou,under,2.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ou,over,3.5,1.87,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ou,under,3.5,1.9,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ht_ou,over,1.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ht_ou,under,1.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ht_ou,over,0.5,1.14,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,3,Betfair,ht_ou,under,0.5,4.8,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ou,over,1.5,1.06,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ou,under,1.5,8.0,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ou,over,2.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ou,under,2.5,3.3,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ou,over,3.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ou,under,3.5,1.87,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ht_ou,over,1.5,1.89,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ht_ou,under,1.5,1.78,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ht_ou,over,0.5,1.18,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,ht_ou,under,0.5,4.6,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,btts,yes,,1.29,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,36,BetVictor,btts,no,,3.25,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ou,over,1.5,1.11,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ou,under,1.5,7.4,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ou,over,2.5,1.37,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ou,under,2.5,3.2,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ou,over,3.5,1.91,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ou,under,3.5,1.98,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ht_ou,over,1.5,1.98,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,4,Pinnacle,ht_ou,under,1.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,5,SBO,ou,over,3.5,1.89,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,5,SBO,ou,under,3.5,1.95,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,5,SBO,ht_ou,over,1.5,1.99,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,5,SBO,ht_ou,under,1.5,1.85,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ou,over,1.5,1.11,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ou,under,1.5,6.6,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ou,over,2.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ou,under,2.5,3.2,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ou,over,3.5,1.87,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ou,under,3.5,1.98,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ht_ou,over,1.5,2.0,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ht_ou,under,1.5,1.82,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ht_ou,over,0.5,1.24,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,ht_ou,under,0.5,4.0,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,btts,yes,,1.31,api_football,change
+2026-10-10T19:33:11Z,1490518,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,New York Red Bulls,San Diego,32,Betano,btts,no,,3.25,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,8,Bet365,ht_ou,over,1.5,2.2,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,8,Bet365,ht_ou,under,1.5,1.62,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ou,over,1.5,1.1,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ou,under,1.5,5.05,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ou,over,2.5,1.43,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ou,under,2.5,2.46,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ou,over,3.5,2.15,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ou,under,3.5,1.65,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ht_ou,over,1.5,2.05,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ht_ou,under,1.5,1.7,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ht_ou,over,0.5,1.19,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,ht_ou,under,0.5,3.8,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,btts,yes,,1.41,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,2,Marathonbet,btts,no,,2.64,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ou,over,1.5,1.11,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ou,under,1.5,6.0,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ou,over,2.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ou,under,2.5,2.63,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ou,over,3.5,2.07,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ou,under,3.5,1.65,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ht_ou,over,1.5,2.05,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ht_ou,under,1.5,1.66,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ht_ou,over,0.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,ht_ou,under,0.5,4.1,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,btts,yes,,1.36,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,36,BetVictor,btts,no,,2.8,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ou,over,1.5,1.15,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ou,under,1.5,5.97,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ou,over,2.5,1.49,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ou,under,2.5,2.72,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ou,over,3.5,2.22,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ou,under,3.5,1.71,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ht_ou,over,1.5,2.19,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,4,Pinnacle,ht_ou,under,1.5,1.69,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,5,SBO,ou,over,3.5,2.23,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,5,SBO,ou,under,3.5,1.65,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,5,SBO,ht_ou,over,1.5,2.21,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,5,SBO,ht_ou,under,1.5,1.66,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ou,over,1.5,1.16,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ou,under,1.5,5.4,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ou,over,2.5,1.5,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ou,under,2.5,2.7,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ou,over,3.5,2.18,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ou,under,3.5,1.72,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ht_ou,over,1.5,2.22,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ht_ou,under,1.5,1.67,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ht_ou,over,0.5,1.28,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,ht_ou,under,0.5,3.6,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,btts,yes,,1.42,api_football,change
+2026-10-10T19:33:11Z,1490519,2026-10-10T23:30:00Z,236.8,T-6h,USA MLS,new_format,Charlotte,FC Dallas,32,Betano,btts,no,,2.75,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,7,William Hill,btts,yes,,1.33,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,7,William Hill,btts,no,,3.1,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ou,over,1.5,1.04,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ou,under,1.5,7.0,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ou,over,2.5,1.28,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ou,under,2.5,3.08,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ou,over,3.5,1.84,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ou,under,3.5,1.9,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ht_ou,over,1.5,1.89,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ht_ou,under,1.5,1.83,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ht_ou,over,0.5,1.14,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,ht_ou,under,0.5,4.45,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,btts,yes,,1.29,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,2,Marathonbet,btts,no,,3.2,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,3,Betfair,btts,yes,,1.33,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,3,Betfair,btts,no,,3.25,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ou,over,1.5,1.06,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ou,under,1.5,8.0,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ou,over,2.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ou,under,2.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ou,over,3.5,1.81,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ou,under,3.5,1.86,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ht_ou,over,1.5,1.86,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,36,BetVictor,ht_ou,under,1.5,1.81,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,4,Pinnacle,ou,under,1.5,7.69,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,4,Pinnacle,ou,over,2.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,4,Pinnacle,ou,under,2.5,3.3,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,4,Pinnacle,ou,over,3.5,1.9,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,4,Pinnacle,ou,under,3.5,1.99,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,4,Pinnacle,ht_ou,under,1.5,1.9,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,5,SBO,ou,over,3.5,1.86,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,5,SBO,ou,under,3.5,1.98,api_football,change
+2026-10-10T19:33:11Z,1490522,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Sporting Kansas City,Portland Timbers,5,SBO,ht_ou,over,1.5,1.95,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,7,William Hill,ht_ou,over,1.5,2.5,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,7,William Hill,ht_ou,under,1.5,1.5,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,7,William Hill,ht_ou,over,0.5,1.3,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,7,William Hill,ht_ou,under,0.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,7,William Hill,btts,yes,,1.62,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,7,William Hill,btts,no,,2.2,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ou,under,1.5,4.0,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ou,over,2.5,1.75,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ou,under,2.5,2.05,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ou,over,3.5,2.75,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ou,under,3.5,1.4,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,ht_ou,under,0.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,btts,yes,,1.62,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,8,Bet365,btts,no,,2.2,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ou,over,1.5,1.19,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ou,under,1.5,3.75,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ou,over,2.5,1.73,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ou,under,2.5,2.04,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ou,over,3.5,2.66,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ou,under,3.5,1.37,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ht_ou,over,1.5,2.45,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ht_ou,under,1.5,1.47,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,ht_ou,under,0.5,2.96,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,btts,yes,,1.6,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,2,Marathonbet,btts,no,,2.16,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ou,under,1.5,4.1,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ou,over,2.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ou,under,2.5,2.0,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ou,over,3.5,3.1,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ht_ou,over,1.5,2.6,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ht_ou,under,1.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,ht_ou,over,0.5,1.29,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,btts,yes,,1.65,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,3,Betfair,btts,no,,2.2,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ou,over,1.5,1.22,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ou,under,1.5,4.0,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ou,over,2.5,1.7,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ou,under,2.5,1.99,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ou,over,3.5,2.88,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ou,under,3.5,1.4,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ht_ou,over,1.5,2.39,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ht_ou,under,1.5,1.49,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,ht_ou,under,0.5,3.3,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,btts,yes,,1.6,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,36,BetVictor,btts,no,,2.2,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ou,over,1.5,1.24,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ou,under,1.5,4.24,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ou,over,2.5,1.8,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ou,under,2.5,2.09,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ou,over,3.5,2.91,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ou,under,3.5,1.43,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ht_ou,over,1.5,2.63,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,4,Pinnacle,ht_ou,under,1.5,1.5,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,5,SBO,ou,over,2.5,1.7,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ou,over,1.5,1.25,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ou,under,1.5,4.0,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ou,over,2.5,1.78,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ou,under,2.5,2.1,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ou,over,3.5,2.87,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ou,under,3.5,1.45,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ht_ou,over,1.5,2.62,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ht_ou,under,1.5,1.5,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ht_ou,over,0.5,1.38,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,ht_ou,under,0.5,3.05,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,btts,yes,,1.62,api_football,change
+2026-10-10T19:33:11Z,1490521,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Minnesota United FC,Houston Dynamo,32,Betano,btts,no,,2.2,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,8,Bet365,ou,over,2.5,1.7,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,8,Bet365,ou,under,2.5,2.1,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,8,Bet365,ou,over,3.5,2.62,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,8,Bet365,ou,under,3.5,1.44,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,3,Betfair,ht_ou,over,1.5,2.4,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,3,Betfair,ht_ou,under,1.5,1.5,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,3,Betfair,btts,yes,,1.62,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,3,Betfair,btts,no,,2.25,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,36,BetVictor,ou,over,2.5,1.68,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,36,BetVictor,ou,under,2.5,2.02,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,36,BetVictor,ht_ou,over,0.5,1.33,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,36,BetVictor,ht_ou,under,0.5,3.25,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,4,Pinnacle,ou,under,1.5,4.34,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,4,Pinnacle,ou,under,2.5,2.16,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,4,Pinnacle,ou,over,3.5,2.84,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,4,Pinnacle,ht_ou,over,1.5,2.59,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,4,Pinnacle,ht_ou,under,1.5,1.51,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,5,SBO,ou,over,2.5,1.71,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,32,Betano,ou,under,2.5,2.15,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,32,Betano,btts,yes,,1.62,api_football,change
+2026-10-10T19:33:11Z,1490520,2026-10-11T00:30:00Z,296.8,T-6h,USA MLS,new_format,Austin,Nashville SC,32,Betano,btts,no,,2.2,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,8,Bet365,ou,over,3.5,2.38,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,8,Bet365,ou,under,3.5,1.53,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,3,Betfair,ou,over,1.5,1.17,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,3,Betfair,ou,under,1.5,5.0,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,3,Betfair,ou,over,3.5,2.55,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,3,Betfair,ou,under,3.5,1.5,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,3,Betfair,btts,yes,,1.53,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,3,Betfair,btts,no,,2.45,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,36,BetVictor,ou,under,2.5,2.24,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,36,BetVictor,ou,over,3.5,2.31,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,36,BetVictor,ou,under,3.5,1.52,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ou,under,1.5,4.94,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ou,over,2.5,1.62,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ou,under,2.5,2.38,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ou,over,3.5,2.53,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ou,under,3.5,1.56,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ht_ou,over,1.5,2.4,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,4,Pinnacle,ht_ou,under,1.5,1.58,api_football,change
+2026-10-10T19:33:11Z,1490523,2026-10-11T01:30:00Z,356.8,T-6h,USA MLS,new_format,Colorado Rapids,San Jose Earthquakes,5,SBO,ht_ou,over,1.5,2.38,api_football,change
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,over,1.5,3.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,ht_ou,under,0.5,2.4,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,btts,yes,,2.1,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,7,William Hill,btts,no,,1.67,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,under,1.5,2.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,over,2.5,2.6,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,under,2.5,1.48,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,over,3.5,5.0,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,over,1.5,3.75,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,btts,yes,,2.05,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,8,Bet365,btts,no,,1.7,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,under,1.5,2.48,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,over,3.5,4.95,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ou,under,3.5,1.11,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,btts,yes,,2.06,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,2,Marathonbet,btts,no,,1.66,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,1.5,1.47,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,1.5,2.63,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,2.5,2.55,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,2.5,1.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,3.5,5.0,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ht_ou,under,0.5,2.4,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,btts,yes,,2.0,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,btts,no,,1.8,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,under,1.5,2.36,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,2.5,2.42,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,under,2.5,1.48,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,3.5,5.75,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,under,3.5,1.13,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,btts,yes,,2.05,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,btts,no,,1.67,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,over,1.5,1.53,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,under,1.5,2.61,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,over,2.5,2.67,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,under,2.5,1.51,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,over,3.5,5.3,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ht_ou,under,0.5,2.43,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,5,SBO,ht_ou,over,0.5,1.56,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,5,SBO,ht_ou,under,0.5,2.38,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,over,1.5,1.52,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,under,1.5,2.52,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,over,3.5,4.95,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ou,under,3.5,1.11,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,btts,yes,,2.06,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,11,1xBet,btts,no,,1.68,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,over,1.5,1.55,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,under,1.5,2.52,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,over,2.5,2.65,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,under,2.5,1.52,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,over,3.5,4.9,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ou,under,3.5,1.18,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,under,1.5,1.27,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,over,0.5,1.65,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,btts,yes,,2.05,api_football,heartbeat
+2026-10-10T19:51:57Z,1493169,2026-10-10T20:00:00Z,8.1,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,32,Betano,btts,no,,1.72,api_football,heartbeat
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,1.5,1.45,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,1.5,2.55,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,2.5,1.45,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,over,3.5,5.2,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,ou,under,3.5,1.13,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,btts,yes,,1.95,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,3,Betfair,btts,no,,1.75,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,36,BetVictor,ou,over,2.5,2.41,api_football,change
+2026-10-10T19:56:13Z,1493169,2026-10-10T20:00:00Z,3.8,T-10m,Argentina Primera Division,new_format,Central Cordoba de Santiago,Estudiantes L.P.,4,Pinnacle,ht_ou,under,0.5,2.44,api_football,change
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ou,under,1.5,5.0,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ou,over,2.5,1.53,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ou,under,2.5,2.4,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ou,over,3.5,2.3,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ou,under,3.5,1.62,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ht_ou,over,1.5,2.2,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ht_ou,under,1.5,1.62,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,ht_ou,under,0.5,3.75,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,btts,yes,,1.91,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,8,Bet365,btts,no,,1.91,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ou,over,1.5,1.13,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ou,over,2.5,1.55,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ou,under,2.5,2.35,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ou,over,3.5,2.28,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ou,under,3.5,1.5,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ht_ou,over,1.5,2.16,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ht_ou,under,1.5,1.63,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ht_ou,over,0.5,1.22,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,ht_ou,under,0.5,3.56,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,btts,yes,,1.86,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,2,Marathonbet,btts,no,,1.82,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ou,over,1.5,1.14,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ou,under,1.5,5.5,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ou,over,2.5,1.5,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ou,under,2.5,2.55,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ou,over,3.5,2.3,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ou,under,3.5,1.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ht_ou,over,1.5,2.2,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ht_ou,under,1.5,1.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,ht_ou,under,0.5,4.0,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,btts,yes,,1.87,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,3,Betfair,btts,no,,1.9,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ou,over,1.5,1.14,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ou,under,1.5,5.0,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ou,over,2.5,1.52,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ou,under,2.5,2.31,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ou,over,3.5,2.25,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ou,under,3.5,1.55,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ht_ou,over,1.5,2.15,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ht_ou,under,1.5,1.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,ht_ou,under,0.5,3.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,btts,yes,,1.83,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,36,BetVictor,btts,no,,1.85,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ou,over,1.5,1.18,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ou,under,1.5,5.2,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ou,over,2.5,1.56,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ou,under,2.5,2.53,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ou,over,3.5,2.41,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ou,under,3.5,1.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ht_ou,over,1.5,2.3,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,4,Pinnacle,ht_ou,under,1.5,1.62,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ou,over,1.5,1.13,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ou,under,1.5,4.5,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ou,over,2.5,1.59,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ou,under,2.5,2.42,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ou,over,3.5,2.28,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ou,under,3.5,1.5,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ht_ou,over,1.5,2.16,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ht_ou,under,1.5,1.63,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ht_ou,over,0.5,1.22,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,ht_ou,under,0.5,3.56,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,btts,yes,,1.86,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,11,1xBet,btts,no,,1.84,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ou,over,1.5,1.19,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ou,under,1.5,4.8,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ou,over,2.5,1.57,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ou,under,2.5,2.47,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ou,over,3.5,2.4,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ou,under,3.5,1.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ht_ou,over,1.5,2.37,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ht_ou,under,1.5,1.6,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ht_ou,over,0.5,1.32,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,ht_ou,under,0.5,3.3,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,btts,yes,,1.83,api_football,heartbeat
+2026-10-10T20:00:23Z,1492409,2026-10-10T21:00:00Z,59.6,T-1h,Brazil Serie A,new_format,Vasco DA Gama,Remo,32,Betano,btts,no,,1.9,api_football,heartbeat
