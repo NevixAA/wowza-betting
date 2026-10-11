@@ -811,6 +811,9 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         # the props supplement), so paper leagues are stripped from it. The ledger below still
         # receives every row, paper leagues included, so they settle and accrue CLV.
         _send = config.drop_paper_leagues(bets)
+        # One side per fixture: a tip on the opposite side of one already sent is never sent.
+        from src.ledger import drop_flipped
+        _send = drop_flipped(_send)
         _send.to_csv(bets_file, index=False)
         log.info(f"Tips saved → {bets_file}  ({len(_send)} tips"
                  + (f", {len(bets) - len(_send)} paper-league tip(s) ledgered only"

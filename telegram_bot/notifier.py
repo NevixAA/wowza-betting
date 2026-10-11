@@ -2016,6 +2016,11 @@ def notify_daily_digest() -> bool:
             _dates   = bl["match_date"].astype(str).str[:10]
             upcoming["O/U 2.5"] = int((_tier_ok & (_dates > today_str)).sum())
             bl = bl[_tier_ok & (_dates == today_str)].copy()
+            # One side per fixture: a fixture tipped on both sides before the flip guard existed
+            # shows only its FIRST tip (Mito HollyHock v Shimizu, 2026-10-11).
+            if "generated_at" in bl.columns:
+                bl = bl.sort_values("generated_at", kind="mergesort").drop_duplicates(
+                    ["match_date", "home_team", "away_team"], keep="first")
             ou_total = len(bl)
             # derive model_type from league for blanks so new-format tips can't show as standard
             if "model_type" not in bl.columns:
@@ -2178,6 +2183,19 @@ def notify_daily_digest() -> bool:
         lines.append(f"🗓 <b>Beyond today</b> — {_later} on the board (not bettable yet)")
         lines.append("")
 
+    # Today's tips as a TABLE IMAGE first (owner request 2026-10-11). Best effort: a rendering or
+    # upload failure is logged and the text briefing below still goes out.
+    try:
+        from telegram_bot.tips_table import render_pngs, send_photo, todays_rows
+        _rows = todays_rows(today_str)
+        if not _rows.empty:
+            _pngs = render_pngs(_rows, f"Today's tips — {header_date}")
+            for _k, _png in enumerate(_pngs):
+                send_photo(token, chat_id, _png,
+                           caption=(f"📊 <b>Today's tips</b> — {len(_rows)} tip(s)" if _k == 0 else ""))
+    except Exception as _e:
+        print(f"[digest] tips table skipped: {type(_e).__name__}: {_e}")
+
     msg1 = "\n".join(lines)
     sent1 = _send(token, chat_id, msg1)
     if not sent1:
@@ -2259,6 +2277,45 @@ def notify_daily_digest() -> bool:
                                       f"({tp:+.2f}u) — 📊 data only, not staked")
         except Exception:
             pass
+
+    # BTTS / O/U 1.5 / O/U 3.5 yesterday. This block did not exist: "Yesterday's Results" read
+    # only the O/U 2.5 ledger and the sharp ledger, so side-market results never appeared (owner
+    # report 2026-10-11). Same rules as O/U 2.5: live tips generated on/after the cutoff, STAKED
+    # tiers in the headline, VALUABLE shown as data only.
+    side_led_y = app_config.OUTPUT_DIR / "side_bets_ledger.csv"
+    if side_led_y.exists():
+        try:
+            sy = _read_csv(side_led_y)
+            sy["pnl"] = pd.to_numeric(sy["pnl"], errors="coerce")
+            sy = sy[sy["match_date"].astype(str).str[:10] == yesterday_str]
+            if "source" in sy.columns:
+                sy = sy[sy["source"].astype(str) == "live"]
+            if "generated_at" in sy.columns:
+                sy = sy[sy["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            for mkt, mkt_label in SIDE_LABELS.items():
+                ms = sy[sy["market"] == mkt] if "market" in sy.columns else pd.DataFrame()
+                if ms.empty:
+                    continue
+                stk = ms[ms["signal_tier"].isin(STAKED_TIERS)]
+                r = _stats_sub(stk, pd.Series([True] * len(stk), index=stk.index)) if not stk.empty else None
+                if r:
+                    n, w, pnl = r
+                    lines2.append(f"📌 <b>{mkt_label}</b>  💰 staked {w}W/{n-w}L  P/L {pnl:+.2f}u")
+                    for tier in STAKED_TIERS:
+                        rt = _stats_sub(stk, stk["signal_tier"] == tier)
+                        if rt:
+                            tn, tw, tp = rt
+                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                else:
+                    lines2.append(f"📌 <b>{mkt_label}</b>: no settled staked bets")
+                for tier in COLLECT_TIERS:
+                    rt = _stats_sub(ms, ms["signal_tier"] == tier)
+                    if rt:
+                        tn, tw, tp = rt
+                        lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {tw}W/{tn-tw}L "
+                                      f"({tp:+.2f}u) — 📊 data only, not staked")
+        except Exception as e:
+            lines2.append(f"  Side markets error: {e}")
 
     # Sharp/WC yesterday
     if sharp_led.exists():
@@ -2348,6 +2405,11 @@ def notify_daily_digest() -> bool:
         try:
             sl = _read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
+            # Same basis as the O/U 2.5 ledger lines above: live tips generated on/after the cutoff.
+            if "source" in sl.columns:
+                sl = sl[sl["source"].astype(str) == "live"]
+            if "generated_at" in sl.columns:
+                sl = sl[sl["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
             sl_s = _settled_only(sl)
             if not sl_s.empty:
                 lines2.append("")
@@ -2355,14 +2417,20 @@ def notify_daily_digest() -> bool:
                     ms = sl_s[sl_s["market"] == mkt] if "market" in sl_s.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                    # Headline = STAKED tiers only; VALUABLE was counted here as if it were money.
+                    mstk = ms[ms["signal_tier"].isin(STAKED_TIERS)]
+                    if not mstk.empty:
+                        mn = len(mstk); mw = int((mstk["pnl"] > 0).sum()); mp = mstk["pnl"].sum()
+                        lines2.append(f"  📌 <b>{mkt_label}</b>  💰 {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                    else:
+                        lines2.append(f"  📌 <b>{mkt_label}</b>  no staked bets settled")
                     for tier in TIER_ORDER:
                         ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                         if ts.empty:
                             continue
                         tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                        lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                        tail = " — 📊 data only" if tier in COLLECT_TIERS else ""
+                        lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u{tail}")
         except Exception:
             pass
 

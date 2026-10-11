@@ -119,6 +119,40 @@ def _dedup_keys(df: pd.DataFrame) -> set:
     ))
 
 
+def committed_sides(source: str = "live") -> dict:
+    """(match_date, home, away) -> the side of the FIRST tip recorded for that fixture.
+
+    ONE SIDE PER FIXTURE, FIRST TIP WINS (owner report 2026-10-11). The ledger used to dedup on
+    (match_date, home, away, SIDE, source), so when the odds moved and the model's best side
+    flipped, the opposite side was a "new" tip: Mito HollyHock v Shimizu was tipped UNDER 2.5
+    MARKSMAN @1.89 on 2026-10-04 and OVER 2.5 VALUABLE @2.45 on 2026-10-11, and both were sent.
+    67 fixtures carry both sides in the ledger (8 since 2026-09-01). A tip already sent stands.
+    """
+    led = _load_ledger()
+    if led.empty:
+        return {}
+    led = led[led["source"].astype(str) == source].sort_values("generated_at", kind="mergesort")
+    led = led.drop_duplicates(["match_date", "home_team", "away_team"], keep="first")
+    return {(str(r.match_date)[:10], str(r.home_team), str(r.away_team)): str(r.side).strip()
+            for r in led.itertuples()}
+
+
+def drop_flipped(bets_df: pd.DataFrame, source: str = "live") -> pd.DataFrame:
+    """Remove rows whose fixture already has a tip on the OTHER side. Used on the send source
+    (bets.csv) so a flipped signal is never sent."""
+    if bets_df is None or bets_df.empty:
+        return bets_df
+    first = committed_sides(source)
+    side = bets_df.get("bet", bets_df.get("best_side")).astype(str).str.strip()
+    keys = list(zip(bets_df["date"].astype(str).str[:10], bets_df["home_team"].astype(str),
+                    bets_df["away_team"].astype(str)))
+    flipped = [first.get(k, s) != s for k, s in zip(keys, side)]
+    n = sum(flipped)
+    if n:
+        log.info(f"Flip guard: {n} tip(s) on the opposite side of an earlier tip — not sent")
+    return bets_df[[not f for f in flipped]]
+
+
 def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
     """
     Append new tips into bets_ledger.csv.
@@ -151,6 +185,15 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         key_to_idx[k] = i
 
     new_rows, upgrades, batch_keys = [], 0, set()
+    # Fixture -> (side, row index) of its FIRST tip, for the flip guard below.
+    _first = {}
+    for i, r in existing[existing["source"].astype(str) == source].sort_values(
+            "generated_at", kind="mergesort").iterrows():
+        _first.setdefault((str(r["match_date"])[:10], str(r["home_team"]), str(r["away_team"])),
+                          (str(r["side"]).strip(), i))
+    if "notes" in existing.columns:
+        existing["notes"] = existing["notes"].astype(object)
+    flips = 0
 
     for _, row in bets_df.iterrows():
         side       = str(row.get("bet", row.get("best_side", ""))).strip()
@@ -178,6 +221,17 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
                 upgrades += 1
             continue
         if dedup_key in batch_keys:
+            continue
+        # FLIP GUARD: the fixture already has a tip on the other side. Not a new tip; the flip is
+        # noted on the original row (once per side) so research can still see it.
+        fx = (match_date, home, away)
+        if fx in _first and _first[fx][0] != side:
+            i = _first[fx][1]
+            note = str(existing.at[i, "notes"]) if pd.notna(existing.at[i, "notes"]) else ""
+            tag = f"FLIP_SEEN {side}"
+            if tag not in note:
+                existing.at[i, "notes"] = (note + " | " if note else "") +                     f"{tag} @{odds:.2f} {tier} {now}"
+                flips += 1
             continue
         batch_keys.add(dedup_key)
 
@@ -207,7 +261,9 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "notes":        "",
         })
 
-    if not new_rows and not upgrades:
+    if flips:
+        log.info(f"Ledger: {flips} side flip(s) noted on the original tip (not added as new tips)")
+    if not new_rows and not upgrades and not flips:
         log.info("Ledger: no new tips (all already logged).")
         return
 
