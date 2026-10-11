@@ -1,0 +1,170 @@
+"""Today's tips as a table IMAGE for Telegram — readable at a glance on a phone.
+
+    from telegram_bot.tips_table import todays_rows, render_pngs, send_photo
+
+Owner request 2026-10-11: "better visuality for the today tips — table or photo with model, tier,
+market, edge, date". Telegram text has no tables and wraps badly on a phone, so the table is drawn
+as a PNG. Pillow is used because it is already installed everywhere (Streamlit depends on it);
+adding matplotlib would change requirements.txt for every workflow, predict included.
+
+SAME ROWS AS THE TEXT DIGEST: today's (UTC) live tips from the two LEDGERS, tiers SNIPER /
+MARKSMAN / VALUABLE, paper leagues excluded. The image is an addition; the text briefing is still
+sent, so a rendering failure can never cost the morning's tips.
+"""
+from __future__ import annotations
+
+import io
+from pathlib import Path
+
+import pandas as pd
+
+import config
+
+TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
+TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235)}
+MARKET_LABEL = {"btts": "BTTS", "over15": "O/U 1.5", "over35": "O/U 3.5"}
+ROWS_PER_IMAGE = 22
+COLUMNS = [("Time", 62), ("League", 190), ("Match", 330), ("Model", 70), ("Tier", 104),
+           ("Market", 150), ("Odds", 62), ("Edge", 66)]
+
+
+def _kickoffs() -> pd.DataFrame:
+    f = config.OUTPUT_DIR / "predictions.csv"
+    if not f.exists():
+        return pd.DataFrame(columns=["league", "date", "home_team", "away_team", "kickoff_utc"])
+    p = pd.read_csv(f, usecols=lambda c: c in {"league", "date", "home_team", "away_team", "kickoff_utc"})
+    return p.drop_duplicates(["league", "date", "home_team", "away_team"])
+
+
+def todays_rows(today_str: str) -> pd.DataFrame:
+    """One row per tip, best first: tier order, then edge."""
+    out = []
+    main = config.OUTPUT_DIR / "bets_ledger.csv"
+    side = config.OUTPUT_DIR / "side_bets_ledger.csv"
+    if main.exists():
+        m = config.drop_paper_leagues(pd.read_csv(main))
+        if "source" in m.columns:
+            m = m[m["source"].astype(str) == "live"]
+        m = m[m["signal_tier"].isin(TIER_ORDER) & (m["match_date"].astype(str).str[:10] == today_str)]
+        # one side per fixture: the FIRST tip stands (flip guard, 2026-10-11)
+        if "generated_at" in m.columns:
+            m = m.sort_values("generated_at", kind="mergesort").drop_duplicates(
+                ["match_date", "home_team", "away_team"], keep="first")
+        for _, r in m.iterrows():
+            out.append({"league": r["league"], "date": today_str, "home_team": r["home_team"],
+                        "away_team": r["away_team"],
+                        "model": r.get("model_type") or config.model_type_for_league(r["league"]),
+                        "tier": r["signal_tier"], "market": f"O/U 2.5 {str(r.get('side', '')).upper()}",
+                        "odds": r.get("odds"), "edge": r.get("edge_pct")})
+    if side.exists():
+        s = config.drop_paper_leagues(pd.read_csv(side))
+        s = s[s["signal_tier"].isin(TIER_ORDER) & (s["match_date"].astype(str).str[:10] == today_str)]
+        for _, r in s.iterrows():
+            mk = str(r.get("market", ""))
+            label = MARKET_LABEL.get(mk, mk.upper())
+            label += " YES" if mk == "btts" else " OVER"
+            out.append({"league": r["league"], "date": today_str, "home_team": r["home_team"],
+                        "away_team": r["away_team"],
+                        "model": r.get("model_type") or config.model_type_for_league(r["league"]),
+                        "tier": r["signal_tier"], "market": label, "odds": r.get("odds"),
+                        "edge": r.get("edge_pct")})
+    d = pd.DataFrame(out)
+    if d.empty:
+        return d
+    d = d.merge(_kickoffs(), on=["league", "date", "home_team", "away_team"], how="left")
+    ko = pd.to_datetime(d.get("kickoff_utc"), errors="coerce")
+    d["time"] = ko.dt.strftime("%H:%M").fillna("–")
+    d["edge"] = pd.to_numeric(d["edge"], errors="coerce")
+    d["_t"] = d["tier"].map({t: i for i, t in enumerate(TIER_ORDER)})
+    d = d.sort_values(["_t", "edge"], ascending=[True, False]).drop(columns="_t")
+    return d.reset_index(drop=True)
+
+
+def _font(size: int, bold: bool = False):
+    from PIL import ImageFont
+    names = (["DejaVuSans-Bold.ttf", "arialbd.ttf", "Arial Bold.ttf"] if bold
+             else ["DejaVuSans.ttf", "arial.ttf", "Arial.ttf"])
+    dirs = ["/usr/share/fonts/truetype/dejavu", "C:/Windows/Fonts", "/Library/Fonts", ""]
+    for n in names:
+        for d in dirs:
+            try:
+                return ImageFont.truetype(str(Path(d) / n) if d else n, size)
+            except OSError:
+                continue
+    try:
+        return ImageFont.load_default(size=size)
+    except TypeError:                                   # Pillow < 10.1
+        return ImageFont.load_default()
+
+
+def _fit(draw, text: str, font, width: int) -> str:
+    text = str(text)
+    if draw.textlength(text, font=font) <= width:
+        return text
+    while text and draw.textlength(text + "…", font=font) > width:
+        text = text[:-1]
+    return text + "…"
+
+
+def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
+    """One PNG per ROWS_PER_IMAGE tips."""
+    from PIL import Image, ImageDraw
+    pad, row_h, head_h, title_h, foot_h = 18, 34, 34, 54, 30
+    width = pad * 2 + sum(w for _, w in COLUMNS)
+    f_title, f_head, f_cell, f_foot = _font(22, True), _font(15, True), _font(15), _font(12)
+    pages = [rows.iloc[i:i + ROWS_PER_IMAGE] for i in range(0, len(rows), ROWS_PER_IMAGE)] or [rows]
+    out = []
+    for n, page in enumerate(pages, start=1):
+        height = title_h + head_h + row_h * max(len(page), 1) + foot_h + pad
+        img = Image.new("RGB", (width, height), (255, 255, 255))
+        dr = ImageDraw.Draw(img)
+        t = title + (f"  ({n}/{len(pages)})" if len(pages) > 1 else "")
+        dr.text((pad, 14), t, font=f_title, fill=(17, 24, 39))
+        y = title_h
+        dr.rectangle([0, y, width, y + head_h], fill=(31, 41, 55))
+        x = pad
+        for name, w in COLUMNS:
+            dr.text((x + 4, y + 8), name, font=f_head, fill=(255, 255, 255))
+            x += w
+        y += head_h
+        if page.empty:
+            dr.text((pad + 4, y + 8), "No tips today", font=f_cell, fill=(75, 85, 99))
+        for i, (_, r) in enumerate(page.iterrows()):
+            bg = (249, 250, 251) if i % 2 else (255, 255, 255)
+            dr.rectangle([0, y, width, y + row_h], fill=bg)
+            colour = TIER_COLOUR.get(r["tier"], (107, 114, 128))
+            dr.rectangle([0, y, 6, y + row_h], fill=colour)             # tier stripe
+            model = "Standard" if str(r["model"]) == "standard" else "New-fmt"
+            edge = "–" if pd.isna(r["edge"]) else f"+{r['edge']:.0f}%"
+            odds = "–" if pd.isna(pd.to_numeric(r["odds"], errors="coerce")) else f"{float(r['odds']):.2f}"
+            cells = [r["time"], r["league"], f"{r['home_team']} v {r['away_team']}", model,
+                     r["tier"], r["market"], odds, edge]
+            x = pad
+            for (name, w), val in zip(COLUMNS, cells):
+                font = f_head if name in ("Tier", "Edge") else f_cell
+                fill = colour if name == "Tier" else (17, 24, 39)
+                dr.text((x + 4, y + 8), _fit(dr, val, font, w - 8), font=font, fill=fill)
+                x += w
+            y += row_h
+        dr.text((pad, y + 8), "Times UTC · edge as recorded by v9 · paper leagues excluded · not betting advice",
+                font=f_foot, fill=(107, 114, 128))
+        buf = io.BytesIO()
+        img.save(buf, format="PNG", optimize=True)
+        out.append(buf.getvalue())
+    return out
+
+
+def send_photo(token: str, chat_id: str, png: bytes, caption: str = "") -> bool:
+    """Telegram sendPhoto. Never raises; the token is never logged."""
+    import requests
+    try:
+        r = requests.post(f"https://api.telegram.org/bot{token}/sendPhoto",
+                          data={"chat_id": chat_id, "caption": caption[:1000], "parse_mode": "HTML"},
+                          files={"photo": ("tips.png", png, "image/png")}, timeout=30)
+        if r.status_code != 200:
+            print(f"[tips_table] sendPhoto HTTP {r.status_code}")
+            return False
+        return True
+    except Exception as e:                                                # noqa: BLE001
+        print(f"[tips_table] sendPhoto failed: {type(e).__name__}")
+        return False
