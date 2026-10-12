@@ -224,26 +224,9 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Train player models (nightly during WC, Sundays, manual)
-        if: |
-          github.event.schedule == '30 23 * * *' ||
-          github.event.schedule == '0 5 * * 0' ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'collect_train_predict')
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: |
-          TODAY=$(date -u +%Y%m%d)
-          if [ "$TODAY" -ge "20260611" ] && [ "$TODAY" -le "20260726" ]; then
-            python -m player_model.pipeline --mode train
-          else
-            # Outside WC — only train on Sundays
-            if [ "$(date -u +%u)" = "7" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-              python -m player_model.pipeline --mode train
-            else
-              echo "Outside WC2026 window, skipping nightly train."
-            fi
-          fi
-        continue-on-error: true
+      # Training MOVED to player_props_train.yml on 2026-10-12. Here it shared this job's
+      # 120-minute limit with predict, and once player_history reached 855k rows it timed out
+      # every Sunday (last completed retrain 2026-09-20) without ever showing red.
 
       # The collect steps are continue-on-error so a bad collect can't block predict. That is
       # the right call, but it also made failure INVISIBLE: player_history.parquet quietly
