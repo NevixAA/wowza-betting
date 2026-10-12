@@ -61,13 +61,26 @@ on:
     # The headroom this frees is FOR predict and the two odds captures, which are deliberately
     # untouched — their prices are pre-match only and cannot be backfilled, so a dropped run there
     # is a permanent loss and a dropped run here is not.
-    - cron: '4 8-23 * * *'         # hourly: 08:00-23:59 UTC = 11:00-02:59 Israel  (16/day)
+    #
+    # IN-RUN LOOP, 2026-10-12 — the "better fix" named above, finally done. Hourly one-shot scans
+    # were still delivered ~3 times a day (14:xx, 19:xx, 23:xx), so the scanner saw each match at
+    # most once and live signals fell to 3 in the two weeks to 10-12. Now: 8 firings a day, each
+    # scanning every 5 minutes for ~170 minutes and committing every 30. Even at today's delivery
+    # rate that is ~100 scans a day instead of 3, and each run is robust to starting late
+    # (CLAUDE.md: in-run loops are the only real timing control). Every 3h covers the overnight
+    # Americas window too. Cost: one /fixtures?live=all call per scan plus stats for live games
+    # (90s cache) - a few thousand calls a day against 75,000.
+    - cron: '4 */3 * * *'          # every 3h, 8/day; each run loops ~170 min
   workflow_dispatch:
+
+concurrency:
+  group: live-scanner
+  cancel-in-progress: false
 
 jobs:
   live:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 185
     permissions:
       contents: write
 
@@ -104,9 +117,41 @@ jobs:
           # is the reason this workflow exists and is deliberately unaffected.
           # Set LIVE_ALERTS: '1' to resume sending.
           LIVE_ALERTS: ''
-        run: python src/live_scanner.py
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          commit_push() {
+            # PER-FILE. `git add -f a b missing` ABORTS and stages NOTHING — one absent path loses
+            # the whole list and `|| true` then hides it. inplay_snapshots.csv is created lazily.
+            for f in output/live_tips.csv output/live_games.csv \
+                     output/live_signals_history.csv output/inplay_snapshots.csv \
+                     telegram_bot/live_notified.json; do
+              git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+            done
+            git diff --staged --quiet && return 0
+            git commit -q -m "auto: live $(date -u '+%Y-%m-%d %H:%M UTC')"
+            for i in 1 2 3 4 5; do
+              # -X theirs keeps THIS run's rows in a rebase (labels are inverted vs a merge);
+              # an in-play state at 63' cannot be re-observed, so losing it is permanent.
+              git pull -q --rebase --autostash -X theirs origin main && git push -q && return 0
+              echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+            done
+            echo "::warning::push failed after 5 retries"; return 1
+          }
+          end=$(( $(date +%s) + 170*60 )); last_push=$(date +%s); scans=0
+          while [ "$(date +%s)" -lt "$end" ]; do
+            t0=$(date +%s)
+            timeout 240 python src/live_scanner.py || echo "::warning::scan failed (exit $?)"
+            scans=$((scans+1))
+            if [ $(( $(date +%s) - last_push )) -ge 1800 ]; then commit_push || true; last_push=$(date +%s); fi
+            el=$(( $(date +%s) - t0 ))
+            if [ "$el" -lt 300 ]; then sleep $(( 300 - el )); fi
+          done
+          echo "scans this run: $scans"
+          commit_push
 
-      - name: Commit and push
+      - name: Final commit (if the loop was cut short)
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
