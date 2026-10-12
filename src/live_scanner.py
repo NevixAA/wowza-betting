@@ -873,6 +873,12 @@ def _append_to_history(df: pd.DataFrame) -> None:
             combined = pd.concat([existing, row], ignore_index=True)
         else:
             combined = row
+        # ONE ROW PER SIGNAL, the first time it fired (2026-10-12). The workflow now scans every
+        # 5 minutes inside one run instead of once per (rarely delivered) cron, so a signal that
+        # stays true is seen many times; without this the grader would count it many times over.
+        _key = [c for c in ("date", "match", "signal_type", "bet") if c in combined.columns]
+        if _key:
+            combined = combined.drop_duplicates(_key, keep="first")
         combined.to_csv(LIVE_HISTORY_FILE, index=False)
     except Exception as e:
         log.debug(f"History append error: {e}")
