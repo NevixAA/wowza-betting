@@ -100,50 +100,80 @@ with col_time:
 st.divider()
 
 # ── Quick stats ───────────────────────────────────────────────────────────────
-bets    = load_bets()
-ledger  = load_ledger()
+# SAME BASIS AS THE DASHBOARD PAGE (fixed 2026-10-12). This header used to count EVERY tier on
+# the O/U 2.5 ledger alone, so it showed -23.22u while the Dashboard showed +36.22u for the same
+# day: VALUABLE is paper (never staked) and carried most of that loss, and the side markets
+# (where most of the profit is) were not counted at all. Two pages, two answers. Now both read
+# staked tiers (SNIPER + MARKSMAN) across every staked market, settled, from
+# PERFORMANCE_CUTOFF_DATE by match date; paper VALUABLE is shown separately and labelled.
+_STAKED = ("SNIPER", "MARKSMAN")
+_SOURCES = [("bets_ledger.csv", None, "O/U 2.5"), ("side_bets_ledger.csv", "market", None),
+            ("ht_ledger.csv", None, "HT O/U")]
 
-live = ledger[ledger["source"] == "live"] if not ledger.empty else pd.DataFrame()
 
-# Performance COUNTS start at the cutoff (pre-fix new-format tips were garbage). Rows before
-# the cutoff stay in the ledger for CLV — they're just excluded from these aggregates.
+@st.cache_data(ttl=60)
+def load_settled() -> pd.DataFrame:
+    parts = []
+    cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
+    for f, mkc, const in _SOURCES:
+        p = config.OUTPUT_DIR / f
+        if not p.exists():
+            continue
+        try:
+            d = _read_csv(p, low_memory=False)
+            if "source" in d.columns:
+                d = d[d["source"].fillna("live").astype(str) == "live"]
+            if "signal_tier" not in d.columns:
+                continue
+            d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
+                         _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
+                         _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
+            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl"]])
+        except Exception:                                   # noqa: BLE001 — a viewer never dies on one file
+            continue
+    return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(
+        columns=["signal_tier", "_mkt", "_pnl"])
+
+
+bets = load_bets()
+settled = load_settled()
+staked = settled[settled["signal_tier"].isin(_STAKED)]
+paper = settled[settled["signal_tier"] == "VALUABLE"]
 _cut = config.PERFORMANCE_CUTOFF_DATE
-if not live.empty and "generated_at" in live.columns:
-    counted = live[live["generated_at"].astype(str).str[:10] >= _cut]
-else:
-    counted = live
-scored = counted[counted["pnl"].notna()] if not counted.empty else pd.DataFrame()
 
-# Tiers are SNIPER / MARKSMAN / VALUABLE (not "VALUE").
 c1, c2, c3, c4, c5 = st.columns(5)
 
 with c1:
-    n_sniper = len(bets[bets["signal_tier"] == "SNIPER"]) if not bets.empty else 0
-    st.metric("🎯 Live SNIPERs", n_sniper)
+    _up = bets[bets["signal_tier"].isin(_STAKED) & bets["bet"].isin(["OVER", "UNDER"])] \
+        if not bets.empty else bets
+    st.metric("🎯 Upcoming staked tips", len(_up),
+              help="SNIPER + MARKSMAN on O/U 2.5 in the current slate. All markets are on the "
+                   "Dashboard page.")
 
 with c2:
-    n_value = len(bets[(bets["signal_tier"] == "VALUABLE") & (bets["bet"].isin(["OVER", "UNDER"]))]) if not bets.empty else 0
-    st.metric("💎 Live VALUABLE", n_value)
+    if len(staked):
+        st.metric("📈 P/L — staked (u)", f"{staked['_pnl'].sum():+.2f}u",
+                  help="Flat 1u, SNIPER + MARKSMAN, every staked market (O/U 2.5, side markets, "
+                       "HT), settled only. Same number as the Dashboard page.")
+    else:
+        st.metric("📈 P/L — staked (u)", "—")
 
 with c3:
-    # P/L in UNITS on flat 1u paper stakes — NOT "ROI" (no real capital/staking).
-    if not scored.empty:
-        pl = scored["pnl"].sum()
-        st.metric("📈 Live P/L (u)", f"{pl:+.2f}u")
+    if len(staked):
+        st.metric("✅ Win rate — staked", f"{(staked['_pnl'] > 0).mean() * 100:.1f}%")
     else:
-        st.metric("📈 Live P/L (u)", "—")
+        st.metric("✅ Win rate — staked", "—")
 
 with c4:
-    if not scored.empty:
-        wr = (scored["pnl"] > 0).mean() * 100
-        st.metric("✅ Win Rate", f"{wr:.1f}%")
-    else:
-        st.metric("✅ Win Rate", "—")
+    st.metric("📊 Settled staked bets", len(staked))
 
 with c5:
-    st.metric("📊 Resolved Bets", len(scored) if not scored.empty else 0)
+    st.metric("💎 Paper VALUABLE P/L", f"{paper['_pnl'].sum():+.2f}u" if len(paper) else "—",
+              delta=f"{len(paper)} tips, not bets", delta_color="off",
+              help="VALUABLE is recorded and tracked but never staked, so it is not in the P/L.")
 
-st.caption(f"📅 Performance counts tips generated on/after {_cut} (pre-fix new-format tips excluded; kept in CLV data).")
+st.caption(f"📅 Settled since {_cut} (by match date), flat 1u stakes. Per-market breakdown on the "
+           f"Dashboard page — one market carries most of the total.")
 
 st.divider()
 st.markdown("### Navigate using the sidebar →")
