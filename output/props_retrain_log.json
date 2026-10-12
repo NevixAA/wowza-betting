@@ -1,0 +1,60 @@
+{
+  "runs": {
+    "2026-10-12": {
+      "goals": {
+        "promoted": true,
+        "why": "log loss 0.25891 -> 0.26126 (+0.00235), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.25891,
+        "logloss_new": 0.26126
+      },
+      "goals2": {
+        "promoted": true,
+        "why": "log loss 0.04325 -> 0.04270 (-0.00055), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.04325,
+        "logloss_new": 0.0427
+      },
+      "assists": {
+        "promoted": true,
+        "why": "log loss 0.21852 -> 0.21803 (-0.00049), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.21852,
+        "logloss_new": 0.21803
+      },
+      "sot": {
+        "promoted": true,
+        "why": "log loss 0.46876 -> 0.47535 (+0.00658), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.46876,
+        "logloss_new": 0.47535
+      },
+      "sot2": {
+        "promoted": true,
+        "why": "log loss 0.17694 -> 0.18473 (+0.00780), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.17694,
+        "logloss_new": 0.18473
+      },
+      "sot3": {
+        "promoted": true,
+        "why": "log loss 0.05941 -> 0.06088 (+0.00147), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.05941,
+        "logloss_new": 0.06088
+      },
+      "sot4": {
+        "promoted": false,
+        "why": "skipped: Cannot convert non-finite values (NA or inf) to integer.Replace or remove non-finite values or cast to an integer typethat supports these values (e.g. 'Int64')"
+      },
+      "cards": {
+        "promoted": true,
+        "why": "log loss 0.36493 -> 0.37373 (+0.00881), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.36493,
+        "logloss_new": 0.37373
+      }
+    }
+  },
+  "latest_run": "2026-10-12"
+}
