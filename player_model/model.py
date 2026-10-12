@@ -65,6 +65,16 @@ def train(df: pd.DataFrame, market: str) -> dict:
     if target_col not in df.columns:
         raise ValueError(f"Target column {target_col} not found")
 
+    # Rows with NO label are not trainable. target_sot4 is empty on 5,403 rows collected before
+    # that target existed (friendlies, Ireland, Finland, internationals; kept by the union merge),
+    # and `.astype(int)` raised on them -> mode_train caught the ValueError as "[SKIP] sot4", so
+    # the sot4 model was never retrained. Found 2026-10-12. Dropping, not imputing: never invent
+    # a label.
+    n_unlabelled = int(df[target_col].isna().sum())
+    if n_unlabelled:
+        print(f"  [{market}] dropping {n_unlabelled:,} rows with no {target_col}")
+        df = df[df[target_col].notna()].reset_index(drop=True)
+
     y = df[target_col].astype(int)
     X, feat_cols = _prep(df)
 
