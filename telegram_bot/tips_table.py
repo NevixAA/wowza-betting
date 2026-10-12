@@ -38,36 +38,54 @@ def _kickoffs() -> pd.DataFrame:
 
 def todays_rows(today_str: str) -> pd.DataFrame:
     """One row per tip, best first: tier order, then edge."""
+    return tips_rows(today_str, today_str)
+
+
+def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
+    """Every live tip with a match date in [date_from, date_to] (inclusive, 'YYYY-MM-DD').
+
+    Shared by the Telegram image and the dashboard's tips board, so both show the same rows.
+    Extra columns the image does not draw: `drift` (O/U 2.5 only), `model_prob` (side markets
+    only), `generated_at`.
+    """
     out = []
     main = config.OUTPUT_DIR / "bets_ledger.csv"
     side = config.OUTPUT_DIR / "side_bets_ledger.csv"
+
+    def _in_range(df):
+        d = df["match_date"].astype(str).str[:10]
+        return (d >= date_from) & (d <= date_to)
+
     if main.exists():
-        m = config.drop_paper_leagues(pd.read_csv(main))
+        m = config.drop_paper_leagues(pd.read_csv(main, low_memory=False))
         if "source" in m.columns:
             m = m[m["source"].astype(str) == "live"]
-        m = m[m["signal_tier"].isin(TIER_ORDER) & (m["match_date"].astype(str).str[:10] == today_str)]
+        m = m[m["signal_tier"].isin(TIER_ORDER) & _in_range(m)]
         # one side per fixture: the FIRST tip stands (flip guard, 2026-10-11)
         if "generated_at" in m.columns:
             m = m.sort_values("generated_at", kind="mergesort").drop_duplicates(
                 ["match_date", "home_team", "away_team"], keep="first")
         for _, r in m.iterrows():
-            out.append({"league": r["league"], "date": today_str, "home_team": r["home_team"],
-                        "away_team": r["away_team"],
+            out.append({"league": r["league"], "date": str(r["match_date"])[:10],
+                        "home_team": r["home_team"], "away_team": r["away_team"],
                         "model": r.get("model_type") or config.model_type_for_league(r["league"]),
                         "tier": r["signal_tier"], "market": f"O/U 2.5 {str(r.get('side', '')).upper()}",
-                        "odds": r.get("odds"), "edge": r.get("edge_pct")})
+                        "odds": r.get("odds"), "edge": r.get("edge_pct"),
+                        "drift": r.get("drift_signal"), "model_prob": None,
+                        "generated_at": r.get("generated_at")})
     if side.exists():
-        s = config.drop_paper_leagues(pd.read_csv(side))
-        s = s[s["signal_tier"].isin(TIER_ORDER) & (s["match_date"].astype(str).str[:10] == today_str)]
+        s = config.drop_paper_leagues(pd.read_csv(side, low_memory=False))
+        s = s[s["signal_tier"].isin(TIER_ORDER) & _in_range(s)]
         for _, r in s.iterrows():
             mk = str(r.get("market", ""))
             label = MARKET_LABEL.get(mk, mk.upper())
             label += " YES" if mk == "btts" else " OVER"
-            out.append({"league": r["league"], "date": today_str, "home_team": r["home_team"],
-                        "away_team": r["away_team"],
+            out.append({"league": r["league"], "date": str(r["match_date"])[:10],
+                        "home_team": r["home_team"], "away_team": r["away_team"],
                         "model": r.get("model_type") or config.model_type_for_league(r["league"]),
                         "tier": r["signal_tier"], "market": label, "odds": r.get("odds"),
-                        "edge": r.get("edge_pct")})
+                        "edge": r.get("edge_pct"), "drift": None,
+                        "model_prob": r.get("model_prob"), "generated_at": r.get("generated_at")})
     d = pd.DataFrame(out)
     if d.empty:
         return d

@@ -112,9 +112,24 @@ if df.empty:
     st.info("No upcoming fixtures right now. (Past matches are hidden — see Live History for results.)")
     st.stop()
 
-bets_file = config.OUTPUT_DIR / "bets.csv"
-mod_time  = datetime.fromtimestamp(bets_file.stat().st_mtime).strftime("%d/%m/%Y %H:%M")
-st.caption(f"Last updated: {mod_time}  •  {len(df)} fixtures fetched")
+
+@st.cache_data(ttl=60)
+def load_board(date_from: str, date_to: str) -> pd.DataFrame:
+    """The SAME rows the Telegram tips image draws (telegram_bot.tips_table): live tips from the
+    two committed ledgers, first side per fixture, paper leagues out. The old board read
+    side_bets.csv, which is not committed, so side markets never appeared on the deployed app."""
+    from telegram_bot.tips_table import tips_rows
+    return tips_rows(date_from, date_to)
+
+
+# File mtime is NOT a freshness signal here: a git checkout resets it on every deploy, so it
+# always read "just now". The newest recorded tip is a real timestamp.
+_today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
+_all_board = load_board(_today, "2099-12-31")
+_last = (pd.to_datetime(_all_board["generated_at"], errors="coerce").max()
+         if len(_all_board) else pd.NaT)
+st.caption(f"Newest tip recorded: {_last:%d/%m/%Y %H:%M} UTC  •  {len(df)} fixtures priced"
+           if pd.notna(_last) else f"{len(df)} fixtures priced")
 
 # ── Filters ────────────────────────────────────────────────────────────────────
 col_f1, col_f2, col_f3 = st.columns(3)
@@ -129,14 +144,20 @@ with col_f3:
         default=["Confirmed", "Neutral", "New", "Conflicted"]
     )
 
-col_f4, col_f5 = st.columns([2, 1])
+col_f4, col_f5, col_f6 = st.columns([2, 1, 1])
+with col_f6:
+    _MARKETS = ["O/U 2.5", "BTTS", "O/U 1.5", "O/U 3.5"]
+    market_filter = st.multiselect("Market", _MARKETS, default=_MARKETS, key="dash_market")
 with col_f4:
     all_leagues = sorted(df["league"].dropna().unique().tolist()) if "league" in df.columns else []
     league_filter = st.multiselect("League", all_leagues, default=all_leagues, key="dash_league")
 with col_f5:
+    _hi = df["date"].max()
+    if len(_all_board):
+        _hi = max(_hi, pd.Timestamp(_all_board["date"].max()))
     date_range = st.date_input(
         "Date range",
-        value=(df["date"].min().date(), df["date"].max().date()),
+        value=(pd.Timestamp(_today).date(), _hi.date()),
         key="dash_dates",
     )
     if isinstance(date_range, (list, tuple)) and len(date_range) == 2:
@@ -144,16 +165,148 @@ with col_f5:
     else:
         date_from = date_to = pd.Timestamp(date_range[0]) if date_range else df["date"].min()
 
-# Active tips only
-tips = df[
-    df["bet"].isin(["OVER", "UNDER"]) &
-    df["signal_tier"].isin(tier_filter) &
-    (df["model_type"].isin(model_filter) if model_filter else True) &
-    df["drift_signal"].isin(drift_filter) &
-    (df["league"].isin(league_filter) if league_filter and "league" in df.columns else True) &
-    (df["date"] >= date_from) &
-    (df["date"] <= date_to + pd.Timedelta(days=1))
-].copy()
+# ── Tips board ─────────────────────────────────────────────────────────────────
+# Owner request 2026-10-12: "tips should be more readable". One board for every market instead
+# of SNIPER cards + two plain tables + a side-market section that never rendered: grouped by
+# match day, one line per tip, tier as a coloured pill, market AND side spelled out.
+import html as _html
+from zoneinfo import ZoneInfo
+
+_TZ_NAME = "Asia/Jerusalem"
+_TIER_CLR = {"SNIPER": "#c42b2b", "MARKSMAN": "#d97706", "VALUABLE": "#2563eb"}
+_TIER_ICON = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+_STAKE = {"SNIPER": "staked · full", "MARKSMAN": "staked · ¾", "VALUABLE": "paper"}
+_SIDE_CLR = {"OVER": "#0e7490", "UNDER": "#7c3aed", "YES": "#15803d"}
+
+
+def _market_group(m: str) -> str:
+    return " ".join(m.split()[:-1]) if m else m       # "O/U 2.5 UNDER" -> "O/U 2.5"
+
+
+def _board(rows: pd.DataFrame, order: str) -> str:
+    try:
+        tz = ZoneInfo(_TZ_NAME)
+    except Exception:                                   # noqa: BLE001 — no tzdata: stay in UTC
+        tz = ZoneInfo("UTC")
+    now = pd.Timestamp.now(tz="UTC")
+    rows = rows.copy()
+    ko = pd.to_datetime(rows["kickoff_utc"], errors="coerce", utc=True)
+    rows["_ko"] = ko
+    rows["_local"] = ko.dt.tz_convert(tz)
+    # Group by the LOCAL kickoff date, so a 00:30 kickoff sits under the day it is played on
+    # here; the ledger's match_date is the fallback when no kickoff time is known.
+    rows["_day"] = rows["_local"].dt.strftime("%Y-%m-%d").fillna(rows["date"].astype(str))
+    rows["_t"] = rows["tier"].map({t: i for i, t in enumerate(_TIER_CLR)})
+    css = """
+<style>
+.wz-wrap{overflow-x:auto;margin-bottom:6px}
+.wz{border-collapse:collapse;width:100%;font-size:0.92rem;min-width:760px;table-layout:fixed}
+.wz th{text-align:left;font-weight:600;font-size:0.72rem;letter-spacing:.04em;text-transform:uppercase;
+       opacity:.65;padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.35)}
+.wz td{padding:7px 8px;border-bottom:1px solid rgba(128,128,128,.15);vertical-align:middle}
+.wz tr.done td{opacity:.45}
+.wz .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wz .ko{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.wz .lg{opacity:.7;font-size:.82rem}
+.wz .pill{display:inline-block;padding:2px 9px;border-radius:999px;color:#fff;font-weight:700;
+          font-size:.74rem;letter-spacing:.03em;white-space:nowrap}
+.wz .sub{display:block;font-size:.7rem;opacity:.6;margin-top:2px;white-space:nowrap}
+.wz .mk{font-weight:700;white-space:nowrap}
+.wz .bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-left:6px}
+.wz-day{font-weight:700;font-size:1.02rem;margin:18px 0 4px}
+.wz-day small{font-weight:400;opacity:.65}
+</style>"""
+    out = [css]
+    emax = max(float(rows["edge"].max() or 0), 1.0)
+    for day, g in rows.groupby("_day", sort=True):
+        d = pd.Timestamp(day)
+        rel = {0: "Today", 1: "Tomorrow"}.get((d.date() - pd.Timestamp.now(tz=tz).date()).days, "")
+        counts = " · ".join(f"{int((g['tier'] == t).sum())} {t}" for t in _TIER_CLR
+                            if (g["tier"] == t).any())
+        label = f"{rel + ' · ' if rel else ''}{d:%a %d %b}"
+        out.append(f"<div class='wz-day'>{label} <small>— {len(g)} tip{'s' if len(g) != 1 else ''}"
+                   f" ({counts})</small></div>")
+        g = (g.sort_values(["_ko", "_t", "edge"], ascending=[True, True, False], na_position="last")
+             if order == "Kickoff time" else g.sort_values(["_t", "edge"], ascending=[True, False]))
+        out.append("<div class='wz-wrap'><table class='wz'><colgroup><col style='width:8%'><col style='width:33%'>"
+                   "<col style='width:15%'><col style='width:15%'><col style='width:8%'>"
+                   "<col style='width:12%'><col style='width:9%'></colgroup>"
+                   "<tr><th>Kickoff</th><th>Match</th>"
+                   "<th>Tip</th><th>Tier</th><th class='num'>Odds</th><th class='num'>Edge</th>"
+                   "<th>Model</th></tr>")
+        for _, r in g.iterrows():
+            started = pd.notna(r["_ko"]) and r["_ko"] <= now
+            kot = r["_local"].strftime("%H:%M") if pd.notna(r["_local"]) else "–"
+            tier = str(r["tier"])
+            clr = _TIER_CLR.get(tier, "#6b7280")
+            parts = str(r["market"]).split()
+            side = parts[-1] if parts else ""
+            mk_txt = " ".join(parts[:-1]).replace("O/U ", "") if parts else ""
+            side_word = {"OVER": "Over", "UNDER": "Under", "YES": "Yes"}.get(side, side.title())
+            tip = (f"BTTS — {side_word}" if mk_txt == "BTTS" else f"{side_word} {mk_txt}")
+            odds = pd.to_numeric(r["odds"], errors="coerce")
+            edge = r["edge"]
+            bar_w = 0 if pd.isna(edge) else int(46 * min(max(float(edge), 0) / emax, 1))
+            extra = []
+            if pd.notna(r.get("model_prob")):
+                extra.append(f"model {float(r['model_prob']) * 100:.0f}%")
+            if isinstance(r.get("drift"), str) and r["drift"] and r["drift"] != "nan":
+                extra.append(f"drift {r['drift']}")
+            model = "Standard" if str(r["model"]) == "standard" else "New-format"
+            out.append(
+                f"<tr class='{'done' if started else ''}'>"
+                f"<td class='ko'>{kot}{'<span class=sub>started</span>' if started else ''}</td>"
+                f"<td><b>{_html.escape(str(r['home_team']))}</b> v "
+                f"<b>{_html.escape(str(r['away_team']))}</b>"
+                f"<span class='sub lg'>{_html.escape(str(r['league']))}</span></td>"
+                f"<td><span class='mk' style='color:{_SIDE_CLR.get(side, 'inherit')}'>{tip}</span>"
+                f"{'<span class=sub>' + ' · '.join(extra) + '</span>' if extra else ''}</td>"
+                f"<td><span class='pill' style='background:{clr}'>{_TIER_ICON.get(tier, '')} {tier}"
+                f"</span><span class='sub'>{_STAKE.get(tier, '')}</span></td>"
+                f"<td class='num'><b>{'–' if pd.isna(odds) else f'{odds:.2f}'}</b></td>"
+                f"<td class='num'>{'–' if pd.isna(edge) else f'+{edge:.1f}%'}"
+                f"<span class='bar' style='width:{bar_w}px;background:{clr}'></span></td>"
+                f"<td class='lg'>{model}</td></tr>")
+        out.append("</table></div>")
+    return "\n".join(out)
+
+
+board = load_board(date_from.strftime("%Y-%m-%d"), date_to.strftime("%Y-%m-%d"))
+if len(board):
+    _keep = board["tier"].isin(tier_filter) & board["market"].map(_market_group).isin(market_filter)
+    if model_filter:
+        _keep &= board["model"].isin(model_filter)
+    if league_filter:
+        _keep &= board["league"].isin(league_filter)
+    # Drift exists for O/U 2.5 only; a side-market row has none and is never hidden by it.
+    _keep &= board["drift"].isna() | board["drift"].isin(drift_filter)
+    board = board[_keep]
+
+st.markdown("## 🎯 Tips")
+if board.empty:
+    st.info("No tips match the current filters.")
+else:
+    _staked = int(board["tier"].isin(["SNIPER", "MARKSMAN"]).sum())
+    _future = pd.to_datetime(board["kickoff_utc"], errors="coerce", utc=True)
+    _next = _future[_future > pd.Timestamp.now(tz="UTC")].min()
+    ui.metric_row([
+        {"label": "Tips shown", "value": f"{len(board)}",
+         "help": "Every live tip in the date range, all markets, one side per fixture."},
+        {"label": "Staked (SNIPER + MARKSMAN)", "value": f"{_staked}",
+         "help": "VALUABLE is recorded and tracked but is not a bet."},
+        {"label": "Fixtures", "value": f"{board[['date', 'home_team', 'away_team']].drop_duplicates().shape[0]}"},
+        {"label": "Next kickoff", "value": (f"{_next.tz_convert(_TZ_NAME):%a %H:%M}"
+                                            if pd.notna(_next) else "—"),
+         "help": f"Israel time ({_TZ_NAME})."},
+    ])
+    _order = st.radio("Order within a day", ["Kickoff time", "Best first"], horizontal=True,
+                      key="dash_order", label_visibility="collapsed")
+    st.markdown(_board(board, _order), unsafe_allow_html=True)
+    st.caption(f"Kickoff in Israel time · the same tips as the Telegram image (from the ledgers, "
+               f"first side per fixture, paper leagues excluded) · Edge is as recorded when the tip "
+               f"was sent · not betting advice.")
+    st.download_button("Download as CSV", board.drop(columns=["generated_at"], errors="ignore")
+                       .to_csv(index=False).encode("utf-8"), "wowza_tips.csv", "text/csv")
 
 st.divider()
 
@@ -378,101 +531,6 @@ if len(_s):
         st.caption(f"CLV panel unavailable ({type(_e).__name__}: {_e})")
     st.divider()
 
-# ── SNIPER section ─────────────────────────────────────────────────────────────
-snipers   = tips[tips["signal_tier"] == "SNIPER"].sort_values("best_edge", ascending=False)
-marksmen  = tips[tips["signal_tier"] == "MARKSMAN"].sort_values("best_edge", ascending=False)
-valuables = tips[tips["signal_tier"] == "VALUABLE"].sort_values("best_edge", ascending=False)
-
-if not snipers.empty:
-    st.markdown(f"### 🎯 SNIPER Tips &nbsp; <small style='color:#e94560'>({len(snipers)} bets)</small>",
-                unsafe_allow_html=True)
-    for _, row in snipers.iterrows():
-        side  = row.get("best_side") or row.get("bet", "")
-        odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
-        edge  = float(row.get("best_edge", 0)) * 100
-        model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿" if row.get("model_type") == "standard" else "🌍"
-        drift = str(row.get("drift_signal", "New"))
-
-        st.markdown(f"""
-        <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);
-                    border:2px solid #e94560;border-radius:10px;
-                    padding:14px 18px;margin-bottom:8px">
-          <span style="color:#e94560;font-size:1.1em;font-weight:bold">🎯 SNIPER</span>
-          &nbsp;&nbsp;{model}
-          <span style="float:right;color:#aaa">{str(row['date'])[:10]}</span><br>
-          <span style="color:white;font-size:1.05em">
-            <b>{row['home_team']}</b> vs <b>{row['away_team']}</b>
-          </span><br>
-          <span style="color:#90caf9">{row.get('league','')}</span>
-          &nbsp;&nbsp;
-          {odds_badge(side, odds)}
-          &nbsp;&nbsp;
-          <span style="color:#00c896;font-weight:bold">Edge: {edge:.1f}%</span>
-          &nbsp;&nbsp;
-          {drift_badge(drift)}
-        </div>
-        """, unsafe_allow_html=True)
-else:
-    if "SNIPER" in tier_filter:
-        st.info("No SNIPER tips matching current filters.")
-
-# ── MARKSMAN section ───────────────────────────────────────────────────────────
-if not marksmen.empty:
-    st.markdown(f"### 🔫 MARKSMAN Tips &nbsp; <small style='color:#00aaff'>({len(marksmen)} bets — 3/4 stake)</small>",
-                unsafe_allow_html=True)
-    marksman_rows = []
-    for _, row in marksmen.iterrows():
-        side  = row.get("best_side") or row.get("bet", "")
-        odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
-        edge  = float(row.get("best_edge", 0)) * 100
-        drift = str(row.get("drift_signal", "New"))
-        model = "Standard 🏴󠁧󠁢󠁥󠁮󠁧󠁿" if row.get("model_type") == "standard" else "New-Format 🌍"
-        marksman_rows.append({
-            "Date": str(row["date"])[:10], "League": row.get("league", ""),
-            "Match": f"{row['home_team']} vs {row['away_team']}",
-            "Side": side, "Odds": f"{odds:.2f}", "Edge": f"{edge:.1f}%",
-            "Drift": drift, "Model": model,
-        })
-    st.dataframe(pd.DataFrame(marksman_rows), width="stretch", hide_index=True)
-else:
-    if "MARKSMAN" in tier_filter:
-        st.info("No MARKSMAN tips matching current filters.")
-
-# ── VALUABLE section ───────────────────────────────────────────────────────────
-if not valuables.empty:
-    st.markdown(f"### 💎 VALUABLE Tips &nbsp; <small style='color:#f5a623'>({len(valuables)} bets — half stake)</small>",
-                unsafe_allow_html=True)
-
-    rows_display = []
-    for _, row in valuables.iterrows():
-        side  = row.get("best_side") or row.get("bet", "")
-        odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
-        edge  = float(row.get("best_edge", 0)) * 100
-        drift = str(row.get("drift_signal", "New"))
-        model = "Standard 🏴󠁧󠁢󠁥󠁮󠁧󠁿" if row.get("model_type") == "standard" else "New-Format 🌍"
-        rows_display.append({
-            "Date":     str(row["date"])[:10],
-            "League":   row.get("league", ""),
-            "Match":    f"{row['home_team']} vs {row['away_team']}",
-            "Side":     side,
-            "Odds":     f"{odds:.2f}",
-            "Edge":     f"{edge:.1f}%",
-            "Drift":    drift,
-            "Model":    model,
-        })
-
-    st.dataframe(
-        pd.DataFrame(rows_display),
-        width="stretch",
-        hide_index=True,
-        column_config={
-            "Odds":  st.column_config.NumberColumn(format="%.2f"),
-        }
-    )
-
-if snipers.empty and marksmen.empty and valuables.empty:
-    st.warning("No tips match your filters.")
-
 # ── HT O/U Predictions ────────────────────────────────────────────────────────
 @st.cache_data(ttl=300)
 def load_predictions_ht():
@@ -513,64 +571,6 @@ if not ht_preds.empty:
         })
     st.dataframe(pd.DataFrame(ht_rows), width="stretch", hide_index=True)
     st.caption("Compare fair prices against your bookmaker's HT market to find value")
-
-# ── Side Markets: BTTS / Over 1.5 / Over 3.5 ──────────────────────────────────
-@st.cache_data(ttl=60)
-def load_side_bets():
-    f = config.OUTPUT_DIR / "side_bets.csv"
-    if not f.exists():
-        return pd.DataFrame()
-    sb = _read_csv(f)
-    sb["date"] = pd.to_datetime(sb["date"], errors="coerce")
-    today = pd.Timestamp.now().normalize()
-    return sb[sb["date"] >= today].copy()
-
-side_bets = load_side_bets()
-if not side_bets.empty:
-    st.markdown("---")
-    st.markdown(
-        "### 📌 Side Market Tips &nbsp;"
-        "<small style='color:#aaa'>(BTTS · Over 1.5 · Over 3.5)</small>",
-        unsafe_allow_html=True,
-    )
-    st.caption("Standard-format leagues only · Trained separately from O/U 2.5")
-
-    # "BTTS" alone is ambiguous about the side; this path only ever produces YES.
-    SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
-    TIER_EMOJI  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
-
-    col_sb1, col_sb2 = st.columns(2)
-    with col_sb1:
-        side_tier_filter = st.multiselect(
-            "Tier (side markets)", ["SNIPER", "MARKSMAN", "VALUABLE"],
-            default=["SNIPER", "MARKSMAN", "VALUABLE"], key="sb_tier",
-        )
-    sb_filtered = side_bets[side_bets["signal_tier"].isin(side_tier_filter)].copy() \
-                  if "signal_tier" in side_bets.columns else side_bets
-
-    for mkt, mkt_label in SIDE_LABELS.items():
-        ms = sb_filtered[sb_filtered["market"] == mkt] if "market" in sb_filtered.columns else pd.DataFrame()
-        if ms.empty:
-            continue
-        with st.expander(
-            f"**{mkt_label}** — {len(ms)} tip{'s' if len(ms) != 1 else ''}",
-            expanded=len(ms) <= 5,
-        ):
-            rows = []
-            for _, row in ms.sort_values("edge", ascending=False).iterrows():
-                tier = row.get("signal_tier", "")
-                ev = row.get("ev")
-                rows.append({
-                    "Tier":    f"{TIER_EMOJI.get(tier,'')} {tier}",
-                    "Date":    str(row["date"])[:10],
-                    "League":  row.get("league", ""),
-                    "Match":   f"{row['home_team']} vs {row['away_team']}",
-                    "Odds":    f"{float(row['market_odds']):.2f}",
-                    "Model P": f"{float(row['model_prob'])*100:.0f}%",
-                    "Edge":    f"{float(row['edge'])*100:.1f}%",
-                    "EV":      f"{float(ev):+.1%}" if pd.notna(ev) else "—",
-                })
-            st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
 # ── Suppressed bets note ────────────────────────────────────────────────────────
 avoided = df[df["bet"] == "AVOID"]
