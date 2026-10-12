@@ -1,10 +1,22 @@
 """
-Player Props Dashboard
-Shows SNIPER/MARKSMAN/VALUABLE player prop signals.
-When odds aren't available yet, shows WC/PROP_LEAGUE signals by model probability.
+Player Props — upcoming prop signals, split by whether a bookmaker priced them.
+
+Rebuilt 2026-10-12 (owner: "we know the odds for player props — upgrade the visuality"):
+
+* Two boards, by PRICE, not by tier. A prop with a bookmaker price can be compared with the
+  model (edge, EV). One without can only show the model's view. Invariant 13: an unpriced prop is
+  AVOID by construction, never a model rejection, so the two are never mixed.
+* The old "World Cup 2026" section held every unpriced CLUB signal months after the tournament
+  ended, and its cards printed "nan" for a missing lazy-factor list. Both gone.
+* Day-grouped tables (kickoff in Israel time) in the same style as the Dashboard tips board,
+  instead of one tall dark card per player.
+
+Props are PAPER-ONLY, permanently (CLAUDE.md invariant 2): accurate model, no betting edge.
+Nothing on this page is a bet.
 """
-import textwrap
+import html as _html
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import streamlit as st
@@ -12,247 +24,209 @@ import streamlit as st
 import dashboard_ui as ui
 
 st.set_page_config(page_title="Player Props | Wowza", page_icon="👤", layout="wide")
-# Was components.v1.html with a JS reload: an API whose announced removal date
-# (2026-06-01) has passed, and which reloaded the whole browser tab and so DISCARDED
-# every filter the user had set.
 ui.autorefresh(minutes=2, key="11_player_props_refresh")
-BASE_DIR   = Path(__file__).resolve().parents[1]
-TIPS_FILE  = BASE_DIR / "output" / "player_tips.csv"
+BASE_DIR = Path(__file__).resolve().parents[1]
+TIPS_FILE = BASE_DIR / "output" / "player_tips.csv"
+LEDGER_FILE = BASE_DIR / "output" / "player_ledger.csv"
+TZ_NAME = "Asia/Jerusalem"
 
-st.title("👤 Player Props")
-st.caption("SNIPER/MARKSMAN/VALUABLE signals + WC2026 model signals — Goals (1+/2+) · SOT (1-3+) · Assists")
+ui.page_header("👤 Player Props", "Model vs bookmaker on every upcoming prop", badge="PAPER · RESEARCH")
 
-if st.button("🔄 Refresh"):
-    st.cache_data.clear()
-    st.rerun()
-
-TIER_META = {
-    "SNIPER":   ("🎯", "#e94560", "EV > 40% · rel_edge ≥ 20% · 2+ lazy factors"),
-    "MARKSMAN": ("🔫", "#00aaff", "EV > 25% · rel_edge ≥ 12% · 1+ lazy factor"),
-    "VALUABLE": ("💎", "#f5a623", "EV > 15% · rel_edge > 0%"),
-    "WATCH":    ("👁",  "#4caf50", "Model signal · add odds to compute EV"),
-}
-
-MARKET_EMOJI = {
-    "goals": "⚽", "goals2": "⚽⚽",
-    "assists": "🎯",
-    "sot": "🔫", "sot2": "🔫", "sot3": "🔫",
-    "cards": "🟨",
-}
 MARKET_LABEL = {
-    "goals": "Anytime Scorer", "goals2": "Score 2+",
-    "assists": "Assist",
-    "sot": "SOT 1+", "sot2": "SOT 2+", "sot3": "SOT 3+",
-    "cards": "Yellow Card",
+    "goals": "⚽ Anytime scorer", "goals2": "⚽ 2+ goals", "goals3": "⚽ Hat-trick",
+    "assists": "🅰️ Assist",
+    "sot": "🎯 1+ shot on target", "sot2": "🎯 2+ shots on target",
+    "sot3": "🎯 3+ shots on target", "sot4": "🎯 4+ shots on target",
+    "cards": "🟨 Booked",
 }
+TIER_CLR = {"SNIPER": "#c42b2b", "MARKSMAN": "#d97706", "VALUABLE": "#2563eb",
+            "PAPER": "#6b7280", "AVOID": "#9ca3af"}
+TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER", "AVOID"]
+
 
 @st.cache_data(ttl=120)
-def load_tips():
+def load_tips() -> pd.DataFrame:
     if not TIPS_FILE.exists():
         return pd.DataFrame()
-    df = pd.read_csv(TIPS_FILE)
+    df = pd.read_csv(TIPS_FILE, low_memory=False)
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    today = pd.Timestamp.now().normalize()
-    return df[df["date"] >= today].copy()
+    df = df[df["date"] >= pd.Timestamp.now().normalize()].copy()
+    for c in ("model_prob", "fair_odds", "market_odds", "ev", "edge_abs", "confidence"):
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+    df["_priced"] = df["market_odds"].notna() & (df["market_odds"] > 1.0)
+    # One row per player, market and day. Two feeds can name the same fixture differently
+    # ("Oviedo vs SD Eibar" / "Oviedo vs Eibar"), which showed the same prop twice; keep the
+    # priced row, then the one with a kickoff time.
+    key = [c for c in ("player_id", "market") if c in df.columns]
+    if len(key) == 2:
+        df["_has_ko"] = pd.to_datetime(df.get("kickoff_utc"), errors="coerce").notna()
+        df = (df.sort_values(["_priced", "_has_ko"], ascending=False, kind="mergesort")
+                .assign(_d=df["date"].dt.date)
+                .drop_duplicates(["_d", *key], keep="first")
+                .drop(columns=["_d", "_has_ko"]))
+    return df
+
 
 df = load_tips()
-
 if df.empty:
-    st.info("⏳ No player prop signals yet. The player props model runs 30 min after each predict.")
+    st.info("⏳ No upcoming player-prop signals yet.")
     st.stop()
 
-# ── Split: priced signals vs model-only signals ────────────────────────────────
-# SPLIT ON THE PRICE, not on a tier name. This was `df["tier"] != "WATCH"`, and "WATCH" is not a
-# tier this pipeline ever emits — the values are AVOID / PAPER / VALUABLE. So has_odds captured
-# EVERY row and no_odds was always empty, which is why the priced/unpriced distinction never
-# appeared and the page looked broken.
-#
-# The distinction is the whole point, per invariant 13: an unpriced prop is AVOID **by
-# construction** because `enrich_with_odds` does `if not mkt_odds: continue`, so no edge is ever
-# computed for it. Reading those AVOIDs as model rejections is wrong, and on 2026-08-16 only 5 of
-# 213 scored players had a price at all.
-_mo = pd.to_numeric(df.get("market_odds"), errors="coerce")
-df["_priced"] = _mo.notna() & (_mo > 1.0)
-has_odds  = df[df["_priced"]].copy()
-no_odds   = df[~df["_priced"]].copy()
+priced = df[df["_priced"]]
+unpriced = df[~df["_priced"]]
 
-# Say it before anything else, so an empty table is never mistaken for a broken page.
-_c1, _c2, _c3 = st.columns(3)
-_c1.metric("Prop rows upcoming", f"{len(df):,}")
-_c2.metric("Priced by the market", f"{len(has_odds):,}",
-           help="Only these can have an edge computed at all.")
-_c3.metric("Never priced", f"{len(no_odds):,}",
-           help="AVOID by construction, not a model rejection (invariant 13).")
-if has_odds.empty:
-    st.warning(
-        f"**No prop is priced right now** — all {len(df):,} upcoming rows are unpriced, so no edge "
-        f"can be computed for any of them. This is a COVERAGE state, not a model opinion. Coverage "
-        f"is per FIXTURE rather than per league and deepens toward kickoff, so an empty board days "
-        f"out is normal. See output/prop_odds_coverage.json for what the bookmakers actually "
-        f"returned per league.")
-elif len(no_odds):
-    st.caption(
-        f"{100*len(no_odds)/max(1,len(df)):.0f}% of upcoming props carry no price. Those rows are "
-        f"AVOID by construction and are excluded from everything below — they are not rejections.")
+# ── Headline ──────────────────────────────────────────────────────────────────
+_beats = priced[priced["model_prob"] > 1 / priced["market_odds"]]
+ui.metric_row([
+    {"label": "Upcoming props", "value": f"{len(df):,}",
+     "help": f"{df['match'].nunique()} fixtures, {df['player_name'].nunique()} players."},
+    {"label": "Priced by a bookmaker", "value": f"{len(priced):,}",
+     "delta": f"{100 * len(priced) / len(df):.0f}% of props", "delta_color": "off",
+     "help": "Only these can be compared with the market."},
+    {"label": "Model above the price", "value": f"{len(_beats):,}",
+     "help": "Priced props where the model's probability exceeds the bookmaker's implied one. "
+             "Paper only — props have no proven betting edge (tested 8 ways)."},
+    {"label": "Model only (no price)", "value": f"{len(unpriced):,}",
+     "help": "No bookmaker offers this prop yet. Not a model rejection."},
+])
+st.caption(
+    "Why so many are unpriced: bookmakers price **anytime scorer** deeply but rarely offer "
+    "**1+ shot on target**, which is where most of the model's strongest signals sit. Markets "
+    "deepen toward kickoff, so prices appear over the last 1–3 days.")
 
-# WC / strong model signals (≥ 55% for PROP_LEAGUE, ≥ 60% for team-model matches)
-wc_signals = no_odds[
-    ((no_odds["match_tier"] == "PROP_LEAGUE") & (no_odds["model_prob"] >= 0.55)) |
-    ((no_odds["match_tier"].isin(["SNIPER","MARKSMAN"])) & (no_odds["model_prob"] >= 0.60))
-].copy()
-
-# ── KPIs ──────────────────────────────────────────────────────────────────────
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Priced signals", len(has_odds[has_odds["tier"] != "WATCH"]))
-c2.metric("🎯 SNIPER",   len(has_odds[has_odds["tier"] == "SNIPER"]))
-c3.metric("🔫 MARKSMAN", len(has_odds[has_odds["tier"] == "MARKSMAN"]))
-c4.metric("💎 VALUABLE", len(has_odds[has_odds["tier"] == "VALUABLE"]))
-c5.metric("🌍 WC signals", len(wc_signals[wc_signals["match_tier"] == "PROP_LEAGUE"]))
-
-st.markdown("---")
+# ── Filters ───────────────────────────────────────────────────────────────────
+f1, f2, f3 = st.columns([2, 2, 1])
+with f1:
+    _mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \
+          sorted(set(df["market"]) - set(MARKET_LABEL))
+    mkt_filter = st.multiselect("Market", _mk, default=_mk,
+                                format_func=lambda m: MARKET_LABEL.get(m, m), key="pp_mkt")
+with f2:
+    _lg = sorted(df["league"].dropna().unique())
+    league_filter = st.multiselect("League", _lg, default=[], placeholder="All leagues",
+                                   key="pp_lg")
+with f3:
+    min_p = st.slider("Min model %", 0, 95, 0, 5, key="pp_minp")
 
 
-def _render_signal(row, *, show_tier_label=True):
-    """Render a single signal card."""
-    tier      = row.get("tier", "WATCH")
-    emoji, color, desc = TIER_META.get(tier, ("📌","#888",""))
-    mkt_emoji = MARKET_EMOJI.get(row["market"], "📊")
-    fair_odds = row.get("fair_odds", "—")
-    mkt_odds  = row.get("market_odds")
-    ev_val    = row.get("ev")
-    conf      = float(row.get("confidence", 0))
-    lazy      = str(row.get("lazy_factors", ""))
-    n_games   = int(row.get("n_games", 0))
-    match_tier = row.get("match_tier", "")
-
-    ev_str   = f"EV: {ev_val:+.1%}" if ev_val is not None and not pd.isna(ev_val) else "EV: add odds"
-    odds_str = f"@ {mkt_odds:.2f}"  if mkt_odds and not pd.isna(mkt_odds) else f"fair {fair_odds}"
-    tier_label = f"{emoji} {tier}" if show_tier_label else f"👁 {match_tier}"
-    lazy_badges = " ".join(
-        f'<span style="background:#333;color:#aaa;padding:1px 6px;border-radius:8px;font-size:0.75em">{f}</span>'
-        for f in lazy.split("|") if f
-    )
-    ges_str = ""
-    ges_val = row.get("ges")
-    if ges_val is not None and not pd.isna(ges_val):
-        ges_str = f" · GES: {float(ges_val):.2f}"
-
-    st.markdown(textwrap.dedent(f"""
-    <div style="border-left:4px solid {color};padding:12px 16px;margin:6px 0;
-                background:#111827;border-radius:6px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="color:{color};font-weight:bold">{tier_label}</span>
-            <span style="color:#aaa;font-size:0.85em">📅 {str(row['date'])[:10]}</span>
-        </div>
-        <b style="color:white;font-size:1.05em">{row['player_name']}</b>
-        <span style="color:#aaa"> · {row['position']} · {row['team']}</span><br/>
-        <span style="color:#90caf9">{row['league']} — {row['match']}</span><br/>
-        <div style="margin:6px 0">
-            <span style="color:white">{mkt_emoji} <b>{MARKET_LABEL.get(row['market'], row['market'].upper())}</b></span>
-            &nbsp;{odds_str}
-            &nbsp;|&nbsp;<span style="color:#00cc88"><b>{ev_str}</b></span>
-            &nbsp;|&nbsp;Model P: <b style="color:white">{row['model_prob']:.0%}</b>
-            {ges_str}
-        </div>
-        <div>{lazy_badges}</div>
-        <div style="color:#555;font-size:0.8em;margin-top:4px">
-            Confidence: {conf:.0%} · Data: {n_games} games · {row.get('data_source','')}
-        </div>
-    </div>
-    """), unsafe_allow_html=True)
+def _filt(d: pd.DataFrame) -> pd.DataFrame:
+    d = d[d["market"].isin(mkt_filter) & (d["model_prob"] * 100 >= min_p)]
+    if league_filter:
+        d = d[d["league"].isin(league_filter)]
+    return d
 
 
-# ── WC2026 section (always shown when WC signals exist) ───────────────────────
-if not wc_signals.empty:
-    st.subheader(f"🌍 World Cup 2026 — {len(wc_signals)} signal(s)")
-    st.caption("Model probability signals — no odds plugged in yet. Check your bookmaker for props.")
-
-    col_f1, col_f2 = st.columns(2)
-    with col_f1:
-        mkt_wc = st.multiselect("Market (WC)", sorted(wc_signals["market"].unique()),
-                                default=list(wc_signals["market"].unique()),
-                                key="mkt_wc")
-    with col_f2:
-        min_p_wc = st.slider("Min model prob (WC)", 0.50, 0.90, 0.55, 0.01, key="mp_wc")
-
-    wc_filtered = wc_signals[
-        wc_signals["market"].isin(mkt_wc) &
-        (wc_signals["model_prob"] >= min_p_wc)
-    ].sort_values("model_prob", ascending=False)
-
-    for _, row in wc_filtered.iterrows():
-        _render_signal(row, show_tier_label=False)
-
-    st.markdown("---")
+_CSS = """
+<style>
+.pp-wrap{overflow-x:auto;margin-bottom:6px}
+.pp{border-collapse:collapse;width:100%;font-size:.92rem;min-width:820px;table-layout:fixed}
+.pp th{text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;
+       opacity:.65;padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.35)}
+.pp td{padding:7px 8px;border-bottom:1px solid rgba(128,128,128,.15);vertical-align:middle}
+.pp .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pp .ko{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.pp .sub{display:block;font-size:.74rem;opacity:.65;margin-top:2px;white-space:nowrap;
+         overflow:hidden;text-overflow:ellipsis}
+.pp .pill{display:inline-block;padding:2px 9px;border-radius:999px;color:#fff;font-weight:700;font-size:.72rem}
+.pp .pos{color:#15803d;font-weight:700}.pp .neg{color:#b91c1c}
+.pp-day{font-weight:700;font-size:1.02rem;margin:18px 0 4px}
+.pp-day small{font-weight:400;opacity:.65}
+</style>"""
 
 
-# ── Priced signals section (when odds are available) ──────────────────────────
-if not has_odds.empty:
-    st.subheader("📊 Priced Signals")
+def _board(d: pd.DataFrame, priced_view: bool, limit: int) -> str:
+    try:
+        tz = ZoneInfo(TZ_NAME)
+    except Exception:                                       # noqa: BLE001
+        tz = ZoneInfo("UTC")
+    d = d.copy()
+    ko = pd.to_datetime(d.get("kickoff_utc"), errors="coerce", utc=True)
+    d["_local"] = ko.dt.tz_convert(tz)
+    d["_day"] = d["_local"].dt.strftime("%Y-%m-%d").fillna(d["date"].dt.strftime("%Y-%m-%d"))
+    if priced_view:
+        d["_edge"] = (d["model_prob"] - 1 / d["market_odds"]) * 100
+        d = d.sort_values(["_day", "_edge"], ascending=[True, False])
+    else:
+        d = d.sort_values(["_day", "model_prob"], ascending=[True, False])
+    shown = d.groupby("_day", group_keys=False).head(limit)
+    today = pd.Timestamp.now(tz=tz).date()
+    cols = ("<colgroup><col style='width:6%'><col style='width:20%'><col style='width:22%'>"
+            "<col style='width:16%'><col style='width:7%'>"
+            + ("<col style='width:9%'><col style='width:9%'><col style='width:11%'>" if priced_view
+               else "<col style='width:8%'><col style='width:14%'>") + "</colgroup>")
+    head = ("<tr><th>Kickoff</th><th>Player</th><th>Match</th><th>Market</th>"
+            "<th class='num'>Model</th>"
+            + ("<th class='num'>Book odds</th><th class='num'>Edge</th><th>Tier</th>" if priced_view
+               else "<th class='num'>Fair odds</th><th>Note</th>") + "</tr>")
+    out = [_CSS]
+    for day, g in shown.groupby("_day", sort=True):
+        dd = pd.Timestamp(day)
+        rel = {0: "Today", 1: "Tomorrow"}.get((dd.date() - today).days, "")
+        total = int((d["_day"] == day).sum())
+        more = f" · top {len(g)} shown" if total > len(g) else ""
+        out.append(f"<div class='pp-day'>{rel + ' · ' if rel else ''}{dd:%a %d %b} "
+                   f"<small>— {total} prop{'s' if total != 1 else ''}{more}</small></div>")
+        out.append(f"<div class='pp-wrap'><table class='pp'>{cols}{head}")
+        for _, r in g.iterrows():
+            kot = r["_local"].strftime("%H:%M") if pd.notna(r["_local"]) else "–"
+            pos = "" if pd.isna(r.get("position")) else f" · {_html.escape(str(r['position']))}"
+            player = (f"<b>{_html.escape(str(r['player_name']))}</b>"
+                      f"<span class='sub'>{_html.escape(str(r.get('team', '')))}{pos}</span>")
+            match = (f"{_html.escape(str(r['match']))}"
+                     f"<span class='sub'>{_html.escape(str(r['league']))}</span>")
+            mkt = MARKET_LABEL.get(r["market"], str(r["market"]))
+            model = f"<b>{r['model_prob'] * 100:.0f}%</b>"
+            if priced_view:
+                impl = 100 / r["market_odds"]
+                e = r["_edge"]
+                tier = str(r.get("tier", ""))
+                cells = (f"<td class='num'><b>{r['market_odds']:.2f}</b>"
+                         f"<span class='sub'>{impl:.0f}% implied</span></td>"
+                         f"<td class='num'><span class='{'pos' if e > 0 else 'neg'}'>{e:+.1f} pts</span>"
+                         + (f"<span class='sub'>EV {r['ev']:+.0%}</span>" if pd.notna(r.get("ev")) else "")
+                         + f"</td><td><span class='pill' style='background:{TIER_CLR.get(tier, '#6b7280')}'>"
+                         f"{_html.escape(tier)}</span></td>")
+            else:
+                fair = r.get("fair_odds")
+                cells = (f"<td class='num'>{'–' if pd.isna(fair) else f'{float(fair):.2f}'}</td>"
+                         f"<td><span class='sub' style='opacity:.6'>no bookmaker price yet</span></td>")
+            out.append(f"<tr><td class='ko'>{kot}</td><td>{player}</td><td>{match}</td>"
+                       f"<td>{mkt}</td><td class='num'>{model}</td>{cells}</tr>")
+        out.append("</table></div>")
+    return "\n".join(out)
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        # Options and defaults come from the DATA, not a hardcoded list. The default was
-        # ["SNIPER","MARKSMAN"] — tiers the props pipeline never emits (it produces PAPER /
-        # VALUABLE / AVOID), so the table was empty even when priced signals existed.
-        _tiers_present = [x for x in ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER"]
-                          if x in set(has_odds["tier"].dropna())]
-        tier_filter = st.multiselect(
-            "Tier", _tiers_present or sorted(has_odds["tier"].dropna().unique()),
-            default=_tiers_present or None,
-            help="Props are PAPER-only permanently (invariant 2): the model is accurate but has no "
-                 "betting edge, so these are research signals, never staked.")
-    with col2:
-        mkt_filter = st.multiselect("Market", sorted(has_odds["market"].unique()),
-                                    default=list(has_odds["market"].unique()))
-    with col3:
-        min_confidence = st.slider("Min confidence", 0.0, 1.0, 0.50, 0.05)
 
-    col4, col5 = st.columns([2, 1])
-    with col4:
-        all_leagues = sorted(has_odds["league"].dropna().unique().tolist()) if "league" in has_odds.columns else []
-        league_filter = st.multiselect("League", all_leagues, default=all_leagues, key="pp_league")
-    with col5:
-        date_range = st.date_input(
-            "Date range",
-            value=(has_odds["date"].min().date(), has_odds["date"].max().date()),
-            key="pp_dates",
-        )
-        if isinstance(date_range, (list, tuple)) and len(date_range) == 2:
-            date_from, date_to = pd.Timestamp(date_range[0]), pd.Timestamp(date_range[1])
-        else:
-            date_from = date_to = pd.Timestamp(date_range[0]) if date_range else has_odds["date"].min()
+tab_p, tab_u = st.tabs([f"💰 Priced by bookmakers ({len(priced)})",
+                        f"🧠 Model only — no price yet ({len(unpriced)})"])
+with tab_p:
+    p = _filt(priced)
+    if p.empty:
+        st.info("No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
+    else:
+        st.markdown(_board(p, True, limit=60), unsafe_allow_html=True)
+        st.caption("**Edge** = model probability minus the bookmaker's implied probability, in "
+                   "percentage points; green means the model rates the player higher than the price "
+                   "does. Bookmaker prices include their margin. Kickoff in Israel time. Paper only.")
+with tab_u:
+    u = _filt(unpriced)
+    if u.empty:
+        st.info("Nothing unpriced matches the filters.")
+    else:
+        st.markdown(_board(u, False, limit=25), unsafe_allow_html=True)
+        st.caption("Strongest model signals per day (top 25). **Fair odds** = 1 / model probability "
+                   "— compare with your own bookmaker. Kickoff in Israel time. Paper only.")
 
-    filtered = has_odds[
-        has_odds["tier"].isin(tier_filter) &
-        has_odds["market"].isin(mkt_filter) &
-        (has_odds["confidence"] >= min_confidence) &
-        (has_odds["league"].isin(league_filter) if league_filter and "league" in has_odds.columns else True) &
-        (has_odds["date"] >= date_from) &
-        (has_odds["date"] <= date_to + pd.Timedelta(days=1))
-    ].sort_values(["tier", "model_prob"], ascending=[True, False])
-
-    st.subheader(f"📋 {len(filtered)} signal(s)")
-    for _, row in filtered.iterrows():
-        _render_signal(row)
-
-elif wc_signals.empty:
-    st.info("No signals with odds yet. Add odds via `enrich_with_odds()` or wait for the next odds update.")
-
-st.markdown("---")
-with st.expander("📊 Raw data — all today's signals"):
-    show_cols = ["date","league","match","match_tier","player_name","position","team",
-                 "market","model_prob","fair_odds","market_odds","ev",
-                 "tier","confidence","lazy_factors","n_games","ges"]
-    show_df = df.sort_values("model_prob", ascending=False)
-    st.dataframe(show_df[[c for c in show_cols if c in show_df.columns]],
+with st.expander("📊 Raw data — every upcoming prop"):
+    show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
+                 "market", "model_prob", "fair_odds", "market_odds", "ev", "tier", "confidence",
+                 "n_games"]
+    st.dataframe(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
                  width="stretch", hide_index=True)
 
-# ── Results / track record (settled bets from the ledger) ──────────────────────
+# ── Results / track record ────────────────────────────────────────────────────
 st.markdown("---")
-st.subheader("📒 Results — settled player-prop bets")
-
-LEDGER_FILE = BASE_DIR / "output" / "player_ledger.csv"
+st.subheader("📒 Results — settled player-prop signals")
 
 
 @st.cache_data(ttl=120)
@@ -263,37 +237,33 @@ def load_results():
 
 
 led = load_results()
-# VALUABLE / WATCH are NOT signals (never sent; ~-8% ROI) — the all-time track record
-# counts SNIPER + MARKSMAN only. (The raw ledger still logs all tiers for data.)
+# The all-time record counts SNIPER + MARKSMAN only; the raw ledger logs every tier for data.
 if not led.empty and "tier" in led.columns:
     led = led[led["tier"].astype(str).str.upper().isin(["SNIPER", "MARKSMAN"])].copy()
 if led.empty or "result" not in led.columns:
-    st.info("No SNIPER/MARKSMAN results yet (`output/player_ledger.csv`). Populate as graded signals resolve.")
+    st.info("No SNIPER/MARKSMAN prop results yet (`output/player_ledger.csv`).")
 else:
     settled = led[led["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
     if settled.empty:
-        st.info("No settled (WIN/LOSS) bets yet — pending/void only.")
+        st.info("No settled (WIN/LOSS) signals yet — pending/void only.")
     else:
         wins = int((settled["result"].astype(str).str.upper() == "WIN").sum())
         n = len(settled)
         roi = (pd.to_numeric(settled["pnl"], errors="coerce").mean() * 100
                if "pnl" in settled.columns else float("nan"))
-        r1, r2, r3, r4 = st.columns(4)
-        r1.metric("Settled bets", n)
-        r2.metric("Record", f"{wins}W – {n - wins}L")
-        r3.metric("Win rate", f"{wins / n * 100:.0f}%")
-        r4.metric("Flat ROI (1u)", f"{roi:+.1f}%" if roi == roi else "—")
-        st.caption("⚠️ Live props so far are mostly World Cup longshots — small, net-negative sample. "
-                   "Treat as data, not proof.")
+        ui.metric_row([
+            {"label": "Settled", "value": f"{n}"},
+            {"label": "Record", "value": f"{wins}W – {n - wins}L"},
+            {"label": "Win rate", "value": f"{wins / n * 100:.0f}%"},
+            {"label": "Flat ROI (1u, paper)", "value": f"{roi:+.1f}%" if roi == roi else "—"},
+        ])
         cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
                             "market_odds", "result", "pnl"] if c in settled.columns]
-        st.dataframe(
-            settled.sort_values("match_date", ascending=False)[cols].head(150),
-            width="stretch", hide_index=True,
-        )
+        st.dataframe(settled.sort_values("match_date", ascending=False)[cols].head(150),
+                     width="stretch", hide_index=True)
 
-st.caption("Player props · 9 markets · API-Football rolling stats · WC2026 national team data")
-
+st.caption("Player props are paper research only — the model is accurate but has shown no betting "
+           "edge against the market.")
 
 # ── Disclaimer & Terms (shown on every dashboard page) ──
 from utils.disclaimer import disclaimer_footer  # noqa: E402

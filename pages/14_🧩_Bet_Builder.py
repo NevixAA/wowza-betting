@@ -35,10 +35,7 @@ import dashboard_ui as ui
 st.set_page_config(page_title="Bet Builder | Wowza", page_icon="🧩", layout="wide")
 ui.autorefresh(minutes=5, key="builder_refresh")
 
-BASE_DIR = Path(__file__).resolve().parents[1]
-# Pro checkout, tried under both names it goes by locally.
-_PRO_CANDIDATES = [BASE_DIR.parent / "wowzaV9-Pro", BASE_DIR.parent / "v10"]
-PRO = next((p for p in _PRO_CANDIDATES if (p / "output").exists()), None)
+from dashboard_data.core import read_csv as _read_any, reachable, resolve_file  # noqa: E402
 
 ui.page_header("🧩 Bet Builder & Multi",
                "Same-match builders and cross-match multiples, priced with measured correlation",
@@ -47,22 +44,17 @@ ui.page_header("🧩 Bet Builder & Multi",
 
 @st.cache_data(ttl=300, show_spinner=False)
 def _load(name: str) -> pd.DataFrame:
-    if PRO is None:
-        return pd.DataFrame()
-    p = PRO / "output" / name
-    if not p.exists():
-        return pd.DataFrame()
-    try:
-        return pd.read_csv(p, low_memory=False)
-    except Exception:
-        return pd.DataFrame()
+    # Local sibling checkout if there is one, else Pro's public repo over HTTP — the same path
+    # the Pro page uses. This page used to look for ../wowzaV9-Pro only, which exists on a
+    # laptop and never on Streamlit Cloud, so the deployed page always said "not found".
+    return _read_any(resolve_file("pro", f"output/{name}"), low_memory=False)
 
 
-if PRO is None:
+if not reachable("pro"):
     st.warning(
-        "**v9-Pro checkout not found.** This page reads combo research produced by "
-        "`NevixAA/wowzaV9-Pro`, expected as a sibling folder (`../wowzaV9-Pro` or `../v10`). "
-        "Nothing is broken in v9 — the data simply lives in the other repo.")
+        "**Pro could not be reached.** This page reads combo research produced by "
+        "`NevixAA/wowzaV9-Pro` — from a sibling checkout or over HTTP — and neither answered. "
+        "Nothing is broken in v9; the data lives in the other repo.")
     st.stop()
 
 cand = _load("bet_builder_candidates.csv")
