@@ -1,0 +1,115 @@
+name: Player Props Train (weekly)
+
+# WHY THIS IS ITS OWN WORKFLOW (2026-10-12)
+#
+# Training used to be a step inside player_props.yml, sharing that job's 120-minute limit with
+# predict. It last completed on 2026-09-20. After that, player_history grew from 302,456 to
+# 855,014 rows (16 -> 31 leagues, the intended result of the 26-league collect fix), and the
+# props model is sklearn's classic GradientBoostingClassifier: single-threaded, time linear in
+# rows (measured 20k rows 61s, 60k rows 204s for one 300-tree fit). Eight markets at 2.83x the
+# rows no longer fit in 120 minutes. The 2026-10-11 run was cancelled at 119.3 min inside
+# "Train player models". Because the step was continue-on-error and a timeout shows grey, not
+# red, three Sundays of retraining were lost silently.
+#
+# Separate job, same model, same data, same promotion gate (player_model.pipeline.mode_train).
+# Also: its own concurrency group, so a long train can never hold up the props predict runs.
+#
+# Two persistence gaps closed at the same time:
+#   * output/props_retrain_log.json (the promoted/blocked record) was never staged by
+#     player_props.yml, so the gate's decisions only ever existed on the runner.
+#   * models/model_player_sot4.pkl was missing from player_props.yml's add list, so the sot4
+#     model was never committed after a retrain.
+# The file list below is read from player_model.config.MODEL_FILES so it cannot drift again.
+#
+# KNOWN LIMIT. GitHub caps a hosted job at 360 minutes, and history keeps growing all season.
+# The lasting fix is a faster learner (HistGradientBoosting), which is an algorithm change and
+# goes through Pro first.
+
+concurrency:
+  group: player-props-train
+  cancel-in-progress: false
+
+on:
+  schedule:
+    # Sunday is the retrain day. Mon/Tue are fallbacks: once-daily crons are delivered hours
+    # late or not at all, so the job is over-scheduled and made idempotent by the weekly guard.
+    - cron: '0 4 * * 0'
+    - cron: '0 4 * * 1'
+    - cron: '0 4 * * 2'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/player_props_train.yml
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Weekly guard, for scheduled runs only: skip if a retrain already completed in the last
+      # 5 days. Reads the COMMITTED decision log, never file mtime (a checkout resets mtime).
+      - name: Already trained this week?
+        id: guard
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import datetime as dt, json, os
+          run = "true"
+          if os.environ.get("EVENT") == "schedule":
+              try:
+                  last = json.load(open("output/props_retrain_log.json", encoding="utf-8")).get("latest_run")
+                  if last and (dt.date.today() - dt.date.fromisoformat(last)).days < 5:
+                      run = "false"
+                      print(f"# trained on {last}, skipping")
+              except FileNotFoundError:
+                  pass
+          print(f"run={run}")
+          PY
+          cat "$GITHUB_OUTPUT"
+        env:
+          EVENT: ${{ github.event_name }}
+
+      - uses: actions/setup-python@v5
+        if: steps.guard.outputs.run == 'true'
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        if: steps.guard.outputs.run == 'true'
+        run: pip install -r requirements.txt
+
+      # NOT continue-on-error: a failed train must show red.
+      - name: Train player models
+        if: steps.guard.outputs.run == 'true'
+        run: |
+          start=$(date +%s)
+          python -m player_model.pipeline --mode train
+          echo "train took $(( ($(date +%s) - start) / 60 )) min"
+
+      - name: Commit models and decision log
+        if: steps.guard.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # One path at a time: a multi-path `git add` stages NOTHING if any path is missing.
+          files=$(python -c "from player_model import config as c; print(' '.join(str(p.relative_to(c.BASE_DIR)).replace(chr(92), '/') for p in c.MODEL_FILES.values()))")
+          for f in $files output/props_retrain_log.json; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
+          git diff --staged --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "auto: player props retrain $(date -u '+%Y-%m-%d %H:%M UTC')"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            # -X theirs keeps THIS run's files in a rebase (labels are inverted vs a merge).
+            git pull --rebase --autostash -X theirs origin main && git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
