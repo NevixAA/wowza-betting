@@ -54,7 +54,65 @@
         "logloss_old": 0.36493,
         "logloss_new": 0.37373
       }
+    },
+    "2026-10-13": {
+      "goals": {
+        "promoted": true,
+        "why": "log loss 0.26126 -> 0.26090 (-0.00036), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.26126,
+        "logloss_new": 0.2609
+      },
+      "goals2": {
+        "promoted": true,
+        "why": "log loss 0.04270 -> 0.04253 (-0.00017), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.0427,
+        "logloss_new": 0.04253
+      },
+      "assists": {
+        "promoted": true,
+        "why": "log loss 0.21803 -> 0.21803 (+0.00000), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.21803,
+        "logloss_new": 0.21803
+      },
+      "sot": {
+        "promoted": true,
+        "why": "log loss 0.47535 -> 0.47522 (-0.00013), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.47535,
+        "logloss_new": 0.47522
+      },
+      "sot2": {
+        "promoted": true,
+        "why": "log loss 0.18473 -> 0.18422 (-0.00051), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.18473,
+        "logloss_new": 0.18422
+      },
+      "sot3": {
+        "promoted": true,
+        "why": "log loss 0.06088 -> 0.06055 (-0.00033), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.06088,
+        "logloss_new": 0.06055
+      },
+      "sot4": {
+        "promoted": true,
+        "why": "log loss 0.02420 -> 0.01766 (-0.00654), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.0242,
+        "logloss_new": 0.01766
+      },
+      "cards": {
+        "promoted": true,
+        "why": "log loss 0.37373 -> 0.37373 (-0.00000), within the 0.03000 tolerance",
+        "rows": 856728,
+        "logloss_old": 0.37373,
+        "logloss_new": 0.37373
+      }
     }
   },
-  "latest_run": "2026-10-12"
+  "latest_run": "2026-10-13"
 }
