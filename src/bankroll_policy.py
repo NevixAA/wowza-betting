@@ -1,0 +1,165 @@
+"""Deterministic bankroll-policy reader: qualifying selections in, stake fractions + audit out.
+
+    from src.bankroll_policy import load_policy, size_day
+    rows = size_day(selections, load_policy(), bankroll=100.0, peak=100.0)
+
+STAKING IS DOWNSTREAM OF PREDICTION. This module never decides whether a tip exists and never
+reads model output beyond what a selection already carries. It only answers "given this
+qualifying selection, how much of the CURRENT bankroll, under the approved policy?". The policy
+file (config/bankroll_policy.json) is produced by the monthly review in wowzaV9-Pro and changes
+only through a reviewed PR — this file never fetches anything and never decides evidence.
+
+NOT WIRED into predict/notify/execution (2026-10-13). It is the single sizing implementation:
+Pro's bankroll simulator imports this exact file (read-only, via V9_LOCAL), so every backtest
+sizes bets with the code production would use.
+
+Order of operations (owner brief, section 32):
+ 1 track = model_type|market   2 state/base (0 -> no real stake)   3 paper league -> 0
+ 4 odds caps (track min/max, hard 3.00)   5 tier multiplier   6 convergence multiplier
+ 7 ONE position per fixture, chosen by the track's evidence_score (never by raw edge)
+ 8 single-bet / fixture cap   9 drawdown throttle   10 league and league x market daily caps
+ 11 daily exposure cap: every stake scaled by cap / total   -> final fraction, stake amount
+
+selections: one row per qualifying tip with columns
+    fixture, league, model_type, market (OU25/BTTS/OVER15/OVER35), signal_tier, odds
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pandas as pd
+
+POLICY_PATH = Path(__file__).resolve().parents[1] / "config" / "bankroll_policy.json"
+
+REAL_STATES = ("PROBATION", "ACTIVE_LOW", "ACTIVE", "ACTIVE_STRONG", "DEGRADED")
+# Absolute ceilings the reader enforces whatever a policy file says (owner brief 4, 7, 9).
+HARD = {"single_bet_cap": 0.02, "fixture_cap": 0.02, "daily_cap": 0.075, "league_daily_cap": 0.04,
+        "league_market_daily_cap": 0.03, "max_odds": 2.75, "blocked_odds": 3.0, "base_fraction": 0.015}
+
+AUDIT_COLS = ["policy_version", "fixture", "league", "model_type", "market", "track",
+              "signal_tier", "odds", "deployment_state", "bankroll_before", "base_fraction",
+              "tier_multiplier", "league_multiplier", "drawdown_multiplier", "requested_fraction",
+              "capped_fraction", "daily_scale", "final_fraction", "stake_amount", "reason"]
+
+
+def load_policy(path: str | Path | None = None) -> dict:
+    with open(path or POLICY_PATH, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def drawdown_multiplier(policy: dict, bankroll: float, peak: float,
+                        floor: float | None = None) -> float:
+    """Throttle from the high-water mark. `floor` (from the caller's state) keeps a reduced level
+    until it is lifted at a review — recovery is gradual, never an instant snap back."""
+    dd = 0.0 if peak <= 0 else max(0.0, 1.0 - bankroll / peak)
+    m = 1.0
+    for thr, mult in sorted(policy.get("drawdown_throttle", []), key=lambda x: x[0]):
+        if dd >= thr:
+            m = float(mult)
+    return m if floor is None else min(m, float(floor))
+
+
+def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: float,
+             dd_floor: float | None = None) -> pd.DataFrame:
+    """Stake fractions for one day's qualifying selections. Pure: same input -> same output."""
+    cols = list(selections.columns)
+    if selections.empty:
+        return pd.DataFrame(columns=cols + [c for c in AUDIT_COLS if c not in cols])
+    pf = policy["portfolio"]
+    caps = {k: min(float(pf.get(k, HARD[k])), HARD[k]) for k in
+            ("single_bet_cap", "fixture_cap", "daily_cap", "league_daily_cap", "league_market_daily_cap")}
+    tiers = policy.get("tier_multipliers", {})
+    conv = policy.get("convergence", {})
+    conv_leagues = set(conv.get("leagues", []))
+    conv_mult = min(float(conv.get("multiplier", 1.0)), 1.20)
+    paper = set(policy.get("paper_leagues", []))
+    hard_odds = min(float(pf.get("hard_max_odds", HARD["blocked_odds"])), HARD["blocked_odds"])
+    ddm = drawdown_multiplier(policy, bankroll, peak, dd_floor)
+
+    d = selections.copy().reset_index(drop=True)
+    d["track"] = d["model_type"].astype(str) + "|" + d["market"].astype(str)
+    out = []
+    for r in d.itertuples(index=False):
+        t = policy["tracks"].get(r.track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
+        base = min(float(t.get("base_fraction", 0.0)), HARD["base_fraction"])
+        state = t.get("state", "UNSUPPORTED")
+        odds = float(r.odds) if pd.notna(r.odds) else float("nan")
+        tm = float(tiers.get(str(r.signal_tier), 0.0))
+        lm = conv_mult if r.league in conv_leagues else 1.0
+        reason = "OK"
+        if state not in REAL_STATES or base <= 0:
+            reason = f"NO_REAL_STAKE_{state}"
+        elif r.league in paper:
+            reason = "PAPER_LEAGUE"
+        elif not (odds == odds) or odds >= hard_odds:
+            reason = "ODDS_BLOCKED"
+        elif odds > min(float(t.get("max_odds", HARD["max_odds"])), HARD["max_odds"]):
+            reason = "ODDS_ABOVE_TRACK_CAP"
+        elif odds < float(t.get("min_odds", 1.0)):
+            reason = "ODDS_BELOW_TRACK_FLOOR"
+        elif tm <= 0:
+            reason = "TIER_NOT_STAKED"
+        req = base * tm * lm if reason == "OK" else 0.0
+        out.append({**r._asdict(), "deployment_state": state, "base_fraction": base,
+                    "tier_multiplier": tm, "league_multiplier": lm, "requested_fraction": req,
+                    "_score": float(t.get("evidence_score", 0.0)), "reason": reason})
+    a = pd.DataFrame(out)
+
+    # 7. one real position per fixture: highest evidence_score, then tier, then base; never edge
+    live = a["requested_fraction"] > 0
+    if pf.get("one_position_per_fixture", True) and live.any():
+        rank = a[live].sort_values(["fixture", "_score", "tier_multiplier", "base_fraction"],
+                                   ascending=[True, False, False, False], kind="mergesort")
+        keep = set(rank.drop_duplicates("fixture", keep="first").index)
+        drop = [i for i in rank.index if i not in keep]
+        a.loc[drop, "requested_fraction"] = 0.0
+        a.loc[drop, "reason"] = "ONE_POSITION_PER_FIXTURE"
+
+    # 8. per-bet / per-fixture cap, 9. drawdown throttle
+    a["capped_fraction"] = a["requested_fraction"].clip(upper=min(caps["single_bet_cap"], caps["fixture_cap"]))
+    a["drawdown_multiplier"] = ddm
+    f = a["capped_fraction"] * ddm
+    if ddm == 0.0:
+        a.loc[a["requested_fraction"] > 0, "reason"] = "DRAWDOWN_STOP_PAPER_REVIEW_REQUIRED"
+
+    # 10. league/day and league x market/day caps: scale inside the group down to the cap
+    for keys, cap in ((["league"], caps["league_daily_cap"]),
+                      (["league", "market"], caps["league_market_daily_cap"])):
+        tot = f.groupby([a[k] for k in keys]).transform("sum")
+        scale = (cap / tot).where(tot > cap, 1.0).fillna(1.0)
+        f = f * scale
+
+    # 11. daily cap: scale every stake proportionally
+    total = float(f.sum())
+    daily_scale = caps["daily_cap"] / total if total > caps["daily_cap"] else 1.0
+    a["daily_scale"] = daily_scale
+    a["final_fraction"] = (f * daily_scale).round(6)
+    a["bankroll_before"] = float(bankroll)
+    a["stake_amount"] = (a["final_fraction"] * float(bankroll)).round(2)
+    a["policy_version"] = policy.get("policy_version", "?")
+    return a.drop(columns=["_score"])[cols + [c for c in AUDIT_COLS if c not in cols]]
+
+
+def log_decisions(rows: pd.DataFrame, path: str | Path | None = None) -> Path:
+    """Append every stake decision (all AUDIT_COLS, zero stakes included with their reason) to
+    output/stake_audit.csv, so any stake can be reproduced from policy_version + inputs."""
+    p = Path(path) if path else POLICY_PATH.parents[1] / "output" / "stake_audit.csv"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    rows = rows.assign(logged_at=pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M:%S"))
+    rows.to_csv(p, mode="a", header=not p.exists(), index=False)
+    return p
+
+
+if __name__ == "__main__":
+    # Example / smoke: python -m src.bankroll_policy
+    demo = pd.DataFrame([
+        {"fixture": "A v B", "league": "Argentina Primera Division", "model_type": "new_format",
+         "market": "BTTS", "signal_tier": "SNIPER", "odds": 2.10},
+        {"fixture": "A v B", "league": "Argentina Primera Division", "model_type": "new_format",
+         "market": "OU25", "signal_tier": "SNIPER", "odds": 2.05},
+        {"fixture": "C v D", "league": "Championship", "model_type": "standard",
+         "market": "OU25", "signal_tier": "SNIPER", "odds": 1.95},
+    ])
+    print(size_day(demo, load_policy(), bankroll=1000.0, peak=1000.0)[
+        ["fixture", "track", "signal_tier", "odds", "final_fraction", "stake_amount", "reason"]].to_string())
