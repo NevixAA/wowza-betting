@@ -662,6 +662,9 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
         # Never take the primary source down: a failure here must leave OddsAPI's result intact.
         print(f"[odds_fetcher] api-football second source skipped ({type(e).__name__}: {e})")
 
+    global _LAST_PRICE_DATES
+    _LAST_PRICE_DATES = _price_dates(history_records)
+
     # Persist every fetched prop odd to the permanent forward-built history.
     try:
         _append_odds_history(history_records)
@@ -761,16 +764,79 @@ def _fill_from_api_football(signals_df, result: dict[str, float],
     return added
 
 
-def match_odds_to_tips(tips_df, odds_raw: dict[str, float]) -> dict[str, float]:
+_TRANSLIT = str.maketrans({"ł": "l", "Ł": "L", "ø": "o", "Ø": "O", "æ": "ae", "Æ": "Ae",
+                           "ß": "ss", "đ": "d", "Đ": "D", "ı": "i"})
+
+
+def _initial_surname(name: str) -> Optional[tuple[str, str]]:
+    """('k', 'viveros') for both 'K. Viveros' and 'Kevin Viveros'. None for a one-word name —
+    mononyms ('Vitinho') are matched exactly or not at all."""
+    s = unicodedata.normalize("NFKD", str(name or "").translate(_TRANSLIT))
+    s = "".join(c for c in s if not unicodedata.combining(c)).lower()
+    toks = [t for t in re.split(r"[\s.]+", re.sub(r"[^a-z\s.'-]", "", s)) if t]
+    if len(toks) < 2:
+        return None
+    return toks[0][0], toks[-1]
+
+
+def _price_dates(history_records: list[dict]) -> dict[str, set[str]]:
+    """{'<norm player>|<market>': {match dates priced}} from one fetch's history records."""
+    out: dict[str, set[str]] = {}
+    for r in history_records:
+        out.setdefault(f"{_norm(str(r.get('player', '')))}|{r.get('market', '')}", set()).add(
+            str(r.get("match_date", ""))[:10])
+    return out
+
+
+# Filled by fetch_prop_odds so match_odds_to_tips can scope a fuzzy match to the tip's match
+# date without changing the (tips, odds_raw) signature the pipeline calls it with.
+_LAST_PRICE_DATES: dict[str, set[str]] = {}
+
+
+def match_odds_to_tips(tips_df, odds_raw: dict[str, float],
+                       price_dates: Optional[dict[str, set[str]]] = None) -> dict[str, float]:
     """
     Map raw odds dict (normalized names) to tips_df player names.
     Returns {"{original_player_name}|{market}": odds} for rows in tips_df.
+
+    Exact normalised name first. FALLBACK (2026-10-13): first initial + surname, because the
+    tips carry API-Football's short form ('K. Viveros', 'E. Haaland') while the books use full
+    names ('kevin viveros', 'erling braut haaland') — exact-only priced 65 tips of 2,503 when
+    137 more had a price on file. The fallback is refused, never guessed, when more than one
+    priced player shares the initial+surname in that market, and the candidate must be priced
+    on the tip's own match date (odds keys carry no fixture, so a namesake elsewhere that day
+    would otherwise be eligible).
     """
+    price_dates = _LAST_PRICE_DATES if price_dates is None else price_dates
+    index: dict[tuple, set[str]] = {}
+    for k in odds_raw:
+        name, _, mk = k.rpartition("|")
+        key = _initial_surname(name)
+        if key:
+            index.setdefault((key, mk), set()).add(name)
+
     matched: dict[str, float] = {}
+    fuzzy = refused = 0
     for _, row in tips_df.iterrows():
         player = row.get("player_name", "")
         market = row.get("market", "")
         key_norm = f"{_norm(player)}|{market}"
         if key_norm in odds_raw:
             matched[f"{player}|{market}"] = odds_raw[key_norm]
+            continue
+        key = _initial_surname(player)
+        if not key:
+            continue
+        cands = index.get((key, market), set())
+        tip_date = str(row.get("date", row.get("match_date", "")))[:10]
+        if price_dates and tip_date:
+            cands = {c for c in cands if tip_date in price_dates.get(f"{c}|{market}", {tip_date})}
+        if len(cands) == 1:
+            matched[f"{player}|{market}"] = odds_raw[f"{next(iter(cands))}|{market}"]
+            fuzzy += 1
+        elif len(cands) > 1:
+            refused += 1
+    if fuzzy or refused:
+        print(f"[odds_fetcher] name match: {fuzzy} priced by initial+surname, "
+              f"{refused} refused as ambiguous")
     return matched
