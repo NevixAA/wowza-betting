@@ -10,6 +10,10 @@ ONLY for new tips (every model) and really big sharp moves; everything else is o
     3. Record                   staked P/L per market, all-time and last 7 days, + paper VALUABLE
     4. Player props today       priced props first (model vs bookmaker), then top model-only
     5. Sharp movements today    money moves on today's fixtures, bad data filtered out
+    6. Pro tips scoreboard      1X2 + Bet Builder hit rates (was Pro's own daily text message)
+
+send_weekly_pack() is the Monday album (week by market, by league, props week, scoreboard) that
+replaces the two weekly text summaries.
 
 Same rows and same bases as the dashboard: paper leagues out, staked = SNIPER + MARKSMAN, VALUABLE
 shown as paper, performance from PERFORMANCE_CUTOFF_DATE by match date, first tip per fixture.
@@ -48,10 +52,24 @@ def render_table(title: str, columns: list[tuple[str, int]], rows: list[dict],
     "bold": {col, ...}, "band": "text"} — a "band" row is a full-width section heading."""
     from PIL import Image, ImageDraw
     pad, row_h, head_h, foot_h = 18, 34, 34, 30
-    title_h = 54 + (24 if subtitle else 0)
     width = pad * 2 + sum(w for _, w in columns)
     f_title, f_sub, f_head, f_cell, f_bold, f_foot = (_font(22, True), _font(14), _font(15, True),
                                                       _font(15), _font(15, True), _font(12))
+    # Subtitle wrapped onto as many lines as it needs (max 3) instead of being cut off.
+    sub_lines: list[str] = []
+    if subtitle:
+        _probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+        cur = ""
+        for word in subtitle.split():
+            nxt = f"{cur} {word}".strip()
+            if _probe.textlength(nxt, font=f_sub) <= width - 2 * pad:
+                cur = nxt
+            else:
+                sub_lines.append(cur)
+                cur = word
+        sub_lines.append(cur)
+        sub_lines = sub_lines[:3]
+    title_h = 54 + 20 * len(sub_lines)
     pages = [rows[i:i + ROWS_PER_IMAGE] for i in range(0, len(rows), ROWS_PER_IMAGE)] or [[]]
     out = []
     for n, page in enumerate(pages, start=1):
@@ -60,8 +78,8 @@ def render_table(title: str, columns: list[tuple[str, int]], rows: list[dict],
         dr = ImageDraw.Draw(img)
         dr.text((pad, 14), title + (f"  ({n}/{len(pages)})" if len(pages) > 1 else ""),
                 font=f_title, fill=INK)
-        if subtitle:
-            dr.text((pad, 46), _fit(dr, subtitle, f_sub, width - 2 * pad), font=f_sub, fill=MUTED)
+        for k, line in enumerate(sub_lines):
+            dr.text((pad, 46 + 20 * k), _fit(dr, line, f_sub, width - 2 * pad), font=f_sub, fill=MUTED)
         y = title_h
         dr.rectangle([0, y, width, y + head_h], fill=(31, 41, 55))
         x = pad
@@ -372,6 +390,209 @@ def sharp_image(today: str) -> list[bytes]:
                         footer="Opening price -> latest captured price · not betting advice")
 
 
+# ── Pro tip scoreboard (1X2 + Bet Builder) ────────────────────────────────────
+# Pro sent this as a separate daily text message. It is read here from Pro's committed JSON
+# (local sibling checkout if present, else the public repo over HTTP — the same source the
+# dashboard uses) and drawn as pictures, and Pro's workflow no longer sends the text.
+PRO_SCOREBOARD_URL = ("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/"
+                      "output/tip_scoreboard.json")
+
+
+def _pro_scoreboard() -> dict:
+    import json
+    for p in (os.getenv("PRO_LOCAL"), "../wowzaV9-Pro", "../pro", "../v10"):
+        if p:
+            f = os.path.join(p, "output", "tip_scoreboard.json")
+            if os.path.exists(f):
+                with open(f, encoding="utf-8") as fh:
+                    return json.load(fh)
+    try:
+        import requests
+        r = requests.get(PRO_SCOREBOARD_URL, timeout=20)
+        return r.json() if r.status_code == 200 else {}
+    except Exception:                                                   # noqa: BLE001
+        return {}
+
+
+def scoreboard_images() -> list[bytes]:
+    sb = _pro_scoreboard()
+    if not sb:
+        return []
+    cols = [("Tips sent", 300), ("Settled", 80), ("Won", 70), ("Hit", 70), ("Needed", 80),
+            ("Model said", 100), ("P/L", 90)]
+
+    def _pct(x):
+        return "" if x is None else f"{100 * float(x):.0f}%"
+
+    def _row(label, b, stripe=None, units=True):
+        if not b or not b.get("settled"):
+            return {"cells": [label, 0, "", "", "", "", ""], "colours": {"Tips sent": MUTED}}
+        hit, need = b.get("hit_rate"), b.get("break_even")
+        u = b.get("units")
+        return {"cells": [label, b["settled"], b.get("won", ""), _pct(hit), _pct(need),
+                          _pct(b.get("model_claimed")), "" if u is None else f"{u:+.2f}u"],
+                "stripe": stripe, "bold": {"Hit", "P/L"},
+                "colours": {"Hit": (GREEN if need is not None and hit is not None and hit > need
+                                    else RED if need is not None else INK),
+                            "P/L": GREEN if (u or 0) > 0 else RED if (u or 0) < 0 else MUTED}}
+
+    rows = []
+    x = sb.get("one_x_two", {})
+    if x:
+        rows.append({"band": f"1X2 tips — {x.get('sent_excl_paper', x.get('sent', 0))} sent, "
+                             f"{x.get('pending', 0)} pending"})
+        rows.append(_row("All 1X2 tips", x.get("headline"), (31, 41, 55)))
+        for pick, b in (x.get("by_pick") or {}).items():
+            rows.append(_row(f"   {pick.title()} picks", b, (156, 163, 175)))
+    bb = sb.get("bet_builder", {})
+    if bb:
+        h = bb.get("headline") or {}
+        rows.append({"band": f"Bet Builder — {bb.get('sent', 0)} sent, {bb.get('ungraded', 0)} not gradable yet"})
+        if h.get("settled"):
+            hit, claim = h.get("hit_rate"), h.get("model_claimed")
+            rows.append({"cells": ["All legs played", h["settled"], h.get("won", ""), _pct(hit), "",
+                                   _pct(claim), f"exp {h.get('expected_wins', '')} wins"],
+                         "stripe": (31, 41, 55), "bold": {"Hit"},
+                         "colours": {"Hit": GREEN if (hit or 0) >= (claim or 0) else RED}})
+        v = bb.get("with_voided_legs") or {}
+        if v.get("settled"):
+            rows.append({"cells": ["A leg was voided (not comparable)", v["settled"], v.get("won", ""),
+                                   _pct(v["won"] / v["settled"]), "", "", ""],
+                         "colours": {"Tips sent": MUTED, "Hit": MUTED}})
+    out = render_table("Pro tips scoreboard — 1X2 and Bet Builder", cols, rows,
+                       subtitle="Are the tips Pro sends hitting? Hit vs the rate needed to break even "
+                                "(1X2) or vs the model's own claim (Bet Builder). Paper leagues excluded.",
+                       footer=f"From Pro output/tip_scoreboard.json · generated {sb.get('generated_at', '?')}")
+    last = (x or {}).get("last_10") or []
+    if last:
+        lc = [("Date", 110), ("Match", 360), ("Pick", 90), ("Odds", 80), ("Result", 100)]
+        lr = [{"cells": [r.get("date", ""), r.get("match", ""), str(r.get("pick", "")).title(),
+                         f"{float(r['odds']):.2f}" if r.get("odds") else "",
+                         "WON" if r.get("won") else "LOST"],
+               "stripe": GREEN if r.get("won") else RED, "bold": {"Result"},
+               "colours": {"Result": GREEN if r.get("won") else RED}} for r in reversed(last)]
+        out += render_table("Last 10 settled 1X2 tips", lc, lr)
+    return out
+
+
+# ── Weekly ────────────────────────────────────────────────────────────────────
+
+def _market_rows(d: pd.DataFrame) -> list[dict]:
+    rows = []
+    for band, tiers, stripe, paper in (("Staked — SNIPER + MARKSMAN", STAKED, TIER_COLOUR["SNIPER"], False),
+                                       ("Paper — VALUABLE", ("VALUABLE",), TIER_COLOUR["VALUABLE"], True)):
+        g0 = d[d["tier"].isin(tiers)]
+        if g0.empty:
+            continue
+        rows.append({"band": band})
+        groups = sorted(g0.groupby("market"), key=lambda kv: -len(kv[1])) + [("All", g0)]
+        for mk, g in groups:
+            w = int((g["pnl"] > 0).sum())
+            be = 100 / g["odds"].mean() if g["odds"].notna().sum() >= 0.8 * len(g) else None
+            hit = 100 * w / len(g)
+            pl = g["pnl"].sum()
+            rows.append({"cells": [mk, len(g), f"{w}-{len(g) - w}", f"{hit:.0f}%",
+                                   "" if be is None else f"{be:.0f}%", f"{pl:+.2f}u", f"{pl / len(g):+.3f}"],
+                         "stripe": (31, 41, 55) if mk == "All" else stripe, "bold": {"P/L"},
+                         "colours": {"P/L": GREEN if pl > 0 else RED,
+                                     "Market": MUTED if paper else INK,
+                                     "Hit": GREEN if be is not None and hit > be else RED if be is not None else INK}})
+    return rows
+
+
+def week_images(today: str) -> list[bytes]:
+    d = settled_tips()
+    if d.empty:
+        return []
+    start = (pd.Timestamp(today) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
+    w = d[(d["date"] >= start) & (d["date"] < today) & d["pnl"].notna()]
+    if w.empty:
+        return []
+    span = f"{pd.Timestamp(start):%d %b} – {pd.Timestamp(today) - pd.Timedelta(days=1):%d %b}"
+    out = render_table(f"Week in review — {span}",
+                       [("Market", 170), ("Bets", 70), ("Won-Lost", 110), ("Hit", 70),
+                        ("Break-even", 110), ("P/L", 100), ("Per bet", 90)],
+                       _market_rows(w),
+                       subtitle="Every settled tip of the last 7 days, flat 1u. Hit is green when above "
+                                "the break-even rate implied by the average price.",
+                       footer="Same basis as the dashboard · paper leagues excluded")
+    st = w[w["tier"].isin(STAKED)]
+    if len(st):
+        lg = (st.groupby("league")["pnl"].agg(Bets="size", PL="sum",
+                                              W=lambda x: int((x > 0).sum()))
+              .reset_index().sort_values("PL", ascending=False))
+        rows = [{"cells": [r["league"], r["Bets"], f"{r['W']}-{r['Bets'] - r['W']}", f"{r['PL']:+.2f}u"],
+                 "stripe": GREEN if r["PL"] > 0 else RED, "bold": {"P/L"},
+                 "colours": {"P/L": GREEN if r["PL"] > 0 else RED}} for _, r in lg.iterrows()]
+        out += render_table("Week by league — staked tips", [("League", 300), ("Bets", 70),
+                                                             ("Won-Lost", 110), ("P/L", 100)], rows,
+                            subtitle="SNIPER + MARKSMAN, all markets, best to worst. Small samples — "
+                                     "one week is noise, not a verdict on a league.")
+    return out
+
+
+def props_week_image(today: str) -> list[bytes]:
+    p = _read("player_ledger.csv")
+    if p.empty:
+        return []
+    start = (pd.Timestamp(today) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
+    p["d"] = p["match_date"].astype(str).str[:10]
+    p["pnl"] = pd.to_numeric(p["pnl"], errors="coerce")
+    p["market_odds"] = pd.to_numeric(p["market_odds"], errors="coerce")
+    w = p[(p["d"] >= start) & (p["d"] < today) & p["result"].isin(["WIN", "LOSS"])
+          & p["market_odds"].notna()]
+    if w.empty:
+        return []
+    rows = []
+    for mk, g in sorted(w.groupby("market"), key=lambda kv: -len(kv[1])):
+        n, won = len(g), int((g["result"] == "WIN").sum())
+        need = 100 * (1 / g["market_odds"]).mean()
+        hit = 100 * won / n
+        pl = g["pnl"].sum()
+        rows.append({"cells": [PROP_LABEL.get(mk, mk), n, f"{won}-{n - won}", f"{hit:.0f}%",
+                               f"{need:.0f}%", f"{pl:+.2f}u"],
+                     "bold": {"P/L at 1u"}, "colours": {"Hit": GREEN if hit > need else RED,
+                                                       "P/L at 1u": GREEN if pl > 0 else RED}})
+    return render_table("Player props — week in review (paper)",
+                        [("Market", 220), ("Priced", 80), ("Won-Lost", 120), ("Hit", 70),
+                         ("Needed", 90), ("P/L at 1u", 110)], rows,
+                        subtitle="Every priced prop signal settled in the last 7 days, all tiers. "
+                                 "Needed = average implied probability of the price. Never staked.")
+
+
+def send_weekly_pack() -> bool:
+    """Monday album: week by market, week by league, props week, Pro scoreboard.
+    Dedup WEEKLY|<iso-year>-W<week> in notified.json. Returns True if sent."""
+    from telegram_bot.notifier import _load_config, _load_notified, _save_notified
+    cfg = _load_config()
+    token, chat_id = cfg.get("token", ""), cfg.get("chat_id", "")
+    if not token or token == "YOUR_BOT_TOKEN":
+        return False
+    now = _dt.datetime.now(_dt.timezone.utc)
+    y, wk, _ = now.isocalendar()
+    key = f"WEEKLY|{y}-W{wk:02d}"
+    notified = _load_notified()
+    if key in notified:
+        print("[weekly_pack] already sent this week")
+        return False
+    pngs, notes = [], []
+    for name, fn in (("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
+                     ("props", lambda: props_week_image(now.strftime("%Y-%m-%d"))),
+                     ("scoreboard", scoreboard_images)):
+        try:
+            imgs = fn()
+            pngs += imgs
+            notes.append(f"{name} {len(imgs)}")
+        except Exception as e:                                          # noqa: BLE001
+            print(f"[weekly_pack] {name} skipped: {type(e).__name__}: {e}")
+    print("[weekly_pack] " + ", ".join(notes))
+    if not pngs or not send_album(token, chat_id, pngs, f"📅 <b>Wowza weekly — week {wk}</b>"):
+        return False
+    notified.add(key)
+    _save_notified(notified)
+    return True
+
+
 # ── The pack ──────────────────────────────────────────────────────────────────
 
 def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
@@ -386,7 +607,8 @@ def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
              ("results", lambda: results_image(yday)),
              ("record", lambda: record_image(today)),
              ("props", lambda: props_image(today)),
-             ("sharp", lambda: sharp_image(today))]
+             ("sharp", lambda: sharp_image(today)),
+             ("scoreboard", scoreboard_images)]
     for name, fn in steps:
         try:
             imgs = fn()
@@ -397,7 +619,8 @@ def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
             notes.append(f"{name} FAILED")
     n_tips = len(todays_rows(today))
     caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
-               f"Today's tips ({n_tips}) · yesterday's results · record · player props · sharp moves")
+               f"Today's tips ({n_tips}) · yesterday's results · record · player props · "
+               f"sharp moves · Pro scoreboard")
     print("[daily_pack] " + ", ".join(notes))
     return pngs, caption
 
@@ -429,7 +652,11 @@ def send_daily_pack() -> bool:
 if __name__ == "__main__":
     import sys
     out = sys.argv[1] if len(sys.argv) > 1 else "."
-    pngs, cap = build_pack()
+    if len(sys.argv) > 2 and sys.argv[2] == "weekly":
+        _t = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+        pngs, cap = week_images(_t) + props_week_image(_t) + scoreboard_images(), "weekly"
+    else:
+        pngs, cap = build_pack()
     for i, b in enumerate(pngs):
         with open(os.path.join(out, f"pack_{i + 1}.png"), "wb") as fh:
             fh.write(b)
