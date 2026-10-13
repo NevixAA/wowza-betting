@@ -1,0 +1,33 @@
+{
+  "policy_version": "balanced-2026-10-13",
+  "name": "WOWZA BALANCED",
+  "status": "RECOMMENDED_NOT_WIRED",
+  "note": "Read by src/bankroll_policy.py only. Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
+  "generated_at": "2026-10-13",
+  "evidence_cutoff": "2026-10-12",
+  "source": "owner brief 2026-10-13 (initial policy); Pro src/bankroll for later versions",
+  "portfolio": {
+    "single_bet_cap": 0.02,
+    "fixture_cap": 0.02,
+    "daily_cap": 0.06,
+    "league_daily_cap": 0.03,
+    "league_market_daily_cap": 0.03,
+    "one_position_per_fixture": true,
+    "hard_max_odds": 3.0
+  },
+  "tier_multipliers": {"SNIPER": 1.10, "MARKSMAN": 0.90},
+  "convergence": {"multiplier": 1.15, "leagues": []},
+  "paper_leagues": ["USA MLS"],
+  "tracks": {
+    "new_format|BTTS":   {"state": "ACTIVE",     "base_fraction": 0.0125, "max_odds": 2.60, "evidence_score": 3.0},
+    "new_format|OU25":   {"state": "ACTIVE_LOW", "base_fraction": 0.005,  "max_odds": 2.50, "evidence_score": 1.0},
+    "new_format|OVER15": {"state": "ACTIVE_LOW", "base_fraction": 0.005,  "min_odds": 1.45, "max_odds": 1.90, "evidence_score": 1.5},
+    "standard|OU25":     {"state": "PAPER",      "base_fraction": 0.0},
+    "standard|BTTS":     {"state": "PAPER",      "base_fraction": 0.0},
+    "standard|OVER15":   {"state": "PAPER",      "base_fraction": 0.0},
+    "new_format|OVER35": {"state": "BLOCKED",    "base_fraction": 0.0},
+    "standard|OVER35":   {"state": "BLOCKED",    "base_fraction": 0.0},
+    "player_props":      {"state": "BLOCKED_FROM_REAL", "base_fraction": 0.0}
+  },
+  "drawdown_throttle": [[0.08, 0.75], [0.12, 0.50], [0.18, 0.0]]
+}
