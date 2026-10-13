@@ -362,6 +362,69 @@ def sharp_instant(s: pd.DataFrame, min_pct: float | None = None) -> pd.DataFrame
     return s[ok & (s["drift_pct"] <= -min_pct)]
 
 
+def sharp_jumps(history: dict | None = None, min_pct: float | None = None,
+                max_age_hours: float = 8.0, now: pd.Timestamp | None = None) -> pd.DataFrame:
+    """SUDDEN moves for the instant alert (owner, 2026-10-13: "big jump from snapshots, 10% and
+    above"): the price change between the LAST TWO captured snapshots, not since opening.
+
+    Raw 10%+ jumps ran ~7/day, but most were the AVERAGE changing composition rather than money:
+    the book count jumping 4 -> 17 moves a consensus price with nobody betting. Kept only when:
+      * >= 5 books on both snapshots and the count within +-20% (same panel of books);
+      * another outcome of the same market moved the OPPOSITE way by >= 2% (a real repricing);
+      * no other outcome jumped >= 10% the SAME way (that is a broken book, not a move);
+      * the new price is above 1.10; the snapshot is recent (default 8h) and before kickoff day;
+      * direction: SHARP_JUMP_DIRECTIONS = "in" (default: price shortening, money coming in),
+        "out", or "both". Measured over 30 days to 2026-10-13: in 1.5/day, both 4.4/day.
+    """
+    import math
+    if min_pct is None:
+        min_pct = float(os.getenv("SHARP_JUMP_MIN_PCT", "10"))
+    dirs = os.getenv("SHARP_JUMP_DIRECTIONS", "in").strip().lower()
+    if history is None:
+        from src.sharp_tracker import _load_history
+        history = _load_history()
+    now = now or pd.Timestamp.now(tz="UTC")
+    today = now.strftime("%Y-%m-%d")
+    rows = []
+    for key, rec in history.items():
+        sn = rec.get("snapshots") or []
+        if len(sn) < 2 or str(rec.get("date", ""))[:10] < today:
+            continue
+        a, b = sn[-2], sn[-1]
+        t = pd.to_datetime(b.get("at"), utc=True, errors="coerce")
+        if pd.isna(t) or (now - t).total_seconds() > max_age_hours * 3600:
+            continue
+        na, nb = a.get("n_books") or 0, b.get("n_books") or 0
+        if na < 5 or nb < 5 or not (0.8 <= nb / na <= 1.25):
+            continue
+        totals = rec.get("market") == "totals"
+        keys = ("odds_over", "odds_under") if totals else ("odds_home", "odds_away", "odds_draw")
+        moves = {}
+        for k in keys:
+            p, c = a.get("odds", {}).get(k), b.get("odds", {}).get(k)
+            if p and c and p > 1 and c > 1:
+                moves[k] = (p, c, c / p - 1)
+        for k, (p, c, m) in moves.items():
+            if abs(m) * 100 < min_pct or c <= 1.10 or math.isnan(m):
+                continue
+            if (dirs == "in" and m > 0) or (dirs == "out" and m < 0):
+                continue
+            others = [v[2] for kk, v in moves.items() if kk != k]
+            if not any(o * m < 0 and abs(o) >= 0.02 for o in others):
+                continue
+            if any(o * m > 0 and abs(o) >= 0.10 for o in others):
+                continue
+            side = k.split("_", 1)[1].upper()
+            label = (f"O/U 2.5 {side}" if totals else
+                     f"1X2 {side} ({rec['home'] if side == 'HOME' else rec['away'] if side == 'AWAY' else 'Draw'})")
+            rows.append({"key": key, "sel": k, "at": str(b.get("at")), "date": str(rec["date"])[:10],
+                         "league": rec.get("league", ""), "match": f"{rec['home']} vs {rec['away']}",
+                         "market": label, "prev_odds": p, "now_odds": c, "jump_pct": round(m * 100, 1),
+                         "books": nb, "snapshots": len(sn)})
+    d = pd.DataFrame(rows)
+    return config.drop_paper_leagues(d) if len(d) else d
+
+
 def sharp_image(today: str) -> list[bytes]:
     s = _sharp_frame()
     if s.empty:

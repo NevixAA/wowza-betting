@@ -615,59 +615,53 @@ def notify_wc_strong() -> int:
 
 
 def notify_sharp_strong() -> int:
-    """Send Telegram alerts for STRONG sharp money signals across all leagues."""
+    """INSTANT sharp alert — a SUDDEN jump between two consecutive odds snapshots.
+
+    Owner, 2026-10-13: "big jump from snapshots, 10% and above". Not the drift since opening
+    (that is in the morning picture pack). The rule and its bad-data guards live in
+    telegram_bot.daily_pack.sharp_jumps; thresholds via SHARP_JUMP_MIN_PCT (10) and
+    SHARP_JUMP_DIRECTIONS ("in" = price shortening only, ~1.5/day measured over 30 days).
+    Was: every STRONG/SHARP drift row, ~8 messages a day.
+    Dedup per selection per snapshot, so a second big jump later on the same match alerts again.
+    """
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")
     if not token or token == "YOUR_BOT_TOKEN":
         return 0
-
-    sharp_file = app_config.OUTPUT_DIR / "sharp_tips.csv"
-    if not sharp_file.exists():
+    from telegram_bot.daily_pack import sharp_jumps
+    try:
+        jumps = sharp_jumps()
+    except Exception as e:                                              # noqa: BLE001
+        print(f"  Sharp jumps unavailable: {type(e).__name__}: {e}")
         return 0
-
-    df = _read_csv(sharp_file)
-    # INSTANT ONLY FOR REALLY BIG MOVES (owner, 2026-10-13). Was every STRONG/SHARP row, ~8 a day.
-    # Now: money coming in (price shortening) by >= SHARP_INSTANT_MIN_PCT (default 30), on a move
-    # that passes the bad-data check — most 30%+ "moves" measured that day were impossible prices
-    # (two outcomes of one match both shortening to 1.10). Everything else is in the morning
-    # picture pack (telegram_bot/daily_pack.py).
-    from telegram_bot.daily_pack import sharp_instant
-    for _c in ("opening_odds", "current_odds", "drift_pct"):
-        df[_c] = pd.to_numeric(df[_c], errors="coerce")
-    strong = sharp_instant(df).copy()
-    if strong.empty:
+    if jumps.empty:
         return 0
 
     notified = _load_notified(SHARP_NOTIFIED_FILE)
     sent = 0
-
-    for _, row in strong.iterrows():
-        key = f"SHARP|{str(row['date'])[:10]}|{row['match']}|{row['market']}"
+    for _, row in jumps.sort_values("jump_pct").iterrows():
+        key = f"JUMP|{row['key']}|{row['sel']}|{row['at']}"
         if key in notified:
             continue
-
-        sig       = row["signal"]
-        emoji     = "🔴" if sig == "STRONG" else "🟡"
-        direction = "▼ Sharp money IN" if row["drift_pct"] < 0 else "▲ Money moving OUT"
+        money_in = row["jump_pct"] < 0
+        at = pd.to_datetime(row["at"], utc=True, errors="coerce")
         msg = (
-            f"{emoji} <b>SHARP MONEY — {sig}</b>\n"
+            f"{'🔴' if money_in else '🔵'} <b>BIG ODDS JUMP — money {'IN' if money_in else 'OUT'}</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
-            f"📅 {str(row['date'])[:10]}\n"
-            f"🏆 {row.get('league','')}\n"
             f"⚽ {row['match']}\n"
+            f"🏆 {row['league']} · 📅 {row['date']}\n"
             f"📌 <b>{row['market']}</b>\n"
-            f"💰 Opening: {row['opening_odds']} → Now: {row['current_odds']}\n"
-            f"📉 Drift: <b>{row['drift_pct']:+.1f}%</b>  {direction}\n"
-            f"🔍 Based on {row['snapshots']} snapshots"
+            f"💰 {row['prev_odds']:.2f} → <b>{row['now_odds']:.2f}</b>  "
+            f"(<b>{row['jump_pct']:+.1f}%</b> in one snapshot)\n"
+            f"🔍 {int(row['books'])} books"
+            + (f" · seen {at:%H:%M} UTC" if pd.notna(at) else "")
         )
-
         if _send(token, chat_id, msg):
             notified.add(key)
             sent += 1
             _save_notified(notified, SHARP_NOTIFIED_FILE)
-            print(f"  Sharp [{sig}]: {row['match']} — {row['market']} {row['drift_pct']:+.1f}%")
-
+            print(f"  Sharp jump: {row['match']} — {row['market']} {row['jump_pct']:+.1f}%")
     return sent
 
 
