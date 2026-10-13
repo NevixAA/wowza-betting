@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -626,7 +627,15 @@ def notify_sharp_strong() -> int:
         return 0
 
     df = _read_csv(sharp_file)
-    strong = df[df["signal"].isin(["STRONG", "SHARP"])].copy()
+    # INSTANT ONLY FOR REALLY BIG MOVES (owner, 2026-10-13). Was every STRONG/SHARP row, ~8 a day.
+    # Now: money coming in (price shortening) by >= SHARP_INSTANT_MIN_PCT (default 30), on a move
+    # that passes the bad-data check — most 30%+ "moves" measured that day were impossible prices
+    # (two outcomes of one match both shortening to 1.10). Everything else is in the morning
+    # picture pack (telegram_bot/daily_pack.py).
+    from telegram_bot.daily_pack import sharp_instant
+    for _c in ("opening_odds", "current_odds", "drift_pct"):
+        df[_c] = pd.to_numeric(df[_c], errors="coerce")
+    strong = sharp_instant(df).copy()
     if strong.empty:
         return 0
 
@@ -806,7 +815,13 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         line moved TOWARD our side (odds shortened) -> sharp CONFIRM
         line moved AGAINST our side (odds drifted)  -> sharp DISAGREE
     Dedup per (fixture, side, direction) so each move alerts once (and again only if it flips).
-    Reads the odds curves we already capture — no API calls, no model/betting logic touched."""
+    Reads the odds curves we already capture — no API calls, no model/betting logic touched.
+
+    MUTED BY DEFAULT since 2026-10-13 (owner: instant messages only for new tips and really big
+    sharp moves). This alert's moves are capped at 20% by design (larger is a data artifact on an
+    O/U 2.5 line), so it can never meet the 30% instant bar. SHARP_TIP_MOVE_ALERTS=1 re-enables."""
+    if os.getenv("SHARP_TIP_MOVE_ALERTS", "").strip() != "1":
+        return 0
     import re
     cfg = _load_config()
     token = cfg.get("token", ""); chat_id = cfg.get("chat_id", "")
@@ -1315,7 +1330,12 @@ def notify_agent_analysis() -> int:
 
 
 def notify_player_props() -> int:
-    """Send Telegram alerts for top player prop tips. Returns count sent."""
+    """Send Telegram alerts for top player prop tips. Returns count sent.
+
+    MUTED BY DEFAULT since 2026-10-13 (owner: props as one daily picture, not a message stream —
+    see telegram_bot/daily_pack.props_image). PROPS_INSTANT_ALERTS=1 re-enables."""
+    if os.getenv("PROPS_INSTANT_ALERTS", "").strip() != "1":
+        return 0
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")
@@ -1462,7 +1482,12 @@ def notify_lineup_cashout() -> int:
       4. Track sent cashout alerts in cashout_notified.json (no repeat cashout per player/market).
 
     Returns count of cashout alerts sent.
+
+    MUTED BY DEFAULT since 2026-10-13 together with the props alerts it follows up on: with no
+    instant prop tip sent, there is nothing to cash out of. PROPS_INSTANT_ALERTS=1 re-enables.
     """
+    if os.getenv("PROPS_INSTANT_ALERTS", "").strip() != "1":
+        return 0
     cfg = _load_config()
     token   = cfg.get("token", "")
     chat_id = cfg.get("chat_id", "")

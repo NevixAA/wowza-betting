@@ -64,7 +64,8 @@ jobs:
           if grep -qF "$KEY" telegram_bot/notified.json 2>/dev/null; then
             echo "send=false" >> "$GITHUB_OUTPUT"
             echo "already sent today ($KEY) — skipping this slot"
-          elif [ "$H" -ge 05 ] && [ "$H" -le 11 ]; then
+          elif [ "$H" -ge 06 ] && [ "$H" -le 11 ]; then
+            # 06:00 UTC = 09:00 Israel (owner's choice, 2026-10-13); was 05:00.
             echo "send=true"  >> "$GITHUB_OUTPUT"
             echo "hour ${H}:00 UTC is inside the morning window — sending"
           elif [ "$H" -ge 12 ]; then
@@ -115,22 +116,28 @@ jobs:
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
         continue-on-error: true
 
-      - name: Send daily digest
+      # ONE PICTURE ALBUM instead of the two long text digests + the props digest (owner,
+      # 2026-10-13): today's tips, yesterday's results, record, player props, sharp movements —
+      # see telegram_bot/daily_pack.py. Same dedup key (DIGEST|<utc-date>), so the gate above is
+      # unchanged. If the album cannot be sent, the old text digest goes out instead, so a
+      # rendering or upload failure can never cost the morning briefing.
+      - name: Send daily picture pack
         if: steps.gate.outputs.send == 'true'
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python -c "
-          import sys; sys.path.insert(0,'.')
-          from telegram_bot.notifier import notify_daily_digest, notify_props_daily_digest, notify_bug_announcement
-          ann = notify_bug_announcement()
-          print(f'Bug announcement: {\"sent\" if ann else \"already sent / skipped\"}')
-          sent = notify_daily_digest()
-          print(f'Daily digest: {\"sent\" if sent else \"failed\"}')
-          props = notify_props_daily_digest()
-          print(f'Props digest: {\"sent\" if props else \"failed\"}')
-          "
+          python - <<'PY'
+          import sys; sys.path.insert(0, '.')
+          from telegram_bot.notifier import notify_bug_announcement, notify_daily_digest
+          from telegram_bot.daily_pack import send_daily_pack
+          print('Bug announcement:', 'sent' if notify_bug_announcement() else 'already sent / skipped')
+          if send_daily_pack():
+              print('Daily picture pack: sent')
+          else:
+              print('::warning::picture pack not sent - falling back to the text digest')
+              print('Text digest:', 'sent' if notify_daily_digest() else 'failed or already sent')
+          PY
 
       - name: Commit dedup keys so digest isn't re-sent today
         if: steps.gate.outputs.send == 'true'
