@@ -151,6 +151,16 @@ def tip_scoreboard() -> dict:
     return j
 
 
+# ── Weekly league promotion (Pro src/scout/promotion) ─────────────────────────────────────────
+def promotion_review() -> dict:
+    """Pro's weekly promotion review + the canonical league registry. Display only."""
+    out = read_json(_f("output/scout/weekly_promotion_review.json"))
+    if out:
+        out["registry"] = read_json(_f("registry/wowza_league_registry.json"))
+        out["freshness"] = freshness_from_timestamp(out.get("generated_at"), "weekly", "promotion review")
+    return out
+
+
 # ── Monthly bankroll review (Pro src/bankroll) ────────────────────────────────────────────────
 def bankroll() -> dict:
     """Pro's latest recommendation and its evidence tables. Display only — never edits a policy."""

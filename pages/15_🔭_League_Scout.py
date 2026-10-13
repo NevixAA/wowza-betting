@@ -133,3 +133,42 @@ else:
     st.caption("Market skill near 0 = the closing price barely beats the league average (a soft market). "
                "Residual z above ~2 = the model knows something the close did not. A paper record that is "
                "almost all one side is the failure signature to distrust.")
+
+# ── weekly promotion review (Pro src/scout/promotion) ───────────────────────────────────────────
+st.divider()
+st.subheader("Weekly promotion review")
+pr = pro.promotion_review() if hasattr(pro, "promotion_review") else {}
+if not pr:
+    st.info("No weekly promotion review yet — it runs every Sunday in Pro.")
+else:
+    if pr.get("freshness"):
+        ui.freshness_chip(pr["freshness"], "promotion review")
+    k = pr.get("counts", {})
+    cc = st.columns(5)
+    for col, (lab, key) in zip(cc, (("New candidates", "new_candidates"), ("Approved (shadow)", "promoted"),
+                                     ("Validation failed", "failed"), ("Data-quality blocked", "blocked"),
+                                     ("Still collecting", "still_collecting"))):
+        col.metric(lab, k.get(key, 0))
+    st.caption(f"Week {pr.get('week')} · {pr.get('leagues_monitored')} leagues monitored · a league that passes stops "
+               f"at SHADOW_APPROVED (paper only) until the existing-league regression test exists — no v9 config "
+               f"change and no money is ever decided here.")
+    det = pr.get("details", {})
+    rows = []
+    for name, d in det.items():
+        dist = d.get("distance") or {}
+        rows.append({"League": name, "State": d.get("new_state"), "Scout": d.get("scout_status", ""),
+                     "Score": d.get("promotion_score"),
+                     "Settled w/ close needed": dist.get("settled_with_close"),
+                     "Results needed": dist.get("results"), "Seasons needed": dist.get("history_seasons"),
+                     "Why": "; ".join(map(str, d.get("reason", [])))[:120]})
+    if rows:
+        T = pd.DataFrame(rows)
+        T["_d"] = T[["Settled w/ close needed", "Results needed"]].fillna(0).sum(axis=1)
+        st.markdown("**Distance to promotion** — closest leagues first")
+        ui.table(T.sort_values(["Score", "_d"], ascending=[False, True], na_position="last")
+                 .drop(columns="_d").head(25))
+    reg = pr.get("registry") or {}
+    if reg.get("divergences"):
+        with st.expander(f"League registry: {len(reg['divergences'])} list divergence(s) in v9 config"):
+            for d in reg["divergences"]:
+                st.write("- " + d)
