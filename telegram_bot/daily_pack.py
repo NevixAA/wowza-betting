@@ -623,6 +623,78 @@ def props_week_image(today: str) -> list[bytes]:
                                  "Needed = average implied probability of the price. Never staked.")
 
 
+def props_model_check_image(today: str, weeks: int = 8) -> list[bytes]:
+    """Are the props models getting better? Week by week: how often settled prop signals hit vs
+    the probability the model gave them, and which model version was live that week.
+
+    Owner request 2026-10-13, after seeing more props "Won": that was VOLUME (the 26-league
+    collection fix graded 6x more signals in the week of 10-05), not a higher hit rate — and the
+    models had not been retrained between 09-20 and 10-12 at all. This picture makes the
+    distinction visible every week.
+
+    Read the GAP, not the hit rate: hit rate moves with the market mix (cards hit ~22%, 1+ SOT
+    ~40%). A model that is improving keeps the gap near zero across markets. The model's figure
+    includes the chance a player does not play, while only players who played are graded, so a
+    positive gap is expected; what matters is whether it is stable or shrinking after a retrain.
+    """
+    import json
+    p = _read("player_ledger.csv")
+    if p.empty:
+        return []
+    p = p[p["result"].isin(["WIN", "LOSS"])].copy()
+    p["dt"] = pd.to_datetime(p["match_date"], errors="coerce")
+    start = pd.Timestamp(today) - pd.Timedelta(weeks=weeks)
+    p = p[(p["dt"] >= start) & (p["dt"] < pd.Timestamp(today))]
+    if p.empty:
+        return []
+    p["win"] = p["result"].eq("WIN")
+    p["mp"] = pd.to_numeric(p["model_prob"], errors="coerce")
+    p["wk"] = p["dt"].dt.to_period("W").dt.start_time
+
+    runs = []
+    try:
+        log = json.loads((config.OUTPUT_DIR / "props_retrain_log.json").read_text(encoding="utf-8"))
+        runs = sorted(k for k, r in log.get("runs", {}).items()
+                      if any(v.get("promoted") for v in r.values()))
+    except Exception:                                                   # noqa: BLE001
+        pass
+
+    # Which model made each tip is decided by WHEN THE TIP WAS MADE (signal_date), not the match
+    # week: a 12 Oct match was tipped days earlier by whatever model was live then. A retrain day
+    # itself counts as old (the retrain lands mid-day, after that morning's tips).
+    first_new = runs[0] if runs else None
+    sig = p["signal_date"].astype(str).str[:10] if "signal_date" in p.columns else p["dt"].dt.strftime("%Y-%m-%d")
+    p["new_model"] = (sig > first_new) if first_new else False
+
+    def _version(g: pd.DataFrame) -> str:
+        share = float(g["new_model"].mean()) if len(g) else 0.0
+        if share == 0:
+            return "old models"
+        return "new models" if share == 1 else f"{share:.0%} new"
+
+    rows = []
+    for wk, g in sorted(p.groupby("wk"), key=lambda kv: kv[0]):
+        hit, said = 100 * g["win"].mean(), 100 * g["mp"].mean()
+        gap = hit - said
+        rows.append({"cells": [f"{wk:%d %b}", len(g), int(g["win"].sum()), f"{hit:.1f}%", f"{said:.1f}%",
+                               f"{gap:+.1f} pts", _version(g)],
+                     "stripe": (31, 41, 55) if g["new_model"].any() else (156, 163, 175),
+                     "bold": {"Gap"}})
+    last = p[p["wk"] == p["wk"].max()]
+    if len(last):
+        rows.append({"band": f"Last week by market ({last['wk'].max():%d %b})"})
+        for mk, g in sorted(last.groupby("market"), key=lambda kv: -len(kv[1])):
+            hit, said = 100 * g["win"].mean(), 100 * g["mp"].mean()
+            rows.append({"cells": [PROP_LABEL.get(mk, mk), len(g), int(g["win"].sum()), f"{hit:.1f}%",
+                                   f"{said:.1f}%", f"{hit - said:+.1f} pts", ""], "bold": {"Gap"}})
+    return render_table("Props model check — hit rate vs what the model said",
+                        [("Week of", 170), ("Settled", 80), ("Won", 70), ("Hit", 80), ("Model said", 110),
+                         ("Gap", 100), ("Tipped by", 130)], rows,
+                        subtitle="All settled prop signals (every tier, played only). Watch the GAP across "
+                                 "weeks, not the hit rate: hit rate moves with the market mix. Dark rows = "
+                                 "weeks with tips from the retrained models (fast learner, 10-12/10-13).")
+
+
 def send_weekly_pack() -> bool:
     """Monday album: week by market, week by league, props week, Pro scoreboard.
     Dedup WEEKLY|<iso-year>-W<week> in notified.json. Returns True if sent."""
@@ -641,6 +713,7 @@ def send_weekly_pack() -> bool:
     pngs, notes = [], []
     for name, fn in (("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
                      ("props", lambda: props_week_image(now.strftime("%Y-%m-%d"))),
+                     ("props_check", lambda: props_model_check_image(now.strftime("%Y-%m-%d"))),
                      ("scoreboard", scoreboard_images)):
         try:
             imgs = fn()
@@ -717,7 +790,8 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "."
     if len(sys.argv) > 2 and sys.argv[2] == "weekly":
         _t = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
-        pngs, cap = week_images(_t) + props_week_image(_t) + scoreboard_images(), "weekly"
+        pngs, cap = (week_images(_t) + props_week_image(_t) + props_model_check_image(_t)
+                     + scoreboard_images(), "weekly")
     else:
         pngs, cap = build_pack()
     for i, b in enumerate(pngs):
