@@ -62,14 +62,16 @@ jobs:
         id: guard
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import datetime as dt, json, os
+          import datetime as dt, json, os, sys
           run = "true"
           if os.environ.get("EVENT") == "schedule":
               try:
                   last = json.load(open("output/props_retrain_log.json", encoding="utf-8")).get("latest_run")
                   if last and (dt.date.today() - dt.date.fromisoformat(last)).days < 5:
                       run = "false"
-                      print(f"# trained on {last}, skipping")
+                      # stderr, NOT stdout: stdout is redirected into $GITHUB_OUTPUT, which accepts
+                      # key=value lines only. A "# ..." line there failed the 2026-10-13 run.
+                      print(f"trained on {last}, skipping", file=sys.stderr)
               except FileNotFoundError:
                   pass
           print(f"run={run}")
