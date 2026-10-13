@@ -8,7 +8,9 @@ on:
 jobs:
   summary:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -21,15 +23,36 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Send weekly summary
+      # PICTURE ALBUM instead of two long text messages (owner, 2026-10-13): week by market, week
+      # by league, player props week, Pro tips scoreboard - telegram_bot/daily_pack.send_weekly_pack.
+      # Dedup WEEKLY|<iso-week> in notified.json. If the album fails, the old texts go out instead.
+      - name: Send weekly picture pack
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          python -c "
-          import sys; sys.path.insert(0,'.')
-          from telegram_bot.notifier import notify_weekly_summary, notify_props_weekly_summary
-          notify_weekly_summary()
-          notify_props_weekly_summary()
-          "
+          python - <<'PY'
+          import sys; sys.path.insert(0, '.')
+          from telegram_bot.daily_pack import send_weekly_pack
+          if send_weekly_pack():
+              print('Weekly picture pack: sent')
+          else:
+              from telegram_bot.notifier import notify_weekly_summary, notify_props_weekly_summary
+              print('::warning::weekly picture pack not sent - falling back to the text summaries')
+              notify_weekly_summary()
+              notify_props_weekly_summary()
+          PY
+
+      - name: Commit dedup key
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f telegram_bot/notified.json 2>/dev/null || true
+          git diff --staged --quiet && exit 0
+          git commit -m "auto: weekly pack sent $(date -u '+%Y-%m-%d')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X theirs origin main && git push && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          exit 1
