@@ -12,7 +12,8 @@ from typing import Optional
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, log_loss
 from sklearn.pipeline import Pipeline
@@ -36,6 +37,22 @@ def _prep(df: pd.DataFrame, feat_cols: list[str] | None = None) -> tuple[pd.Data
     X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
     X = X.fillna(X.median().fillna(0.0))
     return X, cols
+
+
+class _UsableColumns(BaseEstimator, TransformerMixin):
+    """Keep only columns that vary in the TRAINING data. sklearn 1.9's HistGradientBoosting
+    binner raises on an all-NaN or single-valued column; a constant column carries no
+    information for a tree anyway. Decided at fit time, applied identically at predict time."""
+
+    def fit(self, X, y=None):
+        A = np.asarray(X, dtype=float)
+        self.keep_ = [j for j in range(A.shape[1])
+                      if np.isfinite(A[:, j]).sum() > 1
+                      and np.nanmax(A[:, j]) > np.nanmin(A[:, j])]
+        return self
+
+    def transform(self, X):
+        return np.asarray(X, dtype=float)[:, self.keep_]
 
 
 class _PlattCalibratedModel:
@@ -94,11 +111,18 @@ def train(df: pd.DataFrame, market: str) -> dict:
             ("scaler", StandardScaler()),
             ("clf", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
         ]),
+        # HistGradientBoosting since 2026-10-13 (was classic GradientBoostingClassifier: single-
+        # threaded, linear in rows; at 855k rows the weekly retrain took 3h50m and had silently
+        # timed out every Sunday from 09-27). Same trees (300 x depth 3, lr 0.05, min leaf 20);
+        # the key stays "gradient_boost" so predict and stored payloads are unchanged.
+        # Validated in Pro first (src/studies/props_learner.py, output/studies/PROPS_LEARNER.md):
+        # all 8 markets non-inferior under a rule fixed before the results, 6 of 8 significantly
+        # better, ~70x faster. Owner-approved 2026-10-12.
         "gradient_boost": Pipeline([
-            ("scaler", StandardScaler()),
-            ("clf", GradientBoostingClassifier(
-                n_estimators=300, max_depth=3, learning_rate=0.05,
-                subsample=0.8, min_samples_leaf=20, random_state=42,
+            ("usable", _UsableColumns()),
+            ("clf", HistGradientBoostingClassifier(
+                max_iter=300, max_depth=3, learning_rate=0.05,
+                min_samples_leaf=20, early_stopping=False, random_state=42,
             )),
         ]),
     }
