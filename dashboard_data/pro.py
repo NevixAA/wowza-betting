@@ -151,6 +151,20 @@ def tip_scoreboard() -> dict:
     return j
 
 
+# ── Monthly bankroll review (Pro src/bankroll) ────────────────────────────────────────────────
+def bankroll() -> dict:
+    """Pro's latest recommendation and its evidence tables. Display only — never edits a policy."""
+    out = {"recommendation": read_json(_f("output/bankroll/current_policy_recommendation.json"))}
+    for name in ("policy_candidates", "stress_tests", "walk_forward", "track_decisions",
+                 "convergence_leagues", "production_policy_path"):
+        out[name] = read_csv(_f(f"output/bankroll/{name}.csv"))
+    rec = out["recommendation"]
+    if rec:
+        out["freshness"] = freshness_from_timestamp(rec.get("generated_at", "").replace(" UTC", "Z").replace(" ", "T"),
+                                                    "monthly", "bankroll review")
+    return out
+
+
 # ── Upgrade studies (Pro src/studies) ─────────────────────────────────────────────────────────
 def studies() -> dict:
     out = {}
