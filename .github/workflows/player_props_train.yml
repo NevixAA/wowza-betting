@@ -21,9 +21,11 @@ name: Player Props Train (weekly)
 #     model was never committed after a retrain.
 # The file list below is read from player_model.config.MODEL_FILES so it cannot drift again.
 #
-# KNOWN LIMIT. GitHub caps a hosted job at 360 minutes, and history keeps growing all season.
-# The lasting fix is a faster learner (HistGradientBoosting), which is an algorithm change and
-# goes through Pro first.
+# KNOWN LIMIT (resolved 2026-10-13). GitHub caps a hosted job at 360 minutes and history keeps
+# growing, so the classic learner would have outgrown even this job (the first run here took
+# 3h50m). The props models now use HistGradientBoosting: validated in Pro on all 8 markets
+# (output/studies/PROPS_LEARNER.md), ~70x faster, owner-approved. Expect minutes, not hours;
+# the 340-minute limit is left as headroom.
 
 concurrency:
   group: player-props-train
