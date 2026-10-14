@@ -10362,3 +10362,299 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-14T13:03:37Z,1603044,2026-10-15T18:00:00Z,1736.4,FAR,Saudi Pro League,new_format,Al-Ahli Jeddah,Al-Nassr,36,BetVictor,btts,no,,2.45,api_football,open
 2026-10-14T14:42:16Z,1493164,2026-10-14T22:00:00Z,437.7,FAR,Argentina Primera Division,new_format,Sarmiento Junin,River Plate,4,Pinnacle,ht_ou,over,1.5,3.4,api_football,open
 2026-10-14T14:42:16Z,1493164,2026-10-14T22:00:00Z,437.7,FAR,Argentina Primera Division,new_format,Sarmiento Junin,River Plate,4,Pinnacle,ht_ou,under,1.5,1.32,api_football,open
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,7,William Hill,btts,no,,2.5,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,8,Bet365,ou,over,1.5,1.17,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,8,Bet365,ou,under,1.5,5.0,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,8,Bet365,ou,over,2.5,1.57,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,8,Bet365,ou,under,2.5,2.38,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,8,Bet365,ou,over,3.5,2.38,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,8,Bet365,ou,under,3.5,1.57,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ou,over,1.5,1.1,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ou,under,1.5,5.05,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ou,over,2.5,1.46,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ou,under,2.5,2.38,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ou,over,3.5,2.29,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ou,under,3.5,1.58,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ht_ou,over,1.5,2.21,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,ht_ou,under,1.5,1.6,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,btts,yes,,1.43,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,2,Marathonbet,btts,no,,2.58,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ou,over,1.5,1.17,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ou,under,1.5,5.0,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ou,over,2.5,1.53,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ou,under,2.5,2.45,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ou,over,3.5,2.45,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ou,under,3.5,1.53,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ht_ou,over,1.5,2.25,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ht_ou,under,1.5,1.57,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ht_ou,over,0.5,1.22,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,ht_ou,under,0.5,3.8,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,btts,yes,,1.47,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,3,Betfair,btts,no,,2.63,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,ou,over,1.5,1.14,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,ou,over,2.5,1.52,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,ou,under,2.5,2.31,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,ou,over,3.5,2.25,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,ou,under,3.5,1.55,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,btts,yes,,1.44,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,36,BetVictor,btts,no,,2.55,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ou,over,1.5,1.18,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ou,under,1.5,5.26,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ou,over,2.5,1.6,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ou,under,2.5,2.44,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ou,over,3.5,2.45,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ou,under,3.5,1.59,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ht_ou,over,1.5,2.33,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,4,Pinnacle,ht_ou,under,1.5,1.61,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,5,SBO,ou,over,3.5,2.26,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,5,SBO,ht_ou,over,1.5,2.25,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,5,SBO,ht_ou,under,1.5,1.64,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ou,over,1.5,1.1,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ou,under,1.5,5.05,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ou,over,2.5,1.46,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ou,under,2.5,2.38,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ou,over,3.5,2.29,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ou,under,3.5,1.58,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ht_ou,over,1.5,2.21,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,ht_ou,under,1.5,1.6,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,btts,yes,,1.43,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,11,1xBet,btts,no,,2.63,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ou,over,1.5,1.19,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ou,under,1.5,4.75,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ou,over,2.5,1.6,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ou,under,2.5,2.42,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ou,over,3.5,2.42,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ou,under,3.5,1.6,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ht_ou,over,1.5,2.32,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ht_ou,over,0.5,1.31,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,ht_ou,under,0.5,3.35,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,btts,yes,,1.47,api_football,change
+2026-10-14T14:35:45Z,1563200,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Norwich,Southampton,32,Betano,btts,no,,2.55,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,7,William Hill,ht_ou,over,1.5,2.62,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,7,William Hill,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,7,William Hill,ht_ou,over,0.5,1.35,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,7,William Hill,ht_ou,under,0.5,3.0,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,7,William Hill,btts,yes,,1.75,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,7,William Hill,btts,no,,1.95,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ou,over,1.5,1.28,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ou,under,1.5,3.75,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ou,over,2.5,1.91,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ou,under,2.5,1.91,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ou,over,3.5,3.2,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ou,under,3.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ht_ou,over,0.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,ht_ou,under,0.5,3.0,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,btts,yes,,1.83,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,8,Bet365,btts,no,,1.83,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ou,over,1.5,1.22,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ou,under,1.5,3.5,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ou,over,2.5,1.83,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ou,under,2.5,1.91,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ou,over,3.5,2.97,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ou,under,3.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ht_ou,over,1.5,2.54,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ht_ou,over,0.5,1.31,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,ht_ou,under,0.5,3.08,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,btts,yes,,1.79,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,2,Marathonbet,btts,no,,1.89,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,3,Betfair,ou,over,1.5,1.25,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,3,Betfair,ou,under,1.5,3.8,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,3,Betfair,ou,over,3.5,3.1,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ou,over,1.5,1.27,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ou,under,1.5,3.3,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ou,over,2.5,1.79,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ou,under,2.5,1.88,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ou,over,3.5,2.86,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ou,under,3.5,1.35,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ht_ou,over,1.5,2.5,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ht_ou,under,1.5,1.45,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,ht_ou,under,0.5,2.82,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,btts,yes,,1.78,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,36,BetVictor,btts,no,,1.93,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ou,over,1.5,1.28,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ou,under,1.5,3.83,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ou,over,2.5,1.89,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ou,under,2.5,2.0,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ou,over,3.5,3.22,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ou,under,3.5,1.37,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ht_ou,over,1.5,2.8,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ht_ou,over,0.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,4,Pinnacle,ht_ou,under,0.5,3.16,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ou,over,1.5,1.22,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ou,under,1.5,3.5,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ou,over,2.5,1.83,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ou,under,2.5,1.91,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ou,over,3.5,2.97,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ou,under,3.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ht_ou,over,1.5,2.54,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ht_ou,over,0.5,1.31,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,ht_ou,under,0.5,3.08,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,btts,yes,,1.79,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,11,1xBet,btts,no,,1.92,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ou,over,1.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ou,under,1.5,3.6,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ou,over,2.5,1.9,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ou,under,2.5,1.95,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ou,over,3.5,3.2,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ou,under,3.5,1.37,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ht_ou,over,1.5,2.82,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ht_ou,over,0.5,1.42,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,ht_ou,under,0.5,2.9,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,btts,yes,,1.85,api_football,change
+2026-10-14T14:35:45Z,1563202,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,QPR,Derby,32,Betano,btts,no,,1.9,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,7,William Hill,ht_ou,over,1.5,2.7,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,7,William Hill,ht_ou,over,0.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,7,William Hill,ht_ou,under,0.5,2.9,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,over,1.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,under,1.5,3.5,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,over,2.5,2.0,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,under,2.5,1.8,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ht_ou,over,0.5,1.4,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ht_ou,under,0.5,2.75,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,btts,yes,,1.73,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,btts,no,,2.0,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ou,over,1.5,1.25,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ou,under,1.5,3.28,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ou,over,2.5,1.92,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ou,under,2.5,1.82,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ou,over,3.5,3.28,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ou,under,3.5,1.25,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ht_ou,over,1.5,2.82,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,ht_ou,under,1.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,btts,yes,,1.72,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,2,Marathonbet,btts,no,,1.98,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,over,1.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,under,1.5,3.4,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,over,3.5,3.4,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,under,3.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ht_ou,over,1.5,2.88,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ht_ou,under,1.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,btts,yes,,1.67,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,btts,no,,2.15,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,over,1.5,1.32,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,under,1.5,3.0,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,over,2.5,1.9,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,under,2.5,1.78,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,over,3.5,3.1,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,under,3.5,1.3,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ht_ou,over,1.5,2.65,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ht_ou,under,1.5,1.4,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ht_ou,over,0.5,1.4,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ht_ou,under,0.5,2.66,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,under,1.5,3.57,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,over,2.5,2.03,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,over,3.5,3.53,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ht_ou,under,1.5,1.41,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ht_ou,under,0.5,3.03,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,5,SBO,ou,over,2.5,2.05,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,5,SBO,ou,under,2.5,1.79,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ou,over,1.5,1.25,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ou,under,1.5,3.28,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ou,over,2.5,1.92,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ou,under,2.5,1.82,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ou,over,3.5,3.28,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ou,under,3.5,1.25,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ht_ou,over,1.5,2.82,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,ht_ou,under,1.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,btts,yes,,1.72,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,11,1xBet,btts,no,,2.01,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,over,1.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,under,1.5,3.35,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,over,2.5,2.0,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,under,2.5,1.85,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,over,3.5,3.35,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,under,3.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,over,1.5,2.95,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,under,1.5,1.4,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,over,0.5,1.47,api_football,change
+2026-10-14T14:35:45Z,1563201,2026-10-14T18:45:00Z,249.2,T-6h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,under,0.5,2.72,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,7,William Hill,ht_ou,over,1.5,2.62,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,7,William Hill,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,7,William Hill,ht_ou,over,0.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,7,William Hill,ht_ou,under,0.5,3.1,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,7,William Hill,btts,yes,,1.8,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,7,William Hill,btts,no,,1.91,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,8,Bet365,ou,over,2.5,1.73,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,8,Bet365,ou,under,2.5,2.1,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,8,Bet365,ht_ou,over,1.5,2.5,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,8,Bet365,ht_ou,under,1.5,1.5,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,8,Bet365,ht_ou,over,0.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,8,Bet365,ht_ou,under,0.5,3.25,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ou,over,1.5,1.21,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ou,under,1.5,3.58,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ou,over,2.5,1.79,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ou,under,2.5,1.95,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ou,over,3.5,2.88,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ou,under,3.5,1.32,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ht_ou,over,1.5,2.6,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ht_ou,under,1.5,1.42,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ht_ou,over,0.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,ht_ou,under,0.5,2.96,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,btts,yes,,1.74,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,2,Marathonbet,btts,no,,1.95,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ou,over,1.5,1.29,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ou,under,1.5,3.5,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ou,over,2.5,1.87,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ou,under,2.5,1.9,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ou,over,3.5,3.25,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ou,under,3.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ht_ou,over,0.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,ht_ou,under,0.5,3.0,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,btts,yes,,1.87,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,3,Betfair,btts,no,,1.9,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ou,over,1.5,1.28,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ou,under,1.5,3.25,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ou,over,2.5,1.8,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ou,under,2.5,1.87,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ou,over,3.5,2.9,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ou,under,3.5,1.34,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ht_ou,over,1.5,2.52,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ht_ou,under,1.5,1.44,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,ht_ou,under,0.5,2.8,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,btts,yes,,1.78,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,36,BetVictor,btts,no,,1.93,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ou,over,1.5,1.29,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ou,under,1.5,3.75,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ou,over,2.5,1.9,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ou,under,2.5,1.99,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ou,over,3.5,3.18,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ou,under,3.5,1.38,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ht_ou,over,1.5,2.77,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ht_ou,under,1.5,1.45,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ht_ou,over,0.5,1.36,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,4,Pinnacle,ht_ou,under,0.5,3.18,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,5,SBO,ou,over,2.5,1.71,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,5,SBO,ou,under,2.5,2.14,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ou,over,1.5,1.21,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ou,under,1.5,3.58,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ou,over,2.5,1.79,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ou,under,2.5,1.95,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ou,over,3.5,2.88,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ou,under,3.5,1.32,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ht_ou,over,1.5,2.6,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ht_ou,under,1.5,1.42,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ht_ou,over,0.5,1.33,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,ht_ou,under,0.5,2.96,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,btts,yes,,1.74,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,11,1xBet,btts,no,,1.98,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ou,over,1.5,1.27,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ou,under,1.5,3.85,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ou,over,2.5,1.82,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ou,under,2.5,2.05,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ou,over,3.5,3.0,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ou,under,3.5,1.42,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ht_ou,over,1.5,2.7,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ht_ou,under,1.5,1.47,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ht_ou,over,0.5,1.4,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ht_ou,under,0.5,3.0,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,btts,yes,,1.75,api_football,change
+2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,btts,no,,2.02,api_football,change
