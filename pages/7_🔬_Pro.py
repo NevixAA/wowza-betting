@@ -44,8 +44,33 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
-    ["Does it learn?", "Tips sent (1X2 · Bet Builder)", "Studies", "Canonical store", "Governance", "Health"])
+tab_latest, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
+    ["Latest findings", "Does it learn?", "Tips sent (1X2 · Bet Builder)", "Team studies", "Canonical store",
+     "Governance", "Health"])
+
+# ── every study's latest verdict, newest first (Pro output/research_index.json) ──────────────
+with tab_latest:
+    ri = pro.research_index()
+    if not ri.get("items"):
+        st.info("No research index yet — Pro writes `output/research_index.json` after each study run.")
+    else:
+        st.markdown(
+            "**What Pro has learned, newest first.** Each line is read from the study's own verdict file, "
+            "rebuilt after every run — when a study learns something new, it appears here by itself.")
+        st.markdown(
+            "**Two results that look like they contradict each other, and don't:** for **team** markets "
+            "(O/U, BTTS) the model adds nothing once the bookmaker's price is known (Team studies tab, V11 page). "
+            "For **player props** Player V3 *does* add a little to the price — but only in accuracy; no bet has "
+            "yet shown a profit, so props stay paper. Both are true; they are different markets.")
+        ui.freshness_chip(ri["freshness"], "research index")
+        for it in ri["items"]:
+            with st.expander(f"**{it['title']}** — {it.get('status')}", expanded=False):
+                st.caption(f"area: {it.get('area')} · study run: {it.get('date') or '?'}")
+                key = it.get("key") or {}
+                if key:
+                    ui.table(pd.DataFrame([{"item": k, "value": str(v)} for k, v in key.items()]))
+                if it.get("report_url"):
+                    st.markdown(f"[Full report]({it['report_url']})")
 
 # ── the load-bearing positive result ──────────────────────────────────────────────────────────
 with tab_learn:
@@ -256,9 +281,10 @@ with tab_tips:
 with tab_studies:
     S = pro.studies()
     if not any(S.values()):
-        st.info("No studies yet — `pro_studies.yml` writes them on Mondays and Thursdays.")
+        st.info("No studies yet — `pro_studies.yml` writes them daily.")
     else:
-        st.caption("Research only. Refreshed twice a week. Full write-up: `output/studies/REPORT.md` in Pro.")
+        st.caption("Research only, TEAM markets. Refreshed daily. Full write-up: `output/studies/REPORT.md` in Pro. "
+                   "Player, calibration and price-trading studies are on the Latest findings tab.")
         ab = S.get("argentina_btts") or {}
         if ab:
             st.subheader("1 · Argentina BTTS — model, league, bookmaker, or luck?")
@@ -304,7 +330,8 @@ with tab_studies:
                      "90% range": str(x.get("oos_delta_logloss_ci90")), "Verdict": x.get("verdict")}
                     for m, by in ou["residual"].items() for tr, x in by.items() if x.get("n_oos")]
             ui.table(pd.DataFrame(rows))
-            st.caption("Negative Δ = adding the model improved the forecast. None does.")
+            st.caption("Negative Δ = adding the model improved the forecast. None does — on these TEAM markets. "
+                       "Player props are different: see Player Model V3 on the Latest findings tab.")
         ev = S.get("evidence") or {}
         if ev.get("cells"):
             st.subheader("4 · Which league × market has earned money?")

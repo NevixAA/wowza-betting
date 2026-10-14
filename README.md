@@ -64,7 +64,7 @@ running automatically in the cloud (no server/PC needed).
 | **New-Format Model** | O/U for goals-only leagues — separate model, never mixed with standard | Paper |
 | **Sharp Money Tracker** | Odds-drift detection — STEAM / STRONG / SHARP | Info |
 | **Live Scanner** | In-play Poisson signals during match hours | Info/alert |
-| **Player Props** | 7-market ML ensemble | **Paper only — no betting edge** |
+| **Player Props** | 7-market ML ensemble | **Paper only — no betting edge** (V3 forward test running in Pro) |
 | **Fantasy (FPL)** | FPL point projections | Prediction product |
 | **Health Monitor** | Alerts if predict fetches 0 fixtures / all leagues error | Reliability |
 
@@ -73,6 +73,9 @@ running automatically in the cloud (no server/PC needed).
 * **Player props have no betting edge.** The model is accurate (AUC 0.62–0.85, calibrated) and
   the market matches or beats it. Confirmed across 8 tests on the bug-fixed model. Accuracy is
   monetised through **Fantasy**, where there is no vig.
+  *Update 2026-10-14 (Pro, Player V3):* a rebuilt player model does add a little to the prop price
+  out of sample (goals, SOT 1+/2+/3+), but only in accuracy. No profit has been shown. Props stay paper
+  until a pre-registered forward test (from 2026-10-15, 150 settled props per market) says otherwise.
 * **The HT models have no edge.** 74% of HT training labels were fabricated; on honest labels
   AUC is 0.512. A deep-feature rebuild doubled measured skill and still lost to the price.
 
@@ -172,6 +175,21 @@ The part that decides whether a model or a threshold is allowed to change.
 5. **Never pool** markets, model types or tiers. Pooling has reversed the sign of a headline
    three separate times.
 6. **Retrospective code can never award `CONFIRMED`.** That needs a preregistered forward window.
+
+### Latest research (Pro, 2026-10-14) — live on the dashboard
+
+The dashboard's **🔬 Pro → Latest findings** tab reads Pro's `output/research_index.json`. Pro rebuilds
+it after every study run, so new results appear there without a dashboard change. As of 2026-10-14:
+
+| Study | Result | Changes production? |
+|---|---|---|
+| Player Model V3 | Adds a little to the prop price (accuracy), profit unproven | No; forward test running |
+| Calibration form | Log-odds Platt beats v9's form on 12 of 12 models | Not yet; needs owner OK + shadow |
+| Price Trader (back-to-lay) | No edge: placebo as good, −10% per trade after the margin | No; paper engine only |
+| Team markets (O/U, BTTS) | Model adds nothing once the price is known | No; O/U challenger forward record building |
+
+v9 change on 2026-10-14 (logging only, selection unchanged): prop odds fetches now also record every
+book's Over **and** Under quote to `output/prop_quotes/<YYYY-MM>.csv`, which the player studies need.
 
 ---
 
