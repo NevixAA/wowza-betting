@@ -374,6 +374,14 @@ def predict_upcoming(
                 except Exception as e:
                     log.warning(f"  Side-market {target} prediction failed: {e}")
 
+    # 5a. Calibration SHADOW (2026-10-14): log-odds Platt alongside production, logged to
+    # output/calibration_shadow/ only. Reads feat, never writes to it; swallows its own errors.
+    try:
+        from src.calibration_shadow import log_team as _log_calibration_shadow
+        _log_calibration_shadow(feat, payload, payload_newformat, side_payloads)
+    except Exception as e:                                           # noqa: BLE001 - shadow never fails predict
+        log.warning(f"  calibration shadow import skipped: {e}")
+
     # 5b. HT model predictions (standard-format leagues only)
     from src.model import load_models as _load_models
     feat["p_ht_over05"] = np.nan
