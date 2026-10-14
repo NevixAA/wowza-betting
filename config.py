@@ -595,6 +595,13 @@ API_FOOTBALL_IDS = {
     # odds, which no API-Football plan sells.
     "Scottish Championship":   180,
     "National League":          43,
+    # Added 2026-10-14 (owner OK). Read from /leagues?country=Scotland on the live API and checked
+    # against /teams for 2026: 183 = Hamilton, Alloa, Cove Rangers, Queen of the South...;
+    # 184 = Clyde, Stranraer, Elgin, Spartans... Both are standard-format TRAINING leagues (not in
+    # ENABLED_LEAGUES, no OddsAPI key), so this adds results/stats/forward side-market capture and
+    # produces no tips. Closes the last two "model league with no API-Football id" registry gaps.
+    "Scottish League One":     183,
+    "Scottish League Two":     184,
 }
 # IDs may need verification at dashboard.api-football.com/docs
 
@@ -615,6 +622,12 @@ API_FOOTBALL_SEASONS: dict = {
     "Danish Superliga":         "2026",
     "Austrian Bundesliga":      "2026",
     "Romanian Superliga":       "2026",
+    # Scottish lower tiers (2026-10-14). Without an entry a lookup falls back to API_SEASON
+    # ("2025" = the finished season) and finds nothing current. Scottish Championship had an id
+    # since 2026-09-05 but no entry here, so it carried that gap too.
+    "Scottish Championship":    "2026",
+    "Scottish League One":      "2026",
+    "Scottish League Two":      "2026",
     # Summer leagues (calendar year = season year)
     "Sweden Allsvenskan":       "2026",
     "Norway Eliteserien":       "2026",
