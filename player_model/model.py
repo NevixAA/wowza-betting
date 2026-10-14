@@ -55,16 +55,37 @@ class _UsableColumns(BaseEstimator, TransformerMixin):
         return np.asarray(X, dtype=float)[:, self.keep_]
 
 
+def _logit(p) -> np.ndarray:
+    p = np.clip(np.asarray(p, dtype=float), 1e-6, 1 - 1e-6)
+    return np.log(p / (1 - p))
+
+
 class _PlattCalibratedModel:
-    """Pipeline + Platt scaling (LogisticRegression on raw probabilities)."""
-    def __init__(self, pipe, platt):
+    """Pipeline + Platt scaling (LogisticRegression on raw probabilities).
+
+    SHADOW (2026-10-14, owner-approved PR): `_platt_logit` is the same Platt fitted on the LOG-ODDS
+    of the raw probability (Pro CALIBRATION_FORM.md: better on every player model; v9's form
+    overstates the top 5% of goal probabilities, 36.2% claimed vs 29.0% realised). Used ONLY by
+    predict_proba_logit_shadow(); predict_proba() and every prop tip are unchanged. Old pickles
+    lack the attribute and return None.
+    """
+    def __init__(self, pipe, platt, platt_logit=None):
         self._pipe  = pipe
         self._platt = platt
+        self._platt_logit = platt_logit
 
     def predict_proba(self, X):
         raw = self._pipe.predict_proba(X)[:, 1].reshape(-1, 1)
         cal = self._platt.predict_proba(raw)[:, 1]
         cal = np.clip(cal, 0.001, 0.999)
+        return np.column_stack([1 - cal, cal])
+
+    def predict_proba_logit_shadow(self, X):
+        pl = getattr(self, "_platt_logit", None)
+        if pl is None:
+            return None
+        raw = self._pipe.predict_proba(X)[:, 1]
+        cal = np.clip(pl.predict_proba(_logit(raw).reshape(-1, 1))[:, 1], 0.001, 0.999)
         return np.column_stack([1 - cal, cal])
 
 
@@ -134,8 +155,15 @@ def train(df: pd.DataFrame, market: str) -> dict:
         raw_cal = est.predict_proba(X_cal)[:, 1].reshape(-1, 1)
         platt   = LogisticRegression(C=1.0, max_iter=1000)
         platt.fit(raw_cal, y_cal)
+        # SHADOW: same Platt on log-odds, same rows. Never used for a tip.
+        try:
+            platt_logit = LogisticRegression(C=1.0, max_iter=1000)
+            platt_logit.fit(_logit(raw_cal.ravel()).reshape(-1, 1), y_cal)
+        except Exception as e:                                       # noqa: BLE001 - shadow never blocks training
+            print(f"  [{market}] shadow logit calibrator skipped: {e}")
+            platt_logit = None
 
-        calibrated = _PlattCalibratedModel(est, platt)
+        calibrated = _PlattCalibratedModel(est, platt, platt_logit)
         p_test = calibrated.predict_proba(X_test)[:, 1]
         auc = roc_auc_score(y_test, p_test) if y_test.nunique() > 1 else 0.5
         # labels=[0,1] so a single-class test slice (common for rare longshot markets like
@@ -180,3 +208,16 @@ def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
     X, _ = _prep(df, feat_cols)
     probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
     return pd.Series(np.mean(probas, axis=0), index=df.index)
+
+
+def predict_proba_logit_shadow(df: pd.DataFrame, payload: dict) -> Optional[pd.Series]:
+    """SHADOW: the same ensemble with log-odds Platt. Logging only; None for pre-shadow pickles."""
+    X, _ = _prep(df, payload["feature_cols"])
+    cols = []
+    for m in payload["models"].values():
+        f = getattr(m, "predict_proba_logit_shadow", None)
+        p = f(X) if f is not None else None
+        if p is None:
+            return None
+        cols.append(p[:, 1])
+    return pd.Series(np.mean(cols, axis=0), index=df.index)

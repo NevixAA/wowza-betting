@@ -35,19 +35,39 @@ log = logging.getLogger(__name__)
 
 # ── Calibrated model wrapper (module-level so pickle works) ───────────────────
 
+def _logit(p) -> np.ndarray:
+    p = np.clip(np.asarray(p, dtype=float), 1e-6, 1 - 1e-6)
+    return np.log(p / (1 - p))
+
+
 class _CalibratedModel:
     """Wraps a sklearn Pipeline + Platt scaling (sigmoid) calibrator.
     Platt scaling uses LogisticRegression on raw probabilities — regularized,
     no overfit risk on small calibration sets (unlike IsotonicRegression).
+
+    SHADOW (2026-10-14, owner-approved PR): `_calibrator_logit` is a second Platt fitted on the
+    LOG-ODDS of the raw probability, on the same calibration rows. Pro's calibration-form study
+    (output/studies/CALIBRATION_FORM.md) found that form better on 12 of 12 models. It is used ONLY
+    by predict_proba_logit_shadow(); predict_proba() is unchanged, so every tip, tier and stake is
+    unchanged. Pickles from before this change lack the attribute and return None (getattr).
     """
-    def __init__(self, pipe, calibrator):
+    def __init__(self, pipe, calibrator, calibrator_logit=None):
         self._pipe       = pipe
         self._calibrator = calibrator
+        self._calibrator_logit = calibrator_logit
 
     def predict_proba(self, X):
         raw = self._pipe.predict_proba(X)[:, 1].reshape(-1, 1)
         cal = self._calibrator.predict_proba(raw)[:, 1]
         cal = np.clip(cal, 0.001, 0.999)
+        return np.column_stack([1 - cal, cal])
+
+    def predict_proba_logit_shadow(self, X):
+        cl = getattr(self, "_calibrator_logit", None)
+        if cl is None:
+            return None
+        raw = self._pipe.predict_proba(X)[:, 1]
+        cal = np.clip(cl.predict_proba(_logit(raw).reshape(-1, 1))[:, 1], 0.001, 0.999)
         return np.column_stack([1 - cal, cal])
 
 
@@ -210,8 +230,17 @@ def train(
         platt = LogisticRegression(C=1.0, max_iter=1000)
         platt.fit(raw_proba_cal, y_cal,
                   sample_weight=w_cal if w_cal is not None else None)
+        # SHADOW: the same Platt on log-odds, same rows and weights. Never used for selection.
+        platt_logit = None
+        try:
+            platt_logit = LogisticRegression(C=1.0, max_iter=1000)
+            platt_logit.fit(_logit(raw_proba_cal.ravel()).reshape(-1, 1), y_cal,
+                            sample_weight=w_cal if w_cal is not None else None)
+        except Exception as e:                                       # noqa: BLE001 - shadow never blocks training
+            log.warning(f"  shadow logit calibrator skipped for {name}: {e}")
+            platt_logit = None
 
-        calibrated = _CalibratedModel(pipe, platt)
+        calibrated = _CalibratedModel(pipe, platt, platt_logit)
 
         proba = calibrated.predict_proba(X_test)[:, 1]
         metrics = {
@@ -247,6 +276,17 @@ def train(
                 f"  {'meta_logistic':20s}  "
                 f"auc={round(roc_auc_score(y_test, meta_proba), 4):.3f}"
             )
+            # SHADOW blend, fitted the same way on the log-odds-calibrated members. Stored as an
+            # ATTRIBUTE of the production meta model, not a results key: five call sites build
+            # payload["models"] from every results key, and a new key would become a "base model".
+            try:
+                shadow_cols = [results[n]["model"].predict_proba_logit_shadow(X_test) for n in results]
+                if all(c is not None for c in shadow_cols):
+                    meta_logit = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs")
+                    meta_logit.fit(np.column_stack([c[:, 1] for c in shadow_cols]), y_test)
+                    meta_clf.wowza_shadow_meta_logit_ = meta_logit
+            except Exception as e:                                   # noqa: BLE001
+                log.warning(f"  shadow logit meta skipped: {e}")
             results["__meta__"] = {
                 "model":        meta_clf,
                 "metrics":      {},
@@ -356,6 +396,34 @@ def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
         ensemble = np.mean(probas, axis=0)
 
     return pd.Series(ensemble, index=df.index, name="p_over25")
+
+
+def predict_proba_logit_shadow(df: pd.DataFrame, payload: dict) -> Optional[pd.Series]:
+    """SHADOW ensemble probability with log-odds Platt calibration — mirrors predict_proba().
+
+    Logging only (output/calibration_shadow.csv); never feeds a tier, a stake or a message.
+    Returns None for a payload trained before the shadow existed, so it switches itself on at the
+    first retrain after merge.
+    """
+    feat_cols = payload["feature_cols"]
+    X, _ = _prep(df, feat_cols)
+    base = {k: v for k, v in payload["models"].items() if k != "__meta__"}
+    cols = []
+    for m in base.values():
+        f = getattr(m, "predict_proba_logit_shadow", None)
+        p = f(X) if f is not None else None
+        if p is None:
+            return None
+        cols.append(p[:, 1])
+    meta = payload["models"].get("__meta__")
+    meta_logit = getattr(meta, "wowza_shadow_meta_logit_", None) if meta is not None else None
+    if meta is not None and len(cols) >= 2:
+        if meta_logit is None:
+            return None                     # production blends; an unblended shadow would not be comparable
+        out = meta_logit.predict_proba(np.column_stack(cols))[:, 1]
+    else:
+        out = np.mean(cols, axis=0)
+    return pd.Series(out, index=df.index)
 
 
 # ── Feature importances ───────────────────────────────────────────────────────

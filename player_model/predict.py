@@ -21,7 +21,7 @@ from .api_football import _norm_name as _norm_player_name
 # share one definition (see the note above _same_club there).
 from .api_football import _same_club, _club_name_subset
 from .feature_engineering import build_upcoming_features, compute_ges, _build_history_index
-from .model import load_model, predict_proba
+from .model import load_model, predict_proba, predict_proba_logit_shadow
 
 import numpy as np
 
@@ -681,6 +681,13 @@ def run_player_predictions(
         for market, payload in payloads.items():
             probs = predict_proba(feat_df, payload)
             feat_df[f"p_{market}"] = probs.values
+            # Calibration SHADOW (2026-10-14): log-odds Platt next to production, before the team-strength
+            # multiplier. Carried onto the tip row and logged; never used for a tip or tier.
+            try:
+                _sh = predict_proba_logit_shadow(feat_df, payload)
+                feat_df[f"p_{market}_logit_shadow"] = _sh.values if _sh is not None else float("nan")
+            except Exception:                                        # noqa: BLE001
+                feat_df[f"p_{market}_logit_shadow"] = float("nan")
 
         for i, feat_row in feat_df.iterrows():
             player_norm = _norm_player_name(str(feat_row.get("player_name", "")))
@@ -790,6 +797,9 @@ def run_player_predictions(
                     "position":      feat_row.get("position", ""),
                     "market":        market,
                     "model_prob":    round(p_model, 3),
+                    # calibration shadow (raw model output, before the team-strength multiplier)
+                    "p_raw_prod":     round(float(feat_row.get(f"p_{market}", float("nan"))), 5),
+                    "p_logit_shadow": round(float(feat_row.get(f"p_{market}_logit_shadow", float("nan"))), 5),
                     "fair_odds":     fair_o,
                     "market_odds":   None,   # to be filled when odds available
                     "fair_implied":  None,
@@ -822,6 +832,11 @@ def run_player_predictions(
     output = config.OUTPUT_DIR / "player_tips.csv"
     tips_df.to_csv(output, index=False)
     print(f"[player_model] {len(tips_df)} player prop rows -> {output}")
+    try:                                                             # calibration shadow; never fails props
+        from src.calibration_shadow import log_props
+        log_props(tips_df)
+    except Exception as e:                                           # noqa: BLE001
+        print(f"  calibration shadow import skipped: {e}")
     return tips_df
 
 
