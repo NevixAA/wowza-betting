@@ -327,6 +327,65 @@ def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool,
         c["far_empty_probes"] = int(c.get("far_empty_probes", 0)) + 1
 
 
+_QUOTES_DIR = Path(__file__).resolve().parents[1] / "output" / "prop_quotes"
+_QUOTE_KEY = ["match_date", "league", "match", "player", "market", "side", "point", "bookmaker", "odds"]
+
+
+def _quotes_from_oddsapi(bookmakers: list, match_date: str, league: str, match: str) -> list[dict]:
+    """Every bookmaker's quote, BOTH sides, for the markets we model (logging only)."""
+    inv = {(k, p): our for our, (k, p) in _MARKET_MAP.items()}
+    out = []
+    for bm in bookmakers or []:
+        book = bm.get("title") or bm.get("key") or ""
+        for mkt in bm.get("markets", []):
+            for o in mkt.get("outcomes", []):
+                pt = o.get("point")
+                try:
+                    pt = float(pt) if pt is not None else None
+                except (TypeError, ValueError):
+                    continue
+                our = inv.get((mkt.get("key"), pt))
+                if our is None:
+                    continue
+                try:
+                    price = float(o.get("price", 0))
+                except (TypeError, ValueError):
+                    continue
+                if price <= 1.0:
+                    continue
+                out.append({"match_date": match_date, "league": league, "match": match,
+                            "player": _norm(o.get("description", "")), "market": our,
+                            "side": str(o.get("name", "yes")).lower(), "point": pt, "odds": price,
+                            "bookmaker": book, "source": "oddsapi"})
+    return out
+
+
+def _append_quotes(quotes: list[dict]) -> None:
+    """Per-book, both-sides prop quotes -> output/prop_quotes/<YYYY-MM>.csv (month of capture).
+
+    A LOGGING HOOK ONLY (2026-10-14, owner-approved): nothing in v9 reads these files, tip prices
+    are unchanged, and player_prop_odds_history.csv keeps its exact content and schema. Monthly
+    partitions keep any single file small enough that git does not re-store a huge blob on every
+    run (the player_history lesson). Distinct prices only, first time seen. Never raises."""
+    if not quotes:
+        return
+    import pandas as pd
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+    df = pd.DataFrame(quotes)
+    df["snapshot_ts"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    df = df.reindex(columns=["snapshot_ts", *_QUOTE_KEY, "source"])
+    _QUOTES_DIR.mkdir(parents=True, exist_ok=True)
+    f = _QUOTES_DIR / f"{now:%Y-%m}.csv"
+    if f.exists():
+        try:
+            df = pd.concat([pd.read_csv(f), df], ignore_index=True)
+        except Exception:
+            pass
+    df["point"] = pd.to_numeric(df["point"], errors="coerce")
+    df.drop_duplicates(subset=_QUOTE_KEY, keep="first").to_csv(f, index=False)
+
+
 def _append_odds_history(records: list[dict]) -> None:
     """Append fetched prop odds to a permanent CSV history. Keeps every distinct
     PRICE per real fixture (match_date+match+player+market), first time seen — so the
@@ -542,6 +601,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
 
     result: dict[str, float] = {}
     history_records: list[dict] = []
+    quotes: list[dict] = []          # per-book, both-sides log -> output/prop_quotes (logging only)
 
     from datetime import datetime as _dt, timezone as _tz
     today = _dt.now(_tz.utc).strftime("%Y-%m-%d")
@@ -623,6 +683,10 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
             _match_str  = f'{event.get("home_team", "")} vs {event.get("away_team", "")}'
             _match_date = str(event.get("commence_time", ""))[:10]
             _league     = SPORT_KEY_TO_LEAGUE.get(sport_key, sport_key)
+            try:
+                quotes.extend(_quotes_from_oddsapi(bookmakers, _match_date, _league, _match_str))
+            except Exception as _qe:                         # logging must never break pricing
+                print(f"[odds_fetcher] quote log skipped for {_match_str}: {type(_qe).__name__}")
             for our_market, (api_key, point) in _MARKET_MAP.items():
                 prices = _best_price(bookmakers, api_key, point)
                 for player_norm, price in prices.items():
@@ -664,6 +728,15 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
 
     global _LAST_PRICE_DATES
     _LAST_PRICE_DATES = _price_dates(history_records)
+
+    try:
+        from player_model import prop_odds_af as _af
+        quotes.extend(_af.drain_quotes())
+        _append_quotes(quotes)
+        if quotes:
+            print(f"[odds_fetcher] quote log: {len(quotes)} per-book quote(s) incl. both sides")
+    except Exception as e:
+        print(f"[odds_fetcher] quote log skipped: {type(e).__name__}: {e}")
 
     # Persist every fetched prop odd to the permanent forward-built history.
     try:

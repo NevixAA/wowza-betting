@@ -95,6 +95,19 @@ _PLUS_RE = re.compile(r"(\d+(?:\.\d+)?)\+")
 _MIN_ODDS = 1.01
 _MAX_ODDS = 1000.0
 
+# Per-book, BOTH-sides quote log (2026-10-14, owner-approved logging hook). Everything fetch()
+# sees is appended here — over AND under, every bookmaker — and odds_fetcher drains it into
+# output/prop_quotes/. It never feeds `best` or `records`, so tip prices and the existing
+# player_prop_odds_history.csv are unchanged. Purpose: a two-way de-vigged market price for
+# research (Pro player_v3), impossible from the over-only history.
+QUOTES: list[dict] = []
+
+
+def drain_quotes() -> list[dict]:
+    out = list(QUOTES)
+    QUOTES.clear()
+    return out
+
 
 def _norm_bet(name: str) -> str:
     s = str(name or "").strip().lower()
@@ -227,8 +240,9 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                         raw = val.get("value")
                         # An UNDER quote is a different bet and must never be stored as if it
                         # were the over — that mistake would look like a very generous price.
-                        if _is_under(raw):
-                            continue
+                        # Since 2026-10-14 it is KEPT, but only in the separate per-book quote
+                        # log (QUOTES -> output/prop_quotes/), never in `best` or `records`.
+                        under = _is_under(raw)
                         odd = _to_float(val.get("odd"))
                         if odd is None or not (_MIN_ODDS <= odd <= _MAX_ODDS):
                             continue
@@ -250,6 +264,13 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                         player = _clean_player(raw)
                         if not player:
                             continue
+                        QUOTES.append({"match_date": match_date, "league": league, "match": match,
+                                       "player": player, "market": mkt,
+                                       "side": "under" if under else ("over" if spec is not None else "yes"),
+                                       "point": line if spec is not None else None, "odds": odd,
+                                       "bookmaker": book, "source": "api_football"})
+                        if under:
+                            continue                  # quote log only - never a tip price
                         k = f"{_key_name(player)}|{mkt}"
                         # Best available price across books, matching odds_fetcher's contract.
                         if odd > best.get(k, 0.0):
