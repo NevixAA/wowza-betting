@@ -794,6 +794,15 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
             n = (side_bets["market"] == mkt).sum()
             log.info(f"  {label}: {n} tips")
 
+    # ── Stake plan (2026-10-14): the approved bankroll policy applied to this run's tips. Output
+    # files only (stake_plan.csv, stake_audit.csv); no tip, tier, message or bet changes. Paper
+    # leagues and PAPER tracks get a zero stake with the reason recorded. Never raises.
+    try:
+        from src.stake_plan import write as _write_stake_plan
+        _write_stake_plan(bets, side_bets)
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"stake plan skipped: {e}")
+
     # ── HT (half-time O/U) tips -> ht_ledger.csv (open->close->CLV->result) ──
     try:
         append_ht_tips(preds)

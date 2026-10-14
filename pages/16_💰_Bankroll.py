@@ -69,6 +69,35 @@ st.caption(f"Caps: single bet {pct(pf.get('single_bet_cap'))} · fixture {pct(pf
            f"{prod.get('tier_multipliers')} · convergence leagues: "
            f"{(prod.get('convergence') or {}).get('leagues') or 'none'}")
 
+# ── stake plan (src/stake_plan.py, wired 2026-10-14) ──────────────────────────────────────────
+st.subheader("Stake plan — the policy applied to the current tips")
+_sp_path = Path(__file__).resolve().parents[1] / "output" / "stake_plan.csv"
+try:
+    sp = pd.read_csv(_sp_path) if _sp_path.exists() else pd.DataFrame()
+except Exception:                                                    # noqa: BLE001
+    sp = pd.DataFrame()
+if sp.empty:
+    st.info("No stake plan yet — predict writes `output/stake_plan.csv` on its next run.")
+else:
+    staked = sp[sp["final_fraction"] > 0]
+    c = st.columns(3)
+    c[0].metric("Tips sized", f"{len(sp):,}", help=f"generated {sp['generated_at'].iloc[0]} UTC")
+    c[1].metric("With a stake", f"{len(staked):,}")
+    c[2].metric("Days covered", f"{sp['date'].nunique()}")
+    st.caption("Recommendations only: nothing here places a bet, changes a tip or sends a message. Stakes are % of a "
+               "notional bankroll (1.00 unit = 1% of 100); the drawdown throttle is NOT applied because there is no "
+               "real-bankroll ledger. Every zero carries its reason.")
+    by_day = (staked.groupby("date")["final_fraction"].sum() * 100).round(2).rename("% of bankroll").reset_index()
+    show = staked.assign(stake_pct=(staked["final_fraction"] * 100).round(3))[
+        ["date", "fixture", "league", "track", "signal_tier", "odds", "stake_pct"]].sort_values(["date", "stake_pct"],
+                                                                                              ascending=[True, False])
+    st.dataframe(show.rename(columns={"stake_pct": "stake % of bankroll"}), hide_index=True, width="stretch")
+    st.caption("Total staked per day (cap " + pct(pf.get("daily_cap")) + "): "
+               + " · ".join(f"{r['date']} {r['% of bankroll']}%" for _, r in by_day.iterrows()))
+    with st.expander("Why tips got no stake"):
+        st.dataframe(sp[sp["final_fraction"] <= 0]["reason"].value_counts().rename("tips").reset_index(),
+                     hide_index=True, width="stretch")
+
 # ── drawdown ───────────────────────────────────────────────────────────────────────────────────
 path = b.get("production_policy_path", pd.DataFrame())
 if len(path):
