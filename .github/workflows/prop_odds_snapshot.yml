@@ -75,8 +75,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/player_prop_odds_history.csv output/clv_records.csv \
-                     output/prop_odds_coverage.json 2>/dev/null || true
+          # One path at a time: a multi-path `git add` stages NOTHING if any path is missing, and
+          # `|| true` hid that. output/prop_quotes/ (per-book, both-sides quote log, 2026-10-14)
+          # does not exist until the first fetch writes it.
+          for f in output/player_prop_odds_history.csv output/clv_records.csv \
+                   output/prop_odds_coverage.json output/prop_quotes; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
           git diff --staged --quiet || \
             git commit -m "auto: prop odds snapshot $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
