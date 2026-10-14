@@ -10658,3 +10658,557 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,ht_ou,under,0.5,3.0,api_football,change
 2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,btts,yes,,1.75,api_football,change
 2026-10-14T14:35:45Z,1563199,2026-10-14T19:00:00Z,264.2,T-6h,Championship,standard,Lincoln,West Ham,32,Betano,btts,no,,2.02,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,over,1.5,1.28,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,under,1.5,3.75,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,over,2.5,1.91,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,8,Bet365,ou,under,2.5,1.91,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,over,1.5,1.29,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,over,2.5,1.91,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,under,2.5,1.83,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,ou,under,3.5,1.29,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,btts,yes,,1.73,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,3,Betfair,btts,no,,2.1,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,over,1.5,1.31,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,under,1.5,3.05,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,36,BetVictor,ou,over,2.5,1.89,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,under,1.5,3.63,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,over,2.5,2.01,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,under,2.5,1.88,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ou,over,3.5,3.49,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ht_ou,over,1.5,2.91,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ht_ou,over,0.5,1.38,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,4,Pinnacle,ht_ou,under,0.5,3.05,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,over,1.5,1.31,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,under,1.5,3.5,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,over,2.5,1.93,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,under,2.5,1.91,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,over,3.5,3.2,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ou,under,3.5,1.36,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,over,1.5,2.87,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,under,1.5,1.42,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,over,0.5,1.45,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,ht_ou,under,0.5,2.77,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,btts,yes,,1.67,api_football,change
+2026-10-14T16:51:27Z,1563201,2026-10-14T18:45:00Z,113.5,T-3h,Championship,standard,Portsmouth,Sheffield Utd,32,Betano,btts,no,,2.12,api_football,change
+2026-10-14T16:51:27Z,1563205,2026-10-16T19:00:00Z,3008.6,FAR,Championship,standard,Burnley,Wolves,5,SBO,ou,over,2.5,1.84,api_football,open
+2026-10-14T16:51:27Z,1563205,2026-10-16T19:00:00Z,3008.6,FAR,Championship,standard,Burnley,Wolves,5,SBO,ou,under,2.5,1.98,api_football,open
+2026-10-14T16:51:27Z,1563203,2026-10-17T14:00:00Z,4148.6,FAR,Championship,standard,Birmingham,QPR,3,Betfair,ou,over,2.5,1.87,api_football,open
+2026-10-14T16:51:27Z,1563203,2026-10-17T14:00:00Z,4148.6,FAR,Championship,standard,Birmingham,QPR,3,Betfair,ou,under,2.5,1.9,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ou,over,1.5,1.11,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ou,under,1.5,6.0,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ou,over,2.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ou,under,2.5,2.75,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ou,over,3.5,2.0,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ou,under,3.5,1.73,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ht_ou,over,1.5,2.0,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ht_ou,under,1.5,1.73,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ht_ou,over,0.5,1.22,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,ht_ou,under,0.5,4.0,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,btts,yes,,1.8,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,8,Bet365,btts,no,,1.91,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ou,over,1.5,1.07,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ou,under,1.5,5.85,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ou,over,2.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ou,under,2.5,2.7,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ou,over,3.5,1.96,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ou,under,3.5,1.72,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ht_ou,over,1.5,1.98,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,ht_ou,under,1.5,1.71,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,btts,yes,,1.76,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,2,Marathonbet,btts,no,,1.91,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,3,Betfair,ht_ou,over,1.5,1.95,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,3,Betfair,ht_ou,under,1.5,1.75,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,3,Betfair,ht_ou,over,0.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,3,Betfair,ht_ou,under,0.5,4.5,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ou,over,1.5,1.07,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ou,under,1.5,5.85,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ou,over,2.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ou,under,2.5,2.7,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ou,over,3.5,1.96,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ou,under,3.5,1.72,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ht_ou,over,1.5,1.98,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ht_ou,under,1.5,1.71,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ht_ou,over,0.5,1.18,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,ht_ou,under,0.5,4.3,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,btts,yes,,1.76,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,11,1xBet,btts,no,,1.94,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ou,over,1.5,1.13,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ou,under,1.5,5.3,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ou,over,2.5,1.42,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ou,under,2.5,2.75,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ou,over,3.5,2.05,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ou,under,3.5,1.75,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ht_ou,over,1.5,2.12,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ht_ou,under,1.5,1.7,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ht_ou,over,0.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,ht_ou,under,0.5,3.75,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,btts,yes,,1.8,api_football,open
+2026-10-14T16:51:27Z,1557060,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Queen of the South,Ross County,32,Betano,btts,no,,1.9,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ou,over,1.5,1.28,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ou,under,1.5,3.5,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ou,over,2.5,1.95,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ou,under,2.5,1.85,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ou,over,3.5,3.4,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ou,under,3.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ht_ou,over,1.5,2.75,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ht_ou,under,1.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ht_ou,over,0.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,ht_ou,under,0.5,2.75,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,btts,yes,,1.73,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,8,Bet365,btts,no,,2.0,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ou,over,1.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ou,under,1.5,3.28,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ou,over,2.5,1.88,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ou,under,2.5,1.79,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ou,over,3.5,3.2,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ou,under,3.5,1.26,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ht_ou,over,1.5,2.76,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ht_ou,under,1.5,1.35,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ht_ou,over,0.5,1.35,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,ht_ou,under,0.5,2.76,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,btts,yes,,1.7,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,2,Marathonbet,btts,no,,1.98,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,3,Betfair,ht_ou,over,1.5,2.88,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,3,Betfair,ht_ou,under,1.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,3,Betfair,ht_ou,over,0.5,1.33,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,3,Betfair,ht_ou,under,0.5,3.0,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ou,over,1.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ou,under,1.5,3.28,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ou,over,2.5,1.88,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ou,under,2.5,1.79,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ou,over,3.5,3.2,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ou,under,3.5,1.26,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ht_ou,over,1.5,2.76,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ht_ou,under,1.5,1.35,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ht_ou,over,0.5,1.35,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,ht_ou,under,0.5,2.76,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,btts,yes,,1.7,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,11,1xBet,btts,no,,2.01,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ou,over,1.5,1.31,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ou,under,1.5,3.25,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ou,over,2.5,1.95,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ou,under,2.5,1.83,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ou,over,3.5,3.25,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ou,under,3.5,1.32,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ht_ou,over,1.5,2.9,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ht_ou,under,1.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ht_ou,over,0.5,1.44,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,ht_ou,under,0.5,2.72,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,btts,yes,,1.72,api_football,open
+2026-10-14T16:51:27Z,1557057,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Fife,Alloa Athletic,32,Betano,btts,no,,2.0,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ou,over,1.5,1.14,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ou,under,1.5,5.0,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ou,over,2.5,1.53,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ou,under,2.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ou,over,3.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ou,under,3.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ht_ou,over,1.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ht_ou,under,1.5,1.62,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ht_ou,over,0.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,ht_ou,under,0.5,3.75,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,btts,yes,,1.62,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,8,Bet365,btts,no,,2.2,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ou,over,1.5,1.1,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ou,under,1.5,5.05,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ou,over,2.5,1.46,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ou,under,2.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ou,over,3.5,2.22,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ou,under,3.5,1.56,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ht_ou,over,1.5,2.12,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,ht_ou,under,1.5,1.62,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,btts,yes,,1.53,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,2,Marathonbet,btts,no,,2.28,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,3,Betfair,ht_ou,over,1.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,3,Betfair,ht_ou,under,1.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,3,Betfair,ht_ou,over,0.5,1.2,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,3,Betfair,ht_ou,under,0.5,4.0,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ou,over,1.5,1.1,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ou,under,1.5,5.05,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ou,over,2.5,1.46,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ou,under,2.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ou,over,3.5,2.22,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ou,under,3.5,1.56,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ht_ou,over,1.5,2.12,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ht_ou,under,1.5,1.62,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ht_ou,over,0.5,1.23,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,ht_ou,under,0.5,3.7,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,btts,yes,,1.53,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,11,1xBet,btts,no,,2.32,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ou,over,1.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ou,under,1.5,4.65,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ou,over,2.5,1.53,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ou,under,2.5,2.45,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ou,over,3.5,2.27,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ou,under,3.5,1.62,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ht_ou,over,1.5,2.3,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ht_ou,under,1.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ht_ou,over,0.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,ht_ou,under,0.5,3.35,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,btts,yes,,1.57,api_football,open
+2026-10-14T16:51:27Z,1557058,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,East Kilbride,Montrose,32,Betano,btts,no,,2.27,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ou,over,1.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ou,under,1.5,3.75,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ou,over,2.5,1.8,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ou,under,2.5,2.0,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ou,over,3.5,3.0,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ou,under,3.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ht_ou,over,1.5,2.62,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ht_ou,under,1.5,1.44,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ht_ou,over,0.5,1.33,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,ht_ou,under,0.5,3.25,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,btts,yes,,1.67,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,8,Bet365,btts,no,,2.1,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ou,over,1.5,1.2,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ou,under,1.5,3.72,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ou,over,2.5,1.75,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ou,under,2.5,1.93,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ou,over,3.5,2.88,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ou,under,3.5,1.32,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ht_ou,over,1.5,2.57,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ht_ou,under,1.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ht_ou,over,0.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,ht_ou,under,0.5,2.99,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,btts,yes,,1.6,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,2,Marathonbet,btts,no,,2.14,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,3,Betfair,ht_ou,over,1.5,2.6,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,3,Betfair,ht_ou,under,1.5,1.44,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,3,Betfair,ht_ou,over,0.5,1.29,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,3,Betfair,ht_ou,under,0.5,3.3,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ou,over,1.5,1.2,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ou,under,1.5,3.72,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ou,over,2.5,1.75,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ou,under,2.5,1.93,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ou,over,3.5,2.88,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ou,under,3.5,1.32,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ht_ou,over,1.5,2.57,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ht_ou,under,1.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ht_ou,over,0.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,ht_ou,under,0.5,2.99,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,btts,yes,,1.6,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,11,1xBet,btts,no,,2.18,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ou,over,1.5,1.26,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ou,under,1.5,3.6,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ou,over,2.5,1.8,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ou,under,2.5,1.98,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ou,over,3.5,2.9,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ou,under,3.5,1.38,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ht_ou,over,1.5,2.7,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ht_ou,under,1.5,1.45,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ht_ou,over,0.5,1.39,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,ht_ou,under,0.5,2.92,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,btts,yes,,1.65,api_football,open
+2026-10-14T16:51:27Z,1557059,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League One,standard,Peterhead,Cove Rangers,32,Betano,btts,no,,2.12,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ou,over,1.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ou,under,1.5,3.75,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ou,over,2.5,1.85,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ou,under,2.5,1.95,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ou,over,3.5,3.0,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ou,under,3.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ht_ou,over,1.5,2.62,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ht_ou,under,1.5,1.44,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ht_ou,over,0.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,ht_ou,under,0.5,3.0,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,btts,yes,,1.73,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,8,Bet365,btts,no,,2.0,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ou,over,1.5,1.21,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ou,under,1.5,3.58,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ou,over,2.5,1.78,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ou,under,2.5,1.89,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ou,over,3.5,2.97,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ou,under,3.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ht_ou,over,1.5,2.61,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ht_ou,under,1.5,1.39,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ht_ou,over,0.5,1.31,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,ht_ou,under,0.5,2.94,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,btts,yes,,1.66,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,2,Marathonbet,btts,no,,2.04,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,3,Betfair,ht_ou,over,1.5,2.6,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,3,Betfair,ht_ou,under,1.5,1.44,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,3,Betfair,ht_ou,over,0.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,3,Betfair,ht_ou,under,0.5,3.2,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ou,over,1.5,1.21,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ou,under,1.5,3.58,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ou,over,2.5,1.78,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ou,under,2.5,1.89,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ou,over,3.5,2.97,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ou,under,3.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ht_ou,over,1.5,2.61,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ht_ou,under,1.5,1.39,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ht_ou,over,0.5,1.31,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,ht_ou,under,0.5,2.94,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,btts,yes,,1.66,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,11,1xBet,btts,no,,2.07,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ou,over,1.5,1.27,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ou,under,1.5,3.5,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ou,over,2.5,1.83,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ou,under,2.5,1.95,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ou,over,3.5,2.95,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ou,under,3.5,1.37,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ht_ou,over,1.5,2.75,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ht_ou,under,1.5,1.44,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ht_ou,over,0.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,ht_ou,under,0.5,2.87,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,btts,yes,,1.67,api_football,open
+2026-10-14T16:51:27Z,1557056,2026-10-17T16:30:00Z,4298.6,FAR,Scottish League One,standard,Airdrie United,Hamilton Academical,32,Betano,btts,no,,2.07,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ou,over,1.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ou,under,1.5,4.5,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ou,over,2.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ou,under,2.5,2.3,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ou,over,3.5,2.5,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ou,under,3.5,1.5,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ht_ou,over,1.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ht_ou,under,1.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ht_ou,over,0.5,1.28,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,ht_ou,under,0.5,3.5,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,btts,yes,,1.53,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,8,Bet365,btts,no,,2.38,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ou,over,1.5,1.13,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ou,under,1.5,4.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ou,over,2.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ou,under,2.5,2.24,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ou,over,3.5,2.41,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ou,under,3.5,1.45,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ht_ou,over,1.5,2.19,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ht_ou,under,1.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ht_ou,over,0.5,1.22,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,ht_ou,under,0.5,3.54,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,btts,yes,,1.48,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,2,Marathonbet,btts,no,,2.4,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,3,Betfair,ht_ou,over,1.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,3,Betfair,ht_ou,under,1.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,3,Betfair,ht_ou,over,0.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,3,Betfair,ht_ou,under,0.5,3.6,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ou,over,1.5,1.13,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ou,under,1.5,4.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ou,over,2.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ou,under,2.5,2.24,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ou,over,3.5,2.41,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ou,under,3.5,1.45,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ht_ou,over,1.5,2.19,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ht_ou,under,1.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ht_ou,over,0.5,1.22,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,ht_ou,under,0.5,3.54,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,btts,yes,,1.48,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,11,1xBet,btts,no,,2.45,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ou,over,1.5,1.19,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ou,under,1.5,4.15,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ou,over,2.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ou,under,2.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ou,over,3.5,2.42,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ou,under,3.5,1.52,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ht_ou,over,1.5,2.37,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ht_ou,under,1.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ht_ou,over,0.5,1.31,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,ht_ou,under,0.5,3.15,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,btts,yes,,1.52,api_football,open
+2026-10-14T16:51:27Z,1557800,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Dumbarton,Stirling Albion,32,Betano,btts,no,,2.37,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ou,over,1.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ou,under,1.5,4.5,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ou,over,2.5,1.53,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ou,under,2.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ou,over,3.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ou,under,3.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ht_ou,over,1.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ht_ou,under,1.5,1.62,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ht_ou,over,0.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,ht_ou,under,0.5,3.75,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,btts,yes,,1.57,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,8,Bet365,btts,no,,2.25,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ou,over,1.5,1.12,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ou,under,1.5,4.75,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ou,over,2.5,1.47,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ou,under,2.5,2.35,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ou,over,3.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ou,under,3.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ht_ou,over,1.5,2.18,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,ht_ou,under,1.5,1.58,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,btts,yes,,1.51,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,2,Marathonbet,btts,no,,2.32,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,3,Betfair,ht_ou,over,1.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,3,Betfair,ht_ou,under,1.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,3,Betfair,ht_ou,over,0.5,1.22,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,3,Betfair,ht_ou,under,0.5,3.8,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ou,over,1.5,1.12,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ou,under,1.5,4.75,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ou,over,2.5,1.47,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ou,under,2.5,2.35,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ou,over,3.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ou,under,3.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ht_ou,over,1.5,2.18,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ht_ou,under,1.5,1.58,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ht_ou,over,0.5,1.23,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,ht_ou,under,0.5,3.7,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,btts,yes,,1.51,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,11,1xBet,btts,no,,2.36,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ou,over,1.5,1.16,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ou,under,1.5,4.55,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ou,over,2.5,1.52,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ou,under,2.5,2.45,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ou,over,3.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ou,under,3.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ht_ou,over,1.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ht_ou,under,1.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ht_ou,over,0.5,1.28,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,ht_ou,under,0.5,3.3,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,btts,yes,,1.55,api_football,open
+2026-10-14T16:51:27Z,1557799,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Clyde,Annan Athletic,32,Betano,btts,no,,2.32,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ou,over,1.5,1.2,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ou,under,1.5,4.33,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ou,over,2.5,1.65,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ou,under,2.5,2.2,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ou,over,3.5,2.5,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ou,under,3.5,1.5,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ht_ou,over,1.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ht_ou,under,1.5,1.53,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ht_ou,over,0.5,1.3,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,ht_ou,under,0.5,3.4,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,btts,yes,,1.62,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,8,Bet365,btts,no,,2.2,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ou,over,1.5,1.16,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ou,under,1.5,4.05,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ou,over,2.5,1.61,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ou,under,2.5,2.13,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ou,over,3.5,2.49,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ou,under,3.5,1.42,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ht_ou,over,1.5,2.34,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ht_ou,under,1.5,1.48,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ht_ou,over,0.5,1.27,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,ht_ou,under,0.5,3.18,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,btts,yes,,1.56,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,2,Marathonbet,btts,no,,2.21,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,3,Betfair,ht_ou,over,1.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,3,Betfair,ht_ou,under,1.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,3,Betfair,ht_ou,over,0.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,3,Betfair,ht_ou,under,0.5,3.6,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,3,Betfair,btts,yes,,1.57,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,3,Betfair,btts,no,,2.45,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ou,over,1.5,1.16,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ou,under,1.5,4.05,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ou,over,2.5,1.61,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ou,under,2.5,2.13,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ou,over,3.5,2.49,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ou,under,3.5,1.42,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ht_ou,over,1.5,2.34,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ht_ou,under,1.5,1.48,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ht_ou,over,0.5,1.27,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,ht_ou,under,0.5,3.18,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,btts,yes,,1.56,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,11,1xBet,btts,no,,2.25,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ou,over,1.5,1.21,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ou,under,1.5,3.95,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ou,over,2.5,1.65,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ou,under,2.5,2.15,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ou,over,3.5,2.55,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ou,under,3.5,1.47,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ht_ou,over,1.5,2.45,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ht_ou,under,1.5,1.52,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ht_ou,over,0.5,1.33,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,ht_ou,under,0.5,3.05,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,btts,yes,,1.57,api_football,open
+2026-10-14T16:51:27Z,1557801,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Elgin City,Edinburgh City,32,Betano,btts,no,,2.27,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ou,over,1.5,1.22,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ou,under,1.5,4.0,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ou,over,2.5,1.73,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ou,under,2.5,2.08,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ou,over,3.5,2.75,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ou,under,3.5,1.4,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ht_ou,over,1.5,2.5,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ht_ou,under,1.5,1.5,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ht_ou,over,0.5,1.33,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,ht_ou,under,0.5,3.25,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,btts,yes,,1.67,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,8,Bet365,btts,no,,2.1,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ou,over,1.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ou,under,1.5,3.94,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ou,over,2.5,1.68,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ou,under,2.5,2.02,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ou,over,3.5,2.7,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ou,under,3.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ht_ou,over,1.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ht_ou,under,1.5,1.47,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,ht_ou,under,0.5,3.24,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,btts,yes,,1.62,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,2,Marathonbet,btts,no,,2.1,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,3,Betfair,ht_ou,over,1.5,2.55,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,3,Betfair,ht_ou,under,1.5,1.45,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,3,Betfair,ht_ou,over,0.5,1.29,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,3,Betfair,ht_ou,under,0.5,3.3,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,3,Betfair,btts,yes,,1.62,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,3,Betfair,btts,no,,2.25,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ou,over,1.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ou,under,1.5,3.94,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ou,over,2.5,1.68,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ou,under,2.5,2.02,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ou,over,3.5,2.7,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ou,under,3.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ht_ou,over,1.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ht_ou,under,1.5,1.47,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ht_ou,over,0.5,1.26,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,ht_ou,under,0.5,3.24,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,btts,yes,,1.62,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,11,1xBet,btts,no,,2.14,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ou,over,1.5,1.24,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ou,under,1.5,3.7,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ou,over,2.5,1.72,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ou,under,2.5,2.05,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ou,over,3.5,2.67,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ou,under,3.5,1.42,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ht_ou,over,1.5,2.57,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ht_ou,under,1.5,1.47,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ht_ou,over,0.5,1.36,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,ht_ou,under,0.5,3.0,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,btts,yes,,1.67,api_football,open
+2026-10-14T16:51:27Z,1557802,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Kelty Hearts,Forfar Athletic,32,Betano,btts,no,,2.07,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ou,over,1.5,1.17,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ou,under,1.5,4.5,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ou,over,2.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ou,under,2.5,2.3,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ou,over,3.5,2.5,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ou,under,3.5,1.5,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ht_ou,over,1.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ht_ou,under,1.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ht_ou,over,0.5,1.28,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,ht_ou,under,0.5,3.5,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,btts,yes,,1.53,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,8,Bet365,btts,no,,2.38,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ou,over,1.5,1.15,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ou,under,1.5,4.3,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ou,over,2.5,1.56,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ou,under,2.5,2.22,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ou,over,3.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ou,under,3.5,1.46,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ht_ou,over,1.5,2.19,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ht_ou,under,1.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ht_ou,over,0.5,1.24,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,ht_ou,under,0.5,3.38,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,btts,yes,,1.48,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,2,Marathonbet,btts,no,,2.4,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,3,Betfair,ht_ou,over,1.5,2.25,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,3,Betfair,ht_ou,under,1.5,1.57,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,3,Betfair,ht_ou,over,0.5,1.25,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,3,Betfair,ht_ou,under,0.5,3.6,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ou,over,1.5,1.15,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ou,under,1.5,4.3,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ou,over,2.5,1.56,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ou,under,2.5,2.22,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ou,over,3.5,2.38,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ou,under,3.5,1.46,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ht_ou,over,1.5,2.19,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ht_ou,under,1.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ht_ou,over,0.5,1.24,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,ht_ou,under,0.5,3.38,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,btts,yes,,1.48,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,11,1xBet,btts,no,,2.45,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ou,over,1.5,1.19,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ou,under,1.5,4.15,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ou,over,2.5,1.6,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ou,under,2.5,2.27,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ou,over,3.5,2.42,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ou,under,3.5,1.53,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ht_ou,over,1.5,2.37,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ht_ou,under,1.5,1.55,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ht_ou,over,0.5,1.32,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,ht_ou,under,0.5,3.1,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,btts,yes,,1.5,api_football,open
+2026-10-14T16:51:27Z,1557803,2026-10-17T14:00:00Z,4148.6,FAR,Scottish League Two,standard,Spartans,Stranraer,32,Betano,btts,no,,2.42,api_football,open
