@@ -628,6 +628,8 @@ API_FOOTBALL_SEASONS: dict = {
     "Scottish Championship":    "2026",
     "Scottish League One":      "2026",
     "Scottish League Two":      "2026",
+    # National League (id 43) had the same gap since 2026-09-05; API says current = 2026 (Aug 8 -> Apr 24).
+    "National League":          "2026",
     # Summer leagues (calendar year = season year)
     "Sweden Allsvenskan":       "2026",
     "Norway Eliteserien":       "2026",
