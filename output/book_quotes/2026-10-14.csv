@@ -13093,3 +13093,817 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-14T22:51:02Z,1490534,2026-10-15T00:30:00Z,99.0,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,ht_ou,over,1.5,2.2,api_football,change
 2026-10-14T22:51:02Z,1490534,2026-10-15T00:30:00Z,99.0,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,btts,yes,,1.47,api_football,change
 2026-10-14T22:51:02Z,1490534,2026-10-15T00:30:00Z,99.0,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,btts,no,,2.57,api_football,change
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ou,over,1.5,1.18,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ou,under,1.5,4.5,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ou,over,2.5,1.62,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ou,under,2.5,2.25,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ou,over,3.5,2.5,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ou,under,3.5,1.5,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ht_ou,over,1.5,2.38,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ht_ou,under,1.5,1.53,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ht_ou,over,0.5,1.28,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,ht_ou,under,0.5,3.5,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,btts,yes,,1.57,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,8,Bet365,btts,no,,2.25,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,3,Betfair,ou,over,2.5,1.6,api_football,open
+2026-10-14T22:58:24Z,1603052,2026-10-17T15:40:00Z,3881.6,FAR,Saudi Pro League,new_format,NEOM,Al-Ettifaq,3,Betfair,ou,under,2.5,2.3,api_football,open
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,7,William Hill,ht_ou,over,1.5,1.91,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,7,William Hill,ht_ou,under,1.5,1.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,7,William Hill,ht_ou,over,0.5,1.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,7,William Hill,ht_ou,under,0.5,4.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,7,William Hill,btts,yes,,1.3,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,7,William Hill,btts,no,,3.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ou,over,1.5,1.08,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ou,under,1.5,8.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ou,over,2.5,1.36,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ou,under,2.5,3.1,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ou,over,3.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ou,under,3.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ht_ou,over,1.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ht_ou,under,1.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ht_ou,over,0.5,1.18,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,ht_ou,under,0.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,btts,yes,,1.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,8,Bet365,btts,no,,3.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ou,over,1.5,1.06,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ou,under,1.5,6.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ou,over,2.5,1.31,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ou,under,2.5,2.92,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ou,over,3.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ou,under,3.5,1.89,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ht_ou,over,1.5,1.87,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ht_ou,under,1.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ht_ou,over,0.5,1.16,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,ht_ou,under,0.5,4.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,btts,yes,,1.31,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,2,Marathonbet,btts,no,,3.08,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ou,over,1.5,1.08,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ou,under,1.5,7.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ou,over,2.5,1.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ou,under,2.5,3.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ou,over,3.5,1.87,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ou,under,3.5,1.9,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ht_ou,over,1.5,1.91,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ht_ou,under,1.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ht_ou,over,0.5,1.14,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,ht_ou,under,0.5,4.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,btts,yes,,1.3,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,3,Betfair,btts,no,,3.4,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ou,over,1.5,1.07,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ou,under,1.5,7.5,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ou,over,2.5,1.33,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ou,under,2.5,3.13,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ou,over,3.5,1.82,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ou,under,3.5,1.85,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ht_ou,over,1.5,1.88,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ht_ou,under,1.5,1.79,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ht_ou,over,0.5,1.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,ht_ou,under,0.5,4.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,btts,yes,,1.29,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,36,BetVictor,btts,no,,3.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ou,over,1.5,1.11,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ou,under,1.5,7.11,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ou,over,2.5,1.39,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ou,under,2.5,3.13,api_football,change
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ou,over,3.5,1.91,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ou,under,3.5,1.98,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ht_ou,over,1.5,1.99,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,4,Pinnacle,ht_ou,under,1.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,5,SBO,ou,over,3.5,1.99,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,5,SBO,ou,under,3.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,5,SBO,ht_ou,over,1.5,2.03,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,5,SBO,ht_ou,under,1.5,1.81,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ou,over,1.5,1.11,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ou,under,1.5,6.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ou,over,2.5,1.36,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ou,under,2.5,3.15,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ou,over,3.5,1.88,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ou,under,3.5,1.95,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ht_ou,over,1.5,1.95,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ht_ou,under,1.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ht_ou,over,0.5,1.23,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,ht_ou,under,0.5,4.05,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,btts,yes,,1.32,api_football,heartbeat
+2026-10-14T22:58:24Z,1490529,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Toronto FC,Orlando City SC,32,Betano,btts,no,,3.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,7,William Hill,ht_ou,over,1.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,7,William Hill,ht_ou,under,1.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,7,William Hill,ht_ou,over,0.5,1.18,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,7,William Hill,ht_ou,under,0.5,4.4,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,7,William Hill,btts,yes,,1.36,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,7,William Hill,btts,no,,2.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ou,over,1.5,1.1,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ou,under,1.5,7.0,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ou,over,2.5,1.36,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ou,under,2.5,3.1,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ou,over,3.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ou,under,3.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ht_ou,over,1.5,2.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ht_ou,under,1.5,1.67,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,ht_ou,under,0.5,3.75,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,btts,yes,,1.36,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,8,Bet365,btts,no,,3.0,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ou,over,1.5,1.07,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ou,under,1.5,5.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ou,over,2.5,1.33,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ou,under,2.5,2.83,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ou,over,3.5,1.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ou,under,3.5,1.84,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ht_ou,over,1.5,1.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ht_ou,under,1.5,1.82,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ht_ou,over,0.5,1.16,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,ht_ou,under,0.5,4.2,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,btts,yes,,1.35,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,2,Marathonbet,btts,no,,2.88,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ou,over,1.5,1.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ou,under,1.5,6.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ou,over,2.5,1.36,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ou,under,2.5,3.1,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ou,over,3.5,1.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ou,under,3.5,1.87,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ht_ou,over,1.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ht_ou,under,1.5,1.75,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ht_ou,over,0.5,1.17,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,ht_ou,under,0.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,btts,yes,,1.33,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,3,Betfair,btts,no,,3.25,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ou,over,1.5,1.07,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ou,under,1.5,7.5,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ou,over,2.5,1.33,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ou,under,2.5,3.13,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ou,over,3.5,1.85,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ou,under,3.5,1.82,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ht_ou,over,1.5,1.92,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ht_ou,under,1.5,1.76,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ht_ou,over,0.5,1.2,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,ht_ou,under,0.5,4.4,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,btts,yes,,1.3,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,36,BetVictor,btts,no,,3.1,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ou,over,1.5,1.11,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ou,under,1.5,7.22,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ou,over,2.5,1.39,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ou,under,2.5,3.13,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ou,over,3.5,1.96,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ou,under,3.5,1.93,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ht_ou,over,1.5,2.0,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,4,Pinnacle,ht_ou,under,1.5,1.84,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,5,SBO,ou,over,3.5,2.17,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,5,SBO,ou,under,3.5,1.69,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,5,SBO,ht_ou,over,1.5,2.16,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,5,SBO,ht_ou,under,1.5,1.7,api_football,heartbeat
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ou,over,1.5,1.12,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ou,under,1.5,6.3,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ou,over,2.5,1.39,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ou,under,2.5,3.05,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ou,over,3.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ou,under,3.5,1.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ht_ou,over,1.5,2.05,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ht_ou,under,1.5,1.78,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ht_ou,over,0.5,1.25,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,ht_ou,under,0.5,3.9,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,btts,yes,,1.36,api_football,change
+2026-10-14T22:58:24Z,1490527,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Columbus Crew,Charlotte,32,Betano,btts,no,,3.0,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,7,William Hill,ht_ou,over,1.5,2.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,7,William Hill,ht_ou,under,1.5,1.62,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,7,William Hill,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,7,William Hill,ht_ou,under,0.5,3.75,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,7,William Hill,btts,yes,,1.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,7,William Hill,btts,no,,2.45,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ou,over,1.5,1.17,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ou,under,1.5,5.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ou,over,2.5,1.57,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ou,under,2.5,2.35,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ou,over,3.5,2.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ou,under,3.5,1.57,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ht_ou,over,1.5,2.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ht_ou,under,1.5,1.57,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ht_ou,over,0.5,1.28,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,ht_ou,under,0.5,3.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,btts,yes,,1.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,8,Bet365,btts,no,,2.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ou,over,1.5,1.12,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ou,under,1.5,4.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ou,over,2.5,1.54,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ou,under,2.5,2.38,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ou,over,3.5,2.28,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ou,under,3.5,1.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ht_ou,over,1.5,2.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ht_ou,under,1.5,1.62,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ht_ou,over,0.5,1.21,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,ht_ou,under,0.5,3.65,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,btts,yes,,1.45,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,2,Marathonbet,btts,no,,2.51,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ou,over,1.5,1.14,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ou,under,1.5,5.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ou,over,2.5,1.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ou,under,2.5,2.45,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ou,over,3.5,2.38,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ou,under,3.5,1.57,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ht_ou,over,1.5,2.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ht_ou,under,1.5,1.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ht_ou,over,0.5,1.22,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,ht_ou,under,0.5,3.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,btts,yes,,1.47,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,3,Betfair,btts,no,,2.63,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ou,over,1.5,1.13,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ou,under,1.5,5.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ou,over,2.5,1.52,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ou,under,2.5,2.31,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ou,over,3.5,2.23,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ou,under,3.5,1.56,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ht_ou,over,1.5,2.15,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ht_ou,under,1.5,1.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,ht_ou,under,0.5,3.75,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,btts,yes,,1.44,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,36,BetVictor,btts,no,,2.55,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ou,over,1.5,1.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ou,under,1.5,5.25,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ou,over,2.5,1.58,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ou,under,2.5,2.47,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ou,over,3.5,2.42,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ou,under,3.5,1.61,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ht_ou,over,1.5,2.31,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,4,Pinnacle,ht_ou,under,1.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ou,over,1.5,1.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ou,under,1.5,4.9,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ou,over,2.5,1.57,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ou,under,2.5,2.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ou,over,3.5,2.35,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ou,under,3.5,1.62,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ht_ou,over,1.5,2.35,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ht_ou,under,1.5,1.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ht_ou,over,0.5,1.31,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,ht_ou,under,0.5,3.35,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,btts,yes,,1.45,api_football,heartbeat
+2026-10-14T22:58:24Z,1490530,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,CF Montreal,Atlanta United FC,32,Betano,btts,no,,2.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,7,William Hill,ht_ou,over,1.5,2.05,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,7,William Hill,ht_ou,under,1.5,1.7,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,7,William Hill,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,7,William Hill,ht_ou,under,0.5,4.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,7,William Hill,btts,yes,,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,7,William Hill,btts,no,,2.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ou,over,1.5,1.11,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ou,under,1.5,6.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ou,over,2.5,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ou,under,2.5,2.88,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ou,over,3.5,2.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ou,under,3.5,1.73,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ht_ou,over,1.5,2.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ht_ou,under,1.5,1.67,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ht_ou,over,0.5,1.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,ht_ou,under,0.5,3.75,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,btts,yes,,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,8,Bet365,btts,no,,2.75,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ou,over,1.5,1.08,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ou,under,1.5,5.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ou,over,2.5,1.37,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ou,under,2.5,2.66,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ou,over,3.5,2.02,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ou,under,3.5,1.74,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ht_ou,over,1.5,1.97,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ht_ou,under,1.5,1.76,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ht_ou,over,0.5,1.17,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,ht_ou,under,0.5,4.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,btts,yes,,1.36,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,2,Marathonbet,btts,no,,2.83,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ou,over,1.5,1.13,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ou,under,1.5,6.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ou,over,2.5,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ou,under,2.5,2.88,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ou,over,3.5,2.3,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ou,under,3.5,1.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ht_ou,over,1.5,2.1,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ht_ou,under,1.5,1.65,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,ht_ou,under,0.5,4.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,btts,yes,,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,3,Betfair,btts,no,,2.88,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ou,over,1.5,1.09,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ou,under,1.5,6.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ou,over,2.5,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ou,under,2.5,2.8,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ou,over,3.5,1.97,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ou,under,3.5,1.72,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ht_ou,over,1.5,1.99,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ht_ou,under,1.5,1.7,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,ht_ou,under,0.5,4.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,btts,yes,,1.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,36,BetVictor,btts,no,,3.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ou,over,1.5,1.14,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ou,under,1.5,6.15,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ou,over,2.5,1.46,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ou,under,2.5,2.81,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ou,over,3.5,2.12,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ou,under,3.5,1.78,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ht_ou,over,1.5,2.13,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,4,Pinnacle,ht_ou,under,1.5,1.72,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,5,SBO,ht_ou,over,1.5,2.23,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,5,SBO,ht_ou,under,1.5,1.65,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ou,over,1.5,1.15,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ou,under,1.5,5.6,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ou,over,2.5,1.47,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ou,under,2.5,2.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ou,over,3.5,2.12,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ou,under,3.5,1.75,api_football,change
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ht_ou,over,1.5,2.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ht_ou,under,1.5,1.7,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ht_ou,over,0.5,1.27,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,ht_ou,under,0.5,3.7,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,btts,yes,,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490531,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,DC United,New York Red Bulls,32,Betano,btts,no,,2.82,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,7,William Hill,ht_ou,over,1.5,1.95,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,7,William Hill,ht_ou,under,1.5,1.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,7,William Hill,ht_ou,over,0.5,1.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,7,William Hill,ht_ou,under,0.5,4.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,7,William Hill,btts,yes,,1.33,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,7,William Hill,btts,no,,3.1,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ou,over,1.5,1.08,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ou,under,1.5,8.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ou,over,2.5,1.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ou,under,2.5,3.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ou,over,3.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ou,under,3.5,1.91,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ht_ou,over,1.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ht_ou,under,1.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ht_ou,over,0.5,1.18,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,ht_ou,under,0.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,btts,yes,,1.33,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,8,Bet365,btts,no,,3.25,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ou,over,1.5,1.04,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ou,under,1.5,6.9,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ou,over,2.5,1.27,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ou,under,2.5,3.14,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ou,over,3.5,1.79,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ou,under,3.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ht_ou,over,1.5,1.82,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ht_ou,under,1.5,1.9,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ht_ou,over,0.5,1.12,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,ht_ou,under,0.5,4.8,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,btts,yes,,1.31,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,2,Marathonbet,btts,no,,3.08,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ou,over,1.5,1.07,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ou,under,1.5,8.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ou,over,2.5,1.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ou,under,2.5,3.25,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ou,over,3.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ou,under,3.5,2.0,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ht_ou,over,1.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ht_ou,under,1.5,1.85,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ht_ou,over,0.5,1.14,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,ht_ou,under,0.5,4.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,btts,yes,,1.33,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,3,Betfair,btts,no,,3.25,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ou,over,1.5,1.06,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ou,under,1.5,8.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ou,over,2.5,1.3,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ou,under,2.5,3.3,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ou,over,3.5,1.79,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ou,under,3.5,1.88,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ht_ou,over,1.5,1.87,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ht_ou,under,1.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ht_ou,over,0.5,1.18,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,ht_ou,under,0.5,4.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,btts,yes,,1.3,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,36,BetVictor,btts,no,,3.2,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ou,over,1.5,1.11,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ou,under,1.5,7.46,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ou,over,2.5,1.36,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ou,under,2.5,3.26,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ou,over,3.5,1.91,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ou,under,3.5,1.98,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ht_ou,over,1.5,1.99,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,4,Pinnacle,ht_ou,under,1.5,1.85,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ou,over,1.5,1.11,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ou,under,1.5,6.6,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ou,over,2.5,1.36,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ou,under,2.5,3.15,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ou,over,3.5,1.9,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ou,under,3.5,1.95,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ht_ou,over,1.5,2.02,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ht_ou,under,1.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ht_ou,over,0.5,1.23,api_football,heartbeat
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,ht_ou,under,0.5,4.0,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,btts,yes,,1.36,api_football,change
+2026-10-14T22:58:24Z,1490528,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,FC Cincinnati,New England Revolution,32,Betano,btts,no,,3.0,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,7,William Hill,ht_ou,over,1.5,2.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,7,William Hill,ht_ou,under,1.5,1.75,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,7,William Hill,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,7,William Hill,ht_ou,under,0.5,4.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,7,William Hill,btts,yes,,1.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,7,William Hill,btts,no,,2.45,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ou,over,1.5,1.12,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ou,under,1.5,6.0,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ou,over,2.5,1.44,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ou,under,2.5,2.7,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ou,over,3.5,2.0,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ou,under,3.5,1.73,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ht_ou,over,1.5,1.91,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ht_ou,under,1.5,1.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,ht_ou,under,0.5,4.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,btts,yes,,1.53,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,8,Bet365,btts,no,,2.38,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ou,over,1.5,1.08,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ou,under,1.5,5.45,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ou,over,2.5,1.37,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ou,under,2.5,2.66,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ou,over,3.5,2.03,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ou,under,3.5,1.73,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ht_ou,over,1.5,2.02,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ht_ou,under,1.5,1.72,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ht_ou,over,0.5,1.19,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,ht_ou,under,0.5,3.88,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,btts,yes,,1.49,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,2,Marathonbet,btts,no,,2.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ou,over,1.5,1.1,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ou,under,1.5,6.5,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ou,over,2.5,1.4,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ou,under,2.5,2.88,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ou,over,3.5,2.0,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ou,under,3.5,1.8,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ht_ou,over,1.5,2.0,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ht_ou,under,1.5,1.73,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,ht_ou,under,0.5,4.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,btts,yes,,1.5,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,3,Betfair,btts,no,,2.55,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ou,over,1.5,1.11,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ou,under,1.5,6.0,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ou,over,2.5,1.4,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ou,under,2.5,2.8,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ou,over,3.5,1.99,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ou,under,3.5,1.7,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ht_ou,over,1.5,1.97,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ht_ou,under,1.5,1.72,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ht_ou,over,0.5,1.2,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,ht_ou,under,0.5,4.33,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,btts,yes,,1.47,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,36,BetVictor,btts,no,,2.5,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ou,over,1.5,1.14,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ou,under,1.5,6.21,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ou,over,2.5,1.44,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ou,under,2.5,2.88,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ou,over,3.5,2.14,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ou,under,3.5,1.76,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ht_ou,over,1.5,2.11,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,4,Pinnacle,ht_ou,under,1.5,1.76,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,5,SBO,ou,over,3.5,1.87,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,5,SBO,ou,under,3.5,1.97,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,5,SBO,ht_ou,over,1.5,1.94,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,5,SBO,ht_ou,under,1.5,1.9,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ou,over,1.5,1.15,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ou,under,1.5,5.6,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ou,over,2.5,1.47,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ou,under,2.5,2.8,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ou,over,3.5,2.15,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ou,under,3.5,1.75,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ht_ou,over,1.5,2.18,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ht_ou,under,1.5,1.7,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ht_ou,over,0.5,1.26,api_football,heartbeat
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,ht_ou,under,0.5,3.7,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,btts,yes,,1.55,api_football,change
+2026-10-14T22:58:24Z,1490526,2026-10-14T23:30:00Z,31.6,T-1h,USA MLS,new_format,Inter Miami,New York City FC,32,Betano,btts,no,,2.37,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,8,Bet365,ou,over,2.5,1.53,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,8,Bet365,ou,under,2.5,2.4,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,8,Bet365,ou,over,3.5,2.25,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,8,Bet365,ou,under,3.5,1.57,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ou,under,1.5,4.75,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ou,over,2.5,1.47,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ou,under,2.5,2.35,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ou,over,3.5,2.27,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ou,under,3.5,1.59,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ht_ou,over,1.5,2.17,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ht_ou,under,1.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ht_ou,over,0.5,1.22,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,ht_ou,under,0.5,3.55,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,btts,yes,,1.47,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,2,Marathonbet,btts,no,,2.46,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,3,Betfair,btts,yes,,1.44,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,3,Betfair,btts,no,,2.7,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,ou,over,2.5,1.49,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,ou,under,2.5,2.38,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,ou,over,3.5,2.17,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,ou,under,3.5,1.59,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,ht_ou,over,1.5,2.13,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,ht_ou,under,1.5,1.61,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,36,BetVictor,btts,yes,,1.44,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ou,under,1.5,5.37,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ou,over,2.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ou,under,2.5,2.55,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ou,over,3.5,2.37,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ou,under,3.5,1.63,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ht_ou,over,1.5,2.29,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,4,Pinnacle,ht_ou,under,1.5,1.64,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,32,Betano,ou,over,2.5,1.57,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,32,Betano,ou,under,2.5,2.5,api_football,change
+2026-10-14T22:58:24Z,1490532,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,FC Dallas,Seattle Sounders,32,Betano,btts,no,,2.5,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ou,under,1.5,5.75,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ou,over,2.5,1.36,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ou,under,2.5,2.7,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ou,over,3.5,1.99,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ou,under,3.5,1.76,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ht_ou,over,1.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,ht_ou,under,1.5,1.77,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,btts,yes,,1.35,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,2,Marathonbet,btts,no,,2.88,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,36,BetVictor,ou,under,2.5,2.9,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,36,BetVictor,ou,over,3.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,36,BetVictor,ou,under,3.5,1.73,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,36,BetVictor,ht_ou,over,1.5,1.96,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,4,Pinnacle,ou,under,1.5,6.41,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,4,Pinnacle,ou,under,2.5,2.89,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,4,Pinnacle,ou,under,3.5,1.82,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,32,Betano,ou,under,1.5,5.8,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,32,Betano,ou,over,3.5,2.07,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,32,Betano,ht_ou,over,0.5,1.24,api_football,change
+2026-10-14T22:58:24Z,1490533,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Chicago Fire,Philadelphia Union,32,Betano,btts,yes,,1.39,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,3,Betfair,ou,over,3.5,1.75,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,3,Betfair,ou,under,3.5,2.05,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,3,Betfair,ht_ou,over,0.5,1.13,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,3,Betfair,ht_ou,under,0.5,5.2,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,3,Betfair,btts,yes,,1.8,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,3,Betfair,btts,no,,2.0,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,36,BetVictor,ou,under,1.5,9.0,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,36,BetVictor,ou,over,3.5,1.69,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,36,BetVictor,ou,under,3.5,2.01,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,4,Pinnacle,ou,under,2.5,3.7,api_football,change
+2026-10-14T22:58:24Z,1490535,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,Nashville SC,Sporting Kansas City,4,Pinnacle,ht_ou,over,1.5,1.87,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,7,William Hill,ht_ou,over,1.5,2.15,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,7,William Hill,ht_ou,under,1.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,7,William Hill,ht_ou,under,0.5,3.8,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ou,over,1.5,1.14,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ou,under,1.5,5.5,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ou,over,2.5,1.53,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ou,under,2.5,2.4,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ou,over,3.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ou,under,3.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ht_ou,over,1.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,ht_ou,under,1.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,btts,yes,,1.44,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,8,Bet365,btts,no,,2.62,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,3,Betfair,ht_ou,over,1.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,3,Betfair,ht_ou,under,1.5,1.6,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ou,over,2.5,1.47,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ou,under,2.5,2.55,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ou,over,3.5,2.13,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ou,under,3.5,1.61,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ht_ou,over,1.5,2.08,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ht_ou,under,1.5,1.64,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ht_ou,over,0.5,1.25,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,36,BetVictor,ht_ou,under,0.5,3.9,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ou,over,1.5,1.16,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ou,under,1.5,5.54,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ou,over,2.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ou,under,2.5,2.57,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ou,over,3.5,2.35,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ou,under,3.5,1.64,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ht_ou,over,1.5,2.26,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,4,Pinnacle,ht_ou,under,1.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,ou,over,2.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,ou,under,2.5,2.55,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,ht_ou,over,1.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,btts,yes,,1.47,api_football,change
+2026-10-14T22:58:24Z,1490534,2026-10-15T00:30:00Z,91.6,T-3h,USA MLS,new_format,St. Louis City,Vancouver Whitecaps,32,Betano,btts,no,,2.57,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ou,over,1.5,1.1,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ou,under,1.5,6.5,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ou,over,2.5,1.4,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ou,under,2.5,2.88,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ou,over,3.5,2.1,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ou,under,3.5,1.73,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ht_ou,over,1.5,2.1,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ht_ou,under,1.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ht_ou,over,0.5,1.17,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,3,Betfair,ht_ou,under,0.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,36,BetVictor,ou,over,2.5,1.4,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,36,BetVictor,ou,under,2.5,2.75,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,36,BetVictor,ou,over,3.5,2.04,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,36,BetVictor,ou,under,3.5,1.67,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,36,BetVictor,ht_ou,over,1.5,2.04,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,36,BetVictor,ht_ou,under,1.5,1.67,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ou,over,1.5,1.14,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ou,under,1.5,6.05,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ou,over,2.5,1.47,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ou,under,2.5,2.77,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ou,over,3.5,2.17,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ou,under,3.5,1.75,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ht_ou,over,1.5,2.16,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,4,Pinnacle,ht_ou,under,1.5,1.71,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,32,Betano,ou,over,3.5,2.18,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,32,Betano,ht_ou,under,0.5,3.55,api_football,change
+2026-10-14T22:58:24Z,1490537,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Real Salt Lake,San Jose Earthquakes,32,Betano,btts,no,,2.67,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,7,William Hill,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,7,William Hill,btts,no,,2.3,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,ou,over,1.5,1.2,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,ou,under,1.5,4.33,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,ou,over,2.5,1.67,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,ou,under,2.5,2.15,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,ou,over,3.5,2.62,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,ou,under,3.5,1.44,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,btts,yes,,1.62,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,8,Bet365,btts,no,,2.2,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ou,over,1.5,1.16,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ou,under,1.5,4.15,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ou,over,2.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ou,under,2.5,2.21,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ou,over,3.5,2.42,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ou,under,3.5,1.44,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ht_ou,under,1.5,1.57,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,2,Marathonbet,btts,no,,2.22,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,ou,over,1.5,1.2,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,ou,under,1.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,ou,over,2.5,1.6,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,ou,under,2.5,2.3,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,ou,over,3.5,2.55,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,ou,under,3.5,1.5,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,3,Betfair,btts,no,,2.38,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ou,over,1.5,1.18,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ou,under,1.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ou,over,2.5,1.61,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ou,under,2.5,2.14,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ou,over,3.5,2.6,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ou,under,3.5,1.45,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ht_ou,over,1.5,2.25,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ht_ou,under,1.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,ht_ou,under,0.5,3.5,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,36,BetVictor,btts,no,,2.25,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ou,over,1.5,1.21,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ou,under,1.5,4.64,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ou,over,2.5,1.68,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ou,under,2.5,2.27,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ou,over,3.5,2.67,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ou,under,3.5,1.5,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ht_ou,over,1.5,2.48,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,4,Pinnacle,ht_ou,under,1.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ou,over,1.5,1.22,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ou,under,1.5,4.35,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ou,over,2.5,1.67,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ou,under,2.5,2.27,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ou,over,3.5,2.62,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ou,under,3.5,1.52,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ht_ou,over,1.5,2.45,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ht_ou,under,1.5,1.57,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ht_ou,over,0.5,1.33,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,ht_ou,under,0.5,3.25,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,btts,yes,,1.62,api_football,change
+2026-10-14T22:58:24Z,1490536,2026-10-15T01:30:00Z,151.6,T-3h,USA MLS,new_format,Colorado Rapids,Minnesota United FC,32,Betano,btts,no,,2.22,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,7,William Hill,btts,yes,,1.36,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,7,William Hill,btts,no,,2.9,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,3,Betfair,ht_ou,over,1.5,1.95,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,3,Betfair,ht_ou,under,1.5,1.75,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,4,Pinnacle,ou,under,1.5,6.7,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,4,Pinnacle,ou,over,2.5,1.42,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,4,Pinnacle,ou,under,2.5,2.97,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,4,Pinnacle,ou,over,3.5,2.04,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,4,Pinnacle,ht_ou,over,1.5,2.06,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,4,Pinnacle,ht_ou,under,1.5,1.79,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,5,SBO,ou,over,3.5,2.01,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,5,SBO,ou,under,3.5,1.83,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,5,SBO,ht_ou,over,1.5,2.01,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,ou,under,2.5,3.0,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,ou,over,3.5,1.98,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,ou,under,3.5,1.88,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,ht_ou,over,1.5,2.07,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,ht_ou,over,0.5,1.26,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,btts,yes,,1.35,api_football,change
+2026-10-14T22:58:24Z,1490539,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles Galaxy,Portland Timbers,32,Betano,btts,no,,3.05,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,7,William Hill,ht_ou,over,1.5,2.15,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,7,William Hill,ht_ou,under,1.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,7,William Hill,ht_ou,under,0.5,3.75,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,7,William Hill,btts,yes,,1.62,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,7,William Hill,btts,no,,2.15,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ou,over,1.5,1.14,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ou,under,1.5,5.5,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ou,over,2.5,1.5,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ou,under,2.5,2.5,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ou,over,3.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ou,under,3.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ht_ou,over,1.5,2.1,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,ht_ou,under,1.5,1.67,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,btts,yes,,1.67,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,8,Bet365,btts,no,,2.1,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ou,over,1.5,1.11,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ou,under,1.5,4.95,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ou,over,2.5,1.45,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ou,under,2.5,2.41,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ou,over,3.5,2.25,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ou,under,3.5,1.6,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ht_ou,over,1.5,2.16,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ht_ou,under,1.5,1.63,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ht_ou,over,0.5,1.21,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,ht_ou,under,0.5,3.64,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,btts,yes,,1.65,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,2,Marathonbet,btts,no,,2.08,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ou,over,1.5,1.13,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ou,under,1.5,6.0,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ou,over,2.5,1.47,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ou,under,2.5,2.63,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ou,over,3.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ou,under,3.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ht_ou,over,1.5,2.1,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ht_ou,under,1.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ht_ou,over,0.5,1.2,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,ht_ou,under,0.5,4.0,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,3,Betfair,btts,no,,2.38,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ou,over,1.5,1.13,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ou,under,1.5,5.5,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ou,over,2.5,1.47,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ou,under,2.5,2.55,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ou,over,3.5,2.14,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ou,under,3.5,1.61,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ht_ou,over,1.5,2.11,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ht_ou,under,1.5,1.63,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,ht_ou,under,0.5,3.9,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,btts,yes,,1.62,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,36,BetVictor,btts,no,,2.15,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ou,over,1.5,1.16,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ou,under,1.5,5.68,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ou,over,2.5,1.5,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ou,under,2.5,2.67,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ou,over,3.5,2.28,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ou,under,3.5,1.68,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ht_ou,over,1.5,2.24,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,4,Pinnacle,ht_ou,under,1.5,1.66,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ou,over,1.5,1.17,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ou,under,1.5,5.0,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ou,over,2.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ou,under,2.5,2.55,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ou,over,3.5,2.32,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ou,under,3.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ht_ou,over,1.5,2.3,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ht_ou,under,1.5,1.62,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ht_ou,over,0.5,1.3,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,ht_ou,under,0.5,3.45,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,btts,yes,,1.65,api_football,change
+2026-10-14T22:58:24Z,1490538,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,Los Angeles FC,Austin,32,Betano,btts,no,,2.15,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,7,William Hill,ht_ou,over,1.5,2.38,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,7,William Hill,ht_ou,under,1.5,1.53,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,7,William Hill,ht_ou,over,0.5,1.29,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,7,William Hill,ht_ou,under,0.5,3.4,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,7,William Hill,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,7,William Hill,btts,no,,2.3,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,ou,over,2.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,ou,under,2.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,ht_ou,over,1.5,2.5,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,ht_ou,under,1.5,1.5,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,ht_ou,over,0.5,1.3,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,ht_ou,under,0.5,3.4,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,8,Bet365,btts,no,,2.25,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ou,over,1.5,1.16,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ou,under,1.5,4.15,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ou,over,2.5,1.64,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ou,under,2.5,2.17,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ou,over,3.5,2.49,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ou,under,3.5,1.42,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ht_ou,over,1.5,2.34,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ht_ou,under,1.5,1.51,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ht_ou,over,0.5,1.28,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,ht_ou,under,0.5,3.22,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,btts,yes,,1.54,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,2,Marathonbet,btts,no,,2.28,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,3,Betfair,ou,over,2.5,1.65,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,3,Betfair,ou,under,2.5,2.2,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,3,Betfair,ht_ou,over,1.5,2.4,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,3,Betfair,ht_ou,under,1.5,1.5,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,3,Betfair,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,3,Betfair,btts,no,,2.38,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ou,over,1.5,1.18,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ou,under,1.5,4.5,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ou,over,2.5,1.63,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ou,under,2.5,2.11,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ou,over,3.5,2.63,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ou,under,3.5,1.45,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ht_ou,over,1.5,2.3,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ht_ou,under,1.5,1.53,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ht_ou,over,0.5,1.3,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,ht_ou,under,0.5,3.4,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,btts,yes,,1.53,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,36,BetVictor,btts,no,,2.3,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ou,over,1.5,1.21,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ou,under,1.5,4.69,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ou,over,2.5,1.68,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ou,under,2.5,2.28,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ou,over,3.5,2.65,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ou,under,3.5,1.51,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ht_ou,over,1.5,2.48,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,4,Pinnacle,ht_ou,under,1.5,1.55,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,5,SBO,ou,over,2.5,1.63,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ou,over,1.5,1.22,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ou,under,1.5,4.35,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ou,over,2.5,1.67,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ou,under,2.5,2.27,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ou,over,3.5,2.62,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ou,under,3.5,1.52,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ht_ou,over,1.5,2.5,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ht_ou,under,1.5,1.53,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ht_ou,over,0.5,1.35,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,ht_ou,under,0.5,3.15,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,btts,yes,,1.57,api_football,change
+2026-10-14T22:58:24Z,1490540,2026-10-15T02:30:00Z,211.6,T-6h,USA MLS,new_format,San Diego,Houston Dynamo,32,Betano,btts,no,,2.32,api_football,change
