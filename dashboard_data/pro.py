@@ -175,6 +175,25 @@ def bankroll() -> dict:
     return out
 
 
+# ── Research index (Pro src/monitoring/research_index) ────────────────────────────────────────
+def research_index() -> dict:
+    """Every Pro study's LATEST verdict in one file, newest first.
+
+    Pro rebuilds it after each study workflow, so a new finding reaches the dashboard without a
+    dashboard change — adding a study means one entry in Pro's STUDIES list, nothing here.
+    """
+    j = read_json(_f("output/research_index.json"))
+    if j:
+        j["freshness"] = freshness_from_timestamp(
+            str(j.get("generated_at", "")).replace(" UTC", "Z").replace(" ", "T"), "daily", "research index")
+    return j
+
+
+def verdict(rel: str) -> dict:
+    """One study's machine-readable verdict file, e.g. 'output/player_v3/player_v3_verdict.json'."""
+    return read_json(_f(rel))
+
+
 # ── Upgrade studies (Pro src/studies) ─────────────────────────────────────────────────────────
 def studies() -> dict:
     out = {}

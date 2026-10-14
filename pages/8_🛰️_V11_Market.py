@@ -17,7 +17,12 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from dashboard_data import ui, v11
+from dashboard_data import pro, ui, v11
+
+# Streamlit Cloud keeps imported modules across a redeploy (see the Pro page); reload so this page and
+# the helper are always the same version.
+import importlib  # noqa: E402
+pro = importlib.reload(pro)
 
 st.set_page_config(page_title="Wowza | V11", page_icon="🛰️", layout="wide")
 st.title("🛰️ V11 — market-first shadow")
@@ -96,6 +101,15 @@ with tab_res:
                 f"price has not already told you.")
             st.caption("That is a result, not a bug. It is the reason v11 defaults to NO_BET and "
                        "the reason the residual test, not AUC, is the measure that governs here.")
+            # SCOPE (owner, 2026-10-14): this test is TEAM markets only. Pro's Player V3 ran the same test on
+            # player props and found the opposite, so the page states which market each result covers.
+            pv = pro.verdict("output/player_v3/player_v3_verdict.json")
+            if pv:
+                by = pv.get("PLAYER_WOWZA_ADDS_TO_MARKET_BY_MARKET", {})
+                st.info(f"**Scope: team fixtures only.** The same test on **player props** (Pro, Player V3, "
+                        f"{pv.get('generated_at', '?')}) says the model *does* add to the price: "
+                        f"{', '.join(f'{k} {v}' for k, v in by.items())}. That is accuracy only — no prop bet has "
+                        f"shown a profit yet, so props stay paper (pre-registered forward test running).")
             # ONE scale, two series. Brier and log loss are separate charts by design.
             long_b = d.melt(id_vars=[c for c in ("n",) if c in d.columns],
                             value_vars=[base_col, with_col],
@@ -122,6 +136,18 @@ with tab_move:
             ui.kpi("Fixtures", f"{m['fixtures']:,}", "with a usable close")
         with c3:
             ui.freshness_chip(m["freshness"], "movement detail")
+        # Pro's Price Trader lab re-tested these movement figures as REAL trades (2026-10-14). Shown first so a
+        # 70%+ toward rate is never read as money on the table.
+        pt = pro.verdict("output/price_trader/price_trader_verdict.json")
+        if pt:
+            st.error(
+                f"**Movement is not a tradeable edge (Pro Price Trader, {pt.get('generated_at', '?')}).** The toward "
+                "rates here measure fair-probability drift across many snapshots. Entered at Wowza's real signal, at "
+                "prices that really existed: the price moved toward Wowza on only ~41% of trades, a model-free "
+                "placebo did as well, and locking in a profit lost ~10% per trade (the bookmaker margin is bigger "
+                f"than the moves). Verdict: beats placebo **{pt.get('MOVEMENT_BEATS_PLACEBO')}**, profitable after "
+                f"costs **{pt.get('FULL_GREEN_PROFITABLE_AFTER_COSTS')}**, prospective "
+                f"**{pt.get('PROSPECTIVE_CONFIRMATION')}** (paper engine running).")
         st.warning(
             "**Read every snapshot table as a change-log, not a panel.** The writers store "
             "consecutive *distinct* values only, so at any single instant the file contains only "
