@@ -22,6 +22,17 @@ def test_buckets_and_names():
     assert A._clean_player("Iliman-Cheikh Ndiaye - 2") == "Iliman-Cheikh Ndiaye"
 
 
+def test_score_or_assist_captured(monkeypatch):
+    resp = {"response": [{"bookmakers": [{"name": "Bet365", "bets": [
+        {"name": "Player to Score or Assist", "values": [{"value": "Allan Andrade", "odd": "1.67"}]}]}]}]}
+    import player_model.api_football as af
+    monkeypatch.setattr(af, "_get", lambda *a, **k: resp)
+    best, _ = A.fetch([{"fixture_id": 1, "league": "Premier League", "match": "A vs B",
+                        "match_date": "2026-10-17"}], verbose=False)
+    A.drain_quotes()
+    assert best == {"Allan Andrade|goal_or_assist": 1.67}
+
+
 def test_fetch_keeps_sot_and_skips_bare(monkeypatch):
     resp = {"response": [{"bookmakers": [{"name": "Bet365", "bets": [
         {"name": "Home Player Shots On Target Total", "values": [
