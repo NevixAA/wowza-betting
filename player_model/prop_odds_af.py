@@ -147,6 +147,12 @@ def _parse_line(raw: str) -> float | None:
         m = _PLUS_RE.fullmatch(tail)
         if m:
             return float(m.group(1)) - 0.5
+        # API-Football DROPPED THE "+" (seen 2026-10-15): "Tommy Conway - 1" now means 1 or more -
+        # Bet365 prices him 1 -> 1.36, 2 -> 2.62, 3 -> 7.00, 4 -> 19.00, a threshold ladder, not
+        # "exactly N". Read as a number, "1" became line 1.0, matched no bucket and every SOT and
+        # assists quote from this source was silently dropped (0 in October, all leagues).
+        if tail.isdigit():
+            return float(tail) - 0.5
     for tok in s.split():
         if _is_number(tok):
             return float(tok)
