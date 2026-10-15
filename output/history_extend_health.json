@@ -1,17 +1,17 @@
 {
-  "checked_at": "2026-10-14T09:14:54Z",
-  "run_number": "60",
+  "checked_at": "2026-10-15T08:48:57Z",
+  "run_number": "61",
   "gate": {
     "collect": "true",
     "newest_before": "2026-10-13",
-    "age_days": "1",
-    "hours_since_commit": "21.7"
+    "age_days": "2",
+    "hours_since_commit": "23.4"
   },
   "collect_outcome": "success",
-  "last_collect_at": "2026-10-14T09:14:54Z",
+  "last_collect_at": "2026-10-15T08:48:57Z",
   "parquet": {
-    "rows": 857681,
-    "newest_after": "2026-10-13"
+    "rows": 858246,
+    "newest_after": "2026-10-15"
   },
   "collect_log_tail": [
     "  [Norway Eliteserien 2026] 2952 player-match rows collected",
@@ -31,11 +31,11 @@
     "  [Ligue 2 2026] Fetching fixture list (last 99)...",
     "  [Ligue 2 2026] 72 fixtures (72 cached, 0 to fetch)...",
     "  [Ligue 2 2026] 2141 player-match rows collected",
-    "[DONE] 64527 total player-match rows across 26 leagues / 26 season-slots.",
-    "  [sp_events] 2,189 fixtures (8 need API calls)...",
+    "[DONE] 64521 total player-match rows across 26 leagues / 26 season-slots.",
+    "  [sp_events] 2,189 fixtures (20 need API calls)...",
     "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
-    "[collect] union: 857450 existing + 53210 fetched -> 857681 rows (+231 new, 52979 refreshed, 0 removed)",
-    "[collect] Saved 857681 player rows, 21101 players -> player_history.parquet",
+    "[collect] union: 857681 existing + 53208 fetched -> 858246 rows (+565 new, 52643 refreshed, 0 removed)",
+    "[collect] Saved 858246 player rows, 21105 players -> player_history.parquet",
     "  goals (target_goals): 8.1% positive rate",
     "  goals2 (target_goals2): 0.7% positive rate",
     "  assists (target_assists): 5.9% positive rate",
