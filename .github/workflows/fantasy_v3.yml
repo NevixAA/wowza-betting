@@ -1,0 +1,52 @@
+name: Fantasy V3 inputs
+
+# Player V3 for Fantasy (owner-approved 2026-10-15; evidence: wowzaV9-Pro output/studies/FANTASY_V3.md).
+# Retrains V3's P(goal) / P(assist) and the expected-minutes model from player_history every day and
+# writes output/fantasy_v3_inputs.csv + fantasy_v3_meta.json. No model file is committed.
+# Its own job because it takes ~10-15 min, too much for fantasy_refresh's 20-minute budget.
+# fantasy.py reads the inputs only when generated_at is < 36 h old, else falls back to v9.
+# Prediction product only: no prop tip, tier, bet or betting message is affected.
+
+on:
+  schedule:
+    - cron: '15 3 * * *'     # once daily: delivered ~100% of days (CLAUDE.md scheduling measurement)
+  workflow_dispatch:
+
+concurrency:
+  group: fantasy-v3
+  cancel-in-progress: false
+
+jobs:
+  inputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Tests
+        run: python -m pytest tests/test_fantasy_v3.py -q
+      - name: Build V3 inputs
+        run: python -m player_model.fantasy_v3 | tee v3.txt && cat v3.txt >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # per file: a multi-path add stages nothing if one path is missing
+          for f in output/fantasy_v3_inputs.csv output/fantasy_v3_meta.json; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          git diff --staged --quiet && exit 0
+          git commit -m "auto: fantasy V3 inputs $(date -u '+%Y-%m-%d')"
+          for i in 1 2 3 4 5; do
+            git pull --no-rebase -X ours origin main && git push && exit 0
+            sleep $((RANDOM % 7 + 3))
+          done
+          exit 1

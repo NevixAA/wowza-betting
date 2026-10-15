@@ -229,6 +229,12 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     m = pd.to_numeric(pl["minutes_pg"], errors="coerce").fillna(60)
     pl["appearance"] = np.where(m >= 60, 2.0, 1.0)
 
+    # Player V3 (2026-10-15, owner-approved): P(goal), P(assist) and expected-minutes appearance
+    # points from output/fantasy_v3_inputs.csv when fresh (<36h, recorded timestamp); v9's numbers
+    # are kept as *_v9 columns and used for any player V3 does not cover. FANTASY_MODEL=v9 = off.
+    from player_model.fantasy_v3 import apply_attack_and_minutes
+    pl = apply_attack_and_minutes(pl)
+
     da_map = _recent_def_actions(pl_all)
     pl["def_actions_pg"] = pl["player_id"].map(da_map).fillna(0.0) if da_map else 0.0
 
@@ -258,11 +264,20 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     if not fpl.empty:
         by_full = {k: r for k, r in fpl.set_index("match_key").iterrows()}
         by_web  = {k: r for k, r in fpl.set_index("web_key").iterrows()}
+        # Initial + surname, ONLY where exactly one FPL player has the key: an ambiguous key is
+        # left unmatched rather than guessed (a wrong match would attach another man's team,
+        # price and injury status). See fpl_api.players_df init_key.
+        by_init = {}
+        if "init_key" in fpl.columns:
+            _uniq = fpl["init_key"].map(fpl["init_key"].value_counts()) == 1
+            by_init = {k: r for k, r in fpl[_uniq].set_index("init_key").iterrows()}
         for i, r in pl.iterrows():
             k = norm(r.get("player_name", ""))
             rec = by_full.get(k)
             if rec is None:
                 rec = by_web.get(k)
+            if rec is None:
+                rec = by_init.get(k)
             if rec is not None:
                 pl.at[i, "live_team"]         = rec["team"]
                 pl.at[i, "price"]             = rec["price"]
@@ -352,6 +367,12 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     _sr  = pd.to_numeric(pl.get("starter_rate", np.nan), errors="coerce")
     _ssr = pd.to_numeric(pl.get("season_start_rate", np.nan), errors="coerce")
     pl["p_start"] = (0.6 * _sr.fillna(_ssr) + 0.4 * _ssr.fillna(_sr)).clip(0, 1).fillna(0.6)
+    # V3's expected-minutes P(start) where available (see apply_attack_and_minutes); the FPL
+    # injury / doubtful adjustments below still apply on top of it.
+    pl["p_start_v9"] = pl["p_start"]
+    if "_v3_start" in pl.columns:
+        pl["p_start"] = pd.to_numeric(pl["_v3_start"], errors="coerce").fillna(pl["p_start"]).clip(0, 1)
+        pl = pl.drop(columns=["_v3_start"])
     pl.loc[pl["injured"] == True, "p_start"] = 0.0                                    # noqa: E712
     _chance = pd.to_numeric(pl.get("chance_of_playing", np.nan), errors="coerce")
     _dmask = (pl["doubtful"] == True) & _chance.notna()                              # noqa: E712
@@ -460,7 +481,10 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                         "doubtful", "chance_of_playing", "fpl_matched",
                         "fpl_ep_next", "fpl_ppg", "fpl_form", "total_points", "owned_pct",
                         "next_fixtures", "avg_fdr", "fixtures_available", "fixture_adj_pts",
-                        "n_fixtures_next", "total_xpts_next", "total_xpts_rot"]
+                        "n_fixtures_next", "total_xpts_next", "total_xpts_rot",
+                        # Player V3 provenance (2026-10-15): which model produced the row, and v9's own
+                        # numbers alongside, so the switch stays auditable row by row.
+                        "fantasy_model", "p_goal_v9", "p_assist_v9", "p_start_v9"]
             if c in pl.columns]
     out = pl[keep].reset_index(drop=True)
     out = rank_and_captains(out, base_col="fantasy_pts")

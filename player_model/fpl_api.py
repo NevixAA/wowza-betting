@@ -242,6 +242,11 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "total_points":      int(e.get("total_points") or 0),
             "match_key":         _norm(full),
             "web_key":           _norm(e.get("web_name", "")),
+            # first initial + surname: player_history carries API-Football's short form ("E. Haaland",
+            # "B. Saka"), which matched neither key above, so Fantasy dropped those players as
+            # "departed" (2026-10-15: 152 of 736 eligible PL players survived; Haaland, Saka and
+            # C. Palmer were all missing). _norm("E. Haaland") == "ehaaland" == this key.
+            "init_key":          _norm(f"{(e.get('first_name') or ' ')[0]}{e.get('second_name', '')}"),
         })
     return pd.DataFrame(rows)
 
