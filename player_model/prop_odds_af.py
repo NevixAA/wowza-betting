@@ -75,6 +75,10 @@ _BET_TO_MARKET = {
     "anytime goal scorer": ("goals", None),
     "player to be booked": ("cards", None),
     "player assists": ("assists", 0.5),
+    # Score OR assist, yes/no per player (Bet365 on API-Football, every league we cover). Captured
+    # from 2026-10-15 (owner request) so a Pro model can be validated against real prices before it
+    # tips - prop odds are pre-match only and cannot be backfilled. No v9 model or tip uses it yet.
+    "player to score or assist": ("goal_or_assist", None),
     "player shots on target total": ("sot", "line"),
     "player shots total": (None, None),          # total shots, not ON TARGET — not our market
 }
