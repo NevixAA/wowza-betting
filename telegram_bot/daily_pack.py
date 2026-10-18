@@ -477,6 +477,66 @@ def _pro_scoreboard() -> dict:
         return {}
 
 
+PRO_BET_BUILDER_URL = ("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/"
+                       "output/bet_builder_daily.csv")
+
+
+def _pro_bet_builder() -> pd.DataFrame:
+    """Pro's daily Bet Builder selection (Pro src/combo/notify.daily_selection): local sibling
+    checkout if present, else the public repo - the same source as the scoreboard above."""
+    for p in (os.getenv("PRO_LOCAL"), "../wowzaV9-Pro", "../pro", "../v10"):
+        if p:
+            f = os.path.join(p, "output", "bet_builder_daily.csv")
+            if os.path.exists(f):
+                return pd.read_csv(f)
+    try:
+        return pd.read_csv(PRO_BET_BUILDER_URL)
+    except Exception:                                                   # noqa: BLE001
+        return pd.DataFrame()
+
+
+def bet_builder_image(today: str) -> list[bytes]:
+    """Today's Bet Builder combos (owner 2026-10-18: moved here from Pro's separate Telegram
+    messages, which were "spammy"). Pro chooses them with its own tip rules; this only draws them:
+    one band per combo (match, joint probability, fair odds), one row per leg."""
+    d = _pro_bet_builder()
+    if d.empty or "match_date" not in d.columns:
+        return []
+    d = d[d["match_date"].astype(str).str[:10] == today]
+    if d.empty:
+        return []
+    cols = [("", 34), ("Leg", 640), ("Leg chance", 120)]
+    blocks = []                                   # one block = a combo's band + its legs
+    for _, r in d.iterrows():
+        fair = pd.to_numeric(pd.Series([r.get("fair_odds")]), errors="coerce").iloc[0]
+        p = float(r.get("joint_probability") or 0)
+        b = [{"band": f"{r.get('match')} · {r.get('league')} · all legs {p:.1%}"
+                      + (f" · fair odds {fair:.2f}" if pd.notna(fair) else "")}]
+        for i, leg in enumerate(str(r.get("legs") or "").split(" · "), start=1):
+            label, _, pct = leg.rpartition(" (")
+            b.append({"cells": [f"{i}.", label or leg, pct.rstrip(")") if label else ""]})
+        blocks.append(b)
+    # Never split a combo across two images: fill each image with whole combos only.
+    pages, cur = [], []
+    for b in blocks:
+        if cur and len(cur) + len(b) > ROWS_PER_IMAGE:
+            pages.append(cur)
+            cur = []
+        cur += b
+    if cur:
+        pages.append(cur)
+    label = pd.Timestamp(today).strftime("%a %d %b")
+    out = []
+    for n, rows in enumerate(pages, start=1):
+        out += render_table(f"Bet Builder — {label}" + (f"  ({n}/{len(pages)})" if len(pages) > 1 else ""),
+                            cols, rows,
+                            subtitle="Same-match combos where the legs are correlated more than a book "
+                                     "pricing them separately assumes. FAIR odds - no bookmaker builder "
+                                     "price is collected. Paper research, never staked.",
+                            footer="One combo per match · chosen by Pro's combo rules · not betting advice")
+    return out
+
+
 def scoreboard_images() -> list[bytes]:
     sb = _pro_scoreboard()
     if not sb:
@@ -743,6 +803,7 @@ def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
              ("results", lambda: results_image(yday)),
              ("record", lambda: record_image(today)),
              ("props", lambda: props_image(today)),
+             ("bet_builder", lambda: bet_builder_image(today)),
              ("sharp", lambda: sharp_image(today)),
              ("scoreboard", scoreboard_images)]
     for name, fn in steps:
@@ -756,7 +817,7 @@ def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
     n_tips = len(todays_rows(today))
     caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
                f"Today's tips ({n_tips}) · yesterday's results · record · player props · "
-               f"sharp moves · Pro scoreboard")
+               f"Bet Builder · sharp moves · Pro scoreboard")
     print("[daily_pack] " + ", ".join(notes))
     return pngs, caption
 
@@ -781,6 +842,15 @@ def send_daily_pack() -> bool:
     if not send_album(token, chat_id, pngs, caption):
         return False
     notified.add(key)
+    # Every tip the album showed counts as notified under the instant sender's own keys
+    # (owner 2026-10-18: no more instant tip messages - see notifier.instant_tip_allowed), so a later
+    # predict run cannot send any of them again; only tips first found AFTER this album go out alone.
+    try:
+        rows = todays_rows(today)
+        if "notify_key" in rows.columns:
+            notified.update(k for k in rows["notify_key"].dropna().astype(str) if k)
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] could not mark album tips as notified: {e}")
     _save_notified(notified)
     return True
 
