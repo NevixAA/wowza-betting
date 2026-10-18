@@ -1,4 +1,71 @@
 {
+  "36f6f36650046236bd0c864c56022567_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Belgrano de Cordoba",
+    "away": "Barracas Central",
+    "date": "2026-11-01 21:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.57,
+      "odds_away": 5.1,
+      "odds_draw": 3.23
+    },
+    "snapshots": [
+      {
+        "at": "2026-10-18 22:00",
+        "odds": {
+          "odds_home": 1.57,
+          "odds_away": 5.1,
+          "odds_draw": 3.23
+        },
+        "n_books": 7
+      }
+    ]
+  },
+  "bbf63c9655db106dd50c8c05f81c730e_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Newells Old Boys",
+    "away": "Union Santa Fe",
+    "date": "2026-11-01 21:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.0,
+      "odds_away": 3.2,
+      "odds_draw": 2.97
+    },
+    "snapshots": [
+      {
+        "at": "2026-10-18 22:00",
+        "odds": {
+          "odds_home": 2.0,
+          "odds_away": 3.2,
+          "odds_draw": 2.97
+        },
+        "n_books": 7
+      }
+    ]
+  },
+  "bbf63c9655db106dd50c8c05f81c730e_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Newells Old Boys",
+    "away": "Union Santa Fe",
+    "date": "2026-11-01 21:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.42,
+      "odds_under": 1.545
+    },
+    "snapshots": [
+      {
+        "at": "2026-10-18 22:00",
+        "odds": {
+          "odds_over": 2.42,
+          "odds_under": 1.545
+        },
+        "n_books": 2
+      }
+    ]
+  },
   "bc3e6591cce8528bfac5b62fdae2eeb3_h2h": {
     "league": "Argentina Primera Division",
     "home": "Boca Juniors",
@@ -19,6 +86,15 @@
           "odds_draw": 2.975
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-10-18 22:00",
+        "odds": {
+          "odds_home": 2.1,
+          "odds_away": 3.05,
+          "odds_draw": 2.95
+        },
+        "n_books": 7
       }
     ]
   },
@@ -40,6 +116,37 @@
           "odds_under": 1.56
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-10-18 22:00",
+        "odds": {
+          "odds_over": 2.41,
+          "odds_under": 1.545
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "e7c7e29c564581ebdb51705df5b9410f_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Estudiantes",
+    "away": "Instituto de Córdoba",
+    "date": "2026-11-01 00:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.08,
+      "odds_away": 3.84,
+      "odds_draw": 3.0
+    },
+    "snapshots": [
+      {
+        "at": "2026-10-18 22:00",
+        "odds": {
+          "odds_home": 2.08,
+          "odds_away": 3.84,
+          "odds_draw": 3.0
+        },
+        "n_books": 3
       }
     ]
   }
