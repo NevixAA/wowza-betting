@@ -189,6 +189,22 @@ def research_index() -> dict:
     return j
 
 
+def model_lineage() -> dict:
+    """Champion high-water mark evaluation (Pro src/analytics/model_lineage, weekly).
+
+    Small CSVs only. v9's own lineage records (pointer, decisions) are read by the page from the
+    local checkout — this is the part Pro computes: live results, health, the week table.
+    """
+    out = {"answers": read_json(_f("output/model_lineage/answers.json"))}
+    for name in ("current_champions_view", "champion_health", "retrain_week_table",
+                 "challenger_shadow_results", "model_churn", "champion_live_performance"):
+        try:
+            out[name] = read_csv(_f(f"output/model_lineage/{name}.csv"))
+        except Exception:                                             # noqa: BLE001
+            out[name] = pd.DataFrame()
+    return out
+
+
 def verdict(rel: str) -> dict:
     """One study's machine-readable verdict file, e.g. 'output/player_v3/player_v3_verdict.json'."""
     return read_json(_f(rel))
