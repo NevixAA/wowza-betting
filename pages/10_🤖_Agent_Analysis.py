@@ -26,6 +26,10 @@ sys.path.insert(0, str(V9_DIR))
 import config
 
 st.set_page_config(page_title="Match Validator | Wowza", page_icon="🔬", layout="wide")
+import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
+from dashboard_access import require as _require_tier  # noqa: E402
+_require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
+
 st.markdown("## 🔬 Match Validation Agent")
 st.caption("Independent model validation using formulas.md — APPROVES or DISAGREES with each signal.")
 

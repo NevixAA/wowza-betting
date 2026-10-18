@@ -33,6 +33,10 @@ import streamlit as st
 import dashboard_ui as ui
 
 st.set_page_config(page_title="Bet Builder | Wowza", page_icon="🧩", layout="wide")
+import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
+from dashboard_access import require as _require_tier  # noqa: E402
+_require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
+
 ui.autorefresh(minutes=5, key="builder_refresh")
 
 from dashboard_data.core import read_csv as _read_any, reachable, resolve_file  # noqa: E402

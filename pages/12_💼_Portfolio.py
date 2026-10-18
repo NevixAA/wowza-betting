@@ -26,6 +26,9 @@ def _read_csv(*args, **kwargs):
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from dashboard_access import require as _require_tier  # noqa: E402
+_require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
+
 import config
 
 st.set_page_config(page_title="Portfolio | Wowza", page_icon="💼", layout="wide")
