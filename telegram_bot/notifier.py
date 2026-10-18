@@ -337,6 +337,25 @@ def _drift_emoji(signal: str) -> str:
     return {"Confirmed": "✅", "Conflicted": "⚠️", "Neutral": "➡️", "New": "🆕"}.get(str(signal), "")
 
 
+def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None) -> bool:
+    """Should a NEW tip go out as its own message right now? (owner 2026-10-18: "too spammy").
+
+    No by default: every tip appears in its match day's morning album (telegram_bot/daily_pack),
+    which also marks each tip it shows as notified, so nothing is sent twice. Yes only when the
+    album cannot carry it any more - the match is TODAY and either today's album has already gone
+    (DIGEST|<today> recorded: a tip first found after it, ~3% of tips measured since 2026-09-15) or
+    it is past 12:00 UTC and no album went out at all (the scheduler failed; tips must not vanish).
+    TIPS_INSTANT_ALERTS=1 restores the old every-tip behaviour."""
+    if os.getenv("TIPS_INSTANT_ALERTS", "").strip() == "1":
+        return True
+    from datetime import timezone as _tz
+    now = now or datetime.now(_tz.utc)
+    today = now.strftime("%Y-%m-%d")
+    if str(match_date)[:10] != today:
+        return False
+    return f"DIGEST|{today}" in notified or now.hour >= 12
+
+
 def notify_new_snipers() -> int:
     """Check bets.csv for new SNIPER and VALUE tips and send Telegram alerts. Returns count sent."""
     cfg = _load_config()
@@ -424,6 +443,10 @@ def notify_new_snipers() -> int:
                 print(f"  SKIP both-sides: {row['home_team']} vs {row['away_team']} — "
                       f"already tipped {_opposite}, model now says {_side_now}")
                 continue
+
+        # Goes out in its day's morning album instead (not marked notified here: the album marks it).
+        if not instant_tip_allowed(row["date"], notified):
+            continue
 
         tier  = row["signal_tier"]
         side  = row.get("best_side") or row.get("bet", "")
@@ -2604,6 +2627,8 @@ def notify_side_bets() -> int:
         key = (f"SIDE|{str(row['date'])[:10]}|{row['home_team']}|{row['away_team']}"
                f"|{row['market']}" + (f"|{_sd}" if _sd and _sd.upper() not in ("YES", "OVER") else ""))
         if key in notified:
+            continue
+        if not instant_tip_allowed(row["date"], notified):      # morning album carries it
             continue
 
         tier  = row["signal_tier"]

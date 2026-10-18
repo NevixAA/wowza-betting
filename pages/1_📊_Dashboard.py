@@ -102,6 +102,61 @@ with col_upd:
         else:
             st.error(f"Error: {result.stderr[-500:]}")
 
+# ── Top picks: 3 lists of 5 (src/top_picks.py, 2026-10-18) ────────────────────
+# People take a few tips, not 60. These are the lists the morning album shows, frozen each morning and
+# scored; before the album has frozen today's lists the same lists are shown as a preview.
+@st.cache_data(ttl=300)
+def _top_picks(day: str):
+    from src import top_picks as _TP
+    fz = _TP.frozen(day)
+    return (fz, True) if not fz.empty else (_TP.todays_lists(day), False)
+
+
+@st.cache_data(ttl=300)
+def _top_scoreboard(days):
+    from src import top_picks as _TP
+    return _TP.scoreboard(days)
+
+
+try:
+    from src.top_picks import LIST_LABEL as _TPL, LISTS as _TPLISTS
+    _today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
+    _tp, _is_frozen = _top_picks(_today)
+    st.subheader("⭐ Top picks today")
+    st.caption(("Frozen this morning and scored." if _is_frozen else "Preview — frozen when the morning album goes out.")
+               + " Best bets: most expected profit with at least a 45% chance · Safest: the 5 shortest prices · "
+                 "Value: most expected profit. Chance = honest win estimate learned from past results.")
+    if _tp is None or _tp.empty:
+        st.info("No tips for today yet.")
+    else:
+        _cols = st.columns(3)
+        for _c, _name in zip(_cols, _TPLISTS):
+            _x = _tp[_tp["list"] == _name].sort_values("rank")
+            with _c:
+                st.markdown(f"**{_TPL[_name]}**")
+                if _x.empty:
+                    st.caption("nothing qualifies today")
+                    continue
+                st.dataframe(pd.DataFrame({
+                    "Match": _x["home_team"] + " v " + _x["away_team"], "Pick": _x["pick"],
+                    "Odds": _x["odds"].map(lambda v: f"{float(v):.2f}"),
+                    "Chance": _x["p_win"].map(lambda v: "–" if pd.isna(v) else f"{float(v):.0%}")}),
+                    hide_index=True, width="stretch")
+    _win = st.radio("Top-picks record", [7, 30, 0], horizontal=True,
+                    format_func=lambda w: "All time" if w == 0 else f"Last {w} days", key="tp_window")
+    _sb = _top_scoreboard(_win or None)
+    if _sb.empty:
+        st.caption("The record starts with the first frozen day.")
+    else:
+        st.dataframe(_sb.assign(list=_sb["list"].map(_TPL), hit_rate=(_sb["hit_rate"] * 100).round(1),
+                                roi=(_sb["roi"] * 100).round(1), zero_days=(_sb["zero_days"] * 100).round(0))
+                     .rename(columns={"list": "List", "days": "Days", "picks": "Picks", "wins": "Wins",
+                                      "hit_rate": "Hit %", "roi": "ROI %", "zero_days": "0/5 days %"}),
+                     hide_index=True, width="stretch")
+    st.divider()
+except Exception as _e:                                              # noqa: BLE001 - a viewer never dies
+    st.caption(f"Top picks unavailable ({type(_e).__name__})")
+
 # ── Load data ──────────────────────────────────────────────────────────────────
 df = load_bets()
 
