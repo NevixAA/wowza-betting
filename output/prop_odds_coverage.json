@@ -104,10 +104,10 @@
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
-    "empty_streak": 139,
+    "empty_streak": 140,
     "last_probe": "2026-10-18",
     "league": "Japan J-League",
-    "probes": 139,
+    "probes": 140,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
@@ -224,9 +224,9 @@
     "last_priced": "2026-10-18",
     "last_probe": "2026-10-18",
     "league": "Premier League",
-    "matched_events": 8,
-    "priced_events": 2418,
-    "probes": 2578,
+    "matched_events": 1,
+    "priced_events": 2413,
+    "probes": 2573,
     "unmatched_sample": [],
     "wanted_fixtures": 8
   },
@@ -276,9 +276,9 @@
     "last_priced": "2026-10-18",
     "last_probe": "2026-10-18",
     "league": "Serie A",
-    "matched_events": 8,
+    "matched_events": 2,
     "priced_events": 2451,
-    "probes": 2630,
+    "probes": 2628,
     "unmatched_sample": [],
     "wanted_fixtures": 8
   },
@@ -288,23 +288,23 @@
     "last_priced": "2026-10-18",
     "last_probe": "2026-10-18",
     "league": "La Liga",
-    "matched_events": 8,
-    "priced_events": 2040,
-    "probes": 2350,
+    "matched_events": 2,
+    "priced_events": 2039,
+    "probes": 2347,
     "unmatched_sample": [],
     "wanted_fixtures": 8
   },
   "soccer_uefa_champs_league": {
     "empty_streak": 0,
-    "far_empty_probes": 358,
+    "far_empty_probes": 356,
     "last_all_unmatched": "2026-10-14",
     "last_near_empty": "2026-10-14",
     "last_priced": "2026-10-18",
     "last_probe": "2026-10-18",
     "league": "Champions League",
-    "matched_events": 8,
-    "priced_events": 311,
-    "probes": 754,
+    "matched_events": 5,
+    "priced_events": 310,
+    "probes": 751,
     "unmatched_sample": [],
     "wanted_fixtures": 8
   },
@@ -338,17 +338,18 @@
   "soccer_usa_mls": {
     "empty_streak": 0,
     "far_empty_probes": 155,
+    "last_all_unmatched": "2026-10-18",
     "last_near_empty": "2026-10-18",
     "last_priced": "2026-10-18",
     "last_probe": "2026-10-18",
     "league": "USA MLS",
-    "matched_events": 6,
+    "matched_events": 0,
     "priced_events": 1797,
     "probes": 2013,
     "unmatched_sample": [
       "DC United vs FC Cincinnati",
       "FC Cincinnati vs DC United"
     ],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 1
   }
 }
