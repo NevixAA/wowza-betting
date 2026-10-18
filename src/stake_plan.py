@@ -33,6 +33,35 @@ SIDE_MARKET = {"btts": "BTTS", "over15": "OVER15", "over35": "OVER35"}
 BASIS = "notional bankroll, drawdown throttle not applied (no real-bankroll ledger)"
 
 
+PRO_RATINGS = "output/studies/league_ratings.json"
+
+
+def load_league_ratings(max_age_days: float = 8.0) -> dict:
+    """Pro's league ratings 1-10 (src/studies/league_results.py). Fail closed: missing, unreadable or
+    older than max_age_days -> {} (every league gets the minimum scale). Recorded timestamp, never mtime."""
+    import json
+    try:
+        j = None
+        for p in (os.getenv("PRO_LOCAL"), "../pro", "../wowzaV9-Pro"):
+            if p and os.path.exists(os.path.join(p, PRO_RATINGS)):
+                j = json.loads(open(os.path.join(p, PRO_RATINGS), encoding="utf-8").read())
+                break
+        if j is None:
+            import requests
+            r = requests.get("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + PRO_RATINGS, timeout=20)
+            j = r.json() if r.status_code == 200 else None
+        if not j:
+            return {}
+        age = (pd.Timestamp.now(tz="UTC") - pd.Timestamp(j["generated_at"])).total_seconds() / 86400
+        if not (0 <= age <= max_age_days):
+            return {}
+        return {str(k): int(v["rating"]) for k, v in (j.get("ratings") or {}).items()
+                if isinstance(v, dict) and isinstance(v.get("rating"), int) and 1 <= v["rating"] <= 10}
+    except Exception as e:                                           # noqa: BLE001 - fail closed
+        log.warning(f"league ratings unavailable ({type(e).__name__}) - minimum scale for every league")
+        return {}
+
+
 def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataFrame:
     """Tips -> the reader's input: fixture, league, model_type, market, signal_tier, odds."""
     rows = []
@@ -70,7 +99,9 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataF
         policy = load_policy()
         # size_day sizes ONE day (its daily and league caps are per day), and a predict run holds up to
         # a week of fixtures, so each match date is sized on its own.
-        days = [size_day(g, policy, bankroll=bankroll, peak=bankroll) for _, g in sel.groupby("date")] if len(sel) else []
+        ratings = load_league_ratings() if (policy.get("league_rating_sizing") or {}).get("enabled") else None
+        days = [size_day(g, policy, bankroll=bankroll, peak=bankroll, league_ratings=ratings)
+                for _, g in sel.groupby("date")] if len(sel) else []
         plan = pd.concat(days, ignore_index=True) if days else size_day(sel, policy, bankroll=bankroll, peak=bankroll)
         plan["bankroll_basis"] = BASIS
         plan["generated_at"] = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M:%S")
@@ -82,6 +113,10 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataF
                 prev = pd.read_csv(AUDIT, dtype=str, usecols=lambda c: c in key)
                 seen = set(map(tuple, prev[key].astype(str).values)) if set(key) <= set(prev.columns) else set()
                 new = new[[tuple(x) not in seen for x in new[key].astype(str).values]]
+                # Append under the EXISTING header: a new column (league_rating, 2026-10-18) must never
+                # shift every later value into the wrong column of an append-only file.
+                head = list(pd.read_csv(AUDIT, nrows=0).columns)
+                new = new.reindex(columns=head)
             if not new.empty:
                 new.to_csv(AUDIT, mode="a", header=not AUDIT.exists(), index=False)
         staked = plan[plan["final_fraction"] > 0] if not plan.empty else plan
