@@ -72,7 +72,11 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
                         "tier": r["signal_tier"], "market": f"O/U 2.5 {str(r.get('side', '')).upper()}",
                         "odds": r.get("odds"), "edge": r.get("edge_pct"),
                         "drift": r.get("drift_signal"), "model_prob": None,
-                        "generated_at": r.get("generated_at")})
+                        "generated_at": r.get("generated_at"),
+                        # the instant sender's dedup key (notifier.notify_new_snipers), so the
+                        # morning album can mark what it showed and nothing is sent twice
+                        "notify_key": f"{str(r['match_date'])[:10]}|{r['home_team']}|{r['away_team']}"
+                                      f"|{str(r.get('side', '')).upper()}"})
     if side.exists():
         s = config.drop_paper_leagues(pd.read_csv(side, low_memory=False))
         s = s[s["signal_tier"].isin(TIER_ORDER) & _in_range(s)]
@@ -85,7 +89,11 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
                         "model": r.get("model_type") or config.model_type_for_league(r["league"]),
                         "tier": r["signal_tier"], "market": label, "odds": r.get("odds"),
                         "edge": r.get("edge_pct"), "drift": None,
-                        "model_prob": r.get("model_prob"), "generated_at": r.get("generated_at")})
+                        "model_prob": r.get("model_prob"), "generated_at": r.get("generated_at"),
+                        # notifier.notify_side_bets' dedup key (side suffix only when not YES/OVER)
+                        "notify_key": (f"SIDE|{str(r['match_date'])[:10]}|{r['home_team']}|{r['away_team']}|{mk}"
+                                       + (f"|{_sd}" if (_sd := str(r.get('side', '') or '')) and _sd != 'nan'
+                                          and _sd.upper() not in ('YES', 'OVER') else ""))})
     d = pd.DataFrame(out)
     if d.empty:
         return d
