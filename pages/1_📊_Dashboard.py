@@ -163,11 +163,31 @@ try:
             _w = _wk.assign(List=_wk["list"].map(_lab), Kind=_wk["kind"].map(_kind),
                             **{"Hit %": (_wk["hit_rate"] * 100).round(0), "ROI %": (_wk["roi"] * 100).round(0),
                                "0/5 days %": (_wk["zero_days"] * 100).round(0)})
+            if "avg_odds" not in _w.columns:
+                _w["avg_odds"] = float("nan")
             st.dataframe(_w.sort_values(["week", "kind", "list"], ascending=[False, True, True])[
-                ["week", "Kind", "List", "Hit %", "ROI %", "0/5 days %", "days", "picks"]].rename(
-                columns={"week": "Week", "days": "Days", "picks": "Picks"}), hide_index=True, width="stretch")
+                ["week", "Kind", "List", "Hit %", "avg_odds", "ROI %", "0/5 days %", "days", "picks"]].rename(
+                columns={"week": "Week", "avg_odds": "Avg odds", "days": "Days", "picks": "Picks"}),
+                hide_index=True, width="stretch")
             st.caption("Live = the lists users were shown, frozen each morning and graded. Backtest = the walk-forward "
                        "test re-run on all history each day. Earlier weeks are never rewritten.")
+    # Best leagues (Pro src/studies/league_results.py): results separated by league, weekly history.
+    with st.expander("🏆 Best leagues — results by league"):
+        from dashboard_data import pro as _pro
+        _lg = _pro.read_csv(_pro._f("output/studies/league_results_weekly.csv"))
+        if _lg is None or _lg.empty:
+            st.caption("No league table yet — Pro writes it daily.")
+        else:
+            _wnd = st.radio("Window", ["season", "last_30_days"], horizontal=True, key="lg_window",
+                            format_func=lambda w: "Season to date" if w == "season" else "Last 30 days")
+            _t = _lg[(_lg["week"] == _lg["week"].max()) & (_lg["window"] == _wnd)].sort_values("rank")
+            st.dataframe(_t.assign(**{"Hit %": (_t["hit_rate"] * 100).round(0), "ROI %": (_t["roi"] * 100).round(0),
+                                      "Shrunk ROI %": (_t["shrunk_roi"] * 100).round(0)})[
+                ["rank", "league", "tips", "Hit %", "avg_odds", "ROI %", "Shrunk ROI %", "best_market", "label"]].rename(
+                columns={"rank": "#", "league": "League", "tips": "Tips", "avg_odds": "Avg odds",
+                         "best_market": "Best market", "label": "Label"}), hide_index=True, width="stretch")
+            st.caption("Ranked by ROI shrunk toward the average (a lucky handful cannot top it). PROVEN / LOSING = "
+                       "clear of break-even after correcting for testing many leagues at once.")
     st.divider()
 except Exception as _e:                                              # noqa: BLE001 - a viewer never dies
     st.caption(f"Top picks unavailable ({type(_e).__name__})")
