@@ -794,6 +794,81 @@ def props_model_check_image(today: str, weeks: int = 8) -> list[bytes]:
                                  "weeks with tips from the retrained models (fast learner, 10-12/10-13).")
 
 
+def _pro_csv(rel: str) -> pd.DataFrame:
+    """A Pro output CSV: local sibling checkout if present, else the public repo (as the scoreboard)."""
+    for p in (os.getenv("PRO_LOCAL"), "../wowzaV9-Pro", "../pro", "../v10"):
+        if p and os.path.exists(os.path.join(p, rel)):
+            return pd.read_csv(os.path.join(p, rel))
+    try:
+        return pd.read_csv("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + rel)
+    except Exception:                                                   # noqa: BLE001
+        return pd.DataFrame()
+
+
+TP_LABEL = {"BEST_BETS": "Best bets", "SAFEST": "Safest", "VALUE": "Value", "RANDOM_5": "Random 5",
+            "CURRENT": "Old order (tier, edge)"}
+
+
+def top_picks_week_image(now: _dt.datetime) -> list[bytes]:
+    """Weekly Top-picks table (Pro src/studies/top_picks_weekly.py): last completed week, to date, backtest."""
+    h = _pro_csv("output/studies/top_picks_weekly.csv")
+    if h.empty:
+        return []
+    done = (now - _dt.timedelta(days=7)).strftime("%G-W%V")              # the week that just finished
+    latest = h[h["week"] == h["week"].max()]
+    cols = [("List", 190), ("Hit", 70), ("Avg odds", 96), ("ROI", 80), ("0/5 days", 96), ("Picks", 70)]
+    rows = []
+    for kind, title, src in (("live_this_week", f"Live — week {done[-3:]}", h[h["week"] == done]),
+                             ("live_to_date", "Live — to date", latest),
+                             ("backtest", "Backtest — all days with 10+ tips", latest)):
+        x = src[src["kind"] == kind]
+        if x.empty:
+            continue
+        rows.append({"band": title})
+        for name in ("BEST_BETS", "SAFEST", "VALUE", "RANDOM_5", "CURRENT"):
+            r = x[x["list"] == name]
+            if r.empty:
+                continue
+            r = r.iloc[0]
+            roi = float(r["roi"])
+            odds = r.get("avg_odds")
+            rows.append({"cells": [TP_LABEL[name], f"{float(r['hit_rate']):.0%}",
+                                   "–" if pd.isna(odds) else f"{float(odds):.2f}", f"{roi:+.0%}",
+                                   f"{float(r['zero_days']):.0%}", str(int(r["picks"]))],
+                         "colours": {"ROI": GREEN if roi > 0 else RED}, "bold": {"ROI"}})
+    if not rows:
+        return []
+    return render_table("Top picks — weekly table", cols, rows,
+                        subtitle="Top 5 of each list per day. Live = what you were shown, frozen each morning. "
+                                 "Backtest = the same rules re-tested on all history.",
+                        footer="Flat 1 unit per pick · not betting advice")
+
+
+def leagues_image() -> list[bytes]:
+    """Best leagues, season to date (Pro src/studies/league_results.py)."""
+    h = _pro_csv("output/studies/league_results_weekly.csv")
+    if h.empty:
+        return []
+    t = h[(h["week"] == h["week"].max()) & (h["window"] == "season")].sort_values("rank")
+    if t.empty:
+        return []
+    lab = {"PROVEN": ("Proven", GREEN), "PROMISING": ("Promising", (37, 99, 235)), "NEUTRAL": ("Unclear", MUTED),
+           "NOT_ENOUGH": ("Too few", MUTED), "LOSING": ("Losing", RED)}
+    cols = [("#", 40), ("League", 270), ("Tips", 60), ("Hit", 64), ("Avg odds", 92), ("ROI", 76),
+            ("Best market", 190), ("", 110)]
+    rows = []
+    for r in t.itertuples(index=False):
+        name, col = lab.get(r.label, (r.label, MUTED))
+        rows.append({"cells": [str(int(r.rank)), r.league, str(int(r.tips)), f"{r.hit_rate:.0%}",
+                               f"{r.avg_odds:.2f}", f"{r.roi:+.0%}", r.best_market, name],
+                     "colours": {"ROI": GREEN if r.roi > 0 else RED, "": col}, "bold": {""}})
+    return render_table("Best leagues — season to date", cols, rows,
+                        subtitle="All settled tips per league. Ranked by ROI shrunk toward the average, so a lucky "
+                                 "handful cannot top the table. Proven / Losing = clear of break-even even after "
+                                 "allowing for testing many leagues at once.",
+                        footer="Flat 1 unit per tip · paper leagues excluded · not betting advice")
+
+
 def send_weekly_pack() -> bool:
     """Monday album: week by market, week by league, props week, Pro scoreboard.
     Dedup WEEKLY|<iso-year>-W<week> in notified.json. Returns True if sent."""
@@ -810,7 +885,9 @@ def send_weekly_pack() -> bool:
         print("[weekly_pack] already sent this week")
         return False
     pngs, notes = [], []
-    for name, fn in (("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
+    for name, fn in (("top_picks", lambda: top_picks_week_image(now)),
+                     ("leagues", leagues_image),
+                     ("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
                      ("props", lambda: props_week_image(now.strftime("%Y-%m-%d"))),
                      ("props_check", lambda: props_model_check_image(now.strftime("%Y-%m-%d"))),
                      ("scoreboard", scoreboard_images)):
