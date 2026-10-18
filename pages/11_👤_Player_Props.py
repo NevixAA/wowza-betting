@@ -24,6 +24,10 @@ import streamlit as st
 import dashboard_ui as ui
 
 st.set_page_config(page_title="Player Props | Wowza", page_icon="👤", layout="wide")
+import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
+from dashboard_access import require as _require_tier  # noqa: E402
+_require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
+
 ui.autorefresh(minutes=2, key="11_player_props_refresh")
 BASE_DIR = Path(__file__).resolve().parents[1]
 TIPS_FILE = BASE_DIR / "output" / "player_tips.csv"

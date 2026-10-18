@@ -19,6 +19,10 @@ from dashboard_data import fantasy as _fdata, ui as dui
 from player_model.fantasy import rank_and_captains, MIN_CAPTAIN_START
 
 st.set_page_config(page_title="Fantasy | Wowza", page_icon="⚽", layout="wide")
+import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
+from dashboard_access import require as _require_tier  # noqa: E402
+_require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
+
 # Was components.v1.html with a JS reload — an API whose announced removal date (2026-06-01) has
 # passed, and which reloaded the whole tab and so DISCARDED every filter the user had set.
 ui.autorefresh(minutes=2, key="fantasy_refresh")

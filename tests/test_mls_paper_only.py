@@ -101,7 +101,9 @@ def test_the_dashboard_ledger_excludes_mls_by_default():
 
 
 @pytest.mark.parametrize("page", ["pages/12_💼_Portfolio.py", "pages/1_📊_Dashboard.py",
-                                  "pages/5_🎯_Success_Rates.py", "app.py"])
+                                  "pages/5_🎯_Success_Rates.py",
+                                  # app.py became the tier router 2026-10-18; its ledger reads moved here
+                                  "pages/00_🎯_Home.py"])
 def test_every_page_that_reads_a_ledger_directly_filters_it(page):
     src = (ROOT / page).read_text(encoding="utf-8")
     assert len(re.findall(r"pd\.read_csv\(", src)) == 1, f"{page} bypasses the paper filter"

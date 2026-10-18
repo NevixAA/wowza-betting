@@ -16,6 +16,9 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from dashboard_access import require as _require_tier  # noqa: E402
+_require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
+
 from dashboard_data import pro, ui
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same

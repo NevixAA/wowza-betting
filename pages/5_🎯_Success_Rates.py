@@ -103,23 +103,45 @@ if df.empty:
     st.stop()
 
 cut = getattr(config, "PERFORMANCE_CUTOFF_DATE", None)
+
+# ── tier windows (dashboard_access.WINDOWS, 2026-10-18): free = last 7 days of STAKED bets only;
+# pro = 7/14/30/60/90 days; admin also "all time". The window is applied to the settled match date.
+from dashboard_access import WINDOWS, current_tier  # noqa: E402
+_tier = current_tier()
+_wins = WINDOWS[_tier]
+if len(_wins) > 1:
+    window = st.radio("Period", _wins, horizontal=True, index=0,
+                      format_func=lambda w: "All time" if w == 0 else f"Last {w} days")
+else:
+    window = _wins[0]
+    st.caption(f"Last {window} days · Wowza Pro shows 7 / 14 / 30 / 60 / 90 days.")
+
 c1, c2, c3 = st.columns([1.2, 1, 1])
-with c1:
-    use_cut = st.checkbox(
-        f"Apply PERFORMANCE_CUTOFF_DATE ({cut})", value=bool(cut),
-        help="v9 counts P&L only from this date. Earlier rows still contribute CLV but predate "
-             "fixes, so pooling them misstates current performance.")
-with c2:
-    scope = st.radio("Scope", ["STAKED only (SNIPER/MARKSMAN)", "All tiers"], index=0,
-                     help="VALUABLE is recorded for measurement and never bet. Including it in a "
-                          "win rate describes something other than what the money did.")
-with c3:
-    min_n = st.number_input("Hide cells with fewer than n", 1, 100, 10, 1,
-                            help="A rate on a handful of bets is noise. Hidden, not zeroed.")
+if _tier == "free":
+    use_cut, scope = bool(cut), "STAKED only (SNIPER/MARKSMAN)"
+    with c3:
+        min_n = st.number_input("Hide cells with fewer than n", 1, 100, 5, 1,
+                                help="A rate on a handful of bets is noise. Hidden, not zeroed.")
+else:
+    with c1:
+        use_cut = st.checkbox(
+            f"Apply PERFORMANCE_CUTOFF_DATE ({cut})", value=bool(cut),
+            help="v9 counts P&L only from this date. Earlier rows still contribute CLV but predate "
+                 "fixes, so pooling them misstates current performance.")
+    with c2:
+        scope = st.radio("Scope", ["STAKED only (SNIPER/MARKSMAN)", "All tiers"], index=0,
+                         help="VALUABLE is recorded for measurement and never bet. Including it in a "
+                              "win rate describes something other than what the money did.")
+    with c3:
+        min_n = st.number_input("Hide cells with fewer than n", 1, 100, 10, 1,
+                                help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 
 d = df.copy()
 if use_cut and cut:
     d = d[d["_date"].isna() | (d["_date"] >= pd.to_datetime(cut))]
+if window:
+    _since = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=int(window))
+    d = d[d["_date"] >= _since]
 if scope.startswith("STAKED"):
     d = d[d["_tier"].isin(STAKED)]
 
