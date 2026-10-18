@@ -44,9 +44,70 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-tab_latest, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
-    ["Latest findings", "Does it learn?", "Tips sent (1X2 · Bet Builder)", "Team studies", "Canonical store",
-     "Governance", "Health"])
+tab_latest, tab_champ, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
+    ["Latest findings", "Model champions", "Does it learn?", "Tips sent (1X2 · Bet Builder)", "Team studies",
+     "Canonical store", "Governance", "Health"])
+
+# ── champion high-water mark (owner 2026-10-18) ───────────────────────────────────────────────
+with tab_champ:
+    import json as _json
+    st.subheader("Model champions — the high-water mark")
+    st.markdown(
+        "**Retraining is an experiment; promotion is a privilege.** Every retrain trains a *challenger*. "
+        "It replaces the serving model only when it is clearly better on the same fixtures. Worse or "
+        "tied keeps the champion; *possibly* better is shadowed — it predicts the same live fixtures "
+        "next to the champion, without ever producing a tip, until the evidence decides. Weekly "
+        "results still swing with football; what may not slip is the quality of the model serving.")
+    _root = Path(__file__).resolve().parents[1]
+    try:
+        _ptr = _json.loads((_root / "models" / "registry" / "current_champions.json").read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        _ptr = {}
+    try:
+        _dec = pd.read_csv(_root / "output" / "model_lineage" / "retrain_batches.csv")
+    except Exception:                                                  # noqa: BLE001
+        _dec = pd.DataFrame()
+    ml = pro.model_lineage()
+    view = ml.get("current_champions_view", pd.DataFrame())
+    if len(view):
+        ui.table(view.rename(columns=str))
+    elif _ptr:
+        ui.table(pd.DataFrame([{"model": k, "champion": v.get("model_version"),
+                                "since": v.get("champion_since")} for k, v in sorted(_ptr.items())]))
+    else:
+        st.info("No champion registry yet.")
+
+    # lineage timeline: one line per model, last 12 decisions, oldest -> newest
+    if len(_dec):
+        st.markdown("**Lineage — last 12 retrains per model** (oldest → newest)")
+        _sym = {"PROMOTE": "⬆️ promoted", "KEEP_CHAMPION": "⏸ kept", "SHADOW_MORE": "🔬 shadow",
+                "LEGACY_PROMOTED": "↑ old-rule promote", "LEGACY_BLOCKED": "⛔ old-rule block"}
+        for mt, g in _dec.groupby("model_type"):
+            chain = " → ".join(_sym.get(str(v), str(v)) for v in g["verdict"].tail(12))
+            st.markdown(f"- **{mt}**: {chain}")
+        st.caption("Before 2026-10-18 the old rule promoted almost every retrain (each champion lived about a "
+                   "day). From 2026-10-18 only a proven improvement promotes.")
+
+    a = ml.get("answers") or {}
+    if a:
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Retrains analysed", a.get("RETRAIN_ATTEMPTS_ANALYZED"))
+        c2.metric("Promoted", a.get("PROMOTIONS"))
+        c3.metric("Churn rate", a.get("MODEL_CHURN_RATE"))
+        c4.metric("Head-to-head graded", a.get("H2H_GRADED"))
+        st.caption(f"Best proven improvement: {a.get('BEST_PROVEN_CHAMPION_IMPROVEMENT')}")
+    wt = ml.get("retrain_week_table", pd.DataFrame())
+    if len(wt):
+        with st.expander("Retrain → what happened next (the week table)"):
+            st.caption("Future results = settled bets the model generated until the next retrain decision. "
+                       "WEEKLY_RESULT_VARIANCE_HIGH: one week never demotes a champion.")
+            ui.table(wt.tail(40))
+    for key, title in (("challenger_shadow_results", "Shadow challengers vs champion (same live fixtures)"),
+                       ("champion_health", "Champion health"), ("model_churn", "Churn by model")):
+        df = ml.get(key, pd.DataFrame())
+        if len(df):
+            with st.expander(title):
+                ui.table(df)
 
 # ── every study's latest verdict, newest first (Pro output/research_index.json) ──────────────
 with tab_latest:
