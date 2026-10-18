@@ -477,6 +477,45 @@ def _pro_scoreboard() -> dict:
         return {}
 
 
+def top_picks_image(today: str, freeze: bool = False) -> list[bytes]:
+    """The 3 lists of 5 (src/top_picks.py) - first in the album, because people take a few tips, not 68.
+    freeze=True (the real send) logs them once to output/top_picks_log.csv so they are graded later."""
+    from src import top_picks as TP
+    d = TP.freeze_day(today) if freeze else TP.todays_lists(today)
+    if d is None or d.empty:
+        return []
+    sb = TP.scoreboard(30)
+    desc = {"BEST_BETS": "most expected profit, at least a 45% chance", "SAFEST": "the 5 shortest prices",
+            "VALUE": "most expected profit"}
+    cols = [("#", 34), ("Match", 330), ("League", 180), ("Pick", 110), ("Odds", 70), ("Chance", 86)]
+    rows = []
+
+    def _ids(n):
+        x = d[d["list"] == n].sort_values("rank")
+        return list(zip(x["home_team"], x["away_team"], x["market"]))
+
+    same_bv = bool(_ids("BEST_BETS")) and _ids("BEST_BETS") == _ids("VALUE")
+    for name in TP.LISTS:
+        x = d[d["list"] == name].sort_values("rank")
+        if x.empty or (same_bv and name == "VALUE"):
+            continue                        # identical to Best bets today: shown once (both still logged)
+        rec = sb[sb["list"] == name] if len(sb) else sb
+        rec_txt = (f" · last 30 days: {rec['hit_rate'].iloc[0]:.0%} hit, ROI {rec['roi'].iloc[0]:+.0%}"
+                   if len(rec) else " · record starts today")
+        title = ("Best bets = Value today — most expected profit, every pick at least a 45% chance"
+                 if same_bv and name == "BEST_BETS" else f"{TP.LIST_LABEL[name]} — {desc[name]}")
+        rows.append({"band": f"{title}{rec_txt}"})
+        for r in x.itertuples(index=False):
+            pw = "–" if pd.isna(r.p_win) else f"{float(r.p_win):.0%}"
+            rows.append({"cells": [str(r.rank), f"{r.home_team} v {r.away_team}", r.league, r.pick,
+                                   f"{float(r.odds):.2f}", pw]})
+    label = pd.Timestamp(today).strftime("%a %d %b")
+    return render_table(f"Top picks — {label}", cols, rows,
+                        subtitle="Taking a few tips rather than all of them? Start here. Chance = our honest "
+                                 "win estimate, learned from past results. The full list follows.",
+                        footer="Frozen each morning and scored · not betting advice")
+
+
 PRO_BET_BUILDER_URL = ("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/"
                        "output/bet_builder_daily.csv")
 
@@ -791,14 +830,15 @@ def send_weekly_pack() -> bool:
 
 # ── The pack ──────────────────────────────────────────────────────────────────
 
-def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
+def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[list[bytes], str]:
     now = now or _dt.datetime.now(_dt.timezone.utc)
     today = now.strftime("%Y-%m-%d")
     yday = (now - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     header = now.strftime("%a %d %b")
     pngs: list[bytes] = []
     notes = []
-    steps = [("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
+    steps = [("top_picks", lambda: top_picks_image(today, freeze=freeze)),
+             ("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
               if len(todays_rows(today)) else []),
              ("results", lambda: results_image(yday)),
              ("record", lambda: record_image(today)),
@@ -815,9 +855,15 @@ def build_pack(now: _dt.datetime | None = None) -> tuple[list[bytes], str]:
             print(f"[daily_pack] {name} skipped: {type(e).__name__}: {e}")
             notes.append(f"{name} FAILED")
     n_tips = len(todays_rows(today))
+    try:
+        from src.top_picks import day_line
+        yline = day_line(yday)
+    except Exception:                                                   # noqa: BLE001
+        yline = ""
     caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
-               f"Today's tips ({n_tips}) · yesterday's results · record · player props · "
-               f"Bet Builder · sharp moves · Pro scoreboard")
+               f"Top picks · today's tips ({n_tips}) · yesterday's results · record · player props · "
+               f"Bet Builder · sharp moves · Pro scoreboard"
+               + (f"\nYesterday's top picks: {yline}" if yline else ""))
     print("[daily_pack] " + ", ".join(notes))
     return pngs, caption
 
@@ -835,7 +881,7 @@ def send_daily_pack() -> bool:
     if key in notified:
         print("[daily_pack] already sent today")
         return False
-    pngs, caption = build_pack()
+    pngs, caption = build_pack(freeze=True)                 # the real send freezes today's top picks
     if not pngs:
         print("[daily_pack] nothing to send")
         return False
