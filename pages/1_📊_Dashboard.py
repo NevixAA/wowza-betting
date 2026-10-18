@@ -150,6 +150,24 @@ try:
                      .rename(columns={"list": "List", "days": "Days", "picks": "Picks", "wins": "Wins",
                                       "hit_rate": "Hit %", "roi": "ROI %", "zero_days": "0/5 days %"}),
                      hide_index=True, width="stretch")
+    # Weekly table, stored week by week by Pro (src/studies/top_picks_weekly.py): live record + backtest.
+    with st.expander("📅 Weekly table — live record and backtest, week by week"):
+        from dashboard_data import pro as _pro
+        _wk = _pro.read_csv(_pro._f("output/studies/top_picks_weekly.csv"))
+        if _wk is None or _wk.empty:
+            st.caption("No weekly table yet — Pro writes it daily.")
+        else:
+            _lab = {"BEST_BETS": "Best bets", "SAFEST": "Safest", "VALUE": "Value", "RANDOM_5": "Random 5",
+                    "CURRENT": "Current order"}
+            _kind = {"live_this_week": "Live · this week", "live_to_date": "Live · to date", "backtest": "Backtest"}
+            _w = _wk.assign(List=_wk["list"].map(_lab), Kind=_wk["kind"].map(_kind),
+                            **{"Hit %": (_wk["hit_rate"] * 100).round(0), "ROI %": (_wk["roi"] * 100).round(0),
+                               "0/5 days %": (_wk["zero_days"] * 100).round(0)})
+            st.dataframe(_w.sort_values(["week", "kind", "list"], ascending=[False, True, True])[
+                ["week", "Kind", "List", "Hit %", "ROI %", "0/5 days %", "days", "picks"]].rename(
+                columns={"week": "Week", "days": "Days", "picks": "Picks"}), hide_index=True, width="stretch")
+            st.caption("Live = the lists users were shown, frozen each morning and graded. Backtest = the walk-forward "
+                       "test re-run on all history each day. Earlier weeks are never rewritten.")
     st.divider()
 except Exception as _e:                                              # noqa: BLE001 - a viewer never dies
     st.caption(f"Top picks unavailable ({type(_e).__name__})")
