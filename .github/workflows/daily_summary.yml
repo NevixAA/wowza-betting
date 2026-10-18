@@ -144,7 +144,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in telegram_bot/notified.json telegram_bot/player_notified.json; do git add -f "$f" 2>/dev/null || true; done
+          for f in telegram_bot/notified.json telegram_bot/player_notified.json output/top_picks_log.csv; do git add -f "$f" 2>/dev/null || true; done
           git diff --staged --quiet || \
             git commit -m "auto: daily digest sent $(date -u '+%Y-%m-%d')"
           pushed=0
