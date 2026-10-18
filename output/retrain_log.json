@@ -2225,7 +2225,386 @@
         },
         "at": "2026-10-11T10:01:49Z"
       }
+    },
+    "2026-10-18": {
+      "standard": {
+        "promoted": true,
+        "why": "log loss 0.68845 -> 0.68826 (-0.00018), within the 0.03000 tolerance",
+        "rows": 21631,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "CHALLENGER",
+          "n": 4327,
+          "delta_log_loss": -0.00017,
+          "delta_brier": -8.3e-05,
+          "ci_log_loss": [
+            -0.001193,
+            0.000761
+          ],
+          "reasons": [
+            "ci_excludes_zero: 95% block-bootstrap CI [-0.001193, +0.000761] includes zero",
+            "material_improvement: delta -0.000170 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": true,
+            "brier_not_worse": true,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": true,
+          "live_gate_reason": "log loss 0.68845 -> 0.68826 (-0.00018), within the 0.03000 tolerance",
+          "agrees_with_live_gate": false
+        },
+        "logloss_old": 0.68845,
+        "logloss_new": 0.68826,
+        "canary": {
+          "available": true,
+          "n": 4327,
+          "std_old": 0.0392,
+          "std_new": 0.03556,
+          "spread_ratio": 0.907,
+          "mean_old": 0.53778,
+          "mean_new": 0.53802,
+          "frac_crossed_half": 0.0964,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0874,
+          "flags": []
+        },
+        "at": "2026-10-18T07:59:46Z"
+      },
+      "newformat": {
+        "promoted": true,
+        "why": "log loss 0.68250 -> 0.68080 (-0.00170), within the 0.03000 tolerance",
+        "rows": 38606,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "CHALLENGER",
+          "n": 7722,
+          "delta_log_loss": -0.00095,
+          "delta_brier": -0.000449,
+          "ci_log_loss": [
+            -0.001907,
+            8.6e-05
+          ],
+          "reasons": [
+            "ci_excludes_zero: 95% block-bootstrap CI [-0.001907, +0.000086] includes zero",
+            "material_improvement: delta -0.000950 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": true,
+            "brier_not_worse": true,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": true,
+          "live_gate_reason": "log loss 0.68250 -> 0.68080 (-0.00170), within the 0.03000 tolerance",
+          "agrees_with_live_gate": false
+        },
+        "logloss_old": 0.6825,
+        "logloss_new": 0.6808,
+        "canary": {
+          "available": true,
+          "n": 7722,
+          "std_old": 0.07985,
+          "std_new": 0.07975,
+          "spread_ratio": 0.999,
+          "mean_old": 0.52287,
+          "mean_new": 0.5264,
+          "frac_crossed_half": 0.0776,
+          "frac_moved_gt_10pp": 0.0005,
+          "max_abs_move": 0.1636,
+          "flags": []
+        },
+        "at": "2026-10-18T08:00:14Z"
+      },
+      "ht_over05": {
+        "promoted": true,
+        "why": "log loss 0.60402 -> 0.60378 (-0.00024), within the 0.03000 tolerance",
+        "rows": 21236,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "CHALLENGER",
+          "n": 4248,
+          "delta_log_loss": -0.000171,
+          "delta_brier": -7e-05,
+          "ci_log_loss": [
+            -0.000634,
+            0.000311
+          ],
+          "reasons": [
+            "ci_excludes_zero: 95% block-bootstrap CI [-0.000634, +0.000311] includes zero",
+            "material_improvement: delta -0.000171 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": true,
+            "brier_not_worse": true,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": true,
+          "live_gate_reason": "log loss 0.60402 -> 0.60378 (-0.00024), within the 0.03000 tolerance",
+          "agrees_with_live_gate": false
+        },
+        "logloss_old": 0.60402,
+        "logloss_new": 0.60378,
+        "canary": {
+          "available": true,
+          "n": 4248,
+          "std_old": 0.01196,
+          "std_new": 0.00967,
+          "spread_ratio": 0.809,
+          "mean_old": 0.70566,
+          "mean_new": 0.70647,
+          "frac_crossed_half": 0.0,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0354,
+          "flags": []
+        },
+        "at": "2026-10-18T08:01:00Z"
+      },
+      "ht_over15": {
+        "promoted": false,
+        "why": "log loss ROSE +0.00064 (0.64968 -> 0.65031) on the incumbent's own holdout \u2014 a worse candidate does not replace a serving champion",
+        "rows": 21236,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "REJECTED",
+          "n": 4248,
+          "delta_log_loss": 0.000984,
+          "delta_brier": 0.000453,
+          "ci_log_loss": [
+            0.000284,
+            0.001656
+          ],
+          "reasons": [
+            "log_loss_not_worse: delta +0.000984 (0.64772 -> 0.64870)",
+            "brier_not_worse: delta +0.000453",
+            "ci_excludes_zero: 95% block-bootstrap CI [+0.000284, +0.001656] includes zero",
+            "material_improvement: delta +0.000984 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": false,
+            "brier_not_worse": false,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": false,
+          "live_gate_reason": "log loss ROSE +0.00064 (0.64968 -> 0.65031) on the incumbent's own holdout \u2014 a worse candidate does not replace a serving champion",
+          "agrees_with_live_gate": true
+        },
+        "logloss_old": 0.64968,
+        "logloss_new": 0.65031,
+        "canary": {
+          "available": true,
+          "n": 4248,
+          "std_old": 0.021,
+          "std_new": 0.0114,
+          "spread_ratio": 0.543,
+          "mean_old": 0.35483,
+          "mean_new": 0.35575,
+          "frac_crossed_half": 0.0,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0652,
+          "flags": [
+            "spread x0.54"
+          ]
+        },
+        "at": "2026-10-18T08:01:44Z"
+      },
+      "btts": {
+        "promoted": false,
+        "why": "log loss ROSE +0.00022 (0.68575 -> 0.68597) on the incumbent's own holdout \u2014 a worse candidate does not replace a serving champion",
+        "rows": 60237,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "CHALLENGER",
+          "n": 12048,
+          "delta_log_loss": 0.000179,
+          "delta_brier": 9.1e-05,
+          "ci_log_loss": [
+            -0.000537,
+            0.000946
+          ],
+          "reasons": [
+            "log_loss_not_worse: delta +0.000179 (0.68465 -> 0.68483)",
+            "ci_excludes_zero: 95% block-bootstrap CI [-0.000537, +0.000946] includes zero",
+            "material_improvement: delta +0.000179 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": false,
+            "brier_not_worse": true,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": false,
+          "live_gate_reason": "log loss ROSE +0.00022 (0.68575 -> 0.68597) on the incumbent's own holdout \u2014 a worse candidate does not replace a serving champion",
+          "agrees_with_live_gate": true
+        },
+        "logloss_old": 0.68575,
+        "logloss_new": 0.68597,
+        "canary": {
+          "available": true,
+          "n": 12048,
+          "std_old": 0.04069,
+          "std_new": 0.03603,
+          "spread_ratio": 0.886,
+          "mean_old": 0.5495,
+          "mean_new": 0.54837,
+          "frac_crossed_half": 0.0644,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0982,
+          "flags": []
+        },
+        "at": "2026-10-18T08:02:36Z"
+      },
+      "over15": {
+        "promoted": true,
+        "why": "log loss 0.54486 -> 0.54480 (-0.00006), within the 0.03000 tolerance",
+        "rows": 60237,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "CHALLENGER",
+          "n": 12048,
+          "delta_log_loss": -0.000133,
+          "delta_brier": -6.9e-05,
+          "ci_log_loss": [
+            -0.000791,
+            0.000571
+          ],
+          "reasons": [
+            "ci_excludes_zero: 95% block-bootstrap CI [-0.000791, +0.000571] includes zero",
+            "material_improvement: delta -0.000133 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": true,
+            "brier_not_worse": true,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": true,
+          "live_gate_reason": "log loss 0.54486 -> 0.54480 (-0.00006), within the 0.03000 tolerance",
+          "agrees_with_live_gate": false
+        },
+        "logloss_old": 0.54486,
+        "logloss_new": 0.5448,
+        "canary": {
+          "available": true,
+          "n": 12048,
+          "std_old": 0.04517,
+          "std_new": 0.0434,
+          "spread_ratio": 0.961,
+          "mean_old": 0.76124,
+          "mean_new": 0.7615,
+          "frac_crossed_half": 0.0001,
+          "frac_moved_gt_10pp": 0.0002,
+          "max_abs_move": 0.1129,
+          "flags": []
+        },
+        "at": "2026-10-18T08:03:28Z"
+      },
+      "over35": {
+        "promoted": false,
+        "why": "log loss ROSE +0.00030 (0.60125 -> 0.60155) on the incumbent's own holdout \u2014 a worse candidate does not replace a serving champion",
+        "rows": 60237,
+        "comparison_basis": "same_holdout",
+        "v91_gate": {
+          "available": true,
+          "status": "CHALLENGER",
+          "n": 12048,
+          "delta_log_loss": 5e-05,
+          "delta_brier": 1.6e-05,
+          "ci_log_loss": [
+            -0.000439,
+            0.000549
+          ],
+          "reasons": [
+            "log_loss_not_worse: delta +0.000050 (0.59916 -> 0.59921)",
+            "ci_excludes_zero: 95% block-bootstrap CI [-0.000439, +0.000549] includes zero",
+            "material_improvement: delta +0.000050 vs required <= -0.001000",
+            "second_period: not run"
+          ],
+          "checks": {
+            "same_dataset": true,
+            "min_sample": true,
+            "log_loss_not_worse": false,
+            "brier_not_worse": true,
+            "ci_excludes_zero": false,
+            "material_improvement": false,
+            "calibration_held": true,
+            "prediction_canary": true,
+            "no_league_regression": true,
+            "second_period": false
+          },
+          "live_gate_promoted": false,
+          "live_gate_reason": "log loss ROSE +0.00030 (0.60125 -> 0.60155) on the incumbent's own holdout \u2014 a worse candidate does not replace a serving champion",
+          "agrees_with_live_gate": true
+        },
+        "logloss_old": 0.60125,
+        "logloss_new": 0.60155,
+        "canary": {
+          "available": true,
+          "n": 12048,
+          "std_old": 0.06263,
+          "std_new": 0.05796,
+          "spread_ratio": 0.925,
+          "mean_old": 0.29677,
+          "mean_new": 0.29695,
+          "frac_crossed_half": 0.0046,
+          "frac_moved_gt_10pp": 0.0001,
+          "max_abs_move": 0.1119,
+          "flags": []
+        },
+        "at": "2026-10-18T08:04:20Z"
+      }
     }
   },
-  "latest_run": "2026-10-11"
+  "latest_run": "2026-10-18"
 }
