@@ -2559,8 +2559,14 @@ def notify_retrain_result() -> bool:
         if not v.get("promoted"):
             sym = "⛔"
         lines.append(f"{sym} <b>{_escape_html(m)}</b>  {score}")
+        # Champion high-water mark (2026-10-18): a non-promotion is either KEEP_CHAMPION
+        # (worse/tied) or SHADOW_MORE (possibly better, now measured head-to-head on live
+        # fixtures). Older log entries have no verdict and keep the old wording.
+        _verdict = {"KEEP_CHAMPION": "KEEP — champion stays",
+                    "SHADOW_MORE": "SHADOW — challenger now tested live, champion stays"}.get(
+                        str(v.get("verdict", "")), "BLOCKED — incumbent kept")
         lines.append(f"     {_escape_html(str(v.get('rows', '?')))} rows · "
-                     f"{'PROMOTED' if v.get('promoted') else 'BLOCKED — incumbent kept'}")
+                     f"{'PROMOTED' if v.get('promoted') else _verdict}")
         if not v.get("promoted"):
             lines.append(f"     <i>{_escape_html(str(v.get('why', ''))[:140])}</i>")
     lines += ["", f"📈 <b>{len(better)} of {len(models)}</b> model(s) got sharper"

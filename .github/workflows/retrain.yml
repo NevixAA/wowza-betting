@@ -213,6 +213,13 @@ jobs:
                    output/backtest_results_newformat.csv output/backtest_by_league_newformat.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
+          # CHAMPION HIGH-WATER MARK (2026-10-18). The registry (manifests, champion pointer,
+          # immutable champion bytes, the parked SHADOW_MORE challenger) and the lineage records
+          # (retrain_batches / champion_history / high_water_mark). -A so a challenger slot
+          # cleared by a promotion is staged as a deletion. Directory-scoped, never repo-wide.
+          for d in models/registry output/model_lineage; do
+            [ -d "$d" ] && git add -A -f "$d" || echo "  (skip, not present: $d)"
+          done
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: main-model retrain $(date -u '+%Y-%m-%d')"

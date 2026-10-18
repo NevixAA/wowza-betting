@@ -1,0 +1,56 @@
+{
+  "model_type": "ht_over05",
+  "model_version": "ht_over05_20261018T080423Z_359b491a",
+  "retrain_batch_id": "rb_2026-10-18_legacy",
+  "trained_at": null,
+  "deployed_at": "2026-10-18T08:04:23Z",
+  "training_start": null,
+  "training_end": null,
+  "training_cutoff": null,
+  "training_rows": 21236,
+  "feature_schema_version": null,
+  "code_commit_sha": "412f95dd1440",
+  "git_commit": "412f95dd144080bcd3f50b5fba757d17f27385f9",
+  "artifact_sha256": "359b491a454efa0eb5236bae365bf6a9784067583cae2d2db3588179c4062832",
+  "parent_champion_version": "ht_over05_20261011T100150Z_d03a2876",
+  "validation_metrics": {
+    "logloss_old": 0.60402,
+    "logloss_new": 0.60378,
+    "basis": "same_holdout",
+    "v91_gate": {
+      "available": true,
+      "status": "CHALLENGER",
+      "n": 4248,
+      "delta_log_loss": -0.000171,
+      "delta_brier": -7e-05,
+      "ci_log_loss": [
+        -0.000634,
+        0.000311
+      ],
+      "reasons": [
+        "ci_excludes_zero: 95% block-bootstrap CI [-0.000634, +0.000311] includes zero",
+        "material_improvement: delta -0.000171 vs required <= -0.001000",
+        "second_period: not run"
+      ],
+      "checks": {
+        "same_dataset": true,
+        "min_sample": true,
+        "log_loss_not_worse": true,
+        "brier_not_worse": true,
+        "ci_excludes_zero": false,
+        "material_improvement": false,
+        "calibration_held": true,
+        "prediction_canary": true,
+        "no_league_regression": true,
+        "second_period": false
+      },
+      "live_gate_promoted": true,
+      "live_gate_reason": "log loss 0.60402 -> 0.60378 (-0.00024), within the 0.03000 tolerance",
+      "agrees_with_live_gate": false
+    }
+  },
+  "promotion_status": "LEGACY_PROMOTED",
+  "model_role": "CHAMPION",
+  "reconstructed": true,
+  "note": "identity = SHA-256 of the committed bytes; version timestamp is the COMMIT (deploy) time, training time unknown"
+}
