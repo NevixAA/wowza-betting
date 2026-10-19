@@ -10658,3 +10658,704 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-19T16:51:55Z,1584438,2026-10-19T17:00:00Z,8.1,T-10m,Turkish Super Lig,standard,Trabzonspor,Beşiktaş,32,Betano,ht_ou,under,0.5,3.45,api_football,heartbeat
 2026-10-19T16:51:55Z,1584438,2026-10-19T17:00:00Z,8.1,T-10m,Turkish Super Lig,standard,Trabzonspor,Beşiktaş,32,Betano,btts,yes,,1.45,api_football,heartbeat
 2026-10-19T16:51:55Z,1584438,2026-10-19T17:00:00Z,8.1,T-10m,Turkish Super Lig,standard,Trabzonspor,Beşiktaş,32,Betano,btts,no,,2.65,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,over,1.5,3.2,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,under,1.5,1.3,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,under,0.5,2.62,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,1.5,1.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,1.5,2.75,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,2.5,2.3,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,2.5,1.6,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,3.5,4.33,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,3.5,1.2,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,under,1.5,1.3,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,under,0.5,2.5,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,1.5,1.36,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,1.5,2.7,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,2.5,2.23,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,2.5,1.61,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,3.5,3.94,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,3.5,1.17,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,over,1.5,3.22,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,under,1.5,1.28,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,over,0.5,1.47,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,under,0.5,2.45,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,btts,yes,,2.05,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,btts,no,,1.67,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,1.5,1.36,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,1.5,3.1,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,2.5,2.2,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,2.5,1.65,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,3.5,4.2,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,3.5,1.22,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,over,1.5,3.3,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,under,1.5,1.29,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,over,0.5,1.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,under,0.5,2.75,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,btts,yes,,2.0,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,btts,no,,1.8,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,1.5,1.36,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,1.5,2.88,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,2.5,2.14,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,2.5,1.61,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,3.5,4.33,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,3.5,1.18,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,under,1.5,1.29,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,over,0.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,under,0.5,2.37,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,btts,yes,,2.05,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,btts,no,,1.67,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,1.5,1.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,1.5,3.04,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,2.5,2.3,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,2.5,1.67,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,3.5,4.37,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,3.5,1.23,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,under,1.5,1.32,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,over,0.5,1.47,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,under,0.5,2.69,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,1.5,1.36,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,1.5,2.7,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,2.5,2.27,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,2.5,1.64,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,3.5,3.94,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,3.5,1.17,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,over,1.5,3.22,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,under,1.5,1.28,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,over,0.5,1.47,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,under,0.5,2.45,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,btts,yes,,2.05,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,btts,no,,1.69,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,1.5,1.45,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,1.5,2.85,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,2.5,2.32,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,2.5,1.65,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,3.5,4.15,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,3.5,1.24,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,under,1.5,1.32,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,over,0.5,1.57,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,under,0.5,2.45,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,btts,yes,,2.05,api_football,change
+2026-10-19T21:16:05Z,1493192,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,btts,no,,1.72,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,under,1.5,1.29,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,over,0.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,under,0.5,2.45,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,btts,no,,1.65,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,1.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,1.5,2.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,2.5,2.6,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,2.5,1.48,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,3.5,5.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,3.5,1.14,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,over,1.5,3.75,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,under,1.5,1.25,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,over,0.5,1.57,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,under,0.5,2.25,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,btts,yes,,2.2,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,1.5,1.51,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,1.5,2.45,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,2.5,2.49,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,2.5,1.42,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,3.5,5.05,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,3.5,1.1,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,under,1.5,1.24,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,over,0.5,1.55,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,under,0.5,2.32,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,btts,yes,,2.13,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,btts,no,,1.62,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,1.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,1.5,2.55,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,2.5,2.63,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,2.5,1.47,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,3.5,5.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,3.5,1.14,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,over,1.5,3.8,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,under,1.5,1.22,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,over,0.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,under,0.5,2.4,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,btts,yes,,2.1,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,btts,no,,1.73,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,1.5,1.51,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,1.5,2.34,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,2.5,2.44,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,2.5,1.47,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,3.5,5.25,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,3.5,1.13,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,over,1.5,3.9,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,over,0.5,1.57,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,under,0.5,2.21,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,btts,yes,,2.15,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,btts,no,,1.62,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,1.5,1.54,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,1.5,2.59,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,2.5,2.73,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,2.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,3.5,5.56,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,3.5,1.16,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ht_ou,over,0.5,1.57,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ht_ou,under,0.5,2.44,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,5,SBO,ht_ou,over,0.5,1.61,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,5,SBO,ht_ou,under,0.5,2.29,api_football,heartbeat
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,1.5,1.54,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,1.5,2.49,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,2.5,2.49,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,2.5,1.42,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,3.5,5.05,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,3.5,1.1,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,over,1.5,3.4,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,under,1.5,1.24,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,over,0.5,1.55,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,under,0.5,2.32,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,btts,yes,,2.13,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,btts,no,,1.64,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,1.5,1.57,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,1.5,2.47,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,2.5,2.7,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,2.5,1.5,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,3.5,5.1,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,3.5,1.17,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,over,1.5,3.85,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,under,1.5,1.27,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,over,0.5,1.65,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,under,0.5,2.25,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,btts,yes,,2.12,api_football,change
+2026-10-19T21:16:05Z,1493195,2026-10-19T22:00:00Z,43.9,T-1h,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,btts,no,,1.67,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,8,Bet365,btts,yes,,2.2,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,8,Bet365,btts,no,,1.62,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ou,over,1.5,1.53,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ou,under,1.5,2.45,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ou,over,2.5,2.7,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ou,under,2.5,1.44,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ou,over,3.5,5.5,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ou,under,3.5,1.14,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ht_ou,over,1.5,3.8,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,ht_ou,under,1.5,1.22,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,btts,yes,,2.2,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,3,Betfair,btts,no,,1.65,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,36,BetVictor,ou,over,1.5,1.55,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,36,BetVictor,ou,under,1.5,2.25,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,36,BetVictor,ou,over,2.5,2.56,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,36,BetVictor,ou,under,2.5,1.43,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,36,BetVictor,ht_ou,over,0.5,1.6,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,36,BetVictor,ht_ou,under,0.5,2.15,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ou,over,1.5,1.57,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ou,under,1.5,2.51,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ou,over,2.5,2.82,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ou,under,2.5,1.47,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ou,over,3.5,5.86,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ou,under,3.5,1.15,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ht_ou,over,0.5,1.6,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,4,Pinnacle,ht_ou,under,0.5,2.36,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,5,SBO,ht_ou,over,0.5,1.61,api_football,change
+2026-10-19T21:16:05Z,1493187,2026-10-20T00:15:00Z,178.9,T-3h,Argentina Primera Division,new_format,Deportivo Riestra,Union Santa Fe,5,SBO,ht_ou,under,0.5,2.29,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,over,2.5,2.1,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,under,2.5,1.7,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,over,1.5,1.32,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,under,1.5,2.88,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,over,2.5,2.09,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,under,2.5,1.69,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,over,1.5,2.96,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,under,1.5,1.33,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,over,0.5,1.42,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,under,0.5,2.6,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,btts,yes,,2.15,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,btts,no,,1.61,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,over,1.5,1.33,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,under,1.5,3.25,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,over,2.5,2.1,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,under,2.5,1.73,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,over,3.5,3.8,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,under,3.5,1.25,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ht_ou,over,0.5,1.36,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ht_ou,under,0.5,2.88,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,btts,yes,,2.15,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,btts,no,,1.67,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,under,1.5,3.1,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,over,2.5,2.02,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,under,2.5,1.68,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ht_ou,over,0.5,1.43,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ht_ou,under,0.5,2.55,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,over,1.5,1.36,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,under,1.5,3.25,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,over,2.5,2.13,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,under,2.5,1.76,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,over,3.5,3.82,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,under,3.5,1.28,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,over,1.5,3.08,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,over,0.5,1.42,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,under,0.5,2.9,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,over,1.5,1.32,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,under,1.5,2.88,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,over,2.5,2.15,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,under,2.5,1.74,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,over,1.5,2.96,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,under,1.5,1.33,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,over,0.5,1.42,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,under,0.5,2.6,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,btts,yes,,2.15,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,btts,no,,1.63,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,under,1.5,3.05,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,under,3.5,1.26,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,over,1.5,3.0,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,under,1.5,1.4,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,over,0.5,1.45,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,under,0.5,2.77,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,btts,yes,,2.2,api_football,change
+2026-10-19T21:16:05Z,1492414,2026-10-19T23:00:00Z,103.9,T-3h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,btts,no,,1.62,api_football,change
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,over,1.5,3.2,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,under,1.5,1.3,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,under,0.5,2.62,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,1.5,1.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,1.5,2.75,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,2.5,2.3,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,2.5,1.6,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,3.5,4.33,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,3.5,1.2,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,under,1.5,1.3,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,under,0.5,2.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,1.5,2.7,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,2.5,2.23,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,2.5,1.61,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,3.5,3.94,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,over,1.5,3.22,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,under,1.5,1.28,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,1.5,3.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,2.5,2.2,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,2.5,1.65,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,3.5,4.2,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,3.5,1.22,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,over,1.5,3.3,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,under,1.5,1.29,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,over,0.5,1.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,under,0.5,2.75,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,btts,yes,,2.0,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,btts,no,,1.8,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,1.5,2.88,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,2.5,2.14,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,2.5,1.61,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,3.5,4.33,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,3.5,1.18,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,under,1.5,1.29,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,under,0.5,2.37,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,1.5,1.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,1.5,3.04,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,2.5,2.3,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,2.5,1.67,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,3.5,4.37,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,3.5,1.23,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,under,1.5,1.32,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,under,0.5,2.69,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,1.5,2.7,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,2.5,2.27,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,2.5,1.64,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,3.5,3.94,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,over,1.5,3.22,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,under,1.5,1.28,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,btts,no,,1.69,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,1.5,1.45,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,1.5,2.85,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,2.5,2.32,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,2.5,1.65,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,3.5,4.15,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,3.5,1.24,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,under,1.5,1.32,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:31:21Z,1493192,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,btts,no,,1.72,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,under,1.5,1.29,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,btts,no,,1.65,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,1.5,2.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,2.5,2.6,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,2.5,1.48,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,3.5,5.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,3.5,1.14,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,over,1.5,3.75,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,btts,yes,,2.2,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,1.5,1.51,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,1.5,2.45,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,3.5,5.05,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,3.5,1.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,btts,yes,,2.13,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,1.5,2.55,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,2.5,2.63,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,2.5,1.47,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,3.5,5.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,3.5,1.14,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,under,0.5,2.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,btts,no,,1.73,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,1.5,1.51,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,1.5,2.34,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,2.5,2.44,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,2.5,1.47,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,3.5,5.25,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,3.5,1.13,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,over,1.5,3.9,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,under,0.5,2.21,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,1.5,1.54,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,1.5,2.59,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,2.5,2.73,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,2.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,3.5,5.56,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,3.5,1.16,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ht_ou,under,0.5,2.44,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,5,SBO,ht_ou,over,0.5,1.61,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,5,SBO,ht_ou,under,0.5,2.29,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,1.5,1.54,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,1.5,2.49,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,3.5,5.05,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,3.5,1.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,btts,yes,,2.13,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,btts,no,,1.64,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,1.5,1.57,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,1.5,2.47,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,2.5,2.7,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,2.5,1.5,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,3.5,5.1,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,over,1.5,3.85,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,under,1.5,1.27,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,over,0.5,1.65,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,btts,yes,,2.12,api_football,heartbeat
+2026-10-19T21:31:21Z,1493195,2026-10-19T22:00:00Z,28.6,T-30m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,over,1.5,3.2,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,under,1.5,1.3,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,ht_ou,under,0.5,2.62,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,7,William Hill,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,1.5,1.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,1.5,2.75,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,2.5,2.3,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,2.5,1.6,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,over,3.5,4.33,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ou,under,3.5,1.2,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,under,1.5,1.3,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,ht_ou,under,0.5,2.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,8,Bet365,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,1.5,2.7,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,2.5,2.23,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,2.5,1.61,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,over,3.5,3.94,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,over,1.5,3.22,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,under,1.5,1.28,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,2,Marathonbet,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,1.5,3.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,2.5,2.2,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,2.5,1.65,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,over,3.5,4.2,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ou,under,3.5,1.22,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,over,1.5,3.3,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,under,1.5,1.29,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,over,0.5,1.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,ht_ou,under,0.5,2.75,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,btts,yes,,2.0,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,3,Betfair,btts,no,,1.8,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,1.5,2.88,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,2.5,2.14,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,2.5,1.61,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,over,3.5,4.33,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ou,under,3.5,1.18,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,under,1.5,1.29,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,ht_ou,under,0.5,2.37,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,36,BetVictor,btts,no,,1.67,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,1.5,1.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,1.5,3.04,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,2.5,2.3,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,2.5,1.67,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,over,3.5,4.37,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ou,under,3.5,1.23,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,under,1.5,1.32,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,4,Pinnacle,ht_ou,under,0.5,2.69,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,1.5,2.7,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,2.5,2.27,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,2.5,1.64,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,over,3.5,3.94,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,over,1.5,3.22,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,under,1.5,1.28,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,11,1xBet,btts,no,,1.69,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,1.5,1.45,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,1.5,2.85,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,2.5,2.32,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,2.5,1.65,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,over,3.5,4.15,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ou,under,3.5,1.24,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,under,1.5,1.32,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,btts,yes,,2.05,api_football,heartbeat
+2026-10-19T21:50:36Z,1493192,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Newells Old Boys,Central Cordoba de Santiago,32,Betano,btts,no,,1.72,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,under,1.5,1.29,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,ht_ou,under,0.5,2.45,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,7,William Hill,btts,no,,1.65,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,1.5,2.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,2.5,2.6,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,2.5,1.48,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,over,3.5,5.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ou,under,3.5,1.14,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,over,1.5,3.75,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,under,1.5,1.25,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,btts,yes,,2.2,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,8,Bet365,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,1.5,1.51,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,1.5,2.45,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,over,3.5,5.05,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ou,under,3.5,1.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,btts,yes,,2.13,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,2,Marathonbet,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,1.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,1.5,2.55,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,2.5,2.63,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,2.5,1.47,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,over,3.5,5.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ou,under,3.5,1.14,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,over,0.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,ht_ou,under,0.5,2.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,3,Betfair,btts,no,,1.73,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,1.5,1.51,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,1.5,2.34,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,2.5,2.44,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,2.5,1.47,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,over,3.5,5.25,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ou,under,3.5,1.13,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,over,1.5,3.9,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,ht_ou,under,0.5,2.21,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,36,BetVictor,btts,no,,1.62,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,1.5,1.54,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,1.5,2.59,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,2.5,2.73,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,2.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,over,3.5,5.56,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ou,under,3.5,1.16,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,4,Pinnacle,ht_ou,under,0.5,2.44,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,5,SBO,ht_ou,over,0.5,1.61,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,5,SBO,ht_ou,under,0.5,2.29,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,1.5,1.54,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,1.5,2.49,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,2.5,2.49,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,over,3.5,5.05,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ou,under,3.5,1.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,over,1.5,3.4,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,under,1.5,1.24,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,over,0.5,1.55,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,ht_ou,under,0.5,2.32,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,btts,yes,,2.13,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,11,1xBet,btts,no,,1.64,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,1.5,1.57,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,1.5,2.47,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,2.5,2.7,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,2.5,1.5,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,over,3.5,5.1,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ou,under,3.5,1.17,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,over,1.5,3.85,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,under,1.5,1.27,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,over,0.5,1.65,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,btts,yes,,2.12,api_football,heartbeat
+2026-10-19T21:50:36Z,1493195,2026-10-19T22:00:00Z,9.4,T-10m,Argentina Primera Division,new_format,Sarmiento Junin,Barracas Central,32,Betano,btts,no,,1.67,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,7,William Hill,ht_ou,over,1.5,2.9,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,7,William Hill,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,7,William Hill,ht_ou,over,0.5,1.4,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,7,William Hill,ht_ou,under,0.5,2.75,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,7,William Hill,btts,yes,,2.1,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,7,William Hill,btts,no,,1.67,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,under,1.5,3.2,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,over,2.5,2.1,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,under,2.5,1.7,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,over,3.5,4.0,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ou,under,3.5,1.25,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ht_ou,over,1.5,3.25,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ht_ou,under,1.5,1.33,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,ht_ou,under,0.5,2.62,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,btts,yes,,2.2,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,8,Bet365,btts,no,,1.62,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,over,1.5,1.32,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,under,1.5,2.88,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,over,2.5,2.09,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,under,2.5,1.69,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,over,3.5,3.58,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ou,under,3.5,1.21,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,over,1.5,2.96,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,under,1.5,1.33,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,over,0.5,1.42,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,ht_ou,under,0.5,2.6,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,2,Marathonbet,btts,no,,1.61,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,over,1.5,1.33,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,under,1.5,3.25,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,over,2.5,2.1,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,under,2.5,1.73,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,over,3.5,3.8,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ou,under,3.5,1.25,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ht_ou,over,1.5,3.0,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ht_ou,under,1.5,1.33,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ht_ou,over,0.5,1.36,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,ht_ou,under,0.5,2.88,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,3,Betfair,btts,no,,1.67,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,over,1.5,1.33,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,under,1.5,3.1,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,over,2.5,2.02,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,under,2.5,1.68,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,over,3.5,3.9,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ou,under,3.5,1.22,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ht_ou,over,1.5,2.82,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ht_ou,over,0.5,1.43,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,ht_ou,under,0.5,2.55,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,36,BetVictor,btts,no,,1.62,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,under,1.5,3.25,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,over,2.5,2.13,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,under,2.5,1.76,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,over,3.5,3.82,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ou,under,3.5,1.28,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,over,1.5,3.08,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,over,0.5,1.42,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,4,Pinnacle,ht_ou,under,0.5,2.9,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,5,SBO,ou,over,2.5,2.19,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,5,SBO,ou,under,2.5,1.68,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,over,1.5,1.32,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,under,1.5,2.88,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,over,2.5,2.15,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,under,2.5,1.74,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,over,3.5,3.58,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ou,under,3.5,1.21,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,over,1.5,2.96,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,under,1.5,1.33,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,over,0.5,1.42,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,ht_ou,under,0.5,2.6,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,btts,yes,,2.15,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,11,1xBet,btts,no,,1.63,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,over,1.5,1.4,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,under,1.5,3.05,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,over,2.5,2.18,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,under,2.5,1.72,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,over,3.5,3.85,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ou,under,3.5,1.26,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,over,1.5,3.0,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,under,1.5,1.4,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,over,0.5,1.45,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,ht_ou,under,0.5,2.77,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,btts,yes,,2.2,api_football,heartbeat
+2026-10-19T22:00:45Z,1492414,2026-10-19T23:00:00Z,59.2,T-1h,Brazil Serie A,new_format,Corinthians,Vitoria,32,Betano,btts,no,,1.62,api_football,heartbeat
