@@ -44,9 +44,57 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-tab_latest, tab_champ, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
-    ["Latest findings", "Model champions", "Does it learn?", "Tips sent (1X2 · Bet Builder)", "Team studies",
-     "Canonical store", "Governance", "Health"])
+tab_latest, tab_champ, tab_trader, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
+    ["Latest findings", "Model champions", "Price Trader", "Does it learn?", "Tips sent (1X2 · Bet Builder)",
+     "Team studies", "Canonical store", "Governance", "Health"])
+
+# ── Price Trader research lab (owner brief 2026-10-19) — PAPER / SHADOW only ────────────────────
+with tab_trader:
+    pt = pro.price_trader()
+    v = pt.get("verdict") or {}
+    if not v:
+        st.info("No Price Trader v2 verdict yet — Pro writes it daily (pro_price_trader.yml).")
+    else:
+        state = v.get("EVIDENCE_STATE", "?")
+        colour = {"COLLECTING": "🟡", "PRICE_SIGNAL": "🟢", "EXECUTABLE_EDGE": "🟢", "NO_EDGE": "🔴"}.get(state, "⚪")
+        st.markdown(f"## {colour} {state}")
+        st.caption("Paper/shadow research only: no orders, no stakes, no messages. Raw price movement is never "
+                   "called an edge without the economic test (costs, breakeven, controls, forward window).")
+        ds = v.get("data_status") or {}
+        h = pt.get("health") or {}
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Signals with a price path", h.get("tradable", "?"))
+        c2.metric("Exchange back prices", ds.get("EXCHANGE_BACK_PRICES_RECORDED", "?"),
+                  help=f"share of path rows: {ds.get('exchange_opposite_coverage_of_path_rows')}")
+        c3.metric("Executable exchange data", ds.get("EXECUTABLE_EXCHANGE_DATA_AVAILABLE", "?"),
+                  help="no lay ladder / matched size is captured anywhere")
+        c4.metric("Capacity", "UNKNOWN" if ds.get("CAPACITY_UNKNOWN") == "YES" else "known")
+        hp = v.get("historical_primary") or {}
+        fg = v.get("forward_gates") or {}
+        st.markdown(f"**Primary setup (historical, exploratory):** {hp.get('n')} hedged trades, mean "
+                    f"{(hp.get('mean_pnl_per_unit') or 0):+.1%} per unit, full-green rate "
+                    f"{(hp.get('full_green_rate') or 0):.1%}.  **Forward window** (from 2026-10-20): "
+                    f"{fg.get('N_completed_forward', 0)} of {fg.get('N_required', 150)} trades, "
+                    f"{fg.get('match_days', 0)} of {fg.get('days_required', 30)} match days.")
+        hz = pt.get("horizon_rule_results")
+        if hz is not None and len(hz):
+            sub = hz[(hz["venue"] == "book") & (hz["slippage"] == 0) & (hz["rule"] == "GREEN_2PCT")]
+            st.markdown("**By entry horizon** — observed favourable rate vs the rate needed to break even after costs")
+            ui.table(sub[["horizon", "fixtures", "completed", "favourable_move_rate", "median_clv",
+                          "full_green_rate", "mean_pnl_per_unit", "observed_favourable",
+                          "required_favourable", "tradeable"]])
+        ct = pt.get("controls")
+        if ct is not None and len(ct):
+            with st.expander("Wowza vs controls at the same entries (opposite, random, shuffled, market-only)"):
+                ui.table(ct[ct["rule"] == "GREEN_2PCT"][["horizon", "control", "n", "wowza_toward_rate",
+                                                          "control_toward_rate", "wowza_mean_pnl",
+                                                          "control_mean_pnl", "pnl_diff_ci90"]])
+        st.markdown(f"**States (primary):** {v.get('states_primary')} · **labels:** {v.get('labels_primary')}")
+        integ = pt.get("integrity") or {}
+        if integ:
+            st.caption(f"Research integrity: {integ.get('summary')} · blocked: "
+                       f"{integ.get('EDGE_VERDICTS_BLOCKED_FOR') or 'nothing'}")
+        st.caption("PRODUCTION_SELECTION_CHANGED = NO · THRESHOLDS = NO · STAKING = NO · REAL_BETTING_ENABLED = NO")
 
 # ── champion high-water mark (owner 2026-10-18) ───────────────────────────────────────────────
 with tab_champ:
