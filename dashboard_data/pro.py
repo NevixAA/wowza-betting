@@ -205,6 +205,19 @@ def model_lineage() -> dict:
     return out
 
 
+def price_trader() -> dict:
+    """Price Trader research lab (Pro src/price_trader, daily). Small files only."""
+    out = {"verdict": read_json(_f("output/price_trader/v2/verdict_v2.json")),
+           "health": read_json(_f("output/price_trader/price_trader_health.json")),
+           "integrity": read_json(_f("output/research_integrity.json"))}
+    for name in ("horizon_rule_results", "controls", "placebo_by_league"):
+        try:
+            out[name] = read_csv(_f(f"output/price_trader/v2/{name}.csv"))
+        except Exception:                                             # noqa: BLE001
+            out[name] = pd.DataFrame()
+    return out
+
+
 def verdict(rel: str) -> dict:
     """One study's machine-readable verdict file, e.g. 'output/player_v3/player_v3_verdict.json'."""
     return read_json(_f(rel))
