@@ -158,14 +158,19 @@ def probe() -> int:
     except Exception as e:                                             # noqa: BLE001
         print(f"[probe] scout status unreachable ({type(e).__name__})")
         return 0
-    ok = 0
+    ok, rows = 0, []
     for r in st:
         name = f"{r.get('country')} {r.get('league')}"
         k, why = match_sport_key(str(r.get("country") or ""), name, sports)
         ok += bool(k)
+        rows.append({"league": name, "sport_key": k, "reason": None if k else why, "scout_status": r.get("status")})
         print(f"{name:55s} {k or '-':40s} {'' if k else why}")
-    print(f"[probe] {ok} of {len(st)} scout leagues have a uniquely matching OddsAPI sport key "
-          f"({len(sports)} sports listed)")
+    summary = (f"{ok} of {len(st)} scout leagues have a uniquely matching OddsAPI sport key "
+               f"({len(sports)} sports listed)")
+    print(f"[probe] {summary}")
+    (ROOT / "output" / "auto_onboard_probe.json").write_text(json.dumps(
+        {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "summary": summary,
+         "leagues": rows}, indent=1), encoding="utf-8")
     return 0
 
 

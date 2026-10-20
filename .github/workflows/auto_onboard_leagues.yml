@@ -50,7 +50,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          for f in config/auto_leagues.json telegram_bot/notified.json; do
+          for f in config/auto_leagues.json telegram_bot/notified.json output/auto_onboard_probe.json; do
             git add -f "$f" 2>/dev/null || true
           done
           git diff --staged --quiet && exit 0
