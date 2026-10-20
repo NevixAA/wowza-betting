@@ -22,6 +22,7 @@ from typing import Optional
 import requests
 
 from . import config
+from .text_fix import repair_text
 
 # Direct API-Football.com (api-sports.io) — different from RapidAPI
 import os as _os
@@ -225,7 +226,7 @@ def get_team_squad(team_id: int) -> list[dict]:
     if not data or not data.get("response"):
         return []
     players = data["response"][0].get("players", [])
-    return [{"player_id": p.get("id"), "player_name": p.get("name"),
+    return [{"player_id": p.get("id"), "player_name": repair_text(p.get("name")),
              "position": _POS_MAP.get(p.get("position"), p.get("position")),
              "number": p.get("number"), "age": p.get("age")}
             for p in players]
@@ -467,7 +468,7 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
             players.append({
                 "fixture_id":      fixture_id,
                 "player_id":       p.get("id"),
-                "player_name":     p.get("name", ""),
+                "player_name":     repair_text(p.get("name", "")),
                 "team":            team_name,
                 "position":        games.get("position", ""),
                 "minutes_played":  int(games.get("minutes") or 0),
@@ -504,7 +505,7 @@ def get_fixture_lineup(fixture_id: int) -> dict:
         starters  = [
             {
                 "player_id":   p.get("player", {}).get("id"),
-                "player_name": p.get("player", {}).get("name", ""),
+                "player_name": repair_text(p.get("player", {}).get("name", "")),
                 "position":    p.get("pos", ""),
                 "number":      p.get("number"),
                 "started":     True,
@@ -514,7 +515,7 @@ def get_fixture_lineup(fixture_id: int) -> dict:
         subs = [
             {
                 "player_id":   p.get("player", {}).get("id"),
-                "player_name": p.get("player", {}).get("name", ""),
+                "player_name": repair_text(p.get("player", {}).get("name", "")),
                 "position":    p.get("pos", ""),
                 "number":      p.get("number"),
                 "started":     False,
