@@ -218,6 +218,21 @@ def price_trader() -> dict:
     return out
 
 
+def valuable() -> dict:
+    """VALUABLE deep dive (Pro src/studies/valuable, 2026-10-20) + its prospective shadow. Small files only."""
+    base = "output/valuable_deep_dive/"
+    out = {"results": read_json(_f(base + "valuable_results.json")),
+           "shadow": read_json(_f(base + "valuable_shadow_status.json")),
+           "shadow_live": read_json(_f("output/valuable_shadow/valuable_shadow_state.json"))}
+    for name in ("valuable_summary", "valuable_league_market", "valuable_fair_edge_bands", "valuable_edge_bands",
+                 "valuable_first_sight_tiers"):
+        try:
+            out[name] = read_csv(_f(base + f"{name}.csv"))
+        except Exception:                                             # noqa: BLE001 - one missing file never hides the rest
+            out[name] = pd.DataFrame()
+    return out
+
+
 def verdict(rel: str) -> dict:
     """One study's machine-readable verdict file, e.g. 'output/player_v3/player_v3_verdict.json'."""
     return read_json(_f(rel))
