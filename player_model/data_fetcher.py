@@ -26,6 +26,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from . import config
+from .text_fix import repair_text
 
 BASE_URL          = "https://v3.football.api-sports.io"
 CACHE_DIR         = config.BASE_DIR / "player_match_cache"
@@ -519,7 +520,7 @@ def fetch_current_squad(team_id: int, season: str) -> list[dict]:
                 if pid:
                     players.append({
                         "player_id":   int(pid),
-                        "player_name": p.get("name", ""),
+                        "player_name": repair_text(p.get("name", "")),
                         "position":    p.get("position", ""),
                     })
         return players
@@ -601,7 +602,7 @@ def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
 def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Optional[dict]:
     """Parse one player from a /fixtures/players response entry."""
     p = player_entry.get("player", {})
-    name = p.get("name", "").strip()
+    name = repair_text(p.get("name", "")).strip()
     if not name:
         return None
 
@@ -941,7 +942,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
 def _parse_player(entry: dict, league: str) -> Optional[dict]:
     p    = entry.get("player", {})
-    name = p.get("name", "").strip()
+    name = repair_text(p.get("name", "")).strip()
     if not name:
         return None
 
