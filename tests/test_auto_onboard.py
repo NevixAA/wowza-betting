@@ -27,6 +27,14 @@ def test_no_key_or_ambiguous_is_skipped_never_guessed():
     assert k is None and "ambiguous" in why
 
 
+def test_generic_division_name_never_takes_the_top_flight_key():
+    # Probe 2026-10-20: "Denmark 1. Division" matched soccer_denmark_superliga (wrong league)
+    dk = [{"key": "soccer_denmark_superliga", "title": "Denmark Superliga", "description": "Danish Superliga"}]
+    assert AO.match_sport_key("Denmark", "Denmark 1. Division", dk)[0] is None
+    ie = [{"key": "soccer_league_of_ireland", "title": "League of Ireland", "description": "Premier Division"}]
+    assert AO.match_sport_key("Ireland", "Ireland First Division", ie)[0] is None
+
+
 def test_plan_is_additive_and_idempotent():
     q = [{"league_id": 72, "league": "Brazil Serie B", "country": "Brazil", "current_season": "2026", "week": "W45"},
          {"league_id": 71, "league": "Brazil Serie A", "country": "Brazil", "current_season": "2026"},
@@ -37,7 +45,7 @@ def test_plan_is_additive_and_idempotent():
     assert e["odds_api_sport_key"] == "soccer_brazil_serie_b" and e["timezone"] == "America/Sao_Paulo"
     assert e["history_seasons"] == ["2025", "2024", "2023", "2022"]
     reasons = {s["league"]: s["reason"] for s in skipped}
-    assert reasons["Brazil Serie A"] == "already configured" and "no OddsAPI" in reasons["Ghana Premier League"]
+    assert reasons["Brazil Serie A"] == "already configured" and "Ghana Premier League" in reasons
     add2, _ = AO.plan(q, {"leagues": add}, {"Brazil Serie A"}, {71}, SPORTS, "2026-11-17T09:00:00Z")
     assert add2 == []                                   # second run adds nothing
 

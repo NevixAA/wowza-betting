@@ -67,6 +67,10 @@ def match_sport_key(country: str, league: str, sports: list[dict]) -> tuple[str 
     words. Unique match only; anything ambiguous or absent returns (None, reason)."""
     c = _toks(country.replace("-", " "))
     lw = _toks(league) - c - _STOP
+    if not lw:
+        # "1. Division" / "First Division" leave no identity word, and would otherwise match the
+        # country's only key - which is its TOP flight. Never price a league with another's odds.
+        return None, "league name has no identifying word - refusing to guess"
     cands = []
     for s in sports:
         if not str(s.get("key", "")).startswith("soccer_"):
