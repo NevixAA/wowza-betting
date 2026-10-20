@@ -52,10 +52,28 @@ COLUMNS = [
     "opening_odds", "book_count", "market_dispersion",
     # provenance — without these a row cannot be tied to the model that wrote it
     "v9_model_sha", "v91_model_sha", "dataset_id",
+    # IDENTITY (added 2026-10-20, P0 shadow settlement). Rows written before this carried only
+    # the OddsAPI event id, which no results source can be joined on, so not one row could ever
+    # be settled. Written by predict at first sight; for older rows the settler fills them ONCE
+    # from a recorded predictions.csv, and never overwrites a non-blank value.
+    "home_team", "away_team",
+    # SETTLEMENT DETAIL — grading-only, written by src/shadow_settlement.py after the match.
+    "outcome", "home_goals", "away_goals", "result_source",
+    "close_ts", "close_minutes_to_kickoff", "close_band", "close_source", "close_status",
+    "settle_status", "settled_at",
 ]
 
 #: Columns that are knowable only AFTER the bet. §6: they may grade a signal, never select one.
-GRADING_ONLY = ("closing_odds", "clv", "result")
+GRADING_ONLY = ("closing_odds", "clv", "result",
+                "outcome", "home_goals", "away_goals", "result_source",
+                "close_ts", "close_minutes_to_kickoff", "close_band", "close_source",
+                "close_status", "settle_status", "settled_at")
+
+#: Identity columns: fill-once (blank -> value), never revised.
+IDENTITY = ("home_team", "away_team")
+
+#: Everything predict wrote at first sight. Settlement must leave these byte-identical.
+FROZEN = tuple(c for c in COLUMNS if c not in GRADING_ONLY and c not in IDENTITY)
 
 
 def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
@@ -89,7 +107,10 @@ def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
                 .str.strip().replace({"": "ou25", "nan": "ou25", "None": "ou25"}))
 
     if SHADOW_FILE.exists():
-        old = pd.read_csv(SHADOW_FILE)
+        # dtype=str: the existing rows are copied through VERBATIM. A typed read would
+        # re-render every settled cell on every predict run ("2" goals -> "2.0", float noise),
+        # i.e. predict would keep rewriting rows the settler had already written.
+        old = pd.read_csv(SHADOW_FILE, dtype=str)
         if "market" not in old.columns:
             old["market"] = "ou25"
         seen = set(zip(old["fixture_id"].astype(str), _mkt(old["market"]),

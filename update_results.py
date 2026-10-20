@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import unicodedata
 from datetime import datetime, timedelta
@@ -209,6 +210,8 @@ def fetch_scores(sport_key: str, days_from: int) -> list[dict]:
                 "home_score":  score_map[home],
                 "away_score":  score_map[away],
                 "date_str":    str(dt.date()),
+                # OddsAPI event id == the shadow log's fixture_id. Additive: no ledger reads it.
+                "event_id":    event.get("id", ""),
             })
         return results
 
@@ -1341,13 +1344,176 @@ def update_live_signal_results(days: int = 3, dry_run: bool = False) -> None:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+# ── Prospective shadow log settlement (P0 2026-10-20) ────────────────────────────────────────
+#
+# output/v91_shadow.csv had 641 frozen predictions and ZERO settled rows: nothing in the estate
+# ever wrote its result/closing_odds/clv columns, and its rows carried only an OddsAPI event id,
+# so no results source could be joined to them. The grading logic lives in
+# src/shadow_settlement.py (pure, tested); this function only supplies it with the SAME result
+# hierarchy and odds archives the ledgers above use.
+
+SHADOW_FILE  = config.OUTPUT_DIR / "v91_shadow.csv"
+SHADOW_HEALTH_FILE = config.OUTPUT_DIR / "shadow_settlement_health.json"
+
+
+def _read_shadow(path: Path) -> tuple[pd.DataFrame, str]:
+    """dtype=str + no NA parsing, so every untouched cell is written back byte-for-byte."""
+    raw = path.read_bytes()
+    eol = "\r\n" if b"\r\n" in raw[:4096] else "\n"
+    return pd.read_csv(path, dtype=str, keep_default_na=False), eol
+
+
+def _write_shadow(df: pd.DataFrame, path: Path, eol: str) -> None:
+    tmp = path.with_suffix(".csv.tmp")
+    df.to_csv(tmp, index=False, lineterminator=eol)
+    tmp.replace(path)
+
+
+def _shadow_identity() -> dict:
+    """fixture_id -> (home, away) for rows written before the identity columns existed.
+
+    Two sources, both already in the repo: the current predictions.csv (its `_oa_event_id` is
+    exactly what `_log_shadow` stored as fixture_id), and the natural-key fallback
+    `date|home|away` that `_log_shadow` uses when a fixture had no OddsAPI event. Anything else
+    is identified by the OddsAPI scores feed's own event id inside the settlement.
+    """
+    out: dict = {}
+    p = config.OUTPUT_DIR / "predictions.csv"
+    if p.exists():
+        try:
+            pr = pd.read_csv(p, dtype=str, usecols=lambda c: c in (
+                "_oa_event_id", "home_team", "away_team"))
+            for fid, h, a in zip(pr.get("_oa_event_id", []), pr["home_team"], pr["away_team"]):
+                if isinstance(fid, str) and fid.strip():
+                    out.setdefault(fid.strip(), (h, a))
+        except Exception as e:                                        # noqa: BLE001
+            log.warning(f"shadow identity: predictions.csv unreadable ({e})")
+    return out
+
+
+def _write_shadow_health(df: pd.DataFrame, pending: dict | None = None) -> dict:
+    from src.shadow_settlement import health
+    h = health(df, pending=pending)
+    SHADOW_HEALTH_FILE.write_text(json.dumps(h, indent=2) + "\n", encoding="utf-8")
+    return h
+
+
+def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
+                              journal: str | None = None,
+                              providers: list | None = None,
+                              archives: list | None = None,
+                              now=None) -> dict:
+    """Settle finished, unsettled, genuinely-prospective rows of output/v91_shadow.csv.
+
+    Result hierarchy = the ledgers': football-data (where configured) -> OddsAPI scores (3-day
+    window, only for rows inside it, so a stranded row cannot burn OddsAPI credits every run)
+    -> API-Football. Closing price = last archived price strictly before kickoff, from the
+    ledgers' own odds archives. Grading-only columns are written; first-sight columns are hashed
+    and the write is refused if they would change.
+
+    `journal`: also write the updates as JSON there (the workflow re-applies them onto the
+    freshest origin copy of the file, so it never has to resolve a conflict with predict).
+    `providers` / `archives` / `now` exist for tests.
+    """
+    from src.shadow_settlement import apply_updates, settle_frame
+
+    if not SHADOW_FILE.exists():
+        log.info("shadow: v91_shadow.csv not found — nothing to settle")
+        return {"settled": 0}
+    df, eol = _read_shadow(SHADOW_FILE)
+
+    if providers is None:
+        def _fd(league):
+            return fetch_scores_fd(league) if league in _FD_SOURCES else []
+
+        def _oa(league):
+            sk = config.ODDS_API_SPORT_KEYS.get(league)
+            return fetch_scores(sk, days) if (sk and config.ODDS_API_KEY) else []
+
+        providers = [("football-data", _fd, None),
+                     ("oddsapi", _oa, min(days, 3)),
+                     ("api-football", fetch_scores_apifootball, None)]
+    if archives is None:
+        archives = list(zip(_ARCHIVE_FILES, _load_archives_named()))
+
+    updates, pending = settle_frame(df, providers=providers, archives=archives,
+                                    identity=_shadow_identity(), now=now,
+                                    fallback_matcher=_names_match)
+    log.info(f"shadow: {len(updates)} row(s) settleable now; pending {pending}")
+    if dry_run:
+        return {"settled": 0, "would_settle": len(updates), "pending": pending}
+    if journal:
+        Path(journal).write_text(json.dumps(updates), encoding="utf-8")
+    if updates:
+        out, n = apply_updates(df, updates)
+        _write_shadow(out, SHADOW_FILE, eol)
+        log.info(f"shadow: settled {n} row(s) -> {SHADOW_FILE.name}")
+    else:
+        out, n = df, 0
+    h = _write_shadow_health(out, pending)
+    log.info(f"shadow: {h.get('settled_rows')}/{h.get('shadow_rows')} settled · close "
+             f"{h.get('valid_closing_price_pct')}% · CLV {h.get('clv_pct')}%")
+    return {"settled": n, "pending": pending, "health": h}
+
+
+def reapply_shadow_settlement(journal: str) -> int:
+    """Re-apply a journal onto whatever v91_shadow.csv is on disk now (offline, idempotent).
+
+    Used by the workflow after it resets to origin/main: predict may have appended rows since
+    this run started, and re-applying onto THAT file keeps both writers' work without any
+    side-picking merge.
+    """
+    from src.shadow_settlement import apply_updates
+    p = Path(journal)
+    if not p.exists() or not SHADOW_FILE.exists():
+        return 0
+    updates = json.loads(p.read_text(encoding="utf-8") or "[]")
+    df, eol = _read_shadow(SHADOW_FILE)
+    out, n = apply_updates(df, updates)
+    if n:
+        _write_shadow(out, SHADOW_FILE, eol)
+    _write_shadow_health(out)
+    log.info(f"shadow: re-applied {n} settlement(s) from journal")
+    return n
+
+
+def _load_archives_named() -> list:
+    """`_load_archives()` returns frames without their names; keep them aligned by re-reading
+    the same file list in the same order (missing files are skipped there, so skip here too)."""
+    frames = []
+    for name in _ARCHIVE_FILES:
+        p = config.OUTPUT_DIR / name
+        if not p.exists():
+            frames.append(None)
+            continue
+        try:
+            frames.append(pd.read_csv(p, dtype={"odds": float}, low_memory=False))
+        except Exception:                                             # noqa: BLE001
+            frames.append(None)
+    return frames
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--days",    type=int, default=3,
                         help="How many past days to fetch scores for (default: 3)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show what would change without writing the ledger")
+    parser.add_argument("--shadow-journal", default=os.getenv("SHADOW_SETTLEMENT_JOURNAL"),
+                        help="Also write shadow settlements as JSON here (CI re-applies it)")
+    parser.add_argument("--shadow-reapply", default=None, metavar="JOURNAL",
+                        help="ONLY re-apply a shadow settlement journal to v91_shadow.csv")
+    parser.add_argument("--shadow-only", action="store_true",
+                        help="Settle only the shadow log (skip every ledger)")
     args = parser.parse_args()
+
+    if args.shadow_reapply:
+        reapply_shadow_settlement(args.shadow_reapply)
+        return
+    if args.shadow_only:
+        settle_shadow_predictions(days=args.days, dry_run=args.dry_run,
+                                  journal=args.shadow_journal)
+        return
 
     if not LEDGER_FILE.exists():
         log.error(f"Ledger not found: {LEDGER_FILE}")
@@ -1546,6 +1712,12 @@ def main():
     except Exception as e:                                            # noqa: BLE001
         log.warning(f"ht_observations update skipped: {e}")
     update_live_signal_results(days=args.days, dry_run=args.dry_run)
+    # LAST and guarded, like ht_observations: an evidence log must never take a ledger down.
+    try:
+        settle_shadow_predictions(days=args.days, dry_run=args.dry_run,
+                                  journal=args.shadow_journal)
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"shadow settlement skipped: {e}")
 
 
 if __name__ == "__main__":

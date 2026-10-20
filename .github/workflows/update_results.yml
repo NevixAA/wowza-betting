@@ -8,7 +8,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15  # +5 for the shadow settlement pass + its own commit step (2026-10-20)
     permissions:
       contents: write
 
@@ -29,6 +29,9 @@ jobs:
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          # Shadow settlements are journalled here and re-applied in their own commit step
+          # below (see "Commit shadow settlement"). Outside the repo, so no reset can lose it.
+          SHADOW_SETTLEMENT_JOURNAL: ${{ runner.temp }}/shadow_settlement.json
         run: python update_results.py --days 3
 
       # `if: always()` ADDED 2026-09-08, and this is the half of the incident that actually cost
@@ -56,6 +59,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # The shadow log is committed by the NEXT step, not this one. Drop this run's local
+          # edit of it here so the rebase below never has to merge it (the journal holds it).
+          git checkout -- output/v91_shadow.csv 2>/dev/null || true
+          git checkout -- output/shadow_settlement_health.json 2>/dev/null || true
           for f in output/bets_ledger.csv output/side_bets_ledger.csv output/ht_ledger.csv output/ht_observations.csv output/player_ledger.csv output/sharp_ledger.csv output/live_signals_history.csv; do git add -f "$f" 2>/dev/null || true; done
           git diff --staged --quiet || \
             git commit -m "auto: results $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -72,3 +79,41 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+
+      # P0 2026-10-20 — settle the prospective shadow log (output/v91_shadow.csv).
+      #
+      # WHY A SEPARATE STEP, AND WHY NOT `pull --rebase -X theirs` FOR THIS ONE FILE. The ledgers
+      # above have one writer; v91_shadow.csv has TWO: predict APPENDS rows every 5-15 minutes,
+      # this job EDITS rows in place. When predict's appended lines sit next to a row this run
+      # settled, git reports a conflict and `-X theirs` keeps this run's side of the hunk —
+      # silently deleting predict's new rows. A deleted row is then re-logged by predict at a
+      # LATER time, i.e. the first-sight freeze is broken without anyone noticing.
+      #
+      # So this step never merges. Each attempt resets to the freshest origin/main, re-applies
+      # this run's settlements from the journal onto THAT file (offline, idempotent, fills only
+      # blank grading cells; first-sight columns are hashed and the write is refused if they
+      # change), stages the two files individually, and pushes. A lost race just retries.
+      #
+      # The reverse race is benign: if predict's own `-X theirs` rebase reverts a settled cell,
+      # the row is blank again and the next run re-settles it with the same values.
+      - name: Commit shadow settlement
+        if: always()
+        env:
+          SHADOW_SETTLEMENT_JOURNAL: ${{ runner.temp }}/shadow_settlement.json
+        run: |
+          [ -f "$SHADOW_SETTLEMENT_JOURNAL" ] || { echo "no shadow journal - nothing to commit"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            python update_results.py --shadow-reapply "$SHADOW_SETTLEMENT_JOURNAL"
+            for f in output/v91_shadow.csv output/shadow_settlement_health.json; do
+              git add -f "$f" 2>/dev/null || true
+            done
+            if git diff --staged --quiet; then pushed=1; echo "shadow: nothing new"; break; fi
+            git commit -q -m "auto: shadow settlement $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || { echo "shadow settlement push failed after 5 retries"; exit 1; }

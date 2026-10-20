@@ -280,6 +280,10 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
             "v9_model_sha": d.get("model_sha", pd.NA),
             "v91_model_sha": pd.NA,
             "dataset_id": d.get("git_sha", pd.NA),
+            # Identity, so settlement can join a results source. Without these the row held
+            # only an OddsAPI event id and could never be graded (P0 2026-10-20).
+            "home_team": d.get("home_team", pd.NA),
+            "away_team": d.get("away_team", pd.NA),
         })
         n = append_shadow(rows)
         log.info(f"shadow: logged {n} new fixture(s) of {len(rows)} scored")
