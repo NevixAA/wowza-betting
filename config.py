@@ -692,3 +692,44 @@ SOFASCORE_TOURNAMENT_IDS = {
     "La Liga 2": 54, "Serie B": 53, "Denmark Superliga": 39,
     "Norway Eliteserien": 317,
 }
+
+
+# ── AUTO-ONBOARDED LEAGUES (owner standing approval 2026-10-20) ─────────────────────────────────
+# "If a new league is ready to become a tips generator, go." A league that passes EVERY League Scout
+# gate in Pro (data quality, market-residual evidence, existing-league regression harness) is written
+# into config/auto_leagues.json by .github/workflows/auto_onboard_leagues.yml (scripts/auto_onboard.py).
+# It is merged here into every registry a new-format, API-Football-only league needs. ADDITIVE ONLY: a
+# name already configured above is never overwritten, and any error leaves the config exactly as
+# written above. Stakes stay protected by the league rating, which fails closed to the minimum scale
+# for a league with no rating yet.
+AUTO_LEAGUES_FILE = BASE_DIR / "config" / "auto_leagues.json"
+
+
+def _merge_auto_leagues() -> list[str]:
+    import json as _json
+    added = []
+    try:
+        data = _json.loads(AUTO_LEAGUES_FILE.read_text(encoding="utf-8")) if AUTO_LEAGUES_FILE.exists() else {}
+    except Exception:                                                 # noqa: BLE001
+        return added
+    for e in data.get("leagues", []):
+        name = str(e.get("name", "")).strip()
+        try:
+            lid, season, sport_key = int(e["api_football_id"]), str(e["current_season"]), str(e["odds_api_sport_key"])
+        except Exception:                                             # noqa: BLE001 - incomplete entry: skip
+            continue
+        if not name or name in STANDARD_FORMAT_LEAGUES or name in NEW_FORMAT_LEAGUES or name in API_FOOTBALL_IDS:
+            continue
+        NEW_FORMAT_LEAGUES.add(name)
+        API_FOOTBALL_ONLY_LEAGUES.add(name)
+        API_FOOTBALL_EXTRA_SEASONS[name] = [str(s) for s in e.get("history_seasons", [])]
+        ENABLED_LEAGUES.add(name)
+        API_FOOTBALL_IDS[name] = lid
+        API_FOOTBALL_SEASONS[name] = season
+        ODDS_API_SPORT_KEYS[name] = sport_key
+        LEAGUE_TIMEZONES[name] = str(e.get("timezone") or "UTC")
+        added.append(name)
+    return added
+
+
+AUTO_LEAGUES = _merge_auto_leagues()
