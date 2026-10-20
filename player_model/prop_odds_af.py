@@ -133,8 +133,9 @@ def _clean_player(raw: str) -> str:
     s = str(raw or "").strip()
     if " - " in s:
         s = s.split(" - ", 1)[0]
-    for tok in ("Over", "over", "Under", "under"):
-        s = s.replace(tok, " ")
+    # WHOLE WORDS ONLY (2026-10-20): a substring replace turned "Saunders" into "Sa s",
+    # "Ogundere" into "Og e" and "Gundersen" into "G sen" (and would mangle "Grover", "Overmars").
+    s = _SIDE_WORD_RE.sub(" ", s)
     parts = [p for p in s.split() if not _is_number(p) and not _PLUS_RE.fullmatch(p)]
     return " ".join(parts).strip()
 
@@ -163,8 +164,15 @@ def _parse_line(raw: str) -> float | None:
     return None
 
 
+_SIDE_WORD_RE = re.compile(r"\b(?:over|under)\b", re.IGNORECASE)
+_UNDER_WORD_RE = re.compile(r"\bunder\b", re.IGNORECASE)
+
+
 def _is_under(raw: str) -> bool:
-    return "under" in str(raw or "").lower()
+    """True only for the WORD "Under". The substring test this replaced classed every player whose
+    name contains "under" (Saunders, Ogundere, Gundersen) as an Under quote, so his real
+    anytime-scorer Yes price was dropped from tips and from the odds history (15 quotes in Oct)."""
+    return bool(_UNDER_WORD_RE.search(str(raw or "")))
 
 
 def _is_number(tok: str) -> bool:
