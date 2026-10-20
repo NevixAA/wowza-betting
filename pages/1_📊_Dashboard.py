@@ -346,12 +346,18 @@ def _board(rows: pd.DataFrame, order: str) -> str:
             if isinstance(r.get("drift"), str) and r["drift"] and r["drift"] != "nan":
                 extra.append(f"drift {r['drift']}")
             model = "Standard" if str(r["model"]) == "standard" else "New-format"
+            # League rating 1-10 (owner 2026-10-20), the same number the stake plan sizes by.
+            _rt = r.get("rating")
+            _rt_clr = ("#15803d" if pd.notna(_rt) and _rt >= 8 else
+                       "#b91c1c" if pd.notna(_rt) and _rt <= 3 else "inherit")
+            rating_html = ("" if _rt is None or pd.isna(_rt) else
+                           f" · <b style='color:{_rt_clr}'>rating {int(_rt)}/10</b>")
             out.append(
                 f"<tr class='{'done' if started else ''}'>"
                 f"<td class='ko'>{kot}{'<span class=sub>started</span>' if started else ''}</td>"
                 f"<td><b>{_html.escape(str(r['home_team']))}</b> v "
                 f"<b>{_html.escape(str(r['away_team']))}</b>"
-                f"<span class='sub lg'>{_html.escape(str(r['league']))}</span></td>"
+                f"<span class='sub lg'>{_html.escape(str(r['league']))}{rating_html}</span></td>"
                 f"<td><span class='mk' style='color:{_SIDE_CLR.get(side, 'inherit')}'>{tip}</span>"
                 f"{'<span class=sub>' + ' · '.join(extra) + '</span>' if extra else ''}</td>"
                 f"<td><span class='pill' style='background:{clr}'>{_TIER_ICON.get(tier, '')} {tier}"

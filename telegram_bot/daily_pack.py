@@ -322,6 +322,63 @@ def props_image(today: str) -> list[bytes]:
                         footer="Times UTC · paper leagues excluded · not betting advice")
 
 
+def _pro_csv(rel: str) -> pd.DataFrame:
+    """A Pro output, from a sibling checkout or Pro's public repo. Empty on any failure."""
+    try:
+        for base in (os.getenv("PRO_LOCAL"), "../pro", "../wowzaV9-Pro"):
+            if base and os.path.exists(os.path.join(base, rel)):
+                return pd.read_csv(os.path.join(base, rel), low_memory=False)
+        return pd.read_csv("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + rel, low_memory=False)
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] {rel} unavailable: {type(e).__name__}")
+        return pd.DataFrame()
+
+
+def one_x_two_image(now: _dt.datetime) -> list[bytes]:
+    """Pro's paper 1X2 picks in the morning album (owner 2026-10-20: "if there is 1x2 bet - add it to the
+    daily"). Pro selects them (top slice by edge) and records them; it no longer sends its own message.
+    Upcoming picks (next 36 h) plus yesterday's settled ones. PAPER — never staked."""
+    d = _pro_csv("output/paper_1x2.csv")
+    if d.empty or "notified_pick" not in d.columns:
+        return []
+    d = d[d["notified_pick"].notna()].copy()
+    if d.empty:
+        return []
+    d["_ko"] = pd.to_datetime(d["kickoff_utc"], errors="coerce", utc=True)
+    nowts = pd.Timestamp(now)
+    up = d[(d["_ko"] > nowts) & (d["_ko"] <= nowts + pd.Timedelta(hours=36))].sort_values("_ko")
+    yday = (nowts - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    done = d[(d["match_date"].astype(str).str[:10] == yday) & pd.to_numeric(d["result"], errors="coerce").notna()]
+    if up.empty and done.empty:
+        return []
+    pick_lbl = {"HOME": "Home win", "DRAW": "Draw", "AWAY": "Away win"}
+    res_code = {"HOME": 0, "DRAW": 1, "AWAY": 2}
+    cols = [("Time", 112), ("League", 190), ("Match", 320), ("Pick", 110), ("Odds", 70), ("Edge", 80),
+            ("Result", 90)]
+    rows = []
+    if len(up):
+        rows.append({"band": f"Upcoming 1X2 picks — {len(up)}"})
+        for _, r in up.iterrows():
+            ev = pd.to_numeric(r.get("notified_ev"), errors="coerce")
+            rows.append({"cells": [r["_ko"].strftime("%a %H:%M"), r["league"], f"{r['home_team']} v {r['away_team']}",
+                                   pick_lbl.get(str(r["notified_pick"]), r["notified_pick"]),
+                                   f"{float(r['notified_odds']):.2f}", "–" if pd.isna(ev) else f"+{ev * 100:.0f}%", "–"],
+                         "colours": {"Result": MUTED}})
+    if len(done):
+        won = sum(int(pd.to_numeric(r["result"]) == res_code.get(str(r["notified_pick"]), -1)) for _, r in done.iterrows())
+        rows.append({"band": f"Yesterday — {won} of {len(done)} won"})
+        for _, r in done.iterrows():
+            w = int(pd.to_numeric(r["result"])) == res_code.get(str(r["notified_pick"]), -1)
+            rows.append({"cells": ["", r["league"], f"{r['home_team']} v {r['away_team']}",
+                                   pick_lbl.get(str(r["notified_pick"]), r["notified_pick"]),
+                                   f"{float(r['notified_odds']):.2f}", "", "WON" if w else "LOST"],
+                         "stripe": GREEN if w else RED, "colours": {"Result": GREEN if w else RED}})
+    return render_table("1X2 picks (paper)", cols, rows,
+                        subtitle="Pro's 1X2 model, top slice by edge. Paper only - the backtest says this slice "
+                                 "has lost; it is tracked forward to settle that.",
+                        footer="Times UTC · not betting advice")
+
+
 def props_results_image(day: str) -> list[bytes]:
     """Yesterday's settled player props (owner 2026-10-20: the morning album showed today's props but
     never how yesterday's did — prop results lived only in the Monday pack).
@@ -979,6 +1036,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
              ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
              ("props", lambda: props_image(today)),
+             ("one_x_two", lambda: one_x_two_image(now)),
              ("bet_builder", lambda: bet_builder_image(today)),
              ("sharp", lambda: sharp_image(today)),
              ("scoreboard", scoreboard_images)]
@@ -997,7 +1055,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
     except Exception:                                                   # noqa: BLE001
         yline = ""
     caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
-               f"Top picks · today's tips ({n_tips}) · yesterday's results (team + props) · record · player props · "
+               f"Top picks · today's tips ({n_tips}) · yesterday's results (team + props) · record · player props · 1X2 · "
                f"Bet Builder · sharp moves · Pro scoreboard"
                + (f"\nYesterday's top picks: {yline}" if yline else ""))
     print("[daily_pack] " + ", ".join(notes))
