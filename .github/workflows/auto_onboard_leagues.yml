@@ -1,0 +1,62 @@
+name: Auto-onboard leagues from League Scout
+
+# Owner standing approval 2026-10-20: "if a new league is ready to become a tips generator, go."
+# Pro's weekly League Scout (Mon 04:20) queues a league only when it passed every gate, including the
+# existing-league regression harness. This job writes it into config/auto_leagues.json (merged by
+# config.py into every league registry) - only when an OddsAPI sport key matches it uniquely - and
+# sends one Telegram notice per league added. Stakes stay under league-rating sizing, which fails closed
+# to the minimum for a league without a rating. Fail closed on anything unreachable.
+
+on:
+  schedule:
+    - cron: '20 9 * * 1'
+  push:
+    branches: [main]
+    paths: ['.github/workflows/auto_onboard_leagues.yml', 'scripts/auto_onboard.py']
+  workflow_dispatch:
+
+concurrency:
+  group: auto-onboard
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  onboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Tests
+        run: python -m pytest tests/test_auto_onboard.py -q
+      - name: Probe (which scout leagues have a price source)
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python scripts/auto_onboard.py --probe | tee probe.txt
+      - name: Onboard
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/auto_onboard.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in config/auto_leagues.json telegram_bot/notified.json; do
+            git add -f "$f" 2>/dev/null || true
+          done
+          git diff --staged --quiet && exit 0
+          git commit -m "auto: league auto-onboard $(date -u '+%Y-%m-%d')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X theirs origin main && git push && exit 0
+            sleep $((RANDOM % 5 + 3))
+          done
+          exit 1
