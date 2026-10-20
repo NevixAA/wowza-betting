@@ -196,7 +196,20 @@ def health() -> dict:
                        for k, v in last.items()},
             "freshness": freshness_from_timestamp(latest_run, "daily", "retrain_log.json")},
         "training_coverage": {"leagues": len(cov) if isinstance(cov, dict) else 0},
+        "shadow_settlement": shadow_settlement_health(),
     }
+
+
+def shadow_settlement_health() -> dict:
+    """output/shadow_settlement_health.json, written by update_results.py. Read-only: coverage
+    of the prospective shadow log's settlement, NOT a performance number."""
+    h = read_json(OUT / "shadow_settlement_health.json")
+    if not isinstance(h, dict) or not h:
+        return {}
+    h = dict(h)
+    h["freshness"] = freshness_from_timestamp(h.get("generated_at"), "daily",
+                                              "shadow_settlement_health.json")
+    return h
 
 
 def calibration(bins: int = 8, min_bin: int = 20) -> dict:

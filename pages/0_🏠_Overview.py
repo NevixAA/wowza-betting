@@ -165,6 +165,13 @@ with h1:
     rt = hv.get("retrain") or {}
     if rt.get("latest_run"):
         st.caption(f"🔁 last retrain {rt['latest_run']}")
+    ssh = hv.get("shadow_settlement") or {}
+    if ssh:
+        ui.freshness_chip(ssh["freshness"],
+                          f"shadow log · {ssh.get('settled_rows', 0):,}/"
+                          f"{ssh.get('shadow_rows', 0):,} settled")
+        st.caption(f"close {ssh.get('valid_closing_price_pct')}% · CLV {ssh.get('clv_pct')}% "
+                   f"of settled · coverage only, not evidence of edge")
 
 with h2:
     st.markdown(f"**{REPOS['pro']['label']}**")
