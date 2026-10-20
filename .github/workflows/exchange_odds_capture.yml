@@ -1,0 +1,67 @@
+name: Exchange Odds Capture
+
+# Exchange back + LAY prices for our leagues - COLLECTION ONLY (owner approved 2026-10-20).
+# Feeds the hedging (back-to-lay) and prop research with BOTH sides of a price. Never touches a
+# model, a tip, a stake or Telegram. scripts/capture_exchange_odds.py documents what the exchanges
+# actually price in our leagues (h2h + h2h_lay; Matchbook back totals/BTTS; O/U and BTTS lay only on
+# top flights so far) and its two fail-closed guards: a per-run credit budget and an account floor
+# below which it stops so production predict and the prop snapshots keep the shared OddsAPI quota.
+#
+# Once daily on purpose: a once-daily cron is delivered ~100% (it just fires late), and the script
+# samples the next 36h of kickoffs soonest-first, so the firing time does not matter.
+
+concurrency:
+  group: exchange-odds-capture
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '35 10 * * *'
+  push:
+    branches: [main]
+    paths: ['.github/workflows/exchange_odds_capture.yml', 'scripts/capture_exchange_odds.py']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt pytest
+
+      - name: Tests
+        run: python -m pytest tests/test_capture_exchange.py -q
+
+      - name: Capture
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          EXCHANGE_DAILY_BUDGET: "150"
+          EXCHANGE_CREDIT_FLOOR: "15000"
+        run: |
+          set -o pipefail
+          python scripts/capture_exchange_odds.py 2>&1 | tee cap.txt
+          { echo '## Exchange odds capture'; echo '```'; tail -n 10 cap.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          [ -d output/exchange_quotes ] && git add -f output/exchange_quotes
+          git diff --staged --quiet && exit 0
+          git commit -m "auto: exchange odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X theirs origin main && git push && exit 0
+            sleep $((RANDOM % 5 + 3))
+          done
+          exit 1
