@@ -47,9 +47,58 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-tab_latest, tab_champ, tab_trader, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
-    ["Latest findings", "Model champions", "Price Trader", "Does it learn?", "Tips sent (1X2 · Bet Builder)",
-     "Team studies", "Canonical store", "Governance", "Health"])
+(tab_latest, tab_champ, tab_trader, tab_valuable, tab_learn, tab_tips, tab_studies, tab_store, tab_gov,
+ tab_health) = st.tabs(
+    ["Latest findings", "Model champions", "Price Trader", "VALUABLE research", "Does it learn?",
+     "Tips sent (1X2 · Bet Builder)", "Team studies", "Canonical store", "Governance", "Health"])
+
+# ── VALUABLE deep dive (owner brief 2026-10-20) — READ-ONLY research, selection logic untouched ─────
+with tab_valuable:
+    vd = pro.valuable()
+    sm = vd.get("valuable_summary", pd.DataFrame())
+    if sm.empty:
+        st.info("No VALUABLE deep dive yet — Pro writes `output/valuable_deep_dive/` (src/studies/valuable).")
+    else:
+        st.markdown(
+            "**Research only — nothing here changes which tips are sent.** VALUABLE is not one region: on O/U 2.5 "
+            "the size of the edge does not predict results; on BTTS it does, and 4–8% is the one band that held up "
+            "out of sample. Seven hypotheses are frozen and tested from 21 Oct on a shadow of every candidate.")
+        val = sm[sm.tier == "VALUABLE"]
+        pooled = val[val.market.str.startswith("ALL")].set_index("window")
+        c = st.columns(3)
+        for col, (w, lab) in zip(c, (("last14", "Last 14 days"), ("last30", "Last 30 days"), ("since_aug26", "Since 26 Aug"))):
+            if w in pooled.index:
+                r = pooled.loc[w]
+                col.metric(lab, f"{r.ROI_pct:+.1f}%", f"n {int(r.N)} · 90% CI {r.ROI_ci90_lo:+.0f}..{r.ROI_ci90_hi:+.0f}",
+                           delta_color="off")
+        st.caption("Pooled across markets, as the owner audit counts it. By market below.")
+        ui.table(val[~val.market.str.startswith("ALL")][["window", "market", "N", "ROI_pct", "ROI_ci90_lo", "ROI_ci90_hi", "CLV_pct"]]
+                 .rename(columns={"ROI_pct": "ROI %", "ROI_ci90_lo": "CI low", "ROI_ci90_hi": "CI high", "CLV_pct": "CLV %"}))
+        st.subheader("Edge bands (O/U 2.5 VALUABLE since 26 Aug)")
+        st.markdown("3–4%: **−5.8%** (n 196) · 4–6%: **+3.1%** (n 120) · 6–8%: **+16.3%** (n 31) — CLV *falls* as the "
+                    "edge rises (+0.37 → −0.17 → −0.74), so the price does not confirm the high band. "
+                    "BTTS fair edge 4–8%: new-format **+19.6%** (n 87), standard **+31.1%** (n 34).")
+        fb = vd.get("valuable_fair_edge_bands", pd.DataFrame())
+        if not fb.empty:
+            with st.expander("Fair-edge bands (two-sided de-vig)"):
+                ui.table(fb[(fb.kind == "aggregate") & (fb.N > 0)][["band", "market", "model_type", "N", "ROI_pct", "ROI_ci90_lo",
+                                                                     "ROI_ci90_hi", "CLV_pct"]])
+        lm = vd.get("valuable_league_market", pd.DataFrame())
+        if not lm.empty:
+            st.subheader("League × market heatmap (shrunk ROI, VALUABLE, all live history)")
+            import plotly.express as px                                    # heavy import kept out of module scope
+            h = lm[lm.N >= 10].pivot_table(index="league", columns="market", values="ROI_shrunk_pct")
+            if not h.empty:
+                fig = px.imshow(h, color_continuous_scale="RdBu", color_continuous_midpoint=0, text_auto=".0f",
+                                aspect="auto", labels={"color": "shrunk ROI %"})
+                fig.update_layout(height=max(320, 26 * len(h)), margin=dict(l=0, r=0, t=10, b=0))
+                st.plotly_chart(fig, width="stretch")
+            st.caption("Cells with ≥10 settled tips, shrunk toward their tier × market × model average. "
+                       "No cell survives multiple-testing control (best q 0.61).")
+        sh = vd.get("shadow_live") or vd.get("shadow") or {}
+        st.caption(f"Low-edge shadow (every candidate incl. below the floor, never bet): "
+                   f"{sh.get('rows', 0)} rows · {sh.get('settled', 0)} settled · status "
+                   f"{(vd.get('shadow') or {}).get('status', '?')}")
 
 # ── Price Trader research lab (owner brief 2026-10-19) — PAPER / SHADOW only ────────────────────
 with tab_trader:
