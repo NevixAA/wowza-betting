@@ -82,6 +82,53 @@ def _model_sha() -> str:
     return _cached_models
 
 
+#: Per-model version columns for the side/HT markets. `model_version` itself is the O/U model.
+SIDE_VERSION_COLS = {"btts": "model_version_btts", "over15": "model_version_over15",
+                     "over35": "model_version_over35", "ht_over05": "model_version_ht_over05",
+                     "ht_over15": "model_version_ht_over15"}
+
+
+def pd_perf_warning():
+    try:
+        from pandas.errors import PerformanceWarning
+        return PerformanceWarning
+    except Exception:                                         # pragma: no cover
+        return Warning
+
+
+def stamp_versions(df):
+    """WHICH MODEL made each row (champion high-water mark, 2026-10-18).
+
+    `model_sha` above cannot answer that: it digests size+mtime over every .pkl at once, and
+    checkout resets mtime each CI run. These columns name the exact artifact, looked up from the
+    SHA-256 of the file predict loaded (src/model_registry.stamp_for). The O/U row is attributed
+    to the model that actually scored it, including predict's two fallbacks onto the standard
+    model. Additive columns; never raises.
+    """
+    import warnings
+    from src import model_registry as reg
+    try:
+        # predictions arrive as a wide, already-fragmented frame; adding nine columns to it
+        # trips pandas' PerformanceWarning nine times per run. Harmless, and noise in CI logs.
+        warnings.simplefilter("ignore", category=pd_perf_warning())
+        tag = df["model_type"] if "model_type" in df.columns else None
+        rows = (tag.astype(str).map(reg.ou_model_for) if tag is not None
+                else ["standard"] * len(df))
+        stamps = [reg.stamp_for(m) for m in rows]
+        df["model_version"] = [s["model_version"] for s in stamps]
+        df["retrain_batch_id"] = [s["retrain_batch_id"] for s in stamps]
+        df["training_cutoff"] = [s["training_cutoff"] for s in stamps]
+        df["prediction_role"] = "CHAMPION"
+        for m, col in SIDE_VERSION_COLS.items():
+            df[col] = reg.stamp_for(m)["model_version"]
+    except Exception as e:                                    # pragma: no cover
+        log.warning(f"[provenance] version stamping failed ({e}); writing UNKNOWN")
+        for col in ("model_version", *SIDE_VERSION_COLS.values()):
+            if col not in df.columns:
+                df[col] = reg.UNKNOWN_LEGACY
+    return df
+
+
 def stamp(df):
     """Add generated_at / git_sha / model_sha to a predictions frame, in place-ish.
 
@@ -93,6 +140,7 @@ def stamp(df):
         df["generated_at"] = ts
         df["git_sha"] = _git_sha()
         df["model_sha"] = _model_sha()
+        stamp_versions(df)
     except Exception as e:                                    # pragma: no cover
         log.warning(f"[provenance] stamping failed ({e}); writing placeholders")
         try:

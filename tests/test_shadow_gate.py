@@ -49,10 +49,11 @@ def test_the_live_decision_is_passed_in_not_derived():
 
 def test_shadow_gate_is_called_after_the_promotion_decision_is_already_made():
     """Order matters: if it ran BEFORE `promote` was set, a future edit could feed it back in."""
+    # Since 2026-10-18 the decision (and the save, on PROMOTE) is _champion_decision.
     src = inspect_source()
-    i_decide = src.index("if promote:\n        save_models(")
+    i_decide = src.index("gate, gate_extra = _champion_decision(")
     i_shadow = src.index("shadow = _shadow_gate(")
-    assert i_decide < i_shadow, "the shadow gate must run after the model is already saved"
+    assert i_decide < i_shadow, "the shadow gate must run after the champion decision is made"
 
 
 def inspect_source() -> str:

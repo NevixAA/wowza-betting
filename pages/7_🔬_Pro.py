@@ -47,9 +47,118 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-tab_latest, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
-    ["Latest findings", "Does it learn?", "Tips sent (1X2 · Bet Builder)", "Team studies", "Canonical store",
-     "Governance", "Health"])
+tab_latest, tab_champ, tab_trader, tab_learn, tab_tips, tab_studies, tab_store, tab_gov, tab_health = st.tabs(
+    ["Latest findings", "Model champions", "Price Trader", "Does it learn?", "Tips sent (1X2 · Bet Builder)",
+     "Team studies", "Canonical store", "Governance", "Health"])
+
+# ── Price Trader research lab (owner brief 2026-10-19) — PAPER / SHADOW only ────────────────────
+with tab_trader:
+    pt = pro.price_trader()
+    v = pt.get("verdict") or {}
+    if not v:
+        st.info("No Price Trader v2 verdict yet — Pro writes it daily (pro_price_trader.yml).")
+    else:
+        state = v.get("EVIDENCE_STATE", "?")
+        colour = {"COLLECTING": "🟡", "PRICE_SIGNAL": "🟢", "EXECUTABLE_EDGE": "🟢", "NO_EDGE": "🔴"}.get(state, "⚪")
+        st.markdown(f"## {colour} {state}")
+        st.caption("Paper/shadow research only: no orders, no stakes, no messages. Raw price movement is never "
+                   "called an edge without the economic test (costs, breakeven, controls, forward window).")
+        ds = v.get("data_status") or {}
+        h = pt.get("health") or {}
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Signals with a price path", h.get("tradable", "?"))
+        c2.metric("Exchange back prices", ds.get("EXCHANGE_BACK_PRICES_RECORDED", "?"),
+                  help=f"share of path rows: {ds.get('exchange_opposite_coverage_of_path_rows')}")
+        c3.metric("Executable exchange data", ds.get("EXECUTABLE_EXCHANGE_DATA_AVAILABLE", "?"),
+                  help="no lay ladder / matched size is captured anywhere")
+        c4.metric("Capacity", "UNKNOWN" if ds.get("CAPACITY_UNKNOWN") == "YES" else "known")
+        hp = v.get("historical_primary") or {}
+        fg = v.get("forward_gates") or {}
+        st.markdown(f"**Primary setup (historical, exploratory):** {hp.get('n')} hedged trades, mean "
+                    f"{(hp.get('mean_pnl_per_unit') or 0):+.1%} per unit, full-green rate "
+                    f"{(hp.get('full_green_rate') or 0):.1%}.  **Forward window** (from 2026-10-20): "
+                    f"{fg.get('N_completed_forward', 0)} of {fg.get('N_required', 150)} trades, "
+                    f"{fg.get('match_days', 0)} of {fg.get('days_required', 30)} match days.")
+        hz = pt.get("horizon_rule_results")
+        if hz is not None and len(hz):
+            sub = hz[(hz["venue"] == "book") & (hz["slippage"] == 0) & (hz["rule"] == "GREEN_2PCT")]
+            st.markdown("**By entry horizon** — observed favourable rate vs the rate needed to break even after costs")
+            ui.table(sub[["horizon", "fixtures", "completed", "favourable_move_rate", "median_clv",
+                          "full_green_rate", "mean_pnl_per_unit", "observed_favourable",
+                          "required_favourable", "tradeable"]])
+        ct = pt.get("controls")
+        if ct is not None and len(ct):
+            with st.expander("Wowza vs controls at the same entries (opposite, random, shuffled, market-only)"):
+                ui.table(ct[ct["rule"] == "GREEN_2PCT"][["horizon", "control", "n", "wowza_toward_rate",
+                                                          "control_toward_rate", "wowza_mean_pnl",
+                                                          "control_mean_pnl", "pnl_diff_ci90"]])
+        st.markdown(f"**States (primary):** {v.get('states_primary')} · **labels:** {v.get('labels_primary')}")
+        integ = pt.get("integrity") or {}
+        if integ:
+            st.caption(f"Research integrity: {integ.get('summary')} · blocked: "
+                       f"{integ.get('EDGE_VERDICTS_BLOCKED_FOR') or 'nothing'}")
+        st.caption("PRODUCTION_SELECTION_CHANGED = NO · THRESHOLDS = NO · STAKING = NO · REAL_BETTING_ENABLED = NO")
+
+# ── champion high-water mark (owner 2026-10-18) ───────────────────────────────────────────────
+with tab_champ:
+    import json as _json
+    st.subheader("Model champions — the high-water mark")
+    st.markdown(
+        "**Retraining is an experiment; promotion is a privilege.** Every retrain trains a *challenger*. "
+        "It replaces the serving model only when it is clearly better on the same fixtures. Worse or "
+        "tied keeps the champion; *possibly* better is shadowed — it predicts the same live fixtures "
+        "next to the champion, without ever producing a tip, until the evidence decides. Weekly "
+        "results still swing with football; what may not slip is the quality of the model serving.")
+    _root = Path(__file__).resolve().parents[1]
+    try:
+        _ptr = _json.loads((_root / "models" / "registry" / "current_champions.json").read_text(encoding="utf-8"))
+    except Exception:                                                  # noqa: BLE001
+        _ptr = {}
+    try:
+        _dec = pd.read_csv(_root / "output" / "model_lineage" / "retrain_batches.csv")
+    except Exception:                                                  # noqa: BLE001
+        _dec = pd.DataFrame()
+    ml = pro.model_lineage()
+    view = ml.get("current_champions_view", pd.DataFrame())
+    if len(view):
+        ui.table(view.rename(columns=str))
+    elif _ptr:
+        ui.table(pd.DataFrame([{"model": k, "champion": v.get("model_version"),
+                                "since": v.get("champion_since")} for k, v in sorted(_ptr.items())]))
+    else:
+        st.info("No champion registry yet.")
+
+    # lineage timeline: one line per model, last 12 decisions, oldest -> newest
+    if len(_dec):
+        st.markdown("**Lineage — last 12 retrains per model** (oldest → newest)")
+        _sym = {"PROMOTE": "⬆️ promoted", "KEEP_CHAMPION": "⏸ kept", "SHADOW_MORE": "🔬 shadow",
+                "LEGACY_PROMOTED": "↑ old-rule promote", "LEGACY_BLOCKED": "⛔ old-rule block"}
+        for mt, g in _dec.groupby("model_type"):
+            chain = " → ".join(_sym.get(str(v), str(v)) for v in g["verdict"].tail(12))
+            st.markdown(f"- **{mt}**: {chain}")
+        st.caption("Before 2026-10-18 the old rule promoted almost every retrain (each champion lived about a "
+                   "day). From 2026-10-18 only a proven improvement promotes.")
+
+    a = ml.get("answers") or {}
+    if a:
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Retrains analysed", a.get("RETRAIN_ATTEMPTS_ANALYZED"))
+        c2.metric("Promoted", a.get("PROMOTIONS"))
+        c3.metric("Churn rate", a.get("MODEL_CHURN_RATE"))
+        c4.metric("Head-to-head graded", a.get("H2H_GRADED"))
+        st.caption(f"Best proven improvement: {a.get('BEST_PROVEN_CHAMPION_IMPROVEMENT')}")
+    wt = ml.get("retrain_week_table", pd.DataFrame())
+    if len(wt):
+        with st.expander("Retrain → what happened next (the week table)"):
+            st.caption("Future results = settled bets the model generated until the next retrain decision. "
+                       "WEEKLY_RESULT_VARIANCE_HIGH: one week never demotes a champion.")
+            ui.table(wt.tail(40))
+    for key, title in (("challenger_shadow_results", "Shadow challengers vs champion (same live fixtures)"),
+                       ("champion_health", "Champion health"), ("model_churn", "Churn by model")):
+        df = ml.get(key, pd.DataFrame())
+        if len(df):
+            with st.expander(title):
+                ui.table(df)
 
 # ── every study's latest verdict, newest first (Pro output/research_index.json) ──────────────
 with tab_latest:

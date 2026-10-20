@@ -15,19 +15,79 @@
     "one_position_per_fixture": true,
     "hard_max_odds": 3.0
   },
-  "tier_multipliers": {"SNIPER": 1.10, "MARKSMAN": 0.90},
-  "convergence": {"multiplier": 1.15, "leagues": []},
-  "paper_leagues": ["USA MLS"],
-  "tracks": {
-    "new_format|BTTS":   {"state": "ACTIVE",     "base_fraction": 0.0125, "max_odds": 2.60, "evidence_score": 3.0},
-    "new_format|OU25":   {"state": "ACTIVE_LOW", "base_fraction": 0.005,  "max_odds": 2.50, "evidence_score": 1.0},
-    "new_format|OVER15": {"state": "ACTIVE_LOW", "base_fraction": 0.005,  "min_odds": 1.45, "max_odds": 1.90, "evidence_score": 1.5},
-    "standard|OU25":     {"state": "PAPER",      "base_fraction": 0.0},
-    "standard|BTTS":     {"state": "PAPER",      "base_fraction": 0.0},
-    "standard|OVER15":   {"state": "PAPER",      "base_fraction": 0.0},
-    "new_format|OVER35": {"state": "BLOCKED",    "base_fraction": 0.0},
-    "standard|OVER35":   {"state": "BLOCKED",    "base_fraction": 0.0},
-    "player_props":      {"state": "BLOCKED_FROM_REAL", "base_fraction": 0.0}
+  "tier_multipliers": {
+    "SNIPER": 1.1,
+    "MARKSMAN": 0.9
   },
-  "drawdown_throttle": [[0.08, 0.75], [0.12, 0.50], [0.18, 0.0]]
+  "convergence": {
+    "multiplier": 1.15,
+    "leagues": []
+  },
+  "paper_leagues": [
+    "USA MLS"
+  ],
+  "tracks": {
+    "new_format|BTTS": {
+      "state": "ACTIVE",
+      "base_fraction": 0.0125,
+      "max_odds": 2.6,
+      "evidence_score": 3.0
+    },
+    "new_format|OU25": {
+      "state": "ACTIVE_LOW",
+      "base_fraction": 0.005,
+      "max_odds": 2.5,
+      "evidence_score": 1.0
+    },
+    "new_format|OVER15": {
+      "state": "ACTIVE_LOW",
+      "base_fraction": 0.005,
+      "min_odds": 1.45,
+      "max_odds": 1.9,
+      "evidence_score": 1.5
+    },
+    "standard|OU25": {
+      "state": "PAPER",
+      "base_fraction": 0.0
+    },
+    "standard|BTTS": {
+      "state": "PAPER",
+      "base_fraction": 0.0
+    },
+    "standard|OVER15": {
+      "state": "PAPER",
+      "base_fraction": 0.0
+    },
+    "new_format|OVER35": {
+      "state": "BLOCKED",
+      "base_fraction": 0.0
+    },
+    "standard|OVER35": {
+      "state": "BLOCKED",
+      "base_fraction": 0.0
+    },
+    "player_props": {
+      "state": "BLOCKED_FROM_REAL",
+      "base_fraction": 0.0
+    }
+  },
+  "drawdown_throttle": [
+    [
+      0.08,
+      0.75
+    ],
+    [
+      0.12,
+      0.5
+    ],
+    [
+      0.18,
+      0.0
+    ]
+  ],
+  "league_rating_sizing": {
+    "enabled": true,
+    "min_scale": 0.2,
+    "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
+  }
 }

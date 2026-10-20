@@ -1,0 +1,65 @@
+{
+  "standard": {
+    "model_version": "standard_20261018T080423Z_64313878",
+    "champion_since": "2026-10-18T08:04:23Z",
+    "retrain_batch_id": "rb_2026-10-18_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "643138788406aa03c6ae741bdfe9f8c9a06b7b22ea674492450b178bfbc38a45",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "newformat": {
+    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
+    "champion_since": "2026-10-18T08:04:23Z",
+    "retrain_batch_id": "rb_2026-10-18_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "9eb6b4b4860c7970a8c9217c31c6c58f15635936b3405bc0f12c2bcb99db8d98",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "btts": {
+    "model_version": "btts_20261005T101905Z_238e3419",
+    "champion_since": "2026-10-05T10:19:05Z",
+    "retrain_batch_id": "rb_2026-10-05_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "238e3419f41449563d2024644e988f694c54a20bf6c9e276fc8cb33caf691098",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "over15": {
+    "model_version": "over15_20261018T080423Z_da4743a2",
+    "champion_since": "2026-10-18T08:04:23Z",
+    "retrain_batch_id": "rb_2026-10-18_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "da4743a2669fef1390f31c3b12eb5969d912e43dbb50a4e254efb0b4c3cb9c4a",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "over35": {
+    "model_version": "over35_20261005T101905Z_f546ce72",
+    "champion_since": "2026-10-05T10:19:05Z",
+    "retrain_batch_id": "rb_2026-10-05_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "f546ce723bdb31f665a60b3b66c64bbe1cd250594a7564c53955e82423a883fe",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "ht_over05": {
+    "model_version": "ht_over05_20261018T080423Z_359b491a",
+    "champion_since": "2026-10-18T08:04:23Z",
+    "retrain_batch_id": "rb_2026-10-18_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "359b491a454efa0eb5236bae365bf6a9784067583cae2d2db3588179c4062832",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "ht_over15": {
+    "model_version": "ht_over15_20261004T093828Z_6f370f63",
+    "champion_since": "2026-10-04T09:38:28Z",
+    "retrain_batch_id": "rb_2026-10-04_legacy",
+    "training_cutoff": "",
+    "artifact_sha256": "6f370f6304d7009403b77c416cc277fcf65c821f126b5ca78b70e7e00fd6f63b",
+    "promotion_source": "LEGACY_GIT",
+    "promotion_reason": "reconstructed from git history 2026-10-18"
+  }
+}
