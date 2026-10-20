@@ -11594,3 +11594,997 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-20T14:53:48Z,1603059,2026-10-20T18:00:00Z,186.2,T-6h,Saudi Pro League,new_format,Al-Nassr,NEOM,32,Betano,ht_ou,over,1.5,2.32,api_football,change
 2026-10-20T14:53:48Z,1603059,2026-10-20T18:00:00Z,186.2,T-6h,Saudi Pro League,new_format,Al-Nassr,NEOM,32,Betano,ht_ou,under,1.5,1.62,api_football,change
 2026-10-20T14:53:48Z,1603059,2026-10-20T18:00:00Z,186.2,T-6h,Saudi Pro League,new_format,Al-Nassr,NEOM,32,Betano,ht_ou,under,0.5,3.5,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,8,Bet365,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,8,Bet365,ou,under,1.5,4.0,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,8,Bet365,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,8,Bet365,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,8,Bet365,ou,over,3.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,8,Bet365,ou,under,3.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,3,Betfair,ou,under,1.5,4.33,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,ou,under,1.5,3.45,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,ou,over,2.5,1.72,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,ou,under,2.5,1.96,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,ou,over,3.5,2.71,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,ou,under,3.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,btts,yes,,1.78,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,36,BetVictor,btts,no,,1.93,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,4,Pinnacle,ou,under,1.5,4.02,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,4,Pinnacle,ou,under,2.5,2.06,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,4,Pinnacle,ht_ou,over,0.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,5,SBO,ou,over,2.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,5,SBO,ou,under,2.5,2.02,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ou,over,1.5,1.26,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ou,under,1.5,3.9,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ou,over,2.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ou,under,2.5,2.1,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ou,over,3.5,2.9,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ou,under,3.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ht_ou,over,1.5,2.67,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ht_ou,under,1.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1563150,2026-10-20T18:45:00Z,260.6,T-6h,Championship,standard,Wolves,Portsmouth,32,Betano,ht_ou,over,0.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,7,William Hill,ht_ou,over,1.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,7,William Hill,ht_ou,under,1.5,1.75,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,7,William Hill,ht_ou,over,0.5,1.2,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,7,William Hill,ht_ou,under,0.5,4.33,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,7,William Hill,btts,yes,,1.44,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,7,William Hill,btts,no,,2.5,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,8,Bet365,ou,over,2.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,8,Bet365,ou,under,2.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ou,over,1.5,1.08,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ou,under,1.5,5.7,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ou,over,2.5,1.35,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ou,under,2.5,2.74,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ou,over,3.5,1.97,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ou,under,3.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ht_ou,over,1.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ht_ou,under,1.5,1.77,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ht_ou,over,0.5,1.16,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,ht_ou,under,0.5,4.25,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,btts,yes,,1.48,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,2,Marathonbet,btts,no,,2.43,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,36,BetVictor,ou,over,2.5,1.43,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,36,BetVictor,ou,under,2.5,2.56,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,36,BetVictor,ou,over,3.5,2.03,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,36,BetVictor,ou,under,3.5,1.68,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,36,BetVictor,ht_ou,over,1.5,2.02,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,36,BetVictor,ht_ou,under,1.5,1.68,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ou,over,1.5,1.12,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ou,under,1.5,6.86,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ou,over,2.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ou,under,2.5,3.16,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ou,over,3.5,1.97,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ou,under,3.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ht_ou,over,1.5,2.04,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,4,Pinnacle,ht_ou,under,1.5,1.79,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ou,over,1.5,1.08,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ou,under,1.5,5.7,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ou,over,2.5,1.35,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ou,under,2.5,2.74,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ou,over,3.5,1.97,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ou,under,3.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ht_ou,over,1.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ht_ou,under,1.5,1.77,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ht_ou,over,0.5,1.16,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,ht_ou,under,0.5,4.25,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,btts,yes,,1.48,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,11,1xBet,btts,no,,2.47,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,32,Betano,ou,over,2.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,32,Betano,ou,under,2.5,2.6,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,32,Betano,ht_ou,under,1.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,32,Betano,btts,yes,,1.55,api_football,change
+2026-10-20T14:24:26Z,1564373,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Huddersfield,Peterborough,32,Betano,btts,no,,2.3,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,7,William Hill,ht_ou,over,1.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,7,William Hill,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,ou,over,1.5,1.28,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,ou,under,1.5,3.5,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,ou,over,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,ou,under,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,ou,over,3.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,ou,under,3.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,btts,yes,,1.8,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,8,Bet365,btts,no,,1.95,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ou,under,1.5,3.28,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ou,over,2.5,1.89,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ou,under,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ou,over,3.5,3.05,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ou,under,3.5,1.28,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ht_ou,over,1.5,2.64,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ht_ou,under,1.5,1.41,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,ht_ou,under,0.5,2.82,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,btts,yes,,1.79,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,2,Marathonbet,btts,no,,1.89,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ou,over,1.5,1.29,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ou,under,1.5,3.5,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ou,over,2.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ou,under,2.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ou,over,3.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ou,under,3.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ht_ou,over,0.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,ht_ou,under,0.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,btts,yes,,1.73,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,3,Betfair,btts,no,,2.1,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ou,over,1.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ou,under,1.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ou,over,2.5,1.86,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ou,under,2.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ou,over,3.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ou,under,3.5,1.32,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ht_ou,over,1.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ht_ou,under,1.5,1.41,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ht_ou,over,0.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,ht_ou,under,0.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,btts,yes,,1.78,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,36,BetVictor,btts,no,,1.93,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ou,over,1.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ou,under,1.5,3.63,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ou,over,2.5,1.94,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ou,under,2.5,1.93,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ou,over,3.5,3.32,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ou,under,3.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ht_ou,over,1.5,2.88,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ht_ou,under,1.5,1.41,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ht_ou,over,0.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,4,Pinnacle,ht_ou,under,0.5,3.05,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,5,SBO,ou,over,2.5,1.96,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,5,SBO,ou,under,2.5,1.88,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ou,under,1.5,3.28,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ou,over,2.5,1.89,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ou,under,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ou,over,3.5,3.05,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ou,under,3.5,1.28,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ht_ou,over,1.5,2.64,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ht_ou,under,1.5,1.41,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,ht_ou,under,0.5,2.82,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,btts,yes,,1.79,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,11,1xBet,btts,no,,1.92,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ou,over,1.5,1.31,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ou,under,1.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ou,over,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ou,under,2.5,1.83,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ou,over,3.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ou,under,3.5,1.31,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ht_ou,over,1.5,2.9,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ht_ou,over,0.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,ht_ou,under,0.5,2.72,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,btts,yes,,1.83,api_football,change
+2026-10-20T14:24:26Z,1564370,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Burton Albion,Bradford,32,Betano,btts,no,,1.88,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,8,Bet365,ou,over,1.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,8,Bet365,ou,under,1.5,4.0,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,8,Bet365,ou,over,3.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,8,Bet365,ou,under,3.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,3,Betfair,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,3,Betfair,btts,yes,,1.65,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,3,Betfair,btts,no,,2.2,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,36,BetVictor,ou,over,2.5,1.75,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,36,BetVictor,ou,under,2.5,1.93,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,36,BetVictor,ou,over,3.5,2.77,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,36,BetVictor,ht_ou,under,0.5,2.82,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,4,Pinnacle,ou,under,1.5,4.04,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,4,Pinnacle,ou,over,2.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,4,Pinnacle,ou,under,2.5,2.05,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,4,Pinnacle,ou,over,3.5,3.02,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,4,Pinnacle,ht_ou,over,1.5,2.69,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,4,Pinnacle,ht_ou,under,0.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,5,SBO,ou,over,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,5,SBO,ou,under,2.5,1.99,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ou,over,1.5,1.26,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ou,under,1.5,3.6,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ou,under,2.5,1.98,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ou,over,3.5,2.85,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ou,under,3.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ht_ou,over,1.5,2.67,api_football,change
+2026-10-20T14:24:26Z,1564367,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,AFC Wimbledon,Mansfield Town,32,Betano,ht_ou,under,0.5,2.9,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,ou,under,1.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,ou,over,2.5,1.87,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,ou,under,2.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ou,over,1.5,1.28,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ou,under,1.5,3.5,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ou,over,2.5,1.83,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ou,over,3.5,2.95,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ou,under,3.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ht_ou,over,0.5,1.42,api_football,change
+2026-10-20T14:24:26Z,1564376,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Oxford United,Wigan,32,Betano,ht_ou,under,0.5,2.85,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,under,1.5,4.33,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,over,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,under,2.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,over,3.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,under,3.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ht_ou,over,0.5,1.29,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ht_ou,under,0.5,3.3,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,over,1.5,1.23,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,under,1.5,3.9,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,over,2.5,1.7,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,under,2.5,2.12,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,over,3.5,2.65,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,under,3.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,over,1.5,2.55,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,under,1.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,btts,yes,,1.62,api_football,change
+2026-10-20T14:24:26Z,1564372,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,btts,no,,2.18,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,ou,over,2.5,1.57,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,ou,under,2.5,2.38,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,ou,over,3.5,2.55,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,ou,under,3.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,ht_ou,over,0.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,ht_ou,under,0.5,3.6,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,btts,yes,,1.5,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,3,Betfair,btts,no,,2.55,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,36,BetVictor,ou,under,1.5,4.75,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,36,BetVictor,ou,over,3.5,2.35,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,36,BetVictor,ou,under,3.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,36,BetVictor,btts,yes,,1.47,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,36,BetVictor,btts,no,,2.45,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ou,over,1.5,1.18,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ou,under,1.5,5.0,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ou,over,2.5,1.62,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ou,under,2.5,2.35,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ou,over,3.5,2.61,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ht_ou,over,1.5,2.38,api_football,change
+2026-10-20T14:24:26Z,1564368,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Blackpool,Milton Keynes Dons,4,Pinnacle,ht_ou,under,1.5,1.58,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,7,William Hill,ht_ou,over,1.5,1.91,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,7,William Hill,ht_ou,under,1.5,1.8,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,7,William Hill,ht_ou,over,0.5,1.18,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,7,William Hill,ht_ou,under,0.5,4.33,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,7,William Hill,btts,yes,,1.53,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,7,William Hill,btts,no,,2.4,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ou,over,1.5,1.07,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ou,under,1.5,5.8,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ou,over,2.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ou,under,2.5,2.81,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ou,over,3.5,1.92,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ou,under,3.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ht_ou,over,1.5,1.94,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,2,Marathonbet,ht_ou,under,1.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,3,Betfair,ou,over,2.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,3,Betfair,ou,under,2.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,3,Betfair,ou,over,3.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,3,Betfair,ou,under,3.5,1.87,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ou,over,1.5,1.07,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ou,under,1.5,7.5,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ou,over,2.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ou,under,2.5,2.82,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ou,over,3.5,1.86,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ou,under,3.5,1.81,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ht_ou,over,1.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ht_ou,under,1.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ht_ou,over,0.5,1.18,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,36,BetVictor,ht_ou,under,0.5,4.5,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ou,over,1.5,1.11,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ou,under,1.5,7.24,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ou,over,2.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ou,under,2.5,3.35,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ou,over,3.5,1.89,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ou,under,3.5,1.98,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ht_ou,over,1.5,1.94,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,4,Pinnacle,ht_ou,under,1.5,1.88,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,5,SBO,ou,over,3.5,2.06,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,5,SBO,ou,under,3.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,5,SBO,ht_ou,over,1.5,2.08,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,5,SBO,ht_ou,under,1.5,1.76,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ou,over,1.5,1.07,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ou,under,1.5,5.8,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ou,over,2.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ou,under,2.5,2.81,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ou,over,3.5,1.92,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ou,under,3.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ht_ou,over,1.5,1.94,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,11,1xBet,ht_ou,under,1.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ou,over,1.5,1.11,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ou,under,1.5,5.8,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ou,over,2.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ou,under,2.5,2.95,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ou,over,3.5,1.91,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ou,under,3.5,1.87,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ht_ou,over,1.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ht_ou,under,1.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ht_ou,over,0.5,1.26,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,ht_ou,under,0.5,3.6,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,btts,yes,,1.57,api_football,change
+2026-10-20T14:24:26Z,1564374,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Luton,Barnsley,32,Betano,btts,no,,2.27,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,7,William Hill,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,7,William Hill,ht_ou,over,0.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,7,William Hill,ht_ou,under,0.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,8,Bet365,ou,over,3.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,8,Bet365,ou,under,3.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ou,over,2.5,1.81,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ou,under,2.5,1.86,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ou,over,3.5,2.91,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ou,under,3.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ht_ou,over,1.5,2.56,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ht_ou,under,1.5,1.43,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,36,BetVictor,ht_ou,under,0.5,2.74,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,4,Pinnacle,ou,over,1.5,1.27,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,4,Pinnacle,ou,under,1.5,3.83,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,4,Pinnacle,ou,over,2.5,1.89,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,4,Pinnacle,ou,under,2.5,1.98,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,4,Pinnacle,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,4,Pinnacle,ht_ou,under,0.5,3.18,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,5,SBO,ou,over,2.5,1.92,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,5,SBO,ou,under,2.5,1.92,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,32,Betano,ou,under,2.5,1.91,api_football,change
+2026-10-20T14:24:26Z,1564377,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Stevenage,Plymouth,32,Betano,ou,over,3.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,3,Betfair,ou,over,1.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,3,Betfair,ou,under,1.5,4.2,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,3,Betfair,ou,over,2.5,1.73,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,3,Betfair,ou,under,2.5,2.1,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ou,over,1.5,1.24,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ou,under,1.5,3.55,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ou,over,2.5,1.69,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ou,over,3.5,2.64,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ou,under,3.5,1.41,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ht_ou,over,1.5,2.41,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ht_ou,under,1.5,1.48,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ht_ou,over,0.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,ht_ou,under,0.5,2.91,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,36,BetVictor,btts,yes,,1.57,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ou,over,1.5,1.23,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ou,under,1.5,4.24,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ou,over,2.5,1.76,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ou,under,2.5,2.12,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ou,over,3.5,2.9,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ou,under,3.5,1.43,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ht_ou,under,1.5,1.49,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,4,Pinnacle,ht_ou,under,0.5,3.33,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,5,SBO,ou,over,2.5,1.72,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,5,SBO,ou,under,2.5,2.13,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ou,over,1.5,1.23,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ou,under,1.5,3.85,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ou,over,2.5,1.72,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ou,under,2.5,2.1,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ou,over,3.5,2.67,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ou,under,3.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ht_ou,over,1.5,2.57,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ht_ou,over,0.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,ht_ou,under,0.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,btts,yes,,1.57,api_football,change
+2026-10-20T14:24:26Z,1564371,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Cambridge United,Wycombe,32,Betano,btts,no,,2.27,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,under,1.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,over,3.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ht_ou,over,1.5,2.6,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ht_ou,over,0.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ht_ou,under,0.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,over,1.5,1.27,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,under,1.5,3.55,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,over,2.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,under,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,over,3.5,2.92,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,under,3.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ht_ou,over,1.5,2.72,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ht_ou,under,0.5,2.87,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,btts,yes,,1.65,api_football,change
+2026-10-20T14:24:26Z,1564375,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,btts,no,,2.1,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,7,William Hill,ht_ou,over,1.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,7,William Hill,ht_ou,over,0.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,7,William Hill,ht_ou,under,0.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,2,Marathonbet,ou,under,1.5,4.85,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,2,Marathonbet,ou,over,2.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,2,Marathonbet,ou,under,2.5,2.35,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,2,Marathonbet,btts,yes,,1.52,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,2,Marathonbet,btts,no,,2.33,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,3,Betfair,ou,over,3.5,2.38,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,3,Betfair,ou,under,3.5,1.57,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,3,Betfair,ht_ou,over,1.5,2.25,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,3,Betfair,ht_ou,over,0.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,3,Betfair,ht_ou,under,0.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,36,BetVictor,ou,under,2.5,2.36,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,36,BetVictor,ht_ou,over,1.5,2.13,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,36,BetVictor,btts,yes,,1.5,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,36,BetVictor,btts,no,,2.4,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,4,Pinnacle,ou,under,1.5,5.65,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,4,Pinnacle,ou,over,2.5,1.52,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,4,Pinnacle,ou,over,3.5,2.36,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,4,Pinnacle,ht_ou,over,1.5,2.27,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,11,1xBet,ou,under,1.5,4.85,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,11,1xBet,ou,over,2.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,11,1xBet,ou,under,2.5,2.35,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,11,1xBet,btts,yes,,1.52,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,11,1xBet,btts,no,,2.37,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ou,under,1.5,4.6,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ou,over,2.5,1.55,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ou,under,2.5,2.42,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ou,over,3.5,2.3,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ou,under,3.5,1.6,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ht_ou,over,1.5,2.3,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ht_ou,under,1.5,1.6,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,ht_ou,under,0.5,3.3,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,btts,yes,,1.53,api_football,change
+2026-10-20T14:24:26Z,1564369,2026-10-20T18:45:00Z,260.6,T-6h,League One,standard,Bromley,Leicester,32,Betano,btts,no,,2.35,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,3,Betfair,ou,over,3.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,3,Betfair,ou,under,3.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,3,Betfair,ht_ou,over,0.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,3,Betfair,ht_ou,under,0.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,3,Betfair,btts,yes,,1.67,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,3,Betfair,btts,no,,2.15,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,4,Pinnacle,ou,over,3.5,3.36,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,5,SBO,ou,over,2.5,1.96,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,5,SBO,ou,under,2.5,1.88,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ou,over,1.5,1.31,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ou,under,1.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ou,over,2.5,1.93,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ou,under,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ou,over,3.5,3.15,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ou,under,3.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ht_ou,over,1.5,2.87,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,ht_ou,under,0.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563824,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rotherham,Newport County,32,Betano,btts,yes,,1.72,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,7,William Hill,btts,yes,,1.62,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,7,William Hill,btts,no,,2.2,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,8,Bet365,ht_ou,over,1.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,8,Bet365,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,8,Bet365,ht_ou,over,0.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,8,Bet365,ht_ou,under,0.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ou,over,1.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ou,under,1.5,4.1,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ou,over,2.5,1.75,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ou,under,2.5,2.05,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ou,over,3.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ht_ou,over,1.5,2.6,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,btts,yes,,1.62,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,3,Betfair,btts,no,,2.25,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ou,under,1.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ou,over,2.5,1.72,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ou,under,2.5,1.97,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ou,over,3.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ou,under,3.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ht_ou,over,1.5,2.47,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ht_ou,under,1.5,1.46,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,36,BetVictor,ht_ou,under,0.5,2.84,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,4,Pinnacle,ou,under,2.5,2.08,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,4,Pinnacle,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,4,Pinnacle,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,4,Pinnacle,ht_ou,under,0.5,3.13,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,5,SBO,ou,over,2.5,1.81,api_football,change
+2026-10-20T14:24:26Z,1563816,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Bristol Rovers,Salford City,5,SBO,ou,under,2.5,2.03,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,8,Bet365,ou,over,1.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,8,Bet365,ou,under,1.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ou,over,2.5,2.1,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ou,under,2.5,1.73,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ou,over,3.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ou,under,3.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ht_ou,over,1.5,3.0,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ht_ou,under,1.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,3,Betfair,ht_ou,under,0.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,36,BetVictor,ou,over,1.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,36,BetVictor,ou,under,1.5,2.78,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,36,BetVictor,ou,over,2.5,2.04,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,36,BetVictor,ht_ou,over,1.5,2.81,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,36,BetVictor,ht_ou,under,1.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,36,BetVictor,ht_ou,under,0.5,2.54,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ou,over,1.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ou,under,1.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ou,over,2.5,2.18,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ou,under,2.5,1.7,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ou,over,3.5,3.92,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ht_ou,over,1.5,3.13,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,4,Pinnacle,ht_ou,under,0.5,2.82,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,5,SBO,ou,over,2.5,2.17,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,5,SBO,ou,under,2.5,1.69,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ou,over,1.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ou,under,1.5,2.9,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ou,over,2.5,2.12,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ou,under,2.5,1.7,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ou,over,3.5,3.65,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ou,under,3.5,1.26,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ht_ou,over,1.5,3.15,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ht_ou,under,1.5,1.35,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ht_ou,over,0.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,ht_ou,under,0.5,2.55,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,btts,yes,,1.83,api_football,change
+2026-10-20T14:24:26Z,1563822,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Northampton,Tranmere,32,Betano,btts,no,,1.87,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,3,Betfair,ou,over,1.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,3,Betfair,ou,under,1.5,4.2,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,3,Betfair,btts,yes,,1.6,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,3,Betfair,btts,no,,2.3,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,36,BetVictor,ou,under,1.5,4.1,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,36,BetVictor,ou,over,2.5,1.69,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,36,BetVictor,ou,under,2.5,2.01,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,36,BetVictor,ou,over,3.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,36,BetVictor,ou,under,3.5,1.41,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,36,BetVictor,ht_ou,over,1.5,2.36,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,4,Pinnacle,ou,over,1.5,1.23,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,4,Pinnacle,ou,under,1.5,4.25,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,4,Pinnacle,ou,over,3.5,2.86,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,5,SBO,ou,over,2.5,1.76,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,5,SBO,ou,under,2.5,2.08,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ou,under,1.5,3.75,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ou,over,2.5,1.75,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ou,under,2.5,2.05,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ou,over,3.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ou,under,3.5,1.42,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ht_ou,over,1.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ht_ou,under,1.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ht_ou,over,0.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,ht_ou,under,0.5,2.95,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,btts,yes,,1.6,api_football,change
+2026-10-20T14:24:26Z,1563823,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Rochdale,Grimsby,32,Betano,btts,no,,2.2,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,7,William Hill,ht_ou,over,1.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,7,William Hill,ht_ou,over,0.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,7,William Hill,ht_ou,under,0.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,3,Betfair,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,3,Betfair,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,3,Betfair,ou,over,3.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ou,under,1.5,3.6,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ou,over,2.5,1.78,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ou,under,2.5,1.89,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ht_ou,over,1.5,2.5,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ht_ou,under,1.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,36,BetVictor,ht_ou,under,0.5,2.82,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,4,Pinnacle,ou,over,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,4,Pinnacle,ou,under,2.5,1.99,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,4,Pinnacle,ht_ou,under,0.5,3.13,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,5,SBO,ou,over,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,5,SBO,ou,under,2.5,1.99,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ou,over,1.5,1.27,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ou,under,1.5,3.55,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ou,over,2.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ou,under,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ou,over,3.5,2.9,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ou,under,3.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ht_ou,over,1.5,2.72,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563825,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Walsall,Oldham,32,Betano,ht_ou,under,0.5,2.87,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,8,Bet365,ht_ou,over,1.5,2.38,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,8,Bet365,ht_ou,under,1.5,1.53,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ou,over,1.5,1.2,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ou,under,1.5,4.5,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ou,over,2.5,1.65,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ou,under,2.5,2.2,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ou,over,3.5,2.63,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ou,under,3.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ht_ou,over,1.5,2.4,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,ht_ou,under,1.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,btts,yes,,1.73,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,3,Betfair,btts,no,,2.1,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,36,BetVictor,ou,over,3.5,2.43,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,36,BetVictor,ou,under,3.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,36,BetVictor,ht_ou,over,1.5,2.29,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,36,BetVictor,ht_ou,under,1.5,1.53,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ou,under,1.5,4.62,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ou,over,2.5,1.64,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ou,under,2.5,2.29,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ou,over,3.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ou,under,3.5,1.49,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ht_ou,over,1.5,2.46,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,4,Pinnacle,ht_ou,under,1.5,1.54,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ou,over,1.5,1.21,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ou,under,1.5,4.1,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ou,over,2.5,1.65,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ou,under,2.5,2.2,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ou,over,3.5,2.57,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ou,under,3.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ht_ou,over,1.5,2.47,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ht_ou,under,1.5,1.52,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ht_ou,over,0.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,ht_ou,under,0.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,btts,yes,,1.7,api_football,change
+2026-10-20T14:24:26Z,1563818,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Chesterfield,Colchester,32,Betano,btts,no,,2.02,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,3,Betfair,ou,over,2.5,1.87,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,3,Betfair,ou,under,2.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,36,BetVictor,ou,over,3.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,36,BetVictor,ht_ou,over,1.5,2.56,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,36,BetVictor,ht_ou,under,1.5,1.43,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,36,BetVictor,ht_ou,over,0.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,36,BetVictor,ht_ou,under,0.5,2.73,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,4,Pinnacle,ou,under,1.5,3.72,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,4,Pinnacle,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,4,Pinnacle,ou,over,3.5,3.31,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,5,SBO,ou,over,2.5,1.89,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,5,SBO,ou,under,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,32,Betano,ou,over,2.5,1.85,api_football,change
+2026-10-20T14:24:26Z,1563819,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Crawley Town,Shrewsbury,32,Betano,ou,under,2.5,1.93,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,over,1.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,under,1.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,over,2.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,under,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,over,3.5,4.1,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,under,3.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,over,1.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,under,1.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,under,0.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,btts,yes,,1.9,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,btts,no,,1.9,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,over,1.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,under,1.5,2.85,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,over,2.5,2.18,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,under,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,over,3.5,3.75,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,under,3.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,over,1.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,under,1.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,over,0.5,1.52,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,under,0.5,2.5,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,btts,yes,,1.83,api_football,change
+2026-10-20T14:24:26Z,1563820,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,btts,no,,1.87,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,3,Betfair,ou,over,3.5,2.2,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,3,Betfair,ou,under,3.5,1.65,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,36,BetVictor,ou,over,1.5,1.11,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,36,BetVictor,ou,under,1.5,5.4,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,36,BetVictor,ou,over,2.5,1.47,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,36,BetVictor,ou,under,2.5,2.44,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,36,BetVictor,ou,over,3.5,2.13,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,4,Pinnacle,ou,under,1.5,5.76,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,4,Pinnacle,ou,under,2.5,2.66,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,4,Pinnacle,ou,over,3.5,2.25,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,4,Pinnacle,ht_ou,over,1.5,2.2,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,32,Betano,ht_ou,over,1.5,2.27,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,32,Betano,ht_ou,under,0.5,3.45,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,32,Betano,btts,yes,,1.62,api_football,change
+2026-10-20T14:24:26Z,1563815,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Barnet,Swindon Town,32,Betano,btts,no,,2.15,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ou,over,1.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ou,under,1.5,3.8,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ou,over,3.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ou,under,3.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ht_ou,over,0.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,ht_ou,under,0.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,btts,yes,,1.65,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,3,Betfair,btts,no,,2.2,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ou,over,1.5,1.27,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ou,under,1.5,3.5,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ou,over,2.5,1.83,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ou,under,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ou,over,3.5,2.92,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ou,under,3.5,1.37,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ht_ou,over,0.5,1.42,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,ht_ou,under,0.5,2.85,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,btts,yes,,1.65,api_football,change
+2026-10-20T14:24:26Z,1563817,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,Cheltenham,Fleetwood Town,32,Betano,btts,no,,2.12,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ou,under,1.5,4.33,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ou,over,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ou,under,2.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ou,over,3.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ou,under,3.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ht_ou,over,0.5,1.29,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,ht_ou,under,0.5,3.3,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,btts,yes,,1.67,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,3,Betfair,btts,no,,2.15,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ou,over,1.5,1.23,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ou,under,1.5,3.95,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ou,over,2.5,1.7,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ou,under,2.5,2.12,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ou,over,3.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ou,under,3.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ht_ou,over,1.5,2.55,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ht_ou,under,1.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,ht_ou,under,0.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,btts,yes,,1.65,api_football,change
+2026-10-20T14:24:26Z,1563826,2026-10-20T18:45:00Z,260.6,T-6h,League Two,standard,York,Accrington ST,32,Betano,btts,no,,2.12,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,8,Bet365,ht_ou,over,1.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,8,Bet365,ht_ou,under,1.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,8,Bet365,ht_ou,over,0.5,1.44,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,8,Bet365,ht_ou,under,0.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ou,over,1.5,1.36,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ou,under,1.5,3.1,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ou,over,2.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ou,under,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ou,over,3.5,4.1,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ou,under,3.5,1.22,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ht_ou,over,1.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ht_ou,under,1.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,ht_ou,under,0.5,2.75,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,btts,yes,,1.87,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,3,Betfair,btts,no,,1.9,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ou,over,1.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ou,under,1.5,2.73,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ou,over,2.5,2.08,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ou,under,2.5,1.64,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ou,over,3.5,4.1,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ou,under,3.5,1.2,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ht_ou,over,1.5,2.85,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ht_ou,under,1.5,1.35,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ht_ou,over,0.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,ht_ou,under,0.5,2.51,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,btts,yes,,1.85,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,36,BetVictor,btts,no,,1.83,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ou,over,1.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ou,under,1.5,3.05,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ou,over,2.5,2.23,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ou,under,2.5,1.68,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ou,over,3.5,4.05,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ou,under,3.5,1.24,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ht_ou,over,1.5,3.26,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ht_ou,under,1.5,1.33,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ht_ou,over,0.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,4,Pinnacle,ht_ou,under,0.5,2.72,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,5,SBO,ou,over,2.5,2.2,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,5,SBO,ou,under,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ou,over,1.5,1.38,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ou,under,1.5,2.87,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ou,over,2.5,2.15,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ou,under,2.5,1.67,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ou,over,3.5,3.7,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ou,under,3.5,1.25,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ht_ou,over,1.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ht_ou,under,1.5,1.34,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ht_ou,over,0.5,1.5,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,ht_ou,under,0.5,2.52,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,btts,yes,,1.85,api_football,change
+2026-10-20T14:24:26Z,1563821,2026-10-20T19:00:00Z,275.6,T-6h,League Two,standard,Gillingham,Port Vale,32,Betano,btts,no,,1.85,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,ou,over,1.5,1.29,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,ou,under,1.5,3.5,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,ou,over,2.5,1.9,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,ou,over,3.5,3.4,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,ou,under,3.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,btts,yes,,1.73,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,3,Betfair,btts,no,,2.1,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,36,BetVictor,ht_ou,over,1.5,2.7,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,36,BetVictor,ht_ou,under,0.5,2.62,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ou,over,1.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ou,under,1.5,3.48,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ou,over,2.5,2.0,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ou,under,2.5,1.84,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ou,over,3.5,3.49,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ou,under,3.5,1.3,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ht_ou,over,1.5,2.99,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ht_ou,under,1.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,4,Pinnacle,ht_ou,under,0.5,2.95,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,5,SBO,ou,over,2.5,1.99,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,5,SBO,ou,under,2.5,1.79,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ou,over,1.5,1.32,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ou,under,1.5,3.2,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ou,over,2.5,1.95,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ou,under,2.5,1.82,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ou,over,3.5,3.25,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ou,under,3.5,1.31,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ht_ou,over,1.5,2.92,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ht_ou,under,1.5,1.39,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ht_ou,over,0.5,1.45,api_football,change
+2026-10-20T14:24:26Z,1556863,2026-10-20T18:45:00Z,260.6,T-6h,Scottish Championship,standard,Dunfermline,Partick,32,Betano,ht_ou,under,0.5,2.7,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,btts,yes,,1.67,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,3,Betfair,btts,no,,2.15,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,36,BetVictor,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,36,BetVictor,ou,under,2.5,1.87,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,36,BetVictor,ou,over,3.5,2.89,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,36,BetVictor,ht_ou,over,1.5,2.53,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,36,BetVictor,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,36,BetVictor,btts,yes,,1.67,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,4,Pinnacle,ou,over,1.5,1.27,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,4,Pinnacle,ou,under,1.5,3.83,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,4,Pinnacle,ou,under,2.5,1.99,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,4,Pinnacle,ou,over,3.5,3.2,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,4,Pinnacle,ht_ou,over,1.5,2.79,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,4,Pinnacle,ht_ou,under,1.5,1.44,api_football,change
+2026-10-20T14:50:06Z,1564376,2026-10-20T18:45:00Z,234.9,T-6h,League One,standard,Oxford United,Wigan,5,SBO,ou,over,2.5,1.88,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,7,William Hill,ht_ou,over,1.5,2.3,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,7,William Hill,ht_ou,under,1.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,7,William Hill,ht_ou,over,0.5,1.25,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,7,William Hill,ht_ou,under,0.5,3.6,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,7,William Hill,btts,yes,,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,7,William Hill,btts,no,,2.3,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,8,Bet365,ht_ou,over,1.5,2.5,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,8,Bet365,ht_ou,under,1.5,1.5,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,8,Bet365,ht_ou,over,0.5,1.3,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,8,Bet365,ht_ou,under,0.5,3.4,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,8,Bet365,btts,yes,,1.67,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,8,Bet365,btts,no,,2.1,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ou,over,1.5,1.14,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ou,under,1.5,4.4,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ou,over,2.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ou,under,2.5,2.31,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ou,over,3.5,2.33,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ou,under,3.5,1.48,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ht_ou,over,1.5,2.29,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ht_ou,under,1.5,1.56,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ht_ou,over,0.5,1.24,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,btts,yes,,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,2,Marathonbet,btts,no,,2.22,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,over,1.5,1.17,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,under,1.5,5.0,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,over,2.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,under,2.5,2.38,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,over,3.5,2.55,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ou,under,3.5,1.5,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ht_ou,over,1.5,2.25,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ht_ou,under,1.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ht_ou,over,0.5,1.25,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,ht_ou,under,0.5,3.6,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,btts,yes,,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,3,Betfair,btts,no,,2.38,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ou,over,1.5,1.15,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ou,under,1.5,5.0,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ou,over,2.5,1.56,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ou,under,2.5,2.23,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ou,over,3.5,2.32,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ou,under,3.5,1.52,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ht_ou,over,1.5,2.22,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ht_ou,under,1.5,1.56,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ht_ou,over,0.5,1.25,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,ht_ou,under,0.5,3.6,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,btts,yes,,1.53,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,36,BetVictor,btts,no,,2.3,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ou,over,1.5,1.18,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ou,under,1.5,5.09,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ou,over,2.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ou,under,2.5,2.49,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ou,over,3.5,2.48,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ou,under,3.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ht_ou,over,1.5,2.36,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,4,Pinnacle,ht_ou,under,1.5,1.59,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,5,SBO,ou,over,2.5,1.69,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,5,SBO,ou,under,2.5,2.17,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ou,over,1.5,1.14,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ou,under,1.5,4.4,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ou,over,2.5,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ou,under,2.5,2.31,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ou,over,3.5,2.33,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ou,under,3.5,1.48,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ht_ou,over,1.5,2.29,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ht_ou,under,1.5,1.56,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ht_ou,over,0.5,1.24,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,btts,yes,,1.57,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,11,1xBet,btts,no,,2.26,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,over,1.5,1.19,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,under,1.5,4.3,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,over,2.5,1.6,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,under,2.5,2.3,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,over,3.5,2.47,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ou,under,3.5,1.53,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,over,1.5,2.4,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,under,1.5,1.55,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,over,0.5,1.32,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,ht_ou,under,0.5,3.2,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,btts,yes,,1.6,api_football,change
+2026-10-20T14:55:12Z,1564372,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Doncaster,Stockport County,32,Betano,btts,no,,2.2,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,8,Bet365,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,8,Bet365,ou,under,2.5,2.0,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,8,Bet365,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,8,Bet365,ht_ou,under,0.5,3.0,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,over,1.5,1.22,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ou,under,1.5,4.1,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,3,Betfair,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,36,BetVictor,ou,over,1.5,1.26,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,36,BetVictor,ou,over,2.5,1.76,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,36,BetVictor,ou,under,2.5,1.92,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,36,BetVictor,ou,over,3.5,2.79,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,36,BetVictor,ou,under,3.5,1.37,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,36,BetVictor,ht_ou,over,1.5,2.48,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,4,Pinnacle,ou,over,2.5,1.85,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,4,Pinnacle,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,4,Pinnacle,ht_ou,under,1.5,1.45,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,5,SBO,ou,over,2.5,1.86,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,under,1.5,3.5,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,over,2.5,1.83,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ou,over,3.5,2.95,api_football,change
+2026-10-20T14:55:12Z,1564375,2026-10-20T18:45:00Z,229.8,T-6h,League One,standard,Notts County,Sheffield Wednesday,32,Betano,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,7,William Hill,ht_ou,over,1.5,2.75,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,7,William Hill,ht_ou,under,1.5,1.4,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,7,William Hill,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,7,William Hill,ht_ou,under,0.5,2.9,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,8,Bet365,ou,over,1.5,1.33,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,8,Bet365,ou,under,1.5,3.25,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,8,Bet365,ou,over,2.5,2.08,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,8,Bet365,ou,under,2.5,1.73,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,8,Bet365,ou,over,3.5,3.75,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,8,Bet365,ou,under,3.5,1.25,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ou,over,1.5,1.31,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ou,under,1.5,2.92,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ou,over,2.5,2.09,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ou,under,2.5,1.68,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ou,over,3.5,3.58,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ou,under,3.5,1.21,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ht_ou,over,1.5,3.02,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ht_ou,under,1.5,1.32,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ht_ou,over,0.5,1.44,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,ht_ou,under,0.5,2.53,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,btts,yes,,1.8,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,2,Marathonbet,btts,no,,1.88,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,over,1.5,1.33,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,under,1.5,3.25,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,over,2.5,2.1,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,under,2.5,1.73,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,over,3.5,3.8,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ou,under,3.5,1.25,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,over,1.5,3.0,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,under,1.5,1.33,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,over,0.5,1.36,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,ht_ou,under,0.5,2.88,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,3,Betfair,btts,yes,,1.87,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ou,over,1.5,1.35,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ou,under,1.5,2.86,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ou,over,2.5,2.01,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ou,under,2.5,1.69,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ou,over,3.5,3.8,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ou,under,3.5,1.22,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ht_ou,over,1.5,2.82,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ht_ou,under,1.5,1.36,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ht_ou,over,0.5,1.44,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,ht_ou,under,0.5,2.53,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,btts,yes,,1.78,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,36,BetVictor,btts,no,,1.93,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ou,over,1.5,1.34,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ou,under,1.5,3.28,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ou,over,2.5,2.12,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ou,under,2.5,1.74,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ou,over,3.5,3.73,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ou,under,3.5,1.28,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ht_ou,over,1.5,3.01,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ht_ou,under,1.5,1.38,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ht_ou,over,0.5,1.4,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,4,Pinnacle,ht_ou,under,0.5,2.91,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,5,SBO,ou,over,2.5,2.19,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,5,SBO,ou,under,2.5,1.68,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ou,over,1.5,1.31,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ou,under,1.5,2.92,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ou,over,2.5,2.09,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ou,under,2.5,1.68,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ou,over,3.5,3.58,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ou,under,3.5,1.21,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ht_ou,over,1.5,3.02,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ht_ou,under,1.5,1.32,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ht_ou,over,0.5,1.44,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,ht_ou,under,0.5,2.53,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,btts,yes,,1.8,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,11,1xBet,btts,no,,1.9,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,over,1.5,1.37,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,under,1.5,2.95,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,over,2.5,2.1,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,under,2.5,1.72,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,over,3.5,3.55,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ou,under,3.5,1.27,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,over,1.5,3.1,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,under,1.5,1.35,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,over,0.5,1.5,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,ht_ou,under,0.5,2.57,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,btts,yes,,1.8,api_football,change
+2026-10-20T14:55:12Z,1563820,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Exeter City,Crewe,32,Betano,btts,no,,1.9,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,36,BetVictor,ou,over,2.5,1.8,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,36,BetVictor,ou,under,2.5,1.87,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,36,BetVictor,ou,over,3.5,3.13,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,36,BetVictor,ou,under,3.5,1.3,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,36,BetVictor,ht_ou,over,0.5,1.37,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,5,SBO,ou,over,2.5,1.9,api_football,change
+2026-10-20T14:55:12Z,1563817,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,Cheltenham,Fleetwood Town,5,SBO,ou,under,2.5,1.94,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,ou,over,1.5,1.2,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,ou,under,1.5,4.1,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,ht_ou,over,1.5,2.36,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,ht_ou,under,1.5,1.5,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,ht_ou,over,0.5,1.3,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,ht_ou,under,0.5,3.2,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,btts,yes,,1.65,api_football,change
+2026-10-20T14:55:12Z,1563826,2026-10-20T18:45:00Z,229.8,T-6h,League Two,standard,York,Accrington ST,36,BetVictor,btts,no,,2.1,api_football,change
