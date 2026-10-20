@@ -12,11 +12,28 @@ def _access():
     return dashboard_access
 
 
-def test_unknown_or_unconfigured_is_free(monkeypatch):
+def test_dormant_until_login_is_configured(monkeypatch):
+    """No [auth] secrets -> the app is exactly as before tiers existed (everything visible), so merging
+    the tiers can never lock the owner into Free (owner 2026-10-20)."""
     A = _access()
     monkeypatch.delenv("WOWZA_TIER_OVERRIDE", raising=False)
-    assert A.current_tier() == "free"                      # no login, no secrets -> free
-    monkeypatch.setenv("WOWZA_TIER_OVERRIDE", "superuser")   # unknown value ignored
+    monkeypatch.setattr(A, "login_configured", lambda: False)
+    assert A.current_tier() == "admin"
+
+
+def test_with_login_unknown_viewer_is_free(monkeypatch):
+    A = _access()
+    monkeypatch.delenv("WOWZA_TIER_OVERRIDE", raising=False)
+    monkeypatch.setattr(A, "login_configured", lambda: True)
+    monkeypatch.setattr(A, "user_email", lambda: None)
+    assert A.current_tier() == "free"                      # login on, not logged in -> free
+    monkeypatch.setattr(A, "user_email", lambda: "stranger@example.com")
+    monkeypatch.setattr(A, "_emails", lambda key: {"owner@example.com"} if key == "admins" else set())
+    assert A.current_tier() == "free"                      # logged in, on neither list -> free
+    monkeypatch.setattr(A, "user_email", lambda: "owner@example.com")
+    assert A.current_tier() == "admin"
+    monkeypatch.setenv("WOWZA_TIER_OVERRIDE", "superuser")   # unknown override value ignored
+    monkeypatch.setattr(A, "user_email", lambda: None)
     assert A.current_tier() == "free"
 
 

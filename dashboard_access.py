@@ -22,7 +22,8 @@ secrets - never in code or in the repo:
     admins = ["owner@example.com"]
     pro    = ["customer@example.com"]
 
-FAIL CLOSED. No secrets, login not configured, an error, or an email on neither list -> "free".
+DORMANT without [auth] secrets: everyone sees everything, exactly as before the tiers existed.
+Once [auth] exists, FAIL CLOSED: not logged in, an error, or an email on neither list -> "free".
 Locally, WOWZA_TIER_OVERRIDE=admin|pro|free sets the tier for testing (an environment variable a
 visitor cannot set; on Streamlit Cloud only the owner can).
 """
@@ -90,6 +91,12 @@ def current_tier() -> str:
     ov = os.getenv("WOWZA_TIER_OVERRIDE", "").strip().lower()
     if ov in TIERS:
         return ov
+    # DORMANT UNTIL LOGIN EXISTS (owner 2026-10-20: ship the interface now). With no [auth] secrets
+    # the app behaves exactly as it always has - everything visible - so merging cannot lock anyone,
+    # the owner included, into Free. The moment [auth] is added to the deployment's secrets, tiers
+    # switch on and the fail-closed rules below apply.
+    if not login_configured():
+        return "admin"
     email = user_email()
     if not email:
         return "free"
