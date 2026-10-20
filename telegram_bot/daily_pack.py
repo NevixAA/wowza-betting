@@ -322,6 +322,64 @@ def props_image(today: str) -> list[bytes]:
                         footer="Times UTC · paper leagues excluded · not betting advice")
 
 
+def props_results_image(day: str) -> list[bytes]:
+    """Yesterday's settled player props (owner 2026-10-20: the morning album showed today's props but
+    never how yesterday's did — prop results lived only in the Monday pack).
+
+    One row per (player, market), played only (VOID / did-not-play excluded). Priced props are scored
+    against the price (hit vs the hit rate the odds needed, paper P/L at 1u); model-only props against
+    the model's own probability. Paper research — never staked."""
+    p = _read("player_ledger.csv")
+    if p.empty:
+        return []
+    p = p[p["match_date"].astype(str).str[:10] == day].copy()
+    p = p[p["result"].isin(["WIN", "LOSS"])]
+    if p.empty:
+        return []
+    for c in ("model_prob", "market_odds", "pnl"):
+        p[c] = pd.to_numeric(p.get(c), errors="coerce")
+    p["_priced"] = p["market_odds"].notna() & (p["market_odds"] > 1.0)
+    if {"player_id", "market"} <= set(p.columns):
+        p = p.sort_values("_priced", ascending=False, kind="mergesort").drop_duplicates(
+            ["player_id", "market"], keep="first")
+    pr, un = p[p["_priced"]], p[~p["_priced"]]
+    cols = [("Player", 200), ("Match", 300), ("Market", 160), ("Model", 70), ("Odds", 70), ("Result", 90)]
+    rows = []
+    if len(pr):
+        won = int((pr["result"] == "WIN").sum())
+        need = 100 * (1 / pr["market_odds"]).mean()
+        hit = 100 * won / len(pr)
+        # flat 1u at the recorded price (the ledger's pnl column is not filled for every row)
+        pl = float((pr["market_odds"] - 1).where(pr["result"] == "WIN", -1.0).sum())
+        rows.append({"band": f"Priced — {won}-{len(pr) - won} · hit {hit:.0f}% vs {need:.0f}% needed · "
+                             f"paper {pl:+.2f}u at 1u"})
+        pr = pr.assign(_edge=pr["model_prob"] - 1 / pr["market_odds"]).sort_values("_edge", ascending=False)
+        for _, r in pr.head(12).iterrows():
+            w = r["result"] == "WIN"
+            rows.append({"cells": [r["player_name"], f"{r['home_team']} v {r['away_team']}",
+                                   PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
+                                   f"{r['market_odds']:.2f}", "WON" if w else "LOST"],
+                         "stripe": GREEN if w else RED, "bold": {"Result"},
+                         "colours": {"Result": GREEN if w else RED}})
+    if len(un):
+        won = int((un["result"] == "WIN").sum())
+        exp = 100 * un["model_prob"].mean()
+        rows.append({"band": f"Model only (no price) — {won} of {len(un)} hit ({100 * won / len(un):.0f}%) "
+                             f"vs {exp:.0f}% the model expected"})
+        top = un.sort_values("model_prob", ascending=False).head(max(0, ROWS_PER_IMAGE - len(rows) - 2))
+        for _, r in top.iterrows():
+            w = r["result"] == "WIN"
+            rows.append({"cells": [r["player_name"], f"{r['home_team']} v {r['away_team']}",
+                                   PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
+                                   "–", "WON" if w else "LOST"],
+                         "colours": {"Odds": MUTED, "Result": GREEN if w else RED}})
+    label = pd.Timestamp(day).strftime("%a %d %b")
+    return render_table(f"Player props — results {label}", cols, rows,
+                        subtitle="Played only (VOID / did not play excluded). Priced props vs the price; "
+                                 "model-only props vs the model's own probability. Paper — never staked.",
+                        footer="paper leagues excluded · not betting advice")
+
+
 # ── Sharp movements ───────────────────────────────────────────────────────────
 
 def _sharp_frame() -> pd.DataFrame:
@@ -918,6 +976,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
              ("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
               if len(todays_rows(today)) else []),
              ("results", lambda: results_image(yday)),
+             ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
              ("props", lambda: props_image(today)),
              ("bet_builder", lambda: bet_builder_image(today)),
@@ -938,7 +997,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
     except Exception:                                                   # noqa: BLE001
         yline = ""
     caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
-               f"Top picks · today's tips ({n_tips}) · yesterday's results · record · player props · "
+               f"Top picks · today's tips ({n_tips}) · yesterday's results (team + props) · record · player props · "
                f"Bet Builder · sharp moves · Pro scoreboard"
                + (f"\nYesterday's top picks: {yline}" if yline else ""))
     print("[daily_pack] " + ", ".join(notes))
