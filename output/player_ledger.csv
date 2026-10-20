@@ -15591,18 +15591,18 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-12,2026-10-16,Bundesliga,Eintracht Frankfurt,1. FC Köln,L. Lochoshvili,1. FC Köln,D,sot,AVOID,0.15,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,61224,1575187.0
 2026-10-12,2026-10-16,Bundesliga 2,Energie Cottbus,1. FC Nürnberg,Luca Erlein,Energie Cottbus,D,sot,AVOID,0.15,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,456187,1576198.0
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,Paulinho,Toluca,F,sot,AVOID,0.357,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,41111,
-2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,H. Cuypers,Monterrey,F,sot,AVOID,0.26,,,,5,,,,,,27104,
+2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,H. Cuypers,Monterrey,F,sot,AVOID,0.26,,,,5,True,VOID,0.0,DNP,2026-10-20,27104,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,Paulinho,Toluca,F,sot2,AVOID,0.257,,,,5,,,,,,41111,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,A. Vega,Toluca,M,sot,AVOID,0.234,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,2889,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,Helinho,Toluca,M,sot,AVOID,0.233,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,9965,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,N. Castro,Toluca,M,sot,AVOID,0.23,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,153372,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,Paulinho,Toluca,F,goals,AVOID,0.225,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,41111,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,A. Vega,Toluca,M,assists,AVOID,0.224,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,2889,
-2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Orellano,Monterrey,M,sot,AVOID,0.215,,,,5,,,,,,6063,
+2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Orellano,Monterrey,M,sot,AVOID,0.215,,,,5,True,VOID,0.0,DNP,2026-10-20,6063,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,J. Gallardo,Toluca,D,sot,AVOID,0.206,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,2881,
-2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Ocampos,Monterrey,M,sot,AVOID,0.197,,,,5,,,,,,1911,
-2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,D. Rossi,Monterrey,M,sot,AVOID,0.185,,,,5,,,,,,51045,
-2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,O. Pineda,Monterrey,M,sot,AVOID,0.173,,,,5,,,,,,35576,
+2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Ocampos,Monterrey,M,sot,AVOID,0.197,,,,5,True,VOID,0.0,DNP,2026-10-20,1911,
+2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,D. Rossi,Monterrey,M,sot,AVOID,0.185,,,,5,True,VOID,0.0,DNP,2026-10-20,51045,
+2026-10-12,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,O. Pineda,Monterrey,M,sot,AVOID,0.173,,,,5,True,VOID,0.0,DNP,2026-10-20,35576,
 2026-10-12,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,Helinho,Toluca,M,assists,AVOID,0.173,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,9965,
 2026-10-12,2026-10-17,La Liga 2,SD Eibar,Mallorca,Fuentes,Mallorca,F,sot,AVOID,0.652,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,14488,
 2026-10-12,2026-10-17,Austrian Bundesliga,Austria Lustenau,LASK,D. Weixelbraun,Austria Lustenau,M,sot,AVOID,0.479,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,322979,
@@ -15732,7 +15732,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,La Liga,Espanyol,Atletico Madrid,Roberto Fernández,Espanyol,F,sot,AVOID,0.642,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,312990,1570416.0
 2026-10-13,2026-10-18,Norway Eliteserien,Vålerenga,SK Brann,Lucas Haren,Valerenga,M,sot,AVOID,0.64,,,,5,True,VOID,0.0,DNP,2026-10-19,16192,
 2026-10-13,2026-10-17,Bundesliga,FC Schalke 04,FSV Mainz 05,P. Tietz,FSV Mainz 05,F,sot,AVOID,0.639,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,26171,1575192.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,F. Etim,FC Midtjylland,F,sot,AVOID,0.634,,,,5,,,,,,351146,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,F. Etim,FC Midtjylland,F,sot,AVOID,0.634,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,351146,
 2026-10-13,2026-10-17,Premier League,Brentford,Liverpool,Thiago,Brentford,F,sot,AVOID,0.629,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,196156,1557428.0
 2026-10-13,2026-10-17,La Liga,Villarreal,Elche,N. Pépé,Villarreal,F,sot,AVOID,0.627,,,,5,True,VOID,0.0,DNP,2026-10-18,3246,1570422.0
 2026-10-13,2026-10-17,Serie A,AS Roma,Genoa,P. Dybala,AS Roma,M,sot,AVOID,0.625,,,,5,True,VOID,0.0,DNP,2026-10-18,875,1550148.0
@@ -15772,7 +15772,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Ligue 1,Lille,Stade Brestois 29,P. Mboup,Stade Brestois 29,M,sot,AVOID,0.511,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,375990,1552786.0
 2026-10-13,2026-10-17,Bundesliga,Union Berlin,Borussia Dortmund,E. Latte Lath,Union Berlin,F,sot,AVOID,0.511,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,32137,1575188.0
 2026-10-13,2026-10-17,Premier League,Manchester City,Ipswich,A. Semenyo,Manchester City,M,sot,AVOID,0.511,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,19281,1557433.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Júnior Brumado,FC Midtjylland,F,sot,AVOID,0.51,,,,5,,,,,,15810,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Júnior Brumado,FC Midtjylland,F,sot,AVOID,0.51,,,,5,True,VOID,0.0,DNP,2026-10-20,15810,
 2026-10-13,2026-10-17,La Liga,Real Betis,Barcelona,A. Ezzalzouli,Real Betis,M,sot,AVOID,0.509,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,181421,1570413.0
 2026-10-13,2026-10-17,Ligue 1,Estac Troyes,Lens,F. Thauvin,Lens,M,sot,AVOID,0.505,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,1922,1552791.0
 2026-10-13,2026-10-17,La Liga,Valencia,Athletic Club,A. Danjuma,Valencia,F,sot,AVOID,0.505,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,83,1570421.0
@@ -15850,7 +15850,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-16,Ligue 2,Annecy,Nancy,I. Housni,Nancy,M,sot,AVOID,0.377,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-17,386275,1552495.0
 2026-10-13,2026-10-16,Ligue 2,Annecy FC,Nancy,I. Housni,Nancy,M,sot,AVOID,0.377,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-17,386275,
 2026-10-13,2026-10-18,La Liga 2,Burgos CF,Sabadell FC,Ángel Baena,Sabadell,F,sot,AVOID,0.374,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,185478,
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,D. Vukojević,Degerfors IF,F,sot,AVOID,0.372,,,,5,,,,,,47631,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,D. Vukojević,Degerfors IF,F,sot,AVOID,0.372,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47631,
 2026-10-13,2026-10-17,Serie A,Venezia,Napoli,R. Højlund,Napoli,F,sot,AVOID,0.371,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,288006,1550156.0
 2026-10-13,2026-10-16,Ligue 2,Annecy,Nancy,C. Billemaz,Annecy,F,sot,AVOID,0.37,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,90597,1552495.0
 2026-10-13,2026-10-17,Serie A,AS Roma,Genoa,Lorenzo Colombo,Genoa,F,sot,AVOID,0.37,,,,5,True,VOID,0.0,DNP,2026-10-18,263481,1550148.0
@@ -15943,7 +15943,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Ligue 1,Estac Troyes,Lens,A. Mille,Estac Troyes,M,sot,AVOID,0.292,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,174806,1552791.0
 2026-10-13,2026-10-17,Bundesliga,Union Berlin,Borussia Dortmund,Andrej Ilić,Union Berlin,F,goals,AVOID,0.29,,,,5,True,VOID,0.0,DNP,2026-10-18,45892,1575188.0
 2026-10-13,2026-10-17,La Liga,Villarreal,Elche,Ali Houary,Elche,M,sot,AVOID,0.288,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,448243,1570422.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Cho Gue-Sung,FC Midtjylland,F,sot,AVOID,0.288,,,,5,,,,,,34211,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Cho Gue-Sung,FC Midtjylland,F,sot,AVOID,0.288,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,34211,
 2026-10-13,2026-10-18,Norway Eliteserien,Vålerenga,SK Brann,Lucas Haren,Valerenga,M,goals,AVOID,0.288,,,,5,True,VOID,0.0,DNP,2026-10-19,16192,
 2026-10-13,2026-10-17,Bundesliga,FC Schalke 04,FSV Mainz 05,N. Amiri,FSV Mainz 05,M,sot,AVOID,0.288,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,714,1575192.0
 2026-10-13,2026-10-18,Serie B,Sampdoria,Arezzo,Marco Olivieri,Arezzo,F,sot,AVOID,0.287,,,,5,True,VOID,0.0,DNP (0 min),2026-10-19,56300,
@@ -16051,7 +16051,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-18,Norway Eliteserien,Sandefjord,Lillestrom,Nikolaj Möller,Sandefjord,F,sot,AVOID,0.234,,,,5,True,VOID,0.0,DNP,2026-10-19,290983,
 2026-10-13,2026-10-17,Serie A,AS Roma,Genoa,M. Koné,AS Roma,M,sot,AVOID,0.234,,,,5,True,VOID,0.0,DNP,2026-10-18,22147,1550148.0
 2026-10-13,2026-10-17,Romanian Superliga,Universitatea Craiova,Farul Constanta,D. Matei,Universitatea Craiova,F,sot,AVOID,0.234,,,,5,,,,,,409845,1565277.0
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,C. Sagoe,Kalmar FF,F,sot,AVOID,0.233,,,,5,,,,,,284571,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,C. Sagoe,Kalmar FF,F,sot,AVOID,0.233,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,284571,
 2026-10-13,2026-10-17,Bundesliga,Hamburger SV,VfB Stuttgart,G. Prömel,VfB Stuttgart,M,sot,AVOID,0.233,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,24854,1575190.0
 2026-10-13,2026-10-17,Mexico Liga MX,Atlante FC,U.N.A.M. - Pumas,L. Calzadilla,Atlante FC,M,sot,AVOID,0.232,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,129939,1550995.0
 2026-10-13,2026-10-17,Brazil Serie A,Botafogo,Chapecoense-sc,Yago Felipe,Chapecoense-sc,M,cards,AVOID,0.232,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,10348,1492413.0
@@ -16100,7 +16100,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Mexico Liga MX,Santos Laguna,Club Queretaro,D. Parra,Club Queretaro,D,cards,AVOID,0.22,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,35540,1550997.0
 2026-10-13,2026-10-17,Premier League,Newcastle,Aston Villa,João Gomes,Aston Villa,M,cards,AVOID,0.22,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,195103,1557434.0
 2026-10-13,2026-10-17,Brazil Serie A,Atletico-MG,Coritiba,Alexsander,Atletico-MG,M,sot,AVOID,0.22,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,363323,1492411.0
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,D. Vukojević,Degerfors IF,F,goals,AVOID,0.22,,,,5,,,,,,47631,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,D. Vukojević,Degerfors IF,F,goals,AVOID,0.22,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47631,
 2026-10-13,2026-10-17,League One,Wigan,Reading,Benn David Ward,Reading,D,cards,AVOID,0.219,,,,5,True,VOID,0.0,DNP,2026-10-18,301282,1564365.0
 2026-10-13,2026-10-17,Romanian Superliga,Universitatea Craiova,Farul Constanta,A. Cicâldău,Universitatea Craiova,M,sot,AVOID,0.219,,,,5,,,,,,43050,1565277.0
 2026-10-13,2026-10-17,Finland Veikkausliiga,Ilves,SJK,T. Hytönen,Ilves,F,sot2,AVOID,0.219,,,,5,,,,,,264539,1638089.0
@@ -16152,14 +16152,14 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-13,Championship,Millwall,Swansea City,T. Arconte,Millwall,M,goals,AVOID,0.208,,,,5,True,VOID,0.0,DNP,2026-10-14,305959,
 2026-10-13,2026-10-18,Sweden Allsvenskan,Malmo FF,BK Hacken,S. Hakšabanović,Malmo FF,F,goals,AVOID,0.208,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,48196,
 2026-10-13,2026-10-17,Serie A,AS Roma,Genoa,Bryan Cristante,AS Roma,M,cards,AVOID,0.208,,,,5,True,VOID,0.0,DNP,2026-10-18,778,1550148.0
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,C. Gustafsson,Kalmar FF,M,cards,AVOID,0.208,,,,5,,,,,,118325,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,C. Gustafsson,Kalmar FF,M,cards,AVOID,0.208,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,118325,
 2026-10-13,2026-10-17,Brazil Serie A,Atletico-MG,Coritiba,Breno Lopes,Coritiba,M,sot,AVOID,0.208,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,53966,1492411.0
 2026-10-13,2026-10-17,League Two,Fleetwood Town,Rotherham,D. Iorfa,Rotherham,D,cards,AVOID,0.208,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,19375,1563806.0
 2026-10-13,2026-10-17,Premier League,Everton,Chelsea,J. Grealish,Everton,M,sot,AVOID,0.208,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,19187,1557430.0
 2026-10-13,2026-10-17,Bundesliga,Union Berlin,Borussia Dortmund,E. Latte Lath,Union Berlin,F,goals,AVOID,0.207,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,32137,1575188.0
 2026-10-13,2026-10-16,Ireland Premier Division,Drogheda United,Derry City,M. Duffy,Derry City,F,assists,AVOID,0.207,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,69247,1492782.0
 2026-10-13,2026-10-17,Ligue 1,Strasbourg,Paris Saint Germain,Senny Mayulu,Paris Saint Germain,M,sot,AVOID,0.207,,,,5,True,VOID,0.0,DNP,2026-10-18,409216,1552790.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,P. Billing,FC Midtjylland,M,sot,AVOID,0.207,,,,5,,,,,,2734,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,P. Billing,FC Midtjylland,M,sot,AVOID,0.207,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,2734,
 2026-10-13,2026-10-17,Austrian Bundesliga,Austria Lustenau,LASK,D. Weixelbraun,Austria Lustenau,M,goals,AVOID,0.206,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,322979,
 2026-10-13,2026-10-17,Austrian Bundesliga,Austria Lustenau,Lask Linz,D. Weixelbraun,Austria Lustenau,M,goals,AVOID,0.206,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,322979,1561942.0
 2026-10-13,2026-10-18,Bundesliga 2,Karlsruher SC,SV Darmstadt 98,K. Klefisch,SV Darmstadt 98,M,cards,AVOID,0.206,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,26073,
@@ -16168,7 +16168,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Bundesliga,Werder Bremen,SC Paderborn 07,L. Reis,Werder Bremen,M,sot,AVOID,0.206,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,38124,1575191.0
 2026-10-13,2026-10-17,Brazil Serie A,Atletico-MG,Coritiba,T. Cuello,Atletico-MG,M,assists,AVOID,0.205,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,6031,1492411.0
 2026-10-13,2026-10-17,Romanian Superliga,Petrolul Ploiesti,Sepsi OSK Sfantu Gheorghe,A. Bran,Petrolul Ploiesti,M,sot,AVOID,0.205,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,297397,1565275.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Magnus Jensen,FC Midtjylland,D,cards,AVOID,0.205,,,,5,,,,,,81132,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Magnus Jensen,FC Midtjylland,D,cards,AVOID,0.205,,,,5,True,VOID,0.0,DNP,2026-10-20,81132,
 2026-10-13,2026-10-17,Brazil Serie A,Botafogo,Chapecoense-sc,Camilo,Chapecoense-sc,M,cards,AVOID,0.205,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,63998,1492413.0
 2026-10-13,2026-10-13,Champions League,RB Leipzig,PSV Eindhoven,A. Nusa,RB Leipzig,M,assists,AVOID,0.204,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-14,314511,1635711.0
 2026-10-13,2026-10-17,Romanian Superliga,Dinamo Bucuresti,FC Botosani,N. Ilaș,FC Botosani,D,cards,AVOID,0.204,,,,5,,,,,,419730,1565271.0
@@ -16182,7 +16182,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Bundesliga 2,VfL Wolfsburg,1. FC Heidenheim,M. Angely,VfL Wolfsburg,D,cards,AVOID,0.203,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,449714,1576205.0
 2026-10-13,2026-10-18,Norway Eliteserien,Vålerenga,SK Brann,Magnus Westergaard,Valerenga,M,sot,AVOID,0.203,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,16072,
 2026-10-13,2026-10-17,China Super League,Dalian Zhixing,Sichuan Jiuniu,Cephas Malele,Dalian Zhixing,F,sot,AVOID,0.203,,,,5,True,VOID,0.0,DNP,2026-10-18,41927,1523276.0
-2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,R. Chávez,Monterrey,D,cards,AVOID,0.202,,,,5,,,,,,36471,
+2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,R. Chávez,Monterrey,D,cards,AVOID,0.202,,,,5,True,VOID,0.0,DNP,2026-10-20,36471,
 2026-10-13,2026-10-17,Serie A,AS Roma,Genoa,Bryan Cristante,AS Roma,M,sot,AVOID,0.202,,,,5,True,VOID,0.0,DNP,2026-10-18,778,1550148.0
 2026-10-13,2026-10-17,Premier League,Newcastle,Aston Villa,Joelinton,Newcastle,M,cards,AVOID,0.202,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,723,1557434.0
 2026-10-13,2026-10-17,League One,Bradford City,Stevenage,L. Freestone,Stevenage,D,cards,AVOID,0.202,,,,5,True,VOID,0.0,DNP,2026-10-18,82630,
@@ -16243,7 +16243,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-13,Champions League,RB Leipzig,PSV Eindhoven,Christoph Baumgartner,RB Leipzig,M,goals,AVOID,0.195,,,,5,True,VOID,0.0,DNP,2026-10-14,715,1635711.0
 2026-10-13,2026-10-17,Serie A,Bologna,Inter,L. Ferguson,Bologna,M,sot,AVOID,0.195,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,44814,1550149.0
 2026-10-13,2026-10-17,China Super League,Dalian Zhixing,Sichuan Jiuniu,Isnik Alimi,Dalian Zhixing,M,cards,AVOID,0.195,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,56704,1523276.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,F. Etim,FC Midtjylland,F,goals,AVOID,0.195,,,,5,,,,,,351146,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,F. Etim,FC Midtjylland,F,goals,AVOID,0.195,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,351146,
 2026-10-13,2026-10-15,Europa League,Lyon,Crystal Palace,Darío Osorio,Crystal Palace,M,goals,PAPER,0.195,4.75,-0.0737,0.0189,5,True,VOID,0.0,DNP,2026-10-16,307117,1636293.0
 2026-10-13,2026-10-17,Premier League,Brentford,Liverpool,A. Isak,Liverpool,F,sot2,AVOID,0.195,,,,5,True,VOID,0.0,DNP,2026-10-19,2864,1557428.0
 2026-10-13,2026-10-17,Bundesliga 2,Hannover 96,FC St. Pauli,T. Ando,FC St. Pauli,D,cards,AVOID,0.195,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,307929,
@@ -16323,7 +16323,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,La Liga 2,Las Palmas,Castellón,Jesé,Las Palmas,F,goals,AVOID,0.187,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,1585,1569977.0
 2026-10-13,2026-10-17,Premier League,Newcastle,Aston Villa,L. Hall,Newcastle,D,sot,AVOID,0.187,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,284492,1557434.0
 2026-10-13,2026-10-17,Finland Veikkausliiga,Ilves,SJK,J. Kilo,Ilves,M,sot,AVOID,0.187,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,327913,1638089.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,P. Billing,FC Midtjylland,M,cards,AVOID,0.186,,,,5,,,,,,2734,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,P. Billing,FC Midtjylland,M,cards,AVOID,0.186,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,2734,
 2026-10-13,2026-10-17,La Liga 2,Las Palmas,Castellón,E. Loiodice,Las Palmas,M,sot,AVOID,0.186,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,21709,1569977.0
 2026-10-13,2026-10-17,Bundesliga,FC Schalke 04,FSV Mainz 05,F. Gruber,FSV Mainz 05,D,cards,AVOID,0.186,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,202845,1575192.0
 2026-10-13,2026-10-17,Serie A,Bologna,Inter,L. Ferguson,Bologna,M,cards,AVOID,0.186,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,44814,1550149.0
@@ -16395,7 +16395,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-15,Conference League,Panathinaikos,Borac Banja Luka,Bart Meijers,Borac Banja Luka,D,cards,AVOID,0.182,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-16,37578,1636464.0
 2026-10-13,2026-10-17,Ligue 1,Estac Troyes,Lens,M. Cuisance,Lens,M,sot,AVOID,0.182,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,25634,1552791.0
 2026-10-13,2026-10-17,La Liga,Real Betis,Barcelona,Raphinha,Barcelona,F,sot2,AVOID,0.182,,,,5,,,,,,1496,1570413.0
-2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Ocampos,Monterrey,M,assists,AVOID,0.182,,,,5,,,,,,1911,
+2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Ocampos,Monterrey,M,assists,AVOID,0.182,,,,5,True,VOID,0.0,DNP,2026-10-20,1911,
 2026-10-13,2026-10-14,USA MLS,DC United,New York Red Bulls,T. Baribo,DC United,F,goals,AVOID,0.182,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-15,111287,1490531.0
 2026-10-13,2026-10-17,Romanian Superliga,Uta Arad,CFR 1907 Cluj,E. Omić,CFR 1907 Cluj,M,cards,AVOID,0.181,,,,5,,,,,,313202,1565278.0
 2026-10-13,2026-10-13,Championship,Cardiff,Watford,J. Moylan,Cardiff,M,sot2,AVOID,0.181,,,,5,True,VOID,0.0,DNP,2026-10-14,161803,1563194.0
@@ -16623,7 +16623,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-14,Argentina Primera Division,Sarmiento Junin,River Plate,T. Almada,River Plate,M,goals,AVOID,0.167,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-15,6067,1493164.0
 2026-10-13,2026-10-17,Bundesliga,Hamburger SV,VfB Stuttgart,B. Jatta,Hamburger SV,M,sot,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-10-18,24880,1575190.0
 2026-10-13,2026-10-14,USA MLS,Toronto FC,Orlando City SC,Vinícius Nogueira,Orlando City SC,D,cards,AVOID,0.167,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-15,404175,1490529.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Martin Erlić,FC Midtjylland,D,cards,AVOID,0.167,,,,5,,,,,,30827,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Martin Erlić,FC Midtjylland,D,cards,AVOID,0.167,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,30827,
 2026-10-13,2026-10-18,Sweden Allsvenskan,Halmstads BK,Hammarby IF,F. Adjei,Hammarby FF,M,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,374498,
 2026-10-13,2026-10-17,Premier League,Manchester City,Ipswich,Abdukodir Khusanov,Manchester City,D,cards,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-10-18,360114,1557433.0
 2026-10-13,2026-10-17,Premier League,Everton,Chelsea,João Pedro,Chelsea,F,sot2,AVOID,0.166,,,,5,,,,,,10329,1557430.0
@@ -16631,7 +16631,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Brazil Serie A,Atletico-MG,Coritiba,Tiago Cóser,Coritiba,D,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,305026,1492411.0
 2026-10-13,2026-10-16,Ireland Premier Division,St Patrick's Athl.,Shelbourne,A. Keena,St Patrick's Athl.,F,assists,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,44878,1492784.0
 2026-10-13,2026-10-17,Romanian Superliga,Dinamo Bucuresti,FC Botosani,Alexandru Țigănașu,FC Botosani,D,cards,AVOID,0.166,,,,5,,,,,,42570,1565271.0
-2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,V. Guzmán,Monterrey,D,cards,AVOID,0.166,,,,5,,,,,,129943,
+2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,V. Guzmán,Monterrey,D,cards,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-10-20,129943,
 2026-10-13,2026-10-16,Ligue 2,Reims,Dijon,Mory Gbane,Reims,M,sot,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-10-17,156992,1552502.0
 2026-10-13,2026-10-17,League Two,Crewe Alexandra,Rochdale,C. Tasker,Rochdale,D,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,328076,
 2026-10-13,2026-10-17,Serie B,Ascoli,Empoli,N. Rizzo,Ascoli,D,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,115541,1601553.0
@@ -16705,7 +16705,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Romanian Superliga,Petrolul Ploiesti,Sepsi OSK Sfantu Gheorghe,D. Andrei,Sepsi OSK Sfantu Gheorghe,F,sot,AVOID,0.162,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,274956,1565275.0
 2026-10-13,2026-10-14,Argentina Primera Division,Sarmiento Junin,River Plate,Á. Correa,River Plate,M,goals,AVOID,0.162,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-15,53,1493164.0
 2026-10-13,2026-10-17,Brazil Serie A,Botafogo,Chapecoense,Arthur Cabral,Botafogo,F,goals,AVOID,0.162,2.0,-0.676,-0.6566,5,True,VOID,0.0,DNP (0 min),2026-10-18,9938,
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,D. Castillo,FC Midtjylland,M,sot,AVOID,0.162,,,,5,,,,,,338045,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,D. Castillo,FC Midtjylland,M,sot,AVOID,0.162,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,338045,
 2026-10-13,2026-10-15,Conference League,Gent,Aarhus,Max Dean,Gent,F,sot2,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-10-16,278233,1636414.0
 2026-10-13,2026-10-18,Mexico Liga MX,León,América,Ramón Juárez,Club America,D,cards,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-10-19,180734,
 2026-10-13,2026-10-14,USA MLS,Columbus Crew,Charlotte,S. Rodríguez,Columbus Crew,M,cards,AVOID,0.162,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-15,51581,1490527.0
@@ -16728,7 +16728,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Serie B,Carrarese,Modena,G. Brugman,Modena,M,sot,AVOID,0.162,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,31489,1601555.0
 2026-10-13,2026-10-18,Denmark Superliga,OB Odense BK,Brondby IF,C. Winther,Brondby,M,cards,AVOID,0.162,,,,5,True,VOID,0.0,DNP (0 min),2026-10-19,153394,
 2026-10-13,2026-10-17,La Liga,Real Betis,Barcelona,A. Ezzalzouli,Real Betis,M,assists,AVOID,0.161,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,181421,1570413.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Júnior Brumado,FC Midtjylland,F,goals,AVOID,0.161,,,,5,,,,,,15810,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Júnior Brumado,FC Midtjylland,F,goals,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-10-20,15810,
 2026-10-13,2026-10-17,League One,Wigan,Reading,P. O&apos;Connor,Reading,D,cards,AVOID,0.161,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,20489,1564365.0
 2026-10-13,2026-10-17,Serie B,Padova,Virtus Entella,N. Squizzato,Virtus Entella,M,cards,AVOID,0.161,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,161858,1601559.0
 2026-10-13,2026-10-17,Premier League,Manchester City,Ipswich,N. O&apos;Reilly,Manchester City,D,sot,AVOID,0.161,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,307123,1557433.0
@@ -16789,7 +16789,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,League Two,Salford City,Crawley Town,J. Arthurs,Crawley Town,M,cards,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,283130,
 2026-10-13,2026-10-17,Bundesliga,Werder Bremen,SC Paderborn 07,S. Marino,SC Paderborn 07,F,goals,AVOID,0.159,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,328235,1575191.0
 2026-10-13,2026-10-17,Brazil Serie A,Atletico-MG,Coritiba,Natanael,Atletico-MG,D,cards,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,197450,1492411.0
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,N. Milleskog,Degerfors IF,M,sot,AVOID,0.159,,,,5,,,,,,288005,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,N. Milleskog,Degerfors IF,M,sot,AVOID,0.159,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,288005,
 2026-10-13,2026-10-17,Premier League,Everton,Chelsea,Marco Palestra,Chelsea,D,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-18,383018,1557430.0
 2026-10-13,2026-10-16,La Liga 2,Leganes,Cordoba,Daniel Budesca,Cordoba,D,cards,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,455356,1569978.0
 2026-10-13,2026-10-17,Serie B,Padova,Virtus Entella,Lorenzo Carissoni,Padova,D,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-18,32118,1601559.0
@@ -16813,7 +16813,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Championship,Derby County,Stoke City,Tomáš Rigo,Stoke City,M,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-18,290211,
 2026-10-13,2026-10-17,Finland Veikkausliiga,Ilves,SJK,Kelvin Pires,SJK,D,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-18,268806,1638089.0
 2026-10-13,2026-10-17,League Two,Oldham,Cheltenham,G. Scott-Morriss,Oldham,M,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,155701,1563809.0
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,K. WÃ¤tjen,FC Midtjylland,M,sot,AVOID,0.159,,,,5,,,,,,397740,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,K. WÃ¤tjen,FC Midtjylland,M,sot,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,397740,
 2026-10-13,2026-10-17,Serie A,Bologna,Inter,R. Piccoli,Bologna,F,goals,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,30440,1550149.0
 2026-10-13,2026-10-16,China Super League,Henan Jianye,Tianjin Teda,Bruno Nazário,Henan Jianye,M,sot,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,10144,1523275.0
 2026-10-13,2026-10-13,Champions League,Sabah FA,Slavia Praha,Steve Solvet,Sabah FA,D,sot,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-14,174827,1635721.0
@@ -16876,7 +16876,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-15,Conference League,HNK Hajduk Split,Ajax,Alberto del Moral,HNK Hajduk Split,M,cards,AVOID,0.157,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-16,181474,1636419.0
 2026-10-13,2026-10-17,League Two,Shrewsbury,Bristol Rovers,E. Harrison,Bristol Rovers,M,sot,AVOID,0.157,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,19743,1563812.0
 2026-10-13,2026-10-17,Bundesliga 2,SpVgg Greuther Fürth,Eintracht Braunschweig,S. Di Benedetto,Eintracht Braunschweig,M,sot,AVOID,0.157,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,535067,1576199.0
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,M. Hamilton,Degerfors IF,D,cards,AVOID,0.157,,,,5,,,,,,342528,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,M. Hamilton,Degerfors IF,D,cards,AVOID,0.157,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,342528,
 2026-10-13,2026-10-17,La Liga 2,Eibar,Mallorca,Sergio Álvarez,Eibar,M,sot,AVOID,0.157,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,47385,1569973.0
 2026-10-13,2026-10-17,Premier League,Fulham,Hull City,J. Andersen,Fulham,D,cards,AVOID,0.157,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,2729,1557431.0
 2026-10-13,2026-10-18,Argentina Primera Division,Estudiantes de Río Cuarto,Aldosivi Mar del Plata,T. González,Estudiantes de Rio Cuarto,M,cards,AVOID,0.157,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,411414,
@@ -16912,8 +16912,8 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Sweden Allsvenskan,AIK Stockholm,IFK Goteborg,A. Kouame,AIK Stockholm,F,assists,AVOID,0.156,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,432823,1494297.0
 2026-10-13,2026-10-18,Mexico Liga MX,Toluca,Atlético San Luis,F. Pereira,Toluca,D,cards,AVOID,0.156,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,67884,
 2026-10-13,2026-10-17,Mexico Liga MX,Santos Laguna,Querétaro,Bruno Amione,Santos Laguna,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-18,126741,
-2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Orellano,Monterrey,M,assists,AVOID,0.156,,,,5,,,,,,6063,
-2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Ousmane Diao,FC Midtjylland,D,cards,AVOID,0.156,,,,5,,,,,,404026,
+2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,L. Orellano,Monterrey,M,assists,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-20,6063,
+2026-10-13,2026-10-19,Denmark Superliga,Viborg FF,FC Midtjylland,Ousmane Diao,FC Midtjylland,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-20,404026,
 2026-10-13,2026-10-17,La Liga 2,Sporting Gijon,Albacete,Fran Gámez,Albacete,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-18,46732,1569974.0
 2026-10-13,2026-10-17,La Liga,Real Betis,Barcelona,Marc Bartra,Real Betis,D,sot,AVOID,0.156,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,1561,1570413.0
 2026-10-13,2026-10-16,Ligue 1,Le Mans,Toulouse,N. Boissé,Le Mans,D,cards,AVOID,0.156,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,483116,1552785.0
@@ -16955,7 +16955,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-16,Bundesliga,Eintracht Frankfurt,1. FC Köln,K. Kosugi,Eintracht Frankfurt,M,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-17,423789,1575187.0
 2026-10-13,2026-10-17,La Liga,Valencia,Athletic Club,José Gayà,Valencia,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,918,1570421.0
 2026-10-13,2026-10-17,La Liga,Villarreal,Elche,Alberto Moleiro,Villarreal,M,assists,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,182519,1570422.0
-2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,J. Corona,Monterrey,M,sot,AVOID,0.154,,,,5,,,,,,389,
+2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,J. Corona,Monterrey,M,sot,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-10-20,389,
 2026-10-13,2026-10-17,Serie B,Carrarese,Modena,D. Tonoli,Modena,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,381149,1601555.0
 2026-10-13,2026-10-17,League Two,Fleetwood Town,Rotherham,M. Helm,Fleetwood Town,M,sot,AVOID,0.154,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,153431,1563806.0
 2026-10-13,2026-10-17,League One,Peterborough,Burton Albion,Harley Mills,Peterborough,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,434012,1564361.0
@@ -17004,7 +17004,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,League One,Leicester,Doncaster,S. Grehan,Doncaster,D,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,308867,1564357.0
 2026-10-13,2026-10-15,Europa League,Lech Poznan,Bayer Leverkusen,F. Medina,Bayer Leverkusen,D,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-16,6231,1636279.0
 2026-10-13,2026-10-18,Brazil Serie A,Bahia,Flamengo,Rodrigo Nestor,Bahia,M,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,9954,
-2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,V. Larsson,Kalmar FF,D,cards,AVOID,0.153,,,,5,,,,,,198781,
+2026-10-13,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,V. Larsson,Kalmar FF,D,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,198781,
 2026-10-13,2026-10-18,Brazil Serie A,Bahia,Flamengo,Emerson Royal,Flamengo,D,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,1566,
 2026-10-13,2026-10-17,Serie A,AS Roma,Genoa,M. Osmajić,Genoa,F,goals,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,66761,1550148.0
 2026-10-13,2026-10-18,China Super League,Wuhan Three Towns,Shanghai Shenhua FC,Denny Wang Yi,Wuhan Three Towns,D,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP (0 min),2026-10-19,310224,
@@ -17071,7 +17071,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-17,Romanian Superliga,Uta Arad,CFR 1907 Cluj,Andrei Dorobanțu,Uta Arad,D,cards,AVOID,0.151,,,,5,,,,,,326788,1565278.0
 2026-10-13,2026-10-17,Romanian Superliga,Dinamo Bucuresti,FC Botosani,C. Petro,FC Botosani,D,cards,AVOID,0.151,,,,5,,,,,,154984,1565271.0
 2026-10-13,2026-10-17,Romanian Superliga,Petrolul Ploiesti,Sepsi OSK Sfantu Gheorghe,Joeri de Kamps,Sepsi OSK Sfantu Gheorghe,M,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-10-18,61150,1565275.0
-2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,C. Salcedo,Monterrey,D,cards,AVOID,0.151,,,,5,,,,,,2877,
+2026-10-13,2026-10-19,Mexico Liga MX,Monterrey,Pachuca,C. Salcedo,Monterrey,D,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-10-20,2877,
 2026-10-13,2026-10-17,La Liga 2,Las Palmas,Castellón,Valentín Pezzolesi,Las Palmas,D,sot,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,481993,1569977.0
 2026-10-13,2026-10-17,La Liga,Valencia,Athletic Club,I. Williams,Athletic Club,F,goals,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,47294,1570421.0
 2026-10-13,2026-10-17,La Liga 2,Sporting Gijon,Albacete,M. Rodriguez,Sporting Gijon,M,sot,AVOID,0.151,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,578621,1569974.0
@@ -17105,14 +17105,14 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-13,2026-10-18,Brazil Serie A,Grêmio,Cruzeiro,João Marcelo,Cruzeiro,D,cards,AVOID,0.195,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,54866,
 2026-10-13,2026-10-18,Austrian Bundesliga,Wolfsberger AC,WSG Tirol,M. Sulzner,Wolfsberger AC,M,sot,AVOID,0.187,,,,5,,,,,,263055,
 2026-10-13,2026-10-18,Brazil Serie A,Grêmio,Cruzeiro,Fabrício Bruno,Cruzeiro,D,cards,AVOID,0.185,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,10089,
-2026-10-13,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,Gianfranco Facchineri,Galway United,D,cards,AVOID,0.184,,,,5,,,,,,199405,
+2026-10-13,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,Gianfranco Facchineri,Galway United,D,cards,AVOID,0.184,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,199405,
 2026-10-13,2026-10-18,Brazil Serie A,Grêmio,Cruzeiro,Gerson,Cruzeiro,M,cards,AVOID,0.183,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,30408,
 2026-10-13,2026-10-18,Brazil Serie A,Grêmio,Cruzeiro,G. Rojas,Cruzeiro,D,cards,AVOID,0.181,,,,5,True,VOID,0.0,DNP (0 min),2026-10-19,6608,
 2026-10-13,2026-10-18,Austrian Bundesliga,Wolfsberger AC,WSG Tirol,Boris Matić,Wolfsberger AC,M,sot,AVOID,0.172,,,,5,,,,,,388753,
 2026-10-13,2026-10-18,Austrian Bundesliga,Wolfsberger AC,WSG Tirol,R. Renner,Wolfsberger AC,M,sot,AVOID,0.165,,,,5,,,,,,7662,
-2026-10-13,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,O. Williams,Galway United,D,cards,AVOID,0.162,,,,5,,,,,,355316,
+2026-10-13,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,O. Williams,Galway United,D,cards,AVOID,0.162,,,,5,True,VOID,0.0,DNP,2026-10-20,355316,
 2026-10-13,2026-10-18,Austrian Bundesliga,Wolfsberger AC,WSG Tirol,M. Sulzner,Wolfsberger AC,M,cards,AVOID,0.16,,,,5,,,,,,263055,
-2026-10-13,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,L. Devitt,Galway United,M,cards,AVOID,0.157,,,,5,,,,,,69622,
+2026-10-13,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,L. Devitt,Galway United,M,cards,AVOID,0.157,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,69622,
 2026-10-13,2026-10-17,Finland Veikkausliiga,Ilves Tampere,SJK Seinäjoki,O. Väistö,SJK,D,cards,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,368787,
 2026-10-13,2026-10-18,Austrian Bundesliga,Wolfsberger AC,WSG Tirol,F. Wohlmuth,Wolfsberger AC,M,cards,AVOID,0.152,,,,5,,,,,,169339,
 2026-10-13,2026-10-18,Brazil Serie A,Grêmio,Cruzeiro,Bruno Rodrigues,Cruzeiro,M,goals,AVOID,0.151,3.5,-0.4715,-0.4186,5,True,LOSS,-1.0,,2026-10-19,9445,
@@ -18194,39 +18194,39 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,H. Larsen,Tromso,F,sot,AVOID,0.678,,,,5,True,VOID,0.0,DNP,2026-10-19,334630,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,T. Nyhammer,Tromso,F,sot,AVOID,0.445,,,,5,True,VOID,0.0,DNP,2026-10-19,544497,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,H. Larsen,Tromso,F,goals,AVOID,0.404,,,,5,True,VOID,0.0,DNP,2026-10-19,334630,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,N. Mukiele,Montpellier,M,sot,AVOID,0.374,,,,5,,,,,,399890,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,M. Camara,Montpellier,F,sot,AVOID,0.367,,,,5,,,,,,191194,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Lacine Megnan-Pave,Montpellier,F,sot,AVOID,0.357,,,,5,,,,,,667893,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,N. Pays,Montpellier,M,sot,AVOID,0.329,,,,5,,,,,,349616,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,N. Mukiele,Montpellier,M,sot,AVOID,0.374,,,,5,True,VOID,0.0,DNP,2026-10-20,399890,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,M. Camara,Montpellier,F,sot,AVOID,0.367,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,191194,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Lacine Megnan-Pave,Montpellier,F,sot,AVOID,0.357,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,667893,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,N. Pays,Montpellier,M,sot,AVOID,0.329,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,349616,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,M. Bjørlo,Tromso,M,sot,AVOID,0.27,,,,5,True,VOID,0.0,DNP,2026-10-19,94576,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,T. Nyhammer,Tromso,F,goals,AVOID,0.241,,,,5,True,VOID,0.0,DNP,2026-10-19,544497,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,D. Meddah,Montpellier,D,cards,AVOID,0.212,,,,5,,,,,,128992,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,D. Meddah,Montpellier,D,cards,AVOID,0.212,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,128992,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,H. Larsen,Tromso,F,sot2,AVOID,0.212,,,,5,True,VOID,0.0,DNP,2026-10-19,334630,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,N. Vidal-Cartoux,Montpellier,M,sot,AVOID,0.197,,,,5,,,,,,629797,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,N. Vidal-Cartoux,Montpellier,M,sot,AVOID,0.197,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,629797,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,A. Warneryd,Tromso,D,sot,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-10-19,408480,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Everson Junior,Montpellier,M,cards,AVOID,0.183,,,,5,,,,,,325783,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,T. Sainte-Luce,Montpellier,D,cards,AVOID,0.174,,,,5,,,,,,21434,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Y. Zouaoui,Montpellier,D,cards,AVOID,0.168,,,,5,,,,,,23637,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Lacine Megnan-Pave,Montpellier,F,cards,AVOID,0.166,,,,5,,,,,,667893,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Everson Junior,Montpellier,M,cards,AVOID,0.183,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,325783,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,T. Sainte-Luce,Montpellier,D,cards,AVOID,0.174,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,21434,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Y. Zouaoui,Montpellier,D,cards,AVOID,0.168,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,23637,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Lacine Megnan-Pave,Montpellier,F,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,667893,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,D. Edvardsson,Tromso,M,sot,AVOID,0.166,,,,5,True,VOID,0.0,DNP,2026-10-19,198962,
 2026-10-16,2026-10-20,League One,Oxford United,Wigan Athletic,S. Dembélé,Oxford United,M,assists,AVOID,0.165,,,,5,,,,,,19964,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,T. Chennahi,Montpellier,M,cards,AVOID,0.165,,,,5,,,,,,369676,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,J. Laporte,Montpellier,D,cards,AVOID,0.164,,,,5,,,,,,20766,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Y. Mouanga,Montpellier,D,cards,AVOID,0.161,,,,5,,,,,,350388,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,T. Chennahi,Montpellier,M,cards,AVOID,0.165,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,369676,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,J. Laporte,Montpellier,D,cards,AVOID,0.164,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,20766,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Y. Mouanga,Montpellier,D,cards,AVOID,0.161,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,350388,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,V. Osuji,Tromso,D,cards,AVOID,0.16,,,,5,True,VOID,0.0,DNP,2026-10-19,474741,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,I. Dahlqvist,Tromso,M,sot,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-10-19,264435,
-2026-10-16,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,K. Paananen,Kalmar FF,,sot,AVOID,0.157,,,,5,,,,,,341977,
+2026-10-16,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,K. Paananen,Kalmar FF,,sot,AVOID,0.157,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,341977,
 2026-10-16,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,D. Vukojević,Degerfors IF,F,sot2,AVOID,0.155,,,,5,,,,,,47631,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,L. Hien,Tromso,D,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-19,198683,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,T. Chennahi,Montpellier,M,sot,AVOID,0.155,,,,5,,,,,,369676,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,T. Chennahi,Montpellier,M,sot,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,369676,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,R. Jenssen,Tromso,M,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-19,39218,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Everson Junior,Montpellier,M,sot,AVOID,0.155,,,,5,,,,,,325783,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Everson Junior,Montpellier,M,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,325783,
 2026-10-16,2026-10-20,League One,Oxford United,Wigan Athletic,M. Helik,Oxford United,D,cards,AVOID,0.154,,,,5,,,,,,40495,
 2026-10-16,2026-10-17,League One,Stockport County FC,Bromley FC,J. Diamond,Stockport County,F,assists,AVOID,0.154,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,87773,
 2026-10-16,2026-10-18,Norway Eliteserien,Tromso,KFUM,D. Edvardsson,Tromso,M,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-10-19,198962,
 2026-10-16,2026-10-20,League One,Oxford United,Wigan Athletic,P. Kioso,Oxford United,D,cards,AVOID,0.151,,,,5,,,,,,18499,
 2026-10-16,2026-10-18,Sweden Allsvenskan,Västerås SK,Mjällby AIF,S. Gefvert,Vasteras SK FK,M,cards,AVOID,0.15,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,139608,
-2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Naoufel El Hannach,Montpellier,D,cards,AVOID,0.15,,,,5,,,,,,441284,
+2026-10-16,2026-10-19,Ligue 2,Rodez AF,Montpellier,Naoufel El Hannach,Montpellier,D,cards,AVOID,0.15,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,441284,
 2026-10-16,2026-10-21,Japan J-League,FC Tokyo,Kashiwa Reysol,Dani Gómez,FC Tokyo,F,sot,AVOID,0.434,,,,5,,,,,,119232,
 2026-10-16,2026-10-21,Japan J-League,FC Tokyo,Kashiwa Reysol,Marcelo Ryan,FC Tokyo,F,sot,AVOID,0.295,,,,5,,,,,,288013,
 2026-10-16,2026-10-21,Japan J-League,V-Varen Nagasaki,Hiroshima Sanfrecce FC,Thiago Santana,V-varen Nagasaki,F,sot,AVOID,0.272,,,,5,,,,,,41218,
@@ -18266,10 +18266,10 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,T. Robinet,Nantes,F,sot,AVOID,0.614,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,21020,1552500.0
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,A. Priske,Birmingham,F,goals,VALUABLE,0.611,2.88,0.7597,0.8653,5,True,LOSS,-1.0,,2026-10-18,344816,1563203.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,P. Hofmann,VfL Bochum,F,sot,AVOID,0.61,,,,5,,,,,,26287,
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,C. Nouck,Viborg,F,sot,AVOID,0.591,,,,5,,,,,,359976,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,C. Nouck,Viborg,F,sot,AVOID,0.591,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,359976,1549039.0
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,R. Burrell,QPR,F,sot,AVOID,0.584,,,,5,True,VOID,0.0,DNP,2026-10-18,17847,1563203.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,M'Baye Niang,Dunkerque,F,sot,AVOID,0.577,,,,5,True,VOID,0.0,DNP,2026-10-18,2216,1552500.0
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,Dorian Hanza,Viborg,F,sot,AVOID,0.57,1.4,-0.202,-0.1541,5,,,,,,287216,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,Dorian Hanza,Viborg,F,sot,AVOID,0.57,1.4,-0.202,-0.1541,5,True,WIN,0.4,,2026-10-20,287216,1549039.0
 2026-10-16,2026-10-17,Bundesliga,SV Elversberg,FC Augsburg,M. Gregoritsch,FC Augsburg,F,sot,AVOID,0.553,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,25297,1575193.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,A. Bernhardsson,VfL Wolfsburg,F,sot,AVOID,0.54,,,,5,,,,,,47696,
 2026-10-16,2026-10-18,La Liga,Osasuna,Racing Santander,M. Zabiri,Racing Santander,F,sot,AVOID,0.536,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,457101,1570419.0
@@ -18290,7 +18290,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Bundesliga,SV Elversberg,FC Augsburg,D. Mokwa,SV Elversberg,F,sot,AVOID,0.46,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,350047,1575193.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,I. Cardona,Saint Etienne,F,sot,AVOID,0.441,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,8683,1552501.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,G. Abuashvili,Metz,F,sot,AVOID,0.441,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,68177,1552499.0
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,S. Jalal,Viborg,F,sot,AVOID,0.44,1.67,-0.2652,-0.2211,5,,,,,,377648,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,S. Jalal,Viborg,F,sot,AVOID,0.44,1.67,-0.2652,-0.2211,5,True,WIN,0.67,,2026-10-20,377648,1549039.0
 2026-10-16,2026-10-18,Sweden Allsvenskan,Halmstad,Hammarby FF,H. Carneil,Halmstad,M,sot,AVOID,0.435,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,356568,1494300.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,M. Kamara,IF Elfsborg,M,sot,AVOID,0.432,,,,5,,,,,,494708,
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,A. Hofleitner,Grazer AK,F,sot,AVOID,0.429,,,,5,True,VOID,0.0,DNP,2026-10-19,426114,1561946.0
@@ -18301,7 +18301,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,A. Boakye,Saint Etienne,M,sot,AVOID,0.404,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,337426,1552501.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,T. Savanier,Metz,M,sot,AVOID,0.403,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,21443,1552499.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,Seedy Jatta,Sturm Graz,F,sot,AVOID,0.388,,,,5,True,VOID,0.0,DNP,2026-10-19,216761,1561946.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,Marco Essimi,Rodez,M,sot,AVOID,0.384,,,,5,,,,,,129000,1552503.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,Marco Essimi,Rodez,M,sot,AVOID,0.384,,,,5,True,VOID,0.0,DNP,2026-10-20,129000,1552503.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,P. Fall,Metz,F,sot2,AVOID,0.379,,,,5,,,,,,437901,1552499.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,Västerås SK,Halmstads BK,A. Taonsa,Vasteras SK FK,F,sot,AVOID,0.378,,,,5,,,,,,426674,
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,Jacob Peter Hödl,Sturm Graz,M,sot,AVOID,0.374,,,,5,True,VOID,0.0,DNP,2026-10-19,451425,1561946.0
@@ -18331,12 +18331,12 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,K. Ayari,Dunkerque,M,sot,AVOID,0.288,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,533295,1552500.0
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,J. Makengo,Lorient,M,sot,AVOID,0.286,1.91,-0.4537,-0.421,5,True,VOID,0.0,DNP,2026-10-19,22171,1552787.0
 2026-10-16,2026-10-18,Sweden Allsvenskan,Halmstad,Hammarby FF,R. Ascone,Halmstad,F,sot,AVOID,0.283,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,162589,1494300.0
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,A. Beck,Viborg,M,sot,AVOID,0.283,2.2,-0.3774,-0.34,5,,,,,,337806,1549039.0
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,M. Duffy,Derry City,F,assists,AVOID,0.281,,,,5,,,,,,69247,1492776.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,A. Beck,Viborg,M,sot,AVOID,0.283,2.2,-0.3774,-0.34,5,True,WIN,1.2,,2026-10-20,337806,1549039.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,M. Duffy,Derry City,F,assists,AVOID,0.281,,,,5,True,VOID,0.0,DNP,2026-10-20,69247,1492776.0
 2026-10-16,2026-10-18,Serie A,Fiorentina,Como,Assane Diao,Como,M,sot,AVOID,0.278,,,,5,True,VOID,0.0,DNP,2026-10-19,400948,1550150.0
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,K. Saito,QPR,F,sot,AVOID,0.276,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,33838,1563203.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,T. Robinet,Nantes,F,goals,AVOID,0.275,2.5,-0.3125,-0.2712,5,True,LOSS,-1.0,,2026-10-18,21020,1552500.0
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,M. Søndergaard,Viborg,M,sot,AVOID,0.273,1.67,-0.5441,-0.5167,5,,,,,,201972,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,M. Søndergaard,Viborg,M,sot,AVOID,0.273,1.67,-0.5441,-0.5167,5,True,LOSS,-1.0,,2026-10-20,201972,1549039.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,G. Holtmann,VfL Bochum,M,sot,AVOID,0.271,,,,5,,,,,,25919,
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,T. Iwata,Birmingham,M,sot,AVOID,0.269,3.25,-0.1257,-0.0383,5,True,LOSS,-1.0,,2026-10-18,32938,1563203.0
 2026-10-16,2026-10-23,Denmark Superliga,Randers FC,Brondby IF,Warren Caddy,Randers FC,F,goals,AVOID,0.266,,,,5,,,,,,90627,
@@ -18347,7 +18347,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,J. Pandore,Metz,F,sot,AVOID,0.258,,,,5,True,VOID,0.0,DNP,2026-10-18,647405,1552499.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,A. Hoog,Malmo FF,F,sot,AVOID,0.258,,,,5,,,,,,565597,
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,Paris Josua  Brunner,Monaco,F,goals,AVOID,0.257,,,,5,True,VOID,0.0,DNP,2026-10-19,386276,1552787.0
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,C. Nouck,Viborg,F,goals,AVOID,0.256,,,,5,,,,,,359976,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,C. Nouck,Viborg,F,goals,AVOID,0.256,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,359976,1549039.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,Morgan Bokele Mputu,Metz,M,sot,AVOID,0.255,,,,5,True,VOID,0.0,DNP,2026-10-18,336180,1552499.0
 2026-10-16,2026-10-17,Bundesliga,SV Elversberg,FC Augsburg,A. Ibrahimović,FC Augsburg,M,sot,AVOID,0.253,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,327897,1575193.0
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,A. Golovin,Monaco,M,sot,AVOID,0.253,1.67,-0.5775,-0.5521,5,True,VOID,0.0,DNP,2026-10-19,109,1552787.0
@@ -18372,7 +18372,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,Ilias Chair,QPR,F,sot,AVOID,0.225,,,,5,True,VOID,0.0,DNP,2026-10-18,17632,1563203.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,B. Sarr,Metz,M,sot,AVOID,0.222,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,1915,1552499.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,M. Kamara,IF Elfsborg,M,goals,AVOID,0.219,4.0,-0.124,-0.0364,5,,,,,,494708,
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,J. Grønning,Viborg,M,cards,AVOID,0.218,,,,5,,,,,,15963,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,J. Grønning,Viborg,M,cards,AVOID,0.218,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,15963,1549039.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,M. Pannewig,VfL Bochum,M,sot,AVOID,0.217,,,,5,,,,,,336224,
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,Rayan Jawad Kolli,QPR,F,sot,AVOID,0.216,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,431885,1563203.0
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,L. Camara,Monaco,M,cards,AVOID,0.216,4.0,-0.136,-0.0496,5,True,VOID,0.0,DNP,2026-10-19,374058,1552787.0
@@ -18380,7 +18380,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,S. Idumbo-Muzambo,Monaco,M,sot,AVOID,0.214,,,,5,True,VOID,0.0,DNP,2026-10-19,340152,1552787.0
 2026-10-16,2026-10-18,Serie A,Fiorentina,Como,Franco Mastantuono,Fiorentina,M,assists,AVOID,0.214,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,449249,1550150.0
 2026-10-16,2026-10-23,Denmark Superliga,Randers FC,Brondby IF,L. Pedersen,Randers FC,M,cards,AVOID,0.213,,,,5,,,,,,396192,
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,Dorian Hanza,Viborg,F,goals,AVOID,0.213,2.6,-0.4462,-0.413,5,,,,,,287216,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,Dorian Hanza,Viborg,F,goals,AVOID,0.213,2.6,-0.4462,-0.413,5,True,WIN,1.6,,2026-10-20,287216,1549039.0
 2026-10-16,2026-10-18,La Liga,Osasuna,Racing Santander,Andrés Martín,Racing Santander,F,goals,AVOID,0.211,3.9,-0.1771,-0.0948,5,True,LOSS,-1.0,,2026-10-19,47209,1570419.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,T. Meyer,VfL Bochum,M,sot,AVOID,0.208,,,,5,,,,,,585698,
 2026-10-16,2026-10-18,Romanian Superliga,Universitatea Craiova,Farul Constanta,Denis Alibec,Farul Constanta,F,sot,AVOID,0.208,,,,5,True,VOID,0.0,DNP,2026-10-19,43119,1565277.0
@@ -18389,14 +18389,14 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,J. Le Cardinal,Saint Etienne,D,cards,AVOID,0.205,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,85914,1552501.0
 2026-10-16,2026-10-23,Denmark Superliga,Randers FC,Brondby IF,N. Hopland,Randers FC,D,cards,AVOID,0.205,,,,5,,,,,,314285,
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,N. Cadiou,Lorient,M,sot,AVOID,0.205,3.2,-0.344,-0.2784,5,True,VOID,0.0,DNP,2026-10-19,23363,1552787.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,C. Roubiou,Rodez,D,sot,AVOID,0.204,,,,5,,,,,,421890,1552503.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,C. Roubiou,Rodez,D,sot,AVOID,0.204,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,421890,1552503.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,L. Klassen,Grazer AK,M,cards,AVOID,0.204,,,,5,True,VOID,0.0,DNP,2026-10-19,26119,1561946.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,Luca Weinhandl,Sturm Graz,M,sot,AVOID,0.204,,,,5,True,VOID,0.0,DNP,2026-10-19,461977,1561946.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,J. Deminguet,Metz,M,sot,AVOID,0.203,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,21640,1552499.0
 2026-10-16,2026-10-18,Bundesliga 2,Dynamo Dresden,1. FC Magdeburg,B. Bobzien,Dynamo Dresden,M,goals,AVOID,0.203,1.67,-0.661,-0.6406,5,True,LOSS,-1.0,,2026-10-19,287932,1576204.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,Donovan Pines,Grazer AK,D,cards,AVOID,0.203,,,,5,True,VOID,0.0,DNP,2026-10-19,50760,1561946.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,O. Mendy,Universitatea Cluj,M,sot,AVOID,0.202,,,,5,,,,,,179402,1565276.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,I. Macalou,Universitatea Cluj,M,sot,AVOID,0.202,,,,5,,,,,,179429,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,O. Mendy,Universitatea Cluj,M,sot,AVOID,0.202,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,179402,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,I. Macalou,Universitatea Cluj,M,sot,AVOID,0.202,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,179429,1565276.0
 2026-10-16,2026-10-17,Bundesliga,SV Elversberg,FC Augsburg,R. Fellhauer,FC Augsburg,M,sot,AVOID,0.201,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,143831,1575193.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,C. Lichtenberger,Grazer AK,M,sot,AVOID,0.2,,,,5,True,VOID,0.0,DNP,2026-10-19,7511,1561946.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,J. Gorenc Stankovič,Sturm Graz,M,sot,AVOID,0.2,,,,5,True,VOID,0.0,DNP,2026-10-19,19041,1561946.0
@@ -18407,10 +18407,10 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,L. Millar,Birmingham,M,assists,AVOID,0.197,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,44798,1563203.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,Philipp Strompf,VfL Bochum,D,cards,AVOID,0.197,,,,5,,,,,,178169,
 2026-10-16,2026-10-17,Bundesliga,SV Elversberg,FC Augsburg,Noahkai Kai Daniel Banks,FC Augsburg,D,cards,AVOID,0.197,,,,5,True,VOID,0.0,DNP,2026-10-18,413065,1575193.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,Leard Sadriu,Arges Pitesti,D,cards,AVOID,0.196,,,,5,,,,,,109622,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,Leard Sadriu,Arges Pitesti,D,cards,AVOID,0.196,,,,5,True,VOID,0.0,DNP,2026-10-20,109622,1565276.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,A. Zeneli,IF Elfsborg,M,sot,AVOID,0.196,,,,5,,,,,,22019,
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,E. Rexhbeçaj,VfL Wolfsburg,M,cards,AVOID,0.194,,,,5,,,,,,25413,
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,A. Keena,St Patrick's Athl.,F,sot,AVOID,0.194,,,,5,,,,,,44878,1492776.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,A. Keena,St Patrick's Athl.,F,sot,AVOID,0.194,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,44878,1492776.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,Vinicius Souza,VfL Wolfsburg,M,cards,AVOID,0.192,,,,5,,,,,,10169,
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,N. El Jamali,Saint Etienne,M,sot,AVOID,0.192,,,,5,True,VOID,0.0,DNP (0 min),2026-10-18,500070,1552501.0
 2026-10-16,2026-10-18,Sweden Allsvenskan,Halmstad,Hammarby FF,T. Trybull,Halmstad,M,cards,AVOID,0.192,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,19081,1494300.0
@@ -18418,8 +18418,8 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,R. Hachem,Nantes,M,sot,AVOID,0.191,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,174743,1552500.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,L. Nomel,Sochaux,M,sot,AVOID,0.19,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,83945,1552499.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,J. Lepenant,Nantes,F,sot,AVOID,0.19,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,193952,1552500.0
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,A. Olusanya,St Patrick's Athl.,F,sot,AVOID,0.189,,,,5,,,,,,55664,1492776.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,J. Lukić,Universitatea Cluj,F,sot,AVOID,0.189,,,,5,,,,,,77037,1565276.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,A. Olusanya,St Patrick's Athl.,F,sot,AVOID,0.189,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,55664,1492776.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,J. Lukić,Universitatea Cluj,F,sot,AVOID,0.189,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,77037,1565276.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,K. Pedro,Saint Etienne,D,cards,AVOID,0.187,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,452315,1552501.0
 2026-10-16,2026-10-18,Serie A,Fiorentina,Como,N. Paz,Como,M,cards,VALUABLE,0.187,7.2,0.3464,0.5484,5,True,WIN,6.2,,2026-10-19,350037,1550150.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,Fraser Hornby,VfL Wolfsburg,F,sot2,AVOID,0.186,,,,5,,,,,,146009,
@@ -18436,17 +18436,17 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-23,Sweden Allsvenskan,Västerås SK,Halmstads BK,M. Diagne,Vasteras SK FK,M,cards,AVOID,0.182,,,,5,,,,,,385192,
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,S. Agouzoul,Sochaux,D,cards,AVOID,0.181,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,129671,1552499.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,A. Boakye,Saint Etienne,M,cards,AVOID,0.181,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,337426,1552501.0
-2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,N. Mawene,Waterford,M,cards,AVOID,0.181,,,,5,,,,,,325757,1492779.0
+2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,N. Mawene,Waterford,M,cards,AVOID,0.181,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,325757,1492779.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,Oliver Olsen,VfL Bochum,D,cards,AVOID,0.181,,,,5,,,,,,15794,
 2026-10-16,2026-10-23,Denmark Superliga,Randers FC,Brondby IF,S. Hansen,Randers FC,D,cards,AVOID,0.181,,,,5,,,,,,411286,
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,Taylor Gardner-Hickman,Birmingham,M,sot,AVOID,0.18,2.75,-0.505,-0.4753,5,True,VOID,0.0,DNP,2026-10-18,231078,1563203.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,K. Ayari,Dunkerque,M,cards,AVOID,0.18,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,533295,1552500.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,Théna Massock,Dunkerque,M,cards,AVOID,0.18,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,525880,1552500.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,Z. Davitashvili,Saint Etienne,F,goals,AVOID,0.18,2.6,-0.532,-0.5039,5,True,LOSS,-1.0,,2026-10-18,24743,1552501.0
-2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,T. Lonergan,Waterford,F,sot,AVOID,0.179,,,,5,,,,,,317984,1492779.0
+2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,T. Lonergan,Waterford,F,sot,AVOID,0.179,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,317984,1492779.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,I. Cardona,Saint Etienne,F,goals,AVOID,0.179,2.88,-0.4845,-0.4535,5,True,WIN,1.88,,2026-10-18,8683,1552501.0
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,M. Duffy,Derry City,F,sot,AVOID,0.179,,,,5,,,,,,69247,1492776.0
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,J. Lennon,St Patrick's Athl.,M,cards,AVOID,0.178,,,,5,,,,,,69351,1492776.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,M. Duffy,Derry City,F,sot,AVOID,0.179,,,,5,True,VOID,0.0,DNP,2026-10-20,69247,1492776.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,J. Lennon,St Patrick's Athl.,M,cards,AVOID,0.178,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,69351,1492776.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,M. Sollbauer,Grazer AK,D,cards,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-10-19,7554,1561946.0
 2026-10-16,2026-10-18,Bundesliga 2,Dynamo Dresden,1. FC Magdeburg,B. Bobzien,Dynamo Dresden,M,assists,AVOID,0.178,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,287932,1576204.0
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,Flávio Nazinho,Monaco,D,cards,AVOID,0.177,2.5,-0.5575,-0.531,5,True,VOID,0.0,DNP,2026-10-19,294722,1552787.0
@@ -18462,24 +18462,24 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,Mohammed Salisu,Monaco,D,cards,AVOID,0.173,3.4,-0.4118,-0.353,5,True,VOID,0.0,DNP,2026-10-19,47480,1552787.0
 2026-10-16,2026-10-18,Bundesliga 2,Dynamo Dresden,1. FC Magdeburg,Thomas Keller,Dynamo Dresden,D,cards,AVOID,0.173,,,,5,True,VOID,0.0,DNP,2026-10-19,125723,1576204.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,A. Bernhardsson,VfL Wolfsburg,F,goals,AVOID,0.172,2.38,-0.5906,-0.5661,5,,,,,,47696,
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,N. Twisk,Derry City,M,cards,AVOID,0.172,,,,5,,,,,,312839,1492776.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,D. Codrea,Universitatea Cluj,D,cards,AVOID,0.172,,,,5,,,,,,42918,1565276.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,V. Raţă,Arges Pitesti,M,cards,AVOID,0.171,,,,5,,,,,,42524,1565276.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,J. Mendes,Rodez,M,sot,AVOID,0.171,,,,5,,,,,,418978,1552503.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,N. Twisk,Derry City,M,cards,AVOID,0.172,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,312839,1492776.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,D. Codrea,Universitatea Cluj,D,cards,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-10-20,42918,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,V. Raţă,Arges Pitesti,M,cards,AVOID,0.171,,,,5,True,VOID,0.0,DNP,2026-10-20,42524,1565276.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,J. Mendes,Rodez,M,sot,AVOID,0.171,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,418978,1552503.0
 2026-10-16,2026-10-17,Serie B,Mantova,Palermo,M. Bani,Palermo,D,cards,AVOID,0.17,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,30736,1601558.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,Antonin Cartillier,Rodez,M,sot,AVOID,0.17,,,,5,,,,,,361881,1552503.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,Antonin Cartillier,Rodez,M,sot,AVOID,0.17,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,361881,1552503.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,S. Khaoui,RED Star FC 93,M,sot,AVOID,0.169,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,2955,1552501.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,Á. Csongvai,Saint Etienne,M,cards,AVOID,0.169,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,179907,1552501.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,J. Mendes,Rodez,M,cards,AVOID,0.169,,,,5,,,,,,418978,1552503.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,J. Mendes,Rodez,M,cards,AVOID,0.169,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,418978,1552503.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,I. Sissoko,Nantes,M,cards,AVOID,0.168,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,22260,1552500.0
 2026-10-16,2026-10-23,Denmark Superliga,Randers FC,Brondby IF,M. Greve,Randers FC,M,sot,AVOID,0.168,,,,5,,,,,,15859,
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,J. Masson,Sochaux,M,cards,AVOID,0.167,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,20889,1552499.0
-2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,Will Johnson,Waterford,M,cards,AVOID,0.167,,,,5,,,,,,409345,1492779.0
+2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,Will Johnson,Waterford,M,cards,AVOID,0.167,,,,5,True,VOID,0.0,DNP,2026-10-20,409345,1492779.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,S. Nair,Saint Etienne,D,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,191336,1552501.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,M. Magnin,Rodez,D,cards,AVOID,0.166,,,,5,,,,,,272112,1552503.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,M. Magnin,Rodez,D,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,272112,1552503.0
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,G. Kamara,QPR,M,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,1754,1563203.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,M. Angely,VfL Wolfsburg,D,cards,AVOID,0.165,,,,5,,,,,,449714,
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,Robert Moldoveanu,Arges Pitesti,F,sot,AVOID,0.165,,,,5,,,,,,42584,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,Robert Moldoveanu,Arges Pitesti,F,sot,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-10-20,42584,1565276.0
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,D. Zakaria,Monaco,M,sot,AVOID,0.165,3.1,-0.4885,-0.4373,5,True,VOID,0.0,DNP,2026-10-19,2810,1552787.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,A. Skogmar,Malmo FF,M,cards,AVOID,0.165,,,,5,,,,,,424637,
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,A. Skogmar,Malmo FF,M,sot,AVOID,0.165,,,,5,,,,,,424637,
@@ -18488,18 +18488,18 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-18,Sweden Allsvenskan,Halmstad,Hammarby FF,Niilo Mäenpää,Halmstad,M,cards,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-10-19,55450,1494300.0
 2026-10-16,2026-10-18,Serie A,Fiorentina,Como,Alberto Dossena,Como,D,cards,AVOID,0.164,6.4,0.0496,0.207,5,True,VOID,0.0,DNP,2026-10-19,32034,1550150.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,P. Michorl,Grazer AK,M,sot,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-10-19,7538,1561946.0
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,S. Hoare,St Patrick's Athl.,D,cards,AVOID,0.164,,,,5,,,,,,69235,1492776.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,S. Hoare,St Patrick's Athl.,D,cards,AVOID,0.164,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,69235,1492776.0
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,F. Miguel,Metz,M,sot,AVOID,0.163,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,21433,1552499.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,A. Tofan,Arges Pitesti,D,cards,AVOID,0.163,,,,5,,,,,,96861,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,A. Tofan,Arges Pitesti,D,cards,AVOID,0.163,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,96861,1565276.0
 2026-10-16,2026-10-18,Bundesliga 2,Dynamo Dresden,1. FC Magdeburg,B. Atik,1. FC Magdeburg,M,goals,AVOID,0.163,4.33,-0.2942,-0.2236,5,True,LOSS,-1.0,,2026-10-19,25126,1576204.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,K. Fischer,VfL Wolfsburg,D,cards,AVOID,0.162,,,,5,,,,,,177618,
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,P. Neumann,Birmingham,D,sot,AVOID,0.162,3.5,-0.433,-0.3763,5,True,LOSS,-1.0,,2026-10-18,25206,1563203.0
-2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,S. Jalal,Viborg,F,goals,AVOID,0.161,3.75,-0.3962,-0.3359,5,,,,,,377648,1549039.0
+2026-10-16,2026-10-19,Denmark Superliga,Viborg,FC Midtjylland,S. Jalal,Viborg,F,goals,AVOID,0.161,3.75,-0.3962,-0.3359,5,True,LOSS,-1.0,,2026-10-20,377648,1549039.0
 2026-10-16,2026-10-18,La Liga,Osasuna,Racing Santander,Manu Hernando,Racing Santander,D,cards,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-10-19,165713,1570419.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,Mario Tudose,Arges Pitesti,D,cards,AVOID,0.161,,,,5,,,,,,342286,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,Mario Tudose,Arges Pitesti,D,cards,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-10-20,342286,1565276.0
 2026-10-16,2026-10-18,Bundesliga 2,Dynamo Dresden,1. FC Magdeburg,A. MacNulty,1. FC Magdeburg,D,cards,AVOID,0.161,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,279868,1576204.0
 2026-10-16,2026-10-18,Ligue 1,Lorient,Monaco,L. Camara,Monaco,M,sot,AVOID,0.16,3.4,-0.456,-0.4016,5,True,VOID,0.0,DNP,2026-10-19,374058,1552787.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,F. Borţa,Arges Pitesti,D,cards,AVOID,0.16,,,,5,,,,,,42565,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,F. Borţa,Arges Pitesti,D,cards,AVOID,0.16,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,42565,1565276.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,I. Halifa,RED Star FC 93,M,sot,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,354839,1552501.0
 2026-10-16,2026-10-17,Championship,Birmingham,QPR,B. Osayi-Samuel,Birmingham,D,cards,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,19588,1563203.0
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,A. Đurić,Malmo FF,D,cards,AVOID,0.159,,,,5,,,,,,304003,
@@ -18518,16 +18518,16 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,A. Hofleitner,Grazer AK,F,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-19,426114,1561946.0
 2026-10-16,2026-10-18,Romanian Superliga,Universitatea Craiova,Farul Constanta,E. Rădăslăvescu,Farul Constanta,F,sot,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-19,322177,1565277.0
 2026-10-16,2026-10-17,Bundesliga,SV Elversberg,FC Augsburg,Abdulay Juma Bah,FC Augsburg,D,cards,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,449509,1575193.0
-2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,L. Quenabio,Rodez,D,cards,AVOID,0.155,,,,5,,,,,,84962,1552503.0
+2026-10-16,2026-10-19,Ligue 2,Rodez,Montpellier,L. Quenabio,Rodez,D,cards,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,84962,1552503.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,P. Hofmann,VfL Bochum,F,sot2,AVOID,0.155,,,,5,,,,,,26287,
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,S. Sow,Nantes,D,cards,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,274328,1552500.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,I. Sissoko,Nantes,M,sot,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,22260,1552500.0
-2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,O. Bic,Universitatea Cluj,M,cards,AVOID,0.155,,,,5,,,,,,43049,1565276.0
+2026-10-16,2026-10-19,Romanian Superliga,Universitatea Cluj,Arges Pitesti,O. Bic,Universitatea Cluj,M,cards,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,43049,1565276.0
 2026-10-16,2026-10-18,Romanian Superliga,Universitatea Craiova,Farul Constanta,Samuel Teles,Universitatea Craiova,M,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-19,142018,1565277.0
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,S. Klaiber,VfL Bochum,D,cards,AVOID,0.154,,,,5,,,,,,37171,
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,M. Wittek,VfL Bochum,D,sot,AVOID,0.154,,,,5,,,,,,25151,
 2026-10-16,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,Philipp Strompf,VfL Bochum,D,sot,AVOID,0.153,,,,5,,,,,,178169,
-2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,P. Amond,Waterford,F,sot,AVOID,0.153,,,,5,,,,,,82045,1492779.0
+2026-10-16,2026-10-19,Ireland Premier Division,Waterford,Galway United,P. Amond,Waterford,F,sot,AVOID,0.153,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,82045,1492779.0
 2026-10-16,2026-10-17,Ligue 2,RED Star FC 93,Saint Etienne,M. Jaber,Saint Etienne,M,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,136155,1552501.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,T. Robinet,Nantes,F,sot2,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-19,21020,1552500.0
 2026-10-16,2026-10-18,Austrian Bundesliga,Sturm Graz,Grazer AK,L. Klassen,Grazer AK,M,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-19,26119,1561946.0
@@ -18546,7 +18546,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,Pontus Jansson,Malmo FF,D,sot,AVOID,0.151,,,,5,,,,,,19124,
 2026-10-16,2026-10-23,Sweden Allsvenskan,IF Elfsborg,Malmo FF,S. Hakšabanović,Malmo FF,M,goals,AVOID,0.151,,,,5,,,,,,48196,
 2026-10-16,2026-10-17,Ligue 2,Metz,Sochaux,J. Deminguet,Metz,M,cards,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,21640,1552499.0
-2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,C. Dummigan,Derry City,D,cards,AVOID,0.151,,,,5,,,,,,69230,1492776.0
+2026-10-16,2026-10-19,Ireland Premier Division,Derry City,St Patrick's Athl.,C. Dummigan,Derry City,D,cards,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,69230,1492776.0
 2026-10-16,2026-10-18,Romanian Superliga,Universitatea Craiova,Farul Constanta,Gustavo Marins,Farul Constanta,D,cards,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-10-19,302946,1565277.0
 2026-10-16,2026-10-17,Ligue 2,Nantes,Dunkerque,M. Cafaro,Nantes,M,assists,AVOID,0.151,,,,5,True,VOID,0.0,DNP,2026-10-18,22003,1552500.0
 2026-10-16,2026-10-23,La Liga 2,Granada CF,Real Valladolid CF,José Arnáiz,Granada CF,F,sot,AVOID,0.551,1.44,-0.2066,-0.159,5,,,,,,47419,
@@ -18699,8 +18699,8 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-21,Japan J-League,V-Varen Nagasaki,Hiroshima Sanfrecce FC,Matheus Jesus,V-varen Nagasaki,M,assists,AVOID,0.165,,,,5,,,,,,9396,
 2026-10-17,2026-10-21,Japan J-League,V-Varen Nagasaki,Hiroshima Sanfrecce FC,Matheus Jesus,V-varen Nagasaki,M,goals,AVOID,0.163,,,,5,,,,,,9396,
 2026-10-17,2026-10-22,Mexico Liga MX,Atlas,América,K. Zenón,Atlas,M,assists,AVOID,0.16,,,,5,,,,,,288707,
-2026-10-17,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,A. Bolger,Galway United,M,cards,AVOID,0.159,,,,5,,,,,,105972,
-2026-10-17,2026-10-19,Ireland Premier Division,Waterford,Galway United,A. Bolger,Galway United,M,cards,AVOID,0.159,,,,5,,,,,,105972,1492779.0
+2026-10-17,2026-10-19,Ireland Premier Division,Waterford FC,Galway United,A. Bolger,Galway United,M,cards,AVOID,0.159,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,105972,
+2026-10-17,2026-10-19,Ireland Premier Division,Waterford,Galway United,A. Bolger,Galway United,M,cards,AVOID,0.159,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,105972,1492779.0
 2026-10-17,2026-10-18,Mexico Liga MX,Cruz Azul,FC Juarez,F. Nevárez,FC Juarez,D,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-19,36478,1551000.0
 2026-10-17,2026-10-22,Mexico Liga MX,Atlas,América,Luís Esteves,Atlas,M,goals,AVOID,0.154,,,,5,,,,,,187909,
 2026-10-17,2026-10-21,Japan J-League,V-Varen Nagasaki,Hiroshima Sanfrecce FC,K. Doi,V-varen Nagasaki,D,cards,AVOID,0.154,,,,5,,,,,,364593,
@@ -19036,9 +19036,9 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,La Liga,Real Madrid,Sevilla,J. Bellingham,Real Madrid,M,sot,AVOID,0.502,1.2,-0.3976,-0.3615,5,True,VOID,0.0,DNP,2026-10-19,129718,1570420.0
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,F. Azaz,Southampton,M,sot,AVOID,0.501,,,,5,,,,,,231039,
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,Femi Azeez,Brighton,F,sot,AVOID,0.499,1.36,-0.3214,-0.2806,5,True,VOID,0.0,DNP,2026-10-19,282637,1557429.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Richarlison,Tottenham,F,sot,AVOID,0.496,,,,5,,,,,,2413,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Richarlison,Tottenham,F,sot,AVOID,0.496,,,,5,True,VOID,0.0,DNP,2026-10-20,2413,1557436.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,Bruno Fernandes,Manchester United,M,sot,AVOID,0.495,1.66,-0.1783,-0.129,5,True,WIN,0.66,,2026-10-19,1485,1557432.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Omar Marmoush,Tottenham,F,sot,AVOID,0.488,1.25,-0.39,-0.3534,5,,,,,,81573,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Omar Marmoush,Tottenham,F,sot,AVOID,0.488,1.25,-0.39,-0.3534,5,True,WIN,0.25,,2026-10-20,81573,1557436.0
 2026-10-17,2026-10-18,La Liga,Malaga,Real Sociedad,Chupe,Malaga,F,sot,AVOID,0.488,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,376401,1570418.0
 2026-10-17,2026-10-24,Serie B,Avellino,Padova,Gabriele Artistico,Padova,F,sot,AVOID,0.483,,,,5,,,,,,180764,
 2026-10-17,2026-10-20,Championship,Wolves,Portsmouth,M. Mane,Wolves,F,sot,AVOID,0.481,,,,5,,,,,,456206,1563150.0
@@ -19054,7 +19054,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,La Liga 2,Girona,FC Andorra,Abel Ruiz,Girona,F,sot,AVOID,0.456,,,,5,True,VOID,0.0,DNP,2026-10-19,155,1569975.0
 2026-10-17,2026-10-24,Serie B,Virtus Entella,Mantova,A. Franzoni,Virtus Entella,F,sot,AVOID,0.454,,,,5,,,,,,427365,
 2026-10-17,2026-10-18,Bundesliga,Borussia Mönchengladbach,1899 Hoffenheim,B. Conté,1899 Hoffenheim,M,sot,AVOID,0.452,,,,5,True,VOID,0.0,DNP,2026-10-19,279905,1575189.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Sávio,Tottenham,M,sot,AVOID,0.447,,,,5,,,,,,266657,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Sávio,Tottenham,M,sot,AVOID,0.447,,,,5,True,VOID,0.0,DNP,2026-10-20,266657,1557436.0
 2026-10-17,2026-10-18,Bundesliga,Bayer Leverkusen,SC Freiburg,M. Diaby,Bayer Leverkusen,M,sot,AVOID,0.439,1.17,-0.4864,-0.4556,5,True,LOSS,-1.0,,2026-10-19,277,1575186.0
 2026-10-17,2026-10-18,La Liga 2,Girona,FC Andorra,Moró Sidibe,FC Andorra,F,sot,AVOID,0.439,,,,5,True,VOID,0.0,DNP,2026-10-19,348410,1569975.0
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,J. Strand Larsen,Crystal Palace,F,sot,AVOID,0.426,1.4,-0.4036,-0.3678,5,True,LOSS,-1.0,,2026-10-19,2032,1557429.0
@@ -19070,9 +19070,9 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,P. Groß,Brighton,M,sot,AVOID,0.4,2.0,-0.2,-0.152,5,True,LOSS,-1.0,,2026-10-19,18970,1557429.0
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,Léo Scienza,Southampton,M,sot,AVOID,0.399,,,,5,,,,,,283323,
 2026-10-17,2026-10-24,Championship,Blackburn Rovers,Wrexham AFC,C. O&apos;Hare,Wrexham,F,sot,AVOID,0.395,,,,5,,,,,,17668,
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Yann Gboho,Coventry,M,sot,AVOID,0.395,1.8,-0.289,-0.2463,5,,,,,,84128,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Yann Gboho,Coventry,M,sot,AVOID,0.395,1.8,-0.289,-0.2463,5,True,VOID,0.0,DNP,2026-10-20,84128,1557436.0
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,Yankuba Minteh,Brighton,F,sot,AVOID,0.394,,,,5,True,VOID,0.0,DNP,2026-10-19,383685,1557429.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Mathys Tel,Tottenham,F,sot,AVOID,0.392,1.36,-0.4669,-0.4349,5,,,,,,270510,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Mathys Tel,Tottenham,F,sot,AVOID,0.392,1.36,-0.4669,-0.4349,5,True,VOID,0.0,DNP,2026-10-20,270510,1557436.0
 2026-10-17,2026-10-18,Bundesliga,Bayer Leverkusen,SC Freiburg,P. Schick,Bayer Leverkusen,F,goals,AVOID,0.392,2.0,-0.216,-0.169,5,True,WIN,1.0,,2026-10-19,794,1575186.0
 2026-10-17,2026-10-18,La Liga,Malaga,Real Sociedad,Mikel Oyarzabal,Real Sociedad,F,sot,AVOID,0.389,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,47323,1570418.0
 2026-10-17,2026-10-18,La Liga 2,Girona,FC Andorra,Carles Pérez,Girona,M,sot,AVOID,0.388,,,,5,True,VOID,0.0,DNP,2026-10-19,67955,1569975.0
@@ -19123,7 +19123,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-17,Serie B,Pisa,Cremonese,M. Nasti,Cremonese,F,sot,AVOID,0.284,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,345467,1601560.0
 2026-10-17,2026-10-18,Norway Eliteserien,Tromso,KFUM Oslo,B. Kristensen,KFUM Oslo,F,sot,AVOID,0.284,,,,5,True,VOID,0.0,DNP,2026-10-19,314290,1494785.0
 2026-10-17,2026-10-18,Premier League,Nottingham Forest,Arsenal,M. Ødegaard,Arsenal,M,sot,AVOID,0.283,1.83,-0.4821,-0.451,5,True,LOSS,-1.0,,2026-10-19,37127,1557435.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Richarlison,Tottenham,F,goals,AVOID,0.282,,,,5,,,,,,2413,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Richarlison,Tottenham,F,goals,AVOID,0.282,,,,5,True,VOID,0.0,DNP,2026-10-20,2413,1557436.0
 2026-10-17,2026-10-18,La Liga,Malaga,Real Sociedad,Barrenetxea,Real Sociedad,M,sot,AVOID,0.275,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,47317,1570418.0
 2026-10-17,2026-10-24,League One,Stevenage,Milton Keynes Dons,O. Sanderson,Stevenage,F,sot,AVOID,0.273,,,,5,,,,,,284522,
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,K. Matsuki,Southampton,M,sot,AVOID,0.273,,,,5,,,,,,351013,
@@ -19133,7 +19133,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-20,League One,Doncaster,Stockport County,J. Diamond,Stockport County,F,sot,AVOID,0.265,,,,5,,,,,,87773,1564372.0
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,C. Larin,Southampton,F,goals,AVOID,0.264,,,,5,,,,,,2001,
 2026-10-17,2026-10-20,League Two,Walsall,Oldham,C. Kavanagh,Oldham,F,sot,AVOID,0.263,,,,5,,,,,,284199,1563825.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,J. Rudoni,Coventry,M,sot,AVOID,0.262,2.7,-0.2926,-0.2502,5,,,,,,20372,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,J. Rudoni,Coventry,M,sot,AVOID,0.262,2.7,-0.2926,-0.2502,5,True,WIN,1.7,,2026-10-20,20372,1557436.0
 2026-10-17,2026-10-18,Sweden Allsvenskan,Orgryte IS,Gais,T. Sana,Orgryte IS,F,sot,AVOID,0.262,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,15591,1494302.0
 2026-10-17,2026-10-18,Premier League,Nottingham Forest,Arsenal,M. Gibbs-White,Nottingham Forest,M,goals,VALUABLE,0.262,4.9,0.2838,0.4122,5,True,VOID,0.0,DNP,2026-10-19,18746,1557435.0
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,F. Azaz,Southampton,M,goals,AVOID,0.262,,,,5,,,,,,231039,
@@ -19161,7 +19161,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Bundesliga,Bayer Leverkusen,SC Freiburg,M. Eggestein,SC Freiburg,M,sot,AVOID,0.243,2.5,-0.3925,-0.3561,5,True,WIN,1.5,,2026-10-19,2917,1575186.0
 2026-10-17,2026-10-24,Championship,Blackburn Rovers,Wrexham AFC,T. Cantwell,Blackburn,F,goals,AVOID,0.24,,,,5,,,,,,19072,
 2026-10-17,2026-10-24,Serie B,Virtus Entella,Mantova,Bernat Guiu,Virtus Entella,M,goals,AVOID,0.24,,,,5,,,,,,70501,
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Omar Marmoush,Tottenham,F,goals,AVOID,0.24,2.5,-0.4,-0.364,5,,,,,,81573,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Omar Marmoush,Tottenham,F,goals,AVOID,0.24,2.5,-0.4,-0.364,5,True,WIN,1.5,,2026-10-20,81573,1557436.0
 2026-10-17,2026-10-18,Ligue 1,Le Havre,Auxerre,Marvin Senaya,Auxerre,D,cards,AVOID,0.239,,,,5,True,VOID,0.0,DNP,2026-10-19,191240,1552784.0
 2026-10-17,2026-10-18,Premier League,Nottingham Forest,Arsenal,N. Williams,Nottingham Forest,M,sot,AVOID,0.239,2.9,-0.3069,-0.2653,5,True,LOSS,-1.0,,2026-10-19,138780,1557435.0
 2026-10-17,2026-10-18,La Liga,Real Madrid,Sevilla,Y. Fofana,Sevilla,M,sot,AVOID,0.238,,,,5,True,VOID,0.0,DNP,2026-10-19,22254,1570420.0
@@ -19171,7 +19171,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-24,Serie B,Avellino,Padova,B. Moruzzi,Avellino,M,sot,AVOID,0.235,,,,5,,,,,,384491,
 2026-10-17,2026-10-20,League Two,Bristol Rovers,Salford City,C. Mola,Bristol Rovers,M,cards,AVOID,0.234,,,,5,,,,,,138818,1563816.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,A. Stach,Leeds,M,sot,AVOID,0.234,1.9,-0.5554,-0.5287,5,True,WIN,0.9,,2026-10-19,177665,1557432.0
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,R. Guțea,FC Voluntari,M,sot,AVOID,0.234,,,,5,,,,,,401856,1565273.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,R. Guțea,FC Voluntari,M,sot,AVOID,0.234,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,401856,1565273.0
 2026-10-17,2026-10-24,Serie B,Avellino,Padova,M. Palumbo,Avellino,M,sot,AVOID,0.233,,,,5,,,,,,264513,
 2026-10-17,2026-10-18,La Liga,Real Madrid,Sevilla,Félix Correia,Sevilla,M,sot,AVOID,0.233,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,135749,1570420.0
 2026-10-17,2026-10-18,Premier League,Nottingham Forest,Arsenal,Callum Hudson-Odoi,Nottingham Forest,M,sot,AVOID,0.231,2.15,-0.5033,-0.4736,5,True,VOID,0.0,DNP,2026-10-19,2298,1557435.0
@@ -19191,7 +19191,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,La Liga,Malaga,Real Sociedad,Carlos Soler,Real Sociedad,M,sot,AVOID,0.225,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,930,1570418.0
 2026-10-17,2026-10-24,Sweden Allsvenskan,BK Hacken,Degerfors IF,N. Girmai Netabay,Degerfors IF,F,sot,AVOID,0.225,,,,5,,,,,,47600,
 2026-10-17,2026-10-18,La Liga,Real Madrid,Sevilla,F. Valverde,Real Madrid,M,sot,AVOID,0.223,1.83,-0.5919,-0.5674,5,True,VOID,0.0,DNP,2026-10-19,756,1570420.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,S. Tonali,Tottenham,M,sot,AVOID,0.222,2.7,-0.4006,-0.3646,5,,,,,,31146,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,S. Tonali,Tottenham,M,sot,AVOID,0.222,2.7,-0.4006,-0.3646,5,True,LOSS,-1.0,,2026-10-20,31146,1557436.0
 2026-10-17,2026-10-24,Championship,Blackburn Rovers,Wrexham AFC,O. Afolayan,Blackburn,M,goals,AVOID,0.222,,,,5,,,,,,17756,
 2026-10-17,2026-10-18,La Liga 2,Girona,FC Andorra,I. Gonzalez,Girona,M,sot,AVOID,0.221,,,,5,True,VOID,0.0,DNP,2026-10-19,548670,1569975.0
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,Darío Osorio,Crystal Palace,M,cards,AVOID,0.221,4.6,0.0166,0.1183,5,True,VOID,0.0,DNP,2026-10-19,307117,1557429.0
@@ -19212,15 +19212,15 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-24,Championship,Wolverhampton Wanderers,Watford,H. Kyprianou,Watford,M,sot,AVOID,0.214,,,,5,,,,,,130856,
 2026-10-17,2026-10-24,Serie B,Avellino,Padova,Lorenco Šimić,Avellino,D,cards,AVOID,0.213,,,,5,,,,,,30862,
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,Darío Osorio,Crystal Palace,M,goals,AVOID,0.212,4.5,-0.046,0.0494,5,True,VOID,0.0,DNP,2026-10-19,307117,1557429.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Pedro Porro,Tottenham,D,sot,AVOID,0.212,2.45,-0.4806,-0.4494,5,,,,,,47519,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Pedro Porro,Tottenham,D,sot,AVOID,0.212,2.45,-0.4806,-0.4494,5,True,VOID,0.0,DNP,2026-10-20,47519,1557436.0
 2026-10-17,2026-10-18,La Liga 2,Girona,FC Andorra,Marc Domènech,FC Andorra,M,cards,AVOID,0.211,,,,5,True,VOID,0.0,DNP,2026-10-19,327489,1569975.0
 2026-10-17,2026-10-24,Serie B,Virtus Entella,Mantova,R. Kouda,Mantova,M,sot,AVOID,0.211,,,,5,,,,,,386393,
 2026-10-17,2026-10-18,La Liga,Real Madrid,Sevilla,L. Agoumé,Sevilla,M,cards,AVOID,0.211,2.62,-0.4472,-0.414,5,True,VOID,0.0,DNP,2026-10-19,21004,1570420.0
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Sávio,Tottenham,M,assists,AVOID,0.211,,,,5,,,,,,266657,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Sávio,Tottenham,M,assists,AVOID,0.211,,,,5,True,VOID,0.0,DNP,2026-10-20,266657,1557436.0
 2026-10-17,2026-10-20,League Two,Rochdale,Grimsby,C. Vernam,Grimsby,M,sot,AVOID,0.21,,,,5,,,,,,17844,1563823.0
 2026-10-17,2026-10-24,League One,Stevenage,Milton Keynes Dons,J. Magennis,Stevenage,F,sot,AVOID,0.208,,,,5,,,,,,19715,
 2026-10-17,2026-10-24,Championship,Wolverhampton Wanderers,Watford,E. Kayembe,Watford,M,cards,AVOID,0.207,,,,5,,,,,,1424,
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,M. Korenica,FCSB,M,sot,AVOID,0.207,,,,5,,,,,,106104,1565273.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,M. Korenica,FCSB,M,sot,AVOID,0.207,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,106104,1565273.0
 2026-10-17,2026-10-18,Bundesliga,Borussia Mönchengladbach,1899 Hoffenheim,O. Kabak,1899 Hoffenheim,D,cards,AVOID,0.207,3.0,-0.379,-0.3417,5,True,VOID,0.0,DNP,2026-10-19,26300,1575189.0
 2026-10-17,2026-10-24,Serie B,Avellino,Padova,Luca Zanimacchia,Padova,M,sot,AVOID,0.207,,,,5,,,,,,56304,
 2026-10-17,2026-10-18,Bundesliga,Borussia Mönchengladbach,1899 Hoffenheim,Enzo Leopold,Borussia Mönchengladbach,M,sot,AVOID,0.206,,,,5,True,VOID,0.0,DNP,2026-10-19,178250,1575189.0
@@ -19255,7 +19255,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Bundesliga,Bayer Leverkusen,SC Freiburg,I. Maza,Bayer Leverkusen,M,goals,AVOID,0.196,4.4,-0.1376,-0.0514,5,True,WIN,3.4,,2026-10-19,380587,1575186.0
 2026-10-17,2026-10-20,League One,Doncaster,Stockport County,K. Wootton,Stockport County,F,goals,AVOID,0.195,,,,5,,,,,,20481,1564372.0
 2026-10-17,2026-10-24,Serie B,Virtus Entella,Mantova,A. Castellini,Mantova,D,cards,AVOID,0.195,,,,5,,,,,,427079,
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Aurèle Amenda,Coventry,D,cards,AVOID,0.195,,,,5,,,,,,162414,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Aurèle Amenda,Coventry,D,cards,AVOID,0.195,,,,5,True,VOID,0.0,DNP,2026-10-20,162414,1557436.0
 2026-10-17,2026-10-18,Ligue 1,Le Havre,Auxerre,A. Richardson,Le Havre,M,sot,AVOID,0.194,,,,5,True,VOID,0.0,DNP,2026-10-19,314231,1552784.0
 2026-10-17,2026-10-24,Serie B,Virtus Entella,Mantova,L. Cuppone,Virtus Entella,F,sot2,AVOID,0.193,,,,5,,,,,,57075,
 2026-10-17,2026-10-18,Bundesliga,Borussia Mönchengladbach,1899 Hoffenheim,F. Asllani,1899 Hoffenheim,M,goals,AVOID,0.193,2.84,-0.4519,-0.419,5,True,VOID,0.0,DNP,2026-10-19,202501,1575189.0
@@ -19384,9 +19384,9 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,Joe Rodon,Leeds,D,cards,AVOID,0.165,,,,5,True,VOID,0.0,DNP,2026-10-19,19321,1557432.0
 2026-10-17,2026-10-18,Ligue 1,Le Havre,Auxerre,A. Richardson,Le Havre,M,cards,AVOID,0.164,4.0,-0.344,-0.2784,5,True,VOID,0.0,DNP,2026-10-19,314231,1552784.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,B. Mbeumo,Manchester United,F,sot2,AVOID,0.164,3.55,-0.4178,-0.3596,5,,,,,,20589,1557432.0
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,R. Crişan,FC Voluntari,D,cards,AVOID,0.164,,,,5,,,,,,43105,1565273.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,R. Crişan,FC Voluntari,D,cards,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-10-20,43105,1565273.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,Carlos Baleba,Manchester United,M,sot,AVOID,0.164,,,,5,True,VOID,0.0,DNP,2026-10-19,356041,1557432.0
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,A. Garita,FCSB,F,sot,AVOID,0.164,,,,5,,,,,,24289,1565273.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,A. Garita,FCSB,F,sot,AVOID,0.164,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,24289,1565273.0
 2026-10-17,2026-10-24,Championship,Blackburn Rovers,Wrexham AFC,Sam Morsy,Blackburn,M,sot,AVOID,0.164,,,,5,,,,,,19558,
 2026-10-17,2026-10-20,League One,AFC Wimbledon,Mansfield Town,M. Smith,Mansfield Town,F,cards,AVOID,0.163,,,,5,,,,,,19680,1564367.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,Matheus Cunha,Manchester United,M,goals,AVOID,0.162,3.7,-0.4006,-0.3407,5,True,LOSS,-1.0,,2026-10-19,1165,1557432.0
@@ -19400,7 +19400,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-20,Championship,Wolves,Portsmouth,M. Pack,Portsmouth,M,sot,AVOID,0.161,,,,5,,,,,,19273,1563150.0
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,C. Larin,Southampton,F,sot2,AVOID,0.161,,,,5,,,,,,2001,
 2026-10-17,2026-10-24,Championship,Blackburn Rovers,Wrexham AFC,H. Pickering,Blackburn,M,sot,AVOID,0.161,,,,5,,,,,,17685,
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,M. Roman,FC Voluntari,F,sot,AVOID,0.161,,,,5,,,,,,43224,1565273.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,M. Roman,FC Voluntari,F,sot,AVOID,0.161,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,43224,1565273.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,Carlos Baleba,Manchester United,M,cards,AVOID,0.161,,,,5,True,VOID,0.0,DNP,2026-10-19,356041,1557432.0
 2026-10-17,2026-10-18,Bundesliga,Bayer Leverkusen,SC Freiburg,Y. Engelhardt,SC Freiburg,M,cards,AVOID,0.16,3.25,-0.48,-0.428,5,True,LOSS,-1.0,,2026-10-19,178709,1575186.0
 2026-10-17,2026-10-18,La Liga 2,Girona,FC Andorra,Javier Boñar,Girona,D,sot,AVOID,0.16,,,,5,True,VOID,0.0,DNP,2026-10-19,336685,1569975.0
@@ -19439,8 +19439,8 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,La Liga,Real Madrid,Sevilla,D. Dumfries,Real Madrid,D,sot,AVOID,0.156,2.38,-0.6287,-0.6064,5,True,VOID,0.0,DNP,2026-10-19,226,1570420.0
 2026-10-17,2026-10-18,La Liga,Malaga,Real Sociedad,Diego Murillo,Malaga,D,cards,AVOID,0.156,2.9,-0.5476,-0.5205,5,True,VOID,0.0,DNP,2026-10-19,185234,1570418.0
 2026-10-17,2026-10-24,Finland Veikkausliiga,IF Gnistan,AC Oulu,M. Arsalo,AC Oulu,M,cards,AVOID,0.155,,,,5,,,,,,302876,
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Mathys Tel,Tottenham,F,goals,AVOID,0.155,3.18,-0.5071,-0.4578,5,,,,,,270510,1557436.0
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,D. Miculescu,FCSB,M,sot,AVOID,0.155,,,,5,,,,,,42687,1565273.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,Mathys Tel,Tottenham,F,goals,AVOID,0.155,3.18,-0.5071,-0.4578,5,True,VOID,0.0,DNP,2026-10-20,270510,1557436.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,D. Miculescu,FCSB,M,sot,AVOID,0.155,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,42687,1565273.0
 2026-10-17,2026-10-18,Premier League,Nottingham Forest,Arsenal,M. Lewis-Skelly,Arsenal,M,cards,AVOID,0.155,5.6,-0.132,-0.0018,5,True,VOID,0.0,DNP (0 min),2026-10-19,313245,1557435.0
 2026-10-17,2026-10-18,Norway Eliteserien,Tromso,KFUM Oslo,Tore Andre Soras,KFUM Oslo,M,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-19,57230,1494785.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,M. Rashford,Manchester United,M,assists,AVOID,0.155,5.5,-0.1475,-0.0196,5,True,VOID,0.0,DNP (0 min),2026-10-19,909,1557432.0
@@ -19453,14 +19453,14 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-24,Serie B,Avellino,Padova,Carlo Faedo,Padova,D,cards,AVOID,0.155,,,,5,,,,,,329669,
 2026-10-17,2026-10-20,League Two,Walsall,Oldham,E. Ahui,Walsall,D,cards,AVOID,0.155,,,,5,,,,,,377799,1563825.0
 2026-10-17,2026-10-18,Premier League,Nottingham Forest,Arsenal,Arnaud Kalimuendo,Nottingham Forest,F,goals,AVOID,0.154,5.2,-0.1992,-0.0791,5,True,VOID,0.0,DNP,2026-10-19,147831,1557435.0
-2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,Mihai Popescu,FCSB,D,cards,AVOID,0.154,,,,5,,,,,,45006,1565273.0
+2026-10-17,2026-10-19,Romanian Superliga,FC Voluntari,FCSB,Mihai Popescu,FCSB,D,cards,AVOID,0.154,,,,5,True,VOID,0.0,DNP,2026-10-20,45006,1565273.0
 2026-10-17,2026-10-18,Sweden Allsvenskan,Orgryte IS,Gais,S. Lagerlund,Orgryte IS,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,328976,1494302.0
 2026-10-17,2026-10-18,Norway Eliteserien,Tromso,KFUM Oslo,B. Njie,KFUM Oslo,F,goals,AVOID,0.154,5.5,-0.153,-0.026,5,True,VOID,0.0,DNP,2026-10-19,39092,1494785.0
 2026-10-17,2026-10-24,Sweden Allsvenskan,BK Hacken,Degerfors IF,A. Doumbia,BK Hacken,M,cards,AVOID,0.154,,,,5,,,,,,624953,
 2026-10-17,2026-10-24,Championship,West Ham United,Southampton,R. Manning,Southampton,D,cards,AVOID,0.154,,,,5,,,,,,19587,
 2026-10-17,2026-10-20,Championship,Wolves,Portsmouth,R. Saïd,Wolves,M,goals,AVOID,0.154,,,,5,,,,,,194116,1563150.0
 2026-10-17,2026-10-24,League One,Oxford United,Bradford City,M. Helik,Oxford United,D,cards,AVOID,0.154,,,,5,,,,,,40495,
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,T. Sakamoto,Coventry,M,sot,AVOID,0.154,3.9,-0.3994,-0.3393,5,,,,,,33462,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,T. Sakamoto,Coventry,M,sot,AVOID,0.154,3.9,-0.3994,-0.3393,5,True,LOSS,-1.0,,2026-10-20,33462,1557436.0
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,A. Wharton,Crystal Palace,M,sot,AVOID,0.154,3.4,-0.4764,-0.424,5,True,LOSS,-1.0,,2026-10-19,288102,1557429.0
 2026-10-17,2026-10-18,Premier League,Brighton,Crystal Palace,J. Lerma,Crystal Palace,D,cards,AVOID,0.153,3.3,-0.4951,-0.4446,5,True,LOSS,-1.0,,2026-10-19,2490,1557429.0
 2026-10-17,2026-10-24,Serie B,Virtus Entella,Mantova,F. Ruocco,Mantova,F,goals,AVOID,0.153,,,,5,,,,,,281772,
@@ -19487,7 +19487,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Serie A,Juventus,Lazio,Douglas Luiz,Juventus,M,cards,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,47522,1550152.0
 2026-10-17,2026-10-20,League One,Oxford United,Wigan,S. Dembélé,Oxford United,M,cards,AVOID,0.15,,,,5,,,,,,19964,1564376.0
 2026-10-17,2026-10-24,League One,Stevenage,Milton Keynes Dons,C. Bramall,Milton Keynes Dons,M,cards,AVOID,0.15,,,,5,,,,,,82026,
-2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,R. Bentancur,Tottenham,M,cards,AVOID,0.15,,,,5,,,,,,863,1557436.0
+2026-10-17,2026-10-19,Premier League,Tottenham,Coventry,R. Bentancur,Tottenham,M,cards,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-10-20,863,1557436.0
 2026-10-17,2026-10-18,Premier League,Leeds,Manchester United,D. Calvert-Lewin,Leeds,F,sot2,AVOID,0.15,2.7,-0.595,-0.5707,5,,,,,,18766,1557432.0
 2026-10-17,2026-10-20,League One,Doncaster,Stockport County,R. Glover,Stockport County,M,sot,AVOID,0.15,,,,5,,,,,,286786,1564372.0
 2026-10-17,2026-10-18,Serie A,Juventus,Lazio,Kenan Yıldız,Juventus,M,goals,AVOID,0.15,,,,5,True,VOID,0.0,DNP,2026-10-19,339883,1550152.0
@@ -19496,44 +19496,44 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,L. Openda,Lyon,F,sot,AVOID,0.706,,,,5,True,VOID,0.0,DNP,2026-10-19,86,1552788.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,L. Sinayoko,Paris FC,F,sot,AVOID,0.7,,,,5,True,VOID,0.0,DNP,2026-10-19,90617,1552789.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,L. Messi,Inter Miami,F,goals,AVOID,0.685,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,154,1490543.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Sergio Camello,Rayo Vallecano,F,sot,AVOID,0.636,1.2,-0.2368,-0.191,5,,,,,,52,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Sergio Camello,Rayo Vallecano,F,sot,AVOID,0.636,1.2,-0.2368,-0.191,5,True,WIN,0.2,,2026-10-20,52,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,E. Lepaul,Rennes,F,sot,AVOID,0.627,,,,5,True,VOID,0.0,DNP,2026-10-19,163004,1552789.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,E. Ünal,Getafe,F,sot,AVOID,0.493,,,,5,,,,,,47499,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,E. Ünal,Getafe,F,sot,AVOID,0.493,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,47499,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,E. Nuamah,Lyon,M,sot,AVOID,0.487,,,,5,True,VOID,0.0,DNP,2026-10-19,350856,1552788.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,L. Openda,Lyon,F,goals,AVOID,0.471,,,,5,True,VOID,0.0,DNP,2026-10-19,86,1552788.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,I. Kebbal,Paris FC,M,sot,AVOID,0.469,,,,5,True,VOID,0.0,DNP,2026-10-19,83831,1552789.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,L. Messi,Inter Miami,F,assists,AVOID,0.467,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,154,1490543.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Iván Azón,Getafe,F,sot,AVOID,0.46,,,,5,,,,,,161590,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Iván Azón,Getafe,F,sot,AVOID,0.46,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,161590,1570417.0
 2026-10-17,2026-10-24,Austrian Bundesliga,Rapid Wien,Austria Lustenau,D. Weixelbraun,Austria Lustenau,M,sot,AVOID,0.452,,,,5,,,,,,322979,
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Álvaro García,Rayo Vallecano,F,sot,AVOID,0.45,1.75,-0.2125,-0.1652,5,,,,,,47543,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Álvaro García,Rayo Vallecano,F,sot,AVOID,0.45,1.75,-0.2125,-0.1652,5,True,WIN,0.75,,2026-10-20,47543,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,E. Wahi,Nice,F,sot,AVOID,0.436,,,,5,True,VOID,0.0,DNP,2026-10-19,162707,1552788.0
 2026-10-17,2026-10-24,Austrian Bundesliga,Rapid Wien,Austria Lustenau,A. Verinac,Austria Lustenau,F,sot,AVOID,0.424,,,,5,,,,,,379128,
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,B. Embolo,Atlanta United FC,F,sot,AVOID,0.404,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,421,1490543.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,P. Pagis,Paris FC,M,sot,AVOID,0.402,,,,5,True,VOID,0.0,DNP,2026-10-19,276662,1552789.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,P. Mendy,Cagliari,F,sot,AVOID,0.398,1.6,-0.3632,-0.325,5,,,,,,626704,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,P. Mendy,Cagliari,F,sot,AVOID,0.398,1.6,-0.3632,-0.325,5,True,WIN,0.6,,2026-10-20,626704,1550153.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,C. Tolisso,Lyon,M,sot,AVOID,0.394,,,,5,True,VOID,0.0,DNP,2026-10-19,519,1552788.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,L. Sinayoko,Paris FC,F,goals,VALUABLE,0.388,2.98,0.1562,0.2256,5,True,VOID,0.0,DNP,2026-10-19,90617,1552789.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,M. Satriano,Getafe,F,sot,AVOID,0.388,1.5,-0.418,-0.3831,5,,,,,,195512,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,M. Satriano,Getafe,F,sot,AVOID,0.388,1.5,-0.418,-0.3831,5,True,WIN,0.5,,2026-10-20,195512,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,E. Lepaul,Rennes,F,goals,AVOID,0.359,2.7,-0.0307,0.0275,5,True,VOID,0.0,DNP,2026-10-19,163004,1552789.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,L. Koleosho,Paris FC,M,sot,AVOID,0.352,,,,5,True,VOID,0.0,DNP,2026-10-19,359603,1552789.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,M. Almirón,Atlanta United FC,M,sot,AVOID,0.336,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,2507,1490543.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,D. Maldini,Cagliari,M,sot,AVOID,0.336,1.6,-0.4624,-0.4301,5,,,,,,134926,1550153.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Jorge de Frutos,Rayo Vallecano,F,sot,AVOID,0.333,1.65,-0.4506,-0.4176,5,,,,,,128582,1570417.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,D. Maldini,Cagliari,M,sot,AVOID,0.336,1.6,-0.4624,-0.4301,5,True,LOSS,-1.0,,2026-10-20,134926,1550153.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Jorge de Frutos,Rayo Vallecano,F,sot,AVOID,0.333,1.65,-0.4506,-0.4176,5,True,LOSS,-1.0,,2026-10-20,128582,1570417.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,L. Suárez,Inter Miami,F,sot,AVOID,0.321,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,157,1490543.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,L. Messi,Inter Miami,F,sot3,AVOID,0.308,,,,5,True,VOID,0.0,DNP,2026-10-19,154,1490543.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,P. Šulc,Lyon,M,sot,AVOID,0.307,,,,5,True,VOID,0.0,DNP,2026-10-19,66387,1552788.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,M. Amoura,Nice,M,sot,AVOID,0.303,,,,5,True,VOID,0.0,DNP,2026-10-19,200139,1552788.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,L. Openda,Lyon,F,sot2,AVOID,0.294,,,,5,True,VOID,0.0,DNP,2026-10-19,86,1552788.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,G. Berterame,Inter Miami,F,sot,AVOID,0.289,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,6485,1490543.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Yanis Massolin,Cagliari,M,sot,AVOID,0.286,,,,5,,,,,,326177,1550153.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Ramón Terrats,Getafe,M,sot,AVOID,0.278,1.6,-0.5552,-0.5285,5,,,,,,187987,1570417.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Yanis Massolin,Cagliari,M,sot,AVOID,0.286,,,,5,True,VOID,0.0,DNP,2026-10-20,326177,1550153.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Ramón Terrats,Getafe,M,sot,AVOID,0.278,1.6,-0.5552,-0.5285,5,True,LOSS,-1.0,,2026-10-20,187987,1570417.0
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,S. Montiel,Independiente,M,sot,AVOID,0.272,,,,5,True,VOID,0.0,DNP,2026-10-19,265973,1493194.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,S. Birindelli,Monza,M,sot,AVOID,0.272,2.62,-0.2874,-0.2446,5,,,,,,30708,1550153.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,E. Zeballos,Monza,M,sot,AVOID,0.269,1.67,-0.5508,-0.5238,5,,,,,,237090,1550153.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Sergio Camello,Rayo Vallecano,F,goals,AVOID,0.268,3.7,-0.0084,0.0908,5,,,,,,52,1570417.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Isi Palazón,Rayo Vallecano,M,sot,AVOID,0.267,1.83,-0.5114,-0.4821,5,,,,,,131546,1570417.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,S. Birindelli,Monza,M,sot,AVOID,0.272,2.62,-0.2874,-0.2446,5,True,LOSS,-1.0,,2026-10-20,30708,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,E. Zeballos,Monza,M,sot,AVOID,0.269,1.67,-0.5508,-0.5238,5,True,VOID,0.0,DNP,2026-10-20,237090,1550153.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Sergio Camello,Rayo Vallecano,F,goals,AVOID,0.268,3.7,-0.0084,0.0908,5,True,LOSS,-1.0,,2026-10-20,52,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Isi Palazón,Rayo Vallecano,M,sot,AVOID,0.267,1.83,-0.5114,-0.4821,5,True,LOSS,-1.0,,2026-10-20,131546,1570417.0
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,A. Martínez,Racing Club,F,sot,AVOID,0.266,1.67,-0.5558,-0.5291,5,True,VOID,0.0,DNP,2026-10-19,70749,1493194.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Pedro Díaz,Rayo Vallecano,M,sot,AVOID,0.259,,,,5,,,,,,46887,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Pedro Díaz,Rayo Vallecano,M,sot,AVOID,0.259,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,46887,1570417.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,B. Embolo,Atlanta United FC,F,goals,AVOID,0.251,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,421,1490543.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,Tadeo Allende,Inter Miami,M,sot,AVOID,0.248,,,,5,True,VOID,0.0,DNP,2026-10-18,304383,1490543.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,J. Clauss,Nice,M,sot,AVOID,0.246,,,,5,True,VOID,0.0,DNP,2026-10-19,25008,1552788.0
@@ -19542,52 +19542,52 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,Imanol Machuca,Independiente,M,sot,AVOID,0.234,,,,5,True,VOID,0.0,DNP,2026-10-19,6121,1493194.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,P. Frankowski,Rennes,D,cards,VALUABLE,0.232,5.0,0.16,0.276,5,True,VOID,0.0,DNP,2026-10-19,3007,1552789.0
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,F. Zabala,Independiente,D,cards,AVOID,0.231,,,,5,True,VOID,0.0,DNP,2026-10-19,14004,1493194.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,M. Ondoa,Monza,M,sot,AVOID,0.229,2.4,-0.4504,-0.4174,5,,,,,,421859,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,M. Ondoa,Monza,M,sot,AVOID,0.229,2.4,-0.4504,-0.4174,5,True,LOSS,-1.0,,2026-10-20,421859,1550153.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,Micael,Inter Miami,D,cards,AVOID,0.229,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,305799,1490543.0
 2026-10-17,2026-10-24,League Two,Cheltenham Town,Newport County,C. Doidge,Newport County,F,sot,AVOID,0.228,,,,5,,,,,,17494,
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,E. Ünal,Getafe,F,goals,AVOID,0.226,,,,5,,,,,,47499,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,E. Ünal,Getafe,F,goals,AVOID,0.226,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47499,1570417.0
 2026-10-17,2026-10-17,Argentina Primera Division,Platense,Lanus,A. Medina,Lanus,M,cards,AVOID,0.225,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,465137,1493193.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,A. Thomasson,Rennes,M,sot,AVOID,0.222,,,,5,True,VOID,0.0,DNP,2026-10-19,22261,1552789.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Matteo Pessina,Monza,M,sot,AVOID,0.218,,,,5,,,,,,30436,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Matteo Pessina,Monza,M,sot,AVOID,0.218,,,,5,True,VOID,0.0,DNP,2026-10-20,30436,1550153.0
 2026-10-17,2026-10-17,Argentina Primera Division,Independ. Rivadavia,Tigre,J. Dómina,Tigre,F,sot,AVOID,0.217,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,363359,1493191.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,L. Suárez,Inter Miami,F,goals,AVOID,0.217,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,157,1490543.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,A. Romano,Cagliari,M,sot,AVOID,0.21,2.2,-0.538,-0.5103,5,,,,,,394183,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,A. Romano,Cagliari,M,sot,AVOID,0.21,2.2,-0.538,-0.5103,5,True,LOSS,-1.0,,2026-10-20,394183,1550153.0
 2026-10-17,2026-10-24,Austrian Bundesliga,Rapid Wien,Austria Lustenau,D. Kacuri,Austria Lustenau,M,sot,AVOID,0.209,,,,5,,,,,,344258,
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,M. Almirón,Atlanta United FC,M,assists,AVOID,0.209,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,2507,1490543.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,M. Camara,Rennes,M,sot,AVOID,0.207,,,,5,True,VOID,0.0,DNP,2026-10-19,24147,1552789.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,M. Galarza,Inter Miami,M,sot,AVOID,0.202,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,305832,1490543.0
 2026-10-17,2026-10-24,Austrian Bundesliga,Rapid Wien,Austria Lustenau,S. Diarra,Austria Lustenau,M,sot,AVOID,0.2,,,,5,,,,,,456812,
 2026-10-17,2026-10-24,League Two,Cheltenham Town,Newport County,C. Norman,Newport County,D,cards,AVOID,0.197,,,,5,,,,,,20429,
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,F. Lejeune,Rayo Vallecano,D,sot,AVOID,0.195,2.45,-0.5222,-0.4936,5,,,,,,18895,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,F. Lejeune,Rayo Vallecano,D,sot,AVOID,0.195,2.45,-0.5222,-0.4936,5,True,LOSS,-1.0,,2026-10-20,18895,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,E. Nuamah,Lyon,M,goals,AVOID,0.195,3.45,-0.3272,-0.26,5,True,VOID,0.0,DNP,2026-10-19,350856,1552788.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Randy Nteka,Rayo Vallecano,M,sot,AVOID,0.193,1.5,-0.7105,-0.6931,5,,,,,,122657,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Randy Nteka,Rayo Vallecano,M,sot,AVOID,0.193,1.5,-0.7105,-0.6931,5,True,VOID,0.0,DNP,2026-10-20,122657,1570417.0
 2026-10-17,2026-10-24,Austrian Bundesliga,Rapid Wien,Austria Lustenau,A. Gashi,Austria Lustenau,M,sot,AVOID,0.192,,,,5,,,,,,7476,
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Mario Martín,Getafe,M,sot,AVOID,0.191,,,,5,,,,,,343205,1570417.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Ricardo Mangas,Monza,M,sot,AVOID,0.19,3.3,-0.373,-0.3103,5,,,,,,41324,1550153.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Mario Martín,Getafe,M,sot,AVOID,0.191,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,343205,1570417.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Ricardo Mangas,Monza,M,sot,AVOID,0.19,3.3,-0.373,-0.3103,5,True,LOSS,-1.0,,2026-10-20,41324,1550153.0
 2026-10-17,2026-10-17,USA MLS,Minnesota United FC,St. Louis City,S. Becher,St. Louis City,F,sot,AVOID,0.19,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,71739,1490542.0
 2026-10-17,2026-10-24,Austrian Bundesliga,Rapid Wien,Austria Lustenau,A. Verinac,Austria Lustenau,F,goals,AVOID,0.189,,,,5,,,,,,379128,
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,S. Montiel,Independiente,M,assists,AVOID,0.188,,,,5,True,VOID,0.0,DNP,2026-10-19,265973,1493194.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Unai López,Rayo Vallecano,M,cards,AVOID,0.186,,,,5,,,,,,47285,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Unai López,Rayo Vallecano,M,cards,AVOID,0.186,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47285,1570417.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,D. Ayala,Inter Miami,M,cards,AVOID,0.185,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,129886,1490543.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,A. Ait Boudlal,Rennes,D,cards,AVOID,0.184,3.5,-0.356,-0.2916,5,True,VOID,0.0,DNP,2026-10-19,417830,1552789.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Adrià Pedrosa,Rayo Vallecano,D,cards,AVOID,0.184,,,,5,,,,,,47329,1570417.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Francho Serrano,Getafe,M,sot,AVOID,0.184,,,,5,,,,,,162249,1570417.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Mario Martín,Getafe,M,cards,AVOID,0.184,,,,5,,,,,,343205,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Adrià Pedrosa,Rayo Vallecano,D,cards,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47329,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Francho Serrano,Getafe,M,sot,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,162249,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Mario Martín,Getafe,M,cards,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,343205,1570417.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,Casemiro,Inter Miami,D,cards,AVOID,0.183,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,747,1490543.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Andrés García,Getafe,M,sot,AVOID,0.182,2.38,-0.5668,-0.5409,5,,,,,,388013,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Andrés García,Getafe,M,sot,AVOID,0.182,2.38,-0.5668,-0.5409,5,True,LOSS,-1.0,,2026-10-20,388013,1570417.0
 2026-10-17,2026-10-24,League Two,Cheltenham Town,Newport County,M. Dibley-Dias,Newport County,M,cards,AVOID,0.182,,,,5,,,,,,284470,
 2026-10-17,2026-10-24,League Two,Cheltenham Town,Newport County,James Crole,Newport County,F,sot,AVOID,0.181,,,,5,,,,,,383817,
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,M. Folorunsho,Monza,M,sot,AVOID,0.181,2.4,-0.5656,-0.5395,5,,,,,,56851,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,M. Folorunsho,Monza,M,sot,AVOID,0.181,2.4,-0.5656,-0.5395,5,True,LOSS,-1.0,,2026-10-20,56851,1550153.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,G. Luján,Inter Miami,D,cards,AVOID,0.18,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,306705,1490543.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Unai López,Rayo Vallecano,M,sot,AVOID,0.18,3.3,-0.406,-0.3466,5,,,,,,47285,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Unai López,Rayo Vallecano,M,sot,AVOID,0.18,3.3,-0.406,-0.3466,5,True,WIN,2.3,,2026-10-20,47285,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,P. Lees-Melou,Paris FC,M,sot,AVOID,0.178,,,,5,True,VOID,0.0,DNP,2026-10-19,22170,1552789.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,V. Rongier,Rennes,M,cards,AVOID,0.178,4.33,-0.2293,-0.1522,5,True,VOID,0.0,DNP,2026-10-19,21102,1552789.0
 2026-10-17,2026-10-24,League Two,Cheltenham Town,Newport County,C. Brennan,Newport County,M,cards,AVOID,0.176,,,,5,,,,,,204031,
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,F. Lejeune,Rayo Vallecano,D,cards,AVOID,0.175,,,,5,,,,,,18895,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,F. Lejeune,Rayo Vallecano,D,cards,AVOID,0.175,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,18895,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,Morgan Sanson,Nice,M,sot,AVOID,0.174,,,,5,True,VOID,0.0,DNP,2026-10-19,1914,1552788.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,N. Gudelj,Getafe,D,cards,AVOID,0.171,,,,5,,,,,,1489,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,N. Gudelj,Getafe,D,cards,AVOID,0.171,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,1489,1570417.0
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,A. Martínez,Racing Club,F,goals,AVOID,0.171,2.4,-0.5896,-0.565,5,True,VOID,0.0,DNP,2026-10-19,70749,1493194.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Ramón Terrats,Getafe,M,cards,AVOID,0.171,,,,5,,,,,,187987,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,Ramón Terrats,Getafe,M,cards,AVOID,0.171,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,187987,1570417.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,M. Almirón,Atlanta United FC,M,goals,AVOID,0.17,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,2507,1490543.0
 2026-10-17,2026-10-17,Argentina Primera Division,Platense,Lanus,B. Sepúlveda,Platense,F,sot,AVOID,0.169,1.67,-0.7178,-0.7008,5,True,WIN,0.67,,2026-10-18,58591,1493193.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,V. Rongier,Rennes,M,sot,AVOID,0.168,,,,5,True,VOID,0.0,DNP,2026-10-19,21102,1552789.0
@@ -19599,8 +19599,8 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,T. Muyumba,Atlanta United FC,M,cards,AVOID,0.16,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,87301,1490543.0
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,L. Pérez,Racing Club,M,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-19,408342,1493194.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,A. Miranchuk,Atlanta United FC,M,sot,AVOID,0.159,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,484,1490543.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,E. Kouadio,Monza,D,cards,AVOID,0.158,6.0,-0.052,0.0902,5,,,,,,448977,1550153.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,A. Rațiu,Rayo Vallecano,D,sot,AVOID,0.158,2.7,-0.5734,-0.5478,5,,,,,,1703,1570417.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,E. Kouadio,Monza,D,cards,AVOID,0.158,6.0,-0.052,0.0902,5,True,LOSS,-1.0,,2026-10-20,448977,1550153.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,A. Rațiu,Rayo Vallecano,D,sot,AVOID,0.158,2.7,-0.5734,-0.5478,5,True,VOID,0.0,DNP,2026-10-20,1703,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,M. Lopez,Paris FC,M,sot,AVOID,0.157,3.0,-0.529,-0.5007,5,True,VOID,0.0,DNP,2026-10-19,1910,1552789.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,L. Sinayoko,Paris FC,F,sot2,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-19,90617,1552789.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,P. Lees-Melou,Paris FC,M,cards,AVOID,0.155,4.0,-0.38,-0.318,5,True,VOID,0.0,DNP,2026-10-19,22170,1552789.0
@@ -19611,14 +19611,14 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,Otávio,Paris FC,D,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-19,266013,1552789.0
 2026-10-17,2026-10-18,Argentina Primera Division,Racing Club,Independiente,Jonathan De Irastorza,Independiente,D,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-19,475570,1493194.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,F. Bacher,Lyon,D,sot,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-19,7147,1552788.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Roberto Gagliardini,Cagliari,M,cards,AVOID,0.152,3.5,-0.468,-0.4148,5,,,,,,203,1550153.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,O. Mangala,Getafe,M,sot,AVOID,0.152,3.8,-0.4224,-0.3646,5,,,,,,24882,1570417.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Roberto Gagliardini,Cagliari,M,cards,AVOID,0.152,3.5,-0.468,-0.4148,5,True,VOID,0.0,DNP,2026-10-20,203,1550153.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,O. Mangala,Getafe,M,sot,AVOID,0.152,3.8,-0.4224,-0.3646,5,True,VOID,0.0,DNP,2026-10-20,24882,1570417.0
 2026-10-17,2026-10-18,Ligue 1,Paris FC,Rennes,C. Cresswell,Rennes,D,cards,AVOID,0.152,4.2,-0.3616,-0.2978,5,True,VOID,0.0,DNP,2026-10-19,278392,1552789.0
 2026-10-17,2026-10-18,Ligue 1,Lyon,Nice,C. Tolisso,Lyon,M,goals,AVOID,0.151,4.2,-0.3658,-0.3024,5,True,VOID,0.0,DNP,2026-10-19,519,1552788.0
-2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Leonardo Colombo,Monza,M,sot,AVOID,0.151,2.6,-0.6074,-0.5838,5,,,,,,394438,1550153.0
+2026-10-17,2026-10-19,Serie A,Monza,Cagliari,Leonardo Colombo,Monza,M,sot,AVOID,0.151,2.6,-0.6074,-0.5838,5,True,VOID,0.0,DNP,2026-10-20,394438,1550153.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,G. Galoppo,Atlanta United FC,M,sot,AVOID,0.151,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-18,6379,1490543.0
 2026-10-17,2026-10-17,USA MLS,Atlanta United FC,Inter Miami,M. Amaro,Atlanta United FC,M,cards,AVOID,0.151,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-18,406527,1490543.0
-2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,P. Ciss,Rayo Vallecano,M,cards,AVOID,0.15,,,,5,,,,,,41552,1570417.0
+2026-10-17,2026-10-19,La Liga,Getafe,Rayo Vallecano,P. Ciss,Rayo Vallecano,M,cards,AVOID,0.15,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,41552,1570417.0
 2026-10-17,2026-10-24,Brazil Serie A,Internacional,Botafogo,Arthur Cabral,Botafogo,F,sot,AVOID,0.545,1.17,-0.3623,-0.3241,5,,,,,,9938,
 2026-10-17,2026-10-24,Brazil Serie A,Internacional,Botafogo,Vitinho,Internacional,M,sot,AVOID,0.522,,,,5,,,,,,10147,
 2026-10-17,2026-10-24,Brazil Serie A,Internacional,Botafogo,Alan Patrick,Internacional,F,sot,AVOID,0.494,,,,5,,,,,,692,
@@ -19733,7 +19733,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,T. Almada,River Plate,M,sot,AVOID,0.592,,,,5,True,VOID,0.0,DNP,2026-10-19,6067,1493184.0
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Fuentes,Mallorca,F,goals,AVOID,0.499,,,,5,,,,,,14488,
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Álex Sala,Mallorca,M,sot,AVOID,0.469,,,,5,,,,,,181218,
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rondón,CF Pachuca,F,sot,AVOID,0.428,,,,5,,,,,,2461,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rondón,CF Pachuca,F,sot,AVOID,0.428,,,,5,True,VOID,0.0,DNP,2026-10-20,2461,1551001.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,Andreas Pereira,Palmeiras,M,sot,AVOID,0.408,,,,5,,,,,,899,
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,Á. Correa,River Plate,F,sot,AVOID,0.4,,,,5,True,VOID,0.0,DNP,2026-10-19,53,1493184.0
 2026-10-18,2026-10-18,Brazil Serie A,Remo,RB Bragantino,Lucas Barbosa,RB Bragantino,M,sot,AVOID,0.385,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,279811,1492418.0
@@ -19747,7 +19747,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,J. Carranza,Necaxa,F,sot,AVOID,0.329,,,,5,,,,,,6386,1551004.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,Lucas Evangelista,Palmeiras,M,sot,AVOID,0.327,,,,5,,,,,,21095,
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,J. López,Palmeiras,M,goals,AVOID,0.323,2.38,-0.2313,-0.1851,5,,,,,,295513,
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rondón,CF Pachuca,F,goals,AVOID,0.32,3.0,-0.04,0.0176,5,,,,,,2461,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rondón,CF Pachuca,F,goals,AVOID,0.32,3.0,-0.04,0.0176,5,True,VOID,0.0,DNP,2026-10-20,2461,1551001.0
 2026-10-18,2026-10-18,USA MLS,Houston Dynamo,FC Dallas,M. Bogusz,Houston Dynamo,M,sot,AVOID,0.312,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,19125,1490549.0
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,B. Vázquez,Austin,F,sot,AVOID,0.311,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,50893,1490548.0
 2026-10-18,2026-10-24,League One,Wimbledon,Wycombe Wanderers,J. Stockley,AFC Wimbledon,F,sot,AVOID,0.31,,,,5,,,,,,19463,
@@ -19757,7 +19757,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-18,USA MLS,San Jose Earthquakes,Nashville SC,P. Judd,San Jose Earthquakes,F,sot,AVOID,0.303,1.3,-0.6061,-0.5825,5,True,WIN,0.3,,2026-10-19,312909,1490553.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,L. Zelarayán,Belgrano Cordoba,M,sot,AVOID,0.302,,,,5,True,VOID,0.0,DNP,2026-10-19,35528,1493184.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,P. Owusu,CF Montreal,F,sot,AVOID,0.302,,,,5,True,VOID,0.0,DNP,2026-10-19,26140,1490552.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Cóccaro,Newells Old Boys,F,sot,AVOID,0.293,1.36,-0.6015,-0.5776,5,,,,,,51892,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Cóccaro,Newells Old Boys,F,sot,AVOID,0.293,1.36,-0.6015,-0.5776,5,True,WIN,0.36,,2026-10-20,51892,1493192.0
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Pablo Torre,Mallorca,F,sot,AVOID,0.287,,,,5,,,,,,285909,
 2026-10-18,2026-10-24,League One,Wimbledon,Wycombe Wanderers,J. Wareham,Wycombe,F,sot,AVOID,0.286,,,,5,,,,,,191981,
 2026-10-18,2026-10-18,USA MLS,San Jose Earthquakes,Nashville SC,E. Löwen,San Jose Earthquakes,M,sot,AVOID,0.281,1.73,-0.5139,-0.4847,5,True,LOSS,-1.0,,2026-10-19,25614,1490553.0
@@ -19773,10 +19773,10 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,Á. Correa,River Plate,F,assists,AVOID,0.245,,,,5,True,VOID,0.0,DNP,2026-10-19,53,1493184.0
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,C. Ramirez,Austin,F,sot,AVOID,0.244,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,51044,1490548.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,L. Zelarayán,Belgrano Cordoba,M,assists,AVOID,0.241,,,,5,True,VOID,0.0,DNP,2026-10-19,35528,1493184.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Santos,Central Cordoba de Santiago,F,sot,AVOID,0.241,,,,5,,,,,,47424,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Santos,Central Cordoba de Santiago,F,sot,AVOID,0.241,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47424,1493192.0
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,É. Ocampo,Vancouver Whitecaps,D,cards,AVOID,0.24,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,369284,1490548.0
 2026-10-18,2026-10-18,Brazil Serie A,Remo,RB Bragantino,Rodriguinho,RB Bragantino,M,sot,AVOID,0.24,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,363689,1492418.0
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rondón,CF Pachuca,F,sot2,AVOID,0.239,,,,5,,,,,,2461,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rondón,CF Pachuca,F,sot2,AVOID,0.239,,,,5,True,VOID,0.0,DNP,2026-10-20,2461,1551001.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,Aníbal Moreno,River Plate,M,cards,AVOID,0.238,,,,5,True,VOID,0.0,DNP,2026-10-19,6347,1493184.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,L. Martínez,River Plate,D,cards,VALUABLE,0.237,5.6,0.3272,0.5263,5,True,VOID,0.0,DNP,2026-10-19,6000,1493184.0
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,R. Alvarado,Guadalajara Chivas,M,sot,AVOID,0.236,1.3,-0.6932,-0.6748,5,,,,,,2879,1551004.0
@@ -19789,15 +19789,15 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Toni Lato,Mallorca,D,cards,AVOID,0.225,,,,5,,,,,,920,
 2026-10-18,2026-10-18,USA MLS,Sporting Kansas City,Real Salt Lake,André Luiz,Sporting Kansas City,M,goals,AVOID,0.223,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,325717,1490550.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,Marlon Freitas,Palmeiras,M,sot,AVOID,0.22,,,,5,,,,,,9218,
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,C. Rivera,CF Pachuca,M,cards,AVOID,0.219,,,,5,,,,,,13404,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,C. Rivera,CF Pachuca,M,cards,AVOID,0.219,,,,5,True,VOID,0.0,DNP,2026-10-20,13404,1551001.0
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,John Nwankwo,Mallorca,D,cards,AVOID,0.219,,,,5,,,,,,189866,
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,W. Mazzantti,Newells Old Boys,F,sot,AVOID,0.218,1.83,-0.6011,-0.5771,5,,,,,,59231,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,W. Mazzantti,Newells Old Boys,F,sot,AVOID,0.218,1.83,-0.6011,-0.5771,5,True,LOSS,-1.0,,2026-10-20,59231,1493192.0
 2026-10-18,2026-10-18,USA MLS,San Jose Earthquakes,Nashville SC,C. Espinoza,Nashville SC,M,sot,AVOID,0.218,1.36,-0.7035,-0.6857,5,True,LOSS,-1.0,,2026-10-19,51177,1490553.0
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,Kaiky Naves,Necaxa,D,cards,AVOID,0.217,,,,5,,,,,,348896,1551004.0
 2026-10-18,2026-10-18,USA MLS,Houston Dynamo,FC Dallas,Ramiro,FC Dallas,M,cards,AVOID,0.214,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,10249,1490549.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,S. Piette,CF Montreal,M,cards,AVOID,0.211,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,50792,1490552.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,D. Ríos,CF Montreal,F,sot,AVOID,0.211,,,,5,True,VOID,0.0,DNP (0 min),2026-10-19,92590,1490552.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,R. Herrera,Newells Old Boys,M,cards,AVOID,0.211,,,,5,,,,,,280936,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,R. Herrera,Newells Old Boys,M,cards,AVOID,0.211,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,280936,1493192.0
 2026-10-18,2026-10-18,Brazil Serie A,Remo,RB Bragantino,Juninho Capixaba,RB Bragantino,D,cards,AVOID,0.209,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,10481,1492418.0
 2026-10-18,2026-10-18,Brazil Serie A,Remo,RB Bragantino,Eric Ramires,RB Bragantino,M,sot,AVOID,0.204,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,10027,1492418.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,Paul Rothrock,Seattle Sounders,M,cards,AVOID,0.203,,,,5,True,VOID,0.0,DNP,2026-10-19,103203,1490552.0
@@ -19807,7 +19807,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,D. Ochoa,Necaxa,D,cards,AVOID,0.198,,,,5,,,,,,453890,1551004.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,J. Neal,CF Montreal,D,cards,AVOID,0.197,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,208667,1490552.0
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,Santiago Sandoval,Guadalajara Chivas,M,sot,AVOID,0.197,1.4,-0.7242,-0.7077,5,,,,,,524762,1551004.0
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,C. Sánchez,CF Pachuca,D,cards,AVOID,0.195,,,,5,,,,,,270947,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,C. Sánchez,CF Pachuca,D,cards,AVOID,0.195,,,,5,True,VOID,0.0,DNP,2026-10-20,270947,1551001.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,J. Piquerez,Palmeiras,M,sot,AVOID,0.193,,,,5,,,,,,51466,
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Raíllo,Mallorca,D,cards,AVOID,0.193,,,,5,,,,,,46733,
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Adrian Liso,Mallorca,M,sot,AVOID,0.193,,,,5,,,,,,394573,
@@ -19815,19 +19815,19 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,T. Johnson,Vancouver Whitecaps,D,cards,AVOID,0.191,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,363155,1490548.0
 2026-10-18,2026-10-18,USA MLS,Sporting Kansas City,Real Salt Lake,C. Harris,Sporting Kansas City,F,sot,AVOID,0.191,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,94341,1490550.0
 2026-10-18,2026-10-18,USA MLS,Sporting Kansas City,Real Salt Lake,K. Henry,Real Salt Lake,D,cards,AVOID,0.191,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,265865,1490550.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Iacobellis,Central Cordoba de Santiago,M,cards,AVOID,0.189,,,,5,,,,,,59201,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Iacobellis,Central Cordoba de Santiago,M,cards,AVOID,0.189,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,59201,1493192.0
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,J. Carranza,Necaxa,F,goals,AVOID,0.187,,,,5,,,,,,6386,1551004.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,Andreas Pereira,Palmeiras,M,goals,AVOID,0.186,5.0,-0.07,0.023,5,,,,,,899,
 2026-10-18,2026-10-18,USA MLS,San Jose Earthquakes,Nashville SC,Beau Leroux,San Jose Earthquakes,M,sot,AVOID,0.186,2.1,-0.6094,-0.586,5,True,LOSS,-1.0,,2026-10-19,461643,1490553.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Iacobellis,Central Cordoba de Santiago,M,sot,AVOID,0.184,,,,5,,,,,,59201,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Iacobellis,Central Cordoba de Santiago,M,sot,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,59201,1493192.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,D. Joveljić,Seattle Sounders,F,goals,AVOID,0.184,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,364,1490552.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,F. Aguilar,Central Cordoba de Santiago,D,cards,AVOID,0.183,,,,5,,,,,,9980,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,F. Aguilar,Central Cordoba de Santiago,D,cards,AVOID,0.183,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,9980,1493192.0
 2026-10-18,2026-10-18,USA MLS,San Jose Earthquakes,Nashville SC,S. Surridge,Nashville SC,F,goals,AVOID,0.182,1.85,-0.6633,-0.6431,5,True,LOSS,-1.0,,2026-10-19,18884,1490553.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,A. Barboza,Palmeiras,D,sot,AVOID,0.181,,,,5,,,,,,5933,
 2026-10-18,2026-10-18,USA MLS,Houston Dynamo,FC Dallas,N. Norris,FC Dallas,D,cards,AVOID,0.18,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,362139,1490549.0
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,F. Venegas,CF Pachuca,D,cards,AVOID,0.18,,,,5,,,,,,35517,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,F. Venegas,CF Pachuca,D,cards,AVOID,0.18,,,,5,True,VOID,0.0,DNP,2026-10-20,35517,1551001.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,G. Montiel,River Plate,D,sot,AVOID,0.179,,,,5,True,VOID,0.0,DNP,2026-10-19,2468,1493184.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,F. Escobar,Newells Old Boys,D,cards,AVOID,0.177,,,,5,,,,,,50874,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,F. Escobar,Newells Old Boys,D,cards,AVOID,0.177,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,50874,1493192.0
 2026-10-18,2026-10-18,USA MLS,Houston Dynamo,FC Dallas,Guilherme,Houston Dynamo,M,goals,AVOID,0.176,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,9588,1490549.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,N. Otamendi,River Plate,D,cards,AVOID,0.176,,,,5,True,VOID,0.0,DNP,2026-10-19,624,1493184.0
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,B. White,Vancouver Whitecaps,F,goals,AVOID,0.176,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,50969,1490548.0
@@ -19839,7 +19839,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,C. Vargas,Necaxa,D,cards,AVOID,0.173,,,,5,,,,,,35587,1551004.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,Paul Rothrock,Seattle Sounders,M,sot,AVOID,0.172,,,,5,True,VOID,0.0,DNP,2026-10-19,103203,1490552.0
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,M. Valjent,Mallorca,D,cards,AVOID,0.171,,,,5,,,,,,46738,
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,S. Solari,Newells Old Boys,F,sot,AVOID,0.17,1.91,-0.6753,-0.6558,5,,,,,,170127,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,S. Solari,Newells Old Boys,F,sot,AVOID,0.17,1.91,-0.6753,-0.6558,5,True,WIN,0.91,,2026-10-20,170127,1493192.0
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,R. Gauld,Vancouver Whitecaps,M,sot,AVOID,0.17,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,44844,1490548.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,J. Ferreira,Seattle Sounders,F,sot,AVOID,0.169,1.62,-0.7262,-0.7098,5,True,LOSS,-1.0,,2026-10-19,51142,1490552.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,T. Almada,River Plate,M,goals,AVOID,0.168,3.4,-0.4288,-0.3717,5,True,VOID,0.0,DNP,2026-10-19,6067,1493184.0
@@ -19858,16 +19858,16 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-18,USA MLS,Sporting Kansas City,Real Salt Lake,André Luiz,Sporting Kansas City,M,sot2,AVOID,0.158,,,,5,,,,,,325717,1490550.0
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Álex Sala,Mallorca,M,goals,AVOID,0.158,,,,5,,,,,,181218,
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,M. Laborda,Vancouver Whitecaps,D,cards,AVOID,0.158,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,51569,1490548.0
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Barreto,CF Pachuca,D,cards,AVOID,0.158,,,,5,,,,,,6077,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Barreto,CF Pachuca,D,cards,AVOID,0.158,,,,5,True,VOID,0.0,DNP,2026-10-20,6077,1551001.0
 2026-10-18,2026-10-21,Mexico Liga MX,Guadalajara Chivas,Necaxa,R. Martínez,Necaxa,D,cards,AVOID,0.157,,,,5,,,,,,324699,1551004.0
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,Eduardo Bauermann,CF Pachuca,D,cards,AVOID,0.157,,,,5,,,,,,9416,1551001.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,Eduardo Bauermann,CF Pachuca,D,cards,AVOID,0.157,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,9416,1551001.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,J. López,Palmeiras,M,sot2,AVOID,0.157,,,,5,,,,,,295513,
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,T. Galván,River Plate,M,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-19,265912,1493184.0
-2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rodríguez,CF Pachuca,M,cards,AVOID,0.156,,,,5,,,,,,525024,1551001.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,Juan Pablo Pignani,Central Cordoba de Santiago,D,cards,AVOID,0.155,,,,5,,,,,,353506,1493192.0
+2026-10-18,2026-10-19,Mexico Liga MX,Monterrey,CF Pachuca,S. Rodríguez,CF Pachuca,M,cards,AVOID,0.156,,,,5,True,VOID,0.0,DNP,2026-10-20,525024,1551001.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,Juan Pablo Pignani,Central Cordoba de Santiago,D,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-20,353506,1493192.0
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,F. Vázquez,Belgrano Cordoba,M,sot,AVOID,0.155,2.25,-0.6512,-0.6303,5,True,VOID,0.0,DNP,2026-10-19,2057,1493184.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,C. Roldan,Seattle Sounders,M,sot,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,51114,1490552.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,A. Maciel,Central Cordoba de Santiago,D,cards,AVOID,0.154,,,,5,,,,,,5810,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,A. Maciel,Central Cordoba de Santiago,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,5810,1493192.0
 2026-10-18,2026-10-24,La Liga 2,Leganés,Mallorca,Álex Sala,Mallorca,M,cards,AVOID,0.154,,,,5,,,,,,181218,
 2026-10-18,2026-10-18,USA MLS,Houston Dynamo,FC Dallas,Guilherme,Houston Dynamo,M,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,9588,1490549.0
 2026-10-18,2026-10-24,Brazil Serie A,Palmeiras,Bragantino-SP,Murilo,Palmeiras,D,sot,AVOID,0.153,,,,5,,,,,,10083,
@@ -19876,7 +19876,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-24,League One,Wimbledon,Wycombe Wanderers,S. Seddon,AFC Wimbledon,M,cards,AVOID,0.153,,,,5,,,,,,20362,
 2026-10-18,2026-10-24,League One,Wimbledon,Wycombe Wanderers,A. Yiadom,AFC Wimbledon,D,cards,AVOID,0.153,,,,5,,,,,,3427,
 2026-10-18,2026-10-18,Argentina Primera Division,Belgrano Cordoba,River Plate,A. Maldonado,Belgrano Cordoba,D,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-19,6368,1493184.0
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,L. Gianetti,Newells Old Boys,D,cards,AVOID,0.152,,,,5,,,,,,6050,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,L. Gianetti,Newells Old Boys,D,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-10-20,6050,1493192.0
 2026-10-18,2026-10-18,USA MLS,San Jose Earthquakes,Nashville SC,C. Espinoza,Nashville SC,M,assists,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,51177,1490553.0
 2026-10-18,2026-10-18,USA MLS,Seattle Sounders,CF Montreal,N. Tolo,Seattle Sounders,D,cards,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,51107,1490552.0
 2026-10-18,2026-10-18,USA MLS,Austin,Vancouver Whitecaps,B. Vázquez,Austin,F,goals,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,50893,1490548.0
@@ -20225,7 +20225,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-20,League One,Huddersfield,Peterborough,C. Humphreys,Huddersfield,M,assists,AVOID,0.164,,,,5,,,,,,326763,1564373.0
 2026-10-18,2026-10-20,League One,Luton,Barnsley,A. Kay,Barnsley,D,cards,AVOID,0.164,,,,5,,,,,,667790,
 2026-10-18,2026-10-24,League One,Reading,Barnsley,A. Kay,Barnsley,D,cards,AVOID,0.164,,,,5,,,,,,667790,
-2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Vera,Central Cordoba de Santiago,M,cards,AVOID,0.164,,,,5,,,,,,51094,1493192.0
+2026-10-18,2026-10-19,Argentina Primera Division,Newells Old Boys,Central Cordoba de Santiago,M. Vera,Central Cordoba de Santiago,M,cards,AVOID,0.164,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,51094,1493192.0
 2026-10-18,2026-10-24,Bundesliga 2,1. FC Heidenheim,FC Energie Cottbus,P. Mainka,1. FC Heidenheim,D,sot,AVOID,0.164,,,,5,,,,,,24899,
 2026-10-18,2026-10-20,League One,Huddersfield Town,Peterborough United,C. Humphreys,Huddersfield,M,assists,AVOID,0.164,,,,5,,,,,,326763,
 2026-10-18,2026-10-24,Serie B,Avellino,Padova,G. Artistico,Padova,F,goals,AVOID,0.163,,,,5,,,,,,180764,
@@ -20334,18 +20334,18 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-23,Sweden Allsvenskan,Västerås SK,Halmstads BK,S. Gefvert,Vasteras SK FK,M,cards,AVOID,0.15,,,,5,,,,,,139608,
 2026-10-18,2026-10-18,Premier League,Brighton,Crystal Palace,A. Khalaili,Crystal Palace,M,cards,AVOID,0.15,4.0,-0.4,-0.34,5,True,LOSS,-1.0,,2026-10-19,338735,1557429.0
 2026-10-18,2026-10-18,Sweden Allsvenskan,Orgryte IS,Gais,W. Hofvander,Orgryte IS,F,goals,AVOID,0.15,6.0,-0.1,0.035,5,True,VOID,0.0,DNP (0 min),2026-10-19,310233,1494302.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Marin,Celta de Vigo II,F,sot,PAPER,0.755,1.44,0.0872,0.1524,5,,,,,,554288,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Marin,Celta de Vigo II,F,sot,PAPER,0.755,1.44,0.0872,0.1524,5,True,WIN,0.44,,2026-10-20,554288,1569971.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,I. Bjerkebo,Sirius,F,sot,AVOID,0.734,,,,5,,,,,,335097,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,O. Marcos,Celta de Vigo II,F,sot,VALUABLE,0.701,1.73,0.2127,0.2855,5,,,,,,554286,1569971.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Enric Gallego,Tenerife,F,sot,AVOID,0.672,,,,5,,,,,,47581,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,O. Marcos,Celta de Vigo II,F,sot,VALUABLE,0.701,1.73,0.2127,0.2855,5,True,LOSS,-1.0,,2026-10-20,554286,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Enric Gallego,Tenerife,F,sot,AVOID,0.672,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,47581,1569971.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,L. Gindorf,Hannover 96,F,sot,AVOID,0.604,,,,5,,,,,,202771,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,V. Kopotun,Cadiz,F,sot,AVOID,0.603,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,381601,1569976.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Iván Romero,Levante,F,sot,AVOID,0.598,,,,5,,,,,,192032,1570389.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Oihan Sancet,Athletic Club,M,sot,AVOID,0.54,,,,5,,,,,,128398,1570389.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,M. Hartel,Hannover 96,F,sot,AVOID,0.537,,,,5,,,,,,24850,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Marin,Celta de Vigo II,F,goals,VALUABLE,0.501,3.0,0.503,0.5932,5,,,,,,554288,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Marin,Celta de Vigo II,F,goals,VALUABLE,0.501,3.0,0.503,0.5932,5,True,WIN,2.0,,2026-10-20,554288,1569971.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,J. Hove,AIK Stockholm,F,sot,AVOID,0.5,,,,5,,,,,,39335,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Kibet,Celta de Vigo II,F,sot,AVOID,0.5,1.83,-0.085,-0.0301,5,,,,,,621211,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Kibet,Celta de Vigo II,F,sot,AVOID,0.5,1.83,-0.085,-0.0301,5,True,LOSS,-1.0,,2026-10-20,621211,1569971.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,A. Kouame,AIK Stockholm,M,sot,AVOID,0.482,,,,5,,,,,,432823,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,Jorge Pascual,Granada CF,F,sot,AVOID,0.479,1.25,-0.4012,-0.3653,5,True,WIN,0.25,,2026-10-19,290482,1569976.0
 2026-10-18,2026-10-18,Denmark Superliga,Odense,Brondby,O. Hyseni,Brondby,M,sot,AVOID,0.43,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,444421,1549037.0
@@ -20355,43 +20355,43 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,I. Bjerkebo,Sirius,F,goals,AVOID,0.381,,,,5,,,,,,335097,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,L. Assadi,AIK Stockholm,F,sot,AVOID,0.374,,,,5,,,,,,237130,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,Sergio Rodelas,Granada CF,F,sot,AVOID,0.372,1.67,-0.3788,-0.3415,5,True,LOSS,-1.0,,2026-10-19,403498,1569976.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,G. Simeone,Torino,F,sot,AVOID,0.35,1.67,-0.4155,-0.3804,5,,,,,,30414,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,G. Simeone,Torino,F,sot,AVOID,0.35,1.67,-0.4155,-0.3804,5,True,WIN,0.67,,2026-10-20,30414,1550154.0
 2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Marin,Celta de Vigo II,F,sot2,AVOID,0.331,3.25,0.0757,0.1833,5,,,,,,554288,1569971.0
 2026-10-18,2026-10-18,La Liga,Celta Vigo,Alaves,Toni Martínez,Alaves,F,sot,AVOID,0.326,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,47181,1570414.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,A. Opoku,Eintracht Braunschweig,M,sot,AVOID,0.325,,,,5,,,,,,24884,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,VÃ­ctor Moreno,Tenerife,F,sot,AVOID,0.316,,,,5,,,,,,361343,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,VÃ­ctor Moreno,Tenerife,F,sot,AVOID,0.316,,,,5,True,VOID,0.0,DNP,2026-10-20,361343,1569971.0
 2026-10-18,2026-10-18,Sweden Allsvenskan,Halmstad,Hammarby FF,A. Zeljkovic,Halmstad,F,sot,AVOID,0.302,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,100074,1494300.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,O. Marcos,Celta de Vigo II,F,goals,VALUABLE,0.302,4.0,0.208,0.3288,5,,,,,,554286,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,O. Marcos,Celta de Vigo II,F,goals,VALUABLE,0.302,4.0,0.208,0.3288,5,True,LOSS,-1.0,,2026-10-20,554286,1569971.0
 2026-10-18,2026-10-18,Denmark Superliga,Odense,Brondby,J. Ambæk,Brondby,F,sot,AVOID,0.3,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-19,494387,1549037.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,K. Oudenne,Hannover 96,M,sot,AVOID,0.299,,,,5,,,,,,322221,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,Kevin Filling,AIK Stockholm,F,sot,AVOID,0.295,,,,5,,,,,,522735,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Enric Gallego,Tenerife,F,goals,AVOID,0.295,2.88,-0.1504,-0.0994,5,,,,,,47581,1569971.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,E. Touré,Parma,M,sot,AVOID,0.289,1.73,-0.5,-0.47,5,,,,,,194750,1550154.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Enric Gallego,Tenerife,F,goals,AVOID,0.295,2.88,-0.1504,-0.0994,5,True,LOSS,-1.0,,2026-10-20,47581,1569971.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,E. Touré,Parma,M,sot,AVOID,0.289,1.73,-0.5,-0.47,5,True,WIN,0.73,,2026-10-20,194750,1550154.0
 2026-10-18,2026-10-18,Denmark Superliga,Odense,Brondby,A. Ahl-Holmström,Odense,F,sot,AVOID,0.283,1.44,-0.5925,-0.568,5,True,LOSS,-1.0,,2026-10-19,107241,1549037.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,Max Marie,Eintracht Braunschweig,M,sot,AVOID,0.283,,,,5,,,,,,327935,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,I. Bjerkebo,Sirius,F,sot2,AVOID,0.28,,,,5,,,,,,335097,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,Pedro Alemañ,Granada CF,M,sot,AVOID,0.275,1.91,-0.4748,-0.4432,5,True,LOSS,-1.0,,2026-10-19,161873,1569976.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Paco Cortés,Levante,F,sot,AVOID,0.273,,,,5,,,,,,463279,1570389.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,C. Adams,Torino,M,sot,AVOID,0.272,1.57,-0.573,-0.5473,5,,,,,,19524,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,C. Adams,Torino,M,sot,AVOID,0.272,1.57,-0.573,-0.5473,5,True,WIN,0.57,,2026-10-20,19524,1550154.0
 2026-10-18,2026-10-18,Sweden Allsvenskan,Orgryte IS,Gais,S. Salter,Gais,F,sot,AVOID,0.267,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,318824,1494302.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,A. Ali,AIK Stockholm,M,sot,AVOID,0.265,,,,5,,,,,,360565,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,A. Moueffek,Cadiz,M,sot,AVOID,0.261,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,174801,1569976.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,L. Gindorf,Hannover 96,F,goals,AVOID,0.261,,,,5,,,,,,202771,
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,S. Þórðarson,Hannover 96,M,sot,AVOID,0.26,,,,5,,,,,,28714,
 2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,O. Marcos,Celta de Vigo II,F,sot2,PAPER,0.253,4.5,0.1385,0.2524,5,,,,,,554286,1569971.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,Hans Nicolussi Caviglia,Parma,M,sot,AVOID,0.251,,,,5,,,,,,881,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,Hans Nicolussi Caviglia,Parma,M,sot,AVOID,0.251,,,,5,True,VOID,0.0,DNP,2026-10-20,881,1550154.0
 2026-10-18,2026-10-18,Denmark Superliga,Odense,Brondby,M. Younis,Brondby,M,sot,AVOID,0.25,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,404057,1549037.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Robert Navarro,Athletic Club,M,sot,AVOID,0.244,,,,5,,,,,,84086,1570389.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Fabricio,Tenerife,M,sot,AVOID,0.24,,,,5,,,,,,293612,1569971.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,R. Mandragora,Torino,M,sot,AVOID,0.234,1.91,-0.5531,-0.5262,5,,,,,,30810,1550154.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Nacho Gil,Tenerife,M,sot,AVOID,0.233,,,,5,,,,,,46975,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Fabricio,Tenerife,M,sot,AVOID,0.24,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,293612,1569971.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,R. Mandragora,Torino,M,sot,AVOID,0.234,1.91,-0.5531,-0.5262,5,True,LOSS,-1.0,,2026-10-20,30810,1550154.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Nacho Gil,Tenerife,M,sot,AVOID,0.233,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,46975,1569971.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,T. Ayari,AIK Stockholm,M,sot,AVOID,0.231,,,,5,,,,,,338949,
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,M. Aydın,Eintracht Braunschweig,D,sot,AVOID,0.231,,,,5,,,,,,203018,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,V. Kopotun,Cadiz,F,goals,AVOID,0.226,3.6,-0.1864,-0.105,5,True,LOSS,-1.0,,2026-10-19,381601,1569976.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Iván Romero,Levante,F,goals,AVOID,0.225,,,,5,,,,,,192032,1570389.0
 2026-10-18,2026-10-18,Sweden Allsvenskan,Orgryte IS,Gais,O. Pettersson,Gais,F,sot,AVOID,0.225,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,48057,1494302.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,J. Hove,AIK Stockholm,F,goals,AVOID,0.222,,,,5,,,,,,39335,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,AdriÃ  Capdevila,Celta de Vigo II,M,sot,AVOID,0.221,3.4,-0.2486,-0.1735,5,,,,,,440586,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,AdriÃ  Capdevila,Celta de Vigo II,M,sot,AVOID,0.221,3.4,-0.2486,-0.1735,5,True,LOSS,-1.0,,2026-10-20,440586,1569971.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,S. Di Benedetto,Eintracht Braunschweig,M,sot,AVOID,0.219,,,,5,,,,,,535067,
 2026-10-18,2026-10-18,La Liga,Celta Vigo,Alaves,Hugo Álvarez,Celta Vigo,F,sot,AVOID,0.217,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,329720,1570414.0
 2026-10-18,2026-10-24,China Super League,Qingdao West Coast FC,Yunnan Yukun,Bunyamin Abdusalam,Yunnan Yukun,M,assists,AVOID,0.217,,,,5,,,,,,644415,
@@ -20403,38 +20403,38 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-24,China Super League,Qingdao West Coast FC,Yunnan Yukun,Caio Vinícius,Yunnan Yukun,M,cards,AVOID,0.205,,,,5,,,,,,10312,
 2026-10-18,2026-10-24,Championship,Wolverhampton Wanderers,Watford,Iker Bravo,Watford,M,sot,AVOID,0.204,,,,5,,,,,,330599,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,Amel Mujanić,AIK Stockholm,M,sot,AVOID,0.204,,,,5,,,,,,147783,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,M. Pittón,Tenerife,M,cards,AVOID,0.203,,,,5,,,,,,6123,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,M. Pittón,Tenerife,M,cards,AVOID,0.203,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,6123,1569971.0
 2026-10-18,2026-10-24,China Super League,Tianjin Jinmen Tiger FC,Shanghai SIPG FC,Yang Xi,SHANGHAI SIPG,D,cards,AVOID,0.201,,,,5,,,,,,401982,
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,E. Bardeli,Levante,M,sot,AVOID,0.2,,,,5,,,,,,161893,1570389.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,B. Tomiak,Hannover 96,D,cards,AVOID,0.199,,,,5,,,,,,108605,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,M. Lindberg,Sirius,M,sot,AVOID,0.192,,,,5,,,,,,140904,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,V. Svensson,Sirius,M,sot,AVOID,0.19,,,,5,,,,,,347319,
-2026-10-18,2026-10-19,Serie A,Parma,Torino,N. Vlašić,Torino,M,sot,AVOID,0.189,2.0,-0.622,-0.5993,5,,,,,,842,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,N. Vlašić,Torino,M,sot,AVOID,0.189,2.0,-0.622,-0.5993,5,True,LOSS,-1.0,,2026-10-20,842,1550154.0
 2026-10-18,2026-10-24,China Super League,Qingdao West Coast FC,Yunnan Yukun,Cléber,Yunnan Yukun,F,sot,AVOID,0.188,,,,5,,,,,,197072,
 2026-10-18,2026-10-18,La Liga 2,Granada CF,Cadiz,Jorge Pascual,Granada CF,F,goals,AVOID,0.188,2.5,-0.53,-0.5018,5,True,WIN,1.5,,2026-10-19,290482,1569976.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,David Rodríguez,Tenerife,D,cards,AVOID,0.187,,,,5,,,,,,208117,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,David Rodríguez,Tenerife,D,cards,AVOID,0.187,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,208117,1569971.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Jon Ander Olasagasti,Levante,M,sot,AVOID,0.187,,,,5,,,,,,182603,1570389.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,AdriÃ  Capdevila,Celta de Vigo II,M,cards,AVOID,0.185,,,,5,,,,,,440586,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,AdriÃ  Capdevila,Celta de Vigo II,M,cards,AVOID,0.185,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,440586,1569971.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Álex Berenguer,Athletic Club,M,sot,AVOID,0.185,,,,5,,,,,,30510,1570389.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,Dino Beširović,AIK Stockholm,D,cards,AVOID,0.184,,,,5,,,,,,14337,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,T. Ayari,AIK Stockholm,M,cards,AVOID,0.184,,,,5,,,,,,338949,
-2026-10-18,2026-10-19,Serie A,Parma,Torino,P. Comuzzo,Torino,D,cards,AVOID,0.183,4.5,-0.1765,-0.0941,5,,,,,,396637,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,P. Comuzzo,Torino,D,cards,AVOID,0.183,4.5,-0.1765,-0.0941,5,True,WIN,3.5,,2026-10-20,396637,1550154.0
 2026-10-18,2026-10-24,China Super League,Qingdao West Coast FC,Yunnan Yukun,Wang-Kit Tsui,Yunnan Yukun,D,cards,AVOID,0.182,,,,5,,,,,,78813,
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Maroan Sannadi,Athletic Club,F,sot,AVOID,0.182,,,,5,,,,,,287680,1570389.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Dela,Levante,D,sot,AVOID,0.181,,,,5,,,,,,734,1570389.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,F. Flick,Eintracht Braunschweig,M,cards,AVOID,0.179,,,,5,,,,,,119771,
 2026-10-18,2026-10-24,Championship,Wolverhampton Wanderers,Watford,L. Kjerrumgaard,Watford,F,goals,AVOID,0.178,,,,5,,,,,,332788,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Kibet,Celta de Vigo II,F,goals,AVOID,0.177,4.5,-0.2035,-0.1238,5,,,,,,621211,1569971.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Jesús Álvarez,Tenerife,M,cards,AVOID,0.177,,,,5,,,,,,70498,1569971.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,Christian Ordoñez,Parma,M,sot,AVOID,0.174,3.4,-0.4084,-0.3492,5,,,,,,362752,1550154.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,A. Kibet,Celta de Vigo II,F,goals,AVOID,0.177,4.5,-0.2035,-0.1238,5,True,LOSS,-1.0,,2026-10-20,621211,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Jesús Álvarez,Tenerife,M,cards,AVOID,0.177,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,70498,1569971.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,Christian Ordoñez,Parma,M,sot,AVOID,0.174,3.4,-0.4084,-0.3492,5,True,VOID,0.0,DNP,2026-10-20,362752,1550154.0
 2026-10-18,2026-10-24,China Super League,Tianjin Jinmen Tiger FC,Shanghai SIPG FC,Jean Claude Aziangbe,SHANGHAI SIPG,M,cards,AVOID,0.173,,,,5,,,,,,350011,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,Martin Ellingsen,AIK Stockholm,D,cards,AVOID,0.173,,,,5,,,,,,39047,
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Oihan Sancet,Athletic Club,M,goals,AVOID,0.173,,,,5,,,,,,128398,1570389.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,A. Kouame,AIK Stockholm,M,goals,AVOID,0.172,,,,5,,,,,,432823,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Enric Gallego,Tenerife,F,cards,AVOID,0.172,,,,5,,,,,,47581,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Enric Gallego,Tenerife,F,cards,AVOID,0.172,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,47581,1569971.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,M. Heier,Sirius,M,cards,AVOID,0.17,,,,5,,,,,,263554,
-2026-10-18,2026-10-19,Serie A,Parma,Torino,M. Troilo,Parma,D,cards,AVOID,0.168,3.2,-0.4624,-0.4086,5,,,,,,428237,1550154.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Juanjo,Tenerife,M,cards,AVOID,0.168,,,,5,,,,,,170670,1569971.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,M. Troilo,Parma,D,cards,AVOID,0.168,3.2,-0.4624,-0.4086,5,True,WIN,2.2,,2026-10-20,428237,1550154.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Juanjo,Tenerife,M,cards,AVOID,0.168,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,170670,1569971.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,M. Neubauer,Hannover 96,D,cards,AVOID,0.167,,,,5,,,,,,88074,
 2026-10-18,2026-10-24,China Super League,Tianjin Jinmen Tiger FC,Shanghai SIPG FC,Jaume Grau,SHANGHAI SIPG,M,cards,AVOID,0.165,,,,5,,,,,,751,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,Ibrahim Cissé,AIK Stockholm,D,cards,AVOID,0.164,,,,5,,,,,,129635,
@@ -20442,19 +20442,19 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,J. Hugonet,Hannover 96,D,cards,AVOID,0.163,,,,5,,,,,,128343,
 2026-10-18,2026-10-24,China Super League,Shenzhen Peng City FC,Shanghai Shenhua FC,Luís Asué,Shanghai Shenhua,M,sot,AVOID,0.163,,,,5,,,,,,153719,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,M. Lindberg,Sirius,M,cards,AVOID,0.163,,,,5,,,,,,140904,
-2026-10-18,2026-10-19,Serie A,Parma,Torino,A. Cacciamani,Torino,M,sot,AVOID,0.163,2.9,-0.5273,-0.4989,5,,,,,,471040,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,A. Cacciamani,Torino,M,sot,AVOID,0.163,2.9,-0.5273,-0.4989,5,True,LOSS,-1.0,,2026-10-20,471040,1550154.0
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,A. Ali,AIK Stockholm,M,cards,AVOID,0.159,,,,5,,,,,,360565,
 2026-10-18,2026-10-24,China Super League,Shenzhen Peng City FC,Shanghai Shenhua FC,Luís Asué,Shanghai Shenhua,M,cards,AVOID,0.159,,,,5,,,,,,153719,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Stefan Bajčetić,Celta de Vigo II,M,cards,AVOID,0.159,,,,5,,,,,,310187,1569971.0
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Nacho Gil,Tenerife,M,cards,AVOID,0.158,,,,5,,,,,,46975,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Stefan Bajčetić,Celta de Vigo II,M,cards,AVOID,0.159,,,,5,True,VOID,0.0,DNP,2026-10-20,310187,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Nacho Gil,Tenerife,M,cards,AVOID,0.158,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,46975,1569971.0
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,Max Marie,Eintracht Braunschweig,M,cards,AVOID,0.157,,,,5,,,,,,327935,
-2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Stefan Bajčetić,Celta de Vigo II,M,sot,AVOID,0.157,3.75,-0.4113,-0.3524,5,,,,,,310187,1569971.0
+2026-10-18,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Stefan Bajčetić,Celta de Vigo II,M,sot,AVOID,0.157,3.75,-0.4113,-0.3524,5,True,VOID,0.0,DNP,2026-10-20,310187,1569971.0
 2026-10-18,2026-10-24,Championship,Wolverhampton Wanderers,Watford,M. Pollock,Watford,D,cards,AVOID,0.157,,,,5,,,,,,17832,
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,W. Taïbi,Hannover 96,M,cards,AVOID,0.156,,,,5,,,,,,174659,
 2026-10-18,2026-10-25,Bundesliga 2,Eintracht Braunschweig,Hannover 96,F. Flick,Eintracht Braunschweig,M,sot,AVOID,0.156,,,,5,,,,,,119771,
 2026-10-18,2026-10-24,Sweden Allsvenskan,IK Sirius,AIK,W. Olofsson,AIK Stockholm,D,cards,AVOID,0.155,,,,5,,,,,,408963,
 2026-10-18,2026-10-18,La Liga,Celta Vigo,Alaves,Carles Aleñá,Alaves,M,sot,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-19,143,1570414.0
-2026-10-18,2026-10-19,Serie A,Parma,Torino,E. Valeri,Parma,M,sot,AVOID,0.154,4.0,-0.384,-0.3224,5,,,,,,91358,1550154.0
+2026-10-18,2026-10-19,Serie A,Parma,Torino,E. Valeri,Parma,M,sot,AVOID,0.154,4.0,-0.384,-0.3224,5,True,LOSS,-1.0,,2026-10-20,91358,1550154.0
 2026-10-18,2026-10-24,China Super League,Tianjin Jinmen Tiger FC,Shanghai SIPG FC,Zhen Wei,SHANGHAI SIPG,D,cards,AVOID,0.154,,,,5,,,,,,12685,
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Dela,Levante,D,cards,AVOID,0.153,,,,5,,,,,,734,1570389.0
 2026-10-18,2026-10-21,La Liga,Levante,Athletic Club,Ruíz de Galarreta,Athletic Club,M,cards,AVOID,0.151,,,,5,,,,,,47007,1570389.0
@@ -20593,7 +20593,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-25,Norway Eliteserien,Viking FK,Tromso,H. Larsen,Tromso,F,sot,AVOID,0.366,,,,5,,,,,,334630,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,Gift Links,Aarhus,M,sot,AVOID,0.347,,,,5,,,,,,46283,
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,J. Bergström,Mjallby AIF,F,goals,AVOID,0.341,,,,5,,,,,,47729,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Yeison Gordillo,Barracas Central,M,cards,AVOID,0.335,,,,5,,,,,,13367,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Yeison Gordillo,Barracas Central,M,cards,AVOID,0.335,,,,5,True,VOID,0.0,DNP,2026-10-20,13367,1493195.0
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,F. Adjei,Hammarby FF,M,sot,AVOID,0.324,,,,5,,,,,,374498,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,Frederik Emmery,Aarhus,M,sot,AVOID,0.316,,,,5,,,,,,470281,
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,Ali Youssef,Mjallby AIF,F,goals,AVOID,0.313,,,,5,,,,,,48027,
@@ -20609,7 +20609,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,A. Beck,Viborg,M,sot,AVOID,0.254,2.2,-0.4412,-0.4077,5,,,,,,337806,
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,V. Lind,Hammarby FF,F,goals,AVOID,0.248,,,,5,,,,,,161561,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,M. Søndergaard,Viborg,M,sot,AVOID,0.247,1.67,-0.5875,-0.5628,5,,,,,,201972,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,J. Marabel,Sarmiento Junin,F,sot,AVOID,0.247,1.57,-0.6122,-0.5889,5,,,,,,70638,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,J. Marabel,Sarmiento Junin,F,sot,AVOID,0.247,1.57,-0.6122,-0.5889,5,True,WIN,0.57,,2026-10-20,70638,1493195.0
 2026-10-18,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,Cleiton,VfL Wolfsburg,D,cards,AVOID,0.244,,,,5,,,,,,340067,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,Kevin Yakob,Aarhus,M,sot,AVOID,0.244,,,,5,,,,,,48025,
 2026-10-18,2026-10-25,Norway Eliteserien,Sarpsborg FK,Aalesund,M. Christensen,Aalesund,M,sot2,AVOID,0.238,,,,5,,,,,,564536,
@@ -20617,12 +20617,12 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-25,Norway Eliteserien,Sarpsborg FK,Aalesund,D. Mbacke,Aalesund,D,cards,AVOID,0.228,,,,5,,,,,,550635,
 2026-10-18,2026-10-25,Norway Eliteserien,Viking FK,Tromso,T. Nyhammer,Tromso,F,sot,AVOID,0.215,,,,5,,,,,,544497,
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,Villiam Granath,Mjallby AIF,M,sot,AVOID,0.212,,,,5,,,,,,161057,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,N. Demartini,Barracas Central,D,cards,AVOID,0.204,,,,5,,,,,,5541,1493195.0
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,K. Jappert,Barracas Central,D,cards,AVOID,0.203,,,,5,,,,,,368991,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,N. Demartini,Barracas Central,D,cards,AVOID,0.204,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,5541,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,K. Jappert,Barracas Central,D,cards,AVOID,0.203,,,,5,True,VOID,0.0,DNP,2026-10-20,368991,1493195.0
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,Ali Youssef,Mjallby AIF,F,sot2,AVOID,0.198,,,,5,,,,,,48027,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,L. Suárez,Sarmiento Junin,D,cards,AVOID,0.197,,,,5,,,,,,58581,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,L. Suárez,Sarmiento Junin,D,cards,AVOID,0.197,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,58581,1493195.0
 2026-10-18,2026-10-25,Norway Eliteserien,Sarpsborg FK,Aalesund,M. Christensen,Aalesund,M,cards,AVOID,0.193,,,,5,,,,,,564536,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Nicolas Capraro,Barracas Central,D,cards,AVOID,0.191,,,,5,,,,,,126866,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Nicolas Capraro,Barracas Central,D,cards,AVOID,0.191,,,,5,True,VOID,0.0,DNP,2026-10-20,126866,1493195.0
 2026-10-18,2026-10-24,Norway Eliteserien,Bodø/Glimt,Vålerenga,L. Haren,Valerenga,M,goals,AVOID,0.19,,,,5,,,,,,16192,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,Dorian Hanza,Viborg,F,goals,AVOID,0.188,2.6,-0.5112,-0.4819,5,,,,,,287216,
 2026-10-18,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,R. Glatzel,VfL Wolfsburg,F,sot2,AVOID,0.187,,,,5,,,,,,24914,
@@ -20636,11 +20636,11 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-25,Norway Eliteserien,Sarpsborg FK,Aalesund,U. Charles,Aalesund,D,sot,AVOID,0.173,,,,5,,,,,,312874,
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,P. Abraham,Hammarby FF,F,sot2,AVOID,0.167,,,,5,,,,,,198655,
 2026-10-18,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,M. Damar,VfL Wolfsburg,M,goals,AVOID,0.166,,,,5,,,,,,328262,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,J. Mavilla,Sarmiento Junin,F,sot,AVOID,0.165,1.44,-0.7624,-0.7481,5,,,,,,422464,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,J. Mavilla,Sarmiento Junin,F,sot,AVOID,0.165,1.44,-0.7624,-0.7481,5,True,LOSS,-1.0,,2026-10-20,422464,1493195.0
 2026-10-18,2026-10-24,Norway Eliteserien,Bodø/Glimt,Vålerenga,F. Ambina,Valerenga,M,sot,AVOID,0.164,,,,5,,,,,,303108,
 2026-10-18,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,S. Kumbedi,VfL Wolfsburg,D,cards,AVOID,0.164,,,,5,,,,,,334914,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Tomás Porra,Barracas Central,M,cards,AVOID,0.163,,,,5,,,,,,306707,1493195.0
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,N. Briasco,Barracas Central,F,sot,AVOID,0.163,,,,5,,,,,,6189,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Tomás Porra,Barracas Central,M,cards,AVOID,0.163,,,,5,True,VOID,0.0,DNP (0 min),2026-10-20,306707,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,N. Briasco,Barracas Central,F,sot,AVOID,0.163,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,6189,1493195.0
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,J. Gustavsson,Mjallby AIF,M,cards,AVOID,0.162,,,,5,,,,,,47721,
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,E. Skoglund,Hammarby FF,D,cards,AVOID,0.162,,,,5,,,,,,432478,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,Kristian Fredrik Malt Arnstad,Aarhus,M,cards,AVOID,0.162,,,,5,,,,,,108490,
@@ -20648,22 +20648,22 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-18,2026-10-24,Norway Eliteserien,Bodø/Glimt,Vålerenga,C. Lange,Valerenga,M,cards,AVOID,0.162,,,,5,,,,,,16194,
 2026-10-18,2026-10-25,Norway Eliteserien,Viking FK,Tromso,D. Edvardsson,Tromso,M,cards,AVOID,0.16,,,,5,,,,,,198962,
 2026-10-18,2026-10-23,Bundesliga 2,VfL Bochum,VfL Wolfsburg,H. Wahl,VfL Wolfsburg,D,cards,AVOID,0.16,,,,5,,,,,,24961,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,C. Zabala,Sarmiento Junin,M,cards,AVOID,0.16,,,,5,,,,,,5682,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,C. Zabala,Sarmiento Junin,M,cards,AVOID,0.16,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,5682,1493195.0
 2026-10-18,2026-10-25,Norway Eliteserien,Sarpsborg FK,Aalesund,H. M. Reed,Aalesund,F,assists,AVOID,0.159,,,,5,,,,,,564578,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Y. Rak,Barracas Central,D,cards,AVOID,0.158,,,,5,,,,,,67906,1493195.0
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,S. Salle,Sarmiento Junin,D,cards,AVOID,0.155,,,,5,,,,,,403297,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Y. Rak,Barracas Central,D,cards,AVOID,0.158,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,67906,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,S. Salle,Sarmiento Junin,D,cards,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,403297,1493195.0
 2026-10-18,2026-10-25,Norway Eliteserien,Viking FK,Tromso,I. Dahlqvist,Tromso,M,cards,AVOID,0.155,,,,5,,,,,,264435,
 2026-10-18,2026-10-24,Norway Eliteserien,Bodø/Glimt,Vålerenga,A. Kiil Olsen,Valerenga,D,cards,AVOID,0.155,,,,5,,,,,,138736,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Carlos Arce,Barracas Central,M,cards,AVOID,0.155,,,,5,,,,,,59322,1493195.0
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Damián Martínez,Barracas Central,D,cards,AVOID,0.155,,,,5,,,,,,6109,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Carlos Arce,Barracas Central,M,cards,AVOID,0.155,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,59322,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,Damián Martínez,Barracas Central,D,cards,AVOID,0.155,,,,5,True,VOID,0.0,DNP,2026-10-20,6109,1493195.0
 2026-10-18,2026-10-25,Norway Eliteserien,Viking FK,Tromso,A. Warneryd,Tromso,D,cards,AVOID,0.154,,,,5,,,,,,408480,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,E. Pereyra,Barracas Central,D,cards,AVOID,0.154,,,,5,,,,,,6604,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,E. Pereyra,Barracas Central,D,cards,AVOID,0.154,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,6604,1493195.0
 2026-10-18,2026-10-25,Sweden Allsvenskan,Mjällby AIF,Hammarby IF,Axel Norén,Mjallby AIF,D,sot,AVOID,0.153,,,,5,,,,,,107245,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,D. Miloc,Barracas Central,M,cards,AVOID,0.153,,,,5,,,,,,6279,1493195.0
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,J. Insaurralde,Sarmiento Junin,D,cards,AVOID,0.153,,,,5,,,,,,11417,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,D. Miloc,Barracas Central,M,cards,AVOID,0.153,,,,5,True,VOID,0.0,DNP,2026-10-20,6279,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,J. Insaurralde,Sarmiento Junin,D,cards,AVOID,0.153,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,11417,1493195.0
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,Sebastian Jørgensen,Aarhus,M,assists,AVOID,0.152,,,,5,,,,,,15943,
 2026-10-18,2026-10-24,Norway Eliteserien,Bodø/Glimt,Vålerenga,M. Grundetjern,Valerenga,M,sot2,AVOID,0.152,,,,5,,,,,,151688,
-2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,M. García,Sarmiento Junin,M,cards,AVOID,0.152,,,,5,,,,,,304378,1493195.0
+2026-10-18,2026-10-19,Argentina Primera Division,Sarmiento Junin,Barracas Central,M. García,Sarmiento Junin,M,cards,AVOID,0.152,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,304378,1493195.0
 2026-10-18,2026-10-24,Norway Eliteserien,Bodø/Glimt,Vålerenga,H. Sjåtil,Valerenga,D,cards,AVOID,0.152,,,,5,,,,,,382977,
 2026-10-18,2026-10-25,Denmark Superliga,AGF Aarhus,Viborg FF,O. Bundgaard,Viborg,D,cards,AVOID,0.151,,,,5,,,,,,71990,
 2026-10-18,2026-10-24,Brazil Serie A,Chapecoense,Fluminense,Hulk,Fluminense,F,sot,AVOID,0.701,,,,5,,,,,,12705,
@@ -21123,7 +21123,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-19,2026-10-24,Brazil Serie A,Mirassol,Sao Paulo,Bruno Santos,Mirassol,F,goals,AVOID,0.169,2.5,-0.5775,-0.5522,5,,,,,,159843,
 2026-10-19,2026-10-23,Bundesliga,VfB Stuttgart,Borussia Mönchengladbach,J. Scally,Borussia Mönchengladbach,M,sot,AVOID,0.167,,,,5,,,,,,50852,1575196.0
 2026-10-19,2026-10-24,Brazil Serie A,Mirassol,Sao Paulo,D. Bobadilla,Sao Paulo,M,sot,AVOID,0.166,,,,5,,,,,,195107,
-2026-10-19,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Fabricio,Tenerife,M,cards,AVOID,0.166,,,,5,,,,,,293612,1569971.0
+2026-10-19,2026-10-19,La Liga 2,Celta de Vigo II,Tenerife,Fabricio,Tenerife,M,cards,AVOID,0.166,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,293612,1569971.0
 2026-10-19,2026-10-23,La Liga 2,Granada CF,Real Valladolid CF,Sergio Rodelas,Granada CF,F,goals,AVOID,0.165,,,,5,,,,,,403498,
 2026-10-19,2026-10-25,Austrian Bundesliga,Sturm Graz,Ried,S. Seidl,Sturm Graz,M,assists,AVOID,0.165,,,,5,,,,,,176023,
 2026-10-19,2026-10-24,Serie B,Avellino,Padova,M. Venturi,Avellino,D,cards,AVOID,0.164,,,,5,,,,,,56390,
@@ -21178,7 +21178,7 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-19,2026-10-22,Mexico Liga MX,Toluca,Club Tijuana,Adonis Preciado,Club Tijuana,M,assists,AVOID,0.152,,,,5,,,,,,16688,1551008.0
 2026-10-19,2026-10-22,Europa League,Sturm Graz,Marseille,Igor Paixão,Marseille,M,cards,AVOID,0.152,,,,5,,,,,,9363,1636340.0
 2026-10-19,2026-10-21,Japan J-League,Nagoya Grampus,Cerezo Osaka,S. Tanaka,Cerezo Osaka,M,cards,AVOID,0.152,,,,5,,,,,,182008,
-2026-10-19,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,Kazper Karlsson,Degerfors IF,M,cards,AVOID,0.152,,,,5,,,,,,329165,1494299.0
+2026-10-19,2026-10-19,Sweden Allsvenskan,Degerfors IF,Kalmar FF,Kazper Karlsson,Degerfors IF,M,cards,AVOID,0.152,,,,5,True,VOID,0.0,DNP,2026-10-20,329165,1494299.0
 2026-10-19,2026-10-23,Brazil Serie A,Cruzeiro,Remo,Patrick,Remo,M,sot,AVOID,0.152,,,,5,,,,,,10388,1492422.0
 2026-10-19,2026-10-23,Ligue 1,Stade Brestois 29,Nice,X. Mandza Tsiendi,Nice,D,cards,AVOID,0.151,,,,5,,,,,,668717,1552794.0
 2026-10-19,2026-10-23,Bundesliga 2,SV Darmstadt 98,FC St. Pauli,P. Pfeiffer,SV Darmstadt 98,D,sot,AVOID,0.151,,,,5,,,,,,108475,1576208.0
@@ -21206,35 +21206,35 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-19,2026-10-24,Serie B,Südtirol,Sampdoria,O. Abildgaard,Sampdoria,M,cards,AVOID,0.159,,,,5,,,,,,15719,
 2026-10-19,2026-10-24,Ligue 2,Dijon,Rodez AF,P. Bellon,Dijon,M,sot,AVOID,0.159,,,,5,,,,,,174702,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Enric Gallego,Tenerife,F,sot,AVOID,0.665,,,,5,,,,,,47581,
-2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,D. Solanke,Tottenham,F,sot,AVOID,0.446,1.25,-0.4425,-0.4091,5,,,,,,18883,1557436.0
-2026-10-19,2026-10-19,Serie A,Parma,Torino,D. Romero,Parma,F,sot,AVOID,0.392,1.35,-0.4708,-0.439,5,,,,,,194905,1550154.0
+2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,D. Solanke,Tottenham,F,sot,AVOID,0.446,1.25,-0.4425,-0.4091,5,True,LOSS,-1.0,,2026-10-20,18883,1557436.0
+2026-10-19,2026-10-19,Serie A,Parma,Torino,D. Romero,Parma,F,sot,AVOID,0.392,1.35,-0.4708,-0.439,5,True,WIN,0.35,,2026-10-20,194905,1550154.0
 2026-10-19,2026-10-26,Mexico Liga MX,Querétaro,Cruz Azul,G. Fernández,Cruz Azul,F,sot,AVOID,0.349,,,,5,,,,,,51616,
-2026-10-19,2026-10-19,Ligue 2,Rodez,Montpellier,M. Touho,Rodez,F,sot,AVOID,0.344,,,,5,,,,,,363544,1552503.0
+2026-10-19,2026-10-19,Ligue 2,Rodez,Montpellier,M. Touho,Rodez,F,sot,AVOID,0.344,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,363544,1552503.0
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,F. Monzón,Atlas,F,sot,AVOID,0.34,1.25,-0.575,-0.5495,5,,,,,,196743,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,VÃ­ctor Moreno,Tenerife,F,sot,AVOID,0.313,,,,5,,,,,,361343,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Enric Gallego,Tenerife,F,goals,AVOID,0.306,,,,5,,,,,,47581,
-2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,M. Kudus,Tottenham,M,sot,AVOID,0.303,1.62,-0.5091,-0.4797,5,,,,,,15911,1557436.0
+2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,M. Kudus,Tottenham,M,sot,AVOID,0.303,1.62,-0.5091,-0.4797,5,True,LOSS,-1.0,,2026-10-20,15911,1557436.0
 2026-10-19,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,H. Cuypers,Monterrey,F,sot,AVOID,0.291,,,,5,,,,,,27104,
 2026-10-19,2026-10-26,Mexico Liga MX,Querétaro,Cruz Azul,A. Palavecino,Cruz Azul,M,sot,AVOID,0.279,,,,5,,,,,,13402,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,R. Mmaee,Atlas,F,sot,AVOID,0.279,1.33,-0.6289,-0.6067,5,,,,,,15597,
 2026-10-19,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,L. Ocampos,Monterrey,M,sot,AVOID,0.252,,,,5,,,,,,1911,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,Alberto Herrera,Puebla,M,cards,AVOID,0.252,,,,5,,,,,,333856,
-2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,B. Thomas-Asante,Coventry,M,sot,AVOID,0.25,1.91,-0.5225,-0.4938,5,,,,,,82090,1557436.0
+2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,B. Thomas-Asante,Coventry,M,sot,AVOID,0.25,1.91,-0.5225,-0.4938,5,True,LOSS,-1.0,,2026-10-20,82090,1557436.0
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Fabricio,Tenerife,M,sot,AVOID,0.247,,,,5,,,,,,293612,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,Luís Esteves,Atlas,M,sot,AVOID,0.244,1.4,-0.6584,-0.6379,5,,,,,,187909,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,F. Monzón,Atlas,F,goals,AVOID,0.241,2.75,-0.3373,-0.2975,5,,,,,,196743,
 2026-10-19,2026-10-26,Mexico Liga MX,Querétaro,Cruz Azul,J. Paradela,Cruz Azul,M,sot,AVOID,0.233,,,,5,,,,,,6441,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,M. Tomás,Puebla,M,sot,AVOID,0.233,1.57,-0.6342,-0.6122,5,,,,,,269959,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,Kevin Velasco,Puebla,M,sot,AVOID,0.228,1.5,-0.658,-0.6375,5,,,,,,13406,
-2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,S. Cherif,Coventry,F,sot,AVOID,0.22,1.8,-0.604,-0.5802,5,,,,,,421875,1557436.0
+2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,S. Cherif,Coventry,F,sot,AVOID,0.22,1.8,-0.604,-0.5802,5,True,LOSS,-1.0,,2026-10-20,421875,1557436.0
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Nacho Gil,Tenerife,M,sot,AVOID,0.22,,,,5,,,,,,46975,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,F. Monzón,Atlas,F,sot2,AVOID,0.217,2.2,-0.5226,-0.494,5,,,,,,196743,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,J. Purata,Atlas,D,cards,AVOID,0.214,,,,5,,,,,,35514,
-2026-10-19,2026-10-19,Ligue 2,Rodez,Montpellier,N. Nsingi,Rodez,F,sot,AVOID,0.211,,,,5,,,,,,373827,1552503.0
+2026-10-19,2026-10-19,Ligue 2,Rodez,Montpellier,N. Nsingi,Rodez,F,sot,AVOID,0.211,,,,5,True,LOSS,,"unpriced — result only, no stake",2026-10-20,373827,1552503.0
 2026-10-19,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,D. Rossi,Monterrey,M,sot,AVOID,0.207,,,,5,,,,,,51045,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,K. Zenón,Atlas,M,sot,AVOID,0.202,2.75,-0.4445,-0.4112,5,,,,,,288707,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,Eduardo Navarro,Puebla,D,cards,AVOID,0.2,,,,5,,,,,,474285,
-2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,J. Maddison,Tottenham,M,sot,AVOID,0.199,1.35,-0.7313,-0.7152,5,,,,,,18784,1557436.0
+2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,J. Maddison,Tottenham,M,sot,AVOID,0.199,1.35,-0.7313,-0.7152,5,True,WIN,0.35,,2026-10-20,18784,1557436.0
 2026-10-19,2026-10-24,Japan J-League,Kashima Antlers,Kashiwa Reysol,K. Endo,Kashiwa Reysol,M,sot,AVOID,0.197,,,,5,,,,,,33017,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,S. Sanabria,Puebla,M,cards,AVOID,0.194,,,,5,,,,,,425002,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,M. Pittón,Tenerife,M,cards,AVOID,0.194,,,,5,,,,,,6123,
@@ -21242,20 +21242,20 @@ signal_date,match_date,league,home_team,away_team,player_name,team,position,mark
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,K. Zenón,Atlas,M,assists,AVOID,0.188,,,,5,,,,,,288707,
 2026-10-19,2026-10-26,Mexico Liga MX,Querétaro,Cruz Azul,G. Fernández,Cruz Azul,F,goals,AVOID,0.188,,,,5,,,,,,51616,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,E. Mustre,Puebla,F,sot,AVOID,0.185,1.44,-0.7336,-0.7176,5,,,,,,282780,
-2026-10-19,2026-10-19,Serie A,Parma,Torino,G. Fabbian,Parma,M,sot,AVOID,0.184,2.45,-0.5492,-0.5222,5,,,,,,322630,1550154.0
+2026-10-19,2026-10-19,Serie A,Parma,Torino,G. Fabbian,Parma,M,sot,AVOID,0.184,2.45,-0.5492,-0.5222,5,True,LOSS,-1.0,,2026-10-20,322630,1550154.0
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,A. Frías,Atlas,D,cards,AVOID,0.181,,,,5,,,,,,5872,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Jesús Álvarez,Tenerife,M,cards,AVOID,0.177,,,,5,,,,,,70498,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,Jair Díaz,Puebla,D,cards,AVOID,0.174,,,,5,,,,,,35511,
-2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,D. Solanke,Tottenham,F,goals,AVOID,0.174,2.46,-0.572,-0.5463,5,,,,,,18883,1557436.0
+2026-10-19,2026-10-19,Premier League,Tottenham,Coventry,D. Solanke,Tottenham,F,goals,AVOID,0.174,2.46,-0.572,-0.5463,5,True,LOSS,-1.0,,2026-10-20,18883,1557436.0
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Enric Gallego,Tenerife,F,cards,AVOID,0.172,,,,5,,,,,,47581,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,David Rodríguez,Tenerife,D,cards,AVOID,0.171,,,,5,,,,,,208117,
 2026-10-19,2026-10-26,Mexico Liga MX,Querétaro,Cruz Azul,W. Ditta,Cruz Azul,D,cards,AVOID,0.171,,,,5,,,,,,13571,
 2026-10-19,2026-10-26,Mexico Liga MX,Querétaro,Cruz Azul,É. Lira,Cruz Azul,M,sot,AVOID,0.166,,,,5,,,,,,266345,
-2026-10-19,2026-10-19,Ligue 2,Rodez,Montpellier,O. Joly,Rodez,M,sot,AVOID,0.166,,,,5,,,,,,344298,1552503.0
+2026-10-19,2026-10-19,Ligue 2,Rodez,Montpellier,O. Joly,Rodez,M,sot,AVOID,0.166,,,,5,True,WIN,,"unpriced — result only, no stake",2026-10-20,344298,1552503.0
 2026-10-19,2026-10-21,Japan J-League,FC Tokyo,Kashiwa Reysol,K. Endo,Kashiwa Reysol,M,sot,AVOID,0.166,,,,5,,,,,,33017,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,A. Ramírez,Puebla,M,cards,AVOID,0.165,,,,5,,,,,,358091,
 2026-10-19,2026-10-25,Mexico Liga MX,Atlas,Puebla,A. Organista,Puebla,M,cards,AVOID,0.164,,,,5,,,,,,35881,
-2026-10-19,2026-10-19,Serie A,Parma,Torino,Adrián Bernabé,Parma,M,sot,AVOID,0.164,2.1,-0.6556,-0.6349,5,,,,,,628,1550154.0
+2026-10-19,2026-10-19,Serie A,Parma,Torino,Adrián Bernabé,Parma,M,sot,AVOID,0.164,2.1,-0.6556,-0.6349,5,True,WIN,1.1,,2026-10-20,628,1550154.0
 2026-10-19,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,J. Corona,Monterrey,M,sot,AVOID,0.162,,,,5,,,,,,389,
 2026-10-19,2026-10-24,Japan J-League,Kashima Antlers,Kashiwa Reysol,T. Kubo,Kashiwa Reysol,M,sot,AVOID,0.161,,,,5,,,,,,318654,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,Juanjo,Tenerife,M,cards,AVOID,0.159,,,,5,,,,,,170670,
