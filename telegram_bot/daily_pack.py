@@ -322,6 +322,121 @@ def props_image(today: str) -> list[bytes]:
                         footer="Times UTC · paper leagues excluded · not betting advice")
 
 
+def _pro_csv(rel: str) -> pd.DataFrame:
+    """A Pro output, from a sibling checkout or Pro's public repo. Empty on any failure."""
+    try:
+        for base in (os.getenv("PRO_LOCAL"), "../pro", "../wowzaV9-Pro"):
+            if base and os.path.exists(os.path.join(base, rel)):
+                return pd.read_csv(os.path.join(base, rel), low_memory=False)
+        return pd.read_csv("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + rel, low_memory=False)
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] {rel} unavailable: {type(e).__name__}")
+        return pd.DataFrame()
+
+
+def one_x_two_image(now: _dt.datetime) -> list[bytes]:
+    """Pro's paper 1X2 picks in the morning album (owner 2026-10-20: "if there is 1x2 bet - add it to the
+    daily"). Pro selects them (top slice by edge) and records them; it no longer sends its own message.
+    Upcoming picks (next 36 h) plus yesterday's settled ones. PAPER — never staked."""
+    d = _pro_csv("output/paper_1x2.csv")
+    if d.empty or "notified_pick" not in d.columns:
+        return []
+    d = d[d["notified_pick"].notna()].copy()
+    if d.empty:
+        return []
+    d["_ko"] = pd.to_datetime(d["kickoff_utc"], errors="coerce", utc=True)
+    nowts = pd.Timestamp(now)
+    up = d[(d["_ko"] > nowts) & (d["_ko"] <= nowts + pd.Timedelta(hours=36))].sort_values("_ko")
+    yday = (nowts - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    done = d[(d["match_date"].astype(str).str[:10] == yday) & pd.to_numeric(d["result"], errors="coerce").notna()]
+    if up.empty and done.empty:
+        return []
+    pick_lbl = {"HOME": "Home win", "DRAW": "Draw", "AWAY": "Away win"}
+    res_code = {"HOME": 0, "DRAW": 1, "AWAY": 2}
+    cols = [("Time", 112), ("League", 190), ("Match", 320), ("Pick", 110), ("Odds", 70), ("Edge", 80),
+            ("Result", 90)]
+    rows = []
+    if len(up):
+        rows.append({"band": f"Upcoming 1X2 picks — {len(up)}"})
+        for _, r in up.iterrows():
+            ev = pd.to_numeric(r.get("notified_ev"), errors="coerce")
+            rows.append({"cells": [r["_ko"].strftime("%a %H:%M"), r["league"], f"{r['home_team']} v {r['away_team']}",
+                                   pick_lbl.get(str(r["notified_pick"]), r["notified_pick"]),
+                                   f"{float(r['notified_odds']):.2f}", "–" if pd.isna(ev) else f"+{ev * 100:.0f}%", "–"],
+                         "colours": {"Result": MUTED}})
+    if len(done):
+        won = sum(int(pd.to_numeric(r["result"]) == res_code.get(str(r["notified_pick"]), -1)) for _, r in done.iterrows())
+        rows.append({"band": f"Yesterday — {won} of {len(done)} won"})
+        for _, r in done.iterrows():
+            w = int(pd.to_numeric(r["result"])) == res_code.get(str(r["notified_pick"]), -1)
+            rows.append({"cells": ["", r["league"], f"{r['home_team']} v {r['away_team']}",
+                                   pick_lbl.get(str(r["notified_pick"]), r["notified_pick"]),
+                                   f"{float(r['notified_odds']):.2f}", "", "WON" if w else "LOST"],
+                         "stripe": GREEN if w else RED, "colours": {"Result": GREEN if w else RED}})
+    return render_table("1X2 picks (paper)", cols, rows,
+                        subtitle="Pro's 1X2 model, top slice by edge. Paper only - the backtest says this slice "
+                                 "has lost; it is tracked forward to settle that.",
+                        footer="Times UTC · not betting advice")
+
+
+def props_results_image(day: str) -> list[bytes]:
+    """Yesterday's settled player props (owner 2026-10-20: the morning album showed today's props but
+    never how yesterday's did — prop results lived only in the Monday pack).
+
+    One row per (player, market), played only (VOID / did-not-play excluded). Priced props are scored
+    against the price (hit vs the hit rate the odds needed, paper P/L at 1u); model-only props against
+    the model's own probability. Paper research — never staked."""
+    p = _read("player_ledger.csv")
+    if p.empty:
+        return []
+    p = p[p["match_date"].astype(str).str[:10] == day].copy()
+    p = p[p["result"].isin(["WIN", "LOSS"])]
+    if p.empty:
+        return []
+    for c in ("model_prob", "market_odds", "pnl"):
+        p[c] = pd.to_numeric(p.get(c), errors="coerce")
+    p["_priced"] = p["market_odds"].notna() & (p["market_odds"] > 1.0)
+    if {"player_id", "market"} <= set(p.columns):
+        p = p.sort_values("_priced", ascending=False, kind="mergesort").drop_duplicates(
+            ["player_id", "market"], keep="first")
+    pr, un = p[p["_priced"]], p[~p["_priced"]]
+    cols = [("Player", 200), ("Match", 300), ("Market", 160), ("Model", 70), ("Odds", 70), ("Result", 90)]
+    rows = []
+    if len(pr):
+        won = int((pr["result"] == "WIN").sum())
+        need = 100 * (1 / pr["market_odds"]).mean()
+        hit = 100 * won / len(pr)
+        # flat 1u at the recorded price (the ledger's pnl column is not filled for every row)
+        pl = float((pr["market_odds"] - 1).where(pr["result"] == "WIN", -1.0).sum())
+        rows.append({"band": f"Priced — {won}-{len(pr) - won} · hit {hit:.0f}% vs {need:.0f}% needed · "
+                             f"paper {pl:+.2f}u at 1u"})
+        pr = pr.assign(_edge=pr["model_prob"] - 1 / pr["market_odds"]).sort_values("_edge", ascending=False)
+        for _, r in pr.head(12).iterrows():
+            w = r["result"] == "WIN"
+            rows.append({"cells": [r["player_name"], f"{r['home_team']} v {r['away_team']}",
+                                   PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
+                                   f"{r['market_odds']:.2f}", "WON" if w else "LOST"],
+                         "stripe": GREEN if w else RED, "bold": {"Result"},
+                         "colours": {"Result": GREEN if w else RED}})
+    if len(un):
+        won = int((un["result"] == "WIN").sum())
+        exp = 100 * un["model_prob"].mean()
+        rows.append({"band": f"Model only (no price) — {won} of {len(un)} hit ({100 * won / len(un):.0f}%) "
+                             f"vs {exp:.0f}% the model expected"})
+        top = un.sort_values("model_prob", ascending=False).head(max(0, ROWS_PER_IMAGE - len(rows) - 2))
+        for _, r in top.iterrows():
+            w = r["result"] == "WIN"
+            rows.append({"cells": [r["player_name"], f"{r['home_team']} v {r['away_team']}",
+                                   PROP_LABEL.get(r["market"], r["market"]), f"{r['model_prob'] * 100:.0f}%",
+                                   "–", "WON" if w else "LOST"],
+                         "colours": {"Odds": MUTED, "Result": GREEN if w else RED}})
+    label = pd.Timestamp(day).strftime("%a %d %b")
+    return render_table(f"Player props — results {label}", cols, rows,
+                        subtitle="Played only (VOID / did not play excluded). Priced props vs the price; "
+                                 "model-only props vs the model's own probability. Paper — never staked.",
+                        footer="paper leagues excluded · not betting advice")
+
+
 # ── Sharp movements ───────────────────────────────────────────────────────────
 
 def _sharp_frame() -> pd.DataFrame:
@@ -794,6 +909,81 @@ def props_model_check_image(today: str, weeks: int = 8) -> list[bytes]:
                                  "weeks with tips from the retrained models (fast learner, 10-12/10-13).")
 
 
+def _pro_csv(rel: str) -> pd.DataFrame:
+    """A Pro output CSV: local sibling checkout if present, else the public repo (as the scoreboard)."""
+    for p in (os.getenv("PRO_LOCAL"), "../wowzaV9-Pro", "../pro", "../v10"):
+        if p and os.path.exists(os.path.join(p, rel)):
+            return pd.read_csv(os.path.join(p, rel))
+    try:
+        return pd.read_csv("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + rel)
+    except Exception:                                                   # noqa: BLE001
+        return pd.DataFrame()
+
+
+TP_LABEL = {"BEST_BETS": "Best bets", "SAFEST": "Safest", "VALUE": "Value", "RANDOM_5": "Random 5",
+            "CURRENT": "Old order (tier, edge)"}
+
+
+def top_picks_week_image(now: _dt.datetime) -> list[bytes]:
+    """Weekly Top-picks table (Pro src/studies/top_picks_weekly.py): last completed week, to date, backtest."""
+    h = _pro_csv("output/studies/top_picks_weekly.csv")
+    if h.empty:
+        return []
+    done = (now - _dt.timedelta(days=7)).strftime("%G-W%V")              # the week that just finished
+    latest = h[h["week"] == h["week"].max()]
+    cols = [("List", 190), ("Hit", 70), ("Avg odds", 96), ("ROI", 80), ("0/5 days", 96), ("Picks", 70)]
+    rows = []
+    for kind, title, src in (("live_this_week", f"Live — week {done[-3:]}", h[h["week"] == done]),
+                             ("live_to_date", "Live — to date", latest),
+                             ("backtest", "Backtest — all days with 10+ tips", latest)):
+        x = src[src["kind"] == kind]
+        if x.empty:
+            continue
+        rows.append({"band": title})
+        for name in ("BEST_BETS", "SAFEST", "VALUE", "RANDOM_5", "CURRENT"):
+            r = x[x["list"] == name]
+            if r.empty:
+                continue
+            r = r.iloc[0]
+            roi = float(r["roi"])
+            odds = r.get("avg_odds")
+            rows.append({"cells": [TP_LABEL[name], f"{float(r['hit_rate']):.0%}",
+                                   "–" if pd.isna(odds) else f"{float(odds):.2f}", f"{roi:+.0%}",
+                                   f"{float(r['zero_days']):.0%}", str(int(r["picks"]))],
+                         "colours": {"ROI": GREEN if roi > 0 else RED}, "bold": {"ROI"}})
+    if not rows:
+        return []
+    return render_table("Top picks — weekly table", cols, rows,
+                        subtitle="Top 5 of each list per day. Live = what you were shown, frozen each morning. "
+                                 "Backtest = the same rules re-tested on all history.",
+                        footer="Flat 1 unit per pick · not betting advice")
+
+
+def leagues_image() -> list[bytes]:
+    """Best leagues, season to date (Pro src/studies/league_results.py)."""
+    h = _pro_csv("output/studies/league_results_weekly.csv")
+    if h.empty:
+        return []
+    t = h[(h["week"] == h["week"].max()) & (h["window"] == "season")].sort_values("rank")
+    if t.empty:
+        return []
+    lab = {"PROVEN": ("Proven", GREEN), "PROMISING": ("Promising", (37, 99, 235)), "NEUTRAL": ("Unclear", MUTED),
+           "NOT_ENOUGH": ("Too few", MUTED), "LOSING": ("Losing", RED)}
+    cols = [("#", 40), ("League", 270), ("Tips", 60), ("Hit", 64), ("Avg odds", 92), ("ROI", 76),
+            ("Best market", 190), ("", 110)]
+    rows = []
+    for r in t.itertuples(index=False):
+        name, col = lab.get(r.label, (r.label, MUTED))
+        rows.append({"cells": [str(int(r.rank)), r.league, str(int(r.tips)), f"{r.hit_rate:.0%}",
+                               f"{r.avg_odds:.2f}", f"{r.roi:+.0%}", r.best_market, name],
+                     "colours": {"ROI": GREEN if r.roi > 0 else RED, "": col}, "bold": {""}})
+    return render_table("Best leagues — season to date", cols, rows,
+                        subtitle="All settled tips per league. Ranked by ROI shrunk toward the average, so a lucky "
+                                 "handful cannot top the table. Proven / Losing = clear of break-even even after "
+                                 "allowing for testing many leagues at once.",
+                        footer="Flat 1 unit per tip · paper leagues excluded · not betting advice")
+
+
 def send_weekly_pack() -> bool:
     """Monday album: week by market, week by league, props week, Pro scoreboard.
     Dedup WEEKLY|<iso-year>-W<week> in notified.json. Returns True if sent."""
@@ -810,7 +1000,9 @@ def send_weekly_pack() -> bool:
         print("[weekly_pack] already sent this week")
         return False
     pngs, notes = [], []
-    for name, fn in (("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
+    for name, fn in (("top_picks", lambda: top_picks_week_image(now)),
+                     ("leagues", leagues_image),
+                     ("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
                      ("props", lambda: props_week_image(now.strftime("%Y-%m-%d"))),
                      ("props_check", lambda: props_model_check_image(now.strftime("%Y-%m-%d"))),
                      ("scoreboard", scoreboard_images)):
@@ -841,8 +1033,10 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
              ("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
               if len(todays_rows(today)) else []),
              ("results", lambda: results_image(yday)),
+             ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
              ("props", lambda: props_image(today)),
+             ("one_x_two", lambda: one_x_two_image(now)),
              ("bet_builder", lambda: bet_builder_image(today)),
              ("sharp", lambda: sharp_image(today)),
              ("scoreboard", scoreboard_images)]
@@ -861,7 +1055,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
     except Exception:                                                   # noqa: BLE001
         yline = ""
     caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
-               f"Top picks · today's tips ({n_tips}) · yesterday's results · record · player props · "
+               f"Top picks · today's tips ({n_tips}) · yesterday's results (team + props) · record · player props · 1X2 · "
                f"Bet Builder · sharp moves · Pro scoreboard"
                + (f"\nYesterday's top picks: {yline}" if yline else ""))
     print("[daily_pack] " + ", ".join(notes))

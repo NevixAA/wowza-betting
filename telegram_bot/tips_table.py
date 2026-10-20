@@ -24,8 +24,23 @@ TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
 TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235)}
 MARKET_LABEL = {"btts": "BTTS", "over15": "O/U 1.5", "over35": "O/U 3.5"}
 ROWS_PER_IMAGE = 22
-COLUMNS = [("Time", 62), ("League", 190), ("Match", 330), ("Model", 70), ("Tier", 104),
+COLUMNS = [("Time", 62), ("League", 190), ("Rating", 70), ("Match", 330), ("Model", 70), ("Tier", 104),
            ("Market", 150), ("Odds", 62), ("Edge", 66)]
+
+_RATINGS: dict | None = None
+
+
+def league_ratings() -> dict:
+    """Pro's league rating 1-10 (10 = best league), the same source the stake plan sizes by.
+    Shown next to every tip (owner 2026-10-20). Missing or stale -> '-' on the row, never a guess."""
+    global _RATINGS
+    if _RATINGS is None:
+        try:
+            from src.stake_plan import load_league_ratings
+            _RATINGS = load_league_ratings()
+        except Exception:                                                 # noqa: BLE001
+            _RATINGS = {}
+    return _RATINGS
 
 
 def _kickoffs() -> pd.DataFrame:
@@ -101,6 +116,7 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
     ko = pd.to_datetime(d.get("kickoff_utc"), errors="coerce")
     d["time"] = ko.dt.strftime("%H:%M").fillna("–")
     d["edge"] = pd.to_numeric(d["edge"], errors="coerce")
+    d["rating"] = d["league"].map(league_ratings())
     d["_t"] = d["tier"].map({t: i for i, t in enumerate(TIER_ORDER)})
     d = d.sort_values(["_t", "edge"], ascending=[True, False]).drop(columns="_t")
     return d.reset_index(drop=True)
@@ -163,16 +179,21 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
             model = "Standard" if str(r["model"]) == "standard" else "New-fmt"
             edge = "–" if pd.isna(r["edge"]) else f"+{r['edge']:.0f}%"
             odds = "–" if pd.isna(pd.to_numeric(r["odds"], errors="coerce")) else f"{float(r['odds']):.2f}"
-            cells = [r["time"], r["league"], f"{r['home_team']} v {r['away_team']}", model,
+            rt = r.get("rating")
+            rating = "–" if rt is None or pd.isna(rt) else f"{int(rt)}/10"
+            cells = [r["time"], r["league"], rating, f"{r['home_team']} v {r['away_team']}", model,
                      r["tier"], r["market"], odds, edge]
             x = pad
             for (name, w), val in zip(COLUMNS, cells):
-                font = f_head if name in ("Tier", "Edge") else f_cell
+                font = f_head if name in ("Tier", "Edge", "Rating") else f_cell
                 fill = colour if name == "Tier" else (17, 24, 39)
+                if name == "Rating" and val != "–":
+                    v = int(val.split("/")[0])
+                    fill = (21, 128, 61) if v >= 8 else (185, 28, 28) if v <= 3 else (17, 24, 39)
                 dr.text((x + 4, y + 8), _fit(dr, val, font, w - 8), font=font, fill=fill)
                 x += w
             y += row_h
-        dr.text((pad, y + 8), "Times UTC · edge as recorded by v9 · paper leagues excluded · not betting advice",
+        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10 (10 best) · edge as recorded by v9 · paper leagues excluded",
                 font=f_foot, fill=(107, 114, 128))
         buf = io.BytesIO()
         img.save(buf, format="PNG", optimize=True)

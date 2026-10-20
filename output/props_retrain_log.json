@@ -112,7 +112,65 @@
         "logloss_old": 0.37373,
         "logloss_new": 0.37372
       }
+    },
+    "2026-10-18": {
+      "goals": {
+        "promoted": true,
+        "why": "log loss 0.26119 -> 0.26213 (+0.00095), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.26119,
+        "logloss_new": 0.26213
+      },
+      "goals2": {
+        "promoted": true,
+        "why": "log loss 0.04272 -> 0.04311 (+0.00039), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.04272,
+        "logloss_new": 0.04311
+      },
+      "assists": {
+        "promoted": true,
+        "why": "log loss 0.21834 -> 0.21905 (+0.00071), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.21834,
+        "logloss_new": 0.21905
+      },
+      "sot": {
+        "promoted": true,
+        "why": "log loss 0.47560 -> 0.47657 (+0.00097), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.4756,
+        "logloss_new": 0.47657
+      },
+      "sot2": {
+        "promoted": true,
+        "why": "log loss 0.18444 -> 0.18590 (+0.00146), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.18444,
+        "logloss_new": 0.1859
+      },
+      "sot3": {
+        "promoted": true,
+        "why": "log loss 0.06063 -> 0.06119 (+0.00057), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.06063,
+        "logloss_new": 0.06119
+      },
+      "sot4": {
+        "promoted": true,
+        "why": "log loss 0.01765 -> 0.01818 (+0.00054), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.01765,
+        "logloss_new": 0.01818
+      },
+      "cards": {
+        "promoted": true,
+        "why": "log loss 0.37372 -> 0.37314 (-0.00058), within the 0.03000 tolerance",
+        "rows": 862711,
+        "logloss_old": 0.37372,
+        "logloss_new": 0.37314
+      }
     }
   },
-  "latest_run": "2026-10-13"
+  "latest_run": "2026-10-18"
 }

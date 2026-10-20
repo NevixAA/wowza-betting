@@ -60,9 +60,22 @@ def drawdown_multiplier(policy: dict, bankroll: float, peak: float,
     return m if floor is None else min(m, float(floor))
 
 
+def rating_scale(rating: int | None, min_scale: float) -> float:
+    """League rating 1-10 -> stake scale (owner 2026-10-18): 10 -> 1.0 (today's stake), 1 -> min_scale,
+    linear between. Never above 1.0, so a rating can only reduce a stake."""
+    if rating is None:
+        return min_scale
+    r = min(10, max(1, int(rating)))
+    return min_scale + (r - 1) / 9.0 * (1.0 - min_scale)
+
+
 def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: float,
-             dd_floor: float | None = None) -> pd.DataFrame:
-    """Stake fractions for one day's qualifying selections. Pure: same input -> same output."""
+             dd_floor: float | None = None, league_ratings: dict | None = None) -> pd.DataFrame:
+    """Stake fractions for one day's qualifying selections. Pure: same input -> same output.
+
+    league_ratings ({league: 1-10}, Pro league_ratings.json) is applied only when the policy's
+    league_rating_sizing.enabled is true: each stake x rating_scale; an unrated league gets the minimum.
+    Callers that pass nothing (Pro's simulator) are unaffected."""
     cols = list(selections.columns)
     if selections.empty:
         return pd.DataFrame(columns=cols + [c for c in AUDIT_COLS if c not in cols])
@@ -76,6 +89,9 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     paper = set(policy.get("paper_leagues", []))
     hard_odds = min(float(pf.get("hard_max_odds", HARD["blocked_odds"])), HARD["blocked_odds"])
     ddm = drawdown_multiplier(policy, bankroll, peak, dd_floor)
+    lrs = policy.get("league_rating_sizing") or {}
+    use_rating = bool(lrs.get("enabled")) and league_ratings is not None
+    min_scale = min(max(float(lrs.get("min_scale", 0.2)), 0.0), 1.0)
 
     d = selections.copy().reset_index(drop=True)
     d["track"] = d["model_type"].astype(str) + "|" + d["market"].astype(str)
@@ -100,9 +116,12 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
             reason = "ODDS_BELOW_TRACK_FLOOR"
         elif tm <= 0:
             reason = "TIER_NOT_STAKED"
-        req = base * tm * lm if reason == "OK" else 0.0
+        rt = league_ratings.get(r.league) if use_rating else None
+        rs = rating_scale(rt, min_scale) if use_rating else 1.0
+        req = base * tm * lm * rs if reason == "OK" else 0.0
         out.append({**r._asdict(), "deployment_state": state, "base_fraction": base,
                     "tier_multiplier": tm, "league_multiplier": lm, "requested_fraction": req,
+                    "league_rating": rt, "rating_scale": round(rs, 3),
                     "_score": float(t.get("evidence_score", 0.0)), "reason": reason})
     a = pd.DataFrame(out)
 
@@ -138,7 +157,8 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     a["bankroll_before"] = float(bankroll)
     a["stake_amount"] = (a["final_fraction"] * float(bankroll)).round(2)
     a["policy_version"] = policy.get("policy_version", "?")
-    return a.drop(columns=["_score"])[cols + [c for c in AUDIT_COLS if c not in cols]]
+    extra = [c for c in ("league_rating", "rating_scale") if use_rating and c not in cols]
+    return a.drop(columns=["_score"])[cols + [c for c in AUDIT_COLS if c not in cols] + extra]
 
 
 def log_decisions(rows: pd.DataFrame, path: str | Path | None = None) -> Path:

@@ -287,6 +287,86 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
         log.warning(f"shadow log skipped ({e}) — predictions and tips are unaffected")
 
 
+H2H_FILE = config.OUTPUT_DIR / "model_lineage" / "shadow_h2h.csv"
+H2H_COLS = ["logged_at", "match_date", "kickoff_utc", "league", "home_team", "away_team",
+            "model_type", "market", "champion_version", "p_served", "p_champion_raw",
+            "challenger_version", "p_challenger"]
+
+
+def _log_h2h(preds: "pd.DataFrame") -> None:
+    """TRUE HEAD-TO-HEAD SHADOW (champion high-water mark, brief §25).
+
+    For every model type, record what the CHAMPION said about every upcoming fixture — and, when
+    a SHADOW_MORE challenger is parked in models/registry/<type>/challenger.pkl.gz, what the
+    challenger said about the SAME fixture at the SAME moment. The challenger never reaches a
+    tier, a tip, a stake or Telegram: it is scored here and only here.
+
+    `p_served` is the production column; `p_champion_raw` / `p_challenger` are both raw
+    `predict_proba` on the identical feature row, so the comparison is like-for-like even if
+    predict ever post-processes the served number.
+
+    FIRST SIGHT ONLY, keyed on (fixture, model_type, challenger_version): a later run, with more
+    of the price curve and team news, cannot revise a logged opinion. Pro grades the results.
+    Cannot raise — a recorder must never stop tips going out.
+    """
+    try:
+        import numpy as np
+        from src import model_registry as reg
+        if preds is None or preds.empty:
+            return
+        now = datetime.now(timezone.utc).isoformat()
+        tag = (preds["model_type"].astype(str).map(reg.ou_model_for)
+               if "model_type" in preds.columns else pd.Series("standard", index=preds.index))
+        frames = []
+        for mt, col in reg.PRED_COLUMN.items():
+            if col not in preds.columns:
+                continue
+            sub = preds[tag == mt] if mt in ("standard", "newformat") else preds
+            sub = sub[pd.to_numeric(sub[col], errors="coerce").notna()]
+            if sub.empty:
+                continue
+            champ = reg.stamp_for(mt)
+            p_raw = p_ch = np.full(len(sub), np.nan)
+            ch_v = ""
+            try:
+                ch = reg.load_challenger(mt)
+                if ch is not None:
+                    ch_payload, meta = ch
+                    ch_v = meta.get("model_version", "")
+                    p_ch = np.asarray(model_predict_proba(sub, payload=ch_payload), float)
+                    p_raw = np.asarray(model_predict_proba(
+                        sub, payload=load_models(model_file=reg.MODEL_FILES[mt])), float)
+            except Exception as e:                                     # noqa: BLE001
+                log.warning(f"h2h: challenger for {mt} not scored ({e})")
+                ch_v, p_raw, p_ch = "", np.full(len(sub), np.nan), np.full(len(sub), np.nan)
+            frames.append(pd.DataFrame({
+                "logged_at": now, "match_date": sub["date"].astype(str).str[:10].values,
+                "kickoff_utc": sub["kickoff_utc"].values if "kickoff_utc" in sub.columns else "",
+                "league": sub["league"].values, "home_team": sub["home_team"].values,
+                "away_team": sub["away_team"].values, "model_type": mt,
+                "market": reg.TARGET[mt], "champion_version": champ["model_version"],
+                "p_served": pd.to_numeric(sub[col], errors="coerce").round(5).values,
+                "p_champion_raw": np.round(p_raw, 5), "challenger_version": ch_v,
+                "p_challenger": np.round(p_ch, 5)}))
+        if not frames:
+            return
+        new = pd.concat(frames, ignore_index=True)[H2H_COLS]
+        key = ["match_date", "home_team", "away_team", "model_type", "challenger_version"]
+        if H2H_FILE.exists():
+            old = pd.read_csv(H2H_FILE, dtype=str, keep_default_na=False)
+            seen = set(map(tuple, old[key].astype(str).values))
+            new = new[[tuple(map(str, r)) not in seen
+                       for r in new[key].astype(str).values]]
+        new = new.drop_duplicates(key, keep="first")
+        if new.empty:
+            return
+        H2H_FILE.parent.mkdir(parents=True, exist_ok=True)
+        new.to_csv(H2H_FILE, mode="a", header=not H2H_FILE.exists(), index=False)
+        log.info(f"h2h: +{len(new)} first-sight row(s) -> {H2H_FILE.name}")
+    except Exception as e:                                             # noqa: BLE001
+        log.warning(f"h2h log skipped ({e}) — predictions and tips are unaffected")
+
+
 def _shadow_gate(label: str, old_payload, results: dict, test_df, target: str,
                  promoted_by_live_gate: bool, live_reason: str) -> dict:
     """Run the v9.1 promotion gate alongside the live one and WRITE DOWN what it would decide.
@@ -430,6 +510,160 @@ def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: s
     return out
 
 
+#: One id per retrain RUN, shared by every model it trains. Set by mode_train.
+_RETRAIN_BATCH: dict = {}
+
+
+def _champion_decision(label: str, model_file, old_payload, results: dict, test_df,
+                       target: str, basis: str, valid) -> tuple[dict, dict]:
+    """Score champion and challenger on the same holdout rows, decide, and record the lineage.
+
+    Writes the serving file ONLY on PROMOTE, atomically, with an immutable copy kept for
+    rollback. Every challenger — promoted, shadowed or rejected — gets a manifest and a row in
+    output/model_lineage/retrain_batches.csv, because rejected models are evidence too.
+
+    FAIL CLOSED: anything that stops the comparison being completed returns KEEP_CHAMPION. The
+    lineage write itself is wrapped separately, so a bookkeeping failure can never flip a
+    verdict, and a verdict failure can never touch the serving file.
+    """
+    import hashlib
+    import numpy as np
+    from src import model_registry as reg
+    from src.champion_gate import decide, PROMOTE, SHADOW
+
+    mt = label
+    now = reg.utcnow()
+    batch = _RETRAIN_BATCH.get("id") or reg.batch_id(now)
+    extra = {"retrain_batch_id": batch}
+    incumbent_exists = Path(model_file).exists()
+
+    # ── 1. the comparison ────────────────────────────────────────────────────────────────
+    gate = None
+    try:
+        if not incumbent_exists:
+            gate = decide([], [], [], model_type=mt, incumbent_exists=False)
+        elif basis != "same_holdout" or old_payload is None or test_df is None:
+            gate = decide([], [], [], model_type=mt, same_rows=False)
+            gate["reason"] = (f"EVALUATION_FAILED: champion could not be scored on the "
+                              f"challenger's holdout (basis={basis})")
+        else:
+            payload_new = {"target": target,
+                           "models": {k: v["model"] for k, v in results.items()},
+                           "feature_cols": results[next(iter(results))]["feature_cols"],
+                           "metrics": {k: v["metrics"] for k, v in results.items()}}
+            p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
+            p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
+            y = pd.to_numeric(test_df[target], errors="coerce").to_numpy(dtype=float)
+            gate = decide(y, p_old, p_new, model_type=mt,
+                          leagues=test_df["league"] if "league" in test_df.columns else None,
+                          dates=test_df["date"] if "date" in test_df.columns else None,
+                          same_rows=len(p_old) == len(p_new) == len(test_df))
+    except Exception as e:                                             # noqa: BLE001
+        gate = decide([], [], [], model_type=mt, same_rows=False)
+        gate["reason"] = f"EVALUATION_FAILED: {type(e).__name__}: {str(e)[:160]}"
+
+    # ── 2. identity, artifacts and lineage ───────────────────────────────────────────────
+    try:
+        raw = reg.payload_bytes(results)
+        sha = reg.sha256_bytes(raw)
+        version = reg.make_version(mt, now, sha)
+        champ = reg.stamp_for(mt) if incumbent_exists else {"model_version": ""}
+        reg._version_cache.pop(mt, None)
+        champ_v = champ.get("model_version", "")
+        extra.update(challenger_version=version, champion_version=champ_v)
+
+        dates = pd.to_datetime(valid["date"], errors="coerce") if "date" in valid.columns else None
+        t0 = pd.to_datetime(test_df["date"], errors="coerce").min() if (
+            test_df is not None and "date" in test_df.columns) else None
+        seen = dates[dates < t0] if (dates is not None and t0 is not None) else dates
+        fcols = list(results[next(iter(results))]["feature_cols"])
+        role = {"PROMOTE": "CHAMPION", "SHADOW_MORE": "SHADOW"}.get(gate["verdict"], "REJECTED")
+        manifest = {
+            "model_type": mt, "model_version": version, "retrain_batch_id": batch,
+            "trained_at": reg.iso(now),
+            "training_start": None if seen is None else str(seen.min())[:10],
+            "training_end": None if seen is None else str(seen.max())[:10],
+            "training_cutoff": None if seen is None else str(seen.max())[:10],
+            "training_rows": int(len(valid)), "target": target,
+            "feature_schema_version": hashlib.sha256(
+                "|".join(sorted(map(str, fcols))).encode()).hexdigest()[:12],
+            "n_features": len(fcols),
+            "code_commit_sha": os.getenv("GITHUB_SHA", "")[:12] or "local",
+            "data_version": hashlib.sha256(
+                f"{len(valid)}|{None if dates is None else dates.min()}|"
+                f"{None if dates is None else dates.max()}|"
+                f"{pd.to_numeric(valid[target], errors='coerce').sum()}".encode()
+            ).hexdigest()[:12],
+            "artifact_sha256": sha, "parent_champion_version": champ_v,
+            "validation_metrics": {"holdout": gate.get("challenger_metrics"),
+                                   "champion_same_holdout": gate.get("champion_metrics"),
+                                   "ll_delta": gate.get("ll_delta"), "ll_ci": gate.get("ll_ci"),
+                                   "later_half_ll_delta": gate.get("later_half_ll_delta")},
+            "promotion_status": gate["verdict"], "model_role": role,
+        }
+        if gate["verdict"] == PROMOTE:
+            reg.set_champion(mt, manifest, raw, reason=gate["reason"], batch=batch, at=now,
+                             holdout={**(gate.get("challenger_metrics") or {}),
+                                      "fresh_oos_logloss": gate.get("ll_challenger")})
+            reg.write_metrics_file(mt, results)
+            reg.clear_challenger(mt)
+        else:
+            reg.write_manifest(manifest)
+            if gate["verdict"] == SHADOW:
+                reg.set_challenger(mt, manifest, raw)
+
+        ci = gate.get("ll_ci") or [None, None]
+        reg.record_decision({
+            "retrain_batch_id": batch, "decided_at": reg.iso(now), "model_type": mt,
+            "challenger_version": version, "champion_at_training_time": champ_v,
+            "verdict": gate["verdict"], "promoted": gate["verdict"] == PROMOTE,
+            "champion_after": version if gate["verdict"] == PROMOTE else champ_v,
+            "training_rows": len(valid), "training_start": manifest["training_start"],
+            "training_end": manifest["training_end"],
+            "training_cutoff": manifest["training_cutoff"], "holdout_n": gate.get("holdout_n"),
+            "ll_champion": gate.get("ll_champion"), "ll_challenger": gate.get("ll_challenger"),
+            "ll_delta": gate.get("ll_delta"), "ll_ci_lo": ci[0], "ll_ci_hi": ci[1],
+            "brier_delta": gate.get("brier_delta"), "ece_delta": gate.get("ece_delta"),
+            "later_half_ll_delta": gate.get("later_half_ll_delta"),
+            "league_regressions": json.dumps(gate.get("league_regressions") or []),
+            "safe_to_run": gate.get("safe_to_run"),
+            "better_than_champion": gate.get("better_than_champion"),
+            "comparison_basis": basis, "reason": gate["reason"][:400],
+            "legacy_rule_would_promote": "", "source": "CHAMPION_GATE",
+        })
+        cm = gate.get("champion_metrics") or {}
+        hw = {"champion_version": version if gate["verdict"] == PROMOTE else champ_v,
+              "current_regime": {"holdout_n": gate.get("holdout_n"),
+                                 "log_loss": gate.get("ll_challenger") if gate["verdict"] == PROMOTE
+                                 else cm.get("log_loss"),
+                                 "brier": (gate.get("challenger_metrics") or {}).get("brier")
+                                 if gate["verdict"] == PROMOTE else cm.get("brier"),
+                                 "ece": (gate.get("challenger_metrics") or {}).get("ece")
+                                 if gate["verdict"] == PROMOTE else cm.get("ece"),
+                                 "measured_at": reg.iso(now), "retrain_batch_id": batch},
+              "last_challenger": {"version": version, "verdict": gate["verdict"],
+                                  "ll_delta": gate.get("ll_delta"), "ll_ci": gate.get("ll_ci")}}
+        if gate["verdict"] == PROMOTE:
+            hw["historical"] = {**(gate.get("challenger_metrics") or {}),
+                                "promoted_at": reg.iso(now), "retrain_batch_id": batch}
+        reg.update_high_water(mt, hw)
+    except Exception as e:                                             # noqa: BLE001
+        # Bookkeeping failed. If the verdict was PROMOTE but the atomic swap did not complete,
+        # the serving file is untouched; say so instead of claiming a promotion.
+        log.error(f"  [{label}] lineage/registry step failed ({e})")
+        if gate["verdict"] == PROMOTE:
+            # Report what is ACTUALLY serving: the file's bytes decide, not the intent.
+            try:
+                serving = reg.sha256_file(Path(model_file))
+            except Exception:                                          # noqa: BLE001
+                serving = ""
+            if serving != reg.sha256_bytes(reg.payload_bytes(results)):
+                gate = {**gate, "verdict": "KEEP_CHAMPION",
+                        "reason": f"EVALUATION_FAILED: registry write failed before the serving "
+                                  f"file was swapped ({e}); champion unchanged"}
+    return gate, extra
+
+
 def _record_retrain(label: str, entry: dict) -> None:
     """Append one model's outcome to the run record the Telegram notice reads."""
     try:
@@ -448,7 +682,13 @@ def _record_retrain(label: str, entry: dict) -> None:
 
 def _train_one(valid: "pd.DataFrame", label: str, model_file,
                target: str = "over25", weights=None, feature_cols=None) -> dict:
-    """Train one model and save it IF it is not materially worse than the incumbent.
+    """Train one CHALLENGER and let the champion gate decide whether it serves.
+
+    SINCE 2026-10-18 the decision is `_champion_decision` (src/champion_gate.py): PROMOTE only on
+    a material, confirmed improvement in the SERVED probabilities on the same holdout;
+    KEEP_CHAMPION when worse, tied or unevaluable; SHADOW_MORE when a gain is possible but
+    unproven. The tolerance logic below survives only as `legacy_rule_would_promote`. The history
+    that follows explains how the gate got here.
 
     THE GATE. This path — `pipeline.py --mode train`, which is what retrain.yml actually runs —
     used to call `save_models()` unconditionally, so every retrain overwrote the live model with
@@ -578,17 +818,42 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
                               + ("" if basis == "same_holdout"
                                  else f" [WEAK COMPARISON: {basis}]"))
 
+    # ── CHAMPION HIGH-WATER MARK (owner 2026-10-18) ─────────────────────────────────────────
+    # The rule above is kept only as `legacy_rule_would_promote`, for the audit. It is no longer
+    # the decision. Every retrain is now a CHALLENGER that must EARN production on the served
+    # probabilities, same rows, same labels — see src/champion_gate.py. "Not worse" no longer
+    # promotes; a tie keeps the champion; a possible-but-unproven gain is shadowed.
+    legacy_promote, legacy_why = promote, why
+    gate, gate_extra = _champion_decision(label, model_file, _old_payload, results, _test_df,
+                                          target, basis, valid)
+    promote = gate["verdict"] == "PROMOTE"
+    why = f"{gate['verdict']}: {gate['reason']}"
     if promote:
-        save_models(results, model_file=model_file)
-        log.info(f"  [{label}] PROMOTED — {why}")
+        log.info(f"  [{label}] PROMOTED {gate_extra.get('challenger_version')} — {gate['reason']}")
     else:
-        log.error(f"  [{label}] NOT PROMOTED — {why}. {Path(model_file).name} left untouched; "
-                  f"the incumbent keeps serving.")
+        log.warning(f"  [{label}] {gate['verdict']} — {gate['reason']}. "
+                    f"{Path(model_file).name} left untouched; the champion keeps serving.")
     shadow = _shadow_gate(label, _old_payload, results, _test_df, target, promote, why)
+    served_old, served_new = gate.get("ll_champion"), gate.get("ll_challenger")
     _record_retrain(label, {"promoted": promote, "why": why, "rows": int(len(valid)),
-                            "comparison_basis": basis, "v91_gate": shadow,
-                            "logloss_old": None if old_ll != old_ll else round(old_ll, 5),
-                            "logloss_new": None if new_ll != new_ll else round(new_ll, 5),
+                            "verdict": gate["verdict"], "comparison_basis": basis,
+                            "v91_gate": shadow,
+                            # The SERVED-probability log loss the decision was made on, when the
+                            # gate could compute it; else the old base-model mean (marked).
+                            "logloss_old": served_old if served_old is not None else
+                            (None if old_ll != old_ll else round(old_ll, 5)),
+                            "logloss_new": served_new if served_new is not None else
+                            (None if new_ll != new_ll else round(new_ll, 5)),
+                            "logloss_basis": "served_ensemble" if served_new is not None
+                            else "mean_base_models",
+                            "legacy_mean_ll_old": None if old_ll != old_ll else round(old_ll, 5),
+                            "legacy_mean_ll_new": None if new_ll != new_ll else round(new_ll, 5),
+                            "legacy_rule_would_promote": bool(legacy_promote),
+                            "legacy_rule_reason": legacy_why,
+                            "ll_ci": gate.get("ll_ci"),
+                            "champion_version": gate_extra.get("champion_version"),
+                            "challenger_version": gate_extra.get("challenger_version"),
+                            "retrain_batch_id": gate_extra.get("retrain_batch_id"),
                             "canary": canary})
 
     payload = load_models(model_file=model_file)
@@ -604,6 +869,9 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
 def mode_train() -> tuple:
     log.info("=" * 60)
     log.info("MODE: TRAIN  (standard model + new-format model — separate)")
+    from src import model_registry as _reg
+    _RETRAIN_BATCH["id"] = _reg.batch_id(_reg.utcnow())
+    log.info(f"  retrain batch {_RETRAIN_BATCH['id']} — every model trained now is a CHALLENGER")
     log.info("=" * 60)
 
     log.info("Loading historical data...")
@@ -770,6 +1038,7 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
 
     # BEFORE tips are generated, so the record is of what was believed, not what was acted on.
     _log_shadow(preds)
+    _log_h2h(preds)
 
     # ── Save postponed list ──────────────────────────────────────────────────
     if postponed:

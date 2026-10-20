@@ -1,0 +1,26 @@
+{
+  "model_type": "newformat",
+  "model_version": "newformat_20260922T111451Z_47382e5e",
+  "retrain_batch_id": "rb_2026-09-22_legacy",
+  "trained_at": null,
+  "deployed_at": "2026-09-22T11:14:51Z",
+  "training_start": null,
+  "training_end": null,
+  "training_cutoff": null,
+  "training_rows": 48211,
+  "feature_schema_version": null,
+  "code_commit_sha": "5f9658694f46",
+  "git_commit": "5f9658694f4680ee32c227e54f4c9ae3db5e6313",
+  "artifact_sha256": "47382e5e7ea27d6b2bc137c6748dc12a105b7ea8773c0ed1bbdf2a034b38462e",
+  "parent_champion_version": "newformat_20260830T095822Z_7dad5f0d",
+  "validation_metrics": {
+    "logloss_old": 0.68106,
+    "logloss_new": 0.65773,
+    "basis": null,
+    "v91_gate": null
+  },
+  "promotion_status": "LEGACY_PROMOTED",
+  "model_role": "ARCHIVED",
+  "reconstructed": true,
+  "note": "identity = SHA-256 of the committed bytes; version timestamp is the COMMIT (deploy) time, training time unknown"
+}

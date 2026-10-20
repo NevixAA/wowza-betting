@@ -901,6 +901,27 @@ if _ov:
                    f"closer.** That is the honest state of it, and it stays on this page until "
                    f"it flips.", icon="⚠️")
 
+    # FPL ep_next IS THE BENCHMARK (owner brief 2026-10-19). Pro scores challengers against it on
+    # the same player-gameweeks, walk-forward: does Wowza add anything BEYOND the free number?
+    try:
+        from dashboard_data import pro as _pro
+        _fb = _pro.verdict("output/studies/fantasy_benchmark.json")
+    except Exception:                                                   # noqa: BLE001
+        _fb = {}
+    if _fb:
+        _oos = _fb.get("pooled_out_of_sample") or {}
+        _rows = [{"arm": a, "MAE": (_oos.get(a) or {}).get("mae"), "rank corr": (_oos.get(a) or {}).get("spearman"),
+                  "n": (_oos.get(a) or {}).get("n")} for a in ("FPL_EP_NEXT", "WOWZA", "BLEND_50", "BLEND_WF",
+                                                              "RESIDUAL_WF")]
+        _rows.append({"arm": "V3_CHALLENGER", "MAE": None, "rank corr": None, "n": None})
+        st.markdown(f"**Challengers vs FPL ep_next (out of sample)** — Wowza adds information beyond FPL: "
+                    f"**{_fb.get('WOWZA_ADDS_INFORMATION_BEYOND_FPL', 'n/a')}**. "
+                    f"V3: {_fb.get('V3_CHALLENGER', 'n/a')}.")
+        st.dataframe(pd.DataFrame(_rows), hide_index=True, use_container_width=True)
+        with st.expander("Where each xPts component comes from (MODELLED / OFFICIAL_FPL / HEURISTIC / APPROXIMATION)"):
+            st.dataframe(pd.DataFrame(_fb.get("component_lineage") or []), hide_index=True,
+                         use_container_width=True)
+
     # A chart, not another row of metrics. Two gameweeks of MAE side by side on ONE scale says
     # "we lose, consistently" in a glance; four st.metric tiles make the reader do the compare.
     _bm = _fdata.benchmark()

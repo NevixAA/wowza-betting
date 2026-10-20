@@ -65,7 +65,41 @@ LEDGER_COLS = [
     "result",
     "pnl",
     "notes",
+    # MODEL ATTRIBUTION (champion high-water mark, 2026-10-18). Appended at the END so every
+    # existing reader — all by column name — is unaffected. Rows written before this are blank
+    # and mean UNKNOWN_LEGACY; nothing back-fills a version it cannot prove. The values are the
+    # model at FIRST SIGHT of the tip, matching first-sight canonical analysis; an in-place tier
+    # upgrade does not rewrite them.
+    "model_version",
+    "retrain_batch_id",
+    "training_cutoff",
+    "prediction_role",
 ]
+VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
+
+
+def _version_fields(row, model_key: str | None) -> dict:
+    """The attribution of one ledger row: from the stamped predictions row when present (the
+    exact model predict loaded), else looked up for `model_key`. Never raises."""
+    try:
+        if str(row.get("model_version", "") or "") not in ("", "nan"):
+            return {k: str(row.get(k, "") or "") for k in VERSION_FIELDS}
+        from src import model_registry as reg
+        if model_key:
+            return dict(reg.stamp_for(model_key))
+    except Exception:                                                 # noqa: BLE001
+        pass
+    return {"model_version": "UNKNOWN_LEGACY", "retrain_batch_id": "", "training_cutoff": "",
+            "prediction_role": "CHAMPION"}
+
+
+def _ou_key(model_type_tag) -> str:
+    """O/U row -> the model that scored it, including predict's fallbacks."""
+    try:
+        from src import model_registry as reg
+        return reg.ou_model_for(str(model_type_tag))
+    except Exception:                                                 # noqa: BLE001
+        return "standard"
 
 
 def _kelly_pct(edge: float, odds: float) -> float:
@@ -259,6 +293,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "result":       "",
             "pnl":          "",
             "notes":        "",
+            **_version_fields(row, _ou_key(row.get("model_type", ""))),
         })
 
     if flips:
@@ -282,6 +317,8 @@ SIDE_LEDGER_COLS = [
     # generator has always been one-sided.
     "home_team", "away_team", "market", "side", "odds", "edge_pct", "ev_pct",
     "model_prob", "signal_tier", "model_type", "closing_odds", "clv_pct", "result", "pnl", "notes",
+    # model attribution, appended (2026-10-18) — see LEDGER_COLS
+    *VERSION_FIELDS,
 ]
 _SIDE_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
 
@@ -356,6 +393,8 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "signal_tier": tier,
             "model_type": str(row.get("model_type", "")) or config.model_type_for_league(row.get("league", "")),
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
+            # side rows are built from a column subset, so look the market's model up directly
+            **_version_fields({}, market),
         })
 
     if not new_rows and not upgrades:
@@ -378,6 +417,8 @@ HT_LEDGER_COLS = [
     # confidence instead of measuring the market. These four close that gap.
     "odds", "edge_pct", "signal_tier", "model_type",
     "entry_odds", "closing_odds", "clv_pct", "result", "pnl", "notes",
+    # model attribution, appended (2026-10-18) — see LEDGER_COLS
+    *VERSION_FIELDS,
 ]
 
 #: Informational only. HT is PAPER — these labels let HT be read on the same axis as the other
@@ -495,6 +536,7 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
             "signal_tier": _ht_tier(edge), "model_type": "ht",
             "entry_odds": round(mkt_odds, 3) if mkt_odds else "",
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
+            **_version_fields({}, "ht_over15" if market.endswith("15") else "ht_over05"),
         })
     if not new_rows:
         return
