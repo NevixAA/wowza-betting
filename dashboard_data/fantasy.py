@@ -222,3 +222,80 @@ def team_history() -> dict:
                                                   "pl_team_history.parquet"),
             "coverage": {c: float(d[c].notna().mean())
                          for c in ("shots", "corners", "possession") if c in d.columns}}
+
+
+# ── Fantasy V2 artifacts (precomputed by player_model.fantasy_v2 in fantasy_refresh.yml) ─────
+# Every reader below projects columns and touches only small CSV/JSON files. Nothing here
+# imports the model stack, reads player_history.parquet, or computes freshness from mtime.
+
+#: columns the V2 page actually renders — projected at read time to keep memory flat
+V2_COLUMNS = [
+    "rank", "pos_rank", "element", "player_name", "web_name", "team", "team_id", "position",
+    "price", "status", "chance_next_f", "news", "ownership", "net_transfers_k", "fpl_ep_next",
+    "wowza_residual", "residual_applied", "final_xpts", "v2_candidate_xpts",
+    "adj_calibration", "adj_availability", "adj_minutes", "adj_attacking_role", "adj_fixture",
+    "adj_wowza_projection", "adj_base", "p_0", "p_1_59", "p_60", "p_start", "p_play",
+    "exp_minutes", "goal_prob", "assist_prob", "cs_prob", "team_cs_prob", "exp_bonus",
+    "team_goal_exp", "median", "p25", "p75", "p90", "ceiling", "sd", "p_blank", "p6", "p10",
+    "p15", "uncertainty_score", "uncertainty", "minutes_disagreement", "confidence", "risk",
+    "xg90", "xa90", "pen_first", "set_piece", "n_fix", "fdr", "next_fixture", "fixture_run",
+    "fdr_run", "xpts_3gw", "xpts_5gw", "value_per_m", "value_5gw_per_m",
+    "cand_p6", "cand_p10", "cand_p15", "cand_p90"]
+
+
+def v2_projections() -> pd.DataFrame:
+    return read_csv(OUT / "fantasy_v2_projections.csv", usecols=lambda c: c in set(V2_COLUMNS))
+
+
+def v2_summary() -> dict:
+    return read_json(OUT / "fantasy_v2_summary.json")
+
+
+def v2_benchmark() -> dict:
+    return read_json(OUT / "fantasy_v2_benchmark.json")
+
+
+def v2_transfers() -> pd.DataFrame:
+    return read_csv(OUT / "fantasy_v2_transfers.csv")
+
+
+def v2_fixture_matrix() -> pd.DataFrame:
+    return read_csv(OUT / "fantasy_v2_fixture_matrix.csv")
+
+
+def v2_fpl_age_hours() -> float | None:
+    """Age of the FPL bootstrap NOW, from the recorded fetch time in the sidecar (never mtime).
+    None = unknown, which callers must treat as stale."""
+    import time
+    try:
+        ts = read_json(OUT / "fpl_cache_meta.json").get("fpl_bootstrap.json")
+        return (time.time() - float(ts)) / 3600.0 if ts else None
+    except Exception:                                                # noqa: BLE001
+        return None
+
+
+def v2_benchmark_table(bench: dict, population: str = "ACTIVE", final_only: bool = False) -> pd.DataFrame:
+    """One row per arm: MAE, RMSE, Spearman, bias, n, gameweeks, top-10 overlap (mean per GW).
+
+    FPL is ALWAYS a row and always first. A benchmark that hides the champion when it wins is not
+    a benchmark; this table exists precisely so a reader can see FPL winning when it does.
+    """
+    sc = ((bench or {}).get("scores") or {}).get(population) or {}
+    if not sc:
+        return pd.DataFrame()
+    pooled = sc.get("pooled_final_only" if final_only else "pooled") or {}
+    gws = [r for r in sc.get("by_gw", []) if (r.get("status") == "FINAL" or not final_only)]
+    names = {"FPL": "FPL ep_next (baseline)", "LINEAR": "V2: FPL + linear residual",
+             "RIDGE": "FPL + ridge residual", "HGB": "FPL + gradient-boosting residual",
+             "WOWZA": "Old Wowza standalone"}
+    rows = []
+    for arm in ("FPL", "LINEAR", "RIDGE", "HGB", "WOWZA"):
+        m = pooled.get(arm) or {}
+        if "mae" not in m:
+            continue
+        ov = [r.get(arm, {}).get("top10_overlap") for r in gws if r.get(arm, {}).get("top10_overlap") is not None]
+        rows.append({"arm": arm, "model": names.get(arm, arm), "MAE": m.get("mae"),
+                     "RMSE": m.get("rmse"), "Spearman": m.get("spearman"), "bias": m.get("bias"),
+                     "n": m.get("n"), "GWs": ", ".join(str(r["gw"]) for r in gws),
+                     "top-10 overlap /10": (round(sum(ov) / len(ov), 1) if ov else None)})
+    return pd.DataFrame(rows)
