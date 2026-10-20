@@ -35,23 +35,23 @@ These match Pro's figures exactly, and FPL won every gameweek. A regression test
 
 ## 4. Where the old Wowza +1 bias came from
 
-The breakdown covers 882 player-gameweeks of the old projection across GW4–7. Wowza bias is **+1.05**; FPL bias is −0.14.
+The breakdown covers 901 player-gameweeks of the old projection across GW4–7 (GW7 provisional). Wowza bias is **+1.04**; FPL bias is −0.15.
 
 | actual minutes | n | Wowza bias | share of total bias |
 |---|---|---|---|
-| 0 | 435 | +1.43 | **67%** |
-| 1–59 | 139 | +2.10 | **31%** |
-| 60+ | 308 | +0.06 | 2% |
+| 0 | 448 | +1.41 | **68%** |
+| 1–59 | 144 | +2.03 | **31%** |
+| 60+ | 309 | +0.04 | 1% |
 
-* **It is a minutes problem, not a points problem.** For players who actually played 60+ minutes the projection is almost unbiased (+0.06).
-* Mean `p_start` was 0.60, but only 51% of players played at all and 35% played 60+.
+* **It is a minutes problem, not a points problem.** For players who actually played 60+ minutes the projection is almost unbiased (+0.04).
+* Mean `p_start` was 0.59, but only 50% of players played at all and 34% played 60+.
 * The conditional projection is a full-match number (4.6 for 60+ players, against 4.1 actually scored). Applied to substitutes, it credits clean sheets and appearance points they cannot earn.
-* By position, defenders (+1.48) and goalkeepers (+1.39) carry 72% of the bias. That is clean-sheet points paid to players who did not play 60.
-* 271 of the 882 rows were players with **no Premier League minutes yet** this season.
+* By position, defenders (+1.45) and goalkeepers (+1.40) carry 72% of the bias. That is clean-sheet points paid to players who did not play 60.
+* 280 of the 901 rows were players with **no Premier League minutes yet** this season.
 * Smaller effects:
-  * By price, cheap players (≤ £5.0m) are 71% of the bias.
-  * By FDR, bias rises from +0.65 at FDR 2 to +1.54 at FDR 5.
-  * Home and away are about equal (+0.99 / +1.13).
+  * By price, cheap players (≤ £5.0m) are 70% of the bias.
+  * By FDR, bias rises from +0.60 at FDR 2 to +1.54 at FDR 5.
+  * Home and away are about equal (+0.96 / +1.13).
   * By club, Sunderland (+2.35) is the highest and Brighton (−0.38) the lowest.
 
 Section 7 shows that the minutes mixture fixes this specific failure.
@@ -113,13 +113,13 @@ fantasy_projection_log.csv ┘ (archive)   (pre-deadline features   (arms, minut
 
 | arm | n | MAE | RMSE | Spearman | bias | GWs |
 |---|---|---|---|---|---|---|
-| FPL ep_next | 1231 | 1.842 | 2.944 | 0.539 | −0.018 | 5, 6, 7* |
-| **LINEAR (V2)** | 1231 | **1.710** | **2.599** | **0.585** | +0.033 | 5, 6, 7* |
-| RIDGE | 1231 | 1.783 | 2.748 | 0.532 | −0.019 | 5, 6, 7* |
-| HGB | 1231 | 1.816 | 2.764 | 0.532 | +0.051 | 5, 6, 7* |
-| Old Wowza (where published) | 398 | 2.357 | 3.119 | 0.427 | +1.082 | 5, 6, 7* |
+| FPL ep_next | 1275 | 1.848 | 2.951 | 0.532 | +0.007 | 5, 6, 7* |
+| **LINEAR (V2)** | 1275 | **1.708** | **2.593** | **0.580** | +0.044 | 5, 6, 7* |
+| RIDGE | 1275 | 1.786 | 2.745 | 0.526 | +0.005 | 5, 6, 7* |
+| HGB | 1275 | 1.817 | 2.756 | 0.527 | +0.072 | 5, 6, 7* |
+| Old Wowza (where published) | 408 | 2.346 | 3.111 | 0.432 | +1.074 | 5, 6, 7* |
 
-\* GW7 is provisional. **Completed gameweeks only (5–6, n=839):**
+\* GW7 is provisional: every fixture has been played, but FPL has not yet set `data_checked`. **Completed gameweeks only (5–6, n=839):**
 
 | arm | MAE | RMSE | Spearman | bias | MAE − FPL, 90% CI | RMSE − FPL, 90% CI |
 |---|---|---|---|---|---|---|
@@ -136,50 +136,48 @@ The CIs are a player-cluster bootstrap with 2,000 resamples.
 |---|---|---|---|---|
 | 5 | 1.815 | 1.756 | 1.835 | 1.887 |
 | 6 | 1.783 | 1.654 | 1.743 | 1.756 |
-| 7 (provisional) | 1.935 | 1.722 | 1.773 | 1.806 |
+| 7 (provisional) | 1.944 | 1.716 | 1.783 | 1.810 |
 
 LINEAR beats FPL on MAE and RMSE in all three gameweeks.
 
-**LEDGER population** (the players the old projection covered, n=398, the published head-to-head):
+**LEDGER population** (the players the old projection covered, the published head-to-head):
 
-* LINEAR MAE 1.631 vs FPL 1.676 (−0.045, CI −0.136 to +0.049).
-* RMSE 2.620 vs 2.757 (−0.137, CI −0.264 to −0.021).
-* Spearman 0.633 vs 0.605.
-* Not a clear MAE win: GW5 and GW6 better, GW7 worse.
+* Pooled with GW7 (n=408): LINEAR MAE 1.624 vs FPL 1.679, RMSE 2.621 vs 2.770, Spearman 0.632 vs 0.599. LINEAR is lower on MAE in all three gameweeks (GW7 by only 0.02).
+* Completed gameweeks only (n=320): MAE −0.064 (CI −0.171 to +0.039) and RMSE −0.110 (CI −0.243 to +0.021). Neither CI excludes zero, so this is not yet a demonstrated win.
 
-**Decisions (top-k).** Top-10 overlap and "mean actual points of the top 15 by projection" are mixed. FPL was better in GW5 (5.13 vs 4.33 points), LINEAR in GW6 (3.6 vs 3.4) and GW7 (4.67 vs 3.47). Three gameweeks cannot show a ranking improvement, so I make **no decision-quality claim**.
+**Decisions (top-k).** Top-10 overlap and "mean actual points of the top 15 by projection" are mixed. FPL was better in GW5 (5.13 vs 4.33 points), LINEAR in GW6 (3.6 vs 3.4) and GW7 (4.40 vs 3.07). Three gameweeks cannot show a ranking improvement, so I make **no decision-quality claim**.
 
 **What the residual is actually correcting: FPL's `ep_next` is over-dispersed.**
 
 | ep_next band | n | mean ep_next | mean actual | mean V2 |
 |---|---|---|---|---|
-| ≤ 0.5 | 422 | 0.20 | 0.77 | 0.70 |
-| 0.5–2 | 363 | 1.35 | 2.14 | 2.07 |
-| 2–4 | 234 | 3.10 | 3.04 | 3.07 |
-| 4–6 | 131 | 5.13 | 3.78 | 3.84 |
-| > 6 | 80 | **7.74** | **3.84** | 4.82 |
+| ≤ 0.5 | 436 | 0.20 | 0.76 | 0.70 |
+| 0.5–2 | 374 | 1.36 | 2.15 | 2.07 |
+| 2–4 | 241 | 3.10 | 3.01 | 3.07 |
+| 4–6 | 139 | 5.12 | 3.75 | 3.83 |
+| > 6 | 84 | **7.73** | **3.70** | 4.77 |
 
-`ep_next` behaves like recent form. Players above 6 averaged half of it. The overall bias is ≈ 0 because the over-estimates at the top cancel the under-estimates at the bottom. A near-zero bias therefore hid a slope error. The linear residual's coefficient on `ep_next` is −0.88 (fitted on every settled gameweek), so the slope is ≈ 0.12 before the other features. A recalibration of `ep_next` alone (a + b·ep) captures part of the RMSE gain and little of the MAE gain (GW5–7 MAE 1.83/1.76/1.90 vs FPL 1.82/1.78/1.94, measured before the zero floor). The rest comes from minutes evidence.
+`ep_next` behaves like recent form. Players above 6 averaged half of it. The overall bias is ≈ 0 because the over-estimates at the top cancel the under-estimates at the bottom. A near-zero bias therefore hid a slope error. The linear residual's coefficient on `ep_next` is −0.89 (fitted on every settled gameweek), so the slope is ≈ 0.11 before the other features. A recalibration of `ep_next` alone (a + b·ep) captures part of the RMSE gain and little of the MAE gain (GW5–7 MAE 1.83/1.76/1.90 vs FPL 1.82/1.78/1.94, measured before the zero floor). The rest comes from minutes evidence.
 
-**Distribution and minutes calibration** (walk-forward, FPL mean, n=1231):
+**Distribution and minutes calibration** (walk-forward, FPL mean, n=1275):
 
 * **Minutes mixture vs the heuristic** (chance × usage rate):
-  * Log-loss 0.687 vs 0.887.
-  * Brier for P(plays) 0.126 vs 0.169.
-  * Brier for P(60+) 0.118 vs 0.139.
-* **Against the old Wowza `p_start`, on its own players:** Brier for P(plays) 0.125 vs 0.156. This is the bias in section 4, fixed.
+  * Log-loss 0.689 vs 0.897.
+  * Brier for P(plays) 0.126 vs 0.168.
+  * Brier for P(60+) 0.119 vs 0.140.
+* **Against the old Wowza `p_start`, on its own players (n=408):** Brier for P(plays) 0.126 vs 0.156. This is the bias in section 4, fixed.
 * **Goals, assists, clean sheets** (Brier, model vs climatology):
-  * P(goal) 0.0513 vs 0.0565.
-  * P(assist) 0.0557 vs 0.0572.
-  * Defender and keeper clean sheet 0.125 vs 0.129.
+  * P(goal) 0.0516 vs 0.0567.
+  * P(assist) 0.0567 vs 0.0581.
+  * Defender and keeper clean sheet 0.122 vs 0.126.
   * These are small but real gains.
-* **Expected bonus does not beat a constant** (RMSE 0.590 vs 0.577). It is shown, but not trusted.
-* **Intervals.** Actual points were inside P25–P75 (inclusive) 68% of the time. They were above P90 13% of the time with the FPL mean and 11% with the V2 mean.
-* **Upper tail.** It is too fat around the FPL mean: predicted P(15+) is 1.9% against 0.5% observed, and P(10+) is 4.2% against 3.0%. With the V2 mean: P(15+) 1.1% and P(10+) 3.4%. This is the over-dispersion of `ep_next` flowing into the tails. The dashboard says to read upside probabilities as a ranking.
+* **Expected bonus does not beat a constant** (RMSE 0.590 vs 0.576). It is shown, but not trusted.
+* **Intervals.** Actual points were inside P25–P75 (inclusive) 68% of the time. They were above P90 13% of the time with the FPL mean and 11% with the V2 mean (target ≤ 10%).
+* **Upper tail.** It is too fat around the FPL mean: predicted P(15+) is 1.9% against 0.5% observed, and P(10+) is 4.2% against 2.9%. With the V2 mean: P(15+) 1.1% and P(10+) 3.4%. This is the over-dispersion of `ep_next` flowing into the tails. The dashboard says to read upside probabilities as a ranking.
 
 ## 7. Feature importance
 
-* **LINEAR, permutation on GW7** (RMSE increase when the group is shuffled): minutes 0.159, attacking role 0.053, availability 0.021, fixture 0.019, calibration 0.012, old Wowza projection 0.003.
+* **LINEAR, permutation on GW7** (RMSE increase when the group is shuffled): minutes 0.142, attacking role 0.065, calibration 0.031, availability 0.014, fixture 0.010, old Wowza projection 0.004.
 * **RIDGE and HGB:** the "value/recency" group dominates (form, points last gameweek, ownership, price), then minutes, then attack. Fixture context is the weakest group in every model.
 * **The old Wowza projection adds nothing beyond the other evidence.** Its gap feature has a coefficient of about −0.07, and its permutation importance is about 0.
 
