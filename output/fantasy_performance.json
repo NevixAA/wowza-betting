@@ -66,41 +66,64 @@
       "top10_overlap_wowza": 2,
       "top10_overlap_fpl": 3,
       "top10_of": 10
+    },
+    {
+      "gw": 7,
+      "n": 152,
+      "wowza": {
+        "n": 152,
+        "mae": 1.886,
+        "rmse": 2.7371,
+        "spearman": 0.4959,
+        "bias": 1.3571
+      },
+      "fpl_ep_next": {
+        "n": 152,
+        "mae": 0.6704,
+        "rmse": 1.8663,
+        "spearman": 0.6616,
+        "bias": -0.0401
+      },
+      "wowza_better_mae": false,
+      "top10_overlap_wowza": 3,
+      "top10_overlap_fpl": 4,
+      "top10_of": 10
     }
   ],
   "overall": {
     "wowza": {
-      "n": 724,
-      "mae": 2.0375,
-      "rmse": 2.8432,
-      "spearman": 0.5761,
-      "bias": 1.0118
+      "n": 876,
+      "mae": 2.0112,
+      "rmse": 2.825,
+      "spearman": 0.5778,
+      "bias": 1.0717
     },
     "wowza_conditional": {
-      "n": 724,
-      "mae": 3.4826,
-      "rmse": 3.8657,
-      "spearman": 0.2178,
-      "bias": 2.6311
+      "n": 876,
+      "mae": 3.5443,
+      "rmse": 3.9055,
+      "spearman": 0.2238,
+      "bias": 2.7625
     },
     "fpl_ep_next": {
-      "n": 724,
-      "mae": 1.357,
-      "rmse": 2.4028,
-      "spearman": 0.7313,
-      "bias": -0.093
+      "n": 876,
+      "mae": 1.2379,
+      "rmse": 2.3186,
+      "spearman": 0.7396,
+      "bias": -0.0838
     }
   },
   "wowza_column": "proj_uncond",
   "wowza_conditional_column": "proj_fixture_adj",
-  "actual_zero_share": 0.5152,
+  "actual_zero_share": 0.5582,
   "verdict": "FPL ep_next beats Wowza on MAE",
-  "mae_gap": 0.6805,
+  "mae_gap": 0.7733,
   "meta": {
     "settled_gameweeks": [
       4,
       5,
-      6
+      6,
+      7
     ],
     "unsettleable": [
       {
