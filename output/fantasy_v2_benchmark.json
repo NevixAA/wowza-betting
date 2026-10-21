@@ -56,39 +56,39 @@
    },
    "pooled_final_only": {
     "FPL": {
-     "n": 839,
-     "mae": 1.7989,
-     "rmse": 2.9022,
-     "spearman": 0.5651,
-     "bias": -0.0399
+     "n": 1275,
+     "mae": 1.8484,
+     "rmse": 2.9506,
+     "spearman": 0.5321,
+     "bias": 0.0067
     },
     "WOWZA": {
-     "n": 320,
-     "mae": 2.3547,
-     "rmse": 3.1081,
-     "spearman": 0.4136,
-     "bias": 1.0313
+     "n": 408,
+     "mae": 2.3463,
+     "rmse": 3.1111,
+     "spearman": 0.4315,
+     "bias": 1.0743
     },
     "LINEAR": {
-     "n": 839,
-     "mae": 1.7039,
-     "rmse": 2.6216,
-     "spearman": 0.5931,
-     "bias": 0.0158
+     "n": 1275,
+     "mae": 1.708,
+     "rmse": 2.5927,
+     "spearman": 0.5802,
+     "bias": 0.0438
     },
     "RIDGE": {
-     "n": 839,
-     "mae": 1.7881,
-     "rmse": 2.7738,
-     "spearman": 0.5361,
-     "bias": -0.0409
+     "n": 1275,
+     "mae": 1.7862,
+     "rmse": 2.7445,
+     "spearman": 0.5263,
+     "bias": 0.0045
     },
     "HGB": {
-     "n": 839,
-     "mae": 1.8201,
-     "rmse": 2.8043,
-     "spearman": 0.5408,
-     "bias": 0.0253
+     "n": 1275,
+     "mae": 1.8168,
+     "rmse": 2.756,
+     "spearman": 0.5271,
+     "bias": 0.0717
     }
    },
    "by_gw": [
@@ -196,7 +196,7 @@
     },
     {
      "gw": 7,
-     "status": "PROVISIONAL",
+     "status": "FINAL",
      "n": 436,
      "train_gws": "4,5,6",
      "FPL": {
@@ -306,60 +306,60 @@
    },
    "vs_fpl_final_only": {
     "WOWZA": {
-     "n": 320,
-     "mae_minus_fpl": 0.5916,
+     "n": 408,
+     "mae_minus_fpl": 0.6671,
      "mae_ci90": [
-      0.3944,
-      0.7839
+      0.479,
+      0.8535
      ],
-     "rmse_minus_fpl": 0.3174,
+     "rmse_minus_fpl": 0.3415,
      "rmse_ci90": [
-      0.0969,
-      0.519
+      0.1474,
+      0.5207
      ],
-     "spearman_minus_fpl": -0.1942
+     "spearman_minus_fpl": -0.1671
     },
     "LINEAR": {
-     "n": 839,
-     "mae_minus_fpl": -0.095,
+     "n": 1275,
+     "mae_minus_fpl": -0.1404,
      "mae_ci90": [
-      -0.1567,
-      -0.0321
+      -0.1994,
+      -0.0825
      ],
-     "rmse_minus_fpl": -0.2806,
+     "rmse_minus_fpl": -0.3579,
      "rmse_ci90": [
-      -0.3802,
-      -0.1886
+      -0.4522,
+      -0.272
      ],
-     "spearman_minus_fpl": 0.028
+     "spearman_minus_fpl": 0.0481
     },
     "RIDGE": {
-     "n": 839,
-     "mae_minus_fpl": -0.0108,
+     "n": 1275,
+     "mae_minus_fpl": -0.0622,
      "mae_ci90": [
-      -0.0556,
-      0.035
+      -0.102,
+      -0.0234
      ],
-     "rmse_minus_fpl": -0.1284,
+     "rmse_minus_fpl": -0.2061,
      "rmse_ci90": [
-      -0.1818,
-      -0.0742
+      -0.26,
+      -0.1561
      ],
-     "spearman_minus_fpl": -0.029
+     "spearman_minus_fpl": -0.0058
     },
     "HGB": {
-     "n": 839,
-     "mae_minus_fpl": 0.0212,
+     "n": 1275,
+     "mae_minus_fpl": -0.0316,
      "mae_ci90": [
-      -0.0356,
-      0.0796
+      -0.0797,
+      0.0178
      ],
-     "rmse_minus_fpl": -0.0979,
+     "rmse_minus_fpl": -0.1946,
      "rmse_ci90": [
-      -0.1696,
-      -0.028
+      -0.2598,
+      -0.1336
      ],
-     "spearman_minus_fpl": -0.0243
+     "spearman_minus_fpl": -0.005
     }
    }
   },
@@ -404,39 +404,39 @@
    },
    "pooled_final_only": {
     "FPL": {
-     "n": 320,
-     "mae": 1.7631,
-     "rmse": 2.7907,
-     "spearman": 0.6078,
-     "bias": -0.1956
+     "n": 408,
+     "mae": 1.6792,
+     "rmse": 2.7696,
+     "spearman": 0.5986,
+     "bias": -0.2346
     },
     "WOWZA": {
-     "n": 320,
-     "mae": 2.3547,
-     "rmse": 3.1081,
-     "spearman": 0.4136,
-     "bias": 1.0313
+     "n": 408,
+     "mae": 2.3463,
+     "rmse": 3.1111,
+     "spearman": 0.4315,
+     "bias": 1.0743
     },
     "LINEAR": {
-     "n": 320,
-     "mae": 1.6993,
-     "rmse": 2.681,
-     "spearman": 0.6168,
-     "bias": -0.171
+     "n": 408,
+     "mae": 1.6244,
+     "rmse": 2.6209,
+     "spearman": 0.6321,
+     "bias": -0.1271
     },
     "RIDGE": {
-     "n": 320,
-     "mae": 1.7587,
-     "rmse": 2.7041,
-     "spearman": 0.5894,
-     "bias": -0.0958
+     "n": 408,
+     "mae": 1.6653,
+     "rmse": 2.6489,
+     "spearman": 0.6067,
+     "bias": -0.0822
     },
     "HGB": {
-     "n": 320,
-     "mae": 1.8553,
-     "rmse": 2.7841,
-     "spearman": 0.5616,
-     "bias": 0.0271
+     "n": 408,
+     "mae": 1.7499,
+     "rmse": 2.7104,
+     "spearman": 0.5695,
+     "bias": 0.0102
     }
    },
    "by_gw": [
@@ -544,7 +544,7 @@
     },
     {
      "gw": 7,
-     "status": "PROVISIONAL",
+     "status": "FINAL",
      "n": 88,
      "train_gws": "4,5,6",
      "FPL": {
@@ -654,60 +654,60 @@
    },
    "vs_fpl_final_only": {
     "WOWZA": {
-     "n": 320,
-     "mae_minus_fpl": 0.5916,
+     "n": 408,
+     "mae_minus_fpl": 0.6671,
      "mae_ci90": [
-      0.3944,
-      0.7839
+      0.479,
+      0.8535
      ],
-     "rmse_minus_fpl": 0.3174,
+     "rmse_minus_fpl": 0.3415,
      "rmse_ci90": [
-      0.0969,
-      0.519
+      0.1474,
+      0.5207
      ],
-     "spearman_minus_fpl": -0.1942
+     "spearman_minus_fpl": -0.1671
     },
     "LINEAR": {
-     "n": 320,
-     "mae_minus_fpl": -0.0638,
+     "n": 408,
+     "mae_minus_fpl": -0.0548,
      "mae_ci90": [
-      -0.1706,
-      0.0387
+      -0.1449,
+      0.0395
      ],
-     "rmse_minus_fpl": -0.1097,
+     "rmse_minus_fpl": -0.1487,
      "rmse_ci90": [
-      -0.2429,
-      0.0208
+      -0.2772,
+      -0.0311
      ],
-     "spearman_minus_fpl": 0.009
+     "spearman_minus_fpl": 0.0335
     },
     "RIDGE": {
-     "n": 320,
-     "mae_minus_fpl": -0.0044,
+     "n": 408,
+     "mae_minus_fpl": -0.0139,
      "mae_ci90": [
-      -0.0886,
-      0.0764
+      -0.0862,
+      0.0565
      ],
-     "rmse_minus_fpl": -0.0866,
+     "rmse_minus_fpl": -0.1207,
      "rmse_ci90": [
-      -0.1912,
-      0.0141
+      -0.2114,
+      -0.0291
      ],
-     "spearman_minus_fpl": -0.0184
+     "spearman_minus_fpl": 0.0081
     },
     "HGB": {
-     "n": 320,
-     "mae_minus_fpl": 0.0922,
+     "n": 408,
+     "mae_minus_fpl": 0.0707,
      "mae_ci90": [
-      -0.0111,
-      0.1943
+      -0.0169,
+      0.1575
      ],
-     "rmse_minus_fpl": -0.0066,
+     "rmse_minus_fpl": -0.0592,
      "rmse_ci90": [
-      -0.1275,
-      0.1142
+      -0.1657,
+      0.0429
      ],
-     "spearman_minus_fpl": -0.0462
+     "spearman_minus_fpl": -0.0291
     }
    }
   }
@@ -715,48 +715,39 @@
  "acceptance": {
   "LINEAR": {
    "arm": "LINEAR",
-   "decision": "NO-GO",
-   "final_oos_gws": 2,
-   "gameweeks_mae_won": 2,
-   "reasons": [
-    "only 2 FINAL out-of-sample gameweek(s); the rule needs 3",
-    "no consistent within-gameweek ranking improvement"
-   ]
+   "decision": "GO",
+   "final_oos_gws": 3,
+   "gameweeks_mae_won": 3,
+   "reasons": []
   },
   "RIDGE": {
    "arm": "RIDGE",
-   "decision": "NO-GO",
-   "final_oos_gws": 2,
-   "gameweeks_mae_won": 1,
+   "decision": "GO",
+   "final_oos_gws": 3,
+   "gameweeks_mae_won": 2,
    "reasons": [
-    "only 2 FINAL out-of-sample gameweek(s); the rule needs 3",
     "no consistent within-gameweek ranking improvement"
    ]
   },
   "HGB": {
    "arm": "HGB",
-   "decision": "NO-GO",
-   "final_oos_gws": 2,
-   "gameweeks_mae_won": 1,
+   "decision": "GO",
+   "final_oos_gws": 3,
+   "gameweeks_mae_won": 2,
    "reasons": [
-    "only 2 FINAL out-of-sample gameweek(s); the rule needs 3",
-    "MAE +0.021 vs FPL (must be <= 0)",
     "no consistent within-gameweek ranking improvement"
    ]
   }
  },
  "decision": {
   "replace_old_wowza_projection_with_fpl_anchored_v2": "GO",
-  "apply_residual_to_mean": "NO-GO",
+  "apply_residual_to_mean": "GO",
   "detail": {
    "arm": "LINEAR",
-   "decision": "NO-GO",
-   "final_oos_gws": 2,
-   "gameweeks_mae_won": 2,
-   "reasons": [
-    "only 2 FINAL out-of-sample gameweek(s); the rule needs 3",
-    "no consistent within-gameweek ranking improvement"
-   ]
+   "decision": "GO",
+   "final_oos_gws": 3,
+   "gameweeks_mae_won": 3,
+   "reasons": []
   },
   "residual_mode": "shadow",
   "applied": false
@@ -767,21 +758,22 @@
   "gameweeks": [
    4,
    5,
-   6
+   6,
+   7
   ],
   "WOWZA": {
-   "n": 724,
-   "mae": 2.0375,
-   "rmse": 2.8432,
-   "spearman": 0.5761,
-   "bias": 1.0118
+   "n": 876,
+   "mae": 2.0112,
+   "rmse": 2.825,
+   "spearman": 0.5778,
+   "bias": 1.0717
   },
   "FPL": {
-   "n": 724,
-   "mae": 1.357,
-   "rmse": 2.4028,
-   "spearman": 0.7313,
-   "bias": -0.093
+   "n": 876,
+   "mae": 1.2379,
+   "rmse": 2.3186,
+   "spearman": 0.7396,
+   "bias": -0.0838
   },
   "fpl_won_every_gw": true,
   "by_gw": [
@@ -837,6 +829,24 @@
      "rmse": 1.4822,
      "spearman": 0.7312,
      "bias": 0.0054
+    }
+   },
+   {
+    "gw": 7,
+    "n": 152,
+    "WOWZA": {
+     "n": 152,
+     "mae": 1.886,
+     "rmse": 2.7371,
+     "spearman": 0.4959,
+     "bias": 1.3571
+    },
+    "FPL": {
+     "n": 152,
+     "mae": 0.6704,
+     "rmse": 1.8663,
+     "spearman": 0.6616,
+     "bias": -0.0401
     }
    }
   ]
@@ -1636,7 +1646,7 @@
    },
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Brian Brobbey",
     "team": "Sunderland",
     "position": "FWD",
@@ -1651,7 +1661,7 @@
    },
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Jordan Henderson",
     "team": "Chelsea",
     "position": "MID",
@@ -1666,7 +1676,7 @@
    },
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Jay Dasilva",
     "team": "Coventry City",
     "position": "DEF",
@@ -1681,7 +1691,7 @@
    },
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Antoine Semenyo",
     "team": "Man City",
     "position": "MID",
@@ -1696,7 +1706,7 @@
    },
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Matheus Santos Carneiro da Cunha",
     "team": "Man Utd",
     "position": "MID",
@@ -1728,7 +1738,7 @@
   "hurts": [
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Johan Manzambi",
     "team": "Aston Villa",
     "position": "MID",
@@ -1743,7 +1753,7 @@
    },
    {
     "gw": 7,
-    "status": "PROVISIONAL",
+    "status": "FINAL",
     "player_name": "Luka Vu\u0161kovi\u0107",
     "team": "Brighton",
     "position": "DEF",
