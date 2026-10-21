@@ -1,17 +1,17 @@
 {
-  "checked_at": "2026-10-20T09:06:42Z",
-  "run_number": "66",
+  "checked_at": "2026-10-21T09:04:16Z",
+  "run_number": "67",
   "gate": {
     "collect": "true",
-    "newest_before": "2026-10-19",
+    "newest_before": "2026-10-20",
     "age_days": "1",
-    "hours_since_commit": "23.4"
+    "hours_since_commit": "23.8"
   },
   "collect_outcome": "success",
-  "last_collect_at": "2026-10-20T09:06:42Z",
+  "last_collect_at": "2026-10-21T09:04:16Z",
   "parquet": {
-    "rows": 864971,
-    "newest_after": "2026-10-20"
+    "rows": 865759,
+    "newest_after": "2026-10-21"
   },
   "collect_log_tail": [
     "  [Norway Eliteserien 2026] 2960 player-match rows collected",
@@ -29,13 +29,13 @@
     "  [Japan J-League 2027] 99 fixtures (99 cached, 0 to fetch)...",
     "  [Japan J-League 2027] 2969 player-match rows collected",
     "  [Ligue 2 2026] Fetching fixture list (last 99)...",
-    "  [Ligue 2 2026] 81 fixtures (80 cached, 1 to fetch)...",
+    "  [Ligue 2 2026] 81 fixtures (81 cached, 0 to fetch)...",
     "  [Ligue 2 2026] 2406 player-match rows collected",
-    "[DONE] 67597 total player-match rows across 26 leagues / 26 season-slots.",
-    "  [sp_events] 2,299 fixtures (16 need API calls)...",
+    "[DONE] 67574 total player-match rows across 26 leagues / 26 season-slots.",
+    "  [sp_events] 2,299 fixtures (28 need API calls)...",
     "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
-    "[collect] union: 864517 existing + 56274 fetched -> 864971 rows (+454 new, 55820 refreshed, 0 removed)",
-    "[collect] Saved 864971 player rows, 21157 players -> player_history.parquet",
+    "[collect] union: 864971 existing + 56265 fetched -> 865759 rows (+788 new, 55477 refreshed, 0 removed)",
+    "[collect] Saved 865759 player rows, 21162 players -> player_history.parquet",
     "  goals (target_goals): 8.1% positive rate",
     "  goals2 (target_goals2): 0.7% positive rate",
     "  assists (target_assists): 5.9% positive rate",
