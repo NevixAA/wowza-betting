@@ -31,7 +31,8 @@ from dashboard_data import fantasy as fdata  # noqa: E402
 # dashboard_data.fantasy and the page died with AttributeError on v2_projections. Reload once if the
 # readers this page needs are missing.
 if not all(hasattr(fdata, f) for f in ("v2_projections", "v2_summary", "v2_benchmark", "v2_transfers",
-                                       "v2_fixture_matrix")):
+                                       "v2_fixture_matrix", "v2_scoreboard",
+                                       "v2_scoreboard_reliability", "v2_pooled_reliability")):
     import importlib  # noqa: E402
     fdata = importlib.reload(fdata)
 
@@ -184,6 +185,67 @@ if pub.get("available"):
                f"{pub['FPL'].get('bias'):+} vs old Wowza MAE {pub['WOWZA'].get('mae')} / ρ "
                f"{pub['WOWZA'].get('spearman')} / bias {pub['WOWZA'].get('bias'):+}. FPL won every "
                f"gameweek: {pub.get('fpl_won_every_gw')}.")
+
+# Gameweek-by-gameweek scoreboard: precomputed (output/fantasy_v2_scoreboard*.csv), ~20-60 rows.
+sb = fdata.v2_scoreboard() if hasattr(fdata, "v2_scoreboard") else pd.DataFrame()
+with st.expander("🗓️ Gameweek-by-gameweek scoreboard", expanded=True):
+    if sb.empty:
+        st.info("No scoreboard yet — it is written by the Fantasy Refresh workflow once a gameweek "
+                "has been scored out of sample.")
+    else:
+        ARM_LABEL = {"FPL": "FPL baseline", "WOWZA": "Old Wowza", "LINEAR": "LINEAR (V2)",
+                     "RIDGE": "RIDGE", "HGB": "HGB"}
+        view = st.radio("View", ["Accuracy", "Top-10/15 & captain", "Minutes calibration"],
+                        horizontal=True, key="sb_view")
+        s = sb.copy()
+        s["GW"] = "GW" + s["gw"].astype(str) + s["status"].ne("FINAL").map({True: "*", False: ""})
+        s["model"] = s["arm"].map(ARM_LABEL).fillna(s["arm"])
+        base = ["GW", "status", "model", "n"]
+        if view == "Accuracy":
+            cols_ = base + ["mae", "rmse", "spearman", "bias", "fpl_mae_same_rows", "mae_minus_fpl",
+                            "train_gws"]
+        elif view == "Top-10/15 & captain":
+            cols_ = base + ["top10_overlap", "top10_actual_mean", "top10_best_mean",
+                            "top15_overlap", "top15_actual_mean", "top15_best_mean", "captain",
+                            "captain_actual", "best_captain", "best_captain_actual",
+                            "captain_shortfall"]
+        else:
+            cols_ = base + ["minutes_source", "pred_p0", "obs_p0", "pred_p1_59", "obs_p1_59",
+                            "pred_p60", "obs_p60", "p60_brier", "p60_ece"]
+        st.dataframe(s[[c for c in cols_ if c in s.columns]], hide_index=True, width="stretch")
+        fin_sb = s[s["status"] == "FINAL"]
+        lin_, fpl_ = fin_sb[fin_sb["arm"] == "LINEAR"], fin_sb[fin_sb["arm"] == "FPL"]
+        if len(lin_) and len(fpl_):
+            won = int((lin_.set_index("gw")["mae"] < fpl_.set_index("gw")["mae"]).sum())
+            st.caption(f"FPL baseline + Wowza residual (LINEAR) had the lower MAE in **{won} of "
+                       f"{len(lin_)}** final gameweeks. Each gameweek is scored only by models "
+                       "fitted on earlier FINAL gameweeks (`train_gws`). A handful of gameweeks is "
+                       "evidence, not a promotion: the residual stays behind its pre-registered "
+                       "gate. Old Wowza is scored only on the players it published, so compare it "
+                       "with `fpl_mae_same_rows`, not with the FPL row. Top-k columns: overlap with "
+                       "the actual top-k, mean actual points of the predicted top-k, and the best "
+                       "possible (`_best_mean`). Captain points are single (not doubled). "
+                       "LINEAR/RIDGE/HGB share one minutes forecast (the residual moves only the "
+                       "mean). * = provisional gameweek.")
+        rel = fdata.v2_scoreboard_reliability() if hasattr(fdata, "v2_scoreboard_reliability") \
+            else pd.DataFrame()
+        if view == "Minutes calibration" and not rel.empty:
+            gw_opts = ["All scored GWs"] + [f"GW{g}" for g in sorted(rel["gw"].unique())]
+            pick = st.selectbox("Reliability of P(60+ minutes)", gw_opts, key="sb_rel_gw")
+            gsel = None if pick == gw_opts[0] else [int(pick[2:])]
+            pr = fdata.v2_pooled_reliability(rel, gsel)
+            if not pr.empty:
+                diag = alt.Chart(pd.DataFrame({"x": [0, 1], "y": [0, 1]})).mark_line(
+                    strokeDash=[4, 4], color="#999").encode(x="x:Q", y="y:Q")
+                pts = alt.Chart(pr).mark_line(point=True).encode(
+                    x=alt.X("pred_mean:Q", title="Predicted P(60+)", scale=alt.Scale(domain=[0, 1])),
+                    y=alt.Y("obs_rate:Q", title="Observed 60+ rate", scale=alt.Scale(domain=[0, 1])),
+                    color=alt.Color("source:N", legend=alt.Legend(orient="top", title=None)),
+                    tooltip=["source", "lo", "hi", "n", alt.Tooltip("pred_mean:Q", format=".3f"),
+                             alt.Tooltip("obs_rate:Q", format=".3f")]).properties(height=260)
+                st.altair_chart(diag + pts, width="stretch")
+                st.caption("Fixed bins 0-0.1-0.3-0.5-0.7-0.9-1. On the diagonal = calibrated. "
+                           "Old Wowza p_start is a P(start) number, so it is read here as P(60+).")
 
 # ══ 3. TOP RECOMMENDATIONS (cards) ══════════════════════════════════════════════════════════
 st.subheader("⭐ Top recommendations")

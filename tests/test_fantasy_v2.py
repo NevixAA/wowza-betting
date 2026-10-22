@@ -321,3 +321,105 @@ def test_fantasy_page_renders(monkeypatch):
     heads = [s.value for s in at.subheader]
     assert any("benchmark" in h.lower() for h in heads)
     assert any("command center" in h.lower() for h in heads)
+
+
+# ── gameweek-by-gameweek scoreboard ──────────────────────────────────────────────────────────
+def _panel_with_minutes(n_gw=5, n=120, seed=11):
+    p = _synthetic_panel(n_gw=n_gw, n=n, seed=seed)
+    rng = np.random.default_rng(seed)
+    u = rng.uniform(0, 1, len(p))
+    p["bucket"] = np.where(u < 0.3, "m0", np.where(u < 0.5, "m1_59", "m60"))
+    p["actual_minutes"] = np.where(p["bucket"] == "m0", 0, np.where(p["bucket"] == "m1_59", 25, 90))
+    p.loc[p["element"] % 3 == 0, "wowza_uncond"] = p["ep_next"] + 1.0     # the old projection
+    p.loc[p["element"] % 3 == 0, "wowza_p_start"] = 0.8
+    p["web_name"] = "P" + p["element"].astype(str)
+    return p
+
+
+def _board_for(panel):
+    oos = R.walk_forward(panel)
+    return R.gw_scoreboard(oos, R.minutes_models_for(panel, oos["gw"].unique()))
+
+
+def test_scoreboard_is_chronological():
+    """Every GW is scored only by models trained on earlier FINAL GWs, so rewriting the LAST
+    gameweek's outcomes must leave every earlier scoreboard row bit-for-bit unchanged."""
+    p = _panel_with_minutes()
+    board, rel = _board_for(p)
+    assert sorted(board["gw"].unique()) == [2, 3, 4, 5]
+    assert set(board["arm"]) == set(R.ARMS)
+    for r in board.itertuples():
+        assert max(int(x) for x in str(r.train_gws).split(",")) < r.gw
+    p2 = p.copy()
+    last = p2["gw"] == 5
+    p2.loc[last, "actual_points"] = p2.loc[last, "actual_points"] + 7.0
+    p2.loc[last, "bucket"] = "m60"
+    board2, rel2 = _board_for(p2)
+    early = lambda b: b[b["gw"] < 5].reset_index(drop=True)
+    pd.testing.assert_frame_equal(early(board), early(board2))
+    pd.testing.assert_frame_equal(rel[rel["gw"] < 5].reset_index(drop=True),
+                                  rel2[rel2["gw"] < 5].reset_index(drop=True))
+    assert not board[board["gw"] == 5].reset_index(drop=True).equals(
+        board2[board2["gw"] == 5].reset_index(drop=True))
+    # the three residual arms share one minutes forecast; reliability is written once per source
+    g5 = board[board["gw"] == 5].set_index("arm")
+    assert g5.loc["LINEAR", "pred_p60"] == g5.loc["HGB", "pred_p60"] == g5.loc["RIDGE", "pred_p60"]
+    assert rel.groupby(["gw", "source"]).size().eq(len(R.P60_BINS) - 1).all()
+
+
+def test_scoreboard_metrics_on_a_known_gameweek():
+    n = 12
+    y = np.arange(n, dtype=float)
+    d = pd.DataFrame({"gw": 9, "status": "PROVISIONAL", "train_gws": "7,8", "element": range(n),
+                      "web_name": [f"P{i}" for i in range(n)], "actual_points": y,
+                      "FPL": y + 1.0, "LINEAR": y[::-1].copy(), "RIDGE": y, "HGB": y + 0.5,
+                      "WOWZA": np.where(np.arange(n) < 10, y + 2.0, np.nan),
+                      "bucket": ["m0", "m1_59", "m60", "m60"] * 3,
+                      "chance_next_f": 1.0, "min_per_team_game": 60.0, "start_rate": 0.5,
+                      "n_fix": 1, "wowza_p_start": 0.75})
+    board, rel = R.gw_scoreboard(d)
+    b = board.set_index("arm")
+    assert (b["status"] == "PROVISIONAL").all() and (b["gw"] == 9).all()
+    f = b.loc["FPL"]
+    assert f["mae"] == 1 and f["rmse"] == 1 and f["bias"] == 1 and f["spearman"] == 1
+    assert f["top10_overlap"] == 10 and f["top10_actual_mean"] == pytest.approx(6.5)
+    assert f["top15_overlap"] == 12 and f["top15_actual_mean"] == pytest.approx(5.5)
+    assert f["top10_best_mean"] == pytest.approx(6.5)
+    assert f["captain"] == "P11" and f["captain_actual"] == 11 and f["captain_shortfall"] == 0
+    lin = b.loc["LINEAR"]
+    assert lin["spearman"] == pytest.approx(-1.0)
+    assert lin["top10_overlap"] == 8                        # predicted top-10 = actual 0..9
+    assert lin["captain"] == "P0" and lin["captain_actual"] == 0 and lin["captain_shortfall"] == 11
+    assert lin["mae_minus_fpl"] == pytest.approx(lin["mae"] - 1.0)
+    assert b.loc["RIDGE", "mae"] == 0 and b.loc["HGB", "bias"] == pytest.approx(0.5)
+    w = b.loc["WOWZA"]                                     # scored only on its 10 rows
+    assert w["n"] == 10 and w["mae"] == 2 and w["fpl_mae_same_rows"] == 1
+    assert w["mae_minus_fpl"] == pytest.approx(1.0) and w["best_captain_actual"] == 11
+    # minutes: WOWZA carries only P(60+) = 0.75 on rows 0..9, of which 4 were 60+
+    assert pd.isna(w["pred_p0"]) and w["pred_p60"] == pytest.approx(0.75)
+    assert w["obs_p60"] == pytest.approx(0.4)
+    assert w["p60_brier"] == pytest.approx(0.4 * 0.25 ** 2 + 0.6 * 0.75 ** 2)
+    assert w["p60_ece"] == pytest.approx(0.35)
+    # FPL heuristic: play = 1 * 1 * 0.5, P(60+) = 1 * 0.5 * 0.92 -> 0.46
+    assert f["pred_p0"] == pytest.approx(0.5) and f["pred_p60"] == pytest.approx(0.46)
+    assert f["obs_p0"] == pytest.approx(3 / 12) and f["obs_p60"] == pytest.approx(6 / 12)
+    # no minutes model passed: the residual arms report it as unavailable, not as zero
+    assert b.loc["LINEAR", "minutes_source"] == "not available"
+    assert pd.isna(b.loc["LINEAR", "p60_brier"])
+    wr = rel[rel["source"] == R.MINUTES_SOURCE["WOWZA"]].set_index("bin")
+    assert wr.loc[4, "n"] == 10 and wr["n"].sum() == 10        # 0.75 falls in [0.7, 0.9)
+    from dashboard_data import fantasy as fdata
+    pooled = fdata.v2_pooled_reliability(pd.concat([rel, rel.assign(gw=10)]))
+    assert pooled.loc[pooled["source"] == R.MINUTES_SOURCE["WOWZA"], "n"].sum() == 20
+
+
+@pytest.mark.skipif(not (OUT / "fantasy_v2_scoreboard.csv").exists(), reason="no scoreboard")
+def test_committed_scoreboard_matches_the_benchmark():
+    """The scoreboard and the benchmark JSON are two views of one walk-forward; they must agree."""
+    sb = pd.read_csv(OUT / "fantasy_v2_scoreboard.csv")
+    b = json.loads((OUT / "fantasy_v2_benchmark.json").read_text(encoding="utf-8"))
+    by = {r["gw"]: r for r in b["scores"]["ACTIVE"]["by_gw"]}
+    assert set(sb["gw"]) == set(by)
+    for r in sb.itertuples():
+        assert r.mae == pytest.approx(by[r.gw][r.arm]["mae"], abs=1e-4)
+        assert r.n == by[r.gw][r.arm]["n"]

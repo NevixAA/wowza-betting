@@ -11,6 +11,9 @@ small artifacts the dashboard only READS:
     output/fantasy_v2_benchmark.json      walk-forward benchmark of every arm vs FPL ep_next,
                                           acceptance decision, bias diagnosis, calibration
     output/fantasy_v2_oos.csv             every out-of-sample prediction (audit trail)
+    output/fantasy_v2_scoreboard.csv      chronological GW x arm scoreboard (accuracy, top-10/15,
+                                          captain, bias, minutes calibration)
+    output/fantasy_v2_scoreboard_reliability.csv   binned P(60+ minutes) reliability per GW
     output/fantasy_v2_summary.json        command-centre header + captaincy (SAFE/BALANCED/UPSIDE)
     output/fantasy_v2_transfers.csv       OUT -> IN moves ranked by projected gain
     output/fantasy_v2_fixture_matrix.csv  20 teams x next 5 gameweeks
@@ -45,6 +48,8 @@ OUT = Path(__file__).resolve().parents[1] / "output"
 PROJECTIONS = OUT / "fantasy_v2_projections.csv"
 BENCHMARK = OUT / "fantasy_v2_benchmark.json"
 OOS = OUT / "fantasy_v2_oos.csv"
+SCOREBOARD = OUT / "fantasy_v2_scoreboard.csv"
+SCOREBOARD_RELIABILITY = OUT / "fantasy_v2_scoreboard_reliability.csv"
 SUMMARY = OUT / "fantasy_v2_summary.json"
 TRANSFERS = OUT / "fantasy_v2_transfers.csv"
 FIXTURE_MATRIX = OUT / "fantasy_v2_fixture_matrix.csv"
@@ -100,7 +105,9 @@ def _examples(oos: pd.DataFrame, k: int = 8) -> dict:
     return {"helps": fmt(d.nlargest(k, "gain")), "hurts": fmt(d.nsmallest(k, "gain"))}
 
 
-def run_benchmark(panel: pd.DataFrame) -> tuple[dict, pd.DataFrame]:
+def run_benchmark(panel: pd.DataFrame, extras: dict | None = None) -> tuple[dict, pd.DataFrame]:
+    """Walk-forward benchmark. If `extras` is a dict it also receives the GW scoreboard frames
+    ("scoreboard", "reliability") so run() can write them as their own small artifacts."""
     oos = R.walk_forward(panel)
     if oos.empty:
         return {"available": False, "why": "fewer than two settled gameweeks"}, oos
@@ -136,10 +143,7 @@ def run_benchmark(panel: pd.DataFrame) -> tuple[dict, pd.DataFrame]:
     # calibration of the minutes mixture + distribution, walk-forward
     prep = R.prepare(panel)
     settled = prep[prep["status"].isin(["FINAL", "PROVISIONAL"]) & fp.active_mask(prep)]
-    mm_for = {}
-    for gw in sorted(oos["gw"].unique()):
-        tr = settled[(settled["gw"] < gw) & (settled["status"] == "FINAL")]
-        mm_for[gw] = R.MinutesModel().fit(tr)
+    mm_for = R.minutes_models_for(panel, oos["gw"].unique())
     res["distribution"] = {
         "mean_fpl": R.evaluate_distribution(oos, mm_for, "FPL"),
         f"mean_{PRODUCTION_ARM.lower()}": R.evaluate_distribution(oos, mm_for, PRODUCTION_ARM)}
@@ -161,6 +165,11 @@ def run_benchmark(panel: pd.DataFrame) -> tuple[dict, pd.DataFrame]:
     res["ridge_alpha_all_settled"] = rid.alpha_
     res["examples"] = _examples(oos)
     res["fpl_overdispersion"] = _overdispersion(oos)
+    if extras is not None:
+        try:
+            extras["scoreboard"], extras["reliability"] = R.gw_scoreboard(oos, mm_for)
+        except Exception as e:                                       # noqa: BLE001
+            log.warning(f"[fantasy_v2] scoreboard failed ({e})")
     return res, oos
 
 
@@ -538,7 +547,8 @@ def run(write: bool = True) -> dict:
     panel = fp.build_panel()
     if panel.empty:
         return {"ok": False, "why": "empty panel"}
-    bench, oos = run_benchmark(panel)
+    extras: dict = {}
+    bench, oos = run_benchmark(panel, extras)
     proj = project(panel, bench)
     summ = summary(proj, panel, bench, fetched_at)
     tr = transfers(proj)
@@ -555,6 +565,13 @@ def run(write: bool = True) -> dict:
             oos[[c for c in cols if c in oos.columns]].round(3).to_csv(OOS, index=False,
                                                                        encoding="utf-8",
                                                                        lineterminator="\n")
+        board = extras.get("scoreboard")
+        if board is not None and not board.empty:
+            board.to_csv(SCOREBOARD, index=False, encoding="utf-8", lineterminator="\n")
+            rel = extras.get("reliability")
+            if rel is not None and not rel.empty:
+                rel.to_csv(SCOREBOARD_RELIABILITY, index=False, encoding="utf-8",
+                           lineterminator="\n")
         SUMMARY.write_text(json.dumps(summ, indent=1, default=str), encoding="utf-8")
         tr.to_csv(TRANSFERS, index=False, encoding="utf-8", lineterminator="\n")
         if not fm.empty:
