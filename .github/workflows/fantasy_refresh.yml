@@ -74,12 +74,15 @@ jobs:
       # Fantasy V2: archive today's pre-deadline FPL snapshot, re-run the walk-forward benchmark
       # (FPL ep_next vs residual arms) and rebuild the dashboard artifacts. Reads only files already
       # on disk -- no API calls -- and is non-fatal for the same reason as the step above.
-      # FANTASY_V2_RESIDUAL_MODE stays `shadow`: the residual is published but NOT added to the
-      # headline mean, even if its gate reports GO, until the owner switches this to `auto`.
+      # FANTASY_V2_RESIDUAL_MODE = auto (owner decision 2026-10-22): the residual is added to the
+      # headline mean ONLY while its pre-registered gate says GO (>= 3 FINAL out-of-sample gameweeks
+      # AND MAE <= FPL, or a ranking win in every one; a GO is vetoed if the settled-ledger MAE is
+      # > 0.05 worse). Until then - and again if it ever falls back to NO-GO - FPL ep_next is the mean.
+      # Set back to `shadow` to publish the residual without ever applying it.
       - name: Fantasy V2 projections + benchmark
         continue-on-error: true
         env:
-          FANTASY_V2_RESIDUAL_MODE: shadow
+          FANTASY_V2_RESIDUAL_MODE: auto
         run: |
           python -m player_model.fantasy_v2 || echo "::warning::fantasy_v2 failed"
 
