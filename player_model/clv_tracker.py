@@ -61,16 +61,26 @@ def close_out(odds_history_path=None, kickoff_map: dict | None = None) -> int:
     """For open CLV records whose kickoff has passed, set the CLOSING price = the latest odds
     snapshot for that (player, market, date) in the prop-odds history, then compute CLV."""
     path = odds_history_path or (config.OUTPUT_DIR / "player_prop_odds_history.csv")
+    rows = clv_capture._load()
+    # The history is a ROLLING file (src/rolling_store): matches already played live in
+    # player_prop_odds_history_archive/<match_date>.csv. Read only the archive days that still
+    # have open records, plus the live file -- so a record closed late still finds its close.
+    open_days = set()
+    for r in rows:
+        if r.get("odds_close") in ("", None):
+            parts = str(r.get("bet_id", "")).split("|", 3)
+            if len(parts) == 4:
+                open_days.add(parts[1][:10])
     try:
-        oh = pd.read_csv(path)
+        from src.rolling_store import read_all
+        oh = read_all(path, dates=open_days)
     except Exception:
         print(f"[clv_tracker] no odds history at {path}"); return 0
-    if oh.empty:
+    if oh.empty or "player" not in oh.columns:
         return 0
     oh["_pk"] = oh["player"].astype(str).map(_norm)
     oh["_d"] = oh["match_date"].astype(str).str[:10]
     now = datetime.now(timezone.utc)
-    rows = clv_capture._load()
     closed = 0
     for r in rows:
         if r.get("odds_close") not in ("", None):

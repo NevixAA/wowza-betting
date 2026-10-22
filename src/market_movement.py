@@ -81,11 +81,14 @@ class CurveIndex:
         frames = []
         for fname, track in (sources or SOURCES):
             p = out / fname
-            if not p.exists():
+            from src.rolling_store import archive_parts, read_all
+            if not p.exists() and not archive_parts(p):
                 log.info(f"[curve] {fname} absent — skipped")
                 continue
             try:
-                d = pd.read_csv(p, usecols=lambda c: c in {
+                # read_all: rolling files keep finished matches in <stem>_archive/ (2026-10-22);
+                # for a plain file with no archive dir this is exactly read_csv.
+                d = read_all(p, usecols=lambda c: c in {
                     "snapshot_ts", "snapshot_date", "match_date", "league", "match",
                     "market", "odds", "player"})
             except Exception as e:                                    # noqa: BLE001

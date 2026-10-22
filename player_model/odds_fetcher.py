@@ -175,6 +175,7 @@ _CACHE_DIR.mkdir(exist_ok=True)
 # Append-only history of every fetched player-prop odd (built forward, ~free —
 # we already fetch these). Becomes the real-odds dataset for prop backtests.
 _ODDS_HISTORY_FILE = Path(__file__).resolve().parents[1] / "output" / "player_prop_odds_history.csv"
+_ODDS_HISTORY_KEY = ["match_date", "league", "match", "player", "market", "odds"]
 SPORT_KEY_TO_LEAGUE = {v: k for k, v in PROP_SPORT_KEYS.items()}
 
 # Learned per-league prop-market coverage. Rather than hardcoding a guess about
@@ -329,6 +330,7 @@ def _coverage_record(cov: dict, sport_key: str, today: str, priced: bool,
 
 _QUOTES_DIR = Path(__file__).resolve().parents[1] / "output" / "prop_quotes"
 _QUOTE_KEY = ["match_date", "league", "match", "player", "market", "side", "point", "bookmaker", "odds"]
+_QUOTES_LOOKBACK_DAYS = 14          # dedupe window across day-files (a fixture is quoted <~10 days)
 
 
 def _quotes_from_oddsapi(bookmakers: list, match_date: str, league: str, match: str) -> list[dict]:
@@ -361,29 +363,53 @@ def _quotes_from_oddsapi(bookmakers: list, match_date: str, league: str, match: 
 
 
 def _append_quotes(quotes: list[dict]) -> None:
-    """Per-book, both-sides prop quotes -> output/prop_quotes/<YYYY-MM>.csv (month of capture).
+    """Per-book, both-sides prop quotes -> output/prop_quotes/<YYYY-MM-DD>.csv (DAY of capture).
 
     A LOGGING HOOK ONLY (2026-10-14, owner-approved): nothing in v9 reads these files, tip prices
-    are unchanged, and player_prop_odds_history.csv keeps its exact content and schema. Monthly
-    partitions keep any single file small enough that git does not re-store a huge blob on every
-    run (the player_history lesson). Distinct prices only, first time seen. Never raises."""
+    are unchanged, and player_prop_odds_history.csv keeps its exact content and schema. Distinct
+    prices only, first time seen. Never raises.
+
+    DAILY, not monthly (2026-10-22): a monthly file still reached 16 MB and was re-stored whole
+    by git on every run (75x/week). Only today's file is rewritten now; earlier days are frozen.
+    "First time seen" is checked against the previous _QUOTES_LOOKBACK_DAYS day-files (and any
+    legacy monthly file), which covers a fixture's whole pre-match quoting window."""
     if not quotes:
         return
     import pandas as pd
-    from datetime import datetime, timezone
+    from datetime import datetime, timedelta, timezone
     now = datetime.now(timezone.utc)
     df = pd.DataFrame(quotes)
     df["snapshot_ts"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     df = df.reindex(columns=["snapshot_ts", *_QUOTE_KEY, "source"])
+    df["point"] = pd.to_numeric(df["point"], errors="coerce")
     _QUOTES_DIR.mkdir(parents=True, exist_ok=True)
-    f = _QUOTES_DIR / f"{now:%Y-%m}.csv"
+    f = _QUOTES_DIR / f"{now:%Y-%m-%d}.csv"
+    first_day = f"{now - timedelta(days=_QUOTES_LOOKBACK_DAYS):%Y-%m-%d}"
+    seen = []
+    for p in sorted(_QUOTES_DIR.glob("*.csv")):
+        # day-files inside the lookback, plus a legacy <YYYY-MM>.csv of the current/prior month
+        if p == f or not (p.stem >= first_day or (len(p.stem) == 7 and p.stem >= first_day[:7])):
+            continue
+        try:
+            seen.append(pd.read_csv(p, usecols=lambda c: c in _QUOTE_KEY))
+        except Exception:
+            pass
     if f.exists():
         try:
             df = pd.concat([pd.read_csv(f), df], ignore_index=True)
         except Exception:
             pass
-    df["point"] = pd.to_numeric(df["point"], errors="coerce")
-    df.drop_duplicates(subset=_QUOTE_KEY, keep="first").to_csv(f, index=False)
+    df = df.drop_duplicates(subset=_QUOTE_KEY, keep="first")
+    if seen:
+        old = pd.concat(seen, ignore_index=True).reindex(columns=_QUOTE_KEY)
+        old["point"] = pd.to_numeric(old["point"], errors="coerce")
+        known = set(map(tuple, old.astype(str).itertuples(index=False, name=None)))
+        mask = [t not in known for t in
+                map(tuple, df[_QUOTE_KEY].astype(str).itertuples(index=False, name=None))]
+        df = df[mask]
+    if df.empty and not f.exists():
+        return
+    df.to_csv(f, index=False)
 
 
 def _append_odds_history(records: list[dict]) -> None:
@@ -431,10 +457,14 @@ def _append_odds_history(records: list[dict]) -> None:
             pass
     # Keep every distinct PRICE per real fixture (match_date disambiguates fixture-name
     # collisions across seasons) -> preserves the open->close line trajectory for CLV.
-    df = df.drop_duplicates(
-        subset=["match_date", "league", "match", "player", "market", "odds"], keep="first"
-    )
+    df = df.drop_duplicates(subset=_ODDS_HISTORY_KEY, keep="first")
     df.to_csv(_ODDS_HISTORY_FILE, index=False)
+    # Rolling file (2026-10-22): rows of matches already played move once into
+    # player_prop_odds_history_archive/<match_date>.csv, so git stops re-storing ~60 MB per run.
+    # Upcoming matches keep their full open->close history here, so the dedup above is intact.
+    # Full-history readers use src.rolling_store.read_all. Never raises.
+    from src.rolling_store import roll
+    roll(_ODDS_HISTORY_FILE, dedupe_subset=_ODDS_HISTORY_KEY)
 
 
 def _norm(name: str) -> str:

@@ -103,6 +103,10 @@ def append_book_rows(new_rows: list[dict]) -> None:
     prev = df.groupby(key)["odds"].shift()
     df = df[df["odds"].ne(prev)].sort_values("snapshot_ts")
     df.to_csv(path, index=False)
+    # Rolling file: finished match-dates -> book_odds_snapshots_archive/ (see src/rolling_store).
+    # _last_seen below only needs upcoming fixtures, which always stay in the live file.
+    from src.rolling_store import roll
+    roll(path)
 
 
 def fetch(rows: list[dict]) -> list[dict]:

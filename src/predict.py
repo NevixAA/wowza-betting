@@ -203,6 +203,11 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
             log.info(f"[book_odds] {len(_book_rows)} quote(s) from "
                      f"{_bn['bookmaker'].nunique()} bookmaker(s) -> {_bp.name} "
                      f"(total {len(_bn):,})")
+            # Rolling file (2026-10-22): finished match-dates move once into
+            # book_odds_snapshots_archive/<match_date>.csv, so git stops re-storing the whole
+            # history every run. Upcoming matches keep their full curve here. Never raises.
+            from src.rolling_store import roll as _roll
+            _roll(_bp)
         except Exception as e:
             log.warning(f"[book_odds] per-book capture skipped ({e})")
 

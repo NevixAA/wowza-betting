@@ -78,7 +78,11 @@ jobs:
           # One path at a time: a multi-path `git add` stages NOTHING if any path is missing, and
           # `|| true` hid that. output/prop_quotes/ (per-book, both-sides quote log, 2026-10-14)
           # does not exist until the first fetch writes it.
+          # player_prop_odds_history.csv is a ROLLING file since 2026-10-22 (src/rolling_store.py);
+          # rows of played matches move once into output/player_prop_odds_history_archive/.
+          # prop_quotes/ is one file per capture DAY (was per month) for the same reason.
           for f in output/player_prop_odds_history.csv output/clv_records.csv \
+                   output/player_prop_odds_history_archive \
                    output/prop_odds_coverage.json output/prop_quotes; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
