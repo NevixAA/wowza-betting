@@ -71,15 +71,12 @@ with tab_forward:
             hist = h.get("HISTORICAL_DISCOVERY") or {}
             with st.container(border=True):
                 c1, c2, c3 = st.columns([2, 2, 3])
-                c1.markdown(f"**{h['id']}** · {h['league']} · {h['market'].upper()} · {h['model_type']}  
-"
+                c1.markdown(f"**{h['id']}** · {h['league']} · {h['market'].upper()} · {h['model_type']}  \n"
                             f"gate **{h.get('candidate_gate')}** vs production SNIPER "
                             f"{(h.get('production_gates') or {}).get('sniper')} · status **{h.get('status')}**")
-                c2.markdown("🗂️ **HISTORICAL DISCOVERY**  
-"
+                c2.markdown("🗂️ **HISTORICAL DISCOVERY**  \n"
                             f"fit {hist.get('fit_roi')} · validation {hist.get('validation_roi')} · holdout "
-                            f"{hist.get('holdout_roi')}  
-⏸️ *post-discovery rows: shown in the study, NOT COUNTED*")
+                            f"{hist.get('holdout_roi')}  \n⏸️ *post-discovery rows: shown in the study, NOT COUNTED*")
                 c3.markdown(f"🎯 **TRUE FORWARD** n **{f.get('n', 0)}** / {h.get('required_n')} · matchdays "
                             f"{f.get('matchdays', 0)} / {h.get('required_matchdays')} · ROI {f.get('roi_pct')}% "
                             f"CI {f.get('roi_ci95')} · CLV coverage {f.get('clv_coverage_pct')}% mean {f.get('clv_mean')} "
