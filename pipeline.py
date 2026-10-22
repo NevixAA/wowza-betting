@@ -199,7 +199,7 @@ def _mean_logloss(metrics: dict) -> float:
     return float(sum(vals) / len(vals)) if vals else float("nan")
 
 
-def _log_shadow(preds: "pd.DataFrame") -> None:
+def _log_shadow(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -> None:
     """§3/§18 — record what every model believed about every upcoming fixture, BEFORE kickoff.
 
     THIS IS THE FILE THAT UNBLOCKS EVERY CHALLENGER. The promotion gate's `second_period` check
@@ -219,6 +219,11 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
     Every scored fixture is logged, not only the tipped ones. Tips fire on ~14% of the board, so
     a tips-only record would need years to reach a usable n -- and it would throw away exactly
     the fixtures that test whether the tier threshold separates anything.
+
+    `exp_rows` (src.shadow_experiments.score) carries the FROZEN challengers' probabilities for
+    the same fixtures at the same moment; an experiment that names a v91 column (H-MODEL-01 ->
+    `p_pro_hgb`) fills it here, at first sight, and nowhere else. Without `exp_rows` every
+    challenger column stays empty — never a copy of the champion.
 
     Cannot raise: this is a recorder, and a recorder must never be able to stop tips going out.
     """
@@ -252,6 +257,20 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
                 _gcache[k] = resolve_effective_tier_gates(str(league), market)
             return getattr(_gcache[k], which)
 
+        # Challenger columns from the registered experiments, keyed by fixture_id. P0 2026-10-22:
+        # these were hard-coded pd.NA, so p_pro_hgb was empty on 669/669 rows by construction.
+        ch_cols = {"p_v91": pd.Series(pd.NA, index=d.index, dtype=object),
+                   "p_pro_hgb": pd.Series(pd.NA, index=d.index, dtype=object)}
+        if exp_rows is not None and not exp_rows.empty:
+            from src.shadow_experiments import load_registry
+            col_of = {e["experiment_id"]: e.get("v91_shadow_column") for e in load_registry()}
+            for eid, g in exp_rows.groupby("experiment_id"):
+                c = col_of.get(eid)
+                if c in ch_cols:
+                    mp = dict(zip(g["fixture_id"].astype(str), g["p_challenger"]))
+                    hit = d["fixture_id"].astype(str).map(mp)
+                    ch_cols[c] = ch_cols[c].where(hit.isna(), hit)
+
         rows = pd.DataFrame({
             "fixture_id": d["fixture_id"],
             "market": "ou25",
@@ -264,8 +283,8 @@ def _log_shadow(preds: "pd.DataFrame") -> None:
             # challengers are wired -- a column that exists and is empty is honest; a column
             # filled with the champion's number would silently fake agreement.
             "p_v9": d.get("p_over25", pd.NA),
-            "p_v91": pd.NA,
-            "p_pro_hgb": pd.NA,
+            "p_v91": ch_cols["p_v91"],
+            "p_pro_hgb": ch_cols["p_pro_hgb"],
             "p_goal_distribution": d.get("p_over25_poisson_dc", pd.NA),
             "p_market": d.get("impl_prob_over", d.get("implied_prob_over", pd.NA)),
             "v9_side": d.get("best_side", pd.NA),
@@ -312,7 +331,7 @@ H2H_COLS = ["logged_at", "match_date", "kickoff_utc", "league", "home_team", "aw
             "challenger_version", "p_challenger"]
 
 
-def _log_h2h(preds: "pd.DataFrame") -> None:
+def _log_h2h(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -> None:
     """TRUE HEAD-TO-HEAD SHADOW (champion high-water mark, brief §25).
 
     For every model type, record what the CHAMPION said about every upcoming fixture — and, when
@@ -327,6 +346,12 @@ def _log_h2h(preds: "pd.DataFrame") -> None:
     FIRST SIGHT ONLY, keyed on (fixture, model_type, challenger_version): a later run, with more
     of the price curve and team news, cannot revise a logged opinion. Pro grades the results.
     Cannot raise — a recorder must never stop tips going out.
+
+    P0 2026-10-22: the retrain slot above is filled only by a SHADOW_MORE retrain verdict, and none
+    has been issued, so p_champion_raw / challenger_version / p_challenger were empty on every row.
+    Registered prospective experiments (`exp_rows`, src.shadow_experiments) are now challengers
+    here too, one row per (fixture, challenger_version); a model type covered by an experiment no
+    longer gets the champion-only blank-challenger row.
     """
     try:
         import numpy as np
@@ -337,11 +362,34 @@ def _log_h2h(preds: "pd.DataFrame") -> None:
         tag = (preds["model_type"].astype(str).map(reg.ou_model_for)
                if "model_type" in preds.columns else pd.Series("standard", index=preds.index))
         frames = []
+        exp_types: set = set()
+        if exp_rows is not None and not exp_rows.empty:
+            exp_types = set(exp_rows["model_type"].astype(str))
+            frames.append(pd.DataFrame({
+                "logged_at": exp_rows["prediction_ts"].values,
+                "match_date": exp_rows["match_date"].values,
+                "kickoff_utc": exp_rows["kickoff_utc"].values,
+                "league": exp_rows["league"].values, "home_team": exp_rows["home_team"].values,
+                "away_team": exp_rows["away_team"].values,
+                "model_type": exp_rows["model_type"].values,
+                "market": exp_rows["market"].values,
+                "champion_version": exp_rows["champion_version"].values,
+                "p_served": np.round(pd.to_numeric(exp_rows["p_served"]).values, 5),
+                "p_champion_raw": np.round(pd.to_numeric(exp_rows["p_champion_raw"]).values, 5),
+                "challenger_version": exp_rows["challenger_version"].values,
+                "p_challenger": np.round(pd.to_numeric(exp_rows["p_challenger"]).values, 5)}))
         for mt, col in reg.PRED_COLUMN.items():
             if col not in preds.columns:
                 continue
             sub = preds[tag == mt] if mt in ("standard", "newformat") else preds
             sub = sub[pd.to_numeric(sub[col], errors="coerce").notna()]
+            if mt in exp_types and not reg.challenger_path(mt).exists():
+                # Fixtures an experiment already logged need no champion-only blank row.
+                e = exp_rows[exp_rows["model_type"].astype(str) == mt]
+                cov = set(zip(e["match_date"].astype(str), e["home_team"].astype(str),
+                              e["away_team"].astype(str)))
+                sub = sub[[(str(a)[:10], str(b), str(c)) not in cov for a, b, c in
+                           zip(sub["date"], sub["home_team"], sub["away_team"])]]
             if sub.empty:
                 continue
             champ = reg.stamp_for(mt)
@@ -1056,8 +1104,22 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     log.info(f"Predictions saved → {pred_file}  ({len(preds)} fixtures)")
 
     # BEFORE tips are generated, so the record is of what was believed, not what was acted on.
-    _log_shadow(preds)
-    _log_h2h(preds)
+    # Registered prospective experiments (H-MODEL-01 ...): champion re-scored RAW and the frozen
+    # challenger scored on the identical rows. Read-only on `preds`; never served, tiered or
+    # staked. Cannot raise.
+    exp_rows = None
+    try:
+        import time as _time
+        from src import shadow_experiments as _SE
+        _t0 = _time.perf_counter()
+        exp_rows = _SE.score(preds, {"standard": payload_std, "newformat": payload_nf})
+        _n = _SE.append_first_sight(exp_rows)
+        log.info(f"experiments: scored {len(exp_rows)} row(s), +{_n} first-sight "
+                 f"in {_time.perf_counter() - _t0:.2f}s")
+    except Exception as e:                                             # noqa: BLE001
+        log.warning(f"experiments log skipped ({e}) — predictions and tips are unaffected")
+    _log_shadow(preds, exp_rows)
+    _log_h2h(preds, exp_rows)
 
     # ── Save postponed list ──────────────────────────────────────────────────
     if postponed:
