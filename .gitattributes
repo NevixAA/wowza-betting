@@ -33,6 +33,9 @@ output/standard_sidemarket_odds_history.csv  merge=union
 output/newformat_odds_history.csv            merge=union
 output/newformat_odds_dense.csv              merge=union
 output/book_odds_snapshots.csv               merge=union
+# Its per-match-date archive parts (src/rolling_store.py, 2026-10-22). Matches only files created by
+# the roll, none of which existed before this line; written with "\n" by the roller itself.
+output/book_odds_snapshots_archive/*.csv     merge=union
 output/book_quotes/*.csv                     merge=union
 output/api_usage_log.csv                     merge=union
 # Append-only projection log: one row per player per day, so "projected vs actual" is answerable
@@ -59,4 +62,5 @@ output/standard_sidemarket_odds_history.csv  text eol=lf
 output/newformat_odds_history.csv            text eol=lf
 output/newformat_odds_dense.csv              text eol=lf
 output/book_odds_snapshots.csv               text eol=lf
+output/book_odds_snapshots_archive/*.csv     text eol=lf
 output/api_usage_log.csv                     text eol=lf
