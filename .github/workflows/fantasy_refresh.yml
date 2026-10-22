@@ -79,6 +79,8 @@ jobs:
       # AND MAE <= FPL, or a ranking win in every one; a GO is vetoed if the settled-ledger MAE is
       # > 0.05 worse). Until then - and again if it ever falls back to NO-GO - FPL ep_next is the mean.
       # Set back to `shadow` to publish the residual without ever applying it.
+      # Also writes the chronological GW x arm scoreboard (fantasy_v2_scoreboard*.csv); a scoreboard
+      # failure is logged and skipped inside the batch, never fatal to the other artifacts.
       - name: Fantasy V2 projections + benchmark
         continue-on-error: true
         env:
@@ -107,7 +109,9 @@ jobs:
                    output/fantasy_fpl_snapshots.csv output/fantasy_v2_projections.csv \
                    output/fantasy_v2_benchmark.json output/fantasy_v2_oos.csv \
                    output/fantasy_v2_summary.json output/fantasy_v2_transfers.csv \
-                   output/fantasy_v2_fixture_matrix.csv; do
+                   output/fantasy_v2_fixture_matrix.csv \
+                   output/fantasy_v2_scoreboard.csv \
+                   output/fantasy_v2_scoreboard_reliability.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"

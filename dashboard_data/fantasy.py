@@ -263,6 +263,31 @@ def v2_fixture_matrix() -> pd.DataFrame:
     return read_csv(OUT / "fantasy_v2_fixture_matrix.csv")
 
 
+def v2_scoreboard() -> pd.DataFrame:
+    """Chronological GW x arm scoreboard (~5 rows per gameweek), built by the V2 batch."""
+    return read_csv(OUT / "fantasy_v2_scoreboard.csv")
+
+
+def v2_scoreboard_reliability() -> pd.DataFrame:
+    """Binned P(60+ minutes) reliability per gameweek and minutes source."""
+    return read_csv(OUT / "fantasy_v2_scoreboard_reliability.csv")
+
+
+def v2_pooled_reliability(rel: pd.DataFrame, gws=None) -> pd.DataFrame:
+    """Pool the per-GW reliability bins (n-weighted) over the chosen gameweeks. Pure pandas on a
+    few dozen rows - safe at render time."""
+    if rel is None or rel.empty:
+        return pd.DataFrame()
+    d = rel if gws is None else rel[rel["gw"].isin(list(gws))]
+    d = d[d["n"] > 0].copy()
+    if d.empty:
+        return pd.DataFrame()
+    d["wp"], d["wo"] = d["pred_mean"] * d["n"], d["obs_rate"] * d["n"]
+    g = d.groupby(["source", "bin", "lo", "hi"], as_index=False)[["n", "wp", "wo"]].sum()
+    g["pred_mean"], g["obs_rate"] = (g["wp"] / g["n"]).round(4), (g["wo"] / g["n"]).round(4)
+    return g.drop(columns=["wp", "wo"])
+
+
 def v2_fpl_age_hours() -> float | None:
     """Age of the FPL bootstrap NOW, from the recorded fetch time in the sidecar (never mtime).
     None = unknown, which callers must treat as stale."""

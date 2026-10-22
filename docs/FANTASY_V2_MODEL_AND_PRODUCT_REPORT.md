@@ -233,7 +233,7 @@ The page reads only `fantasy_v2_*.csv/json` and `fpl_cache_meta.json`, with colu
   * `.github/workflows/fantasy_refresh.yml`: one new non-fatal step, `python -m player_model.fantasy_v2`, with `FANTASY_V2_RESIDUAL_MODE: shadow`. The seven new artifacts are added to the existing **per-file** `git add` loop. The commit, `pull --rebase -X theirs` and retry pattern is unchanged.
 * **Unchanged**: the v1 Fantasy pipeline (`fantasy.py`, the log, settle, health), which keeps producing the ledger the benchmark uses, and everything outside Fantasy (betting, thresholds, staking, models, other workflows).
 * **Artifacts** (committed by the workflow): `output/fantasy_fpl_snapshots.csv` (~670 rows per gameweek) and `output/fantasy_v2_{projections,benchmark,oos,summary,transfers,fixture_matrix}`.
-* **Tests**: `tests/test_fantasy_v2.py`, 20 tests.
+* **Tests**: `tests/test_fantasy_v2.py`, 20 tests (23 since the scoreboard, section 12).
   * Snapshot timing and replacement rules; cumulative targets; no use of post-deadline fixtures; a provisional gameweek drops unplayed teams; the Wowza projection is taken as of the deadline.
   * The walk-forward never trains on the test gameweek or later; linear contributions add up exactly; the gate needs 3 completed gameweeks and finds nothing when FPL is already right.
   * The pmf is valid and keeps the headline mean; a blank gameweek means 0 minutes; captaincy picks are distinct; transfers are same-position and affordable; the default mode is shadow.
@@ -246,3 +246,39 @@ The page reads only `fantasy_v2_*.csv/json` and `fpl_cache_meta.json`, with colu
 * Fixture multipliers for future gameweeks, and the availability half-life, are conventions.
 * Expected bonus is not better than a constant.
 * Upside probabilities are too generous at the top end.
+
+## 12. Gameweek-by-gameweek scoreboard (added 2026-10-22)
+
+The V2 batch now writes `output/fantasy_v2_scoreboard.csv` (one row per gameweek and arm) and `output/fantasy_v2_scoreboard_reliability.csv` (binned P(60+) reliability). Both come from the same walk-forward as the benchmark: gameweek *g* is scored only by models fitted on FINAL gameweeks before *g*, and the `train_gws` column records which ones. The Fantasy page shows them in the benchmark panel. A regression test rewrites the last gameweek's outcomes and checks that every earlier scoreboard row stays identical.
+
+**How each arm is scored.** Old Wowza is scored only on the players it published (217, 103 and 88 rows), so compare it with `fpl_mae_same_rows`, not with the FPL row. Top-k columns give the overlap with the actual top-k, the mean actual points of the predicted top-k, and the best possible mean. Captain points are single, not doubled. LINEAR, RIDGE and HGB share one minutes forecast (the V2 minutes mixture), because the residual moves only the mean. FPL's minutes column is the FPL-chance × usage heuristic. Old Wowza's `p_start` is read as P(60+).
+
+ACTIVE population, three FINAL out-of-sample gameweeks (GW5–7):
+
+| GW | arm | n | MAE | RMSE | Spearman | bias | top-10 overlap | top-15 mean pts | captain pts (best) | P(60+) Brier / ECE |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 5 | FPL | 411 | 1.815 | 2.873 | 0.578 | −0.145 | 2 | 5.13 | 5 (17) | 0.144 / 0.075 |
+| 5 | LINEAR | 411 | **1.756** | **2.714** | **0.603** | −0.073 | 1 | 4.33 | 2 (17) | 0.109 / 0.040 |
+| 5 | RIDGE | 411 | 1.835 | 2.796 | 0.533 | −0.159 | 0 | 4.47 | 6 (17) | 〃 |
+| 5 | HGB | 411 | 1.887 | 2.885 | 0.522 | −0.106 | 1 | 4.67 | 5 (17) | 〃 |
+| 5 | Old Wowza | 217 | 2.464 (FPL 2.011) | 3.243 | 0.344 | +0.963 | 1 | 4.13 | 2 (17) | 0.222 / 0.183 |
+| 6 | FPL | 428 | 1.783 | 2.930 | 0.554 | +0.061 | 1 | 3.40 | 6 (18) | 0.145 / 0.086 |
+| 6 | LINEAR | 428 | **1.654** | **2.530** | **0.579** | +0.101 | 1 | 3.60 | 6 (18) | 0.129 / 0.045 |
+| 6 | RIDGE | 428 | 1.743 | 2.753 | 0.540 | +0.072 | 0 | 3.60 | 6 (18) | 〃 |
+| 6 | HGB | 428 | 1.756 | 2.725 | 0.558 | +0.151 | 1 | 3.53 | 6 (18) | 〃 |
+| 6 | Old Wowza | 103 | 2.125 (FPL 1.242) | 2.804 | 0.475 | +1.176 | 1 | 2.27 | 1 (18) | 0.298 / 0.294 |
+| 7 | FPL | 436 | 1.944 | 3.042 | 0.473 | +0.096 | 1 | 3.07 | 6 (15) | 0.132 / 0.040 |
+| 7 | LINEAR | 436 | **1.716** | **2.536** | **0.546** | +0.098 | 1 | 4.40 | 5 (15) | 0.118 / 0.034 |
+| 7 | RIDGE | 436 | 1.783 | 2.687 | 0.509 | +0.092 | 1 | 3.33 | 1 (15) | 〃 |
+| 7 | HGB | 436 | 1.810 | 2.661 | 0.503 | +0.161 | 0 | 3.47 | 5 (15) | 〃 |
+| 7 | Old Wowza | 88 | 2.316 (FPL 1.374) | 3.122 | 0.461 | +1.231 | 2 | 2.80 | 2 (15) | 0.322 / 0.357 |
+
+**The owner's figures reproduce.** Pooled over the 1,275 ACTIVE rows: FPL MAE 1.848, RMSE 2.951, Spearman 0.532; LINEAR MAE 1.708, RMSE 2.593, Spearman 0.580; paired LINEAR − FPL MAE −0.140, 90% player-cluster bootstrap CI [−0.199, −0.083]. LINEAR had the lower MAE in all three gameweeks. The old-Wowza figures (MAE ≈1.99 against FPL ≈1.26, bias +1.03) are the **published ledger**, GW4–7, n=858: 1.987 against 1.258, bias +1.028. On the OOS rows above (GW5–7, n=408) the gap is wider: 2.346 against FPL's 1.679 on the same rows, bias +1.074.
+
+**What the scoreboard adds.**
+
+* **The residual wins on error, not on decisions.** LINEAR is better on MAE, RMSE and Spearman in every gameweek. But its top-10 overlap is no better than FPL's, its top-15 mean beats FPL in two gameweeks out of three, and its #1 pick scored 2, 6 and 5 against FPL's 5, 6 and 6. Shrinking big `ep_next` numbers reduces error, but it does not yet pick better captains. Three gameweeks cannot separate this from noise.
+* **The V2 minutes mixture is the best-calibrated minutes forecast in every gameweek.** P(60+) Brier is 0.109–0.129 against 0.132–0.145 for the FPL-chance heuristic, and ECE is 0.034–0.045 against 0.040–0.086. The old Wowza `p_start` is badly over-confident. In its top bin (≥0.9) only 49–81% of players actually played 60+ minutes, which is a large part of its +1 bias.
+* **Status.** All three gameweeks are FINAL. A provisional gameweek is flagged with `*` on the page and `PROVISIONAL` in the CSV. It is never used for training.
+
+The scoreboard is evidence for the pre-registered gate. It does not decide anything by itself. The headline description stays **FPL baseline + Wowza residual**.

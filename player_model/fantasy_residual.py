@@ -354,6 +354,140 @@ def acceptance(score: dict, arm: str) -> dict:
             "gameweeks_mae_won": won, "reasons": why}
 
 
+# ── gameweek-by-gameweek scoreboard ───────────────────────────────────────────────────────────
+#: fixed reliability bins for P(60+ minutes); declared here, never chosen from the data
+P60_BINS = (0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0 + 1e-9)
+#: which minutes forecast each arm carries. The three residual arms share the V2 minutes mixture
+#: (the residual only moves the MEAN), so their minutes columns are identical by construction.
+MINUTES_SOURCE = {"FPL": "FPL chance x usage heuristic", "WOWZA": "old Wowza p_start (60+ only)",
+                  "LINEAR": "V2 minutes mixture", "RIDGE": "V2 minutes mixture",
+                  "HGB": "V2 minutes mixture"}
+
+
+def minutes_models_for(panel: pd.DataFrame, gws) -> dict:
+    """One MinutesModel per test gameweek, fitted ONLY on FINAL gameweeks before it."""
+    p = prepare(panel)
+    settled = p[p["status"].isin(["FINAL", "PROVISIONAL"]) & active_mask(p)]
+    out = {}
+    for gw in sorted(gws):
+        tr = settled[(settled["gw"] < gw) & (settled["status"] == "FINAL")]
+        if tr.empty or tr["bucket"].nunique() < 2:
+            continue                       # a one-class minutes model cannot be fitted
+        out[gw] = MinutesModel().fit(tr)
+    return out
+
+
+def _minutes_probs(g: pd.DataFrame, arm: str, mixture: pd.DataFrame | None) -> pd.DataFrame:
+    nan = pd.DataFrame(np.nan, index=g.index, columns=["m0", "m1_59", "m60"])
+    if arm == "FPL":
+        return heuristic_minutes(g)
+    if arm == "WOWZA":
+        nan["m60"] = pd.to_numeric(g["wowza_p_start"], errors="coerce").clip(0, 1)
+        return nan
+    return mixture.loc[g.index] if mixture is not None else nan
+
+
+def _p60_reliability(p: pd.Series, hit: pd.Series) -> pd.DataFrame:
+    ok = p.notna()
+    p, hit = p[ok].astype(float), hit[ok].astype(float)
+    if p.empty:
+        return pd.DataFrame(columns=["bin", "lo", "hi", "n", "pred_mean", "obs_rate"])
+    b = pd.cut(p, list(P60_BINS), right=False, labels=False, include_lowest=True)
+    rows = []
+    for i in range(len(P60_BINS) - 1):
+        m = b == i
+        rows.append({"bin": i, "lo": P60_BINS[i], "hi": round(min(P60_BINS[i + 1], 1.0), 3),
+                     "n": int(m.sum()),
+                     "pred_mean": round(float(p[m].mean()), 4) if m.any() else np.nan,
+                     "obs_rate": round(float(hit[m].mean()), 4) if m.any() else np.nan})
+    return pd.DataFrame(rows)
+
+
+def gw_scoreboard(oos: pd.DataFrame, mm_for: dict | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Chronological scoreboard: one row per (gameweek, arm), plus binned P(60+) reliability.
+
+    Every number is computed on walk_forward() output, so gameweek g is scored only by models
+    fitted on FINAL gameweeks < g (the `train_gws` column is the proof, and tests pin it). Each arm
+    is scored on the rows it covers; WOWZA covers only the players the old projection published,
+    so `fpl_mae_same_rows` gives FPL's MAE on exactly those rows for a fair comparison.
+    """
+    cols = ["gw", "status", "arm", "train_gws", "n", "mae", "rmse", "spearman", "bias",
+            "fpl_mae_same_rows", "mae_minus_fpl",
+            "top10_overlap", "top10_actual_mean", "top10_best_mean",
+            "top15_overlap", "top15_actual_mean", "top15_best_mean",
+            "captain", "captain_pred", "captain_actual", "best_captain", "best_captain_actual",
+            "captain_shortfall", "minutes_source", "minutes_n",
+            "pred_p0", "obs_p0", "pred_p1_59", "obs_p1_59", "pred_p60", "obs_p60",
+            "p60_brier", "p60_ece"]
+    if oos is None or oos.empty:
+        return pd.DataFrame(columns=cols), pd.DataFrame()
+    board, rel = [], []
+    name = "web_name" if "web_name" in oos.columns else "player_name"
+    for gw, g in oos.sort_values("gw").groupby("gw", sort=True):
+        g = g.dropna(subset=["actual_points"])
+        status = str(g["status"].iloc[0])
+        best = g.nlargest(1, "actual_points").iloc[0]
+        mix = None
+        if mm_for and gw in mm_for:
+            mix = mm_for[gw].predict_proba(g)
+        seen: set = set()
+        for arm in ARMS:
+            if arm not in g.columns:
+                continue
+            gg = g.dropna(subset=[arm])
+            if gg.empty:
+                continue
+            m = metrics(gg["actual_points"], gg[arm])
+            mf = metrics(gg["actual_points"], gg["FPL"])
+            row = {"gw": int(gw), "status": status, "arm": arm,
+                   "train_gws": str(gg["train_gws"].iloc[0]) if "train_gws" in gg else "",
+                   "n": int(len(gg)), "mae": m.get("mae"), "rmse": m.get("rmse"),
+                   "spearman": m.get("spearman"), "bias": m.get("bias"),
+                   "fpl_mae_same_rows": mf.get("mae")}
+            row["mae_minus_fpl"] = (round(row["mae"] - row["fpl_mae_same_rows"], 4)
+                                    if row["mae"] is not None and row["fpl_mae_same_rows"] is not None
+                                    else None)
+            for k in (10, 15):
+                row[f"top{k}_overlap"] = top_overlap(gg, arm, k)
+                row[f"top{k}_actual_mean"] = round(decision_value(gg, arm, k), 3)
+                row[f"top{k}_best_mean"] = round(
+                    float(gg.nlargest(min(k, len(gg)), "actual_points")["actual_points"].mean()), 3)
+            cap = gg.nlargest(1, arm).iloc[0]
+            row.update({"captain": cap[name], "captain_pred": round(float(cap[arm]), 3),
+                        "captain_actual": float(cap["actual_points"]),
+                        "best_captain": best[name],
+                        "best_captain_actual": float(best["actual_points"]),
+                        "captain_shortfall": float(best["actual_points"] - cap["actual_points"])})
+            # minutes calibration: mean predicted bucket probability vs observed frequency
+            P = _minutes_probs(gg, arm, mix)
+            ok = P["m60"].notna()
+            row["minutes_source"] = MINUTES_SOURCE[arm] if ok.any() else "not available"
+            row["minutes_n"] = int(ok.sum())
+            bucket = gg["bucket"].astype(str)
+            for b, lab in (("m0", "p0"), ("m1_59", "p1_59"), ("m60", "p60")):
+                okb = P[b].notna()
+                row[f"pred_{lab}"] = round(float(P.loc[okb, b].mean()), 4) if okb.any() else None
+                row[f"obs_{lab}"] = round(float((bucket[okb] == b).mean()), 4) if okb.any() else None
+            hit60 = (bucket == "m60").astype(float)
+            if ok.any():
+                row["p60_brier"] = round(float(((P.loc[ok, "m60"] - hit60[ok]) ** 2).mean()), 4)
+                r = _p60_reliability(P["m60"], hit60)
+                rr = r[r["n"] > 0]
+                row["p60_ece"] = round(float((rr["n"] * (rr["pred_mean"] - rr["obs_rate"]).abs()).sum()
+                                             / rr["n"].sum()), 4)
+                if row["minutes_source"] not in seen:        # residual arms share one forecast
+                    seen.add(row["minutes_source"])
+                    r.insert(0, "source", row["minutes_source"])
+                    r.insert(0, "status", status)
+                    r.insert(0, "gw", int(gw))
+                    rel.append(r)
+            else:
+                row["p60_brier"] = row["p60_ece"] = None
+            board.append(row)
+    out = pd.DataFrame(board, columns=cols)
+    return out, (pd.concat(rel, ignore_index=True) if rel else pd.DataFrame())
+
+
 # ── bias diagnosis of the existing Wowza projection ───────────────────────────────────────────
 def wowza_bias_breakdown(panel: pd.DataFrame) -> dict:
     """Where the +1 point of Wowza bias comes from, on the published-projection population."""
