@@ -89,5 +89,18 @@
     "enabled": true,
     "min_scale": 0.2,
     "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
-  }
+  },
+  "track_tier_multipliers": {
+    "new_format|OU25": {
+      "SNIPER": 1.0,
+      "MARKSMAN": 1.0,
+      "VALUABLE": 1.0
+    },
+    "standard|OU25": {
+      "SNIPER": 1.0,
+      "MARKSMAN": 1.0,
+      "VALUABLE": 1.0
+    }
+  },
+  "track_tier_multipliers_note": "Owner decision 2026-10-22: on OU25 the edge does not rank outcomes (since Aug 26, flat 1u: SNIPER -9.9% n125, MARKSMAN -5.8% n294, VALUABLE -0.8% n366; Spearman edge vs P/L ~0 on both tracks, Pro WOWZA_EDGE_REASSESSMENT_2026_10), so every OU25 tier is staked the same and VALUABLE is staked. Other tracks keep tier_multipliers. Pro's monthly review derives this per track from evidence."
 }
