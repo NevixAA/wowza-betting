@@ -26,6 +26,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import dashboard_ui as ui  # noqa: E402
 from dashboard_data import fantasy as fdata  # noqa: E402
 
+# STALE-MODULE GUARD (2026-10-22). Streamlit Cloud re-runs page files on every deploy but keeps
+# modules it already imported, so after the V2 update the long-running process served the OLD
+# dashboard_data.fantasy and the page died with AttributeError on v2_projections. Reload once if the
+# readers this page needs are missing.
+if not all(hasattr(fdata, f) for f in ("v2_projections", "v2_summary", "v2_benchmark", "v2_transfers",
+                                       "v2_fixture_matrix")):
+    import importlib  # noqa: E402
+    fdata = importlib.reload(fdata)
+
 st.set_page_config(page_title="Fantasy | Wowza", page_icon="⚽", layout="wide")
 from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
