@@ -84,7 +84,10 @@ jobs:
       - name: Fantasy V2 projections + benchmark
         continue-on-error: true
         env:
-          FANTASY_V2_RESIDUAL_MODE: auto
+          # BACK TO SHADOW (owner repair brief 2026-10-22: 'Fantasy V2 remains shadow until more OOS
+          # gameweeks accumulate' / 'do NOT promote solely because of three gameweeks'). The gate reached GO
+          # on 3/3 final GWs, so `auto` would have applied the residual on the next run.
+          FANTASY_V2_RESIDUAL_MODE: shadow
         run: |
           python -m player_model.fantasy_v2 || echo "::warning::fantasy_v2 failed"
 
