@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-10-22T06:21:04Z",
+  "generated_at": "2026-10-22T13:09:49Z",
   "shadow_rows": 669,
   "finished_prospective_rows": 466,
-  "settled_rows": 449,
-  "settlement_pct_of_all": 67.1,
-  "settlement_pct_of_finished": 96.4,
-  "valid_closing_price_pct": 7.6,
-  "clv_pct": 7.6,
-  "last_settlement_ts": "2026-10-22T01:46:23Z",
+  "settled_rows": 464,
+  "settlement_pct_of_all": 69.4,
+  "settlement_pct_of_finished": 99.6,
+  "valid_closing_price_pct": 7.8,
+  "clv_pct": 7.8,
+  "last_settlement_ts": "2026-10-22T13:09:42Z",
   "pending_reasons_this_run": {},
   "by_market": {
     "ou25": {
       "rows": 669,
-      "settled": 449
+      "settled": 464
     }
   },
   "note": "Coverage only. A settled forward window is NOT evidence of edge; the prospective sample is small and is not a validated experiment."
