@@ -69,6 +69,60 @@ _ALIASES = {
 }
 
 
+# RESULT-SETTLEMENT ALIASES ONLY (owner-approved 2026-10-22) - used by resolve_result(), NEVER by resolve().
+# OddsAPI / predict names -> API-Football RESULT spellings, found by resolving every club in 689 committed
+# predictions snapshots against API-Football's own names; without them those clubs' results could not be
+# settled (v91 shadow). Kept OUT of _ALIASES on purpose: the training history holds both spellings of some
+# clubs (e.g. "SK Rapid" and "Rapid Vienna"), and an alias there would switch which history rows feed the
+# model's form features at predict time - a model-input change nobody approved.
+_RESULT_ALIASES = {
+    # England / Spain
+    "sheffield united": "sheffield utd",
+    "accrington stanley": "accrington st",
+    "celta fortuna": "celta de vigo ii",
+    "real sociedad b": "real sociedad ii",
+    # Brazil / USA / Finland
+    "bragantino sp": "rb bragantino",
+    "atletico mineiro": "atletico mg",
+    "d c united": "dc united",
+    "la galaxy": "los angeles galaxy",
+    "tps turku": "turku ps",
+    # Argentina - "Estudiantes" is explicit because Estudiantes de Rio Cuarto is a different club
+    "argentinos juniors": "argentinos jrs",
+    "estudiantes": "estudiantes l p",
+    "gimnasia la plata": "gimnasia l p",
+    "gimnasia mendoza": "gimnasia m",
+    # Austria - German endonyms vs API-Football's English/older forms
+    "austria wien": "austria vienna",
+    "rapid wien": "rapid vienna",
+    "rb salzburg": "red bull salzburg",
+    "rheindorf altach": "scr altach",
+    "wsg tirol": "wsg wattens",
+    # China - API-Football keeps the clubs' FORMER names (each pairing is one-to-one across the
+    # 16-club league: renamed club -> its previous name)
+    "zhejiang": "hangzhou greentown",
+    "chengdu rongcheng fc": "chengdu better city",
+    "dalian yingbo": "dalian zhixing",
+    "liaoning tieren fc": "shenyang urban",
+    "qingdao hainiu fc": "qingdao jonoon",
+    "qingdao west coast fc": "qingdao youth island",
+    "shenzhen peng city fc": "sichuan jiuniu",
+    "tianjin jinmen tiger fc": "tianjin teda",
+}
+
+
+_RESERVE_SUFFIX = {"ii", "b", "reserves"}
+_RESERVE_ANY = {"u19", "u21", "u23"}
+
+
+def _is_reserve(s: str) -> bool:
+    """A reserve side: "... II" / "... B" / "... Reserves" as the LAST word, or an age group anywhere.
+    Last-word only, so first teams such as "B. Monchengladbach" or "Fortuna Dusseldorf" are never
+    mistaken for reserves ("Celta Fortuna" is covered by its explicit alias instead)."""
+    w = norm(s).split()
+    return bool(w) and (w[-1] in _RESERVE_SUFFIX or bool(set(w) & _RESERVE_ANY))
+
+
 def norm(s: str) -> str:
     """Lowercase, strip accents and punctuation, collapse whitespace."""
     nfkd = unicodedata.normalize("NFKD", str(s))
@@ -142,7 +196,11 @@ def resolve(name: str, candidates: list[str]) -> str | None:
     nt = _tokens(name)
     if not nt:
         return None
-    cand_tokens = [(c, _tokens(c)) for c in candidates]
+    # RESERVE SIDES ONLY MATCH RESERVE SIDES in the token tiers (2026-10-22): "Celta Vigo" (first
+    # team) is a token subset of "Celta de Vigo II" and resolved to it, so a first-team fixture could
+    # be settled with the reserve team's result. Explicit aliases above are unaffected.
+    res = _is_reserve(name)
+    cand_tokens = [(c, _tokens(c)) for c in candidates if _is_reserve(c) == res]
 
     def _only(hits):
         return hits[0] if len(hits) == 1 else None
@@ -182,4 +240,24 @@ def resolve(name: str, candidates: list[str]) -> str | None:
         if hit:
             return hit
 
+    return None
+
+
+def resolve_result(name: str, candidates: list[str]) -> str | None:
+    """resolve() for RESULT settlement: the normal league-scoped tiers first; only if they find
+    nothing, the API-Football result-spelling aliases (either direction). Predict-time matching
+    must keep using resolve()."""
+    hit = resolve(name, candidates)
+    if hit or not name or not candidates:
+        return hit
+    n = norm(name)
+    by_norm = {}
+    for c in candidates:
+        by_norm.setdefault(norm(c), c)
+    alias = _RESULT_ALIASES.get(n)
+    if alias and alias in by_norm:
+        return by_norm[alias]
+    for long_form, short in _RESULT_ALIASES.items():
+        if n == short and long_form in by_norm:
+            return by_norm[long_form]
     return None

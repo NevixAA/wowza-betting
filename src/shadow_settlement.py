@@ -201,8 +201,8 @@ def match_event(home, away, match_date, kickoff, events: list[dict], *,
         cands = [e for e in events if str(e.get("date_str", ""))[:10] in dates]
         if not cands:
             continue
-        rh = team_names.resolve(str(home), sorted({str(e["home_team"]) for e in cands}))
-        ra = team_names.resolve(str(away), sorted({str(e["away_team"]) for e in cands}))
+        rh = team_names.resolve_result(str(home), sorted({str(e["home_team"]) for e in cands}))
+        ra = team_names.resolve_result(str(away), sorted({str(e["away_team"]) for e in cands}))
         if rh and ra:
             hits = [e for e in cands if e["home_team"] == rh and e["away_team"] == ra]
             if len(hits) == 1:
@@ -267,8 +267,8 @@ def closing_price(indexed: list[tuple[str, dict]], home, away, match_date, kicko
         if league and "league" in g.columns:
             gl = g[g["league"].astype(str) == str(league)]
             g = gl if len(gl) else g
-        rh = team_names.resolve(str(home), sorted(set(g["_home"])))
-        ra = team_names.resolve(str(away), sorted(set(g["_away"])))
+        rh = team_names.resolve_result(str(home), sorted(set(g["_home"])))
+        ra = team_names.resolve_result(str(away), sorted(set(g["_away"])))
         m = g[(g["_home"] == rh) & (g["_away"] == ra)] if (rh and ra) else g.iloc[0:0]
         if m.empty and fallback_matcher is not None:
             m = g[[fallback_matcher(str(home), h) and fallback_matcher(str(away), a)
