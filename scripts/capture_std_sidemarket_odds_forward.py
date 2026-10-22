@@ -24,6 +24,12 @@ PROJ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJ))
 import config
 from player_model.api_football import get_upcoming_fixtures
+from src.capture_schedule import PassScheduler
+from src import odds_heartbeat
+
+# Adaptive in-run sampling + loop plan (src/capture_schedule.py). Inert unless the NEAR loop
+# sets CAPTURE_STATE, so a manual single run behaves exactly as before.
+_SCHED = PassScheduler.from_env()
 
 _KEY = os.getenv("APIFOOTBALL_KEY", "")
 _BASE = "https://v3.football.api-sports.io"
@@ -348,9 +354,16 @@ def run() -> int:
                 if hrs is not None and not (0 <= hrs <= MAX_HOURS):
                     n_skipped_far += 1
                     continue
+            # PER-FIXTURE DUE INTERVAL: far fixtures hourly, inside 6h ~15 min, inside 1h ~5 min,
+            # inside 30 min every pass. Spend goes where the close forms (capture_schedule.py).
+            if hrs is not None and hrs < 0:
+                continue                      # kicked off: never price a started match
+            if not _SCHED.due(fid, hrs):
+                continue
             odds = _fetch_odds(fid, want_raw=CAPTURE_BOOK_QUOTES)
             if odds.get("_stop"):
                 stop = True; break
+            _SCHED.mark(fid)
             raw_payload = odds.pop("_raw", None)
             if raw_payload is not None:
                 try:
@@ -381,6 +394,13 @@ def run() -> int:
         except Exception as _e:                                       # noqa: BLE001
             print(f"[book_quotes] write failed: {_e}")
 
+    # LAST-SEEN HEARTBEAT: the change-log below drops an unchanged price, so without this a pass
+    # at T-8m that saw the T-3h price again leaves no proof it was still in force at the close.
+    try:
+        odds_heartbeat.record("std_capture", rows)
+    except Exception as _e:                                           # noqa: BLE001
+        print(f"[heartbeat] skipped: {_e}")
+
     if not rows:
         print("[std_odds] no rows captured")
         if nearest_ko_h is not None:
@@ -406,4 +426,7 @@ def run() -> int:
 
 
 if __name__ == "__main__":
-    run()
+    try:
+        run()
+    finally:
+        _SCHED.close()      # persist due-state; print LOOP_CONTINUE / LOOP_SLEEP_S for the loop

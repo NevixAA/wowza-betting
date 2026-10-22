@@ -71,6 +71,12 @@ STALE_CLOSE = "STALE_CLOSE_GT_30MIN"
 #: `last_pre_kickoff_odds`; closing_odds and clv stay NaN with close_status STALE_CLOSE_GT_30MIN.
 CLOSE_MAX_MIN = 30.0
 
+#: P1 2026-10-22: a row is settled only this long after kickoff. The NEAR capture loops now stay
+#: alive up to 170 minutes (src/capture_schedule.CAP_MIN) and commit once at the end, so a close
+#: observed at T-5m can reach main up to ~3h after kickoff. Settling at FINISH_GRACE_MIN (135)
+#: would freeze such a row as STALE before its close landed — settled rows are never re-graded.
+CLOSE_SETTLE_DELAY_MIN = 240
+
 
 # ── small helpers ─────────────────────────────────────────────────────────────────────────────
 def _blank(v) -> bool:
@@ -252,12 +258,18 @@ def index_archives(archives: Iterable[tuple[str, pd.DataFrame]]) -> list[tuple[s
 
 def closing_price(indexed: list[tuple[str, dict]], home, away, match_date, kickoff,
                   archive_market: str, league: str | None = None,
-                  fallback_matcher: Callable[[str, str], bool] | None = None) -> dict:
+                  fallback_matcher: Callable[[str, str], bool] | None = None,
+                  max_min: float | None = None) -> dict:
     """The final valid PRE-KICKOFF observation for one side of one market.
 
-    Archives are tried in the ledgers' order (densest first); the first archive holding a
-    pre-kickoff price for the fixture wins. Returns a dict with odds (NaN when none), ts,
-    minutes_to_kickoff, band, source and status.
+    Archives are tried in the ledgers' order (densest first). Without `max_min` the first archive
+    holding a pre-kickoff price wins (the original rule). With `max_min` (the settlement passes
+    CLOSE_MAX_MIN) the first archive whose last pre-kickoff observation lies within `max_min`
+    minutes of kickoff wins; only when NO archive can certify a close is the first archive's
+    (stale) price returned, for the caller to label STALE. This stops a stale predict-archive price
+    hiding a certified capture-archive close for the same fixture — the definition of a close is
+    unchanged (strictly pre-kickoff, within 30 minutes), only the search is no longer first-hit.
+    Returns a dict with odds (NaN when none), ts, minutes_to_kickoff, band, source and status.
     """
     none = {"odds": np.nan, "ts": None, "minutes": np.nan, "band": "", "source": ""}
     fallback_matcher = guarded(fallback_matcher)
@@ -266,6 +278,7 @@ def closing_price(indexed: list[tuple[str, dict]], home, away, match_date, kicko
     if _blank(home) or _blank(away):
         return {**none, "status": NO_CLOSE}
     status = NO_CLOSE
+    first = None
     d = str(match_date)[:10]
     for name, groups in indexed:
         g = groups.get((d, archive_market))
@@ -290,10 +303,14 @@ def closing_price(indexed: list[tuple[str, dict]], home, away, match_date, kicko
             continue
         r = pre.sort_values("_ts").iloc[-1]
         mins = float((kickoff - r["_ts"]).total_seconds() / 60.0)
-        return {"odds": float(r["_odds"]), "ts": r["_ts"].strftime("%Y-%m-%dT%H:%M:%SZ"),
+        cand = {"odds": float(r["_odds"]), "ts": r["_ts"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "minutes": round(mins, 1), "band": ladder_band(mins), "source": name,
                 "status": CLOSE_OK}
-    return {**none, "status": status}
+        if max_min is None or mins <= max_min:
+            return cand
+        if first is None:
+            first = cand                      # stale; keep looking for a certifiable close
+    return first if first is not None else {**none, "status": status}
 
 
 # ── the settlement pass ───────────────────────────────────────────────────────────────────────
@@ -349,6 +366,8 @@ def settle_frame(df: pd.DataFrame, *,
             skip("NOT_PROSPECTIVE"); continue                         # logged at/after kickoff
         if now_ts < kickoff + pd.Timedelta(minutes=FINISH_GRACE_MIN):
             skip("NOT_FINISHED"); continue
+        if now_ts < kickoff + pd.Timedelta(minutes=CLOSE_SETTLE_DELAY_MIN):
+            skip("AWAITING_CLOSE_CAPTURE"); continue
 
         fid = str(row.get("fixture_id", "")).strip()
         home, away = row.get("home_team"), row.get("away_team")
@@ -383,7 +402,8 @@ def settle_frame(df: pd.DataFrame, *,
 
         arch_key = MARKETS[market][2].get(side) if side else None
         close = (closing_price(indexed, home, away, row.get("match_date"), kickoff, arch_key,
-                               league=league, fallback_matcher=fallback_matcher)
+                               league=league, fallback_matcher=fallback_matcher,
+                               max_min=CLOSE_MAX_MIN)
                  if arch_key else {"odds": np.nan, "ts": None, "minutes": np.nan, "band": "",
                                    "source": "", "status": NO_CLOSE})
         try:
