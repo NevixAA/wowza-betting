@@ -85,9 +85,20 @@ price changes only. Fix (commit `1187386c`):
 | with T-10 close | 8 (1.7%) |
 | median minutes of last pre-kickoff price | 321.5 |
 
-This is still the *before* number: the new loop has run once for standard (11:26, green, no
-fixture inside its window on a Thursday) and is running for new-format now. The first honest
-after-number comes from this weekend's fixtures.
+This is still the *before* number. First runs on the new code:
+- standard `39770538469` green: no standard kickoff within 6 h on a Thursday, so no heartbeat
+  written (correct);
+- new-format `39784431067` green: stayed alive 94 min to cover two kickoffs and recorded
+  Al-Hazm v Al-Fayha at **T-0.2 min** and Al-Fateh v Al Shabab at **T-0.8 min** — both would have
+  been invisible in the change-log alone;
+- `update_results` `39783842069` green including the CLV guard (INSUFFICIENT_SAMPLE, as designed).
+
+Expected after: 55–70% certified (the replay is probably optimistic by 5–15 points). The guard
+fails below 35% certified (≥ 40 rows) or 40% collection at T-30m (≥ 200 fixture-markets), judged
+only on kickoffs from 2026-10-23 (`shadow_since_measure_from`). Odds calls roughly unchanged
+(new-format 678 → 463/day, standard 563 → 439/day in replay), none in predict. Side effects: shadow
+rows now settle 4 h after kickoff instead of 2 h 15 m; capture no longer prices matches already
+started. Japan J-League rows can only get a close from predict (no capture archive matches them).
 
 ### P1-2 — bankroll dependencies
 `src/bankroll/allocator.py` imported scipy; Pro never installed it. Fix: pandas Spearman
