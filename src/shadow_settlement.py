@@ -63,6 +63,13 @@ CLOSE_OK = "OK"
 NO_CLOSE = "NO_CLOSE"
 POST_KICKOFF_ONLY = "POST_KICKOFF_ONLY"
 NO_KICKOFF = "NO_KICKOFF"
+STALE_CLOSE = "STALE_CLOSE_GT_30MIN"
+
+#: OWNER RULE 2026-10-22: a closing price counts only if it was observed within this many minutes of
+#: kickoff. The archives are change-logs, so an earlier first-seen price MAY still have been in force at
+#: kickoff - but nothing proves it, and an unproven close is not a close. It is kept in
+#: `last_pre_kickoff_odds`; closing_odds and clv stay NaN with close_status STALE_CLOSE_GT_30MIN.
+CLOSE_MAX_MIN = 30.0
 
 
 # ── small helpers ─────────────────────────────────────────────────────────────────────────────
@@ -383,7 +390,10 @@ def settle_frame(df: pd.DataFrame, *,
             entry = float(row.get("entry_odds"))
         except (TypeError, ValueError):
             entry = np.nan
-        cl = close["odds"]
+        last_pre = close["odds"]
+        if close["status"] == CLOSE_OK and np.isfinite(close["minutes"]) and close["minutes"] > CLOSE_MAX_MIN:
+            close = {**close, "status": STALE_CLOSE}
+        cl = close["odds"] if close["status"] == CLOSE_OK else np.nan
         clv = (round((entry / cl - 1.0) * 100.0, 2)
                if (np.isfinite(entry) and entry > 1.0 and np.isfinite(cl) and cl > 1.0)
                else np.nan)
@@ -395,7 +405,7 @@ def settle_frame(df: pd.DataFrame, *,
             "closing_odds": cl, "clv": clv,
             "close_ts": close["ts"], "close_minutes_to_kickoff": close["minutes"],
             "close_band": close["band"], "close_source": close["source"],
-            "close_status": close["status"],
+            "close_status": close["status"], "last_pre_kickoff_odds": last_pre,
             "settle_status": "SETTLED" if result else "SETTLED_NO_SIDE",
             "settled_at": stamp,
         }
@@ -440,6 +450,28 @@ def apply_updates(df: pd.DataFrame, updates: list[dict]) -> tuple[pd.DataFrame, 
     if frozen_digest(out) != before:
         raise RuntimeError("shadow settlement would alter a first-sight column — refused")
     return out, n
+
+
+def enforce_close_rule(df: pd.DataFrame) -> tuple[pd.DataFrame, int]:
+    """Apply the 30-minute close rule to rows settled BEFORE it existed (idempotent, grading-only).
+
+    A row with close_status OK and a close more than CLOSE_MAX_MIN before kickoff keeps that price in
+    `last_pre_kickoff_odds`; closing_odds and clv are cleared and close_status becomes STALE. Once
+    re-labelled a row is never touched again. Every FROZEN column is hashed before and after."""
+    out = df.copy()
+    for c in GRADING_ONLY:
+        if c not in out.columns:
+            out[c] = ""
+    out = out.fillna("")
+    before = frozen_digest(out)
+    mins = pd.to_numeric(out["close_minutes_to_kickoff"], errors="coerce")
+    hit = (out["close_status"].astype(str) == CLOSE_OK) & (mins > CLOSE_MAX_MIN)
+    out.loc[hit, "last_pre_kickoff_odds"] = out.loc[hit, "closing_odds"]
+    out.loc[hit, ["closing_odds", "clv"]] = ""
+    out.loc[hit, "close_status"] = STALE_CLOSE
+    if frozen_digest(out) != before:
+        raise RuntimeError("close rule would alter a first-sight column — refused")
+    return out, int(hit.sum())
 
 
 def health(df: pd.DataFrame, now: datetime | None = None, pending: dict | None = None) -> dict:
