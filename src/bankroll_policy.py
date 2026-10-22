@@ -101,7 +101,11 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
         base = min(float(t.get("base_fraction", 0.0)), HARD["base_fraction"])
         state = t.get("state", "UNSUPPORTED")
         odds = float(r.odds) if pd.notna(r.odds) else float("nan")
-        tm = float(tiers.get(str(r.signal_tier), 0.0))
+        # PER-TRACK TIER MULTIPLIERS (owner 2026-10-22): a track whose edge does not rank outcomes
+        # (OU25: SNIPER -9.9% < MARKSMAN -5.8% < VALUABLE -0.8% since Aug 26) stakes every tier the
+        # same instead of paying most on the biggest raw edge. Absent override -> the global ladder.
+        tt = (policy.get("track_tier_multipliers") or {}).get(r.track)
+        tm = float((tt if tt is not None else tiers).get(str(r.signal_tier), 0.0))
         lm = conv_mult if r.league in conv_leagues else 1.0
         reason = "OK"
         if state not in REAL_STATES or base <= 0:
