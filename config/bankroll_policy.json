@@ -1,8 +1,8 @@
 {
   "policy_version": "balanced-2026-10-13",
   "name": "WOWZA BALANCED",
-  "status": "RECOMMENDED_NOT_WIRED",
-  "note": "Read by src/bankroll_policy.py only. Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
+  "status": "WIRED_PAPER",
+  "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
   "generated_at": "2026-10-13",
   "evidence_cutoff": "2026-10-12",
   "source": "owner brief 2026-10-13 (initial policy); Pro src/bankroll for later versions",
