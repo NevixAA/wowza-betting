@@ -126,6 +126,13 @@ jobs:
           done
           [ "$pushed" = "1" ] || { echo "shadow settlement push failed after 5 retries"; exit 1; }
 
+      # P0 2026-10-22 - FAIL LOUDLY if a registered challenger experiment is not being logged.
+      # The H-MODEL-01 clock ran for 18 days with zero challenger probabilities and nothing went
+      # red. Runs after every commit, so a failure here never costs data.
+      - name: Guard - registered experiments must be logging
+        if: always()
+        run: python -m src.shadow_experiments guard
+
       # CLV COLLECTION GUARD (P1 2026-10-22). Runs LAST, after both commits, so a failing guard can
       # never stop results or settlements from persisting. It turns the run red when certified
       # T-30m close coverage falls below config/clv_collection_expectation.json - the failure that
@@ -135,10 +142,3 @@ jobs:
         run: |
           git fetch -q origin main && git checkout -q origin/main -- output/clv_collection_health.json config/clv_collection_expectation.json 2>/dev/null || true
           python scripts/check_clv_collection_health.py
-
-      # P0 2026-10-22 - FAIL LOUDLY if a registered challenger experiment is not being logged.
-      # The H-MODEL-01 clock ran for 18 days with zero challenger probabilities and nothing went
-      # red. Runs last, after every commit, so a failure here never costs data.
-      - name: Guard - registered experiments must be logging
-        if: always()
-        run: python -m src.shadow_experiments guard
