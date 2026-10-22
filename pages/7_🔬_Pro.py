@@ -21,7 +21,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 from dashboard_data import pro, ui
 # Stale-module guard: Streamlit Cloud keeps already-imported modules across deploys (see the Fantasy page).
-if not all(hasattr(pro, f) for f in ("valuable", "price_trader", "model_lineage")):
+if not all(hasattr(pro, f) for f in ("valuable", "price_trader", "model_lineage", "candidate_forward")):
     import importlib
     pro = importlib.reload(pro)
 
@@ -51,10 +51,40 @@ if contract:
         f"v9 `{str(va.get('v9_commit', ''))[:7]}` · pro `{str(va.get('pro_commit', ''))[:7]}` · "
         f"v11 `{str(va.get('v11_commit', ''))[:7]}`")
 
-(tab_latest, tab_champ, tab_trader, tab_valuable, tab_learn, tab_tips, tab_studies, tab_store, tab_gov,
+(tab_latest, tab_champ, tab_trader, tab_valuable, tab_forward, tab_learn, tab_tips, tab_studies, tab_store, tab_gov,
  tab_health) = st.tabs(
-    ["Latest findings", "Model champions", "Price Trader", "VALUABLE research", "Does it learn?",
+    ["Latest findings", "Model champions", "Price Trader", "VALUABLE research", "Forward tests", "Does it learn?",
      "Tips sent (1X2 · Bet Builder)", "Team studies", "Canonical store", "Governance", "Health"])
+
+# ── Frozen candidate forward tests (P1-4, 2026-10-22) - three windows NEVER mixed ─────────────────
+with tab_forward:
+    cf = pro.candidate_forward() if hasattr(pro, "candidate_forward") else {}
+    if not cf:
+        st.info("No forward-test progress yet — Pro writes it daily (pro_valuable_shadow.yml).")
+    else:
+        st.markdown(f"**{len(cf.get('hypotheses', []))} frozen candidate gates** (registry frozen 2026-10-20, forward "
+                    f"start {str(cf.get('forward_start'))[:10]}). Only TRUE FORWARD rows can pass or fail a test. "
+                    "A retrospective winner is a candidate, never 'confirmed' — CONFIRMED cannot be assigned here.")
+        st.caption(f"status: {cf.get('status_counts')} · updated {cf.get('generated_at')}")
+        for h in cf.get("hypotheses", []):
+            f = h.get("TRUE_FORWARD") or {}
+            hist = h.get("HISTORICAL_DISCOVERY") or {}
+            with st.container(border=True):
+                c1, c2, c3 = st.columns([2, 2, 3])
+                c1.markdown(f"**{h['id']}** · {h['league']} · {h['market'].upper()} · {h['model_type']}  
+"
+                            f"gate **{h.get('candidate_gate')}** vs production SNIPER "
+                            f"{(h.get('production_gates') or {}).get('sniper')} · status **{h.get('status')}**")
+                c2.markdown("🗂️ **HISTORICAL DISCOVERY**  
+"
+                            f"fit {hist.get('fit_roi')} · validation {hist.get('validation_roi')} · holdout "
+                            f"{hist.get('holdout_roi')}  
+⏸️ *post-discovery rows: shown in the study, NOT COUNTED*")
+                c3.markdown(f"🎯 **TRUE FORWARD** n **{f.get('n', 0)}** / {h.get('required_n')} · matchdays "
+                            f"{f.get('matchdays', 0)} / {h.get('required_matchdays')} · ROI {f.get('roi_pct')}% "
+                            f"CI {f.get('roi_ci95')} · CLV coverage {f.get('clv_coverage_pct')}% mean {f.get('clv_mean')} "
+                            f"· BH q {f.get('q_bh')}")
+                c3.progress(min(1.0, float(h.get("progress_pct") or 0) / 100), text=f"{h.get('progress_pct')}% of required n")
 
 # ── VALUABLE deep dive (owner brief 2026-10-20) — READ-ONLY research, selection logic untouched ─────
 with tab_valuable:

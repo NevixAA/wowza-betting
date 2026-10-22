@@ -233,6 +233,19 @@ def valuable() -> dict:
     return out
 
 
+def candidate_forward() -> dict:
+    """Frozen candidate forward tests, daily progress (Pro src/studies/candidate_forward.py)."""
+    return read_json(_f("output/edge_reassessment/candidate_forward_progress.json")) or {}
+
+
+def tier_rules() -> pd.DataFrame:
+    """Per-track evidence: does the edge rank outcomes? (Pro bankroll review, tier_rules.csv)."""
+    try:
+        return read_csv(_f("output/bankroll/tier_rules.csv"))
+    except Exception:                                                 # noqa: BLE001
+        return pd.DataFrame()
+
+
 def verdict(rel: str) -> dict:
     """One study's machine-readable verdict file, e.g. 'output/player_v3/player_v3_verdict.json'."""
     return read_json(_f(rel))

@@ -272,6 +272,15 @@ _TZ_NAME = "Asia/Jerusalem"
 _TIER_CLR = {"SNIPER": "#c42b2b", "MARKSMAN": "#d97706", "VALUABLE": "#2563eb"}
 _TIER_ICON = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
 _STAKE = {"SNIPER": "staked · full", "MARKSMAN": "staked · ¾", "VALUABLE": "paper"}
+# SIGNAL TIER != EVIDENCE RANK (P1-6, 2026-10-22). The tier is a label for the size of the model-vs-price
+# edge. On O/U 2.5 that size does NOT rank outcomes (measured: SNIPER -9.9%, MARKSMAN -5.8%, VALUABLE -0.8%
+# since 26 Aug), so the bankroll policy stakes every O/U tier the same and the page must not imply SNIPER
+# is the stronger bet there. Other markets keep the ladder because their edge does rank outcomes.
+_STAKE_OU = "equal stake · tier ≠ confidence"
+
+
+def _stake_label(tier: str, market: str) -> str:
+    return _STAKE_OU if _market_group(str(market)) == "O/U 2.5" else _STAKE.get(tier, "")
 _SIDE_CLR = {"OVER": "#0e7490", "UNDER": "#7c3aed", "YES": "#15803d"}
 
 
@@ -364,7 +373,7 @@ def _board(rows: pd.DataFrame, order: str) -> str:
                 f"<td><span class='mk' style='color:{_SIDE_CLR.get(side, 'inherit')}'>{tip}</span>"
                 f"{'<span class=sub>' + ' · '.join(extra) + '</span>' if extra else ''}</td>"
                 f"<td><span class='pill' style='background:{clr}'>{_TIER_ICON.get(tier, '')} {tier}"
-                f"</span><span class='sub'>{_STAKE.get(tier, '')}</span></td>"
+                f"</span><span class='sub'>{_stake_label(tier, r.get('market', ''))}</span></td>"
                 f"<td class='num'><b>{'–' if pd.isna(odds) else f'{odds:.2f}'}</b></td>"
                 f"<td class='num'>{'–' if pd.isna(edge) else f'+{edge:.1f}%'}"
                 f"<span class='bar' style='width:{bar_w}px;background:{clr}'></span></td>"
@@ -385,6 +394,9 @@ if len(board):
     board = board[_keep]
 
 st.markdown("## 🎯 Tips")
+st.caption("**Tier = size of the model-vs-market edge, not proven confidence.** On O/U 2.5 a bigger edge has NOT "
+           "meant a better result (SNIPER −9.9%, MARKSMAN −5.8%, VALUABLE −0.8% since 26 Aug), so O/U tiers are staked "
+           "equally. On BTTS and Over 1.5 the edge does rank outcomes, so the ladder stays.")
 if board.empty:
     st.info("No tips match the current filters.")
 else:
@@ -395,7 +407,8 @@ else:
         {"label": "Tips shown", "value": f"{len(board)}",
          "help": "Every live tip in the date range, all markets, one side per fixture."},
         {"label": "Staked (SNIPER + MARKSMAN)", "value": f"{_staked}",
-         "help": "VALUABLE is recorded and tracked but is not a bet."},
+         "help": "On O/U 2.5 every tier, VALUABLE included, carries the same paper stake (the edge size does "
+                 "not rank outcomes there); on other markets VALUABLE is tracked but not staked."},
         {"label": "Fixtures", "value": f"{board[['date', 'home_team', 'away_team']].drop_duplicates().shape[0]}"},
         {"label": "Next kickoff", "value": (f"{_next.tz_convert(_TZ_NAME):%a %H:%M}"
                                             if pd.notna(_next) else "—"),
