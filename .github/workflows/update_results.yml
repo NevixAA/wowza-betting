@@ -109,7 +109,14 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
             python update_results.py --shadow-reapply "$SHADOW_SETTLEMENT_JOURNAL"
-            for f in output/v91_shadow.csv output/shadow_settlement_health.json output/clv_collection_health.json; do
+            # Prospective experiments (H-MODEL-01): RESULTS only, joined from the v91 rows just
+            # settled above. Deterministic from the files on disk, so a retry re-derives it.
+            python -m src.shadow_experiments settle || true
+            python -m src.shadow_experiments evaluate > /dev/null || true
+            for f in output/v91_shadow.csv output/shadow_settlement_health.json \
+                     output/clv_collection_health.json \
+                     output/model_lineage/shadow_experiments.csv \
+                     output/model_lineage/shadow_experiments_eval.json; do
               git add -f "$f" 2>/dev/null || true
             done
             if git diff --staged --quiet; then pushed=1; echo "shadow: nothing new"; break; fi
@@ -128,3 +135,10 @@ jobs:
         run: |
           git fetch -q origin main && git checkout -q origin/main -- output/clv_collection_health.json config/clv_collection_expectation.json 2>/dev/null || true
           python scripts/check_clv_collection_health.py
+
+      # P0 2026-10-22 - FAIL LOUDLY if a registered challenger experiment is not being logged.
+      # The H-MODEL-01 clock ran for 18 days with zero challenger probabilities and nothing went
+      # red. Runs last, after every commit, so a failure here never costs data.
+      - name: Guard - registered experiments must be logging
+        if: always()
+        run: python -m src.shadow_experiments guard
