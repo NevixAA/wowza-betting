@@ -1,16 +1,16 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-10-21T12:18:52Z",
+ "generated_at": "2026-10-22T12:21:25Z",
  "gameweek": 8,
  "deadline": "2026-10-23T17:30:00Z",
- "fpl_fetched_at": "2026-10-21T12:18:38Z",
+ "fpl_fetched_at": "2026-10-22T12:21:11Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 449,
   "with_fixture": 449,
   "blank_gw_players": 0,
   "double_gw_players": 0,
-  "minutes_disagreements": 17,
+  "minutes_disagreements": 18,
   "archived_gameweeks": [
    4,
    5,
@@ -76,12 +76,12 @@
    "p_blank": 0.2393,
    "p_start": 0.952,
    "exp_minutes": 80.5,
-   "ceiling": 26.0,
+   "ceiling": 25.0,
    "next_fixture": "LIV(A)",
    "opponent_weakness": 1.75,
    "pen_first": 0,
    "set_piece": 1,
-   "reasoning": "Best expected captain score: 10.5 xPts (FPL 10.5, Wowza residual -5.6 in shadow); P(start) 95%, ~80 min; vs LIV(A) (team goal expectancy 1.75); takes set pieces; P(10+) 36%, ceiling 26.",
+   "reasoning": "Best expected captain score: 10.5 xPts (FPL 10.5, Wowza residual -5.6 in shadow); P(start) 95%, ~80 min; vs LIV(A) (team goal expectancy 1.75); takes set pieces; P(10+) 36%, ceiling 25.",
    "note": ""
   },
   "SAFE": {
@@ -118,10 +118,10 @@
    "captain_ev": 20.0,
    "fpl_ep_next": 10.0,
    "wowza_residual": -4.954,
-   "p6": 0.4847,
-   "p10": 0.3335,
+   "p6": 0.4851,
+   "p10": 0.3336,
    "p15": 0.2219,
-   "p_blank": 0.3081,
+   "p_blank": 0.3072,
    "p_start": 0.883,
    "exp_minutes": 74.0,
    "ceiling": 25.0,
@@ -134,21 +134,6 @@
   },
   "candidates": [
    {
-    "player_name": "Jordan Henderson",
-    "web_name": "Henderson",
-    "team": "Chelsea",
-    "position": "MID",
-    "final_xpts": 10.5,
-    "p6": 0.421,
-    "p10": 0.31,
-    "p15": 0.226,
-    "p_blank": 0.435,
-    "p_start": 0.74,
-    "ceiling": 30.0,
-    "sd": 9.844,
-    "next_fixture": "TOT(H)"
-   },
-   {
     "player_name": "Maxim De Cuyper",
     "web_name": "De Cuyper",
     "team": "Brighton",
@@ -159,9 +144,24 @@
     "p15": 0.235,
     "p_blank": 0.239,
     "p_start": 0.952,
-    "ceiling": 26.0,
+    "ceiling": 25.0,
     "sd": 8.832,
     "next_fixture": "LIV(A)"
+   },
+   {
+    "player_name": "Jordan Henderson",
+    "web_name": "Henderson",
+    "team": "Chelsea",
+    "position": "MID",
+    "final_xpts": 10.5,
+    "p6": 0.422,
+    "p10": 0.311,
+    "p15": 0.227,
+    "p_blank": 0.434,
+    "p_start": 0.741,
+    "ceiling": 30.0,
+    "sd": 9.85,
+    "next_fixture": "TOT(H)"
    },
    {
     "player_name": "Pedro Lomba Neto",
@@ -172,26 +172,11 @@
     "p6": 0.485,
     "p10": 0.334,
     "p15": 0.222,
-    "p_blank": 0.308,
+    "p_blank": 0.307,
     "p_start": 0.883,
     "ceiling": 25.0,
-    "sd": 8.971,
+    "sd": 8.965,
     "next_fixture": "TOT(H)"
-   },
-   {
-    "player_name": "Luka Vu\u0161kovi\u0107",
-    "web_name": "Vuskovic",
-    "team": "Brighton",
-    "position": "DEF",
-    "final_xpts": 9.5,
-    "p6": 0.499,
-    "p10": 0.328,
-    "p15": 0.206,
-    "p_blank": 0.257,
-    "p_start": 0.946,
-    "ceiling": 23.0,
-    "sd": 8.372,
-    "next_fixture": "LIV(A)"
    },
    {
     "player_name": "Francisco Evanilson de Lima Barbosa",
@@ -205,8 +190,23 @@
     "p_blank": 0.314,
     "p_start": 0.885,
     "ceiling": 24.0,
-    "sd": 8.725,
+    "sd": 8.724,
     "next_fixture": "MUN(A)"
+   },
+   {
+    "player_name": "Luka Vu\u0161kovi\u0107",
+    "web_name": "Vuskovic",
+    "team": "Brighton",
+    "position": "DEF",
+    "final_xpts": 9.5,
+    "p6": 0.499,
+    "p10": 0.328,
+    "p15": 0.206,
+    "p_blank": 0.257,
+    "p_start": 0.946,
+    "ceiling": 23.0,
+    "sd": 8.371,
+    "next_fixture": "LIV(A)"
    },
    {
     "player_name": "Erling Haaland",
@@ -229,13 +229,13 @@
     "team": "Man City",
     "position": "MID",
     "final_xpts": 9.0,
-    "p6": 0.365,
+    "p6": 0.366,
     "p10": 0.264,
     "p15": 0.191,
-    "p_blank": 0.503,
-    "p_start": 0.685,
+    "p_blank": 0.502,
+    "p_start": 0.687,
     "ceiling": 26.0,
-    "sd": 9.39,
+    "sd": 9.386,
     "next_fixture": "AVL(A)"
    },
    {
@@ -247,11 +247,26 @@
     "p6": 0.42,
     "p10": 0.271,
     "p15": 0.168,
-    "p_blank": 0.367,
-    "p_start": 0.839,
+    "p_blank": 0.366,
+    "p_start": 0.84,
     "ceiling": 20.0,
-    "sd": 8.067,
+    "sd": 8.059,
     "next_fixture": "LIV(A)"
+   },
+   {
+    "player_name": "Declan Rice",
+    "web_name": "Rice",
+    "team": "Arsenal",
+    "position": "MID",
+    "final_xpts": 8.0,
+    "p6": 0.449,
+    "p10": 0.274,
+    "p15": 0.158,
+    "p_blank": 0.29,
+    "p_start": 0.935,
+    "ceiling": 19.0,
+    "sd": 7.462,
+    "next_fixture": "EVE(H)"
    },
    {
     "player_name": "Bryan Mbeumo",
@@ -269,36 +284,6 @@
     "next_fixture": "BOU(H)"
    },
    {
-    "player_name": "Declan Rice",
-    "web_name": "Rice",
-    "team": "Arsenal",
-    "position": "MID",
-    "final_xpts": 8.0,
-    "p6": 0.449,
-    "p10": 0.274,
-    "p15": 0.158,
-    "p_blank": 0.29,
-    "p_start": 0.935,
-    "ceiling": 19.0,
-    "sd": 7.463,
-    "next_fixture": "EVE(H)"
-   },
-   {
-    "player_name": "Bart Verbruggen",
-    "web_name": "Verbruggen",
-    "team": "Brighton",
-    "position": "GKP",
-    "final_xpts": 7.5,
-    "p6": 0.442,
-    "p10": 0.253,
-    "p15": 0.135,
-    "p_blank": 0.259,
-    "p_start": 0.982,
-    "ceiling": 17.0,
-    "sd": 6.765,
-    "next_fixture": "LIV(A)"
-   },
-   {
     "player_name": "Ferdi Kad\u0131o\u011flu",
     "web_name": "F.Kad\u0131o\u011flu",
     "team": "Brighton",
@@ -311,6 +296,21 @@
     "p_start": 0.903,
     "ceiling": 18.0,
     "sd": 7.363,
+    "next_fixture": "LIV(A)"
+   },
+   {
+    "player_name": "Olivier Boscagli",
+    "web_name": "Boscagli",
+    "team": "Brighton",
+    "position": "DEF",
+    "final_xpts": 7.5,
+    "p6": 0.423,
+    "p10": 0.257,
+    "p15": 0.147,
+    "p_blank": 0.324,
+    "p_start": 0.899,
+    "ceiling": 18.0,
+    "sd": 7.387,
     "next_fixture": "LIV(A)"
    }
   ]
@@ -375,9 +375,9 @@
    "fpl_ep_next": 10.0,
    "wowza_residual": -4.954,
    "p6": 0.2997,
-   "p10": 0.1396,
-   "p15": 0.0584,
-   "p_blank": 0.3081,
+   "p10": 0.1395,
+   "p15": 0.0582,
+   "p_blank": 0.3072,
    "p_start": 0.883,
    "exp_minutes": 74.0,
    "ceiling": 11.0,
@@ -413,10 +413,10 @@
     "p6": 0.3,
     "p10": 0.14,
     "p15": 0.058,
-    "p_blank": 0.308,
+    "p_blank": 0.307,
     "p_start": 0.883,
     "ceiling": 11.0,
-    "sd": 8.971,
+    "sd": 8.965,
     "next_fixture": "TOT(H)"
    },
    {
@@ -457,11 +457,11 @@
     "final_xpts": 4.873,
     "p6": 0.287,
     "p10": 0.129,
-    "p15": 0.053,
+    "p15": 0.052,
     "p_blank": 0.314,
     "p_start": 0.885,
     "ceiling": 11.0,
-    "sd": 8.725,
+    "sd": 8.724,
     "next_fixture": "MUN(A)"
    },
    {
@@ -476,22 +476,7 @@
     "p_blank": 0.278,
     "p_start": 0.962,
     "ceiling": 10.0,
-    "sd": 6.937,
-    "next_fixture": "EVE(H)"
-   },
-   {
-    "player_name": "Bukayo Saka",
-    "web_name": "Saka",
-    "team": "Arsenal",
-    "position": "MID",
-    "final_xpts": 4.515,
-    "p6": 0.255,
-    "p10": 0.095,
-    "p15": 0.03,
-    "p_blank": 0.682,
-    "p_start": 0.96,
-    "ceiling": 9.0,
-    "sd": 1.15,
+    "sd": 6.936,
     "next_fixture": "EVE(H)"
    },
    {
@@ -506,7 +491,7 @@
     "p_blank": 0.443,
     "p_start": 0.924,
     "ceiling": 9.0,
-    "sd": 3.396,
+    "sd": 3.397,
     "next_fixture": "ARS(A)"
    },
    {
@@ -518,10 +503,10 @@
     "p6": 0.247,
     "p10": 0.092,
     "p15": 0.03,
-    "p_blank": 0.311,
+    "p_blank": 0.31,
     "p_start": 0.937,
     "ceiling": 9.0,
-    "sd": 6.674,
+    "sd": 6.673,
     "next_fixture": "TOT(H)"
    },
    {
@@ -536,7 +521,7 @@
     "p_blank": 0.257,
     "p_start": 0.946,
     "ceiling": 9.0,
-    "sd": 8.372,
+    "sd": 8.371,
     "next_fixture": "LIV(A)"
    },
    {
@@ -564,10 +549,25 @@
     "p10": 0.088,
     "p15": 0.028,
     "p_blank": 0.37,
-    "p_start": 0.909,
+    "p_start": 0.91,
     "ceiling": 9.0,
-    "sd": 5.359,
+    "sd": 5.356,
     "next_fixture": "MUN(A)"
+   },
+   {
+    "player_name": "Dominic Calvert-Lewin",
+    "web_name": "Calvert-Lewin",
+    "team": "Leeds",
+    "position": "FWD",
+    "final_xpts": 4.228,
+    "p6": 0.232,
+    "p10": 0.082,
+    "p15": 0.024,
+    "p_blank": 0.355,
+    "p_start": 0.936,
+    "ceiling": 9.0,
+    "sd": 5.188,
+    "next_fixture": "SUN(A)"
    }
   ]
  }
