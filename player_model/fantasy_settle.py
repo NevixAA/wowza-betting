@@ -52,6 +52,17 @@ def _events() -> pd.DataFrame:
     return ev.sort_values("gw").reset_index(drop=True)
 
 
+def _gw_end(gw: int):
+    """Last kickoff of gameweek `gw` + 2 h (UTC), from the cached FPL fixtures; None if unknown."""
+    try:
+        fx = json.loads((OUT / "fpl_fixtures.json").read_text(encoding="utf-8"))
+    except Exception:                                                   # noqa: BLE001
+        return None
+    fx = fx if isinstance(fx, list) else fx.get("data", fx.get("fixtures", []))
+    ko = [f.get("kickoff_time") for f in fx if f.get("event") == gw and f.get("kickoff_time")]
+    return pd.to_datetime(max(ko), utc=True) + pd.Timedelta(hours=2) if ko else None
+
+
 def build_ledger() -> tuple[pd.DataFrame, dict]:
     """One row per (gameweek, player): pre-deadline forecast vs points actually scored."""
     meta: dict = {"settled_gameweeks": [], "unsettleable": [], "notes": []}
@@ -99,10 +110,31 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
             meta["unsettleable"].append({"gw": gw, "why": "no snapshot between this deadline and the next"})
             continue
         settle_ts = window["snapshot_ts"].max()
+        # POST ROWS MUST POSTDATE THE GAMEWEEK'S LAST MATCH (fixed 2026-10-22). The projection log
+        # lists only the players on that day's board, so a player who dropped off the board right
+        # after the deadline had his "own last row" taken BEFORE his match and post - pre = 0:
+        # Foden was settled at 0 for GW7 (FPL event_points 9); 16 of 152 GW7 players were zeroed.
+        # Using only the window's final snapshot instead is wrong too - in GW5 that snapshot
+        # carried stale totals. So: each player's last row, but only rows taken after the last
+        # kickoff of this gameweek + 2 h. A player with no such row is dropped and counted, never
+        # imputed as zero.
+        gw_end = _gw_end(gw)
+        if gw_end is not None:
+            scored = window[window["snapshot_ts"] >= gw_end]
+            if scored.empty:
+                meta["unsettleable"].append({"gw": gw, "why": "no snapshot after the gameweek's last match"})
+                continue
+            window = scored
+        else:
+            meta["notes"].append(f"GW{gw}: no fixture times - post rows not checked against the last match")
         post = window.sort_values("snapshot_ts").groupby("player_name", as_index=False).last()
 
         j = pre.merge(post[["player_name", "fpl_total_points"]], on="player_name",
                       suffixes=("_pre", "_post"))
+        no_post = len(pre) - len(j)
+        if no_post:
+            meta["notes"].append(f"GW{gw}: dropped {no_post} players with no snapshot after the "
+                                 f"gameweek's last match (never imputed as zero)")
         j["actual_points"] = j["fpl_total_points_post"] - j["fpl_total_points_pre"]
         n_before = len(j)
         j = j.dropna(subset=["actual_points"])
