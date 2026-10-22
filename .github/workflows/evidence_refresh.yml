@@ -64,12 +64,16 @@ jobs:
           set -o pipefail
           python -m src.artifact_freshness | tee fresh.txt
           { echo '## Artifact freshness'; echo '```'; cat fresh.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: GitHub workflow health (last 24 h, 3 repos)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m src.system_health --workflows || echo "::warning::workflow health not recorded"
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in output/track_evidence.json output/allocation_registry.json output/v91_readiness.json \
-                   output/artifact_manifest.json; do
+                   output/artifact_manifest.json output/workflow_health.json; do
             [ -e "$f" ] && git add -f "$f"
           done
           git diff --staged --quiet && exit 0
