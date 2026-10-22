@@ -115,7 +115,8 @@ def test_btts_row_settles_with_its_own_archive_key(shadow):
                    "btts_yes", 1.70)])
     _settle([_ev(hs=1, as_=1)], archives=[("a", arch)])
     d = _read(shadow)
-    assert d.loc[0, "result"] == "WIN" and float(d.loc[0, "closing_odds"]) == 1.70
+    # the price chosen is still the BTTS-Yes archive price; >30 min before kickoff it is not a close
+    assert d.loc[0, "result"] == "WIN" and float(d.loc[0, "last_pre_kickoff_odds"]) == 1.70
 
 
 # ── eligibility ───────────────────────────────────────────────────────────────────────────────
@@ -214,7 +215,7 @@ def test_a_post_kickoff_quote_is_rejected(shadow):
         ("2026-10-18T14:30:00", "2026-10-18", "Leeds United vs Norwich City", "over25", 3.40),
     ])
     _settle(archives=[("a", arch)])
-    assert float(_read(shadow).loc[0, "closing_odds"]) == 1.95
+    assert float(_read(shadow).loc[0, "last_pre_kickoff_odds"]) == 1.95       # never the post-kickoff 3.40
 
 
 def test_only_post_kickoff_quotes_means_no_close(shadow):
@@ -244,7 +245,7 @@ def test_the_close_never_comes_from_the_other_side(shadow):
         ("2026-10-18T12:00:00", "2026-10-18", "Leeds United vs Norwich City", "under25", 2.02),
     ])
     _settle([_ev(hs=0, as_=0)], archives=[("a", arch)])
-    assert float(_read(shadow).loc[0, "closing_odds"]) == 2.02
+    assert float(_read(shadow).loc[0, "last_pre_kickoff_odds"]) == 2.02
 
 
 # ── idempotence ───────────────────────────────────────────────────────────────────────────────
@@ -400,3 +401,43 @@ def test_settlement_runs_last_and_guarded_in_main():
     import inspect
     src = inspect.getsource(ur.main)
     assert src.rfind("settle_shadow_predictions") > src.rfind("update_live_signal_results")
+
+
+# ── owner rule 2026-10-22: a close counts only within 30 minutes of kickoff ─────────────────────
+def test_close_more_than_30_min_before_kickoff_is_not_a_close(shadow):
+    sc.append_shadow([_row(side="OVER", entry=2.00)])                       # kickoff 14:00
+    _settle(archives=[("a", _arch([("2026-10-18T12:00:00", "2026-10-18", "Leeds United vs Norwich City",
+                                    "over25", 1.95)]))])
+    d = _read(shadow)
+    assert d.loc[0, "result"] in ("WIN", "LOSS")                             # result still settles
+    assert d.loc[0, "closing_odds"] == "" and d.loc[0, "clv"] == ""
+    assert d.loc[0, "close_status"] == "STALE_CLOSE_GT_30MIN"
+    assert float(d.loc[0, "last_pre_kickoff_odds"]) == 1.95
+
+
+def test_close_within_30_min_counts(shadow):
+    sc.append_shadow([_row(side="OVER", entry=2.00)])
+    _settle(archives=[("a", _arch([("2026-10-18T13:45:00", "2026-10-18", "Leeds United vs Norwich City",
+                                    "over25", 1.90)]))])
+    d = _read(shadow)
+    assert float(d.loc[0, "closing_odds"]) == 1.90 and d.loc[0, "close_status"] == "OK"
+    assert abs(float(d.loc[0, "clv"]) - (2.00 / 1.90 - 1) * 100) < 0.01
+
+
+def test_rule_is_applied_to_rows_settled_before_it_existed_and_is_idempotent():
+    import pandas as pd
+    from src.shadow_settlement import enforce_close_rule, frozen_digest
+    cols = list(sc.COLUMNS)
+    row = {c: "" for c in cols}
+    row.update({"fixture_id": "x", "market": "ou25", "match_date": "2026-10-18", "p_v9": "0.55",
+                "result": "WIN", "closing_odds": "1.95", "clv": "2.56", "close_status": "OK",
+                "close_minutes_to_kickoff": "319.0"})
+    ok = dict(row, fixture_id="y", close_minutes_to_kickoff="12.0")
+    df = pd.DataFrame([row, ok])[cols].astype(str)
+    d0 = frozen_digest(df.fillna(""))
+    out, n = enforce_close_rule(df)
+    assert n == 1 and out.loc[0, "closing_odds"] == "" and out.loc[0, "last_pre_kickoff_odds"] == "1.95"
+    assert out.loc[1, "closing_odds"] == "1.95"                              # a near-kickoff close stays
+    assert frozen_digest(out) == d0
+    out2, n2 = enforce_close_rule(out)
+    assert n2 == 0 and out2.equals(out)

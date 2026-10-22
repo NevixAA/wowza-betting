@@ -1446,10 +1446,13 @@ def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
         Path(journal).write_text(json.dumps(updates), encoding="utf-8")
     if updates:
         out, n = apply_updates(df, updates)
-        _write_shadow(out, SHADOW_FILE, eol)
-        log.info(f"shadow: settled {n} row(s) -> {SHADOW_FILE.name}")
     else:
         out, n = df, 0
+    from src.shadow_settlement import enforce_close_rule
+    out, n_stale = enforce_close_rule(out)
+    if n or n_stale:
+        _write_shadow(out, SHADOW_FILE, eol)
+        log.info(f"shadow: settled {n} row(s), {n_stale} close(s) >30 min re-labelled -> {SHADOW_FILE.name}")
     h = _write_shadow_health(out, pending)
     log.info(f"shadow: {h.get('settled_rows')}/{h.get('shadow_rows')} settled · close "
              f"{h.get('valid_closing_price_pct')}% · CLV {h.get('clv_pct')}%")
@@ -1470,7 +1473,9 @@ def reapply_shadow_settlement(journal: str) -> int:
     updates = json.loads(p.read_text(encoding="utf-8") or "[]")
     df, eol = _read_shadow(SHADOW_FILE)
     out, n = apply_updates(df, updates)
-    if n:
+    from src.shadow_settlement import enforce_close_rule
+    out, n_stale = enforce_close_rule(out)
+    if n or n_stale:
         _write_shadow(out, SHADOW_FILE, eol)
     _write_shadow_health(out)
     log.info(f"shadow: re-applied {n} settlement(s) from journal")

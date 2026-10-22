@@ -61,13 +61,16 @@ COLUMNS = [
     "outcome", "home_goals", "away_goals", "result_source",
     "close_ts", "close_minutes_to_kickoff", "close_band", "close_source", "close_status",
     "settle_status", "settled_at",
+    # Owner rule 2026-10-22: a close counts only within 30 min of kickoff. A price observed earlier
+    # is kept here (grading-only, never a close) so the observation is not lost.
+    "last_pre_kickoff_odds",
 ]
 
 #: Columns that are knowable only AFTER the bet. §6: they may grade a signal, never select one.
 GRADING_ONLY = ("closing_odds", "clv", "result",
                 "outcome", "home_goals", "away_goals", "result_source",
                 "close_ts", "close_minutes_to_kickoff", "close_band", "close_source",
-                "close_status", "settle_status", "settled_at")
+                "close_status", "settle_status", "settled_at", "last_pre_kickoff_odds")
 
 #: Identity columns: fill-once (blank -> value), never revised.
 IDENTITY = ("home_team", "away_team")
