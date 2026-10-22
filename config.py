@@ -628,6 +628,11 @@ API_FOOTBALL_SEASONS: dict = {
     "Serie B":                  "2026",
     "Greek Super League":       "2026",
     "Danish Superliga":         "2026",
+    # THE LEAGUE IS NAMED "Denmark Superliga" everywhere else (ENABLED_LEAGUES, ids, sport keys), so
+    # the "Danish Superliga" key above never matched and every lookup fell back to API_SEASON
+    # ("2025", finished 2026-05-21): Denmark results and odds could not be fetched from API-Football
+    # (found 2026-10-22 settling the v91 shadow; owner-approved fix). API current = 2026.
+    "Denmark Superliga":        "2026",
     "Austrian Bundesliga":      "2026",
     "Romanian Superliga":       "2026",
     # Scottish lower tiers (2026-10-14). Without an entry a lookup falls back to API_SEASON
@@ -644,7 +649,10 @@ API_FOOTBALL_SEASONS: dict = {
     "Finland Veikkausliiga":    "2026",
     "Ireland Premier Division": "2026",
     "Brazil Serie A":           "2026",
-    "Japan J-League":           "2026",
+    # J1 MOVED TO AN AUTUMN-SPRING CALENDAR: API-Football season 2026 is the spring special
+    # tournament (2026-02-06 -> 06-06); the live league is season 2027 (2026-08-07 -> 2027-06-06),
+    # which the API marks current (verified 2026-10-22; owner-approved fix).
+    "Japan J-League":           "2027",
     "Mexico Liga MX":           "2026",
     "China Super League":       "2026",
     "USA MLS":                  "2026",
