@@ -32,6 +32,63 @@ AUDIT = config.OUTPUT_DIR / "stake_audit.csv"
 SIDE_MARKET = {"btts": "BTTS", "over15": "OVER15", "over35": "OVER35"}
 BASIS = "notional bankroll, drawdown throttle not applied (no real-bankroll ledger)"
 
+# THE SIDE-SELECTION CONTRACT (P0 2026-10-22). Defined ONCE here; pipeline._generate_side_bets
+# emits exactly these columns (plus legacy `market_odds`) and selections() reads only these. Before
+# this, the producer dropped model_type and side and named the price `market_odds`, while this
+# reader did getattr(r, "model_type", "unknown") / getattr(r, "odds", None): every BTTS / OVER15 tip
+# became track `unknown|BTTS` -> UNSUPPORTED -> zero stake, and its odds NaN, silently. The unit test
+# built inputs that already had the right names, so it never saw the mismatch. No getattr defaults:
+# a missing column now raises SelectionSchemaError instead of degrading to "unknown".
+#   market   producer's lowercase target ("btts" / "over15" / "over35"), mapped via SIDE_MARKET
+#   odds     the decimal price the tip was generated at
+#   model_type  the originating prediction's tag: standard | new_format | unknown (genuine only)
+SIDE_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "market", "side",
+                          "signal_tier", "odds", "model_prob", "fair_prob", "edge", "ev")
+TIPPED = ("SNIPER", "MARKSMAN", "VALUABLE")
+
+
+class SelectionSchemaError(ValueError):
+    """Side selections do not satisfy SIDE_SELECTION_COLUMNS (missing column, model_type or odds)."""
+
+
+def check_side_selections(side_bets: pd.DataFrame) -> None:
+    """Raise SelectionSchemaError unless every tipped row carries the full contract with a real
+    model_type and a numeric odds value."""
+    missing = [c for c in SIDE_SELECTION_COLUMNS if c not in side_bets.columns]
+    if missing:
+        raise SelectionSchemaError(f"side selections missing column(s) {missing}")
+    t = side_bets[side_bets["signal_tier"].isin(TIPPED)]
+    mt = t["model_type"].astype(str).str.strip()
+    bad_mt = int((t["model_type"].isna() | mt.isin(("", "nan", "None"))).sum())
+    bad_odds = int(pd.to_numeric(t["odds"], errors="coerce").isna().sum())
+    if bad_mt or bad_odds:
+        raise SelectionSchemaError(f"side selections lost model_type on {bad_mt} row(s) / odds on "
+                                   f"{bad_odds} row(s) of {len(t)}")
+
+
+def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
+    """Problems that mean the plan is silently wrong rather than legitimately zero. Empty = healthy.
+
+    1. A market that has a real-money (REAL_STATES) track in the policy, has tips in the plan, and
+       100% of those tips map to an UNSUPPORTED track - the 2026-10-22 failure shape.
+    2. Any tip whose odds are missing.
+    """
+    from src.bankroll_policy import REAL_STATES
+    if plan is None or plan.empty:
+        return []
+    probs = []
+    active_markets = {k.split("|", 1)[1] for k, v in (policy.get("tracks") or {}).items()
+                      if "|" in k and v.get("state") in REAL_STATES and float(v.get("base_fraction", 0) or 0) > 0}
+    for m in sorted(active_markets):
+        g = plan[plan["market"] == m]
+        if len(g) and (g["deployment_state"] == "UNSUPPORTED").all():
+            probs.append(f"{m}: {len(g)} tip(s), ALL on UNSUPPORTED tracks {sorted(set(g['track']))} "
+                         f"although the policy has an active {m} track")
+    n_odds = int(pd.to_numeric(plan["odds"], errors="coerce").isna().sum())
+    if n_odds:
+        probs.append(f"{n_odds} tip(s) with no odds")
+    return probs
+
 
 PRO_RATINGS = "output/studies/league_ratings.json"
 
@@ -74,16 +131,16 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
                          "league": r.league, "model_type": getattr(r, "model_type", "unknown"),
                          "market": "OU25", "side": side, "signal_tier": r.signal_tier, "odds": odds})
     if side_bets is not None and not side_bets.empty:
-        s = side_bets[side_bets["signal_tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
+        check_side_selections(side_bets)                    # the contract, or a loud failure
+        s = side_bets[side_bets["signal_tier"].isin(TIPPED)]
         for r in s.itertuples(index=False):
             m = SIDE_MARKET.get(str(r.market).lower())
             if not m:
                 continue
-            d = str(getattr(r, "date", getattr(r, "match_date", "")))[:10]
+            d = str(r.date)[:10]
             rows.append({"date": d, "fixture": f"{d}|{r.home_team}|{r.away_team}", "league": r.league,
-                         "model_type": getattr(r, "model_type", "unknown"), "market": m,
-                         "side": str(getattr(r, "side", "") or "YES/OVER"), "signal_tier": r.signal_tier,
-                         "odds": getattr(r, "odds", None)})
+                         "model_type": str(r.model_type), "market": m, "side": str(r.side),
+                         "signal_tier": r.signal_tier, "odds": r.odds})
     d = pd.DataFrame(rows)
     if not d.empty:
         d["odds"] = pd.to_numeric(d["odds"], errors="coerce")
@@ -103,6 +160,8 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataF
         days = [size_day(g, policy, bankroll=bankroll, peak=bankroll, league_ratings=ratings)
                 for _, g in sel.groupby("date")] if len(sel) else []
         plan = pd.concat(days, ignore_index=True) if days else size_day(sel, policy, bankroll=bankroll, peak=bankroll)
+        for problem in health_check(plan, policy):
+            log.error(f"STAKE PLAN HEALTH: {problem}")
         plan["bankroll_basis"] = BASIS
         plan["generated_at"] = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M:%S")
         plan.to_csv(PLAN, index=False)
@@ -123,6 +182,9 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataF
         log.info(f"Stake plan → {PLAN.name}: {len(plan)} tip(s), {len(staked)} with a stake, "
                  f"total {100 * float(staked['final_fraction'].sum()) if len(staked) else 0:.2f}% of bankroll")
         return plan
+    except SelectionSchemaError as e:                                # contract broken: loud, not silent
+        log.error(f"STAKE PLAN NOT WRITTEN - selection contract broken: {e}")
+        return pd.DataFrame()
     except Exception as e:                                           # noqa: BLE001 - never fail predict
         log.warning(f"stake plan skipped: {e}")
         return pd.DataFrame()

@@ -88,6 +88,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     """
     import pandas as pd
     import numpy as np
+    from src.stake_plan import SIDE_SELECTION_COLUMNS
     frames = []
     OVERROUND    = 1.08
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
@@ -97,16 +98,30 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         odds_col = f"odds_{target}"
         if prob_col not in preds.columns or odds_col not in preds.columns:
             continue
-        df = preds[[
-            "date", "league", "home_team", "away_team", prob_col, odds_col
-        ]].dropna(subset=[prob_col, odds_col]).copy()
+        _src_cols = ["date", "league", "home_team", "away_team", prob_col, odds_col]
+        if "model_type" in preds.columns:
+            _src_cols.append("model_type")
+        df = preds[_src_cols].dropna(subset=[prob_col, odds_col]).copy()
         if df.empty:
             continue
+        # THE ORIGINATING PREDICTION'S MODEL TAG (P0 2026-10-22). This frame used to drop it, so
+        # src/stake_plan.py read model_type="unknown" for every side tip and the bankroll policy
+        # mapped all BTTS / OVER15 tips to `unknown|BTTS` -> UNSUPPORTED -> zero stake, while
+        # new_format|BTTS is the ACTIVE track. Taken from the predictions row (src/predict.py tags
+        # it); config.model_type_for_league only where that row carries no tag. Never forced.
+        _canon = df["league"].map(config.model_type_for_league)
+        if "model_type" in df.columns:
+            _mt = df["model_type"]
+            _mt = _mt.where(_mt.notna() & (_mt.astype(str).str.strip() != ""), _canon)
+        else:
+            _mt = _canon
+        df["model_type"] = _mt.astype(str)
 
         market_params = league_params.get(target, {})
 
         df["model_prob"]  = df[prob_col]
         df["market_odds"] = df[odds_col]
+        df["odds"]        = df["market_odds"]   # canonical name (src/stake_plan.SIDE_SELECTION_COLUMNS)
         df["fair_prob"]   = (1.0 / df["market_odds"]) / OVERROUND
         df["edge"]        = df["model_prob"] - df["fair_prob"]
         df["ev"]          = df["model_prob"] * df["market_odds"] - 1.0
@@ -163,9 +178,9 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["signal_tier"] = df.apply(_tier, axis=1)
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
-        frames.append(df[["date", "league", "home_team", "away_team",
-                           "market", "market_odds", "model_prob",
-                           "fair_prob", "edge", "ev", "signal_tier"]])
+        # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
+        # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers.
+        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds"]])
 
     if not frames:
         return pd.DataFrame()
