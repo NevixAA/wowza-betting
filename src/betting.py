@@ -289,6 +289,19 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     over_odds_ok  = ov_odds >= mo_s
     under_odds_ok = un_odds >= mu_s
 
+    # New-format price cap (config.NF_MAX_OU_ODDS, owner 2026-10-22): a new-format side priced above
+    # the cap is not bettable. Still scored and logged - only the tip is withheld.
+    cap = float(getattr(config, "NF_MAX_OU_ODDS", 0) or 0)
+    if cap > 0 and "league" in df.columns:
+        nf = df["league"].map(lambda lg: config.model_type_for_league(str(lg)) == "new_format").astype(bool)
+        over_cap, under_cap = nf & (ov_odds > cap), nf & (un_odds > cap)
+        df["max_odds_blocked"] = (((df["edge_over"] >= config.VALUE_THRESHOLD) & over_cap) |
+                                  ((df["edge_under"] >= config.VALUE_THRESHOLD) & under_cap))
+        over_odds_ok = over_odds_ok & ~over_cap
+        under_odds_ok = under_odds_ok & ~under_cap
+    else:
+        df["max_odds_blocked"] = False
+
     df["min_odds_blocked"] = (
         ((df["edge_over"]  >= config.VALUE_THRESHOLD) & ~over_odds_ok.fillna(False)) |
         ((df["edge_under"] >= config.VALUE_THRESHOLD) & ~under_odds_ok.fillna(False))

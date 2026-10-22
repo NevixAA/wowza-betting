@@ -456,6 +456,14 @@ USE_KELLY      = os.getenv("USE_KELLY", "0") == "1"
 MIN_OVER_ODDS  = float(os.getenv("MIN_OVER_ODDS",  "1.75"))
 MIN_UNDER_ODDS = float(os.getenv("MIN_UNDER_ODDS", "1.75"))
 
+# NEW-FORMAT OU25 PRICE CAP (owner decision 2026-10-22: "yes, but keep collect"). New-format O/U 2.5
+# tips priced above this are not sent. Evidence: odds > 3.00 were 6% of settled bets and 35% of the
+# net loss (ROI -53.9%, CI [-80.7, -20.6]); on the all-fixture record -51.1% [-79.4, -21.1] n47
+# (Pro docs/WOWZA_EDGE_REASSESSMENT_2026_10.md). NEW-FORMAT TRACK ONLY - standard is untouched
+# (invariant 1). The fixture is still scored, written to predictions.csv and both shadow logs, so
+# collection continues; it just never becomes a tip. Set to 0 to disable.
+NF_MAX_OU_ODDS = float(os.getenv("NF_MAX_OU_ODDS", "3.00"))
+
 # ── Drift settings ────────────────────────────────────────────────────────────
 DRIFT_CONFIRM_THRESHOLD  = 0.03
 DRIFT_CONFLICT_THRESHOLD = 0.03
