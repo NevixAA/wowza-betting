@@ -159,6 +159,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 570150,J. Middleton,Brighton,M,,,,,,,,,,
 557377,S. Nti,Brighton,M,,,,,,,,,,
 366735,Joshua Kofi Acheampong,Chelsea,D,0.0,0.0,0.0,0.0,0.2,62.2,6.19,0.0,5.0,1.0
+181734,Pep Chavarría,Chelsea,D,0.0,0.2,0.0,0.2,0.0,54.6,6.62,0.0,5.0,1.0
 152953,L. Colwill,Chelsea,D,0.0,0.0,0.0,0.0,0.0,86.4,6.59,0.0,5.0,1.0
 22094,W. Fofana,Chelsea,D,0.0,0.0,0.0,0.0,0.6,75.4,6.5,0.0,5.0,1.0
 161907,M. Gusto,Chelsea,D,0.0,0.0,0.0,0.4,0.0,71.8,6.57,0.0,5.0,1.0
@@ -181,7 +182,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 292,J. Henderson,Chelsea,M,0.4,0.2,0.4,1.0,0.2,71.4,7.41,0.0,5.0,1.0
 1864,Pedro Neto,Chelsea,M,0.4,0.2,1.2,1.8,0.2,87.8,7.02,0.0,5.0,1.0
 282125,R. Lavia,Chelsea,M,0.2,0.0,0.4,0.4,0.2,56.0,6.72,0.0,5.0,1.0
-181734,Pep Chavarría,Chelsea,M,0.0,0.2,0.0,0.2,0.0,54.6,6.62,0.0,5.0,1.0
 319572,V. Barco,Chelsea,M,0.0,0.0,0.4,0.6,0.4,64.8,6.59,0.0,5.0,1.0
 116117,M. Caicedo,Chelsea,M,0.0,0.0,0.0,0.4,0.0,70.0,6.93,0.0,5.0,1.0
 152982,C. Palmer,Chelsea,M,0.0,0.4,0.6,2.8,0.4,89.6,6.91,0.0,5.0,1.0
@@ -318,23 +318,23 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 18941,M. Targett,Hull City,D,0.0,0.0,0.0,0.0,0.2,36.6,6.52,0.0,5.0,0.82
 395025,S. Ashbee,Hull City,D,,,,,,,,,,
 331551,C. Hughes,Hull City,D,,,,,,,,,,
-299923,M. Belloumi,Hull City,F,0.6,0.2,1.2,3.0,0.2,68.2,7.27,0.0,5.0,1.0
 274312,M. Cho,Hull City,F,0.33,0.0,0.67,1.0,0.0,23.33,6.86,0.0,3.0,1.0
 19569,J. Gelhardt,Hull City,F,0.0,0.4,0.0,0.2,0.0,15.8,6.72,0.0,5.0,1.0
 19337,O. McBurnie,Hull City,F,0.0,0.2,0.2,1.6,0.6,88.4,6.49,0.0,5.0,1.0
-18599,S. Thomas,Hull City,F,0.0,0.2,0.0,0.8,0.0,54.8,6.6,0.0,5.0,1.0
 435482,R. Vaz,Hull City,F,0.0,0.0,0.0,0.0,0.0,17.0,6.32,0.0,2.0,1.0
 380873,Ilyas  Ansah,Hull City,F,,,,,,,,,,
 1591,K. Tzolakis,Hull City,G,0.0,0.0,0.0,0.0,0.2,90.0,6.88,3.6,5.0,1.0
 2930,J. Butland,Hull City,G,,,,,,,,,,
 615629,Archie Howard,Hull City,G,,,,,,,,,,
 19811,D. Phillips,Hull City,G,,,,,,,,,,
+299923,M. Belloumi,Hull City,M,0.6,0.2,1.2,3.0,0.2,68.2,7.27,0.0,5.0,1.0
 19666,M. Crooks,Hull City,M,0.0,0.0,0.0,0.0,0.8,67.4,6.52,0.0,5.0,1.0
 179843,L. Gourna-Douath,Hull City,M,0.0,0.0,0.0,0.33,0.33,46.33,6.62,0.0,3.0,1.0
 284500,T. Iroegbunam,Hull City,M,0.0,0.0,0.0,0.4,0.2,44.0,6.07,0.0,5.0,1.0
 32960,H. Morita,Hull City,M,0.0,0.0,0.0,0.0,0.0,15.0,6.24,0.0,2.0,1.0
 17670,R. Slater,Hull City,M,0.0,0.0,0.4,1.0,0.2,81.6,6.4,0.0,5.0,1.0
 226765,E. Stroud,Hull City,M,0.0,0.2,0.0,0.6,0.2,55.8,6.31,0.0,5.0,0.94
+18599,S. Thomas,Hull City,M,0.0,0.2,0.0,0.8,0.0,54.8,6.6,0.0,5.0,1.0
 19100,K. Dowell,Hull City,M,,,,,,,,,,
 282124,D. Gyabi,Hull City,M,,,,,,,,,,
 396407,J. Hjertø-Dahl,Hull City,M,,,,,,,,,,
@@ -504,7 +504,6 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 328105,L. Miley,Newcastle,D,0.0,0.0,0.0,0.0,0.0,76.4,6.25,0.0,5.0,1.0
 153430,A. Elanga,Newcastle,F,0.4,0.0,0.6,1.0,0.2,54.4,6.98,0.0,5.0,1.0
 315237,W. Osula,Newcastle,F,0.4,0.2,0.4,0.8,0.2,50.6,7.08,0.0,5.0,1.0
-387643,B. Touré,Newcastle,F,0.25,0.0,0.5,0.75,0.0,28.25,6.64,0.0,4.0,1.0
 20649,Y. Wissa,Newcastle,F,0.0,0.0,0.4,2.4,0.4,87.6,6.37,0.0,5.0,1.0
 639204,M. Mills,Newcastle,F,,,,,,,,,,
 395773,V. Salia,Newcastle,F,,,,,,,,,,
@@ -515,6 +514,7 @@ player_id,player_name,team,position,goals_pg,assists_pg,sot_pg,shots_pg,cards_pg
 44912,M. Gillespie,Newcastle,G,,,,,,,,,,
 365988,Aidan Harris,Newcastle,G,,,,,,,,,,
 329640,E. Jaouen,Newcastle,G,,,,,,,,,,
+387643,B. Touré,Newcastle,M,0.25,0.0,0.5,0.75,0.0,28.25,6.64,0.0,4.0,1.0
 19192,J. Ramsey,Newcastle,M,0.2,0.4,0.2,0.4,0.2,54.0,7.0,0.0,5.0,1.0
 1463,J. Willock,Newcastle,M,0.2,0.0,0.4,2.2,0.0,59.4,6.86,0.0,5.0,1.0
 18778,H. Barnes,Newcastle,M,0.2,0.4,1.0,2.4,0.0,90.0,7.05,0.0,5.0,1.0
