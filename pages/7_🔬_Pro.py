@@ -20,6 +20,10 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 from dashboard_data import pro, ui
+# Stale-module guard: Streamlit Cloud keeps already-imported modules across deploys (see the Fantasy page).
+if not all(hasattr(pro, f) for f in ("valuable", "price_trader", "model_lineage")):
+    import importlib
+    pro = importlib.reload(pro)
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same
 # commit, and the server ran the NEW page against the OLD dashboard_data.pro still in memory:
