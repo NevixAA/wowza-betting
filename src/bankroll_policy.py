@@ -9,7 +9,8 @@ qualifying selection, how much of the CURRENT bankroll, under the approved polic
 file (config/bankroll_policy.json) is produced by the monthly review in wowzaV9-Pro and changes
 only through a reviewed PR — this file never fetches anything and never decides evidence.
 
-NOT WIRED into predict/notify/execution (2026-10-13). It is the single sizing implementation:
+WIRED (2026-10-14) into predict via src/stake_plan.py -> output/stake_plan.csv; PAPER stakes only, never
+notify/execution. It is the single sizing implementation:
 Pro's bankroll simulator imports this exact file (read-only, via V9_LOCAL), so every backtest
 sizes bets with the code production would use.
 

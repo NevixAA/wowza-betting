@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T07:08:13+00:00",
+  "generated_at": "2026-10-22T10:44:52+00:00",
   "production_baseline": "v9",
   "evidence_sources": {
     "model_candidate_eval": "model_candidate_eval.csv"
@@ -129,7 +129,7 @@
   },
   "book_quotes_ladder": {
     "status": "SAFE_NOW",
-    "enabled": false,
+    "enabled": true,
     "reason": "per-bookmaker retention costs the SAME number of API calls (the bookmaker filter is simply dropped); a live probe returned 9 books including Pinnacle and Betfair. OFF by default via CAPTURE_BOOK_QUOTES; production capture is byte-identical until enabled.",
     "closing_rule": "closing_quote() returns the last quote inside T-30m or NOTHING \u2014 it never substitutes an earlier price, and POST-kickoff quotes are never eligible"
   },

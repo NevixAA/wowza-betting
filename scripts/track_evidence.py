@@ -28,6 +28,8 @@ weather, scheduling and the same model artefact, so i.i.d. resampling understate
 """
 from __future__ import annotations
 
+import os
+
 import json
 import sys
 from pathlib import Path
@@ -59,7 +61,10 @@ VALIDATABLE_N = 100
 N_BOOT = 2000
 BLOCK_DAYS = 1
 
-TODAY = pd.Timestamp("2026-10-04")
+# DERIVED, NOT TYPED (2026-10-22): this was hard-coded to 2026-10-04, so every "last N days" window
+# stayed anchored there and the artifact went 18 days stale while looking current. Override with
+# TRACK_EVIDENCE_AS_OF=YYYY-MM-DD to reproduce a past run.
+TODAY = pd.Timestamp(os.getenv("TRACK_EVIDENCE_AS_OF") or pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"))
 WINDOWS = {"since_cutoff": None, "last_60d": 60, "last_30d": 30, "last_14d": 14, "last_7d": 7}
 
 

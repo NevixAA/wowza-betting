@@ -1,0 +1,81 @@
+name: Evidence refresh + artifact freshness
+
+# P1-3 (2026-10-22). track_evidence.json, allocation_registry.json and v91_readiness.json are
+# decision-facing but were run by hand once and never again (track_evidence also had its date
+# hard-coded), so they drifted 18 days behind the ledgers while looking current. This job
+# regenerates them daily (~15 s together) and writes output/artifact_manifest.json - the canonical
+# freshness verdict the dashboard reads before showing any decision-facing artifact.
+# Research/health outputs only: no tip, threshold, stake or model changes.
+# Once daily is enough and fires late without harm (each artifact records its own generated_at).
+
+on:
+  schedule:
+    - cron: '45 6 * * *'
+  push:
+    branches: [main]
+    paths: ['.github/workflows/evidence_refresh.yml', 'src/artifact_freshness.py',
+            'scripts/track_evidence.py', 'scripts/allocation_registry.py', 'scripts/v91_readiness.py']
+  workflow_dispatch:
+
+concurrency:
+  group: evidence-refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Check out Pro outputs (read-only, for the freshness manifest)
+        uses: actions/checkout@v4
+        with:
+          repository: NevixAA/wowzaV9-Pro
+          path: _pro
+          fetch-depth: 1
+          sparse-checkout: |
+            output/bankroll
+            output/studies/learned_tiers
+            output/valuable_deep_dive
+            output/edge_reassessment
+            output/scout
+            output/research_index.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt pytest
+      - name: Tests
+        run: python -m pytest tests/test_artifact_freshness.py -q
+      - name: Regenerate evidence (non-fatal per script)
+        run: |
+          for s in track_evidence allocation_registry v91_readiness; do
+            python scripts/$s.py || echo "::warning::$s failed"
+          done
+      - name: Artifact freshness manifest
+        env:
+          PRO_LOCAL: ${{ github.workspace }}/_pro
+        run: |
+          set -o pipefail
+          python -m src.artifact_freshness | tee fresh.txt
+          { echo '## Artifact freshness'; echo '```'; cat fresh.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in output/track_evidence.json output/allocation_registry.json output/v91_readiness.json \
+                   output/artifact_manifest.json; do
+            [ -e "$f" ] && git add -f "$f"
+          done
+          git diff --staged --quiet && exit 0
+          git commit -m "auto: evidence refresh + artifact manifest $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X theirs origin main && git push && exit 0
+            sleep $((RANDOM % 5 + 3))
+          done
+          exit 1

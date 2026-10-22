@@ -31,6 +31,9 @@ prod = json.loads(prod_path.read_text(encoding="utf-8")) if prod_path.exists() e
 b = pro.bankroll() if pro.available() else {}
 rec = b.get("recommendation") or {}
 review = rec.get("review", {})
+from dashboard_data import freshness as _fresh  # noqa: E402  (P1-3: never show stale evidence as current)
+_man = _fresh.manifest()
+_fresh.banner(st, "output/bankroll/current_policy_recommendation.json", "Pro bankroll recommendation", _man)
 
 def pct(x):
     return "—" if x is None or pd.isna(x) else f"{100 * float(x):.2f}%"
@@ -61,7 +64,7 @@ for k, t in (prod.get("tracks") or {}).items():
     d = dec[dec["track"] == k].iloc[0] if len(dec) and (dec["track"] == k).any() else None
     rows.append({"Track": k.replace("|", " · "), "State": t.get("state"), "Base (production)": pct(t.get("base_fraction")),
                  "Recommended": pct(r.get("base_fraction")), "Decision": None if d is None else d["decision"],
-                 "Max odds": t.get("max_odds", "—"), "n": None if d is None else d.get("n"),
+                 "Max odds": str(t.get("max_odds", "—")), "n": None if d is None else d.get("n"),
                  "ROI": None if d is None else pct(d.get("roi")), "Shrunk ROI": None if d is None else pct(d.get("shrunk_roi")),
                  "Why": None if d is None else str(d.get("reasons", ""))[:160]})
 st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
@@ -74,6 +77,7 @@ st.caption(f"Caps: single bet {pct(pf.get('single_bet_cap'))} · fixture {pct(pf
 
 # ── stake plan (src/stake_plan.py, wired 2026-10-14) ──────────────────────────────────────────
 st.subheader("Stake plan — the policy applied to the current tips")
+_fresh.banner(st, "output/stake_plan.csv", "stake plan", _man)
 _sp_path = Path(__file__).resolve().parents[1] / "output" / "stake_plan.csv"
 try:
     sp = pd.read_csv(_sp_path) if _sp_path.exists() else pd.DataFrame()
