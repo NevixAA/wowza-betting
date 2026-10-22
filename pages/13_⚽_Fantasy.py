@@ -497,5 +497,9 @@ with tabs[6]:
                      width="stretch")
     st.caption("Full write-up: docs/FANTASY_V2_MODEL_AND_PRODUCT_REPORT.md")
 
+# ── tools from the original page, restored (owner 2026-10-22) ──────────────────────────────────
+import dashboard_fantasy_tools  # noqa: E402
+dashboard_fantasy_tools.render()
+
 from utils.disclaimer import disclaimer_footer  # noqa: E402
 disclaimer_footer()
