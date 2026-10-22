@@ -71,11 +71,7 @@ on:
         required: false
         default: ''
       loop_minutes:
-        description: 'NEAR only: keep sampling for N minutes (blank = 25)'
-        required: false
-        default: ''
-      loop_every:
-        description: 'NEAR only: minutes between passes (blank = 5)'
+        description: 'Base loop length in minutes before keep-alive applies (blank = 40)'
         required: false
         default: ''
 
@@ -93,7 +89,9 @@ jobs:
     # MAX_LOOP_MIN=50; checkout, pip and the commit add several more. A timeout below the
     # loop cap does not shorten the loop, it KILLS the run mid-window and commits nothing —
     # which is the failure this capture exists to avoid.
-    timeout-minutes: 65
+    # 2026-10-22: CAP 170 (adaptive keep-alive) + checkout/pip/commit. A timeout below the cap
+    # would kill the run mid-window and commit nothing.
+    timeout-minutes: 195
     permissions:
       contents: write
 
@@ -184,111 +182,59 @@ jobs:
           # Safe to do because the script keeps only CONSECUTIVE-DISTINCT prices: a pass where
           # nothing moved writes NO row, so extra passes can only add real movements, never bloat.
           # The commit still happens ONCE after the loop, so this adds no push-race risk.
-          LOOP_MIN="${{ github.event.inputs.loop_minutes }}"
-          LOOP_EVERY="${{ github.event.inputs.loop_every }}"
-          # SIZED TO FIT THE DELIVERY INTERVAL (fixed 2026-08-19, second attempt).
-          # The first version looped for 100 minutes. That was wrong: this workflow's concurrency
-          # group only allows ONE pending run, so while a 100-120 minute loop held the group every
-          # subsequent cron firing queued and was then CANCELLED by the firing after it. Measured:
-          # 7 of 22 runs cancelled after sitting queued 15-44 minutes, and the successful loops ran
-          # 99-122 minutes against a 120-minute timeout, i.e. no margin at all.
-          # No data was lost - the long runs did commit - but most firings were wasted and the run
-          # list looked broken.
-          # 25 minutes at 5-minute spacing gives 5 passes, FINER near-kickoff resolution than the
-          # old 10-minute spacing, and finishes well inside the ~30-45 minute real delivery gap so
-          # runs stop piling up.
-          # 25 -> 40 (2026-09-05). See the loop below for the coverage arithmetic.
-          [ -n "$LOOP_MIN" ]   || LOOP_MIN=40
-          [ -n "$LOOP_EVERY" ] || LOOP_EVERY=5
+          # ── ADAPTIVE NEAR LOOP (P1 2026-10-22) ─────────────────────────────────────────────
+          # Certified CLV needs an observation inside the final 30 minutes (shadow_settlement
+          # CLOSE_MAX_MIN). Measured 2026-10-04..10-22: a capture RAN inside T-30m for only ~30% of
+          # fixtures, because a delivered run (GitHub delivers ~8/day whatever the cron asks) lived
+          # 40-50 minutes and then stopped. Two changes, both decided in src/capture_schedule.py:
+          #   * KEEP-ALIVE: past BASE minutes the run keeps sampling while a kickoff it has seen is
+          #     within KEEPALIVE minutes, never past CAP. Replayed on the measured run starts:
+          #     T-30m "a capture ran" ~44% -> ~76% (new-format), ~34% -> ~90% (standard).
+          #   * PER-FIXTURE DUE INTERVALS: each pass prices a fixture only when it is due (hourly
+          #     beyond 6h, ~15 min at 1-6h, ~5 min at 30-60 min, EVERY pass inside 30 min), and
+          #     passes tighten to 2 minutes when a kickoff is inside 35 minutes. That moves the
+          #     API spend to where the close forms and is what pays for the longer runs.
+          # The script prints LOOP_CONTINUE / LOOP_SLEEP_S; the loop just obeys. A pass that
+          # prints nothing (crashed) falls back to "continue at 5 minutes while inside BASE".
+          # A WIDE firing does its one wide pass first and then joins the same NEAR loop, so every
+          # delivered run is used for the close.
+          # The concurrency group holds one pending run: a firing that lands while this run is
+          # alive waits and starts as soon as it ends, so a long run chains instead of overlapping.
+          # Shadow settlement waits CLOSE_SETTLE_DELAY_MIN (240) after kickoff, longer than CAP plus
+          # the commit, so a close captured by a long run is on main before the row is settled.
+          export CAPTURE_STATE="${RUNNER_TEMP:-/tmp}/capture_state.json"
+          export LOOP_START_S=$(date -u +%s)
+          export LOOP_BASE_MIN="${{ github.event.inputs.loop_minutes }}"
+          [ -n "$LOOP_BASE_MIN" ] || LOOP_BASE_MIN=40
+          export LOOP_KEEPALIVE_MIN=90
+          export LOOP_CAP_MIN=170
+          rm -f "$CAPTURE_STATE"
 
           if [ -z "$MH" ]; then
-            echo "WIDE run: all fixtures in the look-ahead window (single pass)"
-            python scripts/capture_std_sidemarket_odds_forward.py
-            exit 0
+            echo "WIDE pass: all fixtures in the look-ahead window"
+            python scripts/capture_std_sidemarket_odds_forward.py || echo "  (wide pass failed - continuing)"
+            MH=12
           fi
 
-          # ADAPTIVE SPACING (added 2026-08-26). LOOP_MIN stays at 25 deliberately — it was sized
-          # to finish inside the real ~30-45 minute delivery gap, and the previous 100-minute loop
-          # held the concurrency group until every subsequent firing was cancelled. So the loop
-          # DURATION is not the lever.
-          #
-          # The measured gap is specifically at the near end: side markets reach T-10m on 0.8% of
-          # fixture-market series against the main market's 35.4%, from files deduped the same way,
-          # so a 44x difference cannot be explained by dedup. Uniform 5-minute spacing gives 5
-          # passes spread across 25 minutes wherever they happen to land, so hitting a given
-          # fixture's final ten minutes is chance.
-          #
-          # Tightening the interval only when a kickoff is imminent concentrates sampling exactly
-          # where the gap is, WITHOUT extending the loop — so no concurrency risk and no timeout
-          # risk. The script reports NEXT_KO_MIN from the kickoff times it has already fetched, so
-          # deciding the cadence costs no extra API calls.
-          #
-          # Quota impact is small and bounded: the tighter cadence applies only inside the ~40
-          # minutes before a kickoff, and only to fixtures already inside the 12h window. The
-          # script's own MIN_QUOTA=5000 floor still stops it spending into the tip path.
-          echo "NEAR run: fixtures within ${MH}h, adaptive sampling for ${LOOP_MIN}m"
-          # BASE 25 -> 40 minutes (2026-09-05). Coverage of the final ten minutes before kickoff
-          # is a function of delivery x loop length, and delivery is not ours to raise: this
-          # workflow asks for ~36 runs/day and GitHub delivers ~9.7 (27%). Simulated against that
-          # measured rate, P(a capture lands inside T-10m) is 25% at a 25-minute loop, 34% at 40
-          # and 42% at 55 — and the observed figure is 17-33%, so the model matches reality.
-          #
-          # 40 rather than 55 because the concurrency group holds one pending run: a loop long
-          # enough to still be running when the next firing arrives cancels it. At ~2h between
-          # DELIVERED runs, 40 minutes leaves comfortable room; MAX_LOOP_MIN below bounds the
-          # kickoff extension on top of it.
-          START_S=$(date -u +%s)
-          MAX_LOOP_MIN=${MAX_LOOP_MIN:-50}
-          END=$(( START_S + LOOP_MIN * 60 ))
+          echo "NEAR loop: fixtures within ${MH}h, base ${LOOP_BASE_MIN}m, keep-alive ${LOOP_KEEPALIVE_MIN}m, cap ${LOOP_CAP_MIN}m"
           i=0
-          SLEEP_S=$(( LOOP_EVERY * 60 ))
           while : ; do
             i=$((i + 1))
-            echo "--- pass $i  $(date -u '+%H:%M:%S')  (next gap ${SLEEP_S}s) ---"
-            # A failed pass must not abandon the remaining window; the script's own quota guard
-            # (MIN_QUOTA, now 5,000) is what stops the loop spending into the tip path.
-            OUT_TXT=$(python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH" 2>&1) \
-              || echo "  (pass $i failed - continuing)"
+            echo "--- pass $i  $(date -u '+%H:%M:%S') ---"
+            OUT_TXT=$(python scripts/capture_std_sidemarket_odds_forward.py --max-hours "$MH" 2>&1) || echo "  (pass $i failed - continuing)"
             echo "$OUT_TXT"
-            # Nearest kickoff among the fixtures this pass looked at. Absent (no parseable
-            # kickoff, or a failed pass) -> keep the default spacing rather than guessing.
-            KO_MIN=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^NEXT_KO_MIN=\([0-9][0-9]*\)$/\1/p' | head -1)
-            if [ -n "$KO_MIN" ]; then
-              if   [ "$KO_MIN" -le 20 ]; then SLEEP_S=120
-              elif [ "$KO_MIN" -le 45 ]; then SLEEP_S=180
-              else                            SLEEP_S=$(( LOOP_EVERY * 60 ))
-              fi
-              echo "  nearest kickoff ${KO_MIN}m away -> next pass in ${SLEEP_S}s"
+            CONT=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^LOOP_CONTINUE=\([01]\)$/\1/p' | tail -1)
+            SLEEP_S=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^LOOP_SLEEP_S=\([0-9][0-9]*\)$/\1/p' | tail -1)
+            if [ -z "$CONT" ] || [ -z "$SLEEP_S" ]; then
+              SLEEP_S=300
+              ELAPSED=$(( $(date -u +%s) - LOOP_START_S + SLEEP_S ))
+              if [ "$ELAPSED" -lt $(( LOOP_BASE_MIN * 60 )) ]; then CONT=1; else CONT=0; fi
             fi
-            # KICKOFF-AWARE DURATION (2026-09-05). Spacing was already kickoff-aware; the DURATION
-            # was not, and that is where the remaining gap lives. A run that lands at T-40m samples
-            # until T-15m and stops — missing precisely the ten minutes the capture exists for.
-            #
-            # Why not simply set a longer LOOP_MIN: the note above is right that duration is not a
-            # free lever. A 100-minute loop held the concurrency group until later firings were
-            # cancelled (7 of 22). So the loop is extended ONLY when a kickoff is actually within
-            # reach, and never past MAX_LOOP_MIN.
-            #
-            # Aiming at a cron minute cannot solve this. Measured over 33 scheduled runs since
-            # 2026-09-02, this workflow asks for :23 and :52 and fired at neither — 0 runs at :23,
-            # 2 at :52, and the rest scattered across every minute of the hour. GitHub's delay is
-            # effectively random, so the only thing we control is how long a run stays alive once
-            # it starts.
-            NOW_S=$(date -u +%s)
-            if [ -n "$KO_MIN" ] && [ "$NEXT" -ge "$END" ]; then
-              KO_AT=$(( NOW_S + KO_MIN * 60 ))
-              HARD_END=$(( START_S + MAX_LOOP_MIN * 60 ))
-              WANT_END=$(( KO_AT + 120 ))          # two minutes past kickoff: the closing price
-              if [ "$WANT_END" -gt "$END" ] && [ "$WANT_END" -le "$HARD_END" ]; then
-                END=$WANT_END
-                echo "  extending loop to cover a kickoff ${KO_MIN}m away (cap ${MAX_LOOP_MIN}m)"
-              fi
-            fi
-            NEXT=$(( $(date -u +%s) + SLEEP_S ))
-            [ "$NEXT" -lt "$END" ] || break
+            [ "$CONT" = "1" ] || break
+            echo "  next pass in ${SLEEP_S}s"
             sleep "$SLEEP_S"
           done
-          echo "completed $i passes over $(( ( $(date -u +%s) - START_S ) / 60 ))m"
+          echo "completed $i passes over $(( ( $(date -u +%s) - LOOP_START_S ) / 60 ))m"
 
       - name: Commit and push updated standard side-market odds history
         run: |
@@ -300,6 +246,8 @@ jobs:
           # because the commit never included it. A directory of monthly parts, so only the
           # current month's file is ever modified.
           git add -f output/book_quotes 2>/dev/null || true
+          # Last-seen heartbeat (src/odds_heartbeat.py): this writer's own directory only.
+          git add -f output/odds_heartbeat/std_capture 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: std side-market odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

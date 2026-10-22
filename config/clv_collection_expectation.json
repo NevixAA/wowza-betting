@@ -1,0 +1,10 @@
+{
+  "_doc": "Collection-health floor for certified CLV closes (P1 2026-10-22). Read by src/clv_collection_health.py and enforced by scripts/check_clv_collection_health.py (update_results.yml fails the run below it). A close is certified only when observed strictly before kickoff and within 30 minutes of it; this file never relaxes that rule, it only says how much coverage the capture must deliver. BEFORE (fixtures kicking off 2026-10-04..10-22): shadow certified 34/449 = 7.6%; capture archives with a recorded obs inside T-30m 2.8%. DESIGN PREDICTION (measured run starts replayed through src/capture_schedule): a capture inside T-30m for ~75% (new-format) / ~82% (standard) of Bet365-priced fixtures; 93% of shadow rows match a capture archive, so ~55-70% certified shadow coverage is expected. Floors sit well below that, so a FAIL means the capture is broken, not that a week was unlucky.",
+  "measure_from": "2026-10-23T00:00:00Z",
+  "min_certified_t30_pct": 35.0,
+  "min_shadow_sample": 40,
+  "min_collection_t30_pct": 40.0,
+  "min_collection_sample": 200,
+  "collection_window_days": 7,
+  "max_health_age_hours": 30
+}

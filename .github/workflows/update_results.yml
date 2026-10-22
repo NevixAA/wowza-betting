@@ -63,6 +63,7 @@ jobs:
           # edit of it here so the rebase below never has to merge it (the journal holds it).
           git checkout -- output/v91_shadow.csv 2>/dev/null || true
           git checkout -- output/shadow_settlement_health.json 2>/dev/null || true
+          git checkout -- output/clv_collection_health.json 2>/dev/null || true
           for f in output/bets_ledger.csv output/side_bets_ledger.csv output/ht_ledger.csv output/ht_observations.csv output/player_ledger.csv output/sharp_ledger.csv output/live_signals_history.csv; do git add -f "$f" 2>/dev/null || true; done
           git diff --staged --quiet || \
             git commit -m "auto: results $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -108,7 +109,7 @@ jobs:
           for i in 1 2 3 4 5; do
             git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
             python update_results.py --shadow-reapply "$SHADOW_SETTLEMENT_JOURNAL"
-            for f in output/v91_shadow.csv output/shadow_settlement_health.json; do
+            for f in output/v91_shadow.csv output/shadow_settlement_health.json output/clv_collection_health.json; do
               git add -f "$f" 2>/dev/null || true
             done
             if git diff --staged --quiet; then pushed=1; echo "shadow: nothing new"; break; fi
@@ -117,3 +118,13 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "shadow settlement push failed after 5 retries"; exit 1; }
+
+      # CLV COLLECTION GUARD (P1 2026-10-22). Runs LAST, after both commits, so a failing guard can
+      # never stop results or settlements from persisting. It turns the run red when certified
+      # T-30m close coverage falls below config/clv_collection_expectation.json - the failure that
+      # sat unnoticed for weeks (34 of 449 settled shadow rows had a certified close).
+      - name: CLV collection health guard
+        if: always()
+        run: |
+          git fetch -q origin main && git checkout -q origin/main -- output/clv_collection_health.json config/clv_collection_expectation.json 2>/dev/null || true
+          python scripts/check_clv_collection_health.py

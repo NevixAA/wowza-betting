@@ -1391,11 +1391,40 @@ def _shadow_identity() -> dict:
     return out
 
 
-def _write_shadow_health(df: pd.DataFrame, pending: dict | None = None) -> dict:
+def _write_shadow_health(df: pd.DataFrame, pending: dict | None = None,
+                         archives: list | None = None, now=None) -> dict:
     from src.shadow_settlement import health
     h = health(df, pending=pending)
     SHADOW_HEALTH_FILE.write_text(json.dumps(h, indent=2) + "\n", encoding="utf-8")
+    _write_clv_collection_health(df, archives, now)
     return h
+
+
+def _archives_with_heartbeats() -> list:
+    """The ledgers' archives with each capture's last-seen heartbeat folded into its change-log
+    (src/odds_heartbeat.py). A heartbeat row is an ordinary pre-kickoff observation, so the close
+    becomes the latest time the capture actually SAW the price, not the time it last moved."""
+    from src import odds_heartbeat
+    archives = list(zip(_ARCHIVE_FILES, _load_archives_named()))
+    try:
+        return odds_heartbeat.merge_into_archives(archives, odds_heartbeat.load())
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"shadow: heartbeat merge skipped ({e})")
+        return archives
+
+
+def _write_clv_collection_health(df: pd.DataFrame, archives: list | None = None,
+                                 now=None) -> None:
+    """output/clv_collection_health.json - certified-close coverage. Never breaks settlement."""
+    try:
+        from src import clv_collection_health as cch
+        h = cch.build(df, archives if archives is not None else _archives_with_heartbeats(),
+                      now=now)
+        # Next to the shadow health file (so tests that redirect one redirect both).
+        cch.write(h, SHADOW_HEALTH_FILE.parent / "clv_collection_health.json")
+        log.info(f"clv health: {h['check']['status']} {h['check']['reasons']}")
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"clv health skipped ({e})")
 
 
 def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
@@ -1434,7 +1463,7 @@ def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
                      ("oddsapi", _oa, min(days, 3)),
                      ("api-football", fetch_scores_apifootball, None)]
     if archives is None:
-        archives = list(zip(_ARCHIVE_FILES, _load_archives_named()))
+        archives = _archives_with_heartbeats()
 
     updates, pending = settle_frame(df, providers=providers, archives=archives,
                                     identity=_shadow_identity(), now=now,
@@ -1453,7 +1482,7 @@ def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
     if n or n_stale:
         _write_shadow(out, SHADOW_FILE, eol)
         log.info(f"shadow: settled {n} row(s), {n_stale} close(s) >30 min re-labelled -> {SHADOW_FILE.name}")
-    h = _write_shadow_health(out, pending)
+    h = _write_shadow_health(out, pending, archives, now)
     log.info(f"shadow: {h.get('settled_rows')}/{h.get('shadow_rows')} settled · close "
              f"{h.get('valid_closing_price_pct')}% · CLV {h.get('clv_pct')}%")
     return {"settled": n, "pending": pending, "health": h}
