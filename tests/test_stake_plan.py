@@ -15,12 +15,13 @@ def _bets():
 
 
 def _side():
-    return pd.DataFrame([{"match_date": "2026-10-17", "league": "Brazil Serie A", "home_team": "X", "away_team": "Y",
-                          "market": "btts", "odds": 2.05, "signal_tier": "SNIPER", "model_type": "new_format",
-                          "side": "YES"},
-                         {"match_date": "2026-10-17", "league": "USA MLS", "home_team": "P", "away_team": "Q",
-                          "market": "btts", "odds": 2.05, "signal_tier": "SNIPER", "model_type": "new_format",
-                          "side": "YES"}])
+    # the canonical contract (sp.SIDE_SELECTION_COLUMNS); tests/test_side_stake_contract.py drives
+    # the REAL producer, this one only exercises per-day sizing and the audit
+    base = {"date": "2026-10-17", "market": "btts", "odds": 2.05, "signal_tier": "SNIPER",
+            "model_type": "new_format", "side": "YES", "model_prob": 0.62, "fair_prob": 0.45,
+            "edge": 0.17, "ev": 0.27}
+    return pd.DataFrame([{**base, "league": "Brazil Serie A", "home_team": "X", "away_team": "Y"},
+                         {**base, "league": "USA MLS", "home_team": "P", "away_team": "Q"}])
 
 
 def test_sized_per_day_and_caps(tmp_path, monkeypatch):
