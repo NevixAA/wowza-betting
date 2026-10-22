@@ -25,6 +25,24 @@ from dashboard_data.core import REPOS, repo_path
 
 st.set_page_config(page_title="Wowza | Overview", page_icon="🏠", layout="wide")
 st.title("🏠 Wowza — estate overview")
+
+# ── System health: explicit red/amber/green rules (owner repair brief 2026-10-22) ────────────────
+st.subheader("System health")
+try:
+    from src.system_health import evaluate as _sh_eval
+    _checks = _sh_eval()
+    _icon = {"GREEN": "🟢", "AMBER": "🟡", "RED": "🔴", "NO_DATA": "⚪"}
+    _cols = st.columns(3)
+    for _i, _c in enumerate(_checks):
+        with _cols[_i % 3]:
+            st.markdown(f"{_icon.get(_c['status'], '⚪')} **{_c['check']}** — {_c['value']}")
+            st.caption(f"rule: {_c['rule']}" + (f" · {_c['detail']}" if _c.get("detail") else ""))
+    _n_red = sum(c["status"] == "RED" for c in _checks)
+    (st.error if _n_red else st.success)(f"{_n_red} red · {sum(c['status'] == 'AMBER' for c in _checks)} amber · "
+                                         f"{sum(c['status'] == 'GREEN' for c in _checks)} green")
+except Exception as _e:                                               # noqa: BLE001 - health must never break the page
+    st.warning(f"System health unavailable: {type(_e).__name__}")
+st.divider()
 st.caption("Three repositories, three jobs, three scales. Nothing on this page is summed across "
            "them, because units in betting, research and Fantasy are not the same unit.")
 
