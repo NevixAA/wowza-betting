@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T12:21:13Z",
+  "generated_at": "2026-10-23T12:02:39Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -55,9 +55,9 @@
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 9981,
-    "distinct_days": 42,
-    "rows_with_gameweek": 1615,
+    "rows": 10115,
+    "distinct_days": 43,
+    "rows_with_gameweek": 1749,
     "settleable": true,
     "gameweeks_logged": [
       6,
@@ -71,7 +71,7 @@
   "live_gameweek": 7,
   "last_finished_gameweek": 7,
   "season_complete": false,
-  "hours_to_deadline": 29.1,
+  "hours_to_deadline": 5.5,
   "status": "AGING",
   "settlement_ready": true
 }
