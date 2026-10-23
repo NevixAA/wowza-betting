@@ -23850,3 +23850,683 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-23T21:21:51Z,1493203,2026-10-23T21:30:00Z,8.2,T-10m,Argentina Primera Division,new_format,Gimnasia M.,Platense,32,Betano,ht_ou,under,0.5,2.4,api_football,heartbeat
 2026-10-23T21:21:51Z,1493203,2026-10-23T21:30:00Z,8.2,T-10m,Argentina Primera Division,new_format,Gimnasia M.,Platense,32,Betano,btts,yes,,1.93,api_football,heartbeat
 2026-10-23T21:21:51Z,1493203,2026-10-23T21:30:00Z,8.2,T-10m,Argentina Primera Division,new_format,Gimnasia M.,Platense,32,Betano,btts,no,,1.82,api_football,heartbeat
+2026-10-23T21:12:15Z,1558654,2026-10-25T15:00:00Z,2507.8,FAR,Belgian First Division A,standard,Club Brugge KV,St. Truiden,3,Betfair,ou,over,1.5,1.07,api_football,open
+2026-10-23T21:12:15Z,1558654,2026-10-25T15:00:00Z,2507.8,FAR,Belgian First Division A,standard,Club Brugge KV,St. Truiden,3,Betfair,ou,under,1.5,8.0,api_football,open
+2026-10-23T21:12:15Z,1558654,2026-10-25T15:00:00Z,2507.8,FAR,Belgian First Division A,standard,Club Brugge KV,St. Truiden,3,Betfair,ou,over,3.5,1.8,api_football,open
+2026-10-23T21:12:15Z,1558654,2026-10-25T15:00:00Z,2507.8,FAR,Belgian First Division A,standard,Club Brugge KV,St. Truiden,3,Betfair,ou,under,3.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1558654,2026-10-25T15:00:00Z,2507.8,FAR,Belgian First Division A,standard,Club Brugge KV,St. Truiden,3,Betfair,btts,yes,,1.5,api_football,open
+2026-10-23T21:12:15Z,1558654,2026-10-25T15:00:00Z,2507.8,FAR,Belgian First Division A,standard,Club Brugge KV,St. Truiden,3,Betfair,btts,no,,2.5,api_football,open
+2026-10-23T21:12:15Z,1576211,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Holstein Kiel,Dynamo Dresden,3,Betfair,ou,over,1.5,1.17,api_football,open
+2026-10-23T21:12:15Z,1576211,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Holstein Kiel,Dynamo Dresden,3,Betfair,ou,under,1.5,5.0,api_football,open
+2026-10-23T21:12:15Z,1576211,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Holstein Kiel,Dynamo Dresden,3,Betfair,ou,over,3.5,2.45,api_football,open
+2026-10-23T21:12:15Z,1576211,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Holstein Kiel,Dynamo Dresden,3,Betfair,ou,under,3.5,1.53,api_football,open
+2026-10-23T21:12:15Z,1576211,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Holstein Kiel,Dynamo Dresden,3,Betfair,btts,yes,,1.47,api_football,open
+2026-10-23T21:12:15Z,1576211,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Holstein Kiel,Dynamo Dresden,3,Betfair,btts,no,,2.63,api_football,open
+2026-10-23T21:12:15Z,1576207,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Hannover 96,3,Betfair,ou,over,1.5,1.1,api_football,open
+2026-10-23T21:12:15Z,1576207,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Hannover 96,3,Betfair,ou,under,1.5,6.5,api_football,open
+2026-10-23T21:12:15Z,1576207,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Hannover 96,3,Betfair,ou,over,3.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1576207,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Hannover 96,3,Betfair,ou,under,3.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1576207,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Hannover 96,3,Betfair,btts,yes,,1.4,api_football,open
+2026-10-23T21:12:15Z,1576207,2026-10-25T12:30:00Z,2357.8,FAR,Bundesliga 2,standard,Eintracht Braunschweig,Hannover 96,3,Betfair,btts,no,,2.88,api_football,open
+2026-10-23T21:12:15Z,1593343,2026-10-25T14:00:00Z,2447.8,FAR,Greek Super League,standard,Olympiakos Piraeus,Kalamata,3,Betfair,ou,over,1.5,1.14,api_football,open
+2026-10-23T21:12:15Z,1593343,2026-10-25T14:00:00Z,2447.8,FAR,Greek Super League,standard,Olympiakos Piraeus,Kalamata,3,Betfair,ou,under,1.5,5.5,api_football,open
+2026-10-23T21:12:15Z,1593343,2026-10-25T14:00:00Z,2447.8,FAR,Greek Super League,standard,Olympiakos Piraeus,Kalamata,3,Betfair,ou,over,3.5,2.38,api_football,open
+2026-10-23T21:12:15Z,1593343,2026-10-25T14:00:00Z,2447.8,FAR,Greek Super League,standard,Olympiakos Piraeus,Kalamata,3,Betfair,ou,under,3.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1593343,2026-10-25T14:00:00Z,2447.8,FAR,Greek Super League,standard,Olympiakos Piraeus,Kalamata,3,Betfair,btts,yes,,2.88,api_football,open
+2026-10-23T21:12:15Z,1593343,2026-10-25T14:00:00Z,2447.8,FAR,Greek Super League,standard,Olympiakos Piraeus,Kalamata,3,Betfair,btts,no,,1.44,api_football,open
+2026-10-23T21:12:15Z,1593344,2026-10-25T16:00:00Z,2567.8,FAR,Greek Super League,standard,Volos NFC,Panathinaikos,3,Betfair,ou,over,1.5,1.2,api_football,open
+2026-10-23T21:12:15Z,1593344,2026-10-25T16:00:00Z,2567.8,FAR,Greek Super League,standard,Volos NFC,Panathinaikos,3,Betfair,ou,under,1.5,4.5,api_football,open
+2026-10-23T21:12:15Z,1593344,2026-10-25T16:00:00Z,2567.8,FAR,Greek Super League,standard,Volos NFC,Panathinaikos,3,Betfair,ou,over,3.5,2.63,api_football,open
+2026-10-23T21:12:15Z,1593344,2026-10-25T16:00:00Z,2567.8,FAR,Greek Super League,standard,Volos NFC,Panathinaikos,3,Betfair,ou,under,3.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593344,2026-10-25T16:00:00Z,2567.8,FAR,Greek Super League,standard,Volos NFC,Panathinaikos,3,Betfair,btts,yes,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593344,2026-10-25T16:00:00Z,2567.8,FAR,Greek Super League,standard,Volos NFC,Panathinaikos,3,Betfair,btts,no,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593339,2026-10-25T17:30:00Z,2657.8,FAR,Greek Super League,standard,Aris Thessalonikis,Atromitos,3,Betfair,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593339,2026-10-25T17:30:00Z,2657.8,FAR,Greek Super League,standard,Aris Thessalonikis,Atromitos,3,Betfair,ou,under,1.5,3.4,api_football,open
+2026-10-23T21:12:15Z,1593339,2026-10-25T17:30:00Z,2657.8,FAR,Greek Super League,standard,Aris Thessalonikis,Atromitos,3,Betfair,ou,over,3.5,3.4,api_football,open
+2026-10-23T21:12:15Z,1593339,2026-10-25T17:30:00Z,2657.8,FAR,Greek Super League,standard,Aris Thessalonikis,Atromitos,3,Betfair,ou,under,3.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593339,2026-10-25T17:30:00Z,2657.8,FAR,Greek Super League,standard,Aris Thessalonikis,Atromitos,3,Betfair,btts,yes,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593339,2026-10-25T17:30:00Z,2657.8,FAR,Greek Super League,standard,Aris Thessalonikis,Atromitos,3,Betfair,btts,no,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593342,2026-10-25T18:00:00Z,2687.8,FAR,Greek Super League,standard,OFI,PAOK,3,Betfair,ou,over,1.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1593342,2026-10-25T18:00:00Z,2687.8,FAR,Greek Super League,standard,OFI,PAOK,3,Betfair,ou,under,1.5,3.8,api_football,open
+2026-10-23T21:12:15Z,1593342,2026-10-25T18:00:00Z,2687.8,FAR,Greek Super League,standard,OFI,PAOK,3,Betfair,ou,over,3.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593342,2026-10-25T18:00:00Z,2687.8,FAR,Greek Super League,standard,OFI,PAOK,3,Betfair,ou,under,3.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593342,2026-10-25T18:00:00Z,2687.8,FAR,Greek Super League,standard,OFI,PAOK,3,Betfair,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593342,2026-10-25T18:00:00Z,2687.8,FAR,Greek Super League,standard,OFI,PAOK,3,Betfair,btts,no,,2.0,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ou,over,2.5,2.08,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ou,over,3.5,3.75,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ou,under,3.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ht_ou,over,0.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,ht_ou,under,0.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,8,Bet365,btts,no,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ou,over,1.5,1.31,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ou,under,1.5,2.92,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ou,under,2.5,1.72,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ou,over,3.5,3.42,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ou,under,3.5,1.23,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ht_ou,over,1.5,2.82,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,ht_ou,under,0.5,2.67,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,btts,yes,,1.79,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,2,Marathonbet,btts,no,,1.89,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ou,under,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ou,over,2.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,btts,yes,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,3,Betfair,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ou,over,1.5,1.31,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ou,under,1.5,2.92,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ou,under,2.5,1.72,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ou,over,3.5,3.42,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ou,under,3.5,1.23,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ht_ou,over,1.5,2.82,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,ht_ou,under,0.5,2.67,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,btts,yes,,1.79,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,11,1xBet,btts,no,,1.92,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ou,over,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ou,under,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ou,over,2.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ou,under,2.5,1.78,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ou,over,3.5,3.65,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ou,under,3.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ht_ou,over,1.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ht_ou,under,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ht_ou,over,0.5,1.5,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,ht_ou,under,0.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,btts,yes,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593350,2026-11-01T16:00:00Z,12647.8,FAR,Greek Super League,standard,Panetolikos,OFI,32,Betano,btts,no,,1.98,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,7,William Hill,ht_ou,over,1.5,2.9,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,7,William Hill,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,7,William Hill,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,7,William Hill,ht_ou,under,0.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,7,William Hill,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,7,William Hill,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ou,under,2.5,1.75,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,8,Bet365,btts,no,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ou,over,1.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ou,under,1.5,3.05,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ou,under,2.5,1.72,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ou,under,3.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ht_ou,over,1.5,2.83,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ht_ou,over,0.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,ht_ou,under,0.5,2.79,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,btts,yes,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,2,Marathonbet,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ou,under,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ou,over,2.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,btts,yes,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,3,Betfair,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ou,over,1.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ou,under,1.5,3.05,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ou,under,2.5,1.72,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ou,under,3.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ht_ou,over,1.5,2.83,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ht_ou,over,0.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,ht_ou,under,0.5,2.79,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,btts,yes,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,11,1xBet,btts,no,,1.93,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ou,over,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ou,over,2.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ou,under,2.5,1.78,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ou,over,3.5,3.6,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ou,under,3.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ht_ou,over,1.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ht_ou,under,1.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ht_ou,over,0.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,ht_ou,under,0.5,2.67,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593349,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,Panathinaikos,AEK Athens FC,32,Betano,btts,no,,1.93,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,7,William Hill,ht_ou,over,1.5,2.15,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,7,William Hill,ht_ou,under,1.5,1.62,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,7,William Hill,ht_ou,over,0.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,7,William Hill,ht_ou,under,0.5,3.7,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,7,William Hill,btts,yes,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,7,William Hill,btts,no,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ou,over,1.5,1.18,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ou,under,1.5,4.5,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ou,over,2.5,1.6,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ou,under,2.5,2.3,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ou,over,3.5,2.5,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ou,under,3.5,1.5,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ht_ou,over,1.5,2.25,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ht_ou,under,1.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ht_ou,over,0.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,ht_ou,under,0.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,btts,yes,,2.0,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,8,Bet365,btts,no,,1.75,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ou,over,1.5,1.14,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ou,under,1.5,4.35,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ou,over,2.5,1.59,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ou,under,2.5,2.27,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ou,over,3.5,2.35,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ou,under,3.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ht_ou,over,1.5,2.32,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ht_ou,under,1.5,1.52,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ht_ou,over,0.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,ht_ou,under,0.5,3.24,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,btts,yes,,1.94,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,2,Marathonbet,btts,no,,1.75,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ou,over,1.5,1.14,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ou,under,1.5,4.8,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ou,over,2.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ou,under,2.5,2.25,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ht_ou,over,1.5,2.25,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ht_ou,under,1.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ht_ou,over,0.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,ht_ou,under,0.5,3.8,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,btts,yes,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,3,Betfair,btts,no,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ou,over,1.5,1.14,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ou,under,1.5,4.35,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ou,over,2.5,1.59,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ou,under,2.5,2.27,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ou,over,3.5,2.35,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ou,under,3.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ht_ou,over,1.5,2.32,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ht_ou,under,1.5,1.52,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ht_ou,over,0.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,ht_ou,under,0.5,3.24,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,btts,yes,,1.94,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,11,1xBet,btts,no,,1.77,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ou,over,1.5,1.19,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ou,under,1.5,4.7,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ou,over,2.5,1.6,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ou,under,2.5,2.42,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ou,over,3.5,2.47,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ou,under,3.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ht_ou,over,1.5,2.35,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ht_ou,under,1.5,1.6,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ht_ou,over,0.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,ht_ou,under,0.5,3.45,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,btts,yes,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593351,2026-11-01T17:00:00Z,12707.8,FAR,Greek Super League,standard,PAOK,Asteras Tripolis,32,Betano,btts,no,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,7,William Hill,ht_ou,over,1.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,7,William Hill,ht_ou,under,1.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,7,William Hill,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,7,William Hill,ht_ou,under,0.5,2.9,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,7,William Hill,btts,yes,,1.85,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,7,William Hill,btts,no,,1.85,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,ou,under,1.5,3.4,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,ou,over,2.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,ou,under,2.5,1.8,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,btts,yes,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,8,Bet365,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ou,under,1.5,3.04,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ou,over,2.5,1.99,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ou,under,2.5,1.76,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ou,over,3.5,3.34,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ou,under,3.5,1.24,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ht_ou,over,1.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ht_ou,under,1.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ht_ou,over,0.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,ht_ou,under,0.5,2.79,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,btts,yes,,1.81,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,2,Marathonbet,btts,no,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ou,under,1.5,3.3,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ou,over,2.5,1.95,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ou,under,2.5,1.75,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ht_ou,over,1.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,btts,yes,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,3,Betfair,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ou,under,1.5,3.04,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ou,over,2.5,1.99,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ou,under,2.5,1.76,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ou,over,3.5,3.34,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ou,under,3.5,1.24,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ht_ou,over,1.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ht_ou,under,1.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ht_ou,over,0.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,ht_ou,under,0.5,2.79,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,btts,yes,,1.81,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,11,1xBet,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ou,over,1.5,1.35,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ou,under,2.5,1.8,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ou,under,3.5,1.31,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ht_ou,over,1.5,3.05,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ht_ou,under,1.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ht_ou,over,0.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,ht_ou,under,0.5,2.7,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,btts,yes,,1.83,api_football,open
+2026-10-23T21:12:15Z,1593345,2026-11-02T16:00:00Z,14087.8,FAR,Greek Super League,standard,Atromitos,Volos NFC,32,Betano,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,7,William Hill,ht_ou,over,1.5,2.9,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,7,William Hill,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,7,William Hill,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,7,William Hill,ht_ou,under,0.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,7,William Hill,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,7,William Hill,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,ou,under,2.5,1.75,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,8,Bet365,btts,no,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ou,under,1.5,2.97,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ou,over,2.5,2.04,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ou,under,3.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ht_ou,over,1.5,2.96,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ht_ou,over,0.5,1.41,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,ht_ou,under,0.5,2.63,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,btts,yes,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,2,Marathonbet,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ou,under,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ou,over,2.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,btts,yes,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,3,Betfair,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ou,under,1.5,2.97,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ou,over,2.5,2.04,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ou,under,3.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ht_ou,over,1.5,2.96,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ht_ou,over,0.5,1.41,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,ht_ou,under,0.5,2.63,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,btts,yes,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,11,1xBet,btts,no,,1.93,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ou,over,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ou,over,2.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ou,under,2.5,1.78,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ou,over,3.5,3.6,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ou,under,3.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ht_ou,over,1.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ht_ou,under,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ht_ou,over,0.5,1.5,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,ht_ou,under,0.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,btts,yes,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593346,2026-11-02T17:30:00Z,14177.8,FAR,Greek Super League,standard,Kalamata,Iraklis 1908,32,Betano,btts,no,,1.98,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,7,William Hill,ht_ou,over,1.5,2.9,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,7,William Hill,ht_ou,under,1.5,1.35,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,7,William Hill,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,7,William Hill,ht_ou,under,0.5,2.7,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,7,William Hill,btts,yes,,1.85,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,7,William Hill,btts,no,,1.85,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ou,over,2.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ou,under,2.5,1.7,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ou,over,3.5,3.75,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ou,under,3.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ht_ou,over,0.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,ht_ou,under,0.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,8,Bet365,btts,no,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,3,Betfair,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,3,Betfair,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,3,Betfair,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,3,Betfair,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ou,under,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ou,over,2.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ou,under,2.5,1.69,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ou,under,3.5,1.24,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ht_ou,over,1.5,2.85,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ht_ou,over,0.5,1.41,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,ht_ou,under,0.5,2.7,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,btts,yes,,1.85,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,11,1xBet,btts,no,,1.87,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ou,over,1.5,1.39,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ou,under,1.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ou,over,2.5,2.15,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ou,under,2.5,1.75,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ou,over,3.5,3.75,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ht_ou,over,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ht_ou,over,0.5,1.5,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,ht_ou,under,0.5,2.6,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,btts,yes,,1.82,api_football,open
+2026-10-23T21:12:15Z,1593358,2026-11-07T15:00:00Z,21227.8,FAR,Greek Super League,standard,Volos NFC,Kifisia,32,Betano,btts,no,,1.93,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ou,over,1.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ou,under,1.5,3.75,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ou,over,2.5,1.85,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ou,under,2.5,1.95,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ou,over,3.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ou,under,3.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ht_ou,over,1.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ht_ou,under,1.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,ht_ou,under,0.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,btts,yes,,2.0,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,8,Bet365,btts,no,,1.75,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,3,Betfair,ht_ou,over,1.5,2.6,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,3,Betfair,ht_ou,under,1.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,3,Betfair,ht_ou,over,0.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,3,Betfair,ht_ou,under,0.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ou,over,1.5,1.24,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ou,under,1.5,3.6,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ou,over,2.5,1.82,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ou,under,2.5,1.92,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ou,over,3.5,2.85,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ou,under,3.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ht_ou,over,1.5,2.55,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ht_ou,under,1.5,1.45,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ht_ou,over,0.5,1.34,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,ht_ou,under,0.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,btts,yes,,2.0,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,11,1xBet,btts,no,,1.73,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ou,under,1.5,3.65,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ou,over,2.5,1.87,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ou,under,2.5,1.98,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ou,over,3.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ou,under,3.5,1.39,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ht_ou,over,1.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ht_ou,under,1.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ht_ou,over,0.5,1.42,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,ht_ou,under,0.5,2.9,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,btts,yes,,1.98,api_football,open
+2026-10-23T21:12:15Z,1593353,2026-11-07T17:30:00Z,21377.8,FAR,Greek Super League,standard,Aris Thessalonikis,Panetolikos,32,Betano,btts,no,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,7,William Hill,ht_ou,over,1.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,7,William Hill,ht_ou,under,1.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,7,William Hill,ht_ou,over,0.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,7,William Hill,ht_ou,under,0.5,3.9,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,7,William Hill,btts,yes,,2.3,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,7,William Hill,btts,no,,1.57,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,ou,over,1.5,1.14,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,ou,under,1.5,5.5,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,ou,over,2.5,1.5,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,ou,under,2.5,2.5,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,ou,over,3.5,2.25,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,ou,under,3.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,btts,yes,,2.38,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,8,Bet365,btts,no,,1.53,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,3,Betfair,ht_ou,over,1.5,2.2,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,3,Betfair,ht_ou,under,1.5,1.6,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,3,Betfair,ht_ou,over,0.5,1.2,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,3,Betfair,ht_ou,under,0.5,4.0,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ou,over,1.5,1.13,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ou,under,1.5,4.8,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ou,over,2.5,1.51,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ou,under,2.5,2.37,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ou,over,3.5,2.3,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ou,under,3.5,1.58,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ht_ou,over,1.5,2.2,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ht_ou,under,1.5,1.62,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ht_ou,over,0.5,1.22,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,ht_ou,under,0.5,3.75,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,btts,yes,,2.3,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,11,1xBet,btts,no,,1.56,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ou,over,1.5,1.17,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ou,under,1.5,5.1,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ou,over,2.5,1.55,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ou,under,2.5,2.55,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ou,over,3.5,2.32,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ou,under,3.5,1.65,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ht_ou,over,1.5,2.3,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ht_ou,under,1.5,1.62,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ht_ou,over,0.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,ht_ou,under,0.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,btts,yes,,2.57,api_football,open
+2026-10-23T21:12:15Z,1593352,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,AEK Athens FC,Levadiakos,32,Betano,btts,no,,1.47,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,7,William Hill,ht_ou,over,1.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,7,William Hill,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,7,William Hill,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,7,William Hill,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,7,William Hill,btts,yes,,1.83,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,7,William Hill,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ou,over,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ou,under,1.5,3.4,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ou,over,2.5,2.0,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ou,under,2.5,1.8,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ht_ou,over,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ht_ou,over,0.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,ht_ou,under,0.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,btts,yes,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,8,Bet365,btts,no,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,3,Betfair,ht_ou,over,1.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,3,Betfair,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,3,Betfair,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,3,Betfair,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ou,under,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ou,over,2.5,1.97,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ou,under,2.5,1.78,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ou,over,3.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ht_ou,over,1.5,2.7,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ht_ou,under,1.5,1.39,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ht_ou,over,0.5,1.39,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,btts,yes,,1.95,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,11,1xBet,btts,no,,1.78,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ou,over,1.5,1.34,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ou,under,1.5,3.3,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ou,over,2.5,2.02,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ou,under,2.5,1.83,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ou,over,3.5,3.45,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ou,under,3.5,1.32,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ht_ou,under,1.5,1.39,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ht_ou,over,0.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,ht_ou,under,0.5,2.72,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593354,2026-11-08T15:00:00Z,22667.8,FAR,Greek Super League,standard,Asteras Tripolis,Kalamata,32,Betano,btts,no,,1.93,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,7,William Hill,ht_ou,over,1.5,2.5,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,7,William Hill,ht_ou,under,1.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,7,William Hill,ht_ou,over,0.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,7,William Hill,ht_ou,under,0.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,7,William Hill,btts,yes,,2.05,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,7,William Hill,btts,no,,1.7,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,ou,over,1.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,ou,under,1.5,3.75,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,ou,over,2.5,1.85,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,ou,under,2.5,1.95,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,ou,over,3.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,ou,under,3.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,btts,yes,,2.05,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,8,Bet365,btts,no,,1.7,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,3,Betfair,ht_ou,over,1.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,3,Betfair,ht_ou,under,1.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,3,Betfair,ht_ou,over,0.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,3,Betfair,ht_ou,under,0.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ou,over,1.5,1.24,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ou,under,1.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ou,over,2.5,1.82,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ou,under,2.5,1.92,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ou,over,3.5,2.85,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ou,under,3.5,1.35,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ht_ou,over,1.5,2.55,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ht_ou,under,1.5,1.45,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ht_ou,over,0.5,1.34,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,ht_ou,under,0.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,btts,yes,,2.03,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,11,1xBet,btts,no,,1.72,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ou,under,1.5,3.65,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ou,over,2.5,1.88,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ou,under,2.5,1.95,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ou,over,3.5,3.15,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ou,under,3.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ht_ou,over,1.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ht_ou,under,1.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ht_ou,over,0.5,1.42,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,ht_ou,under,0.5,2.9,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,btts,yes,,2.05,api_football,open
+2026-10-23T21:12:15Z,1593355,2026-11-08T15:30:00Z,22697.8,FAR,Greek Super League,standard,Iraklis 1908,Panathinaikos,32,Betano,btts,no,,1.72,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,7,William Hill,ht_ou,over,1.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,7,William Hill,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,7,William Hill,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,7,William Hill,ht_ou,under,0.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,7,William Hill,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,7,William Hill,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,ou,over,2.5,2.05,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,ou,under,2.5,1.75,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,ou,over,3.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,ou,under,3.5,1.28,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,btts,yes,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,8,Bet365,btts,no,,1.91,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,3,Betfair,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,3,Betfair,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,3,Betfair,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,3,Betfair,ht_ou,under,0.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ou,over,1.5,1.31,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ou,under,1.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ou,over,2.5,2.03,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ou,under,2.5,1.73,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ou,over,3.5,3.4,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ou,under,3.5,1.27,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ht_ou,over,1.5,2.8,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ht_ou,under,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,btts,yes,,1.82,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,11,1xBet,btts,no,,1.9,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ou,over,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ou,under,1.5,3.25,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ou,over,2.5,2.1,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ou,under,2.5,1.78,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ou,over,3.5,3.6,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ou,under,3.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ht_ou,over,1.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ht_ou,under,1.5,1.37,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ht_ou,over,0.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,ht_ou,under,0.5,2.67,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,btts,yes,,1.8,api_football,open
+2026-10-23T21:12:15Z,1593356,2026-11-08T17:00:00Z,22787.8,FAR,Greek Super League,standard,OFI,Atromitos,32,Betano,btts,no,,1.93,api_football,open
+2026-10-23T21:12:15Z,1564388,2026-10-24T14:00:00Z,1007.8,FAR,League One,standard,Oxford United,Bradford,8,Bet365,ht_ou,over,1.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1564388,2026-10-24T14:00:00Z,1007.8,FAR,League One,standard,Oxford United,Bradford,8,Bet365,ht_ou,under,1.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1564388,2026-10-24T14:00:00Z,1007.8,FAR,League One,standard,Oxford United,Bradford,8,Bet365,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1564388,2026-10-24T14:00:00Z,1007.8,FAR,League One,standard,Oxford United,Bradford,8,Bet365,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1575519,2026-10-25T15:30:00Z,2537.8,FAR,Portuguese Primeira Liga,standard,Estoril,Moreirense,3,Betfair,ou,over,1.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1575519,2026-10-25T15:30:00Z,2537.8,FAR,Portuguese Primeira Liga,standard,Estoril,Moreirense,3,Betfair,ou,under,1.5,3.5,api_football,open
+2026-10-23T21:12:15Z,1575519,2026-10-25T15:30:00Z,2537.8,FAR,Portuguese Primeira Liga,standard,Estoril,Moreirense,3,Betfair,ou,over,3.5,3.4,api_football,open
+2026-10-23T21:12:15Z,1575519,2026-10-25T15:30:00Z,2537.8,FAR,Portuguese Primeira Liga,standard,Estoril,Moreirense,3,Betfair,ou,under,3.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1575519,2026-10-25T15:30:00Z,2537.8,FAR,Portuguese Primeira Liga,standard,Estoril,Moreirense,3,Betfair,btts,yes,,1.75,api_football,open
+2026-10-23T21:12:15Z,1575519,2026-10-25T15:30:00Z,2537.8,FAR,Portuguese Primeira Liga,standard,Estoril,Moreirense,3,Betfair,btts,no,,2.05,api_football,open
+2026-10-23T21:12:15Z,1556881,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Livingston,Arbroath,36,BetVictor,ht_ou,over,0.5,1.29,api_football,open
+2026-10-23T21:12:15Z,1556881,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Livingston,Arbroath,36,BetVictor,ht_ou,under,0.5,3.3,api_football,open
+2026-10-23T21:12:15Z,1556882,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Morton,Ayr Utd,8,Bet365,ht_ou,over,1.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1556882,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Morton,Ayr Utd,8,Bet365,ht_ou,under,1.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1556882,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Morton,Ayr Utd,8,Bet365,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1556882,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Morton,Ayr Utd,8,Bet365,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1556884,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Queen's Park,Dunfermline,8,Bet365,ht_ou,over,1.5,2.62,api_football,open
+2026-10-23T21:12:15Z,1556884,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Queen's Park,Dunfermline,8,Bet365,ht_ou,under,1.5,1.44,api_football,open
+2026-10-23T21:12:15Z,1556884,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Queen's Park,Dunfermline,8,Bet365,ht_ou,over,0.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1556884,2026-10-24T14:00:00Z,1007.8,FAR,Scottish Championship,standard,Queen's Park,Dunfermline,8,Bet365,ht_ou,under,0.5,3.0,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ou,under,1.5,2.83,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ou,over,2.5,2.08,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ou,under,2.5,1.64,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ou,over,3.5,3.76,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ou,under,3.5,1.19,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ht_ou,over,1.5,2.86,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ht_ou,over,0.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,ht_ou,under,0.5,2.65,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,btts,yes,,1.83,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,2,Marathonbet,btts,no,,1.83,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,3,Betfair,ht_ou,over,1.5,3.2,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,3,Betfair,ht_ou,under,1.5,1.3,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,3,Betfair,ht_ou,over,0.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,3,Betfair,ht_ou,under,0.5,2.75,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ou,over,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ou,under,1.5,2.83,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ou,over,2.5,2.08,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ou,under,2.5,1.64,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ou,over,3.5,3.76,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ou,under,3.5,1.19,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ht_ou,over,1.5,2.86,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ht_ou,under,1.5,1.33,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ht_ou,over,0.5,1.38,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,ht_ou,under,0.5,2.65,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,btts,yes,,1.83,api_football,open
+2026-10-23T21:12:15Z,1556870,2026-10-27T19:45:00Z,5672.8,FAR,Scottish Championship,standard,Stenhousemuir,Dunfermline,11,1xBet,btts,no,,1.86,api_football,open
+2026-10-23T21:12:15Z,1556685,2026-10-25T14:00:00Z,2447.8,FAR,Scottish Premiership,standard,Motherwell,Heart Of Midlothian,3,Betfair,ou,over,1.5,1.2,api_football,open
+2026-10-23T21:12:15Z,1556685,2026-10-25T14:00:00Z,2447.8,FAR,Scottish Premiership,standard,Motherwell,Heart Of Midlothian,3,Betfair,ou,under,1.5,4.33,api_football,open
+2026-10-23T21:12:15Z,1556685,2026-10-25T14:00:00Z,2447.8,FAR,Scottish Premiership,standard,Motherwell,Heart Of Midlothian,3,Betfair,ou,over,3.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1556685,2026-10-25T14:00:00Z,2447.8,FAR,Scottish Premiership,standard,Motherwell,Heart Of Midlothian,3,Betfair,ou,under,3.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1601570,2026-10-25T14:00:00Z,2447.8,FAR,Serie B,standard,Palermo,Carrarese,3,Betfair,ou,over,1.5,1.14,api_football,open
+2026-10-23T21:12:15Z,1601570,2026-10-25T14:00:00Z,2447.8,FAR,Serie B,standard,Palermo,Carrarese,3,Betfair,ou,under,1.5,5.5,api_football,open
+2026-10-23T21:12:15Z,1601570,2026-10-25T14:00:00Z,2447.8,FAR,Serie B,standard,Palermo,Carrarese,3,Betfair,ou,over,3.5,2.38,api_football,open
+2026-10-23T21:12:15Z,1601570,2026-10-25T14:00:00Z,2447.8,FAR,Serie B,standard,Palermo,Carrarese,3,Betfair,ou,under,3.5,1.57,api_football,open
+2026-10-23T21:12:15Z,1601570,2026-10-25T14:00:00Z,2447.8,FAR,Serie B,standard,Palermo,Carrarese,3,Betfair,btts,yes,,1.67,api_football,open
+2026-10-23T21:12:15Z,1601570,2026-10-25T14:00:00Z,2447.8,FAR,Serie B,standard,Palermo,Carrarese,3,Betfair,btts,no,,2.15,api_football,open
+2026-10-23T21:12:15Z,1601572,2026-10-25T16:15:00Z,2582.8,FAR,Serie B,standard,Hellas Verona,Pisa,3,Betfair,ou,over,1.5,1.25,api_football,open
+2026-10-23T21:12:15Z,1601572,2026-10-25T16:15:00Z,2582.8,FAR,Serie B,standard,Hellas Verona,Pisa,3,Betfair,ou,under,1.5,3.8,api_football,open
+2026-10-23T21:12:15Z,1601572,2026-10-25T16:15:00Z,2582.8,FAR,Serie B,standard,Hellas Verona,Pisa,3,Betfair,ou,over,3.5,3.1,api_football,open
+2026-10-23T21:12:15Z,1601572,2026-10-25T16:15:00Z,2582.8,FAR,Serie B,standard,Hellas Verona,Pisa,3,Betfair,ou,under,3.5,1.36,api_football,open
+2026-10-23T21:12:15Z,1601572,2026-10-25T16:15:00Z,2582.8,FAR,Serie B,standard,Hellas Verona,Pisa,3,Betfair,btts,yes,,1.6,api_football,open
+2026-10-23T21:12:15Z,1601572,2026-10-25T16:15:00Z,2582.8,FAR,Serie B,standard,Hellas Verona,Pisa,3,Betfair,btts,no,,2.3,api_football,open
+2026-10-23T21:12:15Z,1584444,2026-10-25T16:00:00Z,2567.8,FAR,Turkish Super Lig,standard,Göztepe,Çorum FK,3,Betfair,ou,over,1.5,1.2,api_football,open
+2026-10-23T21:12:15Z,1584444,2026-10-25T16:00:00Z,2567.8,FAR,Turkish Super Lig,standard,Göztepe,Çorum FK,3,Betfair,ou,under,1.5,4.5,api_football,open
+2026-10-23T21:12:15Z,1584444,2026-10-25T16:00:00Z,2567.8,FAR,Turkish Super Lig,standard,Göztepe,Çorum FK,3,Betfair,ou,over,3.5,2.63,api_football,open
+2026-10-23T21:12:15Z,1584444,2026-10-25T16:00:00Z,2567.8,FAR,Turkish Super Lig,standard,Göztepe,Çorum FK,3,Betfair,ou,under,3.5,1.47,api_football,open
+2026-10-23T21:12:15Z,1584444,2026-10-25T16:00:00Z,2567.8,FAR,Turkish Super Lig,standard,Göztepe,Çorum FK,3,Betfair,btts,yes,,1.5,api_football,open
+2026-10-23T21:12:15Z,1584444,2026-10-25T16:00:00Z,2567.8,FAR,Turkish Super Lig,standard,Göztepe,Çorum FK,3,Betfair,btts,no,,2.55,api_football,open
+2026-10-23T21:12:15Z,1584440,2026-10-26T16:00:00Z,4007.8,FAR,Turkish Super Lig,standard,Beşiktaş,Başakşehir,3,Betfair,ou,over,2.5,1.4,api_football,open
+2026-10-23T21:12:15Z,1584440,2026-10-26T16:00:00Z,4007.8,FAR,Turkish Super Lig,standard,Beşiktaş,Başakşehir,3,Betfair,ou,under,2.5,2.88,api_football,open
+2026-10-23T21:12:15Z,1584446,2026-10-26T16:00:00Z,4007.8,FAR,Turkish Super Lig,standard,Rizespor,Trabzonspor,3,Betfair,ou,over,2.5,1.53,api_football,open
+2026-10-23T21:12:15Z,1584446,2026-10-26T16:00:00Z,4007.8,FAR,Turkish Super Lig,standard,Rizespor,Trabzonspor,3,Betfair,ou,under,2.5,2.45,api_football,open
