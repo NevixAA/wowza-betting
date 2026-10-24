@@ -194,22 +194,22 @@ date,league,match,score,elapsed_mins,signal_type,bet,fair_under_odds,fair_over_o
 2026-10-21,Mexico Liga MX,Guadalajara Chivas vs Necaxa,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.23,5.38,0.8141,0.1859,0.493,00:48,1.0,0.0,WIN
 2026-10-21,League One,Reading vs Leyton Orient,0-0,21,HT_UNDER_1.5,HT UNDER 1.5,1.21,5.66,0.8234,0.1766,0.542,19:21,1.0,0.0,WIN
 2026-10-21,League One,Reading vs Leyton Orient,0-0,36,HT_UNDER_0.5,HT UNDER 0.5,1.33,4.04,0.7522,0.2478,0.542,19:36,1.0,0.0,WIN
-2026-10-23,Bundesliga 2,VfL Bochum vs VfL Wolfsburg,0-1,34,HT_UNDER_1.5,HT UNDER 1.5,1.43,3.35,0.7016,0.2984,0.554,17:04,,,
-2026-10-23,Bundesliga 2,SV Darmstadt 98 vs FC St. Pauli,0-0,36,HT_UNDER_0.5,HT UNDER 0.5,1.34,3.92,0.7449,0.2551,0.564,17:09,,,
-2026-10-23,Sweden Allsvenskan,IF Elfsborg vs Malmo FF,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.18,6.55,0.8472,0.1528,0.453,17:39,,,
-2026-10-23,Ligue 2,Clermont Foot vs Guingamp,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.92,2.08,0.5199,0.4801,0.531,18:24,,,
-2026-10-23,Ireland Premier Division,Derry City vs Dundalk,1-0,29,HT_UNDER_1.5,HT UNDER 1.5,1.61,2.64,0.6218,0.3782,0.5,19:14,,,
-2026-10-23,Ireland Premier Division,Waterford vs Drogheda United,0-1,28,HT_UNDER_1.5,HT UNDER 1.5,1.58,2.71,0.631,0.369,0.44,19:14,,,
-2026-10-23,Ireland Premier Division,Bohemians vs Shelbourne,0-0,23,HT_OVER_0.5,HT OVER 0.5,1.76,2.32,0.5697,0.4303,0.404,19:14,,,
-2026-10-23,Ligue 2,Clermont Foot vs Guingamp,0-2,60,COMEBACK,OVER 2.5,1.85,2.17,0.5395,0.4605,0.531,19:19,,,
-2026-10-23,Ireland Premier Division,Galway United vs St Patrick's Athl.,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.29,4.44,0.7747,0.2253,0.403,19:19,,,
-2026-10-23,Ireland Premier Division,Bohemians vs Shelbourne,0-0,37,HT_UNDER_0.5,HT UNDER 0.5,1.23,5.4,0.815,0.185,0.404,19:29,,,
-2026-10-23,Ireland Premier Division,Waterford vs Drogheda United,1-1,45,UNDER_RECOVERY,UNDER 2.5,2.85,1.54,0.3508,0.6492,0.44,19:34,,,
-2026-10-23,Ireland Premier Division,Shamrock Rovers vs Sligo Rovers,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.22,5.48,0.8174,0.1826,0.48,19:39,,,
-2026-10-23,Ireland Premier Division,Shamrock Rovers vs Sligo Rovers,2-0,43,UNDER_RECOVERY,UNDER 2.5,3.89,1.35,0.2573,0.7427,0.48,19:44,,,
-2026-10-23,Argentina Primera Division,Gimnasia L.P. vs Sarmiento Junin,1-0,28,HT_UNDER_1.5,HT UNDER 1.5,1.59,2.69,0.6276,0.3724,0.447,21:29,,,
-2026-10-23,Argentina Primera Division,Gimnasia L.P. vs Sarmiento Junin,1-0,45,UNDER_HOLD,UNDER 2.5,1.4,3.52,0.7163,0.2837,0.447,21:49,,,
-2026-10-23,Argentina Primera Division,Gimnasia M. vs Platense,1-0,30,HT_UNDER_1.5,HT UNDER 1.5,1.48,3.08,0.6749,0.3251,0.42,21:59,,,
-2026-10-23,Argentina Primera Division,Gimnasia M. vs Platense,1-0,52,UNDER_HOLD,UNDER 2.5,1.42,3.38,0.7045,0.2955,0.42,22:39,,,
-2026-10-23,Brazil Serie A,Cruzeiro vs Remo,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.85,2.18,0.5419,0.4581,0.488,23:24,,,
-2026-10-23,Brazil Serie A,Cruzeiro vs Remo,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.19,6.23,0.8394,0.1606,0.488,23:39,,,
+2026-10-23,Bundesliga 2,VfL Bochum vs VfL Wolfsburg,0-1,34,HT_UNDER_1.5,HT UNDER 1.5,1.43,3.35,0.7016,0.2984,0.554,17:04,2,1,WIN
+2026-10-23,Bundesliga 2,SV Darmstadt 98 vs FC St. Pauli,0-0,36,HT_UNDER_0.5,HT UNDER 0.5,1.34,3.92,0.7449,0.2551,0.564,17:09,0,0,WIN
+2026-10-23,Sweden Allsvenskan,IF Elfsborg vs Malmo FF,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.18,6.55,0.8472,0.1528,0.453,17:39,0,0,WIN
+2026-10-23,Ligue 2,Clermont Foot vs Guingamp,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.92,2.08,0.5199,0.4801,0.531,18:24,2,2,WIN
+2026-10-23,Ireland Premier Division,Derry City vs Dundalk,1-0,29,HT_UNDER_1.5,HT UNDER 1.5,1.61,2.64,0.6218,0.3782,0.5,19:14,3,1,WIN
+2026-10-23,Ireland Premier Division,Waterford vs Drogheda United,0-1,28,HT_UNDER_1.5,HT UNDER 1.5,1.58,2.71,0.631,0.369,0.44,19:14,4,2,LOSS
+2026-10-23,Ireland Premier Division,Bohemians vs Shelbourne,0-0,23,HT_OVER_0.5,HT OVER 0.5,1.76,2.32,0.5697,0.4303,0.404,19:14,1,0,LOSS
+2026-10-23,Ligue 2,Clermont Foot vs Guingamp,0-2,60,COMEBACK,OVER 2.5,1.85,2.17,0.5395,0.4605,0.531,19:19,2,2,LOSS
+2026-10-23,Ireland Premier Division,Galway United vs St Patrick's Athl.,0-0,35,HT_UNDER_0.5,HT UNDER 0.5,1.29,4.44,0.7747,0.2253,0.403,19:19,0,0,WIN
+2026-10-23,Ireland Premier Division,Bohemians vs Shelbourne,0-0,37,HT_UNDER_0.5,HT UNDER 0.5,1.23,5.4,0.815,0.185,0.404,19:29,1,0,WIN
+2026-10-23,Ireland Premier Division,Waterford vs Drogheda United,1-1,45,UNDER_RECOVERY,UNDER 2.5,2.85,1.54,0.3508,0.6492,0.44,19:34,4,2,LOSS
+2026-10-23,Ireland Premier Division,Shamrock Rovers vs Sligo Rovers,0-0,38,HT_UNDER_0.5,HT UNDER 0.5,1.22,5.48,0.8174,0.1826,0.48,19:39,4,2,LOSS
+2026-10-23,Ireland Premier Division,Shamrock Rovers vs Sligo Rovers,2-0,43,UNDER_RECOVERY,UNDER 2.5,3.89,1.35,0.2573,0.7427,0.48,19:44,4,2,LOSS
+2026-10-23,Argentina Primera Division,Gimnasia L.P. vs Sarmiento Junin,1-0,28,HT_UNDER_1.5,HT UNDER 1.5,1.59,2.69,0.6276,0.3724,0.447,21:29,2,1,WIN
+2026-10-23,Argentina Primera Division,Gimnasia L.P. vs Sarmiento Junin,1-0,45,UNDER_HOLD,UNDER 2.5,1.4,3.52,0.7163,0.2837,0.447,21:49,2,1,WIN
+2026-10-23,Argentina Primera Division,Gimnasia M. vs Platense,1-0,30,HT_UNDER_1.5,HT UNDER 1.5,1.48,3.08,0.6749,0.3251,0.42,21:59,3,1,WIN
+2026-10-23,Argentina Primera Division,Gimnasia M. vs Platense,1-0,52,UNDER_HOLD,UNDER 2.5,1.42,3.38,0.7045,0.2955,0.42,22:39,3,1,LOSS
+2026-10-23,Brazil Serie A,Cruzeiro vs Remo,0-0,24,HT_OVER_0.5,HT OVER 0.5,1.85,2.18,0.5419,0.4581,0.488,23:24,1,1,WIN
+2026-10-23,Brazil Serie A,Cruzeiro vs Remo,0-0,39,HT_UNDER_0.5,HT UNDER 0.5,1.19,6.23,0.8394,0.1606,0.488,23:39,1,1,LOSS
