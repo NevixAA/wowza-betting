@@ -337,7 +337,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 363341,B. Gallego,Estudiantes L.P.,M,31.0,22.0,Argentina Primera Division,128,2026
 289478,B. Kociubinski,Estudiantes L.P.,M,52.0,24.0,Argentina Primera Division,128,2026
 465218,Benjamin Sagues Barreiro,Estudiantes L.P.,F,41.0,18.0,Argentina Primera Division,128,2026
-94599,E. Cetré,Estudiantes L.P.,D,18.0,27.0,Argentina Primera Division,128,2026
+94599,E. Cetré,Estudiantes L.P.,F,18.0,27.0,Argentina Primera Division,128,2026
 311070,E. Mancuso,Estudiantes L.P.,D,40.0,26.0,Argentina Primera Division,128,2026
 289426,E. Meza,Estudiantes L.P.,D,20.0,26.0,Argentina Primera Division,128,2026
 356937,F. Iacovich,Estudiantes L.P.,G,1.0,23.0,Argentina Primera Division,128,2026
@@ -346,8 +346,8 @@ player_id,player_name,team,position,number,age,league,league_id,season
 289472,G. Benedetti,Estudiantes L.P.,D,13.0,24.0,Argentina Primera Division,128,2026
 47421,G. Carrillo,Estudiantes L.P.,F,9.0,34.0,Argentina Primera Division,128,2026
 51580,G. Neves,Estudiantes L.P.,M,8.0,28.0,Argentina Primera Division,128,2026
-463852,J. Burgos,Estudiantes L.P.,F,17.0,21.0,Argentina Primera Division,128,2026
-1854,J. Correa,Estudiantes L.P.,F,32.0,31.0,Argentina Primera Division,128,2026
+463852,J. Burgos,Estudiantes L.P.,M,17.0,21.0,Argentina Primera Division,128,2026
+1854,J. Correa,Estudiantes L.P.,M,32.0,31.0,Argentina Primera Division,128,2026
 6310,J. Elías,Estudiantes L.P.,M,39.0,29.0,Argentina Primera Division,128,2026
 461223,J. Pereyra,Estudiantes L.P.,D,36.0,20.0,Argentina Primera Division,128,2026
 49887,J. Sosa,Estudiantes L.P.,M,7.0,40.0,Argentina Primera Division,128,2026
@@ -888,7 +888,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 75844,F. Álvarez,Tigre,D,24.0,31.0,Argentina Primera Division,128,2026
 412107,G. Requena,Tigre,D,23.0,22.0,Argentina Primera Division,128,2026
 11601,G. Soto,Tigre,D,17.0,31.0,Argentina Primera Division,128,2026
-560390,I. Peluffo,Tigre,M,50.0,19.0,Argentina Primera Division,128,2026
+560390,I. Peluffo,Tigre,F,50.0,19.0,Argentina Primera Division,128,2026
 289448,I. Russo,Tigre,F,29.0,25.0,Argentina Primera Division,128,2026
 414380,Ian Martin Subiabre,Tigre,F,25.0,18.0,Argentina Primera Division,128,2026
 363359,J. Dómina,Tigre,F,30.0,20.0,Argentina Primera Division,128,2026
@@ -907,7 +907,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 50886,P. Martínez,Tigre,M,28.0,32.0,Argentina Primera Division,128,2026
 44568,R. Arias,Tigre,D,42.0,33.0,Argentina Primera Division,128,2026
 415140,S. González,Tigre,M,27.0,22.0,Argentina Primera Division,128,2026
-414392,S. López,Tigre,F,22.0,19.0,Argentina Primera Division,128,2026
+414392,S. López,Tigre,M,22.0,19.0,Argentina Primera Division,128,2026
 265943,S. Medina,Tigre,M,21.0,25.0,Argentina Primera Division,128,2026
 458318,T. Serrago,Tigre,M,11.0,21.0,Argentina Primera Division,128,2026
 59081,T. Sultani,Tigre,G,26.0,27.0,Argentina Primera Division,128,2026
@@ -1012,12 +1012,12 @@ player_id,player_name,team,position,number,age,league,league_id,season
 25326,J. Eggestein,Austria Vienna,F,19.0,27.0,Austrian Bundesliga,218,2026
 568153,J. Feddersen,Austria Vienna,D,44.0,18.0,Austrian Bundesliga,218,2026
 7139,J. Handl,Austria Vienna,D,46.0,27.0,Austrian Bundesliga,218,2026
-203377,J. Hettwer,Austria Vienna,F,20.0,22.0,Austrian Bundesliga,218,2026
+203377,J. Hettwer,Austria Vienna,M,20.0,22.0,Austrian Bundesliga,218,2026
 263813,K. Boateng,Austria Vienna,F,14.0,26.0,Austrian Bundesliga,218,2026
 339982,K. Jusic,Austria Vienna,G,32.0,20.0,Austrian Bundesliga,218,2026
 7138,L. Wedl,Austria Vienna,G,13.0,30.0,Austrian Bundesliga,218,2026
 224669,Lee Kang-Hee,Austria Vienna,M,16.0,24.0,Austrian Bundesliga,218,2026
-237220,Lee Tae-Seok,Austria Vienna,D,17.0,23.0,Austrian Bundesliga,218,2026
+237220,Lee Tae-Seok,Austria Vienna,M,17.0,23.0,Austrian Bundesliga,218,2026
 7681,M. Fischer,Austria Vienna,M,30.0,30.0,Austrian Bundesliga,218,2026
 7428,M. Kos,Austria Vienna,G,99.0,28.0,Austrian Bundesliga,218,2026
 394960,Marijan Österreicher,Austria Vienna,M,77.0,19.0,Austrian Bundesliga,218,2026
@@ -1066,17 +1066,17 @@ player_id,player_name,team,position,number,age,league,league_id,season
 417,A. Schöpf,Lask Linz,M,18.0,31.0,Austrian Bundesliga,218,2026
 348168,A. Smakaj,Lask Linz,M,5.0,22.0,Austrian Bundesliga,218,2026
 363691,Alemão,Lask Linz,D,43.0,23.0,Austrian Bundesliga,218,2026
-271327,C. Lang,Lask Linz,M,27.0,23.0,Austrian Bundesliga,218,2026
+271327,C. Lang,Lask Linz,F,27.0,23.0,Austrian Bundesliga,218,2026
 324019,Daniel Elfadli,Lask Linz,M,23.0,28.0,Austrian Bundesliga,218,2026
 7756,F. Flecker,Lask Linz,F,29.0,30.0,Austrian Bundesliga,218,2026
 472147,Fabian Schillinger,Lask Linz,G,50.0,18.0,Austrian Bundesliga,218,2026
 50873,G. Bello,Lask Linz,D,2.0,23.0,Austrian Bundesliga,218,2026
 576920,J. Ilk,Lask Linz,D,14.0,19.0,Austrian Bundesliga,218,2026
 558335,K. Cheikne,Lask Linz,D,52.0,19.0,Austrian Bundesliga,218,2026
-181786,K. Daněk,Lask Linz,M,9.0,22.0,Austrian Bundesliga,218,2026
-15876,K. Jørgensen,Lask Linz,D,20.0,26.0,Austrian Bundesliga,218,2026
+181786,K. Daněk,Lask Linz,F,9.0,22.0,Austrian Bundesliga,218,2026
+15876,K. Jørgensen,Lask Linz,M,20.0,26.0,Austrian Bundesliga,218,2026
 263057,L. Jungwirth,Lask Linz,G,1.0,21.0,Austrian Bundesliga,218,2026
-162718,M. Bogarde,Lask Linz,M,6.0,23.0,Austrian Bundesliga,218,2026
+162718,M. Bogarde,Lask Linz,D,6.0,23.0,Austrian Bundesliga,218,2026
 400054,M. Freckleton,Lask Linz,D,3.0,22.0,Austrian Bundesliga,218,2026
 367672,M. Usor,Lask Linz,F,8.0,23.0,Austrian Bundesliga,218,2026
 551281,M. Verhaeghe,Lask Linz,D,21.0,17.0,Austrian Bundesliga,218,2026
@@ -1123,7 +1123,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 442544,B. Mazurek,Red Bull Salzburg,M,15.0,18.0,Austrian Bundesliga,218,2026
 495,C. Früchtl,Red Bull Salzburg,G,1.0,25.0,Austrian Bundesliga,218,2026
 445566,Christian Zawieschitzky,Red Bull Salzburg,G,52.0,18.0,Austrian Bundesliga,218,2026
-286784,D. Redzic,Red Bull Salzburg,F,23.0,22.0,Austrian Bundesliga,218,2026
+286784,D. Redzic,Red Bull Salzburg,M,23.0,22.0,Austrian Bundesliga,218,2026
 48722,D. Schmid,Red Bull Salzburg,D,31.0,27.0,Austrian Bundesliga,218,2026
 444468,E. Aguilar,Red Bull Salzburg,F,43.0,18.0,Austrian Bundesliga,218,2026
 464055,E. Baidoo,Red Bull Salzburg,M,20.0,19.0,Austrian Bundesliga,218,2026
@@ -1140,14 +1140,14 @@ player_id,player_name,team,position,number,age,league,league_id,season
 283753,N. Veratschnig,Red Bull Salzburg,D,18.0,22.0,Austrian Bundesliga,218,2026
 428304,Nikola Šarčević,Red Bull Salzburg,G,41.0,19.0,Austrian Bundesliga,218,2026
 403326,S. Diabaté,Red Bull Salzburg,M,5.0,21.0,Austrian Bundesliga,218,2026
-288073,S. Kitano,Red Bull Salzburg,F,8.0,21.0,Austrian Bundesliga,218,2026
+288073,S. Kitano,Red Bull Salzburg,M,8.0,21.0,Austrian Bundesliga,218,2026
 1082,S. Lainer,Red Bull Salzburg,D,22.0,33.0,Austrian Bundesliga,218,2026
 327861,T. Drexler,Red Bull Salzburg,D,21.0,20.0,Austrian Bundesliga,218,2026
 570767,T. Hupfauf,Red Bull Salzburg,G,30.0,16.0,Austrian Bundesliga,218,2026
 279907,U. Tohumcu,Red Bull Salzburg,M,7.0,21.0,Austrian Bundesliga,218,2026
 444437,Valentin Zabransky,Red Bull Salzburg,D,47.0,18.0,Austrian Bundesliga,218,2026
 474991,Y. Sulbarán,Red Bull Salzburg,F,7.0,17.0,Austrian Bundesliga,218,2026
-129072,Y. Vertessen,Red Bull Salzburg,F,11.0,24.0,Austrian Bundesliga,218,2026
+129072,Y. Vertessen,Red Bull Salzburg,M,11.0,24.0,Austrian Bundesliga,218,2026
 7070,A. Bajić,Ried,F,12.0,30.0,Austrian Bundesliga,218,2026
 650535,A. Goiginger,Ried,D,33.0,17.0,Austrian Bundesliga,218,2026
 7699,A. Leitner,Ried,G,1.0,31.0,Austrian Bundesliga,218,2026
@@ -1661,7 +1661,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 2560,E. Pulgar,Flamengo,M,5.0,32.0,Brazil Serie A,71,2026
 1566,Emerson Royal,Flamengo,D,22.0,26.0,Brazil Serie A,71,2026
 332654,Evertton Araújo,Flamengo,M,52.0,22.0,Brazil Serie A,71,2026
-16369,G. Plata,Flamengo,M,19.0,25.0,Brazil Serie A,71,2026
+16369,G. Plata,Flamengo,F,19.0,25.0,Brazil Serie A,71,2026
 1290,G. Varela,Flamengo,D,2.0,32.0,Brazil Serie A,71,2026
 2612,G. de Arrascaeta,Flamengo,M,10.0,31.0,Brazil Serie A,71,2026
 5994,J. Carrascal,Flamengo,M,15.0,27.0,Brazil Serie A,71,2026
@@ -1694,7 +1694,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 9872,Igor Rabello,Fluminense,D,21.0,30.0,Brazil Serie A,71,2026
 6337,J. Freytes,Fluminense,D,22.0,25.0,Brazil Serie A,71,2026
 13715,J. Millán,Fluminense,D,29.0,27.0,Brazil Serie A,71,2026
-51214,J. Savarino,Fluminense,F,11.0,29.0,Brazil Serie A,71,2026
+51214,J. Savarino,Fluminense,M,11.0,29.0,Brazil Serie A,71,2026
 282692,Jemmes,Fluminense,D,44.0,25.0,Brazil Serie A,71,2026
 297522,John Kennedy,Fluminense,F,9.0,23.0,Brazil Serie A,71,2026
 443088,Julio Fidelis,Fluminense,D,46.0,19.0,Brazil Serie A,71,2026
@@ -1716,7 +1716,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 519811,Vagno,Fluminense,D,36.0,18.0,Brazil Serie A,71,2026
 10079,Vitor Eudes,Fluminense,G,98.0,27.0,Brazil Serie A,71,2026
 568706,Wesley Nata,Fluminense,F,34.0,17.0,Brazil Serie A,71,2026
-2454,Y. Soteldo,Fluminense,M,30.0,28.0,Brazil Serie A,71,2026
+2454,Y. Soteldo,Fluminense,F,30.0,28.0,Brazil Serie A,71,2026
 570403,B. G. Joao Pedro,Gremio,F,48.0,18.0,Brazil Serie A,71,2026
 510554,Bernardo Zortea,Gremio,M,50.0,18.0,Brazil Serie A,71,2026
 5981,C. Pavón,Gremio,M,7.0,29.0,Brazil Serie A,71,2026
@@ -2419,7 +2419,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 606949,B. Kaltefleiter,RB Leipzig,M,5.0,17.0,Bundesliga,78,2026
 715,C. Baumgartner,RB Leipzig,M,14.0,26.0,Bundesliga,78,2026
 162761,C. Lukeba,RB Leipzig,D,23.0,23.0,Bundesliga,78,2026
-269,C. Nkunku,RB Leipzig,F,28.0,28.0,Bundesliga,78,2026
+269,C. Nkunku,RB Leipzig,M,28.0,28.0,Bundesliga,78,2026
 25158,D. Raum,RB Leipzig,D,22.0,27.0,Bundesliga,78,2026
 343286,E. Banzuzi,RB Leipzig,M,6.0,20.0,Bundesliga,78,2026
 290549,J. Bakayoko,RB Leipzig,F,11.0,22.0,Bundesliga,78,2026
@@ -3030,7 +3030,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 24856,B. Taz,VfL Bochum,M,10.0,27.0,Bundesliga 2,79,2026
 279915,C. Drakas,VfL Bochum,F,27.0,22.0,Bundesliga 2,79,2026
 284466,C. Patino,VfL Bochum,M,28.0,22.0,Bundesliga 2,79,2026
-161886,C. Rasmussen,VfL Bochum,M,7.0,22.0,Bundesliga 2,79,2026
+161886,C. Rasmussen,VfL Bochum,F,7.0,22.0,Bundesliga 2,79,2026
 108482,D. Hanslik,VfL Bochum,F,19.0,29.0,Bundesliga 2,79,2026
 3575,E. Çokaj,VfL Bochum,M,6.0,26.0,Bundesliga 2,79,2026
 25919,G. Holtmann,VfL Bochum,M,17.0,30.0,Bundesliga 2,79,2026
@@ -3142,7 +3142,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 70044,A. Kučys,Celje,F,47.0,22.0,Champions League,2,2026
 325384,A. Tutyškinas,Celje,D,6.0,22.0,Champions League,2,2026
 119780,B. Kramer,Celje,F,9.0,29.0,Champions League,2,2026
-2183,B. Verbič,Celje,M,7.0,32.0,Champions League,2,2026
+2183,B. Verbič,Celje,F,7.0,32.0,Champions League,2,2026
 110057,D. Hrka,Celje,M,4.0,26.0,Champions League,2,2026
 638308,D. Suhovrsnik,Celje,F,31.0,18.0,Champions League,2,2026
 66040,D. Vukliševič,Celje,D,3.0,30.0,Champions League,2,2026
@@ -3159,11 +3159,11 @@ player_id,player_name,team,position,number,age,league,league_id,season
 69932,P. Širvys,Celje,D,2.0,27.0,Champions League,2,2026
 301642,Papa Mustapha Daniel,Celje,M,13.0,23.0,Champions League,2,2026
 109685,R. Požeg,Celje,M,94.0,31.0,Champions League,2,2026
-109987,S. Sešlar,Celje,F,10.0,24.0,Champions League,2,2026
+109987,S. Sešlar,Celje,M,10.0,24.0,Champions League,2,2026
 2759,S. Sluga,Celje,G,21.0,32.0,Champions League,2,2026
 652706,T. Letonja,Celje,M,32.0,17.0,Champions League,2,2026
 215855,V. Tusha,Celje,F,25.0,23.0,Champions League,2,2026
-6917,Y. Dukuly,Celje,M,91.0,22.0,Champions League,2,2026
+6917,Y. Dukuly,Celje,F,91.0,22.0,Champions League,2,2026
 163053,Ł. Bejger,Celje,D,44.0,23.0,Champions League,2,2026
 108460,Ž. Frelih,Celje,G,23.0,28.0,Champions League,2,2026
 105871,Ž. Žužek,Celje,D,15.0,29.0,Champions League,2,2026
@@ -3318,7 +3318,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 327517,J. Yılmaz,Galatasaray,G,24.0,21.0,Champions League,2,2026
 25448,K. Ayhan,Galatasaray,D,23.0,31.0,Champions League,2,2026
 145057,K. Karataş,Galatasaray,D,88.0,23.0,Champions League,2,2026
-644,L. Sané,Galatasaray,M,10.0,30.0,Champions League,2,2026
+644,L. Sané,Galatasaray,F,10.0,30.0,Champions League,2,2026
 1462,L. Torreira,Galatasaray,M,34.0,29.0,Champions League,2,2026
 270508,L. Ugochukwu,Galatasaray,M,18.0,21.0,Champions League,2,2026
 18947,M. Lemina,Galatasaray,M,99.0,32.0,Champions League,2,2026
@@ -3329,23 +3329,23 @@ player_id,player_name,team,position,number,age,league,league_id,season
 49866,U. Çakır,Galatasaray,G,1.0,29.0,Champions League,2,2026
 2780,V. Osimhen,Galatasaray,F,45.0,27.0,Champions League,2,2026
 30504,W. Singo,Galatasaray,D,90.0,25.0,Champions League,2,2026
-454,Y. Akgün,Galatasaray,F,11.0,25.0,Champions League,2,2026
+454,Y. Akgün,Galatasaray,M,11.0,25.0,Champions League,2,2026
 568393,Y. Kahraman,Galatasaray,D,5.0,17.0,Champions League,2,2026
 633,İ. Gündoğan,Galatasaray,M,20.0,35.0,Champions League,2,2026
-561359,A. Christou,Omonia Nicosia,M,82.0,20.0,Champions League,2,2026
+561359,A. Christou,Omonia Nicosia,D,82.0,20.0,Champions League,2,2026
 15392,A. Kakoullis,Omonia Nicosia,F,9.0,24.0,Champions League,2,2026
 343302,A. Neophytou,Omonia Nicosia,F,85.0,20.0,Champions League,2,2026
 540,C. Eiting,Omonia Nicosia,M,6.0,27.0,Champions League,2,2026
 497685,C. Konstantinidis,Omonia Nicosia,D,90.0,17.0,Champions League,2,2026
 647802,C. Panagiotis,Omonia Nicosia,M,92.0,17.0,Champions League,2,2026
 1186,D. Akintola,Omonia Nicosia,F,8.0,30.0,Champions League,2,2026
-10325,Ewandro,Omonia Nicosia,F,11.0,30.0,Champions League,2,2026
-43038,F. Tănase,Omonia Nicosia,M,17.0,31.0,Champions League,2,2026
+10325,Ewandro,Omonia Nicosia,M,11.0,30.0,Champions League,2,2026
+43038,F. Tănase,Omonia Nicosia,F,17.0,31.0,Champions League,2,2026
 370,Fabiano,Omonia Nicosia,G,40.0,38.0,Champions League,2,2026
 383524,G. Viktoros,Omonia Nicosia,D,44.0,20.0,Champions League,2,2026
 30918,J. Balkovec,Omonia Nicosia,D,29.0,31.0,Champions League,2,2026
 20655,J. Duverne,Omonia Nicosia,D,93.0,28.0,Champions League,2,2026
-347681,J. Montnor,Omonia Nicosia,F,7.0,23.0,Champions League,2,2026
+347681,J. Montnor,Omonia Nicosia,M,7.0,23.0,Champions League,2,2026
 531313,Konstantinos Panagi,Omonia Nicosia,F,91.0,18.0,Champions League,2,2026
 37460,L. Brouwers,Omonia Nicosia,M,20.0,27.0,Champions League,2,2026
 22100,L. Diony,Omonia Nicosia,F,99.0,33.0,Champions League,2,2026
@@ -3353,7 +3353,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 76868,M. Marić,Omonia Nicosia,M,14.0,27.0,Champions League,2,2026
 41900,M. Mayambela,Omonia Nicosia,F,21.0,29.0,Champions League,2,2026
 19348,M. Odubajo,Omonia Nicosia,D,28.0,32.0,Champions League,2,2026
-48132,M. Tankovic,Omonia Nicosia,M,22.0,30.0,Champions League,2,2026
+48132,M. Tankovic,Omonia Nicosia,F,22.0,30.0,Champions League,2,2026
 388757,P. Andreou,Omonia Nicosia,M,74.0,19.0,Champions League,2,2026
 455561,P. Michael,Omonia Nicosia,G,78.0,20.0,Champions League,2,2026
 21699,S. Coulibaly,Omonia Nicosia,D,5.0,31.0,Champions League,2,2026
@@ -5299,7 +5299,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 325077,F. Lapoukhov,CSKA Sofia,G,21.0,22.0,Conference League,848,2026
 6302,Facundo Santiago Rodríguez,CSKA Sofia,D,32.0,25.0,Conference League,848,2026
 349211,G. Chorbadzhiyski,CSKA Sofia,M,80.0,21.0,Conference League,848,2026
-15518,I. Pittas,CSKA Sofia,M,28.0,29.0,Conference League,848,2026
+15518,I. Pittas,CSKA Sofia,F,28.0,29.0,Conference League,848,2026
 174609,I. Solet Bomawoko,CSKA Sofia,M,94.0,24.0,Conference League,848,2026
 174834,J. Eto&apos;o,CSKA Sofia,M,99.0,25.0,Conference League,848,2026
 3240,J. Gbamin,CSKA Sofia,D,5.0,30.0,Conference League,848,2026
@@ -5307,7 +5307,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 159774,Léo Pereira,CSKA Sofia,M,38.0,26.0,Conference League,848,2026
 85416,M. Brahimi,CSKA Sofia,F,11.0,27.0,Conference League,848,2026
 7782,M. Ebong,CSKA Sofia,M,7.0,26.0,Conference League,848,2026
-471581,P. Panayotov,CSKA Sofia,M,30.0,20.0,Conference League,848,2026
+471581,P. Panayotov,CSKA Sofia,F,30.0,20.0,Conference League,848,2026
 197253,Pastor,CSKA Sofia,D,2.0,26.0,Conference League,848,2026
 278358,S. Godoy,CSKA Sofia,F,9.0,24.0,Conference League,848,2026
 30535,S. Sensi,CSKA Sofia,M,8.0,30.0,Conference League,848,2026
@@ -5672,7 +5672,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 2188,V. Supryaga,Dynamo Kyiv,F,20.0,25.0,Conference League,848,2026
 395549,V. Surkis,Dynamo Kyiv,G,71.0,19.0,Conference League,848,2026
 395573,V. Zakharchenko,Dynamo Kyiv,D,34.0,19.0,Conference League,848,2026
-260819,A. Albanese,Egnatia Rrogozhinë,F,10.0,25.0,Conference League,848,2026
+260819,A. Albanese,Egnatia Rrogozhinë,M,10.0,25.0,Conference League,848,2026
 3661,A. Aleksi,Egnatia Rrogozhinë,M,6.0,33.0,Conference League,848,2026
 624124,A. Kacbufi,Egnatia Rrogozhinë,D,13.0,24.0,Conference League,848,2026
 157998,A. Kryeziu,Egnatia Rrogozhinë,M,17.0,23.0,Conference League,848,2026
@@ -5792,7 +5792,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 28394,G. Beridze,FC Iberia 1999,F,26.0,28.0,Conference League,848,2026
 540418,G. Chanturia,FC Iberia 1999,D,39.0,18.0,Conference League,848,2026
 423227,G. Gogsadze,FC Iberia 1999,D,2.0,19.0,Conference League,848,2026
-24461,G. Kobuladze,FC Iberia 1999,M,40.0,28.0,Conference League,848,2026
+24461,G. Kobuladze,FC Iberia 1999,D,40.0,28.0,Conference League,848,2026
 379207,G. Kukalia,FC Iberia 1999,D,12.0,21.0,Conference League,848,2026
 24676,G. Kutsia,FC Iberia 1999,M,27.0,26.0,Conference League,848,2026
 41379,G. Makaridze,FC Iberia 1999,G,31.0,36.0,Conference League,848,2026
@@ -5853,14 +5853,14 @@ player_id,player_name,team,position,number,age,league,league_id,season
 4496,A. Kendouci,FC Lugano,M,14.0,26.0,Conference League,848,2026
 26626,A. Papadopoulos,FC Lugano,D,6.0,26.0,Conference League,848,2026
 351925,B. Castro,FC Lugano,F,22.0,22.0,Conference League,848,2026
-416964,B. Karimov,FC Lugano,M,2.0,18.0,Conference League,848,2026
+416964,B. Karimov,FC Lugano,D,2.0,18.0,Conference League,848,2026
 437334,C. Ndiaye,FC Lugano,G,39.0,17.0,Conference League,848,2026
 595011,Christian Raffa,FC Lugano,F,33.0,18.0,Conference League,848,2026
 381495,D. Kelvin,FC Lugano,D,4.0,23.0,Conference League,848,2026
 384129,D. Mina,FC Lugano,G,99.0,20.0,Conference League,848,2026
 454964,D. Moncada,FC Lugano,F,30.0,18.0,Conference League,848,2026
 939,D. von Ballmoos,FC Lugano,G,16.0,31.0,Conference League,848,2026
-303004,Daniel Dos Santos,FC Lugano,F,27.0,23.0,Conference League,848,2026
+303004,Daniel Dos Santos,FC Lugano,M,27.0,23.0,Conference League,848,2026
 19133,E. Alioski,FC Lugano,D,7.0,33.0,Conference League,848,2026
 458180,E. Pihlström,FC Lugano,F,24.0,19.0,Conference League,848,2026
 163131,F. Gebhardt,FC Lugano,G,28.0,23.0,Conference League,848,2026
@@ -5871,7 +5871,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 454456,João Victor Schlickmann Carbone,FC Lugano,D,44.0,20.0,Conference League,848,2026
 25192,K. Behrens,FC Lugano,F,91.0,34.0,Conference League,848,2026
 503,L. Mai,FC Lugano,D,17.0,25.0,Conference League,848,2026
-322626,M. Zanotti,FC Lugano,D,46.0,22.0,Conference League,848,2026
+322626,M. Zanotti,FC Lugano,M,46.0,22.0,Conference League,848,2026
 336574,Martim Marques,FC Lugano,D,26.0,21.0,Conference League,848,2026
 595013,Nicolo Puddu,FC Lugano,F,32.0,18.0,Conference League,848,2026
 2809,R. Steffen,FC Lugano,F,11.0,34.0,Conference League,848,2026
@@ -6049,14 +6049,14 @@ player_id,player_name,team,position,number,age,league,league_id,season
 382190,R. Neelakandan,FC Vaduz,F,27.0,20.0,Conference League,848,2026
 135962,S. Seiler,FC Vaduz,M,8.0,25.0,Conference League,848,2026
 419610,A. Avdić,FK Crvena Zvezda,D,71.0,18.0,Conference League,848,2026
-50910,A. Katai,FK Crvena Zvezda,F,10.0,34.0,Conference League,848,2026
+50910,A. Katai,FK Crvena Zvezda,M,10.0,34.0,Conference League,848,2026
 686974,Andrej Sibinovic,FK Crvena Zvezda,D,66.0,17.0,Conference League,848,2026
 284072,B. Dieng,FK Crvena Zvezda,F,9.0,25.0,Conference League,848,2026
 25341,D. Luckassen,FK Crvena Zvezda,D,32.0,30.0,Conference League,848,2026
 610569,D. Saric,FK Crvena Zvezda,M,55.0,17.0,Conference League,848,2026
 319388,F. Tebo Uchenna,FK Crvena Zvezda,D,30.0,25.0,Conference League,848,2026
 198395,I. Guteša,FK Crvena Zvezda,G,77.0,23.0,Conference League,848,2026
-394173,K. Balov,FK Crvena Zvezda,M,8.0,19.0,Conference League,848,2026
+394173,K. Balov,FK Crvena Zvezda,F,8.0,19.0,Conference League,848,2026
 606918,Kim Ye-geon,FK Crvena Zvezda,M,19.0,17.0,Conference League,848,2026
 68106,L. Loizou,FK Crvena Zvezda,F,75.0,22.0,Conference League,848,2026
 108017,M. Abu Fani,FK Crvena Zvezda,M,15.0,27.0,Conference League,848,2026
@@ -6065,7 +6065,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 146008,M. Cham,FK Crvena Zvezda,M,70.0,25.0,Conference League,848,2026
 491074,M. Gashtarov,FK Crvena Zvezda,D,60.0,19.0,Conference League,848,2026
 353,M. Ivanić,FK Crvena Zvezda,M,4.0,32.0,Conference League,848,2026
-21584,M. Ristić,FK Crvena Zvezda,D,23.0,30.0,Conference League,848,2026
+21584,M. Ristić,FK Crvena Zvezda,F,23.0,30.0,Conference League,848,2026
 610938,M. Strika,FK Crvena Zvezda,D,27.0,16.0,Conference League,848,2026
 2821,M. Veljković,FK Crvena Zvezda,D,13.0,30.0,Conference League,848,2026
 41089,Matheus,FK Crvena Zvezda,G,1.0,34.0,Conference League,848,2026
@@ -6076,7 +6076,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 17789,T. Elšnik,FK Crvena Zvezda,M,21.0,27.0,Conference League,848,2026
 187926,Tomás Händel,FK Crvena Zvezda,M,20.0,25.0,Conference League,848,2026
 462208,V. Kostov,FK Crvena Zvezda,M,22.0,17.0,Conference League,848,2026
-264495,V. Lučić,FK Crvena Zvezda,M,37.0,23.0,Conference League,848,2026
+264495,V. Lučić,FK Crvena Zvezda,F,37.0,23.0,Conference League,848,2026
 36920,Y. Nakayama,FK Crvena Zvezda,D,3.0,28.0,Conference League,848,2026
 66410,A. Růsek,FK Jablonec,F,9.0,26.0,Conference League,848,2026
 314370,D. Hollý,FK Jablonec,M,24.0,22.0,Conference League,848,2026
@@ -6104,7 +6104,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 46022,N. Tekijaški,FK Jablonec,D,4.0,28.0,Conference League,848,2026
 38823,R. Sedláček,FK Jablonec,M,13.0,26.0,Conference League,848,2026
 338972,Roman Horák,FK Jablonec,M,22.0,20.0,Conference League,848,2026
-303107,S. Alioum,FK Jablonec,F,17.0,22.0,Conference League,848,2026
+303107,S. Alioum,FK Jablonec,M,17.0,22.0,Conference League,848,2026
 144722,S. Nebyla,FK Jablonec,M,25.0,23.0,Conference League,848,2026
 585748,S. Tubic,FK Jablonec,D,5.0,21.0,Conference League,848,2026
 55948,V. Tchanturishvili,FK Jablonec,M,7.0,32.0,Conference League,848,2026
@@ -6379,7 +6379,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 402955,A. Omgba,Gent,M,10.0,23.0,Conference League,848,2026
 417801,Abubakar Abdullahi,Gent,F,61.0,19.0,Conference League,848,2026
 453386,B. Evers,Gent,G,31.0,17.0,Conference League,848,2026
-477549,B. Goore,Gent,F,45.0,20.0,Conference League,848,2026
+477549,B. Goore,Gent,M,45.0,20.0,Conference League,848,2026
 19850,C. Burgess,Gent,D,16.0,34.0,Conference League,848,2026
 8716,D. Roef,Gent,G,33.0,31.0,Conference League,848,2026
 513581,E. Seck,Gent,F,59.0,18.0,Conference League,848,2026
@@ -6401,12 +6401,12 @@ player_id,player_name,team,position,number,age,league,league_id,season
 338144,M. Ngom,Gent,D,5.0,25.0,Conference League,848,2026
 60353,M. Paskotši,Gent,D,3.0,22.0,Conference League,848,2026
 281376,M. Samoise,Gent,M,18.0,24.0,Conference League,848,2026
-328978,M. Sonko,Gent,F,11.0,20.0,Conference League,848,2026
-331087,M. Volckaert,Gent,M,57.0,23.0,Conference League,848,2026
+328978,M. Sonko,Gent,M,11.0,20.0,Conference League,848,2026
+331087,M. Volckaert,Gent,D,57.0,23.0,Conference League,848,2026
 669123,Noa Vandenabeele,Gent,G,50.0,16.0,Conference League,848,2026
 37639,S. Van der Heyden,Gent,D,44.0,27.0,Conference League,848,2026
 381830,T. De Vlieger,Gent,M,27.0,20.0,Conference League,848,2026
-161935,Tiago Araújo,Gent,M,20.0,25.0,Conference League,848,2026
+161935,Tiago Araújo,Gent,D,20.0,25.0,Conference League,848,2026
 651719,Y. Mohammed,Gent,F,95.0,18.0,Conference League,848,2026
 69268,A. McEneff,Glentoran,M,8.0,30.0,Conference League,848,2026
 48083,A. Mills,Glentoran,G,1.0,32.0,Conference League,848,2026
@@ -6528,7 +6528,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 57291,Á. Jónsson,HB Torshavn,D,22.0,31.0,Conference League,848,2026
 640441,A. Guram,HNK Hajduk Split,M,26.0,17.0,Conference League,848,2026
 278059,A. Pajaziti,HNK Hajduk Split,M,4.0,23.0,Conference League,848,2026
-111386,A. Sanyang,HNK Hajduk Split,F,7.0,26.0,Conference League,848,2026
+111386,A. Sanyang,HNK Hajduk Split,M,7.0,26.0,Conference League,848,2026
 602741,A. Sutalo,HNK Hajduk Split,M,16.0,19.0,Conference League,848,2026
 8935,A. Van Hoorenbeeck,HNK Hajduk Split,D,5.0,27.0,Conference League,848,2026
 181474,Alberto del Moral,HNK Hajduk Split,M,20.0,25.0,Conference League,848,2026
@@ -6664,9 +6664,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 37656,E. Kabangu,Heart Of Midlothian,F,7.0,27.0,Conference League,848,2026
 312287,F. Pollock,Heart Of Midlothian,M,33.0,21.0,Conference League,848,2026
 138258,H. Milne,Heart Of Midlothian,D,18.0,29.0,Conference League,848,2026
-431652,J. Altena,Heart Of Midlothian,D,23.0,22.0,Conference League,848,2026
+431652,J. Altena,Heart Of Midlothian,M,23.0,22.0,Conference League,848,2026
 45128,J. McCart,Heart Of Midlothian,D,5.0,28.0,Conference League,848,2026
-125694,J. McPake,Heart Of Midlothian,M,15.0,24.0,Conference League,848,2026
+125694,J. McPake,Heart Of Midlothian,F,15.0,24.0,Conference League,848,2026
 50843,J. Williams,Heart Of Midlothian,F,9.0,27.0,Conference League,848,2026
 418942,J. Wilson,Heart Of Midlothian,F,21.0,18.0,Conference League,848,2026
 138415,K. Wright,Heart Of Midlothian,G,34.0,26.0,Conference League,848,2026
@@ -6677,9 +6677,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 138903,O. McEntee,Heart Of Midlothian,M,6.0,24.0,Conference League,848,2026
 214282,P. Kabore,Heart Of Midlothian,F,11.0,24.0,Conference League,848,2026
 44961,R. Fulton,Heart Of Midlothian,G,30.0,29.0,Conference League,848,2026
-351187,R. Mato,Heart Of Midlothian,F,74.0,22.0,Conference League,848,2026
+351187,R. Mato,Heart Of Midlothian,D,74.0,22.0,Conference League,848,2026
 44781,S. Findlay,Heart Of Midlothian,D,17.0,30.0,Conference League,848,2026
-191415,S. Guendouz,Heart Of Midlothian,F,19.0,25.0,Conference League,848,2026
+191415,S. Guendouz,Heart Of Midlothian,M,19.0,25.0,Conference League,848,2026
 503078,S. Kerjota,Heart Of Midlothian,F,29.0,24.0,Conference League,848,2026
 19412,S. Kingsley,Heart Of Midlothian,D,3.0,31.0,Conference League,848,2026
 28934,T. Magnússon,Heart Of Midlothian,M,22.0,23.0,Conference League,848,2026
@@ -6851,7 +6851,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 529982,M. Abish,Kairat Almaty,M,27.0,17.0,Conference League,848,2026
 532067,M. Birkurmanov,Kairat Almaty,F,15.0,18.0,Conference League,848,2026
 47067,Marc Gual,Kairat Almaty,M,28.0,30.0,Conference League,848,2026
-345422,O. Baybek,Kairat Almaty,M,8.0,20.0,Conference League,848,2026
+345422,O. Baybek,Kairat Almaty,D,8.0,20.0,Conference League,848,2026
 264531,O. Jukkola,Kairat Almaty,M,19.0,23.0,Conference League,848,2026
 453725,R. Bagdat,Kairat Almaty,F,29.0,19.0,Conference League,848,2026
 490791,R. Kenesbekov,Kairat Almaty,D,75.0,17.0,Conference League,848,2026
@@ -7040,7 +7040,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 134458,G. Torrilla,Lincoln Red Imps FC,M,22.0,28.0,Conference League,848,2026
 203802,J. Eersteling,Lincoln Red Imps FC,D,66.0,22.0,Conference League,848,2026
 91622,J. Hankins,Lincoln Red Imps FC,G,13.0,25.0,Conference League,848,2026
-182692,Joe,Lincoln Red Imps FC,D,23.0,34.0,Conference League,848,2026
+182692,Joe,Lincoln Red Imps FC,M,23.0,34.0,Conference League,848,2026
 108526,K. Gómez,Lincoln Red Imps FC,F,9.0,31.0,Conference League,848,2026
 55940,L. Casciaro,Lincoln Red Imps FC,F,7.0,44.0,Conference League,848,2026
 573699,L. Mason,Lincoln Red Imps FC,M,16.0,19.0,Conference League,848,2026
@@ -7051,9 +7051,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 46907,Nano,Lincoln Red Imps FC,D,21.0,41.0,Conference League,848,2026
 28946,Nauzet García,Lincoln Red Imps FC,G,1.0,31.0,Conference League,848,2026
 667090,Ruben Garcia,Lincoln Red Imps FC,F,77.0,21.0,Conference League,848,2026
-105684,Toni García,Lincoln Red Imps FC,M,18.0,34.0,Conference League,848,2026
-667088,Yussef Flalhi Idrissi,Lincoln Red Imps FC,F,19.0,26.0,Conference League,848,2026
-46831,Álex Mula,Lincoln Red Imps FC,F,10.0,29.0,Conference League,848,2026
+105684,Toni García,Lincoln Red Imps FC,F,18.0,34.0,Conference League,848,2026
+667088,Yussef Flalhi Idrissi,Lincoln Red Imps FC,M,19.0,26.0,Conference League,848,2026
+46831,Álex Mula,Lincoln Red Imps FC,M,10.0,29.0,Conference League,848,2026
 47035,Álvaro Romero,Lincoln Red Imps FC,F,11.0,29.0,Conference League,848,2026
 44794,A. Frizzell,Linfield,M,10.0,27.0,Conference League,848,2026
 383061,A. Glavin,Linfield,G,18.0,20.0,Conference League,848,2026
@@ -7441,14 +7441,14 @@ player_id,player_name,team,position,number,age,league,league_id,season
 686981,Christos Evzonas,Pafos,M,60.0,21.0,Conference League,848,2026
 108561,David Goldar,Pafos,D,5.0,31.0,Conference League,848,2026
 2283,David Luiz,Pafos,D,4.0,39.0,Conference League,848,2026
-18807,Domingos Quina,Pafos,F,8.0,26.0,Conference League,848,2026
-568255,G. Michael,Pafos,M,42.0,17.0,Conference League,848,2026
+18807,Domingos Quina,Pafos,M,8.0,26.0,Conference League,848,2026
+568255,G. Michael,Pafos,F,42.0,17.0,Conference League,848,2026
 26779,Guga,Pafos,M,6.0,29.0,Conference League,848,2026
 1324,I. Šunjić,Pafos,M,26.0,29.0,Conference League,848,2026
 37599,J. Gorter,Pafos,G,1.0,25.0,Conference League,848,2026
 196159,Jajá,Pafos,F,11.0,25.0,Conference League,848,2026
 441512,Jonatás Noro,Pafos,D,23.0,20.0,Conference League,848,2026
-41994,João Correia,Pafos,D,77.0,29.0,Conference League,848,2026
+41994,João Correia,Pafos,F,77.0,29.0,Conference League,848,2026
 443681,K. Ioannou,Pafos,D,72.0,18.0,Conference League,848,2026
 2860,K. Sema,Pafos,M,12.0,32.0,Conference League,848,2026
 610760,L. Vetter Paulino,Pafos,D,63.0,18.0,Conference League,848,2026
@@ -7524,7 +7524,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 2328,Á. Kovácsik,Paks,G,1.0,34.0,Conference League,848,2026
 129678,A. Ounahi,Panathinaikos,M,21.0,25.0,Conference League,848,2026
 162451,A. Salah-Eddine,Panathinaikos,D,5.0,24.0,Conference League,848,2026
-342918,A. Tetteh,Panathinaikos,F,7.0,24.0,Conference League,848,2026
+342918,A. Tetteh,Panathinaikos,M,7.0,24.0,Conference League,848,2026
 427373,Adriano Jagušić,Panathinaikos,M,8.0,20.0,Conference League,848,2026
 37186,C. Dessers,Panathinaikos,F,9.0,31.0,Conference League,848,2026
 619667,C. Geitonas,Panathinaikos,G,71.0,16.0,Conference League,848,2026
@@ -7551,9 +7551,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 449603,S. Kontouris,Panathinaikos,M,18.0,20.0,Conference League,848,2026
 194,S. de Vrij,Panathinaikos,D,6.0,33.0,Conference League,848,2026
 490156,Santino Andino,Panathinaikos,M,10.0,20.0,Conference League,848,2026
-204290,T. Tsapras,Panathinaikos,M,19.0,24.0,Conference League,848,2026
+204290,T. Tsapras,Panathinaikos,D,19.0,24.0,Conference League,848,2026
 158710,V. Kristiansen,Panathinaikos,D,34.0,23.0,Conference League,848,2026
-323785,V. Taborda,Panathinaikos,F,20.0,24.0,Conference League,848,2026
+323785,V. Taborda,Panathinaikos,M,20.0,24.0,Conference League,848,2026
 550216,Vasilios Lavdas,Panathinaikos,D,56.0,16.0,Conference League,848,2026
 306531,A. Bražinskas,Panevėžys,G,22.0,25.0,Conference League,848,2026
 553965,A. Butkus,Panevėžys,D,31.0,18.0,Conference League,848,2026
@@ -7834,7 +7834,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 406569,Abner,Riga,D,3.0,21.0,Conference League,848,2026
 313790,B. Musah,Riga,D,21.0,26.0,Conference League,848,2026
 341914,C. Saco,Riga,M,6.0,23.0,Conference League,848,2026
-465459,Caio,Riga,F,99.0,25.0,Conference League,848,2026
+465459,Caio,Riga,M,11.0,25.0,Conference League,848,2026
 338966,D. Putrāns,Riga,M,14.0,20.0,Conference League,848,2026
 72542,E. Birka,Riga,D,27.0,25.0,Conference League,848,2026
 564916,E. Maurs-Boks,Riga,D,29.0,19.0,Conference League,848,2026
@@ -7842,7 +7842,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 72446,F. Orols,Riga,G,91.0,25.0,Conference League,848,2026
 190497,Iago Siqueira Augusto,Riga,M,8.0,25.0,Conference League,848,2026
 56115,K. Pirić,Riga,G,12.0,31.0,Conference League,848,2026
-474271,K. Wassom,Riga,M,5.0,21.0,Conference League,848,2026
+474271,K. Wassom,Riga,D,5.0,21.0,Conference League,848,2026
 72517,K. Zommers,Riga,G,12.0,28.0,Conference League,848,2026
 70000,K. Zviedris,Riga,G,1.0,28.0,Conference League,848,2026
 122421,M. Badamosi,Riga,F,19.0,27.0,Conference League,848,2026
@@ -7859,8 +7859,8 @@ player_id,player_name,team,position,number,age,league,league_id,season
 72564,R. Varslavāns,Riga,M,14.0,24.0,Conference League,848,2026
 564981,R. Zemitis,Riga,D,13.0,17.0,Conference League,848,2026
 270988,Reginaldo Ramires,Riga,F,10.0,24.0,Conference League,848,2026
-278074,S. Oulad M&apos;Hand,Riga,M,18.0,22.0,Conference League,848,2026
-129777,Samuel Pedro,Riga,M,15.0,24.0,Conference League,848,2026
+278074,S. Oulad M&apos;Hand,Riga,F,18.0,22.0,Conference League,848,2026
+129777,Samuel Pedro,Riga,F,15.0,24.0,Conference League,848,2026
 344535,T. Papadoudis,Riga,G,31.0,22.0,Conference League,848,2026
 667262,V. Lusis,Riga,F,7.0,18.0,Conference League,848,2026
 2305,A. Filipović,Rīgas FS,D,6.0,31.0,Conference League,848,2026
@@ -7902,12 +7902,12 @@ player_id,player_name,team,position,number,age,league,league_id,season
 359001,Bernardo Fontes,SC Braga,G,31.0,24.0,Conference League,848,2026
 202838,D. Huseinbašić,SC Braga,M,23.0,25.0,Conference League,848,2026
 361371,Diego Rodrigues,SC Braga,M,50.0,21.0,Conference League,848,2026
-336575,Diogo Travassos,SC Braga,M,7.0,22.0,Conference League,848,2026
+336575,Diogo Travassos,SC Braga,D,7.0,22.0,Conference League,848,2026
 336570,E. Tıknaz,SC Braga,M,34.0,21.0,Conference League,848,2026
 936,Fran Navarro,SC Braga,F,9.0,28.0,Conference League,848,2026
 137721,G. Lagerbielke,SC Braga,D,14.0,26.0,Conference League,848,2026
 297303,Gabri Martínez,SC Braga,F,77.0,23.0,Conference League,848,2026
-266630,Gabriel Silva,SC Braga,F,11.0,24.0,Conference League,848,2026
+266630,Gabriel Silva,SC Braga,M,11.0,24.0,Conference League,848,2026
 330295,J. Gorby,SC Braga,M,29.0,23.0,Conference League,848,2026
 371911,J. Milošević,SC Braga,F,17.0,20.0,Conference League,848,2026
 579857,J. Trovisco,SC Braga,M,87.0,18.0,Conference League,848,2026
@@ -7916,12 +7916,12 @@ player_id,player_name,team,position,number,age,league,league_id,season
 2677,João Moutinho,SC Braga,M,8.0,39.0,Conference League,848,2026
 380434,M. Dorgeles,SC Braga,M,20.0,22.0,Conference League,848,2026
 263530,Pau Victor,SC Braga,M,10.0,24.0,Conference League,848,2026
-41103,Ricardo Horta,SC Braga,M,21.0,31.0,Conference League,848,2026
+41103,Ricardo Horta,SC Braga,F,21.0,31.0,Conference League,848,2026
 606182,S. Sodikov,SC Braga,M,19.0,17.0,Conference League,848,2026
 182857,Sergio Barcia,SC Braga,D,22.0,25.0,Conference League,848,2026
 41090,Tiago Sá,SC Braga,G,12.0,31.0,Conference League,848,2026
 491086,Tomás Marqués,SC Braga,M,16.0,19.0,Conference League,848,2026
-9355,Vitor Carvalho,SC Braga,D,6.0,29.0,Conference League,848,2026
+9355,Vitor Carvalho,SC Braga,M,6.0,29.0,Conference League,848,2026
 153290,Víctor Gómez,SC Braga,D,2.0,26.0,Conference League,848,2026
 15874,A. Jung,SC Freiburg,D,5.0,34.0,Conference League,848,2026
 353142,Berkay Yilmaz,SC Freiburg,D,27.0,20.0,Conference League,848,2026
@@ -8253,7 +8253,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 62323,M. Eskihellaç,Trabzonspor,D,19.0,28.0,Conference League,848,2026
 158431,M. Kabasakal,Trabzonspor,D,57.0,29.0,Conference League,848,2026
 107660,M. Mimaroğlu,Trabzonspor,F,77.0,31.0,Conference League,848,2026
-306,Mohamed Salah,Trabzonspor,M,10.0,33.0,Conference League,848,2026
+306,Mohamed Salah,Trabzonspor,F,10.0,33.0,Conference League,848,2026
 454973,N. Saviolo,Trabzonspor,F,70.0,22.0,Conference League,848,2026
 498679,O. Ertem,Trabzonspor,M,90.0,17.0,Conference League,848,2026
 49942,O. Tufan,Trabzonspor,M,11.0,30.0,Conference League,848,2026
@@ -8311,7 +8311,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 37765,L. Unnerstall,Twente,G,1.0,35.0,Conference League,848,2026
 455252,Lucas Vennegoor of Hesselink,Twente,F,25.0,19.0,Conference League,848,2026
 291994,M. Bruns,Twente,D,38.0,23.0,Conference League,848,2026
-30413,M. Pjaca,Twente,F,7.0,30.0,Conference League,848,2026
+30413,M. Pjaca,Twente,M,7.0,30.0,Conference League,848,2026
 339175,M. Rosiak,Twente,D,2.0,20.0,Conference League,848,2026
 161894,N. Ünüvar,Twente,F,37.0,22.0,Conference League,848,2026
 639073,Nigel Groenewald,Twente,F,36.0,19.0,Conference League,848,2026
@@ -8320,10 +8320,10 @@ player_id,player_name,team,position,number,age,league,league_id,season
 37254,R. Pröpper,Twente,D,3.0,32.0,Conference League,848,2026
 129047,R. Zerrouki,Twente,M,6.0,27.0,Conference League,848,2026
 292553,S. Lemkin,Twente,D,23.0,22.0,Conference League,848,2026
-352730,S. Ørjasæter,Twente,M,27.0,22.0,Conference League,848,2026
+352730,S. Ørjasæter,Twente,F,27.0,22.0,Conference League,848,2026
 36934,T. van den Belt,Twente,M,20.0,24.0,Conference League,848,2026
 25416,W. Weghorst,Twente,F,9.0,33.0,Conference League,848,2026
-328670,Y. Taha,Twente,F,10.0,23.0,Conference League,848,2026
+328670,Y. Taha,Twente,M,10.0,23.0,Conference League,848,2026
 518664,Yannick Gerritsen,Twente,G,31.0,19.0,Conference League,848,2026
 544238,A. Agovic,UNA Strassen,D,20.0,27.0,Conference League,848,2026
 106896,A. Sacras,UNA Strassen,D,14.0,25.0,Conference League,848,2026
@@ -8859,16 +8859,16 @@ player_id,player_name,team,position,number,age,league,league_id,season
 2793,V. Pálsson,AC Horsens,D,26.0,34.0,Denmark Superliga,119,2026
 684841,Y. Abbas,AC Horsens,F,,17.0,Denmark Superliga,119,2026
 479885,Y. Ouorou,AC Horsens,F,27.0,19.0,Denmark Superliga,119,2026
-94322,C. McCowatt,Aarhus,M,18.0,26.0,Denmark Superliga,119,2026
+94322,C. McCowatt,Aarhus,F,18.0,26.0,Denmark Superliga,119,2026
 137131,C. Rösler,Aarhus,D,25.0,25.0,Denmark Superliga,119,2026
 521025,Christian Storch,Aarhus,D,45.0,17.0,Denmark Superliga,119,2026
 57141,D. Grétarsson,Aarhus,D,3.0,30.0,Denmark Superliga,119,2026
 151738,E. Kahl,Aarhus,D,19.0,24.0,Denmark Superliga,119,2026
 15584,F. Tingager,Aarhus,D,5.0,32.0,Denmark Superliga,119,2026
-470281,Frederik Emmery,Aarhus,M,39.0,19.0,Denmark Superliga,119,2026
+470281,Frederik Emmery,Aarhus,F,39.0,19.0,Denmark Superliga,119,2026
 46283,G. Links,Aarhus,M,11.0,27.0,Denmark Superliga,119,2026
 607093,H. Sengooba,Aarhus,D,46.0,17.0,Denmark Superliga,119,2026
-315567,J. Andersen,Aarhus,D,26.0,21.0,Denmark Superliga,119,2026
+315567,J. Andersen,Aarhus,M,26.0,21.0,Denmark Superliga,119,2026
 606217,J. Bogere,Aarhus,F,28.0,17.0,Denmark Superliga,119,2026
 15786,J. Hansen,Aarhus,G,1.0,40.0,Denmark Superliga,119,2026
 50009,J. Jønsson,Aarhus,M,16.0,33.0,Denmark Superliga,119,2026
@@ -8886,9 +8886,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 550856,O. Haugstrup,Aarhus,M,22.0,19.0,Denmark Superliga,119,2026
 635531,O. Lyhne,Aarhus,G,41.0,,Denmark Superliga,119,2026
 15931,R. Carstensen,Aarhus,M,29.0,25.0,Denmark Superliga,119,2026
-15943,S. Jørgensen,Aarhus,M,8.0,25.0,Denmark Superliga,119,2026
+15943,S. Jørgensen,Aarhus,F,8.0,25.0,Denmark Superliga,119,2026
 514279,S. Tchamche,Aarhus,F,27.0,19.0,Denmark Superliga,119,2026
-15964,T. Bech,Aarhus,M,31.0,23.0,Denmark Superliga,119,2026
+15964,T. Bech,Aarhus,F,31.0,23.0,Denmark Superliga,119,2026
 495841,T. Kristjánsson,Aarhus,F,20.0,17.0,Denmark Superliga,119,2026
 15668,T. Mølgaard,Aarhus,D,14.0,29.0,Denmark Superliga,119,2026
 550857,Z. Grantzau,Aarhus,D,43.0,16.0,Denmark Superliga,119,2026
@@ -8928,7 +8928,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 1234,A. Král,FC Copenhagen,M,33.0,27.0,Denmark Superliga,119,2026
 443849,A. Markgráf,FC Copenhagen,D,6.0,20.0,Denmark Superliga,119,2026
 24985,A. Sørensen,FC Copenhagen,D,4.0,29.0,Denmark Superliga,119,2026
-1173,B. Meling,FC Copenhagen,D,24.0,31.0,Denmark Superliga,119,2026
+1173,B. Meling,FC Copenhagen,M,24.0,31.0,Denmark Superliga,119,2026
 24894,D. Ramaj,FC Copenhagen,G,1.0,24.0,Denmark Superliga,119,2026
 25312,F. Beijmo,FC Copenhagen,D,2.0,27.0,Denmark Superliga,119,2026
 567955,G. Olsen,FC Copenhagen,M,45.0,18.0,Denmark Superliga,119,2026
@@ -8936,7 +8936,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 633096,G. Vianney,FC Copenhagen,F,44.0,18.0,Denmark Superliga,119,2026
 581943,H. Haraldsen,FC Copenhagen,D,40.0,17.0,Denmark Superliga,119,2026
 419587,Hunor Vajk Németh,FC Copenhagen,M,28.0,18.0,Denmark Superliga,119,2026
-351014,J. Suzuki,FC Copenhagen,M,20.0,22.0,Denmark Superliga,119,2026
+351014,J. Suzuki,FC Copenhagen,D,20.0,22.0,Denmark Superliga,119,2026
 568097,K. Lee,FC Copenhagen,D,35.0,18.0,Denmark Superliga,119,2026
 504208,K. Myrie,FC Copenhagen,D,18.0,19.0,Denmark Superliga,119,2026
 449247,M. Carrizo,FC Copenhagen,F,7.0,19.0,Denmark Superliga,119,2026
@@ -8944,9 +8944,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 15934,M. Emil Madsen,FC Copenhagen,M,21.0,27.0,Denmark Superliga,119,2026
 2431,M. López,FC Copenhagen,D,15.0,26.0,Denmark Superliga,119,2026
 529934,M. Nasnas,FC Copenhagen,M,34.0,16.0,Denmark Superliga,119,2026
-310199,R. Huescas,FC Copenhagen,D,13.0,22.0,Denmark Superliga,119,2026
+310199,R. Huescas,FC Copenhagen,M,13.0,22.0,Denmark Superliga,119,2026
 2784,R. Rúnarsson,FC Copenhagen,G,31.0,30.0,Denmark Superliga,119,2026
-422779,Robert,FC Copenhagen,M,16.0,20.0,Denmark Superliga,119,2026
+422779,Robert,FC Copenhagen,F,16.0,20.0,Denmark Superliga,119,2026
 568382,T. Breum-Harild,FC Copenhagen,G,51.0,18.0,Denmark Superliga,119,2026
 15,T. Delaney,FC Copenhagen,M,27.0,34.0,Denmark Superliga,119,2026
 354831,T. Maseko,FC Copenhagen,F,12.0,22.0,Denmark Superliga,119,2026
@@ -8957,12 +8957,12 @@ player_id,player_name,team,position,number,age,league,league_id,season
 435266,B. Dje Bi Dje,FC Midtjylland,D,15.0,20.0,Denmark Superliga,119,2026
 34211,Cho Gue-Sung,FC Midtjylland,F,10.0,28.0,Denmark Superliga,119,2026
 338045,D. Castillo,FC Midtjylland,M,21.0,21.0,Denmark Superliga,119,2026
-356814,D. Martínez,FC Midtjylland,F,98.0,19.0,Denmark Superliga,119,2026
+356814,D. Martínez,FC Midtjylland,M,98.0,19.0,Denmark Superliga,119,2026
 89754,E. Ólafsson,FC Midtjylland,G,1.0,25.0,Denmark Superliga,119,2026
 351146,F. Etim,FC Midtjylland,F,90.0,24.0,Denmark Superliga,119,2026
 570165,F. Vestergaard,FC Midtjylland,M,42.0,17.0,Denmark Superliga,119,2026
 26519,Hong Hyun-Seok,FC Midtjylland,M,20.0,26.0,Denmark Superliga,119,2026
-496782,J. Emefile,FC Midtjylland,M,38.0,17.0,Denmark Superliga,119,2026
+496782,J. Emefile,FC Midtjylland,F,38.0,17.0,Denmark Superliga,119,2026
 686982,Joseph Okuaghare,FC Midtjylland,M,39.0,18.0,Denmark Superliga,119,2026
 15810,Júnior Brumado,FC Midtjylland,F,74.0,26.0,Denmark Superliga,119,2026
 397740,K. Wätjen,FC Midtjylland,M,29.0,35.0,Denmark Superliga,119,2026
@@ -8978,7 +8978,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 284543,O. Ejeheri,FC Midtjylland,G,30.0,22.0,Denmark Superliga,119,2026
 2734,P. Billing,FC Midtjylland,M,8.0,29.0,Denmark Superliga,119,2026
 311432,P. Bravo,FC Midtjylland,M,19.0,21.0,Denmark Superliga,119,2026
-533,R. Kristensen,FC Midtjylland,M,5.0,28.0,Denmark Superliga,119,2026
+533,R. Kristensen,FC Midtjylland,D,5.0,28.0,Denmark Superliga,119,2026
 438628,S. Iheanacho,FC Midtjylland,F,18.0,20.0,Denmark Superliga,119,2026
 443703,S. Johannesen,FC Midtjylland,M,27.0,18.0,Denmark Superliga,119,2026
 162218,V. Bak Jensen,FC Midtjylland,D,55.0,22.0,Denmark Superliga,119,2026
@@ -9091,8 +9091,8 @@ player_id,player_name,team,position,number,age,league,league_id,season
 382844,M. Demirci,Randers FC,G,22.0,22.0,Denmark Superliga,119,2026
 15859,M. Greve,Randers FC,M,17.0,30.0,Denmark Superliga,119,2026
 550852,M. Nielsen,Randers FC,M,53.0,19.0,Denmark Superliga,119,2026
-286373,M. Sankoh,Randers FC,F,30.0,22.0,Denmark Superliga,119,2026
-265451,M. Sjølstad,Randers FC,D,15.0,25.0,Denmark Superliga,119,2026
+286373,M. Sankoh,Randers FC,M,30.0,22.0,Denmark Superliga,119,2026
+265451,M. Sjølstad,Randers FC,M,15.0,25.0,Denmark Superliga,119,2026
 417304,M. Themsen,Randers FC,M,7.0,19.0,Denmark Superliga,119,2026
 128761,N. Dyhr,Randers FC,D,44.0,24.0,Denmark Superliga,119,2026
 314285,N. Hopland,Randers FC,D,27.0,21.0,Denmark Superliga,119,2026
@@ -9191,14 +9191,14 @@ player_id,player_name,team,position,number,age,league,league_id,season
 89717,V. Lunddal Friðriksson,Viborg,D,3.0,24.0,Denmark Superliga,119,2026
 109684,Ž. Zaletel,Viborg,D,5.0,26.0,Denmark Superliga,119,2026
 462228,A. Natali,AZ Alkmaar,D,3.0,17.0,Europa League,3,2026
-444790,A. Oufkir,AZ Alkmaar,M,24.0,19.0,Europa League,3,2026
+444790,A. Oufkir,AZ Alkmaar,F,24.0,19.0,Europa League,3,2026
 581945,B. Kovacs,AZ Alkmaar,F,18.0,18.0,Europa League,3,2026
 36910,C. Stengs,AZ Alkmaar,M,14.0,27.0,Europa League,3,2026
 179839,D. Kasius,AZ Alkmaar,D,30.0,23.0,Europa League,3,2026
 340597,D. Kwakman,AZ Alkmaar,M,21.0,21.0,Europa League,3,2026
 370475,E. Dijkstra,AZ Alkmaar,D,22.0,19.0,Europa League,3,2026
 37602,H. Verhulst,AZ Alkmaar,G,12.0,32.0,Europa League,3,2026
-496879,H. de Wit,AZ Alkmaar,M,10.0,18.0,Europa League,3,2026
+496879,H. de Wit,AZ Alkmaar,M,75.0,18.0,Europa League,3,2026
 441274,I. Ka,AZ Alkmaar,G,1.0,19.0,Europa League,3,2026
 37154,J. Clasie,AZ Alkmaar,M,8.0,34.0,Europa League,3,2026
 8470,J. De Busser,AZ Alkmaar,G,28.0,26.0,Europa League,3,2026
@@ -9212,7 +9212,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 342954,M. Meerdink,AZ Alkmaar,F,9.0,22.0,Europa League,3,2026
 93064,M. de Wit,AZ Alkmaar,D,34.0,27.0,Europa League,3,2026
 38820,P. Koopmeiners,AZ Alkmaar,M,6.0,25.0,Europa League,3,2026
-338840,R. Daal,AZ Alkmaar,M,11.0,21.0,Europa League,3,2026
+338840,R. Daal,AZ Alkmaar,F,11.0,21.0,Europa League,3,2026
 422581,R. Ichihara,AZ Alkmaar,D,31.0,20.0,Europa League,3,2026
 340711,R. Owusu-Oduro,AZ Alkmaar,G,1.0,21.0,Europa League,3,2026
 446259,R. Robbemond,AZ Alkmaar,M,7.0,20.0,Europa League,3,2026
@@ -9247,7 +9247,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 127417,M. Kana,Anderlecht,M,55.0,23.0,Europa League,3,2026
 626145,M. Seghers,Anderlecht,G,33.0,16.0,Europa League,3,2026
 296455,M. Stroeykens,Anderlecht,M,29.0,21.0,Europa League,3,2026
-202614,M. Winkler,Anderlecht,M,10.0,23.0,Europa League,3,2026
+202614,M. Winkler,Anderlecht,F,10.0,23.0,Europa League,3,2026
 655011,N. Cobiella,Anderlecht,M,53.0,16.0,Europa League,3,2026
 650475,N. Kalonji Kafumpata,Anderlecht,M,68.0,16.0,Europa League,3,2026
 15906,O. Antman,Anderlecht,F,11.0,24.0,Europa League,3,2026
@@ -9255,24 +9255,24 @@ player_id,player_name,team,position,number,age,league,league_id,season
 350854,R. Amané,Anderlecht,M,8.0,22.0,Europa League,3,2026
 277930,T. Aasgaard,Anderlecht,M,19.0,23.0,Europa League,3,2026
 303485,T. Bentayeb,Anderlecht,F,21.0,23.0,Europa League,3,2026
-400844,T. Degreef,Anderlecht,M,83.0,20.0,Europa League,3,2026
+400844,T. Degreef,Anderlecht,F,83.0,20.0,Europa League,3,2026
 392147,Zoumana Keita,Anderlecht,D,2.0,20.0,Europa League,3,2026
 65359,A. Ambartsumyan,Ararat-Armenia,M,10.0,31.0,Europa League,3,2026
 390563,A. Eloyan,Ararat-Armenia,M,9.0,21.0,Europa League,3,2026
 26770,A. Malis,Ararat-Armenia,D,47.0,28.0,Europa League,3,2026
 57449,A. Ndour,Ararat-Armenia,F,25.0,28.0,Europa League,3,2026
 215963,A. Nersesyan,Ararat-Armenia,G,1.0,24.0,Europa League,3,2026
-269533,A. Serobyan,Ararat-Armenia,F,77.0,23.0,Europa League,3,2026
+269533,A. Serobyan,Ararat-Armenia,M,77.0,23.0,Europa League,3,2026
 24562,A. Tera,Ararat-Armenia,M,20.0,28.0,Europa League,3,2026
 146199,Andranik Martirosyan,Ararat-Armenia,G,71.0,22.0,Europa League,3,2026
 579371,Benny,Ararat-Armenia,M,70.0,28.0,Europa League,3,2026
 119525,Bruno Pereira,Ararat-Armenia,D,14.0,27.0,Europa League,3,2026
 41969,Bruno Wilson,Ararat-Armenia,D,43.0,29.0,Europa League,3,2026
 428502,D. Petrosyan,Ararat-Armenia,M,44.0,20.0,Europa League,3,2026
-130806,E. Grigoryan,Ararat-Armenia,M,16.0,27.0,Europa League,3,2026
+130806,E. Grigoryan,Ararat-Armenia,D,16.0,27.0,Europa League,3,2026
 646063,E. Poghosyan,Ararat-Armenia,M,35.0,17.0,Europa League,3,2026
 9856,França,Ararat-Armenia,F,95.0,30.0,Europa League,3,2026
-294599,Hugo Oliveira,Ararat-Armenia,M,2.0,24.0,Europa League,3,2026
+294599,Hugo Oliveira,Ararat-Armenia,D,2.0,24.0,Europa League,3,2026
 57818,J. Balanta,Ararat-Armenia,M,8.0,28.0,Europa League,3,2026
 5693,J. Julio,Ararat-Armenia,D,3.0,29.0,Europa League,3,2026
 141575,João Bravim,Ararat-Armenia,G,98.0,27.0,Europa League,3,2026
@@ -9280,25 +9280,25 @@ player_id,player_name,team,position,number,age,league,league_id,season
 65477,K. Muradyan,Ararat-Armenia,M,19.0,33.0,Europa League,3,2026
 271956,Luís Felipe,Ararat-Armenia,D,5.0,24.0,Europa League,3,2026
 422505,M. Ayvazyan,Ararat-Armenia,M,6.0,20.0,Europa League,3,2026
-21252,M. Carlier,Ararat-Armenia,D,17.0,28.0,Europa League,3,2026
+21252,M. Carlier,Ararat-Armenia,M,17.0,28.0,Europa League,3,2026
 646062,M. Hovhannisyan,Ararat-Armenia,M,23.0,17.0,Europa League,3,2026
 671860,M. Khudaverdyan,Ararat-Armenia,M,22.0,20.0,Europa League,3,2026
 41530,P. Ayongo,Ararat-Armenia,F,90.0,29.0,Europa League,3,2026
 516693,S. Badalyan,Ararat-Armenia,G,12.0,19.0,Europa League,3,2026
 41624,Sandro Lima,Ararat-Armenia,F,91.0,35.0,Europa League,3,2026
 674129,V. Movsisyan,Ararat-Armenia,M,71.0,24.0,Europa League,3,2026
-65374,Z. Shaghoyan,Ararat-Armenia,F,7.0,24.0,Europa League,3,2026
+65374,Z. Shaghoyan,Ararat-Armenia,M,7.0,24.0,Europa League,3,2026
 96576,Zidane Banjaqui,Ararat-Armenia,F,11.0,27.0,Europa League,3,2026
 15623,A. Bah,Benfica,D,6.0,28.0,Europa League,3,2026
 567695,A. Cabral,Benfica,F,72.0,18.0,Europa League,3,2026
 397737,A. Chemong,Benfica,M,88.0,23.0,Europa League,3,2026
 348568,A. Circati,Benfica,D,3.0,22.0,Europa League,3,2026
-301528,A. Schjelderup,Benfica,F,21.0,22.0,Europa League,3,2026
+301528,A. Schjelderup,Benfica,M,21.0,22.0,Europa League,3,2026
 675,A. Trubin,Benfica,G,1.0,25.0,Europa League,3,2026
 414385,C. Echeverri,Benfica,M,30.0,19.0,Europa League,3,2026
 133,C. Lenglet,Benfica,D,2.0,31.0,Europa League,3,2026
 669228,D. Kauan,Benfica,F,7.0,18.0,Europa League,3,2026
-25458,D. Lukebakio,Benfica,M,11.0,28.0,Europa League,3,2026
+25458,D. Lukebakio,Benfica,F,11.0,28.0,Europa League,3,2026
 514215,Daniel Banjaqui,Benfica,D,58.0,17.0,Europa League,3,2026
 386314,Diogo Ferreira,Benfica,G,50.0,19.0,Europa League,3,2026
 158378,E. Barrenechea,Benfica,M,5.0,25.0,Europa League,3,2026
@@ -9386,19 +9386,19 @@ player_id,player_name,team,position,number,age,league,league_id,season
 359117,Shumaira Mheuka,Celtic,F,29.0,18.0,Europa League,3,2026
 169291,V. Sinisalo,Celtic,G,1.0,24.0,Europa League,3,2026
 304958,Yang Hyun-Jun,Celtic,M,13.0,23.0,Europa League,3,2026
-105993,A. Hoxha,Dinamo Zagreb,F,11.0,27.0,Europa League,3,2026
+105993,A. Hoxha,Dinamo Zagreb,M,11.0,27.0,Europa League,3,2026
 428414,A. Stojaković,Dinamo Zagreb,F,15.0,21.0,Europa League,3,2026
 14410,B. Goda,Dinamo Zagreb,D,3.0,27.0,Europa League,3,2026
 490480,B. Orlić,Dinamo Zagreb,D,4.0,19.0,Europa League,3,2026
 182434,D. Beljo,Dinamo Zagreb,F,9.0,23.0,Europa League,3,2026
 524,D. Kotarski,Dinamo Zagreb,G,24.0,25.0,Europa League,3,2026
 1306,D. Zagorac,Dinamo Zagreb,G,1.0,38.0,Europa League,3,2026
-371912,Dani Rodríguez,Dinamo Zagreb,M,7.0,20.0,Europa League,3,2026
+371912,Dani Rodríguez,Dinamo Zagreb,F,7.0,20.0,Europa League,3,2026
 561626,E. Molchan,Dinamo Zagreb,M,34.0,17.0,Europa League,3,2026
 339162,F. Topić,Dinamo Zagreb,F,30.0,21.0,Europa League,3,2026
 14406,I. Filipović,Dinamo Zagreb,G,44.0,31.0,Europa League,3,2026
 14532,I. Nevistić,Dinamo Zagreb,G,33.0,27.0,Europa League,3,2026
-389602,Iker Almena,Dinamo Zagreb,F,23.0,21.0,Europa League,3,2026
+389602,Iker Almena,Dinamo Zagreb,M,23.0,21.0,Europa League,3,2026
 619976,J. Brundic,Dinamo Zagreb,M,14.0,19.0,Europa League,3,2026
 2373,J. Mišić,Dinamo Zagreb,M,27.0,32.0,Europa League,3,2026
 162172,K. Kravtsov,Dinamo Zagreb,M,5.0,23.0,Europa League,3,2026
@@ -9407,7 +9407,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 308814,L. Stojković,Dinamo Zagreb,M,10.0,22.0,Europa League,3,2026
 679208,Lautaro Ultra,Dinamo Zagreb,M,5.0,19.0,Europa League,3,2026
 265491,M. Lisica,Dinamo Zagreb,F,21.0,22.0,Europa League,3,2026
-1330,M. Oršić,Dinamo Zagreb,M,99.0,33.0,Europa League,3,2026
+1330,M. Oršić,Dinamo Zagreb,F,99.0,33.0,Europa League,3,2026
 288319,M. Valinčić,Dinamo Zagreb,D,25.0,23.0,Europa League,3,2026
 1369,M. Zajc,Dinamo Zagreb,M,8.0,31.0,Europa League,3,2026
 263476,N. Galešić,Dinamo Zagreb,D,15.0,24.0,Europa League,3,2026
@@ -9441,7 +9441,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 28209,G. Szécsi,Ferencvarosi TC,G,29.0,36.0,Europa League,3,2026
 128993,G. Zohoré,Ferencvarosi TC,D,5.0,25.0,Europa League,3,2026
 20531,H. Maïga,Ferencvarosi TC,M,80.0,29.0,Europa League,3,2026
-48072,J. Levi,Ferencvarosi TC,M,10.0,29.0,Europa League,3,2026
+48072,J. Levi,Ferencvarosi TC,F,10.0,29.0,Europa League,3,2026
 342442,K. Lisztes,Ferencvarosi TC,F,76.0,20.0,Europa League,3,2026
 2027,K. Zachariassen,Ferencvarosi TC,M,16.0,31.0,Europa League,3,2026
 21613,L. Joseph,Ferencvarosi TC,F,75.0,25.0,Europa League,3,2026
@@ -9454,7 +9454,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 37833,P. Rommens,Ferencvarosi TC,M,88.0,28.0,Europa League,3,2026
 419576,Szilárd Szabó,Ferencvarosi TC,F,13.0,19.0,Europa League,3,2026
 153287,T. Raemaekers,Ferencvarosi TC,D,28.0,25.0,Europa League,3,2026
-45804,V. Birmančević,Ferencvarosi TC,F,7.0,27.0,Europa League,3,2026
+45804,V. Birmančević,Ferencvarosi TC,M,7.0,27.0,Europa League,3,2026
 397434,Z. Varga,Ferencvarosi TC,F,68.0,19.0,Europa League,3,2026
 397433,Á. Bagi,Ferencvarosi TC,F,18.0,19.0,Europa League,3,2026
 30481,Á. Nagy,Ferencvarosi TC,M,6.0,30.0,Europa League,3,2026
@@ -9507,7 +9507,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 510484,J. Kucharski,Jagiellonia,M,70.0,17.0,Europa League,3,2026
 549595,J. Wolosik,Jagiellonia,F,66.0,21.0,Europa League,3,2026
 681751,Jakub Rabiczko,Jagiellonia,G,67.0,18.0,Europa League,3,2026
-40485,Jesús Imaz,Jagiellonia,F,11.0,35.0,Europa League,3,2026
+40485,Jesús Imaz,Jagiellonia,M,11.0,35.0,Europa League,3,2026
 40559,K. Jóźwiak,Jagiellonia,F,72.0,27.0,Europa League,3,2026
 40858,K. Szmyt,Jagiellonia,F,7.0,23.0,Europa League,3,2026
 599282,M. Kuczynski,Jagiellonia,F,90.0,19.0,Europa League,3,2026
@@ -9564,7 +9564,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 56290,C. Makoun,Levski Sofia,D,4.0,25.0,Europa League,3,2026
 480403,David Kusso,Levski Sofia,F,27.0,21.0,Europa League,3,2026
 194736,E. El Moubarik,Levski Sofia,M,19.0,24.0,Europa League,3,2026
-160077,Everton Bala,Levski Sofia,F,17.0,26.0,Europa League,3,2026
+160077,Everton Bala,Levski Sofia,M,17.0,26.0,Europa League,3,2026
 109864,G. Trdin,Levski Sofia,M,18.0,27.0,Europa League,3,2026
 309155,Hevertton Santos,Levski Sofia,D,2.0,25.0,Europa League,3,2026
 352778,J. Perea,Levski Sofia,F,9.0,26.0,Europa League,3,2026
@@ -9572,7 +9572,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 25350,M. Grujić,Levski Sofia,M,8.0,30.0,Europa League,3,2026
 11255,M. Lukov,Levski Sofia,G,78.0,32.0,Europa League,3,2026
 194236,M. Sangaré,Levski Sofia,F,12.0,27.0,Europa League,3,2026
-21157,M. Soula,Levski Sofia,F,22.0,27.0,Europa League,3,2026
+21157,M. Soula,Levski Sofia,M,22.0,27.0,Europa League,3,2026
 367528,Maicon,Levski Sofia,D,3.0,25.0,Europa League,3,2026
 137072,N. Serafimov,Levski Sofia,D,31.0,26.0,Europa League,3,2026
 277056,O. Kamdem,Levski Sofia,D,71.0,23.0,Europa League,3,2026
@@ -9619,7 +9619,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 22153,A. Leya,OFI,F,9.0,28.0,Europa League,3,2026
 26741,A. Poungouras,OFI,D,15.0,30.0,Europa League,3,2026
 36848,Aitor Cantalapiedra,OFI,F,10.0,29.0,Europa League,3,2026
-92525,Borja González,OFI,M,17.0,30.0,Europa League,3,2026
+92525,Borja González,OFI,D,17.0,30.0,Europa League,3,2026
 20294,C. Sielis,OFI,D,16.0,25.0,Europa League,3,2026
 31045,D. Nikolaou,OFI,D,43.0,27.0,Europa League,3,2026
 349497,G. Apostolakis,OFI,M,21.0,21.0,Europa League,3,2026
@@ -9630,7 +9630,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 14361,K. Krizmanić,OFI,D,2.0,25.0,Europa League,3,2026
 482621,K. Lagoudakis,OFI,D,52.0,17.0,Europa League,3,2026
 388962,K. Lilo,OFI,G,1.0,22.0,Europa League,3,2026
-30857,L. Dickmann,OFI,D,24.0,29.0,Europa League,3,2026
+30857,L. Dickmann,OFI,M,24.0,29.0,Europa League,3,2026
 528314,Lefteris Kontekas,OFI,D,44.0,16.0,Europa League,3,2026
 482616,M. Chnaris,OFI,M,91.0,17.0,Europa League,3,2026
 594076,Manouel Kalafatis,OFI,G,23.0,20.0,Europa League,3,2026
@@ -9642,7 +9642,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 1602,T. Androutsos,OFI,M,14.0,28.0,Europa League,3,2026
 26748,T. Chatzigiovanis,OFI,M,7.0,28.0,Europa League,3,2026
 7625,T. Fountas,OFI,F,11.0,30.0,Europa League,3,2026
-170077,T. Nuss,OFI,M,18.0,24.0,Europa League,3,2026
+170077,T. Nuss,OFI,F,18.0,24.0,Europa League,3,2026
 626652,T. Romano,OFI,F,30.0,19.0,Europa League,3,2026
 614179,Thanasis Sitmalidis,OFI,F,71.0,17.0,Europa League,3,2026
 26952,Z. Karachalios,OFI,M,6.0,29.0,Europa League,3,2026
@@ -9686,9 +9686,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 386837,A. Sojka,Plzen,M,12.0,22.0,Europa League,3,2026
 406418,B. Faal,Plzen,F,23.0,22.0,Europa League,3,2026
 271869,C. Kabongo,Plzen,F,25.0,22.0,Europa League,3,2026
-179449,C. Souaré,Plzen,M,19.0,23.0,Europa League,3,2026
+179449,C. Souaré,Plzen,D,19.0,23.0,Europa League,3,2026
 1291,D. Vavro,Plzen,D,3.0,29.0,Europa League,3,2026
-290212,D. Višinský,Plzen,M,9.0,22.0,Europa League,3,2026
+290212,D. Višinský,Plzen,F,9.0,22.0,Europa League,3,2026
 355829,D. Ťapaj,Plzen,G,1.0,21.0,Europa League,3,2026
 181824,F. Prebsl,Plzen,D,98.0,22.0,Europa League,3,2026
 221605,F. Wiegele,Plzen,G,44.0,24.0,Europa League,3,2026
@@ -9716,7 +9716,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 340644,A. Ševínský,Sparta Praha,D,19.0,21.0,Europa League,3,2026
 352525,E. Singhateh,Sparta Praha,M,27.0,22.0,Europa League,3,2026
 555437,H. Sochurek,Sparta Praha,M,38.0,17.0,Europa League,3,2026
-323942,J. Alcócer,Sparta Praha,M,7.0,21.0,Europa League,3,2026
+323942,J. Alcócer,Sparta Praha,F,7.0,21.0,Europa League,3,2026
 95018,J. Braut Brunes,Sparta Praha,F,14.0,25.0,Europa League,3,2026
 394636,J. Feit,Sparta Praha,M,8.0,19.0,Europa League,3,2026
 195098,J. Grimaldo,Sparta Praha,F,21.0,22.0,Europa League,3,2026
@@ -9728,9 +9728,9 @@ player_id,player_name,team,position,number,age,league,league_id,season
 144723,K. Hegyi,Sparta Praha,G,47.0,23.0,Europa League,3,2026
 285,K. Hoever,Sparta Praha,D,25.0,23.0,Europa League,3,2026
 570547,L. Azaka,Sparta Praha,F,20.0,16.0,Europa League,3,2026
-490796,L. Franc,Sparta Praha,G,1.0,16.0,Europa League,3,2026
+490796,L. Franc,Sparta Praha,G,54.0,16.0,Europa League,3,2026
 279,L. Mbe Soh,Sparta Praha,D,22.0,24.0,Europa League,3,2026
-180305,M. Jurásek,Sparta Praha,M,31.0,22.0,Europa League,3,2026
+180305,M. Jurásek,Sparta Praha,F,31.0,22.0,Europa League,3,2026
 606998,M. Kotisek,Sparta Praha,D,2.0,17.0,Europa League,3,2026
 295027,M. Ryneš,Sparta Praha,M,11.0,24.0,Europa League,3,2026
 323899,M. Suchomel,Sparta Praha,D,2.0,23.0,Europa League,3,2026
@@ -9963,22 +9963,22 @@ player_id,player_name,team,position,number,age,league,league_id,season
 55645,V. Seppä,Inter Turku,G,36.0,29.0,Finland Veikkausliiga,244,2026
 383523,V. Ulundu,Inter Turku,F,27.0,20.0,Finland Veikkausliiga,244,2026
 144728,Y. Amankwah,Inter Turku,D,30.0,25.0,Finland Veikkausliiga,244,2026
-339601,A. Aiki,KuPS,F,15.0,20.0,Finland Veikkausliiga,244,2026
+339601,A. Aiki,KuPS,M,15.0,20.0,Finland Veikkausliiga,244,2026
 55382,A. Heinonen,KuPS,M,17.0,26.0,Finland Veikkausliiga,244,2026
 263910,A. Lötjönen,KuPS,D,23.0,21.0,Finland Veikkausliiga,244,2026
 370733,A. Puukko,KuPS,D,29.0,19.0,Finland Veikkausliiga,244,2026
 340124,A. Toivonen,KuPS,M,28.0,20.0,Finland Veikkausliiga,244,2026
-434046,B. Armah,KuPS,M,24.0,21.0,Finland Veikkausliiga,244,2026
+434046,B. Armah,KuPS,D,24.0,21.0,Finland Veikkausliiga,244,2026
 275270,B. Magassa,KuPS,D,28.0,28.0,Finland Veikkausliiga,244,2026
 15898,C. Antwi,KuPS,D,25.0,26.0,Finland Veikkausliiga,244,2026
 343378,C. Kabuye,KuPS,F,19.0,22.0,Finland Veikkausliiga,244,2026
 464213,E. Erguner,KuPS,D,22.0,18.0,Finland Veikkausliiga,244,2026
 380752,E. Tanninen,KuPS,F,17.0,18.0,Finland Veikkausliiga,244,2026
-8944,G. Engvall,KuPS,F,9.0,29.0,Finland Veikkausliiga,244,2026
+8944,G. Engvall,KuPS,M,9.0,29.0,Finland Veikkausliiga,244,2026
 55358,H. Riihimäki,KuPS,G,12.0,22.0,Finland Veikkausliiga,244,2026
 15857,J. Eskesen,KuPS,M,34.0,26.0,Finland Veikkausliiga,244,2026
 7060,J. Kreidl,KuPS,G,1.0,29.0,Finland Veikkausliiga,244,2026
-264134,J. Luyeye-Lutumba,KuPS,M,21.0,23.0,Finland Veikkausliiga,244,2026
+264134,J. Luyeye-Lutumba,KuPS,F,21.0,23.0,Finland Veikkausliiga,244,2026
 52727,J. Moreno,KuPS,F,11.0,30.0,Finland Veikkausliiga,244,2026
 41575,Jorginho,KuPS,D,30.0,28.0,Finland Veikkausliiga,244,2026
 710,K. Adams,KuPS,D,4.0,30.0,Finland Veikkausliiga,244,2026
@@ -9989,7 +9989,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 468240,R. Tikkanen,KuPS,D,3.0,18.0,Finland Veikkausliiga,244,2026
 55474,S. Heiskanen,KuPS,M,3.0,24.0,Finland Veikkausliiga,244,2026
 355318,S. Pasanen,KuPS,M,14.0,19.0,Finland Veikkausliiga,244,2026
-55388,S. Savolainen,KuPS,D,6.0,29.0,Finland Veikkausliiga,244,2026
+55388,S. Savolainen,KuPS,F,6.0,29.0,Finland Veikkausliiga,244,2026
 638099,S. Soumahoro,KuPS,M,20.0,18.0,Finland Veikkausliiga,244,2026
 127751,S. Touray,KuPS,M,22.0,25.0,Finland Veikkausliiga,244,2026
 196073,T. Hämäläinen,KuPS,D,33.0,24.0,Finland Veikkausliiga,244,2026
@@ -10246,7 +10246,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 659463,S. McGrath,Drogheda United,M,33.0,17.0,Ireland Premier Division,357,2026
 69273,T. Oluwa,Drogheda United,F,11.0,24.0,Ireland Premier Division,357,2026
 519857,Theo Hennessy,Drogheda United,G,36.0,19.0,Ireland Premier Division,357,2026
-407947,W. Davis,Drogheda United,M,24.0,20.0,Ireland Premier Division,357,2026
+407947,W. Davis,Drogheda United,F,24.0,20.0,Ireland Premier Division,357,2026
 69559,A. Dervin,Dundalk,M,6.0,26.0,Ireland Premier Division,357,2026
 567937,A. M. Keogh,Dundalk,M,23.0,18.0,Ireland Premier Division,357,2026
 44867,B. Burns,Dundalk,D,3.0,26.0,Ireland Premier Division,357,2026
@@ -10307,7 +10307,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 349288,Vincent Angelini,Galway United,G,32.0,22.0,Ireland Premier Division,357,2026
 467175,A. Brennan,Shamrock Rovers,M,19.0,18.0,Ireland Premier Division,357,2026
 69272,A. Greene,Shamrock Rovers,F,9.0,35.0,Ireland Premier Division,357,2026
-19893,A. Matthews,Shamrock Rovers,D,3.0,33.0,Ireland Premier Division,357,2026
+19893,A. Matthews,Shamrock Rovers,D,2.0,33.0,Ireland Premier Division,357,2026
 559213,B. Mahon,Shamrock Rovers,F,34.0,28.0,Ireland Premier Division,357,2026
 410299,C. Barrett,Shamrock Rovers,D,33.0,20.0,Ireland Premier Division,357,2026
 19241,C. Malley,Shamrock Rovers,M,23.0,25.0,Ireland Premier Division,357,2026
@@ -10320,7 +10320,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 643950,E. Koufie,Shamrock Rovers,F,15.0,19.0,Ireland Premier Division,357,2026
 69362,E. McGinty,Shamrock Rovers,G,1.0,26.0,Ireland Premier Division,357,2026
 19097,E. Stevens,Shamrock Rovers,D,3.0,35.0,Ireland Premier Division,357,2026
-19457,G. Burke,Shamrock Rovers,F,10.0,32.0,Ireland Premier Division,357,2026
+19457,G. Burke,Shamrock Rovers,M,10.0,32.0,Ireland Premier Division,357,2026
 157130,J. Afolabi,Shamrock Rovers,F,18.0,25.0,Ireland Premier Division,357,2026
 55919,J. Byrne,Shamrock Rovers,M,29.0,29.0,Ireland Premier Division,357,2026
 215029,J. McGovern,Shamrock Rovers,F,88.0,23.0,Ireland Premier Division,357,2026
@@ -10338,7 +10338,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 69260,Pico,Shamrock Rovers,D,4.0,33.0,Ireland Premier Division,357,2026
 267859,T. Sobowale,Shamrock Rovers,M,22.0,26.0,Ireland Premier Division,357,2026
 544888,V. Ozhianvuna,Shamrock Rovers,M,36.0,16.0,Ireland Premier Division,357,2026
-69619,W. Fitzgerald,Shamrock Rovers,F,24.0,26.0,Ireland Premier Division,357,2026
+69619,W. Fitzgerald,Shamrock Rovers,M,24.0,26.0,Ireland Premier Division,357,2026
 98001,A. Coote,Shelbourne,M,14.0,27.0,Ireland Premier Division,357,2026
 567934,A. Flynn,Shelbourne,M,52.0,17.0,Ireland Premier Division,357,2026
 610838,C. Campion,Shelbourne,G,74.0,18.0,Ireland Premier Division,357,2026
@@ -10474,7 +10474,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 33373,K. Shiihashi,Avispa Fukuoka,M,34.0,28.0,Japan J-League,98,2026
 369603,K. Yamawaki,Avispa Fukuoka,D,33.0,25.0,Japan J-League,98,2026
 639501,Kazuki Fukushima,Avispa Fukuoka,M,46.0,18.0,Japan J-League,98,2026
-415189,M. Shigemi,Avispa Fukuoka,F,6.0,24.0,Japan J-League,98,2026
+415189,M. Shigemi,Avispa Fukuoka,M,6.0,24.0,Japan J-League,98,2026
 34060,M. Tashiro,Avispa Fukuoka,D,37.0,32.0,Japan J-League,98,2026
 33511,M. Yuzawa,Avispa Fukuoka,M,2.0,32.0,Japan J-League,98,2026
 18949,Oriol Romeu,Avispa Fukuoka,M,21.0,34.0,Japan J-League,98,2026
@@ -10502,14 +10502,14 @@ player_id,player_name,team,position,number,age,league,league_id,season
 65,Dion-Johan Cools,Cerezo Osaka,D,27.0,29.0,Japan J-League,98,2026
 109274,H. Okuda,Cerezo Osaka,M,16.0,24.0,Japan J-League,98,2026
 2749,J. Irvine,Cerezo Osaka,M,36.0,32.0,Japan J-League,98,2026
-46849,Javi Hernández,Cerezo Osaka,D,15.0,27.0,Japan J-League,98,2026
+46849,Javi Hernández,Cerezo Osaka,M,15.0,27.0,Japan J-League,98,2026
 196109,K. Abe,Cerezo Osaka,G,31.0,28.0,Japan J-League,98,2026
 466967,K. Isibor,Cerezo Osaka,G,,18.0,Japan J-League,98,2026
 671638,K. Nagasoe,Cerezo Osaka,F,45.0,17.0,Japan J-League,98,2026
 32953,K. Noborizato,Cerezo Osaka,D,6.0,35.0,Japan J-League,98,2026
 266038,K. Okazawa,Cerezo Osaka,M,28.0,22.0,Japan J-League,98,2026
 2588,Kosuke Nakamura,Cerezo Osaka,G,23.0,31.0,Japan J-League,98,2026
-32996,Lucas Fernandes,Cerezo Osaka,F,77.0,31.0,Japan J-League,98,2026
+32996,Lucas Fernandes,Cerezo Osaka,M,77.0,31.0,Japan J-League,98,2026
 291138,M. Shibayama,Cerezo Osaka,F,48.0,23.0,Japan J-League,98,2026
 41455,P. Sabbag,Cerezo Osaka,F,19.0,28.0,Japan J-League,98,2026
 109332,R. Inoue,Cerezo Osaka,D,4.0,28.0,Japan J-League,98,2026
@@ -10523,7 +10523,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 684566,T. Shiojiri,Cerezo Osaka,F,42.0,18.0,Japan J-League,98,2026
 509263,T. Takahashi,Cerezo Osaka,D,97.0,24.0,Japan J-League,98,2026
 288011,Thiago Andrade,Cerezo Osaka,F,11.0,25.0,Japan J-League,98,2026
-304912,Y. Komi,Cerezo Osaka,F,41.0,23.0,Japan J-League,98,2026
+304912,Y. Komi,Cerezo Osaka,M,41.0,23.0,Japan J-League,98,2026
 417626,Y. Yokoyama,Cerezo Osaka,M,14.0,20.0,Japan J-League,98,2026
 15795,A. Scholz,FC Tokyo,D,24.0,33.0,Japan J-League,98,2026
 620844,D. C. Otani,FC Tokyo,F,55.0,18.0,Japan J-League,98,2026
@@ -10637,7 +10637,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 33776,H. Goya,JEF United Chiba,F,9.0,31.0,Japan J-League,98,2026
 33940,H. Kida,JEF United Chiba,M,55.0,25.0,Japan J-League,98,2026
 555884,J. Suarez,JEF United Chiba,G,19.0,29.0,Japan J-League,98,2026
-201063,K. Tanaka,JEF United Chiba,F,7.0,25.0,Japan J-League,98,2026
+201063,K. Tanaka,JEF United Chiba,M,7.0,25.0,Japan J-League,98,2026
 33862,K. Toriumi,JEF United Chiba,D,24.0,30.0,Japan J-League,98,2026
 33651,K. Yamura,JEF United Chiba,F,29.0,28.0,Japan J-League,98,2026
 33304,K. Yonekura,JEF United Chiba,D,11.0,37.0,Japan J-League,98,2026
@@ -10676,7 +10676,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 403321,K. Tsukui,Kashima,D,23.0,21.0,Japan J-League,98,2026
 34418,Kim Tae-Hyeon,Kashima,D,3.0,25.0,Japan J-League,98,2026
 9550,Léo Ceará,Kashima,F,9.0,30.0,Japan J-League,98,2026
-500918,M. Yoshida,Kashima,F,30.0,17.0,Japan J-League,98,2026
+500918,M. Yoshida,Kashima,M,30.0,17.0,Japan J-League,98,2026
 9354,Matheus Bueno,Kashima,M,8.0,28.0,Japan J-League,98,2026
 8670,N. Ueda,Kashima,D,55.0,31.0,Japan J-League,98,2026
 33008,R. Hirose,Kashima,D,37.0,30.0,Japan J-League,98,2026
@@ -10692,7 +10692,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 620840,Y. Okawa,Kashima,D,28.0,18.0,Japan J-League,98,2026
 33089,Y. Suzuki,Kashima,F,40.0,29.0,Japan J-League,98,2026
 41630,Yan Matheus,Kashima,F,18.0,27.0,Japan J-League,98,2026
-10042,Élber,Kashima,M,17.0,33.0,Japan J-League,98,2026
+10042,Élber,Kashima,F,17.0,33.0,Japan J-League,98,2026
 33131,D. Sugioka,Kashiwa Reysol,D,26.0,27.0,Japan J-League,98,2026
 33393,H. Mitsumaru,Kashiwa Reysol,D,2.0,32.0,Japan J-League,98,2026
 33736,H. Nakama,Kashiwa Reysol,M,19.0,33.0,Japan J-League,98,2026
@@ -10755,7 +10755,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 206964,S. Kawahara,Kawasaki Frontale,M,19.0,27.0,Japan J-League,98,2026
 356370,S. Miura,Kawasaki Frontale,D,13.0,25.0,Japan J-League,98,2026
 625858,Shuto Yamaichi,Kawasaki Frontale,M,25.0,21.0,Japan J-League,98,2026
-24878,T. Ito,Kawasaki Frontale,M,17.0,28.0,Japan J-League,98,2026
+24878,T. Ito,Kawasaki Frontale,F,17.0,28.0,Japan J-League,98,2026
 206955,T. Miyagi,Kawasaki Frontale,F,24.0,24.0,Japan J-League,98,2026
 686492,T. Takahashi,Kawasaki Frontale,D,35.0,21.0,Japan J-League,98,2026
 315353,Y. Hayasaka,Kawasaki Frontale,G,21.0,26.0,Japan J-League,98,2026
@@ -10770,7 +10770,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 374398,Everton,Kyoto Sanga,F,38.0,22.0,Japan J-League,98,2026
 33400,F. Honda,Kyoto Sanga,M,99.0,24.0,Japan J-League,98,2026
 91871,G. Ota,Kyoto Sanga,G,1.0,35.0,Japan J-League,98,2026
-325727,H. Arai,Kyoto Sanga,F,77.0,27.0,Japan J-League,98,2026
+325727,H. Arai,Kyoto Sanga,M,77.0,27.0,Japan J-League,98,2026
 109218,H. Morooka,Kyoto Sanga,M,24.0,28.0,Japan J-League,98,2026
 226301,H. Tawiah,Kyoto Sanga,D,5.0,27.0,Japan J-League,98,2026
 198327,Halls,Kyoto Sanga,G,90.0,26.0,Japan J-League,98,2026
@@ -10785,7 +10785,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 33148,M. Saito,Kyoto Sanga,M,32.0,26.0,Japan J-League,98,2026
 80315,Marco Túlio,Kyoto Sanga,F,11.0,27.0,Japan J-League,98,2026
 353587,R. Kato,Kyoto Sanga,M,26.0,26.0,Japan J-League,98,2026
-410014,R. Nakano,Kyoto Sanga,F,48.0,23.0,Japan J-League,98,2026
+410014,R. Nakano,Kyoto Sanga,M,48.0,23.0,Japan J-League,98,2026
 33104,R. Yamanaka,Kyoto Sanga,M,60.0,32.0,Japan J-League,98,2026
 9896,Rafael Elias,Kyoto Sanga,F,9.0,26.0,Japan J-League,98,2026
 33575,S. Fukuoka,Kyoto Sanga,M,10.0,25.0,Japan J-League,98,2026
@@ -10875,7 +10875,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 660173,R. Shiraogawa,Nagoya Grampus,D,44.0,17.0,Japan J-League,98,2026
 686966,Ryuki Oiso,Nagoya Grampus,D,46.0,21.0,Japan J-League,98,2026
 33043,S. Inagaki,Nagoya Grampus,M,15.0,34.0,Japan J-League,98,2026
-423799,S. Sugiura,Nagoya Grampus,M,30.0,19.0,Japan J-League,98,2026
+423799,S. Sugiura,Nagoya Grampus,F,30.0,19.0,Japan J-League,98,2026
 33667,S. Tokumoto,Nagoya Grampus,D,55.0,30.0,Japan J-League,98,2026
 677520,Sakuto Fukaya,Nagoya Grampus,M,49.0,16.0,Japan J-League,98,2026
 33397,T. Hara,Nagoya Grampus,D,70.0,27.0,Japan J-League,98,2026
@@ -10887,13 +10887,13 @@ player_id,player_name,team,position,number,age,league,league_id,season
 679923,Taichi Odike Chisom,Nagoya Grampus,D,4.0,18.0,Japan J-League,98,2026
 678327,Taiyo Saito,Nagoya Grampus,M,65.0,17.0,Japan J-League,98,2026
 33427,Y. Asano,Nagoya Grampus,M,9.0,28.0,Japan J-League,98,2026
-319007,Y. Kimura,Nagoya Grampus,F,22.0,24.0,Japan J-League,98,2026
-33038,Y. Nogami,Nagoya Grampus,F,2.0,34.0,Japan J-League,98,2026
+319007,Y. Kimura,Nagoya Grampus,M,22.0,24.0,Japan J-League,98,2026
+33038,Y. Nogami,Nagoya Grampus,D,2.0,34.0,Japan J-League,98,2026
 304118,Y. Sato,Nagoya Grampus,D,3.0,27.0,Japan J-League,98,2026
 32879,Y. Takeda,Nagoya Grampus,G,16.0,38.0,Japan J-League,98,2026
 660104,Y. Takeuchi,Nagoya Grampus,D,47.0,15.0,Japan J-League,98,2026
 33976,Y. Yamagishi,Nagoya Grampus,F,11.0,32.0,Japan J-League,98,2026
-351015,A. Suzuki,Sanfrecce Hiroshima,F,10.0,22.0,Japan J-League,98,2026
+351015,A. Suzuki,Sanfrecce Hiroshima,M,10.0,22.0,Japan J-League,98,2026
 33000,D. Suga,Sanfrecce Hiroshima,M,18.0,27.0,Japan J-League,98,2026
 33035,H. Araki,Sanfrecce Hiroshima,D,4.0,29.0,Japan J-League,98,2026
 33045,H. Kawabe,Sanfrecce Hiroshima,M,6.0,30.0,Japan J-League,98,2026
@@ -10914,7 +10914,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 392714,S. Koshimichi,Sanfrecce Hiroshima,M,32.0,21.0,Japan J-League,98,2026
 355998,S. Nakano,Sanfrecce Hiroshima,D,15.0,25.0,Japan J-League,98,2026
 2595,S. Sasaki,Sanfrecce Hiroshima,D,19.0,36.0,Japan J-League,98,2026
-25375,T. Asano,Sanfrecce Hiroshima,F,29.0,31.0,Japan J-League,98,2026
+25375,T. Asano,Sanfrecce Hiroshima,M,29.0,31.0,Japan J-League,98,2026
 33910,T. Kawamura,Sanfrecce Hiroshima,M,8.0,26.0,Japan J-League,98,2026
 33047,T. Matsumoto,Sanfrecce Hiroshima,M,14.0,27.0,Japan J-League,98,2026
 44054,T. Shiotani,Sanfrecce Hiroshima,D,33.0,37.0,Japan J-League,98,2026
@@ -11039,7 +11039,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 329317,K. Yasuda,V-varen Nagasaki,M,7.0,20.0,Japan J-League,98,2026
 33533,M. Goto,V-varen Nagasaki,G,1.0,31.0,Japan J-League,98,2026
 201060,M. Hasegawa,V-varen Nagasaki,M,41.0,27.0,Japan J-League,98,2026
-9396,Matheus Jesus,V-varen Nagasaki,F,10.0,29.0,Japan J-League,98,2026
+9396,Matheus Jesus,V-varen Nagasaki,M,10.0,29.0,Japan J-League,98,2026
 32621,N. Campbell,V-varen Nagasaki,F,11.0,26.0,Japan J-League,98,2026
 640012,Noh Hyeung-jun,V-varen Nagasaki,D,45.0,18.0,Japan J-League,98,2026
 674236,R. Kou,V-varen Nagasaki,F,39.0,22.0,Japan J-League,98,2026
@@ -11048,7 +11048,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 33153,R. Yamasaki,V-varen Nagasaki,F,18.0,33.0,Japan J-League,98,2026
 33775,S. Yoneda,V-varen Nagasaki,M,23.0,30.0,Japan J-League,98,2026
 681458,Sora Oshita,V-varen Nagasaki,D,47.0,,Japan J-League,98,2026
-488416,T. Matsumoto,V-varen Nagasaki,F,34.0,23.0,Japan J-League,98,2026
+488416,T. Matsumoto,V-varen Nagasaki,M,34.0,23.0,Japan J-League,98,2026
 33268,T. Ominami,V-varen Nagasaki,D,25.0,28.0,Japan J-League,98,2026
 33781,T. Sawada,V-varen Nagasaki,M,19.0,34.0,Japan J-League,98,2026
 680418,Tanaka Tomoaki,V-varen Nagasaki,D,43.0,18.0,Japan J-League,98,2026
@@ -11152,7 +11152,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 313025,Hugo Rincón,Athletic Club,D,15.0,22.0,La Liga,140,2026
 47294,I. Williams,Athletic Club,F,9.0,31.0,La Liga,140,2026
 407677,Iker Monreal,Athletic Club,D,5.0,20.0,La Liga,140,2026
-344838,J. Louis-Jean,Athletic Club,D,31.0,21.0,La Liga,140,2026
+344838,J. Louis-Jean,Athletic Club,M,31.0,21.0,La Liga,140,2026
 182181,Jesús Areso,Athletic Club,D,12.0,26.0,La Liga,140,2026
 287680,Maroan Sannadi,Athletic Club,F,21.0,24.0,La Liga,140,2026
 383780,Mikel Jauregizar,Athletic Club,M,18.0,22.0,La Liga,140,2026
@@ -11361,11 +11361,11 @@ player_id,player_name,team,position,number,age,league,league_id,season
 631889,Adrián Riquelme,Getafe,M,44.0,19.0,La Liga,140,2026
 465838,Alberto Risco,Getafe,M,28.0,20.0,La Liga,140,2026
 671625,Alvaro Gutierrez,Getafe,M,33.0,17.0,La Liga,140,2026
-388013,Andrés García,Getafe,D,21.0,22.0,La Liga,140,2026
+388013,Andrés García,Getafe,M,21.0,22.0,La Liga,140,2026
 47472,Borja Mayoral,Getafe,F,9.0,28.0,La Liga,140,2026
 403554,Christantus Uche,Getafe,M,12.0,22.0,La Liga,140,2026
 427182,Curro Burgos,Getafe,D,29.0,21.0,La Liga,140,2026
-47250,D. Dakonam,Getafe,D,2.0,34.0,La Liga,140,2026
+47250,D. Dakonam,Getafe,M,2.0,34.0,La Liga,140,2026
 733,Dani Carvajal,Getafe,D,2.0,33.0,La Liga,140,2026
 47247,David Soria,Getafe,G,13.0,32.0,La Liga,140,2026
 471478,Davinchi,Getafe,D,3.0,18.0,La Liga,140,2026
@@ -11381,15 +11381,15 @@ player_id,player_name,team,position,number,age,league,league_id,season
 432080,Jorge Benito,Getafe,G,35.0,19.0,La Liga,140,2026
 625636,Jorge Montes,Getafe,D,41.0,21.0,La Liga,140,2026
 333369,Joselu,Getafe,F,32.0,21.0,La Liga,140,2026
-18794,Kiko Femenía,Getafe,M,17.0,34.0,La Liga,140,2026
+18794,Kiko Femenía,Getafe,D,17.0,34.0,La Liga,140,2026
 407302,M. Hamdoune,Getafe,D,31.0,21.0,La Liga,140,2026
-195512,M. Satriano,Getafe,M,10.0,24.0,La Liga,140,2026
+195512,M. Satriano,Getafe,F,10.0,24.0,La Liga,140,2026
 669800,Mady Macalou,Getafe,M,,,La Liga,140,2026
 343205,Mario Martín,Getafe,M,6.0,21.0,La Liga,140,2026
 681461,Moha Achraf,Getafe,F,33.0,20.0,La Liga,140,2026
 1489,N. Gudelj,Getafe,M,8.0,34.0,La Liga,140,2026
 24882,O. Mangala,Getafe,M,23.0,27.0,La Liga,140,2026
-187987,Ramón Terrats,Getafe,F,11.0,25.0,La Liga,140,2026
+187987,Ramón Terrats,Getafe,M,11.0,25.0,La Liga,140,2026
 316516,S. Boselli,Getafe,D,15.0,22.0,La Liga,140,2026
 268728,S. Sazonov,Getafe,D,4.0,23.0,La Liga,140,2026
 180927,Z. Romero,Getafe,D,24.0,26.0,La Liga,140,2026
@@ -12408,7 +12408,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 298064,David Torres,Valladolid,D,4.0,22.0,La Liga 2,141,2026
 673887,H. Calvo,Valladolid,F,37.0,19.0,La Liga 2,141,2026
 175439,Homam Ahmed,Valladolid,D,3.0,26.0,La Liga 2,141,2026
-46824,Iván Alejo,Valladolid,F,14.0,30.0,La Liga 2,141,2026
+46824,Iván Alejo,Valladolid,D,14.0,30.0,La Liga 2,141,2026
 354142,Iván Garriel,Valladolid,D,27.0,20.0,La Liga 2,141,2026
 20641,J. Ponceau,Valladolid,M,21.0,25.0,La Liga 2,141,2026
 162028,Juanmi Latasa,Valladolid,F,9.0,24.0,La Liga 2,141,2026
@@ -12423,7 +12423,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 32923,R. Ito,Valladolid,M,13.0,27.0,La Liga 2,141,2026
 197196,Ramón Martínez,Valladolid,D,5.0,23.0,La Liga 2,141,2026
 14341,S. Jurić,Valladolid,M,24.0,29.0,La Liga 2,141,2026
-328139,T. Abed,Valladolid,F,23.0,21.0,La Liga 2,141,2026
+328139,T. Abed,Valladolid,M,23.0,21.0,La Liga 2,141,2026
 307565,T. Ojeda,Valladolid,M,8.0,22.0,La Liga 2,141,2026
 295881,Trilli,Valladolid,D,2.0,22.0,La Liga 2,141,2026
 336554,Victor Barberá,Valladolid,F,17.0,21.0,La Liga 2,141,2026
@@ -14066,7 +14066,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 369500,I. Ganiou,Lens,D,25.0,20.0,Ligue 1,61,2026
 497661,I. Jourdren,Lens,G,1.0,17.0,Ligue 1,61,2026
 21635,J. Gradit,Lens,D,24.0,33.0,Ligue 1,61,2026
-161620,J. Kadile,Lens,F,28.0,23.0,Ligue 1,61,2026
+161620,J. Kadile,Lens,M,28.0,23.0,Ligue 1,61,2026
 138,J. Todibo,Lens,D,20.0,26.0,Ligue 1,61,2026
 441264,K. Antonio,Lens,D,32.0,17.0,Ligue 1,61,2026
 25634,M. Cuisance,Lens,M,27.0,26.0,Ligue 1,61,2026
@@ -14074,16 +14074,16 @@ player_id,player_name,team,position,number,age,league,league_id,season
 178708,M. Nawrocki,Lens,D,3.0,24.0,Ligue 1,61,2026
 40809,M. Skóraś,Lens,M,22.0,25.0,Ligue 1,61,2026
 660571,M. Soares,Lens,M,38.0,16.0,Ligue 1,61,2026
-20525,M. Udol,Lens,M,14.0,29.0,Ligue 1,61,2026
+20525,M. Udol,Lens,D,14.0,29.0,Ligue 1,61,2026
 668702,N. Gane Bernardino,Lens,M,8.0,17.0,Ligue 1,61,2026
 668701,N. Kemtchoum-Stasiowski,Lens,D,5.0,17.0,Ligue 1,61,2026
 395589,N. Čelik,Lens,D,4.0,19.0,Ligue 1,61,2026
 1135,O. Édouard,Lens,F,11.0,27.0,Ligue 1,61,2026
-21568,R. Aguilar,Lens,M,2.0,32.0,Ligue 1,61,2026
+21568,R. Aguilar,Lens,D,2.0,32.0,Ligue 1,61,2026
 347211,R. Risser,Lens,G,40.0,21.0,Ligue 1,61,2026
 322984,S. Baidoo,Lens,D,6.0,21.0,Ligue 1,61,2026
 437139,S. Sagnan,Lens,D,31.0,20.0,Ligue 1,61,2026
-44594,Saud Abdulhamid,Lens,D,23.0,26.0,Ligue 1,61,2026
+44594,Saud Abdulhamid,Lens,M,23.0,26.0,Ligue 1,61,2026
 2929,T. Hazard,Lens,M,9.0,32.0,Ligue 1,61,2026
 327599,Y. Titraoui,Lens,M,8.0,22.0,Ligue 1,61,2026
 72155,A. Ueda,Lille,F,18.0,27.0,Ligue 1,61,2026
@@ -15137,20 +15137,20 @@ player_id,player_name,team,position,number,age,league,league_id,season
 265677,É. Dueñas,Club Queretaro,M,18.0,21.0,Mexico Liga MX,262,2026
 35830,A. Gómez,Club Tijuana,D,6.0,24.0,Mexico Liga MX,262,2026
 653232,A. Magallon,Club Tijuana,F,188.0,20.0,Mexico Liga MX,262,2026
-277168,A. Mejía,Club Tijuana,F,18.0,24.0,Mexico Liga MX,262,2026
+277168,A. Mejía,Club Tijuana,D,18.0,24.0,Mexico Liga MX,262,2026
 445609,A. Perez,Club Tijuana,M,26.0,21.0,Mexico Liga MX,262,2026
 35797,A. Rodríguez,Club Tijuana,G,2.0,33.0,Mexico Liga MX,262,2026
-16688,Adonis Preciado,Club Tijuana,M,7.0,28.0,Mexico Liga MX,262,2026
+16688,Adonis Preciado,Club Tijuana,F,7.0,28.0,Mexico Liga MX,262,2026
 316520,D. Abreu,Club Tijuana,F,19.0,22.0,Mexico Liga MX,262,2026
 278350,Elias Manoel,Club Tijuana,F,13.0,24.0,Mexico Liga MX,262,2026
 8578,F. Boya,Club Tijuana,M,34.0,29.0,Mexico Liga MX,262,2026
-6359,F. González,Club Tijuana,M,11.0,24.0,Mexico Liga MX,262,2026
+6359,F. González,Club Tijuana,F,11.0,24.0,Mexico Liga MX,262,2026
 482605,G. Mora,Club Tijuana,M,10.0,17.0,Mexico Liga MX,262,2026
 606911,I. Olvera,Club Tijuana,D,192.0,17.0,Mexico Liga MX,262,2026
 35694,I. Rivero,Club Tijuana,M,15.0,33.0,Mexico Liga MX,262,2026
 35696,I. Tona,Club Tijuana,M,8.0,25.0,Mexico Liga MX,262,2026
 672886,J. Corona,Club Tijuana,G,230.0,16.0,Mexico Liga MX,262,2026
-513755,J. González,Club Tijuana,F,202.0,20.0,Mexico Liga MX,262,2026
+513755,J. González,Club Tijuana,M,202.0,20.0,Mexico Liga MX,262,2026
 668320,J. Orduno,Club Tijuana,M,197.0,17.0,Mexico Liga MX,262,2026
 2575,J. Porozo,Club Tijuana,D,12.0,26.0,Mexico Liga MX,262,2026
 299896,J. Vega,Club Tijuana,D,16.0,25.0,Mexico Liga MX,262,2026
@@ -15592,7 +15592,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 416063,J. Eikrem,Brann,M,8.0,18.0,Norway Eliteserien,103,2026
 437112,J. Lægreid,Brann,F,39.0,18.0,Norway Eliteserien,103,2026
 57445,J. Soltvedt,Brann,D,17.0,30.0,Norway Eliteserien,103,2026
-15832,J. Sørensen,Brann,M,18.0,27.0,Norway Eliteserien,103,2026
+15832,J. Sørensen,Brann,D,18.0,27.0,Norway Eliteserien,103,2026
 340393,J. Torsvik,Brann,D,15.0,20.0,Norway Eliteserien,103,2026
 151191,K. Eriksen,Brann,M,16.0,30.0,Norway Eliteserien,103,2026
 89768,K. Ingason,Brann,M,10.0,23.0,Norway Eliteserien,103,2026
@@ -15601,7 +15601,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 57429,M. Dyngeland,Brann,G,1.0,30.0,Norway Eliteserien,103,2026
 57160,N. Castro,Brann,F,9.0,29.0,Norway Eliteserien,103,2026
 161943,N. Holm,Brann,F,29.0,25.0,Norway Eliteserien,103,2026
-310076,N. Jensen Wassberg,Brann,F,25.0,21.0,Norway Eliteserien,103,2026
+310076,N. Jensen Wassberg,Brann,M,25.0,21.0,Norway Eliteserien,103,2026
 134756,N. Kasanwirjo,Brann,D,21.0,23.0,Norway Eliteserien,103,2026
 61558,S. Magnússon,Brann,F,22.0,25.0,Norway Eliteserien,103,2026
 216759,S. Nilsen,Brann,G,12.0,25.0,Norway Eliteserien,103,2026
@@ -15719,13 +15719,13 @@ player_id,player_name,team,position,number,age,league,league_id,season
 331919,C. Jebara,Lillestrom,F,19.0,22.0,Norway Eliteserien,103,2026
 364814,D. Bassi,Lillestrom,F,22.0,21.0,Norway Eliteserien,103,2026
 57192,E. Garnås,Lillestrom,D,4.0,31.0,Norway Eliteserien,103,2026
-57198,E. Kitolano,Lillestrom,F,17.0,28.0,Norway Eliteserien,103,2026
+57198,E. Kitolano,Lillestrom,M,17.0,28.0,Norway Eliteserien,103,2026
 265641,F. Elkær,Lillestrom,D,11.0,24.0,Norway Eliteserien,103,2026
 1099,F. Gulbrandsen,Lillestrom,F,8.0,33.0,Norway Eliteserien,103,2026
 47770,F. Ottosson,Lillestrom,M,21.0,29.0,Norway Eliteserien,103,2026
 580202,F. V. Reshane,Lillestrom,M,35.0,17.0,Norway Eliteserien,103,2026
 226691,G. Nordh,Lillestrom,F,15.0,25.0,Norway Eliteserien,103,2026
-531341,G. Nyheim,Lillestrom,F,14.0,19.0,Norway Eliteserien,103,2026
+531341,G. Nyheim,Lillestrom,M,14.0,19.0,Norway Eliteserien,103,2026
 317446,H. Melland,Lillestrom,M,16.0,20.0,Norway Eliteserien,103,2026
 39246,K. Krygård,Lillestrom,M,18.0,26.0,Norway Eliteserien,103,2026
 665692,L. Aastorp,Lillestrom,M,,17.0,Norway Eliteserien,103,2026
@@ -15743,7 +15743,7 @@ player_id,player_name,team,position,number,age,league,league_id,season
 3322,Vá,Lillestrom,F,20.0,27.0,Norway Eliteserien,103,2026
 640202,W. Fadil,Lillestrom,F,8.0,18.0,Norway Eliteserien,103,2026
 39148,Y. Ibrahimaj,Lillestrom,M,29.0,30.0,Norway Eliteserien,103,2026
-151251,Y. Paintsil,Lillestrom,M,26.0,26.0,Norway Eliteserien,103,2026
+151251,Y. Paintsil,Lillestrom,D,26.0,26.0,Norway Eliteserien,103,2026
 158155,A. Posiadała,Molde,G,22.0,22.0,Norway Eliteserien,103,2026
 39085,B. Risa,Molde,D,33.0,27.0,Norway Eliteserien,103,2026
 20964,C. Zady Sery,Molde,M,11.0,26.0,Norway Eliteserien,103,2026
@@ -17028,22 +17028,22 @@ player_id,player_name,team,position,number,age,league,league_id,season
 548905,V. Rafaila,Universitatea Cluj,G,,20.0,Romanian Superliga,283,2026
 170161,Ştefan Daniel Lefter,Universitatea Cluj,G,1.0,21.0,Romanian Superliga,283,2026
 190548,A. Al Hamlawi,Universitatea Craiova,F,9.0,25.0,Romanian Superliga,283,2026
-43050,A. Cicâldău,Universitatea Craiova,M,20.0,28.0,Romanian Superliga,283,2026
+43050,A. Cicâldău,Universitatea Craiova,F,20.0,28.0,Romanian Superliga,283,2026
 104553,A. Crețu,Universitatea Craiova,M,4.0,33.0,Romanian Superliga,283,2026
 401860,A. Maxim,Universitatea Craiova,G,1.0,18.0,Romanian Superliga,283,2026
 43129,A. Rus,Universitatea Craiova,D,28.0,29.0,Romanian Superliga,283,2026
 174693,B. Roux,Universitatea Craiova,D,5.0,26.0,Romanian Superliga,283,2026
 196480,C. Mora,Universitatea Craiova,M,17.0,24.0,Romanian Superliga,283,2026
 443710,D. Barbu,Universitatea Craiova,F,9.0,19.0,Romanian Superliga,283,2026
-409845,D. Matei,Universitatea Craiova,F,30.0,19.0,Romanian Superliga,283,2026
+409845,D. Matei,Universitatea Craiova,M,30.0,19.0,Romanian Superliga,283,2026
 41125,Heriberto Tavares,Universitatea Craiova,D,19.0,29.0,Romanian Superliga,283,2026
 41727,João Lameira,Universitatea Craiova,M,16.0,26.0,Romanian Superliga,283,2026
-450410,L. Băsceanu,Universitatea Craiova,F,29.0,19.0,Romanian Superliga,283,2026
+450410,L. Băsceanu,Universitatea Craiova,M,29.0,19.0,Romanian Superliga,283,2026
 43040,L. Popescu,Universitatea Craiova,G,21.0,28.0,Romanian Superliga,283,2026
 102823,M. Etim,Universitatea Craiova,F,12.0,27.0,Romanian Superliga,283,2026
 442502,M. Goga,Universitatea Craiova,G,31.0,19.0,Romanian Superliga,283,2026
 367688,M. Rădulescu,Universitatea Craiova,M,18.0,20.0,Romanian Superliga,283,2026
-43048,N. Bancu,Universitatea Craiova,D,11.0,33.0,Romanian Superliga,283,2026
+43048,N. Bancu,Universitatea Craiova,M,11.0,33.0,Romanian Superliga,283,2026
 46136,N. Stevanović,Universitatea Craiova,D,24.0,27.0,Romanian Superliga,283,2026
 172883,O. Romanchuk,Universitatea Craiova,D,3.0,26.0,Romanian Superliga,283,2026
 197830,R. Sava,Universitatea Craiova,G,90.0,23.0,Romanian Superliga,283,2026
@@ -17052,8 +17052,8 @@ player_id,player_name,team,position,number,age,league,league_id,season
 107426,S. Nsimba,Universitatea Craiova,F,7.0,29.0,Romanian Superliga,283,2026
 142018,Samuel Teles,Universitatea Craiova,M,23.0,28.0,Romanian Superliga,283,2026
 43071,T. Băluță,Universitatea Craiova,M,8.0,26.0,Romanian Superliga,283,2026
-104481,V. Screciu,Universitatea Craiova,M,6.0,25.0,Romanian Superliga,283,2026
-119077,Ș. Baiaram,Universitatea Craiova,M,10.0,23.0,Romanian Superliga,283,2026
+104481,V. Screciu,Universitatea Craiova,D,6.0,25.0,Romanian Superliga,283,2026
+119077,Ș. Baiaram,Universitatea Craiova,F,10.0,23.0,Romanian Superliga,283,2026
 11295,A. Benga,Uta Arad,D,4.0,36.0,Romanian Superliga,283,2026
 326788,A. Dorobanțu,Uta Arad,M,2.0,21.0,Romanian Superliga,283,2026
 42535,A. Gorcea,Uta Arad,G,33.0,24.0,Romanian Superliga,283,2026
