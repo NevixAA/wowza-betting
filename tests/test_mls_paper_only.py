@@ -101,13 +101,25 @@ def test_the_dashboard_ledger_excludes_mls_by_default():
 
 
 @pytest.mark.parametrize("page", ["pages/12_💼_Portfolio.py", "pages/1_📊_Dashboard.py",
-                                  "pages/5_🎯_Success_Rates.py",
-                                  # app.py became the tier router 2026-10-18; its ledger reads moved here
-                                  "pages/00_🎯_Home.py"])
+                                  "pages/5_🎯_Success_Rates.py"])
 def test_every_page_that_reads_a_ledger_directly_filters_it(page):
     src = (ROOT / page).read_text(encoding="utf-8")
     assert len(re.findall(r"pd\.read_csv\(", src)) == 1, f"{page} bypasses the paper filter"
     assert "drop_paper_leagues(pd.read_csv(" in src
+
+
+def test_home_reads_its_ledgers_through_the_paper_filter():
+    """Home (app.py until 2026-10-18) moved its ledger reads into dashboard_data/today_view.py in the
+    2026-10-25 redesign. The page reads no CSV itself; every ledger/bets read there goes through
+    _read_csv, which is drop_paper_leagues(pd.read_csv(...))."""
+    import ast
+    page = (ROOT / "pages" / "00_🎯_Home.py").read_text(encoding="utf-8")
+    assert "read_csv(" not in page, "Home reads a CSV directly"
+    src = (ROOT / "dashboard_data" / "today_view.py").read_text(encoding="utf-8")
+    assert "return _cfg.drop_paper_leagues(pd.read_csv(*args, **kwargs))" in src
+    fns = {n.name: ast.get_source_segment(src, n) for n in ast.parse(src).body if isinstance(n, ast.FunctionDef)}
+    for name in ("load_bets", "load_settled"):
+        assert "_read_csv(" in fns[name] and "pd.read_csv(" not in fns[name], name
 
 
 # ── nothing is bet ────────────────────────────────────────────────────────────────────────────

@@ -404,7 +404,7 @@ def stat_line(items, container=None) -> None:
 
 def metric_card(label: str, value, *, title: str = "", supporting=None, status: str = "",
                 evidence: str = "", n=None, floor: int = SMALL_SAMPLE_FLOOR, help: str | None = None,
-                delta=None, delta_color: str = "normal", container=None) -> None:
+                delta=None, delta_color: str = "normal", chart_data=None, container=None) -> None:
     """THE card: one main number, 3–5 supporting figures, one status/evidence line.
 
     `status` / `evidence` are markdown strings (status_chip / evidence_badge). A SMALL SAMPLE marker
@@ -413,7 +413,10 @@ def metric_card(label: str, value, *, title: str = "", supporting=None, status: 
     with (container or st).container(border=True):
         if title:
             eyebrow(title)
-        st.metric(label, value, delta=delta, delta_color=delta_color, help=help)
+        if chart_data is not None:
+            st.metric(label, value, delta=delta, delta_color=delta_color, help=help, chart_data=chart_data)
+        else:
+            st.metric(label, value, delta=delta, delta_color=delta_color, help=help)
         stat_line(supporting)
         line = " ".join(x for x in (status, evidence, sample_marker(n, floor) if n is not None else "") if x)
         if line:
