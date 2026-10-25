@@ -47,6 +47,18 @@ def test_stale_manifest_and_workflows():
     assert S.workflow_health({"generated_at": now, "failures_24h": 4, "runs_24h": 90})["status"] == "RED"
 
 
+def test_weekly_research_panel_is_red_when_protected_tracks_move():
+    reg = {"tracked_leagues": ["A", "B"], "regime_counts": {"PROTECTED": 1, "REPAIR": 0, "LEARNING": 9}}
+    ok = {"protected_tracks_modified": False, "changes": [], "unapproved_new_protected_tracks": []}
+    assert S.weekly_research_panel(reg, ok)["status"] == "GREEN"
+    moved = dict(ok, protected_tracks_modified=True, changes=["deployed_env.MARKSMAN_THRESHOLD: 0.08 -> 0.09"])
+    c = S.weekly_research_panel(reg, moved)
+    assert c["status"] == "RED" and "MARKSMAN_THRESHOLD" in c["detail"]
+    assert S.weekly_research_panel(reg, {"error": "boom"})["status"] == "RED"          # unverifiable = fail closed
+    assert S.weekly_research_panel(reg, dict(ok, unapproved_new_protected_tracks=["x"]))["status"] == "AMBER"
+    assert "NO_DATA" in S.weekly_research_panel(reg, ok)["value"]
+
+
 def test_every_check_states_its_rule():
     for c in S.evaluate():
         assert c["status"] in (S.GREEN, S.AMBER, S.RED, S.GREY) and c["rule"]

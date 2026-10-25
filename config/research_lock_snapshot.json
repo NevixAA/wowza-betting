@@ -1,0 +1,267 @@
+{
+ "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
+ "approval_note": "P0 baseline of production state as committed at 23b225cf; owner to confirm",
+ "approved_at": "2026-10-25T08:19:53Z",
+ "approved_by": "INITIAL BASELINE - research agent 2026-10-25, NOT an owner approval",
+ "fingerprint": {
+  "global": {
+   "bankroll_policy": {
+    "convergence": {
+     "leagues": [],
+     "multiplier": 1.15
+    },
+    "drawdown_throttle": [
+     [
+      0.08,
+      0.75
+     ],
+     [
+      0.12,
+      0.5
+     ],
+     [
+      0.18,
+      0.0
+     ]
+    ],
+    "league_rating_sizing": {
+     "enabled": true,
+     "min_scale": 0.2
+    },
+    "paper_leagues": [
+     "USA MLS"
+    ],
+    "policy_version": "balanced-2026-10-13",
+    "portfolio": {
+     "daily_cap": 0.06,
+     "fixture_cap": 0.02,
+     "hard_max_odds": 3.0,
+     "league_daily_cap": 0.03,
+     "league_market_daily_cap": 0.03,
+     "one_position_per_fixture": true,
+     "single_bet_cap": 0.02
+    },
+    "tier_multipliers": {
+     "MARKSMAN": 0.9,
+     "SNIPER": 1.1
+    },
+    "track_tier_multipliers": {
+     "new_format|OU25": {
+      "MARKSMAN": 1.0,
+      "SNIPER": 1.0,
+      "VALUABLE": 1.0
+     },
+     "standard|OU25": {
+      "MARKSMAN": 1.0,
+      "SNIPER": 1.0,
+      "VALUABLE": 1.0
+     }
+    },
+    "tracks": {
+     "new_format|BTTS": {
+      "base_fraction": 0.0125,
+      "evidence_score": 3.0,
+      "max_odds": 2.6,
+      "state": "ACTIVE"
+     },
+     "new_format|OU25": {
+      "base_fraction": 0.005,
+      "evidence_score": 1.0,
+      "max_odds": 2.5,
+      "state": "ACTIVE_LOW"
+     },
+     "new_format|OVER15": {
+      "base_fraction": 0.005,
+      "evidence_score": 1.5,
+      "max_odds": 1.9,
+      "min_odds": 1.45,
+      "state": "ACTIVE_LOW"
+     },
+     "new_format|OVER35": {
+      "base_fraction": 0.0,
+      "state": "BLOCKED"
+     },
+     "player_props": {
+      "base_fraction": 0.0,
+      "state": "BLOCKED_FROM_REAL"
+     },
+     "standard|BTTS": {
+      "base_fraction": 0.0,
+      "state": "PAPER"
+     },
+     "standard|OU25": {
+      "base_fraction": 0.0,
+      "state": "PAPER"
+     },
+     "standard|OVER15": {
+      "base_fraction": 0.0,
+      "state": "PAPER"
+     },
+     "standard|OVER35": {
+      "base_fraction": 0.0,
+      "state": "BLOCKED"
+     }
+    }
+   },
+   "deployed_env": {
+    "LEAGUE_SNIPER_CAP": "0.12",
+    "MARKSMAN_THRESHOLD": "0.08",
+    "VALUABLE_THRESHOLD": "0.03"
+   },
+   "eligibility": {
+    "AUTO_LEAGUES": [],
+    "ENABLED_LEAGUES": [
+     "Argentina Primera Division",
+     "Austrian Bundesliga",
+     "Brazil Serie A",
+     "Bundesliga 2",
+     "Championship",
+     "China Super League",
+     "Denmark Superliga",
+     "Finland Veikkausliiga",
+     "Ireland Premier Division",
+     "Japan J-League",
+     "La Liga 2",
+     "League One",
+     "League Two",
+     "Ligue 2",
+     "Mexico Liga MX",
+     "Norway Eliteserien",
+     "Romanian Superliga",
+     "Serie B",
+     "Sweden Allsvenskan",
+     "USA MLS"
+    ],
+    "MIN_OVER_ODDS": 1.75,
+    "MIN_UNDER_ODDS": 1.75,
+    "NEW_FORMAT_LEAGUES": [
+     "Argentina Primera Division",
+     "Austrian Bundesliga",
+     "Brazil Serie A",
+     "China Super League",
+     "Denmark Superliga",
+     "Finland Veikkausliiga",
+     "Ireland Premier Division",
+     "Japan J-League",
+     "K-League 1",
+     "Mexico Liga MX",
+     "Norway Eliteserien",
+     "Romanian Superliga",
+     "Saudi Pro League",
+     "Sweden Allsvenskan",
+     "USA MLS"
+    ],
+    "NF_MAX_OU_ODDS": 3.0,
+    "PAPER_LEAGUES": [
+     "USA MLS"
+    ],
+    "PROVIDER_UNSUPPORTED": [
+     "Romanian Superliga"
+    ],
+    "STANDARD_FORMAT_LEAGUES": [
+     "Belgian First Division A",
+     "Bundesliga 2",
+     "Championship",
+     "Dutch Eredivisie",
+     "Greek Super League",
+     "La Liga 2",
+     "League One",
+     "League Two",
+     "Ligue 2",
+     "National League",
+     "Portuguese Primeira Liga",
+     "Scottish Championship",
+     "Scottish League One",
+     "Scottish League Two",
+     "Scottish Premiership",
+     "Serie B",
+     "Turkish Super Lig"
+    ]
+   },
+   "execution": {
+    "cloudbet_mode_line": "MODE = os.getenv(\"CLOUDBET_MODE\", DRY).upper()",
+    "workflows_setting_CLOUDBET_MODE": []
+   },
+   "thresholds": {
+    "EDGE_CEILING": 0.19,
+    "LEAGUE_EDGE_CEILING": {
+     "Argentina Primera Division": 0.18,
+     "Austrian Bundesliga": 0.17,
+     "Brazil Serie A": 0.17,
+     "China Super League": 0.15,
+     "Denmark Superliga": 0.17,
+     "Finland Veikkausliiga": 0.16,
+     "Ireland Premier Division": 0.16,
+     "Japan J-League": 0.17,
+     "Mexico Liga MX": 0.18,
+     "Norway Eliteserien": 0.17,
+     "Romanian Superliga": 0.15,
+     "Sweden Allsvenskan": 0.17,
+     "USA MLS": 0.17
+    },
+    "LEAGUE_MARKSMAN_THRESHOLDS": {
+     "Bundesliga 2": 0.12,
+     "League Two": 0.12
+    },
+    "LEAGUE_SNIPER_CALIBRATED": {
+     "Bundesliga 2": 0.2,
+     "Championship": 0.15,
+     "Greek Super League": 0.25,
+     "La Liga 2": 0.2,
+     "League One": 0.25,
+     "League Two": 0.14,
+     "Ligue 2": 0.25,
+     "Serie B": 0.15
+    },
+    "LEAGUE_SNIPER_THRESHOLDS": {
+     "Bundesliga 2": 0.12,
+     "Championship": 0.12,
+     "Greek Super League": 0.12,
+     "La Liga 2": 0.12,
+     "League One": 0.12,
+     "League Two": 0.12,
+     "Ligue 2": 0.12,
+     "Serie B": 0.12
+    },
+    "MARKSMAN_THRESHOLD": 0.08,
+    "SIDE_GLOBAL": [
+     0.1,
+     0.08,
+     0.04
+    ],
+    "SNIPER_THRESHOLD": 0.12,
+    "SNIPER_THRESHOLD_OVER": 0.12,
+    "SNIPER_THRESHOLD_UNDER": 0.12,
+    "VALUABLE_THRESHOLD": 0.03
+   }
+  },
+  "protected_tracks": {
+   "Argentina Primera Division|BTTS|YES|new_format": {
+    "base_fraction": 0.0125,
+    "evidence_score": 3.0,
+    "gates": {
+     "approved_optimizer_applied": false,
+     "edge_ceiling": null,
+     "edge_ceiling_active": false,
+     "league_cap_applied": false,
+     "marksman": 0.08,
+     "marksman_source": "pipeline.py fixed side-market global",
+     "sniper": 0.1,
+     "sniper_source": "pipeline.py fixed side-market global",
+     "valuable": 0.04,
+     "valuable_source": "pipeline.py hard-coded 0.04 (does NOT follow VALUABLE_THRESHOLD)"
+    },
+    "max_odds": 2.6,
+    "min_odds": null,
+    "production_state": "ACTIVE",
+    "tier_multipliers": {
+     "MARKSMAN": 0.9,
+     "SNIPER": 1.1
+    },
+    "track": "new_format|BTTS",
+    "track_state": "ACTIVE"
+   }
+  }
+ },
+ "fingerprint_sha256": "cbd42d57210fe30fb96878bf3b465936c075b9520ca9b71169518b898e4a7803"
+}
