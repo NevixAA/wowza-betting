@@ -52,7 +52,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
-from src.model import (train as train_model, save_models, load_models,
+from src.model import (train as train_model, load_models,
                         get_feature_importances, chronological_split, score_payload,
                         predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
@@ -434,76 +434,6 @@ def _log_h2h(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -> N
         log.warning(f"h2h log skipped ({e}) — predictions and tips are unaffected")
 
 
-def _shadow_gate(label: str, old_payload, results: dict, test_df, target: str,
-                 promoted_by_live_gate: bool, live_reason: str) -> dict:
-    """Run the v9.1 promotion gate alongside the live one and WRITE DOWN what it would decide.
-
-    LOG-ONLY. It never changes `promote`, never touches a .pkl, and a failure here is swallowed:
-    a measurement must not be able to break a retrain.
-
-    WHY LOG-ONLY RATHER THAN SIMPLY SWITCHING. The live tolerance is not arbitrary and the
-    comment above records why: 0.030 sits above every healthy challenger seen across 1,568
-    simulated comparisons, and backtesting eight promotion rules on realised performance found
-    that NO rule beat having no gate at all -- the ordering was monotone in how much a rule
-    blocked, so every rejection cost on average. That is evidence AGAINST tightening, and it
-    would be careless to override it with a gate that has never been run on this estate.
-
-    But that backtest only ever produced healthy challengers, so it priced the cost of blocking
-    and never the cost of shipping a quietly worse model. The live gate asks one question -- did
-    it collapse -- and 27 of 84 logged decisions promoted a model that scored worse than the one
-    it replaced. Most of those are inside noise; the point is that the gate cannot tell which.
-
-    So this records both verdicts side by side for a month. If the strict gate would mostly have
-    blocked models that went on to perform fine, that is the answer and the gate stays off. If it
-    would have caught real degradation the live one waved through, that is the answer too. Either
-    way the decision is made on this estate's own evidence rather than on a borrowed prior.
-    """
-    out = {"available": False}
-    if old_payload is None or test_df is None or len(test_df) < 50:
-        return out
-    try:
-        import numpy as np
-        from src.model_validation import score as mv_score, dataset_id
-        from src.promotion_gate import evaluate_promotion
-
-        payload_new = {
-            "target": target,
-            "models": {k: v["model"] for k, v in results.items()},
-            "feature_cols": results[next(iter(results))]["feature_cols"],
-            "metrics": {k: v["metrics"] for k, v in results.items()},
-        }
-        p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
-        p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
-        y = pd.to_numeric(test_df[target], errors="coerce").to_numpy(dtype=float)
-        m = np.isfinite(p_old) & np.isfinite(p_new) & np.isfinite(y)
-        if m.sum() < 50:
-            return out
-        y, p_old, p_new = y[m], p_old[m], p_new[m]
-        leagues = (test_df.loc[m, "league"] if "league" in test_df.columns else None)
-
-        # Same holdout, same rows, so the dataset id is identical by construction. Passed
-        # explicitly anyway so the check is exercised rather than skipped.
-        did = dataset_id(test_df.loc[m], target, list(payload_new["feature_cols"]))
-        v = evaluate_promotion(mv_score(y, p_old), mv_score(y, p_new), y, p_old, p_new,
-                               leagues=leagues, dataset_id_inc=did, dataset_id_cand=did)
-        out = {"available": True, "status": v.status, "n": v.n,
-               "delta_log_loss": v.delta_log_loss, "delta_brier": v.delta_brier,
-               "ci_log_loss": v.ci_log_loss, "reasons": v.reasons,
-               "checks": {k: bool(c["pass"]) for k, c in v.checks.items()},
-               "live_gate_promoted": bool(promoted_by_live_gate),
-               "live_gate_reason": live_reason,
-               # The number this whole exercise exists to produce.
-               "agrees_with_live_gate": bool(promoted_by_live_gate) == (v.status == "CHAMPION")}
-        verb = "would PROMOTE" if v.status == "CHAMPION" else f"would HOLD ({v.status})"
-        log.info(f"  [{label}] v9.1 gate (log-only): {verb}; live gate "
-                 f"{'promoted' if promoted_by_live_gate else 'blocked'}"
-                 + (f" — {v.reasons[0]}" if v.reasons else ""))
-    except Exception as e:                                            # noqa: BLE001
-        log.warning(f"  [{label}] v9.1 shadow gate did not run ({e}) — live gate unaffected")
-        out = {"available": False, "error": str(e)[:200]}
-    return out
-
-
 def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: str) -> dict:
     """Did the challenger merely get better, or did it start behaving like a different model?
 
@@ -581,156 +511,6 @@ def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: s
 _RETRAIN_BATCH: dict = {}
 
 
-def _champion_decision(label: str, model_file, old_payload, results: dict, test_df,
-                       target: str, basis: str, valid) -> tuple[dict, dict]:
-    """Score champion and challenger on the same holdout rows, decide, and record the lineage.
-
-    Writes the serving file ONLY on PROMOTE, atomically, with an immutable copy kept for
-    rollback. Every challenger — promoted, shadowed or rejected — gets a manifest and a row in
-    output/model_lineage/retrain_batches.csv, because rejected models are evidence too.
-
-    FAIL CLOSED: anything that stops the comparison being completed returns KEEP_CHAMPION. The
-    lineage write itself is wrapped separately, so a bookkeeping failure can never flip a
-    verdict, and a verdict failure can never touch the serving file.
-    """
-    import hashlib
-    import numpy as np
-    from src import model_registry as reg
-    from src.champion_gate import decide, PROMOTE, SHADOW
-
-    mt = label
-    now = reg.utcnow()
-    batch = _RETRAIN_BATCH.get("id") or reg.batch_id(now)
-    extra = {"retrain_batch_id": batch}
-    incumbent_exists = Path(model_file).exists()
-
-    # ── 1. the comparison ────────────────────────────────────────────────────────────────
-    gate = None
-    try:
-        if not incumbent_exists:
-            gate = decide([], [], [], model_type=mt, incumbent_exists=False)
-        elif basis != "same_holdout" or old_payload is None or test_df is None:
-            gate = decide([], [], [], model_type=mt, same_rows=False)
-            gate["reason"] = (f"EVALUATION_FAILED: champion could not be scored on the "
-                              f"challenger's holdout (basis={basis})")
-        else:
-            payload_new = {"target": target,
-                           "models": {k: v["model"] for k, v in results.items()},
-                           "feature_cols": results[next(iter(results))]["feature_cols"],
-                           "metrics": {k: v["metrics"] for k, v in results.items()}}
-            p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
-            p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
-            y = pd.to_numeric(test_df[target], errors="coerce").to_numpy(dtype=float)
-            gate = decide(y, p_old, p_new, model_type=mt,
-                          leagues=test_df["league"] if "league" in test_df.columns else None,
-                          dates=test_df["date"] if "date" in test_df.columns else None,
-                          same_rows=len(p_old) == len(p_new) == len(test_df))
-    except Exception as e:                                             # noqa: BLE001
-        gate = decide([], [], [], model_type=mt, same_rows=False)
-        gate["reason"] = f"EVALUATION_FAILED: {type(e).__name__}: {str(e)[:160]}"
-
-    # ── 2. identity, artifacts and lineage ───────────────────────────────────────────────
-    try:
-        raw = reg.payload_bytes(results)
-        sha = reg.sha256_bytes(raw)
-        version = reg.make_version(mt, now, sha)
-        champ = reg.stamp_for(mt) if incumbent_exists else {"model_version": ""}
-        reg._version_cache.pop(mt, None)
-        champ_v = champ.get("model_version", "")
-        extra.update(challenger_version=version, champion_version=champ_v)
-
-        dates = pd.to_datetime(valid["date"], errors="coerce") if "date" in valid.columns else None
-        t0 = pd.to_datetime(test_df["date"], errors="coerce").min() if (
-            test_df is not None and "date" in test_df.columns) else None
-        seen = dates[dates < t0] if (dates is not None and t0 is not None) else dates
-        fcols = list(results[next(iter(results))]["feature_cols"])
-        role = {"PROMOTE": "CHAMPION", "SHADOW_MORE": "SHADOW"}.get(gate["verdict"], "REJECTED")
-        manifest = {
-            "model_type": mt, "model_version": version, "retrain_batch_id": batch,
-            "trained_at": reg.iso(now),
-            "training_start": None if seen is None else str(seen.min())[:10],
-            "training_end": None if seen is None else str(seen.max())[:10],
-            "training_cutoff": None if seen is None else str(seen.max())[:10],
-            "training_rows": int(len(valid)), "target": target,
-            "feature_schema_version": hashlib.sha256(
-                "|".join(sorted(map(str, fcols))).encode()).hexdigest()[:12],
-            "n_features": len(fcols),
-            "code_commit_sha": os.getenv("GITHUB_SHA", "")[:12] or "local",
-            "data_version": hashlib.sha256(
-                f"{len(valid)}|{None if dates is None else dates.min()}|"
-                f"{None if dates is None else dates.max()}|"
-                f"{pd.to_numeric(valid[target], errors='coerce').sum()}".encode()
-            ).hexdigest()[:12],
-            "artifact_sha256": sha, "parent_champion_version": champ_v,
-            "validation_metrics": {"holdout": gate.get("challenger_metrics"),
-                                   "champion_same_holdout": gate.get("champion_metrics"),
-                                   "ll_delta": gate.get("ll_delta"), "ll_ci": gate.get("ll_ci"),
-                                   "later_half_ll_delta": gate.get("later_half_ll_delta")},
-            "promotion_status": gate["verdict"], "model_role": role,
-        }
-        if gate["verdict"] == PROMOTE:
-            reg.set_champion(mt, manifest, raw, reason=gate["reason"], batch=batch, at=now,
-                             holdout={**(gate.get("challenger_metrics") or {}),
-                                      "fresh_oos_logloss": gate.get("ll_challenger")})
-            reg.write_metrics_file(mt, results)
-            reg.clear_challenger(mt)
-        else:
-            reg.write_manifest(manifest)
-            if gate["verdict"] == SHADOW:
-                reg.set_challenger(mt, manifest, raw)
-
-        ci = gate.get("ll_ci") or [None, None]
-        reg.record_decision({
-            "retrain_batch_id": batch, "decided_at": reg.iso(now), "model_type": mt,
-            "challenger_version": version, "champion_at_training_time": champ_v,
-            "verdict": gate["verdict"], "promoted": gate["verdict"] == PROMOTE,
-            "champion_after": version if gate["verdict"] == PROMOTE else champ_v,
-            "training_rows": len(valid), "training_start": manifest["training_start"],
-            "training_end": manifest["training_end"],
-            "training_cutoff": manifest["training_cutoff"], "holdout_n": gate.get("holdout_n"),
-            "ll_champion": gate.get("ll_champion"), "ll_challenger": gate.get("ll_challenger"),
-            "ll_delta": gate.get("ll_delta"), "ll_ci_lo": ci[0], "ll_ci_hi": ci[1],
-            "brier_delta": gate.get("brier_delta"), "ece_delta": gate.get("ece_delta"),
-            "later_half_ll_delta": gate.get("later_half_ll_delta"),
-            "league_regressions": json.dumps(gate.get("league_regressions") or []),
-            "safe_to_run": gate.get("safe_to_run"),
-            "better_than_champion": gate.get("better_than_champion"),
-            "comparison_basis": basis, "reason": gate["reason"][:400],
-            "legacy_rule_would_promote": "", "source": "CHAMPION_GATE",
-        })
-        cm = gate.get("champion_metrics") or {}
-        hw = {"champion_version": version if gate["verdict"] == PROMOTE else champ_v,
-              "current_regime": {"holdout_n": gate.get("holdout_n"),
-                                 "log_loss": gate.get("ll_challenger") if gate["verdict"] == PROMOTE
-                                 else cm.get("log_loss"),
-                                 "brier": (gate.get("challenger_metrics") or {}).get("brier")
-                                 if gate["verdict"] == PROMOTE else cm.get("brier"),
-                                 "ece": (gate.get("challenger_metrics") or {}).get("ece")
-                                 if gate["verdict"] == PROMOTE else cm.get("ece"),
-                                 "measured_at": reg.iso(now), "retrain_batch_id": batch},
-              "last_challenger": {"version": version, "verdict": gate["verdict"],
-                                  "ll_delta": gate.get("ll_delta"), "ll_ci": gate.get("ll_ci")}}
-        if gate["verdict"] == PROMOTE:
-            hw["historical"] = {**(gate.get("challenger_metrics") or {}),
-                                "promoted_at": reg.iso(now), "retrain_batch_id": batch}
-        reg.update_high_water(mt, hw)
-    except Exception as e:                                             # noqa: BLE001
-        # Bookkeeping failed. If the verdict was PROMOTE but the atomic swap did not complete,
-        # the serving file is untouched; say so instead of claiming a promotion.
-        log.error(f"  [{label}] lineage/registry step failed ({e})")
-        if gate["verdict"] == PROMOTE:
-            # Report what is ACTUALLY serving: the file's bytes decide, not the intent.
-            try:
-                serving = reg.sha256_file(Path(model_file))
-            except Exception:                                          # noqa: BLE001
-                serving = ""
-            if serving != reg.sha256_bytes(reg.payload_bytes(results)):
-                gate = {**gate, "verdict": "KEEP_CHAMPION",
-                        "reason": f"EVALUATION_FAILED: registry write failed before the serving "
-                                  f"file was swapped ({e}); champion unchanged"}
-    return gate, extra
-
-
 def _record_retrain(label: str, entry: dict) -> None:
     """Append one model's outcome to the run record the Telegram notice reads."""
     try:
@@ -749,182 +529,90 @@ def _record_retrain(label: str, entry: dict) -> None:
 
 def _train_one(valid: "pd.DataFrame", label: str, model_file,
                target: str = "over25", weights=None, feature_cols=None) -> dict:
-    """Train one CHALLENGER and let the champion gate decide whether it serves.
+    """Train one CHALLENGER. Whether anything serves is decided ONLY by src/promotion_gate.py.
 
-    SINCE 2026-10-18 the decision is `_champion_decision` (src/champion_gate.py): PROMOTE only on
-    a material, confirmed improvement in the SERVED probabilities on the same holdout;
-    KEEP_CHAMPION when worse, tied or unevaluable; SHADOW_MORE when a gain is possible but
-    unproven. The tolerance logic below survives only as `legacy_rule_would_promote`. The history
-    that follows explains how the gate got here.
+    RETRAINING IS FREQUENT, PROMOTION IS RARE (owner 2026-10-25). Every run:
 
-    THE GATE. This path — `pipeline.py --mode train`, which is what retrain.yml actually runs —
-    used to call `save_models()` unconditionally, so every retrain overwrote the live model with
-    no comparison of any kind. `mode_train` runs no backtest (those live in backtest_matrix.yml,
-    monthly), so there was nothing to validate against at the moment of overwriting, and a model
-    that had got worse shipped exactly as readily as one that had improved.
+      1. `promotion_gate.review_parked` judges the challenger parked by an EARLIER retrain on its
+         independent prospective period (first-sight shadow_h2h rows, graded). This is the only
+         way a retrain challenger can become champion.
+      2. a new candidate is trained and scored against the serving champion on the same untouched
+         chronological holdout (`promotion_gate.submit_candidate`). It can at most QUALIFY and be
+         frozen into the challenger slot (SHADOW_MORE). It is never promoted at birth.
 
-    That is tolerable at weekly cadence and not at daily, which is the cadence from 2026-09-22
-    to 2026-10-05. Daily overwriting with no gate is not learning; it is a random walk on the
-    live model.
+    HISTORY. Until 2026-10-04 a candidate promoted when its log loss had not risen by more than a
+    tolerance (0.030, briefly 0.005): 29 of 91 replayed decisions promoted a model that scored
+    worse. 2026-10-04 added "do no harm" (any rise blocks); 2026-10-18 the champion high-water mark
+    (src/champion_gate.py, material gain + CI on the served probabilities). 2026-10-25 the owner
+    required one canonical gate with a prospective second period; the tolerance branch, the v9.1
+    log-only gate and champion_gate.py were removed so no second definition of "promoted" exists.
 
-    WHAT IT COMPARES. `train_model` already produces held-out metrics on a chronological
-    train/cal/test split, and `save_models` writes them to `models/metrics_<stem>.json`. So the
-    incumbent's score is already on disk and the comparison is free — no second training, no
-    extra minutes against the 120-minute cap.
-
-    Log loss is the metric, not accuracy or AUC: it is a proper scoring rule and it punishes
-    overconfidence, which is this estate's measured defect (+13.64pp on the O/U track).
-
-    THE CAVEAT, stated because it is real: the test slice grows as data arrives, so consecutive
-    runs are not scored on identical rows. Day to day the drift is a handful of fixtures and the
-    comparison is sound; across months the test set genuinely changes and a harder set can look
-    like a worse model. That is what the tolerance absorbs, and it is why this gate is a floor
-    against regression rather than a proof of improvement.
+    THE HOLDOUT is `chronological_split` — the newest 20% of rows, exactly the split train_model
+    holds out — so the candidate never saw it, and the champion is scored on the identical rows.
     """
+    from src import promotion_gate as PG
     log.info(f"  [{label}] {len(valid):,} rows — training ensemble (target={target})...")
+    batch = _RETRAIN_BATCH.get("id", "")
 
-    # SCORE THE INCUMBENT ON THE CANDIDATE'S OWN HOLDOUT.
-    #
-    # This gate used to read the incumbent's log loss from the metrics file written WHEN IT WAS
-    # TRAINED, and compare it against the candidate's log loss on today's holdout. Two different
-    # test sets. That was tolerable while the training frame barely moved between runs, and it
-    # stopped being tolerable on 2026-09-23: a data fix grew the frame 33-56% overnight and every
-    # model reported a large improvement (standard 0.68885 -> 0.64066) that was really a
-    # different, larger holdout. A controlled experiment on IDENTICAL test fixtures the same day
-    # found NO improvement from the extra data, so both numbers cannot be measuring model
-    # quality — and the one with a fixed test set is the one to believe.
-    #
-    # So: recreate the exact split train_model will use, and score the incumbent on it. One
-    # prediction pass, no retraining. The stored-metrics path survives ONLY as a fallback for
-    # when the incumbent cannot be scored at all (no file yet, or a feature-set change), and the
-    # reason string says which basis was used so a promotion can never silently rest on the weak
-    # comparison.
-    basis = "same_holdout"
-    old_ll = float("nan")
+    # 1. period 2 for the parked challenger (may install it; the incumbent is loaded AFTER this)
+    review = PG.review_parked(label, batch=batch) or {}
+
+    basis = "no_incumbent"
     _test_df = None
     _old_payload = None
     try:
         _, _test_df = chronological_split(valid, target)
-        if len(_test_df) >= 50:
+        if Path(model_file).exists() and len(_test_df) >= 50:
             _old_payload = load_models(model_file=model_file)
-            old_ll = score_payload(_old_payload, _test_df, target)
+            basis = "same_holdout"
     except Exception as e:                                           # noqa: BLE001
-        log.warning(f"  [{label}] could not score the incumbent on today's holdout ({e}); "
-                    f"falling back to its stored metrics")
-    if old_ll != old_ll:
-        metrics_file = config.MODELS_DIR / f"metrics_{Path(model_file).stem}.json"
-        try:
-            old_ll = _mean_logloss(json.loads(metrics_file.read_text(encoding="utf-8")))
-            basis = "stored_metrics_FALLBACK"
-        except Exception:
-            basis = "no_incumbent"
+        basis = "incumbent_unscorable"
+        log.warning(f"  [{label}] could not load/score the incumbent on today's holdout ({e}); "
+                    f"the gate will fail closed")
 
     results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
-    new_ll = _mean_logloss({k: v["metrics"] for k, v in results.items()})
     canary = _behaviour_canary(label, _old_payload, results, _test_df, target)
 
-    # THE GATE IS A CRASH BARRIER, NOT A JUDGE. Tolerance derived from 1,568 simulated
-    # challenger-vs-champion comparisons across a 50-month walk-forward, not chosen by feel:
-    #
-    #   worst rise by a HEALTHY challenger (100th pct)   +0.022
-    #   99th percentile                                  +0.010
-    #   95th percentile                                  +0.005   <- the old tolerance
-    #
-    # So 0.005 sat at the 95th percentile of NORMAL variation and blocked 5.6% of perfectly
-    # good models. Backtesting eight promotion rules on the realised performance of whatever
-    # model was actually live found that NO rule beat having no gate at all, v9's included, and
-    # that the ordering was monotone in how much a rule blocked: every rejection cost on average.
-    #
-    # 0.030 sits above every healthy challenger ever observed, so a normal retrain always passes,
-    # while still catching a genuinely broken run -- ht_over05 was rejected at +0.089 and +0.103,
-    # an order of magnitude beyond anything normal, and would still be rejected here.
-    #
-    # Deliberately NOT removed. The backtest only ever produced healthy challengers, so it cannot
-    # price insurance against a corrupt-data or buggy-code run, which is the case a gate exists
-    # for. Loosened to its real job; not deleted on evidence that never tested the risk.
-    tol = float(os.getenv("TRAIN_MAX_LOGLOSS_RISE", "0.030"))
-    #: Never promote a candidate that is measurably worse on the same holdout. Set to "0" to
-    #: restore the pure-tolerance behaviour in one environment variable.
-    BLOCK_WORSE_CANDIDATE = os.getenv("TRAIN_BLOCK_WORSE_CANDIDATE", "1").strip() != "0"
-    if not (old_ll == old_ll):          # NaN — no incumbent on record
-        promote, why = True, "no incumbent metrics on record — first model for this track"
-    elif not (new_ll == new_ll):
-        promote, why = False, "candidate produced no usable log loss — refusing to ship it blind"
-    elif (BLOCK_WORSE_CANDIDATE and basis == "same_holdout" and new_ll > old_ll):
-        # ── DO NO HARM (2026-10-04) ────────────────────────────────────────────────────────
-        # A candidate that scores WORSE than the incumbent ON THE INCUMBENT'S OWN HOLDOUT does
-        # not replace it, however small the gap. Replayed over 91 recorded decisions, the old
-        # tolerance promoted 88 and 29 of those were measurably worse -- including ht_over05 at
-        # +0.019 and newformat at +0.00298. Every one passed only because it degraded by less
-        # than 0.030.
-        #
-        # WHY THIS RULE AND NOT THE FULL STRICT GATE. The strict gate also demands a MATERIAL
-        # improvement of 0.001, and on the same 91 decisions that floor would have blocked 62 of
-        # the 88 live promotions -- over15 would have updated twice in thirteen days. There is no
-        # evidence that is good: 1,568 simulated comparisons found no promotion rule beat having
-        # no gate at all, every rejection costing on average, and retraining is separately proven
-        # to beat freezing. So the material floor stays in LOG-ONLY (`v91_gate`) until a forward
-        # period says otherwise. This rule is the part that needs no such evidence.
-        #
-        # The asymmetry that justifies it: on a tie or a loss, the incumbent is a known quantity
-        # serving in production and the challenger is not. Preferring the incumbent costs nothing
-        # -- tomorrow's retrain tries again on one more day of data, so nothing can deadlock.
-        #
-        # ONLY on `same_holdout`. Under the stored-metrics fallback the two numbers come from
-        # different test sets and a sub-tolerance difference is meaningless, so blocking there
-        # would reject good models on an artefact. That branch keeps the old behaviour.
-        promote, why = False, (f"log loss ROSE {new_ll - old_ll:+.5f} ({old_ll:.5f} -> "
-                               f"{new_ll:.5f}) on the incumbent's own holdout — a worse "
-                               f"candidate does not replace a serving champion")
-    elif new_ll > old_ll + tol:
-        promote, why = False, (f"log loss ROSE {new_ll - old_ll:+.5f} ({old_ll:.5f} -> "
-                               f"{new_ll:.5f}), beyond the {tol:.5f} tolerance")
-    else:
-        promote, why = True, (f"log loss {old_ll:.5f} -> {new_ll:.5f} ({new_ll - old_ll:+.5f}), "
-                              f"within the {tol:.5f} tolerance"
-                              + ("" if basis == "same_holdout"
-                                 else f" [WEAK COMPARISON: {basis}]"))
-
-    # ── CHAMPION HIGH-WATER MARK (owner 2026-10-18) ─────────────────────────────────────────
-    # The rule above is kept only as `legacy_rule_would_promote`, for the audit. It is no longer
-    # the decision. Every retrain is now a CHALLENGER that must EARN production on the served
-    # probabilities, same rows, same labels — see src/champion_gate.py. "Not worse" no longer
-    # promotes; a tie keeps the champion; a possible-but-unproven gain is shadowed.
-    legacy_promote, legacy_why = promote, why
-    gate, gate_extra = _champion_decision(label, model_file, _old_payload, results, _test_df,
-                                          target, basis, valid)
-    promote = gate["verdict"] == "PROMOTE"
-    why = f"{gate['verdict']}: {gate['reason']}"
+    # 2. period 1 for the new candidate
+    gate, gate_extra = PG.submit_candidate(label, model_file, _old_payload, results, _test_df,
+                                           target, basis, valid, batch=batch)
+    # "promoted" in retrain_log means exactly one thing: the serving model changed this run, and
+    # only the gate can change it — a parked challenger passing period 2, or an explicit BOOTSTRAP.
+    reviewed_promote = review.get("verdict") == PG.PROMOTE
+    promote = reviewed_promote or gate["verdict"] == PG.BOOTSTRAP
+    why = (f"PROMOTE (parked {review.get('candidate_version')}): {review.get('reason', '')} | "
+           if reviewed_promote else "") + f"{gate['verdict']}: {gate['reason']}"
     if promote:
-        log.info(f"  [{label}] PROMOTED {gate_extra.get('challenger_version')} — {gate['reason']}")
+        log.warning(f"  [{label}] {why}")
     else:
-        log.warning(f"  [{label}] {gate['verdict']} — {gate['reason']}. "
-                    f"{Path(model_file).name} left untouched; the champion keeps serving.")
-    shadow = _shadow_gate(label, _old_payload, results, _test_df, target, promote, why)
-    served_old, served_new = gate.get("ll_champion"), gate.get("ll_challenger")
+        log.info(f"  [{label}] {gate['verdict']} (qualified={gate.get('qualified')}, "
+                 f"parked={gate.get('parked')}) — {gate['reason'][:300]}. "
+                 f"{Path(model_file).name} left untouched; the champion keeps serving.")
     _record_retrain(label, {"promoted": promote, "why": why, "rows": int(len(valid)),
                             "verdict": gate["verdict"], "comparison_basis": basis,
-                            "v91_gate": shadow,
-                            # The SERVED-probability log loss the decision was made on, when the
-                            # gate could compute it; else the old base-model mean (marked).
-                            "logloss_old": served_old if served_old is not None else
-                            (None if old_ll != old_ll else round(old_ll, 5)),
-                            "logloss_new": served_new if served_new is not None else
-                            (None if new_ll != new_ll else round(new_ll, 5)),
-                            "logloss_basis": "served_ensemble" if served_new is not None
-                            else "mean_base_models",
-                            "legacy_mean_ll_old": None if old_ll != old_ll else round(old_ll, 5),
-                            "legacy_mean_ll_new": None if new_ll != new_ll else round(new_ll, 5),
-                            "legacy_rule_would_promote": bool(legacy_promote),
-                            "legacy_rule_reason": legacy_why,
+                            "gate_version": PG.GATE_VERSION,
+                            "qualified": bool(gate.get("qualified")),
+                            "parked": bool(gate.get("parked")),
+                            "evaluable_tracks": gate.get("evaluable_tracks") or [],
+                            # SERVED-probability log loss on the largest evaluable track
+                            "logloss_old": gate.get("ll_champion"),
+                            "logloss_new": gate.get("ll_challenger"),
+                            "logloss_basis": "served_ensemble_largest_track",
                             "ll_ci": gate.get("ll_ci"),
                             "champion_version": gate_extra.get("champion_version"),
                             "challenger_version": gate_extra.get("challenger_version"),
                             "retrain_batch_id": gate_extra.get("retrain_batch_id"),
+                            "prospective_review": {k: review.get(k) for k in (
+                                "verdict", "candidate_version", "prospective_status",
+                                "prospective_n", "prospective_ll_delta", "reason")}
+                            if review else None,
                             "canary": canary})
 
-    payload = load_models(model_file=model_file)
-    fi = get_feature_importances(payload)
+    try:
+        payload = load_models(model_file=model_file)
+        fi = get_feature_importances(payload)
+    except FileNotFoundError:
+        fi = pd.DataFrame()
     if not fi.empty:
         fi_file = config.MODELS_DIR / f"feature_importances_{label}.csv"
         fi.to_csv(fi_file, index=False)

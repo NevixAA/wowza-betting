@@ -34,7 +34,8 @@ sys.path.insert(0, str(ROOT))
 import pandas as pd  # noqa: E402
 
 from src import model_registry as reg  # noqa: E402
-from src.champion_gate import MATERIAL_LL  # noqa: E402
+from src.promotion_gate import MATERIAL_LL  # noqa: E402
+from src import promotion_gate as PG  # noqa: E402
 
 GIT = os.getenv("WOWZA_GIT", "git")
 
@@ -183,8 +184,8 @@ def main(dry: bool) -> None:
     for mt, p in pointer.items():
         raw = p.pop("_raw")
         reg.store_champion_artifact(mt, p["model_version"], raw)
-    if not reg.POINTER_FILE.exists():
-        reg._atomic_write_json(reg.POINTER_FILE, pointer)
+    # The gate is the only writer of the pointer; it writes only when none exists, and logs it.
+    PG.reconstruct_pointer_if_missing(pointer)
     hw = {mt: {"champion_version": p["model_version"],
                "historical": {"source": "LEGACY_GIT", "note": "no same-holdout validation was "
                               "recorded at promotion; the first new-gate retrain sets the "

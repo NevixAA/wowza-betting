@@ -3,7 +3,7 @@
     from src import model_registry as reg
     reg.stamp_for("standard")          # -> {model_version, retrain_batch_id, training_cutoff, ...}
     reg.record_decision(...)           # every retrain verdict, PROMOTE / KEEP_CHAMPION / SHADOW_MORE
-    reg.rollback("btts", "<version>")  # restore an earlier champion's exact bytes
+    # champion changes (promotion, rollback, bootstrap) live ONLY in src/promotion_gate.py
 
 ────────────────────────────────────────────────────────────────────────────────────────────
 WHY THIS EXISTS
@@ -216,59 +216,9 @@ def store_champion_artifact(model_type: str, version: str, raw: bytes) -> Path:
     return p
 
 
-def set_champion(model_type: str, manifest: dict, raw: bytes, *, reason: str,
-                 batch: str = "", source: str = "CHAMPION_GATE",
-                 holdout: dict | None = None, at: datetime | None = None) -> None:
-    """ATOMIC PROMOTION. Order matters and is chosen so every crash point is recoverable:
-
-    1. immutable copy of the bytes into champions/   (rollback target exists before anything moves)
-    2. manifest                                       (identity exists)
-    3. serving file, write-then-rename                (predict sees old bytes or new, never half)
-    4. pointer, write-then-rename
-    5. history row closing the old era and opening the new one
-
-    A crash between 3 and 4 leaves the pointer naming the previous champion while the file holds
-    the new one; predict then stamps the rows with the file's real hash (looked up from the
-    manifest written in step 2), so attribution stays correct even in that window.
-    """
-    at = at or utcnow()
-    version = manifest["model_version"]
-    store_champion_artifact(model_type, version, raw)
-    write_manifest({**manifest, "model_role": "CHAMPION"})
-    _atomic_write_bytes(MODEL_FILES[model_type], raw)
-    ptr = read_pointer()
-    prior = (ptr.get(model_type) or {}).get("model_version", "")
-    ptr[model_type] = {
-        "model_version": version, "champion_since": iso(at),
-        "retrain_batch_id": manifest.get("retrain_batch_id", ""),
-        "training_cutoff": manifest.get("training_cutoff", ""),
-        "artifact_sha256": manifest["artifact_sha256"],
-        "promotion_source": source, "promotion_reason": reason,
-    }
-    _atomic_write_json(POINTER_FILE, ptr)
-    h = holdout or {}
-    _append_csv(CHAMPION_HISTORY, CHAMPION_HISTORY_COLS, {
-        "model_type": model_type, "champion_version": version, "start_at": iso(at),
-        "end_at": "", "promotion_retrain_batch": batch, "prior_champion": prior,
-        "holdout_n": h.get("n"), "holdout_logloss": h.get("log_loss"),
-        "holdout_brier": h.get("brier"), "holdout_ece": h.get("ece"),
-        "fresh_oos_logloss": h.get("fresh_oos_logloss"), "promotion_source": source,
-        "promotion_reason": reason, "artifact_sha256": manifest["artifact_sha256"],
-        "git_commit": manifest.get("code_commit_sha", ""), "reconstructed": False,
-    })
-    _version_cache.clear()
-
-
-def rollback(model_type: str, to_version: str, reason: str = "operational rollback") -> None:
-    """Restore an earlier champion's exact bytes. No retraining — the bytes are kept for this."""
-    p = champion_artifact_path(model_type, to_version)
-    man = read_manifest(model_type, to_version)
-    if not p.exists() or man is None:
-        raise FileNotFoundError(f"no stored champion artifact/manifest for {to_version}")
-    raw = gzip.decompress(p.read_bytes())
-    if sha256_bytes(raw) != man["artifact_sha256"]:
-        raise ValueError(f"{to_version}: stored bytes do not match the manifest hash")
-    set_champion(model_type, man, raw, reason=f"ROLLBACK: {reason}", source="ROLLBACK")
+# set_champion / rollback LIVE IN src/promotion_gate.py (owner 2026-10-25): the canonical gate is
+# the ONLY writer of the serving file and of current_champions.json. This module keeps identity,
+# manifests, immutable artifacts and the challenger slot; it never changes which model serves.
 
 
 # ── challenger slot (true head-to-head shadow) ────────────────────────────────────────────────
