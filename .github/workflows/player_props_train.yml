@@ -11,7 +11,14 @@ name: Player Props Train (weekly)
 # "Train player models". Because the step was continue-on-error and a timeout shows grey, not
 # red, three Sundays of retraining were lost silently.
 #
-# Separate job, same model, same data, same promotion gate (player_model.pipeline.mode_train).
+# Separate job, same model, same data (player_model.pipeline.mode_train).
+#
+# PROMOTION (2026-10-25, owner decision). The old PROPS_MAX_LOGLOSS_RISE tolerance is gone: it
+# compared each model's OWN holdout and replaced every serving props model at every retrain.
+# Retraining still runs weekly and still produces a candidate per market, but only the canonical
+# promotion gate (player_model/props_gate.py, config/promotion_gate.json "props", PG-PROPS-1.0)
+# may change a serving file: holdout qualification per market, then an independent prospective
+# first-sight period (logged by player_props.yml's predict). Expect "0/8 promoted" most weeks.
 # Also: its own concurrency group, so a long train can never hold up the props predict runs.
 #
 # Two persistence gaps closed at the same time:
@@ -104,9 +111,20 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # One path at a time: a multi-path `git add` stages NOTHING if any path is missing.
           files=$(python -c "from player_model import config as c; print(' '.join(str(p.relative_to(c.BASE_DIR)).replace(chr(92), '/') for p in c.MODEL_FILES.values()))")
-          for f in $files output/props_retrain_log.json; do
+          # PROMOTION GATE (PG-PROPS-1.0, owner decision 2026-10-25). A retrain no longer writes the
+          # serving files above unless the gate promotes; it always writes the gate's records:
+          # the decision log, champion-era history, and the props registry (pointer, immutable
+          # manifests, champion bytes, the parked challenger that props predict scores
+          # first-sight). Without these committed, period 2 can never accumulate evidence.
+          for f in $files output/props_retrain_log.json \
+                   output/model_lineage/props_promotion_decisions.csv \
+                   output/model_lineage/props_champion_history.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
+          # -A so a challenger slot vacated by a promotion/retirement is staged as a deletion.
+          # Directory-scoped, never repo-wide.
+          d=models/registry/props
+          [ -d "$d" ] && git add -A -f "$d" || echo "  (skip, not present: $d)"
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet && { echo "nothing to commit"; exit 0; }
           git commit -m "auto: player props retrain $(date -u '+%Y-%m-%d %H:%M UTC')"

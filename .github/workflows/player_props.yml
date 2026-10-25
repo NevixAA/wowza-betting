@@ -387,6 +387,7 @@ jobs:
                    output/player_prop_odds_history.csv output/clv_records.csv \
                    output/player_prop_odds_history_archive \
                    output/prop_odds_coverage.json output/props_health.json output/prop_quotes \
+                   output/model_lineage/props_shadow_h2h.csv \
                    telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
                    telegram_bot/player_kickoff_cache.json team_id_cache.json \
                    player_history.parquet \

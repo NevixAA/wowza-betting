@@ -53,5 +53,67 @@
     "prospective min_n_per_track": "n_min_per_track = 1000, models/registry/experiments.json, owner decision 2026-10-25 for H-MODEL-01",
     "bootstrap_unit": "match-date blocks, as src/shadow_experiments.evaluate and Pro src/analytics/model_lineage._day_boot_ci already use",
     "new in PG-1.0": "max_mean_shift, max_quantile_shift, extreme share, slope check, early_fail_min_n, max_age_days, min_bootstrap_blocks"
+  },
+  "props": {
+    "gate_version": "PG-PROPS-1.0",
+    "canonical_gate_version": "PG-1.0",
+    "declared_on": "2026-10-25",
+    "declared_by": "owner decision 2026-10-25 ('yes'): player-prop models promote only through the canonical promotion gate, like the team models",
+    "declaration_note": "Same two-period gate as PG-1.0, applied PER MARKET instead of per track (markets are never pooled). Declared before any props candidate was scored on a same-holdout basis. Probability-scale thresholds are the PG-1.0 values rescaled by fixed factors derived from each market's LABEL base rate in player_history.parquet as of 2026-10-25 (870,856 rows) - labels only, no model output. Changing any value is a new gate_version and needs owner approval. Justifications: player_model/props_gate.py.",
+    "scaling_rule": {
+      "reference_base_rate": 0.5,
+      "entropy_ratio": "H(base_rate)/ln 2 - scales log-loss quantities (material floor, league regression)",
+      "variance_ratio": "base_rate*(1-base_rate)/0.25 - scales Brier quantities",
+      "prob_scale": "base_rate/0.5 - scales probability-unit quantities (ECE, mean shift, quantile shift, moved_pp)",
+      "rounding": "2 significant figures"
+    },
+    "holdout": {
+      "min_n_per_market": 1000,
+      "min_events_per_market": 100,
+      "ci_level": 0.95,
+      "n_boot": 2000,
+      "bootstrap_unit": "match_date",
+      "bootstrap_seed": 20261025,
+      "min_bootstrap_blocks": 20,
+      "ece_bins": 10,
+      "max_slope_deterioration": 0.25,
+      "slope_se_multiple": 2.0,
+      "min_league_n": 150,
+      "min_league_events": 30
+    },
+    "canary": {
+      "sd_ratio_min": 0.6667,
+      "sd_ratio_max": 1.5,
+      "quantiles": [0.05, 0.25, 0.5, 0.75, 0.95],
+      "extreme_lo": 0.001,
+      "extreme_hi": 0.95,
+      "max_extreme_share_increase": 0.02,
+      "max_frac_moved": 0.25
+    },
+    "prospective": {
+      "min_n_per_market": 1000,
+      "min_events_per_market": 100,
+      "max_ll_delta_exclusive": 0.0,
+      "early_fail_min_n": 300,
+      "max_age_days": 180,
+      "rows_file": "output/model_lineage/props_shadow_h2h.csv",
+      "outcomes_file": "player_history.parquet"
+    },
+    "markets": {
+      "goals":   {"base_rate": 0.08136, "entropy_ratio": 0.407,  "variance_ratio": 0.299,  "prob_scale": 0.1627, "material_ll_improvement": 0.00041, "max_brier_worsening": 3.0e-05, "max_ece_worsening": 0.0016,  "max_league_ll_regression": 0.0081,  "max_mean_shift": 0.0033,  "max_quantile_shift": 0.0081,  "moved_pp": 0.016},
+      "goals2":  {"base_rate": 0.00732, "entropy_ratio": 0.0624, "variance_ratio": 0.0291, "prob_scale": 0.0146, "material_ll_improvement": 6.2e-05, "max_brier_worsening": 2.9e-06, "max_ece_worsening": 0.00015, "max_league_ll_regression": 0.0012,  "max_mean_shift": 0.00029, "max_quantile_shift": 0.00073, "moved_pp": 0.0015},
+      "assists": {"base_rate": 0.0587,  "entropy_ratio": 0.3223, "variance_ratio": 0.221,  "prob_scale": 0.1174, "material_ll_improvement": 0.00032, "max_brier_worsening": 2.2e-05, "max_ece_worsening": 0.0012,  "max_league_ll_regression": 0.0064,  "max_mean_shift": 0.0023,  "max_quantile_shift": 0.0059,  "moved_pp": 0.012},
+      "sot":     {"base_rate": 0.22458, "entropy_ratio": 0.7684, "variance_ratio": 0.6966, "prob_scale": 0.4492, "material_ll_improvement": 0.00077, "max_brier_worsening": 7.0e-05, "max_ece_worsening": 0.0045,  "max_league_ll_regression": 0.015,   "max_mean_shift": 0.009,   "max_quantile_shift": 0.022,   "moved_pp": 0.045},
+      "sot2":    {"base_rate": 0.05217, "entropy_ratio": 0.2955, "variance_ratio": 0.1978, "prob_scale": 0.1043, "material_ll_improvement": 0.0003,  "max_brier_worsening": 2.0e-05, "max_ece_worsening": 0.001,   "max_league_ll_regression": 0.0059,  "max_mean_shift": 0.0021,  "max_quantile_shift": 0.0052,  "moved_pp": 0.01},
+      "sot3":    {"base_rate": 0.012,   "entropy_ratio": 0.0938, "variance_ratio": 0.0474, "prob_scale": 0.024,  "material_ll_improvement": 9.4e-05, "max_brier_worsening": 4.7e-06, "max_ece_worsening": 0.00024, "max_league_ll_regression": 0.0019,  "max_mean_shift": 0.00048, "max_quantile_shift": 0.0012,  "moved_pp": 0.0024},
+      "sot4":    {"base_rate": 0.00264, "entropy_ratio": 0.0264, "variance_ratio": 0.0105, "prob_scale": 0.0053, "material_ll_improvement": 2.6e-05, "max_brier_worsening": 1.1e-06, "max_ece_worsening": 5.3e-05, "max_league_ll_regression": 0.00053, "max_mean_shift": 0.00011, "max_quantile_shift": 0.00026, "moved_pp": 0.00053},
+      "cards":   {"base_rate": 0.13579, "entropy_ratio": 0.5731, "variance_ratio": 0.4694, "prob_scale": 0.2716, "material_ll_improvement": 0.00057, "max_brier_worsening": 4.7e-05, "max_ece_worsening": 0.0027,  "max_league_ll_regression": 0.011,   "max_mean_shift": 0.0054,  "max_quantile_shift": 0.014,   "moved_pp": 0.027}
+    },
+    "provenance": {
+      "unchanged from PG-1.0": "match-date block bootstrap (2000 draws, seed, 95%, >=20 dates), ECE bins, slope check (0.25 and 2 SE), sd-ratio band, max_frac_moved 0.25, extreme-share increase 0.02, min_league_n 150, early_fail_min_n 300, max_age_days 180, prospective sign rule (delta < 0), min_n 1000 in both periods",
+      "rescaled from PG-1.0 by the market's base rate": "material_ll_improvement (0.001), max_brier_worsening (0.0001), max_ece_worsening (0.01), max_league_ll_regression (0.02), max_mean_shift (0.02), max_quantile_shift (0.05), moved_pp (0.10)",
+      "new in PG-PROPS-1.0": "min_events_per_market 100 (both periods) and min_league_events 30; extreme_lo 0.001 (the props Platt clip floor) in place of 0.05",
+      "base rates": "player_history.parquet as of commit acc2ec4b (2026-10-25), all labelled rows per target"
+    }
   }
 }

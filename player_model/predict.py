@@ -437,6 +437,16 @@ def run_player_predictions(
 
     all_tips = []
 
+    # PROSPECTIVE EVIDENCE FOR THE PROMOTION GATE (PG-PROPS, 2026-10-25). When a retrain has parked
+    # a challenger for a market, score it on the same player-fixtures as the serving model and log
+    # both, first-sight, before kickoff. Recorder only: it never changes a tip and never raises.
+    try:
+        from player_model.props_gate import FirstSightRecorder
+        _first_sight = FirstSightRecorder()
+    except Exception as _e:                                            # noqa: BLE001
+        print(f"[predict] first-sight recorder unavailable: {_e}")
+        _first_sight = None
+
     # Perf: index the history ONCE and lowercase the team column ONCE. Previously every match
     # re-scanned the full 230k-row history per player (O(matches x players x rows)) which pushed
     # the CI predict past its 60-min timeout → cancelled → zero tips. Behaviour is unchanged.
@@ -681,6 +691,12 @@ def run_player_predictions(
         for market, payload in payloads.items():
             probs = predict_proba(feat_df, payload)
             feat_df[f"p_{market}"] = probs.values
+            if _first_sight is not None:
+                _ko = match_row.get("kickoff_utc", "")
+                _first_sight.add(market, feat_df, probs.values, league=str(league),
+                                 match_date=date_str,
+                                 kickoff_utc=_ko if isinstance(_ko, str) else "",
+                                 fixture_id=match_row.get("fixture_id"))
 
         for i, feat_row in feat_df.iterrows():
             player_norm = _norm_player_name(str(feat_row.get("player_name", "")))
@@ -808,6 +824,8 @@ def run_player_predictions(
     if _stale_dropped:
         print(f"[stale_club] {len(_stale_dropped)} player(s) dropped: not in their club's current "
               f"squad list, or unseen for {config.STALE_DAYS}+ days where no list exists")
+    if _first_sight is not None:
+        _first_sight.flush()
     if not all_tips:
         return pd.DataFrame()
 

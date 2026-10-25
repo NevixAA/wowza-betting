@@ -68,8 +68,20 @@ class _PlattCalibratedModel:
         return np.column_stack([1 - cal, cal])
 
 
-def train(df: pd.DataFrame, market: str) -> dict:
-    """Train LogReg + GradientBoosting with Platt calibration for one market."""
+def split_bounds(n: int) -> tuple[int, int]:
+    """(split, cal_split) row indices of the chronological fit | calibration | holdout split.
+    ONE definition, used by train() and by the promotion gate's holdout, so they cannot diverge."""
+    split = int(n * 0.80)
+    return split, int(split * 0.85)
+
+
+def train(df: pd.DataFrame, market: str, return_holdout: bool = False):
+    """Train LogReg + GradientBoosting with Platt calibration for one market.
+
+    return_holdout=True returns (results, holdout_frame, training_cutoff): the untouched
+    chronological holdout rows exactly as train() scored them (every column, so the promotion gate
+    can score the serving champion on the SAME rows), and the date of the last row the candidate
+    saw (fit + calibration)."""
     if "n_prev_games" in df.columns:
         df = df[df["n_prev_games"] >= 1].copy()
     elif "appearances" in df.columns:
@@ -99,8 +111,7 @@ def train(df: pd.DataFrame, market: str) -> dict:
     if n < 200:
         raise ValueError(f"Not enough samples for {market}: {n}")
 
-    split     = int(n * 0.80)
-    cal_split = int(split * 0.85)
+    split, cal_split = split_bounds(n)
 
     X_fit, y_fit   = X.iloc[:cal_split], y.iloc[:cal_split]
     X_cal, y_cal   = X.iloc[cal_split:split], y.iloc[cal_split:split]
@@ -150,20 +161,36 @@ def train(df: pd.DataFrame, market: str) -> dict:
         }
         print(f"  [{market}] {name}: AUC={auc:.3f}  LogLoss={ll:.3f}")
 
+    if return_holdout:
+        cutoff = None
+        if "date" in df.columns and split > 0:
+            cutoff = str(pd.to_datetime(df["date"].iloc[split - 1], errors="coerce"))[:10]
+        return results, df.iloc[split:], cutoff
     return results
 
 
-def save_model(results: dict, market: str) -> None:
-    path = config.MODEL_FILES[market]
-    payload = {
+def build_payload(results: dict, market: str) -> dict:
+    """The serving-file payload, exactly as the pre-gate save_model wrote it."""
+    return {
         "market":      market,
         "models":      {k: v["model"] for k, v in results.items()},
         "feature_cols": results[next(iter(results))]["feature_cols"],
         "metrics":     {k: v["metrics"] for k, v in results.items()},
     }
-    with open(path, "wb") as f:
-        pickle.dump(payload, f)
-    print(f"  Saved {path.name}")
+
+
+def payload_bytes(results: dict, market: str) -> bytes:
+    """Byte format of a serving file (pickle of build_payload), so readers are unchanged."""
+    return pickle.dumps(build_payload(results, market))
+
+
+def save_model(results: dict, market: str) -> None:
+    """REMOVED as a write path (owner decision 2026-10-25). It used to overwrite the serving file
+    unconditionally; the ONLY code that may now change a serving props model is
+    player_model/props_gate.py (promotion, explicit bootstrap, logged rollback)."""
+    raise PermissionError(
+        f"save_model({market!r}) refused: props serving files are written only by "
+        f"player_model.props_gate (canonical promotion gate, PG-PROPS)")
 
 
 def load_model(market: str) -> Optional[dict]:
