@@ -866,11 +866,17 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
                 sk = config.ODDS_API_SPORT_KEYS.get(league)
                 scores_cache[league] = fetch_scores(sk, days) if sk else []
 
-        ev_found = None
-        for ev in scores_cache.get(league, []):
-            if ev["date_str"] == date_str and _names_match(home, ev["home_team"]) and _names_match(away, ev["away_team"]):
-                ev_found = ev
-                break
+        def _match(events):
+            for ev in events:
+                if ev["date_str"] == date_str and _names_match(home, ev["home_team"]) and _names_match(away, ev["away_team"]):
+                    return ev
+            return None
+
+        # LAST RESORT: API-Football, exactly as the O/U 2.5 path does. Without it a side tip whose
+        # fixture the primary source missed (football-data lag or spelling, OddsAPI's 3-day window)
+        # stayed pending forever while the O/U tip on the same match settled: 38 BTTS/O1.5/O3.5
+        # rows since 2026-10-10 (found 2026-10-25). Lazy, so a healthy run costs no calls.
+        ev_found = _match(scores_cache.get(league, [])) or _match(fetch_scores_apifootball(league))
         if ev_found is None:
             continue
 
