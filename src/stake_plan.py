@@ -193,6 +193,36 @@ def _contract_shadow(frame: str, df: pd.DataFrame, schema: str) -> None:
         pass
 
 
+def prior_directions(fixtures=None) -> dict:
+    """{fixture: "OVER"|"UNDER"} of the FIRST position already STAKED (final_fraction > 0) on each
+    fixture by an earlier run, from stake_audit.csv (append-only, first sight). Feeds bankroll_policy
+    .size_day's one-direction-per-fixture guard (owner rule 2026-10-25) so it also holds across runs.
+    Missing/unreadable audit -> {} (the guard then works within the day only). Never raises."""
+    from src.bankroll_policy import goal_direction
+    try:
+        if not AUDIT.exists():
+            return {}
+        a = pd.read_csv(AUDIT, dtype=str, usecols=lambda c: c in ("fixture", "market", "side",
+                                                                 "final_fraction", "generated_at"))
+        if not {"fixture", "market", "final_fraction"} <= set(a.columns):
+            return {}
+        a = a[pd.to_numeric(a["final_fraction"], errors="coerce").fillna(0) > 0]
+        if fixtures is not None:
+            a = a[a["fixture"].isin(set(fixtures))]
+        if a.empty:
+            return {}
+        sides = a["side"] if "side" in a.columns else pd.Series("", index=a.index)
+        a = a.assign(_dir=[goal_direction(m, s) for m, s in zip(a["market"], sides)])
+        a = a[a["_dir"].notna()]
+        if "generated_at" in a.columns:
+            a = a.sort_values("generated_at", kind="mergesort")
+        a = a.drop_duplicates("fixture", keep="first")
+        return dict(zip(a["fixture"].astype(str), a["_dir"]))
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"stake plan: prior directions unavailable ({type(e).__name__}) - within-day guard only")
+        return {}
+
+
 def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
           shadow: pd.DataFrame | None = None) -> pd.DataFrame:
     """Size this run's tips under the approved policy and write plan + audit. Never raises.
@@ -206,7 +236,9 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
         # size_day sizes ONE day (its daily and league caps are per day), and a predict run holds up to
         # a week of fixtures, so each match date is sized on its own.
         ratings = load_league_ratings() if (policy.get("league_rating_sizing") or {}).get("enabled") else None
-        days = [size_day(g, policy, bankroll=bankroll, peak=bankroll, league_ratings=ratings)
+        prior = prior_directions(sel["fixture"]) if len(sel) else {}
+        days = [size_day(g, policy, bankroll=bankroll, peak=bankroll, league_ratings=ratings,
+                         prior_directions=prior)
                 for _, g in sel.groupby("date")] if len(sel) else []
         plan = pd.concat(days, ignore_index=True) if days else size_day(sel, policy, bankroll=bankroll, peak=bankroll)
         for problem in health_check(plan, policy):
