@@ -320,7 +320,10 @@ def test_fantasy_page_renders(monkeypatch):
     assert not at.exception, [e.value for e in at.exception]
     heads = [s.value for s in at.subheader]
     assert any("benchmark" in h.lower() for h in heads)
-    assert any("command center" in h.lower() for h in heads)
+    # 2026-10-25 redesign: the command-center block is the page header metric strip (GW, deadline,
+    # projection health) above the task tabs, no longer a subheader.
+    assert {"Gameweek", "Projection health"} <= {m.label for m in at.metric}
+    assert "Overview" in [t.label for t in at.tabs]
 
 
 # ── gameweek-by-gameweek scoreboard ──────────────────────────────────────────────────────────
