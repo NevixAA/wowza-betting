@@ -138,24 +138,60 @@ PAGES = [
     ("pages/0_🏠_Overview.py",           "Overview",          "🏠", "admin"),
     ("pages/9_🎓_Model_Performance.py",  "Model Performance", "🎓", "admin"),
     ("pages/4_ℹ️_Model_Info.py",         "Model Info",        "ℹ️", "admin"),
-    ("pages/7_🔬_Pro.py",                "Pro research",      "🔬", "admin"),
-    ("pages/8_🛰️_V11_Market.py",         "V11 Market",        "🛰️", "admin"),
+    ("pages/7_🔬_Pro.py",                "Research",          "🔬", "admin"),   # label was "Pro research" (2026-10-25)
+    ("pages/8_🛰️_V11_Market.py",         "Market Lab",        "🛰️", "admin"),   # label was "V11 Market" (2026-10-25)
     ("pages/10_🤖_Agent_Analysis.py",    "Agent Analysis",    "🤖", "admin"),
     ("pages/15_🔭_League_Scout.py",      "League Scout",      "🔭", "admin"),
     ("pages/18_🔧_League_Research.py",   "League Repair Lab", "🔧", "admin"),
+    ("pages/19_🩺_System_Health.py",     "System Health",     "🩺", "admin"),   # new 2026-10-25
+    ("pages/20_🧪_Model_Lab.py",         "Model Lab",         "🧪", "admin"),   # new 2026-10-25
+    ("pages/21_📡_Market_Intelligence.py", "Market Intelligence", "📡", "admin"),   # new 2026-10-25
+    ("pages/22_🏭_Production.py",        "Production",        "🏭", "admin"),   # new 2026-10-25
     ("pages/account.py",                "Account",           "👤", "free"),
 ]
 
-SECTIONS = {"free": "Free", "pro": "Wowza Pro", "admin": "Admin center"}
+SECTIONS = {"free": "Free", "pro": "Wowza Pro", "admin": "Admin center"}   # tier labels (sidebar caption)
+
+# ── sections (owner briefs 2026-10-25: architecture s.30, then the visual-redesign grouping) ─────
+# The sidebar is grouped by USER INTENT, not by who may see it. Tiers still decide visibility (PAGES
+# above + allows(), unchanged); a tier simply sees the non-empty sections of the pages it is allowed.
+# Only DISPLAY labels live here and in PAGES - page FILE names never change (URLs, bookmarks, tests).
+NAV = {
+    "Today":        ["pages/00_🎯_Home.py", "pages/free_tips.py", "pages/1_📊_Dashboard.py", "pages/6_⚡_Live.py"],
+    "Performance":  ["pages/17_🏟️_Leagues.py", "pages/12_💼_Portfolio.py", "pages/16_💰_Bankroll.py",
+                     "pages/5_🎯_Success_Rates.py"],
+    "Tools":        ["pages/13_⚽_Fantasy.py", "pages/11_👤_Player_Props.py", "pages/14_🧩_Bet_Builder.py"],
+    "Research Lab": ["pages/18_🔧_League_Research.py", "pages/20_🧪_Model_Lab.py", "pages/9_🎓_Model_Performance.py",
+                     "pages/21_📡_Market_Intelligence.py", "pages/7_🔬_Pro.py",
+                     "pages/8_🛰️_V11_Market.py", "pages/15_🔭_League_Scout.py", "pages/10_🤖_Agent_Analysis.py"],
+    "System":       ["pages/19_🩺_System_Health.py", "pages/22_🏭_Production.py", "pages/0_🏠_Overview.py", "pages/4_ℹ️_Model_Info.py",
+                     "pages/account.py"],
+}
+NAV_SECTIONS = list(NAV)
+
+# Every PAGES entry belongs to exactly ONE section (tests/test_dashboard_navigation.py enforces it).
+SECTION_OF = {path: sec for sec, paths in NAV.items() for path in paths}
+
+
+def section_of(path: str) -> str:
+    """The navigation section of a page. A page missing from NAV lands in System rather than
+    disappearing (the navigation test fails on it, so this is a never-crash fallback only)."""
+    return SECTION_OF.get(path, "System")
 
 
 def pages_for(tier: str) -> dict[str, list]:
-    """st.navigation input: sections of st.Page for everything this tier may open."""
-    out: dict[str, list] = {}
+    """st.navigation input: sections of st.Page for everything this tier may open.
+
+    WHICH pages a tier gets is decided by PAGES + allows() exactly as before 2026-10-25; only the
+    grouping and order changed (NAV order, empty sections dropped)."""
+    meta = {path: (title, icon, need) for path, title, icon, need in PAGES}
     default = "pages/00_🎯_Home.py" if allows(tier, "pro") else "pages/free_tips.py"
-    for path, title, icon, need in PAGES:
-        if not allows(tier, need):
+    order = [p for paths in NAV.values() for p in paths] + [p for p in meta if p not in SECTION_OF]
+    out: dict[str, list] = {s: [] for s in NAV_SECTIONS}
+    for path in order:
+        if path not in meta or not allows(tier, meta[path][2]):
             continue
-        section = "Account" if path.endswith("account.py") else SECTIONS[need]
-        out.setdefault(section, []).append(st.Page(path, title=title, icon=icon, default=(path == default)))
-    return out
+        title, icon, _ = meta[path]
+        out.setdefault(section_of(path), []).append(
+            st.Page(path, title=title, icon=icon, default=(path == default)))
+    return {s: v for s, v in out.items() if v}

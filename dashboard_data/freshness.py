@@ -41,3 +41,38 @@ def banner(st, rel: str, label: str | None = None, m: dict | None = None) -> dic
     else:
         st.caption(f"✅ {name}: fresh (generated {r.get('generated_at')}, limit {r.get('max_age_hours')} h)")
     return r
+
+
+def age_hours(ts) -> float | None:
+    """Hours since a RECORDED timestamp (never file mtime). None when absent or unparseable."""
+    from datetime import datetime, timezone
+    if not ts:
+        return None
+    try:
+        t = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        if t.tzinfo is None:
+            t = t.replace(tzinfo=timezone.utc)
+        return max(0.0, (datetime.now(timezone.utc) - t).total_seconds() / 3600.0)
+    except Exception:                                                 # noqa: BLE001
+        return None
+
+
+def recorded(st, rel: str, generated_at, max_age_hours: float, label: str | None = None,
+             m: dict | None = None) -> str:
+    """Freshness for an artifact: the manifest's verdict when the manifest tracks it, otherwise the
+    age of the timestamp RECORDED inside the artifact against `max_age_hours`. An unknown age is
+    treated as stale. Returns FRESH | STALE | HISTORICAL | DATED_STUDY | UNKNOWN."""
+    m = m or manifest()
+    if any(r.get("artifact") == rel for r in m.get("artifacts", [])):
+        r = banner(st, rel, label, m)
+        f = r.get("freshness") or "UNKNOWN"
+        return "STALE" if f in ("STALE", "UNKNOWN", "MISSING") else f
+    name = label or rel
+    a = age_hours(generated_at)
+    if a is None or a > max_age_hours:
+        why = "no recorded timestamp" if a is None else f"{a:.1f} h old, limit {max_age_hours:g} h"
+        st.error(f"**STALE — NOT VALID FOR CURRENT DECISIONS** · {name}: {why}")
+        return "STALE" if a is not None else "UNKNOWN"
+    st.caption(f"✅ {name}: fresh (generated {generated_at}, {a:.1f} h old, limit {max_age_hours:g} h; "
+               f"age from the artifact's own timestamp)")
+    return "FRESH"

@@ -6,6 +6,9 @@ last 7 days of success rates), PRO (licensed users - all tips, portfolio, bankro
 7/14/30/60/90 days) and ADMIN (the full admin center). st.navigation shows each viewer only the pages
 their tier allows; Streamlit's automatic pages/ sidebar is replaced by it. The old home screen is now
 pages/00_🎯_Home.py.
+
+Since 2026-10-25 the sidebar is grouped by user intent (dashboard_access.NAV: Today, Performance,
+Tools, Research Lab, System). Tiers still decide which pages appear; sections only decide where.
 """
 import sys
 from pathlib import Path
