@@ -146,6 +146,7 @@ PAGES = [
     ("pages/19_🩺_System_Health.py",     "System Health",     "🩺", "admin"),   # new 2026-10-25
     ("pages/20_🧪_Model_Lab.py",         "Model Lab",         "🧪", "admin"),   # new 2026-10-25
     ("pages/21_📡_Market_Intelligence.py", "Market Intelligence", "📡", "admin"),   # new 2026-10-25
+    ("pages/22_🏭_Production.py",        "Production",        "🏭", "admin"),   # new 2026-10-25
     ("pages/account.py",                "Account",           "👤", "free"),
 ]
 
@@ -163,7 +164,7 @@ NAV = {
     "Research Lab": ["pages/18_🔧_League_Research.py", "pages/20_🧪_Model_Lab.py", "pages/9_🎓_Model_Performance.py",
                      "pages/21_📡_Market_Intelligence.py", "pages/7_🔬_Pro.py",
                      "pages/8_🛰️_V11_Market.py", "pages/15_🔭_League_Scout.py", "pages/10_🤖_Agent_Analysis.py"],
-    "System":       ["pages/19_🩺_System_Health.py", "pages/0_🏠_Overview.py", "pages/4_ℹ️_Model_Info.py",
+    "System":       ["pages/19_🩺_System_Health.py", "pages/22_🏭_Production.py", "pages/0_🏠_Overview.py", "pages/4_ℹ️_Model_Info.py",
                      "pages/account.py"],
 }
 NAV_SECTIONS = list(NAV)

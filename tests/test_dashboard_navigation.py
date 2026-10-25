@@ -83,6 +83,7 @@ NEW_PAGES = [
     ("pages/19_🩺_System_Health.py", "System"),
     ("pages/20_🧪_Model_Lab.py", "Research Lab"),
     ("pages/21_📡_Market_Intelligence.py", "Research Lab"),
+    ("pages/22_🏭_Production.py", "System"),
 ]
 
 
@@ -233,3 +234,24 @@ def test_model_lab_prospective_counts_against_per_track_minimum(tmp_path):
     assert r.loc["standard", "required_n"] == 1000 and not r.loc["standard", "evaluable"]
     assert r.loc["newformat", "evaluable"] and r.loc["newformat", "progress"] == 1.0
     assert M.decisions(tmp_path / "missing.csv").empty
+
+
+def test_production_view_filters_dates_and_finds_protected(tmp_path):
+    import json
+    from dashboard_data import production_view as P
+    sp = tmp_path / "stake_plan.csv"
+    sp.write_text("date,fixture,league,track,deployment_state,final_fraction,reason\n"
+                  "2026-10-24,a,L,t,ACTIVE,0.01,OK\n2026-10-25,b,L,t,ACTIVE,0.005,OK\n"
+                  "2026-10-26,c,L,t,PAPER,0,paper track\n", encoding="utf-8")
+    plan = P.stake_plan(sp, today="2026-10-25")
+    assert plan["fixture"].tolist() == ["b", "c"] and plan["stake_pct"].tolist() == [0.5, 0.0]
+    s = P.plan_summary(plan).set_index("deployment_state")
+    assert s.loc["ACTIVE", "staked"] == 1 and s.loc["PAPER", "staked"] == 0
+    rg = tmp_path / "reg.json"
+    rg.write_text(json.dumps({"entries": [
+        {"key": "A", "research_regime": "PROTECTED", "owner_locked": True, "production_state": "ACTIVE"},
+        {"key": "B", "research_regime": "LEARNING", "owner_locked": False, "production_state": "PAPER"}]}),
+        encoding="utf-8")
+    _, reg = P.registry(rg)
+    assert P.protected(reg)["key"].tolist() == ["A"]
+    assert P.stake_plan(tmp_path / "missing.csv").empty
