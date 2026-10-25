@@ -112,7 +112,7 @@
     "provenance": {
       "unchanged from PG-1.0": "match-date block bootstrap (2000 draws, seed, 95%, >=20 dates), ECE bins, slope check (0.25 and 2 SE), sd-ratio band, max_frac_moved 0.25, extreme-share increase 0.02, min_league_n 150, early_fail_min_n 300, max_age_days 180, prospective sign rule (delta < 0), min_n 1000 in both periods",
       "rescaled from PG-1.0 by the market's base rate": "material_ll_improvement (0.001), max_brier_worsening (0.0001), max_ece_worsening (0.01), max_league_ll_regression (0.02), max_mean_shift (0.02), max_quantile_shift (0.05), moved_pp (0.10)",
-      "new in PG-PROPS-1.0": "min_events_per_market 100 (both periods) and min_league_events 30; extreme_lo 0.001 (the props Platt clip floor) in place of 0.05",
+      "new in PG-PROPS-1.0": "min_events_per_market 100 (both periods) and min_league_events 30; extreme_lo 0.001 (the props Platt clip floor) in place of 0.05; a holdout overlapping a KNOWN champion training cutoff is trimmed to the days strictly after it (PG-1.0 fails the comparison instead)",
       "base rates": "player_history.parquet as of commit acc2ec4b (2026-10-25), all labelled rows per target"
     }
   }

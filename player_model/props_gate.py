@@ -67,6 +67,11 @@ New in PG-PROPS-1.0:
     events (and, implicitly, >> 100 non-events) is the standard minimum for validating a binary
     prediction model (Vergouwe et al. 2005; Collins et al. 2016).
   * min_league_events 30: a league's delta is only allowed to veto when it holds >= 30 events.
+  * Untouched holdout by TRIMMING, not by failing. train() splits by row, so the boundary day is
+    shared, and a champion trained on an earlier history (rows back-filled for new leagues) can
+    have seen dates inside the candidate's holdout. When the champion's cutoff is known, only days
+    strictly AFTER it are scored and every minimum applies to what is left (PG-1.0 returns
+    EVALUATION_FAILED instead). Unknown cutoff (every legacy props model) -> UNVERIFIED, as PG-1.0.
   * extreme_lo 0.001, the props Platt clip floor (model._PlattCalibratedModel), instead of 0.05 —
     most props probabilities legitimately sit below 0.05; pinned-at-the-floor is the degenerate case.
 
@@ -394,17 +399,29 @@ def evaluate_holdout(market: str, y, p_champion, p_candidate, *, dates, leagues=
         y, pc, pn = y[ok], pc[ok], pn[ok]
         dts = dts[ok].reset_index(drop=True)
         lg = None if leagues is None else pd.Series(list(leagues)).astype(str)[ok].to_numpy()
-        n, ev = int(len(y)), int(y.sum()) if len(y) else 0
-        out.update(n=n, events=ev, dropped_rows=int((~ok).sum()))
+        out["dropped_rows"] = int((~ok).sum())
+        # UNTOUCHED BY BOTH MODELS. train() splits by ROW (80/20 of the date-sorted history), so
+        # the boundary day is shared and a champion trained on an earlier, differently-shaped
+        # history (rows back-filled for new leagues) can have seen dates inside this holdout.
+        # PG-1.0 fails such a comparison outright; with a props holdout of ~170k rows the honest
+        # alternative is to score ONLY the days strictly after the champion's cutoff, and then
+        # apply every minimum to what is left. Unknown cutoff (legacy) -> UNVERIFIED, as PG-1.0:
+        # contamination can only flatter the champion, so it biases against promotion.
         if champion_cutoff:
             cut = pd.to_datetime(champion_cutoff, errors="coerce")
-            if pd.notna(cut) and n:
-                if dts.min() <= cut:
-                    out["untouched"] = "VIOLATED"
-                    out["reason"] = (f"EVALUATION_FAILED: holdout starts {dts.min().date()} but the "
-                                     f"champion trained through {cut.date()} - not untouched")
-                    return out
-                out["untouched"] = "VERIFIED"
+            if pd.notna(cut) and len(y):
+                keep = (dts.dt.normalize() > cut.normalize()).to_numpy()
+                if keep.all():
+                    out["untouched"] = "VERIFIED"
+                else:
+                    out["untouched"] = "TRIMMED"
+                    out["trimmed_rows"] = int((~keep).sum())
+                    out["trimmed_through"] = str(cut.date())
+                    y, pc, pn = y[keep], pc[keep], pn[keep]
+                    dts = dts[keep].reset_index(drop=True)
+                    lg = None if lg is None else lg[keep]
+        n, ev = int(len(y)), int(y.sum()) if len(y) else 0
+        out.update(n=n, events=ev)
         if n < int(h["min_n_per_market"]) or ev < int(h["min_events_per_market"]):
             out["reason"] = (f"n={n}, events={ev} below min n {h['min_n_per_market']} / events "
                              f"{h['min_events_per_market']} - nothing can be decided")

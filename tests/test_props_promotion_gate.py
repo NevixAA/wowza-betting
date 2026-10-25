@@ -147,6 +147,20 @@ def test_immaterial_gain_does_not_qualify():
     assert not ev["checks"]["material_improvement"] and not ev["qualified"]
 
 
+def test_holdout_days_the_champion_saw_are_trimmed_not_scored():
+    d = _holdout("goals", n=20000, champ_sd=0.15)
+    args = ("goals", d["target_goals"], d["pc"], d["pn"])
+    first, mid = d["date"].min(), d["date"].iloc[len(d) // 2]
+    before = PPG.evaluate_holdout(*args, dates=d["date"], champion_cutoff=str(first - pd.Timedelta(days=1)))
+    assert before["untouched"] == "VERIFIED" and before["n"] == len(d)
+    half = PPG.evaluate_holdout(*args, dates=d["date"], champion_cutoff=str(mid.date()))
+    assert half["untouched"] == "TRIMMED" and half["n"] == int((d["date"] > mid).sum())
+    allseen = PPG.evaluate_holdout(*args, dates=d["date"], champion_cutoff="2030-01-01")
+    assert allseen["n"] == 0 and not allseen["evaluable"] and not allseen["qualified"]
+    unknown = PPG.evaluate_holdout(*args, dates=d["date"])
+    assert unknown["untouched"] == "UNVERIFIED" and unknown["n"] == len(d)
+
+
 def test_too_few_events_cannot_qualify():
     d = _holdout("sot4", n=3000, champ_sd=0.6)                      # ~8 events
     ev = PPG.evaluate_holdout("sot4", d["target_sot4"], d["pc"], d["pn"], dates=d["date"])
