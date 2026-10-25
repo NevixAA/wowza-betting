@@ -834,9 +834,13 @@ def enrich_with_odds(tips_df: pd.DataFrame, odds_data: dict) -> pd.DataFrame:
     if tips_df.empty:
         return tips_df
 
+    # Fixture-scoped key first (odds_fetcher.tip_price_key, 2026-10-25): two tips sharing a name
+    # in different fixtures must not share a price. The plain key is kept for older callers only.
+    _date_col = "date" if "date" in tips_df.columns else "match_date"
     for idx, row in tips_df.iterrows():
         key        = f"{row['player_name']}|{row['market']}"
-        mkt_odds   = odds_data.get(key)
+        scoped     = f"{key}|{str(row.get(_date_col, '') or '')[:10]}|{row.get('match', '')}"
+        mkt_odds   = odds_data.get(scoped) or odds_data.get(key)
         if not mkt_odds:
             continue
 

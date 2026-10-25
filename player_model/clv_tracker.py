@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 
 from src import clv_capture
 from player_model import config
-from player_model.odds_fetcher import _norm
+from player_model.odds_fetcher import _norm, same_fixture
 
 # Track CLV for EVERY tier that has odds (2026/27: keep the full open->close->CLV record for
 # the whole test slate, not just the sent feed). Rows without odds are skipped inside log_new_tips.
@@ -106,6 +106,12 @@ def close_out(odds_history_path=None, kickoff_map: dict | None = None) -> int:
             continue                      # no kickoff map + match today/future -> don't close early
         pk = _norm(player)
         m = oh[(oh["_pk"] == pk) & (oh["market"].astype(str) == market) & (oh["_d"] == d)]
+        # Same FIXTURE only (2026-10-25): a namesake playing elsewhere that day (Matheuzinho in
+        # Vitoria v Atletico-PR vs Vasco v Corinthians) must not supply this record's close.
+        tip_match = str(r.get("match", "") or "")
+        if not m.empty and tip_match and "match" in m.columns:
+            ok = {mm for mm in m["match"].astype(str).unique() if same_fixture(tip_match, mm)}
+            m = m[m["match"].astype(str).isin(ok)]
         if m.empty:
             continue
         closing = float(m.sort_values("snapshot_ts").iloc[-1]["odds"])   # last snapshot = close
