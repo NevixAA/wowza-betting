@@ -45,14 +45,54 @@ HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 _ID_COLS = {"fixture_id", "player_id", "team_id", "opponent_id", "league_id"}
 
 
-def _history_season(dates: "pd.Series") -> "pd.Series":
-    """Season a fixture belongs to, by the European Jul-Jun convention. NaT -> <NA>."""
+def _history_month(dates: "pd.Series") -> "pd.Series":
+    """Calendar month a fixture belongs to, as 'YYYY-MM'. NaT -> 'unknown'."""
     d = pd.to_datetime(dates, errors="coerce")
-    return (d.dt.year - (d.dt.month < 7)).astype("Int64")
+    return d.dt.strftime("%Y-%m").fillna("unknown")
 
 
-def _save_history(df: "pd.DataFrame", path=None) -> None:
-    """Write player_history as a DIRECTORY of one parquet part per season.
+def _part_name(month_key: str) -> str:
+    """month_2026-10.parquet. Sorts chronologically; 'month_unknown' sorts last."""
+    return f"month_{month_key}.parquet"
+
+
+def _size_guard(root, warn_mb: float = 70, error_mb: float = 100) -> list[str]:
+    """Warn per PART before one nears GitHub's 100 MB per-file limit. Returns the messages."""
+    msgs = []
+    for f in sorted(Path(root).glob("*.parquet")):
+        mb = f.stat().st_size / 1e6
+        if mb > error_mb:
+            msgs.append(f"[history] ERROR {f.name} is {mb:.0f} MB — GitHub will REJECT this push. "
+                        f"That part needs splitting further (by league).")
+        elif mb > warn_mb:
+            msgs.append(f"[history] WARNING {f.name} is {mb:.0f} MB, approaching GitHub's 100 MB "
+                        f"limit. Plan the next split before it lands, not after.")
+    for m in msgs:
+        print(m)
+    return msgs
+
+
+def _save_history(df: "pd.DataFrame", path=None) -> dict:
+    """Write player_history as a DIRECTORY of one parquet part per calendar MONTH, and rewrite
+    only the parts whose content actually changed.
+
+    MONTH PARTS, AND THE NO-OP SKIP (2026-10-25). The per-season split below stopped the single
+    file from crossing 100 MB, but it did not stop the repository growing: measured over the 30
+    days to 2026-10-25, 39 commits touching this directory added 3,008 MB of blobs. Three causes,
+    from `git log --raw` plus a row-level diff of consecutive versions:
+
+      * the daily collect rewrote season_2025 AND season_2026 every day (65.5 MB per commit,
+        1,900 MB over 29 commits). season_2025 is "finished" only for Jul-Jun leagues: the
+        calendar-year leagues (J-League, Ireland, Finland, ...) put Feb-Jun 2026 into it, and
+        those rows are refreshed nightly;
+      * 4 of those 29 commits rewrote ALL five parts with zero changed rows — only the pandas
+        version recorded in the file metadata had changed on the runner;
+      * the weekly injury refresh (146 MB per commit) stamps every row of every active player.
+
+    Month parts confine a write to the months that changed, and comparing the Arrow content of
+    each part with what is on disk (data + schema, metadata ignored) skips a part whose rows did
+    not change at all, so git sees no change. Row ORDER within a part is the writer's order, and
+    parts concatenate chronologically, so every date-sorted read sees what it saw before.
 
     WHY IT IS A DIRECTORY, AND WHY IT KEPT THE .parquet NAME.
 
@@ -80,7 +120,7 @@ def _save_history(df: "pd.DataFrame", path=None) -> None:
     because pyarrow infers a partition column from those and would silently add a `season`
     column that was never in the schema.
 
-    Rows with an unparseable date go to season_unknown.parquet rather than being dropped.
+    Rows with an unparseable date go to month_unknown.parquet rather than being dropped.
 
     Also writes at the precision the data carries, which is what got the single file under the
     limit in the first place: 155 float64 columns held goals, shots, cards and rolling means,
@@ -103,6 +143,10 @@ def _save_history(df: "pd.DataFrame", path=None) -> None:
     if cast:
         out = out.astype(cast)
 
+    import os
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
     root = Path(path or HISTORY_CACHE)
     # Transition: the path used to be a single file. Remove it before creating the directory,
     # so a checkout that still has the old layout self-migrates instead of raising.
@@ -110,35 +154,52 @@ def _save_history(df: "pd.DataFrame", path=None) -> None:
         root.unlink()
     root.mkdir(parents=True, exist_ok=True)
 
-    season = _history_season(out["date"]) if "date" in out.columns else None
-    if season is None:
-        out.to_parquet(root / "season_unknown.parquet", index=False, compression="zstd")
-        return
+    # ONE schema for every part, inferred from the WHOLE frame. Inferring per part would let a
+    # month in which a string column happens to be all-null be written as type `null`, and the
+    # directory read would then depend on which part pyarrow happens to open first.
+    schema = pa.Schema.from_pandas(out, preserve_index=False)
+    month = (_history_month(out["date"]) if "date" in out.columns
+             else pd.Series("unknown", index=out.index))
 
-    written = set()
-    for key, idx in out.groupby(season.fillna(-1), sort=True).groups.items():
-        name = "season_unknown.parquet" if int(key) == -1 else f"season_{int(key)}.parquet"
-        out.loc[idx].to_parquet(root / name, index=False, compression="zstd")
-        written.add(name)
+    stats = {"written": [], "unchanged": [], "removed": [], "bytes_written": 0}
+    keep = set()
+    # .indices gives POSITIONS in original order, so a duplicated index label can never
+    # duplicate rows (.groups + .loc would) and each part keeps the writer's row order.
+    for key, pos in sorted(out.groupby(month.to_numpy(), sort=False).indices.items()):
+        name = _part_name(key)
+        keep.add(name)
+        table = pa.Table.from_pandas(out.iloc[pos], schema=schema, preserve_index=False)
+        f = root / name
+        if f.exists():
+            try:
+                old = pq.read_table(f)
+                if old.schema.equals(table.schema, check_metadata=False) and old.equals(table):
+                    stats["unchanged"].append(name)
+                    continue
+            except Exception:
+                pass   # unreadable or different -> rewrite it
+        tmp = f.with_name(f.name + ".tmp")
+        pq.write_table(table, tmp, compression="zstd")
+        os.replace(tmp, f)          # never leave a half-written part where a reader can see it
+        stats["written"].append(name)
+        stats["bytes_written"] += f.stat().st_size
+
     # Every caller passes the COMPLETE frame, so a part with no rows this time is stale and
-    # must go -- otherwise a season that lost its rows would linger and be read back forever.
-    for f in root.glob("*.parquet"):
-        if f.name not in written:
+    # must go -- otherwise a month that lost its rows would linger and be read back forever.
+    # This is also what migrates the old season_YYYY.parquet parts away on the first write.
+    for f in list(root.glob("*.parquet")) + list(root.glob("*.parquet.tmp")):
+        if f.name not in keep:
             f.unlink()
+            stats["removed"].append(f.name)
 
-    # Say something BEFORE a part gets near the limit, not after a push is rejected.
-    # Splitting by season buys a lot of room -- the largest part is 41 MB today -- but a season
-    # does not have a fixed size: it grows every time a league is added to PROP_LEAGUES. The
-    # single-file layout gave no warning at all, and the first sign of trouble was GH001 on a
-    # push that had already done the work.
-    for f in sorted(root.glob("*.parquet")):
-        mb = f.stat().st_size / 1e6
-        if mb > 100:
-            print(f"[history] ERROR {f.name} is {mb:.0f} MB — GitHub will REJECT this push. "
-                  f"That season needs splitting further (by league, or half-season).")
-        elif mb > 70:
-            print(f"[history] WARNING {f.name} is {mb:.0f} MB, approaching GitHub's 100 MB "
-                  f"limit. Plan the next split before it lands, not after.")
+    print(f"[history] parts: {len(stats['written'])} written "
+          f"({stats['bytes_written'] / 1e6:.1f} MB), {len(stats['unchanged'])} unchanged, "
+          f"{len(stats['removed'])} removed")
+
+    # Say something BEFORE a part gets near the limit, not after a push is rejected. A month
+    # part is a few MB today, but it grows every time a league is added to PROP_LEAGUES.
+    _size_guard(root)
+    return stats
 
 
 # ── Phase 2: Collect ──────────────────────────────────────────────────────────

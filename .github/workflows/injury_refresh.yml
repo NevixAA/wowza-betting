@@ -91,7 +91,9 @@ jobs:
             echo "the next Saturday run will not re-derive."
             exit 0
           fi
-          git add -f player_history.parquet 2>/dev/null || true
+          # -A: player_history.parquet is a DIRECTORY of month parts; a part that appears or
+          # disappears must be staged as an add or a deletion. Directory-scoped, never repo-wide.
+          git add -A -f player_history.parquet 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: injury refresh $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

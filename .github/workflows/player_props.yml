@@ -390,13 +390,15 @@ jobs:
                    output/model_lineage/props_shadow_h2h.csv \
                    telegram_bot/player_notified.json telegram_bot/cashout_notified.json \
                    telegram_bot/player_kickoff_cache.json team_id_cache.json \
-                   player_history.parquet \
                    models/model_player_goals.pkl   models/model_player_goals2.pkl \
                    models/model_player_assists.pkl \
                    models/model_player_sot.pkl     models/model_player_sot2.pkl \
                    models/model_player_sot3.pkl    models/model_player_cards.pkl; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
+          # player_history.parquet is a DIRECTORY of month parts (2026-10-25): -A so a part that
+          # appears or disappears is staged too. Directory-scoped, never repo-wide.
+          git add -A -f player_history.parquet 2>/dev/null || echo "  (skip, not present: player_history.parquet)"
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: player props $(date -u '+%Y-%m-%d %H:%M UTC')"

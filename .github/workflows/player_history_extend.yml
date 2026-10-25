@@ -243,9 +243,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Per-file, so one absent path cannot stage nothing (see player_props.yml).
-          for f in player_history.parquet output/history_extend_health.json; do
+          for f in output/history_extend_health.json; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
+          # player_history.parquet is a DIRECTORY of month parts (2026-10-25). -A stages new
+          # parts AND removed ones (e.g. the old season_YYYY.parquet files on migration); only
+          # parts whose rows changed are rewritten, so most days this stages 1-7 small files.
+          git add -A -f player_history.parquet 2>/dev/null || echo "  (skip, not present: player_history.parquet)"
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
             git commit -m "auto: player history extend $(date -u '+%Y-%m-%d %H:%M UTC')"
