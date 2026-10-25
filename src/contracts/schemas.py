@@ -17,6 +17,7 @@ Families requested by the 2026-10-25 platform brief, and the files they describe
     SHADOW_EXPERIMENT_ROW          output/model_lineage/shadow_experiments.csv
     TOP_PICKS_ROW                  output/top_picks_log.csv
     PROPS_SHOWN_ROW                output/props_shown_log.csv
+    LEAGUE_WEEKLY_RESEARCH_ROW     output/league_weekly_research.csv (weekly per-league panel)
   STAKE_PLAN_ROW                 output/stake_plan.csv (and STAKE_AUDIT_ROW: output/stake_audit.csv)
   SETTLEMENT_ROW                 settled ledger rows (bets_ledger.csv, side_bets_ledger.csv)
   CLV_RECORD                     output/clv_records.csv
@@ -316,6 +317,43 @@ PROPS_SHOWN_ROW = Schema(
                 "a 'priced' row records the odds shown", ("section", "market_odds"))),
 )
 
+LEAGUE_WEEKLY_RESEARCH_ROW = Schema(
+    "LEAGUE_WEEKLY_RESEARCH_ROW", "1",
+    "One frozen top-5 member of a league x market x gameweek research panel "
+    "(output/league_weekly_research.csv, src/research/league_weekly.py). A research observation, NOT a bet.",
+    kind="research_observation", writers=("output/league_weekly_research.csv",),
+    key=("selection_engine_version", "league_week_id", "market", "league_market_rank"), unique_key=True,
+    columns=(
+        Col("research_id", nullable=False), Col("selection_mode", allowed=("WEEKLY_LEAGUE_RESEARCH",), nullable=False),
+        Col("league_week_id", nullable=False), Col("week_lock_ts", "datetime", nullable=False),
+        Col("league", nullable=False), Col("model_type", allowed=TRACKS, nullable=False),
+        Col("fixture_id", nullable=False), Col("kickoff_utc", "datetime", nullable=False),
+        Col("market", allowed=PLAN_MARKETS, nullable=False), Col("side", allowed=SIDES, nullable=False),
+        Col("league_market_rank", "int", min=1, max=5, nullable=False), Col("legacy_rank", "int", min=1),
+        Col("selection_engine_version", allowed=("market_edge_v2",), nullable=False),
+        P("p_model_raw"), P("p_market_fair"), P("p_decision"), P("p_lower_bound"),
+        Col("ev_point", "float"), Col("ev_lower_bound", "float"), ODDS("odds"),
+        Col("decision_state", allowed=ENGINE_STATES, nullable=False),
+        Col("price_quality_state", allowed=("TWO_SIDED_MULTI_BOOK", "TWO_SIDED_SINGLE_BOOK", "INSUFFICIENT"),
+            nullable=False),
+        Col("first_seen_at", "datetime", nullable=False), Col("created_at", "datetime", nullable=False),
+        Col("result", allowed=RESULTS), Col("flat_pnl", "float"), ODDS("closing_odds"), Col("clv_pct", "float"),
+        P("closing_market_fair_prob"),
+    ),
+    rules=(
+        _after_kickoff("first_seen_at"),
+        _side_matches_market("side", "market", btts=("BTTS",)),
+        Rule("first_seen_before_week_lock", lambda d: ts(d["first_seen_at"]) >= ts(d["week_lock_ts"]),
+             "a week member was first seen strictly before the week lock (WL-1)", ("first_seen_at", "week_lock_ts")),
+        Rule("insufficient_price_has_no_pnl",
+             lambda d: text(d["price_quality_state"]).eq("INSUFFICIENT") & num(d["flat_pnl"]).notna(),
+             "a row without a two-sided price never carries a P/L", ("price_quality_state", "flat_pnl")),
+        Rule("qualified_needs_positive_ev_lb",
+             lambda d: text(d["decision_state"]).isin(["QUALIFIED", "STRONG"]) & ~(num(d["ev_lower_bound"]) > 0),
+             "QUALIFIED/STRONG require ev_lower_bound > 0", ("decision_state", "ev_lower_bound")),
+    ),
+)
+
 # ── STAKE_PLAN_ROW ───────────────────────────────────────────────────────────────────────────────
 _STAKE_COLS = (
     Col("date", "date", nullable=False), Col("fixture", nullable=False), Col("league", nullable=False),
@@ -446,7 +484,7 @@ MODEL_EXPERIMENT_REGISTRATION = Schema(
 
 SCHEMAS = {s.name: s for s in (
     PREDICTION_ROW, MARKET_SNAPSHOT_ROW, SELECTION_DECISION, RESEARCH_OBSERVATION, V91_SHADOW_ROW,
-    SHADOW_EXPERIMENT_ROW, TOP_PICKS_ROW, PROPS_SHOWN_ROW, STAKE_PLAN_ROW, STAKE_AUDIT_ROW,
+    SHADOW_EXPERIMENT_ROW, TOP_PICKS_ROW, PROPS_SHOWN_ROW, LEAGUE_WEEKLY_RESEARCH_ROW, STAKE_PLAN_ROW, STAKE_AUDIT_ROW,
     SETTLEMENT_ROW, CLV_RECORD, MODEL_EXPERIMENT_REGISTRATION)}
 
 #: committed file -> schema, for the daily validation of what is actually in the repo
@@ -458,6 +496,7 @@ COMMITTED_FILES = {
     "output/model_lineage/shadow_experiments.csv": "SHADOW_EXPERIMENT_ROW",
     "output/top_picks_log.csv": "TOP_PICKS_ROW",
     "output/props_shown_log.csv": "PROPS_SHOWN_ROW",
+    "output/league_weekly_research.csv": "LEAGUE_WEEKLY_RESEARCH_ROW",
     "output/stake_plan.csv": "STAKE_PLAN_ROW",
     "output/stake_audit.csv": "STAKE_AUDIT_ROW",
     "output/bets_ledger.csv": "SETTLEMENT_ROW",

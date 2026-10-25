@@ -8,7 +8,7 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # +5 for the shadow settlement pass + its own commit step (2026-10-20)
+    timeout-minutes: 20  # +5 for the shadow settlement pass + its own commit step (2026-10-20); +5 league research panel (2026-10-25)
     permissions:
       contents: write
 
@@ -125,6 +125,33 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "shadow settlement push failed after 5 retries"; exit 1; }
+
+      # WEEKLY LEAGUE RESEARCH PANEL SETTLEMENT (2026-10-25). RESEARCH ONLY. Fills the grading columns of
+      # output/league_weekly_research.csv (score from the v91 rows settled above, certified T-30m closes from
+      # the ledgers' archives + heartbeats); frozen columns are hashed and the write is refused if one would
+      # change. Same no-merge discipline as the shadow step: predict APPENDS to this file, so each attempt
+      # resets to the freshest origin/main and re-derives the settlement from the files on disk
+      # (deterministic, idempotent). TOLERANT: a failure is a warning, never a red run.
+      - name: Settle weekly league research panel (research only)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            python -m src.research.league_weekly settle || { echo "::warning::league research settlement failed (research only)"; pushed=1; break; }
+            for f in output/league_weekly_research.csv output/league_weekly_research.csv.first_sight.json \
+                     output/league_weekly_research_summary.json output/league_market_health.json \
+                     output/weekly_league_report.json; do
+              git add -f "$f" 2>/dev/null || true
+            done
+            if git diff --staged --quiet; then pushed=1; echo "league research: nothing new"; break; fi
+            git commit -q -m "auto: league research settlement $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::league research settlement push failed after 5 retries"
 
       # P0 2026-10-22 - FAIL LOUDLY if a registered challenger experiment is not being logged.
       # The H-MODEL-01 clock ran for 18 days with zero challenger probabilities and nothing went

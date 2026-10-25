@@ -233,6 +233,13 @@ jobs:
         run: python telegram_bot/notifier.py
         continue-on-error: true
 
+      # WEEKLY PER-LEAGUE RESEARCH PANEL (2026-10-25). RESEARCH ONLY: reads the edge-engine shadow log this
+      # run just wrote, records first-sight candidates and freezes each league-week's top-5 once its first
+      # match kicks off. Never touches a tip, stake, threshold, ledger or Telegram file. Tolerant: a failure
+      # is a warning and can never stop the commit below.
+      - name: Weekly league research panel (research only)
+        run: python -m src.research.league_weekly || echo "::warning::league_weekly research panel failed (research only - tips unaffected)"
+
       - name: Commit and push outputs
         run: |
           git config user.name "github-actions[bot]"
@@ -254,6 +261,9 @@ jobs:
                    output/predict_health.json output/feature_health.json \
                    output/stake_plan.csv output/stake_audit.csv output/direction_conflicts.csv \
                    output/edge_engine_shadow.csv output/edge_engine_health.json \
+                   output/league_weekly_candidates.csv output/league_weekly_research.csv \
+                   output/league_weekly_research.csv.first_sight.json output/league_weekly_research_summary.json \
+                   output/league_market_health.json output/weekly_league_report.json \
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv \
                    output/v91_shadow.csv \

@@ -142,6 +142,7 @@ PAGES = [
     ("pages/8_🛰️_V11_Market.py",         "V11 Market",        "🛰️", "admin"),
     ("pages/10_🤖_Agent_Analysis.py",    "Agent Analysis",    "🤖", "admin"),
     ("pages/15_🔭_League_Scout.py",      "League Scout",      "🔭", "admin"),
+    ("pages/18_🔧_League_Research.py",   "League Repair Lab", "🔧", "admin"),
     ("pages/account.py",                "Account",           "👤", "free"),
 ]
 
