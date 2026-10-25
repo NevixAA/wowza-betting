@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-10-25T11:53:13Z",
+ "generated_at": "2026-10-25T12:00:20Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Challenger prediction coverage: 54% of 213 rows (p_pro_hgb)",
@@ -18,7 +18,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "cbd42d57210fe30fb96878bf3b465936c075b9520ca9b71169518b898e4a7803",
-  "code_commit": "a635b9e4ddae"
+  "code_commit": "5e8a1dfb111f"
  },
  "counts": {
   "GREEN": 13,
@@ -79,7 +79,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 failed / 134 runs (24 h)",
+   "value": "0 failed / 136 runs (24 h)",
    "rule": "failed/timed-out runs across the 3 repos in the last 24 h: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -114,7 +114,7 @@
   {
    "check": "First-sight store integrity",
    "status": "GREEN",
-   "value": "7 stores, 0 checked against the previous digest",
+   "value": "7 stores, 6 checked against the previous digest",
    "rule": "RED if any store's previously recorded rows no longer match their frozen digest (TAMPERED) or a store is unreadable; AMBER if duplicate keys (earliest-wins breached) or rows observed at/after kickoff; GREEN otherwise",
    "detail": ""
   },
@@ -128,7 +128,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 732 rows, shadow_only=True, 2.5 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 732 rows, shadow_only=True, 2.6 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -320,8 +320,8 @@
    "frozen_digest": "7b2e823f28619c3b9cb0500371dfe6eb887f75fa4a292353f3d3ff0a63cf2240",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 732,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   },
@@ -330,8 +330,8 @@
    "frozen_digest": "1fbc3d147d456c3407185eb65800e31fb4dfc4bd7990ed860092aa3e36b5a53e",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 319,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   },
@@ -340,8 +340,8 @@
    "frozen_digest": "6ef3ceb49817c9f4c3c87349aede5340005b7271de6e4a77893202d07bb0d05e",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 785,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   },
@@ -350,8 +350,8 @@
    "frozen_digest": "a46efbe37e7554106974500c4bc3ff99594d2facd1455b0fb8cac8f51a67bf10",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 2356,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   },
@@ -360,8 +360,8 @@
    "frozen_digest": "0180491adaa0f30345de1da0221051fe9bdceec88145ad747a39df95f90547cb",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 468,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   },
@@ -370,8 +370,8 @@
    "frozen_digest": "9c0e86b079e6ee187c6c687dc63bbb50a6267d51afd9e3554f521f5c88d1d859",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 100,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   },
