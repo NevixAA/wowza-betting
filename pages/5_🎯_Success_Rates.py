@@ -39,8 +39,12 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 
+import dashboard_ui as ui  # noqa: E402
+from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
+import importlib  # noqa: E402
+V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
+
 st.set_page_config(page_title="Success Rates | Wowza", page_icon="🎯", layout="wide")
-st.title("🎯 Success rates — model × market × tier")
 
 STAKED = ("SNIPER", "MARKSMAN")
 _WIN = ("WIN",)
@@ -98,43 +102,55 @@ def _load() -> pd.DataFrame:
 
 
 df = _load()
+_SUB = ("Every rate with its n, staked tiers apart from recorded ones, and props labelled PAPER — the breakdown a "
+        "single headline number hides.")
+_EYEBROW = "Performance · success rates"
 if df.empty:
-    st.info("No settled rows in any ledger yet.")
+    ui.page_header("Success rates", _SUB, eyebrow_text=_EYEBROW)
+    ui.empty_state("NO_DATA", "No settled rows in any ledger yet.")
     st.stop()
 
 cut = getattr(config, "PERFORMANCE_CUTOFF_DATE", None)
+_newest = df["_date"].max()
+_, _chip = _fresh.ts_badge(_newest if pd.notna(_newest) else None, "weekly",
+                           f"newest settled {_newest:%d/%m}" if pd.notna(_newest) else "newest settled")
+ui.page_header("Success rates", _SUB, eyebrow_text=_EYEBROW,
+               freshness=ui.status_chip("NO_DATA", label="FLAT 1U · SETTLED ONLY", tone="NEUTRAL") + " " + _chip)
 
 # ── tier windows (dashboard_access.WINDOWS, 2026-10-18): free = last 7 days of STAKED bets only;
 # pro = 7/14/30/60/90 days; admin also "all time". The window is applied to the settled match date.
 from dashboard_access import WINDOWS, current_tier  # noqa: E402
 _tier = current_tier()
 _wins = WINDOWS[_tier]
+c1, c2 = st.columns([1.4, 1])
 if len(_wins) > 1:
-    window = st.radio("Period", _wins, horizontal=True, index=0,
-                      format_func=lambda w: "All time" if w == 0 else f"Last {w} days")
+    with c1:
+        window = st.radio("Period", _wins, horizontal=True, index=0,
+                          format_func=lambda w: "All time" if w == 0 else f"Last {w} days")
 else:
     window = _wins[0]
     st.caption(f"Last {window} days · Wowza Pro shows 7 / 14 / 30 / 60 / 90 days.")
 
-c1, c2, c3 = st.columns([1.2, 1, 1])
 if _tier == "free":
     use_cut, scope = bool(cut), "STAKED only (SNIPER/MARKSMAN)"
-    with c3:
+    with st.expander("Advanced filters"):
         min_n = st.number_input("Hide cells with fewer than n", 1, 100, 5, 1,
                                 help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 else:
-    with c1:
-        use_cut = st.checkbox(
-            f"Apply PERFORMANCE_CUTOFF_DATE ({cut})", value=bool(cut),
-            help="v9 counts P&L only from this date. Earlier rows still contribute CLV but predate "
-                 "fixes, so pooling them misstates current performance.")
     with c2:
         scope = st.radio("Scope", ["STAKED only (SNIPER/MARKSMAN)", "All tiers"], index=0,
                          help="VALUABLE is recorded for measurement and never bet. Including it in a "
                               "win rate describes something other than what the money did.")
-    with c3:
-        min_n = st.number_input("Hide cells with fewer than n", 1, 100, 10, 1,
-                                help="A rate on a handful of bets is noise. Hidden, not zeroed.")
+    with st.expander("Advanced filters"):
+        a1, a2 = st.columns(2)
+        with a1:
+            use_cut = st.checkbox(
+                f"Apply PERFORMANCE_CUTOFF_DATE ({cut})", value=bool(cut),
+                help="v9 counts P&L only from this date. Earlier rows still contribute CLV but predate "
+                     "fixes, so pooling them misstates current performance.")
+        with a2:
+            min_n = st.number_input("Hide cells with fewer than n", 1, 100, 10, 1,
+                                    help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 
 d = df.copy()
 if use_cut and cut:
@@ -148,7 +164,7 @@ if scope.startswith("STAKED"):
 st.caption(f"{len(d):,} settled observation(s) after filters · "
            f"sources: {d['_source'].value_counts().to_dict()}")
 if d.empty:
-    st.warning("Nothing left after these filters.")
+    ui.empty_state("NO_DATA", "Nothing left after these filters.")
     st.stop()
 
 
@@ -179,8 +195,24 @@ def _table(g: pd.DataFrame) -> pd.DataFrame:
 full = _table(d)
 shown = full[full["n"] >= min_n]
 hidden = full[full["n"] < min_n]
+_ch = V.ci_frame(shown)
 
-st.subheader("Model × market × tier")
+# ═══ STATUS — what this view can and cannot tell apart ═══════════════════════════════════════════
+_n_dec = int(_ch["decisive"].sum()) if len(_ch) else 0
+cc = st.columns(3)
+ui.metric_card("Settled observations", f"{len(d):,}", title="In this view",
+               supporting=[(k, f"{v:,}") for k, v in d["_source"].value_counts().to_dict().items()],
+               n=len(d), container=cc[0])
+ui.metric_card("Cells shown", f"{len(shown):,}", title="Model × market × tier",
+               supporting=[("Hidden (n < " + str(min_n) + ")", f"{len(hidden):,}"),
+                           ("Observations hidden", f"{int(hidden['n'].sum()):,}")], container=cc[1])
+ui.metric_card("Intervals clearing zero", f"{_n_dec} of {len(_ch)}", title="Read the CI, not the ROI",
+               supporting=[("Spanning zero", f"{len(_ch) - _n_dec}")],
+               status=ui.status_chip("NO_DATA", tone="NEUTRAL",
+                                     label="NOT YET DISTINGUISHABLE FROM BREAK-EVEN" if _n_dec == 0 else
+                                     f"{_n_dec} CELL(S) DECISIVE"), container=cc[2])
+
+ui.section_header("Model × market × tier")
 st.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
              width="stretch", hide_index=True,
              column_config={
@@ -197,48 +229,16 @@ if not hidden.empty:
     with st.expander("Show the thin cells anyway"):
         st.dataframe(hidden, width="stretch", hide_index=True)
 
-# The CI column is the point of the page, so say what it means rather than assuming it is read.
 # ── ROI with its confidence interval, as a picture ────────────────────────────
 # The CI is the whole point of this page and it was only ever a text column, which is the one
 # format that makes an interval hard to compare across rows. Drawn with whiskers and a zero line,
 # "most of these intervals span zero" stops being a caption the reader has to take on trust and
-# becomes the obvious feature of the chart.
-#
-# Cells whose interval CLEARS zero are highlighted; everything else is muted, so the eye is drawn
-# to the only cells the data can actually distinguish. With the current sample that is usually
-# none, and showing that plainly is the honest outcome.
-_ch = shown.dropna(subset=["roi_lo", "roi_hi"]).copy()
+# becomes the obvious feature of the chart. Cells whose interval CLEARS zero are drawn as filled
+# diamonds in the primary colour, the rest as grey circles — shape and the legend word carry the
+# reading, so colour is never the only cue.
 if len(_ch):
-    _ch["cell"] = (_ch["model"].astype(str) + " · " + _ch["market"].astype(str)
-                   + " · " + _ch["tier"].astype(str))
-    _ch["decisive"] = (_ch["roi_lo"] > 0) | (_ch["roi_hi"] < 0)
-    _ch = _ch.sort_values("roi_pct")
     try:
-        import plotly.graph_objects as _go
-        _fig = _go.Figure()
-        for _dec, _grp in _ch.groupby("decisive"):
-            _fig.add_trace(_go.Scatter(
-                x=_grp["roi_pct"], y=_grp["cell"], mode="markers",
-                marker=dict(size=11, color="#00c896" if _dec else "#7a7a7a",
-                            symbol="diamond" if _dec else "circle"),
-                error_x=dict(type="data", symmetric=False,
-                             array=_grp["roi_hi"] - _grp["roi_pct"],
-                             arrayminus=_grp["roi_pct"] - _grp["roi_lo"],
-                             thickness=1.4, width=4,
-                             color="#00c896" if _dec else "#6a6a6a"),
-                name=("interval clears zero" if _dec else "interval spans zero"),
-                hovertemplate="%{y}<br>ROI %{x:.1f}%<extra></extra>",
-            ))
-        _fig.add_vline(x=0, line_width=1, line_dash="dash", line_color="#999")
-        _fig.update_layout(
-            height=max(240, 34 * len(_ch)), margin=dict(l=8, r=8, t=8, b=8),
-            xaxis_title="ROI % (95% CI)", yaxis_title=None,
-            legend=dict(orientation="h", y=1.02, x=0),
-            # No hardcoded background: the viewer's light/dark theme must win.
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        )
-        st.plotly_chart(_fig, width="stretch")
-        _n_dec = int(_ch["decisive"].sum())
+        st.altair_chart(V.ci_chart(_ch), width="stretch")
         st.caption(f"{_n_dec} of {len(_ch)} cells have an interval that clears zero. "
                    f"The rest cannot yet be told apart from break-even, whatever their point "
                    f"estimate says.")
@@ -247,9 +247,10 @@ if len(_ch):
 
 _wide = shown[shown["roi_ci95"].str.contains("…", na=False)]
 if not _wide.empty:
-    st.info("**Read the CI, not the ROI.** With this few settled bets most intervals span zero, "
-            "which means the data cannot yet distinguish a winning cell from a losing one. A +20% "
-            "ROI on n=30 and a −20% on n=30 are frequently the same underlying truth.")
+    st.caption("**Read the CI, not the ROI.** With this few settled bets most intervals span zero, "
+               "which means the data cannot yet distinguish a winning cell from a losing one. A +20% "
+               "ROI on n=30 and a −20% on n=30 are frequently the same underlying truth.")
+
 
 def _rollup(g: pd.DataFrame, by: str) -> None:
     """Roll-up table plus the one comparison that makes a hit rate mean anything.
@@ -282,6 +283,10 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     _ok = t["odds_cov"] >= 80
     t["need_pct"] = (100.0 / t["avg_odds"]).round(1).where(_ok)
     t = t.sort_values("n", ascending=False)
+    try:
+        st.altair_chart(V.rollup_chart(t, by), width="stretch", key=f"rollup_{by}")
+    except Exception as _e:                                  # noqa: BLE001
+        st.caption(f"chart unavailable ({type(_e).__name__})")
     st.dataframe(t[[by, "n", "win_pct", "need_pct", "odds_cov", "pl_u", "roi_pct"]],
                  width="stretch", hide_index=True,
                  column_config={
@@ -299,30 +304,6 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
                      "pl_u": st.column_config.NumberColumn("P/L (u)", format="%.1f"),
                      "roi_pct": st.column_config.NumberColumn("ROI %", format="%.1f"),
                  })
-    try:
-        import plotly.graph_objects as _go
-        _f = _go.Figure()
-        _f.add_trace(_go.Bar(x=t[by].astype(str), y=t["win_pct"], name="achieved",
-                             # Grey where there is no trustworthy break-even to compare against:
-                             # a red bar would assert "this lost" on a group whose reference
-                             # level we just declined to compute.
-                             marker_color=["#7a7a7a" if b != b
-                                           else ("#00c896" if a >= b else "#e05c5c")
-                                           for a, b in zip(t["win_pct"], t["need_pct"])],
-                             hovertemplate="%{x}<br>achieved %{y:.1f}%<extra></extra>"))
-        _be = t.dropna(subset=["need_pct"])
-        _f.add_trace(_go.Scatter(x=_be[by].astype(str), y=_be["need_pct"], name="break-even",
-                                 mode="markers",
-                                 marker=dict(symbol="line-ew", size=26,
-                                             line=dict(width=3, color="#d0d0d0")),
-                                 hovertemplate="%{x}<br>needs %{y:.1f}%<extra></extra>"))
-        _f.update_layout(height=260, margin=dict(l=8, r=8, t=8, b=8),
-                         yaxis_title="win %", xaxis_title=None, bargap=0.35,
-                         legend=dict(orientation="h", y=1.04, x=0),
-                         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-        st.plotly_chart(_f, width="stretch", key=f"rollup_{by}")
-    except Exception as _e:                                  # noqa: BLE001
-        st.caption(f"chart unavailable ({type(_e).__name__})")
 
     # The roll-ups deliberately IGNORE the min-n filter above — the point of a roll-up is the
     # complete picture — but that lets a 9-bet group show a +100% ROI next to an 87-bet group at
@@ -330,17 +311,19 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     # and stops the largest number on the chart being read as the best market.
     _thin = t[t["n"] < 20]
     if not _thin.empty:
+        st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{len(_thin)} THIN GROUP(S) · n < 20"))
         st.caption("Thin: " + ", ".join(f"{r[by]} n={int(r['n'])}" for _, r in _thin.iterrows())
                    + " — a single result moves these by a full unit.")
 
 
-st.subheader("Roll-ups")
+ui.section_header("Roll-ups", "Achieved win rate against the break-even the prices demanded. Bar above its tick = "
+                  "the group made money; the roll-ups ignore the min-n filter, so thin groups are named.")
 r1, r2 = st.columns(2)
 with r1:
-    st.markdown("**By market**")
+    ui.eyebrow("By market")
     _rollup(d, "_market")
 with r2:
-    st.markdown("**By tier**")
+    ui.eyebrow("By tier")
     _rollup(d, "_tier")
 
 st.caption(
