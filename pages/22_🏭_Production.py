@@ -26,9 +26,12 @@ freshness = importlib.reload(freshness)
 production_view = importlib.reload(production_view)
 
 st.set_page_config(page_title="Wowza | Production", page_icon="🏭", layout="wide")
-st.title("🏭 Production")
-st.caption("Display only — current bets, stakes and track states as production recorded them. Policies change "
-           "through a reviewed PR, never here. Stakes are % of a notional bankroll.")
+import dashboard_ui as ui  # noqa: E402
+
+_fstate, _fchip = freshness.header_badge("output/stake_plan.csv", "stake plan")
+ui.page_header("Production", "Display only — current bets, stakes and track states as production recorded them. "
+               "Policies change through a reviewed PR, never here. Stakes are % of a notional bankroll.",
+               eyebrow_text="System · production", freshness=_fchip)
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -42,17 +45,18 @@ today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 plan, summ, meta, reg, prot = _load(today)
 
 # ── stake plan ─────────────────────────────────────────────────────────────────────────────────
-st.subheader("Current bets and stakes")
-freshness.recorded(st, "output/stake_plan.csv", None, 12, "stake plan")   # tracked by the manifest
+ui.section_header("Current bets and stakes")
+if _fstate != "FRESH":                     # the header chip states freshness; the long banner only when not fresh
+    freshness.recorded(st, "output/stake_plan.csv", None, 12, "stake plan")   # tracked by the manifest
 if plan.empty:
     st.info(f"No tips dated {today} or later in output/stake_plan.csv — predict writes it on its next run.")
 else:
     staked = plan[plan["final_fraction"] > 0]
-    c = st.columns(4)
-    c[0].metric("Tips sized", f"{len(plan):,}")
-    c[1].metric("With a stake", f"{len(staked):,}")
-    c[2].metric("Days covered", plan["date"].nunique())
-    c[3].metric("Policy", str(plan["policy_version"].dropna().iloc[0]) if plan["policy_version"].notna().any() else "?")
+    ui.metric_grid([{"label": "Tips sized", "value": f"{len(plan):,}"},
+                    {"label": "With a stake", "value": f"{len(staked):,}"},
+                    {"label": "Days covered", "value": plan["date"].nunique()},
+                    {"label": "Policy", "value": str(plan["policy_version"].dropna().iloc[0])
+                     if plan["policy_version"].notna().any() else "?"}], per_row=2)
     st.dataframe(summ, hide_index=True, width="stretch",
                  column_config={"stake_pct_total": st.column_config.NumberColumn("stake % total", format="%.3f")})
     show = st.toggle("Show tips without a stake", value=False)
@@ -68,7 +72,7 @@ else:
                "Every zero stake carries its reason (paper league, PAPER/BLOCKED track, odds outside caps, ...).")
 
 # ── track registry ─────────────────────────────────────────────────────────────────────────────
-st.subheader("Track states (canonical track registry)")
+ui.section_header("Track states (canonical track registry)")
 if reg.empty:
     st.warning("config/track_registry.json missing or unreadable.")
 else:
@@ -99,7 +103,7 @@ else:
                "proof on its own.")
 
 # ── protected tracks ───────────────────────────────────────────────────────────────────────────
-st.subheader("Protected tracks")
+ui.section_header("Protected tracks")
 if prot.empty:
     st.info("No protected tracks in the registry.")
 else:

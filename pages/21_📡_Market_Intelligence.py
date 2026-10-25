@@ -27,8 +27,12 @@ freshness = importlib.reload(freshness)
 market_intel = importlib.reload(market_intel)
 
 st.set_page_config(page_title="Wowza | Market Intelligence", page_icon="📡", layout="wide")
-st.title("📡 Market Intelligence")
-st.caption("Research and monitoring only — nothing here is a bet. Market-first rows are SHADOW ONLY.")
+import dashboard_ui as ui  # noqa: E402
+
+ui.page_header("Market Intelligence", "Research and monitoring only — nothing here is a bet. Market-first rows are "
+               "SHADOW ONLY.", eyebrow_text="Research Lab · prices and closes",
+               freshness=ui.status_chip("SHADOW", label="MARKET-FIRST · SHADOW ONLY") + " "
+               + ui.status_chip("LIVE", label="LEGACY RAW EDGE · PRODUCTION"))
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -44,17 +48,17 @@ d = _load(pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"))
 PCT = st.column_config.NumberColumn(format="%.1f%%")
 
 # ── de-vig coverage ────────────────────────────────────────────────────────────────────────────
-st.subheader("De-vig coverage — two-sided prices per market × track")
+ui.section_header("De-vig coverage — two-sided prices per market × track")
 m = d["meta"]
 freshness.recorded(st, "output/edge_engine_health.json", m.get("generated_at"), 72, "edge-engine health")
 if d["cov"].empty:
     st.warning("output/edge_engine_health.json missing or has no coverage block.")
 else:
-    c = st.columns(4)
-    c[0].metric("Engine", str(m.get("selection_engine_version")))
-    c[1].metric("Config", str(m.get("config_status")))
-    c[2].metric("Rows scored (last run)", f"{m.get('rows_scored') or 0:,}")
-    c[3].metric("Book quotes (last run)", f"{m.get('current_run_book_quotes') or 0:,}")
+    ui.metric_grid([{"label": "Engine", "value": str(m.get("selection_engine_version"))},
+                    {"label": "Config", "value": str(m.get("config_status"))},
+                    {"label": "Rows scored (last run)", "value": f"{m.get('rows_scored') or 0:,}"},
+                    {"label": "Book quotes (last run)", "value": f"{m.get('current_run_book_quotes') or 0:,}"}],
+                   per_row=2)
     if m.get("shadow_only") is not True:
         st.error("shadow_only is not true in edge_engine_health.json — the market-first engine must stay shadow.")
     st.dataframe(d["cov"].assign(two_sided_share=d["cov"]["two_sided_share"] * 100), hide_index=True,
@@ -63,20 +67,24 @@ else:
                "the market-first engine cannot judge it. `legacy_tipped` = rows the legacy raw-edge rule tiered.")
 
 # ── CLV / close coverage ───────────────────────────────────────────────────────────────────────
-st.subheader("Certified close coverage (CLV)")
+ui.section_header("Certified close coverage (CLV)")
 cl = d["clv"]
 freshness.recorded(st, "output/clv_collection_health.json", cl.get("generated_at"), 30, "CLV collection health")
 if not cl.get("generated_at"):
     st.warning("output/clv_collection_health.json missing or unreadable.")
 else:
     s, a, col = cl["since"], cl["all_time"], cl["collection"]
-    c = st.columns(4)
-    c[0].metric(f"Certified T-30 since {str(cl.get('measure_from'))[:10]}", f"{s.get('certified_t30_pct')}%",
-                help=f"n = {s.get('eligible')} settled shadow rows")
-    c[1].metric("Certified T-10 (same window)", f"{s.get('certified_t10_pct')}%", help=f"n = {s.get('eligible')}")
-    c[2].metric("Certified T-30, all time", f"{a.get('certified_t30_pct')}%", help=f"n = {a.get('eligible')}")
-    c[3].metric(f"Collection T-30, last {col.get('window_days')} d", f"{col.get('t30_pct')}%",
-                help=f"{col.get('fixture_markets')} fixture-markets over {col.get('fixtures')} fixtures")
+    ui.metric_grid([
+        {"label": f"Certified T-30 since {str(cl.get('measure_from'))[:10]}", "value": f"{s.get('certified_t30_pct')}%",
+         "help": f"n = {s.get('eligible')} settled shadow rows"},
+        {"label": "Certified T-10 (same window)", "value": f"{s.get('certified_t10_pct')}%",
+         "help": f"n = {s.get('eligible')}"},
+        {"label": "Certified T-30, all time", "value": f"{a.get('certified_t30_pct')}%",
+         "help": f"n = {a.get('eligible')}"},
+        {"label": f"Collection T-30, last {col.get('window_days')} d", "value": f"{col.get('t30_pct')}%",
+         "help": f"{col.get('fixture_markets')} fixture-markets over {col.get('fixtures')} fixtures"}], per_row=2)
+    st.caption(f"CLV coverage n: {s.get('eligible')} settled shadow rows since {str(cl.get('measure_from'))[:10]} · "
+               f"{a.get('eligible')} all time.")
     st.caption(f"Close rule: {cl.get('close_rule')}. Check: {cl['check'].get('status', '?')} "
                f"{'; '.join(cl['check'].get('reasons') or [])}. A CLV figure on a stale close is not certified "
                "and is not evidence.")
@@ -95,7 +103,7 @@ else:
                      column_config={"t60_pct": PCT, "t30_pct": PCT, "t10_pct": PCT})
 
 # ── direction conflicts ────────────────────────────────────────────────────────────────────────
-st.subheader("Direction conflicts — suppressed opposite-direction tips")
+ui.section_header("Direction conflicts — suppressed opposite-direction tips")
 if d["conf"].empty:
     st.info("No direction conflict recorded (output/direction_conflicts.csv is written only when the direction "
             "guard suppresses a tip).")
@@ -107,7 +115,7 @@ else:
     st.caption("A suppressed tip is not sent, not ledgered and not staked: the earlier tip on that fixture stands.")
 
 # ── legacy vs market-first ─────────────────────────────────────────────────────────────────────
-st.subheader("Legacy raw edge vs market-first decision")
+ui.section_header("Legacy raw edge vs market-first decision")
 with st.container(border=True):
     st.markdown("**LEGACY RAW EDGE** (production): `p_model − 1/odds` → SNIPER / MARKSMAN / VALUABLE.  \n"
                 "**MARKET-FIRST** (market_edge_v2, *shadow only*): de-vigged market fair → decision probability → "

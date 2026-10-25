@@ -32,7 +32,11 @@ freshness = importlib.reload(freshness)
 model_lab = importlib.reload(model_lab)
 
 st.set_page_config(page_title="Wowza | Model Lab", page_icon="🧪", layout="wide")
-st.title("🧪 Model Lab")
+import dashboard_ui as ui  # noqa: E402
+
+ui.page_header("Model Lab", "Who serves, who is waiting, and what the canonical promotion gate decided. Display "
+               "only — this page decides nothing and loads no model.", eyebrow_text="Research Lab · model lineage",
+               freshness=ui.status_chip("SHADOW", label="CHALLENGERS ARE SHADOW · NEVER SERVED"))
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -63,7 +67,7 @@ with st.container(border=True):
                "That is the intended rate.")
 
 # ── champions ──────────────────────────────────────────────────────────────────────────────────
-st.subheader("Serving champions")
+ui.section_header("Serving champions")
 if d["champ"].empty:
     st.error("models/registry/current_champions.json is missing or unreadable.")
 else:
@@ -73,7 +77,7 @@ else:
                "ROLLBACK / BOOTSTRAP are explicit, logged operations.")
 
 # ── challenger slots ───────────────────────────────────────────────────────────────────────────
-st.subheader("Challenger slots")
+ui.section_header("Challenger slots")
 if d["slots"].empty:
     st.info("No challenger is parked in any slot.")
 else:
@@ -81,7 +85,7 @@ else:
     st.caption("A parked challenger is SHADOW: never served, tiered or staked. Its holdout numbers are period 1 only.")
 
 # ── gate decisions ─────────────────────────────────────────────────────────────────────────────
-st.subheader("Promotion decisions")
+ui.section_header("Promotion decisions")
 c1, c2 = st.columns(2)
 with c1:
     with st.container(border=True):
@@ -110,7 +114,7 @@ if not d["props_dec"].empty:
         st.dataframe(d["props_dec"], hide_index=True, width="stretch")
 
 # ── prospective comparison ─────────────────────────────────────────────────────────────────────
-st.subheader("Prospective samples — H-MODEL-01 (challenger vs serving champion)")
+ui.section_header("Prospective samples — H-MODEL-01 (challenger vs serving champion)")
 freshness.recorded(st, "output/model_lineage/shadow_experiments_eval.json", d["pe_at"], 48, "shadow experiment eval")
 pe = d["pe"]
 if pe.empty:
@@ -133,7 +137,7 @@ else:
                "(owner 2026-10-25); the window starts at registration.")
 
 # ── latest retrain ─────────────────────────────────────────────────────────────────────────────
-st.subheader(f"Latest retrain — {d['rk'] or 'none recorded'}")
+ui.section_header(f"Latest retrain — {d['rk'] or 'none recorded'}")
 if d["rt"].empty:
     st.info("output/retrain_log.json has no runs.")
 else:
