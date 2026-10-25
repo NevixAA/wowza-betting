@@ -11,12 +11,15 @@ Rebuilt 2026-10-12 (owner: "we know the odds for player props — upgrade the vi
 * Day-grouped tables (kickoff in Israel time) in the same style as the Dashboard tips board,
   instead of one tall dark card per player.
 
+Visual redesign 2026-10-25 (stage 3): the day boards are sortable st.dataframe tables (the hand-built HTML
+table, its stylesheet and its hardcoded tier colours are gone), the three priced props where the model sits
+furthest above the price lead the page as cards, and secondary filters live under "Advanced filters".
+PRESENTATION ONLY — the same rows, filters and limits; components in dashboard_data/props_view.py.
+
 Props are PAPER-ONLY, permanently (CLAUDE.md invariant 2): accurate model, no betting edge.
 Nothing on this page is a bet.
 """
-import html as _html
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 import pandas as pd
 import streamlit as st
@@ -28,24 +31,17 @@ import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(_
 from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
+from dashboard_data import props_view as V  # noqa: E402
+import importlib  # noqa: E402
+V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
+
 ui.autorefresh(minutes=2, key="11_player_props_refresh")
 BASE_DIR = Path(__file__).resolve().parents[1]
 TIPS_FILE = BASE_DIR / "output" / "player_tips.csv"
 LEDGER_FILE = BASE_DIR / "output" / "player_ledger.csv"
-TZ_NAME = "Asia/Jerusalem"
-
-ui.page_header("👤 Player Props", "Model vs bookmaker on every upcoming prop", badge="PAPER · RESEARCH")
-
-MARKET_LABEL = {
-    "goals": "⚽ Anytime scorer", "goals2": "⚽ 2+ goals", "goals3": "⚽ Hat-trick",
-    "assists": "🅰️ Assist",
-    "sot": "🎯 1+ shot on target", "sot2": "🎯 2+ shots on target",
-    "sot3": "🎯 3+ shots on target", "sot4": "🎯 4+ shots on target",
-    "cards": "🟨 Booked",
-}
-TIER_CLR = {"SNIPER": "#c42b2b", "MARKSMAN": "#d97706", "VALUABLE": "#2563eb",
-            "PAPER": "#6b7280", "AVOID": "#9ca3af"}
-TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE", "PAPER", "AVOID"]
+MARKET_LABEL = V.MARKET_LABEL
+_SUB = "Model vs bookmaker on every upcoming prop. Paper research — props have no proven betting edge."
+_EYEBROW = "Tools · player props"
 
 
 @st.cache_data(ttl=120)
@@ -73,16 +69,23 @@ def load_tips() -> pd.DataFrame:
 
 
 df = load_tips()
+_state_chip = ui.status_chip("PAPER", label="PAPER · RESEARCH")
 if df.empty:
-    st.info("⏳ No upcoming player-prop signals yet.")
+    ui.page_header("Player Props", _SUB, eyebrow_text=_EYEBROW, freshness=_state_chip)
+    ui.empty_state("NO_DATA", "⏳ No upcoming player-prop signals yet.")
     st.stop()
+
+ui.page_header("Player Props", _SUB, eyebrow_text=_EYEBROW,
+               freshness=_state_chip + " " + ui.status_chip(
+                   "NO_DATA", tone="NEUTRAL",
+                   label=f"{df['match'].nunique()} fixtures · {df['player_name'].nunique()} players upcoming"))
 
 priced = df[df["_priced"]]
 unpriced = df[~df["_priced"]]
 
-# ── Headline ──────────────────────────────────────────────────────────────────
+# ═══ STATUS — the headline counts ═══════════════════════════════════════════════════════════════
 _beats = priced[priced["model_prob"] > 1 / priced["market_odds"]]
-ui.metric_row([
+ui.metric_grid([
     {"label": "Upcoming props", "value": f"{len(df):,}",
      "help": f"{df['match'].nunique()} fixtures, {df['player_name'].nunique()} players."},
     {"label": "Priced by a bookmaker", "value": f"{len(priced):,}",
@@ -93,25 +96,25 @@ ui.metric_row([
              "Paper only — props have no proven betting edge (tested 8 ways)."},
     {"label": "Model only (no price)", "value": f"{len(unpriced):,}",
      "help": "No bookmaker offers this prop yet. Not a model rejection."},
-])
+], per_row=2)
 st.caption(
     "Why so many are unpriced: bookmakers price **anytime scorer** deeply but rarely offer "
     "**1+ shot on target**, which is where most of the model's strongest signals sit. Markets "
     "deepen toward kickoff, so prices appear over the last 1–3 days.")
 
-# ── Filters ───────────────────────────────────────────────────────────────────
-f1, f2, f3 = st.columns([2, 2, 1])
-with f1:
-    _mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \
-          sorted(set(df["market"]) - set(MARKET_LABEL))
-    mkt_filter = st.multiselect("Market", _mk, default=_mk,
-                                format_func=lambda m: MARKET_LABEL.get(m, m), key="pp_mkt")
-with f2:
-    _lg = sorted(df["league"].dropna().unique())
-    league_filter = st.multiselect("League", _lg, default=[], placeholder="All leagues",
-                                   key="pp_lg")
-with f3:
-    min_p = st.slider("Min model %", 0, 95, 0, 5, key="pp_minp")
+# ═══ Filters — market visible, the rest under Advanced filters ═══════════════════════════════════
+_mk = [m for m in MARKET_LABEL if m in set(df["market"])] + \
+      sorted(set(df["market"]) - set(MARKET_LABEL))
+mkt_filter = st.multiselect("Market", _mk, default=_mk,
+                            format_func=lambda m: MARKET_LABEL.get(m, m), key="pp_mkt")
+with st.expander("Advanced filters"):
+    f2, f3 = st.columns([2, 1])
+    with f2:
+        _lg = sorted(df["league"].dropna().unique())
+        league_filter = st.multiselect("League", _lg, default=[], placeholder="All leagues",
+                                       key="pp_lg")
+    with f3:
+        min_p = st.slider("Min model %", 0, 95, 0, 5, key="pp_minp")
 
 
 def _filt(d: pd.DataFrame) -> pd.DataFrame:
@@ -121,116 +124,48 @@ def _filt(d: pd.DataFrame) -> pd.DataFrame:
     return d
 
 
-_CSS = """
-<style>
-.pp-wrap{overflow-x:auto;margin-bottom:6px}
-.pp{border-collapse:collapse;width:100%;font-size:.92rem;min-width:820px;table-layout:fixed}
-.pp th{text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;
-       opacity:.65;padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.35)}
-.pp td{padding:7px 8px;border-bottom:1px solid rgba(128,128,128,.15);vertical-align:middle}
-.pp .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.pp .ko{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
-.pp .sub{display:block;font-size:.74rem;opacity:.65;margin-top:2px;white-space:nowrap;
-         overflow:hidden;text-overflow:ellipsis}
-.pp .pill{display:inline-block;padding:2px 9px;border-radius:999px;color:#fff;font-weight:700;font-size:.72rem}
-.pp .pos{color:#15803d;font-weight:700}.pp .neg{color:#b91c1c}
-.pp-day{font-weight:700;font-size:1.02rem;margin:18px 0 4px}
-.pp-day small{font-weight:400;opacity:.65}
-</style>"""
+# ═══ RESEARCH — where the model sits furthest above the price ════════════════════════════════════
+p = _filt(priced)
+ui.section_header("Model furthest above the price", "Priced props only, after the filters. Paper research: a "
+                  "gap to the price is not an edge — props have been tested eight ways and none held.")
+top = V.top_priced(p)
+if top.empty:
+    ui.empty_state("NO_DATA", "No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
+else:
+    for col, (_, r) in zip(st.columns(3), top.iterrows()):
+        V.prop_card(r, container=col)
 
-
-def _board(d: pd.DataFrame, priced_view: bool, limit: int) -> str:
-    try:
-        tz = ZoneInfo(TZ_NAME)
-    except Exception:                                       # noqa: BLE001
-        tz = ZoneInfo("UTC")
-    d = d.copy()
-    ko = pd.to_datetime(d.get("kickoff_utc"), errors="coerce", utc=True)
-    d["_local"] = ko.dt.tz_convert(tz)
-    d["_day"] = d["_local"].dt.strftime("%Y-%m-%d").fillna(d["date"].dt.strftime("%Y-%m-%d"))
-    if priced_view:
-        d["_edge"] = (d["model_prob"] - 1 / d["market_odds"]) * 100
-        d = d.sort_values(["_day", "_edge"], ascending=[True, False])
-    else:
-        d = d.sort_values(["_day", "model_prob"], ascending=[True, False])
-    shown = d.groupby("_day", group_keys=False).head(limit)
-    today = pd.Timestamp.now(tz=tz).date()
-    cols = ("<colgroup><col style='width:6%'><col style='width:20%'><col style='width:22%'>"
-            "<col style='width:16%'><col style='width:7%'>"
-            + ("<col style='width:9%'><col style='width:9%'><col style='width:11%'>" if priced_view
-               else "<col style='width:8%'><col style='width:14%'>") + "</colgroup>")
-    head = ("<tr><th>Kickoff</th><th>Player</th><th>Match</th><th>Market</th>"
-            "<th class='num'>Model</th>"
-            + ("<th class='num'>Book odds</th><th class='num'>Edge</th><th>Tier</th>" if priced_view
-               else "<th class='num'>Fair odds</th><th>Note</th>") + "</tr>")
-    out = [_CSS]
-    for day, g in shown.groupby("_day", sort=True):
-        dd = pd.Timestamp(day)
-        rel = {0: "Today", 1: "Tomorrow"}.get((dd.date() - today).days, "")
-        total = int((d["_day"] == day).sum())
-        more = f" · top {len(g)} shown" if total > len(g) else ""
-        out.append(f"<div class='pp-day'>{rel + ' · ' if rel else ''}{dd:%a %d %b} "
-                   f"<small>— {total} prop{'s' if total != 1 else ''}{more}</small></div>")
-        out.append(f"<div class='pp-wrap'><table class='pp'>{cols}{head}")
-        for _, r in g.iterrows():
-            kot = r["_local"].strftime("%H:%M") if pd.notna(r["_local"]) else "–"
-            pos = "" if pd.isna(r.get("position")) else f" · {_html.escape(str(r['position']))}"
-            player = (f"<b>{_html.escape(str(r['player_name']))}</b>"
-                      f"<span class='sub'>{_html.escape(str(r.get('team', '')))}{pos}</span>")
-            match = (f"{_html.escape(str(r['match']))}"
-                     f"<span class='sub'>{_html.escape(str(r['league']))}</span>")
-            mkt = MARKET_LABEL.get(r["market"], str(r["market"]))
-            model = f"<b>{r['model_prob'] * 100:.0f}%</b>"
-            if priced_view:
-                impl = 100 / r["market_odds"]
-                e = r["_edge"]
-                tier = str(r.get("tier", ""))
-                cells = (f"<td class='num'><b>{r['market_odds']:.2f}</b>"
-                         f"<span class='sub'>{impl:.0f}% implied</span></td>"
-                         f"<td class='num'><span class='{'pos' if e > 0 else 'neg'}'>{e:+.1f} pts</span>"
-                         + (f"<span class='sub'>EV {r['ev']:+.0%}</span>" if pd.notna(r.get("ev")) else "")
-                         + f"</td><td><span class='pill' style='background:{TIER_CLR.get(tier, '#6b7280')}'>"
-                         f"{_html.escape(tier)}</span></td>")
-            else:
-                fair = r.get("fair_odds")
-                cells = (f"<td class='num'>{'–' if pd.isna(fair) else f'{float(fair):.2f}'}</td>"
-                         f"<td><span class='sub' style='opacity:.6'>no bookmaker price yet</span></td>")
-            out.append(f"<tr><td class='ko'>{kot}</td><td>{player}</td><td>{match}</td>"
-                       f"<td>{mkt}</td><td class='num'>{model}</td>{cells}</tr>")
-        out.append("</table></div>")
-    return "\n".join(out)
-
-
-tab_p, tab_u = st.tabs([f"💰 Priced by bookmakers ({len(priced)})",
-                        f"🧠 Model only — no price yet ({len(unpriced)})"])
+# ═══ DETAIL — the day boards ═════════════════════════════════════════════════════════════════════
+ui.section_header("All upcoming props")
+tab_p, tab_u = st.tabs([f"Priced by bookmakers ({len(priced)})",
+                        f"Model only — no price yet ({len(unpriced)})"])
 with tab_p:
-    p = _filt(priced)
     if p.empty:
-        st.info("No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
+        ui.empty_state("NO_DATA", "No priced props match the filters. Prices usually appear 1–3 days before kickoff.")
     else:
-        st.markdown(_board(p, True, limit=60), unsafe_allow_html=True)
+        V.render_board(p, True, limit=60)
         st.caption("**Edge** = model probability minus the bookmaker's implied probability, in "
-                   "percentage points; green means the model rates the player higher than the price "
+                   "percentage points; positive means the model rates the player higher than the price "
                    "does. Bookmaker prices include their margin. Kickoff in Israel time. Paper only.")
 with tab_u:
     u = _filt(unpriced)
     if u.empty:
-        st.info("Nothing unpriced matches the filters.")
+        ui.empty_state("NO_DATA", "Nothing unpriced matches the filters.")
     else:
-        st.markdown(_board(u, False, limit=25), unsafe_allow_html=True)
+        V.render_board(u, False, limit=25)
         st.caption("Strongest model signals per day (top 25). **Fair odds** = 1 / model probability "
-                   "— compare with your own bookmaker. Kickoff in Israel time. Paper only.")
+                   "— compare with your own bookmaker. No bookmaker price yet. Kickoff in Israel time. Paper only.")
 
-with st.expander("📊 Raw data — every upcoming prop"):
+with st.expander("Raw data — every upcoming prop"):
     show_cols = ["date", "kickoff_utc", "league", "match", "player_name", "position", "team",
                  "market", "model_prob", "fair_odds", "market_odds", "ev", "tier", "confidence",
                  "n_games"]
-    st.dataframe(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
-                 width="stretch", hide_index=True)
+    ui.compact_table(df.sort_values("model_prob", ascending=False)[[c for c in show_cols if c in df.columns]],
+                     V.RAW_CONFIG)
 
-# ── Results / track record ────────────────────────────────────────────────────
-st.markdown("---")
-st.subheader("📒 Results — settled player-prop signals")
+# ═══ PERFORMANCE — settled record ════════════════════════════════════════════════════════════════
+ui.section_header("Results — settled player-prop signals", "SNIPER + MARKSMAN only, flat 1u paper stakes. A rate is "
+                  "shown with its n; a small n is marked.")
 
 
 @st.cache_data(ttl=120)
@@ -245,26 +180,25 @@ led = load_results()
 if not led.empty and "tier" in led.columns:
     led = led[led["tier"].astype(str).str.upper().isin(["SNIPER", "MARKSMAN"])].copy()
 if led.empty or "result" not in led.columns:
-    st.info("No SNIPER/MARKSMAN prop results yet (`output/player_ledger.csv`).")
+    ui.empty_state("NO_DATA", "No SNIPER/MARKSMAN prop results yet (`output/player_ledger.csv`).")
 else:
     settled = led[led["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
     if settled.empty:
-        st.info("No settled (WIN/LOSS) signals yet — pending/void only.")
+        ui.empty_state("NO_DATA", "No settled (WIN/LOSS) signals yet — pending/void only.")
     else:
         wins = int((settled["result"].astype(str).str.upper() == "WIN").sum())
         n = len(settled)
         roi = (pd.to_numeric(settled["pnl"], errors="coerce").mean() * 100
                if "pnl" in settled.columns else float("nan"))
-        ui.metric_row([
-            {"label": "Settled", "value": f"{n}"},
-            {"label": "Record", "value": f"{wins}W – {n - wins}L"},
-            {"label": "Win rate", "value": f"{wins / n * 100:.0f}%"},
-            {"label": "Flat ROI (1u, paper)", "value": f"{roi:+.1f}%" if roi == roi else "—"},
-        ])
-        cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
-                            "market_odds", "result", "pnl"] if c in settled.columns]
-        st.dataframe(settled.sort_values("match_date", ascending=False)[cols].head(150),
-                     width="stretch", hide_index=True)
+        left, right = st.columns([1, 2])
+        ui.metric_card("Win rate", f"{wins / n * 100:.0f}%", title="Settled record · paper",
+                       supporting=[("Settled", f"{n}"), ("Record", f"{wins}W – {n - wins}L"),
+                                   ("Flat ROI (1u, paper)", f"{roi:+.1f}%" if roi == roi else "—")],
+                       status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED"), n=n, container=left)
+        with right:
+            cols = [c for c in ["match_date", "league", "player_name", "market", "tier",
+                                "market_odds", "result", "pnl"] if c in settled.columns]
+            ui.compact_table(settled.sort_values("match_date", ascending=False)[cols].head(150), V.RESULTS_CONFIG)
 
 st.caption("Player props are paper research only — the model is accurate but has shown no betting "
            "edge against the market.")

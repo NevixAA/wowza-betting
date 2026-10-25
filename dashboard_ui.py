@@ -719,17 +719,22 @@ def _base(df: pd.DataFrame, h: int):
     return alt.Chart(df).properties(height=h)
 
 
-def pnl_bars(df: pd.DataFrame, x: str, y: str, n_col: str | None = None, title: str = "", h: int = 320):
-    """Signed magnitude around zero; n rides in the tooltip so 4 bets never look like 400."""
+def pnl_bars(df: pd.DataFrame, x: str, y: str, n_col: str | None = None, title: str = "", h: int = 320,
+             *, axis_title: str = "P/L (units, flat 1u)", value_title: str = "P/L (u)", fmt: str = "+.2f",
+             n_title: str = "bets"):
+    """Signed magnitude around zero; n rides in the tooltip so 4 bets never look like 400.
+
+    Defaults draw P/L in units; `axis_title` / `value_title` / `fmt` let any other SIGNED measure (an
+    ROI %, a coefficient, an error in points) use the same grammar without being mislabelled as P/L."""
     import altair as alt
     ax, axg = _axes()
     _pos, _neg = polarity()
-    tips = [alt.Tooltip(f"{x}:N"), alt.Tooltip(f"{y}:Q", format="+.2f", title="P/L (u)")]
+    tips = [alt.Tooltip(f"{x}:N"), alt.Tooltip(f"{y}:Q", format=fmt, title=value_title)]
     if n_col and n_col in df.columns:
-        tips.append(alt.Tooltip(f"{n_col}:Q", title="bets", format=","))
+        tips.append(alt.Tooltip(f"{n_col}:Q", title=n_title, format=","))
     return _base(df, h).mark_bar(cornerRadiusEnd=4, size=18).encode(
         y=alt.Y(f"{x}:N", sort="-x", title=None, axis=ax),
-        x=alt.X(f"{y}:Q", title="P/L (units, flat 1u)", axis=axg),
+        x=alt.X(f"{y}:Q", title=axis_title, axis=axg),
         color=alt.condition(alt.datum[y] >= 0, alt.value(_pos), alt.value(_neg)),
         tooltip=tips,
     ).properties(title=title)
