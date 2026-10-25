@@ -1,12 +1,12 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-10-25T12:00:20Z",
+ "generated_at": "2026-10-25T12:31:07Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Challenger prediction coverage: 54% of 213 rows (p_pro_hgb)",
   "AMBER Certified CLV coverage: 20.1% of 571 settled",
-  "AMBER Data contracts: 7 violation(s) in 2 of 13 files"
+  "AMBER Data contracts: 7 violation(s) in 2 of 14 files"
  ],
  "protected_tracks_modified": false,
  "contract_violations": 7,
@@ -18,7 +18,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "cbd42d57210fe30fb96878bf3b465936c075b9520ca9b71169518b898e4a7803",
-  "code_commit": "5e8a1dfb111f"
+  "code_commit": "69f6c855599a"
  },
  "counts": {
   "GREEN": 13,
@@ -79,7 +79,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 failed / 136 runs (24 h)",
+   "value": "0 failed / 131 runs (24 h)",
    "rule": "failed/timed-out runs across the 3 repos in the last 24 h: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -88,14 +88,14 @@
    "status": "GREEN",
    "value": "mode shadow (workflow)",
    "rule": "GREEN if the V2 summary is < 72 h old and the residual mode is shadow or gated; RED if older or missing",
-   "detail": "{\"decision_residual\": \"GO\", \"residual_mode\": \"shadow\", \"residual_applied\": false, \"mean_forecast\": \"FPL ep_next\", \"gws_evaluated\": [5, 6, 7, 8], \"fpl\": {\"n\": 1318, \"mae\": 1.8366, \"rmse\": 2.9329, \"spea"
+   "detail": "{\"decision_residual\": \"GO\", \"residual_mode\": \"shadow\", \"residual_applied\": false, \"mean_forecast\": \"FPL ep_next\", \"gws_evaluated\": [5, 6, 7, 8], \"fpl\": {\"n\": 1497, \"mae\": 1.8414, \"rmse\": 2.9292, \"spea"
   },
   {
    "check": "Weekly research panel",
    "status": "GREEN",
    "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 panel rows NO_DATA",
-   "rule": "RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without re-approval) or the lock cannot be verified; AMBER if the regime registry is missing or a newly PROTECTED track awaits approval; GREEN otherwise. Panel rows: NO_DATA until the panel exists",
-   "detail": "registry evidence cutoff 2026-10-20; lock approved by INITIAL BASELINE - research agent 2026-10-25, NOT an owner approval at 2026-10-25T08:19:53Z"
+   "rule": "RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without re-approval) or the lock cannot be verified; AMBER if the regime registry is missing, a newly PROTECTED track awaits approval, the panel health is missing or > 48 h old, or a tracked league has fixtures this (or last) gameweek but NO panel rows (a silent disappearance; a league with no fixtures is NO_FIXTURES and is fine); GREEN otherwise",
+   "detail": "registry evidence cutoff 2026-10-20; lock approved by Nevo (owner) - approved in chat 2026-10-25 at 2026-10-25T12:09:26Z"
   },
   {
    "check": "Protected tracks (research lock)",
@@ -107,14 +107,14 @@
   {
    "check": "Data contracts",
    "status": "AMBER",
-   "value": "7 violation(s) in 2 of 13 files",
+   "value": "7 violation(s) in 2 of 14 files",
    "rule": "committed files validated against src/contracts (CONTRACTS-1): GREEN 0 violations; AMBER any violation (a finding to review, never auto-fixed); RED if validation itself failed",
    "detail": "output/book_odds_snapshots.csv: 4; output/stake_audit.csv: 3"
   },
   {
    "check": "First-sight store integrity",
    "status": "GREEN",
-   "value": "7 stores, 6 checked against the previous digest",
+   "value": "9 stores, 6 checked against the previous digest",
    "rule": "RED if any store's previously recorded rows no longer match their frozen digest (TAMPERED) or a store is unreadable; AMBER if duplicate keys (earliest-wins breached) or rows observed at/after kickoff; GREEN otherwise",
    "detail": ""
   },
@@ -128,7 +128,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 732 rows, shadow_only=True, 2.6 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 732 rows, shadow_only=True, 3.1 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -144,8 +144,8 @@
   "protected_tracks_modified": false,
   "changes": [],
   "unapproved_new_protected_tracks": [],
-  "approved_by": "INITIAL BASELINE - research agent 2026-10-25, NOT an owner approval",
-  "approved_at": "2026-10-25T08:19:53Z",
+  "approved_by": "Nevo (owner) - approved in chat 2026-10-25",
+  "approved_at": "2026-10-25T12:09:26Z",
   "error": null
  },
  "contracts": {
@@ -231,6 +231,14 @@
    },
    "output/props_shown_log.csv": {
     "schema": "PROPS_SHOWN_ROW",
+    "schema_version": null,
+    "present": false,
+    "rows": 0,
+    "n_violations": 0,
+    "violations": []
+   },
+   "output/league_weekly_research.csv": {
+    "schema": "LEAGUE_WEEKLY_RESEARCH_ROW",
     "schema_version": null,
     "present": false,
     "rows": 0,
@@ -343,6 +351,26 @@
    "prior_rows": 785,
    "prior_match": true,
    "status": "OK",
+   "reasons": []
+  },
+  "league_weekly_candidates.csv": {
+   "rows": 0,
+   "frozen_digest": null,
+   "duplicate_keys": 0,
+   "post_kickoff_rows": 0,
+   "prior_rows": null,
+   "prior_match": null,
+   "status": "EMPTY",
+   "reasons": []
+  },
+  "league_weekly_research.csv": {
+   "rows": 0,
+   "frozen_digest": null,
+   "duplicate_keys": 0,
+   "post_kickoff_rows": 0,
+   "prior_rows": null,
+   "prior_match": null,
+   "status": "EMPTY",
    "reasons": []
   },
   "model_lineage/shadow_h2h.csv": {
