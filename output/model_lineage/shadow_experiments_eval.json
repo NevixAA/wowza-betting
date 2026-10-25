@@ -1,17 +1,17 @@
 {
-  "computed_at": "2026-10-24T23:37:03.513635+00:00",
+  "computed_at": "2026-10-25T12:50:06.550558+00:00",
   "results": {
     "H-MODEL-01__newformat|newformat": {
-      "rows": 148,
-      "settled_paired": 45,
-      "challenger_logged": 148,
-      "ll_champion_raw": 0.704196861456974,
-      "ll_challenger": 0.6979233705154428,
-      "ll_served": 0.704196861456974,
-      "brier_champion_raw": 0.2554639559360445,
-      "brier_challenger": 0.2522021407837555,
-      "delta_log_loss": -0.006273490941531214,
-      "delta_brier": -0.003261815152288883
+      "rows": 172,
+      "settled_paired": 72,
+      "challenger_logged": 172,
+      "ll_champion_raw": 0.6879450178517689,
+      "ll_challenger": 0.6836728783650536,
+      "ll_served": 0.6879450178517689,
+      "brier_champion_raw": 0.24742052981120832,
+      "brier_challenger": 0.24518191373394446,
+      "delta_log_loss": -0.004272139486715243,
+      "delta_brier": -0.0022386160772638834
     },
     "H-MODEL-01__standard|standard": {
       "rows": 147,
