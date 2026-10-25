@@ -1,11 +1,13 @@
 {
- "generated_at": "2026-10-25T22:04:24Z",
+ "generated_at": "2026-10-25T23:32:03Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-26",
  "leagues_with_current_week_data": 18,
  "missing_leagues": [],
- "missing_leagues_previous_week": [],
+ "missing_leagues_previous_week": [
+  "Mexico Liga MX"
+ ],
  "no_fixture_leagues": [
   "China Super League",
   "Romanian Superliga"
@@ -15,10 +17,10 @@
  "expected_candidate_rows": 744,
  "actual_candidate_rows": 744,
  "panel_rows": 116,
- "settled_rows": 63,
- "pending_rows": 53,
- "clv_certified_rows": 20,
- "clv_coverage": 0.3175,
+ "settled_rows": 100,
+ "pending_rows": 16,
+ "clv_certified_rows": 42,
+ "clv_coverage": 0.42,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -923,7 +925,7 @@
    },
    "previous": {
     "league_week_id": "Mexico Liga MX|2026-W43",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 5,
     "fixtures_before_panel_start": 14,
     "fixtures_with_candidates": 4,
