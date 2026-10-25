@@ -82,6 +82,7 @@ EXPECTED_SECTION = {
 NEW_PAGES = [
     ("pages/19_🩺_System_Health.py", "System"),
     ("pages/20_🧪_Model_Lab.py", "Research Lab"),
+    ("pages/21_📡_Market_Intelligence.py", "Research Lab"),
 ]
 
 
