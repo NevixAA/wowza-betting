@@ -195,3 +195,17 @@ ui.empty_state("NOT_CONNECTED", "Pro checkout not present on this host.")
 Redesigned on the system: **Home**, **Tips**. Still on older styling (stages 2–3): see the build
 report; they keep working unchanged through the compatibility names (`kpi`, `metric_row`,
 `state_banner`, `freshness_chip`, `table`).
+
+**Stage 2b (2026-10-25):** **League Repair Lab**, **Leagues**, **Overview**, **Live**. Page-specific
+components live beside each page's data module, never in `dashboard_ui.py`:
+
+| Page | View module | Signature pieces |
+|---|---|---|
+| League Repair Lab | `dashboard_data/league_research_view.py` | overview strip, league cards REPAIR → LEARNING → PROTECTED, profile card, TOP 1/2/3/5 strip, weekly rank heatmap (`heatmap_frame` = `weekly_grid` cell for cell), production vs market-first shadow (one measure per chart) |
+| Leagues | `dashboard_data/leagues_view.py` | league cards with state/regime/track chips and a trend line; profile = three cards (record, context, prices) |
+| Overview | `dashboard_data/overview_view.py` | overall RED / AMBER / GREEN, one health card per check (worst first), staked cards, one data-feed card per subsystem |
+| Live | `dashboard_data/live_view.py` | ONE live match card (match, league, minute progress, score, signal chip, fair price, live / pre-match probability) |
+
+`tests/test_design_system.py` now applies the no-hex / no-`<style>` / no-inline-style / no-divider /
+no-plotly / `page_header` rules to all six redesigned pages and their view modules;
+`tests/test_dashboard_stage2b.py` pins the displayed values to the canonical functions.

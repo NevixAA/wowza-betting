@@ -59,9 +59,15 @@ def test_the_overview_page_asks_for_staked_only():
 
 def test_the_overview_cards_use_the_staked_figures():
     """The headline said 'SNIPER + MARKSMAN only' while the cards beside it showed all tips —
-    three numbers that looked comparable and were not."""
-    src = PAGE.read_text(encoding="utf-8")
-    block = src[src.index("for c, (name, t) in zip"):src.index("st.caption", src.index("for c, (name, t) in zip"))]
+    three numbers that looked comparable and were not.
+
+    Since the 2026-10-25 visual redesign the cards are drawn by dashboard_data/overview_view.staked_cards
+    (the page calls it); the guard follows the code there."""
+    import inspect
+    from dashboard_data import overview_view
+    assert "V.staked_cards(perf)" in PAGE.read_text(encoding="utf-8")
+    src = inspect.getsource(overview_view.staked_cards)
+    block = src[src.index("for i, (name, t) in enumerate"):]
     assert 'staked_only' in block
     assert 't["pnl"]' not in block and "t['pnl']" not in block
 

@@ -185,3 +185,32 @@ def test_page_uses_shared_table_and_is_registered():
     assert "leagues.overview_table(ov)" in src and '_require_tier("pro")' in src
     import dashboard_access as A
     assert any(p == "pages/17_🏟️_Leagues.py" and need == "pro" for p, *_, need in A.PAGES)
+
+
+def test_page_cards_and_profile_carry_module_values(env):
+    """Visual redesign 2026-10-25 (stage 2b): the headline card, league cards and the profile's three cards
+    show the module's numbers (same strings the old ten-metric layout showed)."""
+    testing = pytest.importorskip("streamlit.testing.v1")
+    import streamlit as st
+    import dashboard_ui as ui
+    from dashboard_data import leagues as L
+    from dashboard_data import leagues_view as V
+    st.cache_data.clear()
+    at = testing.AppTest.from_file(str(PAGE), default_timeout=120).run()
+    assert not at.exception, [e.value for e in at.exception]
+    d, ov = _ov()
+    tot = L.totals(d)
+    metrics = [(m.label, m.value) for m in at.metric]
+    assert ("P/L", ui.units(tot["pl"])) == metrics[0]                    # the headline card
+    cards = {r["league"]: r for r in ov.to_dict("records") if r["tips"] > 0 and not r["paper"]}
+    staked = [v for lab, v in metrics if lab == "P/L (staked)"]
+    assert staked == [ui.units(cards[k]["pl"]) for k in cards]           # one card per league, overview order
+    at.selectbox(key="lg_pick").set_value("Brazil Serie A").run()
+    assert not at.exception, [e.value for e in at.exception]
+    row = ov.set_index("league").loc["Brazil Serie A"]
+    m = [(x.label, x.value) for x in at.metric]
+    assert ("P/L", ui.units(row["pl"])) in m[1:] and ("Rating", V.rating(row["rating"])) in m
+    assert ("Avg odds", V.fmt_num(row["avg_odds"])) in m
+    md = " ".join(x.value for x in at.markdown)
+    assert V.fmt_roi(row["roi"]) in md and V.fmt_pct(row["hit"], 1) in md
+    st.cache_data.clear()
