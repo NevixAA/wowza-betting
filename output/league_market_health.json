@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-25T13:12:19Z",
+ "generated_at": "2026-10-25T17:09:38Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-25",
@@ -13,9 +13,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 144,
  "actual_candidate_rows": 140,
- "panel_rows": 60,
+ "panel_rows": 96,
  "settled_rows": 0,
- "pending_rows": 60,
+ "pending_rows": 96,
  "clv_certified_rows": 0,
  "clv_coverage": null,
  "protected_tracks_modified": false,
@@ -85,7 +85,7 @@
   "Austrian Bundesliga": {
    "current": {
     "league_week_id": "Austrian Bundesliga|2026-W43",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 2,
     "fixtures_before_panel_start": 4,
     "fixtures_with_candidates": 2,
@@ -96,19 +96,19 @@
     "markets": {
      "OU25": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "BTTS": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "OVER15": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "OVER35": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      }
     },
     "expected_candidate_rows": 8,
@@ -953,7 +953,7 @@
   "Norway Eliteserien": {
    "current": {
     "league_week_id": "Norway Eliteserien|2026-W43",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 6,
     "fixtures_before_panel_start": 2,
     "fixtures_with_candidates": 6,
@@ -964,19 +964,19 @@
     "markets": {
      "OU25": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 24,
@@ -1077,7 +1077,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W43",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 2,
     "fixtures_before_panel_start": 8,
     "fixtures_with_candidates": 2,
@@ -1088,19 +1088,19 @@
     "markets": {
      "OU25": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "BTTS": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "OVER15": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      },
      "OVER35": {
       "candidates": 2,
-      "panel_rows": 0
+      "panel_rows": 2
      }
     },
     "expected_candidate_rows": 8,
