@@ -79,7 +79,9 @@ EXPECTED_SECTION = {
 }
 
 # Architecture pages added 2026-10-25: (path, section). All admin-only.
-NEW_PAGES = []
+NEW_PAGES = [
+    ("pages/19_🩺_System_Health.py", "System"),
+]
 
 
 def _access():
@@ -195,3 +197,17 @@ def test_new_pages_render(monkeypatch, path):
     at = AppTest.from_file(str(ROOT / path), default_timeout=60).run()
     assert not at.exception, [e.value for e in at.exception]
     assert at.title, "page rendered no title"
+
+
+def test_system_view_labels_stale_artifacts_and_keeps_rules():
+    from dashboard_data import system_view as V
+    m = {"artifacts": [{"artifact": "a.json", "freshness": "FRESH"}, {"artifact": "b.csv", "freshness": "STALE"},
+                       {"artifact": "c.json", "freshness": "MISSING"}, {"artifact": "d.json", "freshness": "HISTORICAL"}]}
+    t = V.manifest_table(m)
+    assert t["verdict"].tolist()[:2] == [V.STALE_LABEL, V.STALE_LABEL]        # stale first
+    assert set(t.loc[t["artifact"].isin(["a.json", "d.json"]), "verdict"]) == {"FRESH", "HISTORICAL"}
+    sh = {"checks": [{"check": "x", "status": "GREEN", "value": 1, "rule": "R1"},
+                     {"check": "y", "status": "RED", "value": 2, "rule": "R2"}]}
+    c = V.checks(sh)
+    assert c["check"].tolist() == ["y", "x"] and c["rule"].tolist() == ["R2", "R1"]
+    assert V.checks({}).empty and V.manifest_table({}).empty
