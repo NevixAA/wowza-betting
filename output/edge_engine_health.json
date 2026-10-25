@@ -1,0 +1,110 @@
+{
+  "generated_at": "2026-10-25T09:25:36Z",
+  "selection_engine_version": "market_edge_v2",
+  "config_status": "UNVALIDATED_DEFAULTS",
+  "devig_method": "power",
+  "shadow_only": true,
+  "runtime_seconds": 1.366,
+  "rows_scored": 732,
+  "rows_appended_first_sight": 732,
+  "current_run_book_quotes": 5850,
+  "prospective_evidence_loaded": false,
+  "coverage": {
+    "BTTS|new_format": {
+      "fixtures": 99,
+      "two_sided": 99,
+      "two_sided_share": 1.0,
+      "multi_book": 97,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 99
+      },
+      "legacy_tipped": 15,
+      "median_books": 8.0
+    },
+    "BTTS|standard": {
+      "fixtures": 84,
+      "two_sided": 84,
+      "two_sided_share": 1.0,
+      "multi_book": 84,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 84
+      },
+      "legacy_tipped": 6,
+      "median_books": 6.0
+    },
+    "OU15|new_format": {
+      "fixtures": 99,
+      "two_sided": 7,
+      "two_sided_share": 0.0707,
+      "multi_book": 6,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 99
+      },
+      "legacy_tipped": 6,
+      "median_books": 0.0
+    },
+    "OU15|standard": {
+      "fixtures": 84,
+      "two_sided": 0,
+      "two_sided_share": 0.0,
+      "multi_book": 0,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 84
+      },
+      "legacy_tipped": 0,
+      "median_books": 0.0
+    },
+    "OU25|new_format": {
+      "fixtures": 99,
+      "two_sided": 99,
+      "two_sided_share": 1.0,
+      "multi_book": 99,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 99
+      },
+      "legacy_tipped": 48,
+      "median_books": 5.0
+    },
+    "OU25|standard": {
+      "fixtures": 84,
+      "two_sided": 84,
+      "two_sided_share": 1.0,
+      "multi_book": 84,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 84
+      },
+      "legacy_tipped": 23,
+      "median_books": 7.0
+    },
+    "OU35|new_format": {
+      "fixtures": 99,
+      "two_sided": 33,
+      "two_sided_share": 0.3333,
+      "multi_book": 31,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 99
+      },
+      "legacy_tipped": 3,
+      "median_books": 0.0
+    },
+    "OU35|standard": {
+      "fixtures": 84,
+      "two_sided": 22,
+      "two_sided_share": 0.2619,
+      "multi_book": 20,
+      "one_sided": 0,
+      "states": {
+        "NO_BET": 84
+      },
+      "legacy_tipped": 0,
+      "median_books": 0.0
+    }
+  }
+}
