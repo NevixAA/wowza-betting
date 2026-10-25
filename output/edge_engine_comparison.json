@@ -1,0 +1,1978 @@
+{
+  "label": "RETROSPECTIVE",
+  "note": "RETROSPECTIVE replay. Can describe, never confirm. Forward evidence: Pro registry/edge2_hypotheses_v1.json.",
+  "generated_at": "2026-10-25T13:12:42Z",
+  "engine_version": "market_edge_v2",
+  "config_path": "config/market_edge_v2.json",
+  "config_sha256": "a85ae7260859c1f06383e92b51e675d4372a8ca2018ebaec76aab87d66d44444",
+  "config_status": "UNVALIDATED_DEFAULTS",
+  "engine_code_sha256": "bd415829f04360c551d727bb5706e0846736539cf0146d99f9a8bfb08b8a2bb6",
+  "inputs": {
+    "board_runs": 723,
+    "board_rows": 115379,
+    "book_quote_rows": 345693,
+    "result_rows": 153592,
+    "replay_rows": 3945,
+    "settled_rows": 2690
+  },
+  "definitions": {
+    "first_sight": "earliest committed predictions.csv run strictly before kickoff with the family's p and a real board price",
+    "legacy_ou25": "tier RECORDED by production at first sight (signal_tier/best_side); reproduced from the threshold regime for validation",
+    "legacy_side": "p-(1/odds)/1.08 with 0.10/0.08/0.04 bars unless league approved in best_params_side_markets.json at the time; BTTS-YES / OVER only",
+    "NEW_QUALIFIED": "market_edge_v2 decision_state QUALIFIED/STRONG, committed UNVALIDATED_DEFAULTS",
+    "NEW_EVLB": "market_edge_v2 value path: ev_lower_bound>0, >=2 books, odds<=max_odds, no extreme-disagreement cap (evidence gate ignored)",
+    "NEW_OBSERVE_POOL": "any non-NO_BET state with a two-sided consensus (ev_point>0) - NOT a bet recommendation, shown for completeness",
+    "two_sided_universe": "first-sight rows where >=1 same-book two-sided pair existed at the entry instant",
+    "clv": "certified only: book write within 30 min before kickoff, LOCF per-book pairs at kickoff, power de-vig median of >=3 books; CLV% = entry_odds*p_close_fair-1",
+    "roi_ci": "matchday (kickoff date) block bootstrap, 2000 resamples",
+    "thresholds_in_force": "predict.yml env history: one change b82cec9f 2026-08-21T16:06:04Z (VALUABLE .04->.03, MARKSMAN .14->.08, league SNIPER cap 1.0->.12); best_params_* read from git at entry time"
+  },
+  "legacy_vs_ledger_same_price": {
+    "OU25": {
+      "matched_same_price": 622,
+      "tier_equal": 343,
+      "tier_equal_pct": 55.1,
+      "ledger_tier_higher": 279,
+      "ledger_tier_lower": 0
+    },
+    "BTTS": {
+      "matched_same_price": 200,
+      "tier_equal": 183,
+      "tier_equal_pct": 91.5,
+      "ledger_tier_higher": 17,
+      "ledger_tier_lower": 0
+    },
+    "OU15": {
+      "matched_same_price": 95,
+      "tier_equal": 89,
+      "tier_equal_pct": 93.7,
+      "ledger_tier_higher": 6,
+      "ledger_tier_lower": 0
+    }
+  },
+  "cells": {
+    "new_format|OU25": {
+      "status": "OK",
+      "window": [
+        "2026-08-15 10:56:28+00:00",
+        "2026-10-22 00:38:25+00:00"
+      ],
+      "first_sight_settled": 846,
+      "two_sided_at_entry": 681,
+      "two_sided_share": 0.805,
+      "new_states_all": {
+        "NO_BET": 833,
+        "OBSERVE": 12,
+        "QUALIFIED": 1
+      },
+      "new_reasons_top": {
+        "NO_POSITIVE_EV": 668,
+        "NO_PRICE": 165,
+        "EV_LB_NOT_POSITIVE": 12,
+        "EV_LB>0": 1
+      },
+      "certified_close_coverage_two_sided_pct": 15.0,
+      "engines_full_universe": {
+        "LEGACY": {
+          "n": 327,
+          "matchdays": 56,
+          "bets_per_day": 4.84,
+          "hit_pct": 41.0,
+          "mean_odds": 2.507,
+          "roi_pct": -3.0,
+          "roi_ci95": [
+            -18.3,
+            10.2
+          ],
+          "pnl_u": -9.94,
+          "max_drawdown_u": 33.84,
+          "longest_losing_streak": 15,
+          "clv_coverage_pct": 16.8,
+          "clv_n": 55,
+          "clv_mean_pct": -9.15,
+          "clv_median_pct": -6.92,
+          "clv_positive_pct": 14.5
+        }
+      },
+      "engines_two_sided_universe": {
+        "LEGACY": {
+          "n": 277,
+          "matchdays": 46,
+          "bets_per_day": 4.1,
+          "hit_pct": 40.8,
+          "mean_odds": 2.509,
+          "roi_pct": -2.8,
+          "roi_ci95": [
+            -20.1,
+            12.4
+          ],
+          "pnl_u": -7.86,
+          "max_drawdown_u": 29.59,
+          "longest_losing_streak": 15,
+          "clv_coverage_pct": 15.5,
+          "clv_n": 43,
+          "clv_mean_pct": -9.28,
+          "clv_median_pct": -6.92,
+          "clv_positive_pct": 18.6
+        },
+        "NEW_QUALIFIED": {
+          "n": 1,
+          "matchdays": 1,
+          "bets_per_day": 0.01,
+          "hit_pct": 100.0,
+          "mean_odds": 1.72,
+          "roi_pct": 72.0,
+          "roi_ci95": [
+            NaN,
+            NaN
+          ],
+          "pnl_u": 0.72,
+          "max_drawdown_u": 0.0,
+          "longest_losing_streak": 0,
+          "clv_coverage_pct": 0.0,
+          "clv_n": 0,
+          "clv_mean_pct": null,
+          "clv_median_pct": null,
+          "clv_positive_pct": null
+        },
+        "NEW_EVLB": {
+          "n": 1,
+          "matchdays": 1,
+          "bets_per_day": 0.01,
+          "hit_pct": 100.0,
+          "mean_odds": 1.72,
+          "roi_pct": 72.0,
+          "roi_ci95": [
+            NaN,
+            NaN
+          ],
+          "pnl_u": 0.72,
+          "max_drawdown_u": 0.0,
+          "longest_losing_streak": 0,
+          "clv_coverage_pct": 0.0,
+          "clv_n": 0,
+          "clv_mean_pct": null,
+          "clv_median_pct": null,
+          "clv_positive_pct": null,
+          "p_one_sided_roi_gt_0": null,
+          "bh_q": null
+        },
+        "NEW_OBSERVE_POOL": {
+          "n": 13,
+          "matchdays": 9,
+          "bets_per_day": 0.19,
+          "hit_pct": 38.5,
+          "mean_odds": 1.918,
+          "roi_pct": -27.0,
+          "roi_ci95": [
+            -78.8,
+            20.9
+          ],
+          "pnl_u": -3.51,
+          "max_drawdown_u": 4.63,
+          "longest_losing_streak": 3,
+          "clv_coverage_pct": 7.7,
+          "clv_n": 1,
+          "clv_mean_pct": -8.79,
+          "clv_median_pct": -8.79,
+          "clv_positive_pct": 0.0
+        }
+      },
+      "agreement_two_sided": {
+        "NEW_EVLB": {
+          "legacy_only": 277,
+          "new_only": 1,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 403
+        },
+        "NEW_QUALIFIED": {
+          "legacy_only": 277,
+          "new_only": 1,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 403
+        }
+      },
+      "probability_quality_side_a": {
+        "model": {
+          "n": 681,
+          "brier": 0.24404,
+          "logloss": 0.68102,
+          "calibration_slope": 0.928,
+          "ece": 0.0519
+        },
+        "market_power": {
+          "n": 681,
+          "brier": 0.23955,
+          "logloss": 0.67136,
+          "calibration_slope": 0.779,
+          "ece": 0.0764
+        },
+        "market_proportional": {
+          "n": 681,
+          "brier": 0.23929,
+          "logloss": 0.67093,
+          "calibration_slope": 0.864,
+          "ece": 0.0586
+        },
+        "decision": {
+          "n": 681,
+          "brier": 0.23909,
+          "logloss": 0.67047,
+          "calibration_slope": 0.821,
+          "ece": 0.0681
+        }
+      },
+      "model_minus_market_brier_gain": {
+        "mean": -0.0045,
+        "ci95": [
+          -0.0112,
+          0.00178
+        ],
+        "note": "positive = model beats the de-vigged market"
+      },
+      "legacy_reproduction_match_pct": 100.0
+    },
+    "standard|OU25": {
+      "status": "OK",
+      "window": [
+        "2026-08-15 10:56:28+00:00",
+        "2026-10-16 13:15:28+00:00"
+      ],
+      "first_sight_settled": 524,
+      "two_sided_at_entry": 424,
+      "two_sided_share": 0.809,
+      "new_states_all": {
+        "NO_BET": 520,
+        "OBSERVE": 4
+      },
+      "new_reasons_top": {
+        "NO_POSITIVE_EV": 420,
+        "NO_PRICE": 100,
+        "EV_LB_NOT_POSITIVE": 4
+      },
+      "certified_close_coverage_two_sided_pct": 23.3,
+      "engines_full_universe": {
+        "LEGACY": {
+          "n": 108,
+          "matchdays": 32,
+          "bets_per_day": 1.74,
+          "hit_pct": 36.1,
+          "mean_odds": 2.216,
+          "roi_pct": -21.6,
+          "roi_ci95": [
+            -38.2,
+            -0.6
+          ],
+          "pnl_u": -23.33,
+          "max_drawdown_u": 23.33,
+          "longest_losing_streak": 5,
+          "clv_coverage_pct": 18.5,
+          "clv_n": 20,
+          "clv_mean_pct": -9.03,
+          "clv_median_pct": -10.12,
+          "clv_positive_pct": 10.0
+        }
+      },
+      "engines_two_sided_universe": {
+        "LEGACY": {
+          "n": 98,
+          "matchdays": 28,
+          "bets_per_day": 1.58,
+          "hit_pct": 36.7,
+          "mean_odds": 2.217,
+          "roi_pct": -20.2,
+          "roi_ci95": [
+            -37.7,
+            4.1
+          ],
+          "pnl_u": -19.81,
+          "max_drawdown_u": 21.28,
+          "longest_losing_streak": 8,
+          "clv_coverage_pct": 19.4,
+          "clv_n": 19,
+          "clv_mean_pct": -9.01,
+          "clv_median_pct": -10.21,
+          "clv_positive_pct": 10.5
+        },
+        "NEW_QUALIFIED": {
+          "n": 0
+        },
+        "NEW_EVLB": {
+          "n": 0,
+          "p_one_sided_roi_gt_0": null,
+          "bh_q": null
+        },
+        "NEW_OBSERVE_POOL": {
+          "n": 4,
+          "matchdays": 3,
+          "bets_per_day": 0.06,
+          "hit_pct": 0.0,
+          "mean_odds": 1.94,
+          "roi_pct": -100.0,
+          "roi_ci95": [
+            NaN,
+            NaN
+          ],
+          "pnl_u": -4.0,
+          "max_drawdown_u": 4.0,
+          "longest_losing_streak": 4,
+          "clv_coverage_pct": 0.0,
+          "clv_n": 0,
+          "clv_mean_pct": null,
+          "clv_median_pct": null,
+          "clv_positive_pct": null
+        }
+      },
+      "agreement_two_sided": {
+        "NEW_EVLB": {
+          "legacy_only": 98,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 326
+        },
+        "NEW_QUALIFIED": {
+          "legacy_only": 98,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 326
+        }
+      },
+      "probability_quality_side_a": {
+        "model": {
+          "n": 424,
+          "brier": 0.25152,
+          "logloss": 0.69622,
+          "calibration_slope": -0.252,
+          "ece": 0.0325
+        },
+        "market_power": {
+          "n": 424,
+          "brier": 0.24516,
+          "logloss": 0.68329,
+          "calibration_slope": 1.128,
+          "ece": 0.029
+        },
+        "market_proportional": {
+          "n": 424,
+          "brier": 0.24527,
+          "logloss": 0.68354,
+          "calibration_slope": 1.282,
+          "ece": 0.0356
+        },
+        "decision": {
+          "n": 424,
+          "brier": 0.24529,
+          "logloss": 0.68358,
+          "calibration_slope": 1.189,
+          "ece": 0.0351
+        }
+      },
+      "model_minus_market_brier_gain": {
+        "mean": -0.00636,
+        "ci95": [
+          -0.01145,
+          -0.0005
+        ],
+        "note": "positive = model beats the de-vigged market"
+      },
+      "legacy_reproduction_match_pct": 100.0
+    },
+    "new_format|BTTS": {
+      "status": "OK",
+      "window": [
+        "2026-08-22 10:03:01+00:00",
+        "2026-10-22 00:38:25+00:00"
+      ],
+      "first_sight_settled": 741,
+      "two_sided_at_entry": 741,
+      "two_sided_share": 1.0,
+      "new_states_all": {
+        "NO_BET": 741
+      },
+      "new_reasons_top": {
+        "NO_POSITIVE_EV": 741
+      },
+      "certified_close_coverage_two_sided_pct": 22.0,
+      "engines_full_universe": {
+        "LEGACY": {
+          "n": 133,
+          "matchdays": 43,
+          "bets_per_day": 2.19,
+          "hit_pct": 60.2,
+          "mean_odds": 2.111,
+          "roi_pct": 26.3,
+          "roi_ci95": [
+            8.2,
+            44.7
+          ],
+          "pnl_u": 35.02,
+          "max_drawdown_u": 7.0,
+          "longest_losing_streak": 7,
+          "clv_coverage_pct": 24.8,
+          "clv_n": 33,
+          "clv_mean_pct": -9.03,
+          "clv_median_pct": -9.25,
+          "clv_positive_pct": 9.1
+        }
+      },
+      "engines_two_sided_universe": {
+        "LEGACY": {
+          "n": 133,
+          "matchdays": 43,
+          "bets_per_day": 2.19,
+          "hit_pct": 60.2,
+          "mean_odds": 2.111,
+          "roi_pct": 26.3,
+          "roi_ci95": [
+            8.2,
+            44.7
+          ],
+          "pnl_u": 35.02,
+          "max_drawdown_u": 7.0,
+          "longest_losing_streak": 7,
+          "clv_coverage_pct": 24.8,
+          "clv_n": 33,
+          "clv_mean_pct": -9.03,
+          "clv_median_pct": -9.25,
+          "clv_positive_pct": 9.1
+        },
+        "NEW_QUALIFIED": {
+          "n": 0
+        },
+        "NEW_EVLB": {
+          "n": 0,
+          "p_one_sided_roi_gt_0": null,
+          "bh_q": null
+        },
+        "NEW_OBSERVE_POOL": {
+          "n": 0
+        }
+      },
+      "agreement_two_sided": {
+        "NEW_EVLB": {
+          "legacy_only": 133,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 608
+        },
+        "NEW_QUALIFIED": {
+          "legacy_only": 133,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 608
+        }
+      },
+      "probability_quality_side_a": {
+        "model": {
+          "n": 741,
+          "brier": 0.24342,
+          "logloss": 0.6799,
+          "calibration_slope": 0.656,
+          "ece": 0.057
+        },
+        "market_power": {
+          "n": 741,
+          "brier": 0.24365,
+          "logloss": 0.68015,
+          "calibration_slope": 0.341,
+          "ece": 0.0479
+        },
+        "market_proportional": {
+          "n": 741,
+          "brier": 0.24317,
+          "logloss": 0.67918,
+          "calibration_slope": 0.386,
+          "ece": 0.0369
+        },
+        "decision": {
+          "n": 741,
+          "brier": 0.24312,
+          "logloss": 0.67907,
+          "calibration_slope": 0.371,
+          "ece": 0.0452
+        }
+      },
+      "model_minus_market_brier_gain": {
+        "mean": 0.00023,
+        "ci95": [
+          -0.00532,
+          0.00606
+        ],
+        "note": "positive = model beats the de-vigged market"
+      }
+    },
+    "standard|BTTS": {
+      "status": "OK",
+      "window": [
+        "2026-08-22 10:03:01+00:00",
+        "2026-10-16 13:15:28+00:00"
+      ],
+      "first_sight_settled": 468,
+      "two_sided_at_entry": 468,
+      "two_sided_share": 1.0,
+      "new_states_all": {
+        "NO_BET": 468
+      },
+      "new_reasons_top": {
+        "NO_POSITIVE_EV": 468
+      },
+      "certified_close_coverage_two_sided_pct": 30.8,
+      "engines_full_universe": {
+        "LEGACY": {
+          "n": 50,
+          "matchdays": 21,
+          "bets_per_day": 0.91,
+          "hit_pct": 52.0,
+          "mean_odds": 1.937,
+          "roi_pct": -0.8,
+          "roi_ci95": [
+            -26.7,
+            33.0
+          ],
+          "pnl_u": -0.42,
+          "max_drawdown_u": 10.25,
+          "longest_losing_streak": 5,
+          "clv_coverage_pct": 24.0,
+          "clv_n": 12,
+          "clv_mean_pct": -1.74,
+          "clv_median_pct": -5.2,
+          "clv_positive_pct": 25.0
+        }
+      },
+      "engines_two_sided_universe": {
+        "LEGACY": {
+          "n": 50,
+          "matchdays": 21,
+          "bets_per_day": 0.91,
+          "hit_pct": 52.0,
+          "mean_odds": 1.937,
+          "roi_pct": -0.8,
+          "roi_ci95": [
+            -26.7,
+            33.0
+          ],
+          "pnl_u": -0.42,
+          "max_drawdown_u": 10.25,
+          "longest_losing_streak": 5,
+          "clv_coverage_pct": 24.0,
+          "clv_n": 12,
+          "clv_mean_pct": -1.74,
+          "clv_median_pct": -5.2,
+          "clv_positive_pct": 25.0
+        },
+        "NEW_QUALIFIED": {
+          "n": 0
+        },
+        "NEW_EVLB": {
+          "n": 0,
+          "p_one_sided_roi_gt_0": null,
+          "bh_q": null
+        },
+        "NEW_OBSERVE_POOL": {
+          "n": 0
+        }
+      },
+      "agreement_two_sided": {
+        "NEW_EVLB": {
+          "legacy_only": 50,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 418
+        },
+        "NEW_QUALIFIED": {
+          "legacy_only": 50,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 418
+        }
+      },
+      "probability_quality_side_a": {
+        "model": {
+          "n": 468,
+          "brier": 0.24402,
+          "logloss": 0.68117,
+          "calibration_slope": 0.946,
+          "ece": 0.09
+        },
+        "market_power": {
+          "n": 468,
+          "brier": 0.24264,
+          "logloss": 0.67834,
+          "calibration_slope": 0.597,
+          "ece": 0.0678
+        },
+        "market_proportional": {
+          "n": 468,
+          "brier": 0.24309,
+          "logloss": 0.67927,
+          "calibration_slope": 0.683,
+          "ece": 0.0725
+        },
+        "decision": {
+          "n": 468,
+          "brier": 0.24259,
+          "logloss": 0.67825,
+          "calibration_slope": 0.664,
+          "ece": 0.0762
+        }
+      },
+      "model_minus_market_brier_gain": {
+        "mean": -0.00139,
+        "ci95": [
+          -0.00602,
+          0.00316
+        ],
+        "note": "positive = model beats the de-vigged market"
+      }
+    },
+    "new_format|OU15": {
+      "status": "OK",
+      "window": [
+        "2026-08-15 10:56:28+00:00",
+        "2026-10-21 13:43:46+00:00"
+      ],
+      "first_sight_settled": 92,
+      "two_sided_at_entry": 69,
+      "two_sided_share": 0.75,
+      "new_states_all": {
+        "NO_BET": 64,
+        "OBSERVE": 28
+      },
+      "new_reasons_top": {
+        "NO_POSITIVE_EV": 63,
+        "ONE_SIDED_PRICE": 22,
+        "EV_LB_NOT_POSITIVE": 6,
+        "STALE_PRICE": 1
+      },
+      "certified_close_coverage_two_sided_pct": 11.6,
+      "engines_full_universe": {
+        "LEGACY": {
+          "n": 84,
+          "matchdays": 39,
+          "bets_per_day": 1.25,
+          "hit_pct": 69.0,
+          "mean_odds": 1.561,
+          "roi_pct": 7.1,
+          "roi_ci95": [
+            -7.2,
+            22.3
+          ],
+          "pnl_u": 5.96,
+          "max_drawdown_u": 4.44,
+          "longest_losing_streak": 3,
+          "clv_coverage_pct": 17.9,
+          "clv_n": 15,
+          "clv_mean_pct": -5.94,
+          "clv_median_pct": -5.42,
+          "clv_positive_pct": 0.0
+        }
+      },
+      "engines_two_sided_universe": {
+        "LEGACY": {
+          "n": 62,
+          "matchdays": 31,
+          "bets_per_day": 0.92,
+          "hit_pct": 71.0,
+          "mean_odds": 1.554,
+          "roi_pct": 9.7,
+          "roi_ci95": [
+            -8.0,
+            27.7
+          ],
+          "pnl_u": 6.04,
+          "max_drawdown_u": 4.44,
+          "longest_losing_streak": 3,
+          "clv_coverage_pct": 12.9,
+          "clv_n": 8,
+          "clv_mean_pct": -4.64,
+          "clv_median_pct": -5.27,
+          "clv_positive_pct": 0.0
+        },
+        "NEW_QUALIFIED": {
+          "n": 0
+        },
+        "NEW_EVLB": {
+          "n": 0,
+          "p_one_sided_roi_gt_0": null,
+          "bh_q": null
+        },
+        "NEW_OBSERVE_POOL": {
+          "n": 6,
+          "matchdays": 6,
+          "bets_per_day": 0.09,
+          "hit_pct": 66.7,
+          "mean_odds": 1.607,
+          "roi_pct": 7.7,
+          "roi_ci95": [
+            -47.0,
+            62.0
+          ],
+          "pnl_u": 0.46,
+          "max_drawdown_u": 1.0,
+          "longest_losing_streak": 1,
+          "clv_coverage_pct": 16.7,
+          "clv_n": 1,
+          "clv_mean_pct": -0.03,
+          "clv_median_pct": -0.03,
+          "clv_positive_pct": 0.0
+        }
+      },
+      "agreement_two_sided": {
+        "NEW_EVLB": {
+          "legacy_only": 62,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 7
+        },
+        "NEW_QUALIFIED": {
+          "legacy_only": 62,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 7
+        }
+      },
+      "probability_quality_side_a": {
+        "model": {
+          "n": 69,
+          "brier": 0.19644,
+          "logloss": 0.58022,
+          "calibration_slope": 1.686,
+          "ece": 0.0345
+        },
+        "market_power": {
+          "n": 69,
+          "brier": 0.20547,
+          "logloss": 0.60026,
+          "calibration_slope": 0.767,
+          "ece": 0.0944
+        },
+        "market_proportional": {
+          "n": 69,
+          "brier": 0.20765,
+          "logloss": 0.60523,
+          "calibration_slope": 0.876,
+          "ece": 0.0988
+        },
+        "decision": {
+          "n": 69,
+          "brier": 0.20433,
+          "logloss": 0.59776,
+          "calibration_slope": 0.804,
+          "ece": 0.0936
+        }
+      },
+      "model_minus_market_brier_gain": {
+        "mean": 0.00904,
+        "ci95": [
+          -0.00811,
+          0.02799
+        ],
+        "note": "positive = model beats the de-vigged market"
+      }
+    },
+    "standard|OU15": {
+      "status": "INSUFFICIENT",
+      "window": [
+        "2026-08-15 15:31:48+00:00",
+        "2026-10-17 20:34:15+00:00"
+      ],
+      "first_sight_settled": 19,
+      "two_sided_at_entry": 18,
+      "two_sided_share": 0.947,
+      "new_states_all": {
+        "NO_BET": 18,
+        "OBSERVE": 1
+      },
+      "new_reasons_top": {
+        "NO_POSITIVE_EV": 18,
+        "ONE_SIDED_PRICE": 1
+      },
+      "certified_close_coverage_two_sided_pct": 11.1,
+      "reason": "18 rows with a same-book two-sided price at first sight (< 30)",
+      "engines_full_universe": {
+        "LEGACY": {
+          "n": 11,
+          "matchdays": 8,
+          "bets_per_day": 0.17,
+          "hit_pct": 45.5,
+          "mean_odds": 1.437,
+          "roi_pct": -36.3,
+          "roi_ci95": [
+            -81.9,
+            10.2
+          ],
+          "pnl_u": -3.99,
+          "max_drawdown_u": 5.0,
+          "longest_losing_streak": 5,
+          "clv_coverage_pct": 0.0,
+          "clv_n": 0,
+          "clv_mean_pct": null,
+          "clv_median_pct": null,
+          "clv_positive_pct": null
+        }
+      },
+      "engines_two_sided_universe": {
+        "LEGACY": {
+          "n": 10,
+          "matchdays": 8,
+          "bets_per_day": 0.16,
+          "hit_pct": 50.0,
+          "mean_odds": 1.436,
+          "roi_pct": -29.9,
+          "roi_ci95": [
+            -81.9,
+            13.2
+          ],
+          "pnl_u": -2.99,
+          "max_drawdown_u": 4.0,
+          "longest_losing_streak": 4,
+          "clv_coverage_pct": 0.0,
+          "clv_n": 0,
+          "clv_mean_pct": null,
+          "clv_median_pct": null,
+          "clv_positive_pct": null
+        },
+        "NEW_QUALIFIED": {
+          "n": 0
+        },
+        "NEW_EVLB": {
+          "n": 0,
+          "p_one_sided_roi_gt_0": null,
+          "bh_q": null
+        },
+        "NEW_OBSERVE_POOL": {
+          "n": 0
+        }
+      },
+      "agreement_two_sided": {
+        "NEW_EVLB": {
+          "legacy_only": 10,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 8
+        },
+        "NEW_QUALIFIED": {
+          "legacy_only": 10,
+          "new_only": 0,
+          "both_same_side": 0,
+          "disagree_side": 0,
+          "neither": 8
+        }
+      },
+      "probability_quality_side_a": {
+        "model": {
+          "n": 18,
+          "brier": 0.23025,
+          "logloss": 0.656,
+          "calibration_slope": NaN,
+          "ece": 0.0749
+        },
+        "market_power": {
+          "n": 18,
+          "brier": 0.19936,
+          "logloss": 0.58033,
+          "calibration_slope": NaN,
+          "ece": 0.1656
+        },
+        "market_proportional": {
+          "n": 18,
+          "brier": 0.20214,
+          "logloss": 0.58919,
+          "calibration_slope": NaN,
+          "ece": 0.1759
+        },
+        "decision": {
+          "n": 18,
+          "brier": 0.20165,
+          "logloss": 0.58556,
+          "calibration_slope": NaN,
+          "ece": 0.1686
+        }
+      },
+      "model_minus_market_brier_gain": {
+        "mean": -0.03088,
+        "ci95": [
+          -0.07187,
+          0.00633
+        ],
+        "note": "positive = model beats the de-vigged market"
+      }
+    }
+  },
+  "disagreement_test": {
+    "new_format|OU25": {
+      "status": "OK",
+      "n_discovery": 340,
+      "n_holdout": 341,
+      "discovery_window": [
+        "2026-08-21 19:14:42+00:00",
+        "2026-09-13 13:20:31+00:00"
+      ],
+      "holdout_window": [
+        "2026-09-13 13:20:31+00:00",
+        "2026-10-22 00:38:25+00:00"
+      ],
+      "bin_edges_from_discovery": [
+        0.0278,
+        0.0628
+      ],
+      "bins": {
+        "small": {
+          "n": 54,
+          "adv": {
+            "mean": 0.0211,
+            "ci95": [
+              -0.0813,
+              0.1088
+            ],
+            "n": 54
+          },
+          "dbrier": {
+            "mean": -0.0008,
+            "ci95": [
+              -0.0041,
+              0.0024
+            ],
+            "n": 54
+          },
+          "dll": {
+            "mean": -0.0015,
+            "ci95": [
+              -0.0083,
+              0.0051
+            ],
+            "n": 54
+          },
+          "clv_dir": {
+            "mean": 0.009,
+            "ci95": [
+              -0.0204,
+              0.0382
+            ],
+            "n": 8
+          },
+          "roi": {
+            "mean": -0.07,
+            "ci95": [
+              -0.2987,
+              0.1265
+            ],
+            "n": 54
+          }
+        },
+        "moderate": {
+          "n": 77,
+          "adv": {
+            "mean": -0.0001,
+            "ci95": [
+              -0.1051,
+              0.1025
+            ],
+            "n": 77
+          },
+          "dbrier": {
+            "mean": -0.0003,
+            "ci95": [
+              -0.0104,
+              0.0096
+            ],
+            "n": 77
+          },
+          "dll": {
+            "mean": -0.0008,
+            "ci95": [
+              -0.0216,
+              0.0196
+            ],
+            "n": 77
+          },
+          "clv_dir": {
+            "mean": -0.0177,
+            "ci95": [
+              -0.0365,
+              -0.0035
+            ],
+            "n": 8
+          },
+          "roi": {
+            "mean": -0.0692,
+            "ci95": [
+              -0.298,
+              0.1649
+            ],
+            "n": 77
+          }
+        },
+        "extreme": {
+          "n": 210,
+          "adv": {
+            "mean": 0.0725,
+            "ci95": [
+              -0.0039,
+              0.1412
+            ],
+            "n": 210
+          },
+          "dbrier": {
+            "mean": -0.0078,
+            "ci95": [
+              -0.0278,
+              0.0081
+            ],
+            "n": 210
+          },
+          "dll": {
+            "mean": -0.016,
+            "ci95": [
+              -0.0573,
+              0.0185
+            ],
+            "n": 210
+          },
+          "clv_dir": {
+            "mean": -0.0006,
+            "ci95": [
+              -0.0161,
+              0.0138
+            ],
+            "n": 29
+          },
+          "roi": {
+            "mean": 0.0427,
+            "ci95": [
+              -0.1439,
+              0.1983
+            ],
+            "n": 210
+          }
+        }
+      },
+      "tests": {
+        "adv": {
+          "diff_moderate_minus_extreme": -0.0726,
+          "ci95": [
+            -0.2042,
+            0.0659
+          ],
+          "p_one_sided": 0.869,
+          "bh_q": 0.914
+        },
+        "dll": {
+          "diff_moderate_minus_extreme": 0.0152,
+          "ci95": [
+            -0.0272,
+            0.063
+          ],
+          "p_one_sided": 0.248,
+          "bh_q": 0.3598
+        },
+        "dbrier": {
+          "diff_moderate_minus_extreme": 0.0075,
+          "ci95": [
+            -0.0117,
+            0.0293
+          ],
+          "p_one_sided": 0.2285,
+          "bh_q": 0.3598
+        },
+        "roi": {
+          "diff_moderate_minus_extreme": -0.1119,
+          "ci95": [
+            -0.3956,
+            0.2034
+          ],
+          "p_one_sided": 0.7665,
+          "bh_q": 0.8687
+        },
+        "clv_dir": {
+          "diff": null,
+          "p_one_sided": null
+        }
+      },
+      "isotonic": {
+        "direction_fitted_on_discovery": "increasing",
+        "holdout_spearman_pred_vs_realised_adv": 0.162,
+        "p": 0.0027
+      }
+    },
+    "standard|OU25": {
+      "status": "OK",
+      "n_discovery": 212,
+      "n_holdout": 212,
+      "discovery_window": [
+        "2026-08-19 10:40:28+00:00",
+        "2026-09-07 14:13:46+00:00"
+      ],
+      "holdout_window": [
+        "2026-09-07 14:13:46+00:00",
+        "2026-10-16 13:15:28+00:00"
+      ],
+      "bin_edges_from_discovery": [
+        0.0255,
+        0.0573
+      ],
+      "bins": {
+        "small": {
+          "n": 71,
+          "adv": {
+            "mean": -0.0072,
+            "ci95": [
+              -0.1061,
+              0.0982
+            ],
+            "n": 71
+          },
+          "dbrier": {
+            "mean": -0.0006,
+            "ci95": [
+              -0.004,
+              0.0026
+            ],
+            "n": 71
+          },
+          "dll": {
+            "mean": -0.0012,
+            "ci95": [
+              -0.0081,
+              0.0053
+            ],
+            "n": 71
+          },
+          "clv_dir": {
+            "mean": -0.0168,
+            "ci95": [
+              -0.0272,
+              -0.0085
+            ],
+            "n": 8
+          },
+          "roi": {
+            "mean": -0.0766,
+            "ci95": [
+              -0.2683,
+              0.1246
+            ],
+            "n": 71
+          }
+        },
+        "moderate": {
+          "n": 55,
+          "adv": {
+            "mean": 0.0307,
+            "ci95": [
+              -0.1035,
+              0.1807
+            ],
+            "n": 55
+          },
+          "dbrier": {
+            "mean": 0.0008,
+            "ci95": [
+              -0.0109,
+              0.0133
+            ],
+            "n": 55
+          },
+          "dll": {
+            "mean": 0.0015,
+            "ci95": [
+              -0.0218,
+              0.0267
+            ],
+            "n": 55
+          },
+          "clv_dir": {
+            "mean": null,
+            "n": 1
+          },
+          "roi": {
+            "mean": -0.026,
+            "ci95": [
+              -0.2869,
+              0.281
+            ],
+            "n": 55
+          }
+        },
+        "extreme": {
+          "n": 86,
+          "adv": {
+            "mean": -0.007,
+            "ci95": [
+              -0.09,
+              0.0877
+            ],
+            "n": 86
+          },
+          "dbrier": {
+            "mean": -0.0163,
+            "ci95": [
+              -0.0328,
+              0.0033
+            ],
+            "n": 86
+          },
+          "dll": {
+            "mean": -0.0332,
+            "ci95": [
+              -0.0666,
+              0.0067
+            ],
+            "n": 86
+          },
+          "clv_dir": {
+            "mean": 0.0081,
+            "ci95": [
+              -0.0012,
+              0.0197
+            ],
+            "n": 10
+          },
+          "roi": {
+            "mean": -0.1236,
+            "ci95": [
+              -0.2957,
+              0.0727
+            ],
+            "n": 86
+          }
+        }
+      },
+      "tests": {
+        "adv": {
+          "diff_moderate_minus_extreme": 0.0376,
+          "ci95": [
+            -0.1334,
+            0.2143
+          ],
+          "p_one_sided": 0.345,
+          "bh_q": 0.4189
+        },
+        "dll": {
+          "diff_moderate_minus_extreme": 0.0347,
+          "ci95": [
+            -0.0106,
+            0.0752
+          ],
+          "p_one_sided": 0.06,
+          "bh_q": 0.3598
+        },
+        "dbrier": {
+          "diff_moderate_minus_extreme": 0.0171,
+          "ci95": [
+            -0.0061,
+            0.0378
+          ],
+          "p_one_sided": 0.0685,
+          "bh_q": 0.3598
+        },
+        "roi": {
+          "diff_moderate_minus_extreme": 0.0976,
+          "ci95": [
+            -0.2337,
+            0.4222
+          ],
+          "p_one_sided": 0.2785,
+          "bh_q": 0.3642
+        },
+        "clv_dir": {
+          "diff": null,
+          "p_one_sided": null
+        }
+      },
+      "isotonic": {
+        "direction_fitted_on_discovery": "increasing",
+        "holdout_spearman_pred_vs_realised_adv": 0.1865,
+        "p": 0.0065
+      }
+    },
+    "new_format|BTTS": {
+      "status": "OK",
+      "n_discovery": 370,
+      "n_holdout": 371,
+      "discovery_window": [
+        "2026-08-22 10:03:01+00:00",
+        "2026-09-12 13:59:26+00:00"
+      ],
+      "holdout_window": [
+        "2026-09-12 15:35:38+00:00",
+        "2026-10-22 00:38:25+00:00"
+      ],
+      "bin_edges_from_discovery": [
+        0.0479,
+        0.0903
+      ],
+      "bins": {
+        "small": {
+          "n": 163,
+          "adv": {
+            "mean": 0.015,
+            "ci95": [
+              -0.0462,
+              0.0796
+            ],
+            "n": 163
+          },
+          "dbrier": {
+            "mean": 0.0002,
+            "ci95": [
+              -0.0031,
+              0.0049
+            ],
+            "n": 163
+          },
+          "dll": {
+            "mean": 0.0004,
+            "ci95": [
+              -0.0065,
+              0.01
+            ],
+            "n": 163
+          },
+          "clv_dir": {
+            "mean": 0.0061,
+            "ci95": [
+              -0.0057,
+              0.0147
+            ],
+            "n": 27
+          },
+          "roi": {
+            "mean": -0.0724,
+            "ci95": [
+              -0.1874,
+              0.0567
+            ],
+            "n": 163
+          }
+        },
+        "moderate": {
+          "n": 123,
+          "adv": {
+            "mean": 0.065,
+            "ci95": [
+              -0.0234,
+              0.1552
+            ],
+            "n": 123
+          },
+          "dbrier": {
+            "mean": 0.0035,
+            "ci95": [
+              -0.0082,
+              0.0156
+            ],
+            "n": 123
+          },
+          "dll": {
+            "mean": 0.0073,
+            "ci95": [
+              -0.0167,
+              0.0322
+            ],
+            "n": 123
+          },
+          "clv_dir": {
+            "mean": 0.0008,
+            "ci95": [
+              -0.0093,
+              0.0128
+            ],
+            "n": 17
+          },
+          "roi": {
+            "mean": 0.0478,
+            "ci95": [
+              -0.1543,
+              0.2564
+            ],
+            "n": 123
+          }
+        },
+        "extreme": {
+          "n": 85,
+          "adv": {
+            "mean": 0.0185,
+            "ci95": [
+              -0.0646,
+              0.1127
+            ],
+            "n": 85
+          },
+          "dbrier": {
+            "mean": -0.0105,
+            "ci95": [
+              -0.0338,
+              0.0173
+            ],
+            "n": 85
+          },
+          "dll": {
+            "mean": -0.0227,
+            "ci95": [
+              -0.0716,
+              0.0369
+            ],
+            "n": 85
+          },
+          "clv_dir": {
+            "mean": 0.0108,
+            "ci95": [
+              0.0002,
+              0.0264
+            ],
+            "n": 13
+          },
+          "roi": {
+            "mean": -0.09,
+            "ci95": [
+              -0.3117,
+              0.1587
+            ],
+            "n": 85
+          }
+        }
+      },
+      "tests": {
+        "adv": {
+          "diff_moderate_minus_extreme": 0.0464,
+          "ci95": [
+            -0.0832,
+            0.162
+          ],
+          "p_one_sided": 0.254,
+          "bh_q": 0.3598
+        },
+        "dll": {
+          "diff_moderate_minus_extreme": 0.0299,
+          "ci95": [
+            -0.0358,
+            0.0832
+          ],
+          "p_one_sided": 0.1635,
+          "bh_q": 0.3598
+        },
+        "dbrier": {
+          "diff_moderate_minus_extreme": 0.014,
+          "ci95": [
+            -0.0169,
+            0.0395
+          ],
+          "p_one_sided": 0.162,
+          "bh_q": 0.3598
+        },
+        "roi": {
+          "diff_moderate_minus_extreme": 0.1378,
+          "ci95": [
+            -0.1752,
+            0.4331
+          ],
+          "p_one_sided": 0.2015,
+          "bh_q": 0.3598
+        },
+        "clv_dir": {
+          "diff_moderate_minus_extreme": -0.01,
+          "ci95": [
+            -0.0284,
+            0.0054
+          ],
+          "p_one_sided": 0.914,
+          "bh_q": 0.914
+        }
+      },
+      "isotonic": {
+        "direction_fitted_on_discovery": "increasing",
+        "holdout_spearman_pred_vs_realised_adv": 0.2196,
+        "p": 0.0
+      }
+    },
+    "standard|BTTS": {
+      "status": "OK",
+      "n_discovery": 234,
+      "n_holdout": 234,
+      "discovery_window": [
+        "2026-08-22 10:03:01+00:00",
+        "2026-09-06 10:21:55+00:00"
+      ],
+      "holdout_window": [
+        "2026-09-06 10:21:55+00:00",
+        "2026-10-16 13:15:28+00:00"
+      ],
+      "bin_edges_from_discovery": [
+        0.0173,
+        0.0401
+      ],
+      "bins": {
+        "small": {
+          "n": 70,
+          "adv": {
+            "mean": 0.0246,
+            "ci95": [
+              -0.0946,
+              0.1407
+            ],
+            "n": 70
+          },
+          "dbrier": {
+            "mean": 0.0006,
+            "ci95": [
+              -0.0015,
+              0.0027
+            ],
+            "n": 70
+          },
+          "dll": {
+            "mean": 0.0012,
+            "ci95": [
+              -0.0029,
+              0.0054
+            ],
+            "n": 70
+          },
+          "clv_dir": {
+            "mean": 0.0011,
+            "ci95": [
+              -0.0033,
+              0.0122
+            ],
+            "n": 11
+          },
+          "roi": {
+            "mean": -0.0453,
+            "ci95": [
+              -0.263,
+              0.1694
+            ],
+            "n": 70
+          }
+        },
+        "moderate": {
+          "n": 68,
+          "adv": {
+            "mean": 0.1608,
+            "ci95": [
+              0.0414,
+              0.2481
+            ],
+            "n": 68
+          },
+          "dbrier": {
+            "mean": 0.0088,
+            "ci95": [
+              0.0025,
+              0.0134
+            ],
+            "n": 68
+          },
+          "dll": {
+            "mean": 0.0176,
+            "ci95": [
+              0.0051,
+              0.027
+            ],
+            "n": 68
+          },
+          "clv_dir": {
+            "mean": 0.0126,
+            "ci95": [
+              -0.0047,
+              0.0348
+            ],
+            "n": 8
+          },
+          "roi": {
+            "mean": 0.2221,
+            "ci95": [
+              -0.0074,
+              0.3928
+            ],
+            "n": 68
+          }
+        },
+        "extreme": {
+          "n": 96,
+          "adv": {
+            "mean": 0.0563,
+            "ci95": [
+              -0.0167,
+              0.183
+            ],
+            "n": 96
+          },
+          "dbrier": {
+            "mean": 0.0026,
+            "ci95": [
+              -0.008,
+              0.0208
+            ],
+            "n": 96
+          },
+          "dll": {
+            "mean": 0.0051,
+            "ci95": [
+              -0.0162,
+              0.042
+            ],
+            "n": 96
+          },
+          "clv_dir": {
+            "mean": 0.0022,
+            "ci95": [
+              -0.0115,
+              0.0217
+            ],
+            "n": 10
+          },
+          "roi": {
+            "mean": 0.006,
+            "ci95": [
+              -0.1454,
+              0.2686
+            ],
+            "n": 96
+          }
+        }
+      },
+      "tests": {
+        "adv": {
+          "diff_moderate_minus_extreme": 0.1045,
+          "ci95": [
+            -0.0567,
+            0.2126
+          ],
+          "p_one_sided": 0.103,
+          "bh_q": 0.3598
+        },
+        "dll": {
+          "diff_moderate_minus_extreme": 0.0125,
+          "ci95": [
+            -0.0216,
+            0.0357
+          ],
+          "p_one_sided": 0.2275,
+          "bh_q": 0.3598
+        },
+        "dbrier": {
+          "diff_moderate_minus_extreme": 0.0062,
+          "ci95": [
+            -0.0116,
+            0.0176
+          ],
+          "p_one_sided": 0.217,
+          "bh_q": 0.3598
+        },
+        "roi": {
+          "diff_moderate_minus_extreme": 0.216,
+          "ci95": [
+            -0.1138,
+            0.4451
+          ],
+          "p_one_sided": 0.092,
+          "bh_q": 0.3598
+        },
+        "clv_dir": {
+          "diff": null,
+          "p_one_sided": null
+        }
+      },
+      "isotonic": {
+        "direction_fitted_on_discovery": "increasing",
+        "holdout_spearman_pred_vs_realised_adv": 0.0511,
+        "p": 0.4365
+      }
+    },
+    "new_format|OU15": {
+      "status": "OK",
+      "n_discovery": 34,
+      "n_holdout": 35,
+      "discovery_window": [
+        "2026-08-19 13:06:49+00:00",
+        "2026-09-13 21:43:30+00:00"
+      ],
+      "holdout_window": [
+        "2026-09-14 02:14:20+00:00",
+        "2026-10-21 13:43:46+00:00"
+      ],
+      "bin_edges_from_discovery": [
+        0.0738,
+        0.0998
+      ],
+      "bins": {
+        "small": {
+          "n": 19,
+          "adv": {
+            "mean": 0.0535,
+            "ci95": [
+              -0.1023,
+              0.2672
+            ],
+            "n": 19
+          },
+          "dbrier": {
+            "mean": 0.0042,
+            "ci95": [
+              -0.0127,
+              0.0273
+            ],
+            "n": 19
+          },
+          "dll": {
+            "mean": 0.0103,
+            "ci95": [
+              -0.0304,
+              0.0631
+            ],
+            "n": 19
+          },
+          "clv_dir": {
+            "mean": null,
+            "n": 1
+          },
+          "roi": {
+            "mean": -0.0432,
+            "ci95": [
+              -0.3045,
+              0.3262
+            ],
+            "n": 19
+          }
+        },
+        "moderate": {
+          "n": 12,
+          "adv": {
+            "mean": 0.0838,
+            "ci95": [
+              -0.2156,
+              0.36
+            ],
+            "n": 12
+          },
+          "dbrier": {
+            "mean": 0.0048,
+            "ci95": [
+              -0.0499,
+              0.0518
+            ],
+            "n": 12
+          },
+          "dll": {
+            "mean": 0.0191,
+            "ci95": [
+              -0.1036,
+              0.1341
+            ],
+            "n": 12
+          },
+          "clv_dir": {
+            "mean": null,
+            "n": 2
+          },
+          "roi": {
+            "mean": 0.2883,
+            "ci95": [
+              -0.3467,
+              1.0318
+            ],
+            "n": 12
+          }
+        },
+        "extreme": {
+          "n": 4,
+          "adv": {
+            "mean": null,
+            "n": 4
+          },
+          "dbrier": {
+            "mean": null,
+            "n": 4
+          },
+          "dll": {
+            "mean": null,
+            "n": 4
+          },
+          "clv_dir": {
+            "mean": null,
+            "n": 0
+          },
+          "roi": {
+            "mean": null,
+            "n": 4
+          }
+        }
+      },
+      "tests": {
+        "adv": {
+          "diff": null,
+          "p_one_sided": null
+        },
+        "dll": {
+          "diff": null,
+          "p_one_sided": null
+        },
+        "dbrier": {
+          "diff": null,
+          "p_one_sided": null
+        },
+        "roi": {
+          "diff": null,
+          "p_one_sided": null
+        },
+        "clv_dir": {
+          "diff": null,
+          "p_one_sided": null
+        }
+      },
+      "isotonic": {
+        "direction_fitted_on_discovery": "increasing",
+        "holdout_spearman_pred_vs_realised_adv": 0.1525,
+        "p": 0.3817
+      }
+    },
+    "standard|OU15": {
+      "status": "INSUFFICIENT",
+      "n": 18,
+      "reason": "18 settled two-sided rows (< 60 for a half/half split)"
+    }
+  },
+  "current_board": {
+    "board_generated_at": "2026-10-25 09:25:35+00:00",
+    "board_fixtures": 183,
+    "pre_kickoff_fixture_market_rows": 549,
+    "legacy_selections": 98,
+    "legacy_selections_by_market": {
+      "OU25": 71,
+      "BTTS": 21,
+      "OU15": 6
+    },
+    "legacy_selections_by_tier": {
+      "VALUABLE": 49,
+      "MARKSMAN": 35,
+      "SNIPER": 14
+    },
+    "new_state_of_legacy_selections": {
+      "NO_BET": 96,
+      "OBSERVE": 2
+    },
+    "side_changes": 54,
+    "become_NO_BET": 96,
+    "become_OBSERVE": 2,
+    "stay_QUALIFIED_or_STRONG": 0,
+    "new_ev_lb_positive_among_legacy": 0,
+    "new_ev_lb_positive_all_rows": 0,
+    "no_bet_reasons": {
+      "NO_POSITIVE_EV": 72,
+      "STALE_PRICE": 24
+    },
+    "by_market": {
+      "BTTS": {
+        "legacy": 21,
+        "states": {
+          "NO_BET": 20,
+          "OBSERVE": 1
+        },
+        "side_changes": 12
+      },
+      "OU15": {
+        "legacy": 6,
+        "states": {
+          "NO_BET": 5,
+          "OBSERVE": 1
+        },
+        "side_changes": 0
+      },
+      "OU25": {
+        "legacy": 71,
+        "states": {
+          "NO_BET": 71
+        },
+        "side_changes": 42
+      }
+    },
+    "shadow_first_sight_view": {
+      "rows": 732,
+      "upcoming_rows": 732,
+      "legacy_selections": 101,
+      "new_state_of_legacy_selections": {
+        "NO_BET": 101
+      },
+      "side_changes": 72,
+      "states_all_upcoming": {
+        "NO_BET": 732
+      }
+    }
+  },
+  "edge_engine_shadow_counts": {
+    "rows": 732,
+    "first_prediction_ts": "2026-10-25T09:25:36Z",
+    "last_prediction_ts": "2026-10-25T09:25:36Z",
+    "by_track_market": {
+      "new_format|BTTS": {
+        "n": 99,
+        "states": {
+          "NO_BET": 99
+        },
+        "two_sided": 99
+      },
+      "new_format|OU15": {
+        "n": 99,
+        "states": {
+          "NO_BET": 99
+        },
+        "two_sided": 7
+      },
+      "new_format|OU25": {
+        "n": 99,
+        "states": {
+          "NO_BET": 99
+        },
+        "two_sided": 99
+      },
+      "new_format|OU35": {
+        "n": 99,
+        "states": {
+          "NO_BET": 99
+        },
+        "two_sided": 33
+      },
+      "standard|BTTS": {
+        "n": 84,
+        "states": {
+          "NO_BET": 84
+        },
+        "two_sided": 84
+      },
+      "standard|OU15": {
+        "n": 84,
+        "states": {
+          "NO_BET": 84
+        },
+        "two_sided": 0
+      },
+      "standard|OU25": {
+        "n": 84,
+        "states": {
+          "NO_BET": 84
+        },
+        "two_sided": 84
+      },
+      "standard|OU35": {
+        "n": 84,
+        "states": {
+          "NO_BET": 84
+        },
+        "two_sided": 22
+      }
+    }
+  }
+}
