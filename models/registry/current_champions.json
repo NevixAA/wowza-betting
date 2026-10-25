@@ -9,13 +9,14 @@
     "promotion_reason": "reconstructed from git history 2026-10-18"
   },
   "newformat": {
-    "model_version": "newformat_20261025T082056Z_cfa68e5c",
-    "champion_since": "2026-10-25T08:20:56Z",
-    "retrain_batch_id": "rb_20261025T081424Z",
-    "training_cutoff": "2025-05-09",
-    "artifact_sha256": "cfa68e5c45fa92ed9e5a3e3009cd625d5e848a06c6102796fb4d3f085e1191bb",
-    "promotion_source": "CHAMPION_GATE",
-    "promotion_reason": "materially better: delta -0.00158, CI [-0.00282, -0.00038], later half -0.00048, Brier -0.00074, ECE +0.0064"
+    "model_version": "newformat_20261018T080423Z_9eb6b4b4",
+    "champion_since": "2026-10-25T08:46:05Z",
+    "retrain_batch_id": "rb_2026-10-18_legacy",
+    "training_cutoff": null,
+    "artifact_sha256": "9eb6b4b4860c7970a8c9217c31c6c58f15635936b3405bc0f12c2bcb99db8d98",
+    "promotion_source": "ROLLBACK",
+    "promotion_reason": "ROLLBACK: owner 2026-10-25: promoted by the retired champion_gate minutes before PG-1.0 went live; holdout-qualified but no prospective period - parked as challenger",
+    "gate_version": "PG-1.0"
   },
   "btts": {
     "model_version": "btts_20261005T101905Z_238e3419",
