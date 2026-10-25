@@ -33,27 +33,6 @@ ui.autorefresh(5, key="main_refresh")
 _TZ = "Asia/Jerusalem"
 
 
-@st.cache_data(ttl=60)
-def _perf(today: str):
-    return today_view.performance(today_view.load_settled(), today=today)
-
-
-@st.cache_data(ttl=60)
-def _upcoming_ou() -> int:
-    return today_view.upcoming_staked_ou(today_view.load_bets())
-
-
-@st.cache_data(ttl=120)
-def _plan(today: str) -> pd.DataFrame:
-    return production_view.stake_plan(today=today)
-
-
-@st.cache_data(ttl=120)
-def _kickoffs() -> pd.DataFrame:
-    return today_view.kickoffs()
-
-
-@st.cache_data(ttl=300)
 def _best_bets(day: str) -> tuple[pd.DataFrame, bool]:
     from src import top_picks as TP
     fz = TP.frozen(day)
@@ -63,19 +42,35 @@ def _best_bets(day: str) -> tuple[pd.DataFrame, bool]:
     return lists[lists["list"] == "BEST_BETS"].sort_values("rank").reset_index(drop=True), frozen
 
 
-@st.cache_data(ttl=300)
-def _health():
+@st.cache_data(ttl=60)
+def _home(today: str, local_day: str) -> dict:
+    """Everything Home reads, in ONE cached call (one cache-key computation per rerun, not six).
+
+    * performance: Home's original staked basis (today_view);
+    * the stake plan (same reader as the Production page), its counts, and the kickoff of every active
+      tip - the 'next' kickoff is picked against the clock on each run, not cached;
+    * the Best-bets list (src.top_picks, the Tips page's lists); system health, manifest, API budget."""
+    plan = production_view.stake_plan(today=today)
+    ko = today_view.kickoffs()
+    active = plan[plan["final_fraction"] > 0] if len(plan) else plan
+    times = (pd.to_datetime(active["fixture"].map(ko.set_index("fixture")["kickoff_utc"]), errors="coerce", utc=True)
+             if len(active) and len(ko) else pd.Series(dtype="datetime64[ns, UTC]"))
     sh, man = today_view.health_files()
-    return sh, man, today_view.api_budget()
+    bb, bb_frozen = _best_bets(today)
+    return {"perf": today_view.performance(today_view.load_settled(), today=local_day),
+            "upcoming_ou": today_view.upcoming_staked_ou(today_view.load_bets()),
+            "act": today_view.action(plan), "ko_times": times,
+            "gen": plan["generated_at"].dropna().astype(str).max() if len(plan) else None,
+            "bb": bb, "bb_frozen": bb_frozen, "sh": sh, "man": man, "budget": today_view.api_budget()}
 
 
 today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
-perf = _perf(pd.Timestamp.now().normalize().strftime("%Y-%m-%d"))
-plan = _plan(today)
-act = today_view.action(plan)
-nxt = today_view.next_kickoff(plan, _kickoffs())
-bb, bb_frozen = _best_bets(today)
-sh, man, budget = _health()
+H = _home(today, pd.Timestamp.now().normalize().strftime("%Y-%m-%d"))
+perf, act, _gen, bb, bb_frozen = H["perf"], H["act"], H["gen"], H["bb"], H["bb_frozen"]
+sh, man, budget = H["sh"], H["man"], H["budget"]
+_ko_times = H["ko_times"]
+_now = pd.Timestamp.now(tz="UTC")
+nxt = _ko_times[_ko_times > _now].min() if len(_ko_times) else pd.NaT
 _cut = config.PERFORMANCE_CUTOFF_DATE
 
 # ── header — the ONE freshness statement on the page ─────────────────────────────────────────
@@ -83,7 +78,6 @@ _h_age = today_view.age_hours(sh.get("generated_at")) if sh else None
 _fresh = (ui.freshness_badge("FRESH" if _h_age is not None and _h_age <= 36 else "STALE",
                              f"system health {_h_age:.1f} h old" if _h_age is not None else "no timestamp")
           if sh else ui.freshness_badge("UNKNOWN", "system health missing"))
-_gen = plan["generated_at"].dropna().astype(str).max() if len(plan) else None
 _tip_line = f"stake plan {pd.Timestamp(_gen):%d/%m %H:%M} UTC" if _gen else ""
 ui.page_header("Home", "What production is doing today, how the staked book stands, and whether the "
                "data behind it is fit for decisions.", eyebrow_text="Today · Wowza Pro",
@@ -100,7 +94,7 @@ with a:
         help="Tips dated today or later that the approved bankroll policy stakes (stake plan, final stake > 0) "
              "— the same count as 'With a stake' on the Production page.",
         supporting=[("Next active kickoff", _nk),
-                    ("Upcoming staked tips (O/U 2.5)", f"{_upcoming_ou()}"),
+                    ("Upcoming staked tips (O/U 2.5)", f"{H['upcoming_ou']}"),
                     ("Paper / no stake", f"{act['paper']}"),
                     ("Shadow engine BET", f"{act['shadow_bet']} of {act['shadow_n']}")],
         status=ui.status_chip("LIVE", label="PRODUCTION") + " " + ui.status_chip("RESEARCH", label="SHADOW SEPARATE"))
@@ -173,12 +167,11 @@ else:
     _cols = st.columns(3)
     for i, r in bb.head(3).iterrows():
         with _cols[i % 3]:
-            with st.container(border=True):
-                ui.eyebrow(f"#{int(r['rank'])} · {r['league']}")
-                st.markdown(f"**{r['home_team']} v {r['away_team']}**")
-                st.metric(str(r["pick"]), ui.fmt_odds(r["odds"]))
-                ui.stat_line([("Chance", ui.fmt_prob(r["p_win"])), ("Expected profit", ui.fmt_roi(r["ev"]))])
-                st.markdown(ui.status_chip(r["signal_tier"]))
+            ui.selection_card(league=f"#{int(r['rank'])} · {r['league']}", kickoff="", home=r["home_team"],
+                              away=r["away_team"], pick=str(r["pick"]), odds=r["odds"],
+                              production_state="", decision_state="", tier=r["signal_tier"], show_plan=False,
+                              supporting=[("Chance", ui.fmt_prob(r["p_win"])),
+                                          ("Expected profit", ui.fmt_roi(r["ev"]))])
     if len(bb) > 3:
         st.caption("Also on the list: " + " · ".join(
             f"#{int(r['rank'])} {r['home_team']} v {r['away_team']} ({r['pick']} @ {ui.fmt_odds(r['odds'])})"

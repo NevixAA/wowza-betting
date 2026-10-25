@@ -384,6 +384,10 @@ def freshness_badge(state: str, detail: str = "") -> str:
 # ═════════════════════════════════════════════════════════════════════════════════════════════
 # BLOCKS
 # ═════════════════════════════════════════════════════════════════════════════════════════════
+#: Paragraph break inside one st.markdown: ends the HTML block so the markdown chip line after it renders.
+_PARA = chr(10) * 2
+
+
 def stat_html(items) -> str:
     """Supporting figures as one wrapping row: [(label, value), ...] or dicts with label/value/n."""
     out = []
@@ -417,10 +421,10 @@ def metric_card(label: str, value, *, title: str = "", supporting=None, status: 
             st.metric(label, value, delta=delta, delta_color=delta_color, help=help, chart_data=chart_data)
         else:
             st.metric(label, value, delta=delta, delta_color=delta_color, help=help)
-        stat_line(supporting)
         line = " ".join(x for x in (status, evidence, sample_marker(n, floor) if n is not None else "") if x)
-        if line:
-            st.markdown(line)
+        body = _PARA.join(x for x in ((stat_html(supporting) if supporting else ""), line) if x)
+        if body:                    # one element: the stats block, then the chip line as markdown
+            st.markdown(body, unsafe_allow_html=True)
 
 
 def metric_grid(items: list[dict], *, per_row: int = 3, border: bool = True) -> None:
@@ -450,19 +454,21 @@ def metric_row(items: list[dict], *, per_row: int = 4) -> None:
 
 def selection_card(*, league: str, kickoff: str, home: str, away: str, pick: str, odds,
                    production_state: str = "", decision_state: str = "", tier: str = "",
-                   supporting=None, evidence: str = "", note: str = "", container=None) -> None:
+                   supporting=None, evidence: str = "", note: str = "", show_plan: bool = True,
+                   container=None) -> None:
     """One selection: who plays, what the pick is, the price, and what production / the shadow
     engine each say about it. The legacy tier is shown last and neutral — metadata, not strength."""
     with (container or st).container(border=True):
-        eyebrow(f"{league} · {kickoff}")
-        st.markdown(f"<div class='wz-title'>{_html.escape(str(home))} v {_html.escape(str(away))}</div>",
+        st.markdown(f"<div class='wz-eyebrow'>{_html.escape(' · '.join(str(x) for x in (league, kickoff) if x))}</div>"
+                    f"<div class='wz-title'>{_html.escape(str(home))} v {_html.escape(str(away))}</div>",
                     unsafe_allow_html=True)
         st.metric(pick, fmt_odds(odds) if not isinstance(odds, str) else odds)
-        stat_line(supporting)
-        chips = [status_chip(production_state) if production_state else status_chip("NO_DATA", label="NOT IN STAKE PLAN"),
+        chips = [status_chip(production_state) if production_state else
+                 (status_chip("NO_DATA", label="NOT IN STAKE PLAN") if show_plan else ""),
                  status_chip(decision_state) if decision_state else "",
                  status_chip(tier) if tier else ""]
-        st.markdown(" ".join(c for c in chips if c))
+        st.markdown((stat_html(supporting) + _PARA if supporting else "") + " ".join(c for c in chips if c),
+                    unsafe_allow_html=True)
         if evidence or note:
             st.caption(" · ".join(x for x in (evidence, note) if x))
 

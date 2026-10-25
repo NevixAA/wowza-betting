@@ -111,3 +111,11 @@ def test_data_ui_is_only_a_reexport():
                  "compare_bars", "cumulative_line", "polarity", "repo_colour", "NEUTRAL", "is_dark"):
         assert getattr(data_ui, name) is getattr(ui, name), name
 
+
+def test_redesigned_pages_invent_no_colours_and_no_dividers():
+    for name in ("00_🎯_Home.py", "1_📊_Dashboard.py"):
+        src = (ROOT / "pages" / name).read_text(encoding="utf-8")
+        assert not re.search(r"#[0-9A-Fa-f]{6}\b", src), f"{name} hardcodes a hex colour"
+        assert "<style" not in src, f"{name} carries its own CSS"
+        assert "st.divider()" not in src and 'st.markdown("---")' not in src, f"{name} uses dividers"
+
