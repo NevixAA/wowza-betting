@@ -127,6 +127,7 @@ PAGES = [
     ("pages/free_tips.py",              "Today's free tips", "🎁", "free"),
     ("pages/00_🎯_Home.py",              "Home",              "🎯", "pro"),
     ("pages/1_📊_Dashboard.py",          "Tips",              "📊", "pro"),
+    ("pages/17_🏟️_Leagues.py",           "Leagues",           "🏟️", "pro"),
     ("pages/11_👤_Player_Props.py",      "Player Props",      "👤", "pro"),
     ("pages/13_⚽_Fantasy.py",           "Fantasy",           "⚽", "pro"),
     ("pages/14_🧩_Bet_Builder.py",       "Bet Builder",       "🧩", "pro"),
