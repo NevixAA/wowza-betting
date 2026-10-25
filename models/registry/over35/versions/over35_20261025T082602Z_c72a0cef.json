@@ -1,0 +1,39 @@
+{
+  "model_type": "over35",
+  "model_version": "over35_20261025T082602Z_c72a0cef",
+  "retrain_batch_id": "rb_20261025T081424Z",
+  "trained_at": "2026-10-25T08:26:02Z",
+  "training_start": "2019-02-22",
+  "training_end": "2025-10-04",
+  "training_cutoff": "2025-10-04",
+  "training_rows": 60501,
+  "target": "over35",
+  "feature_schema_version": "56cc042e5c46",
+  "n_features": 42,
+  "code_commit_sha": "23b225cf9dd8",
+  "data_version": "dd3479267e0b",
+  "artifact_sha256": "c72a0cef071fcd8fec7104d613f8e219a5cacc9d90aff9c2fbb59ce697e1858b",
+  "parent_champion_version": "over35_20261005T101905Z_f546ce72",
+  "validation_metrics": {
+    "holdout": {
+      "n": 12101,
+      "log_loss": 0.599777,
+      "brier": 0.205205,
+      "ece": 0.002726
+    },
+    "champion_same_holdout": {
+      "n": 12101,
+      "log_loss": 0.599843,
+      "brier": 0.20523,
+      "ece": 0.004392
+    },
+    "ll_delta": -6.6e-05,
+    "ll_ci": [
+      -0.000514,
+      0.000432
+    ],
+    "later_half_ll_delta": 0.00025
+  },
+  "promotion_status": "KEEP_CHAMPION",
+  "model_role": "REJECTED"
+}

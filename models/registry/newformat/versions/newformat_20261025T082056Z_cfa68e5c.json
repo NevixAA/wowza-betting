@@ -1,0 +1,39 @@
+{
+  "model_type": "newformat",
+  "model_version": "newformat_20261025T082056Z_cfa68e5c",
+  "retrain_batch_id": "rb_20261025T081424Z",
+  "trained_at": "2026-10-25T08:20:56Z",
+  "training_start": "2019-02-22",
+  "training_end": "2025-05-09",
+  "training_cutoff": "2025-05-09",
+  "training_rows": 38733,
+  "target": "over25",
+  "feature_schema_version": "ac94abb18976",
+  "n_features": 27,
+  "code_commit_sha": "23b225cf9dd8",
+  "data_version": "db94d07a872f",
+  "artifact_sha256": "cfa68e5c45fa92ed9e5a3e3009cd625d5e848a06c6102796fb4d3f085e1191bb",
+  "parent_champion_version": "newformat_20261018T080423Z_9eb6b4b4",
+  "validation_metrics": {
+    "holdout": {
+      "n": 7747,
+      "log_loss": 0.675239,
+      "brier": 0.241222,
+      "ece": 0.014921
+    },
+    "champion_same_holdout": {
+      "n": 7747,
+      "log_loss": 0.67682,
+      "brier": 0.241961,
+      "ece": 0.008503
+    },
+    "ll_delta": -0.001581,
+    "ll_ci": [
+      -0.002819,
+      -0.000383
+    ],
+    "later_half_ll_delta": -0.00048
+  },
+  "promotion_status": "PROMOTE",
+  "model_role": "CHAMPION"
+}
