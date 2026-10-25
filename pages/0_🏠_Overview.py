@@ -8,6 +8,12 @@ about the parts it cannot reach rather than leaving them blank.
 WHAT IT REFUSES TO DO. It does not add v9's P/L to Pro's research numbers or to Fantasy's points.
 Those are three different units measuring three different things, and a single "Wowza score"
 would be a fabrication. Each repo keeps its own scale and its own state label.
+
+Visual redesign 2026-10-25 (stage 2b): four sections - SYSTEM HEALTH (overall RED / AMBER / GREEN at
+the top, one card per check), PRODUCTION, RESEARCH, DATA FEEDS (one card per subsystem: V9 live, Pro
+research, V11 shadow, Fantasy). PRESENTATION ONLY - components in dashboard_data/overview_view.py. Reads
+are cached for two minutes (they were re-run on every widget interaction) and Pro's directory listings
+are fetched concurrently; the values are the same calls' values.
 """
 import sys
 from pathlib import Path
@@ -20,88 +26,71 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
-from dashboard_data import fantasy, pro, ui, v9, v11
-from dashboard_data.core import REPOS, repo_path
+import dashboard_ui as ui  # noqa: E402
+from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
+from dashboard_data import overview_view as V  # noqa: E402
+from dashboard_data.core import REPOS, repo_path  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Overview", page_icon="🏠", layout="wide")
-st.title("🏠 Wowza — estate overview")
 
-# ── System health: explicit red/amber/green rules (owner repair brief 2026-10-22) ────────────────
-st.subheader("System health")
-try:
-    from src.system_health import evaluate as _sh_eval
-    _checks = _sh_eval()
-    _icon = {"GREEN": "🟢", "AMBER": "🟡", "RED": "🔴", "NO_DATA": "⚪"}
-    _cols = st.columns(3)
-    for _i, _c in enumerate(_checks):
-        with _cols[_i % 3]:
-            st.markdown(f"{_icon.get(_c['status'], '⚪')} **{_c['check']}** — {_c['value']}")
-            st.caption(f"rule: {_c['rule']}" + (f" · {_c['detail']}" if _c.get("detail") else ""))
-    _n_red = sum(c["status"] == "RED" for c in _checks)
-    (st.error if _n_red else st.success)(f"{_n_red} red · {sum(c['status'] == 'AMBER' for c in _checks)} amber · "
-                                         f"{sum(c['status'] == 'GREEN' for c in _checks)} green")
-except Exception as _e:                                               # noqa: BLE001 - health must never break the page
-    st.warning(f"System health unavailable: {type(_e).__name__}")
-st.divider()
-st.caption("Three repositories, three jobs, three scales. Nothing on this page is summed across "
-           "them, because units in betting, research and Fantasy are not the same unit.")
 
-# ── which repos are reachable ─────────────────────────────────────────────────────────────────
-cols = st.columns(3)
-_ROLE = {
-    "v9": ("LIVE", "Production. Sends tips, stakes paper, learns every week."),
-    "pro": ("RESEARCH", "Canonical evidence, validation, Bet Builder. Never writes into v9."),
-    "v11": ("SHADOW / RESEARCH ONLY", "Market-first shadow. Logs decisions, places nothing."),
-}
-for c, key in zip(cols, ("v9", "pro", "v11")):
-    with c:
-        state, blurb = _ROLE[key]
-        found = repo_path(key)
-        st.markdown(
-            f"<div style='border-top:3px solid {ui.repo_colour(key)};padding-top:8px'>"
-            f"<b style='font-size:1.05rem'>{REPOS[key]['label']}</b></div>",
-            unsafe_allow_html=True)
-        ui.state_banner(state, blurb)
-        if found is None:
-            st.caption("⚪ not checked out beside v9")
-        else:
-            st.caption(f"📁 `{found.name}`")
+@st.cache_data(ttl=120, show_spinner="Reading the estate…")
+def _estate() -> dict:
+    """Every read the page makes, once per two minutes (not once per widget interaction)."""
+    out = {}
+    try:
+        from src.system_health import evaluate as _sh_eval
+        out["checks"], out["checks_error"] = _sh_eval(), None
+    except Exception as e:                                          # noqa: BLE001 - health must never break the page
+        out["checks"], out["checks_error"] = None, type(e).__name__
+    out["perf"] = v9.performance()
+    out["by_league"] = v9.by_league(days=None, staked_only=True)
+    out["v9_health"] = v9.health()
+    out["pro_available"] = pro.available()
+    if out["pro_available"]:
+        V.prefetch_pro_listings()
+        out["pro_stores"], out["pro_health"] = pro.canonical_stores(), pro.health_artifacts()
+    else:
+        out["pro_absent"] = pro.absent_reason()
+    out["v11_available"] = v11.available()
+    out["v11_health"] = v11.health() if out["v11_available"] else None
+    out["v11_absent"] = None if out["v11_available"] else v11.absent_reason()
+    out["fantasy"] = fantasy.health()
+    out["validity"] = pro.research_validity()
+    return out
 
-st.divider()
 
-# ── v9: the only track carrying money-shaped numbers ──────────────────────────────────────────
-st.subheader("V9 — live betting")
-perf = v9.performance()
+E = _estate()
+checks = E["checks"]
+hv = E["v9_health"]
+_pf = hv["predictions"]["freshness"]
+ui.page_header("Wowza — estate overview",
+               "Three repositories, three jobs, three scales. Nothing on this page is summed across them, because "
+               "units in betting, research and Fantasy are not the same unit.",
+               eyebrow_text="Admin · estate", state=V.overall(checks) if checks is not None else "NO_DATA",
+               freshness=ui.freshness_badge(_pf.state, f"v9 predictions · {_pf.label}"))
+
+# ═══ SYSTEM HEALTH ═══════════════════════════════════════════════════════════════════════════════
+ui.section_header("System health", "Explicit red / amber / green rules (owner repair brief 2026-10-22). Worst first; "
+                  "every card carries its rule.")
+if checks is None:
+    ui.empty_state("ERROR", f"System health unavailable: {E['checks_error']}")
+else:
+    _ov = V.overall(checks)
+    st.markdown(ui.status_chip(_ov, label=f"OVERALL {_ov}") + f" &nbsp;**{V.count_line(checks)}**")
+    V.health_cards(checks)
+
+# ═══ PRODUCTION ═══════════════════════════════════════════════════════════════════════════════════
+ui.section_header("Production — V9 live betting", "Staked tiers only (SNIPER + MARKSMAN). VALUABLE is paper and is "
+                  "kept out of every P/L headline.")
+perf = E["perf"]
 if not perf.get("available"):
-    st.warning(perf.get("why", "no settled bets"))
+    ui.empty_state("NO_DATA", perf.get("why", "no settled bets"))
 else:
     tracks = {k: val for k, val in perf["by_track"].items() if k != "unknown"}
-    k = st.columns(len(tracks) + 1)
     total_n = sum(t["n"] for t in tracks.values())
-    staked_n = sum(t["staked_only"]["n"] for t in tracks.values())
-    staked_pnl = sum(t["staked_only"]["pnl"] for t in tracks.values())
-    with k[0]:
-        # THE HEADLINE IS THE STAKED FIGURE, NOT THE ALL-TIPS FIGURE. VALUABLE is a paper tier;
-        # counting it into the number a reader reads as "how we are doing" inflates the bet count
-        # by roughly 3x and mixes two different decisions into one line.
-        ui.kpi("Staked P/L", ui.units(staked_pnl),
-               f"{staked_n:,} staked bets · SNIPER + MARKSMAN only",
-               tone=ui.polarity()[0] if staked_pnl >= 0 else ui.polarity()[1])
-    # SAME BASIS AS THE HEADLINE. These cards used to show ALL tips, VALUABLE included, while
-    # sitting beside a card labelled "SNIPER + MARKSMAN only" — so three numbers that looked
-    # comparable were not, and the track cards read about 3x larger than the money they
-    # represent. VALUABLE is a paper tier; it belongs in the caption, not in a P/L headline.
-    for c, (name, t) in zip(k[1:], sorted(tracks.items())):
-        s_ = t["staked_only"]
-        with c:
-            be = s_.get("break_even")
-            hit_txt = ui.pct(s_.get("hit"), None)
-            # The hit rate is meaningless without the bar it must clear, so they travel together.
-            be_txt = f" vs {ui.pct(be, None)} break-even" if be is not None else ""
-            ui.kpi(name.replace("_", "-"), ui.units(s_["pnl"]),
-                   f"{s_['n']:,} staked · hit {hit_txt}{be_txt} · ROI {ui.pct(s_.get('roi'), None)}",
-                   tone=ui.polarity()[0] if s_["pnl"] >= 0 else ui.polarity()[1])
-
+    # THE HEADLINE IS THE STAKED FIGURE, NOT THE ALL-TIPS FIGURE (see overview_view.staked_cards).
+    V.staked_cards(perf)
     st.caption(
         f"Every card above is SNIPER + MARKSMAN only — the tiers that carry money. "
         f"Including the paper VALUABLE tier there are {total_n:,} tips worth "
@@ -116,10 +105,9 @@ else:
         left, right = st.columns([3, 2])
         with left:
             st.altair_chart(ui.pnl_bars(d, "track_tier", "pnl", "n",
-                                        title="P/L by track and tier (units, flat 1u)"),
-                            width='stretch')
+                                        title="P/L by track and tier (units, flat 1u)"), width="stretch")
         with right:
-            st.markdown("**Does the tier ladder order the outcomes?**")
+            ui.eyebrow("Does the tier ladder order the outcomes?")
             st.caption(
                 "SNIPER is supposed to be the strongest tier and VALUABLE the weakest. Read the "
                 "bars against that claim. Measured across the whole ledger the ladder carries no "
@@ -127,123 +115,107 @@ else:
                 "0.4066, n=792), and the gap is as large on never-staked VALUABLE (+10.78pp) as "
                 "on staked bets (+16.80pp). A tier that does not separate outcomes is a label, "
                 "not a signal.")
-            ui.table(d.assign(roi=d["roi"].map(lambda x: ui.pct(x, None)),
-                              pnl=d["pnl"].map(ui.units))
-                      .rename(columns={"track_tier": "track · tier"}))
+            ui.compact_table(d.rename(columns={"track_tier": "track · tier"}), V.tier_table_config())
 
-st.divider()
+    # league detail, with small samples flagged rather than hidden
+    ui.section_header("Where the money went, by league")
+    # Staked tiers only — this section is titled "where the money went", and VALUABLE is paper.
+    bl = E["by_league"]
+    if bl.empty:
+        ui.empty_state("NO_DATA", "No settled bets grouped by league yet.")
+    else:
+        bl = bl.copy()
+        bl["label"] = bl["league"] + bl["reliable"].map({True: "", False: "  ⚠ thin"})
+        c1, c2 = st.columns(2)
+        with c1:
+            st.altair_chart(ui.pnl_bars(bl, "label", "pnl", "n", h=26 * len(bl) + 60,
+                                        title="P/L by league (units)"), width="stretch")
+        with c2:
+            # EXCESS OVER EACH LEAGUE'S OWN BREAK-EVEN, not a hit rate against an estate-wide mean.
+            # A 45% hit rate is excellent at 2.40 and a disaster at 1.70.
+            st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
+                                        title="Hit rate minus that league's own break-even"), width="stretch")
+        st.caption("Staked tiers only (SNIPER + MARKSMAN). Including the paper VALUABLE tier the "
+                   "same chart reads -123.16u across 1,350 tips instead of -35.66u across 561 — "
+                   "three and a half times larger, and none of the difference is money.")
+        thin = int((~bl["reliable"]).sum())
+        if thin:
+            st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{thin} THIN LEAGUE(S) · n < 30")
+                        + " :gray[shown rather than hidden, because a missing league reads as 'we don't bet "
+                          "there' when the truth is 'we have not measured it yet'. Do not act on a thin row.]")
 
-# ── league detail, with small samples flagged rather than hidden ───────────────────────────────
-st.subheader("Where the money went, by league")
-# Staked tiers only — this section is titled "where the money went", and VALUABLE is paper.
-bl = v9.by_league(days=None, staked_only=True)
-if bl.empty:
-    st.caption("No settled bets grouped by league yet.")
+# ═══ RESEARCH ═════════════════════════════════════════════════════════════════════════════════════
+ui.section_header("Research", "Pro and V11 produce evidence, never bets. What is currently known to be invalid is "
+                  "listed so it stops circulating — a conclusion nobody retracts keeps getting quoted.")
+dead = [r for r in E["validity"] if str(r.get("status", "")).upper() == "INVALIDATED"]
+if not dead:
+    st.markdown(ui.status_chip("HEALTHY", label="NO INVALIDATED RESULTS LISTED"))
 else:
-    bl = bl.copy()
-    bl["label"] = bl["league"] + bl["reliable"].map({True: "", False: "  ⚠ thin"})
-    c1, c2 = st.columns(2)
-    with c1:
-        st.altair_chart(ui.pnl_bars(bl, "label", "pnl", "n", h=26 * len(bl) + 60,
-                                    title="P/L by league (units)"), width='stretch')
-    with c2:
-        # EXCESS OVER EACH LEAGUE'S OWN BREAK-EVEN, not a hit rate against an estate-wide mean.
-        # A 45% hit rate is excellent at 2.40 and a disaster at 1.70, so one shared reference
-        # line compares every league against a bar none of them actually has to clear — and
-        # makes a short-priced league look strong and a long-priced one look weak purely from
-        # its prices.
-        st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
-                                    title="Hit rate minus that league's own break-even"),
-                        width='stretch')
-    st.caption("Staked tiers only (SNIPER + MARKSMAN). Including the paper VALUABLE tier the "
-               "same chart reads -123.16u across 1,350 tips instead of -35.66u across 561 — "
-               "three and a half times larger, and none of the difference is money.")
-    thin = int((~bl["reliable"]).sum())
-    if thin:
-        st.caption(f"⚠ {thin} league(s) marked thin — fewer than 30 settled bets. They are shown "
-                   "rather than hidden, because a missing league reads as 'we don't bet there' "
-                   "when the truth is 'we have not measured it yet'. Do not act on a thin row.")
+    ui.eyebrow(f"Results known to be invalid · {len(dead)}")
+    for r in dead:
+        with st.expander(f"{r.get('research_id')} — {r.get('repo')} · {r.get('script', '')}"):
+            st.markdown(ui.status_chip("FAIL", label="INVALIDATED") + f" &nbsp;**Why it is void:** {r.get('reason', '—')}")
+            if r.get("example_invalid_numbers"):
+                st.markdown(f"**Do not quote:** {r['example_invalid_numbers']}")
+            if r.get("replacement"):
+                st.markdown(f"**Use instead:** {r['replacement']}")
 
-st.divider()
+# ═══ DATA FEEDS ═══════════════════════════════════════════════════════════════════════════════════
+ui.section_header("Data feeds", "Every age below is derived from the newest RECORD inside the file, or from a "
+                  "timestamp the writer recorded — never from the file's modification time, which `git checkout` "
+                  "resets to now on every CI run. This estate has been misled by an mtime-based age three separate "
+                  "times.")
+r1 = st.columns(2)
+r2 = st.columns(2)
 
-# ── health strip across all four surfaces ─────────────────────────────────────────────────────
-st.subheader("Feed health")
-st.caption("Every age below is derived from the newest RECORD inside the file, or from a "
-           "timestamp the writer recorded — never from the file's modification time, which "
-           "`git checkout` resets to now on every CI run. This estate has been misled by an "
-           "mtime-based age three separate times.")
-
-h1, h2, h3, h4 = st.columns(4)
-with h1:
-    st.markdown(f"**{REPOS['v9']['label']}**")
-    hv = v9.health()
+with r1[0].container(border=True):
+    V.subsystem_header("v9", REPOS["v9"]["label"], repo_path("v9"))
     ui.freshness_chip(hv["predictions"]["freshness"], f"predictions · {hv['predictions']['rows']} rows")
-    ui.freshness_chip(hv["ledger"]["freshness"],
-                      f"ledger · {hv['ledger']['settled']:,} settled")
+    ui.freshness_chip(hv["ledger"]["freshness"], f"ledger · {hv['ledger']['settled']:,} settled")
     rt = hv.get("retrain") or {}
     if rt.get("latest_run"):
         st.caption(f"🔁 last retrain {rt['latest_run']}")
     ssh = hv.get("shadow_settlement") or {}
     if ssh:
         ui.freshness_chip(ssh["freshness"],
-                          f"shadow log · {ssh.get('settled_rows', 0):,}/"
-                          f"{ssh.get('shadow_rows', 0):,} settled")
+                          f"shadow log · {ssh.get('settled_rows', 0):,}/{ssh.get('shadow_rows', 0):,} settled")
         st.caption(f"close {ssh.get('valid_closing_price_pct')}% · CLV {ssh.get('clv_pct')}% "
                    f"of settled · coverage only, not evidence of edge")
 
-with h2:
-    st.markdown(f"**{REPOS['pro']['label']}**")
-    if not pro.available():
-        ui.absent(pro.absent_reason())
+with r1[1].container(border=True):
+    V.subsystem_header("pro", REPOS["pro"]["label"], repo_path("pro"))
+    if not E["pro_available"]:
+        ui.empty_state("NOT_CONNECTED", E["pro_absent"])
     else:
-        cs = pro.canonical_stores()
+        cs = E["pro_stores"]
         if cs.get("available"):
             parts = [(k, v) for k, v in cs["stores"].items() if v.get("partitioned")]
             fresh = sum(1 for _, v in parts if v["freshness"].state == "CURRENT")
-            st.caption(f"📦 {cs['season']} · {len(cs['stores'])} stores · "
-                       f"{fresh}/{len(parts)} current")
+            st.caption(f"📦 {cs['season']} · {len(cs['stores'])} stores · {fresh}/{len(parts)} current")
             for name, v in sorted(parts, key=lambda kv: kv[1]["freshness"].state)[:3]:
                 ui.freshness_chip(v["freshness"], name)
-        ha = pro.health_artifacts()
+        ha = E["pro_health"]
         for fname, meta in list((ha.get("files") or {}).items())[:2]:
             ui.freshness_chip(meta["freshness"], fname.replace(".json", ""))
 
-with h3:
-    st.markdown(f"**{REPOS['v11']['label']}**")
-    if not v11.available():
-        ui.absent(v11.absent_reason())
+with r2[0].container(border=True):
+    V.subsystem_header("v11", REPOS["v11"]["label"], repo_path("v11"))
+    if not E["v11_available"]:
+        ui.empty_state("NOT_CONNECTED", E["v11_absent"])
     else:
-        hv11 = v11.health()
+        hv11 = E["v11_health"]
         ui.freshness_chip(hv11["freshness"], f"shadow log · {hv11['shadow_rows']:,} rows")
         rh = hv11.get("research_health") or {}
         raw = rh.get("raw") or {}
         if raw.get("snapshots_rows"):
             st.caption(f"📈 {raw['snapshots_rows']:,} market snapshots")
 
-with h4:
-    st.markdown("**Fantasy** (inside v9)")
-    fh = fantasy.health()
+with r2[1].container(border=True):
+    V.subsystem_header("fantasy", "Fantasy (inside v9)", None)
+    fh = E["fantasy"]
     if not fh.get("available"):
-        st.caption(fh.get("why", "not run"))
+        ui.empty_state("NO_DATA", fh.get("why", "not run"))
     else:
         ui.freshness_chip(fh["run"], "last run")
         for name, f in fh["feeds"].items():
             ui.freshness_chip(f, name)
-
-st.divider()
-
-# ── what is currently known to be invalid ─────────────────────────────────────────────────────
-rv = pro.research_validity()
-dead = [r for r in rv if str(r.get("status", "")).upper() == "INVALIDATED"]
-if dead:
-    st.subheader("⛔ Results known to be invalid")
-    st.caption("These numbers were produced by code that has since been shown to be wrong. They "
-               "are listed here so they stop circulating — a conclusion nobody retracts keeps "
-               "getting quoted.")
-    for r in dead:
-        with st.expander(f"{r.get('research_id')} — {r.get('repo')} · {r.get('script', '')}"):
-            st.markdown(f"**Why it is void:** {r.get('reason', '—')}")
-            if r.get("example_invalid_numbers"):
-                st.markdown(f"**Do not quote:** {r['example_invalid_numbers']}")
-            if r.get("replacement"):
-                st.markdown(f"**Use instead:** {r['replacement']}")
