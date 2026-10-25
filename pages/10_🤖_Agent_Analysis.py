@@ -30,8 +30,9 @@ import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(_
 from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
-st.markdown("## 🔬 Match Validation Agent")
-st.caption("Independent model validation using formulas.md — APPROVES or DISAGREES with each signal.")
+ui.page_header("Match validation agent", "Independent model validation using formulas.md — APPROVES or DISAGREES "
+               "with each signal. A second opinion, never a bet.", eyebrow_text="Research Lab · agent analysis",
+               freshness=ui.status_chip("RESEARCH", label="RESEARCH · SECOND OPINION"))
 
 # Was components.v1.html with a JS reload: an API whose announced removal date
 # (2026-06-01) has passed, and which reloaded the whole browser tab and so DISCARDED
@@ -156,16 +157,18 @@ def verdict(ml_side, ml_p_over, formula_p_over, ml_edge):
     else:
         formula_agrees = formula_p_over < 0.50
 
+    # The second value is a semantic TONE for the verdict chip (visual redesign 2026-10-25: it was a hex
+    # colour). The verdict word and the rule that picks it are unchanged.
     if formula_agrees and ml_edge >= 15:
-        return "✅ APPROVED", "#00cc88", "Both models agree. Strong edge confirmed."
+        return "✅ APPROVED", "POSITIVE", "Both models agree. Strong edge confirmed."
     elif formula_agrees and ml_edge >= 7:
-        return "✅ APPROVED", "#00cc88", "Models agree. Moderate edge."
+        return "✅ APPROVED", "POSITIVE", "Models agree. Moderate edge."
     elif formula_agrees and ml_edge > 0:
-        return "⚠️ WEAK", "#ffaa00", "Models agree direction but edge is thin — monitor."
+        return "⚠️ WEAK", "WARNING", "Models agree direction but edge is thin — monitor."
     elif diff < 0.05:
-        return "⚠️ NEUTRAL", "#ffaa00", "Formula model is near 50/50 — insufficient independent confirmation."
+        return "⚠️ NEUTRAL", "WARNING", "Formula model is near 50/50 — insufficient independent confirmation."
     else:
-        return "❌ DISAGREE", "#ff4444", f"Formula model says opposite direction (formula P={formula_p:.0%}). Consider skipping."
+        return "❌ DISAGREE", "NEGATIVE", f"Formula model says opposite direction (formula P={formula_p:.0%}). Consider skipping."
 
 
 # ── Load data ─────────────────────────────────────────────────────────────────
@@ -222,7 +225,7 @@ def load_tips():
 
 tips = load_tips()
 if tips.empty:
-    st.info("No upcoming SNIPER/VALUE picks. Run predict pipeline first.")
+    ui.empty_state("NO_DATA", "No upcoming SNIPER/VALUE picks. Run predict pipeline first.")
     st.stop()
 
 # ── Pick selector ─────────────────────────────────────────────────────────────
@@ -239,14 +242,15 @@ filtered = tips[tips["signal_tier"] == "SNIPER"] if snipers_only else tips
 
 if filtered.empty:
     tier_label = "SNIPER" if snipers_only else "SNIPER/MARKSMAN/VALUABLE"
-    st.info(f"No {tier_label} picks for today. Try unchecking 'SNIPER only' or wait for the next predict run.")
+    ui.empty_state("NO_DATA", f"No {tier_label} picks for today. Try unchecking 'SNIPER only' or wait for the next "
+                              "predict run.")
     st.stop()
 
 col_sel, col_all = st.columns([4, 1])
 with col_sel:
     selected_label = st.selectbox("Select pick:", filtered["label"].tolist())
 with col_all:
-    run_all = st.button("▶ Validate All", width="stretch")
+    run_all = st.button("▶ Validate All", width="stretch", type="secondary")
 
 def _safe_float(val, default=1.0):
     """Return float or default if NaN/None/missing."""
@@ -301,96 +305,75 @@ def analyse_row(row):
     }
 
 
+_VERDICT_STATE = {"POSITIVE": "PASS", "WARNING": "WARN", "NEGATIVE": "FAIL"}
+
+
 def render_analysis(row, data):
-    """Render one match analysis."""
-    tc = "#e94560" if data["tier"] == "SNIPER" else "#f5a623"
+    """Render one match analysis (visual redesign 2026-10-25: shared cards and chips, no inline HTML).
+    Every number is the one analyse_row computed, formatted exactly as before."""
+    mkts = data["mkts"]
 
-    # Header
-    st.markdown(f"""
-    <div style="background:#16213e;border:2px solid {tc};border-radius:10px;padding:12px 18px;margin:4px 0">
-      <span style="color:{tc};font-weight:bold;font-size:1.1em">{'🎯 SNIPER' if data['tier']=='SNIPER' else '💡 VALUE'}</span>
-      &nbsp;&nbsp;<b style="color:white">{row['home_team']} vs {row['away_team']}</b>
-      &nbsp;|&nbsp;<span style="color:#90caf9">{row.get('league','')}</span>
-      &nbsp;|&nbsp;<span style="color:#aaa">{str(row['date'])[:10]}</span><br/>
-      <span style="color:#00c896;font-weight:bold">Bet: {data['side']} 2.5 @ {data['odds_bet']:.2f}</span>
-      &nbsp;|&nbsp;ML Edge: <b style="color:#00c896">{data['edge']:.1f}%</b>
-      &nbsp;|&nbsp;ML P(over): <b style="color:white">{data['ml_p_over']:.1%}</b>
-    </div>
-    """, unsafe_allow_html=True)
+    # The tip under review: the shared selection card (legacy tier last and neutral)
+    ui.selection_card(league=str(row.get("league", "")), kickoff=str(row["date"])[:10],
+                      home=row["home_team"], away=row["away_team"], pick=f"Bet: {data['side']} 2.5",
+                      odds=f"{data['odds_bet']:.2f}", tier=str(data["tier"]),
+                      show_plan=False,
+                      supporting=[("ML Edge", f"{data['edge']:.1f}%"), ("ML P(over)", f"{data['ml_p_over']:.1%}")])
+    # The verdict: icon + word chip, the note beside it
+    st.markdown(ui.status_chip(_VERDICT_STATE.get(data["verdict_color"], "WARN"),
+                               label=data["verdict"].split(" ", 1)[-1], tone=data["verdict_color"])
+                + f" &nbsp;**{data['verdict']}** — {data['verdict_note']}")
 
-    # Verdict banner
-    st.markdown(f"""
-    <div style="background:{data['verdict_color']}22;border:1.5px solid {data['verdict_color']};
-                border-radius:8px;padding:10px 16px;margin:6px 0">
-      <b style="color:{data['verdict_color']};font-size:1.15em">{data['verdict']}</b>
-      &nbsp;&nbsp;<span style="color:#ccc">{data['verdict_note']}</span>
-    </div>
-    """, unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    ui.metric_card("λ_T (total)", data["lam_t"], title="Expected goals (formula)",
+                   supporting=[("λ_H (home)", data["lam_h"]), ("λ_A (away)", data["lam_a"])],
+                   help=f"λ_H = LHG({data['lhg']:.2f}) × HAS({data['has']:.2f}) × ADS({data['ads']:.2f}) · "
+                        f"λ_A = LAG({data['lag']:.2f}) × AAS({data['aas']:.2f}) × HDS({data['hds']:.2f})",
+                   status=ui.status_chip("WARN", label="TEAM STRENGTH MISSING · LEAGUE AVERAGES USED")
+                   if data.get("using_defaults") else "", container=c1)
+    ui.metric_card("P(OVER 2.5)", f"{mkts['p_over25']:.1%}", title="Formula probabilities",
+                   delta=f"{mkts['p_over25']-data['ml_p_over']:+.1%} vs ML",
+                   supporting=[("P(BTTS Yes)", f"{mkts['p_btts']:.1%}"), ("P(Home Win)", f"{mkts['p_home']:.1%}"),
+                               ("P(Draw)", f"{mkts['p_draw']:.1%}"), ("P(Away Win)", f"{mkts['p_away']:.1%}")],
+                   container=c2)
+    ui.metric_card("EV", f"{data['ev_val']:+.3f}", title="EV & Kelly",
+                   supporting=[("Kelly (full)", f"{data['kelly_val']:.1%}"),
+                               ("Kelly (½ — recommended)", f"{data['kelly_half']:.1%}"),
+                               ("P(HT OVER 0.5)", f"{mkts['p_ht_over05']:.1%}"),
+                               ("P(HT OVER 1.5)", f"{mkts['p_ht_over15']:.1%}")], container=c3)
+    if data.get("using_defaults"):
+        st.caption("⚠️ Team strength data missing — using league averages (HAS=AAS=HDS=ADS=1.0)")
 
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown("**📐 Expected Goals (formula)**")
-        if data.get("using_defaults"):
-            st.caption("⚠️ Team strength data missing — using league averages (HAS=AAS=HDS=ADS=1.0)")
-        st.metric("λ_H (home)", data["lam_h"],
-                  help=f"LHG({data['lhg']:.2f}) × HAS({data['has']:.2f}) × ADS({data['ads']:.2f})")
-        st.metric("λ_A (away)", data["lam_a"],
-                  help=f"LAG({data['lag']:.2f}) × AAS({data['aas']:.2f}) × HDS({data['hds']:.2f})")
-        st.metric("λ_T (total)", data["lam_t"])
-
-    with c2:
-        st.markdown("**📊 Formula Probabilities**")
-        mkts = data["mkts"]
-        st.metric("P(OVER 2.5)",  f"{mkts['p_over25']:.1%}",
-                  delta=f"{mkts['p_over25']-data['ml_p_over']:+.1%} vs ML")
-        st.metric("P(BTTS Yes)",   f"{mkts['p_btts']:.1%}")
-        st.metric("P(Home Win)",   f"{mkts['p_home']:.1%}")
-        st.metric("P(Draw)",       f"{mkts['p_draw']:.1%}")
-        st.metric("P(Away Win)",   f"{mkts['p_away']:.1%}")
-
-    with c3:
-        st.markdown("**💰 EV & Kelly**")
-        ev_c = "#00cc88" if data["ev_val"] > 0 else "#ff4444"
-        st.metric("EV", f"{data['ev_val']:+.3f}")
-        st.metric("Kelly (full)",   f"{data['kelly_val']:.1%}")
-        st.metric("Kelly (½ — recommended)", f"{data['kelly_half']:.1%}")
-        st.markdown("---")
-        st.markdown("**⏱ HT Formula**")
-        st.metric("P(HT OVER 0.5)", f"{mkts['p_ht_over05']:.1%}")
-        st.metric("P(HT OVER 1.5)", f"{mkts['p_ht_over15']:.1%}")
-
-    with c4:
-        st.markdown("**🎯 Top Correct Scores (Dixon-Coles)**")
-        for (h, a), p in mkts["top_scores"]:
-            if not p or p != p: continue  # skip NaN
-            bar_len = max(1, int(p * 100))
-            bar = "█" * bar_len
-            vc = "#00cc88" if h + a > 2 else "#ffaa00" if h + a == 2 else "#aaa"
-            st.markdown(
-                f"<span style='color:#00c896;font-weight:bold;font-size:1.05em'>{h}-{a}</span>"
-                f"<span style='color:#444'> │ </span>"
-                f"<span style='color:{vc}'>{bar}</span> "
-                f"<span style='color:#ccc'>{p:.1%}</span>"
-                f"<span style='color:#666'> → </span>"
-                f"<span style='color:white'>{fair(p)}</span>",
-                unsafe_allow_html=True,
-            )
-
-    # Fair odds comparison
-    st.markdown("##### Fair Odds vs Market")
-    rows = [
-        {"Market": f"{data['side']} 2.5",  "Formula P": f"{mkts['p_over25'] if data['side']=='OVER' else mkts['p_under25']:.1%}",
-         "Fair odds": fair(mkts["p_over25"] if data["side"]=="OVER" else mkts["p_under25"]),
-         "Market odds": data["odds_bet"],
-         "EV": f"{data['ev_val']:+.3f}", "Edge vs fair": f"{(data['odds_bet'] - fair(mkts['p_over25'] if data['side']=='OVER' else mkts['p_under25'])):.2f}"},
-        {"Market": "BTTS Yes", "Formula P": f"{mkts['p_btts']:.1%}",
-         "Fair odds": fair(mkts["p_btts"]), "Market odds": "—", "EV": "—", "Edge vs fair": "—"},
-        {"Market": "AH -0.5 Home", "Formula P": f"{mkts['p_ah_home']:.1%}",
-         "Fair odds": fair(mkts["p_ah_home"]), "Market odds": "—", "EV": "—", "Edge vs fair": "—"},
-        {"Market": "HT OVER 0.5", "Formula P": f"{mkts['p_ht_over05']:.1%}",
-         "Fair odds": fair(mkts["p_ht_over05"]), "Market odds": "—", "EV": "—", "Edge vs fair": "—"},
-    ]
-    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
+    left, right = st.columns([2, 3])
+    with left:
+        ui.eyebrow("Top correct scores (Dixon-Coles)")
+        cs = pd.DataFrame([{"Score": f"{h}-{a}", "Probability": p, "Fair odds": fair(p),
+                            "Goals": "3+" if h + a > 2 else ("2" if h + a == 2 else "0–1")}
+                           for (h, a), p in mkts["top_scores"] if p and p == p])
+        ui.compact_table(cs, {"Probability": ui.bar_col("Probability", max_value=0.25, fmt="%.3f",
+                                                         help="Bar scale 0–25%: one exact scoreline is rarely "
+                                                              "likelier than that."),
+                              "Fair odds": ui.num_col("Fair odds")})
+    with right:
+        ui.eyebrow("Fair odds vs market")
+        side_p = mkts["p_over25"] if data["side"] == "OVER" else mkts["p_under25"]
+        rows = [
+            {"Market": f"{data['side']} 2.5", "Formula P": side_p, "Fair odds": fair(side_p),
+             "Market odds": data["odds_bet"], "EV": data["ev_val"],
+             "Edge vs fair": round(data["odds_bet"] - fair(side_p), 2)},
+            {"Market": "BTTS Yes", "Formula P": mkts["p_btts"], "Fair odds": fair(mkts["p_btts"]),
+             "Market odds": None, "EV": None, "Edge vs fair": None},
+            {"Market": "AH -0.5 Home", "Formula P": mkts["p_ah_home"], "Fair odds": fair(mkts["p_ah_home"]),
+             "Market odds": None, "EV": None, "Edge vs fair": None},
+            {"Market": "HT OVER 0.5", "Formula P": mkts["p_ht_over05"], "Fair odds": fair(mkts["p_ht_over05"]),
+             "Market odds": None, "EV": None, "Edge vs fair": None},
+        ]
+        ui.compact_table(pd.DataFrame(rows), {"Formula P": ui.num_col("Formula P", fmt="%.3f"),
+                                              "Fair odds": ui.num_col("Fair odds"),
+                                              "Market odds": ui.num_col("Market odds"),
+                                              "EV": ui.num_col("EV", fmt="%+.3f"),
+                                              "Edge vs fair": ui.num_col("Edge vs fair", fmt="%.2f")})
+        st.caption("No collected market price for BTTS, AH or HT — those rows show the formula's fair price only.")
 
 
 # ── Single match view ─────────────────────────────────────────────────────────
@@ -404,7 +387,7 @@ if not run_all:
     has_key = bool(os.getenv("GOOGLE_API_KEY") or os.getenv("ANTHROPIC_API_KEY"))
     if has_key:
         with st.expander("🤖 AI Context — injuries, tactical notes (optional)", expanded=False):
-            if st.button("Ask AI for context"):
+            if st.button("Ask AI for context", type="secondary"):
                 with st.spinner("Asking AI..."):
                     try:
                         from agent.agent_runner import _load_system_prompt, _run_gemini, _run_claude
@@ -427,17 +410,15 @@ if not run_all:
 # ── Bulk validation ───────────────────────────────────────────────────────────
 
 else:
-    st.markdown("---")
-    st.markdown(f"### 🎯 Validating {len(filtered)} picks...")
+    ui.section_header(f"Validating {len(filtered)} picks")
     for _, row in filtered.iterrows():
         data = analyse_row(row)
         with st.expander(f"{data['verdict']}  {row['home_team']} vs {row['away_team']}  [{data['tier']}]",
                          expanded=(data["verdict"].startswith("✅") and data["tier"]=="SNIPER")):
             render_analysis(row, data)
-        st.markdown("---")
 
 # ── Agent Pipeline (9-agent flow) ─────────────────────────────────────────────
-st.markdown("---")
+ui.space("medium")
 with st.expander("🤖 9-Agent Player Props Pipeline", expanded=False):
     from agent.agent_runner import PIPELINE_STAGES, AGENTS, run_pipeline
 
@@ -449,19 +430,20 @@ with st.expander("🤖 9-Agent Player Props Pipeline", expanded=False):
     # Show available agents
     col_a, col_b = st.columns(2)
     with col_a:
-        st.markdown("**Pipeline agents:**")
+        ui.eyebrow("Pipeline agents")
         for s in PIPELINE_STAGES:
             exists = s in AGENTS
             st.markdown(f"{'✅' if exists else '❌'} `{s}`")
     with col_b:
-        st.markdown("**Other agents:**")
+        ui.eyebrow("Other agents")
         other = [k for k in AGENTS if k not in PIPELINE_STAGES and k]
         for k in sorted(other):
             st.markdown(f"🔹 `{k}`")
 
     has_key = bool(os.getenv("GOOGLE_API_KEY") or os.getenv("ANTHROPIC_API_KEY"))
     if not has_key:
-        st.warning("No API key configured (GOOGLE_API_KEY or ANTHROPIC_API_KEY). Add it to .env to run the pipeline.")
+        ui.empty_state("NOT_CONNECTED", "No API key configured (GOOGLE_API_KEY or ANTHROPIC_API_KEY). Add it to .env "
+                                        "to run the pipeline.")
     else:
         st.markdown("**Run pipeline on a match:**")
         pipeline_match = st.selectbox(
@@ -469,7 +451,7 @@ with st.expander("🤖 9-Agent Player Props Pipeline", expanded=False):
             tips["label"].tolist(),
             key="pipeline_match_select",
         )
-        if st.button("▶ Run 9-Agent Pipeline", key="run_pipeline_btn"):
+        if st.button("▶ Run 9-Agent Pipeline", key="run_pipeline_btn", type="primary"):
             row = tips[tips["label"] == pipeline_match].iloc[0]
             match_data = {
                 "match":      f"{row['home_team']} vs {row['away_team']}",
