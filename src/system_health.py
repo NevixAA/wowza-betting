@@ -150,6 +150,38 @@ def fantasy_status(summary: dict) -> dict:
               json.dumps(gate, default=str)[:200] if gate else "")
 
 
+def weekly_research_panel(registry: dict, lock: dict | None) -> dict:
+    """Stub for the weekly per-league research panel (P0, 2026-10-25). The panel itself does not exist
+    yet, so its row metrics are NO_DATA; what is checked now is the research registry and the
+    non-regression lock (src/research_lock.py)."""
+    rule = ("RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without "
+            "re-approval) or the lock cannot be verified; AMBER if the regime registry is missing or a newly "
+            "PROTECTED track awaits approval; GREEN otherwise. Panel rows: NO_DATA until the panel exists")
+    if lock is None or "protected_tracks_modified" not in lock:
+        return _c("Weekly research panel", RED, "lock not verifiable", rule, (lock or {}).get("error", ""))
+    counts = registry.get("regime_counts") or {}
+    leagues = len(registry.get("tracked_leagues") or [])
+    value = (f"{leagues} leagues · {counts} · protected_tracks_modified={lock['protected_tracks_modified']} · "
+             f"panel rows NO_DATA")
+    if lock["protected_tracks_modified"]:
+        return _c("Weekly research panel", RED, value, rule, "; ".join(lock.get("changes", [])[:5]))
+    if not registry or lock.get("unapproved_new_protected_tracks"):
+        return _c("Weekly research panel", AMBER, value, rule,
+                  "no regime registry" if not registry else
+                  f"new PROTECTED awaiting approval: {lock['unapproved_new_protected_tracks']}")
+    return _c("Weekly research panel", GREEN, value, rule,
+              f"registry evidence cutoff {registry.get('evidence_cutoff')}; lock approved by "
+              f"{lock.get('approved_by')} at {lock.get('approved_at')}")
+
+
+def _research_lock_status() -> dict:
+    try:
+        from src.research_lock import check
+        return check()
+    except Exception as e:                                            # noqa: BLE001 - fail closed: RED
+        return {"error": f"{type(e).__name__}: {e}"[:300]}
+
+
 def evaluate(now: datetime | None = None) -> list[dict]:
     now = now or datetime.now(timezone.utc)
     plan = _csv(OUT / "stake_plan.csv")
@@ -168,7 +200,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
             shadow_settlement(_json(OUT / "shadow_settlement_health.json")),
             challenger_coverage(shadow, now), certified_clv(shadow, _json(OUT / "clv_collection_health.json")),
             stale_artifacts(_json(OUT / "artifact_manifest.json")), forward_progress(prog),
-            workflow_health(_json(OUT / "workflow_health.json")), fantasy_status(_json(OUT / "fantasy_v2_summary.json"))]
+            workflow_health(_json(OUT / "workflow_health.json")), fantasy_status(_json(OUT / "fantasy_v2_summary.json")),
+            weekly_research_panel(_json(ROOT / "config" / "league_market_regimes.json"), _research_lock_status())]
 
 
 def record_workflows() -> dict:
