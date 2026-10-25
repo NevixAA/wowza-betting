@@ -17,6 +17,12 @@ under). Sources, newest wins per (fixture, market, book, side):
   * output/book_odds_snapshots.csv, carried forward per book and side (it is a CHANGE-LOG, so an
     unchanged price is still the price; the pair's timestamp is the later side's last change,
     which makes price_age an upper bound — conservative).
+  * output/book_quotes/<date>.csv — API-Football per-book quotes committed by the batch capture jobs
+    (added 2026-10-25, owner-approved; src/edge_af_quotes.py). Read from disk only, no API call.
+    Paired ONLY within the same book AND the same snapshot_ts, strictly pre-kickoff, one line per
+    family, clubs resolved league-scoped with src/team_names (ambiguity refused). Books are named
+    "af:<book>" in books_used; a physical book quoted by both sources votes once (fresher wins).
+    First-sight immutability means this coverage applies only to rows first logged after the change.
 The board price (`odds_over25`, `odds_btts`, ...) is used only as the execution price, never as
 a market: the BTTS board pair is a median-yes / median-no from different books.
 """
@@ -31,6 +37,7 @@ import numpy as np
 import pandas as pd
 
 import config
+from src import edge_af_quotes as EAF
 from src import market_edge as ME
 
 log = logging.getLogger(__name__)
@@ -239,12 +246,23 @@ def append_first_sight(rows: pd.DataFrame, path: Path | None = None) -> int:
     return first_sight_store(path).append(rows)
 
 
+def _source_mix(books_used) -> str:
+    """'oddsapi' | 'apifootball' | 'both' | '' for one row's books_used."""
+    srcs = {EAF.source_of(b) for b in str(books_used or "").split(";") if b and b != "nan"}
+    return "both" if len(srcs) > 1 else (srcs.pop() if srcs else "")
+
+
 def health(rows: pd.DataFrame, now: pd.Timestamp, runtime_s: float, appended: int,
-           params: dict, n_live_quotes: int) -> dict:
+           params: dict, n_live_quotes: int, af_stats: dict | None = None) -> dict:
     cov: dict = {}
     if rows is not None and len(rows):
         for (fam, tr), g in rows.groupby(["market", "model_type"]):
             two = g["market_source"].isin(["MEDIAN_TWO_SIDED_BOOKS", "SINGLE_TWO_SIDED_BOOK"])
+            mix = g.loc[two, "books_used"].map(_source_mix)
+            nb = g.loc[two, "books_used"].astype(str).str.split(";")
+            n_af = nb.map(lambda xs: sum(1 for b in xs if EAF.source_of(b) == "apifootball"))
+            n_oa = nb.map(len) - n_af
+            age = pd.to_numeric(g.loc[two, "price_age_minutes"], errors="coerce")
             cov[f"{fam}|{tr}"] = {
                 "fixtures": int(len(g)),
                 "two_sided": int(two.sum()),
@@ -254,6 +272,13 @@ def health(rows: pd.DataFrame, now: pd.Timestamp, runtime_s: float, appended: in
                 "states": {k: int(v) for k, v in g["new_state"].value_counts().items()},
                 "legacy_tipped": int(g["legacy_tier"].isin(["SNIPER", "MARKSMAN", "VALUABLE"]).sum()),
                 "median_books": float(pd.to_numeric(g["n_books"], errors="coerce").median()),
+                "two_sided_by_source": {k: int((mix == k).sum()) for k in ("oddsapi", "apifootball", "both")},
+                "median_books_two_sided": {
+                    "oddsapi": float(n_oa.median()) if len(n_oa) else None,
+                    "apifootball": float(n_af.median()) if len(n_af) else None},
+                "median_price_age_minutes": float(age.median()) if age.notna().any() else None,
+                "reasons": {k: int(v) for k, v in
+                            g["new_reason"].astype(str).str.split("(").str[0].value_counts().items()},
             }
     return {
         "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -265,6 +290,7 @@ def health(rows: pd.DataFrame, now: pd.Timestamp, runtime_s: float, appended: in
         "rows_scored": int(len(rows)) if rows is not None else 0,
         "rows_appended_first_sight": int(appended),
         "current_run_book_quotes": int(n_live_quotes),
+        "apifootball_book_quotes": af_stats or {},
         "prospective_evidence_loaded": bool(params.get("_evidence_loaded")),
         "coverage": cov,
     }
@@ -273,7 +299,8 @@ def health(rows: pd.DataFrame, now: pd.Timestamp, runtime_s: float, appended: in
 def run(preds: pd.DataFrame, bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
         historical: pd.DataFrame | None = None, now: pd.Timestamp | None = None,
         shadow_path: Path | None = None, health_path: Path | None = None,
-        snapshots_path: Path | None = None, live_rows: list | None = None) -> pd.DataFrame | None:
+        snapshots_path: Path | None = None, live_rows: list | None = None,
+        af_quotes_dir: Path | None = None, use_af_quotes: bool = True) -> pd.DataFrame | None:
     """Score the board, append first-sight rows, write health. Returns the per-side frame the stake
     plan attaches as shadow columns, or None. NEVER RAISES."""
     t0 = time.perf_counter()
@@ -294,6 +321,11 @@ def run(preds: pd.DataFrame, bets: pd.DataFrame | None, side_bets: pd.DataFrame 
                 pass
         q = _quote_frame(now, live_rows, snapshots_path)
         pairs = book_pairs(q, now)
+        af_stats = {"enabled": bool(use_af_quotes)}
+        if use_af_quotes:                       # API-Football batch-captured quotes (disk only)
+            af_pairs, st = EAF.af_book_pairs(preds, now, af_quotes_dir)
+            af_stats.update(st)
+            pairs = EAF.merge_pairs(pairs, af_pairs)
         league_n = (historical["league"].astype(str).value_counts().to_dict()
                     if historical is not None and "league" in getattr(historical, "columns", []) else {})
         clv = {}
@@ -319,7 +351,7 @@ def run(preds: pd.DataFrame, bets: pd.DataFrame | None, side_bets: pd.DataFrame 
         except Exception:                                             # noqa: BLE001
             pass
         dt = time.perf_counter() - t0
-        h = health(rows, now, dt, n, params, len(live_rows))
+        h = health(rows, now, dt, n, params, len(live_rows), af_stats)
         hp = Path(health_path) if health_path else HEALTH_FILE
         hp.write_text(json.dumps(h, indent=2, default=str), encoding="utf-8")
         st = rows["new_state"].value_counts().to_dict() if len(rows) else {}
