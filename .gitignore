@@ -66,3 +66,11 @@ lineup_cache/
 # Dashboard remote-read cache: fetched copies of Pro/v11 output when they are not checked
 # out beside v9. Regenerable and per-deploy, so it must never be committed.
 dashboard_data/_remote_cache/
+
+# SHADOW contract-violation log (src/contracts/shadow.py, 2026-10-25). Runner-local by design: predict,
+# daily_summary and evidence_refresh all write it, and a tracked file that a job modifies without
+# committing is the shape of the 2026-09 rebase incident. Blast radius: exactly this one path, which
+# no commit has ever tracked (git ls-files output/contract_violations.json* is empty). The committed
+# summary lives in output/system_health.json.
+output/contract_violations.json
+output/contract_violations.json.tmp

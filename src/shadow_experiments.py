@@ -255,26 +255,30 @@ def _read_ledger(path: Path) -> pd.DataFrame:
     return pd.read_csv(path, dtype=str, keep_default_na=False)
 
 
+def first_sight_store(path: Path | None = None):
+    """The shared first-sight store (src/research/first_sight.py) for the experiment ledger. Only the
+    FIRST_SIGHT_COLS are frozen; settlement fills RESULT_COLS later."""
+    from src.research.first_sight import FirstSightStore
+    return FirstSightStore(Path(path) if path else LEDGER_FILE, key=KEY, columns=LEDGER_COLS,
+                           observed_col="prediction_ts", kickoff_col="kickoff_utc",
+                           frozen_cols=FIRST_SIGHT_COLS)
+
+
 def append_first_sight(rows: pd.DataFrame, path: Path | None = None) -> int:
-    """Append rows whose key has never been logged. Existing bytes are never rewritten."""
-    p = Path(path) if path else LEDGER_FILE
+    """Append rows whose key has never been logged. Existing bytes are never rewritten.
+    Migrated 2026-10-25 onto the shared FirstSightStore; byte-identical to the previous inline
+    implementation on committed inputs (score() already keeps only rows with kickoff > now and
+    stamps prediction_ts = now, so the store's kickoff refusal is a no-op)."""
     if rows is None or rows.empty:
         return 0
-    new = rows.copy()
-    for c in LEDGER_COLS:
-        if c not in new.columns:
-            new[c] = np.nan
-    new = new[LEDGER_COLS]
-    if p.exists() and p.stat().st_size > 0:
-        old = pd.read_csv(p, dtype=str, keep_default_na=False, usecols=KEY)
-        seen = set(map(tuple, old[KEY].values))
-        new = new[[tuple(map(str, r)) not in seen for r in new[KEY].astype(str).values]]
-    new = new.drop_duplicates(KEY, keep="first")
+    new = first_sight_store(path).append_rows(rows)
     if new.empty:
         return 0
-    p.parent.mkdir(parents=True, exist_ok=True)
-    header = not (p.exists() and p.stat().st_size > 0)
-    new.to_csv(p, mode="a", header=header, index=False, lineterminator="\n")
+    try:                                         # SHADOW contract check (src/contracts); observe only
+        from src.contracts.shadow import observe
+        observe("model_lineage/shadow_experiments.csv (appended rows)", new, "SHADOW_EXPERIMENT_ROW")
+    except Exception:                                                 # noqa: BLE001
+        pass
     return int(len(new))
 
 
