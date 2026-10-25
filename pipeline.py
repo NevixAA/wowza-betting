@@ -1144,12 +1144,24 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
             n = (side_bets["market"] == mkt).sum()
             log.info(f"  {label}: {n} tips")
 
+    # ── market_edge_v2 SHADOW (2026-10-25). The market-first engine (src/market_edge.py) scores
+    # every pre-kickoff fixture x market BESIDE the legacy decision and appends first-sight rows to
+    # output/edge_engine_shadow.csv (+ edge_engine_health.json). It reads `preds`, `side_bets` and
+    # the per-book quotes; it never changes a tip, tier, threshold, stake or message, and it
+    # cannot raise. Its per-side output is attached to the stake plan as trailing shadow columns.
+    _edge_shadow = None
+    try:
+        from src import edge_engine_shadow as _EES
+        _edge_shadow = _EES.run(preds, bets, side_bets, historical=historical)
+    except Exception as e:                                           # noqa: BLE001
+        log.warning(f"edge shadow skipped ({e}) — tips are unaffected")
+
     # ── Stake plan (2026-10-14): the approved bankroll policy applied to this run's tips. Output
     # files only (stake_plan.csv, stake_audit.csv); no tip, tier, message or bet changes. Paper
     # leagues and PAPER tracks get a zero stake with the reason recorded. Never raises.
     try:
         from src.stake_plan import write as _write_stake_plan
-        _write_stake_plan(bets, side_bets)
+        _write_stake_plan(bets, side_bets, shadow=_edge_shadow)
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"stake plan skipped: {e}")
 

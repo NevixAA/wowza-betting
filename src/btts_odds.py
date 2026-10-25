@@ -58,6 +58,8 @@ import config
 log = logging.getLogger(__name__)
 
 _URL = "https://api.the-odds-api.com/v4/sports/{sport}/events/{eid}/odds"
+# This run's per-book BTTS quotes, read ONLY by the market_edge_v2 shadow. Recording only.
+_LAST_BOOK_ROWS: list = []
 
 
 def _cfg(name: str, default: float) -> float:
@@ -206,6 +208,8 @@ def fetch(rows: list[dict]) -> list[dict]:
             filled += 1
         out.append(r)
 
+    global _LAST_BOOK_ROWS
+    _LAST_BOOK_ROWS = list(book_rows)           # shadow-only copy (src/edge_engine_shadow.py)
     try:
         append_book_rows(book_rows)
     except Exception as e:
