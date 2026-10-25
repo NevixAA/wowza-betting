@@ -150,25 +150,47 @@ def fantasy_status(summary: dict) -> dict:
               json.dumps(gate, default=str)[:200] if gate else "")
 
 
-def weekly_research_panel(registry: dict, lock: dict | None) -> dict:
-    """Stub for the weekly per-league research panel (P0, 2026-10-25). The panel itself does not exist
-    yet, so its row metrics are NO_DATA; what is checked now is the research registry and the
-    non-regression lock (src/research_lock.py)."""
+def weekly_research_panel(registry: dict, lock: dict | None, panel: dict | None = None,
+                          now: datetime | None = None) -> dict:
+    """The weekly per-league research panel (src/research/league_weekly.py, 2026-10-25). `panel` is
+    output/league_market_health.json (written by the panel on every predict and settlement run); without it
+    the panel's row metrics are NO_DATA. The research registry and the non-regression lock
+    (src/research_lock.py) are checked either way."""
     rule = ("RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without "
-            "re-approval) or the lock cannot be verified; AMBER if the regime registry is missing or a newly "
-            "PROTECTED track awaits approval; GREEN otherwise. Panel rows: NO_DATA until the panel exists")
+            "re-approval) or the lock cannot be verified; AMBER if the regime registry is missing, a newly "
+            "PROTECTED track awaits approval, the panel health is missing or > 48 h old, or a tracked league "
+            "has fixtures this (or last) gameweek but NO panel rows (a silent disappearance; a league with no "
+            "fixtures is NO_FIXTURES and is fine); GREEN otherwise")
     if lock is None or "protected_tracks_modified" not in lock:
         return _c("Weekly research panel", RED, "lock not verifiable", rule, (lock or {}).get("error", ""))
     counts = registry.get("regime_counts") or {}
     leagues = len(registry.get("tracked_leagues") or [])
-    value = (f"{leagues} leagues · {counts} · protected_tracks_modified={lock['protected_tracks_modified']} · "
-             f"panel rows NO_DATA")
-    if lock["protected_tracks_modified"]:
+    ptm = lock["protected_tracks_modified"]
+    if panel:
+        cov = panel.get("clv_coverage")
+        rows = (f"tracked {panel.get('tracked_leagues')} · with current-week data "
+                f"{panel.get('leagues_with_current_week_data')} · missing {len(panel.get('missing_leagues') or [])} · "
+                f"candidates {panel.get('actual_candidate_rows')}/{panel.get('expected_candidate_rows')} · "
+                f"panel {panel.get('panel_rows')} (settled {panel.get('settled_rows')}, pending "
+                f"{panel.get('pending_rows')}) · CLV coverage {'-' if cov is None else f'{100 * cov:.0f}%'}")
+    else:
+        rows = "panel rows NO_DATA"
+    value = f"{leagues} leagues · {counts} · protected_tracks_modified={ptm} · {rows}"
+    if ptm:
         return _c("Weekly research panel", RED, value, rule, "; ".join(lock.get("changes", [])[:5]))
     if not registry or lock.get("unapproved_new_protected_tracks"):
         return _c("Weekly research panel", AMBER, value, rule,
                   "no regime registry" if not registry else
                   f"new PROTECTED awaiting approval: {lock['unapproved_new_protected_tracks']}")
+    if panel:
+        ts = pd.to_datetime(panel.get("generated_at"), errors="coerce", utc=True)
+        age_h = ((pd.Timestamp(now or datetime.now(timezone.utc)) - ts).total_seconds() / 3600
+                 if pd.notna(ts) else 1e9)
+        miss = sorted(set(panel.get("missing_leagues") or []) | set(panel.get("missing_leagues_previous_week") or []))
+        if age_h > 48 or miss:
+            return _c("Weekly research panel", AMBER, value, rule,
+                      (f"panel health {age_h:.0f} h old; " if age_h > 48 else "")
+                      + (f"fixtures but no rows: {miss}" if miss else ""))
     return _c("Weekly research panel", GREEN, value, rule,
               f"registry evidence cutoff {registry.get('evidence_cutoff')}; lock approved by "
               f"{lock.get('approved_by')} at {lock.get('approved_at')}")
@@ -201,7 +223,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
             challenger_coverage(shadow, now), certified_clv(shadow, _json(OUT / "clv_collection_health.json")),
             stale_artifacts(_json(OUT / "artifact_manifest.json")), forward_progress(prog),
             workflow_health(_json(OUT / "workflow_health.json")), fantasy_status(_json(OUT / "fantasy_v2_summary.json")),
-            weekly_research_panel(_json(ROOT / "config" / "league_market_regimes.json"), _research_lock_status())]
+            weekly_research_panel(_json(ROOT / "config" / "league_market_regimes.json"), _research_lock_status(),
+                                  _json(OUT / "league_market_health.json"), now)]
 
 
 # ── CANONICAL HEALTH ARTIFACT (2026-10-25 platform brief, step a4) ─────────────────────────────
@@ -221,6 +244,7 @@ def first_sight_stores() -> dict:
     from src import edge_engine_shadow as EES
     from src import shadow_experiments as SE
     from src.shadow_compare import COLUMNS as V91_COLS, FROZEN as V91_FROZEN
+    from src.research import league_weekly as LW
     lin = OUT / "model_lineage"
     h2h_cols = ["logged_at", "match_date", "kickoff_utc", "league", "home_team", "away_team", "model_type",
                 "market", "champion_version", "p_served", "p_champion_raw", "challenger_version", "p_challenger"]
@@ -230,6 +254,8 @@ def first_sight_stores() -> dict:
         "v91_shadow.csv": FirstSightStore(OUT / "v91_shadow.csv", key=["fixture_id", "market", "match_date"],
                                           columns=V91_COLS, observed_col="logged_at", kickoff_col="kickoff_utc",
                                           frozen_cols=list(V91_FROZEN)),
+        "league_weekly_candidates.csv": LW.candidate_store(OUT / "league_weekly_candidates.csv"),
+        "league_weekly_research.csv": LW.panel_store(OUT / "league_weekly_research.csv"),
         "model_lineage/shadow_h2h.csv": FirstSightStore(
             lin / "shadow_h2h.csv", key=["match_date", "home_team", "away_team", "model_type", "challenger_version"],
             columns=h2h_cols, observed_col="logged_at", kickoff_col="kickoff_utc"),
