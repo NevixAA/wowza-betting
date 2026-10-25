@@ -222,24 +222,21 @@ def evaluate_board(preds: pd.DataFrame, side_bets: pd.DataFrame | None, now: pd.
             pd.DataFrame(per_side))
 
 
+def first_sight_store(path: Path | None = None):
+    """The shared first-sight store (src/research/first_sight.py) for this log."""
+    from src.research.first_sight import FirstSightStore
+    return FirstSightStore(Path(path) if path else SHADOW_FILE, key=KEY, columns=SHADOW_COLS,
+                           observed_col="prediction_ts", kickoff_col="kickoff_utc")
+
+
 def append_first_sight(rows: pd.DataFrame, path: Path | None = None) -> int:
     """Append rows whose (engine version, fixture, market) was never logged. Existing bytes are
-    never rewritten; within one batch the first row wins."""
-    p = Path(path) if path else SHADOW_FILE
+    never rewritten; within one batch the first row wins. Migrated 2026-10-25 onto the shared
+    FirstSightStore; byte-identical to the previous inline implementation on committed inputs
+    (evaluate_board already drops post-kickoff fixtures, so the store's kickoff refusal is a no-op)."""
     if rows is None or rows.empty:
         return 0
-    new = rows.reindex(columns=SHADOW_COLS)
-    if p.exists() and p.stat().st_size > 0:
-        old = pd.read_csv(p, dtype=str, keep_default_na=False, usecols=KEY)
-        seen = set(map(tuple, old[KEY].values))
-        new = new[[tuple(map(str, k)) not in seen for k in new[KEY].astype(str).values]]
-    new = new.drop_duplicates(KEY, keep="first")
-    if new.empty:
-        return 0
-    p.parent.mkdir(parents=True, exist_ok=True)
-    header = not (p.exists() and p.stat().st_size > 0)
-    new.to_csv(p, mode="a", header=header, index=False, lineterminator="\n")
-    return int(len(new))
+    return first_sight_store(path).append(rows)
 
 
 def health(rows: pd.DataFrame, now: pd.Timestamp, runtime_s: float, appended: int,

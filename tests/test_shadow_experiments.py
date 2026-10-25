@@ -192,7 +192,10 @@ def test_tampered_artifact_is_not_scored(lab):
 def test_settlement_refuses_a_prediction_written_after_kickoff(lab):
     rows = SE.score(_preds(lab), {"standard": lab["champ"]}, now=NOW)
     rows["prediction_ts"] = "2026-10-25T16:00:00+00:00"                 # after kickoff
-    SE.append_first_sight(rows)
+    # Since 2026-10-25 the shared first-sight store refuses such rows at WRITE time (score() never
+    # emits them anyway). Settlement must still refuse one that reached the file another way.
+    assert SE.append_first_sight(rows) == 0
+    rows.reindex(columns=SE.LEDGER_COLS).to_csv(SE.LEDGER_FILE, index=False, lineterminator="\n")
     oc = pd.DataFrame({"fixture_id": rows["fixture_id"], "match_date": "2026-10-25",
                        "home_goals": "2", "away_goals": "1"})
     _, n = SE.settle(pd.read_csv(SE.LEDGER_FILE, dtype=str, keep_default_na=False), oc)
