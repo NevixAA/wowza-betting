@@ -1,29 +1,29 @@
 {
-  "computed_at": "2026-10-25T12:50:06.550558+00:00",
+  "computed_at": "2026-10-25T17:15:30.767499+00:00",
   "results": {
     "H-MODEL-01__newformat|newformat": {
-      "rows": 172,
-      "settled_paired": 72,
-      "challenger_logged": 172,
-      "ll_champion_raw": 0.6879450178517689,
-      "ll_challenger": 0.6836728783650536,
-      "ll_served": 0.6879450178517689,
-      "brier_champion_raw": 0.24742052981120832,
-      "brier_challenger": 0.24518191373394446,
-      "delta_log_loss": -0.004272139486715243,
-      "delta_brier": -0.0022386160772638834
+      "rows": 187,
+      "settled_paired": 77,
+      "challenger_logged": 187,
+      "ll_champion_raw": 0.6869130769581511,
+      "ll_challenger": 0.6832792040053667,
+      "ll_served": 0.6869130769581511,
+      "brier_champion_raw": 0.24694264425828572,
+      "brier_challenger": 0.24499646041129874,
+      "delta_log_loss": -0.003633872952784337,
+      "delta_brier": -0.001946183846987009
     },
     "H-MODEL-01__standard|standard": {
-      "rows": 147,
-      "settled_paired": 62,
-      "challenger_logged": 147,
-      "ll_champion_raw": 0.7059540490345361,
-      "ll_challenger": 0.7166367100330275,
-      "ll_served": 0.7059540490345361,
-      "brier_champion_raw": 0.256375602461129,
-      "brier_challenger": 0.26159376420004843,
-      "delta_log_loss": 0.010682660998491387,
-      "delta_brier": 0.005218161738919347
+      "rows": 157,
+      "settled_paired": 66,
+      "challenger_logged": 157,
+      "ll_champion_raw": 0.70269702063171,
+      "ll_challenger": 0.7132267126191991,
+      "ll_served": 0.70269702063171,
+      "brier_champion_raw": 0.2547627327956364,
+      "brier_challenger": 0.25990643820654546,
+      "delta_log_loss": 0.010529691987489126,
+      "delta_brier": 0.005143705410909083
     }
   }
 }
