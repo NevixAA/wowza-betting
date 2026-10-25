@@ -1,0 +1,13 @@
+{
+  "market": "sot",
+  "model_version": "props_sot_legacy_8e31d4d8",
+  "artifact_sha256": "8e31d4d869c5e0d22c0bf4ec5e730060e2eef99eff431ec9e3af97c275e72caa",
+  "registered_at": "2026-10-25T12:47:02Z",
+  "training_cutoff": null,
+  "training_rows": {
+    "logistic": 696684,
+    "gradient_boost": 696684
+  },
+  "model_role": "CHAMPION",
+  "note": "registered as found serving; training cutoff unknown (legacy)"
+}

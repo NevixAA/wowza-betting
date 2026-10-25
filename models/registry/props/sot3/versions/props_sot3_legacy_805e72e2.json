@@ -1,0 +1,13 @@
+{
+  "market": "sot3",
+  "model_version": "props_sot3_legacy_805e72e2",
+  "artifact_sha256": "805e72e2f0dc44b9d8240bd85093ce6a9560d32a952c4bc533cce7d7248326c7",
+  "registered_at": "2026-10-25T12:47:02Z",
+  "training_cutoff": null,
+  "training_rows": {
+    "logistic": 696684,
+    "gradient_boost": 696684
+  },
+  "model_role": "CHAMPION",
+  "note": "registered as found serving; training cutoff unknown (legacy)"
+}

@@ -228,6 +228,168 @@
         "logloss_old": 0.37314,
         "logloss_new": 0.37276
       }
+    },
+    "2026-10-25#2": {
+      "goals": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_goals_20261025T124702Z_5f9b2159",
+        "champion_version": "props_goals_legacy_1592478c",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 14517,
+        "logloss_old": 0.261965,
+        "logloss_new": 0.261965,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "goals2": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_goals2_20261025T124702Z_aac066ce",
+        "champion_version": "props_goals2_legacy_426e3bb5",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 1346,
+        "logloss_old": 0.043042,
+        "logloss_new": 0.043042,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "assists": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_assists_20261025T124702Z_44c02da4",
+        "champion_version": "props_assists_legacy_6c56f3fd",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 10621,
+        "logloss_old": 0.219752,
+        "logloss_new": 0.219752,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "sot": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot_20261025T124702Z_ea8868fb",
+        "champion_version": "props_sot_legacy_8e31d4d8",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 39543,
+        "logloss_old": 0.476556,
+        "logloss_new": 0.476556,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "sot2": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot2_20261025T124702Z_6017c026",
+        "champion_version": "props_sot2_legacy_a3c186a8",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 9354,
+        "logloss_old": 0.185299,
+        "logloss_new": 0.185299,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "sot3": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot3_20261025T124702Z_6ee22ec1",
+        "champion_version": "props_sot3_legacy_805e72e2",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 2159,
+        "logloss_old": 0.060842,
+        "logloss_new": 0.060842,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "sot4": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot4_20261025T124702Z_84f64045",
+        "champion_version": "props_sot4_legacy_960f5a9b",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 173091,
+        "holdout_events": 455,
+        "logloss_old": 0.018242,
+        "logloss_new": 0.018242,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      },
+      "cards": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_cards_20261025T124702Z_fe0367ef",
+        "champion_version": "props_cards_legacy_1e8f8ce7",
+        "parked": false,
+        "rows": 870856,
+        "holdout_n": 174172,
+        "holdout_events": 22194,
+        "logloss_old": 0.372379,
+        "logloss_new": 0.372379,
+        "ll_delta": 0.0,
+        "ll_ci": [
+          0.0,
+          0.0
+        ],
+        "review": null
+      }
     }
   },
   "latest_run": "2026-10-25"
