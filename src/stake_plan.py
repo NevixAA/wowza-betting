@@ -183,6 +183,16 @@ def attach_shadow(plan: pd.DataFrame, shadow: pd.DataFrame | None) -> pd.DataFra
         return plan
 
 
+def _contract_shadow(frame: str, df: pd.DataFrame, schema: str) -> None:
+    """SHADOW contract check (src/contracts, 2026-10-25) on a frame that is ALREADY written. Records
+    violations in output/contract_violations.json; never changes, blocks or raises."""
+    try:
+        from src.contracts.shadow import observe
+        observe(frame, df, schema)
+    except Exception:                                                # noqa: BLE001 - observation only
+        pass
+
+
 def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
           shadow: pd.DataFrame | None = None) -> pd.DataFrame:
     """Size this run's tips under the approved policy and write plan + audit. Never raises.
@@ -203,7 +213,9 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
             log.error(f"STAKE PLAN HEALTH: {problem}")
         plan["bankroll_basis"] = BASIS
         plan["generated_at"] = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M:%S")
-        attach_shadow(plan, shadow).to_csv(PLAN, index=False)
+        written = attach_shadow(plan, shadow)
+        written.to_csv(PLAN, index=False)
+        _contract_shadow("stake_plan.csv", written, "STAKE_PLAN_ROW")
         if not plan.empty:
             key = ["policy_version", "fixture", "track"]
             new = plan.drop_duplicates(key)
@@ -217,6 +229,7 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
                 new = new.reindex(columns=head)
             if not new.empty:
                 new.to_csv(AUDIT, mode="a", header=not AUDIT.exists(), index=False)
+                _contract_shadow("stake_audit.csv (appended rows)", new, "STAKE_AUDIT_ROW")
         staked = plan[plan["final_fraction"] > 0] if not plan.empty else plan
         log.info(f"Stake plan → {PLAN.name}: {len(plan)} tip(s), {len(staked)} with a stake, "
                  f"total {100 * float(staked['final_fraction'].sum()) if len(staked) else 0:.2f}% of bankroll")

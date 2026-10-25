@@ -316,6 +316,11 @@ def run(preds: pd.DataFrame, bets: pd.DataFrame | None, side_bets: pd.DataFrame 
         params["_evidence_loaded"] = evidence is not None
         rows, per_side = evaluate_board(preds, side_bets, now, pairs, params, league_n, clv, evidence)
         n = append_first_sight(rows, shadow_path)
+        try:                                     # SHADOW contract check (src/contracts); observe only
+            from src.contracts.shadow import observe
+            observe("edge_engine_shadow.csv (scored rows)", rows, "SELECTION_DECISION")
+        except Exception:                                             # noqa: BLE001
+            pass
         dt = time.perf_counter() - t0
         h = health(rows, now, dt, n, params, len(live_rows))
         hp = Path(health_path) if health_path else HEALTH_FILE

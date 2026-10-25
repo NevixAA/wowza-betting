@@ -330,6 +330,12 @@ def _freeze_props_shown(today: str, pr: pd.DataFrame, un: pd.DataFrame) -> None:
         if parts:
             new = pd.concat([old, *parts], ignore_index=True).reindex(columns=_SHOWN_COLS)
             new.to_csv(PROPS_SHOWN_LOG, index=False, lineterminator="\n")
+            try:                                 # SHADOW contract check (src/contracts); observe only
+                from src.contracts.shadow import observe
+                observe("props_shown_log.csv (appended rows)",
+                        pd.concat(parts, ignore_index=True).reindex(columns=_SHOWN_COLS), "PROPS_SHOWN_ROW")
+            except Exception:                                         # noqa: BLE001
+                pass
     except Exception as e:                                              # noqa: BLE001 - never blocks the album
         print(f"[daily_pack] could not log shown props: {e}")
 

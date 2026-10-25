@@ -155,6 +155,11 @@ def freeze_day(day: str) -> pd.DataFrame:
             return d
         d.insert(0, "frozen_at", pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ"))
         d.to_csv(LOG, mode="a", header=not LOG.exists(), index=False)
+        try:                                     # SHADOW contract check (src/contracts); observe only
+            from src.contracts.shadow import observe
+            observe("top_picks_log.csv (appended rows)", d, "TOP_PICKS_ROW")
+        except Exception:                                             # noqa: BLE001
+            pass
         log.info("top picks frozen for %s: %s", day, d.groupby("list").size().to_dict())
         return d
     except Exception as e:                                           # noqa: BLE001 - never break the album

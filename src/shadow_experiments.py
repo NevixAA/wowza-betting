@@ -275,6 +275,11 @@ def append_first_sight(rows: pd.DataFrame, path: Path | None = None) -> int:
     p.parent.mkdir(parents=True, exist_ok=True)
     header = not (p.exists() and p.stat().st_size > 0)
     new.to_csv(p, mode="a", header=header, index=False, lineterminator="\n")
+    try:                                         # SHADOW contract check (src/contracts); observe only
+        from src.contracts.shadow import observe
+        observe("model_lineage/shadow_experiments.csv (appended rows)", new, "SHADOW_EXPERIMENT_ROW")
+    except Exception:                                                 # noqa: BLE001
+        pass
     return int(len(new))
 
 

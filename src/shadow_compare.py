@@ -131,6 +131,11 @@ def append_shadow(rows: list[dict] | pd.DataFrame) -> int:
         out = df
     SHADOW_FILE.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(SHADOW_FILE, index=False)
+    try:                                         # SHADOW contract check (src/contracts); observe only
+        from src.contracts.shadow import observe
+        observe("v91_shadow.csv (appended rows)", df, "V91_SHADOW_ROW")
+    except Exception:                                                 # noqa: BLE001
+        pass
     log.info(f"shadow: +{len(df)} fixtures -> {SHADOW_FILE.name} ({len(out)} total)")
     return int(len(df))
 
