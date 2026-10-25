@@ -225,23 +225,28 @@ def top5_cards(top: pd.DataFrame, per_row: int = 3) -> None:
     for i in range(0, len(rows), per_row):
         for col, r in zip(st.columns(per_row), rows[i:i + per_row]):
             with col.container(border=True):
+                # three elements per card (header, number, figures + chips): 20 cards render on every rerun
                 ko = str(r.get("kickoff_utc", "") or "")[:16].replace("T", " ")
-                st.markdown(ui.rank_badge(int(r["league_market_rank"])) + f" :gray[{_md(ko)} UTC]"
-                            if pd.notna(r.get("league_market_rank")) else f":gray[{_md(ko)}]")
-                st.markdown(f"<div class='wz-title'>{_esc(r.get('home_team', ''))} v {_esc(r.get('away_team', ''))}</div>",
-                            unsafe_allow_html=True)
+                rank = (ui.rank_badge(int(r["league_market_rank"])) + " "
+                        if pd.notna(r.get("league_market_rank")) else "")
+                st.markdown(f"{rank}:gray[{_md(ko)} UTC]{_PARA}<div class='wz-title'>{_esc(r.get('home_team', ''))} v "
+                            f"{_esc(r.get('away_team', ''))}</div>", unsafe_allow_html=True)
                 st.metric(f"EV lower bound · {r.get('side', '')}", ui.fmt_roi(r.get("ev_lower_bound")),
                           help="market_edge_v2's EV lower bound per unit staked (the panel's ranking score)")
-                ui.stat_line([("Side", r.get("side", "") or "—"), ("Odds", ui.fmt_odds(r.get("odds"))),
-                              ("p model", ui.fmt_prob(r.get("p_model_raw"))),
-                              ("p market", ui.fmt_prob(r.get("p_market_fair")))])
                 prod = _yes(r.get("production_selected"))
-                st.markdown(" ".join(x for x in (
+                chips = " ".join(x for x in (
                     ui.status_chip(r.get("decision_state") or "NO_DATA"),
                     ui.status_chip("LIVE", label="PRODUCTION SELECTED · YES") if prod
                     else ui.status_chip("NO_DATA", label="PRODUCTION SELECTED · NO"),
                     ui.status_chip("UNKNOWN", label=str(r.get("status") or "").upper()) if r.get("status") else "",
-                ) if x))
+                ) if x)
+                st.markdown(ui.stat_html([("Side", r.get("side", "") or "—"), ("Odds", ui.fmt_odds(r.get("odds"))),
+                                          ("p model", ui.fmt_prob(r.get("p_model_raw"))),
+                                          ("p market", ui.fmt_prob(r.get("p_market_fair")))]) + _PARA + chips,
+                            unsafe_allow_html=True)
+
+
+_PARA = "\n\n"
 
 
 def _md(s) -> str:
@@ -285,12 +290,12 @@ def rank_strip(t: pd.DataFrame) -> None:
 OUTCOMES = ("WIN", "LOSS", "PENDING", "NO ROW")
 
 
-def heatmap_frame(panel: pd.DataFrame, league: str, market: str) -> pd.DataFrame:
+def heatmap_frame(panel: pd.DataFrame, league: str, market: str, prepared: bool = False) -> pd.DataFrame:
     """Gameweek x rank, long. One row per cell; a rank with no panel row is an explicit NO ROW cell.
 
     The rows are the ones league_weekly_eval.weekly_grid draws (same filter, same prepare()); `cell` is
     league_weekly_eval's own cell text, so the heatmap and the history table say the same thing."""
-    d = EV.prepare(panel)
+    d = panel if prepared else EV.prepare(panel)
     cols = ["gameweek", "league_week_id", "rank", "outcome", "label", "fixture", "side", "result", "clv",
             "decision_state", "production", "ev_lower_bound", "odds", "cell"]
     if d.empty:
@@ -354,8 +359,8 @@ def heatmap_chart(hm: pd.DataFrame):
     return (rect + text).properties(height=max(1, len(weeks)) * 70 + 40)
 
 
-def heatmap(panel: pd.DataFrame, league: str, market: str) -> None:
-    hm = heatmap_frame(panel, league, market)
+def heatmap(panel: pd.DataFrame, league: str, market: str, prepared: bool = False) -> None:
+    hm = heatmap_frame(panel, league, market, prepared=prepared)
     if hm.empty:
         ui.empty_state("NO_DATA", "No frozen gameweeks yet — the heatmap fills one row per gameweek once the "
                                   "panel has rows for this league and market.")

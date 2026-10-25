@@ -41,12 +41,22 @@ st.set_page_config(page_title="Wowza | League Repair Lab", page_icon="🔧", lay
 
 @st.cache_data(ttl=300, show_spinner=False)
 def _load():
-    return (LR.load_panel(), LR.registry_entries(), LR.load_json("league_market_health.json"),
-            LR.load_json("weekly_league_report.json"))
+    """Every page-wide read, once per 5 minutes: the panel, registry, two JSONs, the league overview and the
+    typed panel the heatmaps share (league_weekly_eval.prepare once, not once per market)."""
+    p, e, h, r = (LR.load_panel(), LR.registry_entries(), LR.load_json("league_market_health.json"),
+                  LR.load_json("weekly_league_report.json"))
+    return p, e, h, r, LR.overview(p, e, h), _EV.prepare(p)
+
+
+@st.cache_data(ttl=300, show_spinner=False)
+def _metric_table(league: str):
+    """league_weekly_eval.league_table for one league (seeded bootstrap, deterministic): cached so a widget
+    click does not recompute ~0.35 s of bootstraps. Same function, same panel, same numbers."""
+    return LR.metric_table(_load()[0], league)
 
 
 try:
-    panel, entries, health, report = _load()
+    panel, entries, health, report, ov, prepared = _load()
 except Exception as e:                                                  # noqa: BLE001 - a viewer never dies
     ui.page_header("League Repair Lab", "Weekly per-league research panel.", eyebrow_text="Research Lab")
     ui.empty_state("ERROR", f"Research panel unavailable ({type(e).__name__}: {e})")
@@ -68,7 +78,6 @@ st.caption(f"Panel health generated {health.get('generated_at', '—')} · panel
 # ── all leagues, REPAIR -> LEARNING -> PROTECTED ───────────────────────────────────────────────
 ui.section_header("Leagues", "REPAIR first, then LEARNING, then PROTECTED. Observations are panel rows; CLV "
                   "coverage is certified closes over priced settled rows.")
-ov = LR.overview(panel, entries, health)
 V.league_cards(ov)
 with st.expander("All leagues as a table"):
     ui.compact_table(ov, V.overview_table_config(), height=min(38 * (len(ov) + 1) + 4, 820))
@@ -94,7 +103,7 @@ if (tracks["research_regime"] == "PROTECTED").any():
 with st.expander("Tracks (registry, verbatim)"):
     ui.compact_table(tracks, V.tracks_config())
 
-table = LR.metric_table(panel, league)
+table = _metric_table(league)
 latest = ((report.get("leagues") or {}).get(league) or {})
 for tab, market in zip(st.tabs(list(LR.MARKETS)), LR.MARKETS):
     with tab:
@@ -115,7 +124,7 @@ for tab, market in zip(st.tabs(list(LR.MARKETS)), LR.MARKETS):
         V.rank_strip(t)
 
         ui.section_header("Weekly rank heatmap", "Gameweek × rank: result, CLV and decision state in every cell.")
-        V.heatmap(panel, league, market)
+        V.heatmap(prepared, league, market, prepared=True)
         grid = LR.history_grid(panel, league, market)
         if not grid.empty:
             with st.expander("Weekly history as a table"):
