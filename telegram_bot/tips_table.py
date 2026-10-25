@@ -57,7 +57,11 @@ def todays_rows(today_str: str) -> pd.DataFrame:
 
 
 def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
-    """Every live tip with a match date in [date_from, date_to] (inclusive, 'YYYY-MM-DD').
+    """Every live tip whose TIP DAY is in [date_from, date_to] (inclusive, 'YYYY-MM-DD').
+
+    Tip day, not UTC match date (owner 2026-10-25, src/tip_day.py): a match that kicks off before the
+    next Israeli-morning album (J-League ~06:00 UTC, Liga MX/MLS ~01:00-03:00 UTC) belongs to the
+    PREVIOUS morning's album, which is the last one sent before it starts.
 
     Shared by the Telegram image and the dashboard's tips board, so both show the same rows.
     Extra columns the image does not draw: `drift` (O/U 2.5 only), `model_prob` (side markets
@@ -67,9 +71,13 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
     main = config.OUTPUT_DIR / "bets_ledger.csv"
     side = config.OUTPUT_DIR / "side_bets_ledger.csv"
 
+    # A tip day spans two UTC dates, so read one day either side and filter on the tip day below.
+    _lo = (pd.Timestamp(date_from) - pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+    _hi = (pd.Timestamp(date_to) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
+
     def _in_range(df):
         d = df["match_date"].astype(str).str[:10]
-        return (d >= date_from) & (d <= date_to)
+        return (d >= _lo) & (d <= _hi)
 
     if main.exists():
         m = config.drop_paper_leagues(pd.read_csv(main, low_memory=False))
@@ -112,9 +120,15 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
     d = pd.DataFrame(out)
     if d.empty:
         return d
-    d = d.merge(_kickoffs(), on=["league", "date", "home_team", "away_team"], how="left")
-    ko = pd.to_datetime(d.get("kickoff_utc"), errors="coerce")
-    d["time"] = ko.dt.strftime("%H:%M").fillna("–")
+    from src.tip_day import add_tip_day
+    d = add_tip_day(d, date_col="date")
+    d = d[(d["tip_day"] >= date_from) & (d["tip_day"] <= date_to)]
+    if d.empty:
+        return d.reset_index(drop=True)
+    ko = pd.to_datetime(d["kickoff_utc"], utc=True, errors="coerce")
+    # "Mon 03:00" when the kickoff falls on the next UTC date, so an after-midnight match is unmistakable
+    d["time"] = [("–" if pd.isna(k) else (k.strftime("%a %H:%M") if k.strftime("%Y-%m-%d") != td
+                                          else k.strftime("%H:%M"))) for k, td in zip(ko, d["tip_day"])]
     d["edge"] = pd.to_numeric(d["edge"], errors="coerce")
     d["rating"] = d["league"].map(league_ratings())
     d["_t"] = d["tier"].map({t: i for i, t in enumerate(TIER_ORDER)})

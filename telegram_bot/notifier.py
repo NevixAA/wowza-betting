@@ -337,7 +337,7 @@ def _drift_emoji(signal: str) -> str:
     return {"Confirmed": "✅", "Conflicted": "⚠️", "Neutral": "➡️", "New": "🆕"}.get(str(signal), "")
 
 
-def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None) -> bool:
+def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None, row=None) -> bool:
     """Should a NEW tip go out as its own message right now? (owner 2026-10-18: "too spammy").
 
     No by default: every tip appears in its match day's morning album (telegram_bot/daily_pack),
@@ -351,7 +351,18 @@ def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None
     from datetime import timezone as _tz
     now = now or datetime.now(_tz.utc)
     today = now.strftime("%Y-%m-%d")
-    if str(match_date)[:10] != today:
+    # judged by TIP DAY (src/tip_day.py, 2026-10-25): tonight's 03:00 UTC Liga MX match has tomorrow's
+    # UTC date but belongs to today's album, so a tip found after that album must still go out alone.
+    tday = str(match_date)[:10]
+    if row is not None:
+        try:
+            from src.tip_day import add_tip_day
+            r = {k: row.get(k) for k in ("league", "home_team", "away_team", "kickoff_utc")}
+            r["match_date"] = tday
+            tday = add_tip_day(pd.DataFrame([r]))["tip_day"].iloc[0]
+        except Exception:                                               # noqa: BLE001 - keep the match date
+            pass
+    if tday != today:
         return False
     return f"DIGEST|{today}" in notified or now.hour >= 12
 
@@ -445,7 +456,7 @@ def notify_new_snipers() -> int:
                 continue
 
         # Goes out in its day's morning album instead (not marked notified here: the album marks it).
-        if not instant_tip_allowed(row["date"], notified):
+        if not instant_tip_allowed(row["date"], notified, row=row):
             continue
 
         tier  = row["signal_tier"]
@@ -2634,7 +2645,7 @@ def notify_side_bets() -> int:
                f"|{row['market']}" + (f"|{_sd}" if _sd and _sd.upper() not in ("YES", "OVER") else ""))
         if key in notified:
             continue
-        if not instant_tip_allowed(row["date"], notified):      # morning album carries it
+        if not instant_tip_allowed(row["date"], notified, row=row):      # morning album carries it
             continue
 
         tier  = row["signal_tier"]

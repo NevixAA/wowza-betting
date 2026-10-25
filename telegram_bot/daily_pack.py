@@ -168,6 +168,7 @@ def settled_tips() -> pd.DataFrame:
         parts.append(pd.DataFrame({
             "date": m["match_date"].astype(str).str[:10], "league": m["league"],
             "match": m["home_team"].astype(str) + " v " + m["away_team"].astype(str),
+            "home_team": m["home_team"], "away_team": m["away_team"],
             "tier": m["signal_tier"], "market": "O/U 2.5",
             "pick": "O/U 2.5 " + m["side"].astype(str).str.upper(),
             "odds": pd.to_numeric(m["odds"], errors="coerce"),
@@ -180,6 +181,7 @@ def settled_tips() -> pd.DataFrame:
         parts.append(pd.DataFrame({
             "date": s["match_date"].astype(str).str[:10], "league": s["league"],
             "match": s["home_team"].astype(str) + " v " + s["away_team"].astype(str),
+            "home_team": s["home_team"], "away_team": s["away_team"],
             "tier": s["signal_tier"], "market": mk.map(SIDE_LABEL).fillna(mk.str.upper()),
             "pick": mk.map(lambda k: "BTTS YES" if k == "btts" else f"{SIDE_LABEL.get(k, k)} OVER"),
             "odds": pd.to_numeric(s["odds"], errors="coerce"),
@@ -188,6 +190,8 @@ def settled_tips() -> pd.DataFrame:
         return pd.DataFrame()
     d = pd.concat(parts, ignore_index=True)
     d["result"] = d["result"].astype(str).str.upper().str.strip()
+    from src.tip_day import add_tip_day                    # "yesterday" = the album that carried it
+    d = add_tip_day(d, date_col="date")
     return d[d["tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
 
 
@@ -205,7 +209,7 @@ def results_image(day: str) -> list[bytes]:
     d = settled_tips()
     if d.empty:
         return []
-    y = d[d["date"] == day].copy()
+    y = d[d["tip_day"] == day].copy()
     if y.empty:
         return []
     y["_t"] = y["tier"].map({"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
@@ -311,7 +315,10 @@ def props_image(today: str, freeze: bool = False) -> list[bytes]:
     t = _read("player_tips.csv")
     if t.empty:
         return []
-    t = t[t["date"].astype(str).str[:10] == today].copy()
+    from src.tip_day import tip_day_of                     # player_tips carries its own kickoff_utc
+    t["_tip_day"] = [tip_day_of(k, d) for k, d in zip(t.get("kickoff_utc", pd.Series(None, index=t.index)),
+                                                      t["date"].astype(str))]
+    t = t[t["_tip_day"] == today].copy()
     if t.empty:
         return []
     for c in ("model_prob", "market_odds", "ev"):

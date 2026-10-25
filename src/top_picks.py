@@ -75,7 +75,11 @@ def load_tips() -> pd.DataFrame:
     mp = pd.to_numeric(d["model_prob"], errors="coerce") if "model_prob" in d.columns else pd.Series(np.nan, index=d.index)
     d["model_p"] = mp.where(mp.notna(), d["implied"] + e).clip(0.02, 0.98)
     d["model_type"] = d["model_type"].fillna("unknown").astype(str)
-    d["day"] = d["match_date"].astype(str).str[:10]
+    # day = TIP DAY, the album that carries the tip (src/tip_day.py, 2026-10-25); match_day kept so
+    # lists frozen before the change (keyed by match date) still grade.
+    from src.tip_day import add_tip_day
+    d["match_day"] = d["match_date"].astype(str).str[:10]
+    d["day"] = add_tip_day(d, date_col="match_day")["tip_day"].values
     d["result"] = d["result"].fillna("").astype(str).str.upper()
     d = d.sort_values("generated_at", kind="mergesort").drop_duplicates(KEY, keep="first")
     return d.reset_index(drop=True)
@@ -163,9 +167,15 @@ def graded(days: int | None = None) -> pd.DataFrame:
     f = frozen()
     if f.empty:
         return f
-    t = load_tips()[KEY + ["result"]]
+    t = load_tips()
     f["day"] = f["day"].astype(str)
-    g = f.merge(t, on=KEY, how="left")
+    g = f.merge(t[KEY + ["result"]], on=KEY, how="left")
+    # lists frozen before 2026-10-25 used the match date as the day: grade those by match date
+    alt = t[["match_day", "home_team", "away_team", "market", "result"]].rename(
+        columns={"match_day": "day", "result": "_r2"}).drop_duplicates(KEY)
+    g = g.merge(alt, on=KEY, how="left")
+    g["result"] = g["result"].where(g["result"].notna() & (g["result"] != ""), g["_r2"])
+    g = g.drop(columns="_r2")
     g["result"] = g["result"].fillna("").replace({"": "PENDING"})
     if days:
         cut = (pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=days)).strftime("%Y-%m-%d")
