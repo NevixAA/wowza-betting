@@ -81,6 +81,7 @@ EXPECTED_SECTION = {
 # Architecture pages added 2026-10-25: (path, section). All admin-only.
 NEW_PAGES = [
     ("pages/19_🩺_System_Health.py", "System"),
+    ("pages/20_🧪_Model_Lab.py", "Research Lab"),
 ]
 
 
@@ -211,3 +212,23 @@ def test_system_view_labels_stale_artifacts_and_keeps_rules():
     c = V.checks(sh)
     assert c["check"].tolist() == ["y", "x"] and c["rule"].tolist() == ["R2", "R1"]
     assert V.checks({}).empty and V.manifest_table({}).empty
+
+
+def test_model_lab_prospective_counts_against_per_track_minimum(tmp_path):
+    import json
+    from dashboard_data import model_lab as M
+    ev = tmp_path / "eval.json"
+    ex = tmp_path / "exp.json"
+    ev.write_text(json.dumps({"computed_at": "2026-10-24T23:37:03Z", "results": {
+        "H-MODEL-01__standard|standard": {"rows": 147, "settled_paired": 62, "delta_log_loss": 0.01, "delta_brier": 0.005},
+        "H-MODEL-01__newformat|newformat": {"rows": 1500, "settled_paired": 1200, "delta_log_loss": -0.006,
+                                             "delta_brier": -0.003}}}), encoding="utf-8")
+    ex.write_text(json.dumps({"experiments": [{"experiment_id": "H-MODEL-01__standard", "n_min_per_track": 1000},
+                                              {"experiment_id": "H-MODEL-01__newformat", "n_min_per_track": 1000}]}),
+                  encoding="utf-8")
+    d, at = M.prospective(ev, ex)
+    assert at == "2026-10-24T23:37:03Z"
+    r = d.set_index("track")
+    assert r.loc["standard", "required_n"] == 1000 and not r.loc["standard", "evaluable"]
+    assert r.loc["newformat", "evaluable"] and r.loc["newformat", "progress"] == 1.0
+    assert M.decisions(tmp_path / "missing.csv").empty
