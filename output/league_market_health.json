@@ -1,18 +1,19 @@
 {
- "generated_at": "2026-10-25T19:56:38Z",
+ "generated_at": "2026-10-25T22:04:24Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-10-25",
- "leagues_with_current_week_data": 11,
+ "current_tip_day": "2026-10-26",
+ "leagues_with_current_week_data": 18,
  "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
+  "China Super League",
   "Romanian Superliga"
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 144,
- "actual_candidate_rows": 140,
+ "expected_candidate_rows": 744,
+ "actual_candidate_rows": 744,
  "panel_rows": 116,
  "settled_rows": 63,
  "pending_rows": 53,
@@ -22,6 +23,37 @@
  "leagues": {
   "Argentina Primera Division": {
    "current": {
+    "league_week_id": "Argentina Primera Division|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 13,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 13,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-26T22:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 13,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 13,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 13,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 13,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 52,
+    "actual_candidate_rows": 52
+   },
+   "previous": {
     "league_week_id": "Argentina Primera Division|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 5,
@@ -48,42 +80,42 @@
       "candidates": 5,
       "panel_rows": 5
      }
-    },
-    "expected_candidate_rows": 20,
-    "actual_candidate_rows": 20
-   },
-   "previous": {
-    "league_week_id": "Argentina Primera Division|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 15,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Austrian Bundesliga": {
    "current": {
+    "league_week_id": "Austrian Bundesliga|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 6,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 6,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-30T18:30:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 6,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 24,
+    "actual_candidate_rows": 24
+   },
+   "previous": {
     "league_week_id": "Austrian Bundesliga|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 2,
@@ -110,77 +142,46 @@
       "candidates": 2,
       "panel_rows": 2
      }
-    },
-    "expected_candidate_rows": 8,
-    "actual_candidate_rows": 8
-   },
-   "previous": {
-    "league_week_id": "Austrian Bundesliga|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 6,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Brazil Serie A": {
    "current": {
-    "league_week_id": "Brazil Serie A|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 9,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "Brazil Serie A|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 12,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 12,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-26T22:30:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 48,
+    "actual_candidate_rows": 48
    },
    "previous": {
-    "league_week_id": "Brazil Serie A|2026-W42",
+    "league_week_id": "Brazil Serie A|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 12,
+    "fixtures_before_panel_start": 9,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -208,6 +209,37 @@
   },
   "Bundesliga 2": {
    "current": {
+    "league_week_id": "Bundesliga 2|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 9,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 9,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-30T17:30:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 9,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 9,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 9,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 9,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 36,
+    "actual_candidate_rows": 36
+   },
+   "previous": {
     "league_week_id": "Bundesliga 2|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 3,
@@ -234,77 +266,46 @@
       "candidates": 3,
       "panel_rows": 3
      }
-    },
-    "expected_candidate_rows": 12,
-    "actual_candidate_rows": 12
-   },
-   "previous": {
-    "league_week_id": "Bundesliga 2|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 9,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Championship": {
    "current": {
-    "league_week_id": "Championship|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 13,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "Championship|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 12,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 12,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-30T20:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 12,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 48,
+    "actual_candidate_rows": 48
    },
    "previous": {
-    "league_week_id": "Championship|2026-W42",
+    "league_week_id": "Championship|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 24,
+    "fixtures_before_panel_start": 13,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -332,10 +333,10 @@
   },
   "China Super League": {
    "current": {
-    "league_week_id": "China Super League|2026-W43",
-    "state": "BEFORE_PANEL_START",
+    "league_week_id": "China Super League|2026-W44",
+    "state": "NO_FIXTURES",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 8,
+    "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -363,7 +364,7 @@
     "actual_candidate_rows": 0
    },
    "previous": {
-    "league_week_id": "China Super League|2026-W42",
+    "league_week_id": "China Super League|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
     "fixtures_before_panel_start": 8,
@@ -394,6 +395,37 @@
   },
   "Denmark Superliga": {
    "current": {
+    "league_week_id": "Denmark Superliga|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 6,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 6,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-26T18:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 6,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 24,
+    "actual_candidate_rows": 24
+   },
+   "previous": {
     "league_week_id": "Denmark Superliga|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 4,
@@ -420,42 +452,42 @@
       "candidates": 4,
       "panel_rows": 4
      }
-    },
-    "expected_candidate_rows": 16,
-    "actual_candidate_rows": 16
-   },
-   "previous": {
-    "league_week_id": "Denmark Superliga|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 6,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Finland Veikkausliiga": {
    "current": {
+    "league_week_id": "Finland Veikkausliiga|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 4,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 4,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-28T16:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 4,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 4,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 4,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 4,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 16,
+    "actual_candidate_rows": 16
+   },
+   "previous": {
     "league_week_id": "Finland Veikkausliiga|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 2,
@@ -482,77 +514,46 @@
       "candidates": 2,
       "panel_rows": 2
      }
-    },
-    "expected_candidate_rows": 8,
-    "actual_candidate_rows": 8
-   },
-   "previous": {
-    "league_week_id": "Finland Veikkausliiga|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 8,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Ireland Premier Division": {
    "current": {
-    "league_week_id": "Ireland Premier Division|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 7,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "Ireland Premier Division|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 5,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 5,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-30T19:45:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 5,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 5,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 5,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 5,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 20,
+    "actual_candidate_rows": 20
    },
    "previous": {
-    "league_week_id": "Ireland Premier Division|2026-W42",
+    "league_week_id": "Ireland Premier Division|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 6,
+    "fixtures_before_panel_start": 7,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -580,41 +581,41 @@
   },
   "Japan J-League": {
    "current": {
-    "league_week_id": "Japan J-League|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 20,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "Japan J-League|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 10,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 10,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-31T05:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 10,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 10,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 10,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 10,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 40,
+    "actual_candidate_rows": 40
    },
    "previous": {
-    "league_week_id": "Japan J-League|2026-W42",
+    "league_week_id": "Japan J-League|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 10,
+    "fixtures_before_panel_start": 20,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -642,6 +643,37 @@
   },
   "La Liga 2": {
    "current": {
+    "league_week_id": "La Liga 2|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 9,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 9,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-26T19:30:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 9,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 9,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 9,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 9,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 36,
+    "actual_candidate_rows": 36
+   },
+   "previous": {
     "league_week_id": "La Liga 2|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 4,
@@ -668,77 +700,46 @@
       "candidates": 4,
       "panel_rows": 4
      }
-    },
-    "expected_candidate_rows": 16,
-    "actual_candidate_rows": 16
-   },
-   "previous": {
-    "league_week_id": "La Liga 2|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 14,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "League One": {
    "current": {
-    "league_week_id": "League One|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 24,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "League One|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 17,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 17,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-27T19:45:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 17,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 17,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 17,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 17,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 68,
+    "actual_candidate_rows": 68
    },
    "previous": {
-    "league_week_id": "League One|2026-W42",
+    "league_week_id": "League One|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 12,
+    "fixtures_before_panel_start": 24,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -766,41 +767,41 @@
   },
   "League Two": {
    "current": {
-    "league_week_id": "League Two|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 23,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "League Two|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 14,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 14,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-26T20:00:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 14,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 14,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 14,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 14,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 56,
+    "actual_candidate_rows": 56
    },
    "previous": {
-    "league_week_id": "League Two|2026-W42",
+    "league_week_id": "League Two|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
-    "fixtures_before_panel_start": 12,
+    "fixtures_before_panel_start": 23,
     "fixtures_with_candidates": 0,
     "fixtures_without_candidates": 0,
     "week_lock_ts": null,
@@ -828,38 +829,38 @@
   },
   "Ligue 2": {
    "current": {
-    "league_week_id": "Ligue 2|2026-W43",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 9,
-    "fixtures_with_candidates": 0,
+    "league_week_id": "Ligue 2|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 8,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 8,
     "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
+    "week_lock_ts": "2026-10-26T19:45:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 0,
+      "candidates": 8,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 0,
+      "candidates": 8,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 0,
+      "candidates": 8,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 0,
+      "candidates": 8,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 0,
-    "actual_candidate_rows": 0
+    "expected_candidate_rows": 32,
+    "actual_candidate_rows": 32
    },
    "previous": {
-    "league_week_id": "Ligue 2|2026-W42",
+    "league_week_id": "Ligue 2|2026-W43",
     "state": "BEFORE_PANEL_START",
     "fixtures_known": 0,
     "fixtures_before_panel_start": 9,
@@ -890,6 +891,37 @@
   },
   "Mexico Liga MX": {
    "current": {
+    "league_week_id": "Mexico Liga MX|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 6,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 6,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-29T03:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 6,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 6,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 24,
+    "actual_candidate_rows": 24
+   },
+   "previous": {
     "league_week_id": "Mexico Liga MX|2026-W43",
     "state": "PROVISIONAL",
     "fixtures_known": 5,
@@ -916,42 +948,42 @@
       "candidates": 4,
       "panel_rows": 0
      }
-    },
-    "expected_candidate_rows": 20,
-    "actual_candidate_rows": 16
-   },
-   "previous": {
-    "league_week_id": "Mexico Liga MX|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 9,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Norway Eliteserien": {
    "current": {
+    "league_week_id": "Norway Eliteserien|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 8,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 8,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-30T18:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 8,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 8,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 8,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 8,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 32,
+    "actual_candidate_rows": 32
+   },
+   "previous": {
     "league_week_id": "Norway Eliteserien|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 6,
@@ -978,43 +1010,12 @@
       "candidates": 6,
       "panel_rows": 5
      }
-    },
-    "expected_candidate_rows": 24,
-    "actual_candidate_rows": 24
-   },
-   "previous": {
-    "league_week_id": "Norway Eliteserien|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 9,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Romanian Superliga": {
    "current": {
-    "league_week_id": "Romanian Superliga|2026-W43",
+    "league_week_id": "Romanian Superliga|2026-W44",
     "state": "NO_FIXTURES",
     "fixtures_known": 0,
     "fixtures_before_panel_start": 0,
@@ -1045,7 +1046,7 @@
     "actual_candidate_rows": 0
    },
    "previous": {
-    "league_week_id": "Romanian Superliga|2026-W42",
+    "league_week_id": "Romanian Superliga|2026-W43",
     "state": "NO_FIXTURES",
     "fixtures_known": 0,
     "fixtures_before_panel_start": 0,
@@ -1076,6 +1077,37 @@
   },
   "Serie B": {
    "current": {
+    "league_week_id": "Serie B|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 20,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 20,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-27T18:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 20,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 20,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 20,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 20,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 80,
+    "actual_candidate_rows": 80
+   },
+   "previous": {
     "league_week_id": "Serie B|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 2,
@@ -1102,42 +1134,42 @@
       "candidates": 2,
       "panel_rows": 2
      }
-    },
-    "expected_candidate_rows": 8,
-    "actual_candidate_rows": 8
-   },
-   "previous": {
-    "league_week_id": "Serie B|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 10,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "Sweden Allsvenskan": {
    "current": {
+    "league_week_id": "Sweden Allsvenskan|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 11,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 11,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-27T18:00:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 11,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 11,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 11,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 11,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 44,
+    "actual_candidate_rows": 44
+   },
+   "previous": {
     "league_week_id": "Sweden Allsvenskan|2026-W43",
     "state": "FROZEN",
     "fixtures_known": 2,
@@ -1164,42 +1196,42 @@
       "candidates": 2,
       "panel_rows": 2
      }
-    },
-    "expected_candidate_rows": 8,
-    "actual_candidate_rows": 8
-   },
-   "previous": {
-    "league_week_id": "Sweden Allsvenskan|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 9,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
-      "panel_rows": 0
-     }
     }
    }
   },
   "USA MLS": {
    "current": {
+    "league_week_id": "USA MLS|2026-W44",
+    "state": "PROVISIONAL",
+    "fixtures_known": 16,
+    "fixtures_before_panel_start": 0,
+    "fixtures_with_candidates": 16,
+    "fixtures_without_candidates": 0,
+    "week_lock_ts": "2026-10-28T23:30:00Z",
+    "late_after_lock": 0,
+    "market_gaps": [],
+    "markets": {
+     "OU25": {
+      "candidates": 16,
+      "panel_rows": 0
+     },
+     "BTTS": {
+      "candidates": 16,
+      "panel_rows": 0
+     },
+     "OVER15": {
+      "candidates": 16,
+      "panel_rows": 0
+     },
+     "OVER35": {
+      "candidates": 16,
+      "panel_rows": 0
+     }
+    },
+    "expected_candidate_rows": 64,
+    "actual_candidate_rows": 64
+   },
+   "previous": {
     "league_week_id": "USA MLS|2026-W43",
     "state": "PROVISIONAL",
     "fixtures_known": 1,
@@ -1224,37 +1256,6 @@
      },
      "OVER35": {
       "candidates": 1,
-      "panel_rows": 0
-     }
-    },
-    "expected_candidate_rows": 4,
-    "actual_candidate_rows": 4
-   },
-   "previous": {
-    "league_week_id": "USA MLS|2026-W42",
-    "state": "BEFORE_PANEL_START",
-    "fixtures_known": 0,
-    "fixtures_before_panel_start": 30,
-    "fixtures_with_candidates": 0,
-    "fixtures_without_candidates": 0,
-    "week_lock_ts": null,
-    "late_after_lock": 0,
-    "market_gaps": [],
-    "markets": {
-     "OU25": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "BTTS": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER15": {
-      "candidates": 0,
-      "panel_rows": 0
-     },
-     "OVER35": {
-      "candidates": 0,
       "panel_rows": 0
      }
     }
