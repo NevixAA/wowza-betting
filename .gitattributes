@@ -42,6 +42,15 @@ output/api_usage_log.csv                     merge=union
 # later. Union-merged for the same reason as the odds histories — two writers must never discard
 # each other's days, and a lost day of projections cannot be reconstructed.
 output/fantasy_projection_log.csv            merge=union
+# Player-prop odds (owner-approved 2026-10-25). player_props.yml and prop_odds_snapshot.yml both write
+# these and push with `pull --rebase -X theirs`, which keeps the pushing run's rows and DISCARDS the
+# other job's: 511 rows were lost this way on 2026-10-22. Reproduced in a scratch repo: union keeps
+# both sides and overrides -X theirs. Both writers are distinct-price appends that re-read the whole
+# file and drop duplicates on every pass (odds_fetcher._append_odds_history / _append_quotes), and
+# rows are never edited in place, so any duplicate line union creates is removed on the next run.
+output/player_prop_odds_history.csv          merge=union
+output/player_prop_odds_history_archive/*.csv merge=union
+output/prop_quotes/*.csv                     merge=union
 
 # Keep line endings stable so a Windows local checkout and a Linux runner cannot produce a
 # whole-file diff (which would turn every append into a maximal conflict).

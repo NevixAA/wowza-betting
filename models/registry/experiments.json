@@ -27,7 +27,11 @@
       "note": "SHADOW ONLY. Never served, never tiered, never staked.",
       "artifact": "models/registry/experiments/H-MODEL-01__standard/challenger.pkl.gz",
       "artifact_sha256": "e4191ad506e59fba50377f582ad702585d12e6f620b08ff7f799161a88922dc9",
-      "challenger_version": "pro_hgb_standard_20261022T110238Z_e4191ad5"
+      "challenger_version": "pro_hgb_standard_20261022T110238Z_e4191ad5",
+      "comparator": "serving_champion",
+      "n_min_scope": "per_track",
+      "n_min_per_track": 1000,
+      "owner_decision": "2026-10-25: owner confirmed the prospective comparison is against the champion actually serving (not the never-built corrected stack), and the 1,000-fixture minimum applies to EACH track separately. Window starts at registration; 2026-10-02..10-22 is unrecoverable."
     },
     {
       "experiment_id": "H-MODEL-01__newformat",
@@ -56,7 +60,11 @@
       "note": "SHADOW ONLY. Never served, never tiered, never staked.",
       "artifact": "models/registry/experiments/H-MODEL-01__newformat/challenger.pkl.gz",
       "artifact_sha256": "8e11e6cfad1d3de91ebbb034fa3744596ff19316f3e82855677a20971f3ae9df",
-      "challenger_version": "pro_hgb_newformat_20261022T110238Z_8e11e6cf"
+      "challenger_version": "pro_hgb_newformat_20261022T110238Z_8e11e6cf",
+      "comparator": "serving_champion",
+      "n_min_scope": "per_track",
+      "n_min_per_track": 1000,
+      "owner_decision": "2026-10-25: owner confirmed the prospective comparison is against the champion actually serving (not the never-built corrected stack), and the 1,000-fixture minimum applies to EACH track separately. Window starts at registration; 2026-10-02..10-22 is unrecoverable."
     }
   ]
 }
