@@ -143,6 +143,10 @@ API_BASE = {
 #: happens on every widget interaction.
 _REMOTE_TTL_SECONDS = 30 * 60
 _CACHE_DIR = Path(__file__).resolve().parent / "_remote_cache"
+#: In-process memos (2026-10-25): a missing remote file and a directory listing were re-requested
+#: on EVERY rerun - each a network round trip, and listings count against GitHub's 60/hour limit.
+_MISSING: dict = {}
+_LISTINGS: dict = {}
 
 
 def _cache_path(repo: str, rel: str) -> Path:
@@ -165,16 +169,20 @@ def resolve_file(repo: str, rel: str) -> Path | None:
         return None
 
     cached = _cache_path(repo, rel)
+    import time
     if cached.exists():
-        import time
         if (time.time() - cached.stat().st_mtime) < _REMOTE_TTL_SECONDS:
             return cached
+    elif time.time() - _MISSING.get((repo, rel), -1e9) < _REMOTE_TTL_SECONDS:
+        return None                      # known missing: do not re-ask GitHub on every rerun
     try:
         import urllib.request
         req = urllib.request.Request(f"{base}/{rel}",
                                      headers={"User-Agent": "wowza-dashboard"})
         with urllib.request.urlopen(req, timeout=20) as r:
             if r.status != 200:
+                if not cached.exists():
+                    _MISSING[(repo, rel)] = time.time()
                 return cached if cached.exists() else None
             body = r.read()
         cached.parent.mkdir(parents=True, exist_ok=True)
@@ -183,6 +191,8 @@ def resolve_file(repo: str, rel: str) -> Path | None:
     except Exception:
         # A stale cached copy beats nothing, and the freshness shown to the reader still comes
         # from the file's CONTENT, so an old fetch cannot masquerade as current data.
+        if not cached.exists():
+            _MISSING[(repo, rel)] = time.time()
         return cached if cached.exists() else None
 
 
@@ -200,14 +210,24 @@ def remote_listing(repo: str, rel_dir: str) -> list[str]:
     base = API_BASE.get(repo)
     if not base:
         return []
+    import time
+    hit = _LISTINGS.get((repo, rel_dir))
+    if hit and time.time() - hit[0] < _REMOTE_TTL_SECONDS:
+        return list(hit[1])              # the contents API allows 60 anonymous calls an hour
     try:
         import json as _json
         import urllib.request
         req = urllib.request.Request(f"{base}/contents/{rel_dir}",
                                      headers={"User-Agent": "wowza-dashboard"})
         with urllib.request.urlopen(req, timeout=20) as r:
-            return sorted(e["name"] for e in _json.loads(r.read()))
+            names = sorted(e["name"] for e in _json.loads(r.read()))
+        _LISTINGS[(repo, rel_dir)] = (time.time(), names)
+        return names
     except Exception:
+        if hit:
+            return list(hit[1])
+        # failed (usually the 60/hour API limit): back off 5 minutes instead of retrying every rerun
+        _LISTINGS[(repo, rel_dir)] = (time.time() - _REMOTE_TTL_SECONDS + 300, [])
         return []
 
 
