@@ -820,7 +820,21 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
 
     # ── Side-market tips (BTTS / O1.5 / O3.5) ───────────────────────────────
     side_bets = _generate_side_bets(preds, config.SIDE_MARKETS)
-    if not side_bets.empty:
+
+    # ── ONE GOAL DIRECTION PER FIXTURE (owner rule 2026-10-25, src/direction_guard.py). The one point
+    # where both the O/U 2.5 tips and the side-market tips are known and nothing is written yet. A tip
+    # whose goal direction (any Over line = OVER, any Under line = UNDER; BTTS never conflicts) is
+    # opposite to the fixture's FIRST tip is removed here, so it never reaches bets.csv / side_bets.csv
+    # (Telegram), the ledgers (album, top picks) or the stake plan. First tip stands: an earlier live
+    # ledger tip across runs; within one run the O/U 2.5 tip. Suppressed tips -> direction_conflicts.csv.
+    # The shadow engine keeps the unguarded frames (research logs everything). Never raises.
+    _bets_all, _side_all = bets, side_bets
+    _had_bets, _had_side = not bets.empty, not side_bets.empty
+    from src import direction_guard as _DG
+    bets, side_bets, _dir_conflicts = _DG.apply(bets, side_bets)
+    _DG.record(_dir_conflicts)
+
+    if _had_side:   # pre-guard: a run whose only side tips were suppressed still rewrites side_bets.csv
         side_bets_file = config.OUTPUT_DIR / "side_bets.csv"
         # LEDGER GETS EVERYTHING, THE SEND SOURCE DOES NOT. side_bets.csv is what
         # notify_side_bets reads, so a paper league is stripped from it; the ledger keeps the
@@ -840,7 +854,7 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     _edge_shadow = None
     try:
         from src import edge_engine_shadow as _EES
-        _edge_shadow = _EES.run(preds, bets, side_bets, historical=historical)
+        _edge_shadow = _EES.run(preds, _bets_all, _side_all, historical=historical)
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"edge shadow skipped ({e}) — tips are unaffected")
 
@@ -849,7 +863,10 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     # leagues and PAPER tracks get a zero stake with the reason recorded. Never raises.
     try:
         from src.stake_plan import write as _write_stake_plan
-        _write_stake_plan(bets, side_bets, shadow=_edge_shadow)
+        from src.ledger import drop_flipped as _drop_flipped
+        # drop_flipped: an O/U 2.5 tip on the opposite side of an earlier O/U 2.5 tip is never sent or
+        # ledgered (existing flip guard), so it is not staked either (direction rule 2026-10-25).
+        _write_stake_plan(_drop_flipped(bets), side_bets, shadow=_edge_shadow)
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"stake plan skipped: {e}")
 
@@ -864,7 +881,7 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
     except Exception as e:
         log.warning(f"append_ht_tips skipped: {e}")
 
-    if not bets.empty:
+    if _had_bets:   # pre-guard: a run whose only tips were suppressed still rewrites bets.csv (empty)
         bets_file = config.OUTPUT_DIR / "bets.csv"
         # bets.csv is the SEND SOURCE (notify_new_snipers, agent analysis, dashboard live tips,
         # the props supplement), so paper leagues are stripped from it. The ledger below still

@@ -470,7 +470,9 @@ def test_stake_planner_still_receives_canonical_contract():
 def test_pipeline_wires_shadow_beside_legacy_not_into_it():
     import inspect
     src = inspect.getsource(pipeline.mode_predict)
-    assert "_EES.run(preds, bets, side_bets" in src
+    # the shadow sees the legacy tips BEFORE the direction guard (2026-10-25): research logs everything
+    assert "_EES.run(preds, _bets_all, _side_all" in src
+    assert "_bets_all, _side_all = bets, side_bets" in src
     assert src.index("bets = generate_bets(preds)") < src.index("_EES.run(")
     assert "shadow=_edge_shadow" in src
     from src import betting

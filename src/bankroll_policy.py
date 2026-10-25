@@ -70,13 +70,34 @@ def rating_scale(rating: int | None, min_scale: float) -> float:
     return min_scale + (r - 1) / 9.0 * (1.0 - min_scale)
 
 
+def goal_direction(market, side=None) -> str | None:
+    """OVER / UNDER for a goal-total position (OU25 by its side, OVER15/OVER35/OVERxx -> OVER,
+    UNDERxx -> UNDER); None for BTTS and anything else, which never conflicts. Self-contained on
+    purpose: Pro's simulator imports this file alone. Mirrors src/direction_guard.goal_direction."""
+    m = str(market or "").strip().upper()
+    s = str(side or "").strip().upper()
+    if m.startswith("BTTS"):
+        return None
+    if m.startswith("OVER"):
+        return "OVER"
+    if m.startswith("UNDER"):
+        return "UNDER"
+    if m in ("OU25", "OU", ""):
+        return s if s in ("OVER", "UNDER") else None
+    return None
+
+
 def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: float,
-             dd_floor: float | None = None, league_ratings: dict | None = None) -> pd.DataFrame:
+             dd_floor: float | None = None, league_ratings: dict | None = None,
+             prior_directions: dict | None = None) -> pd.DataFrame:
     """Stake fractions for one day's qualifying selections. Pure: same input -> same output.
 
     league_ratings ({league: 1-10}, Pro league_ratings.json) is applied only when the policy's
     league_rating_sizing.enabled is true: each stake x rating_scale; an unrated league gets the minimum.
-    Callers that pass nothing (Pro's simulator) are unaffected."""
+    Callers that pass nothing (Pro's simulator) are unaffected.
+
+    prior_directions ({fixture: "OVER"|"UNDER"}) = the goal direction of positions ALREADY staked on a
+    fixture by earlier runs (src/stake_plan reads them from stake_audit.csv). See step 6b."""
     cols = list(selections.columns)
     if selections.empty:
         return pd.DataFrame(columns=cols + [c for c in AUDIT_COLS if c not in cols])
@@ -129,6 +150,30 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
                     "league_rating": rt, "rating_scale": round(rs, 3),
                     "_score": float(t.get("evidence_score", 0.0)), "reason": reason})
     a = pd.DataFrame(out)
+
+    # 6b. ONE GOAL DIRECTION PER FIXTURE (owner rule 2026-10-25). Defence in depth behind
+    # src/direction_guard.py, which already removes such tips before they reach this reader: never
+    # stake Over and Under goal-total positions on one match (O/U 2.5 Over v Under, Over 1.5 v Under
+    # 2.5, Over 3.5 v Under 2.5, ...). BTTS has no direction and never conflicts. The FIRST position
+    # stands: a direction already staked by an earlier run (prior_directions), else today's staked O/U
+    # 2.5 position, else the first staked one in input order. Only the opposite-direction stake is
+    # zeroed; nothing else about sizing changes.
+    if len(a):
+        live = a["requested_fraction"] > 0
+        sides = a["side"] if "side" in a.columns else pd.Series(None, index=a.index, dtype=object)
+        dirs = pd.Series([goal_direction(m, s) for m, s in zip(a["market"], sides)], index=a.index,
+                         dtype=object)
+        fixed = dict(prior_directions or {})
+        for pri in (True, False):                        # OU25 first, then any other staked position
+            for i in a.index[live & dirs.notna()]:
+                fx = a.at[i, "fixture"]
+                if fx not in fixed and (not pri or str(a.at[i, "market"]).upper() == "OU25"):
+                    fixed[fx] = dirs[i]
+        opp = [i for i in a.index[live & dirs.notna()]
+               if fixed.get(a.at[i, "fixture"]) not in (None, dirs[i])]
+        if opp:
+            a.loc[opp, "requested_fraction"] = 0.0
+            a.loc[opp, "reason"] = "OPPOSITE_DIRECTION_ON_FIXTURE"
 
     # 7. one real position per fixture: highest evidence_score, then tier, then base; never edge
     live = a["requested_fraction"] > 0
