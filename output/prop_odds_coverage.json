@@ -43,11 +43,11 @@
     "source": "api_football"
   },
   "apifootball:Championship": {
-    "empty_streak": 0,
+    "empty_streak": 1,
     "last_priced": "2026-10-25",
     "last_probe": "2026-10-25",
     "league": "Championship",
-    "priced_events": 495,
+    "priced_events": 494,
     "probes": 518,
     "source": "api_football"
   },
@@ -104,10 +104,10 @@
     "source": "api_football"
   },
   "apifootball:Japan J-League": {
-    "empty_streak": 181,
+    "empty_streak": 182,
     "last_probe": "2026-10-25",
     "league": "Japan J-League",
-    "probes": 181,
+    "probes": 182,
     "source": "api_football"
   },
   "apifootball:La Liga 2": {
@@ -239,11 +239,11 @@
     "last_priced": "2026-10-25",
     "last_probe": "2026-10-25",
     "league": "Ligue 1",
-    "matched_events": 8,
+    "matched_events": 1,
     "priced_events": 2392,
     "probes": 2603,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 1
   },
   "soccer_germany_bundesliga": {
     "empty_streak": 0,
@@ -278,11 +278,11 @@
     "last_priced": "2026-10-25",
     "last_probe": "2026-10-25",
     "league": "Serie A",
-    "matched_events": 8,
-    "priced_events": 2730,
-    "probes": 2921,
+    "matched_events": 5,
+    "priced_events": 2729,
+    "probes": 2920,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   },
   "soccer_spain_la_liga": {
     "empty_streak": 0,
@@ -290,11 +290,11 @@
     "last_priced": "2026-10-25",
     "last_probe": "2026-10-25",
     "league": "La Liga",
-    "matched_events": 8,
+    "matched_events": 1,
     "priced_events": 2228,
-    "probes": 2571,
+    "probes": 2569,
     "unmatched_sample": [],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 1
   },
   "soccer_uefa_champs_league": {
     "empty_streak": 1,
@@ -344,13 +344,13 @@
     "last_priced": "2026-10-25",
     "last_probe": "2026-10-25",
     "league": "USA MLS",
-    "matched_events": 6,
+    "matched_events": 3,
     "priced_events": 2014,
     "probes": 2257,
     "unmatched_sample": [
       "Los Angeles FC vs Los Angeles Galaxy",
       "Toronto FC vs DC United"
     ],
-    "wanted_fixtures": 8
+    "wanted_fixtures": 5
   }
 }
