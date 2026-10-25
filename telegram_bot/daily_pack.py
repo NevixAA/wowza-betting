@@ -13,7 +13,8 @@ ONLY for new tips (every model) and really big sharp moves; everything else is o
     6. Pro tips scoreboard      1X2 + Bet Builder hit rates (was Pro's own daily text message)
 
 send_weekly_pack() is the Monday album (week by market, by league, props week, scoreboard) that
-replaces the two weekly text summaries.
+replaces the two weekly text summaries. Its "Leagues" and "Last week by league" pictures read
+dashboard_data/leagues.py - the same functions as the app's Leagues page (owner 2026-10-25).
 
 Same rows and same bases as the dashboard: paper leagues out, staked = SNIPER + MARKSMAN, VALUABLE
 shown as paper, performance from PERFORMANCE_CUTOFF_DATE by match date, first tip per fixture.
@@ -148,20 +149,40 @@ def send_album(token: str, chat_id: str, pngs: list[bytes], caption: str = "") -
 
 # ── Data ──────────────────────────────────────────────────────────────────────
 
-def _read(name: str) -> pd.DataFrame:
+def _read(name: str, include_paper: bool = False, usecols=None) -> pd.DataFrame:
     p = config.OUTPUT_DIR / name
     if not p.exists():
         return pd.DataFrame()
-    return config.drop_paper_leagues(pd.read_csv(p, low_memory=False))
+    d = pd.read_csv(p, low_memory=False, usecols=(lambda c: c in usecols) if usecols else None)
+    return d if include_paper else config.drop_paper_leagues(d)
 
 
-def settled_tips() -> pd.DataFrame:
+#: The only ledger columns settled_tips() uses - column-projected so the dashboard (a viewer on
+#: ~1 GB) never loads the CLV / provenance columns it does not draw.
+_TIP_COLS = {"source", "match_date", "league", "home_team", "away_team", "signal_tier", "side", "market",
+             "odds", "result", "pnl", "edge_pct", "model_prob"}
+
+
+def _col(df: pd.DataFrame, name: str) -> pd.Series:
+    """A numeric column, or NaN when the ledger does not carry it (never an invented number)."""
+    if name in df.columns:
+        return pd.to_numeric(df[name], errors="coerce")
+    return pd.Series(float("nan"), index=df.index)
+
+
+def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     """Every live tip on the O/U 2.5 and side-market ledgers, normalised: date, league, match,
     tier, market, odds, result, pnl. EVERY SENT tip counts, exactly as on the dashboard — a first-
     tip-per-fixture filter here made the record read +27.97u against the dashboard's +36.22u on
-    2026-10-13, the same two-answers problem the home page had the day before."""
+    2026-10-13, the same two-answers problem the home page had the day before.
+
+    include_paper=True keeps paper-league rows (config.PAPER_LEAGUES) so the Leagues page and
+    picture can SHOW them, labelled as paper; every staked total still excludes them
+    (dashboard_data/leagues.py). Default False = the behaviour every other image relies on.
+    Also carries edge_pct (as recorded) and model_prob (side markets record it; on O/U 2.5 it is
+    NaN here - see dashboard_data/leagues.py for the derivation)."""
     parts = []
-    m = _read("bets_ledger.csv")
+    m = _read("bets_ledger.csv", include_paper, _TIP_COLS)
     if len(m):
         if "source" in m.columns:
             m = m[m["source"].fillna("live").astype(str) == "live"]
@@ -172,8 +193,9 @@ def settled_tips() -> pd.DataFrame:
             "tier": m["signal_tier"], "market": "O/U 2.5",
             "pick": "O/U 2.5 " + m["side"].astype(str).str.upper(),
             "odds": pd.to_numeric(m["odds"], errors="coerce"),
-            "result": m["result"], "pnl": pd.to_numeric(m["pnl"], errors="coerce")}))
-    s = _read("side_bets_ledger.csv")
+            "result": m["result"], "pnl": pd.to_numeric(m["pnl"], errors="coerce"),
+            "edge_pct": _col(m, "edge_pct"), "model_prob": float("nan")}))
+    s = _read("side_bets_ledger.csv", include_paper, _TIP_COLS)
     if len(s):
         if "source" in s.columns:
             s = s[s["source"].fillna("live").astype(str) == "live"]
@@ -185,7 +207,8 @@ def settled_tips() -> pd.DataFrame:
             "tier": s["signal_tier"], "market": mk.map(SIDE_LABEL).fillna(mk.str.upper()),
             "pick": mk.map(lambda k: "BTTS YES" if k == "btts" else f"{SIDE_LABEL.get(k, k)} OVER"),
             "odds": pd.to_numeric(s["odds"], errors="coerce"),
-            "result": s["result"], "pnl": pd.to_numeric(s["pnl"], errors="coerce")}))
+            "result": s["result"], "pnl": pd.to_numeric(s["pnl"], errors="coerce"),
+            "edge_pct": _col(s, "edge_pct"), "model_prob": _col(s, "model_prob")}))
     if not parts:
         return pd.DataFrame()
     d = pd.concat(parts, ignore_index=True)
@@ -1070,29 +1093,83 @@ def top_picks_week_image(now: _dt.datetime) -> list[bytes]:
                         footer="Flat 1 unit per pick · not betting advice")
 
 
-def leagues_image() -> list[bytes]:
-    """Best leagues, season to date (Pro src/studies/league_results.py)."""
-    h = _pro_csv("output/studies/league_results_weekly.csv")
-    if h.empty:
-        return []
-    t = h[(h["week"] == h["week"].max()) & (h["window"] == "season")].sort_values("rank")
-    if t.empty:
-        return []
-    lab = {"PROVEN": ("Proven", GREEN), "PROMISING": ("Promising", (37, 99, 235)), "NEUTRAL": ("Unclear", MUTED),
-           "NOT_ENOUGH": ("Too few", MUTED), "LOSING": ("Losing", RED)}
-    cols = [("#", 40), ("League", 270), ("Tips", 60), ("Hit", 64), ("Avg odds", 92), ("ROI", 76),
-            ("Best market", 190), ("", 110)]
+def _signed(v: float) -> tuple:
+    return GREEN if v > 0 else RED if v < 0 else MUTED
+
+
+def _na(v, fmt: str) -> str:
+    return "–" if v is None or pd.isna(v) else fmt.format(v)
+
+
+LEAGUE_COLUMNS = [("League", 250), ("Rating", 70), ("Tips", 56), ("W-L", 84), ("Hit", 64), ("Avg odds", 86),
+                  ("Avg edge", 86), ("ROI", 74), ("P/L", 84), ("Last 7d", 84), ("Best market", 176),
+                  ("Worst market", 176), ("State", 118)]
+
+
+def league_rows(tab: pd.DataFrame) -> list[dict]:
+    """Telegram rows from dashboard_data.leagues.overview_table - the page's own table, formatted."""
     rows = []
-    for r in t.itertuples(index=False):
-        name, col = lab.get(r.label, (r.label, MUTED))
-        rows.append({"cells": [str(int(r.rank)), r.league, str(int(r.tips)), f"{r.hit_rate:.0%}",
-                               f"{r.avg_odds:.2f}", f"{r.roi:+.0%}", r.best_market, name],
-                     "colours": {"ROI": GREEN if r.roi > 0 else RED, "": col}, "bold": {""}})
-    return render_table("Best leagues — season to date", cols, rows,
-                        subtitle="All settled tips per league. Ranked by ROI shrunk toward the average, so a lucky "
-                                 "handful cannot top the table. Proven / Losing = clear of break-even even after "
-                                 "allowing for testing many leagues at once.",
-                        footer="Flat 1 unit per tip · paper leagues excluded · not betting advice")
+    for r in tab.to_dict("records"):
+        paper = r["League"].endswith(" (paper)")
+        rows.append({"cells": [r["League"], r["Rating"], str(r["Tips"]), r["W-L"], _na(r["Hit %"], "{:.0f}%"),
+                               _na(r["Avg odds"], "{:.2f}"), _na(r["Avg edge %"], "{:.1f}%"),
+                               _na(r["ROI %"], "{:+.0f}%"), f"{r['P/L (u)']:+.2f}u", f"{r['P/L 7d (u)']:+.2f}u",
+                               r["Best market"], r["Worst market"], "Paper league" if paper else r["State"]],
+                     "stripe": MUTED if paper else _signed(r["P/L (u)"]), "bold": {"P/L"},
+                     "colours": {"League": MUTED if paper else INK, "ROI": _signed(r["ROI %"] or 0),
+                                 "P/L": _signed(r["P/L (u)"]), "Last 7d": _signed(r["P/L 7d (u)"]),
+                                 "State": MUTED if paper else INK}})
+    return rows
+
+
+def leagues_image(today: str | None = None) -> list[bytes]:
+    """The Leagues picture (owner 2026-10-25): one row per league with a settled staked tip - rating,
+    record, averages, last 7 days, best / worst market, state. Numbers from dashboard_data.leagues, the
+    same functions as the app's Leagues page. Paginates past ROWS_PER_IMAGE by itself."""
+    from dashboard_data import leagues as L
+    today = today or _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+    d = L.settled()
+    if d.empty:
+        return []
+    ov = L.overview(d, today, rat=L.ratings(), pol=L.policy(), reg=L.regimes())
+    ov = ov[ov["tips"] > 0]
+    if ov.empty:
+        return []
+    t = L.totals(d)
+    sub = (f"Staked tips (SNIPER + MARKSMAN), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
+           f"All leagues: {t['tips']} tips, {L.wl(t['won'], t['lost'], t['void'])}, ROI {t['roi']:+.0%}, "
+           f"{t['pl']:+.2f}u (paper leagues not counted). Rating = Pro league rating 1-10.")
+    return render_table("Leagues — season to date", LEAGUE_COLUMNS, league_rows(L.overview_table(ov)),
+                        subtitle=sub,
+                        footer="Same numbers as the app's Leagues page · best/worst market needs 5+ tips · "
+                               "edge as recorded · not betting advice")
+
+
+def last_week_leagues_image(today: str | None = None) -> list[bytes]:
+    """Last week by league: settled tips of the 7 match days before today, leagues with tips only."""
+    from dashboard_data import leagues as L
+    today = today or _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+    lw = L.last_week(L.settled(), today)
+    if lw.empty:
+        return []
+    rows = []
+    for r in lw.to_dict("records"):
+        paper = r["paper"]
+        rows.append({"cells": [r["league"] + (" (paper)" if paper else ""), str(r["tips"]),
+                               L.wl(r["won"], r["lost"], r["void"]) if r["tips"] else "–",
+                               f"{r['pl']:+.2f}u" if r["tips"] else "–",
+                               str(r["valuable_tips"]), f"{r['valuable_pl']:+.2f}u" if r["valuable_tips"] else "–"],
+                     "stripe": MUTED if paper else _signed(r["pl"]), "bold": {"P/L"},
+                     "colours": {"P/L": _signed(r["pl"]), "League": MUTED if paper else INK,
+                                 "VALUABLE P/L": _signed(r["valuable_pl"])}})
+    start = pd.Timestamp(today) - pd.Timedelta(days=7)
+    span = f"{start:%d %b} – {pd.Timestamp(today) - pd.Timedelta(days=1):%d %b}"
+    return render_table(f"Last week by league — {span}",
+                        [("League", 300), ("Staked", 80), ("W-L", 96), ("P/L", 96), ("VALUABLE", 100),
+                         ("VALUABLE P/L", 130)], rows,
+                        subtitle="Settled tips by match date. Staked = SNIPER + MARKSMAN; VALUABLE is paper. "
+                                 "One week is noise, not a verdict on a league.",
+                        footer="Flat 1u · same basis as the app's Leagues page")
 
 
 def send_weekly_pack() -> bool:
@@ -1112,7 +1189,8 @@ def send_weekly_pack() -> bool:
         return False
     pngs, notes = [], []
     for name, fn in (("top_picks", lambda: top_picks_week_image(now)),
-                     ("leagues", leagues_image),
+                     ("leagues", lambda: leagues_image(now.strftime("%Y-%m-%d"))),
+                     ("leagues_week", lambda: last_week_leagues_image(now.strftime("%Y-%m-%d"))),
                      ("week", lambda: week_images(now.strftime("%Y-%m-%d"))),
                      ("props", lambda: props_week_image(now.strftime("%Y-%m-%d"))),
                      ("props_check", lambda: props_model_check_image(now.strftime("%Y-%m-%d"))),
