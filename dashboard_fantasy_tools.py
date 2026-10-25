@@ -105,15 +105,17 @@ def render() -> None:
     with t_sp:
         st.caption("Likely **penalty takers** + **set-piece goal threats** per club. Current squad only.")
         try:
-            from player_model.fantasy_features import set_piece_penalty_takers
-
+            # Precomputed by fantasy_refresh.yml (player_model.fantasy_features --set-pieces). Computing it
+            # here read the whole player_history parquet at render time - +1.35 GB on a ~1 GB app, and
+            # Streamlit renders every tab's body, so merely opening Fantasy crashed the app (2026-10-25).
             @st.cache_data(ttl=1800, show_spinner=False)
             def _spt():
-                return set_piece_penalty_takers()
+                p = Path(__file__).resolve().parent / "output" / "fantasy_set_pieces.csv"
+                return pd.read_csv(p) if p.exists() else pd.DataFrame()
 
             sp = _spt()
             if sp.empty:
-                st.info("No set-piece data (needs the live FPL feed + parquet history).")
+                st.info("No set-piece table yet - Fantasy Refresh writes output/fantasy_set_pieces.csv daily.")
             else:
                 pick = st.selectbox("Club", ["All"] + sorted(sp["team"].dropna().unique()), key="sp_club")
                 view = sp if pick == "All" else sp[sp["team"] == pick]

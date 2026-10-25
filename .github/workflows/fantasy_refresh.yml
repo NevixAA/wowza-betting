@@ -90,6 +90,8 @@ jobs:
           FANTASY_V2_RESIDUAL_MODE: shadow
         run: |
           python -m player_model.fantasy_v2 || echo "::warning::fantasy_v2 failed"
+          # small precomputed table so the dashboard never reads player_history (2026-10-25)
+          python -m player_model.fantasy_features --set-pieces || echo "::warning::set pieces failed"
 
       - name: Commit outputs
         run: |
@@ -114,7 +116,7 @@ jobs:
                    output/fantasy_v2_summary.json output/fantasy_v2_transfers.csv \
                    output/fantasy_v2_fixture_matrix.csv \
                    output/fantasy_v2_scoreboard.csv \
-                   output/fantasy_v2_scoreboard_reliability.csv; do
+                   output/fantasy_v2_scoreboard_reliability.csv \n                   output/fantasy_set_pieces.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
           done
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"

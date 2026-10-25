@@ -184,8 +184,15 @@ def set_piece_penalty_takers(parquet_path: Path | None = None, top_per_team: int
     """Per current-FPL club: likely penalty taker + set-piece goal threats, from historical
     involvement (penalties won/scored + set-piece/free-kick/headed goals). Current squad only
     (joined to live FPL). A top-3 FPL edge that's otherwise invisible."""
-    df = pd.read_parquet(parquet_path or _PARQUET)
-    pl = df[df["league"] == FANTASY_LEAGUE]
+    # Only the columns and the league this needs (2026-10-25). Reading every column of every league
+    # cost +1.35 GB (peak ~2 GB) and, run at render time, crashed the ~1 GB Streamlit app.
+    import pyarrow.dataset as _ds
+    src = parquet_path or _PARQUET
+    want = ["league", "player_id", "player_name", "penalty_scored", "penalty_won",
+            "sp_goal", "fk_goal", "headed_goal"]
+    dset = _ds.dataset(str(src), format="parquet", partitioning="hive")
+    cols = [c for c in want if c in dset.schema.names]
+    pl = dset.to_table(columns=cols, filter=_ds.field("league") == FANTASY_LEAGUE).to_pandas()
     if pl.empty:
         return pd.DataFrame()
     pen_cols = [c for c in ("penalty_scored", "penalty_won") if c in pl.columns]
@@ -438,3 +445,23 @@ def fantasy_alerts(proj: pd.DataFrame | None = None, watchlist: list | None = No
         risers = _filt(fpl.sort_values("net", ascending=False).head(12), "web_name")[cols]
         fallers = _filt(fpl.sort_values("net").head(12), "web_name")[cols]
     return {"injuries": injuries, "price_risers": risers, "price_fallers": fallers}
+
+
+SET_PIECES_FILE = Path(__file__).resolve().parents[1] / "output" / "fantasy_set_pieces.csv"
+
+
+def write_set_pieces() -> int:
+    """CI: precompute set_piece_penalty_takers() into a small CSV the dashboard reads, so the
+    dashboard never touches player_history. Returns the row count written."""
+    out = set_piece_penalty_takers()
+    if out.empty:
+        return 0
+    out = out.assign(generated_at=pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ"))
+    out.to_csv(SET_PIECES_FILE, index=False, lineterminator="\n")
+    return len(out)
+
+
+if __name__ == "__main__":
+    import sys as _sys
+    if "--set-pieces" in _sys.argv:
+        print(f"[fantasy_features] set pieces: {write_set_pieces()} rows -> {SET_PIECES_FILE}")

@@ -53,6 +53,9 @@ def lab(tmp_path, monkeypatch):
     monkeypatch.setattr(reg, "stamp_for",
                         lambda mt, path=None: {"model_version": f"{mt}_CHAMP_v1"})
     monkeypatch.setattr(reg, "load_challenger", lambda mt: None)       # retrain slot empty
+    # ...and its existence check must not see the REAL registry (a parked challenger there made this
+    # test depend on whatever the last retrain left in models/registry - 2026-10-25)
+    monkeypatch.setattr(reg, "challenger_path", lambda mt: tmp_path / "models/registry" / mt / "challenger.pkl.gz")
     SE._payload_cache.clear()
     exp = SE.register({
         "experiment_id": "H-MODEL-01__standard", "hypothesis_id": "H-MODEL-01",
