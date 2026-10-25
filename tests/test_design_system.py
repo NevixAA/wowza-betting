@@ -45,7 +45,12 @@ def test_semantic_aliases_mean_what_the_brief_says():
         assert t["RESEARCH"] not in (t["POSITIVE"], t["NEGATIVE"], t["WARNING"])
 
 
-@pytest.mark.parametrize("mode", ["dark", "light"])
+def test_theme_is_dark_only():
+    cfg = tomllib.loads((ROOT / ".streamlit" / "config.toml").read_text(encoding="utf-8"))["theme"]
+    assert "light" not in cfg, "owner brief 2026-10-25: one consistent dark theme"
+
+
+@pytest.mark.parametrize("mode", ["dark"])
 def test_theme_file_mirrors_tokens(mode):
     ui = _ui()
     cfg = tomllib.loads((ROOT / ".streamlit" / "config.toml").read_text(encoding="utf-8"))["theme"]
