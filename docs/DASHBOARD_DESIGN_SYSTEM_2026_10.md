@@ -190,11 +190,12 @@ st.markdown(ui.status_chip("PAPER") + " " + ui.evidence_badge("RETROSPECTIVE", 4
 ui.empty_state("NOT_CONNECTED", "Pro checkout not present on this host.")
 ```
 
-## 14. Migration status (2026-10-25, stage 1)
+## 14. Migration status (2026-10-25 — complete after stage 3)
 
-Redesigned on the system: **Home**, **Tips**. Still on older styling (stages 2–3): see the build
-report; they keep working unchanged through the compatibility names (`kpi`, `metric_row`,
-`state_banner`, `freshness_chip`, `table`).
+Stage 1 redesigned **Home**, **Tips**. The compatibility names (`kpi`, `metric_row`, `state_banner`,
+`freshness_chip`, `table`) remain for back-compat; after stage 3 no page calls `kpi` or `metric_row`
+any more (`state_banner` is still used deliberately by Leagues for a paper league and by the Repair Lab
+for PROTECTED tracks — it renders a theme-aware chip, not custom styling).
 
 **Stage 2b (2026-10-25):** **League Repair Lab**, **Leagues**, **Overview**, **Live**. Page-specific
 components live beside each page's data module, never in `dashboard_ui.py`:
@@ -209,3 +210,24 @@ components live beside each page's data module, never in `dashboard_ui.py`:
 `tests/test_design_system.py` now applies the no-hex / no-`<style>` / no-inline-style / no-divider /
 no-plotly / `page_header` rules to all six redesigned pages and their view modules;
 `tests/test_dashboard_stage2b.py` pins the displayed values to the canonical functions.
+
+**Stage 3 (2026-10-25): migration complete — every page in `pages/` is on the system.** Stage 2a had
+already moved **Fantasy** (`dashboard_data/fantasy_view.py`). Stage 3 moved the rest:
+
+| Page | View module | Signature pieces |
+|---|---|---|
+| Portfolio | `portfolio_view.py` | one card per market (final bankroll main, SIMULATED / PAPER chip), equity curve vs a starting-bank rule |
+| Bankroll | `bankroll_view.py` | decision cards, one card per track (state chip, ROI only beside n + match-days), per-day stake bars vs the daily cap, drawdown chart |
+| Player Props | `props_view.py` | top-3 "model above the price" cards (PAPER · NOT A BET), per-day sortable boards (the old HTML board's rows) |
+| Bet Builder | `builder_view.py` | settled-record card, candidate cards, signed dependence chart |
+| Success Rates | `success_view.py` | ROI-with-CI chart (shape + word for "clears zero"), win % vs break-even tick |
+| Model Info | `model_info_view.py` | feature-importance bars, backtest ROI % bars |
+| Research (Pro) | `research_view.py` | evidence strip, forward-test cards with TRUE FORWARD badges, concurrent cached Pro reads, VALUABLE heatmap |
+| Model Performance, Market Lab, League Scout, Agent Analysis, Account, Free tips, System Health, Model Lab, Market Intelligence, Production | (shared components only) | page header with state + one freshness chip, finding cards with n / evidence kind, empty states |
+
+Shared additions (both backward compatible): `pnl_bars(..., axis_title=, value_title=, fmt=, n_title=)` so a
+signed non-P/L measure is never labelled "P/L (units)"; `dashboard_data/freshness.header_badge / ts_badge /
+recorded_badge` return the existing freshness verdicts as one header chip. `tests/test_design_system.py`
+applies every rule to **all** pages and view modules and fails if a page is added without being listed;
+`tests/test_dashboard_stage3.py` pins the stage-3 values. Full record and before / after measurements:
+`docs/DASHBOARD_VISUAL_REDESIGN_2026_10.md`.
