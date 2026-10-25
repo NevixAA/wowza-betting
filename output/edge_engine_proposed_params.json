@@ -1,0 +1,199 @@
+{
+  "status": "PROPOSED",
+  "label": "RETROSPECTIVE",
+  "warning": "NOT production config. config/market_edge_v2.json is unchanged. Discovery-fitted values, scored on a later holdout. Applying any of them requires owner review and a PR - and they would not change the prospective H-EDGE2 tests, which are frozen to the CURRENT config hash.",
+  "generated_at": "2026-10-25T13:12:42Z",
+  "current_config_sha256": "a85ae7260859c1f06383e92b51e675d4372a8ca2018ebaec76aab87d66d44444",
+  "method": "chronological split per track x family (first 60% of settled two-sided first-sight rows = discovery, rest = holdout); de-vig method chosen by discovery market log loss; residual weight w chosen on a 0..1 grid (0.05) by discovery log loss of sigmoid(logit p_mkt + w*clip(raw, +-0.35)); holdout scored once.",
+  "cells": {
+    "new_format|OU25": {
+      "status": "PROPOSED_DISCOVERY_ONLY",
+      "discovery_window": [
+        "2026-08-21 19:14:42+00:00",
+        "2026-09-27 00:45:41+00:00"
+      ],
+      "n_discovery": 408,
+      "holdout_window": [
+        "2026-09-27 10:44:57+00:00",
+        "2026-10-22 00:38:25+00:00"
+      ],
+      "n_holdout": 273,
+      "devig_method_discovery": "power",
+      "discovery_logloss": {
+        "market_power": 0.66563,
+        "market_proportional": 0.66608,
+        "fitted_w": 0.66561,
+        "w0": 0.66563
+      },
+      "residual_weight_fitted": 0.05,
+      "residual_n_eff_proposed": 408,
+      "holdout_logloss": {
+        "market": 0.67994,
+        "fitted_w": 0.6788,
+        "current_default_w_0.1": 0.6777
+      },
+      "holdout_fitted_minus_market_ll": {
+        "mean": -0.00114,
+        "ci95": [
+          -0.00191,
+          -0.00037
+        ],
+        "p_one_sided_fitted_better": 0.004,
+        "note": "negative = fitted residual beats the market on holdout",
+        "bh_q": 0.012
+      }
+    },
+    "standard|OU25": {
+      "status": "PROPOSED_DISCOVERY_ONLY",
+      "discovery_window": [
+        "2026-08-19 10:40:28+00:00",
+        "2026-09-12 15:35:38+00:00"
+      ],
+      "n_discovery": 254,
+      "holdout_window": [
+        "2026-09-12 15:35:38+00:00",
+        "2026-10-16 13:15:28+00:00"
+      ],
+      "n_holdout": 170,
+      "devig_method_discovery": "power",
+      "discovery_logloss": {
+        "market_power": 0.68155,
+        "market_proportional": 0.68204,
+        "fitted_w": 0.68155,
+        "w0": 0.68155
+      },
+      "residual_weight_fitted": 0.0,
+      "residual_n_eff_proposed": 254,
+      "holdout_logloss": {
+        "market": 0.68588,
+        "fitted_w": 0.68588,
+        "current_default_w_0.1": 0.68615
+      },
+      "holdout_fitted_minus_market_ll": {
+        "mean": -0.0,
+        "ci95": [
+          -0.0,
+          0.0
+        ],
+        "p_one_sided_fitted_better": null,
+        "note": "negative = fitted residual beats the market on holdout",
+        "bh_q": null
+      }
+    },
+    "new_format|BTTS": {
+      "status": "PROPOSED_DISCOVERY_ONLY",
+      "discovery_window": [
+        "2026-08-22 10:03:01+00:00",
+        "2026-09-20 01:08:02+00:00"
+      ],
+      "n_discovery": 444,
+      "holdout_window": [
+        "2026-09-20 01:08:02+00:00",
+        "2026-10-22 00:38:25+00:00"
+      ],
+      "n_holdout": 297,
+      "devig_method_discovery": "proportional",
+      "discovery_logloss": {
+        "market_power": 0.68407,
+        "market_proportional": 0.68264,
+        "fitted_w": 0.67825,
+        "w0": 0.68264
+      },
+      "residual_weight_fitted": 0.75,
+      "residual_n_eff_proposed": 444,
+      "holdout_logloss": {
+        "market": 0.67401,
+        "fitted_w": 0.67458,
+        "current_default_w_0.1": 0.67372
+      },
+      "holdout_fitted_minus_market_ll": {
+        "mean": 0.00057,
+        "ci95": [
+          -0.00743,
+          0.00749
+        ],
+        "p_one_sided_fitted_better": 0.57,
+        "note": "negative = fitted residual beats the market on holdout",
+        "bh_q": 0.57
+      }
+    },
+    "standard|BTTS": {
+      "status": "PROPOSED_DISCOVERY_ONLY",
+      "discovery_window": [
+        "2026-08-22 10:03:01+00:00",
+        "2026-09-12 13:59:26+00:00"
+      ],
+      "n_discovery": 280,
+      "holdout_window": [
+        "2026-09-12 13:59:26+00:00",
+        "2026-10-16 13:15:28+00:00"
+      ],
+      "n_holdout": 188,
+      "devig_method_discovery": "power",
+      "discovery_logloss": {
+        "market_power": 0.67083,
+        "market_proportional": 0.67275,
+        "fitted_w": 0.67083,
+        "w0": 0.67083
+      },
+      "residual_weight_fitted": 0.0,
+      "residual_n_eff_proposed": 280,
+      "holdout_logloss": {
+        "market": 0.68953,
+        "fitted_w": 0.68953,
+        "current_default_w_0.1": 0.68806
+      },
+      "holdout_fitted_minus_market_ll": {
+        "mean": -0.0,
+        "ci95": [
+          -0.0,
+          0.0
+        ],
+        "p_one_sided_fitted_better": null,
+        "note": "negative = fitted residual beats the market on holdout",
+        "bh_q": null
+      }
+    },
+    "new_format|OU15": {
+      "status": "PROPOSED_DISCOVERY_ONLY",
+      "discovery_window": [
+        "2026-08-19 13:06:49+00:00",
+        "2026-09-26 22:20:13+00:00"
+      ],
+      "n_discovery": 41,
+      "holdout_window": [
+        "2026-09-27 23:59:24+00:00",
+        "2026-10-21 13:43:46+00:00"
+      ],
+      "n_holdout": 28,
+      "devig_method_discovery": "power",
+      "discovery_logloss": {
+        "market_power": 0.59686,
+        "market_proportional": 0.60233,
+        "fitted_w": 0.5946,
+        "w0": 0.59686
+      },
+      "residual_weight_fitted": 0.45,
+      "residual_n_eff_proposed": 41,
+      "holdout_logloss": {
+        "market": 0.60523,
+        "fitted_w": 0.58517,
+        "current_default_w_0.1": 0.60039
+      },
+      "holdout_fitted_minus_market_ll": {
+        "mean": -0.02006,
+        "ci95": [
+          -0.04431,
+          0.00186
+        ],
+        "p_one_sided_fitted_better": 0.0345,
+        "note": "negative = fitted residual beats the market on holdout",
+        "bh_q": 0.0518
+      }
+    },
+    "standard|OU15": {
+      "status": "INSUFFICIENT",
+      "n": 18
+    }
+  }
+}
