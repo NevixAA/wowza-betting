@@ -1,0 +1,57 @@
+{
+  "gate_version": "PG-1.0",
+  "declared_on": "2026-10-25",
+  "declared_by": "owner requirement 2026-10-25 (one canonical production promotion gate)",
+  "declaration_note": "Every value below was fixed BEFORE any candidate was scored under this gate. Most of them are values this estate had already declared before 2026-10-25 (see 'provenance'), reused rather than re-chosen so they cannot have been tuned on the candidates they now judge. Changing any value is a new gate_version and an architecture change that needs owner approval. Justification for each value is in src/promotion_gate.py.",
+  "holdout": {
+    "min_n_per_track": 1000,
+    "material_ll_improvement": 0.001,
+    "max_brier_worsening": 0.0001,
+    "ci_level": 0.95,
+    "n_boot": 2000,
+    "bootstrap_unit": "match_date",
+    "bootstrap_seed": 20261025,
+    "min_bootstrap_blocks": 20,
+    "ece_bins": 10,
+    "max_ece_worsening": 0.01,
+    "max_slope_deterioration": 0.25,
+    "slope_se_multiple": 2.0,
+    "min_league_n": 150,
+    "max_league_ll_regression": 0.02
+  },
+  "canary": {
+    "max_mean_shift": 0.02,
+    "sd_ratio_min": 0.6667,
+    "sd_ratio_max": 1.5,
+    "quantiles": [0.05, 0.25, 0.5, 0.75, 0.95],
+    "max_quantile_shift": 0.05,
+    "extreme_lo": 0.05,
+    "extreme_hi": 0.95,
+    "max_extreme_share_increase": 0.02,
+    "moved_pp": 0.10,
+    "max_frac_moved": 0.25
+  },
+  "prospective": {
+    "min_n_per_track": 1000,
+    "max_ll_delta_exclusive": 0.0,
+    "max_brier_worsening": 0.0001,
+    "early_fail_min_n": 300,
+    "max_age_days": 180,
+    "outcomes_file": "output/v91_shadow.csv",
+    "rows_file": "output/model_lineage/shadow_h2h.csv"
+  },
+  "tracks": {
+    "rule": "config.model_type_for_league(league) -> standard | new_format | unknown. Every criterion is computed per track; tracks are never pooled. A track below min_n_per_track is reported and excluded; at least one track must be evaluable and every evaluable track must pass."
+  },
+  "provenance": {
+    "min_n_per_track_holdout": "MIN_N = 1000 in src/champion_gate.py (2026-10-18) and src/promotion_gate.py (2026-10-01); GATE.min_rows_holdout = 1000 in Pro src/models/registry.py",
+    "material_ll_improvement": "MIN_EFFECT_LOG_LOSS = 0.001, src/promotion_gate.py, 2026-10-01",
+    "max_brier_worsening": "MAX_BRIER_WORSE = 1e-4, src/champion_gate.py, 2026-10-18",
+    "max_ece_worsening": "MAX_ECE_WORSE = 0.01, src/champion_gate.py / MAX_ECE_DETERIORATION, src/promotion_gate.py",
+    "min_league_n / max_league_ll_regression": "150 / 0.02, src/promotion_gate.py 2026-10-01 and src/champion_gate.py 2026-10-18",
+    "sd_ratio / max_frac_moved": "spread x1.5 and >25% moved >10pp, pipeline._behaviour_canary, set from the 2026-09-23 incident",
+    "prospective min_n_per_track": "n_min_per_track = 1000, models/registry/experiments.json, owner decision 2026-10-25 for H-MODEL-01",
+    "bootstrap_unit": "match-date blocks, as src/shadow_experiments.evaluate and Pro src/analytics/model_lineage._day_boot_ci already use",
+    "new in PG-1.0": "max_mean_shift, max_quantile_shift, extreme share, slope check, early_fail_min_n, max_age_days, min_bootstrap_blocks"
+  }
+}

@@ -242,7 +242,7 @@ def _baseline(history: dict, track: str, k: int = 6) -> dict | None:
     NOT simply the previous run. That distinction is cheap under weekly retraining and load-
     bearing under daily, which is the cadence from 2026-09-22 to 2026-10-05.
 
-    THE RATCHET. `_promotion_gate` allows a drop of up to RETRAIN_MAX_ROI_DROP_PP against its
+    THE RATCHET. `_roi_prefilter` allows a drop of up to RETRAIN_MAX_ROI_DROP_PP against its
     baseline. If the baseline is "yesterday", every day may legally lose the full tolerance and
     each step passes on its own: 10.0 -> 8.1 -> 6.2 -> 4.3 clears a 2pp gate four days running
     while shedding 5.7 points. Holding the baseline at the best of a recent window makes the bar
@@ -262,7 +262,29 @@ def _baseline(history: dict, track: str, k: int = 6) -> dict | None:
     return max(scored, key=lambda r: r["roi_%"])
 
 
-def _promotion_gate(label: str, prev: dict | None, curr: dict) -> tuple[bool, str]:
+def _submit_to_gate(model_type: str, model_file, results: dict, valid) -> str:
+    """Hand a candidate to the ONE production promotion gate (src/promotion_gate.py).
+
+    This script used to `save_models()` straight over the serving file whenever its ROI check
+    passed — a second, contradictory definition of "promoted" that bypassed the champion registry.
+    Since 2026-10-25 it only submits: the gate scores the candidate against the serving champion on
+    the same untouched holdout and can at most park it (SHADOW_MORE). Returns the verdict text.
+    """
+    from src import promotion_gate as PG
+    from src import model_registry as reg
+    from src.model import chronological_split, load_models
+    try:
+        _, test_df = chronological_split(valid, "over25")
+        old = load_models(model_file=model_file) if Path(model_file).exists() else None
+        basis = "same_holdout" if old is not None and len(test_df) >= 50 else "no_incumbent"
+        gate, _ = PG.submit_candidate(model_type, model_file, old, results, test_df, "over25",
+                                      basis, valid, batch=reg.batch_id(reg.utcnow()))
+        return f"{gate['verdict']}: {gate['reason'][:300]}"
+    except Exception as e:                                             # noqa: BLE001
+        return f"KEEP_CHAMPION: gate submission failed ({e}); serving file untouched"
+
+
+def _roi_prefilter(label: str, prev: dict | None, curr: dict) -> tuple[bool, str]:
     """May this freshly trained model replace the incumbent? Returns (promote, reason).
 
     WHY THIS EXISTS. `save_models()` used to run immediately after `train_model()` and BEFORE
@@ -369,7 +391,7 @@ def main():
     # ── 2. Load + feature engineering ─────────────────────────────────────────
     from src.data_loader import load_all_matches
     from src.feature_engineering import build_features
-    from src.model import train as train_model, save_models, load_models, get_feature_importances
+    from src.model import train as train_model, load_models, get_feature_importances
     from src.backtest import run_backtest
 
     raw  = load_all_matches(force=True)
@@ -515,14 +537,16 @@ def main():
         _print_comparison("STANDARD", prev_std, std_summary)
 
         # ── THE GATE ──────────────────────────────────────────────────────────
-        promote, why = _promotion_gate("STANDARD", _baseline(history, "standard"), std_summary)
+        promote, why = _roi_prefilter("STANDARD", _baseline(history, "standard"), std_summary)
         if promote:
-            save_models(std_results, model_file=config.MODEL_FILE_STANDARD)
-            log.info(f"STANDARD model PROMOTED — {why}")
+            # The ROI check is only a PRE-FILTER. Whether the serving model changes is decided by
+            # the one canonical gate (src/promotion_gate.py), which never promotes at birth.
+            why = f"{why} | {_submit_to_gate('standard', config.MODEL_FILE_STANDARD, std_results, std_valid)}"
+            log.info(f"STANDARD candidate submitted to the promotion gate — {why}")
         else:
-            log.error(f"STANDARD model NOT PROMOTED — {why}. "
+            log.error(f"STANDARD candidate NOT SUBMITTED — {why}. "
                       f"{config.MODEL_FILE_STANDARD.name} is LEFT UNTOUCHED; the incumbent "
-                      f"keeps serving. Set RETRAIN_FORCE_PROMOTE=1 to override by hand.")
+                      f"keeps serving.")
 
         # Feature importances describe whatever is ACTUALLY live, which after a blocked
         # promotion is the incumbent, not what was just fitted. Reading the file rather than
@@ -538,7 +562,7 @@ def main():
                         f"feature importances.")
 
         history[f"{run_key}_standard"] = {**std_summary, "season": season,
-                                          "promoted": promote, "gate_reason": why}
+                                          "roi_prefilter_passed": promote, "gate_reason": why}
 
     # ── 4. Train + backtest NEW-FORMAT model ──────────────────────────────────
     nf_valid = valid[valid["league"].isin(config.NEW_FORMAT_LEAGUES)]
@@ -568,15 +592,16 @@ def main():
         _print_comparison("NEW-FORMAT", prev_nf, nf_summary)
 
         # ── THE GATE (new-format's own, independent of standard's) ────────────
-        nf_promote, nf_why = _promotion_gate("NEW-FORMAT", _baseline(history, "newformat"),
+        nf_promote, nf_why = _roi_prefilter("NEW-FORMAT", _baseline(history, "newformat"),
                                              nf_summary)
         if nf_promote:
-            save_models(nf_results, model_file=config.MODEL_FILE_NEWFORMAT)
-            log.info(f"NEW-FORMAT model PROMOTED — {nf_why}")
+            nf_why = (f"{nf_why} | "
+                      f"{_submit_to_gate('newformat', config.MODEL_FILE_NEWFORMAT, nf_results, nf_valid)}")
+            log.info(f"NEW-FORMAT candidate submitted to the promotion gate — {nf_why}")
         else:
-            log.error(f"NEW-FORMAT model NOT PROMOTED — {nf_why}. "
+            log.error(f"NEW-FORMAT candidate NOT SUBMITTED — {nf_why}. "
                       f"{config.MODEL_FILE_NEWFORMAT.name} is LEFT UNTOUCHED; the incumbent "
-                      f"keeps serving. Set RETRAIN_FORCE_PROMOTE=1 to override by hand.")
+                      f"keeps serving.")
 
         try:
             fi_nf = get_feature_importances(load_models(model_file=config.MODEL_FILE_NEWFORMAT))
@@ -590,7 +615,7 @@ def main():
                         f"feature importances.")
 
         history[f"{run_key}_newformat"] = {**nf_summary, "season": season,
-                                           "promoted": nf_promote, "gate_reason": nf_why}
+                                           "roi_prefilter_passed": nf_promote, "gate_reason": nf_why}
     else:
         log.warning(f"Not enough new-format data ({len(nf_valid)} rows < "
                     f"{config.BACKTEST_MIN_TRAIN}) — new-format model not trained")

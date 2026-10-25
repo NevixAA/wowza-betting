@@ -262,7 +262,19 @@ def train(
 
 def save_models(results: dict, target: str = "over25",
                 model_file: Optional[Path] = None) -> None:
+    """Write a trained payload to `model_file` — NEVER to a serving model file.
+
+    Since 2026-10-25 the serving files (config.MODEL_FILE_*, HT_MODEL_FILE_*) are written only by
+    src/promotion_gate.py, so a research or one-off script cannot silently change what serves.
+    """
     path = Path(model_file) if model_file else config.MODEL_FILE
+    serving = {Path(p).resolve() for p in (
+        config.MODEL_FILE_STANDARD, config.MODEL_FILE_NEWFORMAT, config.MODEL_FILE_BTTS,
+        config.MODEL_FILE_OVER15, config.MODEL_FILE_OVER35, config.HT_MODEL_FILE_05,
+        config.HT_MODEL_FILE_15)}
+    if path.resolve() in serving:
+        raise PermissionError(f"{path.name} is a SERVING model file; only src/promotion_gate.py "
+                              f"may write it (submit the candidate to the gate instead)")
     payload = {
         "target":       target,
         "models":       {k: v["model"] for k, v in results.items()},
