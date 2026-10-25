@@ -170,7 +170,65 @@
         "logloss_old": 0.37372,
         "logloss_new": 0.37314
       }
+    },
+    "2026-10-25": {
+      "goals": {
+        "promoted": true,
+        "why": "log loss 0.26213 -> 0.26403 (+0.00189), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.26213,
+        "logloss_new": 0.26403
+      },
+      "goals2": {
+        "promoted": true,
+        "why": "log loss 0.04311 -> 0.04360 (+0.00049), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.04311,
+        "logloss_new": 0.0436
+      },
+      "assists": {
+        "promoted": true,
+        "why": "log loss 0.21905 -> 0.22091 (+0.00186), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.21905,
+        "logloss_new": 0.22091
+      },
+      "sot": {
+        "promoted": true,
+        "why": "log loss 0.47657 -> 0.47834 (+0.00178), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.47657,
+        "logloss_new": 0.47834
+      },
+      "sot2": {
+        "promoted": true,
+        "why": "log loss 0.18590 -> 0.18820 (+0.00230), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.1859,
+        "logloss_new": 0.1882
+      },
+      "sot3": {
+        "promoted": true,
+        "why": "log loss 0.06119 -> 0.06229 (+0.00110), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.06119,
+        "logloss_new": 0.06229
+      },
+      "sot4": {
+        "promoted": true,
+        "why": "log loss 0.01818 -> 0.01824 (+0.00006), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.01818,
+        "logloss_new": 0.01824
+      },
+      "cards": {
+        "promoted": true,
+        "why": "log loss 0.37314 -> 0.37276 (-0.00038), within the 0.03000 tolerance",
+        "rows": 870856,
+        "logloss_old": 0.37314,
+        "logloss_new": 0.37276
+      }
     }
   },
-  "latest_run": "2026-10-18"
+  "latest_run": "2026-10-25"
 }
