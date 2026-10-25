@@ -117,10 +117,28 @@ def test_data_ui_is_only_a_reexport():
         assert getattr(data_ui, name) is getattr(ui, name), name
 
 
-def test_redesigned_pages_invent_no_colours_and_no_dividers():
-    for name in ("00_🎯_Home.py", "1_📊_Dashboard.py"):
-        src = (ROOT / "pages" / name).read_text(encoding="utf-8")
-        assert not re.search(r"#[0-9A-Fa-f]{6}\b", src), f"{name} hardcodes a hex colour"
-        assert "<style" not in src, f"{name} carries its own CSS"
-        assert "st.divider()" not in src and 'st.markdown("---")' not in src, f"{name} uses dividers"
+#: Pages on the design system (stage 1: Home, Tips; stage 2b: Repair Lab, Leagues, Overview, Live) and the
+#: page-specific view modules they draw with.
+REDESIGNED = ("pages/00_🎯_Home.py", "pages/1_📊_Dashboard.py", "pages/18_🔧_League_Research.py",
+              "pages/17_🏟️_Leagues.py", "pages/0_🏠_Overview.py", "pages/6_⚡_Live.py",
+              "dashboard_data/league_research_view.py", "dashboard_data/leagues_view.py",
+              "dashboard_data/overview_view.py", "dashboard_data/live_view.py")
+
+
+@pytest.mark.parametrize("name", REDESIGNED)
+def test_redesigned_pages_invent_no_colours_and_no_dividers(name):
+    src = (ROOT / name).read_text(encoding="utf-8")
+    assert not re.search(r"#[0-9A-Fa-f]{3}(?:[0-9A-Fa-f]{3})?\b", src), f"{name} hardcodes a hex colour"
+    assert "<style" not in src, f"{name} carries its own CSS"
+    assert not re.search(r"style\s*=\s*['\"]", src), f"{name} writes inline styles"
+    assert "st.divider()" not in src and 'st.markdown("---")' not in src, f"{name} uses dividers"
+    assert "plotly" not in src, f"{name} draws outside the shared altair grammar"
+    assert not re.search(r"\bst\.title\(", src), f"{name}: use ui.page_header"
+
+
+@pytest.mark.parametrize("name", [n for n in REDESIGNED if n.startswith("pages/")])
+def test_redesigned_pages_use_the_page_header(name):
+    """One title per page, through page_header (eyebrow + title + caption + state/freshness chips)."""
+    src = (ROOT / name).read_text(encoding="utf-8")
+    assert "page_header(" in src, name
 
