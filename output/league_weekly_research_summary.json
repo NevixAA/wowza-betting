@@ -1,0 +1,76 @@
+{
+ "generated_at": "2026-10-25T12:50:08Z",
+ "panel_version": "LWR-1",
+ "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
+ "evidence_type": "TRUE_FORWARD",
+ "true_forward_start": null,
+ "methodology": {
+  "ranking_score": "RS-1",
+  "week_rule": "WL-1",
+  "gameweek_rule": "GW-1",
+  "top_n": 5,
+  "markets": {
+   "OU25": {
+    "engine_family": "OU25",
+    "side": "engine better side",
+    "observe_only": false
+   },
+   "BTTS": {
+    "engine_family": "BTTS",
+    "side": "YES",
+    "observe_only": false
+   },
+   "OVER15": {
+    "engine_family": "OU15",
+    "side": "OVER",
+    "observe_only": false
+   },
+   "OVER35": {
+    "engine_family": "OU35",
+    "side": "OVER",
+    "observe_only": true
+   }
+  },
+  "close_rule": "certified close: strictly pre-kickoff and within 30 min",
+  "doc": "src/research/league_weekly.py module docstring"
+ },
+ "counts": {
+  "candidates": 0,
+  "panel_rows": 0,
+  "league_weeks_frozen": 0,
+  "settled_rows": 0,
+  "pending_rows": 0
+ },
+ "health": {
+  "generated_at": "2026-10-25T12:50:08Z",
+  "panel_version": "LWR-1",
+  "tracked_leagues": 20,
+  "current_tip_day": "2026-10-25",
+  "leagues_with_current_week_data": 0,
+  "missing_leagues": [],
+  "missing_leagues_previous_week": [],
+  "no_fixture_leagues": [
+   "Romanian Superliga"
+  ],
+  "panel_start": null,
+  "market_gap_leagues": [],
+  "expected_candidate_rows": 0,
+  "actual_candidate_rows": 0,
+  "panel_rows": 0,
+  "settled_rows": 0,
+  "pending_rows": 0,
+  "clv_certified_rows": 0,
+  "clv_coverage": null,
+  "protected_tracks_modified": false
+ },
+ "evaluation": {
+  "evidence_type": "TRUE_FORWARD",
+  "status_rule": "NOT_ENOUGH_DATA below 30 priced settled rows or 8 gameweeks",
+  "rows": 0,
+  "settled_rows": 0,
+  "league_table": [],
+  "rank_monotonicity": [],
+  "rank_monotonicity_pooled": [],
+  "absolute_vs_relative": []
+ }
+}
