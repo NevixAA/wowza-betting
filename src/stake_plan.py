@@ -147,8 +147,47 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
     return d
 
 
-def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataFrame:
-    """Size this run's tips under the approved policy and write plan + audit. Never raises."""
+#: SHADOW columns (market_edge_v2, 2026-10-25). Appended AFTER sizing as trailing columns of
+#: stake_plan.csv only: they never reach size_day, so no fraction, reason or cap can depend on them,
+#: and stake_audit.csv keeps its existing header (write() reindexes the audit to it).
+SHADOW_PLAN_COLS = ("selection_engine_version", "decision_state", "engine_version", "p_market_fair",
+                    "p_decision", "p_lower_bound", "ev_lower_bound", "market_source",
+                    "clv_evidence_state")
+_SHADOW_JOIN = ["fixture", "market", "side"]
+
+
+def attach_shadow(plan: pd.DataFrame, shadow: pd.DataFrame | None) -> pd.DataFrame:
+    """Plan + trailing shadow columns. Existing columns, their order and every value are untouched;
+    a plan row with no shadow match gets NaN (never an invented number). Never raises."""
+    try:
+        if plan is None or plan.empty:
+            return plan
+        out = plan.copy()
+        out["selection_engine_version"] = "legacy_raw_edge"         # the engine that MADE these tips
+        cols = [c for c in SHADOW_PLAN_COLS if c != "selection_engine_version"]
+        if shadow is not None and len(shadow) and set(_SHADOW_JOIN) <= set(shadow.columns):
+            s = (shadow.drop_duplicates(_SHADOW_JOIN, keep="first")
+                 .set_index(_SHADOW_JOIN).reindex(columns=cols))
+            idx = pd.MultiIndex.from_arrays([out[k].astype(str) for k in _SHADOW_JOIN])
+            s.index = pd.MultiIndex.from_arrays([s.index.get_level_values(i).astype(str)
+                                                 for i in range(len(_SHADOW_JOIN))])
+            m = s.reindex(idx)
+            for c in cols:
+                out[c] = m[c].to_numpy()
+        else:
+            for c in cols:
+                out[c] = pd.NA
+        return out
+    except Exception as e:                                           # noqa: BLE001 - shadow only
+        log.warning(f"stake plan shadow columns skipped ({type(e).__name__}: {e})")
+        return plan
+
+
+def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None,
+          shadow: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Size this run's tips under the approved policy and write plan + audit. Never raises.
+
+    `shadow` (src/edge_engine_shadow.run) only adds trailing SHADOW_PLAN_COLS to stake_plan.csv."""
     try:
         from src.bankroll_policy import load_policy, size_day
         sel = selections(bets, side_bets)
@@ -164,7 +203,7 @@ def write(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.DataF
             log.error(f"STAKE PLAN HEALTH: {problem}")
         plan["bankroll_basis"] = BASIS
         plan["generated_at"] = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d %H:%M:%S")
-        plan.to_csv(PLAN, index=False)
+        attach_shadow(plan, shadow).to_csv(PLAN, index=False)
         if not plan.empty:
             key = ["policy_version", "fixture", "track"]
             new = plan.drop_duplicates(key)

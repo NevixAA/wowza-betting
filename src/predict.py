@@ -35,6 +35,10 @@ log = logging.getLogger(__name__)
 
 # Populated by _fetch_odds_api each run; consumed by the outage health check.
 _LAST_FETCH_STATS: dict = {}
+# This run's per-book O/U quotes (every book, both sides, one snapshot). Read ONLY by the
+# market_edge_v2 shadow (src/edge_engine_shadow.py) so its two-sided consensus is as fresh as the
+# board. Recording only: nothing in the selection path reads it.
+_LAST_BOOK_ROWS: list = []
 
 
 # ── Fixture + odds fetching ───────────────────────────────────────────────────
@@ -182,8 +186,9 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
 
     # Health telemetry: distinguishes "every league errored" (hard failure — the
     # btts-422 signature) from "leagues OK but no games". Read by the notifier.
-    global _LAST_FETCH_STATS
+    global _LAST_FETCH_STATS, _LAST_BOOK_ROWS
     _LAST_FETCH_STATS = {"queried": n_queried, "ok": n_ok, "err": n_err, "kept": len(rows)}
+    _LAST_BOOK_ROWS = list(_book_rows)          # shadow-only copy; see the module-level note
 
     # Persist the per-book prices. Wrapped so it can NEVER affect predict: a timed-out or
     # crashed predict sends zero tips, which is far worse than a missing research file.
