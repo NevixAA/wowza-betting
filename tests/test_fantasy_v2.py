@@ -421,5 +421,9 @@ def test_committed_scoreboard_matches_the_benchmark():
     by = {r["gw"]: r for r in b["scores"]["ACTIVE"]["by_gw"]}
     assert set(sb["gw"]) == set(by)
     for r in sb.itertuples():
-        assert r.mae == pytest.approx(by[r.gw][r.arm]["mae"], abs=1e-4)
-        assert r.n == by[r.gw][r.arm]["n"]
+        arm = by[r.gw][r.arm]
+        assert r.n == arm["n"]
+        if "mae" not in arm:                     # too few rows to score (e.g. old Wowza, 9 rows in a PROVISIONAL GW):
+            assert pd.isna(r.mae)                # the benchmark omits the metric, the scoreboard leaves it blank
+            continue
+        assert r.mae == pytest.approx(arm["mae"], abs=1e-4)
