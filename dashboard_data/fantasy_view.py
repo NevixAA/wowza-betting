@@ -333,8 +333,8 @@ def _get(r, k, default=None):
 
 def _name_html(name: str, eyebrow_text: str = "") -> str:
     eb = f"<div class='wz-eyebrow'>{_html.escape(eyebrow_text)}</div>" if eyebrow_text else ""
-    return (eb + f"<div class='wz-title' style='font-size:1.3rem;font-weight:700;margin:.1rem 0 0'>"
-            f"{_html.escape(str(name))}</div>")
+    # The shared .wz-title class only (stage 3: the last inline style in a view module was removed).
+    return eb + f"<div class='wz-title'>{_html.escape(str(name))}</div>"
 
 
 def player_card(r, *, eyebrow_text: str = "", primary_label: str = "Final xPts", primary_value=None,

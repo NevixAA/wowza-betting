@@ -31,6 +31,13 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import config
 
+import dashboard_ui as ui  # noqa: E402
+from dashboard_data import freshness as _fresh, portfolio_view as V  # noqa: E402
+
+# STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper.
+import importlib  # noqa: E402
+V = importlib.reload(V)
+
 st.set_page_config(page_title="Portfolio | Wowza", page_icon="💼", layout="wide")
 
 OUT = config.OUTPUT_DIR
@@ -206,12 +213,9 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
     return eq, stats, pd.DataFrame(games)
 
 
-# ── UI ────────────────────────────────────────────────────────────────────────────
-st.markdown("## 💼 Portfolio Manager")
-st.caption("Separate 1000U bankroll per market · week-by-week · real ledgers")
-
+# ── UI (visual redesign stage 3, 2026-10-25: presentation only — simulate() and its inputs unchanged) ──
 with st.sidebar:
-    st.markdown("### ⚙️ Strategy settings")
+    ui.eyebrow("Strategy settings")
     start_bank = st.number_input("Starting bankroll (U) per market", 100, 100000, 1000, 100)
     mode = st.radio("Staking", ["Fractional Kelly", "Flat % per tier"], index=0)
     st.markdown("**Per-tier size** " +
@@ -223,13 +227,14 @@ with st.sidebar:
     valuable = st.slider("VALUABLE", 0.0, 0.5, 0.0, 0.005,
                          help="paper / data-only by default = 0")
     cap_pct = st.slider("Max stake cap (% of bank)", 0.5, 10.0, 5.0, 0.5)
-    src = st.radio("Data source", ["Live only", "Backtest (⚠ inflated)", "Live + Backtest"], index=0)
-    discount = st.checkbox("Reality-discount edges (÷5)", value=False,
-                           help="Backtest edges run ~5× hot vs live — discount to approximate reality.")
-    _cut = config.PERFORMANCE_CUTOFF_DATE
-    post_fix_only = st.checkbox(f"Count only post-fix tips (from {_cut})", value=True,
-                                help="The new-format model had a calibration bug fixed 2026-08-09. "
-                                     "Pre-fix tips are excluded by default; untick to explore full history.")
+    with st.expander("Advanced filters"):
+        src = st.radio("Data source", ["Live only", "Backtest (⚠ inflated)", "Live + Backtest"], index=0)
+        discount = st.checkbox("Reality-discount edges (÷5)", value=False,
+                               help="Backtest edges run ~5× hot vs live — discount to approximate reality.")
+        _cut = config.PERFORMANCE_CUTOFF_DATE
+        post_fix_only = st.checkbox(f"Count only post-fix tips (from {_cut})", value=True,
+                                    help="The new-format model had a calibration bug fixed 2026-08-09. "
+                                         "Pre-fix tips are excluded by default; untick to explore full history.")
 
 tier_frac = {"SNIPER": sniper, "MARKSMAN": marksman, "VALUABLE": valuable}
 
@@ -242,9 +247,20 @@ side = normalize(load_side_ledger(), "side")
 _parts = [d for d in (main, players, side) if d is not None and not d.empty]
 allbets = pd.concat(_parts, ignore_index=True) if _parts else pd.DataFrame()
 
+_SUB = ("Separate 1000U (default) notional bankroll per market, replayed week by week on the real ledgers. A testing tool for "
+        "staking rules — not a record of money.")
 if allbets.empty:
-    st.warning("No ledger data found.")
+    ui.page_header("Portfolio", _SUB, eyebrow_text="Performance · staking simulation")
+    ui.empty_state("NO_DATA", "No ledger data found.")
     st.stop()
+
+# The ONE freshness statement: the newest settled bet in the ledgers (a recorded date, never file mtime).
+_settled_dates = allbets.loc[allbets["result"].isin(["WIN", "LOSS"]), "match_date"].dropna()
+_newest = _settled_dates.max() if len(_settled_dates) else None
+_, _fresh_chip = _fresh.ts_badge(_newest, "weekly",
+                                 f"newest settled bet {_newest:%d/%m}" if _newest is not None else "newest settled bet")
+ui.page_header("Portfolio", _SUB, eyebrow_text="Performance · staking simulation",
+               freshness=V.state_chip("Standard O/U") + " " + _fresh_chip)
 
 # Source filter (player ledger is all live)
 if src == "Live only":
@@ -260,18 +276,33 @@ if discount:
 if post_fix_only and "generated_at" in allbets.columns:
     allbets = allbets[allbets["generated_at"].astype(str) >= _cut]
 
-# Honesty banner
+# Honesty line — the sample, stated before any curve
 n_live = (allbets["result"].isin(["WIN", "LOSS"])).sum()
-st.info(
+_scope = f"POST-FIX · FROM {_cut}" if post_fix_only else "FULL HISTORY"
+st.markdown(ui.status_chip("NO_DATA", label=f"{n_live} SETTLED BETS IN THIS VIEW", tone="NEUTRAL") + " "
+            + ui.status_chip("NO_DATA", label=_scope, tone="NEUTRAL") + " " + ui.sample_marker(int(n_live)))
+st.caption(
     f"**{n_live} settled bets** in this view"
     + (f" (post-fix, from {_cut})" if post_fix_only else " (full history)")
     + ". ⚠️ Live samples are thin — treat curves as illustrative, not proof. "
-    "Backtest data runs ~5× hot; use the discount toggle."
-)
+    "Backtest data runs ~5× hot; use the discount toggle.")
 
 MARKETS = ["Standard O/U", "New-Format", "Player Props", "Side/BTTS"]
-tabs = st.tabs([f"📈 {m}" for m in MARKETS])
+results = {mkt: simulate(allbets[allbets["market"] == mkt], start_bank, tier_frac, cap_pct, mode) for mkt in MARKETS}
 
+# ── STATUS: one card per market, two per row (one per row on a phone) ──────────────────────────────
+ui.section_header("Where each bankroll ended", "Final bankroll is the main number; bets, weeks and drawdown sit "
+                  "beside it because a return without its sample is not evidence.")
+for i in range(0, len(MARKETS), 2):
+    for col, mkt in zip(st.columns(2), MARKETS[i:i + 2]):
+        if results[mkt] is None:
+            V.empty_card(mkt, container=col)
+        else:
+            V.summary_card(mkt, results[mkt][1], container=col)
+
+# ── DETAIL: one tab per market ─────────────────────────────────────────────────────────────────────
+ui.section_header("Week by week")
+tabs = st.tabs(MARKETS)
 for tab, mkt in zip(tabs, MARKETS):
     with tab:
         if mkt == "Side/BTTS":
@@ -284,6 +315,7 @@ for tab, mkt in zip(tabs, MARKETS):
             # like a decision. Both numbers, or neither.
             _s = allbets[(allbets["market"] == "Side/BTTS")
                          & allbets["result"].isin(["WIN", "LOSS"])]
+            st.markdown(V.state_chip("Side/BTTS"))
             st.caption(
                 f"⚠️ **PAPER ONLY — never staked.** {len(_s)} settled bets since 2026-08-09, "
                 "all live (no backtest rows). Flat-stake result is **+18.6u**, roughly +13%; "
@@ -295,45 +327,17 @@ for tab, mkt in zip(tabs, MARKETS):
             # (new_format 173 rows, standard 73). That is fine for ONE curve, but the tracks must
             # never be sized separately off this file without splitting them first — invariant 1
             # keeps standard and new-format apart everywhere else.
-        sub = allbets[allbets["market"] == mkt]
-        res = simulate(sub, start_bank, tier_frac, cap_pct, mode)
+        res = results[mkt]
         if res is None:
-            st.warning(f"No settled bets for {mkt} under the current tier/source filters.")
+            ui.empty_state("NO_DATA", f"No settled bets for {mkt} under the current tier/source filters.")
             continue
         eq, s, games = res
-
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Final bankroll", f"{s['final']:,.0f}U", f"{s['roi']*100:+.1f}%")
-        c2.metric("Bets / Win%", f"{s['n_bets']}", f"{s['win_pct']*100:.0f}% win")
-        c3.metric("Best / Worst week", f"+{s['best_week']:,.0f}U", f"{s['worst_week']:,.0f}U")
-        c4.metric("Max drawdown", f"{s['max_dd']*100:.1f}%", f"{s['weeks']} wks")
-
-        curve = eq.set_index("week")["bank"]
-        curve.loc[curve.index.min() - pd.Timedelta(days=7)] = start_bank  # seed start point
-        st.line_chart(curve.sort_index(), height=240)
-
-        st.dataframe(
-            eq.assign(
-                week=eq["week"].dt.strftime("%Y-%m-%d"),
-                staked=eq["staked"].round(1),
-                pnl=eq["pnl"].round(1),
-                bank=eq["bank"].round(0),
-                drawdown=(eq["drawdown"] * 100).round(1),
-            )[["week", "bets", "staked", "pnl", "bank", "drawdown"]],
-            width="stretch", hide_index=True,
-        )
+        st.altair_chart(V.equity_chart(eq, start_bank), width="stretch")
+        ui.compact_table(V.weekly_frame(eq), V.WEEKLY_CONFIG)
 
         if games is not None and not games.empty:
-            with st.expander(f"🎮 Games — {len(games)} settled bets staked"):
-                gv = games.sort_values("date", ascending=False).copy()
-                gv["date"] = pd.to_datetime(gv["date"]).dt.strftime("%Y-%m-%d")
-                gv["odds"] = gv["odds"].round(2)
-                gv["stake"] = gv["stake"].round(2)
-                gv["pnl"] = gv["pnl"].round(2)
-                st.dataframe(
-                    gv[["date", "league", "bet", "tier", "odds", "stake", "result", "pnl"]],
-                    width="stretch", hide_index=True,
-                )
+            with st.expander(f"Games — {len(games)} settled bets staked"):
+                ui.compact_table(V.games_frame(games), V.GAMES_CONFIG)
 
 st.caption("Sizing recomputed off bank at each week's open. Kelly f* = edge ÷ (odds−1), "
            "× tier fraction, capped. VALUABLE defaults to paper. "

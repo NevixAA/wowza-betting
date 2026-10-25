@@ -23,6 +23,11 @@ WHAT THE NUMBERS MEAN, STATED ON SCREEN
 * P/L is settled at the FAIR price, so it measures whether the probabilities were right, not
   whether anyone could have won that much.
 """
+
+# Visual redesign 2026-10-25 (stage 3): settled record first as one card (hit rate beside the model's own
+# expected rate and n), then the strongest-dependence candidates as cards, the full candidate table, and
+# the measured dependence as one signed chart. PRESENTATION ONLY — same files, same arithmetic, same
+# filters; components in dashboard_data/builder_view.py.
 from __future__ import annotations
 
 from pathlib import Path
@@ -40,10 +45,13 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 ui.autorefresh(minutes=5, key="builder_refresh")
 
 from dashboard_data.core import read_csv as _read_any, reachable, resolve_file  # noqa: E402
+from dashboard_data import builder_view as V, freshness as _fresh  # noqa: E402
+import importlib  # noqa: E402
+V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
-ui.page_header("🧩 Bet Builder & Multi",
-               "Same-match builders and cross-match multiples, priced with measured correlation",
-               badge="RESEARCH · PAPER")
+_TITLE, _SUB = "Bet Builder & Multi", "Same-match builders and cross-match multiples, priced with measured correlation"
+_EYEBROW = "Tools · combo research"
+_STATE = ui.status_chip("RESEARCH", label="RESEARCH · PAPER")
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -55,76 +63,72 @@ def _load(name: str) -> pd.DataFrame:
 
 
 if not reachable("pro"):
-    st.warning(
-        "**Pro could not be reached.** This page reads combo research produced by "
-        "`NevixAA/wowzaV9-Pro` — from a sibling checkout or over HTTP — and neither answered. "
-        "Nothing is broken in v9; the data lives in the other repo.")
+    ui.page_header(_TITLE, _SUB, eyebrow_text=_EYEBROW, freshness=_STATE)
+    ui.empty_state("NOT_CONNECTED",
+                   "Pro could not be reached. This page reads combo research produced by `NevixAA/wowzaV9-Pro` — "
+                   "from a sibling checkout or over HTTP — and neither answered. Nothing is broken in v9; the data "
+                   "lives in the other repo.")
     st.stop()
 
 cand = _load("bet_builder_candidates.csv")
 settled = _load("bet_builder_settled.csv")
 dep = _load("combo_dependency_matrix.csv")
 
+_gen = pd.to_datetime(cand.get("generated_at"), errors="coerce", utc=True).max() if len(cand) else None
+_, _chip = _fresh.ts_badge(_gen if _gen is not None and pd.notna(_gen) else None, "daily", "candidates generated")
+ui.page_header(_TITLE, _SUB, eyebrow_text=_EYEBROW, freshness=_STATE + " " + _chip)
+
 if cand.empty and settled.empty:
-    st.info("No combo output yet. Generate it in Pro with `python -m src.combo.generate`.")
+    ui.empty_state("NO_DATA", "No combo output yet. Generate it in Pro with `python -m src.combo.generate`.")
     st.stop()
 
-# ── Settled record ────────────────────────────────────────────────────────────
+# ═══ PERFORMANCE — settled record first ══════════════════════════════════════════════════════════
 # Results first. A candidate list with no record of how the last ones went is a wish list, and
 # this page should not be one.
-st.markdown("## 📊 Settled record")
+ui.section_header("Settled record", "P/L is settled at OUR fair price — no bookmaker builder price exists — so it "
+                  "measures whether the probabilities were right, not what anyone could have won.")
 if settled.empty:
-    st.caption("Nothing settled yet — results appear once the fixtures finish and Pro's "
-               "settlement pass has run.")
+    ui.empty_state("NO_DATA", "Nothing settled yet — results appear once the fixtures finish and Pro's "
+                              "settlement pass has run.")
 else:
+    s = V.settled_summary(settled)
     r = settled["combo_result"]
-    won, lost = int((r == "WON").sum()), int((r == "LOST").sum())
-    decided = won + lost
-    odds = pd.to_numeric(settled.get("fair_combo_odds", settled.get("fair_odds")),
-                         errors="coerce")
-    pnl = float(((odds - 1.0).where(r == "WON", -1.0).where(r != "VOID", 0.0)
-                 .where(r != "UNKNOWN", 0.0)).sum())
-    ui.metric_row([
-        {"label": "Settled", "value": f"{decided:,}",
-         "help": "VOID and UNKNOWN are excluded — a player who never came on has not lost."},
-        {"label": "Won", "value": f"{won:,}"},
-        {"label": "Hit rate", "value": f"{100*won/decided:.1f}%" if decided else "—",
-         "help": "Compare against the average joint probability below, not against 50%."},
-        {"label": "P/L at fair odds", "value": f"{pnl:+.2f}u",
-         "help": "Staked at OUR fair price. No bookmaker builder price exists, so this measures "
-                 "whether the probabilities were right — not what anyone could have won."},
-    ])
-    # THE EXPECTATION MUST COME FROM THE DECIDED ROWS ONLY. Averaging joint_probability over the
-    # whole file compares two different populations: the undecided rows are mostly 3- and 4-leg
-    # combos, which are far less likely by construction, while the hit rate can only be measured
-    # on the settled ones. Taken over everything it read "expected 26.4%, 50.3% did" — a model
-    # apparently twice as good as it is, produced entirely by mixing the groups.
-    exp = pd.to_numeric(settled.loc[r.isin(["WON", "LOST"]), "joint_probability"],
-                        errors="coerce").mean() if "joint_probability" in settled.columns else None
-    if decided and exp is not None and exp == exp:
-        st.caption(f"Model expected **{100*exp:.1f}%** of these to win; **{100*won/decided:.1f}%** "
-                   f"did — measured on the {decided:,} DECIDED combos only, since the "
-                   f"{int((r=='UNKNOWN').sum()):,} unverifiable ones skew longer and less likely. "
-                   f"Void {int((r=='VOID').sum())}.")
-    ui.table(settled.sort_values("combo_result").head(60)[
-        [c for c in ("match", "legs", "leg_probs", "joint_probability", "fair_odds",
-                     "final_score", "combo_result", "leg_results") if c in settled.columns]])
-st.divider()
+    decided, won, exp = s["decided"], s["won"], s["exp"]
+    left, right = st.columns([1, 2])
+    V.settled_card(s, container=left)
+    with right:
+        # THE EXPECTATION MUST COME FROM THE DECIDED ROWS ONLY. Averaging joint_probability over the
+        # whole file compares two different populations: the undecided rows are mostly 3- and 4-leg
+        # combos, which are far less likely by construction, while the hit rate can only be measured
+        # on the settled ones. Taken over everything it read "expected 26.4%, 50.3% did" — a model
+        # apparently twice as good as it is, produced entirely by mixing the groups.
+        if decided and exp is not None and exp == exp:
+            st.caption(f"Model expected **{100*exp:.1f}%** of these to win; **{100*won/decided:.1f}%** "
+                       f"did — measured on the {decided:,} DECIDED combos only, since the "
+                       f"{int((r=='UNKNOWN').sum()):,} unverifiable ones skew longer and less likely. "
+                       f"Void {int((r=='VOID').sum())}.")
+        st.caption("VOID and UNKNOWN are excluded — a player who never came on has not lost.")
+    with st.expander(f"Settled combos — {min(len(settled), 60)} shown"):
+        ui.compact_table(settled.sort_values("combo_result").head(60)[
+            [c for c in ("match", "legs", "leg_probs", "joint_probability", "fair_odds",
+                         "final_score", "combo_result", "leg_results") if c in settled.columns]], V.SETTLED_CONFIG)
 
-# ── Live candidates ───────────────────────────────────────────────────────────
-st.markdown("## 🧩 Current candidates")
+# ═══ RESEARCH — current candidates ═══════════════════════════════════════════════════════════════
+ui.section_header("Current candidates", "`fair_odds` is our price, not a market price. The naive price is what "
+                  "multiplying the legs would ask; the gap between them is the whole point of this system.")
 if cand.empty:
-    st.caption("No current candidates.")
+    ui.empty_state("NO_DATA", "No current candidates.")
 else:
-    c1, c2, c3 = st.columns([1, 1, 1.4])
-    n_legs = c1.multiselect("Legs", sorted(cand["n_legs"].dropna().unique().tolist()),
-                            default=sorted(cand["n_legs"].dropna().unique().tolist()))
+    _legs = sorted(cand["n_legs"].dropna().unique().tolist())
+    n_legs = st.multiselect("Legs", _legs, default=_legs)
     odds_col = "fair_combo_odds" if "fair_combo_odds" in cand.columns else "fair_odds"
-    lo, hi = c2.slider("Fair odds", 1.0, 50.0, (2.0, 15.0), 0.5)
-    only_corr = c3.checkbox(
-        "Only where correlation matters (ratio ≥ 1.15)", value=True,
-        help="Combos whose true joint differs materially from multiplying the legs. Where the "
-             "ratio is ~1.00 we are offering no insight the market does not already have.")
+    with st.expander("Advanced filters"):
+        c2, c3 = st.columns([1, 1.4])
+        lo, hi = c2.slider("Fair odds", 1.0, 50.0, (2.0, 15.0), 0.5)
+        only_corr = c3.checkbox(
+            "Only where correlation matters (ratio ≥ 1.15)", value=True,
+            help="Combos whose true joint differs materially from multiplying the legs. Where the "
+                 "ratio is ~1.00 we are offering no insight the market does not already have.")
 
     d = cand[cand["n_legs"].isin(n_legs)] if n_legs else cand
     o = pd.to_numeric(d.get(odds_col), errors="coerce")
@@ -138,28 +142,32 @@ else:
                         odds_col, "independence_fair_odds", "leg_flags", "data_quality")
             if c in d.columns]
     sort_col = "dependency_ratio" if "dependency_ratio" in d.columns else odds_col
-    ui.table(d.sort_values(sort_col, ascending=False).head(200)[show], height=520)
-
-    st.info(
-        "**`fair_odds` is our price, not a market price.** No bookmaker same-game-builder price "
-        "is collected anywhere, so there is no EV column — the comparison to make is against "
-        "your own book. **`independence_fair_odds`** is what naively multiplying the legs would "
-        "ask; the gap between the two is the whole point of this system, and on a four-leg "
-        "builder it has reached **6.7×**.")
-st.divider()
-
-# ── The measured dependence ───────────────────────────────────────────────────
-if not dep.empty:
-    st.markdown("## 🔗 Why combos are not multiplication")
-    a = dep[dep["segment"] == "ALL"].copy()
-    a["independence_error_pp"] = (100 * (a["p_joint"] - a["independent_joint"])).round(2)
-    top = pd.concat([a.nlargest(6, "dependency_ratio"), a.nsmallest(4, "dependency_ratio")])
-    ui.table(top[["market_a", "market_b", "n", "p_joint", "independent_joint",
-                  "dependency_ratio", "independence_error_pp"]].round(4))
+    ordered = d.sort_values(sort_col, ascending=False)
+    if ordered.empty:
+        ui.empty_state("NO_DATA", "No candidates match the filters.")
+    else:
+        for col, (_, row) in zip(st.columns(3), ordered.head(3).iterrows()):
+            V.candidate_card(row, odds_col, container=col)
+        ui.compact_table(ordered.head(200)[show], V.CANDIDATE_CONFIG, height=520)
     st.caption(
-        f"Measured on **{int(a['n'].max()):,} settled fixtures**. A ratio of 1.00 would mean "
-        f"multiplication is safe; independence is statistically defensible for only "
-        f"**{int(a.get('independence_within_ci', pd.Series(dtype=bool)).sum())} of {len(a)}** "
-        f"pairs. Positive `independence_error_pp` means multiplying UNDERSTATES the true chance.")
+        "No bookmaker same-game-builder price is collected anywhere, so there is no EV column — the comparison to "
+        "make is against your own book. **`independence_fair_odds`** is what naively multiplying the legs would "
+        "ask; on a four-leg builder the gap has reached **6.7×**.")
+
+# ═══ RESEARCH — the measured dependence ══════════════════════════════════════════════════════════
+if not dep.empty:
+    ui.section_header("Why combos are not multiplication")
+    a, top = V.dependence_frame(dep)
+    left, right = st.columns([3, 2])
+    with left:
+        st.altair_chart(V.dependence_chart(top), width="stretch")
+    with right:
+        st.caption(
+            f"Measured on **{int(a['n'].max()):,} settled fixtures**. A ratio of 1.00 would mean "
+            f"multiplication is safe; independence is statistically defensible for only "
+            f"**{int(a.get('independence_within_ci', pd.Series(dtype=bool)).sum())} of {len(a)}** "
+            f"pairs. Positive `independence_error_pp` means multiplying UNDERSTATES the true chance.")
+    ui.compact_table(top[["market_a", "market_b", "n", "p_joint", "independent_joint",
+                          "dependency_ratio", "independence_error_pp"]].round(4), V.DEP_CONFIG)
 
 st.caption("Generated in v9-Pro · PAPER research · Pro places no stakes and this page places none.")

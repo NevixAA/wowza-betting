@@ -1,9 +1,13 @@
-"""Complete system documentation — all tools, methods, and configs in one place."""
+"""Complete system documentation — all tools, methods, and configs in one place.
+
+Visual redesign 2026-10-25 (stage 3): page header, no dividers, and the two charts that were drawn outside the
+shared grammar (hardcoded dark backgrounds, red/grey/green ramp) redrawn in the shared altair grammar via dashboard_data/model_info_view.py.
+Thresholds stay numbers (formatted by column_config). PRESENTATION ONLY — the same config values and files.
+"""
 import sys
 from pathlib import Path
 
 import pandas as pd
-import plotly.express as px
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -12,10 +16,16 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import config
 
+import dashboard_ui as ui  # noqa: E402
+from dashboard_data import model_info_view as V  # noqa: E402
+
 st.set_page_config(page_title="System Info | Wowza", page_icon="ℹ️", layout="wide")
 
-st.markdown("## ℹ️ System Documentation")
-st.caption("All tools, methods, thresholds and configs — one place.")
+ui.page_header("System documentation", "All tools, methods, thresholds and configs — one place.",
+               eyebrow_text="System · model info",
+               freshness=ui.status_chip("NO_DATA", label="REFERENCE · READS config.py DEFAULTS", tone="INFO"))
+st.caption("Thresholds below are the config.py defaults; production overrides some through the predict "
+           "workflow environment (see Research → Governance).")
 
 @st.cache_data(ttl=300)
 def load_fi(name):
@@ -77,7 +87,7 @@ with tab_pred:
         without the mismatched features → P(over)≈0.50, balanced. Live
         results counted from the cutoff onward.
         """)
-    st.divider()
+    ui.space("small")
     st.markdown("""
     #### 🔄 How it works
     ```
@@ -240,13 +250,13 @@ with tab_thr:
     for lg, thresh in sorted(config.LEAGUE_SNIPER_THRESHOLDS.items()):
         thresh_data.append({
             "League": lg,
-            "SNIPER Threshold": f"{thresh:.0%}",
+            "SNIPER Threshold": round(100 * thresh, 6),       # a number, formatted '%.0f%%' at render
             "Active": "✅" if lg in config.ENABLED_LEAGUES else "Training only",
             "Rationale": "Most data → lower bar" if thresh <= 0.14
                          else "Good density" if thresh <= 0.18
                          else "High confidence only",
         })
-    st.dataframe(pd.DataFrame(thresh_data), width="stretch", hide_index=True)
+    ui.compact_table(pd.DataFrame(thresh_data), V.THRESH_CONFIG)
 
     st.markdown("#### Training Configuration")
     c1, c2 = st.columns(2)
@@ -266,25 +276,17 @@ with tab_thr:
 with tab_fi:
     st.markdown("### 📊 Feature Importances")
     col_std, col_nf = st.columns(2)
-    for col, name, title, color in [
-        (col_std, "standard", "Standard Model", ["#16213e", "#e94560"]),
-        (col_nf,  "newformat", "New-Format Model", ["#16213e", "#f5a623"]),
+    for col, name, title in [
+        (col_std, "standard", "Standard Model"),
+        (col_nf,  "newformat", "New-Format Model"),
     ]:
         with col:
             st.markdown(f"#### {title}")
             fi = load_fi(name)
             if not fi.empty:
-                fig = px.bar(fi.head(12).sort_values("importance"),
-                             x="importance", y="feature", orientation="h",
-                             color="importance", color_continuous_scale=color,
-                             text="importance_%")
-                fig.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
-                fig.update_layout(plot_bgcolor="#0e1117", paper_bgcolor="#0e1117",
-                                  font_color="white", coloraxis_showscale=False,
-                                  height=420, yaxis_title="", xaxis_title="Importance")
-                st.plotly_chart(fig, width="stretch")
+                st.altair_chart(V.importance_bars(fi), width="stretch")
             else:
-                st.info("Run retrain to generate feature importances.")
+                ui.empty_state("NO_DATA", "Run retrain to generate feature importances.")
 
 # ── Tab 7: Backtest ────────────────────────────────────────────────────────────
 with tab_bt:
@@ -292,28 +294,18 @@ with tab_bt:
     df = load_backtest()
     if not df.empty:
         df_sorted = df.sort_values("roi_%", ascending=False)
-        st.dataframe(df_sorted, width="stretch", hide_index=True)
-        fig = px.bar(df_sorted, x="league", y="roi_%",
-                     color="roi_%",
-                     color_continuous_scale=["#e94560", "#555", "#00c896"],
-                     color_continuous_midpoint=0,
-                     title="Walk-Forward Backtest ROI % by League (post-COVID, standard model)",
-                     text="roi_%")
-        fig.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
-        fig.update_layout(plot_bgcolor="#0e1117", paper_bgcolor="#0e1117",
-                          font_color="white", coloraxis_showscale=False,
-                          height=400, xaxis_tickangle=-20)
-        fig.add_hline(y=0, line_color="#555")
-        st.plotly_chart(fig, width="stretch")
+        st.altair_chart(V.backtest_bars(df_sorted), width="stretch")
+        ui.compact_table(df_sorted, V.BACKTEST_CONFIG)
+        st.caption("Backtest figures run hot versus live; the bets column is the sample behind each ROI.")
     else:
-        st.info("Run retrain to generate backtest results.")
+        ui.empty_state("NO_DATA", "Run retrain to generate backtest results.")
 
     st.markdown("#### New-Format Model")
     st.info("New-format now has full historical stats + odds via the API-Football backfill "
             "(20k+ matches). After the 2026-08-09 calibration fix, live P/L from the cutoff "
             "onward is the real test — see the 💼 Portfolio page.")
 
-st.divider()
+ui.space("small")
 st.caption("v9 · GitHub Actions CI · live P/L in units (paper) · Streamlit Cloud")
 
 

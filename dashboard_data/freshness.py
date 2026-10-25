@@ -76,3 +76,51 @@ def recorded(st, rel: str, generated_at, max_age_hours: float, label: str | None
     st.caption(f"✅ {name}: fresh (generated {generated_at}, {a:.1f} h old, limit {max_age_hours:g} h; "
                f"age from the artifact's own timestamp)")
     return "FRESH"
+
+
+# ── header chips (visual redesign stage 3, 2026-10-25) ──────────────────────────────────────────────
+# The SAME verdicts as banner() / recorded(), returned as one chip for ui.page_header(freshness=...) so a
+# page states its data age once, beside its title. A STALE / UNKNOWN / MISSING artifact still says
+# NOT VALID FOR DECISIONS in the chip itself; pages that need the long explanation keep banner().
+def header_badge(rel: str, label: str | None = None, m: dict | None = None) -> tuple[str, str]:
+    """(state, markdown chip) for a manifest-tracked artifact. state: FRESH | STALE | HISTORICAL | DATED_STUDY."""
+    import dashboard_ui as ui
+    r = status(rel, m)
+    f = r.get("freshness") or "UNKNOWN"
+    name = label or rel
+    gen = str(r.get("generated_at") or "?")[:16].replace("T", " ")
+    if f in ("STALE", "UNKNOWN", "MISSING"):
+        return "STALE", ui.freshness_badge("STALE", f"{name} · NOT VALID FOR DECISIONS")
+    if f == "HISTORICAL":
+        return f, ui.freshness_badge("HISTORICAL", name)
+    if f == "DATED_STUDY":
+        return f, ui.freshness_badge("DATED_STUDY", f"{name} · as of {gen[:10]}")
+    lim = r.get("max_age_hours")
+    return "FRESH", ui.freshness_badge("FRESH", f"{name} · generated {gen} UTC" + (f" · limit {lim} h" if lim else ""))
+
+
+def ts_badge(ts, cadence: str = "daily", label: str = "") -> tuple[str, str]:
+    """(state, chip) from a timestamp recorded INSIDE the data (never file mtime); unknown age = UNKNOWN."""
+    import dashboard_ui as ui
+    from dashboard_data.core import freshness_from_timestamp
+    f = freshness_from_timestamp(ts, cadence)
+    return f.state, ui.freshness_badge(f.state, " · ".join(x for x in (label, f.label) if x))
+
+
+def recorded_badge(rel: str, generated_at, max_age_hours: float, label: str | None = None,
+                   m: dict | None = None) -> tuple[str, str]:
+    """(state, chip) with EXACTLY recorded()'s verdict, without rendering anything. A page shows the chip
+    beside its title and calls recorded() itself only when the state is not FRESH (the long banner)."""
+    import dashboard_ui as ui
+    m = m or manifest()
+    if any(r.get("artifact") == rel for r in m.get("artifacts", [])):
+        st_, chip = header_badge(rel, label, m)
+        return st_, chip
+    name = label or rel
+    a = age_hours(generated_at)
+    if a is None or a > max_age_hours:
+        why = "no recorded timestamp" if a is None else f"{a:.1f} h old, limit {max_age_hours:g} h"
+        return ("STALE" if a is not None else "UNKNOWN"), ui.freshness_badge(
+            "STALE", f"{name} · NOT VALID FOR DECISIONS · {why}")
+    return "FRESH", ui.freshness_badge("FRESH", f"{name} · generated {generated_at} · {a:.1f} h old, "
+                                                f"limit {max_age_hours:g} h")

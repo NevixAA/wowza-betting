@@ -6,6 +6,9 @@ with, frozen each morning and scored. Before the album freezes today's lists, th
 as a preview. If Best bets is empty, the earlier rule is the fallback: tips the approved bankroll
 policy stakes, ranked by the track's evidence (dashboard_access.free_tip_pick). Never more than
 FREE_TIPS_PER_DAY rows reach this page.
+
+Visual redesign 2026-10-25 (stage 3): shared page header and one selection card per tip (the same card the
+Tips page uses: match, pick, price, chance; the legacy tier last and neutral). Same rows, same values.
 """
 import json
 import sys
@@ -17,13 +20,14 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config  # noqa: E402
 from dashboard_access import FREE_TIPS_PER_DAY, current_tier, free_tip_pick  # noqa: E402
+import dashboard_ui as ui  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKET = {"OU25": "Goals 2.5", "OVER15": "Over 1.5 goals", "OVER35": "Over 3.5 goals", "BTTS": "Both teams to score"}
 
-st.title("🎁 Today's free tips")
-st.caption(f"{FREE_TIPS_PER_DAY} tips a day: the top of our Best bets list — the most expected profit among "
-           "tips with at least a 45% chance. Wowza Pro shows all three top-picks lists and every tip.")
+ui.page_header("Today's free tips", f"{FREE_TIPS_PER_DAY} tips a day: the top of our Best bets list — the most "
+               "expected profit among tips with at least a 45% chance. Wowza Pro shows all three top-picks lists and "
+               "every tip.", eyebrow_text="Today · free")
 
 
 @st.cache_data(ttl=300)
@@ -49,34 +53,36 @@ day_s = today.strftime("%Y-%m-%d")
 bb, n_day = _best_bets(day_s)
 
 if len(bb):
-    st.subheader("Today")
-    for r in bb.itertuples(index=False):
-        with st.container(border=True):
-            c1, c2, c3, c4 = st.columns([4, 2, 1, 1])
-            c1.markdown(f"**{r.home_team} vs {r.away_team}**  \n{r.league}")
-            c2.markdown(f"**{r.pick}**  \n{str(r.signal_tier).title()} signal")
-            c3.metric("Odds", f"{float(r.odds):.2f}")
-            c4.metric("Chance", "–" if pd.isna(r.p_win) else f"{float(r.p_win):.0%}")
+    ui.section_header("Today")
+    for i, r in enumerate(bb.itertuples(index=False)):
+        if i % 2 == 0:
+            cols = st.columns(2)
+        ui.selection_card(league=str(r.league), kickoff="", home=r.home_team, away=r.away_team, pick=str(r.pick),
+                          odds=f"{float(r.odds):.2f}", tier=str(r.signal_tier), show_plan=False,
+                          supporting=[("Odds", f"{float(r.odds):.2f}"),
+                                      ("Chance", "–" if pd.isna(r.p_win) else f"{float(r.p_win):.0%}")],
+                          note=f"{str(r.signal_tier).title()} signal", container=cols[i % 2])
     if current_tier() == "free" and n_day > len(bb):
         st.info(f"Wowza Pro has **{n_day} tips** today, three top-picks lists and bankroll sizing — see Account.")
 else:
     plan, policy = _fallback()
     tips, day, n_fb = free_tip_pick(plan, policy, today)
     if tips.empty:
-        st.info("No tips qualify yet for today or the coming days — check back after the next update.")
+        ui.empty_state("NO_DATA", "No tips qualify yet for today or the coming days — check back after the next update.")
     else:
-        st.subheader("Today" if day == day_s else f"Next tips: {day}")
-        for r in tips.itertuples(index=False):
+        ui.section_header("Today" if day == day_s else f"Next tips: {day}")
+        for i, r in enumerate(tips.itertuples(index=False)):
             _, home, away = (str(r.fixture).split("|") + ["", "", ""])[:3]
             mk = MARKET.get(str(r.market), str(r.market))
             side = str(getattr(r, "side", "") or "")
             pick_txt = (f"{side.title()} 2.5 goals" if r.market == "OU25" else
                         f"{mk} — Yes" if r.market == "BTTS" else mk)
-            with st.container(border=True):
-                c1, c2, c3 = st.columns([4, 2, 1])
-                c1.markdown(f"**{home} vs {away}**  \n{r.league}")
-                c2.markdown(f"**{pick_txt}**  \n{r.signal_tier.title()} signal")
-                c3.metric("Odds", f"{float(r.odds):.2f}")
+            if i % 2 == 0:
+                cols = st.columns(2)
+            ui.selection_card(league=str(r.league), kickoff="", home=home, away=away, pick=pick_txt,
+                              odds=f"{float(r.odds):.2f}", tier=str(r.signal_tier), show_plan=False,
+                              supporting=[("Odds", f"{float(r.odds):.2f}")],
+                              note=f"{r.signal_tier.title()} signal", container=cols[i % 2])
 
 st.caption("Odds are the best price seen when the tip was made and can move. Chance = our honest win "
            "estimate. Tips are information, not advice; bet only what you can afford to lose.")

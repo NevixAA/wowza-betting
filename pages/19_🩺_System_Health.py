@@ -31,9 +31,10 @@ freshness = importlib.reload(freshness)
 system_view = importlib.reload(system_view)
 
 st.set_page_config(page_title="Wowza | System Health", page_icon="🩺", layout="wide")
-st.title("🩺 System Health")
-st.caption("Display only. Every status below was computed by CI and is shown with the rule that produced it; "
-           "this page re-derives nothing.")
+import dashboard_ui as ui  # noqa: E402
+
+_SUB = ("Display only. Every status below was computed by CI and is shown with the rule that produced it; "
+        "this page re-derives nothing.")
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -43,26 +44,27 @@ def _load():
 
 sh, man = _load()
 if not sh:
+    ui.page_header("System Health", _SUB, eyebrow_text="System · health", state="FAIL")
     st.error("**output/system_health.json is missing or unreadable** — health is UNKNOWN, which is treated "
              "as FAIL. evidence_refresh.yml writes it daily.")
     st.stop()
 
-freshness.recorded(st, "output/system_health.json", sh.get("generated_at"), 36, "system health", man)
-
-# ── overall verdict ────────────────────────────────────────────────────────────────────────────
+# ── overall verdict (visual redesign 2026-10-25, stage 3: header chips; values as CI recorded them) ─
 overall = str(sh.get("overall", "UNKNOWN"))
+_fstate, _fchip = freshness.recorded_badge("output/system_health.json", sh.get("generated_at"), 36, "system health", man)
+ui.page_header("System Health", _SUB, eyebrow_text="System · health", state=overall, freshness=_fchip)
+if _fstate != "FRESH":
+    freshness.recorded(st, "output/system_health.json", sh.get("generated_at"), 36, "system health", man)
+
 reasons = sh.get("reasons") or []
 msg = f"**Overall: {overall}**" + ("" if not reasons else " — " + " · ".join(map(str, reasons)))
 {"PASS": st.success, "WARN": st.warning}.get(overall, st.error)(msg)
 st.caption(sh.get("about", ""))
 
 cnt = sh.get("counts") or {}
-c = st.columns(5)
-c[0].metric("GREEN", cnt.get("GREEN", 0))
-c[1].metric("AMBER", cnt.get("AMBER", 0))
-c[2].metric("RED", cnt.get("RED", 0))
-c[3].metric("NO_DATA", cnt.get("NO_DATA", 0))
-c[4].metric("Contract violations", sh.get("contract_violations", 0))
+ui.metric_grid([{"label": "GREEN", "value": cnt.get("GREEN", 0)}, {"label": "AMBER", "value": cnt.get("AMBER", 0)},
+                {"label": "RED", "value": cnt.get("RED", 0)}, {"label": "NO_DATA", "value": cnt.get("NO_DATA", 0)},
+                {"label": "Contract violations", "value": sh.get("contract_violations", 0)}], per_row=3)
 
 v = sh.get("versions") or {}
 sel = v.get("selection_engine_version") or {}
@@ -70,7 +72,7 @@ st.caption(f"Policy `{v.get('policy_version')}` · selection engine: production 
            f"shadow `{sel.get('shadow')}` · contracts `{v.get('contracts_version')}` · code `{v.get('code_commit')}`")
 
 # ── protected tracks (research lock) ───────────────────────────────────────────────────────────
-st.subheader("Protected tracks — research lock")
+ui.section_header("Protected tracks — research lock")
 lock = sh.get("research_lock") or {}
 modified = sh.get("protected_tracks_modified")
 if lock.get("error"):
@@ -90,12 +92,12 @@ st.caption(f"Snapshot approved by {lock.get('approved_by', '?')} at {lock.get('a
            f"system_health.json (this page does not run the lock check).")
 
 # ── every check, with its rule ─────────────────────────────────────────────────────────────────
-st.subheader("Checks — status, value and the rule that set it")
+ui.section_header("Checks — status, value and the rule that set it")
 st.dataframe(system_view.checks(sh), hide_index=True, width="stretch",
              column_config={"rule": st.column_config.TextColumn(width="large")})
 
 # ── weekly research panel ──────────────────────────────────────────────────────────────────────
-st.subheader("Weekly research panel")
+ui.section_header("Weekly research panel")
 wk = system_view.check(sh, "Weekly research panel")
 if wk:
     st.markdown(f"{system_view.STATUS_ICON.get(wk.get('status'), wk.get('status'))} — {wk.get('value', '')}")
@@ -106,7 +108,7 @@ else:
     st.info("No weekly research panel check recorded in system_health.json.")
 
 # ── artifact freshness ─────────────────────────────────────────────────────────────────────────
-st.subheader("Artifact freshness (manifest)")
+ui.section_header("Artifact freshness (manifest)")
 mt = system_view.manifest_table(man)
 if mt.empty:
     st.error("**output/artifact_manifest.json is missing or empty** — every artifact is UNKNOWN and treated as "
@@ -121,7 +123,7 @@ else:
     st.dataframe(mt, hide_index=True, width="stretch")
 
 # ── first-sight integrity ──────────────────────────────────────────────────────────────────────
-st.subheader("First-sight store integrity")
+ui.section_header("First-sight store integrity")
 fs = system_view.first_sight(sh)
 fsc = system_view.check(sh, "First-sight store integrity")
 if fsc:

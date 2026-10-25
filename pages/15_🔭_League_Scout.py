@@ -13,6 +13,10 @@ HOW A LEAGUE IS JUDGED, once it has settled fixtures with a captured close:
 
 Nothing here is a bet. A league moves toward v9 only as a paper league, and only at READABLE.
 Reads one small JSON written by the scout report; never the scout's parquet store.
+
+Visual redesign 2026-10-25 (stage 3): page header with the scout report's freshness, a stage funnel and
+three summary cards first, stage chips (glyph + word, no colour-only circles), secondary filters under
+"Advanced filters", and the remote reads cached for five minutes. PRESENTATION ONLY.
 """
 import sys
 from pathlib import Path
@@ -25,7 +29,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
-from dashboard_data import pro, ui
+import dashboard_ui as ui  # noqa: E402
+from dashboard_data import pro  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same
 # commit, and the server ran the NEW page against the OLD dashboard_data.pro still in memory:
@@ -35,61 +40,85 @@ import importlib  # noqa: E402
 pro = importlib.reload(pro)
 
 st.set_page_config(page_title="Wowza | League Scout", page_icon="🔭", layout="wide")
-st.title("🔭 League Scout")
+_TITLE, _SUB = "League Scout", "Collecting evidence on leagues Wowza does not bet. Nothing here is a tip."
+_EYEBROW = "Research Lab · league expansion"
+_STATE = ui.status_chip("RESEARCH", label="RESEARCH · NOT A TIP")
+
+
+@st.cache_data(ttl=300, show_spinner="Reading the scout report…")
+def _load() -> dict:
+    s = pro.scout_status()
+    return {"status": s, "run": pro.scout_last_run() if s.get("available") else {},
+            "promotion": (pro.promotion_review() if hasattr(pro, "promotion_review") else {}) if s.get("available") else {}}
+
 
 if not pro.available():
-    ui.absent(pro.absent_reason())
+    ui.page_header(_TITLE, _SUB, eyebrow_text=_EYEBROW, freshness=_STATE)
+    ui.empty_state("NOT_CONNECTED", pro.absent_reason())
     st.stop()
 
-ui.state_banner("RESEARCH", "Collecting evidence on leagues Wowza does not bet. Nothing here is a tip.")
-
-s = pro.scout_status()
+D = _load()
+s = D["status"]
 if not s.get("available"):
-    ui.absent(s.get("why", "no scout data"))
+    ui.page_header(_TITLE, _SUB, eyebrow_text=_EYEBROW, freshness=_STATE)
+    ui.empty_state("NOT_CONNECTED", s.get("why", "no scout data"))
     st.stop()
-if s.get("freshness"):
-    ui.freshness_chip(s["freshness"], "scout report")
-run = pro.scout_last_run()
+_f = s.get("freshness")
+ui.page_header(_TITLE, _SUB, eyebrow_text=_EYEBROW,
+               freshness=_STATE + " " + (ui.freshness_badge(_f.state, f"scout report · {_f.label}") if _f
+                                         else ui.freshness_badge("UNKNOWN", "scout report · no completed run")))
+run = D["run"]
 if run:
     st.caption(f"Last scout run: {run.get('finished', '?')[:16]} UTC · {run.get('api_calls', '?')} API calls · "
                f"status {run.get('status', '?')} · quota left {run.get('quota_remaining', '?')}")
 
 L = pd.DataFrame(s["leagues"])
 STAGES = ["READABLE", "EARLY", "COLLECTING", "PRICING", "HISTORY_ONLY", "NOT_STARTED"]
-ICON = {"READABLE": "🟢", "EARLY": "🟡", "COLLECTING": "🔵", "PRICING": "🔵",
-        "HISTORY_ONLY": "⚪", "NOT_STARTED": "⚪"}
+#: glyph + word (the word carries the stage; the glyph is a secondary cue, never colour alone)
+ICON = {"READABLE": "✓", "EARLY": "◔", "COLLECTING": "◌", "PRICING": "◌",
+        "HISTORY_ONLY": "○", "NOT_STARTED": "○"}
 
-# ── summary ───────────────────────────────────────────────────────────────────────────────────
-c = st.columns(6)
-with c[0]:
-    ui.kpi("Leagues watched", str(len(L)), f"{int((L['priority'] == 1).sum())} priority 1")
-with c[1]:
-    ui.kpi("Pricing now", str(int((L["upcoming_priced"] > 0).sum())), "leagues with upcoming odds")
-with c[2]:
-    ui.kpi("Fixtures priced", f"{int(L['fixtures_priced'].sum()):,}", "since 2026-10-08")
-with c[3]:
-    ui.kpi("Results stored", f"{int(L['results'].sum()):,}", "history + this season")
-with c[4]:
-    ui.kpi("Model frozen", f"{int(L['model_frozen'].sum()):,}", "probabilities before kickoff")
-with c[5]:
-    ui.kpi("Readable", str(int((L["status"] == "READABLE").sum())), "300+ settled with a close")
+# ═══ STATUS — how far the watch list has got ═════════════════════════════════════════════════════
+c = st.columns(3)
+ui.metric_card("Readable", str(int((L["status"] == "READABLE").sum())), title="300+ settled with a close",
+               supporting=[("Leagues watched", str(len(L))), ("Priority 1", f"{int((L['priority'] == 1).sum())}")],
+               container=c[0])
+ui.metric_card("Pricing now", str(int((L["upcoming_priced"] > 0).sum())), title="Leagues with upcoming odds",
+               supporting=[("Fixtures priced", f"{int(L['fixtures_priced'].sum()):,}"), ("Since", "2026-10-08")],
+               container=c[1])
+ui.metric_card("Results stored", f"{int(L['results'].sum()):,}", title="History + this season",
+               supporting=[("Model frozen (probabilities before kickoff)", f"{int(L['model_frozen'].sum()):,}")],
+               container=c[2])
 
-with st.expander("What the stages mean"):
-    for k in STAGES:
-        if k in (s.get("status_meaning") or {}):
-            st.markdown(f"{ICON[k]} **{k}** — {s['status_meaning'][k]}")
-    st.markdown("A verdict needs about **8–12 weeks** of collection for a busy league, longer for a small one.")
+_funnel = (L["status"].value_counts().reindex(STAGES).dropna().astype(int).rename("leagues")
+           .rename_axis("stage").reset_index())
+if len(_funnel):
+    left, right = st.columns([3, 2])
+    with left:
+        # A bar column, not a chart: the same picture without loading a chart library on a page that
+        # never needed one (keeps the page as light as it was).
+        ui.eyebrow("Leagues by stage")
+        ui.compact_table(_funnel.assign(stage=_funnel["stage"].map(lambda x: f"{ICON.get(x, '')} {x}")),
+                         {"leagues": ui.bar_col("Leagues", max_value=float(len(L)), fmt="%d")})
+    with right:
+        ui.eyebrow("What the stages mean")
+        for k in STAGES:
+            if k in (s.get("status_meaning") or {}):
+                st.markdown(f"**{ICON[k]} {k}** — {s['status_meaning'][k]}")
+        st.caption("A verdict needs about **8–12 weeks** of collection for a busy league, longer for a small one.")
 
-# ── filters ───────────────────────────────────────────────────────────────────────────────────
-f1, f2, f3, f4 = st.columns([1, 2, 2, 2])
-with f1:
-    prio = st.selectbox("Priority", ["All", "1 — owner's list", "2"], key="scout_prio")
-with f2:
-    countries = st.multiselect("Country", sorted(L["country"].unique()), key="scout_country")
+# ═══ DETAIL — every league ═══════════════════════════════════════════════════════════════════════
+f3, f4 = st.columns(2)
 with f3:
     stages = st.multiselect("Stage", [x for x in STAGES if x in set(L["status"])], key="scout_stage")
 with f4:
     q = st.text_input("Search league", key="scout_q")
+with st.expander("Advanced filters"):
+    f1, f2 = st.columns([1, 2])
+    with f1:
+        prio = st.selectbox("Priority", ["All", "1 — owner's list", "2"], key="scout_prio")
+    with f2:
+        countries = st.multiselect("Country", sorted(L["country"].unique()), key="scout_country")
 V = L.copy()
 if prio.startswith("1"):
     V = V[V["priority"] == 1]
@@ -113,15 +142,17 @@ show = pd.DataFrame({
     "History seasons": V["history_seasons"], "Model frozen": V["model_frozen"],
     "Last price": V["last_price_seen"].fillna("–").astype(str).str[:16],
 })
-st.subheader(f"{len(V)} league(s)")
-ui.table(show)
+ui.section_header(f"{len(V)} league(s)")
+ui.table(show, column_config={"Settled with close": ui.bar_col("Settled with close", max_value=300, fmt="%d",
+                                                               help="READABLE at 300 settled fixtures with a close")})
 
-# ── per-league verdicts ──────────────────────────────────────────────────────────────────────
+# ═══ RESEARCH — per-league verdicts ══════════════════════════════════════════════════════════════
 withv = V[V["markets"].map(lambda m: bool(m))]
-st.subheader("Verdicts by market")
+ui.section_header("Verdicts by market", "Market skill near 0 = the closing price barely beats the league average (a "
+                  "soft market). Residual z above ~2 = the model knows something the close did not.")
 if withv.empty:
-    st.info("No league has settled fixtures with a captured closing price yet. Verdicts appear here as "
-            "leagues reach COLLECTING (any settled), EARLY (100+) and READABLE (300+).")
+    ui.empty_state("NO_DATA", "No league has settled fixtures with a captured closing price yet. Verdicts appear here "
+                              "as leagues reach COLLECTING (any settled), EARLY (100+) and READABLE (300+).")
 else:
     rows = []
     for _, r in withv.iterrows():
@@ -133,25 +164,22 @@ else:
                          "Model residual z": res.get("z"), "Paper bets": m.get("paper_bets"),
                          "Paper ROI": m.get("paper_roi"), "Share on one side": m.get("paper_first_side_share")})
     ui.table(pd.DataFrame(rows))
-    st.caption("Market skill near 0 = the closing price barely beats the league average (a soft market). "
-               "Residual z above ~2 = the model knows something the close did not. A paper record that is "
-               "almost all one side is the failure signature to distrust.")
+    st.caption("A paper record that is almost all one side is the failure signature to distrust. A paper ROI is "
+               "never read without its n beside it.")
 
-# ── weekly promotion review (Pro src/scout/promotion) ───────────────────────────────────────────
-st.divider()
-st.subheader("Weekly promotion review")
-pr = pro.promotion_review() if hasattr(pro, "promotion_review") else {}
+# ═══ RESEARCH — weekly promotion review (Pro src/scout/promotion) ════════════════════════════════
+ui.section_header("Weekly promotion review")
+pr = D["promotion"]
 if not pr:
-    st.info("No weekly promotion review yet — it runs every Sunday in Pro.")
+    ui.empty_state("NO_DATA", "No weekly promotion review yet — it runs every Sunday in Pro.")
 else:
     if pr.get("freshness"):
         ui.freshness_chip(pr["freshness"], "promotion review")
     k = pr.get("counts", {})
-    cc = st.columns(5)
-    for col, (lab, key) in zip(cc, (("New candidates", "new_candidates"), ("Approved (shadow)", "promoted"),
+    ui.metric_grid([{"label": lab, "value": k.get(key, 0)}
+                    for lab, key in (("New candidates", "new_candidates"), ("Approved (shadow)", "promoted"),
                                      ("Validation failed", "failed"), ("Data-quality blocked", "blocked"),
-                                     ("Still collecting", "still_collecting"))):
-        col.metric(lab, k.get(key, 0))
+                                     ("Still collecting", "still_collecting"))], per_row=3)
     st.caption(f"Week {pr.get('week')} · {pr.get('leagues_monitored')} leagues monitored · a league that passes stops "
                f"at SHADOW_APPROVED (paper only) until the existing-league regression test exists — no v9 config "
                f"change and no money is ever decided here.")
@@ -167,7 +195,7 @@ else:
     if rows:
         T = pd.DataFrame(rows)
         T["_d"] = T[["Settled w/ close needed", "Results needed"]].fillna(0).sum(axis=1)
-        st.markdown("**Distance to promotion** — closest leagues first")
+        ui.eyebrow("Distance to promotion — closest leagues first")
         ui.table(T.sort_values(["Score", "_d"], ascending=[False, True], na_position="last")
                  .drop(columns="_d").head(25))
     reg = pr.get("registry") or {}
