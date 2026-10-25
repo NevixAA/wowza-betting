@@ -14,7 +14,9 @@ on:
   push:
     branches: [main]
     paths: ['.github/workflows/evidence_refresh.yml', 'src/artifact_freshness.py',
-            'scripts/track_evidence.py', 'scripts/allocation_registry.py', 'scripts/v91_readiness.py']
+            'scripts/track_evidence.py', 'scripts/allocation_registry.py', 'scripts/v91_readiness.py',
+            'src/system_health.py', 'scripts/build_track_registry.py', 'src/contracts/**',
+            'src/research/**']
   workflow_dispatch:
 
 concurrency:
@@ -68,12 +70,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python -m src.system_health --workflows || echo "::warning::workflow health not recorded"
+      # 2026-10-25 platform brief step (a). Read-model + health artifact only: the track registry is
+      # regenerated from committed config (production does not read it), and system_health.json is
+      # the canonical health verdict. Neither step can change a tip, threshold, stake or model.
+      - name: Track registry (read-model, regenerated from committed config)
+        run: python scripts/build_track_registry.py || echo "::warning::track registry not regenerated"
+      - name: System health artifact
+        env:
+          PRO_LOCAL: ${{ github.workspace }}/_pro
+        run: |
+          set -o pipefail
+          python -m src.system_health --write | tee health.txt || echo "::warning::system_health.json not written"
+          { echo '## System health'; echo '```'; cat health.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if grep -q '^OVERALL FAIL' health.txt; then echo "::error title=system health FAIL::see output/system_health.json reasons"; fi
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in output/track_evidence.json output/allocation_registry.json output/v91_readiness.json \
-                   output/artifact_manifest.json output/workflow_health.json; do
+                   output/artifact_manifest.json output/workflow_health.json \
+                   output/system_health.json config/track_registry.json; do
             [ -e "$f" ] && git add -f "$f"
           done
           git diff --staged --quiet && exit 0
