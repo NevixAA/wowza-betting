@@ -275,7 +275,39 @@ def record_image(today: str) -> list[bytes]:
                         footer="Same basis as the dashboard · paper leagues excluded")
 
 
-def props_image(today: str) -> list[bytes]:
+PROPS_SHOWN_LOG = config.OUTPUT_DIR / "props_shown_log.csv"
+_SHOWN_COLS = ["date", "shown_at", "section", "rank", "player_id", "player_name", "match", "market",
+               "model_prob", "market_odds", "edge_pts"]
+
+
+def _freeze_props_shown(today: str, pr: pd.DataFrame, un: pd.DataFrame) -> None:
+    """Record the props the morning album showed, ONCE per day (first sight), so the next morning's
+    results picture grades exactly those players at the odds that were shown. Before this the
+    results re-ranked every settled prop by edge at the FINAL price: Haaland to score was #6 of 12 on
+    the 2026-10-24 album at 2.14, shortened to 1.70 and dropped out of the next day's results."""
+    try:
+        old = pd.read_csv(PROPS_SHOWN_LOG, dtype=str) if PROPS_SHOWN_LOG.exists() else pd.DataFrame()
+        if len(old) and (old["date"] == today).any():
+            return
+        now = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M")
+        parts = []
+        for section, g in (("priced", pr), ("model_only", un)):
+            if len(g):
+                parts.append(pd.DataFrame({
+                    "date": today, "shown_at": now, "section": section, "rank": range(1, len(g) + 1),
+                    "player_id": g["player_id"].values if "player_id" in g else None,
+                    "player_name": g["player_name"].values, "match": g["match"].values,
+                    "market": g["market"].values, "model_prob": g["model_prob"].round(4).values,
+                    "market_odds": g["market_odds"].values,
+                    "edge_pts": g["_edge"].round(2).values if "_edge" in g else None}))
+        if parts:
+            new = pd.concat([old, *parts], ignore_index=True).reindex(columns=_SHOWN_COLS)
+            new.to_csv(PROPS_SHOWN_LOG, index=False, lineterminator="\n")
+    except Exception as e:                                              # noqa: BLE001 - never blocks the album
+        print(f"[daily_pack] could not log shown props: {e}")
+
+
+def props_image(today: str, freeze: bool = False) -> list[bytes]:
     t = _read("player_tips.csv")
     if t.empty:
         return []
@@ -293,6 +325,8 @@ def props_image(today: str) -> list[bytes]:
     pr = t[t["_priced"]].assign(_edge=lambda x: (x["model_prob"] - 1 / x["market_odds"]) * 100) \
         .sort_values("_edge", ascending=False).head(12)
     un = t[~t["_priced"]].sort_values("model_prob", ascending=False).head(ROWS_PER_IMAGE - len(pr) - 2)
+    if freeze:
+        _freeze_props_shown(today, pr, un)
     cols = [("Time", 62), ("Player", 190), ("Match", 300), ("Market", 160), ("Model", 70),
             ("Odds", 70), ("Edge", 86)]
     rows = []
@@ -379,6 +413,73 @@ def one_x_two_image(now: _dt.datetime) -> list[bytes]:
                         footer="Times UTC · not betting advice")
 
 
+def _shown_results(day: str, ledger_day: pd.DataFrame) -> list[bytes] | None:
+    """Results of exactly the props yesterday's album showed (props_shown_log.csv), at the odds shown.
+    None when nothing was logged for that day, so the older all-props ranking is used instead."""
+    try:
+        log = pd.read_csv(PROPS_SHOWN_LOG, dtype={"player_id": str}) if PROPS_SHOWN_LOG.exists() else pd.DataFrame()
+    except Exception:                                                   # noqa: BLE001
+        return None
+    log = log[log["date"].astype(str) == day] if len(log) else log
+    if log.empty or "player_id" not in ledger_day:
+        return None
+    led = ledger_day.assign(player_id=ledger_day["player_id"].astype(str).str.replace(r"\.0$", "", regex=True))
+    led = led.assign(_done=led["result"].isin(["WIN", "LOSS", "VOID"])).sort_values("_done", ascending=False,
+                                                                                    kind="mergesort")
+    res = led.drop_duplicates(["player_id", "market"]).set_index(["player_id", "market"])["result"]
+    log = log.assign(player_id=log["player_id"].astype(str).str.replace(r"\.0$", "", regex=True))
+    log["result"] = [res.get((a, b)) for a, b in zip(log["player_id"], log["market"])]
+    for c in ("model_prob", "market_odds"):
+        log[c] = pd.to_numeric(log[c], errors="coerce")
+
+    def _cell(r):
+        if r == "WIN":
+            return "WON", GREEN
+        if r == "LOSS":
+            return "LOST", RED
+        if r == "VOID":
+            return "did not play", MUTED
+        return "pending", MUTED
+
+    cols = [("Player", 200), ("Match", 300), ("Market", 160), ("Model", 70), ("Odds", 70), ("Result", 120)]
+    rows = []
+    for section, label in (("priced", "Priced"), ("model_only", "Model only (no price)")):
+        g = log[log["section"] == section].sort_values("rank")
+        if g.empty:
+            continue
+        played = g[g["result"].isin(["WIN", "LOSS"])]
+        won = int((played["result"] == "WIN").sum())
+        band = f"{label} — shown yesterday: {won}-{len(played) - won}"
+        if section == "priced" and len(played):
+            pl = float((played["market_odds"] - 1).where(played["result"] == "WIN", -1.0).sum())
+            band += f" · paper {pl:+.2f}u at the odds shown"
+        n_pend = int((~g["result"].isin(["WIN", "LOSS", "VOID"])).sum())
+        rows.append({"band": band + (f" · {n_pend} pending" if n_pend else "")})
+        for _, r in g.iterrows():
+            txt, colour = _cell(r["result"])
+            rows.append({"cells": [r["player_name"], r["match"], PROP_LABEL.get(r["market"], r["market"]),
+                                   "–" if pd.isna(r["model_prob"]) else f"{r['model_prob'] * 100:.0f}%",
+                                   "–" if pd.isna(r["market_odds"]) else f"{r['market_odds']:.2f}", txt],
+                         "stripe": colour if r["result"] in ("WIN", "LOSS") else None, "bold": {"Result"},
+                         "colours": {"Result": colour}})
+    # one line for everything else that settled, so the picture still answers "how did props do overall"
+    allp = ledger_day[ledger_day["result"].isin(["WIN", "LOSS"])].copy()
+    allp["market_odds"] = pd.to_numeric(allp.get("market_odds"), errors="coerce")
+    pr_all = allp[allp["market_odds"] > 1.0]
+    if {"player_id", "market"} <= set(pr_all.columns):
+        pr_all = pr_all.drop_duplicates(["player_id", "market"])
+    if len(pr_all):
+        w = int((pr_all["result"] == "WIN").sum())
+        need = 100 * (1 / pr_all["market_odds"]).mean()
+        rows.append({"band": f"All priced props that day — {w}-{len(pr_all) - w} · hit {100 * w / len(pr_all):.0f}% "
+                             f"vs {need:.0f}% needed"})
+    label = pd.Timestamp(day).strftime("%a %d %b")
+    return render_table(f"Player props — results {label}", cols, rows,
+                        subtitle="The same players yesterday's album showed, at the odds shown then. "
+                                 "Paper — never staked.",
+                        footer="paper leagues excluded · not betting advice")
+
+
 def props_results_image(day: str) -> list[bytes]:
     """Yesterday's settled player props (owner 2026-10-20: the morning album showed today's props but
     never how yesterday's did — prop results lived only in the Monday pack).
@@ -390,6 +491,9 @@ def props_results_image(day: str) -> list[bytes]:
     if p.empty:
         return []
     p = p[p["match_date"].astype(str).str[:10] == day].copy()
+    shown = _shown_results(day, p)
+    if shown is not None:
+        return shown
     p = p[p["result"].isin(["WIN", "LOSS"])]
     if p.empty:
         return []
@@ -1035,7 +1139,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
              ("results", lambda: results_image(yday)),
              ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
-             ("props", lambda: props_image(today)),
+             ("props", lambda: props_image(today, freeze=freeze)),
              ("one_x_two", lambda: one_x_two_image(now)),
              ("bet_builder", lambda: bet_builder_image(today)),
              ("sharp", lambda: sharp_image(today)),
