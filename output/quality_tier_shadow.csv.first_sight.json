@@ -1,0 +1,41 @@
+{
+ "file": "quality_tier_shadow.csv",
+ "key": [
+  "match_day",
+  "home_team",
+  "away_team",
+  "market"
+ ],
+ "frozen_cols": [
+  "observed_at",
+  "ledger_generated_at",
+  "lag_min",
+  "day",
+  "match_day",
+  "kickoff_utc",
+  "league",
+  "home_team",
+  "away_team",
+  "model_type",
+  "market",
+  "side",
+  "odds",
+  "opp_odds",
+  "p_model",
+  "p_fair",
+  "raw_edge",
+  "gap_tier",
+  "model_version",
+  "quality_version",
+  "fitted_through",
+  "train_n",
+  "p_win",
+  "score",
+  "layer_fixed",
+  "cut_lo",
+  "cut_hi"
+ ],
+ "rows": 108,
+ "frozen_digest": "38bb11bf50ba74fd154d8dfadbd43cd32068e1cf3bb7fe4180c5cb939908f29c",
+ "updated_at": "2026-10-26T10:52:02Z"
+}
