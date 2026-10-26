@@ -36,7 +36,13 @@ wins"), so results were reported against a tier nobody had been sent: first-sigh
 ledger tier on only 72% of tips, and new-format BTTS read SNIPER +24.7% / MARKSMAN +16.0% /
 VALUABLE +7.7% in the ledger against +52.2% / +3.1% / +6.7% at first-sight tier.
 
-Now a later, higher tier is recorded ONLY in the append-only research log
+The same holds for the PRICE and EDGE of a logged tip (commit B, 2026-10-26, pending owner
+approval): `odds`, `edge_pct`, `kelly_pct`, `drift_signal` (O/U) and `odds`, `edge_pct`, `ev_pct`
+(side markets) are the values at first log. They used to be overwritten together with the tier
+upgrade, so a side tip was SETTLED at a later run's price (92 of 619 side rows, +2.26u season to
+date) and its CLV measured from it.
+
+Now a later, higher tier (with that run's edge and odds) is recorded ONLY in the append-only research log
 output/ledger_tier_seen.csv (one row per ledger x tip x observed tier, first sight of that tier;
 src/research/first_sight.FirstSightStore). Nothing in a ledger row's tier changes after it is
 written. EXISTING ROWS ARE NOT REWRITTEN: rows logged before 2026-10-26 may still carry an
@@ -260,21 +266,12 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         return
 
     existing = _load_ledger()
-    # In-place edge refreshes below assign floats/strings into existing cells. CI's pandas can
-    # back CSV columns with pyarrow string dtype (future.infer_string), which rejects a float
-    # assignment (TypeError). Cast the columns we may overwrite to object so mixed assignment
-    # is always safe, regardless of the read dtype backend.
-    for _c in ("signal_tier", "edge_pct", "kelly_pct", "drift_signal"):
-        if _c in existing.columns:
-            existing[_c] = existing[_c].astype(object)
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     # FIRST LOGGED TIER STANDS (owner decision 2026-10-26; see the module docstring). This used to
     # be "best tier wins": a re-see at a higher tier raised signal_tier in place, so results were
     # graded against a tier the owner was never sent. Now a higher tier on a re-see goes to the
     # append-only research log (ledger_tier_seen.csv) and signal_tier is never touched.
-    # The edge/kelly/drift refresh that rode on the old upgrade keeps its exact old trigger (a new
-    # best tier): it changes no tier and no O/U P/L (odds are not touched). Freezing it is a
-    # separate owner decision.
+    # Edge, kelly and drift_signal are frozen at first log too (commit B, pending owner approval).
     tier_seen_path = LEDGER_FILE.parent / TIER_SEEN_NAME
     best_seen = _best_seen_tiers("ou25", tier_seen_path)
     tier_seen_rows = []
@@ -285,7 +282,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
              str(r["side"]).strip(), str(r["source"]))
         key_to_idx[k] = i
 
-    new_rows, upgrades, batch_keys = [], 0, set()
+    new_rows, batch_keys = [], set()
     # Fixture -> (side, row index) of its FIRST tip, for the flip guard below.
     _first = {}
     for i, r in existing[existing["source"].astype(str) == source].sort_values(
@@ -321,14 +318,6 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
                     "ledger_odds": existing.at[i, "odds"],
                     "ledger_generated_at": existing.at[i, "generated_at"]})
                 best_seen[seen_key] = rank
-                try:
-                    cur_odds = float(existing.at[i, "odds"])
-                except (TypeError, ValueError):
-                    cur_odds = odds
-                existing.at[i, "edge_pct"]     = round(edge * 100, 2)
-                existing.at[i, "kelly_pct"]    = _kelly_pct(edge, cur_odds)
-                existing.at[i, "drift_signal"] = str(row.get("drift_signal", existing.at[i, "drift_signal"]))
-                upgrades += 1
             continue
         if dedup_key in batch_keys:
             continue
@@ -375,14 +364,14 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
     if flips:
         log.info(f"Ledger: {flips} side flip(s) noted on the original tip (not added as new tips)")
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
-    if not new_rows and not upgrades and not flips:
+    if not new_rows and not flips:
         log.info("Ledger: no new tips (all already logged).")
         return
 
     updated = (pd.concat([existing, pd.DataFrame(new_rows, columns=LEDGER_COLS)], ignore_index=True)
                if new_rows else existing)
     updated.to_csv(LEDGER_FILE, index=False)
-    log.info(f"Ledger: {len(new_rows)} new + {upgrades} edge refresh(es), tiers unchanged → {LEDGER_FILE}")
+    log.info(f"Ledger: {len(new_rows)} new tip(s); logged rows unchanged → {LEDGER_FILE}")
 
 
 # ── Side-market ledger (BTTS / Over 1.5 / Over 3.5) ─────────────────────────────
@@ -422,11 +411,6 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
     if side_df is None or side_df.empty:
         return
     existing = _load_side_ledger()
-    # Same dtype-safety as append_tips: in-place refreshes assign floats into cells that CI's
-    # pandas may back with pyarrow string dtype — cast overwrite targets to object first.
-    for _c in ("signal_tier", "edge_pct", "ev_pct", "odds"):
-        if _c in existing.columns:
-            existing[_c] = existing[_c].astype(object)
     now   = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     today = now[:10]
     tier_seen_path = SIDE_LEDGER_FILE.parent / TIER_SEEN_NAME
@@ -439,7 +423,7 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
              str(r["market"]), str(r["source"]))
         key_to_idx[k] = i
 
-    new_rows, upgrades, batch = [], 0, set()
+    new_rows, batch = [], set()
     for _, row in side_df.iterrows():
         market     = str(row.get("market", ""))
         match_date = str(row["date"])[:10]
@@ -452,9 +436,8 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         key        = (match_date, home, away, market, source)
 
         if key in key_to_idx:
-            # Already logged. The logged tier STANDS (2026-10-26); a higher tier is research info.
-            # The odds/edge/ev refresh keeps its old trigger (a new best tier). It DOES move side P/L
-            # and CLV (settled at `odds`); freezing it is a separate owner decision.
+            # Already logged. The logged tier, odds, edge and ev STAND (2026-10-26): the row is settled
+            # and CLV-graded at the price it was logged at. A higher tier is research info only.
             i   = key_to_idx[key]
             cur = str(existing.at[i, "signal_tier"])
             rank = _SIDE_RANK.get(tier, 0)
@@ -468,10 +451,6 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
                     "ledger_odds": existing.at[i, "odds"],
                     "ledger_generated_at": existing.at[i, "generated_at"]})
                 best_seen[seen_key] = rank
-                existing.at[i, "edge_pct"]    = edge_pct
-                existing.at[i, "ev_pct"]      = ev_pct
-                existing.at[i, "odds"]        = odds
-                upgrades += 1
             continue
         if key in batch:
             continue
@@ -491,13 +470,12 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)
-    if not new_rows and not upgrades:
+    if not new_rows:
         log.info("Side ledger: no new tips (all already logged).")
         return
-    updated = (pd.concat([existing, pd.DataFrame(new_rows, columns=SIDE_LEDGER_COLS)], ignore_index=True)
-               if new_rows else existing)
+    updated = pd.concat([existing, pd.DataFrame(new_rows, columns=SIDE_LEDGER_COLS)], ignore_index=True)
     updated.to_csv(SIDE_LEDGER_FILE, index=False)
-    log.info(f"Side ledger: {len(new_rows)} new + {upgrades} price refresh(es), tiers unchanged → {SIDE_LEDGER_FILE}")
+    log.info(f"Side ledger: {len(new_rows)} new tip(s); logged rows unchanged → {SIDE_LEDGER_FILE}")
 
 
 # ── HT (half-time O/U) ledger ───────────────────────────────────────────────────

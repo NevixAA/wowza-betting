@@ -88,8 +88,7 @@ def test_existing_rows_are_not_rewritten(out):
     L.append_tips(pd.DataFrame([_bet("VALUABLE", edge=0.05), _bet("SNIPER", edge=0.2, home="Other")]))
     led1 = pd.read_csv(out / "bets_ledger.csv", dtype=str)
     assert list(led1["signal_tier"]) == list(led0["signal_tier"]) == ["SNIPER", "VALUABLE"]
-    frozen = [c for c in led0.columns if c not in ("edge_pct", "kelly_pct", "drift_signal")]
-    pd.testing.assert_frame_equal(led1[frozen], led0[frozen])
+    pd.testing.assert_frame_equal(led1, led0)            # commit B: edge/kelly/drift frozen too
 
 
 # ── side-market ledger ───────────────────────────────────────────────────────────────────────────
@@ -144,3 +143,33 @@ def test_fix_ledger_tiers_apply_is_retired():
 def test_predict_commits_the_research_log():
     wf = open(".github/workflows/predict.yml", encoding="utf-8").read()
     assert "output/ledger_tier_seen.csv output/ledger_tier_seen.csv.first_sight.json" in wf
+
+
+# ── commit B (pending owner approval): odds / edge frozen at first log ─────────────────────────────
+def test_ou_edge_kelly_drift_are_frozen_at_first_log(out):
+    L.append_tips(pd.DataFrame([{**_bet("VALUABLE", edge=0.05), "drift_signal": "New"}]))
+    before = (out / "bets_ledger.csv").read_bytes()
+    L.append_tips(pd.DataFrame([{**_bet("SNIPER", edge=0.16, odds_u=2.05), "drift_signal": "Confirmed"}]))
+    assert (out / "bets_ledger.csv").read_bytes() == before          # the ledger file is not even rewritten
+    s = _seen(out).iloc[0]
+    assert float(s["observed_edge_pct"]) == 16.0 and float(s["observed_odds"]) == 2.05
+    assert float(s["ledger_edge_pct"]) == 5.0 and float(s["ledger_odds"]) == 1.89
+
+
+def test_side_odds_edge_ev_are_frozen_at_first_log(out):
+    L.append_side_market_tips(pd.DataFrame([_side("VALUABLE", edge=0.05, odds=2.10)]))
+    before = (out / "side_bets_ledger.csv").read_bytes()
+    L.append_side_market_tips(pd.DataFrame([_side("SNIPER", edge=0.12, odds=2.25)]))
+    assert (out / "side_bets_ledger.csv").read_bytes() == before
+    led = pd.read_csv(out / "side_bets_ledger.csv").iloc[0]
+    assert led["odds"] == 2.10 and led["edge_pct"] == 5.0           # settled + CLV-graded at this price
+    assert float(_seen(out).iloc[0]["observed_odds"]) == 2.25       # the later price is research only
+
+
+def test_a_new_tip_after_a_re_see_still_appends_without_touching_old_rows(out):
+    L.append_side_market_tips(pd.DataFrame([_side("VALUABLE", odds=2.10)]))
+    L.append_side_market_tips(pd.DataFrame([_side("SNIPER", edge=0.12, odds=2.25),
+                                            _side("MARKSMAN", edge=0.09, odds=1.95, home="Lanus")]))
+    led = pd.read_csv(out / "side_bets_ledger.csv")
+    assert list(led["home_team"]) == ["Boca", "Lanus"]
+    assert list(led["odds"]) == [2.10, 1.95] and list(led["signal_tier"]) == ["VALUABLE", "MARKSMAN"]
