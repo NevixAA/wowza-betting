@@ -35585,3 +35585,423 @@ snapshot_ts,fixture_id,kickoff_utc,minutes_to_kickoff,ladder_band,league,model_t
 2026-10-25T22:51:38Z,1551016,2026-10-25T23:00:00Z,8.4,T-10m,Mexico Liga MX,new_format,Atlas,Puebla,32,Betano,ht_ou,under,0.5,3.2,api_football,heartbeat
 2026-10-25T22:51:38Z,1551016,2026-10-25T23:00:00Z,8.4,T-10m,Mexico Liga MX,new_format,Atlas,Puebla,32,Betano,btts,yes,,1.78,api_football,heartbeat
 2026-10-25T22:51:38Z,1551016,2026-10-25T23:00:00Z,8.4,T-10m,Mexico Liga MX,new_format,Atlas,Puebla,32,Betano,btts,no,,1.98,api_football,heartbeat
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,over,1.5,2.9,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,under,1.5,1.36,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,over,0.5,1.4,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,under,0.5,2.8,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,btts,yes,,1.85,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,btts,no,,1.85,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,btts,yes,,1.95,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,btts,no,,1.8,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,over,1.5,1.33,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,under,1.5,2.83,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,over,2.5,2.11,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,under,2.5,1.68,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,over,3.5,3.58,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,under,3.5,1.21,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,over,1.5,2.88,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,under,1.5,1.35,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,over,0.5,1.41,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,under,0.5,2.64,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,btts,yes,,1.88,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,btts,no,,1.8,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,over,1.5,1.33,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,under,1.5,3.25,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,over,2.5,2.05,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,under,2.5,1.75,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,over,3.5,3.8,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,under,3.5,1.25,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,over,1.5,3.0,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,under,1.5,1.33,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,over,0.5,1.36,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,under,0.5,2.88,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,btts,yes,,1.87,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,btts,no,,1.9,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,over,1.5,1.33,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,under,1.5,3.0,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,over,2.5,2.0,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,under,2.5,1.69,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,over,3.5,3.8,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,under,3.5,1.22,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,over,1.5,2.84,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,under,1.5,1.35,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,over,0.5,1.44,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,under,0.5,2.53,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,btts,yes,,1.83,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,btts,no,,1.85,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,over,1.5,1.36,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,under,1.5,3.27,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,over,2.5,2.12,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,under,2.5,1.78,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,over,3.5,3.96,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,under,3.5,1.27,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,over,1.5,3.15,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,under,1.5,1.36,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,over,0.5,1.43,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,under,0.5,2.86,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,5,SBO,ou,over,2.5,2.07,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,5,SBO,ou,under,2.5,1.77,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,over,1.5,1.35,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,under,1.5,2.87,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,over,2.5,2.14,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,under,2.5,1.71,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,over,3.5,3.64,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,under,3.5,1.23,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,over,1.5,2.88,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,under,1.5,1.35,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,over,0.5,1.41,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,under,0.5,2.64,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,btts,yes,,1.88,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,btts,no,,1.82,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,over,1.5,1.42,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,under,1.5,3.0,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,over,2.5,2.22,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,under,2.5,1.7,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,over,3.5,3.95,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,under,3.5,1.26,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,over,1.5,3.05,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,under,1.5,1.38,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,under,0.5,2.7,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,btts,yes,,1.95,api_football,change
+2026-10-25T23:00:43Z,1493201,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,btts,no,,1.8,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,btts,yes,,2.5,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,btts,no,,1.44,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,1.5,1.57,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,1.5,2.31,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,2.5,2.69,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,2.5,1.36,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,3.5,5.7,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,3.5,1.08,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,over,1.5,3.9,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,under,1.5,1.18,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,over,0.5,1.58,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,under,0.5,2.25,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,btts,yes,,2.61,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,btts,no,,1.42,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,btts,yes,,2.7,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,btts,no,,1.44,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,1.5,1.57,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,1.5,2.2,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,2.5,2.75,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,2.5,1.4,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,over,1.5,3.9,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,under,1.5,1.22,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,over,0.5,1.59,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,under,0.5,2.17,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,btts,yes,,2.6,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,btts,no,,1.44,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,over,1.5,1.62,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,under,1.5,2.39,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,over,2.5,2.96,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,under,2.5,1.42,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,over,3.5,6.63,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,over,1.5,1.6,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,under,1.5,2.35,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,over,2.5,2.95,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,under,2.5,1.4,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,over,3.5,7.6,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,under,3.5,1.08,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,over,1.5,3.9,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,under,1.5,1.18,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,over,0.5,1.58,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,under,0.5,2.25,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,btts,yes,,2.61,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,btts,no,,1.43,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,over,1.5,1.6,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,under,1.5,2.42,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,over,2.5,2.77,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,under,2.5,1.47,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,over,3.5,5.4,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,under,3.5,1.16,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,over,1.5,3.75,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,under,1.5,1.28,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,over,0.5,1.6,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,under,0.5,2.35,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,btts,yes,,2.57,api_football,change
+2026-10-25T23:00:43Z,1493200,2026-10-26T00:30:00Z,89.3,T-3h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,btts,no,,1.47,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,8,Bet365,btts,yes,,1.62,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,8,Bet365,btts,no,,2.2,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,36,BetVictor,ou,over,2.5,1.63,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,36,BetVictor,ou,under,2.5,2.09,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,36,BetVictor,ou,over,3.5,2.5,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,36,BetVictor,ou,under,3.5,1.45,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,36,BetVictor,ht_ou,over,1.5,2.31,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,36,BetVictor,ht_ou,under,1.5,1.52,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ou,over,1.5,1.21,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ou,under,1.5,4.6,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ou,over,2.5,1.69,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ou,under,2.5,2.26,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ou,over,3.5,2.69,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ou,under,3.5,1.5,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ht_ou,over,1.5,2.51,api_football,change
+2026-10-25T23:00:43Z,1551018,2026-10-26T01:00:00Z,119.3,T-3h,Mexico Liga MX,new_format,Club Queretaro,Cruz Azul,4,Pinnacle,ht_ou,under,1.5,1.54,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,7,William Hill,ht_ou,under,1.5,1.53,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,7,William Hill,ht_ou,under,0.5,3.4,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,8,Bet365,ou,over,2.5,1.62,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,8,Bet365,ou,under,2.5,2.25,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ou,over,1.5,1.15,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ou,under,1.5,4.25,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ou,over,2.5,1.62,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ou,under,2.5,2.2,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ou,over,3.5,2.43,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ou,under,3.5,1.44,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ht_ou,over,1.5,2.23,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ht_ou,under,1.5,1.56,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,btts,yes,,1.53,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,2,Marathonbet,btts,no,,2.3,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,3,Betfair,ou,over,2.5,1.6,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,3,Betfair,ou,under,2.5,2.3,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,3,Betfair,ht_ou,over,1.5,2.25,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,3,Betfair,ht_ou,over,0.5,1.25,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,3,Betfair,ht_ou,under,0.5,3.6,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,ou,over,2.5,1.61,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,ou,under,2.5,2.13,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,ou,over,3.5,2.44,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,ou,under,3.5,1.47,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,ht_ou,over,1.5,2.28,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,btts,yes,,1.53,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,36,BetVictor,btts,no,,2.3,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ou,under,1.5,4.76,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ou,over,2.5,1.67,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ou,under,2.5,2.31,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ou,over,3.5,2.61,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ou,under,3.5,1.52,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ht_ou,over,1.5,2.45,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,4,Pinnacle,ht_ou,under,1.5,1.56,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ou,over,1.5,1.15,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ou,under,1.5,4.25,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ou,over,2.5,1.62,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ou,under,2.5,2.2,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ou,over,3.5,2.43,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ou,under,3.5,1.44,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ht_ou,over,1.5,2.23,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ht_ou,under,1.5,1.56,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ht_ou,over,0.5,1.26,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,ht_ou,under,0.5,3.4,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,btts,yes,,1.53,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,11,1xBet,btts,no,,2.34,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ou,over,1.5,1.22,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ou,under,1.5,4.35,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ou,over,2.5,1.67,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ou,under,2.5,2.27,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ou,over,3.5,2.62,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ou,under,3.5,1.52,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ht_ou,over,1.5,2.5,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ht_ou,over,0.5,1.35,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,ht_ou,under,0.5,3.1,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,btts,yes,,1.55,api_football,change
+2026-10-25T23:00:43Z,1551019,2026-10-26T03:10:00Z,249.3,T-6h,Mexico Liga MX,new_format,Club Tijuana,Santos Laguna,32,Betano,btts,no,,2.35,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,36,BetVictor,ht_ou,over,1.5,1.98,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,4,Pinnacle,ou,under,1.5,6.09,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,4,Pinnacle,ou,under,2.5,2.81,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,4,Pinnacle,ou,over,3.5,2.16,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,4,Pinnacle,ht_ou,over,1.5,2.14,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ou,over,1.5,1.15,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ou,under,1.5,5.6,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ou,over,2.5,1.47,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ou,under,2.5,2.77,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ou,over,3.5,2.15,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ou,under,3.5,1.75,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ht_ou,over,1.5,2.18,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ht_ou,under,1.5,1.7,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ht_ou,over,0.5,1.27,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,ht_ou,under,0.5,3.65,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,btts,yes,,1.53,api_football,change
+2026-10-25T23:00:43Z,1490570,2026-10-26T01:00:00Z,119.3,T-3h,USA MLS,new_format,Los Angeles FC,Los Angeles Galaxy,32,Betano,btts,no,,2.4,api_football,change
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,over,1.5,2.9,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,over,0.5,1.4,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,ht_ou,under,0.5,2.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,btts,yes,,1.85,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,7,William Hill,btts,no,,1.85,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ou,under,1.5,3.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ou,over,2.5,2.2,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ou,under,2.5,1.65,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ou,over,3.5,4.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ou,under,3.5,1.22,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ht_ou,over,1.5,3.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ht_ou,under,1.5,1.33,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,ht_ou,under,0.5,2.62,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,btts,yes,,1.95,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,8,Bet365,btts,no,,1.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,over,1.5,1.33,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,under,1.5,2.83,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,over,2.5,2.11,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,under,2.5,1.68,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,over,3.5,3.58,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ou,under,3.5,1.21,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,over,1.5,2.88,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,under,1.5,1.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,over,0.5,1.41,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,ht_ou,under,0.5,2.64,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,btts,yes,,1.88,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,2,Marathonbet,btts,no,,1.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,over,1.5,1.33,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,under,1.5,3.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,over,2.5,2.05,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,under,2.5,1.75,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,over,3.5,3.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ou,under,3.5,1.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,over,1.5,3.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,under,1.5,1.33,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,over,0.5,1.36,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,ht_ou,under,0.5,2.88,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,btts,yes,,1.87,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,3,Betfair,btts,no,,1.9,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,over,1.5,1.33,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,under,1.5,3.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,over,2.5,2.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,under,2.5,1.69,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,over,3.5,3.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ou,under,3.5,1.22,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,over,1.5,2.84,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,under,1.5,1.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,over,0.5,1.44,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,ht_ou,under,0.5,2.53,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,btts,yes,,1.83,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,36,BetVictor,btts,no,,1.85,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,over,1.5,1.36,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,under,1.5,3.27,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,over,2.5,2.12,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,under,2.5,1.78,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,over,3.5,3.96,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ou,under,3.5,1.27,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,over,1.5,3.15,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,under,1.5,1.36,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,over,0.5,1.43,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,4,Pinnacle,ht_ou,under,0.5,2.86,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,5,SBO,ou,over,2.5,2.07,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,5,SBO,ou,under,2.5,1.77,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,over,1.5,1.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,under,1.5,2.87,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,over,2.5,2.14,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,under,2.5,1.71,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,over,3.5,3.64,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ou,under,3.5,1.23,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,over,1.5,2.88,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,under,1.5,1.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,over,0.5,1.41,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,ht_ou,under,0.5,2.64,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,btts,yes,,1.88,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,11,1xBet,btts,no,,1.82,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,over,1.5,1.42,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,under,1.5,3.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,over,2.5,2.22,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,under,2.5,1.7,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,over,3.5,3.95,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ou,under,3.5,1.26,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,over,1.5,3.05,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,under,1.5,1.38,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,over,0.5,1.47,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,ht_ou,under,0.5,2.7,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,btts,yes,,1.95,api_football,heartbeat
+2026-10-25T23:36:02Z,1493201,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Central Cordoba de Santiago,Velez Sarsfield,32,Betano,btts,no,,1.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,over,1.5,3.8,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,btts,yes,,2.5,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,7,William Hill,btts,no,,1.44,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ou,over,1.5,1.53,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ou,under,1.5,2.38,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ou,over,2.5,2.7,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ou,under,2.5,1.44,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ou,over,3.5,5.5,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ou,under,3.5,1.14,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ht_ou,over,1.5,4.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ht_ou,over,0.5,1.62,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,ht_ou,under,0.5,2.2,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,btts,yes,,2.75,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,8,Bet365,btts,no,,1.4,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,1.5,1.57,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,1.5,2.31,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,2.5,2.69,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,2.5,1.36,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,over,3.5,5.7,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ou,under,3.5,1.08,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,over,1.5,3.9,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,under,1.5,1.18,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,over,0.5,1.58,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,btts,yes,,2.61,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,2,Marathonbet,btts,no,,1.42,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ou,over,1.5,1.6,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ou,under,1.5,2.3,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ou,over,2.5,2.88,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ou,under,2.5,1.4,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ou,over,3.5,6.5,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ou,under,3.5,1.1,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,over,1.5,4.0,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,under,1.5,1.2,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,over,0.5,1.57,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,btts,yes,,2.7,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,3,Betfair,btts,no,,1.44,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,1.5,1.57,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,1.5,2.2,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,2.5,2.75,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,2.5,1.4,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,over,3.5,6.5,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ou,under,3.5,1.08,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,over,1.5,3.9,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,under,1.5,1.22,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,over,0.5,1.59,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,ht_ou,under,0.5,2.17,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,btts,yes,,2.6,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,36,BetVictor,btts,no,,1.44,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,over,1.5,1.62,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,under,1.5,2.39,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,over,2.5,2.96,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,under,2.5,1.42,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,over,3.5,6.63,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ou,under,3.5,1.13,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ht_ou,over,0.5,1.64,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,4,Pinnacle,ht_ou,under,0.5,2.29,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,5,SBO,ou,over,1.5,1.58,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,5,SBO,ou,under,1.5,2.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,5,SBO,ht_ou,over,0.5,1.64,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,5,SBO,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,over,1.5,1.6,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,under,1.5,2.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,over,2.5,2.95,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,under,2.5,1.4,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,over,3.5,7.6,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ou,under,3.5,1.08,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,over,1.5,3.9,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,under,1.5,1.18,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,over,0.5,1.58,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,ht_ou,under,0.5,2.25,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,btts,yes,,2.61,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,11,1xBet,btts,no,,1.43,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,over,1.5,1.6,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,under,1.5,2.42,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,over,2.5,2.77,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,under,2.5,1.47,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,over,3.5,5.4,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ou,under,3.5,1.16,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,over,1.5,3.75,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,under,1.5,1.28,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,over,0.5,1.6,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,ht_ou,under,0.5,2.35,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,btts,yes,,2.57,api_football,heartbeat
+2026-10-25T23:36:02Z,1493200,2026-10-26T00:30:00Z,54.0,T-1h,Argentina Primera Division,new_format,Barracas Central,Estudiantes de Rio Cuarto,32,Betano,btts,no,,1.47,api_football,heartbeat
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,36,BetVictor,ht_ou,over,1.5,2.25,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,36,BetVictor,ht_ou,under,1.5,1.55,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,4,Pinnacle,ou,under,1.5,4.83,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,4,Pinnacle,ou,over,2.5,1.63,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,4,Pinnacle,ou,under,2.5,2.36,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,4,Pinnacle,ou,over,3.5,2.59,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,4,Pinnacle,ou,under,3.5,1.54,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,4,Pinnacle,ht_ou,over,1.5,2.42,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ou,over,1.5,1.2,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ou,under,1.5,4.6,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ou,over,3.5,2.5,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ou,under,3.5,1.57,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ht_ou,over,1.5,2.22,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ht_ou,under,1.5,1.67,api_football,change
+2026-10-25T23:45:05Z,1551017,2026-10-26T01:05:00Z,79.9,T-3h,Mexico Liga MX,new_format,Club America,CF Pachuca,32,Betano,ht_ou,under,0.5,3.55,api_football,change
