@@ -61,7 +61,11 @@ jobs:
           WOWZA_FULL_ENRICH: '1'
         run: python pipeline.py --mode train
 
-      - name: Run walk-forward backtest + generate league ROI config
+      - name: Run walk-forward backtest + write the threshold PROPOSAL
+        # PROPOSE, NEVER APPLY (owner rule 2026-10-26): the optimiser writes candidates under
+        # output/threshold_proposals/candidates/, this step turns them into a proposal, and only
+        # `python -m src.threshold_apply` (owner-approved entries) writes models/best_params_*.json.
+        # output/league_roi_config.json is no longer rewritten (roi_by_league is in the proposal).
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
@@ -75,62 +79,46 @@ jobs:
           else
             python pipeline.py --mode backtest
           fi
-          python - <<'EOF'
-          import json, pandas as pd
-          from pathlib import Path
-
-          roi = {}
-          for market, f in [
-              ("btts",   "output/backtest_by_league_btts.csv"),
-              ("over15", "output/backtest_by_league_over15.csv"),
-              ("over35", "output/backtest_by_league_over35.csv"),
-          ]:
-              p = Path(f)
-              if not p.exists():
-                  continue
-              df = pd.read_csv(p)
-              for _, row in df.iterrows():
-                  league = row["league"]
-                  roi.setdefault(league, {})[market] = round(float(row["roi_%"]), 2)
-
-          # A league is "approved" for a market if ROI >= threshold
-          THRESHOLDS = {"btts": 5.0, "over15": 3.0, "over35": 8.0}
-          approved = {}
-          for league, markets in roi.items():
-              approved[league] = {
-                  m: v for m, v in markets.items()
-                  if v >= THRESHOLDS.get(m, 5.0)
-              }
-
-          out = {"roi_by_league": roi, "approved_markets_by_league": approved}
-          Path("output/league_roi_config.json").write_text(json.dumps(out, indent=2))
-          approved_count = sum(1 for v in approved.values() if v)
-          print(f"ROI config: {len(roi)} leagues evaluated, {approved_count} approved for alerts")
-          EOF
+          if [ -d output/threshold_proposals/candidates ]; then
+            python -m src.threshold_proposals propose --candidates output/threshold_proposals/candidates \
+              --evidence-dir output
+          fi
+          git diff --exit-code -- models/best_params_standard.json models/best_params_side_markets.json \
+            output/league_roi_config.json
 
       - name: Commit and push backtest results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/backtest_results_standard.csv \
-                     output/backtest_by_league_standard.csv \
-                     output/backtest_results_newformat.csv \
-                     output/backtest_by_league_newformat.csv \
-                     output/backtest_results.csv \
-                     output/backtest_by_league_btts.csv output/backtest_by_league_over15.csv \
-                     output/backtest_by_league_over35.csv \
-                     output/backtest_results_btts.csv output/backtest_results_over15.csv \
-                     output/backtest_results_over35.csv \
-                     output/league_roi_config.json \
-                     models/best_params_side_markets.json \
-                     models/model_v9_standard.pkl models/model_v9_newformat.pkl \
-                     models/model_ht_over05.pkl models/model_ht_over15.pkl \
-                     models/metrics_model_v9_standard.json \
-                     models/metrics_model_v9_newformat.json \
-                     models/metrics_model_ht_over05.json \
-                     models/metrics_model_ht_over15.json \
-                     models/feature_importances_ht_over05.csv \
-                     models/feature_importances_ht_over15.csv 2>/dev/null || true
+          # PER-FILE (`git add a b missing` stages nothing). Thresholds: the PROPOSAL only, never
+          # models/best_params_*.json or output/league_roi_config.json (owner rule 2026-10-26).
+          # Models: a serving .pkl changes only through src/promotion_gate.py, which moves the
+          # registry pointer with it - so a .pkl is committed TOGETHER with models/registry and
+          # output/model_lineage (same as retrain.yml), never alone. Before 2026-10-26 this step
+          # committed .pkl files without the registry, which could leave predict stamping an
+          # UNREGISTERED model version.
+          for f in output/threshold_proposals/*.json output/threshold_proposals/*.md \
+                   output/backtest_results_standard.csv output/backtest_by_league_standard.csv \
+                   output/backtest_results_newformat.csv output/backtest_by_league_newformat.csv \
+                   output/backtest_results.csv \
+                   output/backtest_by_league_btts.csv output/backtest_by_league_over15.csv \
+                   output/backtest_by_league_over35.csv \
+                   output/backtest_results_btts.csv output/backtest_results_over15.csv \
+                   output/backtest_results_over35.csv \
+                   models/model_v9_standard.pkl models/model_v9_newformat.pkl \
+                   models/model_ht_over05.pkl models/model_ht_over15.pkl \
+                   models/metrics_model_v9_standard.json models/metrics_model_v9_newformat.json \
+                   models/metrics_model_ht_over05.json models/metrics_model_ht_over15.json \
+                   models/feature_importances_ht_over05.csv models/feature_importances_ht_over15.csv \
+                   output/retrain_log.json; do
+            [ -f "$f" ] && git add -f "$f" || echo "  (skip, not present: $f)"
+          done
+          for d in models/registry output/model_lineage; do
+            [ -d "$d" ] && git add -A -f "$d" || echo "  (skip, not present: $d)"
+          done
+          if git diff --staged --name-only | grep -E '^(models/best_params_|output/league_roi_config\.json|config/)'; then
+            echo "refusing to commit a production threshold file from a backtest"; exit 1
+          fi
           git diff --staged --quiet || \
             git commit -m "auto: backtest results $(date -u '+%Y-%m-%d')"
           pushed=0

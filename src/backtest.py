@@ -451,6 +451,23 @@ def run_side_market_backtest(
     return results_df, summary, league_summary
 
 
+def _oos_evidence(returns: pd.Series, dates: pd.Series | None) -> dict:
+    """Evidence fields for a threshold PROPOSAL (2026-10-26): independent match-days and a 95% CI.
+
+    `returns` is the per-bet return (pnl / stake) of the out-of-sample selection. The CI is the
+    normal approximation on the mean per-bet return, in ROI percentage points; with fewer than two
+    bets there is no interval. These fields are evidence for the owner reading a proposal — the
+    optimizer's `approved` rule is unchanged and does not read them.
+    """
+    r = pd.to_numeric(returns, errors="coerce").dropna()
+    md = int(pd.to_datetime(dates, errors="coerce").dt.normalize().nunique())         if dates is not None and len(dates) else 0
+    if len(r) < 2:
+        return {"oos_matchdays": md, "oos_roi_ci95": None}
+    m, se = float(r.mean()), float(r.std(ddof=1) / np.sqrt(len(r)))
+    return {"oos_matchdays": md,
+            "oos_roi_ci95": [round((m - 1.96 * se) * 100, 2), round((m + 1.96 * se) * 100, 2)]}
+
+
 def optimize_side_market_thresholds(
     results_df: pd.DataFrame,
     target: str,
@@ -540,6 +557,9 @@ def optimize_side_market_thresholds(
         oos_staked = float(oos["bet_stake"].sum()) if len(oos) else 0.0
         oos_roi = float(oos["pnl"].sum() / oos_staked * 100) if oos_staked > 0 else None
         oos_bets = len(oos)
+        _ev = _oos_evidence(
+            (oos["pnl"] / oos["bet_stake"].where(oos["bet_stake"] > 0)) if len(oos) else oos.get("pnl", pd.Series(dtype=float)),
+            oos["date"] if "date" in oos.columns else None)
 
         drop = (best_roi <= 0 or best_bets < min_bets)
         approved = bool(oos_roi is not None and oos_roi > 0 and oos_bets >= min_oos_bets)
@@ -552,6 +572,7 @@ def optimize_side_market_thresholds(
             "roi_oos":     round(oos_roi, 2) if oos_roi is not None else None,
             "bets_oos":    oos_bets,
             "approved":    approved,
+            **_ev,
         }
 
     kept     = sum(1 for v in results.values() if not v["drop"])
@@ -644,13 +665,14 @@ def optimize_standard_thresholds(
         oos      = pd.concat(oos_rows) if oos_rows else g.iloc[0:0]
         oos_roi  = float(oos["_bpnl"].mean() * 100) if len(oos) else None
         oos_bets = len(oos)
+        _ev = _oos_evidence(oos["_bpnl"], oos["date"] if "date" in oos.columns else None)
 
         if ins is None:
             results[lg] = {
                 "sniper_th": None, "marksman_th": None,
                 "roi_insample": None, "bets_insample": 0,
                 "roi_oos": round(oos_roi, 2) if oos_roi is not None else None,
-                "bets_oos": oos_bets, "approved": False,
+                "bets_oos": oos_bets, "approved": False, **_ev,
             }
             continue
 
@@ -664,6 +686,7 @@ def optimize_standard_thresholds(
             "roi_oos":       round(oos_roi, 2) if oos_roi is not None else None,
             "bets_oos":      oos_bets,
             "approved":      bool(approved),
+            **_ev,
         }
 
     kept = sum(1 for v in results.values() if v["approved"])

@@ -497,16 +497,20 @@ def main():
         # a club splitting into two teams (09-24). The model those gates were fitted for no
         # longer exists, so the gates were tuned for a system that had been replaced.
         #
-        # Refitting here keeps the two in step. It does NOT widen anything by itself: the
-        # `approved` flag still requires an out-of-sample-positive result before
-        # src/betting.py will deploy a value, and an unapproved league keeps falling back to
-        # the hand-set config table exactly as before.
+        # PROPOSE, NEVER APPLY (owner rule 2026-10-26). The refit is still computed every run so
+        # the drift between the model and its gates stays visible, but it is written as a
+        # CANDIDATE under output/threshold_proposals/candidates/ and is NOT staged by retrain.yml.
+        # models/best_params_standard.json, which production reads, changes only through an
+        # owner-approved proposal applied by src/threshold_apply.py; the monthly backtest_matrix
+        # is what turns candidates into a proposal.
         try:
             from src.backtest import optimize_standard_thresholds
+            from src.threshold_proposals import write_candidate
             _th_file = config.MODELS_DIR / "best_params_standard.json"
             _prev = json.loads(_th_file.read_text(encoding="utf-8")) if _th_file.exists() else {}
             _new = optimize_standard_thresholds(std_df)
-            _th_file.write_text(json.dumps(_new, indent=2), encoding="utf-8")
+            _cand = write_candidate("standard", _new)
+            log.info(f"  [gate] refit written as CANDIDATE {_cand} — production thresholds unchanged")
 
             # CHURN IS THE RISK THIS INTRODUCES, so it is logged rather than left to be noticed.
             # A gate that flips approval every week is not a calibration, it is noise, and the
@@ -514,8 +518,8 @@ def main():
             for lg in sorted(set(_prev) | set(_new)):
                 a, b = _prev.get(lg) or {}, _new.get(lg) or {}
                 if a.get("approved") != b.get("approved") or a.get("sniper_th") != b.get("sniper_th"):
-                    log.info(f"  [gate] {lg}: sniper {a.get('sniper_th')} -> {b.get('sniper_th')}, "
-                             f"approved {a.get('approved')} -> {b.get('approved')}")
+                    log.info(f"  [gate] {lg} (candidate vs serving): sniper {a.get('sniper_th')} -> "
+                             f"{b.get('sniper_th')}, approved {a.get('approved')} -> {b.get('approved')}")
             _appr = [lg for lg, v in _new.items() if v.get("approved")]
             log.info(f"  [gate] refit from this run's backtest — "
                      f"{len(_appr)} real-money approved: {_appr or 'none'}")

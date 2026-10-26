@@ -68,3 +68,43 @@ def protected(reg: pd.DataFrame) -> pd.DataFrame:
         return reg
     m = reg["research_regime"].eq("PROTECTED") | reg["owner_locked"].fillna(False).astype(bool)
     return reg[m].reset_index(drop=True)
+
+
+# ── threshold proposals (owner rule 2026-10-26: the monthly backtest PROPOSES, the owner approves) ──
+PROPOSAL_LATEST = ROOT / "output" / "threshold_proposals" / "latest.json"
+APPROVALS = ROOT / "config" / "threshold_approvals.json"
+APPLIED = ROOT / "config" / "threshold_applied.json"
+
+
+def threshold_proposal(latest: Path | None = None, approvals: Path | None = None,
+                       applied: Path | None = None) -> dict:
+    """The newest threshold proposal and where it stands: AWAITING_OWNER / APPROVED_NOT_APPLIED / APPLIED /
+    NO_SERVING_CHANGE, or {} when the monthly job has not written one yet. Reads three small JSON files."""
+    def _j(p):
+        try:
+            return json.loads(Path(p).read_text(encoding="utf-8"))
+        except Exception:                                             # noqa: BLE001
+            return {}
+    lt = _j(latest or PROPOSAL_LATEST)
+    if not lt.get("proposal_id"):
+        return {}
+    pid = lt["proposal_id"]
+    appr = [a for a in (_j(approvals or APPROVALS).get("approvals") or []) if a.get("proposal_id") == pid]
+    hist = [h for h in (_j(applied or APPLIED).get("history") or []) if h.get("proposal_id") == pid]
+    if hist:
+        state = "APPLIED"
+    elif appr:
+        state = "APPROVED_NOT_APPLIED"
+    else:
+        state = lt.get("status") or "AWAITING_OWNER"
+    rows = pd.DataFrame([{
+        "entry": c.get("entry_id"), "change": c.get("change"),
+        "SNIPER now": (c.get("served_now") or {}).get("sniper"),
+        "SNIPER if approved": (c.get("served_if_approved") or {}).get("sniper"),
+        "MARKSMAN now": (c.get("served_now") or {}).get("marksman"),
+        "MARKSMAN if approved": (c.get("served_if_approved") or {}).get("marksman"),
+        "OOS n": c.get("bets_oos"), "OOS match-days": c.get("oos_matchdays"), "OOS ROI %": c.get("roi_oos"),
+        "OOS ROI 95% CI": (str(c.get("oos_roi_ci95")) if c.get("oos_roi_ci95") else None)}
+        for c in lt.get("serving_changes") or []])
+    return {**lt, "state": state, "approved_by": (appr[0].get("approved_by") if appr else None),
+            "applied_at": (hist[-1].get("applied_at") if hist else None), "rows": rows}

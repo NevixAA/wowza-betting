@@ -9,9 +9,18 @@
 WHAT IT GUARDS. Research (scripts/build_league_regimes.py, the weekly panel that follows) must never
 change a threshold, a stake, a market's eligibility, an ACTIVE/PAPER state or a selection rule. This
 module fingerprints the PRODUCTION-FACING behaviour into config/research_lock_snapshot.json and the
-check fails when the live repo no longer matches it. A legitimate change (an owner-approved policy PR,
-or the monthly backtest re-approving a gate on a PROTECTED cell) is accepted by re-running --approve,
-which records approved_by / approved_at; nothing is ever accepted silently.
+check fails when the live repo no longer matches it. A legitimate change (an owner-approved policy PR)
+is accepted by re-running --approve, which records approved_by / approved_at; nothing is ever accepted
+silently.
+
+PER-LEAGUE THRESHOLD FILES (owner rule 2026-10-26: the monthly backtest PROPOSES, the owner approves).
+models/best_params_standard.json and models/best_params_side_markets.json are the files production
+reads its auto-optimised per-league gates from. They may change ONLY through src/threshold_apply.py,
+which applies owner-approved proposal entries, records the files' content digests in
+config/threshold_applied.json and re-approves this snapshot with the approver's name. check() compares
+the live files against that ledger, so ANY other change to them (a workflow, a hand edit, a re-run of
+the optimizer) is reported under `threshold_files.*` and sets protected_tracks_modified - for every
+league, not only PROTECTED ones. `--approve` cannot bless such a change: it does not touch the ledger.
 
 FINGERPRINT CONTENTS
   global.bankroll_policy   config/bankroll_policy.json: policy_version, portfolio caps, tier and
@@ -60,6 +69,11 @@ PREDICT_YML = ROOT / ".github" / "workflows" / "predict.yml"
 CONFIG_PY = ROOT / "config.py"
 CLOUDBET_CLIENT = ROOT / "src" / "cloudbet" / "client.py"
 WORKFLOWS = ROOT / ".github" / "workflows"
+#: The per-league threshold files production reads (src/betting.py, pipeline._generate_side_bets,
+#: src/gate_resolver.py). Written only by src/threshold_apply.py.
+THRESHOLD_FILES = ("models/best_params_standard.json", "models/best_params_side_markets.json")
+THRESHOLD_ROOT = ROOT
+THRESHOLD_LEDGER_PATH = ROOT / "config" / "threshold_applied.json"
 #: Registry market -> gate_resolver market key
 GATE_MARKET = {"OU25": "ou25", "BTTS": "btts", "OVER15": "over15", "OVER35": "over35"}
 
@@ -211,8 +225,43 @@ def diff(old, new, path: str = "") -> list[str]:
     return []
 
 
+def canonical_digest(path: Path) -> str:
+    """Content digest of a JSON file that ignores formatting and line endings (CRLF checkouts on
+    Windows vs LF on CI must not read as a change). ABSENT / UNREADABLE are digests too."""
+    p = Path(path)
+    if not p.exists():
+        return "ABSENT"
+    try:
+        obj = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:                                                 # noqa: BLE001
+        return "UNREADABLE:" + hashlib.sha256(p.read_bytes()).hexdigest()
+    return hashlib.sha256(json.dumps(obj, sort_keys=True, separators=(",", ":"),
+                                     default=str).encode("utf-8")).hexdigest()
+
+
+def threshold_file_digests(root: Path | None = None) -> dict:
+    root = Path(root) if root is not None else THRESHOLD_ROOT
+    return {rel: canonical_digest(root / rel) for rel in THRESHOLD_FILES}
+
+
+def threshold_files_changes(ledger: dict | None = None, root: Path | None = None) -> list[str]:
+    """Differences between the live per-league threshold files and the digests the last APPROVED
+    apply recorded. A missing ledger fails closed."""
+    led = ledger if ledger is not None else _read_json(THRESHOLD_LEDGER_PATH)
+    if not led.get("files"):
+        return ["threshold_files: no applied-threshold ledger (config/threshold_applied.json) - "
+                "per-league thresholds cannot be verified"]
+    out = []
+    for rel, cur in threshold_file_digests(root).items():
+        exp = led["files"].get(rel)
+        if cur != exp:
+            out.append(f"threshold_files.{rel}: {str(exp)[:12]} -> {str(cur)[:12]} (changed without an "
+                       f"owner-approved `python -m src.threshold_apply`)")
+    return out
+
+
 def check(snapshot: dict | None = None, registry: dict | None = None, policy: dict | None = None,
-          env: dict | None = None) -> dict:
+          env: dict | None = None, ledger: dict | None = None) -> dict:
     snap = snapshot if snapshot is not None else _read_json(SNAPSHOT_PATH)
     registry = registry if registry is not None else _read_json(REGISTRY_PATH)
     if not snap.get("fingerprint"):
@@ -220,9 +269,11 @@ def check(snapshot: dict | None = None, registry: dict | None = None, policy: di
                 "unapproved_new_protected_tracks": [], "approved_by": None, "approved_at": None}
     approved_keys = sorted(snap["fingerprint"].get("protected_tracks", {}))
     now = fingerprint(approved_keys, registry=registry, policy=policy, env=env)
-    changes = diff(snap["fingerprint"], now)
+    tf_changes = threshold_files_changes(ledger)
+    changes = diff(snap["fingerprint"], now) + tf_changes
     new_keys = sorted(set(protected_keys(registry)) - set(approved_keys))
     return {"protected_tracks_modified": bool(changes), "changes": changes,
+            "threshold_files_unapproved": tf_changes,
             "unapproved_new_protected_tracks": new_keys, "n_protected_tracks": len(approved_keys),
             "approved_by": snap.get("approved_by"), "approved_at": snap.get("approved_at"),
             "approved_digest": snap.get("fingerprint_sha256"), "current_digest": digest(now)}

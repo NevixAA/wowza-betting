@@ -44,6 +44,24 @@ def _load(today: str):
 today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 plan, summ, meta, reg, prot = _load(today)
 
+# ── threshold proposal notice (display only; owner rule 2026-10-26: the backtest PROPOSES) ────────
+_tp = production_view.threshold_proposal()
+if _tp:
+    _txt = (f"**Threshold proposal {_tp['proposal_id']}** ({_tp.get('created_at', '?')}) — "
+            f"{_tp.get('n_serving_changes', 0)} league × market gate(s) would change if approved · "
+            f"state **{_tp['state']}**")
+    if _tp["state"] == "AWAITING_OWNER":
+        st.info(_txt + ". Nothing is live until the owner approves entries in `config/threshold_approvals.json` "
+                f"and `python -m src.threshold_apply` runs. Read `{_tp.get('summary_md')}`.")
+    elif _tp["state"] == "APPROVED_NOT_APPLIED":
+        st.warning(_txt + f" (approved by {_tp.get('approved_by')}) — run `python -m src.threshold_apply "
+                   f"--proposal {_tp.get('path')}`.")
+    else:
+        st.caption(_txt + (f" · applied {_tp['applied_at']}" if _tp.get("applied_at") else "") + ".")
+    if _tp["state"] in ("AWAITING_OWNER", "APPROVED_NOT_APPLIED") and not _tp["rows"].empty:
+        with st.expander("Proposed gate changes"):
+            st.dataframe(_tp["rows"], hide_index=True, width="stretch")
+
 # ── stake plan ─────────────────────────────────────────────────────────────────────────────────
 ui.section_header("Current bets and stakes")
 if _fstate != "FRESH":                     # the header chip states freshness; the long banner only when not fresh

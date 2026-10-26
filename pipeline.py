@@ -998,15 +998,17 @@ def mode_backtest(feat: "pd.DataFrame" = None, only: str = None) -> tuple:
     # ── Standard O/U 2.5 per-league SNIPER-threshold optimizer ─────────────────
     # Auto-tunes per-league thresholds (the standard-model equivalent of
     # optimize_side_market_thresholds; standard historically used hand-set constants).
-    # OOS-gated: `approved` marks real-money leagues only — signals still fire for all.
+    #
+    # PROPOSE, NEVER APPLY (owner rule 2026-10-26). The result is a CANDIDATE written under
+    # output/threshold_proposals/candidates/ — models/best_params_standard.json, which production
+    # reads, is written only by src/threshold_apply.py from an owner-approved proposal entry.
     if std_results is not None:
-        import json
+        from src.threshold_proposals import write_candidate
         std_th = optimize_standard_thresholds(std_results)
-        (config.MODELS_DIR / "best_params_standard.json").write_text(
-            json.dumps(std_th, indent=2))
+        _cf = write_candidate("standard", std_th)
         appr = [lg for lg, v in std_th.items() if v.get("approved")]
-        log.info(f"Standard per-league thresholds -> best_params_standard.json "
-                 f"({len(appr)} real-money approved: {appr or 'none'})")
+        log.info(f"Standard per-league thresholds -> CANDIDATE {_cf} ({len(appr)} optimizer-approved: "
+                 f"{appr or 'none'}) — not served until the owner approves a proposal")
 
     # Single-model run (only='standard' or 'newformat'): skip the side-market backtests
     # entirely — they're a separate concern, run them alone via `--mode backtest-side --market X`.
@@ -1054,12 +1056,11 @@ def mode_backtest(feat: "pd.DataFrame" = None, only: str = None) -> tuple:
         except Exception as e:
             log.warning(f"  [{target}] Backtest failed: {e}")
 
-    # Save all side-market thresholds to JSON
+    # Save all side-market thresholds as a CANDIDATE (owner rule 2026-10-26: propose, never apply)
     if all_side_thresholds:
-        th_file = config.MODELS_DIR / "best_params_side_markets.json"
-        with open(th_file, "w") as f:
-            json.dump(all_side_thresholds, f, indent=2)
-        log.info(f"Side-market thresholds saved → {th_file}")
+        from src.threshold_proposals import write_candidate
+        th_file = write_candidate("side_markets", all_side_thresholds)
+        log.info(f"Side-market thresholds -> CANDIDATE {th_file} (not served until approved)")
 
     return std_results, std_summary
 
@@ -1089,16 +1090,18 @@ def mode_backtest_side(feat: "pd.DataFrame" = None, market: str = None) -> None:
         for t, p in procs:
             p.wait()
             log.info(f"[{t}] subprocess finished (exit {p.returncode})")
-        # Merge per-market JSON files into one combined best_params_side_markets.json
+        # Merge the per-market CANDIDATES into one combined candidate (owner rule 2026-10-26:
+        # the backtest proposes; models/best_params_side_markets.json is written only by
+        # src/threshold_apply.py from an owner-approved proposal).
+        from src.threshold_proposals import CANDIDATE_DIR, write_candidate
         all_side_thresholds = {}
         for t in config.SIDE_MARKET_LABELS:
-            f = config.MODELS_DIR / f"best_params_{t}.json"
+            f = CANDIDATE_DIR / f"best_params_{t}.json"
             if f.exists():
                 all_side_thresholds[t] = json.loads(f.read_text())
         if all_side_thresholds:
-            th_file = config.MODELS_DIR / "best_params_side_markets.json"
-            th_file.write_text(json.dumps(all_side_thresholds, indent=2))
-            log.info(f"Combined thresholds saved → {th_file}")
+            th_file = write_candidate("side_markets", all_side_thresholds)
+            log.info(f"Combined threshold CANDIDATE saved → {th_file} (not served until approved)")
         return
 
     if feat is None:
@@ -1143,15 +1146,14 @@ def mode_backtest_side(feat: "pd.DataFrame" = None, market: str = None) -> None:
             log.warning(f"  [{target}] Backtest failed: {e}")
 
     if all_side_thresholds:
-        # Save per-market file (used by parallel dispatcher to merge)
+        # CANDIDATES only (owner rule 2026-10-26) — see src/threshold_proposals.py.
+        from src.threshold_proposals import write_candidate
         if market:
-            m_file = config.MODELS_DIR / f"best_params_{market}.json"
-            m_file.write_text(json.dumps(all_side_thresholds.get(market, {}), indent=2))
+            m_file = write_candidate(market, all_side_thresholds.get(market, {}))
+            log.info(f"[{market}] threshold CANDIDATE saved → {m_file} (not served until approved)")
         else:
-            th_file = config.MODELS_DIR / "best_params_side_markets.json"
-            with open(th_file, "w") as f:
-                json.dump(all_side_thresholds, f, indent=2)
-            log.info(f"Side-market thresholds saved → {th_file}")
+            th_file = write_candidate("side_markets", all_side_thresholds)
+            log.info(f"Side-market threshold CANDIDATE saved → {th_file} (not served until approved)")
 
 
 def main():
