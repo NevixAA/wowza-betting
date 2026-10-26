@@ -24,6 +24,7 @@ an in-play price, and treating one as a closing line manufactures enormous fake 
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 
 import numpy as np
@@ -92,6 +93,36 @@ HEARTBEAT_BANDS = {"T-1h", "T-30m", "T-10m"}
 #: OPENING line, which is one row per entity, not a running log of slow drift across a week.
 #: Tracking FAR changes is what turned a projected 1 MB/day into a measured 142 MB/day.
 OPEN_ONLY_BANDS = {"FAR"}
+
+#: FAR EXCEPTION, owner-approved 2026-10-26: the market-first engine's families (full-match O/U
+#: 1.5 / 2.5 / 3.5 and BTTS) ARE change-tracked in FAR. Half-time O/U stays open-only.
+#:
+#: WHY THE RULE ABOVE STOPPED BEING RIGHT. "Nothing is certified against a FAR price" was true for
+#: CLV. It is not true for the market-first shadow engine (src/edge_af_quotes.py ->
+#: src/market_edge.py), which logs its FIRST-SIGHT opinion days before kickoff (61% of first sights
+#: are more than 96 h out) and refuses any book whose pair is older than stale_hard_minutes (720).
+#: An open-only FAR price is older than that within 12 h of being written, so most far fixtures
+#: had no usable two-sided OU15 / OU35 price at first sight.
+#:
+#: VOLUME. The 142 MB/day measured on 2026-10-04 came from tracking THIRTY lines plus 1X2 and
+#: half-time. MODELLED_LINES has since cut that to three full-match lines, and this exception adds
+#: only these families. Two rules keep it small and keep the engine's pairing intact:
+#:   * PAIR-LEVEL. When either side of a (fixture, book, market, line) moves, BOTH sides are
+#:     written at that snapshot. edge_af_quotes pairs only same-snapshot rows, so writing the
+#:     moved side alone would turn that book ONE-SIDED until the partner happened to move too.
+#:   * FAR HEARTBEAT. An unchanged pair is re-written once its latest recorded row is at least
+#:     FAR_HEARTBEAT_H old, so a book whose price simply did not move is not dropped as stale.
+#:     With WIDE passes about every 6 h (src/capture_schedule.wide_due) this is one heartbeat every
+#:     second pass. 0 disables it.
+#: MEASURED 2026-10-26 by replaying the committed parts (10-04..10-26, 21.7 days, both tracks): the
+#: heartbeat adds ~2.4 MB/day at 9 h (5.5 h: ~4.4 MB/day; 11 h: ~2.1 MB/day) on top of ~3.3 MB/day
+#: today, and FAR moves add an estimated ~1.5 MB/day more (day parts gzip ~25x). Two-sided OU15
+#: coverage 48-96 h out rose from ~40% to ~75% (9 h) / ~85% (5.5 h) in the same replay.
+FAR_TRACKED_MARKETS = {"ou", "btts"}
+try:
+    FAR_HEARTBEAT_H = float(os.getenv("BOOK_QUOTES_FAR_HEARTBEAT_H", "9"))
+except ValueError:
+    FAR_HEARTBEAT_H = 9.0
 
 
 def ladder_band(minutes_to_kickoff: float | None) -> str:
@@ -301,6 +332,29 @@ def append_quotes(rows: list[dict], path: Path | None = None) -> int:
     return _append_one(df, Path(path))
 
 
+def _far_tracked_rows(df: pd.DataFrame, prior: pd.DataFrame, far: pd.Series,
+                      changed: pd.Series, seen_ents: set) -> pd.Series:
+    """FAR rows of FAR_TRACKED_MARKETS to write: every side of a (fixture, book, market, line)
+    pair when any side is new, moved, or its latest recorded row is >= FAR_HEARTBEAT_H old."""
+    tracked = far & df["market"].astype(str).isin(FAR_TRACKED_MARKETS)
+    if not tracked.any():
+        return tracked
+    seen = df["_k"].isin(seen_ents)
+    fire = tracked & (~seen | changed)
+    if FAR_HEARTBEAT_H > 0 and len(prior):
+        last_ts = pd.to_datetime(prior.groupby("_k")["snapshot_ts"].max(), errors="coerce",
+                                 utc=True)
+        prev_ts = df["_k"].map(last_ts)
+        now_ts = pd.to_datetime(df["snapshot_ts"], errors="coerce", utc=True)
+        age_h = (now_ts - prev_ts).dt.total_seconds() / 3600.0
+        # An unparseable age is treated as infinitely old: the pair is written.
+        fire |= tracked & seen & (age_h.isna() | (age_h >= FAR_HEARTBEAT_H))
+    pair = (df["fixture_id"].astype(str) + "|" + df["bookmaker_id"].astype(str) + "|"
+            + df["market"].astype(str) + "|" + df["line"].fillna(-1).astype(str))
+    fire_pairs = set(pair[fire])
+    return tracked & pair.isin(fire_pairs)
+
+
 def _append_one(df: pd.DataFrame, p: Path) -> int:
     """Append one frame to one file, keeping only consecutive-DISTINCT prices."""
 
@@ -355,13 +409,15 @@ def _append_one(df: pd.DataFrame, p: Path) -> int:
         seen_ents = set(prior["_k"]) if len(prior) else set()
         far = df["ladder_band"].isin(OPEN_ONLY_BANDS)
         far_first = far & ~df["_k"].isin(seen_ents)
-        keep = (changed & ~far) | heartbeat | far_first
-        # A FAR row that survives `keep` is ALWAYS an opening price, because FAR is never
-        # change-tracked. The first version tested `far_first & ~changed`, but a first sighting
-        # has no prior price, so `changed` is True for exactly the rows that are opens — every
-        # one was mislabelled "change". Caught on the first real capture under the new rules:
-        # 582 of 582 FAR rows said "change".
-        df = df.assign(obs_reason=np.where(far, "open",
+        # ...EXCEPT the engine's families (FAR_TRACKED_MARKETS): pair-level change + FAR heartbeat.
+        far_tracked = _far_tracked_rows(df, prior, far, changed, seen_ents)
+        keep = (changed & ~far) | heartbeat | far_first | far_tracked
+        # A first FAR sighting is an OPENING price. The first version tested
+        # `far_first & ~changed`, but a first sighting has no prior price, so `changed` is True for
+        # exactly the rows that are opens — every one was mislabelled "change" (582 of 582 on the
+        # first real capture). A tracked FAR row that was seen before is a "change" when its own
+        # price moved, otherwise a "heartbeat" (the pair's partner moved, or the pair was due).
+        df = df.assign(obs_reason=np.where(far_first, "open",
                                            np.where(changed, "change", "heartbeat")))
         df = df[keep].drop(columns="_k")
         if df.empty:
