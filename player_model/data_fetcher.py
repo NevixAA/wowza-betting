@@ -1345,23 +1345,31 @@ def fetch_all_player_sidelined(df: "pd.DataFrame", max_workers: int = 5,
     total = len(unique_pids)
     results = {}
 
-    def _fetch_one(pid: int) -> tuple[int, list]:
+    # A FAILED fetch is not an empty sidelined list. It used to return [] here, which the
+    # injury features turn into "no recorded injury" (0 / 365 / 0) -- an invented value written
+    # onto real rows. A failed player is now simply absent from the result and the caller
+    # leaves his rows untouched (2026-10-26).
+    def _fetch_one(pid: int) -> tuple[int, list | None]:
         try:
             return pid, fetch_player_sidelined(pid)
         except Exception:
-            return pid, []
+            return pid, None
 
     done = 0
+    failed = 0
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(_fetch_one, int(pid)): pid for pid in unique_pids}
         for future in as_completed(futures):
             pid, data = future.result()
-            results[pid] = data
+            if data is None:
+                failed += 1
+            else:
+                results[pid] = data
             done += 1
             if done % 500 == 0:
                 print(f"[sidelined] {done}/{total} players fetched...")
 
-    print(f"[sidelined] Done. {len(results)} players processed.")
+    print(f"[sidelined] Done. {len(results)} players processed, {failed} failed (left untouched).")
     return results
 
 

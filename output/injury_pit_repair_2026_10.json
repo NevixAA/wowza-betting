@@ -1,0 +1,189 @@
+{
+  "rows": 870856,
+  "players": 21191,
+  "stamp_events": 29943,
+  "stamp_events_by_kind": {
+    "stamp": 29943
+  },
+  "contaminated_rows": 336535,
+  "contaminated_days_recovered": 159402,
+  "contaminated_days_nulled": 177133,
+  "contaminated_chronic_recovered": 68629,
+  "contaminated_chronic_nulled": 267906,
+  "default_rows": 534321,
+  "default_rows_reconstructed": 69527,
+  "default_rows_value_changed": 68606,
+  "default_rows_chronic_set_nan": 25617,
+  "default_rows_kept_no_stamp": 464794,
+  "changed_cells": {
+    "days_since_last_injury": 404917,
+    "chronic_injury_risk": 293698,
+    "return_from_injury_flag": 185723
+  },
+  "nan_after": {
+    "days_since_last_injury": 177133,
+    "chronic_injury_risk": 293523
+  },
+  "proof_agreement_between_independent_stamps": {
+    "rows_with_2plus_determining_stamps": 220130,
+    "rows_where_they_disagree": 50
+  },
+  "rows_nulled_because_stamps_disagree": 50,
+  "proof_vectorised_vs_scalar": {
+    "checked": 3000,
+    "mismatches": 0
+  },
+  "contaminated_by_year": {
+    "2022": 11130,
+    "2023": 76903,
+    "2024": 95858,
+    "2025": 100214,
+    "2026": 52430
+  },
+  "snapshots": {
+    "708dd601 boundary": {
+      "rows": 30083,
+      "note": "no injury columns yet"
+    },
+    "50ad79bd boundary": {
+      "rows": 230216,
+      "players": 7635,
+      "stamp": 2378,
+      "default": 5257,
+      "mixed": 0,
+      "new_stamps": 0,
+      "default_stamps": 0
+    },
+    "45e4b744 2026-08-16": {
+      "rows": 230216,
+      "players": 7635,
+      "stamp": 2378,
+      "default": 5257,
+      "mixed": 0,
+      "new_stamps": 733,
+      "default_stamps": 0
+    },
+    "24a39b6e 2026-08-17": {
+      "rows": 230216,
+      "players": 7635,
+      "stamp": 2380,
+      "default": 5255,
+      "mixed": 0,
+      "new_stamps": 731,
+      "default_stamps": 0
+    },
+    "48cceaf2 2026-08-18": {
+      "rows": 230216,
+      "players": 7635,
+      "stamp": 2381,
+      "default": 5254,
+      "mixed": 0,
+      "new_stamps": 724,
+      "default_stamps": 0
+    },
+    "ec2aa594 2026-08-22": {
+      "rows": 302456,
+      "players": 8027,
+      "stamp": 1647,
+      "default": 6380,
+      "mixed": 0,
+      "new_stamps": 1396,
+      "default_stamps": 0
+    },
+    "63fb324a 2026-08-29": {
+      "rows": 302456,
+      "players": 8027,
+      "stamp": 1647,
+      "default": 6380,
+      "mixed": 0,
+      "new_stamps": 1148,
+      "default_stamps": 0
+    },
+    "c2195f98 2026-09-05": {
+      "rows": 302456,
+      "players": 8027,
+      "stamp": 1650,
+      "default": 6377,
+      "mixed": 0,
+      "new_stamps": 902,
+      "default_stamps": 0
+    },
+    "416d2694 2026-09-12": {
+      "rows": 302456,
+      "players": 8027,
+      "stamp": 1646,
+      "default": 6381,
+      "mixed": 0,
+      "new_stamps": 793,
+      "default_stamps": 0
+    },
+    "9404d06c 2026-09-19": {
+      "rows": 302456,
+      "players": 8027,
+      "stamp": 1645,
+      "default": 6382,
+      "mixed": 0,
+      "new_stamps": 724,
+      "default_stamps": 0
+    },
+    "937ec2d1 2026-09-26": {
+      "rows": 501476,
+      "players": 16719,
+      "stamp": 4784,
+      "default": 11935,
+      "mixed": 0,
+      "new_stamps": 4513,
+      "default_stamps": "skipped: crawl cap bit, fetched set unknown",
+      "active": 9923
+    },
+    "d9b2902b 2026-10-03": {
+      "rows": 849337,
+      "players": 21029,
+      "stamp": 4642,
+      "default": 16387,
+      "mixed": 0,
+      "new_stamps": 4371,
+      "default_stamps": "skipped: crawl cap bit, fetched set unknown",
+      "active": 9962
+    },
+    "b881e58d 2026-10-10": {
+      "rows": 850860,
+      "players": 21047,
+      "stamp": 4402,
+      "default": 16645,
+      "mixed": 0,
+      "new_stamps": 4108,
+      "default_stamps": "skipped: crawl cap bit, fetched set unknown",
+      "active": 9891
+    },
+    "b2da13a4 2026-10-17": {
+      "rows": 858301,
+      "players": 21105,
+      "stamp": 5657,
+      "default": 15448,
+      "mixed": 0,
+      "new_stamps": 5319,
+      "default_stamps": "skipped: crawl cap bit, fetched set unknown",
+      "active": 9882
+    },
+    "HEAD 2026-10-24": {
+      "rows": 870856,
+      "players": 21191,
+      "stamp": 4890,
+      "default": 16297,
+      "mixed": 4,
+      "new_stamps": 4481,
+      "default_stamps": "skipped: crawl cap bit, fetched set unknown",
+      "active": 10000
+    },
+    "default_stamps_dropped_as_failed_fetch": 0
+  },
+  "write": {
+    "parts_written": 51,
+    "bytes_written": 180454515,
+    "rows_unchanged": true,
+    "keys_unchanged_in_order": true,
+    "non_injury_columns_checked": 209,
+    "non_injury_columns_differing": []
+  }
+}
