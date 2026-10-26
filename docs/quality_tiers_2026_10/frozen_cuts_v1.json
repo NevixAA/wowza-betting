@@ -1,0 +1,58 @@
+{
+ "version": "qt_v1",
+ "learned_on": "DISCOVERY 2026-08-31 .. day < 2026-10-05",
+ "cuts": {
+  "new_format|BTTS": [
+   0.133535,
+   0.254837
+  ],
+  "new_format|OU25": [
+   0.052834,
+   0.171008
+  ],
+  "new_format|OVER15": [
+   0.023083,
+   0.073831
+  ],
+  "new_format|OVER35": [
+   -0.543433,
+   -0.018936
+  ],
+  "standard|BTTS": [
+   0.016653,
+   0.115168
+  ],
+  "standard|OU25": [
+   -0.289036,
+   -0.145828
+  ],
+  "standard|OVER15": [
+   -0.949947,
+   -0.289963
+  ],
+  "standard|OVER35": [
+   -0.612006,
+   -0.034551
+  ]
+ },
+ "chosen_definition": {
+  "new_format|OU25": "TERCILE",
+  "new_format|BTTS": "FIXED",
+  "new_format|OVER15": "FIXED",
+  "new_format|OVER35": "TERCILE",
+  "standard|OU25": "FIXED",
+  "standard|BTTS": "TERCILE",
+  "standard|OVER15": "TERCILE",
+  "standard|OVER35": "TERCILE"
+ },
+ "verdict": {
+  "new_format|OU25": "ONE_LAYER",
+  "new_format|BTTS": "ONE_LAYER",
+  "new_format|OVER15": "ONE_LAYER",
+  "new_format|OVER35": "ONE_LAYER",
+  "standard|OU25": "ONE_LAYER",
+  "standard|BTTS": "ONE_LAYER",
+  "standard|OVER15": "ONE_LAYER",
+  "standard|OVER35": "ONE_LAYER"
+ }
+}

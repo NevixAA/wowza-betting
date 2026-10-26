@@ -1,0 +1,3023 @@
+{
+ "meta": {
+  "version": "qt_v1",
+  "built_at": "2026-10-26T10:24:22Z",
+  "season_start": "2026-08-15",
+  "holdout_starts": "2026-10-05",
+  "first_scored_day": "2026-08-31",
+  "last_day": "2026-10-25",
+  "tips_in_record": 1555,
+  "unmatched_tips": 75,
+  "gap_tier_fallback": 0,
+  "gap_tier_vs_ledger_agree": 0.72,
+  "settled_scored": 981,
+  "frozen": {
+   "C": 0.5,
+   "MIN_TRAIN": 150,
+   "LEAGUE_K": 50.0,
+   "LONG_ODDS": 3.0,
+   "DISCOVERY_SHARE": 0.6,
+   "MIN_HOLDOUT_N": 45,
+   "FDR_Q": 0.1,
+   "N_BOOT": 2000,
+   "SEED": 20261026
+  },
+  "cuts_fixed_from_discovery": {
+   "new_format|BTTS": [
+    0.133535,
+    0.254837
+   ],
+   "new_format|OU25": [
+    0.052834,
+    0.171008
+   ],
+   "new_format|OVER15": [
+    0.023083,
+    0.073831
+   ],
+   "new_format|OVER35": [
+    -0.543433,
+    -0.018936
+   ],
+   "standard|BTTS": [
+    0.016653,
+    0.115168
+   ],
+   "standard|OU25": [
+    -0.289036,
+    -0.145828
+   ],
+   "standard|OVER15": [
+    -0.949947,
+    -0.289963
+   ],
+   "standard|OVER35": [
+    -0.612006,
+    -0.034551
+   ]
+  }
+ },
+ "cells": {
+  "new_format|OU25": {
+   "track": "new_format",
+   "market": "OU25",
+   "season_tips_settled": 487,
+   "scored": 355,
+   "discovery_n": 155,
+   "holdout_n": 200,
+   "chosen_definition": "TERCILE",
+   "discovery": {
+    "TERCILE": {
+     "ordered": false,
+     "spearman": 0.0221,
+     "spearman_p": 0.7851,
+     "top_minus_bottom": 0.0076,
+     "top_minus_bottom_ci95": [
+      -0.5355,
+      0.5537
+     ],
+     "p_one": 0.5017491254372813
+    },
+    "FIXED": {
+     "ordered": false,
+     "spearman": -0.0369,
+     "spearman_p": 0.6486,
+     "top_minus_bottom": -0.1944,
+     "top_minus_bottom_ci95": [
+      -0.7784,
+      0.2837
+     ],
+     "p_one": 0.7901049475262368
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 51,
+     "matchdays": 21,
+     "hit": 0.431,
+     "roi": 0.0563,
+     "roi_ci95": [
+      -0.3547,
+      0.469
+     ],
+     "mean_odds": 2.438,
+     "clv_cert_n": 9,
+     "clv_cert_mean": -2.5,
+     "clv_6h_n": 49,
+     "clv_6h_mean": -0.95
+    },
+    {
+     "layer": "SECOND",
+     "n": 53,
+     "matchdays": 21,
+     "hit": 0.472,
+     "roi": 0.0279,
+     "roi_ci95": [
+      -0.3478,
+      0.4082
+     ],
+     "mean_odds": 2.261,
+     "clv_cert_n": 6,
+     "clv_cert_mean": 5.51,
+     "clv_6h_n": 52,
+     "clv_6h_mean": 1.12
+    },
+    {
+     "layer": "THIRD",
+     "n": 51,
+     "matchdays": 21,
+     "hit": 0.451,
+     "roi": 0.0486,
+     "roi_ci95": [
+      -0.2619,
+      0.3367
+     ],
+     "mean_odds": 2.382,
+     "clv_cert_n": 10,
+     "clv_cert_mean": 1.98,
+     "clv_6h_n": 49,
+     "clv_6h_mean": 0.39
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 67,
+     "matchdays": 15,
+     "hit": 0.373,
+     "roi": -0.1101,
+     "roi_ci95": [
+      -0.4225,
+      0.1976
+     ],
+     "mean_odds": 2.418,
+     "clv_cert_n": 8,
+     "clv_cert_mean": -1.42,
+     "clv_6h_n": 65,
+     "clv_6h_mean": -1.12
+    },
+    {
+     "layer": "SECOND",
+     "n": 66,
+     "matchdays": 15,
+     "hit": 0.576,
+     "roi": 0.2611,
+     "roi_ci95": [
+      -0.0176,
+      0.5652
+     ],
+     "mean_odds": 2.219,
+     "clv_cert_n": 12,
+     "clv_cert_mean": -1.84,
+     "clv_6h_n": 63,
+     "clv_6h_mean": -1.14
+    },
+    {
+     "layer": "THIRD",
+     "n": 67,
+     "matchdays": 16,
+     "hit": 0.478,
+     "roi": 0.033,
+     "roi_ci95": [
+      -0.2196,
+      0.2425
+     ],
+     "mean_odds": 2.293,
+     "clv_cert_n": 10,
+     "clv_cert_mean": -3.3,
+     "clv_6h_n": 64,
+     "clv_6h_mean": 0.3
+    }
+   ],
+   "holdout_monotonic": {
+    "ordered": false,
+    "spearman": 0.0208,
+    "spearman_p": 0.7698,
+    "top_minus_bottom": -0.1431,
+    "top_minus_bottom_ci95": [
+     -0.5512,
+     0.2743
+    ],
+    "p_one": 0.7501249375312344
+   },
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 38,
+     "matchdays": 13,
+     "hit": 0.342,
+     "roi": -0.0568,
+     "roi_ci95": [
+      -0.4162,
+      0.255
+     ],
+     "mean_odds": 2.752,
+     "clv_cert_n": 4,
+     "clv_cert_mean": -2.91,
+     "clv_6h_n": 37,
+     "clv_6h_mean": -0.7
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 42,
+     "matchdays": 10,
+     "hit": 0.357,
+     "roi": -0.2376,
+     "roi_ci95": [
+      -0.518,
+      0.1234
+     ],
+     "mean_odds": 2.252,
+     "clv_cert_n": 5,
+     "clv_cert_mean": 3.35,
+     "clv_6h_n": 40,
+     "clv_6h_mean": -0.32
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 120,
+     "matchdays": 17,
+     "hit": 0.558,
+     "roi": 0.2017,
+     "roi_ci95": [
+      -0.05,
+      0.4457
+     ],
+     "mean_odds": 2.19,
+     "clv_cert_n": 21,
+     "clv_cert_mean": -3.41,
+     "clv_6h_n": 115,
+     "clv_6h_mean": -0.76
+    }
+   ],
+   "holdout_gap_monotonic": {
+    "ordered": false,
+    "spearman": -0.1112,
+    "spearman_p": 0.117,
+    "top_minus_bottom": -0.2585,
+    "top_minus_bottom_ci95": [
+     -0.5996,
+     0.0252
+    ],
+    "p_one": 0.9575212393803099
+   },
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 7,
+     "matchdays": 6,
+     "hit": 0.571,
+     "roi": 0.3529,
+     "roi_ci95": [
+      -0.4143,
+      1.2817
+     ],
+     "mean_odds": 2.389,
+     "clv_cert_n": 3,
+     "clv_cert_mean": -4.19,
+     "clv_6h_n": 7,
+     "clv_6h_mean": -1.35
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 20,
+     "matchdays": 11,
+     "hit": 0.3,
+     "roi": -0.268,
+     "roi_ci95": [
+      -0.73,
+      0.239
+     ],
+     "mean_odds": 2.477,
+     "clv_cert_n": 1,
+     "clv_cert_mean": -5.82,
+     "clv_6h_n": 20,
+     "clv_6h_mean": 0.95
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 128,
+     "matchdays": 26,
+     "hit": 0.469,
+     "roi": 0.0759,
+     "roi_ci95": [
+      -0.205,
+      0.3575
+     ],
+     "mean_odds": 2.339,
+     "clv_cert_n": 21,
+     "clv_cert_mean": 2.32,
+     "clv_6h_n": 123,
+     "clv_6h_mean": 0.18
+    }
+   ],
+   "holdout_ranking": {
+    "score": {
+     "spearman": -0.0497,
+     "p": 0.4842,
+     "n": 200
+    },
+    "p_win_only": {
+     "spearman": -0.1095,
+     "p": 0.1228,
+     "n": 200
+    },
+    "gap_only": {
+     "spearman": -0.0296,
+     "p": 0.6776,
+     "n": 200
+    }
+   },
+   "discovery_ranking": {
+    "score": {
+     "spearman": -0.0117,
+     "p": 0.8852,
+     "n": 155
+    },
+    "p_win_only": {
+     "spearman": -0.114,
+     "p": 0.158,
+     "n": 155
+    },
+    "gap_only": {
+     "spearman": 0.0015,
+     "p": 0.9856,
+     "n": 155
+    }
+   },
+   "holdout_alt_layers": {
+    "p_win_only": {
+     "ordered": false,
+     "spearman": -0.0735,
+     "spearman_p": 0.3009,
+     "top_minus_bottom": -0.0003,
+     "top_minus_bottom_ci95": [
+      -0.2714,
+      0.2808
+     ],
+     "p_one": 0.5087456271864068
+    },
+    "gap_only": {
+     "ordered": false,
+     "spearman": -0.0439,
+     "spearman_p": 0.5368,
+     "top_minus_bottom": -0.1461,
+     "top_minus_bottom_ci95": [
+      -0.47,
+      0.1687
+     ],
+     "p_one": 0.816591704147926
+    }
+   },
+   "holdout_all": {
+    "n": 200,
+    "roi": 0.0603
+   },
+   "holdout_brier": {
+    "n": 200,
+    "p_win": 0.2467,
+    "market_fair": 0.2447,
+    "raw_model": 0.2485,
+    "mean_p_win": 0.4748,
+    "hit": 0.475
+   },
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 50,
+     "matchdays": 22,
+     "hit": 0.4,
+     "roi": 0.0318,
+     "roi_ci95": [
+      -0.2679,
+      0.3248
+     ],
+     "mean_odds": 2.672
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 70,
+     "matchdays": 26,
+     "hit": 0.343,
+     "roi": -0.2341,
+     "roi_ci95": [
+      -0.4668,
+      0.028
+     ],
+     "mean_odds": 2.372
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 367,
+     "matchdays": 53,
+     "hit": 0.488,
+     "roi": 0.0854,
+     "roi_ci95": [
+      -0.0724,
+      0.23
+     ],
+     "mean_odds": 2.289
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 83,
+     "matchdays": 29,
+     "hit": 0.422,
+     "roi": 0.0217,
+     "roi_ci95": [
+      -0.2128,
+      0.26
+     ],
+     "mean_odds": 2.575
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 198,
+     "matchdays": 42,
+     "hit": 0.434,
+     "roi": -0.0125,
+     "roi_ci95": [
+      -0.1422,
+      0.1331
+     ],
+     "mean_odds": 2.371
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 206,
+     "matchdays": 44,
+     "hit": 0.495,
+     "roi": 0.0835,
+     "roi_ci95": [
+      -0.1208,
+      0.2948
+     ],
+     "mean_odds": 2.215
+    }
+   ],
+   "q_bh": 0.9805,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "ORDER_FAILS",
+   "gap_q_bh": 0.9575
+  },
+  "new_format|BTTS": {
+   "track": "new_format",
+   "market": "BTTS",
+   "season_tips_settled": 245,
+   "scored": 193,
+   "discovery_n": 99,
+   "holdout_n": 94,
+   "chosen_definition": "FIXED",
+   "discovery": {
+    "TERCILE": {
+     "ordered": false,
+     "spearman": 0.0221,
+     "spearman_p": 0.8281,
+     "top_minus_bottom": 0.0397,
+     "top_minus_bottom_ci95": [
+      -0.3608,
+      0.3942
+     ],
+     "p_one": 0.4222888555722139
+    },
+    "FIXED": {
+     "ordered": false,
+     "spearman": 0.1547,
+     "spearman_p": 0.1263,
+     "top_minus_bottom": 0.2682,
+     "top_minus_bottom_ci95": [
+      -0.1064,
+      0.627
+     ],
+     "p_one": 0.0814592703648176
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 33,
+     "matchdays": 18,
+     "hit": 0.667,
+     "roi": 0.3765,
+     "roi_ci95": [
+      0.1015,
+      0.705
+     ],
+     "mean_odds": 2.078,
+     "clv_cert_n": 4,
+     "clv_cert_mean": 1.67,
+     "clv_6h_n": 30,
+     "clv_6h_mean": -1.4
+    },
+    {
+     "layer": "SECOND",
+     "n": 33,
+     "matchdays": 11,
+     "hit": 0.727,
+     "roi": 0.4333,
+     "roi_ci95": [
+      0.0582,
+      0.7632
+     ],
+     "mean_odds": 1.959,
+     "clv_cert_n": 8,
+     "clv_cert_mean": 2.53,
+     "clv_6h_n": 30,
+     "clv_6h_mean": 1.1
+    },
+    {
+     "layer": "THIRD",
+     "n": 33,
+     "matchdays": 15,
+     "hit": 0.576,
+     "roi": 0.1083,
+     "roi_ci95": [
+      -0.1558,
+      0.3763
+     ],
+     "mean_odds": 1.929,
+     "clv_cert_n": 4,
+     "clv_cert_mean": -0.82,
+     "clv_6h_n": 32,
+     "clv_6h_mean": 0.1
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 15,
+     "matchdays": 9,
+     "hit": 0.467,
+     "roi": -0.038,
+     "roi_ci95": [
+      -0.5683,
+      0.5219
+     ],
+     "mean_odds": 2.093,
+     "clv_cert_n": 2,
+     "clv_cert_mean": -1.25,
+     "clv_6h_n": 15,
+     "clv_6h_mean": 0.67
+    },
+    {
+     "layer": "SECOND",
+     "n": 33,
+     "matchdays": 12,
+     "hit": 0.303,
+     "roi": -0.4458,
+     "roi_ci95": [
+      -0.8293,
+      -0.1417
+     ],
+     "mean_odds": 1.895,
+     "clv_cert_n": 5,
+     "clv_cert_mean": -2.37,
+     "clv_6h_n": 31,
+     "clv_6h_mean": 0.3
+    },
+    {
+     "layer": "THIRD",
+     "n": 46,
+     "matchdays": 18,
+     "hit": 0.609,
+     "roi": 0.1942,
+     "roi_ci95": [
+      -0.0873,
+      0.5462
+     ],
+     "mean_odds": 1.952,
+     "clv_cert_n": 9,
+     "clv_cert_mean": 2.97,
+     "clv_6h_n": 46,
+     "clv_6h_mean": 0.25
+    }
+   ],
+   "holdout_monotonic": {
+    "ordered": false,
+    "spearman": -0.1963,
+    "spearman_p": 0.0579,
+    "top_minus_bottom": -0.2322,
+    "top_minus_bottom_ci95": [
+     -0.9872,
+     0.4897
+    ],
+    "p_one": 0.7711144427786107
+   },
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 6,
+     "matchdays": 5,
+     "hit": 0.667,
+     "roi": 0.4758,
+     "roi_ci95": [
+      -0.2433,
+      1.294
+     ],
+     "mean_odds": 2.301,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 6,
+     "clv_6h_mean": 2.35
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 11,
+     "matchdays": 6,
+     "hit": 0.182,
+     "roi": -0.6345,
+     "roi_ci95": [
+      -1.0,
+      -0.3015
+     ],
+     "mean_odds": 2.115,
+     "clv_cert_n": 2,
+     "clv_cert_mean": -1.28,
+     "clv_6h_n": 11,
+     "clv_6h_mean": 0.69
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 77,
+     "matchdays": 20,
+     "hit": 0.506,
+     "roi": -0.0288,
+     "roi_ci95": [
+      -0.2533,
+      0.268
+     ],
+     "mean_odds": 1.904,
+     "clv_cert_n": 14,
+     "clv_cert_mean": 1.06,
+     "clv_6h_n": 75,
+     "clv_6h_mean": 0.12
+    }
+   ],
+   "holdout_gap_monotonic": {
+    "ordered": false,
+    "spearman": -0.0196,
+    "spearman_p": 0.8512,
+    "top_minus_bottom": 0.5047,
+    "top_minus_bottom_ci95": [
+     -0.4488,
+     1.4475
+    ],
+    "p_one": 0.1364776718514802
+   },
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 29,
+     "matchdays": 13,
+     "hit": 0.724,
+     "roi": 0.621,
+     "roi_ci95": [
+      0.2496,
+      0.9896
+     ],
+     "mean_odds": 2.238,
+     "clv_cert_n": 3,
+     "clv_cert_mean": 3.24,
+     "clv_6h_n": 29,
+     "clv_6h_mean": -0.51
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 12,
+     "matchdays": 9,
+     "hit": 0.75,
+     "roi": 0.4146,
+     "roi_ci95": [
+      -0.1315,
+      0.822
+     ],
+     "mean_odds": 1.947,
+     "clv_cert_n": 2,
+     "clv_cert_mean": 2.62,
+     "clv_6h_n": 12,
+     "clv_6h_mean": 0.44
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 58,
+     "matchdays": 18,
+     "hit": 0.603,
+     "roi": 0.1261,
+     "roi_ci95": [
+      -0.0137,
+      0.3158
+     ],
+     "mean_odds": 1.872,
+     "clv_cert_n": 11,
+     "clv_cert_mean": 0.79,
+     "clv_6h_n": 51,
+     "clv_6h_mean": 0.08
+    }
+   ],
+   "holdout_ranking": {
+    "score": {
+     "spearman": -0.2291,
+     "p": 0.0263,
+     "n": 94
+    },
+    "p_win_only": {
+     "spearman": -0.2695,
+     "p": 0.0086,
+     "n": 94
+    },
+    "gap_only": {
+     "spearman": 0.0584,
+     "p": 0.5759,
+     "n": 94
+    }
+   },
+   "discovery_ranking": {
+    "score": {
+     "spearman": 0.1417,
+     "p": 0.1618,
+     "n": 99
+    },
+    "p_win_only": {
+     "spearman": -0.1968,
+     "p": 0.0508,
+     "n": 99
+    },
+    "gap_only": {
+     "spearman": 0.4464,
+     "p": 0.0,
+     "n": 99
+    }
+   },
+   "holdout_alt_layers": {
+    "p_win_only": {
+     "ordered": false,
+     "spearman": -0.1502,
+     "spearman_p": 0.1485,
+     "top_minus_bottom": -0.1995,
+     "top_minus_bottom_ci95": [
+      -0.7377,
+      0.3076
+     ],
+     "p_one": 0.7871064467766117
+    },
+    "gap_only": {
+     "ordered": false,
+     "spearman": 0.1213,
+     "spearman_p": 0.2441,
+     "top_minus_bottom": 0.1288,
+     "top_minus_bottom_ci95": [
+      -0.5782,
+      0.7462
+     ],
+     "p_one": 0.3568215892053973
+    }
+   },
+   "holdout_all": {
+    "n": 94,
+    "roi": -0.0675
+   },
+   "holdout_brier": {
+    "n": 94,
+    "p_win": 0.2802,
+    "market_fair": 0.251,
+    "raw_model": 0.2562,
+    "mean_p_win": 0.5905,
+    "hit": 0.4787
+   },
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 48,
+     "matchdays": 23,
+     "hit": 0.667,
+     "roi": 0.5221,
+     "roi_ci95": [
+      0.2132,
+      0.8327
+     ],
+     "mean_odds": 2.292
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 33,
+     "matchdays": 21,
+     "hit": 0.515,
+     "roi": 0.0312,
+     "roi_ci95": [
+      -0.3374,
+      0.4132
+     ],
+     "mean_odds": 2.077
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 164,
+     "matchdays": 45,
+     "hit": 0.555,
+     "roi": 0.0667,
+     "roi_ci95": [
+      -0.0713,
+      0.2294
+     ],
+     "mean_odds": 1.919
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 82,
+     "matchdays": 33,
+     "hit": 0.561,
+     "roi": 0.2469,
+     "roi_ci95": [
+      0.0404,
+      0.4553
+     ],
+     "mean_odds": 2.213
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 51,
+     "matchdays": 31,
+     "hit": 0.588,
+     "roi": 0.1595,
+     "roi_ci95": [
+      -0.1686,
+      0.4668
+     ],
+     "mean_odds": 2.001
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 112,
+     "matchdays": 40,
+     "hit": 0.571,
+     "roi": 0.0772,
+     "roi_ci95": [
+      -0.0794,
+      0.2557
+     ],
+     "mean_odds": 1.873
+    }
+   ],
+   "q_bh": 0.9805,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "ORDER_FAILS",
+   "gap_q_bh": 0.4094
+  },
+  "new_format|OVER15": {
+   "track": "new_format",
+   "market": "OVER15",
+   "season_tips_settled": 93,
+   "scored": 61,
+   "discovery_n": 33,
+   "holdout_n": 28,
+   "chosen_definition": "FIXED",
+   "discovery": {
+    "TERCILE": {
+     "ordered": false,
+     "spearman": 0.0131,
+     "spearman_p": 0.9424,
+     "top_minus_bottom": -0.1367,
+     "top_minus_bottom_ci95": [
+      -0.7546,
+      0.4416
+     ],
+     "p_one": 0.6806596701649176
+    },
+    "FIXED": {
+     "ordered": false,
+     "spearman": 0.2956,
+     "spearman_p": 0.0949,
+     "top_minus_bottom": 0.2027,
+     "top_minus_bottom_ci95": [
+      -0.3898,
+      0.8068
+     ],
+     "p_one": 0.24537731134432783
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 11,
+     "matchdays": 7,
+     "hit": 0.818,
+     "roi": 0.3055,
+     "roi_ci95": [
+      -0.1212,
+      0.6182
+     ],
+     "mean_odds": 1.587,
+     "clv_cert_n": 1,
+     "clv_cert_mean": -0.61,
+     "clv_6h_n": 11,
+     "clv_6h_mean": 0.47
+    },
+    {
+     "layer": "SECOND",
+     "n": 11,
+     "matchdays": 8,
+     "hit": 0.636,
+     "roi": -0.0255,
+     "roi_ci95": [
+      -0.4967,
+      0.3991
+     ],
+     "mean_odds": 1.545,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 11,
+     "clv_6h_mean": 1.3
+    },
+    {
+     "layer": "THIRD",
+     "n": 11,
+     "matchdays": 10,
+     "hit": 0.727,
+     "roi": 0.1027,
+     "roi_ci95": [
+      -0.387,
+      0.4424
+     ],
+     "mean_odds": 1.531,
+     "clv_cert_n": 3,
+     "clv_cert_mean": 2.56,
+     "clv_6h_n": 8,
+     "clv_6h_mean": 0.51
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.47,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.47,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 0.0
+    },
+    {
+     "layer": "SECOND",
+     "n": 15,
+     "matchdays": 8,
+     "hit": 0.733,
+     "roi": 0.1167,
+     "roi_ci95": [
+      -0.2876,
+      0.4341
+     ],
+     "mean_odds": 1.535,
+     "clv_cert_n": 3,
+     "clv_cert_mean": 4.39,
+     "clv_6h_n": 12,
+     "clv_6h_mean": 4.03
+    },
+    {
+     "layer": "THIRD",
+     "n": 12,
+     "matchdays": 7,
+     "hit": 0.833,
+     "roi": 0.2867,
+     "roi_ci95": [
+      0.0677,
+      0.5613
+     ],
+     "mean_odds": 1.561,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 11,
+     "clv_6h_mean": 1.71
+    }
+   ],
+   "holdout_monotonic": {
+    "ordered": false,
+    "spearman": -0.1178,
+    "spearman_p": 0.5506,
+    "top_minus_bottom": 0.1833,
+    "top_minus_bottom_ci95": [
+     -0.0971,
+     0.4415
+    ],
+    "p_one": 0.1200960768614892
+   },
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 11,
+     "matchdays": 8,
+     "hit": 0.818,
+     "roi": 0.26,
+     "roi_ci95": [
+      -0.171,
+      0.569
+     ],
+     "mean_odds": 1.548,
+     "clv_cert_n": 1,
+     "clv_cert_mean": 3.29,
+     "clv_6h_n": 8,
+     "clv_6h_mean": 2.04
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 9,
+     "matchdays": 6,
+     "hit": 0.556,
+     "roi": -0.14,
+     "roi_ci95": [
+      -0.5756,
+      0.3515
+     ],
+     "mean_odds": 1.57,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 9,
+     "clv_6h_mean": 2.41
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 8,
+     "matchdays": 8,
+     "hit": 1.0,
+     "roi": 0.5075,
+     "roi_ci95": [
+      0.4787,
+      0.5375
+     ],
+     "mean_odds": 1.508,
+     "clv_cert_n": 2,
+     "clv_cert_mean": 4.94,
+     "clv_6h_n": 7,
+     "clv_6h_mean": 4.16
+    }
+   ],
+   "holdout_gap_monotonic": {
+    "ordered": false,
+    "spearman": 0.1328,
+    "spearman_p": 0.5004,
+    "top_minus_bottom": -0.2475,
+    "top_minus_bottom_ci95": [
+     -0.6301,
+     0.0735
+    ],
+    "p_one": 0.888055972013993
+   },
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 26,
+     "matchdays": 14,
+     "hit": 0.731,
+     "roi": 0.1427,
+     "roi_ci95": [
+      -0.1089,
+      0.4279
+     ],
+     "mean_odds": 1.564,
+     "clv_cert_n": 2,
+     "clv_cert_mean": 0.67,
+     "clv_6h_n": 26,
+     "clv_6h_mean": 0.69
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 3,
+     "matchdays": 3,
+     "hit": 0.333,
+     "roi": -0.4867,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.553,
+     "clv_cert_n": 1,
+     "clv_cert_mean": -1.91,
+     "clv_6h_n": 2,
+     "clv_6h_mean": -0.96
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 4,
+     "matchdays": 3,
+     "hit": 1.0,
+     "roi": 0.49,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.49,
+     "clv_cert_n": 1,
+     "clv_cert_mean": 7.64,
+     "clv_6h_n": 2,
+     "clv_6h_mean": 3.82
+    }
+   ],
+   "holdout_ranking": {
+    "score": {
+     "spearman": -0.1467,
+     "p": 0.4564,
+     "n": 28
+    },
+    "p_win_only": {
+     "spearman": -0.2751,
+     "p": 0.1565,
+     "n": 28
+    },
+    "gap_only": {
+     "spearman": 0.1971,
+     "p": 0.3147,
+     "n": 28
+    }
+   },
+   "discovery_ranking": {
+    "score": {
+     "spearman": 0.2682,
+     "p": 0.1313,
+     "n": 33
+    },
+    "p_win_only": {
+     "spearman": -0.0938,
+     "p": 0.6037,
+     "n": 33
+    },
+    "gap_only": {
+     "spearman": 0.1514,
+     "p": 0.4003,
+     "n": 33
+    }
+   },
+   "holdout_alt_layers": {
+    "p_win_only": {
+     "ordered": false,
+     "spearman": -0.2527,
+     "spearman_p": 0.1944,
+     "top_minus_bottom": 0.2556,
+     "top_minus_bottom_ci95": [
+      -0.6222,
+      1.1012
+     ],
+     "p_one": 0.303848075962019
+    },
+    "gap_only": {
+     "ordered": false,
+     "spearman": 0.2444,
+     "spearman_p": 0.21,
+     "top_minus_bottom": 0.2011,
+     "top_minus_bottom_ci95": [
+      -0.3793,
+      0.7853
+     ],
+     "p_one": 0.22288855572213892
+    }
+   },
+   "holdout_all": {
+    "n": 28,
+    "roi": 0.2021
+   },
+   "holdout_brier": {
+    "n": 28,
+    "p_win": 0.1776,
+    "market_fair": 0.1957,
+    "raw_model": 0.1701,
+    "mean_p_win": 0.6668,
+    "hit": 0.7857
+   },
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 55,
+     "matchdays": 29,
+     "hit": 0.727,
+     "roi": 0.1411,
+     "roi_ci95": [
+      -0.0553,
+      0.3289
+     ],
+     "mean_odds": 1.57
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 25,
+     "matchdays": 19,
+     "hit": 0.48,
+     "roi": -0.274,
+     "roi_ci95": [
+      -0.5664,
+      0.0291
+     ],
+     "mean_odds": 1.54
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 13,
+     "matchdays": 12,
+     "hit": 1.0,
+     "roi": 0.5069,
+     "roi_ci95": [
+      0.46,
+      0.544
+     ],
+     "mean_odds": 1.507
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 75,
+     "matchdays": 38,
+     "hit": 0.707,
+     "roi": 0.1024,
+     "roi_ci95": [
+      -0.0774,
+      0.2684
+     ],
+     "mean_odds": 1.563
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 14,
+     "matchdays": 13,
+     "hit": 0.571,
+     "roi": -0.1364,
+     "roi_ci95": [
+      -0.5346,
+      0.2194
+     ],
+     "mean_odds": 1.532
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 4,
+     "matchdays": 4,
+     "hit": 1.0,
+     "roi": 0.4325,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.433
+    }
+   ],
+   "q_bh": null,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "INSUFFICIENT",
+   "gap_q_bh": null
+  },
+  "new_format|OVER35": {
+   "track": "new_format",
+   "market": "OVER35",
+   "season_tips_settled": 12,
+   "scored": 12,
+   "discovery_n": 8,
+   "holdout_n": 4,
+   "chosen_definition": "TERCILE",
+   "discovery": {
+    "TERCILE": {
+     "top_minus_bottom": null,
+     "ordered": false
+    },
+    "FIXED": {
+     "top_minus_bottom": null,
+     "ordered": false
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.275,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 2,
+     "clv_6h_mean": -0.88
+    },
+    {
+     "layer": "SECOND",
+     "n": 4,
+     "matchdays": 4,
+     "hit": 0.25,
+     "roi": -0.5225,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.045,
+     "clv_cert_n": 2,
+     "clv_cert_mean": 6.78,
+     "clv_6h_n": 4,
+     "clv_6h_mean": 6.65
+    },
+    {
+     "layer": "THIRD",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.5,
+     "roi": -0.035,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.155,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 7.22
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 1.06,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.06,
+     "clv_cert_n": 1,
+     "clv_cert_mean": 0.0,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 0.0
+    },
+    {
+     "layer": "SECOND",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 1.0,
+     "roi": 0.83,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.83,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 2,
+     "clv_6h_mean": 0.3
+    },
+    {
+     "layer": "THIRD",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.95,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.95,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": -1.02
+    }
+   ],
+   "holdout_monotonic": {},
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 4,
+     "matchdays": 3,
+     "hit": 1.0,
+     "roi": 0.9175,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.917,
+     "clv_cert_n": 1,
+     "clv_cert_mean": 0.0,
+     "clv_6h_n": 4,
+     "clv_6h_mean": -0.1
+    }
+   ],
+   "holdout_gap_monotonic": {},
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 8,
+     "matchdays": 6,
+     "hit": 0.25,
+     "roi": -0.52,
+     "roi_ci95": [
+      -1.0,
+      0.0943
+     ],
+     "mean_odds": 2.13,
+     "clv_cert_n": 2,
+     "clv_cert_mean": 6.78,
+     "clv_6h_n": 7,
+     "clv_6h_mean": 4.58
+    }
+   ],
+   "holdout_ranking": {},
+   "discovery_ranking": {},
+   "holdout_alt_layers": {
+    "p_win_only": {},
+    "gap_only": {}
+   },
+   "holdout_all": {
+    "n": 4,
+    "roi": 0.9175
+   },
+   "holdout_brier": {},
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 12,
+     "matchdays": 9,
+     "hit": 0.5,
+     "roi": -0.0408,
+     "roi_ci95": [
+      -0.6272,
+      0.5745
+     ],
+     "mean_odds": 2.059
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.5,
+     "roi": -0.025,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.095
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 10,
+     "matchdays": 9,
+     "hit": 0.5,
+     "roi": -0.044,
+     "roi_ci95": [
+      -0.6573,
+      0.6956
+     ],
+     "mean_odds": 2.052
+    }
+   ],
+   "q_bh": null,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "INSUFFICIENT",
+   "gap_q_bh": null
+  },
+  "standard|OU25": {
+   "track": "standard",
+   "market": "OU25",
+   "season_tips_settled": 383,
+   "scored": 239,
+   "discovery_n": 109,
+   "holdout_n": 130,
+   "chosen_definition": "FIXED",
+   "discovery": {
+    "TERCILE": {
+     "ordered": false,
+     "spearman": -0.2127,
+     "spearman_p": 0.0264,
+     "top_minus_bottom": -0.5524,
+     "top_minus_bottom_ci95": [
+      -0.9243,
+      -0.1814
+     ],
+     "p_one": 0.9980009995002499
+    },
+    "FIXED": {
+     "ordered": false,
+     "spearman": -0.2074,
+     "spearman_p": 0.0305,
+     "top_minus_bottom": -0.5,
+     "top_minus_bottom_ci95": [
+      -0.928,
+      -0.1918
+     ],
+     "p_one": 0.999000499750125
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 37,
+     "matchdays": 14,
+     "hit": 0.324,
+     "roi": -0.3481,
+     "roi_ci95": [
+      -0.6068,
+      -0.0558
+     ],
+     "mean_odds": 1.969,
+     "clv_cert_n": 3,
+     "clv_cert_mean": -2.26,
+     "clv_6h_n": 36,
+     "clv_6h_mean": 0.61
+    },
+    {
+     "layer": "SECOND",
+     "n": 35,
+     "matchdays": 11,
+     "hit": 0.514,
+     "roi": 0.0554,
+     "roi_ci95": [
+      -0.2283,
+      0.4864
+     ],
+     "mean_odds": 2.029,
+     "clv_cert_n": 5,
+     "clv_cert_mean": 2.3,
+     "clv_6h_n": 35,
+     "clv_6h_mean": 0.58
+    },
+    {
+     "layer": "THIRD",
+     "n": 37,
+     "matchdays": 9,
+     "hit": 0.541,
+     "roi": 0.1519,
+     "roi_ci95": [
+      -0.0556,
+      0.4995
+     ],
+     "mean_odds": 2.106,
+     "clv_cert_n": 9,
+     "clv_cert_mean": -2.16,
+     "clv_6h_n": 37,
+     "clv_6h_mean": -0.43
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 53,
+     "matchdays": 12,
+     "hit": 0.377,
+     "roi": -0.2032,
+     "roi_ci95": [
+      -0.4534,
+      0.0211
+     ],
+     "mean_odds": 2.191,
+     "clv_cert_n": 5,
+     "clv_cert_mean": 2.75,
+     "clv_6h_n": 52,
+     "clv_6h_mean": 1.23
+    },
+    {
+     "layer": "SECOND",
+     "n": 77,
+     "matchdays": 15,
+     "hit": 0.494,
+     "roi": 0.0829,
+     "roi_ci95": [
+      -0.1597,
+      0.3946
+     ],
+     "mean_odds": 2.227,
+     "clv_cert_n": 7,
+     "clv_cert_mean": -2.14,
+     "clv_6h_n": 76,
+     "clv_6h_mean": 0.39
+    },
+    {
+     "layer": "THIRD",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    }
+   ],
+   "holdout_monotonic": {
+    "ordered": false,
+    "spearman": -0.1612,
+    "spearman_p": 0.067,
+    "top_minus_bottom": null,
+    "top_minus_bottom_ci95": [
+     null,
+     null
+    ],
+    "p_one": null
+   },
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 9,
+     "matchdays": 8,
+     "hit": 0.222,
+     "roi": -0.4,
+     "roi_ci95": [
+      -1.0,
+      0.4625
+     ],
+     "mean_odds": 2.45,
+     "clv_cert_n": 2,
+     "clv_cert_mean": -9.78,
+     "clv_6h_n": 9,
+     "clv_6h_mean": -3.62
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 11,
+     "matchdays": 7,
+     "hit": 0.364,
+     "roi": -0.1482,
+     "roi_ci95": [
+      -0.7636,
+      0.6267
+     ],
+     "mean_odds": 2.52,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 11,
+     "clv_6h_mean": -1.64
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 110,
+     "matchdays": 16,
+     "hit": 0.473,
+     "roi": 0.0076,
+     "roi_ci95": [
+      -0.1871,
+      0.2672
+     ],
+     "mean_odds": 2.162,
+     "clv_cert_n": 10,
+     "clv_cert_mean": 1.83,
+     "clv_6h_n": 108,
+     "clv_6h_mean": 1.34
+    }
+   ],
+   "holdout_gap_monotonic": {
+    "ordered": false,
+    "spearman": -0.072,
+    "spearman_p": 0.4154,
+    "top_minus_bottom": -0.4076,
+    "top_minus_bottom_ci95": [
+     -1.1951,
+     0.6565
+    ],
+    "p_one": 0.8075962018990505
+   },
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 16,
+     "matchdays": 5,
+     "hit": 0.438,
+     "roi": -0.17,
+     "roi_ci95": [
+      -0.4447,
+      0.3439
+     ],
+     "mean_odds": 1.964,
+     "clv_cert_n": 2,
+     "clv_cert_mean": 0.54,
+     "clv_6h_n": 16,
+     "clv_6h_mean": -0.62
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 15,
+     "matchdays": 9,
+     "hit": 0.533,
+     "roi": 0.1267,
+     "roi_ci95": [
+      -0.49,
+      0.5636
+     ],
+     "mean_odds": 2.087,
+     "clv_cert_n": 3,
+     "clv_cert_mean": -2.33,
+     "clv_6h_n": 15,
+     "clv_6h_mean": 0.0
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 78,
+     "matchdays": 14,
+     "hit": 0.449,
+     "roi": -0.0577,
+     "roi_ci95": [
+      -0.187,
+      0.1316
+     ],
+     "mean_odds": 2.039,
+     "clv_cert_n": 12,
+     "clv_cert_mean": -0.73,
+     "clv_6h_n": 77,
+     "clv_6h_mean": 0.47
+    }
+   ],
+   "holdout_ranking": {
+    "score": {
+     "spearman": 0.0071,
+     "p": 0.9363,
+     "n": 130
+    },
+    "p_win_only": {
+     "spearman": -0.0512,
+     "p": 0.5632,
+     "n": 130
+    },
+    "gap_only": {
+     "spearman": -0.1386,
+     "p": 0.1158,
+     "n": 130
+    }
+   },
+   "discovery_ranking": {
+    "score": {
+     "spearman": -0.219,
+     "p": 0.0222,
+     "n": 109
+    },
+    "p_win_only": {
+     "spearman": -0.3036,
+     "p": 0.0013,
+     "n": 109
+    },
+    "gap_only": {
+     "spearman": -0.0972,
+     "p": 0.3148,
+     "n": 109
+    }
+   },
+   "holdout_alt_layers": {
+    "p_win_only": {
+     "ordered": false,
+     "spearman": -0.0641,
+     "spearman_p": 0.4688,
+     "top_minus_bottom": 0.0843,
+     "top_minus_bottom_ci95": [
+      -0.2877,
+      0.4042
+     ],
+     "p_one": 0.3263368315842079
+    },
+    "gap_only": {
+     "ordered": false,
+     "spearman": -0.1709,
+     "spearman_p": 0.0519,
+     "top_minus_bottom": -0.591,
+     "top_minus_bottom_ci95": [
+      -1.0086,
+      -0.2103
+     ],
+     "p_one": 0.993503248375812
+    }
+   },
+   "holdout_all": {
+    "n": 130,
+    "roi": -0.0338
+   },
+   "holdout_brier": {
+    "n": 130,
+    "p_win": 0.2423,
+    "market_fair": 0.2434,
+    "raw_model": 0.2536,
+    "mean_p_win": 0.3918,
+    "hit": 0.4462
+   },
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 28,
+     "matchdays": 15,
+     "hit": 0.357,
+     "roi": -0.2543,
+     "roi_ci95": [
+      -0.5949,
+      0.1685
+     ],
+     "mean_odds": 2.151
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 33,
+     "matchdays": 20,
+     "hit": 0.424,
+     "roi": -0.0658,
+     "roi_ci95": [
+      -0.4067,
+      0.3015
+     ],
+     "mean_odds": 2.275
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 322,
+     "matchdays": 49,
+     "hit": 0.416,
+     "roi": -0.1174,
+     "roi_ci95": [
+      -0.2222,
+      0.0036
+     ],
+     "mean_odds": 2.132
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 42,
+     "matchdays": 20,
+     "hit": 0.405,
+     "roi": -0.1017,
+     "roi_ci95": [
+      -0.4608,
+      0.2249
+     ],
+     "mean_odds": 2.276
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 107,
+     "matchdays": 39,
+     "hit": 0.383,
+     "roi": -0.1788,
+     "roi_ci95": [
+      -0.3929,
+      0.0467
+     ],
+     "mean_odds": 2.197
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 234,
+     "matchdays": 45,
+     "hit": 0.427,
+     "roi": -0.1012,
+     "roi_ci95": [
+      -0.2366,
+      0.0553
+     ],
+     "mean_odds": 2.099
+    }
+   ],
+   "q_bh": null,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "ORDER_FAILS",
+   "gap_q_bh": 0.9575
+  },
+  "standard|BTTS": {
+   "track": "standard",
+   "market": "BTTS",
+   "season_tips_settled": 162,
+   "scored": 109,
+   "discovery_n": 61,
+   "holdout_n": 48,
+   "chosen_definition": "TERCILE",
+   "discovery": {
+    "TERCILE": {
+     "ordered": false,
+     "spearman": -0.1656,
+     "spearman_p": 0.2021,
+     "top_minus_bottom": -0.0835,
+     "top_minus_bottom_ci95": [
+      -0.3696,
+      0.3126
+     ],
+     "p_one": 0.7011494252873564
+    },
+    "FIXED": {
+     "ordered": false,
+     "spearman": -0.3241,
+     "spearman_p": 0.0108,
+     "top_minus_bottom": -0.4635,
+     "top_minus_bottom_ci95": [
+      -0.8983,
+      -0.0132
+     ],
+     "p_one": 0.9790104947526237
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 20,
+     "matchdays": 11,
+     "hit": 0.6,
+     "roi": 0.0555,
+     "roi_ci95": [
+      -0.26,
+      0.32
+     ],
+     "mean_odds": 1.764,
+     "clv_cert_n": 2,
+     "clv_cert_mean": -1.66,
+     "clv_6h_n": 20,
+     "clv_6h_mean": 1.22
+    },
+    {
+     "layer": "SECOND",
+     "n": 21,
+     "matchdays": 12,
+     "hit": 0.619,
+     "roi": 0.1181,
+     "roi_ci95": [
+      -0.2056,
+      0.4848
+     ],
+     "mean_odds": 1.803,
+     "clv_cert_n": 5,
+     "clv_cert_mean": 1.93,
+     "clv_6h_n": 21,
+     "clv_6h_mean": 0.71
+    },
+    {
+     "layer": "THIRD",
+     "n": 20,
+     "matchdays": 11,
+     "hit": 0.6,
+     "roi": 0.139,
+     "roi_ci95": [
+      -0.2459,
+      0.415
+     ],
+     "mean_odds": 1.885,
+     "clv_cert_n": 4,
+     "clv_cert_mean": -1.71,
+     "clv_6h_n": 20,
+     "clv_6h_mean": 1.65
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 16,
+     "matchdays": 9,
+     "hit": 0.312,
+     "roi": -0.4372,
+     "roi_ci95": [
+      -0.8282,
+      -0.0879
+     ],
+     "mean_odds": 1.797,
+     "clv_cert_n": 3,
+     "clv_cert_mean": 0.39,
+     "clv_6h_n": 16,
+     "clv_6h_mean": -0.39
+    },
+    {
+     "layer": "SECOND",
+     "n": 16,
+     "matchdays": 8,
+     "hit": 0.562,
+     "roi": 0.0259,
+     "roi_ci95": [
+      -0.4739,
+      0.6465
+     ],
+     "mean_odds": 1.838,
+     "clv_cert_n": 4,
+     "clv_cert_mean": 0.68,
+     "clv_6h_n": 16,
+     "clv_6h_mean": 0.27
+    },
+    {
+     "layer": "THIRD",
+     "n": 16,
+     "matchdays": 9,
+     "hit": 0.688,
+     "roi": 0.2487,
+     "roi_ci95": [
+      -0.154,
+      0.6516
+     ],
+     "mean_odds": 1.826,
+     "clv_cert_n": 3,
+     "clv_cert_mean": 1.04,
+     "clv_6h_n": 16,
+     "clv_6h_mean": -0.38
+    }
+   ],
+   "holdout_monotonic": {
+    "ordered": false,
+    "spearman": -0.2988,
+    "spearman_p": 0.0391,
+    "top_minus_bottom": -0.6859,
+    "top_minus_bottom_ci95": [
+     -1.4404,
+     -0.0104
+    ],
+    "p_one": 0.9805097451274363
+   },
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.755,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.755,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": -1.68
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 47,
+     "matchdays": 11,
+     "hit": 0.511,
+     "roi": -0.0714,
+     "roi_ci95": [
+      -0.2597,
+      0.1461
+     ],
+     "mean_odds": 1.822,
+     "clv_cert_n": 10,
+     "clv_cert_mean": 0.7,
+     "clv_6h_n": 47,
+     "clv_6h_mean": -0.14
+    }
+   ],
+   "holdout_gap_monotonic": {
+    "ordered": false,
+    "spearman": 0.0614,
+    "spearman_p": 0.6785,
+    "top_minus_bottom": null,
+    "top_minus_bottom_ci95": [
+     null,
+     null
+    ],
+    "p_one": null
+   },
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 3,
+     "matchdays": 2,
+     "hit": 0.667,
+     "roi": 0.2833,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.807,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 3,
+     "clv_6h_mean": 2.5
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 4,
+     "matchdays": 3,
+     "hit": 0.25,
+     "roi": -0.5,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.922,
+     "clv_cert_n": 1,
+     "clv_cert_mean": 5.41,
+     "clv_6h_n": 4,
+     "clv_6h_mean": 0.99
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 54,
+     "matchdays": 15,
+     "hit": 0.63,
+     "roi": 0.1393,
+     "roi_ci95": [
+      -0.1362,
+      0.3219
+     ],
+     "mean_odds": 1.81,
+     "clv_cert_n": 10,
+     "clv_cert_mean": -0.59,
+     "clv_6h_n": 54,
+     "clv_6h_mean": 1.13
+    }
+   ],
+   "holdout_ranking": {
+    "score": {
+     "spearman": -0.1538,
+     "p": 0.2966,
+     "n": 48
+    },
+    "p_win_only": {
+     "spearman": -0.2541,
+     "p": 0.0814,
+     "n": 48
+    },
+    "gap_only": {
+     "spearman": 0.0337,
+     "p": 0.8203,
+     "n": 48
+    }
+   },
+   "discovery_ranking": {
+    "score": {
+     "spearman": -0.3301,
+     "p": 0.0094,
+     "n": 61
+    },
+    "p_win_only": {
+     "spearman": -0.4099,
+     "p": 0.001,
+     "n": 61
+    },
+    "gap_only": {
+     "spearman": 0.089,
+     "p": 0.4952,
+     "n": 61
+    }
+   },
+   "holdout_alt_layers": {
+    "p_win_only": {
+     "ordered": false,
+     "spearman": -0.0976,
+     "spearman_p": 0.5091,
+     "top_minus_bottom": 0.0656,
+     "top_minus_bottom_ci95": [
+      -0.7581,
+      0.9624
+     ],
+     "p_one": 0.4397801099450275
+    },
+    "gap_only": {
+     "ordered": false,
+     "spearman": 0.0537,
+     "spearman_p": 0.717,
+     "top_minus_bottom": 0.0272,
+     "top_minus_bottom_ci95": [
+      -0.6532,
+      0.7652
+     ],
+     "p_one": 0.4592703648175912
+    }
+   },
+   "holdout_all": {
+    "n": 48,
+    "roi": -0.0542
+   },
+   "holdout_brier": {
+    "n": 48,
+    "p_win": 0.253,
+    "market_fair": 0.2489,
+    "raw_model": 0.2506,
+    "mean_p_win": 0.5627,
+    "hit": 0.5208
+   },
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 4,
+     "matchdays": 3,
+     "hit": 0.5,
+     "roi": -0.0375,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.98
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 9,
+     "matchdays": 7,
+     "hit": 0.444,
+     "roi": -0.1306,
+     "roi_ci95": [
+      -0.785,
+      0.7436
+     ],
+     "mean_odds": 1.959
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 149,
+     "matchdays": 39,
+     "hit": 0.544,
+     "roi": 0.0033,
+     "roi_ci95": [
+      -0.1537,
+      0.1667
+     ],
+     "mean_odds": 1.854
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 16,
+     "matchdays": 10,
+     "hit": 0.438,
+     "roi": -0.1856,
+     "roi_ci95": [
+      -0.795,
+      0.1386
+     ],
+     "mean_odds": 1.897
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 17,
+     "matchdays": 11,
+     "hit": 0.471,
+     "roi": -0.1326,
+     "roi_ci95": [
+      -0.4941,
+      0.2261
+     ],
+     "mean_odds": 1.878
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 129,
+     "matchdays": 38,
+     "hit": 0.558,
+     "roi": 0.034,
+     "roi_ci95": [
+      -0.1322,
+      0.2196
+     ],
+     "mean_odds": 1.856
+    }
+   ],
+   "q_bh": 0.9805,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "ORDER_FAILS",
+   "gap_q_bh": null
+  },
+  "standard|OVER15": {
+   "track": "standard",
+   "market": "OVER15",
+   "season_tips_settled": 13,
+   "scored": 8,
+   "discovery_n": 6,
+   "holdout_n": 2,
+   "chosen_definition": "TERCILE",
+   "discovery": {
+    "TERCILE": {
+     "top_minus_bottom": null,
+     "ordered": false
+    },
+    "FIXED": {
+     "top_minus_bottom": null,
+     "ordered": false
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.49,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.49,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 0.0
+    },
+    {
+     "layer": "SECOND",
+     "n": 4,
+     "matchdays": 4,
+     "hit": 0.5,
+     "roi": -0.3225,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.405,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": -2.68
+    },
+    {
+     "layer": "THIRD",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.5,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.5,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "SECOND",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.5,
+     "roi": -0.285,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.415,
+     "clv_cert_n": 1,
+     "clv_cert_mean": -4.76,
+     "clv_6h_n": 1,
+     "clv_6h_mean": -4.76
+    },
+    {
+     "layer": "THIRD",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    }
+   ],
+   "holdout_monotonic": {},
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.43,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.43,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.4,
+     "clv_cert_n": 1,
+     "clv_cert_mean": -4.76,
+     "clv_6h_n": 1,
+     "clv_6h_mean": -4.76
+    }
+   ],
+   "holdout_gap_monotonic": {},
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 4,
+     "matchdays": 3,
+     "hit": 0.75,
+     "roi": 0.11,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.498,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 2,
+     "clv_6h_mean": -1.34
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.36,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 1.0,
+     "roi": 0.26,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.26,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    }
+   ],
+   "holdout_ranking": {},
+   "discovery_ranking": {},
+   "holdout_alt_layers": {
+    "p_win_only": {},
+    "gap_only": {}
+   },
+   "holdout_all": {
+    "n": 2,
+    "roi": -0.285
+   },
+   "holdout_brier": {},
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 8,
+     "matchdays": 7,
+     "hit": 0.5,
+     "roi": -0.2662,
+     "roi_ci95": [
+      -0.7957,
+      0.2191
+     ],
+     "mean_odds": 1.485
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.395
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 3,
+     "matchdays": 3,
+     "hit": 0.667,
+     "roi": -0.1433,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.323
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 9,
+     "matchdays": 8,
+     "hit": 0.444,
+     "roi": -0.3478,
+     "roi_ci95": [
+      -0.8212,
+      0.1333
+     ],
+     "mean_odds": 1.471
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.415
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 1.0,
+     "roi": 0.285,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 1.285
+    }
+   ],
+   "q_bh": null,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "INSUFFICIENT",
+   "gap_q_bh": null
+  },
+  "standard|OVER35": {
+   "track": "standard",
+   "market": "OVER35",
+   "season_tips_settled": 4,
+   "scored": 4,
+   "discovery_n": 3,
+   "holdout_n": 1,
+   "chosen_definition": "TERCILE",
+   "discovery": {
+    "TERCILE": {
+     "top_minus_bottom": null,
+     "ordered": false
+    },
+    "FIXED": {
+     "top_minus_bottom": null,
+     "ordered": false
+    }
+   },
+   "discovery_layers": [
+    {
+     "layer": "BEST",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "SECOND",
+     "n": 3,
+     "matchdays": 3,
+     "hit": 0.333,
+     "roi": -0.2333,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 3.007,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 2.22
+    },
+    {
+     "layer": "THIRD",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    }
+   ],
+   "holdout_layers": [
+    {
+     "layer": "BEST",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "SECOND",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.3,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 0.88
+    },
+    {
+     "layer": "THIRD",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    }
+   ],
+   "holdout_monotonic": {},
+   "holdout_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.3,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 0.88
+    }
+   ],
+   "holdout_gap_monotonic": {},
+   "discovery_gap_tiers": [
+    {
+     "layer": "SNIPER",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 4.3,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 0,
+     "clv_6h_mean": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 2,
+     "matchdays": 2,
+     "hit": 0.5,
+     "roi": 0.15,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.36,
+     "clv_cert_n": 0,
+     "clv_cert_mean": null,
+     "clv_6h_n": 1,
+     "clv_6h_mean": 2.22
+    }
+   ],
+   "holdout_ranking": {},
+   "discovery_ranking": {},
+   "holdout_alt_layers": {
+    "p_win_only": {},
+    "gap_only": {}
+   },
+   "holdout_all": {
+    "n": 1,
+    "roi": -1.0
+   },
+   "holdout_brier": {},
+   "season_gap_tiers_first_sight": [
+    {
+     "layer": "SNIPER",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 4.3
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 3,
+     "matchdays": 3,
+     "hit": 0.333,
+     "roi": -0.2333,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.34
+    }
+   ],
+   "season_gap_tiers_ledger": [
+    {
+     "layer": "SNIPER",
+     "n": 1,
+     "matchdays": 1,
+     "hit": 0.0,
+     "roi": -1.0,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 4.3
+    },
+    {
+     "layer": "MARKSMAN",
+     "n": 0,
+     "matchdays": 0,
+     "hit": null,
+     "roi": null,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": null
+    },
+    {
+     "layer": "VALUABLE",
+     "n": 3,
+     "matchdays": 3,
+     "hit": 0.333,
+     "roi": -0.2333,
+     "roi_ci95": [
+      null,
+      null
+     ],
+     "mean_odds": 2.34
+    }
+   ],
+   "q_bh": null,
+   "verdict": "ONE_LAYER",
+   "verdict_reason": "INSUFFICIENT",
+   "gap_q_bh": null
+  }
+ }
+}
