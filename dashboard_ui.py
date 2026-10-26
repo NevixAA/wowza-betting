@@ -160,6 +160,9 @@ STATUSES: dict[str, tuple[str, str, str]] = {
     "DATED_STUDY": ("◷", "DATED STUDY", "INFO"),
     # evidence accrual
     "ACCRUING":    ("◔", "ACCRUING", "RESEARCH"),
+    # evidence type: a replay of the past can describe, never confirm; forward evidence is collected live
+    "RETROSPECTIVE": ("◷", "RETROSPECTIVE · REPLAY, NOT FORWARD EVIDENCE", "WARNING"),
+    "PROSPECTIVE": ("▸", "PROSPECTIVE · FORWARD", "RESEARCH"),
     "REGISTERED":  ("○", "REGISTERED", "RESEARCH"),
     "SMALL_SAMPLE": ("◌", "SMALL SAMPLE", "WARNING"),
     # legacy signal tiers: secondary metadata, deliberately NEUTRAL — a tier is the size of the

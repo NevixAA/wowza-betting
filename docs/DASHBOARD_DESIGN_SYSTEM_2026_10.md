@@ -86,6 +86,8 @@ Every status is **icon + word** (`status_chip(state)`); colour supports it, neve
 | OBSERVE | ◎ OBSERVE | blue |
 | BET (shadow engine) | ◆ BET · SHADOW | violet |
 | NO BET | – NO BET | grey |
+| RETROSPECTIVE (replay) | ◷ RETROSPECTIVE · REPLAY, NOT FORWARD EVIDENCE | amber |
+| PROSPECTIVE (forward) | ▸ PROSPECTIVE · FORWARD | violet |
 | PASS / WARN / FAIL, GREEN / AMBER / RED | ✓ / ▲ / ✕ | green / amber / red |
 
 ### Empty vs error — four different claims
