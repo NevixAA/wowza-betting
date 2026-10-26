@@ -3,9 +3,18 @@ name: Backtest (per-model, parallel)
 # v10 UPGRADE (staged): run each model's backtest as its own PARALLEL job instead of the slow
 # sequential "all". The models are independent, so wall-clock = slowest single model (~20-40min)
 # instead of the sum (hours). Backtest-only (NO --mode train — walk-forward retrains per window
-# internally, so the upfront full retrain was pure waste). Each job uploads its result CSVs as
-# artifacts; a final aggregate job rebuilds league_roi_config.json + best_params_side_markets.json
-# in ONE commit (no 5-way push race).
+# internally, so the upfront full retrain was pure waste). Each job uploads its result CSVs and its
+# threshold CANDIDATE as artifacts; a final aggregate job writes ONE threshold PROPOSAL and commits it
+# with the backtest evidence in ONE commit (no 5-way push race).
+#
+# PROPOSE, NEVER APPLY (owner rule 2026-10-26). Until then this workflow rewrote
+# models/best_params_standard.json / best_params_side_markets.json, and production served every
+# league the optimiser itself marked `approved` - a live threshold change with no human in the loop.
+# Now it writes output/threshold_proposals/<YYYY-MM>.json + .md (+ latest.json) and NOTHING that
+# production reads. The owner approves entries in config/threshold_approvals.json and
+# `python -m src.threshold_apply` applies exactly those. output/league_roi_config.json (no production
+# consumer: telegram_bot/notifier.py reads it but its gate is disabled) is no longer rewritten; its
+# per-league ROI now lives in the proposal as `roi_by_league`.
 #
 # vs the old backtest.yml: same outputs, but parallel + no wasted retrain. Keep backtest.yml for
 # the monthly full train+backtest; use THIS for fast per-model / on-demand re-backtests.
@@ -108,7 +117,7 @@ jobs:
           path: |
             output/backtest_results_${{ matrix.model }}.csv
             output/backtest_by_league_${{ matrix.model }}.csv
-            models/best_params_${{ matrix.model }}.json
+            output/threshold_proposals/candidates/best_params_${{ matrix.model }}.json
           if-no-files-found: ignore
 
   aggregate:
@@ -125,63 +134,37 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install pandas          # aggregate rebuilds ROI config from CSVs (pandas only)
+        # the proposal resolves the gates production serves (config + src/gate_resolver under the
+        # predict.yml env), so it needs the real requirements, not pandas alone
+        run: pip install -r requirements.txt
       - name: Download all model results
         uses: actions/download-artifact@v4
         with:
           path: _artifacts
-      - name: Place artifacts + rebuild league ROI config + merged side thresholds
+      - name: Place evidence + write the threshold PROPOSAL (never the production files)
         run: |
-          mkdir -p output models
-          # flatten artifacts (each in _artifacts/bt-<model>/...) into output/ and models/
+          mkdir -p output
+          # backtest evidence CSVs only. best_params candidates stay in _artifacts and are read from
+          # there; nothing is copied into models/.
           find _artifacts -name 'backtest_*_*.csv' -exec cp {} output/ \; 2>/dev/null || true
-          find _artifacts -name 'best_params_*.json' -exec cp {} models/ \; 2>/dev/null || true
-          python - <<'EOF'
-          import json, glob
-          from pathlib import Path
-          # 1. league ROI config from side-market by-league files (same logic as backtest.yml)
-          roi = {}
-          for market, f in [("btts","output/backtest_by_league_btts.csv"),
-                            ("over15","output/backtest_by_league_over15.csv"),
-                            ("over35","output/backtest_by_league_over35.csv")]:
-              p = Path(f)
-              if not p.exists() or p.stat().st_size == 0:
-                  continue
-              import pandas as pd
-              try:
-                  df = pd.read_csv(p)
-              except pd.errors.EmptyDataError:
-                  print(f"aggregate: {f} has no columns - skipping")
-                  continue
-              for _, row in df.iterrows():
-                  roi.setdefault(row["league"], {})[market] = round(float(row["roi_%"]), 2)
-          THRESH = {"btts": 5.0, "over15": 3.0, "over35": 8.0}
-          approved = {lg: {m: v for m, v in mk.items() if v >= THRESH.get(m, 5.0)}
-                      for lg, mk in roi.items()}
-          Path("output/league_roi_config.json").write_text(
-              json.dumps({"roi_by_league": roi, "approved_markets_by_league": approved}, indent=2))
-          # 2. merge per-market best_params into the combined side-markets file
-          combined = {}
-          for f in glob.glob("models/best_params_*.json"):
-              if f.endswith("best_params_side_markets.json"):
-                  continue
-              key = Path(f).stem.replace("best_params_", "")
-              try:
-                  combined[key] = json.loads(Path(f).read_text())
-              except Exception:
-                  pass
-          if combined:
-              Path("models/best_params_side_markets.json").write_text(json.dumps(combined, indent=2))
-          print(f"aggregate: {len(roi)} leagues, {sum(1 for v in approved.values() if v)} approved")
-          EOF
+          python -m src.threshold_proposals propose --candidates _artifacts --evidence-dir output
+          # Belt and braces: fail the run (red, not grey) if anything production reads was touched.
+          git diff --exit-code -- models/ config/ output/league_roi_config.json
       - name: Commit results (single commit — no push race)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f output/backtest_results_*.csv output/backtest_by_league_*.csv \
-                     output/league_roi_config.json models/best_params_*.json 2>/dev/null || true
+          # PER-FILE (`git add a b missing` stages nothing) and ONLY the proposal + its evidence.
+          # Never models/, never config/, never output/league_roi_config.json.
+          for f in output/threshold_proposals/*.json output/threshold_proposals/*.md \
+                   output/backtest_results_*.csv output/backtest_by_league_*.csv; do
+            [ -f "$f" ] && git add -f "$f" || echo "  (skip, not present: $f)"
+          done
+          if git diff --staged --name-only | grep -E '^(models/|config/|output/league_roi_config\.json)'; then
+            echo "refusing to commit a production threshold file from the monthly backtest"; exit 1
+          fi
           git diff --staged --quiet || \
-            git commit -m "auto: parallel backtest $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git commit -m "auto: monthly threshold PROPOSAL + backtest evidence $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0
           for i in 1 2 3 4 5; do
             # `-X ours` -> `-X theirs`. In a REBASE the labels are inverted from a merge:

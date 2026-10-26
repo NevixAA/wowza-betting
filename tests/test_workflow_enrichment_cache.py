@@ -70,16 +70,22 @@ def test_the_backtest_matrix_specifically_is_fixed():
         "real headroom, not clear the measured time by minutes")
 
 
-def test_the_backtest_commits_the_standard_optimizer():
-    """best_params_standard.json sets Championship's live 0.07 gate. If the backtest does not
-    stage it, the only artifact that can move a per-league threshold never lands."""
+def test_the_backtest_commits_the_standard_optimizer_as_a_proposal():
+    """REVISED 2026-10-26 (owner rule: the monthly backtest PROPOSES, the owner approves). The
+    optimiser output must still land every month - as a proposal, so a frozen gate stays visible -
+    but it must never be staged into the files production reads."""
     txt = (WF / "backtest_matrix.yml").read_text(encoding="utf-8")
-    assert "models/best_params_*.json" in txt or "best_params_standard.json" in txt
+    assert "output/threshold_proposals/candidates/best_params_${{ matrix.model }}.json" in txt
+    assert "python -m src.threshold_proposals propose" in txt
+    assert "models/best_params_*.json" not in txt
 
 
-def test_retrain_now_refits_the_gates_too():
+def test_retrain_still_refits_the_gates_but_only_as_a_candidate():
     """Daily learning with monthly gate-fitting is what let June thresholds survive every data
-    fix that followed."""
+    fix that followed - so retrain keeps refitting, but (2026-10-26) writes a CANDIDATE only and
+    retrain.yml no longer stages models/best_params_*.json."""
     src = (Path(__file__).resolve().parents[1] / "retrain.py").read_text(encoding="utf-8")
-    assert "optimize_standard_thresholds" in src
-    assert "best_params_standard.json" in (WF / "retrain.yml").read_text(encoding="utf-8")
+    assert "optimize_standard_thresholds" in src and "write_candidate(" in src
+    yml = (WF / "retrain.yml").read_text(encoding="utf-8")
+    staged = [ln for ln in yml.splitlines() if "models/best_params_" in ln and not ln.strip().startswith("#")]
+    assert staged == [], staged

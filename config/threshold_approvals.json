@@ -1,0 +1,13 @@
+{
+ "about": "OWNER approvals of per-league threshold proposals (owner rule 2026-10-26: the monthly backtest PROPOSES, the owner approves). Each approval names a proposal in output/threshold_proposals/ by proposal_id + proposal_hash and lists the approved entries by entry_id + entry_hash ONLY - never a threshold value. `python -m src.threshold_apply --proposal <file>` applies exactly those entries and re-approves the research lock as approved_by. An entry not listed here never reaches production.",
+ "example": {
+  "proposal_id": "TP-2026-11-01-1a2b3c4d",
+  "proposal_hash": "<proposal_hash from the proposal JSON>",
+  "approved_by": "Nevo (owner)",
+  "approved_at": "2026-11-02T08:00:00Z",
+  "entries": [
+   {"entry_id": "ou25|Serie B", "entry_hash": "<entry_hash from the proposal JSON>"}
+  ]
+ },
+ "approvals": []
+}

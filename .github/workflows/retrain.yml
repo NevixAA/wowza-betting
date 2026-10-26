@@ -187,6 +187,9 @@ jobs:
           # whether a new model regressed — without it committed, the gate has no memory and
           # week-to-week improvement cannot be measured at all. Same failure shape as the FPL
           # cache sidecar.
+          # NO models/best_params_*.json (owner rule 2026-10-26): retrain.py writes its threshold
+          # refit as a CANDIDATE under output/threshold_proposals/candidates/, which is not staged.
+          # Production thresholds change only through an owner-approved `src.threshold_apply`.
           for f in models/model_v9_standard.pkl models/model_v9_newformat.pkl \
                    models/model_v9_btts.pkl models/model_v9_over15.pkl models/model_v9_over35.pkl \
                    models/model_ht_over05.pkl models/model_ht_over15.pkl \
@@ -194,9 +197,6 @@ jobs:
                    models/metrics_model_v9_btts.json models/metrics_model_v9_over15.json \
                    models/metrics_model_v9_over35.json \
                    models/metrics_model_ht_over05.json models/metrics_model_ht_over15.json \
-                   models/best_params_standard.json \
-                   models/best_params_btts.json models/best_params_over15.json \
-                   models/best_params_over35.json \
                    models/feature_importances_btts.csv models/feature_importances_over15.csv \
                    models/feature_importances_over35.csv \
                    models/feature_importances_ht_over05.csv \

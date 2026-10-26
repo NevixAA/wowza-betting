@@ -1,0 +1,13 @@
+{
+ "about": "Digests of the per-league threshold files as last written by src/threshold_apply.py. src/research_lock.py turns RED when the live files differ. Do not hand-edit.",
+ "baseline": {
+  "note": "Records the per-league threshold files serving on 2026-10-26 (last written by backtest_matrix 2026-10-06, commit d311bb2f). No threshold value changed.",
+  "recorded_at": "2026-10-26T08:04:21Z",
+  "recorded_by": "agent baseline 2026-10-26 under owner-approved change (monthly backtest proposes, owner approves)"
+ },
+ "files": {
+  "models/best_params_side_markets.json": "3c985925d1e8bef0c8ae6f9a8cb20b10b848e60c2d05d5feee9e4cfe62afb9a8",
+  "models/best_params_standard.json": "30539d785aacb0e913627e9498b0dd6364a89e16bd570f825d211fb388e480c9"
+ },
+ "history": []
+}
