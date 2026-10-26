@@ -136,6 +136,17 @@ else:
     st.caption("Shadow only: the challenger is never served. The minimum applies to EACH track separately "
                "(owner 2026-10-25); the window starts at registration.")
 
+# ── H-MODEL-01 evidence panel (owner brief 2026-10-26 part D) — the evaluator's numbers, never recomputed ──
+@st.cache_data(ttl=300, show_spinner=False)
+def _hmodel():
+    from dashboard_data import evidence_panels as EP
+    return EP.hmodel_rows()
+
+
+from dashboard_data import evidence_view as EV  # noqa: E402
+EV = importlib.reload(EV)
+EV.hmodel_panel(*_hmodel())
+
 # ── latest retrain ─────────────────────────────────────────────────────────────────────────────
 ui.section_header(f"Latest retrain — {d['rk'] or 'none recorded'}")
 if d["rt"].empty:

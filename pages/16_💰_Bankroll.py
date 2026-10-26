@@ -85,6 +85,20 @@ if review:
 if not rec:
     ui.empty_state("NO_DATA", "No Pro bankroll review yet - it runs on the 2nd of each month.")
 
+
+# ═══ SINCE LAST FORMAL REVIEW (owner brief 2026-10-26 part D) — read only, NO POLICY CHANGE ════════
+@st.cache_data(ttl=300, show_spinner=False)
+def _since_review(rec_key: str):
+    from dashboard_data import evidence_panels as EP
+    return EP.since_review(pro.bankroll_track_evidence() if pro.available() else {}, rec,
+                           tier_rules=pro.tier_rules() if pro.available() else None)
+
+
+from dashboard_data import evidence_view as EV  # noqa: E402
+EV = importlib.reload(EV)
+_sm, _srows = _since_review(str(rec.get("generated_at")))
+EV.bankroll_since_panel(_sm, _srows)
+
 # ═══ STATUS — one card per track ═════════════════════════════════════════════════════════════════
 ui.section_header("Base stake by track", "Production base stake is the main number. ROI is shown only with its n "
                   "and match-days beside it — an ROI alone is never evidence.")

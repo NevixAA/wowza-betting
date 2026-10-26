@@ -400,13 +400,20 @@ def evaluate(ledger: pd.DataFrame | None = None, n_boot: int = 2000, seed: int =
                        delta_log_loss=float(dl.mean()), delta_brier=float(db.mean()))
             dates = g.loc[ok, "match_date"].to_numpy()
             ud = np.unique(dates)
+            rec["n_matchdays"] = int(len(ud))          # bootstrap blocks (display: PG-1.0 wants >= 20)
             if len(ud) >= 5:
                 rng = np.random.default_rng(seed)
                 by = {k: dl[dates == k] for k in ud}
-                bs = [np.concatenate([by[k] for k in rng.choice(ud, len(ud))]).mean()
-                      for _ in range(n_boot)]
+                byb = {k: db[dates == k] for k in ud}
+                bs, bsb = [], []
+                for _ in range(n_boot):                # ONE draw per resample, shared by both deltas,
+                    pick = rng.choice(ud, len(ud))     # so the log-loss CI is the same as before
+                    bs.append(np.concatenate([by[k] for k in pick]).mean())
+                    bsb.append(np.concatenate([byb[k] for k in pick]).mean())
                 rec["delta_log_loss_ci95"] = [float(np.percentile(bs, 2.5)),
                                               float(np.percentile(bs, 97.5))]
+                rec["delta_brier_ci95"] = [float(np.percentile(bsb, 2.5)),
+                                           float(np.percentile(bsb, 97.5))]
         out[f"{eid}|{mt}"] = rec
     return out
 

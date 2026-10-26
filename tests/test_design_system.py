@@ -129,7 +129,8 @@ STAGE3_PAGES = ("pages/12_💼_Portfolio.py", "pages/16_💰_Bankroll.py", "page
                 "pages/21_📡_Market_Intelligence.py", "pages/22_🏭_Production.py")
 STAGE3_VIEWS = ("dashboard_data/portfolio_view.py", "dashboard_data/bankroll_view.py", "dashboard_data/props_view.py",
                 "dashboard_data/builder_view.py", "dashboard_data/success_view.py",
-                "dashboard_data/model_info_view.py", "dashboard_data/research_view.py")
+                "dashboard_data/model_info_view.py", "dashboard_data/research_view.py",
+                "dashboard_data/evidence_view.py")       # evidence panels, owner brief 2026-10-26 part D
 REDESIGNED = ("pages/00_🎯_Home.py", "pages/1_📊_Dashboard.py", "pages/18_🔧_League_Research.py",
               "pages/17_🏟️_Leagues.py", "pages/0_🏠_Overview.py", "pages/6_⚡_Live.py", "pages/13_⚽_Fantasy.py",
               "dashboard_data/league_research_view.py", "dashboard_data/leagues_view.py",
