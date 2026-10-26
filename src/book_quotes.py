@@ -120,7 +120,7 @@ OPEN_ONLY_BANDS = {"FAR"}
 #: coverage 48-96 h out rose from ~40% to ~75% (9 h) / ~85% (5.5 h) in the same replay.
 FAR_TRACKED_MARKETS = {"ou", "btts"}
 try:
-    FAR_HEARTBEAT_H = float(os.getenv("BOOK_QUOTES_FAR_HEARTBEAT_H", "9"))
+    FAR_HEARTBEAT_H = float(os.getenv("BOOK_QUOTES_FAR_HEARTBEAT_H", "5.5"))   # owner 2026-10-26: 5.5 h (+~10 pts 48-96 h coverage, ~+2 MB/day)
 except ValueError:
     FAR_HEARTBEAT_H = 9.0
 

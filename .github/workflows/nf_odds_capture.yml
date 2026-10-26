@@ -40,9 +40,9 @@ on:
     # :23 and :52 by three minutes, so the two never contend for a runner, and both stay off :00
     # and :15 — GitHub's most contended minutes.
     #
-    # Hours 04:00-08:00 UTC hold zero kickoffs in the store and are dropped, which pays for most
-    # of the second slot. Net 24/day -> 36/day.
-    - cron: '20,50 0-3,9-23 * * *'
+    # 04:00-08:00 UTC used to be dropped as "zero kickoffs", but 7.3% of new-format kickoffs (Asian
+    # leagues) fall at 04-09 UTC; owner 2026-10-26 added them back (all 24 hours now).
+    - cron: '20,50 0-23 * * *'
   workflow_dispatch:
     inputs:
       max_hours:
