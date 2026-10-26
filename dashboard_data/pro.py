@@ -238,6 +238,12 @@ def candidate_forward() -> dict:
     return read_json(_f("output/edge_reassessment/candidate_forward_progress.json")) or {}
 
 
+def edge2_forward() -> dict:
+    """H-EDGE2 market_edge_v2 forward family, daily progress (Pro src/studies/edge2_forward.py).
+    Statuses REGISTERED / ACCRUING / ELIGIBLE_FOR_REVIEW / BLOCKED_CONFIG_CHANGED; never CONFIRMED."""
+    return read_json(_f("output/edge_reassessment/edge2_forward_progress.json")) or {}
+
+
 def tier_rules() -> pd.DataFrame:
     """Per-track evidence: does the edge rank outcomes? (Pro bankroll review, tier_rules.csv)."""
     try:
