@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-10-26T09:55:19Z",
+ "generated_at": "2026-10-26T10:31:55Z",
  "overall": "PASS",
  "reasons": [],
  "protected_tracks_modified": false,
@@ -14,7 +14,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "cbd42d57210fe30fb96878bf3b465936c075b9520ca9b71169518b898e4a7803",
-  "code_commit": "bd507019432d"
+  "code_commit": "df45629bbe95"
  },
  "counts": {
   "GREEN": 16,
@@ -26,7 +26,7 @@
   {
    "check": "Side-market routing",
    "status": "GREEN",
-   "value": "12 side tips, 0 unknown|*",
+   "value": "21 side tips, 0 unknown|*",
    "rule": "RED if any ACTIVE/ACTIVE_LOW policy track has tips and 100% map to UNSUPPORTED; GREEN otherwise",
    "detail": ""
   },
@@ -35,7 +35,7 @@
    "status": "GREEN",
    "value": "0.0% unmapped",
    "rule": "GREEN 0% of tips on unknown|* tracks or without odds; AMBER < 5%; RED >= 5%",
-   "detail": "generated 2026-10-26 09:50:26"
+   "detail": "generated 2026-10-26 10:21:03"
   },
   {
    "check": "Shadow settlement coverage",
@@ -75,7 +75,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 failed / 131 runs (24 h)",
+   "value": "0 failed / 135 runs (24 h)",
    "rule": "failed/timed-out runs across the 3 repos in the last 24 h: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -110,7 +110,7 @@
   {
    "check": "First-sight store integrity",
    "status": "GREEN",
-   "value": "9 stores, 8 checked against the previous digest",
+   "value": "9 stores, 9 checked against the previous digest",
    "rule": "RED if any store's previously recorded rows no longer match their frozen digest (TAMPERED) or a store is unreadable; AMBER if duplicate keys (earliest-wins breached) or rows observed at/after kickoff; GREEN otherwise",
    "detail": ""
   },
@@ -124,7 +124,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 760 rows, shadow_only=True, 0.1 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 760 rows, shadow_only=True, 0.2 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -161,34 +161,34 @@
     "schema": "MARKET_SNAPSHOT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 38005,
+    "rows": 38321,
     "n_violations": 4,
     "violations": [
      {
       "kind": "missing_column",
       "column": "minutes_to_kickoff",
-      "n_rows": 38005,
+      "n_rows": 38321,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "overround",
-      "n_rows": 38005,
+      "n_rows": 38321,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "opposite_odds",
-      "n_rows": 38005,
+      "n_rows": 38321,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "source",
-      "n_rows": 38005,
+      "n_rows": 38321,
       "detail": "required column absent",
       "examples": []
      }
@@ -246,7 +246,7 @@
     "schema": "STAKE_PLAN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 86,
+    "rows": 95,
     "n_violations": 0,
     "violations": []
    },
@@ -395,7 +395,7 @@
    "frozen_digest": "ff39c178257a43738c221c9e282f621eb79c57465eb69b31aa70b005046b47e5",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 100,
+   "prior_rows": 115,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -405,8 +405,8 @@
    "frozen_digest": "b9405d27546f51fb8ee4bf379aefa546fe5cdc4dc6f3f2864840688efb315a1a",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": null,
-   "prior_match": null,
+   "prior_rows": 20,
+   "prior_match": true,
    "status": "OK",
    "reasons": []
   }

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-26T09:55:12.900839+00:00",
+  "generated_at_utc": "2026-10-26T10:31:49.840945+00:00",
   "purpose": "Accumulating record of what bankroll fraction each league x market x model cell justifies. NOT a switch: nothing here enables, disables or sizes a live bet. Read weeks_to_target as the headline.",
   "method": "Quarter-Kelly on the LOWER bound of a matchday-block bootstrap CI, not on the point estimate. A cell whose interval includes zero gets exactly 0.0%. Capped per cell and in total.",
   "reliable_from": "2026-09-24",
