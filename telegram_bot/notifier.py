@@ -1,5 +1,9 @@
 """
-Telegram Notifier — sends SNIPER alerts after each predict run.
+Telegram Notifier — sends tip alerts after each predict run.
+
+Tier WORDS in every message come from src/tier_labels.py (Big / Medium / Small gap, owner
+2026-10-26). The codes SNIPER / MARKSMAN / VALUABLE stay the internal names: ledgers, filters
+and the dedup keys in notified.json are unchanged.
 
 Setup:
   1. Message @BotFather on Telegram → /newbot → copy token
@@ -33,6 +37,7 @@ PLAYER_KICKOFF_FILE   = BASE_DIR / "player_kickoff_cache.json"
 
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
+from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
 
 
 def _read_csv(*args, **kwargs):
@@ -468,12 +473,11 @@ def notify_new_snipers() -> int:
         model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
         mtag  = "standard" if _is_std else "new-format"
 
-        if tier == "SNIPER":
-            header = f"🎯 <b>SNIPER TIP</b> {drift}"
-        elif tier == "MARKSMAN":
-            header = f"🔫 <b>MARKSMAN TIP</b> {drift}"
+        # Display words from src/tier_labels.py: the tier is the size of the gap, not confidence.
+        if tier in ("SNIPER", "MARKSMAN"):
+            header = f"{TIER_ICON[tier]} <b>{tier_label(tier).upper()} TIP</b> {drift}"
         elif tier == "VALUABLE":
-            header = f"💎 <b>VALUABLE TIP</b> ({mtag}) {drift}"   # dynamic — NF VALUABLE now sent too
+            header = f"{TIER_ICON[tier]} <b>{tier_label(tier).upper()} TIP</b> ({mtag}) {drift}"
         else:
             header = f"🔍 <b>EDGE WATCH</b> (small edge, not a tip) {drift}"
 
@@ -1073,7 +1077,7 @@ def notify_weekly_summary() -> bool:
         wc_pending = int(len(wc[wc["date"] >= week_ago]))
 
     # ── Build message — by market then tier ──────────────────────────────────
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    TIER_SYM   = TIER_ICON
     TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
     # BTTS alone does not say which side; this path only ever produces YES.
     SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
@@ -1081,6 +1085,7 @@ def notify_weekly_summary() -> bool:
     lines = [
         "📊 <b>WEEKLY SUMMARY</b>",
         "━━━━━━━━━━━━━━━━",
+        f"<i>{GAP_EXPLAINER}</i>",
         f"📅 {week_start} → {week_end}",
         "",
         "<b>This week by market</b>",
@@ -1113,7 +1118,7 @@ def notify_weekly_summary() -> bool:
                 if ts.empty:
                     continue
                 tn = len(ts); tw = int((ts["pnl"] > 0).sum())
-                lines.append(f"  {TIER_SYM[tier]} {tier}: {tn} bets | {tw/tn:.0%} win | "
+                lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {tn} bets | {tw/tn:.0%} win | "
                              f"P/L <b>{ts['pnl'].sum():+.2f}u</b>")
                 _sharp_split_lines(ts, lines, "      ")
             for tier in COLLECT_TIERS:
@@ -1121,7 +1126,7 @@ def notify_weekly_summary() -> bool:
                 if cs.empty:
                     continue
                 cn = len(cs); cw = int((cs["pnl"] > 0).sum())
-                lines.append(f"  {TIER_SYM.get(tier, '💎')} {tier}: {cn} signals | {cw/cn:.0%} win | "
+                lines.append(f"  {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {cn} signals | {cw/cn:.0%} win | "
                              f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
         if not any_shown:
             lines.append("⚽ <b>Over 2.5</b>: no settled bets")
@@ -1149,7 +1154,7 @@ def notify_weekly_summary() -> bool:
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
                 lines.append("")
         except Exception:
             pass
@@ -1239,7 +1244,7 @@ def notify_weekly_summary() -> bool:
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines.append(f"  {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
                 lines.append("")
         except Exception:
             pass
@@ -1455,7 +1460,7 @@ def notify_player_props() -> int:
         tier   = row.get("feed_tier", "VALUABLE")   # strength-rank bucket, not a real-money tier
         mkt_odds = row.get("market_odds")
         ev_val   = row.get("ev")
-        tier_emoji = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}.get(tier, "💎")
+        tier_emoji = TIER_ICON.get(tier, TIER_ICON["VALUABLE"])
         market_label = {
             "goals": "Anytime Goalscorer", "goals2": "Score 2+",
             "assists": "Assist",
@@ -1468,7 +1473,7 @@ def notify_player_props() -> int:
                        and ev_val and not (isinstance(ev_val, float) and ev_val != ev_val) \
                     else f"📊 Model P: <b>{p*100:.0f}%</b>  |  Fair Odds: <b>{fair:.2f}</b>"
 
-        _title = f"{tier} · TEST"
+        _title = f"{tier_label(tier).upper()} · TEST"
         _footer = ("🧪 <i>Test model — calibrated & strong at predicting, but NOT proven vs the "
                    "market. Tracking only — do NOT bet real money.</i>")
         msg = (
@@ -1677,7 +1682,7 @@ def notify_props_daily_digest() -> bool:
         ("sot3",    "SOT 3+",         "🔫"),
         ("cards",   "Carded",         "🟨"),
     ]
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📄"}
+    TIER_SYM   = TIER_ICON
     TIER_ORDER = ["SNIPER", "MARKSMAN"]                            # what gets SENT as a tip
     # What gets COUNTED in results. Wider than TIER_ORDER because VALUABLE/PAPER picks are
     # real tracked positions even though they don't trigger an individual alert. AVOID/WATCH
@@ -1795,7 +1800,7 @@ def notify_props_daily_digest() -> bool:
                             continue  # don't list individual voided bets (shown only in the W/L/VOID count)
                         emoji = {"WIN": "✅", "LOSS": "❌"}.get(res, "⬜")
                         pnl_r = float(r["pnl"])
-                        tier_s = f"[{r['tier']}] " if "tier" in r and pd.notna(r.get("tier")) else ""
+                        tier_s = f"[{tier_label(r['tier'])}] " if "tier" in r and pd.notna(r.get("tier")) else ""
                         note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
                         lines2.append(
                             f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{pnl_r:+.2f}u</b>"
@@ -1828,7 +1833,7 @@ def notify_props_daily_digest() -> bool:
                             if ts.empty:
                                 continue
                             tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
         except Exception:
             pass
 
@@ -1881,7 +1886,7 @@ def notify_props_weekly_summary() -> bool:
     ]
     MKT_LABEL = {k: lbl for k, lbl, _ in PLAYER_MARKETS}
     MKT_EMOJI = {k: emj for k, _, emj in PLAYER_MARKETS}
-    TIER_SYM  = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎", "PAPER": "📄"}
+    TIER_SYM  = TIER_ICON
     MARKETS   = [k for k, _, _ in PLAYER_MARKETS]
     # WATCH dropped: it's a watchlist, not a position — _bet_tiers_only filters it out with
     # AVOID, so listing it here would only ever render an empty row.
@@ -1931,7 +1936,7 @@ def notify_props_weekly_summary() -> bool:
                 continue
             tn, tw, tp = tr
             lines.append(
-                f"  {TIER_SYM.get(tier, '📌')} {tier}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
+                f"  {TIER_SYM.get(tier, '📌')} {tier_label(tier)}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
             )
     else:
         pending = int(settled_week["pnl"].isna().sum()) if not settled_week.empty else 0
@@ -2046,7 +2051,7 @@ def notify_daily_digest() -> bool:
         print("Daily digest already sent today — skipping.")
         return False
 
-    TIER_SYM   = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
+    TIER_SYM   = TIER_ICON
     TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
     # BTTS alone does not say which side; this path only ever produces YES.
     SIDE_LABELS = {"btts": "BTTS — YES", "over15": "Over 1.5", "over35": "Over 3.5"}
@@ -2055,6 +2060,7 @@ def notify_daily_digest() -> bool:
     lines = [
         f"📊 <b>DAILY BRIEFING</b> — {header_date}",
         "━━━━━━━━━━━━━━━━",
+        f"<i>{GAP_EXPLAINER}</i>",
         "",
     ]
 
@@ -2097,7 +2103,7 @@ def notify_daily_digest() -> bool:
                         tb = fb[fb["signal_tier"] == tier]
                         if tb.empty:
                             continue
-                        lines.append(f"    {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
+                        lines.append(f"    {TIER_SYM[tier]} <b>{tier_label(tier)}</b> ({len(tb)})")
                         for _, r in tb.iterrows():
                             side = str(r.get("side", ""))
                             try:
@@ -2137,7 +2143,7 @@ def notify_daily_digest() -> bool:
                     tb = ms[ms["signal_tier"] == tier]
                     if tb.empty:
                         continue
-                    lines.append(f"  {TIER_SYM[tier]} <b>{tier}</b> ({len(tb)})")
+                    lines.append(f"  {TIER_SYM[tier]} <b>{tier_label(tier)}</b> ({len(tb)})")
                     for _, r in tb.iterrows():
                         try:
                             ev_str = f" EV {float(r.get('ev_pct', 0) or 0):+.0f}%"
@@ -2313,13 +2319,13 @@ def notify_daily_digest() -> bool:
                             r = _stats_sub(fb, fb["signal_tier"] == tier)
                             if r:
                                 tn, tw, tp = r
-                                lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                                lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
                     # Collection tiers: visible, but explicitly not money.
                     for tier in COLLECT_TIERS:
                         r = _stats_sub(fb_all, fb_all["signal_tier"] == tier)
                         if r:
                             tn, tw, tp = r
-                            lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {tw}W/{tn-tw}L "
+                            lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
                                           f"({tp:+.2f}u) — 📊 data only, not staked")
             else:
                 lines2.append("  ⚽ O/U 2.5: no settled staked bets")
@@ -2327,7 +2333,7 @@ def notify_daily_digest() -> bool:
                     r = _stats_sub(live_y, live_y["signal_tier"] == tier) if "signal_tier" in live_y.columns else None
                     if r:
                         tn, tw, tp = r
-                        lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {tw}W/{tn-tw}L "
+                        lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
                                       f"({tp:+.2f}u) — 📊 data only, not staked")
         except Exception:
             pass
@@ -2359,14 +2365,14 @@ def notify_daily_digest() -> bool:
                         rt = _stats_sub(stk, stk["signal_tier"] == tier)
                         if rt:
                             tn, tw, tp = rt
-                            lines2.append(f"    {TIER_SYM[tier]} {tier}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
                 else:
                     lines2.append(f"📌 <b>{mkt_label}</b>: no settled staked bets")
                 for tier in COLLECT_TIERS:
                     rt = _stats_sub(ms, ms["signal_tier"] == tier)
                     if rt:
                         tn, tw, tp = rt
-                        lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {tw}W/{tn-tw}L "
+                        lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
                                       f"({tp:+.2f}u) — 📊 data only, not staked")
         except Exception as e:
             lines2.append(f"  Side markets error: {e}")
@@ -2441,14 +2447,14 @@ def notify_daily_digest() -> bool:
                     if cs.empty:
                         continue
                     cn = len(cs); cw = int((cs["pnl"] > 0).sum())
-                    lines2.append(f"    {TIER_SYM.get(tier, '💎')} {tier}: {cw}W/{cn-cw}L "
+                    lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {cw}W/{cn-cw}L "
                                   f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
                 for tier in STAKED_TIERS:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
                     _sharp_split_lines(ts, lines2, "        ")
         except Exception:
             pass
@@ -2484,7 +2490,7 @@ def notify_daily_digest() -> bool:
                             continue
                         tn = len(ts); w = int((ts["pnl"] > 0).sum())
                         tail = " — 📊 data only" if tier in COLLECT_TIERS else ""
-                        lines2.append(f"    {TIER_SYM[tier]} {tier}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u{tail}")
+                        lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u{tail}")
         except Exception:
             pass
 
@@ -2661,8 +2667,7 @@ def notify_side_bets() -> int:
         # VALUABLE to the filter above would have silently relabelled every VALUABLE side-market
         # tip as MARKSMAN — a wrong tier on a live alert, which is precisely the number the
         # reader uses to size. Same shape as the tier symbols used everywhere else in this file.
-        _TIER_HDR = {"SNIPER": "🎯 SNIPER", "MARKSMAN": "🔫 MARKSMAN", "VALUABLE": "💎 VALUABLE"}
-        tier_header = f"{_TIER_HDR.get(tier, f'📌 {tier}')} — <b>{label}</b>"
+        tier_header = f"{tier_tag(tier)} — <b>{label}</b>"   # icon + display word (src/tier_labels)
 
         msg = (
             f"{emoji} {tier_header}\n"
@@ -2787,5 +2792,5 @@ if __name__ == "__main__":
         # too (predict runs every 5 min) raced live_scanner's dedup -> DUPLICATE live alerts.
         # Removed 2026-08-09 so live signals have exactly ONE sender.
         health = notify_predict_health()
-        print(f"Notifications sent: {n} O/U SNIPER + {side} side market + {ht} HT"
+        print(f"Notifications sent: {n} O/U 2.5 + {side} side market + {ht} HT"
               + (" + HEALTH ALERT" if health else ""))
