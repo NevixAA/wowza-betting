@@ -73,6 +73,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # A queued scheduled run otherwise checks out the SHA of its SCHEDULE time, so it would
+          # read a stale output/capture_wide state and could repeat a WIDE pass already done.
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -94,6 +97,12 @@ jobs:
           # new_format. Any fix there will be argued from closing lines, and /odds is pre-match
           # only -- so the evidence has to exist before the question is asked.
           CAPTURE_BOOK_QUOTES: "1"
+          # WIDE-pass guard (src/capture_schedule.wide_due). One WIDE pass prices every look-ahead
+          # fixture: ~17+17x28 = ~490 calls (std) / ~15+15x20 = ~315 (nf). 4/day by the 6 h rule;
+          # the call cap is a hard ceiling on what WIDE passes may spend per UTC day.
+          CAPTURE_WIDE_EVERY_H: "6"
+          CAPTURE_WIDE_MAX_PER_DAY: "4"
+          CAPTURE_WIDE_MAX_CALLS_PER_DAY: "1500"
         run: |
           # NEAR on the 15-minute cron, WIDE on the 4x/day cron. One script, one flag.
           # ── NEAR vs WIDE: MATCH THE WIDE CRON, DEFAULT TO NEAR ─────────────────────────
@@ -156,19 +165,59 @@ jobs:
           export LOOP_CAP_MIN=170
           rm -f "$CAPTURE_STATE"
 
+          # ── WIDE PASSES FROM INSIDE THE LOOP (owner-approved 2026-10-26) ─────────────────────
+          # The WIDE cron used to be the ONLY way a WIDE pass happened, and GitHub cannot hit a
+          # clock: measured 2026-10-05..10-26, 3.2-3.3 WIDE passes/day were delivered against 4
+          # requested, hours late and with 7-9 h gaps. The market-first engine refuses a far book
+          # quote older than 12 h, so now EVERY pass of this loop first asks
+          # `python -m src.capture_schedule wide-due`, which answers from a RECORDED timestamp in
+          # the committed file below (never mtime; missing/corrupt = infinitely old = run now).
+          # Due at >= CAPTURE_WIDE_EVERY_H hours; hard-capped per UTC day by pass count and by the
+          # API calls WIDE passes spent; never inside the last 15 minutes before the loop cap.
+          # The WIDE cron is now just one more firing that asks the same question. A manual run
+          # with blank max_hours still forces one WIDE pass. If the check itself fails, the old
+          # rule applies: one WIDE pass on the WIDE cron, none otherwise.
+          export CAPTURE_WIDE_STATE="output/capture_wide/nf_capture.json"
+          FORCE_WIDE=0
+          WIDE_FALLBACK_DONE=0
+          LAST_KO=""      # nearest kickoff (min) from the last NEAR pass: a WIDE pass waits while
+                          # a close is forming (<=35 min), at most 2 h past due
           if [ -z "$MH" ]; then
-            echo "WIDE pass: all fixtures in the look-ahead window"
-            python scripts/capture_nf_odds_forward.py || echo "  (wide pass failed - continuing)"
+            [ -n "$SCHED" ] || FORCE_WIDE=1
             MH=12
           fi
+          wide_if_due() {
+            if [ "$FORCE_WIDE" = "1" ]; then
+              FORCE_WIDE=0
+              WD="$(printf 'WIDE_DUE=1\nWIDE_REASON=MANUAL')"
+            else
+              WD=$(python -m src.capture_schedule wide-due --state "$CAPTURE_WIDE_STATE" \
+                     --next-ko-min "$LAST_KO" 2>&1)
+              if ! printf '%s\n' "$WD" | grep -q '^WIDE_DUE=[01]$'; then
+                echo "  [wide] due check failed: $WD"
+                if [ "$SCHED" = "$WIDE_CRON" ] && [ "$WIDE_FALLBACK_DONE" != "1" ]; then
+                  WIDE_FALLBACK_DONE=1; WD="WIDE_DUE=1"
+                else
+                  WD="WIDE_DUE=0"
+                fi
+              fi
+            fi
+            printf '%s\n' "$WD" | sed 's/^/  [wide] /'
+            if printf '%s\n' "$WD" | grep -q '^WIDE_DUE=1$'; then
+              echo "WIDE pass: all fixtures in the look-ahead window"
+              python scripts/capture_nf_odds_forward.py || echo "  (wide pass failed - continuing)"
+            fi
+          }
 
           echo "NEAR loop: fixtures within ${MH}h, base ${LOOP_BASE_MIN}m, keep-alive ${LOOP_KEEPALIVE_MIN}m, cap ${LOOP_CAP_MIN}m"
           i=0
           while : ; do
             i=$((i + 1))
             echo "--- pass $i  $(date -u '+%H:%M:%S') ---"
+            wide_if_due
             OUT_TXT=$(python scripts/capture_nf_odds_forward.py --max-hours "$MH" 2>&1) || echo "  (pass $i failed - continuing)"
             echo "$OUT_TXT"
+            LAST_KO=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^NEXT_KO_MIN=\([0-9][0-9]*\)$/\1/p' | tail -1)
             CONT=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^LOOP_CONTINUE=\([01]\)$/\1/p' | tail -1)
             SLEEP_S=$(printf '%s\n' "$OUT_TXT" | sed -n 's/^LOOP_SLEEP_S=\([0-9][0-9]*\)$/\1/p' | tail -1)
             if [ -z "$CONT" ] || [ -z "$SLEEP_S" ]; then
@@ -192,6 +241,8 @@ jobs:
           git add -f output/book_quotes 2>/dev/null || true
           # Last-seen heartbeat (src/odds_heartbeat.py): this writer's own directory only.
           git add -f output/odds_heartbeat/nf_capture 2>/dev/null || true
+          # Recorded WIDE-pass timestamp + per-day counters (src/capture_schedule.wide_due).
+          git add -f output/capture_wide/nf_capture.json 2>/dev/null || true
           git diff --staged --quiet || \
             git commit -m "auto: nf odds capture $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

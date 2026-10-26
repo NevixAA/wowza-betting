@@ -248,12 +248,16 @@ def test_h2h_is_no_longer_captured():
 
 def test_far_is_kept_once_as_an_opening_price_not_change_tracked(tmp_path, monkeypatch):
     """97.8% of captured rows were FAR and nothing is ever certified against one. What FAR is
-    for is the OPENING line — one row, not a week of slow drift."""
+    for is the OPENING line — one row, not a week of slow drift. Since 2026-10-26 this holds for
+    every market EXCEPT the engine's families (FAR_TRACKED_MARKETS), so it is tested on ht_ou."""
     monkeypatch.setattr(bq, "QUOTES_DIR", tmp_path)
-    assert bq.append_quotes([_qb("2026-10-01T06:00:00Z", 1.90, "FAR", 4000.0)]) == 1
+    ht = {"market": "ht_ou", "line": 1.5}
+    assert bq.append_quotes([{**_qb("2026-10-01T06:00:00Z", 1.90, "FAR", 4000.0), **ht}]) == 1
     assert bq.load_quotes().iloc[0]["obs_reason"] == "open"
     # a genuine FAR price move is NOT stored — it is drift nobody reads
-    assert bq.append_quotes([_qb("2026-10-02T06:00:00Z", 2.10, "FAR", 3000.0)]) == 0
+    assert bq.append_quotes([{**_qb("2026-10-02T06:00:00Z", 2.10, "FAR", 3000.0), **ht}]) == 0
+    # ...nor an unchanged one a day later (no FAR heartbeat outside the tracked families)
+    assert bq.append_quotes([{**_qb("2026-10-02T18:00:00Z", 2.10, "FAR", 2280.0), **ht}]) == 0
     # but the near rungs still capture everything
     assert bq.append_quotes([_qb("2026-10-04T17:30:00Z", 2.10, "T-30m", 30.0)]) == 1
 

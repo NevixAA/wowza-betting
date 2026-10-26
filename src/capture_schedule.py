@@ -183,3 +183,162 @@ class PassScheduler:
             # Machine-readable, one per line, parsed by the workflow loop.
             print(f"LOOP_CONTINUE={1 if cont else 0}")
             print(f"LOOP_SLEEP_S={sleep_s}")
+
+
+# ── WIDE passes from inside the loop (owner-approved 2026-10-26) ─────────────────────────────────
+# WHY. A WIDE pass (every look-ahead fixture, no --max-hours) used to run only when the WIDE cron
+# itself was delivered. Measured 2026-10-05..10-26 from the consensus archives: 3.2-3.3 delivered
+# WIDE passes/day per job against 4 requested, landing hours late (00:05 -> ~04:00) and with
+# 7-9 h gaps. The market-first engine refuses a book whose pair is older than its 12 h stale limit
+# (market_edge stale_hard_minutes=720), so the far horizon cannot depend on a cron landing.
+#
+# HOW. Every pass of the NEAR loop first asks `wide_due`. A WIDE pass runs when the last one is
+# >= WIDE_EVERY_H old, read from a RECORDED timestamp in a committed file
+# (output/capture_wide/<writer>.json) — never from file mtime, which `git checkout` resets on every
+# CI run. A missing, corrupt or future timestamp is UNKNOWN AGE and treated as infinitely old:
+# the pass runs (the first FPL freshness fix fell back otherwise and deadlocked itself).
+#
+# HARD GUARDS (env-overridable, per UTC day and per job): at most WIDE_MAX_PER_DAY passes and at
+# most WIDE_MAX_CALLS_PER_DAY API calls spent by WIDE passes (a pass is refused when calls_today
+# plus the last pass's measured cost would exceed it). No WIDE pass starts within WIDE_LATEST_MIN
+# of the loop cap, so a late WIDE pass cannot push the job into its timeout. MIN_QUOTA in the
+# capture scripts stays the final backstop. Nothing in this module makes an API call.
+WIDE_STATE_DIR = Path(__file__).resolve().parents[1] / "output" / "capture_wide"
+WIDE_EVERY_H = 6.0
+WIDE_MAX_PER_DAY = 4
+WIDE_MAX_CALLS_PER_DAY = 2500
+WIDE_EST_CALLS = 500            # cost assumed for a pass before one has been measured
+WIDE_LATEST_MIN = 15.0
+CLOSE_GUARD_MIN = 35.0          # defer a WIDE pass while a kickoff is this close...
+WIDE_DEFER_MAX_H = 2.0          # ...but never more than this past due
+
+
+def _env_float(name: str, default: float) -> float:
+    try:
+        return float(os.environ[name])
+    except (KeyError, ValueError):
+        return default
+
+
+def _parse_utc(s) -> float | None:
+    """Epoch seconds from an ISO 'YYYY-MM-DDTHH:MM:SSZ' string, or None when unusable."""
+    from datetime import datetime, timezone
+    try:
+        return datetime.strptime(str(s), "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=timezone.utc).timestamp()
+    except (TypeError, ValueError):
+        return None
+
+
+def _iso(ts: float) -> str:
+    from datetime import datetime, timezone
+    return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def load_wide_state(path) -> dict:
+    """The recorded WIDE state, or {} when missing / unreadable (= unknown age)."""
+    try:
+        d = json.loads(Path(path).read_text(encoding="utf-8"))
+        return d if isinstance(d, dict) else {}
+    except Exception:                                                 # noqa: BLE001
+        return {}
+
+
+def wide_due(state: dict, now: float, *, every_h: float = WIDE_EVERY_H,
+             max_per_day: int = WIDE_MAX_PER_DAY,
+             max_calls_per_day: float = WIDE_MAX_CALLS_PER_DAY,
+             loop_elapsed_min: float | None = None, loop_cap_min: float | None = None,
+             next_ko_min: float | None = None) -> tuple[bool, str]:
+    """(run a WIDE pass now?, reason). Pure: no I/O and no clock of its own."""
+    if (loop_elapsed_min is not None and loop_cap_min is not None
+            and loop_elapsed_min > loop_cap_min - WIDE_LATEST_MIN):
+        return False, "LOOP_TOO_LATE"
+    last = _parse_utc(state.get("last_wide_utc"))
+    if last is None or last > now + 300:
+        return True, "UNKNOWN_AGE"                # never recorded / corrupt / future: run now
+    age_h = (now - last) / 3600.0
+    if age_h < every_h:
+        return False, f"FRESH({age_h:.1f}h<{every_h:g}h)"
+    # A WIDE pass takes minutes. While a close is forming (a kickoff inside CLOSE_GUARD_MIN, where
+    # the loop prices every 2 minutes) it waits — but only up to WIDE_DEFER_MAX_H past due, so a
+    # busy Saturday cannot starve the far horizon.
+    if (next_ko_min is not None and 0 < next_ko_min <= CLOSE_GUARD_MIN
+            and age_h < every_h + WIDE_DEFER_MAX_H):
+        return False, f"DEFER_CLOSE_FORMING(ko in {next_ko_min:.0f}m)"
+    today = _iso(now)[:10]
+    same_day = state.get("day") == today
+    passes = int(state.get("passes_today", 0) or 0) if same_day else 0
+    calls = float(state.get("calls_today", 0) or 0) if same_day else 0.0
+    if passes >= max_per_day:
+        return False, f"DAY_PASS_CAP({passes}>={max_per_day})"
+    est = float(state.get("last_pass_calls") or WIDE_EST_CALLS)
+    if calls + est > max_calls_per_day:
+        return False, f"DAY_CALL_CAP({calls:.0f}+{est:.0f}>{max_calls_per_day:.0f})"
+    return True, f"DUE({age_h:.1f}h)"
+
+
+def record_wide(path, now: float, calls: int) -> dict:
+    """Record a completed WIDE pass: its timestamp plus per-UTC-day pass and call counters."""
+    p = Path(path)
+    st = load_wide_state(p)
+    today = _iso(now)[:10]
+    if st.get("day") != today:
+        st = {"day": today, "passes_today": 0, "calls_today": 0}
+    st.update(last_wide_utc=_iso(now), day=today,
+              passes_today=int(st.get("passes_today", 0) or 0) + 1,
+              calls_today=int(st.get("calls_today", 0) or 0) + int(calls),
+              last_pass_calls=int(calls))
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(st, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    return st
+
+
+def record_wide_from_env(started: float, calls: int) -> None:
+    """Called by a capture script at the end of a WIDE pass when CAPTURE_WIDE_STATE is set.
+    `started` is the pass's own start time, so the next due check measures from when the far
+    prices were actually taken. Never raises into the capture."""
+    path = os.getenv("CAPTURE_WIDE_STATE")
+    if not path:
+        return
+    try:
+        st = record_wide(path, started, calls)
+        print(f"[wide] recorded pass {st['passes_today']} today, {calls} calls "
+              f"({st['calls_today']} WIDE calls today)")
+    except Exception as e:                                            # noqa: BLE001
+        print(f"[wide] state not recorded ({e})")
+
+
+def main(argv: list[str] | None = None) -> int:
+    """`python -m src.capture_schedule wide-due --state PATH` -> WIDE_DUE=0|1 and WIDE_REASON=."""
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd", choices=["wide-due"])
+    ap.add_argument("--state", required=True)
+    ap.add_argument("--next-ko-min", default="",
+                    help="minutes to the nearest kickoff from the last NEAR pass (blank = unknown)")
+    a = ap.parse_args(argv)
+    try:
+        next_ko = float(a.next_ko_min) if str(a.next_ko_min).strip() else None
+    except ValueError:
+        next_ko = None
+    now = time.time()
+    start = os.getenv("LOOP_START_S")
+    try:
+        elapsed = (now - float(start)) / 60.0 if start else None
+    except ValueError:
+        elapsed = None
+    ok, why = wide_due(load_wide_state(a.state), now,
+                       every_h=_env_float("CAPTURE_WIDE_EVERY_H", WIDE_EVERY_H),
+                       max_per_day=int(_env_float("CAPTURE_WIDE_MAX_PER_DAY", WIDE_MAX_PER_DAY)),
+                       max_calls_per_day=_env_float("CAPTURE_WIDE_MAX_CALLS_PER_DAY",
+                                                    WIDE_MAX_CALLS_PER_DAY),
+                       loop_elapsed_min=elapsed,
+                       loop_cap_min=_env_float("LOOP_CAP_MIN", CAP_MIN),
+                       next_ko_min=next_ko)
+    print(f"WIDE_DUE={1 if ok else 0}")
+    print(f"WIDE_REASON={why}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

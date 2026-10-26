@@ -22,13 +22,19 @@ import pandas as pd
 PROJ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJ))
 import config
+from player_model import api_football as _af
 from player_model.api_football import get_upcoming_fixtures
-from src.capture_schedule import PassScheduler
+from src.capture_schedule import PassScheduler, record_wide_from_env
 from src import odds_heartbeat
 
 # Adaptive in-run sampling + loop plan (src/capture_schedule.py). Inert unless the NEAR loop
 # sets CAPTURE_STATE, so a manual single run behaves exactly as before.
 _SCHED = PassScheduler.from_env()
+# WIDE bookkeeping (src/capture_schedule.wide_due): when this process is a WIDE pass and the loop set
+# CAPTURE_WIDE_STATE, its start time and API-call count are recorded in a committed file so the
+# next due check reads a recorded timestamp (never mtime) and the per-day call cap can be enforced.
+_PASS_START = time.time()
+_ODDS_CALLS = 0
 
 # FULL-MATCH BTTS ONLY. Duplicated verbatim from
 # scripts/capture_std_sidemarket_odds_forward.py, which carries the full explanation; all four
@@ -221,11 +227,13 @@ def _fetch_odds(fixture_id: int, want_raw: bool = False) -> dict:
     byte-for-byte what it has always been -- and dropping it costs no extra calls, because the
     same request simply returns every book instead of one.
     """
+    global _ODDS_CALLS
     for attempt in range(3):
         try:
             params = {"fixture": fixture_id}
             if not want_raw:
                 params["bookmaker"] = BET365
+            _ODDS_CALLS += 1
             r = requests.get(f"{_BASE}/odds", headers=_HEADERS, params=params, timeout=20)
             if r.status_code == 429:
                 time.sleep(15); continue
@@ -383,3 +391,5 @@ if __name__ == "__main__":
         run()
     finally:
         _SCHED.close()      # persist due-state; print LOOP_CONTINUE / LOOP_SLEEP_S for the loop
+        if MAX_HOURS is None and _KEY:   # a WIDE pass: record when it ran and what it cost
+            record_wide_from_env(_PASS_START, _ODDS_CALLS + int(_af._STATS.get("calls", 0)))
