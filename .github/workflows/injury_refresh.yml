@@ -6,8 +6,13 @@ name: Injury Refresh
 # Injuries/chronic-risk move slowly, so once a day is plenty; hourly predicts
 # reuse the injury features already written into player_history.parquet.
 
+# SHARED with player_history_extend.yml (2026-10-26): the two scheduled writers of
+# player_history.parquet run one at a time, and `ref: main` below makes a run that waited in
+# the queue start from the commit the other one pushed. On 2026-10-24 they committed 42 s
+# apart from stale checkouts and the rebase let one copy of a month part overwrite the other
+# (764 rows lost until the next collect). See the comment in player_history_extend.yml.
 concurrency:
-  group: injury-refresh
+  group: player-history-writer
   cancel-in-progress: false
 
 on:
@@ -34,6 +39,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main      # never the queued trigger SHA -- see the concurrency comment above
 
       - uses: actions/setup-python@v5
         with:
@@ -55,6 +61,16 @@ jobs:
         run: python -m player_model.pipeline --mode enrich-sidelined-live
 
       # Commit the 59MB parquet WEEKLY, not daily.
+      #
+      # UPDATE 2026-10-26: the churn described below is gone at its source. The refresh now
+      # writes each row AS OF ITS MATCH DATE and only rows from the last 60 days
+      # (history_integrity.INJURY_REFRESH_WINDOW_DAYS); a point-in-time value does not drift
+      # with the calendar, so a refresh changes only rows the collect added since the last one
+      # (NaN -> value) plus genuine corrections, i.e. the newest one or two month parts. The
+      # "today"-stamped value it used to write onto every historical row was a FEATURE LEAK
+      # (a 2023 row knew about 2026 injuries), not just a storage cost. Saturday-only stays:
+      # those parts are rewritten by the daily collect anyway, so committing daily would
+      # roughly double their churn for a few days of freshness on NaN-until-Saturday rows.
       #
       # Measured 2026-08-18: this workflow committed player_history.parquet every day, and the
       # file content changed by 6-198 BYTES each time — yet parquet is a binary container git
@@ -105,7 +121,13 @@ jobs:
             # reporting success -- exactly how af_history.parquet went 18 days without moving.
             # `-X theirs` keeps this run's data and still never fails the pull, so nothing is
             # lost and no job starts going red.
-            git pull --rebase --autostash -X theirs origin main && git push && { pushed=1; break; }
+            if git pull --rebase --autostash -X theirs origin main; then
+              # Tripwire: never push a history that lacks a row origin already has.
+              python -m player_model.history_integrity guard origin/main || {
+                echo "::error title=history guard::push would drop committed player_history rows - not pushed"
+                exit 1; }
+              git push && { pushed=1; break; }
+            fi
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }

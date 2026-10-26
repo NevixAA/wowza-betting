@@ -24,8 +24,15 @@ on:
         type: choice
         options: ['false', 'true']
 
+# ONE WRITER AT A TIME (2026-10-26). This group is SHARED with injury_refresh.yml, the only other
+# scheduled writer of player_history.parquet. On 2026-10-24 the two committed 42 seconds apart,
+# each from a checkout that predated the other's push, and `git pull --rebase -X theirs` let one
+# run's copy of a month part replace the other's wholesale: 764 rows vanished until the next
+# collect re-added them. Serialised, the second job starts only after the first has pushed, and
+# with `ref: main` below its checkout INCLUDES that push, so there is nothing to clobber.
+# Still deliberately NOT player-props (an hour-long collect must not block hourly predict).
 concurrency:
-  group: player-history-extend   # deliberately NOT player-props
+  group: player-history-writer
   cancel-in-progress: false
 
 jobs:
@@ -43,6 +50,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # A run that waited in the concurrency queue would otherwise check out the SHA from
+          # when it was TRIGGERED, i.e. before the run it waited for had pushed.
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -248,7 +258,9 @@ jobs:
           done
           # player_history.parquet is a DIRECTORY of month parts (2026-10-25). -A stages new
           # parts AND removed ones (e.g. the old season_YYYY.parquet files on migration); only
-          # parts whose rows changed are rewritten, so most days this stages 1-7 small files.
+          # parts whose rows changed are rewritten. Since the 14-day frozen window (2026-10-26)
+          # a collect can only change rows from the last 14 days, so this is the current month
+          # part, plus the previous one during the first half of a month.
           git add -A -f player_history.parquet 2>/dev/null || echo "  (skip, not present: player_history.parquet)"
           echo "staged: $(git diff --staged --name-only | wc -l) file(s)"
           git diff --staged --quiet || \
@@ -261,7 +273,14 @@ jobs:
             # reporting success -- exactly how af_history.parquet went 18 days without moving.
             # `-X theirs` keeps this run's data and still never fails the pull, so nothing is
             # lost and no job starts going red.
-            git pull --rebase --autostash -X theirs origin main && git push && exit 0
+            if git pull --rebase --autostash -X theirs origin main; then
+              # Tripwire: never push a history that lacks a row origin already has (the
+              # 10-24 clobber). The shared concurrency group should make this unreachable.
+              python -m player_model.history_integrity guard origin/main || {
+                echo "::error title=history guard::push would drop committed player_history rows - not pushed"
+                exit 1; }
+              git push && exit 0
+            fi
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           echo "::error title=history extend push failed::Collected but not persisted."

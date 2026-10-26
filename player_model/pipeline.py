@@ -38,6 +38,7 @@ from player_model.model import train, load_model
 from player_model.predict import run_player_predictions, enrich_with_odds, enrich_no_odds_markets, tag_paper_feed
 from player_model.odds_fetcher import fetch_prop_odds, match_odds_to_tips
 from player_model.ledger import append_player_signals
+from player_model import history_integrity as HI
 
 HISTORY_CACHE = config.BASE_DIR / "player_history.parquet"
 
@@ -224,6 +225,12 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
     if df.empty:
         print("[collect] Feature engineering returned empty DataFrame.")
         return
+    # A collect does not observe injuries: build_features only fills the 365/0/0 defaults when
+    # the columns are absent. Those are not measurements (CLAUDE.md invariant 9), so new rows
+    # carry NaN until the injury refresh computes them as of their match date.
+    for _c in HI.INJURY_COLUMNS:
+        if _c in df.columns:
+            df[_c] = float("nan")
 
     # UNION, never replace. A collect can only ADD rows and refresh values on rows it
     # re-fetched; it can never remove a row that already existed.
@@ -251,9 +258,6 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
             _before = len(existing)
             key = ["fixture_id", "player_id"]
             if set(key).issubset(df.columns) and set(key).issubset(existing.columns):
-                a = existing.drop_duplicates(subset=key, keep="last").set_index(key)
-                b = df.drop_duplicates(subset=key, keep="last").set_index(key)
-
                 # SAME SEMANTICS AS combine_first, A FRACTION OF THE MEMORY.
                 #
                 # `b.combine_first(a)` reindexes BOTH frames onto the union of their keys and
@@ -270,26 +274,24 @@ def mode_collect(extended: bool = False, last_n: int = 100) -> None:
                 # handful of fixtures against a third of a million stored rows -- so the
                 # expensive operation now runs on thousands of rows instead of half a million.
                 #
-                # Result is identical to combine_first: fresh value wins wherever it is
-                # non-null, existing fills every gap, and rows present only in `existing` are
-                # carried through -- which is what protects the enrichment columns
-                # (chronic_injury_risk, days_since_last_injury) that enrich-sidelined-live
-                # writes but a collect does not produce.
-                both = a.index.intersection(b.index)
-                if len(both):
-                    fixed = b.loc[both].combine_first(a.loc[both])
-                    parts = [a.drop(index=both), b.drop(index=both), fixed]
-                else:
-                    parts = [a, b]
-                # sort_index so the output is byte-for-byte what combine_first produced;
-                # combine_first returns a sorted index and downstream steps have been reading
-                # that order for months.
-                merged = pd.concat([p for p in parts if len(p)]).sort_index()
-                df = merged.reset_index()
-                added = len(df) - len(a)
-                refreshed = len(b.index.intersection(a.index))
-                print(f"[collect] union: {len(a)} existing + {len(b)} fetched -> {len(df)} rows "
-                      f"(+{added} new, {refreshed} refreshed, 0 removed)")
+                # Inside the window the result is identical to combine_first: fresh value wins
+                # wherever it is non-null, existing fills every gap, and rows present only in
+                # `existing` are carried through. (That was meant to protect the injury columns,
+                # but build_features inserts 365/0/0 defaults when they are absent, so every
+                # re-fetched row had its injury values reset to the default every night.
+                # merge_history now blanks them in the fetched frame.)
+                #
+                # FROZEN WINDOW (2026-10-26, owner-approved). The overlap is now split by match
+                # date: a row more than FROZEN_AFTER_DAYS (14) old is IMMUTABLE -- the nightly
+                # re-derivation of opp_strength_index / referee_* / n_prev_games on rows up to
+                # ~120 days old rewrote seven month parts a day and changed what old training
+                # rows said. New rows are still always added. Injury columns are never taken
+                # from a collect. Rules and evidence: player_model/history_integrity.py.
+                df, st = HI.merge_history(existing, df)
+                print(f"[collect] union: {st['existing']} existing + {st['fetched']} fetched -> "
+                      f"{len(df)} rows (+{st['added']} new, {st['refreshed']} refreshed inside "
+                      f"the {HI.FROZEN_AFTER_DAYS}-day window, {st['frozen']} frozen kept as "
+                      f"stored, 0 removed)")
             else:
                 df = pd.concat([existing, df], ignore_index=True)
                 print(f"[collect] union without key columns -> {len(df)} rows")
@@ -329,6 +331,9 @@ def mode_collect_wc(last_n: int = 10) -> None:
     if new_df.empty:
         print("[collect-wc] Feature engineering returned empty DataFrame.")
         return
+    for _c in HI.INJURY_COLUMNS:          # not observed by a collect -> NaN, see mode_collect
+        if _c in new_df.columns:
+            new_df[_c] = float("nan")
 
     # Union with existing history, same rule as mode_collect: refresh without loss.
     # concat + drop_duplicates(keep="last") kept every existing ROW, but for a re-fetched row
@@ -341,9 +346,8 @@ def mode_collect_wc(last_n: int = 10) -> None:
         _before = len(existing)
         key = ["fixture_id", "player_id"]
         if set(key).issubset(new_df.columns) and set(key).issubset(existing.columns):
-            a = existing.drop_duplicates(subset=key, keep="last").set_index(key)
-            b = new_df.drop_duplicates(subset=key, keep="last").set_index(key)
-            combined = b.combine_first(a).reset_index()
+            # Same frozen-window rule as mode_collect (history_integrity.merge_history).
+            combined, _st = HI.merge_history(existing, new_df)
         else:
             combined = pd.concat([existing, new_df], ignore_index=True)
     else:
@@ -915,33 +919,9 @@ def mode_enrich_sidelined():
     total = len(unique_pids)
     print(f"[enrich-sidelined] Fetching sidelined history for {total} players (batches of 1000)...")
 
-    today = dt.date.today()
-
-    def _compute_injury_features(pid: int, match_date, sidelined_map: dict) -> dict:
-        entries = sidelined_map.get(int(pid), [])
-        if not entries:
-            return {"chronic_injury_risk": 0.0, "days_since_last_injury": 365.0, "return_from_injury_flag": 0.0}
-        if hasattr(match_date, "date"):
-            match_d = match_date.date()
-        else:
-            try:
-                match_d = dt.date.fromisoformat(str(match_date)[:10])
-            except Exception:
-                match_d = today
-        year_ago = match_d - dt.timedelta(days=365)
-        recent = [e for e in entries if e.get("start") and dt.date.fromisoformat(e["start"][:10]) >= year_ago]
-        past = sorted([e for e in entries if e.get("end") and dt.date.fromisoformat(e["end"][:10]) < match_d],
-                      key=lambda x: x["end"], reverse=True)
-        days_since = 365.0
-        if past:
-            last_end = dt.date.fromisoformat(past[0]["end"][:10])
-            days_since = float((match_d - last_end).days)
-        return_flag = float(0 < days_since <= 21)
-        return {
-            "chronic_injury_risk":     float(len(recent)),
-            "days_since_last_injury":  days_since,
-            "return_from_injury_flag": return_flag,
-        }
+    # POINT IN TIME, per row (history_integrity.injury_features_asof). This full backfill already
+    # used each row's match date for days_since, but counted every spell that started after
+    # year_ago -- including spells that started AFTER the match -- in chronic_injury_risk.
 
     BATCH_SIZE = 1000
     for batch_start in range(0, total, BATCH_SIZE):
@@ -951,16 +931,11 @@ def mode_enrich_sidelined():
         if not sidelined_map:
             continue
 
-        batch_rows = df[df["player_id"].isin(batch_pids)].index
-        for idx in batch_rows:
-            row   = df.loc[idx]
-            feats = _compute_injury_features(row.get("player_id", 0), row.get("date"), sidelined_map)
-            for col, val in feats.items():
-                df.at[idx, col] = val
+        HI.apply_injury_pit(df, sidelined_map, df["player_id"].isin(batch_pids))
 
         # Merge-on-write: re-read latest parquet to preserve columns written by parallel processes
         latest = pd.read_parquet(HISTORY_CACHE)
-        for col in ["chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"]:
+        for col in HI.INJURY_COLUMNS:
             if col in df.columns:
                 latest[col] = df[col]
         _save_history(latest)
@@ -1014,30 +989,25 @@ def mode_enrich_sidelined_live() -> None:
         print("[enrich-sidelined-live] No sidelined data returned.")
         return
 
-    def _compute_injury_features(pid: int, sidelined_map: dict) -> dict:
-        entries = sidelined_map.get(int(pid), [])
-        if not entries:
-            return {"chronic_injury_risk": 0.0, "days_since_last_injury": 365.0, "return_from_injury_flag": 0.0}
-        year_ago = today - dt.timedelta(days=365)
-        recent = [e for e in entries if e.get("start") and dt.date.fromisoformat(e["start"][:10]) >= year_ago]
-        past = sorted([e for e in entries if e.get("end") and dt.date.fromisoformat(e["end"][:10]) < today],
-                      key=lambda x: x["end"], reverse=True)
-        days_since = 365.0
-        if past:
-            last_end = dt.date.fromisoformat(past[0]["end"][:10])
-            days_since = float((today - last_end).days)
-        return {
-            "chronic_injury_risk":     float(len(recent)),
-            "days_since_last_injury":  days_since,
-            "return_from_injury_flag": float(0 < days_since <= 21),
-        }
-
-    active_pids_set = set(active_pids)
-    for idx in df[df["player_id"].isin(active_pids_set)].index:
-        pid = df.at[idx, "player_id"]
-        feats = _compute_injury_features(pid, sidelined_map)
-        for col, val in feats.items():
-            df.at[idx, col] = val
+    # POINT IN TIME, AND ONLY THE RECENT WINDOW (2026-10-26, owner-approved).
+    #
+    # This used to compute ONE value per player as of TODAY and stamp it onto EVERY row the
+    # player had, back to 2022 -- 355,770 rows changed by the 10-24 refresh alone, 39,627 of
+    # them in 2022. A 2023 training row therefore carried days_since_last_injury measured from
+    # an injury that happened in 2026, and every weekly refresh rewrote all 51 month parts
+    # (~144 MB). Now each row is computed as of its OWN match date from spells that began
+    # before it, and only rows inside INJURY_REFRESH_WINDOW_DAYS are written. Older rows are
+    # left alone: a past match's injury state does not change because time passed.
+    window_start = pd.Timestamp(today) - pd.Timedelta(days=HI.INJURY_REFRESH_WINDOW_DAYS)
+    row_dates = pd.to_datetime(df["date"], errors="coerce")
+    if getattr(row_dates.dt, "tz", None) is not None:
+        row_dates = row_dates.dt.tz_convert("UTC").dt.tz_localize(None)
+    in_window = (row_dates >= window_start) & df["player_id"].isin(set(active_pids))
+    n = HI.apply_injury_pit(df, sidelined_map, in_window)
+    failed = total - len(sidelined_map)
+    print(f"[enrich-sidelined-live] {n} rows inside the {HI.INJURY_REFRESH_WINDOW_DAYS}-day "
+          f"window written as of their match date; {failed} player(s) not fetched (cap) or "
+          f"whose fetch failed left untouched")
 
     _save_history(df)
     print(f"[enrich-sidelined-live] Done. {total} players refreshed -> {HISTORY_CACHE}")
