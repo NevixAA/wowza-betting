@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-26T11:52:49Z",
+ "generated_at": "2026-10-26T12:54:36Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-26",
@@ -12,8 +12,8 @@
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 768,
- "actual_candidate_rows": 768,
+ "expected_candidate_rows": 776,
+ "actual_candidate_rows": 776,
  "panel_rows": 136,
  "settled_rows": 136,
  "pending_rows": 0,
@@ -831,33 +831,33 @@
    "current": {
     "league_week_id": "Ligue 2|2026-W44",
     "state": "PROVISIONAL",
-    "fixtures_known": 8,
+    "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 8,
+    "fixtures_with_candidates": 10,
     "fixtures_without_candidates": 0,
     "week_lock_ts": "2026-10-26T19:45:00Z",
     "late_after_lock": 0,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 8,
+      "candidates": 10,
       "panel_rows": 0
      },
      "BTTS": {
-      "candidates": 8,
+      "candidates": 10,
       "panel_rows": 0
      },
      "OVER15": {
-      "candidates": 8,
+      "candidates": 10,
       "panel_rows": 0
      },
      "OVER35": {
-      "candidates": 8,
+      "candidates": 10,
       "panel_rows": 0
      }
     },
-    "expected_candidate_rows": 32,
-    "actual_candidate_rows": 32
+    "expected_candidate_rows": 40,
+    "actual_candidate_rows": 40
    },
    "previous": {
     "league_week_id": "Ligue 2|2026-W43",
