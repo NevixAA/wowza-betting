@@ -15,14 +15,18 @@ Pro's bankroll simulator imports this exact file (read-only, via V9_LOCAL), so e
 sizes bets with the code production would use.
 
 Order of operations (owner brief, section 32):
- 1 track = model_type|market   2 state/base (0 -> no real stake)   3 paper league -> 0
+ 1 track = track_key(model_type, market, side): model_type|market, except O/U 2.5, which is split by
+   SIDE (model_type|OU25_OVER / model_type|OU25_UNDER, owner 2026-10-26). An O/U 2.5 tip without a valid
+   side maps to model_type|OU25_UNKNOWN_SIDE, which no policy defines -> no stake (fail closed)
+ 2 state/base (0 -> no real stake)   3 paper league -> 0
  4 odds caps (track min/max, hard 3.00)   5 tier multiplier   6 convergence multiplier
  7 ONE position per fixture, chosen by the track's evidence_score (never by raw edge)
  8 single-bet / fixture cap   9 drawdown throttle   10 league and league x market daily caps
  11 daily exposure cap: every stake scaled by cap / total   -> final fraction, stake amount
 
 selections: one row per qualifying tip with columns
-    fixture, league, model_type, market (OU25/BTTS/OVER15/OVER35), signal_tier, odds
+    fixture, league, model_type, market (OU25/BTTS/OVER15/OVER35), side, signal_tier, odds
+    (`side` is required for OU25: without it a tip cannot be routed to a side track and gets no stake)
 """
 from __future__ import annotations
 
@@ -37,6 +41,37 @@ REAL_STATES = ("PROBATION", "ACTIVE_LOW", "ACTIVE", "ACTIVE_STRONG", "DEGRADED")
 # Absolute ceilings the reader enforces whatever a policy file says (owner brief 4, 7, 9).
 HARD = {"single_bet_cap": 0.02, "fixture_cap": 0.02, "daily_cap": 0.075, "league_daily_cap": 0.04,
         "league_market_daily_cap": 0.03, "max_odds": 2.75, "blocked_odds": 3.0, "base_fraction": 0.015}
+
+#: Markets whose policy track is split by SIDE (owner 2026-10-26). Each side is its own track with its
+#: own state, base fraction, odds caps, tier multipliers and evidence, and Pro reviews it separately.
+SIDE_SPLIT_MARKETS = {"OU25": ("OVER", "UNDER")}
+UNKNOWN_SIDE = "UNKNOWN_SIDE"
+
+
+def track_key(model_type, market, side=None) -> str:
+    """THE policy track key. `model_type|market` (new_format|BTTS), except a side-split market, which is
+    `model_type|market_SIDE` (new_format|OU25_OVER, standard|OU25_UNDER). A side-split market with a
+    missing or unrecognised side -> `model_type|market_UNKNOWN_SIDE`, a key no policy defines, so the tip
+    can never be staked on the other side's settings (fail closed). Self-contained on purpose: Pro
+    imports this file alone and keys its track evidence with this same function."""
+    mt, mk = str(model_type), str(market)
+    sides = SIDE_SPLIT_MARKETS.get(mk.strip().upper())
+    if sides is None:
+        return f"{mt}|{mk}"
+    s = "" if side is None or (isinstance(side, float) and side != side) else str(side).strip().upper()
+    return f"{mt}|{mk}_{s if s in sides else UNKNOWN_SIDE}"
+
+
+def split_track(track) -> tuple[str, str, str | None]:
+    """Inverse of track_key: 'new_format|OU25_OVER' -> ('new_format', 'OU25', 'OVER');
+    'new_format|BTTS' -> ('new_format', 'BTTS', None); 'player_props' -> ('player_props', '', None)."""
+    mt, _, mk = str(track).partition("|")
+    for base, sides in SIDE_SPLIT_MARKETS.items():
+        for s in sides + (UNKNOWN_SIDE,):
+            if mk == f"{base}_{s}":
+                return mt, base, s
+    return mt, mk, None
+
 
 AUDIT_COLS = ["policy_version", "fixture", "league", "model_type", "market", "track",
               "signal_tier", "odds", "deployment_state", "bankroll_before", "base_fraction",
@@ -116,7 +151,8 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     min_scale = min(max(float(lrs.get("min_scale", 0.2)), 0.0), 1.0)
 
     d = selections.copy().reset_index(drop=True)
-    d["track"] = d["model_type"].astype(str) + "|" + d["market"].astype(str)
+    side_in = d["side"] if "side" in d.columns else pd.Series(None, index=d.index, dtype=object)
+    d["track"] = [track_key(mt, mk, sd) for mt, mk, sd in zip(d["model_type"], d["market"], side_in)]
     out = []
     for r in d.itertuples(index=False):
         t = policy["tracks"].get(r.track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
@@ -130,7 +166,9 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
         tm = float((tt if tt is not None else tiers).get(str(r.signal_tier), 0.0))
         lm = conv_mult if r.league in conv_leagues else 1.0
         reason = "OK"
-        if state not in REAL_STATES or base <= 0:
+        if str(r.track).endswith(f"_{UNKNOWN_SIDE}"):
+            reason = "NO_REAL_STAKE_UNKNOWN_SIDE"           # side-split market without a usable side
+        elif state not in REAL_STATES or base <= 0:
             reason = f"NO_REAL_STAKE_{state}"
         elif r.league in paper:
             reason = "PAPER_LEAGUE"
@@ -225,11 +263,11 @@ if __name__ == "__main__":
     # Example / smoke: python -m src.bankroll_policy
     demo = pd.DataFrame([
         {"fixture": "A v B", "league": "Argentina Primera Division", "model_type": "new_format",
-         "market": "BTTS", "signal_tier": "SNIPER", "odds": 2.10},
+         "market": "BTTS", "side": "YES", "signal_tier": "SNIPER", "odds": 2.10},
         {"fixture": "A v B", "league": "Argentina Primera Division", "model_type": "new_format",
-         "market": "OU25", "signal_tier": "SNIPER", "odds": 2.05},
+         "market": "OU25", "side": "OVER", "signal_tier": "SNIPER", "odds": 2.05},
         {"fixture": "C v D", "league": "Championship", "model_type": "standard",
-         "market": "OU25", "signal_tier": "SNIPER", "odds": 1.95},
+         "market": "OU25", "side": "UNDER", "signal_tier": "SNIPER", "odds": 1.95},
     ])
     print(size_day(demo, load_policy(), bankroll=1000.0, peak=1000.0)[
         ["fixture", "track", "signal_tier", "odds", "final_fraction", "stake_amount", "reason"]].to_string())

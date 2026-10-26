@@ -74,7 +74,8 @@ def production_view(league: str, market: str, side: str, model_type: str, policy
     """What production applies to this cell. Mirrors src/bankroll_policy.size_day (track state, base
     fraction, paper-league override, odds caps) and config (ENABLED/PAPER leagues, provider support,
     NF O/U cap, min O/U odds), with eligibility resolved under the deployed env."""
-    track = f"{model_type}|{market}"
+    from src.bankroll_policy import track_key
+    track = track_key(model_type, market, side)          # O/U 2.5 per side since 2026-10-26
     t = (policy.get("tracks") or {}).get(track) or {}
     track_state = t.get("state", "UNSUPPORTED")
     base = float(t.get("base_fraction", 0.0) or 0.0)

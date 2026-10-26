@@ -100,8 +100,9 @@ def test_legacy_split_counts_from_the_raw_csv(mig):
     b = b[b["odds"] > 1]
     won = np.where(b["legacy_side"].isin(["OVER", "YES"]), b["y"], 1 - b["y"])
     b = b.assign(pnl=np.where(won == 1, b["odds"] - 1, -1.0),
-                 basis=["DEPLOYABLE" if M.deployable(lg, t, f, tier, o, policy)[0] else "PAPER"
-                        for lg, t, f, tier, o in zip(b["league"], b["track"], b["family"], b["legacy_tier"], b["odds"])])
+                 basis=["DEPLOYABLE" if M.deployable(lg, t, f, tier, o, policy, sd)[0] else "PAPER"
+                        for lg, t, f, tier, o, sd in zip(b["league"], b["track"], b["family"], b["legacy_tier"],
+                                                         b["odds"], b["legacy_side"])])
     leg = mig["engines"][mig["engines"]["engine"] == "LEGACY raw edge"]
     for (t, f, basis), g in b.groupby(["track", "family", "basis"]):
         row = leg[(leg["cell"] == M.cell_label(t, f)) & (leg["basis"] == basis)].iloc[0]
@@ -135,23 +136,33 @@ def test_probability_gain_and_agreement_equal_the_json(mig, cmp_json):
 
 
 def test_deployable_rule_follows_the_policy():
-    pol = {"tracks": {"new_format|OU25": {"state": "ACTIVE_LOW", "base_fraction": 0.005, "max_odds": 2.5},
+    ou = {"state": "ACTIVE_LOW", "base_fraction": 0.005, "max_odds": 2.5}
+    eq = {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}
+    pol = {"tracks": {"new_format|OU25_OVER": dict(ou), "new_format|OU25_UNDER": dict(ou),
                       "new_format|BTTS": {"state": "ACTIVE", "base_fraction": 0.0125, "max_odds": 2.6},
                       "new_format|OVER15": {"state": "ACTIVE_LOW", "base_fraction": 0.005, "min_odds": 1.45,
                                             "max_odds": 1.9},
-                      "standard|OU25": {"state": "PAPER", "base_fraction": 0.0}},
+                      "standard|OU25_OVER": {"state": "PAPER", "base_fraction": 0.0},
+                      "standard|OU25_UNDER": {"state": "PAPER", "base_fraction": 0.0}},
            "paper_leagues": ["USA MLS"], "portfolio": {"hard_max_odds": 3.0},
            "tier_multipliers": {"SNIPER": 1.1, "MARKSMAN": 0.9},
-           "track_tier_multipliers": {"new_format|OU25": {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}}}
+           "track_tier_multipliers": {"new_format|OU25_OVER": dict(eq), "new_format|OU25_UNDER": dict(eq)}}
     D = M.deployable
-    assert D("Brazil Serie A", "new_format", "OU25", "VALUABLE", 2.0, pol)[0]          # OU25 stakes every tier
+    assert D("Brazil Serie A", "new_format", "OU25", "VALUABLE", 2.0, pol, "UNDER")[0]  # OU25 stakes every tier
+    assert D("Brazil Serie A", "new_format", "OU25", "VALUABLE", 2.0, pol, "OVER")[0]
     assert not D("Brazil Serie A", "new_format", "BTTS", "VALUABLE", 2.0, pol)[0]      # tier not staked
     assert D("Brazil Serie A", "new_format", "BTTS", "SNIPER", 2.0, pol)[0]
-    assert D("Championship", "standard", "OU25", "SNIPER", 2.0, pol) == (False, "track PAPER")
-    assert D("USA MLS", "new_format", "OU25", "SNIPER", 2.0, pol) == (False, "paper league")
-    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 2.6, pol) == (False, "odds above track cap")
+    assert D("Championship", "standard", "OU25", "SNIPER", 2.0, pol, "OVER") == (False, "track PAPER")
+    assert D("USA MLS", "new_format", "OU25", "SNIPER", 2.0, pol, "OVER") == (False, "paper league")
+    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 2.6, pol, "OVER") == (False, "odds above track cap")
     assert D("Brazil Serie A", "new_format", "OU15", "SNIPER", 1.40, pol) == (False, "odds below track floor")
-    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 3.2, pol) == (False, "odds blocked")
+    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 3.2, pol, "UNDER") == (False, "odds blocked")
+    # an O/U 2.5 selection with no side maps to no track: never deployable (fail closed)
+    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 2.0, pol) == (False, "track UNSUPPORTED")
+    # each side follows ITS OWN track: pausing UNDER leaves OVER deployable
+    pol["tracks"]["new_format|OU25_UNDER"] = {"state": "PAPER", "base_fraction": 0.0}
+    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 2.0, pol, "UNDER") == (False, "track PAPER")
+    assert D("Brazil Serie A", "new_format", "OU25", "SNIPER", 2.0, pol, "OVER")[0]
 
 
 @pytest.mark.skipif(not SHADOW.exists(), reason="shadow log not present")

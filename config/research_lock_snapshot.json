@@ -1,8 +1,8 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
  "approval_note": "",
- "approved_at": "2026-10-25T12:09:26Z",
- "approved_by": "Nevo (owner) - approved in chat 2026-10-25",
+ "approved_at": "2026-10-26T11:43:15Z",
+ "approved_by": "Nevo (owner) - OU25 tracks split by side 2026-10-26 (identical stakes)",
  "fingerprint": {
   "global": {
    "bankroll_policy": {
@@ -46,12 +46,22 @@
      "SNIPER": 1.1
     },
     "track_tier_multipliers": {
-     "new_format|OU25": {
+     "new_format|OU25_OVER": {
       "MARKSMAN": 1.0,
       "SNIPER": 1.0,
       "VALUABLE": 1.0
      },
-     "standard|OU25": {
+     "new_format|OU25_UNDER": {
+      "MARKSMAN": 1.0,
+      "SNIPER": 1.0,
+      "VALUABLE": 1.0
+     },
+     "standard|OU25_OVER": {
+      "MARKSMAN": 1.0,
+      "SNIPER": 1.0,
+      "VALUABLE": 1.0
+     },
+     "standard|OU25_UNDER": {
       "MARKSMAN": 1.0,
       "SNIPER": 1.0,
       "VALUABLE": 1.0
@@ -64,7 +74,13 @@
       "max_odds": 2.6,
       "state": "ACTIVE"
      },
-     "new_format|OU25": {
+     "new_format|OU25_OVER": {
+      "base_fraction": 0.005,
+      "evidence_score": 1.0,
+      "max_odds": 2.5,
+      "state": "ACTIVE_LOW"
+     },
+     "new_format|OU25_UNDER": {
       "base_fraction": 0.005,
       "evidence_score": 1.0,
       "max_odds": 2.5,
@@ -89,7 +105,11 @@
       "base_fraction": 0.0,
       "state": "PAPER"
      },
-     "standard|OU25": {
+     "standard|OU25_OVER": {
+      "base_fraction": 0.0,
+      "state": "PAPER"
+     },
+     "standard|OU25_UNDER": {
       "base_fraction": 0.0,
       "state": "PAPER"
      },
@@ -263,5 +283,5 @@
    }
   }
  },
- "fingerprint_sha256": "cbd42d57210fe30fb96878bf3b465936c075b9520ca9b71169518b898e4a7803"
+ "fingerprint_sha256": "8a9959d39a544d2330d6a5cd47bd86dc4342d49bff43e9007a29c266d60ae1da"
 }

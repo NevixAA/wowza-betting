@@ -4,19 +4,22 @@ import pandas as pd
 from src.bankroll_policy import load_policy, size_day
 
 
-def _sel(market, tiers):
+def _sel(market, tiers, side="OVER"):
     # one selection per fixture so the one-position-per-fixture rule never interferes
     return pd.DataFrame([{"fixture": f"f{i}", "league": "Argentina Primera Division", "model_type": "new_format",
-                          "market": market, "signal_tier": t, "odds": 2.0} for i, t in enumerate(tiers)])
+                          "market": market, "side": side, "signal_tier": t, "odds": 2.0}
+                         for i, t in enumerate(tiers)])
 
 
 def test_ou25_tiers_are_staked_equally_and_valuable_is_staked():
     pol = load_policy()
-    out = size_day(_sel("OU25", ["SNIPER", "MARKSMAN", "VALUABLE"]), pol, bankroll=100.0, peak=100.0)
-    mult = dict(zip(out["signal_tier"], out["tier_multiplier"]))
-    assert mult == {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}
-    req = dict(zip(out["signal_tier"], out["requested_fraction"]))
-    assert req["VALUABLE"] > 0 and req["VALUABLE"] == req["SNIPER"] == req["MARKSMAN"]
+    for side in ("OVER", "UNDER"):                      # per-side tracks since 2026-10-26, same settings
+        out = size_day(_sel("OU25", ["SNIPER", "MARKSMAN", "VALUABLE"], side), pol, bankroll=100.0, peak=100.0)
+        assert set(out["track"]) == {f"new_format|OU25_{side}"}
+        mult = dict(zip(out["signal_tier"], out["tier_multiplier"]))
+        assert mult == {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}
+        req = dict(zip(out["signal_tier"], out["requested_fraction"]))
+        assert req["VALUABLE"] > 0 and req["VALUABLE"] == req["SNIPER"] == req["MARKSMAN"]
 
 
 def test_btts_keeps_the_global_ladder():

@@ -9,6 +9,10 @@ run produced and writes what the policy says to stake:
     output/stake_audit.csv   append-only, FIRST SIGHT per (policy_version, fixture, track): a stake can
                              be reproduced later from the policy version and the inputs
 
+Every row carries `side` and its `track`; O/U 2.5 tracks are per side since 2026-10-26
+(new_format|OU25_OVER ..., src/bankroll_policy.track_key). Audit rows written before the split carry
+the parent key (new_format|OU25) under the same policy_version, whose settings each side copied.
+
 WHAT IT DOES NOT DO. It never decides whether a tip exists, never changes a tier, never sends a
 message and never places a bet (Cloudbet / wowza-exec are untouched). Stakes are recommendations.
 
@@ -72,12 +76,14 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
     1. A market that has a real-money (REAL_STATES) track in the policy, has tips in the plan, and
        100% of those tips map to an UNSUPPORTED track - the 2026-10-22 failure shape.
     2. Any tip whose odds are missing.
+    3. Any O/U 2.5 tip routed to no side track (track ..._UNKNOWN_SIDE, owner split 2026-10-26).
     """
-    from src.bankroll_policy import REAL_STATES
+    from src.bankroll_policy import REAL_STATES, UNKNOWN_SIDE, split_track
     if plan is None or plan.empty:
         return []
     probs = []
-    active_markets = {k.split("|", 1)[1] for k, v in (policy.get("tracks") or {}).items()
+    # market of a side-split track is its base market: new_format|OU25_OVER -> OU25
+    active_markets = {split_track(k)[1] for k, v in (policy.get("tracks") or {}).items()
                       if "|" in k and v.get("state") in REAL_STATES and float(v.get("base_fraction", 0) or 0) > 0}
     for m in sorted(active_markets):
         g = plan[plan["market"] == m]
@@ -87,6 +93,9 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
     n_odds = int(pd.to_numeric(plan["odds"], errors="coerce").isna().sum())
     if n_odds:
         probs.append(f"{n_odds} tip(s) with no odds")
+    n_side = int(plan["track"].astype(str).str.endswith(f"_{UNKNOWN_SIDE}").sum()) if "track" in plan else 0
+    if n_side:
+        probs.append(f"{n_side} O/U tip(s) with no usable side (track *_{UNKNOWN_SIDE}, no stake)")
     return probs
 
 

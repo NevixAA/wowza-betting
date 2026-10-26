@@ -33,7 +33,8 @@ def test_committed_snapshot_matches_the_repo():
 def test_snapshot_covers_every_protected_track_and_the_global_protections():
     assert sorted(SNAP["fingerprint"]["protected_tracks"]) == L.protected_keys(REG)
     g = SNAP["fingerprint"]["global"]
-    assert g["bankroll_policy"]["tracks"]["standard|OU25"]["state"] == "PAPER"
+    assert g["bankroll_policy"]["tracks"]["standard|OU25_OVER"]["state"] == "PAPER"
+    assert g["bankroll_policy"]["tracks"]["standard|OU25_UNDER"]["state"] == "PAPER"
     assert g["bankroll_policy"]["tracks"]["player_props"]["state"] == "BLOCKED_FROM_REAL"
     assert g["execution"]["workflows_setting_CLOUDBET_MODE"] == []
     assert g["deployed_env"]["MARKSMAN_THRESHOLD"] == "0.08"
@@ -49,9 +50,10 @@ def test_changed_deployed_threshold_is_detected_and_named():
 
 def test_changed_state_or_stake_is_detected():
     p = copy.deepcopy(POLICY)
-    p["tracks"]["standard|OU25"]["state"] = "ACTIVE"
+    p["tracks"]["standard|OU25_UNDER"]["state"] = "ACTIVE"           # ONE side moving is detected
     r = L.check(policy=p)
-    assert r["protected_tracks_modified"] and any("tracks.standard|OU25.state" in c for c in r["changes"])
+    assert r["protected_tracks_modified"] and any("tracks.standard|OU25_UNDER.state" in c for c in r["changes"])
+    assert not any("standard|OU25_OVER" in c for c in r["changes"])
     p = copy.deepcopy(POLICY)
     p["tracks"]["new_format|BTTS"]["base_fraction"] = 0.015
     r = L.check(policy=p)

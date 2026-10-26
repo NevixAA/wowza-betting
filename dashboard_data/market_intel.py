@@ -169,15 +169,17 @@ def comparison_meta(path: Path | None = None) -> dict:
     return out
 
 
-def deployable(league: str, track: str, family: str, tier: str, odds: float, policy: dict) -> tuple[bool, str]:
+def deployable(league: str, track: str, family: str, tier: str, odds: float, policy: dict,
+               side: str | None = None) -> tuple[bool, str]:
     """Would TODAY's bankroll policy put real money on this legacy selection? The same per-row rules as
     src/bankroll_policy.py (track state + base fraction, paper league, hard and track odds caps, tier
     multiplier), WITHOUT the portfolio caps / drawdown throttle, which depend on the day's book. A
     RETROSPECTIVE classification: the policy in force at the time differed (e.g. VALUABLE was staked on
-    OU25 only from 2026-10-22)."""
-    from src.bankroll_policy import HARD, REAL_STATES
-    t = (policy.get("tracks") or {}).get(f"{track}|{POLICY_MARKET.get(family, family)}",
-                                         {"state": "UNSUPPORTED", "base_fraction": 0.0})
+    OU25 only from 2026-10-22). The policy track is src/bankroll_policy.track_key, so O/U 2.5 needs the
+    selection's `side` (per-side tracks since 2026-10-26); without one it is never deployable."""
+    from src.bankroll_policy import HARD, REAL_STATES, track_key
+    tkey = track_key(track, POLICY_MARKET.get(family, family), side)
+    t = (policy.get("tracks") or {}).get(tkey, {"state": "UNSUPPORTED", "base_fraction": 0.0})
     if t.get("state") not in REAL_STATES or float(t.get("base_fraction", 0.0)) <= 0:
         return False, f"track {t.get('state')}"
     if league in set(policy.get("paper_leagues") or []):
@@ -189,7 +191,7 @@ def deployable(league: str, track: str, family: str, tier: str, odds: float, pol
         return False, "odds above track cap"
     if odds < float(t.get("min_odds", 1.0)):
         return False, "odds below track floor"
-    tt = (policy.get("track_tier_multipliers") or {}).get(f"{track}|{POLICY_MARKET.get(family, family)}")
+    tt = (policy.get("track_tier_multipliers") or {}).get(tkey)
     if float((tt if tt is not None else policy.get("tier_multipliers", {})).get(str(tier), 0.0)) <= 0:
         return False, "tier not staked"
     return True, "staked under today's policy"
@@ -252,8 +254,8 @@ def migration_comparison(cmp_path: Path | None = None, bt_path: Path | None = No
             days = max((s["entry_ts"].max() - s["entry_ts"].min()).total_seconds() / 86400.0, 1.0) if len(s) else 1.0
             x = R.settle_bets(two, "LEGACY") if len(two) else two
             if len(x):
-                dep = [deployable(lg, track, fam, tier, o, policy)[0]
-                       for lg, tier, o in zip(x["league"], x["legacy_tier"], x["bet_odds"])]
+                dep = [deployable(lg, track, fam, tier, o, policy, sd)[0]
+                       for lg, tier, o, sd in zip(x["league"], x["legacy_tier"], x["bet_odds"], x["bet_side"])]
                 x = x.assign(_dep=dep)
             n_all, pnl_all = 0, 0.0
             for basis, part in (("DEPLOYABLE", x[x["_dep"]] if len(x) else x),

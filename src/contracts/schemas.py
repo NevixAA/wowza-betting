@@ -361,7 +361,10 @@ _STAKE_COLS = (
     Col("market", allowed=PLAN_MARKETS, nullable=False), Col("side", allowed=SIDES, nullable=False),
     Col("signal_tier", allowed=TIERS, nullable=False), ODDS("odds", nullable=False),
     Col("policy_version", nullable=False),
-    Col("track", pattern=r"(standard|new_format|unknown)\|(OU25|BTTS|OVER15|OVER35)", nullable=False),
+    # O/U 2.5 tracks are per side since 2026-10-26 (OU25_OVER / OU25_UNDER; OU25_UNKNOWN_SIDE = no
+    # usable side, never staked). Bare OU25 stays valid for append-only audit rows written before the split.
+    Col("track", pattern=r"(standard|new_format|unknown)\|(OU25(_OVER|_UNDER|_UNKNOWN_SIDE)?|BTTS|OVER15|OVER35)",
+        nullable=False),
     Col("deployment_state", allowed=DEPLOYMENT_STATES, nullable=False),
     Col("bankroll_before", "float", min=0.0), Col("base_fraction", "float", min=0.0, max=0.02),
     Col("tier_multiplier", "float", min=0.0), Col("league_multiplier", "float", min=0.0),
@@ -373,6 +376,17 @@ _STAKE_COLS = (
 )
 
 
+def _track_ok(d: pd.DataFrame) -> pd.Series:
+    """track equals src/bankroll_policy.track_key(model_type, market, side), or - on rows written before
+    the 2026-10-26 O/U side split - the parent model_type|market."""
+    from src.bankroll_policy import track_key
+    side = d["side"] if "side" in d.columns else pd.Series(None, index=d.index, dtype=object)
+    want = pd.Series([track_key(mt, mk, sd) for mt, mk, sd in
+                      zip(text(d["model_type"]), text(d["market"]), side)], index=d.index)
+    tr = text(d["track"])
+    return (tr == want) | (tr == text(d["model_type"]) + "|" + text(d["market"]))
+
+
 def _stake_rules() -> tuple:
     return (
         Rule("stake_only_on_ok", lambda d: (num(d["final_fraction"]) > 0) & (text(d["reason"]) != "OK"),
@@ -381,8 +395,10 @@ def _stake_rules() -> tuple:
              lambda d: (num(d["final_fraction"]) > 0) & ~text(d["deployment_state"]).isin(REAL_STATES),
              "only a real-money track state may carry a stake", ("final_fraction", "deployment_state")),
         Rule("track_is_model_type_market",
-             lambda d: text(d["track"]) != text(d["model_type"]) + "|" + text(d["market"]),
-             "track = model_type|market", ("track", "model_type", "market")),
+             lambda d: ~_track_ok(d),
+             "track = src/bankroll_policy.track_key(model_type, market, side) (O/U 2.5 per side since "
+             "2026-10-26; the pre-split model_type|OU25 is accepted on historical audit rows)",
+             ("track", "model_type", "market", "side")),
         Rule("fixture_matches_date",
              lambda d: text(d["fixture"]).str[:10] != text(d["date"]).str[:10],
              "fixture key starts with its date", ("fixture", "date")),

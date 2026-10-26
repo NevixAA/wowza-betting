@@ -51,6 +51,7 @@ def side_routing(plan: pd.DataFrame, policy: dict) -> dict:
         if t.get("state") not in ("ACTIVE", "ACTIVE_LOW", "ACTIVE_STRONG", "PROBATION"):
             continue
         mt, mk = track.split("|")
+        mk = mk.split("_")[0] if mk.startswith("OU25_") else mk        # O/U 2.5 side tracks (2026-10-26)
         g = side[side["market"] == mk]
         g = g[g["model_type"].isin([mt, "unknown"])] if len(g) else g
         if len(g) and (g["deployment_state"] == "UNSUPPORTED").all():
@@ -61,10 +62,13 @@ def side_routing(plan: pd.DataFrame, policy: dict) -> dict:
 
 
 def stake_mapping(plan: pd.DataFrame) -> dict:
-    rule = "GREEN 0% of tips on unknown|* tracks or without odds; AMBER < 5%; RED >= 5%"
+    rule = ("GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track or without odds; "
+            "AMBER < 5%; RED >= 5%")
     if plan.empty:
         return _c("Stake-plan mapping", GREY, "no stake plan", rule)
-    bad = plan["track"].astype(str).str.startswith("unknown|") | pd.to_numeric(plan["odds"], errors="coerce").isna()
+    tr = plan["track"].astype(str)
+    bad = (tr.str.startswith("unknown|") | tr.str.endswith("_UNKNOWN_SIDE")
+           | pd.to_numeric(plan["odds"], errors="coerce").isna())
     share = float(bad.mean() * 100)
     return _c("Stake-plan mapping", GREEN if share == 0 else AMBER if share < 5 else RED, f"{share:.1f}% unmapped", rule,
               f"generated {plan['generated_at'].iloc[0] if 'generated_at' in plan else '?'}")
