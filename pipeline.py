@@ -808,6 +808,12 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         log.warning(f"experiments log skipped ({e}) — predictions and tips are unaffected")
     _log_shadow(preds, exp_rows)
     _log_h2h(preds, exp_rows)
+    # Drift is information only since 2026-10-26 (owner decision, config.DRIFT_TIER_ADJUSTMENT):
+    # record, at first sight, the tier the removed drift rule WOULD have given each tip. Never raises.
+    from src.drift import log_shadow as _log_drift_shadow
+    _n_drift = _log_drift_shadow(preds)
+    if _n_drift:
+        log.info(f"drift shadow: +{_n_drift} first-sight row(s) -> output/drift_shadow.csv")
 
     # ── Save postponed list ──────────────────────────────────────────────────
     if postponed:

@@ -210,6 +210,9 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
     # (usually VALUABLE) and may CLIMB to the tier it is actually SENT at. Freezing the
     # first sighting made summaries under-count SNIPER/MARKSMAN (the MARKSMAN=4 bug), so on
     # a re-see we UPGRADE the recorded tier/edge in place to the strongest seen.
+    # Since 2026-10-26 the incoming tier is EDGE-ONLY (drift tier adjustment removed by owner
+    # decision, config.DRIFT_TIER_ADJUSTMENT), so this upgrade can no longer be triggered by drift;
+    # drift_signal is still refreshed below as information.
     _TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
 
     key_to_idx = {}

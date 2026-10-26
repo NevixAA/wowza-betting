@@ -9,10 +9,13 @@ v8 core + additions from v7:
    that silently muted whole leagues (Championship, Serie B). The both_losing
    column is still computed for visibility but no longer suppresses any bet.
 
-2. Drift tier filter (from v7 odds drift concept)
-   After assigning the fixed 3-tier label, adjust using drift_signal:
-     SNIPER + Conflicted  → downgrade to VALUE
-     VALUE  + Confirmed   → upgrade to SNIPER  (if best_edge >= DRIFT_UPGRADE_EDGE)
+2. Drift tier adjustment — REMOVED (owner decision 2026-10-26)
+   Was: after the base tier, SNIPER+Conflicted -> MARKSMAN, MARKSMAN+Confirmed -> SNIPER (edge >=
+   DRIFT_UPGRADE_EDGE), VALUABLE+Confirmed -> MARKSMAN. Never validated, and on settled live tips the
+   Confirmed bucket it upgraded lost (-9.1%) while the Neutral bucket it ignored won (+13.6%).
+   Now gated by the constant config.DRIFT_TIER_ADJUSTMENT (False): signal_tier is the base tier only.
+   drift_signal is still computed as information and the old rule's answer is kept as
+   drift_shadow_tier (never served, tiered, staked or sent). See docs/DEPRECATION_REGISTER.md.
 
 Fixed 3-tier labels (league-independent):
   SNIPER  — edge >= 0.10   → bet full stake
@@ -197,7 +200,9 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
 
 def _apply_drift_adjustment(tier: str, drift_signal: str, best_edge: float) -> str:
     """
-    Adjust tier based on market drift signal (three-tier system).
+    The REMOVED drift rule (owner decision 2026-10-26), kept only to compute drift_shadow_tier:
+    what the old rule WOULD have produced. It changes signal_tier only while
+    config.DRIFT_TIER_ADJUSTMENT is True, which it is not (and no env var can make it so).
       SNIPER   + Conflicted  → MARKSMAN  (market disagrees — one step down)
       MARKSMAN + Confirmed   → SNIPER    (market confirms, edge strong enough)
       VALUABLE + Confirmed   → MARKSMAN  (market confirms moderate edge)
@@ -233,7 +238,8 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
         min_odds_blocked
         bet                 OVER | UNDER | AVOID
         bet_stake
-        signal_tier         SNIPER | VALUE | AVOID  (drift-adjusted)
+        signal_tier         SNIPER | MARKSMAN | VALUABLE | AVOID  (NOT drift-adjusted)
+        drift_shadow_tier   what the removed drift rule would have produced (info only)
         both_losing         True/False — league flagged by v7 optimizer
     """
     df = df.copy()
@@ -422,20 +428,37 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     else:
         df["no_form_data"] = False
 
-    # Drift adjustment (if drift_signal column exists)
+    # Drift: INFORMATION ONLY since 2026-10-26 (owner decision). The removed rule's answer is kept as
+    # drift_shadow_tier so a future frozen forward test can measure it; signal_tier is untouched
+    # unless config.DRIFT_TIER_ADJUSTMENT is True (a code constant - see drift_tier_adjustment_enabled).
     if "drift_signal" in df.columns:
-        adjusted = []
-        for _, row in df.iterrows():
-            tier = str(row["signal_tier"])
-            if tier == "AVOID":
-                adjusted.append("AVOID")
-                continue
-            drift = str(row.get("drift_signal", "New"))
-            new_tier = _apply_drift_adjustment(tier, drift, float(row["best_edge"]))
-            adjusted.append(new_tier)
-        df["signal_tier"] = adjusted
+        df["drift_shadow_tier"] = drift_shadow_tiers(df)
+        if drift_tier_adjustment_enabled():
+            df["signal_tier"] = df["drift_shadow_tier"]
 
     return df
+
+
+def drift_tier_adjustment_enabled() -> bool:
+    """config.DRIFT_TIER_ADJUSTMENT, and ONLY that. The rule was removed by owner decision 2026-10-26;
+    an environment variable of the same name is IGNORED (with a warning) so a workflow cannot switch
+    an unvalidated rule back on without a reviewed code change."""
+    env = os.getenv("DRIFT_TIER_ADJUSTMENT")
+    if env is not None:
+        log.warning(f"DRIFT_TIER_ADJUSTMENT={env!r} in the environment is IGNORED: the drift tier "
+                    f"adjustment was removed by owner decision 2026-10-26 and is controlled only by "
+                    f"the config.py constant (currently {bool(config.DRIFT_TIER_ADJUSTMENT)}).")
+    return bool(getattr(config, "DRIFT_TIER_ADJUSTMENT", False))
+
+
+def drift_shadow_tiers(df: pd.DataFrame) -> list:
+    """The tier the REMOVED drift rule would have produced for each row (AVOID stays AVOID)."""
+    out = []
+    for tier, drift, edge in zip(df["signal_tier"].astype(str),
+                                 df["drift_signal"].astype(str),
+                                 pd.to_numeric(df["best_edge"], errors="coerce").fillna(0.0)):
+        out.append("AVOID" if tier == "AVOID" else _apply_drift_adjustment(tier, drift, float(edge)))
+    return out
 
 
 def generate_bets(df: pd.DataFrame) -> pd.DataFrame:

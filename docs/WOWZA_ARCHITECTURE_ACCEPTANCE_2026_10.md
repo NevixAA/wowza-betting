@@ -51,7 +51,7 @@ therefore proven by its own non-regression run, not by the lock.
      * NF cap 3.00 (292–301);
      * AVOID below `VALUE_THRESHOLD`;
      * blind-fixture guard (366–421);
-     * drift up/downgrade `_apply_drift_adjustment` (198–214).
+     * drift up/downgrade `_apply_drift_adjustment` (198–214). *Removed 2026-10-26: since then this step only records `drift_shadow_tier` (`config.DRIFT_TIER_ADJUSTMENT = False`).*
 6. Back in `mode_predict`, the selection and logging steps:
    1. `shadow_experiments.score` / `append_first_sight` (803–804);
    2. `_log_shadow` (809);
@@ -151,7 +151,7 @@ There are 93 LEARNING entries, broken down as follows:
 ## Q6. Legacy components still in production
 
 1. **The legacy raw-edge tier engine.** It covers both O/U 2.5 (`betting.py`) and side markets (`pipeline._generate_side_bets`). This is *the* selection engine.
-2. **Drift tier adjustment** (`betting.py:198-214`). The earlier "drift gate miscalibrated" study found the rule was never backtested and points the wrong way (Confirmed −10.8% vs Neutral +8.0%).
+2. ~~**Drift tier adjustment**~~ (`betting.py:198-214`). The earlier "drift gate miscalibrated" study found the rule was never backtested and points the wrong way (Confirmed −10.8% vs Neutral +8.0%). **REMOVED 2026-10-26** by owner decision (live settled tips: Confirmed −9.1% vs Neutral +13.6%); see `DEPRECATION_REGISTER.md` #15.
 3. **`src/edge_engine.py` de-vig helpers** in props CLV (`src/clv_capture.py:24`).
 4. **Synthetic `_DEFAULT_ODDS`** still filling side-market backtests. The rows are NO_PRICE, so they are never certified.
 5. **The monthly per-league optimizer** (`backtest_matrix.yml` → `best_params_*.json`, auto-`approved`).
@@ -164,7 +164,7 @@ There are 93 LEARNING entries, broken down as follows:
 | `retrain.yml` (`0 3 * * *`, Sundays only after 2026-10-05) → `pipeline._train_one` | serving team `.pkl` + pointer | PG-1.0. `submit_candidate` never promotes; PROMOTE only via `review_parked` after **holdout** (n ≥ 1000, ΔLL ≤ −0.001, CI upper < 0, Brier, ECE, slope, canary, league checks) **and a prospective period** (n ≥ 1000 per track, ΔLL < 0; early fail at 300; 180-day expiry) | Not for weeks. The only parked candidate (`newformat_20261025T082056Z_cfa68e5c`) started its prospective period on 2026-10-25. |
 | `player_props_train.yml` (Sun–Tue 04:00) | serving props models | PG-PROPS-1.0 (same two periods, per market, n ≥ 1000 and ≥ 100 events) | No: all 8 markets KEEP_CHAMPION on 2026-10-25 and nothing is parked. Props remain PAPER regardless. |
 | `backtest_matrix.yml` (`0 3 1 * *`) | **nothing since 2026-10-26.** It writes a PROPOSAL (`output/threshold_proposals/<YYYY-MM>.json/.md`); `models/best_params_*.json` change only via `python -m src.threshold_apply` on owner-approved entries (`config/threshold_approvals.json`, id + content hash). The same applies to the weekly `retrain.py` refit, which now writes a candidate only. | Owner approval + `research_lock` (threshold files are digest-checked against `config/threshold_applied.json`; any other change is RED) | Proposes on 2026-11-01; serves nothing without approval. |
-| Drift (`odds_history_v9.json`), every predict run | tier up/downgrade per fixture | none (rule in code) | yes, continuously |
+| Drift (`odds_history_v9.json`), every predict run | **nothing since 2026-10-26** (owner decision). Was: tier up/downgrade per fixture. `drift_signal` is now information only; the old rule's answer is logged as `drift_shadow_tier` (`predictions.csv`, first-sight `output/drift_shadow.csv`). | the code constant `config.DRIFT_TIER_ADJUSTMENT = False` (`config.py:357`); a same-named env var is ignored with a warning (`betting.py:442`). Return only via a frozen Pro forward test + owner approval (`DEPRECATION_REGISTER.md` #15) | no |
 | `auto_onboard_leagues.yml` (Mon 09:20) | `config/auto_leagues.json`, merged into ENABLED/NEW_FORMAT leagues (`config.py:721-756`) | its own criteria; `research_lock` fingerprints `AUTO_LEAGUES` | yes (list empty today) |
 | Pro `league_ratings.json` fetched live (`stake_plan.py:96-119`) | stake scale per league | can only shrink a stake (min 0.2) | yes |
 | Date-armed config | `REQUIRE_FORM_DATA_UNTIL=2026-09-15` re-armed the blind-fixture guard (`betting.py:401-410`); the retrain cadence guard switched daily → Sunday on 2026-10-05 | in code | already fired |

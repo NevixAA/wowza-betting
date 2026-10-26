@@ -339,7 +339,23 @@ SNIPER_THRESHOLD        = float(os.getenv("SNIPER_THRESHOLD",        "0.12"))   
 SNIPER_THRESHOLD_OVER   = float(os.getenv("SNIPER_THRESHOLD_OVER",   "0.12"))   # OVER needs a bit more edge
 SNIPER_THRESHOLD_UNDER  = float(os.getenv("SNIPER_THRESHOLD_UNDER",  "0.12"))   # raised from 0.10 to match OVER
 EDGE_CEILING            = float(os.getenv("EDGE_CEILING",            "0.19"))   # above this = model overconfident
-DRIFT_UPGRADE_EDGE      = float(os.getenv("DRIFT_UPGRADE_EDGE",      "0.10"))
+
+# ── DRIFT TIER ADJUSTMENT: REMOVED (owner decision 2026-10-26, "yes") ─────────────────────────
+# The rule in src/betting._apply_drift_adjustment (SNIPER+Conflicted -> MARKSMAN, MARKSMAN+Confirmed
+# -> SNIPER when edge >= DRIFT_UPGRADE_EDGE, VALUABLE+Confirmed -> MARKSMAN) was never validated and
+# points the wrong way on settled live O/U tips 2026-04-26..10-25 (matchday block bootstrap):
+# Confirmed (upgraded) n=135 ROI -9.1% [-28.9, +13.5]; Neutral n=265 +13.6% [+1.9, +24.6];
+# Conflicted (downgraded) n=265 -12.6%; New n=604 -11.1%; Confirmed-Neutral -22.7 pts [-44.5, +3.5].
+# Production behaviour needs evidence to be ON, so tiers are now computed exactly as without drift.
+# drift_signal is still computed and written as INFORMATION, and the tier the old rule WOULD have
+# produced is recorded as drift_shadow_tier (predictions.csv + first-sight output/drift_shadow.csv).
+#
+# A PLAIN CONSTANT ON PURPOSE, NOT os.getenv: no workflow can switch it back on silently, and a
+# DRIFT_TIER_ADJUSTMENT environment variable is IGNORED with a warning (src/betting.py). Returning a
+# drift rule requires a frozen forward test in Pro + owner approval, then a reviewed edit here.
+# See docs/DEPRECATION_REGISTER.md.
+DRIFT_TIER_ADJUSTMENT   = False
+DRIFT_UPGRADE_EDGE      = 0.10    # the removed rule's MARKSMAN->SNIPER edge bar; used only by the shadow
 
 # Per-league edge ceilings — override global EDGE_CEILING for new-format leagues
 # where thinner data / noisier bookmaker prices cause the model to overfit at high edges.

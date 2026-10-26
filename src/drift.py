@@ -332,3 +332,75 @@ def purge_old(cutoff_days: int = 10) -> int:
     if to_del:
         _save(history)
     return len(to_del)
+
+
+# ── DRIFT SHADOW LOG (owner decision 2026-10-26) ─────────────────────────────
+# The drift tier adjustment no longer changes a tier (config.DRIFT_TIER_ADJUSTMENT = False). What the
+# removed rule WOULD have done is recorded here, once per tip, at FIRST SIGHT, so a future frozen
+# forward test can judge it on rows it never influenced. A separate research log on purpose: the
+# ledgers' schemas are not touched. Never served, tiered, staked or sent.
+SHADOW_FILE_NAME = "drift_shadow.csv"        # under config.OUTPUT_DIR, resolved at call time
+SHADOW_KEY = ["match_date", "home_team", "away_team", "side"]
+SHADOW_COLS = ["observed_at", "match_date", "kickoff_utc", "league", "model_type",
+               "home_team", "away_team", "side", "odds", "best_edge",
+               "drift_signal", "over_drift", "under_drift", "odds_snapshots",
+               "signal_tier", "drift_shadow_tier", "drift_would_change",
+               "drift_tier_adjustment_enabled", "model_version"]
+
+
+def shadow_store(path: Optional[Path] = None):
+    from src.research.first_sight import FirstSightStore
+    return FirstSightStore(Path(path) if path else config.OUTPUT_DIR / SHADOW_FILE_NAME,
+                           key=SHADOW_KEY, columns=SHADOW_COLS,
+                           observed_col="observed_at", kickoff_col="kickoff_utc")
+
+
+def shadow_rows(preds: pd.DataFrame, now: Optional[str] = None) -> pd.DataFrame:
+    """One row per tipped fixture side (served signal_tier != AVOID) with the old rule's answer."""
+    need = {"signal_tier", "drift_shadow_tier", "bet", "home_team", "away_team", "date"}
+    if preds is None or preds.empty or not need.issubset(preds.columns):
+        return pd.DataFrame(columns=SHADOW_COLS)
+    d = preds[(preds["signal_tier"].astype(str) != "AVOID")
+              & preds["bet"].astype(str).isin(["OVER", "UNDER"])]
+    if d.empty:
+        return pd.DataFrame(columns=SHADOW_COLS)
+    from src.betting import drift_tier_adjustment_enabled
+
+    def col(name):
+        return d[name] if name in d.columns else pd.Series(np.nan, index=d.index)
+
+    side = d["bet"].astype(str)
+    served = d["signal_tier"].astype(str)
+    shadow = d["drift_shadow_tier"].astype(str)
+    out = pd.DataFrame({
+        "observed_at": now or datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+        "match_date": d["date"].astype(str).str[:10],
+        "kickoff_utc": col("kickoff_utc"),
+        "league": col("league"),
+        "model_type": col("model_type"),
+        "home_team": d["home_team"].astype(str),
+        "away_team": d["away_team"].astype(str),
+        "side": side,
+        "odds": np.where(side == "UNDER", pd.to_numeric(col("odds_under25"), errors="coerce"),
+                         pd.to_numeric(col("odds_over25"), errors="coerce")),
+        "best_edge": pd.to_numeric(col("best_edge"), errors="coerce").round(4),
+        "drift_signal": col("drift_signal"),
+        "over_drift": col("over_drift"),
+        "under_drift": col("under_drift"),
+        "odds_snapshots": col("odds_snapshots"),
+        "signal_tier": served,
+        "drift_shadow_tier": shadow,
+        "drift_would_change": served != shadow,
+        "drift_tier_adjustment_enabled": drift_tier_adjustment_enabled(),
+        "model_version": col("model_version"),
+    }, index=d.index)
+    return out.reindex(columns=SHADOW_COLS).reset_index(drop=True)
+
+
+def log_shadow(preds: pd.DataFrame, path: Optional[Path] = None) -> int:
+    """Append first-sight drift shadow rows. Never raises (a recorder must not stop predict)."""
+    try:
+        return shadow_store(path).append(shadow_rows(preds))
+    except Exception as e:                                          # noqa: BLE001 - recorder
+        print(f"[drift] shadow log skipped: {e}")
+        return 0

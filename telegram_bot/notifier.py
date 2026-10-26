@@ -485,7 +485,8 @@ def notify_new_snipers() -> int:
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
             f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n"
-            f"🔀 Drift: {row.get('drift_signal','New')} {drift}"
+            # Drift is information only since 2026-10-26: it never changes the tier above.
+            f"🔀 Drift: {row.get('drift_signal','New')} {drift} (info only)"
         )
 
         if _send(token, chat_id, msg):

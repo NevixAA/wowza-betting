@@ -248,9 +248,10 @@ jobs:
           # abort and stage NOTHING (the `|| true` then hides it) -> no commit -> notified.json
           # dedup never persists -> every 5-min run re-sends the same tips (the duplicate flood).
           # odds_history_v9.json drives the ENTIRE drift feature. It is per-run state, so if
-          # it isn't committed the next run starts blank -> drift_signal stuck on "New" and
-          # the tier upgrade/downgrade in betting.py never fires. It was gitignored until
-          # 2026-08-15; drift.py now stores price CHANGES only, so it stays small.
+          # it isn't committed the next run starts blank -> drift_signal stuck on "New". It was
+          # gitignored until 2026-08-15; drift.py now stores price CHANGES only, so it stays small.
+          # Drift no longer changes a tier (owner decision 2026-10-26, config.DRIFT_TIER_ADJUSTMENT);
+          # output/drift_shadow.csv records, at first sight, the tier the removed rule would have given.
           for f in output/bets.csv output/bets_ledger.csv output/predictions.csv \
                    odds_history_v9.json team_id_cache.json \
                    output/side_bets_ledger.csv output/standard_odds_history.csv output/ht_ledger.csv output/ht_observations.csv \
@@ -260,6 +261,7 @@ jobs:
                    output/worldcup_history.json output/sharp_history.json \
                    output/predict_health.json output/feature_health.json \
                    output/stake_plan.csv output/stake_audit.csv output/direction_conflicts.csv \
+                   output/drift_shadow.csv \
                    output/edge_engine_shadow.csv output/edge_engine_health.json \
                    output/league_weekly_candidates.csv output/league_weekly_research.csv \
                    output/league_weekly_research.csv.first_sight.json output/league_weekly_research_summary.json \
