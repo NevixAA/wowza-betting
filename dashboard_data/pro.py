@@ -244,6 +244,12 @@ def edge2_forward() -> dict:
     return read_json(_f("output/edge_reassessment/edge2_forward_progress.json")) or {}
 
 
+def bankroll_track_evidence() -> dict:
+    """The formal review's per-track evidence (Pro src/bankroll/evidence.track_evidence, keyed with v9's
+    track_key, so O/U 2.5 is per side). Read by the Bankroll page's 'since last formal review' panel."""
+    return read_json(_f("output/bankroll/track_evidence.json")) or {}
+
+
 def tier_rules() -> pd.DataFrame:
     """Per-track evidence: does the edge rank outcomes? (Pro bankroll review, tier_rules.csv)."""
     try:

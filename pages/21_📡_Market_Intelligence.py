@@ -286,6 +286,20 @@ else:
                    f"{e2_meta.get('production_changed')}. ELIGIBLE_FOR_REVIEW needs the minimum settled two-sided "
                    "rows AND 8 gameweeks, then owner review.")
 
+# ═══ Evidence panels (owner brief 2026-10-26 part D) — display only ════════════════════════════════
+@st.cache_data(ttl=600, show_spinner=False)
+def _evidence_panels(today: str):
+    from dashboard_data import evidence_panels as EP
+    e2p = pro.edge2_forward() if pro.available() else {}
+    return EP.edge2_report(e2p), EP.over15_real_price(today=today)
+
+
+from dashboard_data import evidence_view as EV  # noqa: E402
+EV = importlib.reload(EV)
+(_e2m, _e2items), (_o15m, _o15rows) = _evidence_panels(pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"))
+EV.edge2_report_panel(_e2m, _e2items)
+EV.over15_panel(_o15m, _o15rows)
+
 try:                                                   # the link only resolves inside the app's navigation
     st.page_link("pages/8_🛰️_V11_Market.py", label="Market Lab (V11 market-first shadow)", icon="🛰️")
 except Exception:                                      # noqa: BLE001
