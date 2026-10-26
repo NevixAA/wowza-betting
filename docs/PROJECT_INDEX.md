@@ -29,8 +29,13 @@ Architecture detail: `docs/WOWZA_PLATFORM_ARCHITECTURE_2026_10.md`.
   | Track | State | Base fraction | Odds limits |
   |---|---|---|---|
   | `new_format\|BTTS` | ACTIVE | 0.0125 | max 2.6 |
-  | `new_format\|OU25` | ACTIVE_LOW | 0.005 | max 2.5 |
+  | `new_format\|OU25_OVER` | ACTIVE_LOW | 0.005 | max 2.5 |
+  | `new_format\|OU25_UNDER` | ACTIVE_LOW | 0.005 | max 2.5 |
   | `new_format\|OVER15` | ACTIVE_LOW | 0.005 | 1.45–1.9 |
+
+  O/U 2.5 is staked and reviewed per SIDE since 2026-10-26 (owner decision): each side started with
+  exactly the old `new_format|OU25` / `standard|OU25` settings, so stakes were unchanged by the split.
+  Key = `src/bankroll_policy.track_key`; an O/U 2.5 tip with no valid side gets no stake.
 
 * **Zero-stake tracks:**
   * every `standard|*` track is PAPER;
@@ -133,7 +138,7 @@ facts:
 * league eligibility;
 * Cloudbet mode.
 
-As a result, `standard|OU25` PAPER, `*|OVER35` BLOCKED and props BLOCKED_FROM_REAL are locked too.
+As a result, `standard|OU25_OVER` / `standard|OU25_UNDER` PAPER, `*|OVER35` BLOCKED and props BLOCKED_FROM_REAL are locked too.
 
 Note: the 2026-10-08 auto-bet review found Argentina BTTS profit to be league-wide (no selection skill). PROTECTED
 means "credible positive result on a staked track". It is not proof that the model adds anything.

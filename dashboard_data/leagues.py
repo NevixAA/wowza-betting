@@ -55,7 +55,8 @@ _PICK_TO_MARKET = {"O/U 2.5 OVER": "O/U 2.5 Over", "O/U 2.5 UNDER": "O/U 2.5 Und
 #: display market -> (policy market, regime side)
 _TRACK = {"O/U 2.5 Over": ("OU25", "OVER"), "O/U 2.5 Under": ("OU25", "UNDER"), "BTTS": ("BTTS", "YES"),
           "Over 1.5": ("OVER15", "OVER"), "Over 3.5": ("OVER35", "OVER")}
-_POLICY_LABEL = {"OU25": "O/U 2.5", "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
+_POLICY_LABEL = {"OU25": "O/U 2.5", "OU25_OVER": "O/U 2.5 Over", "OU25_UNDER": "O/U 2.5 Under",
+                 "BTTS": "BTTS", "OVER15": "Over 1.5", "OVER35": "Over 3.5"}
 #: strongest first - the league's headline state is its strongest market's
 STATE_ORDER = ["ACTIVE_STRONG", "ACTIVE", "ACTIVE_LOW", "PROBATION", "DEGRADED", "PAPER", "BLOCKED"]
 REGIME_ORDER = ["PROTECTED", "REPAIR", "LEARNING"]

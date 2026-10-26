@@ -173,10 +173,12 @@ def _ll(p, y):
     return -(y * np.log(p) + (1 - y) * np.log(1 - p))
 
 
-def production_state(policy: dict, league: str, model_type: str, market: str) -> dict:
+def production_state(policy: dict, league: str, model_type: str, market: str, side: str | None = None) -> dict:
     """Exactly what production applies: bankroll_policy track state, then the paper-league override
-    (src/bankroll_policy.size_day: PAPER_LEAGUE -> no stake; config.PAPER_LEAGUES -> never sent)."""
-    track = f"{model_type}|{market}"
+    (src/bankroll_policy.size_day: PAPER_LEAGUE -> no stake; config.PAPER_LEAGUES -> never sent).
+    The track key is src/bankroll_policy.track_key: O/U 2.5 is per side since 2026-10-26."""
+    from src.bankroll_policy import track_key
+    track = track_key(model_type, market, side)
     t = (policy.get("tracks") or {}).get(track)
     track_state = t.get("state", "UNSUPPORTED") if t else "UNSUPPORTED"
     paper = league in set(policy.get("paper_leagues", [])) or config.is_paper_league(league)
@@ -344,7 +346,7 @@ def build_registry(af: pd.DataFrame, anchor: pd.DataFrame, bets: pd.DataFrame, s
         mt = config.model_type_for_league(lg)
         for market, sd, akey, lkey in SPECS:
             key = f"{lg}|{market}|{sd}|{mt}"
-            ps = production_state(policy, lg, mt, market)
+            ps = production_state(policy, lg, mt, market, sd)
             fx = af[(af["league"] == lg) & (af["market"] == akey) & (af["model_type"] == mt)]
             sig = fx[(fx["side"] == sd) & fx["prod_tier"].isin(TIPPED)]
             if akey == "ou25" and mt == "new_format" and cap > 0:
@@ -383,7 +385,8 @@ def build_registry(af: pd.DataFrame, anchor: pd.DataFrame, bets: pd.DataFrame, s
         "policy_version": policy.get("policy_version"), "sources": sources or {},
         "global_protections": {
             "player_props": (policy.get("tracks") or {}).get("player_props", {}).get("state"),
-            "standard|OU25": (policy.get("tracks") or {}).get("standard|OU25", {}).get("state"),
+            "standard|OU25_OVER": (policy.get("tracks") or {}).get("standard|OU25_OVER", {}).get("state"),
+            "standard|OU25_UNDER": (policy.get("tracks") or {}).get("standard|OU25_UNDER", {}).get("state"),
             "new_format|OVER35": (policy.get("tracks") or {}).get("new_format|OVER35", {}).get("state"),
             "standard|OVER35": (policy.get("tracks") or {}).get("standard|OVER35", {}).get("state"),
             "cloudbet": "PAPER_ONLY (src/cloudbet/client.py MODE defaults to DRY; no workflow sets CLOUDBET_MODE)"},

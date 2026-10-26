@@ -61,6 +61,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from src.bankroll_policy import track_key
+
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT_PATH = ROOT / "config" / "research_lock_snapshot.json"
 REGISTRY_PATH = ROOT / "config" / "league_market_regimes.json"
@@ -188,7 +190,7 @@ def fingerprint(track_keys: list[str] | None = None, registry: dict | None = Non
     tracks = {}
     for k, (lg, gm, side) in zip(track_keys, cells):
         _lg, market, _side, mt = k.split("|")
-        tkey = f"{mt}|{market}"
+        tkey = track_key(mt, market, _side)              # O/U 2.5 per side since 2026-10-26
         t = (policy.get("tracks") or {}).get(tkey) or {}
         tt = (policy.get("track_tier_multipliers") or {}).get(tkey)
         tracks[k] = {"track": tkey, "track_state": t.get("state", "UNSUPPORTED"),

@@ -260,7 +260,7 @@ def _policy():
     t = {"state": "ACTIVE", "base_fraction": 0.01, "max_odds": 2.75, "evidence_score": 1.0}
     return {"policy_version": "test", "portfolio": {"one_position_per_fixture": False},
             "tier_multipliers": {"SNIPER": 1.0},
-            "tracks": {f"new_format|{m}": dict(t) for m in ("OU25", "OVER15", "OVER35", "BTTS")}}
+            "tracks": {f"new_format|{m}": dict(t) for m in ("OU25_OVER", "OU25_UNDER", "OVER15", "OVER35", "BTTS")}}
 
 
 def test_size_day_zeroes_the_opposite_direction_within_a_day():

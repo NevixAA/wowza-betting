@@ -69,7 +69,8 @@ def test_protected_entries_are_owner_locked_and_only_they_are():
 def test_production_state_is_what_production_applies():
     policy = load_policy()
     tracks = policy["tracks"]
-    assert tracks["standard|OU25"]["state"] == "PAPER"
+    assert tracks["standard|OU25_OVER"]["state"] == tracks["standard|OU25_UNDER"]["state"] == "PAPER"
+    assert REG["global_protections"]["standard|OU25_OVER"] == REG["global_protections"]["standard|OU25_UNDER"] == "PAPER"
     assert tracks["standard|OVER35"]["state"] == tracks["new_format|OVER35"]["state"] == "BLOCKED"
     assert tracks["player_props"]["state"] == "BLOCKED_FROM_REAL"
     assert REG["global_protections"]["player_props"] == "BLOCKED_FROM_REAL"
@@ -82,12 +83,13 @@ def test_production_state_is_what_production_applies():
         if config.is_paper_league(e["league"]):
             assert e["production_state"] == "PAPER_LEAGUE"
         sel.append({"fixture": f"f{i}", "league": e["league"], "model_type": e["model_type"],
-                    "market": e["market"], "signal_tier": "SNIPER", "odds": 1.80})
+                    "market": e["market"], "side": e["side"], "signal_tier": "SNIPER", "odds": 1.80})
     # the production sizer itself: a SNIPER at 1.80 gets a real stake exactly where the registry says the
     # state is a real-money state
     out = size_day(pd.DataFrame(sel), policy, bankroll=1000.0, peak=1000.0)
     for e, (_, r) in zip(REG["entries"], out.iterrows()):
         assert (r["requested_fraction"] > 0) == (e["production_state"] in REAL_STATES), (e["key"], r["reason"])
+        assert r["track"] == e["track"], e["key"]          # the registry names the track the sizer uses
 
 
 def test_one_losing_week_never_moves_an_entry():

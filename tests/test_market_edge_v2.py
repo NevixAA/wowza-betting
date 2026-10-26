@@ -271,7 +271,8 @@ def test_props_are_blocked():
 
 def test_policy_track_states_unchanged():
     t = load_policy()["tracks"]
-    assert t["standard|OU25"]["state"] == "PAPER" and float(t["standard|OU25"]["base_fraction"]) == 0
+    for k in ("standard|OU25_OVER", "standard|OU25_UNDER"):        # O/U 2.5 per side since 2026-10-26
+        assert t[k]["state"] == "PAPER" and float(t[k]["base_fraction"]) == 0
     assert t["standard|OVER35"]["state"] == "BLOCKED" and t["new_format|OVER35"]["state"] == "BLOCKED"
 
 

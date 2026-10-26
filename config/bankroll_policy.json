@@ -33,7 +33,13 @@
       "max_odds": 2.6,
       "evidence_score": 3.0
     },
-    "new_format|OU25": {
+    "new_format|OU25_OVER": {
+      "state": "ACTIVE_LOW",
+      "base_fraction": 0.005,
+      "max_odds": 2.5,
+      "evidence_score": 1.0
+    },
+    "new_format|OU25_UNDER": {
       "state": "ACTIVE_LOW",
       "base_fraction": 0.005,
       "max_odds": 2.5,
@@ -46,7 +52,11 @@
       "max_odds": 1.9,
       "evidence_score": 1.5
     },
-    "standard|OU25": {
+    "standard|OU25_OVER": {
+      "state": "PAPER",
+      "base_fraction": 0.0
+    },
+    "standard|OU25_UNDER": {
       "state": "PAPER",
       "base_fraction": 0.0
     },
@@ -91,16 +101,27 @@
     "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
   },
   "track_tier_multipliers": {
-    "new_format|OU25": {
+    "new_format|OU25_OVER": {
       "SNIPER": 1.0,
       "MARKSMAN": 1.0,
       "VALUABLE": 1.0
     },
-    "standard|OU25": {
+    "new_format|OU25_UNDER": {
+      "SNIPER": 1.0,
+      "MARKSMAN": 1.0,
+      "VALUABLE": 1.0
+    },
+    "standard|OU25_OVER": {
+      "SNIPER": 1.0,
+      "MARKSMAN": 1.0,
+      "VALUABLE": 1.0
+    },
+    "standard|OU25_UNDER": {
       "SNIPER": 1.0,
       "MARKSMAN": 1.0,
       "VALUABLE": 1.0
     }
   },
-  "track_tier_multipliers_note": "Owner decision 2026-10-22: on OU25 the edge does not rank outcomes (since Aug 26, flat 1u: SNIPER -9.9% n125, MARKSMAN -5.8% n294, VALUABLE -0.8% n366; Spearman edge vs P/L ~0 on both tracks, Pro WOWZA_EDGE_REASSESSMENT_2026_10), so every OU25 tier is staked the same and VALUABLE is staked. Other tracks keep tier_multipliers. Pro's monthly review derives this per track from evidence."
+  "track_tier_multipliers_note": "Owner decision 2026-10-22: on OU25 the edge does not rank outcomes (since Aug 26, flat 1u: SNIPER -9.9% n125, MARKSMAN -5.8% n294, VALUABLE -0.8% n366; Spearman edge vs P/L ~0 on both tracks, Pro WOWZA_EDGE_REASSESSMENT_2026_10), so every OU25 tier is staked the same and VALUABLE is staked. Other tracks keep tier_multipliers. Pro's monthly review derives this per track from evidence.",
+  "track_side_split_note": "Owner decision 2026-10-26: O/U 2.5 is staked and reviewed per SIDE. The tracks new_format|OU25 and standard|OU25 were replaced by new_format|OU25_OVER, new_format|OU25_UNDER, standard|OU25_OVER and standard|OU25_UNDER, each starting with EXACTLY its parent's settings (state, base_fraction, odds caps, evidence_score, track_tier_multipliers), so every stake on the day of the split is identical. Key = src/bankroll_policy.track_key(model_type, market, side); an O/U 2.5 tip with no valid side gets no stake. From the 2026-11-01 review Pro evaluates each side as its own track under the unchanged rules (reductions-only until the allocator is walk-forward validated). Evidence at the split (settled live from 2026-08-10, flat 1u): NF OVER n147 ROI +4.0% [-15.6,+25.1]; NF UNDER n402 -0.4% [-13.5,+11.9]; STD OVER n197 -12.4%; STD UNDER n197 -14.8% - not significant, so no stake change."
 }
