@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-26T00:20:19Z",
+ "generated_at": "2026-10-26T01:38:01Z",
  "panel_version": "LWR-1",
  "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
  "note": "Research panel, not bets. FROZEN rows were fixed at the week lock (first kickoff of the league-week) from first-sight scores; PROVISIONAL rows may still change until the lock.",
@@ -521,13 +521,13 @@
      "gameweeks": 1,
      "rank1_n_priced_settled": 0,
      "rank1_roi": null,
-     "top3_n_priced_settled": 1,
+     "top3_n_priced_settled": 2,
      "top3_roi": -1.0,
-     "top5_n_priced_settled": 1,
+     "top5_n_priced_settled": 2,
      "top5_roi": -1.0,
-     "top5_clv_mean": 1.538,
+     "top5_clv_mean": 0.769,
      "top5_clv_coverage": 1.0,
-     "top5_dlogloss_model_minus_market": -0.0107,
+     "top5_dlogloss_model_minus_market": 0.09963,
      "status": "NOT_ENOUGH_DATA"
     },
     "OU25": {
@@ -536,11 +536,11 @@
      "rank1_roi": 0.68,
      "top3_n_priced_settled": 1,
      "top3_roi": 0.68,
-     "top5_n_priced_settled": 1,
-     "top5_roi": 0.68,
-     "top5_clv_mean": 0.599,
+     "top5_n_priced_settled": 2,
+     "top5_roi": 0.6,
+     "top5_clv_mean": -0.028,
      "top5_clv_coverage": 1.0,
-     "top5_dlogloss_model_minus_market": -0.10418,
+     "top5_dlogloss_model_minus_market": -0.00649,
      "status": "NOT_ENOUGH_DATA"
     },
     "OVER15": {

@@ -1,11 +1,13 @@
 {
- "generated_at": "2026-10-26T00:20:19Z",
+ "generated_at": "2026-10-26T01:38:01Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-26",
  "leagues_with_current_week_data": 18,
  "missing_leagues": [],
- "missing_leagues_previous_week": [],
+ "missing_leagues_previous_week": [
+  "USA MLS"
+ ],
  "no_fixture_leagues": [
   "China Super League",
   "Romanian Superliga"
@@ -15,10 +17,10 @@
  "expected_candidate_rows": 748,
  "actual_candidate_rows": 748,
  "panel_rows": 132,
- "settled_rows": 100,
- "pending_rows": 32,
- "clv_certified_rows": 42,
- "clv_coverage": 0.42,
+ "settled_rows": 104,
+ "pending_rows": 28,
+ "clv_certified_rows": 44,
+ "clv_coverage": 0.4231,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -1233,7 +1235,7 @@
    },
    "previous": {
     "league_week_id": "USA MLS|2026-W43",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 1,
     "fixtures_before_panel_start": 15,
     "fixtures_with_candidates": 1,
