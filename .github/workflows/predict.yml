@@ -240,6 +240,13 @@ jobs:
       - name: Weekly league research panel (research only)
         run: python -m src.research.league_weekly || echo "::warning::league_weekly research panel failed (research only - tips unaffected)"
 
+      # QUALITY-LAYER SHADOW (2026-10-26, docs/QUALITY_TIERS_STUDY_2026_10.md). RESEARCH ONLY: logs, at first sight,
+      # the learned Best / Second / Third layer of every tip on the board to output/quality_tier_shadow.csv. Reads
+      # the ledgers and predictions.csv; never writes a tip, tier, stake, threshold, ledger or Telegram file.
+      # Tolerant: a failure is a warning and can never stop the commit below.
+      - name: Quality-layer shadow (research only)
+        run: python -m src.research.quality_tiers --shadow || echo "::warning::quality-layer shadow failed (research only - tips unaffected)"
+
       - name: Commit and push outputs
         run: |
           git config user.name "github-actions[bot]"
@@ -269,6 +276,7 @@ jobs:
                    output/fd_history.parquet \
                    output/book_odds_snapshots.csv \
                    output/v91_shadow.csv \
+                   output/quality_tier_shadow.csv output/quality_tier_shadow.csv.first_sight.json \
                    output/model_lineage/shadow_h2h.csv \
                    output/model_lineage/shadow_experiments.csv \
                    telegram_bot/notified.json telegram_bot/live_notified.json; do
