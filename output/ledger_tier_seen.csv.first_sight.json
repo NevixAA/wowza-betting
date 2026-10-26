@@ -1,0 +1,31 @@
+{
+ "file": "ledger_tier_seen.csv",
+ "key": [
+  "ledger",
+  "source",
+  "match_date",
+  "home_team",
+  "away_team",
+  "selection",
+  "observed_tier"
+ ],
+ "frozen_cols": [
+  "observed_at",
+  "ledger",
+  "source",
+  "match_date",
+  "home_team",
+  "away_team",
+  "selection",
+  "observed_tier",
+  "observed_edge_pct",
+  "observed_odds",
+  "ledger_tier",
+  "ledger_edge_pct",
+  "ledger_odds",
+  "ledger_generated_at"
+ ],
+ "rows": 1,
+ "frozen_digest": "d3d3ca245cb4e82bb7abcb99da6b982b7bf46ecff13c55e78ab6256f96b8d8cd",
+ "updated_at": "2026-10-26T15:09:14Z"
+}
