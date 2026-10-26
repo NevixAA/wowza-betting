@@ -176,8 +176,8 @@ else:
                     {"label": "Engine config", "value": str(mm.get("config_status"))},
                     {"label": "Bankroll policy (DEPLOYABLE split)", "value": str(mig["policy_version"])}],
                    per_row=2)
-    st.caption("**LEGACY** = production's raw-edge tier at first sight (not the ledger, which upgrades tiers in "
-               "place). **DEPLOYABLE** = a legacy selection today's bankroll policy would stake (track state, paper "
+    st.caption("**LEGACY** = production's raw-edge tier at first sight (not the ledger: its rows logged before "
+               "2026-10-26 can carry a tier upgraded in place; since then the first logged tier stands). **DEPLOYABLE** = a legacy selection today's bankroll policy would stake (track state, paper "
                "league, odds caps, tier multiplier); **PAPER** = one it would not. That split applies today's "
                "policy to the whole window, and today's policy was set partly on this window, so it describes, it "
                "does not test. Every market-first (NEW) row is PAPER: market_edge_v2 is shadow only. ROI CI = "

@@ -26,6 +26,22 @@ clv_pct       : closing line value %
 result        : WIN / LOSS / VOID  ← fill manually after the match
 pnl           : profit/loss in units ← fill manually (or leave blank for auto)
 notes         : anything you want to remember about this bet
+
+FIRST LOGGED TIER STANDS (owner decision 2026-10-26)
+----------------------------------------------------
+A tip's `signal_tier` is the tier it had when it was FIRST logged, which is the tier the owner
+received (instant message from the same run, or the morning album, which reads this ledger). Until
+2026-10-26 a later predict run with a higher tier raised the logged tier in place ("best tier
+wins"), so results were reported against a tier nobody had been sent: first-sight tier matched the
+ledger tier on only 72% of tips, and new-format BTTS read SNIPER +24.7% / MARKSMAN +16.0% /
+VALUABLE +7.7% in the ledger against +52.2% / +3.1% / +6.7% at first-sight tier.
+
+Now a later, higher tier is recorded ONLY in the append-only research log
+output/ledger_tier_seen.csv (one row per ledger x tip x observed tier, first sight of that tier;
+src/research/first_sight.FirstSightStore). Nothing in a ledger row's tier changes after it is
+written. EXISTING ROWS ARE NOT REWRITTEN: rows logged before 2026-10-26 may still carry an
+upgraded tier. For tier analysis over that period use the first-sight data (the git history of
+these ledgers, output/edge_engine_shadow.csv, src/research/edge_replay.first_sight), not the ledger.
 """
 from __future__ import annotations
 
@@ -68,8 +84,8 @@ LEDGER_COLS = [
     # MODEL ATTRIBUTION (champion high-water mark, 2026-10-18). Appended at the END so every
     # existing reader — all by column name — is unaffected. Rows written before this are blank
     # and mean UNKNOWN_LEGACY; nothing back-fills a version it cannot prove. The values are the
-    # model at FIRST SIGHT of the tip, matching first-sight canonical analysis; an in-place tier
-    # upgrade does not rewrite them.
+    # model at FIRST SIGHT of the tip, matching first-sight canonical analysis; nothing rewrites
+    # them (and since 2026-10-26 nothing rewrites the tier either).
     "model_version",
     "retrain_batch_id",
     "training_cutoff",
@@ -143,6 +159,52 @@ def _load_ledger() -> pd.DataFrame:
     return pd.DataFrame(columns=LEDGER_COLS)
 
 
+_TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+
+# ── Later higher tiers: an append-only research log, never the ledger (2026-10-26) ─────────────
+TIER_SEEN_NAME = "ledger_tier_seen.csv"     # beside the ledger it describes (output/)
+TIER_SEEN_COLS = [
+    "observed_at", "ledger", "source", "match_date", "home_team", "away_team", "selection",
+    "observed_tier", "observed_edge_pct", "observed_odds",
+    "ledger_tier", "ledger_edge_pct", "ledger_odds", "ledger_generated_at",
+]
+TIER_SEEN_KEY = ["ledger", "source", "match_date", "home_team", "away_team", "selection", "observed_tier"]
+
+
+def tier_seen_store(path: Path | None = None):
+    """First-sight store of tiers seen ABOVE a tip's logged tier: one row per (ledger, tip, observed
+    tier), the first run that produced it. Research only - nothing reads it to tip, tier or stake."""
+    from src.research.first_sight import FirstSightStore
+    return FirstSightStore(path or (config.OUTPUT_DIR / TIER_SEEN_NAME), key=TIER_SEEN_KEY,
+                           columns=TIER_SEEN_COLS, digest=True)
+
+
+def _best_seen_tiers(ledger: str, path: Path | None = None) -> dict:
+    """(source, match_date, home, away, selection) -> highest tier rank already in the research log."""
+    try:
+        d = tier_seen_store(path).read()
+    except Exception:                                                 # noqa: BLE001
+        return {}
+    if d.empty:
+        return {}
+    d = d[d["ledger"].astype(str) == ledger]
+    out: dict = {}
+    for r in d.itertuples(index=False):
+        k = (str(r.source), str(r.match_date)[:10], str(r.home_team), str(r.away_team), str(r.selection))
+        out[k] = max(out.get(k, 0), _TIER_RANK.get(str(r.observed_tier), 0))
+    return out
+
+
+def _record_tiers_seen(rows: list, path: Path) -> int:
+    """Append later-higher-tier observations. Never raises (a recorder must not stop predict)."""
+    if not rows:
+        return 0
+    n = tier_seen_store(path).append(pd.DataFrame(rows, columns=TIER_SEEN_COLS))
+    if n:
+        log.info(f"Tier-seen log: {n} later higher tier(s) recorded (ledger tier unchanged) → {path.name}")
+    return n
+
+
 def _dedup_keys(df: pd.DataFrame) -> set:
     return set(zip(
         df.get("match_date", pd.Series([], dtype=str)).fillna(""),
@@ -198,7 +260,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         return
 
     existing = _load_ledger()
-    # In-place tier upgrades below assign floats/strings into existing cells. CI's pandas can
+    # In-place edge refreshes below assign floats/strings into existing cells. CI's pandas can
     # back CSV columns with pyarrow string dtype (future.infer_string), which rejects a float
     # assignment (TypeError). Cast the columns we may overwrite to object so mixed assignment
     # is always safe, regardless of the read dtype backend.
@@ -206,14 +268,16 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         if _c in existing.columns:
             existing[_c] = existing[_c].astype(object)
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
-    # Tier ranking for best-tier-wins upgrades. A fixture first appears at a low edge
-    # (usually VALUABLE) and may CLIMB to the tier it is actually SENT at. Freezing the
-    # first sighting made summaries under-count SNIPER/MARKSMAN (the MARKSMAN=4 bug), so on
-    # a re-see we UPGRADE the recorded tier/edge in place to the strongest seen.
-    # Since 2026-10-26 the incoming tier is EDGE-ONLY (drift tier adjustment removed by owner
-    # decision, config.DRIFT_TIER_ADJUSTMENT), so this upgrade can no longer be triggered by drift;
-    # drift_signal is still refreshed below as information.
-    _TIER_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+    # FIRST LOGGED TIER STANDS (owner decision 2026-10-26; see the module docstring). This used to
+    # be "best tier wins": a re-see at a higher tier raised signal_tier in place, so results were
+    # graded against a tier the owner was never sent. Now a higher tier on a re-see goes to the
+    # append-only research log (ledger_tier_seen.csv) and signal_tier is never touched.
+    # The edge/kelly/drift refresh that rode on the old upgrade keeps its exact old trigger (a new
+    # best tier): it changes no tier and no O/U P/L (odds are not touched). Freezing it is a
+    # separate owner decision.
+    tier_seen_path = LEDGER_FILE.parent / TIER_SEEN_NAME
+    best_seen = _best_seen_tiers("ou25", tier_seen_path)
+    tier_seen_rows = []
 
     key_to_idx = {}
     for i, r in existing.iterrows():
@@ -243,15 +307,24 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         edge       = float(row.get("best_edge", 0.0))
 
         if dedup_key in key_to_idx:
-            # Already logged — UPGRADE tier/edge in place if this run is a stronger tier.
+            # Already logged. The logged tier STANDS; a higher tier now is research information.
             i   = key_to_idx[dedup_key]
             cur = str(existing.at[i, "signal_tier"])
-            if _TIER_RANK.get(tier, 0) > _TIER_RANK.get(cur, 0):
+            rank = _TIER_RANK.get(tier, 0)
+            seen_key = (source, match_date, home, away, side)
+            if rank > max(_TIER_RANK.get(cur, 0), best_seen.get(seen_key, 0)):
+                tier_seen_rows.append({
+                    "observed_at": now, "ledger": "ou25", "source": source, "match_date": match_date,
+                    "home_team": home, "away_team": away, "selection": side,
+                    "observed_tier": tier, "observed_edge_pct": round(edge * 100, 2), "observed_odds": odds,
+                    "ledger_tier": cur, "ledger_edge_pct": existing.at[i, "edge_pct"],
+                    "ledger_odds": existing.at[i, "odds"],
+                    "ledger_generated_at": existing.at[i, "generated_at"]})
+                best_seen[seen_key] = rank
                 try:
                     cur_odds = float(existing.at[i, "odds"])
                 except (TypeError, ValueError):
                     cur_odds = odds
-                existing.at[i, "signal_tier"]  = tier
                 existing.at[i, "edge_pct"]     = round(edge * 100, 2)
                 existing.at[i, "kelly_pct"]    = _kelly_pct(edge, cur_odds)
                 existing.at[i, "drift_signal"] = str(row.get("drift_signal", existing.at[i, "drift_signal"]))
@@ -301,6 +374,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
 
     if flips:
         log.info(f"Ledger: {flips} side flip(s) noted on the original tip (not added as new tips)")
+    _record_tiers_seen(tier_seen_rows, tier_seen_path)
     if not new_rows and not upgrades and not flips:
         log.info("Ledger: no new tips (all already logged).")
         return
@@ -308,7 +382,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
     updated = (pd.concat([existing, pd.DataFrame(new_rows, columns=LEDGER_COLS)], ignore_index=True)
                if new_rows else existing)
     updated.to_csv(LEDGER_FILE, index=False)
-    log.info(f"Ledger: {len(new_rows)} new + {upgrades} tier-upgrade(s) → {LEDGER_FILE}")
+    log.info(f"Ledger: {len(new_rows)} new + {upgrades} edge refresh(es), tiers unchanged → {LEDGER_FILE}")
 
 
 # ── Side-market ledger (BTTS / Over 1.5 / Over 3.5) ─────────────────────────────
@@ -323,7 +397,7 @@ SIDE_LEDGER_COLS = [
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
 ]
-_SIDE_RANK = {"SNIPER": 3, "MARKSMAN": 2, "VALUABLE": 1, "": 0, "AVOID": 0, "nan": 0}
+_SIDE_RANK = _TIER_RANK
 
 
 def _load_side_ledger() -> pd.DataFrame:
@@ -337,7 +411,8 @@ def _load_side_ledger() -> pd.DataFrame:
 
 def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None:
     """Append BTTS / Over 1.5 / Over 3.5 tips to their OWN ledger (side_bets_ledger.csv),
-    one row per (fixture, market), ALL tiers. Same best-tier-wins upgrade as append_tips.
+    one row per (fixture, market), ALL tiers. Same rule as append_tips: the FIRST logged tier stands,
+    a later higher tier goes to the research log (ledger_tier_seen.csv), never into the row.
 
     This is the writer the weekly summary always expected but nothing populated — so side
     markets are now tracked for the season-long live test. result/pnl/closing_odds/clv fill
@@ -347,13 +422,16 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
     if side_df is None or side_df.empty:
         return
     existing = _load_side_ledger()
-    # Same dtype-safety as append_tips: in-place upgrades assign floats into cells that CI's
+    # Same dtype-safety as append_tips: in-place refreshes assign floats into cells that CI's
     # pandas may back with pyarrow string dtype — cast overwrite targets to object first.
     for _c in ("signal_tier", "edge_pct", "ev_pct", "odds"):
         if _c in existing.columns:
             existing[_c] = existing[_c].astype(object)
     now   = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
     today = now[:10]
+    tier_seen_path = SIDE_LEDGER_FILE.parent / TIER_SEEN_NAME
+    best_seen = _best_seen_tiers("side", tier_seen_path)
+    tier_seen_rows = []
 
     key_to_idx = {}
     for i, r in existing.iterrows():
@@ -374,10 +452,22 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         key        = (match_date, home, away, market, source)
 
         if key in key_to_idx:
+            # Already logged. The logged tier STANDS (2026-10-26); a higher tier is research info.
+            # The odds/edge/ev refresh keeps its old trigger (a new best tier). It DOES move side P/L
+            # and CLV (settled at `odds`); freezing it is a separate owner decision.
             i   = key_to_idx[key]
             cur = str(existing.at[i, "signal_tier"])
-            if _SIDE_RANK.get(tier, 0) > _SIDE_RANK.get(cur, 0):
-                existing.at[i, "signal_tier"] = tier
+            rank = _SIDE_RANK.get(tier, 0)
+            seen_key = (source, match_date, home, away, market)
+            if rank > max(_SIDE_RANK.get(cur, 0), best_seen.get(seen_key, 0)):
+                tier_seen_rows.append({
+                    "observed_at": now, "ledger": "side", "source": source, "match_date": match_date,
+                    "home_team": home, "away_team": away, "selection": market,
+                    "observed_tier": tier, "observed_edge_pct": edge_pct, "observed_odds": odds,
+                    "ledger_tier": cur, "ledger_edge_pct": existing.at[i, "edge_pct"],
+                    "ledger_odds": existing.at[i, "odds"],
+                    "ledger_generated_at": existing.at[i, "generated_at"]})
+                best_seen[seen_key] = rank
                 existing.at[i, "edge_pct"]    = edge_pct
                 existing.at[i, "ev_pct"]      = ev_pct
                 existing.at[i, "odds"]        = odds
@@ -400,13 +490,14 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             **_version_fields({}, market),
         })
 
+    _record_tiers_seen(tier_seen_rows, tier_seen_path)
     if not new_rows and not upgrades:
         log.info("Side ledger: no new tips (all already logged).")
         return
     updated = (pd.concat([existing, pd.DataFrame(new_rows, columns=SIDE_LEDGER_COLS)], ignore_index=True)
                if new_rows else existing)
     updated.to_csv(SIDE_LEDGER_FILE, index=False)
-    log.info(f"Side ledger: {len(new_rows)} new + {upgrades} tier-upgrade(s) → {SIDE_LEDGER_FILE}")
+    log.info(f"Side ledger: {len(new_rows)} new + {upgrades} price refresh(es), tiers unchanged → {SIDE_LEDGER_FILE}")
 
 
 # ── HT (half-time O/U) ledger ───────────────────────────────────────────────────

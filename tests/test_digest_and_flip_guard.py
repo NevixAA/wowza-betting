@@ -49,11 +49,12 @@ def test_the_flip_is_noted_once_not_on_every_run(out):
     assert note.count("FLIP_SEEN OVER") == 1
 
 
-def test_same_side_upgrades_still_work(out):
+def test_same_side_re_see_keeps_the_first_logged_tier(out):
+    # owner decision 2026-10-26: the first logged tier stands (was: best tier wins in place)
     L.append_tips(pd.DataFrame([_bet("UNDER", "VALUABLE")]))
     L.append_tips(pd.DataFrame([_bet("UNDER", "SNIPER", edge=0.15)]))
     led = pd.read_csv(out / "bets_ledger.csv")
-    assert len(led) == 1 and led.iloc[0]["signal_tier"] == "SNIPER"
+    assert len(led) == 1 and led.iloc[0]["signal_tier"] == "VALUABLE"
 
 
 def test_a_flipped_tip_is_dropped_from_the_send_source(out):

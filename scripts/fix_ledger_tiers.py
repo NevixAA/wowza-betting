@@ -1,5 +1,9 @@
 """One-time backfill: reconcile bets_ledger.csv tiers with the ACTUAL send record.
 
+RETIRED 2026-10-26 - `--apply` is refused. The owner decided the FIRST LOGGED tier stands and
+historical ledger rows are never rewritten (src/ledger.py docstring). This script raised logged
+tiers after the fact, which is exactly what that decision forbids. The dry run still reports.
+
 Why: append_tips used to freeze each fixture's signal_tier at first sighting (usually
 VALUABLE, the lowest tier). Tips that later climbed and were SENT as SNIPER/MARKSMAN kept
 the stale VALUABLE label, so the weekly summary under-counted sharp tips (the "MARKSMAN=4"
@@ -81,4 +85,7 @@ def main(apply: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    main(apply="--apply" in sys.argv)
+    if "--apply" in sys.argv:
+        sys.exit("fix_ledger_tiers: --apply is retired (2026-10-26: the first logged tier stands and "
+                 "ledger history is never rewritten). Dry run only.")
+    main(apply=False)
