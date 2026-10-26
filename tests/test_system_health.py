@@ -24,7 +24,8 @@ def test_lost_model_type_or_odds_turns_mapping_red():
     assert S.stake_mapping(_plan("new_format|BTTS", "ACTIVE"))["status"] == "GREEN"
 
 
-def test_registered_challenger_with_no_probabilities_is_red():
+def test_registered_challenger_with_no_probabilities_is_red(monkeypatch):
+    monkeypatch.setattr(S, "_experiment_start", lambda: None)
     now = datetime(2026, 10, 22, tzinfo=timezone.utc)
     sh = pd.DataFrame({"logged_at": ["2026-10-21T10:00:00Z"] * 3, "p_pro_hgb": [None, None, None]})
     assert S.challenger_coverage(sh, now)["status"] == "RED"
@@ -62,3 +63,31 @@ def test_weekly_research_panel_is_red_when_protected_tracks_move():
 def test_every_check_states_its_rule():
     for c in S.evaluate():
         assert c["status"] in (S.GREEN, S.AMBER, S.RED, S.GREY) and c["rule"]
+
+
+def test_challenger_rows_before_the_experiment_do_not_count(monkeypatch):
+    monkeypatch.setattr(S, "_experiment_start", lambda: pd.Timestamp("2026-10-22 11:00", tz="UTC"))
+    now = datetime(2026, 10, 25, tzinfo=timezone.utc)
+    sh = pd.DataFrame({"logged_at": ["2026-10-21T10:00:00Z"] * 5 + ["2026-10-23T10:00:00Z"] * 5,
+                       "p_pro_hgb": [None] * 5 + [0.55] * 5})
+    c = S.challenger_coverage(sh, now)
+    assert c["status"] == "GREEN" and c["value"].startswith("100% of 5")
+
+
+def test_certified_clv_uses_the_post_fix_window():
+    sh = pd.DataFrame({"result": ["WIN"] * 10, "close_status": ["OK"] + ["STALE_CLOSE_GT_30MIN"] * 9})
+    h = {"measure_from": "2026-10-23T00:00:00Z",
+         "shadow_since_measure_from": {"eligible": 40, "certified_t30_pct": 72.5}}
+    c = S.certified_clv(sh, h)
+    assert c["status"] == "GREEN" and "72.5%" in c["value"] and "all-time 10.0%" in c["detail"]
+    assert S.certified_clv(sh, {})["status"] == "RED"          # no post-fix window -> all-time rule
+
+
+def test_new_contract_violation_beyond_the_baseline_is_amber(monkeypatch):
+    import src.contracts as C
+    known = {"output/stake_audit.csv": {"schema": "STAKE_AUDIT_ROW", "rows": 500, "n_violations": 1,
+                                         "violations": [{"kind": "null", "column": "odds", "n_rows": 110}]}}
+    monkeypatch.setattr(C, "committed_violations", lambda root=None: {k: dict(v) for k, v in known.items()})
+    assert S.contracts_check()[0]["status"] == "GREEN"         # acknowledged historical rows
+    known["output/stake_audit.csv"]["violations"] = [{"kind": "null", "column": "odds", "n_rows": 111}]
+    assert S.contracts_check()[0]["status"] == "AMBER"         # one more row than acknowledged

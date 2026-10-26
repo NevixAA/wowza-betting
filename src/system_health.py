@@ -79,29 +79,51 @@ def shadow_settlement(h: dict) -> dict:
               f"{v}% ({h.get('settled_rows')}/{h.get('finished_prospective_rows')})", rule, f"as of {h.get('generated_at')}")
 
 
+def _experiment_start() -> pd.Timestamp | None:
+    """Earliest registration of an ACTIVE challenger experiment (models/registry/experiments.json)."""
+    reg = _json(ROOT / "models" / "registry" / "experiments.json").get("experiments", [])
+    ts = [pd.Timestamp(e["registered_at"]) for e in reg
+          if e.get("status", "ACTIVE") == "ACTIVE" and e.get("registered_at")]
+    return min(ts) if ts else None
+
+
 def challenger_coverage(shadow: pd.DataFrame, now: datetime) -> dict:
-    rule = "over rows logged in the last 7 days: GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%"
+    rule = ("over rows logged in the last 7 days AND after the challenger experiment was registered "
+            "(rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger "
+            "probability; AMBER > 0%; RED 0%")
     if shadow.empty:
         return _c("Challenger prediction coverage", GREY, "no shadow log", rule)
     ts = pd.to_datetime(shadow.get("logged_at"), utc=True, errors="coerce")
-    recent = shadow[ts >= pd.Timestamp(now) - pd.Timedelta(days=7)]
+    since = pd.Timestamp(now) - pd.Timedelta(days=7)
+    start = _experiment_start()
+    if start is not None:
+        since = max(since, start.tz_localize("UTC") if start.tzinfo is None else start)
+    recent = shadow[ts >= since]
     col = next((c for c in ("p_challenger", "p_pro_hgb", "p_v91") if c in shadow.columns), None)
     if recent.empty or col is None:
         return _c("Challenger prediction coverage", GREY, "no recent rows", rule)
     share = float(pd.to_numeric(recent[col], errors="coerce").notna().mean() * 100)
     return _c("Challenger prediction coverage", GREEN if share >= 90 else AMBER if share > 0 else RED,
-              f"{share:.0f}% of {len(recent)} rows ({col})", rule)
+              f"{share:.0f}% of {len(recent)} rows ({col})", rule, f"window from {since:%Y-%m-%d %H:%M} UTC")
 
 
 def certified_clv(shadow: pd.DataFrame, clv_health: dict) -> dict:
-    rule = "share of settled shadow rows with a close observed <= 30 min before kickoff: GREEN >= 50%; AMBER >= 20%; RED < 20%"
+    rule = ("share of settled shadow rows with a close observed <= 30 min before kickoff, measured from the "
+            "collection fix (clv_collection_health.json measure_from; all-time shown for context): "
+            "GREEN >= 50%; AMBER >= 20%; RED < 20%")
     s = shadow[shadow.get("result", pd.Series(dtype=str)).isin(["WIN", "LOSS"])] if len(shadow) else shadow
-    if s.empty or "close_status" not in s.columns:
+    all_time = (float((s["close_status"] == "OK").mean() * 100), len(s)) \
+        if len(s) and "close_status" in s.columns else (None, 0)
+    since = (clv_health or {}).get("shadow_since_measure_from") or {}
+    if since.get("eligible"):
+        share, n, frm = float(since["certified_t30_pct"]), int(since["eligible"]), clv_health.get("measure_from")
+    elif all_time[0] is not None:
+        share, n, frm = all_time[0], all_time[1], "all time"
+    else:
         return _c("Certified CLV coverage", GREY, "no settled rows", rule)
-    share = float((s["close_status"] == "OK").mean() * 100)
+    detail = f"since {str(frm)[:10]}" + (f" · all-time {all_time[0]:.1f}% of {all_time[1]}" if all_time[0] is not None else "")
     return _c("Certified CLV coverage", GREEN if share >= 50 else AMBER if share >= 20 else RED,
-              f"{share:.1f}% of {len(s)} settled", rule,
-              f"collection health generated {clv_health.get('generated_at')}" if clv_health else "")
+              f"{share:.1f}% of {n} settled", rule, detail)
 
 
 def stale_artifacts(manifest: dict) -> dict:
@@ -308,17 +330,35 @@ def contracts_check() -> tuple[dict, dict]:
         r = committed_violations(ROOT)
     except Exception as e:                                             # noqa: BLE001
         return _c("Data contracts", RED, "validation failed", rule, f"{type(e).__name__}: {e}"[:200]), {}
-    n = sum(int(x.get("n_violations", 0)) for x in r.values())
     internal = any(v.get("kind") == "internal_error" for x in r.values() for v in x.get("violations", []))
+    # Known, reviewed HISTORICAL violations (config/contract_baseline.json) are reported but do not turn the
+    # check amber; anything beyond them (new column, more rows than acknowledged, new kind) still does.
+    base = _json(ROOT / "config" / "contract_baseline.json").get("acknowledged", [])
+    ack = {(a["file"], a["kind"], a.get("column")): a.get("max_rows") for a in base}
+    n_known = 0
+    for f, x in r.items():
+        new = []
+        for v in x.get("violations", []):
+            k = (f, v.get("kind"), v.get("column"))
+            if k in ack and (ack[k] is None or int(v.get("n_rows") or 0) <= int(ack[k])):
+                n_known += 1
+            else:
+                new.append(v)
+        x["new_violations"] = new
+    n = sum(len(x.get("new_violations", [])) for x in r.values())
     files = {f: {"schema": x.get("schema"), "schema_version": x.get("schema_version"), "present": x.get("present"),
                  "rows": x.get("rows"), "n_violations": x.get("n_violations", 0),
                  "violations": [{k: v.get(k) for k in ("kind", "column", "n_rows", "detail", "examples")}
                                 for v in x.get("violations", [])][:20]}
              for f, x in r.items()}
-    bad = [f"{f}: {x['n_violations']}" for f, x in files.items() if x["n_violations"]]
+    bad = [f"{f}: {len(x.get('new_violations', []))}" for f, x in r.items() if x.get("new_violations")]
     st = RED if internal else AMBER if n else GREEN
-    return (_c("Data contracts", st, f"{n} violation(s) in {len(bad)} of {len(files)} files", rule, "; ".join(bad)),
-            {"contracts_version": CONTRACTS_VERSION, "n_violations": n, "files": files})
+    return (_c("Data contracts", st, f"{n} new violation(s) in {len(bad)} of {len(files)} files"
+               + (f" · {n_known} known historical (config/contract_baseline.json)" if n_known else ""),
+               rule + "; known historical violations listed in config/contract_baseline.json do not count",
+               "; ".join(bad)),
+            {"contracts_version": CONTRACTS_VERSION, "n_violations": n, "n_known_historical": n_known,
+             "files": files})
 
 
 def promotion_gate_health(now: datetime) -> dict:

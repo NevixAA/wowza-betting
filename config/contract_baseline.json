@@ -1,0 +1,21 @@
+{
+  "version": "1",
+  "declared_on": "2026-10-26",
+  "note": "Known, reviewed contract violations in HISTORICAL committed data. The system-health 'Data contracts' check is AMBER only for violations beyond these (a new column missing, more rows than the max below, or a new kind). Never use this to hide a violation in rows written after declared_on - raise the max only with a reason.",
+  "acknowledged": [
+    {"file": "output/book_odds_snapshots.csv", "kind": "missing_column", "column": "minutes_to_kickoff", "max_rows": null,
+     "reason": "OddsAPI change-log writer predates CONTRACTS-1; derivable from kickoff + snapshot time at read (src/edge_engine_shadow does)."},
+    {"file": "output/book_odds_snapshots.csv", "kind": "missing_column", "column": "overround", "max_rows": null,
+     "reason": "Derived at read from the paired prices; not stored by the change-log writer."},
+    {"file": "output/book_odds_snapshots.csv", "kind": "missing_column", "column": "opposite_odds", "max_rows": null,
+     "reason": "The change-log stores each side as its own row; pairing happens at read (same book, same snapshot)."},
+    {"file": "output/book_odds_snapshots.csv", "kind": "missing_column", "column": "source", "max_rows": null,
+     "reason": "Single-source file (OddsAPI); source is implied by the file."},
+    {"file": "output/stake_audit.csv", "kind": "allowed", "column": "side", "max_rows": 110,
+     "reason": "Rows written before the 2026-10-22 side-market staking fix (b4ce9e22); frozen history."},
+    {"file": "output/stake_audit.csv", "kind": "null", "column": "odds", "max_rows": 110,
+     "reason": "Same 110 pre-fix rows (odds were lost before the fix); frozen history, all zero stake."},
+    {"file": "output/stake_audit.csv", "kind": "rule", "column": "one_position_per_fixture", "max_rows": 2,
+     "reason": "San Lorenzo v Newell's 2026-10-24: Over 1.5 and BTTS in two runs, same goal direction. Owner 2026-10-25: several same-direction positions on one fixture are fine; opposite directions are blocked by src/direction_guard.py."}
+  ]
+}
