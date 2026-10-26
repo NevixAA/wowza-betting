@@ -279,6 +279,12 @@ def club_squads() -> None:
         except Exception:                                               # noqa: BLE001
             return pd.DataFrame()
 
+    # The slim deployment (deploy/README_DASHBOARD_DEPLOY.md) does not mirror player_history.parquet
+    # (~173 MB, ~1.35 GB in memory), so club squads exist only on a full checkout.
+    if not (BASE_DIR / "player_history.parquet").exists():
+        st.info("Club squads read the full player history, which this deployment does not carry. "
+                "Every other Fantasy tool works from the daily Fantasy Refresh files.")
+        return
     wsel = st.selectbox("Form window", list(n_opts.keys()), index=0, key="sq_window",
                         help="Per-game stats = average over each player's last N games.")
     # ON DEMAND ONLY: build_squads reads the whole player_history parquet (every column). Streamlit

@@ -218,7 +218,25 @@ def weekly_research_panel(registry: dict, lock: dict | None, panel: dict | None 
               f"{lock.get('approved_by')} at {lock.get('approved_at')}")
 
 
+def _slim_dashboard() -> bool:
+    """True inside the SLIM dashboard deployment (deploy/README_DASHBOARD_DEPLOY.md): code-only, data
+    mirrored, no workflows / thresholds / cloudbet client to fingerprint. Never true in CI."""
+    env = os.getenv("WOWZA_SLIM", "").strip().lower()
+    if env in ("0", "false", "no", "off") or (ROOT / ".github" / "workflows" / "predict.yml").exists():
+        return False                                                  # a full checkout is never slim
+    return env in ("1", "true", "yes", "on") or (ROOT / "deploy" / "SLIM").exists()
+
+
 def _research_lock_status() -> dict:
+    if _slim_dashboard():
+        # The live lock check needs the whole repo (workflows, threshold files, a config subprocess).
+        # The slim dashboard shows the result CI recorded in output/system_health.json instead, and
+        # says so; a missing record stays unverifiable (RED), never assumed fine.
+        rec = (_json(HEALTH_FILE).get("research_lock") or {})
+        if "protected_tracks_modified" not in rec:
+            return {"error": "slim deployment: no CI-recorded research lock in output/system_health.json"}
+        return {**rec, "source": f"recorded by CI in output/system_health.json at "
+                                 f"{_json(HEALTH_FILE).get('generated_at')}"}
     try:
         from src.research_lock import check
         return check()

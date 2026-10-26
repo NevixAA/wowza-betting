@@ -115,7 +115,9 @@ ui.page_header("Tips", "Every live tip — one side per fixture, the same rows a
                "production stakes and what the market-first shadow engine thinks of it.",
                eyebrow_text="Today · Tips", freshness=_fresh + f" :gray[{len(df)} fixtures priced]")
 
-if not is_public():
+# The admin actions run the pipeline in place, so they need a FULL checkout. The slim deployment
+# (deploy/README_DASHBOARD_DEPLOY.md) carries only the dashboard code - no pipeline.py - so they are hidden.
+if not is_public() and (Path(V9_DIR) / "pipeline.py").exists():
     with st.popover("Admin actions"):
         if st.button("🔄 Run Predict Now", width="stretch"):
             with st.spinner("Fetching fixtures & computing predictions..."):

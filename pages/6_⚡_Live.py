@@ -177,7 +177,9 @@ def render_live(df, games):
         if st.button("🔄 Refresh", key="live_refresh"):
             st.cache_data.clear(); st.rerun()
     with col_run:
-        if not is_public() and st.button("▶ Run Live Scan Now", key="live_run"):
+        # needs a full checkout: the slim deployment carries no src/live_scanner.py
+        if (not is_public() and (BASE_DIR / "src" / "live_scanner.py").exists()
+                and st.button("▶ Run Live Scan Now", key="live_run")):
             import subprocess
             subprocess.run([sys.executable, str(BASE_DIR / "src" / "live_scanner.py")],
                            cwd=BASE_DIR, capture_output=True, text=True, timeout=60)
