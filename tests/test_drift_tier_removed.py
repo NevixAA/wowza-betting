@@ -187,6 +187,8 @@ def test_tip_message_shows_drift_as_information_not_as_an_upgrade(tmp_path, monk
     monkeypatch.setattr(N, "_send", lambda token, chat, text: sent.append(text) or True)
     assert N.notify_new_snipers() == 1
     msg = sent[0]
-    assert "VALUABLE TIP" in msg and "MARKSMAN" not in msg                  # not upgraded by Confirmed
+    from src.tier_labels import tier_label                                  # display words, 2026-10-26
+    assert f"{tier_label('VALUABLE').upper()} TIP" in msg                  # not upgraded by Confirmed
+    assert tier_label("MARKSMAN").upper() not in msg.upper()
     assert "Drift: Confirmed" in msg and "(info only)" in msg
     assert "upgrad" not in msg.lower()

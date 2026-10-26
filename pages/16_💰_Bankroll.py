@@ -22,6 +22,7 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import tier_label  # noqa: E402
 from dashboard_data import bankroll_view as V, pro  # noqa: E402
 from dashboard_data import freshness as _fresh  # noqa: E402  (P1-3: never show stale evidence as current)
 
@@ -96,7 +97,7 @@ pf = prod.get("portfolio", {})
 st.caption(f"Caps: single bet {pct(pf.get('single_bet_cap'))} · fixture {pct(pf.get('fixture_cap'))} · day "
            f"{pct(pf.get('daily_cap'))} · league/day {pct(pf.get('league_daily_cap'))} · league×market/day "
            f"{pct(pf.get('league_market_daily_cap'))} · one real position per fixture · tiers "
-           f"{prod.get('tier_multipliers')} · convergence leagues: "
+           f"{ {tier_label(k): v for k, v in (prod.get('tier_multipliers') or {}).items()} } · convergence leagues: "
            f"{(prod.get('convergence') or {}).get('leagues') or 'none'}")
 
 # ═══ ACTION — the policy applied to the current tips (src/stake_plan.py, wired 2026-10-14) ═══════

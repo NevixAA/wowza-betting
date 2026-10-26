@@ -34,6 +34,7 @@ market_intel = importlib.reload(market_intel)
 
 st.set_page_config(page_title="Wowza | Market Intelligence", page_icon="📡", layout="wide")
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import TIER_LABEL  # noqa: E402
 
 ui.page_header("Market Intelligence", "Research and monitoring only — nothing here is a bet. Market-first rows are "
                "SHADOW ONLY.", eyebrow_text="Research Lab · prices and closes",
@@ -67,7 +68,7 @@ else:
                    per_row=2)
     if m.get("shadow_only") is not True:
         st.error("shadow_only is not true in edge_engine_health.json — the market-first engine must stay shadow.")
-    st.dataframe(d["cov"].assign(two_sided_share=d["cov"]["two_sided_share"] * 100), hide_index=True,
+    ui.dataframe(d["cov"].assign(two_sided_share=d["cov"]["two_sided_share"] * 100), hide_index=True,
                  width="stretch", column_config={"two_sided_share": PCT})
     st.caption(f"De-vig method `{m.get('devig_method')}`. A fixture without a two-sided price cannot be de-vigged, so "
                "the market-first engine cannot judge it. `legacy_tipped` = rows the legacy raw-edge rule tiered.")
@@ -96,16 +97,16 @@ else:
                "and is not evidence.")
     t1, t2, t3 = st.tabs(["Certified, by league", "Collection, by track / market", "Collection, by league"])
     with t1:
-        st.dataframe(cl["since_by_league"].sort_values("eligible", ascending=False), hide_index=True,
+        ui.dataframe(cl["since_by_league"].sort_values("eligible", ascending=False), hide_index=True,
                      width="stretch", column_config={"certified_t30_pct": PCT, "certified_t10_pct": PCT})
-        st.dataframe(cl["since_by_market"], hide_index=True, width="stretch",
+        ui.dataframe(cl["since_by_market"], hide_index=True, width="stretch",
                      column_config={"certified_t30_pct": PCT, "certified_t10_pct": PCT})
     with t2:
         cc = {"t60_pct": PCT, "t30_pct": PCT, "t10_pct": PCT}
-        st.dataframe(cl["collection_by_track"], hide_index=True, width="stretch", column_config=cc)
-        st.dataframe(cl["collection_by_market"], hide_index=True, width="stretch", column_config=cc)
+        ui.dataframe(cl["collection_by_track"], hide_index=True, width="stretch", column_config=cc)
+        ui.dataframe(cl["collection_by_market"], hide_index=True, width="stretch", column_config=cc)
     with t3:
-        st.dataframe(cl["collection_by_league"].sort_values("t30_pct"), hide_index=True, width="stretch",
+        ui.dataframe(cl["collection_by_league"].sort_values("t30_pct"), hide_index=True, width="stretch",
                      column_config={"t60_pct": PCT, "t30_pct": PCT, "t10_pct": PCT})
 
 # ── direction conflicts ────────────────────────────────────────────────────────────────────────
@@ -115,21 +116,22 @@ if d["conf"].empty:
             "guard suppresses a tip).")
 else:
     st.metric("Suppressed tips (all time)", f"{len(d['conf']):,}")
-    st.dataframe(d["conf_sum"], hide_index=True, width="stretch")
+    ui.dataframe(d["conf_sum"], hide_index=True, width="stretch")
     with st.expander("Latest suppressed rows"):
-        st.dataframe(d["conf"].head(200), hide_index=True, width="stretch")
+        ui.dataframe(d["conf"].head(200), hide_index=True, width="stretch")
     st.caption("A suppressed tip is not sent, not ledgered and not staked: the earlier tip on that fixture stands.")
 
 # ── legacy vs market-first ─────────────────────────────────────────────────────────────────────
 ui.section_header("Legacy raw edge vs market-first decision")
 with st.container(border=True):
-    st.markdown("**LEGACY RAW EDGE** (production): `p_model − 1/odds` → SNIPER / MARKSMAN / VALUABLE.  \n"
+    st.markdown("**LEGACY RAW EDGE** (production): `p_model − 1/odds` → "
+                f"{TIER_LABEL['SNIPER']} / {TIER_LABEL['MARKSMAN']} / {TIER_LABEL['VALUABLE']} (gap size).  \n"
                 "**MARKET-FIRST** (market_edge_v2, *shadow only*): de-vigged market fair → decision probability → "
                 "lower bound → EV lower bound → state BET / PAPER / NO_BET.")
 if d["lsum"].empty:
     st.info("output/edge_engine_shadow.csv has no rows yet.")
 else:
-    st.dataframe(d["lsum"], hide_index=True, width="stretch",
+    ui.dataframe(d["lsum"], hide_index=True, width="stretch",
                  column_config={"median_ev_lb": st.column_config.NumberColumn(format="%.3f")})
     st.caption("All first-sight rows. A legacy tier where the market-first state is NO_BET is a disagreement, not "
                "proof either way: neither column is a P/L, and none of these counts is an ROI.")
@@ -137,7 +139,7 @@ else:
     st.markdown(f"**Upcoming fixtures — {len(up):,} rows**")
     if not up.empty:
         num = st.column_config.NumberColumn
-        st.dataframe(up, hide_index=True, width="stretch", column_config={
+        ui.dataframe(up, hide_index=True, width="stretch", column_config={
             "legacy_raw_edge": num("LEGACY raw edge", format="%.3f"),
             "p_market_fair": num("market fair", format="%.3f"), "p_decision": num("decision p", format="%.3f"),
             "p_lower_bound": num("lower bound", format="%.3f"), "ev_lower_bound": num("EV_LB", format="%.3f"),

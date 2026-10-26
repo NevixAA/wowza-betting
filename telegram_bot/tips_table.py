@@ -10,6 +10,9 @@ adding matplotlib would change requirements.txt for every workflow, predict incl
 SAME ROWS AS THE TEXT DIGEST: today's (UTC) live tips from the two LEDGERS, tiers SNIPER /
 MARKSMAN / VALUABLE, paper leagues excluded. The image is an addition; the text briefing is still
 sent, so a rendering failure can never cost the morning's tips.
+
+The rows keep the internal tier CODES (callers sort and filter on them); the picture shows the
+owner's display words from src/tier_labels.py - Big / Medium / Small gap (2026-10-26).
 """
 from __future__ import annotations
 
@@ -19,12 +22,13 @@ from pathlib import Path
 import pandas as pd
 
 import config
+from src.tier_labels import GAP_EXPLAINER, tier_label
 
 TIER_ORDER = ["SNIPER", "MARKSMAN", "VALUABLE"]
 TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235)}
 MARKET_LABEL = {"btts": "BTTS", "over15": "O/U 1.5", "over35": "O/U 3.5"}
 ROWS_PER_IMAGE = 22
-COLUMNS = [("Time", 62), ("League", 190), ("Rating", 70), ("Match", 330), ("Model", 70), ("Tier", 104),
+COLUMNS = [("Time", 62), ("League", 190), ("Rating", 70), ("Match", 330), ("Model", 70), ("Gap", 104),
            ("Market", 150), ("Odds", 62), ("Edge", 66)]
 
 _RATINGS: dict | None = None
@@ -165,7 +169,7 @@ def _fit(draw, text: str, font, width: int) -> str:
 def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
     """One PNG per ROWS_PER_IMAGE tips."""
     from PIL import Image, ImageDraw
-    pad, row_h, head_h, title_h, foot_h = 18, 34, 34, 54, 30
+    pad, row_h, head_h, title_h, foot_h = 18, 34, 34, 54, 48
     width = pad * 2 + sum(w for _, w in COLUMNS)
     f_title, f_head, f_cell, f_foot = _font(22, True), _font(15, True), _font(15), _font(12)
     pages = [rows.iloc[i:i + ROWS_PER_IMAGE] for i in range(0, len(rows), ROWS_PER_IMAGE)] or [rows]
@@ -196,11 +200,11 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
             rt = r.get("rating")
             rating = "–" if rt is None or pd.isna(rt) else f"{int(rt)}/10"
             cells = [r["time"], r["league"], rating, f"{r['home_team']} v {r['away_team']}", model,
-                     r["tier"], r["market"], odds, edge]
+                     tier_label(r["tier"]), r["market"], odds, edge]
             x = pad
             for (name, w), val in zip(COLUMNS, cells):
-                font = f_head if name in ("Tier", "Edge", "Rating") else f_cell
-                fill = colour if name == "Tier" else (17, 24, 39)
+                font = f_head if name in ("Gap", "Edge", "Rating") else f_cell
+                fill = colour if name == "Gap" else (17, 24, 39)
                 if name == "Rating" and val != "–":
                     v = int(val.split("/")[0])
                     fill = (21, 128, 61) if v >= 8 else (185, 28, 28) if v <= 3 else (17, 24, 39)
@@ -209,6 +213,7 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
             y += row_h
         dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10 (10 best) · edge as recorded by v9 · paper leagues excluded",
                 font=f_foot, fill=(107, 114, 128))
+        dr.text((pad, y + 26), GAP_EXPLAINER, font=f_foot, fill=(107, 114, 128))
         buf = io.BytesIO()
         img.save(buf, format="PNG", optimize=True)
         out.append(buf.getvalue())

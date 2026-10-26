@@ -24,8 +24,9 @@ STAKE_PLAN = ROOT / "output" / "stake_plan.csv"
 SHADOW = ROOT / "output" / "edge_engine_shadow.csv"
 TZ_NAME = "Asia/Jerusalem"
 
+from src.tier_labels import TIER_ICON, tier_label  # noqa: E402 - display words (owner 2026-10-26)
+
 TIER_ORDER = ("SNIPER", "MARKSMAN", "VALUABLE")
-TIER_ICON = {"SNIPER": "🎯", "MARKSMAN": "🔫", "VALUABLE": "💎"}
 STAKE = {"SNIPER": "staked · full", "MARKSMAN": "staked · ¾", "VALUABLE": "paper"}
 # SIGNAL TIER != EVIDENCE RANK (P1-6, 2026-10-22): on O/U 2.5 the edge size does not rank outcomes, so the
 # bankroll policy stakes every O/U tier the same and the page must not imply SNIPER is the stronger bet.
@@ -179,7 +180,7 @@ def selections_table(b: pd.DataFrame, research: bool = True) -> pd.DataFrame:
                   if "drift" in b.columns else None),
         "Production": b["production_state"].map(_state),
         "Stake %": b["final_fraction"] * 100,
-        "Tier (legacy)": b["tier"].astype(str),
+        "Gap": b["tier"].map(tier_label),
         "Stake note": [stake_label(t, m) for t, m in zip(b["tier"], b["market"])],
         "Model": b["model"].map(lambda m: "Standard" if str(m) == "standard" else "New-format"),
     })

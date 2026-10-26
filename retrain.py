@@ -41,6 +41,7 @@ log = logging.getLogger(__name__)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
+from src.tier_labels import tier_label   # display words only (owner 2026-10-26)
 
 METRICS_FILE = config.OUTPUT_DIR / "backtest_metrics_history.json"
 DATA_DIR     = config.DATA_DIR / "data" / "football_data"
@@ -331,16 +332,16 @@ def _roi_prefilter(label: str, prev: dict | None, curr: dict) -> tuple[bool, str
 
 def _print_comparison(label: str, prev: dict | None, curr: dict) -> None:
     keys = [
-        ("roi_%",              "ROI % (S+MM placed)"),
+        ("roi_%",              "ROI % (Big+Medium placed)"),
         ("sharpe_ratio",       "Sharpe"),
         ("max_drawdown_units", "Max DD (u)"),
-        ("win_rate",           "Win Rate (S+MM)"),
-        ("total_bets",         "Placed Bets (S+MM)"),
+        ("win_rate",           "Win Rate (Big+Medium)"),
+        ("total_bets",         "Placed Bets (Big+Medium)"),
     ]
     tier_keys = [
-        ("sniper_bets",    "sniper_roi_%",    "SNIPER"),
-        ("marksman_bets",  "marksman_roi_%",  "MARKSMAN"),
-        ("valuable_bets",  "valuable_roi_%",  "VALUABLE (info)"),
+        ("sniper_bets",    "sniper_roi_%",    tier_label("SNIPER")),
+        ("marksman_bets",  "marksman_roi_%",  tier_label("MARKSMAN")),
+        ("valuable_bets",  "valuable_roi_%",  f"{tier_label('VALUABLE')} (info)"),
     ]
     print(f"\n{'=' * 60}")
     print(f"  BACKTEST COMPARISON — {label}")

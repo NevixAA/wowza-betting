@@ -236,7 +236,7 @@ with t_play:
             "p_start", "exp_minutes", "goal_prob", "assist_prob", "cs_prob", "median", "p90",
             "xpts_3gw", "xpts_5gw", "value_5gw_per_m", "ownership", "next_fixture", "risk",
             "confidence"]
-    st.dataframe(v[show], hide_index=True, width="stretch", height=520, column_config={
+    ui.dataframe(v[show], hide_index=True, width="stretch", height=520, column_config={
         "web_name": "Player", "team": "Team", "position": "Pos",
         "price": st.column_config.NumberColumn("£m", format="%.1f"),
         "final_xpts": st.column_config.ProgressColumn("Final xPts", min_value=0,
@@ -297,7 +297,7 @@ with t_tr:
         for col, (_, t) in zip(st.columns(3), trans.iloc[3:6].iterrows()):
             fv.precomputed_move_card(t, container=col)
         with st.expander("All precomputed moves (table)"):
-            st.dataframe(trans.head(40)[["out_web", "out_team", "position", "out_price", "in_web",
+            ui.dataframe(trans.head(40)[["out_web", "out_team", "position", "out_price", "in_web",
                                          "in_team", "in_price", "gain_next", "gain_3gw", "gain_5gw",
                                          "net_gain_5gw_with_hit", "in_p_start", "in_risk"]],
                          hide_index=True, width="stretch", column_config={
@@ -391,7 +391,7 @@ with t_sq:
                     part = sq.get(lab)
                     if isinstance(part, pd.DataFrame) and not part.empty:
                         st.markdown(f"**{'Starting XI' if lab == 'xi' else 'Bench'}**")
-                        st.dataframe(part[[c for c in ("web_name", "team", "position", "price", hz,
+                        ui.dataframe(part[[c for c in ("web_name", "team", "position", "price", hz,
                                                        "p_start", "next_fixture") if c in part.columns]],
                                      hide_index=True, width="stretch", column_config={
                                          "web_name": "Player", "price": ui.money_col("£m"),
@@ -450,7 +450,7 @@ with t_lab:
                 {"label": "FPL ep_next MAE", "value": f"{fpl_row['MAE']:.3f}"},
                 {"label": "Gameweeks scored", "value": str(bt["GWs"].iloc[0]) if len(bt) else "—"},
             ], per_row=3)
-            st.dataframe(bt.drop(columns=["arm"]), hide_index=True, width="stretch",
+            ui.dataframe(bt.drop(columns=["arm"]), hide_index=True, width="stretch",
                          column_config={"MAE": st.column_config.NumberColumn(format="%.3f"),
                                         "RMSE": st.column_config.NumberColumn(format="%.3f"),
                                         "Spearman": st.column_config.NumberColumn(format="%.3f"),
@@ -518,7 +518,7 @@ with t_lab:
             else:
                 cols_ = base + ["minutes_source", "pred_p0", "obs_p0", "pred_p1_59", "obs_p1_59",
                                 "pred_p60", "obs_p60", "p60_brier", "p60_ece"]
-            st.dataframe(s[[c for c in cols_ if c in s.columns]], hide_index=True, width="stretch")
+            ui.dataframe(s[[c for c in cols_ if c in s.columns]], hide_index=True, width="stretch")
             if len(lin_) and len(fpl_):
                 st.caption(f"FPL baseline + Wowza residual (LINEAR) had the lower MAE in **{won} of "
                            f"{len(lin_)}** final gameweeks. Each gameweek is scored only by models "
@@ -565,19 +565,19 @@ with t_lab:
         od = pd.DataFrame(bench.get("fpl_overdispersion") or [])
         if not od.empty:
             st.markdown("**Where FPL ep_next goes wrong** (out-of-sample, ACTIVE population)")
-            st.dataframe(od.rename(columns={"band": "ep_next band", "ep_next": "mean ep_next",
+            ui.dataframe(od.rename(columns={"band": "ep_next band", "ep_next": "mean ep_next",
                                             "actual": "mean actual", "v2": "mean V2"}),
                          hide_index=True, width="stretch")
         imp = (bench.get("importance") or {}).get("LINEAR") or []
         if imp:
             st.markdown(f"**What the residual uses** — permutation importance on GW"
                         f"{(bench.get('importance') or {}).get('permutation_test_gw')} (RMSE increase when shuffled)")
-            st.dataframe(pd.DataFrame(imp), hide_index=True, width="stretch")
+            ui.dataframe(pd.DataFrame(imp), hide_index=True, width="stretch")
         wb = bench.get("wowza_bias") or {}
         if wb:
             st.markdown(f"**Old Wowza bias {wb.get('bias'):+.2f}** (FPL {wb.get('fpl_bias'):+.2f}, n={wb.get('n')}) "
                         "by actual minutes band:")
-            st.dataframe(pd.DataFrame(wb.get("by", {}).get("minutes_band", [])), hide_index=True,
+            ui.dataframe(pd.DataFrame(wb.get("by", {}).get("minutes_band", [])), hide_index=True,
                          width="stretch")
         st.caption("Full write-up: docs/FANTASY_V2_MODEL_AND_PRODUCT_REPORT.md")
 

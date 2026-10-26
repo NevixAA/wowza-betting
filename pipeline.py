@@ -57,6 +57,7 @@ from src.model import (train as train_model, load_models,
                         predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
 from src.betting import generate_bets
+from src.tier_labels import TIER_LABEL_SHORT, tier_label   # display words only (owner 2026-10-26)
 from src.backtest import (run_backtest, run_side_market_backtest,
                            optimize_side_market_thresholds, optimize_standard_thresholds)
 from src.ledger import (append_tips, append_side_market_tips, append_ht_tips,
@@ -913,9 +914,9 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         display = [c for c in display if c in bets.columns]
 
         for tier, label, note in [
-            ("SNIPER",   "SNIPER    (per-league threshold)", "full stake"),
-            ("MARKSMAN", "MARKSMAN  (edge 8%-threshold)",   "3/4 stake"),
-            ("VALUABLE", "VALUABLE  (edge 4-8%)",           "half stake / monitor"),
+            ("SNIPER",   f"{tier_label('SNIPER'):<11}(per-league threshold)", "full stake"),
+            ("MARKSMAN", f"{tier_label('MARKSMAN'):<11}(edge 8%-threshold)",   "3/4 stake"),
+            ("VALUABLE", f"{tier_label('VALUABLE'):<11}(edge 4-8%)",           "half stake / monitor"),
         ]:
             rows = bets[bets["signal_tier"] == tier]
             print("\n" + "=" * 90)
@@ -929,7 +930,7 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         # Both-losing summary
         bl_count = int(preds.get("both_losing", pd.Series(False)).sum()) if "both_losing" in preds.columns else 0
 
-        print(f"\n  SNIPER      : {(bets['signal_tier'] == 'SNIPER').sum()}")
+        print(f"\n  {tier_label('SNIPER'):<12}: {(bets['signal_tier'] == 'SNIPER').sum()}")
         print(f"  VALUE       : {(bets['signal_tier'] == 'VALUE').sum()}")
         print(f"  AVOID       : {len(preds) - len(bets)} fixtures below threshold")
         if bl_count:
@@ -1052,7 +1053,8 @@ def mode_backtest(feat: "pd.DataFrame" = None, only: str = None) -> tuple:
             all_side_thresholds[target] = league_ths
 
             print(f"\n  PER-LEAGUE THRESHOLDS [{label}]:")
-            print(f"  {'League':<30} {'SNIPER th':>10} {'MARKSMAN th':>12} {'ROI%':>8} {'Bets':>6} {'Drop':>6}")
+            print(f"  {'League':<30} {TIER_LABEL_SHORT['SNIPER'] + ' th':>10} "
+                  f"{TIER_LABEL_SHORT['MARKSMAN'] + ' th':>12} {'ROI%':>8} {'Bets':>6} {'Drop':>6}")
             print(f"  {'-'*72}")
             for lg, v in sorted(league_ths.items()):
                 roi_str = f"{v['roi']:.1f}%" if v['roi'] is not None else "—"
@@ -1141,7 +1143,8 @@ def mode_backtest_side(feat: "pd.DataFrame" = None, market: str = None) -> None:
             all_side_thresholds[target] = league_ths
 
             print(f"\n  PER-LEAGUE THRESHOLDS [{label}]:")
-            print(f"  {'League':<30} {'SNIPER th':>10} {'MARKSMAN th':>12} {'ROI%':>8} {'Bets':>6} {'Drop':>6}")
+            print(f"  {'League':<30} {TIER_LABEL_SHORT['SNIPER'] + ' th':>10} "
+                  f"{TIER_LABEL_SHORT['MARKSMAN'] + ' th':>12} {'ROI%':>8} {'Bets':>6} {'Drop':>6}")
             print(f"  {'-'*72}")
             for lg, v in sorted(league_ths.items()):
                 roi_str = f"{v['roi']:.1f}%" if v['roi'] is not None else "—"

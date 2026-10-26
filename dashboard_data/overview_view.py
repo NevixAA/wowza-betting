@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 import streamlit as st
 
 import dashboard_ui as ui
+from src.tier_labels import STAKED_LABEL
 from dashboard_data import core
 
 ORDER = {"RED": 0, "AMBER": 1, "NO_DATA": 2, "GREEN": 3}
@@ -83,7 +84,7 @@ def staked_cards(perf: dict) -> None:
     items = sorted(tracks.items())
     cols = st.columns(min(3, len(items) + 1))
     ui.metric_card("Staked P/L", ui.units(staked_pnl), title="V9 · all tracks", container=cols[0],
-                   supporting=[("Staked bets", f"{staked_n:,}"), ("Tiers", "SNIPER + MARKSMAN only")],
+                   supporting=[("Staked bets", f"{staked_n:,}"), ("Tiers", f"{STAKED_LABEL} only")],
                    status=ui.status_chip("LIVE", label="STAKED"), n=staked_n)
     for i, (name, t) in enumerate(items):
         s_ = t["staked_only"]

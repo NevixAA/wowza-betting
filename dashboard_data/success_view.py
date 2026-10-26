@@ -11,6 +11,7 @@ from __future__ import annotations
 import pandas as pd
 
 import dashboard_ui as ui
+from src.tier_labels import tier_label
 
 
 def _axis(t, **kw):
@@ -24,7 +25,8 @@ def ci_frame(shown: pd.DataFrame) -> pd.DataFrame:
     ch = shown.dropna(subset=["roi_lo", "roi_hi"]).copy()
     if ch.empty:
         return ch
-    ch["cell"] = ch["model"].astype(str) + " · " + ch["market"].astype(str) + " · " + ch["tier"].astype(str)
+    ch["cell"] = (ch["model"].astype(str) + " · " + ch["market"].astype(str) + " · "
+                  + ch["tier"].astype(str).map(tier_label))       # display words (src/tier_labels.py)
     ch["decisive"] = (ch["roi_lo"] > 0) | (ch["roi_hi"] < 0)
     ch["reading"] = ch["decisive"].map({True: "interval clears zero", False: "interval spans zero"})
     return ch.sort_values("roi_pct")

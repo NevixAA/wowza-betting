@@ -167,14 +167,15 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
     if want.empty:
         return
     assert m["Tips shown"] == str(len(want)) and len(got) == len(want)
-    assert m["Staked (SNIPER + MARKSMAN)"] == str(int(want["tier"].isin(["SNIPER", "MARKSMAN"]).sum()))
+    from src.tier_labels import STAKED_LABEL, tier_label    # display words (owner 2026-10-26)
+    assert m[f"Staked ({STAKED_LABEL})"] == str(int(want["tier"].isin(["SNIPER", "MARKSMAN"]).sum()))
     assert m["Fixtures"] == str(want[["date", "home_team", "away_team"]].drop_duplicates().shape[0])
 
     def key(match, pick, odds, edge, tier):
         return (match, pick, round(float(odds), 2), None if pd.isna(edge) else round(float(edge), 2), tier)
-    exp = sorted(key(f"{r.home_team} v {r.away_team}", TV.tip_text(r.market), r.odds, r.edge, r.tier)
+    exp = sorted(key(f"{r.home_team} v {r.away_team}", TV.tip_text(r.market), r.odds, r.edge, tier_label(r.tier))
                  for r in want.itertuples())
-    obs = sorted(key(r["Match"], r["Pick"], r["Odds"], r["Edge %"], r["Tier (legacy)"]) for _, r in got.iterrows())
+    obs = sorted(key(r["Match"], r["Pick"], r["Odds"], r["Edge %"], r["Gap"]) for _, r in got.iterrows())
     assert obs == exp
     # numbers stay numbers: sorting the table must sort by value, not by text
     for c in ("Odds", "Edge %", "Stake %"):

@@ -19,6 +19,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from src.tier_labels import TIER_LABEL
 
 #: every Pro adapter the page reads (name -> attribute on dashboard_data.pro)
 CALLS = ("system_contract", "candidate_forward", "valuable", "price_trader", "model_lineage", "research_index",
@@ -64,7 +65,7 @@ def forward_card(h: dict, container=None) -> None:
                                       state=str(h.get("status") or "")) + " "
                     + ui.sample_marker(f.get("n", 0) or 0))
         st.progress(min(1.0, float(h.get("progress_pct") or 0) / 100), text=f"{h.get('progress_pct')}% of required n")
-        st.caption(f"gate **{h.get('candidate_gate')}** vs production SNIPER "
+        st.caption(f"gate **{h.get('candidate_gate')}** vs production {TIER_LABEL['SNIPER']} "
                    f"{(h.get('production_gates') or {}).get('sniper')} · status **{h.get('status')}** · "
                    f"HISTORICAL DISCOVERY fit {hist.get('fit_roi')} · validation {hist.get('validation_roi')} · "
                    f"holdout {hist.get('holdout_roi')} — post-discovery rows: shown in the study, NOT COUNTED")

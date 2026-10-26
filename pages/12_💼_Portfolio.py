@@ -32,6 +32,7 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import config
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import PAPER_TIER_LABEL, tier_label  # noqa: E402
 from dashboard_data import freshness as _fresh, portfolio_view as V  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper.
@@ -220,11 +221,11 @@ with st.sidebar:
     mode = st.radio("Staking", ["Fractional Kelly", "Flat % per tier"], index=0)
     st.markdown("**Per-tier size** " +
                 ("(× full Kelly)" if mode == "Fractional Kelly" else "(flat % of bank)"))
-    sniper = st.slider("SNIPER", 0.0, 0.5, 0.125, 0.005,
+    sniper = st.slider(tier_label("SNIPER"), 0.0, 0.5, 0.125, 0.005,
                        help="1/8 Kelly = 0.125")
-    marksman = st.slider("MARKSMAN", 0.0, 0.5, 0.0625, 0.005,
+    marksman = st.slider(tier_label("MARKSMAN"), 0.0, 0.5, 0.0625, 0.005,
                          help="1/16 Kelly = 0.0625")
-    valuable = st.slider("VALUABLE", 0.0, 0.5, 0.0, 0.005,
+    valuable = st.slider(tier_label("VALUABLE"), 0.0, 0.5, 0.0, 0.005,
                          help="paper / data-only by default = 0")
     cap_pct = st.slider("Max stake cap (% of bank)", 0.5, 10.0, 5.0, 0.5)
     with st.expander("Advanced filters"):
@@ -340,7 +341,7 @@ for tab, mkt in zip(tabs, MARKETS):
                 ui.compact_table(V.games_frame(games), V.GAMES_CONFIG)
 
 st.caption("Sizing recomputed off bank at each week's open. Kelly f* = edge ÷ (odds−1), "
-           "× tier fraction, capped. VALUABLE defaults to paper. "
+           f"× tier fraction, capped. {PAPER_TIER_LABEL} defaults to paper. "
            "Edge is unproven live (n small) — this is a testing tool, not a guarantee.")
 
 

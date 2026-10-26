@@ -312,10 +312,11 @@ def test_success_rates_page_renders_for_each_tier(monkeypatch, tier):
 def test_model_info_thresholds_are_numbers_with_the_same_value(monkeypatch):
     import config
     at = _render(P["4"], monkeypatch)
-    t = next(d.value for d in at.dataframe if "SNIPER Threshold" in d.value.columns)
+    from dashboard_data.model_info_view import THRESH_COL          # "Big gap threshold" (src/tier_labels)
+    t = next(d.value for d in at.dataframe if THRESH_COL in d.value.columns)
     want = {lg: f"{v:.0%}" for lg, v in config.LEAGUE_SNIPER_THRESHOLDS.items()}
     for _, r in t.iterrows():
-        assert f"{r['SNIPER Threshold']:.0f}%" == want[r["League"]]
+        assert f"{r[THRESH_COL]:.0f}%" == want[r["League"]]
 
 
 # ══ Research (Pro) ════════════════════════════════════════════════════════════════════════════════

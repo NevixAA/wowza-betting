@@ -18,6 +18,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from src.tier_labels import tier_label as _tier_word
 from dotenv import load_dotenv
 
 V9_DIR = Path(__file__).resolve().parents[1]
@@ -225,25 +226,25 @@ def load_tips():
 
 tips = load_tips()
 if tips.empty:
-    ui.empty_state("NO_DATA", "No upcoming SNIPER/VALUE picks. Run predict pipeline first.")
+    ui.empty_state("NO_DATA", "No upcoming picks. Run predict pipeline first.")
     st.stop()
 
 # ── Pick selector ─────────────────────────────────────────────────────────────
 
 tips["label"] = (
-    tips["signal_tier"] + " | "
+    tips["signal_tier"].map(_tier_word) + " | "
     + tips["date"].dt.strftime("%d/%m") + "  "
     + tips["home_team"] + " vs " + tips["away_team"]
     + "  [" + tips["league"].astype(str) + "]"
 )
 
-snipers_only = st.checkbox("SNIPER only", value=True)
+snipers_only = st.checkbox(f"{_tier_word('SNIPER')} only", value=True)
 filtered = tips[tips["signal_tier"] == "SNIPER"] if snipers_only else tips
 
 if filtered.empty:
-    tier_label = "SNIPER" if snipers_only else "SNIPER/MARKSMAN/VALUABLE"
-    ui.empty_state("NO_DATA", f"No {tier_label} picks for today. Try unchecking 'SNIPER only' or wait for the next "
-                              "predict run.")
+    _which = _tier_word("SNIPER") if snipers_only else "tipped"
+    ui.empty_state("NO_DATA", f"No {_which} picks for today. Try unchecking '{_tier_word('SNIPER')} only' or "
+                              "wait for the next predict run.")
     st.stop()
 
 col_sel, col_all = st.columns([4, 1])
@@ -413,7 +414,7 @@ else:
     ui.section_header(f"Validating {len(filtered)} picks")
     for _, row in filtered.iterrows():
         data = analyse_row(row)
-        with st.expander(f"{data['verdict']}  {row['home_team']} vs {row['away_team']}  [{data['tier']}]",
+        with st.expander(f"{data['verdict']}  {row['home_team']} vs {row['away_team']}  [{_tier_word(data['tier'])}]",
                          expanded=(data["verdict"].startswith("✅") and data["tier"]=="SNIPER")):
             render_analysis(row, data)
 

@@ -19,7 +19,7 @@ from dashboard_data import core, leagues
 #: overview_table columns -> display format (numbers stay numbers; sorting works)
 TABLE_FORMATS = {"Tips": "%d", "Hit %": "%.1f", "ROI %": "%+.1f", "P/L (u)": "%+.2f", "Avg odds": "%.2f",
                  "Avg edge %": "%.1f", "Model %": "%.1f", "Implied %": "%.1f", "P/L 7d (u)": "%+.2f",
-                 "VALUABLE (paper) P/L": "%+.2f", "Upcoming": "%d"}
+                 leagues.PAPER_PL_COL: "%+.2f", "Upcoming": "%d"}
 STATS_FORMATS = {"Tips": "%d", "Hit %": "%.1f", "ROI %": "%+.1f", "P/L (u)": "%+.2f", "Avg odds": "%.2f",
                  "Avg edge %": "%.1f", "Model %": "%.1f", "Implied %": "%.1f"}
 

@@ -2,7 +2,27 @@
 
 **Status:** Production — fully automated via GitHub Actions
 **Live since:** April 2026
-**Last doc update:** 2026-10-08
+**Last doc update:** 2026-10-26
+
+> **2026-10-26 — tier names people see.** Owner decision: the tiers measure the SIZE of the gap
+> between our probability and the bookmaker's price, not confidence. This season a bigger gap did
+> not mean better results on O/U 2.5 (new-format SNIPER −4.2% vs VALUABLE +2.2%; every standard
+> tier negative); only new-format BTTS showed it (SNIPER +25.7%) — figures as stated in the owner's
+> 2026-10-26 decision. So everything a person reads —
+> Telegram messages and pictures, every dashboard page, human-readable reports — now says:
+>
+> | internal code (unchanged) | shown as |
+> |---|---|
+> | `SNIPER` | **Big gap** |
+> | `MARKSMAN` | **Medium gap** |
+> | `VALUABLE` | **Small gap** |
+> | `AVOID` | No tip |
+>
+> *Gap = how far our probability is from the bookmaker's price. It is not a confidence rating.*
+> One mapping, `src/tier_labels.py`, supplies every label. **Display only:** `signal_tier` values in
+> the ledgers/CSVs, thresholds, env vars (`MARKSMAN_THRESHOLD` …), bankroll-policy keys, the
+> `notified.json` dedup keys and Pro interfaces keep the codes, so history stays comparable. This
+> file keeps the codes below because it documents the code.
 
 > **2026-10-08 update.**
 >
@@ -58,7 +78,7 @@ running automatically in the cloud (no server/PC needed).
 
 | Module | What it does | Money? |
 |---|---|---|
-| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers | **Real-money candidate** — but the 2026-10-08 studies found no evidence the model adds to the market (see update above) |
+| **Standard O/U 2.5** | Over/Under 2.5 for our second-division leagues — SNIPER/MARKSMAN/VALUABLE tiers (shown as Big / Medium / Small gap) | **Real-money candidate** — but the 2026-10-08 studies found no evidence the model adds to the market (see update above) |
 | **Side Markets** | BTTS, O/U 1.5, O/U 3.5 — per-league walk-forward thresholds | Real-money candidate |
 | **HT Model** | Half-time O/U 0.5 and 1.5 | Paper — **no edge** (see below) |
 | **New-Format Model** | O/U for goals-only leagues — separate model, never mixed with standard | Paper |
@@ -82,6 +102,10 @@ running automatically in the cloud (no server/PC needed).
 ---
 
 ## Signal Tiers
+
+People see these as **Big gap** (SNIPER), **Medium gap** (MARKSMAN) and **Small gap** (VALUABLE) —
+the size of the model-vs-price gap, not confidence (`src/tier_labels.py`). The codes below are the
+internal names and are unchanged.
 
 **The effective gate is not in `config.py`.** Resolution order, as `src/betting.py` actually
 implements it:

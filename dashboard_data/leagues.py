@@ -35,6 +35,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.tier_labels import PAPER_TIER_LABEL
+
 import config
 
 V9_DIR = Path(__file__).resolve().parents[1]
@@ -43,6 +45,8 @@ REGIMES_PATH = V9_DIR / "config" / "league_market_regimes.json"
 PRO_WEEKLY = "output/studies/league_results_weekly.csv"
 
 STAKED = ("SNIPER", "MARKSMAN")
+#: overview_table column for paper (VALUABLE) P/L - display words from src/tier_labels.py
+PAPER_PL_COL = f"{PAPER_TIER_LABEL} (paper) P/L"
 TIERS = ("SNIPER", "MARKSMAN", "VALUABLE")
 #: Display markets. Sides are never pooled: O/U 2.5 Over and Under are separate rows.
 MARKETS = ["O/U 2.5 Over", "O/U 2.5 Under", "BTTS", "Over 1.5", "Over 3.5"]
@@ -277,7 +281,7 @@ def overview_table(ov: pd.DataFrame) -> pd.DataFrame:
         "Model %": (ov["avg_model_prob"] * 100).round(1),
         "Implied %": (ov["avg_implied"] * 100).round(1),
         "P/L 7d (u)": ov["pl_7d"].round(2),
-        "VALUABLE (paper) P/L": ov["valuable_pl"].round(2),
+        PAPER_PL_COL: ov["valuable_pl"].round(2),
         "Upcoming": ov["upcoming"].astype(int),
         "Best market": ov["best_market"],
         "Worst market": ov["worst_market"],
