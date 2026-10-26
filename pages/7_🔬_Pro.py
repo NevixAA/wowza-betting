@@ -27,6 +27,7 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import PAPER_TIER_LABEL, TIER_LABEL  # noqa: E402
 from dashboard_data import pro  # noqa: E402
 from dashboard_data import research_view as V  # noqa: E402
 
@@ -98,7 +99,7 @@ ui.research_card(title="1X2 tips sent", label="Hit rate", value=ui.pct(_h1.get("
 
 (tab_latest, tab_champ, tab_trader, tab_valuable, tab_forward, tab_learn, tab_tips, tab_studies, tab_store, tab_gov,
  tab_health) = st.tabs(
-    ["Latest findings", "Model champions", "Price Trader", "VALUABLE research", "Forward tests", "Does it learn?",
+    ["Latest findings", "Model champions", "Price Trader", f"{PAPER_TIER_LABEL} research", "Forward tests", "Does it learn?",
      "Tips sent (1X2 · Bet Builder)", "Team studies", "Canonical store", "Governance", "Health"])
 
 # ── Frozen candidate forward tests (P1-4, 2026-10-22) - three windows NEVER mixed ─────────────────
@@ -120,10 +121,10 @@ with tab_valuable:
     vd = P["valuable"] or {}
     sm = vd.get("valuable_summary", pd.DataFrame())
     if sm.empty:
-        ui.empty_state("NO_DATA", "No VALUABLE deep dive yet — Pro writes `output/valuable_deep_dive/` (src/studies/valuable).")
+        ui.empty_state("NO_DATA", f"No {PAPER_TIER_LABEL} deep dive yet — Pro writes `output/valuable_deep_dive/` (src/studies/valuable).")
     else:
         st.markdown(
-            "**Research only — nothing here changes which tips are sent.** VALUABLE is not one region: on O/U 2.5 "
+            f"**Research only — nothing here changes which tips are sent.** {PAPER_TIER_LABEL} is not one region: on O/U 2.5 "
             "the size of the edge does not predict results; on BTTS it does, and 4–8% is the one band that held up "
             "out of sample. Seven hypotheses are frozen and tested from 21 Oct on a shadow of every candidate.")
         val = sm[sm.tier == "VALUABLE"]
@@ -132,14 +133,14 @@ with tab_valuable:
         for col, (w, lab) in zip(c, (("last14", "Last 14 days"), ("last30", "Last 30 days"), ("since_aug26", "Since 26 Aug"))):
             if w in pooled.index:
                 r = pooled.loc[w]
-                ui.metric_card(lab, f"{r.ROI_pct:+.1f}%", title="VALUABLE · pooled ROI", delta_color="off",
+                ui.metric_card(lab, f"{r.ROI_pct:+.1f}%", title=f"{PAPER_TIER_LABEL} · pooled ROI", delta_color="off",
                                delta=f"n {int(r.N)} · 90% CI {r.ROI_ci90_lo:+.0f}..{r.ROI_ci90_hi:+.0f}",
                                supporting=[("CLV %", f"{r.CLV_pct}" if "CLV_pct" in r.index else "—")],
                                status=ui.status_chip("PAPER", label="PAPER · NEVER STAKED"), n=int(r.N), container=col)
         st.caption("Pooled across markets, as the owner audit counts it. By market below.")
         ui.table(val[~val.market.str.startswith("ALL")][["window", "market", "N", "ROI_pct", "ROI_ci90_lo", "ROI_ci90_hi", "CLV_pct"]]
                  .rename(columns={"ROI_pct": "ROI %", "ROI_ci90_lo": "CI low", "ROI_ci90_hi": "CI high", "CLV_pct": "CLV %"}))
-        ui.section_header("Edge bands (O/U 2.5 VALUABLE since 26 Aug)", container=st)
+        ui.section_header(f"Edge bands (O/U 2.5 {PAPER_TIER_LABEL} since 26 Aug)", container=st)
         st.markdown("3–4%: **−5.8%** (n 196) · 4–6%: **+3.1%** (n 120) · 6–8%: **+16.3%** (n 31) — CLV *falls* as the "
                     "edge rises (+0.37 → −0.17 → −0.74), so the price does not confirm the high band. "
                     "BTTS fair edge 4–8%: new-format **+19.6%** (n 87), standard **+31.1%** (n 34).")
@@ -150,7 +151,7 @@ with tab_valuable:
                                                                      "ROI_ci90_hi", "CLV_pct"]])
         lm = vd.get("valuable_league_market", pd.DataFrame())
         if not lm.empty:
-            ui.section_header("League × market heatmap (shrunk ROI, VALUABLE, all live history)", container=st)
+            ui.section_header(f"League × market heatmap (shrunk ROI, {PAPER_TIER_LABEL}, all live history)", container=st)
             hd = V.valuable_heat_frame(lm)
             if not hd.empty:
                 st.altair_chart(V.valuable_heatmap(hd), width="stretch")
@@ -422,7 +423,7 @@ with tab_gov:
                     ui.table(pd.DataFrame([{"setting": k, "value": v} for k, v in dep.items()]))
                 st.caption(
                     "This is not pedantry. Reading config.py and stopping there produced the "
-                    "widely repeated claim that 37 of 38 staked MARKSMAN bets were below their "
+                    f"widely repeated claim that 37 of 38 staked {TIER_LABEL['MARKSMAN']} bets were below their "
                     "own threshold. Measured against each bet's own effective floor the figure "
                     "is 25 of 38 — still a real defect, but a different one.")
 

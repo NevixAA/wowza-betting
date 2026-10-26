@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config  # noqa: E402
 from dashboard_access import FREE_TIPS_PER_DAY, current_tier, free_tip_pick  # noqa: E402
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import tier_label  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 MARKET = {"OU25": "Goals 2.5", "OVER15": "Over 1.5 goals", "OVER35": "Over 3.5 goals", "BTTS": "Both teams to score"}
@@ -61,7 +62,7 @@ if len(bb):
                           odds=f"{float(r.odds):.2f}", tier=str(r.signal_tier), show_plan=False,
                           supporting=[("Odds", f"{float(r.odds):.2f}"),
                                       ("Chance", "–" if pd.isna(r.p_win) else f"{float(r.p_win):.0%}")],
-                          note=f"{str(r.signal_tier).title()} signal", container=cols[i % 2])
+                          note=f"{tier_label(r.signal_tier)} signal", container=cols[i % 2])
     if current_tier() == "free" and n_day > len(bb):
         st.info(f"Wowza Pro has **{n_day} tips** today, three top-picks lists and bankroll sizing — see Account.")
 else:
@@ -82,7 +83,7 @@ else:
             ui.selection_card(league=str(r.league), kickoff="", home=home, away=away, pick=pick_txt,
                               odds=f"{float(r.odds):.2f}", tier=str(r.signal_tier), show_plan=False,
                               supporting=[("Odds", f"{float(r.odds):.2f}")],
-                              note=f"{r.signal_tier.title()} signal", container=cols[i % 2])
+                              note=f"{tier_label(r.signal_tier)} signal", container=cols[i % 2])
 
 st.caption("Odds are the best price seen when the tip was made and can move. Chance = our honest win "
            "estimate. Tips are information, not advice; bet only what you can afford to lose.")

@@ -57,9 +57,11 @@ def test_display_frame_maps_text_never_numbers_and_never_mutates():
 
 
 # ── 2. static: no hard-coded old names in display strings ──────────────────────────────────────────
-DISPLAY_MODULES = sorted(
-    [ROOT / "telegram_bot" / "notifier.py", ROOT / "telegram_bot" / "daily_pack.py",
-     ROOT / "telegram_bot" / "tips_table.py"])
+TELEGRAM_MODULES = [ROOT / "telegram_bot" / "notifier.py", ROOT / "telegram_bot" / "daily_pack.py",
+                    ROOT / "telegram_bot" / "tips_table.py"]
+DASHBOARD_MODULES = ([ROOT / "dashboard_ui.py"] + sorted((ROOT / "pages").glob("*.py"))
+                     + sorted((ROOT / "dashboard_data").glob("*.py")))
+DISPLAY_MODULES = sorted(TELEGRAM_MODULES + DASHBOARD_MODULES)
 
 
 def _docstring_ids(tree) -> set[int]:
@@ -111,9 +113,32 @@ def _allowed(v: str) -> bool:
     return any(a in v for a in ALLOWED)
 
 
+def test_the_static_check_catches_display_strings(tmp_path):
+    f = tmp_path / "m.py"
+    f.write_text('"""Docstring SNIPER is fine."""\nA = ("SNIPER", "MARKSMAN")\nB = "Staked (SNIPER + MARKSMAN)"\n'
+                 'C = f"{n} VALUABLE tips"\n# comment VALUABLE\nD = "SNIPER_THRESHOLD"\n', encoding="utf-8")
+    bad = display_string_violations(f)
+    assert len(bad) == 2 and ":3:" in bad[0] and ":4:" in bad[1], bad
+
+
 def test_display_modules_use_the_mapping():
-    for p in DISPLAY_MODULES:
+    for p in TELEGRAM_MODULES + [ROOT / "dashboard_ui.py"]:
         assert "tier_labels" in p.read_text(encoding="utf-8"), f"{p.name} does not import src/tier_labels"
+
+
+def test_pages_render_tables_through_the_relabelling_helpers():
+    """Pages and view modules never call st.dataframe directly: ui.table / ui.compact_table / ui.dataframe
+    run every table through tier_labels.display_frame, so a tier code in a cell is shown as its label."""
+    bad = [f"{p.name}:{i}" for p in DASHBOARD_MODULES if p.name != "dashboard_ui.py"
+           for i, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1)
+           if "st.dataframe(" in line and not line.lstrip().startswith("#")]
+    assert not bad, bad
+
+
+def test_slim_deployment_ships_the_mapping():
+    import json
+    m = json.loads((ROOT / "deploy" / "dashboard_manifest.json").read_text(encoding="utf-8"))
+    assert "src/tier_labels.py" in {e["path"] for e in m["code"]}
 
 
 # ── 3. Telegram on committed data ───────────────────────────────────────────────────────────────────
@@ -188,3 +213,59 @@ def test_telegram_messages_labels_codes_and_keys_unchanged(monkeypatch, tmp_path
     o_u = [k for k in saved if k.count("|") == 3 and k.split("|")[0][:2] == "20"]
     assert all(k.split("|")[3] in ("OVER", "UNDER") for k in o_u)
     assert {p: _hash(p) for p in watched} == before
+
+
+# ── 4. dashboard pages on committed data ───────────────────────────────────────────────────────────
+#: Every page that shows a tier somewhere (cards, chips, captions, tables, filters, selectors).
+TIER_PAGES = ["00_🎯_Home.py", "0_🏠_Overview.py", "1_📊_Dashboard.py", "10_🤖_Agent_Analysis.py",
+              "11_👤_Player_Props.py", "12_💼_Portfolio.py", "16_💰_Bankroll.py", "17_🏟️_Leagues.py",
+              "21_📡_Market_Intelligence.py", "22_🏭_Production.py", "4_ℹ️_Model_Info.py",
+              "5_🎯_Success_Rates.py", "7_🔬_Pro.py", "9_🎓_Model_Performance.py", "free_tips.py"]
+PAGE_CODE = re.compile(r"\b(SNIPER|MARKSMAN|VALUABLE)\b|\b(Sniper|Marksman)\b")
+
+
+def _page_strings(at) -> list[str]:
+    """Every string a person can read on the rendered page. A multiselect's VALUE is the internal key
+    (its options are drawn through format_func), so it is the one thing not read here."""
+    out: list[str] = []
+
+    def walk(node):
+        kind = type(node).__name__
+        for attr in ("label", "value", "body", "options", "help", "placeholder"):
+            if kind == "Multiselect" and attr == "value":
+                continue
+            try:
+                v = getattr(node, attr)
+            except Exception:                                   # noqa: BLE001
+                continue
+            if isinstance(v, pd.DataFrame):
+                out.extend(map(str, v.columns))
+                out.extend(str(x) for x in v.to_numpy().ravel().tolist())
+            elif isinstance(v, str):
+                out.append(v)
+            elif isinstance(v, (list, tuple)):
+                out.extend(str(x) for x in v)
+        ch = getattr(node, "children", None)
+        if isinstance(ch, dict):
+            for k in ch:
+                walk(ch[k])
+
+    walk(at._tree)
+    return out
+
+
+@pytest.mark.parametrize("page", TIER_PAGES)
+def test_dashboard_pages_show_labels_not_codes(page, monkeypatch):
+    import streamlit as st
+    from streamlit.testing.v1 import AppTest
+    from dashboard_data import core
+    path = ROOT / "pages" / page
+    monkeypatch.setattr(core, "RAW_BASE", {})                   # Pro / V11 unreachable: no network
+    for k in ("pro", "v11"):
+        monkeypatch.setitem(core.REPOS, k, {**core.REPOS[k], "candidates": []})
+    monkeypatch.setenv("WOWZA_TIER_OVERRIDE", "admin")
+    st.cache_data.clear()
+    at = AppTest.from_file(str(path.resolve()), default_timeout=240).run()
+    assert not at.exception, [e.value for e in at.exception]
+    left = [s[:140] for s in _page_strings(at) if PAGE_CODE.search(s)]
+    assert not left, left[:5]

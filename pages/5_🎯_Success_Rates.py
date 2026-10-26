@@ -40,6 +40,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame  # noqa: E402
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
 import importlib  # noqa: E402
 V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
@@ -132,14 +133,14 @@ else:
     st.caption(f"Last {window} days · Wowza Pro shows 7 / 14 / 30 / 60 / 90 days.")
 
 if _tier == "free":
-    use_cut, scope = bool(cut), "STAKED only (SNIPER/MARKSMAN)"
+    use_cut, scope = bool(cut), f"STAKED only ({STAKED_LABEL})"
     with st.expander("Advanced filters"):
         min_n = st.number_input("Hide cells with fewer than n", 1, 100, 5, 1,
                                 help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 else:
     with c2:
-        scope = st.radio("Scope", ["STAKED only (SNIPER/MARKSMAN)", "All tiers"], index=0,
-                         help="VALUABLE is recorded for measurement and never bet. Including it in a "
+        scope = st.radio("Scope", [f"STAKED only ({STAKED_LABEL})", "All tiers"], index=0,
+                         help=f"{PAPER_TIER_LABEL} is recorded for measurement and never bet. Including it in a "
                               "win rate describes something other than what the money did.")
     with st.expander("Advanced filters"):
         a1, a2 = st.columns(2)
@@ -213,7 +214,7 @@ ui.metric_card("Intervals clearing zero", f"{_n_dec} of {len(_ch)}", title="Read
                                      f"{_n_dec} CELL(S) DECISIVE"), container=cc[2])
 
 ui.section_header("Model × market × tier")
-st.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
+ui.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
              width="stretch", hide_index=True,
              column_config={
                  "win_pct": st.column_config.NumberColumn("win %", format="%.1f"),
@@ -227,7 +228,7 @@ if not hidden.empty:
                f"({int(hidden['n'].sum())} observations). Hidden rather than shown at zero — an "
                f"empty cell reads as 'no data', a 0% reads as 'it lost'.")
     with st.expander("Show the thin cells anyway"):
-        st.dataframe(hidden, width="stretch", hide_index=True)
+        ui.dataframe(hidden, width="stretch", hide_index=True)
 
 # ── ROI with its confidence interval, as a picture ────────────────────────────
 # The CI is the whole point of this page and it was only ever a text column, which is the one
@@ -284,10 +285,10 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     t["need_pct"] = (100.0 / t["avg_odds"]).round(1).where(_ok)
     t = t.sort_values("n", ascending=False)
     try:
-        st.altair_chart(V.rollup_chart(t, by), width="stretch", key=f"rollup_{by}")
+        st.altair_chart(V.rollup_chart(display_frame(t), by), width="stretch", key=f"rollup_{by}")
     except Exception as _e:                                  # noqa: BLE001
         st.caption(f"chart unavailable ({type(_e).__name__})")
-    st.dataframe(t[[by, "n", "win_pct", "need_pct", "odds_cov", "pl_u", "roi_pct"]],
+    ui.dataframe(t[[by, "n", "win_pct", "need_pct", "odds_cov", "pl_u", "roi_pct"]],
                  width="stretch", hide_index=True,
                  column_config={
                      by: st.column_config.TextColumn(by.lstrip("_")),

@@ -17,6 +17,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import config
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, TIER_LABEL  # noqa: E402
 from dashboard_data import model_info_view as V  # noqa: E402
 
 st.set_page_config(page_title="System Info | Wowza", page_icon="ℹ️", layout="wide")
@@ -88,14 +89,14 @@ with tab_pred:
         results counted from the cutoff onward.
         """)
     ui.space("small")
-    st.markdown("""
+    st.markdown(f"""
     #### 🔄 How it works
     ```
     1. OddsAPI  → fetch upcoming fixtures + current O/U odds
     2. Features → form, strength, HT rates, market implied prob
     3. Model    → predict p(over 2.5)
     4. Edge     = p_model − p_implied   (p_implied = 1/odds)
-    5. Tier     → SNIPER / MARKSMAN / VALUABLE  (per-league thresholds)
+    5. Tier     → {TIER_LABEL['SNIPER']} / {TIER_LABEL['MARKSMAN']} / {TIER_LABEL['VALUABLE']}  (per-league thresholds)
     6. Guard    → both-losing filter suppresses conflicting bets
     7. Drift    → market movement (sharp money) confirms or conflicts the signal
     ```
@@ -238,23 +239,24 @@ with tab_thr:
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("Global SNIPER", f"{config.SNIPER_THRESHOLD:.0%}")
+        st.metric(f"Global {TIER_LABEL['SNIPER']}", f"{config.SNIPER_THRESHOLD:.0%}")
     with col2:
         st.metric("OVER threshold", f"{config.SNIPER_THRESHOLD_OVER:.0%}", help="OVER bets less reliable post-COVID")
     with col3:
         st.metric("UNDER threshold", f"{config.SNIPER_THRESHOLD_UNDER:.0%}", help="UNDER bets more reliable")
 
-    st.markdown("#### Per-League SNIPER Thresholds")
-    st.caption("Calibrated from post-COVID walk-forward backtest. Higher bar = only highest confidence bets.")
+    st.markdown(f"#### Per-League {TIER_LABEL['SNIPER']} Thresholds")
+    st.caption("Calibrated from post-COVID walk-forward backtest. Higher bar = only the largest gaps between "
+               f"our probability and the price. {GAP_EXPLAINER}")
     thresh_data = []
     for lg, thresh in sorted(config.LEAGUE_SNIPER_THRESHOLDS.items()):
         thresh_data.append({
             "League": lg,
-            "SNIPER Threshold": round(100 * thresh, 6),       # a number, formatted '%.0f%%' at render
+            V.THRESH_COL: round(100 * thresh, 6),       # a number, formatted '%.0f%%' at render
             "Active": "✅" if lg in config.ENABLED_LEAGUES else "Training only",
             "Rationale": "Most data → lower bar" if thresh <= 0.14
                          else "Good density" if thresh <= 0.18
-                         else "High confidence only",
+                         else "Largest gaps only",
         })
     ui.compact_table(pd.DataFrame(thresh_data), V.THRESH_CONFIG)
 
@@ -270,7 +272,7 @@ with tab_thr:
             for s, w in sorted(config.TRAINING_DECAY_WEIGHTS.items(), reverse=True)
             if w > 0 or s in config.COVID_SEASONS
         ])
-        st.dataframe(decay_df, width="stretch", hide_index=True)
+        ui.dataframe(decay_df, width="stretch", hide_index=True)
 
 # ── Tab 6: Feature Importances ─────────────────────────────────────────────────
 with tab_fi:

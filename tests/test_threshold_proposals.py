@@ -371,7 +371,8 @@ def test_dashboard_reads_the_proposal_state(tmp_path):
     none = tmp_path / "a.json"
     none.write_text(json.dumps({"approvals": []}), encoding="utf-8")
     r = V.threshold_proposal(latest=lt, approvals=none, applied=tmp_path / "x.json")
-    assert r["state"] == "AWAITING_OWNER" and r["rows"].iloc[0]["SNIPER if approved"] == 0.15
+    from src.tier_labels import TIER_LABEL                                  # column shown as "Big gap ..."
+    assert r["state"] == "AWAITING_OWNER" and r["rows"].iloc[0][f"{TIER_LABEL['SNIPER']} if approved"] == 0.15
     none.write_text(json.dumps({"approvals": [{"proposal_id": "TP-x", "approved_by": "Nevo"}]}), encoding="utf-8")
     assert V.threshold_proposal(latest=lt, approvals=none, applied=tmp_path / "x.json")["state"] == "APPROVED_NOT_APPLIED"
     led = tmp_path / "led.json"

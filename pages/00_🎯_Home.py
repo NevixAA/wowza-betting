@@ -25,6 +25,7 @@ from dashboard_access import require  # noqa: E402
 require("pro")
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
 from dashboard_data import production_view, today_view  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Home", page_icon="🎯", layout="wide", initial_sidebar_state="expanded")
@@ -102,15 +103,15 @@ with a:
         r = bb.iloc[0]
         st.caption(f"Best bets #1: **{r['home_team']} v {r['away_team']}** · {r['pick']} @ {ui.fmt_odds(r['odds'])}"
                    f" · chance {ui.fmt_prob(r['p_win'])}")
-    st.caption(f"Upcoming staked tips = SNIPER + MARKSMAN on O/U 2.5 in the current slate. "
-               f"Not staked by state: {_paper_bits}. Kickoff in Israel time.")
+    st.caption(f"Upcoming staked tips = {STAKED_LABEL} on O/U 2.5 in the current slate. "
+               f"Not staked by state: {_paper_bits}. Kickoff in Israel time. {GAP_EXPLAINER}")
 
 with b:
     if perf["n"]:
         _dd = perf["drawdown"]
         ui.metric_card(
             "Staked P/L", f"{perf['pnl']:+.2f}u", title="B · Current performance",
-            help="Flat 1u, SNIPER + MARKSMAN, every staked market (O/U 2.5, side markets, HT), settled only. "
+            help=f"Flat 1u, {STAKED_LABEL}, every staked market (O/U 2.5, side markets, HT), settled only. "
                  "Same number as the Tips page.",
             supporting=[("ROI", ui.fmt_roi(perf["roi"])),
                         ("Win rate — staked", f"{perf['win_rate'] * 100:.1f}%"),
@@ -124,7 +125,7 @@ with b:
             ui.eyebrow("B · Current performance")
             st.metric("Staked P/L", "—")
             ui.stat_line([("Win rate — staked", "—"), ("Settled staked bets", "0")])
-    st.caption("Paper VALUABLE P/L: "
+    st.caption(f"Paper {PAPER_TIER_LABEL} P/L: "
                + (f"**{perf['paper_pnl']:+.2f}u** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
                + " — tracked, never staked, never in the P/L.")
 
@@ -178,7 +179,7 @@ else:
             for _, r in bb.iloc[3:].iterrows()) + ". All three lists are on the Tips page.")
 
 # ── recent performance ───────────────────────────────────────────────────────────────────────
-ui.section_header("Recent performance", "Staked P/L per market, flat 1u, SNIPER + MARKSMAN, settled since the "
+ui.section_header("Recent performance", f"Staked P/L per market, flat 1u, {STAKED_LABEL}, settled since the "
                   "cutoff. The line on the P/L card above is the cumulative total by match date. A sample, "
                   "not a track record.")
 if perf["n"]:

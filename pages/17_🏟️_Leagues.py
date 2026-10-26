@@ -28,6 +28,7 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("pro")  # tier guard (dashboard_access.PAGES) - same tier as the Tips dashboard
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
 from dashboard_data import core, leagues  # noqa: E402
 from dashboard_data import leagues_view as V  # noqa: E402
 
@@ -58,9 +59,9 @@ def _pro_weekly():
 
 from src.tip_day import today as _tip_today  # noqa: E402
 TODAY = _tip_today()
-_SUB = ("Every league's record, tips, rating and averages. Results are staked tiers (SNIPER + MARKSMAN), settled, "
-        "flat 1u, from the performance cutoff; VALUABLE is paper and shown on its own line. Paper leagues are shown "
-        "and labelled, never counted in totals. Not betting advice.")
+_SUB = (f"Every league's record, tips, rating and averages. Results are staked tiers ({STAKED_LABEL}), settled, "
+        f"flat 1u, from the performance cutoff; {PAPER_TIER_LABEL} is paper and shown on its own line. Paper leagues "
+        f"are shown and labelled, never counted in totals. {GAP_EXPLAINER} Not betting advice.")
 try:
     d, up, rat, pol, reg, ov, tr = _load(TODAY)
 except Exception as e:                                                  # noqa: BLE001 - a viewer never dies
@@ -82,7 +83,7 @@ ui.metric_card("P/L", ui.units(tot["pl"]), title="All leagues · staked tiers", 
                supporting=[("Staked tips settled", f"{tot['tips']:,}"), ("Hit", V.fmt_pct(tot["hit"], 1)),
                            ("ROI", V.fmt_roi(tot["roi"])), ("W-L", V.wl_help(tot["won"], tot["lost"], tot["void"])),
                            ("Leagues", f"{int((ov['tips'] > 0).sum())} with staked tips · {len(ov)} listed")],
-               status=ui.status_chip("LIVE", label="STAKED · SNIPER + MARKSMAN") + " "
+               status=ui.status_chip("LIVE", label=f"STAKED · {STAKED_LABEL.upper()}") + " "
                + ui.status_chip("PAPER", label="PAPER LEAGUES EXCLUDED"))
 
 # ── 1. all-leagues overview ───────────────────────────────────────────────────────────────────
@@ -137,7 +138,7 @@ ui.section_header("Market breakdown", "Sides never pooled: O/U 2.5 Over and Unde
 left, right = st.columns(2)
 with left:
     ui.eyebrow("By market")
-    basis = st.radio("Tiers", ["Staked (SNIPER + MARKSMAN)", "VALUABLE (paper)"], horizontal=True,
+    basis = st.radio("Tiers", [f"Staked ({STAKED_LABEL})", f"{PAPER_TIER_LABEL} (paper)"], horizontal=True,
                      key="lg_mkt_basis", label_visibility="collapsed")
     bm = leagues.by_market(g, leagues.STAKED if basis.startswith("Staked") else ("VALUABLE",), reg=reg, league=pick)
     if bm.empty:

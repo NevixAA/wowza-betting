@@ -29,6 +29,8 @@ import re
 import pandas as pd
 import streamlit as st
 
+from src.tier_labels import TIER_LABEL, display_frame, relabel_text
+
 # ═════════════════════════════════════════════════════════════════════════════════════════════
 # TOKENS
 # ═════════════════════════════════════════════════════════════════════════════════════════════
@@ -166,10 +168,11 @@ STATUSES: dict[str, tuple[str, str, str]] = {
     "REGISTERED":  ("○", "REGISTERED", "RESEARCH"),
     "SMALL_SAMPLE": ("◌", "SMALL SAMPLE", "WARNING"),
     # legacy signal tiers: secondary metadata, deliberately NEUTRAL — a tier is the size of the
-    # model-vs-price gap, not evidence, so it must never look like a strength rating.
-    "SNIPER":      ("·", "SNIPER", "NEUTRAL"),
-    "MARKSMAN":    ("·", "MARKSMAN", "NEUTRAL"),
-    "VALUABLE":    ("·", "VALUABLE", "NEUTRAL"),
+    # model-vs-price gap, not evidence, so it must never look like a strength rating. The chip
+    # shows the owner's gap words (src/tier_labels.py, 2026-10-26); the key stays the code.
+    "SNIPER":      ("·", TIER_LABEL["SNIPER"].upper(), "NEUTRAL"),
+    "MARKSMAN":    ("·", TIER_LABEL["MARKSMAN"].upper(), "NEUTRAL"),
+    "VALUABLE":    ("·", TIER_LABEL["VALUABLE"].upper(), "NEUTRAL"),
 }
 
 
@@ -690,8 +693,13 @@ def table(df, *, bars: tuple[str, ...] = (), sparks: dict[str, dict] | tuple[str
 
     `height=None` is omitted (Streamlit rejects it). Mixed-type object columns are stringified so
     Arrow cannot silently coerce a value. Explicit `column_config` entries win over the automatic map.
+    Tier codes in headers / text cells are shown as the gap labels (src/tier_labels.display_frame);
+    numbers are never touched.
     """
     target = container if container is not None else st
+    df = display_frame(df)
+    if column_config:
+        column_config = {relabel_text(k): v for k, v in column_config.items()}
     if height is not None:
         kw["height"] = height
     cfg = auto_config(df, bars=bars, sparks=sparks) if auto_format else {}
@@ -699,6 +707,15 @@ def table(df, *, bars: tuple[str, ...] = (), sparks: dict[str, dict] | tuple[str
         cfg.update(column_config)
     target.dataframe(_stringify_mixed(df), hide_index=True, width="stretch",
                      column_config=cfg or None, **kw)
+
+
+def dataframe(data, *args, **kw):
+    """`st.dataframe` for pages that format their own table: identical call, but tier codes in headers
+    and text cells are shown as the gap labels (src/tier_labels.py). Pages call this, never st.dataframe."""
+    target = kw.pop("container", None) or st
+    if kw.get("column_config"):
+        kw["column_config"] = {relabel_text(k): v for k, v in kw["column_config"].items()}
+    return target.dataframe(display_frame(data), *args, **kw)
 
 
 def compact_table(df, column_config: dict | None = None, *, height: int | None = None, **kw) -> None:

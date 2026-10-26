@@ -11,6 +11,7 @@ from __future__ import annotations
 import pandas as pd
 
 import dashboard_ui as ui
+from src.tier_labels import TIER_LABEL
 
 
 def importance_bars(fi: pd.DataFrame, top: int = 12, h: int = 380):
@@ -37,6 +38,8 @@ def backtest_bars(df: pd.DataFrame):
                        axis_title="ROI %", value_title="ROI %", fmt="+.2f")
 
 
-THRESH_CONFIG = {"SNIPER Threshold": ui.num_col("SNIPER threshold", fmt="%.0f%%")}
+#: per-league threshold column, named with the display word for the SNIPER tier (src/tier_labels.py)
+THRESH_COL = f"{TIER_LABEL['SNIPER']} threshold"
+THRESH_CONFIG = {THRESH_COL: ui.num_col(THRESH_COL, fmt="%.0f%%")}
 BACKTEST_CONFIG = {"bets": ui.num_col("Bets", fmt="%.0f"), "wins": ui.num_col("Wins", fmt="%.0f"),
                    "profit": ui.num_col("Profit (u)", fmt="%+.2f"), "roi_%": ui.num_col("ROI %", fmt="%+.2f")}

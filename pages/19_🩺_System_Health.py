@@ -81,7 +81,7 @@ elif modified:
     st.error("**PROTECTED TRACKS MODIFIED** — a production state, threshold, stake or eligibility of a "
              "protected track moved without owner approval. System health is FAIL until resolved.")
     if lock.get("changes"):
-        st.dataframe(pd.DataFrame(lock["changes"]), hide_index=True, width="stretch")
+        ui.dataframe(pd.DataFrame(lock["changes"]), hide_index=True, width="stretch")
 else:
     st.success("🔒 protected_tracks_modified = **False** — protected tracks are unchanged since the owner-approved "
                "snapshot. Research may observe them (PROTECTED — SHADOW ONLY), never change them.")
@@ -93,7 +93,7 @@ st.caption(f"Snapshot approved by {lock.get('approved_by', '?')} at {lock.get('a
 
 # ── every check, with its rule ─────────────────────────────────────────────────────────────────
 ui.section_header("Checks — status, value and the rule that set it")
-st.dataframe(system_view.checks(sh), hide_index=True, width="stretch",
+ui.dataframe(system_view.checks(sh), hide_index=True, width="stretch",
              column_config={"rule": st.column_config.TextColumn(width="large")})
 
 # ── weekly research panel ──────────────────────────────────────────────────────────────────────
@@ -120,7 +120,7 @@ else:
         else f"All {len(mt)} tracked artifacts are fresh or labelled (HISTORICAL / DATED_STUDY).")
     st.caption(f"Manifest generated {man.get('generated_at')} · calculation {man.get('calculation_version')}. "
                "Ages come from timestamps recorded inside each artifact, never from file mtime.")
-    st.dataframe(mt, hide_index=True, width="stretch")
+    ui.dataframe(mt, hide_index=True, width="stretch")
 
 # ── first-sight integrity ──────────────────────────────────────────────────────────────────────
 ui.section_header("First-sight store integrity")
@@ -132,7 +132,7 @@ if fsc:
 if fs.empty:
     st.info("No first-sight stores recorded.")
 else:
-    st.dataframe(fs, hide_index=True, width="stretch")
+    ui.dataframe(fs, hide_index=True, width="stretch")
 
 # ── data contracts ─────────────────────────────────────────────────────────────────────────────
 cv = system_view.contract_violations(sh)
@@ -140,4 +140,4 @@ with st.expander(f"Data-contract violations ({len(cv)})", expanded=False):
     if cv.empty:
         st.success("No contract violations recorded.")
     else:
-        st.dataframe(cv, hide_index=True, width="stretch")
+        ui.dataframe(cv, hide_index=True, width="stretch")

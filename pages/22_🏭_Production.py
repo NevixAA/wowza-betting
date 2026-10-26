@@ -60,7 +60,7 @@ if _tp:
         st.caption(_txt + (f" · applied {_tp['applied_at']}" if _tp.get("applied_at") else "") + ".")
     if _tp["state"] in ("AWAITING_OWNER", "APPROVED_NOT_APPLIED") and not _tp["rows"].empty:
         with st.expander("Proposed gate changes"):
-            st.dataframe(_tp["rows"], hide_index=True, width="stretch")
+            ui.dataframe(_tp["rows"], hide_index=True, width="stretch")
 
 # ── stake plan ─────────────────────────────────────────────────────────────────────────────────
 ui.section_header("Current bets and stakes")
@@ -75,11 +75,11 @@ else:
                     {"label": "Days covered", "value": plan["date"].nunique()},
                     {"label": "Policy", "value": str(plan["policy_version"].dropna().iloc[0])
                      if plan["policy_version"].notna().any() else "?"}], per_row=2)
-    st.dataframe(summ, hide_index=True, width="stretch",
+    ui.dataframe(summ, hide_index=True, width="stretch",
                  column_config={"stake_pct_total": st.column_config.NumberColumn("stake % total", format="%.3f")})
     show = st.toggle("Show tips without a stake", value=False)
     rows = plan if show else staked
-    st.dataframe(rows[["date", "fixture", "league", "track", "market", "side", "signal_tier", "odds",
+    ui.dataframe(rows[["date", "fixture", "league", "track", "market", "side", "signal_tier", "odds",
                        "deployment_state", "stake_pct", "reason", "decision_state"]],
                  hide_index=True, width="stretch",
                  column_config={"stake_pct": st.column_config.NumberColumn("final stake %", format="%.3f"),
@@ -115,7 +115,7 @@ else:
                f"· {meta.get('n_entries')} entries · production states: {meta.get('production_state_counts')}")
     states = sorted(reg["production_state"].dropna().unique().tolist())
     pick = st.multiselect("Production state", states, default=[s for s in states if s != "OFF"] or states)
-    st.dataframe(reg[reg["production_state"].isin(pick)], hide_index=True, width="stretch",
+    ui.dataframe(reg[reg["production_state"].isin(pick)], hide_index=True, width="stretch",
                  column_config={"evidence_reason": st.column_config.TextColumn(width="large")})
     st.caption("Evidence is shown with its n and independent match-days; an ROI inside evidence_reason is never "
                "proof on its own.")
@@ -128,5 +128,5 @@ else:
     st.warning(f"**PROTECTED — SHADOW ONLY** · {len(prot)} track(s). Research may observe them, never change their "
                "production state, thresholds, stakes or eligibility (owner lock; the research-lock check in System "
                "Health turns FAIL if they move).")
-    st.dataframe(prot[["key", "production_state", "research_regime", "owner_locked", "real_money", "evidence_status",
+    ui.dataframe(prot[["key", "production_state", "research_regime", "owner_locked", "real_money", "evidence_status",
                        "evidence_n", "independent_matchdays"]], hide_index=True, width="stretch")

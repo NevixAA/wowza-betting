@@ -71,7 +71,7 @@ ui.section_header("Serving champions")
 if d["champ"].empty:
     st.error("models/registry/current_champions.json is missing or unreadable.")
 else:
-    st.dataframe(d["champ"], hide_index=True, width="stretch",
+    ui.dataframe(d["champ"], hide_index=True, width="stretch",
                  column_config={"promotion_reason": st.column_config.TextColumn(width="large")})
     st.caption("`current_champions.json` is the serving pointer. LEGACY_GIT = reconstructed from git history; "
                "ROLLBACK / BOOTSTRAP are explicit, logged operations.")
@@ -81,7 +81,7 @@ ui.section_header("Challenger slots")
 if d["slots"].empty:
     st.info("No challenger is parked in any slot.")
 else:
-    st.dataframe(d["slots"], hide_index=True, width="stretch")
+    ui.dataframe(d["slots"], hide_index=True, width="stretch")
     st.caption("A parked challenger is SHADOW: never served, tiered or staked. Its holdout numbers are period 1 only.")
 
 # ── gate decisions ─────────────────────────────────────────────────────────────────────────────
@@ -107,11 +107,11 @@ with c2:
             st.metric("Decisions", len(d["props_dec"]))
             st.caption(f"Last: {d['props_dec']['decided_at'].iloc[0]}")
 if not d["dec"].empty:
-    st.dataframe(d["dec"], hide_index=True, width="stretch",
+    ui.dataframe(d["dec"], hide_index=True, width="stretch",
                  column_config={"reason": st.column_config.TextColumn(width="large")})
 if not d["props_dec"].empty:
     with st.expander("Props gate decisions"):
-        st.dataframe(d["props_dec"], hide_index=True, width="stretch")
+        ui.dataframe(d["props_dec"], hide_index=True, width="stretch")
 
 # ── prospective comparison ─────────────────────────────────────────────────────────────────────
 ui.section_header("Prospective samples — H-MODEL-01 (challenger vs serving champion)")
@@ -132,7 +132,7 @@ else:
                 if not r["evaluable"]:
                     st.caption(f"⏳ Below the {r['required_n']:,}-row per-track minimum: **not evidence yet**, "
                                "shown for monitoring only.")
-    st.dataframe(pe.drop(columns=["progress"]), hide_index=True, width="stretch")
+    ui.dataframe(pe.drop(columns=["progress"]), hide_index=True, width="stretch")
     st.caption("Shadow only: the challenger is never served. The minimum applies to EACH track separately "
                "(owner 2026-10-25); the window starts at registration.")
 
@@ -141,7 +141,7 @@ ui.section_header(f"Latest retrain — {d['rk'] or 'none recorded'}")
 if d["rt"].empty:
     st.info("output/retrain_log.json has no runs.")
 else:
-    st.dataframe(d["rt"], hide_index=True, width="stretch",
+    ui.dataframe(d["rt"], hide_index=True, width="stretch",
                  column_config={"why": st.column_config.TextColumn(width="large")})
     st.caption("These are the verdicts the retrain LOGGED. A logged PROMOTE is not the serving state: the serving "
                "model is whatever current_champions.json points to, and any later gate action (e.g. an owner "

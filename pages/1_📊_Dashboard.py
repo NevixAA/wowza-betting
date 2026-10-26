@@ -37,6 +37,7 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import config  # noqa: E402
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
 from dashboard_data import tips_view as TV  # noqa: E402
 
 st.set_page_config(page_title="Tips | Wowza", page_icon="📊", layout="wide")
@@ -177,8 +178,8 @@ with g2:
 with st.expander("Advanced filters"):
     a1, a2, a3 = st.columns(3)
     with a1:
-        tier_filter = st.multiselect("Legacy tier", list(TV.TIER_ORDER), default=list(TV.TIER_ORDER),
-                                     help="Tier = size of the model-vs-market edge, not proven confidence.")
+        tier_filter = st.multiselect("Gap size", list(TV.TIER_ORDER), default=list(TV.TIER_ORDER),
+                                     format_func=tier_label, help=GAP_EXPLAINER)
     with a2:
         drift_filter = st.multiselect("Drift signal", ["Confirmed", "Neutral", "New", "Conflicted"],
                                       default=["Confirmed", "Neutral", "New", "Conflicted"],
@@ -206,9 +207,10 @@ else:
     ui.metric_grid([
         {"label": "Tips shown", "value": f"{len(board)}",
          "help": "Every live tip in the date range, all markets, one side per fixture."},
-        {"label": "Staked (SNIPER + MARKSMAN)", "value": f"{_staked}",
-         "help": "On O/U 2.5 every tier, VALUABLE included, carries the same paper stake (the edge size does "
-                 "not rank outcomes there); on other markets VALUABLE is tracked but not staked."},
+        {"label": f"Staked ({STAKED_LABEL})", "value": f"{_staked}",
+         "help": f"On O/U 2.5 every tier, {PAPER_TIER_LABEL} included, carries the same paper stake (the gap "
+                 f"size does not rank outcomes there); on other markets {PAPER_TIER_LABEL} is tracked but not "
+                 f"staked. {GAP_EXPLAINER}"},
         {"label": "Fixtures", "value": f"{board[['date', 'home_team', 'away_team']].drop_duplicates().shape[0]}"},
         {"label": "Next kickoff", "value": (f"{_next.tz_convert(_TZ_NAME):%a %H:%M}" if pd.notna(_next) else "—"),
          "help": f"Israel time ({_TZ_NAME})."},
@@ -254,7 +256,8 @@ else:
     ui.section_header("Current vs shadow", "Two different questions. CURRENT is the legacy tier ladder production "
                       "sends — tier = size of the model-vs-price gap. SHADOW is the market-first engine's verdict "
                       "on the same tips. A higher tier is not stronger evidence.")
-    _counts = " · ".join(f"{int((board['tier'] == t).sum())} {t}" for t in TV.TIER_ORDER if (board["tier"] == t).any())
+    _counts = " · ".join(f"{int((board['tier'] == t).sum())} {tier_label(t)}" for t in TV.TIER_ORDER
+                         if (board["tier"] == t).any())
     _sh = TV.shadow_summary(board)
     cur, sha = st.columns(2)
     with cur.container(border=True):
@@ -263,7 +266,8 @@ else:
         _ps = board["production_state"].value_counts()
         ui.stat_line([(s, f"{int(_ps.get(s, 0))}") for s in _STATES if int(_ps.get(s, 0))])
         st.caption("Production state per tip, from the stake plan. O/U 2.5 tiers are staked equally "
-                   "(SNIPER −9.9%, MARKSMAN −5.8%, VALUABLE −0.8% since 26 Aug); on BTTS and Over 1.5 the edge "
+                   f"({tier_label('SNIPER')} −9.9%, {tier_label('MARKSMAN')} −5.8%, {tier_label('VALUABLE')} "
+                   "−0.8% since 26 Aug); on BTTS and Over 1.5 the edge "
                    "does rank outcomes, so the ladder stays.")
     with sha.container(border=True):
         ui.eyebrow(f"Shadow · market-first ({_sh['engine'] or 'engine n/a'})")
@@ -462,7 +466,7 @@ with t_perf:
         ui.metric_grid([
             {"label": "P/L — all staked markets", "value": f"{_tot:+.2f}u",
              "delta": f"{_tot / len(_s):+.3f}u per bet",
-             "help": "Flat 1u stakes, SNIPER + MARKSMAN only. Read the per-market table below "
+             "help": f"Flat 1u stakes, {STAKED_LABEL} only. Read the per-market table below "
                      "before this number — it is a sum of very unequal samples."},
             {"label": f"Excluding {_biggest['Market']}",
              "value": f"{float(_ex['_pnl'].sum()):+.2f}u" if len(_ex) else "—",
@@ -489,7 +493,7 @@ with t_perf:
             st.markdown(" ".join(ui.sample_marker(int(r["Bets"]), floor=_THIN) + f" :gray[{r['Market']}]"
                                  for _, r in _thin.iterrows()))
         st.caption(
-            f"Flat 1u stakes · **staked tiers only** (SNIPER + MARKSMAN — VALUABLE is not a bet) · "
+            f"Flat 1u stakes · **staked tiers only** ({STAKED_LABEL} — {PAPER_TIER_LABEL} is not a bet) · "
             f"settled only · from {_cut.date()}. **Hit** is the share won; **Need** is the "
             f"break-even rate implied by the average price paid, so Hit above Need is a profitable "
             f"market and below it is not."

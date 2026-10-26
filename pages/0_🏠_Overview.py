@@ -27,6 +27,7 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
 from dashboard_data import overview_view as V  # noqa: E402
 from dashboard_data.core import REPOS, repo_path  # noqa: E402
@@ -81,8 +82,8 @@ else:
     V.health_cards(checks)
 
 # ═══ PRODUCTION ═══════════════════════════════════════════════════════════════════════════════════
-ui.section_header("Production — V9 live betting", "Staked tiers only (SNIPER + MARKSMAN). VALUABLE is paper and is "
-                  "kept out of every P/L headline.")
+ui.section_header("Production — V9 live betting", f"Staked tiers only ({STAKED_LABEL}). {PAPER_TIER_LABEL} is paper "
+                  f"and is kept out of every P/L headline. {GAP_EXPLAINER}")
 perf = E["perf"]
 if not perf.get("available"):
     ui.empty_state("NO_DATA", perf.get("why", "no settled bets"))
@@ -92,13 +93,13 @@ else:
     # THE HEADLINE IS THE STAKED FIGURE, NOT THE ALL-TIPS FIGURE (see overview_view.staked_cards).
     V.staked_cards(perf)
     st.caption(
-        f"Every card above is SNIPER + MARKSMAN only — the tiers that carry money. "
-        f"Including the paper VALUABLE tier there are {total_n:,} tips worth "
+        f"Every card above is {STAKED_LABEL} only — the tiers that carry money. "
+        f"Including the paper {PAPER_TIER_LABEL} tier there are {total_n:,} tips worth "
         f"{sum(t['pnl'] for t in tracks.values()):+.2f}u, but a paper tier is not a result and "
         f"is kept out of every P/L headline on this page.")
 
     # per-track, per-tier P/L. One chart, one scale, n in every tooltip.
-    rows = [{"track_tier": f"{tr} · {ti}", "pnl": v["pnl"], "n": v["n"], "roi": v["roi"]}
+    rows = [{"track_tier": f"{tr} · {tier_label(ti)}", "pnl": v["pnl"], "n": v["n"], "roi": v["roi"]}
             for tr, t in tracks.items() for ti, v in t["by_tier"].items()]
     if rows:
         d = pd.DataFrame(rows).sort_values("pnl")
@@ -107,14 +108,15 @@ else:
             st.altair_chart(ui.pnl_bars(d, "track_tier", "pnl", "n",
                                         title="P/L by track and tier (units, flat 1u)"), width="stretch")
         with right:
-            ui.eyebrow("Does the tier ladder order the outcomes?")
+            ui.eyebrow("Does a bigger gap mean better outcomes?")
             st.caption(
-                "SNIPER is supposed to be the strongest tier and VALUABLE the weakest. Read the "
-                "bars against that claim. Measured across the whole ledger the ladder carries no "
-                "information: the model is overconfident by +13.64pp (claimed 0.5430, realised "
-                "0.4066, n=792), and the gap is as large on never-staked VALUABLE (+10.78pp) as "
-                "on staked bets (+16.80pp). A tier that does not separate outcomes is a label, "
-                "not a signal.")
+                f"The tier is only the size of the gap between our probability and the price: "
+                f"{tier_label('SNIPER')} is the largest gap, {tier_label('VALUABLE')} the smallest. "
+                "Read the bars against the idea that a bigger gap wins more. Measured across the whole "
+                "ledger the ladder carries no information: the model is overconfident by +13.64pp "
+                "(claimed 0.5430, realised 0.4066, n=792), and the overconfidence is as large on "
+                f"never-staked {tier_label('VALUABLE')} tips (+10.78pp) as on staked bets (+16.80pp). "
+                "A tier that does not separate outcomes is a label, not a signal.")
             ui.compact_table(d.rename(columns={"track_tier": "track · tier"}), V.tier_table_config())
 
     # league detail, with small samples flagged rather than hidden
@@ -135,7 +137,7 @@ else:
             # A 45% hit rate is excellent at 2.40 and a disaster at 1.70.
             st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
                                         title="Hit rate minus that league's own break-even"), width="stretch")
-        st.caption("Staked tiers only (SNIPER + MARKSMAN). Including the paper VALUABLE tier the "
+        st.caption(f"Staked tiers only ({STAKED_LABEL}). Including the paper {PAPER_TIER_LABEL} tier the "
                    "same chart reads -123.16u across 1,350 tips instead of -35.66u across 561 — "
                    "three and a half times larger, and none of the difference is money.")
         thin = int((~bl["reliable"]).sum())

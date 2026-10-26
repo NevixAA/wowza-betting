@@ -15,6 +15,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.tier_labels import TIER_LABEL
+
 ROOT = Path(__file__).resolve().parents[1]
 STAKE_PLAN = ROOT / "output" / "stake_plan.csv"
 REGISTRY = ROOT / "config" / "track_registry.json"
@@ -99,10 +101,10 @@ def threshold_proposal(latest: Path | None = None, approvals: Path | None = None
         state = lt.get("status") or "AWAITING_OWNER"
     rows = pd.DataFrame([{
         "entry": c.get("entry_id"), "change": c.get("change"),
-        "SNIPER now": (c.get("served_now") or {}).get("sniper"),
-        "SNIPER if approved": (c.get("served_if_approved") or {}).get("sniper"),
-        "MARKSMAN now": (c.get("served_now") or {}).get("marksman"),
-        "MARKSMAN if approved": (c.get("served_if_approved") or {}).get("marksman"),
+        f"{TIER_LABEL['SNIPER']} now": (c.get("served_now") or {}).get("sniper"),
+        f"{TIER_LABEL['SNIPER']} if approved": (c.get("served_if_approved") or {}).get("sniper"),
+        f"{TIER_LABEL['MARKSMAN']} now": (c.get("served_now") or {}).get("marksman"),
+        f"{TIER_LABEL['MARKSMAN']} if approved": (c.get("served_if_approved") or {}).get("marksman"),
         "OOS n": c.get("bets_oos"), "OOS match-days": c.get("oos_matchdays"), "OOS ROI %": c.get("roi_oos"),
         "OOS ROI 95% CI": (str(c.get("oos_roi_ci95")) if c.get("oos_roi_ci95") else None)}
         for c in lt.get("serving_changes") or []])

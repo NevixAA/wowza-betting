@@ -25,6 +25,7 @@ import pandas as pd
 import streamlit as st
 
 import dashboard_ui as ui
+from src.tier_labels import STAKED_LABEL
 
 st.set_page_config(page_title="Player Props | Wowza", page_icon="👤", layout="wide")
 import sys as _sys; from pathlib import Path as _P; _sys.path.insert(0, str(_P(__file__).resolve().parents[1]))
@@ -164,7 +165,7 @@ with st.expander("Raw data — every upcoming prop"):
                      V.RAW_CONFIG)
 
 # ═══ PERFORMANCE — settled record ════════════════════════════════════════════════════════════════
-ui.section_header("Results — settled player-prop signals", "SNIPER + MARKSMAN only, flat 1u paper stakes. A rate is "
+ui.section_header("Results — settled player-prop signals", f"{STAKED_LABEL} only, flat 1u paper stakes. A rate is "
                   "shown with its n; a small n is marked.")
 
 
@@ -180,7 +181,7 @@ led = load_results()
 if not led.empty and "tier" in led.columns:
     led = led[led["tier"].astype(str).str.upper().isin(["SNIPER", "MARKSMAN"])].copy()
 if led.empty or "result" not in led.columns:
-    ui.empty_state("NO_DATA", "No SNIPER/MARKSMAN prop results yet (`output/player_ledger.csv`).")
+    ui.empty_state("NO_DATA", f"No {STAKED_LABEL} prop results yet (`output/player_ledger.csv`).")
 else:
     settled = led[led["result"].astype(str).str.upper().isin(["WIN", "LOSS"])].copy()
     if settled.empty:

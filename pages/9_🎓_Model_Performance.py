@@ -25,6 +25,7 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import dashboard_ui as ui  # noqa: E402
+from src.tier_labels import TIER_LABEL  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Model performance", page_icon="🎓", layout="wide")
@@ -104,10 +105,11 @@ else:
     bt = cal.get("by_tier") or {}
     if bt:
         d = pd.DataFrame([{"tier": k, **v} for k, v in bt.items()]).sort_values("gap_pp")
+        d["tier"] = d["tier"].map(lambda t: TIER_LABEL.get(str(t).upper(), t))   # display words only
         st.markdown(
-            "**The claim being tested.** SNIPER is supposed to be the strongest signal, VALUABLE "
-            "the weakest. If the ladder means anything, the overconfidence gap should be smallest "
-            "at the top."
+            f"**The claim being tested.** The tier is the size of the gap between our probability and the "
+            f"price ({TIER_LABEL['SNIPER']} largest, {TIER_LABEL['VALUABLE']} smallest). If a bigger gap "
+            "meant a better bet, the overconfidence should be smallest at the top."
         )
         cc1, cc2 = st.columns([3, 2])
         with cc1:
