@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-10-26T08:09:49Z",
+ "generated_at": "2026-10-26T09:55:19Z",
  "overall": "PASS",
  "reasons": [],
  "protected_tracks_modified": false,
@@ -14,7 +14,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "cbd42d57210fe30fb96878bf3b465936c075b9520ca9b71169518b898e4a7803",
-  "code_commit": "4c117c3cd2ce"
+  "code_commit": "bd507019432d"
  },
  "counts": {
   "GREEN": 16,
@@ -26,7 +26,7 @@
   {
    "check": "Side-market routing",
    "status": "GREEN",
-   "value": "24 side tips, 0 unknown|*",
+   "value": "12 side tips, 0 unknown|*",
    "rule": "RED if any ACTIVE/ACTIVE_LOW policy track has tips and 100% map to UNSUPPORTED; GREEN otherwise",
    "detail": ""
   },
@@ -35,14 +35,14 @@
    "status": "GREEN",
    "value": "0.0% unmapped",
    "rule": "GREEN 0% of tips on unknown|* tracks or without odds; AMBER < 5%; RED >= 5%",
-   "detail": "generated 2026-10-26 07:58:38"
+   "detail": "generated 2026-10-26 09:50:26"
   },
   {
    "check": "Shadow settlement coverage",
    "status": "GREEN",
-   "value": "99.0% (625/631)",
+   "value": "99.5% (634/637)",
    "rule": "GREEN >= 95% of finished shadow rows settled; AMBER >= 80%; RED < 80%",
-   "detail": "as of 2026-10-26T01:37:58Z"
+   "detail": "as of 2026-10-26T08:20:51Z"
   },
   {
    "check": "Challenger prediction coverage",
@@ -54,9 +54,9 @@
   {
    "check": "Certified CLV coverage",
    "status": "GREEN",
-   "value": "71.4% of 161 settled",
+   "value": "69.4% of 170 settled",
    "rule": "share of settled shadow rows with a close observed <= 30 min before kickoff, measured from the collection fix (clv_collection_health.json measure_from; all-time shown for context): GREEN >= 50%; AMBER >= 20%; RED < 20%",
-   "detail": "since 2026-10-23 \u00b7 all-time 24.2% of 625"
+   "detail": "since 2026-10-23 \u00b7 all-time 24.3% of 634"
   },
   {
    "check": "Stale artifacts",
@@ -75,7 +75,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 failed / 137 runs (24 h)",
+   "value": "0 failed / 131 runs (24 h)",
    "rule": "failed/timed-out runs across the 3 repos in the last 24 h: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -89,7 +89,7 @@
   {
    "check": "Weekly research panel",
    "status": "GREEN",
-   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 18 \u00b7 missing 0 \u00b7 candidates 760/760 \u00b7 panel 136 (settled 104, pending 32) \u00b7 CLV coverage 42%",
+   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 18 \u00b7 missing 0 \u00b7 candidates 760/760 \u00b7 panel 136 (settled 136, pending 0) \u00b7 CLV coverage 39%",
    "rule": "RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without re-approval) or the lock cannot be verified; AMBER if the regime registry is missing, a newly PROTECTED track awaits approval, the panel health is missing or > 48 h old, or a tracked league has fixtures this (or last) gameweek but NO panel rows (a silent disappearance; a league with no fixtures is NO_FIXTURES and is fine); GREEN otherwise",
    "detail": "registry evidence cutoff 2026-10-20; lock approved by Nevo (owner) - approved in chat 2026-10-25 at 2026-10-25T12:09:26Z"
   },
@@ -124,7 +124,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 760 rows, shadow_only=True, 0.2 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 760 rows, shadow_only=True, 0.1 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -161,34 +161,34 @@
     "schema": "MARKET_SNAPSHOT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 37723,
+    "rows": 38005,
     "n_violations": 4,
     "violations": [
      {
       "kind": "missing_column",
       "column": "minutes_to_kickoff",
-      "n_rows": 37723,
+      "n_rows": 38005,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "overround",
-      "n_rows": 37723,
+      "n_rows": 38005,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "opposite_odds",
-      "n_rows": 37723,
+      "n_rows": 38005,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "source",
-      "n_rows": 37723,
+      "n_rows": 38005,
       "detail": "required column absent",
       "examples": []
      }
@@ -222,15 +222,15 @@
     "schema": "TOP_PICKS_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 100,
+    "rows": 115,
     "n_violations": 0,
     "violations": []
    },
    "output/props_shown_log.csv": {
     "schema": "PROPS_SHOWN_ROW",
-    "schema_version": null,
-    "present": false,
-    "rows": 0,
+    "schema_version": "1",
+    "present": true,
+    "rows": 20,
     "n_violations": 0,
     "violations": []
    },
@@ -246,7 +246,7 @@
     "schema": "STAKE_PLAN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 98,
+    "rows": 86,
     "n_violations": 0,
     "violations": []
    },
@@ -325,7 +325,7 @@
    "frozen_digest": "57dfbf07eae86f3067b1f1ec7c76ab0545369e6777c5820615e5bda93c3afce6",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 752,
+   "prior_rows": 900,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -335,7 +335,7 @@
    "frozen_digest": "19fc561decb3f354cbdfa9b5ec0c51e4e459f6f85ccd7d4a546d9d6e5e462e37",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 324,
+   "prior_rows": 361,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -345,7 +345,7 @@
    "frozen_digest": "70a738c1587fb152a6171c5f7d64a2a46c001069b1c95fbb683eb1b7e319b2d6",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 790,
+   "prior_rows": 827,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -355,7 +355,7 @@
    "frozen_digest": "48e1e8c11b0fc4f73c2e4ab8b9f7c1d1813dfa6e7d994459d241e719f2d97a1b",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 752,
+   "prior_rows": 900,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -365,7 +365,7 @@
    "frozen_digest": "fed7579e7e28ab48584c4e83b175985369a1a0d1bda72d99aec9503eede06a51",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 60,
+   "prior_rows": 136,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -375,7 +375,7 @@
    "frozen_digest": "3287ccb1d4804580db458bb206e2f3568df7501521432caac669f072134983d5",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2389,
+   "prior_rows": 2594,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -385,14 +385,14 @@
    "frozen_digest": "5eeafc22decf6120ad6ff31d83568fea6528884f164908c4c80e68e986e84d57",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 472,
+   "prior_rows": 496,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "top_picks_log.csv": {
-   "rows": 100,
-   "frozen_digest": "9c0e86b079e6ee187c6c687dc63bbb50a6267d51afd9e3554f521f5c88d1d859",
+   "rows": 115,
+   "frozen_digest": "ff39c178257a43738c221c9e282f621eb79c57465eb69b31aa70b005046b47e5",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
    "prior_rows": 100,
@@ -401,13 +401,13 @@
    "reasons": []
   },
   "props_shown_log.csv": {
-   "rows": 0,
-   "frozen_digest": null,
+   "rows": 20,
+   "frozen_digest": "b9405d27546f51fb8ee4bf379aefa546fe5cdc4dc6f3f2864840688efb315a1a",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
    "prior_rows": null,
    "prior_match": null,
-   "status": "EMPTY",
+   "status": "OK",
    "reasons": []
   }
  },
