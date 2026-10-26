@@ -61,12 +61,15 @@ without any CSS.
 | Green | positive, healthy, live deployed | "a strong tier" |
 | Amber | paper, warning | research |
 | Violet | research, shadow | a bet |
-| Red | negative, failure, blocked | "SNIPER" |
+| Red | negative, failure, blocked | "Big gap" (SNIPER) |
 | Grey | insufficient, unavailable, legacy metadata | healthy |
 | Blue | primary, neutral interaction, governance (PROTECTED) | an error |
 
-Legacy tiers (SNIPER / MARKSMAN / VALUABLE) are **grey** chips: a tier is the size of the
-model-vs-price gap, not evidence. On O/U 2.5 a bigger tier has not meant a better result.
+Legacy tiers are **grey** chips that read **BIG GAP / MEDIUM GAP / SMALL GAP** (owner decision
+2026-10-26; internal codes SNIPER / MARKSMAN / VALUABLE are unchanged in stored data): a tier is the
+size of the model-vs-price gap, not evidence. On O/U 2.5 a bigger gap has not meant a better result.
+Every tier word comes from `src/tier_labels.py`; tables go through `ui.table` / `ui.compact_table` /
+`ui.dataframe`, which show codes as labels (`display_frame`). Pages never call `st.dataframe`.
 
 ## 4. Status vocabulary
 

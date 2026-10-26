@@ -288,6 +288,9 @@ def _fmt(x) -> str:
 
 
 def to_markdown(p: dict) -> str:
+    # Tier words are the owner's display labels (src/tier_labels.py, 2026-10-26); the JSON proposal,
+    # its hashes and the approval entries keep the internal codes (sniper / marksman).
+    from src.tier_labels import GAP_EXPLAINER, GLOSSARY, TIER_LABEL
     lines = [f"# Threshold proposal {p['proposal_id']}", "",
              f"Created {p['created_at']} for {p['month']} · status **{p['status']}** · "
              f"proposal_hash `{p['proposal_hash']}`", "",
@@ -297,10 +300,12 @@ def to_markdown(p: dict) -> str:
              f"Deployed env: `{p.get('deployed_env')}` · candidates for: {', '.join(p['markets_with_candidates']) or 'none'}"
              + (f" · **missing (job failed or timed out): {', '.join(p['markets_missing'])}**"
                 if p.get("markets_missing") else ""), "",
-             f"Rule: {p['approval_rule']}", ""]
+             f"Rule: {p['approval_rule']}", "",
+             f"{GAP_EXPLAINER} {GLOSSARY}", ""]
     serving = [e for e in p["entries"] if e.get("serves_change")]
     other = [e for e in p["entries"] if not e.get("serves_change")]
-    hdr = ("| entry | change | served now (SNIPER / MARKSMAN) | if approved | OOS n | OOS match-days | OOS ROI % "
+    hdr = (f"| entry | change | served now ({TIER_LABEL['SNIPER']} / {TIER_LABEL['MARKSMAN']}) | if approved "
+           "| OOS n | OOS match-days | OOS ROI % "
            "| OOS ROI 95% CI | in-sample ROI % | entry_hash |")
     sep = "|" + "---|" * 10
     for title, rows in (("Entries that change what production serves", serving),

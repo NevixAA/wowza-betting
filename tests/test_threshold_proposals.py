@@ -173,6 +173,11 @@ def test_proposal_compares_with_production_and_resolves_served_gates(sandbox):
     assert p["status"] == "AWAITING_OWNER" and p["proposal_id"].startswith("TP-2026-11-01-")
     md = TP.to_markdown(p)
     assert "ou25|Serie B" in md and "How to approve" in md
+    # owner 2026-10-26: the report a person reads shows gap labels; the codes appear only in the one
+    # explicit glossary line (the JSON proposal and its hashes keep the codes)
+    from src.tier_labels import GLOSSARY
+    assert "served now (Big gap / Medium gap)" in md
+    assert not re.search(r"\b(SNIPER|MARKSMAN|VALUABLE)\b", md.replace(GLOSSARY, ""))
 
 
 # ── 2. apply refuses anything not matched to an approved proposal hash ──────────────────────────
