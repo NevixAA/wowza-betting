@@ -1,0 +1,3 @@
+# History clean-up (owner-approved 2026-10-25)
+
+Run 2026-10-26 05:10 UTC. Removed only superseded versions of player_history.parquet (old single file + old season parts) that no branch or tag uses. Every branch/tag tip tree, every commit message/author/date and the full history of predictions.csv, bets.csv, player_tips.csv, bets_ledger.csv, side_bets_ledger.csv and the FPL caches were verified identical. Commit IDs changed: `commit-map.txt` maps every old ID to its new ID (old new). A full bundle of the old history is kept at `C:\Users\nevo.APOLLO\OneDrive - Apollo\archive\נבו אישי\אישי\Wowza\mixed\_git_backups\wowza-betting-before-history-cleanup-20261026.bundle`.
