@@ -138,3 +138,4 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+# schedule re-registered after the 2026-10-26 history clean-up (comment only)

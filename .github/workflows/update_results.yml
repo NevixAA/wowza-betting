@@ -169,3 +169,4 @@ jobs:
         run: |
           git fetch -q origin main && git checkout -q origin/main -- output/clv_collection_health.json config/clv_collection_expectation.json 2>/dev/null || true
           python scripts/check_clv_collection_health.py
+# schedule re-registered after the 2026-10-26 history clean-up (comment only)

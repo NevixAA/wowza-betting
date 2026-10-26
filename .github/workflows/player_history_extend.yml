@@ -274,3 +274,4 @@ jobs:
             echo "::error title=collect failed::player_history.parquet did not advance."
             exit 1
           fi
+# schedule re-registered after the 2026-10-26 history clean-up (comment only)

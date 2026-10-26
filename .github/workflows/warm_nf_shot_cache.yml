@@ -45,3 +45,4 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: python scripts/warm_nf_shot_cache.py
+# schedule re-registered after the 2026-10-26 history clean-up (comment only)
