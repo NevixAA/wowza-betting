@@ -1760,14 +1760,14 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-12,2026-10-17,China Super League,Qingdao Hainiu FC,Liaoning Tieren FC,1X2 AWAY (Liaoning Tieren FC),AWAY,STEAM_STRONG,2.12,1.9,-10.4,100,19,WIN,1.12,2026-10-20
 2026-10-12,2026-10-18,China Super League,Beijing FC,Qingdao West Coast FC,1X2 AWAY (Qingdao West Coast FC),AWAY,STEAM_STRONG,6.8,6.1,-10.3,100,15,LOSS,-1.0,2026-10-20
 2026-10-12,2026-10-18,Bundesliga 2,Arminia Bielefeld,VfL Osnabrück,1X2 AWAY (VfL Osnabrück),AWAY,STEAM_SHARP,4.6,4.205,-8.6,100,20,,,
-2026-10-12,2026-10-25,Argentina Primera Division,River Plate,Racing Club,1X2 AWAY (Racing Club),AWAY,STEAM_SHARP,6.0,5.5,-8.3,100,7,,,
+2026-10-12,2026-10-25,Argentina Primera Division,River Plate,Racing Club,1X2 AWAY (Racing Club),AWAY,STEAM_SHARP,6.0,5.5,-8.3,100,7,LOSS,-1.0,2026-10-26
 2026-10-12,2026-10-18,Argentina Primera Division,Platense,Lanus,1X2 HOME (Platense),HOME,STEAM_SHARP,3.185,2.925,-8.2,100,12,,,
 2026-10-12,2026-10-17,Japan J-League,Mito HollyHock,Urawa Red Diamonds,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.01,1.85,-8.0,100,13,WIN,1.01,2026-10-20
 2026-10-12,2026-10-18,Finland Veikkausliiga,KuPS Kuopio,VPS Vaasa,1X2 HOME (KuPS Kuopio),HOME,STEAM_SHARP,1.665,1.535,-7.8,100,12,WIN,0.665,2026-10-19
 2026-10-12,2026-10-17,Argentina Primera Division,Boca Juniors,Talleres,O/U 2.5 OVER,OVER,STEAM_SHARP,2.22,2.05,-7.7,100,8,WIN,1.22,2026-10-18
 2026-10-12,2026-10-17,Mexico Liga MX,Atlante FC,Pumas,1X2 HOME (Atlante FC),HOME,STEAM_SHARP,2.48,2.3,-7.3,100,17,LOSS,-1.0,2026-10-18
 2026-10-12,2026-10-12,Brazil Serie A,Coritiba,Botafogo,O/U 2.5 OVER,OVER,STEAM_SHARP,1.77,1.64,-7.3,100,14,LOSS,-1.0,2026-10-13
-2026-10-12,2026-10-25,Argentina Primera Division,Aldosivi Mar del Plata,Belgrano de Cordoba,1X2 HOME (Aldosivi Mar del Plata),HOME,STEAM_SHARP,3.975,3.7,-6.9,100,7,,,
+2026-10-12,2026-10-25,Argentina Primera Division,Aldosivi Mar del Plata,Belgrano de Cordoba,1X2 HOME (Aldosivi Mar del Plata),HOME,STEAM_SHARP,3.975,3.7,-6.9,100,7,WIN,2.975,2026-10-26
 2026-10-12,2026-10-17,Japan J-League,JEF United Chiba,Yokohama F Marinos,1X2 HOME (JEF United Chiba),HOME,STEAM_SHARP,3.64,3.4,-6.6,100,18,LOSS,-1.0,2026-10-20
 2026-10-12,2026-10-17,Japan J-League,Shimizu S Pulse,Gamba Osaka,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.05,1.92,-6.3,100,13,LOSS,-1.0,2026-10-20
 2026-10-12,2026-10-17,League Two,Fleetwood Town,Rotherham United,1X2 HOME (Fleetwood Town),HOME,STEAM_SHARP,2.45,2.3,-6.1,100,14,,,
@@ -1898,7 +1898,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-17,2026-10-24,Serie B,US Catanzaro 1929,Ascoli,1X2 AWAY (Ascoli),AWAY,STEAM_SHARP,2.95,2.8,-5.1,84,14,WIN,1.95,2026-10-25
 2026-10-18,2026-10-21,Mexico Liga MX,FC Juárez,Atlante FC,1X2 AWAY (Atlante FC),AWAY,STEAM_STRONG,2.6,2.28,-12.3,100,14,WIN,1.6,2026-10-22
 2026-10-18,2026-10-18,Austrian Bundesliga,Wolfsberger AC,WSG Tirol,1X2 AWAY (WSG Tirol),AWAY,STEAM_STRONG,2.635,2.335,-11.4,100,20,WIN,1.635,2026-10-20
-2026-10-18,2026-10-25,Argentina Primera Division,Rosario Central,Atlético Huracán,1X2 HOME (Rosario Central),HOME,STEAM_STRONG,1.78,1.58,-11.2,100,13,,,
+2026-10-18,2026-10-25,Argentina Primera Division,Rosario Central,Atlético Huracán,1X2 HOME (Rosario Central),HOME,STEAM_STRONG,1.78,1.58,-11.2,100,13,WIN,0.78,2026-10-26
 2026-10-18,2026-10-21,Japan J-League,Avispa Fukuoka,Gamba Osaka,1X2 AWAY (Gamba Osaka),AWAY,STEAM_STRONG,2.95,2.63,-10.8,100,18,WIN,1.95,2026-10-22
 2026-10-18,2026-10-18,Argentina Primera Division,Estudiantes,San Lorenzo,O/U 2.5 OVER,OVER,STEAM_STRONG,2.58,2.32,-10.1,100,4,WIN,1.58,2026-10-19
 2026-10-18,2026-10-21,Japan J-League,Kawasaki Frontale,Vissel Kobe,1X2 HOME (Kawasaki Frontale),HOME,STEAM_SHARP,2.5,2.265,-9.4,100,18,WIN,1.5,2026-10-22
@@ -1913,8 +1913,8 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-18,2026-10-18,Argentina Primera Division,Racing Club,Independiente,1X2 AWAY (Independiente),AWAY,STEAM_SHARP,3.7,3.51,-5.1,100,14,LOSS,-1.0,2026-10-19
 2026-10-18,2026-10-24,China Super League,Henan FC,Beijing FC,1X2 AWAY (Beijing FC),AWAY,STEAM_STRONG,2.71,2.19,-19.2,100,14,,,
 2026-10-18,2026-10-24,Sweden Allsvenskan,Djurgardens IF,Örgryte IS,1X2 AWAY (Örgryte IS),AWAY,STEAM_STRONG,15.0,13.1,-12.7,91,16,,,
-2026-10-18,2026-10-25,Serie B,Hellas Verona,Pisa,O/U 2.5 OVER,OVER,STEAM_SHARP,2.05,1.85,-9.8,100,11,,,
-2026-10-18,2026-10-25,Serie B,Hellas Verona,Pisa,1X2 HOME (Hellas Verona),HOME,STEAM_SHARP,2.32,2.12,-8.6,100,17,,,
+2026-10-18,2026-10-25,Serie B,Hellas Verona,Pisa,O/U 2.5 OVER,OVER,STEAM_SHARP,2.05,1.85,-9.8,100,11,LOSS,-1.0,2026-10-26
+2026-10-18,2026-10-25,Serie B,Hellas Verona,Pisa,1X2 HOME (Hellas Verona),HOME,STEAM_SHARP,2.32,2.12,-8.6,100,17,LOSS,-1.0,2026-10-26
 2026-10-18,2026-10-22,Mexico Liga MX,Puebla,Monterrey,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.265,2.075,-8.4,91,10,LOSS,-1.0,2026-10-23
 2026-10-18,2026-10-18,Brazil Serie A,Fluminense,Santos,O/U 2.5 OVER,OVER,STEAM_SHARP,1.89,1.76,-6.9,100,17,WIN,0.89,2026-10-19
 2026-10-18,2026-10-24,Austrian Bundesliga,WSG Tirol,Grazer AK,1X2 HOME (WSG Tirol),HOME,STEAM_SHARP,2.52,2.35,-6.7,91,15,,,
@@ -1922,11 +1922,11 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-18,2026-10-24,Serie B,Modena,Cesena FC,1X2 HOME (Modena),HOME,STEAM_SHARP,1.58,1.48,-6.3,91,17,WIN,0.58,2026-10-25
 2026-10-18,2026-10-24,Finland Veikkausliiga,VPS Vaasa,FC Inter Turku,1X2 AWAY (FC Inter Turku),AWAY,STEAM_SHARP,1.84,1.725,-6.2,91,10,WIN,0.84,2026-10-25
 2026-10-18,2026-10-23,Austrian Bundesliga,Rheindorf Altach,Austria Wien,O/U 2.5 OVER,OVER,STEAM_SHARP,1.91,1.81,-5.2,91,9,,,
-2026-10-18,2026-10-25,Norway Eliteserien,Kristiansund BK,KFUM,1X2 AWAY (KFUM),AWAY,STEAM_SHARP,3.15,2.915,-7.5,100,12,,,
+2026-10-18,2026-10-25,Norway Eliteserien,Kristiansund BK,KFUM,1X2 AWAY (KFUM),AWAY,STEAM_SHARP,3.15,2.915,-7.5,100,12,LOSS,-1.0,2026-10-26
 2026-10-18,2026-10-24,Serie B,Südtirol,Sampdoria,1X2 AWAY (Sampdoria),AWAY,STEAM_SHARP,2.8,2.62,-6.4,79,18,LOSS,-1.0,2026-10-25
 2026-10-18,2026-10-24,Serie B,Südtirol,Sampdoria,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.05,2.89,-5.2,79,18,WIN,2.05,2026-10-25
 2026-10-18,2026-10-24,USA MLS,Columbus Crew SC,Toronto FC,1X2 HOME (Columbus Crew SC),HOME,STEAM_SHARP,1.76,1.62,-8.0,70,15,,,
-2026-10-18,2026-10-25,Finland Veikkausliiga,HJK Helsinki,KuPS Kuopio,1X2 HOME (HJK Helsinki),HOME,STEAM_SHARP,1.995,1.88,-5.8,75,10,,,
+2026-10-18,2026-10-25,Finland Veikkausliiga,HJK Helsinki,KuPS Kuopio,1X2 HOME (HJK Helsinki),HOME,STEAM_SHARP,1.995,1.88,-5.8,75,10,LOSS,-1.0,2026-10-26
 2026-10-18,2026-10-21,USA MLS,FC Cincinnati,D.C. United,1X2 HOME (FC Cincinnati),HOME,STEAM_SHARP,1.74,1.64,-5.7,70,15,,,
 2026-10-18,2026-10-31,Argentina Primera Division,Racing Club,Aldosivi Mar del Plata,1X2 AWAY (Aldosivi Mar del Plata),AWAY,STRONG,6.2,3.765,-39.3,100,2,,,
 2026-10-18,2026-10-30,Argentina Primera Division,Atlético Huracán,CA Tigre BA,1X2 AWAY (CA Tigre BA),AWAY,STRONG,3.92,2.585,-34.1,100,2,,,
@@ -1934,7 +1934,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-18,2026-10-30,Argentina Primera Division,Atlético Huracán,CA Tigre BA,1X2 HOME (Atlético Huracán),HOME,STRONG,2.27,1.62,-28.6,100,2,,,
 2026-10-18,2026-10-30,Argentina Primera Division,Atlético Huracán,CA Tigre BA,1X2 DRAW (Draw),DRAW,STRONG,2.79,2.025,-27.4,100,2,,,
 2026-10-18,2026-10-31,Argentina Primera Division,Racing Club,Aldosivi Mar del Plata,1X2 HOME (Racing Club),HOME,STRONG,1.62,1.335,-17.6,100,2,,,
-2026-10-18,2026-10-25,Brazil Serie A,Santos,Bahia,O/U 2.5 OVER,OVER,STEAM_SHARP,1.77,1.63,-7.9,90,13,,,
+2026-10-18,2026-10-25,Brazil Serie A,Santos,Bahia,O/U 2.5 OVER,OVER,STEAM_SHARP,1.77,1.63,-7.9,90,13,LOSS,-1.0,2026-10-26
 2026-10-18,2026-10-26,Brazil Serie A,Flamengo,Atletico Mineiro,O/U 2.5 OVER,OVER,STEAM_SHARP,1.665,1.55,-6.9,65,11,,,
 2026-10-19,2026-10-24,China Super League,Chengdu Rongcheng FC,Dalian Yingbo,1X2 AWAY (Dalian Yingbo),AWAY,STEAM_STRONG,3.8,3.275,-13.8,100,18,,,
 2026-10-19,2026-10-24,China Super League,Wuhan Three Towns,Shandong Luneng Taishan FC,1X2 AWAY (Shandong Luneng Taishan FC),AWAY,STEAM_STRONG,2.18,1.91,-12.4,100,17,,,
@@ -1958,7 +1958,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-19,2026-10-24,League Two,Chesterfield FC,Crewe Alexandra,1X2 AWAY (Crewe Alexandra),AWAY,STEAM_SHARP,4.245,3.95,-6.9,100,12,,,
 2026-10-19,2026-10-24,Serie B,Virtus Entella,Mantova,1X2 HOME (Virtus Entella),HOME,STEAM_SHARP,2.32,2.16,-6.9,100,19,LOSS,-1.0,2026-10-25
 2026-10-19,2026-10-24,Championship,Portsmouth,Millwall,1X2 AWAY (Millwall),AWAY,STEAM_SHARP,2.81,2.62,-6.8,100,18,LOSS,-1.0,2026-10-25
-2026-10-19,2026-10-25,Argentina Primera Division,Independiente,Boca Juniors,1X2 HOME (Independiente),HOME,STEAM_SHARP,3.8,3.55,-6.6,100,13,,,
+2026-10-19,2026-10-25,Argentina Primera Division,Independiente,Boca Juniors,1X2 HOME (Independiente),HOME,STEAM_SHARP,3.8,3.55,-6.6,100,13,LOSS,-1.0,2026-10-26
 2026-10-19,2026-10-24,Championship,Charlton Athletic,Norwich City,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.06,1.925,-6.6,100,16,LOSS,-1.0,2026-10-25
 2026-10-19,2026-10-24,Ligue 2,Saint Etienne,Nantes,1X2 HOME (Saint Etienne),HOME,STEAM_SHARP,1.82,1.7,-6.6,100,16,,,
 2026-10-19,2026-10-25,La Liga 2,Sabadell FC,Tenerife,1X2 HOME (Sabadell FC),HOME,STEAM_SHARP,2.06,1.93,-6.3,100,17,,,
@@ -1966,15 +1966,15 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-19,2026-10-24,Mexico Liga MX,León,Toluca,1X2 HOME (León),HOME,STEAM_SHARP,3.325,3.125,-6.0,100,10,LOSS,-1.0,2026-10-25
 2026-10-19,2026-10-28,Brazil Serie A,Bragantino-SP,Chapecoense,1X2 AWAY (Chapecoense),AWAY,STEAM_SHARP,9.0,8.5,-5.6,100,13,,,
 2026-10-19,2026-10-23,Ligue 2,Pau FC,Grenoble,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.82,1.72,-5.5,100,13,,,
-2026-10-19,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.525,3.335,-5.4,100,8,,,
+2026-10-19,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.525,3.335,-5.4,100,8,LOSS,-1.0,2026-10-26
 2026-10-19,2026-10-19,Ireland Premier Division,Derry City,St Patricks Athletic,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.86,1.76,-5.4,100,15,,,
 2026-10-19,2026-10-24,La Liga 2,Girona FC,Celta Fortuna,1X2 AWAY (Celta Fortuna),AWAY,STEAM_SHARP,8.125,7.7,-5.2,100,16,,,
-2026-10-19,2026-10-25,Mexico Liga MX,Pumas,Tigres,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.035,1.93,-5.2,100,8,,,
+2026-10-19,2026-10-25,Mexico Liga MX,Pumas,Tigres,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.035,1.93,-5.2,100,8,WIN,1.035,2026-10-26
 2026-10-19,2026-10-24,China Super League,Chengdu Rongcheng FC,Dalian Yingbo,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.975,3.775,-5.0,100,18,,,
 2026-10-19,2026-10-25,Denmark Superliga,Randers FC,Brondby IF,1X2 HOME (Randers FC),HOME,STRONG,3.5,1.13,-67.7,100,1,,,
 2026-10-19,2026-10-25,Denmark Superliga,Randers FC,Brondby IF,1X2 AWAY (Brondby IF),AWAY,STRONG,1.95,1.26,-35.4,100,1,,,
 2026-10-19,2026-10-24,Argentina Primera Division,Banfield,Lanus,O/U 2.5 OVER,OVER,STRONG,2.62,2.31,-11.8,100,6,LOSS,-1.0,2026-10-25
-2026-10-19,2026-10-25,Brazil Serie A,Santos,Bahia,1X2 HOME (Santos),HOME,STRONG,2.2,1.98,-10.0,100,22,,,
+2026-10-19,2026-10-25,Brazil Serie A,Santos,Bahia,1X2 HOME (Santos),HOME,STRONG,2.2,1.98,-10.0,100,22,LOSS,-1.0,2026-10-26
 2026-10-19,2026-10-23,Ireland Premier Division,Galway United,St Patricks Athletic,1X2 AWAY (St Patricks Athletic),AWAY,STEAM_STRONG,1.77,1.55,-12.4,94,16,,,
 2026-10-19,2026-10-24,USA MLS,Atlanta United FC,Chicago Fire,1X2 AWAY (Chicago Fire),AWAY,STEAM_SHARP,2.62,2.405,-8.2,100,22,,,
 2026-10-19,2026-10-23,Ireland Premier Division,Waterford FC,Drogheda United,1X2 HOME (Waterford FC),HOME,STEAM_SHARP,2.015,1.85,-8.2,94,16,,,
@@ -2043,7 +2043,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-22,2026-10-26,Mexico Liga MX,América,Pachuca,1X2 HOME (América),HOME,STEAM_SHARP,1.69,1.55,-8.3,100,16,,,
 2026-10-22,2026-10-24,Brazil Serie A,Internacional,Botafogo,1X2 HOME (Internacional),HOME,STEAM_SHARP,1.96,1.82,-7.1,100,21,WIN,0.96,2026-10-25
 2026-10-22,2026-10-24,USA MLS,D.C. United,FC Cincinnati,1X2 AWAY (FC Cincinnati),AWAY,STEAM_SHARP,2.38,2.22,-6.7,100,21,,,
-2026-10-22,2026-10-25,Serie B,Palermo,Carrarese,1X2 AWAY (Carrarese),AWAY,STEAM_SHARP,6.1,5.7,-6.6,100,19,,,
+2026-10-22,2026-10-25,Serie B,Palermo,Carrarese,1X2 AWAY (Carrarese),AWAY,STEAM_SHARP,6.1,5.7,-6.6,100,19,LOSS,-1.0,2026-10-26
 2026-10-22,2026-10-24,Argentina Primera Division,Banfield,Lanus,1X2 AWAY (Lanus),AWAY,STEAM_SHARP,2.25,2.08,-7.6,100,15,LOSS,-1.0,2026-10-25
 2026-10-22,2026-10-29,Sweden Allsvenskan,Hammarby IF,IK Sirius,1X2 AWAY (IK Sirius),AWAY,STEAM_SHARP,5.3,5.0,-5.7,92,9,,,
 2026-10-22,2026-10-29,Sweden Allsvenskan,Örgryte IS,Mjällby AIF,1X2 HOME (Örgryte IS),HOME,STEAM_SHARP,3.35,3.15,-6.0,99,9,,,
@@ -2053,7 +2053,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-23,2026-10-23,Ligue 2,Pau FC,Grenoble,1X2 AWAY (Grenoble),AWAY,STEAM_SHARP,4.35,4.0,-8.0,100,21,,,
 2026-10-23,2026-10-23,Argentina Primera Division,Gimnasia Mendoza,Platense,O/U 2.5 OVER,OVER,STEAM_SHARP,2.48,2.32,-6.5,100,6,WIN,1.48,2026-10-24
 2026-10-23,2026-10-26,Mexico Liga MX,América,Pachuca,O/U 2.5 OVER,OVER,STEAM_SHARP,1.62,1.52,-6.2,100,7,,,
-2026-10-23,2026-10-25,Argentina Primera Division,Independiente,Boca Juniors,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.64,1.55,-5.5,100,7,,,
+2026-10-23,2026-10-25,Argentina Primera Division,Independiente,Boca Juniors,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.64,1.55,-5.5,100,7,WIN,0.64,2026-10-26
 2026-10-23,2026-10-26,Denmark Superliga,FC Copenhagen,OB Odense BK,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.95,4.7,-5.1,100,20,,,
 2026-10-23,2026-10-24,Bundesliga 2,1. FC Magdeburg,Karlsruher SC,O/U 2.5 UNDER,UNDER,STRONG,2.82,2.52,-10.6,100,3,,,
 2026-10-23,2026-10-28,Sweden Allsvenskan,Halmstads BK,Malmo FF,1X2 AWAY (Malmo FF),AWAY,STEAM_STRONG,1.85,1.63,-11.9,93,15,,,
@@ -2075,7 +2075,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-24,2026-10-24,La Liga 2,Leganés,Mallorca,1X2 AWAY (Mallorca),AWAY,STEAM_SHARP,2.27,2.1,-7.5,100,21,,,
 2026-10-24,2026-10-24,USA MLS,Philadelphia Union,New England Revolution,1X2 HOME (Philadelphia Union),HOME,STEAM_SHARP,1.57,1.47,-6.4,100,23,,,
 2026-10-24,2026-10-24,Championship,Stoke City,Bristol City,O/U 2.5 UNDER,UNDER,STEAM_SHARP,1.87,1.75,-6.4,100,15,WIN,0.87,2026-10-25
-2026-10-24,2026-10-25,Mexico Liga MX,Pumas,Tigres,1X2 HOME (Pumas),HOME,STEAM_SHARP,2.7,2.55,-5.6,100,18,,,
+2026-10-24,2026-10-25,Mexico Liga MX,Pumas,Tigres,1X2 HOME (Pumas),HOME,STEAM_SHARP,2.7,2.55,-5.6,100,18,LOSS,-1.0,2026-10-26
 2026-10-24,2026-10-24,Finland Veikkausliiga,IF Gnistan,AC Oulu,O/U 2.5 OVER,OVER,STEAM_SHARP,1.66,1.57,-5.4,100,11,WIN,0.66,2026-10-25
 2026-10-24,2026-10-24,Championship,Blackburn Rovers,Wrexham AFC,1X2 AWAY (Wrexham AFC),AWAY,STEAM_SHARP,2.575,2.435,-5.4,100,22,LOSS,-1.0,2026-10-25
 2026-10-24,2026-10-24,Sweden Allsvenskan,Djurgardens IF,Örgryte IS,1X2 DRAW (Draw),DRAW,STEAM_SHARP,8.0,7.58,-5.2,100,21,,,
@@ -2088,7 +2088,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-24,2026-10-25,USA MLS,Houston Dynamo,Minnesota United FC,1X2 AWAY (Minnesota United FC),AWAY,STEAM_SHARP,3.3,3.1,-6.1,92,23,,,
 2026-10-24,2026-10-28,Sweden Allsvenskan,Degerfors IF,Västerås SK,1X2 HOME (Degerfors IF),HOME,STEAM_SHARP,2.65,2.5,-5.7,92,17,,,
 2026-10-24,2026-10-28,Finland Veikkausliiga,AC Oulu,VPS Vaasa,O/U 2.5 OVER,OVER,STEAM_SHARP,2.04,1.93,-5.4,92,12,,,
-2026-10-24,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,1X2 HOME (Monterrey),HOME,STEAM_SHARP,2.45,2.32,-5.3,92,18,,,
+2026-10-24,2026-10-25,Mexico Liga MX,Monterrey,Guadalajara,1X2 HOME (Monterrey),HOME,STEAM_SHARP,2.45,2.32,-5.3,92,18,LOSS,-1.0,2026-10-26
 2026-10-24,2026-10-27,Serie B,Vicenza,Modena,1X2 AWAY (Modena),AWAY,STEAM_SHARP,2.16,2.05,-5.1,92,17,,,
 2026-10-24,2026-10-31,Bundesliga 2,VfL Wolfsburg,VfL Osnabrück,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.95,4.7,-5.1,100,13,,,
 2026-10-24,2026-10-31,League Two,Fleetwood Town,Bristol Rovers,1X2 AWAY (Bristol Rovers),AWAY,STEAM_STRONG,2.82,2.5,-11.3,100,6,,,
@@ -2110,9 +2110,9 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-25,2026-10-25,Austrian Bundesliga,Sturm Graz,Ried,1X2 HOME (Sturm Graz),HOME,STEAM_STRONG,1.745,1.57,-10.0,100,20,,,
 2026-10-25,2026-10-28,USA MLS,New York City FC,Atlanta United FC,1X2 AWAY (Atlanta United FC),AWAY,STEAM_SHARP,4.1,3.69,-10.0,100,21,,,
 2026-10-25,2026-10-31,Bundesliga 2,VfL Wolfsburg,VfL Osnabrück,1X2 AWAY (VfL Osnabrück),AWAY,STEAM_SHARP,6.1,5.5,-9.8,100,13,,,
-2026-10-25,2026-10-25,Argentina Primera Division,Aldosivi Mar del Plata,Belgrano de Cordoba,O/U 2.5 OVER,OVER,STEAM_SHARP,2.415,2.185,-9.5,100,8,,,
+2026-10-25,2026-10-25,Argentina Primera Division,Aldosivi Mar del Plata,Belgrano de Cordoba,O/U 2.5 OVER,OVER,STEAM_SHARP,2.415,2.185,-9.5,100,8,LOSS,-1.0,2026-10-26
 2026-10-25,2026-10-29,USA MLS,Seattle Sounders FC,Houston Dynamo,1X2 HOME (Seattle Sounders FC),HOME,STEAM_SHARP,2.05,1.87,-8.8,100,21,,,
-2026-10-25,2026-10-25,Norway Eliteserien,IK Start,Sandefjord,1X2 AWAY (Sandefjord),AWAY,STEAM_SHARP,2.89,2.635,-8.8,100,22,,,
+2026-10-25,2026-10-25,Norway Eliteserien,IK Start,Sandefjord,1X2 AWAY (Sandefjord),AWAY,STEAM_SHARP,2.89,2.635,-8.8,100,22,LOSS,-1.0,2026-10-26
 2026-10-25,2026-10-29,USA MLS,Vancouver Whitecaps FC,San Diego FC,1X2 AWAY (San Diego FC),AWAY,STEAM_SHARP,6.0,5.5,-8.3,100,21,,,
 2026-10-25,2026-10-29,USA MLS,St. Louis City SC,Portland Timbers,1X2 DRAW (Draw),DRAW,STEAM_SHARP,4.4,4.05,-8.0,100,21,,,
 2026-10-25,2026-10-26,Argentina Primera Division,Central Córdoba,Velez Sarsfield BA,1X2 AWAY (Velez Sarsfield BA),AWAY,STEAM_SHARP,2.0,1.84,-8.0,100,15,,,
@@ -2126,7 +2126,7 @@ signal_date,match_date,league,home_team,away_team,market_label,side,signal,openi
 2026-10-25,2026-11-03,League Two,Northampton Town,Oldham Athletic,1X2 AWAY (Oldham Athletic),AWAY,STEAM_SHARP,2.5,2.35,-6.0,100,7,,,
 2026-10-25,2026-10-29,USA MLS,San Jose Earthquakes,Colorado Rapids,1X2 HOME (San Jose Earthquakes),HOME,STEAM_SHARP,2.25,2.12,-5.8,100,21,,,
 2026-10-25,2026-10-29,Brazil Serie A,Bahia,Sao Paulo,O/U 2.5 OVER,OVER,STEAM_SHARP,1.935,1.83,-5.4,100,16,,,
-2026-10-25,2026-10-25,Norway Eliteserien,Kristiansund BK,KFUM,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.08,1.97,-5.3,100,17,,,
+2026-10-25,2026-10-25,Norway Eliteserien,Kristiansund BK,KFUM,O/U 2.5 UNDER,UNDER,STEAM_SHARP,2.08,1.97,-5.3,100,17,LOSS,-1.0,2026-10-26
 2026-10-25,2026-10-28,USA MLS,Toronto FC,D.C. United,1X2 DRAW (Draw),DRAW,STEAM_SHARP,3.9,3.7,-5.1,100,21,,,
 2026-10-25,2026-10-25,Denmark Superliga,FC Midtjylland,Lyngby,O/U 2.5 OVER,OVER,STRONG,1.56,1.37,-12.2,100,3,,,
 2026-10-25,2026-10-25,Austrian Bundesliga,Sturm Graz,Ried,O/U 2.5 OVER,OVER,STRONG,1.57,1.41,-10.2,100,3,,,
