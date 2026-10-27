@@ -17,18 +17,18 @@ player_id,player_name,team,position,number,age
 532,M. de Ligt,Manchester United,D,4.0,26
 305834,Andrey Santos,Manchester United,M,17.0,21
 356041,C. Baleba,Manchester United,M,20.0,21
-1485,Bruno Fernandes,Manchester United,F,8.0,31
+1485,Bruno Fernandes,Manchester United,M,8.0,31
 383770,J. Fletcher,Manchester United,M,38.0,18
 557460,T. Fletcher,Manchester United,M,39.0,19
 284322,K. Mainoo,Manchester United,M,37.0,20
 19220,M. Mount,Manchester United,M,7.0,26
 2926,Y. Tielemans,Manchester United,M,18.0,28
 51494,M. Ugarte,Manchester United,M,25.0,25
-1165,Matheus Cunha,Manchester United,M,10.0,26
-157997,A. Diallo,Manchester United,F,16.0,23
+1165,Matheus Cunha,Manchester United,F,10.0,26
+157997,A. Diallo,Manchester United,M,16.0,23
 517227,J. Gabriel,Manchester United,F,77.0,15
 557462,S. Lacey,Manchester United,F,31.0,19
-20589,B. Mbeumo,Manchester United,M,19.0,26
+20589,B. Mbeumo,Manchester United,F,19.0,26
 909,M. Rashford,Manchester United,F,9.0,28
 115589,B. Šeško,Manchester United,F,30.0,22
 465942,T. Thompson,Manchester United,F,27.0,17
@@ -92,11 +92,11 @@ player_id,player_name,team,position,number,age
 361485,A. Tóth,Bournemouth,M,27.0,20
 18870,D. Brooks,Bournemouth,M,7.0,28
 152856,Evanilson,Bournemouth,F,9.0,26
-343576,B. Doak,Bournemouth,M,11.0,20
+343576,B. Doak,Bournemouth,F,11.0,20
 296458,D. Jebbison,Bournemouth,F,29.0,22
-792,J. Kluivert,Bournemouth,F,19.0,26
+792,J. Kluivert,Bournemouth,M,19.0,26
 368030,E. Kroupi,Bournemouth,F,22.0,19
-407806,Rayan,Bournemouth,F,37.0,19
+407806,Rayan,Bournemouth,M,37.0,19
 343202,Á. Rodríguez,Bournemouth,F,30.0,21
 21566,B. Lecomte,Fulham,G,23.0,34
 1438,B. Leno,Fulham,G,1.0,33
@@ -148,7 +148,7 @@ player_id,player_name,team,position,number,age
 1096,D. Szoboszlai,Liverpool,M,8.0,25
 203224,F. Wirtz,Liverpool,M,7.0,22
 588501,Joshua Abe,Liverpool,F,40.0,15
-161904,B. Barcola,Liverpool,F,29.0,23
+161904,B. Barcola,Liverpool,M,29.0,23
 30410,F. Chiesa,Liverpool,F,14.0,28
 314661,J. Danns,Liverpool,F,9.0,19
 247,C. Gakpo,Liverpool,M,18.0,26
@@ -186,7 +186,7 @@ player_id,player_name,team,position,number,age
 18979,V. Gyökeres,Arsenal,F,14.0,28
 457731,A. Annous,Arsenal,F,43.0,18
 978,K. Havertz,Arsenal,F,29.0,26
-136723,N. Madueke,Arsenal,F,20.0,23
+136723,N. Madueke,Arsenal,M,20.0,23
 446017,C. O’Neill,Arsenal,F,53.0,17
 1460,B. Saka,Arsenal,F,7.0,24
 161800,C. Tzolis,Arsenal,F,17.0,23
@@ -221,7 +221,7 @@ player_id,player_name,team,position,number,age
 265826,A. Kinský,Tottenham,G,31.0,22
 19145,T. Adarabioyo,Tottenham,D,4.0,28
 164,B. Davies,Tottenham,D,33.0,32
-328089,A. Gray,Tottenham,M,14.0,19
+328089,A. Gray,Tottenham,D,14.0,19
 459203,M. Hardy,Tottenham,D,5.0,17
 47519,Pedro Porro,Tottenham,D,23.0,26
 289,A. Robertson,Tottenham,D,3.0,31
@@ -240,12 +240,12 @@ player_id,player_name,team,position,number,age
 18784,J. Maddison,Tottenham,M,10.0,29
 162016,X. Simons,Tottenham,M,7.0,22
 31146,S. Tonali,Tottenham,M,16.0,25
-81573,Omar Marmoush,Tottenham,M,22.0,26
+81573,Omar Marmoush,Tottenham,F,22.0,26
 63577,M. Mudryk,Tottenham,F,27.0,24
 2413,Richarlison,Tottenham,F,9.0,28
 18883,D. Solanke,Tottenham,F,19.0,28
 266657,Sávio,Tottenham,F,17.0,21
-270510,M. Tel,Tottenham,F,11.0,20
+270510,M. Tel,Tottenham,M,11.0,20
 465310,L. Williams-Barnett,Tottenham,M,68.0,17
 19599,E. Martínez,Chelsea,G,1.0,33
 340151,M. Penders,Chelsea,G,39.0,20
@@ -332,7 +332,7 @@ player_id,player_name,team,position,number,age
 383685,Y. Minteh,Brighton,F,11.0,21
 106835,K. Mitoma,Brighton,F,22.0,28
 553958,N. Oriola,Brighton,F,49.0,18
-293643,I. Osman,Brighton,M,15.0,21
+293643,I. Osman,Brighton,F,15.0,21
 90590,G. Rutter,Brighton,F,10.0,23
 524411,Z. Yohanna,Brighton,F,36.0,18
 646915,L. Benetton,Crystal Palace,G,81.0,15
@@ -380,7 +380,7 @@ player_id,player_name,team,position,number,age
 409303,E. Diouf,Brentford,D,25.0,21
 408221,B. Fredrick,Brentford,D,48.0,20
 19346,R. Henry,Brentford,D,3.0,28
-44871,A. Hickey,Brentford,D,2.0,23
+44871,A. Hickey,Brentford,M,2.0,23
 342022,M. Kayode,Brentford,D,33.0,21
 624708,O. Shield,Brentford,D,3.0,19
 36922,S. van den Berg,Brentford,D,4.0,24
@@ -392,11 +392,11 @@ player_id,player_name,team,position,number,age
 106725,K. Lewis-Potter,Brentford,D,23.0,24
 277306,M. Sangaré,Brentford,M,18.0,23
 178077,K. Schade,Brentford,M,7.0,24
-441271,Jannik Schuster,Brentford,M,44.0,19
+441271,Jannik Schuster,Brentford,D,44.0,19
 263538,Y. Yarmolyuk,Brentford,M,6.0,21
-196855,J. Anthony,Brentford,M,19.0,26
+196855,J. Anthony,Brentford,F,19.0,26
 393193,Kaye Iyowuna Furo,Brentford,F,9.0,18
-427736,Gustavo Gomes,Brentford,F,11.0,20
+427736,Gustavo Gomes,Brentford,F,39.0,20
 284797,D. Ouattara,Brentford,M,11.0,23
 196156,Thiago,Brentford,F,9.0,24
 2939,C. Wilson,Brentford,F,13.0,33
@@ -457,10 +457,10 @@ player_id,player_name,team,position,number,age
 557507,O. Pickles,Leeds,M,66.0,18
 177665,A. Stach,Leeds,M,18.0,27
 32966,A. Tanaka,Leeds,M,22.0,27
-19221,H. Wilson,Leeds,F,10.0,28
+19221,H. Wilson,Leeds,M,10.0,28
 18766,D. Calvert-Lewin,Leeds,F,9.0,28
 19461,L. Nmecha,Leeds,F,14.0,27
-48389,N. Okafor,Leeds,M,19.0,25
+48389,N. Okafor,Leeds,F,19.0,25
 2930,J. Butland,Hull City,G,1.0,32
 615629,Archie Howard,Hull City,G,55.0,19
 19811,D. Phillips,Hull City,G,12.0,30
@@ -588,7 +588,7 @@ player_id,player_name,team,position,number,age
 646252,J. Angulo,Sunderland,F,50.0,18
 311543,N. Angulo,Sunderland,M,10.0,22
 38750,B. Brobbey,Sunderland,F,9.0,23
-361348,M. Fofana,Sunderland,M,39.0,20
+361348,M. Fofana,Sunderland,F,39.0,20
 553701,F. Geragusian,Sunderland,F,74.0,18
 84087,W. Isidor,Sunderland,F,18.0,25
 284414,R. Mundle,Sunderland,F,14.0,22
