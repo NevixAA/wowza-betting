@@ -1,12 +1,10 @@
 {
- "generated_at": "2026-10-27T23:06:08Z",
+ "generated_at": "2026-10-27T23:09:42Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-28",
  "leagues_with_current_week_data": 18,
- "missing_leagues": [
-  "League One"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -16,9 +14,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 784,
  "actual_candidate_rows": 784,
- "panel_rows": 296,
+ "panel_rows": 316,
  "settled_rows": 186,
- "pending_rows": 110,
+ "pending_rows": 130,
  "clv_certified_rows": 69,
  "clv_coverage": 0.371,
  "protected_tracks_modified": false,
@@ -708,7 +706,7 @@
   "League One": {
    "current": {
     "league_week_id": "League One|2026-W44",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 17,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 17,
@@ -719,19 +717,19 @@
     "markets": {
      "OU25": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 68,
