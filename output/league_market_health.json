@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-10-26T20:43:56Z",
+ "generated_at": "2026-10-27T00:05:44Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-10-26",
+ "current_tip_day": "2026-10-27",
  "leagues_with_current_week_data": 18,
  "missing_leagues": [],
  "missing_leagues_previous_week": [],
@@ -14,9 +14,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 784,
  "actual_candidate_rows": 784,
- "panel_rows": 216,
+ "panel_rows": 256,
  "settled_rows": 136,
- "pending_rows": 80,
+ "pending_rows": 120,
  "clv_certified_rows": 53,
  "clv_coverage": 0.3897,
  "protected_tracks_modified": false,
@@ -24,7 +24,7 @@
   "Argentina Primera Division": {
    "current": {
     "league_week_id": "Argentina Primera Division|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 14,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 14,
@@ -35,19 +35,19 @@
     "markets": {
      "OU25": {
       "candidates": 14,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 14,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 14,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 14,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 56,
@@ -148,7 +148,7 @@
   "Brazil Serie A": {
    "current": {
     "league_week_id": "Brazil Serie A|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 12,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 12,
@@ -159,19 +159,19 @@
     "markets": {
      "OU25": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 12,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 48,
