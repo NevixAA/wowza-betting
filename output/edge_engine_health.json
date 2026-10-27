@@ -1,29 +1,29 @@
 {
-  "generated_at": "2026-10-27T04:59:46Z",
+  "generated_at": "2026-10-27T10:32:14Z",
   "selection_engine_version": "market_edge_v2",
   "config_status": "UNVALIDATED_DEFAULTS",
   "devig_method": "power",
   "shadow_only": true,
-  "runtime_seconds": 1.64,
+  "runtime_seconds": 1.658,
   "rows_scored": 796,
-  "rows_appended_first_sight": 8,
-  "current_run_book_quotes": 7376,
+  "rows_appended_first_sight": 0,
+  "current_run_book_quotes": 7574,
   "apifootball_book_quotes": {
     "enabled": true,
-    "files_rows": 75332,
+    "files_rows": 93968,
     "board_fixtures": 199,
-    "matched_both_teams": 150,
-    "matched_one_team_ko": 13,
+    "matched_both_teams": 173,
+    "matched_one_team_ko": 15,
     "unmatched_no_league_quotes": 0,
-    "unmatched_not_captured": 26,
-    "unmatched_names": 9,
+    "unmatched_not_captured": 8,
+    "unmatched_names": 2,
     "refused_ambiguous": 0,
     "refused_kickoff_mismatch": 1,
     "rows_post_kickoff_or_future": 0,
-    "rows_other_line_or_market": 4462,
-    "pairs_same_snapshot": 3658,
-    "one_sided_superseded": 0,
-    "runtime_seconds": 0.19
+    "rows_other_line_or_market": 6840,
+    "pairs_same_snapshot": 4393,
+    "one_sided_superseded": 1,
+    "runtime_seconds": 0.199
   },
   "prospective_evidence_loaded": false,
   "coverage": {
@@ -36,18 +36,18 @@
       "states": {
         "NO_BET": 108
       },
-      "legacy_tipped": 10,
-      "median_books": 10.0,
+      "legacy_tipped": 11,
+      "median_books": 11.0,
       "two_sided_by_source": {
-        "oddsapi": 25,
-        "apifootball": 0,
-        "both": 83
+        "oddsapi": 10,
+        "apifootball": 1,
+        "both": 97
       },
       "median_books_two_sided": {
         "oddsapi": 7.0,
-        "apifootball": 3.0
+        "apifootball": 4.0
       },
-      "median_price_age_minutes": 492.5,
+      "median_price_age_minutes": 314.4,
       "reasons": {
         "NO_POSITIVE_EV": 108
       }
@@ -61,53 +61,53 @@
       "states": {
         "NO_BET": 91
       },
-      "legacy_tipped": 3,
+      "legacy_tipped": 4,
       "median_books": 13.0,
       "two_sided_by_source": {
-        "oddsapi": 11,
+        "oddsapi": 1,
         "apifootball": 0,
-        "both": 80
+        "both": 90
       },
       "median_books_two_sided": {
         "oddsapi": 8.0,
         "apifootball": 5.0
       },
-      "median_price_age_minutes": 473.6,
+      "median_price_age_minutes": 339.4,
       "reasons": {
         "NO_POSITIVE_EV": 91
       }
     },
     "OU15|new_format": {
       "fixtures": 108,
-      "two_sided": 85,
-      "two_sided_share": 0.787,
-      "multi_book": 84,
+      "two_sided": 98,
+      "two_sided_share": 0.9074,
+      "multi_book": 98,
       "one_sided": 0,
       "states": {
         "NO_BET": 108
       },
       "legacy_tipped": 4,
-      "median_books": 5.0,
+      "median_books": 6.0,
       "two_sided_by_source": {
-        "oddsapi": 2,
-        "apifootball": 78,
-        "both": 5
+        "oddsapi": 0,
+        "apifootball": 91,
+        "both": 7
       },
       "median_books_two_sided": {
         "oddsapi": 0.0,
-        "apifootball": 5.0
+        "apifootball": 6.0
       },
-      "median_price_age_minutes": 492.5,
+      "median_price_age_minutes": 314.4,
       "reasons": {
-        "NO_POSITIVE_EV": 85,
-        "NO_PRICE": 23
+        "NO_POSITIVE_EV": 98,
+        "NO_PRICE": 10
       }
     },
     "OU15|standard": {
       "fixtures": 91,
-      "two_sided": 80,
-      "two_sided_share": 0.8791,
-      "multi_book": 80,
+      "two_sided": 90,
+      "two_sided_share": 0.989,
+      "multi_book": 90,
       "one_sided": 0,
       "states": {
         "NO_BET": 91
@@ -116,43 +116,43 @@
       "median_books": 6.0,
       "two_sided_by_source": {
         "oddsapi": 0,
-        "apifootball": 80,
+        "apifootball": 90,
         "both": 0
       },
       "median_books_two_sided": {
         "oddsapi": 0.0,
         "apifootball": 6.0
       },
-      "median_price_age_minutes": 473.6,
+      "median_price_age_minutes": 339.4,
       "reasons": {
-        "NO_POSITIVE_EV": 80,
-        "NO_PRICE": 11
+        "NO_POSITIVE_EV": 90,
+        "NO_PRICE": 1
       }
     },
     "OU25|new_format": {
       "fixtures": 108,
       "two_sided": 108,
       "two_sided_share": 1.0,
-      "multi_book": 106,
+      "multi_book": 108,
       "one_sided": 0,
       "states": {
         "NO_BET": 108
       },
       "legacy_tipped": 57,
-      "median_books": 10.0,
+      "median_books": 11.5,
       "two_sided_by_source": {
-        "oddsapi": 25,
+        "oddsapi": 10,
         "apifootball": 0,
-        "both": 83
+        "both": 98
       },
       "median_books_two_sided": {
         "oddsapi": 7.0,
-        "apifootball": 4.0
+        "apifootball": 5.0
       },
-      "median_price_age_minutes": 492.5,
+      "median_price_age_minutes": 314.4,
       "reasons": {
-        "NO_POSITIVE_EV": 99,
-        "NO_POSITIVE_EV; EXTREME_DISAGREEMENT": 9
+        "NO_POSITIVE_EV": 98,
+        "NO_POSITIVE_EV; EXTREME_DISAGREEMENT": 10
       }
     },
     "OU25|standard": {
@@ -168,15 +168,15 @@
       "legacy_tipped": 20,
       "median_books": 14.0,
       "two_sided_by_source": {
-        "oddsapi": 11,
+        "oddsapi": 1,
         "apifootball": 0,
-        "both": 80
+        "both": 90
       },
       "median_books_two_sided": {
         "oddsapi": 11.0,
         "apifootball": 4.0
       },
-      "median_price_age_minutes": 473.6,
+      "median_price_age_minutes": 339.4,
       "reasons": {
         "NO_POSITIVE_EV": 90,
         "EV_LB_NOT_POSITIVE": 1
@@ -184,9 +184,9 @@
     },
     "OU35|new_format": {
       "fixtures": 108,
-      "two_sided": 90,
-      "two_sided_share": 0.8333,
-      "multi_book": 90,
+      "two_sided": 100,
+      "two_sided_share": 0.9259,
+      "multi_book": 100,
       "one_sided": 0,
       "states": {
         "NO_BET": 108
@@ -194,25 +194,25 @@
       "legacy_tipped": 3,
       "median_books": 6.0,
       "two_sided_by_source": {
-        "oddsapi": 7,
-        "apifootball": 47,
-        "both": 36
+        "oddsapi": 2,
+        "apifootball": 56,
+        "both": 42
       },
       "median_books_two_sided": {
         "oddsapi": 0.0,
-        "apifootball": 4.0
+        "apifootball": 5.5
       },
-      "median_price_age_minutes": 492.5,
+      "median_price_age_minutes": 314.4,
       "reasons": {
-        "MARKET_BLOCKED": 90,
-        "NO_PRICE": 18
+        "MARKET_BLOCKED": 100,
+        "NO_PRICE": 8
       }
     },
     "OU35|standard": {
       "fixtures": 91,
-      "two_sided": 81,
-      "two_sided_share": 0.8901,
-      "multi_book": 81,
+      "two_sided": 90,
+      "two_sided_share": 0.989,
+      "multi_book": 90,
       "one_sided": 0,
       "states": {
         "NO_BET": 91
@@ -220,18 +220,18 @@
       "legacy_tipped": 0,
       "median_books": 6.0,
       "two_sided_by_source": {
-        "oddsapi": 1,
-        "apifootball": 56,
+        "oddsapi": 0,
+        "apifootball": 66,
         "both": 24
       },
       "median_books_two_sided": {
         "oddsapi": 0.0,
-        "apifootball": 5.0
+        "apifootball": 6.0
       },
-      "median_price_age_minutes": 473.6,
+      "median_price_age_minutes": 339.4,
       "reasons": {
-        "MARKET_BLOCKED": 81,
-        "NO_PRICE": 10
+        "MARKET_BLOCKED": 90,
+        "NO_PRICE": 1
       }
     }
   }
