@@ -1,13 +1,10 @@
 {
- "generated_at": "2026-10-27T18:52:46Z",
+ "generated_at": "2026-10-27T19:38:29Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-27",
  "leagues_with_current_week_data": 18,
- "missing_leagues": [
-  "Serie B",
-  "Sweden Allsvenskan"
- ],
+ "missing_leagues": [],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -17,9 +14,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 784,
  "actual_candidate_rows": 784,
- "panel_rows": 256,
+ "panel_rows": 296,
  "settled_rows": 166,
- "pending_rows": 90,
+ "pending_rows": 130,
  "clv_certified_rows": 60,
  "clv_coverage": 0.3614,
  "protected_tracks_modified": false,
@@ -1081,7 +1078,7 @@
   "Serie B": {
    "current": {
     "league_week_id": "Serie B|2026-W44",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 20,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 20,
@@ -1092,19 +1089,19 @@
     "markets": {
      "OU25": {
       "candidates": 20,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 20,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 20,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 20,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 80,
@@ -1143,7 +1140,7 @@
   "Sweden Allsvenskan": {
    "current": {
     "league_week_id": "Sweden Allsvenskan|2026-W44",
-    "state": "LOCKED_NOT_FROZEN",
+    "state": "FROZEN",
     "fixtures_known": 13,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 13,
@@ -1154,19 +1151,19 @@
     "markets": {
      "OU25": {
       "candidates": 13,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 13,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 13,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 13,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 52,
