@@ -187,6 +187,15 @@ jobs:
           # comparison would pool the two silently.
           REQUIRE_FORM_DATA: "0"
           REQUIRE_FORM_DATA_UNTIL: "2026-09-15"
+          # STANDARD O/U 2.5 SERVING RECIPE (owner Nevo, 2026-10-28: "switch Standard now"). Standard
+          # fixtures' p_over25 comes from models/model_v9_standard_repaired.pkl on repaired as-of features
+          # (src/standard_serving.py). New Format, BTTS/O1.5/O3.5 and HT are unaffected; thresholds,
+          # tiers, stakes and Telegram logic are unchanged. Every row says which served it
+          # (predictions.csv serving_recipe + model_version; ledger model_version).
+          # ROLLBACK = set this to "legacy_v9" (or delete the line). models/model_v9_standard.pkl is the
+          # untouched legacy champion. A missing/broken repaired file falls back to legacy per row,
+          # stamped legacy_v9_fallback (system_health turns RED).
+          STANDARD_OU25_SERVING_RECIPE: "v9_repaired"
           LEAGUE_SNIPER_CAP: "0.12"
           MARKSMAN_THRESHOLD: "0.08"
           VALUABLE_THRESHOLD: "0.03"
