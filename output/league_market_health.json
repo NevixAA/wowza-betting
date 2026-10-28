@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T15:05:50Z",
+ "generated_at": "2026-10-28T20:16:22Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-28",
@@ -14,9 +14,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 788,
  "actual_candidate_rows": 788,
- "panel_rows": 316,
+ "panel_rows": 332,
  "settled_rows": 200,
- "pending_rows": 116,
+ "pending_rows": 132,
  "clv_certified_rows": 76,
  "clv_coverage": 0.38,
  "protected_tracks_modified": false,
@@ -458,7 +458,7 @@
   "Finland Veikkausliiga": {
    "current": {
     "league_week_id": "Finland Veikkausliiga|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 4,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 4,
@@ -469,19 +469,19 @@
     "markets": {
      "OU25": {
       "candidates": 4,
-      "panel_rows": 0
+      "panel_rows": 4
      },
      "BTTS": {
       "candidates": 4,
-      "panel_rows": 0
+      "panel_rows": 4
      },
      "OVER15": {
       "candidates": 4,
-      "panel_rows": 0
+      "panel_rows": 4
      },
      "OVER35": {
       "candidates": 4,
-      "panel_rows": 0
+      "panel_rows": 4
      }
     },
     "expected_candidate_rows": 16,
