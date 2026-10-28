@@ -383,6 +383,30 @@ def contracts_check() -> tuple[dict, dict]:
              "files": files})
 
 
+def standard_serving_health() -> dict:
+    """Standard O/U 2.5 serving switch (owner 2026-10-28, src/standard_serving.py)."""
+    rule = ("GREEN if the committed board has no serving_recipe column (switch off: legacy_v9) or every "
+            "Standard row is served by v9_repaired with a registered standard_repaired model_version; RED "
+            "if any Standard row fell back to legacy (legacy_v9_fallback) or a repaired row's model is "
+            "unregistered")
+    p = OUT / "predictions.csv"
+    if not p.exists():
+        return _c("Standard OU25 serving", GREEN, "no board to check", rule)
+    d = _csv(p, dtype=str, keep_default_na=False)
+    if "serving_recipe" not in d.columns:
+        return _c("Standard OU25 serving", GREEN, "legacy_v9 (switch off)", rule)
+    std = d[d.get("model_type", pd.Series("", index=d.index)).astype(str) == "standard"]
+    rec = std["serving_recipe"].astype(str)
+    n_fb, n_rep = int((rec == "legacy_v9_fallback").sum()), int((rec == "v9_repaired").sum())
+    mv = std.loc[rec == "v9_repaired", "model_version"].astype(str) if "model_version" in std.columns \
+        else pd.Series(dtype=str)
+    bad_mv = int((~mv.str.startswith("standard_repaired_")).sum())
+    st = RED if (n_fb or bad_mv) else GREEN
+    return _c("Standard OU25 serving", st,
+              f"v9_repaired on {n_rep}/{len(std)} Standard rows, {n_fb} legacy fallback(s)", rule,
+              (f"{bad_mv} repaired row(s) without a registered standard_repaired version" if bad_mv else ""))
+
+
 def promotion_gate_health(now: datetime) -> dict:
     rule = ("RED if output/model_lineage/promotion_decisions.csv is missing/unreadable, or a champion in "
             "models/registry/current_champions.json differs from the latest PROMOTED decision for its model type "
@@ -515,7 +539,8 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
     checks.append(c_check)
     fs_check, fs = first_sight_integrity(prior.get("first_sight"))
     checks.append(fs_check)
-    for fn in (lambda: promotion_gate_health(now), lambda: edge_shadow_health(now), track_registry_check):
+    for fn in (lambda: promotion_gate_health(now), lambda: edge_shadow_health(now), track_registry_check,
+               standard_serving_health):
         try:
             checks.append(fn())
         except Exception as e:                                         # noqa: BLE001
