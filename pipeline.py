@@ -362,6 +362,13 @@ def _log_h2h(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -> N
         now = datetime.now(timezone.utc).isoformat()
         tag = (preds["model_type"].astype(str).map(reg.ou_model_for)
                if "model_type" in preds.columns else pd.Series("standard", index=preds.index))
+        # Standard O/U 2.5 serving switch (2026-10-28): rows the repaired model served are logged
+        # under "standard_repaired" with ITS version, so a legacy "standard" row never carries a
+        # p_served the legacy champion did not produce. Column absent when the switch is off.
+        if "serving_recipe" in preds.columns and "model_type" in preds.columns:
+            tag = pd.Series([reg.ou_model_for_row(t, r) for t, r in
+                             zip(preds["model_type"].astype(str),
+                                 preds["serving_recipe"].astype(str))], index=preds.index)
         frames = []
         exp_types: set = set()
         if exp_rows is not None and not exp_rows.empty:
@@ -382,7 +389,8 @@ def _log_h2h(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -> N
         for mt, col in reg.PRED_COLUMN.items():
             if col not in preds.columns:
                 continue
-            sub = preds[tag == mt] if mt in ("standard", "newformat") else preds
+            sub = (preds[tag == mt] if mt in ("standard", "newformat", "standard_repaired")
+                   else preds)
             sub = sub[pd.to_numeric(sub[col], errors="coerce").notna()]
             if mt in exp_types and not reg.challenger_path(mt).exists():
                 # Fixtures an experiment already logged need no champion-only blank row.
