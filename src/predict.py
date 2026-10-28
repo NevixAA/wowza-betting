@@ -352,6 +352,14 @@ def predict_upcoming(
         probas[unknown_mask.values] = p_unk.values
         log.info(f"  Fallback (unknown league): {unknown_mask.sum()} fixtures")
 
+    # Standard O/U 2.5 serving recipe (owner 2026-10-28, config.STANDARD_OU25_SERVING_RECIPE).
+    # legacy_v9 (default): a no-op — nothing above or below changes. v9_repaired: the Standard rows'
+    # over25 probability is replaced by the repaired payload's, scored on repaired as-of features
+    # built from `historical` alone; `feat` itself (which the side/HT models read below) is not
+    # modified except for the added serving_recipe / serving_no_form columns. Never raises.
+    from src import standard_serving as _std_serving
+    probas = _std_serving.apply(feat, std_mask, probas, historical)
+
     feat["p_over25"]   = probas
     feat["model_type"] = "unknown"
     feat.loc[std_mask, "model_type"] = "standard"
