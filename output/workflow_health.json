@@ -1,6 +1,13 @@
 {
- "generated_at": "2026-10-27T12:44:10Z",
- "runs_24h": 125,
- "failures_24h": 0,
- "failures": []
+ "generated_at": "2026-10-28T12:37:27Z",
+ "runs_24h": 116,
+ "failures_24h": 1,
+ "failures": [
+  {
+   "repo": "wowzaV9-Pro",
+   "workflow": "Pro Standard Repair BENCHMARK (forensic phase 2, manual)",
+   "at": "2026-10-28T09:31:40Z",
+   "sha": "6af395d6"
+  }
+ ]
 }
