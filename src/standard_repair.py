@@ -161,7 +161,12 @@ def load_fd_entry_prices(fd_raw_dir) -> pd.DataFrame:
         lg = inv.get(code)
         if not lg:
             continue
-        raw = pd.read_csv(p, encoding="utf-8-sig", on_bad_lines="skip", low_memory=False)
+        try:
+            raw = pd.read_csv(p, encoding="utf-8-sig", on_bad_lines="skip", low_memory=False)
+        except UnicodeDecodeError:
+            # some football-data files are Windows-1252 (e.g. byte 0x92, a curly apostrophe)
+            raw = pd.read_csv(p, encoding="cp1252", encoding_errors="replace",
+                              on_bad_lines="skip", low_memory=False)
         if "Date" not in raw.columns:
             continue
         px = fd_entry_closing(raw)
