@@ -300,6 +300,25 @@ FOOTBALL_DATA_LEAGUES = {
 TARGET_COL  = "over25"
 ROLLING_N   = 5
 
+# ── Model recipe switch (Standard forensic repair, 2026-10-28) ────────────────
+# "legacy_v9"   = the recipe production trains and serves today, defects included. DEFAULT.
+# "v9_repaired" = persisted train-only imputer, one canonical train/serve feature builder
+#                 (src/features_repaired.py), league-scoped team stats, four-block chronological
+#                 stacking, weights attached to rows, price features selectable.
+# RESEARCH ONLY: pipeline.mode_train / predict never read this (they call the legacy defaults);
+# it is honoured by the research entry point `python -m src.standard_repair`. Moving production
+# to the repaired recipe is an owner-approved serving change, and src/model_registry.payload_bytes
+# would first have to persist payload["imputer"].
+MODEL_RECIPES = ("legacy_v9", "v9_repaired")
+MODEL_RECIPE = os.getenv("WOWZA_MODEL_RECIPE", "legacy_v9").strip() or "legacy_v9"
+if MODEL_RECIPE not in MODEL_RECIPES:
+    MODEL_RECIPE = "legacy_v9"
+# Price-derived features in the repaired recipe: none | asof (entry price only) | closing (legacy).
+MARKET_FEATURE_MODES = ("none", "asof", "closing")
+MARKET_FEATURE_MODE = os.getenv("WOWZA_MARKET_FEATURE_MODE", "none").strip() or "none"
+if MARKET_FEATURE_MODE not in MARKET_FEATURE_MODES:
+    MARKET_FEATURE_MODE = "none"
+
 # ── Training data filters ─────────────────────────────────────────────────────
 # Exclude COVID seasons — empty stadiums created anomalous patterns not present today
 EXCLUDE_COVID_SEASONS = True

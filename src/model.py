@@ -121,8 +121,20 @@ FEATURE_COLS = [
 ]
 
 
-def _prep(df: pd.DataFrame, feat_cols: list[str] = None) -> tuple[pd.DataFrame, list[str]]:
-    """Select and impute feature columns."""
+def _prep(df: pd.DataFrame, feat_cols: list[str] = None,
+          imputer=None) -> tuple[pd.DataFrame, list[str]]:
+    """Select and impute feature columns.
+
+    imputer=None (LEGACY, every serving payload): fill with the median OF THIS FRAME — the
+    batch-median defect (P0 bug 1): a row's value depends on the other rows passed with it.
+    imputer=<manifest> (recipe v9_repaired): fill from the persisted TRAINING distribution, so a
+    row's value depends only on that row. All declared features are kept, in payload order.
+    """
+    if imputer is not None:
+        from src.imputer import apply_imputer
+        cols = list(feat_cols or FEATURE_COLS)
+        X, _deg, _rep = apply_imputer(df, imputer, cols)
+        return X, cols
     cols = [c for c in (feat_cols or FEATURE_COLS) if c in df.columns]
     X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
     col_medians = X.median().fillna(0.0)
@@ -138,12 +150,23 @@ def train(
     train_ratio: float = 0.8,
     sample_weight=None,
     feature_cols: "list[str] | None" = None,
+    recipe: str = "legacy_v9",
 ) -> dict:
     """
     Train on the chronological training split, calibrate on the test split.
     sample_weight: array-like of per-row weights (time-decay etc.), same length as df.
     Returns dict: {model_name: {"model", "metrics", "feature_cols"}}
+
+    recipe="legacy_v9" (DEFAULT — pipeline.mode_train never passes anything else) is the code
+    below, unchanged, defects included: batch-median imputation (bug 1), the meta-logistic fitted
+    AND reported on the same test block (bug 6), and weights indexed by a reset index (bug 8).
+    recipe="v9_repaired" -> train_repaired() (research only).
     """
+    if recipe == "v9_repaired":
+        return train_repaired(df, target=target, sample_weight=sample_weight,
+                              feature_cols=feature_cols)
+    if recipe != "legacy_v9":
+        raise ValueError(f"unknown model recipe {recipe!r}")
     import numpy as np
     df = df.dropna(subset=[target]).copy().sort_values("date").reset_index(drop=True)
     split   = int(len(df) * train_ratio)
@@ -258,6 +281,199 @@ def train(
     return results
 
 
+# ── Recipe v9_repaired (Standard forensic repair 2026-10-28) — RESEARCH ONLY ──────
+
+MODEL_RECIPE_VERSION = "v9_repaired-1.0"
+#: chronological block boundaries (fractions of the time-ordered labelled rows). The holdout is
+#: the newest 20% — the same rows `chronological_split` holds out — so legacy and repaired are
+#: scored on IDENTICAL untouched fixtures.
+FOUR_BLOCKS = {"base": (0.00, 0.64), "calibration": (0.64, 0.72),
+               "meta": (0.72, 0.80), "holdout": (0.80, 1.00)}
+
+
+class TrainResults(dict):
+    """A plain {model_name: {...}} dict (every existing reader keeps working) that also carries
+    the recipe metadata `build_payload` persists: imputer, blocks, versions."""
+    def __init__(self, *a, meta: "dict | None" = None, **k):
+        super().__init__(*a, **k)
+        self.meta = dict(meta or {})
+
+
+def _rows_with_weights(df: pd.DataFrame, target: str, sample_weight) -> pd.DataFrame:
+    """Attach the weight TO THE ROW before any filter or sort (bug 8).
+
+    A pd.Series is aligned by index label; an array must have one entry per row of `df` as
+    passed. A length mismatch is an error — never a silent fallback to ones.
+    """
+    d = df.copy()
+    if sample_weight is None:
+        d["_w"] = 1.0
+    elif isinstance(sample_weight, pd.Series):
+        w = sample_weight.reindex(d.index)
+        if w.isna().any():
+            raise ValueError("sample_weight Series does not cover every row of df")
+        d["_w"] = w.to_numpy(dtype=float)
+    else:
+        w = np.asarray(sample_weight, dtype=float)
+        if len(w) != len(d):
+            raise ValueError(f"sample_weight has {len(w)} entries for {len(d)} rows")
+        d["_w"] = w
+    d = d.dropna(subset=[target])
+    tie = [c for c in ("league", "home_team", "away_team") if c in d.columns]
+    return d.sort_values(["date"] + tie, kind="mergesort").reset_index(drop=True)
+
+
+def four_block_split(df: pd.DataFrame, target: str, sample_weight=None) -> dict:
+    """BASE TRAIN -> CALIBRATION -> META TRAIN -> UNTOUCHED HOLDOUT, strictly chronological.
+
+    Boundaries are cut on whole dates where possible: a date that straddles a cut goes to the
+    LATER block, so no block shares a matchday with the block before it.
+    """
+    d = _rows_with_weights(df, target, sample_weight)
+    n = len(d)
+    dates = pd.to_datetime(d["date"]).to_numpy()
+    cuts = {}
+    for name, (lo, hi) in FOUR_BLOCKS.items():
+        cuts[name] = int(round(n * hi)) if hi < 1 else n
+    bounds, start = {}, 0
+    for name in FOUR_BLOCKS:
+        end = cuts[name]
+        if end < n and end > start:
+            # move the cut back to the first row of the straddling date
+            first_of_day = int(np.searchsorted(dates, dates[end], side="left"))
+            end = max(start, first_of_day)
+        bounds[name] = (start, end)
+        start = end
+    return {name: d.iloc[a:b].copy() for name, (a, b) in bounds.items()}
+
+
+def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
+                   feature_cols: "list[str] | None" = None) -> TrainResults:
+    """Same model family as legacy (LR + GB + LightGBM, Platt, meta-logistic), with every P0
+    training defect removed:
+
+      bug 1  imputer fitted on BASE rows only, persisted, applied to every block and to serving;
+      bug 6  calibrators fit on CALIBRATION, meta-logistic on META, all metrics on the untouched
+             HOLDOUT — no reported number comes from rows any stage was fitted on;
+      bug 8  weights travel with their rows (`_rows_with_weights`).
+    """
+    from src.imputer import fit_imputer, IMPUTER_VERSION
+    feat_cols = list(feature_cols or FEATURE_COLS)
+    blocks = four_block_split(df, target, sample_weight)
+    base, cal, meta_b, hold = (blocks["base"], blocks["calibration"], blocks["meta"],
+                               blocks["holdout"])
+    if min(len(base), len(cal), len(meta_b), len(hold)) < 20:
+        raise ValueError(f"too few rows for four-block training: "
+                         f"{[len(b) for b in blocks.values()]}")
+    imputer = fit_imputer(base, feat_cols)
+    X_base, _ = _prep(base, feat_cols, imputer=imputer)
+    X_cal, _ = _prep(cal, feat_cols, imputer=imputer)
+    X_meta, _ = _prep(meta_b, feat_cols, imputer=imputer)
+    X_hold, _ = _prep(hold, feat_cols, imputer=imputer)
+    y_base, y_cal = base[target].to_numpy(), cal[target].to_numpy()
+    y_meta, y_hold = meta_b[target].to_numpy(), hold[target].to_numpy()
+    w_base, w_cal = base["_w"].to_numpy(), cal["_w"].to_numpy()
+
+    models_cfg = [
+        ("logistic", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
+        ("gradient_boost", GradientBoostingClassifier(
+            n_estimators=300, max_depth=4, learning_rate=0.05,
+            subsample=0.8, min_samples_leaf=20, random_state=42)),
+    ]
+    try:
+        from lightgbm import LGBMClassifier
+        models_cfg.append(("lightgbm", LGBMClassifier(
+            n_estimators=200, learning_rate=0.05, max_depth=6, num_leaves=31, subsample=0.8,
+            colsample_bytree=0.8, min_child_samples=20, random_state=42, verbose=-1, n_jobs=-1)))
+    except ImportError:
+        pass
+
+    def _m(y, p):
+        p = np.clip(p, 1e-15, 1 - 1e-15)
+        return {"accuracy": round(accuracy_score(y, p >= 0.5), 4),
+                "auc": round(roc_auc_score(y, p), 4) if len(set(y)) > 1 else None,
+                "log_loss": round(log_loss(y, p, labels=[0, 1]), 5),
+                "brier": round(float(np.mean((p - y) ** 2)), 5)}
+
+    results = TrainResults()
+    for name, base_clf in models_cfg:
+        pipe = Pipeline([("scaler", StandardScaler()), ("clf", base_clf)])
+        pipe.fit(X_base, y_base, clf__sample_weight=w_base)
+        platt = LogisticRegression(C=1.0, max_iter=1000)
+        platt.fit(pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1), y_cal, sample_weight=w_cal)
+        calibrated = _CalibratedModel(pipe, platt)
+        metrics = _m(y_hold, calibrated.predict_proba(X_hold)[:, 1])
+        metrics.update(n_train=int(len(base)), n_cal=int(len(cal)), n_meta=int(len(meta_b)),
+                       n_test=int(len(hold)), evaluated_on="holdout")
+        results[name] = {"model": calibrated, "metrics": metrics, "feature_cols": feat_cols}
+
+    served_hold = None
+    if len(results) >= 2:
+        meta_X = np.column_stack([results[k]["model"].predict_proba(X_meta)[:, 1] for k in results])
+        meta_clf = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs")
+        meta_clf.fit(meta_X, y_meta)
+        hold_X = np.column_stack([results[k]["model"].predict_proba(X_hold)[:, 1] for k in results])
+        served_hold = meta_clf.predict_proba(hold_X)[:, 1]
+        mm = _m(y_hold, served_hold)
+        mm.update(n_meta=int(len(meta_b)), n_test=int(len(hold)), evaluated_on="holdout")
+        results["__meta__"] = {"model": meta_clf, "metrics": mm, "feature_cols": list(results)}
+    else:
+        served_hold = results[next(iter(results))]["model"].predict_proba(X_hold)[:, 1]
+
+    def _rng(b):
+        return [str(pd.Timestamp(b["date"].min()).date()), str(pd.Timestamp(b["date"].max()).date())]
+    results.meta = {
+        "recipe": "v9_repaired", "model_recipe_version": MODEL_RECIPE_VERSION,
+        "imputer": imputer.to_dict(), "imputer_version": IMPUTER_VERSION,
+        "blocks": {k: {"rows": int(len(b)), "dates": _rng(b)} for k, b in blocks.items()},
+        "served_holdout_metrics": _m(y_hold, served_hold),
+        "target": target,
+    }
+    log.info(f"  [v9_repaired] served holdout {results.meta['served_holdout_metrics']}  "
+             f"blocks={ {k: v['rows'] for k, v in results.meta['blocks'].items()} }")
+    return results
+
+
+def build_payload(results: dict, target: str = "over25") -> dict:
+    """The payload `save_models` writes. Legacy results -> exactly the legacy dict; repaired
+    results additionally carry `imputer`, `recipe` and the block/version metadata."""
+    payload = {
+        "target":       target,
+        "models":       {k: v["model"] for k, v in results.items()},
+        "feature_cols": results[next(iter(results))]["feature_cols"],
+        "metrics":      {k: v["metrics"] for k, v in results.items()},
+    }
+    payload.update(getattr(results, "meta", {}) or {})
+    return payload
+
+
+def score_served(payload: dict, df: pd.DataFrame, target: str) -> dict:
+    """Log loss / Brier of the probability predict_proba actually SERVES (bug 7).
+
+    `score_payload` averages the sub-models' log losses and skips `__meta__`, but production
+    serves the meta-logistic blend, so that number describes a model nobody serves. This scores
+    the served probability. Diagnostics per sub-model are included, never used for a decision.
+    """
+    y = pd.to_numeric(df[target], errors="coerce").to_numpy(dtype=float)
+    ok = np.isfinite(y)
+    p = np.clip(np.asarray(predict_proba(df, payload=payload), dtype=float), 1e-15, 1 - 1e-15)
+    ok &= np.isfinite(p)
+    out = {"n": int(ok.sum()),
+           "log_loss": float(log_loss(y[ok], p[ok], labels=[0, 1])) if ok.any() else float("nan"),
+           "brier": float(np.mean((p[ok] - y[ok]) ** 2)) if ok.any() else float("nan"),
+           "submodel_mean_log_loss_diagnostic": score_payload(payload, df[ok], target)}
+    return out
+
+
+def compare_served(champion: dict, challenger: dict, df: pd.DataFrame, target: str) -> dict:
+    """Canonical comparison: served champion probability vs served challenger probability on the
+    IDENTICAL rows. Negative `delta_log_loss` = challenger better. Read-only; decides nothing."""
+    a, b = score_served(champion, df, target), score_served(challenger, df, target)
+    return {"n": a["n"], "champion": a, "challenger": b,
+            "delta_log_loss": b["log_loss"] - a["log_loss"],
+            "delta_brier": b["brier"] - a["brier"]}
+
+
 # ── Persistence ───────────────────────────────────────────────────────────────
 
 def save_models(results: dict, target: str = "over25",
@@ -275,12 +491,7 @@ def save_models(results: dict, target: str = "over25",
     if path.resolve() in serving:
         raise PermissionError(f"{path.name} is a SERVING model file; only src/promotion_gate.py "
                               f"may write it (submit the candidate to the gate instead)")
-    payload = {
-        "target":       target,
-        "models":       {k: v["model"] for k, v in results.items()},
-        "feature_cols": results[next(iter(results))]["feature_cols"],
-        "metrics":      {k: v["metrics"] for k, v in results.items()},
-    }
+    payload = build_payload(results, target)
     with open(path, "wb") as f:
         pickle.dump(payload, f)
 
@@ -326,7 +537,7 @@ def score_payload(payload: dict, df: pd.DataFrame, target: str) -> float:
     """
     import numpy as np
     from sklearn.metrics import log_loss as _ll
-    X, _ = _prep(df, payload.get("feature_cols"))
+    X, _ = _prep(df, payload.get("feature_cols"), imputer=payload.get("imputer"))
     y = df[target].values
     out = []
     for name, m in (payload.get("models") or {}).items():
@@ -352,7 +563,9 @@ def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
         payload = load_models(model_file)
 
     feat_cols  = payload["feature_cols"]
-    X, _       = _prep(df, feat_cols)
+    # payload["imputer"] exists only on v9_repaired payloads; serving payloads have none, so
+    # this is the legacy call exactly.
+    X, _       = _prep(df, feat_cols, imputer=payload.get("imputer"))
     base_models = {k: v for k, v in payload["models"].items() if k != "__meta__"}
     meta_model  = payload["models"].get("__meta__")
 
