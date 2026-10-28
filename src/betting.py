@@ -374,6 +374,11 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     _present = [c for c in _CORE_FORM if c in df.columns]
     if _present:
         _blind = df[_present].isna().any(axis=1)
+        # Standard O/U 2.5 served by the REPAIRED recipe (src/standard_serving.py) is blind when ITS
+        # OWN form features are missing. The column exists only when STANDARD_OU25_SERVING_RECIPE is
+        # v9_repaired, so the legacy path is unchanged. O/U 2.5 only.
+        if p_col == "p_over25" and "serving_no_form" in df.columns:
+            _blind = _blind | df["serving_no_form"].astype("boolean").fillna(False).astype(bool)
         df["no_form_data"] = _blind
         # REQUIRE_FORM_DATA (env, default "1") is the blind-fixture guard of invariant 8.
         #
@@ -478,6 +483,9 @@ def generate_bets(df: pd.DataFrame) -> pd.DataFrame:
         "bet", "bet_stake", "signal_tier",
         "drift_signal", "over_drift", "under_drift", "odds_snapshots",
         "both_losing", "min_odds_blocked", "model_type",
+        # Standard O/U 2.5 serving switch (2026-10-28): present only when the switch is on, so the
+        # legacy bets.csv is unchanged; lets the ledger attribute the row to the repaired model.
+        "serving_recipe",
     ]
     output_cols = [c for c in output_cols if c in visible.columns]
     return visible[output_cols].reset_index(drop=True)
