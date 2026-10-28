@@ -1,0 +1,98 @@
+name: Std O/U 1.5 History Backfill (research)
+
+# RESEARCH-ONLY OddsAPI HISTORICAL backfill of full-match O/U 1.5 + 3.5 prices for the 7 Standard
+# bet leagues, seasons 2025-26 then 2024-25. Owner approved 2026-10-28 ("wait for the credit reset,
+# then run it"). scripts/backfill_std_ou15_history.py documents the endpoints, the exact-match
+# parser and the guards.
+#
+# ISOLATION. Writes ONLY output/research/std_ou15_history_backfill.csv and
+# output/research/std_ou15_backfill_state.json. Nothing in production reads output/research/; the
+# training file output/standard_sidemarket_odds_history.csv is never written. Merging the rows into
+# training is a later OWNER decision. No model, tip, stake or Telegram is touched.
+#
+# CREDITS. OddsAPI credits are shared with predict, the props snapshots and the exchange capture,
+# and production comes first. Step 1 is a 0-credit balance check (GET /v4/sports) that records a
+# ledger point and decides RUN/SKIP: SKIP while remaining < 60,000 (no reset yet), while the
+# backfill is complete, or while remaining is inside the live-usage reserve (measured burn x days
+# to the next reset x 1.15, never below 25,000). A RUN spends at most 8,000 credits.
+#
+# Once daily on purpose: not time-sensitive, and a once-daily cron is delivered ~100% (late).
+
+concurrency:
+  group: std-ou15-history-backfill
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '47 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    # 8,000 credits = ~760 event calls + a few hundred list calls at ~0.5-1 s each: ~15-20 min.
+    timeout-minutes: 60
+    env:
+      OU15_START_THRESHOLD: "60000"
+      OU15_FLOOR_MIN: "25000"
+      OU15_RUN_CAP: "8000"
+      OU15_LIVE_BURN_PER_DAY: "3400"
+      OU15_CYCLE_DAYS: "30"
+      OU15_RESERVE_SAFETY: "1.15"
+      OU15_DYNAMIC_RESERVE: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Stdlib + requests only (src/team_names is pure stdlib): no full requirements install.
+      - run: pip install "requests>=2.31.0" pytest
+
+      - name: Tests (parser + guards)
+        run: python -m pytest tests/test_backfill_std_ou15.py -q
+
+      - name: Balance check (0 credits)
+        id: check
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python scripts/backfill_std_ou15_history.py --check | tee check.txt
+
+      - name: Backfill
+        if: steps.check.outputs.run == 'true'
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: |
+          set -o pipefail
+          python scripts/backfill_std_ou15_history.py 2>&1 | tee run.txt
+
+      - name: Summary
+        if: always()
+        run: |
+          { echo '## Std O/U 1.5 history backfill'; echo '```'
+            cat check.txt 2>/dev/null; tail -n 15 run.txt 2>/dev/null
+            python scripts/backfill_std_ou15_history.py --status 2>/dev/null | tail -n 20
+            echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit (research files only, one per commit)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          committed=0
+          for f in output/research/std_ou15_history_backfill.csv output/research/std_ou15_backfill_state.json; do
+            [ -f "$f" ] || continue
+            git add -f "$f" && { git diff --staged --quiet || { git commit -m "auto: std O/U 1.5 history backfill $(basename "$f") $(date -u '+%Y-%m-%d %H:%M UTC')" && committed=1; }; }
+          done
+          [ "$committed" = "1" ] || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash -X theirs origin main && git push && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          echo "push failed after 5 retries"; exit 1
