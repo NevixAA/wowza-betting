@@ -1,0 +1,163 @@
+name: Standard OU25 repaired model (train + preview / owner install)
+
+# Owner decision 2026-10-28 (Nevo): "switch Standard now" — Standard O/U 2.5 serving moves from the
+# legacy v9 model to the repaired recipe, BEFORE forward evidence, by explicit owner override.
+# Scope: Standard OU25 only. New Format, BTTS/O1.5/O3.5 and HT models are untouched.
+#
+# DISPATCH ONLY. Nothing here is scheduled, so no retrain can run it by accident, and retrain.yml
+# never trains, gates or stages models/model_v9_standard_repaired.pkl (model type
+# "standard_repaired" is FROZEN in src/model_registry.FROZEN_MODEL_TYPES).
+#
+#   mode=preview  (no commit, nothing installed; dispatch with --ref <branch> before the code is on main)
+#                 train on rows strictly before today (UTC) -> payload + training record ->
+#                 scripts/standard_switch_preview.py on MAIN's committed board/ledgers/odds ->
+#                 one artifact "standard-repaired-<run_id>" (payload, record, preview csv/json/md).
+#   mode=install  (main only, after the owner has seen the preview and the code is on main)
+#                 downloads the EXACT payload of `preview_run_id`, checks its sha256, and installs
+#                 it through src.promotion_gate.owner_install with the owner's approval text ->
+#                 commits the serving file + registry + lineage to main, file by file.
+#                 This does NOT switch serving: predict reads the file only once predict.yml sets
+#                 STANDARD_OU25_SERVING_RECIPE: "v9_repaired" (a separate, owner-approved commit).
+#
+# Training data: v9's own loader (src.data_loader.load_all_matches, football-data download + the
+# committed fd_history / af_history banks), with the SAME data env predict uses (no API keys, no
+# WOWZA_FULL_ENRICH, archive default) — the repaired recipe's point is train/serve parity of the
+# as-of features, and this is also the env the Pro benchmark (LL gap 0.0111 vs 0.0184) ran in.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'preview | install'
+        required: true
+        default: 'preview'
+        type: choice
+        options: [preview, install]
+      preview_run_id:
+        description: 'install: run id of the preview run whose payload the owner approved'
+        required: false
+        default: ''
+      expected_sha256:
+        description: 'install: sha256 of that payload (from its training_record.json / preview_summary.json)'
+        required: false
+        default: ''
+      approved_by:
+        description: 'install: approver'
+        required: false
+        default: 'Nevo (owner)'
+      approval:
+        description: 'install: owner approval text (recorded verbatim in manifest, pointer, lineage)'
+        required: false
+        default: 'Nevo (owner) 2026-10-28: switch Standard OU25 to repaired recipe before forward evidence; rollback = set STANDARD_OU25_SERVING_RECIPE=legacy_v9'
+      supersede:
+        description: 'install: exact current standard_repaired version to replace (blank for the first install)'
+        required: false
+        default: ''
+
+env:
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  preview:
+    if: inputs.mode == 'preview'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    concurrency:
+      group: standard-repaired-preview
+      cancel-in-progress: false
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4          # code = the dispatched ref (the branch before landing)
+      - name: Board, ledgers, odds history and data banks from MAIN (latest committed state)
+        run: |
+          set -euo pipefail
+          git fetch --depth 1 origin main
+          git checkout FETCH_HEAD -- output/predictions.csv      # the board itself is mandatory
+          for f in output/bets_ledger.csv output/side_bets_ledger.csv odds_history_v9.json \
+                   output/fd_history.parquet output/af_history.parquet; do
+            git checkout FETCH_HEAD -- "$f" || echo "  (not on main, branch copy kept: $f)"
+          done
+          echo "board from main $(git rev-parse --short FETCH_HEAD): $(wc -l < output/predictions.csv) lines"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies (same requirements as predict)
+        run: pip install -r requirements.txt
+      - name: Train (rows strictly before today UTC) - FAILS on any integrity failure
+        run: python scripts/train_standard_repaired.py --out _artifact
+      - name: Preview on main's committed board (read-only, predict passes offline)
+        run: python scripts/standard_switch_preview.py --payload _artifact/standard_repaired_over25.pkl --out _artifact --history-network
+      - name: Summary
+        if: always()
+        run: |
+          [ -f _artifact/preview_report.md ] && cat _artifact/preview_report.md >> "$GITHUB_STEP_SUMMARY" || true
+          [ -f _artifact/training_record.json ] && { echo '```json'; cat _artifact/training_record.json; echo '```'; } >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: standard-repaired-${{ github.run_id }}
+          path: _artifact/
+          retention-days: 90
+
+  install:
+    if: inputs.mode == 'install'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Same group as retrain.yml: registry/pointer/lineage writes are serialised with the retrain.
+    concurrency:
+      group: retrain
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Refuse anything but main
+        run: |
+          [ "${{ github.ref }}" = "refs/heads/main" ] || { echo "::error::install runs from main only (dispatched on ${{ github.ref }})"; exit 1; }
+          [ -n "${{ inputs.preview_run_id }}" ] && [ -n "${{ inputs.expected_sha256 }}" ] || { echo "::error::preview_run_id and expected_sha256 are required"; exit 1; }
+      - uses: actions/checkout@v4
+        with:
+          ref: main                         # never a stale queued SHA
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Download the previewed payload
+        uses: actions/download-artifact@v4
+        with:
+          name: standard-repaired-${{ inputs.preview_run_id }}
+          path: _approved
+          run-id: ${{ inputs.preview_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Owner install (src.promotion_gate.owner_install) - FAILS on any integrity failure
+        env:
+          APPROVAL: ${{ inputs.approval }}
+          APPROVED_BY: ${{ inputs.approved_by }}
+        run: |
+          set -euo pipefail
+          python scripts/train_standard_repaired.py --out _work --install-from _approved \
+            --expected-sha256 "${{ inputs.expected_sha256 }}" \
+            --approved-by "$APPROVED_BY" --approval "$APPROVAL" --supersede "${{ inputs.supersede }}"
+          # the legacy rollback model must be byte-identical to main
+          git diff --quiet -- models/model_v9_standard.pkl || { echo "::error::legacy standard model changed"; exit 1; }
+      - name: Commit (per file)
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in models/model_v9_standard_repaired.pkl models/metrics_model_v9_standard_repaired.json \
+                   models/registry/current_champions.json \
+                   output/model_lineage/champion_history.csv output/model_lineage/promotion_decisions.csv \
+                   output/model_lineage/high_water_mark.json; do
+            git add -f "$f"
+          done
+          git add -A -f models/registry/standard_repaired
+          git status --short
+          git commit -m "owner install: standard_repaired $(python -c "import json;print(json.load(open('_work/training_record.json'))['installed_version'])")"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          exit 1
