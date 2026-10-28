@@ -61,13 +61,23 @@ MODEL_FILES: dict[str, Path] = {
     "over35": config.MODEL_FILE_OVER35,
     "ht_over05": config.HT_MODEL_FILE_05,
     "ht_over15": config.HT_MODEL_FILE_15,
+    # Standard O/U 2.5 on the repaired recipe (owner 2026-10-28). Its own model type, champion and
+    # serving file, so the legacy "standard" champion stays intact as the rollback. Installed only
+    # by promotion_gate.owner_install; FROZEN (see FROZEN_MODEL_TYPES) — no retrain submits to it.
+    "standard_repaired": config.MODEL_FILE_STANDARD_REPAIRED,
 }
 #: What each model's probability column is called in predictions.csv.
 PRED_COLUMN = {"standard": "p_over25", "newformat": "p_over25", "btts": "p_btts",
                "over15": "p_over15", "over35": "p_over35",
-               "ht_over05": "p_ht_over05", "ht_over15": "p_ht_over15"}
+               "ht_over05": "p_ht_over05", "ht_over15": "p_ht_over15",
+               "standard_repaired": "p_over25"}
 TARGET = {"standard": "over25", "newformat": "over25", "btts": "btts", "over15": "over15",
-          "over35": "over35", "ht_over05": "ht_over05", "ht_over15": "ht_over15"}
+          "over35": "over35", "ht_over05": "ht_over05", "ht_over15": "ht_over15",
+          "standard_repaired": "over25"}
+#: Model types no scheduled retrain may submit a candidate to (promotion_gate refuses them). The
+#: repaired Standard model changes only by an explicit owner_install (owner decision 2026-10-28:
+#: frozen until the owner decides how it is retrained).
+FROZEN_MODEL_TYPES = frozenset({"standard_repaired"})
 
 REGISTRY_DIR = config.MODELS_DIR / "registry"
 LINEAGE_DIR = config.OUTPUT_DIR / "model_lineage"
@@ -306,6 +316,14 @@ def ou_model_for(model_type_tag: str) -> str:
     return "standard"
 
 
+def ou_model_for_row(model_type_tag, serving_recipe=None) -> str:
+    """`ou_model_for` that also honours the Standard O/U 2.5 serving switch: a row predict stamped
+    serving_recipe == "v9_repaired" was scored by the "standard_repaired" model."""
+    if str(serving_recipe) == "v9_repaired" and str(model_type_tag) == "standard":
+        return "standard_repaired"
+    return ou_model_for(model_type_tag)
+
+
 def market_model(market: str) -> str | None:
     m = str(market).strip().lower()
     return m if m in MODEL_FILES else None
@@ -335,16 +353,22 @@ def update_high_water(model_type: str, entry: dict) -> None:
     _atomic_write_json(HIGH_WATER, hw)
 
 
-def payload_bytes(results: dict, target: str = "over25") -> bytes:
+def payload_bytes(results: dict, target: str = "over25", extra: dict | None = None) -> bytes:
     """Byte-identical to what `src.model.save_models` writes, so the serving file's format and
     every reader of it are unchanged. (save_models stores target='over25' for side models too —
-    kept as-is; changing a payload field is not this task.)"""
-    payload = {
-        "target": target,
-        "models": {k: v["model"] for k, v in results.items()},
-        "feature_cols": results[next(iter(results))]["feature_cols"],
-        "metrics": {k: v["metrics"] for k, v in results.items()},
-    }
+    kept as-is; changing a payload field is not this task.)
+
+    FIXED 2026-10-28: this used to rebuild the dict from four keys and so DROPPED everything a
+    v9_repaired result carries (`imputer`, `recipe`, block/version metadata) — a repaired model
+    installed through it would have served with batch-median imputation, the very defect the
+    recipe removes. It now goes through `src.model.build_payload`, which is the legacy dict
+    exactly for legacy results (same keys, same order -> same pickle bytes) and adds the recipe
+    metadata for repaired ones. `extra` adds payload-level provenance (e.g. `research`, the frozen
+    `identity_alias_map`)."""
+    from src.model import build_payload
+    payload = build_payload(results, target)
+    if extra:
+        payload.update(extra)
     return pickle.dumps(payload)
 
 
