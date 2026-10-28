@@ -35,6 +35,10 @@ for d in (MODELS_DIR, OUTPUT_DIR):
 MODEL_FILE_STANDARD  = MODELS_DIR / "model_v9_standard.pkl"
 MODEL_FILE_NEWFORMAT = MODELS_DIR / "model_v9_newformat.pkl"
 MODEL_FILE           = MODEL_FILE_STANDARD   # backward-compat alias
+# Standard O/U 2.5 on the REPAIRED recipe (owner 2026-10-28). A SEPARATE serving file, written only
+# by src/promotion_gate.owner_install (model type "standard_repaired"); read by predict only when
+# STANDARD_OU25_SERVING_RECIPE (below) is "v9_repaired". MODEL_FILE_STANDARD stays the rollback.
+MODEL_FILE_STANDARD_REPAIRED = MODELS_DIR / "model_v9_standard_repaired.pkl"
 
 # ── HT models (standard-format leagues only — they have HTHG/HTAG data) ──────
 HT_MODEL_FILE_05 = MODELS_DIR / "model_ht_over05.pkl"
@@ -318,6 +322,20 @@ MARKET_FEATURE_MODES = ("none", "asof", "closing")
 MARKET_FEATURE_MODE = os.getenv("WOWZA_MARKET_FEATURE_MODE", "none").strip() or "none"
 if MARKET_FEATURE_MODE not in MARKET_FEATURE_MODES:
     MARKET_FEATURE_MODE = "none"
+
+# ── Standard O/U 2.5 SERVING recipe (owner 2026-10-28: "switch Standard now") ──
+# The ONE production switch. Scope: the over25 probability of STANDARD-format fixtures only.
+#   "legacy_v9"   (DEFAULT, and the rollback) models/model_v9_standard.pkl on legacy features.
+#   "v9_repaired" models/model_v9_standard_repaired.pkl on repaired as-of features
+#                 (src/standard_serving.py: frozen identity alias map, train-only imputer).
+# New Format, BTTS / O1.5 / O3.5 side models and HT models are NOT affected by either value.
+# Deployed value = predict.yml env (CLAUDE.md trap 1). Unknown values fall back to legacy_v9.
+# ROLLBACK: set STANDARD_OU25_SERVING_RECIPE: "legacy_v9" in predict.yml (or delete the line).
+STANDARD_OU25_SERVING_RECIPES = ("legacy_v9", "v9_repaired")
+STANDARD_OU25_SERVING_RECIPE = (os.getenv("STANDARD_OU25_SERVING_RECIPE", "legacy_v9").strip()
+                                or "legacy_v9")
+if STANDARD_OU25_SERVING_RECIPE not in STANDARD_OU25_SERVING_RECIPES:
+    STANDARD_OU25_SERVING_RECIPE = "legacy_v9"
 
 # ── Training data filters ─────────────────────────────────────────────────────
 # Exclude COVID seasons — empty stadiums created anomalous patterns not present today
