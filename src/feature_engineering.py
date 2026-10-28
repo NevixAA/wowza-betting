@@ -349,13 +349,24 @@ def _merge_sofascore(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Main entry point ──────────────────────────────────────────────────────────
 
-def build_features(matches: pd.DataFrame, n: int = None) -> pd.DataFrame:
+def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v9",
+                   price_mode: str = "none") -> pd.DataFrame:
     """
     Add all engineered features to the matches DataFrame.
     Input must come from data_loader.load_all_matches().
     Returns a new DataFrame with feature columns appended.
     No data leakage: all features use only information available before each match.
+
+    recipe="legacy_v9" (DEFAULT, what production trains on) is the code below, unchanged.
+    recipe="v9_repaired" routes to src/features_repaired.build_features_repaired — the single
+    train/serve implementation of the 2026-10-28 forensic repair (research only; `price_mode`
+    applies only there).
     """
+    if recipe == "v9_repaired":
+        from src.features_repaired import build_features_repaired
+        return build_features_repaired(matches, n=n, price_mode=price_mode)
+    if recipe != "legacy_v9":
+        raise ValueError(f"unknown feature recipe {recipe!r}")
     if n is None:
         n = _N
 
@@ -531,12 +542,24 @@ def build_upcoming_features(
     upcoming: pd.DataFrame,
     historical: pd.DataFrame,
     n: int = None,
+    recipe: str = "legacy_v9",
+    price_mode: str = "none",
 ) -> pd.DataFrame:
     """
     Compute features for upcoming (unplayed) fixtures using only historical data.
     `upcoming` must have: date, league, home_team, away_team, odds_over25, odds_under25
     `historical` is the full historical DataFrame from load_all_matches().
+
+    recipe="legacy_v9" (DEFAULT, what serves) is the code below, unchanged — including its
+    known train/serve defects (home_advantage=1.0, away HT form not league-scoped, ...), which are
+    documented in src/features_repaired.py and measured by scripts/standard_feature_audit.py.
+    recipe="v9_repaired" uses the SAME function as repaired training (no network enrichment).
     """
+    if recipe == "v9_repaired":
+        from src.features_repaired import build_upcoming_features_repaired
+        return build_upcoming_features_repaired(upcoming, historical, n=n, price_mode=price_mode)
+    if recipe != "legacy_v9":
+        raise ValueError(f"unknown feature recipe {recipe!r}")
     if n is None:
         n = _N
 
