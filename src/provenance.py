@@ -114,6 +114,11 @@ def stamp_versions(df):
         tag = df["model_type"] if "model_type" in df.columns else None
         rows = (tag.astype(str).map(reg.ou_model_for) if tag is not None
                 else ["standard"] * len(df))
+        # Standard O/U 2.5 serving switch (2026-10-28): a row the repaired model scored is
+        # attributed to "standard_repaired". `serving_recipe` exists only when the switch is on.
+        if tag is not None and "serving_recipe" in df.columns:
+            rows = [reg.ou_model_for_row(t, r) for t, r in
+                    zip(tag.astype(str), df["serving_recipe"].astype(str))]
         stamps = [reg.stamp_for(m) for m in rows]
         df["model_version"] = [s["model_version"] for s in stamps]
         df["retrain_batch_id"] = [s["retrain_batch_id"] for s in stamps]
