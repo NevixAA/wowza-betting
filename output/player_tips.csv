@@ -16,13 +16,13 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Venezia vs Inter,PROP_LEAGUE,57446,1550176.0,A. Adams,Venezia,F,sot,0.79,1.27,1.44,0.6551,0.1349,0.2059,0.1376,0.83,0.623,,5,match_level,PAPER,0.0
 2026-10-30,,Brazil Serie A,Grêmio vs Atletico Paranaense,VALUABLE,13198,,K. Viveros,Atletico Paranaense,F,sot,0.788,1.27,,,,,,0.767,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Metz vs PAU,PROP_LEAGUE,437901,1552517.0,Pape Moussa Fall,Metz,F,sot,0.788,1.27,,,,,,0.744,0.623,,5,match_level,AVOID,
-2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,10174,1492438.0,Gabriel Barbosa,Santos,F,sot,0.787,1.27,1.4,0.6739,0.1131,0.1679,0.1018,0.83,0.623,,5,match_level,AVOID,0.0
+2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,10174,1492438.0,Gabriel Barbosa,Santos,F,sot,0.787,1.27,1.5,0.6289,0.1581,0.2513,0.1805,0.83,0.623,,5,match_level,VALUABLE,0.0722
 2026-11-01,,Sweden Allsvenskan,IF Elfsborg vs Örgryte IS,MARKSMAN,494708,,M. Kamara,IF Elfsborg,M,sot,0.786,1.27,,,,,,0.687,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T16:00:00+00:00,Norway Eliteserien,Sarpsborg 08 FF vs Kristiansund BK,PROP_LEAGUE,151166,1494793.0,D. Karlsbakk,Sarpsborg 08 FF,F,sot,0.78,1.28,,,,,,0.798,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T17:30:00+00:00,La Liga 2,Celta de Vigo II vs Cordoba,PROP_LEAGUE,554288,1569994.0,Álvaro Marín,Celta de Vigo II,F,sot,0.778,1.29,1.36,0.6937,0.0843,0.1216,0.0581,0.767,0.623,,5,match_level,AVOID,0.0
 2026-10-29,2026-10-29T17:30:00+00:00,Sweden Allsvenskan,Hammarby FF vs Sirius,PROP_LEAGUE,161561,1494318.0,V. Lind,Hammarby FF,F,sot,0.777,1.29,,,,,,0.798,0.623,,5,match_level,AVOID,
 2026-10-29,,Sweden Allsvenskan,Hammarby IF vs IK Sirius,SNIPER,161561,,V. Lind,Hammarby FF,F,sot,0.776,1.29,,,,,,0.798,0.623,,5,match_level,AVOID,
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,335553,,O. De Rosario,Sonderjyske,F,sot,0.771,1.3,1.62,0.5823,0.1887,0.324,0.249,0.812,0.623,,5,match_level,VALUABLE,0.0803
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,335553,,O. De Rosario,Sonderjyske,F,sot,0.771,1.3,1.5,0.6289,0.1421,0.2259,0.1565,0.812,0.623,,5,match_level,VALUABLE,0.0626
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,Bayer Leverkusen vs VfB Stuttgart,PROP_LEAGUE,794,1575204.0,Patrik Schick,Bayer Leverkusen,F,sot,0.771,1.3,1.22,0.7733,-0.0023,-0.0029,-0.0594,0.788,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Sweden Allsvenskan,Djurgardens IF vs Degerfors IF,MARKSMAN,57263,,K. Lien,Djurgardens IF,F,sot,0.769,1.3,,,,,,0.744,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Fluminense vs Internacional,PROP_LEAGUE,12705,1492435.0,Hulk,Fluminense,F,sot,0.768,1.3,1.25,0.7547,0.0133,0.0176,-0.04,0.671,0.698,MINUTES,5,match_level,AVOID,0.0
@@ -138,7 +138,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-29,,Sweden Allsvenskan,Örgryte IS vs Mjällby AIF,VALUABLE,310233,,W. Hofvander,Orgryte IS,F,sot,0.618,1.62,,,,,,0.725,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:00:00+00:00,Championship,Wolves vs Cardiff,PROP_LEAGUE,19484,1563238.0,Adam Armstrong,Wolves,F,sot,0.618,1.62,1.36,0.6937,-0.0757,-0.1091,-0.1595,0.641,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Championship,Wolves vs Cardiff,PROP_LEAGUE,194116,1563238.0,Rafiki Saïd,Wolves,M,sot,0.618,1.62,1.44,0.6551,-0.0371,-0.0567,-0.1101,0.324,0.623,,5,match_level,AVOID,0.0
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,474605,,M. Haidara,Sonderjyske,M,sot,0.617,1.62,2.5,0.3774,0.2396,0.635,0.5425,0.71,0.623,,5,match_level,VALUABLE,0.0723
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,474605,,M. Haidara,Sonderjyske,M,sot,0.617,1.62,1.83,0.5155,0.1015,0.1969,0.1291,0.71,0.623,,5,match_level,PAPER,0.0
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,AC Milan vs Bologna,PROP_LEAGUE,17,1550167.0,C. Pulišić,AC Milan,F,sot,0.616,1.62,1.22,0.7733,-0.1573,-0.2034,-0.2485,0.694,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T18:00:00+00:00,Serie B,Pisa vs Palermo,PROP_LEAGUE,36986,1601582.0,Dennis Johnsen,Palermo,M,sot,0.615,1.62,,,,,,0.818,0.623,,5,match_level,AVOID,
 2026-10-31,,Bundesliga 2,Karlsruher SC vs 1. FC Heidenheim,VALUABLE,26107,,Marvin Wanitzek,Karlsruher SC,M,sot,0.615,1.63,,,,,,0.447,0.623,,5,match_level,AVOID,
@@ -208,7 +208,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,2026-11-01T15:00:00+00:00,Denmark Superliga,FC Nordsjaelland vs FC Midtjylland,PROP_LEAGUE,180982,1549048.0,A. Lind,FC Nordsjaelland,F,sot,0.563,1.78,,,,,,0.719,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:00:00+00:00,Bundesliga 2,SV Darmstadt 98 vs 1. FC Magdeburg,PROP_LEAGUE,25126,1576217.0,Barış Atik,1. FC Magdeburg,F,sot,0.562,1.78,,,,,,0.569,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,Werder Bremen vs 1899 Hoffenheim,PROP_LEAGUE,203040,1575209.0,T. Lemperle,1899 Hoffenheim,F,sot,0.561,1.78,1.32,0.7147,-0.1537,-0.215,-0.2595,0.712,0.623,,5,match_level,AVOID,0.0
-2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,2414,1492438.0,Everton Cebolinha,Santos,M,sot,0.557,1.79,1.4,0.6739,-0.1169,-0.1734,-0.2202,0.373,0.623,,5,match_level,AVOID,0.0
+2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,2414,1492438.0,Everton Cebolinha,Santos,M,sot,0.557,1.79,1.5,0.6289,-0.0719,-0.1144,-0.1645,0.373,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Energie Cottbus vs VfL Bochum,PROP_LEAGUE,26287,1576216.0,P. Hofmann,VfL Bochum,F,sot,0.556,1.8,,,,,,0.74,0.623,,5,match_level,AVOID,
 2026-11-01,,Serie B,Arezzo vs Ascoli,VALUABLE,56633,,C. Tavernelli,Arezzo,M,sot,0.556,1.8,,,,,,0.484,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T19:45:00+00:00,Ligue 1,Lyon vs Angers,PROP_LEAGUE,350856,1552804.0,E. Nuamah,Lyon,F,sot,0.555,1.8,,,,,,0.747,0.623,,5,match_level,AVOID,
@@ -287,7 +287,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,AC Milan vs Bologna,PROP_LEAGUE,41585,1550167.0,Gonçalo Ramos,AC Milan,F,goals,0.501,2.0,2.48,0.3804,0.1206,0.317,0.2425,0.767,0.623,,5,match_level,VALUABLE,0.0328
 2026-10-31,2026-10-31T15:15:00+00:00,La Liga 2,Eibar vs Almeria,PROP_LEAGUE,279482,1569996.0,B. Cipenga,Almeria,M,sot,0.499,2.01,,,,,,0.621,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:30:00+00:00,League Two,Grimsby vs York,PROP_LEAGUE,20444,1563843.0,A. Cook,Grimsby,F,goals,0.497,2.01,2.4,0.3931,0.1039,0.2644,0.1928,0.52,0.623,,5,match_level,VALUABLE,0.0275
-2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,2979,1551021.0,J. Rodríguez,FC Juarez,M,sot,0.495,2.02,1.67,0.5649,-0.0699,-0.1238,-0.1734,0.318,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,2979,1551021.0,J. Rodríguez,FC Juarez,M,sot,0.495,2.02,1.62,0.5823,-0.0873,-0.15,-0.1981,0.318,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T13:00:00+00:00,La Liga,Levante vs Atletico Madrid,PROP_LEAGUE,192032,1570439.0,Iván Romero,Levante,F,sot,0.495,2.02,,,,,,0.687,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:15:00+00:00,La Liga,Rayo Vallecano vs Celta Vigo,PROP_LEAGUE,122734,1570441.0,Ferrán Jutglà,Celta Vigo,F,sot,0.495,2.02,,,,,,0.713,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T19:45:00+00:00,Ligue 1,Lyon vs Angers,PROP_LEAGUE,66387,1552804.0,P. Šulc,Lyon,F,sot,0.495,2.02,,,,,,0.665,0.623,,5,match_level,AVOID,
@@ -300,7 +300,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,,Denmark Superliga,OB Odense BK vs Silkeborg IF,SNIPER,331680,,O. Ross,Silkeborg,F,sot,0.491,2.03,,,,,,0.716,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T19:45:00+00:00,Serie A,Monza vs Napoli,PROP_LEAGUE,340547,1550172.0,Gustavo Varela,Monza,F,sot2,0.491,2.04,3.2,0.2841,0.2069,0.7283,0.5712,,0.623,,5,match_level,VALUABLE,0.0519
 2026-11-02,,Brazil Serie A,Bragantino-SP vs Santos,VALUABLE,2414,,Everton Cebolinha,Santos,M,sot,0.488,2.05,,,,,,0.373,0.623,,5,match_level,AVOID,
-2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,2979,,J. Rodríguez,FC Juarez,M,sot,0.488,2.05,1.67,0.5649,-0.0769,-0.1361,-0.185,0.318,0.623,,5,match_level,AVOID,0.0
+2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,2979,,J. Rodríguez,FC Juarez,M,sot,0.488,2.05,1.62,0.5823,-0.0943,-0.162,-0.2094,0.318,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T18:00:00+00:00,Sweden Allsvenskan,IFK Goteborg vs Djurgardens IF,PROP_LEAGUE,57263,1494316.0,K. Lien,Djurgardens IF,F,goals,0.487,2.05,2.2,0.4288,0.0582,0.1357,0.0714,0.744,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T18:00:00+00:00,Ligue 1,Le Havre vs Paris Saint Germain,PROP_LEAGUE,931,1552801.0,Ferran Torres,Paris Saint Germain,F,sot,0.485,2.06,,,,,,0.739,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:00:00+00:00,Bundesliga 2,SV Darmstadt 98 vs 1. FC Magdeburg,PROP_LEAGUE,25108,1576217.0,Emmanuel Iyoha,1. FC Magdeburg,F,sot,0.485,2.06,,,,,,0.767,0.623,,5,match_level,AVOID,
@@ -377,7 +377,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T18:00:00+00:00,Sweden Allsvenskan,IF Brommapojkarna vs BK Hacken,PROP_LEAGUE,404171,1494314.0,Anton Kurochkin,IF Brommapojkarna,M,sot,0.44,2.27,,,,,,0.64,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T18:00:00+00:00,Denmark Superliga,Lyngby vs Randers FC,PROP_LEAGUE,90627,1549047.0,Warren Caddy,Randers FC,F,sot,0.44,2.27,,,,,,0.671,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Parma vs Udinese,PROP_LEAGUE,194750,1550173.0,El Bilal Touré,Parma,F,sot,0.439,2.28,,,,,,0.717,0.623,,5,match_level,AVOID,
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,335553,,O. De Rosario,Sonderjyske,F,goals,0.438,2.28,3.75,0.2424,0.1956,0.8068,0.6425,0.812,0.623,,5,match_level,VALUABLE,0.0467
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,335553,,O. De Rosario,Sonderjyske,F,goals,0.438,2.28,3.4,0.2674,0.1706,0.6381,0.4892,0.812,0.623,,5,match_level,VALUABLE,0.0408
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Parma vs Udinese,PROP_LEAGUE,541,1550173.0,J. Ekkelenkamp,Udinese,F,sot,0.436,2.29,,,,,,0.536,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:30:00+00:00,Premier League,Chelsea vs Manchester United,PROP_LEAGUE,10329,1557450.0,João Pedro,Chelsea,F,sot2,0.435,2.3,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T23:30:00+00:00,USA MLS,New England Revolution vs New York Red Bulls,PROP_LEAGUE,269532,1490573.0,D. Turgeman,New England Revolution,F,sot,0.433,2.31,,,,,,0.744,0.623,,5,match_level,AVOID,
@@ -391,8 +391,8 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T12:00:00+00:00,Bundesliga 2,VfL Wolfsburg vs VfL Osnabrück,PROP_LEAGUE,47696,1576223.0,A. Bernhardsson,VfL Wolfsburg,M,goals,0.428,2.34,2.25,0.4193,0.0087,0.0208,-0.037,0.762,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T16:00:00+00:00,Austrian Bundesliga,SCR Altach vs Ried,PROP_LEAGUE,7070,1561954.0,A. Bajić,Ried,F,sot,0.427,2.34,,,,,,0.663,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T20:05:00+00:00,Ligue 1,Lille vs Lens,PROP_LEAGUE,277191,1552802.0,A. Sima,Lens,F,sot,0.427,2.34,,,,,,0.7,0.623,,5,match_level,AVOID,
-2026-10-30,2026-10-30T18:00:00+00:00,Denmark Superliga,Lyngby vs Randers FC,PROP_LEAGUE,51286,1549047.0,S. Colyn,Lyngby,F,sot,0.427,2.34,1.36,0.6937,-0.2667,-0.3844,-0.4193,0.797,0.623,,5,match_level,AVOID,0.0
-2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,10174,1492438.0,Gabriel Barbosa,Santos,F,sot2,0.426,2.35,3.0,0.3145,0.1115,0.3547,0.278,,0.623,,5,match_level,VALUABLE,0.0278
+2026-10-30,2026-10-30T18:00:00+00:00,Denmark Superliga,Lyngby vs Randers FC,PROP_LEAGUE,51286,1549047.0,S. Colyn,Lyngby,F,sot,0.427,2.34,1.4,0.6739,-0.2469,-0.3663,-0.4022,0.797,0.623,,5,match_level,AVOID,0.0
+2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,10174,1492438.0,Gabriel Barbosa,Santos,F,sot2,0.426,2.35,3.4,0.2674,0.1586,0.5932,0.4484,,0.623,,5,match_level,VALUABLE,0.0374
 2026-10-31,2026-10-31T18:30:00+00:00,Austrian Bundesliga,Lask Linz vs WSG Wattens,PROP_LEAGUE,284474,1561957.0,Michael Olakigbe,WSG Wattens,F,sot,0.426,2.35,,,,,,0.661,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T19:45:00+00:00,Serie A,Monza vs Napoli,PROP_LEAGUE,288006,1550172.0,Rasmus Højlund,Napoli,F,sot,0.424,2.36,1.22,0.7733,-0.3493,-0.4517,-0.4827,0.638,0.698,MINUTES,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Bournemouth vs Leeds,PROP_LEAGUE,152856,1557448.0,Evanilson,Bournemouth,F,goals,0.424,2.36,,,,,,0.732,0.623,,5,match_level,AVOID,
@@ -496,7 +496,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,51616,,G. Fernández,Cruz Azul,F,sot,0.382,2.62,1.14,0.8275,-0.4455,-0.5384,-0.5645,0.817,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T20:00:00+00:00,La Liga,Villarreal vs Espanyol,PROP_LEAGUE,286639,1570442.0,Bryan Zaragoza,Espanyol,M,sot,0.382,2.62,,,,,,0.439,0.623,,5,match_level,AVOID,
 2026-10-29,2026-10-29T03:00:00+00:00,Mexico Liga MX,Club America vs Club Tijuana,PROP_LEAGUE,51618,1550952.0,B. Rodríguez,Club America,M,sot,0.381,2.63,1.2,0.7862,-0.4052,-0.5154,-0.5428,0.75,0.623,,5,match_level,AVOID,0.0
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,335553,,O. De Rosario,Sonderjyske,F,sot2,0.381,2.62,4.0,0.2273,0.1537,0.6764,0.524,,0.623,,5,match_level,VALUABLE,0.0349
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,335553,,O. De Rosario,Sonderjyske,F,sot2,0.381,2.62,3.4,0.2674,0.1136,0.4249,0.2954,,0.623,,5,match_level,VALUABLE,0.0246
 2026-10-30,2026-10-30T18:00:00+00:00,Norway Eliteserien,Bodo/Glimt vs Viking,PROP_LEAGUE,15622,1494789.0,Peter Christiansen,Viking,F,goals,0.38,2.63,2.88,0.3276,0.0524,0.1601,0.0944,0.75,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T20:00:00+00:00,La Liga,Villarreal vs Espanyol,PROP_LEAGUE,290740,1570442.0,Ilias Akhomach,Villarreal,M,sot,0.38,2.63,,,,,,0.301,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-29,2026-10-29T17:30:00+00:00,Sweden Allsvenskan,Hammarby FF vs Sirius,PROP_LEAGUE,161561,1494318.0,V. Lind,Hammarby FF,F,assists,0.38,2.63,,,,,,,0.623,,5,match_level,AVOID,
@@ -623,7 +623,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,,Sweden Allsvenskan,Malmo FF vs Hammarby IF,SNIPER,565597,,A. Hoog,Malmo FF,F,sot,0.337,2.97,,,,,,0.702,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,20964,1494790.0,C. Zady Sery,Molde,M,sot,0.336,2.98,,,,,,0.513,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T17:00:00+00:00,Denmark Superliga,Brondby vs Aarhus,PROP_LEAGUE,444421,1549046.0,O. Hyseni,Brondby,M,goals,0.336,2.98,,,,,,0.693,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T16:00:00+00:00,Austrian Bundesliga,SCR Altach vs Ried,PROP_LEAGUE,161087,1561954.0,O. Diawara,SCR Altach,F,goals,0.335,2.98,2.3,0.4102,-0.0752,-0.1833,-0.2295,0.79,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T16:00:00+00:00,Austrian Bundesliga,SCR Altach vs Ried,PROP_LEAGUE,161087,1561954.0,O. Diawara,SCR Altach,F,goals,0.335,2.98,2.4,0.3931,-0.0581,-0.1478,-0.196,0.79,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Norway Eliteserien,Fredrikstad vs Rosenborg,PROP_LEAGUE,39265,1494791.0,S. Sørløkk,Fredrikstad,M,sot,0.334,2.99,,,,,,0.276,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,39044,1494790.0,Eirik Hestad,Molde,M,sot,0.334,2.99,,,,,,0.688,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Fluminense vs Internacional,PROP_LEAGUE,692,1492435.0,Alan Patrick,Internacional,M,sot,0.334,2.99,,,,,,0.464,0.623,,5,match_level,AVOID,
@@ -664,7 +664,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,2026-11-01T13:00:00+00:00,Denmark Superliga,Viborg vs AC Horsens,PROP_LEAGUE,337806,1549051.0,A. Beck,Viborg,M,sot,0.325,3.08,,,,,,0.504,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T18:00:00+00:00,Sweden Allsvenskan,IFK Goteborg vs Djurgardens IF,PROP_LEAGUE,2865,1494316.0,S. Larsson,IFK Goteborg,M,sot,0.325,3.08,,,,,,0.653,0.623,,5,match_level,AVOID,
 2026-10-30,,Brazil Serie A,Corinthians vs Mirassol,VALUABLE,44348,,Eduardo,Mirassol,M,sot,0.324,3.09,,,,,,0.687,0.623,,5,match_level,AVOID,
-2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,63968,,Ó. Estupiñán,FC Juarez,F,goals,0.324,3.09,2.62,0.3601,-0.0361,-0.1002,-0.1511,0.767,0.623,,5,match_level,AVOID,0.0
+2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,63968,,Ó. Estupiñán,FC Juarez,F,goals,0.324,3.09,2.5,0.3774,-0.0534,-0.1414,-0.19,0.767,0.623,,5,match_level,AVOID,0.0
 2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,57160,1494790.0,N. Castro,Brann,F,sot,0.324,3.08,,,,,,0.721,0.623,,5,match_level,AVOID,
 2026-10-30,,Argentina Primera Division,Atlético Huracán vs CA Tigre BA,VALUABLE,16590,,J. Caicedo,Huracan,F,sot,0.323,3.09,1.44,0.6551,-0.3321,-0.507,-0.5349,0.641,0.623,,5,match_level,AVOID,0.0
 2026-11-01,2026-11-01T13:00:00+00:00,La Liga 2,Eldense vs Granada CF,PROP_LEAGUE,403498,1569997.0,Sergio Rodelas,Granada CF,F,sot,0.323,3.1,,,,,,0.609,0.623,,5,match_level,AVOID,
@@ -692,7 +692,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-29,2026-10-29T00:30:00+00:00,Brazil Serie A,Bahia vs Sao Paulo,PROP_LEAGUE,47319,1492431.0,Willian José,Bahia,F,sot,0.317,3.16,,,,,,0.66,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Venezia vs Inter,PROP_LEAGUE,30558,1550176.0,Nicolò Barella,Inter,M,sot,0.317,3.15,2.4,0.3931,-0.0761,-0.1936,-0.2392,0.493,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Venezia vs Inter,PROP_LEAGUE,212,1550176.0,Andrea Adorante,Venezia,F,goals,0.317,3.16,,,,,,0.747,0.623,,5,match_level,AVOID,
-2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Arminia Bielefeld vs Eintracht Braunschweig,PROP_LEAGUE,428913,1576215.0,Jan Urbich,Eintracht Braunschweig,F,goals,0.317,3.16,3.5,0.2597,0.0573,0.2205,0.1095,0.665,0.698,MINUTES,5,match_level,AVOID,0.0
+2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Arminia Bielefeld vs Eintracht Braunschweig,PROP_LEAGUE,428913,1576215.0,Jan Urbich,Eintracht Braunschweig,F,goals,0.317,3.16,3.5,0.2597,0.0573,0.2205,0.1095,0.665,0.698,MINUTES,5,match_level,PAPER,0.0
 2026-11-01,2026-11-01T13:00:00+00:00,Finland Veikkausliiga,AC Oulu vs KuPS,PROP_LEAGUE,81641,1638116.0,C. Triana,AC Oulu,F,sot,0.316,3.16,,,,,,0.708,0.623,,5,match_level,AVOID,
 2026-10-31,,League Two,Shrewsbury Town vs Gillingham,VALUABLE,119086,,Ronan Hale,Gillingham,F,sot,0.316,3.17,,,,,,0.732,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:00:00+00:00,Serie B,Cremonese vs Benevento,PROP_LEAGUE,31399,1601586.0,C. Kouan,Benevento,M,sot,0.316,3.16,,,,,,0.481,0.623,,5,match_level,AVOID,
@@ -718,7 +718,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T23:30:00+00:00,USA MLS,Toronto FC vs DC United,PROP_LEAGUE,25332,1490575.0,Josh Sargent,Toronto FC,F,sot,0.311,3.21,,,,,,0.626,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T18:00:00+00:00,Norway Eliteserien,Bodo/Glimt vs Viking,PROP_LEAGUE,57159,1494789.0,S. Fet,Bodo/Glimt,M,sot,0.31,3.22,,,,,,0.302,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-28,2026-10-28T23:30:00+00:00,USA MLS,Charlotte vs CF Montreal,PROP_LEAGUE,348231,1490574.0,Idan Toklomati,Charlotte,F,sot,0.31,3.23,,,,,,0.733,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T15:00:00+00:00,Championship,Wolves vs Cardiff,PROP_LEAGUE,194116,1563238.0,Rafiki Saïd,Wolves,M,goals,0.31,3.23,3.0,0.3145,-0.0045,-0.0142,-0.07,0.324,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T15:00:00+00:00,Championship,Wolves vs Cardiff,PROP_LEAGUE,194116,1563238.0,Rafiki Saïd,Wolves,M,goals,0.31,3.23,2.88,0.3276,-0.0176,-0.0536,-0.1072,0.324,0.623,,5,match_level,AVOID,0.0
 2026-11-01,2026-11-01T13:30:00+00:00,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,PROP_LEAGUE,451425,1561959.0,Jacob Hödl,Sturm Graz,M,sot,0.31,3.22,,,,,,0.29,0.623,,5,match_level,AVOID,
 2026-10-31,,League One,Stockport County FC vs Wimbledon,MARKSMAN,20481,,K. Wootton,Stockport County,F,sot2,0.31,3.23,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T18:00:00+00:00,Norway Eliteserien,Bodo/Glimt vs Viking,PROP_LEAGUE,8626,1494789.0,Henrik Bjørdal,Viking,M,sot,0.309,3.24,,,,,,0.448,0.623,,5,match_level,AVOID,
@@ -763,7 +763,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T13:00:00+00:00,La Liga,Levante vs Atletico Madrid,PROP_LEAGUE,323935,1570439.0,Giuliano Simeone,Atletico Madrid,F,sot,0.3,3.34,,,,,,0.461,0.623,,5,match_level,AVOID,
 2026-10-31,,League Two,Crewe Alexandra vs Barnet,VALUABLE,87898,,K. Tshimanga,Barnet,F,goals,0.3,3.33,2.5,0.3774,-0.0774,-0.205,-0.25,0.79,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T18:00:00+00:00,Serie B,Pisa vs Palermo,PROP_LEAGUE,266331,1601582.0,F. Pittarello,Pisa,F,sot2,0.299,3.34,3.0,0.3145,-0.0155,-0.0492,-0.103,,0.623,,5,match_level,AVOID,0.0
-2026-10-31,2026-10-31T16:00:00+00:00,Austrian Bundesliga,SCR Altach vs Ried,PROP_LEAGUE,7302,1561954.0,P. Greil,SCR Altach,M,goals,0.298,3.36,2.3,0.4102,-0.1122,-0.2735,-0.3146,0.534,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T16:00:00+00:00,Austrian Bundesliga,SCR Altach vs Ried,PROP_LEAGUE,7302,1561954.0,P. Greil,SCR Altach,M,goals,0.298,3.36,2.4,0.3931,-0.0951,-0.2419,-0.2848,0.534,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Denmark Superliga,Brondby IF vs AGF Aarhus,VALUABLE,15964,,T. Bech,Aarhus,M,sot,0.298,3.35,,,,,,0.432,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T17:00:00+00:00,Denmark Superliga,Brondby vs Aarhus,PROP_LEAGUE,15964,1549046.0,T. Bech,Aarhus,M,sot,0.298,3.35,,,,,,0.432,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Hull City vs Ipswich,PROP_LEAGUE,303467,1557452.0,A. Fatawu,Ipswich,M,sot,0.298,3.36,,,,,,0.258,0.623,,5,match_level,AVOID,
@@ -810,7 +810,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,,Serie B,Avellino vs Pisa,VALUABLE,333161,,O. Correia,Pisa,M,sot,0.288,3.48,,,,,,0.504,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T18:00:00+00:00,Sweden Allsvenskan,IFK Goteborg vs Djurgardens IF,PROP_LEAGUE,356642,1494316.0,Alexander Illum Simmelhack,IFK Goteborg,F,sot,0.288,3.48,,,,,,0.76,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:00:00+00:00,Bundesliga 2,VfL Wolfsburg vs VfL Osnabrück,PROP_LEAGUE,328262,1576223.0,M. Damar,VfL Wolfsburg,M,goals,0.287,3.48,2.88,0.3276,-0.0406,-0.1238,-0.1734,0.823,0.623,,5,match_level,AVOID,0.0
-2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,6441,,J. Paradela,Cruz Azul,M,sot,0.287,3.48,1.22,0.7733,-0.4863,-0.6289,-0.6499,0.605,0.698,SET_PIECE,5,match_level,AVOID,0.0
+2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,6441,,J. Paradela,Cruz Azul,M,sot,0.287,3.48,1.36,0.6937,-0.4067,-0.5863,-0.6097,0.605,0.698,SET_PIECE,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T20:00:00+00:00,Championship,Sheffield Utd vs Wrexham,PROP_LEAGUE,312256,1563233.0,Sydie Peck,Sheffield Utd,M,sot,0.287,3.48,2.1,0.4492,-0.1622,-0.3611,-0.3973,0.284,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T18:00:00+00:00,Norway Eliteserien,Bodo/Glimt vs Viking,PROP_LEAGUE,262598,1494789.0,S. Auklend,Bodo/Glimt,M,sot,0.287,3.49,,,,,,0.292,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-31,2026-10-31T13:00:00+00:00,La Liga 2,Real Sociedad II vs Girona,PROP_LEAGUE,445881,1570000.0,Lander Astiazarán,Real Sociedad II,F,goals,0.287,3.49,3.6,0.2525,0.0345,0.1365,0.0332,0.634,0.623,,5,match_level,AVOID,0.0
@@ -829,7 +829,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T15:00:00+00:00,Norway Eliteserien,Fredrikstad vs Rosenborg,PROP_LEAGUE,39134,1494791.0,A. Pereira,Rosenborg,D,sot,0.285,3.51,,,,,,0.539,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Fluminense vs Internacional,PROP_LEAGUE,51603,1492435.0,A. Canobbio,Fluminense,M,sot,0.285,3.51,1.57,0.6009,-0.3159,-0.5257,-0.5526,0.236,0.623,,5,match_level,AVOID,0.0
 2026-10-31,,Bundesliga 2,Karlsruher SC vs 1. FC Heidenheim,VALUABLE,24641,,Budu Zivzivadze,1. FC Heidenheim,F,goals,0.285,3.51,2.5,0.3774,-0.0924,-0.2448,-0.2875,0.712,0.623,,5,match_level,AVOID,0.0
-2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,Atletico San Luis vs Atlas,PROP_LEAGUE,291057,1551020.0,Rafa Llorente,Atletico San Luis,F,sot,0.284,3.52,1.5,0.6289,-0.3449,-0.5484,-0.574,0.639,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,Atletico San Luis vs Atlas,PROP_LEAGUE,291057,1551020.0,Rafa Llorente,Atletico San Luis,F,sot,0.284,3.52,1.4,0.6739,-0.3899,-0.5785,-0.6024,0.639,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,RB Bragantino vs Chapecoense-sc,PROP_LEAGUE,10004,1492432.0,Eduardo Sasha,RB Bragantino,F,goals,0.284,3.53,2.1,0.4492,-0.1652,-0.3678,-0.4036,0.711,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T18:00:00+00:00,Serie B,Pisa vs Palermo,PROP_LEAGUE,31560,1601582.0,S. Moreo,Pisa,F,goals,0.284,3.52,2.6,0.3628,-0.0788,-0.2173,-0.2616,0.742,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Serie B,Arezzo vs Ascoli,VALUABLE,330771,,Simone D'Uffizi,Ascoli,M,sot,0.284,3.52,,,,,,0.299,0.623,,5,match_level,AVOID,
@@ -837,7 +837,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-30,2026-10-30T20:00:00+00:00,Championship,Sheffield Utd vs Wrexham,PROP_LEAGUE,906,1563233.0,Tahith Chong,Sheffield Utd,M,sot,0.283,3.53,2.5,0.3774,-0.0944,-0.2501,-0.2925,0.401,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Serie B,Avellino vs Pisa,VALUABLE,20959,,M. Tramoni,Pisa,M,assists,0.283,3.53,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:30:00+00:00,Bundesliga,SV Elversberg vs FSV Mainz 05,PROP_LEAGUE,26171,1575211.0,P. Tietz,FSV Mainz 05,F,sot2,0.283,3.54,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,63968,1551021.0,Ó. Estupiñán,FC Juarez,F,goals,0.283,3.53,2.62,0.3601,-0.0771,-0.2141,-0.2585,0.767,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,63968,1551021.0,Ó. Estupiñán,FC Juarez,F,goals,0.283,3.53,2.5,0.3774,-0.0944,-0.2501,-0.2925,0.767,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Norway Eliteserien,Fredrikstad vs Rosenborg,PROP_LEAGUE,125675,1494791.0,B. Fiabema,Fredrikstad,F,goals,0.282,3.55,3.25,0.2797,0.0023,0.0081,-0.0835,0.527,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Manchester City vs Brighton,PROP_LEAGUE,425714,1557454.0,Allan,Manchester City,F,sot,0.282,3.55,,,,,,0.655,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T19:45:00+00:00,Ligue 1,Lyon vs Angers,PROP_LEAGUE,86,1552804.0,L. Openda,Lyon,F,sot2,0.282,3.54,,,,,,,0.623,,5,match_level,AVOID,
@@ -929,8 +929,8 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-30,2026-10-30T20:00:00+00:00,Championship,Sheffield Utd vs Wrexham,PROP_LEAGUE,19804,1563233.0,Kieffer Moore,Wrexham,F,goals,0.263,3.8,2.75,0.3431,-0.0801,-0.2334,-0.2767,0.792,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T12:30:00+00:00,Championship,Norwich vs Watford,PROP_LEAGUE,349755,1563232.0,Kellen Fisher,Norwich,D,cards,0.263,3.8,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T22:00:00+00:00,Argentina Primera Division,Estudiantes de Rio Cuarto vs Gimnasia L.P.,PROP_LEAGUE,6161,1493218.0,L. Janson,Gimnasia L.P.,M,sot,0.263,3.8,,,,,,0.308,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T18:30:00+00:00,Austrian Bundesliga,Lask Linz vs WSG Wattens,PROP_LEAGUE,367672,1561957.0,Moses Usor,Lask Linz,F,goals,0.263,3.8,1.91,0.4939,-0.2309,-0.4675,-0.4977,0.683,0.623,,5,match_level,AVOID,0.0
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,382966,,I. Seydi,Sonderjyske,M,sot,0.263,3.8,3.0,0.3145,-0.0515,-0.1637,-0.211,0.578,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T18:30:00+00:00,Austrian Bundesliga,Lask Linz vs WSG Wattens,PROP_LEAGUE,367672,1561957.0,Moses Usor,Lask Linz,F,goals,0.263,3.8,1.83,0.5155,-0.2525,-0.4898,-0.5187,0.683,0.623,,5,match_level,AVOID,0.0
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,382966,,I. Seydi,Sonderjyske,M,sot,0.263,3.8,2.5,0.3774,-0.1144,-0.3031,-0.3425,0.578,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T23:30:00+00:00,USA MLS,New York City FC vs Atlanta United FC,PROP_LEAGUE,2507,1490572.0,Miguel Almirón,Atlanta United FC,F,goals,0.263,3.81,4.1,0.2217,0.0413,0.1861,0.0783,0.76,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Grenoble vs Dijon,PROP_LEAGUE,374504,1552514.0,Samba Diba,Grenoble,M,sot,0.263,3.8,,,,,,0.297,0.623,,5,match_level,AVOID,
 2026-10-29,2026-10-29T17:30:00+00:00,Sweden Allsvenskan,Hammarby FF vs Sirius,PROP_LEAGUE,335097,1494318.0,I. Bjerkebo,Sirius,F,sot2,0.262,3.82,,,,,,,0.623,,5,match_level,AVOID,
@@ -1011,7 +1011,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T12:30:00+00:00,League One,Bradford vs Huddersfield,PROP_LEAGUE,20351,1564392.0,S. Humphrys,Bradford,F,sot,0.253,3.95,,,,,,0.657,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Manchester City vs Brighton,PROP_LEAGUE,19281,1557454.0,A. Semenyo,Manchester City,F,goals,0.252,3.96,,,,,,0.663,0.623,,5,match_level,AVOID,
 2026-10-29,,Brazil Serie A,Vasco da Gama vs Flamengo,VALUABLE,63475,,Bruno Duarte,Vasco DA Gama,F,goals,0.252,3.96,3.75,0.2424,0.0096,0.0395,-0.055,0.541,0.623,,5,match_level,AVOID,0.0
-2026-10-31,,Championship,Wolverhampton Wanderers vs Cardiff City,MARKSMAN,320017,,Yousef Salech,Cardiff,F,goals,0.252,3.97,3.0,0.3145,-0.0625,-0.1986,-0.244,0.813,0.623,,5,match_level,AVOID,0.0
+2026-10-31,,Championship,Wolverhampton Wanderers vs Cardiff City,MARKSMAN,320017,,Yousef Salech,Cardiff,F,goals,0.252,3.97,2.88,0.3276,-0.0756,-0.2307,-0.2742,0.813,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T18:00:00+00:00,Serie B,Pisa vs Palermo,PROP_LEAGUE,31370,1601582.0,Jacopo Segre,Palermo,M,sot,0.252,3.97,,,,,,0.455,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T18:30:00+00:00,Romanian Superliga,Rapid vs Csikszereda,PROP_LEAGUE,70341,1565289.0,Márton Eppel,Csikszereda,F,sot,0.251,3.99,,,,,,0.748,0.623,,5,match_level,AVOID,
 2026-10-29,2026-10-29T00:30:00+00:00,Brazil Serie A,Bahia vs Sao Paulo,PROP_LEAGUE,47368,1492431.0,J. Calleri,Sao Paulo,F,goals,0.251,3.98,3.0,0.3145,-0.0635,-0.2018,-0.247,0.649,0.623,,5,match_level,AVOID,0.0
@@ -1087,8 +1087,8 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T14:00:00+00:00,Serie B,Cremonese vs Benevento,PROP_LEAGUE,32084,1601586.0,F. Salvemini,Benevento,F,goals,0.241,4.15,,,,,,0.615,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Energie Cottbus vs VfL Bochum,PROP_LEAGUE,177526,1576216.0,M. Hannemann,Energie Cottbus,M,sot,0.241,4.15,,,,,,0.24,0.698,MINUTES,5,match_level,AVOID,
 2026-10-31,,Bundesliga 2,Karlsruher SC vs 1. FC Heidenheim,VALUABLE,203011,,Julian Niehues,1. FC Heidenheim,M,sot,0.24,4.16,,,,,,0.353,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T17:00:00+00:00,Norway Eliteserien,Aalesund vs Sandefjord,PROP_LEAGUE,564536,1494788.0,M. Christensen,Aalesund,M,goals,0.24,4.17,3.1,0.2933,-0.0533,-0.1816,-0.256,0.779,0.623,,5,match_level,AVOID,0.0
-2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,Atletico San Luis vs Atlas,PROP_LEAGUE,2564,1551020.0,F. Mora,Atletico San Luis,F,sot,0.24,4.17,1.5,0.6289,-0.3889,-0.6184,-0.64,0.649,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T17:00:00+00:00,Norway Eliteserien,Aalesund vs Sandefjord,PROP_LEAGUE,564536,1494788.0,M. Christensen,Aalesund,M,goals,0.24,4.17,3.25,0.2797,-0.0397,-0.142,-0.22,0.779,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,Atletico San Luis vs Atlas,PROP_LEAGUE,2564,1551020.0,F. Mora,Atletico San Luis,F,sot,0.24,4.17,1.4,0.6739,-0.4339,-0.6438,-0.664,0.649,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Sweden Allsvenskan,Djurgardens IF vs Degerfors IF,MARKSMAN,342528,,Yiriyon Gideon,Degerfors IF,D,cards,0.24,4.16,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T15:00:00+00:00,Denmark Superliga,FC Nordsjaelland vs FC Midtjylland,PROP_LEAGUE,997,1549048.0,A. Maxsø,FC Midtjylland,D,cards,0.24,4.17,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T18:00:00+00:00,Sweden Allsvenskan,IF Brommapojkarna vs BK Hacken,PROP_LEAGUE,160934,1494314.0,Julius Lindberg,BK Hacken,M,goals,0.24,4.16,3.5,0.2597,-0.0197,-0.076,-0.16,0.787,0.623,,5,match_level,AVOID,0.0
@@ -1118,8 +1118,8 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-30,2026-10-30T18:00:00+00:00,Norway Eliteserien,Bodo/Glimt vs Viking,PROP_LEAGUE,1188,1494789.0,Erik Botheim,Viking,F,goals,0.237,4.22,2.5,0.3774,-0.1404,-0.372,-0.4075,0.821,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T19:45:00+00:00,Serie A,Genoa vs Juventus,PROP_LEAGUE,21104,1550171.0,Randal Kolo Muani,Juventus,F,goals,0.237,4.23,2.62,0.3601,-0.1231,-0.3418,-0.3791,0.569,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,Atletico San Luis vs Atlas,PROP_LEAGUE,187909,1551020.0,Luís Esteves,Atlas,M,sot,0.237,4.21,2.62,0.3601,-0.1231,-0.3418,-0.3791,0.676,0.623,,5,match_level,AVOID,0.0
-2026-10-31,2026-10-31T03:00:00+00:00,Mexico Liga MX,Puebla vs U.N.A.M. - Pumas,PROP_LEAGUE,269959,1551022.0,M. Tomás,Puebla,M,sot,0.237,4.21,1.2,0.7862,-0.5492,-0.6985,-0.7156,0.524,0.623,,5,match_level,AVOID,0.0
-2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,506275,1492438.0,Gabriel Bontempo,Santos,M,sot,0.236,4.23,2.5,0.3774,-0.1414,-0.3746,-0.41,0.289,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T03:00:00+00:00,Mexico Liga MX,Puebla vs U.N.A.M. - Pumas,PROP_LEAGUE,269959,1551022.0,M. Tomás,Puebla,M,sot,0.237,4.21,1.5,0.6289,-0.3919,-0.6232,-0.6445,0.524,0.623,,5,match_level,AVOID,0.0
+2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,506275,1492438.0,Gabriel Bontempo,Santos,M,sot,0.236,4.23,2.62,0.3601,-0.1241,-0.3446,-0.3817,0.289,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Mexico Liga MX,Santos Laguna vs Necaxa,MARKSMAN,128167,,P. Pedraza,Necaxa,M,cards,0.236,4.25,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Bournemouth vs Leeds,PROP_LEAGUE,18766,1557448.0,Dominic Calvert-Lewin,Leeds,F,sot2,0.236,4.23,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Energie Cottbus vs VfL Bochum,PROP_LEAGUE,90692,1576216.0,Tolcay Ciğerci,Energie Cottbus,M,sot2,0.236,4.24,,,,,,,0.623,,5,match_level,AVOID,
@@ -1252,7 +1252,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Energie Cottbus vs VfL Bochum,PROP_LEAGUE,26287,1576216.0,P. Hofmann,VfL Bochum,F,goals,0.223,4.49,2.38,0.3964,-0.1734,-0.4374,-0.4693,0.74,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T14:00:00+00:00,Serie B,Modena vs Mantova,PROP_LEAGUE,275053,1601588.0,R. Ilie,Mantova,M,sot,0.222,4.5,,,,,,0.301,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,Werder Bremen vs 1899 Hoffenheim,PROP_LEAGUE,7073,1575209.0,M. Grüll,Werder Bremen,M,goals,0.222,4.51,3.6,0.2525,-0.0305,-0.1209,-0.2008,0.47,0.623,,5,match_level,AVOID,0.0
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,140612,,M. Olesen,Sonderjyske,M,sot,0.222,4.51,6.0,0.1449,0.0771,0.5318,0.332,0.257,0.623,,5,match_level,PAPER,0.0
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,140612,,M. Olesen,Sonderjyske,M,sot,0.222,4.51,3.75,0.2424,-0.0204,-0.0842,-0.1675,0.257,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Manchester City vs Brighton,PROP_LEAGUE,1100,1557454.0,Erling Haaland,Manchester City,F,sot3,0.222,4.5,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-29,,Finland Veikkausliiga,KuPS Kuopio vs IF Gnistan,SNIPER,313748,,V. Gasc,KuPS,M,cards,0.222,4.5,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,,Austrian Bundesliga,LASK vs WSG Tirol,SNIPER,367672,,Moses Usor,Lask Linz,F,goals,0.222,4.5,,,,,,0.683,0.623,,5,match_level,AVOID,
@@ -1475,7 +1475,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-29,,Sweden Allsvenskan,Örgryte IS vs Mjällby AIF,VALUABLE,161057,,Villiam Granath,Mjallby AIF,M,sot,0.204,4.91,,,,,,0.253,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T17:00:00+00:00,Romanian Superliga,Petrolul Ploiesti vs CFR 1907 Cluj,PROP_LEAGUE,30697,1565292.0,Andrei Cordea,CFR 1907 Cluj,F,sot,0.204,4.9,,,,,,0.568,0.623,,5,match_level,AVOID,
 2026-10-29,2026-10-29T00:30:00+00:00,Brazil Serie A,Bahia vs Sao Paulo,PROP_LEAGUE,612911,1492431.0,D. Ferreira,Sao Paulo,M,cards,0.204,4.91,,,,,,,0.698,MINUTES,5,match_level,AVOID,
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,474605,,M. Haidara,Sonderjyske,M,goals,0.204,4.91,5.5,0.1581,0.0459,0.2903,0.122,0.71,0.623,,5,match_level,PAPER,0.0
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,474605,,M. Haidara,Sonderjyske,M,goals,0.204,4.91,4.33,0.21,-0.006,-0.0283,-0.1167,0.71,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:15:00+00:00,La Liga 2,Eibar vs Almeria,PROP_LEAGUE,287652,1569996.0,Jon Magunazelaia,Eibar,M,sot,0.204,4.91,,,,,,0.419,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T17:00:00+00:00,Norway Eliteserien,Aalesund vs Sandefjord,PROP_LEAGUE,217097,1494788.0,Marcus Melchior,Sandefjord,M,sot,0.204,4.9,,,,,,0.234,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-30,2026-10-30T17:30:00+00:00,Bundesliga 2,Energie Cottbus vs VfL Bochum,PROP_LEAGUE,716,1576216.0,L. Bittencourt,Energie Cottbus,M,sot,0.203,4.93,,,,,,0.248,0.698,SET_PIECE,5,match_level,AVOID,
@@ -1548,7 +1548,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T18:00:00+00:00,Serie B,Pisa vs Palermo,PROP_LEAGUE,30736,1601582.0,M. Bani,Palermo,D,cards,0.199,5.02,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-01,2026-11-01T13:30:00+00:00,Austrian Bundesliga,Red Bull Salzburg vs Austria Lustenau,PROP_LEAGUE,344258,1561958.0,D. Kacuri,Austria Lustenau,M,sot,0.199,5.03,,,,,,0.253,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:15:00+00:00,La Liga,Rayo Vallecano vs Celta Vigo,PROP_LEAGUE,122734,1570441.0,Ferrán Jutglà,Celta Vigo,F,goals,0.199,5.03,,,,,,0.713,0.623,,5,match_level,AVOID,
-2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,57160,1494790.0,N. Castro,Brann,F,goals,0.199,5.02,2.75,0.3431,-0.1441,-0.4199,-0.4527,0.721,0.623,,5,match_level,AVOID,0.0
+2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,57160,1494790.0,N. Castro,Brann,F,goals,0.199,5.02,2.6,0.3628,-0.1638,-0.4516,-0.4826,0.721,0.623,,5,match_level,AVOID,0.0
 2026-10-29,,Brazil Serie A,Vasco da Gama vs Flamengo,VALUABLE,358383,,Alan Lescano,Vasco DA Gama,M,goals,0.199,5.04,4.0,0.2273,-0.0283,-0.1244,-0.204,0.608,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T17:45:00+00:00,Argentina Primera Division,Defensa Y Justicia vs Independiente,PROP_LEAGUE,430102,1493215.0,J. Lucco,Defensa Y Justicia,M,sot,0.199,5.03,1.83,0.5155,-0.3165,-0.614,-0.6358,0.698,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T19:45:00+00:00,Ireland Premier Division,Drogheda United vs Galway United,PROP_LEAGUE,105972,1492791.0,A. Bolger,Galway United,M,cards,0.199,5.03,,,,,,,0.623,,5,match_level,AVOID,
@@ -1685,7 +1685,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Laval vs Boulogne,PROP_LEAGUE,629642,1552516.0,M. Houdayer,Laval,M,assists,0.191,5.24,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,63968,1551021.0,Ó. Estupiñán,FC Juarez,F,sot2,0.191,5.24,2.38,0.3964,-0.2054,-0.5181,-0.5454,,0.623,,5,match_level,AVOID,0.0
 2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,197625,1494790.0,E. Guðmundsson,Brann,M,sot,0.191,5.25,,,,,,0.451,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,2979,1551021.0,J. Rodríguez,FC Juarez,M,goals,0.191,5.23,4.5,0.202,-0.011,-0.0545,-0.1405,0.318,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,2979,1551021.0,J. Rodríguez,FC Juarez,M,goals,0.191,5.23,4.33,0.21,-0.019,-0.0903,-0.173,0.318,0.623,,5,match_level,AVOID,0.0
 2026-10-29,2026-10-29T03:00:00+00:00,Mexico Liga MX,Club America vs Club Tijuana,PROP_LEAGUE,51618,1550952.0,B. Rodríguez,Club America,M,sot2,0.191,5.24,2.0,0.4717,-0.2807,-0.5951,-0.618,,0.623,,5,match_level,AVOID,0.0
 2026-10-31,,Championship,Southampton vs Queens Park Rangers,VALUABLE,282060,,Caspar Jander,Southampton,M,cards,0.191,5.22,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-01,,Denmark Superliga,Viborg FF vs AC Horsens,VALUABLE,404526,,Seniko Doua,AC Horsens,M,cards,0.191,5.22,,,,,,,0.623,,5,match_level,AVOID,
@@ -1999,7 +1999,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T19:00:00+00:00,Serie B,Juve Stabia vs Hellas Verona,PROP_LEAGUE,281291,1601578.0,E. Iannoni,Hellas Verona,M,sot,0.176,5.69,,,,,,0.459,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Venezia vs Inter,PROP_LEAGUE,5,1550176.0,Manuel Akanji,Inter,D,cards,0.176,5.7,7.0,0.1242,0.0518,0.4168,0.232,,0.623,,5,match_level,VALUABLE,0.0077
 2026-10-31,2026-10-31T14:00:00+00:00,Romanian Superliga,Corvinul Hunedoara vs Arges Pitesti,PROP_LEAGUE,335546,1565287.0,F. Iacob,Corvinul Hunedoara,D,cards,0.176,5.68,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,359835,,D. García,FC Juarez,M,sot,0.176,5.67,3.25,0.2797,-0.1037,-0.3708,-0.428,0.323,0.623,,5,match_level,AVOID,0.0
+2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,359835,,D. García,FC Juarez,M,sot,0.176,5.67,3.0,0.3145,-0.1385,-0.4403,-0.472,0.323,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T14:00:00+00:00,Serie B,Cremonese vs Benevento,PROP_LEAGUE,32190,1601586.0,Fabio Gerli,Cremonese,M,cards,0.176,5.69,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-01,,Mexico Liga MX,Monterrey vs Tijuana,MARKSMAN,27104,,H. Cuypers,Monterrey,F,goals,0.176,5.69,1.83,0.5155,-0.3395,-0.6586,-0.6779,0.708,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Parma vs Udinese,PROP_LEAGUE,22007,1550173.0,H. Kamara,Udinese,M,sot,0.176,5.68,,,,,,0.247,0.623,,5,match_level,AVOID,
@@ -2042,7 +2042,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,FC Augsburg vs SC Freiburg,PROP_LEAGUE,202696,1575206.0,I. Matanović,SC Freiburg,F,sot2,0.175,5.7,2.5,0.3774,-0.2024,-0.5363,-0.5625,,0.623,,5,match_level,AVOID,0.0
 2026-10-30,,Ireland Premier Division,Shelbourne Dublin vs Waterford FC,SNIPER,317984,,T. Lonergan,Waterford,F,sot,0.175,5.72,,,,,,0.784,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T18:30:00+00:00,Austrian Bundesliga,Grazer AK vs TSV Hartberg,PROP_LEAGUE,202810,1561956.0,Yannick Oberleitner,Grazer AK,D,cards,0.175,5.7,,,,,,,0.623,,5,match_level,AVOID,
-2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,161943,1494790.0,N. Holm,Brann,F,goals,0.175,5.71,2.3,0.4102,-0.2352,-0.5734,-0.5975,0.428,0.623,,5,match_level,AVOID,0.0
+2026-11-01,2026-11-01T13:30:00+00:00,Norway Eliteserien,Brann vs Molde,PROP_LEAGUE,161943,1494790.0,N. Holm,Brann,F,goals,0.175,5.71,2.38,0.3964,-0.2214,-0.5585,-0.5835,0.428,0.623,,5,match_level,AVOID,0.0
 2026-10-31,,League One,Stockport County FC vs Wimbledon,MARKSMAN,286786,,R. Glover,Stockport County,M,sot,0.175,5.73,,,,,,0.253,0.698,SET_PIECE,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:00:00+00:00,League One,Leicester vs Stevenage,PROP_LEAGUE,305733,1564393.0,W. Alves,Leicester,M,sot,0.175,5.72,,,,,,0.504,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Hull City vs Ipswich,PROP_LEAGUE,17670,1557452.0,Regan Slater,Hull City,M,sot,0.175,5.71,,,,,,0.272,0.623,,5,match_level,AVOID,
@@ -2201,7 +2201,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-28,2026-10-28T18:00:00+00:00,Sweden Allsvenskan,Degerfors IF vs Vasteras SK FK,PROP_LEAGUE,161533,1494315.0,H. Magnusson,Vasteras SK FK,D,cards,0.17,5.9,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Rodez vs Dunkerque,PROP_LEAGUE,84962,1552521.0,L. Quenabio,Rodez,D,cards,0.17,5.88,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,,Bundesliga 2,Karlsruher SC vs 1. FC Heidenheim,VALUABLE,24899,,Patrick Mainka,1. FC Heidenheim,D,cards,0.17,5.88,,,,,,,0.623,,5,match_level,AVOID,
-2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,474605,,M. Haidara,Sonderjyske,M,sot2,0.17,5.89,10.0,0.087,0.083,0.955,0.7,,0.623,,5,match_level,VALUABLE,0.0156
+2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,474605,,M. Haidara,Sonderjyske,M,sot2,0.17,5.89,5.5,0.1581,0.0119,0.0753,-0.065,,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Bournemouth vs Leeds,PROP_LEAGUE,1150,1557448.0,Tyler Adams,Bournemouth,M,cards,0.169,5.92,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,Bayer Leverkusen vs VfB Stuttgart,PROP_LEAGUE,162032,1575204.0,Miguel Gutiérrez,Bayer Leverkusen,D,sot,0.169,5.92,2.55,0.37,-0.201,-0.5432,-0.5691,0.459,0.698,SET_PIECE,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T17:00:00+00:00,Romanian Superliga,Petrolul Ploiesti vs CFR 1907 Cluj,PROP_LEAGUE,28455,1565292.0,Stefan Dražić,CFR 1907 Cluj,F,sot,0.169,5.9,,,,,,0.625,0.623,,5,match_level,AVOID,
@@ -2242,7 +2242,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,2026-11-01T15:30:00+00:00,Romanian Superliga,Universitatea Craiova vs FC Botosani,PROP_LEAGUE,42570,1565294.0,Alexandru Țigănașu,FC Botosani,D,cards,0.168,5.97,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,6441,,J. Paradela,Cruz Azul,M,assists,0.168,5.94,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-02,,La Liga 2,Oviedo vs Las Palmas,VALUABLE,21709,,E. Loiodice,Las Palmas,M,cards,0.168,5.97,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T18:30:00+00:00,Austrian Bundesliga,Lask Linz vs WSG Wattens,PROP_LEAGUE,284474,1561957.0,Michael Olakigbe,WSG Wattens,F,goals,0.168,5.96,6.0,0.1449,0.0231,0.1592,0.008,0.661,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T18:30:00+00:00,Austrian Bundesliga,Lask Linz vs WSG Wattens,PROP_LEAGUE,284474,1561957.0,Michael Olakigbe,WSG Wattens,F,goals,0.168,5.96,5.0,0.1818,-0.0138,-0.076,-0.16,0.661,0.623,,5,match_level,AVOID,0.0
 2026-11-01,2026-11-01T13:00:00+00:00,Denmark Superliga,Viborg vs AC Horsens,PROP_LEAGUE,479884,1549051.0,A. Moro,AC Horsens,M,sot,0.168,5.95,,,,,,0.452,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T17:30:00+00:00,Serie A,Venezia vs Inter,PROP_LEAGUE,774,1550176.0,Juan Jesus,Venezia,D,cards,0.168,5.94,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-02,,Denmark Superliga,SonderjyskE vs FC Copenhagen,VALUABLE,37452,,S. Velkov,Sonderjyske,D,sot,0.168,5.94,6.0,0.1449,0.0231,0.1592,0.008,0.598,0.623,,5,match_level,AVOID,0.0
@@ -2284,7 +2284,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,104941,,Monchu,FC Juarez,M,sot,0.167,5.97,,,,,,0.311,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Metz vs PAU,PROP_LEAGUE,20745,1552517.0,Jessy Benet,PAU,M,cards,0.167,5.99,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-28,2026-10-28T23:30:00+00:00,USA MLS,Inter Miami vs FC Cincinnati,PROP_LEAGUE,305832,1490571.0,Matías Galarza,Inter Miami,M,cards,0.167,6.0,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,2979,,J. Rodríguez,FC Juarez,M,goals,0.167,6.01,4.5,0.202,-0.035,-0.1733,-0.2485,0.318,0.623,,5,match_level,AVOID,0.0
+2026-10-31,,Mexico Liga MX,FC Juárez vs Querétaro,MARKSMAN,2979,,J. Rodríguez,FC Juarez,M,goals,0.167,6.01,4.33,0.21,-0.043,-0.2046,-0.2769,0.318,0.623,,5,match_level,AVOID,0.0
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Nantes vs Clermont Foot,PROP_LEAGUE,191368,1552518.0,Florian Bianchini,Clermont Foot,M,cards,0.167,5.97,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-02,,Brazil Serie A,Bragantino-SP vs Santos,VALUABLE,2414,,Everton Cebolinha,Santos,M,cards,0.166,6.03,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:30:00+00:00,League One,Plymouth vs Reading,PROP_LEAGUE,19618,1564398.0,A. Rinomhota,Reading,M,cards,0.166,6.01,,,,,,,0.623,,5,match_level,AVOID,
@@ -2377,7 +2377,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T12:00:00+00:00,Bundesliga 2,VfL Wolfsburg vs VfL Osnabrück,PROP_LEAGUE,203426,1576223.0,Jonathan Gómez,VfL Osnabrück,M,cards,0.164,6.09,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T18:30:00+00:00,Romanian Superliga,Rapid vs Csikszereda,PROP_LEAGUE,130149,1565289.0,Attila Csűrös,Csikszereda,M,cards,0.164,6.09,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Nantes vs Clermont Foot,PROP_LEAGUE,22134,1552518.0,Kelvin Amian,Nantes,D,cards,0.164,6.1,,,,,,,0.623,,5,match_level,AVOID,
-2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,266345,,É. Lira,Cruz Azul,M,sot,0.164,6.09,3.0,0.3145,-0.1505,-0.4785,-0.508,0.264,0.623,,5,match_level,AVOID,0.0
+2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,266345,,É. Lira,Cruz Azul,M,sot,0.164,6.09,3.5,0.2597,-0.0957,-0.3686,-0.426,0.264,0.623,,5,match_level,AVOID,0.0
 2026-11-01,,Mexico Liga MX,Guadalajara vs Atlante FC,SNIPER,554810,,J. N. Carrera,Atlante FC,D,cards,0.164,6.1,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:30:00+00:00,Championship,Lincoln vs Birmingham,PROP_LEAGUE,19202,1563229.0,Lee Buchanan,Birmingham,D,cards,0.164,6.08,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,Werder Bremen vs 1899 Hoffenheim,PROP_LEAGUE,161883,1575209.0,Y. Regeer,Werder Bremen,M,cards,0.164,6.09,,,,,,,0.623,,5,match_level,AVOID,
@@ -2422,7 +2422,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-30,2026-10-30T19:45:00+00:00,Ireland Premier Division,Shelbourne vs Waterford,PROP_LEAGUE,82045,1492793.0,P. Amond,Waterford,F,sot,0.162,6.19,,,,,,0.779,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Rodez vs Dunkerque,PROP_LEAGUE,325916,1552521.0,R. Lipinski,Rodez,D,cards,0.162,6.17,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,,Brazil Serie A,Corinthians vs Mirassol,VALUABLE,9992,,Gustavo Henrique,Corinthians,D,sot,0.162,6.16,2.2,0.4288,-0.2668,-0.6222,-0.6436,0.687,0.698,SET_PIECE,5,match_level,AVOID,0.0
-2026-11-01,2026-11-01T13:30:00+00:00,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,PROP_LEAGUE,176023,1561959.0,Simon Seidl,Sturm Graz,F,goals,0.162,6.19,2.3,0.4102,-0.2482,-0.605,-0.6274,0.755,0.623,,5,match_level,AVOID,0.0
+2026-11-01,2026-11-01T13:30:00+00:00,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,PROP_LEAGUE,176023,1561959.0,Simon Seidl,Sturm Graz,F,goals,0.162,6.19,2.38,0.3964,-0.2344,-0.5913,-0.6144,0.755,0.623,,5,match_level,AVOID,0.0
 2026-11-01,2026-11-01T13:30:00+00:00,Austrian Bundesliga,Wolfsberger AC vs Sturm Graz,PROP_LEAGUE,19041,1561959.0,Jon Gorenc Stanković,Sturm Graz,M,cards,0.162,6.16,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,FC Augsburg vs SC Freiburg,PROP_LEAGUE,178403,1575206.0,C. Brackelmann,FC Augsburg,D,sot,0.162,6.16,,,,,,0.422,0.623,,5,match_level,AVOID,
 2026-10-31,,Championship,Southampton vs Queens Park Rangers,VALUABLE,282060,,Caspar Jander,Southampton,M,sot,0.162,6.18,,,,,,0.253,0.623,,5,match_level,AVOID,
@@ -2519,7 +2519,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-11-01,,Norway Eliteserien,Sarpsborg FK vs Kristiansund BK,VALUABLE,39165,,J. Isaksen,Kristiansund BK,M,cards,0.16,6.24,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T20:00:00+00:00,La Liga,Barcelona vs Alaves,PROP_LEAGUE,538,1570434.0,F. de Jong,Barcelona,M,cards,0.16,6.26,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T23:00:00+00:00,Mexico Liga MX,CF Pachuca vs Tigres UANL,PROP_LEAGUE,6077,1551023.0,S. Barreto,CF Pachuca,D,cards,0.16,6.23,,,,,,,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T17:00:00+00:00,Norway Eliteserien,Aalesund vs Sandefjord,PROP_LEAGUE,55586,1494788.0,J. Dunsby,Sandefjord,F,goals,0.16,6.26,2.88,0.3276,-0.1676,-0.5116,-0.5392,0.6,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T17:00:00+00:00,Norway Eliteserien,Aalesund vs Sandefjord,PROP_LEAGUE,55586,1494788.0,J. Dunsby,Sandefjord,F,goals,0.16,6.26,3.1,0.2933,-0.1333,-0.4544,-0.504,0.6,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T17:45:00+00:00,Argentina Primera Division,Defensa Y Justicia vs Independiente,PROP_LEAGUE,669570,1493215.0,Juan Miguel Arrayago,Independiente,D,cards,0.16,6.25,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-01,,Serie B,Avellino vs Pisa,VALUABLE,56390,,Michael Venturi,Avellino,D,cards,0.16,6.26,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T00:15:00+00:00,Argentina Primera Division,Sarmiento Junin vs Rosario Central,PROP_LEAGUE,5918,1493225.0,Mauricio Leonel Martínez,Sarmiento Junin,M,cards,0.16,6.26,,,,,,,0.623,,5,match_level,AVOID,
@@ -2583,7 +2583,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T17:30:00+00:00,La Liga,Real Betis vs Malaga,PROP_LEAGUE,47341,1570435.0,Marc Roca,Real Betis,M,sot,0.158,6.31,,,,,,0.23,0.623,,5,match_level,AVOID,
 2026-10-30,,Brazil Serie A,Corinthians vs Mirassol,VALUABLE,80654,,Willian Machado,Mirassol,D,cards,0.158,6.32,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T20:00:00+00:00,Championship,Sheffield Utd vs Wrexham,PROP_LEAGUE,342660,1563233.0,Oliver Arblaster,Sheffield Utd,M,sot,0.158,6.34,2.62,0.3601,-0.2021,-0.5612,-0.586,0.375,0.623,,5,match_level,AVOID,0.0
-2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,30568,1492438.0,C. Oliva,Santos,M,sot,0.158,6.32,4.0,0.2273,-0.0693,-0.3048,-0.368,0.253,0.623,,5,match_level,AVOID,0.0
+2026-10-28,2026-10-28T22:30:00+00:00,Brazil Serie A,Santos vs Palmeiras,PROP_LEAGUE,30568,1492438.0,C. Oliva,Santos,M,sot,0.158,6.32,4.33,0.21,-0.052,-0.2474,-0.3159,0.253,0.623,,5,match_level,AVOID,0.0
 2026-10-28,2026-10-28T19:45:00+00:00,Serie A,Monza vs Napoli,PROP_LEAGUE,380691,1550172.0,Jay Robinson,Monza,M,goals,0.158,6.31,5.8,0.1499,0.0081,0.0539,-0.0836,0.657,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T17:30:00+00:00,La Liga 2,Celta de Vigo II vs Cordoba,PROP_LEAGUE,289141,1569994.0,Adnane Ghailan,Cordoba,M,cards,0.158,6.31,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T14:30:00+00:00,Bundesliga,Bayer Leverkusen vs VfB Stuttgart,PROP_LEAGUE,25342,1575204.0,M. Mittelstädt,VfB Stuttgart,D,sot,0.158,6.31,2.9,0.3253,-0.1673,-0.5143,-0.5418,0.424,0.698,SET_PIECE,5,match_level,AVOID,0.0
@@ -2618,7 +2618,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T12:30:00+00:00,League One,Plymouth vs Reading,PROP_LEAGUE,20489,1564398.0,P. O&apos;Connor,Reading,D,cards,0.157,6.38,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T20:05:00+00:00,Ligue 1,Lille vs Lens,PROP_LEAGUE,441264,1552802.0,K. Antonio,Lens,D,cards,0.157,6.37,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:45:00+00:00,Ireland Premier Division,Drogheda United vs Galway United,PROP_LEAGUE,355316,1492791.0,O. Williams,Galway United,D,cards,0.157,6.38,,,,,,,0.623,,5,match_level,AVOID,
-2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,35850,,J. Márquez,Cruz Azul,M,sot,0.157,6.36,1.25,0.7547,-0.5977,-0.792,-0.8037,0.282,0.623,,5,match_level,AVOID,0.0
+2026-11-02,,Mexico Liga MX,Cruz Azul vs León,MARKSMAN,35850,,J. Márquez,Cruz Azul,M,sot,0.157,6.36,1.57,0.6009,-0.4439,-0.7387,-0.7535,0.282,0.623,,5,match_level,AVOID,0.0
 2026-10-29,,Brazil Serie A,Vasco da Gama vs Flamengo,VALUABLE,126936,,Samuel Lino,Flamengo,M,assists,0.157,6.38,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-29,,Brazil Serie A,Vasco da Gama vs Flamengo,VALUABLE,345748,,Andrés Gómez,Vasco DA Gama,M,assists,0.157,6.38,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T13:00:00+00:00,La Liga,Levante vs Atletico Madrid,PROP_LEAGUE,182219,1570439.0,Alex Baena,Atletico Madrid,M,cards,0.157,6.37,,,,,,,0.698,MINUTES,5,match_level,AVOID,
@@ -2834,7 +2834,7 @@ date,kickoff_utc,league,match,match_tier,player_id,fixture_id,player_name,team,p
 2026-10-31,2026-10-31T15:00:00+00:00,Premier League,Hull City vs Ipswich,PROP_LEAGUE,18397,1557452.0,Jack Taylor,Ipswich,M,cards,0.152,6.56,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-31,2026-10-31T12:30:00+00:00,Championship,Lincoln vs Birmingham,PROP_LEAGUE,17740,1563229.0,T. Hamer,Lincoln,D,cards,0.152,6.58,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-29,,Finland Veikkausliiga,KuPS Kuopio vs IF Gnistan,SNIPER,52727,,J. Moreno,KuPS,F,goals,0.152,6.58,,,,,,0.765,0.623,,5,match_level,AVOID,
-2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,359835,1551021.0,D. García,FC Juarez,M,sot,0.152,6.59,3.25,0.2797,-0.1277,-0.4566,-0.506,0.323,0.623,,5,match_level,AVOID,0.0
+2026-10-31,2026-10-31T01:00:00+00:00,Mexico Liga MX,FC Juarez vs Club Queretaro,PROP_LEAGUE,359835,1551021.0,D. García,FC Juarez,M,sot,0.152,6.59,3.0,0.3145,-0.1625,-0.5166,-0.544,0.323,0.623,,5,match_level,AVOID,0.0
 2026-10-31,2026-10-31T20:00:00+00:00,La Liga,Barcelona vs Alaves,PROP_LEAGUE,183751,1570434.0,A. Rebbach,Alaves,D,cards,0.152,6.57,,,,,,,0.623,,5,match_level,AVOID,
 2026-11-01,,Denmark Superliga,OB Odense BK vs Silkeborg IF,SNIPER,440577,,A. Madsen,Silkeborg,D,cards,0.152,6.59,,,,,,,0.623,,5,match_level,AVOID,
 2026-10-30,2026-10-30T19:00:00+00:00,Ligue 2,Laval vs Boulogne,PROP_LEAGUE,174663,1552516.0,J. Gaudin,Laval,M,sot,0.151,6.64,,,,,,0.231,0.623,,5,match_level,AVOID,
