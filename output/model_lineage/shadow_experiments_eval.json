@@ -1,31 +1,31 @@
 {
-  "computed_at": "2026-10-28T14:18:14.665045+00:00",
+  "computed_at": "2026-10-28T20:30:08.275261+00:00",
   "results": {
     "H-MODEL-01__newformat|newformat": {
       "rows": 216,
-      "settled_paired": 106,
+      "settled_paired": 107,
       "challenger_logged": 216,
-      "ll_champion_raw": 0.6887167183435825,
-      "ll_challenger": 0.6672075063090499,
-      "ll_served": 0.6887167183435825,
-      "brier_champion_raw": 0.2478270148757453,
-      "brier_challenger": 0.2373295716938396,
-      "delta_log_loss": -0.021509212034532578,
-      "delta_brier": -0.01049744318190565,
-      "n_matchdays": 5,
+      "ll_champion_raw": 0.686934441129054,
+      "ll_challenger": 0.6673891406678857,
+      "ll_served": 0.686934441129054,
+      "brier_champion_raw": 0.24694891437381308,
+      "brier_challenger": 0.23741759109080374,
+      "delta_log_loss": -0.019545300461168164,
+      "delta_brier": -0.009531323283009341,
+      "n_matchdays": 6,
       "delta_log_loss_ci95": [
-        -0.06891202907702204,
-        -0.005552385930954656
+        -0.062308404579778924,
+        -0.0009213190913137381
       ],
       "delta_brier_ci95": [
-        -0.033988737042210504,
-        -0.002985440160037729
+        -0.030702693875640442,
+        -0.0006871249164999934
       ]
     },
     "H-MODEL-01__standard|standard": {
-      "rows": 178,
+      "rows": 181,
       "settled_paired": 88,
-      "challenger_logged": 178,
+      "challenger_logged": 181,
       "ll_champion_raw": 0.6994824797256602,
       "ll_challenger": 0.7112642595153811,
       "ll_served": 0.6994824797256602,
