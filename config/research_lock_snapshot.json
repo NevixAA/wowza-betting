@@ -1,8 +1,8 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "",
- "approved_at": "2026-10-26T11:43:15Z",
- "approved_by": "Nevo (owner) - OU25 tracks split by side 2026-10-26 (identical stakes)",
+ "approval_note": "2026-10-28 owner-approved: Standard OU25 serving switched to repaired recipe (STANDARD_OU25_SERVING_RECIPE=v9_repaired in predict.yml); rollback = legacy_v9",
+ "approved_at": "2026-10-28T12:38:11Z",
+ "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
    "bankroll_policy": {
@@ -126,6 +126,7 @@
    "deployed_env": {
     "LEAGUE_SNIPER_CAP": "0.12",
     "MARKSMAN_THRESHOLD": "0.08",
+    "STANDARD_OU25_SERVING_RECIPE": "v9_repaired",
     "VALUABLE_THRESHOLD": "0.03"
    },
    "eligibility": {
@@ -283,5 +284,5 @@
    }
   }
  },
- "fingerprint_sha256": "8a9959d39a544d2330d6a5cd47bd86dc4342d49bff43e9007a29c266d60ae1da"
+ "fingerprint_sha256": "712bb087c6e81a38660a5ee411722d5ad5ea7483e3b608a6c0321929ad6c124f"
 }
