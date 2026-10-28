@@ -115,11 +115,12 @@ def _version_fields(row, model_key: str | None) -> dict:
             "prediction_role": "CHAMPION"}
 
 
-def _ou_key(model_type_tag) -> str:
-    """O/U row -> the model that scored it, including predict's fallbacks."""
+def _ou_key(model_type_tag, serving_recipe=None) -> str:
+    """O/U row -> the model that scored it, including predict's fallbacks and the Standard O/U 2.5
+    serving switch (`serving_recipe`, present on bets rows only when the switch is on)."""
     try:
         from src import model_registry as reg
-        return reg.ou_model_for(str(model_type_tag))
+        return reg.ou_model_for_row(str(model_type_tag), serving_recipe)
     except Exception:                                                 # noqa: BLE001
         return "standard"
 
@@ -358,7 +359,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "result":       "",
             "pnl":          "",
             "notes":        "",
-            **_version_fields(row, _ou_key(row.get("model_type", ""))),
+            **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
         })
 
     if flips:
