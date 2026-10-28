@@ -360,7 +360,7 @@ def save_research_payload(payload: dict, path) -> Path:
     serving = {Path(p).resolve() for p in (
         config.MODEL_FILE_STANDARD, config.MODEL_FILE_NEWFORMAT, config.MODEL_FILE_BTTS,
         config.MODEL_FILE_OVER15, config.MODEL_FILE_OVER35, config.HT_MODEL_FILE_05,
-        config.HT_MODEL_FILE_15)}
+        config.HT_MODEL_FILE_15, config.MODEL_FILE_STANDARD_REPAIRED)}
     if path in serving or path.parent == Path(config.MODELS_DIR).resolve():
         raise PermissionError(f"{path} is a serving location; research payloads go elsewhere")
     path.parent.mkdir(parents=True, exist_ok=True)
