@@ -38,6 +38,9 @@ takes TWO independent periods, both against the champion actually serving, both 
      Anything else -> SHADOW_MORE. With no prospective period the verdict is never PROMOTE.
 
 Verdicts: PROMOTE | KEEP_CHAMPION | SHADOW_MORE (+ BOOTSTRAP / ROLLBACK, both explicit and logged).
+OWNER OVERRIDE (2026-10-28): `owner_install` installs a FROZEN model type (reg.FROZEN_MODEL_TYPES,
+today only "standard_repaired") on the owner's recorded approval, without either period — logged
+as stage OWNER_INSTALL / PROMOTE. Retrains never submit to a frozen type (submit_candidate refuses).
 Every decision, with every metric and the gate version, is appended to
 output/model_lineage/promotion_decisions.csv (and, for retrain decisions, retrain_batches.csv).
 
@@ -619,6 +622,90 @@ def rollback(model_type: str, to_version: str, reason: str = "operational rollba
                      "reason": reason})
 
 
+OWNER_INSTALL = "OWNER_INSTALL"
+
+
+def owner_install(model_type: str, raw: bytes, *, approval: str, approved_by: str,
+                  training: dict | None = None, supersede: str = "",
+                  now: datetime | None = None) -> dict:
+    """EXPLICIT OWNER OVERRIDE of PG-1.0 for a FROZEN model type (owner 2026-10-28).
+
+    PG-1.0 promotes a model only after a holdout qualification AND a prospective period against
+    the serving champion. The repaired Standard OU25 model is being switched in BEFORE any forward
+    evidence, by owner decision — that is not something the gate can decide, so it is not routed
+    through `submit_candidate` (which would correctly refuse it) and it is not hidden either:
+
+      * only model types in reg.FROZEN_MODEL_TYPES (a separate serving file and champion; the legacy
+        `standard` champion and its bytes are never touched, so the rollback stays one env value);
+      * the payload must be a valid repaired Standard OU25 payload (src/standard_serving);
+      * `approval` (the owner's words, verbatim) and `approved_by` are mandatory and are written to
+        the manifest, the champion pointer, champion_history.csv and promotion_decisions.csv
+        (stage OWNER_INSTALL, verdict PROMOTE) — so system_health's "pointer == last promoted
+        decision" check holds and the act is auditable;
+      * an existing champion of the type is replaced only when `supersede` names it EXACTLY.
+
+    Written through `_install_champion`, i.e. this module stays the only writer of the serving
+    file and of current_champions.json. Raises on any refusal; nothing is written in that case.
+    """
+    import pickle
+    from src import standard_serving
+    now = now or reg.utcnow()
+    training = dict(training or {})
+    if model_type not in reg.FROZEN_MODEL_TYPES:
+        raise PermissionError(f"owner_install is only for frozen model types "
+                              f"{sorted(reg.FROZEN_MODEL_TYPES)}; {model_type} goes through the gate")
+    if not str(approval or "").strip() or not str(approved_by or "").strip():
+        raise PermissionError("owner_install needs the owner's approval text and approver name")
+    standard_serving.validate_payload(pickle.loads(raw))
+    prior = (reg.read_pointer().get(model_type) or {}).get("model_version", "")
+    if prior and supersede != prior:
+        raise PermissionError(f"{model_type} already has champion {prior}; pass supersede={prior!r} "
+                              f"to replace it deliberately")
+    sha = reg.sha256_bytes(raw)
+    trained_at = pd.to_datetime(training.get("trained_at") or reg.iso(now), utc=True).to_pydatetime()
+    version = reg.make_version(model_type, trained_at, sha)
+    payload = pickle.loads(raw)
+    fcols = list(payload.get("feature_cols") or [])
+    import hashlib
+    held = payload.get("served_holdout_metrics") or {}
+    manifest = {
+        "model_type": model_type, "model_version": version,
+        "retrain_batch_id": training.get("retrain_batch_id") or f"owner_{now:%Y%m%dT%H%M%SZ}",
+        "trained_at": reg.iso(trained_at),
+        "training_start": training.get("training_start"), "training_end": training.get("training_end"),
+        "training_cutoff": training.get("training_cutoff"), "training_rows": training.get("training_rows"),
+        "target": "over25", "recipe": payload.get("recipe"),
+        "model_recipe_version": payload.get("model_recipe_version"),
+        "imputer_version": payload.get("imputer_version"),
+        "feature_schema_version": hashlib.sha256("|".join(sorted(map(str, fcols))).encode()).hexdigest()[:12],
+        "n_features": len(fcols),
+        "code_commit_sha": os.getenv("GITHUB_SHA", "")[:12] or training.get("code_commit_sha") or "local",
+        "artifact_sha256": sha, "parent_champion_version": prior,
+        "validation_metrics": {"served_holdout": held, "blocks": payload.get("blocks")},
+        "promotion_status": OWNER_INSTALL, "model_role": "CHAMPION",
+        "owner_approval": {"text": approval, "approved_by": approved_by, "installed_at": reg.iso(now),
+                           "gate_version_overridden": GATE_VERSION},
+        "research": payload.get("research"),
+    }
+    reason = f"{OWNER_INSTALL} by {approved_by}: {approval}"
+    _install_champion(model_type, manifest, raw, reason=reason, batch=manifest["retrain_batch_id"],
+                      source=OWNER_INSTALL, holdout=held, at=now)
+    stem = reg.MODEL_FILES[model_type].stem
+    reg._atomic_write_bytes(config.MODELS_DIR / f"metrics_{stem}.json",
+                            json.dumps(payload.get("metrics") or {}, indent=2, default=str).encode("utf-8"))
+    record_decision({"stage": OWNER_INSTALL, "model_type": model_type, "candidate_version": version,
+                     "champion_version": prior, "verdict": PROMOTE, "promoted": True,
+                     "qualified": False, "parked": False,
+                     "retrain_batch_id": manifest["retrain_batch_id"], "prospective_status": "NONE",
+                     "metrics": {"served_holdout": held}, "reason": reason[:600]})
+    reg.update_high_water(model_type, {"champion_version": version,
+                                       "historical": {**held, "promoted_at": reg.iso(now),
+                                                      "gate_version": GATE_VERSION,
+                                                      "promotion_source": OWNER_INSTALL}})
+    log.warning(f"[{model_type}] OWNER_INSTALL {version} (prior: {prior or 'none'}) — {reason[:200]}")
+    return manifest
+
+
 def reconstruct_pointer_if_missing(pointer: dict, source: str = "LEGACY_GIT") -> bool:
     """One-off lineage reconstruction (scripts/backfill_model_lineage.py). Writes the pointer only
     when NONE exists — it can never replace a champion — and logs the act. Returns True if written."""
@@ -700,6 +787,8 @@ def review_parked(model_type: str, *, now: datetime | None = None, batch: str = 
     """Period 2 for the challenger in the slot. The ONLY path by which a retrain challenger can be
     PROMOTED. Returns the decision record, or None when the slot is empty. NEVER RAISES."""
     now = now or reg.utcnow()
+    if model_type in reg.FROZEN_MODEL_TYPES:
+        return None                       # frozen: no challenger slot is ever reviewed (2026-10-28)
     try:
         ch = reg.load_challenger(model_type)
         if ch is None:
@@ -826,6 +915,17 @@ def submit_candidate(model_type: str, model_file, old_payload, results: dict, te
     now = now or reg.utcnow()
     batch = batch or reg.batch_id(now)
     extra = {"retrain_batch_id": batch}
+    if mt in reg.FROZEN_MODEL_TYPES:
+        # A frozen model type (owner 2026-10-28) is never touched by a retrain: no comparison, no
+        # bootstrap over a missing file, no manifest, no slot. Logged so the refusal is visible.
+        reason = (f"FROZEN: {mt} changes only by owner_install (owner decision 2026-10-28); "
+                  f"retrain candidates are not accepted")
+        record_decision({"stage": "HOLDOUT", "model_type": mt, "verdict": KEEP, "promoted": False,
+                         "retrain_batch_id": batch, "reason": reason,
+                         "champion_version": (reg.read_pointer().get(mt) or {}).get("model_version", "")})
+        return ({"verdict": KEEP, "reason": reason, "qualified": False, "possible_gain": False,
+                 "tracks": {}, "evaluable_tracks": [], "holdout_n": 0, "parked": False,
+                 "ll_champion": None, "ll_challenger": None, "ll_ci": None}, extra)
     gate = {"verdict": KEEP, "reason": "", "qualified": False, "possible_gain": False,
             "tracks": {}, "evaluable_tracks": [], "holdout_n": 0, "parked": False,
             "ll_champion": None, "ll_challenger": None, "ll_ci": None}
@@ -858,10 +958,10 @@ def submit_candidate(model_type: str, model_file, old_payload, results: dict, te
                           f"holdout (basis={basis})")
     else:
         try:
-            payload_new = {"target": target,
-                           "models": {k: v["model"] for k, v in results.items()},
-                           "feature_cols": results[next(iter(results))]["feature_cols"],
-                           "metrics": {k: v["metrics"] for k, v in results.items()}}
+            # build_payload == the old four-key dict for legacy results; for a v9_repaired result
+            # it keeps the persisted imputer, so the candidate is scored as it would serve.
+            from src.model import build_payload as _build_payload
+            payload_new = _build_payload(results, target)
             p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
             p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
             y = pd.to_numeric(test_df[target], errors="coerce").to_numpy(dtype=float)
