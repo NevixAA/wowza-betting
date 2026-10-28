@@ -177,5 +177,18 @@
       ]
     },
     "updated_at": "2026-10-25T08:22:47Z"
+  },
+  "standard_repaired": {
+    "champion_version": "standard_repaired_20261028T123040Z_1f5805e6",
+    "historical": {
+      "accuracy": 0.5448,
+      "auc": 0.5554,
+      "log_loss": 0.68778,
+      "brier": 0.24733,
+      "promoted_at": "2026-10-28T12:37:37Z",
+      "gate_version": "PG-1.0",
+      "promotion_source": "OWNER_INSTALL"
+    },
+    "updated_at": "2026-10-28T12:37:38Z"
   }
 }

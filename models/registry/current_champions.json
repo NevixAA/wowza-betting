@@ -62,5 +62,15 @@
     "artifact_sha256": "6f370f6304d7009403b77c416cc277fcf65c821f126b5ca78b70e7e00fd6f63b",
     "promotion_source": "LEGACY_GIT",
     "promotion_reason": "reconstructed from git history 2026-10-18"
+  },
+  "standard_repaired": {
+    "model_version": "standard_repaired_20261028T123040Z_1f5805e6",
+    "champion_since": "2026-10-28T12:37:37Z",
+    "retrain_batch_id": "owner_20261028T123040Z",
+    "training_cutoff": "2026-10-28",
+    "artifact_sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
+    "promotion_source": "OWNER_INSTALL",
+    "promotion_reason": "OWNER_INSTALL by Nevo (owner): Nevo (owner) 2026-10-28: switch Standard OU25 to repaired recipe before forward evidence; rollback = set STANDARD_OU25_SERVING_RECIPE=legacy_v9",
+    "gate_version": "PG-1.0"
   }
 }

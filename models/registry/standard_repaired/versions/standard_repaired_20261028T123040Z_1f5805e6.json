@@ -1,0 +1,102 @@
+{
+  "model_type": "standard_repaired",
+  "model_version": "standard_repaired_20261028T123040Z_1f5805e6",
+  "retrain_batch_id": "owner_20261028T123040Z",
+  "trained_at": "2026-10-28T12:30:40Z",
+  "training_start": "2021-07-30",
+  "training_end": "2026-10-26",
+  "training_cutoff": "2026-10-28",
+  "training_rows": 31086,
+  "target": "over25",
+  "recipe": "v9_repaired",
+  "model_recipe_version": "v9_repaired-1.0",
+  "imputer_version": "v9-train-only-imputer-1.0",
+  "feature_schema_version": "b80056819be9",
+  "n_features": 41,
+  "code_commit_sha": "c80fd51418ff",
+  "artifact_sha256": "1f5805e63c9945cb3e1804ceb72a52dfdbd75360574183d33d76d35f8a9f1a74",
+  "parent_champion_version": "",
+  "validation_metrics": {
+    "served_holdout": {
+      "accuracy": 0.5448,
+      "auc": 0.5554,
+      "log_loss": 0.68778,
+      "brier": 0.24733
+    },
+    "blocks": {
+      "base": {
+        "rows": 19843,
+        "dates": [
+          "2021-07-30",
+          "2024-11-22"
+        ]
+      },
+      "calibration": {
+        "rows": 2457,
+        "dates": [
+          "2024-11-23",
+          "2025-03-14"
+        ]
+      },
+      "meta": {
+        "rows": 2547,
+        "dates": [
+          "2025-03-15",
+          "2025-09-27"
+        ]
+      },
+      "holdout": {
+        "rows": 6239,
+        "dates": [
+          "2025-09-28",
+          "2026-10-26"
+        ]
+      }
+    }
+  },
+  "promotion_status": "OWNER_INSTALL",
+  "model_role": "CHAMPION",
+  "owner_approval": {
+    "text": "Nevo (owner) 2026-10-28: switch Standard OU25 to repaired recipe before forward evidence; rollback = set STANDARD_OU25_SERVING_RECIPE=legacy_v9",
+    "approved_by": "Nevo (owner)",
+    "installed_at": "2026-10-28T12:37:37Z",
+    "gate_version_overridden": "PG-1.0"
+  },
+  "research": {
+    "recipe": "v9_repaired",
+    "arm": "V9_REPAIRED",
+    "price_mode": "none",
+    "track": "standard",
+    "target": "over25",
+    "team_scope": "league",
+    "weights": "derived",
+    "rows": 31086,
+    "frame_hash": "3fd56c29e2c55ee8",
+    "training_cutoff": "2026-10-28",
+    "training_start": "2021-07-30",
+    "training_end": "2026-10-26",
+    "identity": "v9r-identity-1.0:explicit+derived",
+    "identity_version": "v9r-identity-1.0",
+    "alias_map_file": "config/standard_ou25_identity_aliases.json",
+    "alias_map_sha256": "7ee523a3523008b813b4125e969f24265154640b402b5e5b019b1c3759f41f32",
+    "identity_report": {
+      "identity_version": "v9r-identity-1.0",
+      "n_aliases": 142,
+      "team_cells_renamed": 15020,
+      "duplicate_rows_removed": 9683,
+      "quarantined_fixtures": 4
+    },
+    "feature_recipe_version": "v9r-features-1.0",
+    "imputer_version": "v9-train-only-imputer-1.0",
+    "model_recipe_version": "v9_repaired-1.0",
+    "v9_commit": "4b77a998a0c9dae53785f5f4cc1f266183f77fd2",
+    "sklearn": "1.9.1",
+    "pandas": "3.1.0",
+    "python": "3.11.17",
+    "data_env": {
+      "WOWZA_FULL_ENRICH": "",
+      "WOWZA_USE_BACKTEST_ARCHIVE": ""
+    },
+    "generated_at": "2026-10-28T12:30:40Z"
+  }
+}
