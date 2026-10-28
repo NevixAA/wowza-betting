@@ -1,27 +1,27 @@
 {
-  "generated_at": "2026-10-27T23:06:05Z",
+  "generated_at": "2026-10-28T02:33:27Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
-    "eligible": 651,
-    "with_t30_close": 166,
-    "with_t10_close": 118,
+    "eligible": 658,
+    "with_t30_close": 173,
+    "with_t10_close": 125,
     "stale_close": 485,
     "no_close": 0,
-    "certified_t30_pct": 25.5,
-    "certified_t10_pct": 18.1,
+    "certified_t30_pct": 26.3,
+    "certified_t10_pct": 19.0,
     "median_close_minutes_certified": 1.7,
-    "median_last_pre_kickoff_minutes": 207.3,
+    "median_last_pre_kickoff_minutes": 204.2,
     "by_league": {
       "Argentina Primera Division": {
-        "eligible": 53,
-        "with_t30_close": 16,
-        "with_t10_close": 12,
+        "eligible": 54,
+        "with_t30_close": 17,
+        "with_t10_close": 13,
         "stale_close": 37,
         "no_close": 0,
-        "certified_t30_pct": 30.2,
-        "certified_t10_pct": 22.6,
-        "median_close_minutes_certified": 5.0,
-        "median_last_pre_kickoff_minutes": 222.9
+        "certified_t30_pct": 31.5,
+        "certified_t10_pct": 24.1,
+        "median_close_minutes_certified": 3.5,
+        "median_last_pre_kickoff_minutes": 216.8
       },
       "Austrian Bundesliga": {
         "eligible": 18,
@@ -134,25 +134,25 @@
         "median_last_pre_kickoff_minutes": 309.2
       },
       "League One": {
-        "eligible": 48,
-        "with_t30_close": 11,
-        "with_t10_close": 10,
+        "eligible": 53,
+        "with_t30_close": 16,
+        "with_t10_close": 15,
         "stale_close": 37,
         "no_close": 0,
-        "certified_t30_pct": 22.9,
-        "certified_t10_pct": 20.8,
-        "median_close_minutes_certified": 0.4,
-        "median_last_pre_kickoff_minutes": 310.9
+        "certified_t30_pct": 30.2,
+        "certified_t10_pct": 28.3,
+        "median_close_minutes_certified": 0.9,
+        "median_last_pre_kickoff_minutes": 93.2
       },
       "League Two": {
-        "eligible": 48,
-        "with_t30_close": 7,
-        "with_t10_close": 7,
+        "eligible": 49,
+        "with_t30_close": 8,
+        "with_t10_close": 8,
         "stale_close": 41,
         "no_close": 0,
-        "certified_t30_pct": 14.6,
-        "certified_t10_pct": 14.6,
-        "median_close_minutes_certified": 0.4,
+        "certified_t30_pct": 16.3,
+        "certified_t10_pct": 16.3,
+        "median_close_minutes_certified": 0.9,
         "median_last_pre_kickoff_minutes": 524.3
       },
       "Ligue 2": {
@@ -224,39 +224,39 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 651,
-        "with_t30_close": 166,
-        "with_t10_close": 118,
+        "eligible": 658,
+        "with_t30_close": 173,
+        "with_t10_close": 125,
         "stale_close": 485,
         "no_close": 0,
-        "certified_t30_pct": 25.5,
-        "certified_t10_pct": 18.1,
+        "certified_t30_pct": 26.3,
+        "certified_t10_pct": 19.0,
         "median_close_minutes_certified": 1.7,
-        "median_last_pre_kickoff_minutes": 207.3
+        "median_last_pre_kickoff_minutes": 204.2
       }
     }
   },
   "shadow_since_measure_from": {
-    "eligible": 187,
-    "with_t30_close": 130,
-    "with_t10_close": 110,
+    "eligible": 194,
+    "with_t30_close": 137,
+    "with_t10_close": 117,
     "stale_close": 57,
     "no_close": 0,
-    "certified_t30_pct": 69.5,
-    "certified_t10_pct": 58.8,
+    "certified_t30_pct": 70.6,
+    "certified_t10_pct": 60.3,
     "median_close_minutes_certified": 1.4,
     "median_last_pre_kickoff_minutes": 1.9,
     "by_league": {
       "Argentina Primera Division": {
-        "eligible": 14,
-        "with_t30_close": 11,
-        "with_t10_close": 9,
+        "eligible": 15,
+        "with_t30_close": 12,
+        "with_t10_close": 10,
         "stale_close": 3,
         "no_close": 0,
-        "certified_t30_pct": 78.6,
-        "certified_t10_pct": 64.3,
-        "median_close_minutes_certified": 2.0,
-        "median_last_pre_kickoff_minutes": 7.0
+        "certified_t30_pct": 80.0,
+        "certified_t10_pct": 66.7,
+        "median_close_minutes_certified": 1.9,
+        "median_last_pre_kickoff_minutes": 6.5
       },
       "Austrian Bundesliga": {
         "eligible": 6,
@@ -369,25 +369,25 @@
         "median_last_pre_kickoff_minutes": 15.1
       },
       "League One": {
-        "eligible": 12,
-        "with_t30_close": 10,
-        "with_t10_close": 10,
+        "eligible": 17,
+        "with_t30_close": 15,
+        "with_t10_close": 15,
         "stale_close": 2,
         "no_close": 0,
-        "certified_t30_pct": 83.3,
-        "certified_t10_pct": 83.3,
+        "certified_t30_pct": 88.2,
+        "certified_t10_pct": 88.2,
         "median_close_minutes_certified": 0.4,
-        "median_last_pre_kickoff_minutes": 0.4
+        "median_last_pre_kickoff_minutes": 1.4
       },
       "League Two": {
-        "eligible": 12,
-        "with_t30_close": 7,
-        "with_t10_close": 7,
+        "eligible": 13,
+        "with_t30_close": 8,
+        "with_t10_close": 8,
         "stale_close": 5,
         "no_close": 0,
-        "certified_t30_pct": 58.3,
-        "certified_t10_pct": 58.3,
-        "median_close_minutes_certified": 0.4,
+        "certified_t30_pct": 61.5,
+        "certified_t10_pct": 61.5,
+        "median_close_minutes_certified": 0.9,
         "median_last_pre_kickoff_minutes": 1.4
       },
       "Ligue 2": {
@@ -459,13 +459,13 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 187,
-        "with_t30_close": 130,
-        "with_t10_close": 110,
+        "eligible": 194,
+        "with_t30_close": 137,
+        "with_t10_close": 117,
         "stale_close": 57,
         "no_close": 0,
-        "certified_t30_pct": 69.5,
-        "certified_t10_pct": 58.8,
+        "certified_t30_pct": 70.6,
+        "certified_t10_pct": 60.3,
         "median_close_minutes_certified": 1.4,
         "median_last_pre_kickoff_minutes": 1.9
       }
