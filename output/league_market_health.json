@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-10-28T20:30:12Z",
+ "generated_at": "2026-10-29T00:23:20Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-10-28",
+ "current_tip_day": "2026-10-29",
  "leagues_with_current_week_data": 18,
  "missing_leagues": [],
  "missing_leagues_previous_week": [],
@@ -14,9 +14,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 788,
  "actual_candidate_rows": 788,
- "panel_rows": 332,
+ "panel_rows": 352,
  "settled_rows": 204,
- "pending_rows": 128,
+ "pending_rows": 148,
  "clv_certified_rows": 78,
  "clv_coverage": 0.3824,
  "protected_tracks_modified": false,
@@ -1202,7 +1202,7 @@
   "USA MLS": {
    "current": {
     "league_week_id": "USA MLS|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 17,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 17,
@@ -1213,19 +1213,19 @@
     "markets": {
      "OU25": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 17,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 68,
