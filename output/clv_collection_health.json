@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-10-28T20:30:07Z",
+  "generated_at": "2026-10-29T01:11:41Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
-    "eligible": 659,
-    "with_t30_close": 174,
-    "with_t10_close": 126,
-    "stale_close": 485,
+    "eligible": 666,
+    "with_t30_close": 177,
+    "with_t10_close": 129,
+    "stale_close": 489,
     "no_close": 0,
-    "certified_t30_pct": 26.4,
-    "certified_t10_pct": 19.1,
+    "certified_t30_pct": 26.6,
+    "certified_t10_pct": 19.4,
     "median_close_minutes_certified": 1.7,
-    "median_last_pre_kickoff_minutes": 204.2,
+    "median_last_pre_kickoff_minutes": 199.6,
     "by_league": {
       "Argentina Primera Division": {
         "eligible": 54,
@@ -189,26 +189,26 @@
         "median_last_pre_kickoff_minutes": 99.1
       },
       "Serie B": {
-        "eligible": 37,
-        "with_t30_close": 20,
-        "with_t10_close": 13,
+        "eligible": 40,
+        "with_t30_close": 23,
+        "with_t10_close": 16,
         "stale_close": 17,
         "no_close": 0,
-        "certified_t30_pct": 54.1,
-        "certified_t10_pct": 35.1,
+        "certified_t30_pct": 57.5,
+        "certified_t10_pct": 40.0,
         "median_close_minutes_certified": 1.9,
-        "median_last_pre_kickoff_minutes": 19.8
+        "median_last_pre_kickoff_minutes": 19.7
       },
       "Sweden Allsvenskan": {
-        "eligible": 25,
+        "eligible": 29,
         "with_t30_close": 7,
         "with_t10_close": 5,
-        "stale_close": 18,
+        "stale_close": 22,
         "no_close": 0,
-        "certified_t30_pct": 28.0,
-        "certified_t10_pct": 20.0,
+        "certified_t30_pct": 24.1,
+        "certified_t10_pct": 17.2,
         "median_close_minutes_certified": 1.5,
-        "median_last_pre_kickoff_minutes": 169.7
+        "median_last_pre_kickoff_minutes": 175.0
       },
       "USA MLS": {
         "eligible": 62,
@@ -224,26 +224,26 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 659,
-        "with_t30_close": 174,
-        "with_t10_close": 126,
-        "stale_close": 485,
+        "eligible": 666,
+        "with_t30_close": 177,
+        "with_t10_close": 129,
+        "stale_close": 489,
         "no_close": 0,
-        "certified_t30_pct": 26.4,
-        "certified_t10_pct": 19.1,
+        "certified_t30_pct": 26.6,
+        "certified_t10_pct": 19.4,
         "median_close_minutes_certified": 1.7,
-        "median_last_pre_kickoff_minutes": 204.2
+        "median_last_pre_kickoff_minutes": 199.6
       }
     }
   },
   "shadow_since_measure_from": {
-    "eligible": 195,
-    "with_t30_close": 138,
-    "with_t10_close": 118,
-    "stale_close": 57,
+    "eligible": 202,
+    "with_t30_close": 141,
+    "with_t10_close": 121,
+    "stale_close": 61,
     "no_close": 0,
-    "certified_t30_pct": 70.8,
-    "certified_t10_pct": 60.5,
+    "certified_t30_pct": 69.8,
+    "certified_t10_pct": 59.9,
     "median_close_minutes_certified": 1.4,
     "median_last_pre_kickoff_minutes": 1.9,
     "by_league": {
@@ -424,26 +424,26 @@
         "median_last_pre_kickoff_minutes": 0.7
       },
       "Serie B": {
-        "eligible": 17,
-        "with_t30_close": 17,
-        "with_t10_close": 13,
+        "eligible": 20,
+        "with_t30_close": 20,
+        "with_t10_close": 16,
         "stale_close": 0,
         "no_close": 0,
         "certified_t30_pct": 100.0,
-        "certified_t10_pct": 76.5,
+        "certified_t10_pct": 80.0,
         "median_close_minutes_certified": 1.9,
         "median_last_pre_kickoff_minutes": 1.9
       },
       "Sweden Allsvenskan": {
-        "eligible": 9,
+        "eligible": 13,
         "with_t30_close": 7,
         "with_t10_close": 5,
-        "stale_close": 2,
+        "stale_close": 6,
         "no_close": 0,
-        "certified_t30_pct": 77.8,
-        "certified_t10_pct": 55.6,
+        "certified_t30_pct": 53.8,
+        "certified_t10_pct": 38.5,
         "median_close_minutes_certified": 1.5,
-        "median_last_pre_kickoff_minutes": 2.0
+        "median_last_pre_kickoff_minutes": 19.7
       },
       "USA MLS": {
         "eligible": 15,
@@ -459,13 +459,13 @@
     },
     "by_market": {
       "ou25": {
-        "eligible": 195,
-        "with_t30_close": 138,
-        "with_t10_close": 118,
-        "stale_close": 57,
+        "eligible": 202,
+        "with_t30_close": 141,
+        "with_t10_close": 121,
+        "stale_close": 61,
         "no_close": 0,
-        "certified_t30_pct": 70.8,
-        "certified_t10_pct": 60.5,
+        "certified_t30_pct": 69.8,
+        "certified_t10_pct": 59.9,
         "median_close_minutes_certified": 1.4,
         "median_last_pre_kickoff_minutes": 1.9
       }
@@ -475,19 +475,19 @@
   "collection": {
     "window_days": 7.0,
     "from": "2026-10-23 00:00:00+00:00",
-    "fixture_markets": 2494,
-    "fixtures": 313,
-    "t30_pct": 65.4,
-    "t10_pct": 63.5,
+    "fixture_markets": 2622,
+    "fixtures": 329,
+    "t30_pct": 66.1,
+    "t10_pct": 64.2,
     "t60_pct": 77.4,
-    "median_last_obs_minutes": 1.6,
+    "median_last_obs_minutes": 1.7,
     "by_track": {
       "new_format": {
-        "fixture_markets": 1046,
-        "fixtures": 131,
-        "t30_pct": 62.1,
-        "t10_pct": 58.8,
-        "t60_pct": 65.3,
+        "fixture_markets": 1174,
+        "fixtures": 147,
+        "t30_pct": 63.9,
+        "t10_pct": 60.9,
+        "t60_pct": 66.7,
         "median_last_obs_minutes": 1.7
       },
       "standard": {
@@ -501,67 +501,67 @@
     },
     "by_market": {
       "btts_no": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 65.4,
-        "t10_pct": 63.8,
-        "t60_pct": 76.9,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 66.2,
+        "t10_pct": 64.6,
+        "t60_pct": 77.1,
         "median_last_obs_minutes": 1.6
       },
       "btts_yes": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 65.4,
-        "t10_pct": 63.8,
-        "t60_pct": 76.9,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 66.2,
+        "t10_pct": 64.6,
+        "t60_pct": 77.1,
         "median_last_obs_minutes": 1.6
       },
       "over15": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 65.4,
-        "t10_pct": 63.8,
-        "t60_pct": 77.9,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 66.2,
+        "t10_pct": 64.6,
+        "t60_pct": 78.0,
         "median_last_obs_minutes": 1.6
       },
       "over25": {
-        "fixture_markets": 310,
-        "fixtures": 310,
-        "t30_pct": 63.9,
-        "t10_pct": 61.6,
-        "t60_pct": 76.1,
+        "fixture_markets": 326,
+        "fixtures": 326,
+        "t30_pct": 64.1,
+        "t10_pct": 62.0,
+        "t60_pct": 75.8,
         "median_last_obs_minutes": 1.7
       },
       "over35": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 66.3,
-        "t10_pct": 64.1,
-        "t60_pct": 78.2,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 67.1,
+        "t10_pct": 64.9,
+        "t60_pct": 78.4,
         "median_last_obs_minutes": 1.6
       },
       "under15": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 65.7,
-        "t10_pct": 64.1,
-        "t60_pct": 77.9,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 66.5,
+        "t10_pct": 64.9,
+        "t60_pct": 78.0,
         "median_last_obs_minutes": 1.6
       },
       "under25": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 65.1,
-        "t10_pct": 62.5,
-        "t60_pct": 76.9,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 65.2,
+        "t10_pct": 62.8,
+        "t60_pct": 76.5,
         "median_last_obs_minutes": 1.7
       },
       "under35": {
-        "fixture_markets": 312,
-        "fixtures": 312,
-        "t30_pct": 66.3,
-        "t10_pct": 64.1,
-        "t60_pct": 78.2,
+        "fixture_markets": 328,
+        "fixtures": 328,
+        "t30_pct": 67.1,
+        "t10_pct": 64.9,
+        "t60_pct": 78.4,
         "median_last_obs_minutes": 1.6
       }
     },
@@ -591,12 +591,12 @@
         "median_last_obs_minutes": 0.4
       },
       "Brazil Serie A": {
-        "fixture_markets": 80,
-        "fixtures": 10,
-        "t30_pct": 80.0,
-        "t10_pct": 80.0,
-        "t60_pct": 80.0,
-        "median_last_obs_minutes": 1.4
+        "fixture_markets": 120,
+        "fixtures": 15,
+        "t30_pct": 66.7,
+        "t10_pct": 66.7,
+        "t60_pct": 66.7,
+        "median_last_obs_minutes": 1.7
       },
       "Bundesliga 2": {
         "fixture_markets": 72,
@@ -807,12 +807,12 @@
         "median_last_obs_minutes": 1.6
       },
       "USA MLS": {
-        "fixture_markets": 120,
-        "fixtures": 15,
-        "t30_pct": 67.5,
-        "t10_pct": 65.8,
-        "t60_pct": 67.5,
-        "median_last_obs_minutes": 1.6
+        "fixture_markets": 208,
+        "fixtures": 26,
+        "t30_pct": 79.3,
+        "t10_pct": 78.4,
+        "t60_pct": 79.3,
+        "median_last_obs_minutes": 1.7
       }
     }
   },
