@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T01:11:44Z",
+ "generated_at": "2026-10-29T05:43:05Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-29",
@@ -12,11 +12,11 @@
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 788,
- "actual_candidate_rows": 788,
- "panel_rows": 352,
+ "expected_candidate_rows": 836,
+ "actual_candidate_rows": 836,
+ "panel_rows": 372,
  "settled_rows": 215,
- "pending_rows": 137,
+ "pending_rows": 157,
  "clv_certified_rows": 78,
  "clv_coverage": 0.3628,
  "protected_tracks_modified": false,
@@ -892,7 +892,7 @@
   "Mexico Liga MX": {
    "current": {
     "league_week_id": "Mexico Liga MX|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
@@ -903,19 +903,19 @@
     "markets": {
      "OU25": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 10,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 40,
@@ -1203,33 +1203,33 @@
    "current": {
     "league_week_id": "USA MLS|2026-W44",
     "state": "FROZEN",
-    "fixtures_known": 17,
+    "fixtures_known": 29,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 17,
+    "fixtures_with_candidates": 29,
     "fixtures_without_candidates": 0,
     "week_lock_ts": "2026-10-28T23:30:00Z",
-    "late_after_lock": 0,
+    "late_after_lock": 48,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 17,
+      "candidates": 29,
       "panel_rows": 5
      },
      "BTTS": {
-      "candidates": 17,
+      "candidates": 29,
       "panel_rows": 5
      },
      "OVER15": {
-      "candidates": 17,
+      "candidates": 29,
       "panel_rows": 5
      },
      "OVER35": {
-      "candidates": 17,
+      "candidates": 29,
       "panel_rows": 5
      }
     },
-    "expected_candidate_rows": 68,
-    "actual_candidate_rows": 68
+    "expected_candidate_rows": 116,
+    "actual_candidate_rows": 116
    },
    "previous": {
     "league_week_id": "USA MLS|2026-W43",
