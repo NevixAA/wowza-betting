@@ -10,17 +10,17 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-10-28T15:58:49Z,2026-10-28,2026-10-28T16:00:00Z,Finland Veikkausliiga,AC Oulu vs VPS,under15,4.33,nf_capture
 2026-10-28T15:58:49Z,2026-10-28,2026-10-28T16:00:00Z,Finland Veikkausliiga,AC Oulu vs VPS,under25,2.15,nf_capture
 2026-10-28T15:58:49Z,2026-10-28,2026-10-28T16:00:00Z,Finland Veikkausliiga,AC Oulu vs VPS,under35,1.44,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,btts_no,2.38,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,btts_yes,1.53,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,h2h_away,5.25,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,h2h_draw,4.5,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,h2h_home,1.55,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,over15,1.12,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,over25,1.44,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,over35,2.0,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,under15,6.0,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,under25,2.7,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,under35,1.73,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,btts_no,2.5,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,btts_yes,1.5,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,h2h_away,4.75,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,h2h_draw,4.33,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,h2h_home,1.62,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,over15,1.11,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,over25,1.4,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,over35,2.0,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,under15,6.5,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,under25,2.88,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Charlotte vs CF Montreal,under35,1.73,nf_capture
 2026-10-28T15:54:45Z,2026-10-28,2026-10-28T18:00:00Z,Sweden Allsvenskan,Degerfors IF vs Vasteras SK FK,btts_no,2.05,nf_capture
 2026-10-28T15:54:45Z,2026-10-28,2026-10-28T18:00:00Z,Sweden Allsvenskan,Degerfors IF vs Vasteras SK FK,btts_yes,1.7,nf_capture
 2026-10-28T15:54:45Z,2026-10-28,2026-10-28T18:00:00Z,Sweden Allsvenskan,Degerfors IF vs Vasteras SK FK,h2h_away,2.55,nf_capture
@@ -76,37 +76,38 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-10-28T15:54:45Z,2026-10-28,2026-10-28T18:00:00Z,Sweden Allsvenskan,IFK Goteborg vs Djurgardens IF,under15,4.5,nf_capture
 2026-10-28T15:54:45Z,2026-10-28,2026-10-28T18:00:00Z,Sweden Allsvenskan,IFK Goteborg vs Djurgardens IF,under25,2.25,nf_capture
 2026-10-28T15:54:45Z,2026-10-28,2026-10-28T18:00:00Z,Sweden Allsvenskan,IFK Goteborg vs Djurgardens IF,under35,1.5,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,btts_no,3.0,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,btts_yes,1.36,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,h2h_away,4.75,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,h2h_draw,5.25,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,h2h_home,1.55,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,over15,1.06,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,over25,1.22,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,over35,1.57,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,under15,10.0,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,under25,4.2,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,under35,2.25,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,btts_no,2.75,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,btts_yes,1.4,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,h2h_away,3.5,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,h2h_draw,4.0,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,h2h_home,1.91,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,over15,1.11,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,over35,1.91,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,under15,6.5,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,under25,2.88,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,under35,1.8,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,btts_no,2.38,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,btts_yes,1.53,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,h2h_away,4.2,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,h2h_draw,4.1,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,h2h_home,1.73,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,over15,1.14,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,over35,2.25,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,under15,5.5,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,btts_no,3.25,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,btts_yes,1.33,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,h2h_away,4.75,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,h2h_draw,5.25,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,h2h_home,1.55,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,over15,1.06,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,over25,1.22,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,over35,1.57,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,under15,10.0,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,under25,4.2,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Inter Miami vs FC Cincinnati,under35,2.25,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,btts_no,3.0,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,btts_yes,1.36,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,h2h_away,3.1,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,h2h_draw,4.0,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,h2h_home,2.1,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,over15,1.1,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,over35,1.83,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,under15,7.0,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,under25,3.1,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New England Revolution vs New York Red Bulls,under35,1.83,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,btts_no,2.2,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,btts_yes,1.62,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,h2h_away,4.33,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,h2h_draw,3.9,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,h2h_home,1.75,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,over15,1.18,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,over25,1.65,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,over35,2.5,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,under15,4.5,nf_capture
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,under25,2.4,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,under35,1.57,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,New York City FC vs Atlanta United FC,under35,1.5,nf_capture
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T22:30:00Z,Brazil Serie A,RB Bragantino vs Chapecoense-sc,btts_no,2.2,nf_capture
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T22:30:00Z,Brazil Serie A,RB Bragantino vs Chapecoense-sc,btts_yes,1.62,nf_capture
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T22:30:00Z,Brazil Serie A,RB Bragantino vs Chapecoense-sc,h2h_away,9.5,nf_capture
@@ -129,14 +130,14 @@ snapshot_ts,match_date,kickoff_utc,league,match,market,odds,writer
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T22:30:00Z,Brazil Serie A,Santos vs Palmeiras,under15,4.0,nf_capture
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T22:30:00Z,Brazil Serie A,Santos vs Palmeiras,under25,2.0,nf_capture
 2026-10-28T19:29:05Z,2026-10-28,2026-10-28T22:30:00Z,Brazil Serie A,Santos vs Palmeiras,under35,1.4,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,btts_no,2.62,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,btts_yes,1.44,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,h2h_away,3.75,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,h2h_draw,3.8,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,h2h_home,1.9,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,over15,1.14,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,over25,1.48,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,over35,2.1,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,under15,5.5,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,under25,2.6,nf_capture
-2026-10-28T19:29:05Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,under35,1.67,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,btts_no,2.62,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,btts_yes,1.44,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,h2h_away,3.75,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,h2h_draw,3.8,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,h2h_home,1.9,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,over15,1.14,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,over25,1.48,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,over35,2.1,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,under15,5.5,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,under25,2.6,nf_capture
+2026-10-28T23:29:15Z,2026-10-28,2026-10-28T23:30:00Z,USA MLS,Toronto FC vs DC United,under35,1.67,nf_capture
