@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T15:02:33Z",
+ "generated_at": "2026-10-30T19:57:31Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-30",
@@ -14,9 +14,9 @@
  "market_gap_leagues": [],
  "expected_candidate_rows": 836,
  "actual_candidate_rows": 836,
- "panel_rows": 372,
+ "panel_rows": 452,
  "settled_rows": 260,
- "pending_rows": 112,
+ "pending_rows": 192,
  "clv_certified_rows": 99,
  "clv_coverage": 0.3808,
  "protected_tracks_modified": false,
@@ -86,7 +86,7 @@
   "Austrian Bundesliga": {
    "current": {
     "league_week_id": "Austrian Bundesliga|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 6,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 6,
@@ -97,19 +97,19 @@
     "markets": {
      "OU25": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 6,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 24,
@@ -210,7 +210,7 @@
   "Bundesliga 2": {
    "current": {
     "league_week_id": "Bundesliga 2|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 9,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 9,
@@ -221,19 +221,19 @@
     "markets": {
      "OU25": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 9,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 36,
@@ -520,7 +520,7 @@
   "Ireland Premier Division": {
    "current": {
     "league_week_id": "Ireland Premier Division|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 5,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 5,
@@ -531,19 +531,19 @@
     "markets": {
      "OU25": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 5,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 20,
@@ -954,7 +954,7 @@
   "Norway Eliteserien": {
    "current": {
     "league_week_id": "Norway Eliteserien|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "FROZEN",
     "fixtures_known": 8,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 8,
@@ -965,19 +965,19 @@
     "markets": {
      "OU25": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "BTTS": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER15": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      },
      "OVER35": {
       "candidates": 8,
-      "panel_rows": 0
+      "panel_rows": 5
      }
     },
     "expected_candidate_rows": 32,
