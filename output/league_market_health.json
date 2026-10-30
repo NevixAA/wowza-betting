@@ -1,10 +1,12 @@
 {
- "generated_at": "2026-10-30T19:57:31Z",
+ "generated_at": "2026-10-30T20:04:46Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-10-30",
  "leagues_with_current_week_data": 18,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Championship"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "China Super League",
@@ -272,7 +274,7 @@
   "Championship": {
    "current": {
     "league_week_id": "Championship|2026-W44",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 12,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 12,
