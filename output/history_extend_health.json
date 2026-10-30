@@ -1,17 +1,17 @@
 {
-  "checked_at": "2026-10-29T10:37:54Z",
-  "run_number": "74",
+  "checked_at": "2026-10-30T10:41:51Z",
+  "run_number": "75",
   "gate": {
     "collect": "true",
-    "newest_before": "2026-10-27",
-    "age_days": "2",
-    "hours_since_commit": "24.2"
+    "newest_before": "2026-10-29",
+    "age_days": "1",
+    "hours_since_commit": "23.8"
   },
   "collect_outcome": "success",
-  "last_collect_at": "2026-10-29T10:37:54Z",
+  "last_collect_at": "2026-10-30T10:41:51Z",
   "parquet": {
-    "rows": 874422,
-    "newest_after": "2026-10-29"
+    "rows": 874732,
+    "newest_after": "2026-10-30"
   },
   "collect_log_tail": [
     "  [Austrian Bundesliga 2026] Fetching fixture list (last 99)...",
@@ -30,12 +30,12 @@
     "  [Ligue 2 2026] Fetching fixture list (last 99)...",
     "  [Ligue 2 2026] 90 fixtures (90 cached, 0 to fetch)...",
     "  [Ligue 2 2026] 2670 player-match rows collected",
-    "[DONE] 70964 total player-match rows across 26 leagues / 26 season-slots.",
-    "  [sp_events] 2,420 fixtures (33 need API calls)...",
+    "[DONE] 71073 total player-match rows across 26 leagues / 26 season-slots.",
+    "  [sp_events] 2,424 fixtures (11 need API calls)...",
     "  [sp_events] 0 SP goals (0 headers) | 0 SP assist rows matched",
-    "[collect] union: 873489 existing + 59616 fetched -> 874422 rows (+933 new, 15395 refreshed inside the 14-day window, 43288 frozen kept as stored, 0 removed)",
-    "[history] parts: 1 written (5.1 MB), 50 unchanged, 0 removed",
-    "[collect] Saved 874422 player rows, 21222 players -> player_history.parquet",
+    "[collect] union: 874422 existing + 59734 fetched -> 874732 rows (+310 new, 16036 refreshed inside the 14-day window, 43388 frozen kept as stored, 0 removed)",
+    "[history] parts: 3 written (13.2 MB), 48 unchanged, 0 removed",
+    "[collect] Saved 874732 player rows, 21225 players -> player_history.parquet",
     "  goals (target_goals): 8.1% positive rate",
     "  goals2 (target_goals2): 0.7% positive rate",
     "  assists (target_assists): 5.9% positive rate",
