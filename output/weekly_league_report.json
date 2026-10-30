@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-30T20:04:46Z",
+ "generated_at": "2026-10-30T23:38:33Z",
  "panel_version": "LWR-1",
  "selection_mode": "WEEKLY_LEAGUE_RESEARCH",
  "note": "Research panel, not bets. FROZEN rows were fixed at the week lock (first kickoff of the league-week) from first-sight scores; PROVISIONAL rows may still change until the lock.",
@@ -2384,7 +2384,60 @@
      }
     ]
    },
-   "previous_weeks": {}
+   "previous_weeks": {
+    "BTTS": {
+     "gameweeks": 0,
+     "rank1_n_priced_settled": 0,
+     "rank1_roi": null,
+     "top3_n_priced_settled": 0,
+     "top3_roi": null,
+     "top5_n_priced_settled": 0,
+     "top5_roi": null,
+     "top5_clv_mean": null,
+     "top5_clv_coverage": null,
+     "top5_dlogloss_model_minus_market": null,
+     "status": "NOT_ENOUGH_DATA"
+    },
+    "OU25": {
+     "gameweeks": 0,
+     "rank1_n_priced_settled": 0,
+     "rank1_roi": null,
+     "top3_n_priced_settled": 0,
+     "top3_roi": null,
+     "top5_n_priced_settled": 0,
+     "top5_roi": null,
+     "top5_clv_mean": null,
+     "top5_clv_coverage": null,
+     "top5_dlogloss_model_minus_market": null,
+     "status": "NOT_ENOUGH_DATA"
+    },
+    "OVER15": {
+     "gameweeks": 0,
+     "rank1_n_priced_settled": 0,
+     "rank1_roi": null,
+     "top3_n_priced_settled": 0,
+     "top3_roi": null,
+     "top5_n_priced_settled": 0,
+     "top5_roi": null,
+     "top5_clv_mean": null,
+     "top5_clv_coverage": null,
+     "top5_dlogloss_model_minus_market": null,
+     "status": "NOT_ENOUGH_DATA"
+    },
+    "OVER35": {
+     "gameweeks": 0,
+     "rank1_n_priced_settled": 0,
+     "rank1_roi": null,
+     "top3_n_priced_settled": 0,
+     "top3_roi": null,
+     "top5_n_priced_settled": 0,
+     "top5_roi": null,
+     "top5_clv_mean": null,
+     "top5_clv_coverage": null,
+     "top5_dlogloss_model_minus_market": null,
+     "status": "NOT_ENOUGH_DATA"
+    }
+   }
   },
   "China Super League": {
    "latest_league_week_id": null,
