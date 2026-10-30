@@ -1,16 +1,16 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-10-29T13:32:02Z",
+ "generated_at": "2026-10-30T13:21:12Z",
  "gameweek": 9,
  "deadline": "2026-10-31T11:00:00Z",
- "fpl_fetched_at": "2026-10-29T13:31:50Z",
+ "fpl_fetched_at": "2026-10-30T13:21:00Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 452,
   "with_fixture": 452,
   "blank_gw_players": 0,
   "double_gw_players": 0,
-  "minutes_disagreements": 12,
+  "minutes_disagreements": 14,
   "archived_gameweeks": [
    4,
    5,
@@ -76,7 +76,7 @@
    "p6": 0.4755,
    "p10": 0.3109,
    "p15": 0.1936,
-   "p_blank": 0.2864,
+   "p_blank": 0.2862,
    "p_start": 0.92,
    "exp_minutes": 77.5,
    "ceiling": 22.0,
@@ -100,7 +100,7 @@
    "p6": 0.4885,
    "p10": 0.3125,
    "p15": 0.1895,
-   "p_blank": 0.2535,
+   "p_blank": 0.2534,
    "p_start": 0.96,
    "exp_minutes": 81.1,
    "ceiling": 21.0,
@@ -148,7 +148,7 @@
     "p_blank": 0.286,
     "p_start": 0.92,
     "ceiling": 22.0,
-    "sd": 8.267,
+    "sd": 8.266,
     "next_fixture": "LIV(A)"
    },
    {
@@ -160,10 +160,10 @@
     "p6": 0.488,
     "p10": 0.312,
     "p15": 0.19,
-    "p_blank": 0.254,
+    "p_blank": 0.253,
     "p_start": 0.96,
     "ceiling": 21.0,
-    "sd": 7.992,
+    "sd": 7.991,
     "next_fixture": "LIV(A)"
    },
    {
@@ -187,13 +187,13 @@
     "team": "Bournemouth",
     "position": "FWD",
     "final_xpts": 8.3,
-    "p6": 0.445,
+    "p6": 0.446,
     "p10": 0.284,
     "p15": 0.173,
-    "p_blank": 0.321,
-    "p_start": 0.896,
+    "p_blank": 0.319,
+    "p_start": 0.899,
     "ceiling": 20.0,
-    "sd": 7.945,
+    "sd": 7.929,
     "next_fixture": "LEE(H)"
    },
    {
@@ -202,13 +202,13 @@
     "team": "Aston Villa",
     "position": "FWD",
     "final_xpts": 8.0,
-    "p6": 0.42,
+    "p6": 0.422,
     "p10": 0.271,
-    "p15": 0.168,
-    "p_blank": 0.364,
-    "p_start": 0.854,
+    "p15": 0.167,
+    "p_blank": 0.36,
+    "p_start": 0.857,
     "ceiling": 20.0,
-    "sd": 8.016,
+    "sd": 7.993,
     "next_fixture": "FUL(H)"
    },
    {
@@ -217,13 +217,13 @@
     "team": "Chelsea",
     "position": "MID",
     "final_xpts": 7.7,
-    "p6": 0.39,
+    "p6": 0.391,
     "p10": 0.257,
     "p15": 0.163,
     "p_blank": 0.421,
-    "p_start": 0.782,
+    "p_start": 0.783,
     "ceiling": 20.0,
-    "sd": 8.215,
+    "sd": 8.21,
     "next_fixture": "MUN(H)"
    },
    {
@@ -238,7 +238,7 @@
     "p_blank": 0.333,
     "p_start": 0.89,
     "ceiling": 19.0,
-    "sd": 7.549,
+    "sd": 7.547,
     "next_fixture": "MUN(H)"
    },
    {
@@ -263,12 +263,12 @@
     "position": "DEF",
     "final_xpts": 7.0,
     "p6": 0.403,
-    "p10": 0.237,
+    "p10": 0.236,
     "p15": 0.13,
     "p_blank": 0.336,
     "p_start": 0.901,
     "ceiling": 17.0,
-    "sd": 6.981,
+    "sd": 6.979,
     "next_fixture": "LIV(A)"
    },
    {
@@ -280,10 +280,10 @@
     "p6": 0.407,
     "p10": 0.234,
     "p15": 0.125,
-    "p_blank": 0.319,
-    "p_start": 0.924,
+    "p_blank": 0.318,
+    "p_start": 0.925,
     "ceiling": 16.0,
-    "sd": 6.756,
+    "sd": 6.75,
     "next_fixture": "LEE(H)"
    },
    {
@@ -295,10 +295,10 @@
     "p6": 0.397,
     "p10": 0.22,
     "p15": 0.113,
-    "p_blank": 0.314,
-    "p_start": 0.94,
+    "p_blank": 0.313,
+    "p_start": 0.941,
     "ceiling": 15.0,
-    "sd": 6.422,
+    "sd": 6.413,
     "next_fixture": "LEE(H)"
    },
    {
@@ -307,13 +307,13 @@
     "team": "Man City",
     "position": "MID",
     "final_xpts": 6.7,
-    "p6": 0.355,
+    "p6": 0.356,
     "p10": 0.223,
     "p15": 0.134,
-    "p_blank": 0.451,
-    "p_start": 0.769,
+    "p_blank": 0.45,
+    "p_start": 0.77,
     "ceiling": 18.0,
-    "sd": 7.531,
+    "sd": 7.525,
     "next_fixture": "BHA(H)"
    }
   ]
@@ -354,9 +354,9 @@
    "fpl_ep_next": 9.0,
    "wowza_residual": -4.56,
    "p6": 0.2487,
-   "p10": 0.0917,
+   "p10": 0.0916,
    "p15": 0.0287,
-   "p_blank": 0.2535,
+   "p_blank": 0.2534,
    "p_start": 0.96,
    "exp_minutes": 81.1,
    "ceiling": 9.0,
@@ -378,10 +378,10 @@
    "fpl_ep_next": 7.0,
    "wowza_residual": -2.173,
    "p6": 0.2835,
-   "p10": 0.1207,
-   "p15": 0.045,
-   "p_blank": 0.319,
-   "p_start": 0.924,
+   "p10": 0.1206,
+   "p15": 0.0449,
+   "p_blank": 0.3183,
+   "p_start": 0.925,
    "exp_minutes": 77.8,
    "ceiling": 10.0,
    "next_fixture": "LEE(H)",
@@ -416,10 +416,10 @@
     "p6": 0.284,
     "p10": 0.121,
     "p15": 0.045,
-    "p_blank": 0.319,
-    "p_start": 0.924,
+    "p_blank": 0.318,
+    "p_start": 0.925,
     "ceiling": 10.0,
-    "sd": 6.756,
+    "sd": 6.75,
     "next_fixture": "LEE(H)"
    },
    {
@@ -461,10 +461,10 @@
     "p6": 0.257,
     "p10": 0.104,
     "p15": 0.037,
-    "p_blank": 0.321,
-    "p_start": 0.896,
+    "p_blank": 0.319,
+    "p_start": 0.899,
     "ceiling": 10.0,
-    "sd": 7.945,
+    "sd": 7.929,
     "next_fixture": "LEE(H)"
    },
    {
@@ -476,10 +476,10 @@
     "p6": 0.249,
     "p10": 0.092,
     "p15": 0.029,
-    "p_blank": 0.254,
+    "p_blank": 0.253,
     "p_start": 0.96,
     "ceiling": 9.0,
-    "sd": 7.992,
+    "sd": 7.991,
     "next_fixture": "LIV(A)"
    },
    {
@@ -494,7 +494,7 @@
     "p_blank": 0.333,
     "p_start": 0.89,
     "ceiling": 9.0,
-    "sd": 7.549,
+    "sd": 7.547,
     "next_fixture": "MUN(H)"
    },
    {
@@ -509,7 +509,7 @@
     "p_blank": 0.421,
     "p_start": 0.931,
     "ceiling": 9.0,
-    "sd": 3.752,
+    "sd": 3.751,
     "next_fixture": "NFO(H)"
    },
    {
@@ -521,10 +521,10 @@
     "p6": 0.228,
     "p10": 0.081,
     "p15": 0.024,
-    "p_blank": 0.385,
-    "p_start": 0.922,
+    "p_blank": 0.384,
+    "p_start": 0.923,
     "ceiling": 9.0,
-    "sd": 4.694,
+    "sd": 4.691,
     "next_fixture": "LEE(H)"
    },
    {
@@ -536,10 +536,10 @@
     "p6": 0.227,
     "p10": 0.079,
     "p15": 0.023,
-    "p_blank": 0.314,
-    "p_start": 0.94,
+    "p_blank": 0.313,
+    "p_start": 0.941,
     "ceiling": 9.0,
-    "sd": 6.422,
+    "sd": 6.413,
     "next_fixture": "LEE(H)"
    },
    {
@@ -552,9 +552,9 @@
     "p10": 0.088,
     "p15": 0.029,
     "p_blank": 0.383,
-    "p_start": 0.878,
+    "p_start": 0.879,
     "ceiling": 9.0,
-    "sd": 6.151,
+    "sd": 6.146,
     "next_fixture": "ARS(H)"
    },
    {
@@ -565,11 +565,11 @@
     "final_xpts": 4.125,
     "p6": 0.235,
     "p10": 0.094,
-    "p15": 0.033,
-    "p_blank": 0.414,
-    "p_start": 0.836,
+    "p15": 0.032,
+    "p_blank": 0.413,
+    "p_start": 0.837,
     "ceiling": 9.0,
-    "sd": 6.107,
+    "sd": 6.098,
     "next_fixture": "AVL(A)"
    }
   ]
