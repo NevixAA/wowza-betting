@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-10-31T11:28:43Z",
-  "run_id": "41193575444",
-  "run_number": "1561",
+  "checked_at": "2026-10-31T12:34:19Z",
+  "run_id": "41198176538",
+  "run_number": "1562",
   "event": "schedule",
   "schedule": "",
-  "sha": "8168af23bfc7",
+  "sha": "003bffeb7429",
   "history_freshness": {
     "newest_match": "2026-10-31",
     "age_days": "0",
@@ -16,18 +16,17 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 2847,
+    "rows": 2794,
     "fixtures": 159,
-    "mtime": "2026-10-31T11:27:20Z"
+    "mtime": "2026-10-31T12:33:03Z"
   },
   "output/player_ledger.csv": {
-    "rows": 30532,
+    "rows": 30536,
     "fixtures": null,
-    "mtime": "2026-10-31T11:28:42Z"
+    "mtime": "2026-10-31T12:34:18Z"
   },
   "git_dirty_outputs": [
-    "M output/clv_records.csv",
-    " M output/player_ledger.csv",
+    "M output/player_ledger.csv",
     " M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json",
@@ -65,14 +64,14 @@
     "[odds_fetcher] api-football second source: +10155 quote(s)",
     "[odds_fetcher] quote log: 17309 per-book quote(s) incl. both sides",
     "[odds_fetcher] 10155 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Ligue 2', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
-    "[odds_fetcher] name match: 271 priced by initial+surname, 1 refused as ambiguous",
-    "[predict] Odds enriched for 488 player/market pairs",
+    "[odds_fetcher] name match: 269 priced by initial+surname, 1 refused as ambiguous",
+    "[predict] Odds enriched for 481 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
-    "[clv_tracker] logged 9 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 3889, 'mean_clv_pct': 0.0122, 'mean_clv_prob': None, 'beat_close_rate': 0.312, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
-    "[lineup] 0 confirmed starters | 2847 lineup TBC",
-    "[predict] SNIPER:0  MARKSMAN:2  VALUABLE:35",
-    "[predict] player_ledger: +30 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=520 cache_hits=201 cache_hit_rate=28% errors=0  quota_remaining 66421->65637 (account-wide delta 784)"
+    "[lineup] Dropped 58 tips \u2014 players confirmed benched/not in squad",
+    "[lineup] 172 confirmed starters | 2564 lineup TBC",
+    "[predict] SNIPER:0  MARKSMAN:4  VALUABLE:31",
+    "[predict] player_ledger: +4 new signal(s) recorded",
+    "[api_usage] workflow=Player Props af_calls=520 cache_hits=201 cache_hit_rate=28% errors=0  quota_remaining 64818->63650 (account-wide delta 1168)"
   ]
 }
