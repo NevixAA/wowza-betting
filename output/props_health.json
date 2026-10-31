@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-10-31T03:26:02Z",
-  "run_id": "41160840030",
-  "run_number": "1559",
+  "checked_at": "2026-10-31T05:08:06Z",
+  "run_id": "41168124562",
+  "run_number": "1560",
   "event": "schedule",
   "schedule": "",
-  "sha": "2febbdc826f5",
+  "sha": "5b152d33fa3d",
   "history_freshness": {
     "newest_match": "2026-10-30",
     "age_days": "1",
@@ -16,25 +16,25 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 2842,
-    "fixtures": 160,
-    "mtime": "2026-10-31T03:24:44Z"
+    "rows": 2837,
+    "fixtures": 159,
+    "mtime": "2026-10-31T05:06:53Z"
   },
   "output/player_ledger.csv": {
     "rows": 30502,
     "fixtures": null,
-    "mtime": "2026-10-31T03:26:02Z"
+    "mtime": "2026-10-31T04:20:20Z"
   },
   "git_dirty_outputs": [
-    "M output/clv_records.csv",
-    " M output/player_ledger.csv",
-    " M output/player_prop_odds_history.csv",
+    "M output/player_prop_odds_history.csv",
     " M output/player_tips.csv",
     " M output/prop_odds_coverage.json",
-    "?? output/player_prop_odds_history_archive/2026-10-28.csv",
-    "?? output/prop_quotes/2026-10-31.csv"
+    " M output/prop_quotes/2026-10-31.csv"
   ],
   "predict_log_tail": [
+    "[odds_fetcher] sports/soccer_uefa_champs_league/events OK | quota remaining: 0",
+    "[odds_fetcher] sports/soccer_uefa_champs_league/events/9b8076d3ffa027df6f6cb3189de46706/odds: HTTP 401 | {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDIT",
+    "[odds_fetcher] sports/soccer_uefa_champs_league/events/bc0b6614c9714816038d5a0ff8963144/odds: HTTP 401 | {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDIT",
     "[odds_fetcher] sports/soccer_uefa_champs_league/events/1a5a84045050d0d7baf1301909d3b465/odds: HTTP 401 | {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDIT",
     "[odds_fetcher] sports/soccer_uefa_champs_league/events/f6f3cf01c2b20b7f746b5a06097a0569/odds: HTTP 401 | {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDIT",
     "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 0",
@@ -62,18 +62,15 @@
     "[odds_fetcher] sports/soccer_usa_mls/events/4a7f23af0e71f2d528510b2be9dfa80a/odds: HTTP 401 | {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDIT",
     "[odds_fetcher] sports/soccer_usa_mls/events/0dd5a2f4c3ddd0a56f917795e5f711f7/odds: HTTP 401 | {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDIT",
     "[odds_fetcher] soccer_england_league1: parked \u2014 25 consecutive events with no bookmaker, last probed 2026-10-29; retries every 7d",
-    "[odds_fetcher] api-football second source: +10371 quote(s)",
-    "[odds_fetcher] quote log: 17590 per-book quote(s) incl. both sides",
-    "[odds_fetcher] 10371 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Ligue 2', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
-    "[odds_fetcher] name match: 267 priced by initial+surname, 1 refused as ambiguous",
-    "[predict] Odds enriched for 481 player/market pairs",
+    "[odds_fetcher] api-football second source: +10155 quote(s)",
+    "[odds_fetcher] quote log: 17309 per-book quote(s) incl. both sides",
+    "[odds_fetcher] 10155 player-market prices | leagues with any prop coverage: ['apifootball:Argentina Primera Division', 'apifootball:Austrian Bundesliga', 'apifootball:Brazil Serie A', 'apifootball:Bundesliga 2', 'apifootball:Championship', 'apifootball:China Super League', 'apifootball:Conference League', 'apifootball:Denmark Superliga', 'apifootball:Europa League', 'apifootball:Ireland Premier Division', 'apifootball:La Liga 2', 'apifootball:League One', 'apifootball:League Two', 'apifootball:Ligue 2', 'apifootball:Mexico Liga MX', 'apifootball:Norway Eliteserien', 'apifootball:Romanian Superliga', 'apifootball:Serie B', 'apifootball:Sweden Allsvenskan', 'Premier League', 'Ligue 1', 'Bundesliga', 'Serie A', 'La Liga', 'Champions League', 'USA MLS']",
+    "[odds_fetcher] name match: 266 priced by initial+surname, 1 refused as ambiguous",
+    "[predict] Odds enriched for 480 player/market pairs",
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
-    "[clv_tracker] logged 38 new tip entry prices",
-    "[clv_tracker] closed out 64 records",
     "[clv_tracker] CLV report: {'n': 3889, 'mean_clv_pct': 0.0122, 'mean_clv_prob': None, 'beat_close_rate': 0.312, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
-    "[lineup] 5 confirmed starters | 2837 lineup TBC",
+    "[lineup] 0 confirmed starters | 2837 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:2  VALUABLE:33",
-    "[predict] player_ledger: +119 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=521 cache_hits=180 cache_hit_rate=26% errors=0  quota_remaining 73811->73257 (account-wide delta 554)"
+    "[api_usage] workflow=Player Props af_calls=520 cache_hits=180 cache_hit_rate=26% errors=0  quota_remaining 73052->72432 (account-wide delta 620)"
   ]
 }
