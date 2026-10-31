@@ -1,9 +1,10 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-10-30T13:40:03Z",
+ "generated_at": "2026-10-31T13:08:35Z",
  "overall": "WARN",
  "reasons": [
+  "AMBER Stale artifacts: 1 stale",
   "AMBER Data contracts: 1 new violation(s) in 1 of 14 files \u00b7 6 known historical (config/contract_baseline.json)"
  ],
  "protected_tracks_modified": false,
@@ -16,11 +17,11 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "712bb087c6e81a38660a5ee411722d5ad5ea7483e3b608a6c0321929ad6c124f",
-  "code_commit": "d8e8d0aa1ce0"
+  "code_commit": "56dbe82c32e1"
  },
  "counts": {
-  "GREEN": 16,
-  "AMBER": 1,
+  "GREEN": 15,
+  "AMBER": 2,
   "RED": 0,
   "NO_DATA": 0
  },
@@ -28,7 +29,7 @@
   {
    "check": "Side-market routing",
    "status": "GREEN",
-   "value": "29 side tips, 0 unknown|*",
+   "value": "11 side tips, 0 unknown|*",
    "rule": "RED if any ACTIVE/ACTIVE_LOW policy track has tips and 100% map to UNSUPPORTED; GREEN otherwise",
    "detail": ""
   },
@@ -37,47 +38,47 @@
    "status": "GREEN",
    "value": "0.0% unmapped",
    "rule": "GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track or without odds; AMBER < 5%; RED >= 5%",
-   "detail": "generated 2026-10-30 11:40:14"
+   "detail": "generated 2026-10-30 19:57:28"
   },
   {
    "check": "Shadow settlement coverage",
    "status": "GREEN",
-   "value": "99.3% (691/696)",
+   "value": "99.3% (711/716)",
    "rule": "GREEN >= 95% of finished shadow rows settled; AMBER >= 80%; RED < 80%",
-   "detail": "as of 2026-10-30T01:17:02Z"
+   "detail": "as of 2026-10-31T00:59:56Z"
   },
   {
    "check": "Challenger prediction coverage",
    "status": "GREEN",
-   "value": "100% of 206 rows (p_pro_hgb)",
+   "value": "100% of 186 rows (p_pro_hgb)",
    "rule": "over rows logged in the last 7 days AND after the challenger experiment was registered (rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%",
-   "detail": "window from 2026-10-23 13:40 UTC"
+   "detail": "window from 2026-10-24 13:08 UTC"
   },
   {
    "check": "Certified CLV coverage",
    "status": "GREEN",
-   "value": "70.5% of 227 settled",
+   "value": "69.2% of 247 settled",
    "rule": "share of settled shadow rows with a close observed <= 30 min before kickoff, measured from the collection fix (clv_collection_health.json measure_from; all-time shown for context): GREEN >= 50%; AMBER >= 20%; RED < 20%",
-   "detail": "since 2026-10-23 \u00b7 all-time 28.4% of 691"
+   "detail": "since 2026-10-23 \u00b7 all-time 29.1% of 711"
   },
   {
    "check": "Stale artifacts",
-   "status": "GREEN",
-   "value": "0 stale",
+   "status": "AMBER",
+   "value": "1 stale",
    "rule": "decision-facing artifacts STALE/UNKNOWN/MISSING: GREEN 0; AMBER 1-2; RED >= 3 (manifest itself > 36 h old = RED)",
-   "detail": ""
+   "detail": "output/stake_plan.csv"
   },
   {
    "check": "Forward candidate progress",
    "status": "GREEN",
-   "value": "21/1200 forward bets \u00b7 {'ACCRUING': 7, 'REGISTERED': 6, 'DISCOVERY': 1}",
+   "value": "24/1200 forward bets \u00b7 {'ACCRUING': 7, 'REGISTERED': 6, 'DISCOVERY': 1}",
    "rule": "GREEN if the frozen forward evaluator ran within 48 h; AMBER within 7 days; RED older/missing (progress itself is informational)",
    "detail": ""
   },
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 failed / 107 runs (24 h)",
+   "value": "0 failed / 119 runs (24 h)",
    "rule": "failed/timed-out runs across the 3 repos in the last 24 h: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -91,7 +92,7 @@
   {
    "check": "Weekly research panel",
    "status": "GREEN",
-   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 18 \u00b7 missing 0 \u00b7 candidates 836/836 \u00b7 panel 372 (settled 257, pending 115) \u00b7 CLV coverage 37%",
+   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 18 \u00b7 missing 0 \u00b7 candidates 836/836 \u00b7 panel 492 (settled 315, pending 177) \u00b7 CLV coverage 36%",
    "rule": "RED if protected_tracks_modified (production state/thresholds/stakes/eligibility moved without re-approval) or the lock cannot be verified; AMBER if the regime registry is missing, a newly PROTECTED track awaits approval, the panel health is missing or > 48 h old, or a tracked league has fixtures this (or last) gameweek but NO panel rows (a silent disappearance; a league with no fixtures is NO_FIXTURES and is fine); GREEN otherwise",
    "detail": "registry evidence cutoff 2026-10-20; lock approved by Nevo (owner) at 2026-10-28T12:38:11Z"
   },
@@ -126,7 +127,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 740 rows, shadow_only=True, 2.0 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 700 rows, shadow_only=True, 17.2 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -140,7 +141,7 @@
   {
    "check": "Standard OU25 serving",
    "status": "GREEN",
-   "value": "v9_repaired on 89/89 Standard rows, 0 legacy fallback(s)",
+   "value": "v9_repaired on 85/85 Standard rows, 0 legacy fallback(s)",
    "rule": "GREEN if the committed board has no serving_recipe column (switch off: legacy_v9) or every Standard row is served by v9_repaired with a registered standard_repaired model_version; RED if any Standard row fell back to legacy (legacy_v9_fallback) or a repaired row's model is unregistered",
    "detail": ""
   }
@@ -162,7 +163,7 @@
     "schema": "PREDICTION_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 185,
+    "rows": 175,
     "n_violations": 0,
     "violations": []
    },
@@ -170,34 +171,34 @@
     "schema": "MARKET_SNAPSHOT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 28158,
+    "rows": 30509,
     "n_violations": 4,
     "violations": [
      {
       "kind": "missing_column",
       "column": "minutes_to_kickoff",
-      "n_rows": 28158,
+      "n_rows": 30509,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "overround",
-      "n_rows": 28158,
+      "n_rows": 30509,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "opposite_odds",
-      "n_rows": 28158,
+      "n_rows": 30509,
       "detail": "required column absent",
       "examples": []
      },
      {
       "kind": "missing_column",
       "column": "source",
-      "n_rows": 28158,
+      "n_rows": 30509,
       "detail": "required column absent",
       "examples": []
      }
@@ -207,7 +208,7 @@
     "schema": "SELECTION_DECISION",
     "schema_version": "1",
     "present": true,
-    "rows": 1128,
+    "rows": 1152,
     "n_violations": 0,
     "violations": []
    },
@@ -215,7 +216,7 @@
     "schema": "V91_SHADOW_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 884,
+    "rows": 890,
     "n_violations": 0,
     "violations": []
    },
@@ -223,7 +224,7 @@
     "schema": "SHADOW_EXPERIMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 418,
+    "rows": 424,
     "n_violations": 0,
     "violations": []
    },
@@ -231,7 +232,7 @@
     "schema": "TOP_PICKS_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 174,
+    "rows": 189,
     "n_violations": 0,
     "violations": []
    },
@@ -239,7 +240,7 @@
     "schema": "PROPS_SHOWN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 100,
+    "rows": 120,
     "n_violations": 0,
     "violations": []
    },
@@ -247,7 +248,7 @@
     "schema": "LEAGUE_WEEKLY_RESEARCH_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 372,
+    "rows": 492,
     "n_violations": 0,
     "violations": []
    },
@@ -255,7 +256,7 @@
     "schema": "STAKE_PLAN_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 97,
+    "rows": 77,
     "n_violations": 0,
     "violations": []
    },
@@ -263,7 +264,7 @@
     "schema": "STAKE_AUDIT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 642,
+    "rows": 648,
     "n_violations": 3,
     "violations": [
      {
@@ -299,7 +300,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 5886,
+    "rows": 5890,
     "n_violations": 0,
     "violations": []
    },
@@ -307,7 +308,7 @@
     "schema": "SETTLEMENT_ROW",
     "schema_version": "1",
     "present": true,
-    "rows": 642,
+    "rows": 644,
     "n_violations": 0,
     "violations": []
    },
@@ -315,7 +316,7 @@
     "schema": "CLV_RECORD",
     "schema_version": "1",
     "present": true,
-    "rows": 7547,
+    "rows": 7751,
     "n_violations": 0,
     "violations": []
    },
@@ -331,48 +332,48 @@
  },
  "first_sight": {
   "edge_engine_shadow.csv": {
-   "rows": 1128,
-   "frozen_digest": "8618f8b22c48d226d0e0d9371f2ba25198dc0130bfc94411f9388976e0d2b9d8",
+   "rows": 1152,
+   "frozen_digest": "3347f87ac88a8aa81f09cdf52c1b583958f9d9dc2bd3a178b12e406451eca964",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1112,
+   "prior_rows": 1128,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "model_lineage/shadow_experiments.csv": {
-   "rows": 418,
-   "frozen_digest": "fd1a2363f4d48de73ae27d4efd0b13ad6f7cbc3497e7f2de9519d24ab95c926d",
+   "rows": 424,
+   "frozen_digest": "ff029942d2d0cebde2a989b61bcae2b3a0432b4b2d536d9ff32fc41f74a62b35",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 414,
+   "prior_rows": 418,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "v91_shadow.csv": {
-   "rows": 884,
-   "frozen_digest": "06f73ba9240575f21a5cafa7736ff85779b5cf368da7f8fd925ff2524ad04be6",
+   "rows": 890,
+   "frozen_digest": "aaf5e86ef03b82261139dbbac5c83158634169d91528ed5e498eb06a3a05c35a",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 880,
+   "prior_rows": 884,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "league_weekly_candidates.csv": {
-   "rows": 1128,
-   "frozen_digest": "4a9e1f32464b03dc477e596f96075306b3dbe87ec542a2fa89a6cf1fabfbd8e2",
+   "rows": 1152,
+   "frozen_digest": "d47575d8bb8aa9739c9c0cdafe841b70d14cbd9364a6530e49fef2c3837a43cf",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1112,
+   "prior_rows": 1128,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "league_weekly_research.csv": {
-   "rows": 372,
-   "frozen_digest": "015f0a70d9f973b5e91e679be094df7b4dd505623cba210fef4075c94c01f4ee",
+   "rows": 492,
+   "frozen_digest": "1c016ab36889d0e35ffec7cc5252b49767faea89a7b71d1580f073d93c44c734",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
    "prior_rows": 372,
@@ -381,41 +382,41 @@
    "reasons": []
   },
   "model_lineage/shadow_h2h.csv": {
-   "rows": 3010,
-   "frozen_digest": "dcba8757d236fea5853947ebfa9cc852292a36c2fd75e6a4656af875cfc52d61",
+   "rows": 3048,
+   "frozen_digest": "3ae7e079e6642761c415e1e7ad3043e1e0b5754af828a12a953e5d6e96798539",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 2988,
+   "prior_rows": 3010,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "stake_audit.csv": {
-   "rows": 642,
-   "frozen_digest": "b4ef46c9482a3c1437f1b067e5af8706848f6e4178b41a3afa5e926a4d7ecf12",
+   "rows": 648,
+   "frozen_digest": "10c7d588d3313de7ad466c01f71705e618a47dae6328411c3eb0b4bbefdfe701",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 635,
+   "prior_rows": 642,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "top_picks_log.csv": {
-   "rows": 174,
-   "frozen_digest": "12b1427005ea13ee8a4401700bf5754f96c81a00c6414c43ba2f52e75cab4de6",
+   "rows": 189,
+   "frozen_digest": "4ad08063bec8e64018b9bc469b35fd69508f6827eb83ca20c66b5c4964a1f3b4",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 159,
+   "prior_rows": 174,
    "prior_match": true,
    "status": "OK",
    "reasons": []
   },
   "props_shown_log.csv": {
-   "rows": 100,
-   "frozen_digest": "6b67558817257e9b820fd2978469ebbd3dcd27e0a619be9c05fb38acb910b39c",
+   "rows": 120,
+   "frozen_digest": "8b408e13fb7b0db926c0477db874ab9d23dc7cb40eacdbf9e647f611d79a629a",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 80,
+   "prior_rows": 100,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -435,13 +436,13 @@
    "feature_version": null
   },
   "bets_ledger.csv": {
-   "model_version": 0.0308,
+   "model_version": 0.0314,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
   },
   "side_bets_ledger.csv": {
-   "model_version": 0.1495,
+   "model_version": 0.1522,
    "selection_engine_version": null,
    "policy_version": null,
    "feature_version": null
