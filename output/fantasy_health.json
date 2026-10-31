@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T13:21:02Z",
+  "generated_at": "2026-10-31T12:57:34Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -41,38 +41,39 @@
   "coverage": {
     "projection_players": 283,
     "clubs": 20,
-    "available": 222,
-    "doubtful": 12,
-    "unavailable": 49,
+    "available": 220,
+    "doubtful": 9,
+    "unavailable": 54,
     "availability_breakdown": {
-      "available": 222,
+      "available": 220,
       "unavailable": 32,
-      "injured": 17,
-      "doubtful": 12
+      "injured": 22,
+      "doubtful": 9
     },
-    "p_start_zero": 49,
+    "p_start_zero": 54,
     "fpl_match_rate": 1.0,
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 10525,
-    "distinct_days": 45,
-    "rows_with_gameweek": 2159,
+    "rows": 10808,
+    "distinct_days": 46,
+    "rows_with_gameweek": 2442,
     "settleable": true,
     "gameweeks_logged": [
       6,
       7,
       8,
-      9
+      9,
+      10
     ]
   },
   "notes": [],
-  "current_gameweek": 9,
-  "deadline_utc": "2026-10-31T11:00:00Z",
-  "live_gameweek": 8,
+  "current_gameweek": 10,
+  "deadline_utc": "2026-11-06T18:30:00Z",
+  "live_gameweek": 9,
   "last_finished_gameweek": 8,
   "season_complete": false,
-  "hours_to_deadline": 21.6,
+  "hours_to_deadline": 149.5,
   "status": "AGING",
   "settlement_ready": true
 }
