@@ -14,10 +14,13 @@ import numpy as np
 import pandas as pd
 
 warnings.filterwarnings("ignore")
-DEV = os.path.join(os.environ["USERPROFILE"], "dev")
-V9 = os.path.join(DEV, "wowza-betting")
-GIT = r"C:\Program Files\Git\cmd\git.exe"
-REPOS = ["wowza-betting", "wowzaV9-Pro", "wowza_v11", "wowza-dashboard", "wowza-exec"]
+# usage: python scripts/audit_data_files.py <out.csv>   (sibling checkouts of the other repos are
+# profiled when present next to this repo; WOWZA_DEV overrides the parent folder, GIT the git binary)
+V9 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEV = os.environ.get("WOWZA_DEV", os.path.dirname(V9))
+GIT = os.environ.get("GIT", "git")
+REPOS = [r for r in ["wowza-betting", "wowzaV9-Pro", "wowza_v11", "wowza-dashboard", "wowza-exec"]
+         if os.path.isdir(os.path.join(DEV, r))]
 OUT = sys.argv[1]
 sys.path.insert(0, V9); os.chdir(V9)
 from src.league_registry import canonical_name   # noqa: E402
