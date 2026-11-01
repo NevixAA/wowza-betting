@@ -25,6 +25,7 @@ fixtures before the following snapshot are kept — an unplayed match is unknown
 from __future__ import annotations
 
 import json
+import logging
 import math
 import unicodedata
 from pathlib import Path
@@ -33,6 +34,8 @@ import numpy as np
 import pandas as pd
 
 from player_model import fantasy_snapshots as fs
+
+log = logging.getLogger(__name__)
 
 OUT = Path(__file__).resolve().parents[1] / "output"
 FIXTURES = OUT / "fpl_fixtures.json"
@@ -53,7 +56,9 @@ def load_fixtures(path: Path | None = None) -> pd.DataFrame:
     p = path or FIXTURES
     try:
         raw = json.loads(p.read_text(encoding="utf-8"))
-    except Exception:                                                # noqa: BLE001
+    except Exception as e:                                           # noqa: BLE001
+        log.warning("fantasy_panel: no FPL fixtures (%s: %s) - fixture counts unknown",
+                    type(e).__name__, e)
         return pd.DataFrame()
     rows = [{"fixture": f.get("id"), "event": f.get("event"), "kickoff": f.get("kickoff_time"),
              "team_h": f.get("team_h"), "team_a": f.get("team_a"),
@@ -84,7 +89,9 @@ def team_fixture_long(fx: pd.DataFrame) -> pd.DataFrame:
 def events_table(path: Path | None = None) -> pd.DataFrame:
     try:
         b = json.loads((path or BOOTSTRAP).read_text(encoding="utf-8"))
-    except Exception:                                                # noqa: BLE001
+    except Exception as e:                                           # noqa: BLE001
+        log.warning("fantasy_panel: no FPL bootstrap (%s: %s) - no gameweek events",
+                    type(e).__name__, e)
         return pd.DataFrame(columns=["gw", "deadline", "finished", "checked"])
     ev = pd.DataFrame([{"gw": e["id"], "deadline": e["deadline_time"],
                         "finished": bool(e.get("finished")),
@@ -107,12 +114,14 @@ def team_strength_asof(snap: pd.DataFrame, tfl: pd.DataFrame, deadline) -> pd.Da
     done = tfl[(tfl["finished"]) & (tfl["kickoff"] < deadline)]
     gp = done.groupby("team_id").agg(games=("fixture", "size"), gf=("gf", "sum"), ga=("ga", "sum"))
     s = snap.copy()
-    s["xg"] = pd.to_numeric(s["xg"], errors="coerce").fillna(0)
-    xg_for = s.groupby("team_id")["xg"].sum()
+    # A player with no xG / xGC / minutes figure makes his TEAM's total unknown (NaN), rather than
+    # being counted as 0 and quietly deflating the team's xG.
+    s["xg"] = pd.to_numeric(s["xg"], errors="coerce")
+    xg_for = s.groupby("team_id")["xg"].agg(_strict_sum)
     gk = s[s["position"] == "GKP"].copy()
-    gk["minutes"] = pd.to_numeric(gk["minutes"], errors="coerce").fillna(0)
-    gk["xgc"] = pd.to_numeric(gk["xgc"], errors="coerce").fillna(0)
-    gkt = gk.groupby("team_id").agg(xgc=("xgc", "sum"), mins=("minutes", "sum"))
+    gk["minutes"] = pd.to_numeric(gk["minutes"], errors="coerce")
+    gk["xgc"] = pd.to_numeric(gk["xgc"], errors="coerce")
+    gkt = gk.groupby("team_id").agg(xgc=("xgc", _strict_sum), mins=("minutes", _strict_sum))
     t = pd.DataFrame(index=sorted(set(s["team_id"].dropna().astype(int))))
     t["games"] = gp["games"].reindex(t.index).fillna(0)
     g = t["games"].replace(0, np.nan)
@@ -123,28 +132,47 @@ def team_strength_asof(snap: pd.DataFrame, tfl: pd.DataFrame, deadline) -> pd.Da
     prior = 4.0
     for k in ("gf_pg", "ga_pg", "xg_for_pg", "xga_pg"):
         raw = t[f"{k}_raw"]
-        mu = float(np.nanmean(raw)) if raw.notna().any() else 1.35
-        if not np.isfinite(mu):
-            mu = 1.35
+        # The league mean is measured from this league's own finished fixtures; with none yet it
+        # is unknown (NaN) - it used to be a typed 1.35.
+        mu = float(np.nanmean(raw)) if raw.notna().any() else float("nan")
         t[k] = ((raw.fillna(mu) * t["games"] + mu * prior) / (t["games"] + prior))
+    # Home advantage MEASURED from the same finished fixtures (goals per game at home / overall,
+    # and away / overall); it was an unfitted 1.10 / 0.91. NaN with no finished fixture.
+    gf = pd.to_numeric(done["gf"], errors="coerce")
+    allm = float(gf.mean()) if gf.notna().any() else float("nan")
+    hm = done["home"].astype(bool)
+    t["ha_home"] = float(gf[hm].mean()) / allm if allm and allm == allm and hm.any() else np.nan
+    t["ha_away"] = float(gf[~hm].mean()) / allm if allm and allm == allm and (~hm).any() else np.nan
     t.index.name = "team_id"
-    return t[["games", "gf_pg", "ga_pg", "xg_for_pg", "xga_pg"]].reset_index()
+    return t[["games", "gf_pg", "ga_pg", "xg_for_pg", "xga_pg", "ha_home", "ha_away"]].reset_index()
+
+
+def _strict_sum(v: pd.Series) -> float:
+    """Sum that is NaN when any member is unknown (pandas' sum would count a NaN as 0)."""
+    return float(v.sum()) if len(v) and v.notna().all() else float("nan")
 
 
 def fixture_lambdas(team_id, opp_id, home, ts: pd.DataFrame) -> tuple[float, float]:
-    """(team goal expectancy, opponent goal expectancy) for one fixture, multiplicative model."""
+    """(team goal expectancy, opponent goal expectancy) for one fixture, multiplicative model.
+    (NaN, NaN) when either club or the league reference is unknown - never the league mean."""
+    nan = (float("nan"), float("nan"))
     t = ts.set_index("team_id")
-    lg = float(t["xg_for_pg"].mean()) if len(t) else 1.35
+    lg = float(t["xg_for_pg"].mean()) if len(t) else float("nan")
+    if not lg == lg or lg <= 0:
+        return nan
     try:
         att = 0.5 * t.at[team_id, "xg_for_pg"] + 0.5 * t.at[team_id, "gf_pg"]
         dfn = 0.5 * t.at[team_id, "xga_pg"] + 0.5 * t.at[team_id, "ga_pg"]
         o_att = 0.5 * t.at[opp_id, "xg_for_pg"] + 0.5 * t.at[opp_id, "gf_pg"]
         o_dfn = 0.5 * t.at[opp_id, "xga_pg"] + 0.5 * t.at[opp_id, "ga_pg"]
     except KeyError:
-        return lg, lg
-    ha = 1.10 if home else 0.91
-    lam_for = att * o_dfn / lg * ha
-    lam_against = o_att * dfn / lg / ha
+        return nan
+    ha_for = t["ha_home" if home else "ha_away"].iloc[0] if "ha_home" in t.columns else np.nan
+    ha_against = t["ha_away" if home else "ha_home"].iloc[0] if "ha_home" in t.columns else np.nan
+    lam_for = att * o_dfn / lg * ha_for
+    lam_against = o_att * dfn / lg * ha_against
+    if not (lam_for == lam_for and lam_against == lam_against):
+        return nan
     return float(np.clip(lam_for, 0.2, 4.5)), float(np.clip(lam_against, 0.2, 4.5))
 
 
@@ -166,18 +194,29 @@ def gw_fixture_context(gw: int, tfl: pd.DataFrame, ts: pd.DataFrame) -> pd.DataF
 
 
 # ── Wowza's own published projection, as of each deadline ───────────────────────────────────
+_WOWZA_COLS = ["key", "fpl_id", "wowza_cond", "wowza_p_start", "wowza_uncond"]
+
+
 def wowza_asof(log: pd.DataFrame, deadline) -> pd.DataFrame:
+    """Wowza's last projection per player before `deadline`. Grouped by the FPL element id where
+    the log row carries one (fantasy_log writes it from 2026-11-01), else by name (legacy rows)."""
     if log is None or log.empty:
-        return pd.DataFrame(columns=["key", "wowza_cond", "wowza_p_start", "wowza_uncond"])
-    lg = log[log["snapshot_ts"] < deadline]
+        return pd.DataFrame(columns=_WOWZA_COLS)
+    lg = log[log["snapshot_ts"] < deadline].copy()
     if lg.empty:
-        return pd.DataFrame(columns=["key", "wowza_cond", "wowza_p_start", "wowza_uncond"])
-    last = lg.sort_values("snapshot_ts").groupby("player_name", as_index=False).last()
+        return pd.DataFrame(columns=_WOWZA_COLS)
+    fid = (pd.to_numeric(lg["fpl_id"], errors="coerce") if "fpl_id" in lg.columns
+           else pd.Series(np.nan, index=lg.index))
+    lg["fpl_id"] = fid
+    lg["_g"] = ("id:" + fid.astype("Int64").astype(str)).where(fid.notna(),
+                                                               "name:" + lg["player_name"].astype(str))
+    last = lg.sort_values("snapshot_ts").groupby("_g", as_index=False).last()
     # Only a projection made for THIS window counts: one older than 14 days is not "as of".
     last = last[last["snapshot_ts"] >= deadline - pd.Timedelta(days=14)]
     base = pd.to_numeric(last["proj_fixture_adj"], errors="coerce")
     ps = pd.to_numeric(last["p_start"], errors="coerce").clip(0, 1)
-    return pd.DataFrame({"key": last["player_name"].map(norm_name), "team_log": last["team"],
+    return pd.DataFrame({"key": last["player_name"].map(norm_name), "fpl_id": last["fpl_id"],
+                         "team_log": last["team"],
                          "wowza_cond": base, "wowza_p_start": ps, "wowza_uncond": base * ps})
 
 
@@ -185,7 +224,7 @@ def _load_log(path: Path | None = None) -> pd.DataFrame:
     p = path or PROJ_LOG
     if not p.exists():
         return pd.DataFrame()
-    lg = pd.read_csv(p, usecols=lambda c: c in {"snapshot_ts", "player_name", "team",
+    lg = pd.read_csv(p, usecols=lambda c: c in {"snapshot_ts", "fpl_id", "player_name", "team",
                                                 "proj_fixture_adj", "p_start"})
     lg["snapshot_ts"] = pd.to_datetime(lg["snapshot_ts"], utc=True, errors="coerce")
     return lg.dropna(subset=["snapshot_ts"])
@@ -193,6 +232,17 @@ def _load_log(path: Path | None = None) -> pd.DataFrame:
 
 def _num(d: pd.DataFrame, c: str) -> pd.Series:
     return pd.to_numeric(d[c], errors="coerce") if c in d.columns else pd.Series(np.nan, index=d.index)
+
+
+def _position_rate(d: pd.DataFrame, col: str, per: str) -> dict:
+    """{position: sum(col) / sum(per)} over the snapshot's players with a known value and a
+    positive denominator; per = 'n90' (minutes / 90) or 'starts'. Missing position -> absent."""
+    num = _num(d, col)
+    den = _num(d, "minutes") / 90.0 if per == "n90" else _num(d, "starts")
+    ok = num.notna() & (den > 0)
+    g = pd.DataFrame({"p": d["position"], "n": num, "d": den})[ok].groupby("p")
+    s = g["n"].sum() / g["d"].sum()
+    return {k: float(v) for k, v in s.items() if np.isfinite(v)}
 
 
 def features_for(snap: pd.DataFrame, prev: pd.DataFrame | None, tfl: pd.DataFrame,
@@ -205,28 +255,40 @@ def features_for(snap: pd.DataFrame, prev: pd.DataFrame | None, tfl: pd.DataFram
     d = d.merge(ts.rename(columns={"games": "team_games"}), on="team_id", how="left")
     ctx = gw_fixture_context(gw, tfl, ts)
     d = d.merge(ctx, on="team_id", how="left")
-    d["n_fix"] = d["n_fix"].fillna(0).astype(int)
+    # A club with no fixture in a LOADED fixture list has a blank gameweek (0 fixtures, real);
+    # with no fixture list at all the count is unknown (NaN), not a league-wide blank.
+    d["n_fix"] = d["n_fix"].fillna(0).astype(int) if not tfl.empty else np.nan
     tg = d["team_games"].replace(0, np.nan)
-    mins = _num(d, "minutes").fillna(0)
+    # Unknown season counters stay NaN (they were 0, i.e. "never played").
+    mins = _num(d, "minutes")
     d["min_per_team_game"] = (mins / tg).clip(0, 90)
-    d["start_rate"] = (_num(d, "starts").fillna(0) / tg).clip(0, 1)
-    d["pts_per_team_game"] = _num(d, "total_points").fillna(0) / tg
+    d["start_rate"] = (_num(d, "starts") / tg).clip(0, 1)
+    d["pts_per_team_game"] = _num(d, "total_points") / tg
     n90 = (mins / 90.0)
     prior90 = 3.0    # shrink per-90 rates with three full games of league-average prior
-    pos_xg = {"FWD": 0.38, "MID": 0.17, "DEF": 0.05, "GKP": 0.0}
-    pos_xa = {"FWD": 0.12, "MID": 0.14, "DEF": 0.06, "GKP": 0.01}
-    d["xg90"] = (_num(d, "xg").fillna(0) + d["position"].map(pos_xg) * prior90) / (n90 + prior90)
-    d["xa90"] = (_num(d, "xa").fillna(0) + d["position"].map(pos_xa) * prior90) / (n90 + prior90)
+    # The priors are the POSITION's own per-90 rates MEASURED on this same pre-deadline snapshot
+    # (they were typed: xG FWD 0.38 / MID 0.17 / DEF 0.05 / GKP 0.0, xA 0.12 / 0.14 / 0.06 / 0.01,
+    # BPS 15 per 90, bonus +0.3 per start). NaN while a position has no minutes yet.
+    pos_xg, pos_xa, pos_bps, pos_bonus = (_position_rate(d, c, den)
+                                          for c, den in (("xg", "n90"), ("xa", "n90"),
+                                                         ("bps", "n90"), ("bonus", "starts")))
+    d["xg90"] = (_num(d, "xg") + d["position"].map(pos_xg) * prior90) / (n90 + prior90)
+    d["xa90"] = (_num(d, "xa") + d["position"].map(pos_xa) * prior90) / (n90 + prior90)
     d["xgi90"] = d["xg90"] + d["xa90"]
-    d["bps90"] = (_num(d, "bps").fillna(0) + 15 * prior90) / (n90 + prior90)
-    d["bonus_per_start"] = (_num(d, "bonus").fillna(0) + 0.3) / (_num(d, "starts").fillna(0) + 1)
-    d["dc90"] = (_num(d, "def_contrib").fillna(0)) / (n90 + prior90) if "def_contrib" in d else 0.0
-    d["saves90"] = _num(d, "saves").fillna(0) / (n90 + prior90)
-    d["threat_pg"] = _num(d, "threat").fillna(0) / tg
-    d["creativity_pg"] = _num(d, "creativity").fillna(0) / tg
+    d["bps90"] = (_num(d, "bps") + d["position"].map(pos_bps) * prior90) / (n90 + prior90)
+    d["bonus_per_start"] = ((_num(d, "bonus") + d["position"].map(pos_bonus))
+                            / (_num(d, "starts") + 1))
+    # No defensive-contribution column in the snapshot -> unknown, not 0.
+    d["dc90"] = (_num(d, "def_contrib") / (n90 + prior90) if "def_contrib" in d.columns
+                 else np.nan)
+    d["saves90"] = _num(d, "saves") / (n90 + prior90)
+    d["threat_pg"] = _num(d, "threat") / tg
+    d["creativity_pg"] = _num(d, "creativity") / tg
     st = d["status"].astype(str)
     ch = _num(d, "chance_next")
-    d["chance_next_f"] = ch.where(ch.notna(), np.where(st == "a", 100.0, 0.0)) / 100.0
+    # FPL publishes no chance for a fully available ('a') player: that convention means 100.
+    # A null chance on any other status is unknown (NaN) - it used to be read as 0%.
+    d["chance_next_f"] = ch.where(ch.notna(), np.where(st == "a", 100.0, np.nan)) / 100.0
     d["is_out"] = st.isin(["i", "s", "u", "n"]).astype(int)
     d["is_doubt"] = (st == "d").astype(int)
     d["has_news"] = d["news"].fillna("").astype(str).str.len().gt(0).astype(int)
@@ -234,18 +296,24 @@ def features_for(snap: pd.DataFrame, prev: pd.DataFrame | None, tfl: pd.DataFram
     d["pen_any"] = _num(d, "pen_order").notna().astype(int)
     d["set_piece"] = (_num(d, "corner_order").le(2) | _num(d, "dfk_order").le(2)).astype(int)
     d["ownership"] = _num(d, "selected_pct")
-    d["net_transfers_k"] = (_num(d, "transfers_in_event").fillna(0)
-                            - _num(d, "transfers_out_event").fillna(0)) / 1000.0
+    d["net_transfers_k"] = (_num(d, "transfers_in_event")
+                            - _num(d, "transfers_out_event")) / 1000.0
     d["ppm"] = d["pts_per_team_game"] / d["price"].replace(0, np.nan)
     for p in POSITIONS:
         d[f"pos_{p}"] = (d["position"] == p).astype(int)
     d["is_defensive"] = d["position"].isin(["GKP", "DEF"]).astype(int)
-    d["cs_exp"] = d["cs_prob"].fillna(0) * d["position"].map({"GKP": 4, "DEF": 4, "MID": 1, "FWD": 0})
+    # Expected CS points: 0 for a blank gameweek (no fixture, no clean sheet - real), NaN when the
+    # fixture's CS probability is unknown (it was 0, which reads as "certain to concede").
+    blank = d["n_fix"] == 0
+    d["cs_exp"] = (d["cs_prob"] * d["position"].map({"GKP": 4, "DEF": 4, "MID": 1, "FWD": 0})
+                   ).where(~blank, 0.0)
     # GKP 10: FPL game_config.scoring.goals_scored (was 6, R2-D fantasy bug #2).
     d["goal_pts"] = d["position"].map({"GKP": 10, "DEF": 6, "MID": 5, "FWD": 4}).astype(float)
-    lg_avg = float(ts["xg_for_pg"].mean()) if len(ts) else 1.35
-    lam_rel = (d["lam_for"] / d["n_fix"].replace(0, np.nan)) / (lg_avg or 1.35)
-    d["attack_fixture"] = lam_rel.fillna(1.0)
+    # Attack fixture factor vs the league's measured xG/game; NaN when either is unknown or the
+    # club blanks (it was a neutral 1.0, and the league reference a typed 1.35).
+    lg_avg = float(ts["xg_for_pg"].mean()) if len(ts) else float("nan")
+    lg_avg = lg_avg if lg_avg == lg_avg and lg_avg > 0 else np.nan
+    d["attack_fixture"] = (d["lam_for"] / d["n_fix"].replace(0, np.nan)) / lg_avg
     d["ep_next"] = _num(d, "ep_next")
     # last gameweek deltas (NaN when no previous snapshot exists)
     if prev is not None and not prev.empty:
@@ -259,20 +327,43 @@ def features_for(snap: pd.DataFrame, prev: pd.DataFrame | None, tfl: pd.DataFram
         d["started_last"] = np.nan
         d["pts_last"] = np.nan
         d["ep_prev"] = np.nan
+    return attach_wowza(d, wowza)
+
+
+def attach_wowza(d: pd.DataFrame, wowza: pd.DataFrame | None) -> pd.DataFrame:
+    """Attach Wowza's as-of projection (wowza_cond / wowza_p_start / wowza_uncond, in_ledger)."""
+    d = d.copy()
     d["key"] = d["player_name"].map(norm_name)
     d["key_web"] = d["web_name"].map(norm_name)
+    wc = ["wowza_cond", "wowza_p_start", "wowza_uncond"]
     if wowza is not None and not wowza.empty:
-        w = wowza.drop_duplicates("key")
-        m = d[["key"]].merge(w, on="key", how="left")
+        fid = (pd.to_numeric(wowza["fpl_id"], errors="coerce") if "fpl_id" in wowza.columns
+               else pd.Series(np.nan, index=wowza.index))
+        # 1) the FPL element id, wherever the log row has one (both sides then carry an id);
+        by_id = wowza[fid.notna()].assign(_id=fid[fid.notna()].astype(int)).drop_duplicates("_id")
+        m = pd.DataFrame({c: d["element"].map(by_id.set_index("_id")[c]).values for c in wc})
+        # 2) legacy log rows without an id: the name bridge (full name, then web_name) - no id
+        #    crosswalk exists for them. A name key held by two players on either side is refused,
+        #    never resolved to one of them.
+        w = wowza[fid.isna()]
         miss = m["wowza_cond"].isna().values
-        if miss.any():
-            m2 = d[["key_web"]].merge(w.rename(columns={"key": "key_web"}), on="key_web", how="left")
-            for c in ("wowza_cond", "wowza_p_start", "wowza_uncond"):
-                m.loc[miss, c] = m2.loc[miss, c].values
-        for c in ("wowza_cond", "wowza_p_start", "wowza_uncond"):
+        if miss.any() and not w.empty:
+            dup_w = set(w["key"][w["key"].duplicated(keep=False)])
+            w = w[~w["key"].isin(dup_w)]
+            look = w[w["key"].map(lambda k: isinstance(k, str) and k != "")].set_index("key")
+            for col in ("key", "key_web"):
+                dup_d = set(d[col][d[col].duplicated(keep=False)])
+                hit = d[col].where(~d[col].isin(dup_d))
+                for c in wc:
+                    vals = hit.map(lambda k, c=c: look.at[k, c] if isinstance(k, str)
+                                   and k in look.index else np.nan).values
+                    m.loc[miss, c] = vals[miss]
+                miss = m["wowza_cond"].isna().values
+        for c in wc:
             d[c] = m[c].values
     else:
-        d["wowza_cond"] = d["wowza_p_start"] = d["wowza_uncond"] = np.nan
+        for c in wc:
+            d[c] = np.nan
     d["in_ledger"] = d["wowza_uncond"].notna().astype(int)
     return d
 
@@ -351,4 +442,5 @@ def build_panel(archive: pd.DataFrame | None = None, fixtures: pd.DataFrame | No
 def active_mask(d: pd.DataFrame) -> pd.Series:
     """The evaluation universe: players with season minutes before the deadline OR a non-trivial
     FPL expectation. Scoring hundreds of never-used reserves at 0 vs 0 would flatter every arm."""
-    return (pd.to_numeric(d["minutes"], errors="coerce").fillna(0) > 0) | (d["ep_next"].fillna(0) >= 0.5)
+    # Unknown minutes / ep_next simply do not qualify (NaN comparisons are False).
+    return (pd.to_numeric(d["minutes"], errors="coerce") > 0) | (d["ep_next"] >= 0.5)

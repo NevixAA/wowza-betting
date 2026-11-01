@@ -34,7 +34,9 @@ import pandas as pd
 log = logging.getLogger(__name__)
 
 LOG_COLS = [
-    "snapshot_date", "snapshot_ts", "gw", "player_name", "team", "position", "price",
+    # fpl_id = the FPL element id: the settlement / V2 panel join key (rows logged before
+    # 2026-11-01 carry none and can only be joined by name).
+    "snapshot_date", "snapshot_ts", "gw", "fpl_id", "player_name", "team", "position", "price",
     # ours
     "proj_pts_per_game", "proj_fixture_adj", "proj_total_next", "n_fixtures_next", "avg_fdr",
     "p_start", "minutes_pg",
@@ -57,6 +59,7 @@ def append(proj: pd.DataFrame, *, gw: int | None = None,
             "snapshot_date": now.strftime("%Y-%m-%d"),
             "snapshot_ts": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "gw": gw if gw is not None else "",
+            "fpl_id": proj.get("fpl_id"),
             "player_name": proj.get("player_name"),
             "team": proj.get("team"),
             "position": proj.get("position"),
@@ -88,8 +91,12 @@ def append(proj: pd.DataFrame, *, gw: int | None = None,
                             f"would DESTROY history, so appending is skipped this run")
                 return 0
         # One row per player per day: the job may run many times and each would otherwise add a
-        # near-duplicate. Last write of the day wins.
-        d = d.drop_duplicates(subset=["snapshot_date", "player_name"], keep="last")
+        # near-duplicate. Last write of the day wins. Keyed on the FPL element id where the row
+        # has one (two players can share a name), else on the name (legacy rows).
+        fid = pd.to_numeric(d["fpl_id"], errors="coerce")
+        d["_k"] = ("id:" + fid.astype("Int64").astype(str)).where(
+            fid.notna(), "name:" + d["player_name"].astype(str))
+        d = d.drop_duplicates(subset=["snapshot_date", "_k"], keep="last").drop(columns="_k")
         d.to_csv(path, index=False)
         log.info(f"[fantasy_log] {len(proj)} projection(s) logged -> {path.name} "
                  f"(total {len(d):,} rows, {d['snapshot_date'].nunique()} day(s))")
@@ -116,7 +123,7 @@ def calibration(log_path: Path | None = None) -> pd.DataFrame:
             d[c] = pd.to_numeric(d.get(c), errors="coerce")
         # Only players who actually play: a projection for someone with no minutes is untestable,
         # and including them drags both error terms toward zero for the wrong reason.
-        d = d[d["minutes_pg"].fillna(0) >= 30]
+        d = d[d["minutes_pg"] >= 30]          # unknown minutes are excluded (NaN >= 30 is False)
         if d.empty:
             return pd.DataFrame()
         d["err_ours"] = (d["proj_pts_per_game"] - d["fpl_ppg"]).abs()
@@ -131,5 +138,6 @@ def calibration(log_path: Path | None = None) -> pd.DataFrame:
         ).reset_index()
         g["ours_beats_fpl"] = g["mae_fpl"] - g["mae_ours"]      # positive = we are closer
         return g.round(3)
-    except Exception:
+    except Exception as e:                                                  # noqa: BLE001
+        log.warning(f"[fantasy_log] calibration unavailable ({type(e).__name__}: {e})")
         return pd.DataFrame()

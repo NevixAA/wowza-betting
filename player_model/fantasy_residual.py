@@ -648,7 +648,7 @@ class MinutesModel:
             if b not in out:
                 out[b] = 0.0
         # A blank gameweek is certain zero minutes, whatever the usage history says.
-        blank = x["n_fix"].fillna(1).to_numpy() == 0
+        blank = (pd.to_numeric(x["n_fix"], errors="coerce") == 0).to_numpy()   # NaN: not a known blank
         out.loc[blank, ["m1_59", "m60"]] = 0.0
         out.loc[blank, "m0"] = 1.0
         return out[["m0", "m1_59", "m60"]]
@@ -668,7 +668,7 @@ def heuristic_minutes(x: pd.DataFrame) -> pd.DataFrame:
     p60 = (ch * x["start_rate"].fillna(0) * 0.92).clip(0.005, 0.97)
     p60 = np.minimum(p60, play - 0.005)
     out = pd.DataFrame({"m0": 1 - play, "m1_59": play - p60, "m60": p60}, index=x.index)
-    blank = x["n_fix"].fillna(1).to_numpy() == 0
+    blank = (pd.to_numeric(x["n_fix"], errors="coerce") == 0).to_numpy()   # NaN: not a known blank
     out.loc[blank, ["m1_59", "m60"]] = 0.001
     out.loc[blank, "m0"] = 0.998
     return out
@@ -703,9 +703,14 @@ def point_distribution(mu: float, probs: dict, position: str, mm: MinutesModel) 
             pmf[k + off] += p1 * v
             m1 += k * v
     if p60 > 1e-6:
+        size = mm.size_.get(position)
+        if size is None or not mu == mu:
+            # No dispersion fitted for this position (or no mean): the distribution is unknown,
+            # not a negative binomial of a typed size 2.0.
+            return np.full(MAX_PTS + off + 1, np.nan)
         m60 = (mu - p1 * m1) / p60
         m60 = float(np.clip(m60, 1.5, 16.0))
-        nb = _negbin_pmf(max(m60 - 2.0, 0.05), mm.size_.get(position, 2.0), MAX_PTS - 2)
+        nb = _negbin_pmf(max(m60 - 2.0, 0.05), size, MAX_PTS - 2)
         for k, v in enumerate(nb):
             pmf[k + 2 + off] += p60 * v
     s = pmf.sum()
@@ -714,6 +719,9 @@ def point_distribution(mu: float, probs: dict, position: str, mm: MinutesModel) 
 
 def dist_summary(pmf: np.ndarray) -> dict:
     off = 2
+    if not np.isfinite(pmf).all():
+        return {k: np.nan for k in ("dist_mean", "p25", "median", "p75", "p90", "sd",
+                                    "p_blank", "p6", "p10", "p15")}
     pts = np.arange(len(pmf)) - off
     cdf = np.cumsum(pmf)
 
@@ -739,22 +747,29 @@ P_START_GIVEN_1_59 = 0.227
 
 def event_probs(x: pd.DataFrame, P: pd.DataFrame, cond_minutes: dict) -> pd.DataFrame:
     """Goal / assist / clean-sheet / bonus quantities from role x expected minutes x fixture."""
-    em = P["m1_59"] * cond_minutes.get("m1_59", 25.0) + P["m60"] * cond_minutes.get("m60", 88.0)
-    fx = x["attack_fixture"].fillna(1.0).clip(0.4, 2.5)
-    nfx = x["n_fix"].fillna(1).clip(lower=0)
-    lam_g = (x["xg90"] * em / 90.0 * fx).fillna(0)
-    lam_a = (x["xa90"] * em / 90.0 * fx).fillna(0)
+    # Conditional minutes per bucket come from the training gameweeks; a bucket that never
+    # occurred there leaves expected minutes unknown (it was a typed 25 / 88).
+    cm = {b: float(cond_minutes[b]) if b in cond_minutes else np.nan for b in ("m1_59", "m60")}
+    em = P["m1_59"] * cm["m1_59"] + P["m60"] * cm["m60"]
+    nfx = pd.to_numeric(x["n_fix"], errors="coerce").clip(lower=0)
+    blank = (nfx == 0).to_numpy()
+    # Unknown fixture factor / rate -> unknown probability (no neutral 1.0, no 0). A BLANK
+    # gameweek is a real zero: no fixture, no goal, no assist, no clean sheet, no bonus.
+    fx = pd.to_numeric(x["attack_fixture"], errors="coerce").clip(0.4, 2.5)
+    lam_g = (x["xg90"] * em / 90.0 * fx).where(~blank, 0.0)
+    lam_a = (x["xa90"] * em / 90.0 * fx).where(~blank, 0.0)
     out = pd.DataFrame(index=x.index)
     out["exp_minutes"] = em.round(1)
     out["p_start"] = (P["m60"] + P_START_GIVEN_1_59 * P["m1_59"]).clip(0, 1).round(3)
     out["p_play"] = (1 - P["m0"]).round(3)
     out["goal_prob"] = (1 - np.exp(-lam_g)).round(3)
     out["assist_prob"] = (1 - np.exp(-lam_a)).round(3)
-    cs_team = x["cs_prob"].fillna(0)
+    cs_team = pd.to_numeric(x["cs_prob"], errors="coerce").where(~blank, 0.0)
     out["team_cs_prob"] = cs_team.round(3)
     out["cs_prob"] = np.where(x["position"].isin(["GKP", "DEF", "MID"]),
                               (cs_team * P["m60"]).round(3), np.nan)
-    out["exp_bonus"] = (x["bonus_per_start"].fillna(0.2) * P["m60"] * nfx.clip(upper=2)).round(3)
+    out["exp_bonus"] = (pd.to_numeric(x["bonus_per_start"], errors="coerce")
+                        * P["m60"] * nfx.clip(upper=2)).where(~blank, 0.0).round(3)
     out["team_goal_exp"] = x["lam_for"].round(2)
     return out
 
