@@ -475,6 +475,21 @@ def _find_result(
 
 # ── Player prop result resolver ───────────────────────────────────────────────
 
+def _initial_surname_match(name_key: str, stats_map: dict):
+    """'armand laurienté' <-> 'a. laurienté': same first initial AND same last word, exactly one
+    candidate in this fixture's stats, else None (never a guess between two players)."""
+    import re as _re
+    toks = _re.sub(r"[^a-z0-9 ]", " ", name_key).split()
+    if len(toks) < 2:
+        return None
+    hits = []
+    for k, v in stats_map.items():
+        kt = _re.sub(r"[^a-z0-9 ]", " ", k).split()
+        if len(kt) >= 2 and kt[-1] == toks[-1] and kt[0][0] == toks[0][0]:
+            hits.append(v)
+    return hits[0] if len(hits) == 1 else None
+
+
 _PLAYER_MARKET_STAT = {"goals": "goals", "sot": "shots_on_target", "cards": "yellow_card",
                        "assists": "assists"}
 
@@ -624,14 +639,25 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
             continue
 
         # ── Step 3: find this player in the stats ─────────────────────────────
+        # BY PLAYER ID FIRST (the ledger carries API-Football's id). Name-only matching voided as
+        # "DNP" props on players who played 90 minutes: the ledger says 'Armand Laurienté', the
+        # stats say 'A. Laurienté', and the first-5-letters fallback ('arman' vs 'a. la') missed -
+        # 31 of 63 tipped voids in Oct 2026 (player_history shows them playing). Then the exact
+        # name, then same first initial + same surname with exactly ONE candidate. The old
+        # first-5-letters guess is gone: it could also hand a player another player's stats.
+        stats = None
+        _pid = row.get("player_id")
+        try:
+            _pid = str(int(float(_pid))) if _pid not in (None, "") and str(_pid) != "nan" else None
+        except (TypeError, ValueError):
+            _pid = None
+        if _pid:
+            stats = next((v for v in stats_map.values() if str(v.get("player_id")) == _pid), None)
         player_key = _norm(player)
-        stats = stats_map.get(player_key)
         if stats is None:
-            # Fuzzy fallback: first-5-chars match
-            for k, v in stats_map.items():
-                if len(player_key) >= 5 and len(k) >= 5 and (player_key[:5] in k or k[:5] in player_key):
-                    stats = v
-                    break
+            stats = stats_map.get(player_key)
+        if stats is None:
+            stats = _initial_surname_match(player_key, stats_map)
 
         if stats is None:
             # Player not in fixture stats at all — did not play (DNP)

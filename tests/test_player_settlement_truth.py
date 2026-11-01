@@ -71,6 +71,30 @@ def test_player_absent_from_published_stats_is_dnp(tmp_path, monkeypatch):
     assert row["result"] == "VOID" and row["notes"] == "DNP"
 
 
+def test_abbreviated_stats_name_is_not_a_dnp(tmp_path, monkeypatch):
+    p = _ledger(tmp_path, monkeypatch, days_ago=2, player="Bukayo Saka")
+    _api(monkeypatch, [{"player_name": "B. Saka", "player_id": 99, "minutes_played": 90, "shots_on_target": 2},
+                       {"player_name": "Declan Rice", "player_id": 98, "minutes_played": 90, "shots_on_target": 0}])
+    U.update_player_results()
+    assert pd.read_csv(p, dtype=str)["result"].iloc[0] == "WIN"
+
+
+def test_player_id_wins_over_names(tmp_path, monkeypatch):
+    p = _ledger(tmp_path, monkeypatch, days_ago=2, player="Armand Laurienté")
+    led = pd.read_csv(p, dtype=str); led["player_id"] = "777"; led.to_csv(p, index=False)
+    _api(monkeypatch, [{"player_name": "Someone Else", "player_id": 777, "minutes_played": 90, "shots_on_target": 3}])
+    U.update_player_results()
+    assert pd.read_csv(p, dtype=str)["result"].iloc[0] == "WIN"
+
+
+def test_two_same_initial_surname_candidates_are_not_guessed(tmp_path, monkeypatch):
+    p = _ledger(tmp_path, monkeypatch, days_ago=2, player="Alex Silva")
+    _api(monkeypatch, [{"player_name": "A. Silva", "player_id": 1, "minutes_played": 90, "shots_on_target": 3},
+                       {"player_name": "Andre Silva", "player_id": 2, "minutes_played": 90, "shots_on_target": 0}])
+    U.update_player_results()
+    assert pd.read_csv(p, dtype=str)["notes"].iloc[0] == "DNP"
+
+
 def test_threshold_prop_settles(tmp_path, monkeypatch):
     p = _ledger(tmp_path, monkeypatch, days_ago=2)
     _api(monkeypatch, [{"player_name": "Bukayo Saka", "minutes_played": 90, "shots_on_target": 3}])
