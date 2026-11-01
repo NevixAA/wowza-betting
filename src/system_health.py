@@ -153,13 +153,17 @@ def forward_progress(prog: dict) -> dict:
 
 
 def workflow_health(wh: dict) -> dict:
-    rule = "failed/timed-out runs across the 3 repos in the last 24 h: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)"
+    rule = ("workflows whose latest run on main (last 24 h, 3 repos) failed or timed out — failures a later "
+            "success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 "
+            "(record > 36 h old = AMBER)")
     if not wh:
         return _c("GitHub workflow health", GREY, "not recorded yet", rule)
     n = int(wh.get("failures_24h", 0))
     age = (pd.Timestamp.now(tz="UTC") - pd.Timestamp(wh["generated_at"])).total_seconds() / 3600
     st = RED if n >= 3 else AMBER if (n >= 1 or age > 36) else GREEN
-    return _c("GitHub workflow health", st, f"{n} failed / {wh.get('runs_24h')} runs (24 h)", rule,
+    sup = wh.get("superseded_failures_24h")
+    val = f"{n} still failing / {wh.get('runs_24h')} runs (24 h)" + (f" · {sup} fixed since" if sup else "")
+    return _c("GitHub workflow health", st, val, rule,
               "; ".join(f"{f['repo']}: {f['workflow']}" for f in wh.get("failures", [])[:5]))
 
 
@@ -598,23 +602,54 @@ def write_artifact(path: Path | None = None, now: datetime | None = None) -> dic
     return a
 
 
+_FAILED = ("failure", "timed_out", "startup_failure")
+_PROD_BRANCHES = ("main", "master")
+
+
+def still_failing(runs_by_repo: dict) -> tuple[list, int]:
+    """Workflows whose LATEST completed run on main is a failure, plus how many failed runs a later
+    success already superseded. Counting every failed run (2026-11-01) turned three research-branch
+    runs that had each gone green minutes later into a RED system health — a fixed failure is history,
+    not a fault. Branch-only research runs are ignored: production never reads them. Runs are expected
+    newest first, as the GitHub API returns them."""
+    fails, superseded = [], 0
+    for repo, runs in runs_by_repo.items():
+        latest = set()
+        for w in runs:
+            if w.get("head_branch") not in _PROD_BRANCHES or w.get("conclusion") is None:
+                continue
+            key = w["name"]
+            if key in latest:
+                superseded += w.get("conclusion") in _FAILED
+                continue
+            latest.add(key)
+            if w.get("conclusion") in _FAILED:
+                fails.append({"repo": repo.split("/")[-1], "workflow": w["name"], "at": w["created_at"],
+                              "sha": w["head_sha"][:8]})
+    return fails, superseded
+
+
 def record_workflows() -> dict:
-    """CI only: failed runs in the last 24 h across the three repos (GitHub API; token if available)."""
+    """CI only: workflows still failing on main across the three repos (GitHub API; token if available)."""
     import requests
     tok = os.getenv("GITHUB_TOKEN", "")
     hdr = {"Authorization": f"Bearer {tok}"} if tok else {}
     since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    runs, fails = 0, []
+    by_repo = {}
     for repo in REPOS:
-        r = requests.get(f"https://api.github.com/repos/{repo}/actions/runs",
-                         params={"per_page": 100, "created": f">{since}"}, headers=hdr, timeout=30).json()
-        for w in r.get("workflow_runs", []):
-            runs += 1
-            if w.get("conclusion") in ("failure", "timed_out", "startup_failure"):
-                fails.append({"repo": repo.split("/")[1], "workflow": w["name"], "at": w["created_at"],
-                              "sha": w["head_sha"][:8]})
-    out = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "runs_24h": runs,
-           "failures_24h": len(fails), "failures": fails}
+        by_repo[repo] = []
+        for page in range(1, 11):          # >100 runs/day is normal here; one page undercounted
+            r = requests.get(f"https://api.github.com/repos/{repo}/actions/runs",
+                             params={"per_page": 100, "page": page, "created": f">{since}"},
+                             headers=hdr, timeout=30).json()
+            batch = r.get("workflow_runs", [])
+            by_repo[repo] += batch
+            if len(batch) < 100:
+                break
+    fails, superseded = still_failing(by_repo)
+    out = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "runs_24h": sum(len(v) for v in by_repo.values()),
+           "failures_24h": len(fails), "failures": fails, "superseded_failures_24h": superseded}
     (OUT / "workflow_health.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
     return out
 

@@ -48,6 +48,20 @@ def test_stale_manifest_and_workflows():
     assert S.workflow_health({"generated_at": now, "failures_24h": 4, "runs_24h": 90})["status"] == "RED"
 
 
+def test_workflow_health_counts_only_latest_failing_runs_on_main():
+    def run(name, concl, branch="main"):
+        return {"name": name, "conclusion": concl, "head_branch": branch,
+                "created_at": "2026-11-01T10:00:00Z", "head_sha": "abcdef1234"}
+    runs = {"o/pro": [run("Team Stats", "success"), run("Team Stats", "failure"),     # fixed since
+                      run("Studies", "failure"), run("Studies", "success"),          # broke again
+                      run("R2-B", "failure", "r2/branch"),                           # research branch
+                      run("Collect", None), run("Collect", "success"),               # in progress
+                      run("Index", "cancelled")]}
+    fails, superseded = S.still_failing(runs)
+    assert [f["workflow"] for f in fails] == ["Studies"]
+    assert superseded == 1
+
+
 def test_weekly_research_panel_is_red_when_protected_tracks_move():
     reg = {"tracked_leagues": ["A", "B"], "regime_counts": {"PROTECTED": 1, "REPAIR": 0, "LEARNING": 9}}
     ok = {"protected_tracks_modified": False, "changes": [], "unapproved_new_protected_tracks": []}
