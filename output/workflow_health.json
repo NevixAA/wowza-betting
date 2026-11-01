@@ -1,6 +1,25 @@
 {
- "generated_at": "2026-10-31T13:08:34Z",
- "runs_24h": 119,
- "failures_24h": 0,
- "failures": []
+ "generated_at": "2026-11-01T10:58:48Z",
+ "runs_24h": 131,
+ "failures_24h": 3,
+ "failures": [
+  {
+   "repo": "wowzaV9-Pro",
+   "workflow": "Pro R2-B Repaired Challengers (research, branch-only)",
+   "at": "2026-11-01T10:33:04Z",
+   "sha": "b442a6ec"
+  },
+  {
+   "repo": "wowzaV9-Pro",
+   "workflow": "Pro R2-B Repaired Challengers (research, branch-only)",
+   "at": "2026-11-01T10:27:20Z",
+   "sha": "b442a6ec"
+  },
+  {
+   "repo": "wowzaV9-Pro",
+   "workflow": "Pro Logit Calibration BENCHMARK (research, branch-only)",
+   "at": "2026-11-01T09:05:17Z",
+   "sha": "cd372844"
+  }
+ ]
 }
