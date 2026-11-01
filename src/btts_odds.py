@@ -193,6 +193,15 @@ def fetch(rows: list[dict]) -> list[dict]:
     near_h = _cfg("BTTS_NEAR_HOURS", 6.0)
     max_calls = int(_cfg("BTTS_MAX_CALLS", 200))
     regions = os.getenv("BTTS_REGIONS", "uk,eu")
+    # OVER 1.5 / 3.5 PRICES (owner decision 2026-11-01, Data Truth finding 9, option B "targeted").
+    # The bulk call rarely quotes those lines (Over 1.5 priced on 2 of 164 board fixtures), so side
+    # tips on them were nearly impossible. The per-event call adds `alternate_totals` ONLY within
+    # ALT_TOTALS_WINDOW_H of kickoff (where tips are sent) and at most ALT_TOTALS_MAX_CALLS per run:
+    # 25 x 2 extra credits x ~11 predict runs = <= 550/day, under the ~751/day the remaining
+    # monthly quota allows (measured 2026-11-01). ALT_TOTALS_MAX_CALLS=0 switches it off.
+    alt_window_h = _cfg("ALT_TOTALS_WINDOW_H", 24.0)
+    alt_max_calls = int(_cfg("ALT_TOTALS_MAX_CALLS", 25))
+    alt_calls = 0
 
     now = pd.Timestamp(datetime.now(timezone.utc))
     snap_path = config.OUTPUT_DIR / "book_odds_snapshots.csv"
@@ -204,6 +213,7 @@ def fetch(rows: list[dict]) -> list[dict]:
     n_fresh = n_nokey = n_err = 0
     # Usage accounting only (R2-C finding 23): never read by the refresh/near-kickoff logic.
     n_capped = n_near_fetch = 0
+    filled_alt: dict[str, int] = {}
     credits_by_league: dict[str, int] = {}
     calls_by_league: dict[str, int] = {}
     remaining_hdr = None
@@ -235,12 +245,16 @@ def fetch(rows: list[dict]) -> list[dict]:
             n_capped += 1
             out.append(r)
             continue
+        want_alt = (lead_h is not None and 0 <= lead_h <= alt_window_h and alt_calls < alt_max_calls
+                    and (pd.isna(r.get("odds_over15")) or pd.isna(r.get("odds_over35"))))
         try:
             resp = requests.get(_URL.format(sport=skey, eid=eid),
                                 params={"apiKey": config.ODDS_API_KEY, "regions": regions,
-                                        "markets": "btts", "oddsFormat": "decimal"},
+                                        "markets": "btts,alternate_totals" if want_alt else "btts",
+                                        "oddsFormat": "decimal"},
                                 timeout=15)
             calls += 1
+            alt_calls += int(want_alt)
             _c0 = credits
             # OddsAPI bills markets x regions per event call; x-requests-last is what THIS call cost
             try:
@@ -267,8 +281,26 @@ def fetch(rows: list[dict]) -> list[dict]:
             continue
 
         yes, no = [], []
+        alt = {1.5: ([], []), 3.5: ([], [])}          # line -> (over prices, under prices)
         for bm in data.get("bookmakers", []):
             for mkt in bm.get("markets", []):
+                if mkt.get("key") == "alternate_totals":
+                    for oc in mkt.get("outcomes", []):
+                        try:
+                            pt, pr = float(oc.get("point")), float(oc.get("price"))
+                        except (TypeError, ValueError):
+                            continue
+                        side = str(oc.get("name", "")).upper()
+                        if pt not in alt or pr <= 1.0 or side not in ("OVER", "UNDER"):
+                            continue
+                        alt[pt][0 if side == "OVER" else 1].append(pr)
+                        book_rows.append({
+                            "snapshot_ts": snap_ts, "league": r.get("league", ""),
+                            "match_date": str(r.get("date", ""))[:10],
+                            "kickoff_utc": str(r.get("kickoff_utc", "")), "match": match,
+                            "bookmaker": bm.get("key", ""), "market": "OU15" if pt == 1.5 else "OU35",
+                            "side": side, "odds": pr})
+                    continue
                 if mkt.get("key") != "btts":
                     continue
                 for oc in mkt.get("outcomes", []):
@@ -299,6 +331,14 @@ def fetch(rows: list[dict]) -> list[dict]:
             r["btts_overround"] = round(iy + ino - 1.0, 4)
             r["btts_fair_yes"] = round(iy / (iy + ino), 4)
             filled += 1
+        # Over 1.5 / 3.5 from alternate_totals: both sides required (as for BTTS), and a price the
+        # bulk call already supplied is never overwritten.
+        for pt, col in ((1.5, "odds_over15"), (3.5, "odds_over35")):
+            ov, un = alt[pt]
+            if ov and un and pd.isna(r.get(col)):
+                r = dict(r)
+                r[col] = float(statistics.median(ov))
+                filled_alt[col] = filled_alt.get(col, 0) + 1
         out.append(r)
 
     global _LAST_BOOK_ROWS
@@ -314,7 +354,8 @@ def fetch(rows: list[dict]) -> list[dict]:
             log.warning(f"[btts] fetch clock save failed: {e}")
     log.info(f"[btts] {calls} call(s), {credits} credit(s) spent, filled {filled}/{len(rows)} fixtures "
              f"(skipped {n_fresh} within {refresh_h:g}h refresh, {n_nokey} no event id, "
-             f"{n_err} errors; near-kickoff window {near_h:g}h)")
+             f"{n_err} errors; near-kickoff window {near_h:g}h); alternate totals: {alt_calls} "
+             f"call(s) (cap {alt_max_calls}, window {alt_window_h:g}h), filled {filled_alt or 0}")
     _log_usage(calls=calls, credits=credits, rows=len(rows), fresh=n_fresh, nokey=n_nokey,
                err=n_err, capped=n_capped, near=n_near_fetch, regions=regions,
                by_league=credits_by_league, calls_by_league=calls_by_league,
