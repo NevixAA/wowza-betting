@@ -104,22 +104,11 @@ DEFAULTS: list[dict] = [dict(zip(
      "match live game_config"),
 ]]
 
-SUSPECTED_BUGS = [
-    {"id": "bonus_cs_points_as_probability", "severity": "MED", "reach": "V1->V2",
-     "evidence": "fantasy.py passes cs_pts (0-4) into _expected_bonus(cs=...) which expects a probability"},
-    {"id": "status_n_not_out_v1", "severity": "MED (latent)", "reach": "V1",
-     "evidence": "fpl_api.py:232 injured only for i/s/u; V2 (fantasy_panel.py:230) includes 'n'"},
-    {"id": "v1_next_gw_is_5_fixture_average", "severity": "MED", "reach": "V1->V2",
-     "evidence": "fantasy.py _per_game/_cs_row average 5 fixtures; settled against one GW"},
-    {"id": "v2_p_start_unfitted", "severity": "MED", "reach": "V2 labels and captain pools",
-     "evidence": "fantasy_residual.py:708 p_start = P60 + 0.35*P(1-59), constant not fitted"},
-    {"id": "fantasy_health_pinned_aging", "severity": "MED", "reach": "health only",
-     "evidence": "fantasy_health.py hard-codes official_squads UNKNOWN_AGE so status can never be OK"},
-    {"id": "season_hardcoded", "severity": "MED from mid-2027", "reach": "V1 squads",
-     "evidence": "fantasy.py:693,712 seasons=('2026','2025')"},
-    {"id": "ranking_gate_without_ci", "severity": "LOW", "reach": "V2 acceptance gate",
-     "evidence": "fantasy_residual.py docstring promises a CI; code requires spearman > FPL each GW"},
-]
+# All nine R2-D suspected Fantasy bugs were fixed on 2026-11-01 (owner decision): dc_thresholds and
+# goal_points_gkp_6 (f36d6548); bonus_cs_points_as_probability, status_n_not_out_v1,
+# v1_next_gw_is_5_fixture_average, season_hardcoded (e40e8cc9); v2_p_start_unfitted,
+# fantasy_health_pinned_aging, ranking_gate_without_ci (832bfaed). Add new ones here as found.
+SUSPECTED_BUGS: list[dict] = []
 
 
 def _read(name: str) -> pd.DataFrame | None:
