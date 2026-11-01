@@ -4,11 +4,17 @@ name: One-off - recheck props DNP voids (2026-11-01)
 # matching of a8a0e6ec (scripts/oneoff_recheck_dnp_voids_2026_11.py). Manual only. The results go
 # to a journal outside the repo and are applied to the LATEST ledger in the commit step, so rows
 # other workflows append meanwhile are never lost. Delete this file once it has run.
+# API-FOOTBALL QUOTA: a full pass is ~1,600 fixtures (~2,000 calls) and the account had ~3,800
+# left on 2026-11-01 evening, which production collectors need. So it runs in nightly BATCHES of
+# 300 fixtures right after the daily quota reset; each checked row leaves the 'DNP' pool
+# (RECHECKED / DNP_CONFIRMED / DNP (0 min) / NO_STATS / DNP_NO_FIXTURE), so it ends by itself.
 on:
+  schedule:
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       limit_fixtures:
-        description: 'Max fixtures to check this run (blank = all)'
+        description: 'Max fixtures to check this run (blank = 300)'
         required: false
 
 concurrency:
@@ -34,9 +40,12 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          LIM="${{ github.event.inputs.limit_fixtures }}"
+          LIM="${{ github.event.inputs.limit_fixtures }}"; [ -n "$LIM" ] || LIM=300
           python scripts/oneoff_recheck_dnp_voids_2026_11.py --journal "$RUNNER_TEMP/dnp.json" \
-            ${LIM:+--limit-fixtures $LIM} | tee recheck.txt
+            --limit-fixtures "$LIM" | tee recheck.txt
+          if grep -q 'checked 0 fixture' recheck.txt; then
+            echo "::notice::No DNP voids left to re-check - delete .github/workflows/oneoff_dnp_recheck.yml"
+          fi
           { echo '## DNP recheck'; echo '```'; tail -n 5 recheck.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Apply to the latest ledger and commit
         run: |

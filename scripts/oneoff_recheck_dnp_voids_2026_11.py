@@ -45,6 +45,9 @@ def recheck(led: pd.DataFrame, limit_fixtures: int | None = None) -> dict:
         season = resolve_api_season(league, str(md)[:10]) if lid else None
         fid = find_fixture_id(lid, season, str(md)[:10], home, away) if (lid and is_known(season)) else None
         if not fid:
+            for i in idx:   # no fixture id at all: record it, so batches move on
+                upd[tuple(str(led.loc[i, c]) for c in KEY)] = {"result": "VOID", "pnl": "0.0",
+                                                               "notes": "DNP_NO_FIXTURE"}
             counts["no_fixture"] += len(idx)
             continue
         raw = get_fixture_player_stats(fid)
@@ -62,6 +65,9 @@ def recheck(led: pd.DataFrame, limit_fixtures: int | None = None) -> dict:
                 s = next((v for v in smap.values() if str(v.get("player_id")) == pid), None)
             s = s or smap.get(U._norm(r["player_name"])) or U._initial_surname_match(U._norm(r["player_name"]), smap)
             if s is None:
+                # Genuinely absent from the fixture's stats: confirmed, and marked so the next
+                # batch run does not spend API calls on it again.
+                upd[k] = {"result": "VOID", "pnl": "0.0", "notes": "DNP_CONFIRMED"}
                 counts["DNP"] += 1
                 continue
             if int(s.get("minutes_played") or 0) == 0:
