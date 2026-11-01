@@ -72,6 +72,19 @@ def _state(age_h: float | None, key: str) -> str:
     return "AGING" if age_h <= t["stale"] else "STALE"
 
 
+def _git_age_hours(path) -> float | None:
+    """Hours since `path` was last committed, or None (no git / untracked)."""
+    import subprocess
+    try:
+        out = subprocess.run(["git", "log", "-1", "--format=%ct", "--", str(path)], capture_output=True,
+                             text=True, timeout=15, cwd=str(OUT.parent)).stdout.strip()
+        if not out:
+            return None
+        return (pd.Timestamp(_now()) - pd.Timestamp(int(out), unit="s", tz="UTC")).total_seconds() / 3600
+    except Exception:                                                  # noqa: BLE001
+        return None
+
+
 def build() -> dict:
     h: dict = {
         "generated_at": _now().strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -110,10 +123,17 @@ def build() -> dict:
             "age_hours": round(age, 2) if age is not None else None,
             "state": _state(age, key),
         }
+    # The squads file has no fetch-time sidecar; its age is the time of its LAST COMMIT (CI commits
+    # it after every refresh). File mtime would be a lie in CI (a fresh checkout makes every file
+    # "new"). This was hard-coded UNKNOWN_AGE, so Fantasy health could never be OK (R2-D bug
+    # 'fantasy_health_pinned_aging'). No git -> still UNKNOWN_AGE, never a guessed age.
     for key, fname in (("official_squads", "pl_squads_official.csv"),):
         p = OUT / fname
+        age = _git_age_hours(p) if p.exists() else None
         h["feeds"][key] = {"file": fname, "exists": p.exists(),
-                           "age_hours": None, "state": "UNKNOWN_AGE" if p.exists() else "UNAVAILABLE"}
+                           "age_hours": round(age, 2) if age is not None else None,
+                           "state": (_state(age, key) if age is not None
+                                     else "UNKNOWN_AGE" if p.exists() else "UNAVAILABLE")}
 
     # ── projections ──────────────────────────────────────────────────────────
     tips_p = OUT / "fantasy_tips.csv"

@@ -35,6 +35,19 @@ def test_dc_points_follow_the_real_bar(mean, thr, lo, hi):
     assert lo <= F._poisson_dc_pts(mean, thr) <= hi
 
 
+def test_p_start_constant_is_still_what_the_data_says():
+    import pandas as pd
+    from player_model.fantasy_residual import P_START_GIVEN_1_59
+    p = Path(__file__).resolve().parents[1] / "player_history.parquet"
+    if not p.exists():
+        pytest.skip("no player history")
+    h = pd.read_parquet(p, columns=["league", "date", "minutes", "started"])
+    h = h[(h.league == "Premier League") & h.minutes.between(1, 59)
+          & (pd.to_datetime(h.date, errors="coerce") >= "2025-07-01")].dropna(subset=["started"])
+    share = h["started"].astype(bool).mean()
+    assert abs(share - P_START_GIVEN_1_59) < 0.05, f"measured {share:.3f}; refit P_START_GIVEN_1_59"
+
+
 def test_forwards_no_longer_out_score_defenders_on_dc():
     # typical FPL dc_per90 (2026-11-01 bootstrap medians): DEF 7.4, FWD 3.7
     assert F._poisson_dc_pts(7.4, F._DC_THRESH["DEF"]) > F._poisson_dc_pts(3.7, F._DC_THRESH["FWD"])

@@ -224,6 +224,34 @@ def top_overlap(g: pd.DataFrame, col: str, k: int = 10) -> int:
     return len(set(g.nlargest(k, col).index) & set(g.nlargest(k, "actual_points").index))
 
 
+def rank_boot_delta(df: pd.DataFrame, a: str, b: str = "FPL", n: int = 2000,
+                    seed: int = 20261101) -> list:
+    """90% CI of the mean per-gameweek Spearman(a) - Spearman(b), resampling PLAYERS (a player's
+    rows move together), i.e. the CI the acceptance gate promises for a ranking improvement."""
+    from scipy.stats import spearmanr
+    d = df.dropna(subset=[a, b, "actual_points"])
+    if d.empty or "gw" not in d.columns or d["element"].nunique() < 30:
+        return [None, None]
+    uniq = d["element"].unique()
+    rng = np.random.default_rng(seed)
+    out = []
+    groups = {e: g for e, g in d.groupby("element")}
+    for _ in range(n):
+        s = pd.concat([groups[e] for e in rng.choice(uniq, len(uniq))], ignore_index=True)
+        diffs = []
+        for _, g in s.groupby("gw"):
+            if len(g) >= 10:
+                ra = spearmanr(g[a], g["actual_points"])[0]
+                rb = spearmanr(g[b], g["actual_points"])[0]
+                if ra == ra and rb == rb:
+                    diffs.append(ra - rb)
+        if diffs:
+            out.append(float(np.mean(diffs)))
+    if not out:
+        return [None, None]
+    return [round(float(np.quantile(out, 0.05)), 4), round(float(np.quantile(out, 0.95)), 4)]
+
+
 def decision_value(g: pd.DataFrame, col: str, k: int = 15) -> float:
     """Mean actual points of the k players a projection ranks highest — what picking by it earns."""
     return float(g.nlargest(min(k, len(g)), col)["actual_points"].mean())
@@ -321,6 +349,8 @@ def score_arms(oos: pd.DataFrame, population: str = "ACTIVE") -> dict:
                 "rmse_minus_fpl": round(ma["rmse"] - mf["rmse"], 4),
                 "rmse_ci90": cluster_boot_delta(ff, arm, "FPL", "mse"),
                 "spearman_minus_fpl": round(ma["spearman"] - mf["spearman"], 4),
+                "spearman_ci90": (rank_boot_delta(ff, arm, "FPL", n=200)
+                                  if key == "vs_fpl_final_only" else [None, None]),
             }
     return res
 
@@ -337,8 +367,11 @@ def acceptance(score: dict, arm: str) -> dict:
     v = score["vs_fpl_final_only"].get(arm, {})
     mae_ok = v.get("mae_minus_fpl") is not None and v["mae_minus_fpl"] <= 0
     won = sum(1 for r in fin if r.get(arm, {}).get("mae", 9e9) <= r["FPL"].get("mae", -1))
-    rank_ok = all(r.get(arm, {}).get("spearman", -1) > r["FPL"].get("spearman", 9) for r in fin) \
-        and n_final >= MIN_FINAL_OOS_GWS
+    # The promised CI (R2-D bug 'ranking_gate_without_ci'): this used to require only that the arm's
+    # Spearman beat FPL's in every final gameweek - a point comparison, no interval. Now the
+    # player-clustered 90% CI of the mean per-GW Spearman gain must exclude zero.
+    _ci = v.get("spearman_ci90") or [None, None]
+    rank_ok = (_ci[0] is not None and _ci[0] > 0) and n_final >= MIN_FINAL_OOS_GWS
     enough = n_final >= MIN_FINAL_OOS_GWS
     go = enough and (mae_ok or rank_ok)
     why = []
@@ -349,7 +382,7 @@ def acceptance(score: dict, arm: str) -> dict:
         why.append(f"MAE {v.get('mae_minus_fpl'):+.3f} vs FPL (must be <= 0)"
                    if v.get("mae_minus_fpl") is not None else "no MAE comparison")
     if not rank_ok:
-        why.append("no consistent within-gameweek ranking improvement")
+        why.append(f"ranking gain not established (Spearman-vs-FPL 90% CI {_ci})")
     return {"arm": arm, "decision": "GO" if go else "NO-GO", "final_oos_gws": n_final,
             "gameweeks_mae_won": won, "reasons": why}
 
@@ -696,6 +729,14 @@ def dist_summary(pmf: np.ndarray) -> dict:
             "p15": round(float(pmf[pts >= 15].sum()), 4)}
 
 
+#: Share of 1-59-minute Premier League appearances that were STARTS, MEASURED on player_history
+#: (2026-11-01: 0.227, 95% CI 0.213-0.241, n=3,652 appearances since 2025-07-01; 0.193 since
+#: 2023-07). It was an unfitted 0.35, overstating p_start for rotation players and with it the V2
+#: Confidence/Risk labels and captain pools (R2-D bug 'v2_p_start_unfitted').
+#: tests/test_fantasy_fpl_rules.py re-measures it and fails if the data moves outside the CI.
+P_START_GIVEN_1_59 = 0.227
+
+
 def event_probs(x: pd.DataFrame, P: pd.DataFrame, cond_minutes: dict) -> pd.DataFrame:
     """Goal / assist / clean-sheet / bonus quantities from role x expected minutes x fixture."""
     em = P["m1_59"] * cond_minutes.get("m1_59", 25.0) + P["m60"] * cond_minutes.get("m60", 88.0)
@@ -705,7 +746,7 @@ def event_probs(x: pd.DataFrame, P: pd.DataFrame, cond_minutes: dict) -> pd.Data
     lam_a = (x["xa90"] * em / 90.0 * fx).fillna(0)
     out = pd.DataFrame(index=x.index)
     out["exp_minutes"] = em.round(1)
-    out["p_start"] = (P["m60"] + 0.35 * P["m1_59"]).clip(0, 1).round(3)
+    out["p_start"] = (P["m60"] + P_START_GIVEN_1_59 * P["m1_59"]).clip(0, 1).round(3)
     out["p_play"] = (1 - P["m0"]).round(3)
     out["goal_prob"] = (1 - np.exp(-lam_g)).round(3)
     out["assist_prob"] = (1 - np.exp(-lam_a)).round(3)
