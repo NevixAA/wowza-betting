@@ -58,7 +58,10 @@ def test_added_timezones_come_from_the_country_table():
 
 
 def test_fpl_league_and_fbref_and_same_club_pairs_match_code():
-    assert LR.fpl_league() == _literal("player_model/fantasy.py", "FANTASY_LEAGUE")
+    # dt/fantasy (2026-11-01) derives FANTASY_LEAGUE from the registry; the value copied into the
+    # registry was the literal "Premier League" that fantasy.py held before.
+    from player_model import fantasy as FAN
+    assert LR.fpl_league() == FAN.FANTASY_LEAGUE == "Premier League"
     from player_model import config as PMC
     assert PMC.FBREF_LEAGUES                            # derived from provider_names.fbref
     for name, (fid, slug) in PMC.FBREF_LEAGUES.items():

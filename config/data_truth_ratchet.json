@@ -1,5 +1,5 @@
 {
- "max_known_defaults": 35,
+ "max_known_defaults": 0,
  "rule": "May only go DOWN. Lower it in the same commit that removes a baselined default; .github/workflows/data_truth_gate.yml fails any commit that raises it or exceeds it.",
  "milestone": "Data Truth 100% (NevixAA/wowza-betting milestone): upgrades wait until it is closed - docs/STOPLIGHT.md"
 }
