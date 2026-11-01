@@ -31,6 +31,7 @@ import datetime as _dt
 import io
 import os
 
+import numpy as np
 import pandas as pd
 
 import config
@@ -775,6 +776,49 @@ def top_picks_image(today: str, freeze: bool = False) -> list[bytes]:
                         footer="Frozen each morning and scored · not betting advice")
 
 
+def top_picks_results_image(day: str) -> list[bytes]:
+    """Yesterday's frozen top-picks lists, pick by pick, with results and the running record
+    (owner 2026-11-01: the morning summary showed the lists' results only as one caption line).
+    The record rows count every graded day, so a pick that settled after an earlier morning's
+    send (late MLS / Brazil kick-offs) is still counted the next day."""
+    from src import top_picks as TP
+    g = TP.graded()
+    if g.empty:
+        return []
+    y = g[g["day"] == day]
+    if y.empty:
+        return []
+    cols = [("#", 34), ("Match", 330), ("Pick", 120), ("Odds", 70), ("Result", 90), ("P/L", 76)]
+    rows = []
+    for name in TP.LISTS:
+        x = y[y["list"] == name].sort_values("rank")
+        if x.empty:
+            continue
+        pnl = np.where(x["result"] == "WIN", x["odds"] - 1.0, np.where(x["result"] == "LOSS", -1.0, np.nan))
+        st = x["result"].isin(["WIN", "LOSS"])
+        wins, n_set, n_pend = int((x["result"] == "WIN").sum()), int(st.sum()), int((~st).sum())
+        head = f"{TP.LIST_LABEL[name]} — {wins}/{n_set} won, {np.nansum(pnl):+.2f}u"
+        rows.append({"band": head + (f" · {n_pend} still to play" if n_pend else "")})
+        for r, p in zip(x.itertuples(index=False), pnl):
+            res = r.result if r.result in ("WIN", "LOSS") else "PENDING"
+            txt, rc = _res_cell(res, None if np.isnan(p) else p)
+            rows.append({"cells": [str(r.rank), f"{r.home_team} v {r.away_team}", r.pick, f"{float(r.odds):.2f}",
+                                   txt, "" if np.isnan(p) else f"{p:+.2f}"],
+                         "bold": {"Result", "P/L"},
+                         "colours": {"Result": rc,
+                                     "P/L": GREEN if (p or 0) > 0 else RED if (p or 0) < 0 else MUTED}})
+    for label, days in (("7 days", 7), ("30 days", 30), ("All time", None)):
+        sb = TP.scoreboard(days)
+        if sb.empty:
+            continue
+        parts = [f"{TP.LIST_LABEL[r.list]} {r.wins}/{r.picks} ROI {r.roi:+.0%}" for r in sb.itertuples(index=False)]
+        rows.append({"band": f"{label}: " + "  ·  ".join(parts)})
+    when = pd.Timestamp(day).strftime("%a %d %b")
+    return render_table(f"Top picks results — {when}", cols, rows,
+                        subtitle="The 3 lists of 5 as frozen that morning, graded at flat 1u stakes.",
+                        footer="Late results are picked up the next day · not betting advice")
+
+
 PRO_BET_BUILDER_URL = ("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/"
                        "output/bet_builder_daily.csv")
 
@@ -1231,6 +1275,7 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
     steps = [("top_picks", lambda: top_picks_image(today, freeze=freeze)),
              ("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
               if len(todays_rows(today)) else []),
+             ("top_picks_results", lambda: top_picks_results_image(yday)),
              ("results", lambda: results_image(yday)),
              ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
