@@ -58,17 +58,18 @@ def _norm(name: str) -> str:
 
 
 def _names_match(a: str, b: str) -> bool:
-    """True if two team names refer to the same club (normalised exact or substring)."""
-    na, nb = _norm(a), _norm(b)
-    if na == nb:
-        return True
-    # substring both ways (handles "Man City" vs "Manchester City" style)
-    if na in nb or nb in na:
-        return True
-    # first-word match for short names
-    if na.split()[0] == nb.split()[0] and len(na.split()[0]) >= 4:
-        return True
-    return False
+    """True if two team names refer to the same club, by the canonical resolver
+    (src.team_names.resolve_result: normalised equality, aliases incl. result spellings, then
+    identity tokens that must pair up, reserve sides only with reserve sides).
+
+    This was substring-or-first-word, which called Real Madrid = Real Sociedad, Man City = Man
+    United, Bristol City = Bristol Rovers and Sheffield United = Sheffield Wednesday, while missing
+    LA Galaxy / Los Angeles Galaxy, Bodø/Glimt / Bodo/Glimt and Bragantino-SP / RB Bragantino, so
+    8 live tips sat unsettled and 64 had no closing price (Data Truth audit findings 17, 18)."""
+    from src.team_names import resolve_result
+    if not a or not b:
+        return False
+    return resolve_result(str(a), [str(b)]) is not None or resolve_result(str(b), [str(a)]) is not None
 
 
 # ── football-data.co.uk scores fetch ─────────────────────────────────────────
