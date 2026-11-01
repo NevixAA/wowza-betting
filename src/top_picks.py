@@ -56,7 +56,12 @@ def load_tips() -> pd.DataFrame:
     if p.exists():
         m = pd.read_csv(p, low_memory=False)
         if "source" in m.columns:
-            m = m[m["source"].fillna("live").astype(str).eq("live")]
+            # Only rows that SAY they are live. A blank source used to count as live, so a row of
+            # unknown origin (backtest, replay) could rank as a real tip.
+            n_blank = int(m["source"].isna().sum())
+            if n_blank:
+                log.info(f"top picks: {n_blank} bets_ledger row(s) with no source skipped")
+            m = m[m["source"].astype(str).eq("live") & m["source"].notna()]
         m["market"] = "OU25_" + m["side"].astype(str).str.upper()
         parts.append(m)
     p = config.OUTPUT_DIR / "side_bets_ledger.csv"
@@ -75,7 +80,14 @@ def load_tips() -> pd.DataFrame:
     e = e / 100.0 if e.abs().median() > 1.0 else e                  # stored as % or as a fraction
     mp = pd.to_numeric(d["model_prob"], errors="coerce") if "model_prob" in d.columns else pd.Series(np.nan, index=d.index)
     d["model_p"] = mp.where(mp.notna(), d["implied"] + e).clip(0.02, 0.98)
-    d["model_type"] = d["model_type"].fillna("unknown").astype(str)
+    # A missing tag is computed from the league's registered format (config.model_type_for_league),
+    # not set to a placeholder; a tip whose league has no format cannot be ranked by track.
+    mt = d["model_type"].where(d["model_type"].notna(), d["league"].map(config.model_type_for_league))
+    unknown = mt.isna() | (mt.astype(str) == "unknown")
+    if unknown.any():
+        log.info(f"top picks: {int(unknown.sum())} tip(s) with no model format skipped")
+    d = d[~unknown].copy()
+    d["model_type"] = mt[~unknown].astype(str)
     # day = TIP DAY, the album that carries the tip (src/tip_day.py, 2026-10-25); match_day kept so
     # lists frozen before the change (keyed by match date) still grade.
     from src.tip_day import add_tip_day

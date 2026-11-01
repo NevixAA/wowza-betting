@@ -189,8 +189,13 @@ def train(
 
     # Align sample weights to the sorted/reset df
     if sample_weight is not None:
-        w_all = np.array(sample_weight)[df.index] if len(sample_weight) == len(df) else \
-                np.ones(len(df))
+        # A length mismatch used to swap the recency weights for uniform 1.0 silently. Raise, as
+        # _rows_with_weights does for the repaired recipe. (Positional indexing after the sort is
+        # the documented legacy defect bug 8, kept as-is: legacy numerics are the rollback.)
+        if len(sample_weight) != len(df):
+            raise ValueError(f"sample_weight has {len(sample_weight)} entries for {len(df)} labelled "
+                             f"rows - compute the weights on the frame passed to train()")
+        w_all = np.array(sample_weight)[df.index]
         w_train = w_all[:split]
     else:
         w_train = None

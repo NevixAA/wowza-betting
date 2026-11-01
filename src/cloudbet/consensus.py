@@ -78,7 +78,8 @@ def consensus_probability(quotes: pd.DataFrame, fixture_id, market: str, side: s
     d = quotes[(quotes["fixture_id"].astype(str) == str(fixture_id))
                & (quotes["market"].astype(str) == market)]
     if line is not None and "line" in d.columns:
-        d = d[pd.to_numeric(d["line"], errors="coerce").fillna(-1) == line]
+        # A quote with no line never matches one (NaN == line is False); no -1 sentinel needed.
+        d = d[pd.to_numeric(d["line"], errors="coerce") == line]
     if exclude:
         low = {str(e).lower() for e in exclude}
         d = d[~d["bookmaker"].astype(str).str.lower().isin(low)]

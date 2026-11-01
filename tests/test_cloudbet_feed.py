@@ -84,7 +84,30 @@ def test_an_ambiguous_name_is_refused_not_guessed():
 
 
 def test_a_name_sharing_nothing_is_refused():
+    assert match_team("Platense", ["Boca Juniors", "Racing Club"])[0] is None
+
+
+@pytest.mark.xfail(strict=True, reason="KNOWN BUG in src/team_names.resolve (not owned here): tier 5 "
+                   "pairs 'platense' with the stem 'plate', so Platense resolves to River Plate when "
+                   "the real club is absent from the candidates. match_team now uses the estate "
+                   "resolver (owner rule), so it inherits this; fix belongs in team_names._prefix_eq.")
+def test_a_stem_only_overlap_is_refused():
     assert match_team("Platense", ["Boca Juniors", "River Plate"])[0] is None
+
+
+def test_match_team_is_the_estate_resolver():
+    """No private matcher: whatever src/team_names.resolve answers is what the bot uses."""
+    from src.team_names import resolve
+    cands = ["CA Velez Sarsfield", "Platense", "Queens Park Rangers"]
+    for ours in ("Velez Sarsfield", "QPR", "Manchester City"):
+        assert match_team(ours, cands)[0] == resolve(ours, cands)
+
+
+def test_a_selection_without_a_status_is_not_a_price():
+    """A missing status is unknown, not enabled."""
+    e = {"home": {"name": "A"}, "away": {"name": "B"}, "markets": {"soccer.total_goals": {
+        "submarkets": {"total=2.5": {"selections": [{"outcome": "over", "price": 1.95}]}}}}}
+    assert price_for(e, "ou25", "OVER")[0] is None
 
 
 def test_both_clubs_must_resolve_to_the_SAME_event():

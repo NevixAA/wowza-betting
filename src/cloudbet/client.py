@@ -41,6 +41,8 @@ log = logging.getLogger(__name__)
 
 BASE = os.getenv("CLOUDBET_BASE", "https://sports-api.cloudbet.com/pub/v2")
 TRADING = os.getenv("CLOUDBET_TRADING_BASE", "https://sports-api.cloudbet.com/pub/v3")
+#: Cloudbet's account API (balance per currency). Same key as the trading API.
+ACCOUNT = os.getenv("CLOUDBET_ACCOUNT_BASE", "https://sports-api.cloudbet.com/pub/v1/account")
 
 DRY, PLAY, REAL = "DRY", "PLAY", "REAL"
 #: Default is DRY. Promoting to PLAY or REAL is an explicit, deliberate environment change.
@@ -204,6 +206,26 @@ class CloudbetClient:
 
     def bet_status(self, reference_id: str) -> dict:
         return self._get(f"{TRADING}/bets/{reference_id}/status")
+
+    # ── account ───────────────────────────────────────────────────────────────────────────────
+    @property
+    def currency(self) -> str:
+        return PLAY_CURRENCY if self.mode == PLAY else REAL_CURRENCY
+
+    def balance(self) -> float | None:
+        """The LIVE account balance in this mode's currency, or None when it cannot be read.
+
+        None means "unknown", never zero and never a guess: the caller must then refuse to stake
+        (or use an explicitly configured bankroll). Without a key there is nothing to ask.
+        """
+        if not self._key:
+            return None
+        j = self._get(f"{ACCOUNT}/currencies/{self.currency}/balance")
+        try:
+            amt = float(j.get("amount"))
+        except (TypeError, ValueError, AttributeError):
+            return None
+        return amt if amt == amt else None
 
 
 def fingerprint(obj) -> str:
