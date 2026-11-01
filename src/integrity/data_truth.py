@@ -211,11 +211,53 @@ def write_baseline() -> int:
     return len(entries)
 
 
+# ── STOPLIGHT GATE (owner 2026-11-01: "we can't go back from 100% data") ─────────────────────────
+RATCHET = ROOT / "config" / "data_truth_ratchet.json"
+#: rules whose RED blocks a push/PR. Rule 3 (missing data) is operational - an API outage must not
+#: block code - and already turns system health RED daily via evidence_refresh.
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4")
+
+
+def _ratchet() -> dict:
+    return json.loads(RATCHET.read_text(encoding="utf-8"))
+
+
+def gate(previous_ceiling: int | None = None, checks: list[dict] | None = None) -> list[str]:
+    """Reasons the stoplight is RED for this commit ([] = green). The known-defaults ceiling in
+    config/data_truth_ratchet.json may only go DOWN: the baseline may not exceed it, and the ceiling
+    may not rise above the previous commit's."""
+    fails = []
+    for c in checks if checks is not None else evaluate():
+        if c["status"] == RED and c["check"].startswith(GATED):
+            fails.append(f"{c['check']}: {c['value']} {c['detail']}".strip())
+    ceiling = int(_ratchet()["max_known_defaults"])
+    n = len(_baseline().get("entries", []))
+    if n > ceiling:
+        fails.append(f"known-defaults baseline has {n} entries > ratchet ceiling {ceiling} "
+                     "(remove the default instead of baselining it)")
+    if previous_ceiling is not None and ceiling > previous_ceiling:
+        fails.append(f"ratchet ceiling raised {previous_ceiling} -> {ceiling}: it may only go down")
+    return fails
+
+
 def main(argv=None) -> int:
     argv = argv if argv is not None else sys.argv[1:]
     if "--baseline" in argv:
         print(f"baseline: {write_baseline()} entr(ies) -> {BASELINE.relative_to(ROOT)}")
         return 0
+    if "--gate" in argv:
+        prev = None
+        if "--previous-ceiling" in argv:
+            v = argv[argv.index("--previous-ceiling") + 1]
+            prev = int(v) if v.strip().isdigit() else None
+        checks = evaluate()
+        for c in checks:
+            print(f"{c['status']:7} {c['check']}: {c['value']}")
+        fails = gate(prev, checks)
+        for f in fails:
+            print(f"::error title=Data truth stoplight RED::{f}")
+        print("STOPLIGHT", "RED" if fails else "GREEN")
+        return 1 if fails else 0
     checks = evaluate()
     doc = {"artifact": "data_truth_health", "version": VERSION,
            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "checks": checks}

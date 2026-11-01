@@ -1,0 +1,57 @@
+name: Data Truth stoplight
+
+# Owner rule 2026-11-01: "we can't go back from 100% data - only keep collecting true and good data."
+# docs/STOPLIGHT.md. Two gates:
+#   1. RATCHET (every code/config push and PR): data truth rules 1/2/4 must not be RED, the
+#      known-defaults baseline may not exceed config/data_truth_ratchet.json, and that ceiling may
+#      only go down.
+#   2. UPGRADES WAIT (PRs labelled `upgrade`): red while the "Data Truth 100%" milestone has open issues.
+on:
+  push:
+    branches: [main]
+    paths: ['**.py', 'config/**', '.github/workflows/data_truth_gate.yml']
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  ratchet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: pip install -r requirements.txt
+      - name: Stoplight
+        run: |
+          PREV_SHA="${{ github.event.pull_request.base.sha || github.event.before }}"
+          PREV=""
+          if [ -n "$PREV_SHA" ] && git cat-file -e "$PREV_SHA:config/data_truth_ratchet.json" 2>/dev/null; then
+            PREV=$(git show "$PREV_SHA:config/data_truth_ratchet.json" | python -c "import json,sys; print(json.load(sys.stdin)['max_known_defaults'])")
+          fi
+          echo "previous ceiling: ${PREV:-none}"
+          python -m src.integrity.data_truth --gate --previous-ceiling "${PREV:-none}"
+
+  upgrades-wait:
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'upgrade')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Data Truth 100% milestone must be closed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          OPEN=$(gh api "repos/${{ github.repository }}/milestones?state=open" --jq '.[] | select(.title=="Data Truth 100%") | .open_issues')
+          if [ -n "$OPEN" ] && [ "$OPEN" -gt 0 ]; then
+            echo "::error title=Stoplight RED::Data Truth 100% milestone has $OPEN open issue(s). Upgrades wait until it is closed (docs/STOPLIGHT.md)."
+            exit 1
+          fi
+          echo "Stoplight GREEN: Data Truth 100% milestone closed - upgrades may proceed (the ratchet still applies)."

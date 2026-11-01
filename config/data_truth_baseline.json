@@ -196,12 +196,6 @@
   {
    "file": "player_model/fantasy.py",
    "kind": "fillna_literal",
-   "code": "thr = pl[\"position\"].map(_DC_THRESH).fillna(6.0)",
-   "reason": "KNOWN (R2-D fantasy defaults register, player_model/fantasy_defaults.py): owner decision pending on the listed Fantasy defaults"
-  },
-  {
-   "file": "player_model/fantasy.py",
-   "kind": "fillna_literal",
    "code": "pl[\"p_start\"] = (0.6 * _sr.fillna(_ssr) + 0.4 * _ssr.fillna(_sr)).clip(0, 1).fillna(0.6)",
    "reason": "KNOWN (R2-D fantasy defaults register, player_model/fantasy_defaults.py): owner decision pending on the listed Fantasy defaults"
   },
@@ -241,6 +235,5 @@
    "code": "strong[\"_sig_rank\"] = strong[\"signal\"].map(_sig_order).fillna(9)",
    "reason": "NOT A DATA VALUE: display sort order for unknown signal labels"
   }
- ],
- "note": "Every invented default still in production code, each with a reason. The Data Truth 2 check is RED for any site NOT listed here. Remove an entry when its site is fixed; never add one without a reason."
+ ]
 }
