@@ -56,6 +56,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 import sys
@@ -121,8 +122,26 @@ def _ou_key(model_type_tag, serving_recipe=None) -> str:
     try:
         from src import model_registry as reg
         return reg.ou_model_for_row(str(model_type_tag), serving_recipe)
-    except Exception:                                                 # noqa: BLE001
-        return "standard"
+    except Exception as e:                                            # noqa: BLE001
+        # Unknown model -> None, so the row is stamped UNKNOWN_LEGACY by _version_fields. This
+        # returned "standard", attributing a new-format tip to the standard model.
+        log.warning(f"Ledger: no model key for model_type {model_type_tag!r} ({e}) - attribution left unknown")
+        return None
+
+
+def _num(v) -> float:
+    """A float from a predictions cell, or NaN when it is missing or not a number. Never 0.0: a
+    missing edge/price/probability written as 0 reads as a real zero."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return np.nan
+    return f if np.isfinite(f) else np.nan
+
+
+def _pct(v: float):
+    """round(v * 100, 2), or '' (blank cell) when v is missing."""
+    return round(v * 100, 2) if np.isfinite(v) else ""
 
 
 def _kelly_pct(edge: float, odds: float) -> float:
@@ -158,10 +177,13 @@ def _load_ledger() -> pd.DataFrame:
     """Load ledger, backfilling missing 'source' column on old rows."""
     if LEDGER_FILE.exists():
         df = pd.read_csv(LEDGER_FILE, dtype=str)
+        # A row without a source stays without one (NaN): it is not assumed to be a live tip, so
+        # committed_sides / the dedup never count it as one. Every current row carries 'live'.
         if "source" not in df.columns:
-            df.insert(0, "source", "live")
-        else:
-            df["source"] = df["source"].fillna("live")
+            log.warning("bets_ledger.csv has no 'source' column - rows left without a source")
+            df.insert(0, "source", np.nan)
+        elif df["source"].isna().any():
+            log.warning(f"bets_ledger.csv: {int(df['source'].isna().sum())} row(s) without a source - left blank")
         return df
     return pd.DataFrame(columns=LEDGER_COLS)
 
@@ -218,7 +240,7 @@ def _dedup_keys(df: pd.DataFrame) -> set:
         df.get("home_team",  pd.Series([], dtype=str)).fillna(""),
         df.get("away_team",  pd.Series([], dtype=str)).fillna(""),
         df.get("side",       pd.Series([], dtype=str)).fillna(""),
-        df.get("source",     pd.Series([], dtype=str)).fillna("live"),
+        df.get("source",     pd.Series([], dtype=str)).fillna(""),
     ))
 
 
@@ -304,7 +326,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         dedup_key  = (match_date, home, away, side, source)
         tier       = str(row.get("signal_tier", ""))
         odds       = float(row["odds_under25"] if side == "UNDER" else row["odds_over25"])
-        edge       = float(row.get("best_edge", 0.0))
+        edge       = _num(row.get("best_edge"))      # NaN when missing, never 0.0
 
         if dedup_key in key_to_idx:
             # Already logged. The logged tier STANDS; a higher tier now is research information.
@@ -316,7 +338,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
                 tier_seen_rows.append({
                     "observed_at": now, "ledger": "ou25", "source": source, "match_date": match_date,
                     "home_team": home, "away_team": away, "selection": side,
-                    "observed_tier": tier, "observed_edge_pct": round(edge * 100, 2), "observed_odds": odds,
+                    "observed_tier": tier, "observed_edge_pct": _pct(edge), "observed_odds": odds,
                     "ledger_tier": cur, "ledger_edge_pct": existing.at[i, "edge_pct"],
                     "ledger_odds": existing.at[i, "odds"],
                     "ledger_generated_at": existing.at[i, "generated_at"]})
@@ -351,10 +373,11 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "odds":         odds,
             "opening_odds": opening,
             "odds_drift":   drift_val,
-            "edge_pct":     round(edge * 100, 2),
+            "edge_pct":     _pct(edge),
             "signal_tier":  tier,
             "drift_signal": str(row.get("drift_signal", "")),
-            "kelly_pct":    _kelly_pct(edge, odds),
+            # No edge -> no stake size (blank), not a Kelly computed from an invented 0 edge.
+            "kelly_pct":    _kelly_pct(edge, odds) if np.isfinite(edge) else "",
             "model_type":   str(row.get("model_type", "")),
             "closing_odds": "",
             "clv_pct":      "",
@@ -437,9 +460,12 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
         home       = str(row["home_team"])
         away       = str(row["away_team"])
         tier       = str(row.get("signal_tier", ""))
-        odds       = float(row.get("market_odds", 0.0) or 0.0)
-        edge_pct   = round(float(row.get("edge", 0.0) or 0.0) * 100, 2)
-        ev_pct     = round(float(row.get("ev", 0.0) or 0.0) * 100, 2)
+        # Missing price / edge / EV stay blank. They were written as 0, and settlement then read
+        # an odds of 0 as "no price" only by luck while edge 0 / EV 0 read as real values.
+        odds       = _num(row.get("market_odds"))
+        odds       = odds if odds > 1.0 else ""
+        edge_pct   = _pct(_num(row.get("edge")))
+        ev_pct     = _pct(_num(row.get("ev")))
         key        = (match_date, home, away, market, source)
 
         if key in key_to_idx:
@@ -472,7 +498,8 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "side": (str(row["side"]) if pd.notna(row.get("side")) and str(row.get("side")).strip()
                      else _SIDE_OF_MARKET.get(market, "")),
             "odds": odds, "edge_pct": edge_pct, "ev_pct": ev_pct,
-            "model_prob": round(float(row.get("model_prob", 0.0) or 0.0), 4),
+            "model_prob": (round(_num(row.get("model_prob")), 4)
+                           if np.isfinite(_num(row.get("model_prob"))) else ""),
             "signal_tier": tier,
             "model_type": str(row.get("model_type", "")) or config.model_type_for_league(row.get("league", "")),
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
@@ -613,7 +640,9 @@ def append_ht_tips(preds_df: pd.DataFrame, source: str = "live") -> None:
             "source": source, "generated_at": now, "match_date": md,
             "league": lg, "home_team": home, "away_team": away,
             "market": market, "side": side, "model_prob": round(prob, 4),
-            "fair_odds": round(1.0 / max(prob, 0.01), 2),
+            # prob >= 0.60 on every branch above, so no floor is needed (the max(prob, 0.01) clip
+            # could only ever have manufactured a 100.0 fair price).
+            "fair_odds": round(1.0 / prob, 2),
             "odds": round(mkt_odds, 3) if mkt_odds else "",
             "edge_pct": round(edge * 100, 2) if edge is not None else "",
             "signal_tier": _ht_tier(edge), "model_type": "ht",

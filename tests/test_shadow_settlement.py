@@ -444,3 +444,38 @@ def test_rule_is_applied_to_rows_settled_before_it_existed_and_is_idempotent():
     assert frozen_digest(out) == d0
     out2, n2 = enforce_close_rule(out)
     assert n2 == 0 and out2.equals(out)
+
+
+# ── Data Truth 2026-11-01: no assumed market, no cross-league close ─────────────────────────
+def test_a_blank_market_is_not_assumed_to_be_ou25():
+    assert ss.norm_market("") == "" and ss.norm_market(None) == ""
+    df = pd.DataFrame([{k: ("" if v is None else str(v)) for k, v in _row(market="").items()}])
+    updates, pending = ss.settle_frame(df, providers=[("test", lambda lg: [_ev()])], now=NOW)
+    assert updates == [] and pending == {"UNSUPPORTED_MARKET": 1}
+
+
+def test_close_never_falls_back_to_another_league():
+    ko = pd.Timestamp("2026-10-18 14:00:00", tz="UTC")
+    arch = _arch([("2026-10-18T13:50:00Z", "2026-10-18", "Leeds vs Norwich", "over25", 2.0)])
+    arch["league"] = "League One"                     # the only quote is in another competition
+    idx = ss.index_archives([("a", arch)])
+    c = ss.closing_price(idx, "Leeds United", "Norwich City", "2026-10-18", ko, "over25",
+                         league="Championship")
+    assert np.isnan(c["odds"]) and c["status"] == ss.NO_CLOSE
+    arch["league"] = "Championship"
+    c = ss.closing_price(ss.index_archives([("a", arch)]), "Leeds United", "Norwich City",
+                         "2026-10-18", ko, "over25", league="Championship")
+    assert c["odds"] == 2.0
+
+
+def test_settlement_passes_no_pairwise_fallback_matcher(shadow, monkeypatch):
+    seen = {}
+    real = ss.settle_frame
+
+    def spy(df, **kw):
+        seen.update(kw)
+        return real(df, **kw)
+    monkeypatch.setattr(ss, "settle_frame", spy)
+    sc.append_shadow([_row()])
+    _settle()
+    assert seen.get("fallback_matcher") is None

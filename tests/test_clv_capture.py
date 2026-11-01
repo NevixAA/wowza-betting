@@ -373,3 +373,18 @@ def test_update_results_runs_the_guard_last_and_commits_the_health_file():
     assert "check_clv_collection_health.py" in steps[-1]["run"] and steps[-1]["if"] == "always()"
     assert any("output/clv_collection_health.json" in str(s.get("run", ""))
                and "git add" in str(s.get("run", "")) for s in steps)
+
+
+def test_clv_health_floors_come_only_from_the_expectation_file():
+    from src import clv_collection_health as cch
+    h = {"shadow_since_measure_from": {"eligible": 100, "certified_t30_pct": 90.0},
+         "collection": {"fixture_markets": 500, "t30_pct": 90.0}}
+    exp = {"min_shadow_sample": 40, "min_certified_t30_pct": 35.0, "min_collection_sample": 200,
+           "min_collection_t30_pct": 40.0, "collection_window_days": 7}
+    assert cch.check(h, exp)["status"] == "PASS"
+    short = {k: v for k, v in exp.items() if k != "min_shadow_sample"}
+    r = cch.check(h, short)
+    assert r["status"] == "NO_EXPECTATION" and "min_shadow_sample" in r["reasons"][0]
+    # A percentage that was not measured is not 0% -> never a FAIL.
+    h2 = {**h, "shadow_since_measure_from": {"eligible": 100, "certified_t30_pct": None}}
+    assert cch.check(h2, exp)["status"] == "INSUFFICIENT_SAMPLE"
