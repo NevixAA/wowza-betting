@@ -2,24 +2,6 @@
  "version": "DATA-TRUTH-1",
  "entries": [
   {
-   "file": "src/feature_engineering.py",
-   "kind": "fillna_literal",
-   "code": "df[\"p_over25_poisson_dc\"] = df[\"implied_prob_over\"].fillna(0.5)",
-   "reason": "KNOWN (R2-E inventory): p_over25_poisson_dc fallback only when the Dixon-Coles helper is unavailable; fired on 0 board rows"
-  },
-  {
-   "file": "src/feature_engineering.py",
-   "kind": "fillna_literal",
-   "code": "df[\"p_over25_poisson_dc\"] = df[\"implied_prob_over\"].fillna(0.5)",
-   "reason": "KNOWN (R2-E inventory): p_over25_poisson_dc fallback only when the Dixon-Coles helper is unavailable; fired on 0 board rows"
-  },
-  {
-   "file": "player_model/predict.py",
-   "kind": "fillna_literal",
-   "code": "cand[\"_ev\"] = pd.to_numeric(cand[\"ev\"], errors=\"coerce\").fillna(-999)",
-   "reason": "NOT A DATA VALUE: sort key that ranks unpriced rows last in the PAPER feed"
-  },
-  {
    "file": "player_model/feature_engineering.py",
    "kind": "fillna_literal",
    "code": ").fillna(7.0)",
@@ -228,12 +210,6 @@
    "kind": "fillna_literal",
    "code": "* (_aerial.fillna(0.50)         / 0.50)",
    "reason": "KNOWN, deferred (Data Truth #42): props league-quality cold-start constants; same R2-D switch"
-  },
-  {
-   "file": "telegram_bot/notifier.py",
-   "kind": "fillna_literal",
-   "code": "strong[\"_sig_rank\"] = strong[\"signal\"].map(_sig_order).fillna(9)",
-   "reason": "NOT A DATA VALUE: display sort order for unknown signal labels"
   }
  ]
 }

@@ -55,13 +55,9 @@ log = logging.getLogger(__name__)
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 
-try:
-    from src.poisson import dixon_coles_p_over25 as _dc_p_over25
-except ImportError:
-    try:
-        from poisson import dixon_coles_p_over25 as _dc_p_over25
-    except ImportError:
-        _dc_p_over25 = None
+# Hard import: src/poisson.py ships with this repo. When it was optional, a failed import silently
+# replaced the model's own goal estimate with the market price (or 0.5) - data truth, 2026-11-01.
+from src.poisson import dixon_coles_p_over25 as _dc_p_over25
 
 _N = config.ROLLING_N
 
@@ -533,13 +529,14 @@ def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v
         df["implied_prob_over"] + df["implied_prob_under"] - 1.0
     ).clip(lower=0.0)
 
-    # Dixon-Coles corrected P(over 2.5) using per-team rolling goal rates as lambdas
-    if _dc_p_over25 is not None and "home_scored_last5" in df.columns:
+    # Dixon-Coles corrected P(over 2.5) using per-team rolling goal rates as lambdas; no form -> NaN
+    if "home_scored_last5" in df.columns:
         _lh = df["home_scored_last5"].clip(lower=0.3, upper=4.0)
         _la = df["away_scored_last5"].clip(lower=0.3, upper=4.0)
-        df["p_over25_poisson_dc"] = [_dc_p_over25(h, a) for h, a in zip(_lh, _la)]
+        df["p_over25_poisson_dc"] = [_dc_p_over25(h, a) if pd.notna(h) and pd.notna(a) else np.nan
+                                     for h, a in zip(_lh, _la)]
     else:
-        df["p_over25_poisson_dc"] = df["implied_prob_over"].fillna(0.5)
+        df["p_over25_poisson_dc"] = np.nan
 
     return df
 
@@ -1028,13 +1025,14 @@ def build_upcoming_features(
         _use = _nf & _best.notna()
         df.loc[_use, "bookmaker_overround"] = _best[_use]
 
-    # Dixon-Coles corrected P(over 2.5)
-    if _dc_p_over25 is not None and "home_scored_last5" in df.columns:
+    # Dixon-Coles corrected P(over 2.5); no form -> NaN (never the market price passed off as ours)
+    if "home_scored_last5" in df.columns:
         _lh = df["home_scored_last5"].clip(lower=0.3, upper=4.0)
         _la = df["away_scored_last5"].clip(lower=0.3, upper=4.0)
-        df["p_over25_poisson_dc"] = [_dc_p_over25(h, a) for h, a in zip(_lh, _la)]
+        df["p_over25_poisson_dc"] = [_dc_p_over25(h, a) if pd.notna(h) and pd.notna(a) else np.nan
+                                     for h, a in zip(_lh, _la)]
     else:
-        df["p_over25_poisson_dc"] = df["implied_prob_over"].fillna(0.5)
+        df["p_over25_poisson_dc"] = np.nan
 
     # ── Optional: API-Football standings metadata (not model features) ────────
     # Adds table position, GD/game, form pts for display in predictions.csv.

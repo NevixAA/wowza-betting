@@ -913,7 +913,10 @@ def tag_paper_feed(tips_df: pd.DataFrame, top_n: int | None = None) -> pd.DataFr
     cand = tips_df[(tips_df["tier"] == "AVOID") & tips_df["market_odds"].notna()].copy()
     if cand.empty:
         return tips_df
-    cand["_ev"] = pd.to_numeric(cand["ev"], errors="coerce").fillna(-999)
+    cand["_ev"] = pd.to_numeric(cand["ev"], errors="coerce")
+    cand = cand[cand["_ev"].notna()]          # a PAPER pick needs a real EV - never a sentinel rank
+    if cand.empty:
+        return tips_df
     top_idx = cand.sort_values("_ev", ascending=False).head(n).index
     tips_df.loc[top_idx, "tier"] = "PAPER"
     print(f"[player_model] PAPER feed: promoted {len(top_idx)} top picks (tracking-only, no edge)")

@@ -602,9 +602,11 @@ def notify_wc_strong() -> int:
     strong = strong[strong["_date"].between(today, cutoff)]
 
     # Priority: STRONG first, then SHARP, then FADING; within each by absolute drift
-    _sig_order = {"STRONG": 0, "SHARP": 1, "FADING": 2}
-    strong["_sig_rank"] = strong["signal"].map(_sig_order).fillna(9)
-    strong = strong.sort_values(["_sig_rank", "drift_pct"], key=lambda s: s if s.name != "drift_pct" else s.abs(), ascending=[True, False])
+    # STEAM_STRONG / STEAM_SHARP rank with STRONG / SHARP (they used to fall to a sentinel 9, last)
+    _sig_order = {"STRONG": 0, "STEAM_STRONG": 0, "SHARP": 1, "STEAM_SHARP": 1, "FADING": 2}
+    strong["_sig_rank"] = strong["signal"].astype(str).str.upper().map(_sig_order)
+    strong = strong.sort_values(["_sig_rank", "drift_pct"], key=lambda s: s if s.name != "drift_pct" else s.abs(),
+                                ascending=[True, False], na_position="last")
 
     if strong.empty:
         return 0
