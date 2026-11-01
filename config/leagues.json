@@ -1,5 +1,5 @@
 {
- "registry_version": "LR-1.0-2026-11-01",
+ "registry_version": "LR-1.1-2026-11-01",
  "about": "CANONICAL LEAGUE REGISTRY (R2 finding 7). config.py DERIVES its league sets and per-league provider maps from this file (src/league_registry.py); edit here, never in config.py. Aliases are alternative spellings that resolve to the canonical name; they are never separate keys. Seed generated from config.py at origin/main 4e9c93357 (2026-11-01); tests/test_league_registry.py proves the derived values equal that snapshot.",
  "season_rule_types": {
   "start_year": "API-Football season = the year the season STARTS; a date before start_month belongs to the previous year's season (European autumn-spring)",
@@ -7,6 +7,16 @@
   "end_year": "season = the year the season ENDS: a date in/after start_month belongs to next year's season (J1 from 2026/27)",
   "fixed": "one tournament season",
   "eras": "a list of rules with from/until dates (inclusive from, exclusive until) when a league changed calendar"
+ },
+ "league_fields_lr_1_1": {
+  "competition_type": "club_league | club_cup | national_teams (API-Football ids 2/3/848 are club cups, id 1 the national-team World Cup)",
+  "props": "true = the player-prop pipeline covers this league (copied from player_model/config.py PROP_LEAGUES, ids verified equal)",
+  "fpl": "true only for the one league Fantasy Premier League scores (player_model/fantasy.py FANTASY_LEAGUE)",
+  "odds_api_sport_key": "OddsAPI sport key; prop-only keys copied from player_model/odds_fetcher.py PROP_SPORT_KEYS",
+  "odds_api_extra_sport_keys": "further OddsAPI keys for phases of the same competition (UCL qualification)",
+  "timezone": "IANA zone; for single-zone countries copied from scripts/auto_onboard.py COUNTRY_TZ; null for multi-country competitions and where no source holds it",
+  "provider_names.fbref": "FBref competition id + URL slug (player_model/config.py FBREF_LEAGUES)",
+  "same_club_spellings": "pairs of history spellings of ONE club whose sources never overlap in time (src/data_loader.py _SAME_CLUB_NO_OVERLAP)"
  },
  "leagues": [
   {
@@ -17,6 +27,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "England",
    "timezone": "Europe/London",
    "football_data_code": "E1",
@@ -25,7 +38,18 @@
    "sofascore_tournament_id": 18,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 10,
+     "slug": "Championship"
+    }
+   },
+   "same_club_spellings": [
+    [
+     "Sheffield United",
+     "Sheffield Utd"
+    ]
+   ],
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -39,6 +63,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "England",
    "timezone": "Europe/London",
    "football_data_code": "E2",
@@ -47,7 +74,18 @@
    "sofascore_tournament_id": 24,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 15,
+     "slug": "League-One"
+    }
+   },
+   "same_club_spellings": [
+    [
+     "Sheffield United",
+     "Sheffield Utd"
+    ]
+   ],
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -61,6 +99,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "England",
    "timezone": "Europe/London",
    "football_data_code": "E3",
@@ -69,7 +110,12 @@
    "sofascore_tournament_id": 25,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 16,
+     "slug": "League-Two"
+    }
+   },
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -83,6 +129,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Germany",
    "timezone": "Europe/Berlin",
    "football_data_code": "D2",
@@ -91,7 +140,12 @@
    "sofascore_tournament_id": 44,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 33,
+     "slug": "2-Bundesliga"
+    }
+   },
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -105,6 +159,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "France",
    "timezone": "Europe/Paris",
    "football_data_code": "F2",
@@ -113,7 +170,12 @@
    "sofascore_tournament_id": 182,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 60,
+     "slug": "Ligue-2"
+    }
+   },
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -127,6 +189,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Spain",
    "timezone": "Europe/Madrid",
    "football_data_code": "SP2",
@@ -135,7 +200,18 @@
    "sofascore_tournament_id": 54,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 17,
+     "slug": "Segunda-Division"
+    }
+   },
+   "same_club_spellings": [
+    [
+     "Celta B",
+     "Celta de Vigo II"
+    ]
+   ],
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -149,6 +225,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Italy",
    "timezone": "Europe/Rome",
    "football_data_code": "I2",
@@ -157,7 +236,12 @@
    "sofascore_tournament_id": 53,
    "api_football_only": false,
    "api_football_extra_seasons": [],
-   "provider_names": {},
+   "provider_names": {
+    "fbref": {
+     "id": 18,
+     "slug": "Serie-B"
+    }
+   },
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -171,6 +255,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Greece",
    "timezone": "Europe/Athens",
    "football_data_code": "G1",
@@ -196,6 +283,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Denmark",
    "timezone": "Europe/Copenhagen",
    "football_data_code": "DNK",
@@ -220,6 +310,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Austria",
    "timezone": "Europe/Vienna",
    "football_data_code": "AUT",
@@ -242,6 +335,9 @@
    "production_state": "ENABLED_PROVIDER_UNSUPPORTED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Romania",
    "timezone": "Europe/Bucharest",
    "football_data_code": "ROM",
@@ -271,6 +367,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Sweden",
    "timezone": "Europe/Stockholm",
    "football_data_code": "SWE",
@@ -292,6 +391,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Norway",
    "timezone": "Europe/Oslo",
    "football_data_code": "NOR",
@@ -313,6 +415,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Finland",
    "timezone": "Europe/Helsinki",
    "football_data_code": "FIN",
@@ -334,6 +439,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Ireland",
    "timezone": "Europe/Dublin",
    "football_data_code": "IRL",
@@ -355,6 +463,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Argentina",
    "timezone": "America/Argentina/Buenos_Aires",
    "football_data_code": "ARG",
@@ -366,9 +477,21 @@
    "provider_names": {},
    "season_rule": {
     "eras": [
-     {"until": "2020-07-01", "type": "start_year", "start_month": 7},
-     {"from": "2020-07-01", "until": "2021-02-01", "type": "fixed", "season": "2020"},
-     {"from": "2021-02-01", "type": "calendar_year"}
+     {
+      "until": "2020-07-01",
+      "type": "start_year",
+      "start_month": 7
+     },
+     {
+      "from": "2020-07-01",
+      "until": "2021-02-01",
+      "type": "fixed",
+      "season": "2020"
+     },
+     {
+      "from": "2021-02-01",
+      "type": "calendar_year"
+     }
     ],
     "evidence": "Split season until 2019/20; Copa Diego Maradona Oct 2020 - Jan 2021 is API season 2020; calendar year from 2021 (Pro registry/league_season_calendar.json; Data Truth finding 56)"
    }
@@ -381,6 +504,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Brazil",
    "timezone": "America/Sao_Paulo",
    "football_data_code": "BRA",
@@ -392,9 +518,20 @@
    "provider_names": {},
    "season_rule": {
     "eras": [
-     {"until": "2020-08-01", "type": "calendar_year"},
-     {"from": "2020-08-01", "until": "2021-03-01", "type": "fixed", "season": "2020"},
-     {"from": "2021-03-01", "type": "calendar_year"}
+     {
+      "until": "2020-08-01",
+      "type": "calendar_year"
+     },
+     {
+      "from": "2020-08-01",
+      "until": "2021-03-01",
+      "type": "fixed",
+      "season": "2020"
+     },
+     {
+      "from": "2021-03-01",
+      "type": "calendar_year"
+     }
     ],
     "evidence": "COVID: the 2020 campaign ran Aug 2020 - Feb 2021 (fd_history: 0 rows Jan-Jul 2020, 112 rows Jan-Feb 2021; Data Truth finding 56)"
    }
@@ -407,6 +544,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Japan",
    "timezone": "Asia/Tokyo",
    "football_data_code": "JPN",
@@ -439,6 +579,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Mexico",
    "timezone": "America/Mexico_City",
    "football_data_code": "MEX",
@@ -448,6 +591,12 @@
    "api_football_only": false,
    "api_football_extra_seasons": [],
    "provider_names": {},
+   "same_club_spellings": [
+    [
+     "U.N.A.M. - Pumas",
+     "UNAM Pumas"
+    ]
+   ],
    "season_rule": {
     "type": "start_year",
     "start_month": 7
@@ -461,6 +610,9 @@
    "production_state": "ENABLED",
    "enabled": true,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "China",
    "timezone": "Asia/Shanghai",
    "football_data_code": "CHN",
@@ -472,9 +624,20 @@
    "provider_names": {},
    "season_rule": {
     "eras": [
-     {"until": "2021-04-01", "type": "calendar_year"},
-     {"from": "2021-04-01", "until": "2022-02-01", "type": "fixed", "season": "2021"},
-     {"from": "2022-02-01", "type": "calendar_year"}
+     {
+      "until": "2021-04-01",
+      "type": "calendar_year"
+     },
+     {
+      "from": "2021-04-01",
+      "until": "2022-02-01",
+      "type": "fixed",
+      "season": "2021"
+     },
+     {
+      "from": "2022-02-01",
+      "type": "calendar_year"
+     }
     ],
     "evidence": "The 2021 campaign finished in Jan 2022 (fd_history: 16 rows Jan 2022, none Feb-May 2022; Data Truth finding 56)"
    }
@@ -487,6 +650,9 @@
    "production_state": "PAPER",
    "enabled": true,
    "paper": true,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "USA",
    "timezone": "America/New_York",
    "football_data_code": "USA",
@@ -509,6 +675,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Saudi-Arabia",
    "timezone": "Asia/Riyadh",
    "football_data_code": null,
@@ -539,6 +708,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "South-Korea",
    "timezone": "Asia/Seoul",
    "football_data_code": null,
@@ -570,6 +742,9 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "national_teams",
+   "props": true,
+   "fpl": false,
    "country": "World",
    "timezone": null,
    "football_data_code": null,
@@ -593,11 +768,17 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_cup",
+   "props": true,
+   "fpl": false,
    "country": "World",
    "timezone": null,
    "football_data_code": null,
    "api_football_id": 2,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_uefa_champs_league",
+   "odds_api_extra_sport_keys": [
+    "soccer_uefa_champs_league_qualification"
+   ],
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -615,11 +796,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_cup",
+   "props": true,
+   "fpl": false,
    "country": "World",
    "timezone": null,
    "football_data_code": null,
    "api_football_id": 3,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_uefa_europa_league",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -637,11 +821,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_cup",
+   "props": true,
+   "fpl": false,
    "country": "World",
    "timezone": null,
    "football_data_code": null,
    "api_football_id": 848,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_uefa_europa_conference_league",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -659,11 +846,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": true,
    "country": "England",
-   "timezone": null,
+   "timezone": "Europe/London",
    "football_data_code": null,
    "api_football_id": 39,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_epl",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -681,11 +871,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Spain",
-   "timezone": null,
+   "timezone": "Europe/Madrid",
    "football_data_code": null,
    "api_football_id": 140,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_spain_la_liga",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -703,11 +896,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Italy",
-   "timezone": null,
+   "timezone": "Europe/Rome",
    "football_data_code": null,
    "api_football_id": 135,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_italy_serie_a",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -725,11 +921,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "Germany",
-   "timezone": null,
+   "timezone": "Europe/Berlin",
    "football_data_code": null,
    "api_football_id": 78,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_germany_bundesliga",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -747,11 +946,14 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": true,
+   "fpl": false,
    "country": "France",
-   "timezone": null,
+   "timezone": "Europe/Paris",
    "football_data_code": null,
    "api_football_id": 61,
-   "odds_api_sport_key": null,
+   "odds_api_sport_key": "soccer_france_ligue_one",
    "sofascore_tournament_id": null,
    "api_football_only": false,
    "api_football_extra_seasons": [],
@@ -769,6 +971,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Netherlands",
    "timezone": "Europe/Amsterdam",
    "football_data_code": "N1",
@@ -794,6 +999,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Portugal",
    "timezone": "Europe/Lisbon",
    "football_data_code": "P1",
@@ -819,6 +1027,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Belgium",
    "timezone": "Europe/Brussels",
    "football_data_code": "B1",
@@ -844,6 +1055,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Scotland",
    "timezone": "Europe/London",
    "football_data_code": "SC0",
@@ -867,6 +1081,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Turkey",
    "timezone": "Europe/Istanbul",
    "football_data_code": "T1",
@@ -890,8 +1107,11 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Switzerland",
-   "timezone": null,
+   "timezone": "Europe/Zurich",
    "football_data_code": null,
    "api_football_id": 207,
    "odds_api_sport_key": null,
@@ -912,8 +1132,11 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Czech-Republic",
-   "timezone": null,
+   "timezone": "Europe/Prague",
    "football_data_code": null,
    "api_football_id": 345,
    "odds_api_sport_key": null,
@@ -934,8 +1157,11 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Croatia",
-   "timezone": null,
+   "timezone": "Europe/Zagreb",
    "football_data_code": null,
    "api_football_id": 210,
    "odds_api_sport_key": null,
@@ -956,8 +1182,11 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Serbia",
-   "timezone": null,
+   "timezone": "Europe/Belgrade",
    "football_data_code": null,
    "api_football_id": 286,
    "odds_api_sport_key": null,
@@ -978,8 +1207,11 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Ukraine",
-   "timezone": null,
+   "timezone": "Europe/Kyiv",
    "football_data_code": null,
    "api_football_id": 333,
    "odds_api_sport_key": null,
@@ -1000,6 +1232,9 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Poland",
    "timezone": "Europe/Warsaw",
    "football_data_code": null,
@@ -1022,6 +1257,9 @@
    "production_state": "COLLECTION_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Cyprus",
    "timezone": null,
    "football_data_code": null,
@@ -1044,6 +1282,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Scotland",
    "timezone": "Europe/London",
    "football_data_code": "SC1",
@@ -1067,6 +1308,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "England",
    "timezone": "Europe/London",
    "football_data_code": "EC",
@@ -1090,6 +1334,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Scotland",
    "timezone": "Europe/London",
    "football_data_code": "SC2",
@@ -1113,6 +1360,9 @@
    "production_state": "TRAINING_ONLY",
    "enabled": false,
    "paper": false,
+   "competition_type": "club_league",
+   "props": false,
+   "fpl": false,
    "country": "Scotland",
    "timezone": "Europe/London",
    "football_data_code": "SC3",
