@@ -1,8 +1,8 @@
 {
   "model_type": "standard",
-  "model_version": "standard_20261101T111837Z_3562424e",
-  "retrain_batch_id": "rb_20261101T095533Z",
-  "trained_at": "2026-11-01T11:18:37Z",
+  "model_version": "standard_20261101T153917Z_a47c133e",
+  "retrain_batch_id": "rb_20261101T140927Z",
+  "trained_at": "2026-11-01T15:39:17Z",
   "training_start": "2023-07-29",
   "training_end": "2026-01-30",
   "training_cutoff": "2026-01-30",
@@ -10,21 +10,21 @@
   "target": "over25",
   "feature_schema_version": "56cc042e5c46",
   "n_features": 42,
-  "code_commit_sha": "4e9c93357910",
-  "artifact_sha256": "3562424e5b54985080161aac122c33cf3b5dc1c37a16c0477e5a3c1051857fbd",
+  "code_commit_sha": "fc6b8bab62ab",
+  "artifact_sha256": "a47c133e61f429ee76f68f94035571f5c8feffa3953a400bfb141112c31338cb",
   "parent_champion_version": "standard_20261018T080423Z_64313878",
   "validation_metrics": {
     "gate_version": "PG-1.0",
     "tracks": {
       "standard": {
         "n": 4388,
-        "ll_delta": -0.000918,
+        "ll_delta": -0.00067,
         "ci": [
-          -0.00213,
-          0.00025
+          -0.001668,
+          0.000369
         ],
-        "brier_delta": -0.000449,
-        "ece_delta": 0.003937,
+        "brier_delta": -0.000331,
+        "ece_delta": 0.004897,
         "passed": false
       }
     }
@@ -39,19 +39,19 @@
     ],
     "canary_ok": true,
     "holdout_n": 4388,
-    "holdout_ll_delta": -0.000918,
-    "holdout_ci_lo": -0.00213,
-    "holdout_ci_hi": 0.00025,
+    "holdout_ll_delta": -0.00067,
+    "holdout_ci_lo": -0.001668,
+    "holdout_ci_hi": 0.000369,
     "summary_candidate_metrics": {
       "n": 4388,
-      "log_loss": 0.683827,
-      "brier": 0.245377,
-      "ece": 0.009157,
-      "cal_slope": 1.3736,
-      "cal_slope_se": 0.1853,
-      "mean_p": 0.54122,
-      "base_rate": 0.54125
+      "log_loss": 0.683902,
+      "brier": 0.245409,
+      "ece": 0.007632,
+      "cal_slope": 1.3111,
+      "cal_slope_se": 0.179,
+      "mean_p": 0.54099,
+      "base_rate": 0.54102
     }
   },
-  "shadow_since": "2026-11-01T11:18:37Z"
+  "shadow_since": "2026-11-01T15:39:17Z"
 }
