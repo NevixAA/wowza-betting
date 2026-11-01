@@ -96,7 +96,18 @@ _FD_SOURCES = {
 }
 
 _FD_NEW_URL = "https://www.football-data.co.uk/new/{code}.csv"
-_FD_STD_URL = "https://www.football-data.co.uk/mmz4281/2526/{code}.csv"
+_FD_STD_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
+
+
+def _fd_std_season_codes(today=None) -> list[str]:
+    """football-data season folders for the CURRENT and PREVIOUS split season ('2627', '2526').
+    This was the literal '2526', so from August 2026 no 2026/27 fixture in these leagues could
+    ever settle here (Data Truth audit findings 15, 29). Previous season too: a tip from May still
+    needs grading in August."""
+    d = pd.Timestamp(today or datetime.utcnow().date())
+    start = d.year if d.month >= 7 else d.year - 1
+    return [f"{y % 100:02d}{(y + 1) % 100:02d}" for y in (start, start - 1)]
+
 
 def fetch_scores_fd(league: str) -> list[dict]:
     """Fetch completed results from football-data.co.uk (free, no quota). Includes HT scores where available."""
@@ -108,17 +119,25 @@ def fetch_scores_fd(league: str) -> list[dict]:
     try:
         from io import StringIO
 
-        url = _FD_NEW_URL.format(code=code) if fmt == "new" else _FD_STD_URL.format(code=code)
-        r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
-        if r.status_code != 200:
-            log.debug(f"  FD {league}: HTTP {r.status_code}")
+        urls = ([_FD_NEW_URL.format(code=code)] if fmt == "new" else
+                [_FD_STD_URL.format(season=s, code=code) for s in _fd_std_season_codes()])
+        parts = []
+        for url in urls:
+            r = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0"})
+            if r.status_code != 200:
+                log.warning(f"  FD {league}: HTTP {r.status_code} for {url}")
+                continue
+            parts.append(pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
+                                     on_bad_lines="skip", low_memory=False))
+        if not parts:
             return []
-
-        raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
-                          on_bad_lines="skip", low_memory=False)
+        raw = pd.concat(parts, ignore_index=True)
 
         if fmt == "new" and "Season" in raw.columns:
-            raw = raw[raw["Season"].astype(str).str.contains("2025|2026")].copy()
+            # This year and last year, never a literal list: '2025|2026' dropped every NF result
+            # from the 2027 calendar seasons on (Data Truth audit finding 21).
+            _y = datetime.utcnow().year
+            raw = raw[raw["Season"].astype(str).str.contains(f"{_y - 1}|{_y}")].copy()
 
         results = []
         for _, row in raw.iterrows():

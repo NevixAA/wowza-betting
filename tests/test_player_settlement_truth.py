@@ -78,6 +78,13 @@ def test_threshold_prop_settles(tmp_path, monkeypatch):
     assert pd.read_csv(p, dtype=str)["result"].iloc[0] == "WIN"
 
 
+@pytest.mark.parametrize("today,want", [("2026-11-01", ["2627", "2526"]),
+                                        ("2027-03-01", ["2627", "2526"]),
+                                        ("2027-08-15", ["2728", "2627"])])
+def test_fd_std_settlement_reads_the_live_season(today, want):
+    assert U._fd_std_season_codes(today) == want
+
+
 def test_season_comes_from_the_registry(tmp_path, monkeypatch):
     from src.season_resolver import resolve_api_season
     _ledger(tmp_path, monkeypatch, days_ago=2, league="Japan J-League")
