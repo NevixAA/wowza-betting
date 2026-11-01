@@ -35,7 +35,10 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "deploy" / "dashboard_manifest.json"
 
 #: Non-Python files the slim tree must carry.
-ASSETS = [".streamlit/config.toml"]
+ASSETS = [".streamlit/config.toml",
+          # config.py derives every league table from it at import (R2-A); a missing file stops config
+          # loading, so it ships WITH the code instead of arriving later through the data mirror.
+          "config/leagues.json"]
 #: The deploy machinery itself (the mirror is imported by app.py; the builder ships for provenance).
 ALWAYS_CODE = ["app.py", "dashboard_data/remote_mirror.py"]
 #: Never mirrored, whatever reads them.

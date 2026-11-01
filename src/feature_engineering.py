@@ -822,7 +822,13 @@ def build_upcoming_features(
             _lid = config.API_FOOTBALL_IDS.get(_lg)
             if not _lid:
                 continue
-            _szn = config.API_FOOTBALL_SEASONS.get(_lg, "2025")
+            # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(_lg, "2025").
+            from src.season_resolver import resolve_api_season, is_known, record_degradation
+            _szn = resolve_api_season(_lg, df.loc[df["league"] == _lg, "date"].min()
+                                      if "date" in df.columns else None)
+            if not is_known(_szn):
+                record_degradation("feature_engineering.injury_context", _lg)
+                continue
             try:
                 _inj_ctx[_lg] = get_league_injury_context(_lid, _szn)
             except Exception:
@@ -1019,7 +1025,12 @@ def build_upcoming_features(
             if not lg_id:
                 continue
 
-            season = _cfg.API_FOOTBALL_SEASONS.get(league, _cfg.API_SEASON)
+            # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(league, API_SEASON="2025").
+            from src.season_resolver import resolve_api_season, is_known, record_degradation
+            season = resolve_api_season(league, row.get("date"))
+            if not is_known(season):
+                record_degradation("feature_engineering.standings", league)
+                continue
 
             if (lg_id, season) not in _standings_cache:
                 _standings_cache[(lg_id, season)] = build_standings_map(lg_id, season)

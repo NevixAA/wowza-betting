@@ -283,9 +283,11 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
     try:
         sys.path.insert(0, str(ROOT))
         import config as _cfg
-        _current = {n: str(_cfg.API_FOOTBALL_SEASONS.get(n, "")) for n, _, _ in leagues_to_run}
+        # League-aware season (R2 finding 6). An unresolvable league adds nothing (never a guessed year).
+        from src.season_resolver import resolve_api_season, is_known
+        _current = {n: (lambda s_: s_ if is_known(s_) else "")(resolve_api_season(n)) for n, _, _ in leagues_to_run}
     except Exception:
-        _current = {n: str(datetime.now().year) for n, _, _ in leagues_to_run}
+        _current = {}
     leagues_to_run = [
         (n, i, s + ([_current[n]] if _current.get(n) and _current[n] not in s else []))
         for n, i, s in leagues_to_run

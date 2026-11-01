@@ -20,6 +20,10 @@
    "bytes": 43254
   },
   {
+   "path": "config/leagues.json",
+   "bytes": 29295
+  },
+  {
    "path": "dashboard_access.py",
    "bytes": 10493
   },
@@ -384,6 +388,10 @@
    "bytes": 8852
   },
   {
+   "path": "src/league_registry.py",
+   "bytes": 16764
+  },
+  {
    "path": "src/ledger.py",
    "bytes": 36123
   },
@@ -438,6 +446,10 @@
   {
    "path": "src/rolling_store.py",
    "bytes": 6195
+  },
+  {
+   "path": "src/season_resolver.py",
+   "bytes": 11122
   },
   {
    "path": "src/shadow_compare.py",
@@ -1321,8 +1333,8 @@
   "urllib3"
  ],
  "totals": {
-  "code_files": 126,
-  "code_bytes": 2190995,
+  "code_files": 129,
+  "code_bytes": 2248176,
   "data_files": 80,
   "data_bytes": 17101476
  },

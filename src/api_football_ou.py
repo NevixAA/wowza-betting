@@ -31,6 +31,26 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
+from src.season_resolver import (SEASON_UNKNOWN, is_known as _season_known,  # noqa: E402
+                                 record_degradation as _season_degraded,
+                                 resolve_api_season)
+
+
+def _season_for(league, kickoff_date=None, explicit: str | None = None, site: str = "") -> str:
+    """The API-Football season for a league (R2 finding 6). `explicit` (a caller-supplied season)
+    wins; otherwise src.season_resolver decides from the league's own calendar rule. Returns
+    SEASON_UNKNOWN - and records the degradation - rather than a generic year: callers skip the
+    enrichment on SEASON_UNKNOWN. This replaces the old generic config-level season ("2025")."""
+    if explicit:
+        return str(explicit)
+    s = resolve_api_season(league, kickoff_date)
+    if not _season_known(s):
+        _season_degraded(f"api_football_ou.{site}", league)
+    return s
+
+
+def _row_date(row):
+    return row.get("date") if hasattr(row, "get") else None
 
 # FULL-MATCH BTTS ONLY. Duplicated verbatim from
 # scripts/capture_std_sidemarket_odds_forward.py, which carries the full explanation; all four
@@ -563,6 +583,7 @@ def fetch_team_season_stats(
     team_name: str,
     league_name: str,
     season: str | None = None,
+    kickoff_date=None,
 ) -> dict:
     """
     Fetch season-to-date team statistics from /teams/statistics.
@@ -577,8 +598,9 @@ def fetch_team_season_stats(
     if not league_id or not _KEY:
         return {}
 
-    if season is None:
-        season = config.API_SEASON
+    season = _season_for(league_name, kickoff_date, season, "fetch_team_season_stats")
+    if not _season_known(season):
+        return {}
 
     team_id = _resolve_team_id(team_name, league_id, season)
     if not team_id:
@@ -650,9 +672,6 @@ def fetch_upcoming_team_stats(
     if not _KEY:
         return {}
 
-    if season is None:
-        season = config.API_SEASON
-
     results: dict[str, dict] = {}
     seen: set[tuple[str, str]] = set()
 
@@ -662,7 +681,7 @@ def fetch_upcoming_team_stats(
             if team and (team, lg) not in seen:
                 seen.add((team, lg))
                 try:
-                    s = fetch_team_season_stats(team, lg, season)
+                    s = fetch_team_season_stats(team, lg, season, kickoff_date=_row_date(row))
                     if s:
                         results[team] = s
                 except Exception:
@@ -688,15 +707,17 @@ def resolve_upcoming_fixture_ids(
     """
     if not _KEY:
         return {}
-    if season is None:
-        season = config.API_SEASON
-
     result: dict[tuple[str, str], int] = {}
     for lg in upcoming_df["league"].unique():
         league_id = config.API_FOOTBALL_IDS.get(str(lg))
         if not league_id:
             continue
-        data = _get("fixtures", {"league": league_id, "season": season, "next": 10}, ttl_h=6)
+        _d = (upcoming_df.loc[upcoming_df["league"] == lg, "date"].min()
+              if "date" in upcoming_df.columns else None)
+        szn = _season_for(lg, _d, season, "resolve_upcoming_fixture_ids")
+        if not _season_known(szn):
+            continue
+        data = _get("fixtures", {"league": league_id, "season": szn, "next": 10}, ttl_h=6)
         if not data:
             continue
         for entry in data.get("response", []):
@@ -806,9 +827,6 @@ def fetch_h2h_features(
     """
     if not _KEY:
         return {}
-    if season is None:
-        season = config.API_SEASON
-
     results: dict[int, dict] = {}
 
     for idx, row in upcoming_df.iterrows():
@@ -818,9 +836,12 @@ def fetch_h2h_features(
         lid = config.API_FOOTBALL_IDS.get(lg)
         if not lid:
             continue
+        szn = _season_for(lg, _row_date(row), season, "fetch_h2h_features")
+        if not _season_known(szn):
+            continue
         try:
-            home_id = _resolve_team_id(ht, lid, season)
-            away_id = _resolve_team_id(at, lid, season)
+            home_id = _resolve_team_id(ht, lid, szn)
+            away_id = _resolve_team_id(at, lid, szn)
         except Exception:
             continue
         if not home_id or not away_id:
@@ -970,8 +991,11 @@ def fetch_season_round_features(
     league_stage: dict[str, dict] = {}
     for lg in upcoming_df.get("league", pd.Series(dtype=str)).unique():
         lid = config.API_FOOTBALL_IDS.get(lg)
-        szn = config.API_FOOTBALL_SEASONS.get(lg, "2025")
         if not lid:
+            continue
+        _d = upcoming_df.loc[upcoming_df["league"] == lg, "date"].min() if "date" in upcoming_df.columns else None
+        szn = _season_for(lg, _d, None, "fetch_season_round_features")
+        if not _season_known(szn):
             continue
         if lg in league_stage:
             continue
@@ -1039,8 +1063,10 @@ def fetch_coach_features(
         if team_name in team_coach:
             return team_coach[team_name]
         lid = config.API_FOOTBALL_IDS.get(league)
-        szn = config.API_FOOTBALL_SEASONS.get(league, "2025")
         if not lid:
+            return {}
+        szn = _season_for(league, None, None, "fetch_coach_features")
+        if not _season_known(szn):
             return {}
         team_id = _resolve_team_id(team_name, lid, szn)
         if not team_id:

@@ -317,7 +317,12 @@ def run() -> int:
         if stop:
             break
         lid = config.API_FOOTBALL_IDS[league]
-        season = config.API_FOOTBALL_SEASONS.get(league, str(now.year))
+        # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(league, str(now.year)),
+        # which guessed the calendar year for any league missing from the table.
+        from src.season_resolver import resolve_api_season, is_known
+        season = resolve_api_season(league, now.date())
+        if not is_known(season):
+            print(f"  {league}: season unresolvable (SEASON_UNKNOWN) - skipped"); continue
         try:
             fixtures = get_upcoming_fixtures(lid, season, next_n=NEXT_N)
         except Exception as e:

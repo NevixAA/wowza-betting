@@ -53,7 +53,11 @@ def run() -> None:
         if head < _MIN_HEADROOM:
             print(f"[warm_nf] quota headroom {head} < {_MIN_HEADROOM} — stopping early"); break
         lid = config.API_FOOTBALL_IDS[league]
-        cur = config.API_FOOTBALL_SEASONS.get(league, str(now_year))
+        # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(league, str(now_year)).
+        from src.season_resolver import resolve_api_season, is_known
+        cur = resolve_api_season(league)
+        if not is_known(cur):
+            print(f"[warm_nf] {league}: season unresolvable (SEASON_UNKNOWN) - skipped"); continue
         # warm current + prior season (rolling features need recent history)
         try:
             prior = str(int(cur) - 1)

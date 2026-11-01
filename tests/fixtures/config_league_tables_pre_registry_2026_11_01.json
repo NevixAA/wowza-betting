@@ -1,0 +1,841 @@
+{
+ "about": "config.py league tables at origin/main 4e9c93357 (2026-11-01), BEFORE they were derived from config/leagues.json. tests/test_league_registry.py proves the derived tables equal these, except the three documented alias keys.",
+ "tables": {
+  "STANDARD_FORMAT_LEAGUES": [
+   "Belgian First Division A",
+   "Bundesliga 2",
+   "Championship",
+   "Dutch Eredivisie",
+   "Greek Super League",
+   "La Liga 2",
+   "League One",
+   "League Two",
+   "Ligue 2",
+   "National League",
+   "Portuguese Primeira Liga",
+   "Scottish Championship",
+   "Scottish League One",
+   "Scottish League Two",
+   "Scottish Premiership",
+   "Serie B",
+   "Turkish Super Lig"
+  ],
+  "NEW_FORMAT_LEAGUES": [
+   "Argentina Primera Division",
+   "Austrian Bundesliga",
+   "Brazil Serie A",
+   "China Super League",
+   "Denmark Superliga",
+   "Finland Veikkausliiga",
+   "Ireland Premier Division",
+   "Japan J-League",
+   "K-League 1",
+   "Mexico Liga MX",
+   "Norway Eliteserien",
+   "Romanian Superliga",
+   "Saudi Pro League",
+   "Sweden Allsvenskan",
+   "USA MLS"
+  ],
+  "API_FOOTBALL_ONLY_LEAGUES": [
+   "K-League 1",
+   "Saudi Pro League"
+  ],
+  "API_FOOTBALL_EXTRA_SEASONS": [
+   [
+    "Saudi Pro League",
+    [
+     "2019",
+     "2020",
+     "2021",
+     "2022",
+     "2023",
+     "2024"
+    ]
+   ],
+   [
+    "K-League 1",
+    [
+     "2020",
+     "2021",
+     "2022",
+     "2023",
+     "2024",
+     "2025"
+    ]
+   ]
+  ],
+  "ENABLED_LEAGUES": [
+   "Argentina Primera Division",
+   "Austrian Bundesliga",
+   "Brazil Serie A",
+   "Bundesliga 2",
+   "Championship",
+   "China Super League",
+   "Denmark Superliga",
+   "Finland Veikkausliiga",
+   "Ireland Premier Division",
+   "Japan J-League",
+   "La Liga 2",
+   "League One",
+   "League Two",
+   "Ligue 2",
+   "Mexico Liga MX",
+   "Norway Eliteserien",
+   "Romanian Superliga",
+   "Serie B",
+   "Sweden Allsvenskan",
+   "USA MLS"
+  ],
+  "PAPER_LEAGUES": [
+   "USA MLS"
+  ],
+  "FOOTBALL_DATA_LEAGUES": [
+   [
+    "Championship",
+    "E1"
+   ],
+   [
+    "League One",
+    "E2"
+   ],
+   [
+    "League Two",
+    "E3"
+   ],
+   [
+    "National League",
+    "EC"
+   ],
+   [
+    "Bundesliga 2",
+    "D2"
+   ],
+   [
+    "Ligue 2",
+    "F2"
+   ],
+   [
+    "La Liga 2",
+    "SP2"
+   ],
+   [
+    "Serie B",
+    "I2"
+   ],
+   [
+    "Greek Super League",
+    "G1"
+   ],
+   [
+    "Portuguese Primeira Liga",
+    "P1"
+   ],
+   [
+    "Scottish Championship",
+    "SC1"
+   ],
+   [
+    "Scottish League One",
+    "SC2"
+   ],
+   [
+    "Scottish League Two",
+    "SC3"
+   ],
+   [
+    "Scottish Premiership",
+    "SC0"
+   ],
+   [
+    "Belgian First Division A",
+    "B1"
+   ],
+   [
+    "Dutch Eredivisie",
+    "N1"
+   ],
+   [
+    "Turkish Super Lig",
+    "T1"
+   ],
+   [
+    "Denmark Superliga",
+    "DNK"
+   ],
+   [
+    "Norway Eliteserien",
+    "NOR"
+   ],
+   [
+    "Austria Bundesliga",
+    "AUT"
+   ],
+   [
+    "Austrian Bundesliga",
+    "AUT"
+   ],
+   [
+    "Romanian Superliga",
+    "ROM"
+   ],
+   [
+    "Sweden Allsvenskan",
+    "SWE"
+   ],
+   [
+    "Finland Veikkausliiga",
+    "FIN"
+   ],
+   [
+    "Ireland Premier Division",
+    "IRL"
+   ],
+   [
+    "Argentina Primera Division",
+    "ARG"
+   ],
+   [
+    "Brazil Serie A",
+    "BRA"
+   ],
+   [
+    "Japan J-League",
+    "JPN"
+   ],
+   [
+    "Mexico Liga MX",
+    "MEX"
+   ],
+   [
+    "China Super League",
+    "CHN"
+   ],
+   [
+    "USA MLS",
+    "USA"
+   ]
+  ],
+  "LEAGUE_TIMEZONES": [
+   [
+    "League One",
+    "Europe/London"
+   ],
+   [
+    "League Two",
+    "Europe/London"
+   ],
+   [
+    "Championship",
+    "Europe/London"
+   ],
+   [
+    "National League",
+    "Europe/London"
+   ],
+   [
+    "Bundesliga 2",
+    "Europe/Berlin"
+   ],
+   [
+    "La Liga 2",
+    "Europe/Madrid"
+   ],
+   [
+    "Ligue 2",
+    "Europe/Paris"
+   ],
+   [
+    "Serie B",
+    "Europe/Rome"
+   ],
+   [
+    "Greek Super League",
+    "Europe/Athens"
+   ],
+   [
+    "Portuguese Primeira Liga",
+    "Europe/Lisbon"
+   ],
+   [
+    "Scottish Championship",
+    "Europe/London"
+   ],
+   [
+    "Scottish League One",
+    "Europe/London"
+   ],
+   [
+    "Scottish League Two",
+    "Europe/London"
+   ],
+   [
+    "Scottish Premiership",
+    "Europe/London"
+   ],
+   [
+    "Belgian First Division A",
+    "Europe/Brussels"
+   ],
+   [
+    "Dutch Eredivisie",
+    "Europe/Amsterdam"
+   ],
+   [
+    "Turkish Super Lig",
+    "Europe/Istanbul"
+   ],
+   [
+    "Denmark Superliga",
+    "Europe/Copenhagen"
+   ],
+   [
+    "Austrian Bundesliga",
+    "Europe/Vienna"
+   ],
+   [
+    "Austria Bundesliga",
+    "Europe/Vienna"
+   ],
+   [
+    "Romanian Superliga",
+    "Europe/Bucharest"
+   ],
+   [
+    "Sweden Allsvenskan",
+    "Europe/Stockholm"
+   ],
+   [
+    "Norway Eliteserien",
+    "Europe/Oslo"
+   ],
+   [
+    "Finland Veikkausliiga",
+    "Europe/Helsinki"
+   ],
+   [
+    "Ireland Premier Division",
+    "Europe/Dublin"
+   ],
+   [
+    "Argentina Primera Division",
+    "America/Argentina/Buenos_Aires"
+   ],
+   [
+    "Brazil Serie A",
+    "America/Sao_Paulo"
+   ],
+   [
+    "Japan J-League",
+    "Asia/Tokyo"
+   ],
+   [
+    "Mexico Liga MX",
+    "America/Mexico_City"
+   ],
+   [
+    "China Super League",
+    "Asia/Shanghai"
+   ],
+   [
+    "USA MLS",
+    "America/New_York"
+   ],
+   [
+    "Saudi Pro League",
+    "Asia/Riyadh"
+   ],
+   [
+    "K-League 1",
+    "Asia/Seoul"
+   ],
+   [
+    "Poland Ekstraklasa",
+    "Europe/Warsaw"
+   ]
+  ],
+  "API_FOOTBALL_IDS": [
+   [
+    "Championship",
+    40
+   ],
+   [
+    "League One",
+    41
+   ],
+   [
+    "League Two",
+    42
+   ],
+   [
+    "Bundesliga 2",
+    79
+   ],
+   [
+    "Ligue 2",
+    62
+   ],
+   [
+    "La Liga 2",
+    141
+   ],
+   [
+    "Serie B",
+    136
+   ],
+   [
+    "Greek Super League",
+    197
+   ],
+   [
+    "Denmark Superliga",
+    119
+   ],
+   [
+    "Austrian Bundesliga",
+    218
+   ],
+   [
+    "Romanian Superliga",
+    283
+   ],
+   [
+    "Sweden Allsvenskan",
+    113
+   ],
+   [
+    "Norway Eliteserien",
+    103
+   ],
+   [
+    "Finland Veikkausliiga",
+    244
+   ],
+   [
+    "Ireland Premier Division",
+    357
+   ],
+   [
+    "Argentina Primera Division",
+    128
+   ],
+   [
+    "Brazil Serie A",
+    71
+   ],
+   [
+    "Japan J-League",
+    98
+   ],
+   [
+    "Mexico Liga MX",
+    262
+   ],
+   [
+    "China Super League",
+    169
+   ],
+   [
+    "USA MLS",
+    253
+   ],
+   [
+    "Saudi Pro League",
+    307
+   ],
+   [
+    "K-League 1",
+    292
+   ],
+   [
+    "World Cup 2026",
+    1
+   ],
+   [
+    "Champions League",
+    2
+   ],
+   [
+    "Europa League",
+    3
+   ],
+   [
+    "Conference League",
+    848
+   ],
+   [
+    "Premier League",
+    39
+   ],
+   [
+    "La Liga",
+    140
+   ],
+   [
+    "Serie A",
+    135
+   ],
+   [
+    "Bundesliga",
+    78
+   ],
+   [
+    "Ligue 1",
+    61
+   ],
+   [
+    "Dutch Eredivisie",
+    88
+   ],
+   [
+    "Portuguese Primeira Liga",
+    94
+   ],
+   [
+    "Belgian First Division A",
+    144
+   ],
+   [
+    "Scottish Premiership",
+    179
+   ],
+   [
+    "Turkish Super Lig",
+    203
+   ],
+   [
+    "Swiss Super League",
+    207
+   ],
+   [
+    "Czech Liga",
+    345
+   ],
+   [
+    "Croatia HNL",
+    210
+   ],
+   [
+    "Serbia Super Liga",
+    286
+   ],
+   [
+    "Ukraine Premier League",
+    333
+   ],
+   [
+    "Poland Ekstraklasa",
+    106
+   ],
+   [
+    "Cyprus First Division",
+    318
+   ],
+   [
+    "Scottish Championship",
+    180
+   ],
+   [
+    "National League",
+    43
+   ],
+   [
+    "Scottish League One",
+    183
+   ],
+   [
+    "Scottish League Two",
+    184
+   ]
+  ],
+  "API_FOOTBALL_SEASONS": [
+   [
+    "Championship",
+    "2026"
+   ],
+   [
+    "League One",
+    "2026"
+   ],
+   [
+    "League Two",
+    "2026"
+   ],
+   [
+    "Bundesliga 2",
+    "2026"
+   ],
+   [
+    "Ligue 2",
+    "2026"
+   ],
+   [
+    "La Liga 2",
+    "2026"
+   ],
+   [
+    "Serie B",
+    "2026"
+   ],
+   [
+    "Greek Super League",
+    "2026"
+   ],
+   [
+    "Danish Superliga",
+    "2026"
+   ],
+   [
+    "Denmark Superliga",
+    "2026"
+   ],
+   [
+    "Austrian Bundesliga",
+    "2026"
+   ],
+   [
+    "Romanian Superliga",
+    "2026"
+   ],
+   [
+    "Scottish Championship",
+    "2026"
+   ],
+   [
+    "Scottish League One",
+    "2026"
+   ],
+   [
+    "Scottish League Two",
+    "2026"
+   ],
+   [
+    "National League",
+    "2026"
+   ],
+   [
+    "Sweden Allsvenskan",
+    "2026"
+   ],
+   [
+    "Norway Eliteserien",
+    "2026"
+   ],
+   [
+    "Finland Veikkausliiga",
+    "2026"
+   ],
+   [
+    "Ireland Premier Division",
+    "2026"
+   ],
+   [
+    "Brazil Serie A",
+    "2026"
+   ],
+   [
+    "Japan J-League",
+    "2027"
+   ],
+   [
+    "Mexico Liga MX",
+    "2026"
+   ],
+   [
+    "China Super League",
+    "2026"
+   ],
+   [
+    "USA MLS",
+    "2026"
+   ],
+   [
+    "Argentina Primera Division",
+    "2026"
+   ],
+   [
+    "Saudi Pro League",
+    "2026"
+   ],
+   [
+    "K-League 1",
+    "2026"
+   ],
+   [
+    "World Cup 2026",
+    "2026"
+   ]
+  ],
+  "ODDS_API_SPORT_KEYS": [
+   [
+    "World Cup",
+    "soccer_fifa_world_cup"
+   ],
+   [
+    "World Cup 2026",
+    "soccer_fifa_world_cup"
+   ],
+   [
+    "Championship",
+    "soccer_efl_champ"
+   ],
+   [
+    "League One",
+    "soccer_england_league1"
+   ],
+   [
+    "League Two",
+    "soccer_england_league2"
+   ],
+   [
+    "Bundesliga 2",
+    "soccer_germany_bundesliga2"
+   ],
+   [
+    "Ligue 2",
+    "soccer_france_ligue_two"
+   ],
+   [
+    "La Liga 2",
+    "soccer_spain_segunda_division"
+   ],
+   [
+    "Serie B",
+    "soccer_italy_serie_b"
+   ],
+   [
+    "Greek Super League",
+    "soccer_greece_super_league"
+   ],
+   [
+    "Denmark Superliga",
+    "soccer_denmark_superliga"
+   ],
+   [
+    "Austrian Bundesliga",
+    "soccer_austria_bundesliga"
+   ],
+   [
+    "Sweden Allsvenskan",
+    "soccer_sweden_allsvenskan"
+   ],
+   [
+    "Norway Eliteserien",
+    "soccer_norway_eliteserien"
+   ],
+   [
+    "Finland Veikkausliiga",
+    "soccer_finland_veikkausliiga"
+   ],
+   [
+    "Ireland Premier Division",
+    "soccer_league_of_ireland"
+   ],
+   [
+    "Argentina Primera Division",
+    "soccer_argentina_primera_division"
+   ],
+   [
+    "Brazil Serie A",
+    "soccer_brazil_campeonato"
+   ],
+   [
+    "Japan J-League",
+    "soccer_japan_j_league"
+   ],
+   [
+    "Mexico Liga MX",
+    "soccer_mexico_ligamx"
+   ],
+   [
+    "China Super League",
+    "soccer_china_superleague"
+   ],
+   [
+    "USA MLS",
+    "soccer_usa_mls"
+   ],
+   [
+    "Belgian First Division A",
+    "soccer_belgium_first_div"
+   ],
+   [
+    "Dutch Eredivisie",
+    "soccer_netherlands_eredivisie"
+   ],
+   [
+    "Scottish Premiership",
+    "soccer_spl"
+   ],
+   [
+    "Turkish Super Lig",
+    "soccer_turkey_super_league"
+   ],
+   [
+    "Poland Ekstraklasa",
+    "soccer_poland_ekstraklasa"
+   ],
+   [
+    "Saudi Pro League",
+    "soccer_saudi_arabia_pro_league"
+   ],
+   [
+    "K-League 1",
+    "soccer_korea_kleague1"
+   ]
+  ],
+  "SOFASCORE_TOURNAMENT_IDS": [
+   [
+    "Championship",
+    18
+   ],
+   [
+    "League One",
+    24
+   ],
+   [
+    "League Two",
+    25
+   ],
+   [
+    "National League",
+    173
+   ],
+   [
+    "Bundesliga 2",
+    44
+   ],
+   [
+    "Ligue 2",
+    182
+   ],
+   [
+    "La Liga 2",
+    54
+   ],
+   [
+    "Serie B",
+    53
+   ],
+   [
+    "Denmark Superliga",
+    39
+   ],
+   [
+    "Norway Eliteserien",
+    317
+   ]
+  ],
+  "PROVIDER_UNSUPPORTED": [
+   [
+    "Romanian Superliga",
+    {
+     "reason": "NO_ODDSAPI_SPORT_KEY",
+     "provider": "oddsapi",
+     "verified": "2026-08-22",
+     "evidence": "full /sports?all=true catalogue enumerated; no Romanian competition at any tier"
+    }
+   ]
+  ]
+ }
+}
