@@ -211,7 +211,7 @@ def send_fantasy_tips(max_per_pos: int = 3) -> int:
         from player_model import config as _pc
         fx = get_upcoming_fixtures(
             _pc.PROP_LEAGUES["Premier League"],
-            _pc.PROP_SEASONS.get("Premier League", "2025"), next_n=1)
+            _pc.prop_season("Premier League"), next_n=1)
         if not fx:
             print("[fantasy] no upcoming PL fixtures — skipping (off-season)")
             return 0

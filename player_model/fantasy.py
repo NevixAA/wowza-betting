@@ -676,7 +676,7 @@ def upcoming_by_team(next_n: int = 5) -> dict:
     try:
         from player_model.api_football import get_upcoming_fixtures
         lid = config.PROP_LEAGUES.get(FANTASY_LEAGUE, 39)
-        season = config.PROP_SEASONS.get(FANTASY_LEAGUE, "2025")
+        season = config.prop_season(FANTASY_LEAGUE)
         fx = get_upcoming_fixtures(lid, season, next_n=next_n * 12)  # a few GWs to cover all clubs
         out: dict[str, list] = {}
         for f in fx:

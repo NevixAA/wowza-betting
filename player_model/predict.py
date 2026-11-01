@@ -343,7 +343,7 @@ def run_player_predictions(
             from player_model.api_football import get_fixtures_between
             _from, _to = today.strftime("%Y-%m-%d"), _horizon.strftime("%Y-%m-%d")
             for league, lg_id in config.PROP_LEAGUES.items():
-                season = config.PROP_SEASONS.get(league, "2025")
+                season = config.prop_season(league)
                 # The whole window, not `next=5`: five kickoffs cut every full round in half.
                 fixtures = get_fixtures_between(lg_id, season, _from, _to)
                 for fix in fixtures:
@@ -425,7 +425,7 @@ def run_player_predictions(
             for _lg, _lg_id in config.PROP_LEAGUES.items():
                 if _bet_leagues and _lg not in _bet_leagues:
                     continue
-                _szn = config.PROP_SEASONS.get(_lg, "2025")
+                _szn = config.prop_season(_lg)
                 injured_cache[_lg] = _gip(_lg_id, _szn, _today_str)
             _n_inj = sum(len(v) for v in injured_cache.values())
             if _n_inj:

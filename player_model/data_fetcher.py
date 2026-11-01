@@ -99,13 +99,14 @@ _WC_LEAGUE_IDS = {"World Cup": 1}
 
 
 def _current_season(league: str, today=None) -> str:
-    """API-Football keys a season by its START year."""
-    from datetime import date as _date
-    d = today or _date.today()
-    if league in _CALENDAR_YEAR_LEAGUES:
-        return str(d.year)
-    # European seasons start in July/August.
-    return str(d.year if d.month >= 7 else d.year - 1)
+    """API-Football season for `league`, from the canonical registry (src.season_resolver).
+
+    This was a second hand rule (_CALENDAR_YEAR_LEAGUES + "July start" for the rest), which still
+    called J1 calendar-year after it moved to autumn-spring (live season 2027 since 2026-07) - the
+    same defect as PROP_SEASONS (Data Truth audit findings 38, 41). Unknown league ->
+    'SEASON_UNKNOWN', which API-Football answers with nothing: a visible miss, never a guess."""
+    from src.season_resolver import resolve_api_season
+    return resolve_api_season(league, today)
 
 
 # Core betting leagues — default for collect_match_history()
@@ -1215,8 +1216,15 @@ def fetch_player_profile(player_id: int) -> dict:
         except Exception:
             pass
 
-    data = _api_get("players", {"id": player_id, "season": "2025"})
-    resp = data.get("response", [])
+    # Age/height/weight do not depend on the season, but the endpoint needs one. The literal
+    # "2025" meant a player first registered in 2026 never got a profile (Data Truth finding 41):
+    # this year, then last year.
+    from datetime import date as _date
+    resp = []
+    for _s in (_date.today().year, _date.today().year - 1):
+        resp = _api_get("players", {"id": player_id, "season": str(_s)}).get("response", [])
+        if resp:
+            break
     if not resp:
         return {}
 

@@ -46,7 +46,7 @@ def build_upcoming_signals() -> pd.DataFrame:
         # for a league neither can price, so membership in PROP_LEAGUES is the correct gate:
         # that dict IS the set of leagues we want props for.
         pass
-        season = config.PROP_SEASONS.get(league, str(pd.Timestamp.utcnow().year))
+        season = config.prop_season(league)
         # predict's 4-day window, not `next=8`: that cut full rounds short and spent OddsAPI
         # calls on fixtures weeks away that predict never tips.
         _today = pd.Timestamp.utcnow().normalize()

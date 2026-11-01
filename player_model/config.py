@@ -416,15 +416,28 @@ def _prop_season_now() -> str:
 
     European seasons start in July, so months 7-12 belong to the year that has just begun and
     months 1-6 to the campaign that started the previous year.
+
+    SUPERSEDED for PROP_SEASONS (Data Truth audit findings 38, 41): this European rule was applied
+    to EVERY league, so J1 was '2026' while its live season is 2027, and calendar-year leagues (MLS,
+    Brazil, Argentina, Nordics, China, Ireland) would be a year behind every January-June. Kept only
+    for callers outside player_model that import it.
     """
     from datetime import date
     t = date.today()
     return str(t.year if t.month >= 7 else t.year - 1)
 
 
+def prop_season(league: str, on_date=None) -> str:
+    """API-Football season for `league` on `on_date` (default today), from the canonical
+    registry's season rules (src.season_resolver). An unknown league gives 'SEASON_UNKNOWN',
+    which API-Football answers with nothing - a visible miss, never a guessed year."""
+    from src.season_resolver import resolve_api_season
+    return resolve_api_season(league, on_date)
+
+
 # One entry per league in PROP_LEAGUES, always. Never edit this by hand — add the league to
-# PROP_LEAGUES and its season appears here.
-PROP_SEASONS = {league: _prop_season_now() for league in PROP_LEAGUES}
+# PROP_LEAGUES and its season appears here. League-aware since 2026-11-01.
+PROP_SEASONS = {league: prop_season(league) for league in PROP_LEAGUES}
 FBREF_LEAGUES = {
     "Championship": (10, "Championship"), "League One": (15, "League-One"),
     "League Two": (16, "League-Two"),     "Bundesliga 2": (33, "2-Bundesliga"),

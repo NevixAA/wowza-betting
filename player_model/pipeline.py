@@ -547,7 +547,7 @@ def _build_referee_profiles() -> dict:
         _today = pd.Timestamp.now().normalize()
         _from, _to = _today.strftime("%Y-%m-%d"), (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d")
         for league, lg_id in config.PROP_LEAGUES.items():
-            season = config.PROP_SEASONS.get(league, "2025")
+            season = config.prop_season(league)
             fixtures = get_fixtures_between(lg_id, season, _from, _to)
             for fix in fixtures:
                 teams    = fix.get("teams", {})
@@ -586,7 +586,7 @@ def _match_day_gate_skips() -> bool:
         horizon = now + _dt.timedelta(hours=72)
         any_data = False          # did ANY league return fixtures at all?
         for league, lg_id in config.PROP_LEAGUES.items():
-            season = config.PROP_SEASONS.get(league, "2025")
+            season = config.prop_season(league)
             fixtures = get_upcoming_fixtures(lg_id, season, next_n=3) or []
             if fixtures:
                 any_data = True
@@ -776,7 +776,7 @@ def _enrich_with_recent_form(history: pd.DataFrame) -> None:
         for league, lg_id in config.PROP_LEAGUES.items():
             if not any(league.lower() in l.lower() for l in leagues_needed):
                 continue
-            season = config.PROP_SEASONS.get(league, "2025")
+            season = config.prop_season(league)
             fixtures = get_recent_fixtures(lg_id, season, last_n=5)
             print(f"  [{league}] {len(fixtures)} recent fixtures fetched")
 
