@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T12:57:34Z",
+  "generated_at": "2026-11-01T13:45:07Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -73,7 +73,98 @@
   "live_gameweek": 9,
   "last_finished_gameweek": 8,
   "season_complete": false,
-  "hours_to_deadline": 149.5,
+  "hours_to_deadline": 124.7,
   "status": "AGING",
-  "settlement_ready": true
+  "settlement_ready": true,
+  "defaults_audit": {
+    "register_version": "FANTASY-DEFAULTS-1.0",
+    "counts_by_class": {
+      "MISSING_DATA_FALLBACK": 15,
+      "DOMAIN_PRIOR": 13,
+      "OBSERVED": 2,
+      "TRAIN_FITTED_PRIOR": 4
+    },
+    "important": [
+      {
+        "id": "dc_thresholds",
+        "where": "fantasy.py:41",
+        "value": "DEF 5 / MID 4.5 / FWD 4 actions",
+        "class": "DOMAIN_PRIOR",
+        "reach": "V1->V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "SUSPECTED BUG: FPL rule is DEF>=10 CBIT, MID/FWD>=12 CBIRT; inflates dc_pts"
+      },
+      {
+        "id": "prop_model_missing_zero",
+        "where": "fantasy.py:227",
+        "value": "missing props model -> p = 0",
+        "class": "MISSING_DATA_FALLBACK",
+        "reach": "V1->V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "all attacking points vanish silently"
+      },
+      {
+        "id": "v2_p_start_from_mix",
+        "where": "fantasy_residual.py:708",
+        "value": "p_start = P60 + 0.35*P(1-59)",
+        "class": "DOMAIN_PRIOR",
+        "reach": "V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "unfitted; drives Confidence/Risk labels and captain pools"
+      },
+      {
+        "id": "v2_chance_fill",
+        "where": "fantasy_panel.py:229",
+        "value": "NaN chance -> 100 if status 'a' else 0",
+        "class": "MISSING_DATA_FALLBACK",
+        "reach": "V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "follows FPL convention (harsh, not optimistic)"
+      },
+      {
+        "id": "v2_captain_pools",
+        "where": "fantasy_v2.py:404-425",
+        "value": "p_start 0.85 / 0.75; 0.7/0.8 x best",
+        "class": "DOMAIN_PRIOR",
+        "reach": "V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": ""
+      }
+    ],
+    "suspected_bugs": [
+      "dc_thresholds",
+      "goal_points_gkp_6",
+      "bonus_cs_points_as_probability",
+      "status_n_not_out_v1",
+      "v1_next_gw_is_5_fixture_average",
+      "v2_p_start_unfitted",
+      "fantasy_health_pinned_aging",
+      "season_hardcoded",
+      "ranking_gate_without_ci"
+    ],
+    "fire_counts": {
+      "v1_rows": 283,
+      "p_start_exactly_0_6": 3,
+      "fpl_unmatched_rows": 0,
+      "fixtures_unavailable_rows": 0,
+      "p_goal_all_zero": false,
+      "p_assist_all_zero": false,
+      "p_sot2_all_zero": false,
+      "mean_dc_pts_by_position": {
+        "DEF": 1.282,
+        "FWD": 1.294,
+        "GKP": 0.0,
+        "MID": 1.077
+      },
+      "v2_rows": 451,
+      "v2_blank_gw_rows": 0,
+      "v2_start_rate_missing": 0
+    },
+    "behaviour_changed": false
+  }
 }
