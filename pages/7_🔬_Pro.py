@@ -45,6 +45,39 @@ _EYEBROW = "Research Lab · Pro evidence & validation"
 _STATE = ui.status_chip("RESEARCH", label="RESEARCH · NOT A BET")
 
 
+def _dash(v, fmt: str = "{}") -> str:
+    """A Pro field as text, or '—' when Pro did not write it (never a 0 or a typed default)."""
+    return "—" if v is None else fmt.format(v)
+
+
+def _band_line(eb: pd.DataFrame, fb: pd.DataFrame) -> str:
+    """O/U 2.5 raw-edge bands (pooled over model types) and BTTS fair-edge 4–8% by model, from Pro's
+    valuable_edge_bands.csv / valuable_fair_edge_bands.csv. '—' when a file or band is absent."""
+    def _pool(d):
+        d = d[d["N"] > 0]
+        n = int(d["N"].sum())
+        if not n:
+            return "—"
+        roi = 100.0 * float(pd.to_numeric(d["PnL"], errors="coerce").sum()) / n
+        cn = pd.to_numeric(d["CLV_n"], errors="coerce").fillna(0)
+        clv = (float((pd.to_numeric(d["CLV_pct"], errors="coerce") * cn).sum() / cn.sum())
+               if cn.sum() else None)
+        return f"**{roi:+.1f}%** (n {n}, CLV {_dash(clv, '{:+.2f}')})"
+    parts = []
+    if not eb.empty and {"edge_type", "kind", "band", "market"}.issubset(eb.columns):
+        ou = eb[(eb.edge_type == "raw_edge") & (eb.kind == "aggregate") & (eb.market == "over25")]
+        parts.append(" · ".join(f"{b.replace('-', '–')}%: {_pool(ou[ou.band == b])}" for b in ("3-4", "4-6", "6-8")))
+    else:
+        parts.append("O/U 2.5 edge bands: —")
+    if not fb.empty and {"kind", "band", "market", "model_type"}.issubset(fb.columns):
+        bt = fb[(fb.kind == "aggregate") & (fb.band == "4-8") & (fb.market == "btts")]
+        parts.append("BTTS fair edge 4–8%: " + ", ".join(
+            f"{m.replace('_', '-')} {_pool(bt[bt.model_type == m])}" for m in ("new_format", "standard")))
+    else:
+        parts.append("BTTS fair edge 4–8%: —")
+    return " — ".join(parts)
+
+
 @st.cache_data(ttl=300, show_spinner="Reading Pro…")
 def _load() -> dict:
     return V.load_all(pro)
@@ -85,14 +118,14 @@ ui.research_card(title="Frozen forward tests", label="Candidate gates", value=f"
                  evidence=ui.evidence_badge("TRUE FORWARD", None, span=f"from {str(cf.get('forward_start'))[:10]}")
                  if cf else "", state="RESEARCH", container=s1[0])
 ui.research_card(title="Price Trader", label="Evidence state", value=str(_v.get("EVIDENCE_STATE", "—")).replace("_", " "),
-                 supporting=[("Forward trades", f"{_fg.get('N_completed_forward', 0)} / {_fg.get('N_required', 150)}"),
-                             ("Match days", f"{_fg.get('match_days', 0)} / {_fg.get('days_required', 30)}")],
-                 state="SHADOW", n=_fg.get("N_completed_forward", 0) if _v else None, container=s1[1])
+                 supporting=[("Forward trades", f"{_dash(_fg.get('N_completed_forward'))} / {_dash(_fg.get('N_required'))}"),
+                             ("Match days", f"{_dash(_fg.get('match_days'))} / {_dash(_fg.get('days_required'))}")],
+                 state="SHADOW", n=_fg.get("N_completed_forward") if _v else None, container=s1[1])
 ui.research_card(title="Model champions", label="Promoted", value=str(_a.get("PROMOTIONS", "—")),
                  supporting=[("Retrains analysed", str(_a.get("RETRAIN_ATTEMPTS_ANALYZED", "—"))),
                              ("Churn rate", str(_a.get("MODEL_CHURN_RATE", "—")))], state="RESEARCH", container=s2[0])
 ui.research_card(title="1X2 tips sent", label="Hit rate", value=ui.pct(_h1.get("hit_rate")) if _h1.get("settled") else "—",
-                 supporting=[("Won", f"{_h1.get('won', 0)} / {_h1.get('settled', 0)}"),
+                 supporting=[("Won", f"{_dash(_h1.get('won'))} / {_dash(_h1.get('settled'))}"),
                              ("Flat stakes", ui.units(_h1["units"]) if _h1.get("settled") else "—"),
                              ("ROI", ui.pct(_h1.get("roi")) if _h1.get("settled") else "—")],
                  state="RESEARCH", n=_h1.get("settled") if _h1.get("settled") else None, container=s2[1])
@@ -141,10 +174,9 @@ with tab_valuable:
         ui.table(val[~val.market.str.startswith("ALL")][["window", "market", "N", "ROI_pct", "ROI_ci90_lo", "ROI_ci90_hi", "CLV_pct"]]
                  .rename(columns={"ROI_pct": "ROI %", "ROI_ci90_lo": "CI low", "ROI_ci90_hi": "CI high", "CLV_pct": "CLV %"}))
         ui.section_header(f"Edge bands (O/U 2.5 {PAPER_TIER_LABEL} since 26 Aug)", container=st)
-        st.markdown("3–4%: **−5.8%** (n 196) · 4–6%: **+3.1%** (n 120) · 6–8%: **+16.3%** (n 31) — CLV *falls* as the "
-                    "edge rises (+0.37 → −0.17 → −0.74), so the price does not confirm the high band. "
-                    "BTTS fair edge 4–8%: new-format **+19.6%** (n 87), standard **+31.1%** (n 34).")
+        # Computed from Pro's band files on every render (was hand-typed from one run and went stale).
         fb = vd.get("valuable_fair_edge_bands", pd.DataFrame())
+        st.markdown(_band_line(vd.get("valuable_edge_bands", pd.DataFrame()), fb))
         if not fb.empty:
             with st.expander("Fair-edge bands (two-sided de-vig)"):
                 ui.table(fb[(fb.kind == "aggregate") & (fb.N > 0)][["band", "market", "model_type", "N", "ROI_pct", "ROI_ci90_lo",
@@ -159,7 +191,7 @@ with tab_valuable:
                        "No cell survives multiple-testing control (best q 0.61).")
         sh = vd.get("shadow_live") or vd.get("shadow") or {}
         st.caption(f"Low-edge shadow (every candidate incl. below the floor, never bet): "
-                   f"{sh.get('rows', 0)} rows · {sh.get('settled', 0)} settled · status "
+                   f"{_dash(sh.get('rows'))} rows · {_dash(sh.get('settled'))} settled · status "
                    f"{(vd.get('shadow') or {}).get('status', '?')}")
 
 # ── Price Trader research lab (owner brief 2026-10-19) — PAPER / SHADOW only ────────────────────
@@ -185,13 +217,14 @@ with tab_trader:
         hp = v.get("historical_primary") or {}
         fg = v.get("forward_gates") or {}
         st.markdown(f"**Primary setup (historical, exploratory):** {hp.get('n')} hedged trades, mean "
-                    f"{(hp.get('mean_pnl_per_unit') or 0):+.1%} per unit, full-green rate "
-                    f"{(hp.get('full_green_rate') or 0):.1%}.  **Forward window** (from 2026-10-20): "
-                    f"{fg.get('N_completed_forward', 0)} of {fg.get('N_required', 150)} trades, "
-                    f"{fg.get('match_days', 0)} of {fg.get('days_required', 30)} match days.")
-        st.markdown(ui.evidence_badge("TRUE FORWARD", fg.get("N_completed_forward", 0),
-                                      span=f"{fg.get('match_days', 0)} match days", state=state)
-                    + " " + ui.sample_marker(fg.get("N_completed_forward", 0) or 0))
+                    f"{_dash(hp.get('mean_pnl_per_unit'), '{:+.1%}')} per unit, full-green rate "
+                    f"{_dash(hp.get('full_green_rate'), '{:.1%}')}.  **Forward window** (from 2026-10-20): "
+                    f"{_dash(fg.get('N_completed_forward'))} of {_dash(fg.get('N_required'))} trades, "
+                    f"{_dash(fg.get('match_days'))} of {_dash(fg.get('days_required'))} match days.")
+        st.markdown(ui.evidence_badge("TRUE FORWARD", fg.get("N_completed_forward"),
+                                      span=f"{_dash(fg.get('match_days'))} match days", state=state)
+                    + (" " + ui.sample_marker(fg["N_completed_forward"])
+                       if fg.get("N_completed_forward") is not None else ""))
         hz = pt.get("horizon_rule_results")
         if hz is not None and len(hz):
             sub = hz[(hz["venue"] == "book") & (hz["slippage"] == 0) & (hz["rule"] == "GREEN_2PCT")]
@@ -387,7 +420,7 @@ with tab_store:
         flat = {k: v for k, v in cs["stores"].items() if not v.get("partitioned")}
         if flat:
             st.caption("Unpartitioned stores: " +
-                       ", ".join(f"{k} ({v.get('files', 0)} files)" for k, v in flat.items()))
+                       ", ".join(f"{k} ({_dash(v.get('files'))} files)" for k, v in flat.items()))
 
 # ── governance ────────────────────────────────────────────────────────────────────────────────
 with tab_gov:
@@ -468,7 +501,7 @@ with tab_tips:
             ci = h.get("roi_ci90") or [None, None]
             c = st.columns(2)
             ui.metric_card("Hit rate", ui.pct(h["hit_rate"]), title="1X2 · tips sent",
-                           supporting=[("Won", f"{h['won']} / {h['settled']}"), ("Pending", f"{a.get('pending', 0)} pending"),
+                           supporting=[("Won", f"{h['won']} / {h['settled']}"), ("Pending", f"{_dash(a.get('pending'))} pending"),
                                        ("Break-even", ui.pct(h["break_even"]))],
                            n=h["settled"], container=c[0])
             ui.metric_card("Flat stakes", ui.units(h["units"]), title="Result at flat 1u",
@@ -488,8 +521,8 @@ with tab_tips:
                            supporting=[("Hit rate", ui.pct(bh["hit_rate"])),
                                        ("Model expected", f"{bh['expected_wins']:.1f} wins"),
                                        ("z", f"z = {bh['z_actual_vs_claimed']}"),
-                                       ("With a voided leg", str(v.get("settled", 0))),
-                                       ("'Won' on the remaining legs", f"{v.get('won', 0)} 'won' on the remaining legs")],
+                                       ("With a voided leg", _dash(v.get("settled"))),
+                                       ("'Won' on the remaining legs", f"{_dash(v.get('won'))} 'won' on the remaining legs")],
                            n=bh["settled"])
             st.caption("Combos with a voided player leg are settled on the remaining legs, so they are kept out of "
                        "the hit rate. No bookmaker builder price is recorded, so builder P/L cannot be measured.")
@@ -529,7 +562,7 @@ with tab_studies:
             tv, tc = ch["tips_at_5pct_edge"]["v9"], ch["tips_at_5pct_edge"]["challenger"]
             w = ch.get("current_weights", {})
             c = st.columns(2)
-            ui.metric_card("v9 result", ui.units(tv.get("units", 0)), title="v9 tips at a 5% edge",
+            ui.metric_card("v9 result", (ui.units(tv["units"]) if tv.get("units") is not None else "—"), title="v9 tips at a 5% edge",
                            supporting=[("Tips", str(tv.get("n"))), ("UNDER share", f"{ui.pct(tv.get('under_share'))} UNDER"),
                                        ("ROI", f"ROI {ui.pct(tv.get('roi'))}")],
                            n=tv.get("n"), container=c[0])

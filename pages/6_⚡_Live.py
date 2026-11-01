@@ -73,8 +73,24 @@ def load_history():
     return df.sort_values("date", ascending=False).reset_index(drop=True)
 
 
-def _norm(s: str) -> str:
-    return "".join(c for c in str(s).lower() if c.isalnum())
+def _bucket(league, d) -> tuple:
+    """(canonical league, YYYY-MM-DD) - results are only ever matched inside one league and day."""
+    from src.league_registry import canonical_name
+    return (canonical_name(league) or str(league), pd.Timestamp(d).strftime("%Y-%m-%d"))
+
+
+def _find_result(look: dict, league, d, home, away):
+    """(ft, ht) of the SAME fixture, clubs matched by src/team_names.resolve_result (settlement
+    resolver) inside one league and one date; (None, None) when not found or ambiguous."""
+    from src.team_names import resolve_result
+    pairs = look.get(_bucket(league, d))
+    if not pairs:
+        return (None, None)
+    h = resolve_result(str(home), sorted({p[0] for p in pairs}))
+    if h is None:
+        return (None, None)
+    a = resolve_result(str(away), sorted({p[1] for p in pairs if p[0] == h}))
+    return pairs.get((h, a), (None, None)) if a is not None else (None, None)
 
 
 @st.cache_data(ttl=1800, show_spinner="Loading final scores…")
@@ -107,17 +123,17 @@ def load_results_lookup():
         # 14 MB for fd and 21 MB for af that are then thrown away — and this is a cached
         # function, so the peak is what the deployment pays for the rest of its life.
         fd = pd.read_parquet(out / "fd_history.parquet",
-                             columns=["date", "home_team", "away_team",
+                             columns=["league", "date", "home_team", "away_team",
                                       "home_goals", "away_goals"])
         frames.append(fd)
-    except Exception:
-        pass
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[live] fd_history.parquet unreadable: {e}")
     try:
         af = pd.read_parquet(out / "af_history.parquet",
-                             columns=["date", "home_team", "away_team", "FTHG", "FTAG"])
+                             columns=["league", "date", "home_team", "away_team", "FTHG", "FTAG"])
         frames.append(af.rename(columns={"FTHG": "home_goals", "FTAG": "away_goals"}))
-    except Exception:
-        pass
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[live] af_history.parquet unreadable: {e}")
     if not frames:
         return {}
     m = pd.concat(frames, ignore_index=True)
@@ -138,16 +154,15 @@ def load_results_lookup():
         m["ht_total_goals"] = None
     if m.empty:
         return {}
+    # {(canonical league, date): {(home, away): (ft, ht)}} - see _find_result
     look = {}
     for r in m.itertuples(index=False):
         d = getattr(r, "date", None)
         if pd.isna(d):
             continue
-        key = (_norm(getattr(r, "home_team", "")), _norm(getattr(r, "away_team", "")),
-               pd.Timestamp(d).strftime("%Y-%m-%d"))
         ht = getattr(r, "ht_total_goals", None)
-        look[key] = (getattr(r, "total_goals", None),
-                     ht if ht is not None and not pd.isna(ht) else None)
+        look.setdefault(_bucket(r.league, d), {})[(str(r.home_team), str(r.away_team))] = (
+            getattr(r, "total_goals", None), ht if ht is not None and not pd.isna(ht) else None)
     return look
 
 
@@ -297,15 +312,13 @@ def render_history():
     lookup = load_results_lookup()
 
     def _lookup_result(row):
+        # Same league, same date, resolver-matched clubs. No ±1-day shifting: a neighbouring
+        # day's fixture between similarly named clubs is not this match.
         m = str(row.get("match", ""))
-        if " vs " not in m or pd.isna(row["date"]):
+        if " vs " not in m or pd.isna(row["date"]) or "league" not in row.index:
             return (None, None)
         h, a = m.split(" vs ", 1)
-        for off in (0, -1, 1):
-            key = (_norm(h), _norm(a), (pd.Timestamp(row["date"]) + pd.Timedelta(days=off)).strftime("%Y-%m-%d"))
-            if key in lookup:
-                return lookup[key]
-        return (None, None)
+        return _find_result(lookup, row["league"], row["date"], h, a)
 
     # Prefer scores/results written by the grader (update_results.py) — the match DB has no
     # current-season new-format scores, so the on-the-fly join below is only a fallback.

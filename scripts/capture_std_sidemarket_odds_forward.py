@@ -42,8 +42,10 @@ _BASE = "https://v3.football.api-sports.io"
 _HEADERS = {"x-apisports-key": _KEY}
 BET365 = 8
 OUT = PROJ / "output" / "standard_sidemarket_odds_history.csv"
+# fixture_id / home_team_id / away_team_id (added 2026-11-01): API-Football's own ids from the same
+# fixtures response, so a curve is keyed on the fixture, not on the "Home vs Away" spelling.
 COLS = ["snapshot_date", "snapshot_ts", "match_date", "kickoff_utc", "league",
-        "match", "market", "odds"]
+        "match", "market", "odds", "fixture_id", "home_team_id", "away_team_id"]
 # LOOK-AHEAD FIXTURES PER LEAGUE. Raised 12 -> 28 on 2026-09-29 because 12 was starving the
 # half-time evidence: of 80 HT tips, 64 were for fixtures the capture NEVER SAW. Not a bookmaker
 # problem — of the 16 fixtures it did capture, all 16 carried the first-half market. League One
@@ -393,7 +395,10 @@ def run() -> int:
                              "match_date": mdate,
                              "kickoff_utc": _iso_kickoff(raw_ko),
                              "league": league,
-                             "match": f"{home} vs {away}", "market": market, "odds": odd})
+                             "match": f"{home} vs {away}", "market": market, "odds": odd,
+                             "fixture_id": fid,
+                             "home_team_id": teams.get("home", {}).get("id"),
+                             "away_team_id": teams.get("away", {}).get("id")})
             n_lg += 1
         _far = f", {n_skipped_far} beyond {MAX_HOURS}h skipped" if MAX_HOURS is not None else ""
         print(f"  {league}: {n_lg} upcoming fixtures priced{_far}")
@@ -425,9 +430,15 @@ def run() -> int:
     # keep price CHANGES (consecutive-distinct) per (fixture, market) -> open..moving..close
     # curve. A plain distinct-dedup would drop a reverted closing price (1.90->1.95->1.90 loses
     # the true 1.90 close); this keeps every change AND the true last snapshot.
-    new = new.sort_values(["match_date", "match", "market", "snapshot_ts"])
-    _prev = new.groupby(["match_date", "match", "market"])["odds"].shift()
-    new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts")
+    # Curve key: the fixture_id where the row has one; rows captured before ids were stored keep
+    # their (match_date, match) key - the same AF spelling from the same endpoint.
+    _fid = pd.to_numeric(new.get("fixture_id"), errors="coerce") if "fixture_id" in new.columns \
+        else pd.Series(float("nan"), index=new.index)
+    new["_curve"] = _fid.map(lambda x: f"id:{int(x)}" if pd.notna(x) else None).fillna(
+        "name:" + new["match_date"].astype(str) + "|" + new["match"].astype(str))
+    new = new.sort_values(["_curve", "market", "snapshot_ts"])
+    _prev = new.groupby(["_curve", "market"])["odds"].shift()
+    new = new[new["odds"].ne(_prev)].sort_values("snapshot_ts").drop(columns="_curve")
     _ordered(new).to_csv(OUT, index=False)
     print(f"[std_odds] appended -> {OUT.name} (total {len(new):,})")
     # Machine-readable, on its own line, so the NEAR loop can adapt its sleep WITHOUT a second

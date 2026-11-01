@@ -27,6 +27,12 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 
 import dashboard_ui as ui  # noqa: E402
+
+
+def _n(v) -> str:
+    """A count from a health file, or '—' when the file does not carry it (missing is not 0)."""
+    return "—" if v is None else f"{v:,}"
+
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
 from dashboard_data import overview_view as V  # noqa: E402
@@ -180,7 +186,7 @@ with r1[0].container(border=True):
     ssh = hv.get("shadow_settlement") or {}
     if ssh:
         ui.freshness_chip(ssh["freshness"],
-                          f"shadow log · {ssh.get('settled_rows', 0):,}/{ssh.get('shadow_rows', 0):,} settled")
+                          f"shadow log · {_n(ssh.get('settled_rows'))}/{_n(ssh.get('shadow_rows'))} settled")
         st.caption(f"close {ssh.get('valid_closing_price_pct')}% · CLV {ssh.get('clv_pct')}% "
                    f"of settled · coverage only, not evidence of edge")
 

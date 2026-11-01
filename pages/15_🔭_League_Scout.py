@@ -176,7 +176,7 @@ else:
     if pr.get("freshness"):
         ui.freshness_chip(pr["freshness"], "promotion review")
     k = pr.get("counts", {})
-    ui.metric_grid([{"label": lab, "value": k.get(key, 0)}
+    ui.metric_grid([{"label": lab, "value": "—" if k.get(key) is None else k[key]}
                     for lab, key in (("New candidates", "new_candidates"), ("Approved (shadow)", "promoted"),
                                      ("Validation failed", "failed"), ("Data-quality blocked", "blocked"),
                                      ("Still collecting", "still_collecting"))], per_row=3)

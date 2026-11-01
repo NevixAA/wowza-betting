@@ -14,7 +14,7 @@ Output: output/af_history.parquet
 Usage:
     python scripts/backfill_af_history.py            # full run
     python scripts/backfill_af_history.py --dry-run  # estimate call count only
-    python scripts/backfill_af_history.py --league "Brazil Serie A"  # single league
+    python scripts/backfill_af_history.py --league "<registry league name>"  # single league
 """
 from __future__ import annotations
 
@@ -42,35 +42,56 @@ _KEY     = os.getenv("APIFOOTBALL_KEY", "")
 _HEADERS = {"x-apisports-key": _KEY}
 
 # ── League config ─────────────────────────────────────────────────────────────
-# (league_name, af_league_id, [backfill_seasons])
-# Calendar-year leagues use the year as season (2020 → 2020 season)
-# Split-year leagues use start year (2020 → 2020/21)
+# Every NEW-FORMAT league in config/leagues.json (incl. the API-Football-only training leagues),
+# with its API-Football id from the registry. Seasons are not typed here: they are the provider
+# seasons (src/season_resolver) spanned by the league's OWN history - from its first match in
+# fd_history / af_history to today - or, for an API-Football-only league with no history yet,
+# its registered api_football_extra_seasons. A league with neither is skipped and logged.
 
-LEAGUES = [
-    # Summer / Americas / Asia — calendar year
-    ("Brazil Serie A",           71,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Japan J-League",           98,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Mexico Liga MX",          262,  ["2019","2020","2021","2022","2023","2024"]),
-    ("China Super League",      169,  ["2019","2020","2021","2022","2023","2024"]),
-    ("USA MLS",                 253,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Argentina Primera Division",128,["2019","2020","2021","2022","2023","2024"]),
-    ("Ireland Premier Division",357,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Finland Veikkausliiga",   244,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Sweden Allsvenskan",      113,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("Norway Eliteserien",      103,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    # European winter/spring — split year (season = start year)
-    ("Denmark Superliga",       119,  ["2019","2020","2021","2022","2023","2024"]),
-    ("Austrian Bundesliga",     218,  ["2019","2020","2021","2022","2023","2024"]),
-    # Added 2026-08-16 — these were missing from the original backfill.
-    # Romanian Superliga is the important one: it is in ENABLED_LEAGUES, so it produces REAL
-    # TIPS, yet it had no shot data at all and was training and predicting on goals only
-    # while every other new-format league had the full feature set.
-    ("Romanian Superliga",      283,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    # API-Football-only leagues: training pool only (not in ENABLED_LEAGUES), but they are
-    # in STANDARD_FORMAT_LEAGUES' training data, so shot coverage improves model quality.
-    ("Saudi Pro League",        307,  ["2019","2020","2021","2022","2023","2024","2025"]),
-    ("K-League 1",              292,  ["2020","2021","2022","2023","2024","2025"]),
-]
+def _history_start() -> dict:
+    """{canonical league: earliest match date} over the committed history parquets."""
+    from src.league_registry import canonical_name
+    first: dict = {}
+    for f in (ROOT / "output" / "fd_history.parquet", OUTPUT):
+        if not f.exists():
+            continue
+        try:
+            h = pd.read_parquet(f, columns=["league", "date"])
+        except Exception as e:                                          # noqa: BLE001
+            print(f"  [warn] {f.name} unreadable ({e}) — not used for season spans")
+            continue
+        h["date"] = pd.to_datetime(h["date"], errors="coerce")
+        for lg, d in h.dropna(subset=["date"]).groupby("league")["date"].min().items():
+            c = canonical_name(lg) or str(lg)
+            first[c] = min(d, first.get(c, d))
+    return first
+
+
+def league_plan() -> list[tuple[str, int, list[str]]]:
+    """[(league, af_league_id, [seasons])] for every registry new-format league."""
+    from src import league_registry as LR
+    from src.season_resolver import resolve_api_season, is_known
+    starts = _history_start()
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
+    plan = []
+    for e in LR.leagues():
+        if e.get("model_type") != "new_format":
+            continue
+        name, af_id = e["name"], e.get("api_football_id")
+        if af_id is None:
+            print(f"  [skip] {name}: no api_football_id in config/leagues.json")
+            continue
+        if name in starts:
+            # one probe per month across the span: every season the history covers
+            probes = pd.date_range(starts[name].normalize(), today, freq="MS").append(pd.DatetimeIndex([today]))
+            seasons = sorted({s for s in (resolve_api_season(name, d.date()) for d in probes) if is_known(s)})
+        else:
+            seasons = [str(s) for s in (e.get("api_football_extra_seasons") or [])]
+        if not seasons:
+            print(f"  [skip] {name}: no history and no registered seasons — nothing to backfill")
+            continue
+        plan.append((name, int(af_id), seasons))
+    return plan
 
 
 # ── API helpers ───────────────────────────────────────────────────────────────
@@ -212,6 +233,11 @@ def parse_fixture(league_name: str, season: str, f: dict, stats_resp) -> dict | 
         "date":       date_str,
         "home_team":  home,
         "away_team":  away,
+        # Provider ids from the same response: the fixture and both clubs are identified by id,
+        # not only by their spelling (the skip list keys on fixture_id).
+        "fixture_id":   fix.get("id"),
+        "home_team_id": teams.get("home", {}).get("id"),
+        "away_team_id": teams.get("away", {}).get("id"),
         "FTHG":       int(fthg),
         "FTAG":       int(ftag),
         "FTR":        "H" if fthg > ftag else ("A" if ftag > fthg else "D"),
@@ -273,7 +299,12 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
     total_api_calls = 0
     total_fixtures  = 0
 
-    leagues_to_run = [(n, i, s) for n, i, s in LEAGUES if target_league is None or n == target_league]
+    from src.league_registry import canonical_name
+    _target = None if target_league is None else canonical_name(target_league)
+    if target_league is not None and _target is None:
+        print(f"  [error] --league {target_league!r} is not a registered league name or alias")
+        return
+    leagues_to_run = [(n, i, s) for n, i, s in league_plan() if _target is None or n == _target]
 
     # ── Keep the CURRENT season in scope ──────────────────────────────────────
     # The season lists above were written for the one-time pre-season backfill and stop at
@@ -299,16 +330,23 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
     # treat it as the record of what we already have and skip those fixtures entirely.
     # That is what makes this safe to run on a schedule: the first run collects the current
     # season, every later run collects only what is genuinely new.
+    # Skip set keyed on API-Football's fixture_id where the row carries one (rows written since
+    # 2026-11-01); older rows only have names, and those names are API-Football's own spelling
+    # from the same endpoint, so the legacy key compares like with like.
     existing_keys: set = set()
+    existing_ids: set = set()
     if OUTPUT.exists():
         try:
-            _ex = pd.read_parquet(OUTPUT, columns=["league", "date", "home_team", "away_team"])
+            _ex = pd.read_parquet(OUTPUT)
             _ex["date"] = pd.to_datetime(_ex["date"], errors="coerce")
+            if "fixture_id" in _ex.columns:
+                existing_ids = {int(x) for x in pd.to_numeric(_ex["fixture_id"], errors="coerce").dropna()}
+                _ex = _ex[_ex["fixture_id"].isna()]
             existing_keys = {
                 (str(r.league), str(r.date)[:10], str(r.home_team), str(r.away_team))
                 for r in _ex.itertuples()
             }
-            print(f"  af_history.parquet already holds {len(existing_keys):,} fixtures — "
+            print(f"  af_history.parquet already holds {len(existing_ids) + len(existing_keys):,} fixtures — "
                   f"these will be skipped, not re-fetched")
         except Exception as e:
             print(f"  [warn] could not read existing af_history ({e}) — no skip list")
@@ -327,16 +365,16 @@ def run(target_league: str | None = None, dry_run: bool = False) -> None:
                 # Already in the committed parquet? Then we have this fixture's stats and
                 # must not spend a call on it again. This is the whole point of the skip
                 # list — completed results never change.
+                fix_id = f["fixture"]["id"]
                 _tm = f.get("teams", {}) or {}
                 _key = (league_name,
                         str((f.get("fixture", {}) or {}).get("date", ""))[:10],
                         str((_tm.get("home") or {}).get("name", "")),
                         str((_tm.get("away") or {}).get("name", "")))
-                if _key in existing_keys:
+                if fix_id in existing_ids or _key in existing_keys:
                     skipped += 1
                     continue
 
-                fix_id = f["fixture"]["id"]
                 stats_resp = fetch_stats(fix_id, dry_run)
                 total_api_calls += 1
 

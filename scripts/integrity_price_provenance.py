@@ -25,23 +25,39 @@ os.chdir(ROOT)
 LINES = {"1.5": ("over15", "under15"), "2.5": ("over25", "under25"), "3.5": ("over35", "under35")}
 
 
-def outcomes():
+def _lg(x) -> str:
+    from src.league_registry import canonical_name
+    return canonical_name(x) or str(x)
+
+
+def outcomes() -> dict:
+    """{(canonical league, YYYY-MM-DD): {(home, away): (total goals, btts)}} from fd_history."""
     import pandas as pd
-    from src.api_football_ou import _norm_name
     f = pd.read_parquet(ROOT / "output" / "fd_history.parquet")
-    f["_h"] = f["home_team"].map(_norm_name)
-    f["_a"] = f["away_team"].map(_norm_name)
-    f["_d"] = pd.to_datetime(f["date"], errors="coerce").dt.strftime("%Y-%m-%d")
-    f = f.drop_duplicates(["league", "_h", "_a", "_d"])
+    f["md"] = pd.to_datetime(f["date"], errors="coerce").dt.strftime("%Y-%m-%d")
     f["tg"] = f["home_goals"] + f["away_goals"]
     f["bt"] = ((f["home_goals"] > 0) & (f["away_goals"] > 0)).astype(float)
-    return f[["league", "_h", "_a", "_d", "tg", "bt"]]
+    idx: dict = {}
+    for r in f.dropna(subset=["md"]).itertuples(index=False):
+        idx.setdefault((_lg(r.league), r.md), {}).setdefault((str(r.home_team), str(r.away_team)), (r.tg, r.bt))
+    return idx
+
+
+def _result_of(idx: dict, league, d, home, away):
+    """(tg, bt) of the SAME fixture: one league, one date, clubs matched by
+    src/team_names.resolve_result (the settlement resolver). (nan, nan) when absent/ambiguous."""
+    from src.team_names import resolve_result
+    pairs = idx.get((_lg(league), str(d)[:10]))
+    if not pairs:
+        return (float("nan"), float("nan"))
+    h = resolve_result(str(home), sorted({p[0] for p in pairs}))
+    a = None if h is None else resolve_result(str(away), sorted({p[1] for p in pairs if p[0] == h}))
+    return pairs[(h, a)] if a is not None else (float("nan"), float("nan"))
 
 
 def evidence(lab, out, source):
     import numpy as np
     import pandas as pd
-    from src.api_football_ou import _norm_name
     d = lab.copy()
     d["_ts"] = pd.to_datetime(d["snapshot_ts"], errors="coerce", utc=True, format="mixed")
     d["period"] = np.where(d["price_origin"] == "BACKFILL_HISTORICAL", "backfill",
@@ -50,10 +66,17 @@ def evidence(lab, out, source):
     w = d.pivot_table(index=["league", "match", "match_date", "period"], columns="market",
                       values="odds", aggfunc="last").reset_index()
     p = w["match"].astype(str).str.split(" vs ", n=1, expand=True)
-    w["_h"] = p[0].map(_norm_name)
-    w["_a"] = (p[1] if p.shape[1] > 1 else "").map(_norm_name)
-    w["_d"] = w["match_date"].astype(str).str[:10]
-    m = w.merge(out, on=["league", "_h", "_a", "_d"], how="inner")
+    if p.shape[1] < 2:
+        p[1] = None
+    # Resolver join (league + date + resolve_result), not a lower-cased/stripped name key.
+    res = [_result_of(out, lg, md, h, a) if a is not None else (float("nan"), float("nan"))
+           for lg, md, h, a in zip(w["league"], w["match_date"], p[0], p[1])]
+    w["tg"] = [r[0] for r in res]
+    w["bt"] = [r[1] for r in res]
+    unmatched = int(w["tg"].isna().sum())
+    if unmatched:
+        print(f"  [{source}] {unmatched} fixture-period row(s) without a resolvable result - left out")
+    m = w[w["tg"].notna()]
     rows = []
     for per, g in m.groupby("period"):
         for ln, (o, u) in LINES.items():

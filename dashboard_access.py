@@ -58,9 +58,12 @@ def free_tip_pick(plan, policy: dict, today, n: int = FREE_TIPS_PER_DAY):
         return d, None, 0
     day = d["date"].min()
     d = d[d["date"] == day]
-    ev = {k: float(v.get("evidence_score", 0)) for k, v in (policy or {}).get("tracks", {}).items()}
-    d["_ev"] = d["track"].map(ev).fillna(0.0)
-    d = d.sort_values(["_ev", "final_fraction", "odds"], ascending=[False, False, True], kind="mergesort")
+    # A track without an evidence_score stays NaN and ranks LAST - it is not scored 0.
+    ev = {k: pd.to_numeric(v.get("evidence_score"), errors="coerce")
+          for k, v in (policy or {}).get("tracks", {}).items()}
+    d["_ev"] = pd.to_numeric(d["track"].map(ev), errors="coerce")
+    d = d.sort_values(["_ev", "final_fraction", "odds"], ascending=[False, False, True], kind="mergesort",
+                      na_position="last")
     return d.head(n), day, int(len(d))
 
 

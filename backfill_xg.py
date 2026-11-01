@@ -9,7 +9,7 @@ Next training run automatically picks up the richer data.
 Usage:
     python backfill_xg.py                          # all leagues, 3 seasons back
     python backfill_xg.py --seasons 2023 2024 2025 # specific seasons
-    python backfill_xg.py --league "Championship"  # single league
+    python backfill_xg.py --league "<registry league name>"  # single league
     python backfill_xg.py --start-from 3           # skip first N leagues (resume after quota reset)
     python backfill_xg.py --dry-run                # show what would run, no API calls
 
@@ -33,23 +33,26 @@ from src.api_football_ou import (
 )
 
 
-# Historical seasons to backfill per league type
-STANDARD_SEASONS = ["2022", "2023", "2024", "2025"]   # European format (Aug-May)
-SUMMER_SEASONS   = ["2023", "2024", "2025", "2026"]   # Calendar-year leagues
-
-# Leagues that use summer/calendar-year seasons
-SUMMER_LEAGUES = {
-    "Sweden Allsvenskan", "Norway Eliteserien", "Finland Veikkausliiga",
-    "Ireland Premier Division", "Brazil Serie A", "Japan J-League",
-    "Mexico Liga MX", "China Super League", "USA MLS",
-}
+# How many of a league's most recent provider seasons to backfill (a window size, not data).
+N_SEASONS = 4
 
 
-def get_seasons_for_league(league: str) -> list[str]:
-    """Return the historical seasons to backfill for a given league."""
-    if league in SUMMER_LEAGUES:
-        return SUMMER_SEASONS
-    return STANDARD_SEASONS
+def get_seasons_for_league(league: str, today=None) -> list[str]:
+    """The league's N_SEASONS most recent API-Football seasons, from ITS OWN season rule in
+    config/leagues.json (src/season_resolver) - not a typed summer/winter list, which had Liga MX
+    on the calendar year and went stale every year. Empty when the season is unresolvable."""
+    import datetime as _dt
+    from src.season_resolver import resolve_api_season, is_known
+    d = today or _dt.date.today()
+    seen: list[str] = []
+    for back in range(0, 12 * (N_SEASONS + 2)):             # walk back month by month
+        y, m = divmod(d.year * 12 + d.month - 1 - back, 12)
+        s = resolve_api_season(league, _dt.date(y, m + 1, 1) if back else d)
+        if is_known(s) and s not in seen:
+            seen.append(s)
+        if len(seen) == N_SEASONS:
+            break
+    return sorted(seen)
 
 
 def backfill_league_season(league: str, league_id: int, season: str, dry_run: bool = False) -> int:
@@ -96,13 +99,22 @@ def main():
         print("ERROR: APIFOOTBALL_KEY env var not set. Set it or use --dry-run.")
         sys.exit(1)
 
+    from src.league_registry import canonical_name, competition_type
+    target = canonical_name(args.league) if args.league else None
+    if args.league and target is None:
+        print(f"ERROR: --league {args.league!r} is not a registered league name or alias.")
+        sys.exit(1)
     all_leagues = {}
     for lg, lid in config.API_FOOTBALL_IDS.items():
-        if lg in ("World Cup 2026", "World Cup"):
+        # national-team tournaments have no club xG history to backfill (registry competition_type)
+        if competition_type(lg) == "national_teams":
             continue
-        if args.league and lg != args.league:
+        if target and (canonical_name(lg) or lg) != target:
             continue
         seasons = args.seasons if args.seasons else get_seasons_for_league(lg)
+        if not seasons:
+            print(f"  skip {lg}: season unresolvable (SEASON_UNKNOWN)")
+            continue
         all_leagues[lg] = (lid, seasons)
 
     # Apply --start-from: skip leagues before position N (1-based)

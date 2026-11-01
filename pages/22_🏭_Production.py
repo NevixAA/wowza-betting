@@ -48,7 +48,7 @@ plan, summ, meta, reg, prot = _load(today)
 _tp = production_view.threshold_proposal()
 if _tp:
     _txt = (f"**Threshold proposal {_tp['proposal_id']}** ({_tp.get('created_at', '?')}) — "
-            f"{_tp.get('n_serving_changes', 0)} league × market gate(s) would change if approved · "
+            f"{_tp.get('n_serving_changes') if _tp.get('n_serving_changes') is not None else '—'} league × market gate(s) would change if approved · "
             f"state **{_tp['state']}**")
     if _tp["state"] == "AWAITING_OWNER":
         st.info(_txt + ". Nothing is live until the owner approves entries in `config/threshold_approvals.json` "

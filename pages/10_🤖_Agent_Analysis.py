@@ -49,8 +49,10 @@ two different methods is stronger evidence than either alone.
 
 **The numbers**
 - **λ_H / λ_A (lambda)** — expected goals for the home / away team, from
-  `league_avg × attack_strength × opponent_defense_strength`. **λ_T** = total expected goals.
-  *(If team-strength data is missing, it falls back to league average = 1.0 and says so.)*
+  `league_avg × attack_strength × opponent_defense_strength`, split home/away by the league's
+  own measured home-goal share. **λ_T** = total expected goals.
+  *(If team-strength data, odds or the league's goal shares are missing, the pick gets NO verdict
+  and the missing inputs are listed.)*
 - **Formula P** — the probability this independent model gives (e.g. P(OVER 2.5)).
   **ML P** — the machine-learning model's probability. The `Δ vs ML` shows how far apart they are.
 - **EV** — expected value per 1 unit staked: `P × odds − 1`. Positive = +EV at that price.
@@ -102,8 +104,9 @@ def score_matrix(lam_h, lam_a, max_goals=8, rho=-0.10):
     # Normalize
     return {k: v/total for k, v in matrix.items()}
 
-def calc_markets(lam_h, lam_a, rho=-0.10):
-    """Compute all markets from λ_H and λ_A."""
+def calc_markets(lam_h, lam_a, fh_pct, rho=-0.10):
+    """Compute all markets from λ_H and λ_A. `fh_pct` is the league's measured first-half share
+    of goals (league_goal_shares); None -> the HT markets are left missing (NaN)."""
     mat = score_matrix(lam_h, lam_a, rho=rho)
 
     p_over25 = sum(v for (h,a),v in mat.items() if h+a > 2.5)
@@ -114,11 +117,13 @@ def calc_markets(lam_h, lam_a, rho=-0.10):
     p_away    = sum(v for (h,a),v in mat.items() if a > h)
     p_ah_home = p_home  # AH -0.5
 
-    # FH model (first-half goals share: ~44% for most leagues)
-    fh_pct = 0.44
-    lam_fh = (lam_h + lam_a) * fh_pct
-    p_ht_over05 = 1 - poisson(0, lam_fh)
-    p_ht_over15 = 1 - poisson_cdf(1, lam_fh)
+    # FH model: the league's own first-half goal share (no global ~44% constant).
+    if fh_pct is None:
+        p_ht_over05 = p_ht_over15 = float("nan")
+    else:
+        lam_fh = (lam_h + lam_a) * fh_pct
+        p_ht_over05 = 1 - poisson(0, lam_fh)
+        p_ht_over15 = 1 - poisson_cdf(1, lam_fh)
 
     top_scores = sorted(mat.items(), key=lambda x: -x[1])[:6]
 
@@ -178,6 +183,54 @@ FEAT_COLS = ["home_attack_str","away_attack_str","home_defense_str","away_defens
              "league_avg_goals","home_scored_last5","away_scored_last5",
              "p_over25","p_ht_over05","p_ht_over15"]
 
+def match_prediction(row, preds):
+    """The predictions.csv row of the SAME fixture as tip `row`, or None.
+
+    Same canonical league, same date, and both clubs matched by src/team_names.resolve. The old
+    8-character prefix match with a date-less fallback could attach another fixture's features
+    (a different day, or a different club sharing a prefix); a miss now stays a miss."""
+    from src.league_registry import canonical_name
+    from src.team_names import resolve
+    lg = canonical_name(row.get("league")) or str(row.get("league"))
+    pl = preds["league"].map(lambda x: canonical_name(x) or str(x))
+    same = preds[(pl == lg) & (preds["date"].dt.date == row["date"].date())]
+    if same.empty:
+        return None
+    h = resolve(str(row["home_team"]), sorted(same["home_team"].astype(str).unique()))
+    if h is None:
+        return None
+    same = same[same["home_team"].astype(str) == h]
+    a = resolve(str(row["away_team"]), sorted(same["away_team"].astype(str).unique()))
+    if a is None:
+        return None
+    return same[same["away_team"].astype(str) == a].iloc[0]
+
+
+@st.cache_data(ttl=3600)
+def league_goal_shares() -> dict:
+    """{canonical league: {"home_share", "fh_share"}} measured from that league's own results in
+    output/fd_history.parquet: home goals / all goals, and half-time goals / full-time goals.
+    A league with no results (or no HT scores) has no entry / None - never a global 55% or 44%."""
+    p = config.OUTPUT_DIR / "fd_history.parquet"
+    if not p.exists():
+        return {}
+    from src.league_registry import canonical_name
+    h = pd.read_parquet(p, columns=["league", "home_goals", "away_goals", "ht_home_goals", "ht_away_goals"])
+    h = h.dropna(subset=["home_goals", "away_goals"])
+    h["league"] = h["league"].map(lambda x: canonical_name(x) or str(x))
+    out = {}
+    for lg, g in h.groupby("league"):
+        tot = float(g["home_goals"].sum() + g["away_goals"].sum())
+        if tot <= 0:
+            continue
+        ht = g.dropna(subset=["ht_home_goals", "ht_away_goals"])
+        ft_ht = float(ht["home_goals"].sum() + ht["away_goals"].sum())
+        out[lg] = {"home_share": float(g["home_goals"].sum()) / tot,
+                   "fh_share": (float(ht["ht_home_goals"].sum() + ht["ht_away_goals"].sum()) / ft_ht
+                                if ft_ht > 0 else None)}
+    return out
+
+
 @st.cache_data(ttl=60)
 def load_tips():
     f = config.OUTPUT_DIR / "bets.csv"
@@ -197,31 +250,17 @@ def load_tips():
     for col in FEAT_COLS:
         bets[col] = float("nan")
 
-    # Fuzzy row-by-row lookup — handles minor name/date differences
-    def _norm(s):
-        return str(s).lower().strip()
-
+    unmatched = 0
     for idx, row in bets.iterrows():
-        h8 = _norm(row["home_team"])[:8]
-        a8 = _norm(row["away_team"])[:8]
-        d  = row["date"].date()
-        candidates = preds[
-            (preds["home_team"].str.lower().str[:8] == h8) &
-            (preds["away_team"].str.lower().str[:8] == a8) &
-            (preds["date"].dt.date == d)
-        ]
-        if candidates.empty:
-            # Try date ±1 day
-            candidates = preds[
-                (preds["home_team"].str.lower().str[:8] == h8) &
-                (preds["away_team"].str.lower().str[:8] == a8)
-            ]
-        if not candidates.empty:
-            src = candidates.iloc[0]
-            for col in FEAT_COLS:
-                if col in src.index:
-                    bets.at[idx, col] = src[col]
-
+        src = match_prediction(row, preds)
+        if src is None:
+            unmatched += 1
+            continue
+        for col in FEAT_COLS:
+            if col in src.index:
+                bets.at[idx, col] = src[col]
+    if unmatched:
+        print(f"[agent_analysis] {unmatched} tip(s) without a predictions.csv row - features left missing")
     return bets
 
 tips = load_tips()
@@ -253,39 +292,57 @@ with col_sel:
 with col_all:
     run_all = st.button("▶ Validate All", width="stretch", type="secondary")
 
-def _safe_float(val, default=1.0):
-    """Return float or default if NaN/None/missing."""
+def _num(val):
+    """float, or None when missing/NaN/unparseable - never a stand-in value."""
     try:
         v = float(val)
-        return default if (v != v) else v  # v != v is True for NaN
+        return None if v != v else v  # v != v is True for NaN
     except (TypeError, ValueError):
-        return default
+        return None
 
-def analyse_row(row):
-    """Run full validation on one row."""
-    side       = row.get("best_side") or row.get("bet", "OVER")
-    odds_o     = _safe_float(row.get("odds_over25"),  2.0)
-    odds_u     = _safe_float(row.get("odds_under25"), 1.75)
+def analyse_row(row, shares=None):
+    """Run full validation on one row.
+
+    Every input is the tip's own recorded value or its league's measured goal shares. When any
+    required one is missing the result carries `missing` (the names) and NO verdict - the page
+    shows the gap instead of validating against league-average 1.0 strengths or invented odds."""
+    shares = league_goal_shares() if shares is None else shares
+    from src.league_registry import canonical_name
+    side       = str(row.get("best_side") or row.get("bet") or "").upper()
+    odds_o     = _num(row.get("odds_over25"))
+    odds_u     = _num(row.get("odds_under25"))
     odds_bet   = odds_u if side == "UNDER" else odds_o
-    edge       = _safe_float(row.get("best_edge"), 0.0) * 100
-    tier       = row.get("signal_tier", "VALUE")
-    ml_p_over  = _safe_float(row.get("p_over25"),         0.5)
-    lga        = _safe_float(row.get("league_avg_goals"), 2.5)
-    # Default to 1.0 (league average) when team strength data is missing
-    has        = _safe_float(row.get("home_attack_str"),  1.0)
-    aas        = _safe_float(row.get("away_attack_str"),  1.0)
-    hds        = _safe_float(row.get("home_defense_str"), 1.0)
-    ads        = _safe_float(row.get("away_defense_str"), 1.0)
+    edge       = _num(row.get("best_edge"))
+    tier       = row.get("signal_tier")
+    ml_p_over  = _num(row.get("p_over25"))
+    lga        = _num(row.get("league_avg_goals"))
+    has        = _num(row.get("home_attack_str"))
+    aas        = _num(row.get("away_attack_str"))
+    hds        = _num(row.get("home_defense_str"))
+    ads        = _num(row.get("away_defense_str"))
+    sh         = shares.get(canonical_name(row.get("league")) or str(row.get("league")), {})
+    home_share = sh.get("home_share")
+
+    need = {"side": side if side in ("OVER", "UNDER") else None, "odds": odds_bet, "best_edge": edge,
+            "p_over25": ml_p_over, "league_avg_goals": lga, "home_attack_str": has,
+            "away_attack_str": aas, "home_defense_str": hds, "away_defense_str": ads,
+            "league home-goal share": home_share}
+    missing = [k for k, v in need.items() if v is None]
+    if missing:
+        return {"side": side, "tier": tier, "missing": missing,
+                "verdict": "— NO VERDICT", "verdict_color": None,
+                "verdict_note": "missing input(s): " + ", ".join(missing)}
+    edge = edge * 100
 
     # ── Team Goal Expectancy (formulas.md §1) ─────────────────────────────
-    using_defaults = (has == 1.0 and aas == 1.0 and hds == 1.0 and ads == 1.0)
-    lhg = lga * 0.55
-    lag = lga * 0.45
+    # Home/away split of the league average = the league's own measured home-goal share.
+    lhg = lga * home_share
+    lag = lga * (1 - home_share)
     lam_h = round(lhg * has * ads, 3)
     lam_a = round(lag * aas * hds, 3)
     lam_t = round(lam_h + lam_a, 3)
 
-    mkts = calc_markets(lam_h, lam_a)
+    mkts = calc_markets(lam_h, lam_a, sh.get("fh_share"))
     vrd, vrd_color, vrd_note = verdict(side, ml_p_over, mkts["p_over25"], edge)
     ml_p_bet = ml_p_over if side == "OVER" else 1 - ml_p_over
     formula_p_bet = mkts["p_over25"] if side == "UNDER" else mkts["p_under25"]
@@ -302,16 +359,27 @@ def analyse_row(row):
         "ev_val": ev(ml_p_bet, odds_bet),
         "kelly_val": kelly(ml_p_bet, odds_bet),
         "kelly_half": round(kelly(ml_p_bet, odds_bet) / 2, 4),
-        "using_defaults": using_defaults,
+        "missing": [],
     }
 
 
 _VERDICT_STATE = {"POSITIVE": "PASS", "WARNING": "WARN", "NEGATIVE": "FAIL"}
 
 
+def _pct(p):
+    return "—" if p is None or p != p else f"{p:.1%}"
+
+
 def render_analysis(row, data):
     """Render one match analysis (visual redesign 2026-10-25: shared cards and chips, no inline HTML).
     Every number is the one analyse_row computed, formatted exactly as before."""
+    if data["missing"]:
+        # No verdict without the inputs: say which are missing instead of validating on defaults.
+        ui.selection_card(league=str(row.get("league", "")), kickoff=str(row["date"])[:10],
+                          home=row["home_team"], away=row["away_team"], pick=f"Bet: {data['side'] or '—'} 2.5",
+                          odds="—", tier=str(data["tier"]), show_plan=False, supporting=[])
+        st.markdown(ui.status_chip("WARN", label="NO VERDICT") + f" &nbsp;{data['verdict_note']}")
+        return
     mkts = data["mkts"]
 
     # The tip under review: the shared selection card (legacy tier last and neutral)
@@ -330,8 +398,7 @@ def render_analysis(row, data):
                    supporting=[("λ_H (home)", data["lam_h"]), ("λ_A (away)", data["lam_a"])],
                    help=f"λ_H = LHG({data['lhg']:.2f}) × HAS({data['has']:.2f}) × ADS({data['ads']:.2f}) · "
                         f"λ_A = LAG({data['lag']:.2f}) × AAS({data['aas']:.2f}) × HDS({data['hds']:.2f})",
-                   status=ui.status_chip("WARN", label="TEAM STRENGTH MISSING · LEAGUE AVERAGES USED")
-                   if data.get("using_defaults") else "", container=c1)
+                   container=c1)
     ui.metric_card("P(OVER 2.5)", f"{mkts['p_over25']:.1%}", title="Formula probabilities",
                    delta=f"{mkts['p_over25']-data['ml_p_over']:+.1%} vs ML",
                    supporting=[("P(BTTS Yes)", f"{mkts['p_btts']:.1%}"), ("P(Home Win)", f"{mkts['p_home']:.1%}"),
@@ -340,10 +407,8 @@ def render_analysis(row, data):
     ui.metric_card("EV", f"{data['ev_val']:+.3f}", title="EV & Kelly",
                    supporting=[("Kelly (full)", f"{data['kelly_val']:.1%}"),
                                ("Kelly (½ — recommended)", f"{data['kelly_half']:.1%}"),
-                               ("P(HT OVER 0.5)", f"{mkts['p_ht_over05']:.1%}"),
-                               ("P(HT OVER 1.5)", f"{mkts['p_ht_over15']:.1%}")], container=c3)
-    if data.get("using_defaults"):
-        st.caption("⚠️ Team strength data missing — using league averages (HAS=AAS=HDS=ADS=1.0)")
+                               ("P(HT OVER 0.5)", _pct(mkts['p_ht_over05'])),
+                               ("P(HT OVER 1.5)", _pct(mkts['p_ht_over15']))], container=c3)
 
     left, right = st.columns([2, 3])
     with left:
@@ -366,7 +431,8 @@ def render_analysis(row, data):
              "Market odds": None, "EV": None, "Edge vs fair": None},
             {"Market": "AH -0.5 Home", "Formula P": mkts["p_ah_home"], "Fair odds": fair(mkts["p_ah_home"]),
              "Market odds": None, "EV": None, "Edge vs fair": None},
-            {"Market": "HT OVER 0.5", "Formula P": mkts["p_ht_over05"], "Fair odds": fair(mkts["p_ht_over05"]),
+            {"Market": "HT OVER 0.5", "Formula P": mkts["p_ht_over05"],
+             "Fair odds": None if mkts["p_ht_over05"] != mkts["p_ht_over05"] else fair(mkts["p_ht_over05"]),
              "Market odds": None, "EV": None, "Edge vs fair": None},
         ]
         ui.compact_table(pd.DataFrame(rows), {"Formula P": ui.num_col("Formula P", fmt="%.3f"),
@@ -386,7 +452,7 @@ if not run_all:
 
     # Optional AI context
     has_key = bool(os.getenv("GOOGLE_API_KEY") or os.getenv("ANTHROPIC_API_KEY"))
-    if has_key:
+    if has_key and not data["missing"]:
         with st.expander("🤖 AI Context — injuries, tactical notes (optional)", expanded=False):
             if st.button("Ask AI for context", type="secondary"):
                 with st.spinner("Asking AI..."):

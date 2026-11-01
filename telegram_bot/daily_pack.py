@@ -174,6 +174,15 @@ def _col(df: pd.DataFrame, name: str) -> pd.Series:
     return pd.Series(float("nan"), index=df.index)
 
 
+def _live_only(df: pd.DataFrame, name: str) -> pd.DataFrame:
+    """Rows whose recorded source is 'live'. A row with NO recorded source is not assumed live -
+    it is excluded and counted, so an unlabelled backtest row can never enter the record."""
+    src = df["source"]
+    if src.isna().any():
+        print(f"[daily_pack] {name}: {int(src.isna().sum())} row(s) without a recorded source excluded")
+    return df[src.astype(str) == "live"]
+
+
 def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     """Every live tip on the O/U 2.5 and side-market ledgers, normalised: date, league, match,
     tier, market, odds, result, pnl. EVERY SENT tip counts, exactly as on the dashboard — a first-
@@ -189,7 +198,7 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     m = _read("bets_ledger.csv", include_paper, _TIP_COLS)
     if len(m):
         if "source" in m.columns:
-            m = m[m["source"].fillna("live").astype(str) == "live"]
+            m = _live_only(m, "bets_ledger.csv")
         parts.append(pd.DataFrame({
             "date": m["match_date"].astype(str).str[:10], "league": m["league"],
             "match": m["home_team"].astype(str) + " v " + m["away_team"].astype(str),
@@ -202,7 +211,7 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     s = _read("side_bets_ledger.csv", include_paper, _TIP_COLS)
     if len(s):
         if "source" in s.columns:
-            s = s[s["source"].fillna("live").astype(str) == "live"]
+            s = _live_only(s, "side_bets_ledger.csv")
         mk = s["market"].astype(str)
         parts.append(pd.DataFrame({
             "date": s["match_date"].astype(str).str[:10], "league": s["league"],
@@ -269,7 +278,7 @@ def record_image(today: str) -> list[bytes]:
     d = settled_tips()
     if d.empty:
         return []
-    cut = str(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))[:10]
+    cut = str(config.PERFORMANCE_CUTOFF_DATE)[:10]   # configured cutoff; absent = AttributeError, not 1970
     d = d[(d["date"] >= cut) & d["pnl"].notna()]
     week = (pd.Timestamp(today) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
     cols = [("Market", 170), ("Bets", 70), ("Won-Lost", 110), ("Hit", 70), ("Break-even", 110),
@@ -851,8 +860,9 @@ def bet_builder_image(today: str) -> list[bytes]:
     blocks = []                                   # one block = a combo's band + its legs
     for _, r in d.iterrows():
         fair = pd.to_numeric(pd.Series([r.get("fair_odds")]), errors="coerce").iloc[0]
-        p = float(r.get("joint_probability") or 0)
-        b = [{"band": f"{r.get('match')} · {r.get('league')} · all legs {p:.1%}"
+        p = pd.to_numeric(pd.Series([r.get("joint_probability")]), errors="coerce").iloc[0]
+        b = [{"band": f"{r.get('match')} · {r.get('league')} · all legs "
+                      + ("–" if pd.isna(p) else f"{p:.1%}")
                       + (f" · fair odds {fair:.2f}" if pd.notna(fair) else "")}]
         for i, leg in enumerate(str(r.get("legs") or "").split(" · "), start=1):
             label, _, pct = leg.rpartition(" (")
@@ -904,21 +914,23 @@ def scoreboard_images() -> list[bytes]:
     rows = []
     x = sb.get("one_x_two", {})
     if x:
-        rows.append({"band": f"1X2 tips — {x.get('sent_excl_paper', x.get('sent', 0))} sent, "
-                             f"{x.get('pending', 0)} pending"})
+        _sent = x.get("sent_excl_paper", x.get("sent"))     # missing counts print '—', not 0
+        rows.append({"band": f"1X2 tips — {'—' if _sent is None else _sent} sent, "
+                             f"{x.get('pending', '—')} pending"})
         rows.append(_row("All 1X2 tips", x.get("headline"), (31, 41, 55)))
         for pick, b in (x.get("by_pick") or {}).items():
             rows.append(_row(f"   {pick.title()} picks", b, (156, 163, 175)))
     bb = sb.get("bet_builder", {})
     if bb:
         h = bb.get("headline") or {}
-        rows.append({"band": f"Bet Builder — {bb.get('sent', 0)} sent, {bb.get('ungraded', 0)} not gradable yet"})
+        rows.append({"band": f"Bet Builder — {bb.get('sent', '—')} sent, {bb.get('ungraded', '—')} not gradable yet"})
         if h.get("settled"):
             hit, claim = h.get("hit_rate"), h.get("model_claimed")
             rows.append({"cells": ["All legs played", h["settled"], h.get("won", ""), _pct(hit), "",
                                    _pct(claim), f"exp {h.get('expected_wins', '')} wins"],
                          "stripe": (31, 41, 55), "bold": {"Hit"},
-                         "colours": {"Hit": GREEN if (hit or 0) >= (claim or 0) else RED}})
+                         "colours": {"Hit": INK if hit is None or claim is None
+                                     else GREEN if hit >= claim else RED}})
         v = bb.get("with_voided_legs") or {}
         if v.get("settled"):
             rows.append({"cells": ["A leg was voided (not comparable)", v["settled"], v.get("won", ""),
