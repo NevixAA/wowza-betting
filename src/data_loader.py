@@ -270,6 +270,19 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     return d
 
 
+def _fd_download_tables() -> tuple[dict, dict]:
+    """({league: code} for per-season mmz4281 files, {league: code} for /new/ files), from the
+    registry: every league with a football_data_code, standard -> mmz4281, new_format -> /new/."""
+    from src import league_registry as _LR
+    std, new = {}, {}
+    for e in _LR.leagues():
+        code = e.get("football_data_code")
+        if not code:
+            continue
+        (std if e.get("model_type") == "standard" else new)[e["name"]] = code
+    return std, new
+
+
 def _drop_misfiled_league_rows(d: pd.DataFrame, source: str) -> pd.DataFrame:
     """Rows filed under the WRONG league, removed before they reach training, serving or backtests.
 
@@ -431,23 +444,11 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
     _start = _now.year if _now.month >= 7 else _now.year - 1
     SEASONS = [f"{str(y)[2:]}{str(y + 1)[2:]}" for y in range(_start, _start - 4, -1)]
 
-    std_leagues = {
-        "League One": "E2", "League Two": "E3", "Championship": "E1",
-        "Bundesliga 2": "D2", "La Liga 2": "SP2", "Ligue 2": "F2",
-        "Serie B": "I2", "Greek Super League": "G1",
-        "Belgian First Division A": "B1", "Dutch Eredivisie": "N1",
-        "Turkish Super Lig": "T1", "Scottish Premiership": "SC0",
-        "Scottish Championship": "SC1", "Portuguese Primeira Liga": "P1",
-        "National League": "EC",
-    }
-    new_leagues = {
-        "Denmark Superliga": "DNK", "Austrian Bundesliga": "AUT",
-        "Sweden Allsvenskan": "SWE", "Norway Eliteserien": "NOR",
-        "Finland Veikkausliiga": "FIN", "Ireland Premier Division": "IRL",
-        "Argentina Primera Division": "ARG", "Brazil Serie A": "BRA",
-        "Japan J-League": "JPN", "Mexico Liga MX": "MEX",
-        "China Super League": "CHN", "USA MLS": "USA",
-    }
+    # DERIVED from config/leagues.json (football_data_code + model_type), never a hand copy: the
+    # copies here had drifted from the registry and left out Romanian Superliga (ENABLED and tipped)
+    # plus Scottish League One/Two, so their football-data history was never downloaded (Data Truth
+    # audit finding 45). Standard leagues use the per-season mmz4281 files, new-format the one file.
+    std_leagues, new_leagues = _fd_download_tables()
 
     frames = []
 
@@ -466,6 +467,9 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
             try:
                 r = requests.get(url, timeout=15, headers=HEADERS)
                 if r.status_code != 200:
+                    # Named, never silent: a 404/503 used to drop this league-season from
+                    # training and serving history with no trace (Data Truth audit finding 43).
+                    log.warning(f"[data] {league} {season_label}: HTTP {r.status_code} — not in history this run")
                     continue
                 raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
                                   on_bad_lines="skip", low_memory=False)
@@ -507,19 +511,26 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
         try:
             r = requests.get(url, timeout=15, headers=HEADERS)
             if r.status_code != 200:
+                log.warning(f"[data] {league}: HTTP {r.status_code} — not in history this run")
                 continue
             raw = pd.read_csv(StringIO(r.text), encoding="utf-8-sig",
                               on_bad_lines="skip", low_memory=False)
-            if "Season" in raw.columns:
-                raw = raw[raw["Season"].astype(str).str.contains(
-                    "2022|2023|2024|2025|2026")].copy()
             df = pd.DataFrame()
             df["date"] = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
-            df = df[df["date"].notna()].copy()
+            # The same window as the standard leagues (the last 4 campaigns, rolling by itself),
+            # by DATE. This was the literal Season filter '2022|2023|2024|2025|2026', which drops
+            # every row from the 2027 calendar seasons on (Data Truth audit findings 32, 36, 46).
+            df = df[df["date"] >= pd.Timestamp(f"{_start - 4}-01-01")].copy()
             if df.empty:
                 continue
             df["league"] = league
-            df["season"] = raw.get("Season", "2025/26").values[:len(df)] if "Season" in raw.columns else "2025/26"
+            # By INDEX, never by position: `.values[:len(df)]` after dropping rows shifted every
+            # label onto the wrong fixture, and a file with no Season column was told '2025/26'.
+            if "Season" in raw.columns:
+                df["season"] = raw.loc[df.index, "Season"].astype(str).to_numpy()
+            else:
+                log.warning(f"[data] {league}: no Season column — season left empty, not invented")
+                df["season"] = np.nan
             df["home_team"] = raw.get("Home", np.nan)
             df["away_team"] = raw.get("Away", np.nan)
             for out_col, src_col in [
@@ -1625,17 +1636,26 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         "Serie A":           "I1",
         "Ligue 1":           "F1",
     }
-    _STD_URL = "https://www.football-data.co.uk/mmz4281/2526/{code}.csv"
-    for lg_name, code in _HT_EXTRA.items():
-        # Skip if already loaded via local CSV
-        if any(lg_name in str(f.get("league", "")) for f in [{"league": f["league"].iloc[0]} for f in frames if not f.empty]):
+    # The CURRENT and PREVIOUS campaigns, derived from the date and labelled to match. This was the
+    # literal 2526 folder labelled '2025/26', so HT history never got the season being played
+    # (Data Truth audit finding 44).
+    _STD_URL = "https://www.football-data.co.uk/mmz4281/{season}/{code}.csv"
+    _n = __import__("datetime").datetime.now()
+    _y0 = _n.year if _n.month >= 7 else _n.year - 1
+    _ht_seasons = [(f"{y % 100:02d}{(y + 1) % 100:02d}", f"{y}/{(y + 1) % 100:02d}") for y in (_y0, _y0 - 1)]
+    # Leagues already loaded via local CSV, decided ONCE - checked inside the loop, the current
+    # season's own download would make the previous season look "already loaded".
+    _local = {str(f["league"].iloc[0]) for f in frames if not f.empty}
+    for (lg_name, code), (s_code, s_label) in [(lc, s) for lc in _HT_EXTRA.items() for s in _ht_seasons]:
+        if any(lg_name in lg for lg in _local):
             continue
         try:
             import requests as _req
             from io import StringIO as _SIO
-            r = _req.get(_STD_URL.format(code=code), timeout=20,
+            r = _req.get(_STD_URL.format(season=s_code, code=code), timeout=20,
                          headers={"User-Agent": "Mozilla/5.0"})
             if r.status_code != 200:
+                log.warning(f"[data] HT extra {lg_name} {s_label}: HTTP {r.status_code}")
                 continue
             raw = pd.read_csv(_SIO(r.text), encoding="utf-8-sig", on_bad_lines="skip", low_memory=False)
             if "FTHG" not in raw.columns:
@@ -1644,7 +1664,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             df["date"]      = pd.to_datetime(raw.get("Date"), dayfirst=True, errors="coerce")
             df = df[df["date"].notna()].copy()
             df["league"]    = lg_name
-            df["season"]    = "2025/26"
+            df["season"]    = s_label
             df["home_team"] = raw.get("HomeTeam", np.nan)
             df["away_team"] = raw.get("AwayTeam", np.nan)
             for out_col, src_col in [
@@ -1664,9 +1684,9 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             df["odds_over35"]  = _pick_odds(raw, _OVER35_COLS)
             df = df[df["home_team"].notna() & df["away_team"].notna()]
             frames.append(df)
-            log.debug(f"HT extra: {lg_name} {len(df)} rows")
+            log.debug(f"HT extra: {lg_name} {s_label} {len(df)} rows")
         except Exception as e:
-            log.debug(f"HT extra {lg_name}: {e}")
+            log.warning(f"[data] HT extra {lg_name} {s_label} skipped ({type(e).__name__}: {e})")
 
     if not frames:
         raise RuntimeError(f"No match sheets found in {path}")
