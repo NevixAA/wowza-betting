@@ -1,7 +1,7 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-01T17:45:31Z",
+ "generated_at": "2026-11-01T18:56:50Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
@@ -13,7 +13,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 39 known (baseline); 1 baseline entr(ies) now gone",
+   "value": "0 new default(s); 39 known (baseline); 0 baseline entr(ies) now gone",
    "rule": "no NEW invented default in production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder): RED if any site is not in config/data_truth_baseline.json; GREEN otherwise (baseline entries each carry a reason)",
    "detail": ""
   },
