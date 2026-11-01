@@ -38,7 +38,9 @@ a whole. Any hand edit here is overwritten by the next build: change the code in
 * Data: NOT in this repo. `dashboard_data/remote_mirror.py` downloads the manifest's data files from
   `https://raw.githubusercontent.com/NevixAA/wowza-betting/main/<path>` into the same relative paths
   at startup and then at most every 10 minutes (the `deploy/SLIM` marker switches it on).
-* Built from v9 commit: `{sha}` at {built}.
+* Built from v9 commit: `{sha}` at {built}. Build id `{build_id}`, dashboard schema {schema}.
+* Code/data skew: `deploy/BUILD_INFO.json` records this build; the app compares it with v9's manifest
+  at the mirrored data SHA and warns (STALE_BUILD / INCOMPATIBLE / UNKNOWN) when they disagree.
 
 Full instructions: `deploy/README_DASHBOARD_DEPLOY.md`.
 """
@@ -56,7 +58,8 @@ def _git_sha() -> str:
 def _gitignore(data_paths: list[str], code_paths: list[str]) -> str:
     lines = ["# GENERATED. Data below is downloaded at runtime by dashboard_data/remote_mirror.py;",
              "# it must never be committed to the slim repo.",
-             "deploy/.mirror_sync.json", "**/.*.tmp", "dashboard_data/_remote_cache/",
+             "deploy/.mirror_sync.json", "deploy/.v9_manifest_at_data.json", "**/.*.tmp",
+             "dashboard_data/_remote_cache/",
              "__pycache__/", "*.pyc", ".env", ".api_keys", ".streamlit/secrets.toml", ""]
     code_tops = {p.split("/")[0] for p in code_paths if "/" in p}
     whole = sorted({p.split("/")[0] for p in data_paths if "/" in p} - code_tops)
@@ -65,6 +68,28 @@ def _gitignore(data_paths: list[str], code_paths: list[str]) -> str:
     lines.append("# individual data files")
     lines += [f"/{p}" for p in data_paths if p.split("/")[0] not in whole]
     return "\n".join(lines) + "\n"
+
+
+def schema_version() -> int:
+    """DASHBOARD_SCHEMA_VERSION from dashboard_data/remote_mirror.py (single source of truth)."""
+    import re
+    txt = (ROOT / "dashboard_data" / "remote_mirror.py").read_text(encoding="utf-8")
+    m = re.search(r"^DASHBOARD_SCHEMA_VERSION\s*=\s*(\d+)", txt, re.M)
+    if not m:
+        raise SystemExit("DASHBOARD_SCHEMA_VERSION not found in dashboard_data/remote_mirror.py")
+    return int(m.group(1))
+
+
+def build_id(root: Path, code: list[str]) -> str:
+    """Content digest of the code files that make up this build (stable across rebuilds of the same
+    code, different the moment any shipped code byte changes)."""
+    import hashlib
+    h = hashlib.sha256()
+    for rel in sorted(code):
+        h.update(rel.encode("utf-8") + b"\0")
+        h.update((root / rel).read_bytes())
+        h.update(b"\0")
+    return h.hexdigest()[:16]
 
 
 def build(out: Path, force: bool = False) -> dict:
@@ -99,6 +124,11 @@ def build(out: Path, force: bool = False) -> dict:
         raise SystemExit(f"manifest code files missing from the checkout: {missing}")
 
     sha = _git_sha()
+    schema = schema_version()
+    if m.get("schema_version") != schema:
+        raise SystemExit(f"manifest schema_version {m.get('schema_version')} != code DASHBOARD_SCHEMA_VERSION "
+                         f"{schema}: regenerate it (python scripts/dashboard_manifest.py --write)")
+    bid = build_id(ROOT, code)
     if sha == "unknown":
         sha = f"unknown (manifest traced at {m.get('v9_commit')})"
     built = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -108,15 +138,18 @@ def build(out: Path, force: bool = False) -> dict:
         "This tree is the SLIM dashboard deployment. Its presence switches on\n"
         "dashboard_data/remote_mirror.py (data downloaded from v9's public raw URLs).\n", encoding="utf-8")
     shutil.copy2(REQS, out / "requirements.txt")
-    (out / "README.md").write_text(README.format(sha=sha, built=built), encoding="utf-8")
+    (out / "README.md").write_text(README.format(sha=sha, built=built, build_id=bid, schema=schema),
+                                   encoding="utf-8")
     (out / ".gitignore").write_text(_gitignore(data, code),encoding="utf-8")
     (out / "deploy" / "BUILD_INFO.json").write_text(json.dumps(
         {"built_at_utc": built, "v9_commit_of_manifest": m.get("v9_commit"), "v9_head_at_build": _git_sha(),
+         "dashboard_build_id": bid, "schema_version": schema,
          "code_files": len(code), "data_files_mirrored": len(data)}, indent=1), encoding="utf-8")
 
     total = sum(p.stat().st_size for p in out.rglob("*") if p.is_file() and ".git" not in p.parts)
     n = sum(1 for p in out.rglob("*") if p.is_file() and ".git" not in p.parts)
-    return {"out": str(out), "files": n, "bytes": total, "mb": round(total / 1e6, 2)}
+    return {"out": str(out), "files": n, "bytes": total, "mb": round(total / 1e6, 2), "build_id": bid,
+            "schema_version": schema}
 
 
 def main(argv=None) -> int:

@@ -26,6 +26,7 @@ import argparse
 import ast
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -328,6 +329,12 @@ def _is_noise(rel: str) -> bool:
             or parts[-1] in SECRET_NAMES or rel.endswith((".py", ".pyc")) or "/skills/" in rel)
 
 
+def _schema_version(root: Path = ROOT) -> int:
+    m = re.search(r"^DASHBOARD_SCHEMA_VERSION\s*=\s*(\d+)",
+                  (root / "dashboard_data" / "remote_mirror.py").read_text(encoding="utf-8"), re.M)
+    return int(m.group(1)) if m else 0
+
+
 def build_manifest(trace: dict, root: Path = ROOT) -> dict:
     tracked = set(_git(root, "ls-files", "-z").split("\0")) - {""}
     code = set(ALWAYS_CODE) | set(ASSETS) | static_closure(root)
@@ -383,6 +390,9 @@ def build_manifest(trace: dict, root: Path = ROOT) -> dict:
                  "scripts/build_dashboard_repo.py (code) and dashboard_data/remote_mirror.py (data). Do not hand-edit.",
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "v9_commit": _git(root, "rev-parse", "HEAD").strip() or None,
+        # The dashboard data contract version (dashboard_data/remote_mirror.DASHBOARD_SCHEMA_VERSION).
+        # The slim app compares this, read from v9 at the mirrored data SHA, with its own build.
+        "schema_version": _schema_version(root),
         "code": code_e,
         "data": data,
         "excluded": excluded,

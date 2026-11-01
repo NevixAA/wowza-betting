@@ -30,6 +30,18 @@ Streamlit Cloud's egress IPs are shared with other tenants):
 Downloads are pinned to one commit SHA when it is known, so a sync is a consistent snapshot.
 Each file is written to a temp file and atomically renamed; on any failure the old copy stays.
 
+CODE/DATA SKEW (R2 finding 32, 2026-11-01). The slim app's CODE is whatever build was last pushed;
+its DATA is v9 main at the mirrored SHA. The two can drift apart (pages changed in v9 but the slim
+repo was not rebuilt, or a page needs a file the old build never mirrors). compatibility() compares
+  * the build's deploy/BUILD_INFO.json (dashboard build id = digest of the code files, source v9 SHA,
+    schema version, the manifest it was built from) with
+  * v9's deploy/dashboard_manifest.json AT THE MIRRORED DATA SHA (downloaded by sync() into
+    deploy/.v9_manifest_at_data.json),
+and returns COMPATIBLE / STALE_BUILD / INCOMPATIBLE / UNKNOWN / NOT_SYNCED / BUILD_INFO_MISSING
+(LOCAL_CHECKOUT outside slim mode). Only COMPATIBLE and LOCAL_CHECKOUT are healthy: an unknown or
+incompatible schema is never shown as healthy. Bump DASHBOARD_SCHEMA_VERSION whenever a page starts
+depending on a data shape older data cannot satisfy.
+
 FRESHNESS. Data freshness shown on the pages still comes from file CONTENT (dashboard_data.core),
 never from mtime. What this module records - when it last synced, at which SHA, each file's ETag -
 lives in deploy/.mirror_sync.json and is reported by status(); it is never used to judge whether
@@ -51,6 +63,13 @@ DEPLOY = ROOT / "deploy"
 MANIFEST = DEPLOY / "dashboard_manifest.json"
 SLIM_MARKER = DEPLOY / "SLIM"
 SYNC_FILE = DEPLOY / ".mirror_sync.json"
+BUILD_INFO = DEPLOY / "BUILD_INFO.json"
+V9_MANIFEST_COPY = DEPLOY / ".v9_manifest_at_data.json"
+V9_MANIFEST_REL = "deploy/dashboard_manifest.json"
+
+#: The data contract between dashboard code and v9's mirrored files. Written into the manifest by
+#: scripts/dashboard_manifest.py and into BUILD_INFO.json by scripts/build_dashboard_repo.py.
+DASHBOARD_SCHEMA_VERSION = 1
 
 REPO = os.getenv("WOWZA_MIRROR_REPO", "NevixAA/wowza-betting")
 BRANCH = os.getenv("WOWZA_MIRROR_BRANCH", "main")
@@ -192,6 +211,7 @@ def sync(force_full: bool = False) -> dict:
 
     targets = files
     mode = "full"
+    changed = None
     if sha and old_sha == sha and have_all and not force_full:
         targets, mode = [], "unchanged-sha"
     elif sha and old_sha and have_all and not force_full:
@@ -216,6 +236,13 @@ def sync(force_full: bool = False) -> dict:
                         etags[rel] = etag
     # A sync that could not reach anything keeps the previous SHA, so the next one retries in full.
     ok = counts["failed"] == 0
+    # The DATA side's own manifest, at the same ref, for the code/data compatibility check. Fetched on
+    # a full sync, or when the compare API says it changed. Never counted against `ok` (the pages do
+    # not read it) and never written over the BUILD's own manifest.
+    v9m = dict(prev.get("v9_manifest") or {})
+    if mode == "full" or (mode == "compare" and V9_MANIFEST_REL in set(changed or ())):
+        _r, outcome, _e = _fetch_manifest_copy(ref)
+        v9m = {"outcome": outcome, "ref": ref, "at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     rec = {
         "synced_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()) if ok else prev.get("synced_at_utc"),
         "attempted_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -226,6 +253,7 @@ def sync(force_full: bool = False) -> dict:
         "seconds": round(time.time() - t0, 2),
         "etags": etags,
         "missing": missing,
+        "v9_manifest": v9m,
     }
     try:
         _write_atomic(SYNC_FILE, json.dumps(rec, indent=1).encode("utf-8"))
@@ -281,4 +309,95 @@ def status() -> dict:
         "counts": prev.get("counts"),
         "files": prev.get("files"),
         "running": bool(th is not None and th.is_alive()),
+        "compat": compatibility(),
     }
+
+
+# ── code/data compatibility (R2 finding 32) ───────────────────────────────────────────────────
+def _fetch_manifest_copy(ref: str) -> tuple[str, str, str | None]:
+    """Download v9's dashboard manifest at `ref` into V9_MANIFEST_COPY (never over MANIFEST)."""
+    url = f"{RAW}/{ref}/" + urllib.request.quote(V9_MANIFEST_REL)
+    try:
+        st, body, _h = _get(url)
+    except Exception:                                                # noqa: BLE001
+        return V9_MANIFEST_REL, "failed", None
+    if st != 200:
+        return V9_MANIFEST_REL, ("missing" if st == 404 else "failed"), None
+    try:
+        json.loads(body)
+        _write_atomic(V9_MANIFEST_COPY, body)
+    except Exception:                                                # noqa: BLE001
+        return V9_MANIFEST_REL, "failed", None
+    return V9_MANIFEST_REL, "updated", None
+
+
+def _read_json(p: Path) -> dict | None:
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:                                                # noqa: BLE001
+        return None
+
+
+def _paths(entries) -> set[str]:
+    return {(e["path"] if isinstance(e, dict) else str(e)) for e in (entries or [])}
+
+
+def _code_sig(entries) -> set[tuple]:
+    return {((e.get("path"), e.get("bytes")) if isinstance(e, dict) else (str(e), None))
+            for e in (entries or [])}
+
+
+HEALTHY = ("COMPATIBLE", "LOCAL_CHECKOUT")
+
+
+def compatibility() -> dict:
+    """Dashboard build vs mirrored data. Never raises. `healthy` is True only for COMPATIBLE /
+    LOCAL_CHECKOUT; everything else carries a human-readable warning."""
+    if not slim_mode():
+        return {"status": "LOCAL_CHECKOUT", "healthy": True, "schema_version": DASHBOARD_SCHEMA_VERSION,
+                "warning": None}
+    b = _read_json(BUILD_INFO) or {}
+    s = _read_json(SYNC_FILE) or {}
+    v = _read_json(V9_MANIFEST_COPY)
+    own = _read_json(MANIFEST) or {}
+    rec = {
+        "dashboard_build_id": b.get("dashboard_build_id"),
+        "built_at_utc": b.get("built_at_utc"),
+        "source_v9_sha": b.get("v9_head_at_build"),
+        "manifest_v9_commit": b.get("v9_commit_of_manifest"),
+        "build_schema_version": b.get("schema_version"),
+        "code_schema_version": DASHBOARD_SCHEMA_VERSION,
+        "mirrored_data_sha": s.get("sha"),
+        "data_manifest_v9_commit": (v or {}).get("v9_commit"),
+        "data_schema_version": (v or {}).get("schema_version"),
+        "last_successful_sync_utc": s.get("synced_at_utc"),
+        "last_attempted_sync_utc": s.get("attempted_at_utc"),
+    }
+
+    def done(status, warning, **extra):
+        rec.update(status=status, healthy=status in HEALTHY, warning=warning, **extra)
+        return rec
+
+    if not b:
+        return done("BUILD_INFO_MISSING", "deploy/BUILD_INFO.json is missing: cannot tell which code "
+                    "build is running. Rebuild the slim repo.")
+    if not s.get("synced_at_utc"):
+        return done("NOT_SYNCED", "No successful data sync yet: pages may show no data.")
+    if v is None:
+        return done("UNKNOWN", "v9's dashboard manifest at the mirrored data SHA could not be read, so "
+                    "code/data compatibility is UNKNOWN (not assumed healthy).")
+    schemas = {rec["build_schema_version"], rec["code_schema_version"], rec["data_schema_version"]}
+    if len(schemas) != 1:
+        return done("INCOMPATIBLE", f"Dashboard schema mismatch: build {rec['build_schema_version']}, "
+                    f"code {rec['code_schema_version']}, data {rec['data_schema_version']}. Pages may "
+                    "misread the data. Rebuild and push the slim repo from current v9.")
+    data_new = sorted(_paths(v.get("data")) - _paths(own.get("data")))
+    data_gone = sorted(_paths(own.get("data")) - _paths(v.get("data")))
+    code_diff = sorted({p for p, _ in (_code_sig(v.get("code")) ^ _code_sig(own.get("code")))})
+    if data_new or data_gone or code_diff:
+        return done("STALE_BUILD", f"The deployed dashboard code is older than v9's dashboard at the "
+                    f"mirrored SHA ({len(code_diff)} code file(s) differ, {len(data_new)} data file(s) "
+                    f"new, {len(data_gone)} dropped). Rebuild and push the slim repo.",
+                    code_files_differ=code_diff[:20], data_files_new=data_new[:20],
+                    data_files_dropped=data_gone[:20])
+    return done("COMPATIBLE", None)

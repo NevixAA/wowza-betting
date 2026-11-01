@@ -130,13 +130,30 @@ def ev_lb(p_lb: float, best_odds: float, tx_cost: float = DEFAULT_TX_COST) -> fl
 
 
 # ── decision ──────────────────────────────────────────────────────────────────
+MISSING_MODEL_PROBABILITY = "MISSING_MODEL_PROBABILITY"
+
+
+def valid_probability(p) -> bool:
+    """A real model probability: finite and in [0, 1]. None / NaN / out-of-range is MISSING, and
+    missing never becomes 0.5 (R2 finding 30: unknown data must never create confidence)."""
+    try:
+        x = float(p)
+    except (TypeError, ValueError):
+        return False
+    return x == x and 0.0 <= x <= 1.0
+
+
 @dataclass
 class Candidate:
     market: str
     over_odds: float
     under_odds: float | None = None
     best_odds: float | None = None          # best price available across books
-    p_model: float = 0.5
+    # Was 0.5: a Candidate built without a model probability silently carried a coin flip into the
+    # blend. Now None, and classify() returns NO_BET / MISSING_MODEL_PROBABILITY (R2 finding 30).
+    # Dormant API in production (only power_devig/proportional_devig are imported, by clv_capture);
+    # the serving shadow engine is src/market_edge.py, which already fails closed (MISSING_MODEL).
+    p_model: float | None = None
     book_fair_probs: dict = field(default_factory=dict)
     exchange_prob: float | None = None
     n_eff: int = 0
@@ -154,6 +171,8 @@ def classify(c: Candidate) -> dict:
            "p_lb": None, "ev_lb": None, "abs_edge": None}
 
     # ── hard gates ──
+    if not valid_probability(c.p_model):
+        out["reason"] = MISSING_MODEL_PROBABILITY; return out
     if not c.settlement_aligned:
         out["reason"] = "settlement feed not aligned (odds vs outcome definition)"; return out
     if best > MAX_BET_ODDS:
