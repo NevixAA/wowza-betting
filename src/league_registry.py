@@ -19,6 +19,13 @@ iterated, never counted twice. Resolution is EXACT (after trimming whitespace): 
 or case-folding match, because a near-name that silently resolves is the same failure shape as a
 near-name that silently routes to the Standard model (R2 finding 8).
 
+PER-LEAGUE FACTS (LR-1.1). Facts the code used to type next to a league name - prop coverage, the FPL
+league, competition type (club league / club cup / national teams), timezones, OddsAPI keys - live
+in the registry too and are read through prop_leagues(), prop_sport_keys(), odds_api_sport_key(),
+odds_api_sport_keys_for(), sport_key_to_league(), timezone(), competition_type(), leagues_of_type(),
+fpl_league(), provider_name() and same_club_spellings(). An unknown league or a fact the registry
+does not hold returns None (or an empty list): never a default.
+
 THIS MODULE MUST NOT IMPORT config: config.py imports it.
 """
 from __future__ import annotations
@@ -26,7 +33,7 @@ from __future__ import annotations
 import json
 import sys
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timezone as _tz
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +43,23 @@ HEALTH_FILE = ROOT / "output" / "league_registry_health.json"
 MODEL_TYPES = ("standard", "new_format")
 PRODUCTION_STATES = ("ENABLED", "ENABLED_PROVIDER_UNSUPPORTED", "PAPER", "TRAINING_ONLY", "COLLECTION_ONLY")
 SEASON_RULE_TYPES = ("start_year", "calendar_year", "end_year", "fixed")
+COMPETITION_TYPES = ("club_league", "club_cup", "national_teams")
+
+_IANA: set | None = None
+
+
+def _iana_zones() -> set:
+    """Every IANA zone this interpreter knows; empty when it has no tz database at all (Windows
+    without the tzdata package), in which case the zone-name check is skipped rather than failing
+    every league - config.py refuses to start on a validation error."""
+    global _IANA
+    if _IANA is None:
+        try:
+            import zoneinfo
+            _IANA = set(zoneinfo.available_timezones())
+        except Exception:                                                  # noqa: BLE001
+            _IANA = set()
+    return _IANA
 
 
 class RegistryError(ValueError):
@@ -154,6 +178,10 @@ def validate(reg: dict) -> list[str]:
         if e.get("paper") and not e.get("enabled"):
             errs.append(f"{n}: a paper league must stay enabled (config.PAPER_LEAGUES rule)")
         errs += [f"{n}: {m}" for m in _validate_season_rule(e.get("season_rule"))]
+        errs += [f"{n}: {m}" for m in _validate_facts(e)]
+    fpl = [e.get("name") for e in leagues if e.get("fpl") is True]
+    if len(fpl) > 1:
+        errs.append(f"fpl is true for {len(fpl)} leagues {fpl}: FPL scores exactly one league")
     # aliases: never a canonical name, never two targets, never chained
     seen: dict[str, str] = {}
     for e in leagues:
@@ -176,7 +204,54 @@ def validate(reg: dict) -> list[str]:
             if v in owner:
                 errs.append(f"{fld} {v!r} used by two leagues ({owner[v]} / {e['name']})")
             owner[v] = e["name"]
+    # an extra OddsAPI key is still one league's key: never another league's primary or extra key
+    key_owner = {e["odds_api_sport_key"]: e["name"] for e in leagues if e.get("odds_api_sport_key")}
+    for e in leagues:
+        for k in e.get("odds_api_extra_sport_keys") or []:
+            if k in key_owner and key_owner[k] != e.get("name"):
+                errs.append(f"odds_api_sport_key {k!r} used by two leagues ({key_owner[k]} / {e.get('name')})")
+            elif k in key_owner:
+                errs.append(f"{e.get('name')}: extra OddsAPI key {k!r} repeats its own primary key")
+            key_owner[k] = e.get("name")
     return errs
+
+
+def _validate_facts(e: dict) -> list[str]:
+    """The per-league facts added in LR-1.1 (competition type, props, FPL, timezone, extra OddsAPI
+    keys, same-club spellings). Each is REQUIRED to be well-formed when present; competition_type,
+    props and fpl are required on every entry so a consumer never has to assume one."""
+    out = []
+    if e.get("competition_type") not in COMPETITION_TYPES:
+        out.append(f"competition_type {e.get('competition_type')!r} not in {COMPETITION_TYPES}")
+    for flag in ("props", "fpl"):
+        if not isinstance(e.get(flag), bool):
+            out.append(f"{flag} must be true or false, got {e.get(flag)!r}")
+    if e.get("props") is True and not e.get("api_football_id"):
+        out.append("props league must have an api_football_id (the prop pipeline fetches by id)")
+    if e.get("fpl") is True and e.get("competition_type") != "club_league":
+        out.append("the fpl league must be a club_league")
+    tz = e.get("timezone")
+    if tz is not None:
+        if not isinstance(tz, str) or not tz.strip() or tz != tz.strip():
+            out.append(f"timezone {tz!r} must be a non-empty IANA name or null")
+        elif _iana_zones() and tz not in _iana_zones():
+            out.append(f"timezone {tz!r} is not an IANA zone")
+    if e.get("competition_type") == "club_league" and e.get("enabled") and not tz:
+        out.append("enabled club league must have a timezone (kickoff times would be shown in a guessed zone)")
+    extra = e.get("odds_api_extra_sport_keys")
+    if extra is not None and (not isinstance(extra, list)
+                              or not all(isinstance(k, str) and k.strip() == k and k for k in extra)
+                              or len(set(extra)) != len(extra)):
+        out.append(f"odds_api_extra_sport_keys {extra!r} must be a list of distinct non-empty keys")
+    if extra and not e.get("odds_api_sport_key"):
+        out.append("odds_api_extra_sport_keys without a primary odds_api_sport_key")
+    pairs = e.get("same_club_spellings")
+    if pairs is not None:
+        if not isinstance(pairs, list) or not all(
+                isinstance(p, list) and len(p) == 2 and all(isinstance(s, str) and s.strip() == s and s for s in p)
+                and p[0] != p[1] for p in pairs):
+            out.append(f"same_club_spellings {pairs!r} must be a list of [spelling, other spelling] pairs")
+    return out
 
 
 def _validate_season_rule(rule) -> list[str]:
@@ -267,6 +342,88 @@ def derive(path: Path | None = None) -> Derived:
     return d
 
 
+# ── per-league facts (LR-1.1) ───────────────────────────────────────────────────────────────────
+# Each accessor takes a canonical name OR a registered alias and returns None for an unknown league
+# or a fact the registry does not hold: the caller must skip and log, never substitute a value.
+def _fact(league, fld, path: Path | None = None):
+    e = entry(league, path) if league is not None else None
+    if e is None:
+        return None
+    v = e.get(fld)
+    return None if v in (None, "") else v
+
+
+def prop_leagues(path: Path | None = None) -> LeagueMap:
+    """{canonical name: API-Football id} for every league the player-prop pipeline covers, in
+    registry order. Replaces player_model/config.py PROP_LEAGUES (aliases such as "World Cup" still
+    resolve on lookup)."""
+    return LeagueMap({e["name"]: e["api_football_id"] for e in leagues(path) if e.get("props") is True},
+                     alias_map(path))
+
+
+def prop_sport_keys(path: Path | None = None) -> LeagueMap:
+    """{canonical name: OddsAPI sport key} for prop leagues that have one. Replaces
+    player_model/odds_fetcher.py PROP_SPORT_KEYS; extra keys (UCL qualification) come from
+    `odds_api_sport_keys_for` / `sport_key_to_league`."""
+    return LeagueMap({e["name"]: e["odds_api_sport_key"] for e in leagues(path)
+                      if e.get("props") is True and e.get("odds_api_sport_key")}, alias_map(path))
+
+
+def odds_api_sport_key(league, path: Path | None = None) -> str | None:
+    """The league's primary OddsAPI sport key, or None (unknown league / no key registered)."""
+    return _fact(league, "odds_api_sport_key", path)
+
+
+def odds_api_sport_keys_for(league, path: Path | None = None) -> list[str]:
+    """Primary + extra OddsAPI keys of one league (empty list when it has none)."""
+    e = entry(league, path) if league is not None else None
+    if e is None or not e.get("odds_api_sport_key"):
+        return []
+    return [e["odds_api_sport_key"], *(e.get("odds_api_extra_sport_keys") or [])]
+
+
+def sport_key_to_league(path: Path | None = None) -> dict:
+    """{OddsAPI sport key: canonical league} over every primary and extra key."""
+    return {k: e["name"] for e in leagues(path) for k in odds_api_sport_keys_for(e["name"], path)}
+
+
+def timezone(league, path: Path | None = None) -> str | None:
+    """IANA timezone of the league, or None when the registry holds none (multi-country competitions,
+    and leagues no source in the repos gives a zone for). Never 'UTC' by default."""
+    return _fact(league, "timezone", path)
+
+
+def competition_type(league, path: Path | None = None) -> str | None:
+    """'club_league' | 'club_cup' | 'national_teams', or None for an unknown league."""
+    return _fact(league, "competition_type", path)
+
+
+def leagues_of_type(ctype: str, path: Path | None = None) -> list[str]:
+    """Canonical names of every registry league of one competition type, in registry order."""
+    if ctype not in COMPETITION_TYPES:
+        raise ValueError(f"competition type {ctype!r} not in {COMPETITION_TYPES}")
+    return [e["name"] for e in leagues(path) if e.get("competition_type") == ctype]
+
+
+def fpl_league(path: Path | None = None) -> str | None:
+    """Canonical name of the one league Fantasy Premier League scores, or None if none is flagged."""
+    hit = [e["name"] for e in leagues(path) if e.get("fpl") is True]
+    return hit[0] if hit else None
+
+
+def provider_name(league, provider: str, path: Path | None = None):
+    """A provider's own id/name record for the league (e.g. provider='fbref' -> {'id', 'slug'}),
+    or None."""
+    names = _fact(league, "provider_names", path) or {}
+    return names.get(provider)
+
+
+def same_club_spellings(league, path: Path | None = None) -> list[tuple[str, str]]:
+    """Registered pairs of history spellings of ONE club in this league (sources that never overlap
+    in time, so no same-day evidence can link them). Empty list when none are registered."""
+    return [tuple(p) for p in (_fact(league, "same_club_spellings", path) or [])]
+
+
 # ── health ──────────────────────────────────────────────────────────────────────────────────────
 def consistency_with_config(cfg=None) -> dict:
     """Does the LIVE config (after the auto-league overlay) still agree with the registry?
@@ -308,7 +465,7 @@ def consistency_with_config(cfg=None) -> dict:
 
 
 def health(routing: dict | None = None, now: datetime | None = None) -> dict:
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(_tz.utc)
     out = {"generated_at": now.isoformat(timespec="seconds"), "registry_file": "config/leagues.json"}
     try:
         reg = json.loads(REGISTRY_FILE.read_text(encoding="utf-8"))
@@ -322,7 +479,8 @@ def health(routing: dict | None = None, now: datetime | None = None) -> dict:
                      "standard": sum(e.get("model_type") == "standard" for e in ls),
                      "new_format": sum(e.get("model_type") == "new_format" for e in ls),
                      "enabled": sum(bool(e.get("enabled")) for e in ls),
-                     "paper": sum(bool(e.get("paper")) for e in ls)}
+                     "paper": sum(bool(e.get("paper")) for e in ls),
+                     "props": sum(e.get("props") is True for e in ls)}
     out["aliases"] = {a: e["name"] for e in ls for a in e.get("aliases", []) or []}
     try:
         cons = consistency_with_config()
@@ -335,6 +493,8 @@ def health(routing: dict | None = None, now: datetime | None = None) -> dict:
             gaps.append(f"{e['name']}: enabled with no OddsAPI sport key and no PROVIDER_UNSUPPORTED evidence")
         if e.get("model_type") and not e.get("api_football_id"):
             gaps.append(f"{e['name']}: model league with no API-Football id")
+        if e.get("competition_type") == "club_league" and not e.get("timezone"):
+            gaps.append(f"{e['name']}: club league with no timezone in any repo source")
     out["coverage_gaps"] = gaps
     if routing is not None:
         out["last_predict_routing"] = routing

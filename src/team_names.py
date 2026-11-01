@@ -84,6 +84,24 @@ _ALIASES = {
     "austria wien": "austria vienna",
     "atletico mineiro": "atletico mg",
     "argentinos juniors": "argentinos jrs",
+    # Data Truth repair 2026-11-01 (data profile: unresolved_club_name). Same rule as above: ONE
+    # spelling of the club in its league's history bank (fd_history + af_history), and the same
+    # club proven at fixture level - on every ledger/quote fixture of the predict spelling, the
+    # bank row for that league, date (+-1 day) and the resolved opponent carries exactly this
+    # history spelling in the club's slot (counts in brackets).
+    "estudiantes": "estudiantes l p",           # Argentina; Estudiantes de Rio Cuarto is another club (27/27)
+    "gimnasia la plata": "gimnasia l p",        # Argentina; Gimnasia Mendoza is another club (26/29)
+    "cercle brugge ksv": "cercle brugge",       # Belgium; tokens also hit Club Brugge (2/2)
+    "oh leuven": "oud heverlee leuven",         # Belgium (4/4)
+    "beijing fc": "beijing guoan",              # China; Beijing Renhe last played 2019 (24/24)
+    "boston united": "boston utd",              # National League (6/6)
+    "inverness ct": "inverness c",              # Scottish Championship (6/6)
+    "raith rovers": "raith rvs",                # Scottish Championship (4/4)
+    "airdrie united": "airdrie utd",            # Scottish League One (4/4)
+    "queen of the south": "queen of sth",       # Scottish League One (4/4)
+    "sporting cp": "sp lisbon",                 # Portugal (4/4)
+    "vitoria sc": "guimaraes",                  # Portugal; Vitoria Setubal is "Setubal" (4/4)
+    "basaksehir": "buyuksehyr",                 # Turkey (6/6)
 }
 
 
@@ -131,6 +149,21 @@ _RESULT_ALIASES = {
     # refuse it as ambiguous; the alias names the one spelling to use.
     "saint etienne": "st etienne",
     "urawa red diamonds": "urawa reds",
+    # Data Truth repair 2026-11-01: clubs whose history bank holds TWO spellings of the one club
+    # (a duplicate identity, finding 37), so the token tiers refuse them as ambiguous. Proven the
+    # same club at fixture level: both spellings sit in the club's slot on the same league + date
+    # + opponent as the predict spelling. Settlement only - in _ALIASES they would pick one half
+    # of the club's form history, a model-input change that waits for the identity merge.
+    "belgrano de cordoba": "belgrano",          # Argentina: 'Belgrano' 18 / 'Belgrano Cordoba' 20
+    "instituto de cordoba": "instituto",        # Argentina: 'Instituto' 19 / 'Instituto Cordoba' 18
+    "chapecoense": "chapecoense sc",            # Brazil: 'Chapecoense-SC' 30 / 'Chapecoense-sc' 24
+    "sc paderborn": "paderborn",                # Bundesliga 2: 'Paderborn' 2 / 'SC Paderborn 07' 3
+    "shanghai sipg fc": "shanghai port",        # China (renamed 2021): 'Shanghai Port' 24 / 'SHANGHAI SIPG' 7
+    "st patricks athletic": "st patricks",      # Ireland: 'St. Patricks' 24 / "St Patrick's Athl." 25
+    "kyoto purple sanga": "kyoto sanga",        # Japan: 'Kyoto Sanga' 13 / 'Kyoto' 20
+    "andorra cf": "andorra",                    # La Liga 2: 'Andorra' 19 / 'FC Andorra' 10
+    "cd castellon": "castellon",                # La Liga 2: 'Castellon' 17 / 'Castellón' 8
+    "pumas": "unam pumas",                      # Liga MX: 'UNAM Pumas' 21 / 'U.N.A.M. - Pumas' 18
 }
 
 
