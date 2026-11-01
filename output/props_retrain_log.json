@@ -390,7 +390,169 @@
         ],
         "review": null
       }
+    },
+    "2026-11-01": {
+      "goals": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_goals_20261101T105740Z_acf69110",
+        "champion_version": "props_goals_legacy_1592478c",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 14637,
+        "logloss_old": 0.262433,
+        "logloss_new": 0.262295,
+        "ll_delta": -0.0001382,
+        "ll_ci": [
+          -0.0002159,
+          -5.86e-05
+        ],
+        "review": null
+      },
+      "goals2": {
+        "promoted": false,
+        "verdict": "SHADOW_MORE",
+        "why": "QUALIFIED on the holdout (all holdout criteria met); no prospective period yet - frozen for period 2, not promoted",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_goals2_20261101T105740Z_24e7091d",
+        "champion_version": "props_goals2_legacy_426e3bb5",
+        "parked": true,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 1366,
+        "logloss_old": 0.043277,
+        "logloss_new": 0.043132,
+        "ll_delta": -0.0001454,
+        "ll_ci": [
+          -0.0001976,
+          -9.4e-05
+        ],
+        "review": null
+      },
+      "assists": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_assists_20261101T105740Z_7f2b9665",
+        "champion_version": "props_assists_legacy_6c56f3fd",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 10724,
+        "logloss_old": 0.220241,
+        "logloss_new": 0.220233,
+        "ll_delta": -8.2e-06,
+        "ll_ci": [
+          -9.95e-05,
+          7.37e-05
+        ],
+        "review": null
+      },
+      "sot": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot_20261101T105740Z_47c0e809",
+        "champion_version": "props_sot_legacy_8e31d4d8",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 39840,
+        "logloss_old": 0.476738,
+        "logloss_new": 0.476624,
+        "ll_delta": -0.0001137,
+        "ll_ci": [
+          -0.0001791,
+          -4.73e-05
+        ],
+        "review": null
+      },
+      "sot2": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot2_20261101T105740Z_7ea0d800",
+        "champion_version": "props_sot2_legacy_a3c186a8",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 9452,
+        "logloss_old": 0.186046,
+        "logloss_new": 0.18598,
+        "ll_delta": -6.59e-05,
+        "ll_ci": [
+          -0.000134,
+          1.9e-06
+        ],
+        "review": null
+      },
+      "sot3": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot3_20261101T105740Z_479123d9",
+        "champion_version": "props_sot3_legacy_805e72e2",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 2181,
+        "logloss_old": 0.061092,
+        "logloss_new": 0.061126,
+        "ll_delta": 3.43e-05,
+        "ll_ci": [
+          -3.32e-05,
+          0.0001042
+        ],
+        "review": null
+      },
+      "sot4": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero, slope_not_worse, prediction_canary",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_sot4_20261101T105740Z_39bb358c",
+        "champion_version": "props_sot4_legacy_960f5a9b",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 174146,
+        "holdout_events": 463,
+        "logloss_old": 0.018422,
+        "logloss_new": 0.018424,
+        "ll_delta": 1.8e-06,
+        "ll_ci": [
+          -6e-07,
+          4.5e-06
+        ],
+        "review": null
+      },
+      "cards": {
+        "promoted": false,
+        "verdict": "KEEP_CHAMPION",
+        "why": "failed: material_improvement, ci_excludes_zero",
+        "gate_version": "PG-PROPS-1.0",
+        "candidate_version": "props_cards_20261101T105740Z_34d1e59c",
+        "champion_version": "props_cards_legacy_1e8f8ce7",
+        "parked": false,
+        "rows": 876130,
+        "holdout_n": 175226,
+        "holdout_events": 22341,
+        "logloss_old": 0.372412,
+        "logloss_new": 0.372409,
+        "ll_delta": -3.6e-06,
+        "ll_ci": [
+          -3.75e-05,
+          3.02e-05
+        ],
+        "review": null
+      }
     }
   },
-  "latest_run": "2026-10-25"
+  "latest_run": "2026-11-01"
 }
