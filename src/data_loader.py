@@ -270,6 +270,137 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     return d
 
 
+def _canonical_season_labels(d: pd.DataFrame) -> pd.Series:
+    """Season label DERIVED from (league, date) by the registry's season rules (src.season_resolver):
+    split-season leagues 'YYYY/YY', calendar-year leagues 'YYYY', J1 by its eras. A league the
+    registry does not know keeps its stored label."""
+    from src.season_resolver import resolve
+    dt = pd.to_datetime(d["date"], errors="coerce")
+    lg = d["league"].astype(str)
+    ym = dt.dt.strftime("%Y-%m-01")
+    lab = {}
+    for league, first in set(zip(lg, ym)):
+        if first == "NaT" or not isinstance(first, str):
+            continue
+        r = resolve(league, first)
+        if not str(r.season).isdigit():
+            continue
+        s = int(r.season)
+        if "calendar_year" in r.rule or "fixed" in r.rule:
+            lab[(league, first)] = str(s)
+        else:
+            start = s - 1 if "end_year" in r.rule else s
+            lab[(league, first)] = f"{start}/{(start + 1) % 100:02d}"
+    new = pd.Series([lab.get(k) for k in zip(lg, ym)], index=d.index, dtype=object)
+    return new.where(new.notna(), d.get("season"))
+
+
+# One club, two spellings, from sources that never overlap in time (2026-11-01 audit of the merged
+# history): no same-day evidence can exist, so the pairs are named.
+_SAME_CLUB_NO_OVERLAP = {
+    "Mexico Liga MX": [("U.N.A.M. - Pumas", "UNAM Pumas")],
+    "La Liga 2": [("Celta B", "Celta de Vigo II")],
+    "Championship": [("Sheffield United", "Sheffield Utd")],
+    "League One": [("Sheffield United", "Sheffield Utd")],
+}
+
+
+def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
+    """{league: {alias: canonical}} from same-day, same-score fixtures where ONE side's name is
+    identical and the other differs - 'Stoke City v Hull' next to 'Stoke v Hull'. A club cannot
+    play twice on one day, so the differing names are one club. identity_repair (frozen
+    v9r-identity-1.0, used by the repaired Standard recipe) only counts pairs where BOTH names
+    differ, so these duplicates survived. Same safeguards: >= min_dates distinct dates, same club
+    by src.team_names, the two names never met, one-to-one; newest spelling is canonical."""
+    from collections import Counter, defaultdict
+    from src.identity_repair import _same_club
+    d = df[df["home_goals"].notna() & df["away_goals"].notna()].copy()
+    d["_d"] = pd.to_datetime(d["date"]).dt.normalize()
+    ev: dict = defaultdict(Counter)
+    for (lg, dt, _hg, _ag), g in d.groupby(["league", "_d", "home_goals", "away_goals"], sort=False):
+        if len(g) < 2:
+            continue
+        rows = list(zip(g["home_team"].astype(str), g["away_team"].astype(str)))
+        for i in range(len(rows)):
+            for j in range(i + 1, len(rows)):
+                (h1, a1), (h2, a2) = rows[i], rows[j]
+                if (h1 == h2) != (a1 == a2):                 # exactly one side identical
+                    x, y = (a1, a2) if h1 == h2 else (h1, h2)
+                    ev[lg][(tuple(sorted((x, y))), dt)] += 1
+    last = pd.concat([d[["league", "home_team", "_d"]].rename(columns={"home_team": "t"}),
+                      d[["league", "away_team", "_d"]].rename(columns={"away_team": "t"})]
+                     ).groupby(["league", "t"])["_d"].max().to_dict()
+    met = defaultdict(set)
+    for lg, h, a in zip(d["league"], d["home_team"].astype(str), d["away_team"].astype(str)):
+        met[lg].add(tuple(sorted((h, a))))
+    out: dict = {}
+    for lg, cnt in ev.items():
+        dates = Counter(k for (k, _dt) in cnt)            # distinct dates per name pair
+        strong = [(k, n) for k, n in dates.items() if n >= min_dates and k not in met[lg]
+                  and _same_club(*k)]
+        partners: dict = defaultdict(list)
+        for (x, y), n in strong:
+            partners[x].append((n, y))
+            partners[y].append((n, x))
+        m = {}
+        for (x, y), n in strong:
+            if max(partners[x])[1] != y or max(partners[y])[1] != x:
+                continue
+            canon, alias = sorted((x, y), key=lambda t: (last.get((lg, t), pd.Timestamp(0)), t),
+                                  reverse=True)
+            m[alias] = canon
+        if m:
+            out[lg] = m
+    return out
+
+
+def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
+    """ONE club, ONE fixture, ONE season label - for every model track, not only Standard repaired.
+
+    The merged history carried the same match twice under two spellings and two labels
+    ('Sheffield Wednesday' 2023 next to 'Sheffield Weds' 2023/24, 'Stoke City' 2026 next to 'Stoke'
+    2026/27): 3,158 duplicate fixtures in 8 split leagues, calendar labels whose group spans two
+    real campaigns (Championship '2025' = half of 2024/25 + half of 2025/26), and clubs split in
+    two (Belgrano / Belgrano Cordoba, Kyoto / Kyoto Sanga, Urawa / Urawa Reds, UNAM). Season-to-date
+    features - the NF model's top feature - averaged across campaigns and half-histories
+    (Data Truth audit finding 37).
+
+    Season labels come from the registry rules; clubs and duplicates go through
+    src.identity_repair.canonicalise_and_dedupe (same-day evidence, >= 3 dates; score conflicts
+    quarantined, never guessed) - the step the repaired Standard recipe already serves with.
+    Rollback: WOWZA_IDENTITY_DEDUPE=0."""
+    if os.getenv("WOWZA_IDENTITY_DEDUPE", "1").strip() == "0" or out.empty:
+        return out
+    try:
+        before = len(out)
+        out = out.copy()
+        out["season"] = _canonical_season_labels(out)
+        from src.identity_repair import canonicalise_and_dedupe
+        one_side = _one_side_aliases(out)
+        # Spellings of one club that never share a day (so no same-day evidence exists); the
+        # most recently seen spelling is canonical.
+        _last = pd.concat([out[["league", "home_team", "date"]].rename(columns={"home_team": "t"}),
+                           out[["league", "away_team", "date"]].rename(columns={"away_team": "t"})]
+                          ).groupby(["league", "t"])["date"].max().to_dict()
+        for lg, pairs in _SAME_CLUB_NO_OVERLAP.items():
+            for x, y in pairs:
+                if (lg, x) in _last and (lg, y) in _last:
+                    canon, alias = sorted((x, y), key=lambda t: _last[(lg, t)], reverse=True)
+                    one_side.setdefault(lg, {})[alias] = canon
+        out, rep = canonicalise_and_dedupe(out, alias_map=one_side)
+        log.info(f"[identity] one-side same-day aliases: "
+                 f"{sum(len(m) for m in one_side.values())} in {len(one_side)} league(s)")
+        log.info(f"[identity] {rep['n_aliases']} club aliases, {rep['team_cells_renamed']:,} names "
+                 f"unified, {rep['duplicate_rows_removed']:,} duplicate fixtures removed, "
+                 f"{rep['quarantined_fixtures']} score-conflict fixture(s) quarantined "
+                 f"({before:,} -> {len(out):,} rows)")
+        return out
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[identity] canonical identity/season step FAILED ({type(e).__name__}: {e}) — "
+                  f"history left as merged")
+        return out
+
+
 def _fd_download_tables() -> tuple[dict, dict]:
     """({league: code} for per-season mmz4281 files, {league: code} for /new/ files), from the
     registry: every league with a football_data_code, standard -> mmz4281, new_format -> /new/."""
@@ -1487,6 +1618,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
         # Club identity BEFORE any enrichment or feature work: a club split across two
         # spellings is two teams to everything downstream.
         out = _canonicalise_clubs(out)
+        out = _canonical_identity_and_seasons(out)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only
