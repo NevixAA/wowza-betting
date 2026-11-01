@@ -193,8 +193,11 @@ jobs:
           # tiers, stakes and Telegram logic are unchanged. Every row says which served it
           # (predictions.csv serving_recipe + model_version; ledger model_version).
           # ROLLBACK = set this to "legacy_v9" (or delete the line). models/model_v9_standard.pkl is the
-          # untouched legacy champion. A missing/broken repaired file falls back to legacy per row,
-          # stamped legacy_v9_fallback (system_health turns RED).
+          # untouched legacy champion. FAIL CLOSED since R2-A (2026-11-01): a missing/broken repaired file
+          # leaves Standard O/U 2.5 with NO probability and NO tip (stamped v9_repaired_failed,
+          # output/standard_serving_health.json FAIL, system_health RED) - no silent legacy fallback. Any
+          # value other than legacy_v9 / v9_repaired stops predict (configuration error).
+          # Owner rollback doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
           STANDARD_OU25_SERVING_RECIPE: "v9_repaired"
           LEAGUE_SNIPER_CAP: "0.12"
           MARKSMAN_THRESHOLD: "0.08"
@@ -276,6 +279,7 @@ jobs:
                    output/live_tips.csv output/live_games.csv \
                    output/worldcup_history.json output/sharp_history.json \
                    output/predict_health.json output/feature_health.json \
+                   output/league_registry_health.json output/season_resolution_health.json output/standard_serving_health.json \
                    output/stake_plan.csv output/stake_audit.csv output/direction_conflicts.csv \
                    output/drift_shadow.csv \
                    output/edge_engine_shadow.csv output/edge_engine_health.json \

@@ -286,6 +286,9 @@ def stamp_for(model_type: str, path: Path | None = None) -> dict:
     Cached per process (predict loads each model once). NEVER RAISES: any failure returns an
     honest UNKNOWN rather than a guess, because a crashed predict sends no tips at all.
     """
+    if model_type == NO_MODEL:
+        return {"model_version": NO_MODEL_VERSION, "retrain_batch_id": "", "training_cutoff": "",
+                "prediction_role": "NONE"}
     if model_type in _version_cache:
         return _version_cache[model_type]
     out = {"model_version": UNKNOWN_LEGACY, "retrain_batch_id": "", "training_cutoff": "",
@@ -307,20 +310,34 @@ def stamp_for(model_type: str, path: Path | None = None) -> dict:
     return out
 
 
+#: pseudo model type for a row NO O/U model scored (predict fail-closed, R2-A 2026-11-01)
+NO_MODEL = "none"
+NO_MODEL_VERSION = "NONE_FAIL_CLOSED"
+
+
 def ou_model_for(model_type_tag: str) -> str:
-    """Which O/U model scored a row. Mirrors src/predict.py:332-348 exactly, INCLUDING its
-    fallbacks: a new-format row is scored by the standard model when the new-format file is
-    missing, and an `unknown` league row is always scored by the standard model."""
-    if str(model_type_tag) == "new_format" and MODEL_FILES["newformat"].exists():
+    """Which O/U model scored a row. Mirrors src/predict.predict_upcoming routing exactly.
+
+    Since R2-A (2026-11-01) predict FAILS CLOSED: an `unknown` league row and a new-format row
+    whose new-format artifact is missing are scored by NO model (p_over25 empty). They used to be
+    scored by the standard model, and this function used to say so."""
+    t = str(model_type_tag)
+    if t == "standard":
+        return "standard"
+    if t == "new_format" and MODEL_FILES["newformat"].exists():
         return "newformat"
-    return "standard"
+    return NO_MODEL
 
 
 def ou_model_for_row(model_type_tag, serving_recipe=None) -> str:
     """`ou_model_for` that also honours the Standard O/U 2.5 serving switch: a row predict stamped
-    serving_recipe == "v9_repaired" was scored by the "standard_repaired" model."""
-    if str(serving_recipe) == "v9_repaired" and str(model_type_tag) == "standard":
-        return "standard_repaired"
+    serving_recipe == "v9_repaired" was scored by the "standard_repaired" model; a row stamped
+    "v9_repaired_failed" (repaired scoring failed, fail closed) was scored by NO model."""
+    if str(model_type_tag) == "standard":
+        if str(serving_recipe) == "v9_repaired":
+            return "standard_repaired"
+        if str(serving_recipe) == "v9_repaired_failed":
+            return NO_MODEL
     return ou_model_for(model_type_tag)
 
 

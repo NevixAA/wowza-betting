@@ -783,6 +783,10 @@ def mode_predict(historical: "pd.DataFrame" = None) -> "pd.DataFrame":
         side_payloads=side_payloads,
         days_ahead=7,
     )
+    # R2-A: league routing (unknown league / missing NF artifact refused), resolved seasons and the
+    # Standard O/U 2.5 serving outcome -> output/*_health.json. Never raises.
+    from src.predict import write_integrity_health
+    write_integrity_health()
 
     if preds is None or preds.empty:
         log.warning("No predictions generated.")

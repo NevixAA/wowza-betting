@@ -166,7 +166,11 @@ def _nf(df):
 
 
 # ── config ────────────────────────────────────────────────────────────────────────────────────
-@pytest.mark.parametrize("val,expect", [(None, "legacy_v9"), ("", "legacy_v9"), ("garbage", "legacy_v9"),
+# R2-A (2026-11-01, finding 17): an invalid value is no longer laundered into legacy_v9. config keeps
+# loading (dashboard / notifier / results must not die) but marks it INVALID; predict refuses to start
+# (see test_invalid_recipe_is_a_configuration_error).
+@pytest.mark.parametrize("val,expect", [(None, "legacy_v9"), ("", "legacy_v9"), ("garbage", "INVALID"),
+                                        ("v9_repaird", "INVALID"),
                                         ("legacy_v9", "legacy_v9"), ("v9_repaired", "v9_repaired")])
 def test_switch_value_parsing_defaults_to_legacy(val, expect):
     env = {k: v for k, v in os.environ.items() if k != "STANDARD_OU25_SERVING_RECIPE"}
@@ -411,21 +415,59 @@ def test_rollback_env_restores_legacy_exactly(predict_env, monkeypatch):
     assert "serving_recipe" in R.columns and "serving_recipe" not in back.columns
 
 
-def test_broken_repaired_file_falls_back_to_legacy_stamped(predict_env, monkeypatch, tmp_path):
+def test_broken_repaired_file_fails_closed_no_legacy_fallback(predict_env, monkeypatch, tmp_path):
+    """R2-A finding 17: a repaired scoring failure leaves Standard rows with NO probability and NO
+    bet (it used to re-score them with the legacy model and keep tipping). NF rows are untouched."""
     L = predict_env("legacy_v9")
     monkeypatch.setattr(config, "MODEL_FILE_STANDARD_REPAIRED", tmp_path / "missing.pkl")
     R = predict_env("v9_repaired")
-    np.testing.assert_array_equal(_std(R)["p_over25"].to_numpy(), _std(L)["p_over25"].to_numpy())
-    assert set(_std(R)["serving_recipe"]) == {"legacy_v9_fallback"}
-    assert not _std(R)["serving_no_form"].any()
+    assert _std(R)["p_over25"].isna().all()
+    assert set(_std(R)["serving_recipe"]) == {SS.FAILED}
+    assert set(_std(R)["bet"]) == {"AVOID"} and set(_std(R)["signal_tier"]) == {"AVOID"}
+    assert not (_std(R)["bet_stake"] > 0).any()
+    np.testing.assert_array_equal(_nf(R)["p_over25"].to_numpy(), _nf(L)["p_over25"].to_numpy())
+    h = SS.last_health()
+    assert h["status"] == "FAIL" and h["unscored_fail_closed"] == len(_std(R)) and h["error"]
+    from src.betting import generate_bets
+    b = generate_bets(R)
+    assert b.empty or not b["league"].isin(config.STANDARD_FORMAT_LEAGUES).any()
+
+
+def test_repaired_scoring_exception_fails_closed(predict_env, monkeypatch):
+    def boom(*a, **k):
+        raise RuntimeError("feature build exploded")
+    monkeypatch.setattr(SS, "score_fixtures", boom)
+    R = predict_env("v9_repaired")
+    assert _std(R)["p_over25"].isna().all() and set(_std(R)["serving_recipe"]) == {SS.FAILED}
+    assert "feature build exploded" in SS.last_health()["error"]
+
+
+def test_invalid_recipe_is_a_configuration_error(predict_env, monkeypatch):
+    monkeypatch.setattr(config, "STANDARD_OU25_SERVING_RECIPE_RAW", "v9_repaird")
+    with pytest.raises(SS.ServingConfigError):
+        predict_env("legacy_v9")
+    monkeypatch.setattr(config, "STANDARD_OU25_SERVING_RECIPE_RAW", "v9_repaired")
+    with pytest.raises(SS.ServingConfigError):
+        predict_env("INVALID")                          # what config.py stores for a bad env value
+
+
+def test_invalid_recipe_raises_before_odds_are_fetched(monkeypatch):
+    from src import predict as P
+    calls = []
+    monkeypatch.setattr(P, "_fetch_odds_api", lambda *a, **k: calls.append(1))
+    monkeypatch.setattr(config, "STANDARD_OU25_SERVING_RECIPE_RAW", "garbage")
+    with pytest.raises(SS.ServingConfigError):
+        P.predict_upcoming(pd.DataFrame(), {}, payload_newformat=None)
+    assert calls == []
 
 
 # ── attribution + health ─────────────────────────────────────────────────────────────────────
 def test_row_attribution_mapping():
     assert reg.ou_model_for_row("standard", "v9_repaired") == "standard_repaired"
-    assert reg.ou_model_for_row("standard", "legacy_v9_fallback") == "standard"
+    assert reg.ou_model_for_row("standard", "legacy_v9_fallback") == "standard"     # pre-R2 boards
+    assert reg.ou_model_for_row("standard", "v9_repaired_failed") == reg.NO_MODEL   # fail closed
     assert reg.ou_model_for_row("standard", None) == "standard"
-    assert reg.ou_model_for_row("unknown", "v9_repaired") == "standard"
+    assert reg.ou_model_for_row("unknown", "v9_repaired") == reg.NO_MODEL           # R2-A: no fallback
     assert reg.PRED_COLUMN["standard_repaired"] == "p_over25"
 
 
@@ -444,6 +486,9 @@ def test_system_health_serving_check(tmp_path, monkeypatch):
     pd.DataFrame({"model_type": ["standard"], "serving_recipe": ["legacy_v9_fallback"],
                   "model_version": ["standard_1"]}).to_csv(tmp_path / "predictions.csv", index=False)
     assert S.standard_serving_health()["status"] == S.RED
+    pd.DataFrame({"model_type": ["standard"], "serving_recipe": ["v9_repaired_failed"],
+                  "model_version": ["NONE_FAIL_CLOSED"]}).to_csv(tmp_path / "predictions.csv", index=False)
+    assert S.standard_serving_health()["status"] == S.RED                      # failed closed
     pd.DataFrame({"model_type": ["standard"], "serving_recipe": ["v9_repaired"],
                   "model_version": ["UNREGISTERED_standard_repaired_abc"]}).to_csv(
         tmp_path / "predictions.csv", index=False)
