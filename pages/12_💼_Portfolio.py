@@ -229,9 +229,8 @@ with st.sidebar:
                          help="paper / data-only by default = 0")
     cap_pct = st.slider("Max stake cap (% of bank)", 0.5, 10.0, 5.0, 0.5)
     with st.expander("Advanced filters"):
-        src = st.radio("Data source", ["Live only", "Backtest (⚠ inflated)", "Live + Backtest"], index=0)
-        discount = st.checkbox("Reality-discount edges (÷5)", value=False,
-                               help="Backtest edges run ~5× hot vs live — discount to approximate reality.")
+        # Live tips only: simulated backtest bets are not part of the production record (2026-11-01)
+        src, discount = "Live only", False
         _cut = config.PERFORMANCE_CUTOFF_DATE
         post_fix_only = st.checkbox(f"Count only post-fix tips (from {_cut})", value=True,
                                     help="The new-format model had a calibration bug fixed 2026-08-09. "

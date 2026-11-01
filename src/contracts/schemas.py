@@ -440,7 +440,7 @@ SETTLEMENT_ROW = Schema(
     "valid with blank result and pnl.",
     kind="settlement", writers=("output/bets_ledger.csv", "output/side_bets_ledger.csv"),
     columns=(
-        Col("source", allowed=("live", "backtest")), Col("match_date", "date", nullable=False),
+        Col("source", allowed=("live",)), Col("match_date", "date", nullable=False),
         Col("league", nullable=False), Col("home_team", nullable=False), Col("away_team", nullable=False),
         ODDS("odds"), Col("signal_tier", allowed=TIERS), Col("model_type", allowed=TRACKS + ("unknown",)),
         Col("result", allowed=RESULTS), Col("pnl", "float"), ODDS("closing_odds"), Col("clv_pct", "float"),
