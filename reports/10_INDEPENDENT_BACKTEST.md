@@ -179,5 +179,5 @@ Each test plants one broken row and asserts the independent implementation rejec
 * HEAVY.lock was shared with AU1/AU2/AU3. Every heavy step took the lock (`common.heavy_lock`).
 * The independent results source cannot find 314 of 2,365 independent bets (13%; Finland, China, Brazil, La Liga 2 and MLS names, plus fixtures after the parquets' last date 2026-10-29/31). These stay **unsettled**, never imputed.
 * Regime ordering uses committer time; regime-file edits made on branches take effect at their merge commit time.
-* The full existing v9 suite run is logged in the hand-back (known pre-existing failures per the brief).
+* Existing v9 suite at the audited ref (`python -m pytest tests -q --ignore=tests/audit`, under HEAVY.lock): **1,505 passed, 27 skipped, 4 failed**. All four failures are on the brief's known pre-existing list: `test_dashboard_staked_basis`, `test_fantasy_v2` archive, `test_promotion_gate` passing_all_criteria, `test_shadow_settlement` health artifact. The run rewrote tracked `src/cloudbet/__pycache__/*.pyc`; those were restored with `git checkout` and are not committed.
 * Independence grep (run from the worktree): `grep -rnE "^\s*(from|import) " scripts/audit/independent_backtest/*.py tests/audit/*.py` lists only stdlib, pandas, numpy, pytest and `scripts.audit.independent_backtest`.
