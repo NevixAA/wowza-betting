@@ -33,6 +33,25 @@ import config
 log = logging.getLogger(__name__)
 
 
+# ── Calibration space (research 2026-11-01) ───────────────────────────────────
+# "prob" (legacy, default): Platt and the meta blend are logistic regressions on PROBABILITIES. A
+# logistic on p has slope coef/4 at p=0.5, so with the fitted coefficients (1.6-4.0) every stage
+# pulls predictions toward 50% - measured on the repaired Standard frame, the across-league spread
+# of mean P(over) falls 0.054 actual -> 0.014 served. "logit": the same regressions on log-odds,
+# where an already-calibrated input maps to itself (coef 1, intercept 0). Research option only;
+# payloads without `calibration_space` behave exactly as before.
+CALIBRATION_SPACES = ("prob", "logit")
+
+
+def _to_space(p, space: str):
+    if space == "prob":
+        return p
+    if space == "logit":
+        q = np.clip(np.asarray(p, dtype=float), 1e-6, 1 - 1e-6)
+        return np.log(q / (1 - q))
+    raise ValueError(f"unknown calibration space {space!r}")
+
+
 # ── Calibrated model wrapper (module-level so pickle works) ───────────────────
 
 class _CalibratedModel:
@@ -40,12 +59,15 @@ class _CalibratedModel:
     Platt scaling uses LogisticRegression on raw probabilities — regularized,
     no overfit risk on small calibration sets (unlike IsotonicRegression).
     """
-    def __init__(self, pipe, calibrator):
+    def __init__(self, pipe, calibrator, space: str = "prob"):
         self._pipe       = pipe
         self._calibrator = calibrator
+        if space != "prob":                     # legacy objects keep their exact attribute set
+            self._space = space
 
     def predict_proba(self, X):
         raw = self._pipe.predict_proba(X)[:, 1].reshape(-1, 1)
+        raw = _to_space(raw, getattr(self, "_space", "prob"))
         cal = self._calibrator.predict_proba(raw)[:, 1]
         cal = np.clip(cal, 0.001, 0.999)
         return np.column_stack([1 - cal, cal])
@@ -151,6 +173,7 @@ def train(
     sample_weight=None,
     feature_cols: "list[str] | None" = None,
     recipe: str = "legacy_v9",
+    calibration_space: str = "prob",
 ) -> dict:
     """
     Train on the chronological training split, calibrate on the test split.
@@ -162,9 +185,11 @@ def train(
     AND reported on the same test block (bug 6), and weights indexed by a reset index (bug 8).
     recipe="v9_repaired" -> train_repaired() (research only).
     """
+    if calibration_space not in CALIBRATION_SPACES:
+        raise ValueError(f"unknown calibration space {calibration_space!r}")
     if recipe == "v9_repaired":
         return train_repaired(df, target=target, sample_weight=sample_weight,
-                              feature_cols=feature_cols)
+                              feature_cols=feature_cols, calibration_space=calibration_space)
     if recipe != "legacy_v9":
         raise ValueError(f"unknown model recipe {recipe!r}")
     import numpy as np
@@ -229,12 +254,12 @@ def train(
 
         # Platt scaling calibration (sigmoid) on cal split — regularized, no overfit risk
         # Replaces IsotonicRegression which overfits on small cal sets (<300 samples)
-        raw_proba_cal = pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1)
+        raw_proba_cal = _to_space(pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1), calibration_space)
         platt = LogisticRegression(C=1.0, max_iter=1000)
         platt.fit(raw_proba_cal, y_cal,
                   sample_weight=w_cal if w_cal is not None else None)
 
-        calibrated = _CalibratedModel(pipe, platt)
+        calibrated = _CalibratedModel(pipe, platt, space=calibration_space)
 
         proba = calibrated.predict_proba(X_test)[:, 1]
         metrics = {
@@ -260,9 +285,9 @@ def train(
     # The test split was never seen by any base model, so there is no leakage.
     if len(results) >= 2:
         try:
-            meta_X = np.column_stack([
+            meta_X = _to_space(np.column_stack([
                 results[n]["model"].predict_proba(X_test)[:, 1] for n in results
-            ])
+            ]), calibration_space)
             meta_clf = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs")
             meta_clf.fit(meta_X, y_test)
             meta_proba = meta_clf.predict_proba(meta_X)[:, 1]
@@ -278,6 +303,8 @@ def train(
         except Exception as e:
             log.warning(f"Meta-logistic training failed, falling back to mean: {e}")
 
+    if calibration_space != "prob":             # legacy "prob" results stay a plain dict
+        results = TrainResults(results, meta={"calibration_space": calibration_space})
     return results
 
 
@@ -348,7 +375,8 @@ def four_block_split(df: pd.DataFrame, target: str, sample_weight=None) -> dict:
 
 
 def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
-                   feature_cols: "list[str] | None" = None) -> TrainResults:
+                   feature_cols: "list[str] | None" = None,
+                   calibration_space: str = "prob") -> TrainResults:
     """Same model family as legacy (LR + GB + LightGBM, Platt, meta-logistic), with every P0
     training defect removed:
 
@@ -400,8 +428,9 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
         pipe = Pipeline([("scaler", StandardScaler()), ("clf", base_clf)])
         pipe.fit(X_base, y_base, clf__sample_weight=w_base)
         platt = LogisticRegression(C=1.0, max_iter=1000)
-        platt.fit(pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1), y_cal, sample_weight=w_cal)
-        calibrated = _CalibratedModel(pipe, platt)
+        platt.fit(_to_space(pipe.predict_proba(X_cal)[:, 1].reshape(-1, 1), calibration_space),
+                  y_cal, sample_weight=w_cal)
+        calibrated = _CalibratedModel(pipe, platt, space=calibration_space)
         metrics = _m(y_hold, calibrated.predict_proba(X_hold)[:, 1])
         metrics.update(n_train=int(len(base)), n_cal=int(len(cal)), n_meta=int(len(meta_b)),
                        n_test=int(len(hold)), evaluated_on="holdout")
@@ -409,10 +438,12 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
 
     served_hold = None
     if len(results) >= 2:
-        meta_X = np.column_stack([results[k]["model"].predict_proba(X_meta)[:, 1] for k in results])
+        meta_X = _to_space(np.column_stack([results[k]["model"].predict_proba(X_meta)[:, 1]
+                                            for k in results]), calibration_space)
         meta_clf = LogisticRegression(C=1.0, max_iter=500, solver="lbfgs")
         meta_clf.fit(meta_X, y_meta)
-        hold_X = np.column_stack([results[k]["model"].predict_proba(X_hold)[:, 1] for k in results])
+        hold_X = _to_space(np.column_stack([results[k]["model"].predict_proba(X_hold)[:, 1]
+                                            for k in results]), calibration_space)
         served_hold = meta_clf.predict_proba(hold_X)[:, 1]
         mm = _m(y_hold, served_hold)
         mm.update(n_meta=int(len(meta_b)), n_test=int(len(hold)), evaluated_on="holdout")
@@ -429,6 +460,8 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
         "served_holdout_metrics": _m(y_hold, served_hold),
         "target": target,
     }
+    if calibration_space != "prob":             # absent key == "prob": legacy payload unchanged
+        results.meta["calibration_space"] = calibration_space
     log.info(f"  [v9_repaired] served holdout {results.meta['served_holdout_metrics']}  "
              f"blocks={ {k: v['rows'] for k, v in results.meta['blocks'].items()} }")
     return results
@@ -573,7 +606,7 @@ def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
 
     if meta_model is not None and len(probas) >= 2:
         try:
-            meta_X   = np.column_stack(probas)
+            meta_X   = _to_space(np.column_stack(probas), payload.get("calibration_space", "prob"))
             ensemble = meta_model.predict_proba(meta_X)[:, 1]
         except Exception:
             ensemble = np.mean(probas, axis=0)
