@@ -87,6 +87,7 @@ RETRAIN_BATCHES = LINEAGE_DIR / "retrain_batches.csv"
 HIGH_WATER = LINEAGE_DIR / "high_water_mark.json"
 
 UNKNOWN_LEGACY = "UNKNOWN_LEGACY"
+UNKNOWN_PRE_GATE_CUTOFF = "UNKNOWN_PRE_GATE"   # registered before the gate recorded training windows
 ROLES = ("CHAMPION", "CHALLENGER", "REJECTED", "SHADOW", "ARCHIVED")
 
 CHAMPION_HISTORY_COLS = [
@@ -299,9 +300,13 @@ def stamp_for(model_type: str, path: Path | None = None) -> dict:
             sha = sha256_file(f)
             man = _index_by_sha().get(sha)
             if man:
+                # A model registered before the promotion gate (LEGACY_PROMOTED, 126 manifests)
+                # never recorded its training window. Say so explicitly instead of leaving the
+                # field blank, which read as "not stamped" (Data Truth audit finding 48). Every
+                # gate-trained model carries its real cutoff.
                 out.update(model_version=man["model_version"],
                            retrain_batch_id=man.get("retrain_batch_id", ""),
-                           training_cutoff=man.get("training_cutoff", ""))
+                           training_cutoff=man.get("training_cutoff") or UNKNOWN_PRE_GATE_CUTOFF)
             else:
                 out["model_version"] = f"UNREGISTERED_{model_type}_{sha[:12]}"
     except Exception as e:                                             # noqa: BLE001
