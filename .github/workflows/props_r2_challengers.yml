@@ -1,0 +1,77 @@
+name: Props R2 challengers (retrospective, no promotion)
+
+# R2-D (finding 20, 2026-11-01). Trains, per props market, the LEGACY recipe and the REPAIRED
+# recipe (train-fitted persisted imputer + feature contract) on the same player_history snapshot
+# and the same chronological split, and compares them on the untouched holdout.
+#
+# RETROSPECTIVE evidence only. It never writes a serving file (models/model_player_*.pkl) and
+# never touches models/registry/props or the promotion gate: challenger payloads go to
+# models/challengers/props_r2/. Runs on GitHub Actions because the laptop must not train.
+
+concurrency:
+  group: props-r2-challengers
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [r2/props-integrity]
+    paths:
+      - .github/workflows/props_r2_challengers.yml
+      - scripts/props_r2_challengers.py
+      - player_model/props_contract.py
+      - player_model/props_feature_contract.json
+      - config/experiments/props_r2/**
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
+
+      - name: Integrity tests (gate)
+        run: python -m pytest tests/test_props_r2_integrity.py -q
+
+      - name: Replay legacy vs repaired on the chronological holdout
+        run: |
+          start=$(date +%s)
+          python scripts/props_r2_challengers.py
+          echo "replay took $(( ($(date +%s) - start) / 60 )) min"
+
+      - name: Integrity health
+        run: python -m player_model.props_integrity_health
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: props-r2-holdout-scored
+          path: output/props_r2/props_r2_holdout_scored.csv.gz
+          retention-days: 30
+
+      - name: Commit results to the R2 branch only
+        if: github.ref == 'refs/heads/r2/props-integrity'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for f in output/props_r2/props_r2_challengers.json output/player_props_integrity_health.json; do
+            git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"
+          done
+          for f in models/challengers/props_r2/*.pkl; do git add -f "$f"; done
+          git diff --staged --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "auto: props R2 challenger replay $(date -u '+%Y-%m-%d %H:%M UTC') [RETROSPECTIVE]"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin r2/props-integrity && git push origin HEAD:r2/props-integrity && exit 0
+            sleep 5
+          done
+          exit 1

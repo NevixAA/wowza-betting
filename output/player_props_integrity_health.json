@@ -1,0 +1,360 @@
+{
+  "generated_at": "2026-11-01T10:24:10Z",
+  "code_sha": "4e9c93357910c50a495df1fe923ad2bfe5242201",
+  "workstream": "R2-D (findings 20, 21, 22)",
+  "status": "WARN",
+  "status_meaning": "WARN = serving props payloads still use the legacy batch-median imputer (paper market, no staking); repaired challengers are RETROSPECTIVE only until owner review",
+  "feature_contract": {
+    "version": "PFC-1.0",
+    "sha256": "50ad676151903ebce9fc7a4d4d3d09f87c4642f99e11a815bada8cba736fe1f9",
+    "counts": {
+      "IMPUTABLE": 83,
+      "OPTIONAL_DEGRADED": 40,
+      "REQUIRED_FAIL_ROW": 12,
+      "SEMANTIC_ZERO": 3
+    },
+    "covers_feature_list": true
+  },
+  "imputer_version_repaired": "PROPS-IMPUTER-1.0",
+  "tracks": {
+    "goals": {
+      "model_type": "player_props",
+      "market": "goals",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_goals_legacy_1592478c",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "1592478c1c33d49a8508ed6a5808fda262dde65e5aa8646987814332f9da9685",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.012637601013667565,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "goals2": {
+      "model_type": "player_props",
+      "market": "goals2",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_goals2_legacy_426e3bb5",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "426e3bb5a6a6f78385b74d3af4d9efcd34bee925f24044a3f7e03349fecc52c8",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.0008241273075172348,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "assists": {
+      "model_type": "player_props",
+      "market": "assists",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_assists_legacy_6c56f3fd",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "6c56f3fdd84bbe9686abde93898dcd57c956818dc4d00683a75095d6f816619d",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.009266214347005558,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "sot": {
+      "model_type": "player_props",
+      "market": "sot",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_sot_legacy_8e31d4d8",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "8e31d4d869c5e0d22c0bf4ec5e730060e2eef99eff431ec9e3af97c275e72caa",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.003655753597006317,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "sot2": {
+      "model_type": "player_props",
+      "market": "sot2",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_sot2_legacy_a3c186a8",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "a3c186a86c808362f16f57872942533c8bc13ab8266adf6ced0adeeefb0424a1",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.005118231716094546,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "sot3": {
+      "model_type": "player_props",
+      "market": "sot3",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_sot3_legacy_805e72e2",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "805e72e2f0dc44b9d8240bd85093ce6a9560d32a952c4bc533cce7d7248326c7",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.012906881443152718,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "sot4": {
+      "model_type": "player_props",
+      "market": "sot4",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_sot4_legacy_960f5a9b",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "960f5a9ba70fd47c89641935bdeeb2f328381bae651ab4f2bf46bcad28a761f5",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 3.779812042807758e-07,
+        "rows_differing_gt_1e-9": 10,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    },
+    "cards": {
+      "model_type": "player_props",
+      "market": "cards",
+      "recipe": "props_legacy_batch_median",
+      "serving_version": "props_cards_legacy_1e8f8ce7",
+      "champion_since": "2026-10-25T12:47:02Z",
+      "artifact_sha256": "1e8f8ce712b5746f79c437137a2fb5f73f6ecd7025eef64330543ac571ddd3bb",
+      "artifact_matches_registry": true,
+      "training_cutoff": null,
+      "imputer_version": "BATCH_MEDIAN_LEGACY",
+      "feature_contract_version": "NONE",
+      "n_features": 138,
+      "missing_feature_policy": "absent column -> 0.0; NaN -> median of the scoring batch",
+      "holdout_independence": "FAIL (imputer medians include holdout rows)",
+      "chronology": "PASS (fit 0-68% | calibration 68-80% | holdout 80-100%, by date)",
+      "serving_fallback_policy": "none (props have no row-level fallback)",
+      "price_provenance": "N/A - props are PAPER permanently",
+      "training_data_note": "champion since 2026-10-25: trained on pre-2026-10-26 player_history with LEAKED injury values (point-in-time repair fb43970c)",
+      "batch_invariance": {
+        "rows": 120,
+        "nan_injected_feature": "kp_per90",
+        "max_abs_diff_single_vs_batch": 0.00972759480403193,
+        "rows_differing_gt_1e-9": 16,
+        "batch_invariant": false
+      },
+      "challenger_r2": {
+        "state": "NOT_RUN",
+        "note": "PROPS-R2 replay has not produced results"
+      },
+      "status": "WARN"
+    }
+  },
+  "fantasy_defaults": {
+    "register_version": "FANTASY-DEFAULTS-1.0",
+    "counts_by_class": {
+      "MISSING_DATA_FALLBACK": 15,
+      "DOMAIN_PRIOR": 13,
+      "OBSERVED": 2,
+      "TRAIN_FITTED_PRIOR": 4
+    },
+    "important": [
+      {
+        "id": "dc_thresholds",
+        "where": "fantasy.py:41",
+        "value": "DEF 5 / MID 4.5 / FWD 4 actions",
+        "class": "DOMAIN_PRIOR",
+        "reach": "V1->V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "SUSPECTED BUG: FPL rule is DEF>=10 CBIT, MID/FWD>=12 CBIRT; inflates dc_pts"
+      },
+      {
+        "id": "prop_model_missing_zero",
+        "where": "fantasy.py:227",
+        "value": "missing props model -> p = 0",
+        "class": "MISSING_DATA_FALLBACK",
+        "reach": "V1->V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "all attacking points vanish silently"
+      },
+      {
+        "id": "v2_p_start_from_mix",
+        "where": "fantasy_residual.py:708",
+        "value": "p_start = P60 + 0.35*P(1-59)",
+        "class": "DOMAIN_PRIOR",
+        "reach": "V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "unfitted; drives Confidence/Risk labels and captain pools"
+      },
+      {
+        "id": "v2_chance_fill",
+        "where": "fantasy_panel.py:229",
+        "value": "NaN chance -> 100 if status 'a' else 0",
+        "class": "MISSING_DATA_FALLBACK",
+        "reach": "V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": "follows FPL convention (harsh, not optimistic)"
+      },
+      {
+        "id": "v2_captain_pools",
+        "where": "fantasy_v2.py:404-425",
+        "value": "p_start 0.85 / 0.75; 0.7/0.8 x best",
+        "class": "DOMAIN_PRIOR",
+        "reach": "V2",
+        "importance": "HIGH",
+        "detectable": false,
+        "note": ""
+      }
+    ],
+    "suspected_bugs": [
+      "dc_thresholds",
+      "goal_points_gkp_6",
+      "bonus_cs_points_as_probability",
+      "status_n_not_out_v1",
+      "v1_next_gw_is_5_fixture_average",
+      "v2_p_start_unfitted",
+      "fantasy_health_pinned_aging",
+      "season_hardcoded",
+      "ranking_gate_without_ci"
+    ],
+    "fire_counts": {
+      "v1_rows": 283,
+      "p_start_exactly_0_6": 3,
+      "fpl_unmatched_rows": 0,
+      "fixtures_unavailable_rows": 0,
+      "p_goal_all_zero": false,
+      "p_assist_all_zero": false,
+      "p_sot2_all_zero": false,
+      "mean_dc_pts_by_position": {
+        "DEF": 1.282,
+        "FWD": 1.294,
+        "GKP": 0.0,
+        "MID": 1.077
+      },
+      "v2_rows": 451,
+      "v2_blank_gw_rows": 0,
+      "v2_start_rate_missing": 0
+    },
+    "behaviour_changed": false
+  }
+}
