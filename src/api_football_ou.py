@@ -494,11 +494,14 @@ def injury_features_from_context(
 ) -> dict[str, float]:
     """
     Compute key_attacker_absent_home / _away from a pre-fetched league context.
-    Returns {key_attacker_absent_home: 0/1, key_attacker_absent_away: 0/1}.
+    Returns {key_attacker_absent_home: 0/1, key_attacker_absent_away: 0/1}, or NaN for both when
+    the injuries were not fetched or the fixture id is unresolved. That used to be 0.0 ("we
+    checked and nobody is out"), which is what all 154/154 board fixtures carried
+    (Data Truth audit finding 47).
     """
-    out = {"key_attacker_absent_home": 0.0, "key_attacker_absent_away": 0.0}
+    unknown = {"key_attacker_absent_home": float("nan"), "key_attacker_absent_away": float("nan")}
     if not ctx:
-        return out
+        return unknown
 
     home_norm = _norm_name(home_team)
     away_norm = _norm_name(away_team)
@@ -506,7 +509,8 @@ def injury_features_from_context(
 
     fix_id = ctx["fixture_ids"].get((home_norm, away_norm, date_str))
     if fix_id is None:
-        return out
+        return unknown
+    out = {"key_attacker_absent_home": 0.0, "key_attacker_absent_away": 0.0}
 
     injuries     = ctx["injuries"].get(fix_id, {})
     top_scorers  = ctx["top_scorers"]

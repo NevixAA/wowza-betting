@@ -694,10 +694,13 @@ def mode_train() -> tuple:
 
     # ── Build time-decay sample weights ─────────────────────────────────────
     def _get_weights(df):
-        weights = df["season"].map(
-            lambda s: config.TRAINING_DECAY_WEIGHTS.get(s, config.DEFAULT_DECAY_WEIGHT)
-        ).fillna(config.DEFAULT_DECAY_WEIGHT)
-        return weights.values
+        # Recency from the match DATE (src.standard_repair.derived_weights: newest season 4.0, then
+        # 3/2/1.5, COVID seasons 0), the shape TRAINING_DECAY_WEIGHTS was typed to give. That map has
+        # no 2025/26 or 2026/27 key and no calendar-year labels, so 82% of rows - the two NEWEST
+        # seasons included - fell to the 1.0 default while 2024/25 got 4.0, and calendar '2020'
+        # (COVID) got 1.0 (Data Truth audit finding 33).
+        from src.standard_repair import derived_weights
+        return derived_weights(df).to_numpy()
 
     # ── Standard model — trained only on standard-format league data ────────
     log.info("\nTraining STANDARD model ...")

@@ -851,13 +851,14 @@ def build_upcoming_features(
                     _r["home_team"], _r["away_team"], _r["date"], _ctx
                 ))
             _inj_df = pd.DataFrame(_inj_rows, index=df.index)
-            df["key_attacker_absent_home"] = _inj_df["key_attacker_absent_home"].fillna(0.0)
-            df["key_attacker_absent_away"] = _inj_df["key_attacker_absent_away"].fillna(0.0)
+            # NaN stays NaN (not fetched / fixture unresolved); see injury_features_from_context.
+            df["key_attacker_absent_home"] = _inj_df["key_attacker_absent_home"]
+            df["key_attacker_absent_away"] = _inj_df["key_attacker_absent_away"]
     except Exception as e:
         # Falling back to 0 is safe, but SAY SO. A missing APIFOOTBALL_KEY (which is exactly
         # what happened in predict.yml for months) looks identical to a quiet run when this
         # is a bare `pass`. output/feature_health.json records the resulting degeneracy.
-        log.warning(f"[enrich] injury features unavailable, using defaults: {e}")
+        log.warning(f"[enrich] injury features unavailable, left NaN (not fetched): {e}")
 
     # ── Phase 3: /teams/statistics — real-time season-to-date venue averages ────
     # Overrides _venue_season_stats() values computed from FD historical data.

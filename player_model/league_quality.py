@@ -133,16 +133,36 @@ def enrich_league_quality(history: list[dict]) -> list[dict]:
     n = 5  # rolling window — keep consistent with feature_engineering ROLLING_N
 
     # ── League tier per row ───────────────────────────────────────────────────
-    def _get_tier(league: str) -> int:
-        if not isinstance(league, str):
-            return 3
-        for key, tier in LEAGUE_TIERS.items():
-            if key.lower() in league.lower() or league.lower() in key.lower():
-                return tier
-        return 3  # default: mid-tier
-
-    df["league_tier"]    = df["league"].apply(_get_tier) if "league" in df.columns else 3
+    df["league_tier"] = df["league"].apply(league_tier) if "league" in df.columns else 3
     df["league_quality"] = df["league_tier"].apply(_tier_to_quality)
+    return _enrich_rest(df, n)
+
+
+_TIERS_LC = {k.lower(): v for k, v in LEAGUE_TIERS.items()}
+
+
+def league_tier(league) -> int:
+    """EXACT league first (registry-canonical), then the LONGEST table key the name starts with
+    ('World Cup - Qualification Europe' -> 'World Cup'). The old two-way substring scan in dict
+    order gave 'La Liga 2' the top-flight 'La Liga' tier 1 (own entry 2), likewise Bundesliga 2,
+    Brazil Serie A ('Serie A') and Austrian Bundesliga: ~129k history rows on the wrong tier
+    (Data Truth audit finding 40). Unknown league -> 3 (mid-tier), as before."""
+    if not isinstance(league, str):
+        return 3
+    try:
+        from src.league_registry import canonical_name
+        canon = canonical_name(league) or league
+    except Exception:                                                  # noqa: BLE001
+        canon = league
+    for name in (canon, league):
+        if name.lower() in _TIERS_LC:
+            return _TIERS_LC[name.lower()]
+    pref = [k for k in _TIERS_LC if league.lower().startswith(k)]
+    return _TIERS_LC[max(pref, key=len)] if pref else 3
+
+
+def _enrich_rest(df: pd.DataFrame, n: int) -> list[dict]:
+    """The rest of enrich_league_quality, after league_tier/league_quality are set."""
 
     # ── Career average league quality (expanding, shift=1) ────────────────────
     grp = df.groupby("player_id", group_keys=False)
