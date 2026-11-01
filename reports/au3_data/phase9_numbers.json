@@ -1,0 +1,2735 @@
+{
+ "claim_reproduction_committed_ledger": {
+  "ledger_tier_S+M_all": {
+   "n": 142,
+   "pnl": 26.88,
+   "roi_pct": 18.9,
+   "ci_day": [
+    1.3,
+    35.5
+   ],
+   "ci_iid": [
+    1.5,
+    37.2
+   ]
+  },
+  "ledger_all_tiers_all": {
+   "n": 270,
+   "pnl": 38.18,
+   "roi_pct": 14.1,
+   "ci_day": [
+    1.5,
+    27.5
+   ],
+   "ci_iid": [
+    1.8,
+    26.0
+   ]
+  },
+  "ledger_tier_S+M_since0901": {
+   "n": 120,
+   "pnl": 16.82,
+   "roi_pct": 14.0,
+   "ci_day": [
+    -5.7,
+    31.8
+   ],
+   "ci_iid": [
+    -4.5,
+    32.7
+   ]
+  },
+  "ledger_tier_S+M_to_1031": {
+   "n": 142,
+   "pnl": 26.88,
+   "roi_pct": 18.9,
+   "ci_day": [
+    1.3,
+    35.5
+   ],
+   "ci_iid": [
+    1.5,
+    37.2
+   ]
+  }
+ },
+ "nf_btts_variants_independent_settlement": {
+  "all_live|S+M_ledger_tier|first_sight_price": {
+   "n": 139,
+   "pnl": 25.78,
+   "roi_pct": 18.5,
+   "ci_day": [
+    1.5,
+    34.1
+   ],
+   "ci_iid": [
+    1.2,
+    36.0
+   ]
+  },
+  "all_live|S+M_ledger_tier|ledger_price": {
+   "n": 139,
+   "pnl": 27.52,
+   "roi_pct": 19.8,
+   "ci_day": [
+    2.6,
+    35.5
+   ],
+   "ci_iid": [
+    2.4,
+    37.4
+   ]
+  },
+  "all_live|S+M_first_sight_tier|first_sight_price": {
+   "n": 83,
+   "pnl": 24.16,
+   "roi_pct": 29.1,
+   "ci_day": [
+    3.4,
+    53.0
+   ],
+   "ci_iid": [
+    5.5,
+    52.6
+   ]
+  },
+  "all_live|S+M_first_sight_tier|ledger_price": {
+   "n": 83,
+   "pnl": 24.34,
+   "roi_pct": 29.3,
+   "ci_day": [
+    3.5,
+    53.1
+   ],
+   "ci_iid": [
+    5.7,
+    52.9
+   ]
+  },
+  "all_live|all_tiers|first_sight_price": {
+   "n": 267,
+   "pnl": 35.03,
+   "roi_pct": 13.1,
+   "ci_day": [
+    0.9,
+    26.2
+   ],
+   "ci_iid": [
+    1.0,
+    24.7
+   ]
+  },
+  "all_live|all_tiers|ledger_price": {
+   "n": 267,
+   "pnl": 36.77,
+   "roi_pct": 13.8,
+   "ci_day": [
+    1.5,
+    26.9
+   ],
+   "ci_iid": [
+    1.5,
+    25.5
+   ]
+  },
+  "all_live|VALUABLE_first_sight|first_sight_price": {
+   "n": 184,
+   "pnl": 10.87,
+   "roi_pct": 5.9,
+   "ci_day": [
+    -6.6,
+    19.3
+   ],
+   "ci_iid": [
+    -7.6,
+    19.6
+   ]
+  },
+  "all_live|VALUABLE_first_sight|ledger_price": {
+   "n": 184,
+   "pnl": 12.43,
+   "roi_pct": 6.8,
+   "ci_day": [
+    -6.0,
+    20.2
+   ],
+   "ci_iid": [
+    -6.8,
+    20.6
+   ]
+  },
+  "since_0901|S+M_ledger_tier|first_sight_price": {
+   "n": 119,
+   "pnl": 16.42,
+   "roi_pct": 13.8,
+   "ci_day": [
+    -5.5,
+    31.6
+   ],
+   "ci_iid": [
+    -5.1,
+    32.8
+   ]
+  },
+  "since_0901|S+M_ledger_tier|ledger_price": {
+   "n": 119,
+   "pnl": 17.66,
+   "roi_pct": 14.8,
+   "ci_day": [
+    -4.6,
+    32.6
+   ],
+   "ci_iid": [
+    -4.3,
+    34.0
+   ]
+  },
+  "since_0901|S+M_first_sight_tier|first_sight_price": {
+   "n": 70,
+   "pnl": 16.12,
+   "roi_pct": 23.0,
+   "ci_day": [
+    -5.3,
+    49.7
+   ],
+   "ci_iid": [
+    -3.1,
+    48.5
+   ]
+  },
+  "since_0901|S+M_first_sight_tier|ledger_price": {
+   "n": 70,
+   "pnl": 16.15,
+   "roi_pct": 23.1,
+   "ci_day": [
+    -5.3,
+    49.8
+   ],
+   "ci_iid": [
+    -3.1,
+    48.5
+   ]
+  },
+  "since_0901|all_tiers|first_sight_price": {
+   "n": 234,
+   "pnl": 18.64,
+   "roi_pct": 8.0,
+   "ci_day": [
+    -5.2,
+    21.5
+   ],
+   "ci_iid": [
+    -4.9,
+    20.4
+   ]
+  },
+  "since_0901|all_tiers|ledger_price": {
+   "n": 234,
+   "pnl": 19.89,
+   "roi_pct": 8.5,
+   "ci_day": [
+    -4.6,
+    21.9
+   ],
+   "ci_iid": [
+    -4.5,
+    20.9
+   ]
+  },
+  "since_0901|VALUABLE_first_sight|first_sight_price": {
+   "n": 164,
+   "pnl": 2.53,
+   "roi_pct": 1.5,
+   "ci_day": [
+    -11.2,
+    15.7
+   ],
+   "ci_iid": [
+    -12.9,
+    16.0
+   ]
+  },
+  "since_0901|VALUABLE_first_sight|ledger_price": {
+   "n": 164,
+   "pnl": 3.74,
+   "roi_pct": 2.3,
+   "ci_day": [
+    -10.5,
+    16.5
+   ],
+   "ci_iid": [
+    -12.2,
+    16.8
+   ]
+  },
+  "pre_0901|S+M_ledger_tier|first_sight_price": {
+   "n": 20,
+   "pnl": 9.36,
+   "roi_pct": 46.8,
+   "ci_day": [
+    0.6,
+    86.2
+   ],
+   "ci_iid": [
+    -1.2,
+    92.3
+   ]
+  },
+  "pre_0901|S+M_ledger_tier|ledger_price": {
+   "n": 20,
+   "pnl": 9.86,
+   "roi_pct": 49.3,
+   "ci_day": [
+    3.0,
+    89.7
+   ],
+   "ci_iid": [
+    0.4,
+    95.8
+   ]
+  },
+  "pre_0901|S+M_first_sight_tier|first_sight_price": {
+   "n": 13,
+   "pnl": 8.04,
+   "roi_pct": 61.8,
+   "ci_day": [
+    11.3,
+    93.5
+   ],
+   "ci_iid": [
+    4.2,
+    118.2
+   ]
+  },
+  "pre_0901|S+M_first_sight_tier|ledger_price": {
+   "n": 13,
+   "pnl": 8.19,
+   "roi_pct": 63.0,
+   "ci_day": [
+    11.3,
+    94.8
+   ],
+   "ci_iid": [
+    4.8,
+    119.4
+   ]
+  },
+  "pre_0901|all_tiers|first_sight_price": {
+   "n": 33,
+   "pnl": 16.38,
+   "roi_pct": 49.7,
+   "ci_day": [
+    13.8,
+    86.8
+   ],
+   "ci_iid": [
+    15.4,
+    83.4
+   ]
+  },
+  "pre_0901|all_tiers|ledger_price": {
+   "n": 33,
+   "pnl": 16.88,
+   "roi_pct": 51.1,
+   "ci_day": [
+    15.0,
+    88.3
+   ],
+   "ci_iid": [
+    16.6,
+    85.1
+   ]
+  },
+  "pre_0901|VALUABLE_first_sight|first_sight_price": {
+   "n": 20,
+   "pnl": 8.34,
+   "roi_pct": 41.7,
+   "ci_day": [
+    5.0,
+    84.1
+   ],
+   "ci_iid": [
+    0.2,
+    82.2
+   ]
+  },
+  "pre_0901|VALUABLE_first_sight|ledger_price": {
+   "n": 20,
+   "pnl": 8.68,
+   "roi_pct": 43.4,
+   "ci_day": [
+    7.1,
+    86.5
+   ],
+   "ci_iid": [
+    1.0,
+    84.2
+   ]
+  }
+ },
+ "nf_btts_rows": {
+  "live_rows": 299,
+  "independently_settled": 267,
+  "ledger_settled": 270,
+  "unresolved_but_ledger_settled": 11,
+  "odds_changed_after_first_sight": 53,
+  "tier_upgraded_after_first_sight": 73
+ },
+ "concentration": [
+  {
+   "window": "all_live",
+   "league": "Argentina Primera Division",
+   "n": 125,
+   "pnl": 36.85,
+   "roi_pct": 29.5,
+   "ci_day": [
+    11.3,
+    48.5
+   ],
+   "ci_iid": [
+    10.3,
+    47.6
+   ],
+   "share_of_bets": 0.468
+  },
+  {
+   "window": "all_live",
+   "league": "Austrian Bundesliga",
+   "n": 7,
+   "pnl": 1.72,
+   "roi_pct": 24.6,
+   "ci_day": [
+    -26.0,
+    75.7
+   ],
+   "ci_iid": [
+    -47.5,
+    75.7
+   ],
+   "share_of_bets": 0.026
+  },
+  {
+   "window": "all_live",
+   "league": "Brazil Serie A",
+   "n": 46,
+   "pnl": 11.82,
+   "roi_pct": 25.7,
+   "ci_day": [
+    4.4,
+    43.9
+   ],
+   "ci_iid": [
+    -2.1,
+    51.3
+   ],
+   "share_of_bets": 0.172
+  },
+  {
+   "window": "all_live",
+   "league": "China Super League",
+   "n": 1,
+   "pnl": -1.0,
+   "roi_pct": -100.0,
+   "ci_day": [
+    -100.0,
+    -100.0
+   ],
+   "ci_iid": [
+    -100.0,
+    -100.0
+   ],
+   "share_of_bets": 0.004
+  },
+  {
+   "window": "all_live",
+   "league": "Denmark Superliga",
+   "n": 4,
+   "pnl": -0.54,
+   "roi_pct": -13.5,
+   "ci_day": [
+    -100.0,
+    73.0
+   ],
+   "ci_iid": [
+    -100.0,
+    73.0
+   ],
+   "share_of_bets": 0.015
+  },
+  {
+   "window": "all_live",
+   "league": "Finland Veikkausliiga",
+   "n": 9,
+   "pnl": -7.0,
+   "roi_pct": -77.8,
+   "ci_day": [
+    -100.0,
+    -25.0
+   ],
+   "ci_iid": [
+    -100.0,
+    -33.3
+   ],
+   "share_of_bets": 0.034
+  },
+  {
+   "window": "all_live",
+   "league": "Ireland Premier Division",
+   "n": 9,
+   "pnl": -2.02,
+   "roi_pct": -22.4,
+   "ci_day": [
+    -82.6,
+    52.4
+   ],
+   "ci_iid": [
+    -80.8,
+    37.8
+   ],
+   "share_of_bets": 0.034
+  },
+  {
+   "window": "all_live",
+   "league": "Japan J-League",
+   "n": 31,
+   "pnl": -5.61,
+   "roi_pct": -18.1,
+   "ci_day": [
+    -50.1,
+    14.7
+   ],
+   "ci_iid": [
+    -50.7,
+    14.5
+   ],
+   "share_of_bets": 0.116
+  },
+  {
+   "window": "all_live",
+   "league": "Mexico Liga MX",
+   "n": 12,
+   "pnl": 2.7,
+   "roi_pct": 22.5,
+   "ci_day": [
+    -7.7,
+    62.8
+   ],
+   "ci_iid": [
+    -19.6,
+    60.6
+   ],
+   "share_of_bets": 0.045
+  },
+  {
+   "window": "all_live",
+   "league": "Norway Eliteserien",
+   "n": 8,
+   "pnl": 1.85,
+   "roi_pct": 23.1,
+   "ci_day": [
+    -47.5,
+    65.4
+   ],
+   "ci_iid": [
+    -36.7,
+    66.6
+   ],
+   "share_of_bets": 0.03
+  },
+  {
+   "window": "all_live",
+   "league": "Sweden Allsvenskan",
+   "n": 6,
+   "pnl": -2.5,
+   "roi_pct": -41.7,
+   "ci_day": [
+    -100.0,
+    17.3
+   ],
+   "ci_iid": [
+    -100.0,
+    17.3
+   ],
+   "share_of_bets": 0.022
+  },
+  {
+   "window": "all_live",
+   "league": "USA MLS",
+   "n": 9,
+   "pnl": -1.24,
+   "roi_pct": -13.7,
+   "ci_day": [
+    -54.0,
+    17.0
+   ],
+   "ci_iid": [
+    -66.3,
+    36.8
+   ],
+   "share_of_bets": 0.034
+  },
+  {
+   "window": "all_live",
+   "league": "EX-ARGENTINA",
+   "n": 142,
+   "pnl": -1.82,
+   "roi_pct": -1.3,
+   "ci_day": [
+    -14.4,
+    11.9
+   ],
+   "ci_iid": [
+    -16.2,
+    13.7
+   ],
+   "share_of_bets": 0.532
+  },
+  {
+   "window": "all_live",
+   "league": "EX-ARGENTINA-EX-BRAZIL",
+   "n": 96,
+   "pnl": -13.65,
+   "roi_pct": -14.2,
+   "ci_day": [
+    -27.9,
+    0.7
+   ],
+   "ci_iid": [
+    -31.4,
+    2.9
+   ],
+   "share_of_bets": 0.36
+  },
+  {
+   "window": "all_live",
+   "league": "TOP5_DAYS_PROFIT_u",
+   "n": 58,
+   "pnl": 28.36,
+   "roi_pct": 3.0,
+   "ci_day": null,
+   "ci_iid": null,
+   "share_of_bets": 0.165
+  },
+  {
+   "window": "since_0901",
+   "league": "Argentina Primera Division",
+   "n": 103,
+   "pnl": 25.61,
+   "roi_pct": 24.9,
+   "ci_day": [
+    3.9,
+    47.1
+   ],
+   "ci_iid": [
+    4.0,
+    45.5
+   ],
+   "share_of_bets": 0.44
+  },
+  {
+   "window": "since_0901",
+   "league": "Austrian Bundesliga",
+   "n": 7,
+   "pnl": 1.72,
+   "roi_pct": 24.6,
+   "ci_day": [
+    -26.0,
+    75.7
+   ],
+   "ci_iid": [
+    -47.5,
+    75.7
+   ],
+   "share_of_bets": 0.03
+  },
+  {
+   "window": "since_0901",
+   "league": "Brazil Serie A",
+   "n": 39,
+   "pnl": 6.89,
+   "roi_pct": 17.7,
+   "ci_day": [
+    -5.5,
+    35.7
+   ],
+   "ci_iid": [
+    -12.2,
+    47.0
+   ],
+   "share_of_bets": 0.167
+  },
+  {
+   "window": "since_0901",
+   "league": "China Super League",
+   "n": 1,
+   "pnl": -1.0,
+   "roi_pct": -100.0,
+   "ci_day": [
+    -100.0,
+    -100.0
+   ],
+   "ci_iid": [
+    -100.0,
+    -100.0
+   ],
+   "share_of_bets": 0.004
+  },
+  {
+   "window": "since_0901",
+   "league": "Denmark Superliga",
+   "n": 4,
+   "pnl": -0.54,
+   "roi_pct": -13.5,
+   "ci_day": [
+    -100.0,
+    73.0
+   ],
+   "ci_iid": [
+    -100.0,
+    73.0
+   ],
+   "share_of_bets": 0.017
+  },
+  {
+   "window": "since_0901",
+   "league": "Finland Veikkausliiga",
+   "n": 9,
+   "pnl": -7.0,
+   "roi_pct": -77.8,
+   "ci_day": [
+    -100.0,
+    -25.0
+   ],
+   "ci_iid": [
+    -100.0,
+    -33.3
+   ],
+   "share_of_bets": 0.038
+  },
+  {
+   "window": "since_0901",
+   "league": "Ireland Premier Division",
+   "n": 9,
+   "pnl": -2.02,
+   "roi_pct": -22.4,
+   "ci_day": [
+    -82.6,
+    52.4
+   ],
+   "ci_iid": [
+    -80.8,
+    37.8
+   ],
+   "share_of_bets": 0.038
+  },
+  {
+   "window": "since_0901",
+   "league": "Japan J-League",
+   "n": 28,
+   "pnl": -6.82,
+   "roi_pct": -24.3,
+   "ci_day": [
+    -56.6,
+    7.5
+   ],
+   "ci_iid": [
+    -58.7,
+    10.9
+   ],
+   "share_of_bets": 0.12
+  },
+  {
+   "window": "since_0901",
+   "league": "Mexico Liga MX",
+   "n": 11,
+   "pnl": 3.7,
+   "roi_pct": 33.6,
+   "ci_day": [
+    10.6,
+    67.1
+   ],
+   "ci_iid": [
+    -10.8,
+    64.9
+   ],
+   "share_of_bets": 0.047
+  },
+  {
+   "window": "since_0901",
+   "league": "Norway Eliteserien",
+   "n": 8,
+   "pnl": 1.85,
+   "roi_pct": 23.1,
+   "ci_day": [
+    -47.5,
+    65.4
+   ],
+   "ci_iid": [
+    -36.7,
+    66.6
+   ],
+   "share_of_bets": 0.034
+  },
+  {
+   "window": "since_0901",
+   "league": "Sweden Allsvenskan",
+   "n": 6,
+   "pnl": -2.5,
+   "roi_pct": -41.7,
+   "ci_day": [
+    -100.0,
+    17.3
+   ],
+   "ci_iid": [
+    -100.0,
+    17.3
+   ],
+   "share_of_bets": 0.026
+  },
+  {
+   "window": "since_0901",
+   "league": "USA MLS",
+   "n": 9,
+   "pnl": -1.24,
+   "roi_pct": -13.7,
+   "ci_day": [
+    -54.0,
+    17.0
+   ],
+   "ci_iid": [
+    -66.3,
+    36.8
+   ],
+   "share_of_bets": 0.038
+  },
+  {
+   "window": "since_0901",
+   "league": "EX-ARGENTINA",
+   "n": 131,
+   "pnl": -6.96,
+   "roi_pct": -5.3,
+   "ci_day": [
+    -18.2,
+    7.5
+   ],
+   "ci_iid": [
+    -20.1,
+    10.2
+   ],
+   "share_of_bets": 0.56
+  },
+  {
+   "window": "since_0901",
+   "league": "EX-ARGENTINA-EX-BRAZIL",
+   "n": 92,
+   "pnl": -13.84,
+   "roi_pct": -15.0,
+   "ci_day": [
+    -28.8,
+    -0.5
+   ],
+   "ci_iid": [
+    -33.6,
+    3.0
+   ],
+   "share_of_bets": 0.393
+  },
+  {
+   "window": "since_0901",
+   "league": "TOP5_DAYS_PROFIT_u",
+   "n": 50,
+   "pnl": 24.25,
+   "roi_pct": -2.9,
+   "ci_day": null,
+   "ci_iid": null,
+   "share_of_bets": 0.162
+  }
+ ],
+ "splits_all_live": {
+  "odds_band": [
+   {
+    "key": "[1.0, 1.8)",
+    "n": 58,
+    "pnl": 1.99,
+    "roi_pct": 3.4,
+    "ci_day": [
+     -15.2,
+     20.3
+    ],
+    "ci_iid": [
+     -17.6,
+     23.8
+    ],
+    "hit": 0.621,
+    "mean_odds": 1.66
+   },
+   {
+    "key": "[1.8, 2.0)",
+    "n": 74,
+    "pnl": -8.98,
+    "roi_pct": -12.1,
+    "ci_day": [
+     -31.2,
+     8.1
+    ],
+    "ci_iid": [
+     -35.0,
+     8.8
+    ],
+    "hit": 0.459,
+    "mean_odds": 1.9
+   },
+   {
+    "key": "[2.0, 2.2)",
+    "n": 83,
+    "pnl": 21.22,
+    "roi_pct": 25.6,
+    "ci_day": [
+     -0.0,
+     48.2
+    ],
+    "ci_iid": [
+     2.8,
+     47.2
+    ],
+    "hit": 0.602,
+    "mean_odds": 2.09
+   },
+   {
+    "key": "[2.2, 2.5)",
+    "n": 44,
+    "pnl": 18.51,
+    "roi_pct": 42.1,
+    "ci_day": [
+     3.3,
+     76.0
+    ],
+    "ci_iid": [
+     10.0,
+     74.9
+    ],
+    "hit": 0.614,
+    "mean_odds": 2.3
+   },
+   {
+    "key": "[2.5, 99.0)",
+    "n": 8,
+    "pnl": 2.29,
+    "roi_pct": 28.7,
+    "ci_day": [
+     -67.0,
+     122.9
+    ],
+    "ci_iid": [
+     -67.8,
+     124.4
+    ],
+    "hit": 0.5,
+    "mean_odds": 2.6
+   }
+  ],
+  "month": [
+   {
+    "key": "2026-08",
+    "n": 33,
+    "pnl": 16.38,
+    "roi_pct": 49.7,
+    "ci_day": [
+     13.8,
+     86.8
+    ],
+    "ci_iid": [
+     15.4,
+     83.4
+    ],
+    "hit": 0.697,
+    "mean_odds": 2.15
+   },
+   {
+    "key": "2026-09",
+    "n": 110,
+    "pnl": 24.04,
+    "roi_pct": 21.9,
+    "ci_day": [
+     6.7,
+     38.5
+    ],
+    "ci_iid": [
+     3.2,
+     39.5
+    ],
+    "hit": 0.618,
+    "mean_odds": 1.96
+   },
+   {
+    "key": "2026-10",
+    "n": 124,
+    "pnl": -5.4,
+    "roi_pct": -4.4,
+    "ci_day": [
+     -20.5,
+     14.2
+    ],
+    "ci_iid": [
+     -22.3,
+     13.9
+    ],
+    "hit": 0.484,
+    "mean_odds": 1.98
+   }
+  ],
+  "tier_fs": [
+   {
+    "key": "MARKSMAN",
+    "n": 32,
+    "pnl": -0.22,
+    "roi_pct": -0.7,
+    "ci_day": [
+     -35.0,
+     35.1
+    ],
+    "ci_iid": [
+     -34.1,
+     32.9
+    ],
+    "hit": 0.5,
+    "mean_odds": 2.07
+   },
+   {
+    "key": "SNIPER",
+    "n": 51,
+    "pnl": 24.38,
+    "roi_pct": 47.8,
+    "ci_day": [
+     16.8,
+     77.7
+    ],
+    "ci_iid": [
+     17.1,
+     77.9
+    ],
+    "hit": 0.647,
+    "mean_odds": 2.28
+   },
+   {
+    "key": "VALUABLE",
+    "n": 184,
+    "pnl": 10.87,
+    "roi_pct": 5.9,
+    "ci_day": [
+     -6.6,
+     19.3
+    ],
+    "ci_iid": [
+     -7.6,
+     19.6
+    ],
+    "hit": 0.554,
+    "mean_odds": 1.9
+   }
+  ],
+  "tier_ledger": [
+   {
+    "key": "MARKSMAN",
+    "n": 52,
+    "pnl": 9.04,
+    "roi_pct": 17.4,
+    "ci_day": [
+     -13.7,
+     45.9
+    ],
+    "ci_iid": [
+     -9.0,
+     43.2
+    ],
+    "hit": 0.596,
+    "mean_odds": 1.99
+   },
+   {
+    "key": "SNIPER",
+    "n": 87,
+    "pnl": 16.74,
+    "roi_pct": 19.2,
+    "ci_day": [
+     -1.3,
+     37.5
+    ],
+    "ci_iid": [
+     -4.8,
+     43.3
+    ],
+    "hit": 0.54,
+    "mean_odds": 2.18
+   },
+   {
+    "key": "VALUABLE",
+    "n": 128,
+    "pnl": 9.25,
+    "roi_pct": 7.2,
+    "ci_day": [
+     -6.0,
+     22.3
+    ],
+    "ci_iid": [
+     -9.8,
+     22.9
+    ],
+    "hit": 0.57,
+    "mean_odds": 1.87
+   }
+  ],
+  "mv": [
+   {
+    "key": "UNKNOWN_LEGACY",
+    "n": 236,
+    "pnl": 42.41,
+    "roi_pct": 18.0,
+    "ci_day": [
+     5.6,
+     31.1
+    ],
+    "ci_iid": [
+     5.1,
+     30.7
+    ],
+    "hit": 0.589,
+    "mean_odds": 2.0
+   },
+   {
+    "key": "btts_20261005T101905Z_238e3419",
+    "n": 31,
+    "pnl": -7.38,
+    "roi_pct": -23.8,
+    "ci_day": [
+     -53.1,
+     7.3
+    ],
+    "ci_iid": [
+     -56.2,
+     9.8
+    ],
+    "hit": 0.387,
+    "mean_odds": 1.96
+   }
+  ],
+  "books": [
+   {
+    "key": "1",
+    "n": 4,
+    "pnl": 0.2,
+    "roi_pct": 5.0,
+    "ci_day": [
+     -100.0,
+     40.0
+    ],
+    "ci_iid": [
+     -100.0,
+     110.0
+    ],
+    "hit": 0.5,
+    "mean_odds": 2.08
+   },
+   {
+    "key": "10",
+    "n": 3,
+    "pnl": 1.45,
+    "roi_pct": 48.5,
+    "ci_day": [
+     47.0,
+     49.2
+    ],
+    "ci_iid": [
+     42.0,
+     56.5
+    ],
+    "hit": 1.0,
+    "mean_odds": 1.49
+   },
+   {
+    "key": "11",
+    "n": 8,
+    "pnl": 3.53,
+    "roi_pct": 44.1,
+    "ci_day": [
+     -5.9,
+     95.9
+    ],
+    "ci_iid": [
+     -12.8,
+     94.8
+    ],
+    "hit": 0.75,
+    "mean_odds": 1.88
+   },
+   {
+    "key": "2",
+    "n": 23,
+    "pnl": 0.46,
+    "roi_pct": 2.0,
+    "ci_day": [
+     -40.9,
+     43.9
+    ],
+    "ci_iid": [
+     -37.7,
+     40.7
+    ],
+    "hit": 0.522,
+    "mean_odds": 1.91
+   },
+   {
+    "key": "3",
+    "n": 11,
+    "pnl": 2.61,
+    "roi_pct": 23.7,
+    "ci_day": [
+     -10.6,
+     62.9
+    ],
+    "ci_iid": [
+     -32.5,
+     78.5
+    ],
+    "hit": 0.636,
+    "mean_odds": 1.97
+   },
+   {
+    "key": "4",
+    "n": 13,
+    "pnl": 4.9,
+    "roi_pct": 37.7,
+    "ci_day": [
+     -17.9,
+     92.3
+    ],
+    "ci_iid": [
+     -21.7,
+     95.1
+    ],
+    "hit": 0.615,
+    "mean_odds": 2.2
+   },
+   {
+    "key": "5",
+    "n": 117,
+    "pnl": 24.91,
+    "roi_pct": 21.3,
+    "ci_day": [
+     -1.4,
+     44.5
+    ],
+    "ci_iid": [
+     1.8,
+     40.8
+    ],
+    "hit": 0.564,
+    "mean_odds": 2.14
+   },
+   {
+    "key": "6",
+    "n": 23,
+    "pnl": -4.3,
+    "roi_pct": -18.7,
+    "ci_day": [
+     -49.3,
+     16.4
+    ],
+    "ci_iid": [
+     -52.8,
+     16.6
+    ],
+    "hit": 0.478,
+    "mean_odds": 1.78
+   },
+   {
+    "key": "7",
+    "n": 14,
+    "pnl": 1.73,
+    "roi_pct": 12.4,
+    "ci_day": [
+     -43.6,
+     54.5
+    ],
+    "ci_iid": [
+     -36.1,
+     53.0
+    ],
+    "hit": 0.643,
+    "mean_odds": 1.79
+   },
+   {
+    "key": "8",
+    "n": 40,
+    "pnl": 1.97,
+    "roi_pct": 4.9,
+    "ci_day": [
+     -19.3,
+     25.7
+    ],
+    "ci_iid": [
+     -24.1,
+     34.1
+    ],
+    "hit": 0.55,
+    "mean_odds": 1.88
+   },
+   {
+    "key": "9",
+    "n": 11,
+    "pnl": -2.44,
+    "roi_pct": -22.2,
+    "ci_day": [
+     -84.3,
+     37.5
+    ],
+    "ci_iid": [
+     -69.5,
+     26.6
+    ],
+    "hit": 0.455,
+    "mean_odds": 1.68
+   }
+  ],
+  "two_sided": [
+   {
+    "key": "True",
+    "n": 267,
+    "pnl": 35.03,
+    "roi_pct": 13.1,
+    "ci_day": [
+     0.9,
+     26.2
+    ],
+    "ci_iid": [
+     1.0,
+     24.7
+    ],
+    "hit": 0.566,
+    "mean_odds": 1.99
+   }
+  ],
+  "edge_band": [
+   {
+    "key": "[0.04, 0.06)",
+    "n": 128,
+    "pnl": 0.08,
+    "roi_pct": 0.1,
+    "ci_day": [
+     -13.1,
+     15.9
+    ],
+    "ci_iid": [
+     -16.2,
+     16.0
+    ],
+    "hit": 0.539,
+    "mean_odds": 1.85
+   },
+   {
+    "key": "[0.06, 0.08)",
+    "n": 56,
+    "pnl": 10.79,
+    "roi_pct": 19.3,
+    "ci_day": [
+     -5.1,
+     45.1
+    ],
+    "ci_iid": [
+     -7.5,
+     46.5
+    ],
+    "hit": 0.589,
+    "mean_odds": 2.0
+   },
+   {
+    "key": "[0.08, 0.1)",
+    "n": 32,
+    "pnl": -0.22,
+    "roi_pct": -0.7,
+    "ci_day": [
+     -35.0,
+     35.1
+    ],
+    "ci_iid": [
+     -34.1,
+     32.9
+    ],
+    "hit": 0.5,
+    "mean_odds": 2.07
+   },
+   {
+    "key": "[0.1, 0.15)",
+    "n": 46,
+    "pnl": 19.19,
+    "roi_pct": 41.7,
+    "ci_day": [
+     8.8,
+     73.2
+    ],
+    "ci_iid": [
+     10.4,
+     73.2
+    ],
+    "hit": 0.63,
+    "mean_odds": 2.24
+   },
+   {
+    "key": "[0.15, 9.0)",
+    "n": 5,
+    "pnl": 5.19,
+    "roi_pct": 103.8,
+    "ci_day": [
+     0.9,
+     160.1
+    ],
+    "ci_iid": [
+     0.9,
+     160.1
+    ],
+    "hit": 0.8,
+    "mean_odds": 2.64
+   }
+  ]
+ },
+ "splits_since_0901": {
+  "odds_band": [
+   {
+    "key": "[1.0, 1.8)",
+    "n": 58,
+    "pnl": 1.99,
+    "roi_pct": 3.4,
+    "ci_day": [
+     -15.2,
+     20.3
+    ],
+    "ci_iid": [
+     -17.6,
+     23.8
+    ],
+    "hit": 0.621,
+    "mean_odds": 1.66
+   },
+   {
+    "key": "[1.8, 2.0)",
+    "n": 65,
+    "pnl": -13.74,
+    "roi_pct": -21.1,
+    "ci_day": [
+     -40.4,
+     -3.4
+    ],
+    "ci_iid": [
+     -44.6,
+     2.0
+    ],
+    "hit": 0.415,
+    "mean_odds": 1.89
+   },
+   {
+    "key": "[2.0, 2.2)",
+    "n": 69,
+    "pnl": 16.45,
+    "roi_pct": 23.8,
+    "ci_day": [
+     -5.9,
+     51.2
+    ],
+    "ci_iid": [
+     -0.5,
+     47.8
+    ],
+    "hit": 0.594,
+    "mean_odds": 2.08
+   },
+   {
+    "key": "[2.2, 2.5)",
+    "n": 37,
+    "pnl": 13.74,
+    "roi_pct": 37.1,
+    "ci_day": [
+     -4.6,
+     74.5
+    ],
+    "ci_iid": [
+     0.6,
+     73.5
+    ],
+    "hit": 0.595,
+    "mean_odds": 2.29
+   },
+   {
+    "key": "[2.5, 99.0)",
+    "n": 5,
+    "pnl": 0.21,
+    "roi_pct": 4.1,
+    "ci_day": [
+     -100.0,
+     160.2
+    ],
+    "ci_iid": [
+     -100.0,
+     109.7
+    ],
+    "hit": 0.4,
+    "mean_odds": 2.64
+   }
+  ],
+  "month": [
+   {
+    "key": "2026-09",
+    "n": 110,
+    "pnl": 24.04,
+    "roi_pct": 21.9,
+    "ci_day": [
+     6.7,
+     38.5
+    ],
+    "ci_iid": [
+     3.2,
+     39.5
+    ],
+    "hit": 0.618,
+    "mean_odds": 1.96
+   },
+   {
+    "key": "2026-10",
+    "n": 124,
+    "pnl": -5.4,
+    "roi_pct": -4.4,
+    "ci_day": [
+     -20.5,
+     14.2
+    ],
+    "ci_iid": [
+     -22.3,
+     13.9
+    ],
+    "hit": 0.484,
+    "mean_odds": 1.98
+   }
+  ],
+  "tier_fs": [
+   {
+    "key": "MARKSMAN",
+    "n": 26,
+    "pnl": -2.85,
+    "roi_pct": -11.0,
+    "ci_day": [
+     -48.7,
+     27.2
+    ],
+    "ci_iid": [
+     -48.2,
+     27.6
+    ],
+    "hit": 0.462,
+    "mean_odds": 2.04
+   },
+   {
+    "key": "SNIPER",
+    "n": 44,
+    "pnl": 18.97,
+    "roi_pct": 43.1,
+    "ci_day": [
+     10.2,
+     75.2
+    ],
+    "ci_iid": [
+     10.9,
+     74.0
+    ],
+    "hit": 0.636,
+    "mean_odds": 2.25
+   },
+   {
+    "key": "VALUABLE",
+    "n": 164,
+    "pnl": 2.53,
+    "roi_pct": 1.5,
+    "ci_day": [
+     -11.2,
+     15.7
+    ],
+    "ci_iid": [
+     -12.9,
+     16.0
+    ],
+    "hit": 0.537,
+    "mean_odds": 1.88
+   }
+  ],
+  "mv": [
+   {
+    "key": "UNKNOWN_LEGACY",
+    "n": 203,
+    "pnl": 26.03,
+    "roi_pct": 12.8,
+    "ci_day": [
+     0.5,
+     26.6
+    ],
+    "ci_iid": [
+     -1.2,
+     27.1
+    ],
+    "hit": 0.571,
+    "mean_odds": 1.97
+   },
+   {
+    "key": "btts_20261005T101905Z_238e3419",
+    "n": 31,
+    "pnl": -7.38,
+    "roi_pct": -23.8,
+    "ci_day": [
+     -53.1,
+     7.3
+    ],
+    "ci_iid": [
+     -56.2,
+     9.8
+    ],
+    "hit": 0.387,
+    "mean_odds": 1.96
+   }
+  ],
+  "books": [
+   {
+    "key": "1",
+    "n": 1,
+    "pnl": -1.0,
+    "roi_pct": -100.0,
+    "ci_day": [
+     -100.0,
+     -100.0
+    ],
+    "ci_iid": [
+     -100.0,
+     -100.0
+    ],
+    "hit": 0.0,
+    "mean_odds": 2.0
+   },
+   {
+    "key": "10",
+    "n": 3,
+    "pnl": 1.45,
+    "roi_pct": 48.5,
+    "ci_day": [
+     47.0,
+     49.2
+    ],
+    "ci_iid": [
+     42.0,
+     56.5
+    ],
+    "hit": 1.0,
+    "mean_odds": 1.49
+   },
+   {
+    "key": "11",
+    "n": 5,
+    "pnl": 0.48,
+    "roi_pct": 9.6,
+    "ci_day": [
+     -56.2,
+     80.0
+    ],
+    "ci_iid": [
+     -65.0,
+     84.2
+    ],
+    "hit": 0.6,
+    "mean_odds": 1.79
+   },
+   {
+    "key": "2",
+    "n": 23,
+    "pnl": 0.46,
+    "roi_pct": 2.0,
+    "ci_day": [
+     -40.9,
+     43.9
+    ],
+    "ci_iid": [
+     -37.7,
+     40.7
+    ],
+    "hit": 0.522,
+    "mean_odds": 1.91
+   },
+   {
+    "key": "3",
+    "n": 11,
+    "pnl": 2.61,
+    "roi_pct": 23.7,
+    "ci_day": [
+     -10.6,
+     62.9
+    ],
+    "ci_iid": [
+     -32.5,
+     78.5
+    ],
+    "hit": 0.636,
+    "mean_odds": 1.97
+   },
+   {
+    "key": "4",
+    "n": 10,
+    "pnl": 3.75,
+    "roi_pct": 37.5,
+    "ci_day": [
+     -26.6,
+     103.2
+    ],
+    "ci_iid": [
+     -32.8,
+     107.1
+    ],
+    "hit": 0.6,
+    "mean_odds": 2.23
+   },
+   {
+    "key": "5",
+    "n": 97,
+    "pnl": 13.83,
+    "roi_pct": 14.3,
+    "ci_day": [
+     -10.7,
+     40.5
+    ],
+    "ci_iid": [
+     -7.8,
+     35.4
+    ],
+    "hit": 0.536,
+    "mean_odds": 2.12
+   },
+   {
+    "key": "6",
+    "n": 23,
+    "pnl": -4.3,
+    "roi_pct": -18.7,
+    "ci_day": [
+     -49.3,
+     16.4
+    ],
+    "ci_iid": [
+     -52.8,
+     16.6
+    ],
+    "hit": 0.478,
+    "mean_odds": 1.78
+   },
+   {
+    "key": "7",
+    "n": 13,
+    "pnl": 2.73,
+    "roi_pct": 21.0,
+    "ci_day": [
+     -35.8,
+     61.9
+    ],
+    "ci_iid": [
+     -21.1,
+     62.5
+    ],
+    "hit": 0.692,
+    "mean_odds": 1.79
+   },
+   {
+    "key": "8",
+    "n": 37,
+    "pnl": 1.07,
+    "roi_pct": 2.9,
+    "ci_day": [
+     -21.7,
+     22.5
+    ],
+    "ci_iid": [
+     -28.2,
+     33.7
+    ],
+    "hit": 0.541,
+    "mean_odds": 1.87
+   },
+   {
+    "key": "9",
+    "n": 11,
+    "pnl": -2.44,
+    "roi_pct": -22.2,
+    "ci_day": [
+     -84.3,
+     37.5
+    ],
+    "ci_iid": [
+     -69.5,
+     26.6
+    ],
+    "hit": 0.455,
+    "mean_odds": 1.68
+   }
+  ],
+  "two_sided": [
+   {
+    "key": "True",
+    "n": 234,
+    "pnl": 18.64,
+    "roi_pct": 8.0,
+    "ci_day": [
+     -5.2,
+     21.5
+    ],
+    "ci_iid": [
+     -4.9,
+     20.4
+    ],
+    "hit": 0.547,
+    "mean_odds": 1.97
+   }
+  ],
+  "edge_band": [
+   {
+    "key": "[0.04, 0.06)",
+    "n": 118,
+    "pnl": -5.84,
+    "roi_pct": -4.9,
+    "ci_day": [
+     -17.9,
+     9.9
+    ],
+    "ci_iid": [
+     -21.6,
+     11.3
+    ],
+    "hit": 0.517,
+    "mean_odds": 1.84
+   },
+   {
+    "key": "[0.06, 0.08)",
+    "n": 46,
+    "pnl": 8.37,
+    "roi_pct": 18.2,
+    "ci_day": [
+     -9.6,
+     46.3
+    ],
+    "ci_iid": [
+     -10.6,
+     47.0
+    ],
+    "hit": 0.587,
+    "mean_odds": 1.99
+   },
+   {
+    "key": "[0.08, 0.1)",
+    "n": 26,
+    "pnl": -2.85,
+    "roi_pct": -11.0,
+    "ci_day": [
+     -48.7,
+     27.2
+    ],
+    "ci_iid": [
+     -48.2,
+     27.6
+    ],
+    "hit": 0.462,
+    "mean_odds": 2.04
+   },
+   {
+    "key": "[0.1, 0.15)",
+    "n": 40,
+    "pnl": 15.36,
+    "roi_pct": 38.4,
+    "ci_day": [
+     0.1,
+     75.4
+    ],
+    "ci_iid": [
+     4.3,
+     71.2
+    ],
+    "hit": 0.625,
+    "mean_odds": 2.21
+   },
+   {
+    "key": "[0.15, 9.0)",
+    "n": 4,
+    "pnl": 3.61,
+    "roi_pct": 90.2,
+    "ci_day": [
+     -35.9,
+     160.2
+    ],
+    "ci_iid": [
+     -35.9,
+     160.2
+    ],
+    "hit": 0.75,
+    "mean_odds": 2.65
+   }
+  ]
+ },
+ "weekly_all_live": [
+  {
+   "key": "2026-08-17/2026-08-23",
+   "n": 8,
+   "pnl": 4.86,
+   "roi_pct": 60.7,
+   "ci_day": [
+    44.7,
+    108.7
+   ],
+   "ci_iid": [
+    -15.3,
+    117.5
+   ],
+   "hit": 0.75,
+   "mean_odds": 2.18
+  },
+  {
+   "key": "2026-08-24/2026-08-30",
+   "n": 22,
+   "pnl": 12.58,
+   "roi_pct": 57.2,
+   "ci_day": [
+    12.5,
+    117.2
+   ],
+   "ci_iid": [
+    14.4,
+    96.6
+   ],
+   "hit": 0.727,
+   "mean_odds": 2.15
+  },
+  {
+   "key": "2026-08-31/2026-09-06",
+   "n": 32,
+   "pnl": 0.26,
+   "roi_pct": 0.8,
+   "ci_day": [
+    -26.3,
+    14.6
+   ],
+   "ci_iid": [
+    -34.4,
+    36.2
+   ],
+   "hit": 0.5,
+   "mean_odds": 2.04
+  },
+  {
+   "key": "2026-09-07/2026-09-13",
+   "n": 29,
+   "pnl": 11.67,
+   "roi_pct": 40.2,
+   "ci_day": [
+    -12.8,
+    68.9
+   ],
+   "ci_iid": [
+    4.4,
+    74.6
+   ],
+   "hit": 0.69,
+   "mean_odds": 2.0
+  },
+  {
+   "key": "2026-09-14/2026-09-20",
+   "n": 35,
+   "pnl": 9.72,
+   "roi_pct": 27.8,
+   "ci_day": [
+    6.5,
+    59.1
+   ],
+   "ci_iid": [
+    -6.2,
+    60.0
+   ],
+   "hit": 0.629,
+   "mean_odds": 2.01
+  },
+  {
+   "key": "2026-09-21/2026-09-27",
+   "n": 16,
+   "pnl": 0.79,
+   "roi_pct": 4.9,
+   "ci_day": [
+    -14.0,
+    43.9
+   ],
+   "ci_iid": [
+    -36.2,
+    44.5
+   ],
+   "hit": 0.625,
+   "mean_odds": 1.7
+  },
+  {
+   "key": "2026-09-28/2026-10-04",
+   "n": 12,
+   "pnl": 2.1,
+   "roi_pct": 17.5,
+   "ci_day": [
+    -12.9,
+    82.5
+   ],
+   "ci_iid": [
+    -40.0,
+    72.1
+   ],
+   "hit": 0.583,
+   "mean_odds": 2.07
+  },
+  {
+   "key": "2026-10-05/2026-10-11",
+   "n": 33,
+   "pnl": 8.38,
+   "roi_pct": 25.4,
+   "ci_day": [
+    3.6,
+    55.7
+   ],
+   "ci_iid": [
+    -9.1,
+    57.1
+   ],
+   "hit": 0.636,
+   "mean_odds": 2.01
+  },
+  {
+   "key": "2026-10-12/2026-10-18",
+   "n": 33,
+   "pnl": -7.86,
+   "roi_pct": -23.8,
+   "ci_day": [
+    -58.2,
+    -1.2
+   ],
+   "ci_iid": [
+    -55.7,
+    8.3
+   ],
+   "hit": 0.394,
+   "mean_odds": 1.91
+  },
+  {
+   "key": "2026-10-19/2026-10-25",
+   "n": 32,
+   "pnl": -7.05,
+   "roi_pct": -22.0,
+   "ci_day": [
+    -53.5,
+    37.5
+   ],
+   "ci_iid": [
+    -54.3,
+    12.2
+   ],
+   "hit": 0.406,
+   "mean_odds": 1.92
+  },
+  {
+   "key": "2026-10-26/2026-11-01",
+   "n": 15,
+   "pnl": -0.4,
+   "roi_pct": -2.7,
+   "ci_day": [
+    -49.5,
+    32.9
+   ],
+   "ci_iid": [
+    -52.6,
+    51.9
+   ],
+   "hit": 0.467,
+   "mean_odds": 2.06
+  }
+ ],
+ "price_provenance": {
+  "traced": 299,
+  "of": 299,
+  "ledger_odds_eq_pred_odds_btts": 299,
+  "two_sided_no_price_present": 299,
+  "books_field_present": 299,
+  "books_distribution": {
+   "1.0": 6,
+   "2.0": 27,
+   "3.0": 12,
+   "4.0": 14,
+   "5.0": 133,
+   "6.0": 24,
+   "7.0": 15,
+   "8.0": 44,
+   "9.0": 11,
+   "10.0": 4,
+   "11.0": 9
+  },
+  "margin_median (btts_overround is stored as 1/y+1/n-1)": 0.0803,
+  "margin_below_0": 0,
+  "odds_exactly_1.85_fallback": 11
+ },
+ "same_fixture_multi_side_market": 118,
+ "nf_btts_with_ou25_tip_same_fixture": {
+  "OVER": 95,
+  "UNDER": 73,
+  "nan": 133
+ },
+ "nf_btts_dup_keys": 0,
+ "availability_and_blind_baseline": [
+  {
+   "window": "all_live",
+   "population": "BLIND_YES_all_priced",
+   "n": 964,
+   "pnl": 2.17,
+   "roi_pct": 0.2,
+   "ci_day": [
+    -4.3,
+    4.9
+   ],
+   "ci_iid": [
+    -5.3,
+    5.5
+   ]
+  },
+  {
+   "window": "all_live",
+   "population": "tipped",
+   "n": 267,
+   "pnl": 33.71,
+   "roi_pct": 12.6,
+   "ci_day": [
+    0.3,
+    25.7
+   ],
+   "ci_iid": [
+    0.8,
+    24.1
+   ]
+  },
+  {
+   "window": "all_live",
+   "population": "not_tipped",
+   "n": 697,
+   "pnl": -31.54,
+   "roi_pct": -4.5,
+   "ci_day": [
+    -9.5,
+    0.3
+   ],
+   "ci_iid": [
+    -10.1,
+    1.1
+   ]
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Argentina Primera Division",
+   "n": 132,
+   "pnl": 37.7,
+   "roi_pct": 28.6,
+   "ci_day": [
+    9.6,
+    48.1
+   ],
+   "ci_iid": [
+    9.7,
+    47.4
+   ],
+   "tipped_share": 0.947
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Austrian Bundesliga",
+   "n": 42,
+   "pnl": -1.21,
+   "roi_pct": -2.9,
+   "ci_day": [
+    -26.8,
+    20.5
+   ],
+   "ci_iid": [
+    -27.6,
+    21.2
+   ],
+   "tipped_share": 0.167
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Brazil Serie A",
+   "n": 101,
+   "pnl": 12.19,
+   "roi_pct": 12.1,
+   "ci_day": [
+    -4.4,
+    25.5
+   ],
+   "ci_iid": [
+    -5.8,
+    30.2
+   ],
+   "tipped_share": 0.455
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|China Super League",
+   "n": 50,
+   "pnl": -4.06,
+   "roi_pct": -8.1,
+   "ci_day": [
+    -23.1,
+    4.5
+   ],
+   "ci_iid": [
+    -29.1,
+    12.1
+   ],
+   "tipped_share": 0.02
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Denmark Superliga",
+   "n": 51,
+   "pnl": 1.88,
+   "roi_pct": 3.7,
+   "ci_day": [
+    -16.6,
+    22.2
+   ],
+   "ci_iid": [
+    -17.2,
+    23.6
+   ],
+   "tipped_share": 0.078
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Finland Veikkausliiga",
+   "n": 52,
+   "pnl": -14.9,
+   "roi_pct": -28.7,
+   "ci_day": [
+    -49.9,
+    -9.8
+   ],
+   "ci_iid": [
+    -50.3,
+    -7.5
+   ],
+   "tipped_share": 0.173
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Ireland Premier Division",
+   "n": 41,
+   "pnl": 1.06,
+   "roi_pct": 2.6,
+   "ci_day": [
+    -16.2,
+    23.7
+   ],
+   "ci_iid": [
+    -21.4,
+    25.3
+   ],
+   "tipped_share": 0.22
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Japan J-League",
+   "n": 99,
+   "pnl": -7.31,
+   "roi_pct": -7.4,
+   "ci_day": [
+    -21.2,
+    7.1
+   ],
+   "ci_iid": [
+    -25.4,
+    9.2
+   ],
+   "tipped_share": 0.313
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Mexico Liga MX",
+   "n": 86,
+   "pnl": -0.08,
+   "roi_pct": -0.1,
+   "ci_day": [
+    -16.5,
+    15.8
+   ],
+   "ci_iid": [
+    -15.9,
+    15.7
+   ],
+   "tipped_share": 0.14
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Norway Eliteserien",
+   "n": 59,
+   "pnl": 4.67,
+   "roi_pct": 7.9,
+   "ci_day": [
+    -7.8,
+    21.3
+   ],
+   "ci_iid": [
+    -10.1,
+    25.2
+   ],
+   "tipped_share": 0.136
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|Sweden Allsvenskan",
+   "n": 69,
+   "pnl": -24.1,
+   "roi_pct": -34.9,
+   "ci_day": [
+    -50.7,
+    -18.3
+   ],
+   "ci_iid": [
+    -53.7,
+    -16.5
+   ],
+   "tipped_share": 0.087
+  },
+  {
+   "window": "all_live",
+   "population": "BLIND_YES|USA MLS",
+   "n": 182,
+   "pnl": -3.66,
+   "roi_pct": -2.0,
+   "ci_day": [
+    -11.2,
+    6.9
+   ],
+   "ci_iid": [
+    -12.4,
+    8.2
+   ],
+   "tipped_share": 0.049
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES_all_priced",
+   "n": 798,
+   "pnl": -13.91,
+   "roi_pct": -1.7,
+   "ci_day": [
+    -6.3,
+    3.5
+   ],
+   "ci_iid": [
+    -7.7,
+    4.0
+   ]
+  },
+  {
+   "window": "since_0901",
+   "population": "tipped",
+   "n": 234,
+   "pnl": 17.46,
+   "roi_pct": 7.5,
+   "ci_day": [
+    -5.6,
+    20.9
+   ],
+   "ci_iid": [
+    -5.8,
+    20.3
+   ]
+  },
+  {
+   "window": "since_0901",
+   "population": "not_tipped",
+   "n": 564,
+   "pnl": -31.38,
+   "roi_pct": -5.6,
+   "ci_day": [
+    -10.9,
+    -0.3
+   ],
+   "ci_iid": [
+    -11.7,
+    0.8
+   ]
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Argentina Primera Division",
+   "n": 110,
+   "pnl": 26.47,
+   "roi_pct": 24.1,
+   "ci_day": [
+    3.3,
+    46.4
+   ],
+   "ci_iid": [
+    4.6,
+    44.0
+   ],
+   "tipped_share": 0.936
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Austrian Bundesliga",
+   "n": 34,
+   "pnl": -1.64,
+   "roi_pct": -4.8,
+   "ci_day": [
+    -26.1,
+    17.5
+   ],
+   "ci_iid": [
+    -31.9,
+    21.8
+   ],
+   "tipped_share": 0.206
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Brazil Serie A",
+   "n": 83,
+   "pnl": 5.81,
+   "roi_pct": 7.0,
+   "ci_day": [
+    -12.3,
+    22.7
+   ],
+   "ci_iid": [
+    -12.0,
+    26.1
+   ],
+   "tipped_share": 0.47
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|China Super League",
+   "n": 35,
+   "pnl": -4.16,
+   "roi_pct": -11.9,
+   "ci_day": [
+    -30.0,
+    1.1
+   ],
+   "ci_iid": [
+    -36.0,
+    11.6
+   ],
+   "tipped_share": 0.029
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Denmark Superliga",
+   "n": 39,
+   "pnl": -0.63,
+   "roi_pct": -1.6,
+   "ci_day": [
+    -26.9,
+    17.8
+   ],
+   "ci_iid": [
+    -24.8,
+    21.0
+   ],
+   "tipped_share": 0.103
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Finland Veikkausliiga",
+   "n": 41,
+   "pnl": -10.29,
+   "roi_pct": -25.1,
+   "ci_day": [
+    -49.5,
+    -5.0
+   ],
+   "ci_iid": [
+    -49.1,
+    -0.0
+   ],
+   "tipped_share": 0.22
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Ireland Premier Division",
+   "n": 37,
+   "pnl": 0.15,
+   "roi_pct": 0.4,
+   "ci_day": [
+    -19.7,
+    23.4
+   ],
+   "ci_iid": [
+    -25.6,
+    25.1
+   ],
+   "tipped_share": 0.243
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Japan J-League",
+   "n": 86,
+   "pnl": -7.43,
+   "roi_pct": -8.6,
+   "ci_day": [
+    -24.2,
+    7.3
+   ],
+   "ci_iid": [
+    -26.1,
+    9.0
+   ],
+   "tipped_share": 0.326
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Mexico Liga MX",
+   "n": 75,
+   "pnl": -0.2,
+   "roi_pct": -0.3,
+   "ci_day": [
+    -16.9,
+    15.2
+   ],
+   "ci_iid": [
+    -16.9,
+    15.5
+   ],
+   "tipped_share": 0.147
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Norway Eliteserien",
+   "n": 49,
+   "pnl": 2.66,
+   "roi_pct": 5.4,
+   "ci_day": [
+    -12.8,
+    22.2
+   ],
+   "ci_iid": [
+    -15.3,
+    23.8
+   ],
+   "tipped_share": 0.163
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|Sweden Allsvenskan",
+   "n": 58,
+   "pnl": -17.8,
+   "roi_pct": -30.7,
+   "ci_day": [
+    -48.7,
+    -11.5
+   ],
+   "ci_iid": [
+    -51.2,
+    -9.9
+   ],
+   "tipped_share": 0.103
+  },
+  {
+   "window": "since_0901",
+   "population": "BLIND_YES|USA MLS",
+   "n": 151,
+   "pnl": -6.83,
+   "roi_pct": -4.5,
+   "ci_day": [
+    -14.3,
+    4.7
+   ],
+   "ci_iid": [
+    -15.4,
+    6.0
+   ],
+   "tipped_share": 0.06
+  }
+ ],
+ "availability": {
+  "nf_fixtures_in_panel": 1815,
+  "nf_fixtures_btts_priced": 1105
+ },
+ "league_cells_tested": 69,
+ "league_cells_positive_point": 30,
+ "league_cells_bh_q_le_0.10": [],
+ "top_cells": [
+  {
+   "market": "btts",
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "n": 103,
+   "pnl": 25.61,
+   "roi_pct": 24.9,
+   "ci_day": [
+    3.9,
+    47.1
+   ],
+   "p_one_sided": 0.012,
+   "bh_q": 0.7201875000000001
+  },
+  {
+   "market": "ou25_under",
+   "track": "new_format",
+   "league": "Finland Veikkausliiga",
+   "n": 27,
+   "pnl": 10.23,
+   "roi_pct": 37.9,
+   "ci_day": [
+    9.7,
+    74.4
+   ],
+   "p_one_sided": 0.03025,
+   "bh_q": 0.7201875000000001
+  },
+  {
+   "market": "ou25_over",
+   "track": "new_format",
+   "league": "Japan J-League",
+   "n": 15,
+   "pnl": 7.5,
+   "roi_pct": 50.0,
+   "ci_day": [
+    -5.2,
+    97.0
+   ],
+   "p_one_sided": 0.037,
+   "bh_q": 0.7201875000000001
+  },
+  {
+   "market": "btts",
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "n": 11,
+   "pnl": 3.7,
+   "roi_pct": 33.6,
+   "ci_day": [
+    10.6,
+    67.1
+   ],
+   "p_one_sided": 0.04175,
+   "bh_q": 0.7201875000000001
+  },
+  {
+   "market": "btts",
+   "track": "standard",
+   "league": "Ligue 2",
+   "n": 17,
+   "pnl": 5.3,
+   "roi_pct": 31.2,
+   "ci_day": [
+    -10.0,
+    73.2
+   ],
+   "p_one_sided": 0.0945,
+   "bh_q": 1.0
+  },
+  {
+   "market": "ou25_under",
+   "track": "new_format",
+   "league": "Sweden Allsvenskan",
+   "n": 42,
+   "pnl": 9.23,
+   "roi_pct": 22.0,
+   "ci_day": [
+    -11.5,
+    52.8
+   ],
+   "p_one_sided": 0.11825,
+   "bh_q": 1.0
+  },
+  {
+   "market": "btts",
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "n": 39,
+   "pnl": 6.89,
+   "roi_pct": 17.7,
+   "ci_day": [
+    -5.5,
+    35.7
+   ],
+   "p_one_sided": 0.12925,
+   "bh_q": 1.0
+  },
+  {
+   "market": "over15",
+   "track": "new_format",
+   "league": "Argentina Primera Division",
+   "n": 71,
+   "pnl": 6.75,
+   "roi_pct": 9.5,
+   "ci_day": [
+    -7.0,
+    26.8
+   ],
+   "p_one_sided": 0.13875,
+   "bh_q": 1.0
+  },
+  {
+   "market": "ou25_under",
+   "track": "new_format",
+   "league": "Mexico Liga MX",
+   "n": 47,
+   "pnl": 8.25,
+   "roi_pct": 17.6,
+   "ci_day": [
+    -19.3,
+    53.8
+   ],
+   "p_one_sided": 0.1485,
+   "bh_q": 1.0
+  },
+  {
+   "market": "btts",
+   "track": "new_format",
+   "league": "Norway Eliteserien",
+   "n": 8,
+   "pnl": 1.85,
+   "roi_pct": 23.1,
+   "ci_day": [
+    -47.5,
+    65.4
+   ],
+   "p_one_sided": 0.16375,
+   "bh_q": 1.0
+  },
+  {
+   "market": "ou25_over",
+   "track": "new_format",
+   "league": "Brazil Serie A",
+   "n": 10,
+   "pnl": 3.17,
+   "roi_pct": 31.7,
+   "ci_day": [
+    -41.7,
+    86.2
+   ],
+   "p_one_sided": 0.17025,
+   "bh_q": 1.0
+  },
+  {
+   "market": "btts",
+   "track": "new_format",
+   "league": "Austrian Bundesliga",
+   "n": 7,
+   "pnl": 1.72,
+   "roi_pct": 24.6,
+   "ci_day": [
+    -26.0,
+    75.7
+   ],
+   "p_one_sided": 0.24025,
+   "bh_q": 1.0
+  }
+ ]
+}
