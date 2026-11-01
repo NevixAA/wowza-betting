@@ -17,10 +17,15 @@ is read before every run and holds every reference id and fixture already placed
 and the one-side-per-fixture rule are both enforced against it, so a workflow that fires twice,
 or a process that dies mid-run and restarts, cannot re-stake. Cloudbet's own referenceId dedup
 is the second layer; neither is trusted alone.
+
+NO STAKE WITHOUT REAL INPUTS (Data Truth 2026-11-01). The bankroll is the live Cloudbet balance or
+an explicit CLOUDBET_BANKROLL - never a typed default; without one the run refuses to stake. A
+candidate tiered on a GLOBAL threshold (no per-league evidence; every prop) is never staked.
 """
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -104,8 +109,12 @@ def price_candidates(cands: pd.DataFrame, client: CloudbetClient,
         # EDGE AT THEIR PRICE. Our stored edge was computed against our own book, so the
         # difference between the two implied probabilities is how much of it their price eats.
         ours = pd.to_numeric(pd.Series([r.get("our_odds")]), errors="coerce").iloc[0]
-        shift = (1.0 / float(ours) - 1.0 / q.odds) if pd.notna(ours) and float(ours) > 1 else 0.0
-        edges.append(float(r["edge"]) + shift)
+        if not (pd.notna(ours) and float(ours) > 1):
+            # Without our own price the stored edge cannot be moved onto Cloudbet's price. It used
+            # to be carried over unchanged (shift 0.0), i.e. an edge against a price we never saw.
+            edges.append(None); reasons.append("no our_odds: edge at Cloudbet price unknown")
+            continue
+        edges.append(float(r["edge"]) + (1.0 / float(ours) - 1.0 / q.odds))
         reasons.append("")
     out = cands.copy()
     out["cloudbet_price"] = px
@@ -118,6 +127,59 @@ def price_candidates(cands: pd.DataFrame, client: CloudbetClient,
     return out
 
 
+def resolve_bankroll(client: CloudbetClient, bankroll: float | None = None) -> tuple[float | None, str]:
+    """(bankroll, source), or (None, why) when there is no real figure to size stakes on.
+
+    Order: an explicit argument, the LIVE Cloudbet balance, then the CLOUDBET_BANKROLL environment
+    variable. There is no default: a typed 2000 used to size every stake when none of these existed,
+    so a bot pointed at an empty or unknown account staked as if it held 2000.
+    """
+    if bankroll is not None:
+        return float(bankroll), "argument"
+    live = client.balance()
+    if live is not None:
+        return live, f"live Cloudbet balance ({client.currency})"
+    env = os.getenv("CLOUDBET_BANKROLL", "").strip()
+    if not env:
+        return None, ("no live Cloudbet balance (no key, or the account API did not answer) and "
+                      "CLOUDBET_BANKROLL is not set")
+    try:
+        v = float(env)
+    except ValueError:
+        return None, f"CLOUDBET_BANKROLL={env!r} is not a number"
+    if not (v == v):
+        return None, "CLOUDBET_BANKROLL is NaN"
+    return v, "CLOUDBET_BANKROLL"
+
+
+def _drop_without_league_evidence(cands: pd.DataFrame) -> pd.DataFrame:
+    """Only bets tiered on their league's OWN threshold may be staked (owner 2026-11-01).
+
+    Team markets: betting.league_threshold_evidence (approved optimiser value or calibrated
+    per-league threshold). Props have no per-league threshold anywhere in the estate - one global
+    "positive EV" bar - so no prop has league evidence and none is staked. Every drop is logged."""
+    if cands.empty:
+        return cands
+    from src.betting import league_threshold_evidence
+    cache: dict = {}
+
+    def _ok(r) -> bool:
+        if str(r.get("bet_kind")) == "prop":
+            return False
+        k = (str(r.get("league")), str(r.get("market")))
+        if k not in cache:
+            cache[k] = league_threshold_evidence(*k)
+        return cache[k]
+
+    keep = cands.apply(_ok, axis=1).astype(bool)
+    if (~keep).any():
+        cells = sorted({(str(lg), str(m)) for lg, m in
+                        zip(cands.loc[~keep, "league"], cands.loc[~keep, "market"])})
+        log.info(f"no stake: {int((~keep).sum())} candidate(s) have no per-league threshold "
+                 f"evidence (global bar only): {cells[:20]}")
+    return cands[keep]
+
+
 def run(mode: str | None = None, bankroll: float | None = None,
         days_ahead: int = 0, rules: SelectionRules | None = None,
         staking: StakingRules | None = None,
@@ -125,12 +187,15 @@ def run(mode: str | None = None, bankroll: float | None = None,
     client = CloudbetClient(mode=mode)
     rules = rules or SelectionRules()
     staking = staking or StakingRules()
-    bankroll = float(bankroll if bankroll is not None else
-                     __import__("os").getenv("CLOUDBET_BANKROLL", "2000"))
+    bankroll, source = resolve_bankroll(client, bankroll)
+    if bankroll is None:
+        log.error(f"REFUSING TO STAKE: {source}. Set CLOUDBET_BANKROLL or provide a key whose "
+                  f"account balance can be read.")
+        return pd.DataFrame()
 
     led = _load_ledger()
     today = _placed_today(led)
-    log.info(f"mode={client.mode} | {describe(bankroll, staking)}")
+    log.info(f"mode={client.mode} | bankroll from {source} | {describe(bankroll, staking)}")
     log.info(f"already placed today: {len(today)} of {rules.max_bets_per_day}")
 
     cands = build_candidates(days_ahead=days_ahead)
@@ -142,7 +207,7 @@ def run(mode: str | None = None, bankroll: float | None = None,
         log.warning("no Cloudbet event feed supplied — every candidate will be dropped as "
                     "unpriced, which is correct: we do not bet into a price we cannot see")
         events_by_league = {}
-    priced = price_candidates(cands, client, events_by_league)
+    priced = _drop_without_league_evidence(price_candidates(cands, client, events_by_league))
 
     sel, rej = select(
         priced, rules,
@@ -156,7 +221,14 @@ def run(mode: str | None = None, bankroll: float | None = None,
         log.info(f"daily cap: taking the best {room} of {len(sel)}")
         sel = sel.head(room)
 
-    staked_today = pd.to_numeric(today["stake"], errors="coerce").fillna(0).sum()
+    stakes = pd.to_numeric(today["stake"], errors="coerce")
+    if stakes.isna().any():
+        # An unreadable stake on an ACCEPTED bet is money at risk we cannot count. Reading it as 0
+        # would let the daily exposure cap pass bets it should stop: fail closed instead.
+        log.error(f"REFUSING TO STAKE: {int(stakes.isna().sum())} of today's accepted bet(s) in "
+                  f"{LEDGER.name} have an unreadable stake, so today's exposure is unknown")
+        return pd.DataFrame()
+    staked_today = float(stakes.sum())
     rows = []
     for _, r in sel.iterrows():
         stake, why = stake_for(bankroll, staking, staked_today=float(staked_today),

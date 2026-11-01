@@ -89,8 +89,10 @@ def reload_league_params() -> None:
 
 
 def _get_league_cfg(league: str) -> dict:
-    params = _load_league_params()
-    return params.get(str(league)) or params.get("_default") or {}
+    # The league's OWN entry only. A "_default" entry used to stand in for every league without one,
+    # i.e. another league's (or nobody's) min-odds and both_losing flag; absent -> the configured
+    # config.MIN_*_ODDS rules in _get_min_odds.
+    return _load_league_params().get(str(league)) or {}
 
 
 def _is_both_losing(league: str) -> bool:
@@ -138,6 +140,26 @@ def _load_standard_thresholds() -> dict:
         except Exception:
             _STANDARD_TH_CACHE = {}
     return _STANDARD_TH_CACHE
+
+
+def league_threshold_evidence(league: str, market: str = "ou25") -> bool:
+    """True when `league` x `market` is tiered on a threshold of ITS OWN: an approved optimiser value
+    (best_params_standard / best_params_side_markets) or, for O/U 2.5, a calibrated
+    config.LEAGUE_SNIPER_THRESHOLDS entry. False when the tier came from a GLOBAL bar.
+
+    Staking reads this (owner 2026-11-01: "every league should be special thresholds"): a tip tiered
+    on a global bar may still be shown, but it is never staked. Resolved through src/gate_resolver,
+    the one mirror of the production gates, so this cannot drift from what tiered the tip."""
+    from src.gate_resolver import resolve_effective_tier_gates
+    try:
+        g = resolve_effective_tier_gates(str(league), str(market).lower())
+    except Exception as e:                                            # noqa: BLE001 - no evidence
+        log.warning(f"threshold evidence unavailable for {league} {market} ({type(e).__name__}) - no stake")
+        return False
+    if str(market).lower() == "ou25":
+        # edge_ceiling_active is exactly "no per-league value was found" in _base_tier
+        return bool(g.approved_optimizer_applied or not g.edge_ceiling_active)
+    return bool(g.approved_optimizer_applied)
 
 
 def _base_tier(edge: float, side: str = "", league: str = "") -> str:

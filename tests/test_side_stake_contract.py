@@ -35,6 +35,23 @@ def _isolate(tmp_path, monkeypatch):
         lg: 10 for lg in (NF, NF2, STD, PAPER)})
     monkeypatch.setattr(sp, "PLAN", tmp_path / "stake_plan.csv")
     monkeypatch.setattr(sp, "AUDIT", tmp_path / "stake_audit.csv")
+    # The contract under test is model_type / odds / side reaching the policy; the leagues here are
+    # given per-league threshold evidence so the stake is decided by the track. The no-evidence rule
+    # (owner 2026-11-01) is test_global_threshold_tip_is_not_staked below.
+    import src.betting as betting
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": True)
+
+
+def test_global_threshold_tip_is_not_staked(monkeypatch):
+    """With no approved per-league side threshold the BTTS tip was tiered on the global bar: it is
+    still planned and audited, with NO stake."""
+    import src.betting as betting
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": False)
+    side = pipeline._generate_side_bets(pd.DataFrame([_pred("G", NF, btts=(0.62, 2.10))]),
+                                        config.SIDE_MARKETS)
+    plan = sp.write(None, side)
+    assert len(plan) == 1 and plan["final_fraction"].iloc[0] == 0
+    assert plan["reason"].iloc[0] == "NO_LEAGUE_THRESHOLD_EVIDENCE"
 
 
 def _pred(home, league, model_type=None, **mk):

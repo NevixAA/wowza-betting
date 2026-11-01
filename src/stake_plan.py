@@ -49,6 +49,11 @@ BASIS = "notional bankroll, drawdown throttle not applied (no real-bankroll ledg
 SIDE_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "market", "side",
                           "signal_tier", "odds", "model_prob", "fair_prob", "edge", "ev")
 TIPPED = ("SNIPER", "MARKSMAN", "VALUABLE")
+#: The O/U 2.5 tips frame (betting.generate_bets -> bets.csv) as this reader needs it.
+BET_SELECTION_COLUMNS = ("date", "league", "home_team", "away_team", "model_type", "best_side",
+                         "odds_over25", "odds_under25", "signal_tier")
+#: policy market -> the gate_resolver market whose thresholds tiered it
+THRESHOLD_MARKET = {"OU25": "ou25", "BTTS": "btts", "OVER15": "over15", "OVER35": "over35"}
 
 
 class SelectionSchemaError(ValueError):
@@ -104,7 +109,8 @@ PRO_RATINGS = "output/studies/league_ratings.json"
 
 def load_league_ratings(max_age_days: float = 8.0) -> dict:
     """Pro's league ratings 1-10 (src/studies/league_results.py). Fail closed: missing, unreadable or
-    older than max_age_days -> {} (every league gets the minimum scale). Recorded timestamp, never mtime."""
+    older than max_age_days -> {} (no league is rated, so NO league is staked - bankroll_policy gives an
+    unrated league no stake since 2026-11-01). Every such case is logged. Recorded timestamp, never mtime."""
     import json
     try:
         j = None
@@ -117,14 +123,19 @@ def load_league_ratings(max_age_days: float = 8.0) -> dict:
             r = requests.get("https://raw.githubusercontent.com/NevixAA/wowzaV9-Pro/main/" + PRO_RATINGS, timeout=20)
             j = r.json() if r.status_code == 200 else None
         if not j:
+            log.warning(f"league ratings unavailable ({PRO_RATINGS} not found) - no league is rated, "
+                        f"so no tip gets a stake")
             return {}
         age = (pd.Timestamp.now(tz="UTC") - pd.Timestamp(j["generated_at"])).total_seconds() / 86400
         if not (0 <= age <= max_age_days):
+            log.warning(f"league ratings are {age:.1f} days old (limit {max_age_days}) - not used, so no "
+                        f"tip gets a stake")
             return {}
         return {str(k): int(v["rating"]) for k, v in (j.get("ratings") or {}).items()
                 if isinstance(v, dict) and isinstance(v.get("rating"), int) and 1 <= v["rating"] <= 10}
     except Exception as e:                                           # noqa: BLE001 - fail closed
-        log.warning(f"league ratings unavailable ({type(e).__name__}) - minimum scale for every league")
+        log.warning(f"league ratings unavailable ({type(e).__name__}) - no league is rated, so no tip "
+                    f"gets a stake")
         return {}
 
 
@@ -132,12 +143,18 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
     """Tips -> the reader's input: fixture, league, model_type, market, signal_tier, odds."""
     rows = []
     if bets is not None and not bets.empty:
+        # Same contract discipline as the side path: no getattr defaults. A bets frame without
+        # model_type used to stake every tip on track `unknown|OU25`; without best_side it priced
+        # the tip at the UNDER odds.
+        missing = [c for c in BET_SELECTION_COLUMNS if c not in bets.columns]
+        if missing:
+            raise SelectionSchemaError(f"O/U selections missing column(s) {missing}")
         b = bets[bets["signal_tier"].isin(("SNIPER", "MARKSMAN", "VALUABLE"))]
         for r in b.itertuples(index=False):
-            side = str(getattr(r, "best_side", "")).upper()
-            odds = getattr(r, "odds_over25" if side == "OVER" else "odds_under25", None)
+            side = str(r.best_side).upper()
+            odds = (r.odds_over25 if side == "OVER" else r.odds_under25 if side == "UNDER" else None)
             rows.append({"date": str(r.date)[:10], "fixture": f"{str(r.date)[:10]}|{r.home_team}|{r.away_team}",
-                         "league": r.league, "model_type": getattr(r, "model_type", "unknown"),
+                         "league": r.league, "model_type": str(r.model_type),
                          "market": "OU25", "side": side, "signal_tier": r.signal_tier, "odds": odds})
     if side_bets is not None and not side_bets.empty:
         check_side_selections(side_bets)                    # the contract, or a loud failure
@@ -153,6 +170,23 @@ def selections(bets: pd.DataFrame | None, side_bets: pd.DataFrame | None) -> pd.
     d = pd.DataFrame(rows)
     if not d.empty:
         d["odds"] = pd.to_numeric(d["odds"], errors="coerce")
+        # NO GLOBAL-THRESHOLD STAKES (owner 2026-11-01: "every league should be special thresholds").
+        # A tip tiered on a global bar is still planned and audited, but bankroll_policy gives it no
+        # stake (NO_LEAGUE_THRESHOLD_EVIDENCE).
+        from src.betting import league_threshold_evidence
+        cache: dict = {}
+        ev = []
+        for lg, mk in zip(d["league"].astype(str), d["market"].astype(str)):
+            k = (lg, THRESHOLD_MARKET.get(mk, mk.lower()))
+            if k not in cache:
+                cache[k] = league_threshold_evidence(*k)
+            ev.append(cache[k])
+        d["league_threshold_evidence"] = ev
+        n_no = len(ev) - sum(ev)
+        if n_no:
+            log.info(f"stake plan: {n_no} of {len(ev)} tip(s) tiered on a GLOBAL threshold (no per-league "
+                     f"evidence) - planned with no stake: "
+                     f"{sorted({k for k, v in cache.items() if not v})[:20]}")
     return d
 
 

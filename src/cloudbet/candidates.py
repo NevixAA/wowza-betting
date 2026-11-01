@@ -48,8 +48,9 @@ PROP_MARKETS = ("goals", "assists", "sot", "sot2", "sot3", "cards")
 _REG = Path(__file__).resolve().parents[2] / "registry" / "settlement_alignment.json"
 
 #: The side each market implies when the ledger does not record one. These paths only ever
-#: produce one side by construction, which is why the column was left blank.
-_IMPLIED_SIDE = {"btts": "YES", "over15": "OVER", "over35": "OVER", "ou25": "OVER"}
+#: produce one side by construction, which is why the column was left blank. O/U 2.5 is NOT here:
+#: it is tipped on either side, so a row without a recorded side is dropped, never assumed OVER.
+_IMPLIED_SIDE = {"btts": "YES", "over15": "OVER", "over35": "OVER"}
 
 
 def _settlement() -> dict:
@@ -110,6 +111,22 @@ def team_candidates(days_ahead: int = 0) -> pd.DataFrame:
         # edge_pct is in PERCENT in the ledger; the team bar and the prop bar are both in
         # probability points, so it is converted here rather than at the comparison.
         edge = pd.to_numeric(d.get("edge_pct"), errors="coerce") / 100.0
+        mk = (pd.Series(market, index=d.index) if market else d["market"].astype(str))
+        # SIDE IS NaN ON EVERY SIDE-MARKET LEDGER ROW (435 of 435). The ledger never stores it
+        # because those paths only ever produce one side, so for reporting it is implied. A bot
+        # cannot work from an implication: a NaN side builds a broken marketUrl and would either
+        # fail or, worse, place the wrong side. Derived from the market where the market has ONE
+        # side (_IMPLIED_SIDE); otherwise (O/U 2.5) a missing side drops the row below.
+        recorded = (d["side"].astype(str).str.upper() if "side" in d.columns
+                    else pd.Series(pd.NA, index=d.index, dtype=object))
+        side = recorded.where(recorded.isin(["OVER", "UNDER", "YES", "NO"]), mk.map(_IMPLIED_SIDE))
+        if side.isna().any():
+            log.info(f"{path.name}: {int(side.isna().sum())} row(s) dropped - no recorded side and "
+                     f"the market does not imply one")
+            keep = side.notna()
+            d, edge, mk, side = d[keep], edge[keep], mk[keep], side[keep]
+            if d.empty:
+                continue
         rows.append(pd.DataFrame({
             "fixture_id": (d["match_date"].astype(str).str[:10] + "|"
                            + d["home_team"].astype(str) + "|" + d["away_team"].astype(str)
@@ -120,16 +137,8 @@ def team_candidates(days_ahead: int = 0) -> pd.DataFrame:
             "date": d["match_date"].astype(str).str[:10], "league": d["league"],
             "home_team": d["home_team"], "away_team": d["away_team"],
             "kickoff_utc": d.get("kickoff_utc"),
-            "market": market if market else d["market"],
-            # SIDE IS NaN ON EVERY SIDE-MARKET LEDGER ROW (435 of 435). The ledger never
-            # stores it because those paths only ever produce one side, so for reporting it is
-            # implied. A bot cannot work from an implication: a NaN side builds a broken
-            # marketUrl and would either fail or, worse, place the wrong side. Derived here
-            # from the market, which is the same rule the tip generator applies.
-            "side": (pd.Series(d.get("side")).astype(str).str.upper()
-                     .where(lambda x: x.isin(["OVER", "UNDER", "YES", "NO"]),
-                            (market if market else d["market"]).map(_IMPLIED_SIDE)
-                            if market is None else _IMPLIED_SIDE.get(market, "OVER"))),
+            "market": mk,
+            "side": side,
             "edge": edge,
             "signal_tier": d.get("signal_tier"),
             "model_type": d.get("model_type"),

@@ -18,7 +18,8 @@ Order of operations (owner brief, section 32):
  1 track = track_key(model_type, market, side): model_type|market, except O/U 2.5, which is split by
    SIDE (model_type|OU25_OVER / model_type|OU25_UNDER, owner 2026-10-26). An O/U 2.5 tip without a valid
    side maps to model_type|OU25_UNKNOWN_SIDE, which no policy defines -> no stake (fail closed)
- 2 state/base (0 -> no real stake)   3 paper league -> 0
+ 2 state/base (0 -> no real stake)   3 paper league -> 0   (+ no league-threshold evidence /
+   no league rating -> 0, see size_day)
  4 odds caps (track min/max, hard 3.00)   5 tier multiplier   6 convergence multiplier
  7 ONE position per fixture, chosen by the track's evidence_score (never by raw edge)
  8 single-bet / fixture cap   9 drawdown throttle   10 league and league x market daily caps
@@ -96,13 +97,21 @@ def drawdown_multiplier(policy: dict, bankroll: float, peak: float,
     return m if floor is None else min(m, float(floor))
 
 
-def rating_scale(rating: int | None, min_scale: float) -> float:
+def rating_scale(rating: int | None, min_scale: float) -> float | None:
     """League rating 1-10 -> stake scale (owner 2026-10-18): 10 -> 1.0 (today's stake), 1 -> min_scale,
-    linear between. Never above 1.0, so a rating can only reduce a stake."""
+    linear between. Never above 1.0, so a rating can only reduce a stake.
+
+    No rating -> None, NOT min_scale (Data Truth 2026-11-01): an unrated league has no evidence, and
+    sizing it as if it were rated 1 invented a rating; size_day gives it no stake (NO_LEAGUE_RATING)."""
     if rating is None:
-        return min_scale
+        return None
     r = min(10, max(1, int(rating)))
     return min_scale + (r - 1) / 9.0 * (1.0 - min_scale)
+
+
+def _is_true(v) -> bool:
+    """Only an explicit True counts as evidence; NaN / None / "unknown" do not."""
+    return type(v).__name__ in ("bool", "bool_") and bool(v)       # python bool or numpy.bool_
 
 
 def goal_direction(market, side=None) -> str | None:
@@ -128,8 +137,13 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     """Stake fractions for one day's qualifying selections. Pure: same input -> same output.
 
     league_ratings ({league: 1-10}, Pro league_ratings.json) is applied only when the policy's
-    league_rating_sizing.enabled is true: each stake x rating_scale; an unrated league gets the minimum.
+    league_rating_sizing.enabled is true: each stake x rating_scale; an UNRATED league gets NO stake
+    (reason NO_LEAGUE_RATING), and so does every league when the policy omits min_scale.
     Callers that pass nothing (Pro's simulator) are unaffected.
+
+    Optional selection column `league_threshold_evidence` (src/stake_plan): False = the tip was tiered
+    on a GLOBAL bar, not its league's own threshold -> no stake (NO_LEAGUE_THRESHOLD_EVIDENCE). Absent
+    column (Pro's simulator) -> not applied.
 
     prior_directions ({fixture: "OVER"|"UNDER"}) = the goal direction of positions ALREADY staked on a
     fixture by earlier runs (src/stake_plan reads them from stake_audit.csv). See step 6b."""
@@ -148,13 +162,18 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     ddm = drawdown_multiplier(policy, bankroll, peak, dd_floor)
     lrs = policy.get("league_rating_sizing") or {}
     use_rating = bool(lrs.get("enabled")) and league_ratings is not None
-    min_scale = min(max(float(lrs.get("min_scale", 0.2)), 0.0), 1.0)
+    # min_scale comes from the policy file only; a policy that enables rating sizing without it
+    # cannot size any league, so nothing is staked (reason NO_RATING_MIN_SCALE) rather than a typed 0.2.
+    min_scale = (min(max(float(lrs["min_scale"]), 0.0), 1.0)
+                 if lrs.get("min_scale") is not None else None)
 
     d = selections.copy().reset_index(drop=True)
     side_in = d["side"] if "side" in d.columns else pd.Series(None, index=d.index, dtype=object)
     d["track"] = [track_key(mt, mk, sd) for mt, mk, sd in zip(d["model_type"], d["market"], side_in)]
+    ev_in = (d["league_threshold_evidence"] if "league_threshold_evidence" in d.columns
+             else pd.Series(True, index=d.index, dtype=object))
     out = []
-    for r in d.itertuples(index=False):
+    for i, r in enumerate(d.itertuples(index=False)):
         t = policy["tracks"].get(r.track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
         base = min(float(t.get("base_fraction", 0.0)), HARD["base_fraction"])
         state = t.get("state", "UNSUPPORTED")
@@ -180,12 +199,16 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
             reason = "ODDS_BELOW_TRACK_FLOOR"
         elif tm <= 0:
             reason = "TIER_NOT_STAKED"
+        elif not _is_true(ev_in.iloc[i]):
+            reason = "NO_LEAGUE_THRESHOLD_EVIDENCE"         # tiered on a global bar only
         rt = league_ratings.get(r.league) if use_rating else None
-        rs = rating_scale(rt, min_scale) if use_rating else 1.0
+        rs = (rating_scale(rt, min_scale) if min_scale is not None else None) if use_rating else 1.0
+        if reason == "OK" and use_rating and rs is None:
+            reason = "NO_RATING_MIN_SCALE" if min_scale is None else "NO_LEAGUE_RATING"
         req = base * tm * lm * rs if reason == "OK" else 0.0
         out.append({**r._asdict(), "deployment_state": state, "base_fraction": base,
                     "tier_multiplier": tm, "league_multiplier": lm, "requested_fraction": req,
-                    "league_rating": rt, "rating_scale": round(rs, 3),
+                    "league_rating": rt, "rating_scale": round(rs, 3) if rs is not None else None,
                     "_score": float(t.get("evidence_score", 0.0)), "reason": reason})
     a = pd.DataFrame(out)
 

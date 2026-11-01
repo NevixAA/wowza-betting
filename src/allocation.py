@@ -186,7 +186,11 @@ def _cell(d: pd.DataFrame, league: str, market: str, track: str,
                     reason=(f"CI includes zero [{lo:+.4f}, {hi:+.4f}] — the honest reading of "
                             f"'could be negative' is zero stake, not a small one"))
 
-    f = _kelly_fraction(lo, mean_odds or 2.0) * shrink
+    if mean_odds is None:
+        # Kelly needs the price; it used to assume even money (2.0) when the cell had none.
+        return Cell(**base, fraction=0.0, state=ACCUMULATING,
+                    reason="no readable odds on the settled bets - cannot size without a price")
+    f = _kelly_fraction(lo, mean_odds) * shrink
     f = min(f, MAX_CELL_FRACTION)
     return Cell(**base, fraction=round(f, 5), state=ALLOCATABLE,
                 reason=(f"lower-bound edge {lo:+.4f} at mean odds {mean_odds:.2f} -> "
@@ -216,7 +220,8 @@ def allocate(bets: pd.DataFrame, reliable_from: str = RELIABLE_FROM,
     cells = []
     for (lg, mk, tr), g in d.groupby(["league", "market", "model_type"]):
         cells.append(_cell(g, str(lg), str(mk), str(tr)))
-    cells.sort(key=lambda c: (-c.fraction, -(c.roi or -9)))
+    # A cell with no ROI sorts after every cell that has one (no -9 sentinel standing in for it).
+    cells.sort(key=lambda c: (-c.fraction, c.roi is None, -(c.roi if c.roi is not None else 0.0)))
 
     total = sum(c.fraction for c in cells)
     scaled = 1.0
@@ -343,7 +348,7 @@ def diagnose(d: pd.DataFrame, min_n: int = 25) -> list[dict]:
         days = pd.to_datetime(d["match_date"], errors="coerce", utc=True
                               ).dt.floor("D").astype("int64").to_numpy()
         lo, hi = _block_ci(pnl, days)
-        if lo is not None and lo <= 0 <= (hi or 0):
+        if lo is not None and hi is not None and lo <= 0 <= hi:
             out.append({
                 "cause": CAUSE_VARIANCE, "severity": 0.0,
                 "evidence": f"CI [{lo:+.3f}, {hi:+.3f}] spans zero on {len(d)} bets",

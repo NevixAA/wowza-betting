@@ -14,7 +14,7 @@ def test_scale_bounds():
     assert rating_scale(10, 0.2) == 1.0
     assert rating_scale(1, 0.2) == pytest.approx(0.2)
     assert rating_scale(99, 0.2) == 1.0                         # never above today's stake
-    assert rating_scale(None, 0.2) == pytest.approx(0.2)       # unrated -> minimum
+    assert rating_scale(None, 0.2) is None                     # unrated -> no scale (no evidence)
 
 
 def test_rated_stakes_scale_down_only():
@@ -25,8 +25,32 @@ def test_rated_stakes_scale_down_only():
     r = rated.set_index("fixture")["requested_fraction"]
     assert r["f1"] == pytest.approx(b["f1"]) and r["f2"] == pytest.approx(0.2 * b["f2"])
     assert "league_rating" in rated.columns and "league_rating" not in base.columns
-    none = size_day(SEL, pol, 100.0, 100.0, league_ratings={})  # ratings unavailable -> every league minimum
-    assert (none["requested_fraction"] <= base["requested_fraction"] * 0.2 + 1e-12).all()
+    # Ratings unavailable -> no league is rated -> NO stake (Data Truth 2026-11-01: an unrated league
+    # used to be sized as if rated 1, an invented rating).
+    none = size_day(SEL, pol, 100.0, 100.0, league_ratings={})
+    assert (none["requested_fraction"] == 0).all() and set(none["reason"]) == {"NO_LEAGUE_RATING"}
+    half = size_day(SEL, pol, 100.0, 100.0, league_ratings={"Brazil Serie A": 10})
+    h = half.set_index("fixture")
+    assert h.loc["f1", "requested_fraction"] > 0 and h.loc["f2", "reason"] == "NO_LEAGUE_RATING"
+
+
+def test_policy_without_min_scale_stakes_nothing():
+    """min_scale comes from the policy file only; no typed 0.2 stands in for it."""
+    pol = load_policy()
+    pol = {**pol, "league_rating_sizing": {"enabled": True}}
+    r = size_day(SEL, pol, 100.0, 100.0, league_ratings={"Brazil Serie A": 10, "League One": 10})
+    assert (r["requested_fraction"] == 0).all() and set(r["reason"]) == {"NO_RATING_MIN_SCALE"}
+
+
+def test_no_league_threshold_evidence_means_no_stake():
+    """Owner 2026-11-01: a tip tiered on a GLOBAL bar is never staked. Column absent -> not applied."""
+    pol = load_policy()
+    sel = SEL.assign(league_threshold_evidence=[True, False])
+    r = size_day(sel, pol, 100.0, 100.0).set_index("fixture")
+    assert r.loc["f2", "reason"] == "NO_LEAGUE_THRESHOLD_EVIDENCE" and r.loc["f2", "requested_fraction"] == 0
+    assert r.loc["f1", "reason"] == "OK" and r.loc["f1", "requested_fraction"] > 0
+    nan = size_day(SEL.assign(league_threshold_evidence=[float("nan"), None]), pol, 100.0, 100.0)
+    assert set(nan["reason"]) == {"NO_LEAGUE_THRESHOLD_EVIDENCE"}       # unknown is not evidence
 
 
 def test_disabled_policy_ignores_ratings():

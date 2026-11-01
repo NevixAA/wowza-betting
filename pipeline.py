@@ -66,6 +66,10 @@ from src.ledger import (append_tips, append_side_market_tips, append_ht_tips,
 
 # ── Side-market bet generation ────────────────────────────────────────────────
 
+#: The one side each side-market path produces (it reads p_{target} / odds_{target}).
+SIDE_OF_TARGET = {"btts": "YES", "over15": "OVER", "over35": "OVER"}
+
+
 def _load_side_market_thresholds() -> dict:
     """Load per-league thresholds from best_params_side_markets.json if it exists."""
     import json
@@ -109,6 +113,10 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
             _quotes = None
 
     for target in side_markets:
+        if target not in SIDE_OF_TARGET:
+            # No side is defined for this target: never tip it with an empty side.
+            log.warning(f"side market {target!r} has no defined side - skipped, no tips")
+            continue
         prob_col = f"p_{target}"
         odds_col = f"odds_{target}"
         if prob_col not in preds.columns or odds_col not in preds.columns:
@@ -176,7 +184,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         # the MARKET is closer to truth than the model. The 2.82pp model-market gap manufactures a
         # NO edge on every fixture before any fixture-specific information exists. Enabling NO
         # would systematically bet a calibration error 61 times. Recalibrate p_btts first.
-        df["side"]        = {"btts": "YES", "over15": "OVER", "over35": "OVER"}.get(target, "")
+        df["side"]        = SIDE_OF_TARGET[target]
 
         def _tier(row):
             lg = row["league"]
@@ -685,10 +693,12 @@ def mode_train() -> tuple:
 
     # ── Exclude COVID seasons ────────────────────────────────────────────────
     if config.EXCLUDE_COVID_SEASONS:
+        # Per league from its own season rule (config.covid_season_mask): the old label set
+        # {"2019/20", "2020/21"} never matched a calendar-year league's "2020".
         before = len(raw)
-        raw = raw[~raw["season"].isin(config.COVID_SEASONS)]
-        log.info(f"  Excluded COVID seasons {config.COVID_SEASONS}: "
-                 f"{before - len(raw):,} rows removed → {len(raw):,} remaining")
+        raw = raw[~config.covid_season_mask(raw)]
+        log.info(f"  Excluded COVID seasons (league seasons in play {config.COVID_PERIOD[0]}.."
+                 f"{config.COVID_PERIOD[1]}): {before - len(raw):,} rows removed → {len(raw):,} remaining")
 
     log.info("Engineering features...")
     feat  = build_features(raw)

@@ -12,6 +12,10 @@ from src.cloudbet.staking import StakingRules
 @pytest.fixture
 def ledger(tmp_path, monkeypatch):
     monkeypatch.setattr(bot, "LEDGER", tmp_path / "cloudbet_bets.csv")
+    # These tests exercise pricing, caps and the ledger, so the test league is given per-league
+    # threshold evidence; the evidence rule itself is tested separately below.
+    import src.betting as betting
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": True)
     return bot.LEDGER
 
 
@@ -122,6 +126,65 @@ def test_the_ledger_records_both_prices_and_the_settlement_status(monkeypatch, l
     for c in ("our_odds", "cloudbet_odds", "edge_at_our_price", "edge_at_cloudbet_price",
               "settlement_status", "reference_id"):
         assert d[c].notna().all(), c
+
+
+# ── bankroll: a real figure or no stake (Data Truth 2026-11-01) ───────────────────────────────
+class _Client:
+    def __init__(self, live=None, currency="USDT"):
+        self._live, self.currency = live, currency
+
+    def balance(self):
+        return self._live
+
+
+def test_no_bankroll_anywhere_refuses_to_stake(monkeypatch, ledger, caplog):
+    """There used to be a typed 2000 default. With no argument, no live balance and no
+    CLOUDBET_BANKROLL the bot must stake nothing and say why."""
+    monkeypatch.delenv("CLOUDBET_BANKROLL", raising=False)
+    monkeypatch.delenv("CLOUDBET_API_KEY", raising=False)
+    monkeypatch.setattr(bot, "build_candidates", lambda **_: _cands())
+    with caplog.at_level("ERROR"):
+        out = bot.run(mode="DRY", events_by_league=_events())
+    assert out.empty and not ledger.exists()
+    assert "REFUSING TO STAKE" in caplog.text
+
+
+def test_bankroll_order_argument_then_live_balance_then_env(monkeypatch):
+    monkeypatch.setenv("CLOUDBET_BANKROLL", "750")
+    assert bot.resolve_bankroll(_Client(live=1234.5), 99.0) == (99.0, "argument")
+    assert bot.resolve_bankroll(_Client(live=1234.5))[0] == 1234.5
+    assert bot.resolve_bankroll(_Client(live=None)) == (750.0, "CLOUDBET_BANKROLL")
+    monkeypatch.setenv("CLOUDBET_BANKROLL", "lots")
+    assert bot.resolve_bankroll(_Client(live=None))[0] is None
+
+
+def test_an_unreadable_stake_today_fails_closed(monkeypatch, ledger):
+    """Today's exposure must be counted, not guessed: an unreadable stake was read as 0."""
+    prior = pd.DataFrame([{"placed_at": pd.Timestamp.now(tz="UTC").isoformat(), "accepted": True,
+                           "reference_id": "r", "fixture_id": "other", "stake": "??"}])
+    for c in bot.LEDGER_COLUMNS:
+        if c not in prior.columns:
+            prior[c] = pd.NA
+    prior[bot.LEDGER_COLUMNS].to_csv(ledger, index=False)
+    assert len(_run(monkeypatch, ledger)) == 0
+
+
+def test_no_our_odds_means_no_cloudbet_edge(monkeypatch, ledger):
+    """Without our own price the edge cannot be moved onto Cloudbet's: NaN, never carried over."""
+    c = _cands(1)
+    c["our_odds"] = float("nan")
+    priced = bot.price_candidates(c, bot.CloudbetClient(mode="DRY"), _events(1))
+    assert priced["edge"].isna().all() and "no our_odds" in priced["price_reason"].iloc[0]
+
+
+def test_a_league_without_its_own_threshold_is_not_staked(monkeypatch, ledger):
+    """Owner 2026-11-01: no stake on a global threshold. Props never have a per-league one."""
+    import src.betting as betting
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": False)
+    assert len(_run(monkeypatch, ledger)) == 0
+    monkeypatch.setattr(betting, "league_threshold_evidence", lambda league, market="ou25": True)
+    props = _cands(1).assign(bet_kind="prop")
+    assert bot._drop_without_league_evidence(props).empty
 
 
 # ── staking ───────────────────────────────────────────────────────────────────────────────────
