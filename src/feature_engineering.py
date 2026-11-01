@@ -115,12 +115,15 @@ def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
     away["is_home"] = 0
 
     tc = pd.concat([home, away], ignore_index=True)
-    return tc.sort_values(["team", "league", "date"]).reset_index(drop=True)
+    # (league, team) then DATE: grouping by bare club name crossed leagues in alphabetical-league
+    # order, so a same-named club elsewhere (or a later match in another competition) entered
+    # the window (Data Truth 2026-11-01).
+    return tc.sort_values(["league", "team", "date"], kind="mergesort").reset_index(drop=True)
 
 
 def _rolling(tc: pd.DataFrame, stat: str, n: int) -> pd.Series:
-    """Leakage-free rolling mean: shift(1) then rolling(n)."""
-    return tc.groupby("team")[stat].transform(
+    """Leakage-free rolling mean per (league, team): shift(1) then rolling(n)."""
+    return tc.groupby(["league", "team"], sort=False)[stat].transform(
         lambda x: x.shift(1).rolling(n, min_periods=1).mean()
     )
 
@@ -188,11 +191,13 @@ def _add_home_advantage(df: pd.DataFrame) -> pd.DataFrame:
 
 def _add_rest_days(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    last_match: dict[str, pd.Timestamp] = {}
+    # keyed (league, team): a same-named club in another league must not reset the clock
+    last_match: dict[tuple, pd.Timestamp] = {}
     home_rest, away_rest = [], []
 
     for _, row in df.sort_values("date").iterrows():
-        h, a = row["home_team"], row["away_team"]
+        lg = row["league"]
+        h, a = (lg, row["home_team"]), (lg, row["away_team"])
         hd = last_match.get(h)
         ad = last_match.get(a)
         home_rest.append((row["date"] - hd).days if hd is not None else np.nan)
@@ -221,18 +226,19 @@ def _add_season_venue_stats(df: pd.DataFrame) -> pd.DataFrame:
                 "home_cs_rate_h", "away_cs_rate_a"]:
         out[col] = np.nan
 
-    if "season" not in out.columns:
-        return out
+    # Season DERIVED from (date, league), never the stored label: mixed "2025" / "2025/26" /
+    # "2025/2026" labels split or merged one campaign (Data Truth 2026-11-01).
+    from src.features_repaired import season_key
+    s = out.sort_values("date").copy()
+    s["_szn"] = season_key(s["date"], s["league"].astype(str))
 
-    s = out.sort_values("date")
-
-    for _, grp in s.groupby(["league", "season", "home_team"], sort=False):
+    for _, grp in s.groupby(["league", "_szn", "home_team"], sort=False):
         idx = grp.index
         out.loc[idx, "home_season_goals_h"]    = grp["home_goals"].expanding().mean().shift(1).values
         out.loc[idx, "home_season_conceded_h"] = grp["away_goals"].expanding().mean().shift(1).values
         out.loc[idx, "home_cs_rate_h"]         = (grp["away_goals"] == 0).astype(float).expanding().mean().shift(1).values
 
-    for _, grp in s.groupby(["league", "season", "away_team"], sort=False):
+    for _, grp in s.groupby(["league", "_szn", "away_team"], sort=False):
         idx = grp.index
         out.loc[idx, "away_season_goals_a"]    = grp["away_goals"].expanding().mean().shift(1).values
         out.loc[idx, "away_season_conceded_a"] = grp["home_goals"].expanding().mean().shift(1).values
@@ -246,20 +252,24 @@ def _add_season_venue_stats(df: pd.DataFrame) -> pd.DataFrame:
 def _compute_referee_stats(matches: pd.DataFrame) -> tuple[dict, float]:
     """
     Compute per-referee average total fouls from historical data.
-    Returns (ref_dict, global_default) where ref_dict maps name → avg_fouls.
+    Returns (ref_dict, global_mean) where ref_dict maps name → avg_fouls.
     Minimum 3 matches to be included.
+
+    Only matches where BOTH foul counts exist count (a missing count was filled with 0 and
+    dragged the mean down). global_mean is informational only: an unknown referee gets NaN,
+    never this pooled mean, and an empty/absent history returns NaN (Data Truth 2026-11-01).
     """
     df = matches.copy()
-    if "referee" not in df.columns or df["referee"].isna().all():
-        return {}, 22.0
+    if ("referee" not in df.columns or df["referee"].isna().all()
+            or "home_fouls" not in df.columns or "away_fouls" not in df.columns):
+        return {}, np.nan
 
     df = df[df["referee"].notna()].copy()
     df["referee"] = df["referee"].astype(str).str.strip()
-    df["total_fouls"] = (
-        pd.to_numeric(df.get("home_fouls", 0), errors="coerce").fillna(0) +
-        pd.to_numeric(df.get("away_fouls", 0), errors="coerce").fillna(0)
-    )
-    global_default = float(df["total_fouls"].mean()) if len(df) > 0 else 22.0
+    df["total_fouls"] = (pd.to_numeric(df["home_fouls"], errors="coerce")
+                         + pd.to_numeric(df["away_fouls"], errors="coerce"))
+    df = df[df["total_fouls"].notna()]
+    global_default = float(df["total_fouls"].mean()) if len(df) > 0 else np.nan
 
     grp = df.groupby("referee").agg(
         ref_foul_avg=("total_fouls", "mean"),
@@ -285,24 +295,18 @@ def _load_sofascore_cache() -> dict:
         return {}
 
 
-_SS_DEFAULTS = {
-    "sp_goals_pg": 0.30, "pen_goals_pg": 0.07,
-    "fk_goals_pg": 0.03, "headed_goals_pg": 0.20,
-}
-
 _ss_cache_loaded: Optional[dict] = None
 
 
 def _ss_lookup(league: str, team: str, stat: str) -> float:
     """Sofascore set-piece stat for a team, or NaN when we simply don't have it.
 
-    Returns NaN rather than _SS_DEFAULTS (2026-08-15). sofascore_cache.json is not present
+    Returns NaN rather than typed priors (2026-08-15). sofascore_cache.json is not present
     in the repo at all, so every lookup fell through to the stand-in and stamped an
     identical 0.30 / 0.07 / 0.03 onto EVERY row of every league — numbers that look like
     per-team measurements and are nothing of the sort. These columns were already dropped
     from FEATURE_COLS as 0% importance (ML audit 2026-06-10), so nothing consumes them;
-    they only ever misled whoever read the CSV. _SS_DEFAULTS is kept as documentation of
-    the league-average priors in case the cache is ever populated.
+    they only ever misled whoever read the CSV. The typed priors were deleted 2026-11-01.
     """
     global _ss_cache_loaded
     if _ss_cache_loaded is None:
@@ -315,19 +319,11 @@ def _ss_lookup(league: str, team: str, stat: str) -> float:
     if team in teams_dict:
         return teams_dict[team].get(stat, np.nan)
 
-    # Fuzzy match
-    try:
-        from rapidfuzz import process as fp
-        hit = fp.extractOne(team, list(teams_dict.keys()), score_cutoff=75)
-        if hit:
-            return teams_dict[hit[0]].get(stat, np.nan)
-    except ImportError:
-        # Simple substring fallback
-        tl = team.lower()
-        for name in teams_dict:
-            if tl in name.lower() or name.lower() in tl:
-                return teams_dict[name].get(stat, np.nan)
-
+    # Canonical resolver within this league's pool (no fuzzy/substring club matching)
+    from src.team_names import resolve
+    hit = resolve(team, list(teams_dict.keys()))
+    if hit:
+        return teams_dict[hit].get(stat, np.nan)
     return np.nan
 
 
@@ -464,23 +460,22 @@ def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v
     df = df.merge(away_tc, on="_src_idx", how="left")
     df = df.drop(columns=["_src_idx"])
 
+    # ── League-wide expanding average ──────────────────────────────────────
+    # Computed BEFORE the HT block: it ran after, so the HT strengths always divided by a typed
+    # 0.65 for every league (Data Truth 2026-11-01). No league history yet -> NaN.
+    df["league_avg_goals"] = _league_expanding_avg(df).values
+
     # ── HT-derived features (when available) ──────────────────────────────
     if has_ht and "home_ht_scored_last5" in df.columns:
         # NaN when either side has no HT history - fillna(0) read "unknown" as "never scores at
         # half-time" (48 of 154 board fixtures understated, 17 at exactly 0; Data Truth audit
         # finding 7). Identical rule at serving time below; the model imputes it like any gap.
         df["combined_ht_goals_avg"] = df["home_ht_scored_last5"] + df["away_ht_scored_last5"]
-        if "league_avg_goals" in df.columns:
-            half_avg = (df["league_avg_goals"] / 2).replace(0, np.nan)
-        else:
-            half_avg = pd.Series(0.65, index=df.index)
+        half_avg = (df["league_avg_goals"] / 2).replace(0, np.nan)
         df["home_ht_attack_str"]  = df["home_ht_scored_last5"]   / half_avg
         df["away_ht_attack_str"]  = df["away_ht_scored_last5"]   / half_avg
         df["home_ht_defense_str"] = df["home_ht_conceded_last5"] / half_avg
         df["away_ht_defense_str"] = df["away_ht_conceded_last5"] / half_avg
-
-    # ── League-wide expanding average ──────────────────────────────────────
-    df["league_avg_goals"] = _league_expanding_avg(df).values
 
     # ── Strength metrics ────────────────────────────────────────────────────
     half_avg = (df["league_avg_goals"] / 2).replace(0, np.nan)
@@ -514,13 +509,14 @@ def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v
     df = _merge_sofascore(df)
 
     # ── Referee foul avg ────────────────────────────────────────────────────
-    ref_stats, ref_default = _compute_referee_stats(df)
+    # Unknown / absent referee -> NaN, never the pooled global mean (Data Truth 2026-11-01)
+    ref_stats, _ = _compute_referee_stats(df)
     if "referee" in df.columns:
         df["referee_foul_avg"] = df["referee"].map(
-            lambda r: ref_stats.get(str(r).strip(), ref_default) if pd.notna(r) else ref_default
+            lambda r: ref_stats.get(str(r).strip(), np.nan) if pd.notna(r) else np.nan
         )
     else:
-        df["referee_foul_avg"] = ref_default
+        df["referee_foul_avg"] = np.nan
 
     # ── Implied probability from historical odds ────────────────────────────
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
@@ -640,9 +636,12 @@ def build_upcoming_features(
         vals = list(h) + list(a)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
-    # NF_FEATURE_PARITY (default on, 2026-11-01): home_advantage + new-format overround computed as
-    # training does. "0" restores the old serving behaviour exactly - the rollback switch.
+    # NF_FEATURE_PARITY (default on, 2026-11-01): new-format overround computed as training does.
+    # "0" restores the old single-book overround. The home_advantage=1.0 and exact-name season
+    # rollbacks it also used to switch were removed (Data Truth 2026-11-01: typed constant /
+    # raw name matching).
     _parity = os.getenv("NF_FEATURE_PARITY", "1").strip() != "0"
+    from src.features_repaired import season_key
     rows = upcoming.to_dict("records")
     feat_records = []
     for row in rows:
@@ -713,34 +712,34 @@ def build_upcoming_features(
         feat["away_blocked_last5"]    = _team_recent(at, "home_blocked",    "away_blocked",    n, lg)
 
         # Season-to-date venue stats (current season from historical data — no shift needed)
-        def _venue_season_stats(team, team_col, scored_col, conceded_col, league=""):
+        def _venue_season_stats(team, team_col, scored_col, conceded_col, league="", date=None):
             # League-scoped name resolution, the same as the rolling form above (invariant 11).
             # This used an EXACT OddsAPI-name match, so any club spelled differently by OddsAPI
             # and the history ("Atlanta United FC" / "Atlanta Utd") got NaN season stats that
             # were then batch-median imputed: 55% of live new-format rows vs 8% in training
-            # (measured 2026-11-01). NF_FEATURE_PARITY=0 restores the exact match.
-            if _parity:
-                rows = _find_team_rows(team, team_col, league)
-            else:
-                rows = hist[hist[team_col] == team]
-                if league:
-                    rows = rows[rows["league"] == league]
-            if rows.empty or "season" not in rows.columns:
+            # (measured 2026-11-01).
+            rows = _find_team_rows(team, team_col, league)
+            if rows.empty or not league or pd.isna(pd.to_datetime(date, errors="coerce")):
                 return np.nan, np.nan, np.nan
-            latest_szn = rows.sort_values("date")["season"].iloc[-1]
-            rows = rows[rows["season"] == latest_szn]
-            if rows.empty:
+            # The FIXTURE's season, derived from (date, league) exactly as training does - not
+            # the team's latest stored label, which at a season start served last campaign's
+            # venue stats as "season to date". No rows yet this season -> NaN.
+            fx_szn = season_key(pd.Series([pd.to_datetime(date)]), pd.Series([league])).iloc[0]
+            row_szn = season_key(rows["date"], rows["league"].astype(str))
+            rows = rows[row_szn == fx_szn]
+            played = rows[rows[conceded_col].notna()]
+            if played.empty:
                 return np.nan, np.nan, np.nan
             return (
                 float(rows[scored_col].dropna().mean()),
-                float(rows[conceded_col].dropna().mean()),
-                float((rows[conceded_col] == 0).mean()),
+                float(played[conceded_col].mean()),
+                float((played[conceded_col] == 0).mean()),
             )
 
         (feat["home_season_goals_h"], feat["home_season_conceded_h"], feat["home_cs_rate_h"]) = \
-            _venue_season_stats(ht, "home_team", "home_goals", "away_goals", lg)
+            _venue_season_stats(ht, "home_team", "home_goals", "away_goals", lg, row.get("date"))
         (feat["away_season_goals_a"], feat["away_season_conceded_a"], feat["away_cs_rate_a"]) = \
-            _venue_season_stats(at, "away_team", "away_goals", "home_goals", lg)
+            _venue_season_stats(at, "away_team", "away_goals", "home_goals", lg, row.get("date"))
 
         lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else hist["away_goals"].mean()
         # No league history -> no reference average -> home-advantage features stay NaN below
@@ -753,12 +752,9 @@ def build_upcoming_features(
         # training saw ~0.45 on average - a 2.1-sd train/serve shift on every fixture that,
         # with the overround mismatch below, pulled new-format P(over) ~6pp low and turned
         # 91% of October's NF O/U tips into Unders (measured 2026-11-01).
-        if _parity:
-            ht_home_rows = _find_team_rows(ht, "home_team", lg).tail(n)
-            feat["home_advantage"] = (np.nan if (ht_home_rows.empty or _no_ref) else float(
-                (ht_home_rows["home_goals"] > lg_avg_away).sum() / len(ht_home_rows)))
-        else:
-            feat["home_advantage"] = 1.0                      # pre-2026-11-01 behaviour (rollback)
+        ht_home_rows = _find_team_rows(ht, "home_team", lg).tail(n)
+        feat["home_advantage"] = (np.nan if (ht_home_rows.empty or _no_ref) else float(
+            (ht_home_rows["home_goals"] > lg_avg_away).sum() / len(ht_home_rows)))
 
         # Away team's rolling home advantage (fraction of their own home games they dominate).
         # No history -> NaN, as in training (was an invented 0.45).
@@ -801,25 +797,33 @@ def build_upcoming_features(
     # Board names resolved to their HISTORY spelling first (league-scoped, same resolver as the form
     # features): with raw OddsAPI names 'Blackburn Rovers', 'Queens Park Rangers'... never met
     # football-data's 'Blackburn', 'QPR', and 36% of Standard fixtures still had no rest days.
+    # A refused/missed name stays None (rest days NaN), never the raw OddsAPI spelling; history is
+    # restricted to the board's leagues and _add_rest_days keys (league, team), so a same-named
+    # club elsewhere never sets the clock (Data Truth 2026-11-01).
     def _hist_name(team, league):
         if not league:
-            return team
+            return None
         key = (str(team), str(league))
         if key not in _resolved:
             _resolved[key] = resolve_team(team, _clubs_in(league))
-        return _resolved[key] or team
+        return _resolved[key]
     _up = df[["date", "home_team", "away_team"]].copy()
     _lgs = df["league"] if "league" in df.columns else pd.Series("", index=df.index)
+    _up["league"] = _lgs.to_numpy()
     _up["home_team"] = [_hist_name(t, lg) for t, lg in zip(df["home_team"], _lgs)]
     _up["away_team"] = [_hist_name(t, lg) for t, lg in zip(df["away_team"], _lgs)]
-    _teams = set(_up["home_team"]) | set(_up["away_team"])
-    _h = hist[["date", "home_team", "away_team"]]
-    _h = _h[_h["home_team"].isin(_teams) | _h["away_team"].isin(_teams)]
+    _teams = {t for t in set(_up["home_team"]) | set(_up["away_team"]) if pd.notna(t)}
+    _h = hist[["date", "league", "home_team", "away_team"]]
+    _h = _h[_h["league"].isin(set(_lgs))
+            & (_h["home_team"].isin(_teams) | _h["away_team"].isin(_teams))]
     combined = pd.concat([_h, _up], ignore_index=True)
     combined_rd = _add_rest_days(combined)
     tail = combined_rd.tail(len(df))
-    df["home_rest_days"] = tail["home_rest_days"].to_numpy()
-    df["away_rest_days"] = tail["away_rest_days"].to_numpy()
+    df["home_rest_days"] = np.where(_up["home_team"].isna(), np.nan, tail["home_rest_days"].to_numpy())
+    df["away_rest_days"] = np.where(_up["away_team"].isna(), np.nan, tail["away_rest_days"].to_numpy())
+    _n_unres = int(_up["home_team"].isna().sum() + _up["away_team"].isna().sum())
+    if _n_unres:
+        log.warning(f"[names] {_n_unres} board side(s) unresolved in history -> rest days NaN")
 
     # Set piece proxies — use league averages from history
     lg_corners = hist.groupby("league").apply(
@@ -889,10 +893,11 @@ def build_upcoming_features(
         _ts = fetch_upcoming_team_stats(df)
         if _ts:
             for _idx, _r in df.iterrows():
-                _ht = str(_r.get("home_team", ""))
-                _at = str(_r.get("away_team", ""))
-                _hs = _ts.get(_ht, {})
-                _as = _ts.get(_at, {})
+                # keyed (league, team): same-named clubs in different leagues no longer
+                # overwrite each other's season stats
+                _lgk = str(_r.get("league", ""))
+                _hs = _ts.get((_lgk, str(_r.get("home_team", ""))), {})
+                _as = _ts.get((_lgk, str(_r.get("away_team", ""))), {})
                 if _hs:
                     if _hs.get("goals_for_h") is not None:
                         df.at[_idx, "home_season_goals_h"]    = _hs["goals_for_h"]
@@ -997,12 +1002,15 @@ def build_upcoming_features(
     # Sofascore
     df = _merge_sofascore(df)
 
-    # Referee foul avg — use historical ref stats; fallback to global default
-    ref_stats, ref_default = _compute_referee_stats(hist)
-    ref_col = df.get("referee", pd.Series(dtype=object))
-    df["referee_foul_avg"] = ref_col.map(
-        lambda r: ref_stats.get(str(r).strip(), ref_default) if pd.notna(r) else ref_default
-    )
+    # Referee foul avg from historical ref stats; unknown / absent referee -> NaN, never the
+    # pooled global mean (Data Truth 2026-11-01)
+    ref_stats, _ = _compute_referee_stats(hist)
+    if "referee" in df.columns:
+        df["referee_foul_avg"] = df["referee"].map(
+            lambda r: ref_stats.get(str(r).strip(), np.nan) if pd.notna(r) else np.nan
+        )
+    else:
+        df["referee_foul_avg"] = np.nan
 
     # Implied probs
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
@@ -1066,26 +1074,32 @@ def build_upcoming_features(
             if (lg_id, season) not in _standings_cache:
                 _standings_cache[(lg_id, season)] = build_standings_map(lg_id, season)
             smap   = _standings_cache[(lg_id, season)]
-            n_teams = max(len(smap), 1)
+            n_teams = len(smap)
+            if not n_teams:
+                continue
 
             home_s = lookup_team_standing(smap, str(row.get("home_team", "")))
             away_s = lookup_team_standing(smap, str(row.get("away_team", "")))
 
+            # missing standing fields stay NaN (rank is None when API-Football omits it)
+            def _v(x):
+                return np.nan if x is None else x
+            h_rank = home_s.get("rank") if home_s else None
+            a_rank = away_s.get("rank") if away_s else None
             if home_s:
-                df.at[i, "home_table_pos"]  = round(home_s["rank"] / n_teams, 3)
-                df.at[i, "home_gd_pg"]      = home_s["gd_per_game"]
-                df.at[i, "home_form_pts"]   = home_s["form_pts"]
-                df.at[i, "home_win_rate_h"] = home_s["home_win_rate"]
+                df.at[i, "home_table_pos"]  = round(h_rank / n_teams, 3) if h_rank is not None else np.nan
+                df.at[i, "home_gd_pg"]      = _v(home_s["gd_per_game"])
+                df.at[i, "home_form_pts"]   = _v(home_s["form_pts"])
+                df.at[i, "home_win_rate_h"] = _v(home_s["home_win_rate"])
             if away_s:
-                df.at[i, "away_table_pos"]  = round(away_s["rank"] / n_teams, 3)
-                df.at[i, "away_gd_pg"]      = away_s["gd_per_game"]
-                df.at[i, "away_form_pts"]   = away_s["form_pts"]
-                df.at[i, "away_win_rate_a"] = away_s["away_win_rate"]
-            if home_s and away_s:
-                df.at[i, "table_pos_gap"] = round(
-                    (away_s["rank"] - home_s["rank"]) / n_teams, 3
-                )
-    except Exception:
-        pass  # standings are metadata only — never break predictions
+                df.at[i, "away_table_pos"]  = round(a_rank / n_teams, 3) if a_rank is not None else np.nan
+                df.at[i, "away_gd_pg"]      = _v(away_s["gd_per_game"])
+                df.at[i, "away_form_pts"]   = _v(away_s["form_pts"])
+                df.at[i, "away_win_rate_a"] = _v(away_s["away_win_rate"])
+            if h_rank is not None and a_rank is not None:
+                df.at[i, "table_pos_gap"] = round((a_rank - h_rank) / n_teams, 3)
+    except Exception as e:
+        # standings are metadata only — never break predictions, but say so
+        log.warning(f"[enrich] standings metadata unavailable, left NaN: {e}")
 
     return df

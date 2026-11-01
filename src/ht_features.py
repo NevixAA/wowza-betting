@@ -80,8 +80,13 @@ class _Acc:
         return self.w
 
     def mean(self, prior: float, prior_w: float = PRIOR_MATCHES) -> float:
-        """Shrunk toward `prior`. With no history this returns the prior exactly."""
+        """Shrunk toward `prior`. With no history this returns the prior exactly; a NaN prior
+        (nothing to shrink toward yet) gives NaN."""
         return (self.sw + prior * prior_w) / (self.w + prior_w)
+
+    def raw_mean(self) -> float:
+        """Unshrunk weighted mean of what was observed, NaN with no observations."""
+        return self.sw / self.w if self.w > 0 else float("nan")
 
 
 def build_ht_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -129,18 +134,26 @@ def build_ht_features(df: pd.DataFrame) -> pd.DataFrame:
         return a
 
     out = {c: np.full(len(d), np.nan) for c in HT_FEATURE_COLS}
-    # Global fallbacks so the very first fixtures are not NaN-blank.
-    G_H, G_A, G_O05 = 0.55, 0.45, 0.70
+    # League baselines shrink toward the POOLED as-of history of every league (never-decaying, so
+    # it is the plain mean of all HT scores played so far), not typed 0.55 / 0.45 / 0.70 / 0.42
+    # priors (Data Truth 2026-11-01). Before the first played HT score anywhere there is nothing to
+    # shrink toward, so those first fixtures are NaN.
+    _inf = float("inf")
+    g_h, g_a, g_o05 = _Acc(_inf), _Acc(_inf), _Acc(_inf)
+    g_share = _Acc(_inf)
 
     for i in range(len(d)):
         L, H, A = lg[i], home[i], away[i]
         la_h, la_a, la_o = acc(lg_h, L), acc(lg_a, L), acc(lg_o05, L)
-        base_h = la_h.mean(G_H, 20.0)
-        base_a = la_a.mean(G_A, 20.0)
-        base_o = la_o.mean(G_O05, 20.0)
+        base_h = la_h.mean(g_h.raw_mean(), 20.0)
+        base_a = la_a.mean(g_a.raw_mean(), 20.0)
+        base_o = la_o.mean(g_o05.raw_mean(), 20.0)
 
-        hs, hc = acc(t_hs, H), acc(t_hc, H)          # this team, at HOME
-        aws, awc = acc(t_as, A), acc(t_ac, A)        # that team, AWAY
+        # Team accumulators keyed (league, team): a same-named club in another league is a
+        # different history (the league accumulators already were league-keyed).
+        TH, TA = (L, H), (L, A)
+        hs, hc = acc(t_hs, TH), acc(t_hc, TH)        # this team, at HOME
+        aws, awc = acc(t_as, TA), acc(t_ac, TA)      # that team, AWAY
 
         # Multiplicative strengths, each shrunk to its own league baseline.
         h_att = np.clip(hs.mean(base_h) / max(base_h, 1e-6), STRENGTH_LO, STRENGTH_HI)
@@ -169,10 +182,10 @@ def build_ht_features(df: pd.DataFrame) -> pd.DataFrame:
         out["ht_home_conceded_ewm"][i] = hc.mean(base_a)
         out["ht_away_scored_ewm"][i] = aws.mean(base_a)
         out["ht_away_conceded_ewm"][i] = awc.mean(base_h)
-        out["ht_home_over05_ewm"][i] = acc(t_o05_h, H).mean(base_o)
-        out["ht_away_over05_ewm"][i] = acc(t_o05_a, A).mean(base_o)
-        out["ht_ft_share_home"][i] = acc(t_share_h, H).mean(0.42, 10.0)
-        out["ht_ft_share_away"][i] = acc(t_share_a, A).mean(0.42, 10.0)
+        out["ht_home_over05_ewm"][i] = acc(t_o05_h, TH).mean(base_o)
+        out["ht_away_over05_ewm"][i] = acc(t_o05_a, TA).mean(base_o)
+        out["ht_ft_share_home"][i] = acc(t_share_h, TH).mean(g_share.raw_mean(), 10.0)
+        out["ht_ft_share_away"][i] = acc(t_share_a, TA).mean(g_share.raw_mean(), 10.0)
 
         k = (L, *sorted((H, A)))
         hx = acc(h2h, k)
@@ -182,15 +195,18 @@ def build_ht_features(df: pd.DataFrame) -> pd.DataFrame:
         # ── UPDATE ONLY AFTER EMITTING. This ordering is the no-leakage guarantee. ──
         if not (np.isnan(hh[i]) or np.isnan(ha[i])):
             la_h.add(hh[i]); la_a.add(ha[i]); la_o.add(1.0 if tot[i] >= 1 else 0.0)
+            g_h.add(hh[i]); g_a.add(ha[i]); g_o05.add(1.0 if tot[i] >= 1 else 0.0)
             hs.add(hh[i]); hc.add(ha[i])
             aws.add(ha[i]); awc.add(hh[i])
-            acc(t_o05_h, H).add(1.0 if tot[i] >= 1 else 0.0)
-            acc(t_o05_a, A).add(1.0 if tot[i] >= 1 else 0.0)
+            acc(t_o05_h, TH).add(1.0 if tot[i] >= 1 else 0.0)
+            acc(t_o05_a, TA).add(1.0 if tot[i] >= 1 else 0.0)
             hx.add(1.0 if tot[i] >= 1 else 0.0)
             if not np.isnan(fh[i]) and fh[i] > 0:
-                acc(t_share_h, H).add(hh[i] / fh[i])
+                acc(t_share_h, TH).add(hh[i] / fh[i])
+                g_share.add(hh[i] / fh[i])
             if not np.isnan(fa[i]) and fa[i] > 0:
-                acc(t_share_a, A).add(ha[i] / fa[i])
+                acc(t_share_a, TA).add(ha[i] / fa[i])
+                g_share.add(ha[i] / fa[i])
 
     for c, v in out.items():
         d[c] = v

@@ -238,7 +238,7 @@ def _update_history(history: dict, events: list[dict]) -> dict:
         history[key]["snapshots"].append({
             "at":      ev["fetched_at"],
             "odds":    _extract_odds(ev),
-            "n_books": ev.get("n_books", 1),
+            "n_books": ev.get("n_books"),       # unknown stays None, never an invented 1
         })
         history[key]["snapshots"] = history[key]["snapshots"][-50:]
     return history
@@ -335,7 +335,7 @@ def _build_tips(history: dict) -> pd.DataFrame:
         opening  = rec["opening"]
         current  = rec["snapshots"][-1]["odds"]
         n_snaps  = len(rec["snapshots"])
-        n_books  = rec["snapshots"][-1].get("n_books", 1)
+        n_books  = rec["snapshots"][-1].get("n_books")
         snaps    = rec["snapshots"]
 
         if rec["market"] == "totals":
@@ -370,8 +370,9 @@ def _build_tips(history: dict) -> pd.DataFrame:
             if sig == "NEUTRAL":
                 continue
 
-            # Thin-market guard: STEAM requires ≥4 books to be credible
-            if n_books < 4 and sig in ("STEAM_STRONG", "STEAM_SHARP"):
+            # Thin-market guard: STEAM requires ≥4 books to be credible (an unknown book count
+            # proves nothing, so it is treated as thin)
+            if (n_books is None or n_books < 4) and sig in ("STEAM_STRONG", "STEAM_SHARP"):
                 sig = {"STEAM_STRONG": "STRONG", "STEAM_SHARP": "SHARP"}[sig]
 
             consensus = _consensus_pct(snaps, ok, d)

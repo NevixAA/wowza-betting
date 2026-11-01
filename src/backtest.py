@@ -226,11 +226,28 @@ def run_backtest(
 
 # ── Side-market walk-forward backtest ─────────────────────────────────────────
 
-_OVERROUND = 1.08  # assumed bookmaker margin for side markets
+# The OTHER side of each side market. The fair price is the power de-vig of the two-sided pair
+# (as production does since 2026-11-01); a row without both sides is NOT priced. The typed 1.08
+# margin and the 1.85/1.40/2.60 fill prices were removed (Data Truth 2026-11-01).
+_OPPOSITE_ODDS = {"btts": "odds_btts_no", "over15": "odds_under15", "over35": "odds_under35"}
 
-# Market-average fallback odds when bookmaker odds aren't in the CSV.
-# Used only when odds_col is all-NaN (e.g. Football-Data new-format leagues).
-_DEFAULT_ODDS = {"btts": 1.85, "over15": 1.40, "over35": 2.60}
+
+def _two_sided_fair(side: pd.Series, other: pd.Series) -> pd.Series:
+    """Power-de-vigged fair probability of `side`; NaN where either price is missing."""
+    from src.edge_engine import power_devig
+    s = pd.to_numeric(side, errors="coerce")
+    o = pd.to_numeric(other, errors="coerce")
+    vals = [power_devig(a, b) if (pd.notna(a) and pd.notna(b)) else None for a, b in zip(s, o)]
+    return pd.Series([np.nan if v is None else v for v in vals], index=side.index, dtype=float)
+
+def _derived_season(df: pd.DataFrame) -> pd.Series:
+    """Canonical season from (date, league) — the same derivation the repaired features use.
+    Within one league every label has one format, so sorting it is time order."""
+    from src.features_repaired import season_key
+    s = season_key(pd.to_datetime(df["date"], errors="coerce"), df["league"].astype(str))
+    # an unparseable date gives no season (NaN), never a "<NA>/.." label
+    return s.where(pd.to_datetime(df["date"], errors="coerce").notna())
+
 
 def _side_tier(edge: float) -> str:
     if edge >= 0.10: return "SNIPER"
@@ -261,15 +278,23 @@ def run_side_market_backtest(
     min_train = min_train or config.BACKTEST_MIN_TRAIN
     odds_col  = f"odds_{target}"
 
-    # Only require the target outcome — odds are filled with market defaults if absent
+    # Only require the target outcome — unpriced rows still TRAIN (no odds needed) but are
+    # never bets; their odds stay NaN
+    n_in = len(df)
     df = df.dropna(subset=[target]).copy()
+    if len(df) < n_in:
+        log.info(f"[{target}] {n_in - len(df)} rows without a {target} outcome skipped")
     if odds_col not in df.columns:
         df[odds_col] = np.nan
-    # A FILLED PRICE IS NOT A PRICE. The fill stays — the model still scores these rows and
-    # they still contribute to TRAINING, which needs no odds — but they are flagged and can
-    # never be counted as bets, because an "edge" against a constant is not an edge.
+    opp_col = _OPPOSITE_ODDS.get(target)
+    if opp_col is None or opp_col not in df.columns:
+        df["_odds_other"] = np.nan
+    else:
+        df["_odds_other"] = df[opp_col]
+    # A MISSING PRICE IS NOT A PRICE. Unpriced rows (no price for this side, or no price for the
+    # other side to de-vig against) are flagged and can never be counted as bets.
     #
-    # WHY THIS MATTERED. With a constant price, fair_prob = (1/1.40)/1.08 = 0.6614 is also
+    # HISTORY (why a filled price mattered). With a constant price, fair_prob = (1/1.40)/1.08 = 0.6614 is also
     # constant, so `edge = p_model - 0.6614` and the tier is a bare model-probability threshold
     # with no market in it. The reported ROI was the payout of an invented number. Measured on
     # the committed outputs: over15 was 12,186/12,187 rows (100.0%) at the 1.40 default, and
@@ -282,21 +307,21 @@ def run_side_market_backtest(
     # used the default) and is running at +27.3% ROI live over 167 settled bets, while over15 was
     # certified entirely on the constant and is running at -1.0% over 63. Honest certification
     # and live performance agree; fabricated certification and live performance do not.
-    df["price_synthetic"] = df[odds_col].isna()
+    #
+    # price_synthetic keeps its name for downstream readers; it now means "not priced": no
+    # two-sided pair, so no honest fair probability.
+    df["price_synthetic"] = df[odds_col].isna() | df["_odds_other"].isna()
     missing_odds = int(df["price_synthetic"].sum())
     if missing_odds > 0:
-        fallback = _DEFAULT_ODDS.get(target, 2.00)
-        df[odds_col] = df[odds_col].fillna(fallback)
         pct = 100.0 * missing_odds / max(len(df), 1)
         log.warning(
-            f"[{target}] {missing_odds}/{len(df)} rows ({pct:.1f}%) have NO real {odds_col} — "
-            f"filled with {fallback} for scoring only and EXCLUDED from bets/ROI"
+            f"[{target}] {missing_odds}/{len(df)} rows ({pct:.1f}%) have no two-sided "
+            f"{odds_col}/{opp_col} price — left unpriced (NaN) and EXCLUDED from bets/ROI"
         )
         if missing_odds == len(df):
             log.error(
-                f"[{target}] NO PRICED DATA AT ALL — 100% of rows are synthetic. This market "
-                f"cannot be backtested and must not be certified. Any ROI reported for it "
-                f"previously was the payout of a constant."
+                f"[{target}] NO PRICED DATA AT ALL — 100% of rows lack a two-sided price. This "
+                f"market cannot be backtested and must not be certified."
             )
     df = df.sort_values("date").reset_index(drop=True)
 
@@ -340,7 +365,7 @@ def run_side_market_backtest(
             continue
 
         # Compute edge + tier
-        test_df["fair_prob"]  = (1.0 / test_df[odds_col]) / _OVERROUND
+        test_df["fair_prob"]  = _two_sided_fair(test_df[odds_col], test_df["_odds_other"])
         test_df["edge"]       = test_df[f"p_{target}"] - test_df["fair_prob"]
         test_df["signal_tier"] = test_df["edge"].apply(_side_tier)
         # Synthetic-priced rows can never be bets. NO_PRICE is deliberately a distinct label
@@ -532,10 +557,14 @@ def optimize_side_market_thresholds(
                 best = (float(round(th, 4)), len(sel), roi)
         return best
 
-    has_season = "season" in results_df.columns
-    seasons = sorted(results_df["season"].astype(str).unique()) if has_season else []
+    # Seasons DERIVED from (date, league) and ordered per league: sorting the raw stored labels
+    # put mixed "2025" / "2025/26" labels out of time order and split campaigns.
+    has_season = "date" in results_df.columns and "league" in results_df.columns
+    if has_season:
+        results_df = results_df.assign(_szn=_derived_season(results_df))
 
     for league, grp in results_df.groupby("league"):
+        seasons = sorted(grp["_szn"].dropna().unique()) if has_season else []
         ins = _best(grp, min_bets)
         best_th = ins[0] if ins else edge_min
         best_bets = ins[1] if ins else 0
@@ -545,8 +574,8 @@ def optimize_side_market_thresholds(
         # optimize_standard_thresholds so a reader comparing the two sees one method, not two.
         oos_rows = []
         for i in range(1, len(seasons)):
-            train = grp[grp["season"].astype(str).isin(seasons[:i])]
-            test = grp[grp["season"].astype(str) == seasons[i]]
+            train = grp[grp["_szn"].isin(seasons[:i])]
+            test = grp[grp["_szn"] == seasons[i]]
             bt = _best(train, max(10, min_bets // 2))
             if bt is None or test.empty:
                 continue
@@ -625,16 +654,17 @@ def optimize_standard_thresholds(
     df["_bpnl"] = np.where(df["best_side"] == "OVER",  pnl_over,
                   np.where(df["best_side"] == "UNDER", pnl_under, np.nan))
 
-    covid = set(getattr(config, "COVID_SEASONS", {"2019/20", "2020/21"}))
+    # Season derived from (date, league), never the stored label (see optimize_side_market_thresholds)
+    df["_szn"] = _derived_season(df)
+    covid = set(config.COVID_SEASONS)
     d = df[
-        ~df["season"].astype(str).isin(covid)
+        ~df["_szn"].isin(covid)
         & df["best_side"].isin(["OVER", "UNDER"])
         & df["best_edge"].notna()
         & df["_bpnl"].notna()
     ].copy()
 
     grid    = np.round(np.arange(edge_min, edge_max + edge_step / 2, edge_step), 4)
-    seasons = sorted(d["season"].astype(str).unique())
 
     def _best_threshold(sub: pd.DataFrame, floor_bets: int):
         best = None
@@ -651,11 +681,13 @@ def optimize_standard_thresholds(
     for lg, g in d.groupby("league"):
         ins = _best_threshold(g, min_bets)
 
-        # Walk-forward OOS: tune on prior seasons, apply to each following season.
+        # Walk-forward OOS: tune on prior seasons, apply to each following season (this
+        # league's own derived seasons, in time order).
+        seasons = sorted(g["_szn"].dropna().unique())
         oos_rows = []
         for i in range(1, len(seasons)):
-            train = g[g["season"].astype(str).isin(seasons[:i])]
-            test  = g[g["season"].astype(str) == seasons[i]]
+            train = g[g["_szn"].isin(seasons[:i])]
+            test  = g[g["_szn"] == seasons[i]]
             bt = _best_threshold(train, max(15, min_bets // 2))
             if bt is None or test.empty:
                 continue

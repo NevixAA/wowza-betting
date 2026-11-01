@@ -30,6 +30,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -263,8 +264,11 @@ def _fetch_live_scores_oddsapi() -> list[dict]:
 
     active_leagues = _leagues_with_games_today()
 
-    # Always include World Cup when it's active (June 11 – July 19, 2026)
-    wc_leagues = {"World Cup 2026": "soccer_fifa_world_cup"}
+    # National-team competitions (World Cup) always scanned when the registry has a sport key
+    # for them - derived from config/leagues.json competition_type, never a typed league name.
+    from src import league_registry as _lr
+    wc_leagues = {lg: _lr.odds_api_sport_key(lg) for lg in _lr.leagues_of_type("national_teams")
+                  if _lr.odds_api_sport_key(lg)}
     scan_map = {**{l: k for l, k in config.ODDS_API_SPORT_KEYS.items()
                    if l in config.ENABLED_LEAGUES}, **wc_leagues}
 
@@ -306,22 +310,23 @@ def _fetch_live_scores_oddsapi() -> list[dict]:
                 if wall_mins < 1:
                     continue  # not started yet
 
-                # Approximate game clock: subtract ~15min halftime break if in 2nd half
-                # Wall clock > 60min likely means halftime has passed
-                HT_BREAK = 15  # typical halftime break duration in minutes
-                elapsed = wall_mins - HT_BREAK if wall_mins > 60 else wall_mins
-                elapsed = max(0.0, min(elapsed, 95.0))
+                # NO GAME CLOCK on this path: OddsAPI /scores has none, and estimating one from
+                # wall time with a typed 15-minute half-time break invented the minute every
+                # signal keys on. elapsed stays None, so the game is listed but never signalled
+                # (Data Truth 2026-11-01). A real clock needs API-Football /fixtures?live=all.
+                elapsed = None
 
+                # Unparseable / absent score -> None (was 0): no signal is priced on a guess
                 scores = ev.get("scores") or []
-                home_goals = away_goals = 0
+                home_goals = away_goals = None
                 for s in scores:
                     try:
-                        goals = int(s.get("score", 0))
+                        goals = int(s.get("score"))
                     except (ValueError, TypeError):
-                        goals = 0
-                    if s["name"] == ev["home_team"]:
+                        goals = None
+                    if s.get("name") == ev["home_team"]:
                         home_goals = goals
-                    else:
+                    elif s.get("name") == ev["away_team"]:
                         away_goals = goals
 
                 key = f"{ev['home_team']}|{ev['away_team']}"
@@ -336,16 +341,23 @@ def _fetch_live_scores_oddsapi() -> list[dict]:
                     "home_team":   ev["home_team"],
                     "away_team":   ev["away_team"],
                     "commence":    commence,
-                    "elapsed_mins": min(round(elapsed), 95),
+                    "elapsed_mins": elapsed,
                     "home_goals":  home_goals,
                     "away_goals":  away_goals,
-                    "total_goals": home_goals + away_goals,
+                    "total_goals": _total(home_goals, away_goals),
                 })
 
         except Exception as e:
             log.debug(f"Scores fetch {league}: {e}")
 
     return live
+
+
+def _total(home_goals, away_goals):
+    """Total goals, or None when either side's score is unknown."""
+    if home_goals is None or away_goals is None:
+        return None
+    return home_goals + away_goals
 
 
 def _fetch_live_scores_apifootball() -> list[dict]:
@@ -401,24 +413,26 @@ def _fetch_live_scores_apifootball() -> list[dict]:
             continue
         seen.add(key)
 
-        status  = fix.get("status", "1H")
-        elapsed = fix.get("elapsed_mins") or 0
+        status  = fix.get("status")
+        # Absent clock stays None (was 0): such a game is listed but never signalled
+        elapsed = fix.get("elapsed_mins")
 
-        # During halftime, treat elapsed as 45 so HT signals evaluate correctly
+        # During halftime the clock is 45 by the rules of the game, so HT signals evaluate
         if status == "HT":
             elapsed = 45
 
         _league_last_active[league_name] = now
 
+        hg, ag = fix.get("home_goals"), fix.get("away_goals")
         live.append({
             "fixture_id":   fix.get("fixture_id"),
             "league":       league_name,
             "home_team":    home,
             "away_team":    away,
             "elapsed_mins": elapsed,
-            "home_goals":   fix.get("home_goals", 0),
-            "away_goals":   fix.get("away_goals", 0),
-            "total_goals":  fix.get("home_goals", 0) + fix.get("away_goals", 0),
+            "home_goals":   hg,
+            "away_goals":   ag,
+            "total_goals":  _total(hg, ag),
             "status":       status,
         })
 
@@ -447,23 +461,26 @@ def _load_predictions() -> pd.DataFrame:
     return df
 
 
-def _match_prediction(pred_df: pd.DataFrame, home: str, away: str) -> dict | None:
-    """Find pre-match prediction row for this fixture (fuzzy name match)."""
-    if pred_df.empty:
+def _match_prediction(pred_df: pd.DataFrame, home: str, away: str,
+                      league: str | None = None) -> dict | None:
+    """Find the pre-match prediction row for this fixture, WITHIN its league, through the
+    canonical resolver (src.team_names.resolve refuses ambiguity). The old first-8-characters
+    match ignored the league and API-Football vs OddsAPI spellings. No league -> no match."""
+    if pred_df.empty or not league or "league" not in pred_df.columns:
         return None
-
-    # Exact match first
-    mask = (pred_df["home_team"] == home) & (pred_df["away_team"] == away)
+    from src.league_registry import canonical_name
+    from src.team_names import resolve
+    lg = canonical_name(league) or league
+    pl = pred_df[pred_df["league"].astype(str).map(lambda x: canonical_name(x) or x) == lg]
+    if pl.empty:
+        return None
+    hn = home if home in set(pl["home_team"]) else resolve(home, sorted(set(pl["home_team"].astype(str))))
+    an = away if away in set(pl["away_team"]) else resolve(away, sorted(set(pl["away_team"].astype(str))))
+    if not hn or not an:
+        return None
+    mask = (pl["home_team"] == hn) & (pl["away_team"] == an)
     if mask.any():
-        return pred_df[mask].iloc[0].to_dict()
-
-    # Fuzzy: first 8 chars
-    h8, a8 = home[:8].lower(), away[:8].lower()
-    mask2 = (pred_df["home_team"].str[:8].str.lower() == h8) & \
-            (pred_df["away_team"].str[:8].str.lower() == a8)
-    if mask2.any():
-        return pred_df[mask2].iloc[0].to_dict()
-
+        return pl[mask].iloc[0].to_dict()
     return None
 
 
@@ -482,44 +499,49 @@ def _detect_signals(live_games: list[dict], pred_df: pd.DataFrame,
         away      = game["away_team"]
         league    = game["league"]
 
-        pred = _match_prediction(pred_df, home, away)
-        if pred is None:
-            # WC teams are not in predictions.csv — use neutral defaults so Poisson signals still fire
-            if "World Cup" not in league and "FIFA" not in league:
-                continue
-            pred = {}
+        # Required inputs: a game clock, a known score and a pre-match P(over). Any missing ->
+        # no signal, logged. (World Cup games used to get a typed P(over)=0.45, attack 1.0 and
+        # league average 2.5 so signals still fired - Data Truth 2026-11-01.)
+        if elapsed is None or total_g is None or home_g is None or away_g is None:
+            log.info(f"  skip {home} vs {away}: no live clock/score")
+            continue
+        pred = _match_prediction(pred_df, home, away, league)
+        p_over = pd.to_numeric((pred or {}).get("p_over25"), errors="coerce")
+        if pred is None or pd.isna(p_over):
+            log.info(f"  skip {home} vs {away} ({league}): no pre-match probability")
+            continue
 
-        p_over     = float(pred.get("p_over25", 0.45))
+        p_over     = float(p_over)
         lam        = _lambda_from_p_over(p_over)
         # v2: live-adjust the remaining lambda from in-play SOT (falls back to naive if no SOT)
         _sot_live  = (sot_by_fixture or {}).get(game.get("fixture_id"))
         _lam_rem   = (_live_lambda_remaining(lam, elapsed, _sot_live, home_g, away_g)
                       if _sot_live is not None else None)
         probs      = _live_probs(total_g, elapsed, lam, lam_remaining_override=_lam_rem)
-        pre_signal = str(pred.get("signal_tier", "AVOID"))
+        pre_signal = pred.get("signal_tier")          # as recorded; never a placeholder tier
 
-        home_atk   = float(pred.get("home_attack_str", 1.0) or 1.0)
-        away_atk   = float(pred.get("away_attack_str", 1.0) or 1.0)
-        league_avg = float(pred.get("league_avg_goals", 2.5) or 2.5)
+        # Missing attack strength -> NaN: every comparison is False, so the attack-based signals
+        # simply do not fire (was a typed 1.0)
+        home_atk   = float(pd.to_numeric(pred.get("home_attack_str"), errors="coerce"))
+        away_atk   = float(pd.to_numeric(pred.get("away_attack_str"), errors="coerce"))
 
         # ── Pre-compute shot gate and goal recency ────────────────────────────
         fixture_id   = game.get("fixture_id")
-        shot_gate_ok = True   # True means SLEEPING_GAME is allowed
+        # True means SLEEPING_GAME is allowed. It must be PROVEN by a shot count below the gate;
+        # unknown shots (no fixture id, failed fetch, null stat) block it rather than read as 0.
+        shot_gate_ok = False
         recent_goal  = False  # True means suppress UNDER signals
 
         if fixture_id and elapsed >= 60 and total_g == 0:
             try:
                 from src.api_football import get_fixture_statistics
                 stats = get_fixture_statistics(fixture_id, cache_hours=0.025)
-                if stats:
-                    total_shots = (
-                        (stats.get("home") or {}).get("shots", 0) +
-                        (stats.get("away") or {}).get("shots", 0)
-                    )
-                    if total_shots >= SHOT_GATE_THRESHOLD:
-                        shot_gate_ok = False  # high-shot 0-0 is not sleeping
-            except Exception:
-                pass
+                hs = (stats.get("home") or {}).get("shots") if stats else None
+                as_ = (stats.get("away") or {}).get("shots") if stats else None
+                if hs is not None and as_ is not None:
+                    shot_gate_ok = (hs + as_) < SHOT_GATE_THRESHOLD  # high-shot 0-0 is not sleeping
+            except Exception as e:
+                log.debug(f"shot gate stats unavailable for {fixture_id}: {e}")
 
         if fixture_id and elapsed >= MIN_ELAPSED and total_g <= 2:
             try:
@@ -734,19 +756,23 @@ def run() -> list[dict]:
     # Save all live games for dashboard visibility (with or without signal)
     game_rows = []
     for g in live_games:
-        pred = _match_prediction(pred_df, g["home_team"], g["away_team"]) if not pred_df.empty else None
-        p_over = float(pred["p_over25"]) if pred else None
+        pred = (_match_prediction(pred_df, g["home_team"], g["away_team"], g["league"])
+                if not pred_df.empty else None)
+        _p = pd.to_numeric(pred.get("p_over25"), errors="coerce") if pred else np.nan
+        p_over = None if pd.isna(_p) else float(_p)
         lam    = _lambda_from_p_over(p_over) if p_over else None
-        probs  = _live_probs(g["total_goals"], g["elapsed_mins"], lam) if lam else {}
+        _known = g["total_goals"] is not None and g["elapsed_mins"] is not None
+        probs  = _live_probs(g["total_goals"], g["elapsed_mins"], lam) if (lam and _known) else {}
         game_rows.append({
             "league":          g["league"],
             "match":           f"{g['home_team']} vs {g['away_team']}",
-            "score":           f"{g['home_goals']}-{g['away_goals']}",
+            "score":           (f"{g['home_goals']}-{g['away_goals']}"
+                                if g["total_goals"] is not None else None),
             "elapsed_mins":    g["elapsed_mins"],
             "has_prediction":  pred is not None,
-            "pre_signal":      pred.get("signal_tier", "-") if pred else "-",
+            "pre_signal":      pred.get("signal_tier") if pred else None,
             "pre_p_over":      round(p_over * 100, 1) if p_over else None,
-            "live_p_under":    round(probs.get("p_under", 0) * 100, 1) if probs else None,
+            "live_p_under":    round(probs["p_under"] * 100, 1) if probs else None,
             "fair_under_odds": probs.get("fair_under_odds") if probs else None,
             "fair_over_odds":  probs.get("fair_over_odds")  if probs else None,
             "updated_at":      datetime.now().strftime("%H:%M"),
@@ -767,9 +793,11 @@ def run() -> list[dict]:
         try:
             from src.api_football import get_fixture_statistics
             _st = get_fixture_statistics(_fid, cache_hours=0.025)
-            if _st:
-                sot_by_fixture[_fid] = ((_st.get("home") or {}).get("shots_on_target", 0)
-                                        + (_st.get("away") or {}).get("shots_on_target", 0))
+            _hs = (_st.get("home") or {}).get("shots_on_target") if _st else None
+            _as = (_st.get("away") or {}).get("shots_on_target") if _st else None
+            # SOT only when both sides report it; otherwise the live lambda falls back (no 0s)
+            if _hs is not None and _as is not None:
+                sot_by_fixture[_fid] = _hs + _as
         except Exception:
             pass
     try:
@@ -906,7 +934,6 @@ def grade_live_signals(parquet_path: str | None = None) -> dict:
     ACTUAL final total goals (from player_history.parquet, summed per fixture). Answers the
     question the old scanner never did: do these signals actually hit? Returns a per-signal-type
     hit-rate report. (HT signals need HT scores -> skipped here.) Read the hit rate, not vibes."""
-    import re
     hist = LIVE_HISTORY_FILE
     if not hist.exists():
         print("[grade] no live_signals_history.csv yet"); return {}
@@ -916,24 +943,43 @@ def grade_live_signals(parquet_path: str | None = None) -> dict:
     pqp = Path(parquet_path) if parquet_path else (config.OUTPUT_DIR.parent / "player_history.parquet")
     if not pqp.exists():
         print(f"[grade] parquet not found ({pqp})"); return {}
-    pq = pd.read_parquet(pqp, columns=["home_team", "away_team", "date", "goals", "fixture_id"])
-    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
-    tot = pq.groupby("fixture_id").agg(h=("home_team", "first"), a=("away_team", "first"),
-                                       d=("date", "first"), g=("goals", "sum")).reset_index()
-    finals = {(_norm(r.h), _norm(r.a), str(r.d)[:10]): r.g for r in tot.itertuples(index=False)}
+    # Matched WITHIN (league, date) through the canonical resolver - the old stripped-lowercase
+    # name + date key ignored the league (Data Truth 2026-11-01). No league column -> no grading.
+    from src.league_registry import canonical_name
+    from src.team_names import resolve
+    try:
+        pq = pd.read_parquet(pqp, columns=["league", "home_team", "away_team", "date", "goals",
+                                           "fixture_id"])
+    except Exception as e:
+        print(f"[grade] parquet has no usable league column, cannot grade by league: {e}")
+        return {}
+    tot = pq.groupby("fixture_id").agg(lg=("league", "first"), h=("home_team", "first"),
+                                       a=("away_team", "first"), d=("date", "first"),
+                                       g=("goals", "sum")).reset_index()
+    finals: dict = {}          # (league, date) -> {(home, away): total goals}
+    for r in tot.itertuples(index=False):
+        lg = canonical_name(r.lg) or str(r.lg)
+        finals.setdefault((lg, str(r.d)[:10]), {})[(str(r.h), str(r.a))] = r.g
 
-    rows = []
+    rows, n_unmatched = [], 0
     for s in sig.itertuples(index=False):
         m = str(getattr(s, "match", ""))
         if " vs " not in m or "UNDER 2.5" not in str(getattr(s, "bet", "")) and "OVER 2.5" not in str(getattr(s, "bet", "")):
             continue
         h, a = m.split(" vs ", 1)
-        fg = finals.get((_norm(h), _norm(a), str(getattr(s, "date", ""))[:10]))
+        slg = canonical_name(getattr(s, "league", None)) or str(getattr(s, "league", ""))
+        day = finals.get((slg, str(getattr(s, "date", ""))[:10]), {})
+        hn = resolve(h, sorted({k[0] for k in day})) if day else None
+        an = resolve(a, sorted({k[1] for k in day})) if day else None
+        fg = day.get((hn, an)) if (hn and an) else None
         if fg is None:
+            n_unmatched += 1
             continue
         under = fg < 2.5
         won = under if "UNDER" in str(s.bet) else (not under)
         rows.append({"signal_type": getattr(s, "signal_type", "?"), "won": bool(won)})
+    if n_unmatched:
+        print(f"[grade] {n_unmatched} O/U 2.5 signal(s) not matched to a result in their league/date")
     if not rows:
         print("[grade] no gradable O/U 2.5 signals matched to results yet"); return {}
     gdf = pd.DataFrame(rows)

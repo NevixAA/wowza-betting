@@ -60,8 +60,16 @@ def test_fpl_league_and_fbref_and_same_club_pairs_match_code():
     assert LR.fpl_league() == _literal("player_model/fantasy.py", "FANTASY_LEAGUE")
     for name, (fid, slug) in _literal("player_model/config.py", "FBREF_LEAGUES").items():
         assert LR.provider_name(name, "fbref") == {"id": fid, "slug": slug}, name
-    for name, pairs in _literal("src/data_loader.py", "_SAME_CLUB_NO_OVERLAP").items():
+    # The pairs data_loader._SAME_CLUB_NO_OVERLAP held until dt/features (2026-11-01) moved its
+    # reader onto the registry; the hand dict is gone from code.
+    moved = {"Mexico Liga MX": [("U.N.A.M. - Pumas", "UNAM Pumas")],
+             "La Liga 2": [("Celta B", "Celta de Vigo II")],
+             "Championship": [("Sheffield United", "Sheffield Utd")],
+             "League One": [("Sheffield United", "Sheffield Utd")]}
+    for name, pairs in moved.items():
         assert LR.same_club_spellings(name) == [tuple(p) for p in pairs], name
+    with pytest.raises(KeyError):
+        _literal("src/data_loader.py", "_SAME_CLUB_NO_OVERLAP")
 
 
 # ── accessors ───────────────────────────────────────────────────────────────────────────────────
