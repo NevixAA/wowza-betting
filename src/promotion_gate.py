@@ -1036,14 +1036,14 @@ def submit_candidate(model_type: str, model_file, old_payload, results: dict, te
                     canary_ok = all((r.get("checks") or {}).get("prediction_canary", False)
                                     for t, r in (gate.get("tracks") or {}).items()
                                     if t in gate.get("evaluable_tracks", []))
-                    reg.set_challenger(mt, {**manifest, "gate": {
+                    reg.set_challenger(mt, now=now, manifest={**manifest, "gate": {
                         "gate_version": GATE_VERSION, "qualified": bool(gate["qualified"]),
                         "evaluable_tracks": gate.get("evaluable_tracks") or [],
                         "canary_ok": bool(canary_ok), "holdout_n": gate.get("holdout_n"),
                         "holdout_ll_delta": s.get("ll_delta"),
                         "holdout_ci_lo": (s.get("ci") or [None, None])[0],
                         "holdout_ci_hi": (s.get("ci") or [None, None])[1],
-                        "summary_candidate_metrics": s.get("candidate") or {}}}, raw)
+                        "summary_candidate_metrics": s.get("candidate") or {}}}, raw=raw)
                     gate["parked"] = True
         ci = gate.get("ll_ci") or [None, None]
         checks = {t: r.get("checks") for t, r in (gate.get("tracks") or {}).items()}

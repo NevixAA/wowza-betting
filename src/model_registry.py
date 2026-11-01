@@ -241,15 +241,17 @@ def challenger_meta_path(model_type: str) -> Path:
     return REGISTRY_DIR / model_type / "challenger.json"
 
 
-def set_challenger(model_type: str, manifest: dict, raw: bytes) -> None:
+def set_challenger(model_type: str, manifest: dict, raw: bytes, now=None) -> None:
     """Park a SHADOW_MORE challenger where predict can score it without serving it.
 
     The slot never touches the serving file. One slot per model type: the latest SHADOW_MORE
     challenger replaces the previous one (its manifest and metrics stay in the lineage).
+    `shadow_since` (the freeze that prospective rows must postdate) uses the CALLER's clock: this
+    always took the wall clock, so the gate's own `now` and the freeze could disagree.
     """
     _atomic_write_bytes(challenger_path(model_type), gzip.compress(raw, 6))
     _atomic_write_json(challenger_meta_path(model_type),
-                       {**manifest, "model_role": "SHADOW", "shadow_since": iso(utcnow())})
+                       {**manifest, "model_role": "SHADOW", "shadow_since": iso(now or utcnow())})
 
 
 def clear_challenger(model_type: str) -> None:
