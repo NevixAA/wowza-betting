@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-01T13:02:51Z",
+ "generated_at": "2026-11-01T13:04:12Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Data contracts: 1 new violation(s) in 1 of 14 files \u00b7 6 known historical (config/contract_baseline.json)"
@@ -51,7 +51,7 @@
    "status": "GREEN",
    "value": "100% of 176 rows (p_pro_hgb)",
    "rule": "over rows logged in the last 7 days AND after the challenger experiment was registered (rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%",
-   "detail": "window from 2026-10-25 13:02 UTC"
+   "detail": "window from 2026-10-25 13:04 UTC"
   },
   {
    "check": "Certified CLV coverage",
@@ -77,7 +77,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 133 runs (24 h) \u00b7 2 fixed since",
+   "value": "0 still failing / 134 runs (24 h) \u00b7 2 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -126,7 +126,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 632 rows, shadow_only=True, 1.7 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 632 rows, shadow_only=True, 1.8 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
@@ -335,7 +335,7 @@
    "frozen_digest": "eb7567a36930d5aed5523e361267e6edfe18308fea786ed9a6e0dd38618ec088",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1432,
+   "prior_rows": 1436,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -345,7 +345,7 @@
    "frozen_digest": "f54955df6d05515d260672675124ce009881a4fadbb7fdc362e3b75c0ccc1fec",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 494,
+   "prior_rows": 495,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -355,7 +355,7 @@
    "frozen_digest": "f8efe648867d4ad5f5e08a95402f879b13428a294150855daff3ca00cd2166e2",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 960,
+   "prior_rows": 961,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -365,7 +365,7 @@
    "frozen_digest": "da8493ed691dc5ac74229554a82586647b0dd08af8a4f376e2b3790cdcc9c3ce",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 1432,
+   "prior_rows": 1436,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -385,7 +385,7 @@
    "frozen_digest": "cb0c5d10c243ccf3a4c696d194a402eb4a23748c12574884a42fc0a196a6cf77",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 3466,
+   "prior_rows": 3471,
    "prior_match": true,
    "status": "OK",
    "reasons": []
@@ -395,7 +395,7 @@
    "frozen_digest": "78d4188b51db4c9ff69d5d2ae0effd91587f5662e84c7aba4e62e7365da24944",
    "duplicate_keys": 0,
    "post_kickoff_rows": 0,
-   "prior_rows": 684,
+   "prior_rows": 687,
    "prior_match": true,
    "status": "OK",
    "reasons": []
