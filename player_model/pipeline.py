@@ -498,6 +498,7 @@ def _build_match_contexts() -> dict:
     """
     import json
     contexts: dict = {}
+    skipped = 0
     wc_hist_file = config.OUTPUT_DIR / "worldcup_history.json"
     if not wc_hist_file.exists():
         return contexts
@@ -514,16 +515,20 @@ def _build_match_contexts() -> dict:
             odds  = snaps[-1]["odds"] if snaps else rec.get("opening", {})
             oh = odds.get("odds_home")
             oa = odds.get("odds_away")
-            od = odds.get("odds_draw", 3.0) or 3.0
-            if not oh or not oa:
+            od = odds.get("odds_draw")
+            # All three prices are needed to de-vig; a missing draw price skips the context (was
+            # a typed 3.0). predict then skips the team-strength multiplier for that fixture.
+            if not oh or not oa or not od:
+                skipped += 1
                 continue
             total = 1 / oh + 1 / oa + 1 / od
             contexts[match_key] = {
                 "home_win_prob": round((1 / oh) / total, 3),
                 "away_win_prob": round((1 / oa) / total, 3),
             }
-        if contexts:
-            print(f"[pipeline] Win probs loaded for {len(contexts)} WC matches")
+        if contexts or skipped:
+            print(f"[pipeline] Win probs loaded for {len(contexts)} WC matches; {skipped} skipped "
+                  f"(incomplete 1X2 prices)")
     except Exception as e:
         print(f"[pipeline] Match context build failed: {e}")
     return contexts
@@ -531,16 +536,19 @@ def _build_match_contexts() -> dict:
 
 # ── Referee profiles ─────────────────────────────────────────────────────────
 
-def _build_referee_profiles() -> dict:
+def _build_referee_profiles(history: pd.DataFrame) -> dict:
     """
     Fetch referee names for all upcoming prop-league fixtures and build strictness profiles.
-    Returns {match_key: {yellows_per_game, strictness_score, n_games}}.
-    All underlying API calls are cached in api_football._get() — safe to call every run.
+    Returns {fixture_id: {yellows_per_game, strictness_score, n_games, lg_yellows_per_match}}.
+
+    The profile is MEASURED from player_history with the training definition
+    (feature_engineering.referee_profile_from_history: the referee's yellows/match in the league's
+    scope, z-scored against the league's measured mean/sd, NaN below the minimum samples). It used
+    to come from api_football.build_referee_profile, whose league mean/sd were a typed 3.5 / 1.0.
+    Referee NAMES still come from API-Football (cached in api_football._get()).
     """
-    from player_model.api_football import (
-        get_fixtures_between, get_fixture_referee, build_referee_profile,
-    )
-    import pandas as pd
+    from player_model.api_football import get_fixtures_between, get_fixture_referee
+    from player_model.feature_engineering import referee_profile_from_history
     profiles: dict = {}
     try:
         # Same 4-day window as predict, so every tipped fixture can carry its referee.
@@ -557,20 +565,19 @@ def _build_referee_profiles() -> dict:
                 fid      = fix.get("fixture", {}).get("id")
                 if not fid:
                     continue
-                match_key = f"{home}|{away}|{dt}"
                 referee   = get_fixture_referee(fid)
                 if referee:
-                    profiles[match_key] = build_referee_profile(referee, lg_id, season)
+                    # keyed by the API-Football fixture id (predict looks it up by id first)
+                    profiles[int(fid)] = referee_profile_from_history(history, referee, league)
     except Exception as e:
         print(f"[pipeline] Referee profile build failed: {e}")
     return profiles
 
 
-# ── Match-day gating (active only AFTER the World Cup) ──────────────────────────
-# WC2026 final ~Jul 26. During/before WC there are matches almost daily, so the
-# gate is dormant. After WC, predict + injury-refresh only run when there are
-# prop-league fixtures in the next 72h — no wasted API calls on quiet days.
-_WC_END = "20260726"
+# ── Match-day gating ─────────────────────────────────────────────────────────────
+# predict + injury-refresh only run when there are prop-league fixtures in the next 72h — no wasted
+# API calls on quiet days. (The typed `_WC_END = "20260726"` dormancy for the 2026 World Cup was
+# removed: the tournament is over, so the gate is simply always on.)
 
 
 def _match_day_gate_skips() -> bool:
@@ -578,9 +585,6 @@ def _match_day_gate_skips() -> bool:
     Fail-open: any error returns False so we never lose tips to a check bug."""
     import datetime as _dt
     try:
-        today = _dt.datetime.now(_dt.timezone.utc).strftime("%Y%m%d")
-        if today <= _WC_END:
-            return False  # dormant during/before WC
         from player_model.api_football import get_upcoming_fixtures
         now     = _dt.datetime.now(_dt.timezone.utc)
         horizon = now + _dt.timedelta(hours=72)
@@ -635,19 +639,16 @@ def mode_predict() -> None:
 
     history = pd.read_parquet(HISTORY_CACHE)
 
-    # Try to enrich with API-Football recent form if key available
+    # (The old _enrich_with_recent_form overwrote a player's last stored goals_pg / sot_pg /
+    # cards_pg with ONE match's raw counts, `stat.get(..., 0)`; recent matches belong in history
+    # through collect, and build_upcoming_features recomputes every rolling value from raw rows.)
     import os
     api_key = os.getenv("APIFOOTBALL_KEY", "")
-    if api_key:
-        print("[predict] API-Football key found — will fetch recent match stats for rolling features.")
-        _enrich_with_recent_form(history)
-    else:
-        print("[predict] No APIFOOTBALL_KEY — using season stats only (less precise rolling features).")
 
     tips = run_player_predictions(
         bets_csv=config.OUTPUT_DIR / "bets.csv",
         history_df=history,
-        referee_profiles=_build_referee_profiles() if api_key else None,
+        referee_profiles=_build_referee_profiles(history) if api_key else None,
         match_contexts=_build_match_contexts(),
     )
 
@@ -758,47 +759,6 @@ def _filter_by_lineup(tips: pd.DataFrame) -> pd.DataFrame:
     tbc       = (tips["lineup_status"] == "tbc").sum()
     print(f"[lineup] {confirmed} confirmed starters | {tbc} lineup TBC")
     return tips
-
-
-def _enrich_with_recent_form(history: pd.DataFrame) -> None:
-    """Use API-Football to update rolling stats for players in upcoming matches."""
-    try:
-        from player_model.api_football import get_recent_fixtures, get_fixture_player_stats
-        from player_model.feature_engineering import build_rolling_features
-
-        bets_csv = config.OUTPUT_DIR / "bets.csv"
-        if not bets_csv.exists():
-            return
-
-        bets = pd.read_csv(bets_csv)
-        leagues_needed = bets["league"].unique().tolist()
-
-        for league, lg_id in config.PROP_LEAGUES.items():
-            if not any(league.lower() in l.lower() for l in leagues_needed):
-                continue
-            season = config.prop_season(league)
-            fixtures = get_recent_fixtures(lg_id, season, last_n=5)
-            print(f"  [{league}] {len(fixtures)} recent fixtures fetched")
-
-            for fix in fixtures[:3]:  # limit to 3 most recent to save API calls
-                fix_id = fix.get("fixture", {}).get("id")
-                if not fix_id:
-                    continue
-                player_stats = get_fixture_player_stats(fix_id)
-                # Update rolling stats in history for matched players
-                for stat in player_stats:
-                    pid = stat.get("player_id")
-                    if pid and len(history[history["player_id"] == pid]) > 0:
-                        idx = history[history["player_id"] == pid].index[-1]
-                        # Update with most recent match data
-                        mins = int(stat.get("minutes_played") or 0)
-                        if mins > 0:
-                            history.at[idx, "goals_pg"]  = stat.get("goals", 0)
-                            history.at[idx, "sot_pg"]    = stat.get("shots_on_target", 0)
-                            history.at[idx, "cards_pg"]  = stat.get("yellow_card", 0)
-
-    except Exception as e:
-        print(f"  [enrich] Error enriching with API-Football: {e}")
 
 
 # ── Season stats enrichment ───────────────────────────────────────────────────
@@ -969,10 +929,13 @@ def mode_enrich_sidelined_live() -> None:
     else:
         active_pids = df["player_id"].dropna().unique().tolist()
 
-    # Limit to PROP_LEAGUES players only
+    # Limit to PROP_LEAGUES players only (registry identity: history's "World Cup" is the
+    # registry's "World Cup 2026")
     prop_league_names = set(config.PROP_LEAGUES.keys())
     if "league" in df.columns and prop_league_names:
-        league_mask = df["league"].isin(prop_league_names)
+        _reg = config.league_registry()
+        _canon = {lg: _reg.canonical_name(lg) for lg in df["league"].astype(str).unique()}
+        league_mask = df["league"].astype(str).map(_canon).isin(prop_league_names)
         prop_pids = set(df.loc[league_mask, "player_id"].dropna().unique())
         active_pids = [p for p in active_pids if p in prop_pids]
 
@@ -1041,21 +1004,17 @@ def mode_squad_sync() -> None:
                 if pid and pid not in current_teams:
                     current_teams[pid] = t["team_name"]
 
-    updates = 0
-    for pid, current_team in current_teams.items():
-        mask = df["player_id"] == pid
-        if not mask.any():
-            continue
-        last_team = df.loc[mask, "team"].iloc[-1]
-        if last_team != current_team:
-            # Update last 30 rows only (current season games)
-            idx = df[mask].tail(30).index
-            df.loc[idx, "team"] = current_team
-            updates += 1
-            print(f"  [squad-sync] player {pid}: {last_team} → {current_team}")
-
-    _save_history(df)
-    print(f"[squad-sync] Done. {updates} players updated | {len(current_teams)} players tracked.")
+    # REPORT ONLY (Data Truth, 2026-11-01). This used to overwrite `team` on the player's last 30
+    # history rows with his CURRENT club, so matches he played for his former club were recorded
+    # as played for the new one (and every opponent/team feature of those rows moved with them).
+    # A history row keeps the club the player actually played for; the current club comes from
+    # the live squad overlay in predict (output/squads_official.csv, keyed by player_id).
+    last_team = (df.sort_values("date").drop_duplicates("player_id", keep="last")
+                 .set_index("player_id")["team"])
+    moved = sum(1 for pid, cur in current_teams.items()
+                if pid in last_team.index and last_team[pid] != cur)
+    print(f"[squad-sync] {moved} player(s) whose current club differs from their last history row "
+          f"| {len(current_teams)} players tracked. History not modified.")
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

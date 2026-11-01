@@ -33,19 +33,20 @@ def _literal(rel, name):
 
 
 # ── provenance: every value is a copy of what the code already held ─────────────────────────────
+# The player_model tables these facts were copied from are now DERIVED from the registry (dt/props,
+# 2026-11-01): the provenance check becomes "the code reads the registry, and types no copy".
 def test_props_flag_equals_player_model_prop_leagues():
-    src = _literal("player_model/config.py", "PROP_LEAGUES")
-    assert {LR.canonical_name(k): v for k, v in src.items()} == dict(LR.prop_leagues())
+    from player_model import config as PMC
+    assert dict(PMC.PROP_LEAGUES) == dict(LR.prop_leagues())
+    with pytest.raises((KeyError, ValueError)):         # no typed (literal) copy left in the source
+        _literal("player_model/config.py", "PROP_LEAGUES")
 
 
 def test_prop_sport_keys_equal_odds_fetcher_table():
-    src = _literal("player_model/odds_fetcher.py", "PROP_SPORT_KEYS")
-    for name, key in src.items():
-        c = LR.canonical_name(name)
-        if c is None:                                       # a phase of a registered competition
-            assert LR.sport_key_to_league()[key] == "Champions League", name
-            continue
-        assert LR.prop_sport_keys()[c] == key and LR.odds_api_sport_key(c) == key, name
+    from player_model import odds_fetcher as OF
+    assert dict(OF.PROP_SPORT_KEYS) == dict(LR.prop_sport_keys())
+    assert OF.SPORT_KEY_TO_LEAGUE == LR.sport_key_to_league()
+    assert OF.SPORT_KEY_TO_LEAGUE["soccer_uefa_champs_league_qualification"] == "Champions League"
     assert "soccer_uefa_champs_league_qualification" in LR.odds_api_sport_keys_for("Champions League")
 
 
@@ -58,7 +59,9 @@ def test_added_timezones_come_from_the_country_table():
 
 def test_fpl_league_and_fbref_and_same_club_pairs_match_code():
     assert LR.fpl_league() == _literal("player_model/fantasy.py", "FANTASY_LEAGUE")
-    for name, (fid, slug) in _literal("player_model/config.py", "FBREF_LEAGUES").items():
+    from player_model import config as PMC
+    assert PMC.FBREF_LEAGUES                            # derived from provider_names.fbref
+    for name, (fid, slug) in PMC.FBREF_LEAGUES.items():
         assert LR.provider_name(name, "fbref") == {"id": fid, "slug": slug}, name
     # The pairs data_loader._SAME_CLUB_NO_OVERLAP held until dt/features (2026-11-01) moved its
     # reader onto the registry; the hand dict is gone from code.

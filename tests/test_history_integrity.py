@@ -144,8 +144,12 @@ def test_injury_value_is_as_of_the_match_date_not_today():
     assert f["chronic_injury_risk"] == 2.0                         # starts 2025-01-10, 2025-09-01
     assert f["return_from_injury_flag"] == 1.0
     f = HI.injury_features_asof(ENTRIES, "2024-06-01")             # before any spell
-    assert f == {"chronic_injury_risk": 0.0, "days_since_last_injury": 365.0,
-                 "return_from_injury_flag": 0.0}
+    # "no recorded spell" is NaN days + the explicit flag (dt/props: the 365 sentinel is gone)
+    assert np.isnan(f["days_since_last_injury"])
+    assert f["chronic_injury_risk"] == 0.0 and f["return_from_injury_flag"] == 0.0
+    rows = pd.DataFrame([f, HI.injury_features_asof(ENTRIES, "2025-10-01"),
+                         dict.fromkeys(HI.INJURY_COLUMNS, np.nan)])          # last: never refreshed
+    assert HI.no_spell_recorded(rows).tolist() == [True, False, False]
     f = HI.injury_features_asof(ENTRIES, "2026-05-01")
     assert f["days_since_last_injury"] == 16.0
     assert f["chronic_injury_risk"] == 2.0                         # 2025-09-01, 2026-03-01
@@ -155,7 +159,7 @@ def test_injury_value_is_as_of_the_match_date_not_today():
 
 def test_spell_starting_on_or_after_the_match_is_invisible():
     f = HI.injury_features_asof([{"start": "2025-05-05", "end": "2025-05-20"}], "2025-05-05")
-    assert f["chronic_injury_risk"] == 0.0 and f["days_since_last_injury"] == 365.0
+    assert f["chronic_injury_risk"] == 0.0 and np.isnan(f["days_since_last_injury"])
 
 
 def _random_entries(rng, n, lo=pd.Timestamp("2022-01-01"), span=1700):
@@ -180,8 +184,8 @@ def test_no_injury_field_uses_an_event_from_after_the_match():
         # brute force, from the definition
         ends = [dt.date.fromisoformat(e["end"]) for e in entries
                 if dt.date.fromisoformat(e["start"]) < m.date() and dt.date.fromisoformat(e["end"]) < m.date()]
-        want = float((m.date() - max(ends)).days) if ends else 365.0
-        assert f["days_since_last_injury"] == want
+        want = float((m.date() - max(ends)).days) if ends else float("nan")
+        assert f["days_since_last_injury"] == want or (np.isnan(want) and np.isnan(f["days_since_last_injury"]))
         n = sum(1 for e in entries
                 if m.date() - dt.timedelta(days=365) <= dt.date.fromisoformat(e["start"]) < m.date())
         assert f["chronic_injury_risk"] == float(n)
@@ -259,7 +263,8 @@ def test_reconstruction_from_a_today_stamp_equals_point_in_time():
             continue                                   # exact-365 collision with the sentinel
         if days is not None:
             hits_d += 1
-            assert days == truth["days_since_last_injury"]
+            assert days == truth["days_since_last_injury"] or (
+                np.isnan(days) and np.isnan(truth["days_since_last_injury"]))
         if chronic is not None:
             hits_c += 1
             assert chronic == truth["chronic_injury_risk"]
@@ -365,7 +370,9 @@ def test_real_history_injury_columns_are_internally_consistent():
         pytest.skip("no player_history in this checkout")
     df = pd.read_parquet(path, columns=list(HI.INJURY_COLUMNS) + ["player_id"])
     d, f = df["days_since_last_injury"], df["return_from_injury_flag"]
-    assert (d.isna() == f.isna()).all()
+    # A measured gap always has its flag; days NaN with a flag present is "no recorded spell"
+    # (HI.no_spell_recorded, the replacement for the old 365 sentinel rows).
+    assert (d.isna() | f.notna()).all()
     assert ((f == 1) == ((d > 0) & (d <= HI.RETURN_WINDOW_DAYS))).all()
     # a today-stamp makes every row of a player identical; point-in-time values do not
     x = df[d.notna() & (d != HI.NO_INJURY_DAYS)]

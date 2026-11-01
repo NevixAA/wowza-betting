@@ -268,45 +268,19 @@ _GENERIC_TOKENS = {"fc", "cf", "sc", "afc", "cd", "ac", "ss", "as", "us",
                    "if", "fk", "sk", "bk", "club", "cp", "sd"}
 _RESERVE_TOKENS = {"b", "c", "ii", "2", "reserve", "reserves", "u19", "u20",
                    "u21", "u23", "academy", "youth", "castilla"}
-_TOKEN_ALIASES = {"utd": "united", "weds": "wednesday", "wed": "wednesday",
-                  "wanderers": "wanderers", "spurs": "tottenham"}
 
 
 def _team_match(a: str, b: str) -> bool:
-    """True iff a and b name the SAME senior club.
+    """True iff a and b name the SAME senior club, decided by the v9 resolver
+    (src.team_names.resolve: normalised equality, registered aliases, identity-token tiers,
+    reserve sides only matching reserve sides, ambiguity refused).
 
-    Handles all three cases the naive matchers got wrong:
-      • abbreviations: "Man City" == "Manchester City", "Inter" == "Internazionale"
-        (token-prefix match, min length 3);
-      • distinct clubs sharing a word stay apart: "Man City" != "Man United",
-        "Real Madrid" != "Real Sociedad", "West Ham" != "West Brom";
-      • reserve/youth sides rejected: "Barcelona" != "Barcelona B".
-    Generic suffixes (FC/CF/AC/…) are ignored. Fuzzy fallback only when no token relation.
-    """
-    import difflib
-    na, nb = _norm_name(a), _norm_name(b)
-    if na == nb:
-        return True
-    _alias = lambda toks: {_TOKEN_ALIASES.get(t, t) for t in toks}
-    sa = _alias(set(na.split()) - _GENERIC_TOKENS)
-    sb = _alias(set(nb.split()) - _GENERIC_TOKENS)
-    if not sa or not sb:
+    Data Truth (2026-11-01): this used to carry its own token-alias dict and a
+    difflib ratio >= 0.90 fuzzy fallback; club identity now has ONE definition. Callers compare
+    two names already scoped to one league/date's fixture list."""
+    if not a or not b:
         return False
-
-    ra, rb = sa & _RESERVE_TOKENS, sb & _RESERVE_TOKENS
-    ca, cb = sa - _RESERVE_TOKENS, sb - _RESERVE_TOKENS
-    if bool(ra) != bool(rb) and ca and cb and (ca <= cb or cb <= ca):
-        return False   # senior vs reserve of the same club -> different teams
-
-    def _tok(t, others):   # exact, or one a prefix of the other (>=3 chars) -> abbreviation
-        return any(t == o or (len(t) >= 3 and o.startswith(t)) or (len(o) >= 3 and t.startswith(o))
-                   for o in others)
-
-    if ca and all(_tok(t, cb) for t in ca):   # every identity token of A maps into B
-        return True
-    if cb and all(_tok(t, ca) for t in cb):   # …or vice-versa
-        return True
-    return difflib.SequenceMatcher(None, na, nb).ratio() >= 0.90
+    return bool(config._v9_src("team_names").resolve(a, [b]))
 
 
 # ── Strict variants, for SEARCHING a multi-league history ─────────────────────────────
@@ -404,22 +378,31 @@ def get_fixture_goals(league_id: int, season: str, date_str: str, home: str, awa
     return None
 
 
-def get_injured_players(league_id: int, season: str, date_str: str) -> set[str]:
+def get_injured_players(league_id: int, season: str, date_str: str) -> set[int]:
     """
-    Return normalized names of players currently injured/suspended for a league on a given date.
+    Return the API-Football player IDS of players injured/suspended for a league on a given date.
     Uses /injuries endpoint cached 4 hours (injury status is stable within a day).
     Returns empty set if no key or endpoint unavailable.
+
+    IDS, NOT NAMES (Data Truth, 2026-11-01): predict matched these on normalised names, so two
+    players sharing a short name ("J. Silva") blocked each other. An entry without an id is
+    skipped and counted in the log line.
     """
     data = _get("/injuries", {
         "league": league_id, "season": season, "date": date_str,
     }, cache_hours=4)
     if not data:
         return set()
-    injured: set[str] = set()
+    injured: set[int] = set()
+    no_id = 0
     for entry in data.get("response", []):
-        name = entry.get("player", {}).get("name", "")
-        if name:
-            injured.add(_norm_name(name))
+        pid = (entry.get("player") or {}).get("id")
+        try:
+            injured.add(int(pid))
+        except (TypeError, ValueError):
+            no_id += 1
+    if no_id:
+        print(f"[injuries] league {league_id}: {no_id} entr(ies) without a player id skipped")
     return injured
 
 
@@ -585,39 +568,57 @@ def get_player_recent_stats(player_id: int, league_id: int, season: str,
 
 # ── Referee profiles ──────────────────────────────────────────────────────────
 
-def build_referee_profile(referee_name: str, league_id: int, season: str) -> dict:
+def _referee_key(name) -> str:
+    """Normalised referee name for EXACT comparison. API-Football carries "M. Oliver" or
+    "Michael Oliver, England"; the country suffix is dropped, nothing else is guessed."""
+    return " ".join(_norm_name(str(name or "").split(",")[0]).replace(".", ". ").split())
+
+
+def build_referee_profile(referee_name: str, league_id: int, season: str,
+                          league_avg: float | None = None,
+                          league_std: float | None = None) -> dict:
     """
     Compute referee profile from recent fixtures.
     Returns: {yellows_per_game, strictness_score, n_games}
+
+    Data Truth (2026-11-01): no typed fallback. Unknown referee or fewer than
+    config.MIN_REF_MATCHES matches -> yellows_per_game and strictness_score are NaN. The z-score
+    uses the league's MEASURED yellows/match mean and sd (pass them in, e.g. from
+    feature_engineering.league_yellow_stats over player_history); without them strictness is NaN.
+    The name test is exact equality of the normalised name (was a substring test).
+    NEEDS RESOURCE: API-Football gives the referee as a name string only (no referee id).
     """
+    nan = float("nan")
     if not referee_name:
-        return {"yellows_per_game": 3.5, "strictness_score": 0.0, "n_games": 0}
+        return {"yellows_per_game": nan, "strictness_score": nan, "n_games": 0}
 
+    want = _referee_key(referee_name)
     fixtures = get_recent_fixtures(league_id, season, last_n=30)
-    ref_fixtures = [
-        f for f in fixtures
-        if referee_name.lower() in (f.get("fixture", {}).get("referee", "") or "").lower()
-    ]
+    ref_fixtures = [f for f in fixtures
+                    if _referee_key(f.get("fixture", {}).get("referee")) == want]
 
-    if len(ref_fixtures) < 3:
-        return {"yellows_per_game": 3.5, "strictness_score": 0.0, "n_games": 0}
+    if len(ref_fixtures) < config.MIN_REF_MATCHES:
+        return {"yellows_per_game": nan, "strictness_score": nan, "n_games": len(ref_fixtures)}
 
     total_yellows = 0
+    n = 0
     for fix in ref_fixtures:
         fix_id = fix.get("fixture", {}).get("id")
-        if fix_id:
-            stats = get_fixture_player_stats(fix_id)
-            total_yellows += sum(s.get("yellow_card", 0) for s in stats)
+        stats = get_fixture_player_stats(fix_id) if fix_id else []
+        if not stats:
+            continue                     # no player stats -> this match is not counted
+        total_yellows += sum(s.get("yellow_card", 0) for s in stats)
+        n += 1
+    if n < config.MIN_REF_MATCHES:
+        return {"yellows_per_game": nan, "strictness_score": nan, "n_games": n}
 
-    n = len(ref_fixtures)
     avg_yellows = total_yellows / n
-    # League average is ~3.5 yellows/game; compute z-score
-    league_avg = 3.5
-    league_std = 1.0
-    strictness = (avg_yellows - league_avg) / league_std
+    ok = (league_avg is not None and league_std is not None
+          and league_avg == league_avg and league_std == league_std and league_std > 0)
+    strictness = (avg_yellows - league_avg) / league_std if ok else nan
 
     return {
         "yellows_per_game": round(avg_yellows, 2),
-        "strictness_score": round(strictness, 2),
+        "strictness_score": round(strictness, 2) if ok else nan,
         "n_games": n,
     }

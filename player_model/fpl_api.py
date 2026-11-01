@@ -204,6 +204,13 @@ def gameweek_context(bootstrap: dict | None = None) -> dict:
     return out
 
 
+def _f_or_nan(x) -> float:
+    try:
+        return float(x)
+    except (TypeError, ValueError):
+        return float("nan")
+
+
 def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
     """Tidy player table from bootstrap elements: LIVE team, position, price, availability,
     injury flags, and name-match keys (match_key = full name, web_key = FPL short name)."""
@@ -215,7 +222,8 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
     for e in b["elements"]:
         t      = teams.get(e.get("team"), {})
         full   = f"{e.get('first_name', '')} {e.get('second_name', '')}".strip()
-        status = e.get("status", "a") or "a"
+        # Absent status is UNKNOWN, not "available" (Data Truth, 2026-11-01).
+        status = e.get("status") or "unknown"
         rows.append({
             "fpl_id":            e.get("id"),
             "web_name":          e.get("web_name", ""),
@@ -226,7 +234,7 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "position":          _POS.get(e.get("element_type"), ""),
             "price":             round((e.get("now_cost") or 0) / 10.0, 1),
             "status":            status,
-            "availability":      _STATUS.get(status, "available"),
+            "availability":      _STATUS.get(status, "unknown"),
             "chance_of_playing": e.get("chance_of_playing_next_round"),
             "news":              (e.get("news") or "").strip(),
             # 'n' (not in squad / ineligible) is OUT too - V2 already treats it so; V1 did not
@@ -234,7 +242,7 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "injured":           status in ("i", "s", "u", "n"),
             "doubtful":          status == "d",
             # FPL-native signals (for differentials / hybrid ranking / price-change context)
-            "owned_pct":         float(e.get("selected_by_percent") or 0.0),
+            "owned_pct":         _f_or_nan(e.get("selected_by_percent")),     # absent -> NaN, not 0%
             "fpl_form":          float(e.get("form") or 0.0),
             "fpl_ppg":           float(e.get("points_per_game") or 0.0),
             "fpl_ep_next":       float(e.get("ep_next") or 0.0),   # FPL's own expected pts

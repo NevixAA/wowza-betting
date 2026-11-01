@@ -72,13 +72,33 @@ def _parse_side(market_label: str) -> str:
     return ""
 
 
+def _has_id(x) -> bool:
+    try:
+        return int(float(x)) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def _ledger_key(r) -> tuple:
+    """Identity of a ledger row: (player_id, fixture_id, market), or (player_id, match_date, market)
+    when the fixture has no API-Football id. Was (player_name, market, match_date) - two players
+    sharing a name on one day collapsed into one row."""
+    pid = int(float(r.get("player_id"))) if _has_id(r.get("player_id")) else None
+    fid = int(float(r.get("fixture_id"))) if _has_id(r.get("fixture_id")) else None
+    if fid is not None:
+        return ("fixture", pid, fid, str(r.get("market", "")))
+    return ("date", pid, str(r.get("match_date", ""))[:10], str(r.get("market", "")))
+
+
 def append_player_signals(
     tips_df: pd.DataFrame,
     ledger_file: Path = PLAYER_LEDGER_FILE,
 ) -> int:
     """
     Append SNIPER/MARKSMAN/VALUABLE signals from tips_df to player_ledger.csv.
-    Deduplicates on (player_name, market, match_date) — one entry per player per market per match.
+    Deduplicates on IDS: (player_id, fixture_id, market), or (player_id, match_date, market) for a
+    fixture without an API-Football id. A tip without a match date or without a player_id is
+    refused (logged) - it cannot be settled honestly.
     Returns count of newly appended rows.
     """
     if tips_df.empty:
@@ -90,11 +110,16 @@ def append_player_signals(
 
     today = _today()
     rows = []
+    refused = 0
     for _, r in signals.iterrows():
         home, away = _split_match(r.get("match", ""))
+        _md = str(r.get("date") or "")[:10]
+        if not _md or _md in ("nan", "NaT", "None") or not _has_id(r.get("player_id")):
+            refused += 1          # no match date / no player id (was dated "today")
+            continue
         rows.append({
             "signal_date":   today,
-            "match_date":    str(r.get("date", today))[:10],
+            "match_date":    _md,
             "league":        r.get("league", ""),
             "home_team":     home,
             "away_team":     away,
@@ -118,22 +143,16 @@ def append_player_signals(
             "resolved_date": "",
         })
 
+    if refused:
+        log.info(f"player_ledger: {refused} signal(s) refused (no match date or no player_id)")
+    if not rows:
+        return 0
     new_df = pd.DataFrame(rows, columns=PLAYER_LEDGER_COLS)
 
     if ledger_file.exists():
         existing = pd.read_csv(ledger_file, dtype=str)
-        # whitespace-collapsed on both sides, so a row written before names were collapsed
-        # (2026-11-01) is still recognised and never duplicated
-        existing_keys = set(
-            zip(existing["player_name"].fillna("").map(lambda s: " ".join(s.split())),
-                existing["market"], existing["match_date"])
-        )
-        new_df = new_df[
-            ~new_df.apply(
-                lambda r: (r["player_name"], r["market"], r["match_date"]) in existing_keys,
-                axis=1,
-            )
-        ]
+        existing_keys = {_ledger_key(r) for r in existing.to_dict("records")}
+        new_df = new_df[~new_df.apply(lambda r: _ledger_key(r) in existing_keys, axis=1)]
         if new_df.empty:
             log.info("player_ledger: all signals already recorded")
             return 0

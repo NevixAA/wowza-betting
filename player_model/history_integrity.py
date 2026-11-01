@@ -57,8 +57,12 @@ RAW_FACTS_MUTABLE_AFTER_FREEZE: tuple[str, ...] = ()
 INJURY_COLUMNS = ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag")
 # The injury refresh writes only rows whose match is at most this many days old.
 INJURY_REFRESH_WINDOW_DAYS = 60
-# The pre-existing sentinel: "no sidelined spell ended before this match" (config.py: 365 =
-# healthy). Kept so the feature means what the serving models were trained on.
+# "No sidelined spell ended before this match" is now days_since_last_injury = NaN on a row whose
+# chronic_injury_risk / return_from_injury_flag ARE written (a row the refresh never reached has all
+# three NaN) - that pair is the explicit "no recorded spell" flag, with no extra column to rewrite
+# every month part for (Data Truth, 2026-11-01). It used to be the SENTINEL 365 days, a value that is
+# also a real gap. NO_INJURY_DAYS is kept ONLY to decode rows written before that change
+# (reconstruct_from_stamp, the 2026-10 repair script); nothing new is written with it.
 NO_INJURY_DAYS = 365.0
 RETURN_WINDOW_DAYS = 21
 CHRONIC_LOOKBACK_DAYS = 365
@@ -171,15 +175,21 @@ def injury_evidence(entries: list[dict], match_date) -> dict:
 def injury_features_asof(entries: list[dict], match_date) -> dict:
     """chronic_injury_risk / days_since_last_injury / return_from_injury_flag for ONE row, as of
     its own match date. `entries` is the player's /sidelined list ({start, end} ISO dates); an
-    empty list is a real answer ("no recorded spell"), and gives the 0 / 365 / 0 the models were
-    trained on. A FAILED fetch must not reach here (it is not an empty list -- see
-    data_fetcher.fetch_all_player_sidelined)."""
+    empty list is a real answer ("no recorded spell"): chronic 0, days_since NaN (no spell ended,
+    so there is no gap to measure), return flag 0 (see no_spell_recorded). A FAILED fetch must not
+    reach here (it is not an empty list -- see data_fetcher.fetch_all_player_sidelined)."""
     ev = injury_evidence(entries, match_date)
-    days = (float((ev["match_date"] - ev["last_end"]).days) if ev["last_end"] is not None
-            else NO_INJURY_DAYS)
+    none = ev["last_end"] is None
+    days = float("nan") if none else float((ev["match_date"] - ev["last_end"]).days)
     return {"chronic_injury_risk": float(len(ev["starts"])),
             "days_since_last_injury": days,
-            "return_from_injury_flag": float(0 < days <= RETURN_WINDOW_DAYS)}
+            "return_from_injury_flag": float((not none) and 0 < days <= RETURN_WINDOW_DAYS)}
+
+
+def no_spell_recorded(df: pd.DataFrame) -> pd.Series:
+    """Rows whose injury refresh found NO sidelined spell ending before the match: days NaN while
+    the return flag was written. (Unrefreshed rows have all three NaN and are False here.)"""
+    return df["days_since_last_injury"].isna() & df["return_from_injury_flag"].notna()
 
 
 def apply_injury_pit(df: pd.DataFrame, sidelined_map: dict, row_mask=None) -> int:
@@ -218,7 +228,8 @@ def reconstruct_from_stamp(match_date, stamp_date, chronic, days) -> tuple[float
     The old refresh wrote days = D - L, where L is the last spell end before D (or the 365
     sentinel when there was none), and chronic = number of spells starting in [D - 365, D].
 
-      days_since at M:  sentinel at D -> no spell ended before D, so none before M -> 365.
+      days_since at M:  sentinel at D -> no spell ended before D, so none before M -> NaN
+                        (no gap to measure; was the 365 sentinel).
                         L < M        -> no end in (L, D) ⊇ (L, M), so the last end before M is
                                         L -> M - L.
                         L >= M       -> the last end before M is unknown -> None.
@@ -236,7 +247,7 @@ def reconstruct_from_stamp(match_date, stamp_date, chronic, days) -> tuple[float
     sentinel = float(days) == NO_INJURY_DAYS
     last_end = None if sentinel else d - pd.Timedelta(days=float(days))
     if last_end is None:
-        out_days = NO_INJURY_DAYS
+        out_days = float("nan")
     elif last_end < m:
         out_days = float((m - last_end).days)
     else:
