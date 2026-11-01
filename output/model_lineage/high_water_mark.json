@@ -7,25 +7,25 @@
     },
     "current_regime": {
       "holdout_n": 3936,
-      "log_loss": 0.685463,
-      "brier": 0.246181,
-      "ece": 0.00577,
-      "measured_at": "2026-11-01T16:44:19Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "log_loss": 0.685554,
+      "brier": 0.246226,
+      "ece": 0.004997,
+      "measured_at": "2026-11-01T17:08:44Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "standard_20261101T164419Z_9eab496f",
+      "version": "standard_20261101T170844Z_279e2947",
       "verdict": "SHADOW_MORE",
       "qualified": true,
-      "parked": true,
-      "ll_delta": -0.001657,
+      "parked": false,
+      "ll_delta": -0.001641,
       "ll_ci": [
-        -0.003226,
-        -0.000132
+        -0.003176,
+        -0.000115
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:44:19Z"
+    "updated_at": "2026-11-01T17:08:44Z"
   },
   "newformat": {
     "champion_version": "newformat_20261018T080423Z_9eb6b4b4",
@@ -38,26 +38,26 @@
       "retrain_batch_id": "rb_20261025T081424Z"
     },
     "current_regime": {
-      "holdout_n": 6520,
-      "log_loss": 0.677764,
-      "brier": 0.24241,
-      "ece": 0.015331,
-      "measured_at": "2026-11-01T16:44:48Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "holdout_n": 6465,
+      "log_loss": 0.67743,
+      "brier": 0.24225,
+      "ece": 0.01577,
+      "measured_at": "2026-11-01T17:09:12Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "newformat_20261101T164448Z_b77a849c",
+      "version": "newformat_20261101T170912Z_57eec186",
       "verdict": "SHADOW_MORE",
-      "qualified": false,
+      "qualified": true,
       "parked": false,
-      "ll_delta": -0.001806,
+      "ll_delta": -0.002309,
       "ll_ci": [
-        -0.003639,
-        3.5e-05
+        -0.004403,
+        -0.000242
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:44:48Z"
+    "updated_at": "2026-11-01T17:09:12Z"
   },
   "btts": {
     "champion_version": "btts_20261005T101905Z_238e3419",
@@ -66,26 +66,26 @@
       "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
     },
     "current_regime": {
-      "holdout_n": 10456,
-      "log_loss": 0.686145,
-      "brier": 0.24652,
-      "ece": 0.006736,
-      "measured_at": "2026-11-01T16:47:37Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "holdout_n": 10400,
+      "log_loss": 0.685973,
+      "brier": 0.246435,
+      "ece": 0.00568,
+      "measured_at": "2026-11-01T17:12:01Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "btts_20261101T164737Z_220f8040",
+      "version": "btts_20261101T171201Z_1138024e",
       "verdict": "KEEP_CHAMPION",
       "qualified": false,
       "parked": false,
-      "ll_delta": 0.000824,
+      "ll_delta": 0.000671,
       "ll_ci": [
-        -0.000855,
-        0.002621
+        -0.000818,
+        0.002361
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:47:38Z"
+    "updated_at": "2026-11-01T17:12:01Z"
   },
   "over15": {
     "champion_version": "over15_20261018T080423Z_da4743a2",
@@ -94,26 +94,26 @@
       "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
     },
     "current_regime": {
-      "holdout_n": 10456,
-      "log_loss": 0.540595,
-      "brier": 0.178088,
-      "ece": 0.006226,
-      "measured_at": "2026-11-01T16:48:32Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "holdout_n": 10400,
+      "log_loss": 0.540204,
+      "brier": 0.177912,
+      "ece": 0.005163,
+      "measured_at": "2026-11-01T17:12:56Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "over15_20261101T164832Z_1fab05c3",
+      "version": "over15_20261101T171256Z_bf561c88",
       "verdict": "KEEP_CHAMPION",
       "qualified": false,
       "parked": false,
-      "ll_delta": 0.000223,
+      "ll_delta": 0.000658,
       "ll_ci": [
-        -0.001241,
-        0.001762
+        -0.00093,
+        0.002378
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:48:32Z"
+    "updated_at": "2026-11-01T17:12:56Z"
   },
   "over35": {
     "champion_version": "over35_20261005T101905Z_f546ce72",
@@ -122,26 +122,26 @@
       "note": "no same-holdout validation was recorded at promotion; the first new-gate retrain sets the current-regime benchmark"
     },
     "current_regime": {
-      "holdout_n": 10456,
-      "log_loss": 0.604006,
-      "brier": 0.207045,
-      "ece": 0.004901,
-      "measured_at": "2026-11-01T16:49:27Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "holdout_n": 10400,
+      "log_loss": 0.604637,
+      "brier": 0.207343,
+      "ece": 0.005466,
+      "measured_at": "2026-11-01T17:13:50Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "over35_20261101T164927Z_bf8628c3",
+      "version": "over35_20261101T171350Z_d9189a22",
       "verdict": "KEEP_CHAMPION",
       "qualified": false,
       "parked": false,
-      "ll_delta": 0.001764,
+      "ll_delta": 0.00194,
       "ll_ci": [
-        0.0001,
-        0.003544
+        0.000229,
+        0.003691
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:49:27Z"
+    "updated_at": "2026-11-01T17:13:50Z"
   },
   "ht_over05": {
     "champion_version": "ht_over05_20261018T080423Z_359b491a",
@@ -151,25 +151,25 @@
     },
     "current_regime": {
       "holdout_n": 4544,
-      "log_loss": 0.593893,
-      "brier": 0.202089,
-      "ece": 0.011393,
-      "measured_at": "2026-11-01T16:45:46Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "log_loss": 0.593903,
+      "brier": 0.202093,
+      "ece": 0.011391,
+      "measured_at": "2026-11-01T17:10:10Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "ht_over05_20261101T164546Z_1314de9a",
+      "version": "ht_over05_20261101T171010Z_e051bc04",
       "verdict": "KEEP_CHAMPION",
       "qualified": false,
       "parked": false,
-      "ll_delta": 9.3e-05,
+      "ll_delta": 0.000202,
       "ll_ci": [
-        -0.000641,
-        0.000789
+        -0.000549,
+        0.000947
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:45:46Z"
+    "updated_at": "2026-11-01T17:10:11Z"
   },
   "ht_over15": {
     "champion_version": "ht_over15_20261004T093828Z_6f370f63",
@@ -179,25 +179,25 @@
     },
     "current_regime": {
       "holdout_n": 4544,
-      "log_loss": 0.649784,
-      "brier": 0.228698,
-      "ece": 0.003576,
-      "measured_at": "2026-11-01T16:46:42Z",
-      "retrain_batch_id": "rb_20261101T164233Z"
+      "log_loss": 0.649793,
+      "brier": 0.228702,
+      "ece": 0.003575,
+      "measured_at": "2026-11-01T17:11:07Z",
+      "retrain_batch_id": "rb_20261101T170713Z"
     },
     "last_challenger": {
-      "version": "ht_over15_20261101T164642Z_c37bbe30",
+      "version": "ht_over15_20261101T171107Z_0ea3561a",
       "verdict": "KEEP_CHAMPION",
       "qualified": false,
       "parked": false,
-      "ll_delta": 0.000675,
+      "ll_delta": 0.000709,
       "ll_ci": [
-        2.8e-05,
-        0.001346
+        6.6e-05,
+        0.001371
       ],
       "gate_version": "PG-1.0"
     },
-    "updated_at": "2026-11-01T16:46:43Z"
+    "updated_at": "2026-11-01T17:11:07Z"
   },
   "standard_repaired": {
     "champion_version": "standard_repaired_20261028T123040Z_1f5805e6",

@@ -1,0 +1,34 @@
+{
+  "model_type": "standard",
+  "model_version": "standard_20261101T170844Z_279e2947",
+  "retrain_batch_id": "rb_20261101T170713Z",
+  "trained_at": "2026-11-01T17:08:44Z",
+  "training_start": "2023-07-29",
+  "training_end": "2026-02-06",
+  "training_cutoff": "2026-02-06",
+  "training_rows": 19676,
+  "target": "over25",
+  "feature_schema_version": "56cc042e5c46",
+  "n_features": 42,
+  "code_commit_sha": "6224ca9551c0",
+  "artifact_sha256": "279e2947a64e179562f6e62719d56273901b522c3d262a93ff034c8164f33f6b",
+  "parent_champion_version": "standard_20261018T080423Z_64313878",
+  "validation_metrics": {
+    "gate_version": "PG-1.0",
+    "tracks": {
+      "standard": {
+        "n": 3936,
+        "ll_delta": -0.001641,
+        "ci": [
+          -0.003176,
+          -0.000115
+        ],
+        "brier_delta": -0.000797,
+        "ece_delta": 0.006491,
+        "passed": true
+      }
+    }
+  },
+  "promotion_status": "SHADOW_MORE",
+  "model_role": "SHADOW"
+}

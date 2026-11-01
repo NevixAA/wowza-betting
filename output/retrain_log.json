@@ -3072,71 +3072,71 @@
     "2026-11-01": {
       "standard": {
         "promoted": false,
-        "why": "SHADOW_MORE: QUALIFIED on the holdout ([standard] all holdout criteria met); no prospective period yet \u2014 frozen for period 2, not promoted",
+        "why": "SHADOW_MORE: QUALIFIED on the holdout ([standard] all holdout criteria met); no prospective period yet \u2014 frozen for period 2, not promoted | slot held by qualified standard_20261101T164419Z_9eab496f; not parked",
         "rows": 19676,
         "verdict": "SHADOW_MORE",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
         "qualified": true,
-        "parked": true,
+        "parked": false,
         "evaluable_tracks": [
           "standard"
         ],
-        "logloss_old": 0.685463,
-        "logloss_new": 0.683806,
+        "logloss_old": 0.685554,
+        "logloss_new": 0.683913,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          -0.003226,
-          -0.000132
+          -0.003176,
+          -0.000115
         ],
         "champion_version": "standard_20261018T080423Z_64313878",
-        "challenger_version": "standard_20261101T164419Z_9eab496f",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "standard_20261101T170844Z_279e2947",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": {
           "verdict": "SHADOW_MORE",
-          "candidate_version": "standard_20261101T163453Z_9e71c179",
-          "prospective_status": null,
-          "prospective_n": null,
+          "candidate_version": "standard_20261101T164419Z_9eab496f",
+          "prospective_status": "PENDING",
+          "prospective_n": 0,
           "prospective_ll_delta": null,
-          "reason": "not promotable: did not qualify on its holdout; kept as research shadow"
+          "reason": "prospective pending: [standard] PENDING: no graded prospective rows yet"
         },
         "canary": {
           "available": true,
           "n": 3936,
-          "std_old": 0.03524,
-          "std_new": 0.03738,
-          "spread_ratio": 1.061,
-          "mean_old": 0.53898,
-          "mean_new": 0.54291,
-          "frac_crossed_half": 0.124,
-          "frac_moved_gt_10pp": 0.0038,
-          "max_abs_move": 0.2369,
+          "std_old": 0.03523,
+          "std_new": 0.03673,
+          "spread_ratio": 1.043,
+          "mean_old": 0.53899,
+          "mean_new": 0.54241,
+          "frac_crossed_half": 0.1225,
+          "frac_moved_gt_10pp": 0.0041,
+          "max_abs_move": 0.2389,
           "flags": []
         },
-        "at": "2026-11-01T16:44:19Z"
+        "at": "2026-11-01T17:08:44Z"
       },
       "newformat": {
         "promoted": false,
-        "why": "SHADOW_MORE: not qualified but a material gain is inside the CI \u2014 research shadow, never promotable: [new_format] failed: ci_excludes_zero | slot held by qualified newformat_20261025T082056Z_cfa68e5c; not parked",
-        "rows": 32600,
+        "why": "SHADOW_MORE: QUALIFIED on the holdout ([new_format] all holdout criteria met); no prospective period yet \u2014 frozen for period 2, not promoted | slot held by qualified newformat_20261025T082056Z_cfa68e5c; not parked",
+        "rows": 32324,
         "verdict": "SHADOW_MORE",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
-        "qualified": false,
+        "qualified": true,
         "parked": false,
         "evaluable_tracks": [
           "new_format"
         ],
-        "logloss_old": 0.677764,
-        "logloss_new": 0.675958,
+        "logloss_old": 0.67743,
+        "logloss_new": 0.675121,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          -0.003639,
-          3.5e-05
+          -0.004403,
+          -0.000242
         ],
         "champion_version": "newformat_20261018T080423Z_9eb6b4b4",
-        "challenger_version": "newformat_20261101T164448Z_b77a849c",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "newformat_20261101T170912Z_57eec186",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": {
           "verdict": "SHADOW_MORE",
           "candidate_version": "newformat_20261025T082056Z_cfa68e5c",
@@ -3147,23 +3147,23 @@
         },
         "canary": {
           "available": true,
-          "n": 6520,
-          "std_old": 0.08014,
-          "std_new": 0.08373,
-          "spread_ratio": 1.045,
-          "mean_old": 0.52844,
-          "mean_new": 0.52899,
-          "frac_crossed_half": 0.1273,
-          "frac_moved_gt_10pp": 0.0066,
-          "max_abs_move": 0.1623,
+          "n": 6465,
+          "std_old": 0.08039,
+          "std_new": 0.08579,
+          "spread_ratio": 1.067,
+          "mean_old": 0.52785,
+          "mean_new": 0.52982,
+          "frac_crossed_half": 0.1276,
+          "frac_moved_gt_10pp": 0.0087,
+          "max_abs_move": 0.1559,
           "flags": []
         },
-        "at": "2026-11-01T16:44:48Z"
+        "at": "2026-11-01T17:09:12Z"
       },
       "ht_over05": {
         "promoted": false,
         "why": "KEEP_CHAMPION: [standard] failed: material_improvement, ci_excludes_zero, prediction_canary",
-        "rows": 22717,
+        "rows": 22720,
         "verdict": "KEEP_CHAMPION",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
@@ -3172,38 +3172,38 @@
         "evaluable_tracks": [
           "standard"
         ],
-        "logloss_old": 0.593893,
-        "logloss_new": 0.593987,
+        "logloss_old": 0.593903,
+        "logloss_new": 0.594105,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          -0.000641,
-          0.000789
+          -0.000549,
+          0.000947
         ],
         "champion_version": "ht_over05_20261018T080423Z_359b491a",
-        "challenger_version": "ht_over05_20261101T164546Z_1314de9a",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "ht_over05_20261101T171010Z_e051bc04",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": null,
         "canary": {
           "available": true,
           "n": 4544,
           "std_old": 0.00951,
-          "std_new": 0.00576,
-          "spread_ratio": 0.606,
+          "std_new": 0.00528,
+          "spread_ratio": 0.555,
           "mean_old": 0.70669,
-          "mean_new": 0.7157,
+          "mean_new": 0.71569,
           "frac_crossed_half": 0.0,
           "frac_moved_gt_10pp": 0.0,
-          "max_abs_move": 0.0414,
+          "max_abs_move": 0.0463,
           "flags": [
-            "spread x0.61"
+            "spread x0.56"
           ]
         },
-        "at": "2026-11-01T16:45:46Z"
+        "at": "2026-11-01T17:10:11Z"
       },
       "ht_over15": {
         "promoted": false,
         "why": "KEEP_CHAMPION: [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior",
-        "rows": 22717,
+        "rows": 22720,
         "verdict": "KEEP_CHAMPION",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
@@ -3212,36 +3212,36 @@
         "evaluable_tracks": [
           "standard"
         ],
-        "logloss_old": 0.649784,
-        "logloss_new": 0.650459,
+        "logloss_old": 0.649793,
+        "logloss_new": 0.650502,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          2.8e-05,
-          0.001346
+          6.6e-05,
+          0.001371
         ],
         "champion_version": "ht_over15_20261004T093828Z_6f370f63",
-        "challenger_version": "ht_over15_20261101T164642Z_c37bbe30",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "ht_over15_20261101T171107Z_0ea3561a",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": null,
         "canary": {
           "available": true,
           "n": 4544,
           "std_old": 0.02105,
-          "std_new": 0.01459,
-          "spread_ratio": 0.693,
+          "std_new": 0.01615,
+          "spread_ratio": 0.767,
           "mean_old": 0.35465,
-          "mean_new": 0.35612,
+          "mean_new": 0.3561,
           "frac_crossed_half": 0.0,
           "frac_moved_gt_10pp": 0.0,
-          "max_abs_move": 0.0627,
+          "max_abs_move": 0.0607,
           "flags": []
         },
-        "at": "2026-11-01T16:46:43Z"
+        "at": "2026-11-01T17:11:07Z"
       },
       "btts": {
         "promoted": false,
         "why": "KEEP_CHAMPION: [new_format] failed: material_improvement, ci_excludes_zero, brier_non_inferior; [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior",
-        "rows": 52276,
+        "rows": 52000,
         "verdict": "KEEP_CHAMPION",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
@@ -3251,16 +3251,16 @@
           "new_format",
           "standard"
         ],
-        "logloss_old": 0.686145,
-        "logloss_new": 0.686968,
+        "logloss_old": 0.685973,
+        "logloss_new": 0.686644,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          -0.000855,
-          0.002621
+          -0.000818,
+          0.002361
         ],
         "champion_version": "btts_20261005T101905Z_238e3419",
-        "challenger_version": "btts_20261101T164737Z_220f8040",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "btts_20261101T171201Z_1138024e",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": {
           "verdict": "SHADOW_MORE",
           "candidate_version": "btts_20261101T112201Z_bf9b956c",
@@ -3271,23 +3271,23 @@
         },
         "canary": {
           "available": true,
-          "n": 10456,
-          "std_old": 0.03991,
-          "std_new": 0.03021,
-          "spread_ratio": 0.757,
-          "mean_old": 0.55227,
-          "mean_new": 0.55286,
-          "frac_crossed_half": 0.089,
-          "frac_moved_gt_10pp": 0.0039,
-          "max_abs_move": 0.199,
+          "n": 10400,
+          "std_old": 0.03997,
+          "std_new": 0.02897,
+          "spread_ratio": 0.725,
+          "mean_old": 0.55225,
+          "mean_new": 0.55353,
+          "frac_crossed_half": 0.0857,
+          "frac_moved_gt_10pp": 0.0037,
+          "max_abs_move": 0.1617,
           "flags": []
         },
-        "at": "2026-11-01T16:47:38Z"
+        "at": "2026-11-01T17:12:01Z"
       },
       "over15": {
         "promoted": false,
-        "why": "KEEP_CHAMPION: [new_format] failed: material_improvement, ci_excludes_zero, brier_non_inferior; [standard] failed: material_improvement, ci_excludes_zero",
-        "rows": 52276,
+        "why": "KEEP_CHAMPION: [new_format] failed: material_improvement, ci_excludes_zero, brier_non_inferior; [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior, prediction_canary",
+        "rows": 52000,
         "verdict": "KEEP_CHAMPION",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
@@ -3297,16 +3297,16 @@
           "new_format",
           "standard"
         ],
-        "logloss_old": 0.540595,
-        "logloss_new": 0.540818,
+        "logloss_old": 0.540204,
+        "logloss_new": 0.540862,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          -0.001241,
-          0.001762
+          -0.00093,
+          0.002378
         ],
         "champion_version": "over15_20261018T080423Z_da4743a2",
-        "challenger_version": "over15_20261101T164832Z_1fab05c3",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "over15_20261101T171256Z_bf561c88",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": {
           "verdict": "SHADOW_MORE",
           "candidate_version": "over15_20261101T154342Z_bcbad302",
@@ -3317,23 +3317,23 @@
         },
         "canary": {
           "available": true,
-          "n": 10456,
-          "std_old": 0.04142,
-          "std_new": 0.03431,
-          "spread_ratio": 0.828,
-          "mean_old": 0.76573,
-          "mean_new": 0.7657,
-          "frac_crossed_half": 0.0002,
-          "frac_moved_gt_10pp": 0.0035,
-          "max_abs_move": 0.3389,
+          "n": 10400,
+          "std_old": 0.04154,
+          "std_new": 0.03188,
+          "spread_ratio": 0.767,
+          "mean_old": 0.76567,
+          "mean_new": 0.76606,
+          "frac_crossed_half": 0.0001,
+          "frac_moved_gt_10pp": 0.0037,
+          "max_abs_move": 0.2955,
           "flags": []
         },
-        "at": "2026-11-01T16:48:32Z"
+        "at": "2026-11-01T17:12:56Z"
       },
       "over35": {
         "promoted": false,
         "why": "KEEP_CHAMPION: [new_format] failed: material_improvement, ci_excludes_zero, brier_non_inferior; [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior",
-        "rows": 52276,
+        "rows": 52000,
         "verdict": "KEEP_CHAMPION",
         "comparison_basis": "same_holdout",
         "gate_version": "PG-1.0",
@@ -3343,31 +3343,31 @@
           "new_format",
           "standard"
         ],
-        "logloss_old": 0.604006,
-        "logloss_new": 0.60577,
+        "logloss_old": 0.604637,
+        "logloss_new": 0.606578,
         "logloss_basis": "served_ensemble_largest_track",
         "ll_ci": [
-          0.0001,
-          0.003544
+          0.000229,
+          0.003691
         ],
         "champion_version": "over35_20261005T101905Z_f546ce72",
-        "challenger_version": "over35_20261101T164927Z_bf8628c3",
-        "retrain_batch_id": "rb_20261101T164233Z",
+        "challenger_version": "over35_20261101T171350Z_d9189a22",
+        "retrain_batch_id": "rb_20261101T170713Z",
         "prospective_review": null,
         "canary": {
           "available": true,
-          "n": 10456,
-          "std_old": 0.06518,
-          "std_new": 0.05094,
-          "spread_ratio": 0.782,
-          "mean_old": 0.30077,
-          "mean_new": 0.30364,
-          "frac_crossed_half": 0.0122,
-          "frac_moved_gt_10pp": 0.0157,
-          "max_abs_move": 0.3161,
+          "n": 10400,
+          "std_old": 0.06516,
+          "std_new": 0.05228,
+          "spread_ratio": 0.802,
+          "mean_old": 0.30078,
+          "mean_new": 0.30404,
+          "frac_crossed_half": 0.0123,
+          "frac_moved_gt_10pp": 0.0138,
+          "max_abs_move": 0.3192,
           "flags": []
         },
-        "at": "2026-11-01T16:49:27Z"
+        "at": "2026-11-01T17:13:50Z"
       }
     }
   },
