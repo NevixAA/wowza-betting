@@ -782,15 +782,20 @@ def build_upcoming_features(
     df["home_ht_defense_str"] = df["home_ht_conceded_last5"] / half_avg
     df["away_ht_defense_str"] = df["away_ht_conceded_last5"] / half_avg
 
-    # Rest days using historical
-    combined = pd.concat([
-        hist[["date", "home_team", "away_team"]].tail(1000),
-        df[["date", "home_team", "away_team"]],
-    ]).sort_values("date").reset_index(drop=True)
+    # Rest days using historical. _add_rest_days keeps its INPUT order, so the upcoming rows stay
+    # the last len(df) rows in df's own order. Sorting here first (as this did until 2026-11-01)
+    # then copying back by position handed fixtures another fixture's rest days whenever the board
+    # was not in date order (51 of 52 consistency checks failed on the committed board). History
+    # is every row involving a team on the board, not the last 1,000 rows across all leagues,
+    # which left 64% of live Standard fixtures with no rest days at all.
+    _teams = set(df["home_team"]) | set(df["away_team"])
+    _h = hist[["date", "home_team", "away_team"]]
+    _h = _h[_h["home_team"].isin(_teams) | _h["away_team"].isin(_teams)]
+    combined = pd.concat([_h, df[["date", "home_team", "away_team"]]], ignore_index=True)
     combined_rd = _add_rest_days(combined)
-    tail = combined_rd.tail(len(df)).reset_index(drop=True)
-    df["home_rest_days"] = tail["home_rest_days"].values
-    df["away_rest_days"] = tail["away_rest_days"].values
+    tail = combined_rd.tail(len(df))
+    df["home_rest_days"] = tail["home_rest_days"].to_numpy()
+    df["away_rest_days"] = tail["away_rest_days"].to_numpy()
 
     # Set piece proxies — use league averages from history
     lg_corners = hist.groupby("league").apply(

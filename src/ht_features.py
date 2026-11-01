@@ -229,6 +229,10 @@ def attach_ht_features(historical: pd.DataFrame,
             # present it is stale data, and letting it update the accumulator would leak.
             up[c] = np.nan
     up["_is_upcoming"] = True
+    # build_ht_features sorts by (date, league, home, away). Callers assign the result back to
+    # `upcoming` by POSITION, so it must come back in the caller's order — until 2026-11-01 it came
+    # back sorted and 148 of 154 board rows carried another fixture's HT features.
+    up["_up_pos"] = np.arange(len(up))
 
     hist = historical.copy()
     hist["_is_upcoming"] = False
@@ -239,4 +243,5 @@ def attach_ht_features(historical: pd.DataFrame,
     both = build_ht_features(
         pd.concat([hist.reindex(columns=cols), up.reindex(columns=cols)], ignore_index=True))
     out = both[both["_is_upcoming"] == True].drop(columns=["_is_upcoming"])  # noqa: E712
+    out = out.sort_values("_up_pos", kind="mergesort").drop(columns=["_up_pos"])
     return out.reset_index(drop=True)

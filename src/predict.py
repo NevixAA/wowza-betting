@@ -491,14 +491,22 @@ def predict_upcoming(
             # attach_ht_features rebuilds the accumulators over `historical` and emits the
             # upcoming rows only. Upcoming fixtures carry no half-time score, so they receive
             # features and update nothing — every one sees the full history, none sees another.
-            _ht_scored = feat
+            _ht_ok = False          # score HT only on features attached to the right fixtures
             try:
                 from src.ht_features import attach_ht_features, HT_FEATURE_COLS
                 _ht = attach_ht_features(historical, feat)
-                if len(_ht) == len(feat):
+                # Same fixture on every row, or nothing: a positional copy with a mere length
+                # check is how every HT feature landed on the wrong fixture until 2026-11-01.
+                _aligned = len(_ht) == len(feat) and all(
+                    (_ht[k].astype(str).to_numpy() == feat[k].astype(str).to_numpy()).all()
+                    for k in ("home_team", "away_team"))
+                if not _aligned:
+                    log.error("  HT features do not line up with the fixtures — HT not scored this run")
+                elif len(_ht) == len(feat):
                     for _c in HT_FEATURE_COLS:
                         if _c in _ht.columns:
                             feat[_c] = _ht[_c].to_numpy()
+                    _ht_ok = True
                     _cov = float(np.mean([feat[c].notna().mean() for c in HT_FEATURE_COLS
                                           if c in feat.columns]))
                     log.info(f"  HT features attached: {_cov:.0%} populated")
@@ -509,12 +517,15 @@ def predict_upcoming(
                 else:
                     log.warning(f"  HT feature rows {len(_ht)} != fixtures {len(feat)} — skipped")
             except Exception as _e:                                   # noqa: BLE001
-                log.warning(f"  HT feature attach failed ({_e}) — model may be degraded")
+                log.error(f"  HT feature attach failed ({_e}) — HT not scored this run")
 
-            feat.loc[std_mask, "p_ht_over05"] = predict_proba(feat[std_mask], payload=ht_payload_05).values
-            if ht_payload_15:
-                feat.loc[std_mask, "p_ht_over15"] = predict_proba(feat[std_mask], payload=ht_payload_15).values
-            log.info(f"  HT model: {std_mask.sum()} fixtures scored")
+            # FAIL CLOSED: scoring on missing features imputes them (z ~ -37, see above) and emits
+            # confident nonsense. No HT features, no HT probabilities.
+            if _ht_ok:
+                feat.loc[std_mask, "p_ht_over05"] = predict_proba(feat[std_mask], payload=ht_payload_05).values
+                if ht_payload_15:
+                    feat.loc[std_mask, "p_ht_over15"] = predict_proba(feat[std_mask], payload=ht_payload_15).values
+                log.info(f"  HT model: {std_mask.sum()} fixtures scored")
         except Exception as e:
             log.warning(f"  HT model prediction failed: {e}")
 
