@@ -365,8 +365,14 @@ def fetch_scores_apifootball(league: str) -> list[dict]:
 
     out: list[dict] = []
     lid = config.API_FOOTBALL_IDS.get(league)
+    # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(league, API_SEASON="2025").
+    from src.season_resolver import resolve_api_season, is_known, record_degradation
+    season = resolve_api_season(league) if lid else None
+    if lid and not is_known(season):
+        record_degradation("update_results._af_completed", league)
+        log.warning(f"  [api-football] {league}: season unresolvable - fallback settlement skipped")
+        lid = None
     if lid:
-        season = config.API_FOOTBALL_SEASONS.get(league, config.API_SEASON)
         try:
             from src.api_football_ou import fetch_league_fixture_results
             df = fetch_league_fixture_results(lid, season, league)
@@ -1315,8 +1321,10 @@ def update_live_signal_results(days: int = 3, dry_run: bool = False) -> None:
         need_ht = ht_total is None and side.startswith("HT_")
         if (need_ft or need_ht) and af_ok and get_fixture_goals is not None:
             lg_id  = config.API_FOOTBALL_IDS.get(league)
-            season = config.API_FOOTBALL_SEASONS.get(league)
-            if lg_id and season:
+            # Season of THIS fixture's date (R2 finding 6), not today's table entry.
+            from src.season_resolver import resolve_api_season, is_known
+            season = resolve_api_season(league, d)
+            if lg_id and is_known(season):
                 for dd in variants:
                     try:
                         g = get_fixture_goals(lg_id, season, dd, home, away)

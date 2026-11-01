@@ -39,6 +39,49 @@ _LAST_FETCH_STATS: dict = {}
 # market_edge_v2 shadow (src/edge_engine_shadow.py) so its two-sided consensus is as fresh as the
 # board. Recording only: nothing in the selection path reads it.
 _LAST_BOOK_ROWS: list = []
+# This run's model routing (R2-A fail-closed). Written into output/league_registry_health.json.
+_LAST_ROUTING: dict = {}
+
+
+def _record_routing(feat, std_mask, nf_mask, unknown_mask, nf_payload_missing: bool) -> dict:
+    """Record which fixtures each O/U model scored and which were REFUSED. Never raises. Written
+    to output/league_registry_health.json (`last_predict_routing`) by write_integrity_health()."""
+    global _LAST_ROUTING
+    try:
+        def _fx(mask):
+            sub = feat.loc[mask]
+            return [{"league": str(r.get("league", "")), "home_team": str(r.get("home_team", "")),
+                     "away_team": str(r.get("away_team", "")), "date": str(r.get("date", ""))[:10]}
+                    for _, r in sub.iterrows()]
+        _LAST_ROUTING = {
+            "generated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            "fixtures": int(len(feat)), "standard": int(std_mask.sum()), "new_format": int(nf_mask.sum()),
+            "unknown_league_fixtures": _fx(unknown_mask),
+            "new_format_artifact_missing": bool(nf_payload_missing),
+            "new_format_unscored_fixtures": int(nf_mask.sum()) if nf_payload_missing else 0,
+            "policy": "unknown league -> model_type=unknown, no probability, no bet; missing NF artifact -> "
+                      "NF fixtures unscored (no Standard fallback)",
+            "status": ("FAIL" if (nf_payload_missing and bool(nf_mask.any()))
+                       else "WARN" if bool(unknown_mask.any()) else "PASS"),
+        }
+    except Exception as e:                                             # noqa: BLE001
+        _LAST_ROUTING = {"status": "FAIL", "error": f"{type(e).__name__}: {e}"}
+    return _LAST_ROUTING
+
+
+def write_integrity_health() -> None:
+    """Write this run's routing / season / Standard-serving health files. Called by
+    pipeline.mode_predict AFTER predict_upcoming (offline previews call predict_upcoming directly
+    and therefore write nothing). Never raises."""
+    try:
+        from src import league_registry, season_resolver, standard_serving
+        out = Path(config.OUTPUT_DIR)                  # honours a redirected OUTPUT_DIR (tests, previews)
+        league_registry.write_health(routing=_LAST_ROUTING or None,
+                                     path=out / league_registry.HEALTH_FILE.name)
+        season_resolver.write_health(path=out / season_resolver.HEALTH_FILE.name)
+        standard_serving.write_health(path=out / standard_serving.HEALTH_FILE.name)
+    except Exception as e:                                             # noqa: BLE001
+        log.warning(f"league/season/serving health not written: {e}")
 
 
 # ── Fixture + odds fetching ───────────────────────────────────────────────────
@@ -312,6 +355,11 @@ def predict_upcoming(
     from src.model import predict_proba
     from src.betting import evaluate_value
     from src.drift import snapshot, enrich, purge_old
+    from src import standard_serving as _std_serving
+
+    # 0. Configuration gate (R2 finding 17): an invalid STANDARD_OU25_SERVING_RECIPE is a
+    #    configuration error, raised BEFORE any OddsAPI credit is spent - never a silent legacy run.
+    _std_serving.check_config()
 
     # 1. Fetch live fixtures
     log.info("Fetching upcoming fixtures from OddsAPI...")
@@ -357,19 +405,30 @@ def predict_upcoming(
         probas[std_mask.values] = p_std.values
         log.info(f"  Standard model: {std_mask.sum()} fixtures")
 
+    # FAIL CLOSED (R2 finding 8, 2026-11-01). Two fallbacks used to score a fixture with a model
+    # that was never trained for it: a New Format fixture went to the STANDARD model when the NF
+    # artifact was missing, and a league in neither list ("Fallback (unknown league)") always went
+    # to the STANDARD model. Both now leave p_over25 EMPTY: no probability -> no edge -> AVOID ->
+    # no tip, plus an ERROR log line and output/league_registry_health.json `last_predict_routing`.
+    # Routing is by EXACT canonical name (config.model_type_for_league); a near-name such as
+    # "Austria Bundesliga" or "championship" is unknown, never "close enough".
+    nf_payload_missing = payload_newformat is None
     if nf_mask.any():
-        nf_payload = payload_newformat if payload_newformat is not None else payload
-        p_nf = predict_proba(feat[nf_mask], payload=nf_payload)
-        probas[nf_mask.values] = p_nf.values
-        log.info(f"  New-format model: {nf_mask.sum()} fixtures"
-                 + (" (using standard model as fallback)" if payload_newformat is None else ""))
+        if nf_payload_missing:
+            log.error(f"  New-format model artifact NOT LOADED: {int(nf_mask.sum())} New Format "
+                      f"fixture(s) left WITHOUT a probability (no Standard-model fallback; fail closed)")
+        else:
+            p_nf = predict_proba(feat[nf_mask], payload=payload_newformat)
+            probas[nf_mask.values] = p_nf.values
+            log.info(f"  New-format model: {nf_mask.sum()} fixtures")
 
-    # Any remaining unclassified fixtures (unknown league) use standard model as fallback
     unknown_mask = ~std_mask & ~nf_mask
     if unknown_mask.any():
-        p_unk = predict_proba(feat[unknown_mask], payload=payload)
-        probas[unknown_mask.values] = p_unk.values
-        log.info(f"  Fallback (unknown league): {unknown_mask.sum()} fixtures")
+        _unk = feat.loc[unknown_mask, "league"].astype(str).value_counts().to_dict()
+        log.error(f"  UNKNOWN LEAGUE: {int(unknown_mask.sum())} fixture(s) in league(s) {_unk} are in "
+                  f"neither STANDARD_FORMAT_LEAGUES nor NEW_FORMAT_LEAGUES -> model_type=unknown, "
+                  f"NO probability, NO bet (fail closed; no Standard-model fallback)")
+    _record_routing(feat, std_mask, nf_mask, unknown_mask, nf_payload_missing)
 
     # Standard O/U 2.5 serving recipe (owner 2026-10-28, config.STANDARD_OU25_SERVING_RECIPE).
     # legacy_v9 (default): a no-op — nothing above or below changes. v9_repaired: the Standard rows'

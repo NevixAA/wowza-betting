@@ -118,9 +118,13 @@ def test_unregistered_file_gets_real_hash_not_invented_version(tmpreg):
 
 
 def test_ou_routing_mirrors_predict_fallbacks(tmpreg):
+    # R2-A (2026-11-01): predict FAILS CLOSED - no model scores an unknown league or an NF row
+    # whose NF artifact is missing (both used to fall back to the standard model).
     assert reg.ou_model_for("standard") == "standard"
-    assert reg.ou_model_for("unknown") == "standard"            # predict.py:339 fallback
-    assert reg.ou_model_for("new_format") == "standard"         # NF file missing -> standard
+    assert reg.ou_model_for("unknown") == reg.NO_MODEL
+    assert reg.ou_model_for("new_format") == reg.NO_MODEL       # NF file missing -> no model
+    assert reg.stamp_for(reg.NO_MODEL)["model_version"] == reg.NO_MODEL_VERSION
+    assert reg.ou_model_for_row("standard", "v9_repaired_failed") == reg.NO_MODEL
     reg.MODEL_FILES["newformat"].parent.mkdir(parents=True, exist_ok=True)
     reg.MODEL_FILES["newformat"].write_bytes(b"nf")
     assert reg.ou_model_for("new_format") == "newformat"

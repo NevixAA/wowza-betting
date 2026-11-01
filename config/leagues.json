@@ -1,0 +1,1117 @@
+{
+ "registry_version": "LR-1.0-2026-11-01",
+ "about": "CANONICAL LEAGUE REGISTRY (R2 finding 7). config.py DERIVES its league sets and per-league provider maps from this file (src/league_registry.py); edit here, never in config.py. Aliases are alternative spellings that resolve to the canonical name; they are never separate keys. Seed generated from config.py at origin/main 4e9c93357 (2026-11-01); tests/test_league_registry.py proves the derived values equal that snapshot.",
+ "season_rule_types": {
+  "start_year": "API-Football season = the year the season STARTS; a date before start_month belongs to the previous year's season (European autumn-spring)",
+  "calendar_year": "season = the calendar year of the kickoff (spring-autumn leagues)",
+  "end_year": "season = the year the season ENDS: a date in/after start_month belongs to next year's season (J1 from 2026/27)",
+  "fixed": "one tournament season",
+  "eras": "a list of rules with from/until dates (inclusive from, exclusive until) when a league changed calendar"
+ },
+ "leagues": [
+  {
+   "id": "championship",
+   "name": "Championship",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "England",
+   "timezone": "Europe/London",
+   "football_data_code": "E1",
+   "api_football_id": 40,
+   "odds_api_sport_key": "soccer_efl_champ",
+   "sofascore_tournament_id": 18,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "league_one",
+   "name": "League One",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "England",
+   "timezone": "Europe/London",
+   "football_data_code": "E2",
+   "api_football_id": 41,
+   "odds_api_sport_key": "soccer_england_league1",
+   "sofascore_tournament_id": 24,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "league_two",
+   "name": "League Two",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "England",
+   "timezone": "Europe/London",
+   "football_data_code": "E3",
+   "api_football_id": 42,
+   "odds_api_sport_key": "soccer_england_league2",
+   "sofascore_tournament_id": 25,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "bundesliga_2",
+   "name": "Bundesliga 2",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Germany",
+   "timezone": "Europe/Berlin",
+   "football_data_code": "D2",
+   "api_football_id": 79,
+   "odds_api_sport_key": "soccer_germany_bundesliga2",
+   "sofascore_tournament_id": 44,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "ligue_2",
+   "name": "Ligue 2",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "France",
+   "timezone": "Europe/Paris",
+   "football_data_code": "F2",
+   "api_football_id": 62,
+   "odds_api_sport_key": "soccer_france_ligue_two",
+   "sofascore_tournament_id": 182,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "la_liga_2",
+   "name": "La Liga 2",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Spain",
+   "timezone": "Europe/Madrid",
+   "football_data_code": "SP2",
+   "api_football_id": 141,
+   "odds_api_sport_key": "soccer_spain_segunda_division",
+   "sofascore_tournament_id": 54,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "serie_b",
+   "name": "Serie B",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Italy",
+   "timezone": "Europe/Rome",
+   "football_data_code": "I2",
+   "api_football_id": 136,
+   "odds_api_sport_key": "soccer_italy_serie_b",
+   "sofascore_tournament_id": 53,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "greek_super_league",
+   "name": "Greek Super League",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Greece",
+   "timezone": "Europe/Athens",
+   "football_data_code": "G1",
+   "api_football_id": 197,
+   "odds_api_sport_key": "soccer_greece_super_league",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only - removed from ENABLED_LEAGUES at -7.26% ROI"
+  },
+  {
+   "id": "denmark_superliga",
+   "name": "Denmark Superliga",
+   "aliases": [
+    "Danish Superliga"
+   ],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Denmark",
+   "timezone": "Europe/Copenhagen",
+   "football_data_code": "DNK",
+   "api_football_id": 119,
+   "odds_api_sport_key": "soccer_denmark_superliga",
+   "sofascore_tournament_id": 39,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "austrian_bundesliga",
+   "name": "Austrian Bundesliga",
+   "aliases": [
+    "Austria Bundesliga"
+   ],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Austria",
+   "timezone": "Europe/Vienna",
+   "football_data_code": "AUT",
+   "api_football_id": 218,
+   "odds_api_sport_key": "soccer_austria_bundesliga",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "romanian_superliga",
+   "name": "Romanian Superliga",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED_PROVIDER_UNSUPPORTED",
+   "enabled": true,
+   "paper": false,
+   "country": "Romania",
+   "timezone": "Europe/Bucharest",
+   "football_data_code": "ROM",
+   "api_football_id": 283,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "provider_unsupported": {
+    "reason": "NO_ODDSAPI_SPORT_KEY",
+    "provider": "oddsapi",
+    "verified": "2026-08-22",
+    "evidence": "full /sports?all=true catalogue enumerated; no Romanian competition at any tier"
+   },
+   "note": "enabled for training/collection; OddsAPI sells no Romanian competition (PROVIDER_UNSUPPORTED)"
+  },
+  {
+   "id": "sweden_allsvenskan",
+   "name": "Sweden Allsvenskan",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Sweden",
+   "timezone": "Europe/Stockholm",
+   "football_data_code": "SWE",
+   "api_football_id": 113,
+   "odds_api_sport_key": "soccer_sweden_allsvenskan",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "norway_eliteserien",
+   "name": "Norway Eliteserien",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Norway",
+   "timezone": "Europe/Oslo",
+   "football_data_code": "NOR",
+   "api_football_id": 103,
+   "odds_api_sport_key": "soccer_norway_eliteserien",
+   "sofascore_tournament_id": 317,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "finland_veikkausliiga",
+   "name": "Finland Veikkausliiga",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Finland",
+   "timezone": "Europe/Helsinki",
+   "football_data_code": "FIN",
+   "api_football_id": 244,
+   "odds_api_sport_key": "soccer_finland_veikkausliiga",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "ireland_premier_division",
+   "name": "Ireland Premier Division",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Ireland",
+   "timezone": "Europe/Dublin",
+   "football_data_code": "IRL",
+   "api_football_id": 357,
+   "odds_api_sport_key": "soccer_league_of_ireland",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "argentina_primera_division",
+   "name": "Argentina Primera Division",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Argentina",
+   "timezone": "America/Argentina/Buenos_Aires",
+   "football_data_code": "ARG",
+   "api_football_id": 128,
+   "odds_api_sport_key": "soccer_argentina_primera_division",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "brazil_serie_a",
+   "name": "Brazil Serie A",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Brazil",
+   "timezone": "America/Sao_Paulo",
+   "football_data_code": "BRA",
+   "api_football_id": 71,
+   "odds_api_sport_key": "soccer_brazil_campeonato",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "japan_j_league",
+   "name": "Japan J-League",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Japan",
+   "timezone": "Asia/Tokyo",
+   "football_data_code": "JPN",
+   "api_football_id": 98,
+   "odds_api_sport_key": "soccer_japan_j_league",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "eras": [
+     {
+      "until": "2026-07-01",
+      "type": "calendar_year"
+     },
+     {
+      "from": "2026-07-01",
+      "type": "end_year",
+      "start_month": 7
+     }
+    ],
+    "evidence": "J1 moved to autumn-spring: API-Football season 2026 = spring special tournament 2026-02-06..06-06; live league = season 2027 (2026-08-07..2027-06-06), API current (verified 2026-10-22, config.py; player_model/data_fetcher.api_current_season)"
+   }
+  },
+  {
+   "id": "mexico_liga_mx",
+   "name": "Mexico Liga MX",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "Mexico",
+   "timezone": "America/Mexico_City",
+   "football_data_code": "MEX",
+   "api_football_id": 262,
+   "odds_api_sport_key": "soccer_mexico_ligamx",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "china_super_league",
+   "name": "China Super League",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "ENABLED",
+   "enabled": true,
+   "paper": false,
+   "country": "China",
+   "timezone": "Asia/Shanghai",
+   "football_data_code": "CHN",
+   "api_football_id": 169,
+   "odds_api_sport_key": "soccer_china_superleague",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   }
+  },
+  {
+   "id": "usa_mls",
+   "name": "USA MLS",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "PAPER",
+   "enabled": true,
+   "paper": true,
+   "country": "USA",
+   "timezone": "America/New_York",
+   "football_data_code": "USA",
+   "api_football_id": 253,
+   "odds_api_sport_key": "soccer_usa_mls",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   },
+   "note": "PAPER league (owner 2026-10-06/07): predicted and collected, never sent, counted or bet - see config.PAPER_LEAGUES"
+  },
+  {
+   "id": "saudi_pro_league",
+   "name": "Saudi Pro League",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Saudi-Arabia",
+   "timezone": "Asia/Riyadh",
+   "football_data_code": null,
+   "api_football_id": 307,
+   "odds_api_sport_key": "soccer_saudi_arabia_pro_league",
+   "sofascore_tournament_id": null,
+   "api_football_only": true,
+   "api_football_extra_seasons": [
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "API-Football-only; training only until 1+ seasons validated"
+  },
+  {
+   "id": "k_league_1",
+   "name": "K-League 1",
+   "aliases": [],
+   "model_type": "new_format",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "South-Korea",
+   "timezone": "Asia/Seoul",
+   "football_data_code": null,
+   "api_football_id": 292,
+   "odds_api_sport_key": "soccer_korea_kleague1",
+   "sofascore_tournament_id": null,
+   "api_football_only": true,
+   "api_football_extra_seasons": [
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025"
+   ],
+   "provider_names": {},
+   "season_rule": {
+    "type": "calendar_year"
+   },
+   "note": "API-Football-only; training only until 1+ seasons validated"
+  },
+  {
+   "id": "world_cup_2026",
+   "name": "World Cup 2026",
+   "aliases": [
+    "World Cup"
+   ],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "World",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 1,
+   "odds_api_sport_key": "soccer_fifa_world_cup",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "fixed",
+    "season": "2026",
+    "evidence": "tournament; API-Football season 2026 (config.API_FOOTBALL_SEASONS)"
+   }
+  },
+  {
+   "id": "champions_league",
+   "name": "Champions League",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "World",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 2,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "europa_league",
+   "name": "Europa League",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "World",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 3,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "conference_league",
+   "name": "Conference League",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "World",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 848,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "premier_league",
+   "name": "Premier League",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "England",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 39,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "la_liga",
+   "name": "La Liga",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Spain",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 140,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "serie_a",
+   "name": "Serie A",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Italy",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 135,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "bundesliga",
+   "name": "Bundesliga",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Germany",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 78,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "ligue_1",
+   "name": "Ligue 1",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "France",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 61,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "dutch_eredivisie",
+   "name": "Dutch Eredivisie",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Netherlands",
+   "timezone": "Europe/Amsterdam",
+   "football_data_code": "N1",
+   "api_football_id": 88,
+   "odds_api_sport_key": "soccer_netherlands_eredivisie",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {
+    "api_football": "Eredivisie"
+   },
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only - backtest ROI -3.61%; has an OddsAPI key, not predicted"
+  },
+  {
+   "id": "portuguese_primeira_liga",
+   "name": "Portuguese Primeira Liga",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Portugal",
+   "timezone": "Europe/Lisbon",
+   "football_data_code": "P1",
+   "api_football_id": 94,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {
+    "api_football": "Primeira Liga"
+   },
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only (no OddsAPI live key)"
+  },
+  {
+   "id": "belgian_first_division_a",
+   "name": "Belgian First Division A",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Belgium",
+   "timezone": "Europe/Brussels",
+   "football_data_code": "B1",
+   "api_football_id": 144,
+   "odds_api_sport_key": "soccer_belgium_first_div",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {
+    "api_football": "Belgian Pro League"
+   },
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only - backtest ROI -21.53% (config.py 2026); has an OddsAPI key, not predicted"
+  },
+  {
+   "id": "scottish_premiership",
+   "name": "Scottish Premiership",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Scotland",
+   "timezone": "Europe/London",
+   "football_data_code": "SC0",
+   "api_football_id": 179,
+   "odds_api_sport_key": "soccer_spl",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only - backtest ROI -15.39%; has an OddsAPI key, not predicted"
+  },
+  {
+   "id": "turkish_super_lig",
+   "name": "Turkish Super Lig",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Turkey",
+   "timezone": "Europe/Istanbul",
+   "football_data_code": "T1",
+   "api_football_id": 203,
+   "odds_api_sport_key": "soccer_turkey_super_league",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only - backtest ROI -8.03%; has an OddsAPI key, not predicted"
+  },
+  {
+   "id": "swiss_super_league",
+   "name": "Swiss Super League",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Switzerland",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 207,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "czech_liga",
+   "name": "Czech Liga",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Czech-Republic",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 345,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "croatia_hnl",
+   "name": "Croatia HNL",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Croatia",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 210,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "serbia_super_liga",
+   "name": "Serbia Super Liga",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Serbia",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 286,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "ukraine_premier_league",
+   "name": "Ukraine Premier League",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Ukraine",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 333,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "poland_ekstraklasa",
+   "name": "Poland Ekstraklasa",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Poland",
+   "timezone": "Europe/Warsaw",
+   "football_data_code": null,
+   "api_football_id": 106,
+   "odds_api_sport_key": "soccer_poland_ekstraklasa",
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "cyprus_first_division",
+   "name": "Cyprus First Division",
+   "aliases": [],
+   "model_type": null,
+   "production_state": "COLLECTION_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Cyprus",
+   "timezone": null,
+   "football_data_code": null,
+   "api_football_id": 318,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   }
+  },
+  {
+   "id": "scottish_championship",
+   "name": "Scottish Championship",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Scotland",
+   "timezone": "Europe/London",
+   "football_data_code": "SC1",
+   "api_football_id": 180,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only (no OddsAPI live key)"
+  },
+  {
+   "id": "national_league",
+   "name": "National League",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "England",
+   "timezone": "Europe/London",
+   "football_data_code": "EC",
+   "api_football_id": 43,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": 173,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only (no OddsAPI live key)"
+  },
+  {
+   "id": "scottish_league_one",
+   "name": "Scottish League One",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Scotland",
+   "timezone": "Europe/London",
+   "football_data_code": "SC2",
+   "api_football_id": 183,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only (no OddsAPI live key)"
+  },
+  {
+   "id": "scottish_league_two",
+   "name": "Scottish League Two",
+   "aliases": [],
+   "model_type": "standard",
+   "production_state": "TRAINING_ONLY",
+   "enabled": false,
+   "paper": false,
+   "country": "Scotland",
+   "timezone": "Europe/London",
+   "football_data_code": "SC3",
+   "api_football_id": 184,
+   "odds_api_sport_key": null,
+   "sofascore_tournament_id": null,
+   "api_football_only": false,
+   "api_football_extra_seasons": [],
+   "provider_names": {},
+   "season_rule": {
+    "type": "start_year",
+    "start_month": 7
+   },
+   "note": "training only (no OddsAPI live key)"
+  }
+ ]
+}

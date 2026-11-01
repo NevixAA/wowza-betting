@@ -26,6 +26,22 @@ SOFASCORE_CACHE   = DATA_DIR / "sofascore_cache.json"
 ODDS_HISTORY_JSON = BASE_DIR / "odds_history_v9.json"
 V7_BEST_PARAMS    = DATA_DIR / "best_params.json"
 
+# ── CANONICAL LEAGUE REGISTRY (R2 finding 7, 2026-11-01) ─────────────────────
+# Every per-league table below (format sets, ENABLED/PAPER, API-Football ids and seasons, OddsAPI
+# sport keys, football-data codes, timezones, Sofascore ids, PROVIDER_UNSUPPORTED) is DERIVED from
+# config/leagues.json by src/league_registry.py. Edit the registry, not this file. Registered
+# aliases ("Austria Bundesliga", "Danish Superliga", "World Cup") resolve on lookup but are never
+# separate keys. An invalid registry stops config from loading (RegistryError) rather than serve
+# half a league table. tests/test_league_registry.py proves the derived tables equal the
+# pre-registry values (snapshot of origin/main 4e9c93357).
+import sys as _sys
+if str(BASE_DIR) not in _sys.path:
+    _sys.path.insert(0, str(BASE_DIR))
+from src import league_registry as _league_registry      # noqa: E402
+from src import season_resolver as _season_resolver      # noqa: E402
+_LR = _league_registry.derive()
+LEAGUE_REGISTRY_VERSION = _LR.version
+
 MODELS_DIR = BASE_DIR / "models"
 OUTPUT_DIR = BASE_DIR / "output"
 for d in (MODELS_DIR, OUTPUT_DIR):
@@ -78,23 +94,17 @@ SIDE_MARKET_LABELS = {
 # staying silent.
 #
 # Each entry must record the EVIDENCE, so nobody re-litigates it from memory.
-PROVIDER_UNSUPPORTED: dict = {
-    # Verified 2026-08-22 against the FULL OddsAPI catalogue (`/sports?all=true`, 67 soccer
-    # competitions enumerated in the commit message). No Romanian competition exists at any tier,
-    # under any of: romania / roman / liga_i / liga1 / superliga / super_liga / fcsb / cfr. The only
-    # "superliga" hit is Denmark. So this is provider coverage, not a naming mismatch, and a key
-    # cannot be invented for it.
-    #
-    # Kept in ENABLED_LEAGUES deliberately rather than removed: the intent to bet it is real, and
-    # deleting the row would erase the record of why it produces nothing. It has 0 ledger rows and
-    # has never appeared on a board.
-    "Romanian Superliga": {
-        "reason":   "NO_ODDSAPI_SPORT_KEY",
-        "provider": "oddsapi",
-        "verified": "2026-08-22",
-        "evidence": "full /sports?all=true catalogue enumerated; no Romanian competition at any tier",
-    },
-}
+# (notes formerly inside the PROVIDER_UNSUPPORTED literal; values now live in config/leagues.json)
+# Verified 2026-08-22 against the FULL OddsAPI catalogue (`/sports?all=true`, 67 soccer
+# competitions enumerated in the commit message). No Romanian competition exists at any tier,
+# under any of: romania / roman / liga_i / liga1 / superliga / super_liga / fcsb / cfr. The only
+# "superliga" hit is Denmark. So this is provider coverage, not a naming mismatch, and a key
+# cannot be invented for it.
+#
+# Kept in ENABLED_LEAGUES deliberately rather than removed: the intent to bet it is real, and
+# deleting the row would erase the record of why it produces nothing. It has 0 ledger rows and
+# has never appeared on a board.
+PROVIDER_UNSUPPORTED: dict = _LR.provider_unsupported
 
 
 def provider_supported(league: str) -> bool:
@@ -109,44 +119,17 @@ def unsupported_reason(league: str) -> str:
 
 # ── League format classification ──────────────────────────────────────────────
 # Standard: historical CSVs contain shots, corners, O/U odds → richer features
-STANDARD_FORMAT_LEAGUES = {
-    "League One", "League Two",
-    "Bundesliga 2", "La Liga 2", "Ligue 2",
-    "Championship",
-    "Serie B",
-    "Greek Super League",
-    # Training-only (no OddsAPI live key)
-    "National League",
-    "Portuguese Primeira Liga",
-    "Scottish Championship", "Scottish League One", "Scottish League Two",
-    # Below have API keys but backtest shows negative ROI — training only, not predicted
-    "Belgian First Division A",  # -21.53%
-    "Dutch Eredivisie",          # -3.61%
-    "Scottish Premiership",      # -15.39%
-    "Turkish Super Lig",         # -8.03%
-}
+# (notes formerly inside the STANDARD_FORMAT_LEAGUES literal; values now live in config/leagues.json)
+# Below have API keys but backtest shows negative ROI — training only, not predicted
+#   Belgian First Division A: -21.53%
+#   Dutch Eredivisie: -3.61%
+#   Scottish Premiership: -15.39%
+#   Turkish Super Lig: -8.03%
+STANDARD_FORMAT_LEAGUES = set(_LR.standard)
 
 # New-format: goals + 1X2 odds only — no shots/corners/O/U odds in history
-NEW_FORMAT_LEAGUES = {
-    # Existing
-    "Denmark Superliga",
-    "Austrian Bundesliga",
-    "Sweden Allsvenskan",
-    "Romanian Superliga",
-    # New
-    "Norway Eliteserien",
-    "Finland Veikkausliiga",
-    "Ireland Premier Division",
-    "Argentina Primera Division",
-    "Brazil Serie A",
-    "Japan J-League",
-    "Mexico Liga MX",
-    "China Super League",
-    "USA MLS",
-    # API-Football-only (not on football-data.co.uk) — training only until validated
-    "Saudi Pro League",
-    "K-League 1",
-}
+# (notes formerly inside the NEW_FORMAT_LEAGUES literal; values now live in config/leagues.json)
+NEW_FORMAT_LEAGUES = set(_LR.new_format)
 
 def model_type_for_league(league) -> str:
     """Canonical model tag for a league: 'standard' | 'new_format' | 'unknown'.
@@ -164,50 +147,19 @@ def model_type_for_league(league) -> str:
 
 
 # Leagues loaded entirely from API-Football (no football-data.co.uk coverage)
-API_FOOTBALL_ONLY_LEAGUES = {
-    "Saudi Pro League",
-    "K-League 1",
-}
+API_FOOTBALL_ONLY_LEAGUES = set(_LR.api_football_only)
 
 # Historical seasons to backfill for API-Football-only leagues
-API_FOOTBALL_EXTRA_SEASONS: dict = {
-    "Saudi Pro League": ["2019", "2020", "2021", "2022", "2023", "2024"],
-    "K-League 1":       ["2020", "2021", "2022", "2023", "2024", "2025"],
-}
+API_FOOTBALL_EXTRA_SEASONS: dict = _LR.api_football_extra_seasons
 
 # ── Live-prediction leagues (have OddsAPI coverage) ───────────────────────────
 # Only leagues listed here generate live betting tips via pipeline.py --mode predict
-ENABLED_LEAGUES = {
-    # Standard format — live predictions enabled
-    "League One", "League Two",
-    "Bundesliga 2", "La Liga 2", "Ligue 2",
-    "Championship",
-    "Serie B",
-    # "Greek Super League",   # -7.26% ROI
-    # "Belgian First Division A", # -21.53% ROI
-    # "Dutch Eredivisie",         # -3.61% ROI
-    # "Scottish Premiership",     # -15.39% ROI
-    # "Turkish Super Lig",        # -8.03% ROI
-    # New format — live predictions enabled
-    "Denmark Superliga",
-    "Austrian Bundesliga",
-    "Sweden Allsvenskan",
-    "Norway Eliteserien",
-    "Finland Veikkausliiga",
-    "Ireland Premier Division",
-    "Argentina Primera Division",
-    "Brazil Serie A",
-    "Japan J-League",
-    "Mexico Liga MX",
-    "China Super League",
-    "USA MLS",     # PAPER LEAGUE — see PAPER_LEAGUES below. Predicted and collected, never
-                   # sent, never counted, never bet.
-    # New format — training only (no OddsAPI key), kept for model quality
-    "Romanian Superliga",
-    # API-Football-only — training only until 1+ seasons validated
-    # "Saudi Pro League",  # enable after ROI validation
-    # "K-League 1",        # enable after ROI validation
-}
+# (notes formerly inside the ENABLED_LEAGUES literal; values now live in config/leagues.json)
+# Not enabled on negative backtest ROI (training only): Greek Super League -7.26%, Belgian First
+# Division A -21.53%, Dutch Eredivisie -3.61%, Scottish Premiership -15.39%, Turkish Super Lig -8.03%.
+#   USA MLS: PAPER LEAGUE — see PAPER_LEAGUES below. Predicted and collected, never sent, never counted, never bet.
+# Saudi Pro League / K-League 1: API-Football-only, training only - enable after ROI validation.
+ENABLED_LEAGUES = set(_LR.enabled)
 
 # ── Paper leagues: collect EVERYTHING, send nothing, count nothing, bet nothing ─
 #
@@ -242,9 +194,7 @@ ENABLED_LEAGUES = {
 # UPGRADING A PAPER LEAGUE LATER: remove it from this set. Note its paper-period rows are
 # already in the ledgers, so they will start counting in KPIs from that moment; decide then
 # whether to count from the upgrade date instead.
-PAPER_LEAGUES: set = {
-    "USA MLS",
-}
+PAPER_LEAGUES: set = set(_LR.paper)
 
 
 def is_paper_league(league) -> bool:
@@ -264,41 +214,9 @@ def drop_paper_leagues(df, col: str = "league"):
     return df[~df[col].astype(str).str.strip().isin(PAPER_LEAGUES)]
 
 # ── football-data.co.uk league codes ─────────────────────────────────────────
-FOOTBALL_DATA_LEAGUES = {
-    # Standard format (mmz4281 URL)
-    "Championship":            "E1",
-    "League One":              "E2",
-    "League Two":              "E3",
-    "National League":         "EC",
-    "Bundesliga 2":            "D2",
-    "Ligue 2":                 "F2",
-    "La Liga 2":               "SP2",
-    "Serie B":                 "I2",
-    "Greek Super League":      "G1",
-    "Portuguese Primeira Liga": "P1",
-    "Scottish Championship":   "SC1",
-    "Scottish League One":     "SC2",
-    "Scottish League Two":     "SC3",
-    "Scottish Premiership":    "SC0",
-    "Belgian First Division A": "B1",
-    "Dutch Eredivisie":        "N1",
-    "Turkish Super Lig":       "T1",
-    # New format (football-data.co.uk/new/ URL)
-    "Denmark Superliga":       "DNK",
-    "Norway Eliteserien":      "NOR",
-    "Austria Bundesliga":      "AUT",   # note: file code AUT
-    "Austrian Bundesliga":     "AUT",
-    "Romanian Superliga":      "ROM",
-    "Sweden Allsvenskan":      "SWE",
-    "Finland Veikkausliiga":   "FIN",
-    "Ireland Premier Division": "IRL",
-    "Argentina Primera Division": "ARG",
-    "Brazil Serie A":          "BRA",
-    "Japan J-League":          "JPN",
-    "Mexico Liga MX":          "MEX",
-    "China Super League":      "CHN",
-    "USA MLS":                 "USA",
-}
+# (notes formerly inside the FOOTBALL_DATA_LEAGUES literal; values now live in config/leagues.json)
+# "Austria Bundesliga" is now a registered ALIAS of "Austrian Bundesliga" (file code AUT), not a second key.
+FOOTBALL_DATA_LEAGUES = _LR.football_data
 
 # ── Model ─────────────────────────────────────────────────────────────────────
 TARGET_COL  = "over25"
@@ -329,13 +247,24 @@ if MARKET_FEATURE_MODE not in MARKET_FEATURE_MODES:
 #   "v9_repaired" models/model_v9_standard_repaired.pkl on repaired as-of features
 #                 (src/standard_serving.py: frozen identity alias map, train-only imputer).
 # New Format, BTTS / O1.5 / O3.5 side models and HT models are NOT affected by either value.
-# Deployed value = predict.yml env (CLAUDE.md trap 1). Unknown values fall back to legacy_v9.
+# Deployed value = predict.yml env (CLAUDE.md trap 1).
+# INVALID VALUES ARE A CONFIGURATION ERROR (R2 finding 17, 2026-11-01). They used to fall back to
+# legacy_v9 silently, so a typo in predict.yml quietly reverted Standard to the legacy model. The
+# raw value is kept in STANDARD_OU25_SERVING_RECIPE_RAW and src.standard_serving.check_config()
+# raises ServingConfigError on it before predict fetches odds. Importing config never raises (the
+# dashboard, notifier and results jobs must keep working); only predict refuses to start.
 # ROLLBACK: set STANDARD_OU25_SERVING_RECIPE: "legacy_v9" in predict.yml (or delete the line).
+# Owner doc: docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md
 STANDARD_OU25_SERVING_RECIPES = ("legacy_v9", "v9_repaired")
-STANDARD_OU25_SERVING_RECIPE = (os.getenv("STANDARD_OU25_SERVING_RECIPE", "legacy_v9").strip()
-                                or "legacy_v9")
+STANDARD_OU25_SERVING_RECIPE_EXPLICIT = bool(os.getenv("STANDARD_OU25_SERVING_RECIPE", "").strip())
+STANDARD_OU25_SERVING_RECIPE_RAW = os.getenv("STANDARD_OU25_SERVING_RECIPE", "legacy_v9").strip() or "legacy_v9"
+STANDARD_OU25_SERVING_RECIPE = STANDARD_OU25_SERVING_RECIPE_RAW
 if STANDARD_OU25_SERVING_RECIPE not in STANDARD_OU25_SERVING_RECIPES:
-    STANDARD_OU25_SERVING_RECIPE = "legacy_v9"
+    import logging as _logging
+    _logging.getLogger(__name__).error(
+        f"STANDARD_OU25_SERVING_RECIPE={STANDARD_OU25_SERVING_RECIPE_RAW!r} is INVALID "
+        f"(expected {STANDARD_OU25_SERVING_RECIPES}); predict will refuse to start")
+    STANDARD_OU25_SERVING_RECIPE = "INVALID"
 
 # ── Training data filters ─────────────────────────────────────────────────────
 # Exclude COVID seasons — empty stadiums created anomalous patterns not present today
@@ -463,44 +392,9 @@ ARTIFICIAL_PITCH_LEAGUES: set = {
 # match's local calendar day can differ from its UTC day (e.g. Japan/Argentina).
 # The stored `date` stays UTC (join key); the notifier converts kickoff_utc to the
 # league's local tz for what the user reads. Unknown leagues fall back to UTC.
-LEAGUE_TIMEZONES: dict = {
-    # Standard format
-    "League One":                "Europe/London",
-    "League Two":                "Europe/London",
-    "Championship":              "Europe/London",
-    "National League":           "Europe/London",
-    "Bundesliga 2":              "Europe/Berlin",
-    "La Liga 2":                 "Europe/Madrid",
-    "Ligue 2":                   "Europe/Paris",
-    "Serie B":                   "Europe/Rome",
-    "Greek Super League":        "Europe/Athens",
-    "Portuguese Primeira Liga":  "Europe/Lisbon",
-    "Scottish Championship":     "Europe/London",
-    "Scottish League One":       "Europe/London",
-    "Scottish League Two":       "Europe/London",
-    "Scottish Premiership":      "Europe/London",
-    "Belgian First Division A":  "Europe/Brussels",
-    "Dutch Eredivisie":          "Europe/Amsterdam",
-    "Turkish Super Lig":         "Europe/Istanbul",
-    # New format
-    "Denmark Superliga":         "Europe/Copenhagen",
-    "Austrian Bundesliga":       "Europe/Vienna",
-    "Austria Bundesliga":        "Europe/Vienna",
-    "Romanian Superliga":        "Europe/Bucharest",
-    "Sweden Allsvenskan":        "Europe/Stockholm",
-    "Norway Eliteserien":        "Europe/Oslo",
-    "Finland Veikkausliiga":     "Europe/Helsinki",
-    "Ireland Premier Division":  "Europe/Dublin",
-    "Argentina Primera Division": "America/Argentina/Buenos_Aires",
-    "Brazil Serie A":            "America/Sao_Paulo",
-    "Japan J-League":            "Asia/Tokyo",
-    "Mexico Liga MX":            "America/Mexico_City",
-    "China Super League":        "Asia/Shanghai",
-    "USA MLS":                   "America/New_York",   # MLS spans zones; ET as display proxy
-    "Saudi Pro League":          "Asia/Riyadh",
-    "K-League 1":                "Asia/Seoul",
-    "Poland Ekstraklasa":        "Europe/Warsaw",
-}
+# (notes formerly inside the LEAGUE_TIMEZONES literal; values now live in config/leagues.json)
+#   USA MLS: MLS spans zones; ET as display proxy
+LEAGUE_TIMEZONES: dict = _LR.timezones
 
 KELLY_FRACTION = float(os.getenv("KELLY_FRACTION", "0.25"))
 FLAT_STAKE     = float(os.getenv("FLAT_STAKE",     "1.0"))
@@ -544,223 +438,125 @@ BACKTEST_MIN_TRAIN = 400
 ODDS_API_KEY = os.getenv("ODDS_API_KEY", "").strip()
 API_KEY      = os.getenv("API_KEY",      "").strip()
 API_HOST     = "api-football-v1.p.rapidapi.com"
-API_SEASON   = os.getenv("API_SEASON", "2025")
+# DEPRECATED (R2 finding 6, 2026-11-01). Was os.getenv("API_SEASON", "2025"): one generic season
+# for every league, defaulting to a FINISHED season, and the silent fallback of four api_football_ou
+# call sites plus feature_engineering / update_results. No code reads it any more; every call site
+# asks src.season_resolver.resolve_api_season(league, kickoff_date) and skips (recording the
+# degradation) on SEASON_UNKNOWN. The name is kept, set to the sentinel, so a forgotten consumer
+# sends an obviously invalid season instead of a plausible wrong one.
+API_SEASON   = _season_resolver.SEASON_UNKNOWN
 
-API_FOOTBALL_IDS = {
-    # Standard format leagues
-    "Championship":             40,
-    "League One":               41,
-    "League Two":               42,
-    "Bundesliga 2":             79,
-    # WAS 65 — the defunct Coupe de la Ligue, not Ligue 2. Fixed 2026-10-08: with 65 every
-    # API-Football consumer (per-book odds capture, side-market capture, xG/shot enrichment,
-    # results fallback, live scanner) asked for a competition with no fixtures, so Ligue 2 had
-    # zero per-book quotes and no side-market odds since 2026-05-09 while 9 fixtures sat on the
-    # board. player_model/config.py had the same bug and was fixed to 62 earlier; this copy was
-    # missed. Verified on /leagues: Ligue 1 = 61, Ligue 2 = 62, Ligue 3 = 63.
-    "Ligue 2":                  62,
-    "La Liga 2":               141,
-    "Serie B":                 136,
-    "Greek Super League":      197,
-    # New format — European winter/spring
-    "Denmark Superliga":       119,
-    "Austrian Bundesliga":     218,
-    "Romanian Superliga":      283,
-    # New format — summer / Americas / Asia
-    "Sweden Allsvenskan":      113,
-    "Norway Eliteserien":      103,
-    "Finland Veikkausliiga":   244,
-    "Ireland Premier Division": 357,
-    "Argentina Primera Division": 128,
-    "Brazil Serie A":           71,
-    "Japan J-League":           98,
-    "Mexico Liga MX":          262,
-    "China Super League":      169,
-    "USA MLS":                 253,
-    # API-Football-only leagues (not on FD)
-    "Saudi Pro League":        307,
-    "K-League 1":              292,
-    # International
-    "World Cup 2026":            1,
-    # UEFA club competitions (added 2026-09-05). COLLECTION ONLY — deliberately NOT added to
-    # ENABLED_LEAGUES or ODDS_API_SPORT_KEYS, and that ordering is the whole point.
-    #
-    # There is currently ZERO history for these competitions: af_history holds 15 leagues and
-    # none of them is UEFA, and football-data.co.uk does not cover them at all. A fixture with no
-    # rolling-form history is refused by invariant 8 (`no_form_data` -> AVOID), and rightly so —
-    # median-imputed features produce a confident-looking wrong edge, which is how York City once
-    # showed the second-strongest EFL edge on the board built on nothing.
-    #
-    # So wiring these into predict TODAY would spend OddsAPI credits — the pool that was exhausted
-    # on 09-04 and took every real tip down with it — to generate AVOID rows. Adding them here
-    # instead collects fixtures, results and team stats through API-Football, which has roughly
-    # 60,000/day of unused headroom, and BUILDS the history that any future model needs.
-    #
-    # Pricing and prediction come later, once there is a season of history to train on and the
-    # OddsAPI plan has proven stable across a full billing cycle.
-    "Champions League":          2,
-    "Europa League":             3,
-    "Conference League":       848,
-    # TOP DIVISIONS — COLLECTION ONLY, and they are the missing input for the tournaments above.
-    #
-    # A European tie is decided by the two clubs' CURRENT DOMESTIC FORM, not by their history in
-    # that competition; the tournament's own past carries almost no weight when the sides come
-    # from different leagues and meet twice a decade. That framing is right, and it is why the
-    # blocker here was never "no UEFA history" — it is that we do not collect the leagues those
-    # clubs actually play in. Measured against the real 2026 fixture lists:
-    #
-    #     Champions League   81 clubs,  12 with domestic form (15%)
-    #     Europa League      76 clubs,  17 (22%)
-    #     Conference League 165 clubs,  26 (16%)
-    #
-    # and a fixture needs BOTH sides, so joint coverage was ~2%. Our 23 leagues are second
-    # divisions — Championship, Bundesliga 2, Ligue 2, La Liga 2, Serie B — while UEFA clubs are
-    # top-flight. Arsenal, Atletico, Milan and Ajax simply had no form with us.
-    #
-    # Every id below was READ FROM THE API (/leagues, season 2026, matched on country + name),
-    # not typed from memory. Greece is absent only because "Greek Super League" is already above.
-    #
-    # Cost is one-time and affordable: ~6,500 finished fixtures across these leagues at roughly
-    # one /fixtures/statistics call each, against ~60,000/day of unused API-Football headroom.
-    # None of them is added to ENABLED_LEAGUES or ODDS_API_SPORT_KEYS, so this spends no OddsAPI
-    # credit and produces no tips — it builds the form table the tournaments need.
-    "Premier League":           39,
-    "La Liga":                 140,
-    "Serie A":                 135,
-    "Bundesliga":               78,
-    "Ligue 1":                  61,
-    "Dutch Eredivisie":         88,
-    "Portuguese Primeira Liga": 94,
-    "Belgian First Division A": 144,
-    "Scottish Premiership":    179,
-    "Turkish Super Lig":       203,
-    "Swiss Super League":      207,
-    "Czech Liga":              345,
-    "Croatia HNL":             210,
-    "Serbia Super Liga":       286,
-    "Ukraine Premier League":  333,
-    "Poland Ekstraklasa":      106,
-    "Cyprus First Division":   318,
-    # THE LAST TWO football-data.co.uk-ONLY TRAINING LEAGUES (added 2026-09-05).
-    #
-    # I claimed five training leagues had "no API-Football id" and were therefore a hard blocker
-    # on ever dropping football-data.co.uk. That was wrong, and it was wrong in a lazy way: I
-    # compared football-data's SPELLINGS against our config keys instead of asking the API.
-    # Three of the five were already here under different names — Belgian First Division A is
-    # `Belgian Pro League` (144), Dutch Eredivisie is `Eredivisie` (88), Portuguese Primeira Liga
-    # is `Primeira Liga` (94). Only these two were genuinely absent.
-    #
-    # Read from /leagues?country=... on the live API, not guessed. With them, every one of the 27
-    # leagues football-data supplies is coverable by API-Football, so the free source is no longer
-    # structurally required for CURRENT-season results or stats — only for HISTORICAL closing
-    # odds, which no API-Football plan sells.
-    "Scottish Championship":   180,
-    "National League":          43,
-    # Added 2026-10-14 (owner OK). Read from /leagues?country=Scotland on the live API and checked
-    # against /teams for 2026: 183 = Hamilton, Alloa, Cove Rangers, Queen of the South...;
-    # 184 = Clyde, Stranraer, Elgin, Spartans... Both are standard-format TRAINING leagues (not in
-    # ENABLED_LEAGUES, no OddsAPI key), so this adds results/stats/forward side-market capture and
-    # produces no tips. Closes the last two "model league with no API-Football id" registry gaps.
-    "Scottish League One":     183,
-    "Scottish League Two":     184,
-}
+# (notes formerly inside the API_FOOTBALL_IDS literal; values now live in config/leagues.json)
+# WAS 65 — the defunct Coupe de la Ligue, not Ligue 2. Fixed 2026-10-08: with 65 every
+# API-Football consumer (per-book odds capture, side-market capture, xG/shot enrichment,
+# results fallback, live scanner) asked for a competition with no fixtures, so Ligue 2 had
+# zero per-book quotes and no side-market odds since 2026-05-09 while 9 fixtures sat on the
+# board. player_model/config.py had the same bug and was fixed to 62 earlier; this copy was
+# missed. Verified on /leagues: Ligue 1 = 61, Ligue 2 = 62, Ligue 3 = 63.
+# New format — European winter/spring
+# New format — summer / Americas / Asia
+# API-Football-only leagues (not on FD)
+# UEFA club competitions (added 2026-09-05). COLLECTION ONLY — deliberately NOT added to
+# ENABLED_LEAGUES or ODDS_API_SPORT_KEYS, and that ordering is the whole point.
+#
+# There is currently ZERO history for these competitions: af_history holds 15 leagues and
+# none of them is UEFA, and football-data.co.uk does not cover them at all. A fixture with no
+# rolling-form history is refused by invariant 8 (`no_form_data` -> AVOID), and rightly so —
+# median-imputed features produce a confident-looking wrong edge, which is how York City once
+# showed the second-strongest EFL edge on the board built on nothing.
+#
+# So wiring these into predict TODAY would spend OddsAPI credits — the pool that was exhausted
+# on 09-04 and took every real tip down with it — to generate AVOID rows. Adding them here
+# instead collects fixtures, results and team stats through API-Football, which has roughly
+# 60,000/day of unused headroom, and BUILDS the history that any future model needs.
+#
+# Pricing and prediction come later, once there is a season of history to train on and the
+# OddsAPI plan has proven stable across a full billing cycle.
+# TOP DIVISIONS — COLLECTION ONLY, and they are the missing input for the tournaments above.
+#
+# A European tie is decided by the two clubs' CURRENT DOMESTIC FORM, not by their history in
+# that competition; the tournament's own past carries almost no weight when the sides come
+# from different leagues and meet twice a decade. That framing is right, and it is why the
+# blocker here was never "no UEFA history" — it is that we do not collect the leagues those
+# clubs actually play in. Measured against the real 2026 fixture lists:
+#
+# Champions League   81 clubs,  12 with domestic form (15%)
+# Europa League      76 clubs,  17 (22%)
+# Conference League 165 clubs,  26 (16%)
+#
+# and a fixture needs BOTH sides, so joint coverage was ~2%. Our 23 leagues are second
+# divisions — Championship, Bundesliga 2, Ligue 2, La Liga 2, Serie B — while UEFA clubs are
+# top-flight. Arsenal, Atletico, Milan and Ajax simply had no form with us.
+#
+# Every id below was READ FROM THE API (/leagues, season 2026, matched on country + name),
+# not typed from memory. Greece is absent only because "Greek Super League" is already above.
+#
+# Cost is one-time and affordable: ~6,500 finished fixtures across these leagues at roughly
+# one /fixtures/statistics call each, against ~60,000/day of unused API-Football headroom.
+# None of them is added to ENABLED_LEAGUES or ODDS_API_SPORT_KEYS, so this spends no OddsAPI
+# credit and produces no tips — it builds the form table the tournaments need.
+# THE LAST TWO football-data.co.uk-ONLY TRAINING LEAGUES (added 2026-09-05).
+#
+# I claimed five training leagues had "no API-Football id" and were therefore a hard blocker
+# on ever dropping football-data.co.uk. That was wrong, and it was wrong in a lazy way: I
+# compared football-data's SPELLINGS against our config keys instead of asking the API.
+# Three of the five were already here under different names — Belgian First Division A is
+# `Belgian Pro League` (144), Dutch Eredivisie is `Eredivisie` (88), Portuguese Primeira Liga
+# is `Primeira Liga` (94). Only these two were genuinely absent.
+#
+# Read from /leagues?country=... on the live API, not guessed. With them, every one of the 27
+# leagues football-data supplies is coverable by API-Football, so the free source is no longer
+# structurally required for CURRENT-season results or stats — only for HISTORICAL closing
+# odds, which no API-Football plan sells.
+# Added 2026-10-14 (owner OK). Read from /leagues?country=Scotland on the live API and checked
+# against /teams for 2026: 183 = Hamilton, Alloa, Cove Rangers, Queen of the South...;
+# 184 = Clyde, Stranraer, Elgin, Spartans... Both are standard-format TRAINING leagues (not in
+# ENABLED_LEAGUES, no OddsAPI key), so this adds results/stats/forward side-market capture and
+# produces no tips. Closes the last two "model league with no API-Football id" registry gaps.
+API_FOOTBALL_IDS = _LR.api_football_ids
 # IDs may need verification at dashboard.api-football.com/docs
 
-# Per-league season year (API-Football start year convention)
-API_FOOTBALL_SEASONS: dict = {
-    # Standard format — 2026/27 European season (API-Football season = start year 2026).
-    # ROLLED 2025->2026 on 2026-08-05: the 2025/26 season ended (~May 2026); on "2025" the
-    # capture looked in the finished season and found NO upcoming fixtures -> zero standard
-    # odds/1X2/HT/CLV collection for the whole 2026/27 season. New-format was already 2026.
-    "Championship":             "2026",
-    "League One":               "2026",
-    "League Two":               "2026",
-    "Bundesliga 2":             "2026",
-    "Ligue 2":                  "2026",
-    "La Liga 2":                "2026",
-    "Serie B":                  "2026",
-    "Greek Super League":       "2026",
-    "Danish Superliga":         "2026",
-    # THE LEAGUE IS NAMED "Denmark Superliga" everywhere else (ENABLED_LEAGUES, ids, sport keys), so
-    # the "Danish Superliga" key above never matched and every lookup fell back to API_SEASON
-    # ("2025", finished 2026-05-21): Denmark results and odds could not be fetched from API-Football
-    # (found 2026-10-22 settling the v91 shadow; owner-approved fix). API current = 2026.
-    "Denmark Superliga":        "2026",
-    "Austrian Bundesliga":      "2026",
-    "Romanian Superliga":       "2026",
-    # Scottish lower tiers (2026-10-14). Without an entry a lookup falls back to API_SEASON
-    # ("2025" = the finished season) and finds nothing current. Scottish Championship had an id
-    # since 2026-09-05 but no entry here, so it carried that gap too.
-    "Scottish Championship":    "2026",
-    "Scottish League One":      "2026",
-    "Scottish League Two":      "2026",
-    # National League (id 43) had the same gap since 2026-09-05; API says current = 2026 (Aug 8 -> Apr 24).
-    "National League":          "2026",
-    # Summer leagues (calendar year = season year)
-    "Sweden Allsvenskan":       "2026",
-    "Norway Eliteserien":       "2026",
-    "Finland Veikkausliiga":    "2026",
-    "Ireland Premier Division": "2026",
-    "Brazil Serie A":           "2026",
-    # J1 MOVED TO AN AUTUMN-SPRING CALENDAR: API-Football season 2026 is the spring special
-    # tournament (2026-02-06 -> 06-06); the live league is season 2027 (2026-08-07 -> 2027-06-06),
-    # which the API marks current (verified 2026-10-22; owner-approved fix).
-    "Japan J-League":           "2027",
-    "Mexico Liga MX":           "2026",
-    "China Super League":       "2026",
-    "USA MLS":                  "2026",
-    # South America (2026 season under way by Aug)
-    "Argentina Primera Division": "2026",
-    # API-Football-only leagues (current season)
-    "Saudi Pro League":          "2026",   # 2026/27 season starts Aug 2026
-    "K-League 1":                "2026",   # calendar year 2026
-    # International
-    "World Cup 2026":            "2026",
-}
+# Per-league API-Football season, RESOLVED (R2 finding 6) - no longer hand-rolled each summer.
+# src/season_resolver applies each league's season_rule from config/leagues.json to TODAY (UTC) at
+# import: start_year leagues roll on 1 July, calendar_year leagues on 1 January, Japan J1 keys by
+# END year from 2026-07-01. On 2026-11-01 it reproduces the old hand table exactly (tested). Leagues
+# whose season cannot be resolved are ABSENT, never defaulted. Code that has a fixture date should
+# call resolve_api_season(league, kickoff_date) directly instead of reading this table.
+def _derived_api_football_seasons() -> dict:
+    out = {}
+    for _e in _league_registry.leagues():
+        if _e.get("api_football_id") in (None, ""):
+            continue
+        _s = _season_resolver.resolve_api_season(_e["name"])
+        if _season_resolver.is_known(_s):
+            out[_e["name"]] = _s
+    return _league_registry.LeagueMap(out, _LR.aliases)
 
-ODDS_API_SPORT_KEYS = {
-    # World Cup
-    "World Cup":               "soccer_fifa_world_cup",
-    "World Cup 2026":          "soccer_fifa_world_cup",
-    # Standard format
-    "Championship":            "soccer_efl_champ",
-    "League One":              "soccer_england_league1",
-    "League Two":              "soccer_england_league2",
-    "Bundesliga 2":            "soccer_germany_bundesliga2",
-    "Ligue 2":                 "soccer_france_ligue_two",
-    "La Liga 2":               "soccer_spain_segunda_division",
-    "Serie B":                 "soccer_italy_serie_b",
-    "Greek Super League":      "soccer_greece_super_league",
-    # New format
-    "Denmark Superliga":       "soccer_denmark_superliga",
-    "Austrian Bundesliga":     "soccer_austria_bundesliga",
-    "Sweden Allsvenskan":      "soccer_sweden_allsvenskan",
-    "Norway Eliteserien":      "soccer_norway_eliteserien",
-    "Finland Veikkausliiga":   "soccer_finland_veikkausliiga",
-    "Ireland Premier Division": "soccer_league_of_ireland",
-    "Argentina Primera Division": "soccer_argentina_primera_division",
-    "Brazil Serie A":          "soccer_brazil_campeonato",
-    "Japan J-League":          "soccer_japan_j_league",
-    "Mexico Liga MX":          "soccer_mexico_ligamx",
-    "China Super League":      "soccer_china_superleague",
-    "USA MLS":                 "soccer_usa_mls",
-    # Kept for results fetching (removed from enabled, negative ROI)
-    "Belgian First Division A": "soccer_belgium_first_div",
-    "Dutch Eredivisie":         "soccer_netherlands_eredivisie",
-    "Scottish Premiership":     "soccer_spl",
-    "Turkish Super Lig":        "soccer_turkey_super_league",
-    "Poland Ekstraklasa":       "soccer_poland_ekstraklasa",
-    # API-Football-only (for future live odds when enabled)
-    "Saudi Pro League":         "soccer_saudi_arabia_pro_league",
-    "K-League 1":               "soccer_korea_kleague1",
-}
 
-SOFASCORE_TOURNAMENT_IDS = {
-    "Championship": 18, "League One": 24, "League Two": 25,
-    "National League": 173, "Bundesliga 2": 44, "Ligue 2": 182,
-    "La Liga 2": 54, "Serie B": 53, "Denmark Superliga": 39,
-    "Norway Eliteserien": 317,
-}
+# (notes formerly inside the API_FOOTBALL_SEASONS literal; values now live in config/leagues.json)
+# Standard format — 2026/27 European season (API-Football season = start year 2026).
+# ROLLED 2025->2026 on 2026-08-05: the 2025/26 season ended (~May 2026); on "2025" the
+# capture looked in the finished season and found NO upcoming fixtures -> zero standard
+# odds/1X2/HT/CLV collection for the whole 2026/27 season. New-format was already 2026.
+# THE LEAGUE IS NAMED "Denmark Superliga" everywhere else (ENABLED_LEAGUES, ids, sport keys), so
+# the "Danish Superliga" key above never matched and every lookup fell back to API_SEASON
+# ("2025", finished 2026-05-21): Denmark results and odds could not be fetched from API-Football
+# (found 2026-10-22 settling the v91 shadow; owner-approved fix). API current = 2026.
+# Scottish lower tiers (2026-10-14). Without an entry a lookup falls back to API_SEASON
+# ("2025" = the finished season) and finds nothing current. Scottish Championship had an id
+# since 2026-09-05 but no entry here, so it carried that gap too.
+# National League (id 43) had the same gap since 2026-09-05; API says current = 2026 (Aug 8 -> Apr 24).
+# J1 MOVED TO AN AUTUMN-SPRING CALENDAR: API-Football season 2026 is the spring special
+# tournament (2026-02-06 -> 06-06); the live league is season 2027 (2026-08-07 -> 2027-06-06),
+# which the API marks current (verified 2026-10-22; owner-approved fix).
+#   Saudi Pro League: 2026/27 season starts Aug 2026
+#   K-League 1: calendar year 2026
+API_FOOTBALL_SEASONS: dict = _derived_api_football_seasons()
+
+# (notes formerly inside the ODDS_API_SPORT_KEYS literal; values now live in config/leagues.json)
+ODDS_API_SPORT_KEYS = _LR.odds_api_sport_keys
+
+SOFASCORE_TOURNAMENT_IDS = _LR.sofascore_ids
 
 
 # ── AUTO-ONBOARDED LEAGUES (owner standing approval 2026-10-20) ─────────────────────────────────

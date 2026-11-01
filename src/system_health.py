@@ -387,8 +387,8 @@ def standard_serving_health() -> dict:
     """Standard O/U 2.5 serving switch (owner 2026-10-28, src/standard_serving.py)."""
     rule = ("GREEN if the committed board has no serving_recipe column (switch off: legacy_v9) or every "
             "Standard row is served by v9_repaired with a registered standard_repaired model_version; RED "
-            "if any Standard row fell back to legacy (legacy_v9_fallback) or a repaired row's model is "
-            "unregistered")
+            "if any Standard row fell back to legacy (legacy_v9_fallback, pre-R2 boards), failed closed "
+            "with no probability (v9_repaired_failed) or a repaired row's model is unregistered")
     p = OUT / "predictions.csv"
     if not p.exists():
         return _c("Standard OU25 serving", GREEN, "no board to check", rule)
@@ -398,12 +398,14 @@ def standard_serving_health() -> dict:
     std = d[d.get("model_type", pd.Series("", index=d.index)).astype(str) == "standard"]
     rec = std["serving_recipe"].astype(str)
     n_fb, n_rep = int((rec == "legacy_v9_fallback").sum()), int((rec == "v9_repaired").sum())
+    n_fail = int((rec == "v9_repaired_failed").sum())
     mv = std.loc[rec == "v9_repaired", "model_version"].astype(str) if "model_version" in std.columns \
         else pd.Series(dtype=str)
     bad_mv = int((~mv.str.startswith("standard_repaired_")).sum())
-    st = RED if (n_fb or bad_mv) else GREEN
+    st = RED if (n_fb or n_fail or bad_mv) else GREEN
     return _c("Standard OU25 serving", st,
-              f"v9_repaired on {n_rep}/{len(std)} Standard rows, {n_fb} legacy fallback(s)", rule,
+              f"v9_repaired on {n_rep}/{len(std)} Standard rows, {n_fb} legacy fallback(s), "
+              f"{n_fail} failed closed (no probability)", rule,
               (f"{bad_mv} repaired row(s) without a registered standard_repaired version" if bad_mv else ""))
 
 

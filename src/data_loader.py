@@ -975,7 +975,14 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         if "home_xg" in df.columns and df.loc[mask, "home_xg"].notna().mean() > 0.5:
             continue
 
-        season = config.API_FOOTBALL_SEASONS.get(league, "2025")
+        # League-aware current season (R2 finding 6). Was API_FOOTBALL_SEASONS.get(league, "2025"):
+        # a league missing from that table (the training-only Standard leagues under
+        # WOWZA_FULL_ENRICH) was fetched on the finished 2025 season. SEASON_UNKNOWN -> skip.
+        from src.season_resolver import resolve_api_season, is_known, record_degradation
+        season = resolve_api_season(league)
+        if not is_known(season):
+            record_degradation("data_loader._enrich_with_api_shots", league)
+            continue
         # Also try the previous calendar year — many leagues span two seasons
         # (e.g. Brazil 2026 is in-progress but 2025 is fully completed in FD)
         prev_season = str(int(season) - 1)

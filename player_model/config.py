@@ -11,7 +11,10 @@ CACHE_FILE = BASE_DIR / "player_stats_cache.json"
 # ── API-Football (same RapidAPI key as main system) ───────────────────────────
 API_HOST   = os.getenv("API_HOST",   "api-football-v1.p.rapidapi.com")
 API_KEY    = os.getenv("API_KEY",    "")
-API_SEASON = os.getenv("API_SEASON", "2025")
+# DEPRECATED (R2 finding 6, 2026-11-01): was os.getenv("API_SEASON", "2025"). Nothing reads it; props
+# seasons come from player_model/data_fetcher (_current_season + api_current_season) and the root
+# src/season_resolver. The sentinel makes any forgotten consumer fail visibly, not quietly.
+API_SEASON = "SEASON_UNKNOWN"
 
 # ── Markets ───────────────────────────────────────────────────────────────────
 MARKETS    = ["goals", "goals2", "assists", "sot", "sot2", "sot3", "sot4", "cards"]
