@@ -241,7 +241,8 @@ def features_for(snap: pd.DataFrame, prev: pd.DataFrame | None, tfl: pd.DataFram
         d[f"pos_{p}"] = (d["position"] == p).astype(int)
     d["is_defensive"] = d["position"].isin(["GKP", "DEF"]).astype(int)
     d["cs_exp"] = d["cs_prob"].fillna(0) * d["position"].map({"GKP": 4, "DEF": 4, "MID": 1, "FWD": 0})
-    d["goal_pts"] = d["position"].map({"GKP": 6, "DEF": 6, "MID": 5, "FWD": 4}).astype(float)
+    # GKP 10: FPL game_config.scoring.goals_scored (was 6, R2-D fantasy bug #2).
+    d["goal_pts"] = d["position"].map({"GKP": 10, "DEF": 6, "MID": 5, "FWD": 4}).astype(float)
     lg_avg = float(ts["xg_for_pg"].mean()) if len(ts) else 1.35
     lam_rel = (d["lam_for"] / d["n_fix"].replace(0, np.nan)) / (lg_avg or 1.35)
     d["attack_fixture"] = lam_rel.fillna(1.0)

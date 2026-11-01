@@ -240,6 +240,9 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "transfers_in_gw":   int(e.get("transfers_in_event") or 0),
             "transfers_out_gw":  int(e.get("transfers_out_event") or 0),
             "total_points":      int(e.get("total_points") or 0),
+            # FPL's own defensive-contribution action count per 90 (the stat its DC points use)
+            "dc_per90":          (float(e["defensive_contribution_per_90"])
+                                  if e.get("defensive_contribution_per_90") is not None else None),
             "match_key":         _norm(full),
             "web_key":           _norm(e.get("web_name", "")),
         })

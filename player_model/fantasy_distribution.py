@@ -34,7 +34,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-GOAL_PTS = {"FWD": 4.0, "MID": 5.0, "DEF": 6.0, "GKP": 6.0}
+GOAL_PTS = {"FWD": 4.0, "MID": 5.0, "DEF": 6.0, "GKP": 10.0}   # GKP 10: FPL game_config (was 6)
 ASSIST_PTS = 3.0
 CS_PTS = {"FWD": 0.0, "MID": 1.0, "DEF": 4.0, "GKP": 4.0}
 MAX_BONUS = 3

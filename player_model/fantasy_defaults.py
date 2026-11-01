@@ -44,7 +44,7 @@ DEFAULTS: list[dict] = [dict(zip(
      "LOW", False, "dead after the position alias"),
     ("goal_points_gkp_6", "fantasy.py:33,35; fantasy_panel.py:244; fantasy_distribution.py:37",
      "GKP goal = 6", "OBSERVED", "V1->V2, V2 feature", "LOW", False,
-     "WRONG RULE: live FPL game_config.scoring.goals_scored.GKP = 10"),
+     "FIXED 2026-11-01 (owner): GKP goal = 10 everywhere, per live FPL game_config"),
     ("referee_cards_3_5", "feature_engineering.py:312-319,1423", "missing referee -> 3.5 yellows/match",
      "MISSING_DATA_FALLBACK", "V1 (props features, cards market)", "LOW", False, ""),
     ("fdr_heuristic_xg", "fantasy.py:323", "opp xG = 0.5 + 0.42*avg FDR (next 5)", "DOMAIN_PRIOR",
@@ -53,7 +53,8 @@ DEFAULTS: list[dict] = [dict(zip(
      False, ""),
     # ---- V1 projection
     ("dc_thresholds", "fantasy.py:41", "DEF 5 / MID 4.5 / FWD 4 actions", "DOMAIN_PRIOR", "V1->V2", "HIGH",
-     False, "SUSPECTED BUG: FPL rule is DEF>=10 CBIT, MID/FWD>=12 CBIRT; inflates dc_pts"),
+     False, "FIXED 2026-11-01 (owner): FPL's own DC count per 90 vs real thresholds DEF 10 / MID 12 / "
+            "FWD 12, derived from FPL live scoring GW6-8"),
     ("bonus_scale_0_66", "fantasy.py:172", "x0.66", "TRAIN_FITTED_PRIOR", "V1->V2", "MED", False,
      "fitted in scripts/fantasy_backtest.py with cs=0 and narrower defensive actions than production"),
     ("sot2_weight_0_45", "fantasy.py:309", "x0.45", "TRAIN_FITTED_PRIOR", "V1->V2", "MED", False,
@@ -104,12 +105,6 @@ DEFAULTS: list[dict] = [dict(zip(
 ]]
 
 SUSPECTED_BUGS = [
-    {"id": "dc_thresholds", "severity": "HIGH", "reach": "V1->V2 (shadow residual + benchmark arm)",
-     "evidence": "fantasy.py:41 uses 5/4.5/4 actions incl. duels_won; FPL rule DEF>=10 CBIT, MID/FWD>=12 "
-                 "CBIRT. fantasy_tips.csv mean dc_pts FWD 1.29 > DEF 1.28; fpl_bootstrap shows 0% of FWD "
-                 "reach 12. Plausibly a large part of the documented +1.0 Wowza bias."},
-    {"id": "goal_points_gkp_6", "severity": "LOW", "reach": "V1, V2 feature",
-     "evidence": "output/fpl_bootstrap.json game_config.scoring.goals_scored = GKP 10, DEF 6, MID 5, FWD 4"},
     {"id": "bonus_cs_points_as_probability", "severity": "MED", "reach": "V1->V2",
      "evidence": "fantasy.py passes cs_pts (0-4) into _expected_bonus(cs=...) which expects a probability"},
     {"id": "status_n_not_out_v1", "severity": "MED (latent)", "reach": "V1",

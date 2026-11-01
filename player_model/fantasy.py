@@ -30,15 +30,18 @@ from player_model import config
 # scores players, so the pipeline pays for it and the viewer does not.
 
 FANTASY_LEAGUE = "Premier League"
-GOAL_PTS = {"F": 4.0, "M": 5.0, "D": 6.0, "G": 6.0}   # legacy parquet-position goal pts
+GOAL_PTS = {"F": 4.0, "M": 5.0, "D": 6.0, "G": 10.0}  # legacy parquet-position goal pts (GKP 10, FPL)
 # FPL goal points keyed by FPL position codes (GKP/DEF/MID/FWD)
-FPL_GOAL_PTS = {"FWD": 4.0, "MID": 5.0, "DEF": 6.0, "GKP": 6.0}
+# GKP 10, from FPL's own game_config.scoring.goals_scored (was 6 - Data Truth / R2-D fantasy bug #2).
+FPL_GOAL_PTS = {"FWD": 4.0, "MID": 5.0, "DEF": 6.0, "GKP": 10.0}
 # Clean-sheet points by position (DEF/GK 4, MID 1, FWD 0)
 FPL_CS_PTS   = {"DEF": 4.0, "GKP": 4.0, "MID": 1.0, "FWD": 0.0}
-# Defensive-contribution proxy thresholds (actions/game). APPROX: our source gives
-# tackles+interceptions+blocks+duels_won but NOT clearances or ball-recoveries, so these
-# sit below FPL's real 10 (DEF CBIT) / 12 (MID+FWD tackles+recoveries) cut-offs.
-_DC_THRESH = {"DEF": 5.0, "GKP": 999.0, "MID": 4.5, "FWD": 4.0}
+# Defensive-contribution thresholds = FPL's REAL ones, on FPL's OWN action count
+# (elements.defensive_contribution_per_90). Derived 2026-11-01 from FPL's live scoring for GW6-8
+# (2,004 player-gameweeks): DEF scored 2 pts from exactly 10 actions (never at 9), MID from 12
+# (never at 11), FWD never below 12. The old 5 / 4.5 / 4 were applied to our own different count
+# (tackles+interceptions+blocks+duels_won) and gave FWDs more DC pts than DEFs (R2-D fantasy bug #1).
+_DC_THRESH = {"DEF": 10.0, "GKP": 999.0, "MID": 12.0, "FWD": 12.0}
 _POS_ALIAS = {"F": "FWD", "M": "MID", "D": "DEF", "G": "GKP",
               "FWD": "FWD", "MID": "MID", "DEF": "DEF", "GKP": "GKP", "GK": "GKP"}
 _PARQUET = Path(__file__).resolve().parents[1] / "player_history.parquet"
@@ -283,6 +286,7 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
                 pl.at[i, "fpl_form"]          = rec.get("fpl_form")
                 pl.at[i, "total_points"]      = rec.get("total_points")
                 pl.at[i, "owned_pct"]         = rec.get("owned_pct")
+                pl.at[i, "fpl_dc_per90"]      = rec.get("dc_per90")
         # A player NOT in the current FPL set has LEFT the PL (e.g. Salah -> Besiktas,
         # De Bruyne -> abroad) or isn't fantasy-relevant -> DROP them. The parquet holds many
         # past-season players who've since transferred out, so a LOW match rate is EXPECTED and
@@ -308,9 +312,18 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     # only ~0.43 pts beyond goals/assists (they're correlated → +1 double-counted). scripts/fantasy_backtest.py
     pl["attack_pts"] = (pl["p_goal"] * pl["goal_pts"] + pl["p_assist"] * 3.0 + pl["p_sot2"] * 0.45).round(3)
 
-    # Defensive-contribution pts — Poisson P(actions >= threshold) (upgrade from linear clip)
-    thr = pl["position"].map(_DC_THRESH).fillna(6.0)
-    pl["dc_pts"] = [_poisson_dc_pts(float(a or 0), float(t)) for a, t in zip(pl["def_actions_pg"], thr)]
+    # Defensive-contribution pts — Poisson P(actions >= threshold), on FPL's OWN action count per
+    # game (defensive_contribution_per_90 x expected minutes / 90) against FPL's real thresholds.
+    # A player with no FPL figure gets NaN dc_pts (never a guess) and contributes 0 to the total.
+    # def_actions_pg (our proxy count) stays the BONUS input only, where its weights were fitted.
+    thr = pl["position"].map(_DC_THRESH)
+    if "fpl_dc_per90" in pl.columns:
+        _dc_pg = pd.to_numeric(pl["fpl_dc_per90"], errors="coerce") * (m.reindex(pl.index) / 90.0)
+    else:
+        _dc_pg = pd.Series(np.nan, index=pl.index)
+    pl["dc_actions_pg"] = _dc_pg.round(3)
+    pl["dc_pts"] = [_poisson_dc_pts(float(a), float(t)) if (a == a and t == t) else np.nan
+                    for a, t in zip(_dc_pg, thr)]
 
     # Clean-sheet pts — TEAM goals-conceded model blended with fixture difficulty.
     # P(CS) = exp(-lambda); lambda = 0.6·(team recent conceded/game) + 0.4·(FDR-implied opp xG).
@@ -345,7 +358,7 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
     pl["bonus_pts"] = [_expected_bonus(g, a, s, float(d or 0), c) for g, a, s, d, c in
                        zip(pl["p_goal"], pl["p_assist"], pl["p_sot2"], pl["def_actions_pg"], pl["cs_pts"])]
 
-    pl["fantasy_pts"] = (pl["appearance"] + pl["attack_pts"] + pl["dc_pts"]
+    pl["fantasy_pts"] = (pl["appearance"] + pl["attack_pts"] + pl["dc_pts"].fillna(0.0)
                          + pl["cs_pts"] + pl["bonus_pts"]).round(3)
 
     # Minutes / rotation risk — P(start) from recent + season start rates, killed by injury
