@@ -346,26 +346,22 @@ def test_serving_payload_scores_identically_to_main(name):
 
 # ── finding 16: cold-start option leaves the default untouched ──────────────────────────────
 
-def test_cold_start_nan_only_changes_the_cold_start_columns():
+def test_cold_start_is_nan_only_and_typed_priors_are_gone():
+    """Data Truth 2026-11-01: "nan" is the only cold-start mode (and the default). The typed
+    "current" priors (1.10 / 0.55 / 0.45 / 0.35 / 0.33 / HT 0) were removed."""
     raw = _nf_frame()
     a = build_features_repaired(raw)
     b = build_features_repaired(raw, cold_start="nan")
-    cold = {"home_advantage", "away_home_adv_factor", "combined_sot_ratio", "combined_ht_goals_avg"}
-    same = [c for c in a.columns if c not in cold]
-    pd.testing.assert_frame_equal(a[same], b[same])
-    for c in cold:
-        assert b[c].isna().any()                                       # NaN where no history
-    for c in ("combined_sot_ratio", "combined_ht_goals_avg"):
-        known = b[c].notna()
-        assert np.allclose(a.loc[known, c], b.loc[known, c])          # identical where history
-    # home flags: "nan" never uses the typed 1.10 league-away prior, so only windows that reach
-    # back to a league's very first matchday can differ; later rows are identical
-    late = pd.to_datetime(a["date"]) >= pd.to_datetime(a["date"]).min() + pd.Timedelta(days=400)
-    for c in ("home_advantage", "away_home_adv_factor"):
-        k = late & b[c].notna()
-        assert k.sum() > 50 and np.allclose(a.loc[k, c], b.loc[k, c])
-    with pytest.raises(ValueError):
-        build_features_repaired(raw, cold_start="zero")
+    pd.testing.assert_frame_equal(a, b)                                 # default IS "nan"
+    for c in ("home_advantage", "away_home_adv_factor", "combined_sot_ratio", "combined_ht_goals_avg"):
+        assert a[c].isna().any() and a[c].notna().any(), c            # NaN only where no history
+    # a typed prior would show up as the constant on every first-history row
+    first = a.groupby(["league", "home_team"]).head(1)
+    assert not first["home_advantage"].isin([0.55]).any()
+    assert not first["away_home_adv_factor"].isin([0.45]).any()
+    for bad in ("current", "zero"):
+        with pytest.raises(ValueError):
+            build_features_repaired(raw, cold_start=bad)
 
 
 # ── finding 19: track purity of side challengers ────────────────────────────────────────────

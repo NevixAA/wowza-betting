@@ -122,6 +122,13 @@ def _get(endpoint: str, params: dict, cache_hours: float = 24) -> Optional[dict]
 
 # ── Standings ─────────────────────────────────────────────────────────────────
 
+def _per_game(num, played) -> Optional[float]:
+    """num / played rounded, or None when either is missing or no games were played."""
+    if num is None or not played:
+        return None
+    return round(num / played, 3)
+
+
 def get_standings(league_id: int, season: str) -> list[dict]:
     """
     Returns list of standing dicts for a league/season. 24h cache.
@@ -143,30 +150,34 @@ def get_standings(league_id: int, season: str) -> list[dict]:
                 home_s    = entry.get("home", {})
                 away_s    = entry.get("away", {})
 
-                played  = all_s.get("played", 0) or 0
-                gf      = (all_s.get("goals") or {}).get("for",     0) or 0
-                ga      = (all_s.get("goals") or {}).get("against", 0) or 0
+                # Missing blocks stay None and a rate over 0 games is None (was 0 counts, rates
+                # over max(played, 1) = 0.0 at every season start, and a sentinel rank 99).
+                played  = all_s.get("played")
+                gf      = (all_s.get("goals") or {}).get("for")
+                ga      = (all_s.get("goals") or {}).get("against")
 
-                h_played = home_s.get("played", 0) or 0
-                h_win    = home_s.get("win",    0) or 0
-                a_played = away_s.get("played", 0) or 0
-                a_win    = away_s.get("win",    0) or 0
+                h_played = home_s.get("played")
+                h_win    = home_s.get("win")
+                a_played = away_s.get("played")
+                a_win    = away_s.get("win")
 
                 form_str  = (entry.get("form") or "")[-5:]
-                form_pts  = sum(3 if c == "W" else 1 if c == "D" else 0 for c in form_str)
+                form_pts  = (sum(3 if c == "W" else 1 if c == "D" else 0 for c in form_str)
+                             if form_str else None)
+                gd = (gf - ga) if (gf is not None and ga is not None) else None
 
                 standings.append({
                     "team_id":          team.get("id"),
                     "team_name":        team.get("name", ""),
-                    "rank":             entry.get("rank", 99),
-                    "points":           entry.get("points", 0),
+                    "rank":             entry.get("rank"),
+                    "points":           entry.get("points"),
                     "played":           played,
-                    "gd":               gf - ga,
-                    "gd_per_game":      round((gf - ga) / max(played, 1), 3),
-                    "goals_for_pg":     round(gf / max(played, 1), 3),
-                    "goals_against_pg": round(ga / max(played, 1), 3),
-                    "home_win_rate":    round(h_win / max(h_played, 1), 3),
-                    "away_win_rate":    round(a_win / max(a_played, 1), 3),
+                    "gd":               gd,
+                    "gd_per_game":      _per_game(gd, played),
+                    "goals_for_pg":     _per_game(gf, played),
+                    "goals_against_pg": _per_game(ga, played),
+                    "home_win_rate":    _per_game(h_win, h_played),
+                    "away_win_rate":    _per_game(a_win, a_played),
                     "form_pts":         form_pts,
                     "form_str":         form_str,
                 })
@@ -175,38 +186,36 @@ def get_standings(league_id: int, season: str) -> list[dict]:
 
 def build_standings_map(league_id: int, season: str) -> dict[str, dict]:
     """
-    Returns {lowercase_team_name: standing_dict} for fuzzy lookup.
+    Returns {API-Football team name: standing_dict} for one league/season.
     Returns empty dict if API key unavailable or request fails.
     """
     standings = get_standings(league_id, season)
-    return {s["team_name"].lower().strip(): s for s in standings}
+    return {s["team_name"]: s for s in standings if s.get("team_name")}
 
 
 def lookup_team_standing(standings_map: dict[str, dict], team_name: str) -> Optional[dict]:
     """
-    Fuzzy-match team name against standings map.
-    Tries exact → token overlap → prefix match.
-    Returns standing dict or None.
+    Resolve team_name against ONE league's standings through the canonical resolver
+    (src.team_names.resolve, which refuses ambiguity). The old single-shared-word overlap
+    let 'Manchester City' pick 'Manchester United'. Returns standing dict or None.
     """
     if not standings_map or not team_name:
         return None
-    key = team_name.lower().strip()
-    if key in standings_map:
-        return standings_map[key]
-
-    # Token overlap (handles "Burnley FC" → "Burnley")
-    words = set(key.split())
-    best_score, best_hit = 0, None
-    for name, standing in standings_map.items():
-        overlap = len(words & set(name.split()))
-        if overlap > best_score:
-            best_score, best_hit = overlap, standing
-    if best_score >= 1 and best_hit is not None:
-        return best_hit
-    return None
+    if team_name in standings_map:
+        return standings_map[team_name]
+    from src.team_names import resolve
+    hit = resolve(team_name, list(standings_map))
+    return standings_map[hit] if hit else None
 
 
 # ── Fixture statistics ────────────────────────────────────────────────────────
+
+def _int_or_none(v) -> Optional[int]:
+    try:
+        return int(v) if v is not None else None
+    except (TypeError, ValueError):
+        return None
+
 
 def get_fixture_statistics(fixture_id: int, cache_hours: float = 8760) -> dict:
     """
@@ -223,27 +232,31 @@ def get_fixture_statistics(fixture_id: int, cache_hours: float = 8760) -> dict:
         side = "home" if i == 0 else "away"
         team = team_data.get("team", {})
 
-        parsed: dict = {"team_id": team.get("id"), "team_name": team.get("name", "")}
+        # A null/absent stat stays None (was 0 for counts and 50% possession)
+        parsed: dict = {"team_id": team.get("id"), "team_name": team.get("name", ""),
+                        "shots_on_target": None, "shots_off": None, "shots": None,
+                        "corners": None, "fouls": None, "possession": None, "offsides": None}
         for stat in team_data.get("statistics", []):
             t = stat.get("type", "")
             v = stat.get("value")
             if t == "Shots on Goal":
-                parsed["shots_on_target"] = int(v or 0)
+                parsed["shots_on_target"] = _int_or_none(v)
             elif t == "Shots off Goal":
-                parsed["shots_off"] = int(v or 0)
+                parsed["shots_off"] = _int_or_none(v)
             elif t == "Total Shots":
-                parsed["shots"] = int(v or 0)
+                parsed["shots"] = _int_or_none(v)
             elif t == "Corner Kicks":
-                parsed["corners"] = int(v or 0)
+                parsed["corners"] = _int_or_none(v)
             elif t == "Fouls":
-                parsed["fouls"] = int(v or 0)
+                parsed["fouls"] = _int_or_none(v)
             elif t == "Ball Possession":
                 try:
-                    parsed["possession"] = float(str(v or "50%").replace("%", ""))
+                    parsed["possession"] = (float(str(v).replace("%", "").strip())
+                                            if v is not None else None)
                 except ValueError:
-                    parsed["possession"] = 50.0
+                    parsed["possession"] = None
             elif t == "Offsides":
-                parsed["offsides"] = int(v or 0)
+                parsed["offsides"] = _int_or_none(v)
         result[side] = parsed
     return result
 
@@ -276,10 +289,10 @@ def get_injuries(league_id: int, season: str, fixture_id: int) -> list[dict]:
     return injuries
 
 
-def count_attacking_injuries(injuries: list[dict], team_name: str) -> int:
-    """Count attackers/midfielders missing for a team (fuzzy name match)."""
-    key = team_name.lower()[:6]
-    team_inj = [i for i in injuries if key in i["team_name"].lower()[:8]]
+def count_attacking_injuries(injuries: list[dict], team_id: int) -> int:
+    """Count attackers/midfielders missing for a team, matched by API-Football team id (the old
+    6-character name prefix matched any club sharing it)."""
+    team_inj = [i for i in injuries if team_id is not None and i.get("team_id") == team_id]
     attacking = {"f", "m", "attacker", "midfielder", "forward"}
     return sum(
         1 for i in team_inj
@@ -299,7 +312,7 @@ def get_odds(fixture_id: int, bookmaker_id: int = 6) -> dict:
     if not data:
         return {}
 
-    over_odd = under_odd = 0.0
+    over_odd = under_odd = None
     for entry in data.get("response", []):
         for bm in entry.get("bookmakers", []):
             for bet in bm.get("bets", []):
@@ -307,7 +320,10 @@ def get_odds(fixture_id: int, bookmaker_id: int = 6) -> dict:
                     continue
                 for val in bet.get("values", []):
                     label = str(val.get("value", ""))
-                    odd   = float(val.get("odd") or 0)
+                    try:
+                        odd = float(val["odd"]) if val.get("odd") is not None else None
+                    except (TypeError, ValueError):
+                        odd = None
                     if "Over 2.5" in label:
                         over_odd = odd
                     elif "Under 2.5" in label:
@@ -404,7 +420,7 @@ def get_fixture_events(fixture_id: int) -> list[dict]:
     events = []
     for ev in data.get("response", []):
         events.append({
-            "time":      (ev.get("time") or {}).get("elapsed", 0) or 0,
+            "time":      (ev.get("time") or {}).get("elapsed"),   # None when absent, never 0
             "type":      ev.get("type",   ""),
             "detail":    ev.get("detail", ""),
             "team_id":   (ev.get("team") or {}).get("id"),
@@ -415,7 +431,7 @@ def get_fixture_events(fixture_id: int) -> list[dict]:
 
 def last_goal_elapsed(events: list[dict]) -> Optional[int]:
     """Returns elapsed minute of most recent goal, or None if no goals."""
-    goal_events = [e for e in events if e.get("type") == "Goal"]
+    goal_events = [e for e in events if e.get("type") == "Goal" and e.get("time") is not None]
     if not goal_events:
         return None
     return max(e["time"] for e in goal_events)
@@ -468,7 +484,9 @@ def get_live_fixtures(league_ids: list[int] = None) -> list[dict]:
             continue
         status_obj = fix.get("fixture", {}).get("status", {})
         short      = status_obj.get("short", "")
-        elapsed    = status_obj.get("elapsed") or 0
+        # absent clock/score stay None (were 0): the scanner skips such a game, it never
+        # prices minute 0 / 0-0
+        elapsed    = status_obj.get("elapsed")
 
         if short not in ("1H", "HT", "2H", "ET", "P"):
             continue
@@ -485,8 +503,8 @@ def get_live_fixtures(league_ids: list[int] = None) -> list[dict]:
             "home_team":    (teams.get("home") or {}).get("name", ""),
             "away_team_id": (teams.get("away") or {}).get("id"),
             "away_team":    (teams.get("away") or {}).get("name", ""),
-            "home_goals":   goals.get("home") or 0,
-            "away_goals":   goals.get("away") or 0,
+            "home_goals":   goals.get("home"),
+            "away_goals":   goals.get("away"),
             "status":       short,
             "elapsed_mins": elapsed,
         })

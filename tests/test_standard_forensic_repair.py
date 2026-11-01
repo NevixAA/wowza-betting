@@ -179,8 +179,8 @@ def test_05_home_advantage_not_constant_live(raw, feat):
 
 
 def test_05b_legacy_home_advantage_matches_training_rule(raw, monkeypatch):
-    """NF_FEATURE_PARITY (2026-11-01): the legacy serving path computes home_advantage as
-    training's _add_home_advantage does; NF_FEATURE_PARITY=0 restores the old constant 1.0."""
+    """The legacy serving path computes home_advantage as training's _add_home_advantage does.
+    NF_FEATURE_PARITY=0 no longer restores the typed constant 1.0 (Data Truth 2026-11-01)."""
     from src.feature_engineering import build_upcoming_features
     nxt = raw["date"].max() + pd.Timedelta(days=7)
     teams = sorted(raw.loc[raw.league == STD_A, "home_team"].unique())
@@ -195,7 +195,8 @@ def test_05b_legacy_home_advantage_matches_training_rule(raw, monkeypatch):
     assert f.loc[f.home_team == t0, "home_advantage"].iloc[0] == pytest.approx(
         (last["home_goals"] > lg_avg_away).mean())
     monkeypatch.setenv("NF_FEATURE_PARITY", "0")
-    assert set(build_upcoming_features(up, raw)["home_advantage"]) == {1.0}
+    rb = build_upcoming_features(up, raw)["home_advantage"]
+    assert 1.0 not in set(rb) and rb.tolist() == f["home_advantage"].tolist()
 
 
 def test_05c_newformat_overround_uses_best_price_only_for_new_format(raw, monkeypatch):
