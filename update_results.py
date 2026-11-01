@@ -453,17 +453,20 @@ def _find_result(
 
 # ── Player prop result resolver ───────────────────────────────────────────────
 
+_PLAYER_MARKET_STAT = {"goals": "goals", "sot": "shots_on_target", "cards": "yellow_card",
+                       "assists": "assists"}
+
+
 def _resolve_player_market(market: str, stats: dict) -> str:
-    """Determine WIN/LOSS for a player prop market given their fixture stats."""
-    if market == "goals":
-        return "WIN" if int(stats.get("goals", 0)) >= 1 else "LOSS"
-    if market == "sot":
-        return "WIN" if int(stats.get("shots_on_target", 0)) >= 1 else "LOSS"
-    if market == "cards":
-        return "WIN" if int(stats.get("yellow_card", 0)) >= 1 else "LOSS"
-    if market == "assists":
-        return "WIN" if int(stats.get("assists", 0)) >= 1 else "LOSS"
-    return ""
+    """WIN/LOSS for a player prop: `<base>` means 1+, `<base><N>` means N+ ('sot2' = 2+ shots on
+    target). The producer writes sot2/sot3/goals2; this used to know only the bare names, so every
+    multi-threshold prop stayed pending for ever (Data Truth audit finding 19). Unknown -> ''."""
+    import re
+    m = re.fullmatch(r"([a-z]+?)(\d*)", str(market or "").strip().lower())
+    if not m or m.group(1) not in _PLAYER_MARKET_STAT:
+        return ""
+    need = int(m.group(2) or 1)
+    return "WIN" if int(stats.get(_PLAYER_MARKET_STAT[m.group(1)], 0) or 0) >= need else "LOSS"
 
 
 def _fetch_fixture_player_stats(league_id: int, season: str, date_str: str, home: str, away: str) -> dict[str, dict]:
@@ -547,13 +550,15 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
             log.debug(f"  {league}: no PROP_LEAGUES entry — skipping")
             continue
 
-        yr     = int(date_str[:4])
-        # Single-year tournaments (WC=1, Euros=4, Copa America=9) use the match year directly.
-        # Club leagues that span two calendar years use yr-1 for Jan-Jun matches.
-        _SINGLE_YEAR_LEAGUES = {1, 4, 9}
-        season = str(yr) if league_id in _SINGLE_YEAR_LEAGUES else (
-            str(yr - 1) if int(date_str[5:7]) < 7 else str(yr)
-        )
+        # The fixture's OWN season from the canonical resolver (config/leagues.json season rules).
+        # The hand rule here ("Jan-Jun means yr-1") is European-only: calendar-year leagues (MLS,
+        # Brazil, Nordics, China, Ireland) were looked up a year behind every spring, and J1 (season
+        # 2027 since 2026-07) never settled (Data Truth audit findings 23, 25).
+        from src.season_resolver import resolve_api_season, is_known
+        season = resolve_api_season(league, date_str)
+        if not is_known(season):
+            log.warning(f"  {league}: no season for {date_str} in the registry — leaving pending")
+            continue
 
         # ── Step 1: look up fixture as FT (completed) ─────────────────────────
         if cache_key not in fixture_cache:
@@ -581,6 +586,20 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
             stats_cache[cache_key] = {_norm(p["player_name"]): p for p in raw if p.get("player_name")}
 
         stats_map = stats_cache[cache_key]
+
+        # NO STATS FOR THE WHOLE FIXTURE IS NOT "DID NOT PLAY". An API error, an empty body or stats
+        # not yet published all look like this, and until 2026-11-01 every prop on such a fixture
+        # was voided as DNP for good (Data Truth audit finding 16). Leave it pending and retry; only
+        # after 7 days is it voided, and then with a note that says why.
+        if not stats_map:
+            _age = (pd.Timestamp(today_str) - pd.Timestamp(date_str)).days if date_str else 0
+            if _age >= 7:
+                log.warning(f"  {home} vs {away} ({date_str}): no player stats after {_age} days — VOID (NO_STATS)")
+                updates.append({"idx": idx, "is_played": "True", "result": "VOID",
+                                "pnl": "0.0", "notes": "NO_STATS_7D", "resolved_date": today_str})
+            else:
+                log.info(f"  {home} vs {away} ({date_str}): no player stats yet — leaving pending")
+            continue
 
         # ── Step 3: find this player in the stats ─────────────────────────────
         player_key = _norm(player)
