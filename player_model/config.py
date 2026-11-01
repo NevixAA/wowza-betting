@@ -343,109 +343,23 @@ MIN_APPEARANCES  = 3   # season-stats fallback path
 MIN_GAMES_SIGNAL = 5   # minimum match history to generate a signal
 MIN_GAMES_SNIPER = 8
 
+# ── Minimum samples for MEASURED context features (Data Truth, owner rule 2026-11-01) ──────────
+# Opponent / keeper / penalty / referee / league context is computed from the matches we hold.
+# Below these sample sizes the value is NaN (explicitly missing), never a typed prior.
+MIN_OPP_MATCHES    = 3    # an opponent team's prior matches before its concede/discipline rates count
+MIN_GK_MATCHES     = 3    # a keeper's prior matches before his save rate / saves count
+MIN_PEN_ATTEMPTS   = 3    # a player's prior penalty attempts before his conversion rate counts
+MIN_REF_MATCHES    = 3    # a referee's prior matches before his yellows/match counts
+MIN_LEAGUE_MATCHES = 20   # a league's prior fixtures before its own average is used as a normaliser
+
 # ── Leagues with player prop markets ─────────────────────────────────────────
-# IMPORTANT: Only popular leagues have SOT/Goals/Cards prop markets at bookmakers.
-# Lower leagues (League Two, Ligue 2, La Liga 2) rarely have these markets.
-PROP_LEAGUES = {
-    # ── Top tier — biggest player prop markets ────────────────────────────────
-    "Premier League":  39,    # ⭐⭐⭐⭐⭐ Most liquid props globally
-    "Bundesliga":      78,    # ⭐⭐⭐⭐  Very active German market
-    "La Liga":         140,   # ⭐⭐⭐⭐  Active Spanish market
-    "Serie A":         135,   # ⭐⭐⭐   Good Italian coverage
-    "Ligue 1":         61,    # ⭐⭐⭐   French market
-    # ── Our standard model leagues — moderate prop coverage ───────────────────
-    "Championship":    40,
-    "League One":      41,
-    # League Two ADDED 2026-08-27. It was in neither PROP_LEAGUES nor PROP_SPORT_KEYS, so its
-    # players were AVOID by construction — the "no sport key, never asked" case. OddsAPI does not
-    # sell props for it, but API-Football does (13 books, 11 prop markets, 127 quotes on one
-    # probe fixture), and the second source can only reach leagues listed here.
-    "League Two":      42,
-    "Bundesliga 2":    79,
-    # ── European club competitions ────────────────────────────────────────────
-    "Champions League":    2,    # ⭐⭐⭐⭐⭐ Biggest club prop market
-    "Europa League":       3,    # ⭐⭐⭐⭐  Active prop market
-    "Conference League":   848,  # ⭐⭐⭐   Growing prop market
-    # ── World Cup 2026 — biggest event globally ───────────────────────────────
-    "World Cup":       1,
-    # ── Bet leagues, ADDED 2026-08-27 after probing API-Football per league ───
-    #
-    # Every one of these is a league we BET on that had no prop coverage at all: not in
-    # PROP_LEAGUES, so the second source could not reach it, and its players were AVOID by
-    # construction. 13 of the 16 uncovered bet leagues returned real player-prop markets on a
-    # one-fixture probe each, with the markets found listed below.
-    #
-    # USA MLS matters most: it is our largest single league by settled bets, and OddsAPI
-    # OFFICIALLY supports MLS props (their docs list it, and a probe returned 133 quotes), so it
-    # gets an OddsAPI sport key too and will draw on both sources.
-    "USA MLS":                    253,  # goals, sot, assists  (+ OddsAPI: 133 quotes)
-    "Mexico Liga MX":             262,  # goals, sot, assists, cards
-    "Denmark Superliga":          119,  # goals, sot, assists, cards
-    "Romanian Superliga":         283,  # goals, sot, assists, cards
-    "Brazil Serie A":              71,  # goals, sot, assists
-    "Argentina Primera Division": 128,  # goals, sot, assists
-    "La Liga 2":                  141,  # goals, sot, assists — we already send tips here
-    "Serie B":                    136,  # goals, sot, assists — we already send tips here
-    "Sweden Allsvenskan":         113,  # goals, assists
-    "Norway Eliteserien":         103,  # goals, assists
-    "Austrian Bundesliga":        218,  # goals, assists
-    "China Super League":         169,  # goals, assists
-    "Ireland Premier Division":   357,  # goals, assists — we already send tips here
-    # Bet leagues with NO fixtures scheduled at probe time, so availability is UNKNOWN rather
-    # than absent. Listed so they are covered the moment fixtures appear; the coverage ledger
-    # will record what they actually return.
-    "Japan J-League":              98,  # no upcoming fixtures at probe time
-    # WAS 65, WHICH IS NOT LIGUE 2. Id 65 is `Coupe de la Ligue`, a French league cup whose
-    # last season was 2019 — so every fixture list came back empty and the league looked like
-    # it simply had no matches. That is why the 2026-08-27 probe recorded "no upcoming
-    # fixtures at probe time" rather than a wrong id. Verified 2026-09-24 against
-    # /leagues?country=France&type=League: Ligue 1 is 61, Ligue 2 is 62, Ligue 3 is 63.
-    # All 29 ids in this dict were re-validated against the API in the same pass; this was
-    # the only wrong one.
-    "Ligue 2":                     62,
-    # Probed and returned ZERO player-prop markets. Kept so the ledger records that from
-    # evidence rather than the league silently never being asked.
-    "Finland Veikkausliiga":      244,  # 11 books, 0 player-prop markets
-}
-# Season year for each league (API-Football uses start year of season)
-def _prop_season_now() -> str:
-    """API-Football season (its start year) for the campaign in progress.
-
-    DERIVED, NOT TYPED. The old PROP_SEASONS was a hand-maintained dict listing each league
-    explicitly, which broke twice in the same way:
-      * frozen at "2025" while PROP_SEASONS said "2026" — six weeks uncollected (2026-08-16), and
-      * a league added to PROP_LEAGUES with no matching PROP_SEASONS entry gets season None and
-        is silently skipped, which is what happened to League Two on 2026-08-27.
-    A parallel list of the same leagues is a bug waiting for the next edit, so the season is now
-    computed and every league in PROP_LEAGUES gets one automatically.
-
-    European seasons start in July, so months 7-12 belong to the year that has just begun and
-    months 1-6 to the campaign that started the previous year.
-
-    SUPERSEDED for PROP_SEASONS (Data Truth audit findings 38, 41): this European rule was applied
-    to EVERY league, so J1 was '2026' while its live season is 2027, and calendar-year leagues (MLS,
-    Brazil, Argentina, Nordics, China, Ireland) would be a year behind every January-June. Kept only
-    for callers outside player_model that import it.
-    """
-    from datetime import date
-    t = date.today()
-    return str(t.year if t.month >= 7 else t.year - 1)
-
-
-def prop_season(league: str, on_date=None) -> str:
-    """API-Football season for `league` on `on_date` (default today), from the canonical
-    registry's season rules (src.season_resolver). An unknown league gives 'SEASON_UNKNOWN',
-    which API-Football answers with nothing - a visible miss, never a guessed year."""
-    return _season_resolver().resolve_api_season(league, on_date)
-
-
-_SR_FOREIGN = None      # v9's resolver, privately loaded under a foreign `src` (see below)
-
-
-def _season_resolver():
-    """v9's src.season_resolver, even when the importer has its OWN `src` package (wowzaV9-Pro
-    imports player_model from _v9/, and there `src` is Pro's - a plain import crashed Pro Live Odds
-    on 2026-11-01). A foreign `src` and sys.path are restored afterwards."""
+# DERIVED FROM THE REGISTRY (Data Truth, LR-1.1): config/leagues.json `props: true` entries,
+# {canonical name: API-Football id}. The hand-typed table that lived here (29 leagues, with the
+# probe notes) was copied into the registry verbatim and is no longer typed in code.
+def _v9_src(module: str):
+    """v9's src.<module>, even when the importer has its OWN `src` package (wowzaV9-Pro imports
+    player_model from _v9/, and there `src` is Pro's - a plain import crashed Pro Live Odds on
+    2026-11-01). A foreign `src` and sys.path are restored afterwards."""
     import importlib
     import sys
     from pathlib import Path
@@ -456,15 +370,15 @@ def _season_resolver():
     if not foreign:
         if str(root) not in sys.path:
             sys.path.append(str(root))
-        return importlib.import_module("src.season_resolver")
+        return importlib.import_module(f"src.{module}")
+    if module in _SRC_FOREIGN:
+        return _SRC_FOREIGN[module]
     saved_path = list(sys.path)
     saved = {k: sys.modules.pop(k) for k in list(sys.modules) if k == "src" or k.startswith("src.")}
     sys.path.insert(0, str(root))
     try:
-        global _SR_FOREIGN
-        if _SR_FOREIGN is None:
-            _SR_FOREIGN = importlib.import_module("src.season_resolver")
-        return _SR_FOREIGN
+        _SRC_FOREIGN[module] = importlib.import_module(f"src.{module}")
+        return _SRC_FOREIGN[module]
     finally:
         sys.path[:] = saved_path
         for k in [k for k in sys.modules if k == "src" or k.startswith("src.")]:
@@ -472,15 +386,32 @@ def _season_resolver():
         sys.modules.update(saved)
 
 
+_SRC_FOREIGN: dict = {}     # v9 modules privately loaded under a foreign `src`
+
+
+def league_registry():
+    """v9's src.league_registry (foreign-`src` safe)."""
+    return _v9_src("league_registry")
+
+
+PROP_LEAGUES = league_registry().prop_leagues()
+
+
+def prop_season(league: str, on_date=None) -> str:
+    """API-Football season for `league` on `on_date` (default today), from the canonical
+    registry's season rules (src.season_resolver). An unknown league gives 'SEASON_UNKNOWN',
+    which API-Football answers with nothing - a visible miss, never a guessed year.
+    (The month>=7 `_prop_season_now` rule that used to sit here was deleted: it gave every league
+    the European calendar, Data Truth audit findings 38, 41.)"""
+    return _v9_src("season_resolver").resolve_api_season(league, on_date)
+
+
 # One entry per league in PROP_LEAGUES, always. Never edit this by hand — add the league to
 # PROP_LEAGUES and its season appears here. League-aware since 2026-11-01.
 PROP_SEASONS = {league: prop_season(league) for league in PROP_LEAGUES}
-FBREF_LEAGUES = {
-    "Championship": (10, "Championship"), "League One": (15, "League-One"),
-    "League Two": (16, "League-Two"),     "Bundesliga 2": (33, "2-Bundesliga"),
-    "Ligue 2": (60, "Ligue-2"),           "La Liga 2": (17, "Segunda-Division"),
-    "Serie B": (18, "Serie-B"),
-}
-
+# {league: (fbref id, fbref slug)} from the registry's provider_names.fbref (LR-1.1), no longer typed.
+FBREF_LEAGUES = {e["name"]: (e["provider_names"]["fbref"]["id"], e["provider_names"]["fbref"]["slug"])
+                 for e in league_registry().leagues()
+                 if (e.get("provider_names") or {}).get("fbref")}
 CACHE_DAYS    = 7
 REQUEST_DELAY = 4.0

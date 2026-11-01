@@ -34,7 +34,9 @@ from typing import Optional
 
 import requests
 
-_BASE = "https://api.the-odds-api.com/v4"
+from . import config as _pm_config
+
+_BASE ="https://api.the-odds-api.com/v4"
 
 # Bookmaker regions to request. EU books barely price player props outside the top
 # five leagues — the deep prop market for English and German football is the UK
@@ -140,34 +142,14 @@ _WC_API_MARKETS_STR = ",".join(
 )
 _WC_SPORT_KEY = "soccer_fifa_world_cup"
 
-# Odds API sport keys for our prop leagues
-PROP_SPORT_KEYS = {
-    "World Cup":        "soccer_fifa_world_cup",
-    "Premier League":   "soccer_epl",
-    "Bundesliga":       "soccer_germany_bundesliga",
-    "La Liga":          "soccer_spain_la_liga",
-    "Serie A":          "soccer_italy_serie_a",
-    # FIXED 2026-08-19. Was "soccer_france_ligue_1", which OddsAPI answers with
-    # 404 UNKNOWN_SPORT — so Ligue 1 player props have NEVER been fetchable, silently, since
-    # the key was written. The real key is "ligue_one". Confirmed against the free /v4/sports
-    # endpoint (no quota cost), which lists soccer_france_ligue_one / soccer_france_ligue_two.
-    "Ligue 1":          "soccer_france_ligue_one",
-    # UCL group stage has not started; the qualifiers are being played NOW and are a separate
-    # sport key. Without this the competition is invisible until the group stage.
-    "Champions League Qualifying": "soccer_uefa_champs_league_qualification",
-    "Championship":     "soccer_efl_champ",
-    "League One":       "soccer_england_league1",
-    "Bundesliga 2":     "soccer_germany_bundesliga2",
-    "Champions League": "soccer_uefa_champs_league",
-    "Europa League":    "soccer_uefa_europa_league",
-    "Conference League":"soccer_uefa_europa_conference_league",
-    # ADDED 2026-08-27. OddsAPI's documentation lists MLS as one of only six competitions it
-    # sells soccer player props for -- "EPL, French Ligue 1, German Bundesliga, Italian Serie A,
-    # Spanish La Liga, and MLS" -- and it was the one of those six we never asked for. A probe
-    # returned 133 player quotes across 2 books on a single fixture. MLS is also our largest
-    # league by settled bets, so this was the most expensive omission in the file.
-    "USA MLS":          "soccer_usa_mls",
-}
+# Odds API sport keys for our prop leagues. DERIVED FROM THE REGISTRY (Data Truth, LR-1.1):
+# {canonical league: primary OddsAPI key} for every `props: true` league with a key
+# (src.league_registry.prop_sport_keys). The hand table that lived here was copied into
+# config/leagues.json; alias lookups ("World Cup") still resolve through the LeagueMap.
+# NOTE: the registry lists a key for every prop league that has one, so leagues the old table
+# omitted (e.g. Ligue 2, La Liga 2, the Nordics) are now asked too; prop_odds_coverage.json
+# parks any league that prices nothing after _COVERAGE_MIN_PROBES events.
+PROP_SPORT_KEYS = _pm_config.league_registry().prop_sport_keys()
 
 _CACHE_DIR = Path(__file__).resolve().parents[1] / "prop_odds_cache"
 _CACHE_DIR.mkdir(exist_ok=True)
@@ -176,7 +158,8 @@ _CACHE_DIR.mkdir(exist_ok=True)
 # we already fetch these). Becomes the real-odds dataset for prop backtests.
 _ODDS_HISTORY_FILE = Path(__file__).resolve().parents[1] / "output" / "player_prop_odds_history.csv"
 _ODDS_HISTORY_KEY = ["match_date", "league", "match", "player", "market", "odds"]
-SPORT_KEY_TO_LEAGUE = {v: k for k, v in PROP_SPORT_KEYS.items()}
+# Every primary AND extra key (UCL qualification -> "Champions League") -> canonical league.
+SPORT_KEY_TO_LEAGUE = _pm_config.league_registry().sport_key_to_league()
 
 # Learned per-league prop-market coverage. Rather than hardcoding a guess about
 # which competitions offer player props, record what OddsAPI actually returns and
@@ -482,12 +465,10 @@ def _norm(name: str) -> str:
 # when in truth it was never asked. src/team_names.resolve is the same league-scoped,
 # ambiguity-refusing matcher the team model already uses.
 try:
-    import sys as _sys
-    if str(Path(__file__).resolve().parents[1]) not in _sys.path:
-        _sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from src.team_names import resolve as _resolve_club
+    _resolve_club = _pm_config._v9_src("team_names").resolve
 except Exception as _e:                                      # pragma: no cover
-    print(f"[odds_fetcher] team_names unavailable ({_e}); falling back to exact matching")
+    # No resolver -> no club matching at all (logged), never a raw-string fallback.
+    print(f"[odds_fetcher] team_names unavailable ({_e}); no event can be matched this run")
     _resolve_club = None
 
 
@@ -503,10 +484,6 @@ def _resolve_event(ev_home: str, ev_away: str,
     if not wanted:
         return None
     if _resolve_club is None:
-        h, a = _norm(ev_home), _norm(ev_away)
-        for (wh, wa) in wanted:
-            if (_norm(wh), _norm(wa)) in {(h, a), (a, h)}:
-                return (wh, wa)
         return None
 
     homes = [h for h, _ in wanted]
@@ -954,20 +931,12 @@ def _split_match(match) -> Optional[tuple[str, str]]:
 
 
 def _same_team(a: str, b: str) -> bool:
-    """Same club under two spellings (OddsAPI / API-Football / ours). Uses the existing
-    matchers: src.team_names.resolve (league-scoped, ambiguity-refusing) and, failing that,
-    api_football._team_match, which is built for two names already known to be one fixture."""
-    if not a or not b:
+    """Same club under two spellings (OddsAPI / API-Football / ours), decided by
+    src.team_names.resolve ONLY (Data Truth: the api_football._team_match fallback, with its
+    0.90 difflib ratio, is no longer consulted). resolve's first tier is normalised equality."""
+    if not a or not b or _resolve_club is None:
         return False
-    if _norm(a) == _norm(b):
-        return True
-    if _resolve_club is not None and _resolve_club(a, [b]):
-        return True
-    try:
-        from player_model.api_football import _team_match
-        return bool(_team_match(a, b))
-    except Exception:                                        # pragma: no cover
-        return False
+    return bool(_resolve_club(a, [b]))
 
 
 def same_fixture(match_a, match_b) -> bool:

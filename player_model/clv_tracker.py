@@ -180,12 +180,10 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     except Exception:
         pq = pd.read_parquet(pqp, columns=_cols)
         pq["player_id"] = None
-    pq["pk"]   = pq["player_name"].astype(str).map(_norm)
     pq["dkey"] = pq["date"].astype(str).str[:10]
-    idx = {(r.pk, r.dkey): r for r in pq.itertuples()}
     # Exact index. Joining players by NAME is the weak link that has kept props ungraded:
-    # any spelling variance between the tip and the stats row silently drops the record.
-    # player_ledger now carries player_id, so resolve it and match on (id, date) first.
+    # any spelling variance between the tip and the stats row silently drops the record, and a
+    # namesake's row grades the wrong player. player_ledger carries player_id: (id, date) ONLY.
     idx_by_id = {(str(r.player_id), r.dkey): r for r in pq.itertuples()
                  if r.player_id is not None and str(r.player_id) not in ("", "nan", "None")}
 
@@ -205,6 +203,7 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     pq_max = str(pq["dkey"].max()) if len(pq) else "(empty)"
     today = str(_dt.utcnow().date())
     graded = 0
+    no_id = 0                  # no player_id for the tip -> cannot be graded honestly
     no_stats: list[str] = []   # played, but the parquet has no stats row -> can't grade
     for i in clv[pending].index:
         try:
@@ -216,12 +215,16 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
             continue
         # Prefer the exact (player_id, date) match; fall back to the name for rows written
         # before player_id existed.
+        # By player_id ONLY (Data Truth, 2026-11-01). The id comes from the ledger row the same tip
+        # wrote; the old fallback joined the stats parquet on the normalised NAME, which graded a
+        # namesake's match. No id -> the record stays PENDING (counted below).
         rec = None
         _pid = pid_lookup.get((_norm(player), market, d))
         if _pid:
             rec = idx_by_id.get((_pid, d))
-        if rec is None:
-            rec = idx.get((_norm(player), d))
+        else:
+            no_id += 1
+            continue
         hit = _MARKET_HIT.get(market)
         if hit is None:
             continue
@@ -237,14 +240,21 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
         try:
             odds = float(clv.at[i, "odds_bet"])
         except (TypeError, ValueError):
-            odds = 0.0
+            odds = float("nan")
         clv.at[i, "result"] = "WIN" if won else "LOSS"
-        clv.at[i, "pnl"] = round(odds - 1.0, 3) if won else -1.0
+        # A WIN without a recorded bet price has unknown P/L, left blank (was odds 0.0 -> -1.0).
+        if not won:
+            clv.at[i, "pnl"] = -1.0
+        elif odds == odds and odds > 1.0:
+            clv.at[i, "pnl"] = round(odds - 1.0, 3)
+        else:
+            clv.at[i, "pnl"] = float("nan")
         graded += 1
 
     if graded:
         clv.to_csv(f, index=False)
-    print(f"[clv_tracker] settle: {graded} record(s) graded")
+    print(f"[clv_tracker] settle: {graded} record(s) graded"
+          + (f"; {no_id} left PENDING (no player_id on the tip)" if no_id else ""))
     if no_stats:
         # Be LOUD about this. A silent "0 graded" looks like "nothing to do", but the real
         # cause is upstream: player_history.parquet has no rows for those match dates, so the

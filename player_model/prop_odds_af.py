@@ -209,17 +209,24 @@ def find_upcoming_fixture_id(league_id: int, season: str, date_str: str,
     how the first version of this looked like it worked. Left alone rather than parameterised,
     since grading relies on that filter and on a 7-day cache that would be wrong here.
     """
-    from player_model.api_football import _get, _team_match
+    from player_model.api_football import _get
+    from player_model import config as pm_config
 
     data = _get("/fixtures", {"league": league_id, "season": season, "date": date_str},
                 cache_hours=6) or {}
+    by_pair = {}
     for fix in data.get("response", []):
         t = fix.get("teams", {})
-        fh = (t.get("home") or {}).get("name", "")
-        fa = (t.get("away") or {}).get("name", "")
-        if _team_match(home, fh) and _team_match(away, fa):
-            return (fix.get("fixture") or {}).get("id")
-    return None
+        by_pair[((t.get("home") or {}).get("name", ""), (t.get("away") or {}).get("name", ""))] = \
+            (fix.get("fixture") or {}).get("id")
+    if not by_pair:
+        return None
+    # Both clubs resolved (src.team_names.resolve, ambiguity refused) among THIS league-date's
+    # fixture clubs, and the resolved pair must be one fixture (was a pairwise _team_match).
+    resolve = pm_config._v9_src("team_names").resolve
+    rh = resolve(home, [h for h, _ in by_pair])
+    ra = resolve(away, [a for _, a in by_pair])
+    return by_pair.get((rh, ra)) if rh and ra else None
 
 
 def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, float], list[dict]]:

@@ -7,6 +7,7 @@ IsotonicRegression — better calibration on small samples per the Senior ML aud
 from __future__ import annotations
 
 import pickle
+import warnings
 from pathlib import Path
 from typing import Optional
 
@@ -26,18 +27,58 @@ TARGETS = config.MARKET_TARGETS
 
 
 def _prep(df: pd.DataFrame, feat_cols: list[str] | None = None) -> tuple[pd.DataFrame, list[str]]:
+    """Legacy (batch-median) preprocessing. Data Truth (2026-11-01): a feature column that is
+    absent, or has no value anywhere in the batch, stays NaN (it used to become 0.0 for every
+    row). Only the NaN-native estimator can score such rows; see _ensemble_proba."""
     cols = feat_cols or [c for c in config.PLAYER_FEATURE_COLS if c in df.columns]
-    # Fill missing columns with 0 rather than crashing — graceful degradation at predict time
     missing = [c for c in cols if c not in df.columns]
     if missing:
         import logging
-        logging.getLogger(__name__).warning(f"[predict] {len(missing)} feature cols missing from feat_df, filling 0: {missing[:8]}")
+        logging.getLogger(__name__).warning(
+            f"[predict] {len(missing)} feature cols absent from feat_df, left NaN: {missing[:8]}")
         df = df.copy()
         for c in missing:
-            df[c] = 0.0
+            df[c] = np.nan
     X = df[cols].copy().apply(pd.to_numeric, errors="coerce")
-    X = X.fillna(X.median().fillna(0.0))
+    X = X.fillna(X.median())
     return X, cols
+
+
+def _nan_native(model) -> bool:
+    """True when the calibrated model's estimator accepts NaN (HistGradientBoosting)."""
+    pipe = getattr(model, "_pipe", model)
+    final = pipe.steps[-1][1] if hasattr(pipe, "steps") else pipe
+    return isinstance(final, HistGradientBoostingClassifier)
+
+
+_ENSEMBLE_LOG: dict = {"rows_nan_native_only": 0, "rows_unscorable": 0}
+
+
+def _ensemble_proba(models: dict, X: pd.DataFrame) -> np.ndarray:
+    """Mean probability over the payload's models. A row that still has a missing input after the
+    legacy batch-median step is scored ONLY by the NaN-native estimator(s) (no invented value is
+    fed to the logistic model); a row no estimator can score gets NaN (no tip). Counts are logged
+    by predict_proba."""
+    complete = X.notna().all(axis=1).to_numpy()
+    out = np.full(len(X), np.nan)
+    probs_all, probs_nan = [], []
+    for m in models.values():
+        if _nan_native(m):
+            probs_nan.append(m.predict_proba(X)[:, 1])
+        elif complete.any():
+            p = np.full(len(X), np.nan)
+            p[complete] = m.predict_proba(X[complete])[:, 1]
+            probs_all.append(p)
+    if probs_all or probs_nan:
+        stack = np.vstack(probs_all + probs_nan)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)       # all-NaN column -> NaN, intended
+            out = np.nanmean(stack, axis=0)
+    if not probs_nan:
+        out[~complete] = np.nan
+    _ENSEMBLE_LOG["rows_nan_native_only"] += int((~complete).sum()) if probs_nan else 0
+    _ENSEMBLE_LOG["rows_unscorable"] += int(np.isnan(out).sum())
+    return out
 
 
 class _UsableColumns(BaseEstimator, TransformerMixin):
@@ -116,6 +157,13 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
     n = len(df)
     if recipe == "legacy":
         X, feat_cols = _prep(df)
+        # A feature with no value in the whole training frame carries nothing to learn and has no
+        # median: dropped from this candidate (logged), never filled with a typed 0.0.
+        _dead = [c for c in feat_cols if X[c].isna().all()]
+        if _dead:
+            print(f"  [{market}] {len(_dead)} feature(s) with no value in training dropped: {_dead[:12]}")
+            feat_cols = [c for c in feat_cols if c not in _dead]
+            X = X[feat_cols]
     elif recipe == PC.RECIPE_REPAIRED:
         if n < 200:
             raise ValueError(f"Not enough samples for {market}: {n}")
@@ -193,7 +241,8 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: s
 
         calibrated = _PlattCalibratedModel(est, platt)
         p_test = calibrated.predict_proba(X_test)[:, 1]
-        auc = roc_auc_score(y_test, p_test) if y_test.nunique() > 1 else 0.5
+        # A single-class holdout has no AUC (was reported as 0.5, i.e. "no skill").
+        auc = roc_auc_score(y_test, p_test) if y_test.nunique() > 1 else float("nan")
         # labels=[0,1] so a single-class test slice (common for rare longshot markets like
         # sot3/goals2) does NOT raise -> otherwise train() aborts to [SKIP] and silently keeps
         # the STALE previous model for that market.
@@ -288,8 +337,7 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict) -> pd.DataFrame:
         return out
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)
-    probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
-    out = pd.DataFrame({"p": np.mean(probas, axis=0)}, index=df.index)
+    out = pd.DataFrame({"p": _ensemble_proba(payload["models"], X)}, index=df.index)
     raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
                             else pd.Series(np.nan, index=df.index)) for c in feat_cols},
                        index=df.index)
@@ -314,5 +362,11 @@ def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
         return predict_with_diagnostics(df, payload)["p"]
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)
-    probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
-    return pd.Series(np.mean(probas, axis=0), index=df.index)
+    before = dict(_ENSEMBLE_LOG)
+    p = pd.Series(_ensemble_proba(payload["models"], X), index=df.index)
+    n_nn = _ENSEMBLE_LOG["rows_nan_native_only"] - before["rows_nan_native_only"]
+    n_un = _ENSEMBLE_LOG["rows_unscorable"] - before["rows_unscorable"]
+    if n_nn or n_un:
+        print(f"[props_model] {payload.get('market')}: {n_nn}/{len(df)} row(s) with a missing input "
+              f"scored by the NaN-native estimator only; {n_un} unscorable (no probability)")
+    return p

@@ -74,7 +74,7 @@ def test_unknown_feature_is_refused_by_the_imputer():
 
 
 # ---------------------------------------------------------------------------- legacy parity
-def _real_rows(n=400) -> pd.DataFrame:
+def _real_rows(n=400, absent=("rating_pg",)) -> pd.DataFrame:
     parts = sorted((ROOT / "player_history.parquet").glob("month_*.parquet"))
     if not parts:
         pytest.skip("player_history.parquet not checked out")
@@ -82,21 +82,35 @@ def _real_rows(n=400) -> pd.DataFrame:
     rng = np.random.default_rng(1)
     for c in FEATS[:40]:                              # inject NaNs -> batch medians fire
         df.loc[rng.random(len(df)) < 0.1, c] = np.nan
-    return df.drop(columns=["rating_pg"])            # an ABSENT column -> legacy 0.0 fill
+    return df.drop(columns=list(absent))             # an ABSENT column (legacy used to fill 0.0)
+
+
+def _hgb_only(df: pd.DataFrame, payload: dict) -> np.ndarray:
+    cols = payload["feature_cols"]
+    X = df.reindex(columns=cols).apply(pd.to_numeric, errors="coerce")
+    X = X.fillna(X.median())
+    return np.mean([m.predict_proba(X)[:, 1] for m in payload["models"].values() if M._nan_native(m)],
+                   axis=0)
 
 
 @pytest.mark.parametrize("market", config.MARKETS)
 def test_serving_legacy_payload_scores_exactly_as_before_r2(market):
+    """Data Truth (dt/props, 2026-11-01): wherever every input is measured (or batch-median filled,
+    the legacy recipe), the legacy payload scores EXACTLY as before R2. An ABSENT feature column is
+    no longer a typed 0.0: those rows are scored by the NaN-native estimator alone."""
     path = config.MODEL_FILES[market]
     if not path.exists():
         pytest.skip(f"{path.name} absent")
     raw = path.read_bytes()
     payload = pickle.loads(raw)
     assert "recipe" not in payload and M.payload_recipe(payload) == PC.RECIPE_LEGACY
+    full = _real_rows(absent=())
+    got = M.predict_proba(full, payload).to_numpy()
+    np.testing.assert_array_equal(got, _legacy_reference(full, payload))
+    np.testing.assert_array_equal(M.predict_with_diagnostics(full, payload)["p"].to_numpy(), got)
     df = _real_rows()
     got = M.predict_proba(df, payload).to_numpy()
-    np.testing.assert_array_equal(got, _legacy_reference(df, payload))
-    # the diagnostics wrapper returns the same probability for legacy
+    np.testing.assert_allclose(got, _hgb_only(df, payload), rtol=0, atol=1e-12)
     np.testing.assert_array_equal(M.predict_with_diagnostics(df, payload)["p"].to_numpy(), got)
 
 
