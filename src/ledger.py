@@ -399,6 +399,10 @@ def _load_side_ledger() -> pd.DataFrame:
     return pd.DataFrame(columns=SIDE_LEDGER_COLS)
 
 
+# pipeline._generate_side_bets is one-sided by construction: BTTS is YES, Over 1.5/3.5 is OVER.
+_SIDE_OF_MARKET = {"btts": "YES", "over15": "OVER", "over35": "OVER"}
+
+
 def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None:
     """Append BTTS / Over 1.5 / Over 3.5 tips to their OWN ledger (side_bets_ledger.csv),
     one row per (fixture, market), ALL tiers. Same rule as append_tips: the FIRST logged tier stands,
@@ -461,6 +465,10 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "source": source, "generated_at": now, "signal_date": today,
             "match_date": match_date, "league": str(row.get("league", "")),
             "home_team": home, "away_team": away, "market": market,
+            # The producer emits `side` and SIDE_LEDGER_COLS declares it, but it was never written
+            # here, so the column was 100% null (Data Truth audit findings 26, 28).
+            "side": (str(row["side"]) if pd.notna(row.get("side")) and str(row.get("side")).strip()
+                     else _SIDE_OF_MARKET.get(market, "")),
             "odds": odds, "edge_pct": edge_pct, "ev_pct": ev_pct,
             "model_prob": round(float(row.get("model_prob", 0.0) or 0.0), 4),
             "signal_tier": tier,

@@ -811,11 +811,17 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
             log.debug(f"  sharp: {home} vs {away} {date_str} not found in scores")
             continue
 
+        # No usable entry price -> the RESULT is graded, the P/L is not. This defaulted to odds 1.0,
+        # so a WIN was booked at 0.0 with no flag (Data Truth audit finding 27).
         try:
             opening_odds = float(row["opening_odds"])
         except (TypeError, ValueError):
-            opening_odds = 1.0
-        pnl = round(opening_odds - 1.0, 4) if match_result == "WIN" else -1.0
+            opening_odds = np.nan
+        if not opening_odds > 1.0:
+            pnl = np.nan
+            log.warning(f"  sharp: {home} vs {away} {date_str} has no entry price — result kept, P/L left empty")
+        else:
+            pnl = round(opening_odds - 1.0, 4) if match_result == "WIN" else -1.0
 
         updates.append({"idx": idx, "result": match_result, "pnl": pnl})
         log.info(
@@ -928,11 +934,17 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
         res = _resolve_side_market(market, ev_found["home_score"], ev_found["away_score"])
         if not res:
             continue
+        # No usable entry price -> result graded, P/L left empty (was odds 1.0: a WIN booked at 0.0
+        # with no flag, Data Truth audit finding 27).
         try:
             odds = float(row["odds"])
         except (TypeError, ValueError):
-            odds = 1.0
-        pnl = round(odds - 1.0, 4) if res == "WIN" else -1.0
+            odds = np.nan
+        if not odds > 1.0:
+            pnl = np.nan
+            log.warning(f"  side {market}: {home} vs {away} {date_str} has no entry price — P/L left empty")
+        else:
+            pnl = round(odds - 1.0, 4) if res == "WIN" else -1.0
 
         # Closing line -> CLV, same percent convention as bets_ledger/ht_ledger.
         # A missing closing price is normal (thin 2nd-div side markets); grade the result
@@ -1199,10 +1211,12 @@ def update_ht_results(days: int = 3) -> None:
         try:
             fair = float(led.at[i, "fair_odds"])
         except (TypeError, ValueError):
-            fair = 1.0
-        stake_odds = entry or close or fair or 1.0   # settle at ENTRY (open), like main/side ledgers
+            fair = None
+        stake_odds = entry or close or fair          # settle at ENTRY (open), like main/side ledgers
         led.at[i, "result"] = res
-        led.at[i, "pnl"] = round(stake_odds - 1.0, 3) if res == "WIN" else -1.0
+        # No price at all -> no P/L. The final `or 1.0` booked a WIN at 0.0 (finding 27).
+        led.at[i, "pnl"] = (np.nan if not (stake_odds and stake_odds > 1.0)
+                            else round(stake_odds - 1.0, 3) if res == "WIN" else -1.0)
         # MARK THE CIRCULAR ONES. With no captured price this settles at the model's OWN fair
         # odds (1/p), so a win returns exactly what the model implied and the P/L measures
         # nothing about the market — it only restates the model's confidence. Summing those
