@@ -1,25 +1,21 @@
 {
-  "ts": "2026-11-01T05:55:34.597997+00:00",
+  "ts": "2026-11-01T09:27:23.818344+00:00",
   "models": {
     "standard": {
-      "fixtures": 70,
+      "fixtures": 67,
       "n_features": 42,
       "blank": [],
-      "constant": [
-        "home_advantage"
-      ],
-      "degenerate": 1,
-      "degenerate_pct": 2.4
+      "constant": [],
+      "degenerate": 0,
+      "degenerate_pct": 0.0
     },
     "new_format": {
-      "fixtures": 77,
+      "fixtures": 86,
       "n_features": 27,
       "blank": [],
-      "constant": [
-        "home_advantage"
-      ],
-      "degenerate": 1,
-      "degenerate_pct": 3.7
+      "constant": [],
+      "degenerate": 0,
+      "degenerate_pct": 0.0
     }
   }
 }
