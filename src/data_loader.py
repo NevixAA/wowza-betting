@@ -140,13 +140,57 @@ def _nf_real_odds() -> dict:
                                 f"(2026-08-23 parser fix). Raw file unchanged.")
                     _o = _o[~_bad]
                 _o = _drop_mismapped(_o, "newformat_odds_history", "nf_odds")
+                # Keyed by the MATCH date (snapshot date only when absent), last PRE-KICKOFF
+                # snapshot per market. Keying by snapshot date filed every price captured before
+                # match day under the wrong day, so the training lookup (by match date) missed it
+                # (Data Truth audit finding 39).
+                _md = _o["match_date"].where(_o["match_date"].notna(), _o["snapshot_date"]) \
+                    if "match_date" in _o.columns else _o["snapshot_date"]
+                _o = _o.assign(md_key=_md.astype(str).str[:10])
+                if "snapshot_ts" in _o.columns:
+                    _ts = pd.to_datetime(_o["snapshot_ts"], errors="coerce", utc=True)
+                    _ko = pd.to_datetime(_o.get("kickoff_utc"), errors="coerce", utc=True)
+                    _o = _o[~(_ko.notna() & _ts.notna() & (_ts >= _ko))]
+                    _o = _o.assign(ts_key=pd.to_datetime(_o["snapshot_ts"], errors="coerce", utc=True)
+                                   ).sort_values("ts_key", kind="mergesort")
+                # (itertuples renames columns that start with "_", so no underscore names here)
                 for _r in _o.itertuples(index=False):
                     _nf_odds_cache.setdefault(
-                        (str(_r.snapshot_date), str(_r.league), str(_r.match)), {}
-                    )[str(_r.market)] = float(_r.odds)
-            except Exception:
-                pass
+                        (str(_r.md_key), str(_r.league), str(_r.match)), {}
+                    )[str(_r.market)] = float(_r.odds)          # later snapshot overwrites
+            except Exception as e:                                     # noqa: BLE001
+                # Never silent: an empty price table looks exactly like "no captures".
+                log.error(f"[nf_odds] could not build the NF price table ({type(e).__name__}: {e})")
     return _nf_odds_cache
+
+_nf_by_day: dict | None = None
+
+
+def _nf_odds_lookup(nfo: dict, day: str, league: str, home: str, away: str) -> dict:
+    """Prices for one fixture: the exact 'Home vs Away' key, else both names resolved within that
+    day and league (src.team_names.resolve - the capture uses OddsAPI spellings, the history uses
+    football-data's). Exactly one fixture or nothing (Data Truth audit finding 39)."""
+    hit = nfo.get((day, league, f"{home} vs {away}"))
+    if hit:
+        return hit
+    global _nf_by_day
+    if _nf_by_day is None or _nf_by_day.get("_src") is not nfo:
+        _nf_by_day = {"_src": nfo}
+        for (d, lg, m) in nfo:
+            if " vs " in m:
+                h, a = m.split(" vs ", 1)
+                _nf_by_day.setdefault((d, lg), []).append((h, a, m))
+    cands = _nf_by_day.get((day, league), [])
+    if not cands:
+        return {}
+    from src.team_names import resolve as _rs
+    rh = _rs(home, [c[0] for c in cands])
+    ra = _rs(away, [c[1] for c in cands])
+    if not rh or not ra:
+        return {}
+    ms = [m for h, a, m in cands if h == rh and a == ra]
+    return nfo.get((day, league, ms[0]), {}) if len(ms) == 1 else {}
+
 
 # Module-level cache so we only parse the XLSX once per process
 _CACHE: Optional[pd.DataFrame] = None
@@ -672,7 +716,8 @@ def _ci_download_all(have: set | None = None) -> list[pd.DataFrame]:
             _nfo   = _nf_real_odds()
             _days  = df["date"].dt.strftime("%Y-%m-%d")
             _mkeys = df["home_team"].astype(str) + " vs " + df["away_team"].astype(str)
-            _rws   = [_nfo.get((d, league, m), {}) for d, m in zip(_days, _mkeys)]
+            _rws   = [_nf_odds_lookup(_nfo, d, league, h, a) for d, h, a in
+                      zip(_days, df["home_team"].astype(str), df["away_team"].astype(str))]
             df["odds_over25"]  = [r.get("over25",   np.nan) for r in _rws]
             df["odds_under25"] = [r.get("under25",  np.nan) for r in _rws]
             df["odds_over15"]  = [r.get("over15",   np.nan) for r in _rws]
