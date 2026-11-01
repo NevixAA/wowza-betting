@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-01T10:39:33Z",
+  "generated_at": "2026-11-01T11:20:21Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -9,9 +9,9 @@
     "side_edge_devig_health": true,
     "join_integrity_health": true,
     "identity_health": false,
-    "season_resolution_health": false,
-    "league_registry_health": false,
-    "player_props_integrity_health": false
+    "season_resolution_health": true,
+    "league_registry_health": true,
+    "player_props_integrity_health": true
   },
   "tracks": {
     "standard|OU25": {
@@ -23,7 +23,7 @@
       "model_recipe_version": "v9_repaired-1.0",
       "serving_version": "standard_repaired_20261028T123040Z_1f5805e6",
       "training_cutoff": "2026-10-28",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "3fd56c29e2c55ee8",
       "identity_version": "v9r-identity-1.0",
       "feature_recipe_version": "v9r-features-1.0",
@@ -119,7 +119,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "newformat_20261018T080423Z_9eb6b4b4",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -180,7 +180,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "2026-10-28",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -223,7 +223,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 330,
+          "CONFIRMED_BY_DEVIG": 331,
           "UNVERIFIABLE_ONE_SIDED": 80,
           "ONLY_BECAUSE_OF_1_08": 77
         },
@@ -252,7 +252,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -292,7 +292,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 330,
+          "CONFIRMED_BY_DEVIG": 331,
           "UNVERIFIABLE_ONE_SIDED": 80,
           "ONLY_BECAUSE_OF_1_08": 77
         },
@@ -321,7 +321,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "2026-10-28",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -393,7 +393,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -462,7 +462,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "2026-10-28",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -507,7 +507,7 @@
         "devig_shadow_ledger": {
           "CONFIRMED_BY_DEVIG": 17,
           "ONLY_BECAUSE_OF_1_08": 7,
-          "UNVERIFIABLE_ONE_SIDED": 1
+          "UNVERIFIABLE_ONE_SIDED": 2
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -534,7 +534,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -576,7 +576,7 @@
         "devig_shadow_ledger": {
           "CONFIRMED_BY_DEVIG": 17,
           "ONLY_BECAUSE_OF_1_08": 7,
-          "UNVERIFIABLE_ONE_SIDED": 1
+          "UNVERIFIABLE_ONE_SIDED": 2
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -603,7 +603,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over05_20261018T080423Z_359b491a",
       "training_cutoff": "2026-10-28",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -668,7 +668,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over15_20261004T093828Z_6f370f63",
       "training_cutoff": "2026-10-28",
-      "code_sha": "b0a1204ad4c6",
+      "code_sha": "64c045900056",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -727,7 +727,7 @@
     "props|ALL": {
       "model_type": "props",
       "market": "ALL",
-      "status": "UNKNOWN",
+      "status": "WARN",
       "note": "owned by the props workstream (player_props_integrity_health.json)"
     }
   }

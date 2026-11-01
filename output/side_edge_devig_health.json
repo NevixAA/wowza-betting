@@ -1,48 +1,53 @@
 {
   "artifact": "side_edge_devig_health",
   "shadow_version": "side_edge_devig_shadow-1.0",
-  "generated_at": "2026-11-01T10:37:56Z",
+  "generated_at": "2026-11-01T11:19:54Z",
   "production_rule": "edge = p_model - (1/odds)/1.08 (pipeline._generate_side_bets, unchanged)",
   "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
   "quotes_from": "2026-08-19 09:23:27+00:00",
-  "quote_rows": 197724,
+  "quote_rows": 197950,
   "board": {
-    "generated_at": "2026-11-01T09:43:06Z",
-    "rows": 82,
-    "production_tips": 2,
+    "generated_at": "2026-11-01T10:59:39Z",
+    "rows": 93,
+    "production_tips": 4,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 2
+      "CONFIRMED_BY_DEVIG": 3,
+      "ONLY_BECAUSE_OF_1_08": 1
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 1
+        "CONFIRMED_BY_DEVIG": 1,
+        "ONLY_BECAUSE_OF_1_08": 1
       },
       "over15": {
         "CONFIRMED_BY_DEVIG": 1
+      },
+      "over35": {
+        "CONFIRMED_BY_DEVIG": 1
       }
     },
-    "devigged_rows": 82,
-    "median_pair_overround": 0.0767,
-    "median_edge_prod_minus_devig_pp": 0.06,
-    "mean_edge_prod_minus_devig_pp": -0.12,
-    "p90_edge_prod_minus_devig_pp": 1.92,
+    "devigged_rows": 93,
+    "median_pair_overround": 0.0772,
+    "median_edge_prod_minus_devig_pp": 0.13,
+    "mean_edge_prod_minus_devig_pp": -0.03,
+    "p90_edge_prod_minus_devig_pp": 1.85,
     "rows_prod_edge_inflated_ge_2pp": 7,
     "rows_pair_overround_below_6pct": 1,
-    "mean_inflation_pp_when_overround_below_6pct": 0.87
+    "mean_inflation_pp_when_overround_below_6pct": 4.03
   },
   "ledger_retrospective": {
     "label": "RETROSPECTIVE",
-    "tips_since_quotes_exist": 617,
-    "rows": 617,
-    "production_tips": 617,
+    "tips_since_quotes_exist": 619,
+    "rows": 619,
+    "production_tips": 619,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 424,
-      "UNVERIFIABLE_ONE_SIDED": 101,
+      "CONFIRMED_BY_DEVIG": 425,
+      "UNVERIFIABLE_ONE_SIDED": 102,
       "ONLY_BECAUSE_OF_1_08": 92
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 330,
+        "CONFIRMED_BY_DEVIG": 331,
         "UNVERIFIABLE_ONE_SIDED": 80,
         "ONLY_BECAUSE_OF_1_08": 77
       },
@@ -54,13 +59,13 @@
       "over35": {
         "CONFIRMED_BY_DEVIG": 17,
         "ONLY_BECAUSE_OF_1_08": 7,
-        "UNVERIFIABLE_ONE_SIDED": 1
+        "UNVERIFIABLE_ONE_SIDED": 2
       }
     },
-    "devigged_rows": 516,
+    "devigged_rows": 517,
     "median_pair_overround": 0.0798,
     "median_edge_prod_minus_devig_pp": 0.1,
-    "mean_edge_prod_minus_devig_pp": 0.47,
+    "mean_edge_prod_minus_devig_pp": 0.46,
     "p90_edge_prod_minus_devig_pp": 2.51,
     "rows_prod_edge_inflated_ge_2pp": 83,
     "rows_pair_overround_below_6pct": 15,
@@ -117,7 +122,7 @@
         "tier_prod": "VALUABLE",
         "edge_prod": 0.0412,
         "edge_devig": -0.0072,
-        "odds": 1.89,
+        "odds": 1.8900000000000001,
         "p_fair_devig": 0.5383,
         "books": "betfred_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
       },
@@ -157,29 +162,32 @@
     ]
   },
   "ledger_open_tips": {
-    "rows": 30,
-    "production_tips": 30,
+    "rows": 32,
+    "production_tips": 32,
     "classification": {
-      "CONFIRMED_BY_DEVIG": 16,
+      "CONFIRMED_BY_DEVIG": 17,
       "ONLY_BECAUSE_OF_1_08": 8,
-      "UNVERIFIABLE_ONE_SIDED": 6
+      "UNVERIFIABLE_ONE_SIDED": 7
     },
     "by_market": {
       "btts": {
-        "CONFIRMED_BY_DEVIG": 15,
+        "CONFIRMED_BY_DEVIG": 16,
         "ONLY_BECAUSE_OF_1_08": 6,
         "UNVERIFIABLE_ONE_SIDED": 6
       },
       "over15": {
         "ONLY_BECAUSE_OF_1_08": 2,
         "CONFIRMED_BY_DEVIG": 1
+      },
+      "over35": {
+        "UNVERIFIABLE_ONE_SIDED": 1
       }
     },
-    "devigged_rows": 24,
+    "devigged_rows": 25,
     "median_pair_overround": 0.0799,
-    "median_edge_prod_minus_devig_pp": 0.02,
-    "mean_edge_prod_minus_devig_pp": 0.28,
-    "p90_edge_prod_minus_devig_pp": 2.07,
+    "median_edge_prod_minus_devig_pp": -0.05,
+    "mean_edge_prod_minus_devig_pp": 0.24,
+    "p90_edge_prod_minus_devig_pp": 1.94,
     "rows_prod_edge_inflated_ge_2pp": 3,
     "rows_pair_overround_below_6pct": 0
   }

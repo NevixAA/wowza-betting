@@ -1,94 +1,28 @@
 {
   "artifact": "oddsapi_quota_health",
   "rule_version": "oddsapi-quota-1.0",
-  "generated_at": "2026-11-01T10:39:29Z",
-  "window_hours": 48.0,
-  "runs_listed": 121,
-  "runs_parsed": 121,
+  "generated_at": "2026-11-01T11:20:19Z",
+  "window_hours": 24.0,
+  "runs_listed": 65,
+  "runs_parsed": 65,
   "log_download_failures": 0,
-  "credits_logged_in_window": 393,
-  "credits_per_day_logged_estimate": 196,
-  "account_remaining_latest": 98948,
-  "account_remaining_latest_ts": "2026-11-01T09:22:14Z",
-  "account_burn_per_day_from_remaining": 1352,
-  "projected_days_to_exhaustion": 73.2,
+  "credits_logged_in_window": 506,
+  "credits_per_day_logged_estimate": 506,
+  "account_remaining_latest": 98238,
+  "account_remaining_latest_ts": "2026-11-01T11:18:03Z",
+  "account_burn_per_day_from_remaining": 1906,
+  "projected_days_to_exhaustion": 51.5,
   "monthly_allowance_assumed": 100000,
   "by_workflow": {
-    "warm_nf_shot_cache.yml": {
-      "runs": 2,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "daily_summary.yml": {
-      "runs": 10,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "nf_odds_capture.yml": {
-      "runs": 16,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "player_props.yml": {
-      "runs": 13,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
     "predict.yml": {
-      "runs": 15,
-      "credits": 390,
-      "calls": 195,
+      "runs": 10,
+      "credits": 506,
+      "calls": 253,
       "runs_with_unknown_credits": 0
     },
-    "af_usage_monitor.yml": {
-      "runs": 6,
+    "injury_refresh.yml": {
+      "runs": 1,
       "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "prop_odds_snapshot.yml": {
-      "runs": 7,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "std_odds_capture.yml": {
-      "runs": 16,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "live_scanner.yml": {
-      "runs": 7,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "update_results.yml": {
-      "runs": 7,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "sharp_tracker.yml": {
-      "runs": 6,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "sharp_move_alert.yml": {
-      "runs": 4,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "exchange_odds_capture.yml": {
-      "runs": 2,
-      "credits": 3,
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
@@ -98,20 +32,8 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "fantasy_refresh.yml": {
-      "runs": 2,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "af_history_extend.yml": {
-      "runs": 2,
-      "credits": 0,
-      "calls": 0,
-      "runs_with_unknown_credits": 0
-    },
-    "injury_refresh.yml": {
-      "runs": 2,
+    "player_props_train.yml": {
+      "runs": 1,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
@@ -122,21 +44,114 @@
       "calls": 0,
       "runs_with_unknown_credits": 0
     },
-    "retrain.yml": {
+    "props_r2_challengers.yml": {
+      "runs": 1,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "warm_nf_shot_cache.yml": {
+      "runs": 1,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "daily_summary.yml": {
+      "runs": 4,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "nf_odds_capture.yml": {
+      "runs": 8,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "player_props.yml": {
+      "runs": 6,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "af_usage_monitor.yml": {
+      "runs": 3,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "prop_odds_snapshot.yml": {
+      "runs": 4,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "std_odds_capture.yml": {
+      "runs": 7,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "live_scanner.yml": {
+      "runs": 4,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "update_results.yml": {
+      "runs": 4,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "sharp_tracker.yml": {
+      "runs": 3,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "sharp_move_alert.yml": {
+      "runs": 2,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "exchange_odds_capture.yml": {
+      "runs": 1,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "fantasy_refresh.yml": {
+      "runs": 1,
+      "credits": 0,
+      "calls": 0,
+      "runs_with_unknown_credits": 0
+    },
+    "af_history_extend.yml": {
       "runs": 1,
       "credits": 0,
       "calls": 0,
       "runs_with_unknown_credits": 0
     }
   },
-  "by_league": {},
-  "by_market": {
-    "btts": 390,
-    "exchange_h2h": 3
+  "by_league": {
+    "Austrian Bundesliga": 6,
+    "Bundesliga 2": 6,
+    "Denmark Superliga": 8,
+    "Finland Veikkausliiga": 2,
+    "La Liga 2": 4,
+    "League One": 2,
+    "Norway Eliteserien": 8,
+    "Serie B": 8,
+    "Sweden Allsvenskan": 10
   },
-  "btts_fixtures_considered": 459,
-  "btts_suppressed_by_refresh_clock": 264,
-  "btts_duplicate_fetch_suppression_rate": 0.5752,
+  "by_market": {
+    "btts": 506
+  },
+  "btts_fixtures_considered": 775,
+  "btts_suppressed_by_refresh_clock": 522,
+  "btts_duplicate_fetch_suppression_rate": 0.6735,
   "thresholds": {
     "warn_remaining_fraction": 0.25,
     "warn_days_to_exhaustion": 7,
@@ -144,5 +159,5 @@
   },
   "status": "PASS",
   "reasons": [],
-  "health_check_line": "OddsAPI quota PASS: remaining 98948, burn 1352/day, 73.2 days left, BTTS suppression 58%"
+  "health_check_line": "OddsAPI quota PASS: remaining 98238, burn 1906/day, 51.5 days left, BTTS suppression 67%"
 }
