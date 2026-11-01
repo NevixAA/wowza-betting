@@ -1,0 +1,1749 @@
+{
+ "ref": "fb0e9697ec8556d4dd3df57f31f8ed5415a5012d",
+ "n_boards": 1347,
+ "board_rows": 169054,
+ "first_board_utc": "2026-05-21T09:36:48+00:00",
+ "last_board_utc": "2026-11-01T10:59:39+00:00",
+ "side_ledger_first_commit": "2026-08-09T10:58:14+00:00",
+ "decisions": [
+  {
+   "market": "ou25",
+   "outcome": "below_threshold",
+   "n": 109654
+  },
+  {
+   "market": "btts",
+   "outcome": "no_model_probability",
+   "n": 1715
+  },
+  {
+   "market": "over15",
+   "outcome": "no_model_probability",
+   "n": 1715
+  },
+  {
+   "market": "over35",
+   "outcome": "no_model_probability",
+   "n": 1715
+  },
+  {
+   "market": "ou25",
+   "outcome": "SELECTED",
+   "n": 51976
+  },
+  {
+   "market": "ou25",
+   "outcome": "price_bound_blocked",
+   "n": 3545
+  },
+  {
+   "market": "btts",
+   "outcome": "unpriced",
+   "n": 87443
+  },
+  {
+   "market": "over15",
+   "outcome": "unpriced",
+   "n": 156600
+  },
+  {
+   "market": "over35",
+   "outcome": "unpriced",
+   "n": 130190
+  },
+  {
+   "market": "over35",
+   "outcome": "below_threshold",
+   "n": 36848
+  },
+  {
+   "market": "over15",
+   "outcome": "SELECTED",
+   "n": 9933
+  },
+  {
+   "market": "over35",
+   "outcome": "SELECTED",
+   "n": 296
+  },
+  {
+   "market": "over15",
+   "outcome": "below_threshold",
+   "n": 805
+  },
+  {
+   "market": "ou25",
+   "outcome": "blind_fixture_guard",
+   "n": 3871
+  },
+  {
+   "market": "ou25",
+   "outcome": "post_kickoff_quote",
+   "n": 8
+  },
+  {
+   "market": "over35",
+   "outcome": "post_kickoff_quote",
+   "n": 5
+  },
+  {
+   "market": "btts",
+   "outcome": "below_threshold",
+   "n": 68309
+  },
+  {
+   "market": "btts",
+   "outcome": "SELECTED",
+   "n": 11585
+  },
+  {
+   "market": "btts",
+   "outcome": "post_kickoff_quote",
+   "n": 2
+  },
+  {
+   "market": "over15",
+   "outcome": "post_kickoff_quote",
+   "n": 1
+  }
+ ],
+ "mismatch_reason_counts": {
+  "ledger_tier_overwritten_after_first_log": 627,
+  "independent_result_unavailable_NOT_FOUND": 151,
+  "invalid_side_AVOID": 135,
+  "independent_rejects_price_bound_blocked": 123,
+  "ledger_odds_overwritten_after_first_log": 92,
+  "NOT_IDENTIFIABLE_logged_before_first_committed_board": 68,
+  "production_unsettled_but_result_known": 32,
+  "production_logged_from_uncommitted_board": 28,
+  "tier_differs_MARKSMAN_vs_VALUABLE_pre_2026-10-26_drift_tier_era": 26,
+  "row_removed_from_current_ledger": 23,
+  "tier_differs_VALUE_vs_VALUABLE_pre_2026-10-26_drift_tier_era (legacy VALUE label)": 11,
+  "independent_only": 11,
+  "tier_differs_MARKSMAN_vs_SNIPER_pre_2026-10-26_drift_tier_era": 6,
+  "production_board_decision_AVOID_AVOID": 6,
+  "NOT_IDENTIFIABLE_both_losing_guard_v7_params_uncommitted": 6,
+  "independent_first_sight_earlier_than_production_log": 5,
+  "independent_policy_drop_opposite_goal_direction": 3,
+  "independent_rejects_below_threshold": 2,
+  "production_has_opposite_side_first(flip_guard/one_side_policy)": 2,
+  "production_board_decision_UNDER_VALUABLE": 2,
+  "independent_policy_drop_flip_opposite_ou25": 2,
+  "tier_differs_VALUE_vs_SNIPER_pre_2026-10-26_drift_tier_era (legacy VALUE label)": 1
+ },
+ "reconciliation": {
+  "production_keys": 2481,
+  "independent_only": 11,
+  "production_exact_match_no_reason": 1551,
+  "by_market": {
+   "ou25": {
+    "production": 1829,
+    "matched_clean": 1081,
+    "independent_also_selected": 1655,
+    "independent_only": 8
+   },
+   "btts": {
+    "production": 488,
+    "matched_clean": 349,
+    "independent_also_selected": 488,
+    "independent_only": 0
+   },
+   "over15": {
+    "production": 138,
+    "matched_clean": 100,
+    "independent_also_selected": 138,
+    "independent_only": 0
+   },
+   "over35": {
+    "production": 26,
+    "matched_clean": 21,
+    "independent_also_selected": 26,
+    "independent_only": 3
+   }
+  },
+  "result_comparisons": {
+   "both_settled": 2001,
+   "agree": 2001,
+   "disagree": 0
+  }
+ },
+ "independent_roi": {
+  "btts|new_format|all|ALL": {
+   "flat": {
+    "n": 262,
+    "staked": 262.0,
+    "profit": 35.305,
+    "roi_pct": 13.48,
+    "hit_pct": 56.49,
+    "mean_odds": 2.004
+   },
+   "flat_ci95_day_block": [
+    1.29,
+    25.74
+   ],
+   "documented_tier_stake": {
+    "n": 262,
+    "staked": 165.0,
+    "profit": 30.54,
+    "roi_pct": 18.51,
+    "hit_pct": 56.49,
+    "mean_odds": 2.004
+   },
+   "actual_stake_audit": {
+    "n": 6,
+    "staked": 5.87,
+    "profit": -4.2605,
+    "roi_pct": -72.58,
+    "hit_pct": 16.67,
+    "mean_odds": 2.261
+   }
+  },
+  "btts|new_format|all|YES": {
+   "flat": {
+    "n": 262,
+    "staked": 262.0,
+    "profit": 35.305,
+    "roi_pct": 13.48,
+    "hit_pct": 56.49,
+    "mean_odds": 2.004
+   },
+   "flat_ci95_day_block": [
+    2.51,
+    26.77
+   ],
+   "documented_tier_stake": {
+    "n": 262,
+    "staked": 165.0,
+    "profit": 30.54,
+    "roi_pct": 18.51,
+    "hit_pct": 56.49,
+    "mean_odds": 2.004
+   },
+   "actual_stake_audit": {
+    "n": 6,
+    "staked": 5.87,
+    "profit": -4.2605,
+    "roi_pct": -72.58,
+    "hit_pct": 16.67,
+    "mean_odds": 2.261
+   }
+  },
+  "btts|new_format|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 224,
+    "staked": 224.0,
+    "profit": 21.715,
+    "roi_pct": 9.69,
+    "hit_pct": 55.36,
+    "mean_odds": 1.981
+   },
+   "flat_ci95_day_block": [
+    -2.55,
+    22.79
+   ],
+   "documented_tier_stake": {
+    "n": 224,
+    "staked": 140.75,
+    "profit": 20.07,
+    "roi_pct": 14.26,
+    "hit_pct": 55.36,
+    "mean_odds": 1.981
+   },
+   "actual_stake_audit": {
+    "n": 6,
+    "staked": 5.87,
+    "profit": -4.2605,
+    "roi_pct": -72.58,
+    "hit_pct": 16.67,
+    "mean_odds": 2.261
+   }
+  },
+  "btts|new_format|from_2026-09-01|YES": {
+   "flat": {
+    "n": 224,
+    "staked": 224.0,
+    "profit": 21.715,
+    "roi_pct": 9.69,
+    "hit_pct": 55.36,
+    "mean_odds": 1.981
+   },
+   "flat_ci95_day_block": [
+    -3.21,
+    23.33
+   ],
+   "documented_tier_stake": {
+    "n": 224,
+    "staked": 140.75,
+    "profit": 20.07,
+    "roi_pct": 14.26,
+    "hit_pct": 55.36,
+    "mean_odds": 1.981
+   },
+   "actual_stake_audit": {
+    "n": 6,
+    "staked": 5.87,
+    "profit": -4.2605,
+    "roi_pct": -72.58,
+    "hit_pct": 16.67,
+    "mean_odds": 2.261
+   }
+  },
+  "btts|standard|all|ALL": {
+   "flat": {
+    "n": 156,
+    "staked": 156.0,
+    "profit": 6.865,
+    "roi_pct": 4.4,
+    "hit_pct": 56.41,
+    "mean_odds": 1.861
+   },
+   "flat_ci95_day_block": [
+    -11.55,
+    21.49
+   ],
+   "documented_tier_stake": {
+    "n": 156,
+    "staked": 81.5,
+    "profit": 3.2463,
+    "roi_pct": 3.98,
+    "hit_pct": 56.41,
+    "mean_odds": 1.861
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "btts|standard|all|YES": {
+   "flat": {
+    "n": 156,
+    "staked": 156.0,
+    "profit": 6.865,
+    "roi_pct": 4.4,
+    "hit_pct": 56.41,
+    "mean_odds": 1.861
+   },
+   "flat_ci95_day_block": [
+    -11.46,
+    20.46
+   ],
+   "documented_tier_stake": {
+    "n": 156,
+    "staked": 81.5,
+    "profit": 3.2463,
+    "roi_pct": 3.98,
+    "hit_pct": 56.41,
+    "mean_odds": 1.861
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "btts|standard|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 137,
+    "staked": 137.0,
+    "profit": 4.02,
+    "roi_pct": 2.93,
+    "hit_pct": 56.2,
+    "mean_odds": 1.841
+   },
+   "flat_ci95_day_block": [
+    -11.9,
+    21.59
+   ],
+   "documented_tier_stake": {
+    "n": 137,
+    "staked": 71.75,
+    "profit": 2.0738,
+    "roi_pct": 2.89,
+    "hit_pct": 56.2,
+    "mean_odds": 1.841
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "btts|standard|from_2026-09-01|YES": {
+   "flat": {
+    "n": 137,
+    "staked": 137.0,
+    "profit": 4.02,
+    "roi_pct": 2.93,
+    "hit_pct": 56.2,
+    "mean_odds": 1.841
+   },
+   "flat_ci95_day_block": [
+    -11.71,
+    20.59
+   ],
+   "documented_tier_stake": {
+    "n": 137,
+    "staked": 71.75,
+    "profit": 2.0738,
+    "roi_pct": 2.89,
+    "hit_pct": 56.2,
+    "mean_odds": 1.841
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|new_format|all|ALL": {
+   "flat": {
+    "n": 993,
+    "staked": 993.0,
+    "profit": -60.4,
+    "roi_pct": -6.08,
+    "hit_pct": 40.99,
+    "mean_odds": 2.385
+   },
+   "flat_ci95_day_block": [
+    -14.21,
+    1.45
+   ],
+   "documented_tier_stake": {
+    "n": 993,
+    "staked": 636.0,
+    "profit": -46.12,
+    "roi_pct": -7.25,
+    "hit_pct": 40.99,
+    "mean_odds": 2.385
+   },
+   "actual_stake_audit": {
+    "n": 65,
+    "staked": 26.21,
+    "profit": -6.5566,
+    "roi_pct": -25.02,
+    "hit_pct": 35.38,
+    "mean_odds": 2.144
+   }
+  },
+  "ou25|new_format|all|OVER": {
+   "flat": {
+    "n": 221,
+    "staked": 221.0,
+    "profit": -5.39,
+    "roi_pct": -2.44,
+    "hit_pct": 42.99,
+    "mean_odds": 2.376
+   },
+   "flat_ci95_day_block": [
+    -17.21,
+    12.32
+   ],
+   "documented_tier_stake": {
+    "n": 221,
+    "staked": 129.5,
+    "profit": -2.685,
+    "roi_pct": -2.07,
+    "hit_pct": 42.99,
+    "mean_odds": 2.376
+   },
+   "actual_stake_audit": {
+    "n": 0
+   }
+  },
+  "ou25|new_format|all|UNDER": {
+   "flat": {
+    "n": 772,
+    "staked": 772.0,
+    "profit": -55.01,
+    "roi_pct": -7.13,
+    "hit_pct": 40.41,
+    "mean_odds": 2.387
+   },
+   "flat_ci95_day_block": [
+    -16.5,
+    1.34
+   ],
+   "documented_tier_stake": {
+    "n": 772,
+    "staked": 506.5,
+    "profit": -43.435,
+    "roi_pct": -8.58,
+    "hit_pct": 40.41,
+    "mean_odds": 2.387
+   },
+   "actual_stake_audit": {
+    "n": 65,
+    "staked": 26.21,
+    "profit": -6.5566,
+    "roi_pct": -25.02,
+    "hit_pct": 35.38,
+    "mean_odds": 2.144
+   }
+  },
+  "ou25|new_format|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 490,
+    "staked": 490.0,
+    "profit": -12.44,
+    "roi_pct": -2.54,
+    "hit_pct": 41.84,
+    "mean_odds": 2.403
+   },
+   "flat_ci95_day_block": [
+    -15.02,
+    9.0
+   ],
+   "documented_tier_stake": {
+    "n": 490,
+    "staked": 301.0,
+    "profit": -14.3475,
+    "roi_pct": -4.77,
+    "hit_pct": 41.84,
+    "mean_odds": 2.403
+   },
+   "actual_stake_audit": {
+    "n": 65,
+    "staked": 26.21,
+    "profit": -6.5566,
+    "roi_pct": -25.02,
+    "hit_pct": 35.38,
+    "mean_odds": 2.144
+   }
+  },
+  "ou25|new_format|from_2026-09-01|OVER": {
+   "flat": {
+    "n": 85,
+    "staked": 85.0,
+    "profit": 6.88,
+    "roi_pct": 8.09,
+    "hit_pct": 45.88,
+    "mean_odds": 2.45
+   },
+   "flat_ci95_day_block": [
+    -20.27,
+    37.28
+   ],
+   "documented_tier_stake": {
+    "n": 85,
+    "staked": 44.75,
+    "profit": 5.2175,
+    "roi_pct": 11.66,
+    "hit_pct": 45.88,
+    "mean_odds": 2.45
+   },
+   "actual_stake_audit": {
+    "n": 0
+   }
+  },
+  "ou25|new_format|from_2026-09-01|UNDER": {
+   "flat": {
+    "n": 405,
+    "staked": 405.0,
+    "profit": -19.32,
+    "roi_pct": -4.77,
+    "hit_pct": 40.99,
+    "mean_odds": 2.393
+   },
+   "flat_ci95_day_block": [
+    -18.42,
+    6.68
+   ],
+   "documented_tier_stake": {
+    "n": 405,
+    "staked": 256.25,
+    "profit": -19.565,
+    "roi_pct": -7.64,
+    "hit_pct": 40.99,
+    "mean_odds": 2.393
+   },
+   "actual_stake_audit": {
+    "n": 65,
+    "staked": 26.21,
+    "profit": -6.5566,
+    "roi_pct": -25.02,
+    "hit_pct": 35.38,
+    "mean_odds": 2.144
+   }
+  },
+  "ou25|standard|all|ALL": {
+   "flat": {
+    "n": 397,
+    "staked": 397.0,
+    "profit": -55.38,
+    "roi_pct": -13.95,
+    "hit_pct": 40.3,
+    "mean_odds": 2.153
+   },
+   "flat_ci95_day_block": [
+    -24.42,
+    -2.41
+   ],
+   "documented_tier_stake": {
+    "n": 397,
+    "staked": 221.0,
+    "profit": -30.8425,
+    "roi_pct": -13.96,
+    "hit_pct": 40.3,
+    "mean_odds": 2.153
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|standard|all|OVER": {
+   "flat": {
+    "n": 199,
+    "staked": 199.0,
+    "profit": -24.48,
+    "roi_pct": -12.3,
+    "hit_pct": 43.22,
+    "mean_odds": 2.042
+   },
+   "flat_ci95_day_block": [
+    -25.31,
+    4.05
+   ],
+   "documented_tier_stake": {
+    "n": 199,
+    "staked": 114.5,
+    "profit": -15.2925,
+    "roi_pct": -13.36,
+    "hit_pct": 43.22,
+    "mean_odds": 2.042
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|standard|all|UNDER": {
+   "flat": {
+    "n": 198,
+    "staked": 198.0,
+    "profit": -30.9,
+    "roi_pct": -15.61,
+    "hit_pct": 37.37,
+    "mean_odds": 2.264
+   },
+   "flat_ci95_day_block": [
+    -28.51,
+    0.11
+   ],
+   "documented_tier_stake": {
+    "n": 198,
+    "staked": 106.5,
+    "profit": -15.55,
+    "roi_pct": -14.6,
+    "hit_pct": 37.37,
+    "mean_odds": 2.264
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|standard|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 315,
+    "staked": 315.0,
+    "profit": -32.71,
+    "roi_pct": -10.38,
+    "hit_pct": 42.22,
+    "mean_odds": 2.142
+   },
+   "flat_ci95_day_block": [
+    -21.13,
+    2.64
+   ],
+   "documented_tier_stake": {
+    "n": 315,
+    "staked": 178.75,
+    "profit": -19.4575,
+    "roi_pct": -10.89,
+    "hit_pct": 42.22,
+    "mean_odds": 2.142
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|standard|from_2026-09-01|OVER": {
+   "flat": {
+    "n": 166,
+    "staked": 166.0,
+    "profit": -20.16,
+    "roi_pct": -12.14,
+    "hit_pct": 43.98,
+    "mean_odds": 2.004
+   },
+   "flat_ci95_day_block": [
+    -26.47,
+    4.46
+   ],
+   "documented_tier_stake": {
+    "n": 166,
+    "staked": 97.25,
+    "profit": -12.3825,
+    "roi_pct": -12.73,
+    "hit_pct": 43.98,
+    "mean_odds": 2.004
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|standard|from_2026-09-01|UNDER": {
+   "flat": {
+    "n": 149,
+    "staked": 149.0,
+    "profit": -12.55,
+    "roi_pct": -8.42,
+    "hit_pct": 40.27,
+    "mean_odds": 2.295
+   },
+   "flat_ci95_day_block": [
+    -22.93,
+    8.33
+   ],
+   "documented_tier_stake": {
+    "n": 149,
+    "staked": 81.5,
+    "profit": -7.075,
+    "roi_pct": -8.68,
+    "hit_pct": 40.27,
+    "mean_odds": 2.295
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over15|new_format|all|ALL": {
+   "flat": {
+    "n": 165,
+    "staked": 165.0,
+    "profit": 3.35,
+    "roi_pct": 2.03,
+    "hit_pct": 64.85,
+    "mean_odds": 1.577
+   },
+   "flat_ci95_day_block": [
+    -9.2,
+    13.51
+   ],
+   "documented_tier_stake": {
+    "n": 165,
+    "staked": 138.0,
+    "profit": 3.84,
+    "roi_pct": 2.78,
+    "hit_pct": 64.85,
+    "mean_odds": 1.577
+   },
+   "actual_stake_audit": {
+    "n": 1,
+    "staked": 0.34,
+    "profit": -0.34,
+    "roi_pct": -100.0,
+    "hit_pct": 0.0,
+    "mean_odds": 1.68
+   }
+  },
+  "over15|new_format|all|OVER": {
+   "flat": {
+    "n": 165,
+    "staked": 165.0,
+    "profit": 3.35,
+    "roi_pct": 2.03,
+    "hit_pct": 64.85,
+    "mean_odds": 1.577
+   },
+   "flat_ci95_day_block": [
+    -8.88,
+    12.88
+   ],
+   "documented_tier_stake": {
+    "n": 165,
+    "staked": 138.0,
+    "profit": 3.84,
+    "roi_pct": 2.78,
+    "hit_pct": 64.85,
+    "mean_odds": 1.577
+   },
+   "actual_stake_audit": {
+    "n": 1,
+    "staked": 0.34,
+    "profit": -0.34,
+    "roi_pct": -100.0,
+    "hit_pct": 0.0,
+    "mean_odds": 1.68
+   }
+  },
+  "over15|new_format|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 78,
+    "staked": 78.0,
+    "profit": 8.46,
+    "roi_pct": 10.85,
+    "hit_pct": 71.79,
+    "mean_odds": 1.553
+   },
+   "flat_ci95_day_block": [
+    -5.25,
+    27.97
+   ],
+   "documented_tier_stake": {
+    "n": 78,
+    "staked": 66.0,
+    "profit": 6.8775,
+    "roi_pct": 10.42,
+    "hit_pct": 71.79,
+    "mean_odds": 1.553
+   },
+   "actual_stake_audit": {
+    "n": 1,
+    "staked": 0.34,
+    "profit": -0.34,
+    "roi_pct": -100.0,
+    "hit_pct": 0.0,
+    "mean_odds": 1.68
+   }
+  },
+  "over15|new_format|from_2026-09-01|OVER": {
+   "flat": {
+    "n": 78,
+    "staked": 78.0,
+    "profit": 8.46,
+    "roi_pct": 10.85,
+    "hit_pct": 71.79,
+    "mean_odds": 1.553
+   },
+   "flat_ci95_day_block": [
+    -6.01,
+    27.93
+   ],
+   "documented_tier_stake": {
+    "n": 78,
+    "staked": 66.0,
+    "profit": 6.8775,
+    "roi_pct": 10.42,
+    "hit_pct": 71.79,
+    "mean_odds": 1.553
+   },
+   "actual_stake_audit": {
+    "n": 1,
+    "staked": 0.34,
+    "profit": -0.34,
+    "roi_pct": -100.0,
+    "hit_pct": 0.0,
+    "mean_odds": 1.68
+   }
+  },
+  "over15|standard|all|ALL": {
+   "flat": {
+    "n": 13,
+    "staked": 13.0,
+    "profit": -4.56,
+    "roi_pct": -35.08,
+    "hit_pct": 46.15,
+    "mean_odds": 1.434
+   },
+   "flat_ci95_day_block": [
+    -73.1,
+    7.11
+   ],
+   "documented_tier_stake": {
+    "n": 13,
+    "staked": 11.25,
+    "profit": -4.095,
+    "roi_pct": -36.4,
+    "hit_pct": 46.15,
+    "mean_odds": 1.434
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over15|standard|all|OVER": {
+   "flat": {
+    "n": 13,
+    "staked": 13.0,
+    "profit": -4.56,
+    "roi_pct": -35.08,
+    "hit_pct": 46.15,
+    "mean_odds": 1.434
+   },
+   "flat_ci95_day_block": [
+    -73.14,
+    6.0
+   ],
+   "documented_tier_stake": {
+    "n": 13,
+    "staked": 11.25,
+    "profit": -4.095,
+    "roi_pct": -36.4,
+    "hit_pct": 46.15,
+    "mean_odds": 1.434
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over15|standard|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 9,
+    "staked": 9.0,
+    "profit": -1.87,
+    "roi_pct": -20.78,
+    "hit_pct": 55.56,
+    "mean_odds": 1.442
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 9,
+    "staked": 8.0,
+    "profit": -1.5,
+    "roi_pct": -18.75,
+    "hit_pct": 55.56,
+    "mean_odds": 1.442
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over15|standard|from_2026-09-01|OVER": {
+   "flat": {
+    "n": 9,
+    "staked": 9.0,
+    "profit": -1.87,
+    "roi_pct": -20.78,
+    "hit_pct": 55.56,
+    "mean_odds": 1.442
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 9,
+    "staked": 8.0,
+    "profit": -1.5,
+    "roi_pct": -18.75,
+    "hit_pct": 55.56,
+    "mean_odds": 1.442
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|new_format|all|ALL": {
+   "flat": {
+    "n": 8,
+    "staked": 8.0,
+    "profit": -0.06,
+    "roi_pct": -0.75,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 8,
+    "staked": 4.5,
+    "profit": -0.53,
+    "roi_pct": -11.78,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|new_format|all|OVER": {
+   "flat": {
+    "n": 8,
+    "staked": 8.0,
+    "profit": -0.06,
+    "roi_pct": -0.75,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 8,
+    "staked": 4.5,
+    "profit": -0.53,
+    "roi_pct": -11.78,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|new_format|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 8,
+    "staked": 8.0,
+    "profit": -0.06,
+    "roi_pct": -0.75,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 8,
+    "staked": 4.5,
+    "profit": -0.53,
+    "roi_pct": -11.78,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|new_format|from_2026-09-01|OVER": {
+   "flat": {
+    "n": 8,
+    "staked": 8.0,
+    "profit": -0.06,
+    "roi_pct": -0.75,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 8,
+    "staked": 4.5,
+    "profit": -0.53,
+    "roi_pct": -11.78,
+    "hit_pct": 50.0,
+    "mean_odds": 2.005
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|standard|all|ALL": {
+   "flat": {
+    "n": 2,
+    "staked": 2.0,
+    "profit": 0.3,
+    "roi_pct": 15.0,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 2,
+    "staked": 1.5,
+    "profit": -0.35,
+    "roi_pct": -23.33,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|standard|all|OVER": {
+   "flat": {
+    "n": 2,
+    "staked": 2.0,
+    "profit": 0.3,
+    "roi_pct": 15.0,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 2,
+    "staked": 1.5,
+    "profit": -0.35,
+    "roi_pct": -23.33,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|standard|from_2026-09-01|ALL": {
+   "flat": {
+    "n": 2,
+    "staked": 2.0,
+    "profit": 0.3,
+    "roi_pct": 15.0,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 2,
+    "staked": 1.5,
+    "profit": -0.35,
+    "roi_pct": -23.33,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "over35|standard|from_2026-09-01|OVER": {
+   "flat": {
+    "n": 2,
+    "staked": 2.0,
+    "profit": 0.3,
+    "roi_pct": 15.0,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "flat_ci95_day_block": null,
+   "documented_tier_stake": {
+    "n": 2,
+    "staked": 1.5,
+    "profit": -0.35,
+    "roi_pct": -23.33,
+    "hit_pct": 50.0,
+    "mean_odds": 3.3
+   },
+   "actual_stake_audit": {
+    "n": 0,
+    "note": "NOT IDENTIFIABLE - no stake_audit row (stake log starts 2026-10-14)"
+   }
+  },
+  "ou25|standard|repaired_served_from_2026-10-28": {
+   "flat": {
+    "n": 0
+   }
+  },
+  "ou25|standard|legacy_2026-09-01_to_10-28": {
+   "flat": {
+    "n": 315,
+    "staked": 315.0,
+    "profit": -32.71,
+    "roi_pct": -10.38,
+    "hit_pct": 42.22,
+    "mean_odds": 2.142
+   },
+   "flat_ci95_day_block": [
+    -21.3,
+    2.38
+   ]
+  }
+ },
+ "ou25_from_09_01_by_model_side_band": {
+  "new_format|OVER|<2": {
+   "n": 17,
+   "staked": 17.0,
+   "profit": -0.4,
+   "roi_pct": -2.35,
+   "hit_pct": 52.94,
+   "mean_odds": 1.873
+  },
+  "new_format|OVER|2-2.5": {
+   "n": 25,
+   "staked": 25.0,
+   "profit": 11.45,
+   "roi_pct": 45.8,
+   "hit_pct": 64.0,
+   "mean_odds": 2.262
+  },
+  "new_format|OVER|2.5-3": {
+   "n": 38,
+   "staked": 38.0,
+   "profit": -5.27,
+   "roi_pct": -13.87,
+   "hit_pct": 31.58,
+   "mean_odds": 2.738
+  },
+  "new_format|OVER|>3": {
+   "n": 5,
+   "staked": 5.0,
+   "profit": 1.1,
+   "roi_pct": 22.0,
+   "hit_pct": 40.0,
+   "mean_odds": 3.17
+  },
+  "new_format|UNDER|<2": {
+   "n": 60,
+   "staked": 60.0,
+   "profit": 2.75,
+   "roi_pct": 4.58,
+   "hit_pct": 55.0,
+   "mean_odds": 1.903
+  },
+  "new_format|UNDER|2-2.5": {
+   "n": 225,
+   "staked": 225.0,
+   "profit": -5.16,
+   "roi_pct": -2.29,
+   "hit_pct": 43.11,
+   "mean_odds": 2.251
+  },
+  "new_format|UNDER|2.5-3": {
+   "n": 91,
+   "staked": 91.0,
+   "profit": -9.81,
+   "roi_pct": -10.78,
+   "hit_pct": 32.97,
+   "mean_odds": 2.747
+  },
+  "new_format|UNDER|>3": {
+   "n": 29,
+   "staked": 29.0,
+   "profit": -7.1,
+   "roi_pct": -24.48,
+   "hit_pct": 20.69,
+   "mean_odds": 3.398
+  },
+  "standard|OVER|<2": {
+   "n": 99,
+   "staked": 99.0,
+   "profit": -13.37,
+   "roi_pct": -13.51,
+   "hit_pct": 45.45,
+   "mean_odds": 1.899
+  },
+  "standard|OVER|2-2.5": {
+   "n": 65,
+   "staked": 65.0,
+   "profit": -4.79,
+   "roi_pct": -7.37,
+   "hit_pct": 43.08,
+   "mean_odds": 2.147
+  },
+  "standard|OVER|2.5-3": {
+   "n": 2,
+   "staked": 2.0,
+   "profit": -2.0,
+   "roi_pct": -100.0,
+   "hit_pct": 0.0,
+   "mean_odds": 2.55
+  },
+  "standard|UNDER|<2": {
+   "n": 20,
+   "staked": 20.0,
+   "profit": 1.37,
+   "roi_pct": 6.85,
+   "hit_pct": 55.0,
+   "mean_odds": 1.944
+  },
+  "standard|UNDER|2-2.5": {
+   "n": 98,
+   "staked": 98.0,
+   "profit": -13.01,
+   "roi_pct": -13.28,
+   "hit_pct": 38.78,
+   "mean_odds": 2.232
+  },
+  "standard|UNDER|2.5-3": {
+   "n": 30,
+   "staked": 30.0,
+   "profit": -3.06,
+   "roi_pct": -10.2,
+   "hit_pct": 33.33,
+   "mean_odds": 2.705
+  },
+  "standard|UNDER|>3": {
+   "n": 1,
+   "staked": 1.0,
+   "profit": 2.15,
+   "roi_pct": 215.0,
+   "hit_pct": 100.0,
+   "mean_odds": 3.15
+  }
+ },
+ "production_ledger_roi": {
+  "btts|new_format|all|ALL": {
+   "n": 270,
+   "staked": 270.0,
+   "profit": 38.18,
+   "roi_pct": 14.14,
+   "hit_pct": 56.67,
+   "mean_odds": 2.013,
+   "ledger_pnl_sum": 38.18
+  },
+  "btts|new_format|all|YES": {
+   "n": 270,
+   "staked": 270.0,
+   "profit": 38.18,
+   "roi_pct": 14.14,
+   "hit_pct": 56.67,
+   "mean_odds": 2.013,
+   "ledger_pnl_sum": 38.18
+  },
+  "btts|new_format|from_2026-09-01|ALL": {
+   "n": 232,
+   "staked": 232.0,
+   "profit": 24.15,
+   "roi_pct": 10.41,
+   "hit_pct": 55.6,
+   "mean_odds": 1.99,
+   "ledger_pnl_sum": 24.15
+  },
+  "btts|new_format|from_2026-09-01|YES": {
+   "n": 232,
+   "staked": 232.0,
+   "profit": 24.15,
+   "roi_pct": 10.41,
+   "hit_pct": 55.6,
+   "mean_odds": 1.99,
+   "ledger_pnl_sum": 24.15
+  },
+  "btts|standard|all|ALL": {
+   "n": 174,
+   "staked": 174.0,
+   "profit": 0.065,
+   "roi_pct": 0.04,
+   "hit_pct": 54.02,
+   "mean_odds": 1.864,
+   "ledger_pnl_sum": 0.065
+  },
+  "btts|standard|all|YES": {
+   "n": 174,
+   "staked": 174.0,
+   "profit": 0.065,
+   "roi_pct": 0.04,
+   "hit_pct": 54.02,
+   "mean_odds": 1.864,
+   "ledger_pnl_sum": 0.065
+  },
+  "btts|standard|from_2026-09-01|ALL": {
+   "n": 154,
+   "staked": 154.0,
+   "profit": -1.78,
+   "roi_pct": -1.16,
+   "hit_pct": 53.9,
+   "mean_odds": 1.845,
+   "ledger_pnl_sum": -1.78
+  },
+  "btts|standard|from_2026-09-01|YES": {
+   "n": 154,
+   "staked": 154.0,
+   "profit": -1.78,
+   "roi_pct": -1.16,
+   "hit_pct": 53.9,
+   "mean_odds": 1.845,
+   "ledger_pnl_sum": -1.78
+  },
+  "ou25|new_format|all|ALL": {
+   "n": 1096,
+   "staked": 1096.0,
+   "profit": -58.54,
+   "roi_pct": -5.34,
+   "hit_pct": 41.7,
+   "mean_odds": 2.364,
+   "ledger_pnl_sum": -58.54
+  },
+  "ou25|new_format|all|OVER": {
+   "n": 253,
+   "staked": 253.0,
+   "profit": -2.58,
+   "roi_pct": -1.02,
+   "hit_pct": 44.27,
+   "mean_odds": 2.329,
+   "ledger_pnl_sum": -2.58
+  },
+  "ou25|new_format|all|UNDER": {
+   "n": 843,
+   "staked": 843.0,
+   "profit": -55.96,
+   "roi_pct": -6.64,
+   "hit_pct": 40.93,
+   "mean_odds": 2.375,
+   "ledger_pnl_sum": -55.96
+  },
+  "ou25|new_format|from_2026-09-01|ALL": {
+   "n": 531,
+   "staked": 531.0,
+   "profit": -9.84,
+   "roi_pct": -1.85,
+   "hit_pct": 42.37,
+   "mean_odds": 2.397,
+   "ledger_pnl_sum": -9.84
+  },
+  "ou25|new_format|from_2026-09-01|OVER": {
+   "n": 90,
+   "staked": 90.0,
+   "profit": 9.29,
+   "roi_pct": 10.32,
+   "hit_pct": 46.67,
+   "mean_odds": 2.438,
+   "ledger_pnl_sum": 9.29
+  },
+  "ou25|new_format|from_2026-09-01|UNDER": {
+   "n": 441,
+   "staked": 441.0,
+   "profit": -19.13,
+   "roi_pct": -4.34,
+   "hit_pct": 41.5,
+   "mean_odds": 2.389,
+   "ledger_pnl_sum": -19.13
+  },
+  "ou25|standard|all|ALL": {
+   "n": 451,
+   "staked": 451.0,
+   "profit": -61.1,
+   "roi_pct": -13.55,
+   "hit_pct": 40.13,
+   "mean_odds": 2.169,
+   "ledger_pnl_sum": -61.1
+  },
+  "ou25|standard|all|OVER": {
+   "n": 208,
+   "staked": 208.0,
+   "profit": -28.12,
+   "roi_pct": -13.52,
+   "hit_pct": 42.79,
+   "mean_odds": 2.041,
+   "ledger_pnl_sum": -28.12
+  },
+  "ou25|standard|all|UNDER": {
+   "n": 243,
+   "staked": 243.0,
+   "profit": -32.98,
+   "roi_pct": -13.57,
+   "hit_pct": 37.86,
+   "mean_odds": 2.279,
+   "ledger_pnl_sum": -32.98
+  },
+  "ou25|standard|from_2026-09-01|ALL": {
+   "n": 346,
+   "staked": 346.0,
+   "profit": -35.18,
+   "roi_pct": -10.17,
+   "hit_pct": 42.2,
+   "mean_odds": 2.152,
+   "ledger_pnl_sum": -35.18
+  },
+  "ou25|standard|from_2026-09-01|OVER": {
+   "n": 174,
+   "staked": 174.0,
+   "profit": -22.26,
+   "roi_pct": -12.79,
+   "hit_pct": 43.68,
+   "mean_odds": 2.006,
+   "ledger_pnl_sum": -22.26
+  },
+  "ou25|standard|from_2026-09-01|UNDER": {
+   "n": 172,
+   "staked": 172.0,
+   "profit": -12.92,
+   "roi_pct": -7.51,
+   "hit_pct": 40.7,
+   "mean_odds": 2.3,
+   "ledger_pnl_sum": -12.92
+  },
+  "ou25|unknown|all|ALL": {
+   "n": 3,
+   "staked": 3.0,
+   "profit": -3.0,
+   "roi_pct": -100.0,
+   "hit_pct": 0.0,
+   "mean_odds": 2.09,
+   "ledger_pnl_sum": -3.0
+  },
+  "ou25|unknown|all|UNDER": {
+   "n": 3,
+   "staked": 3.0,
+   "profit": -3.0,
+   "roi_pct": -100.0,
+   "hit_pct": 0.0,
+   "mean_odds": 2.09,
+   "ledger_pnl_sum": -3.0
+  },
+  "ou25|unknown|from_2026-09-01|ALL": {
+   "n": 0,
+   "ledger_pnl_sum": 0.0
+  },
+  "over15|new_format|all|ALL": {
+   "n": 121,
+   "staked": 121.0,
+   "profit": 13.14,
+   "roi_pct": 10.86,
+   "hit_pct": 71.07,
+   "mean_odds": 1.565,
+   "ledger_pnl_sum": 13.14
+  },
+  "over15|new_format|all|OVER": {
+   "n": 121,
+   "staked": 121.0,
+   "profit": 13.14,
+   "roi_pct": 10.86,
+   "hit_pct": 71.07,
+   "mean_odds": 1.565,
+   "ledger_pnl_sum": 13.14
+  },
+  "over15|new_format|from_2026-09-01|ALL": {
+   "n": 79,
+   "staked": 79.0,
+   "profit": 9.2,
+   "roi_pct": 11.65,
+   "hit_pct": 72.15,
+   "mean_odds": 1.556,
+   "ledger_pnl_sum": 9.2
+  },
+  "over15|new_format|from_2026-09-01|OVER": {
+   "n": 79,
+   "staked": 79.0,
+   "profit": 9.2,
+   "roi_pct": 11.65,
+   "hit_pct": 72.15,
+   "mean_odds": 1.556,
+   "ledger_pnl_sum": 9.2
+  },
+  "over15|standard|all|ALL": {
+   "n": 13,
+   "staked": 13.0,
+   "profit": -4.56,
+   "roi_pct": -35.08,
+   "hit_pct": 46.15,
+   "mean_odds": 1.434,
+   "ledger_pnl_sum": -4.56
+  },
+  "over15|standard|all|OVER": {
+   "n": 13,
+   "staked": 13.0,
+   "profit": -4.56,
+   "roi_pct": -35.08,
+   "hit_pct": 46.15,
+   "mean_odds": 1.434,
+   "ledger_pnl_sum": -4.56
+  },
+  "over15|standard|from_2026-09-01|ALL": {
+   "n": 9,
+   "staked": 9.0,
+   "profit": -1.87,
+   "roi_pct": -20.78,
+   "hit_pct": 55.56,
+   "mean_odds": 1.442,
+   "ledger_pnl_sum": -1.87
+  },
+  "over15|standard|from_2026-09-01|OVER": {
+   "n": 9,
+   "staked": 9.0,
+   "profit": -1.87,
+   "roi_pct": -20.78,
+   "hit_pct": 55.56,
+   "mean_odds": 1.442,
+   "ledger_pnl_sum": -1.87
+  },
+  "over35|new_format|all|ALL": {
+   "n": 19,
+   "staked": 19.0,
+   "profit": -3.54,
+   "roi_pct": -18.63,
+   "hit_pct": 42.11,
+   "mean_odds": 2.08,
+   "ledger_pnl_sum": -3.54
+  },
+  "over35|new_format|all|OVER": {
+   "n": 19,
+   "staked": 19.0,
+   "profit": -3.54,
+   "roi_pct": -18.63,
+   "hit_pct": 42.11,
+   "mean_odds": 2.08,
+   "ledger_pnl_sum": -3.54
+  },
+  "over35|new_format|from_2026-09-01|ALL": {
+   "n": 19,
+   "staked": 19.0,
+   "profit": -3.54,
+   "roi_pct": -18.63,
+   "hit_pct": 42.11,
+   "mean_odds": 2.08,
+   "ledger_pnl_sum": -3.54
+  },
+  "over35|new_format|from_2026-09-01|OVER": {
+   "n": 19,
+   "staked": 19.0,
+   "profit": -3.54,
+   "roi_pct": -18.63,
+   "hit_pct": 42.11,
+   "mean_odds": 2.08,
+   "ledger_pnl_sum": -3.54
+  },
+  "over35|standard|all|ALL": {
+   "n": 5,
+   "staked": 5.0,
+   "profit": 0.11,
+   "roi_pct": 2.2,
+   "hit_pct": 40.0,
+   "mean_odds": 2.826,
+   "ledger_pnl_sum": 0.11
+  },
+  "over35|standard|all|OVER": {
+   "n": 5,
+   "staked": 5.0,
+   "profit": 0.11,
+   "roi_pct": 2.2,
+   "hit_pct": 40.0,
+   "mean_odds": 2.826,
+   "ledger_pnl_sum": 0.11
+  },
+  "over35|standard|from_2026-09-01|ALL": {
+   "n": 5,
+   "staked": 5.0,
+   "profit": 0.11,
+   "roi_pct": 2.2,
+   "hit_pct": 40.0,
+   "mean_odds": 2.826,
+   "ledger_pnl_sum": 0.11
+  },
+  "over35|standard|from_2026-09-01|OVER": {
+   "n": 5,
+   "staked": 5.0,
+   "profit": 0.11,
+   "roi_pct": 2.2,
+   "hit_pct": 40.0,
+   "mean_odds": 2.826,
+   "ledger_pnl_sum": 0.11
+  }
+ },
+ "placebos": {
+  "btts|new_format|from_2026-09-01": {
+   "random_fixture_subset_equal_n": {
+    "frame_n": 1329,
+    "draw_n": 224,
+    "mean_roi": -1.91,
+    "p2.5": -12.14,
+    "p97.5": 7.94,
+    "p_value_actual_ge": 0.01
+   },
+   "outcome_permutation_control": {
+    "mean_roi": 9.67,
+    "p_value_actual_ge": 0.469
+   },
+   "actual_roi_pct": 9.69
+  },
+  "btts|standard|from_2026-09-01": {
+   "random_fixture_subset_equal_n": {
+    "frame_n": 1274,
+    "draw_n": 137,
+    "mean_roi": -1.7,
+    "p2.5": -16.56,
+    "p97.5": 11.32,
+    "p_value_actual_ge": 0.252
+   },
+   "outcome_permutation_control": {
+    "mean_roi": 3.49,
+    "p_value_actual_ge": 0.859
+   },
+   "actual_roi_pct": 2.93
+  },
+  "ou25|new_format|from_2026-09-01": {
+   "random_side": {
+    "mean_roi": -6.8,
+    "p95": 0.52,
+    "p_value_actual_ge": 0.167
+   },
+   "anti_strategy_opposite_side": {
+    "n": 490,
+    "roi_pct": -11.0
+   },
+   "random_fixture_subset_equal_n": {
+    "frame_n": 752,
+    "draw_n": 490,
+    "mean_roi": -6.18,
+    "p2.5": -14.86,
+    "p97.5": 2.63,
+    "p_value_actual_ge": 0.203
+   },
+   "outcome_permutation_control": {
+    "mean_roi": 0.54,
+    "p_value_actual_ge": 1.0
+   },
+   "actual_roi_pct": -2.54
+  },
+  "ou25|standard|from_2026-09-01": {
+   "random_side": {
+    "mean_roi": -7.87,
+    "p95": 0.76,
+    "p_value_actual_ge": 0.684
+   },
+   "anti_strategy_opposite_side": {
+    "n": 315,
+    "roi_pct": -4.86
+   },
+   "random_fixture_subset_equal_n": {
+    "frame_n": 577,
+    "draw_n": 315,
+    "mean_roi": -7.4,
+    "p2.5": -17.81,
+    "p97.5": 3.25,
+    "p_value_actual_ge": 0.713
+   },
+   "outcome_permutation_control": {
+    "mean_roi": -9.58,
+    "p_value_actual_ge": 0.867
+   },
+   "actual_roi_pct": -10.38
+  },
+  "over15|new_format|from_2026-09-01": {
+   "random_fixture_subset_equal_n": {
+    "frame_n": 98,
+    "draw_n": 78,
+    "mean_roi": 8.35,
+    "p2.5": 1.68,
+    "p97.5": 15.23,
+    "p_value_actual_ge": 0.255
+   },
+   "outcome_permutation_control": {
+    "mean_roi": 11.53,
+    "p_value_actual_ge": 0.971
+   },
+   "actual_roi_pct": 10.85
+  }
+ },
+ "independent_settlement_status": {
+  "MATCHED": 2051,
+  "NOT_FOUND": 314
+ },
+ "first_sight_books": [
+  {
+   "market": "btts",
+   "policy_drop": "",
+   "n": 488
+  },
+  {
+   "market": "ou25",
+   "policy_drop": "",
+   "n": 1616
+  },
+  {
+   "market": "ou25",
+   "policy_drop": "flip_opposite_ou25",
+   "n": 41
+  },
+  {
+   "market": "ou25",
+   "policy_drop": "opposite_goal_direction",
+   "n": 6
+  },
+  {
+   "market": "over15",
+   "policy_drop": "",
+   "n": 184
+  },
+  {
+   "market": "over35",
+   "policy_drop": "",
+   "n": 12
+  },
+  {
+   "market": "over35",
+   "policy_drop": "opposite_goal_direction",
+   "n": 18
+  }
+ ]
+}
