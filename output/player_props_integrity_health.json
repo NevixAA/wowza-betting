@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-01T10:24:10Z",
-  "code_sha": "4e9c93357910c50a495df1fe923ad2bfe5242201",
+  "generated_at": "2026-11-01T10:49:31Z",
+  "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
   "workstream": "R2-D (findings 20, 21, 22)",
   "status": "WARN",
   "status_meaning": "WARN = serving props payloads still use the legacy batch-median imputer (paper market, no staking); repaired challengers are RETROSPECTIVE only until owner review",
@@ -38,13 +38,49 @@
       "batch_invariance": {
         "rows": 120,
         "nan_injected_feature": "kp_per90",
-        "max_abs_diff_single_vs_batch": 0.012637601013667565,
+        "max_abs_diff_single_vs_batch": 0.012637601013667621,
         "rows_differing_gt_1e-9": 16,
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-goals",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.018874449056989588,
+          "repaired": 0.018874449056989588
+        },
+        "auc": {
+          "legacy": 0.7421859867264843,
+          "repaired": 0.7421859867264843
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 698,
+          "mean_abs_shift": 4.393463884829076e-06,
+          "p99_abs_shift": 2.7755575615628914e-17,
+          "max_abs_shift": 0.051825438596122986,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "702379f82257e2a379e37cca16ca1ec612dee65182196c1b8d4ef548a26a5cf8",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -69,13 +105,49 @@
       "batch_invariance": {
         "rows": 120,
         "nan_injected_feature": "kp_per90",
-        "max_abs_diff_single_vs_batch": 0.0008241273075172348,
+        "max_abs_diff_single_vs_batch": 0.0008241273075172278,
         "rows_differing_gt_1e-9": 16,
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-goals2",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.0062346318866391675,
+          "repaired": 0.0062346318866391675
+        },
+        "auc": {
+          "legacy": 0.8407228411584949,
+          "repaired": 0.8407228411584949
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 692,
+          "mean_abs_shift": 4.029194511794747e-08,
+          "p99_abs_shift": 0.0,
+          "max_abs_shift": 0.001437981790633449,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "d541fb56fcb94305b2e814f42f266957521e795f6e9b9567cd4c6210a817f43b",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -100,13 +172,49 @@
       "batch_invariance": {
         "rows": 120,
         "nan_injected_feature": "kp_per90",
-        "max_abs_diff_single_vs_batch": 0.009266214347005558,
+        "max_abs_diff_single_vs_batch": 0.009266214347005544,
         "rows_differing_gt_1e-9": 16,
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-assists",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.01118824646103843,
+          "repaired": 0.01118824646103843
+        },
+        "auc": {
+          "legacy": 0.6829574410723623,
+          "repaired": 0.6829574410723623
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 698,
+          "mean_abs_shift": 8.977576817494175e-06,
+          "p99_abs_shift": 1.3877787807814457e-17,
+          "max_abs_shift": 0.05034607014247794,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "8eaae726779eed3e8b0c2ea4cb81d12c387db3b24e58ec3754fc9a87889f9b03",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -136,8 +244,44 @@
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-sot",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.026649434121132375,
+          "repaired": 0.026649434121132375
+        },
+        "auc": {
+          "legacy": 0.7346094493120111,
+          "repaired": 0.7346094493120111
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 698,
+          "mean_abs_shift": 8.420410377328955e-06,
+          "p99_abs_shift": 1.1102230246251565e-16,
+          "max_abs_shift": 0.01625999214978613,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "fa3a98e6ae4383d5b27388ce40e034c0b3dc792f1e0fcda0b4e370ed1fab5c4d",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -162,13 +306,49 @@
       "batch_invariance": {
         "rows": 120,
         "nan_injected_feature": "kp_per90",
-        "max_abs_diff_single_vs_batch": 0.005118231716094546,
+        "max_abs_diff_single_vs_batch": 0.005118231716094518,
         "rows_differing_gt_1e-9": 16,
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-sot2",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.018382846437495454,
+          "repaired": 0.018382846437495454
+        },
+        "auc": {
+          "legacy": 0.8016092761557949,
+          "repaired": 0.8016092761557949
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 698,
+          "mean_abs_shift": 1.1166370589786947e-05,
+          "p99_abs_shift": 2.0816681711721685e-17,
+          "max_abs_shift": 0.06832711850474699,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "dda9efb99681d84c3bf18bc33c16951903f2d99b93f70559baa511a956540273",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -193,13 +373,49 @@
       "batch_invariance": {
         "rows": 120,
         "nan_injected_feature": "kp_per90",
-        "max_abs_diff_single_vs_batch": 0.012906881443152718,
+        "max_abs_diff_single_vs_batch": 0.012906881443153384,
         "rows_differing_gt_1e-9": 16,
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-sot3",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.008134864267787078,
+          "repaired": 0.008134864267787078
+        },
+        "auc": {
+          "legacy": 0.8517634156591968,
+          "repaired": 0.8517634156591968
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 698,
+          "mean_abs_shift": 1.0796111391188667e-06,
+          "p99_abs_shift": 0.0,
+          "max_abs_shift": 0.012868663192469418,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "943f461018c9175d446ede10c568af2c888e84695d726a107beed359bac8e61e",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -229,8 +445,44 @@
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-sot4",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-01",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.003193886645234702,
+          "repaired": 0.003193886645234702
+        },
+        "auc": {
+          "legacy": 0.8881463456728433,
+          "repaired": 0.8881463456728433
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 174090,
+          "rows_shifted_gt_1e-9": 326,
+          "mean_abs_shift": 3.084170775832065e-09,
+          "p99_abs_shift": 0.0,
+          "max_abs_shift": 6.227303624470023e-05,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 174090,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 27253,
+          "rows_with_degraded": 27253,
+          "mean_n_missing": 0.16903325865931415,
+          "mean_n_degraded": 0.16903325865931415
+        },
+        "challenger_sha256": "dd4446d40a2d222bf5434f3dd91cd75da2a79e038c850de0c2e0d09d79195adc",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     },
@@ -255,13 +507,49 @@
       "batch_invariance": {
         "rows": 120,
         "nan_injected_feature": "kp_per90",
-        "max_abs_diff_single_vs_batch": 0.00972759480403193,
+        "max_abs_diff_single_vs_batch": 0.009727594804031875,
         "rows_differing_gt_1e-9": 16,
         "batch_invariant": false
       },
       "challenger_r2": {
-        "state": "NOT_RUN",
-        "note": "PROPS-R2 replay has not produced results"
+        "state": "RETROSPECTIVE_PASS",
+        "experiment_id": "PROPS-R2-cards",
+        "evidence_class": "RETROSPECTIVE",
+        "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+        "generated_at": "2026-11-01T10:27:14Z",
+        "training_cutoff": "2026-01-10",
+        "delta_log_loss": 0.0,
+        "delta_log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "delta_brier": 0.0,
+        "ece10": {
+          "legacy": 0.008056630504818725,
+          "repaired": 0.008056630504818725
+        },
+        "auc": {
+          "legacy": 0.6201525187878145,
+          "repaired": 0.6201525187878145
+        },
+        "legacy_batch_sensitivity": {
+          "rows": 175171,
+          "rows_shifted_gt_1e-9": 698,
+          "mean_abs_shift": 6.575576373793701e-06,
+          "p99_abs_shift": 2.7755575615628914e-17,
+          "max_abs_shift": 0.01093356471844631,
+          "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+        },
+        "holdout_feature_health": {
+          "rows": 175171,
+          "required_fail_rows": 0,
+          "rows_with_any_missing": 26615,
+          "rows_with_degraded": 26615,
+          "mean_n_missing": 0.16553539113209378,
+          "mean_n_degraded": 0.16553539113209378
+        },
+        "challenger_sha256": "1a2d74e4ac06529ea29db5435ef48397c5530758ca64e955add48dbec080d770",
+        "promotion": "NONE (owner review + PG-PROPS required)"
       },
       "status": "WARN"
     }

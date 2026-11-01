@@ -1,0 +1,987 @@
+{
+  "generated_at": "2026-11-01T10:27:14Z",
+  "evidence_class": "RETROSPECTIVE",
+  "lifecycle_stage": "RETROSPECTIVE_REPLAY",
+  "code_sha": "1970aaa2376d7eeea23129930f05eee0257ef466",
+  "contract_version": "PFC-1.0",
+  "imputer_version": "PROPS-IMPUTER-1.0",
+  "data": {
+    "rows": 875853,
+    "newest_match": "2026-10-31",
+    "oldest_match": "2022-08-12",
+    "feature_list_sha256": "82cf1b90f9175798e5721b98e3e4e9ddf92501add845a7a11cb6d111b5735b3b",
+    "note": "player_history injury columns are point-in-time since 2026-10-26 (fb43970c); serving champions were trained on the pre-repair leaked values. BOTH arms here train on the repaired data, so the comparison isolates preprocessing."
+  },
+  "promotion": "NONE - no serving file written; owner review required for any cutover",
+  "markets": {
+    "goals": {
+      "experiment_id": "PROPS-R2-goals",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 14631,
+        "base_rate": 0.08352409930867552,
+        "mean_p": 0.08429351731220476,
+        "log_loss": 0.2623266659628917,
+        "brier": 0.0725413057604849,
+        "ece10": 0.018874449056989588,
+        "calib_intercept": -0.21694603905089835,
+        "calib_slope": 0.905388450852799,
+        "auc": 0.7421859867264843
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 14631,
+        "base_rate": 0.08352409930867552,
+        "mean_p": 0.08429351731220476,
+        "log_loss": 0.2623266659628917,
+        "brier": 0.0725413057604849,
+        "ece10": 0.018874449056989588,
+        "calib_intercept": -0.21694603905089835,
+        "calib_slope": 0.905388450852799,
+        "auc": 0.7421859867264843
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 14631,
+        "base_rate": 0.08352409930867552,
+        "mean_p": 0.08429351731220476,
+        "log_loss": 0.2623266659628917,
+        "brier": 0.0725413057604849,
+        "ece10": 0.018874449056989588,
+        "calib_intercept": -0.21694603905089835,
+        "calib_slope": 0.905388450852799,
+        "auc": 0.7421859867264843
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 14631,
+        "base_rate": 0.08352409930867552,
+        "mean_p": 0.08429766556758125,
+        "log_loss": 0.26232664190073623,
+        "brier": 0.0725413080978142,
+        "ece10": 0.018864349626670673,
+        "calib_intercept": -0.217082982207264,
+        "calib_slope": 0.9053497535954568,
+        "auc": 0.7421805155634728
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 698,
+        "mean_abs_shift": 4.393463884829076e-06,
+        "p99_abs_shift": 2.7755575615628914e-17,
+        "max_abs_shift": 0.051825438596122986,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_goals.pkl",
+      "challenger_sha256": "702379f82257e2a379e37cca16ca1ec612dee65182196c1b8d4ef548a26a5cf8",
+      "minutes": 2.9
+    },
+    "goals2": {
+      "experiment_id": "PROPS-R2-goals2",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 1367,
+        "base_rate": 0.007803803140930862,
+        "mean_p": 0.00746307519437913,
+        "log_loss": 0.04325654217277019,
+        "brier": 0.00774999590306166,
+        "ece10": 0.0062346318866391675,
+        "calib_intercept": 0.7769063166996221,
+        "calib_slope": 1.154362286053047,
+        "auc": 0.8407228411584949
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 1367,
+        "base_rate": 0.007803803140930862,
+        "mean_p": 0.00746307519437913,
+        "log_loss": 0.04325654217277019,
+        "brier": 0.00774999590306166,
+        "ece10": 0.0062346318866391675,
+        "calib_intercept": 0.7769063166996221,
+        "calib_slope": 1.154362286053047,
+        "auc": 0.8407228411584949
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 1367,
+        "base_rate": 0.007803803140930862,
+        "mean_p": 0.00746307519437913,
+        "log_loss": 0.04325654217277019,
+        "brier": 0.00774999590306166,
+        "ece10": 0.0062346318866391675,
+        "calib_intercept": 0.7769063166996221,
+        "calib_slope": 1.154362286053047,
+        "auc": 0.8407228411584949
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 1367,
+        "base_rate": 0.007803803140930862,
+        "mean_p": 0.007463110423701826,
+        "log_loss": 0.04325656332860263,
+        "brier": 0.0077499967159950205,
+        "ece10": 0.006234604040484247,
+        "calib_intercept": 0.7768642356427171,
+        "calib_slope": 1.154354633174919,
+        "auc": 0.8407196044912113
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 692,
+        "mean_abs_shift": 4.029194511794747e-08,
+        "p99_abs_shift": 0.0,
+        "max_abs_shift": 0.001437981790633449,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_goals2.pkl",
+      "challenger_sha256": "d541fb56fcb94305b2e814f42f266957521e795f6e9b9567cd4c6210a817f43b",
+      "minutes": 2.6
+    },
+    "assists": {
+      "experiment_id": "PROPS-R2-assists",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 10720,
+        "base_rate": 0.06119734430927494,
+        "mean_p": 0.05906527041237013,
+        "log_loss": 0.22023131000182603,
+        "brier": 0.0564140480639406,
+        "ece10": 0.01118824646103843,
+        "calib_intercept": -0.13435352856101707,
+        "calib_slope": 0.9341903549192638,
+        "auc": 0.6829574410723623
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 10720,
+        "base_rate": 0.06119734430927494,
+        "mean_p": 0.05906527041237013,
+        "log_loss": 0.22023131000182603,
+        "brier": 0.0564140480639406,
+        "ece10": 0.01118824646103843,
+        "calib_intercept": -0.13435352856101707,
+        "calib_slope": 0.9341903549192638,
+        "auc": 0.6829574410723623
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 10720,
+        "base_rate": 0.06119734430927494,
+        "mean_p": 0.05906527041237013,
+        "log_loss": 0.22023131000182603,
+        "brier": 0.0564140480639406,
+        "ece10": 0.01118824646103843,
+        "calib_intercept": -0.13435352856101707,
+        "calib_slope": 0.9341903549192638,
+        "auc": 0.6829574410723623
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 10720,
+        "base_rate": 0.06119734430927494,
+        "mean_p": 0.059073502337615956,
+        "log_loss": 0.22023288703515062,
+        "brier": 0.0564148929234089,
+        "ece10": 0.01120005349544064,
+        "calib_intercept": -0.13495016622602893,
+        "calib_slope": 0.9339978449296285,
+        "auc": 0.6829426229988027
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 698,
+        "mean_abs_shift": 8.977576817494175e-06,
+        "p99_abs_shift": 1.3877787807814457e-17,
+        "max_abs_shift": 0.05034607014247794,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_assists.pkl",
+      "challenger_sha256": "8eaae726779eed3e8b0c2ea4cb81d12c387db3b24e58ec3754fc9a87889f9b03",
+      "minutes": 2.8
+    },
+    "sot": {
+      "experiment_id": "PROPS-R2-sot",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 39819,
+        "base_rate": 0.22731502360550548,
+        "mean_p": 0.22757923956266682,
+        "log_loss": 0.4765118602177018,
+        "brier": 0.15474979561481855,
+        "ece10": 0.026649434121132375,
+        "calib_intercept": -0.0741158106734356,
+        "calib_slope": 0.9341905852599117,
+        "auc": 0.7346094493120111
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 39819,
+        "base_rate": 0.22731502360550548,
+        "mean_p": 0.22757923956266682,
+        "log_loss": 0.4765118602177018,
+        "brier": 0.15474979561481855,
+        "ece10": 0.026649434121132375,
+        "calib_intercept": -0.0741158106734356,
+        "calib_slope": 0.9341905852599117,
+        "auc": 0.7346094493120111
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 39819,
+        "base_rate": 0.22731502360550548,
+        "mean_p": 0.22757923956266682,
+        "log_loss": 0.4765118602177018,
+        "brier": 0.15474979561481855,
+        "ece10": 0.026649434121132375,
+        "calib_intercept": -0.0741158106734356,
+        "calib_slope": 0.9341905852599117,
+        "auc": 0.7346094493120111
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 39819,
+        "base_rate": 0.22731502360550548,
+        "mean_p": 0.2275873228512133,
+        "log_loss": 0.47651183020789173,
+        "brier": 0.15474970091787993,
+        "ece10": 0.02663513177629711,
+        "calib_intercept": -0.07419565003309914,
+        "calib_slope": 0.934163732205614,
+        "auc": 0.7346081082059746
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 698,
+        "mean_abs_shift": 8.420410377328955e-06,
+        "p99_abs_shift": 1.1102230246251565e-16,
+        "max_abs_shift": 0.01625999214978613,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_sot.pkl",
+      "challenger_sha256": "fa3a98e6ae4383d5b27388ce40e034c0b3dc792f1e0fcda0b4e370ed1fab5c4d",
+      "minutes": 2.9
+    },
+    "sot2": {
+      "experiment_id": "PROPS-R2-sot2",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 9442,
+        "base_rate": 0.053901616135090855,
+        "mean_p": 0.0552212049859409,
+        "log_loss": 0.18592966052804263,
+        "brier": 0.04866777246721158,
+        "ece10": 0.018382846437495454,
+        "calib_intercept": -0.3481670963108039,
+        "calib_slope": 0.8736873446773935,
+        "auc": 0.8016092761557949
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 9442,
+        "base_rate": 0.053901616135090855,
+        "mean_p": 0.0552212049859409,
+        "log_loss": 0.18592966052804263,
+        "brier": 0.04866777246721158,
+        "ece10": 0.018382846437495454,
+        "calib_intercept": -0.3481670963108039,
+        "calib_slope": 0.8736873446773935,
+        "auc": 0.8016092761557949
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 9442,
+        "base_rate": 0.053901616135090855,
+        "mean_p": 0.0552212049859409,
+        "log_loss": 0.18592966052804263,
+        "brier": 0.04866777246721158,
+        "ece10": 0.018382846437495454,
+        "calib_intercept": -0.3481670963108039,
+        "calib_slope": 0.8736873446773935,
+        "auc": 0.8016092761557949
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 9442,
+        "base_rate": 0.053901616135090855,
+        "mean_p": 0.05523098003164045,
+        "log_loss": 0.1859305043325988,
+        "brier": 0.048668708586143965,
+        "ece10": 0.01837652891071398,
+        "calib_intercept": -0.3487124184014592,
+        "calib_slope": 0.8735480633379272,
+        "auc": 0.8016091604870378
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 698,
+        "mean_abs_shift": 1.1166370589786947e-05,
+        "p99_abs_shift": 2.0816681711721685e-17,
+        "max_abs_shift": 0.06832711850474699,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_sot2.pkl",
+      "challenger_sha256": "dda9efb99681d84c3bf18bc33c16951903f2d99b93f70559baa511a956540273",
+      "minutes": 2.8
+    },
+    "sot3": {
+      "experiment_id": "PROPS-R2-sot3",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 2183,
+        "base_rate": 0.012462108454024925,
+        "mean_p": 0.01251793863468839,
+        "log_loss": 0.06113545063645427,
+        "brier": 0.012266163700218092,
+        "ece10": 0.008134864267787078,
+        "calib_intercept": -0.00321308437462707,
+        "calib_slope": 1.0005414999129572,
+        "auc": 0.8517634156591968
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 2183,
+        "base_rate": 0.012462108454024925,
+        "mean_p": 0.01251793863468839,
+        "log_loss": 0.06113545063645427,
+        "brier": 0.012266163700218092,
+        "ece10": 0.008134864267787078,
+        "calib_intercept": -0.00321308437462707,
+        "calib_slope": 1.0005414999129572,
+        "auc": 0.8517634156591968
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 2183,
+        "base_rate": 0.012462108454024925,
+        "mean_p": 0.01251793863468839,
+        "log_loss": 0.06113545063645427,
+        "brier": 0.012266163700218092,
+        "ece10": 0.008134864267787078,
+        "calib_intercept": -0.00321308437462707,
+        "calib_slope": 1.0005414999129572,
+        "auc": 0.8517634156591968
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 2183,
+        "base_rate": 0.012462108454024925,
+        "mean_p": 0.01251832341082446,
+        "log_loss": 0.06113465493844329,
+        "brier": 0.012266039634193609,
+        "ece10": 0.008134553279563207,
+        "calib_intercept": -0.0029696977073162194,
+        "calib_slope": 1.0006090747710334,
+        "auc": 0.8517662543956326
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 698,
+        "mean_abs_shift": 1.0796111391188667e-06,
+        "p99_abs_shift": 0.0,
+        "max_abs_shift": 0.012868663192469418,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_sot3.pkl",
+      "challenger_sha256": "943f461018c9175d446ede10c568af2c888e84695d726a107beed359bac8e61e",
+      "minutes": 2.6
+    },
+    "sot4": {
+      "experiment_id": "PROPS-R2-sot4",
+      "status": "OK",
+      "training_cutoff": "2026-01-01",
+      "blocks": {
+        "fit": [
+          0,
+          591906
+        ],
+        "calibration": [
+          591906,
+          696360
+        ],
+        "holdout": [
+          696360,
+          870450
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-19"
+        ],
+        "calibration_dates": [
+          "2025-08-19",
+          "2026-01-01"
+        ],
+        "holdout_dates": [
+          "2026-01-01",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 174090,
+        "events": 464,
+        "base_rate": 0.002665288069389396,
+        "mean_p": 0.002471961343137255,
+        "log_loss": 0.01846304878903202,
+        "brier": 0.0026581998083524266,
+        "ece10": 0.003193886645234702,
+        "calib_intercept": -0.16011924543946923,
+        "calib_slope": 0.960903612371471,
+        "auc": 0.8881463456728433
+      },
+      "repaired": {
+        "n": 174090,
+        "events": 464,
+        "base_rate": 0.002665288069389396,
+        "mean_p": 0.002471961343137255,
+        "log_loss": 0.01846304878903202,
+        "brier": 0.0026581998083524266,
+        "ece10": 0.003193886645234702,
+        "calib_intercept": -0.16011924543946923,
+        "calib_slope": 0.960903612371471,
+        "auc": 0.8881463456728433
+      },
+      "legacy_all_holdout_rows": {
+        "n": 174090,
+        "events": 464,
+        "base_rate": 0.002665288069389396,
+        "mean_p": 0.002471961343137255,
+        "log_loss": 0.01846304878903202,
+        "brier": 0.0026581998083524266,
+        "ece10": 0.003193886645234702,
+        "calib_intercept": -0.16011924543946923,
+        "calib_slope": 0.960903612371471,
+        "auc": 0.8881463456728433
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 174090,
+        "events": 464,
+        "base_rate": 0.002665288069389396,
+        "mean_p": 0.0024719644043580346,
+        "log_loss": 0.01846305185790185,
+        "brier": 0.0026581998236123935,
+        "ece10": 0.003193883632655122,
+        "calib_intercept": -0.16011932149042019,
+        "calib_slope": 0.9609037620360635,
+        "auc": 0.8880406885271036
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 174090,
+        "rows_shifted_gt_1e-9": 326,
+        "mean_abs_shift": 3.084170775832065e-09,
+        "p99_abs_shift": 0.0,
+        "max_abs_shift": 6.227303624470023e-05,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 44
+      },
+      "holdout_feature_health": {
+        "rows": 174090,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 27253,
+        "rows_with_degraded": 27253,
+        "mean_n_missing": 0.16903325865931415,
+        "mean_n_degraded": 0.16903325865931415
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_sot4.pkl",
+      "challenger_sha256": "dd4446d40a2d222bf5434f3dd91cd75da2a79e038c850de0c2e0d09d79195adc",
+      "minutes": 2.5
+    },
+    "cards": {
+      "experiment_id": "PROPS-R2-cards",
+      "status": "OK",
+      "training_cutoff": "2026-01-10",
+      "blocks": {
+        "fit": [
+          0,
+          595579
+        ],
+        "calibration": [
+          595579,
+          700682
+        ],
+        "holdout": [
+          700682,
+          875853
+        ],
+        "fit_dates": [
+          "2022-08-12",
+          "2025-08-23"
+        ],
+        "calibration_dates": [
+          "2025-08-23",
+          "2026-01-10"
+        ],
+        "holdout_dates": [
+          "2026-01-10",
+          "2026-10-31"
+        ]
+      },
+      "required_fail_excluded": {
+        "fit": 0,
+        "calibration": 0,
+        "holdout": 0
+      },
+      "imputer_dropped_unfittable": [],
+      "n_features": {
+        "legacy": 138,
+        "repaired": 138
+      },
+      "legacy": {
+        "n": 175171,
+        "events": 22330,
+        "base_rate": 0.12747543828601765,
+        "mean_p": 0.1300467495258186,
+        "log_loss": 0.3723746538341248,
+        "brier": 0.10925775054097327,
+        "ece10": 0.008056630504818725,
+        "calib_intercept": 0.00840044843572028,
+        "calib_slope": 1.0172330389232083,
+        "auc": 0.6201525187878145
+      },
+      "repaired": {
+        "n": 175171,
+        "events": 22330,
+        "base_rate": 0.12747543828601765,
+        "mean_p": 0.1300467495258186,
+        "log_loss": 0.3723746538341248,
+        "brier": 0.10925775054097327,
+        "ece10": 0.008056630504818725,
+        "calib_intercept": 0.00840044843572028,
+        "calib_slope": 1.0172330389232083,
+        "auc": 0.6201525187878145
+      },
+      "legacy_all_holdout_rows": {
+        "n": 175171,
+        "events": 22330,
+        "base_rate": 0.12747543828601765,
+        "mean_p": 0.1300467495258186,
+        "log_loss": 0.3723746538341248,
+        "brier": 0.10925775054097327,
+        "ece10": 0.008056630504818725,
+        "calib_intercept": 0.00840044843572028,
+        "calib_slope": 1.0172330389232083,
+        "auc": 0.6201525187878145
+      },
+      "legacy_as_served_per_fixture": {
+        "n": 175171,
+        "events": 22330,
+        "base_rate": 0.12747543828601765,
+        "mean_p": 0.1300402586977121,
+        "log_loss": 0.37237567518607895,
+        "brier": 0.10925802408320252,
+        "ece10": 0.008059060010761536,
+        "calib_intercept": 0.008380532762446102,
+        "calib_slope": 1.0171899401070579,
+        "auc": 0.6201487249907414
+      },
+      "legacy_batch_sensitivity": {
+        "rows": 175171,
+        "rows_shifted_gt_1e-9": 698,
+        "mean_abs_shift": 6.575576373793701e-06,
+        "p99_abs_shift": 2.7755575615628914e-17,
+        "max_abs_shift": 0.01093356471844631,
+        "meaning": "|legacy p scored per fixture (as served) - legacy p scored in the whole-frame batch (as trained)|; 0 for a batch-invariant model"
+      },
+      "delta_repaired_minus_legacy": {
+        "log_loss": 0.0,
+        "log_loss_ci95": [
+          0.0,
+          0.0
+        ],
+        "brier": 0.0,
+        "brier_ci95": [
+          0.0,
+          0.0
+        ],
+        "week_blocks": 43
+      },
+      "holdout_feature_health": {
+        "rows": 175171,
+        "required_fail_rows": 0,
+        "rows_with_any_missing": 26615,
+        "rows_with_degraded": 26615,
+        "mean_n_missing": 0.16553539113209378,
+        "mean_n_degraded": 0.16553539113209378
+      },
+      "challenger_artifact": "models/challengers/props_r2/props_r2_cards.pkl",
+      "challenger_sha256": "1a2d74e4ac06529ea29db5435ef48397c5530758ca64e955add48dbec080d770",
+      "minutes": 2.6
+    }
+  },
+  "minutes_total": 21.8
+}
