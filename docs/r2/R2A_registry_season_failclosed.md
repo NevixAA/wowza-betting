@@ -7,7 +7,7 @@ Branch `r2/registry-season-failclosed` (v9). Not merged. Base: origin/main `4e9c
 | `4f431f935` | owner rollback doc written FIRST: `docs/STANDARD_REPAIRED_FAILCLOSED_ROLLBACK.md` |
 | `246b2cc4e` | canonical league registry + season resolver; every `API_SEASON` call site moved |
 | `746ba0f87` | predict fails closed (unknown league, missing NF artifact, repaired Standard failure); invalid recipe = configuration error |
-| (next commit) | `scripts/r2a_failclosed_replay.py`, this file |
+| `068fd02a6` | `scripts/r2a_failclosed_replay.py`, this file; health files honour `config.OUTPUT_DIR` |
 
 ## Defects
 
