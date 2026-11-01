@@ -88,7 +88,22 @@ def build_ledger() -> tuple[pd.DataFrame, dict]:
             meta["unsettleable"].append({"gw": gw, "why": "no snapshot on one side of the deadline"})
             continue
 
-        # Pre-deadline forecast: the last snapshot a manager could actually have acted on.
+        # Pre-deadline forecast: the last snapshot a manager could actually have acted on - and
+        # taken AFTER the previous gameweek was scored. Without that bound a player who had been
+        # off the board for weeks used a stale cumulative total, so post - pre summed SEVERAL
+        # gameweeks: 115 GW8 players were settled at e.g. Henderson 23 / Haaland 27 against FPL's
+        # 2 / 8 (Data Truth audit; caught by test_archive_actuals_match_the_settled_ledger).
+        prev_end = _gw_end(gw - 1)
+        if prev_end is not None:
+            fresh = before[before["snapshot_ts"] >= prev_end]
+            stale = before["player_name"].nunique() - fresh["player_name"].nunique()
+            if stale:
+                meta["notes"].append(f"GW{gw}: dropped {stale} players with no snapshot between the "
+                                     f"previous gameweek's end and this deadline (stale total)")
+            before = fresh
+            if before.empty:
+                meta["unsettleable"].append({"gw": gw, "why": "no snapshot after the previous gameweek"})
+                continue
         pre = (before.sort_values("snapshot_ts").groupby("player_name", as_index=False).last())
 
         # Post-settlement: the LAST snapshot before the NEXT deadline.
