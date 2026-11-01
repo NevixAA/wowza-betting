@@ -657,15 +657,18 @@ def build_upcoming_features(
         # HT rolling features (NaN for leagues without HTHG/HTAG data)
         feat["home_ht_scored_last5"]    = _team_recent(ht, "ht_home_goals", "ht_away_goals", n, lg)
         feat["home_ht_conceded_last5"]  = _team_recent(ht, "ht_away_goals", "ht_home_goals", n, lg)
-        feat["away_ht_scored_last5"]    = _team_recent(at, "ht_home_goals", "ht_away_goals", n)
-        feat["away_ht_conceded_last5"]  = _team_recent(at, "ht_away_goals", "ht_home_goals", n)
+        # League-scoped like every other form feature. These two had no `lg` until 2026-11-01, so
+        # an away club's HT form could come from a same-named club in another league.
+        feat["away_ht_scored_last5"]    = _team_recent(at, "ht_home_goals", "ht_away_goals", n, lg)
+        feat["away_ht_conceded_last5"]  = _team_recent(at, "ht_away_goals", "ht_home_goals", n, lg)
         def _ht_rate(team, threshold, nn, league=""):
-            # League-isolated: never mix HT stats across different leagues
-            h = hist[hist["home_team"] == team]
-            a = hist[hist["away_team"] == team]
-            if league:
-                h = h[h["league"] == league]
-                a = a[a["league"] == league]
+            # League-isolated AND name-resolved: this matched the raw OddsAPI name exactly, so
+            # 'Blackburn Rovers', 'Queens Park Rangers', 'Cardiff City' (football-data: Blackburn,
+            # QPR, Cardiff) had no HT rate at all - 75-100% NaN in Championship, La Liga 2,
+            # Bundesliga 2 and League One while the same clubs' goal form resolved fine
+            # (Data Truth audit finding 8).
+            h = _find_team_rows(team, "home_team", league)
+            a = _find_team_rows(team, "away_team", league)
             # HALF-TIME COLUMNS ARE OPTIONAL. Indexing them directly crashed predict with
             # KeyError: 'ht_home_goals' the moment the history frame came from a source without
             # them — which is exactly what happened when the football-data.co.uk outage forced a
@@ -674,12 +677,13 @@ def build_upcoming_features(
             # feature here does; it must not take the whole tip run down.
             if not {"ht_home_goals", "ht_away_goals"} <= set(hist.columns):
                 return float("nan")
-            hm   = h["ht_home_goals"].dropna()
-            hm_t = h["ht_away_goals"].dropna()
-            aw   = a["ht_away_goals"].dropna()
-            aw_t = a["ht_home_goals"].dropna()
-            total = [(a_ + b) for a_, b in zip(list(hm.tail(nn)), list(hm_t.tail(nn)))] + \
-                    [(a_ + b) for a_, b in zip(list(aw.tail(nn)), list(aw_t.tail(nn)))]
+            # One match = both half-time scores of THAT match. Dropping NaN per column and then
+            # zipping paired one match's home HT goals with another match's away HT goals
+            # whenever a single side was missing.
+            hh = h.dropna(subset=["ht_home_goals", "ht_away_goals"]).tail(nn)
+            aa = a.dropna(subset=["ht_home_goals", "ht_away_goals"]).tail(nn)
+            total = list(hh["ht_home_goals"] + hh["ht_away_goals"]) + \
+                    list(aa["ht_home_goals"] + aa["ht_away_goals"])
             if not total:
                 return float('nan')
             return sum(1 for x in total if x >= threshold) / len(total)

@@ -224,7 +224,9 @@ def test_06_away_ht_is_league_scoped(raw):
     assert f["away_ht_scored_last5"].iloc[0] == 0.0      # only League A's Rovers (never score at HT)
     from src.feature_engineering import build_upcoming_features
     g = build_upcoming_features(up, raw)
-    assert g["away_ht_scored_last5"].iloc[0] > 0.0       # legacy: League B's Rovers leak in
+    # The legacy path leaked League B's Rovers in until 2026-11-01 (Data Truth audit finding 8);
+    # it is league-scoped now, like the repaired recipe.
+    assert g["away_ht_scored_last5"].iloc[0] == 0.0
 
 
 def test_06b_training_is_league_scoped_too(feat):
