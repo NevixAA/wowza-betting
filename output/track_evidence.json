@@ -494,14 +494,14 @@
     },
     "side": {
       "OVER": {
-        "n": 138,
-        "pnl": 9.69,
-        "roi_per_bet": 0.0702,
-        "hit_rate": 0.4783,
-        "break_even": 0.451,
-        "ci_lo": -0.1236,
-        "ci_hi": 0.291,
-        "clv_available": 138,
+        "n": 266,
+        "pnl": 8.56,
+        "roi_per_bet": 0.0322,
+        "hit_rate": 0.5526,
+        "break_even": 0.5381,
+        "ci_lo": -0.0975,
+        "ci_hi": 0.1728,
+        "clv_available": 266,
         "status": "NEUTRAL"
       },
       "UNDER": {
@@ -514,6 +514,17 @@
         "ci_hi": -0.0398,
         "clv_available": 465,
         "status": "NEGATIVE_SIGNAL"
+      },
+      "YES": {
+        "n": 176,
+        "pnl": 22.71,
+        "roi_per_bet": 0.1291,
+        "hit_rate": 0.5398,
+        "break_even": 0.4855,
+        "ci_lo": -0.0113,
+        "ci_hi": 0.2602,
+        "clv_available": 154,
+        "status": "NEUTRAL"
       }
     },
     "league": {
