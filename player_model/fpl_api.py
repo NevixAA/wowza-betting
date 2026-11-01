@@ -229,7 +229,9 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "availability":      _STATUS.get(status, "available"),
             "chance_of_playing": e.get("chance_of_playing_next_round"),
             "news":              (e.get("news") or "").strip(),
-            "injured":           status in ("i", "s", "u"),
+            # 'n' (not in squad / ineligible) is OUT too - V2 already treats it so; V1 did not
+            # (R2-D fantasy bug 'status_n_not_out_v1').
+            "injured":           status in ("i", "s", "u", "n"),
             "doubtful":          status == "d",
             # FPL-native signals (for differentials / hybrid ranking / price-change context)
             "owned_pct":         float(e.get("selected_by_percent") or 0.0),
