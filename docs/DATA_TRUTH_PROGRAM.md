@@ -5,10 +5,10 @@ by an automated check that turns CI red, not by a one-off clean-up:
 
 | # | Rule | Enforced by (target) |
 |---|---|---|
-| 1 | No mismatched labels / naming | fixed `v9 28ef297b` |
-| 2 | No silent defaults | fixed `v9 28ef297b` |
-| 3 | No missing data | fixed `v9 f83f8d9c` |
-| 4 | No wrong league relations | fixed `v9 fc6b8bab` |
+| 1 | No mismatched labels / naming | every league, team, market, tier and track resolves to ONE canonical key; unresolved names fail closed and are counted |
+| 2 | No silent defaults | no `fillna(const)` / `.get(k, literal)` / hard-coded season on a value that reaches a tip, stake, grade or dashboard number; each remaining default is registered, flagged on the row, and counted |
+| 3 | No missing data | no silent caps (`next=N`, `head(N)`, single-page API reads); every drop is logged and counted; freshness and coverage checks per league/market |
+| 4 | No wrong league relations | all joins keyed by league; one league registry (`config/leagues.json`) consumed by v9, Pro, v11, exec and the dashboard, with equality tests |
 
 "100% bug-free" cannot be proven for a codebase this size. What this program delivers is: every
 known violation fixed or fail-closed, and a red check the moment a new one appears.
