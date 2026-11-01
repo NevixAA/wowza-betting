@@ -117,6 +117,19 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         if "model_type" in preds.columns:
             _src_cols.append("model_type")
         df = preds[_src_cols].dropna(subset=[prob_col, odds_col]).copy()
+        # BLIND-FIXTURE GUARD, same rule as the O/U path (betting.evaluate_value): no rolling form
+        # means median-imputed features and a confident-looking wrong edge. Until 2026-11-01 side
+        # markets skipped it, so Belgrano v Barracas Central (no home form) went out as BTTS SNIPER
+        # 11.96%, staked, and BEST_BETS #1, while its O/U 2.5 was forced to AVOID.
+        _form = [c for c in ("home_scored_last5", "away_scored_last5",
+                             "home_conceded_last5", "away_conceded_last5") if c in preds.columns]
+        _blind = (preds.loc[df.index, _form].isna().any(axis=1) if _form
+                  else pd.Series(False, index=df.index))
+        if "no_form_data" in preds.columns:
+            _blind = _blind | preds.loc[df.index, "no_form_data"].astype("boolean").fillna(False).astype(bool)
+        if _blind.any():
+            log.info(f"side {target}: {int(_blind.sum())} blind fixture(s) skipped (no rolling-form history)")
+            df = df[~_blind]
         if df.empty:
             continue
         # THE ORIGINATING PREDICTION'S MODEL TAG (P0 2026-10-22). This frame used to drop it, so

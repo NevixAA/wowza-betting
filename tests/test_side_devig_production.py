@@ -71,6 +71,17 @@ def test_edge_that_only_existed_under_1_08_is_dropped(monkeypatch):
     assert _run(monkeypatch, [_pred("A", p, 1.92)], q).empty
 
 
+def test_blind_fixture_gets_no_side_tip(monkeypatch):
+    q = _quotes([("A vs A B", "bk1", "YES", 1.80), ("A vs A B", "bk1", "NO", 2.00),
+                 ("C vs C B", "bk1", "YES", 1.80), ("C vs C B", "bk1", "NO", 2.00)])
+    seen = dict(_pred("A", 0.66, 1.80), home_scored_last5=1.2, away_scored_last5=1.0,
+                home_conceded_last5=1.1, away_conceded_last5=1.3)
+    blind = dict(_pred("C", 0.66, 1.80), home_scored_last5=float("nan"), away_scored_last5=1.0,
+                 home_conceded_last5=1.1, away_conceded_last5=1.3)
+    out = _run(monkeypatch, [seen, blind], q)
+    assert list(out["home_team"]) == ["A"]
+
+
 def test_rollback_switch_restores_legacy(monkeypatch):
     monkeypatch.setattr(config, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")
     out = _run(monkeypatch, [_pred("A", 0.66, 1.80)], _quotes([]).iloc[0:0])
