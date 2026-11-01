@@ -1,7 +1,7 @@
 {
  "about": "Canonical system health (src/system_health.build_artifact), written daily by evidence_refresh.yml. overall: FAIL if any RED check or protected_tracks_modified; WARN if any AMBER/NO_DATA; PASS otherwise. Every status comes from the rule stored beside it.",
  "artifact_version": "SYSTEM-HEALTH-1",
- "generated_at": "2026-11-01T18:56:48Z",
+ "generated_at": "2026-11-01T19:05:28Z",
  "overall": "WARN",
  "reasons": [
   "AMBER Data contracts: 2 new violation(s) in 2 of 14 files \u00b7 6 known historical (config/contract_baseline.json)"
@@ -16,7 +16,7 @@
   },
   "contracts_version": "CONTRACTS-1",
   "research_lock_digest": "712bb087c6e81a38660a5ee411722d5ad5ea7483e3b608a6c0321929ad6c124f",
-  "code_commit": "b2fcf64ee298"
+  "code_commit": "038153bcb5ae"
  },
  "counts": {
   "GREEN": 20,
@@ -51,7 +51,7 @@
    "status": "GREEN",
    "value": "100% of 184 rows (p_pro_hgb)",
    "rule": "over rows logged in the last 7 days AND after the challenger experiment was registered (rows logged before a challenger existed cannot carry one): GREEN >= 90% carry a challenger probability; AMBER > 0%; RED 0%",
-   "detail": "window from 2026-10-25 18:56 UTC"
+   "detail": "window from 2026-10-25 19:05 UTC"
   },
   {
    "check": "Certified CLV coverage",
@@ -77,7 +77,7 @@
   {
    "check": "GitHub workflow health",
    "status": "GREEN",
-   "value": "0 still failing / 174 runs (24 h) \u00b7 6 fixed since",
+   "value": "0 still failing / 176 runs (24 h) \u00b7 6 fixed since",
    "rule": "workflows whose latest run on main (last 24 h, 3 repos) failed or timed out \u2014 failures a later success superseded and branch-only research runs do not count: GREEN 0; AMBER 1-2; RED >= 3 (record > 36 h old = AMBER)",
    "detail": ""
   },
@@ -126,7 +126,7 @@
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 39 known (baseline); 0 baseline entr(ies) now gone",
+   "value": "0 new default(s); 35 known (baseline); 0 baseline entr(ies) now gone",
    "rule": "no NEW invented default in production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder): RED if any site is not in config/data_truth_baseline.json; GREEN otherwise (baseline entries each carry a reason)",
    "detail": ""
   },
@@ -154,7 +154,7 @@
   {
    "check": "Edge-engine shadow",
    "status": "GREEN",
-   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 656 rows, shadow_only=True, 1.9 h old",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 656 rows, shadow_only=True, 2.0 h old",
    "rule": "RED if edge_engine_health.json is missing, older than 72 h, or shadow_only is not true (a shadow engine must never be live); AMBER if older than 24 h or it scored 0 rows; GREEN otherwise",
    "detail": ""
   },
