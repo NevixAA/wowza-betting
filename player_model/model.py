@@ -20,6 +20,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 from . import config
+from . import props_contract as PC
 
 TARGETS = config.MARKET_TARGETS
 
@@ -75,8 +76,15 @@ def split_bounds(n: int) -> tuple[int, int]:
     return split, int(split * 0.85)
 
 
-def train(df: pd.DataFrame, market: str, return_holdout: bool = False):
+def train(df: pd.DataFrame, market: str, return_holdout: bool = False, recipe: str = "legacy"):
     """Train LogReg + GradientBoosting with Platt calibration for one market.
+
+    recipe="legacy" (DEFAULT, what the weekly retrain and the promotion gate use): unchanged
+    preprocessing, `_prep` batch medians over the whole frame (holdout included).
+    recipe="props_r2_repaired" (R2-D challenger, never served without owner approval): the
+    persisted PropsImputer fitted on the FIT block only, applied identically to calibration,
+    holdout and live; REQUIRED_FAIL_ROW rows are excluded from fit/calibration and get no
+    holdout probability. Same split bounds, same estimators, same hyper-parameters.
 
     return_holdout=True returns (results, holdout_frame, training_cutoff): the untouched
     chronological holdout rows exactly as train() scored them (every column, so the promotion gate
@@ -105,9 +113,20 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False):
         df = df[df[target_col].notna()].reset_index(drop=True)
 
     y = df[target_col].astype(int)
-    X, feat_cols = _prep(df)
-
     n = len(df)
+    if recipe == "legacy":
+        X, feat_cols = _prep(df)
+    elif recipe == PC.RECIPE_REPAIRED:
+        if n < 200:
+            raise ValueError(f"Not enough samples for {market}: {n}")
+        _split, _cal = split_bounds(n)
+        # FIT block only: calibration and holdout statistics never reach the imputer.
+        imputer = PC.PropsImputer().fit(df.iloc[:_cal], list(config.PLAYER_FEATURE_COLS))
+        X, diag = imputer.transform(df)
+        feat_cols = list(imputer.feature_cols_)
+    else:
+        raise ValueError(f"unknown props recipe {recipe!r}")
+
     if n < 200:
         raise ValueError(f"Not enough samples for {market}: {n}")
 
@@ -116,6 +135,32 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False):
     X_fit, y_fit   = X.iloc[:cal_split], y.iloc[:cal_split]
     X_cal, y_cal   = X.iloc[cal_split:split], y.iloc[cal_split:split]
     X_test, y_test = X.iloc[split:], y.iloc[split:]
+    r2_meta = None
+    if recipe == PC.RECIPE_REPAIRED:
+        ok = ~diag["required_fail"].to_numpy()
+        fit_ok, cal_ok, test_ok = ok[:cal_split], ok[cal_split:split], ok[split:]
+        X_fit, y_fit = X_fit[fit_ok], y_fit[fit_ok]
+        X_cal, y_cal = X_cal[cal_ok], y_cal[cal_ok]
+        X_test, y_test = X_test[test_ok], y_test[test_ok]
+        _d = pd.to_datetime(df["date"], errors="coerce") if "date" in df.columns else None
+
+        def _rng(a, b):
+            if _d is None or b <= a:
+                return None
+            return [str(_d.iloc[a])[:10], str(_d.iloc[b - 1])[:10]]
+        r2_meta = {
+            "recipe": PC.RECIPE_REPAIRED,
+            "imputer": imputer.state(),
+            "imputer_version": PC.IMPUTER_VERSION,
+            "contract_version": imputer.contract["contract_version"],
+            "blocks": {"fit": [0, cal_split], "calibration": [cal_split, split], "holdout": [split, n],
+                       "fit_dates": _rng(0, cal_split), "calibration_dates": _rng(cal_split, split),
+                       "holdout_dates": _rng(split, n)},
+            "required_fail_excluded": {"fit": int((~fit_ok).sum()),
+                                       "calibration": int((~cal_ok).sum()),
+                                       "holdout": int((~test_ok).sum())},
+            "training_rows": int(n),
+        }
 
     estimators = {
         "logistic": Pipeline([
@@ -159,6 +204,15 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False):
             "feature_cols": feat_cols,
             "metrics":     {"auc": auc, "log_loss": ll, "n_train": split, "n_test": len(y_test)},
         }
+        if r2_meta is not None:
+            results[name]["r2"] = r2_meta
+        if return_holdout:
+            # The holdout probabilities exactly as THIS train() scored them, aligned to the
+            # returned holdout frame (NaN where the repaired contract refused a row). Not part
+            # of build_payload, so serving bytes are unaffected.
+            full = np.full(n - split, np.nan)
+            full[np.asarray(X_test.index) - split] = p_test
+            results[name]["holdout_p"] = full
         print(f"  [{market}] {name}: AUC={auc:.3f}  LogLoss={ll:.3f}")
 
     if return_holdout:
@@ -171,12 +225,18 @@ def train(df: pd.DataFrame, market: str, return_holdout: bool = False):
 
 def build_payload(results: dict, market: str) -> dict:
     """The serving-file payload, exactly as the pre-gate save_model wrote it."""
-    return {
+    payload = {
         "market":      market,
         "models":      {k: v["model"] for k, v in results.items()},
         "feature_cols": results[next(iter(results))]["feature_cols"],
         "metrics":     {k: v["metrics"] for k, v in results.items()},
     }
+    # R2 challenger metadata. Added ONLY for a repaired recipe, so a legacy payload's keys (and
+    # therefore its pickle bytes / artifact sha) are exactly what they were before R2.
+    r2 = results[next(iter(results))].get("r2")
+    if r2:
+        payload.update(r2)
+    return payload
 
 
 def payload_bytes(results: dict, market: str) -> bytes:
@@ -201,8 +261,57 @@ def load_model(market: str) -> Optional[dict]:
         return pickle.load(f)
 
 
+def payload_recipe(payload: dict) -> str:
+    """A payload without a `recipe` key is a pre-R2 (legacy) payload - every serving props model
+    as of 2026-11-01."""
+    return payload.get("recipe") or PC.RECIPE_LEGACY
+
+
+def predict_with_diagnostics(df: pd.DataFrame, payload: dict) -> pd.DataFrame:
+    """Per-row probability plus the R2 integrity record. Columns: p, n_missing, n_degraded,
+    n_required_missing, required_fail, imputer_version, contract_version, recipe.
+
+    Repaired payload: persisted train-fitted imputer, batch-invariant, REQUIRED_FAIL_ROW -> p NaN.
+    Legacy payload: EXACTLY the pre-R2 computation (batch medians, absent column -> 0.0); the
+    diagnostics then describe the raw input and imputer_version says BATCH_MEDIAN_LEGACY."""
+    if payload_recipe(payload) == PC.RECIPE_REPAIRED:
+        imp = PC.PropsImputer.from_state(payload["imputer"])
+        X, diag = imp.transform(df)
+        if list(X.columns) != list(payload["feature_cols"]):
+            raise ValueError("payload feature_cols differ from its persisted imputer")
+        probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
+        p = pd.Series(np.mean(probas, axis=0), index=df.index)
+        p[diag["required_fail"].to_numpy()] = np.nan
+        out = diag.copy()
+        out.insert(0, "p", p)
+        out["recipe"] = PC.RECIPE_REPAIRED
+        return out
+    feat_cols = payload["feature_cols"]
+    X, _ = _prep(df, feat_cols)
+    probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
+    out = pd.DataFrame({"p": np.mean(probas, axis=0)}, index=df.index)
+    raw = pd.DataFrame({c: (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                            else pd.Series(np.nan, index=df.index)) for c in feat_cols},
+                       index=df.index)
+    out["n_missing"] = raw.isna().sum(axis=1).astype(int)
+    out["n_degraded"] = -1          # legacy payloads carry no contract
+    out["n_required_missing"] = -1
+    out["required_fail"] = False    # legacy never fails a row (that is the defect)
+    out["imputer_version"] = "BATCH_MEDIAN_LEGACY"
+    out["contract_version"] = "NONE"
+    out["recipe"] = PC.RECIPE_LEGACY
+    return out
+
+
 def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
-    """Ensemble average probability from both models."""
+    """Ensemble average probability from both models.
+
+    Legacy payloads (no `recipe` key; all serving props models as of 2026-11-01) take the
+    original code path unchanged - batch-median `_prep` - so serving probabilities are
+    bit-identical to pre-R2 until an owner-approved retrain. Repaired payloads use the persisted
+    train-fitted imputer and return NaN on rows that fail the feature contract."""
+    if payload_recipe(payload) == PC.RECIPE_REPAIRED:
+        return predict_with_diagnostics(df, payload)["p"]
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)
     probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]

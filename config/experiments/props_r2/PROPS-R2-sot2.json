@@ -1,0 +1,49 @@
+{
+  "experiment_id": "PROPS-R2-sot2",
+  "registered_at": "2026-11-01",
+  "registered_by": "R2-D (model-integrity repair)",
+  "frozen": true,
+  "evidence_class": "RETROSPECTIVE",
+  "lifecycle_stage": "RETROSPECTIVE_REPLAY",
+  "lifecycle": [
+    "DISCOVERY",
+    "REPAIRED_IMPLEMENTATION",
+    "RETROSPECTIVE_REPLAY",
+    "SHADOW",
+    "FORWARD_ACCRUAL",
+    "ELIGIBLE_FOR_REVIEW",
+    "OWNER_REVIEW",
+    "OPTIONAL_PROMOTION"
+  ],
+  "market": "sot2",
+  "target": "target_sot2",
+  "hypothesis": "Replacing whole-frame / scoring-batch median imputation with a train-fitted persisted imputer and a per-feature missing-data contract removes holdout leakage and batch dependence WITHOUT making the holdout log loss worse (integrity repair, not a tuning exercise).",
+  "recipe": "props_r2_repaired",
+  "baseline": "legacy recipe (player_model.model.train recipe=legacy), same data snapshot, same split, same estimators",
+  "code_ref": "branch r2/props-integrity; exact SHA recorded per run in output/props_r2/props_r2_challengers.json (code_sha)",
+  "data": "player_history.parquet at the checked-out commit (injury columns point-in-time since 2026-10-26)",
+  "training_cutoff": "last fit+calibration row of the chronological 80% (split_bounds); recorded per run",
+  "feature_list_sha256": "82cf1b90f9175798e5721b98e3e4e9ddf92501add845a7a11cb6d111b5735b3b",
+  "feature_contract_version": "PFC-1.0",
+  "imputer_version": "PROPS-IMPUTER-1.0",
+  "identity_version": "player_id + latest-club rule (unchanged)",
+  "blocks": "fit 0..68% | calibration 68..80% | untouched holdout 80..100% (chronological, rows sorted by date)",
+  "metrics_primary": [
+    "log_loss",
+    "brier",
+    "ece10",
+    "calib_intercept",
+    "calib_slope"
+  ],
+  "metrics_secondary": [
+    "auc"
+  ],
+  "market_metrics": "NONE - props are paper permanently; no ROI/EV/staking computed",
+  "pass_criteria_frozen": {
+    "non_inferior": "upper 95% week-block bootstrap CI of (repaired - legacy) holdout log loss <= +0.001",
+    "calibration": "repaired ece10 <= legacy ece10 + 0.005",
+    "integrity": "tests/test_props_r2_integrity.py passes (batch invariance, fit-block-only statistics, no silent zero)"
+  },
+  "promotion_criteria": "NONE automatic. Passing makes the recipe eligible for SHADOW scoring next to the champion; any serving change requires PG-PROPS + explicit owner approval.",
+  "thresholds_tuned_on_holdout": false
+}

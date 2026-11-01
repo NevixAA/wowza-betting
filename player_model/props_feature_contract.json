@@ -1,0 +1,564 @@
+{
+  "contract_sha256": "50ad676151903ebce9fc7a4d4d3d09f87c4642f99e11a815bada8cba736fe1f9",
+  "contract_version": "PFC-1.0",
+  "counts": {
+    "IMPUTABLE": 83,
+    "OPTIONAL_DEGRADED": 40,
+    "REQUIRED_FAIL_ROW": 12,
+    "SEMANTIC_ZERO": 3
+  },
+  "features": {
+    "aerial_matchup_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "aerial_won_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "age": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "age_peak_delta": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "aggression_adjusted_threat": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "assists_pg": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "core rate"
+    },
+    "att_vs_gk_threat": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "box_actions_per90": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "box_dominance_vs_gk": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "box_threat_vs_leaky_defense": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "card_clash_index": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "referee assignment is often unknown until close to kickoff"
+    },
+    "card_exposure_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "card_risk_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "cards_pg": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "core rate"
+    },
+    "career_assists_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "career_goals_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "career_shots_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "career_sot_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "carrier_vs_press": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "chronic_injury_risk": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
+    },
+    "clinical_vs_gk": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "context_quality_discount": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "creative_playmaker_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "creative_pressure_matchup": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "days_since_last_injury": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
+    },
+    "defender_sot_role_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "defensive_actions_per90": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "defensive_solidity": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "defensive_vulnerability_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "disciplinary_pressure_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "dribble_contact_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "dribble_creativity_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "dribble_success_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "dribbled_past_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "dribbler_vs_defensive_line": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "dribbles_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "duel_intensity_per90": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "efficiency_vs_leaky_keeper": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "finishing_threat_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "forward_matchup_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "foul_committer_ratio": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "foul_draw_matchup_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "foul_magnet_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "fouls_drawn_per90": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "fouls_per90": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "goal_involvement_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "goals_away_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "goals_home_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "goals_pg": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "core rate"
+    },
+    "height_advantage_score": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "height_aerial_interaction": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "height_cm": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "height_diff_vs_opp_def": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "interceptions_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "is_home": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "venue; every row in training has it, a fixture without it is not identified"
+    },
+    "key_passes_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "kp_per90": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "kp_vs_aggressive_defense": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "league_quality": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "league_tier": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "mid_threat_vs_defense": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "midfield_engine_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "minutes_pg": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "playing time drives every count market"
+    },
+    "n_prev_games": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "history depth; without it the player is a cold start, not a prop candidate"
+    },
+    "offside_aggressiveness": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "offsides_pg": {
+      "class": "SEMANTIC_ZERO",
+      "reason": "API-Football reports null for an event that did not happen"
+    },
+    "opp_adjusted_shot_threat": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_def_aerial_win_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_def_aggression": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_def_cards_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_def_fouls_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_def_mean_height": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players profile (age, height)"
+    },
+    "opp_def_player_quality": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "opponent lineup-level detail (GK, defenders)"
+    },
+    "opp_def_player_rating_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "opponent lineup-level detail (GK, defenders)"
+    },
+    "opp_gk_save_rate": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "opponent lineup-level detail (GK, defenders)"
+    },
+    "opp_gk_saves_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "opponent lineup-level detail (GK, defenders)"
+    },
+    "opp_goals_conceded_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_goals_conceded_vs_fwd_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_goals_conceded_vs_mid_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_mid_cards_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_mid_discipline": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_mid_fouls_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_sot_conceded_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_sot_conceded_vs_fwd_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_sot_conceded_vs_mid_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "opp_strength_index": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "opp_top_def_rating": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "opponent lineup-level detail (GK, defenders)"
+    },
+    "passes_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "penalties_won_pg": {
+      "class": "SEMANTIC_ZERO",
+      "reason": "API-Football reports null for an event that did not happen"
+    },
+    "penalty_conversion_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "penalty_threat_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "player_career_avg_quality": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "pos_defender": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "position encoding"
+    },
+    "pos_forward": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "position encoding"
+    },
+    "pos_midfielder": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "position encoding"
+    },
+    "progressive_carrier_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "quality_adj_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "quality_adj_sot_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "quality_mismatch_goals": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "quality_mismatch_sot": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "league / opponent-quality enrichment"
+    },
+    "rating_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "red_cards_pg": {
+      "class": "SEMANTIC_ZERO",
+      "reason": "API-Football reports null for an event that did not happen"
+    },
+    "referee_strictness": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "referee assignment is often unknown until close to kickoff"
+    },
+    "referee_yellows_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "referee assignment is often unknown until close to kickoff"
+    },
+    "rest_days": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "return_from_injury_flag": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "injury feed (point-in-time since 2026-10-26; serving models trained on leaked values)"
+    },
+    "season_appearances": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_assists_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_cards_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_dribble_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_fouls_drawn_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_fouls_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_minutes_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_shots_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_sot_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "season_start_rate": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "API-Football /players/statistics season priors"
+    },
+    "set_piece_corner_matchup": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "set_piece_threat_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shooting_efficiency_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shot_accuracy_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shots_away_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shots_home_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shots_pg": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "core rate"
+    },
+    "sot_away_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "sot_home_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "sot_pg": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "core rate"
+    },
+    "sot_quality_score": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "sot_rate": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "sp_receiver_score": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "set-piece role enrichment"
+    },
+    "sp_taker_score": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "set-piece role enrichment"
+    },
+    "starter_rate": {
+      "class": "REQUIRED_FAIL_ROW",
+      "reason": "role; a missing starter rate makes every count market unscorable"
+    },
+    "tackle_dribble_clash": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "tackles_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "team_corners_pg": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "team_goals_pg_roll": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "team_momentum_forward_matchup": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "volume_shot_penetration": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    }
+  }
+}

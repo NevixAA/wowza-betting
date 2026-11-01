@@ -175,6 +175,13 @@ def build() -> dict:
     else:
         h["status"] = "OK"
     h["settlement_ready"] = bool(h.get("projection_log", {}).get("settleable"))
+    # R2-D (2026-11-01): the defaults register + how often detectable fallbacks fired.
+    # Descriptive only; it does not affect `status`.
+    try:
+        from player_model import fantasy_defaults as FD
+        h["defaults_audit"] = FD.summary()
+    except Exception as e:                                           # noqa: BLE001
+        h["defaults_audit"] = {"error": f"{type(e).__name__}: {e}"}
     return h
 
 
