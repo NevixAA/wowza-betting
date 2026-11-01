@@ -47,6 +47,15 @@ def _hist():
     return df
 
 
+def test_rest_days_resolve_bookmaker_names():
+    hist = _hist()
+    up = pd.DataFrame([{"date": hist.date.max() + pd.Timedelta(days=5), "league": "Championship",
+                        "home_team": "Blackburn Rovers", "away_team": "Queens Park Rangers",
+                        "odds_over25": 2.0, "odds_under25": 1.8}])
+    f = build_upcoming_features(up, hist).iloc[0]
+    assert pd.notna(f["home_rest_days"]) and pd.notna(f["away_rest_days"])
+
+
 def test_ht_rates_resolve_bookmaker_names():
     hist = _hist()
     up = pd.DataFrame([{"date": hist.date.max() + pd.Timedelta(days=5), "league": "Championship",

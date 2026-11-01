@@ -801,10 +801,24 @@ def build_upcoming_features(
     # was not in date order (51 of 52 consistency checks failed on the committed board). History
     # is every row involving a team on the board, not the last 1,000 rows across all leagues,
     # which left 64% of live Standard fixtures with no rest days at all.
-    _teams = set(df["home_team"]) | set(df["away_team"])
+    # Board names resolved to their HISTORY spelling first (league-scoped, same resolver as the form
+    # features): with raw OddsAPI names 'Blackburn Rovers', 'Queens Park Rangers'... never met
+    # football-data's 'Blackburn', 'QPR', and 36% of Standard fixtures still had no rest days.
+    def _hist_name(team, league):
+        if not league:
+            return team
+        key = (str(team), str(league))
+        if key not in _resolved:
+            _resolved[key] = resolve_team(team, _clubs_in(league))
+        return _resolved[key] or team
+    _up = df[["date", "home_team", "away_team"]].copy()
+    _lgs = df["league"] if "league" in df.columns else pd.Series("", index=df.index)
+    _up["home_team"] = [_hist_name(t, lg) for t, lg in zip(df["home_team"], _lgs)]
+    _up["away_team"] = [_hist_name(t, lg) for t, lg in zip(df["away_team"], _lgs)]
+    _teams = set(_up["home_team"]) | set(_up["away_team"])
     _h = hist[["date", "home_team", "away_team"]]
     _h = _h[_h["home_team"].isin(_teams) | _h["away_team"].isin(_teams)]
-    combined = pd.concat([_h, df[["date", "home_team", "away_team"]]], ignore_index=True)
+    combined = pd.concat([_h, _up], ignore_index=True)
     combined_rd = _add_rest_days(combined)
     tail = combined_rd.tail(len(df))
     df["home_rest_days"] = tail["home_rest_days"].to_numpy()
