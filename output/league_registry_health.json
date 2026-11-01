@@ -1,0 +1,105 @@
+{
+ "generated_at": "2026-11-01T10:59:39+00:00",
+ "registry_file": "config/leagues.json",
+ "registry_version": "LR-1.0-2026-11-01",
+ "errors": [],
+ "counts": {
+  "leagues": 48,
+  "aliases": 3,
+  "standard": 17,
+  "new_format": 15,
+  "enabled": 20,
+  "paper": 1
+ },
+ "aliases": {
+  "Danish Superliga": "Denmark Superliga",
+  "Austria Bundesliga": "Austrian Bundesliga",
+  "World Cup": "World Cup 2026"
+ },
+ "config_consistency": {
+  "STANDARD_FORMAT_LEAGUES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "missing": [],
+   "unexpected": []
+  },
+  "NEW_FORMAT_LEAGUES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "missing": [],
+   "unexpected": []
+  },
+  "ENABLED_LEAGUES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "missing": [],
+   "unexpected": []
+  },
+  "PAPER_LEAGUES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "missing": [],
+   "unexpected": []
+  },
+  "API_FOOTBALL_ONLY_LEAGUES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "missing": [],
+   "unexpected": []
+  },
+  "API_FOOTBALL_EXTRA_SEASONS": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "differs": []
+  },
+  "FOOTBALL_DATA_LEAGUES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "differs": []
+  },
+  "LEAGUE_TIMEZONES": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "differs": []
+  },
+  "API_FOOTBALL_IDS": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "differs": []
+  },
+  "ODDS_API_SPORT_KEYS": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "differs": []
+  },
+  "SOFASCORE_TOURNAMENT_IDS": {
+   "status": "PASS",
+   "non_registry_keys": [],
+   "unexplained_non_registry_keys": [],
+   "differs": []
+  }
+ },
+ "coverage_gaps": [],
+ "last_predict_routing": {
+  "generated_at": "2026-11-01T10:59:29Z",
+  "fixtures": 158,
+  "standard": 70,
+  "new_format": 88,
+  "unknown_league_fixtures": [],
+  "new_format_artifact_missing": false,
+  "new_format_unscored_fixtures": 0,
+  "policy": "unknown league -> model_type=unknown, no probability, no bet; missing NF artifact -> NF fixtures unscored (no Standard fallback)",
+  "status": "PASS"
+ },
+ "status": "PASS"
+}
