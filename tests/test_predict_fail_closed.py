@@ -130,13 +130,11 @@ def test_routing_is_exact_canonical_only():
 def test_integrity_health_written_by_pipeline_hook(run, monkeypatch, tmp_path):
     from src import league_registry as LR, season_resolver as SR, standard_serving as SS
     import src.predict as P
-    monkeypatch.setattr(LR, "HEALTH_FILE", tmp_path / "lr.json")
-    monkeypatch.setattr(SR, "HEALTH_FILE", tmp_path / "sr.json")
-    monkeypatch.setattr(SS, "HEALTH_FILE", tmp_path / "ss.json")
+    monkeypatch.setattr(config, "OUTPUT_DIR", tmp_path)
     run(KNOWN + [("Danish Superliga", "X1", "X2")])
     P.write_integrity_health()
-    lr = json.loads((tmp_path / "lr.json").read_text(encoding="utf-8"))
+    lr = json.loads((tmp_path / "league_registry_health.json").read_text(encoding="utf-8"))
     assert lr["last_predict_routing"]["unknown_league_fixtures"][0]["league"] == "Danish Superliga"
     assert lr["status"] in ("WARN", "FAIL")
-    assert json.loads((tmp_path / "sr.json").read_text(encoding="utf-8"))["leagues"]
-    assert json.loads((tmp_path / "ss.json").read_text(encoding="utf-8"))["serving_recipe"] == "legacy_v9"
+    assert json.loads((tmp_path / "season_resolution_health.json").read_text(encoding="utf-8"))["leagues"]
+    assert json.loads((tmp_path / "standard_serving_health.json").read_text(encoding="utf-8"))["serving_recipe"] == "legacy_v9"

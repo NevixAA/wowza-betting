@@ -75,9 +75,11 @@ def write_integrity_health() -> None:
     and therefore write nothing). Never raises."""
     try:
         from src import league_registry, season_resolver, standard_serving
-        league_registry.write_health(routing=_LAST_ROUTING or None)
-        season_resolver.write_health()
-        standard_serving.write_health()
+        out = Path(config.OUTPUT_DIR)                  # honours a redirected OUTPUT_DIR (tests, previews)
+        league_registry.write_health(routing=_LAST_ROUTING or None,
+                                     path=out / league_registry.HEALTH_FILE.name)
+        season_resolver.write_health(path=out / season_resolver.HEALTH_FILE.name)
+        standard_serving.write_health(path=out / standard_serving.HEALTH_FILE.name)
     except Exception as e:                                             # noqa: BLE001
         log.warning(f"league/season/serving health not written: {e}")
 
