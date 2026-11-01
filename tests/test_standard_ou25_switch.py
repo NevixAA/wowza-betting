@@ -41,7 +41,7 @@ STD_A, STD_B, NF = "Championship", "League One", "Brazil Serie A"
 FEATS = feature_cols_for("none")
 SIDE_P = ["p_btts", "p_over15", "p_over35", "p_ht_over05", "p_ht_over15"]
 SWITCH_COLS = ["serving_recipe", "serving_no_form"]
-OU_DERIVED = {"p_over25", "impl_prob_over", "impl_prob_under", "edge_over", "edge_under", "kelly_over",
+OU_DERIVED = {"p_over25", "p_over25_raw", "impl_prob_over", "impl_prob_under", "edge_over", "edge_under", "kelly_over",
               "kelly_under", "ev_over", "ev_under", "stake_over", "stake_under", "tier_over", "tier_under",
               "min_odds_blocked", "max_odds_blocked", "bet", "bet_stake", "signal_tier",
               "drift_shadow_tier", "best_side", "best_edge", "best_odds", "no_form_data", "both_losing"}
