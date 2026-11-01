@@ -96,6 +96,7 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
 
     rows = []
     n_queried = n_ok = n_err = 0   # health telemetry (see _LAST_FETCH_STATS)
+    _failed_leagues: list[str] = []
     # Per-book prices already present in the OddsAPI response. Collected here and written to
     # output/book_odds_snapshots.csv below; see the note at the capture site.
     _book_rows: list[dict] = []
@@ -121,7 +122,10 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
             )
             if r.status_code != 200:
                 n_err += 1
-                log.debug(f"OddsAPI {league}: HTTP {r.status_code}")
+                # WARNING and named: at DEBUG a single league could drop off the board with no
+                # record of which one (Data Truth audit finding 14).
+                _failed_leagues.append(f"{league}: HTTP {r.status_code}")
+                log.warning(f"OddsAPI {league}: HTTP {r.status_code} — league skipped this run")
                 continue
             n_ok += 1
 
@@ -234,7 +238,8 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                     })
         except Exception as e:
             n_err += 1
-            log.debug(f"OddsAPI {league} exception: {e}")
+            _failed_leagues.append(f"{league}: {type(e).__name__}")
+            log.warning(f"OddsAPI {league} exception: {e} — league skipped this run")
 
     # ── BTTS: per-event, whole board ─────────────────────────────────────────────────
     # BTTS is unavailable on the bulk /odds endpoint (asking for it 422s the ENTIRE call, which is
@@ -249,7 +254,8 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
     # Health telemetry: distinguishes "every league errored" (hard failure — the
     # btts-422 signature) from "leagues OK but no games". Read by the notifier.
     global _LAST_FETCH_STATS, _LAST_BOOK_ROWS
-    _LAST_FETCH_STATS = {"queried": n_queried, "ok": n_ok, "err": n_err, "kept": len(rows)}
+    _LAST_FETCH_STATS = {"queried": n_queried, "ok": n_ok, "err": n_err, "kept": len(rows),
+                         "failed_leagues": _failed_leagues}
     _LAST_BOOK_ROWS = list(_book_rows)          # shadow-only copy; see the module-level note
 
     # Persist the per-book prices. Wrapped so it can NEVER affect predict: a timed-out or
