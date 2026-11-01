@@ -368,7 +368,10 @@ def test_end_to_end_prediction_to_prospective_window(shadow):
 
 def test_health_artifact_is_written(shadow):
     import json
-    sc.append_shadow([_row(), _row("f", ko="2026-10-30 14:00:00")])
+    # The second fixture must be in the FUTURE so it is not "finished". This was the literal
+    # 2026-10-30, which turned into the past and failed the test from 2026-10-31 on.
+    future = (pd.Timestamp.utcnow() + pd.Timedelta(days=3)).strftime("%Y-%m-%d 14:00:00")
+    sc.append_shadow([_row(), _row("f", ko=future)])
     _settle()
     h = json.loads(ur.SHADOW_HEALTH_FILE.read_text(encoding="utf-8"))
     assert h["shadow_rows"] == 2 and h["settled_rows"] == 1
