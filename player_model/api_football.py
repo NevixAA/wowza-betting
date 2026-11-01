@@ -207,6 +207,20 @@ def get_upcoming_fixtures(league_id: int, season: str, next_n: int = 5) -> list[
     return data.get("response", [])
 
 
+def get_fixtures_between(league_id: int, season: str, date_from: str, date_to: str) -> list[dict]:
+    """EVERY fixture of a league between two dates (YYYY-MM-DD, inclusive).
+
+    Use this, not get_upcoming_fixtures, for a slate: `next=5` returned only the first five
+    kickoffs, so a 10-match Premier League round or an 18-match Champions League matchday was
+    cut to 5 and the rest never got props (2026-11-01: 13 of 26 leagues sat at exactly 5)."""
+    data = _get("/fixtures", {
+        "league": league_id, "season": season, "from": date_from, "to": date_to
+    }, cache_hours=2)
+    if not data:
+        return []
+    return data.get("response", [])
+
+
 _POS_MAP = {"Goalkeeper": "G", "Defender": "D", "Midfielder": "M", "Attacker": "F"}
 
 

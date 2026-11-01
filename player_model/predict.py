@@ -340,12 +340,16 @@ def run_player_predictions(
     prop_matches = []
     if _APIFOOTBALL_KEY:
         try:
-            from player_model.api_football import get_upcoming_fixtures
+            from player_model.api_football import get_fixtures_between
+            _from, _to = today.strftime("%Y-%m-%d"), _horizon.strftime("%Y-%m-%d")
             for league, lg_id in config.PROP_LEAGUES.items():
                 season = config.PROP_SEASONS.get(league, "2025")
-                n_fix = 20 if league == "World Cup" else 5
-                fixtures = get_upcoming_fixtures(lg_id, season, next_n=n_fix)
+                # The whole window, not `next=5`: five kickoffs cut every full round in half.
+                fixtures = get_fixtures_between(lg_id, season, _from, _to)
                 for fix in fixtures:
+                    # A date window also returns today's live and finished games; `next` never did.
+                    if fix.get("fixture", {}).get("status", {}).get("short", "NS") not in ("NS", "TBD"):
+                        continue
                     teams    = fix.get("teams", {})
                     dt_full  = fix.get("fixture", {}).get("date", "")
                     dt       = dt_full[:10]

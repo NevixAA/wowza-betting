@@ -538,14 +538,17 @@ def _build_referee_profiles() -> dict:
     All underlying API calls are cached in api_football._get() — safe to call every run.
     """
     from player_model.api_football import (
-        get_upcoming_fixtures, get_fixture_referee, build_referee_profile,
+        get_fixtures_between, get_fixture_referee, build_referee_profile,
     )
+    import pandas as pd
     profiles: dict = {}
     try:
+        # Same 4-day window as predict, so every tipped fixture can carry its referee.
+        _today = pd.Timestamp.now().normalize()
+        _from, _to = _today.strftime("%Y-%m-%d"), (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d")
         for league, lg_id in config.PROP_LEAGUES.items():
             season = config.PROP_SEASONS.get(league, "2025")
-            n_fix = 20 if league == "World Cup" else 5
-            fixtures = get_upcoming_fixtures(lg_id, season, next_n=n_fix)
+            fixtures = get_fixtures_between(lg_id, season, _from, _to)
             for fix in fixtures:
                 teams    = fix.get("teams", {})
                 home     = teams.get("home", {}).get("name", "")

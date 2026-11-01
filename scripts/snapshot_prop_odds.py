@@ -23,7 +23,7 @@ PROJ = Path(__file__).resolve().parents[1]
 os.chdir(PROJ); sys.path.insert(0, str(PROJ))
 import pandas as pd
 from player_model import config
-from player_model.api_football import get_upcoming_fixtures
+from player_model.api_football import get_fixtures_between
 from player_model.odds_fetcher import fetch_prop_odds, PROP_SPORT_KEYS
 from player_model import clv_tracker
 
@@ -47,9 +47,12 @@ def build_upcoming_signals() -> pd.DataFrame:
         # that dict IS the set of leagues we want props for.
         pass
         season = config.PROP_SEASONS.get(league, str(pd.Timestamp.utcnow().year))
-        n_fix = 20 if league == "World Cup" else 8
+        # predict's 4-day window, not `next=8`: that cut full rounds short and spent OddsAPI
+        # calls on fixtures weeks away that predict never tips.
+        _today = pd.Timestamp.utcnow().normalize()
         try:
-            fixtures = get_upcoming_fixtures(lg_id, season, next_n=n_fix)
+            fixtures = get_fixtures_between(lg_id, season, _today.strftime("%Y-%m-%d"),
+                                            (_today + pd.Timedelta(days=4)).strftime("%Y-%m-%d"))
         except Exception as e:
             print(f"  {league}: fixtures fetch failed ({e})"); continue
         for fx in fixtures:
