@@ -442,6 +442,14 @@ def run_player_predictions(
     except Exception as _e:                                            # noqa: BLE001
         print(f"[predict] first-sight recorder unavailable: {_e}")
         _first_sight = None
+    # R2-D repaired props recipe in SHADOW (owner decision 2026-11-01): scored on the same
+    # player-fixtures, logged first-sight to output/props_r2_shadow.csv. Never changes a tip.
+    try:
+        from player_model.props_r2_shadow import Recorder as _R2Recorder
+        _r2_shadow = _R2Recorder()
+    except Exception as _e:                                            # noqa: BLE001
+        print(f"[predict] props R2 shadow unavailable: {_e}")
+        _r2_shadow = None
 
     # Perf: index the history ONCE and lowercase the team column ONCE. Previously every match
     # re-scanned the full 230k-row history per player (O(matches x players x rows)) which pushed
@@ -693,6 +701,11 @@ def run_player_predictions(
                                  match_date=date_str,
                                  kickoff_utc=_ko if isinstance(_ko, str) else "",
                                  fixture_id=match_row.get("fixture_id"))
+            if _r2_shadow is not None:
+                _ko = match_row.get("kickoff_utc", "")
+                _r2_shadow.add(market, feat_df, probs.values, league=str(league), match_date=date_str,
+                               kickoff_utc=_ko if isinstance(_ko, str) else "",
+                               fixture_id=match_row.get("fixture_id"))
 
         for i, feat_row in feat_df.iterrows():
             player_norm = _norm_player_name(str(feat_row.get("player_name", "")))
@@ -822,6 +835,9 @@ def run_player_predictions(
               f"squad list, or unseen for {config.STALE_DAYS}+ days where no list exists")
     if _first_sight is not None:
         _first_sight.flush()
+    if _r2_shadow is not None:
+        _n_r2 = _r2_shadow.flush()
+        print(f"[props_r2_shadow] +{_n_r2} first-sight row(s) -> output/props_r2_shadow.csv")
     if not all_tips:
         return pd.DataFrame()
 
