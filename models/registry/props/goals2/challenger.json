@@ -1,0 +1,49 @@
+{
+  "market": "goals2",
+  "model_version": "props_goals2_20261101T105740Z_24e7091d",
+  "retrain_batch_id": "props_rb_20261101T105740Z",
+  "trained_at": "2026-11-01T10:57:40Z",
+  "training_cutoff": "2026-01-10",
+  "training_rows": 876130,
+  "target": "target_goals2",
+  "feature_schema_version": "4e1f02eef485",
+  "n_features": 138,
+  "code_commit_sha": "2d35faa20bc8",
+  "artifact_sha256": "24e7091d1a046bacae8f0684ba0e142a8d59ccffc5093e60b089b18cfde31bfb",
+  "parent_champion_version": "props_goals2_legacy_426e3bb5",
+  "validation": {
+    "n": 175226,
+    "events": 1366,
+    "ll_delta": -0.0001454,
+    "ci": [
+      -0.0001976,
+      -9.4e-05
+    ],
+    "brier_delta": -5e-06,
+    "ece_delta": -8.1e-05,
+    "qualified": true,
+    "checks": {
+      "material_improvement": true,
+      "ci_excludes_zero": true,
+      "brier_non_inferior": true,
+      "ece_not_worse": true,
+      "slope_not_worse": true,
+      "prediction_canary": true,
+      "no_league_regression": true
+    }
+  },
+  "promotion_status": "SHADOW_MORE",
+  "model_role": "SHADOW",
+  "gate_version": "PG-PROPS-1.0",
+  "shadow_since": "2026-11-01T10:57:40Z",
+  "gate": {
+    "gate_version": "PG-PROPS-1.0",
+    "qualified": true,
+    "canary_ok": true,
+    "holdout_n": 175226,
+    "holdout_events": 1366,
+    "holdout_ll_delta": -0.0001454,
+    "holdout_ci_lo": -0.0001976,
+    "holdout_ci_hi": -9.4e-05
+  }
+}

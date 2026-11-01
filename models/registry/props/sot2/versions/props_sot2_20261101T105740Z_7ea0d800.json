@@ -1,0 +1,38 @@
+{
+  "market": "sot2",
+  "model_version": "props_sot2_20261101T105740Z_7ea0d800",
+  "retrain_batch_id": "props_rb_20261101T105740Z",
+  "trained_at": "2026-11-01T10:57:40Z",
+  "training_cutoff": "2026-01-10",
+  "training_rows": 876130,
+  "target": "target_sot2",
+  "feature_schema_version": "4e1f02eef485",
+  "n_features": 138,
+  "code_commit_sha": "2d35faa20bc8",
+  "artifact_sha256": "7ea0d800cf38d652c20adc13a263037dd2bed46e4ac034f4bddc1cb763105e67",
+  "parent_champion_version": "props_sot2_legacy_a3c186a8",
+  "validation": {
+    "n": 175226,
+    "events": 9452,
+    "ll_delta": -6.59e-05,
+    "ci": [
+      -0.000134,
+      1.9e-06
+    ],
+    "brier_delta": 5e-06,
+    "ece_delta": -0.000206,
+    "qualified": false,
+    "checks": {
+      "material_improvement": false,
+      "ci_excludes_zero": false,
+      "brier_non_inferior": true,
+      "ece_not_worse": true,
+      "slope_not_worse": true,
+      "prediction_canary": true,
+      "no_league_regression": true
+    }
+  },
+  "promotion_status": "KEEP_CHAMPION",
+  "model_role": "REJECTED",
+  "gate_version": "PG-PROPS-1.0"
+}

@@ -1,0 +1,38 @@
+{
+  "market": "cards",
+  "model_version": "props_cards_20261101T105740Z_34d1e59c",
+  "retrain_batch_id": "props_rb_20261101T105740Z",
+  "trained_at": "2026-11-01T10:57:40Z",
+  "training_cutoff": "2026-01-10",
+  "training_rows": 876130,
+  "target": "target_cards",
+  "feature_schema_version": "4e1f02eef485",
+  "n_features": 138,
+  "code_commit_sha": "2d35faa20bc8",
+  "artifact_sha256": "34d1e59c8bbd80cf83490488d799a93d9a28c9039cc8378823bbae2ea77972b9",
+  "parent_champion_version": "props_cards_legacy_1e8f8ce7",
+  "validation": {
+    "n": 175226,
+    "events": 22341,
+    "ll_delta": -3.6e-06,
+    "ci": [
+      -3.75e-05,
+      3.02e-05
+    ],
+    "brier_delta": 1e-06,
+    "ece_delta": 0.000134,
+    "qualified": false,
+    "checks": {
+      "material_improvement": false,
+      "ci_excludes_zero": false,
+      "brier_non_inferior": true,
+      "ece_not_worse": true,
+      "slope_not_worse": true,
+      "prediction_canary": true,
+      "no_league_regression": true
+    }
+  },
+  "promotion_status": "KEEP_CHAMPION",
+  "model_role": "REJECTED",
+  "gate_version": "PG-PROPS-1.0"
+}
