@@ -1,7 +1,14 @@
 {
- "generated_at": "2026-11-01T17:03:44Z",
- "runs_24h": 156,
- "failures_24h": 0,
- "failures": [],
+ "generated_at": "2026-11-01T17:45:27Z",
+ "runs_24h": 159,
+ "failures_24h": 1,
+ "failures": [
+  {
+   "repo": "wowzaV9-Pro",
+   "workflow": "Pro Live Odds",
+   "at": "2026-11-01T17:05:04Z",
+   "sha": "7c36b4e8"
+  }
+ ],
  "superseded_failures_24h": 2
 }

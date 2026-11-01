@@ -1,26 +1,26 @@
 {
  "artifact": "data_truth_health",
  "version": "DATA-TRUTH-1",
- "generated_at": "2026-11-01T17:03:48Z",
+ "generated_at": "2026-11-01T17:45:31Z",
  "checks": [
   {
    "check": "Data truth 1: one canonical name",
    "status": "GREEN",
-   "value": "0 unknown league name(s); blind board fixtures 9.1%",
+   "value": "0 unknown league name(s); blind board fixtures 3.7%",
    "rule": "every league value in predictions / ledgers / player tips / history banks is a registry league (canonical or alias): RED if any is not; AMBER if > 10% of board fixtures are blind (no form)",
    "detail": ""
   },
   {
    "check": "Data truth 2: no silent defaults",
    "status": "GREEN",
-   "value": "0 new default(s); 40 known (baseline); 0 baseline entr(ies) now gone",
+   "value": "0 new default(s); 39 known (baseline); 1 baseline entr(ies) now gone",
    "rule": "no NEW invented default in production code (fillna(<non-zero literal>), literal season fallback/list, pinned football-data folder): RED if any site is not in config/data_truth_baseline.json; GREEN otherwise (baseline entries each carry a reason)",
    "detail": ""
   },
   {
    "check": "Data truth 3: no missing data",
-   "status": "RED",
-   "value": "home_rest_days missing on 36% of Standard fixtures; home_ht_over05_rate missing on 66% of Standard fixtures",
+   "status": "GREEN",
+   "value": "board priced, features present",
    "rule": "live board: every fixture priced (odds_over25); Standard fixtures' rest days and HT form present (RED if > 50% missing, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old)",
    "detail": ""
   },
