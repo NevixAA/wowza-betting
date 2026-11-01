@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -564,7 +565,6 @@ def build_upcoming_features(
         n = _N
 
     upcoming = upcoming.copy()
-    upcoming["home_advantage"] = 1.0
 
     hist = historical.sort_values("date").copy()
 
@@ -636,6 +636,9 @@ def build_upcoming_features(
         vals = list(h) + list(a)
         return float(np.mean(vals[-nn:])) if vals else np.nan
 
+    # NF_FEATURE_PARITY (default on, 2026-11-01): home_advantage + new-format overround computed as
+    # training does. "0" restores the old serving behaviour exactly - the rollback switch.
+    _parity = os.getenv("NF_FEATURE_PARITY", "1").strip() != "0"
     rows = upcoming.to_dict("records")
     feat_records = []
     for row in rows:
@@ -723,13 +726,27 @@ def build_upcoming_features(
         (feat["away_season_goals_a"], feat["away_season_conceded_a"], feat["away_cs_rate_a"]) = \
             _venue_season_stats(at, "away_team", "away_goals", "home_goals", lg)
 
+        lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else hist["away_goals"].mean()
+        lg_avg_away = lg_avg_away if pd.notna(lg_avg_away) and lg_avg_away > 0 else 1.1
+
+        # HOME team's rolling home advantage, computed exactly as training does
+        # (_add_home_advantage: fraction of its last n home games scoring above the league's
+        # average away goals; 0.55 with no history). This was hardcoded to 1.0 here while
+        # training saw ~0.45 on average - a 2.1-sd train/serve shift on every fixture that,
+        # with the overround mismatch below, pulled new-format P(over) ~6pp low and turned
+        # 91% of October's NF O/U tips into Unders (measured 2026-11-01).
+        if _parity:
+            ht_home_rows = _find_team_rows(ht, "home_team", lg).tail(n)
+            feat["home_advantage"] = (0.55 if ht_home_rows.empty else float(
+                (ht_home_rows["home_goals"] > lg_avg_away).sum() / len(ht_home_rows)))
+        else:
+            feat["home_advantage"] = 1.0                      # pre-2026-11-01 behaviour (rollback)
+
         # Away team's rolling home advantage (fraction of their own home games they dominate)
         at_home_rows = _find_team_rows(at, "home_team", lg).tail(n)
         if at_home_rows.empty:
             feat["away_home_adv_factor"] = 0.45
         else:
-            lg_avg_away = hist[hist["league"] == lg]["away_goals"].mean() if lg else hist["away_goals"].mean()
-            lg_avg_away = lg_avg_away if pd.notna(lg_avg_away) and lg_avg_away > 0 else 1.1
             feat["away_home_adv_factor"] = float(
                 (at_home_rows["home_goals"] > lg_avg_away).sum() / len(at_home_rows)
             )
@@ -949,6 +966,20 @@ def build_upcoming_features(
     df["bookmaker_overround"] = (
         df["implied_prob_over"] + df["implied_prob_under"] - 1.0
     ).clip(lower=0.0)
+    # NEW-FORMAT OVERROUND FROM THE BEST PRICE PER SIDE (2026-11-01). New-format training odds are
+    # one price per side from output/newformat_odds_history.csv, margin mean 3.6% - the shape of a
+    # best-of-books price. Live odds_over25/under25 come from ONE bookmaker (~7.7%), so the model
+    # read every live fixture as a high-margin, low-scoring one. Measured on live per-book quotes:
+    # best-of-books margin 4.0% (sd 2.3%) vs median book 7.0%. Only the FEATURE changes; the
+    # odds used for edges and tips are untouched. Standard rows keep the old rule (their training
+    # prices are football-data columns, a different question).
+    if _parity and {"best_over25", "best_under25", "league"} <= set(df.columns):
+        _nf = df["league"].map(lambda l: config.model_type_for_league(l) == "new_format")
+        _bo = pd.to_numeric(df["best_over25"], errors="coerce")
+        _bu = pd.to_numeric(df["best_under25"], errors="coerce")
+        _best = (1.0 / _bo + 1.0 / _bu - 1.0).clip(lower=0.0)
+        _use = _nf & _best.notna()
+        df.loc[_use, "bookmaker_overround"] = _best[_use]
 
     # Dixon-Coles corrected P(over 2.5)
     if _dc_p_over25 is not None and "home_scored_last5" in df.columns:

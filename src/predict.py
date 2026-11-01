@@ -153,6 +153,23 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                     if ov25 and un25 and ov15 and ov35:
                         break
 
+                # Best price per side across EVERY book (the loop above stops early). Feeds only
+                # the new-format bookmaker_overround FEATURE, to match its best-of-books training
+                # prices (src/feature_engineering.py); odds_over25/under25 are unchanged.
+                best_ov25 = best_un25 = None
+                for bm in event.get("bookmakers", []):
+                    for mkt in bm.get("markets", []):
+                        if mkt.get("key") != "totals":
+                            continue
+                        for outcome in mkt.get("outcomes", []):
+                            pr = outcome.get("price")
+                            if outcome.get("point") != 2.5 or not pr:
+                                continue
+                            if outcome.get("name") == "Over":
+                                best_ov25 = max(best_ov25 or 0.0, float(pr))
+                            elif outcome.get("name") == "Under":
+                                best_un25 = max(best_un25 or 0.0, float(pr))
+
                 if ov25 and un25:
                     rows.append({
                         "league":       league,
@@ -162,6 +179,8 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                         "away_team":    event.get("away_team", ""),
                         "odds_over25":  float(ov25),
                         "odds_under25": float(un25),
+                        "best_over25":  best_ov25,
+                        "best_under25": best_un25,
                         "odds_over15":  float(ov15) if ov15 else None,
                         "odds_over35":  float(ov35) if ov35 else None,
                         "odds_btts":    float(btts_yes) if btts_yes else None,

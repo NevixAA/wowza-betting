@@ -178,13 +178,40 @@ def test_05_home_advantage_not_constant_live(raw, feat):
     assert f["home_advantage"].nunique() > 1
 
 
-def test_05b_documents_legacy_constant_home_advantage(raw):
+def test_05b_legacy_home_advantage_matches_training_rule(raw, monkeypatch):
+    """NF_FEATURE_PARITY (2026-11-01): the legacy serving path computes home_advantage as
+    training's _add_home_advantage does; NF_FEATURE_PARITY=0 restores the old constant 1.0."""
     from src.feature_engineering import build_upcoming_features
     nxt = raw["date"].max() + pd.Timedelta(days=7)
-    up = pd.DataFrame({"date": nxt, "league": STD_A, "home_team": ["A0", "A1"],
-                       "away_team": ["A2", "A3"], "odds_over25": 2.0, "odds_under25": 1.8})
+    teams = sorted(raw.loc[raw.league == STD_A, "home_team"].unique())
+    up = pd.DataFrame({"date": nxt, "league": STD_A, "home_team": teams[:5],
+                       "away_team": teams[5:10], "odds_over25": 2.0, "odds_under25": 1.8})
     f = build_upcoming_features(up, raw)
-    assert set(f["home_advantage"]) == {1.0}
+    assert f["home_advantage"].between(0, 1).all()
+    h = raw[(raw.league == STD_A)]
+    lg_avg_away = h["away_goals"].mean()
+    t0 = teams[0]
+    last = h[h.home_team == t0].sort_values("date").tail(config.ROLLING_N)
+    assert f.loc[f.home_team == t0, "home_advantage"].iloc[0] == pytest.approx(
+        (last["home_goals"] > lg_avg_away).mean())
+    monkeypatch.setenv("NF_FEATURE_PARITY", "0")
+    assert set(build_upcoming_features(up, raw)["home_advantage"]) == {1.0}
+
+
+def test_05c_newformat_overround_uses_best_price_only_for_new_format(raw, monkeypatch):
+    from src.feature_engineering import build_upcoming_features
+    nxt = raw["date"].max() + pd.Timedelta(days=7)
+    st_t = sorted(raw.loc[raw.league == STD_A, "home_team"].unique())
+    up = pd.DataFrame({"date": nxt, "league": [NF, STD_A],                # NF clubs need no history:
+                       "home_team": ["N0", st_t[0]], "away_team": ["N1", st_t[1]],   # the rule is price-only
+                       "odds_over25": 1.80, "odds_under25": 1.90,          # one book: margin ~8.2%
+                       "best_over25": 1.95, "best_under25": 2.00})         # best:     margin ~1.3%
+    f = build_upcoming_features(up, raw).set_index("league")
+    assert f.loc[NF, "bookmaker_overround"] == pytest.approx(1 / 1.95 + 1 / 2.00 - 1)
+    assert f.loc[STD_A, "bookmaker_overround"] == pytest.approx(1 / 1.80 + 1 / 1.90 - 1)
+    monkeypatch.setenv("NF_FEATURE_PARITY", "0")
+    g = build_upcoming_features(up, raw).set_index("league")
+    assert g.loc[NF, "bookmaker_overround"] == pytest.approx(1 / 1.80 + 1 / 1.90 - 1)
 
 
 # ── 6 away HT features league-scoped (same club name in two leagues) ────────────────────────
