@@ -545,6 +545,14 @@ def build_artifact(now: datetime | None = None, prior: dict | None = None) -> di
     checks.append(c_check)
     fs_check, fs = first_sight_integrity(prior.get("first_sight"))
     checks.append(fs_check)
+    # The owner's four Data Truth rules (2026-11-01): one canonical name, no silent defaults, no
+    # missing data, right league relations. Any violation is a RED line here (src/integrity/data_truth).
+    try:
+        from src.integrity import data_truth as _DT
+        checks += _DT.evaluate(now)
+    except Exception as e:                                             # noqa: BLE001
+        checks.append(_c("Data truth checks", RED, "failed", "src/integrity/data_truth must run",
+                         f"{type(e).__name__}: {e}"[:200]))
     for fn in (lambda: promotion_gate_health(now), lambda: edge_shadow_health(now), track_registry_check,
                standard_serving_health):
         try:

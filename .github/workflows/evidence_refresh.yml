@@ -16,7 +16,7 @@ on:
     paths: ['.github/workflows/evidence_refresh.yml', 'src/artifact_freshness.py',
             'scripts/track_evidence.py', 'scripts/allocation_registry.py', 'scripts/v91_readiness.py',
             'src/system_health.py', 'scripts/build_track_registry.py', 'src/contracts/**',
-            'src/research/**']
+            'src/research/**', 'src/integrity/data_truth.py', 'config/data_truth_baseline.json']
   workflow_dispatch:
 
 concurrency:
@@ -83,13 +83,19 @@ jobs:
           python -m src.system_health --write | tee health.txt || echo "::warning::system_health.json not written"
           { echo '## System health'; echo '```'; cat health.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           if grep -q '^OVERALL FAIL' health.txt; then echo "::error title=system health FAIL::see output/system_health.json reasons"; fi
+      # The owner's four Data Truth rules, in detail (they are also lines in system_health.json).
+      - name: Data truth checks
+        run: |
+          python -m src.integrity.data_truth | tee truth.txt || echo "::warning::data truth checks did not run"
+          { echo '## Data truth'; echo '```'; cat truth.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if grep -q '^RED' truth.txt; then echo "::error title=Data truth RED::see output/data_truth_health.json"; fi
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in output/track_evidence.json output/allocation_registry.json output/v91_readiness.json \
                    output/artifact_manifest.json output/workflow_health.json \
-                   output/system_health.json config/track_registry.json; do
+                   output/system_health.json output/data_truth_health.json config/track_registry.json; do
             [ -e "$f" ] && git add -f "$f"
           done
           git diff --staged --quiet && exit 0
