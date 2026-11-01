@@ -66,7 +66,14 @@ def main(argv=None) -> int:
             continue
         with open(path, "rb") as fh:
             lp = pickle.load(fh)
-        for (_, r), p in zip(feat.iterrows(), predict_proba(feat, payload=lp)):
+        # The training frame lacks some live-only enrichment columns (e.g. api_implied_*); add
+        # every payload feature it is missing as NaN, identically in the main and branch runs,
+        # so sklearn sees the payload's exact feature list.
+        fl = feat.copy()
+        for c in lp["feature_cols"]:
+            if c not in fl.columns:
+                fl[c] = float("nan")
+        for (_, r), p in zip(fl.iterrows(), predict_proba(fl, payload=lp)):
             rows.append((name, r["date"], r["league"], r["home_team"], r["away_team"], repr(float(p))))
     out = pd.DataFrame(rows, columns=["set", "date", "league", "home_team", "away_team", "p"])
     out.to_csv(a.out, index=False)
