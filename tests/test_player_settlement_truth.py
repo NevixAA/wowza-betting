@@ -85,6 +85,17 @@ def test_fd_std_settlement_reads_the_live_season(today, want):
     assert U._fd_std_season_codes(today) == want
 
 
+def test_af_fallback_uses_the_matchs_season_not_todays(monkeypatch):
+    import src.api_football_ou as AFO
+    seen = []
+    monkeypatch.setattr(AFO, "fetch_league_fixture_results",
+                        lambda lid, season, league: seen.append(season) or pd.DataFrame())
+    monkeypatch.setattr(U, "_AF_RESULTS_CACHE", {})
+    U.fetch_scores_apifootball("Championship", "2026-05-02")      # last campaign's fixture
+    U.fetch_scores_apifootball("Championship", "2026-10-25")      # this campaign's
+    assert seen == ["2025", "2026"]
+
+
 def test_season_comes_from_the_registry(tmp_path, monkeypatch):
     from src.season_resolver import resolve_api_season
     _ledger(tmp_path, monkeypatch, days_ago=2, league="Japan J-League")

@@ -27,7 +27,8 @@ def _run(monkeypatch, tmp_path, primary, af):
     monkeypatch.setattr(U, "SIDE_LEDGER_FILE", p)
     monkeypatch.setattr(U, "_FD_SOURCES", {"League Two": "E3"})
     monkeypatch.setattr(U, "fetch_scores_fd", lambda league: primary)
-    monkeypatch.setattr(U, "fetch_scores_apifootball", lambda league: calls.append(league) or af)
+    monkeypatch.setattr(U, "fetch_scores_apifootball",
+                        lambda league, match_date=None: calls.append(league) or af)
     monkeypatch.setattr(U, "_closing_for_market", lambda *a, **k: float("nan"))
     U.update_side_market_results(days=3)
     return pd.read_csv(p, dtype=str), calls

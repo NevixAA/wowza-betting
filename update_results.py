@@ -363,7 +363,7 @@ def _closing_odds_json(home: str, away: str, match_date: str, side: str) -> floa
 _AF_RESULTS_CACHE: dict = {}
 
 
-def fetch_scores_apifootball(league: str) -> list[dict]:
+def fetch_scores_apifootball(league: str, match_date: str | None = None) -> list[dict]:
     """Completed fixtures for a league from API-Football, in fetch_scores() shape.
 
     WHY THIS EXISTS: leagues without a football-data source (Argentina, Brazil, Finland,
@@ -380,14 +380,16 @@ def fetch_scores_apifootball(league: str) -> list[dict]:
     where everything settles normally makes no extra API calls at all. That matters: this
     job runs every 2 hours and has no actions/cache step.
     """
-    if league in _AF_RESULTS_CACHE:
-        return _AF_RESULTS_CACHE[league]
-
     out: list[dict] = []
     lid = config.API_FOOTBALL_IDS.get(league)
     # League-aware season (R2 finding 6): was API_FOOTBALL_SEASONS.get(league, API_SEASON="2025").
+    # The MATCH's season, not today's: a tip from the previous campaign was looked up in the
+    # current one and could never settle - 52 live O/U 2.5 tips from May-Oct 2026 were stranded
+    # (Data Truth audit findings 22, 30). Cached per (league, season).
     from src.season_resolver import resolve_api_season, is_known, record_degradation
-    season = resolve_api_season(league) if lid else None
+    season = resolve_api_season(league, match_date) if lid else None
+    if (league, season) in _AF_RESULTS_CACHE:
+        return _AF_RESULTS_CACHE[(league, season)]
     if lid and not is_known(season):
         record_degradation("update_results._af_completed", league)
         log.warning(f"  [api-football] {league}: season unresolvable - fallback settlement skipped")
@@ -419,7 +421,7 @@ def fetch_scores_apifootball(league: str) -> list[dict]:
     else:
         log.debug(f"  [api-football] {league}: no API_FOOTBALL_IDS entry")
 
-    _AF_RESULTS_CACHE[league] = out
+    _AF_RESULTS_CACHE[(league, season)] = out
     return out
 
 
@@ -927,7 +929,7 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
         # fixture the primary source missed (football-data lag or spelling, OddsAPI's 3-day window)
         # stayed pending forever while the O/U tip on the same match settled: 38 BTTS/O1.5/O3.5
         # rows since 2026-10-10 (found 2026-10-25). Lazy, so a healthy run costs no calls.
-        ev_found = _match(scores_cache.get(league, [])) or _match(fetch_scores_apifootball(league))
+        ev_found = _match(scores_cache.get(league, [])) or _match(fetch_scores_apifootball(league, date_str))
         if ev_found is None:
             continue
 
@@ -1698,7 +1700,7 @@ def main():
                 away=row["away_team"],
                 date_str=row["match_date"],
                 side=row["side"],
-                completed=fetch_scores_apifootball(league),
+                completed=fetch_scores_apifootball(league, str(row["match_date"])[:10]),
             )
 
         if found is None:
