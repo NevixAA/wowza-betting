@@ -311,3 +311,11 @@ def test_one_position_per_fixture_rule_unchanged():
     sel = pd.DataFrame([_sel("OU25", "OVER"), _sel("OVER15", "OVER")])
     out = size_day(sel, pol, 100.0, 100.0)
     assert sorted(out["reason"]) == ["OK", "ONE_POSITION_PER_FIXTURE"]
+
+
+@pytest.fixture(autouse=True)
+def _legacy_side_fair_price(monkeypatch):
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
+    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
+    import config as _cfg
+    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")

@@ -478,3 +478,11 @@ def test_pipeline_wires_shadow_beside_legacy_not_into_it():
     assert "shadow=_edge_shadow" in src
     from src import betting
     assert "market_edge" not in inspect.getsource(betting)          # legacy path untouched
+
+
+@pytest.fixture(autouse=True)
+def _legacy_side_fair_price(monkeypatch):
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
+    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
+    import config as _cfg
+    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")

@@ -190,3 +190,11 @@ def test_health_check_flags_active_market_all_unsupported():
     assert len(probs) == 1 and probs[0].startswith("BTTS:")
     good = size_day(sp.selections(None, side), pol, bankroll=100.0, peak=100.0)
     assert sp.health_check(good, pol) == []
+
+
+@pytest.fixture(autouse=True)
+def _legacy_side_fair_price(monkeypatch):
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
+    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
+    import config as _cfg
+    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")

@@ -24,17 +24,8 @@ os.chdir(ROOT)
 
 
 def load_quotes():
-    import pandas as pd
-    out = ROOT / "output"
-    parts = []
-    cols = ["snapshot_ts", "match_date", "kickoff_utc", "match", "bookmaker", "market", "side", "odds"]
-    for p in [out / "book_odds_snapshots.csv", *sorted((out / "book_odds_snapshots_archive").glob("*.csv"))]:
-        try:
-            parts.append(pd.read_csv(p, usecols=lambda c: c in cols, low_memory=False))
-        except Exception:                                           # noqa: BLE001
-            continue
-    q = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=cols)
-    return q[q["market"].isin(["BTTS", "OU15", "OU35"])]
+    from src.integrity.side_edge_devig import load_quotes as _lq
+    return _lq(ROOT / "output")
 
 
 def main(argv=None) -> int:
@@ -69,7 +60,8 @@ def main(argv=None) -> int:
 
     doc = {"artifact": "side_edge_devig_health", "shadow_version": SE.SHADOW_VERSION,
            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "production_rule": "edge = p_model - (1/odds)/1.08 (pipeline._generate_side_bets, unchanged)",
+           "production_rule": "two-sided de-vig since 2026-11-01 (config.SIDE_EDGE_FAIR_PRICE); "
+                              "edge_prod below = the old (1/odds)/1.08, kept for comparison",
            "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), "
                           "pre-kickoff, carried forward to the decision time; same thresholds",
            "quotes_from": str(q0), "quote_rows": int(len(quotes)),

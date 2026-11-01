@@ -71,6 +71,18 @@ SIDE_MARKETS = {
     "over15": MODEL_FILE_OVER15,
     "over35": MODEL_FILE_OVER35,
 }
+# Side-market fair price (owner decision 2026-11-01, R2-C finding 4). "devig_two_sided": the median
+# over books of the power-de-vigged same-book pair (src/integrity/side_edge_devig); a fixture with no
+# two-sided pair gets NO tip. "legacy_1_08": the old (1/odds)/1.08, which inflated edges in the tails
+# (+2.67pp on sharp books) and produced 92 of 617 logged tips on its own.
+# ROLLBACK: set SIDE_EDGE_FAIR_PRICE: "legacy_1_08" in predict.yml (or here).
+SIDE_EDGE_FAIR_PRICES = ("devig_two_sided", "legacy_1_08")
+SIDE_EDGE_FAIR_PRICE = os.getenv("SIDE_EDGE_FAIR_PRICE", "devig_two_sided").strip() or "devig_two_sided"
+if SIDE_EDGE_FAIR_PRICE not in SIDE_EDGE_FAIR_PRICES:     # a typo falls to the STRICTER rule
+    import logging as _logging
+    _logging.getLogger(__name__).error(
+        f"SIDE_EDGE_FAIR_PRICE={SIDE_EDGE_FAIR_PRICE!r} not in {SIDE_EDGE_FAIR_PRICES}; using devig_two_sided")
+    SIDE_EDGE_FAIR_PRICE = "devig_two_sided"
 # Human-readable labels for Telegram / dashboard
 SIDE_MARKET_LABELS = {
     # "BTTS" alone does not say whether the tip is that both teams DO score or that they do not.

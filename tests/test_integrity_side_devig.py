@@ -93,3 +93,11 @@ def test_append_first_sight_never_rewrites(tmp_path):
     before = p.read_bytes()
     ev2 = SE.evaluate_rows(_row(p_model=0.70), q, {})
     assert SE.append_first_sight(ev2, p) == 0 and p.read_bytes() == before
+
+
+@pytest.fixture(autouse=True)
+def _legacy_side_fair_price(monkeypatch):
+    """Synthetic rows here carry no book quotes, and these tests pin other behaviour. The two-sided
+    de-vig fair price (production since 2026-11-01) has its own tests: test_side_devig_production.py."""
+    import config as _cfg
+    monkeypatch.setattr(_cfg, "SIDE_EDGE_FAIR_PRICE", "legacy_1_08")

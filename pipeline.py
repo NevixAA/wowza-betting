@@ -91,8 +91,22 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
     frames = []
-    OVERROUND    = 1.08
+    OVERROUND    = 1.08          # legacy_1_08 only (config.SIDE_EDGE_FAIR_PRICE rollback)
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
+
+    # FAIR PRICE = TWO-SIDED DE-VIG (owner cutover 2026-11-01, R2-C finding 4). The shadow that ran
+    # beside production proved the same thresholds; only the fair-price definition changes. A
+    # fixture/market with no same-book two-sided pair gets NO tip (fail closed, owner choice).
+    _devig = getattr(config, "SIDE_EDGE_FAIR_PRICE", "devig_two_sided") == "devig_two_sided"
+    _quotes, _asof = None, pd.Timestamp.now(tz="UTC")
+    if _devig:
+        try:
+            from src.integrity import side_edge_devig as _SE
+            _quotes = _SE.load_quotes(config.OUTPUT_DIR, since=_asof - pd.Timedelta(days=14))
+            log.info(f"side markets: fair price = two-sided de-vig ({len(_quotes)} recent book quotes)")
+        except Exception as e:                                         # noqa: BLE001
+            log.error(f"side markets: book quotes unavailable ({e}) — NO side tips this run (fail closed)")
+            _quotes = None
 
     for target in side_markets:
         prob_col = f"p_{target}"
@@ -123,7 +137,17 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
         df["model_prob"]  = df[prob_col]
         df["market_odds"] = df[odds_col]
         df["odds"]        = df["market_odds"]   # canonical name (src/stake_plan.SIDE_SELECTION_COLUMNS)
-        df["fair_prob"]   = (1.0 / df["market_odds"]) / OVERROUND
+        if _devig:
+            df["fair_prob"] = (_SE.production_fair_probs(df, target, _quotes, _asof)
+                               if _quotes is not None else np.nan)
+            _n0 = len(df)
+            df = df.dropna(subset=["fair_prob"])
+            if _n0 - len(df):
+                log.info(f"side {target}: {_n0 - len(df)} of {_n0} fixture(s) skipped — no two-sided price")
+            if df.empty:
+                continue
+        else:
+            df["fair_prob"] = (1.0 / df["market_odds"]) / OVERROUND
         df["edge"]        = df["model_prob"] - df["fair_prob"]
         df["ev"]          = df["model_prob"] * df["market_odds"] - 1.0
         df["market"]      = target

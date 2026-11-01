@@ -1,6 +1,10 @@
-"""SHADOW side-market edge on two-sided de-vigged prices, beside production's 1.08 rule.
+"""Side-market edge on two-sided de-vigged prices.
 
-PRODUCTION (pipeline._generate_side_bets, UNCHANGED by this module):
+SINCE 2026-11-01 THIS IS PRODUCTION (owner cutover): pipeline._generate_side_bets prices side edges
+with `production_fair_probs` below and skips fixtures with no two-sided pair. The shadow comparison
+against the old rule keeps running for the record. Rollback: config.SIDE_EDGE_FAIR_PRICE.
+
+THE OLD RULE (legacy_1_08):
 
     fair_prob = (1 / odds) / 1.08          edge = p_model - fair_prob
 
@@ -234,6 +238,51 @@ def append_first_sight(ev: pd.DataFrame, path: Path) -> int:
         return int(len(new))
     ev.to_csv(path, index=False)
     return int(len(ev))
+
+
+def load_quotes(output_dir: Path, since: pd.Timestamp | None = None) -> pd.DataFrame:
+    """Per-book side-market quotes from the committed change-log (current file + archive).
+    `since` (UTC) drops older snapshot rows — production only needs the live slate."""
+    cols = ["snapshot_ts", "match_date", "kickoff_utc", "match", "bookmaker", "market", "side", "odds"]
+    out = Path(output_dir)
+    parts = []
+    for p in [out / "book_odds_snapshots.csv", *sorted((out / "book_odds_snapshots_archive").glob("*.csv"))]:
+        try:
+            parts.append(pd.read_csv(p, usecols=lambda c: c in cols, low_memory=False))
+        except Exception:                                           # noqa: BLE001
+            continue
+    q = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=cols)
+    q = q[q["market"].isin(["BTTS", "OU15", "OU35"])]
+    if since is not None and len(q):
+        q = q[_utc(q["snapshot_ts"]) >= since]
+    return q
+
+
+def production_fair_probs(df: pd.DataFrame, market: str, quotes: pd.DataFrame,
+                          asof: pd.Timestamp) -> pd.Series:
+    """PRODUCTION side-market fair probability (owner cutover 2026-11-01): the median over books of
+    the power-de-vigged same-book two-sided pair, pre-kickoff, carried forward to `asof`.
+    NaN where no two-sided pair exists — the caller must not tip those (fail closed).
+
+    df: league, home_team, away_team, [kickoff_utc]; index preserved."""
+    if df.empty or quotes is None or quotes.empty:
+        return pd.Series(np.nan, index=df.index)
+    q = quotes.copy()
+    q["_ts"] = _utc(q["snapshot_ts"])
+    q = q.dropna(subset=["_ts"])
+    q["side"] = q["side"].astype(str).str.upper()
+    q["odds"] = pd.to_numeric(q["odds"], errors="coerce")
+    q = q[q["odds"] > 1.0]
+    ko_map = (q.dropna(subset=["kickoff_utc"]).drop_duplicates("match", keep="last")
+               .set_index("match")["kickoff_utc"].astype(str).to_dict()) if "kickoff_utc" in q else {}
+    snap_mk, sa, sb, _, _ = FAMILY[market]
+    out = {}
+    for idx, r in df.iterrows():
+        match = f"{r['home_team']} vs {r['away_team']}"
+        ko = _utc(pd.Series([r.get("kickoff_utc") or ko_map.get(match)])).iloc[0]
+        pairs = book_pairs(q, match, snap_mk, sa, sb, asof, ko)
+        out[idx] = float(statistics.median(p["p_fair"] for p in pairs)) if pairs else np.nan
+    return pd.Series(out, dtype=float).reindex(df.index)
 
 
 def load_league_params(models_dir: Path) -> dict:
