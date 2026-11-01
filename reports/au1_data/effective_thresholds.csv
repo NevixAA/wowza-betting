@@ -1,0 +1,81 @@
+regime,league,side,model_type,valuable_floor,marksman_floor,sniper_floor,ladder_changes,non_monotone
+R_pre0821_defaults,Argentina Primera Division,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Argentina Primera Division,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Austrian Bundesliga,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Austrian Bundesliga,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Brazil Serie A,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Brazil Serie A,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Bundesliga 2,OVER,standard,0.04,,0.2,0.04:VALUABLE;0.2:SNIPER,False
+R_pre0821_defaults,Bundesliga 2,UNDER,standard,0.04,,0.2,0.04:VALUABLE;0.2:SNIPER,False
+R_pre0821_defaults,Championship,OVER,standard,0.04,0.14,0.15,0.04:VALUABLE;0.14:MARKSMAN;0.15:SNIPER,False
+R_pre0821_defaults,Championship,UNDER,standard,0.04,0.14,0.15,0.04:VALUABLE;0.14:MARKSMAN;0.15:SNIPER,False
+R_pre0821_defaults,China Super League,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,China Super League,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Denmark Superliga,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Denmark Superliga,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Finland Veikkausliiga,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Finland Veikkausliiga,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Ireland Premier Division,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Ireland Premier Division,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Japan J-League,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Japan J-League,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,La Liga 2,OVER,standard,0.04,0.14,0.2,0.04:VALUABLE;0.14:MARKSMAN;0.2:SNIPER,False
+R_pre0821_defaults,La Liga 2,UNDER,standard,0.04,0.14,0.2,0.04:VALUABLE;0.14:MARKSMAN;0.2:SNIPER,False
+R_pre0821_defaults,League One,OVER,standard,0.04,0.14,0.25,0.04:VALUABLE;0.14:MARKSMAN;0.25:SNIPER,False
+R_pre0821_defaults,League One,UNDER,standard,0.04,0.14,0.25,0.04:VALUABLE;0.14:MARKSMAN;0.25:SNIPER,False
+R_pre0821_defaults,League Two,OVER,standard,0.04,0.11,0.13,0.04:VALUABLE;0.11:MARKSMAN;0.13:SNIPER,False
+R_pre0821_defaults,League Two,UNDER,standard,0.04,0.11,0.13,0.04:VALUABLE;0.11:MARKSMAN;0.13:SNIPER,False
+R_pre0821_defaults,Ligue 2,OVER,standard,0.04,0.14,0.25,0.04:VALUABLE;0.14:MARKSMAN;0.25:SNIPER,False
+R_pre0821_defaults,Ligue 2,UNDER,standard,0.04,0.14,0.25,0.04:VALUABLE;0.14:MARKSMAN;0.25:SNIPER,False
+R_pre0821_defaults,Mexico Liga MX,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Mexico Liga MX,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Norway Eliteserien,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Norway Eliteserien,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Romanian Superliga,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Romanian Superliga,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Serie B,OVER,standard,0.04,0.1,0.12,0.04:VALUABLE;0.1:MARKSMAN;0.12:SNIPER,False
+R_pre0821_defaults,Serie B,UNDER,standard,0.04,0.1,0.12,0.04:VALUABLE;0.1:MARKSMAN;0.12:SNIPER,False
+R_pre0821_defaults,Sweden Allsvenskan,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,Sweden Allsvenskan,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,USA MLS,OVER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_pre0821_defaults,USA MLS,UNDER,new_format,0.04,,0.12,0.04:VALUABLE;0.12:SNIPER,False
+R_post0821_predict_yml,Argentina Primera Division,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Argentina Primera Division,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Austrian Bundesliga,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Austrian Bundesliga,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Brazil Serie A,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Brazil Serie A,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Bundesliga 2,OVER,standard,0.03,,0.12,0.03:VALUABLE;0.12:SNIPER,False
+R_post0821_predict_yml,Bundesliga 2,UNDER,standard,0.03,,0.12,0.03:VALUABLE;0.12:SNIPER,False
+R_post0821_predict_yml,Championship,OVER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Championship,UNDER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,China Super League,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,China Super League,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Denmark Superliga,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Denmark Superliga,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Finland Veikkausliiga,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Finland Veikkausliiga,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Ireland Premier Division,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Ireland Premier Division,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Japan J-League,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Japan J-League,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,La Liga 2,OVER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,La Liga 2,UNDER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,League One,OVER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,League One,UNDER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,League Two,OVER,standard,0.03,0.11,0.13,0.03:VALUABLE;0.11:MARKSMAN;0.13:SNIPER,False
+R_post0821_predict_yml,League Two,UNDER,standard,0.03,0.11,0.13,0.03:VALUABLE;0.11:MARKSMAN;0.13:SNIPER,False
+R_post0821_predict_yml,Ligue 2,OVER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Ligue 2,UNDER,standard,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Mexico Liga MX,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Mexico Liga MX,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Norway Eliteserien,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Norway Eliteserien,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Romanian Superliga,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Romanian Superliga,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Serie B,OVER,standard,0.03,0.1,0.12,0.03:VALUABLE;0.1:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Serie B,UNDER,standard,0.03,0.1,0.12,0.03:VALUABLE;0.1:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Sweden Allsvenskan,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,Sweden Allsvenskan,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,USA MLS,OVER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
+R_post0821_predict_yml,USA MLS,UNDER,new_format,0.03,0.08,0.12,0.03:VALUABLE;0.08:MARKSMAN;0.12:SNIPER,False
