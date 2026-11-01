@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-01T11:20:21Z",
+  "generated_at": "2026-11-01T13:27:45Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -23,7 +23,7 @@
       "model_recipe_version": "v9_repaired-1.0",
       "serving_version": "standard_repaired_20261028T123040Z_1f5805e6",
       "training_cutoff": "2026-10-28",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "3fd56c29e2c55ee8",
       "identity_version": "v9r-identity-1.0",
       "feature_recipe_version": "v9r-features-1.0",
@@ -67,13 +67,12 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 18,
-          "WARN": 21,
-          "FAIL": 2
+          "PASS": 21,
+          "WARN": 19,
+          "FAIL": 1
         },
         "fail_features": [
-          "home_rest_days",
-          "away_rest_days"
+          "home_rest_days"
         ]
       },
       "batch_invariance": {
@@ -119,7 +118,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "newformat_20261018T080423Z_9eb6b4b4",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -134,8 +133,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 11,
+          "PASS": 15,
+          "WARN": 12,
           "FAIL": 0
         },
         "fail_features": []
@@ -180,7 +179,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "2026-10-28",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -195,13 +194,12 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 15,
-          "WARN": 25,
-          "FAIL": 2
+          "PASS": 17,
+          "WARN": 24,
+          "FAIL": 1
         },
         "fail_features": [
-          "home_rest_days",
-          "away_rest_days"
+          "home_rest_days"
         ]
       },
       "batch_invariance": {
@@ -219,13 +217,13 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9475,
+        "synthetic_share_historical": 0.9446,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 331,
+          "CONFIRMED_BY_DEVIG": 332,
           "UNVERIFIABLE_ONE_SIDED": 80,
-          "ONLY_BECAUSE_OF_1_08": 77
+          "ONLY_BECAUSE_OF_1_08": 78
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -252,7 +250,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -267,8 +265,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 26,
+          "PASS": 15,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -288,13 +286,13 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9475,
+        "synthetic_share_historical": 0.9446,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 331,
+          "CONFIRMED_BY_DEVIG": 332,
           "UNVERIFIABLE_ONE_SIDED": 80,
-          "ONLY_BECAUSE_OF_1_08": 77
+          "ONLY_BECAUSE_OF_1_08": 78
         },
         "status": "WARN",
         "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
@@ -321,7 +319,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "2026-10-28",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -336,13 +334,12 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 15,
-          "WARN": 25,
-          "FAIL": 2
+          "PASS": 17,
+          "WARN": 24,
+          "FAIL": 1
         },
         "fail_features": [
-          "home_rest_days",
-          "away_rest_days"
+          "home_rest_days"
         ]
       },
       "batch_invariance": {
@@ -360,7 +357,7 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9967,
+        "synthetic_share_historical": 0.993,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
@@ -393,7 +390,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -408,8 +405,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 26,
+          "PASS": 15,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -429,7 +426,7 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9967,
+        "synthetic_share_historical": 0.993,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
@@ -462,7 +459,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "2026-10-28",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -477,13 +474,12 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 15,
-          "WARN": 25,
-          "FAIL": 2
+          "PASS": 17,
+          "WARN": 24,
+          "FAIL": 1
         },
         "fail_features": [
-          "home_rest_days",
-          "away_rest_days"
+          "home_rest_days"
         ]
       },
       "batch_invariance": {
@@ -501,7 +497,7 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9966,
+        "synthetic_share_historical": 0.9929,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
@@ -534,7 +530,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "UNKNOWN",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -549,8 +545,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 26,
+          "PASS": 15,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -570,7 +566,7 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9966,
+        "synthetic_share_historical": 0.9929,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
@@ -603,7 +599,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over05_20261018T080423Z_359b491a",
       "training_cutoff": "2026-10-28",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -618,13 +614,12 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 38,
-          "WARN": 25,
-          "FAIL": 2
+          "PASS": 40,
+          "WARN": 24,
+          "FAIL": 1
         },
         "fail_features": [
-          "home_rest_days",
-          "away_rest_days"
+          "home_rest_days"
         ]
       },
       "batch_invariance": {
@@ -668,7 +663,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over15_20261004T093828Z_6f370f63",
       "training_cutoff": "2026-10-28",
-      "code_sha": "64c045900056",
+      "code_sha": "2b6263b34751",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -683,13 +678,12 @@
       "parity": {
         "status": "FAIL",
         "counts": {
-          "PASS": 38,
-          "WARN": 25,
-          "FAIL": 2
+          "PASS": 40,
+          "WARN": 24,
+          "FAIL": 1
         },
         "fail_features": [
-          "home_rest_days",
-          "away_rest_days"
+          "home_rest_days"
         ]
       },
       "batch_invariance": {

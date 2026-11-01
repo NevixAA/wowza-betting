@@ -1,7 +1,7 @@
 {
   "artifact": "price_provenance_health",
   "version": "price-provenance-1.0",
-  "generated_at": "2026-11-01T11:19:47Z",
+  "generated_at": "2026-11-01T13:27:10Z",
   "capture_files": {
     "newformat_odds_history": {
       "rows": 64353,
@@ -23,7 +23,7 @@
       "raw_file_rewritten": false
     },
     "standard_sidemarket_odds_history": {
-      "rows": 66158,
+      "rows": 66570,
       "invalid_rows": 271,
       "invalid_by_reason": {
         "FIRST_HALF_BTTS_PRICE_GT_3.20": 271
@@ -35,7 +35,7 @@
       "raw_file_rewritten": false
     },
     "standard_odds_history": {
-      "rows": 10656,
+      "rows": 10681,
       "invalid_rows": 0,
       "invalid_by_reason": {},
       "invalid_by_market": {},
@@ -245,29 +245,29 @@
   ],
   "synthetic_side_prices_in_backtests": {
     "btts": {
-      "rows": 22516,
-      "synthetic_rows": 21335,
-      "synthetic_share": 0.9475,
+      "rows": 22794,
+      "synthetic_rows": 21531,
+      "synthetic_share": 0.9446,
       "basis": "price_synthetic flag",
-      "placed_rows": 209,
+      "placed_rows": 227,
       "placed_rows_synthetic": 0,
       "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
     },
     "over15": {
-      "rows": 22516,
-      "synthetic_rows": 22441,
-      "synthetic_share": 0.9967,
+      "rows": 22794,
+      "synthetic_rows": 22635,
+      "synthetic_share": 0.993,
       "basis": "price_synthetic flag",
-      "placed_rows": 10,
+      "placed_rows": 7,
       "placed_rows_synthetic": 0,
       "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
     },
     "over35": {
-      "rows": 22516,
-      "synthetic_rows": 22439,
-      "synthetic_share": 0.9966,
+      "rows": 22794,
+      "synthetic_rows": 22632,
+      "synthetic_share": 0.9929,
       "basis": "price_synthetic flag",
-      "placed_rows": 59,
+      "placed_rows": 54,
       "placed_rows_synthetic": 0,
       "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
     }
