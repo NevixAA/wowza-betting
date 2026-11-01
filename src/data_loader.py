@@ -36,6 +36,43 @@ import config
 
 log = logging.getLogger(__name__)
 
+from src.integrity import joins as _IJ  # noqa: E402  (R2-C join integrity)
+
+
+def _price_mapping_filter() -> bool:
+    """WOWZA_PRICE_MAPPING_FILTER=1 drops capture rows whose market mapping is proven invalid
+    (src/integrity/price_provenance.label_market_mapping: newformat O/U captured before the
+    2026-08-10 parser fix, first-half BTTS > 3.20) from the training-price reads. Default OFF
+    until the owner reviews (it changes training prices for ~360 summer-2026 NF fixtures)."""
+    return os.getenv("WOWZA_PRICE_MAPPING_FILTER", "0").strip() == "1"
+
+
+def _drop_mismapped(o: pd.DataFrame, source: str, tag: str) -> pd.DataFrame:
+    """Rows with market_mapping_valid=False removed from THIS READ ONLY (raw file untouched).
+    Always counts them in the log; removes them only with WOWZA_PRICE_MAPPING_FILTER=1."""
+    try:
+        if not {"snapshot_ts", "market", "odds"}.issubset(o.columns) or o.empty:
+            return o
+        from src.integrity.price_provenance import label_market_mapping
+        ok = label_market_mapping(o[["snapshot_ts", "market", "odds"]], source)["market_mapping_valid"]
+        n_bad = int((~ok.to_numpy()).sum())
+        if n_bad:
+            act = "dropped" if _price_mapping_filter() else "KEPT (WOWZA_PRICE_MAPPING_FILTER=0)"
+            log.warning(f"[{tag}] {n_bad} row(s) of {source} carry an invalid market mapping — {act}")
+            if _price_mapping_filter():
+                return o[ok.to_numpy()]
+    except Exception as _e:                                       # noqa: BLE001
+        log.warning(f"[{tag}] price-mapping check skipped: {_e}")
+    return o
+
+
+def _safe_joins() -> bool:
+    """WOWZA_SAFE_ENRICH_JOINS=1 serves the league-keyed, collapse-then-merge enrichment joins.
+    Default OFF (owner review pending): the replay in docs/r2/R2C_joins_parity_provenance.md shows
+    the safe join changes serving features. The legacy joins are AUDITED either way."""
+    return os.getenv("WOWZA_SAFE_ENRICH_JOINS", "0").strip() == "1"
+
+
 _SEASON_MAP = {
     # European winter seasons (YYMM code → readable label)
     "2526": "2025/26", "2425": "2024/25", "2324": "2023/24",
@@ -99,6 +136,7 @@ def _nf_real_odds() -> dict:
                                 f"> 3.20 — first-half BTTS mislabelled as full-match "
                                 f"(2026-08-23 parser fix). Raw file unchanged.")
                     _o = _o[~_bad]
+                _o = _drop_mismapped(_o, "newformat_odds_history", "nf_odds")
                 for _r in _o.itertuples(index=False):
                     _nf_odds_cache.setdefault(
                         (str(_r.snapshot_date), str(_r.league), str(_r.match)), {}
@@ -567,6 +605,10 @@ def _enrich_with_af_odds(df: pd.DataFrame) -> pd.DataFrame:
             ["odds_btts", "odds_over15", "odds_over35"]
         ]
 
+        try:   # R2-C: league-free key — audited (output/join_integrity_health.json)
+            _IJ.audit_legacy_merge(df, odds_hist, ["_h", "_a", "_d"], name="af_odds_history.legacy")
+        except Exception as _e:                                  # noqa: BLE001
+            log.warning(f"[af_odds] join audit skipped: {_e}")
         idx = pd.MultiIndex.from_arrays([df["_h"], df["_a"], df["_d"]])
         matched = lookup.reindex(idx).reset_index(drop=True)
 
@@ -643,6 +685,21 @@ def _enrich_with_standard_sidemarket_odds(df: pd.DataFrame) -> pd.DataFrame:
         df["_h"] = df["home_team"].apply(_norm_name)
         df["_a"] = df["away_team"].apply(_norm_name)
         df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        try:   # R2-C: league-free key — audited (output/join_integrity_health.json)
+            _IJ.audit_league_free_lookup(df, oh, ["_h", "_a", "_d"],
+                                         name="std_sidemarket_odds.legacy")
+        except Exception as _e:                                  # noqa: BLE001
+            log.warning(f"[std_sidemarket] join audit skipped: {_e}")
+        if _safe_joins():
+            _w = oh.sort_values("snapshot_ts") if "snapshot_ts" in oh.columns else oh
+            _w = (_w.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
+                    .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
+                    .reset_index())
+            _vc = [c for c in ("odds_btts", "odds_over15", "odds_over35")
+                   if c in _w.columns and c in df.columns]
+            df, _ = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
+                                         value_cols=_vc, name="std_sidemarket_odds")
+            return df.drop(columns=["_h", "_a", "_d"])
         idx = pd.MultiIndex.from_arrays([df["_h"], df["_a"], df["_d"]])
         matched = piv.reindex(idx).reset_index(drop=True)
         for col in ("odds_btts", "odds_over15", "odds_over35"):   # NOTE: over25 deliberately excluded
@@ -696,6 +753,7 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
         if not {"market", "odds", "match", "match_date"}.issubset(o.columns):
             continue
         o = o[o["market"].isin(("over25", "under25"))]
+        o = _drop_mismapped(o, p.stem, "ou25_captures")
         if len(o):
             frames.append(o)
     if not frames:
@@ -722,17 +780,34 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
         df["_h"] = df["home_team"].apply(_norm_name)
         df["_a"] = df["away_team"].apply(_norm_name)
         df["_d"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
-        matched = piv.reindex(pd.MultiIndex.from_arrays(
-            [df["_h"], df["_a"], df["_d"]])).reset_index(drop=True)
-        for col in ("odds_over25", "odds_under25"):
-            if col not in df.columns:
-                df[col] = np.nan
-            if col in matched.columns:
-                mask = df[col].isna() & matched[col].notna()
-                if mask.any():
-                    df.loc[mask, col] = matched.loc[mask, col].values
-                    log.info(f"  [ou25_captures] {col}: filled {int(mask.sum())} row(s) from our "
-                             f"own forward captures")
+        try:   # R2-C: league-free key — audited (output/join_integrity_health.json)
+            _IJ.audit_league_free_lookup(df, oh, ["_h", "_a", "_d"],
+                                         name="ou25_captures.legacy")
+        except Exception as _e:                                  # noqa: BLE001
+            log.warning(f"[ou25_captures] join audit skipped: {_e}")
+        if _safe_joins() and "league" in oh.columns:
+            for col in ("odds_over25", "odds_under25"):
+                if col not in df.columns:
+                    df[col] = np.nan
+            _w = (oh.drop_duplicates(["league", "_h", "_a", "_d", "_col"], keep="last")
+                    .pivot(index=["league", "_h", "_a", "_d"], columns="_col", values="odds")
+                    .reset_index())
+            _vc = [c for c in ("odds_over25", "odds_under25") if c in _w.columns]
+            df, _rep = _IJ.safe_left_enrich(df, _w, keys=["league", "_h", "_a", "_d"],
+                                            value_cols=_vc, name="ou25_captures")
+            log.info(f"  [ou25_captures] SAFE join filled {_rep.filled_cells}")
+        else:
+            matched = piv.reindex(pd.MultiIndex.from_arrays(
+                [df["_h"], df["_a"], df["_d"]])).reset_index(drop=True)
+            for col in ("odds_over25", "odds_under25"):
+                if col not in df.columns:
+                    df[col] = np.nan
+                if col in matched.columns:
+                    mask = df[col].isna() & matched[col].notna()
+                    if mask.any():
+                        df.loc[mask, col] = matched.loc[mask, col].values
+                        log.info(f"  [ou25_captures] {col}: filled {int(mask.sum())} row(s) from "
+                                 f"our own forward captures")
 
         # SECOND PASS, league-scoped, through the canonical resolver (invariant 11). `_norm_name`
         # lower-cases and strips punctuation but knows nothing about club naming: it cannot see
@@ -853,24 +928,44 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             df["_away_norm"] = df["away_team"].apply(_norm_name)
             df["_date_str"]  = df["date"].dt.strftime("%Y-%m-%d")
 
-            merged = df.merge(
-                hist[["_home_norm", "_away_norm", "_date_str", "league"] + hist_cols]
-                    .rename(columns={c: f"{c}_h" for c in hist_cols}),
-                on=["_home_norm", "_away_norm", "_date_str"],
-                how="left",
-                suffixes=("", "_h"),
-            )
+            # R2-C finding 12. The legacy join below keys on (home, away, date) WITHOUT league and
+            # copies back POSITIONALLY. af_history holds duplicate keys (two spellings of one club
+            # that normalise alike, and whole leagues filed twice under another league's name), so
+            # the merge returns more rows than df and the zip shifts every later value onto the
+            # wrong fixture. The audit always runs (output/join_integrity_health.json); the
+            # league-keyed safe join serves only with WOWZA_SAFE_ENRICH_JOINS=1 until the owner
+            # reviews the serving-feature diff (docs/r2/R2C_joins_parity_provenance.md).
+            _k3 = ["_home_norm", "_away_norm", "_date_str"]
+            try:
+                _IJ.audit_legacy_merge(df, hist, _k3, name="af_history_shots.legacy")
+            except Exception as _e:                              # noqa: BLE001
+                log.warning(f"[af_history] join audit skipped: {_e}")
+            if _safe_joins():
+                df, _rep = _IJ.safe_left_enrich(
+                    df, hist, keys=["league"] + _k3, value_cols=hist_cols,
+                    name="af_history_shots")
+                log.info(f"[af_history] SAFE join: matched {_rep.matched_left_rows:,}/"
+                         f"{_rep.left_rows:,}; ambiguous key groups {_rep.ambiguous_key_groups}; "
+                         f"right duplicate rows {_rep.right_duplicate_rows}")
+            else:
+                merged = df.merge(
+                    hist[["_home_norm", "_away_norm", "_date_str", "league"] + hist_cols]
+                        .rename(columns={c: f"{c}_h" for c in hist_cols}),
+                    on=["_home_norm", "_away_norm", "_date_str"],
+                    how="left",
+                    suffixes=("", "_h"),
+                )
 
-            for col in hist_cols:
-                hcol = f"{col}_h"
-                if hcol not in merged.columns:
-                    continue
-                if col not in df.columns:
-                    df[col] = np.nan
-                orig = df[col].values
-                hist_vals = merged[hcol].values
-                df[col] = [float(h) if pd.isna(o) and pd.notna(h) else o
-                           for o, h in zip(orig, hist_vals)]
+                for col in hist_cols:
+                    hcol = f"{col}_h"
+                    if hcol not in merged.columns:
+                        continue
+                    if col not in df.columns:
+                        df[col] = np.nan
+                    orig = df[col].values
+                    hist_vals = merged[hcol].values
+                    df[col] = [float(h) if pd.isna(o) and pd.notna(h) else o
+                               for o, h in zip(orig, hist_vals)]
 
             df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore", inplace=True)
             n_with_shots = int(df["home_shots"].notna().sum()) if "home_shots" in df.columns else 0
@@ -893,21 +988,32 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
                 df["_away_norm"] = df["away_team"].apply(_norm_name)
                 df["_date_str"]  = df["date"].dt.strftime("%Y-%m-%d")
 
-            ht_merged = df.merge(
-                ht_hist[["_home_norm", "_away_norm", "_date_str", "HTHG", "HTAG"]]
-                    .rename(columns={"HTHG": "HTHG_h", "HTAG": "HTAG_h"}),
-                on=["_home_norm", "_away_norm", "_date_str"],
-                how="left",
-            )
-            for src, dst in [("HTHG_h", "ht_home_goals"), ("HTAG_h", "ht_away_goals")]:
-                if src not in ht_merged.columns:
-                    continue
-                if dst not in df.columns:
-                    df[dst] = np.nan
-                orig = df[dst].values
-                fill = ht_merged[src].values
-                df[dst] = [float(h) if pd.isna(o) and pd.notna(h) else o
-                           for o, h in zip(orig, fill)]
+            _k3 = ["_home_norm", "_away_norm", "_date_str"]
+            try:
+                _IJ.audit_legacy_merge(df, ht_hist, _k3, name="af_ht_history.legacy")
+            except Exception as _e:                              # noqa: BLE001
+                log.warning(f"[af_ht_history] join audit skipped: {_e}")
+            if _safe_joins() and "league" in ht_hist.columns:
+                df, _ = _IJ.safe_left_enrich(
+                    df, ht_hist, keys=["league"] + _k3, value_cols=["HTHG", "HTAG"],
+                    target_cols={"HTHG": "ht_home_goals", "HTAG": "ht_away_goals"},
+                    name="af_ht_history")
+            else:
+                ht_merged = df.merge(
+                    ht_hist[["_home_norm", "_away_norm", "_date_str", "HTHG", "HTAG"]]
+                        .rename(columns={"HTHG": "HTHG_h", "HTAG": "HTAG_h"}),
+                    on=["_home_norm", "_away_norm", "_date_str"],
+                    how="left",
+                )
+                for src, dst in [("HTHG_h", "ht_home_goals"), ("HTAG_h", "ht_away_goals")]:
+                    if src not in ht_merged.columns:
+                        continue
+                    if dst not in df.columns:
+                        df[dst] = np.nan
+                    orig = df[dst].values
+                    fill = ht_merged[src].values
+                    df[dst] = [float(h) if pd.isna(o) and pd.notna(h) else o
+                               for o, h in zip(orig, fill)]
 
             df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore", inplace=True)
             n_ht = int(df["ht_home_goals"].notna().sum()) if "ht_home_goals" in df.columns else 0
@@ -1009,23 +1115,41 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
                     "home_corners", "away_corners", "home_fouls", "away_fouls",
                     "home_xg", "away_xg", "home_insidebox", "away_insidebox"]
         avail_cols = [c for c in api_cols if c in shots_df.columns]
-        merged = league_rows.merge(
-            shots_df[["_home_norm", "_away_norm", "_date_str"] + avail_cols],
-            on=["_home_norm", "_away_norm", "_date_str"],
-            how="left",
-            suffixes=("", "_api"),
-        )
+        # League-scoped already (one league id per fetch), but shots_df is de-duplicated only when
+        # two seasons were fetched, so a duplicate key could still expand the merge and shift the
+        # positional copy-back. Audited always; safe join with WOWZA_SAFE_ENRICH_JOINS=1.
+        _k3 = ["_home_norm", "_away_norm", "_date_str"]
+        try:
+            _IJ.audit_legacy_merge(league_rows, shots_df, _k3,
+                                   name=f"api_football_live_shots.legacy[{league}]")
+        except Exception as _e:                                  # noqa: BLE001
+            log.warning(f"[api_football_ou] join audit skipped: {_e}")
+        if _safe_joins():
+            _sd = shots_df.copy()
+            _sd["league"] = league
+            _lr, _ = _IJ.safe_left_enrich(league_rows, _sd, keys=["league"] + _k3,
+                                          value_cols=avail_cols,
+                                          name=f"api_football_live_shots[{league}]")
+            for col in avail_cols:
+                df.loc[_lr.index, col] = _lr[col].to_numpy()
+        else:
+            merged = league_rows.merge(
+                shots_df[["_home_norm", "_away_norm", "_date_str"] + avail_cols],
+                on=["_home_norm", "_away_norm", "_date_str"],
+                how="left",
+                suffixes=("", "_api"),
+            )
 
-        idx = df.index[mask]
-        for col in avail_cols:
-            api_col = f"{col}_api"
-            if api_col not in merged.columns:
-                continue
-            orig = df.loc[idx, col].values
-            api  = merged[api_col].values
-            filled = [float(a) if pd.isna(o) and pd.notna(a) else o
-                      for o, a in zip(orig, api)]
-            df.loc[idx, col] = filled
+            idx = df.index[mask]
+            for col in avail_cols:
+                api_col = f"{col}_api"
+                if api_col not in merged.columns:
+                    continue
+                orig = df.loc[idx, col].values
+                api  = merged[api_col].values
+                filled = [float(a) if pd.isna(o) and pd.notna(a) else o
+                          for o, a in zip(orig, api)]
+                df.loc[idx, col] = filled
 
         n_filled = int(df.loc[mask, "home_shots"].notna().sum())
         log.info(f"[api_football_ou] {league}: {n_filled}/{int(mask.sum())} rows now have shot data")
