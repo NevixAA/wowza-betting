@@ -238,7 +238,7 @@ def test_07_weights_stay_with_fixture_after_sort(feat):
     rows = feat.dropna(subset=["over25"]).sample(frac=1.0, random_state=3)   # NOT date-sorted
     w = pd.Series(np.arange(len(rows), dtype=float), index=rows.index)
     out = M._rows_with_weights(rows.assign(_id=w), "over25", w)
-    assert (out["_w"] == out["_id"]).all()
+    assert (out["_sample_weight"] == out["_id"]).all()
     with pytest.raises(ValueError):
         M._rows_with_weights(rows, "over25", np.ones(len(rows) - 1))   # no silent fallback
 

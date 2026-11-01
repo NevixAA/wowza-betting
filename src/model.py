@@ -151,6 +151,7 @@ def train(
     sample_weight=None,
     feature_cols: "list[str] | None" = None,
     recipe: str = "legacy_v9",
+    **repaired_options,
 ) -> dict:
     """
     Train on the chronological training split, calibrate on the test split.
@@ -160,13 +161,18 @@ def train(
     recipe="legacy_v9" (DEFAULT — pipeline.mode_train never passes anything else) is the code
     below, unchanged, defects included: batch-median imputation (bug 1), the meta-logistic fitted
     AND reported on the same test block (bug 6), and weights indexed by a reset index (bug 8).
-    recipe="v9_repaired" -> train_repaired() (research only).
+    recipe="v9_repaired" -> train_repaired() (the serving Standard model's trainer).
+    recipe in R2_RECIPES ("nf_v9_repaired" / "side_v9_repaired" / "ht_v9_repaired") ->
+    train_repaired() with the R2 options (holdout_start, imputer_options, provenance) — challenger
+    payloads only; nothing serves them.
     """
-    if recipe == "v9_repaired":
+    if recipe in REPAIRED_RECIPES:
         return train_repaired(df, target=target, sample_weight=sample_weight,
-                              feature_cols=feature_cols)
+                              feature_cols=feature_cols, recipe=recipe, **repaired_options)
     if recipe != "legacy_v9":
         raise ValueError(f"unknown model recipe {recipe!r}")
+    if repaired_options:
+        raise TypeError(f"legacy_v9 takes no repaired options: {sorted(repaired_options)}")
     import numpy as np
     df = df.dropna(subset=[target]).copy().sort_values("date").reset_index(drop=True)
     split   = int(len(df) * train_ratio)
@@ -299,47 +305,57 @@ class TrainResults(dict):
         self.meta = dict(meta or {})
 
 
+#: R2 (2026-11-01): ONE parameterised repaired architecture for every non-Standard team model.
+#: The recipe NAME selects only the default metadata label; the architecture is identical.
+#: "v9_repaired" keeps its exact 2026-10-28 numerics (the serving Standard model's trainer).
+R2_RECIPES = ("nf_v9_repaired", "side_v9_repaired", "ht_v9_repaired")
+REPAIRED_RECIPES = ("v9_repaired",) + R2_RECIPES
+R2_RECIPE_VERSION = "r2-repaired-1.0"
+#: R2 within-pre-holdout fractions: the same 0.64 / 0.08 / 0.08 shape as FOUR_BLOCKS once the
+#: holdout (newest 20%) is set aside, i.e. 80% / 10% / 10% of the pre-holdout rows.
+R2_PRE_HOLDOUT_BLOCKS = {"base": (0.00, 0.80), "calibration": (0.80, 0.90), "meta": (0.90, 1.00)}
+WEIGHT_COL = "_sample_weight"
+
+
 def _rows_with_weights(df: pd.DataFrame, target: str, sample_weight) -> pd.DataFrame:
-    """Attach the weight TO THE ROW before any filter or sort (bug 8).
+    """Attach the weight TO THE ROW before any filter or sort (bug 8 / finding 4).
 
     A pd.Series is aligned by index label; an array must have one entry per row of `df` as
-    passed. A length mismatch is an error — never a silent fallback to ones.
+    passed. A length mismatch is an error — never a silent fallback to ones. After the sort the
+    weight of every row is re-derived from its ORIGINAL position (`_row_pos`) and compared with
+    the travelling column: any disagreement raises instead of training on misaligned weights.
     """
     d = df.copy()
     if sample_weight is None:
-        d["_w"] = 1.0
+        w = np.ones(len(d))
     elif isinstance(sample_weight, pd.Series):
-        w = sample_weight.reindex(d.index)
-        if w.isna().any():
+        ws = sample_weight.reindex(d.index)
+        if ws.isna().any():
             raise ValueError("sample_weight Series does not cover every row of df")
-        d["_w"] = w.to_numpy(dtype=float)
+        w = ws.to_numpy(dtype=float)
     else:
         w = np.asarray(sample_weight, dtype=float)
         if len(w) != len(d):
             raise ValueError(f"sample_weight has {len(w)} entries for {len(d)} rows")
-        d["_w"] = w
+    d[WEIGHT_COL] = w
+    d["_row_pos"] = np.arange(len(d))
     d = d.dropna(subset=[target])
     tie = [c for c in ("league", "home_team", "away_team") if c in d.columns]
-    return d.sort_values(["date"] + tie, kind="mergesort").reset_index(drop=True)
+    d = d.sort_values(["date"] + tie, kind="mergesort").reset_index(drop=True)
+    if not np.array_equal(w[d["_row_pos"].to_numpy()], d[WEIGHT_COL].to_numpy()):
+        raise AssertionError("sample weights no longer belong to their rows after the sort")
+    return d
 
 
-def four_block_split(df: pd.DataFrame, target: str, sample_weight=None) -> dict:
-    """BASE TRAIN -> CALIBRATION -> META TRAIN -> UNTOUCHED HOLDOUT, strictly chronological.
-
-    Boundaries are cut on whole dates where possible: a date that straddles a cut goes to the
-    LATER block, so no block shares a matchday with the block before it.
-    """
-    d = _rows_with_weights(df, target, sample_weight)
+def _whole_date_cuts(d: pd.DataFrame, fracs: dict) -> dict:
+    """Cut `d` (date-sorted) at the given fractions; a date straddling a cut goes to the LATER
+    block, so no block shares a matchday with the block before it."""
     n = len(d)
     dates = pd.to_datetime(d["date"]).to_numpy()
-    cuts = {}
-    for name, (lo, hi) in FOUR_BLOCKS.items():
-        cuts[name] = int(round(n * hi)) if hi < 1 else n
     bounds, start = {}, 0
-    for name in FOUR_BLOCKS:
-        end = cuts[name]
+    for name, (_lo, hi) in fracs.items():
+        end = int(round(n * hi)) if hi < 1 else n
         if end < n and end > start:
-            # move the cut back to the first row of the straddling date
             first_of_day = int(np.searchsorted(dates, dates[end], side="left"))
             end = max(start, first_of_day)
         bounds[name] = (start, end)
@@ -347,34 +363,70 @@ def four_block_split(df: pd.DataFrame, target: str, sample_weight=None) -> dict:
     return {name: d.iloc[a:b].copy() for name, (a, b) in bounds.items()}
 
 
-def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
-                   feature_cols: "list[str] | None" = None) -> TrainResults:
-    """Same model family as legacy (LR + GB + LightGBM, Platt, meta-logistic), with every P0
-    training defect removed:
+def four_block_split(df: pd.DataFrame, target: str, sample_weight=None,
+                     holdout_start=None) -> dict:
+    """BASE TRAIN -> CALIBRATION -> META TRAIN -> UNTOUCHED HOLDOUT, strictly chronological.
 
-      bug 1  imputer fitted on BASE rows only, persisted, applied to every block and to serving;
-      bug 6  calibrators fit on CALIBRATION, meta-logistic on META, all metrics on the untouched
-             HOLDOUT — no reported number comes from rows any stage was fitted on;
-      bug 8  weights travel with their rows (`_rows_with_weights`).
+    holdout_start=None (v9_repaired, unchanged): cut at FOUR_BLOCKS fractions of the rows.
+    holdout_start=<date> (R2): the holdout is every row dated ON/AFTER it — a boundary fixed
+    outside the trainer, so several challengers trained on DIFFERENT row sets (source regimes,
+    tracks) are scored on the IDENTICAL untouched rows; the earlier rows split 80/10/10.
+    Both cut on whole dates.
     """
-    from src.imputer import fit_imputer, IMPUTER_VERSION
-    feat_cols = list(feature_cols or FEATURE_COLS)
-    blocks = four_block_split(df, target, sample_weight)
-    base, cal, meta_b, hold = (blocks["base"], blocks["calibration"], blocks["meta"],
-                               blocks["holdout"])
-    if min(len(base), len(cal), len(meta_b), len(hold)) < 20:
-        raise ValueError(f"too few rows for four-block training: "
-                         f"{[len(b) for b in blocks.values()]}")
-    imputer = fit_imputer(base, feat_cols)
-    X_base, _ = _prep(base, feat_cols, imputer=imputer)
-    X_cal, _ = _prep(cal, feat_cols, imputer=imputer)
-    X_meta, _ = _prep(meta_b, feat_cols, imputer=imputer)
-    X_hold, _ = _prep(hold, feat_cols, imputer=imputer)
-    y_base, y_cal = base[target].to_numpy(), cal[target].to_numpy()
-    y_meta, y_hold = meta_b[target].to_numpy(), hold[target].to_numpy()
-    w_base, w_cal = base["_w"].to_numpy(), cal["_w"].to_numpy()
+    d = _rows_with_weights(df, target, sample_weight)
+    if holdout_start is None:
+        return _whole_date_cuts(d, FOUR_BLOCKS)
+    hs = pd.Timestamp(holdout_start)
+    dd = pd.to_datetime(d["date"])
+    pre, hold = d[dd < hs].reset_index(drop=True), d[dd >= hs].reset_index(drop=True)
+    out = _whole_date_cuts(pre, R2_PRE_HOLDOUT_BLOCKS)
+    out["holdout"] = hold.copy()
+    return out
 
-    models_cfg = [
+
+def assert_blocks_disjoint(blocks: dict) -> None:
+    """No two consecutive blocks share a calendar date (same-day league aggregates cannot leak
+    from a later block into an earlier one), and each block is strictly after the previous."""
+    order = [k for k in ("base", "calibration", "meta", "holdout") if k in blocks]
+    for a, b in zip(order, order[1:]):
+        if blocks[a].empty or blocks[b].empty:
+            continue
+        if pd.to_datetime(blocks[a]["date"]).max() >= pd.to_datetime(blocks[b]["date"]).min():
+            raise AssertionError(f"block {a} overlaps block {b} in time")
+
+
+def _block_meta(blocks: dict) -> dict:
+    def _rng(b):
+        return [str(pd.Timestamp(b["date"].min()).date()), str(pd.Timestamp(b["date"].max()).date())]
+    return {k: {"rows": int(len(b)), "dates": _rng(b)} for k, b in blocks.items()}
+
+
+def _metrics(y, p) -> dict:
+    p = np.clip(np.asarray(p, float), 1e-15, 1 - 1e-15)
+    y = np.asarray(y, float)
+    return {"accuracy": round(accuracy_score(y, p >= 0.5), 4),
+            "auc": round(roc_auc_score(y, p), 4) if len(set(y)) > 1 else None,
+            "log_loss": round(log_loss(y, p, labels=[0, 1]), 5),
+            "brier": round(float(np.mean((p - y) ** 2)), 5),
+            "ece": round(expected_calibration_error(y, p), 5)}
+
+
+def expected_calibration_error(y, p, bins: int = 10) -> float:
+    """Equal-width 10-bin ECE (|mean p - mean y| weighted by bin share)."""
+    y, p = np.asarray(y, float), np.asarray(p, float)
+    if not len(y):
+        return float("nan")
+    idx = np.clip((p * bins).astype(int), 0, bins - 1)
+    e = 0.0
+    for b in range(bins):
+        m = idx == b
+        if m.any():
+            e += m.mean() * abs(p[m].mean() - y[m].mean())
+    return float(e)
+
+
+def _base_models():
+    cfg = [
         ("logistic", LogisticRegression(max_iter=2000, C=0.5, solver="lbfgs")),
         ("gradient_boost", GradientBoostingClassifier(
             n_estimators=300, max_depth=4, learning_rate=0.05,
@@ -382,21 +434,76 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
     ]
     try:
         from lightgbm import LGBMClassifier
-        models_cfg.append(("lightgbm", LGBMClassifier(
+        cfg.append(("lightgbm", LGBMClassifier(
             n_estimators=200, learning_rate=0.05, max_depth=6, num_leaves=31, subsample=0.8,
             colsample_bytree=0.8, min_child_samples=20, random_state=42, verbose=-1, n_jobs=-1)))
     except ImportError:
         pass
+    return cfg
 
-    def _m(y, p):
-        p = np.clip(p, 1e-15, 1 - 1e-15)
-        return {"accuracy": round(accuracy_score(y, p >= 0.5), 4),
-                "auc": round(roc_auc_score(y, p), 4) if len(set(y)) > 1 else None,
-                "log_loss": round(log_loss(y, p, labels=[0, 1]), 5),
-                "brier": round(float(np.mean((p - y) ** 2)), 5)}
+
+def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
+                   feature_cols: "list[str] | None" = None, recipe: str = "v9_repaired",
+                   holdout_start=None, imputer_options: "dict | None" = None,
+                   provenance: "dict | None" = None) -> TrainResults:
+    """Same model family as legacy (LR + GB + LightGBM, Platt, meta-logistic), with every P0
+    training defect removed:
+
+      bug 1  imputer fitted on BASE rows only, persisted, applied to every block and to serving;
+      bug 6  calibrators fit on CALIBRATION, meta-logistic on META, all metrics on the untouched
+             HOLDOUT — no reported number comes from rows any stage was fitted on;
+      bug 8  weights travel with their rows (`_rows_with_weights`, verified after the sort).
+
+    recipe "v9_repaired" with no R2 keyword = the 2026-10-28 trainer, numerically unchanged.
+    R2 recipes (nf_/side_/ht_v9_repaired) additionally: a 1.1 imputer (no-training-values
+    features DROPPED and recorded, never silently constant), an externally fixed holdout
+    boundary, asserted block disjointness, holdout-label independence evidence, and the full
+    payload metadata (versions, cutoff, frame hash, feature list, blocks, weights, provenance).
+    """
+    from src.imputer import fit_imputer, IMPUTER_VERSION
+    if recipe not in REPAIRED_RECIPES:
+        raise ValueError(f"unknown repaired recipe {recipe!r}")
+    r2 = recipe in R2_RECIPES or holdout_start is not None or imputer_options is not None
+    feat_cols = list(feature_cols or FEATURE_COLS)
+    blocks = four_block_split(df, target, sample_weight, holdout_start=holdout_start)
+    base, cal, meta_b, hold = (blocks["base"], blocks["calibration"], blocks["meta"],
+                               blocks["holdout"])
+    if min(len(base), len(cal), len(meta_b), len(hold)) < 20:
+        raise ValueError(f"too few rows for four-block training: "
+                         f"{[len(b) for b in blocks.values()]}")
+    dropped = []
+    if r2:
+        assert_blocks_disjoint(blocks)
+        opts = {"all_missing": "drop", **(imputer_options or {})}
+        imputer = fit_imputer(base, feat_cols, **opts)
+        dropped = list(imputer.all_missing_features)
+        if dropped:
+            feat_cols = [c for c in feat_cols if c not in dropped]
+            log.info(f"  [{recipe}] dropped {len(dropped)} feature(s) with no training values: "
+                     f"{dropped}")
+            imputer = fit_imputer(base, feat_cols, **opts)
+    else:
+        imputer = fit_imputer(base, feat_cols)
+    X_base, _ = _prep(base, feat_cols, imputer=imputer)
+    X_cal, _ = _prep(cal, feat_cols, imputer=imputer)
+    X_meta, _ = _prep(meta_b, feat_cols, imputer=imputer)
+    X_hold, _ = _prep(hold, feat_cols, imputer=imputer)
+    y_base, y_cal = base[target].to_numpy(), cal[target].to_numpy()
+    y_meta, y_hold = meta_b[target].to_numpy(), hold[target].to_numpy()
+    w_base, w_cal = base[WEIGHT_COL].to_numpy(), cal[WEIGHT_COL].to_numpy()
+
+    if r2:
+        _m = _metrics
+    else:
+        def _m(y, p):                                   # exact 2026-10-28 metric dict
+            p = np.clip(p, 1e-15, 1 - 1e-15)
+            return {"accuracy": round(accuracy_score(y, p >= 0.5), 4),
+                    "auc": round(roc_auc_score(y, p), 4) if len(set(y)) > 1 else None,
+                    "log_loss": round(log_loss(y, p, labels=[0, 1]), 5),
+                    "brier": round(float(np.mean((p - y) ** 2)), 5)}
 
     results = TrainResults()
-    for name, base_clf in models_cfg:
+    for name, base_clf in _base_models():
         pipe = Pipeline([("scaler", StandardScaler()), ("clf", base_clf)])
         pipe.fit(X_base, y_base, clf__sample_weight=w_base)
         platt = LogisticRegression(C=1.0, max_iter=1000)
@@ -420,18 +527,65 @@ def train_repaired(df: pd.DataFrame, target: str = "over25", sample_weight=None,
     else:
         served_hold = results[next(iter(results))]["model"].predict_proba(X_hold)[:, 1]
 
-    def _rng(b):
-        return [str(pd.Timestamp(b["date"].min()).date()), str(pd.Timestamp(b["date"].max()).date())]
     results.meta = {
         "recipe": "v9_repaired", "model_recipe_version": MODEL_RECIPE_VERSION,
         "imputer": imputer.to_dict(), "imputer_version": IMPUTER_VERSION,
-        "blocks": {k: {"rows": int(len(b)), "dates": _rng(b)} for k, b in blocks.items()},
+        "blocks": _block_meta(blocks),
         "served_holdout_metrics": _m(y_hold, served_hold),
         "target": target,
     }
-    log.info(f"  [v9_repaired] served holdout {results.meta['served_holdout_metrics']}  "
+    if r2:
+        results.meta.update(_r2_meta(recipe, blocks, feat_cols, dropped, imputer, target,
+                                     holdout_start, provenance))
+        results.holdout_frame = hold
+        results.holdout_p = served_hold
+    log.info(f"  [{recipe}] served holdout {results.meta['served_holdout_metrics']}  "
              f"blocks={ {k: v['rows'] for k, v in results.meta['blocks'].items()} }")
     return results
+
+
+def _r2_meta(recipe, blocks, feat_cols, dropped, imputer, target, holdout_start, provenance):
+    """Full payload metadata (finding 1). Nothing here is used to score; it is the audit trail."""
+    import hashlib
+    import os
+    import subprocess
+    pre = pd.concat([blocks["base"], blocks["calibration"], blocks["meta"]])
+    keys = [c for c in ("date", "league", "home_team", "away_team", target) if c in pre.columns]
+    fh = hashlib.sha256(pd.util.hash_pandas_object(
+        pre[keys].astype(str), index=False).to_numpy().tobytes()).hexdigest()[:16]
+    sha = os.getenv("GITHUB_SHA", "").strip()
+    if not sha:
+        try:
+            sha = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
+                                 cwd=Path(__file__).resolve().parents[1], timeout=20).stdout.strip()
+        except Exception:                                              # noqa: BLE001
+            sha = "unknown"
+    prov = dict(provenance or {})
+    d_pre = pd.to_datetime(pre["date"])
+    return {
+        "recipe": recipe, "model_recipe_version": R2_RECIPE_VERSION,
+        "imputer_version": imputer.version,
+        "feature_cols": list(feat_cols), "n_features": len(feat_cols),
+        "dropped_all_missing_features": list(dropped),
+        "block_definition": {"holdout_start": (str(pd.Timestamp(holdout_start).date())
+                                               if holdout_start is not None else None),
+                             "pre_holdout_fractions": R2_PRE_HOLDOUT_BLOCKS
+                             if holdout_start is not None else FOUR_BLOCKS,
+                             "whole_date_cuts": True, "disjoint_asserted": True},
+        "holdout_independence": {"imputer_fit": "base", "base_models_fit": "base",
+                                 "calibrators_fit": "calibration", "meta_fit": "meta",
+                                 "holdout_labels_used_for_fitting": False},
+        "weights": {"column": WEIGHT_COL, "travel_with_rows": True, "alignment_verified": True,
+                    "base_ess": round(float(blocks["base"][WEIGHT_COL].sum() ** 2
+                                            / max(1e-12, (blocks["base"][WEIGHT_COL] ** 2).sum())), 1),
+                    "recency": prov.pop("recency", None)},
+        "training_start": str(d_pre.min().date()), "training_end": str(d_pre.max().date()),
+        "training_cutoff": prov.pop("training_cutoff", str(d_pre.max().date())),
+        "training_rows": int(len(pre)), "frame_hash": fh, "code_sha": sha or "unknown",
+        "feature_recipe_version": prov.pop("feature_recipe_version", None),
+        "identity_version": prov.pop("identity_version", None),
+        "provenance": prov,
+    }
 
 
 def build_payload(results: dict, target: str = "over25") -> dict:
@@ -563,6 +717,11 @@ def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
         payload = load_models(model_file)
 
     feat_cols  = payload["feature_cols"]
+    # A repaired payload WITHOUT its persisted imputer would silently fall back to the
+    # batch-median path (finding 2): refuse it. Legacy payloads carry no `recipe` key.
+    if payload.get("recipe") in REPAIRED_RECIPES and not payload.get("imputer"):
+        raise ValueError(f"{payload.get('recipe')} payload has no persisted imputer — refusing "
+                         f"to impute from the scoring batch")
     # payload["imputer"] exists only on v9_repaired payloads; serving payloads have none, so
     # this is the legacy call exactly.
     X, _       = _prep(df, feat_cols, imputer=payload.get("imputer"))
