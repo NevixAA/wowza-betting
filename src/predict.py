@@ -449,6 +449,21 @@ def predict_upcoming(
     feat.loc[std_mask, "model_type"] = "standard"
     feat.loc[nf_mask,  "model_type"] = "new_format"
 
+    # NEW-FORMAT RECALIBRATION TO OUTCOMES (owner 2026-11-01, src/nf_calibration.py): NF overs were
+    # under-rated ~10pp against results. A one-parameter shift fitted on settled fixtures predicted
+    # by the FIXED pipeline; applied only once n >= 150 and its CI excludes zero, reported always.
+    # p_over25_raw keeps the model's own number.
+    feat["p_over25_raw"] = feat["p_over25"]
+    try:
+        from src import nf_calibration as _nfc
+        _cal = _nfc.fit()
+        if nf_mask.any():
+            feat.loc[nf_mask, "p_over25"] = _nfc.apply(feat.loc[nf_mask, "p_over25"].astype(float), _cal)
+        log.info(f"  NF calibration: n={_cal['n']} shift={_cal.get('shift')} ci={_cal.get('ci95')} "
+                 f"-> {_cal.get('reason')}")
+    except Exception as _e:                                            # noqa: BLE001
+        log.warning(f"  NF calibration skipped ({type(_e).__name__}: {_e}) - raw probabilities served")
+
     # How much of each model's input actually arrived? Blank/constant features are imputed
     # silently and skew the calibrated logistic member — the new-format bug in one line.
     # Diagnostic only; never alters a prediction.

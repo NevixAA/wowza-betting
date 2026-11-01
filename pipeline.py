@@ -320,7 +320,10 @@ def _log_shadow(preds: "pd.DataFrame", exp_rows: "pd.DataFrame | None" = None) -
             # What each model believed. p_v91/p_pro_hgb/p_goal_distribution stay NaN until those
             # challengers are wired -- a column that exists and is empty is honest; a column
             # filled with the champion's number would silently fake agreement.
-            "p_v9": d.get("p_over25", pd.NA),
+            # p_v9 = the model's OWN number (pre-NF-calibration) so src/nf_calibration fits on raw
+            # predictions; fitting on already-calibrated ones would cancel the shift and flip it off.
+            "p_v9": d.get("p_over25_raw", d.get("p_over25", pd.NA)),
+            "p_v9_served": d.get("p_over25", pd.NA),
             "p_v91": ch_cols["p_v91"],
             "p_pro_hgb": ch_cols["p_pro_hgb"],
             "p_goal_distribution": d.get("p_over25_poisson_dc", pd.NA),

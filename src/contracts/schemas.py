@@ -231,6 +231,7 @@ V91_SHADOW_ROW = Schema(
         Col("kickoff_utc", "datetime"), Col("league", nullable=False),
         Col("model_type", allowed=TRACKS + ("unknown",)),
         P("p_v9"), P("p_v91"), P("p_pro_hgb"), P("p_goal_distribution"), P("p_market"),
+        P("p_v9_served"),
         Col("v9_side", allowed=("OVER", "UNDER")), Col("v9_tier", allowed=LEGACY_TIERS),
         Col("v9_edge", "float", min=-1.0, max=1.0), ODDS("entry_odds"), ODDS("closing_odds"),
         Col("clv", "float"), Col("result", allowed=RESULTS),
