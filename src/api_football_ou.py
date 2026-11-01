@@ -340,12 +340,21 @@ def fetch_league_fixture_results(
     """
     Fetch completed fixture results (goals + HT) for a league/season.
     Used for Saudi Pro League, K-League 1 and any other league not on FD.
-    Permanent cache (TTL 1 year) — completed match results never change.
+    A completed result never changes, but the LIST of completed fixtures in a season still being
+    played grows every week. The 1-year cache froze the current season's list (restored across CI
+    runs by actions/cache), so its history stopped at the first fetch (Data Truth audit finding 35).
+    A finished season keeps the year; the current one (or an unknown league) is refreshed every 6 h.
 
     Returns DataFrame: date, home_team, away_team,
                        home_goals, away_goals, ht_home_goals, ht_away_goals
     """
-    data = _get("fixtures", {"league": league_id, "season": season, "status": "FT"}, ttl_h=8760)
+    ttl = 6
+    if league_name:
+        from src.season_resolver import resolve_api_season, is_known
+        cur = resolve_api_season(league_name)
+        if is_known(cur) and str(season) != str(cur):
+            ttl = 8760
+    data = _get("fixtures", {"league": league_id, "season": season, "status": "FT"}, ttl_h=ttl)
     if not data:
         return pd.DataFrame()
 
