@@ -14,12 +14,12 @@ markets trained POOLED as production does, every metric reported PER TRACK, neve
 
 REAL ENTRY PRICES ONLY, two-sided, de-vigged proportionally (no closing prices, no one-sided proxies):
   Standard O/U 2.5   football-data NON-C columns (Avg>2.5, B365>2.5, P>2.5, Max>2.5) - --fd-dir
-  New Format O/U     output/newformat_odds_history.csv over25/under25 (best-of-books; rows with a
+  New Format O/U     output/newformat_odds_history.csv over25/under25, summer 2026-06-01..08-22 dropped (best-of-books; rows with a
                      negative two-way margin are flagged and EXCLUDED from market work)
   Standard side      output/standard_sidemarket_odds_history.csv first pre-kickoff snapshot; rows
                      2026-06-01..2026-08-22 dropped (forward capture trusted from 08-23); BTTS Yes > 3.2
                      dropped (first-half mislabel)
-  New Format side    output/newformat_odds_history.csv, same BTTS rule
+  New Format side    output/newformat_odds_history.csv, same BTTS rule, summer dropped; O1.5 / O3.5 only from 2026-08-23
 Tip simulation: production's edge rule and the DEPLOYED thresholds parsed from predict.yml (CLAUDE.md
 trap 1), at the same entry prices. Holdout = newest 20% (untouched); live rows = date >= 2026-09-01.
 """
@@ -91,6 +91,14 @@ def entry_pairs(target: str, track: str) -> pd.DataFrame:
             d = d[(d["match_date"] < "2026-06-01") | (d["match_date"] >= "2026-08-23")]
     else:
         d = _odds_file("newformat_odds_history.csv")
+        if len(d):
+            # Measured 2026-11-01: NF over15 median 1.66 (backfill) / 1.57 (2026-06..08-22) vs 1.20 from
+            # the trusted forward capture, and the summer over25 median 2.20 (mean 2.77) - not
+            # full-match lines. Summer is dropped for every market; O1.5 / O3.5 are trusted only
+            # from the forward capture (>= 2026-08-23).
+            d = d[(d["match_date"] < "2026-06-01") | (d["match_date"] >= "2026-08-23")]
+            if target in ("over15", "over35"):
+                d = d[d["match_date"] >= "2026-08-23"]
     if d.empty:
         return pd.DataFrame()
     d = d[d["market"].isin([yes, no])]
