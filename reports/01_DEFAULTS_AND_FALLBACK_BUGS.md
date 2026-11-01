@@ -173,3 +173,12 @@ fixture; selection/ROI impact is **NOT IDENTIFIABLE** without re-serving histori
 python scripts/audit/au1_fallback_evidence.py
 python -m pytest tests/audit/test_au1_findings.py -q -rxX
 ```
+
+## Test run (2026-11-01, worktree audit/au1 @ fb0e9697e + audit files, HEAVY.lock held)
+
+`python -m pytest tests -q`: **1508 passed, 5 failed, 27 skipped, 7 xfailed** (the 7 xfails are AU1's strict markers).
+Four failures are the known pre-existing ones (`test_dashboard_staked_basis`, `test_fantasy_v2` archive,
+`test_promotion_gate` passing_all_criteria, `test_shadow_settlement` health artifact). The fifth,
+`test_integrity_joins::test_league_free_lookup_audit_reports_cross_league_values`, was caused by AU1's own test
+replacing `src.integrity` join-audit function at module level; it passes in isolation and after the fix (monkeypatch
+fixture, commit following c7087876). `test_home_tips_values` passed in this run.

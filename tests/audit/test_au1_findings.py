@@ -95,9 +95,10 @@ def test_committed_board_rest_days_physically_possible():
 # ── AU1-B04: committed side-market backtests are stale against the current loader ────────────
 @pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU1-B04: the 2026-10-06 side backtest flags 100% of 2024-11..2026-10 "
                    "standard rows synthetic, but the committed history + current loader join price ~72% of them")
-def test_side_backtest_real_price_coverage_matches_loader():
+def test_side_backtest_real_price_coverage_matches_loader(monkeypatch):
     import src.data_loader as DL
-    DL._IJ.audit_league_free_lookup = lambda *a, **k: None
+    # never write join health from an audit; monkeypatch so the stub cannot leak into other tests
+    monkeypatch.setattr(DL._IJ, "audit_league_free_lookup", lambda *a, **k: None)
     d = pd.read_csv(O / "backtest_results_btts.csv", low_memory=False,
                     usecols=["date", "league", "home_team", "away_team", "price_synthetic"])
     art_real = int((~d["price_synthetic"].astype(bool)).sum())
