@@ -127,7 +127,7 @@ def test_data_loader_legacy_join_is_audited_as_fail(monkeypatch):
     from src import data_loader as DL
     monkeypatch.setenv("APIFOOTBALL_KEY", "")
     monkeypatch.setattr(config, "API_KEY", "", raising=False)
-    monkeypatch.delenv("WOWZA_SAFE_ENRICH_JOINS", raising=False)
+    monkeypatch.setenv("WOWZA_SAFE_ENRICH_JOINS", "0")      # the legacy path, now rollback-only
     h = pd.read_parquet(ROOT / "output" / "af_history.parquet")
     left = h[h["league"] == "Argentina Primera Division"][["league", "date", "home_team", "away_team"]].copy()
     left["date"] = pd.to_datetime(left["date"])

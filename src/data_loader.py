@@ -42,9 +42,10 @@ from src.integrity import joins as _IJ  # noqa: E402  (R2-C join integrity)
 def _price_mapping_filter() -> bool:
     """WOWZA_PRICE_MAPPING_FILTER=1 drops capture rows whose market mapping is proven invalid
     (src/integrity/price_provenance.label_market_mapping: newformat O/U captured before the
-    2026-08-10 parser fix, first-half BTTS > 3.20) from the training-price reads. Default OFF
-    until the owner reviews (it changes training prices for ~360 summer-2026 NF fixtures)."""
-    return os.getenv("WOWZA_PRICE_MAPPING_FILTER", "0").strip() == "1"
+    2026-08-10 parser fix, first-half BTTS > 3.20) from the training-price reads. Default ON since
+    2026-11-01 (owner decision, Data Truth program): a price for the wrong market is not data.
+    It changes training prices for ~360 summer-2026 NF fixtures. Rollback: set it to 0."""
+    return os.getenv("WOWZA_PRICE_MAPPING_FILTER", "1").strip() == "1"
 
 
 def _drop_mismapped(o: pd.DataFrame, source: str, tag: str) -> pd.DataFrame:
@@ -68,9 +69,11 @@ def _drop_mismapped(o: pd.DataFrame, source: str, tag: str) -> pd.DataFrame:
 
 def _safe_joins() -> bool:
     """WOWZA_SAFE_ENRICH_JOINS=1 serves the league-keyed, collapse-then-merge enrichment joins.
-    Default OFF (owner review pending): the replay in docs/r2/R2C_joins_parity_provenance.md shows
-    the safe join changes serving features. The legacy joins are AUDITED either way."""
-    return os.getenv("WOWZA_SAFE_ENRICH_JOINS", "0").strip() == "1"
+    Default ON since 2026-11-01 (owner decision, Data Truth program): the legacy (home, away, date)
+    merge without league put 85,454 shot/xG/inside-box values on the wrong fixtures
+    (join_integrity_health.json). Changes serving AND training features, so the models are
+    retrained on the corrected frame. Rollback: set it to 0. The legacy joins stay AUDITED."""
+    return os.getenv("WOWZA_SAFE_ENRICH_JOINS", "1").strip() == "1"
 
 
 _SEASON_MAP = {
@@ -267,6 +270,35 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     return d
 
 
+def _drop_misfiled_league_rows(d: pd.DataFrame, source: str) -> pd.DataFrame:
+    """Rows filed under the WRONG league, removed before they reach training, serving or backtests.
+
+    Two proven defects (Data Truth audit 2026-11-01, findings 4/5/31):
+      * a league that is not in config/leagues.json at all - 'Denmark 1st Div' holds 2,041
+        Bundesliga 2 fixtures (Bielefeld, Bochum, Dresden...) a second time;
+      * a split-season label ('2023/24') in a CALENDAR-YEAR league - every such 'Norway
+        Eliteserien' row is a Dutch Eredivisie fixture (Ajax, PSV, AZ...), 1,800-2,106 of them,
+        which made Dutch football 45% of the Norway history behind serving, backtests and gates.
+    Registry aliases are fine (they resolve). Every drop is logged with its count."""
+    if d is None or d.empty or "league" not in d.columns:
+        return d
+    from src import league_registry as _LR
+    canon = {lg: _LR.canonical_name(lg) for lg in d["league"].astype(str).unique()}
+    cal = {e["name"] for e in _LR.leagues()
+           if (e.get("season_rule") or {}).get("type") == "calendar_year"}
+    lg = d["league"].astype(str)
+    unknown = lg.map(canon).isna()
+    split_in_cal = (lg.map(canon).isin(cal)
+                    & d.get("season", pd.Series("", index=d.index)).astype(str).str.contains("/"))
+    bad = unknown | split_in_cal
+    if bad.any():
+        what = (d.loc[bad, "league"].astype(str)
+                + np.where(unknown[bad], " (not in registry)", " (split label in calendar-year league)"))
+        log.warning(f"[{source}] dropped {int(bad.sum()):,} misfiled row(s): "
+                    f"{what.value_counts().to_dict()}")
+    return d[~bad]
+
+
 def _load_backtest_archive() -> pd.DataFrame:
     """Three extra seasons we already own, in a file nothing has ever read.
 
@@ -312,6 +344,7 @@ def _load_backtest_archive() -> pd.DataFrame:
     for c in cols:
         if c not in ("date", "league", "season", "home_team", "away_team", "ftr"):
             d[c] = pd.to_numeric(d[c], errors="coerce")
+    d = _drop_misfiled_league_rows(d, "archive")
     log.info(f"[archive] {len(d):,} rows from backtest_all_leagues.csv "
              f"({d['date'].min().date()}..{d['date'].max().date()}, "
              f"{d['league'].nunique()} leagues)")
@@ -901,6 +934,7 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     if af_history_path.exists():
         try:
             hist = pd.read_parquet(af_history_path)
+            hist = _drop_misfiled_league_rows(hist, "af_history")
             hist["date"] = pd.to_datetime(hist["date"], errors="coerce")
             hist["_home_norm"] = hist["home_team"].apply(_norm_name)
             hist["_away_norm"] = hist["away_team"].apply(_norm_name)
@@ -1191,6 +1225,9 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             _new = _new.rename(columns={k: v for k, v in _COLMAP.items() if k in _have})
             _prev = pd.read_parquet(_hist_p) if _hist_p.exists() else None
             _merged = pd.concat([_prev, _new], ignore_index=True) if _prev is not None else _new
+            # Never bank a misfiled row: this write-back is how the archive's Dutch-as-Norway and
+            # Bundesliga-2-as-'Denmark 1st Div' copies got into af_history in the first place.
+            _merged = _drop_misfiled_league_rows(_merged, "af_history write-back")
             # Newest row wins: a later fetch may fill a column an earlier one left null.
             _merged = _merged.drop_duplicates(
                 subset=[c for c in ("date", "league", "home_team", "away_team")

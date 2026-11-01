@@ -87,13 +87,14 @@ def test_first_half_btts_rejected_from_standard_full_match_reads():
     assert not lab.loc[5, "market_mapping_valid"] and lab.loc[4, "market_mapping_valid"]
 
 
-def test_loader_mapping_filter_drops_only_with_flag(monkeypatch):
+def test_loader_mapping_filter_on_by_default_with_rollback(monkeypatch):
+    """Default ON since 2026-11-01 (owner decision); WOWZA_PRICE_MAPPING_FILTER=0 rolls back."""
     from src import data_loader as DL
     raw = _caps()
     monkeypatch.delenv("WOWZA_PRICE_MAPPING_FILTER", raising=False)
-    assert len(DL._drop_mismapped(raw, "newformat_odds_history", "t")) == len(raw)
-    monkeypatch.setenv("WOWZA_PRICE_MAPPING_FILTER", "1")
     assert len(DL._drop_mismapped(raw, "newformat_odds_history", "t")) == 3
+    monkeypatch.setenv("WOWZA_PRICE_MAPPING_FILTER", "0")
+    assert len(DL._drop_mismapped(raw, "newformat_odds_history", "t")) == len(raw)
 
 
 # ── de-vig / entry / closing ────────────────────────────────────────────────────────────────────
