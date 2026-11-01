@@ -283,7 +283,7 @@ jobs:
                    output/league_weekly_research.csv.first_sight.json output/league_weekly_research_summary.json \
                    output/league_market_health.json output/weekly_league_report.json \
                    output/fd_history.parquet \
-                   output/book_odds_snapshots.csv \
+                   output/book_odds_snapshots.csv output/btts_fetch_clock.json \
                    output/v91_shadow.csv \
                    output/quality_tier_shadow.csv output/quality_tier_shadow.csv.first_sight.json \
                    output/ledger_tier_seen.csv output/ledger_tier_seen.csv.first_sight.json \

@@ -34,6 +34,10 @@ COST, stated plainly because the naive version is genuinely expensive:
     That buys the whole board AND a genuine open->moving->closing curve where the line actually
     moves. Set BTTS_REFRESH_HOURS=0 to fetch everything every run if the allowance ever permits.
 
+    CORRECTION (2026-11-01): the refresh clock never worked until the fetch clock below was added
+    (every run bought the whole board, ~62% of October's credits), and a call costs markets x
+    regions = 2 credits with the default "uk,eu", not 1. The log now reports both calls and credits.
+
 PERSISTENCE WITHOUT A NEW FILE. Quotes are written to, and read back from,
 `output/book_odds_snapshots.csv` — which predict already writes, already commits, and which already
 carries kickoff_utc. So the refresh clock survives across runs for free and BTTS lands in the same
@@ -69,8 +73,8 @@ def _cfg(name: str, default: float) -> float:
         return default
 
 
-def _last_seen(path) -> dict[str, pd.Timestamp]:
-    """Newest BTTS snapshot per fixture, from the committed archive. The cross-run clock."""
+def _archive_seen(path) -> dict[str, pd.Timestamp]:
+    """Newest BTTS price CHANGE per fixture in the committed archive."""
     if not path.exists():
         return {}
     try:
@@ -83,6 +87,50 @@ def _last_seen(path) -> dict[str, pd.Timestamp]:
                     .groupby("match")["_t"].max().to_dict())
     except Exception:
         return {}
+
+
+# THE FETCH CLOCK (2026-11-01). The refresh rule used to read its clock from the archive alone, but
+# the archive keeps consecutive-DISTINCT prices only, so its newest row is the last price CHANGE, not
+# the last FETCH. A market that had not moved for 2h looked stale, was refetched, came back unmoved,
+# wrote nothing, and looked stale again on the next run: every run bought the whole board. Logs
+# 2026-10-17..11-01 show "skipped 0-4 within 2h refresh" out of 150-211 every time, ~68k of October's
+# ~110k OddsAPI credits, and the plan ran dry on 10-30/31. This sidecar records the last successful
+# fetch per fixture; predict.yml commits it. A missing or unreadable clock means "never fetched"
+# (refetch), never "fresh" — an unknown age is treated as infinitely old.
+CLOCK_KEEP_DAYS = 14
+
+
+def _clock_path():
+    return config.OUTPUT_DIR / "btts_fetch_clock.json"
+
+
+def _load_clock() -> dict[str, pd.Timestamp]:
+    import json
+    try:
+        raw = json.loads(_clock_path().read_text(encoding="utf-8"))
+        out = {m: pd.Timestamp(t) for m, t in raw.items()}
+        return {m: (t.tz_localize("UTC") if t.tzinfo is None else t) for m, t in out.items()}
+    except Exception:
+        return {}
+
+
+def _save_clock(clock: dict[str, pd.Timestamp], now: pd.Timestamp) -> None:
+    import json
+    keep = {m: t for m, t in clock.items() if (now - t).days < CLOCK_KEEP_DAYS}
+    p = _clock_path()
+    tmp = p.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps({m: t.strftime("%Y-%m-%dT%H:%M:%SZ") for m, t in sorted(keep.items())},
+                              indent=0), encoding="utf-8")
+    tmp.replace(p)
+
+
+def _last_seen(path) -> dict[str, pd.Timestamp]:
+    """Last time each fixture's BTTS price was fetched: the newer of the fetch clock and the archive."""
+    seen = _archive_seen(path)
+    for m, t in _load_clock().items():
+        if m not in seen or t > seen[m]:
+            seen[m] = t
+    return seen
 
 
 def append_book_rows(new_rows: list[dict]) -> None:
@@ -129,6 +177,7 @@ def fetch(rows: list[dict]) -> list[dict]:
     snap_ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     out, calls, filled, book_rows = [], 0, 0, []
+    credits, n_regions, fetched = 0, len([x for x in regions.split(",") if x.strip()]) or 1, {}
     n_fresh = n_nokey = n_err = 0
     for r in rows:
         match = f"{r.get('home_team', '')} vs {r.get('away_team', '')}"
@@ -163,11 +212,17 @@ def fetch(rows: list[dict]) -> list[dict]:
                                         "markets": "btts", "oddsFormat": "decimal"},
                                 timeout=15)
             calls += 1
+            # OddsAPI bills markets x regions per event call; x-requests-last is what THIS call cost
+            try:
+                credits += int(float(resp.headers.get("x-requests-last") or n_regions))
+            except ValueError:
+                credits += n_regions
             if resp.status_code != 200:
                 n_err += 1
                 out.append(r)
                 continue
             data = resp.json()
+            fetched[match] = now
         except Exception:
             n_err += 1
             out.append(r)
@@ -214,7 +269,12 @@ def fetch(rows: list[dict]) -> list[dict]:
         append_book_rows(book_rows)
     except Exception as e:
         log.warning(f"[btts] archive append failed: {e}")
-    log.info(f"[btts] {calls} credit(s) spent, filled {filled}/{len(rows)} fixtures "
+    if fetched:
+        try:
+            _save_clock({**_load_clock(), **fetched}, now)
+        except Exception as e:
+            log.warning(f"[btts] fetch clock save failed: {e}")
+    log.info(f"[btts] {calls} call(s), {credits} credit(s) spent, filled {filled}/{len(rows)} fixtures "
              f"(skipped {n_fresh} within {refresh_h:g}h refresh, {n_nokey} no event id, "
              f"{n_err} errors; near-kickoff window {near_h:g}h)")
     return out
