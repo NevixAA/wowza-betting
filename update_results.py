@@ -1147,16 +1147,25 @@ def update_ht_results(days: int = 3) -> None:
     def _ht_score(league: str, home: str, away: str, day: str):
         """HT goals for one fixture, or None. League-scoped so a name can't cross competitions."""
         g = _by_day.get((day, str(league)))
-        if g is None or g.empty:
+        if g is not None and not g.empty:
+            h = _resolve_team(home, list(g["home_team"]))
+            a = _resolve_team(away, list(g["away_team"]))
+            if h and a:
+                m = g[(g["home_team"] == h) & (g["away_team"] == a)]
+                # Exactly one, or nothing. An ambiguous match is not graded — a wrong settlement
+                # is far worse than a late one.
+                if len(m) == 1:
+                    return (m.iloc[0]["hh"], m.iloc[0]["ha"])
+        # LAST RESORT: API-Football's completed fixtures for THIS match's season carry HT scores.
+        # Without it a fixture missing from both committed stores stayed pending for ever
+        # (Data Truth audit finding 24). Same rules: resolved names, exactly one match.
+        from src.team_names import resolve_result as _rr
+        evs = [e for e in fetch_scores_apifootball(str(league), day)
+               if e.get("date_str") == day and "ht_home" in e]
+        if not evs:
             return None
-        h = _resolve_team(home, list(g["home_team"]))
-        a = _resolve_team(away, list(g["away_team"]))
-        if not h or not a:
-            return None
-        m = g[(g["home_team"] == h) & (g["away_team"] == a)]
-        # Exactly one, or nothing. An ambiguous match is not graded — a wrong settlement is far
-        # worse than a late one.
-        return (m.iloc[0]["hh"], m.iloc[0]["ha"]) if len(m) == 1 else None
+        hits = [e for e in evs if _rr(home, [e["home_team"]]) and _rr(away, [e["away_team"]])]
+        return (hits[0]["ht_home"], hits[0]["ht_away"]) if len(hits) == 1 else None
 
     # ── THE ODDS JOIN NEEDS THE SAME NAME RESOLUTION, for the same reason ───────────────
     # The captured prices are real and plentiful — 4,478 ht_* rows, all four lines, 250 on a

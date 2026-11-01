@@ -96,6 +96,27 @@ def test_af_fallback_uses_the_matchs_season_not_todays(monkeypatch):
     assert seen == ["2025", "2026"]
 
 
+def test_ht_tip_settles_from_api_football_when_stores_miss_it(tmp_path, monkeypatch):
+    d = (datetime.utcnow().date() - timedelta(days=2)).isoformat()
+    monkeypatch.setattr(U.config, "OUTPUT_DIR", tmp_path)
+    led = tmp_path / "ht_ledger.csv"
+    pd.DataFrame([{"match_date": d, "league": "League One", "home_team": "Plymouth Argyle",
+                   "away_team": "Wycombe Wanderers", "market": "ht_over05", "fair_odds": "1.4",
+                   "result": "", "pnl": "", "notes": ""}]).to_csv(led, index=False)
+    pd.DataFrame(columns=["league", "date", "home_team", "away_team", "ht_home_goals",
+                          "ht_away_goals"]).to_parquet(tmp_path / "fd_history.parquet")
+    monkeypatch.setattr(U, "fetch_scores_apifootball", lambda league, match_date=None: [
+        {"home_team": "Plymouth", "away_team": "Wycombe", "home_score": 2, "away_score": 1,
+         "date_str": d, "ht_home": 1, "ht_away": 0}])
+    fn = getattr(U, "update_ht_results", None) or getattr(U, "update_ht_ledger", None)
+    if fn is None:
+        pytest.skip("HT settler entry point not found")
+    if hasattr(U, "HT_LEDGER_FILE"):
+        monkeypatch.setattr(U, "HT_LEDGER_FILE", led)
+    fn()
+    assert pd.read_csv(led, dtype=str)["result"].iloc[0] == "WIN"
+
+
 def test_season_comes_from_the_registry(tmp_path, monkeypatch):
     from src.season_resolver import resolve_api_season
     _ledger(tmp_path, monkeypatch, days_ago=2, league="Japan J-League")
