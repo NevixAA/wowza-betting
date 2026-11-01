@@ -167,3 +167,83 @@ def split_history_check(df: pd.DataFrame) -> pd.DataFrame:
     d["_d"] = pd.to_datetime(d["date"]).dt.normalize()
     g = d.groupby(["league", "_d", "home_goals", "away_goals"]).size()
     return g[g > 1].reset_index(name="rows")
+
+
+# ── R2 (2026-11-01): evidence-first identity audit, every league incl. New Format ─────────────
+
+def same_day_evidence(df: pd.DataFrame) -> dict:
+    """{league: Counter[(a, b)]} — distinct dates on which names a and b appear as the two
+    spellings of one same-score fixture (the evidence `derive_same_day_aliases` counts)."""
+    d = df[df["home_goals"].notna() & df["away_goals"].notna()].copy()
+    d["_d"] = pd.to_datetime(d["date"]).dt.normalize()
+    ev: dict = defaultdict(Counter)
+    for (lg, _dt, _hg, _ag), g in d.groupby(["league", "_d", "home_goals", "away_goals"], sort=False):
+        if len(g) < 2:
+            continue
+        rows = list(zip(g["home_team"].astype(str), g["away_team"].astype(str)))
+        seen = set()
+        for i in range(len(rows)):
+            for j in range(i + 1, len(rows)):
+                (h1, a1), (h2, a2) = rows[i], rows[j]
+                if h1 != h2 and a1 != a2:
+                    for x, y in ((h1, h2), (a1, a2)):
+                        k = tuple(sorted((x, y)))
+                        if k not in seen:
+                            seen.add(k)
+                            ev[lg][k] += 1
+    return ev
+
+
+def overlap_audit(df: pd.DataFrame, alias_map: dict | None = None, leagues=None,
+                  min_dates: int = 3) -> pd.DataFrame:
+    """Every name pair with same-day duplicate evidence, with each name's active date range and
+    the decision the repair takes. Evidence first: nothing here creates an alias; it shows which
+    duplicate identities the explicit map + derivation already resolve and which still need an
+    owner-reviewed alias (CANDIDATE_REVIEW).
+
+      ALIASED_EXPLICIT   the pair is in the explicit (committed, audited) map
+      ALIASED_DERIVED    derivation accepts it (>= min_dates, one-to-one, same club, never met)
+      CANDIDATE_REVIEW   evidence >= min_dates but derivation refuses it (e.g. not one-to-one)
+      WEAK_EVIDENCE      fewer than min_dates evidence dates
+      TWO_CLUBS          the two names have played each other -> never the same club
+    """
+    explicit = alias_map or {}
+    d = df.copy()
+    if leagues is not None:
+        d = d[d["league"].astype(str).isin(set(leagues))]
+    d["_d"] = pd.to_datetime(d["date"]).dt.normalize()
+    ev = same_day_evidence(d)
+    derived = derive_same_day_aliases(d, min_dates)
+    long = pd.concat([d[["league", "home_team", "_d"]].rename(columns={"home_team": "t"}),
+                      d[["league", "away_team", "_d"]].rename(columns={"away_team": "t"})])
+    rng = long.groupby(["league", "t"])["_d"].agg(["min", "max", "size"])
+    met: dict = defaultdict(set)
+    for lg, h, a in zip(d["league"], d["home_team"].astype(str), d["away_team"].astype(str)):
+        met[lg].add(tuple(sorted((h, a))))
+    rows = []
+    for lg, cnt in ev.items():
+        ex = explicit.get(lg, {})
+        dv = derived.get(lg, {})
+        for (a, b), n in cnt.items():
+            ra, rb = rng.loc[(lg, a)], rng.loc[(lg, b)]
+            ov = (min(ra["max"], rb["max"]) - max(ra["min"], rb["min"])).days
+            if ex.get(a) == b or ex.get(b) == a or (a in ex and ex.get(a) == ex.get(b)):
+                dec = "ALIASED_EXPLICIT"
+            elif dv.get(a) == b or dv.get(b) == a:
+                dec = "ALIASED_DERIVED"
+            elif (a, b) in met[lg]:
+                dec = "TWO_CLUBS"
+            elif n >= min_dates:
+                dec = "CANDIDATE_REVIEW"
+            else:
+                dec = "WEAK_EVIDENCE"
+            rows.append({"league": lg, "a": a, "b": b, "evidence_dates": int(n),
+                         "a_first": str(ra["min"].date()), "a_last": str(ra["max"].date()),
+                         "a_rows": int(ra["size"]), "b_first": str(rb["min"].date()),
+                         "b_last": str(rb["max"].date()), "b_rows": int(rb["size"]),
+                         "overlap_days": int(ov), "decision": dec})
+    cols = ["league", "a", "b", "evidence_dates", "a_first", "a_last", "a_rows", "b_first",
+            "b_last", "b_rows", "overlap_days", "decision"]
+    return (pd.DataFrame(rows, columns=cols)
+            .sort_values(["league", "evidence_dates"], ascending=[True, False])
+            .reset_index(drop=True))

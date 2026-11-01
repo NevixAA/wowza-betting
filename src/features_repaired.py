@@ -86,6 +86,13 @@ STANDARD_SERVING_FEATURES = [
 _HA_HOME_DEFAULT = 0.55
 _HA_AWAY_DEFAULT = 0.45
 _LG_AWAY_DEFAULT = 1.1
+#: Cold-start handling (finding 16, R2 research option — challengers only).
+#:   "current"  the hand-typed priors above + SOT 0.35/0.33 + HT 0 (DEFAULT; the serving Standard
+#:              repaired model's behaviour, byte-identical)
+#:   "nan"      no invented value: a feature with no as-of history stays NaN, so the payload's
+#:              persisted TRAIN-only imputer fills it (ablations B / C / D differ only in the
+#:              imputer: global median / train-fitted league median / global median + indicator)
+COLD_START_MODES = ("current", "nan")
 
 
 def feature_cols_for(price_mode: str = "none", base: list | None = None) -> list:
@@ -158,7 +165,8 @@ def _price_overround(over, under) -> pd.Series:
 
 
 def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
-                            price_mode: str = "none", team_scope: str = "league") -> pd.DataFrame:
+                            price_mode: str = "none", team_scope: str = "league",
+                            cold_start: str = "current") -> pd.DataFrame:
     """Canonical as-of features. Rows with no full-time score are UNPLAYED: they receive
     features and contribute nothing. Returns the frame sorted by (date, league, home, away)
     with a fresh RangeIndex and the original row position in `_src_pos`.
@@ -172,6 +180,9 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
         raise ValueError(f"team_scope must be one of {TEAM_SCOPES}")
     if price_mode not in PRICE_MODES:
         raise ValueError(f"price_mode must be one of {PRICE_MODES}, got {price_mode!r}")
+    if cold_start not in COLD_START_MODES:
+        raise ValueError(f"cold_start must be one of {COLD_START_MODES}, got {cold_start!r}")
+    cs_nan = cold_start == "nan"
     n = n or config.ROLLING_N
     df = matches.copy()
     df["_src_pos"] = np.arange(len(df))
@@ -204,6 +215,8 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
     df["league_avg_goals"] = _league_asof_mean(df, "_total_goals")
     lg_away = _league_asof_mean(df, "_away_goals_played")
     home_flag = (hg > lg_away.fillna(_LG_AWAY_DEFAULT)).astype(float).where(played)
+    if cs_nan:                       # no league history yet -> no flag, never a typed 1.10
+        home_flag = home_flag.where(lg_away.notna())
 
     # ── team-centric long frame, keyed (league, team) ────────────────────────────────
     def _side(is_home: bool) -> pd.DataFrame:
@@ -242,8 +255,12 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
         part = tc[tc["is_home"] == is_home].set_index("_row")
         for src, dst in names.items():
             df[pfx + dst] = part[src].reindex(df.index).to_numpy()
-    df["home_advantage"] = df.pop("home__ha").fillna(_HA_HOME_DEFAULT)
-    df["away_home_adv_factor"] = df.pop("away__ha").fillna(_HA_AWAY_DEFAULT)
+    if cs_nan:
+        df["home_advantage"] = df.pop("home__ha")
+        df["away_home_adv_factor"] = df.pop("away__ha")
+    else:
+        df["home_advantage"] = df.pop("home__ha").fillna(_HA_HOME_DEFAULT)
+        df["away_home_adv_factor"] = df.pop("away__ha").fillna(_HA_AWAY_DEFAULT)
 
     # ── season-to-date venue stats, canonical season key ────────────────────────────
     hcs = (ag == 0).astype(float).where(played)
@@ -271,6 +288,9 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
     df["away_sot_ratio_last5"] = df["away_sot_last5"] / df["away_shots_last5"].replace(0, np.nan)
     df["combined_sot_ratio"] = (df["home_sot_ratio_last5"].fillna(0.35)
                                 + df["away_sot_ratio_last5"].fillna(0.33)) / 2
+    if cs_nan:                       # NaN unless both sides have history
+        df["combined_ht_goals_avg"] = df["home_ht_scored_last5"] + df["away_ht_scored_last5"]
+        df["combined_sot_ratio"] = (df["home_sot_ratio_last5"] + df["away_sot_ratio_last5"]) / 2
     from src.poisson import dixon_coles_p_over25 as _dc
     lh = df["home_scored_last5"].clip(lower=0.3, upper=4.0)
     la = df["away_scored_last5"].clip(lower=0.3, upper=4.0)
@@ -319,7 +339,8 @@ def _resolve_names(up: pd.DataFrame, hist: pd.DataFrame) -> pd.DataFrame:
 
 def build_upcoming_features_repaired(upcoming: pd.DataFrame, historical: pd.DataFrame,
                                      n: int | None = None, price_mode: str = "none",
-                                     cutoff=None, team_scope: str = "league") -> pd.DataFrame:
+                                     cutoff=None, team_scope: str = "league",
+                                     cold_start: str = "current") -> pd.DataFrame:
     """Serve-time features through the SAME function training uses.
 
     `upcoming` needs date, league, home_team, away_team (+ odds_over25/odds_under25 if a price
@@ -358,7 +379,8 @@ def build_upcoming_features_repaired(upcoming: pd.DataFrame, historical: pd.Data
         core["odds_over25"] = pd.to_numeric(up.get("odds_over25"), errors="coerce")
         core["odds_under25"] = pd.to_numeric(up.get("odds_under25"), errors="coerce")
     full = build_features_repaired(pd.concat([hist, core], ignore_index=True), n=n,
-                                   price_mode=price_mode, team_scope=team_scope)
+                                   price_mode=price_mode, team_scope=team_scope,
+                                   cold_start=cold_start)
     feats =full[full["_upc_id"].notna()].sort_values("_upc_id").copy()
     feats["_upc_id"] = feats["_upc_id"].astype(int)
     produced = [c for c in feats.columns
