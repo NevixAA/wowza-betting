@@ -436,8 +436,40 @@ def prop_season(league: str, on_date=None) -> str:
     """API-Football season for `league` on `on_date` (default today), from the canonical
     registry's season rules (src.season_resolver). An unknown league gives 'SEASON_UNKNOWN',
     which API-Football answers with nothing - a visible miss, never a guessed year."""
-    from src.season_resolver import resolve_api_season
-    return resolve_api_season(league, on_date)
+    return _season_resolver().resolve_api_season(league, on_date)
+
+
+_SR_FOREIGN = None      # v9's resolver, privately loaded under a foreign `src` (see below)
+
+
+def _season_resolver():
+    """v9's src.season_resolver, even when the importer has its OWN `src` package (wowzaV9-Pro
+    imports player_model from _v9/, and there `src` is Pro's - a plain import crashed Pro Live Odds
+    on 2026-11-01). A foreign `src` and sys.path are restored afterwards."""
+    import importlib
+    import sys
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    cur = sys.modules.get("src")
+    foreign = cur is not None and (root / "src").resolve() not in {
+        Path(p).resolve() for p in getattr(cur, "__path__", [])}
+    if not foreign:
+        if str(root) not in sys.path:
+            sys.path.append(str(root))
+        return importlib.import_module("src.season_resolver")
+    saved_path = list(sys.path)
+    saved = {k: sys.modules.pop(k) for k in list(sys.modules) if k == "src" or k.startswith("src.")}
+    sys.path.insert(0, str(root))
+    try:
+        global _SR_FOREIGN
+        if _SR_FOREIGN is None:
+            _SR_FOREIGN = importlib.import_module("src.season_resolver")
+        return _SR_FOREIGN
+    finally:
+        sys.path[:] = saved_path
+        for k in [k for k in sys.modules if k == "src" or k.startswith("src.")]:
+            sys.modules.pop(k)
+        sys.modules.update(saved)
 
 
 # One entry per league in PROP_LEAGUES, always. Never edit this by hand — add the league to
