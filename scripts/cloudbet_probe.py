@@ -24,6 +24,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import pandas as pd  # noqa: E402
 import config  # noqa: E402
 from src.cloudbet.client import CloudbetClient  # noqa: E402
 from src.cloudbet.feed import (MARKET_MAP, discover_markets, find_event,  # noqa: E402
@@ -56,15 +57,22 @@ def main() -> int:
         if not comps:
             print("no competitions returned — check the key's permissions")
             return 1
-        print(f"{len(comps)} soccer competitions. Ones that look like our leagues:\n")
-        want = [w.lower() for w in config.ENABLED_LEAGUES]
+        # Our leagues are matched to Cloudbet ONLY through a competition key registered in
+        # config/leagues.json (provider_names.cloudbet) - never by guessing words in the names.
+        from src import league_registry as LR
+        by_key = {str(k): (name, cat) for k, name, cat in comps}
+        print(f"{len(comps)} soccer competitions.\n\nOur enabled leagues:")
+        for lg in sorted(config.ENABLED_LEAGUES):
+            ck = LR.provider_name(lg, "cloudbet")
+            if ck is None:
+                print(f"  {lg:<32} no cloudbet competition key registered")
+            elif str(ck) in by_key:
+                print(f"  {lg:<32} {ck} ({by_key[str(ck)][1]} — {by_key[str(ck)][0]})")
+            else:
+                print(f"  {lg:<32} registered key {ck!r} NOT returned by Cloudbet")
+        print("\nAll competitions:")
         for key, name, cat in sorted(comps, key=lambda x: str(x[1])):
-            n = f"{cat} {name}".lower()
-            if any(tok in n for tok in
-                   ("argentina", "brazil", "serie b", "segunda", "championship",
-                    "league one", "league two", "ligue 2", "2. bundesliga", "j1",
-                    "liga mx", "allsvenskan", "eliteserien", "superliga", "veikkaus")):
-                print(f"  {str(key):<44} {cat} — {name}")
+            print(f"  {str(key):<44} {cat} — {name}")
         print("\nRe-run with --competition <key> to probe one.")
         return 0
 
@@ -112,7 +120,7 @@ def main() -> int:
             print(f"  NO PRICE   {r['selection_label'][:38]:<40} {why[:70]}")
             continue
         hit += 1
-        ours = float(r.get("our_odds") or 0)
+        ours = pd.to_numeric(r.get("our_odds"), errors="coerce")     # missing -> NaN, never 0
         delta = (1 / ours - 1 / q.odds) if ours > 1 else float("nan")
         print(f"  PRICED     {r['selection_label'][:38]:<40} ours {ours:>5.2f} -> "
               f"cloudbet {q.odds:>5.2f}   edge shift {delta:+.3f}")

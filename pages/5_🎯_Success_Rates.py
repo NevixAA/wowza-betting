@@ -74,10 +74,18 @@ def _load() -> pd.DataFrame:
             return
         d["_res"] = d["result"].astype(str).str.upper()
         d["_tier"] = d[tier_col].astype(str)
-        d["_model"] = (d[model_col].astype(str) if model_col and model_col in d.columns
-                       else model_const or "unknown")
+        # The recorded model_type; a blank on an O/U ledger row is derived from the canonical
+        # league's registry model. A ledger with no model at all shows '—' (missing), not 'unknown'.
+        if model_const:
+            d["_model"] = model_const
+        elif model_col and model_col in d.columns:
+            mt = d[model_col].astype("string").str.strip().replace("", pd.NA)
+            d["_model"] = mt.fillna(d["league"].map(_model_from_league)) if "league" in d.columns else mt
+            d["_model"] = d["_model"].replace("unknown", pd.NA).fillna("—").astype(str)
+        else:
+            d["_model"] = "—"
         d["_market"] = (d[market_col].astype(str) if market_col and market_col in d.columns
-                        else market_const or "unknown")
+                        else market_const or "—")
         dc = next((c for c in ("match_date", "date", "signal_date") if c in d.columns), None)
         d["_date"] = pd.to_datetime(d[dc], errors="coerce") if dc else pd.NaT
         oc = next((c for c in ("odds", "entry_odds", "market_odds") if c in d.columns), None)
@@ -98,8 +106,15 @@ def _load() -> pd.DataFrame:
     df = pd.concat(out, ignore_index=True)
     df["win"] = (df["_res"] == "WIN").astype(int)
     # Flat 1u return, matching v9's "P/L in units" convention rather than an invented stake plan.
-    df["ret"] = np.where(df["win"] == 1, df["_odds"].fillna(2.0) - 1.0, -1.0)
+    # PRICED BETS ONLY: a bet without a recorded price has no return (NaN), so P/L and ROI are
+    # over priced bets and the unpriced count is shown beside them - no 2.00 stand-in.
+    df["ret"] = np.where(df["_odds"].isna(), np.nan, np.where(df["win"] == 1, df["_odds"] - 1.0, -1.0))
     return df
+
+
+def _model_from_league(lg):
+    from src.league_registry import canonical_name
+    return config.model_type_for_league(canonical_name(lg) or lg)
 
 
 df = _load()
@@ -172,25 +187,27 @@ if d.empty:
 def _table(g: pd.DataFrame) -> pd.DataFrame:
     t = g.groupby(["_model", "_market", "_tier"]).agg(
         n=("win", "size"), wins=("win", "sum"),
-        pl_u=("ret", "sum"), roi=("ret", "mean"),
+        pl_u=("ret", lambda s: s.sum(min_count=1)), roi=("ret", "mean"),
+        n_priced=("_odds", "count"),
         avg_odds=("_odds", "mean")).reset_index()
+    t["unpriced"] = t["n"] - t["n_priced"]
     t["win_pct"] = (100 * t["wins"] / t["n"]).round(1)
     t["roi_pct"] = (100 * t["roi"]).round(1)
     # Standard error on the mean return: the honest width around every ROI figure.
     se = g.groupby(["_model", "_market", "_tier"])["ret"].sem().reset_index(name="se")
     t = t.merge(se, on=["_model", "_market", "_tier"], how="left")
     t["roi_ci95"] = t.apply(
-        lambda r: "—" if pd.isna(r["se"]) or r["n"] < 5
+        lambda r: "—" if pd.isna(r["se"]) or r["n_priced"] < 5
         else f"{100*(r['roi']-1.96*r['se']):+.0f}% … {100*(r['roi']+1.96*r['se']):+.0f}%", axis=1)
     # Numeric CI bounds kept ALONGSIDE the display string. The string is right for the table (it
     # is a range, not a sortable quantity) but a chart needs numbers, and recomputing them
     # somewhere else would let the table and the chart disagree about the same cell.
-    t["roi_lo"] = (100 * (t["roi"] - 1.96 * t["se"])).where(t["n"] >= 5)
-    t["roi_hi"] = (100 * (t["roi"] + 1.96 * t["se"])).where(t["n"] >= 5)
+    t["roi_lo"] = (100 * (t["roi"] - 1.96 * t["se"])).where(t["n_priced"] >= 5)
+    t["roi_hi"] = (100 * (t["roi"] + 1.96 * t["se"])).where(t["n_priced"] >= 5)
     t = t.rename(columns={"_model": "model", "_market": "market", "_tier": "tier"})
     return t[["model", "market", "tier", "n", "wins", "win_pct", "pl_u",
               "roi_pct", "roi_ci95", "roi_lo", "roi_hi",
-              "avg_odds"]].sort_values("n", ascending=False)
+              "avg_odds", "unpriced"]].sort_values("n", ascending=False)
 
 
 full = _table(d)
@@ -222,6 +239,9 @@ ui.dataframe(shown.drop(columns=["roi_lo", "roi_hi"], errors="ignore"),
                  "roi_pct": st.column_config.NumberColumn("ROI %", format="%.1f"),
                  "roi_ci95": st.column_config.TextColumn("ROI 95% CI"),
                  "avg_odds": st.column_config.NumberColumn("avg odds", format="%.2f"),
+                 "unpriced": st.column_config.NumberColumn(
+                     "unpriced", help="Settled bets with no recorded price: counted in win %, "
+                                      "left out of P/L and ROI (no stand-in price)."),
              })
 if not hidden.empty:
     st.caption(f"{len(hidden)} cell(s) hidden for n < {min_n} "
@@ -266,7 +286,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     lost. Nothing here is a new claim — it is the existing arithmetic drawn instead of tabulated.
     """
     t = g.groupby(by).agg(n=("win", "size"), win_pct=("win", "mean"),
-                          pl_u=("ret", "sum"), roi=("ret", "mean"),
+                          pl_u=("ret", lambda s: s.sum(min_count=1)), roi=("ret", "mean"),
                           avg_odds=("_odds", "mean"),
                           n_odds=("_odds", "count")).reset_index()
     t["win_pct"] = (100 * t["win_pct"]).round(1)
@@ -277,9 +297,8 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     # drawn as the break-even line for all 13 would be an invented reference level, so the marker
     # is suppressed below 80% coverage instead of being drawn from a fragment.
     #
-    # `_odds.mean()` also skips NaN whereas `ret` substitutes 2.00 for a missing price, so on a
-    # thinly-priced group the two would disagree about the same bets. Showing coverage makes that
-    # visible rather than letting it quietly shift the comparison.
+    # `ret` is NaN for an unpriced bet, so P/L and ROI cover the same priced bets `_odds.mean()`
+    # does. Coverage is shown so a thinly-priced group is visibly so.
     t["odds_cov"] = (100.0 * t["n_odds"] / t["n"]).round(0)
     _ok = t["odds_cov"] >= 80
     t["need_pct"] = (100.0 / t["avg_odds"]).round(1).where(_ok)
@@ -301,7 +320,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
                      "odds_cov": st.column_config.NumberColumn(
                          "priced %", format="%.0f%%",
                          help="Share of settled bets in this group with a recorded price. "
-                              "Where this is low, P/L uses a 2.00 stand-in."),
+                              "P/L and ROI cover the priced bets only."),
                      "pl_u": st.column_config.NumberColumn("P/L (u)", format="%.1f"),
                      "roi_pct": st.column_config.NumberColumn("ROI %", format="%.1f"),
                  })

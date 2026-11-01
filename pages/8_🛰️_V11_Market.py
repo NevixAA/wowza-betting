@@ -61,7 +61,7 @@ raw = (health.get("research_health") or {}).get("raw") or {}
 c = st.columns(2)
 ui.metric_card("Shadow decisions logged", f"{health['shadow_rows']:,}", title="Reading v9's public data",
                status=ui.status_chip("SHADOW"), container=c[0])
-ui.metric_card("Market snapshots", f"{raw.get('snapshots_rows', 0):,}", title="Price changes only",
+ui.metric_card("Market snapshots", ('—' if raw.get('snapshots_rows') is None else f"{raw['snapshots_rows']:,}"), title="Price changes only",
                supporting=[("Stored as", "a change-log, not a panel — see Price movement")], container=c[1])
 
 tab_res, tab_move, tab_mom = st.tabs(

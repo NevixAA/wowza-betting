@@ -55,6 +55,16 @@ def _kickoffs() -> pd.DataFrame:
     return p.drop_duplicates(["league", "date", "home_team", "away_team"])
 
 
+def _model_of(r) -> str:
+    """The row's recorded model_type; a blank/NaN is derived from the canonical league's registry
+    model (config.model_type_for_league), never left as the string 'nan'."""
+    mt = r.get("model_type")
+    if mt is not None and not (isinstance(mt, float) and pd.isna(mt)) and str(mt).strip():
+        return str(mt).strip()
+    from src.league_registry import canonical_name
+    return config.model_type_for_league(canonical_name(r["league"]) or r["league"])
+
+
 def todays_rows(today_str: str) -> pd.DataFrame:
     """One row per tip, best first: tier order, then edge."""
     return tips_rows(today_str, today_str)
@@ -95,7 +105,7 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
         for _, r in m.iterrows():
             out.append({"league": r["league"], "date": str(r["match_date"])[:10],
                         "home_team": r["home_team"], "away_team": r["away_team"],
-                        "model": r.get("model_type") or config.model_type_for_league(r["league"]),
+                        "model": _model_of(r),
                         "tier": r["signal_tier"], "market": f"O/U 2.5 {str(r.get('side', '')).upper()}",
                         "odds": r.get("odds"), "edge": r.get("edge_pct"),
                         "drift": r.get("drift_signal"), "model_prob": None,
@@ -113,7 +123,7 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
             label += " YES" if mk == "btts" else " OVER"
             out.append({"league": r["league"], "date": str(r["match_date"])[:10],
                         "home_team": r["home_team"], "away_team": r["away_team"],
-                        "model": r.get("model_type") or config.model_type_for_league(r["league"]),
+                        "model": _model_of(r),
                         "tier": r["signal_tier"], "market": label, "odds": r.get("odds"),
                         "edge": r.get("edge_pct"), "drift": None,
                         "model_prob": r.get("model_prob"), "generated_at": r.get("generated_at"),
@@ -194,7 +204,8 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
             dr.rectangle([0, y, width, y + row_h], fill=bg)
             colour = TIER_COLOUR.get(r["tier"], (107, 114, 128))
             dr.rectangle([0, y, 6, y + row_h], fill=colour)             # tier stripe
-            model = "Standard" if str(r["model"]) == "standard" else "New-fmt"
+            # an untagged model is shown as missing, not labelled New-format by elimination
+            model = {"standard": "Standard", "new_format": "New-fmt"}.get(str(r["model"]), "–")
             edge = "–" if pd.isna(r["edge"]) else f"+{r['edge']:.0f}%"
             odds = "–" if pd.isna(pd.to_numeric(r["odds"], errors="coerce")) else f"{float(r['odds']):.2f}"
             rt = r.get("rating")

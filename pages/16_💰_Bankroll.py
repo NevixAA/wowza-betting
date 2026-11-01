@@ -74,12 +74,13 @@ ui.metric_card("Pro recommends", review.get("RECOMMENDED_POLICY", "—").replace
                container=c[1])
 ui.metric_card("Last review", review.get("as_of", "—"), title="Cadence",
                delta=f"next ~{nxt:%d %b}" if nxt is not None else None, delta_color="off",
-               supporting=[("Walk-forward", f"{wf.get('months_evaluated', 0)} of {wf.get('required', 6)} months")],
+               supporting=[("Walk-forward", f"{wf.get('months_evaluated') if wf.get('months_evaluated') is not None else '—'} of "
+                                           f"{wf.get('required') if wf.get('required') is not None else '—'} months")],
                status=ui.status_chip("NO_DATA", label=str(wf.get("status", "?")).replace("_", " "), tone="RESEARCH"),
                container=c[2])
 if review:
-    st.caption(f"Allocator walk-forward: **{wf.get('status', '?')}** ({wf.get('months_evaluated', 0)} of "
-               f"{wf.get('required', 6)} months). Until validated, Pro only ever recommends the current policy "
+    st.caption(f"Allocator walk-forward: **{wf.get('status', '?')}** ({wf.get('months_evaluated') if wf.get('months_evaluated') is not None else '—'} of "
+               f"{wf.get('required') if wf.get('required') is not None else '—'} months). Until validated, Pro only ever recommends the current policy "
                f"with risk REDUCTIONS. Best growth: {review.get('BEST_GROWTH_POLICY')} · best survival: "
                f"{review.get('BEST_SURVIVAL_POLICY')}.")
 if not rec:

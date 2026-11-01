@@ -62,6 +62,8 @@ repair_priority_score (REPAIR-1 weights; each term in [0, 1], shown separately i
   (The first draft applied the signal-count factor to the market term too, which discounted a
   100-fixture market comparison by an unrelated signal count; corrected before the first commit.)
   REPAIR_PRIORITY_HIGH = research_regime == REPAIR AND score >= 0.40.
+  A term whose evidence factor is > 0 but whose input is missing is None, and then the score is
+  None (2026-11-01): a missing ROI / drawdown / calibration is not a 0.
 """
 from __future__ import annotations
 
@@ -311,20 +313,32 @@ def classify(ps: dict, sm: dict, mk: dict) -> tuple[str, str]:
 def repair_score(regime: str, sm: dict, clv: dict, mk: dict) -> dict:
     n, md = sm["evidence_n"], sm["independent_matchdays"]
     roi = sm["recent_roi"]["roi"]
+    # A raw input that is MISSING stays None (it is not a 0). The two documented gates stay 0: the
+    # CLV term below MIN_CERTIFIED_FOR_CLV_TERM closes, and the market term without an OK market
+    # comparison (its evidence factor is 0 then anyway).
+    _neg = (lambda v: None if v is None else -v)
     raw = {
-        "neg_roi": -roi if roi is not None else 0.0,
-        "neg_clv": -(clv["mean_clv_pct"] or 0.0) if clv["n_certified"] >= MIN_CERTIFIED_FOR_CLV_TERM else 0.0,
-        "market_beats_model": (mk.get("dlogloss_model_minus_market") or 0.0) if mk.get("status") == "OK" else 0.0,
-        "drawdown": sm["max_drawdown_units"] or 0.0,
-        "calibration_error": abs(sm["calibration_error"] or 0.0),
-        "volume_poor_results": float(n) if (roi is not None and roi < 0) else 0.0,
+        "neg_roi": _neg(roi),
+        "neg_clv": _neg(clv["mean_clv_pct"]) if clv["n_certified"] >= MIN_CERTIFIED_FOR_CLV_TERM else 0.0,
+        "market_beats_model": mk.get("dlogloss_model_minus_market") if mk.get("status") == "OK" else 0.0,
+        "drawdown": sm["max_drawdown_units"],
+        "calibration_error": None if sm["calibration_error"] is None else abs(sm["calibration_error"]),
+        "volume_poor_results": None if roi is None else (float(n) if roi < 0 else 0.0),
     }
     ef = min(1.0, n / MIN_N) * min(1.0, md / MIN_MD)
     mf = (min(1.0, mk["n_fixtures"] / MKT_MIN_N) * min(1.0, mk["matchdays"] / MIN_MD)
           if mk.get("status") == "OK" else 0.0)
-    terms = {k: _f((mf if k == "market_beats_model" else ef) * WEIGHTS[k]
-                   * float(np.clip(raw[k] / SCALES[k], 0.0, 1.0))) for k in WEIGHTS}
-    score = _f(sum(terms.values()))
+
+    def _term(k):
+        fac = mf if k == "market_beats_model" else ef
+        if fac == 0:
+            return 0.0                    # no evidence behind the term: it weighs nothing (computed)
+        if raw[k] is None:
+            return None                   # evidence exists but the input is missing
+        return _f(fac * WEIGHTS[k] * float(np.clip(raw[k] / SCALES[k], 0.0, 1.0)))
+    terms = {k: _term(k) for k in WEIGHTS}
+    # Any missing term -> no score (None), never a sum that silently treats it as 0.
+    score = None if any(v is None for v in terms.values()) else _f(sum(terms.values()))
     return {"repair_priority_score": score, "repair_priority_terms": terms,
             "evidence_factor": {"signals": _f(ef), "market": _f(mf)},
             "REPAIR_PRIORITY_HIGH": bool(regime == "REPAIR" and score is not None and score >= HIGH_SCORE)}
@@ -339,7 +353,7 @@ def build_registry(af: pd.DataFrame, anchor: pd.DataFrame, bets: pd.DataFrame, s
     af = af.copy()
     af["kick"] = pd.to_datetime(af["kick"], utc=True)
     af["md"] = pd.to_datetime(af["md"]).dt.strftime("%Y-%m-%d")
-    cap = float(getattr(config, "NF_MAX_OU_ODDS", 0) or 0)
+    cap = float(config.NF_MAX_OU_ODDS)        # the deployed cap; absent config = AttributeError, not "no cap"
     cutoff = str(af["kick"].max().date()) if len(af) else None
     entries = []
     for lg in leagues:

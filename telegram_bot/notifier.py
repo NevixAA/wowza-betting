@@ -37,6 +37,7 @@ PLAYER_KICKOFF_FILE   = BASE_DIR / "player_kickoff_cache.json"
 
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
+from src import league_registry as _LRG
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
 
 
@@ -62,8 +63,9 @@ def _fmt_kickoff(row) -> str:
     OddsAPI `commence_time` is UTC, so a match's local calendar day can differ from
     its UTC day (Japan, Argentina, Brazil, …). We convert `kickoff_utc` to the league's
     local tz for what the user reads. The stored `date` stays UTC (join/dedup key) and
-    is NOT touched. Falls back to the UTC date string when `kickoff_utc` is missing,
-    unparseable, or the league tz is unknown — so it can never regress the old behaviour.
+    is NOT touched. Falls back to the UTC date string when `kickoff_utc` is missing or
+    unparseable. When the registry holds no zone for the league (multi-country cups, unknown
+    names) the time is shown in UTC and LABELLED 'UTC' - never passed off as local time.
     """
     fallback = str(row.get("date", ""))[:10]
     ko = row.get("kickoff_utc", None)
@@ -73,13 +75,55 @@ def _fmt_kickoff(row) -> str:
         ts = pd.to_datetime(ko, utc=True, errors="coerce")
         if pd.isna(ts):
             return fallback
-        tz = app_config.LEAGUE_TIMEZONES.get(str(row.get("league", "")), "UTC")
+        tz = _LRG.timezone(row.get("league"))
+        if tz is None:
+            return f"{ts.strftime('%Y-%m-%d %H:%M')} UTC"
         local = ts.tz_convert(tz)
         abbr = local.strftime("%Z")
-        suffix = "" if (tz == "UTC" or not abbr) else f" {abbr}"
+        suffix = f" {abbr}" if abbr else f" ({tz})"
         return f"{local.strftime('%Y-%m-%d %H:%M')}{suffix}"
-    except Exception:
+    except Exception as e:
+        print(f"[kickoff] could not localise {ko!r} for {row.get('league')!r}: {e} - showing UTC date")
         return fallback
+
+
+def _fixture_bucket(league, date) -> tuple:
+    """Index key for per-fixture lookups: (canonical league, YYYY-MM-DD). An unregistered
+    league keeps its raw name, so it can still only meet rows spelled the same way."""
+    return (_LRG.canonical_name(league) or str(league), str(date)[:10])
+
+
+def _fixture_lookup(index: dict, league, date, home, away):
+    """Value stored for one fixture in `index` {(league, date): {(home, away): value}}.
+
+    Clubs are matched by src/team_names.resolve inside ONE league and ONE date - never by a
+    lower-cased/punctuation-stripped string - so differently spelled sources still meet and an
+    ambiguous name finds nothing (None) instead of a neighbour's fixture."""
+    from src.team_names import resolve as _resolve_club
+    pairs = index.get(_fixture_bucket(league, date))
+    if not pairs:
+        return None
+    h = _resolve_club(str(home), sorted({p[0] for p in pairs}))
+    if h is None:
+        return None
+    a = _resolve_club(str(away), sorted({p[1] for p in pairs if p[0] == h}))
+    return None if a is None else pairs.get((h, a))
+
+
+def _model_type_of(league) -> str:
+    """config.model_type_for_league on the CANONICAL league name, so a row written under a
+    registered alias is not reported as 'unknown'."""
+    return app_config.model_type_for_league(_LRG.canonical_name(league) or league)
+
+
+def _is_prop_league(leagues: "pd.Series") -> "pd.Series":
+    """Boolean mask: the row's league (canonical or alias) is flagged `props` in the registry.
+    Rows of other / unregistered leagues are dropped and counted."""
+    props = set(_LRG.prop_leagues())
+    mask = leagues.map(lambda lg: _LRG.canonical_name(lg) in props).astype(bool)
+    if (~mask).any():
+        print(f"[props] {int((~mask).sum())} row(s) outside registry prop leagues dropped")
+    return mask
 
 
 def _load_config() -> dict:
@@ -172,24 +216,35 @@ def _valid_fixture_rows(df):
         return df
     if not {"team", "home_team", "away_team"}.issubset(df.columns):
         return df
-    from player_model.api_football import _same_club, _club_name_subset
+    # Club identity goes through the ONE resolver (src/team_names), not the player model's own
+    # fuzzy helpers. The ledger has no team id, so names are all there is.
+    from src.team_names import resolve as _resolve_club, _tokens as _club_tokens
     tl = _team_league_map()
 
     def _ok(team, home, away, league) -> bool:
         team, home, away = str(team), str(home), str(away)
-        if _same_club(team, home) or _same_club(team, away):
+        hit = _resolve_club(team, [home, away])
+        if hit is None:
+            return False
+        if _club_tokens(team) == _club_tokens(hit):
             return True
-        # Ambiguous subset ("Plymouth" vs "Plymouth Argyle" = same club, "Inter" vs
+        # Subset/alias match ("Plymouth" vs "Plymouth Argyle" = same club, "Inter" vs
         # "Inter Club d'Escaldes" = not): trust it only where we hold history for that
-        # club in THIS competition. Same rule predict.py now applies.
-        if _club_name_subset(team, home) or _club_name_subset(team, away):
-            return str(league) in tl.get(team, ())
-        return False
+        # club in THIS competition. Same rule predict.py applies.
+        lg = _LRG.canonical_name(league) or str(league)
+        return lg in tl.get(team, ()) or str(league) in tl.get(team, ())
 
-    leagues = df["league"] if "league" in df.columns else pd.Series([""] * len(df), index=df.index)
-    keep = [_ok(t, h, a, lg) for t, h, a, lg in
-            zip(df["team"], df["home_team"], df["away_team"], leagues)]
-    return df[pd.Series(keep, index=df.index)].copy()
+    if "league" not in df.columns:
+        # Without the competition the subset rule cannot be corroborated; those rows are dropped.
+        print("[props] ledger frame has no league column - subset club matches cannot be corroborated")
+        leagues = pd.Series([None] * len(df), index=df.index)
+    else:
+        leagues = df["league"]
+    keep = pd.Series([_ok(t, h, a, lg) for t, h, a, lg in
+                      zip(df["team"], df["home_team"], df["away_team"], leagues)], index=df.index)
+    if (~keep).any():
+        print(f"[props] {int((~keep).sum())} prop row(s) dropped: player's club is neither side of the fixture")
+    return df[keep].copy()
 
 
 def _countable_props(df):
@@ -201,29 +256,40 @@ def _countable_props(df):
 def send_fantasy_tips(max_per_pos: int = 3) -> int:
     """FANTASY (FPL) family — captaincy + top picks per position. PREDICTIONS, not bets;
     kept visibly separate from the SNIPER/MARKSMAN betting tips.
-    GUARDED: fires only when there ARE upcoming Premier League fixtures — stays silent
+    GUARDED: fires only when there ARE upcoming fixtures in the registry's FPL league — stays silent
     off-season so it never posts empty projections. Returns 1 if sent, else 0."""
     from pathlib import Path as _P
     import pandas as _pd
     # in-season guard: no upcoming PL GW -> stay silent
+    # The FPL competition and its API-Football id come from the registry (fpl flag), not a literal.
+    fpl_lg = _LRG.fpl_league()
+    fpl_id = _LRG.prop_leagues().get(fpl_lg) if fpl_lg else None
+    if fpl_lg is None or fpl_id is None:
+        print(f"[fantasy] registry has no FPL league with an API-Football id ({fpl_lg!r}) — skipping")
+        return 0
     try:
         from player_model.api_football import get_upcoming_fixtures
-        from player_model import config as _pc
-        fx = get_upcoming_fixtures(
-            _pc.PROP_LEAGUES["Premier League"],
-            _pc.prop_season("Premier League"), next_n=1)
+        from src.season_resolver import resolve_api_season, is_known
+        season = resolve_api_season(fpl_lg)
+        if not is_known(season):
+            print(f"[fantasy] season unknown for {fpl_lg} — skipping")
+            return 0
+        fx = get_upcoming_fixtures(fpl_id, season, next_n=1)
         if not fx:
-            print("[fantasy] no upcoming PL fixtures — skipping (off-season)")
+            print(f"[fantasy] no upcoming {fpl_lg} fixtures — skipping (off-season)")
             return 0
     except Exception as e:
         print(f"[fantasy] fixture guard failed ({e}) — skipping")
         return 0
     f = _P(__file__).resolve().parents[1] / "output" / "fantasy_tips.csv"
     if not f.exists():
+        print(f"[fantasy] {f.name} missing — skipping")
         return 0
     try:
-        df = __read_csv(f)
-    except Exception:
+        # was `__read_csv` (NameError swallowed below), so this family never sent.
+        df = _read_csv(f)
+    except Exception as e:
+        print(f"[fantasy] could not read {f.name} ({e}) — skipping")
         return 0
     if df.empty:
         return 0
@@ -342,6 +408,25 @@ def _drift_emoji(signal: str) -> str:
     return {"Confirmed": "✅", "Conflicted": "⚠️", "Neutral": "➡️", "New": "🆕"}.get(str(signal), "")
 
 
+def _fmt_num(v, spec: str, scale: float = 1.0) -> str:
+    """`v` formatted with `spec`, or '–' when it is missing/unparseable. A missing price or edge
+    is shown as missing, never as 0.00 / +0%."""
+    x = pd.to_numeric(v, errors="coerce")
+    return "–" if pd.isna(x) else format(float(x) * scale, spec)
+
+
+_NO_DRIFT = "no drift data"
+
+
+def _drift_text(signal) -> str:
+    """The recorded drift signal, or 'no drift data' when none was recorded. A blank is not
+    'New' - 'New' is a real signal (first snapshot) and must not be invented."""
+    if signal is None or (isinstance(signal, float) and pd.isna(signal)):
+        return _NO_DRIFT
+    s = str(signal).strip()
+    return s if s and s.lower() not in ("nan", "none") else _NO_DRIFT
+
+
 def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None, row=None) -> bool:
     """Should a NEW tip go out as its own message right now? (owner 2026-10-18: "too spammy").
 
@@ -404,7 +489,8 @@ def notify_new_snipers() -> int:
     if "model_type" not in df.columns:
         df["model_type"] = ""
     _blk = df["model_type"].isna() | (df["model_type"].astype(str).str.strip().isin(["", "nan"]))
-    df.loc[_blk, "model_type"] = df.loc[_blk, "league"].map(app_config.model_type_for_league)
+    df["model_type"] = df["model_type"].astype(object)   # an all-blank column reads as float
+    df.loc[_blk, "model_type"] = df.loc[_blk, "league"].map(_model_type_of)
     # Send SNIPER + MARKSMAN + VALUABLE for ALL models (Nevo 2026-08-09: enable new-format
     # VALUABLE live too, now that the NF model is recalibrated). Dedup (notified.json) sends
     # each fixture+side once, so the higher NF volume won't re-flood.
@@ -467,9 +553,18 @@ def notify_new_snipers() -> int:
         tier  = row["signal_tier"]
         side  = row.get("best_side") or row.get("bet", "")
         odds  = row["odds_under25"] if side == "UNDER" else row["odds_over25"]
-        edge  = float(row.get("best_edge", 0)) * 100
-        drift = _drift_emoji(row.get("drift_signal", "New"))
-        _is_std = row.get("model_type") == "standard"
+        # A tip goes out only with its recorded edge, price and model; a missing one is a
+        # skipped send (logged), never a 0% edge or a guessed model label.
+        edge  = pd.to_numeric(row.get("best_edge"), errors="coerce") * 100
+        odds  = pd.to_numeric(odds, errors="coerce")
+        _mt   = str(row.get("model_type") or "").strip()
+        if pd.isna(edge) or pd.isna(odds) or _mt not in ("standard", "new_format"):
+            print(f"  SKIP unsendable tip: {row['home_team']} vs {row['away_team']} [{row.get('league')}] — "
+                  f"edge={row.get('best_edge')!r} odds={odds!r} model_type={_mt!r}")
+            continue
+        _drift_sig = _drift_text(row.get("drift_signal"))
+        drift = _drift_emoji(_drift_sig) if _drift_sig != _NO_DRIFT else ""
+        _is_std = _mt == "standard"
         model = "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Standard" if _is_std else "🌍 New-Format"
         mtag  = "standard" if _is_std else "new-format"
 
@@ -490,7 +585,7 @@ def notify_new_snipers() -> int:
             f"📌 <b>{side} 2.5</b>  @ {odds:.2f}\n"
             f"📊 Edge: <b>{edge:.1f}%</b>  |  {model}\n"
             # Drift is information only since 2026-10-26: it never changes the tier above.
-            f"🔀 Drift: {row.get('drift_signal','New')} {drift} (info only)"
+            f"🔀 Drift: {_drift_sig} {drift} (info only)"
         )
 
         if _send(token, chat_id, msg):
@@ -868,7 +963,6 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
     bl = _read_csv(led)
     if "source" not in bl.columns:
         return 0
-    _norm = lambda s: re.sub(r"[^a-z0-9]", "", str(s).lower())
     live = bl[bl["source"] == "live"].copy()
     today = datetime.now().strftime("%Y-%m-%d")
     live = live[live["match_date"].astype(str).str[:10] >= today]
@@ -887,16 +981,15 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
             _b = _read_csv(_p)
         except Exception:
             continue
-        if "kickoff_utc" not in _b.columns:
+        if not {"kickoff_utc", "league"}.issubset(_b.columns):
             continue
         for _r in _b.itertuples(index=False):
-            _k = (_norm(getattr(_r, "home_team", "")), _norm(getattr(_r, "away_team", "")),
-                  str(getattr(_r, "date", ""))[:10])
-            _ko.setdefault(_k, str(getattr(_r, "kickoff_utc", "")))
+            _ko.setdefault(_fixture_bucket(_r.league, getattr(_r, "date", "")), {}).setdefault(
+                (str(_r.home_team), str(_r.away_team)), str(_r.kickoff_utc))
     _now_ts = pd.Timestamp.utcnow()
 
     def _upcoming(row) -> bool:
-        kt = _ko.get((_norm(row["home_team"]), _norm(row["away_team"]), str(row["match_date"])[:10]))
+        kt = _fixture_lookup(_ko, row["league"], row["match_date"], row["home_team"], row["away_team"])
         if kt:
             t = pd.to_datetime(kt, utc=True, errors="coerce")
             if pd.notna(t):
@@ -926,7 +1019,11 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
             continue
         try:
             oh = _read_csv(p).sort_values("snapshot_ts")
-        except Exception:
+        except Exception as e:
+            print(f"[sharp-move] could not read {f}: {e}")
+            continue
+        if "league" not in oh.columns:
+            print(f"[sharp-move] {f} has no league column — skipped")
             continue
         for r in oh.itertuples(index=False):
             m = str(getattr(r, "match", ""))
@@ -937,12 +1034,14 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
                 od = float(r.odds)
             except (TypeError, ValueError):
                 continue
-            key = (_norm(h), _norm(a), str(r.match_date)[:10], str(r.market), f)
+            # {(source, market): {(league, date): {(home, away): [first, latest]}}}
+            pairs = snaps.setdefault((f, str(r.market)), {}).setdefault(
+                _fixture_bucket(r.league, r.match_date), {})
             # store (first-seen, latest) from the SAME source -> a valid open->close move.
-            if key not in snaps:
-                snaps[key] = [od, od]
+            if (h, a) not in pairs:
+                pairs[(h, a)] = [od, od]
             else:
-                snaps[key][1] = od
+                pairs[(h, a)][1] = od
 
     notified = _load_sharp_move_notified()
     sent = 0
@@ -953,8 +1052,8 @@ def notify_sharp_movement(move_thresh: float = 0.03) -> int:
         mkt = "under25" if side == "UNDER" else "over25"
         pair = None
         for f in _SRC_PRIORITY:                       # first source with a same-source curve wins
-            cand = snaps.get((_norm(r.home_team), _norm(r.away_team),
-                              str(r.match_date)[:10], mkt, f))
+            cand = _fixture_lookup(snaps.get((f, mkt), {}), r.league, r.match_date,
+                                   r.home_team, r.away_team)
             if cand:
                 pair = cand
                 break
@@ -1039,7 +1138,8 @@ def notify_weekly_summary() -> bool:
         if "model_type" not in live.columns:
             live["model_type"] = ""
         _blk = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
-        live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(app_config.model_type_for_league)
+        live["model_type"] = live["model_type"].astype(object)   # an all-blank column reads as float
+        live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(_model_type_of)
         if "generated_at" in live.columns:   # count only tips generated on/after the cutoff
             live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
         lw = live[live["match_date"] >= week_ago]
@@ -1142,8 +1242,15 @@ def notify_weekly_summary() -> bool:
         try:
             sl = _read_csv(side_led)
             sl["pnl"]         = pd.to_numeric(sl["pnl"], errors="coerce")
-            sl["signal_date"] = pd.to_datetime(sl.get("signal_date", sl.get("match_date", "")), errors="coerce")
-            sl_week = sl[sl["signal_date"] >= week_ago] if "signal_date" in sl.columns else sl
+            # The week is the SIGNAL week; a row without a signal_date is not placed in it by
+            # borrowing match_date - it is left out and counted.
+            if "signal_date" not in sl.columns:
+                print("[weekly] side_bets_ledger.csv has no signal_date column — side markets skipped")
+                sl = sl.iloc[0:0].assign(signal_date=pd.NaT)
+            sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
+            if sl["signal_date"].isna().any():
+                print(f"[weekly] {int(sl['signal_date'].isna().sum())} side-market row(s) without signal_date excluded")
+            sl_week = sl[sl["signal_date"] >= week_ago]
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_week[sl_week["market"] == mkt] if "market" in sl_week.columns else pd.DataFrame()
                 ms = _settled_only(ms)
@@ -1339,14 +1446,15 @@ def notify_agent_analysis() -> int:
         strongest = _escape_html((m.group(1).strip() if m else analysis)[:1200])
 
         side = row.get("best_side") or row.get("bet", "")
-        edge = float(row.get("best_edge", 0)) * 100
+        edge = pd.to_numeric(row.get("best_edge"), errors="coerce") * 100
+        edge_str = "edge not recorded" if pd.isna(edge) else f"Edge: <b>{edge:.1f}%</b>"
 
         msg = (
             f"🤖 <b>AGENT ANALYSIS</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"🏆 {row.get('league', '')}  |  📅 {_fmt_kickoff(row)}\n"
-            f"🎯 ML Signal: <b>{side} 2.5</b>  Edge: <b>{edge:.1f}%</b>\n"
+            f"🎯 ML Signal: <b>{side} 2.5</b>  {edge_str}\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"<b>Strongest Signals:</b>\n"
             f"{strongest}\n"
@@ -1402,9 +1510,8 @@ def notify_player_props() -> int:
         except Exception:
             pass
 
-    # Only leagues with actual bookmaker player prop markets
-    from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
-    df = df[df["league"].isin(_PROP_LEAGUES.keys())].copy()
+    # Only leagues with actual bookmaker player prop markets (registry `props` flag)
+    df = df[_is_prop_league(df["league"])].copy()
 
     # ── WEEKEND "MEAT" FEED (props are a calibrated-but-unproven TEST model) ─────────
     # Props have no proven market edge, so this is NOT an edge-gated send: we surface a fixed
@@ -1623,15 +1730,21 @@ def notify_lineup_cashout() -> int:
 
         mkt_label = MARKET_LABEL.get(market, market)
         row = tip_lookup.get(key, {})
-        match_str = row.get("match", "")
-        team_str  = row.get("team", "")
+        match_str = str(row.get("match") or "").strip()
+        team_str  = str(row.get("team") or "").strip()
+        # A cash-out call without the fixture is unactionable (which bet?) - skip it, logged.
+        if not match_str or match_str.lower() == "nan":
+            print(f"  SKIP cashout: {player_name} — {mkt_label}: fixture not found in today's tips")
+            continue
+        if team_str.lower() == "nan":
+            team_str = "—"
 
         msg = (
             f"🚨 <b>LINEUP ALERT — CASHOUT RECOMMENDED</b>\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"👤 <b>{player_name}</b> is NOT in the confirmed starting XI\n"
             f"📌 Market: <b>{mkt_label}</b>\n"
-            f"⚽ {match_str or 'Unknown match'}  |  {team_str}\n"
+            f"⚽ {match_str}  |  {team_str or '—'}\n"
             f"📅 {date_str}\n"
             f"━━━━━━━━━━━━━━━━\n"
             f"⚠️ If you placed this bet, consider cashing out now."
@@ -1701,8 +1814,8 @@ def notify_props_daily_digest() -> bool:
     player_file = app_config.OUTPUT_DIR / "player_tips.csv"
     if player_file.exists():
         try:
-            from player_model.config import PROP_LEAGUES as _PROP_LEAGUES
             all_props = _read_csv(player_file)
+            _in_props = _is_prop_league(all_props["league"])
             _dates = all_props["date"].astype(str).str[:10]
             # Count the footer with the SAME two filters this briefing applies below — prop
             # leagues, and only tiers that would actually be sent. An unfiltered count is
@@ -1711,11 +1824,10 @@ def notify_props_daily_digest() -> bool:
             # that does not exist: 787 rows against 3 real ones when this was written.
             props_upcoming = int((
                 (_dates > today_str)
-                & all_props["league"].isin(_PROP_LEAGUES.keys())
+                & _in_props
                 & all_props["tier"].isin(TIER_ORDER)
             ).sum())
-            all_props = all_props[_dates == today_str].copy()
-            all_props = all_props[all_props["league"].isin(_PROP_LEAGUES.keys())].copy()
+            all_props = all_props[(_dates == today_str) & _in_props].copy()
             tips_data = all_props
         except Exception as e:
             lines.append(f"  error loading player_tips.csv: {e}")
@@ -1743,8 +1855,9 @@ def notify_props_daily_digest() -> bool:
                 for _, r in tb.iterrows():
                     ev = r.get("ev"); odds = r.get("market_odds")
                     ev_str = f" EV {float(ev):+.0%}" if pd.notna(ev) else ""
+                    _mp = pd.to_numeric(r.get("model_prob"), errors="coerce")
                     od_str = (f" @ {float(odds):.2f}" if pd.notna(odds)
-                              else f" {float(r.get('model_prob', 0))*100:.0f}%")
+                              else (f" {_mp*100:.0f}%" if pd.notna(_mp) else " –"))
                     lines.append(
                         f"  {sym} <b>{r['player_name']}</b> ({r.get('team','')})"
                         f"{od_str}{ev_str}  [{r.get('league','')}]"
@@ -1871,7 +1984,13 @@ def notify_props_weekly_summary() -> bool:
 
     pled = _countable_props(_read_csv(player_led))  # AVOID/WATCH + wrong-fixture: never counted
     pled["pnl"]         = pd.to_numeric(pled["pnl"], errors="coerce")
-    pled["signal_date"] = pd.to_datetime(pled.get("signal_date", pled.get("match_date")), errors="coerce")
+    # Windowed on signal_date only; rows without one are excluded (logged), not re-dated.
+    if "signal_date" not in pled.columns:
+        print("[props weekly] player_ledger.csv has no signal_date column — no weekly window")
+        pled = pled.assign(signal_date=pd.NaT)
+    pled["signal_date"] = pd.to_datetime(pled["signal_date"], errors="coerce")
+    if pled["signal_date"].isna().any():
+        print(f"[props weekly] {int(pled['signal_date'].isna().sum())} prop row(s) without signal_date excluded from the week")
 
     settled_all  = _settled_only(pled)
     settled_week = settled_all[settled_all["signal_date"] >= week_ago].copy()
@@ -2088,7 +2207,8 @@ def notify_daily_digest() -> bool:
             if "model_type" not in bl.columns:
                 bl["model_type"] = ""
             _blk = bl["model_type"].isna() | (bl["model_type"].astype(str).str.strip().isin(["", "nan"]))
-            bl.loc[_blk, "model_type"] = bl.loc[_blk, "league"].map(app_config.model_type_for_league)
+            bl["model_type"] = bl["model_type"].astype(object)   # an all-blank column reads as float
+            bl.loc[_blk, "model_type"] = bl.loc[_blk, "league"].map(_model_type_of)
             # Market is O/U 2.5 (tips can be OVER or UNDER) — NOT "Over 2.5". Group by model
             # then tier; the per-tip line shows the actual side.
             lines.append(f"⚽ <b>O/U 2.5</b>  ({ou_total} tip{'s' if ou_total != 1 else ''})")
@@ -2108,19 +2228,19 @@ def notify_daily_digest() -> bool:
                         lines.append(f"    {TIER_SYM[tier]} <b>{tier_label(tier)}</b> ({len(tb)})")
                         for _, r in tb.iterrows():
                             side = str(r.get("side", ""))
-                            try:
-                                odds = float(r.get("odds", 0) or 0)
-                            except (TypeError, ValueError):
-                                odds = 0.0
-                            try:
-                                edge = float(r.get("edge_pct", 0) or 0)
-                            except (TypeError, ValueError):
-                                edge = 0.0
+                            # unpriced / no recorded edge -> '–', never @ 0.00 (+0%)
+                            odds = _fmt_num(r.get("odds"), ".2f")
+                            edge = _fmt_num(r.get("edge_pct"), "+.0f")
                             lines.append(
                                 f"      {r['home_team']} vs {r['away_team']} — "
-                                f"<b>{side} 2.5</b> @ {odds:.2f} (+{edge:.0f}%)"
+                                f"<b>{side} 2.5</b> @ {odds} ({edge}%)"
                                 f"  [{r.get('league','')}]"
                             )
+                _unk = bl[~bl["model_type"].isin(["standard", "new_format"])]
+                if not _unk.empty:
+                    lines.append(f"  ❔ {len(_unk)} tip(s) with no registered model — not listed")
+                    print(f"[digest] {len(_unk)} O/U tip(s) without model_type: "
+                          f"{sorted(_unk['league'].astype(str).unique())}")
         except Exception as e:
             lines.append(f"  error: {e}")
     else:
@@ -2147,17 +2267,12 @@ def notify_daily_digest() -> bool:
                         continue
                     lines.append(f"  {TIER_SYM[tier]} <b>{tier_label(tier)}</b> ({len(tb)})")
                     for _, r in tb.iterrows():
-                        try:
-                            ev_str = f" EV {float(r.get('ev_pct', 0) or 0):+.0f}%"
-                        except (TypeError, ValueError):
-                            ev_str = ""
-                        try:
-                            odds = float(r.get("odds", 0) or 0)
-                        except (TypeError, ValueError):
-                            odds = 0.0
+                        _ev = _fmt_num(r.get("ev_pct"), "+.0f")
+                        ev_str = f" EV {_ev}%" if _ev != "–" else " EV –"
+                        odds = _fmt_num(r.get("odds"), ".2f")
                         lines.append(
                             f"    {r['home_team']} vs {r['away_team']} — "
-                            f"@ {odds:.2f}{ev_str}"
+                            f"@ {odds}{ev_str}"
                             f"  [{r.get('league','')}]"
                         )
                 lines.append("")
@@ -2294,7 +2409,8 @@ def notify_daily_digest() -> bool:
             if "model_type" not in live_y.columns:
                 live_y["model_type"] = ""
             _blk = live_y["model_type"].isna() | (live_y["model_type"].astype(str).str.strip().isin(["", "nan"]))
-            live_y.loc[_blk, "model_type"] = live_y.loc[_blk, "league"].map(app_config.model_type_for_league)
+            live_y["model_type"] = live_y["model_type"].astype(object)   # an all-blank column reads as float
+            live_y.loc[_blk, "model_type"] = live_y.loc[_blk, "league"].map(_model_type_of)
             # STAKED only in every headline. VALUABLE is shown, but never counted as money.
             _stk = live_y[live_y["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in live_y.columns else live_y
             r_all = _stats_sub(_stk, pd.Series([True] * len(_stk), index=_stk.index))
@@ -2420,7 +2536,8 @@ def notify_daily_digest() -> bool:
             if "model_type" not in live.columns:
                 live["model_type"] = ""
             _blank = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
-            live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(app_config.model_type_for_league)
+            live["model_type"] = live["model_type"].astype(object)   # an all-blank column reads as float
+            live.loc[_blank, "model_type"] = live.loc[_blank, "league"].map(_model_type_of)
             for fmt, emoji, label in [
                 ("standard",   "⚽", "O/U 2.5 — Standard"),
                 ("new_format", "🌍", "O/U 2.5 — New-Format"),

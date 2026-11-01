@@ -88,7 +88,8 @@ def _market(league: str) -> str:
     # Classify via the canonical config map so ALL standard leagues (incl. Greek / Danish /
     # Austrian / Romanian) are captured — the old hardcoded STD_LEAGUES set silently dropped
     # several standard leagues to "Other", excluding them from the Standard O/U track.
-    mt = config.model_type_for_league(league)
+    from src.league_registry import canonical_name
+    mt = config.model_type_for_league(canonical_name(league) or league)
     if mt == "new_format":
         return "New-Format"
     if mt == "standard":
@@ -112,10 +113,12 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
         ).dt.strftime("%Y-%m-%d").fillna("")
     if kind in ("main", "side"):
         out["odds"] = pd.to_numeric(df["odds"], errors="coerce")
-        out["edge"] = pd.to_numeric(df.get("edge_pct", 0), errors="coerce") / 100.0
+        # No recorded edge / source -> NaN: Kelly skips the row, the source filters never match it.
+        out["edge"] = (pd.to_numeric(df["edge_pct"], errors="coerce") / 100.0 if "edge_pct" in df.columns
+                       else np.nan)
         out["tier"] = df.get("signal_tier", "").astype(str).str.upper()
         out["result"] = df.get("result", "").astype(str).str.upper()
-        out["source"] = df.get("source", "live").astype(str)
+        out["source"] = df["source"] if "source" in df.columns else np.nan
         if kind == "side":
             # One track, NOT split by league. The side ledger spans both model tracks
             # (model_type is in the file), but its 143 settled bets cannot support four
@@ -136,8 +139,9 @@ def normalize(df: pd.DataFrame, kind: str) -> pd.DataFrame:
         odds = pd.to_numeric(df["market_odds"], errors="coerce")
         mp = pd.to_numeric(df.get("model_prob", np.nan), errors="coerce")
         out["odds"] = odds
-        # edge = model_prob - implied (fallback to ev if model_prob missing)
-        out["edge"] = (mp - 1.0 / odds).fillna(pd.to_numeric(df.get("ev", 0), errors="coerce"))
+        # edge = model_prob - implied. No model_prob -> NaN (excluded from Kelly); `ev` is a
+        # different quantity (p*odds - 1) and is not substituted for it.
+        out["edge"] = mp - 1.0 / odds
         out["tier"] = df.get("tier", "").astype(str).str.upper()
         out["result"] = df.get("result", "").astype(str).str.upper()
         out["market"] = "Player Props"
@@ -163,6 +167,7 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
     peak = bank
     rows = []
     games = []
+    no_edge = 0
     for wk, g in b.sort_values("match_date").groupby("week"):
         wk_open = bank
         staked = pnl = 0.0
@@ -173,6 +178,9 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
                 continue                               # paper tier → skip
             odds = float(bt["odds"])
             if mode == "Fractional Kelly":
+                if pd.isna(bt["edge"]):                # no recorded edge -> no Kelly stake (counted)
+                    no_edge += 1
+                    continue
                 fk = max(float(bt["edge"]) / (odds - 1.0), 0.0)
                 stake_frac = min(frac * fk, cap_pct / 100.0)
             else:                                      # Flat % per tier
@@ -210,6 +218,7 @@ def simulate(bets: pd.DataFrame, start_bank: float, tier_frac: dict,
         "worst_week": eq["pnl"].min(),
         "max_dd": eq["drawdown"].min(),
         "weeks": len(eq),
+        "skipped_no_edge": int(no_edge),
     }
     return eq, stats, pd.DataFrame(games)
 
@@ -316,12 +325,17 @@ for tab, mkt in zip(tabs, MARKETS):
             _s = allbets[(allbets["market"] == "Side/BTTS")
                          & allbets["result"].isin(["WIN", "LOSS"])]
             st.markdown(V.state_chip("Side/BTTS"))
+            # Flat 1u result computed from the same rows (was a hand-typed +18.6u that went stale).
+            _sp = _s[_s["odds"] > 1.0]
+            _flat = float(np.where(_sp["result"] == "WIN", _sp["odds"] - 1.0, -1.0).sum()) if len(_sp) else None
+            _flat_s = ("—" if _flat is None
+                       else f"**{_flat:+.1f}u** over {len(_sp)} priced bet(s), {100 * _flat / len(_sp):+.0f}%")
             st.caption(
-                f"⚠️ **PAPER ONLY — never staked.** {len(_s)} settled bets since 2026-08-09, "
-                "all live (no backtest rows). Flat-stake result is **+18.6u**, roughly +13%; "
+                f"⚠️ **PAPER ONLY — never staked.** {len(_s)} settled bets in this view. "
+                f"Flat-stake result is {_flat_s}; "
                 "the curve below is Kelly-sized and compounds, so it reads far higher on the "
-                "same bets. One month is not a season — this exists to watch the track "
-                "accumulate. Real money stays on standard 2nd-division O/U."
+                "same bets. This exists to watch the track accumulate. Real money stays on "
+                "standard 2nd-division O/U."
             )
             # Worth knowing when reading it: this single bankroll mixes both model tracks
             # (new_format 173 rows, standard 73). That is fine for ONE curve, but the tracks must
@@ -332,6 +346,8 @@ for tab, mkt in zip(tabs, MARKETS):
             ui.empty_state("NO_DATA", f"No settled bets for {mkt} under the current tier/source filters.")
             continue
         eq, s, games = res
+        if s.get("skipped_no_edge"):
+            st.caption(f"{s['skipped_no_edge']} settled bet(s) have no recorded edge and get no Kelly stake.")
         st.altair_chart(V.equity_chart(eq, start_bank), width="stretch")
         ui.compact_table(V.weekly_frame(eq), V.WEEKLY_CONFIG)
 

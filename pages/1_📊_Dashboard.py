@@ -64,8 +64,11 @@ def load_bets():
     # rows can't show up under 'standard' (canonical map in config.model_type_for_league).
     _blank_mt = df["model_type"].str.strip().isin(["", "nan"])
     if _blank_mt.any() and "league" in df.columns:
-        df.loc[_blank_mt, "model_type"] = df.loc[_blank_mt, "league"].map(config.model_type_for_league)
-    df["drift_signal"] = df["drift_signal"].fillna("New").astype(str)
+        from src.league_registry import canonical_name
+        df.loc[_blank_mt, "model_type"] = df.loc[_blank_mt, "league"].map(
+            lambda lg: config.model_type_for_league(canonical_name(lg) or lg))
+    # No recorded drift is its own value - 'New' is a real signal (first snapshot), not a blank.
+    df["drift_signal"] = df["drift_signal"].fillna("no drift data").astype(str)
     df["signal_tier"] = df["signal_tier"].fillna("").astype(str)
     return df
 

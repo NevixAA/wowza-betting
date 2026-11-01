@@ -79,8 +79,9 @@ def _num(x, fmt="{:.2f}", none="—"):
 age_now = fdata.v2_fpl_age_hours()
 fresh = ("UNKNOWN" if age_now is None else "CURRENT" if age_now <= 30 else
          "AGING" if age_now <= 54 else "STALE")
+from src.league_registry import fpl_league as _fpl_league  # noqa: E402 - the FPL league from the registry
 ui.page_header(
-    "Fantasy", "Premier League Fantasy projections anchored on FPL's own expected points, with Wowza's "
+    "Fantasy", f"{_fpl_league() or 'FPL'} Fantasy projections anchored on FPL's own expected points, with Wowza's "
     "minutes, role, fixture and uncertainty layer. Scored in **FPL points** — not betting tips.",
     eyebrow_text="FPL · Fantasy V2",
     freshness=ui.freshness_badge(fresh, f"FPL data {age_now:.0f}h old" if age_now is not None
@@ -106,7 +107,7 @@ ui.metric_grid([
      "help": "The gameweek these projections are FOR (FPL's next deadline)."},
     dl_item,
     {"label": "Projection health", "value": ph.get("state", "—"),
-     "delta": f"{ph.get('players', 0)} players · {ph.get('minutes_disagreements', 0)} minutes flags",
+     "delta": f"{ph.get('players', '—')} players · {ph.get('minutes_disagreements', '—')} minutes flags",
      "delta_color": "off",
      "help": "FPL data age comes from the RECORDED fetch time in fpl_cache_meta.json, never from file "
              "mtime. The daily job runs once a day, so up to ~30h is normal."},
@@ -118,9 +119,9 @@ if bs.get("residual_applied"):
                 "acceptance gate and is applied.")
 else:
     st.markdown(ui.status_chip("SHADOW") +
-                f" **Mean forecast: {bs.get('mean_forecast', 'FPL ep_next')}.** FPL baseline + Wowza "
+                f" **Mean forecast: {bs.get('mean_forecast') or '—'}.** FPL baseline + Wowza "
                 f"residual is a *shadow* adjustment — acceptance gate **{dec or '—'}** (mode "
-                f"`{bs.get('residual_mode', 'shadow')}`); not added to the headline number until it beats "
+                f"`{bs.get('residual_mode') or '—'}`); not added to the headline number until it beats "
                 "FPL over enough completed gameweeks.")
 if fresh in ("STALE", "UNKNOWN"):
     ui.empty_state("STALE", "FPL snapshot is stale or undatable — injuries, prices and the squad list "
@@ -377,16 +378,22 @@ with t_sq:
         hz = st.radio("Optimise", ["final_xpts", "xpts_3gw", "xpts_5gw"], horizontal=True, key="opt_h")
         if st.button("Solve squad"):
             from player_model.fantasy_optimizer import optimal_squad
-            df_o = proj.assign(availability=proj["risk"].map(
-                {"Unavailable": "unavailable"}).fillna("available"))
+            # The projection's own risk label is passed through (the optimiser drops 'unavailable');
+            # a player with NO risk label is left out and counted, not assumed available.
+            _norisk = proj["risk"].isna()
+            if _norisk.any():
+                st.caption(f"{int(_norisk.sum())} player(s) without an availability label left out of the solve.")
+            df_o = proj[~_norisk].assign(availability=proj.loc[~_norisk, "risk"].astype(str).str.lower())
             sq = optimal_squad(df_o, points_col=hz)
             if not sq or not sq.get("feasible"):
                 st.warning(f"No feasible squad ({(sq or {}).get('reason', 'no data')}).")
             else:
                 capn = sq.get("captain")
                 cap_name = capn.get("web_name") if capn is not None else "—"
-                st.success(f"Formation {sq.get('formation')} · cost £{sq.get('total_cost', 0):.1f}m · "
-                           f"XI points {sq.get('xi_points', 0):.1f} · captain {cap_name}")
+                _c, _x = sq.get("total_cost"), sq.get("xi_points")
+                st.success(f"Formation {sq.get('formation')} · cost "
+                           f"{'—' if _c is None else f'£{_c:.1f}m'} · "
+                           f"XI points {'—' if _x is None else f'{_x:.1f}'} · captain {cap_name}")
                 for lab in ("xi", "bench"):
                     part = sq.get(lab)
                     if isinstance(part, pd.DataFrame) and not part.empty:

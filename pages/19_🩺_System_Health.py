@@ -64,7 +64,7 @@ st.caption(sh.get("about", ""))
 cnt = sh.get("counts") or {}
 ui.metric_grid([{"label": "GREEN", "value": cnt.get("GREEN", 0)}, {"label": "AMBER", "value": cnt.get("AMBER", 0)},
                 {"label": "RED", "value": cnt.get("RED", 0)}, {"label": "NO_DATA", "value": cnt.get("NO_DATA", 0)},
-                {"label": "Contract violations", "value": sh.get("contract_violations", 0)}], per_row=3)
+                {"label": "Contract violations", "value": ("—" if sh.get("contract_violations") is None else sh["contract_violations"])}], per_row=3)
 
 v = sh.get("versions") or {}
 sel = v.get("selection_engine_version") or {}
