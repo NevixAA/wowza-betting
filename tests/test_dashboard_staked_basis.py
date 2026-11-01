@@ -109,14 +109,25 @@ def test_the_raw_history_is_still_reachable():
     assert len(v9.ledger(since_cutoff=False)) >= len(v9.ledger())
 
 
-def test_the_two_defects_together_flipped_the_sign():
-    """Regression guard on the headline itself. Reading main-O/U-only, all-time, gave -35.66u;
-    all markets since the cutoff gives +10.71u. A dashboard that reports a losing book as the
-    headline when the staked book is profitable is worse than no dashboard."""
+def test_the_headline_is_the_staked_book_on_the_corrected_basis():
+    """Regression guard on the headline's BASIS, not its sign. Reading main-O/U-only, all-time,
+    gave -35.66u when all markets since the cutoff gave +10.71u. This used to assert the staked P/L
+    is POSITIVE - a market outcome, not a code property - so it failed as soon as the book moved
+    (-7.09u on 2026-11-01) while the code was right. Now: the dashboard's staked figure equals the
+    same quantity computed independently from the raw ledgers, whatever its sign."""
+    import config
     d = v9.ledger()
     if d.empty:
         return
-    st = d[d["result"].isin(["WIN", "LOSS"])]
-    st = st[st["signal_tier"].astype(str).str.upper().isin(("SNIPER", "MARKSMAN"))]
-    pnl = pd.to_numeric(st["pnl"], errors="coerce").sum()
-    assert pnl > 0, f"staked P/L is {pnl:+.2f}u — expected the corrected basis to be positive"
+    staked = lambda f: f[f["result"].isin(["WIN", "LOSS"])
+                         & f["signal_tier"].astype(str).str.upper().isin(("SNIPER", "MARKSMAN"))]
+    got = pd.to_numeric(staked(d)["pnl"], errors="coerce").sum()
+
+    out = Path(config.OUTPUT_DIR)
+    raw = pd.concat([pd.read_csv(out / f, low_memory=False) for f in ("bets_ledger.csv", "side_bets_ledger.csv")
+                     if (out / f).exists()], ignore_index=True)
+    md = pd.to_datetime(raw["match_date"], errors="coerce", utc=True)
+    raw = raw[md >= pd.Timestamp(str(config.PERFORMANCE_CUTOFF_DATE), tz="UTC")]
+    raw = raw[~raw["league"].isin(set(config.PAPER_LEAGUES))]     # settled, never counted as money
+    want = pd.to_numeric(staked(raw)["pnl"], errors="coerce").sum()
+    assert round(got, 2) == round(want, 2), f"dashboard {got:+.2f}u vs ledgers {want:+.2f}u"
