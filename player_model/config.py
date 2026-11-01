@@ -126,6 +126,11 @@ MAX_STAKE_SNIPER      = 0.03
 MAX_STAKE_MARKSMAN    = 0.02
 MAX_STAKE_VALUABLE    = 0.01
 CONFIDENCE_FLOORS     = {"SNIPER": 0.72, "MARKSMAN": 0.62, "VALUABLE": 0.50}
+# OFF (owner decision 2026-11-01, Data Truth finding 52). These floors were tuned on a score that
+# was 45% constant (+0.40 on every row) and they filtered nothing: tiers are identical with and
+# without them. The honest score carries no ranking signal yet (n_games is the 5-game window on
+# every row; lazy factors are 7% of rows). Turn ON only after floors are fitted on settled props.
+PROPS_CONFIDENCE_GATE = False
 
 # Relative edge gates — replace hard market_odds floors (5.0 / 4.0) with model-derived edge.
 # rel_edge = (model_prob - fair_prob) / fair_prob  — odds-level-agnostic measure.

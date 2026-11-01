@@ -177,31 +177,17 @@ def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
     """5-component confidence score (0.0-1.0)."""
     n_games = row.get("n_games", 0)
 
-    # Data volume (0->0, 5->0.40, 10->0.70, 20->1.0)
+    # MEASURED COMPONENTS ONLY (Data Truth audit finding 52, owner decision 2026-11-01). The score
+    # used to add a literal recency 0.8 and model agreement 1.0 (+0.40 on every row) and a
+    # p_start of 0.8 when absent - 45% of it was constant. Weights of the measured parts are kept
+    # and renormalised; p_start counts only when it was actually computed.
     vol_score = min(1.0, n_games / 20.0) * 0.70 + (min(n_games, 5) / 5.0) * 0.30
-
-    # Recency (exponential decay — most recent game weighted highest)
-    recency = 0.8  # default when no per-match data
-
-    # Model agreement (always 1.0 for single model, will improve with XGBoost)
-    model_agree = 1.0
-
-    # Lazy factor contribution
     lazy_score = min(lazy_factor_count / 2.0, 1.0)
-
-    # Minutes certainty
-    p_start = row.get("p_start", 0.8)  # P(player starts)
-    min_cert = float(p_start)
-
-    score = (
-        config.CONFIDENCE_FLOORS.get("VALUABLE", 0.50) * 0  # zero-point base
-        + 0.30 * vol_score
-        + 0.25 * recency
-        + 0.20 * model_agree
-        + 0.15 * lazy_score
-        + 0.10 * min_cert
-    )
-    return round(score, 3)
+    parts = [(0.30, vol_score), (0.15, lazy_score)]
+    p_start = row.get("p_start")
+    if p_start is not None and p_start == p_start:
+        parts.append((0.10, float(p_start)))
+    return round(sum(w * v for w, v in parts) / sum(w for w, _ in parts), 3)
 
 
 # ── Tier classification ───────────────────────────────────────────────────────
@@ -227,6 +213,12 @@ def _classify_tier(
     # rel_edge = (model_prob - fair_prob) / fair_prob — odds-level-agnostic.
     _sniper_re   = getattr(config, "REL_EDGE_SNIPER",   0.20)
     _marksman_re = getattr(config, "REL_EDGE_MARKSMAN", 0.12)
+    # Confidence floors apply only when the gate is ON (config.PROPS_CONFIDENCE_GATE). It is OFF:
+    # the honest score is uninformative today (n_games is the window size, 5 on every row), so a
+    # floor could only pass everything or nothing. Measured 2026-11-01: identical tiers with and
+    # without the gate on the live board (686 AVOID / 41 VALUABLE / 2 MARKSMAN).
+    if not getattr(config, "PROPS_CONFIDENCE_GATE", False):
+        confidence = 1.0
 
     if (ev >= config.SNIPER_EV and rel_edge >= _sniper_re
             and confidence >= config.CONFIDENCE_FLOORS["SNIPER"]
