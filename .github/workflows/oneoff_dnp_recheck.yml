@@ -1,0 +1,54 @@
+name: One-off - recheck props DNP voids (2026-11-01)
+
+# Re-checks every props row voided 'DNP' against API-Football's fixture stats with the id-based
+# matching of a8a0e6ec (scripts/oneoff_recheck_dnp_voids_2026_11.py). Manual only. The results go
+# to a journal outside the repo and are applied to the LATEST ledger in the commit step, so rows
+# other workflows append meanwhile are never lost. Delete this file once it has run.
+on:
+  workflow_dispatch:
+    inputs:
+      limit_fixtures:
+        description: 'Max fixtures to check this run (blank = all)'
+        required: false
+
+concurrency:
+  group: oneoff-dnp-recheck
+  cancel-in-progress: false
+
+jobs:
+  recheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Recheck DNP voids
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          LIM="${{ github.event.inputs.limit_fixtures }}"
+          python scripts/oneoff_recheck_dnp_voids_2026_11.py --journal "$RUNNER_TEMP/dnp.json" \
+            ${LIM:+--limit-fixtures $LIM} | tee recheck.txt
+          { echo '## DNP recheck'; echo '```'; tail -n 5 recheck.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Apply to the latest ledger and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            python scripts/oneoff_recheck_dnp_voids_2026_11.py --apply-journal "$RUNNER_TEMP/dnp.json"
+            git add -f output/player_ledger.csv
+            git diff --staged --quiet && { echo "nothing to apply"; exit 0; }
+            git commit -q -m "data(props ledger): DNP voids re-checked against API-Football fixture stats"
+            git push && exit 0
+            sleep $((i * 15))
+          done
+          echo "::error::could not push the recheck after 5 attempts"; exit 1
