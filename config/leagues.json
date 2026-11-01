@@ -365,7 +365,12 @@
    "api_football_extra_seasons": [],
    "provider_names": {},
    "season_rule": {
-    "type": "calendar_year"
+    "eras": [
+     {"until": "2020-07-01", "type": "start_year", "start_month": 7},
+     {"from": "2020-07-01", "until": "2021-02-01", "type": "fixed", "season": "2020"},
+     {"from": "2021-02-01", "type": "calendar_year"}
+    ],
+    "evidence": "Split season until 2019/20; Copa Diego Maradona Oct 2020 - Jan 2021 is API season 2020; calendar year from 2021 (Pro registry/league_season_calendar.json; Data Truth finding 56)"
    }
   },
   {
@@ -386,7 +391,12 @@
    "api_football_extra_seasons": [],
    "provider_names": {},
    "season_rule": {
-    "type": "calendar_year"
+    "eras": [
+     {"until": "2020-08-01", "type": "calendar_year"},
+     {"from": "2020-08-01", "until": "2021-03-01", "type": "fixed", "season": "2020"},
+     {"from": "2021-03-01", "type": "calendar_year"}
+    ],
+    "evidence": "COVID: the 2020 campaign ran Aug 2020 - Feb 2021 (fd_history: 0 rows Jan-Jul 2020, 112 rows Jan-Feb 2021; Data Truth finding 56)"
    }
   },
   {
@@ -461,7 +471,12 @@
    "api_football_extra_seasons": [],
    "provider_names": {},
    "season_rule": {
-    "type": "calendar_year"
+    "eras": [
+     {"until": "2021-04-01", "type": "calendar_year"},
+     {"from": "2021-04-01", "until": "2022-02-01", "type": "fixed", "season": "2021"},
+     {"from": "2022-02-01", "type": "calendar_year"}
+    ],
+    "evidence": "The 2021 campaign finished in Jan 2022 (fd_history: 16 rows Jan 2022, none Feb-May 2022; Data Truth finding 56)"
    }
   },
   {
