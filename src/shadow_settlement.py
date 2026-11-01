@@ -35,7 +35,7 @@ from typing import Callable, Iterable
 import numpy as np
 import pandas as pd
 
-from src import team_names
+from src import league_registry, team_names
 from src.book_quotes import ladder_band
 from src.shadow_compare import FROZEN, GRADING_ONLY, IDENTITY
 
@@ -101,7 +101,9 @@ def _ts(v) -> pd.Timestamp | None:
 
 
 def norm_market(v) -> str:
-    return "ou25" if _blank(v) else str(v).strip().lower()
+    """Lower-cased market key; '' when blank. A blank market was assumed to be ou25 and graded
+    as one - an unknown market is now UNSUPPORTED_MARKET and stays ungraded."""
+    return "" if _blank(v) else str(v).strip().lower()
 
 
 def norm_side(v) -> str | None:
@@ -280,13 +282,22 @@ def closing_price(indexed: list[tuple[str, dict]], home, away, match_date, kicko
     status = NO_CLOSE
     first = None
     d = str(match_date)[:10]
+    # League-scoped through the registry on BOTH sides, and never widened: when no archive row
+    # carries the fixture's league the search used to fall back to every league on that date, so a
+    # same-named fixture elsewhere could supply the close. An archive without a league column, or
+    # a call without a league, is not league-checked (the caller's own scope applies).
+    lk = league_registry.canonical_name(league) if league else None
+    if league and lk is None:
+        return {**none, "status": NO_CLOSE}
     for name, groups in indexed:
         g = groups.get((d, archive_market))
         if g is None or g.empty:
             continue
-        if league and "league" in g.columns:
-            gl = g[g["league"].astype(str) == str(league)]
-            g = gl if len(gl) else g
+        if lk and "league" in g.columns:
+            canon = {v: league_registry.canonical_name(v) for v in g["league"].dropna().unique()}
+            g = g[g["league"].map(canon) == lk]
+            if g.empty:
+                continue
         rh = team_names.resolve_result(str(home), sorted(set(g["_home"])))
         ra = team_names.resolve_result(str(away), sorted(set(g["_away"])))
         m = g[(g["_home"] == rh) & (g["_away"] == ra)] if (rh and ra) else g.iloc[0:0]
@@ -517,8 +528,9 @@ def health(df: pd.DataFrame, now: datetime | None = None, pending: dict | None =
     sa = df.get("settled_at", pd.Series([""] * n)).fillna("").astype(str)
     sa = sa[sa.str.len() > 0]
     by_market = {}
-    for mk, g in df.assign(_m=df.get("market", pd.Series(["ou25"] * n)).fillna("ou25")
-                           ).groupby("_m"):
+    # A row with no market is counted under "" (unknown), not as ou25.
+    mkt = df["market"] if "market" in df.columns else pd.Series([None] * n, index=df.index)
+    for mk, g in df.assign(_m=mkt.map(norm_market)).groupby("_m"):
         gm = g.get("result", pd.Series(dtype=str)).fillna("").astype(str).str.upper()
         by_market[str(mk)] = {"rows": int(len(g)), "settled": int(gm.isin(["WIN", "LOSS"]).sum())}
     return {

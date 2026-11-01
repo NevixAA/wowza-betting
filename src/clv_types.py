@@ -77,7 +77,7 @@ def _window(df: pd.DataFrame, fixture_id, market: str, side: str,
             line: float | None) -> pd.DataFrame:
     m = df[(df["fixture_id"] == fixture_id) & (df["market"] == market) & (df["side"] == side)]
     if line is not None and "line" in m.columns:
-        m = m[m["line"].fillna(-1) == line]
+        m = m[m["line"].notna() & (m["line"] == line)]      # a row with no line never matches
     return m
 
 
