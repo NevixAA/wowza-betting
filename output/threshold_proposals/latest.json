@@ -1,64 +1,14 @@
 {
- "proposal_id": "TP-2026-11-01-499d22a5",
- "proposal_hash": "499d22a54eebb73ef6098996b87cfdf0f98ee19998b73d453b8228b260d705a3",
- "path": "output/threshold_proposals/2026-11.json",
- "summary_md": "output/threshold_proposals/2026-11.md",
- "created_at": "2026-11-01T13:19:33Z",
+ "proposal_id": "TP-2026-11-01-7536b681",
+ "proposal_hash": "7536b681e02dfb0e7f53cf280fc7dacc1f39439f6f19b4aab6c2f2a4a46311f6",
+ "path": "output/threshold_proposals/2026-11_7536b681.json",
+ "summary_md": "output/threshold_proposals/2026-11_7536b681.md",
+ "created_at": "2026-11-01T19:07:44Z",
  "month": "2026-11",
  "status": "AWAITING_OWNER",
  "n_entries": 28,
- "n_serving_changes": 8,
+ "n_serving_changes": 4,
  "serving_changes": [
-  {
-   "entry_id": "ou25|Championship",
-   "change": "NEW_APPROVAL",
-   "served_now": {
-    "sniper": 0.12,
-    "marksman": 0.08,
-    "valuable": 0.03,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.15, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)"
-   },
-   "served_if_approved": {
-    "sniper": 0.16,
-    "marksman": 0.14,
-    "valuable": 0.03,
-    "sniper_source": "best_params_standard[Championship] (approved, OOS-positive)",
-    "marksman_source": "best_params_standard[Championship] (approved)"
-   },
-   "bets_oos": 200,
-   "oos_matchdays": 114,
-   "roi_oos": 11.38,
-   "oos_roi_ci95": [
-    -6.5,
-    29.27
-   ]
-  },
-  {
-   "entry_id": "ou25|League One",
-   "change": "NEW_APPROVAL",
-   "served_now": {
-    "sniper": 0.12,
-    "marksman": 0.08,
-    "valuable": 0.03,
-    "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.25, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
-    "marksman_source": "config.MARKSMAN_THRESHOLD (global, env-overridable)"
-   },
-   "served_if_approved": {
-    "sniper": 0.11,
-    "marksman": 0.09,
-    "valuable": 0.03,
-    "sniper_source": "best_params_standard[League One] (approved, OOS-positive)",
-    "marksman_source": "best_params_standard[League One] (approved)"
-   },
-   "bets_oos": 89,
-   "oos_matchdays": 58,
-   "roi_oos": 2.88,
-   "oos_roi_ci95": [
-    -27.14,
-    32.89
-   ]
-  },
   {
    "entry_id": "ou25|League Two",
    "change": "APPROVAL_REVOKED",
@@ -76,37 +26,12 @@
     "sniper_source": "config.LEAGUE_SNIPER_THRESHOLDS (calibrated 0.14, CAPPED to 0.12 by LEAGUE_SNIPER_CAP=0.12)",
     "marksman_source": "config.LEAGUE_MARKSMAN_THRESHOLDS"
    },
-   "bets_oos": 201,
-   "oos_matchdays": 98,
-   "roi_oos": -12.57,
+   "bets_oos": 143,
+   "oos_matchdays": 104,
+   "roi_oos": -7.98,
    "oos_roi_ci95": [
-    -28.73,
-    3.6
-   ]
-  },
-  {
-   "entry_id": "ou25|Serie B",
-   "change": "THRESHOLD_CHANGE",
-   "served_now": {
-    "sniper": 0.12,
-    "marksman": 0.1,
-    "valuable": 0.03,
-    "sniper_source": "best_params_standard[Serie B] (approved, OOS-positive)",
-    "marksman_source": "best_params_standard[Serie B] (approved)"
-   },
-   "served_if_approved": {
-    "sniper": 0.11,
-    "marksman": 0.09,
-    "valuable": 0.03,
-    "sniper_source": "best_params_standard[Serie B] (approved, OOS-positive)",
-    "marksman_source": "best_params_standard[Serie B] (approved)"
-   },
-   "bets_oos": 96,
-   "oos_matchdays": 60,
-   "roi_oos": 10.45,
-   "oos_roi_ci95": [
-    -15.57,
-    36.47
+    -27.08,
+    11.12
    ]
   },
   {
@@ -126,14 +51,14 @@
     "sniper_source": "pipeline.py fixed side-market global",
     "marksman_source": "pipeline.py fixed side-market global"
    },
-   "bets_oos": 1,
-   "oos_matchdays": 1,
-   "roi_oos": -100.0,
+   "bets_oos": 0,
+   "oos_matchdays": 0,
+   "roi_oos": null,
    "oos_roi_ci95": null
   },
   {
    "entry_id": "btts|Championship",
-   "change": "THRESHOLD_CHANGE",
+   "change": "APPROVAL_REVOKED",
    "served_now": {
     "sniper": 0.09,
     "marksman": 0.07,
@@ -145,19 +70,19 @@
     "sniper": 0.1,
     "marksman": 0.08,
     "valuable": 0.04,
-    "sniper_source": "best_params_side_markets[btts][Championship] (approved)",
-    "marksman_source": "best_params_side_markets[btts][Championship] (approved)"
+    "sniper_source": "pipeline.py fixed side-market global",
+    "marksman_source": "pipeline.py fixed side-market global"
    },
-   "bets_oos": 57,
-   "oos_matchdays": 32,
-   "roi_oos": 17.47,
+   "bets_oos": 9,
+   "oos_matchdays": 9,
+   "roi_oos": 55.33,
    "oos_roi_ci95": [
-    -9.0,
-    46.33
+    -20.97,
+    131.64
    ]
   },
   {
-   "entry_id": "btts|League One",
+   "entry_id": "btts|Serie B",
    "change": "NEW_APPROVAL",
    "served_now": {
     "sniper": 0.1,
@@ -167,43 +92,18 @@
     "marksman_source": "pipeline.py fixed side-market global"
    },
    "served_if_approved": {
-    "sniper": 0.09,
-    "marksman": 0.07,
+    "sniper": 0.08,
+    "marksman": 0.06,
     "valuable": 0.04,
-    "sniper_source": "best_params_side_markets[btts][League One] (approved)",
-    "marksman_source": "best_params_side_markets[btts][League One] (approved)"
+    "sniper_source": "best_params_side_markets[btts][Serie B] (approved)",
+    "marksman_source": "best_params_side_markets[btts][Serie B] (approved)"
    },
-   "bets_oos": 55,
-   "oos_matchdays": 27,
-   "roi_oos": 6.34,
+   "bets_oos": 33,
+   "oos_matchdays": 24,
+   "roi_oos": 3.18,
    "oos_roi_ci95": [
-    -31.51,
-    26.06
-   ]
-  },
-  {
-   "entry_id": "btts|League Two",
-   "change": "NEW_APPROVAL",
-   "served_now": {
-    "sniper": 0.1,
-    "marksman": 0.08,
-    "valuable": 0.04,
-    "sniper_source": "pipeline.py fixed side-market global",
-    "marksman_source": "pipeline.py fixed side-market global"
-   },
-   "served_if_approved": {
-    "sniper": 0.09,
-    "marksman": 0.07,
-    "valuable": 0.04,
-    "sniper_source": "best_params_side_markets[btts][League Two] (approved)",
-    "marksman_source": "best_params_side_markets[btts][League Two] (approved)"
-   },
-   "bets_oos": 60,
-   "oos_matchdays": 31,
-   "roi_oos": 41.56,
-   "oos_roi_ci95": [
-    11.57,
-    61.33
+    -33.7,
+    40.06
    ]
   }
  ],
