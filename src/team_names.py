@@ -66,6 +66,15 @@ _ALIASES = {
     # prop-odds matching showed Bayern and Koln failing against OddsAPI's English spellings.
     "bayern munich": "bayern munchen",
     "cologne": "koln",
+    # OddsAPI spellings that resolved to NOTHING, so the fixture got no form data at all
+    # (invariant 8). Owner-approved 2026-11-01 ("we must fix those bugs"). MLS: one history spelling
+    # each, so this only adds data. China: the history holds each club under TWO names with
+    # overlapping dates (a duplicate identity, the Standard bug the NF repair still has to fix);
+    # until then the CURRENT name is used.
+    "d c united": "dc united",
+    "la galaxy": "los angeles galaxy",
+    "shandong luneng taishan fc": "shandong taishan",
+    "henan fc": "henan songshan longmen",
 }
 
 

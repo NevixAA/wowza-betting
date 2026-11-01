@@ -706,9 +706,17 @@ def build_upcoming_features(
 
         # Season-to-date venue stats (current season from historical data — no shift needed)
         def _venue_season_stats(team, team_col, scored_col, conceded_col, league=""):
-            rows = hist[hist[team_col] == team]
-            if league:
-                rows = rows[rows["league"] == league]
+            # League-scoped name resolution, the same as the rolling form above (invariant 11).
+            # This used an EXACT OddsAPI-name match, so any club spelled differently by OddsAPI
+            # and the history ("Atlanta United FC" / "Atlanta Utd") got NaN season stats that
+            # were then batch-median imputed: 55% of live new-format rows vs 8% in training
+            # (measured 2026-11-01). NF_FEATURE_PARITY=0 restores the exact match.
+            if _parity:
+                rows = _find_team_rows(team, team_col, league)
+            else:
+                rows = hist[hist[team_col] == team]
+                if league:
+                    rows = rows[rows["league"] == league]
             if rows.empty or "season" not in rows.columns:
                 return np.nan, np.nan, np.nan
             latest_szn = rows.sort_values("date")["season"].iloc[-1]
