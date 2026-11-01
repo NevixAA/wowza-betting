@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-01T17:04:34Z",
+  "generated_at": "2026-11-01T18:57:23Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -44,7 +44,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83002,
-      "right_rows": 16864,
+      "right_rows": 16891,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -74,7 +74,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83002,
-      "right_rows": 31921,
+      "right_rows": 31986,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -191,7 +191,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83002,
-      "right_rows": 16864,
+      "right_rows": 16891,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -222,7 +222,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83002,
-      "right_rows": 7518,
+      "right_rows": 7521,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -254,7 +254,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83002,
-      "right_rows": 31921,
+      "right_rows": 31986,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -285,7 +285,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83002,
-      "right_rows": 6200,
+      "right_rows": 6212,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -297,8 +297,8 @@
       "output_rows": 83002,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "odds_over25": 934,
-        "odds_under25": 935
+        "odds_over25": 593,
+        "odds_under25": 595
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -310,7 +310,7 @@
   "replay": {
     "label": "RETROSPECTIVE",
     "rows_total": 83002,
-    "rows_with_any_enriched_value_changed": 39677,
+    "rows_with_any_enriched_value_changed": 39671,
     "first_changed_row": {
       "date": "2019-02-25 00:00:00",
       "league": "Ireland Premier Division",
@@ -321,34 +321,34 @@
       "home_shots": {
         "legacy_non_null": 82755,
         "safe_non_null": 82143,
-        "shifted": 20212,
+        "shifted": 20217,
         "phantom": 836,
         "dropped": 224,
-        "rows_changed": 21272
+        "rows_changed": 21277
       },
       "away_shots": {
         "legacy_non_null": 82758,
         "safe_non_null": 82148,
-        "shifted": 20075,
-        "phantom": 832,
-        "dropped": 222,
-        "rows_changed": 21129
+        "shifted": 20073,
+        "phantom": 831,
+        "dropped": 221,
+        "rows_changed": 21125
       },
       "home_sot": {
         "legacy_non_null": 82756,
         "safe_non_null": 82155,
-        "shifted": 18846,
-        "phantom": 825,
-        "dropped": 224,
-        "rows_changed": 19895
+        "shifted": 18836,
+        "phantom": 824,
+        "dropped": 223,
+        "rows_changed": 19883
       },
       "away_sot": {
         "legacy_non_null": 82763,
         "safe_non_null": 82156,
-        "shifted": 18607,
-        "phantom": 824,
-        "dropped": 217,
-        "rows_changed": 19648
+        "shifted": 18616,
+        "phantom": 823,
+        "dropped": 216,
+        "rows_changed": 19655
       },
       "home_corners": {
         "legacy_non_null": 56643,
@@ -385,34 +385,34 @@
       "home_xg": {
         "legacy_non_null": 7974,
         "safe_non_null": 12266,
-        "shifted": 5380,
-        "phantom": 2579,
-        "dropped": 6871,
-        "rows_changed": 14830
+        "shifted": 5383,
+        "phantom": 2576,
+        "dropped": 6868,
+        "rows_changed": 14827
       },
       "away_xg": {
         "legacy_non_null": 7974,
         "safe_non_null": 12270,
-        "shifted": 5370,
-        "phantom": 2576,
-        "dropped": 6872,
+        "shifted": 5374,
+        "phantom": 2574,
+        "dropped": 6870,
         "rows_changed": 14818
       },
       "home_insidebox": {
         "legacy_non_null": 10145,
         "safe_non_null": 14795,
-        "shifted": 7414,
-        "phantom": 2163,
-        "dropped": 6813,
-        "rows_changed": 16390
+        "shifted": 7397,
+        "phantom": 2170,
+        "dropped": 6820,
+        "rows_changed": 16387
       },
       "away_insidebox": {
         "legacy_non_null": 10145,
         "safe_non_null": 14794,
-        "shifted": 7282,
-        "phantom": 2170,
-        "dropped": 6819,
-        "rows_changed": 16271
+        "shifted": 7280,
+        "phantom": 2177,
+        "dropped": 6826,
+        "rows_changed": 16283
       },
       "ht_home_goals": {
         "legacy_non_null": 23501,
@@ -431,44 +431,44 @@
         "rows_changed": 0
       },
       "odds_btts": {
-        "legacy_non_null": 7340,
-        "safe_non_null": 9539,
+        "legacy_non_null": 7904,
+        "safe_non_null": 10103,
         "shifted": 655,
         "phantom": 3867,
         "dropped": 6066,
         "rows_changed": 10588
       },
       "odds_over15": {
-        "legacy_non_null": 1061,
-        "safe_non_null": 1276,
+        "legacy_non_null": 1690,
+        "safe_non_null": 1905,
         "shifted": 0,
         "phantom": 538,
         "dropped": 753,
         "rows_changed": 1291
       },
       "odds_over35": {
-        "legacy_non_null": 1377,
-        "safe_non_null": 1605,
+        "legacy_non_null": 2009,
+        "safe_non_null": 2237,
         "shifted": 0,
         "phantom": 542,
         "dropped": 770,
         "rows_changed": 1312
       },
       "odds_over25": {
-        "legacy_non_null": 43986,
-        "safe_non_null": 42583,
+        "legacy_non_null": 44303,
+        "safe_non_null": 42841,
         "shifted": 1,
-        "phantom": 1551,
-        "dropped": 148,
-        "rows_changed": 1700
+        "phantom": 1564,
+        "dropped": 102,
+        "rows_changed": 1667
       },
       "odds_under25": {
-        "legacy_non_null": 43993,
-        "safe_non_null": 42587,
+        "legacy_non_null": 44312,
+        "safe_non_null": 42846,
         "shifted": 1,
-        "phantom": 1554,
-        "dropped": 148,
-        "rows_changed": 1703
+        "phantom": 1568,
+        "dropped": 102,
+        "rows_changed": 1671
       }
     }
   },
@@ -549,8 +549,8 @@
   "serving_replay": {
     "board_fixtures": 164,
     "recipe": "v9_repaired",
-    "tips_legacy": 48,
-    "tips_safe": 45,
+    "tips_legacy": 62,
+    "tips_safe": 57,
     "tips_only_legacy": [
       [
         "Argentina Primera Division",
@@ -562,16 +562,48 @@
       ],
       [
         "Argentina Primera Division",
-        "Boca Juniors",
-        "River Plate",
+        "CA Tigre BA",
+        "Sarmiento de Junin",
         "btts",
         "YES",
         "VALUABLE"
       ],
       [
         "Argentina Primera Division",
-        "CA Tigre BA",
-        "Sarmiento de Junin",
+        "Independiente Rivadavia",
+        "Banfield",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Austrian Bundesliga",
+        "Sturm Graz",
+        "RB Salzburg",
+        "OU25",
+        "UNDER",
+        "SNIPER"
+      ],
+      [
+        "Brazil Serie A",
+        "Internacional",
+        "Coritiba",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Sao Paulo",
+        "Corinthians",
+        "btts",
+        "YES",
+        "VALUABLE"
+      ],
+      [
+        "Serie B",
+        "Pisa",
+        "S\u00fcdtirol",
         "btts",
         "YES",
         "VALUABLE"
@@ -593,19 +625,35 @@
         "btts",
         "YES",
         "MARKSMAN"
+      ],
+      [
+        "Austrian Bundesliga",
+        "Sturm Graz",
+        "RB Salzburg",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Denmark Superliga",
+        "SonderjyskE",
+        "FC Copenhagen",
+        "btts",
+        "YES",
+        "VALUABLE"
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 33,
+      "away_corners_pg_roll": 35,
       "away_fouls_pg_roll": 36,
-      "away_insidebox_last5": 153,
+      "away_insidebox_last5": 149,
       "away_xg_last5": 158,
       "combined_sot_ratio": 86,
-      "home_corners_pg_roll": 33,
-      "home_fouls_pg_roll": 35,
-      "home_insidebox_last5": 155,
+      "home_corners_pg_roll": 28,
+      "home_fouls_pg_roll": 31,
+      "home_insidebox_last5": 154,
       "home_xg_last5": 158,
-      "p_over25": 94,
+      "p_over25": 93,
       "p_btts": 164,
       "p_over15": 164,
       "p_over35": 164,

@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-01T17:05:47Z",
+  "generated_at": "2026-11-01T18:58:32Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -23,7 +23,7 @@
       "model_recipe_version": "v9_repaired-1.0",
       "serving_version": "standard_repaired_20261028T123040Z_1f5805e6",
       "training_cutoff": "2026-10-28",
-      "code_sha": "30f8d95f5b67",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "3fd56c29e2c55ee8",
       "identity_version": "v9r-identity-1.0",
       "feature_recipe_version": "v9r-features-1.0",
@@ -67,8 +67,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 19,
-          "WARN": 22,
+          "PASS": 20,
+          "WARN": 21,
           "FAIL": 0
         },
         "fail_features": []
@@ -115,8 +115,8 @@
       "recipe": "legacy_v9",
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "newformat_20261018T080423Z_9eb6b4b4",
-      "training_cutoff": "UNKNOWN",
-      "code_sha": "30f8d95f5b67",
+      "training_cutoff": "UNKNOWN_PRE_GATE",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -131,8 +131,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 17,
-          "WARN": 10,
+          "PASS": 19,
+          "WARN": 8,
           "FAIL": 0
         },
         "fail_features": []
@@ -177,7 +177,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "2026-10-28",
-      "code_sha": "30f8d95f5b67",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -192,8 +192,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 26,
+          "PASS": 15,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -217,7 +217,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 332,
+          "CONFIRMED_BY_DEVIG": 336,
           "UNVERIFIABLE_ONE_SIDED": 83,
           "ONLY_BECAUSE_OF_1_08": 78
         },
@@ -245,8 +245,8 @@
       "recipe": "legacy_v9",
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
-      "training_cutoff": "UNKNOWN",
-      "code_sha": "30f8d95f5b67",
+      "training_cutoff": "UNKNOWN_PRE_GATE",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -261,8 +261,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 18,
-          "WARN": 24,
+          "PASS": 19,
+          "WARN": 23,
           "FAIL": 0
         },
         "fail_features": []
@@ -286,7 +286,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 332,
+          "CONFIRMED_BY_DEVIG": 336,
           "UNVERIFIABLE_ONE_SIDED": 83,
           "ONLY_BECAUSE_OF_1_08": 78
         },
@@ -315,7 +315,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "2026-10-28",
-      "code_sha": "30f8d95f5b67",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -330,8 +330,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 26,
+          "PASS": 15,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -383,8 +383,8 @@
       "recipe": "legacy_v9",
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
-      "training_cutoff": "UNKNOWN",
-      "code_sha": "30f8d95f5b67",
+      "training_cutoff": "UNKNOWN_PRE_GATE",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -399,8 +399,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 18,
-          "WARN": 24,
+          "PASS": 19,
+          "WARN": 23,
           "FAIL": 0
         },
         "fail_features": []
@@ -453,7 +453,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "2026-10-28",
-      "code_sha": "30f8d95f5b67",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -468,8 +468,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 16,
-          "WARN": 26,
+          "PASS": 15,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -493,7 +493,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 17,
+          "CONFIRMED_BY_DEVIG": 18,
           "ONLY_BECAUSE_OF_1_08": 7,
           "UNVERIFIABLE_ONE_SIDED": 2
         },
@@ -521,8 +521,8 @@
       "recipe": "legacy_v9",
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
-      "training_cutoff": "UNKNOWN",
-      "code_sha": "30f8d95f5b67",
+      "training_cutoff": "UNKNOWN_PRE_GATE",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -537,8 +537,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 18,
-          "WARN": 24,
+          "PASS": 19,
+          "WARN": 23,
           "FAIL": 0
         },
         "fail_features": []
@@ -562,7 +562,7 @@
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 17,
+          "CONFIRMED_BY_DEVIG": 18,
           "ONLY_BECAUSE_OF_1_08": 7,
           "UNVERIFIABLE_ONE_SIDED": 2
         },
@@ -591,7 +591,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over05_20261018T080423Z_359b491a",
       "training_cutoff": "2026-10-28",
-      "code_sha": "30f8d95f5b67",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -606,8 +606,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 39,
-          "WARN": 26,
+          "PASS": 38,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
@@ -653,7 +653,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over15_20261004T093828Z_6f370f63",
       "training_cutoff": "2026-10-28",
-      "code_sha": "30f8d95f5b67",
+      "code_sha": "6c7d6a80dde5",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -668,8 +668,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 39,
-          "WARN": 26,
+          "PASS": 38,
+          "WARN": 27,
           "FAIL": 0
         },
         "fail_features": []
