@@ -1,30 +1,30 @@
 {
   "model_type": "standard",
-  "model_version": "standard_20261101T153917Z_a47c133e",
-  "retrain_batch_id": "rb_20261101T140927Z",
-  "trained_at": "2026-11-01T15:39:17Z",
+  "model_version": "standard_20261101T163453Z_9e71c179",
+  "retrain_batch_id": "rb_20261101T162736Z",
+  "trained_at": "2026-11-01T16:34:53Z",
   "training_start": "2023-07-29",
-  "training_end": "2026-01-30",
-  "training_cutoff": "2026-01-30",
-  "training_rows": 21940,
+  "training_end": "2026-02-06",
+  "training_cutoff": "2026-02-06",
+  "training_rows": 19676,
   "target": "over25",
   "feature_schema_version": "56cc042e5c46",
   "n_features": 42,
-  "code_commit_sha": "fc6b8bab62ab",
-  "artifact_sha256": "a47c133e61f429ee76f68f94035571f5c8feffa3953a400bfb141112c31338cb",
+  "code_commit_sha": "0e16b292d6fb",
+  "artifact_sha256": "9e71c1799299edf8330281f5be06c0741bda2b45095dfd1e5e3257dfe67d8477",
   "parent_champion_version": "standard_20261018T080423Z_64313878",
   "validation_metrics": {
     "gate_version": "PG-1.0",
     "tracks": {
       "standard": {
-        "n": 4388,
-        "ll_delta": -0.00067,
+        "n": 3936,
+        "ll_delta": -0.000594,
         "ci": [
-          -0.001668,
-          0.000369
+          -0.002101,
+          0.000848
         ],
-        "brier_delta": -0.000331,
-        "ece_delta": 0.004897,
+        "brier_delta": -0.000288,
+        "ece_delta": 0.00172,
         "passed": false
       }
     }
@@ -38,20 +38,20 @@
       "standard"
     ],
     "canary_ok": true,
-    "holdout_n": 4388,
-    "holdout_ll_delta": -0.00067,
-    "holdout_ci_lo": -0.001668,
-    "holdout_ci_hi": 0.000369,
+    "holdout_n": 3936,
+    "holdout_ll_delta": -0.000594,
+    "holdout_ci_lo": -0.002101,
+    "holdout_ci_hi": 0.000848,
     "summary_candidate_metrics": {
-      "n": 4388,
-      "log_loss": 0.683902,
-      "brier": 0.245409,
-      "ece": 0.007632,
-      "cal_slope": 1.3111,
-      "cal_slope_se": 0.179,
-      "mean_p": 0.54099,
-      "base_rate": 0.54102
+      "n": 3936,
+      "log_loss": 0.6849,
+      "brier": 0.245908,
+      "ece": 0.00507,
+      "cal_slope": 1.5484,
+      "cal_slope_se": 0.2397,
+      "mean_p": 0.54192,
+      "base_rate": 0.54192
     }
   },
-  "shadow_since": "2026-11-01T15:39:17Z"
+  "shadow_since": "2026-11-01T16:34:53Z"
 }

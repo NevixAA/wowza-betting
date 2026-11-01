@@ -1,0 +1,45 @@
+{
+  "model_type": "btts",
+  "model_version": "btts_20261101T163810Z_3ffecff8",
+  "retrain_batch_id": "rb_20261101T162736Z",
+  "trained_at": "2026-11-01T16:38:10Z",
+  "training_start": "2019-02-22",
+  "training_end": "2025-11-01",
+  "training_cutoff": "2025-11-01",
+  "training_rows": 52276,
+  "target": "btts",
+  "feature_schema_version": "56cc042e5c46",
+  "n_features": 42,
+  "code_commit_sha": "0e16b292d6fb",
+  "artifact_sha256": "3ffecff81c6b6ac95279d497f817f7e5a384314d1001166d9caed21edf18a803",
+  "parent_champion_version": "btts_20261005T101905Z_238e3419",
+  "validation_metrics": {
+    "gate_version": "PG-1.0",
+    "tracks": {
+      "new_format": {
+        "n": 4644,
+        "ll_delta": 0.001829,
+        "ci": [
+          -3.9e-05,
+          0.003578
+        ],
+        "brier_delta": 0.000909,
+        "ece_delta": -0.002527,
+        "passed": false
+      },
+      "standard": {
+        "n": 5812,
+        "ll_delta": 0.001056,
+        "ci": [
+          -0.000481,
+          0.002651
+        ],
+        "brier_delta": 0.000518,
+        "ece_delta": 0.001152,
+        "passed": false
+      }
+    }
+  },
+  "promotion_status": "KEEP_CHAMPION",
+  "model_role": "REJECTED"
+}
