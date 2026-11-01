@@ -1,0 +1,277 @@
+{
+  "artifact": "price_provenance_health",
+  "version": "price-provenance-1.0",
+  "generated_at": "2026-11-01T10:29:54Z",
+  "capture_files": {
+    "newformat_odds_history": {
+      "rows": 64294,
+      "invalid_rows": 5007,
+      "invalid_by_reason": {
+        "PARSER_PRE_FIX_OU_2026-08-10": 4074,
+        "FIRST_HALF_BTTS_PRICE_GT_3.20": 933
+      },
+      "invalid_by_market": {
+        "btts_yes": 933,
+        "over35": 714,
+        "under35": 712,
+        "over15": 662,
+        "over25": 662,
+        "under15": 662,
+        "under25": 662
+      },
+      "main_line_only_rows": 7838,
+      "raw_file_rewritten": false
+    },
+    "standard_sidemarket_odds_history": {
+      "rows": 66158,
+      "invalid_rows": 271,
+      "invalid_by_reason": {
+        "FIRST_HALF_BTTS_PRICE_GT_3.20": 271
+      },
+      "invalid_by_market": {
+        "btts_yes": 271
+      },
+      "main_line_only_rows": 0,
+      "raw_file_rewritten": false
+    },
+    "standard_odds_history": {
+      "rows": 10654,
+      "invalid_rows": 0,
+      "invalid_by_reason": {},
+      "invalid_by_market": {},
+      "main_line_only_rows": 0,
+      "raw_file_rewritten": false
+    }
+  },
+  "mapping_evidence_vs_realised": [
+    {
+      "source": "newformat_odds_history",
+      "period": "backfill",
+      "line": "OU1.5",
+      "n": 393,
+      "median_over": 1.66,
+      "implied_over": 0.5897,
+      "realised_over": 0.6209,
+      "gap": -0.0312,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "backfill",
+      "line": "OU2.5",
+      "n": 2780,
+      "median_over": 1.9,
+      "implied_over": 0.5168,
+      "realised_over": 0.5302,
+      "gap": -0.0134,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "backfill",
+      "line": "OU3.5",
+      "n": 746,
+      "median_over": 2.3,
+      "implied_over": 0.4379,
+      "realised_over": 0.4424,
+      "gap": -0.0045,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "backfill",
+      "line": "BTTS",
+      "n": 2807,
+      "median_over": 1.77,
+      "implied_over": 0.5329,
+      "realised_over": 0.5607,
+      "gap": -0.0278,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_invalid",
+      "line": "OU1.5",
+      "n": 358,
+      "median_over": 1.8,
+      "implied_over": 0.5461,
+      "realised_over": 0.7486,
+      "gap": -0.2025,
+      "consistent_full_match": false
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_invalid",
+      "line": "OU2.5",
+      "n": 353,
+      "median_over": 3.5,
+      "implied_over": 0.3178,
+      "realised_over": 0.4901,
+      "gap": -0.1723,
+      "consistent_full_match": false
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_invalid",
+      "line": "OU3.5",
+      "n": 358,
+      "median_over": 2.38,
+      "implied_over": 0.334,
+      "realised_over": 0.2542,
+      "gap": 0.0798,
+      "consistent_full_match": false
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_valid",
+      "line": "OU1.5",
+      "n": 761,
+      "median_over": 1.2,
+      "implied_over": 0.7716,
+      "realised_over": 0.7819,
+      "gap": -0.0103,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_valid",
+      "line": "OU2.5",
+      "n": 766,
+      "median_over": 1.67,
+      "implied_over": 0.5513,
+      "realised_over": 0.5509,
+      "gap": 0.0004,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_valid",
+      "line": "OU3.5",
+      "n": 772,
+      "median_over": 2.62,
+      "implied_over": 0.3528,
+      "realised_over": 0.3316,
+      "gap": 0.0212,
+      "consistent_full_match": true
+    },
+    {
+      "source": "newformat_odds_history",
+      "period": "forward_valid",
+      "line": "BTTS",
+      "n": 611,
+      "median_over": 1.67,
+      "implied_over": 0.5458,
+      "realised_over": 0.6023,
+      "gap": -0.0565,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_sidemarket_odds_history",
+      "period": "backfill",
+      "line": "OU2.5",
+      "n": 30,
+      "median_over": 1.6,
+      "implied_over": 0.5713,
+      "realised_over": 0.6667,
+      "gap": -0.0954,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_sidemarket_odds_history",
+      "period": "backfill",
+      "line": "BTTS",
+      "n": 6058,
+      "median_over": 1.85,
+      "implied_over": 0.517,
+      "realised_over": 0.5309,
+      "gap": -0.0139,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_sidemarket_odds_history",
+      "period": "forward_valid",
+      "line": "OU1.5",
+      "n": 767,
+      "median_over": 1.25,
+      "implied_over": 0.7561,
+      "realised_over": 0.7797,
+      "gap": -0.0236,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_sidemarket_odds_history",
+      "period": "forward_valid",
+      "line": "OU2.5",
+      "n": 761,
+      "median_over": 1.85,
+      "implied_over": 0.5241,
+      "realised_over": 0.5611,
+      "gap": -0.037,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_sidemarket_odds_history",
+      "period": "forward_valid",
+      "line": "OU3.5",
+      "n": 767,
+      "median_over": 3.0,
+      "implied_over": 0.3234,
+      "realised_over": 0.3286,
+      "gap": -0.0052,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_sidemarket_odds_history",
+      "period": "forward_valid",
+      "line": "BTTS",
+      "n": 653,
+      "median_over": 1.73,
+      "implied_over": 0.5421,
+      "realised_over": 0.5743,
+      "gap": -0.0322,
+      "consistent_full_match": true
+    },
+    {
+      "source": "standard_odds_history",
+      "period": "forward_valid",
+      "line": "OU2.5",
+      "n": 292,
+      "median_over": 1.9,
+      "implied_over": 0.4964,
+      "realised_over": 0.5137,
+      "gap": -0.0173,
+      "consistent_full_match": true
+    }
+  ],
+  "synthetic_side_prices_in_backtests": {
+    "btts": {
+      "rows": 22516,
+      "synthetic_rows": 21335,
+      "synthetic_share": 0.9475,
+      "basis": "price_synthetic flag",
+      "placed_rows": 209,
+      "placed_rows_synthetic": 0,
+      "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
+    },
+    "over15": {
+      "rows": 22516,
+      "synthetic_rows": 22441,
+      "synthetic_share": 0.9967,
+      "basis": "price_synthetic flag",
+      "placed_rows": 10,
+      "placed_rows_synthetic": 0,
+      "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
+    },
+    "over35": {
+      "rows": 22516,
+      "synthetic_rows": 22439,
+      "synthetic_share": 0.9966,
+      "basis": "price_synthetic flag",
+      "placed_rows": 59,
+      "placed_rows_synthetic": 0,
+      "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
+    }
+  },
+  "status": "PASS",
+  "unexplained_inconsistent_cells": []
+}

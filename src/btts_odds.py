@@ -159,6 +159,29 @@ def append_book_rows(new_rows: list[dict]) -> None:
     roll(path)
 
 
+def _log_usage(*, calls, credits, rows, fresh, nokey, err, capped, near, regions, by_league,
+               calls_by_league, remaining) -> None:
+    """One machine-readable line per run for src/integrity/oddsapi_quota.py (R2-C). Never raises,
+    never prints the key. `suppressed_fresh / fixtures_considered` is the duplicate-fetch
+    suppression rate of the refresh clock."""
+    import json
+    try:
+        rem = int(float(remaining)) if remaining not in (None, "") else None
+    except (TypeError, ValueError):
+        rem = None
+    try:
+        log.info("[oddsapi_usage] " + json.dumps({
+            "source": "btts_odds", "workflow": os.getenv("GITHUB_WORKFLOW", ""),
+            "run_id": os.getenv("GITHUB_RUN_ID", ""), "market": "btts", "regions": regions,
+            "calls": calls, "credits": credits, "credits_by_market": {"btts": credits},
+            "credits_by_league": by_league, "calls_by_league": calls_by_league,
+            "fixtures_considered": rows, "suppressed_fresh": fresh, "no_event_id": nokey,
+            "errors": err, "capped": capped, "near_kickoff_fetches": near,
+            "requests_remaining": rem}, sort_keys=True))
+    except Exception:                                              # noqa: BLE001
+        pass
+
+
 def fetch(rows: list[dict]) -> list[dict]:
     """Fill `odds_btts` across the board. Returns rows unchanged on any failure.
 
@@ -179,6 +202,11 @@ def fetch(rows: list[dict]) -> list[dict]:
     out, calls, filled, book_rows = [], 0, 0, []
     credits, n_regions, fetched = 0, len([x for x in regions.split(",") if x.strip()]) or 1, {}
     n_fresh = n_nokey = n_err = 0
+    # Usage accounting only (R2-C finding 23): never read by the refresh/near-kickoff logic.
+    n_capped = n_near_fetch = 0
+    credits_by_league: dict[str, int] = {}
+    calls_by_league: dict[str, int] = {}
+    remaining_hdr = None
     for r in rows:
         match = f"{r.get('home_team', '')} vs {r.get('away_team', '')}"
         # hours to kickoff — unparseable means "treat as far out", never skip silently
@@ -204,6 +232,7 @@ def fetch(rows: list[dict]) -> list[dict]:
             out.append(r)
             continue
         if calls >= max_calls:
+            n_capped += 1
             out.append(r)
             continue
         try:
@@ -212,11 +241,20 @@ def fetch(rows: list[dict]) -> list[dict]:
                                         "markets": "btts", "oddsFormat": "decimal"},
                                 timeout=15)
             calls += 1
+            _c0 = credits
             # OddsAPI bills markets x regions per event call; x-requests-last is what THIS call cost
             try:
                 credits += int(float(resp.headers.get("x-requests-last") or n_regions))
             except ValueError:
                 credits += n_regions
+            try:
+                _lg = str(r.get("league") or "unknown")
+                credits_by_league[_lg] = credits_by_league.get(_lg, 0) + (credits - _c0)
+                calls_by_league[_lg] = calls_by_league.get(_lg, 0) + 1
+                n_near_fetch += int(bool(near))
+                remaining_hdr = resp.headers.get("x-requests-remaining") or remaining_hdr
+            except Exception:                                      # noqa: BLE001
+                pass
             if resp.status_code != 200:
                 n_err += 1
                 out.append(r)
@@ -277,4 +315,8 @@ def fetch(rows: list[dict]) -> list[dict]:
     log.info(f"[btts] {calls} call(s), {credits} credit(s) spent, filled {filled}/{len(rows)} fixtures "
              f"(skipped {n_fresh} within {refresh_h:g}h refresh, {n_nokey} no event id, "
              f"{n_err} errors; near-kickoff window {near_h:g}h)")
+    _log_usage(calls=calls, credits=credits, rows=len(rows), fresh=n_fresh, nokey=n_nokey,
+               err=n_err, capped=n_capped, near=n_near_fetch, regions=regions,
+               by_league=credits_by_league, calls_by_league=calls_by_league,
+               remaining=remaining_hdr)
     return out

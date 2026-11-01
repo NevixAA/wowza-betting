@@ -1,0 +1,734 @@
+{
+  "artifact": "model_integrity_health",
+  "version": "model-integrity-health-0.1",
+  "generated_at": "2026-11-01T10:39:33Z",
+  "status": "FAIL",
+  "inputs_present": {
+    "feature_parity_health": true,
+    "price_provenance_health": true,
+    "side_edge_devig_health": true,
+    "join_integrity_health": true,
+    "identity_health": false,
+    "season_resolution_health": false,
+    "league_registry_health": false,
+    "player_props_integrity_health": false
+  },
+  "tracks": {
+    "standard|OU25": {
+      "model_type": "standard",
+      "market": "OU25",
+      "payload": "model_v9_standard_repaired.pkl",
+      "payload_sha256_16": "1f5805e63c9945cb",
+      "recipe": "v9_repaired",
+      "model_recipe_version": "v9_repaired-1.0",
+      "serving_version": "standard_repaired_20261028T123040Z_1f5805e6",
+      "training_cutoff": "2026-10-28",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "3fd56c29e2c55ee8",
+      "identity_version": "v9r-identity-1.0",
+      "feature_recipe_version": "v9r-features-1.0",
+      "imputer_version": "v9-train-only-imputer-1.0",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 41,
+      "chronology": {
+        "status": "PASS",
+        "blocks": {
+          "base": {
+            "rows": 19843,
+            "dates": [
+              "2021-07-30",
+              "2024-11-22"
+            ]
+          },
+          "calibration": {
+            "rows": 2457,
+            "dates": [
+              "2024-11-23",
+              "2025-03-14"
+            ]
+          },
+          "meta": {
+            "rows": 2547,
+            "dates": [
+              "2025-03-15",
+              "2025-09-27"
+            ]
+          },
+          "holdout": {
+            "rows": 6239,
+            "dates": [
+              "2025-09-28",
+              "2026-10-26"
+            ]
+          }
+        }
+      },
+      "parity": {
+        "status": "FAIL",
+        "counts": {
+          "PASS": 18,
+          "WARN": 21,
+          "FAIL": 2
+        },
+        "fail_features": [
+          "home_rest_days",
+          "away_rest_days"
+        ]
+      },
+      "batch_invariance": {
+        "status": "PASS",
+        "note": "train-only persisted imputer"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "PASS",
+        "holdout": {
+          "rows": 6239,
+          "dates": [
+            "2025-09-28",
+            "2026-10-26"
+          ]
+        }
+      },
+      "price_provenance": {
+        "price_features_in_model": [],
+        "status": "PASS",
+        "note": "v9_repaired serves price_mode=none: football-only model, no market input"
+      },
+      "missing_feature_policy": "persisted train-only imputer",
+      "serving_fallback_policy": "row-level fallback to legacy_v9 when repaired features are unavailable; invalid STANDARD_OU25_SERVING_RECIPE silently becomes legacy_v9 (finding 17: fails OPEN)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "weight_alignment"
+      ]
+    },
+    "new_format|OU25": {
+      "model_type": "new_format",
+      "market": "OU25",
+      "payload": "model_v9_newformat.pkl",
+      "payload_sha256_16": "9eb6b4b4860c7970",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "newformat_20261018T080423Z_9eb6b4b4",
+      "training_cutoff": "UNKNOWN",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 27,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "WARN",
+        "counts": {
+          "PASS": 16,
+          "WARN": 11,
+          "FAIL": 0
+        },
+        "fail_features": []
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "status": "WARN",
+        "note": "NF model carries bookmaker_overround: historical value is a last-snapshot (near-closing) best-of-books price while live is the current board; 83% of NF training rows have it missing (median-imputed). Market info inside a pre-match model (finding 15)."
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "standard|BTTS": {
+      "model_type": "standard",
+      "market": "BTTS",
+      "payload": "model_v9_btts.pkl",
+      "payload_sha256_16": "238e3419f4144956",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "btts_20261005T101905Z_238e3419",
+      "training_cutoff": "2026-10-28",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 42,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "FAIL",
+        "counts": {
+          "PASS": 15,
+          "WARN": 25,
+          "FAIL": 2
+        },
+        "fail_features": [
+          "home_rest_days",
+          "away_rest_days"
+        ]
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "synthetic_share_historical": 0.9475,
+        "placed_rows_synthetic": 0,
+        "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
+        "devig_shadow_ledger": {
+          "CONFIRMED_BY_DEVIG": 330,
+          "UNVERIFIABLE_ONE_SIDED": 80,
+          "ONLY_BECAUSE_OF_1_08": 77
+        },
+        "status": "WARN",
+        "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "new_format|BTTS": {
+      "model_type": "new_format",
+      "market": "BTTS",
+      "payload": "model_v9_btts.pkl",
+      "payload_sha256_16": "238e3419f4144956",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "btts_20261005T101905Z_238e3419",
+      "training_cutoff": "UNKNOWN",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 42,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "WARN",
+        "counts": {
+          "PASS": 16,
+          "WARN": 26,
+          "FAIL": 0
+        },
+        "fail_features": []
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "synthetic_share_historical": 0.9475,
+        "placed_rows_synthetic": 0,
+        "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
+        "devig_shadow_ledger": {
+          "CONFIRMED_BY_DEVIG": 330,
+          "UNVERIFIABLE_ONE_SIDED": 80,
+          "ONLY_BECAUSE_OF_1_08": 77
+        },
+        "status": "WARN",
+        "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "standard|OU15": {
+      "model_type": "standard",
+      "market": "OU15",
+      "payload": "model_v9_over15.pkl",
+      "payload_sha256_16": "da4743a2669fef13",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "over15_20261018T080423Z_da4743a2",
+      "training_cutoff": "2026-10-28",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 42,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "FAIL",
+        "counts": {
+          "PASS": 15,
+          "WARN": 25,
+          "FAIL": 2
+        },
+        "fail_features": [
+          "home_rest_days",
+          "away_rest_days"
+        ]
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "synthetic_share_historical": 0.9967,
+        "placed_rows_synthetic": 0,
+        "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
+        "devig_shadow_ledger": {
+          "CONFIRMED_BY_DEVIG": 77,
+          "UNVERIFIABLE_ONE_SIDED": 20,
+          "ONLY_BECAUSE_OF_1_08": 8
+        },
+        "status": "WARN",
+        "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "new_format|OU15": {
+      "model_type": "new_format",
+      "market": "OU15",
+      "payload": "model_v9_over15.pkl",
+      "payload_sha256_16": "da4743a2669fef13",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "over15_20261018T080423Z_da4743a2",
+      "training_cutoff": "UNKNOWN",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 42,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "WARN",
+        "counts": {
+          "PASS": 16,
+          "WARN": 26,
+          "FAIL": 0
+        },
+        "fail_features": []
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "synthetic_share_historical": 0.9967,
+        "placed_rows_synthetic": 0,
+        "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
+        "devig_shadow_ledger": {
+          "CONFIRMED_BY_DEVIG": 77,
+          "UNVERIFIABLE_ONE_SIDED": 20,
+          "ONLY_BECAUSE_OF_1_08": 8
+        },
+        "status": "WARN",
+        "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "standard|OU35": {
+      "model_type": "standard",
+      "market": "OU35",
+      "payload": "model_v9_over35.pkl",
+      "payload_sha256_16": "f546ce723bdb31f6",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "over35_20261005T101905Z_f546ce72",
+      "training_cutoff": "2026-10-28",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 42,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "FAIL",
+        "counts": {
+          "PASS": 15,
+          "WARN": 25,
+          "FAIL": 2
+        },
+        "fail_features": [
+          "home_rest_days",
+          "away_rest_days"
+        ]
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "synthetic_share_historical": 0.9966,
+        "placed_rows_synthetic": 0,
+        "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
+        "devig_shadow_ledger": {
+          "CONFIRMED_BY_DEVIG": 17,
+          "ONLY_BECAUSE_OF_1_08": 7,
+          "UNVERIFIABLE_ONE_SIDED": 1
+        },
+        "status": "WARN",
+        "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "new_format|OU35": {
+      "model_type": "new_format",
+      "market": "OU35",
+      "payload": "model_v9_over35.pkl",
+      "payload_sha256_16": "f546ce723bdb31f6",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "over35_20261005T101905Z_f546ce72",
+      "training_cutoff": "UNKNOWN",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 42,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "WARN",
+        "counts": {
+          "PASS": 16,
+          "WARN": 26,
+          "FAIL": 0
+        },
+        "fail_features": []
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "synthetic_share_historical": 0.9966,
+        "placed_rows_synthetic": 0,
+        "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
+        "devig_shadow_ledger": {
+          "CONFIRMED_BY_DEVIG": 17,
+          "ONLY_BECAUSE_OF_1_08": 7,
+          "UNVERIFIABLE_ONE_SIDED": 1
+        },
+        "status": "WARN",
+        "note": "historical side prices mostly SYNTHETIC (diagnostic only, excluded from ROI); live edge uses a fixed 1.08 margin, not a two-sided de-vig (shadow logged)"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "missing NF payload falls back to the standard payload (src/predict.py:332)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence"
+      ]
+    },
+    "standard|HT_O05": {
+      "model_type": "standard",
+      "market": "HT_O05",
+      "payload": "model_ht_over05.pkl",
+      "payload_sha256_16": "359b491a454efa0e",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "ht_over05_20261018T080423Z_359b491a",
+      "training_cutoff": "2026-10-28",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 65,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "FAIL",
+        "counts": {
+          "PASS": 38,
+          "WARN": 25,
+          "FAIL": 2
+        },
+        "fail_features": [
+          "home_rest_days",
+          "away_rest_days"
+        ]
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "status": "UNKNOWN",
+        "note": "HT prices not audited by R2-C"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence",
+        "price_provenance"
+      ]
+    },
+    "standard|HT_O15": {
+      "model_type": "standard",
+      "market": "HT_O15",
+      "payload": "model_ht_over15.pkl",
+      "payload_sha256_16": "6f370f6304d70094",
+      "recipe": "legacy_v9",
+      "model_recipe_version": "legacy_v9 (unversioned)",
+      "serving_version": "ht_over15_20261004T093828Z_6f370f63",
+      "training_cutoff": "2026-10-28",
+      "code_sha": "b0a1204ad4c6",
+      "data_hash": "UNKNOWN",
+      "identity_version": "UNKNOWN",
+      "feature_recipe_version": "legacy_v9 (unversioned)",
+      "imputer_version": "batch-median at predict (src/model._prep: X.median())",
+      "season_resolver_version": "UNKNOWN",
+      "league_registry_version": "UNKNOWN",
+      "n_features": 65,
+      "chronology": {
+        "status": "UNKNOWN",
+        "note": "legacy recipe: no persisted block boundaries"
+      },
+      "parity": {
+        "status": "FAIL",
+        "counts": {
+          "PASS": 38,
+          "WARN": 25,
+          "FAIL": 2
+        },
+        "fail_features": [
+          "home_rest_days",
+          "away_rest_days"
+        ]
+      },
+      "batch_invariance": {
+        "status": "FAIL",
+        "note": "legacy _prep fills NaN with the scoring batch's median"
+      },
+      "weight_alignment": {
+        "status": "UNKNOWN",
+        "owner": "R2 model-recipe workstream"
+      },
+      "holdout_independence": {
+        "status": "UNKNOWN"
+      },
+      "price_provenance": {
+        "price_features_in_model": [
+          "bookmaker_overround"
+        ],
+        "status": "UNKNOWN",
+        "note": "HT prices not audited by R2-C"
+      },
+      "missing_feature_policy": "batch median (legacy)",
+      "serving_fallback_policy": "unknown leagues are scored by the STANDARD payload (finding 8: fails OPEN)",
+      "join_integrity": {
+        "status": "FAIL",
+        "af_history_join_mode": "legacy"
+      },
+      "status": "FAIL",
+      "unknown_checks": [
+        "chronology",
+        "weight_alignment",
+        "holdout_independence",
+        "price_provenance"
+      ]
+    },
+    "props|ALL": {
+      "model_type": "props",
+      "market": "ALL",
+      "status": "UNKNOWN",
+      "note": "owned by the props workstream (player_props_integrity_health.json)"
+    }
+  }
+}

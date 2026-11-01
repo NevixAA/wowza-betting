@@ -1,0 +1,186 @@
+{
+  "artifact": "side_edge_devig_health",
+  "shadow_version": "side_edge_devig_shadow-1.0",
+  "generated_at": "2026-11-01T10:37:56Z",
+  "production_rule": "edge = p_model - (1/odds)/1.08 (pipeline._generate_side_bets, unchanged)",
+  "shadow_rule": "edge = p_model - median_books(power_devig(same-book two-sided pair)), pre-kickoff, carried forward to the decision time; same thresholds",
+  "quotes_from": "2026-08-19 09:23:27+00:00",
+  "quote_rows": 197724,
+  "board": {
+    "generated_at": "2026-11-01T09:43:06Z",
+    "rows": 82,
+    "production_tips": 2,
+    "classification": {
+      "CONFIRMED_BY_DEVIG": 2
+    },
+    "by_market": {
+      "btts": {
+        "CONFIRMED_BY_DEVIG": 1
+      },
+      "over15": {
+        "CONFIRMED_BY_DEVIG": 1
+      }
+    },
+    "devigged_rows": 82,
+    "median_pair_overround": 0.0767,
+    "median_edge_prod_minus_devig_pp": 0.06,
+    "mean_edge_prod_minus_devig_pp": -0.12,
+    "p90_edge_prod_minus_devig_pp": 1.92,
+    "rows_prod_edge_inflated_ge_2pp": 7,
+    "rows_pair_overround_below_6pct": 1,
+    "mean_inflation_pp_when_overround_below_6pct": 0.87
+  },
+  "ledger_retrospective": {
+    "label": "RETROSPECTIVE",
+    "tips_since_quotes_exist": 617,
+    "rows": 617,
+    "production_tips": 617,
+    "classification": {
+      "CONFIRMED_BY_DEVIG": 424,
+      "UNVERIFIABLE_ONE_SIDED": 101,
+      "ONLY_BECAUSE_OF_1_08": 92
+    },
+    "by_market": {
+      "btts": {
+        "CONFIRMED_BY_DEVIG": 330,
+        "UNVERIFIABLE_ONE_SIDED": 80,
+        "ONLY_BECAUSE_OF_1_08": 77
+      },
+      "over15": {
+        "CONFIRMED_BY_DEVIG": 77,
+        "UNVERIFIABLE_ONE_SIDED": 20,
+        "ONLY_BECAUSE_OF_1_08": 8
+      },
+      "over35": {
+        "CONFIRMED_BY_DEVIG": 17,
+        "ONLY_BECAUSE_OF_1_08": 7,
+        "UNVERIFIABLE_ONE_SIDED": 1
+      }
+    },
+    "devigged_rows": 516,
+    "median_pair_overround": 0.0798,
+    "median_edge_prod_minus_devig_pp": 0.1,
+    "mean_edge_prod_minus_devig_pp": 0.47,
+    "p90_edge_prod_minus_devig_pp": 2.51,
+    "rows_prod_edge_inflated_ge_2pp": 83,
+    "rows_pair_overround_below_6pct": 15,
+    "mean_inflation_pp_when_overround_below_6pct": 2.67,
+    "examples_only_because_of_1_08": [
+      {
+        "fixture": "Estudiantes v Instituto de C\u00f3rdoba",
+        "league": "Argentina Primera Division",
+        "market": "over15",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.058,
+        "edge_devig": 0.0317,
+        "odds": 1.52,
+        "p_fair_devig": 0.6355,
+        "books": "codere_it;leovegas_se;marathonbet;onexbet;unibet_se"
+      },
+      {
+        "fixture": "V\u00e4ster\u00e5s SK v IF Brommapojkarna",
+        "league": "Sweden Allsvenskan",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0464,
+        "edge_devig": 0.0367,
+        "odds": 1.59,
+        "p_fair_devig": 0.592,
+        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet"
+      },
+      {
+        "fixture": "New York City FC v CF Montreal",
+        "league": "USA MLS",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0444,
+        "edge_devig": 0.0379,
+        "odds": 1.65,
+        "p_fair_devig": 0.5677,
+        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;mybookieag;onexbet;pinnacle;virginbet;williamhill"
+      },
+      {
+        "fixture": "Mj\u00e4llby AIF v Kalmar FF",
+        "league": "Sweden Allsvenskan",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0438,
+        "edge_devig": 0.0372,
+        "odds": 1.72,
+        "p_fair_devig": 0.5449,
+        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
+      },
+      {
+        "fixture": "Northampton Town v Oldham Athletic",
+        "league": "League Two",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0412,
+        "edge_devig": -0.0072,
+        "odds": 1.89,
+        "p_fair_devig": 0.5383,
+        "books": "betfred_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
+      },
+      {
+        "fixture": "Arminia Bielefeld v Eintracht Braunschweig",
+        "league": "Bundesliga 2",
+        "market": "over35",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0533,
+        "edge_devig": -0.0054,
+        "odds": 2.81,
+        "p_fair_devig": 0.3882,
+        "books": "codere_it;marathonbet;onexbet;tipico_de"
+      },
+      {
+        "fixture": "Accrington Stanley v Northampton Town",
+        "league": "League Two",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0411,
+        "edge_devig": 0.0392,
+        "odds": 1.84,
+        "p_fair_devig": 0.5051,
+        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;matchbook;onexbet;pinnacle;virginbet;williamhill"
+      },
+      {
+        "fixture": "Wrexham AFC v Wolverhampton Wanderers",
+        "league": "Championship",
+        "market": "btts",
+        "tier_prod": "VALUABLE",
+        "edge_prod": 0.0436,
+        "edge_devig": 0.0368,
+        "odds": 1.69,
+        "p_fair_devig": 0.5547,
+        "books": "betfred_uk;coral;ladbrokes_uk;leovegas;livescorebet;onexbet;virginbet;williamhill"
+      }
+    ]
+  },
+  "ledger_open_tips": {
+    "rows": 30,
+    "production_tips": 30,
+    "classification": {
+      "CONFIRMED_BY_DEVIG": 16,
+      "ONLY_BECAUSE_OF_1_08": 8,
+      "UNVERIFIABLE_ONE_SIDED": 6
+    },
+    "by_market": {
+      "btts": {
+        "CONFIRMED_BY_DEVIG": 15,
+        "ONLY_BECAUSE_OF_1_08": 6,
+        "UNVERIFIABLE_ONE_SIDED": 6
+      },
+      "over15": {
+        "ONLY_BECAUSE_OF_1_08": 2,
+        "CONFIRMED_BY_DEVIG": 1
+      }
+    },
+    "devigged_rows": 24,
+    "median_pair_overround": 0.0799,
+    "median_edge_prod_minus_devig_pp": 0.02,
+    "mean_edge_prod_minus_devig_pp": 0.28,
+    "p90_edge_prod_minus_devig_pp": 2.07,
+    "rows_prod_edge_inflated_ge_2pp": 3,
+    "rows_pair_overround_below_6pct": 0
+  }
+}

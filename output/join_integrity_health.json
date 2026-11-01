@@ -1,0 +1,644 @@
+{
+  "artifact": "join_integrity_health",
+  "helper_version": "safe_left_enrich-1.0",
+  "generated_at": "2026-11-01T10:36:25Z",
+  "status": "FAIL",
+  "joins": {
+    "af_history_shots.legacy": {
+      "name": "af_history_shots.legacy",
+      "keys": [
+        "_home_norm",
+        "_away_norm",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 85467,
+      "right_rows": 90685,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 8420,
+      "right_duplicate_rows": 17016,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 85190,
+      "unmapped_left_rows": 0,
+      "output_rows": 98531,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 13064,
+      "legacy_misaligned_rows": 85454,
+      "status": "FAIL",
+      "notes": [
+        "key omits league/fixture_id"
+      ]
+    },
+    "std_sidemarket_odds.legacy": {
+      "name": "std_sidemarket_odds.legacy",
+      "keys": [
+        "_h",
+        "_a",
+        "_d"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 85467,
+      "right_rows": 16746,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 532,
+      "ambiguous_cells": {
+        "Denmark 1st Div <- Bundesliga 2": 532
+      },
+      "left_null_key_rows": 0,
+      "matched_left_rows": 7366,
+      "unmapped_left_rows": 78101,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 0,
+      "legacy_misaligned_rows": 0,
+      "status": "WARN",
+      "notes": [
+        "key omits league/fixture_id; pivot aggfunc picks one value per key"
+      ]
+    },
+    "ou25_captures.legacy": {
+      "name": "ou25_captures.legacy",
+      "keys": [
+        "_h",
+        "_a",
+        "_d"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 85467,
+      "right_rows": 33109,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 4790,
+      "unmapped_left_rows": 80677,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 0,
+      "legacy_misaligned_rows": 0,
+      "status": "PASS",
+      "notes": [
+        "key omits league/fixture_id; pivot aggfunc picks one value per key"
+      ]
+    }
+  },
+  "serving_join_mode": "legacy",
+  "flag": "WOWZA_SAFE_ENRICH_JOINS (default 0 = legacy joins serve; owner review pending)",
+  "safe_join_reports": {
+    "af_history_shots.legacy": {
+      "name": "af_history_shots.legacy",
+      "keys": [
+        "_home_norm",
+        "_away_norm",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 85467,
+      "right_rows": 90685,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 8420,
+      "right_duplicate_rows": 17016,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 85190,
+      "unmapped_left_rows": 0,
+      "output_rows": 98531,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 13064,
+      "legacy_misaligned_rows": 85454,
+      "status": "FAIL",
+      "notes": [
+        "key omits league/fixture_id"
+      ]
+    },
+    "af_history_shots": {
+      "name": "af_history_shots",
+      "keys": [
+        "league",
+        "_home_norm",
+        "_away_norm",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 85467,
+      "right_rows": 90685,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 4871,
+      "right_duplicate_rows": 9875,
+      "ambiguous_key_groups": 1473,
+      "ambiguous_cells": {
+        "home_shots": 905,
+        "away_shots": 896,
+        "home_sot": 828,
+        "away_sot": 805,
+        "home_xg": 495,
+        "away_xg": 491,
+        "home_insidebox": 673,
+        "away_insidebox": 667
+      },
+      "left_null_key_rows": 0,
+      "matched_left_rows": 85190,
+      "unmapped_left_rows": 277,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "home_shots": 20219,
+        "away_shots": 20218,
+        "home_sot": 20277,
+        "away_sot": 20295,
+        "home_corners": 213,
+        "away_corners": 213,
+        "home_fouls": 213,
+        "away_fouls": 213,
+        "home_yellows": 210,
+        "away_yellows": 210,
+        "home_xg": 12161,
+        "away_xg": 12165,
+        "home_insidebox": 14794,
+        "away_insidebox": 14807
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "WARN",
+      "notes": []
+    },
+    "std_sidemarket_odds.legacy": {
+      "name": "std_sidemarket_odds.legacy",
+      "keys": [
+        "_h",
+        "_a",
+        "_d"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 85467,
+      "right_rows": 16746,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 532,
+      "ambiguous_cells": {
+        "Denmark 1st Div <- Bundesliga 2": 532
+      },
+      "left_null_key_rows": 0,
+      "matched_left_rows": 7366,
+      "unmapped_left_rows": 78101,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 0,
+      "legacy_misaligned_rows": 0,
+      "status": "WARN",
+      "notes": [
+        "key omits league/fixture_id; pivot aggfunc picks one value per key"
+      ]
+    },
+    "std_sidemarket_odds": {
+      "name": "std_sidemarket_odds",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_d"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 85467,
+      "right_rows": 7499,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 6834,
+      "unmapped_left_rows": 78633,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "odds_btts": 6733,
+        "odds_over15": 748,
+        "odds_over35": 765
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
+    },
+    "ou25_captures.legacy": {
+      "name": "ou25_captures.legacy",
+      "keys": [
+        "_h",
+        "_a",
+        "_d"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 85467,
+      "right_rows": 33109,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 4790,
+      "unmapped_left_rows": 80677,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 0,
+      "legacy_misaligned_rows": 0,
+      "status": "PASS",
+      "notes": [
+        "key omits league/fixture_id; pivot aggfunc picks one value per key"
+      ]
+    },
+    "ou25_captures": {
+      "name": "ou25_captures",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_d"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 85467,
+      "right_rows": 6486,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 0,
+      "right_duplicate_rows": 0,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 4790,
+      "unmapped_left_rows": 80677,
+      "output_rows": 85467,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "odds_over25": 1235,
+        "odds_under25": 1236
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
+    }
+  },
+  "replay": {
+    "label": "RETROSPECTIVE",
+    "rows_total": 85467,
+    "rows_with_any_enriched_value_changed": 38701,
+    "first_changed_row": {
+      "date": "2019-02-25 00:00:00",
+      "league": "Ireland Premier Division",
+      "home_team": "Dundalk",
+      "away_team": "UCD"
+    },
+    "columns": {
+      "home_shots": {
+        "legacy_non_null": 85444,
+        "safe_non_null": 84523,
+        "shifted": 19066,
+        "phantom": 934,
+        "dropped": 13,
+        "rows_changed": 20013
+      },
+      "away_shots": {
+        "legacy_non_null": 85444,
+        "safe_non_null": 84522,
+        "shifted": 18891,
+        "phantom": 935,
+        "dropped": 13,
+        "rows_changed": 19839
+      },
+      "home_sot": {
+        "legacy_non_null": 85443,
+        "safe_non_null": 84571,
+        "shifted": 17773,
+        "phantom": 886,
+        "dropped": 14,
+        "rows_changed": 18673
+      },
+      "away_sot": {
+        "legacy_non_null": 85443,
+        "safe_non_null": 84589,
+        "shifted": 17587,
+        "phantom": 868,
+        "dropped": 14,
+        "rows_changed": 18469
+      },
+      "home_corners": {
+        "legacy_non_null": 60457,
+        "safe_non_null": 60670,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 213,
+        "rows_changed": 213
+      },
+      "away_corners": {
+        "legacy_non_null": 60457,
+        "safe_non_null": 60670,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 213,
+        "rows_changed": 213
+      },
+      "home_fouls": {
+        "legacy_non_null": 60459,
+        "safe_non_null": 60672,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 213,
+        "rows_changed": 213
+      },
+      "away_fouls": {
+        "legacy_non_null": 60459,
+        "safe_non_null": 60672,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 213,
+        "rows_changed": 213
+      },
+      "home_xg": {
+        "legacy_non_null": 4835,
+        "safe_non_null": 12161,
+        "shifted": 3142,
+        "phantom": 1682,
+        "dropped": 9008,
+        "rows_changed": 13832
+      },
+      "away_xg": {
+        "legacy_non_null": 4835,
+        "safe_non_null": 12165,
+        "shifted": 3135,
+        "phantom": 1681,
+        "dropped": 9011,
+        "rows_changed": 13827
+      },
+      "home_insidebox": {
+        "legacy_non_null": 6402,
+        "safe_non_null": 14794,
+        "shifted": 4546,
+        "phantom": 1496,
+        "dropped": 9888,
+        "rows_changed": 15930
+      },
+      "away_insidebox": {
+        "legacy_non_null": 6402,
+        "safe_non_null": 14807,
+        "shifted": 4477,
+        "phantom": 1486,
+        "dropped": 9891,
+        "rows_changed": 15854
+      },
+      "ht_home_goals": {
+        "legacy_non_null": 22352,
+        "safe_non_null": 22352,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 0,
+        "rows_changed": 0
+      },
+      "ht_away_goals": {
+        "legacy_non_null": 22352,
+        "safe_non_null": 22352,
+        "shifted": 0,
+        "phantom": 0,
+        "dropped": 0,
+        "rows_changed": 0
+      },
+      "odds_btts": {
+        "legacy_non_null": 7817,
+        "safe_non_null": 9530,
+        "shifted": 724,
+        "phantom": 4283,
+        "dropped": 5996,
+        "rows_changed": 11003
+      },
+      "odds_over15": {
+        "legacy_non_null": 1064,
+        "safe_non_null": 1278,
+        "shifted": 0,
+        "phantom": 534,
+        "dropped": 748,
+        "rows_changed": 1282
+      },
+      "odds_over35": {
+        "legacy_non_null": 1384,
+        "safe_non_null": 1608,
+        "shifted": 0,
+        "phantom": 541,
+        "dropped": 765,
+        "rows_changed": 1306
+      },
+      "odds_over25": {
+        "legacy_non_null": 48156,
+        "safe_non_null": 46593,
+        "shifted": 1,
+        "phantom": 1729,
+        "dropped": 166,
+        "rows_changed": 1896
+      },
+      "odds_under25": {
+        "legacy_non_null": 48162,
+        "safe_non_null": 46597,
+        "shifted": 1,
+        "phantom": 1731,
+        "dropped": 166,
+        "rows_changed": 1898
+      }
+    }
+  },
+  "fixture_level_enrichment_joins_in_v9": [
+    {
+      "site": "src/data_loader.py::_enrich_with_api_shots step 1 (af_history.parquet)",
+      "key_legacy": "home_norm+away_norm+date (no league)",
+      "copy_back": "positional zip",
+      "defect": "EXPANDS + SHIFTS (proven)",
+      "fix": "safe_left_enrich on league+keys, flag",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/data_loader.py::_enrich_with_api_shots step 1b (af_ht_history.parquet)",
+      "key_legacy": "home_norm+away_norm+date (no league)",
+      "copy_back": "positional zip",
+      "defect": "same shape; file not committed, CI cache only",
+      "fix": "safe_left_enrich, flag",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/data_loader.py::_enrich_with_api_shots live per-league shots merge",
+      "key_legacy": "home_norm+away_norm+date within one league",
+      "copy_back": "positional",
+      "defect": "expands if the fetched frame holds a duplicate key",
+      "fix": "safe_left_enrich, flag",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/data_loader.py::_enrich_with_standard_sidemarket_odds",
+      "key_legacy": "home_norm+away_norm+date (no league), pivot last",
+      "copy_back": "boolean mask across two indexes",
+      "defect": "frame index is not a RangeIndex after _canonicalise_clubs, so mask & .values misalign (proven)",
+      "fix": "safe_left_enrich on league+keys, flag",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/data_loader.py::_enrich_ou25_from_captures first pass",
+      "key_legacy": "home_norm+away_norm+date (no league), pivot last",
+      "copy_back": "boolean mask across two indexes",
+      "defect": "same index misalignment (proven)",
+      "fix": "safe_left_enrich, flag; resolver pass already index-safe",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/data_loader.py::_enrich_with_af_odds (af_odds_history.parquet)",
+      "key_legacy": "home+away+date (no league), reindex",
+      "copy_back": "boolean mask",
+      "defect": "permanent no-op (file can never exist, CLAUDE.md); audited only",
+      "fix": "none needed",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/data_loader.py::_ci_download_all NF odds (_nf_real_odds dict)",
+      "key_legacy": "(snapshot_date, league, 'Home vs Away') dict",
+      "copy_back": "per row lookup",
+      "defect": "league-scoped, no expansion; reads mis-mapped pre-2026-08-10 O/U rows",
+      "fix": "WOWZA_PRICE_MAPPING_FILTER, flag",
+      "owner": "R2-C"
+    },
+    {
+      "site": "src/feature_engineering.py (_merge_sofascore, season-stat / upcoming lookups)",
+      "key_legacy": "league-scoped team lookups",
+      "copy_back": "by index / dict",
+      "defect": "not audited by R2-C beyond reading",
+      "fix": "owner: feature workstream",
+      "owner": "other"
+    },
+    {
+      "site": "src/predict.py (odds/board merges)",
+      "key_legacy": "various",
+      "copy_back": "-",
+      "defect": "not edited (owned by another workstream)",
+      "fix": "-",
+      "owner": "other"
+    }
+  ],
+  "serving_replay": {
+    "board_fixtures": 153,
+    "recipe": "v9_repaired",
+    "tips_legacy": 35,
+    "tips_safe": 35,
+    "tips_only_legacy": [
+      [
+        "Argentina Primera Division",
+        "Belgrano de Cordoba",
+        "Barracas Central",
+        "over15",
+        "OVER",
+        "MARKSMAN"
+      ],
+      [
+        "Japan J-League",
+        "Shimizu S Pulse",
+        "Tokyo Verdy",
+        "OU25",
+        "OVER",
+        "VALUABLE"
+      ],
+      [
+        "Sweden Allsvenskan",
+        "Degerfors IF",
+        "GAIS",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Sweden Allsvenskan",
+        "Malmo FF",
+        "Hammarby IF",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ]
+    ],
+    "tips_only_safe": [
+      [
+        "Argentina Primera Division",
+        "Belgrano de Cordoba",
+        "Barracas Central",
+        "over15",
+        "OVER",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Cruzeiro",
+        "Bahia",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Brazil Serie A",
+        "Vitoria",
+        "Fluminense",
+        "OU25",
+        "OVER",
+        "VALUABLE"
+      ],
+      [
+        "Japan J-League",
+        "FC Machida Zelvia",
+        "Hiroshima Sanfrecce FC",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ]
+    ],
+    "features_changed": {
+      "away_corners_pg_roll": 36,
+      "away_fouls_pg_roll": 40,
+      "away_insidebox_last5": 142,
+      "away_xg_last5": 148,
+      "combined_sot_ratio": 82,
+      "home_corners_pg_roll": 43,
+      "home_fouls_pg_roll": 45,
+      "home_insidebox_last5": 144,
+      "home_xg_last5": 148,
+      "p_over25": 84,
+      "p_btts": 153,
+      "p_over15": 153,
+      "p_over35": 153,
+      "p_ht_over05": 67,
+      "p_ht_over15": 66
+    }
+  }
+}
