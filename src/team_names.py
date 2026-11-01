@@ -117,6 +117,11 @@ _RESULT_ALIASES = {
     "qingdao west coast fc": "qingdao youth island",
     "shenzhen peng city fc": "sichuan jiuniu",
     "tianjin jinmen tiger fc": "tianjin teda",
+    # France / Japan (Data Truth audit 2026-11-01, finding 20: never resolved, never graded).
+    # Urawa is spelled both "Urawa" and "Urawa Reds" in the result sources, so the token tiers
+    # refuse it as ambiguous; the alias names the one spelling to use.
+    "saint etienne": "st etienne",
+    "urawa red diamonds": "urawa reds",
 }
 
 
