@@ -13,6 +13,7 @@ Functions:
 """
 from __future__ import annotations
 
+import logging
 import unicodedata
 from pathlib import Path
 
@@ -20,7 +21,10 @@ import numpy as np
 import pandas as pd
 
 from player_model import fpl_api
-from player_model.fantasy import build_fantasy_projections, FANTASY_LEAGUE, _PARQUET
+from player_model.fantasy import (build_fantasy_projections, fpl_crosswalk, fpl_ids, _PARQUET,
+                                  _fantasy_league_rows, _fantasy_league_spellings)
+
+log = logging.getLogger(__name__)
 # Imported lazily inside the scoring function — see the note in player_model/fantasy.py.
 # player_model.model pulls scikit-learn, and the Streamlit dashboard reaches this package only
 # for pure-pandas helpers. The viewer should not pay for the model stack.
@@ -40,6 +44,22 @@ def _proj(proj: pd.DataFrame | None) -> pd.DataFrame:
     return proj if proj is not None else build_fantasy_projections()
 
 
+def _by_fpl_id(df: pd.DataFrame) -> pd.DataFrame:
+    """Projections indexed by FPL element id (rows without one dropped). Every projection join
+    below is on this id - names were joined lower-cased/accent-stripped before, which merged
+    namesakes and dropped renamed players silently."""
+    d = df.assign(_fid=fpl_ids(df)).dropna(subset=["_fid"])
+    d["_fid"] = d["_fid"].astype(int)
+    return d.drop_duplicates("_fid").set_index("_fid")
+
+
+def _current_or_last_gw(boot: dict) -> int | None:
+    """The current FPL gameweek, else the last finished one (from FPL's own events); None when
+    neither is known - never an invented gameweek 1."""
+    ctx = fpl_api.gameweek_context(boot)
+    return ctx.get("current_gw") or ctx.get("last_finished_gw")
+
+
 # ── Differentials ───────────────────────────────────────────────────────────────
 
 def differentials(proj: pd.DataFrame | None = None, max_owned: float = 10.0,
@@ -51,11 +71,13 @@ def differentials(proj: pd.DataFrame | None = None, max_owned: float = 10.0,
     fpl = fpl_api.players_df()
     if fpl.empty or "owned_pct" not in fpl.columns:
         return pd.DataFrame()
-    own_full = fpl.set_index("match_key")["owned_pct"].to_dict()
-    own_web  = fpl.set_index("web_key")["owned_pct"].to_dict()
+    # Ownership joined on the FPL element id; a projection without one has unknown ownership.
+    own = fpl.drop_duplicates("fpl_id").set_index("fpl_id")["owned_pct"]
     df = df.copy()
-    keys = df["player_name"].map(_norm)
-    df["owned_pct"] = [own_full.get(k, own_web.get(k, np.nan)) for k in keys]
+    df["owned_pct"] = fpl_ids(df).map(own)
+    if df["owned_pct"].isna().any():
+        log.info("differentials: %d projection(s) without an FPL id/ownership - skipped",
+                 int(df["owned_pct"].isna().sum()))
     d = df[df["owned_pct"].notna() & (df["owned_pct"] <= max_owned)]
     return d.sort_values("fantasy_pts", ascending=False).head(top_n).reset_index(drop=True)
 
@@ -102,11 +124,14 @@ def market_leaderboards(markets=("goals", "goals2", "assists", "sot2", "cards"),
     """{market: DataFrame[player_name, team, position, prob]} from the CALIBRATED prop models,
     on each PL player's latest form row. Only markets whose model exists are returned."""
     df = pd.read_parquet(parquet_path or _PARQUET)
-    pl = df[df["league"] == FANTASY_LEAGUE].copy()
-    if pl.empty:
+    pl = _fantasy_league_rows(df).copy()
+    if pl.empty or "minutes_pg" not in pl.columns:
         return {}
     pl = pl.sort_values("date").groupby("player_id", as_index=False).tail(1)
-    mins = pd.to_numeric(pl.get("minutes_pg", 0), errors="coerce").fillna(0)
+    mins = pd.to_numeric(pl["minutes_pg"], errors="coerce")
+    if mins.isna().any():
+        log.info("market_leaderboards: %d player(s) skipped - minutes_pg unknown",
+                 int(mins.isna().sum()))
     pl = pl[mins >= min_minutes].copy()
     if pl.empty:
         return {}
@@ -118,7 +143,8 @@ def market_leaderboards(markets=("goals", "goals2", "assists", "sot2", "cards"),
             continue
         try:
             probs = predict_proba(pl, payload).values
-        except Exception:
+        except Exception as e:                                              # noqa: BLE001
+            log.warning("market_leaderboards: %s skipped (%s: %s)", mkt, type(e).__name__, e)
             continue
         cols = [c for c in ("player_name", "team", "position") if c in pl.columns]
         board = pl[cols].copy()
@@ -160,10 +186,12 @@ def _fetch_entry_squad(team_id: int) -> pd.DataFrame:
             boot = fpl_api.fetch_bootstrap()
             gw = next((e["id"] for e in boot.get("events", []) if e.get("is_current")), None)
         if not gw:
+            log.info("fetch_entry_squad: no current gameweek for entry %s", team_id)
             return pd.DataFrame()
         picks = fpl_api._get_json(f"{fpl_api._BASE}/entry/{int(team_id)}/event/{int(gw)}/picks/")
         ids = [(p["element"], p.get("is_captain", False)) for p in (picks or {}).get("picks", [])]
-    except Exception:
+    except Exception as e:                                                  # noqa: BLE001
+        log.warning("fetch_entry_squad: entry %s unavailable (%s: %s)", team_id, type(e).__name__, e)
         return pd.DataFrame()
     if not ids:
         return pd.DataFrame()
@@ -177,6 +205,9 @@ def _fetch_entry_squad(team_id: int) -> pd.DataFrame:
             r = by_id.loc[eid]
             rows.append({"fpl_id": eid, "web_name": r["web_name"], "position": r["position"],
                          "team": r["team"], "price": r["price"], "is_captain": bool(is_cap)})
+    if len(rows) < len(ids):
+        log.info("fetch_entry_squad: %d pick(s) not in the FPL bootstrap - left out",
+                 len(ids) - len(rows))
     return pd.DataFrame(rows)
 
 
@@ -192,29 +223,36 @@ def set_piece_penalty_takers(parquet_path: Path | None = None, top_per_team: int
             "sp_goal", "fk_goal", "headed_goal"]
     dset = _ds.dataset(str(src), format="parquet", partitioning="hive")
     cols = [c for c in want if c in dset.schema.names]
-    pl = dset.to_table(columns=cols, filter=_ds.field("league") == FANTASY_LEAGUE).to_pandas()
+    # The FPL league and its registered spellings (registry), not one typed name.
+    pl = dset.to_table(columns=cols,
+                       filter=_ds.field("league").isin(_fantasy_league_spellings())).to_pandas()
     if pl.empty:
         return pd.DataFrame()
     pen_cols = [c for c in ("penalty_scored", "penalty_won") if c in pl.columns]
     sp_cols  = [c for c in ("sp_goal", "fk_goal", "headed_goal") if c in pl.columns]
     g = pl.groupby("player_id")
     tot = pd.DataFrame({"player_name": g["player_name"].last()})
-    tot["pens"]     = g[pen_cols].sum().sum(axis=1) if pen_cols else 0.0
-    tot["sp_goals"] = g[sp_cols].sum().sum(axis=1) if sp_cols else 0.0
+    # A missing source column means an unknown count (NaN), not zero involvement.
+    tot["pens"]     = g[pen_cols].sum().sum(axis=1) if pen_cols else np.nan
+    tot["sp_goals"] = g[sp_cols].sum().sum(axis=1) if sp_cols else np.nan
     tot = tot.reset_index()
 
     fpl = fpl_api.players_df()
     if fpl.empty:
         return pd.DataFrame()
-    own_full = {r["match_key"]: (r["team"], r["position"]) for _, r in fpl.iterrows()}
-    own_web  = {r["web_key"]:  (r["team"], r["position"]) for _, r in fpl.iterrows()}
+    # API-Football player -> FPL element through fantasy.fpl_crosswalk (the single,
+    # ambiguity-refusing bridge), then the live team/position by element id.
+    tot["fpl_id"] = fpl_crosswalk(tot, fpl, fpl_api._norm)
+    unmatched = int(tot["fpl_id"].isna().sum())
+    if unmatched:
+        log.info("set_piece_penalty_takers: %d history player(s) not in the current FPL set",
+                 unmatched)
+    by_id = fpl.drop_duplicates("fpl_id").set_index("fpl_id")
     rows = []
-    for _, r in tot.iterrows():
-        k = _norm(r["player_name"])
-        tp = own_full.get(k) or own_web.get(k)
-        if not tp:
-            continue
-        rows.append({"player_name": r["player_name"], "team": tp[0], "position": tp[1],
+    for _, r in tot[tot["fpl_id"].notna()].iterrows():
+        rec = by_id.loc[int(r["fpl_id"])]
+        rows.append({"fpl_id": int(r["fpl_id"]), "player_name": r["player_name"],
+                     "team": rec["team"], "position": rec["position"],
                      "pens": float(r["pens"]), "sp_goals": float(r["sp_goals"])})
     out = pd.DataFrame(rows)
     if out.empty:
@@ -238,44 +276,41 @@ def transfer_suggestions(team_id: int, proj: pd.DataFrame | None = None,
     df = _proj(proj)
     if df.empty:
         return {"error": "No projections available."}
-    df = df.copy()
-    df["_key"] = df["player_name"].map(_norm)
-    proj_by_key = {k: r for k, r in df.set_index("_key").iterrows()}
-
-    fpl = fpl_api.players_df()
-    web_to_key = {}
-    if not fpl.empty:
-        web_to_key = {int(r["fpl_id"]): r["match_key"] for _, r in fpl.iterrows()}
-
-    # attach projected pts to each owned player
-    owned_keys = set()
+    # Owned picks joined to projections on the FPL element id (was: normalized name). An owned
+    # player with no projection has UNKNOWN points: he is listed, never valued at 0 and sold.
+    look = _by_fpl_id(df)
     squad = squad.copy()
-    pts, inj = [], []
-    for _, r in squad.iterrows():
-        k = web_to_key.get(int(r["fpl_id"]))
-        rec = proj_by_key.get(k) if k else None
-        owned_keys.add(k)
-        pts.append(float(rec["fantasy_pts"]) if rec is not None else 0.0)
-        inj.append(bool(rec["injured"]) if (rec is not None and "injured" in rec) else False)
-    squad["proj_pts"] = pts
-    squad["injured"]  = inj
-    # weakest = injured first, then lowest projected pts
-    squad["_sell_score"] = squad["injured"].astype(int) * 100 - squad["proj_pts"]
-    sells = squad.sort_values("_sell_score", ascending=False).head(n)
+    fid = pd.to_numeric(squad["fpl_id"], errors="coerce")
+    squad["proj_pts"] = fid.map(pd.to_numeric(look["fantasy_pts"], errors="coerce"))
+    squad["injured"] = (fid.map(look["injured"]) if "injured" in look.columns
+                        else pd.Series(np.nan, index=squad.index))
+    owned = set(fid.dropna().astype(int))
+    unknown = squad["proj_pts"].isna()
+    # weakest = injured first, then lowest projected pts; only players with a projection
+    known = squad[~unknown].copy()
+    known["_sell_score"] = (known["injured"].fillna(False).astype(bool).astype(int) * 100
+                            - known["proj_pts"])
+    sells = known.sort_values("_sell_score", ascending=False).head(n)
 
+    cand_pool = look[~look.index.isin(owned)].reset_index()
     suggestions = []
     for _, s in sells.iterrows():
         pos = s["position"]
-        cands = df[(df["position"] == pos) & (~df["_key"].isin(owned_keys))]
+        cands = cand_pool[(cand_pool["position"] == pos) & cand_pool["fantasy_pts"].notna()]
         cands = cands.sort_values("fantasy_pts", ascending=False).head(3)
         suggestions.append({
             "out": f"{s['web_name']} ({s['team']}, {pos}) — {s['proj_pts']:.2f} pts"
-                   + ("  ⚠️ injured" if s["injured"] else ""),
+                   + ("  ⚠️ injured" if s["injured"] == True else ""),          # noqa: E712
             "in_options": [f"{r['player_name']} ({r.get('team','')}) — {r['fantasy_pts']:.2f} pts"
                            for _, r in cands.iterrows()],
         })
-    return {"squad": squad, "sells": suggestions,
-            "note": "Prediction-based suggestions; verify price/availability in the FPL app."}
+    note = "Prediction-based suggestions; verify price/availability in the FPL app."
+    if unknown.any():
+        names = ", ".join(squad.loc[unknown, "web_name"].astype(str))
+        log.info("transfer_suggestions: %d owned player(s) without a projection: %s",
+                 int(unknown.sum()), names)
+        note += f" No projection for: {names} (not considered as sells)."
+    return {"squad": squad, "sells": suggestions, "note": note}
 
 
 # ── Chip strategy advisor ────────────────────────────────────────────────────
@@ -292,7 +327,12 @@ def chip_advisor(proj: pd.DataFrame | None = None, horizon: int = 8) -> dict:
     events = boot.get("events", [])
     cur = next((e["id"] for e in events if e.get("is_current")), None)
     if cur is None:
-        nxt = next((e["id"] for e in events if e.get("is_next")), 1)
+        # Before GW1 FPL marks no current event; the next one bounds the window. With neither,
+        # the calendar position is unknown (no invented "next = GW1") - no advice.
+        nxt = next((e["id"] for e in events if e.get("is_next")), None)
+        if nxt is None:
+            log.info("chip_advisor: FPL marks no current or next gameweek - no chip calendar")
+            return {}
         cur = nxt - 1
 
     gw_team: dict = {}
@@ -340,21 +380,24 @@ def auto_lineup(team_id: int, proj: pd.DataFrame | None = None) -> dict:
     df = _proj(proj)
     if df.empty:
         return {"error": "No projections available."}
-    df = df.copy()
-    df["_key"] = df["player_name"].map(_norm)
-    proj_by = {r["_key"]: r for _, r in df.set_index("_key").iterrows()}
-    fpl = fpl_api.players_df()
-    web2key = {int(r["fpl_id"]): r["match_key"] for _, r in fpl.iterrows()} if not fpl.empty else {}
-
-    rows = []
-    for _, s in squad.iterrows():
-        k = web2key.get(int(s["fpl_id"]))
-        rec = proj_by.get(k) if k else None
-        rows.append({"player_name": s["web_name"], "position": s["position"], "team": s["team"],
-                     "fantasy_pts": float(rec["fantasy_pts"]) if rec is not None else 0.0,
-                     "injured": bool(rec["injured"]) if (rec is not None and "injured" in rec) else False,
-                     "price": s.get("price", np.nan)})
-    sq = pd.DataFrame(rows)
+    # Joined on the FPL element id. An owned player without a projection has UNKNOWN points: a
+    # lineup cannot be ranked honestly around him, so no lineup is suggested (was: 0 points,
+    # which benched him silently).
+    look = _by_fpl_id(df)
+    fid = pd.to_numeric(squad["fpl_id"], errors="coerce")
+    sq = pd.DataFrame({
+        "player_name": squad["web_name"], "position": squad["position"], "team": squad["team"],
+        "fantasy_pts": fid.map(pd.to_numeric(look["fantasy_pts"], errors="coerce")),
+        "injured": (fid.map(look["injured"]) if "injured" in look.columns
+                    else pd.Series(np.nan, index=squad.index)),
+        "price": squad["price"] if "price" in squad.columns else np.nan})
+    unknown = sq["fantasy_pts"].isna()
+    if unknown.any():
+        names = ", ".join(sq.loc[unknown, "player_name"].astype(str))
+        log.info("auto_lineup: %d owned player(s) without a projection: %s", int(unknown.sum()), names)
+        return {"error": f"No projection for {names} - a lineup would have to guess their points."}
+    # Unknown injury status is not 'fit': only a known False starts.
+    sq["injured"] = ~(sq["injured"] == False)                                   # noqa: E712
     xi = best_xi(sq)                       # points-max legal XI from the 15
     if not xi:
         return {"error": "Could not form a legal XI from that squad."}
@@ -380,37 +423,43 @@ def mini_league_analysis(league_id: int, proj: pd.DataFrame | None = None,
     try:
         st = fpl_api._get_json(f"{fpl_api._BASE}/leagues-classic/{int(league_id)}/standings/")
         entries = [e["entry"] for e in st.get("standings", {}).get("results", [])[:top_managers]]
-    except Exception:
+    except Exception as e:                                                  # noqa: BLE001
+        log.warning("mini_league_analysis: league %s unavailable (%s: %s)",
+                    league_id, type(e).__name__, e)
         return {"error": "Could not fetch that league (check the ID / FPL reachable)."}
     if not entries:
         return {"error": "No managers found in that league."}
     boot = fpl_api.fetch_bootstrap()
-    gw = next((e["id"] for e in boot.get("events", []) if e.get("is_current")), None)
+    # Current gameweek, else the last finished one - never an invented GW1.
+    gw = _current_or_last_gw(boot)
     if gw is None:
-        gw = max(1, next((e["id"] for e in boot.get("events", []) if e.get("is_next")), 2) - 1)
+        return {"error": "FPL marks no current or finished gameweek - no squads to read yet."}
     own = Counter()
+    failed = 0
     for eid in entries:
         try:
             picks = fpl_api._get_json(f"{fpl_api._BASE}/entry/{eid}/event/{gw}/picks/")
             for p in picks.get("picks", []):
                 own[p["element"]] += 1
-        except Exception:
+        except Exception:                                                   # noqa: BLE001
+            failed += 1
             continue
-    n = len(entries)
+    if failed:
+        log.info("mini_league_analysis: %d of %d manager squad(s) unreadable - skipped",
+                 failed, len(entries))
+    n = len(entries) - failed
     if not own:
         return {"error": "Could not read any squads in that league."}
     fpl = fpl_api.players_df()
-    id2name = {int(r["fpl_id"]): r["match_key"] for _, r in fpl.iterrows()} if not fpl.empty else {}
-    id2disp = {int(r["fpl_id"]): (r["web_name"], r["team"]) for _, r in fpl.iterrows()} if not fpl.empty else {}
-    df = _proj(proj).copy()
-    df["_key"] = df["player_name"].map(_norm)
-    pj = {r["_key"]: float(r["fantasy_pts"]) for _, r in df.set_index("_key").iterrows()}
+    id2disp = ({int(r["fpl_id"]): (r["web_name"], r["team"]) for _, r in fpl.iterrows()}
+               if not fpl.empty else {})
+    # Projections by FPL element id (no name join); a pick without one has unknown xpts.
+    pj = pd.to_numeric(_by_fpl_id(_proj(proj))["fantasy_pts"], errors="coerce").to_dict()
 
     recs = []
     for eid, cnt in own.items():
-        nm, tm = id2disp.get(eid, ("", ""))
-        key = id2name.get(eid)
-        xp = pj.get(key, np.nan)
+        nm, tm = id2disp.get(eid, (None, None))
+        xp = pj.get(int(eid), np.nan)
         recs.append({"player": nm, "team": tm, "league_own_pct": round(100 * cnt / n, 1),
                      "xpts": xp})
     r = pd.DataFrame(recs)

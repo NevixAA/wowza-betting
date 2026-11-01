@@ -24,23 +24,35 @@ like advice. A chip is used once a season; a confidently wrong recommendation is
 """
 from __future__ import annotations
 
+import logging
+
+import numpy as np
 import pandas as pd
 
+from player_model.fantasy import fpl_ids
 
+log = logging.getLogger(__name__)
+
+
+def _col(df: pd.DataFrame, c: str) -> pd.Series:
+    return (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+            else pd.Series(np.nan, index=df.index))
+
+
+# Unknown points stay NaN (never 0, never P(start)=1, never "one notional fixture"); every
+# consumer below skips or reports NaN players instead of valuing them.
 def _uncond(df: pd.DataFrame) -> pd.Series:
     for c in ("xpts_uncond", "xpts_rot"):
         if c in df.columns:
-            return pd.to_numeric(df[c], errors="coerce").fillna(0.0)
-    base = pd.to_numeric(df.get("fantasy_pts", 0), errors="coerce").fillna(0.0)
-    p = pd.to_numeric(df.get("p_start", 1.0), errors="coerce").fillna(0.0).clip(0, 1)
-    return base * p
+            return _col(df, c)
+    return _col(df, "fantasy_pts") * _col(df, "p_start").clip(0, 1)
 
 
 def _window(df: pd.DataFrame) -> pd.Series:
     for c in ("total_xpts_rot", "total_xpts_next"):
         if c in df.columns:
-            return pd.to_numeric(df[c], errors="coerce").fillna(0.0)
-    return _uncond(df) * pd.to_numeric(df.get("n_fixtures_next", 1), errors="coerce").fillna(1.0)
+            return _col(df, c)
+    return _uncond(df) * _col(df, "n_fixtures_next")
 
 
 #: Legal starting-XI shape: exactly one keeper, then DEF/MID/FWD within these bounds.
@@ -69,7 +81,7 @@ def legal_xi(squad: pd.DataFrame, col: str) -> pd.DataFrame:
                 continue
             xi = pd.concat([by["GKP"].head(1), by["DEF"].head(d),
                             by["MID"].head(m), by["FWD"].head(f)])
-            tot = float(pd.to_numeric(xi[col], errors="coerce").fillna(0).sum())
+            tot = float(pd.to_numeric(xi[col], errors="coerce").sum())
             if tot > best_pts:
                 best, best_pts = xi, tot
     return best if best is not None else squad.nlargest(0, col)
@@ -91,13 +103,15 @@ def chip_values(proj: pd.DataFrame, squad: pd.DataFrame | None = None,
         av = p["availability"].astype(str).str.lower()
         elig = p[~av.isin(("injured", "unavailable", "suspended")) & (av != "doubtful")]
     if "p_start" in elig.columns:
-        elig = elig[pd.to_numeric(elig["p_start"], errors="coerce").fillna(0) >= 0.60]
+        # Unknown P(start) is not eligible (NaN >= 0.60 is False) - a captain must be known to start.
+        elig = elig[pd.to_numeric(elig["p_start"], errors="coerce") >= 0.60]
+    elig = elig[elig["_gw"].notna()]
     if elig.empty:
         out["triple_captain"] = {"available": False, "why": "no eligible captain"}
     else:
         best = elig.nlargest(1, "_gw").iloc[0]
-        nfix = float(pd.to_numeric(pd.Series([best.get("n_fixtures_next", 1)]),
-                                   errors="coerce").fillna(1)[0])
+        nfix = float(pd.to_numeric(pd.Series([best.get("n_fixtures_next")], dtype="object"),
+                                   errors="coerce")[0])
         out["triple_captain"] = {
             "available": True,
             "player": best.get("player_name"), "team": best.get("team"),
@@ -106,7 +120,7 @@ def chip_values(proj: pd.DataFrame, squad: pd.DataFrame | None = None,
             # n_fixtures_next counts the whole WINDOW, not one gameweek, so it cannot be used
             # to claim a double. Saying "5 fixtures in the window, so this is a DGW" was simply
             # wrong; a real DGW check needs the per-gameweek fixture calendar.
-            "window_fixtures": int(nfix),
+            "window_fixtures": int(nfix) if nfix == nfix else None,
             "note": ("Triple Captain is worth one extra captain score. It pays properly only in "
                      "a DOUBLE gameweek, which this cannot confirm — n_fixtures_next counts the "
                      "whole window, not a single gameweek. Check the fixture ticker before "
@@ -124,11 +138,24 @@ def chip_values(proj: pd.DataFrame, squad: pd.DataFrame | None = None,
 
     out["squad_supplied"] = True
     sq = squad.copy()
-    sq["_key"] = sq["player_name"].astype(str).str.lower().str.strip()
-    look = p.assign(_key=p["player_name"].astype(str).str.lower().str.strip()).set_index("_key")
-    sq["_gw"] = [float(look["_gw"].get(k, 0.0)) for k in sq["_key"]]
-    sq["_win"] = [float(look["_win"].get(k, 0.0)) for k in sq["_key"]]
-    missing = int(sum(1 for k in sq["_key"] if k not in look.index))
+    # Owned squad joined to projections on the FPL element id (not a lower-cased name). An owned
+    # player with no projection is NOT valued at 0: the squad-dependent chips are withheld, since
+    # any number would silently understate (or, for Free Hit/Wildcard, overstate) the chip.
+    sq["_key"] = fpl_ids(sq)
+    look = p.assign(_key=fpl_ids(p)).dropna(subset=["_key"]).drop_duplicates("_key").set_index("_key")
+    sq["_gw"] = sq["_key"].map(look["_gw"])
+    sq["_win"] = sq["_key"].map(look["_win"])
+    missing = sq["_gw"].isna() | sq["_win"].isna()
+    if missing.any():
+        names = (", ".join(sq.loc[missing, "player_name"].astype(str))
+                 if "player_name" in sq.columns else "")
+        log.info("chip_values: %d owned player(s) without a projection (%s) - squad chips withheld",
+                 int(missing.sum()), names)
+        for k in ("bench_boost", "free_hit", "wildcard"):
+            out[k] = {"available": False,
+                      "why": f"{int(missing.sum())} owned player(s) have no projection "
+                             f"({names}); the chip cannot be valued without them"}
+        return out
 
     # ── Bench Boost: what the bench would otherwise not score ────────────────
     # The bench is whoever is NOT in the best legal XI. Using best_xi() here failed silently
@@ -147,9 +174,6 @@ def chip_values(proj: pd.DataFrame, squad: pd.DataFrame | None = None,
                  if float(bench["_gw"].sum()) < 6 else
                  "a bench worth boosting"),
     }
-    if missing:
-        out["bench_boost"]["warning"] = (f"{missing} owned players have no projection and were "
-                                         f"valued at 0, which understates this chip")
 
     # ── Free Hit and Wildcard: the optimiser against what you own ────────────
     try:
@@ -162,7 +186,7 @@ def chip_values(proj: pd.DataFrame, squad: pd.DataFrame | None = None,
                 continue
             # Compare like with like: a LEGAL XI from the squad, not its top 11 by points.
             _mine_xi = legal_xi(sq, col)
-            mine = float(pd.to_numeric(_mine_xi[col], errors="coerce").fillna(0).sum())
+            mine = float(pd.to_numeric(_mine_xi[col], errors="coerce").sum())
             out[chip] = {
                 "available": True,
                 "incremental_points": round(best["xi_points"] - mine, 2),

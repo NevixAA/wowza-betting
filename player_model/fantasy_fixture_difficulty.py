@@ -36,10 +36,15 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+import logging
+
 from player_model import config
+# The FPL league comes from the registry (config/leagues.json fpl: true), not a typed name.
+from player_model.fantasy import FANTASY_LEAGUE, _fantasy_league_rows, _resolve_club
+
+log = logging.getLogger(__name__)
 
 PARQUET = config.BASE_DIR / "player_history.parquet"
-FANTASY_LEAGUE = "Premier League"
 #: Matches after which a team's rating is treated as reliable.
 MIN_MATCHES = 8
 #: Half-life in matches for the recency weighting.
@@ -51,7 +56,7 @@ def _team_match_frame(parquet_path=None) -> pd.DataFrame:
     cols = ["league", "fixture_id", "date", "team", "opponent", "is_home",
             "goals", "goals_conceded"]
     df = pd.read_parquet(parquet_path or PARQUET, columns=cols)
-    pl = df[df["league"] == FANTASY_LEAGUE].copy()
+    pl = _fantasy_league_rows(df).copy()
     if pl.empty:
         return pl
     pl["date"] = pd.to_datetime(pl["date"], errors="coerce")
@@ -81,11 +86,13 @@ def team_strengths(parquet_path=None) -> pd.DataFrame:
             if mask is not None:
                 s, ww = s[mask], w[mask]
             return float(np.average(s, weights=ww)) if len(s) and ww.sum() > 0 else np.nan
-        home = t["is_home"].astype(bool).to_numpy()
+        # Unknown venue counts toward neither split (astype(bool) read a missing flag as home).
+        hv = pd.to_numeric(t["is_home"], errors="coerce").to_numpy(float)
+        home, away = hv == 1, hv == 0
         rows.append({"team": team, "matches": n,
                      "gf_pg": wm("gf"), "ga_pg": wm("ga"),
                      "gf_home": wm("gf", home), "ga_home": wm("ga", home),
-                     "gf_away": wm("gf", ~home), "ga_away": wm("ga", ~home),
+                     "gf_away": wm("gf", away), "ga_away": wm("ga", away),
                      "reliable": n >= MIN_MATCHES})
     s = pd.DataFrame(rows)
     # Index against the league so 1.0 means "exactly average".
@@ -108,7 +115,10 @@ def _scale_from(reference: pd.Series) -> np.ndarray:
 
 
 def _apply_scale(x: pd.Series, cuts: np.ndarray) -> pd.Series:
-    return pd.Series(np.digitize(x.to_numpy(float), cuts) + 1, index=x.index).clip(1, 5)
+    # NaN stays NaN: np.digitize puts NaN past the last cut, i.e. rated a confident 5.
+    v = x.to_numpy(float)
+    r = pd.Series(np.digitize(v, cuts) + 1, index=x.index, dtype="float64").clip(1, 5)
+    return r.where(~np.isnan(v))
 
 
 def rate_fixtures(opponents: pd.DataFrame, strengths: pd.DataFrame | None = None) -> pd.DataFrame:
@@ -123,16 +133,24 @@ def rate_fixtures(opponents: pd.DataFrame, strengths: pd.DataFrame | None = None
                                 difficulty_reliable=False)
     idx = s.set_index("team")
     o = opponents.copy()
+    # The opponent is resolved onto the history's club spellings by src.team_names.resolve
+    # (league-scoped, ambiguity-refusing) - a raw string lookup missed every spelling variant.
+    clubs = list(idx.index)
+    key = o["opponent"].map(lambda t: _resolve_club(t, clubs))
+    if key.isna().any():
+        log.info("rate_fixtures: %d fixture(s) with an unresolved opponent - difficulty unknown: %s",
+                 int(key.isna().sum()), ", ".join(sorted(set(o.loc[key.isna(), "opponent"].astype(str)))))
     # Harder to score against = concedes FEWER goals, so invert the defence index.
-    o["_opp_concede"] = o["opponent"].map(idx["defence_index"])
-    o["_opp_score"] = o["opponent"].map(idx["attack_index"])
-    o["difficulty_reliable"] = o["opponent"].map(idx["reliable"]).fillna(False)
+    o["_opp_concede"] = key.map(idx["defence_index"])
+    o["_opp_score"] = key.map(idx["attack_index"])
+    o["difficulty_reliable"] = key.map(idx["reliable"]) == True                  # noqa: E712
     rel = s[s["reliable"]] if s["reliable"].any() else s
-    # Cut points from the LEAGUE, applied to whatever fixtures were asked about.
+    # Cut points from the LEAGUE, applied to whatever fixtures were asked about. An unresolved
+    # opponent is NaN (unknown), not the league-average opponent.
     a_cuts = _scale_from(-rel["defence_index"])
     d_cuts = _scale_from(rel["attack_index"])
-    o["attack_difficulty"] = _apply_scale(-o["_opp_concede"].fillna(rel["defence_index"].mean()), a_cuts)
-    o["defence_difficulty"] = _apply_scale(o["_opp_score"].fillna(rel["attack_index"].mean()), d_cuts)
+    o["attack_difficulty"] = _apply_scale(-o["_opp_concede"], a_cuts)
+    o["defence_difficulty"] = _apply_scale(o["_opp_score"], d_cuts)
     return o.drop(columns=["_opp_concede", "_opp_score"])
 
 
