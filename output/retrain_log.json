@@ -3068,7 +3068,292 @@
         },
         "at": "2026-10-25T08:26:04Z"
       }
+    },
+    "2026-11-01": {
+      "standard": {
+        "promoted": false,
+        "why": "SHADOW_MORE: not qualified but a material gain is inside the CI \u2014 research shadow, never promotable: [standard] failed: material_improvement, ci_excludes_zero",
+        "rows": 21940,
+        "verdict": "SHADOW_MORE",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": false,
+        "parked": true,
+        "evaluable_tracks": [
+          "standard"
+        ],
+        "logloss_old": 0.684744,
+        "logloss_new": 0.683827,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          -0.00213,
+          0.00025
+        ],
+        "champion_version": "standard_20261018T080423Z_64313878",
+        "challenger_version": "standard_20261101T111837Z_3562424e",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": {
+          "verdict": "SHADOW_MORE",
+          "candidate_version": "standard_20261025T082022Z_3a405c51",
+          "prospective_status": null,
+          "prospective_n": null,
+          "prospective_ll_delta": null,
+          "reason": "not promotable: qualified under gate none, not PG-1.0; kept as research shadow"
+        },
+        "canary": {
+          "available": true,
+          "n": 4388,
+          "std_old": 0.0357,
+          "std_new": 0.04109,
+          "spread_ratio": 1.151,
+          "mean_old": 0.5383,
+          "mean_new": 0.54122,
+          "frac_crossed_half": 0.0994,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0995,
+          "flags": []
+        },
+        "at": "2026-11-01T11:18:37Z"
+      },
+      "newformat": {
+        "promoted": false,
+        "why": "SHADOW_MORE: QUALIFIED on the holdout ([new_format] all holdout criteria met); no prospective period yet \u2014 frozen for period 2, not promoted | slot held by qualified newformat_20261025T082056Z_cfa68e5c; not parked",
+        "rows": 38871,
+        "verdict": "SHADOW_MORE",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": true,
+        "parked": false,
+        "evaluable_tracks": [
+          "new_format"
+        ],
+        "logloss_old": 0.677059,
+        "logloss_new": 0.674086,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          -0.004529,
+          -0.001367
+        ],
+        "champion_version": "newformat_20261018T080423Z_9eb6b4b4",
+        "challenger_version": "newformat_20261101T111910Z_7f8182f3",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": {
+          "verdict": "SHADOW_MORE",
+          "candidate_version": "newformat_20261025T082056Z_cfa68e5c",
+          "prospective_status": "PENDING",
+          "prospective_n": 103,
+          "prospective_ll_delta": -0.0375,
+          "reason": "prospective pending: [new_format] PENDING: n=103 < 1000"
+        },
+        "canary": {
+          "available": true,
+          "n": 7775,
+          "std_old": 0.07952,
+          "std_new": 0.09038,
+          "spread_ratio": 1.137,
+          "mean_old": 0.52401,
+          "mean_new": 0.52749,
+          "frac_crossed_half": 0.1002,
+          "frac_moved_gt_10pp": 0.0027,
+          "max_abs_move": 0.1402,
+          "flags": []
+        },
+        "at": "2026-11-01T11:19:10Z"
+      },
+      "ht_over05": {
+        "promoted": false,
+        "why": "KEEP_CHAMPION: [standard] failed: material_improvement, ci_excludes_zero",
+        "rows": 21552,
+        "verdict": "KEEP_CHAMPION",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": false,
+        "parked": false,
+        "evaluable_tracks": [
+          "standard"
+        ],
+        "logloss_old": 0.595758,
+        "logloss_new": 0.595566,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          -0.000851,
+          0.000478
+        ],
+        "champion_version": "ht_over05_20261018T080423Z_359b491a",
+        "challenger_version": "ht_over05_20261101T112006Z_8a76181a",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": null,
+        "canary": {
+          "available": true,
+          "n": 4311,
+          "std_old": 0.00968,
+          "std_new": 0.00975,
+          "spread_ratio": 1.007,
+          "mean_old": 0.70648,
+          "mean_new": 0.71353,
+          "frac_crossed_half": 0.0,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0372,
+          "flags": []
+        },
+        "at": "2026-11-01T11:20:06Z"
+      },
+      "ht_over15": {
+        "promoted": false,
+        "why": "KEEP_CHAMPION: [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior",
+        "rows": 21552,
+        "verdict": "KEEP_CHAMPION",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": false,
+        "parked": false,
+        "evaluable_tracks": [
+          "standard"
+        ],
+        "logloss_old": 0.650378,
+        "logloss_new": 0.651266,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          0.000118,
+          0.001666
+        ],
+        "champion_version": "ht_over15_20261004T093828Z_6f370f63",
+        "challenger_version": "ht_over15_20261101T112059Z_249c7207",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": null,
+        "canary": {
+          "available": true,
+          "n": 4311,
+          "std_old": 0.02095,
+          "std_new": 0.01541,
+          "spread_ratio": 0.735,
+          "mean_old": 0.3548,
+          "mean_new": 0.35657,
+          "frac_crossed_half": 0.0,
+          "frac_moved_gt_10pp": 0.0,
+          "max_abs_move": 0.0651,
+          "flags": []
+        },
+        "at": "2026-11-01T11:21:00Z"
+      },
+      "btts": {
+        "promoted": false,
+        "why": "SHADOW_MORE: not qualified but a material gain is inside the CI \u2014 research shadow, never promotable: [new_format] failed: material_improvement, ci_excludes_zero; [standard] failed: material_improvement, ci_excludes_zero",
+        "rows": 60811,
+        "verdict": "SHADOW_MORE",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": false,
+        "parked": true,
+        "evaluable_tracks": [
+          "new_format",
+          "standard"
+        ],
+        "logloss_old": 0.686573,
+        "logloss_new": 0.686257,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          -0.001393,
+          0.000717
+        ],
+        "champion_version": "btts_20261005T101905Z_238e3419",
+        "challenger_version": "btts_20261101T112201Z_bf9b956c",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": null,
+        "canary": {
+          "available": true,
+          "n": 12163,
+          "std_old": 0.04039,
+          "std_new": 0.04113,
+          "spread_ratio": 1.018,
+          "mean_old": 0.55055,
+          "mean_new": 0.54929,
+          "frac_crossed_half": 0.0732,
+          "frac_moved_gt_10pp": 0.0002,
+          "max_abs_move": 0.1191,
+          "flags": []
+        },
+        "at": "2026-11-01T11:22:01Z"
+      },
+      "over15": {
+        "promoted": false,
+        "why": "SHADOW_MORE: not qualified but a material gain is inside the CI \u2014 research shadow, never promotable: [new_format] failed: ci_excludes_zero; [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior",
+        "rows": 60811,
+        "verdict": "SHADOW_MORE",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": false,
+        "parked": true,
+        "evaluable_tracks": [
+          "new_format",
+          "standard"
+        ],
+        "logloss_old": 0.545383,
+        "logloss_new": 0.545577,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          -0.000925,
+          0.001214
+        ],
+        "champion_version": "over15_20261018T080423Z_da4743a2",
+        "challenger_version": "over15_20261101T112303Z_e3e5d0aa",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": null,
+        "canary": {
+          "available": true,
+          "n": 12163,
+          "std_old": 0.04284,
+          "std_new": 0.04728,
+          "spread_ratio": 1.104,
+          "mean_old": 0.76285,
+          "mean_new": 0.76317,
+          "frac_crossed_half": 0.0,
+          "frac_moved_gt_10pp": 0.0003,
+          "max_abs_move": 0.1746,
+          "flags": []
+        },
+        "at": "2026-11-01T11:23:03Z"
+      },
+      "over35": {
+        "promoted": false,
+        "why": "KEEP_CHAMPION: [new_format] failed: material_improvement, ci_excludes_zero, brier_non_inferior; [standard] failed: material_improvement, ci_excludes_zero, brier_non_inferior",
+        "rows": 60811,
+        "verdict": "KEEP_CHAMPION",
+        "comparison_basis": "same_holdout",
+        "gate_version": "PG-1.0",
+        "qualified": false,
+        "parked": false,
+        "evaluable_tracks": [
+          "new_format",
+          "standard"
+        ],
+        "logloss_old": 0.600492,
+        "logloss_new": 0.601274,
+        "logloss_basis": "served_ensemble_largest_track",
+        "ll_ci": [
+          -0.000299,
+          0.001887
+        ],
+        "champion_version": "over35_20261005T101905Z_f546ce72",
+        "challenger_version": "over35_20261101T112406Z_76ee12a5",
+        "retrain_batch_id": "rb_20261101T095533Z",
+        "prospective_review": null,
+        "canary": {
+          "available": true,
+          "n": 12163,
+          "std_old": 0.06343,
+          "std_new": 0.05855,
+          "spread_ratio": 0.923,
+          "mean_old": 0.29782,
+          "mean_new": 0.29908,
+          "frac_crossed_half": 0.0065,
+          "frac_moved_gt_10pp": 0.0007,
+          "max_abs_move": 0.1416,
+          "flags": []
+        },
+        "at": "2026-11-01T11:24:06Z"
+      }
     }
   },
-  "latest_run": "2026-10-25"
+  "latest_run": "2026-11-01"
 }

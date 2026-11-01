@@ -1,0 +1,69 @@
+{
+  "model_type": "btts",
+  "model_version": "btts_20261101T112201Z_bf9b956c",
+  "retrain_batch_id": "rb_20261101T095533Z",
+  "trained_at": "2026-11-01T11:22:01Z",
+  "training_start": "2019-02-22",
+  "training_end": "2025-10-17",
+  "training_cutoff": "2025-10-17",
+  "training_rows": 60811,
+  "target": "btts",
+  "feature_schema_version": "56cc042e5c46",
+  "n_features": 42,
+  "code_commit_sha": "4e9c93357910",
+  "artifact_sha256": "bf9b956c506a55bc85b61488b10e1ffeb28f2d0ed77472e28d6835c44f0bf8e8",
+  "parent_champion_version": "btts_20261005T101905Z_238e3419",
+  "validation_metrics": {
+    "gate_version": "PG-1.0",
+    "tracks": {
+      "new_format": {
+        "n": 5422,
+        "ll_delta": 0.000168,
+        "ci": [
+          -0.001021,
+          0.001477
+        ],
+        "brier_delta": 8e-05,
+        "ece_delta": -0.001773,
+        "passed": false
+      },
+      "standard": {
+        "n": 6741,
+        "ll_delta": -0.000316,
+        "ci": [
+          -0.001393,
+          0.000717
+        ],
+        "brier_delta": -0.00015,
+        "ece_delta": -0.002645,
+        "passed": false
+      }
+    }
+  },
+  "promotion_status": "SHADOW_MORE",
+  "model_role": "SHADOW",
+  "gate": {
+    "gate_version": "PG-1.0",
+    "qualified": false,
+    "evaluable_tracks": [
+      "new_format",
+      "standard"
+    ],
+    "canary_ok": true,
+    "holdout_n": 12163,
+    "holdout_ll_delta": -0.000316,
+    "holdout_ci_lo": -0.001393,
+    "holdout_ci_hi": 0.000717,
+    "summary_candidate_metrics": {
+      "n": 6741,
+      "log_loss": 0.686257,
+      "brier": 0.246585,
+      "ece": 0.007944,
+      "cal_slope": 0.9807,
+      "cal_slope_se": 0.1629,
+      "mean_p": 0.54873,
+      "base_rate": 0.54576
+    }
+  },
+  "shadow_since": "2026-11-01T11:22:01Z"
+}

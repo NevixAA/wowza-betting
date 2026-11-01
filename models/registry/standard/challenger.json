@@ -1,40 +1,57 @@
 {
   "model_type": "standard",
-  "model_version": "standard_20261025T082022Z_3a405c51",
-  "retrain_batch_id": "rb_20261025T081424Z",
-  "trained_at": "2026-10-25T08:20:22Z",
+  "model_version": "standard_20261101T111837Z_3562424e",
+  "retrain_batch_id": "rb_20261101T095533Z",
+  "trained_at": "2026-11-01T11:18:37Z",
   "training_start": "2023-07-29",
-  "training_end": "2026-01-24",
-  "training_cutoff": "2026-01-24",
-  "training_rows": 21768,
+  "training_end": "2026-01-30",
+  "training_cutoff": "2026-01-30",
+  "training_rows": 21940,
   "target": "over25",
   "feature_schema_version": "56cc042e5c46",
   "n_features": 42,
-  "code_commit_sha": "23b225cf9dd8",
-  "data_version": "1cbe614b7dc0",
-  "artifact_sha256": "3a405c511ebb0c696c1e771e5594f33bc76d4f1f1e3ab9c058391ca86995fc01",
+  "code_commit_sha": "4e9c93357910",
+  "artifact_sha256": "3562424e5b54985080161aac122c33cf3b5dc1c37a16c0477e5a3c1051857fbd",
   "parent_champion_version": "standard_20261018T080423Z_64313878",
   "validation_metrics": {
-    "holdout": {
-      "n": 4354,
-      "log_loss": 0.684207,
-      "brier": 0.245563,
-      "ece": 0.004366
-    },
-    "champion_same_holdout": {
-      "n": 4354,
-      "log_loss": 0.68509,
-      "brier": 0.245998,
-      "ece": 0.001785
-    },
-    "ll_delta": -0.000883,
-    "ll_ci": [
-      -0.002179,
-      0.000339
-    ],
-    "later_half_ll_delta": -0.00097
+    "gate_version": "PG-1.0",
+    "tracks": {
+      "standard": {
+        "n": 4388,
+        "ll_delta": -0.000918,
+        "ci": [
+          -0.00213,
+          0.00025
+        ],
+        "brier_delta": -0.000449,
+        "ece_delta": 0.003937,
+        "passed": false
+      }
+    }
   },
   "promotion_status": "SHADOW_MORE",
   "model_role": "SHADOW",
-  "shadow_since": "2026-10-25T08:20:22Z"
+  "gate": {
+    "gate_version": "PG-1.0",
+    "qualified": false,
+    "evaluable_tracks": [
+      "standard"
+    ],
+    "canary_ok": true,
+    "holdout_n": 4388,
+    "holdout_ll_delta": -0.000918,
+    "holdout_ci_lo": -0.00213,
+    "holdout_ci_hi": 0.00025,
+    "summary_candidate_metrics": {
+      "n": 4388,
+      "log_loss": 0.683827,
+      "brier": 0.245377,
+      "ece": 0.009157,
+      "cal_slope": 1.3736,
+      "cal_slope_se": 0.1853,
+      "mean_p": 0.54122,
+      "base_rate": 0.54125
+    }
+  },
+  "shadow_since": "2026-11-01T11:18:37Z"
 }
