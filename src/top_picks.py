@@ -9,7 +9,8 @@ days with >= 10 tips, walk-forward): a random 5 hit 47%; the lists below hit 55-
 THE THREE LISTS (top 5 of the day's tips each; a tip may appear in more than one):
   BEST_BETS  highest expected profit among tips with P(win) >= 45%      (backtest 55% hit, +9% ROI)
   SAFEST     the 5 SHORTEST PRICES - chosen over the ML version because it
-             won the backtest (63% hit, no 0/5 day vs 57%), owner 2026-10-18 (backtest 63%, +9%)
+             won the backtest (63% hit, no 0/5 day vs 57%), owner 2026-10-18 (backtest 63%, +9%);
+             tips with negative expected profit are excluded (owner 2026-11-01)
   VALUE      highest expected profit                                     (backtest 55%, +12%)
 P(win) is learned each morning from every tip settled before that day: logistic regression on
 logit(1/odds), logit(model probability), market and model track. The raw model probability is not
@@ -115,7 +116,10 @@ def todays_lists(day: str, tips: pd.DataFrame | None = None) -> pd.DataFrame:
         return pd.DataFrame()
     g["p_win"] = p_win(g, day, allt)
     g["ev"] = g["p_win"] * g["odds"] - 1.0
-    picks = {"SAFEST": g.nsmallest(TOP_K, "odds")}
+    # SAFEST = shortest prices, but never a tip the ranker itself scores as a losing bet (ev < 0):
+    # on 2026-11-01 two Under 2.5 picks at 1.75/1.78 were listed as "safest" at -3% EV (owner
+    # 2026-11-01). Tips without a P(win) yet (too little history) are still eligible.
+    picks = {"SAFEST": g[~(g["ev"] < 0)].nsmallest(TOP_K, "odds")}
     if g["p_win"].notna().any():
         picks["VALUE"] = g.nlargest(TOP_K, "ev")
         picks["BEST_BETS"] = g[g["p_win"] >= HIT_FLOOR].nlargest(TOP_K, "ev")

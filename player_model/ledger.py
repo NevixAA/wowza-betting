@@ -100,7 +100,8 @@ def append_player_signals(
             "away_team":     away,
             "player_id":     r.get("player_id", ""),
             "fixture_id":    r.get("fixture_id", ""),
-            "player_name":   r.get("player_name", ""),
+            # API-Football sends some names with doubled spaces ("Paris Josua  Brunner")
+            "player_name":   " ".join(str(r.get("player_name", "") or "").split()),
             "team":          r.get("team", ""),
             "position":      r.get("position", ""),
             "market":        r.get("market", ""),
@@ -121,8 +122,11 @@ def append_player_signals(
 
     if ledger_file.exists():
         existing = pd.read_csv(ledger_file, dtype=str)
+        # whitespace-collapsed on both sides, so a row written before names were collapsed
+        # (2026-11-01) is still recognised and never duplicated
         existing_keys = set(
-            zip(existing["player_name"], existing["market"], existing["match_date"])
+            zip(existing["player_name"].fillna("").map(lambda s: " ".join(s.split())),
+                existing["market"], existing["match_date"])
         )
         new_df = new_df[
             ~new_df.apply(

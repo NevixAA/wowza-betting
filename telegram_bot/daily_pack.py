@@ -745,7 +745,7 @@ def top_picks_image(today: str, freeze: bool = False) -> list[bytes]:
     if d is None or d.empty:
         return []
     sb = TP.scoreboard(30)
-    desc = {"BEST_BETS": "most expected profit, at least a 45% chance", "SAFEST": "the 5 shortest prices",
+    desc = {"BEST_BETS": "most expected profit, at least a 45% chance", "SAFEST": "the 5 shortest prices, none with negative expected profit",
             "VALUE": "most expected profit"}
     cols = [("#", 34), ("Match", 330), ("League", 180), ("Pick", 110), ("Odds", 70), ("Chance", 86)]
     rows = []

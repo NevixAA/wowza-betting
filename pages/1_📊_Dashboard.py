@@ -318,7 +318,7 @@ with t_top:
         from src.top_picks import LIST_LABEL as _TPL, LISTS as _TPLISTS
         _tp, _is_frozen = _top_picks(_today)
         st.caption(("Frozen this morning and scored." if _is_frozen else "Preview — frozen when the morning album goes out.")
-                   + " Best bets: most expected profit with at least a 45% chance · Safest: the 5 shortest prices · "
+                   + " Best bets: most expected profit with at least a 45% chance · Safest: the 5 shortest prices with no negative expected profit · "
                      "Value: most expected profit. Chance = honest win estimate learned from past results.")
         if _tp is None or _tp.empty:
             ui.empty_state("NO_DATA", "No tips for today yet.")

@@ -51,10 +51,10 @@ SIDE_LEDGER_FILE   = config.OUTPUT_DIR / "side_bets_ledger.csv"
 # ── Team name normalisation ───────────────────────────────────────────────────
 
 def _norm(name: str) -> str:
-    """Lowercase + strip accents for fuzzy matching."""
+    """Lowercase + strip accents + collapse whitespace for fuzzy matching."""
     nfkd = unicodedata.normalize("NFKD", str(name))
     ascii_str = "".join(c for c in nfkd if not unicodedata.combining(c))
-    return ascii_str.lower().strip()
+    return " ".join(ascii_str.lower().split())
 
 
 def _names_match(a: str, b: str) -> bool:

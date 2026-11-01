@@ -2676,7 +2676,7 @@ def notify_side_bets() -> int:
             f"🏆 {row.get('league', '')}\n"
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
-            f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  P={float(row['model_prob'])*100:.0f}%\n"
+            f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n"
             f"⚠️ Check your bookmaker's {label} market"
         )
 

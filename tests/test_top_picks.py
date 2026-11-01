@@ -37,8 +37,12 @@ def test_lists_shape_and_rules(env):
     assert set(d["list"]) == {"BEST_BETS", "SAFEST", "VALUE"}
     assert (d.groupby("list").size() <= TP.TOP_K).all()
     safest = d[d["list"] == "SAFEST"]["odds"]
-    day = TP.load_tips().query("day == @days[-1]")
-    assert sorted(safest.tolist()) == sorted(day.nsmallest(5, "odds")["odds"].tolist())     # 5 shortest prices
+    allt = TP.load_tips()
+    day = allt.query("day == @days[-1]").copy()
+    day["ev"] = TP.p_win(day, days[-1], allt) * day["odds"] - 1.0
+    ok = day[~(day["ev"] < 0)]                                   # never a negative-EV "safest" pick
+    assert sorted(safest.tolist()) == sorted(ok.nsmallest(5, "odds")["odds"].tolist())      # 5 shortest prices
+    assert not (d[d["list"] == "SAFEST"]["ev"] < 0).any()
     assert (d[d["list"] == "BEST_BETS"]["p_win"] >= TP.HIT_FLOOR).all()
 
 
