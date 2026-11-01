@@ -37,7 +37,19 @@ tier = current_tier()
 nav = st.navigation(pages_for(tier))
 with st.sidebar:
     st.caption({"free": "Wowza Free", "pro": "Wowza Pro", "admin": "Admin center"}[tier])
-    if remote_mirror.slim_mode() and tier == "admin":
-        st.caption(f"Data mirror: synced {_mirror.get('synced_at_utc') or 'never'} UTC"
-                   + (f" · v9 `{str(_mirror.get('sha'))[:7]}`" if _mirror.get("sha") else ""))
+    if remote_mirror.slim_mode():
+        # Code/data skew (R2 finding 32): never show an incompatible or unknown build as healthy.
+        _c = (_mirror or {}).get("compat") or remote_mirror.compatibility()
+        if tier == "admin":
+            st.caption(f"Data mirror: synced {_mirror.get('synced_at_utc') or 'never'} UTC"
+                       f" (attempted {_mirror.get('attempted_at_utc') or 'never'})"
+                       + (f" · data v9 `{str(_mirror.get('sha'))[:7]}`" if _mirror.get("sha") else "")
+                       + f" · build `{str(_c.get('dashboard_build_id') or '?')[:8]}`"
+                       + f" from v9 `{str(_c.get('source_v9_sha') or '?')[:7]}`"
+                       + f" · schema {_c.get('build_schema_version')}/{_c.get('data_schema_version')}"
+                       + f" · **{_c.get('status')}**")
+            if not _c.get("healthy"):
+                st.warning(_c.get("warning") or _c.get("status"))
+        elif _c.get("status") == "INCOMPATIBLE":
+            st.warning("Some figures may be out of date while the dashboard updates.")
 nav.run()
