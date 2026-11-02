@@ -324,8 +324,64 @@ def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -
 # PHASE 1b — Fixture results for leagues not on football-data.co.uk
 # ─────────────────────────────────────────────────────────────────────────────
 
+#: API-Football statuses of a match decided after extra time / on penalties. For these `goals` holds
+#: the 120-minute score; `score.fulltime` holds the 90-minute one (regular time + stoppage).
+EXTRA_TIME_STATUSES = ("AET", "PEN")
+
+
+def _results_ttl(season, league_name: str) -> float:
+    """A finished season keeps a year; the current one (or an unknown league) is refreshed every 6 h."""
+    if league_name:
+        from src.season_resolver import resolve_api_season, is_known
+        cur = resolve_api_season(league_name)
+        if is_known(cur) and str(season) != str(cur):
+            return 8760
+    return 6
+
+
+def _result_rows(data: dict, with_status: bool) -> list[dict]:
+    """One row per finished fixture of an API-Football /fixtures response.
+
+    SETTLEMENT IS ON 90 MINUTES (owner rule): for an AET / PEN fixture the goals are taken from
+    score.fulltime (the 90-minute score), never from `goals` (120 minutes). An extra-time fixture
+    without a 90-minute score is skipped - never filled from the 120-minute total."""
+    rows = []
+    for f in data.get("response", []):
+        fix   = f.get("fixture") or {}
+        teams = f.get("teams") or {}
+        goals = f.get("goals") or {}
+        score = f.get("score") or {}
+        ht    = score.get("halftime") or {}
+        status = (fix.get("status") or {}).get("short") or "FT"
+        src = (score.get("fulltime") or {}) if status in EXTRA_TIME_STATUSES else goals
+        home_g, away_g = src.get("home"), src.get("away")
+        if home_g is None or away_g is None:
+            continue
+        ht_home, ht_away = ht.get("home"), ht.get("away")
+        row = {
+            "date":          str(fix.get("date", ""))[:10],
+            "home_team":     (teams.get("home") or {}).get("name", ""),
+            "away_team":     (teams.get("away") or {}).get("name", ""),
+            "home_goals":    int(home_g),
+            "away_goals":    int(away_g),
+            "ht_home_goals": int(ht_home) if ht_home is not None else None,
+            "ht_away_goals": int(ht_away) if ht_away is not None else None,
+        }
+        if with_status:
+            row["status"] = status
+            row["fixture_id"] = fix.get("id")
+        rows.append(row)
+    return rows
+
+
+def _results_frame(rows: list[dict]) -> pd.DataFrame:
+    df = pd.DataFrame(rows)
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    return df[df["date"].notna() & df["home_team"].notna() & df["away_team"].notna()]
+
+
 def fetch_league_fixture_results(
-    league_id: int, season: str, league_name: str = ""
+    league_id: int, season: str, league_name: str = "", statuses: str = "FT"
 ) -> pd.DataFrame:
     """
     Fetch completed fixture results (goals + HT) for a league/season.
@@ -335,55 +391,48 @@ def fetch_league_fixture_results(
     runs by actions/cache), so its history stopped at the first fetch (Data Truth audit finding 35).
     A finished season keeps the year; the current one (or an unknown league) is refreshed every 6 h.
 
+    `statuses` is API-Football's status filter. The default 'FT' keeps the training loader's
+    frame exactly as it was. Settlement passes 'FT-AET-PEN': extra-time fixtures then carry their
+    90-minute score (score.fulltime) plus `status` and `fixture_id` columns.
+
     Returns DataFrame: date, home_team, away_team,
-                       home_goals, away_goals, ht_home_goals, ht_away_goals
+                       home_goals, away_goals, ht_home_goals, ht_away_goals [, status, fixture_id]
     """
-    ttl = 6
-    if league_name:
-        from src.season_resolver import resolve_api_season, is_known
-        cur = resolve_api_season(league_name)
-        if is_known(cur) and str(season) != str(cur):
-            ttl = 8760
-    data = _get("fixtures", {"league": league_id, "season": season, "status": "FT"}, ttl_h=ttl)
+    ttl = _results_ttl(season, league_name)
+    data = _get("fixtures", {"league": league_id, "season": season, "status": statuses}, ttl_h=ttl)
     if not data:
         return pd.DataFrame()
 
-    rows = []
-    for f in data.get("response", []):
-        fix   = f.get("fixture", {})
-        teams = f.get("teams", {})
-        goals = f.get("goals", {})
-        score = f.get("score", {})
-        ht    = score.get("halftime", {})
-
-        home_g = goals.get("home")
-        away_g = goals.get("away")
-        if home_g is None or away_g is None:
-            continue
-
-        ht_home = ht.get("home")
-        ht_away = ht.get("away")
-
-        rows.append({
-            "date":          str(fix.get("date", ""))[:10],
-            "home_team":     teams.get("home", {}).get("name", ""),
-            "away_team":     teams.get("away", {}).get("name", ""),
-            "home_goals":    int(home_g),
-            "away_goals":    int(away_g),
-            "ht_home_goals": int(ht_home) if ht_home is not None else None,
-            "ht_away_goals": int(ht_away) if ht_away is not None else None,
-        })
-
+    rows = _result_rows(data, with_status=statuses != "FT")
     if not rows:
         return pd.DataFrame()
 
     label = league_name or str(league_id)
     print(f"[api_football_ou] {label} season {season}: {len(rows)} fixture results loaded")
+    return _results_frame(rows)
 
-    df = pd.DataFrame(rows)
-    df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    df = df[df["date"].notna() & df["home_team"].notna() & df["away_team"].notna()]
-    return df
+
+def fetch_league_extra_time_results(
+    league_id: int, season: str, league_name: str = ""
+) -> Optional[pd.DataFrame]:
+    """The league/season's fixtures decided after extra time or on penalties (status AET / PEN),
+    each with its 90-minute score. The KNOCKOUT GUARD of update_results reads this before it lets
+    a football-data / OddsAPI score settle a fixture: those sources do not say whether a score is
+    90 or 120 minutes (MLS play-offs, Argentina knockouts).
+
+    None when the list could not be fetched (no key, HTTP error) - the caller must not read that
+    as "no extra-time fixtures". An empty frame means the provider answered with none."""
+    if not _KEY:
+        return None
+    data = _get("fixtures", {"league": league_id, "season": season, "status": "AET-PEN"},
+                ttl_h=_results_ttl(season, league_name))
+    if data is None or data.get("errors"):           # quota / rate-limit answers come as HTTP 200
+        return None
+    rows = [r for r in _result_rows(data, with_status=True) if r["status"] in EXTRA_TIME_STATUSES]
+    if not rows:
+        return pd.DataFrame(columns=["date", "home_team", "away_team", "home_goals", "away_goals",
+                                     "ht_home_goals", "ht_away_goals", "status", "fixture_id"])
+    return _results_frame(rows)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -29,13 +29,15 @@ def _fx(status, home="Inter Miami", away="Orlando City"):
 @pytest.fixture
 def af(monkeypatch):
     """Fake the league's fixtures-on-a-date pool behind update_results._af_get."""
-    state = {"day": [], "calls": []}
+    state = {"day": [], "season": [], "calls": []}
 
     def fake(endpoint, params, cache_hours):
         state["calls"].append((endpoint, dict(params)))
-        assert endpoint == "/fixtures" and "date" in params, endpoint
-        return {"response": state["day"]}
+        assert endpoint == "/fixtures", endpoint
+        # the season pool is the round-5 same-pair reschedule lookup (no 'date' param)
+        return {"response": state["day"] if "date" in params else state["season"]}
     monkeypatch.setattr(U, "_af_get", fake)
+    monkeypatch.setattr(U, "_SEASON_FIXTURES", {})
     monkeypatch.setenv("APIFOOTBALL_KEY", "x")
     monkeypatch.setattr(U, "_STATUS_ALLOWED", None)
     return state
