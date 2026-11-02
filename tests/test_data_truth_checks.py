@@ -12,8 +12,9 @@ from src.integrity import data_truth as DT
 
 
 def test_every_baseline_entry_has_a_reason():
+    # Empty is the target (ratchet ceiling 0 since 2026-11-01); any entry that returns needs a reason.
     b = json.loads(DT.BASELINE.read_text(encoding="utf-8"))
-    assert b["entries"]
+    assert isinstance(b["entries"], list)
     assert all(e.get("reason") and not e["reason"].startswith("TODO") for e in b["entries"])
 
 

@@ -40,7 +40,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config
 
 import dashboard_ui as ui  # noqa: E402
-from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame  # noqa: E402
+from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame, relabel_text  # noqa: E402
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
 import importlib  # noqa: E402
 V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
@@ -332,8 +332,9 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     _thin = t[t["n"] < 20]
     if not _thin.empty:
         st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{len(_thin)} THIN GROUP(S) · n < 20"))
-        st.caption("Thin: " + ", ".join(f"{r[by]} n={int(r['n'])}" for _, r in _thin.iterrows())
-                   + " — a single result moves these by a full unit.")
+        # relabel_text: a group named by its tier code (grouping by tier) shows the label, not the code
+        st.caption(relabel_text("Thin: " + ", ".join(f"{r[by]} n={int(r['n'])}" for _, r in _thin.iterrows())
+                                + " — a single result moves these by a full unit."))
 
 
 ui.section_header("Roll-ups", "Achieved win rate against the break-even the prices demanded. Bar above its tick = "
