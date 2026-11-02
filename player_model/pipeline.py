@@ -368,6 +368,68 @@ def mode_collect_wc(last_n: int = 10) -> None:
             print(f"  {market}: {rate:.1%} positive rate (WC data)")
 
 
+# ── UEFA cup rows into player_history (owner question 2026-11-02) ─────────────
+
+# Raw (collected) columns a cup row carries; the derived features are rebuilt from them.
+_SP_RAW = ("sp_goal", "headed_goal", "fk_goal", "sp_assist", "fk_assist")
+
+
+def merge_cup_rows(existing: "pd.DataFrame", cups: "pd.DataFrame") -> tuple:
+    """(combined history, stats). Appends the collected UEFA cup rows the history does not hold,
+    with their features built in the FULL history context (one build_features pass over the raw
+    columns of history + every cup row), so a cup row's form / rest days / opponent features see
+    the player's league AND cup matches. Only the new cup rows are taken from that pass: every
+    stored row stays exactly as it is (history_integrity.merge_history adds, never rewrites a
+    frozen row). Extra-time cup fixtures are context, not training rows (cup_history)."""
+    from player_model import cup_history as CH
+    new = CH.training_rows(CH.new_cup_rows(existing, cups))
+    stats = {"cup_rows": int(len(cups)), "to_append": int(len(new)), "appended": 0,
+             "extra_time_context_only": int(len(CH.new_cup_rows(existing, cups)) - len(new))}
+    if new.empty:
+        return existing, stats
+    raw = [c for c in cups.columns if c != "fixture_status"]
+    raw += [c for c in (*_SP_RAW, "height_cm", "weight_kg", "age") if c in existing.columns and c not in raw]
+    ctx = pd.concat([existing.reindex(columns=raw), cups.reindex(columns=raw)], ignore_index=True)
+    ctx = ctx.drop_duplicates(["fixture_id", "player_id"], keep="first")
+    built = build_features(ctx)
+    keys = pd.MultiIndex.from_frame(new[["fixture_id", "player_id"]].apply(pd.to_numeric, errors="coerce"))
+    bk = pd.MultiIndex.from_frame(built[["fixture_id", "player_id"]].apply(pd.to_numeric, errors="coerce"))
+    out = built[bk.isin(keys)].copy()
+    for _c in HI.INJURY_COLUMNS:            # not observed by a collect -> NaN, see mode_collect
+        if _c in out.columns:
+            out[_c] = float("nan")
+    combined, _st = HI.merge_history(existing, out)
+    stats["appended"] = int(len(combined) - len(existing))
+    stats["first_appearance_dropped"] = int(len(new) - len(out))
+    return combined, stats
+
+
+def mode_merge_cups(dry_run: bool = False) -> None:
+    from player_model.cup_history import cup_rows
+    if not HISTORY_CACHE.exists():
+        print("[merge-cups] No player_history.parquet.")
+        return
+    cups = cup_rows()
+    if cups.empty:
+        print("[merge-cups] no collected cup rows (run scripts/collect_cup_player_stats.py)")
+        return
+    existing = pd.read_parquet(HISTORY_CACHE)
+    if dry_run:
+        from player_model import cup_history as CH
+        new = CH.new_cup_rows(existing, cups)
+        print(f"[merge-cups] dry run: {len(cups):,} collected, {len(new):,} not in history, "
+              f"{len(CH.training_rows(new)):,} would be appended (90-minute fixtures)")
+        return
+    combined, st = merge_cup_rows(existing, cups)
+    print(f"[merge-cups] {st}")
+    if st["appended"] <= 0:
+        return
+    if len(combined) < len(existing):
+        print("[merge-cups] ABORT: fewer rows than stored. Refusing to write.")
+        return
+    _save_history(combined)
+
+
 # ── Phase 3: Train ────────────────────────────────────────────────────────────
 
 
@@ -637,7 +699,10 @@ def mode_predict() -> None:
         print("[predict] Post-WC match-day gating: no prop fixtures in next 72h — skipping.")
         return
 
-    history = pd.read_parquet(HISTORY_CACHE)
+    # The collected UEFA cup rows (output/collect/cup_player_rows.parquet) join the serving history:
+    # a player's form / minutes / rest days and the opponent tables include his cup matches.
+    from player_model.cup_history import with_cup_rows
+    history = with_cup_rows(pd.read_parquet(HISTORY_CACHE))
 
     # (The old _enrich_with_recent_form overwrote a player's last stored goals_pg / sot_pg /
     # cards_pg with ONE match's raw counts, `stat.get(..., 0)`; recent matches belong in history
@@ -1023,7 +1088,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Player Model Pipeline")
     parser.add_argument("--mode", choices=["collect", "collect-wc", "train", "predict", "all",
                                            "enrich-season", "enrich-profiles", "enrich-sidelined",
-                                           "enrich-sidelined-live", "squad-sync"], required=True)
+                                           "enrich-sidelined-live", "squad-sync", "merge-cups"],
+                        required=True)
+    parser.add_argument("--dry-run", action="store_true",
+                        help="merge-cups: report what would be appended, write nothing")
     parser.add_argument("--extended", action="store_true",
                         help="Also collect Champions League / Europa League / Conference League")
     parser.add_argument("--last-n", type=int, default=99,
@@ -1044,6 +1112,8 @@ def main() -> None:
         mode_enrich_sidelined_live()
     if args.mode == "squad-sync":
         mode_squad_sync()
+    if args.mode == "merge-cups":
+        mode_merge_cups(dry_run=args.dry_run)
     if args.mode == "train" or args.mode == "all":
         mode_train()
     if args.mode == "predict" or args.mode == "all":

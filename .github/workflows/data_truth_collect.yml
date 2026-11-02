@@ -18,6 +18,11 @@ name: Data Truth Collect (real data)
 #      new-format league-season whose output/fd_history.parquet matches lack a half-time score
 #      (1 call per league-season: 120 on the 2026-11-02 history); the half-time scores are written
 #      BESIDE the history (output/collect/fd_history_ht_fill.parquet + ht_fill_audit.json)
+#   8. scripts/collect_cup_player_stats.py     API-Football /fixtures/players for every UEFA cup
+#      fixture (Champions / Europa / Conference League, ids 2 / 3 / 848) in the span player_history
+#      covers: 1 call per fixture (3,779 on the 2026-11-02 fixture list, then only newly finished
+#      ones), written BESIDE the history to output/collect/cup_player_rows.parquet (serving reads it
+#      at once; python -m player_model.pipeline --mode merge-cups appends it to player_history)
 #
 # API-FOOTBALL BUDGET (scripts/collect_common.py, checked before EVERY call): this job may spend at
 # most 45,000 calls per UTC day (journal output/collect/af_budget.json, committed) and stops as soon
@@ -34,9 +39,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fixtures,htscores,afgap,sidelined,profiles,understat,strength)'
+        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,sidelined,profiles,understat,strength)'
         required: false
-        default: 'fixtures,htscores,afgap,sidelined,profiles,understat,strength'
+        default: 'fixtures,htscores,cupstats,afgap,sidelined,profiles,understat,strength'
 
 concurrency:
   group: data-truth-collect
@@ -49,7 +54,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,afgap,sidelined,profiles,understat,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,sidelined,profiles,understat,strength' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -110,6 +115,16 @@ jobs:
         run: |
           python scripts/collect_ht_scores.py
           /tmp/commit_collected.sh htscores
+
+      # Runs third: ~3,800 calls on the first run, then only newly finished cup fixtures. Needs
+      # step 1's fixture list (output/strength/competition_fixtures.parquet).
+      - name: 8. UEFA cup player stats per fixture
+        if: contains(env.STEPS, 'cupstats')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_cup_player_stats.py
+          /tmp/commit_collected.sh cupstats
 
       - name: 2. af_history gap
         if: contains(env.STEPS, 'afgap')

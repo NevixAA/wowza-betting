@@ -339,17 +339,34 @@ def team_scope(league) -> str | None:
 
 
 def _team_keys(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
-    """(own team key, opponent key) per player row: '<API-Football team name>|<scope>'. Within one
-    API-Football competition scope the team name IS the identity (the provider names a club the same
-    way in every fixture); history carries no team id. NaN where the scope is unknown."""
+    """(own team key, opponent key) per player row.
+
+    A CLUB is 'af:<API-Football team id>' in EVERY competition (player_model.team_identity): the
+    row's own ids, else its fixture's ids (side by club identity), else the club's name resolved
+    among the clubs of the row's competition. So an opponent in a Champions League tie is the same
+    key as in its domestic league, and its opponent features come from ALL its recent matches
+    (owner question 2026-11-02: the cup's own scope held no history, every cup opponent was NaN).
+    A national team, or a club no id source resolves, keeps '<name>|<scope>'. NaN where the
+    competition is unknown to the registry (Friendlies, qualifiers) and no fixture id proves it."""
+    from . import team_identity as TI
     scope = df["league"].map(team_scope) if "league" in df.columns else pd.Series(None, index=df.index)
     if "opponent" in df.columns:
         opp = df["opponent"]
     else:
         opp = df["away_team"].where(df["is_home"].astype(bool), df["home_team"])
-    own = df["team"].astype(str) + "|" + scope
-    oth = opp.astype(str) + "|" + scope
-    return own.where(scope.notna()), oth.where(scope.notna())
+    own_n = (df["team"].astype(str) + "|" + scope).where(scope.notna())
+    oth_n = (opp.astype(str) + "|" + scope).where(scope.notna())
+    tid, oid = TI.row_team_ids(df)
+    own, oth = tid.map(TI.key), oid.map(TI.key)
+    club = scope.notna() & (scope != "national_teams")
+    if "league" in df.columns:
+        for ser, names in ((own, df["team"]), (oth, opp)):
+            m = ser.isna() & club
+            if m.any():
+                pairs = pd.Series(list(zip(names[m].astype(str), df.loc[m, "league"])), index=names[m].index)
+                cache = {p: TI.club_key(p[0], p[1]) for p in pd.unique(pairs)}
+                ser.loc[m] = pairs.map(cache)
+    return own.where(own.notna(), own_n), oth.where(oth.notna(), oth_n)
 
 
 # ── one row per (fixture, team): what the team did and what it conceded ─────────────────────────
@@ -461,9 +478,51 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
     t.loc[both0, ["team_corners", "corners_conceded"]] = np.nan
     # Only the side we hold rows for can be measured: a fixture whose opponent was not collected
     # leaves every conceded quantity NaN (it used to drop out of an inner self-join silently).
+    t = _with_fixture_scores(t)
     t["date"] = pd.to_datetime(t["date"], errors="coerce")
     t["_day"] = t["date"].dt.normalize()
     return t.sort_values(["_tkey", "date", "fixture_id"]).reset_index(drop=True)
+
+
+def _with_fixture_scores(t: pd.DataFrame) -> pd.DataFrame:
+    """Goals scored / conceded per team-fixture from the API-Football 90-MINUTE score
+    (output/strength/competition_fixtures.parquet, score.fulltime), and one row per side of every
+    collected fixture we hold NO player rows for (goals only, every other quantity NaN).
+
+    Why: a club's recent matches are ALL the competitions it played. A Champions League opponent
+    from a league whose players we do not collect (Club Brugge, Sporting, Kairat) has its domestic
+    and cup results in the collected fixtures, so its goals-conceded rate is measured from those;
+    its shots / keeper / defender / midfield quantities exist only where we hold its player rows
+    (its cup matches, once scripts/collect_cup_player_stats.py has run). The player-row goal sum
+    it replaces missed own goals and counted extra-time goals; the fixture score is the 90-minute
+    figure (props settle on 90 minutes). A fixture without a stored score keeps the player sum."""
+    from . import team_identity as TI
+    fx = TI.fixture_results()
+    if fx.empty or t.empty:
+        return t
+    fx = fx.dropna(subset=["home_id", "away_id"])
+    sides = []
+    for own, oth, gs, gc in (("home_id", "away_id", "ft_home", "ft_away"),
+                             ("away_id", "home_id", "ft_away", "ft_home")):
+        sides.append(pd.DataFrame({"fixture_id": fx["fixture_id"].to_numpy(),
+                                   "_tkey": fx[own].map(TI.key).to_numpy(),
+                                   "_okey": fx[oth].map(TI.key).to_numpy(),
+                                   "date": fx["date"].to_numpy(), "league": fx["competition"].to_numpy(),
+                                   "_gs": fx[gs].to_numpy(dtype=float), "_gc": fx[gc].to_numpy(dtype=float)}))
+    s = pd.concat(sides, ignore_index=True).dropna(subset=["_tkey", "_okey"])
+    s = s[s["_gs"].notna() & s["_gc"].notna()]
+    t = t.assign(fixture_id=pd.to_numeric(t["fixture_id"], errors="coerce"))
+    t = t.merge(s[["fixture_id", "_tkey", "_gs", "_gc"]], on=["fixture_id", "_tkey"], how="left")
+    has = t["_gs"].notna()
+    t.loc[has, "goals_scored"] = t.loc[has, "_gs"]
+    t.loc[has, "goals_conceded"] = t.loc[has, "_gc"]
+    t = t.drop(columns=["_gs", "_gc"])
+    held = pd.MultiIndex.from_frame(t[["fixture_id", "_tkey"]])
+    new = s[~pd.MultiIndex.from_frame(s[["fixture_id", "_tkey"]]).isin(held)]
+    if len(new):
+        add = new.rename(columns={"_gs": "goals_scored", "_gc": "goals_conceded"})
+        t = pd.concat([t, add.reindex(columns=t.columns)], ignore_index=True)
+    return t
 
 
 def _blank_unrecorded_corners(df: pd.DataFrame) -> pd.DataFrame:
@@ -482,24 +541,48 @@ def _blank_unrecorded_corners(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _roll_measured(t: pd.DataFrame, col: str, n: int, min_n: int) -> pd.Series:
+    """Per team (_tkey), BEFORE each fixture: the mean of the team's last n fixtures that MEASURE
+    `col` (unmeasured fixtures skipped, not counted), NaN below min_n. A team's fixtures include
+    every competition (the score-only rows of _with_fixture_scores carry goals but no shots /
+    keeper / defender figures): skipping the unmeasured ones keeps those features on the team's
+    last n measured matches instead of losing them to a tie we hold no player rows for.
+    `t` sorted by (_tkey, date)."""
+    v = pd.to_numeric(t[col], errors="coerce")
+    ok = v.notna()
+    key = t["_tkey"]
+    # measured fixtures strictly before each row, within its team
+    before = ok.astype(int).groupby(key).cumsum() - ok.astype(int)
+    out = pd.Series(np.nan, index=t.index, dtype=float)
+    if not ok.any():
+        return out
+    sub = pd.DataFrame({"_tkey": key[ok], "v": v[ok]})
+    sub["_j"] = sub.groupby("_tkey").cumcount() + 1
+    sub["after"] = (sub.groupby("_tkey")["v"].rolling(n, min_periods=min_n).mean()
+                    .reset_index(level=0, drop=True).reindex(sub.index))
+    q = pd.DataFrame({"_tkey": key, "_j": before, "_i": np.arange(len(t))})
+    hit = q[q["_j"] > 0].merge(sub[["_tkey", "_j", "after"]], on=["_tkey", "_j"], how="left")
+    out.iloc[hit["_i"].to_numpy()] = hit["after"].to_numpy()
+    return out
+
+
 def _team_rolling(t: pd.DataFrame, n: int) -> pd.DataFrame:
-    """Pre-match rolling value of each _TEAM_ROLL quantity per team (shift(1), min sample)."""
-    g = t.groupby("_tkey", group_keys=False)
+    """Pre-match rolling value of each _TEAM_ROLL quantity per team: the mean of its last n
+    fixtures that measure it (strictly before the fixture; min sample; _roll_measured)."""
     out = t[["fixture_id", "_tkey"]].copy()
     for src, (feat, min_attr) in _TEAM_ROLL.items():
-        out[feat] = _roll(g, src, n, getattr(config, min_attr))
-    out["_opp_team_corners_pg"] = _roll(g, "team_corners", n, config.MIN_OPP_MATCHES)
+        out[feat] = _roll_measured(t, src, n, getattr(config, min_attr))
+    out["_opp_team_corners_pg"] = _roll_measured(t, "team_corners", n, config.MIN_OPP_MATCHES)
     return out
 
 
 def _team_now(rows: pd.DataFrame, n: int) -> dict:
     """Serving counterpart of _team_rolling: the team's state BEFORE its next match = the mean of
-    its last n fixtures we hold, same minimum samples."""
-    last = rows.tail(n)
+    its last n fixtures we hold that measure each quantity, same minimum samples."""
     out = {}
     for src, (feat, min_attr) in _TEAM_ROLL.items():
-        s = pd.to_numeric(last[src], errors="coerce")
-        out[feat] = float(s.mean()) if s.notna().sum() >= getattr(config, min_attr) else NAN
+        s = pd.to_numeric(rows[src], errors="coerce").dropna().tail(n)
+        out[feat] = float(s.mean()) if len(s) >= getattr(config, min_attr) else NAN
     return out
 
 
@@ -837,12 +920,14 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     Also computes opponent defensive rolling features per fixture.
     """
-    if not match_rows:
+    if match_rows is None or len(match_rows) == 0:
         return pd.DataFrame()
 
     n = n or config.ROLLING_N
 
-    df = pd.DataFrame(match_rows)
+    # A list of row dicts, or a DataFrame (pipeline.merge_cup_rows passes the history frame: a
+    # 900k-row list of dicts would cost several GB).
+    df = match_rows.copy() if isinstance(match_rows, pd.DataFrame) else pd.DataFrame(match_rows)
     df["date"] = pd.to_datetime(df["date"])
     # A row without a real player id has no player to build a history for: player_id 0 pooled
     # 153 different players into ONE rolling history (props_truth 2026-11-02). Dropped, logged.
@@ -999,6 +1084,11 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # ── Opponent features, measured from the opponent's prior matches (team_match_table) ──────
     df["opponent"] = df["away_team"].where(df["is_home"].astype(bool), df["home_team"])
+    # API-Football team ids of the row's club and opponent (team_identity: the row's own, else its
+    # fixture's), resolved ONCE and kept on the row: the opponent tables and the strength lookup
+    # key clubs by id across every competition.
+    from . import team_identity as _TI
+    df["team_id"], df["opponent_id"] = _TI.row_team_ids(df)
     # Measured club / league strength as of the match date (league_quality.attach_strength).
     df = _LQ.attach_strength(df)
     # Set-piece roles from mapped Understat shots, as of the match date (setpiece/features.py).
@@ -1078,9 +1168,12 @@ def _serving_context(history: pd.DataFrame) -> dict:
         t = team_match_table(h)
         teams_by_scope: dict = {}
         if not t.empty:
-            names = t["_tkey"].str.rsplit("|", n=1, expand=True)
-            for scope, sub in names.groupby(1):
-                teams_by_scope[scope] = sorted(sub[0].unique())
+            named = t["_tkey"].astype(str)
+            named = named[named.str.contains("|", regex=False)]      # national teams / no id
+            if len(named):
+                names = named.str.rsplit("|", n=1, expand=True)
+                for scope, sub in names.groupby(1):
+                    teams_by_scope[scope] = sorted(sub[0].unique())
         # Measured strength over the whole history (career averages) and the collected real data.
         hs = _LQ.attach_strength(h) if "team" in h.columns else h
         by_pid_strength = ({p: g[["league_elo", "opp_club_elo", "_scope"]] for p, g in hs.groupby("player_id")}
@@ -1105,12 +1198,22 @@ def _serving_context(history: pd.DataFrame) -> dict:
 
 
 def _opponent_state(ctx: dict, opponent: str, league, n: int) -> dict:
-    """Opponent features for the upcoming fixture: the opponent resolved (src.team_names.resolve)
-    among the teams we hold in the fixture league's identity scope, then its last n fixtures.
+    """Opponent features for the upcoming fixture, from the opponent's last n fixtures in ANY
+    competition: the opponent's API-Football id (team_identity.club_key: among the clubs of the
+    fixture's competition, else the strength name index) is the key of the training table
+    (team_match_table / _team_keys). A national team, or a club no id source resolves, falls back
+    to src.team_names.resolve among the names held in the fixture league's identity scope.
     Unresolvable -> every opponent feature NaN (logged by the caller)."""
     nan_state = {feat: NAN for feat, _ in _TEAM_ROLL.values()}
+    if not opponent:
+        return nan_state
+    from . import team_identity as TI
+    k = TI.club_key(str(opponent), league) if team_scope(league) != "national_teams" else None
+    rows = ctx["by_team"].get(k) if k else None
+    if rows is not None and len(rows):
+        return _team_now(rows, n)
     scope = team_scope(league)
-    if not opponent or scope is None:
+    if scope is None:
         return nan_state
     cands = ctx["teams_by_scope"].get(scope, [])
     hit = config._v9_src("team_names").resolve(str(opponent), cands) if cands else None
