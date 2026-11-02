@@ -473,14 +473,19 @@ def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
 
 def _fd_download_tables() -> tuple[dict, dict]:
     """({league: code} for per-season mmz4281 files, {league: code} for /new/ files), from the
-    registry: every league with a football_data_code, standard -> mmz4281, new_format -> /new/."""
+    registry: every MODEL league with a football_data_code, standard -> mmz4281, new_format -> /new/.
+    A league with model_type null is skipped here (it is not a model league and was being filed in
+    the /new/ bucket by elimination); the HT-extra download reads those by football_data_format."""
     from src import league_registry as _LR
     std, new = {}, {}
     for e in _LR.leagues():
         code = e.get("football_data_code")
         if not code:
             continue
-        (std if e.get("model_type") == "standard" else new)[e["name"]] = code
+        if e.get("model_type") == "standard":
+            std[e["name"]] = code
+        elif e.get("model_type") == "new_format":
+            new[e["name"]] = code
     return std, new
 
 
@@ -1643,9 +1648,12 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
 
     # ── Direct HT download: registry standard leagues not in local files ─────
     # Was a hand table of big-5 names/codes ('Bundesliga 1' is not even a registry name). Now every
-    # registry league with a standard football_data_code that no local file supplied. A league the
-    # registry gives no code (the big-5 today) is not downloaded.
-    _HT_EXTRA = dict(_fd_download_tables()[0])
+    # registry league whose football-data file family is the per-season mmz4281 one
+    # (football_data_format, LR-1.2): the standard model leagues plus the big-5, which have no model
+    # but whose codes (E0/D1/SP1/I1/F1) the registry now holds. Skipped when a local file supplied it.
+    from src import league_registry as _LRx
+    _HT_EXTRA = {e["name"]: e["football_data_code"] for e in _LRx.leagues()
+                 if e.get("football_data_format") == "mmz4281" and e.get("football_data_code")}
     # The CURRENT and PREVIOUS campaigns, derived from the date and labelled to match. This was the
     # literal 2526 folder labelled '2025/26', so HT history never got the season being played
     # (Data Truth audit finding 44).
