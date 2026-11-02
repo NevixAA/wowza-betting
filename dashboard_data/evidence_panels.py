@@ -148,6 +148,10 @@ def load_bets(bets: pd.DataFrame | None = None, side_bets: pd.DataFrame | None =
             "side": m["side"].astype(str).str.upper(), "signal_tier": m["signal_tier"], "odds": m["odds"],
             "result": m["result"], "pnl": m["pnl"], "clv_pct": m.get("clv_pct")}))
     if len(s):
+        # first-half BTTS closes (output/corrections/side_clv_first_half_contaminated.csv): no CLV.
+        # P/L stays; the ledger value is kept as clv_pct_stored by the corrections module.
+        from src.clv_corrections import exclude_contaminated_clv
+        s = exclude_contaminated_clv(s)
         parts.append(pd.DataFrame({
             "source": s.get("source"), "date": s["match_date"], "league": s["league"], "home": s["home_team"],
             "away": s["away_team"], "model_type": s.get("model_type"), "market": s["market"].map(SIDE_MARKET),
