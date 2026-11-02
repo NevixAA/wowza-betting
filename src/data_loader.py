@@ -524,6 +524,7 @@ def _repair_club_text(df: pd.DataFrame) -> pd.DataFrame:
     from src.integrity.duplicate_matches import fix_mojibake
     if df is None or df.empty:
         return df
+    df = df.copy()
     n = 0
     for c in ("home_team", "away_team"):
         if c in df.columns:
@@ -559,6 +560,17 @@ def _one_match_one_row(df: pd.DataFrame) -> pd.DataFrame:
     out = out.sort_values("date", kind="mergesort").reset_index(drop=True)
     out.attrs["one_match_report"] = {k: v for k, v in rep.items() if k != "examples"}
     return out
+
+
+def one_club_one_match(out: pd.DataFrame) -> pd.DataFrame:
+    """THE identity pipeline of the merged history, in ONE place - load_all_matches (train and serve)
+    and the data-truth check (src/integrity/data_truth.one_match) both call it: mojibake repaired,
+    one spelling per club (_canonicalise_clubs, _canonical_identity_and_seasons), one row per match
+    (_one_match_one_row: +-3 days, canonical clubs, same score)."""
+    out = _repair_club_text(out)
+    out = _canonicalise_clubs(out)
+    out = _canonical_identity_and_seasons(out)
+    return _one_match_one_row(out)
 
 
 def _impossible_stats_to_missing(df: pd.DataFrame) -> pd.DataFrame:
@@ -1658,7 +1670,6 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
             ci_frames.append(_arch.assign(row_source="backtest_archive"))
         out = pd.concat(ci_frames, ignore_index=True)
         out = out[out["home_team"].notna() & out["away_team"].notna()]
-        out = _repair_club_text(out)
         out = out.sort_values("date").reset_index(drop=True)
         out["total_goals"] = out["home_goals"] + out["away_goals"]
         # No score -> label NaN, never 0 (NaN > 2.5 is False, which read as an Under / no BTTS)
@@ -1691,9 +1702,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
                 out.get("away_sot", pd.Series(dtype=float)) / out.get("away_shots", pd.Series(dtype=float)), np.nan)
         # Club identity BEFORE any enrichment or feature work: a club split across two
         # spellings is two teams to everything downstream.
-        out = _canonicalise_clubs(out)
-        out = _canonical_identity_and_seasons(out)
-        out = _one_match_one_row(out)                     # +-3 d, canonical clubs, same score
+        out = one_club_one_match(out)
         out = _enrich_with_api_shots(out)
         out = _enrich_with_standard_sidemarket_odds(out)   # real BTTS/O1.5/O3.5 for 2nd-divs
         out = _enrich_ou25_from_captures(out)             # our own O/U 2.5, NaN-only

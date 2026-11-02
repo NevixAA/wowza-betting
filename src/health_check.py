@@ -55,9 +55,18 @@ def record_feature_health(feat, cols_by_model: dict) -> dict:
     import pandas as pd
 
     state = {"ts": datetime.now(timezone.utc).isoformat(), "models": {}}
+    if not cols_by_model:
+        state["status"] = "NO_DATA"
+        log.warning("[feature-health] no model column lists were passed - nothing was checked (NO_DATA)")
     for model_type, cols in (cols_by_model or {}).items():
         sub = feat[feat["model_type"] == model_type] if "model_type" in feat.columns else feat
         if sub.empty or not cols:
+            # A model with no rows (or no columns) was NOT checked. It used to vanish from the file,
+            # which reads exactly like "no degenerate features" (2026-11-02, missing input != healthy).
+            state["models"][model_type] = {"status": "NO_DATA", "fixtures": int(len(sub)),
+                                           "n_features": len(cols or [])}
+            log.warning(f"[feature-health] {model_type}: NO_DATA ({len(sub)} fixture(s), "
+                        f"{len(cols or [])} column(s)) - not checked")
             continue
         blank, const = [], []
         for c in cols:
@@ -72,6 +81,7 @@ def record_feature_health(feat, cols_by_model: dict) -> dict:
         n = len(cols)
         deg = len(blank) + len(const)
         state["models"][model_type] = {
+            "status": "DEGRADED" if (len(blank) + len(const)) else "OK",
             "fixtures": int(len(sub)), "n_features": n,
             "blank": sorted(blank), "constant": sorted(const),
             "degenerate": deg, "degenerate_pct": round(deg / n * 100, 1) if n else 0.0,

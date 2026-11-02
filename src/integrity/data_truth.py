@@ -15,6 +15,11 @@ turns system health RED instead of waiting for the next audit:
                  and the history banks are fresh.
     4 LEAGUES    no misfiled league rows in the banks, the registry validates, joins serve
                  league-keyed.
+    5 ONE MATCH  the banks, through the loader's identity pipeline, hold no match twice (same day
+                 under two spellings, or 1-3 days apart) and no row whose form window holds its own
+                 match (2026-11-02).
+
+A check whose input is missing is NO_DATA (or RED where the input is a production bank), never GREEN.
 
 Every check reads committed files only, so it runs offline and in CI. Nothing here changes data.
 """
@@ -73,10 +78,12 @@ def naming() -> dict:
             "(canonical or alias): RED if any is not; AMBER if > 10% of board fixtures are blind (no form)")
     from src.league_registry import canonical_name
     unknown: dict[str, set] = {}
+    read = []
     for f in BOARD_FILES + BANK_FILES:
         d = _read(OUT / f, ["league"])
         if d.empty or "league" not in d.columns:
             continue
+        read.append(f)
         bad = {lg for lg in d["league"].dropna().astype(str).unique() if not canonical_name(lg)}
         if bad:
             unknown[f] = bad
@@ -87,6 +94,12 @@ def naming() -> dict:
     n_bad = sum(len(v) for v in unknown.values())
     st = RED if n_bad else AMBER if (blind is not None and blind > 10) else GREEN
     detail = "; ".join(f"{f}: {sorted(v)[:5]}" for f, v in unknown.items())
+    if not read:
+        # nothing was read, so nothing was checked (it read GREEN before 2026-11-02)
+        return _c("Data truth 1: one canonical name", GREY, "no board, ledger or bank to check", rule)
+    unread = [f for f in BOARD_FILES + BANK_FILES if f not in read]
+    if unread:
+        detail = (detail + "; " if detail else "") + f"not checked (missing/unreadable): {unread}"
     return _c("Data truth 1: one canonical name", st,
               f"{n_bad} unknown league name(s); blind board fixtures "
               f"{'n/a' if blind is None else f'{blind:.1f}%'}", rule, detail)
@@ -157,11 +170,20 @@ def missing(now: datetime | None = None) -> dict:
                 issues.append(f"{col} missing on {share:.0f}% of Standard fixtures")
     for f in BANK_FILES:
         d = _read(OUT / f, ["date"])
-        if not d.empty:
-            age = (pd.Timestamp(now) - pd.to_datetime(d["date"], errors="coerce", utc=True).max()).days
-            if age > 10:
-                issues.append(f"{f} newest match {age} days old")
-                worst = AMBER if worst == GREEN else worst
+        if d.empty or "date" not in d.columns:
+            # a missing history bank is missing data, not a fresh one (it read GREEN before)
+            issues.append(f"{f} missing or unreadable")
+            worst = RED
+            continue
+        newest = pd.to_datetime(d["date"], errors="coerce", utc=True).max()
+        if pd.isna(newest):
+            issues.append(f"{f} has no readable match date")
+            worst = RED
+            continue
+        age = (pd.Timestamp(now) - newest).days
+        if age > 10:
+            issues.append(f"{f} newest match {age} days old")
+            worst = AMBER if worst == GREEN else worst
     return _c("Data truth 3: no missing data", worst, "; ".join(issues) or "board priced, features present",
               rule)
 
@@ -173,26 +195,85 @@ def leagues() -> dict:
             "league-keyed (WOWZA_SAFE_ENRICH_JOINS on): RED on any violation")
     from src import data_loader as DL
     from src.league_registry import load_registry, validate
-    issues = []
+    issues, unread = [], []
     for f in ("af_history.parquet", "backtest_all_leagues.csv"):
         d = _read(OUT / f, ["league", "season"])
-        if not d.empty:
-            n = len(d) - len(DL._drop_misfiled_league_rows(d, f"data_truth:{f}"))
-            if n:
-                issues.append(f"{f}: {n} misfiled row(s)")
+        if d.empty:
+            unread.append(f)
+            continue
+        n = len(d) - len(DL._drop_misfiled_league_rows(d, f"data_truth:{f}"))
+        if n:
+            issues.append(f"{f}: {n} misfiled row(s)")
     errs = validate(load_registry())
     if errs:
         issues.append(f"registry: {len(errs)} error(s) e.g. {errs[0]}")
     if not DL._safe_joins():
         issues.append("enrichment joins are NOT league-keyed (WOWZA_SAFE_ENRICH_JOINS=0)")
-    return _c("Data truth 4: right league relations", RED if issues else GREEN,
-              "; ".join(issues) or "banks clean, registry valid, joins league-keyed", rule)
+    if issues:
+        return _c("Data truth 4: right league relations", RED, "; ".join(issues), rule)
+    if unread:
+        # an unread bank was not checked: NO_DATA, never "banks clean" (GREEN before 2026-11-02)
+        return _c("Data truth 4: right league relations", GREY,
+                  f"not checked (missing/unreadable): {unread}", rule)
+    return _c("Data truth 4: right league relations", GREEN,
+              "banks clean, registry valid, joins league-keyed", rule)
+
+
+# ── 5 ONE MATCH, ONE ROW ─────────────────────────────────────────────────────────────────────────
+_MATCH_COLS = ["date", "league", "season", "home_team", "away_team", "home_goals", "away_goals"]
+
+
+def _bank_matches(f: str) -> pd.DataFrame:
+    d = _read(OUT / f, _MATCH_COLS)
+    if d.empty or not set(_MATCH_COLS) - {"season"} <= set(d.columns):
+        return pd.DataFrame()
+    d = d.copy()
+    d["date"] = pd.to_datetime(d["date"], errors="coerce")
+    for c in ("home_goals", "away_goals"):
+        d[c] = pd.to_numeric(d[c], errors="coerce")
+    return d.dropna(subset=["date", "home_team", "away_team", "home_goals", "away_goals"])
+
+
+def one_match(banks: dict | None = None) -> dict:
+    """The banks the training frame is built from, merged and put through the loader's own identity
+    pipeline (src/data_loader.one_club_one_match - the same code train and serve run), must hold
+    no match twice. `banks` {name: frame} overrides the committed files (tests)."""
+    rule = ("one match, one row: fd_history + the backtest archive, through data_loader.one_club_one_match, "
+            "hold 0 duplicate-match pairs (same league, canonical clubs, same score, dates <= 3 d apart; or "
+            "same day, same score, one side the same club) and 0 rows whose last-5 window holds their own "
+            "match: RED on any; NO_DATA if fd_history is missing")
+    from src import data_loader as DL
+    from src.integrity.duplicate_matches import duplicate_pairs, self_containing_rows
+    if banks is None:
+        banks = {"fd_cache": _bank_matches("fd_history.parquet"),
+                 "backtest_archive": _bank_matches("backtest_all_leagues.csv")}
+    fd = banks.get("fd_cache", pd.DataFrame())
+    if fd is None or fd.empty:
+        return _c("Data truth 5: one match, one row", GREY, "no fd_history to check", rule)
+    parts = []
+    for src, d in banks.items():
+        if d is None or d.empty:
+            continue
+        if src == "backtest_archive":
+            d = DL._drop_misfiled_league_rows(d, "data_truth:archive")
+        parts.append(d.assign(row_source=src))
+    merged = pd.concat(parts, ignore_index=True).sort_values("date", kind="mergesort").reset_index(drop=True)
+    clean = DL.one_club_one_match(merged)
+    pairs = duplicate_pairs(clean)
+    sc = self_containing_rows(clean, pairs)
+    removed = len(merged) - len(clean)
+    st = RED if (len(pairs) or int(sc.sum())) else GREEN
+    ex = "; ".join(f"{p.league}: rows {p.i}/{p.j} {p.gap_days} d ({p.kind})" for p in pairs.head(3).itertuples())
+    return _c("Data truth 5: one match, one row", st,
+              f"{len(pairs)} duplicate pair(s), {int(sc.sum())} self-containing row(s) after the loader's "
+              f"identity pipeline ({len(merged):,} bank rows -> {len(clean):,}; {removed:,} copies removed)",
+              rule, ex)
 
 
 def evaluate(now: datetime | None = None) -> list[dict]:
-    """The four rule checks. Never raises: a check that cannot run is itself RED."""
+    """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
-    for fn in (naming, defaults, lambda: missing(now), leagues):
+    for fn in (naming, defaults, lambda: missing(now), leagues, one_match):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
