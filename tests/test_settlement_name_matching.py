@@ -10,6 +10,10 @@ import pytest
 import update_results as U
 
 
+def _ev(h, a, d="2026-10-24", hs=1, as_=0):
+    return {"home_team": h, "away_team": a, "home_score": hs, "away_score": as_, "date_str": d}
+
+
 @pytest.mark.parametrize("a,b", [
     ("LA Galaxy", "Los Angeles Galaxy"), ("D.C. United", "DC United"),
     ("Bragantino-SP", "RB Bragantino"), ("St Patricks Athletic", "St. Patricks"),
@@ -19,7 +23,9 @@ import update_results as U
     ("Arminia Bielefeld", "Bielefeld"), ("Cadiz CF", "Cádiz"),
 ])
 def test_same_club_matches(a, b):
-    assert U._names_match(a, b) and U._names_match(b, a)
+    # Settlement resolves inside the date's fixture pool (_match_event); a one-fixture pool here.
+    assert U._match_event(a, "Roma", [_ev(b, "Roma")], {"2026-10-24"}) is not None
+    assert U._match_event(b, "Roma", [_ev(a, "Roma")], {"2026-10-24"}) is not None
 
 
 @pytest.mark.parametrize("a,b", [
@@ -28,18 +34,18 @@ def test_same_club_matches(a, b):
     ("Bristol City", "Bristol Rovers"), ("Sheffield United", "Sheffield Wednesday"),
 ])
 def test_different_clubs_never_match(a, b):
-    assert not U._names_match(a, b) and not U._names_match(b, a)
+    assert U._match_event(a, "Roma", [_ev(b, "Roma")], {"2026-10-24"}) is None
+    assert U._match_event(b, "Roma", [_ev(a, "Roma")], {"2026-10-24"}) is None
 
 
 # ── pool-scoped settlement matching (Data Truth 2026-11-01) ───────────────────────────────────
-def _ev(h, a, d="2026-10-24", hs=1, as_=0):
-    return {"home_team": h, "away_team": a, "home_score": hs, "away_score": as_, "date_str": d}
 
 
 def test_match_event_refuses_an_ambiguous_pool():
-    # A token subset is not proof of one club (2026-11-02): 'Bristol' no longer matches 'Bristol
-    # City' even pairwise, and in the date's pool it resolves to neither.
-    assert not U._names_match("Bristol", "Bristol City")
+    # A token subset is not proof of one club (resolver, 2026-11-02): 'Bristol' does not settle
+    # against 'Bristol City' even when it is the only Bristol on the date, and with both Bristol
+    # clubs on the date nothing is settled either.
+    assert U._match_event("Bristol", "Roma", [_ev("Bristol City", "Roma")], {"2026-10-24"}) is None
     evs = [_ev("Bristol City", "Roma"), _ev("Bristol Rovers", "Roma")]
     assert U._match_event("Bristol", "Roma", evs, {"2026-10-24"}) is None
 
@@ -79,6 +85,11 @@ def test_closing_price_is_league_scoped(monkeypatch):
                                  league="League Two") == 2.1
     # No league -> no close (it used to search every league on the date).
     assert np.isnan(U._closing_for_market("Barrow AFC", "Gillingham", "2026-10-24", "over25"))
+
+
+def test_pairwise_name_matcher_is_gone():
+    # Deleted: its one-name pool let any token-subset pair match. Nothing may call it again.
+    assert not hasattr(U, "_names_match") and not hasattr(U, "_norm")
 
 
 def test_resolve_ht_unknown_half_is_not_zero():

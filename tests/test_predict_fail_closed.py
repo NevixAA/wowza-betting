@@ -120,11 +120,15 @@ def test_standard_fallback_code_is_gone():
     assert "p_unk = predict_proba" not in src
 
 
-def test_routing_is_exact_canonical_only():
-    assert config.model_type_for_league("Austria Bundesliga") == "unknown"     # alias is NOT a model route
-    assert config.model_type_for_league("championship") == "unknown"
-    assert config.model_type_for_league("Premier League") == "unknown"         # registry, collection only
+def test_model_type_resolves_through_the_registry_and_is_none_when_missing():
+    # Data Truth round 2: resolved via league_registry.canonical_name; no 'unknown' placeholder.
     assert config.model_type_for_league("Austrian Bundesliga") == "new_format"
+    assert config.model_type_for_league("Austria Bundesliga") == "new_format"  # registered alias
+    assert config.model_type_for_league("championship") is None               # not registered
+    assert config.model_type_for_league("Premier League") is None             # registry, collection only
+    assert config.model_type_for_league("Nowhere League") is None
+    assert config.model_type_for_league(None) is None
+    assert config.model_type_for_league(float("nan")) is None
 
 
 def test_integrity_health_written_by_pipeline_hook(run, monkeypatch, tmp_path):

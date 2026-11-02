@@ -159,19 +159,31 @@ STANDARD_FORMAT_LEAGUES = set(_LR.standard)
 # (notes formerly inside the NEW_FORMAT_LEAGUES literal; values now live in config/leagues.json)
 NEW_FORMAT_LEAGUES = set(_LR.new_format)
 
-def model_type_for_league(league) -> str:
-    """Canonical model tag for a league: 'standard' | 'new_format' | 'unknown'.
+def model_type_for_league(league) -> str | None:
+    """Canonical model tag for a league: 'standard' | 'new_format', or None when the league is not
+    registered (config/leagues.json) or has no model.
 
     Single source of truth so the ledger, digest, and dashboard never disagree on which
     model a bet belongs to. Reporting was previously treating an untagged (blank) row as
     'standard', which let new-format bets leak into the standard column.
+
+    The name is resolved through src.league_registry.canonical_name, so a REGISTERED alias
+    ('Austria Bundesliga') routes like its canonical league, while an unregistered near-name
+    ('championship') resolves to nothing. This used to be exact string matching that returned the
+    placeholder category 'unknown' (Data Truth round 2); a missing model is now None, explicitly.
     """
-    lg = str(league).strip()
+    if league is None or (isinstance(league, float) and league != league):
+        return None
+    lg = _league_registry.canonical_name(str(league).strip())
+    if lg is None:
+        # Auto-onboarded leagues (config/auto_leagues.json) are merged below without a registry
+        # entry; they are matched by their exact configured name only.
+        lg = str(league).strip()
     if lg in STANDARD_FORMAT_LEAGUES:
         return "standard"
     if lg in NEW_FORMAT_LEAGUES:
         return "new_format"
-    return "unknown"
+    return None
 
 
 # Leagues loaded entirely from API-Football (no football-data.co.uk coverage)
@@ -303,8 +315,9 @@ EXCLUDE_COVID_SEASONS = True
 # old label set), calendar-year leagues -> 2020, which the label set never matched ("2020" is not
 # "2019/20"), so their pandemic season stayed in training. Use covid_season_mask(df).
 COVID_PERIOD = ("2020-03-01", "2020-12-31")
-# DEPRECATED label set, kept only for readers not yet moved to covid_season_mask (src/standard_repair,
-# src/backtest, scripts/*). It is correct for start-year leagues only.
+# DEPRECATED DISPLAY-ONLY label set. No training, backtest or script path reads it any more (all use
+# covid_season_mask). Its last reader is the Model Info page (pages/4_*_Model_Info.py, another owner's
+# file); delete it together with that page's reference. Correct for start-year leagues only.
 COVID_SEASONS = {"2019/20", "2020/21"}
 
 
@@ -355,7 +368,11 @@ def covid_season_mask(df, league_col: str = "league", date_col: str = "date"):
             f"covid_season_mask: {unresolved} row(s) whose league/date has no resolvable season - kept")
     return _pd.Series(out, index=df.index)
 
-# Time-decay weights — recent seasons are more representative of current market
+# DEPRECATED DISPLAY-ONLY. Training weights are DERIVED from the match date
+# (src.standard_repair.derived_weights = the frozen src.recency season_age function); no training or
+# research path reads this map or DEFAULT_DECAY_WEIGHT any more. The last reader is the Model Info
+# page (pages/4_*_Model_Info.py, another owner's file), where it is shown as if it still applied;
+# delete both names together with that page's reference.
 TRAINING_DECAY_WEIGHTS = {
     "2024/25": 4.0,
     "2023/24": 3.0,
@@ -475,7 +492,8 @@ ARTIFICIAL_PITCH_LEAGUES: set = _registry_keyed({
 # Used ONLY for DISPLAY in the Telegram bot: OddsAPI commence_time is UTC, so a
 # match's local calendar day can differ from its UTC day (e.g. Japan/Argentina).
 # The stored `date` stays UTC (join key); the notifier converts kickoff_utc to the
-# league's local tz for what the user reads. Unknown leagues fall back to UTC.
+# league's local tz for what the user reads. A league with no registered timezone has no entry
+# (no UTC stand-in); an auto-onboarded league without one is skipped and logged (_merge_auto_leagues).
 # (notes formerly inside the LEAGUE_TIMEZONES literal; values now live in config/leagues.json)
 #   USA MLS: MLS spans zones; ET as display proxy
 LEAGUE_TIMEZONES: dict = _LR.timezones
@@ -649,8 +667,8 @@ SOFASCORE_TOURNAMENT_IDS = _LR.sofascore_ids
 # into config/auto_leagues.json by .github/workflows/auto_onboard_leagues.yml (scripts/auto_onboard.py).
 # It is merged here into every registry a new-format, API-Football-only league needs. ADDITIVE ONLY: a
 # name already configured above is never overwritten, and any error leaves the config exactly as
-# written above. Stakes stay protected by the league rating, which fails closed to the minimum scale
-# for a league with no rating yet.
+# written above. Stakes stay protected by the league rating: a league with no rating yet gets no stake
+# (NO_LEAGUE_RATING, config/bankroll_policy.json league_rating_sizing).
 AUTO_LEAGUES_FILE = BASE_DIR / "config" / "auto_leagues.json"
 
 

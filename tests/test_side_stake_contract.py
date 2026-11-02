@@ -133,9 +133,11 @@ def test_no_unknown_track_unless_source_is_unknown():                # (7)
     _, _, plan = _run([_pred("I", NF, btts=(0.62, 2.10), over15=(0.75, 1.60)),
                        _pred("J", STD, btts=(0.62, 2.10), over15=(0.80, 1.53))])
     assert not plan["track"].str.startswith("unknown|").any()
-    # a genuinely untagged league (neither list) is still reported as unknown, not forced
-    _, _, plan = _run([_pred("K", "Nowhere League", btts=(0.62, 2.10))])
-    assert _row(plan, "K", "BTTS")["track"] == "unknown|BTTS"
+    # A genuinely untagged league (neither list) has NO model (config.model_type_for_league -> None,
+    # Data Truth round 2, no 'unknown' placeholder). The selection contract refuses it loudly
+    # instead of staking an invented track; it is never forced onto standard / new_format.
+    with pytest.raises(sp.SelectionSchemaError):
+        _run([_pred("K", "Nowhere League", btts=(0.62, 2.10))])
 
 
 def test_predictions_tag_wins_and_blank_tag_falls_back():

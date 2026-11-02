@@ -22,7 +22,6 @@ import json
 import logging
 import os
 import sys
-import unicodedata
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -50,32 +49,10 @@ SIDE_LEDGER_FILE   = config.OUTPUT_DIR / "side_bets_ledger.csv"
 
 # ── Team name normalisation ───────────────────────────────────────────────────
 
-def _norm(name: str) -> str:
-    """Lowercase + strip accents + collapse whitespace for fuzzy matching."""
-    nfkd = unicodedata.normalize("NFKD", str(name))
-    ascii_str = "".join(c for c in nfkd if not unicodedata.combining(c))
-    return " ".join(ascii_str.lower().split())
-
-
-def _names_match(a: str, b: str) -> bool:
-    """True if two team names refer to the same club, by the canonical resolver
-    (src.team_names.resolve_result: normalised equality, aliases incl. result spellings, then
-    identity tokens that must pair up, reserve sides only with reserve sides).
-
-    This was substring-or-first-word, which called Real Madrid = Real Sociedad, Man City = Man
-    United, Bristol City = Bristol Rovers and Sheffield United = Sheffield Wednesday, while missing
-    LA Galaxy / Los Angeles Galaxy, Bodø/Glimt / Bodo/Glimt and Bragantino-SP / RB Bragantino, so
-    8 live tips sat unsettled and 64 had no closing price (Data Truth audit findings 17, 18).
-
-    PAIRWISE ONLY - NOT USED FOR SETTLEMENT HERE. With a one-name pool the resolver's ambiguity
-    refusal can never fire, so any token-subset pair matches ('Inter' / 'Inter Miami'). Settlement
-    in this file resolves inside the whole league+date pool with `_match_event`; this stays only
-    for external callers (src/research/league_weekly.py) until they move to a pool."""
-    from src.team_names import resolve_result
-    if not a or not b:
-        return False
-    return resolve_result(str(a), [str(b)]) is not None or resolve_result(str(b), [str(a)]) is not None
-
+# Club names are matched ONLY by src.team_names.resolve_result inside a league+date pool
+# (_match_event, _closing_for_market, _find_prop_fixture). The pairwise _names_match and the
+# lowercase _norm key were deleted (Data Truth round 2): a one-name pool can never be ambiguous,
+# so any token-subset pair matched ('Inter' / 'Inter Miami').
 
 def _canon_league(league) -> str | None:
     """Canonical league name through the registry (config/leagues.json), or None when unknown."""

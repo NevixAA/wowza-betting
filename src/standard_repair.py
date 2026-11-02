@@ -167,22 +167,29 @@ def load_fd_entry_prices(fd_raw_dir) -> pd.DataFrame:
             # some football-data files are Windows-1252 (e.g. byte 0x92, a curly apostrophe)
             raw = pd.read_csv(p, encoding="cp1252", encoding_errors="replace",
                               on_bad_lines="skip", low_memory=False)
-        if "Date" not in raw.columns:
+        if not {"Date", "HomeTeam", "AwayTeam"} <= set(raw.columns):
+            log.warning(f"{p.name}: no Date/HomeTeam/AwayTeam columns - file skipped")
             continue
         px = fd_entry_closing(raw)
         px["date"] = pd.to_datetime(raw["Date"], dayfirst=True, errors="coerce").dt.normalize()
         px["league"] = lg
-        px["fd_home"] = raw.get("HomeTeam", pd.Series(np.nan, index=raw.index)).astype(str)
-        px["fd_away"] = raw.get("AwayTeam", pd.Series(np.nan, index=raw.index)).astype(str)
+        px["fd_home"] = raw["HomeTeam"]
+        px["fd_away"] = raw["AwayTeam"]
         px["fd_file"] = p.name
-        frames.append(px[px["date"].notna()])
+        frames.append(px[px["date"].notna() & px["fd_home"].notna() & px["fd_away"].notna()])
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
 def attach_entry_prices(frame: pd.DataFrame, prices: pd.DataFrame) -> pd.DataFrame:
     """Add odds_over25_entry / odds_under25_entry (+ class/source) to a training frame, matched
-    on (date, league, normalised home, normalised away). Never touches odds_over25 (closing)."""
-    from src.data_loader import _norm_club
+    on (date, league, home, away). Never touches odds_over25 (closing).
+
+    Clubs are matched by src.team_names.resolve inside the pool of football-data clubs of the SAME
+    league on the SAME date (home against that day's home names, away against away names), so the
+    resolver's ambiguity refusal works. This used to join on data_loader's affix-stripping club key, an
+    normaliser outside the canonical resolver. An unresolved fixture gets no price
+    (entry_price_class MISSING), never a near-name's."""
+    from src.team_names import resolve
     f = frame.copy()
     if prices is None or prices.empty:
         f["odds_over25_entry"] = np.nan
@@ -190,11 +197,16 @@ def attach_entry_prices(frame: pd.DataFrame, prices: pd.DataFrame) -> pd.DataFra
         f["entry_price_class"] = "MISSING"
         return f
     pk = prices.assign(_d=pd.to_datetime(prices["date"]).dt.normalize(),
-                       _h=prices["fd_home"].map(_norm_club), _a=prices["fd_away"].map(_norm_club))
+                       _h=prices["fd_home"].astype(str), _a=prices["fd_away"].astype(str))
     pk = pk.drop_duplicates(["_d", "league", "_h", "_a"], keep="last")
+    homes = {k: sorted(set(g)) for k, g in pk.groupby(["_d", "league"])["_h"]}
+    aways = {k: sorted(set(g)) for k, g in pk.groupby(["_d", "league"])["_a"]}
     f["_d"] = pd.to_datetime(f["date"]).dt.normalize()
-    f["_h"] = f["home_team"].astype(str).map(_norm_club)
-    f["_a"] = f["away_team"].astype(str).map(_norm_club)
+    key = list(zip(f["_d"], f["league"]))
+    f["_h"] = [resolve(str(n), homes[k]) if k in homes else None
+               for n, k in zip(f["home_team"], key)]
+    f["_a"] = [resolve(str(n), aways[k]) if k in aways else None
+               for n, k in zip(f["away_team"], key)]
     cols = ["odds_over25_entry", "odds_under25_entry", "entry_price_class", "entry_price_source",
             "odds_over25_close", "odds_under25_close", "close_price_class"]
     f = f.drop(columns=[c for c in cols if c in f.columns])
@@ -207,45 +219,27 @@ def attach_entry_prices(frame: pd.DataFrame, prices: pd.DataFrame) -> pd.DataFra
 # ── frames ──────────────────────────────────────────────────────────────────────────────────
 
 def load_history() -> pd.DataFrame:
-    """Production loader, COVID exclusion exactly as pipeline.mode_train applies it."""
+    """Production loader, COVID exclusion exactly as pipeline.mode_train applies it: per league
+    from its own season rule (config.covid_season_mask), not the old start-year label set."""
     from src.data_loader import load_all_matches
     raw = load_all_matches()
     if config.EXCLUDE_COVID_SEASONS:
-        raw = raw[~raw["season"].isin(config.COVID_SEASONS)]
+        raw = raw[~config.covid_season_mask(raw)]
     return raw
 
 
-def legacy_weights(df: pd.DataFrame) -> pd.Series:
-    """pipeline.mode_train._get_weights, as an index-aligned Series (season-LABEL keyed — note
-    the map has no 2025/26 or 2026/27 entry, so the two newest seasons get the 1.0 default while
-    2024/25 gets 4.0; reported, not changed)."""
-    w = df["season"].map(lambda s: config.TRAINING_DECAY_WEIGHTS.get(s, config.DEFAULT_DECAY_WEIGHT)
-                         ).fillna(config.DEFAULT_DECAY_WEIGHT)
-    return pd.Series(w.to_numpy(dtype=float), index=df.index)
-
-
-#: Recency weights by AGE of the canonical season (0 = the newest season in the frame). Same
-#: shape as config.TRAINING_DECAY_WEIGHTS had when it was typed (newest season 4.0, then 3/2/1.5),
-#: but derived from the match date, so it can never freeze at a hand-typed season key.
-DERIVED_AGE_WEIGHTS = {0: 4.0, 1: 3.0, 2: 2.0, 3: 1.5}
-
-
 def derived_weights(df: pd.DataFrame, as_of=None) -> pd.Series:
-    """Weight from the match DATE (bug: TRAINING_DECAY_WEIGHTS has no 2025/26 / 2026/27 key and
-    standard rows also carry calendar-year labels, so the newest seasons fell back to 1.0 while
-    2024/25 got 4.0). Season = canonical date-derived key; age is counted from `as_of`
-    (default: the frame's newest date). COVID seasons keep weight 0 as in the legacy map."""
-    from src.features_repaired import season_key
-    d = pd.to_datetime(df["date"])
-    sk = season_key(d, df["league"].astype(str))
-    ref = pd.Timestamp(as_of) if as_of is not None else d.max()
-    ref_sk = season_key(pd.Series([ref] * len(df), index=df.index), df["league"].astype(str))
-    start = sk.str.slice(0, 4).astype(int)
-    age = ref_sk.str.slice(0, 4).astype(int) - start
-    w = age.map(lambda a: DERIVED_AGE_WEIGHTS.get(int(a), config.DEFAULT_DECAY_WEIGHT)).astype(float)
-    covid = sk.isin({"2019/20", "2020/21"})
-    w[covid] = 0.0
-    return pd.Series(w.to_numpy(dtype=float), index=df.index)
+    """Recency weight from the match DATE - the ONLY training weight (pipeline.mode_train uses it).
+
+    The frozen src.recency `season_age` function: weight by the age of the canonical date-derived
+    season counted from `as_of` (default: the frame's newest date), {0: 4.0, 1: 3.0, 2: 2.0,
+    3: 1.5, older: 1.0}, seasons 2019/20 and 2020/21 weight 0. It replaced the hand-typed
+    TRAINING_DECAY_WEIGHTS season-label map in config (retired from training, Data Truth round 2), which had no
+    2025/26 / 2026/27 key and no calendar-year labels, so the newest seasons fell to its 1.0
+    DEFAULT_DECAY_WEIGHT while 2024/25 got 4.0. Rows after `as_of` are refused (ValueError)."""
+    from src import recency
+    ref = pd.Timestamp(as_of) if as_of is not None else pd.to_datetime(df["date"]).max()
+    return recency.weights(df, "season_age", ref)
 
 
 def prepare_history(raw: pd.DataFrame, recipe: str, alias_map=None, identity: bool = True):
@@ -331,13 +325,16 @@ def feature_cols(recipe: str, price_mode: str, track: str = "standard") -> list:
 def train_track(feat: pd.DataFrame, recipe: str, price_mode: str, track: str = "standard",
                 target: str = "over25", weights: str | None = None) -> dict:
     """Train one payload. Legacy: production's `train()` with mode_train's weights, unchanged.
-    Repaired: `train_repaired` with weights attached to their rows; `weights` = "derived"
-    (repaired default: from the match date) or "legacy" (the season-label map)."""
+    Repaired: `train_repaired` with weights attached to their rows. `weights` is "derived" (from
+    the match date, derived_weights - what mode_train uses); the season-label "legacy" map is
+    retired from training and refused."""
     from src.model import train, build_payload
+    weights = weights or "derived"
+    if weights != "derived":
+        raise ValueError(f"weights={weights!r}: only 'derived' exists (the season-label map is retired)")
     rows = track_rows(feat, track, target)
     cols = feature_cols(recipe, price_mode, "newformat" if track == "newformat" else "standard")
-    weights = weights or ("legacy" if recipe == "legacy_v9" else "derived")
-    w = legacy_weights(rows) if weights == "legacy" else derived_weights(rows)
+    w = derived_weights(rows)
     if recipe == "legacy_v9":
         res = train(rows, target=target, sample_weight=w.to_numpy(), feature_cols=cols)
     else:
@@ -532,8 +529,8 @@ def main(argv=None) -> int:
                         help="repaired recipe WITHOUT identity canonicalisation (ablation)")
         p_.add_argument("--team-scope", choices=("league", "club"), default="league")
     for p_ in (t, s):
-        p_.add_argument("--weights", choices=("derived", "legacy"), default=None,
-                        help="repaired default: derived from match date")
+        p_.add_argument("--weights", choices=("derived",), default=None,
+                        help="derived from the match date (the only training weight)")
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
