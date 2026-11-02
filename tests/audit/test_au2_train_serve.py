@@ -52,8 +52,7 @@ def _board() -> pd.DataFrame:
 
 # ── AU2-B01: HT features assigned by position onto an unsorted board ─────────────────────────
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU2-B01: attach_ht_features returns rows in (date, league, home, away) "
-                                        "order; src/predict.py assigns them POSITIONALLY onto the board")
+# AU2-B01 FIXED on data-truth-100 (attach_ht_features keeps board order); xfail removed 2026-11-02.
 def test_ht_features_follow_board_order():
     from src.ht_features import attach_ht_features
     hist, board = _history(), _board()
@@ -81,8 +80,7 @@ def _rest_by_key(hist: pd.DataFrame, board: pd.DataFrame) -> list:
     return [(r.date - last[r.home_team]).days for r in board.itertuples()]
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU2-B02: build_upcoming_features rest days = POSITIONAL tail of a "
-                                        "date-sorted concat; wrong rows on an unsorted board")
+# AU2-B02 FIXED on data-truth-100 (_add_rest_days keeps input order); xfail removed 2026-11-02.
 def test_legacy_serving_rest_days_belong_to_their_fixture():
     from src.feature_engineering import build_upcoming_features
     hist, board = _history(), _board()
@@ -117,8 +115,7 @@ def test_repaired_builder_rest_days_are_per_fixture_on_unsorted_board():
 
 # ── AU2-B03: full-time targets are not masked when goals are missing ─────────────────────────
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU2-B03: (NaN > 2.5).astype(float) == 0.0 - a missing score becomes "
-                                        "an UNDER / BTTS-NO label (src/data_loader.py:1413-1416, 1644-1649)")
+# AU2-B03 FIXED on data-truth-100 (src/data_loader.py:1524 masks with .where(_ftn)); xfail removed 2026-11-02.
 def test_fulltime_targets_stay_missing_without_goals():
     src = (ROOT / "src" / "data_loader.py").read_text(encoding="utf-8")
     # the half-time targets use .where(_htn); the full-time ones must too
@@ -133,17 +130,18 @@ def test_nan_goal_comparison_is_zero_not_nan():
 
 # ── AU2-B05: props serving rest_days is the PREVIOUS match's rest ───────────────────────────
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU2-B05: player_model build_upcoming_features copies rest_days from "
-                                        "the player's last history row (rest before his PREVIOUS match)")
+# AU2-B05 FIXED on data-truth-100: without a fixture_date the serving rest_days is NaN (missing stays
+# missing), with fixture_date 2026-10-25 it is 7.0; xfail removed 2026-11-02.
 def test_props_serving_rest_days_is_days_since_last_match():
     from player_model.feature_engineering import build_upcoming_features
     base = {"player_name": "X", "team": "A1", "opponent": "B1", "league": "Championship", "position": "F",
             "minutes": 90, "started": 1, "goals": 0, "assists": 0, "shots_total": 2, "shots_on_target": 1,
             "yellow_cards": 0, "key_passes": 1, "rating": 7.0, "is_home": 1}
     hist = pd.DataFrame([
-        dict(base, player_id=1, date=pd.Timestamp("2026-10-01"), rest_days=6.0),
-        dict(base, player_id=1, date=pd.Timestamp("2026-10-15"), rest_days=14.0),
-        dict(base, player_id=1, date=pd.Timestamp("2026-10-18"), rest_days=3.0),
+        # fixture_id: the team table is keyed (fixture_id, team) since the league-keyed rewrite
+        dict(base, player_id=1, fixture_id=101, date=pd.Timestamp("2026-10-01"), rest_days=6.0),
+        dict(base, player_id=1, fixture_id=102, date=pd.Timestamp("2026-10-15"), rest_days=14.0),
+        dict(base, player_id=1, fixture_id=103, date=pd.Timestamp("2026-10-18"), rest_days=3.0),
     ])
     up = hist.iloc[-1].to_dict()                     # production passes the latest history row
     f = build_upcoming_features([up], hist, {}, {})
