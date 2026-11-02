@@ -157,7 +157,13 @@ _CACHE_DIR.mkdir(exist_ok=True)
 # Append-only history of every fetched player-prop odd (built forward, ~free —
 # we already fetch these). Becomes the real-odds dataset for prop backtests.
 _ODDS_HISTORY_FILE = Path(__file__).resolve().parents[1] / "output" / "player_prop_odds_history.csv"
-_ODDS_HISTORY_KEY = ["match_date", "league", "match", "player", "market", "odds"]
+# One price QUOTE = (fixture, player, market, source, bookmaker, snapshot time, price). The key used
+# to stop at the price, so two books quoting the same number collapsed into whichever was seen first
+# and a book that went 2.0 -> 2.2 -> 2.0 lost its return to 2.0: its "last price" in the file was a
+# price it no longer offered (props_truth, 2026-11-02). Consecutive identical quotes of ONE book are
+# collapsed by _collapse_price_runs (the file still grows only when a book moves its price).
+_ODDS_BOOK_KEY = ["match_date", "league", "match", "player", "market", "source", "bookmaker"]
+_ODDS_HISTORY_KEY = _ODDS_BOOK_KEY + ["snapshot_ts", "odds"]
 # Every primary AND extra key (UCL qualification -> "Champions League") -> canonical league.
 SPORT_KEY_TO_LEAGUE = _pm_config.league_registry().sport_key_to_league()
 
@@ -443,7 +449,7 @@ def _append_odds_history(records: list[dict]) -> None:
     # Keep every distinct PRICE per real fixture (match_date disambiguates fixture-name
     # collisions across seasons) -> preserves the open->close line trajectory for CLV.
     df = _carry_player_ids(df)
-    df = df.drop_duplicates(subset=_ODDS_HISTORY_KEY, keep="first")
+    df = _collapse_price_runs(df.drop_duplicates(subset=_ODDS_HISTORY_KEY, keep="first"))
     df.to_csv(_ODDS_HISTORY_FILE, index=False)
     # Rolling file (2026-10-22): rows of matches already played move once into
     # player_prop_odds_history_archive/<match_date>.csv, so git stops re-storing ~60 MB per run.
@@ -454,6 +460,24 @@ def _append_odds_history(records: list[dict]) -> None:
 
 
 _PLAYER_ROW_KEY = ["match_date", "league", "match", "player"]
+
+
+def _collapse_price_runs(df):
+    """Per book (_ODDS_BOOK_KEY), in snapshot order, keep a quote only when its price differs from
+    that book's previous quote. Every price change - including a return to an earlier price - is
+    kept, so the last row of a book is the price it last offered. Row order is preserved."""
+    import pandas as pd
+    if df.empty or "odds" not in df.columns:
+        return df
+    keys = [k for k in _ODDS_BOOK_KEY if k in df.columns]
+    ts = df["snapshot_ts"] if "snapshot_ts" in df.columns else pd.Series("", index=df.index)
+    order = (df.assign(_ts=ts.astype(str), _pos=range(len(df)))
+             .sort_values(["_ts", "_pos"], kind="stable"))
+    k = order[keys].astype(object).where(order[keys].notna(), "").astype(str).agg("|".join, axis=1)
+    prev = order["odds"].groupby(k, sort=False).shift(1)
+    keep = prev.isna() | (pd.to_numeric(order["odds"], errors="coerce")
+                          != pd.to_numeric(prev, errors="coerce"))
+    return df[df.index.isin(order.index[keep.to_numpy()])]
 
 
 def _carry_player_ids(df):

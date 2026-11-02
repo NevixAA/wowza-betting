@@ -20,8 +20,16 @@ _APIFOOTBALL_KEY = os.getenv("APIFOOTBALL_KEY", "")
 # api_football name matchers (_same_club / _club_name_subset / _norm_name) are no longer used here.
 from .feature_engineering import build_upcoming_features, compute_ges, _build_history_index
 from .model import load_model, predict_proba
+from .club_rule import club_conflict
 
 import numpy as np
+
+
+def capped_prob(p: float, cap: float) -> float | None:
+    """The model probability when it lies within the market's realistic cap (and the 0.95 absolute
+    ceiling); None above it. The cap is a bound, never a value to write in the probability's place:
+    min(p, cap) produced the model_prob = 0.5 sentinel on 168 World Cup tips (props_truth)."""
+    return None if p > min(float(cap), 0.95) else p
 
 
 def _af_id(v) -> int | None:
@@ -587,6 +595,11 @@ def run_player_predictions(
                    .drop_duplicates("player_id", keep="last")
                    .set_index("player_id")["team"].astype(str))
     _latest_team = _latest_team.reindex(_latest_any.index).fillna(_latest_any)
+    # The player's latest CLUB appearance (club, date) - the evidence the current-club conflict
+    # guard below checks the tip's club against (club_conflict, invariant 12).
+    _latest_club_row = (_club_hist.assign(_d=pd.to_datetime(_club_hist["date"], errors="coerce"))
+                        .sort_values("_d").drop_duplicates("player_id", keep="last")
+                        .set_index("player_id")[["team", "_d"]])
 
     # ── LIVE SQUAD OVERLAY — authoritative for CURRENT club ──────────────────────────────
     # This is the "/players/squads overlay" the note above asks for. A historical appearance
@@ -718,6 +731,8 @@ def run_player_predictions(
         seen = _last_seen.get(pid)
         return seen is not None and pd.notna(seen) and seen >= _cutoff
     _stale_dropped = set()
+    _club_conflict_dropped = set()
+    _n_cap_bound = 0
 
     for _, match_row in bets.iterrows():
         home      = match_row["home_team"]
@@ -791,6 +806,18 @@ def run_player_predictions(
         _keep = [_eligible(p, c) for p, c in zip(team_players["player_id"], team_players["team"])]
         _stale_dropped.update(team_players.loc[[not k for k in _keep], "player_id"].tolist())
         team_players = team_players[_keep]
+        # Current-club rule (invariant 12): a later appearance for ANOTHER club contradicts the
+        # club we would tip him for -> no tip (ghost tips: Casemiro for Man United while at Inter
+        # Miami, De Paul for Atletico while at Inter Miami).
+        # Club competitions only: in a national-team fixture the side is a country, not a club.
+        _fx_day = pd.Timestamp(date_str)
+        _club_fixture = _reg.competition_type(league) in ("club_league", "club_cup")
+        _conf = [_club_fixture and club_conflict(
+                     c, *(_latest_club_row.loc[p].tolist() if p in _latest_club_row.index
+                          else (None, None)), _fx_day)
+                 for p, c in zip(team_players["player_id"], team_players["team"])]
+        _club_conflict_dropped.update(team_players.loc[_conf, "player_id"].tolist())
+        team_players = team_players[[not c for c in _conf]]
         if team_players.empty:
             continue
 
@@ -903,8 +930,14 @@ def run_player_predictions(
                 else:
                     _n_quality_cap_skipped += 1
 
-                # Cap at realistic maximum then absolute ceiling of 0.95
-                p_model = min(p_model, _MARKET_CAPS[market], 0.95)
+                # A probability ABOVE the realistic maximum is not tipped at the cap. Writing the cap
+                # in its place made model_prob a sentinel the model never produced: 168 World Cup
+                # VALUABLE/MARKSMAN tips (2026-06-23..28) carry exactly 0.5 = that run's goals cap,
+                # priced and staked as if measured (output/corrections/props_sentinel_prob.csv).
+                p_model = capped_prob(p_model, _MARKET_CAPS[market])
+                if p_model is None:
+                    _n_cap_bound += 1
+                    continue
 
                 if p_model < config.MIN_SIGNAL_PROB:
                     continue
@@ -976,6 +1009,13 @@ def run_player_predictions(
     if _n_unresolved:
         print(f"[predict] {_n_unresolved} fixture(s) skipped: neither club resolved among the "
               f"clubs we hold for that league's scope")
+    if _club_conflict_dropped:
+        print(f"[current_club] {len(_club_conflict_dropped)} player(s) not tipped: a club appearance "
+              f"for another club within {config.CURRENT_CLUB_CONFLICT_DAYS} days contradicts the "
+              f"club the tip would name")
+    if _n_cap_bound:
+        print(f"[predict] {_n_cap_bound} player-market(s) not tipped: probability above the market's "
+              f"realistic cap (the cap is not written as a probability)")
     if _n_quality_cap_skipped:
         print(f"[predict] quality-mismatch cap skipped on {_n_quality_cap_skipped} player-market(s): "
               f"league/opponent quality not measured")

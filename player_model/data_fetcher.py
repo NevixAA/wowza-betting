@@ -64,9 +64,14 @@ def _stable_player_id(raw_id, name: str) -> int | None:
     A name hash is not an identity (two players sharing a name merge; a re-spelling splits one).
     No API id -> None, and the caller drops the row (counted in _NO_ID_DROPPED, logged per season).
     """
+    # An id of 0 (or negative) is not an identity either: the provider sends 0 for some unlisted
+    # players, and player_history pooled 256 rows of 153 different players under player_id 0
+    # (props_truth 2026-11-02) - one rolling history for all of them.
     if raw_id is not None:
         try:
-            return int(raw_id)
+            v = int(raw_id)
+            if v > 0:
+                return v
         except (TypeError, ValueError):
             pass
     _NO_ID_DROPPED[0] += 1
@@ -74,6 +79,26 @@ def _stable_player_id(raw_id, name: str) -> int | None:
 
 
 _NO_ID_DROPPED = [0]     # rows dropped this process because API-Football gave no player id
+
+
+def fixture_side(team_data: dict, fixture: dict, home_name, away_name) -> bool | None:
+    """Is this /fixtures/players team block the HOME side? By API-Football TEAM ID when the
+    fixture carries both ids, else by club identity (club_rule.side_of: exact name, then
+    src.team_names identity). None when neither proves a side - the caller skips the block.
+    Was `team_name == home_team`: the two endpoints spell some clubs differently ("Pachuca" /
+    "CF Pachuca"), so the HOME club was stored as away with ITSELF as the opponent on 2,478
+    player_history rows (props_truth 2026-11-02)."""
+    from .club_rule import side_of
+    tid = (team_data.get("team") or {}).get("id")
+    teams = (fixture or {}).get("teams") or {}
+    hid, aid = (teams.get("home") or {}).get("id"), (teams.get("away") or {}).get("id")
+    if tid is not None and hid is not None and aid is not None and hid != aid:
+        if tid == hid:
+            return True
+        if tid == aid:
+            return False
+        return None
+    return side_of((team_data.get("team") or {}).get("name", ""), home_name, away_name)
 
 # Global rate-limiter: enforces REQUEST_DELAY between API calls across ALL threads.
 # Without this, each thread sleeps independently → no real throughput gain.
@@ -711,17 +736,23 @@ def _collect_one_season(
             continue
 
         fix_stats = _fetch_fixture_statistics(fixture_id)
+        _raw = fix.get("_raw", fix)
 
         for team_data in team_data_list:
             team_name = team_data.get("team", {}).get("name", "")
             team_st   = fix_stats.get(team_name, {})
+            is_home = fixture_side(team_data, _raw, home_team, away_team)
+            if is_home is None:
+                print(f"    [fix {fixture_id}] {team_name!r} is neither side of "
+                      f"{home_team!r} v {away_team!r} - its rows skipped")
+                continue
             meta = {
                 "fixture_id":  fixture_id,
                 "date":        fix_date,
                 "home_team":   home_team,
                 "away_team":   away_team,
                 "team":        team_name,
-                "is_home":     (team_name == home_team),
+                "is_home":     is_home,
                 "team_corners": team_st.get("corners"),      # None when stats are unavailable
                 "referee":     referee,
                 "season":      season,
@@ -909,7 +940,10 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
             for team_data in team_data_list:
                 t_name  = team_data.get("team", {}).get("name", "")
-                is_home = (t_name == home_team)
+                is_home = fixture_side(team_data, fix, home_team, away_team)
+                if is_home is None:
+                    print(f"    [fix {fixture_id}] {t_name!r} is neither side - its rows skipped")
+                    continue
                 team_st = fix_stats.get(t_name, {})
                 meta = {
                     "fixture_id":   fixture_id,
