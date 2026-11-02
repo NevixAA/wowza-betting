@@ -2,7 +2,16 @@ name: Sharp Money Tracker
 
 on:
   schedule:
-    - cron: '0 8,10,12,14,16,18,20,22 * * *'  # every 2h
+    # EVERY HOUR, AROUND THE CLOCK (Data Truth round 5; owner: keep Pro 1X2's 12h max price age and
+    # snapshot more often). The old '0 8,10,...,22' asked for 8 slots and had NO slot from 22:00 to
+    # 08:00 UTC; GitHub delivered ~3 a day (2026-10-19..11-02 on main), so every morning the newest h2h
+    # price was 12-14h old and Pro withheld its 1X2 picks as STALE_PRICE. Asking hourly (minute 23, off
+    # the top-of-hour crowd) closes the overnight hole; src/sharp_tracker.MIN_INTERVAL_H (1.75h) makes a
+    # fire within 1.75h of the newest snapshot a 0-credit no-op, so at most 12 fetches a day are paid
+    # for. Cost per fetch <= 19 leagues x 2 markets x 1 region = 38 credits (calls with no events are
+    # not billed): <= 456/day worst case. The run stops below SHARP_CREDIT_FLOOR (15,000) remaining,
+    # and logs an [oddsapi_usage] line, so integrity_health measures the real cost.
+    - cron: '23 * * * *'
   workflow_dispatch:
 
 # One sharp run at a time (it had no group at all). Cross-workflow ledger safety comes from the
