@@ -139,6 +139,9 @@ def load_bets(bets: pd.DataFrame | None = None, side_bets: pd.DataFrame | None =
     s = _read(SIDE_BETS) if side_bets is None else side_bets
     parts = []
     if len(m):
+        # first-half prices stored as closes (output/corrections/clv_first_half_contaminated.csv): no CLV
+        from src.clv_corrections import exclude_contaminated_clv
+        m = exclude_contaminated_clv(m)
         parts.append(pd.DataFrame({
             "source": m.get("source"), "date": m["match_date"], "league": m["league"], "home": m["home_team"],
             "away": m["away_team"], "model_type": m.get("model_type"), "market": "OU25",
