@@ -328,6 +328,34 @@ PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DEAD_GOAL_TYP
 _DATA_GAP_FEATURES = {"season_pass_accuracy"}
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DATA_GAP_FEATURES]
 
+# WITHHELD UNTIL REAL DATA EXISTS (props_truth, 2026-11-02; round-2 finding V3). Measured on the
+# committed player_history at data-truth-100 40d7dda9: age = 25.0, height_cm = 180, weight_kg = 75
+# and age_peak_delta = 0 on 876,130 of 876,130 rows - the old build_features placeholders, never a
+# collected value (enrich-profiles never populated them). Every feature below is that placeholder or
+# arithmetic on it, so it carries no information about the player. They leave the props TRAINING
+# feature set (config.PLAYER_FEATURE_COLS); the serving payloads keep their own persisted
+# feature_cols and are untouched (no retrain - the drop takes effect at the next owner-approved
+# props retrain). Re-admit a feature only when player_history carries a REAL value for it
+# (collected profiles, output/collect/player_profiles.parquet) on a measured share of rows.
+PROFILE_FEATURES_WITHHELD = {
+    "age", "age_peak_delta", "height_cm", "height_aerial_interaction",
+    "opp_def_mean_height", "height_diff_vs_opp_def", "height_advantage_score",
+}
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in PROFILE_FEATURES_WITHHELD]
+
+# A player-match row cannot have more minutes than a match with extra time (120) plus stoppage.
+# Stored rows above this are provider errors (League One / League Two 2024-03-13/14: 142-174 min);
+# the raw value is kept and the minutes-derived features treat it as missing. 121-123 min appear on
+# extra-time matches (World Cup 2026-07-03, Argentina 2025-12-02) and are plausible.
+MAX_MATCH_MINUTES = 130
+
+# CURRENT-CLUB RULE at tip time (invariant 12): a player whose latest CLUB appearance in
+# player_history is for a different club than the one we would tip him for, within this many days
+# of the fixture, is not tipped (conflicting evidence, logged). Ghost tips measured 2026-11-02: 337
+# graded player_ledger rows where the same player_id played another fixture that day (Anthony Gordon
+# for Newcastle on 2026-08-23 while at Barcelona; Casemiro for Manchester United while at Inter Miami).
+CURRENT_CLUB_CONFLICT_DAYS = 21
+
 # Understat shot-level features (xG, headed/SP/FK goals, goals-xG) were scraped + integrated
 # (3 seasons, 133k shots, 84% top-5 coverage) and tested 2026-06-30: NO measurable AUC gain
 # (deltas +/-0.002, noise) even on top-5-only rows. Reason: redundant with existing goals_pg/

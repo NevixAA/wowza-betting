@@ -78,6 +78,23 @@ def _ratio(a, b) -> pd.Series:
     return pd.to_numeric(a, errors="coerce") / b.where(b > 0)
 
 
+def profile_composites(f: pd.DataFrame) -> pd.DataFrame:
+    """The age / height composites, IN PLACE (NaN wherever an input is missing). One definition for
+    build_features/_add_composites and scripts/rebuild_player_history.py."""
+    f["height_diff_vs_opp_def"] = f["height_cm"] - f["opp_def_mean_height"]
+    f["height_advantage_score"] = (f["height_diff_vs_opp_def"] / 10.0).clip(-2.0, 2.0)
+    f["height_aerial_interaction"] = ((f["height_cm"].clip(160, 200) - 160) / 40) * f["aerial_won_rate"]
+    f["age_peak_delta"] = (f["age"] - 27).abs()
+    return f
+
+
+def minutes_ok(minutes) -> pd.Series:
+    """Minutes played, NaN above config.MAX_MATCH_MINUTES (a provider error, not a measurement).
+    ONE definition for build_features and serving."""
+    m = pd.to_numeric(pd.Series(minutes), errors="coerce")
+    return m.where(m <= config.MAX_MATCH_MINUTES)
+
+
 def _profile(df: pd.DataFrame, col: str) -> pd.Series:
     s = _num(df, col)
     return s.where(s != _PROFILE_PLACEHOLDERS[col]) if col in _PROFILE_PLACEHOLDERS else s
@@ -740,10 +757,7 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["team_momentum_forward_matchup"] = (f["team_goals_pg_roll"] * f["opp_goals_conceded_pg"] * pf).clip(lower=0.0)
 
     # Height: the player's and the opponent defenders' measured heights (NaN while unprofiled).
-    f["height_diff_vs_opp_def"] = f["height_cm"] - f["opp_def_mean_height"]
-    f["height_advantage_score"] = (f["height_diff_vs_opp_def"] / 10.0).clip(-2.0, 2.0)
-    f["height_aerial_interaction"] = ((f["height_cm"].clip(160, 200) - 160) / 40) * f["aerial_won_rate"]
-    f["age_peak_delta"] = (f["age"] - 27).abs()
+    profile_composites(f)
     _h_adj = (f["height_advantage_score"] + 2.0) / 4.0
     f["defender_sp_edge"] = (f["sp_receiver_score"] * _h_adj * sp_rel * corners_rel.clip(0.3, 2.0)).clip(0, 4.0)
     _sp_sot_proxy = (f["sp_goals_pg"] * 5.0 + f["headed_goals_pg"] * 4.0).clip(0, 0.6)
@@ -830,18 +844,27 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     df = pd.DataFrame(match_rows)
     df["date"] = pd.to_datetime(df["date"])
+    # A row without a real player id has no player to build a history for: player_id 0 pooled
+    # 153 different players into ONE rolling history (props_truth 2026-11-02). Dropped, logged.
+    _pid = pd.to_numeric(df["player_id"], errors="coerce")
+    if (~(_pid > 0)).any():
+        print(f"[features] {int((~(_pid > 0)).sum()):,} row(s) without a real player_id dropped")
+        df = df[(_pid > 0).to_numpy()]
     df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
     # Before the minutes filter: the rule needs both teams' rows of a fixture.
     df = _blank_unrecorded_corners(df)
 
     # Drop bench/DNP rows (< 10 min)
     df = df[df["minutes"] >= 10].copy()
+    # Minutes above a match's maximum are a provider error: the raw value stays, every
+    # minutes-derived feature reads it as missing (_minutes_ok).
+    df["_minutes_ok"] = minutes_ok(df["minutes"])
 
     # ── Per-player rolling features — shift(1) prevents any leakage ──────────
     grp = df.groupby("player_id", group_keys=False)
     for feat, raw in (("goals_pg", "goals"), ("assists_pg", "assists"), ("shots_pg", "shots_total"),
                       ("sot_pg", "shots_on_target"), ("cards_pg", "yellow_cards"),
-                      ("minutes_pg", "minutes"), ("key_passes_pg", "key_passes")):
+                      ("minutes_pg", "_minutes_ok"), ("key_passes_pg", "key_passes")):
         df[feat] = _roll(grp, raw, n) if raw in df.columns else np.nan
 
     # API-Football rating 0 = not rated; no prior rated match -> NaN (was 7.0).
@@ -876,7 +899,7 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["starter_rate"] = _roll(grp, "started", n) if "started" in df.columns else np.nan
 
     # ── Phase 1: ratio and per-90 rolling features (zero leakage) ────────────
-    mins = _num(df, "minutes")
+    mins = _num(df, "_minutes_ok")
     df["_shot_acc"] = _ratio(_num(df, "shots_on_target"), _num(df, "shots_total"))
     df["_kp90"] = _ratio(_num(df, "key_passes"), mins) * 90
     df["_gi90"] = _ratio(_num(df, "goals") + _num(df, "assists"), mins) * 90
@@ -1163,14 +1186,16 @@ def build_upcoming_features(
             "position": p.get("position", ""),
             "n_games": len(phist), "n_prev_games": len(phist_all), "data_source": "match_level",
         }
-        mins = _num(phist, "minutes")
+        # Minutes above a match's maximum read as missing - the same rule as build_features.
+        phist = phist.assign(_minutes_ok=minutes_ok(_num(phist, "minutes")).to_numpy())
+        mins = _num(phist, "_minutes_ok")
         r["minutes_est"] = p.get("minutes", NAN)
         if "fixture_id" in phist.columns and ctx["blank_corner_fixtures"]:
             phist = phist.assign(team_corners=_num(phist, "team_corners").where(
                 ~phist["fixture_id"].isin(ctx["blank_corner_fixtures"])))
         for feat, raw in (("goals_pg", "goals"), ("assists_pg", "assists"), ("shots_pg", "shots_total"),
                           ("sot_pg", "shots_on_target"), ("cards_pg", "yellow_cards"),
-                          ("minutes_pg", "minutes"), ("key_passes_pg", "key_passes"),
+                          ("minutes_pg", "_minutes_ok"), ("key_passes_pg", "key_passes"),
                           ("starter_rate", "started"), ("team_corners_pg", "team_corners"),
                           ("tackles_pg", "tackles_total"), ("interceptions_pg", "interceptions"),
                           ("dribbles_pg", "dribbles_success"), ("dribbled_past_pg", "dribbles_past"),

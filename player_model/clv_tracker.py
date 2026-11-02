@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from src import clv_capture
 from player_model import config
 from player_model.odds_fetcher import _norm, same_fixture
+from player_model.club_rule import same_fixture_sides
 
 # Track CLV for EVERY tier that has odds (2026/27: keep the full open->close->CLV record for
 # the whole test slate, not just the sent feed). Rows without odds are skipped inside log_new_tips.
@@ -242,7 +243,7 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
         print(f"[clv_tracker] settle: parquet not found ({pqp})")
         return 0
     _cols = ["player_name", "date", "goals", "assists",
-             "shots_on_target", "yellow_cards", "red_cards"]
+             "shots_on_target", "yellow_cards", "red_cards", "home_team", "away_team"]
     try:                       # player_id landed 2026-08-15; tolerate older parquets
         pq = pd.read_parquet(pqp, columns=_cols + ["player_id", "fixture_id"])
     except Exception:
@@ -281,7 +282,8 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
                 if _pid is not None:
                     pid_lookup[(_norm(_r.get("player_name", "")),
                                 str(_r.get("market", "")),
-                                str(_r.get("match_date", ""))[:10])] = (_pid, _id_str(_r.get("fixture_id")))
+                                str(_r.get("match_date", ""))[:10])] = (
+                        _pid, _id_str(_r.get("fixture_id")), _r.get("home_team"), _r.get("away_team"))
     except Exception as e:
         print(f"[clv_tracker] settle: player_ledger.csv unreadable ({type(e).__name__}: {e}) - "
               f"no player ids, nothing can be graded")
@@ -292,6 +294,7 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     no_id = 0                  # no player_id for the tip -> cannot be graded honestly
     no_stats: list[str] = []   # played, but the parquet has no stats row -> can't grade
     unknown_stat = 0           # stats row found, but the market's stat is missing -> pending
+    ghost = 0                  # the player's row that day is another fixture -> pending
     for i in clv[pending].index:
         try:
             _, d, player, market = str(clv.at[i, "bet_id"]).split("|", 3)
@@ -309,10 +312,16 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
         if ids is None:
             no_id += 1
             continue
-        _pid, _fid = ids
+        _pid, _fid, _home, _away = ids
         rec = idx_by_fx.get((_pid, _fid)) if _fid is not None else idx_by_id.get((_pid, d))
         hit = _MARKET_HIT.get(market)
         if hit is None:
+            continue
+        if rec is not None and _fid is None and not same_fixture_sides(
+                _home, _away, getattr(rec, "home_team", None), getattr(rec, "away_team", None)):
+            # CURRENT-CLUB RULE (invariant 12): the player's stats row that day is ANOTHER fixture
+            # (he played for another club) - never graded off it. PENDING, counted.
+            ghost += 1
             continue
         if rec is None:
             # Match not in our player-stats parquet yet (data gap / not collected) -> leave
@@ -344,7 +353,9 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     print(f"[clv_tracker] settle: {graded} record(s) graded"
           + (f"; {no_id} left PENDING (no player_id on the tip)" if no_id else "")
           + (f"; {unknown_stat} left PENDING (the market's stat is missing in the stats row)"
-             if unknown_stat else ""))
+             if unknown_stat else "")
+          + (f"; {ghost} left PENDING (the player's stats row that day is another fixture - "
+             f"current-club rule)" if ghost else ""))
     if no_stats:
         # Be LOUD about this. A silent "0 graded" looks like "nothing to do", but the real
         # cause is upstream: player_history.parquet has no rows for those match dates, so the

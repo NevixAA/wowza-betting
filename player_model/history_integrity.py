@@ -149,7 +149,42 @@ def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame, today=None,
     # combine_first row order the old merge produced and downstream steps have been reading.
     merged = pd.concat([p for p in parts if len(p)]).sort_index().reset_index()
     stats["added"] = int(len(merged) - len(a))
+    # n_prev_games of every row this collect added or refreshed counts the player's WHOLE stored
+    # history, not just the rows of this fetch batch (build_features sees only the batch: on the
+    # committed history 84k rows, 9.6%, carried a batch-truncated count). Frozen rows are untouched.
+    if "n_prev_games" in merged.columns and "player_id" in merged.columns and len(merged):
+        frozen_keys = set(frozen) if len(both) else set()
+        fresh_keys = set(b.index) - frozen_keys
+        mask = pd.Series([k in fresh_keys for k in zip(*(merged[c] for c in KEY))], index=merged.index)
+        if mask.any():
+            full = prev_games_full(merged)
+            changed = mask & ~((full == merged["n_prev_games"]) | (full.isna() & merged["n_prev_games"].isna()))
+            stats["n_prev_recounted"] = int(changed.sum())
+            merged.loc[mask, "n_prev_games"] = full[mask]
     return merged, stats
+
+
+def prev_games_full(df: pd.DataFrame) -> pd.Series:
+    """n_prev_games recounted over the player's WHOLE stored history: the count stored on his
+    earliest stored row (the games before it, which build_features dropped as first appearances)
+    plus the number of his stored rows before this one (date, then fixture_id order). A row
+    without a real player_id (<= 0 / missing) has no history -> NaN. One definition, used by
+    merge_history (producer) and scripts/rebuild_player_history.py (stored history)."""
+    pid = pd.to_numeric(df["player_id"], errors="coerce")
+    ok = pid > 0
+    out = pd.Series(np.nan, index=df.index, dtype=float)
+    if not ok.any():
+        return out
+    d = df.loc[ok, ["player_id", "date"] + (["fixture_id"] if "fixture_id" in df.columns else [])].copy()
+    d["_d"] = pd.to_datetime(d["date"], errors="coerce")
+    d["_n"] = pd.to_numeric(df.loc[ok, "n_prev_games"], errors="coerce") if "n_prev_games" in df.columns \
+        else np.nan
+    d = d.sort_values(["player_id", "_d"] + (["fixture_id"] if "fixture_id" in d.columns else []),
+                      kind="stable")
+    g = d.groupby("player_id", sort=False)
+    base = g["_n"].transform("first").fillna(0).clip(lower=0)
+    out.loc[d.index] = (base + g.cumcount()).astype(float)
+    return out
 
 
 # ── injury features as of the match date ─────────────────────────────────────────────────────
