@@ -1,5 +1,5 @@
 {
-  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02",
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
   "name": "WOWZA BALANCED",
   "status": "WIRED_PAPER",
   "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
@@ -101,9 +101,14 @@
     ]
   ],
   "league_rating_sizing": {
-    "enabled": true,
+    "enabled": false,
     "min_scale": 0.2,
-    "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
+    "note": "Owner 2026-11-02: OFF until Pro rates each league x market from out-of-sample evidence. output/studies/league_ratings.json pools all markets, tiers and tracks into one in-season-ROI rating per league (estate scan; model-isolation rule), so it no longer scales stakes.",
+    "previous_state": {
+      "enabled": true,
+      "min_scale": 0.2,
+      "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
+    }
   },
   "track_tier_multipliers": {
     "new_format|OU25_OVER": {

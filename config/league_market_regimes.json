@@ -33,7 +33,7 @@
   "formula": "score = sum(evidence_factor_of_term * weight * clip(term/scale, 0, 1)); signal terms use min(1, n_signals/30)*min(1, matchdays/8), market_beats_model uses min(1, n_fixtures/100)*min(1, matchdays/8); neg_clv needs >= 10 certified closes; volume_poor_results only when ROI < 0",
   "high": "REPAIR_PRIORITY_HIGH = research_regime == REPAIR AND score >= 0.4"
  },
- "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02",
+ "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
  "sources": {
   "all_fixture_settled": {
    "path": "pro:experiments/valuable_2026_10/all_fixture_settled.parquet",

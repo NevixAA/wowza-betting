@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-11-02 owner decision: new-format O/U Unders paper-only until the clean-data retrain passes per-league validation",
- "approved_at": "2026-11-02T07:07:00Z",
+ "approval_note": "2026-11-02 owner decision: pooled Pro league rating no longer scales stakes until per league x market out-of-sample ratings exist",
+ "approved_at": "2026-11-02T08:24:51Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -25,13 +25,13 @@
      ]
     ],
     "league_rating_sizing": {
-     "enabled": true,
+     "enabled": false,
      "min_scale": 0.2
     },
     "paper_leagues": [
      "USA MLS"
     ],
-    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02",
+    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
     "portfolio": {
      "daily_cap": 0.06,
      "fixture_cap": 0.02,
@@ -289,5 +289,5 @@
    }
   }
  },
- "fingerprint_sha256": "8f9b3844c38376da85e368e8d826866f8a745eea8f70e6ea57e741875aea54db"
+ "fingerprint_sha256": "521000edf970df8b4e9af0e640941570bee516c1c666d95dab25d5cb7cbc19a0"
 }
