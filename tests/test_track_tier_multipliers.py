@@ -19,7 +19,12 @@ def test_ou25_tiers_are_staked_equally_and_valuable_is_staked():
         mult = dict(zip(out["signal_tier"], out["tier_multiplier"]))
         assert mult == {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}
         req = dict(zip(out["signal_tier"], out["requested_fraction"]))
-        assert req["VALUABLE"] > 0 and req["VALUABLE"] == req["SNIPER"] == req["MARKSMAN"]
+        assert req["VALUABLE"] == req["SNIPER"] == req["MARKSMAN"]
+        if pol["tracks"][f"new_format|OU25_{side}"]["state"] == "PAPER":
+            # owner 2026-11-02: new-format Unders are paper-only until the clean retrain - never staked
+            assert (out["final_fraction"] == 0).all() and set(out["reason"]) == {"NO_REAL_STAKE_PAPER"}
+        else:
+            assert req["VALUABLE"] > 0
 
 
 def test_btts_keeps_the_global_ladder():

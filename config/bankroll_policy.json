@@ -1,5 +1,5 @@
 {
-  "policy_version": "balanced-2026-10-13",
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
   "name": "WOWZA BALANCED",
   "status": "WIRED_PAPER",
   "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
@@ -40,10 +40,15 @@
       "evidence_score": 1.0
     },
     "new_format|OU25_UNDER": {
-      "state": "ACTIVE_LOW",
-      "base_fraction": 0.005,
+      "state": "PAPER",
+      "base_fraction": 0.0,
       "max_odds": 2.5,
-      "evidence_score": 1.0
+      "evidence_score": 1.0,
+      "paper_reason": "Owner 2026-11-02: new-format O/U Unders are paper-only (shown and recorded, never staked) until the clean-data retrain passes per-league validation. The NF model under-rates goals (457 settled: over rate 58.4%, model 47.8%); staked NF Unders -51u since 2026-08-10, 4-12 on 2026-11-01.",
+      "previous_state": {
+        "state": "ACTIVE_LOW",
+        "base_fraction": 0.005
+      }
     },
     "new_format|OVER15": {
       "state": "ACTIVE_LOW",
@@ -96,9 +101,14 @@
     ]
   ],
   "league_rating_sizing": {
-    "enabled": true,
+    "enabled": false,
     "min_scale": 0.2,
-    "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between. A league with no rating gets NO stake (reason NO_LEAGUE_RATING, Data Truth 2026-11-01: sizing it at 20% invented a rating of 1); ratings file missing/unreadable/older than 8 days = no league is rated = no stake (src/stake_plan.load_league_ratings). Scales DOWN only; every cap unchanged."
+    "note": "Owner 2026-11-02: OFF until Pro rates each league x market from out-of-sample evidence. output/studies/league_ratings.json pools all markets, tiers and tracks into one in-season-ROI rating per league (estate scan; model-isolation rule), so it no longer scales stakes. When re-enabled: a league with no rating gets NO stake (owner 2026-11-02; reason NO_LEAGUE_RATING), ratings file missing/unreadable/older than 8 days = no league is rated = no stake. Scales DOWN only; every cap unchanged.",
+    "previous_state": {
+      "enabled": true,
+      "min_scale": 0.2,
+      "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
+    }
   },
   "track_tier_multipliers": {
     "new_format|OU25_OVER": {

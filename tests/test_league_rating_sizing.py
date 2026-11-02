@@ -17,8 +17,16 @@ def test_scale_bounds():
     assert rating_scale(None, 0.2) is None                     # unrated -> no scale (no evidence)
 
 
+def test_live_policy_has_pooled_rating_sizing_off():
+    # Owner 2026-11-02: the pooled league rating no longer scales stakes (previous state kept).
+    lrs = load_policy()["league_rating_sizing"]
+    assert lrs["enabled"] is False and lrs["previous_state"]["enabled"] is True and lrs["note"]
+
+
 def test_rated_stakes_scale_down_only():
+    # the mechanism, with sizing switched on explicitly (the live policy has it off since 2026-11-02)
     pol = load_policy()
+    pol = {**pol, "league_rating_sizing": {**pol["league_rating_sizing"], "enabled": True}}
     base = size_day(SEL, pol, 100.0, 100.0)                     # no ratings passed: unchanged (Pro simulator)
     rated = size_day(SEL, pol, 100.0, 100.0, league_ratings={"Brazil Serie A": 10, "League One": 1})
     b = base.set_index("fixture")["requested_fraction"]

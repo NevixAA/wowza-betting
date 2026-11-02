@@ -154,6 +154,24 @@
           "odds_draw": 7.1
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.17,
+          "odds_away": 14.0,
+          "odds_draw": 7.1
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.17,
+          "odds_away": 14.0,
+          "odds_draw": 7.15
+        },
+        "n_books": 22
       }
     ]
   },
@@ -295,6 +313,22 @@
           "odds_under": 2.94
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.36,
+          "odds_under": 2.94
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.36,
+          "odds_under": 2.94
+        },
+        "n_books": 3
       }
     ]
   },
@@ -312,6 +346,24 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_home": 1.78,
+          "odds_away": 3.9,
+          "odds_draw": 3.65
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.78,
+          "odds_away": 3.9,
+          "odds_draw": 3.65
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_home": 1.78,
           "odds_away": 3.9,
@@ -339,6 +391,83 @@
           "odds_under": 2.235
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.235
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.235
+        },
+        "n_books": 6
+      }
+    ]
+  },
+  "0377ed072a93f8b77593c0f001fda9ec_h2h": {
+    "league": "La Liga 2",
+    "home": "Las Palmas",
+    "away": "CD Eldense",
+    "date": "2026-11-08 17:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.06,
+      "odds_away": 3.17,
+      "odds_draw": 3.2
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.06,
+          "odds_away": 3.17,
+          "odds_draw": 3.2
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.06,
+          "odds_away": 3.17,
+          "odds_draw": 3.2
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "0377ed072a93f8b77593c0f001fda9ec_totals": {
+    "league": "La Liga 2",
+    "home": "Las Palmas",
+    "away": "CD Eldense",
+    "date": "2026-11-08 17:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.825,
+      "odds_under": 1.825
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.825,
+          "odds_under": 1.825
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.825,
+          "odds_under": 1.825
+        },
+        "n_books": 4
       }
     ]
   },
@@ -609,6 +738,160 @@
       }
     ]
   },
+  "077e9bfa253514e27bdae1ce5956c78e_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Gimnasia Mendoza",
+    "away": "Independiente Rivadavia",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.7,
+      "odds_away": 2.425,
+      "odds_draw": 3.125
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.7,
+          "odds_away": 2.425,
+          "odds_draw": 3.125
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.7,
+          "odds_away": 2.425,
+          "odds_draw": 3.125
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "077e9bfa253514e27bdae1ce5956c78e_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Gimnasia Mendoza",
+    "away": "Independiente Rivadavia",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.995,
+      "odds_under": 1.74
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.995,
+          "odds_under": 1.74
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.995,
+          "odds_under": 1.74
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "08575be0e87f59501c7ad50d80fa0f9a_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Aldosivi Mar del Plata",
+    "away": "River Plate",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 6.9,
+      "odds_away": 1.38,
+      "odds_draw": 3.8
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 6.9,
+          "odds_away": 1.38,
+          "odds_draw": 3.8
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 6.3,
+          "odds_away": 1.47,
+          "odds_draw": 4.085
+        },
+        "n_books": 12
+      }
+    ]
+  },
+  "08575be0e87f59501c7ad50d80fa0f9a_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Aldosivi Mar del Plata",
+    "away": "River Plate",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.93,
+      "odds_under": 1.8
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.93,
+          "odds_under": 1.8
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.92,
+          "odds_under": 1.84
+        },
+        "n_books": 8
+      }
+    ]
+  },
+  "0c2ed692b4ae41d5c8d1a9474f3192f8_h2h": {
+    "league": "Denmark Superliga",
+    "home": "FC Midtjylland",
+    "away": "SonderjyskE",
+    "date": "2026-11-08 17:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.24,
+      "odds_away": 8.0,
+      "odds_draw": 5.4
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.24,
+          "odds_away": 8.0,
+          "odds_draw": 5.4
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.23,
+          "odds_away": 8.0,
+          "odds_draw": 5.4
+        },
+        "n_books": 9
+      }
+    ]
+  },
   "0db0938ab636e18037e77f2375ade121_h2h": {
     "league": "USA MLS",
     "home": "San Diego FC",
@@ -629,6 +912,24 @@
           "odds_draw": 5.1
         },
         "n_books": 18
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.4,
+          "odds_away": 5.6,
+          "odds_draw": 5.1
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.44,
+          "odds_away": 5.4,
+          "odds_draw": 5.04
+        },
+        "n_books": 19
       }
     ]
   },
@@ -647,6 +948,22 @@
         "at": "2026-11-01 14:40",
         "odds": {
           "odds_over": 1.24,
+          "odds_under": 3.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.24,
+          "odds_under": 3.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.25,
           "odds_under": 3.95
         },
         "n_books": 3
@@ -988,6 +1305,24 @@
           "odds_draw": 3.83
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.54,
+          "odds_away": 6.3,
+          "odds_draw": 3.83
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.54,
+          "odds_away": 6.3,
+          "odds_draw": 3.83
+        },
+        "n_books": 15
       }
     ]
   },
@@ -1140,6 +1475,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.12,
+          "odds_under": 1.7
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.12,
+          "odds_under": 1.7
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 2.12,
           "odds_under": 1.7
@@ -1467,6 +1818,53 @@
           "odds_draw": 5.0
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.26,
+          "odds_away": 8.0,
+          "odds_draw": 5.6
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.22,
+          "odds_away": 8.8,
+          "odds_draw": 6.25
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "110f0c14909249dee819119e3affbab5_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Rosenborg",
+    "away": "IK Start",
+    "date": "2026-11-07 17:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.37,
+      "odds_under": 3.05
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.37,
+          "odds_under": 3.05
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.33,
+          "odds_under": 3.25
+        },
+        "n_books": 3
       }
     ]
   },
@@ -1490,6 +1888,24 @@
           "odds_draw": 3.2
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.62,
+          "odds_away": 2.55,
+          "odds_draw": 3.2
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.62,
+          "odds_away": 2.55,
+          "odds_draw": 3.2
+        },
+        "n_books": 13
       }
     ]
   },
@@ -1506,6 +1922,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.88
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.88
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.85,
           "odds_under": 1.88
@@ -1642,6 +2074,24 @@
           "odds_draw": 4.55
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 7.2,
+          "odds_away": 1.33,
+          "odds_draw": 5.2
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 7.38,
+          "odds_away": 1.33,
+          "odds_draw": 5.2
+        },
+        "n_books": 17
       }
     ]
   },
@@ -1759,6 +2209,22 @@
           "odds_under": 2.52
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.72
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.72
+        },
+        "n_books": 3
       }
     ]
   },
@@ -1782,6 +2248,24 @@
           "odds_draw": 3.45
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.45,
+          "odds_away": 2.5,
+          "odds_draw": 3.445
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.45,
+          "odds_away": 2.565,
+          "odds_draw": 3.4
+        },
+        "n_books": 12
       }
     ]
   },
@@ -1803,6 +2287,22 @@
           "odds_under": 2.035
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.74,
+          "odds_under": 2.03
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 2.02
+        },
+        "n_books": 7
       }
     ]
   },
@@ -1826,6 +2326,24 @@
           "odds_draw": 3.45
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.59,
+          "odds_away": 2.44,
+          "odds_draw": 3.45
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.59,
+          "odds_away": 2.4,
+          "odds_draw": 3.45
+        },
+        "n_books": 19
       }
     ]
   },
@@ -1847,6 +2365,22 @@
           "odds_under": 2.15
         },
         "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.61,
+          "odds_under": 2.23
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.61,
+          "odds_under": 2.23
+        },
+        "n_books": 11
       }
     ]
   },
@@ -1866,6 +2400,24 @@
         "at": "2026-11-01 14:40",
         "odds": {
           "odds_home": 2.02,
+          "odds_away": 3.7,
+          "odds_draw": 3.0
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.02,
+          "odds_away": 3.7,
+          "odds_draw": 3.0
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.01,
           "odds_away": 3.7,
           "odds_draw": 3.0
         },
@@ -1891,6 +2443,127 @@
           "odds_under": 2.0
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.705,
+          "odds_under": 2.025
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.705,
+          "odds_under": 2.025
+        },
+        "n_books": 8
+      }
+    ]
+  },
+  "14aec7933e69c140965b1ae959076e70_h2h": {
+    "league": "Mexico Liga MX",
+    "home": "Querétaro",
+    "away": "Puebla",
+    "date": "2026-11-09 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.76,
+      "odds_away": 4.1,
+      "odds_draw": 3.75
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.76,
+          "odds_away": 4.1,
+          "odds_draw": 3.75
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "14aec7933e69c140965b1ae959076e70_totals": {
+    "league": "Mexico Liga MX",
+    "home": "Querétaro",
+    "away": "Puebla",
+    "date": "2026-11-09 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.615,
+      "odds_under": 2.12
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.615,
+          "odds_under": 2.12
+        },
+        "n_books": 8
+      }
+    ]
+  },
+  "16733c7ba96ca1a9be07451819b16595_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Banfield",
+    "away": "Atlético Tucuman",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.275,
+      "odds_away": 2.95,
+      "odds_draw": 3.1
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.275,
+          "odds_away": 2.95,
+          "odds_draw": 3.1
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.275,
+          "odds_away": 2.95,
+          "odds_draw": 3.1
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "16733c7ba96ca1a9be07451819b16595_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Banfield",
+    "away": "Atlético Tucuman",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.125,
+      "odds_under": 1.655
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.125,
+          "odds_under": 1.655
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.125,
+          "odds_under": 1.655
+        },
+        "n_books": 2
       }
     ]
   },
@@ -2031,6 +2704,24 @@
           "odds_draw": 3.3
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.38,
+          "odds_away": 2.85,
+          "odds_draw": 3.35
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.45,
+          "odds_away": 2.76,
+          "odds_draw": 3.34
+        },
+        "n_books": 21
       }
     ]
   },
@@ -2154,6 +2845,22 @@
         "odds": {
           "odds_over": 1.88,
           "odds_under": 1.87
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.86,
+          "odds_under": 1.88
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.88,
+          "odds_under": 1.88
         },
         "n_books": 15
       }
@@ -2305,6 +3012,15 @@
           "odds_draw": 4.2
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.8,
+          "odds_away": 3.9,
+          "odds_draw": 4.0
+        },
+        "n_books": 21
       }
     ]
   },
@@ -2358,6 +3074,14 @@
           "odds_under": 2.62
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.46,
+          "odds_under": 2.68
+        },
+        "n_books": 2
       }
     ]
   },
@@ -2498,6 +3222,24 @@
           "odds_draw": 4.3
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.62,
+          "odds_away": 4.6,
+          "odds_draw": 4.33
+        },
+        "n_books": 23
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.71,
+          "odds_away": 4.15,
+          "odds_draw": 4.2
+        },
+        "n_books": 21
       }
     ]
   },
@@ -2551,6 +3293,22 @@
           "odds_under": 2.75
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.75
+        },
+        "n_books": 2
       }
     ]
   },
@@ -2574,6 +3332,24 @@
           "odds_draw": 3.425
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.38,
+          "odds_away": 2.7,
+          "odds_draw": 3.45
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.38,
+          "odds_away": 2.7,
+          "odds_draw": 3.475
+        },
+        "n_books": 20
       }
     ]
   },
@@ -2595,6 +3371,22 @@
           "odds_under": 2.2
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.6,
+          "odds_under": 2.2
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.6,
+          "odds_under": 2.2
+        },
+        "n_books": 11
       }
     ]
   },
@@ -2917,6 +3709,45 @@
           "odds_draw": 4.3
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 5.1,
+          "odds_away": 1.55,
+          "odds_draw": 4.3
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 4.33,
+          "odds_away": 1.62,
+          "odds_draw": 4.1
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "1cecab6721bb9ac477e36301c2c5412b_totals": {
+    "league": "USA MLS",
+    "home": "CF Montreal",
+    "away": "Vancouver Whitecaps FC",
+    "date": "2026-11-07 21:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.4,
+      "odds_under": 2.62
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.62
+        },
+        "n_books": 1
       }
     ]
   },
@@ -2940,6 +3771,45 @@
           "odds_draw": 3.75
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.65,
+          "odds_away": 2.33,
+          "odds_draw": 3.75
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.325,
+          "odds_away": 1.82,
+          "odds_draw": 3.8
+        },
+        "n_books": 14
+      }
+    ]
+  },
+  "21a304be611df436b73802b3a5d9995a_totals": {
+    "league": "USA MLS",
+    "home": "Austin FC",
+    "away": "Portland Timbers",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.44,
+      "odds_under": 2.5
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.5
+        },
+        "n_books": 1
       }
     ]
   },
@@ -2963,6 +3833,24 @@
           "odds_draw": 4.0
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 4.7,
+          "odds_away": 1.61,
+          "odds_draw": 4.0
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 4.7,
+          "odds_away": 1.61,
+          "odds_draw": 4.0
+        },
+        "n_books": 17
       }
     ]
   },
@@ -2979,6 +3867,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.61,
+          "odds_under": 2.23
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.61,
+          "odds_under": 2.23
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.61,
           "odds_under": 2.23
@@ -3639,6 +4543,24 @@
           "odds_draw": 3.425
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.115,
+          "odds_away": 3.05,
+          "odds_draw": 3.425
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.12,
+          "odds_away": 3.1,
+          "odds_draw": 3.45
+        },
+        "n_books": 15
       }
     ]
   },
@@ -3655,6 +4577,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.67,
+          "odds_under": 2.11
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.67,
+          "odds_under": 2.11
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.67,
           "odds_under": 2.11
@@ -3683,6 +4621,45 @@
           "odds_draw": 3.95
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.1,
+          "odds_away": 2.9,
+          "odds_draw": 3.95
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.85,
+          "odds_away": 3.32,
+          "odds_draw": 3.95
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "2999abe7822c923b29c9fd21905c1723_totals": {
+    "league": "USA MLS",
+    "home": "Orlando City SC",
+    "away": "New England Revolution",
+    "date": "2026-11-07 21:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.36,
+      "odds_under": 3.0
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.36,
+          "odds_under": 3.0
+        },
+        "n_books": 1
       }
     ]
   },
@@ -3832,6 +4809,15 @@
           "odds_draw": 3.98
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.15,
+          "odds_away": 2.9,
+          "odds_draw": 3.9
+        },
+        "n_books": 23
       }
     ]
   },
@@ -3893,6 +4879,14 @@
           "odds_under": 2.75
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.41,
+          "odds_under": 2.85
+        },
+        "n_books": 3
       }
     ]
   },
@@ -3916,6 +4910,24 @@
           "odds_draw": 3.8
         },
         "n_books": 19
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.89,
+          "odds_away": 3.38,
+          "odds_draw": 3.95
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.855,
+          "odds_away": 3.4,
+          "odds_draw": 3.95
+        },
+        "n_books": 20
       }
     ]
   },
@@ -3934,6 +4946,22 @@
         "at": "2026-11-01 14:40",
         "odds": {
           "odds_over": 1.42,
+          "odds_under": 2.68
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.41,
+          "odds_under": 2.68
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.41,
           "odds_under": 2.68
         },
         "n_books": 3
@@ -4348,6 +5376,24 @@
           "odds_draw": 5.15
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.26,
+          "odds_away": 9.05,
+          "odds_draw": 5.15
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.26,
+          "odds_away": 9.05,
+          "odds_draw": 5.15
+        },
+        "n_books": 12
       }
     ]
   },
@@ -4433,6 +5479,22 @@
           "odds_under": 2.58
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.58
+        },
+        "n_books": 3
       }
     ]
   },
@@ -4456,6 +5518,24 @@
           "odds_draw": 6.25
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.215,
+          "odds_away": 9.7,
+          "odds_draw": 6.325
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.23,
+          "odds_away": 9.35,
+          "odds_draw": 6.05
+        },
+        "n_books": 14
       }
     ]
   },
@@ -4472,6 +5552,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.32,
+          "odds_under": 3.2
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.32,
+          "odds_under": 3.2
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.32,
           "odds_under": 3.2
@@ -4500,6 +5596,24 @@
           "odds_draw": 4.725
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 5.6,
+          "odds_away": 1.43,
+          "odds_draw": 4.7
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 5.6,
+          "odds_away": 1.43,
+          "odds_draw": 4.7
+        },
+        "n_books": 14
       }
     ]
   },
@@ -4516,6 +5630,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.41,
+          "odds_under": 2.82
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.41,
+          "odds_under": 2.82
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.41,
           "odds_under": 2.82
@@ -4616,6 +5746,24 @@
           "odds_draw": 4.2
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 4.7,
+          "odds_away": 1.57,
+          "odds_draw": 4.2
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 4.7,
+          "odds_away": 1.57,
+          "odds_draw": 4.2
+        },
+        "n_books": 11
       }
     ]
   },
@@ -4696,6 +5844,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.45,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.45,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.45,
           "odds_under": 2.58
@@ -4796,6 +5960,24 @@
           "odds_draw": 3.6
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.15,
+          "odds_away": 2.1,
+          "odds_draw": 3.6
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.15,
+          "odds_away": 2.105,
+          "odds_draw": 3.6
+        },
+        "n_books": 22
       }
     ]
   },
@@ -4881,6 +6063,22 @@
           "odds_under": 2.04
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 2.04
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 2.04
+        },
+        "n_books": 14
       }
     ]
   },
@@ -5039,6 +6237,24 @@
           "odds_draw": 3.25
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.7,
+          "odds_away": 2.48,
+          "odds_draw": 3.25
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.75,
+          "odds_away": 2.465,
+          "odds_draw": 3.25
+        },
+        "n_books": 22
       }
     ]
   },
@@ -5180,6 +6396,22 @@
           "odds_under": 1.755
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.985,
+          "odds_under": 1.755
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.99,
+          "odds_under": 1.76
+        },
+        "n_books": 15
       }
     ]
   },
@@ -5554,6 +6786,15 @@
           "odds_draw": 3.29
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.9,
+          "odds_away": 4.4,
+          "odds_draw": 3.29
+        },
+        "n_books": 15
       }
     ]
   },
@@ -5738,6 +6979,14 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.38,
+          "odds_under": 1.55
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
         "odds": {
           "odds_over": 2.38,
           "odds_under": 1.55
@@ -6062,6 +7311,38 @@
       }
     ]
   },
+  "3a986ab890486c8a375ca00feed49131_h2h": {
+    "league": "Sweden Allsvenskan",
+    "home": "AIK",
+    "away": "BK Hacken",
+    "date": "2026-11-08 15:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.4,
+      "odds_away": 1.8,
+      "odds_draw": 3.75
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.4,
+          "odds_away": 1.8,
+          "odds_draw": 3.75
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.4,
+          "odds_away": 1.8,
+          "odds_draw": 3.75
+        },
+        "n_books": 9
+      }
+    ]
+  },
   "3b9a50f1eb2723779a14eae1199c8e5c_h2h": {
     "league": "Bundesliga 2",
     "home": "1. FC Nürnberg",
@@ -6082,6 +7363,24 @@
           "odds_draw": 4.0
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.67,
+          "odds_away": 4.0,
+          "odds_draw": 4.0
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.67,
+          "odds_away": 4.0,
+          "odds_draw": 4.025
+        },
+        "n_books": 20
       }
     ]
   },
@@ -6103,6 +7402,83 @@
           "odds_under": 2.58
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      }
+    ]
+  },
+  "3faca22879b6a624f3bbd039fa7d9072_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Instituto de Córdoba",
+    "away": "Newells Old Boys",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.89,
+      "odds_away": 3.95,
+      "odds_draw": 3.075
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.89,
+          "odds_away": 3.95,
+          "odds_draw": 3.075
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.865,
+          "odds_away": 4.125,
+          "odds_draw": 3.15
+        },
+        "n_books": 10
+      }
+    ]
+  },
+  "3faca22879b6a624f3bbd039fa7d9072_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Instituto de Córdoba",
+    "away": "Newells Old Boys",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.405,
+      "odds_under": 1.52
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.405,
+          "odds_under": 1.52
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.42,
+          "odds_under": 1.52
+        },
+        "n_books": 5
       }
     ]
   },
@@ -6126,6 +7502,24 @@
           "odds_draw": 3.4
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.005,
+          "odds_away": 3.31,
+          "odds_draw": 3.4
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.005,
+          "odds_away": 3.31,
+          "odds_draw": 3.4
+        },
+        "n_books": 14
       }
     ]
   },
@@ -6142,6 +7536,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.05
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.05
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.7,
           "odds_under": 2.05
@@ -6170,6 +7580,24 @@
           "odds_draw": 3.4
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.1,
+          "odds_away": 2.15,
+          "odds_draw": 3.44
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.11,
+          "odds_away": 2.15,
+          "odds_draw": 3.445
+        },
+        "n_books": 14
       }
     ]
   },
@@ -6191,6 +7619,22 @@
           "odds_under": 1.97
         },
         "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.74,
+          "odds_under": 1.97
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.74,
+          "odds_under": 1.97
+        },
+        "n_books": 10
       }
     ]
   },
@@ -6214,6 +7658,24 @@
           "odds_draw": 4.05
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 4.8,
+          "odds_away": 1.54,
+          "odds_draw": 4.05
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 4.8,
+          "odds_away": 1.54,
+          "odds_draw": 4.05
+        },
+        "n_books": 15
       }
     ]
   },
@@ -6230,6 +7692,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.5,
+          "odds_under": 2.45
+        },
+        "n_books": 1
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.5,
+          "odds_under": 2.45
+        },
+        "n_books": 1
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.5,
           "odds_under": 2.45
@@ -6330,6 +7808,24 @@
           "odds_draw": 3.8
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.265,
+          "odds_away": 2.55,
+          "odds_draw": 3.8
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.275,
+          "odds_away": 2.55,
+          "odds_draw": 3.8
+        },
+        "n_books": 10
       }
     ]
   },
@@ -6415,6 +7911,22 @@
           "odds_under": 3.4
         },
         "n_books": 2
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.27,
+          "odds_under": 3.4
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.27,
+          "odds_under": 3.4
+        },
+        "n_books": 2
       }
     ]
   },
@@ -6438,6 +7950,24 @@
           "odds_draw": 4.1
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.6,
+          "odds_away": 4.5,
+          "odds_draw": 4.15
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.6,
+          "odds_away": 4.545,
+          "odds_draw": 4.2
+        },
+        "n_books": 14
       }
     ]
   },
@@ -6457,6 +7987,83 @@
         "odds": {
           "odds_over": 1.41,
           "odds_under": 2.82
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.85
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.85
+        },
+        "n_books": 3
+      }
+    ]
+  },
+  "460e6fc9e2af7ea0784ed473f39befe5_h2h": {
+    "league": "Norway Eliteserien",
+    "home": "Viking FK",
+    "away": "KFUM",
+    "date": "2026-11-08 16:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.185,
+      "odds_away": 10.0,
+      "odds_draw": 6.4
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.185,
+          "odds_away": 10.0,
+          "odds_draw": 6.4
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.185,
+          "odds_away": 10.5,
+          "odds_draw": 6.4
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "460e6fc9e2af7ea0784ed473f39befe5_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Viking FK",
+    "away": "KFUM",
+    "date": "2026-11-08 16:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.31,
+      "odds_under": 3.35
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.31,
+          "odds_under": 3.35
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.31,
+          "odds_under": 3.35
         },
         "n_books": 3
       }
@@ -6482,6 +8089,24 @@
           "odds_draw": 3.7
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.17,
+          "odds_away": 2.8,
+          "odds_draw": 3.7
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 2.8,
+          "odds_draw": 3.7
+        },
+        "n_books": 17
       }
     ]
   },
@@ -6498,6 +8123,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.47,
+          "odds_under": 2.62
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.47,
+          "odds_under": 2.62
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.47,
           "odds_under": 2.62
@@ -6526,6 +8167,24 @@
           "odds_draw": 3.55
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.33,
+          "odds_away": 2.75,
+          "odds_draw": 3.55
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.33,
+          "odds_away": 2.75,
+          "odds_draw": 3.55
+        },
+        "n_books": 4
       }
     ]
   },
@@ -6542,6 +8201,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.66,
+          "odds_under": 2.18
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.66,
+          "odds_under": 2.18
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.66,
           "odds_under": 2.18
@@ -6624,6 +8299,24 @@
           "odds_draw": 4.06
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.37,
+          "odds_away": 1.89,
+          "odds_draw": 4.1
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.35,
+          "odds_away": 1.905,
+          "odds_draw": 4.06
+        },
+        "n_books": 22
       }
     ]
   },
@@ -6645,6 +8338,83 @@
           "odds_under": 2.95
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      }
+    ]
+  },
+  "47b7fc7d25003a9083df3789f996281e_h2h": {
+    "league": "Ligue 2",
+    "home": "Dijon",
+    "away": "Red Star",
+    "date": "2026-11-06 19:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.55,
+      "odds_away": 2.52,
+      "odds_draw": 3.3
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.55,
+          "odds_away": 2.52,
+          "odds_draw": 3.3
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.52,
+          "odds_away": 2.43,
+          "odds_draw": 3.3
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "47b7fc7d25003a9083df3789f996281e_totals": {
+    "league": "Ligue 2",
+    "home": "Dijon",
+    "away": "Red Star",
+    "date": "2026-11-06 19:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.75,
+      "odds_under": 1.93
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 1.93
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 1.93
+        },
+        "n_books": 4
       }
     ]
   },
@@ -6967,6 +8737,24 @@
           "odds_draw": 3.55
         },
         "n_books": 19
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.32,
+          "odds_away": 2.6,
+          "odds_draw": 3.605
+        },
+        "n_books": 20
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.565,
+          "odds_draw": 3.6
+        },
+        "n_books": 20
       }
     ]
   },
@@ -6988,6 +8776,22 @@
           "odds_under": 2.3
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.53,
+          "odds_under": 2.32
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.535,
+          "odds_under": 2.32
+        },
+        "n_books": 8
       }
     ]
   },
@@ -7083,6 +8887,24 @@
           "odds_draw": 4.6
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.615,
+          "odds_away": 3.9,
+          "odds_draw": 4.6
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.615,
+          "odds_away": 3.9,
+          "odds_draw": 4.6
+        },
+        "n_books": 12
       }
     ]
   },
@@ -7168,6 +8990,83 @@
           "odds_under": 3.7
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.24,
+          "odds_under": 3.7
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.24,
+          "odds_under": 3.7
+        },
+        "n_books": 3
+      }
+    ]
+  },
+  "4dbcec00debc1a175148bdb6824e14b3_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Argentinos Juniors",
+    "away": "Atlético Huracán",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.72,
+      "odds_away": 4.7,
+      "odds_draw": 3.25
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.72,
+          "odds_away": 4.7,
+          "odds_draw": 3.25
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.72,
+          "odds_away": 4.7,
+          "odds_draw": 3.25
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "4dbcec00debc1a175148bdb6824e14b3_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Argentinos Juniors",
+    "away": "Atlético Huracán",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.355,
+      "odds_under": 1.535
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.355,
+          "odds_under": 1.535
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.355,
+          "odds_under": 1.535
+        },
+        "n_books": 2
       }
     ]
   },
@@ -7191,6 +9090,45 @@
           "odds_draw": 5.1
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.47,
+          "odds_away": 5.2,
+          "odds_draw": 5.1
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.48,
+          "odds_away": 4.91,
+          "odds_draw": 4.9
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "4e4cd20d205e8bd0cd8ba54391b62257_totals": {
+    "league": "USA MLS",
+    "home": "Inter Miami CF",
+    "away": "Charlotte FC",
+    "date": "2026-11-07 21:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.29,
+      "odds_under": 3.5
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.29,
+          "odds_under": 3.5
+        },
+        "n_books": 1
       }
     ]
   },
@@ -7367,6 +9305,24 @@
           "odds_draw": 3.2
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 3.35,
+          "odds_draw": 3.2
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 3.35,
+          "odds_draw": 3.15
+        },
+        "n_books": 15
       }
     ]
   },
@@ -7524,6 +9480,22 @@
           "odds_under": 1.68
         },
         "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.12,
+          "odds_under": 1.68
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.12,
+          "odds_under": 1.68
+        },
+        "n_books": 8
       }
     ]
   },
@@ -7682,6 +9654,24 @@
           "odds_draw": 6.1
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.21,
+          "odds_away": 11.315,
+          "odds_draw": 6.1
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.21,
+          "odds_away": 11.315,
+          "odds_draw": 6.1
+        },
+        "n_books": 22
       }
     ]
   },
@@ -7818,6 +9808,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.52,
+          "odds_under": 2.42
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.52,
+          "odds_under": 2.42
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.52,
           "odds_under": 2.42
@@ -8460,6 +10466,24 @@
           "odds_draw": 3.975
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.55,
+          "odds_away": 5.785,
+          "odds_draw": 3.975
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.55,
+          "odds_away": 5.89,
+          "odds_draw": 3.975
+        },
+        "n_books": 14
       }
     ]
   },
@@ -8761,6 +10785,22 @@
           "odds_under": 1.865
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.885,
+          "odds_under": 1.865
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.88,
+          "odds_under": 1.895
+        },
+        "n_books": 10
       }
     ]
   },
@@ -8856,6 +10896,24 @@
           "odds_draw": 4.075
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.005,
+          "odds_away": 2.895,
+          "odds_draw": 4.075
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.005,
+          "odds_away": 2.895,
+          "odds_draw": 4.075
+        },
+        "n_books": 12
       }
     ]
   },
@@ -8936,6 +10994,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.25,
+          "odds_under": 3.6
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.25,
+          "odds_under": 3.6
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.25,
           "odds_under": 3.6
@@ -9090,6 +11164,15 @@
           "odds_draw": 4.7
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.47,
+          "odds_away": 5.6,
+          "odds_draw": 4.81
+        },
+        "n_books": 23
       }
     ]
   },
@@ -9143,6 +11226,14 @@
           "odds_under": 2.85
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.32,
+          "odds_under": 3.35
+        },
+        "n_books": 3
       }
     ]
   },
@@ -9160,6 +11251,24 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_home": 1.82,
+          "odds_away": 3.55,
+          "odds_draw": 4.1
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.82,
+          "odds_away": 3.55,
+          "odds_draw": 4.1
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_home": 1.82,
           "odds_away": 3.55,
@@ -9505,6 +11614,24 @@
           "odds_draw": 2.85
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.43,
+          "odds_away": 2.95,
+          "odds_draw": 2.88
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.43,
+          "odds_away": 2.95,
+          "odds_draw": 2.88
+        },
+        "n_books": 19
       }
     ]
   },
@@ -9526,6 +11653,22 @@
           "odds_under": 1.55
         },
         "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.28,
+          "odds_under": 1.55
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.28,
+          "odds_under": 1.55
+        },
+        "n_books": 11
       }
     ]
   },
@@ -9549,6 +11692,24 @@
           "odds_draw": 3.275
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.825,
+          "odds_away": 2.3,
+          "odds_draw": 3.3
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.825,
+          "odds_away": 2.3,
+          "odds_draw": 3.3
+        },
+        "n_books": 14
       }
     ]
   },
@@ -9565,6 +11726,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.79,
+          "odds_under": 1.95
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.79,
+          "odds_under": 1.95
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.79,
           "odds_under": 1.95
@@ -9791,6 +11968,24 @@
           "odds_draw": 3.6
         },
         "n_books": 24
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.1,
+          "odds_away": 3.15,
+          "odds_draw": 3.55
+        },
+        "n_books": 24
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.12,
+          "odds_away": 3.065,
+          "odds_draw": 3.6
+        },
+        "n_books": 24
       }
     ]
   },
@@ -9988,6 +12183,22 @@
           "odds_under": 2.255
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.59,
+          "odds_under": 2.26
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.59,
+          "odds_under": 2.26
+        },
+        "n_books": 14
       }
     ]
   },
@@ -10011,6 +12222,24 @@
           "odds_draw": 3.6
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.79,
+          "odds_away": 3.9,
+          "odds_draw": 3.65
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.79,
+          "odds_away": 3.9,
+          "odds_draw": 3.6
+        },
+        "n_books": 15
       }
     ]
   },
@@ -10027,6 +12256,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.69,
+          "odds_under": 2.09
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.69,
+          "odds_under": 2.09
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.69,
           "odds_under": 2.09
@@ -10055,6 +12300,53 @@
           "odds_draw": 3.65
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.08,
+          "odds_away": 2.07,
+          "odds_draw": 3.65
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.08,
+          "odds_away": 2.07,
+          "odds_draw": 3.65
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "615fc58d9980422a8fea00e339e13949_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Kristiansund BK",
+    "away": "Vålerenga",
+    "date": "2026-11-07 15:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.41,
+      "odds_under": 2.85
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.41,
+          "odds_under": 2.85
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.41,
+          "odds_under": 2.85
+        },
+        "n_books": 3
       }
     ]
   },
@@ -10466,6 +12758,24 @@
           "odds_draw": 3.35
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.4,
+          "odds_away": 2.79,
+          "odds_draw": 3.35
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.4,
+          "odds_away": 2.79,
+          "odds_draw": 3.35
+        },
+        "n_books": 21
       }
     ]
   },
@@ -10551,6 +12861,22 @@
           "odds_under": 1.88
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.86,
+          "odds_under": 1.88
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.86,
+          "odds_under": 1.88
+        },
+        "n_books": 16
       }
     ]
   },
@@ -10574,6 +12900,24 @@
           "odds_draw": 3.4
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.31,
+          "odds_away": 2.72,
+          "odds_draw": 3.4
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.32,
+          "odds_away": 2.72,
+          "odds_draw": 3.45
+        },
+        "n_books": 20
       }
     ]
   },
@@ -10595,6 +12939,83 @@
           "odds_under": 2.25
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.26
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.25
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "658bb2b77031ef93a7ae893145b663b3_h2h": {
+    "league": "Ligue 2",
+    "home": "Nancy",
+    "away": "Sochaux",
+    "date": "2026-11-06 19:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.8,
+      "odds_away": 3.95,
+      "odds_draw": 3.4
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.8,
+          "odds_away": 3.95,
+          "odds_draw": 3.4
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.8,
+          "odds_away": 3.95,
+          "odds_draw": 3.4
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "658bb2b77031ef93a7ae893145b663b3_totals": {
+    "league": "Ligue 2",
+    "home": "Nancy",
+    "away": "Sochaux",
+    "date": "2026-11-06 19:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.87,
+      "odds_under": 1.81
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.87,
+          "odds_under": 1.81
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.87,
+          "odds_under": 1.81
+        },
+        "n_books": 4
       }
     ]
   },
@@ -10618,6 +13039,24 @@
           "odds_draw": 3.85
         },
         "n_books": 19
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.91,
+          "odds_away": 3.4,
+          "odds_draw": 3.85
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.95,
+          "odds_away": 3.3,
+          "odds_draw": 3.85
+        },
+        "n_books": 19
       }
     ]
   },
@@ -10634,6 +13073,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.44,
           "odds_under": 2.75
@@ -10779,6 +13234,24 @@
           "odds_draw": 3.55
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.5,
+          "odds_draw": 3.6
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.5,
+          "odds_draw": 3.6
+        },
+        "n_books": 21
       }
     ]
   },
@@ -10904,6 +13377,22 @@
           "odds_under": 1.825
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.895,
+          "odds_under": 1.825
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.895,
+          "odds_under": 1.825
+        },
+        "n_books": 16
       }
     ]
   },
@@ -10927,6 +13416,24 @@
           "odds_draw": 3.4
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.63,
+          "odds_away": 1.88,
+          "odds_draw": 3.4
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.63,
+          "odds_away": 1.88,
+          "odds_draw": 3.4
+        },
+        "n_books": 10
       }
     ]
   },
@@ -10943,6 +13450,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.82
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.82
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.85,
           "odds_under": 1.82
@@ -11124,6 +13647,24 @@
           "odds_draw": 4.05
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.55,
+          "odds_away": 5.37,
+          "odds_draw": 4.05
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.57,
+          "odds_away": 5.35,
+          "odds_draw": 4.0
+        },
+        "n_books": 23
       }
     ]
   },
@@ -11281,6 +13822,22 @@
           "odds_under": 1.98
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.76,
+          "odds_under": 1.98
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.755,
+          "odds_under": 1.985
+        },
+        "n_books": 16
       }
     ]
   },
@@ -11791,6 +14348,24 @@
           "odds_draw": 3.15
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.95,
+          "odds_draw": 3.12
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.91,
+          "odds_draw": 3.12
+        },
+        "n_books": 16
       }
     ]
   },
@@ -11964,6 +14539,22 @@
           "odds_under": 1.7
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.055,
+          "odds_under": 1.7
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.055,
+          "odds_under": 1.695
+        },
+        "n_books": 12
       }
     ]
   },
@@ -11987,6 +14578,24 @@
           "odds_draw": 3.45
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.7,
+          "odds_draw": 3.4
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.7,
+          "odds_draw": 3.4
+        },
+        "n_books": 12
       }
     ]
   },
@@ -12008,6 +14617,22 @@
           "odds_under": 2.12
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.1
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.06
+        },
+        "n_books": 7
       }
     ]
   },
@@ -12031,6 +14656,24 @@
           "odds_draw": 3.8
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.555,
+          "odds_away": 5.05,
+          "odds_draw": 3.875
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.555,
+          "odds_away": 5.05,
+          "odds_draw": 3.875
+        },
+        "n_books": 18
       }
     ]
   },
@@ -12052,6 +14695,22 @@
           "odds_under": 1.84
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 1.95
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 1.95
+        },
+        "n_books": 11
       }
     ]
   },
@@ -12210,6 +14869,24 @@
           "odds_draw": 3.1
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.1,
+          "odds_away": 3.46,
+          "odds_draw": 3.1
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.1,
+          "odds_away": 3.5,
+          "odds_draw": 3.1
+        },
+        "n_books": 23
       }
     ]
   },
@@ -12346,6 +15023,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.3,
+          "odds_under": 1.565
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.3,
+          "odds_under": 1.565
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 2.3,
           "odds_under": 1.565
@@ -13047,6 +15740,24 @@
           "odds_draw": 3.815
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.905,
+          "odds_away": 2.05,
+          "odds_draw": 3.825
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.0,
+          "odds_away": 2.0,
+          "odds_draw": 3.85
+        },
+        "n_books": 12
       }
     ]
   },
@@ -13063,6 +15774,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.37,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 3.05
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.37,
           "odds_under": 2.95
@@ -13091,6 +15818,24 @@
           "odds_draw": 3.325
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.65,
+          "odds_away": 2.315,
+          "odds_draw": 3.325
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.65,
+          "odds_away": 2.315,
+          "odds_draw": 3.325
+        },
+        "n_books": 4
       }
     ]
   },
@@ -13107,6 +15852,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 1.98
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 1.98
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.7,
           "odds_under": 1.98
@@ -13135,6 +15896,24 @@
           "odds_draw": 3.3
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.91,
+          "odds_away": 3.45,
+          "odds_draw": 3.3
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.91,
+          "odds_away": 3.45,
+          "odds_draw": 3.3
+        },
+        "n_books": 11
       }
     ]
   },
@@ -13156,6 +15935,83 @@
           "odds_under": 1.795
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.865,
+          "odds_under": 1.795
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.865,
+          "odds_under": 1.795
+        },
+        "n_books": 4
+      }
+    ]
+  },
+  "74fa00eeaae6c0beb21475ee9fe73bad_h2h": {
+    "league": "Norway Eliteserien",
+    "home": "Lillestrom",
+    "away": "Aalesund",
+    "date": "2026-11-08 16:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.8,
+      "odds_away": 3.64,
+      "odds_draw": 4.05
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.8,
+          "odds_away": 3.64,
+          "odds_draw": 4.05
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.8,
+          "odds_away": 3.64,
+          "odds_draw": 4.05
+        },
+        "n_books": 15
+      }
+    ]
+  },
+  "74fa00eeaae6c0beb21475ee9fe73bad_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Lillestrom",
+    "away": "Aalesund",
+    "date": "2026-11-08 16:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.35,
+      "odds_under": 3.15
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 3.15
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 3.15
+        },
+        "n_books": 3
       }
     ]
   },
@@ -13314,6 +16170,24 @@
           "odds_draw": 3.925
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.2,
+          "odds_draw": 3.925
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.2,
+          "odds_draw": 3.85
+        },
+        "n_books": 22
       }
     ]
   },
@@ -13450,6 +16324,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.525,
+          "odds_under": 2.335
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.525,
+          "odds_under": 2.335
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.525,
           "odds_under": 2.335
@@ -13794,6 +16684,24 @@
           "odds_draw": 3.3
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.0,
+          "odds_away": 3.4,
+          "odds_draw": 3.3
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.0,
+          "odds_away": 3.4,
+          "odds_draw": 3.3
+        },
+        "n_books": 13
       }
     ]
   },
@@ -13815,6 +16723,83 @@
           "odds_under": 1.83
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.91,
+          "odds_under": 1.83
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.91,
+          "odds_under": 1.83
+        },
+        "n_books": 8
+      }
+    ]
+  },
+  "76611e81a480e9f83b04f21c1cad402d_h2h": {
+    "league": "La Liga 2",
+    "home": "Sporting Gijón",
+    "away": "Real Valladolid CF",
+    "date": "2026-11-08 17:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.23,
+      "odds_away": 2.95,
+      "odds_draw": 3.1
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.23,
+          "odds_away": 2.95,
+          "odds_draw": 3.1
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.23,
+          "odds_away": 2.95,
+          "odds_draw": 3.1
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "76611e81a480e9f83b04f21c1cad402d_totals": {
+    "league": "La Liga 2",
+    "home": "Sporting Gijón",
+    "away": "Real Valladolid CF",
+    "date": "2026-11-08 17:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.05,
+      "odds_under": 1.655
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.05,
+          "odds_under": 1.655
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.05,
+          "odds_under": 1.655
+        },
+        "n_books": 4
       }
     ]
   },
@@ -13838,6 +16823,106 @@
           "odds_draw": 3.8
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.6,
+          "odds_away": 4.14,
+          "odds_draw": 3.8
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.645,
+          "odds_away": 4.23,
+          "odds_draw": 3.925
+        },
+        "n_books": 12
+      }
+    ]
+  },
+  "76b8d2047cea0309b144b134e22f4743_totals": {
+    "league": "Denmark Superliga",
+    "home": "FC Copenhagen",
+    "away": "Brondby IF",
+    "date": "2026-11-08 11:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.5,
+      "odds_under": 2.52
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.5,
+          "odds_under": 2.52
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "773505cd110575abf45522433f6578a4_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Gimnasia La Plata",
+    "away": "Belgrano de Cordoba",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.225,
+      "odds_away": 3.0,
+      "odds_draw": 3.125
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.225,
+          "odds_away": 3.0,
+          "odds_draw": 3.125
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.32,
+          "odds_away": 2.975,
+          "odds_draw": 3.115
+        },
+        "n_books": 12
+      }
+    ]
+  },
+  "773505cd110575abf45522433f6578a4_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Gimnasia La Plata",
+    "away": "Belgrano de Cordoba",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.04,
+      "odds_under": 1.715
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.04,
+          "odds_under": 1.715
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.02,
+          "odds_under": 1.73
+        },
+        "n_books": 7
       }
     ]
   },
@@ -13855,6 +16940,24 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_home": 1.95,
+          "odds_away": 3.475,
+          "odds_draw": 3.4
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.95,
+          "odds_away": 3.475,
+          "odds_draw": 3.4
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_home": 1.95,
           "odds_away": 3.475,
@@ -13880,6 +16983,22 @@
         "odds": {
           "odds_over": 1.76,
           "odds_under": 1.96
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.76,
+          "odds_under": 1.95
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.76,
+          "odds_under": 1.95
         },
         "n_books": 8
       }
@@ -14654,6 +17773,15 @@
           "odds_draw": 3.95
         },
         "n_books": 18
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.32,
+          "odds_draw": 3.9
+        },
+        "n_books": 18
       }
     ]
   },
@@ -14779,6 +17907,14 @@
           "odds_under": 2.23
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.18
+        },
+        "n_books": 7
       }
     ]
   },
@@ -15118,6 +18254,53 @@
           "odds_draw": 4.0
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 5.4,
+          "odds_away": 1.445,
+          "odds_draw": 4.6
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 6.635,
+          "odds_away": 1.36,
+          "odds_draw": 5.1
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "7c7cdf1a0fee0a3434d8f648392c8e65_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Tromso",
+    "away": "Bodø/Glimt",
+    "date": "2026-11-08 13:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.39,
+      "odds_under": 2.95
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.92
+        },
+        "n_books": 3
       }
     ]
   },
@@ -15195,6 +18378,24 @@
           "odds_draw": 3.445
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.32,
+          "odds_away": 2.07,
+          "odds_draw": 3.445
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.345,
+          "odds_away": 2.07,
+          "odds_draw": 3.445
+        },
+        "n_books": 22
       }
     ]
   },
@@ -15262,6 +18463,22 @@
         "odds": {
           "odds_over": 1.835,
           "odds_under": 1.905
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.845,
+          "odds_under": 1.92
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.845,
+          "odds_under": 1.92
         },
         "n_books": 16
       }
@@ -15341,6 +18558,24 @@
           "odds_draw": 3.5
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.62,
+          "odds_away": 2.45,
+          "odds_draw": 3.45
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.62,
+          "odds_away": 2.465,
+          "odds_draw": 3.5
+        },
+        "n_books": 16
       }
     ]
   },
@@ -15410,6 +18645,22 @@
           "odds_under": 2.13
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.08
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.08
+        },
+        "n_books": 12
       }
     ]
   },
@@ -15433,6 +18684,24 @@
           "odds_draw": 3.7
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 3.0,
+          "odds_draw": 3.8
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 3.05,
+          "odds_draw": 3.65
+        },
+        "n_books": 19
       }
     ]
   },
@@ -15449,6 +18718,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.4,
           "odds_under": 2.75
@@ -15594,6 +18879,24 @@
           "odds_draw": 3.3
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.02,
+          "odds_away": 3.5,
+          "odds_draw": 3.35
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.02,
+          "odds_away": 3.5,
+          "odds_draw": 3.35
+        },
+        "n_books": 21
       }
     ]
   },
@@ -15719,6 +19022,83 @@
           "odds_under": 1.75
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.98,
+          "odds_under": 1.75
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.98,
+          "odds_under": 1.75
+        },
+        "n_books": 13
+      }
+    ]
+  },
+  "8113162855a5e10941b4a1e917e5afc0_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "CA Tigre BA",
+    "away": "Sarmiento de Junin",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.66,
+      "odds_away": 4.775,
+      "odds_draw": 3.325
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.66,
+          "odds_away": 4.775,
+          "odds_draw": 3.325
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.65,
+          "odds_away": 4.85,
+          "odds_draw": 3.395
+        },
+        "n_books": 14
+      }
+    ]
+  },
+  "8113162855a5e10941b4a1e917e5afc0_totals": {
+    "league": "Argentina Primera Division",
+    "home": "CA Tigre BA",
+    "away": "Sarmiento de Junin",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.28,
+      "odds_under": 1.62
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.28,
+          "odds_under": 1.62
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.28,
+          "odds_under": 1.6
+        },
+        "n_books": 7
       }
     ]
   },
@@ -16202,6 +19582,24 @@
           "odds_draw": 5.55
         },
         "n_books": 20
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.29,
+          "odds_away": 8.465,
+          "odds_draw": 5.6
+        },
+        "n_books": 20
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.29,
+          "odds_away": 8.33,
+          "odds_draw": 5.625
+        },
+        "n_books": 20
       }
     ]
   },
@@ -16250,6 +19648,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.44,
+          "odds_under": 2.75
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.44,
           "odds_under": 2.75
@@ -16395,6 +19809,24 @@
           "odds_draw": 3.81
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.83,
+          "odds_away": 3.91,
+          "odds_draw": 3.8
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.83,
+          "odds_away": 3.91,
+          "odds_draw": 3.8
+        },
+        "n_books": 21
       }
     ]
   },
@@ -16520,6 +19952,22 @@
           "odds_under": 2.25
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.6,
+          "odds_under": 2.23
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.6,
+          "odds_under": 2.24
+        },
+        "n_books": 10
       }
     ]
   },
@@ -16543,6 +19991,24 @@
           "odds_draw": 3.45
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.99,
+          "odds_away": 3.4,
+          "odds_draw": 3.45
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.99,
+          "odds_away": 3.4,
+          "odds_draw": 3.45
+        },
+        "n_books": 17
       }
     ]
   },
@@ -16559,6 +20025,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.9
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.89
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.85,
           "odds_under": 1.9
@@ -16903,6 +20385,24 @@
           "odds_draw": 3.4
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.97,
+          "odds_away": 2.12,
+          "odds_draw": 3.4
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.985,
+          "odds_away": 2.135,
+          "odds_draw": 3.45
+        },
+        "n_books": 14
       }
     ]
   },
@@ -16924,6 +20424,83 @@
           "odds_under": 2.28
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.57,
+          "odds_under": 2.28
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.57,
+          "odds_under": 2.28
+        },
+        "n_books": 9
+      }
+    ]
+  },
+  "88fead70e852197758d9b67fdce0e93f_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Rosario Central",
+    "away": "Estudiantes de Río Cuarto",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.24,
+      "odds_away": 11.0,
+      "odds_draw": 5.45
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.24,
+          "odds_away": 11.0,
+          "odds_draw": 5.45
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.23,
+          "odds_away": 12.0,
+          "odds_draw": 5.45
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "88fead70e852197758d9b67fdce0e93f_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Rosario Central",
+    "away": "Estudiantes de Río Cuarto",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.74,
+      "odds_under": 2.09
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.74,
+          "odds_under": 2.09
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.73,
+          "odds_under": 2.09
+        },
+        "n_books": 7
       }
     ]
   },
@@ -17246,6 +20823,24 @@
           "odds_draw": 3.45
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.465,
+          "odds_away": 2.54,
+          "odds_draw": 3.425
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.48,
+          "odds_away": 2.55,
+          "odds_draw": 3.45
+        },
+        "n_books": 17
       }
     ]
   },
@@ -17262,6 +20857,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.11
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.11
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.68,
           "odds_under": 2.11
@@ -17288,6 +20899,45 @@
           "odds_home": 2.3,
           "odds_away": 2.75,
           "odds_draw": 3.65
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.3,
+          "odds_away": 2.75,
+          "odds_draw": 3.65
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 3.06,
+          "odds_draw": 3.65
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "8afef7f1a4041f69d3bce0e3d39a7ee8_totals": {
+    "league": "USA MLS",
+    "home": "Seattle Sounders FC",
+    "away": "Los Angeles FC",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.585,
+      "odds_under": 2.285
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.585,
+          "odds_under": 2.285
         },
         "n_books": 4
       }
@@ -17582,6 +21232,70 @@
           "odds_under": 2.42
         },
         "n_books": 3
+      }
+    ]
+  },
+  "8c660735cd820dac241991d4627feeaf_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "San Lorenzo",
+    "away": "Platense",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.425,
+      "odds_away": 3.0,
+      "odds_draw": 2.79
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.425,
+          "odds_away": 3.0,
+          "odds_draw": 2.79
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.425,
+          "odds_away": 3.0,
+          "odds_draw": 2.79
+        },
+        "n_books": 2
+      }
+    ]
+  },
+  "8c8e04fc074fa19c51214c68da6fd258_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Independiente",
+    "away": "Deportivo Riestra",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.995,
+      "odds_away": 3.75,
+      "odds_draw": 2.95
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.995,
+          "odds_away": 3.75,
+          "odds_draw": 2.95
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.995,
+          "odds_away": 3.75,
+          "odds_draw": 2.95
+        },
+        "n_books": 2
       }
     ]
   },
@@ -17921,6 +21635,24 @@
           "odds_draw": 3.4
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.71,
+          "odds_away": 2.365,
+          "odds_draw": 3.4
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.71,
+          "odds_away": 2.365,
+          "odds_draw": 3.4
+        },
+        "n_books": 14
       }
     ]
   },
@@ -17942,6 +21674,22 @@
           "odds_under": 2.03
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 2.02
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 2.02
+        },
+        "n_books": 7
       }
     ]
   },
@@ -18563,6 +22311,24 @@
           "odds_draw": 3.425
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.16,
+          "odds_away": 2.815,
+          "odds_draw": 3.425
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.17,
+          "odds_away": 2.88,
+          "odds_draw": 3.6
+        },
+        "n_books": 15
       }
     ]
   },
@@ -18584,6 +22350,22 @@
           "odds_under": 2.29
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.53,
+          "odds_under": 2.29
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.52,
+          "odds_under": 2.3
+        },
+        "n_books": 7
       }
     ]
   },
@@ -18854,6 +22636,67 @@
       }
     ]
   },
+  "922c2dd253c81c2c53bcda1806eb7a09_h2h": {
+    "league": "Sweden Allsvenskan",
+    "home": "Kalmar FF",
+    "away": "IK Sirius",
+    "date": "2026-11-08 15:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.1,
+      "odds_away": 1.97,
+      "odds_draw": 3.5
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.1,
+          "odds_away": 1.97,
+          "odds_draw": 3.5
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.1,
+          "odds_away": 1.97,
+          "odds_draw": 3.5
+        },
+        "n_books": 9
+      }
+    ]
+  },
+  "922c2dd253c81c2c53bcda1806eb7a09_totals": {
+    "league": "Sweden Allsvenskan",
+    "home": "Kalmar FF",
+    "away": "IK Sirius",
+    "date": "2026-11-08 15:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.68,
+      "odds_under": 2.04
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.04
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.04
+        },
+        "n_books": 4
+      }
+    ]
+  },
   "92be144094819c2abf511d4bb00878d5_h2h": {
     "league": "League One",
     "home": "Huddersfield Town",
@@ -18946,6 +22789,24 @@
           "odds_draw": 3.7
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.985,
+          "odds_away": 3.3,
+          "odds_draw": 3.7
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.985,
+          "odds_away": 3.3,
+          "odds_draw": 3.7
+        },
+        "n_books": 16
       }
     ]
   },
@@ -19031,6 +22892,22 @@
           "odds_under": 2.3
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.545,
+          "odds_under": 2.29
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.535,
+          "odds_under": 2.315
+        },
+        "n_books": 8
       }
     ]
   },
@@ -19126,6 +23003,24 @@
           "odds_draw": 3.29
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.585,
+          "odds_away": 2.655,
+          "odds_draw": 3.29
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.585,
+          "odds_away": 2.655,
+          "odds_draw": 3.29
+        },
+        "n_books": 22
       }
     ]
   },
@@ -19206,6 +23101,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.01,
+          "odds_under": 1.75
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.01,
+          "odds_under": 1.75
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 2.01,
           "odds_under": 1.75
@@ -19525,6 +23436,24 @@
           "odds_draw": 3.45
         },
         "n_books": 19
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.5,
+          "odds_away": 2.45,
+          "odds_draw": 3.45
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.525,
+          "odds_away": 2.45,
+          "odds_draw": 3.475
+        },
+        "n_books": 20
       }
     ]
   },
@@ -19541,6 +23470,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.18
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.18
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.62,
           "odds_under": 2.18
@@ -19704,6 +23649,24 @@
           "odds_draw": 3.45
         },
         "n_books": 19
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.12,
+          "odds_away": 3.18,
+          "odds_draw": 3.45
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.12,
+          "odds_away": 3.15,
+          "odds_draw": 3.45
+        },
+        "n_books": 20
       }
     ]
   },
@@ -19842,6 +23805,22 @@
         "at": "2026-11-01 14:40",
         "odds": {
           "odds_over": 1.75,
+          "odds_under": 2.01
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 2.01
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.76,
           "odds_under": 2.01
         },
         "n_books": 15
@@ -19994,6 +23973,15 @@
           "odds_draw": 3.915
         },
         "n_books": 18
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.78,
+          "odds_away": 3.755,
+          "odds_draw": 3.915
+        },
+        "n_books": 18
       }
     ]
   },
@@ -20117,6 +24105,75 @@
         "odds": {
           "odds_over": 1.49,
           "odds_under": 2.52
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.49,
+          "odds_under": 2.52
+        },
+        "n_books": 3
+      }
+    ]
+  },
+  "9ec4219adf394482a2a72a7109cb72e5_h2h": {
+    "league": "Norway Eliteserien",
+    "home": "Sandefjord",
+    "away": "Molde",
+    "date": "2026-11-08 16:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.4,
+      "odds_away": 1.85,
+      "odds_draw": 4.0
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.4,
+          "odds_away": 1.85,
+          "odds_draw": 4.0
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.92,
+          "odds_away": 1.7,
+          "odds_draw": 4.1
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "9ec4219adf394482a2a72a7109cb72e5_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Sandefjord",
+    "away": "Molde",
+    "date": "2026-11-08 16:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.35,
+      "odds_under": 3.15
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 3.15
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 3.2
         },
         "n_books": 3
       }
@@ -20417,6 +24474,24 @@
           "odds_draw": 3.075
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.25,
+          "odds_away": 3.125,
+          "odds_draw": 3.075
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.25,
+          "odds_away": 3.125,
+          "odds_draw": 3.075
+        },
+        "n_books": 14
       }
     ]
   },
@@ -20436,6 +24511,144 @@
         "odds": {
           "odds_over": 2.25,
           "odds_under": 1.58
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.25,
+          "odds_under": 1.58
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.25,
+          "odds_under": 1.58
+        },
+        "n_books": 6
+      }
+    ]
+  },
+  "a0a5702fe3cd7f3217c66c13b234989b_h2h": {
+    "league": "Norway Eliteserien",
+    "home": "HamKam",
+    "away": "Sarpsborg FK",
+    "date": "2026-11-08 16:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.025,
+      "odds_away": 2.07,
+      "odds_draw": 3.65
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.025,
+          "odds_away": 2.07,
+          "odds_draw": 3.65
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.025,
+          "odds_away": 2.07,
+          "odds_draw": 3.65
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "a0a5702fe3cd7f3217c66c13b234989b_totals": {
+    "league": "Norway Eliteserien",
+    "home": "HamKam",
+    "away": "Sarpsborg FK",
+    "date": "2026-11-08 16:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.51,
+      "odds_under": 2.35
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.51,
+          "odds_under": 2.35
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.51,
+          "odds_under": 2.35
+        },
+        "n_books": 7
+      }
+    ]
+  },
+  "a0bd5663efc354e1a58ea639f6f3d572_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Central Córdoba",
+    "away": "Lanus",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.63,
+      "odds_away": 1.92,
+      "odds_draw": 2.95
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.63,
+          "odds_away": 1.92,
+          "odds_draw": 2.95
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.7,
+          "odds_away": 1.955,
+          "odds_draw": 3.125
+        },
+        "n_books": 10
+      }
+    ]
+  },
+  "a0bd5663efc354e1a58ea639f6f3d572_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Central Córdoba",
+    "away": "Lanus",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.2,
+      "odds_under": 1.6
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.2,
+          "odds_under": 1.6
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.35,
+          "odds_under": 1.575
         },
         "n_books": 6
       }
@@ -20461,6 +24674,24 @@
           "odds_draw": 4.265
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 5.205,
+          "odds_away": 1.495,
+          "odds_draw": 4.34
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 5.205,
+          "odds_away": 1.495,
+          "odds_draw": 4.34
+        },
+        "n_books": 14
       }
     ]
   },
@@ -20477,6 +24708,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.62
+        },
+        "n_books": 1
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.62
+        },
+        "n_books": 1
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.4,
           "odds_under": 2.62
@@ -20505,6 +24752,53 @@
           "odds_draw": 4.2
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.55,
+          "odds_away": 5.0,
+          "odds_draw": 4.1
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.55,
+          "odds_away": 5.0,
+          "odds_draw": 4.1
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "a3141a19d1b0353ddd557db60e9ad1ba_totals": {
+    "league": "Denmark Superliga",
+    "home": "AGF Aarhus",
+    "away": "AC Horsens",
+    "date": "2026-11-08 13:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.55,
+      "odds_under": 2.31
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.31
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.31
+        },
+        "n_books": 5
       }
     ]
   },
@@ -21499,6 +25793,24 @@
           "odds_draw": 2.96
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.95,
+          "odds_away": 2.55,
+          "odds_draw": 3.0
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.95,
+          "odds_away": 2.55,
+          "odds_draw": 3.0
+        },
+        "n_books": 15
       }
     ]
   },
@@ -21800,6 +26112,83 @@
           "odds_under": 1.52
         },
         "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.45,
+          "odds_under": 1.52
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.45,
+          "odds_under": 1.52
+        },
+        "n_books": 7
+      }
+    ]
+  },
+  "a77c0e31aaf9bc5a041914cb6b1a5a13_h2h": {
+    "league": "Denmark Superliga",
+    "home": "Randers FC",
+    "away": "FC Nordsjaelland",
+    "date": "2026-11-08 15:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 4.28,
+      "odds_away": 1.63,
+      "odds_draw": 4.05
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 4.28,
+          "odds_away": 1.63,
+          "odds_draw": 4.05
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 4.28,
+          "odds_away": 1.63,
+          "odds_draw": 4.05
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "a77c0e31aaf9bc5a041914cb6b1a5a13_totals": {
+    "league": "Denmark Superliga",
+    "home": "Randers FC",
+    "away": "FC Nordsjaelland",
+    "date": "2026-11-08 15:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.39,
+      "odds_under": 2.92
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.92
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.92
+        },
+        "n_books": 3
       }
     ]
   },
@@ -21817,6 +26206,24 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_home": 2.9,
+          "odds_away": 2.25,
+          "odds_draw": 3.4
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.9,
+          "odds_away": 2.25,
+          "odds_draw": 3.4
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_home": 2.9,
           "odds_away": 2.25,
@@ -21844,6 +26251,22 @@
           "odds_under": 1.87
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.87
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.87
+        },
+        "n_books": 11
       }
     ]
   },
@@ -21867,6 +26290,24 @@
           "odds_draw": 3.85
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.4,
+          "odds_draw": 3.85
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.4,
+          "odds_draw": 3.85
+        },
+        "n_books": 15
       }
     ]
   },
@@ -21883,6 +26324,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.08
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.08
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.7,
           "odds_under": 2.08
@@ -21911,6 +26368,24 @@
           "odds_draw": 3.6
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.84,
+          "odds_away": 2.17,
+          "odds_draw": 3.56
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.84,
+          "odds_away": 2.17,
+          "odds_draw": 3.56
+        },
+        "n_books": 17
       }
     ]
   },
@@ -21932,6 +26407,22 @@
           "odds_under": 2.17
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.12
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.12
+        },
+        "n_books": 9
       }
     ]
   },
@@ -21955,6 +26446,24 @@
           "odds_draw": 3.225
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.07,
+          "odds_away": 3.3,
+          "odds_draw": 3.225
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.07,
+          "odds_away": 3.3,
+          "odds_draw": 3.225
+        },
+        "n_books": 18
       }
     ]
   },
@@ -21976,6 +26485,22 @@
           "odds_under": 1.745
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.94,
+          "odds_under": 1.75
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.94,
+          "odds_under": 1.75
+        },
+        "n_books": 13
       }
     ]
   },
@@ -21999,6 +26524,24 @@
           "odds_draw": 4.4
         },
         "n_books": 18
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.59,
+          "odds_away": 4.45,
+          "odds_draw": 4.4
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.62,
+          "odds_away": 4.35,
+          "odds_draw": 4.3
+        },
+        "n_books": 19
       }
     ]
   },
@@ -22015,6 +26558,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.39,
           "odds_under": 2.95
@@ -22115,6 +26674,24 @@
           "odds_draw": 3.6
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.955,
+          "odds_away": 3.56,
+          "odds_draw": 3.6
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.955,
+          "odds_away": 3.56,
+          "odds_draw": 3.6
+        },
+        "n_books": 22
       }
     ]
   },
@@ -22195,6 +26772,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 2.0
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 2.0
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.75,
           "odds_under": 2.0
@@ -22340,6 +26933,24 @@
           "odds_draw": 4.0
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.48,
+          "odds_away": 6.25,
+          "odds_draw": 4.1
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.49,
+          "odds_away": 6.4,
+          "odds_draw": 4.1
+        },
+        "n_books": 21
       }
     ]
   },
@@ -22465,6 +27076,22 @@
           "odds_under": 1.85
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.87,
+          "odds_under": 1.85
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.87,
+          "odds_under": 1.85
+        },
+        "n_books": 16
       }
     ]
   },
@@ -22488,6 +27115,24 @@
           "odds_draw": 3.475
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 2.935,
+          "odds_draw": 3.475
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 2.935,
+          "odds_draw": 3.47
+        },
+        "n_books": 16
       }
     ]
   },
@@ -22504,6 +27149,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.71,
+          "odds_under": 2.05
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.71,
+          "odds_under": 2.05
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.71,
           "odds_under": 2.05
@@ -22649,6 +27310,24 @@
           "odds_draw": 3.25
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.3,
+          "odds_away": 2.9,
+          "odds_draw": 3.25
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.25,
+          "odds_away": 2.95,
+          "odds_draw": 3.3
+        },
+        "n_books": 21
       }
     ]
   },
@@ -22774,6 +27453,22 @@
           "odds_under": 1.83
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.9,
+          "odds_under": 1.83
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.9,
+          "odds_under": 1.83
+        },
+        "n_books": 15
       }
     ]
   },
@@ -22797,6 +27492,24 @@
           "odds_draw": 3.465
         },
         "n_books": 18
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.86,
+          "odds_away": 2.265,
+          "odds_draw": 3.465
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.85,
+          "odds_away": 2.25,
+          "odds_draw": 3.45
+        },
+        "n_books": 19
       }
     ]
   },
@@ -22813,6 +27526,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.21
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.21
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.62,
           "odds_under": 2.21
@@ -22949,6 +27678,24 @@
           "odds_draw": 4.8
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.38,
+          "odds_away": 6.845,
+          "odds_draw": 4.775
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.38,
+          "odds_away": 6.9,
+          "odds_draw": 4.775
+        },
+        "n_books": 18
       }
     ]
   },
@@ -22994,6 +27741,22 @@
           "odds_under": 2.38
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.59,
+          "odds_under": 2.27
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.28
+        },
+        "n_books": 7
       }
     ]
   },
@@ -23017,6 +27780,24 @@
           "odds_draw": 4.05
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.39,
+          "odds_away": 6.75,
+          "odds_draw": 4.7
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.39,
+          "odds_away": 6.75,
+          "odds_draw": 4.7
+        },
+        "n_books": 17
       }
     ]
   },
@@ -23038,6 +27819,22 @@
           "odds_under": 2.3
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.35
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.35
+        },
+        "n_books": 5
       }
     ]
   },
@@ -23061,6 +27858,24 @@
           "odds_draw": 3.2
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.925,
+          "odds_away": 2.26,
+          "odds_draw": 3.2
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.925,
+          "odds_away": 2.26,
+          "odds_draw": 3.2
+        },
+        "n_books": 14
       }
     ]
   },
@@ -23082,6 +27897,22 @@
           "odds_under": 1.85
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.85
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.85
+        },
+        "n_books": 9
       }
     ]
   },
@@ -23105,6 +27936,24 @@
           "odds_draw": 3.4
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.68,
+          "odds_away": 4.45,
+          "odds_draw": 3.55
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.68,
+          "odds_away": 4.4,
+          "odds_draw": 3.55
+        },
+        "n_books": 14
       }
     ]
   },
@@ -23126,6 +27975,22 @@
           "odds_under": 1.73
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.89,
+          "odds_under": 1.82
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.89,
+          "odds_under": 1.82
+        },
+        "n_books": 9
       }
     ]
   },
@@ -23266,6 +28131,15 @@
           "odds_draw": 3.9
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.0,
+          "odds_away": 2.09,
+          "odds_draw": 3.95
+        },
+        "n_books": 23
       }
     ]
   },
@@ -23327,6 +28201,14 @@
           "odds_under": 2.95
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.39,
+          "odds_under": 2.95
+        },
+        "n_books": 3
       }
     ]
   },
@@ -23350,6 +28232,24 @@
           "odds_draw": 3.95
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.6,
+          "odds_away": 4.6,
+          "odds_draw": 3.95
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.6,
+          "odds_away": 4.6,
+          "odds_draw": 3.95
+        },
+        "n_books": 16
       }
     ]
   },
@@ -23371,6 +28271,22 @@
           "odds_under": 2.135
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.185
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.185
+        },
+        "n_books": 8
       }
     ]
   },
@@ -23394,6 +28310,24 @@
           "odds_draw": 3.5
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.03,
+          "odds_away": 3.25,
+          "odds_draw": 3.5
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.03,
+          "odds_away": 3.25,
+          "odds_draw": 3.5
+        },
+        "n_books": 15
       }
     ]
   },
@@ -23410,6 +28344,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 2.04
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 2.04
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.72,
           "odds_under": 2.04
@@ -23438,6 +28388,85 @@
           "odds_draw": 4.5
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.42,
+          "odds_away": 5.4,
+          "odds_draw": 4.5
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.42,
+          "odds_away": 5.4,
+          "odds_draw": 4.5
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "ba67d60b86eca4f5a81b7043d24bf905_h2h": {
+    "league": "Norway Eliteserien",
+    "home": "Fredrikstad FK",
+    "away": "SK Brann",
+    "date": "2026-11-08 18:15",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.75,
+      "odds_away": 2.2,
+      "odds_draw": 3.65
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.75,
+          "odds_away": 2.2,
+          "odds_draw": 3.65
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.635,
+          "odds_away": 2.2,
+          "odds_draw": 3.65
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "ba67d60b86eca4f5a81b7043d24bf905_totals": {
+    "league": "Norway Eliteserien",
+    "home": "Fredrikstad FK",
+    "away": "SK Brann",
+    "date": "2026-11-08 18:15",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.51,
+      "odds_under": 2.35
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.51,
+          "odds_under": 2.35
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.51,
+          "odds_under": 2.35
+        },
+        "n_books": 7
       }
     ]
   },
@@ -24128,6 +29157,15 @@
           "odds_draw": 3.2
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.11,
+          "odds_away": 3.6,
+          "odds_draw": 3.2
+        },
+        "n_books": 15
       }
     ]
   },
@@ -24459,6 +29497,14 @@
         "odds": {
           "odds_over": 2.23,
           "odds_under": 1.61
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.25,
+          "odds_under": 1.6
         },
         "n_books": 7
       }
@@ -25271,6 +30317,24 @@
           "odds_draw": 3.65
         },
         "n_books": 21
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.68,
+          "odds_away": 4.6,
+          "odds_draw": 3.6
+        },
+        "n_books": 21
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.7,
+          "odds_away": 4.5,
+          "odds_draw": 3.6
+        },
+        "n_books": 21
       }
     ]
   },
@@ -25348,6 +30412,22 @@
           "odds_under": 1.95
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.78,
+          "odds_under": 1.95
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.78,
+          "odds_under": 1.95
+        },
+        "n_books": 15
       }
     ]
   },
@@ -25371,6 +30451,24 @@
           "odds_draw": 3.35
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.185,
+          "odds_away": 2.975,
+          "odds_draw": 3.35
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.185,
+          "odds_away": 2.975,
+          "odds_draw": 3.35
+        },
+        "n_books": 14
       }
     ]
   },
@@ -25387,6 +30485,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.69,
+          "odds_under": 2.05
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.69,
+          "odds_under": 2.05
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.69,
           "odds_under": 2.05
@@ -25415,6 +30529,45 @@
           "odds_draw": 5.8
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.3,
+          "odds_away": 8.0,
+          "odds_draw": 5.8
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.4,
+          "odds_away": 5.85,
+          "odds_draw": 5.0
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "c0c73d9305b8e399fb6cf9a234a7b9e4_totals": {
+    "league": "USA MLS",
+    "home": "Philadelphia Union",
+    "away": "Toronto FC",
+    "date": "2026-11-07 21:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.35,
+      "odds_under": 3.0
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 3.0
+        },
+        "n_books": 1
       }
     ]
   },
@@ -25438,6 +30591,24 @@
           "odds_draw": 3.1
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.0,
+          "odds_away": 2.28,
+          "odds_draw": 3.1
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.0,
+          "odds_away": 2.28,
+          "odds_draw": 3.1
+        },
+        "n_books": 17
       }
     ]
   },
@@ -25459,6 +30630,22 @@
           "odds_under": 1.67
         },
         "n_books": 8
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.05,
+          "odds_under": 1.7
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.05,
+          "odds_under": 1.7
+        },
+        "n_books": 11
       }
     ]
   },
@@ -25599,6 +30786,24 @@
           "odds_draw": 3.95
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.72,
+          "odds_away": 4.2,
+          "odds_draw": 4.0
+        },
+        "n_books": 23
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.72,
+          "odds_away": 4.2,
+          "odds_draw": 4.0
+        },
+        "n_books": 23
       }
     ]
   },
@@ -25724,6 +30929,22 @@
           "odds_under": 2.28
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.32
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.58,
+          "odds_under": 2.32
+        },
+        "n_books": 7
       }
     ]
   },
@@ -26026,6 +31247,67 @@
       }
     ]
   },
+  "c8d54d20e3fa9acb251716ff6820a0c6_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Talleres",
+    "away": "Estudiantes",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.265,
+      "odds_away": 3.115,
+      "odds_draw": 2.975
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.265,
+          "odds_away": 3.115,
+          "odds_draw": 2.975
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.33,
+          "odds_away": 3.05,
+          "odds_draw": 3.08
+        },
+        "n_books": 13
+      }
+    ]
+  },
+  "c8d54d20e3fa9acb251716ff6820a0c6_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Talleres",
+    "away": "Estudiantes",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.28,
+      "odds_under": 1.61
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.28,
+          "odds_under": 1.61
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.28,
+          "odds_under": 1.6
+        },
+        "n_books": 6
+      }
+    ]
+  },
   "c90bb1002a2640dbd9ac108a3b81841a_h2h": {
     "league": "China Super League",
     "home": "Dalian Yingbo",
@@ -26118,6 +31400,24 @@
           "odds_draw": 4.375
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.39,
+          "odds_away": 7.1,
+          "odds_draw": 4.5
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.39,
+          "odds_away": 7.1,
+          "odds_draw": 4.5
+        },
+        "n_books": 12
       }
     ]
   },
@@ -26203,6 +31503,22 @@
           "odds_under": 2.04
         },
         "n_books": 6
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.71,
+          "odds_under": 2.06
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.71,
+          "odds_under": 2.06
+        },
+        "n_books": 7
       }
     ]
   },
@@ -26223,6 +31539,24 @@
         "odds": {
           "odds_home": 2.72,
           "odds_away": 2.28,
+          "odds_draw": 3.25
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.72,
+          "odds_away": 2.28,
+          "odds_draw": 3.25
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.72,
+          "odds_away": 2.25,
           "odds_draw": 3.25
         },
         "n_books": 11
@@ -26247,6 +31581,83 @@
           "odds_under": 1.895
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.76,
+          "odds_under": 1.895
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.78,
+          "odds_under": 1.885
+        },
+        "n_books": 4
+      }
+    ]
+  },
+  "c9e285d98525711130aa5801e9634657_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Boca Juniors",
+    "away": "Defensa y Justicia",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 1.44,
+      "odds_away": 6.425,
+      "odds_draw": 3.95
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.44,
+          "odds_away": 6.425,
+          "odds_draw": 3.95
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.415,
+          "odds_away": 7.25,
+          "odds_draw": 4.1
+        },
+        "n_books": 10
+      }
+    ]
+  },
+  "c9e285d98525711130aa5801e9634657_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Boca Juniors",
+    "away": "Defensa y Justicia",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.855,
+      "odds_under": 1.855
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.855,
+          "odds_under": 1.855
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.825,
+          "odds_under": 1.945
+        },
+        "n_books": 6
       }
     ]
   },
@@ -26342,6 +31753,24 @@
           "odds_draw": 3.65
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.98,
+          "odds_away": 3.42,
+          "odds_draw": 3.65
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.98,
+          "odds_away": 3.42,
+          "odds_draw": 3.65
+        },
+        "n_books": 22
       }
     ]
   },
@@ -26427,6 +31856,22 @@
           "odds_under": 2.145
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.64,
+          "odds_under": 2.145
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.65,
+          "odds_under": 2.145
+        },
+        "n_books": 12
       }
     ]
   },
@@ -26450,6 +31895,24 @@
           "odds_draw": 4.9
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.32,
+          "odds_away": 7.9,
+          "odds_draw": 4.9
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.32,
+          "odds_away": 7.9,
+          "odds_draw": 4.9
+        },
+        "n_books": 14
       }
     ]
   },
@@ -26466,6 +31929,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.57,
+          "odds_under": 2.25
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.57,
+          "odds_under": 2.25
+        },
+        "n_books": 5
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.57,
           "odds_under": 2.25
@@ -26647,6 +32126,24 @@
           "odds_draw": 3.6
         },
         "n_books": 23
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.34,
+          "odds_away": 1.97,
+          "odds_draw": 3.65
+        },
+        "n_books": 23
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.34,
+          "odds_away": 1.97,
+          "odds_draw": 3.65
+        },
+        "n_books": 23
       }
     ]
   },
@@ -26804,6 +32301,22 @@
           "odds_under": 2.15
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.655,
+          "odds_under": 2.15
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.65,
+          "odds_under": 2.155
+        },
+        "n_books": 14
       }
     ]
   },
@@ -26827,6 +32340,24 @@
           "odds_draw": 3.6
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.61,
+          "odds_away": 2.305,
+          "odds_draw": 3.6
+        },
+        "n_books": 20
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.61,
+          "odds_away": 2.305,
+          "odds_draw": 3.6
+        },
+        "n_books": 20
       }
     ]
   },
@@ -26843,6 +32374,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.52,
+          "odds_under": 2.42
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.535,
+          "odds_under": 2.4
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.52,
           "odds_under": 2.42
@@ -26871,6 +32418,24 @@
           "odds_draw": 3.285
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.0,
+          "odds_away": 2.2,
+          "odds_draw": 3.285
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.0,
+          "odds_away": 2.2,
+          "odds_draw": 3.285
+        },
+        "n_books": 12
       }
     ]
   },
@@ -26887,6 +32452,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.74,
+          "odds_under": 1.98
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.74,
+          "odds_under": 1.98
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.74,
           "odds_under": 1.98
@@ -26987,6 +32568,24 @@
           "odds_draw": 3.49
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 3.0,
+          "odds_draw": 3.49
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.2,
+          "odds_away": 3.0,
+          "odds_draw": 3.49
+        },
+        "n_books": 22
       }
     ]
   },
@@ -27072,6 +32671,22 @@
           "odds_under": 2.03
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.75,
+          "odds_under": 2.03
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.725,
+          "odds_under": 2.02
+        },
+        "n_books": 14
       }
     ]
   },
@@ -27394,6 +33009,24 @@
           "odds_draw": 3.55
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.25,
+          "odds_away": 2.76,
+          "odds_draw": 3.4
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.275,
+          "odds_away": 2.765,
+          "odds_draw": 3.4
+        },
+        "n_books": 16
       }
     ]
   },
@@ -27415,6 +33048,22 @@
           "odds_under": 2.25
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.595,
+          "odds_under": 2.185
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.19
+        },
+        "n_books": 9
       }
     ]
   },
@@ -27438,6 +33087,24 @@
           "odds_draw": 3.575
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.98,
+          "odds_away": 3.075,
+          "odds_draw": 3.575
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.02,
+          "odds_away": 3.15,
+          "odds_draw": 3.65
+        },
+        "n_books": 15
       }
     ]
   },
@@ -27459,6 +33126,22 @@
           "odds_under": 2.275
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.54,
+          "odds_under": 2.275
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.3
+        },
+        "n_books": 9
       }
     ]
   },
@@ -27554,6 +33237,24 @@
           "odds_draw": 3.27
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.6,
+          "odds_away": 2.61,
+          "odds_draw": 3.25
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.6,
+          "odds_away": 2.61,
+          "odds_draw": 3.25
+        },
+        "n_books": 22
       }
     ]
   },
@@ -27637,6 +33338,22 @@
         "odds": {
           "odds_over": 1.965,
           "odds_under": 1.82
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.965,
+          "odds_under": 1.81
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.965,
+          "odds_under": 1.81
         },
         "n_books": 16
       }
@@ -28298,6 +34015,67 @@
       }
     ]
   },
+  "d30d1bf02fe13e8aade539b76289bdc3_h2h": {
+    "league": "La Liga 2",
+    "home": "Girona FC",
+    "away": "Almería",
+    "date": "2026-11-08 15:15",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.02,
+      "odds_away": 3.05,
+      "odds_draw": 3.4
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.02,
+          "odds_away": 3.05,
+          "odds_draw": 3.4
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.02,
+          "odds_away": 3.05,
+          "odds_draw": 3.4
+        },
+        "n_books": 13
+      }
+    ]
+  },
+  "d30d1bf02fe13e8aade539b76289bdc3_totals": {
+    "league": "La Liga 2",
+    "home": "Girona FC",
+    "away": "Almería",
+    "date": "2026-11-08 15:15",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.67,
+      "odds_under": 2.06
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.67,
+          "odds_under": 2.06
+        },
+        "n_books": 8
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.67,
+          "odds_under": 2.06
+        },
+        "n_books": 8
+      }
+    ]
+  },
   "d57787a1694c40c4fd54a519d9347180_h2h": {
     "league": "La Liga 2",
     "home": "Burgos CF",
@@ -28597,6 +34375,67 @@
       }
     ]
   },
+  "d5a74e1730cf9bd8bfe0488e3d064e35_h2h": {
+    "league": "Ligue 2",
+    "home": "Grenoble",
+    "away": "Stade de Reims",
+    "date": "2026-11-06 19:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.8,
+      "odds_away": 1.92,
+      "odds_draw": 3.3
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.8,
+          "odds_away": 1.92,
+          "odds_draw": 3.3
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.68,
+          "odds_away": 1.86,
+          "odds_draw": 3.3
+        },
+        "n_books": 11
+      }
+    ]
+  },
+  "d5a74e1730cf9bd8bfe0488e3d064e35_totals": {
+    "league": "Ligue 2",
+    "home": "Grenoble",
+    "away": "Stade de Reims",
+    "date": "2026-11-06 19:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.02,
+      "odds_under": 1.68
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.02,
+          "odds_under": 1.68
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.02,
+          "odds_under": 1.68
+        },
+        "n_books": 4
+      }
+    ]
+  },
   "d66b4a30227f3acd6f3366f62f763229_h2h": {
     "league": "Japan J-League",
     "home": "Avispa Fukuoka",
@@ -28611,6 +34450,24 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 3.4,
+          "odds_draw": 3.25
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 3.4,
+          "odds_draw": 3.25
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_home": 2.05,
           "odds_away": 3.4,
@@ -28633,6 +34490,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.0,
+          "odds_under": 1.75
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.0,
+          "odds_under": 1.75
+        },
+        "n_books": 7
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 2.0,
           "odds_under": 1.75
@@ -28661,6 +34534,24 @@
           "odds_draw": 2.95
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.585,
+          "odds_away": 2.56,
+          "odds_draw": 2.95
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.585,
+          "odds_away": 2.56,
+          "odds_draw": 2.95
+        },
+        "n_books": 10
       }
     ]
   },
@@ -28677,6 +34568,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.365,
+          "odds_under": 1.495
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.365,
+          "odds_under": 1.495
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 2.365,
           "odds_under": 1.495
@@ -28705,6 +34612,24 @@
           "odds_draw": 3.65
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.15,
+          "odds_away": 2.8,
+          "odds_draw": 3.65
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.15,
+          "odds_away": 2.8,
+          "odds_draw": 3.65
+        },
+        "n_books": 12
       }
     ]
   },
@@ -28721,6 +34646,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.46,
+          "odds_under": 2.52
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.46,
+          "odds_under": 2.52
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.46,
           "odds_under": 2.52
@@ -28749,6 +34690,24 @@
           "odds_draw": 3.6
         },
         "n_books": 18
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.0,
+          "odds_away": 3.25,
+          "odds_draw": 3.6
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.0,
+          "odds_away": 3.25,
+          "odds_draw": 3.6
+        },
+        "n_books": 19
       }
     ]
   },
@@ -28770,6 +34729,22 @@
           "odds_under": 2.225
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.225
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.62,
+          "odds_under": 2.23
+        },
+        "n_books": 11
       }
     ]
   },
@@ -28865,6 +34840,24 @@
           "odds_draw": 3.51
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.45,
+          "odds_away": 2.62,
+          "odds_draw": 3.51
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.45,
+          "odds_away": 2.62,
+          "odds_draw": 3.51
+        },
+        "n_books": 22
       }
     ]
   },
@@ -28950,6 +34943,22 @@
           "odds_under": 2.185
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.63,
+          "odds_under": 2.185
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.63,
+          "odds_under": 2.185
+        },
+        "n_books": 12
       }
     ]
   },
@@ -28973,6 +34982,24 @@
           "odds_draw": 3.7
         },
         "n_books": 19
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 2.95,
+          "odds_draw": 3.7
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.025,
+          "odds_away": 3.0,
+          "odds_draw": 3.875
+        },
+        "n_books": 20
       }
     ]
   },
@@ -28992,6 +35019,22 @@
         "odds": {
           "odds_over": 1.35,
           "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.35,
+          "odds_under": 2.95
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.34,
+          "odds_under": 3.0
         },
         "n_books": 3
       }
@@ -29017,6 +35060,24 @@
           "odds_draw": 3.35
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.065,
+          "odds_away": 3.125,
+          "odds_draw": 3.35
+        },
+        "n_books": 16
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.05,
+          "odds_away": 3.25,
+          "odds_draw": 3.35
+        },
+        "n_books": 17
       }
     ]
   },
@@ -29038,6 +35099,22 @@
           "odds_under": 1.97
         },
         "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 1.97
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.72,
+          "odds_under": 1.97
+        },
+        "n_books": 10
       }
     ]
   },
@@ -29061,6 +35138,24 @@
           "odds_draw": 3.35
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.95,
+          "odds_away": 2.23,
+          "odds_draw": 3.35
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.95,
+          "odds_away": 2.24,
+          "odds_draw": 3.3
+        },
+        "n_books": 15
       }
     ]
   },
@@ -29082,6 +35177,22 @@
           "odds_under": 1.88
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.85,
+          "odds_under": 1.88
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.83,
+          "odds_under": 1.88
+        },
+        "n_books": 9
       }
     ]
   },
@@ -29421,6 +35532,24 @@
           "odds_draw": 3.7
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.84,
+          "odds_away": 3.7,
+          "odds_draw": 3.8
+        },
+        "n_books": 19
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.84,
+          "odds_away": 3.7,
+          "odds_draw": 3.8
+        },
+        "n_books": 20
       }
     ]
   },
@@ -29442,6 +35571,22 @@
           "odds_under": 2.3
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.3
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.55,
+          "odds_under": 2.3
+        },
+        "n_books": 6
       }
     ]
   },
@@ -29519,6 +35664,24 @@
           "odds_draw": 3.85
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 4.11,
+          "odds_away": 1.75,
+          "odds_draw": 3.85
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 4.11,
+          "odds_away": 1.75,
+          "odds_draw": 3.875
+        },
+        "n_books": 22
       }
     ]
   },
@@ -29588,6 +35751,22 @@
           "odds_under": 2.16
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.615,
+          "odds_under": 2.2
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.615,
+          "odds_under": 2.2
+        },
+        "n_books": 12
       }
     ]
   },
@@ -29611,6 +35790,45 @@
           "odds_draw": 4.1
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.45,
+          "odds_away": 1.87,
+          "odds_draw": 4.1
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.32,
+          "odds_away": 2.565,
+          "odds_draw": 3.8
+        },
+        "n_books": 16
+      }
+    ]
+  },
+  "e373abc8622b9853aa4fbd3d01c33d8e_totals": {
+    "league": "USA MLS",
+    "home": "FC Cincinnati",
+    "away": "Nashville SC",
+    "date": "2026-11-07 21:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.4,
+      "odds_under": 2.7
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.7
+        },
+        "n_books": 1
       }
     ]
   },
@@ -29742,6 +35960,24 @@
           "odds_draw": 4.7
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 6.2,
+          "odds_away": 1.43,
+          "odds_draw": 4.7
+        },
+        "n_books": 23
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 6.4,
+          "odds_away": 1.43,
+          "odds_draw": 4.7
+        },
+        "n_books": 23
       }
     ]
   },
@@ -29859,6 +36095,83 @@
           "odds_under": 2.58
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.49,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.49,
+          "odds_under": 2.58
+        },
+        "n_books": 3
+      }
+    ]
+  },
+  "e6eb2081b5daf57e7c9ca26e37abe511_h2h": {
+    "league": "Sweden Allsvenskan",
+    "home": "IF Brommapojkarna",
+    "away": "Mjällby AIF",
+    "date": "2026-11-08 15:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.63,
+      "odds_away": 2.25,
+      "odds_draw": 3.4
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.63,
+          "odds_away": 2.25,
+          "odds_draw": 3.4
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.63,
+          "odds_away": 2.25,
+          "odds_draw": 3.4
+        },
+        "n_books": 9
+      }
+    ]
+  },
+  "e6eb2081b5daf57e7c9ca26e37abe511_totals": {
+    "league": "Sweden Allsvenskan",
+    "home": "IF Brommapojkarna",
+    "away": "Mjällby AIF",
+    "date": "2026-11-08 15:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.68,
+      "odds_under": 2.04
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.04
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.68,
+          "odds_under": 2.04
+        },
+        "n_books": 4
       }
     ]
   },
@@ -30017,6 +36330,24 @@
           "odds_draw": 3.6
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.99,
+          "odds_away": 3.33,
+          "odds_draw": 3.6
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.99,
+          "odds_away": 3.36,
+          "odds_draw": 3.6
+        },
+        "n_books": 23
       }
     ]
   },
@@ -30158,6 +36489,83 @@
           "odds_under": 2.08
         },
         "n_books": 15
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.08
+        },
+        "n_books": 15
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.075
+        },
+        "n_books": 14
+      }
+    ]
+  },
+  "e7805bcd2f8373456b94d47235321bf6_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Barracas Central",
+    "away": "Racing Club",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.675,
+      "odds_away": 2.565,
+      "odds_draw": 2.95
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.675,
+          "odds_away": 2.565,
+          "odds_draw": 2.95
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.42,
+          "odds_away": 2.8,
+          "odds_draw": 2.91
+        },
+        "n_books": 12
+      }
+    ]
+  },
+  "e7805bcd2f8373456b94d47235321bf6_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Barracas Central",
+    "away": "Racing Club",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.455,
+      "odds_under": 1.495
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.455,
+          "odds_under": 1.495
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.44,
+          "odds_under": 1.52
+        },
+        "n_books": 6
       }
     ]
   },
@@ -30175,6 +36583,24 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_home": 6.4,
+          "odds_away": 1.34,
+          "odds_draw": 4.6
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 6.4,
+          "odds_away": 1.34,
+          "odds_draw": 4.6
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_home": 6.4,
           "odds_away": 1.34,
@@ -30638,6 +37064,24 @@
           "odds_draw": 3.25
         },
         "n_books": 17
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.88,
+          "odds_draw": 3.25
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.35,
+          "odds_away": 2.86,
+          "odds_draw": 3.25
+        },
+        "n_books": 17
       }
     ]
   },
@@ -30654,6 +37098,22 @@
     "snapshots": [
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 2.09,
+          "odds_under": 1.69
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.09,
+          "odds_under": 1.69
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 2.09,
           "odds_under": 1.69
@@ -30682,6 +37142,24 @@
           "odds_draw": 3.925
         },
         "n_books": 16
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.785,
+          "odds_away": 3.65,
+          "odds_draw": 3.95
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.79,
+          "odds_away": 3.65,
+          "odds_draw": 3.95
+        },
+        "n_books": 19
       }
     ]
   },
@@ -30701,6 +37179,22 @@
         "odds": {
           "odds_over": 1.49,
           "odds_under": 2.45
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.49,
+          "odds_under": 2.45
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.52,
+          "odds_under": 2.35
         },
         "n_books": 3
       }
@@ -30726,6 +37220,24 @@
           "odds_draw": 3.45
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.78,
+          "odds_away": 4.1,
+          "odds_draw": 3.45
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.78,
+          "odds_away": 4.05,
+          "odds_draw": 3.45
+        },
+        "n_books": 18
       }
     ]
   },
@@ -30747,6 +37259,22 @@
           "odds_under": 1.86
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.83,
+          "odds_under": 1.87
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.83,
+          "odds_under": 1.87
+        },
+        "n_books": 13
       }
     ]
   },
@@ -30770,6 +37298,24 @@
           "odds_draw": 3.15
         },
         "n_books": 11
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.895,
+          "odds_away": 3.665,
+          "odds_draw": 3.3
+        },
+        "n_books": 14
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.91,
+          "odds_away": 3.665,
+          "odds_draw": 3.3
+        },
+        "n_books": 16
       }
     ]
   },
@@ -30791,6 +37337,22 @@
           "odds_under": 1.64
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.08,
+          "odds_under": 1.65
+        },
+        "n_books": 9
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.08,
+          "odds_under": 1.65
+        },
+        "n_books": 9
       }
     ]
   },
@@ -30814,6 +37376,24 @@
           "odds_draw": 3.15
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.445,
+          "odds_away": 2.64,
+          "odds_draw": 3.3
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.445,
+          "odds_away": 2.64,
+          "odds_draw": 3.325
+        },
+        "n_books": 18
       }
     ]
   },
@@ -30835,6 +37415,22 @@
           "odds_under": 1.8
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.02
+        },
+        "n_books": 11
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.7,
+          "odds_under": 2.02
+        },
+        "n_books": 11
       }
     ]
   },
@@ -31200,6 +37796,15 @@
           "odds_draw": 4.15
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.505,
+          "odds_away": 6.365,
+          "odds_draw": 4.15
+        },
+        "n_books": 14
       }
     ]
   },
@@ -31371,6 +37976,14 @@
         "odds": {
           "odds_over": 1.865,
           "odds_under": 1.89
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.865,
+          "odds_under": 1.895
         },
         "n_books": 10
       }
@@ -32669,6 +39282,167 @@
           "odds_draw": 4.0
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.93,
+          "odds_away": 3.3,
+          "odds_draw": 4.0
+        },
+        "n_books": 4
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.85,
+          "odds_away": 3.3,
+          "odds_draw": 4.0
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "f5ca1b83c89f16c83a63977c741ed93d_totals": {
+    "league": "USA MLS",
+    "home": "New York Red Bulls",
+    "away": "Atlanta United FC",
+    "date": "2026-11-07 21:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.4,
+      "odds_under": 2.7
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.4,
+          "odds_under": 2.7
+        },
+        "n_books": 1
+      }
+    ]
+  },
+  "f892f9aa0772c3febcde6fb5477bb6ea_h2h": {
+    "league": "Serie B",
+    "home": "Carrarese",
+    "away": "Sampdoria",
+    "date": "2026-11-08 16:15",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.43,
+      "odds_away": 2.7,
+      "odds_draw": 3.15
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.43,
+          "odds_away": 2.7,
+          "odds_draw": 3.15
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.43,
+          "odds_away": 2.7,
+          "odds_draw": 3.15
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "f892f9aa0772c3febcde6fb5477bb6ea_totals": {
+    "league": "Serie B",
+    "home": "Carrarese",
+    "away": "Sampdoria",
+    "date": "2026-11-08 16:15",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.89,
+      "odds_under": 1.8
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.89,
+          "odds_under": 1.8
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.89,
+          "odds_under": 1.8
+        },
+        "n_books": 12
+      }
+    ]
+  },
+  "f89b9247af7cc118faae54ec9f0934ee_h2h": {
+    "league": "La Liga 2",
+    "home": "Tenerife",
+    "away": "Andorra CF",
+    "date": "2026-11-02 13:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.25,
+      "odds_away": 3.1,
+      "odds_draw": 3.05
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.25,
+          "odds_away": 3.1,
+          "odds_draw": 3.05
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.25,
+          "odds_away": 3.175,
+          "odds_draw": 3.1
+        },
+        "n_books": 14
+      }
+    ]
+  },
+  "f89b9247af7cc118faae54ec9f0934ee_totals": {
+    "league": "La Liga 2",
+    "home": "Tenerife",
+    "away": "Andorra CF",
+    "date": "2026-11-02 13:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.165,
+      "odds_under": 1.61
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.165,
+          "odds_under": 1.61
+        },
+        "n_books": 6
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.135,
+          "odds_under": 1.675
+        },
+        "n_books": 6
       }
     ]
   },
@@ -33080,6 +39854,24 @@
           "odds_draw": 4.8
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.44,
+          "odds_away": 5.5,
+          "odds_draw": 4.8
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.44,
+          "odds_away": 5.5,
+          "odds_draw": 4.8
+        },
+        "n_books": 12
       }
     ]
   },
@@ -33160,6 +39952,22 @@
       },
       {
         "at": "2026-11-01 14:40",
+        "odds": {
+          "odds_over": 1.26,
+          "odds_under": 3.5
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.26,
+          "odds_under": 3.5
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
         "odds": {
           "odds_over": 1.26,
           "odds_under": 3.5
@@ -33260,6 +40068,24 @@
           "odds_draw": 5.725
         },
         "n_books": 12
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.25,
+          "odds_away": 8.95,
+          "odds_draw": 5.725
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.25,
+          "odds_away": 8.95,
+          "odds_draw": 5.725
+        },
+        "n_books": 12
       }
     ]
   },
@@ -33345,6 +40171,22 @@
           "odds_under": 3.2
         },
         "n_books": 3
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.3,
+          "odds_under": 3.2
+        },
+        "n_books": 3
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.3,
+          "odds_under": 3.2
+        },
+        "n_books": 3
       }
     ]
   },
@@ -33368,6 +40210,24 @@
           "odds_draw": 3.25
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.65,
+          "odds_away": 2.4,
+          "odds_draw": 3.25
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.7,
+          "odds_away": 2.4,
+          "odds_draw": 3.25
+        },
+        "n_books": 18
       }
     ]
   },
@@ -33389,6 +40249,83 @@
           "odds_under": 1.93
         },
         "n_books": 4
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.625,
+          "odds_under": 2.165
+        },
+        "n_books": 10
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.625,
+          "odds_under": 2.165
+        },
+        "n_books": 10
+      }
+    ]
+  },
+  "fd4b1507292f89721d6d024b337a6375_h2h": {
+    "league": "Serie B",
+    "home": "Vicenza",
+    "away": "Cremonese",
+    "date": "2026-11-08 18:30",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 2.75,
+      "odds_away": 2.4,
+      "odds_draw": 3.1
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 2.75,
+          "odds_away": 2.4,
+          "odds_draw": 3.1
+        },
+        "n_books": 17
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.75,
+          "odds_away": 2.4,
+          "odds_draw": 3.1
+        },
+        "n_books": 17
+      }
+    ]
+  },
+  "fd4b1507292f89721d6d024b337a6375_totals": {
+    "league": "Serie B",
+    "home": "Vicenza",
+    "away": "Cremonese",
+    "date": "2026-11-08 18:30",
+    "market": "totals",
+    "opening": {
+      "odds_over": 1.87,
+      "odds_under": 1.845
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.87,
+          "odds_under": 1.845
+        },
+        "n_books": 12
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.87,
+          "odds_under": 1.845
+        },
+        "n_books": 12
       }
     ]
   },
@@ -33412,6 +40349,24 @@
           "odds_draw": 3.375
         },
         "n_books": 14
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 1.73,
+          "odds_away": 4.4,
+          "odds_draw": 3.4
+        },
+        "n_books": 18
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 1.73,
+          "odds_away": 4.4,
+          "odds_draw": 3.4
+        },
+        "n_books": 18
       }
     ]
   },
@@ -33433,6 +40388,22 @@
           "odds_under": 1.78
         },
         "n_books": 10
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.88,
+          "odds_under": 1.83
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.88,
+          "odds_under": 1.83
+        },
+        "n_books": 13
       }
     ]
   },
@@ -33528,6 +40499,24 @@
           "odds_draw": 3.59
         },
         "n_books": 22
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.25,
+          "odds_away": 2.05,
+          "odds_draw": 3.59
+        },
+        "n_books": 22
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 3.25,
+          "odds_away": 2.05,
+          "odds_draw": 3.59
+        },
+        "n_books": 22
       }
     ]
   },
@@ -33613,6 +40602,83 @@
           "odds_under": 2.12
         },
         "n_books": 13
+      },
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 1.66,
+          "odds_under": 2.12
+        },
+        "n_books": 13
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 1.66,
+          "odds_under": 2.12
+        },
+        "n_books": 13
+      }
+    ]
+  },
+  "fe3353416cd2a4e1f322665b3e48e21b_h2h": {
+    "league": "Argentina Primera Division",
+    "home": "Union Santa Fe",
+    "away": "Velez Sarsfield BA",
+    "date": "2026-11-08 00:00",
+    "market": "h2h",
+    "opening": {
+      "odds_home": 3.05,
+      "odds_away": 2.21,
+      "odds_draw": 3.125
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_home": 3.05,
+          "odds_away": 2.21,
+          "odds_draw": 3.125
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_home": 2.64,
+          "odds_away": 2.62,
+          "odds_draw": 3.07
+        },
+        "n_books": 12
+      }
+    ]
+  },
+  "fe3353416cd2a4e1f322665b3e48e21b_totals": {
+    "league": "Argentina Primera Division",
+    "home": "Union Santa Fe",
+    "away": "Velez Sarsfield BA",
+    "date": "2026-11-08 00:00",
+    "market": "totals",
+    "opening": {
+      "odds_over": 2.125,
+      "odds_under": 1.655
+    },
+    "snapshots": [
+      {
+        "at": "2026-11-01 20:03",
+        "odds": {
+          "odds_over": 2.125,
+          "odds_under": 1.655
+        },
+        "n_books": 2
+      },
+      {
+        "at": "2026-11-02 01:11",
+        "odds": {
+          "odds_over": 2.115,
+          "odds_under": 1.68
+        },
+        "n_books": 6
       }
     ]
   }
