@@ -134,6 +134,7 @@ def test_two_different_clubs_are_still_refused():
 def af(monkeypatch):
     state = {"day": []}
     monkeypatch.setattr(U, "_af_get", lambda e, p, c: {"response": state["day"]})
+    monkeypatch.setattr(U, "_SEASON_FIXTURES", {})
     monkeypatch.setenv("APIFOOTBALL_KEY", "x")
     monkeypatch.setattr(U, "_STATUS_ALLOWED", None)
     return state

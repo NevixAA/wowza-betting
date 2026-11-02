@@ -262,7 +262,7 @@ def test_af_fallback_uses_the_matchs_season_not_todays(monkeypatch):
     import src.api_football_ou as AFO
     seen = []
     monkeypatch.setattr(AFO, "fetch_league_fixture_results",
-                        lambda lid, season, league: seen.append(season) or pd.DataFrame())
+                        lambda lid, season, league, **kw: seen.append(season) or pd.DataFrame())
     monkeypatch.setattr(U, "_AF_RESULTS_CACHE", {})
     U.fetch_scores_apifootball("Championship", "2026-05-02")      # last campaign's fixture
     U.fetch_scores_apifootball("Championship", "2026-10-25")      # this campaign's

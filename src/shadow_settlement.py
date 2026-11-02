@@ -348,8 +348,14 @@ def settle_frame(df: pd.DataFrame, *,
                  identity: dict[str, tuple[str, str]] | None = None,
                  now: datetime | None = None,
                  fallback_matcher: Callable[[str, str], bool] | None = None,
+                 extra_time_guard: Callable | None = None,
                  ) -> tuple[list[dict], dict]:
     """Work out what to write. Returns (updates, pending_reasons). Does NOT modify `df`.
+
+    `extra_time_guard(league, home, away, match_date, event) -> (event | None, why)` is the
+    knockout guard (settlement is on 90 minutes): it gets every event a source other than
+    'api-football' matched and returns the event to settle on - API-Football's 90-minute score for
+    an AET / PEN fixture - or (None, why) to leave the row pending (KNOCKOUT_GUARD_UNAVAILABLE).
 
     `df` is the shadow file read with dtype=str. `providers` is the results hierarchy in priority
     order, each `(name, fn)` or `(name, fn, max_age_days)` with `fn(league) -> [event dicts]`
@@ -433,6 +439,12 @@ def settle_frame(df: pd.DataFrame, *,
         if _blank(home) or _blank(away):                              # identified by event id
             home, away = ev["home_team"], ev["away_team"]
             fill_identity = {"home_team": home, "away_team": away}
+        if extra_time_guard is not None and src != "api-football":
+            g_ev, why = extra_time_guard(league, home, away, str(row.get("match_date", ""))[:10], ev)
+            if g_ev is None:
+                skip("KNOCKOUT_GUARD_UNAVAILABLE"); continue
+            if g_ev is not ev:
+                ev, src = g_ev, "api-football (90 min)"
 
         hg, ag = int(ev["home_score"]), int(ev["away_score"])
         side = norm_side(row.get("v9_side"))

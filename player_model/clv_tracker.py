@@ -176,8 +176,16 @@ _MARKET_HIT = {
     "sot2":    lambda s: s["sot"] >= 2,
     "sot3":    lambda s: s["sot"] >= 3,
     "sot4":    lambda s: s["sot"] >= 4,
-    "cards":   lambda s: (s["yc"] >= 1) or (s["rc"] >= 1),
+    "cards":   lambda s: _cards_result(s) == "WIN",
 }
+
+
+def _cards_result(s: dict) -> str:
+    """THE one card rule, update_results.card_market_result (a yellow OR a red card wins; LOSS only
+    when both are known to be 0; '' = pending). This grader used to keep its own lambda and held
+    'yellow known >= 1, red unknown' pending where the ledger settles it as a WIN (round 5)."""
+    from update_results import card_market_result
+    return card_market_result(s.get("yc"), s.get("rc"))
 #: stats each market reads; a None among them leaves the record PENDING (Data Truth 2026-11-02).
 _MARKET_NEEDS = {m: (("yc", "rc") if m == "cards" else
                      ("goals",) if m.startswith("goals") else
@@ -329,7 +337,13 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
             no_stats.append(d)
             continue
         s = _settle_stats(rec)
-        if any(s[k] is None for k in _MARKET_NEEDS[market]):
+        if market == "cards":
+            # One card rule (update_results.card_market_result): a known card settles even when
+            # the other colour is missing; '' = unknown -> PENDING.
+            if not _cards_result(s):
+                unknown_stat += 1
+                continue
+        elif any(s[k] is None for k in _MARKET_NEEDS[market]):
             # A stat the market needs is missing (provider null): unknown, NOT zero. PENDING.
             unknown_stat += 1
             continue

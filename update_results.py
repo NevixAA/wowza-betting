@@ -490,7 +490,10 @@ def fetch_scores_apifootball(league: str, match_date: str | None = None) -> list
     if lid:
         try:
             from src.api_football_ou import fetch_league_fixture_results
-            df = fetch_league_fixture_results(lid, season, league)
+            # FT + AET + PEN (round 5): extra-time fixtures used to be filtered out here, so an MLS
+            # play-off or Argentina knockout tip could never settle from API-Football. They come
+            # with their 90-MINUTE score (score.fulltime) - settlement ignores extra time.
+            df = fetch_league_fixture_results(lid, season, league, statuses="FT-AET-PEN")
             for _, r in df.iterrows():
                 try:
                     hg, ag = int(r["home_goals"]), int(r["away_goals"])
@@ -511,6 +514,9 @@ def fetch_scores_apifootball(league: str, match_date: str | None = None) -> list
                 hh, ha = r.get("ht_home_goals"), r.get("ht_away_goals")
                 if pd.notna(hh) and pd.notna(ha):
                     ev["ht_home"], ev["ht_away"] = int(hh), int(ha)
+                st = r.get("status")
+                if isinstance(st, str) and st:
+                    ev["status"] = st
                 out.append(ev)
             log.info(f"  [api-football] {league}: {len(out)} completed fixtures "
                      f"(season {season}) for fallback settlement")
@@ -520,6 +526,165 @@ def fetch_scores_apifootball(league: str, match_date: str | None = None) -> list
         log.debug(f"  [api-football] {league}: no API_FOOTBALL_IDS entry")
 
     _AF_RESULTS_CACHE[(league, season)] = out
+    return out
+
+
+# ── KNOCKOUT GUARD: TEAM LEDGERS SETTLE ON 90 MINUTES (round 5, P1-2e) ──────────────────────────────
+# football-data and OddsAPI publish ONE final score and do not say whether it is the 90- or the
+# 120-minute score. In a league with knock-out rounds (MLS play-offs, Argentina's knockout stage,
+# Championship play-offs) a match can go to extra time, and a 120-minute score would settle an O/U,
+# BTTS or sharp tip on goals scored after the 90 minutes the owner rule settles on.
+#
+# So before a football-data / OddsAPI score settles a row, the league's API-Football fixtures decided
+# after extra time / on penalties (status AET / PEN) for the match's season are looked up: if the
+# fixture is one of them, the row settles on API-Football's 90-minute score (score.fulltime) instead.
+# One call per (league, season) per run, cached here. When that list cannot be fetched although a key
+# is set, the row stays PENDING (logged) - a late settlement is better than a 120-minute one. With
+# no key at all (local runs) or no API-Football id for the league there is no source to check
+# against; the row settles as before and the run counts it.
+_AF_ET_CACHE: dict = {}
+_KNOCKOUT_UNCHECKED: dict[str, int] = {}
+
+
+def _extra_time_events(league, match_date) -> list[dict] | None:
+    """The league's AET / PEN fixtures of the match's season as events (90-minute score), [] when
+    there is no source to check, None when the source exists but did not answer."""
+    from src import api_football_ou as AFO
+    from src.season_resolver import resolve_api_season, is_known
+    lid = config.API_FOOTBALL_IDS.get(league)
+    if not lid:
+        _KNOCKOUT_UNCHECKED["no_api_football_id"] = _KNOCKOUT_UNCHECKED.get("no_api_football_id", 0) + 1
+        return []
+    season = resolve_api_season(league, str(match_date)[:10])
+    if not is_known(season):
+        _KNOCKOUT_UNCHECKED["season_unknown"] = _KNOCKOUT_UNCHECKED.get("season_unknown", 0) + 1
+        return []
+    if not AFO._KEY:
+        _KNOCKOUT_UNCHECKED["no_api_key"] = _KNOCKOUT_UNCHECKED.get("no_api_key", 0) + 1
+        return []
+    k = (league, season)
+    if k not in _AF_ET_CACHE:
+        try:
+            df = AFO.fetch_league_extra_time_results(lid, season, league)
+        except Exception as e:                                        # noqa: BLE001
+            log.warning(f"  [knockout guard] {league} {season}: lookup failed ({e})")
+            df = None
+        if df is None:
+            _AF_ET_CACHE[k] = None
+        else:
+            _AF_ET_CACHE[k] = [{"home_team": str(r["home_team"]), "away_team": str(r["away_team"]),
+                                "home_score": int(r["home_goals"]), "away_score": int(r["away_goals"]),
+                                "date_str": str(r["date"])[:10], "status": str(r["status"]),
+                                **({"ht_home": int(r["ht_home_goals"]), "ht_away": int(r["ht_away_goals"])}
+                                   if pd.notna(r.get("ht_home_goals")) and pd.notna(r.get("ht_away_goals"))
+                                   else {})}
+                               for _, r in df.iterrows()]
+    return _AF_ET_CACHE[k]
+
+
+def _knockout_guard(league, home, away, date_str, ev: dict) -> tuple[dict | None, str]:
+    """(the event to settle on, '') for a football-data / OddsAPI event `ev`, or (None, why).
+    An API-Football event (it carries `status`) is already on 90 minutes and passes unchanged."""
+    if ev is None or ev.get("status"):
+        return ev, ""
+    et = _extra_time_events(league, date_str)
+    if et is None:
+        return None, "knockout_guard_unavailable (API-Football AET/PEN list not fetched)"
+    hit = _find_event(home, away, et, date_str)
+    if hit is None:
+        return ev, ""
+    log.info(f"  {home} vs {away} {str(date_str)[:10]}: API-Football reports {hit['status']} - "
+             f"settled on the 90-minute score {hit['home_score']}-{hit['away_score']} "
+             f"(source said {ev.get('home_score')}-{ev.get('away_score')})")
+    return hit, ""
+
+
+def _team_event(league, home, away, date_str, pools: list,
+                fallback: bool = True) -> tuple[dict | None, str]:
+    """THE 90-minute event for a team-ledger row: the first primary pool (football-data / OddsAPI)
+    that holds the fixture, through the knockout guard; else (when `fallback`) API-Football - lazy,
+    already on 90 minutes. (None, '') when no source has it, (None, why) when the guard holds it."""
+    for pool in pools:
+        ev = _find_event(home, away, pool or [], date_str)
+        if ev is not None:
+            return _knockout_guard(league, home, away, date_str, ev)
+    if not fallback:
+        return None, ""
+    return _find_event(home, away, fetch_scores_apifootball(league, str(date_str)[:10]), date_str), ""
+
+
+EXTRA_TIME_RESTATED_FILE = config.OUTPUT_DIR / "corrections" / "team_ledgers_extra_time_restated.csv"
+
+
+def _restate_one(ledger: str, row, ev: dict) -> str:
+    """The row's result re-graded on the 90-minute event `ev`, with the ledger's own grader."""
+    hs, as_ = int(ev["home_score"]), int(ev["away_score"])
+    if ledger == "bets_ledger":
+        g = _grade_ou_event(ev, str(row.get("side", "")))
+        return g[0] if g else ""
+    if ledger == "side_bets_ledger":
+        return _resolve_side_market(str(row.get("market", "")), hs, as_)
+    if ledger == "sharp_ledger":
+        return _resolve_sharp_side(str(row.get("side", "")), hs, as_) or ""
+    return ""
+
+
+def extra_time_restatement(frames: dict, et_lookup) -> pd.DataFrame:
+    """Settled WIN / LOSS team-ledger rows whose fixture API-Football reports as AET / PEN, with the
+    result re-graded on the 90-minute score BESIDE the committed one (the ledgers are not rewritten).
+    `frames` = {ledger name: DataFrame}; `et_lookup(league, date)` -> AET/PEN events or None.
+    The restated P/L uses the price the ledger settled on (sharp: the signal-time price)."""
+    out = []
+    for name, d in frames.items():
+        if d is None or d.empty or "result" not in d.columns:
+            continue
+        for _, r in d[d["result"].isin(["WIN", "LOSS"])].iterrows():
+            et = et_lookup(r["league"], str(r["match_date"])[:10])
+            if not et:
+                continue
+            hit = _find_event(r["home_team"], r["away_team"], et, str(r["match_date"])[:10])
+            if hit is None:
+                continue
+            new = _restate_one(name, r, hit)
+            if not new:
+                continue
+            if name == "sharp_ledger":
+                odds = _sharp_entry_odds(r)
+            else:
+                try:
+                    odds = float(r.get("odds"))
+                except (TypeError, ValueError):
+                    odds = float("nan")
+            priced = str(r.get("pnl", "")).strip() not in ("", "nan") and odds > 1.0
+            out.append({"ledger": name, "match_date": r["match_date"], "league": r["league"],
+                        "home_team": r["home_team"], "away_team": r["away_team"],
+                        "market": r.get("market", "") if name == "side_bets_ledger" else r.get("side", ""),
+                        "status": hit["status"], "score_90": f"{hit['home_score']}-{hit['away_score']}",
+                        "original_result": r["result"], "original_pnl": r.get("pnl", ""),
+                        "restated_result": new,
+                        "restated_pnl": "" if not priced else (round(odds - 1.0, 4) if new == "WIN" else -1.0),
+                        "changed": new != r["result"],
+                        "note": "settled on 90 minutes (owner rule); source API-Football score.fulltime"})
+    return pd.DataFrame(out)
+
+
+def write_extra_time_restatement(dst: Path | None = None) -> pd.DataFrame:
+    """output/corrections/team_ledgers_extra_time_restated.csv. Needs API-Football (CI); one call per
+    (league, season) with settled rows. Ledgers untouched."""
+    dst = dst or EXTRA_TIME_RESTATED_FILE
+    frames = {}
+    for name, p in (("bets_ledger", LEDGER_FILE), ("side_bets_ledger", SIDE_LEDGER_FILE),
+                    ("sharp_ledger", SHARP_LEDGER_FILE)):
+        try:
+            frames[name] = pd.read_csv(p, dtype=str, keep_default_na=False)
+        except Exception as e:                                        # noqa: BLE001
+            log.warning(f"extra-time restatement: {p.name} unreadable ({e})")
+    out = extra_time_restatement(frames, _extra_time_events)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(dst, index=False, lineterminator="\n")
+    n = int(out["changed"].sum()) if not out.empty else 0
+    log.info(f"extra-time restatement: {len(out)} settled row(s) on AET/PEN fixtures, {n} result(s) "
+             f"change on 90 minutes -> {dst}")
     return out
 
 
@@ -534,7 +699,11 @@ def _find_result(
     Returns (result_str, total_goals, extras) or None if not found.
     extras contains ht_total if HT scores are available.
     """
-    ev = _find_event(home, away, completed, date_str)
+    return _grade_ou_event(_find_event(home, away, completed, date_str), side)
+
+
+def _grade_ou_event(ev: dict | None, side: str) -> tuple[str, float, dict] | None:
+    """(result, total goals, extras) for an O/U 2.5 / HT side on one matched event, or None."""
     if ev is not None:
         total = ev["home_score"] + ev["away_score"]
         # Both half-time goals or no half-time total: one missing half was added as -1 before.
@@ -652,6 +821,70 @@ def _pending_frames_for_status(today_str: str) -> list:
     return out
 
 
+# ── RESCHEDULED > 48 HOURS, THEN PLAYED (round 5) ──────────────────────────────────────────────────
+# API-Football MOVES a rescheduled fixture to its new date, so the original-date lookup above finds
+# nothing and the row stayed pending for ever. Once the 48-hour window has closed, the league's
+# fixtures of the match's season are searched for the SAME PAIR (both clubs resolved in the season's
+# pool by src.team_names, same home / away):
+#   * exactly one such fixture, dated after the window (D+2)  -> VOID 'RESCHEDULED' (owner rule: a
+#     match not played within 48h of the original kick-off voids, whatever happens to it later);
+#   * exactly one, inside the window                          -> its own status decides: PST / CANC /
+#     ABD voids, a finished match settles from the results (it is in the 48-hour result window);
+#   * two or more (four-meeting leagues, best-of-3 play-offs) -> AMBIGUOUS, stays pending, logged;
+#   * one dated before the window                             -> not this match, stays pending.
+# Ledgers carry a date, not a kick-off time, so the window is taken in whole days (D-1 .. D+2), the
+# same window the result lookup uses. One call per (league, season) per run, cached here.
+_DAY_MISS = ("no API-Football fixtures for the league on that date",
+             "clubs not resolved in that date's fixtures", "0 fixtures match")
+_SEASON_FIXTURES: dict = {}
+
+
+def _season_fixtures(league_id, season) -> list:
+    k = (league_id, str(season))
+    if k not in _SEASON_FIXTURES:
+        _SEASON_FIXTURES[k] = _af_response("/fixtures", {"league": league_id, "season": season}, 6)
+    return _SEASON_FIXTURES[k]
+
+
+def _reschedule_evidence(day: tuple, date_str, home, away, day_why: str) -> tuple[str | None, str]:
+    """('RESCHEDULED' | a _VOID_STATUSES label, '') or (None, why the row stays pending)."""
+    from src.team_names import resolve_result
+    lid, season, d = day
+    try:
+        fixtures = _season_fixtures(lid, season)
+    except Exception as e:                                            # noqa: BLE001
+        return None, f"fixture_not_found_on_date ({day_why}; season lookup failed: {type(e).__name__})"
+    named = [f for f in fixtures if all(_fixture_teams(f))]
+    if not named:
+        return None, f"fixture_not_found_on_date ({day_why}; no season fixtures)"
+    rh = resolve_result(str(home), sorted({_fixture_teams(f)[0] for f in named}))
+    ra = resolve_result(str(away), sorted({_fixture_teams(f)[1] for f in named}))
+    if not rh or not ra:
+        return None, f"fixture_not_found_on_date ({day_why}; clubs not resolved in the season's fixtures)"
+    pair = [f for f in named if _fixture_teams(f) == (rh, ra)]
+    if not pair:
+        return None, f"fixture_not_found_on_date ({day_why}; no same-pair fixture in the season)"
+    if len(pair) > 1:
+        dates = sorted(str((f.get("fixture") or {}).get("date") or "")[:10] for f in pair)
+        return None, f"reschedule_ambiguous ({len(pair)} same-pair fixtures in season {season}: {dates})"
+    fx = pair[0]
+    on = str((fx.get("fixture") or {}).get("date") or "")[:10]
+    status = ((fx.get("fixture") or {}).get("status") or {}).get("short")
+    if not on:
+        return None, "fixture_not_found_on_date (same-pair fixture has no date)"
+    lo = str((pd.Timestamp(d) + pd.Timedelta(days=_RESCHEDULE_DAYS[0])).date())
+    hi = str((pd.Timestamp(d) + pd.Timedelta(days=_RESCHEDULE_DAYS[1])).date())
+    if on < lo:
+        return None, f"reschedule_not_this_match (only same-pair fixture is on {on}, before {d})"
+    if on > hi:
+        log.info(f"  {home} vs {away} {d}: API-Football moved the fixture to {on} ({status}), "
+                 f"more than 48h later -> RESCHEDULED")
+        return "RESCHEDULED", ""
+    if status in _VOID_STATUSES:                       # the window has closed (checked by the caller)
+        return _VOID_STATUSES[status], ""
+    return None, f"no_result_yet (same-pair fixture on {on} inside the 48h window, status {status!r})"
+
+
 def _postponement_evidence(league, date_str, home, away) -> tuple[str | None, str]:
     """('POSTPONED' | 'CANCELLED' | 'ABANDONED', '') when API-Football reports that status for this
     fixture, else (None, why the row stays pending)."""
@@ -667,6 +900,8 @@ def _postponement_evidence(league, date_str, home, away) -> tuple[str | None, st
     except Exception as e:                                            # noqa: BLE001
         return None, f"status_lookup_failed ({type(e).__name__})"
     if fx is None:
+        if why in _DAY_MISS and _window_closed(date_str):
+            return _reschedule_evidence(day, date_str, home, away, why)
         return None, f"fixture_not_found_on_date ({why})"
     status = ((fx.get("fixture") or {}).get("status") or {}).get("short")
     if status in _VOID_STATUSES:
@@ -1031,6 +1266,107 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
         log.info("APIFOOTBALL_KEY not set — skipping player prop resolution")
         return
 
+    updates, fixture_ids, skipped = _grade_player_rows(pending, today_str, dry_run)
+
+    if skipped:
+        log.info(f"player_ledger: left pending this run - {dict(sorted(skipped.items()))}")
+
+    if not updates and not fixture_ids:
+        log.info("  No player prop results resolved.")
+        return
+
+    if dry_run:
+        voids   = sum(1 for u in updates if u["result"] == "VOID")
+        wins    = sum(1 for u in updates if u["result"] == "WIN")
+        losses  = sum(1 for u in updates if u["result"] == "LOSS")
+        print(f"\n  [DRY RUN] Would update {len(updates)} player prop row(s): "
+              f"{wins}W / {losses}L / {voids} VOID, and write {len(fixture_ids)} fixture_id(s). "
+              f"No files written.")
+        return
+
+    # Issue #1 step 1: the fixture id found for a row that had none is written back, so the next
+    # run (and every reader) identifies the fixture by id instead of by club names.
+    ledger["fixture_id"] = ledger["fixture_id"].astype(object)
+    for i, fid in fixture_ids.items():
+        ledger.at[i, "fixture_id"] = str(fid)
+    for u in updates:
+        ledger.at[u["idx"], "is_played"]     = u["is_played"]
+        ledger.at[u["idx"], "result"]        = u["result"]
+        ledger.at[u["idx"], "pnl"]           = str(u["pnl"])
+        ledger.at[u["idx"], "notes"]         = u.get("notes", "")
+        ledger.at[u["idx"], "resolved_date"] = u["resolved_date"]
+
+    ledger.to_csv(PLAYER_LEDGER_FILE, index=False)
+
+    wins      = sum(1 for u in updates if u["result"] == "WIN")
+    losses    = sum(1 for u in updates if u["result"] == "LOSS")
+    voids     = sum(1 for u in updates if u["result"] == "VOID")
+    # Unpriced rows carry pnl "" and are excluded from the total — summing them as 0.0 would
+    # quietly restate "no bet existed" as "a bet that broke even".
+    staked    = [u for u in updates if u["result"] != "VOID" and str(u["pnl"]) != ""]
+    unpriced  = sum(1 for u in updates if str(u["pnl"]) == "")
+    total_pnl = sum(float(u["pnl"]) for u in staked)
+    log.info(f"player_ledger: {len(updates)} resolved — {wins}W / {losses}L / {voids} VOID — "
+             f"PnL={total_pnl:+.3f}u over {len(staked)} priced row(s)"
+             + (f"; {unpriced} unpriced row(s) graded with no P&L" if unpriced else "")
+             + (f"; fixture_id written on {len(fixture_ids)} row(s)" if fixture_ids else ""))
+    log.info(f"  Saved → {PLAYER_LEDGER_FILE}")
+
+
+# ── THE 111 RESTORED PLAYER ROWS ARE GRADED IN THEIR SIDECAR (round 5, owner decision) ─────────────
+# output/corrections/player_ledger_restored_2026-11.csv holds tips lost from player_ledger.csv by bot
+# commits (scripts/check_ledger_history.py --restore), with their first-sight values. They are never
+# appended to the ledger. They are graded HERE, by the very same per-row rules as the ledger
+# (_grade_player_rows), into new `graded_*` columns beside the first-sight ones - the restored
+# `result` / `pnl` / `notes` columns keep the values first seen and are never rewritten.
+RESTORED_PLAYER_FILE = config.OUTPUT_DIR / "corrections" / "player_ledger_restored_2026-11.csv"
+_RESTORED_GRADE_COLS = ("graded_is_played", "graded_result", "graded_pnl", "graded_notes",
+                        "graded_resolved_date", "graded_fixture_id")
+
+
+def grade_restored_player_sidecar(path: Path | None = None, dry_run: bool = False) -> dict:
+    """Grade the restored rows that have no graded_result yet; write only the graded_* columns."""
+    import os
+    p = path or RESTORED_PLAYER_FILE
+    if not p.exists():
+        return {"graded": 0}
+    raw = p.read_bytes()
+    eol = "\r\n" if b"\r\n" in raw[:4096] else "\n"
+    side = pd.read_csv(p, dtype=str, keep_default_na=False)
+    for c in _RESTORED_GRADE_COLS:
+        if c not in side.columns:
+            side[c] = ""
+    if not os.getenv("APIFOOTBALL_KEY", ""):
+        log.info("restored player rows: APIFOOTBALL_KEY not set — not graded this run")
+        return {"graded": 0}
+    today_str = str(datetime.utcnow().date())
+    pending = side[(side["graded_result"].str.strip() == "") & (side["match_date"] < today_str)]
+    if pending.empty:
+        return {"graded": 0}
+    # The grader reads the row's ledger columns; the restored file carries every one of them.
+    updates, fixture_ids, skipped = _grade_player_rows(pending, today_str, dry_run)
+    if skipped:
+        log.info(f"restored player rows: left pending - {dict(sorted(skipped.items()))}")
+    if dry_run or (not updates and not fixture_ids):
+        return {"graded": 0, "would_grade": len(updates), "pending": skipped}
+    for i, fid in fixture_ids.items():
+        side.at[i, "graded_fixture_id"] = str(fid)
+    for u in updates:
+        side.at[u["idx"], "graded_is_played"] = u["is_played"]
+        side.at[u["idx"], "graded_result"] = u["result"]
+        side.at[u["idx"], "graded_pnl"] = str(u["pnl"])
+        side.at[u["idx"], "graded_notes"] = u.get("notes", "")
+        side.at[u["idx"], "graded_resolved_date"] = u["resolved_date"]
+    side.to_csv(p, index=False, lineterminator=eol)
+    log.info(f"restored player rows: {len(updates)} graded beside the first-sight values -> {p}")
+    return {"graded": len(updates), "pending": skipped}
+
+
+def _grade_player_rows(pending: pd.DataFrame, today_str: str,
+                       dry_run: bool = False) -> tuple[list[dict], dict, dict]:
+    """THE per-row player-prop grading rules (fixture, status, 48h rule, match sheet, appearance,
+    90 minutes, price). Returns (updates, fixture_ids found for rows without one, skip reasons).
+    Shared by player_ledger.csv and the restored-rows sidecar."""
     from src.league_registry import prop_leagues
     from src.season_resolver import resolve_api_season, is_known
     prop_ids = prop_leagues()
@@ -1205,49 +1541,7 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
             f"PnL={pnl_txt}"
         )
 
-    if skipped:
-        log.info(f"player_ledger: left pending this run - {dict(sorted(skipped.items()))}")
-
-    if not updates and not fixture_ids:
-        log.info("  No player prop results resolved.")
-        return
-
-    if dry_run:
-        voids   = sum(1 for u in updates if u["result"] == "VOID")
-        wins    = sum(1 for u in updates if u["result"] == "WIN")
-        losses  = sum(1 for u in updates if u["result"] == "LOSS")
-        print(f"\n  [DRY RUN] Would update {len(updates)} player prop row(s): "
-              f"{wins}W / {losses}L / {voids} VOID, and write {len(fixture_ids)} fixture_id(s). "
-              f"No files written.")
-        return
-
-    # Issue #1 step 1: the fixture id found for a row that had none is written back, so the next
-    # run (and every reader) identifies the fixture by id instead of by club names.
-    ledger["fixture_id"] = ledger["fixture_id"].astype(object)
-    for i, fid in fixture_ids.items():
-        ledger.at[i, "fixture_id"] = str(fid)
-    for u in updates:
-        ledger.at[u["idx"], "is_played"]     = u["is_played"]
-        ledger.at[u["idx"], "result"]        = u["result"]
-        ledger.at[u["idx"], "pnl"]           = str(u["pnl"])
-        ledger.at[u["idx"], "notes"]         = u.get("notes", "")
-        ledger.at[u["idx"], "resolved_date"] = u["resolved_date"]
-
-    ledger.to_csv(PLAYER_LEDGER_FILE, index=False)
-
-    wins      = sum(1 for u in updates if u["result"] == "WIN")
-    losses    = sum(1 for u in updates if u["result"] == "LOSS")
-    voids     = sum(1 for u in updates if u["result"] == "VOID")
-    # Unpriced rows carry pnl "" and are excluded from the total — summing them as 0.0 would
-    # quietly restate "no bet existed" as "a bet that broke even".
-    staked    = [u for u in updates if u["result"] != "VOID" and str(u["pnl"]) != ""]
-    unpriced  = sum(1 for u in updates if str(u["pnl"]) == "")
-    total_pnl = sum(float(u["pnl"]) for u in staked)
-    log.info(f"player_ledger: {len(updates)} resolved — {wins}W / {losses}L / {voids} VOID — "
-             f"PnL={total_pnl:+.3f}u over {len(staked)} priced row(s)"
-             + (f"; {unpriced} unpriced row(s) graded with no P&L" if unpriced else "")
-             + (f"; fixture_id written on {len(fixture_ids)} row(s)" if fixture_ids else ""))
-    log.info(f"  Saved → {PLAYER_LEDGER_FILE}")
+    return updates, fixture_ids, skipped
 
 
 # ── Sharp money result resolver ───────────────────────────────────────────────
@@ -1385,12 +1679,14 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
         # tip in a league with no football-data feed (MLS, Argentina, Brazil ...) could only settle
         # inside OddsAPI's 3-day scores window: 96 of the 164 sharp rows pending > 7 days on
         # 2026-11-02 were MLS. Lazy, so a healthy run costs no calls.
-        ev = (_find_event(home, away, scores_cache.get(league, []), date_str)
-              or _find_event(home, away, fetch_scores_apifootball(league, date_str), date_str))
+        # The primary score goes through the knockout guard (90 minutes, round 5).
+        ev, held = _team_event(league, home, away, date_str, [scores_cache.get(league, [])])
         match_result = _resolve_sharp_side(side, ev["home_score"], ev["away_score"]) if ev else None
 
         if not match_result:
-            if ev is None:
+            if held:
+                why = held
+            elif ev is None:
                 label, why = _postponement_evidence(league, date_str, home, away)
                 if label:
                     log.info(f"  sharp: {home} vs {away} {date_str} — {label} (API-Football), marking VOID")
@@ -1522,10 +1818,10 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
         # fixture the primary source missed (football-data lag or spelling, OddsAPI's 3-day window)
         # stayed pending forever while the O/U tip on the same match settled: 38 BTTS/O1.5/O3.5
         # rows since 2026-10-10 (found 2026-10-25). Lazy, so a healthy run costs no calls.
-        ev_found = (_find_event(home, away, scores_cache.get(league, []), date_str)
-                    or _find_event(home, away, fetch_scores_apifootball(league, date_str), date_str))
+        # The primary score goes through the knockout guard (90 minutes, round 5).
+        ev_found, held = _team_event(league, home, away, date_str, [scores_cache.get(league, [])])
         if ev_found is None:
-            label, why = _postponement_evidence(league, date_str, home, away)
+            label, why = (None, held) if held else _postponement_evidence(league, date_str, home, away)
             if label:
                 log.info(f"  side {market}: {home} vs {away} {date_str} — {label} (API-Football), marking VOID")
                 updates.append({"idx": idx, "result": "VOID", "pnl": 0.0, "closing_odds": np.nan,
@@ -2023,6 +2319,12 @@ def update_live_signal_results(days: int = 3, dry_run: bool = False) -> None:
         # 1) football-data (free) — FT (+HT for standard leagues)
         ev = _first(_fd_completed(league))
         if ev is not None:
+            # Knockout guard (round 5): final_total and full-time sides are on 90 minutes.
+            ev, held = _knockout_guard(league, home, away, ev["date_str"], ev)
+            if held:
+                log.debug(f"  live: {home} vs {away} ({d}) pending: {held}")
+                continue
+        if ev is not None:
             ft_total = ev["home_score"] + ev["away_score"]
             if ev.get("ht_home") is not None and ev.get("ht_away") is not None:
                 ht_total = ev["ht_home"] + ev["ht_away"]
@@ -2171,7 +2473,10 @@ def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
         return {"settled": 0}
     df, eol = _read_shadow(SHADOW_FILE)
 
+    guard = None
     if providers is None:
+        guard = _knockout_guard                    # 90 minutes: AET / PEN from API-Football
+
         def _fd(league):
             return fetch_scores_fd(league) if league in _FD_SOURCES else []
 
@@ -2188,7 +2493,8 @@ def settle_shadow_predictions(days: int = 3, dry_run: bool = False,
     # No fallback_matcher: the pairwise _names_match let any token-subset pair through once the
     # pool-scoped resolver had (rightly) refused. An unresolved fixture stays pending, counted.
     updates, pending = settle_frame(df, providers=providers, archives=archives,
-                                    identity=_shadow_identity(), now=now)
+                                    identity=_shadow_identity(), now=now,
+                                    extra_time_guard=guard)
     log.info(f"shadow: {len(updates)} row(s) settleable now; pending {pending}")
     if dry_run:
         return {"settled": 0, "would_settle": len(updates), "pending": pending}
@@ -2263,7 +2569,23 @@ def main():
     parser.add_argument("--restate-sharp", action="store_true",
                         help="ONLY write the settlement sidecars under output/corrections/ "
                              "(sharp restatement, card regrade); offline, ledgers untouched")
+    parser.add_argument("--restate-extra-time", action="store_true",
+                        help="ONLY write output/corrections/team_ledgers_extra_time_restated.csv "
+                             "(settled rows on AET/PEN fixtures re-graded on 90 minutes; needs "
+                             "API-Football - run it in the collection job; ledgers untouched)")
+    parser.add_argument("--grade-restored", action="store_true",
+                        help="ONLY grade output/corrections/player_ledger_restored_2026-11.csv into its "
+                             "graded_* columns (needs API-Football; player_ledger.csv untouched)")
     args = parser.parse_args()
+
+    # Corrections sidecars: explicit, never part of the 2-hourly run (they need API-Football calls
+    # and the settlement workflow does not commit output/corrections/). Combinable.
+    if args.restate_extra_time or args.grade_restored:
+        if args.grade_restored:
+            grade_restored_player_sidecar(dry_run=args.dry_run)
+        if args.restate_extra_time:
+            write_extra_time_restatement()
+        return
 
     if args.restate_sharp:
         write_sharp_restatement()
@@ -2342,30 +2664,31 @@ def main():
 
     for idx, row in pending.iterrows():
         league = row["league"]
-        found = None
-        for completed in scores_cache.get(league, []):
-            found = _find_result(
-                home=row["home_team"],
-                away=row["away_team"],
-                date_str=row["match_date"],
-                side=row["side"],
-                completed=completed,
-            )
+        # Primary pools (football-data, then OddsAPI) through the knockout guard (90 minutes), then
+        # API-Football as the LAST RESORT - only reached when no primary source resolved the fixture,
+        # so a healthy run makes no fallback call. That is what settles leagues with no football-data
+        # feed once they age past OddsAPI's 3-day scores window.
+        # A pool whose event cannot grade the side (an HT side with no HT score) hands on to the next.
+        found, held = None, ""
+        for pool in [*scores_cache.get(league, []), None]:
+            if pool is None:
+                ev, held = _team_event(league, row["home_team"], row["away_team"],
+                                       row["match_date"], [])
+            else:
+                ev, held = _team_event(league, row["home_team"], row["away_team"],
+                                       row["match_date"], [pool], fallback=False)
+                if ev is None and not held:
+                    continue
+            if held:
+                break
+            found = _grade_ou_event(ev, row["side"])
             if found is not None:
                 break
-
-        if found is None:
-            # LAST RESORT: API-Football. Only reached when the primary source could not
-            # resolve this fixture, so a healthy run costs nothing. This is what finally
-            # settles leagues with no football-data feed once they age past OddsAPI's
-            # 3-day scores window.
-            found = _find_result(
-                home=row["home_team"],
-                away=row["away_team"],
-                date_str=row["match_date"],
-                side=row["side"],
-                completed=fetch_scores_apifootball(league, str(row["match_date"])[:10]),
-            )
+        if held:
+            reasons[held.split(" (")[0]] = reasons.get(held.split(" (")[0], 0) + 1
+            left.append(row["match_date"])
+            log.debug(f"  pending: {row['home_team']} vs {row['away_team']} ({row['match_date']}): {held}")
+            continue
 
         if found is None:
             label, why = _postponement_evidence(league, str(row["match_date"])[:10],
@@ -2506,6 +2829,9 @@ def main():
     except Exception as e:                                            # noqa: BLE001
         log.warning(f"ht_observations update skipped: {e}")
     update_live_signal_results(days=args.days, dry_run=args.dry_run)
+    if _KNOCKOUT_UNCHECKED:
+        log.info(f"knockout guard: primary-source scores settled WITHOUT an AET/PEN check "
+                 f"(no source to check against) - {dict(sorted(_KNOCKOUT_UNCHECKED.items()))}")
     # LAST and guarded, like ht_observations: an evidence log must never take a ledger down.
     try:
         settle_shadow_predictions(days=args.days, dry_run=args.dry_run,
