@@ -64,6 +64,12 @@ jobs:
       #                                       refined today's board yet.
       # Net effect: whichever slot first lands in the morning window wins; if GitHub is punctual
       # the 05:00 slot wins, if it is 5h late the 01:00 slot wins. Both are mornings.
+      #
+      # LATE ALBUM (owner rule, Data Truth round 5). This gate only decides WHETHER to send. Whether
+      # the send is on time is decided in Python (telegram_bot/daily_pack.album_is_late), DST-safe:
+      # at or after the tip-day rollover (10:00 Israel = 07:00 UTC summer / 08:00 UTC winter) the
+      # album goes out labelled 'late' and lists only matches whose kickoff is known and still ahead.
+      # Before the rollover it is sent exactly as before.
       - name: Decide whether to send now
         id: gate
         run: |
@@ -78,7 +84,7 @@ jobs:
             echo "hour ${H}:00 UTC is inside the morning window — sending"
           elif [ "$H" -ge 12 ]; then
             echo "send=true"  >> "$GITHUB_OUTPUT"
-            echo "hour ${H}:00 UTC is past the window and nothing sent today — sending as fallback"
+            echo "hour ${H}:00 UTC is past the window and nothing sent today — sending as fallback (late album: labelled, no started matches)"
           elif [ "$H" = "05" ]; then
             # 2026-10-19: the only fire of the morning landed at 05:42 and skipped; the 07:00 and
             # 09:00 slots were dropped/delayed by GitHub, so no digest by 11:00 Israel. A fire in

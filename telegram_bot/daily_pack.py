@@ -50,6 +50,45 @@ PROP_LABEL = {"goals": "Anytime scorer", "goals2": "2+ goals", "assists": "Assis
 ROWS_PER_IMAGE = 22
 
 
+# ── Late album (owner rule, Data Truth round 5) ───────────────────────────────
+# The album for tip day T is ON TIME until T's rollover (src/tip_day: 10:00 Israel wall clock, DST-safe
+# - 07:00 UTC in summer, 08:00 UTC in winter). A send at or after that rollover is LATE: it is labelled
+# 'late' in the caption and in the tips title, and every section that lists matches to bet keeps only
+# matches whose kickoff is KNOWN and strictly after the send time. A match whose kickoff cannot be
+# found is left out of a late album (it cannot be shown not to have started). On time nothing changes.
+
+def rollover_utc(today: str) -> pd.Timestamp:
+    """UTC instant of tip day `today`'s rollover (ROLLOVER_HOUR wall clock in the tip-day zone)."""
+    from src.tip_day import ROLLOVER_HOUR, TZ
+    return pd.Timestamp(f"{today} {ROLLOVER_HOUR:02d}:00").tz_localize(TZ).tz_convert("UTC")
+
+
+def album_is_late(now, today: str | None = None) -> bool:
+    """True when an album for `today` (default: now's UTC date) sent at `now` is after the rollover."""
+    now = pd.Timestamp(now)
+    now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+    return now >= rollover_utc(today or now.strftime("%Y-%m-%d"))
+
+
+def not_started(kickoff, cutoff) -> pd.Series:
+    """True where the kickoff is known and strictly after `cutoff` (UTC). Unknown kickoff -> False."""
+    ko = pd.to_datetime(pd.Series(kickoff), utc=True, errors="coerce")
+    c = pd.Timestamp(cutoff)
+    c = c.tz_localize("UTC") if c.tzinfo is None else c.tz_convert("UTC")
+    return (ko.notna() & (ko > c)).to_numpy()
+
+
+def _late_filter(df: pd.DataFrame, kickoff, cutoff, what: str) -> pd.DataFrame:
+    """Rows of `df` not started at `cutoff`; logs how many were left out. cutoff None -> df unchanged."""
+    if cutoff is None or df is None or df.empty:
+        return df
+    keep = not_started(kickoff, cutoff)
+    if (~keep).any():
+        print(f"[daily_pack] late album: {int((~keep).sum())} {what} left out "
+              f"(kicked off, or kickoff unknown, at {pd.Timestamp(cutoff):%Y-%m-%d %H:%M} UTC)")
+    return df[keep]
+
+
 # ── Rendering ─────────────────────────────────────────────────────────────────
 
 def render_table(title: str, columns: list[tuple[str, int]], rows: list[dict],
@@ -357,7 +396,7 @@ def _freeze_props_shown(today: str, pr: pd.DataFrame, un: pd.DataFrame) -> None:
         print(f"[daily_pack] could not log shown props: {e}")
 
 
-def props_image(today: str, freeze: bool = False) -> list[bytes]:
+def props_image(today: str, freeze: bool = False, cutoff=None) -> list[bytes]:
     t = _read("player_tips.csv")
     if t.empty:
         return []
@@ -365,6 +404,7 @@ def props_image(today: str, freeze: bool = False) -> list[bytes]:
     t["_tip_day"] = [tip_day_of(k, d) for k, d in zip(t.get("kickoff_utc", pd.Series(None, index=t.index)),
                                                       t["date"].astype(str))]
     t = t[t["_tip_day"] == today].copy()
+    t = _late_filter(t, t.get("kickoff_utc", pd.Series(None, index=t.index)), cutoff, "prop(s)")
     if t.empty:
         return []
     for c in ("model_prob", "market_odds", "ev"):
@@ -697,11 +737,29 @@ def sharp_jumps(history: dict | None = None, min_pct: float | None = None,
     return config.drop_paper_leagues(d) if len(d) else d
 
 
-def sharp_image(today: str) -> list[bytes]:
+def sharp_kickoffs(history: dict | None = None) -> dict:
+    """(league, 'home vs away', 'YYYY-MM-DD') -> kickoff (UTC 'YYYY-MM-DD HH:MM') from the sharp history
+    the tips were built from. sharp_tips.csv carries the date only."""
+    if history is None:
+        from src.sharp_tracker import _load_history
+        history = _load_history()
+    out = {}
+    for rec in (history or {}).values():
+        d = str(rec.get("date") or "")
+        if len(d) >= 16:
+            out[(str(rec.get("league", "")), f"{rec.get('home')} vs {rec.get('away')}", d[:10])] = d[:16]
+    return out
+
+
+def sharp_image(today: str, cutoff=None, history: dict | None = None) -> list[bytes]:
     s = _sharp_frame()
     if s.empty:
         return []
     s = s[s["date"].astype(str).str[:10] == today].copy()
+    if cutoff is not None and not s.empty:
+        ko = sharp_kickoffs(history)
+        s = _late_filter(s, [ko.get((str(r.league), str(r.match), str(r.date)[:10]))
+                             for r in s.itertuples(index=False)], cutoff, "sharp move(s)")
     if s.empty:
         return []
     s["_bad"] = sharp_artifacts(s)
@@ -749,11 +807,12 @@ def _pro_scoreboard() -> dict:
         return {}
 
 
-def top_picks_image(today: str, freeze: bool = False) -> list[bytes]:
+def top_picks_image(today: str, freeze: bool = False, now=None) -> list[bytes]:
     """The 3 lists of 5 (src/top_picks.py) - first in the album, because people take a few tips, not 68.
-    freeze=True (the real send) logs them once to output/top_picks_log.csv so they are graded later."""
+    freeze=True (the real send) logs them once to output/top_picks_log.csv so they are graded later.
+    `now` is the send time: src/top_picks leaves out every tip whose match kicked off by then."""
     from src import top_picks as TP
-    d = TP.freeze_day(today) if freeze else TP.todays_lists(today)
+    d = TP.freeze_day(today, now=now) if freeze else TP.todays_lists(today, now=now)
     if d is None or d.empty:
         return []
     sb = TP.scoreboard(30)
@@ -851,7 +910,18 @@ def _pro_bet_builder() -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def bet_builder_image(today: str) -> list[bytes]:
+def _combo_kickoffs(d: pd.DataFrame, ko: pd.DataFrame | None = None) -> list:
+    """Kickoff per Bet Builder row: Pro's file has no kickoff, so it is looked up in v9's own fixture
+    kickoffs (src/tip_day.kickoffs) by league, match date and 'home vs away'. Not found -> None."""
+    from src.tip_day import kickoffs
+    k = kickoffs() if ko is None else ko
+    look = {(str(r.league), str(r.match_date)[:10], f"{r.home_team} vs {r.away_team}"): r.kickoff_utc
+            for r in k.itertuples(index=False)} if len(k) else {}
+    return [look.get((str(r.get("league")), str(r.get("match_date"))[:10], str(r.get("match"))))
+            for _, r in d.iterrows()]
+
+
+def bet_builder_image(today: str, cutoff=None, ko: pd.DataFrame | None = None) -> list[bytes]:
     """Today's Bet Builder combos (owner 2026-10-18: moved here from Pro's separate Telegram
     messages, which were "spammy"). Pro chooses them with its own tip rules; this only draws them:
     one band per combo (match, joint probability, fair odds), one row per leg."""
@@ -859,6 +929,8 @@ def bet_builder_image(today: str) -> list[bytes]:
     if d.empty or "match_date" not in d.columns:
         return []
     d = d[d["match_date"].astype(str).str[:10] == today]
+    if cutoff is not None and not d.empty:
+        d = _late_filter(d, _combo_kickoffs(d, ko), cutoff, "Bet Builder combo(s)")
     if d.empty:
         return []
     cols = [("", 34), ("Leg", 640), ("Leg chance", 120)]
@@ -1282,24 +1354,42 @@ def send_weekly_pack() -> bool:
 
 # ── The pack ──────────────────────────────────────────────────────────────────
 
+def album_tips(today: str, cutoff=None) -> pd.DataFrame:
+    """Today's tips as the album shows them: all of them on time; only not-yet-started ones when late."""
+    rows = todays_rows(today)
+    if cutoff is None or rows is None or rows.empty:
+        return rows
+    ko = rows["kickoff_utc"] if "kickoff_utc" in rows.columns else pd.Series(None, index=rows.index)
+    return _late_filter(rows, ko, cutoff, "tip(s)").reset_index(drop=True)
+
+
 def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[list[bytes], str]:
     now = now or _dt.datetime.now(_dt.timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=_dt.timezone.utc)
     today = now.strftime("%Y-%m-%d")
     yday = (now - _dt.timedelta(days=1)).strftime("%Y-%m-%d")
     header = now.strftime("%a %d %b")
+    late =album_is_late(now, today)
+    cutoff = now if late else None                 # late: list only matches not started at the send time
+    tag = " (late)" if late else ""
     pngs: list[bytes] = []
     notes = []
-    steps = [("top_picks", lambda: top_picks_image(today, freeze=freeze)),
-             ("tips", lambda: render_pngs(todays_rows(today), f"Today's tips — {header}")
-              if len(todays_rows(today)) else []),
+    try:
+        tips = album_tips(today, cutoff)
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[daily_pack] tips skipped: {type(e).__name__}: {e}")
+        tips = pd.DataFrame()
+    steps =[("top_picks", lambda: top_picks_image(today, freeze=freeze, now=now if late else None)),
+             ("tips", lambda: render_pngs(tips, f"Today's tips — {header}{tag}") if len(tips) else []),
              ("top_picks_results", lambda: top_picks_results_image(yday)),
              ("results", lambda: results_image(yday)),
              ("props_results", lambda: props_results_image(yday)),
              ("record", lambda: record_image(today)),
-             ("props", lambda: props_image(today, freeze=freeze)),
+             ("props", lambda: props_image(today, freeze=freeze, cutoff=cutoff)),
              ("one_x_two", lambda: one_x_two_image(now)),
-             ("bet_builder", lambda: bet_builder_image(today)),
-             ("sharp", lambda: sharp_image(today)),
+             ("bet_builder", lambda: bet_builder_image(today, cutoff=cutoff)),
+             ("sharp", lambda: sharp_image(today, cutoff=cutoff)),
              ("scoreboard", scoreboard_images)]
     for name, fn in steps:
         try:
@@ -1309,13 +1399,19 @@ def build_pack(now: _dt.datetime | None = None, freeze: bool = False) -> tuple[l
         except Exception as e:                                          # noqa: BLE001
             print(f"[daily_pack] {name} skipped: {type(e).__name__}: {e}")
             notes.append(f"{name} FAILED")
-    n_tips = len(todays_rows(today))
+    n_tips = len(tips)
     try:
         from src.top_picks import day_line
         yline = day_line(yday)
     except Exception:                                                   # noqa: BLE001
         yline = ""
-    caption = (f"☀️ <b>Wowza daily — {header}</b>\n"
+    late_line = ""
+    if late:
+        from src.tip_day import TZ
+        late_line = (f"\n<b>LATE</b> - sent {pd.Timestamp(now).tz_convert(TZ):%H:%M} Israel, after the "
+                     f"{rollover_utc(today).tz_convert(TZ):%H:%M} cut-off. Matches that already kicked off "
+                     f"are left out.")
+    caption = (f"☀️ <b>Wowza daily — {header}{tag}</b>{late_line}\n"
                f"Top picks · today's tips ({n_tips}) · yesterday's results (team + props) · record · player props · 1X2 · "
                f"Bet Builder · sharp moves · Pro scoreboard"
                + (f"\nYesterday's top picks: {yline}" if yline else ""))

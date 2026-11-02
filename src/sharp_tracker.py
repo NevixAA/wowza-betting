@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import statistics
 import sys
 from datetime import datetime, timedelta
@@ -46,32 +47,80 @@ DRIFT_STRONG_PCT = 0.10   # 10% = strong signal
 STEAM_PCT        = 0.03   # 3%  move in one 2h window = steam
 DAYS_AHEAD       = 14
 
+# SNAPSHOT CADENCE (Data Truth round 5, owner: Pro 1X2 keeps its 12h max price age, so snapshot more often).
+# Measured on main's sharp_history (2026-10-19..11-02): ~3 snapshots a day, at roughly 13-15, 18-21 and
+# 22-01 UTC, and NONE between ~01:00 and ~13:00 UTC, so the newest h2h price was 12-14h old every
+# morning. The workflow now asks every hour around the clock (.github/workflows/sharp_tracker.yml); this
+# guard turns a fire that lands within MIN_INTERVAL_H of the newest stored snapshot into a no-op, so the
+# credit cost is capped at one fetch per ~2h however many slots GitHub delivers.
+MIN_INTERVAL_H = float(os.getenv("SHARP_MIN_INTERVAL_H", "1.75"))
+# QUOTA GUARD: stop fetching when the account has fewer than this many credits left - production
+# (predict's odds) comes first. Same default as the exchange capture (EXCHANGE_CREDIT_FLOOR).
+CREDIT_FLOOR = int(os.getenv("SHARP_CREDIT_FLOOR", "15000"))
+REGIONS = "eu"
+MARKETS = ("totals", "h2h")
+
+
+def new_usage() -> dict:
+    """Credit accounting for one run (logged as an [oddsapi_usage] line for src/integrity/oddsapi_quota)."""
+    return {"calls": 0, "credits": 0, "credits_by_league": {}, "credits_by_market": {},
+            "requests_remaining": None, "stopped": None, "errors": 0}
+
+
+def max_credits_per_snapshot(n_leagues: int) -> int:
+    """Upper bound of one snapshot: OddsAPI bills markets x regions per /odds call (calls that return no
+    events are not billed), one call per market per league."""
+    return n_leagues * len(MARKETS) * len([r for r in REGIONS.split(",") if r.strip()])
+
 
 # ── OddsAPI fetch — median across all bookmakers ──────────────────────────────
 
-def _fetch_odds_for_league(sport_key: str, league: str) -> list[dict]:
+def _fetch_odds_for_league(sport_key: str, league: str, usage: dict | None = None) -> list[dict]:
     """Fetch totals + h2h odds — median across ALL bookmakers + consensus count."""
     results = []
     cutoff  = datetime.utcnow() + timedelta(days=DAYS_AHEAD)
+    usage = usage if usage is not None else new_usage()
 
-    for market in ("totals", "h2h"):
+    for market in MARKETS:
+        rem = usage.get("requests_remaining")
+        if rem is not None and rem < CREDIT_FLOOR:
+            usage["stopped"] = (f"account below the {CREDIT_FLOOR}-credit floor ({rem} left) - "
+                                f"production comes first")
+            break
         try:
             r = requests.get(
                 f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds",
                 params={
                     "apiKey":     config.ODDS_API_KEY,
-                    "regions":    "eu",
+                    "regions":    REGIONS,
                     "markets":    market,
                     "oddsFormat": "decimal",
                 },
                 timeout=15,
             )
         except Exception as e:
-            log.debug(f"  {league} ({market}): {e}")
+            usage["errors"] += 1
+            log.warning(f"  {league} ({market}): request failed: {type(e).__name__}")
             continue
 
+        usage["calls"] += 1
+        hdr = getattr(r, "headers", None) or {}
+        try:
+            spent = int(float(hdr.get("x-requests-last") or 0))
+        except (TypeError, ValueError):
+            spent = 0
+        usage["credits"] += spent
+        usage["credits_by_league"][league] = usage["credits_by_league"].get(league, 0) + spent
+        usage["credits_by_market"][market] = usage["credits_by_market"].get(market, 0) + spent
+        try:
+            if hdr.get("x-requests-remaining") not in (None, ""):
+                usage["requests_remaining"] = int(float(hdr["x-requests-remaining"]))
+        except (TypeError, ValueError):
+            pass
+
         if r.status_code != 200:
-            log.debug(f"  {league} ({market}): HTTP {r.status_code}")
+            usage["errors"] += 1
+            log.warning(f"  {league} ({market}): HTTP {r.status_code}")
             continue
 
         for event in r.json():
@@ -410,20 +459,80 @@ def _build_tips(history: dict) -> pd.DataFrame:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def run():
+def last_snapshot_at(history: dict) -> datetime | None:
+    """Newest snapshot time (UTC, naive) anywhere in the history; None when there is none."""
+    best = None
+    for rec in (history or {}).values():
+        for s in (rec.get("snapshots") or [])[-1:]:
+            t = pd.to_datetime(s.get("at"), errors="coerce")
+            if pd.notna(t) and (best is None or t > best):
+                best = t
+    return None if best is None else best.to_pydatetime()
+
+
+def price_freshness(history: dict, now: datetime, market: str = "h2h") -> dict:
+    """Age of the newest snapshot of every upcoming fixture in `market` (what Pro 1X2 re-prices from):
+    fixtures, max age, and how many are older than 12h."""
+    ages = []
+    for rec in (history or {}).values():
+        if rec.get("market") != market or not rec.get("snapshots"):
+            continue
+        ko = pd.to_datetime(rec.get("date"), errors="coerce")
+        t = pd.to_datetime(rec["snapshots"][-1].get("at"), errors="coerce")
+        if pd.isna(ko) or pd.isna(t) or ko.to_pydatetime() <= now:
+            continue
+        ages.append((now - t.to_pydatetime()).total_seconds() / 3600.0)
+    return {"market": market, "upcoming_fixtures": len(ages),
+            "max_age_h": round(max(ages), 2) if ages else None,
+            "older_than_12h": sum(a > 12 for a in ages)}
+
+
+def _log_usage(usage: dict, status: str, n_leagues: int, fresh: dict) -> None:
+    """One machine-readable line per run for src/integrity/oddsapi_quota.py. Never raises, never the key."""
+    try:
+        log.info("[oddsapi_usage] " + json.dumps({
+            "source": "sharp_tracker", "workflow": os.getenv("GITHUB_WORKFLOW", ""),
+            "run_id": os.getenv("GITHUB_RUN_ID", ""), "status": status, "regions": REGIONS,
+            "calls": usage["calls"], "credits": usage["credits"],
+            "credits_by_market": usage["credits_by_market"], "credits_by_league": usage["credits_by_league"],
+            "max_credits_per_snapshot": max_credits_per_snapshot(n_leagues), "errors": usage["errors"],
+            "stopped": usage["stopped"], "requests_remaining": usage["requests_remaining"],
+            "h2h_freshness": fresh}, sort_keys=True))
+    except Exception:                                                   # noqa: BLE001
+        pass
+
+
+def run(now: datetime | None = None):
     log.info("Sharp Money Tracker v2 — volume-weighted + steam detection")
+    now = now or datetime.utcnow()
     history = _load_history()
     total_events = 0
+    leagues = [lg for lg in config.ENABLED_LEAGUES if config.ODDS_API_SPORT_KEYS.get(lg)]
+    usage = new_usage()
 
-    for league in config.ENABLED_LEAGUES:
+    last = last_snapshot_at(history)
+    if last is not None and (now - last).total_seconds() / 3600.0 < MIN_INTERVAL_H:
+        log.info(f"[sharp] newest snapshot {last:%Y-%m-%d %H:%M} UTC is under {MIN_INTERVAL_H}h old - "
+                 f"no fetch this slot (0 credits)")
+        _log_usage(usage, "SKIPPED_FRESH", len(leagues), price_freshness(history, now))
+        return None
+
+    for league in leagues:
         sport_key = config.ODDS_API_SPORT_KEYS.get(league)
-        if not sport_key:
-            continue
-        events = _fetch_odds_for_league(sport_key, league)
+        events = _fetch_odds_for_league(sport_key, league, usage)
         if events:
             history = _update_history(history, events)
             total_events += len(events)
             log.info(f"  {league}: {len(events)} snapshots")
+        if usage["stopped"]:
+            log.warning(f"[sharp] stopped early: {usage['stopped']}")
+            break
+
+    fresh = price_freshness(history, now)
+    _log_usage(usage, "STOPPED_QUOTA_FLOOR" if usage["stopped"] else "FETCHED", len(leagues), fresh)
+    log.info(f"[sharp] {usage['calls']} call(s), {usage['credits']} credit(s); h2h prices: "
+             f"{fresh['upcoming_fixtures']} upcoming fixtures, newest-price max age {fresh['max_age_h']}h, "
+             f"{fresh['older_than_12h']} older than 12h")
 
     _save_history(history)
     tips = _build_tips(history)
