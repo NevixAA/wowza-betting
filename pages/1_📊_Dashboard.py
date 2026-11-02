@@ -398,37 +398,19 @@ with t_top:
 # FOUR FILTERS, EACH OF WHICH CHANGES THE ANSWER, so all are stated on screen: STAKED TIERS ONLY
 # (VALUABLE is not a bet), FROM PERFORMANCE_CUTOFF_DATE, SETTLED ONLY, and broken out PER MARKET
 # (a single blended number is either the wrong sign or the wrong story). n is shown beside the total.
-_STAKED_TIERS = ("SNIPER", "MARKSMAN")
-_MKT_SOURCES = [("bets_ledger.csv", None, "O/U 2.5"),
-                ("side_bets_ledger.csv", "market", None),
-                ("ht_ledger.csv", None, "HT O/U")]
 _cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
 
 
 @st.cache_data(ttl=60)
 def _settled_staked():
-    """Settled staked rows per market (the ledgers are read once a minute, not on every rerun)."""
-    _parts, _missing, _unreadable = [], [], []
-    for _f, _mkc, _const in _MKT_SOURCES:
-        _fp = config.OUTPUT_DIR / _f
-        if not _fp.exists():
-            _missing.append(_f)
-            continue
-        try:
-            _d = _read_csv(_fp, low_memory=False)
-            _d["_dt"] = pd.to_datetime(_d.get("match_date"), errors="coerce")
-            _d["_pnl"] = pd.to_numeric(_d.get("pnl"), errors="coerce")
-            _oc = "odds" if "odds" in _d.columns else "entry_odds"
-            _d["_odds"] = pd.to_numeric(_d.get(_oc), errors="coerce")
-            _d["_mkt"] = (_d[_mkc].astype(str) if _mkc and _mkc in _d.columns else _const)
-            _keep = (_d.get("signal_tier").isin(_STAKED_TIERS)
-                     & _d["_pnl"].notna() & (_d["_dt"] >= _cut))
-            if _keep.any():
-                _parts.append(_d[_keep][["_mkt", "_dt", "_pnl", "_odds", "signal_tier"]])
-        except Exception as _e:                             # noqa: BLE001
-            _unreadable.append(f"{_f} unreadable ({type(_e).__name__}: {_e})")
-    return ((pd.concat(_parts, ignore_index=True).sort_values("_dt") if _parts else pd.DataFrame()),
-            _missing, _unreadable)
+    """Settled staked rows per market - THE staked definition (dashboard_data.today_view.staked_settled:
+    SNIPER + MARKSMAN, live, settled, since the cutoff, paper leagues out; props never). This page
+    used its own reader until 2026-11-02, without the live filter and reading ht_ledger.csv (which
+    has no signal_tier) as 'unreadable'. Ledgers are read once a minute, not on every rerun."""
+    from dashboard_data import today_view as _TV
+    _missing = [_f for _f, _, _ in _TV.SOURCES if not (config.OUTPUT_DIR / _f).exists()]
+    _s = _TV.staked_settled()
+    return (_s.sort_values("_dt", kind="mergesort").reset_index(drop=True) if len(_s) else pd.DataFrame()), _missing, []
 
 
 @st.cache_data(ttl=60)

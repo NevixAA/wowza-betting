@@ -34,6 +34,7 @@ import config
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import PAPER_TIER_LABEL, tier_label  # noqa: E402
 from dashboard_data import freshness as _fresh, portfolio_view as V  # noqa: E402
+from src import units as U  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper.
 import importlib  # noqa: E402
@@ -327,15 +328,18 @@ for tab, mkt in zip(tabs, MARKETS):
             st.markdown(V.state_chip("Side/BTTS"))
             # Flat 1u result computed from the same rows (was a hand-typed +18.6u that went stale).
             _sp = _s[_s["odds"] > 1.0]
-            _flat = float(np.where(_sp["result"] == "WIN", _sp["odds"] - 1.0, -1.0).sum()) if len(_sp) else None
+            _flat = U.total(np.where(_sp["result"] == "WIN", _sp["odds"] - 1.0, -1.0)) if len(_sp) else None
             _flat_s = ("—" if _flat is None
-                       else f"**{_flat:+.1f}u** over {len(_sp)} priced bet(s), {100 * _flat / len(_sp):+.0f}%")
+                       else f"**{U.fmt(_flat, 1)}** over {len(_sp)} priced bet(s), {100 * _flat / len(_sp):+.0f}%")
+            # Side-market SNIPER + MARKSMAN tips ARE staked (THE staked definition, today_view), so this
+            # no longer says "paper only - never staked"; the per-track production state is the
+            # bankroll policy's (Production page).
             st.caption(
-                f"⚠️ **PAPER ONLY — never staked.** {len(_s)} settled bets in this view. "
+                f"{len(_s)} settled bets in this view. "
                 f"Flat-stake result is {_flat_s}; "
                 "the curve below is Kelly-sized and compounds, so it reads far higher on the "
-                "same bets. This exists to watch the track accumulate. Real money stays on "
-                "standard 2nd-division O/U."
+                "same bets. Which side-market tracks carry a stake today is the bankroll policy's call "
+                "(Production page)."
             )
             # Worth knowing when reading it: this single bankroll mixes both model tracks
             # (new_format 173 rows, standard 73). That is fine for ONE curve, but the tracks must

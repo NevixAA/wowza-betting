@@ -5,6 +5,7 @@ import pandas as pd
 
 import config
 
+from src import units as U
 from dashboard_data.core import (V9_DIR, Freshness, freshness_from_timestamp,
                                  newest_date, read_csv, read_json)
 
@@ -103,27 +104,39 @@ def performance(days: int | None = None) -> dict:
     if s.empty:
         return {"available": False, "why": f"no settled bets in the last {days} days"}
     out = {"available": True, "window_days": days, "by_track": {}}
+    # THE staked definition (dashboard_data.today_view.is_staked: SNIPER + MARKSMAN, live, settled,
+    # since the cutoff, paper leagues out). Until 2026-11-02 this counted WIN/LOSS rows of any source
+    # and kept rows without a match date, so Overview's "Staked" differed from Home's and Tips'.
+    from dashboard_data.today_view import is_staked
+    dd = d.copy()
+    if days and "generated_at" in dd.columns:
+        dd = dd[dd["generated_at"] >= cut]
+    smask = is_staked(dd.get("signal_tier", pd.Series("", index=dd.index)),
+                      source=dd["source"] if "source" in dd.columns else None,
+                      dt=dd["match_date"].dt.tz_convert(None) if "match_date" in dd.columns else None,
+                      league=dd["league"] if "league" in dd.columns else None, pnl=dd.get("pnl"))
+    staked_all = dd[smask.to_numpy()]
     for track, g in s.groupby(s.get("model_type", "unknown")):
         tiers = {}
         for tier, t in g.groupby(s.loc[g.index].get("signal_tier", "unknown")):
             pnl = pd.to_numeric(t.get("pnl"), errors="coerce").fillna(0)
-            tiers[str(tier)] = {"n": int(len(t)), "pnl": round(float(pnl.sum()), 2),
-                                "roi": round(float(pnl.sum() / len(t)), 4) if len(t) else None,
+            tiers[str(tier)] = {"n": int(len(t)), "pnl": U.total(pnl),
+                                "roi": round(U.total(pnl) / len(t), 4) if len(t) else None,
                                 "hit": round(float((t["result"] == "WIN").mean()), 4)}
         pnl = pd.to_numeric(g.get("pnl"), errors="coerce").fillna(0)
-        staked = g[g.get("signal_tier", "").isin(["SNIPER", "MARKSMAN"])]
-        spnl = pd.to_numeric(staked.get("pnl"), errors="coerce").fillna(0)
+        staked = staked_all[staked_all.get("model_type", pd.Series("unknown", index=staked_all.index)) == track]
+        spnl = pd.to_numeric(staked.get("pnl"), errors="coerce")
         out["by_track"][str(track)] = {
-            "n": int(len(g)), "pnl": round(float(pnl.sum()), 2),
-            "roi": round(float(pnl.sum() / len(g)), 4) if len(g) else None,
+            "n": int(len(g)), "pnl": U.total(pnl),
+            "roi": round(U.total(pnl) / len(g), 4) if len(g) else None,
             "hit": round(float((g["result"] == "WIN").mean()), 4),
             # BREAK-EVEN TRAVELS WITH THE HIT RATE. A 45% hit rate is excellent at 2.40 and a
             # disaster at 1.70, so a hit rate shown without the bar it has to clear invites
             # exactly the wrong read. mean(1/odds), never 1/mean(odds).
             "staked_only": {
-                "n": int(len(staked)), "pnl": round(float(spnl.sum()), 2),
-                "roi": round(float(spnl.sum() / len(staked)), 4) if len(staked) else None,
-                "hit": (round(float((staked["result"] == "WIN").mean()), 4)
+                "n": int(len(staked)), "pnl": U.total(spnl),
+                "roi": round(U.total(spnl) / len(staked), 4) if len(staked) else None,
+                "hit": (round(float((spnl > 0).mean()), 4)
                         if len(staked) else None),
                 "break_even": _break_even(staked)},
             "by_tier": tiers,
@@ -154,7 +167,7 @@ def by_league(days: int | None = 30, min_n: int = 5,
     s["_inv"] = 1.0 / pd.to_numeric(s.get("odds"), errors="coerce").where(
         lambda x: x > 1)
     g = s.groupby(["league", s.get("model_type", "unknown")]).agg(
-        n=("result", "size"), pnl=("pnl", "sum"),
+        n=("result", "size"), pnl=("pnl", U.total),
         hit=("result", lambda x: (x == "WIN").mean()),
         # Each league's OWN bar. A 45% hit rate is excellent at 2.40 and a disaster at 1.70,
         # so comparing every league against one estate-wide mean compares them against a line

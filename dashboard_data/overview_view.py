@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 import streamlit as st
 
 import dashboard_ui as ui
+from src import units as U
 from src.tier_labels import STAKED_LABEL
 from dashboard_data import core
 
@@ -80,16 +81,16 @@ def staked_cards(perf: dict) -> None:
     """The staked headline + one card per track, SNIPER + MARKSMAN only (VALUABLE is paper)."""
     tracks = {k: val for k, val in perf["by_track"].items() if k != "unknown"}
     staked_n = sum(t["staked_only"]["n"] for t in tracks.values())
-    staked_pnl = sum(t["staked_only"]["pnl"] for t in tracks.values())
+    staked_pnl = U.total(t["staked_only"]["pnl"] for t in tracks.values())
     items = sorted(tracks.items())
     cols = st.columns(min(3, len(items) + 1))
-    ui.metric_card("Staked P/L", ui.units(staked_pnl), title="V9 · all tracks", container=cols[0],
+    ui.metric_card("Staked P/L", U.fmt(staked_pnl), title="V9 · all tracks", container=cols[0],
                    supporting=[("Staked bets", f"{staked_n:,}"), ("Tiers", f"{STAKED_LABEL} only")],
                    status=ui.status_chip("LIVE", label="STAKED"), n=staked_n)
     for i, (name, t) in enumerate(items):
         s_ = t["staked_only"]
         be = s_.get("break_even")
-        ui.metric_card(name.replace("_", "-"), ui.units(s_["pnl"]), title="Track · staked",
+        ui.metric_card(name.replace("_", "-"), U.fmt(s_["pnl"]), title="Track · staked",
                        container=cols[(i + 1) % len(cols)],
                        supporting=[("Staked", f"{s_['n']:,}"), ("Hit", ui.pct(s_.get("hit"), None)),
                                    ("Break-even", ui.pct(be, None) if be is not None else "—"),

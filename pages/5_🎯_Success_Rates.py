@@ -91,7 +91,11 @@ def _load() -> pd.DataFrame:
         oc = next((c for c in ("odds", "entry_odds", "market_odds") if c in d.columns), None)
         d["_odds"] = pd.to_numeric(d[oc], errors="coerce") if oc else np.nan
         d["_source"] = label
-        out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date"]])
+        d["_ledger"] = path
+        d["_live"] = d["source"] if "source" in d.columns else "live"
+        d["_league"] = d["league"] if "league" in d.columns else pd.NA
+        out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date",
+                      "_ledger", "_live", "_league"]])
 
     # Main O/U carries no `market` column — it IS the OU25 line. Named explicitly so it never
     # lands in an "unknown" bucket next to a genuinely missing value.
@@ -175,7 +179,12 @@ if window:
     _since = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=int(window))
     d = d[d["_date"] >= _since]
 if scope.startswith("STAKED"):
-    d = d[d["_tier"].isin(STAKED)]
+    # THE staked definition (dashboard_data.today_view.is_staked): SNIPER + MARKSMAN, live, settled,
+    # since the cutoff (whatever the checkbox says), paper leagues out, and never a player prop -
+    # props are paper-only, and their SNIPER/MARKSMAN rows were counted here as staked until 2026-11-02.
+    from dashboard_data.today_view import is_staked as _is_staked
+    d = d[_is_staked(d["_tier"], source=d["_live"], dt=d["_date"], league=d["_league"],
+                     ledger=d["_ledger"]).to_numpy()]
 
 st.caption(f"{len(d):,} settled observation(s) after filters · "
            f"sources: {d['_source'].value_counts().to_dict()}")

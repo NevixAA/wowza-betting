@@ -25,9 +25,16 @@ from src import units as U
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 
+# ── THE definition of "Staked" (owner, 2026-11-02) ─────────────────────────────────────────────
+# A staked bet is a SNIPER or MARKSMAN row, source == live, settled (pnl recorded), match date on or
+# after PERFORMANCE_CUTOFF_DATE, outside config.PAPER_LEAGUES, on a team-market ledger (SOURCES).
+# Player props are paper-only (invariant 2) and are never in SOURCES. Every page that says
+# "Staked" reads staked_settled() / is_staked(); nothing re-derives it.
 STAKED = ("SNIPER", "MARKSMAN")
 SOURCES = [("bets_ledger.csv", None, "O/U 2.5"), ("side_bets_ledger.csv", "market", None),
            ("ht_ledger.csv", None, "HT O/U")]
+#: ledgers that can never hold a staked bet (props are paper-only)
+PAPER_ONLY_LEDGERS = ("player_ledger.csv",)
 #: CLAUDE.md guardrail: alert at 45,000 of the 75,000/day API-Football plan.
 API_BUDGET_WARN_SHARE = 0.60
 
@@ -63,6 +70,35 @@ def load_bets(out_dir=None) -> pd.DataFrame:
     return df
 
 
+SETTLED_COLS = ["signal_tier", "_mkt", "_pnl", "_dt", "league", "_odds", "_ledger"]
+
+
+def is_staked(tier, source=None, dt=None, league=None, ledger=None, pnl=None) -> pd.Series:
+    """Row mask for THE staked definition above, on already-aligned Series (any may be None =
+    not filtered on that axis because the caller has already applied it)."""
+    import config
+    tier = pd.Series(tier).astype(str).str.upper()
+    m = tier.isin(STAKED)
+    if source is not None:
+        m &= pd.Series(source, index=tier.index).fillna("live").astype(str).eq("live")
+    if dt is not None:
+        cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
+        m &= pd.to_datetime(pd.Series(dt, index=tier.index), errors="coerce") >= cut
+    if league is not None:
+        m &= ~pd.Series(league, index=tier.index).map(config.is_paper_league).fillna(False).astype(bool)
+    if ledger is not None:
+        m &= ~pd.Series(ledger, index=tier.index).astype(str).isin(PAPER_ONLY_LEDGERS)
+    if pnl is not None:
+        m &= pd.to_numeric(pd.Series(pnl, index=tier.index), errors="coerce").notna()
+    return m
+
+
+def staked_settled(out_dir=None) -> pd.DataFrame:
+    """THE staked rows (see the definition at the top of this module)."""
+    s = load_settled(out_dir)
+    return s[s["signal_tier"].isin(STAKED)].reset_index(drop=True)
+
+
 def load_settled(out_dir=None) -> pd.DataFrame:
     """Every settled live row on every staked market since the cutoff (all tiers; callers split)."""
     import config
@@ -78,14 +114,17 @@ def load_settled(out_dir=None) -> pd.DataFrame:
                 d = d[d["source"].fillna("live").astype(str) == "live"]
             if "signal_tier" not in d.columns:
                 continue
+            oc = "odds" if "odds" in d.columns else "entry_odds"
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
+                         _odds=pd.to_numeric(d[oc], errors="coerce") if oc in d.columns else float("nan"),
+                         _ledger=f,
+                         league=d["league"] if "league" in d.columns else pd.NA,
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl", "_dt"]])
+            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][SETTLED_COLS])
         except Exception:                                             # noqa: BLE001 — a viewer never dies on one file
             continue
-    return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(
-        columns=["signal_tier", "_mkt", "_pnl", "_dt"])
+    return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=SETTLED_COLS)
 
 
 def upcoming_staked_ou(bets: pd.DataFrame) -> int:

@@ -13,10 +13,12 @@ import streamlit as st
 import dashboard_ui as ui
 
 #: What each simulated market IS, so a curve is never read as money it was not. Props are paper by
-#: invariant 2; the side-market ledger has never been staked. The two O/U tracks are simulations of the
-#: tips production sent - the bankroll itself is notional, so they carry SIMULATED, not LIVE.
+#: invariant 2. Side markets are staked under THE staked definition (dashboard_data.today_view: their
+#: SNIPER + MARKSMAN rows are in Home's and Tips' Staked P/L), so - like the two O/U tracks - they are a
+#: simulation of tips production sent on a notional bankroll: SIMULATED, not LIVE. (Until 2026-11-02
+#: this said "PAPER · NEVER STAKED" for Side/BTTS while the other pages counted it as staked.)
 MARKET_STATE = {"Standard O/U": ("SIMULATED", None), "New-Format": ("SIMULATED", None),
-                "Player Props": ("PAPER", "PAPER · NEVER STAKED"), "Side/BTTS": ("PAPER", "PAPER · NEVER STAKED")}
+                "Player Props": ("PAPER", "PAPER · NEVER STAKED"), "Side/BTTS": ("SIMULATED", None)}
 
 
 def state_chip(market: str) -> str:
