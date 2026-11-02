@@ -1,0 +1,136 @@
+name: Data Truth Collect (real data)
+
+# Owner decision C (2026-11-02): collect the REAL data the props features and the measured club
+# strength need, instead of inventing it. Resumable and journaled: every collector skips what is
+# already stored, so a run that stops (budget, timeout) loses nothing and the next run continues.
+#
+#   1. scripts/collect_competition_fixtures.py  API-Football /fixtures?league&season for every
+#      registry club league and club cup + the continental cups (Libertadores, Sudamericana,
+#      AFC / CONCACAF Champions League, Club World Cup): 1 call per competition-season
+#   2. scripts/collect_af_history_gap.py        the af_history.parquet gap (2025 calendar-year
+#      seasons of the new-format leagues), via scripts/backfill_af_history.py
+#   3. scripts/collect_sidelined.py             /sidelined?player for every player without one
+#   4. scripts/collect_player_profiles.py       /players?id&season for every (player, season) in
+#      player_history without a stored profile (height, weight, birth date, season penalties)
+#   5. scripts/collect_understat_shots.py       Understat shots + rosters (no API-Football call)
+#   6. python -m src.strength.build             refit the measured club / league strength
+#
+# API-FOOTBALL BUDGET (scripts/collect_common.py, checked before EVERY call): this job may spend at
+# most 45,000 calls per UTC day (journal output/collect/af_budget.json, committed) and stops as soon
+# as the account's x-ratelimit-requests-remaining is below 25,000 (plan 75,000/day; normal use is
+# up to ~23,300/day). A budget stop is a clean exit 0; the next run continues.
+#
+# TRIGGER: a push to data-truth-100 that changes .github/collect_trigger.txt, or workflow_dispatch.
+# Not scheduled: the lead starts each run-day.
+
+on:
+  push:
+    branches: [data-truth-100]
+    paths: ['.github/collect_trigger.txt']
+  workflow_dispatch:
+    inputs:
+      steps:
+        description: 'Comma list of steps to run (fixtures,afgap,sidelined,profiles,understat,strength)'
+        required: false
+        default: 'fixtures,afgap,sidelined,profiles,understat,strength'
+
+concurrency:
+  group: data-truth-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    permissions:
+      contents: write
+    env:
+      STEPS: ${{ github.event.inputs.steps || 'fixtures,afgap,sidelined,profiles,understat,strength' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: data-truth-100
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # The per-fixture statistics of the af_history gap are cached permanently by
+      # backfill_af_history; restoring them lets a budget-stopped league finish for free.
+      - name: Cache AF history fixture cache
+        uses: actions/cache@v4
+        with:
+          path: scripts/af_history_cache
+          key: af-history-${{ github.run_id }}
+          restore-keys: af-history-
+
+      - name: Commit helper
+        run: |
+          cat > /tmp/commit_collected.sh <<'EOF'
+          #!/usr/bin/env bash
+          # Commit whatever the collectors stored so far and push it to data-truth-100.
+          set -u
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/collect output/strength output/af_history.parquet 2>/dev/null || true
+          if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
+          git commit -q -m "auto: data truth collect ($1) $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            # In a rebase `-X theirs` keeps THIS run's commit (the collected data).
+            git pull --rebase --autostash -X theirs origin data-truth-100 && \
+              git push origin HEAD:data-truth-100 && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          echo "push failed after 5 retries"; exit 1
+          EOF
+          chmod +x /tmp/commit_collected.sh
+
+      - name: 1. Cross-league competition fixtures
+        if: contains(env.STEPS, 'fixtures')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_competition_fixtures.py
+          /tmp/commit_collected.sh fixtures
+
+      - name: 2. af_history gap
+        if: contains(env.STEPS, 'afgap')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_af_history_gap.py
+          /tmp/commit_collected.sh afgap
+
+      - name: 3. Sidelined history per player
+        if: contains(env.STEPS, 'sidelined')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_sidelined.py
+          /tmp/commit_collected.sh sidelined
+
+      - name: 4. Player profiles per season
+        if: contains(env.STEPS, 'profiles')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_player_profiles.py
+          /tmp/commit_collected.sh profiles
+
+      - name: 5. Understat shots (no API-Football calls)
+        if: contains(env.STEPS, 'understat')
+        timeout-minutes: 120
+        run: |
+          python scripts/collect_understat_shots.py --max-matches 4000
+          /tmp/commit_collected.sh understat
+
+      - name: 6. Measured club / league strength
+        if: always() && contains(env.STEPS, 'strength')
+        run: |
+          python -m src.strength.build
+          /tmp/commit_collected.sh strength

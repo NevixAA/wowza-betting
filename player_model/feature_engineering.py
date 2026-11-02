@@ -1040,7 +1040,7 @@ def _serving_context(history: pd.DataFrame) -> dict:
                 teams_by_scope[scope] = sorted(sub[0].unique())
         # Measured strength over the whole history (career averages) and the collected real data.
         hs = _LQ.attach_strength(h) if "team" in h.columns else h
-        by_pid_strength = ({p: g[["league_elo", "opp_club_elo"]] for p, g in hs.groupby("player_id")}
+        by_pid_strength = ({p: g[["league_elo", "opp_club_elo", "_scope"]] for p, g in hs.groupby("player_id")}
                            if "player_id" in hs.columns else {})
         prof = collected_profiles()
         blank = set()
@@ -1286,7 +1286,7 @@ def build_upcoming_features(
             lg_cache[skey] = _LQ.fixture_strength(skey[0], skey[1], league, fdate)
         r.update(lg_cache[skey])
         _rows = ctx["strength_by_pid"].get(pid)
-        r.update(_LQ.career_now(_rows) if _rows is not None else
+        r.update(_LQ.career_now(_rows, league) if _rows is not None else
                  {"player_career_avg_league_elo": NAN, "player_career_avg_opp_elo": NAN})
         r["league_tier"] = r["league_quality"] = r["player_career_avg_quality"] = NAN
         rows.append(r)

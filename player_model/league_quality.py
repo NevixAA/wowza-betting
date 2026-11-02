@@ -82,6 +82,7 @@ def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
     out = df.copy()
     for c in MEASURED_COLUMNS:
         out[c] = np.nan
+    out["_scope"] = None
     if out.empty or S.empty or not {"date", "league", "team"} <= set(out.columns):
         return out
     opp = out["opponent"] if "opponent" in out.columns else \
@@ -94,25 +95,48 @@ def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
     lg = S.league_asof(out["league"], dates)
     out["league_elo"] = lg["league_elo"].to_numpy()
     out["league_elo_rank"] = lg["league_elo_rank"].to_numpy()
+    out["_scope"] = _scopes(out["league"])
     if "player_id" in out.columns:
         order = np.lexsort((np.arange(len(out)), dates.to_numpy(), out["player_id"].to_numpy()))
         o = out.iloc[order]
-        for src, feat in (("league_elo", "player_career_avg_league_elo"),
-                          ("opp_club_elo", "player_career_avg_opp_elo")):
+        # league_elo is on the linked cross-league scale: averaged over the whole career. Club
+        # ratings share a scale only inside one identity scope (a country's divisions; a cup), so
+        # the opponent average uses the player's earlier rows in the SAME scope as the row.
+        for src, feat, keys in (("league_elo", "player_career_avg_league_elo", [o["player_id"]]),
+                                ("opp_club_elo", "player_career_avg_opp_elo",
+                                 [o["player_id"], o["_scope"].fillna("")])):
             v = o[src]
-            prev_sum = v.fillna(0.0).groupby(o["player_id"]).cumsum() - v.fillna(0.0)
-            prev_n = v.notna().astype(int).groupby(o["player_id"]).cumsum() - v.notna().astype(int)
+            prev_sum = v.fillna(0.0).groupby(keys).cumsum() - v.fillna(0.0)
+            prev_n = v.notna().astype(int).groupby(keys).cumsum() - v.notna().astype(int)
             avg = (prev_sum / prev_n.where(prev_n > 0)).where(prev_n >= MIN_CAREER_ROWS)
             out.loc[o.index, feat] = avg.to_numpy()
     return out
 
 
-def career_now(rows: pd.DataFrame) -> dict:
-    """Serving: the career averages over ALL of a player's stored rows (all before the fixture)."""
+def _scopes(leagues: pd.Series) -> pd.Series:
+    """Identity scope per row: the club league's country, the cup itself, else None."""
+    from src.strength import results
+    cache = {}
+    for lg in pd.unique(leagues):
+        s = results.scope_of(lg)
+        if s is None and results.competition_type(lg) == "club_cup":
+            s = f"club_cup:{results._canon(lg) or lg}"
+        cache[lg] = s
+    return leagues.map(cache)
+
+
+def career_now(rows: pd.DataFrame, league=None) -> dict:
+    """Serving: the career averages over a player's stored rows (all before the fixture); the
+    opponent average over the rows in the fixture league's identity scope (training definition)."""
     res = {}
+    scope = _scopes(pd.Series([league]))[0] if league is not None else None
     for src, feat in (("league_elo", "player_career_avg_league_elo"),
                       ("opp_club_elo", "player_career_avg_opp_elo")):
-        v = pd.to_numeric(rows[src], errors="coerce") if src in rows.columns else pd.Series(dtype=float)
+        sub = rows
+        if src == "opp_club_elo":
+            sub = rows[rows["_scope"] == scope] if (scope is not None and "_scope" in rows.columns) \
+                else rows.iloc[0:0]
+        v = pd.to_numeric(sub[src], errors="coerce") if src in sub.columns else pd.Series(dtype=float)
         res[feat] = float(v.mean()) if v.notna().sum() >= MIN_CAREER_ROWS else float("nan")
     return res
 
