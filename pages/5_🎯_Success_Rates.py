@@ -42,6 +42,7 @@ import config
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame, relabel_text  # noqa: E402
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
+from src import units as U  # noqa: E402
 import importlib  # noqa: E402
 V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
@@ -112,7 +113,7 @@ def _load() -> pd.DataFrame:
     # Flat 1u return, matching v9's "P/L in units" convention rather than an invented stake plan.
     # PRICED BETS ONLY: a bet without a recorded price has no return (NaN), so P/L and ROI are
     # over priced bets and the unpriced count is shown beside them - no 2.00 stand-in.
-    df["ret"] = np.where(df["_odds"].isna(), np.nan, np.where(df["win"] == 1, df["_odds"] - 1.0, -1.0))
+    df["ret"] = np.where(df["_odds"].isna(), np.nan, np.where(df["win"] == 1, U.profit(df["_odds"]), -1.0))
     return df
 
 
@@ -196,7 +197,7 @@ if d.empty:
 def _table(g: pd.DataFrame) -> pd.DataFrame:
     t = g.groupby(["_model", "_market", "_tier"]).agg(
         n=("win", "size"), wins=("win", "sum"),
-        pl_u=("ret", lambda s: s.sum(min_count=1)), roi=("ret", "mean"),
+        pl_u=("ret", lambda s: U.total(s) if s.notna().any() else np.nan), roi=("ret", "mean"),
         n_priced=("_odds", "count"),
         avg_odds=("_odds", "mean")).reset_index()
     t["unpriced"] = t["n"] - t["n_priced"]
@@ -295,7 +296,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     lost. Nothing here is a new claim — it is the existing arithmetic drawn instead of tabulated.
     """
     t = g.groupby(by).agg(n=("win", "size"), win_pct=("win", "mean"),
-                          pl_u=("ret", lambda s: s.sum(min_count=1)), roi=("ret", "mean"),
+                          pl_u=("ret", lambda s: U.total(s) if s.notna().any() else np.nan), roi=("ret", "mean"),
                           avg_odds=("_odds", "mean"),
                           n_odds=("_odds", "count")).reset_index()
     t["win_pct"] = (100 * t["win_pct"]).round(1)

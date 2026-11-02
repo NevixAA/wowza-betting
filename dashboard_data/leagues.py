@@ -342,7 +342,7 @@ def last_week(d: pd.DataFrame, today: str) -> pd.DataFrame:
         s = summarise(g[g["staked"]])
         v = g[g["tier"] == "VALUABLE"]
         rows.append({"league": lg, "paper": bool(config.is_paper_league(lg)), **s,
-                     "valuable_tips": int(len(v)), "valuable_pl": round(float(v["pnl"].sum()), 4)})
+                     "valuable_tips": int(len(v)), "valuable_pl": U.total(v["pnl"])})
     out = pd.DataFrame(rows)
     if out.empty:
         return out
