@@ -289,7 +289,10 @@ def _update_history(history: dict, events: list[dict]) -> dict:
             "odds":    _extract_odds(ev),
             "n_books": ev.get("n_books"),       # unknown stays None, never an invented 1
         })
-        history[key]["snapshots"] = history[key]["snapshots"][-50:]
+        # EVERY snapshot is kept (owner, 2026-11-02). The old `[-50:]` cap silently dropped the
+        # EARLIEST prices of 1,430 fixtures (Jun-Oct 2026 partitions; Aug: 906 of 1,396 at the cap),
+        # i.e. the price history nearest the opening was lost. Growth stays bounded per file by the
+        # month partitions below: a settled month is never rewritten, only the current one churns.
     return history
 
 

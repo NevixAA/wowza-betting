@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '30 7,9,11,13,15,17,19,21,23 * * *'  # every 2h, offset from predict
   workflow_dispatch:
+    inputs:
+      corrections:
+        description: "Also run the corrections sidecars now (--grade-restored --restate-extra-time)"
+        type: boolean
+        default: false
 
 # Two settlement runs (schedule + a manual dispatch, or a late scheduled fire) never overlap.
 # Cross-workflow ledger safety does NOT come from a concurrency group: it comes from the row-level
@@ -171,6 +176,49 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || echo "::warning::league research settlement push failed after 5 retries"
+
+      # CORRECTIONS SIDECARS (ops6, 2026-11-02). The two round-5 sidecars need API-Football, so they
+      # can only be built here, never on a laptop:
+      #   output/corrections/player_ledger_restored_2026-11.csv   graded_* columns of the 111 restored
+      #       player tips (first-sight columns never rewritten; graded rows are never re-graded)
+      #   output/corrections/team_ledgers_extra_time_restated.csv settled team-ledger rows on AET/PEN
+      #       fixtures re-graded on 90 minutes, BESIDE the ledgers (ledgers untouched)
+      # BUDGET (API-Football, counted 2026-11-02 at data-truth-100): extra-time = 1 call per
+      # (league, season) with settled rows = 30; restored grading = at most 1 fixture lookup per
+      # league-date (31) + 1 /fixtures/players per fixture (44) on the FIRST run, then only rows still
+      # ungraded. So ~105 calls on day one, ~30/day after. Gated to ONCE A DAY (the 07:30 UTC fire)
+      # or a manual dispatch with `corrections: true`. Only this step writes these two files, so it
+      # runs the command once, keeps the output in $RUNNER_TEMP, and each push attempt resets to the
+      # freshest origin/main and copies them back (no merge, no `-X theirs`). Tolerant: a failure is a
+      # warning, never a red run, and never touches a ledger.
+      - name: Corrections sidecars (restored props grading + extra-time restatement)
+        if: always()
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          CORRECTIONS_DISPATCH: ${{ github.event_name == 'workflow_dispatch' && inputs.corrections }}
+        run: |
+          if [ "$CORRECTIONS_DISPATCH" != "true" ] && [ "$(date -u +%H)" != "07" ]; then
+            echo "corrections sidecars: not this run (daily at 07 UTC, or dispatch with corrections=true)"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin main && git reset -q --hard origin/main || true
+          python update_results.py --grade-restored --restate-extra-time || { echo "::warning::corrections sidecars failed"; exit 0; }
+          keep="$RUNNER_TEMP/corrections_keep"; mkdir -p "$keep"
+          files="output/corrections/player_ledger_restored_2026-11.csv output/corrections/team_ledgers_extra_time_restated.csv"
+          for f in $files; do [ -f "$f" ] && cp "$f" "$keep/$(basename "$f")"; done
+          pushed=0
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main || { sleep 3; continue; }
+            for f in $files; do
+              [ -f "$keep/$(basename "$f")" ] && cp "$keep/$(basename "$f")" "$f" && git add -f "$f"
+            done
+            if git diff --staged --quiet; then pushed=1; echo "corrections sidecars: nothing new"; break; fi
+            git commit -q -m "auto: corrections sidecars $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push && { pushed=1; break; }
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          [ "$pushed" = "1" ] || echo "::warning::corrections sidecars push failed after 5 retries"
 
       # P0 2026-10-22 - FAIL LOUDLY if a registered challenger experiment is not being logged.
       # The H-MODEL-01 clock ran for 18 days with zero challenger probabilities and nothing went
