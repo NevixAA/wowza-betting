@@ -263,6 +263,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # LEDGERS GO THROUGH THE ROW-LEVEL SYNC, NOT THE REBASE BELOW (estate scan P1, 2026-11-02).
+          # bets/side/ht ledgers and ht_observations are also rewritten by update_results and
+          # daily_summary; `pull --rebase -X theirs` dropped the other run's rows in a conflicting
+          # hunk. sync-push re-applies this run's row changes on the freshest origin/main
+          # (src/ledger.py "LEDGER SYNC"); on failure it puts the files back for the add below.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: predict ledgers $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           # Add each file INDIVIDUALLY: a single missing pathspec makes `git add a b missing`
           # abort and stage NOTHING (the `|| true` then hides it) -> no commit -> notified.json
           # dedup never persists -> every 5-min run re-sends the same tips (the duplicate flood).
@@ -320,4 +329,5 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
 # schedule re-registered after the 2026-10-26 history clean-up (comment only)

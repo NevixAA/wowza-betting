@@ -371,6 +371,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # LEDGERS GO THROUGH THE ROW-LEVEL SYNC, NOT THE REBASE BELOW (estate scan P1, 2026-11-02).
+          # player_ledger.csv is appended here and settled by update_results / daily_summary;
+          # `pull --rebase -X theirs` dropped the other run's rows in a conflicting hunk. sync-push
+          # re-applies this run's row changes on the freshest origin/main (src/ledger.py
+          # "LEDGER SYNC"); on failure it puts the file back for the add below.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: player props ledger $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           # Add each file INDIVIDUALLY. `git add -f a b missing` validates every pathspec
           # first and ABORTS, staging NOTHING — and `2>/dev/null || true` then hides it. Two
           # of the paths below (telegram_bot/player_kickoff_cache.json, team_id_cache.json)
@@ -415,6 +424,7 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
 
       # Every functional step above is continue-on-error so one failure cannot stop the
       # others' outputs from being committed. That is the right trade, but the cost was that

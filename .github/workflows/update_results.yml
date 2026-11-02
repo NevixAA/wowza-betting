@@ -5,6 +5,13 @@ on:
     - cron: '30 7,9,11,13,15,17,19,21,23 * * *'  # every 2h, offset from predict
   workflow_dispatch:
 
+# Two settlement runs (schedule + a manual dispatch, or a late scheduled fire) never overlap.
+# Cross-workflow ledger safety does NOT come from a concurrency group: it comes from the row-level
+# ledger sync in the commit step (src/ledger.py "LEDGER SYNC"), which is lossless however runs overlap.
+concurrency:
+  group: update-results
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -64,6 +71,16 @@ jobs:
           git checkout -- output/v91_shadow.csv 2>/dev/null || true
           git checkout -- output/shadow_settlement_health.json 2>/dev/null || true
           git checkout -- output/clv_collection_health.json 2>/dev/null || true
+          # LEDGERS GO THROUGH THE ROW-LEVEL SYNC, NOT THE REBASE BELOW (estate scan P1, 2026-11-02).
+          # `pull --rebase -X theirs` resolves a conflicting hunk wholesale for this run, so a row
+          # predict appended next to a row settled here was deleted. sync-snapshot holds this run's
+          # ledger edits and restores HEAD's copy; sync-push re-applies them ROW BY ROW on the
+          # freshest origin/main (src/ledger.py "LEDGER SYNC") and pushes. If it cannot push it puts
+          # the files back, the lines below commit them the old way and the step goes red.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: results ledgers $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           for f in output/bets_ledger.csv output/side_bets_ledger.csv output/ht_ledger.csv output/ht_observations.csv output/player_ledger.csv output/sharp_ledger.csv output/live_signals_history.csv; do git add -f "$f" 2>/dev/null || true; done
           git diff --staged --quiet || \
             git commit -m "auto: results $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -80,11 +97,13 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
 
       # P0 2026-10-20 — settle the prospective shadow log (output/v91_shadow.csv).
       #
-      # WHY A SEPARATE STEP, AND WHY NOT `pull --rebase -X theirs` FOR THIS ONE FILE. The ledgers
-      # above have one writer; v91_shadow.csv has TWO: predict APPENDS rows every 5-15 minutes,
+      # WHY A SEPARATE STEP, AND WHY NOT `pull --rebase -X theirs` FOR THIS ONE FILE. (The ledgers
+      # above had the same two-writer problem; since 2026-11-02 they go through the row-level
+      # ledger sync.) v91_shadow.csv has TWO writers: predict APPENDS rows every 5-15 minutes,
       # this job EDITS rows in place. When predict's appended lines sit next to a row this run
       # settled, git reports a conflict and `-X theirs` keeps this run's side of the hunk —
       # silently deleting predict's new rows. A deleted row is then re-logged by predict at a

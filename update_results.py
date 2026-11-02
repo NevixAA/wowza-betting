@@ -526,6 +526,108 @@ def _find_result(
 _FT_STATUSES = ("FT", "AET", "PEN")
 _VOID_STATUSES = {"PST": "POSTPONED", "CANC": "CANCELLED", "ABD": "ABANDONED"}
 
+
+# ── POSTPONED / CANCELLED / ABANDONED: VOID ON EVIDENCE ONLY (estate scan P2, 2026-11-02) ──────────
+# Only the props settler ever voided a postponed fixture. The O/U, side-market, sharp and HT ledgers
+# had no path to VOID at all, so a postponed match sat pending for ever: 45 main, 10 side, 19 HT and
+# 164 sharp rows were pending more than 7 days on the committed ledgers (2026-11-02).
+#
+# A row is voided ONLY when API-Football's own fixture says PST / CANC / ABD: the league's fixtures
+# on the row's date (league id + season from the registry), both clubs resolved in that pool by
+# src.team_names (exactly one fixture, the same lookup the props settler uses). Never on age: a row
+# no source can settle stays pending, and the reason is logged and counted every run.
+#
+# BUDGET. Each distinct (league, season, date) costs one API-Football call per run (the client cache
+# does not survive a CI runner). main() plans the days for the whole run: at most
+# UPDATE_RESULTS_AF_STATUS_BUDGET (default 40) of them, chosen in an order that rotates every hour,
+# so a backlog larger than the budget is still fully covered within a day. None = no plan (tests,
+# ad-hoc calls) -> every lookup is allowed.
+_STATUS_ALLOWED: set | None = None
+
+
+def _status_day(league, date_str) -> tuple | None:
+    canon = _canon_league(league)
+    lid = config.API_FOOTBALL_IDS.get(canon) if canon else None
+    if not lid:
+        return None
+    from src.season_resolver import resolve_api_season, is_known
+    season = resolve_api_season(canon, str(date_str)[:10])
+    return (lid, season, str(date_str)[:10]) if is_known(season) else None
+
+
+def _plan_status_checks(frames: list, today_str: str, budget: int | None = None,
+                        now: datetime | None = None) -> set:
+    """Choose this run's (league id, season, date) status lookups across every pending ledger."""
+    import hashlib
+    budget = int(os.getenv("UPDATE_RESULTS_AF_STATUS_BUDGET", "40")) if budget is None else budget
+    days = set()
+    for df in frames:
+        if df is None or df.empty:
+            continue
+        for _, r in df.iterrows():
+            d = _status_day(r.get("league"), r.get("match_date"))
+            if d and d[2] < today_str:
+                days.add(d)
+    salt = (now or datetime.utcnow()).strftime("%Y-%m-%d %H")
+    order = sorted(days, key=lambda d: hashlib.sha1(f"{salt}|{d}".encode()).hexdigest())
+    chosen = set(order[:max(budget, 0)])
+    if len(days) > len(chosen):
+        log.info(f"status checks: {len(chosen)} of {len(days)} league-days this run (budget {budget}); "
+                 f"the rest rotate into later runs")
+    return chosen
+
+
+def _pending_frames_for_status(today_str: str) -> list:
+    """Pending rows at least 2 days old from every ledger that can void on status evidence (the
+    day after a match its result normally settles from the scores; no lookup is spent on it)."""
+    cut = str((pd.Timestamp(today_str) - pd.Timedelta(days=1)).date())
+    out = []
+    for p in (LEDGER_FILE, SIDE_LEDGER_FILE, SHARP_LEDGER_FILE, config.OUTPUT_DIR / "ht_ledger.csv"):
+        try:
+            d = pd.read_csv(p, dtype=str, keep_default_na=False)
+        except Exception:                                             # noqa: BLE001
+            continue
+        if {"result", "match_date", "league"} <= set(d.columns):
+            out.append(d[(d["result"].str.strip() == "") & (d["match_date"] < cut)])
+    return out
+
+
+def _postponement_evidence(league, date_str, home, away) -> tuple[str | None, str]:
+    """('POSTPONED' | 'CANCELLED' | 'ABANDONED', '') when API-Football reports that status for this
+    fixture, else (None, why the row stays pending)."""
+    if not os.getenv("APIFOOTBALL_KEY", ""):
+        return None, "no_status_source (APIFOOTBALL_KEY not set)"
+    day = _status_day(league, date_str)
+    if day is None:
+        return None, "no_status_source (league or season not in the registry)"
+    if _STATUS_ALLOWED is not None and day not in _STATUS_ALLOWED:
+        return None, "status_not_checked_this_run (budget)"
+    try:
+        fx, why = _find_prop_fixture(day[0], day[1], day[2], home, away)
+    except Exception as e:                                            # noqa: BLE001
+        return None, f"status_lookup_failed ({type(e).__name__})"
+    if fx is None:
+        return None, f"fixture_not_found_on_date ({why})"
+    status = ((fx.get("fixture") or {}).get("status") or {}).get("short")
+    if status in _VOID_STATUSES:
+        return _VOID_STATUSES[status], ""
+    return None, f"no_result_yet (API-Football status {status!r})"
+
+
+def _join_note(old, label: str) -> str:
+    old = "" if old is None or (isinstance(old, float) and np.isnan(old)) else str(old).strip()
+    return label if not old or old == "nan" else f"{old}; {label}"
+
+
+def _log_pending(ledger: str, reasons: dict, today_str: str, dates: list) -> None:
+    """One line per run: why rows stay pending (never voided on age), and how many are > 7 days."""
+    if not reasons:
+        return
+    cut = str((pd.Timestamp(today_str) - pd.Timedelta(days=7)).date())
+    old = sum(1 for d in dates if str(d)[:10] < cut)
+    log.info(f"{ledger}: {len(dates)} left pending this run ({old} older than 7 days) - "
+             f"{dict(sorted(reasons.items()))}")
+
 _PLAYER_MARKET_STAT = {"goals": "goals", "sot": "shots_on_target", "cards": "yellow_card",
                        "assists": "assists"}
 
@@ -789,16 +891,13 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
 
         # NO STATS FOR THE WHOLE FIXTURE IS NOT "DID NOT PLAY". An API error, an empty body or stats
         # not yet published all look like this, and until 2026-11-01 every prop on such a fixture
-        # was voided as DNP for good (Data Truth audit finding 16). Leave it pending and retry; only
-        # after 7 days is it voided, and then with a note that says why.
+        # was voided as DNP for good (Data Truth audit finding 16). Leave it pending and retry.
+        # NEVER VOIDED ON AGE (estate scan P2, 2026-11-02): this used to void the row after 7 days
+        # ('NO_STATS_7D') although the fixture had FINISHED - the match was played, only the
+        # provider's sheet is missing. Age is not evidence; the row stays pending, counted below.
         if not players["by_id"]:
             _age = (pd.Timestamp(today_str) - pd.Timestamp(date_str)).days
-            if _age >= 7:
-                log.warning(f"  {home} vs {away} ({date_str}): no player stats after {_age} days — VOID (NO_STATS)")
-                updates.append({"idx": idx, "is_played": "True", "result": "VOID",
-                                "pnl": "0.0", "notes": "NO_STATS_7D", "resolved_date": today_str})
-            else:
-                _skip("no_player_stats_yet", what)
+            _skip("no_player_stats" + ("_7d_plus" if _age >= 7 else "_yet"), f"{what} ({_age} days)")
             continue
 
         # ── Step 3: the player, by player_id only ────────────────────────────
@@ -958,6 +1057,8 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
 
     scores_cache: dict[str, list[dict]] = {}
     updates: list[dict] = []
+    reasons: dict[str, int] = {}
+    left: list[str] = []
 
     for idx, row in pending.iterrows():
         league   = row["league"]
@@ -968,6 +1069,8 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
 
         if not side:
             log.debug(f"  sharp: no side parsed for {row.get('market_label', '')} — skipping")
+            reasons["no_side"] = reasons.get("no_side", 0) + 1
+            left.append(date_str)
             continue
 
         if league not in scores_cache:
@@ -983,11 +1086,26 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
                 else:
                     scores_cache[league] = []
 
-        ev = _match_event(home, away, scores_cache.get(league, []), {date_str})
+        # LAST RESORT: API-Football, as the O/U and side-market paths already do. Without it a sharp
+        # tip in a league with no football-data feed (MLS, Argentina, Brazil ...) could only settle
+        # inside OddsAPI's 3-day scores window: 96 of the 164 sharp rows pending > 7 days on
+        # 2026-11-02 were MLS. Lazy, so a healthy run costs no calls.
+        ev = (_match_event(home, away, scores_cache.get(league, []), {date_str})
+              or _match_event(home, away, fetch_scores_apifootball(league, date_str), {date_str}))
         match_result = _resolve_sharp_side(side, ev["home_score"], ev["away_score"]) if ev else None
 
         if not match_result:
-            log.debug(f"  sharp: {home} vs {away} {date_str} not found in scores")
+            if ev is None:
+                label, why = _postponement_evidence(league, date_str, home, away)
+                if label:
+                    log.info(f"  sharp: {home} vs {away} {date_str} — {label} (API-Football), marking VOID")
+                    updates.append({"idx": idx, "result": "VOID", "pnl": 0.0})
+                    continue
+            else:
+                why = f"side {side!r} not gradable"
+            reasons[why.split(" (")[0]] = reasons.get(why.split(" (")[0], 0) + 1
+            left.append(date_str)
+            log.debug(f"  sharp: {home} vs {away} {date_str} pending: {why}")
             continue
 
         # No usable entry price -> the RESULT is graded, the P/L is not. This defaulted to odds 1.0,
@@ -1008,12 +1126,14 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
             f"{home} vs {away} ({side}) {date_str} → {match_result}  PnL={pnl:+.3f}u"
         )
 
+    _log_pending("sharp_ledger", reasons, today_str, left)
     if not updates:
         log.info("  No sharp money results found in any scores source.")
         return
 
     if dry_run:
-        print(f"\n  [DRY RUN] Would update {len(updates)} sharp row(s). No files written.")
+        print(f"\n  [DRY RUN] Would update {len(updates)} sharp row(s) "
+              f"({sum(1 for u in updates if u['result'] == 'VOID')} VOID). No files written.")
         return
 
     resolved_today = str(datetime.utcnow().date())
@@ -1027,8 +1147,9 @@ def update_sharp_results(days: int = 3, dry_run: bool = False) -> None:
 
     wins      = sum(1 for u in updates if u["result"] == "WIN")
     losses    = sum(1 for u in updates if u["result"] == "LOSS")
-    priced    = [u["pnl"] for u in updates if not np.isnan(u["pnl"])]
-    log.info(f"sharp_ledger: {len(updates)} resolved — {wins}W/{losses}L — "
+    voids     = sum(1 for u in updates if u["result"] == "VOID")
+    priced    = [u["pnl"] for u in updates if u["result"] != "VOID" and not np.isnan(u["pnl"])]
+    log.info(f"sharp_ledger: {len(updates)} resolved — {wins}W/{losses}L/{voids} VOID — "
              f"PnL={sum(priced):+.3f}u over {len(priced)} priced row(s)")
     log.info(f"  Saved → {SHARP_LEDGER_FILE}")
 
@@ -1082,6 +1203,8 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
 
     scores_cache: dict[str, list[dict]] = {}
     updates: list[dict] = []
+    reasons: dict[str, int] = {}
+    left: list[str] = []
 
     for idx, row in pending.iterrows():
         league   = row["league"]
@@ -1105,11 +1228,21 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
         ev_found = (_match_event(home, away, scores_cache.get(league, []), {date_str})
                     or _match_event(home, away, fetch_scores_apifootball(league, date_str), {date_str}))
         if ev_found is None:
-            log.debug(f"  side {market}: {home} vs {away} {date_str} not found in any scores source")
+            label, why = _postponement_evidence(league, date_str, home, away)
+            if label:
+                log.info(f"  side {market}: {home} vs {away} {date_str} — {label} (API-Football), marking VOID")
+                updates.append({"idx": idx, "result": "VOID", "pnl": 0.0, "closing_odds": np.nan,
+                                "clv_pct": np.nan, "notes": label})
+                continue
+            reasons[why.split(" (")[0]] = reasons.get(why.split(" (")[0], 0) + 1
+            left.append(date_str)
+            log.debug(f"  side {market}: {home} vs {away} {date_str} pending: {why}")
             continue
 
         res = _resolve_side_market(market, ev_found["home_score"], ev_found["away_score"])
         if not res:
+            reasons["market_not_gradable"] = reasons.get("market_not_gradable", 0) + 1
+            left.append(date_str)
             continue
         # No usable entry price -> result graded, P/L left empty (was odds 1.0: a WIN booked at 0.0
         # with no flag, Data Truth audit finding 27).
@@ -1140,13 +1273,17 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
             f"{home} vs {away} ({market}) {date_str} → {res}  PnL={pnl:+.3f}u{clv_str}"
         )
 
+    _log_pending("side_bets_ledger", reasons, today_str, left)
     if not updates:
         log.info("  No side-market results found in any scores source.")
         return
     if dry_run:
-        print(f"\n  [DRY RUN] Would update {len(updates)} side-market row(s). No files written.")
+        print(f"\n  [DRY RUN] Would update {len(updates)} side-market row(s) "
+              f"({sum(1 for u in updates if u['result'] == 'VOID')} VOID). No files written.")
         return
 
+    if "notes" not in ledger.columns:
+        ledger["notes"] = ""
     for u in updates:
         ledger.at[u["idx"], "result"] = u["result"]
         # An unpriced row's P/L stays EMPTY, not the text 'nan'.
@@ -1155,12 +1292,15 @@ def update_side_market_results(days: int = 3, dry_run: bool = False) -> None:
             ledger.at[u["idx"], "closing_odds"] = str(u["closing_odds"])
         if not np.isnan(u["clv_pct"]):
             ledger.at[u["idx"], "clv_pct"] = str(u["clv_pct"])
+        if u.get("notes"):
+            ledger.at[u["idx"], "notes"] = _join_note(ledger.at[u["idx"], "notes"], u["notes"])
     ledger.to_csv(SIDE_LEDGER_FILE, index=False)
 
     wins   = sum(1 for u in updates if u["result"] == "WIN")
     losses = sum(1 for u in updates if u["result"] == "LOSS")
-    priced = [u["pnl"] for u in updates if not np.isnan(u["pnl"])]
-    log.info(f"side_bets_ledger: {len(updates)} resolved — {wins}W/{losses}L — "
+    voids  = sum(1 for u in updates if u["result"] == "VOID")
+    priced = [u["pnl"] for u in updates if u["result"] != "VOID" and not np.isnan(u["pnl"])]
+    log.info(f"side_bets_ledger: {len(updates)} resolved ({voids} VOID) — {wins}W/{losses}L — "
              f"PnL={sum(priced):+.3f}u over {len(priced)} priced row(s)")
     log.info(f"  Saved → {SIDE_LEDGER_FILE}")
 
@@ -1393,14 +1533,28 @@ def update_ht_results(days: int = 3) -> None:
             return None, None
 
     graded = 0
+    reasons: dict[str, int] = {}
+    left: list[str] = []
     for i in pending.index:
         home = led.at[i, "home_team"]; away = led.at[i, "away_team"]
         d = str(led.at[i, "match_date"])[:10]; mkt = str(led.at[i, "market"])
         sc = _ht_score(led.at[i, "league"], home, away, d)
         if sc is None:
+            label, why = _postponement_evidence(led.at[i, "league"], d, home, away)
+            if label:
+                log.info(f"  ht {mkt}: {home} vs {away} {d} — {label} (API-Football), marking VOID")
+                led.at[i, "result"] = "VOID"
+                led.at[i, "pnl"] = 0.0
+                led.at[i, "notes"] = _join_note(led.at[i, "notes"], label)
+                graded += 1
+                continue
+            reasons[why.split(" (")[0]] = reasons.get(why.split(" (")[0], 0) + 1
+            left.append(d)
             continue
         res = _resolve_ht(mkt, sc[0], sc[1])
         if not res:
+            reasons["ht_score_incomplete"] = reasons.get("ht_score_incomplete", 0) + 1
+            left.append(d)
             continue
         entry, close = _ht_odds(led.at[i, "league"], home, away, d, mkt)
         # The price logged WITH the tip is the entry; the capture's first snapshot only when the
@@ -1429,6 +1583,7 @@ def update_ht_results(days: int = 3) -> None:
             led.at[i, "clv_pct"] = round((entry / close - 1.0) * 100.0, 2)   # PERCENT, like bets_ledger
         graded += 1
 
+    _log_pending("ht_ledger", reasons, today, left)
     if graded:
         led.to_csv(f, index=False)
     log.info(f"ht_ledger: graded {graded} HT tip(s) → {f}")
@@ -1865,9 +2020,17 @@ def main():
         scores_cache[league] = [fetch_scores(sport_key, args.days)]
         log.info(f"    → {len(scores_cache[league][0])} completed events returned")
 
+    # Plan this run's API-Football status lookups (postponement evidence) across every ledger that
+    # can void on it, so the per-run budget is shared and rotates (see _plan_status_checks).
+    global _STATUS_ALLOWED
+    _STATUS_ALLOWED = _plan_status_checks(_pending_frames_for_status(today_str), today_str)
+
     # Match tips to results
     filled = 0
     updates: list[dict] = []
+    voids: list[dict] = []          # postponed / cancelled / abandoned on API-Football evidence
+    reasons: dict[str, int] = {}
+    left: list[str] = []
 
     for idx, row in pending.iterrows():
         league = row["league"]
@@ -1897,7 +2060,16 @@ def main():
             )
 
         if found is None:
-            log.debug(f"  Not found: {row['home_team']} vs {row['away_team']} ({row['match_date']})")
+            label, why = _postponement_evidence(league, str(row["match_date"])[:10],
+                                                row["home_team"], row["away_team"])
+            if label:
+                log.info(f"  {row['home_team']} vs {row['away_team']} ({row['match_date']}) — "
+                         f"{label} (API-Football), marking VOID")
+                voids.append({"idx": idx, "label": label})
+            else:
+                reasons[why.split(" (")[0]] = reasons.get(why.split(" (")[0], 0) + 1
+                left.append(row["match_date"])
+                log.debug(f"  pending: {row['home_team']} vs {row['away_team']} ({row['match_date']}): {why}")
             continue
 
         result_str, total_goals, extras = found
@@ -1945,12 +2117,26 @@ def main():
         )
         filled += 1
 
-    if not updates:
+    _log_pending("bets_ledger", reasons, today_str, left)
+    if not updates and not voids:
         log.info("No pending matches found in any scores source. If matches were recently played, try --days with a larger value or re-run after the local CSVs are refreshed.")
     elif args.dry_run:
-        print(f"\n  [DRY RUN] Would update {filled} row(s). No files written.")
+        print(f"\n  [DRY RUN] Would update {filled} row(s) and void {len(voids)} "
+              f"(postponed/cancelled/abandoned on API-Football evidence). No files written.")
 
     # Write back to ledger
+    if voids and not args.dry_run:
+        if "notes" not in ledger.columns:
+            ledger["notes"] = ""
+        ledger["notes"] = ledger["notes"].astype(object)
+        for v in voids:
+            ledger.at[v["idx"], "result"] = "VOID"
+            ledger.at[v["idx"], "pnl"] = "0.0"
+            ledger.at[v["idx"], "notes"] = _join_note(ledger.at[v["idx"], "notes"], v["label"])
+        if not updates:
+            ledger.to_csv(LEDGER_FILE, index=False)
+        log.info(f"bets_ledger: {len(voids)} row(s) VOID on API-Football evidence "
+                 f"({', '.join(sorted({v['label'] for v in voids}))})")
     if updates and not args.dry_run:
         if "ht_score" not in ledger.columns:
             ledger["ht_score"] = ""

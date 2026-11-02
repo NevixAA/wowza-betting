@@ -48,6 +48,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # sharp_ledger.csv goes through the row-level ledger sync (estate scan P1, 2026-11-02):
+          # src/ledger.py "LEDGER SYNC". On failure the file is put back for the add below.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: worldcup sharp ledger $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           git add -f \
             output/worldcup_tips.csv output/worldcup_history.json \
             output/worldcup_model_tips.csv output/sharp_ledger.csv \
@@ -67,3 +73,4 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
