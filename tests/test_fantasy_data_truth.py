@@ -88,12 +88,15 @@ def test_missing_fdr_is_skipped_not_read_as_3():
 
 
 # ── API-Football -> FPL bridge ───────────────────────────────────────────────────────────────────
-def test_crosswalk_refuses_a_name_two_fpl_elements_share():
+def test_crosswalk_joins_on_ids_never_on_a_shared_name():
+    # Round 2 (2026-11-02): the bridge is the stored id crosswalk, not a name. A name two FPL
+    # elements share no longer matters; only the API-Football player_id does.
     fpl = pd.DataFrame({"fpl_id": [1, 2, 3], "match_key": ["johnsmith", "johnsmith", "aliceb"],
                         "web_key": ["smith", "smithj", "alice"]})
-    pl = pd.DataFrame({"player_name": ["John Smith", "Alice B", "Nobody"]})
-    ids = F.fpl_crosswalk(pl, fpl, lambda s: "".join(c for c in str(s).lower() if c.isalnum()))
-    assert math.isnan(ids.iloc[0]) and ids.iloc[1] == 3 and math.isnan(ids.iloc[2])
+    pl = pd.DataFrame({"player_id": [10, 20, 30], "player_name": ["John Smith", "Alice B", "Nobody"]})
+    cw = pd.DataFrame({"fpl_id": [2, 3], "af_player_id": [10, 20]})
+    ids = F.fpl_crosswalk(pl, fpl, crosswalk=cw)
+    assert ids.iloc[0] == 2 and ids.iloc[1] == 3 and math.isnan(ids.iloc[2])
 
 
 # ── optimiser / transfers / chips ────────────────────────────────────────────────────────────────

@@ -1,0 +1,289 @@
+"""
+collect_ht_scores.py - half-time scores for the new-format leagues (Data Truth round 2, HT data gap).
+
+    python scripts/collect_ht_scores.py            # fetch what is missing, then match
+    python scripts/collect_ht_scores.py --dry-run  # print the plan (league-seasons, calls); no call
+    python scripts/collect_ht_scores.py --match-only  # re-match the stored fixtures; no call
+
+THE GAP. output/fd_history.parquet (football-data.co.uk) carries ht_home_goals / ht_away_goals for
+only 5-27% of the new-format leagues' matches (measured 2026-11-02 on 42,084 rows of the 15
+registry `model_type: new_format` leagues) and for 0 of the 2,188 played since 2026-07-01.
+
+WHAT. API-Football /fixtures?league&season (ONE call per league-season) returns every fixture with
+`score.halftime`. For every new-format league-season that has a history match WITHOUT a half-time
+score (league from config/leagues.json, season from src.season_resolver on that match's date):
+  1. fetch the season once -> output/collect/af_ht_scores.parquet: one row per FINISHED fixture
+     (FT/AET/PEN) with its API-Football fixture id, club ids/names and score.halftime. A null
+     half-time score is stored as missing, never 0.
+  2. match each history row lacking a half-time score to ONE fixture: same league, the history's
+     clubs resolved onto the fixture's clubs with src.team_names (resolve, then the API-Football
+     result-spelling aliases) home->home and away->away, on the same date; only when the same date
+     has no candidate, on the adjacent dates (kick-off in UTC vs the local date). More than one
+     candidate, or one fixture claimed by history rows of DIFFERENT dates -> refused (counted,
+     nothing written). History rows of the same date that resolve onto the same fixture are one
+     match under two club spellings (the history repeats such matches) and each gets the score.
+
+OUTPUT (beside the original - fd_history.parquet is NEVER rewritten):
+  output/collect/fd_history_ht_fill.parquet  league, date, home_team, away_team (the history's own
+      spellings), HTHG, HTAG (the provider's half-time score), fixture_id, af_date, match_rule,
+      source, matched_at - the same key + HTHG/HTAG layout as af_ht_history.parquet.
+  output/collect/ht_fill_audit.json          per league: rows lacking HT, filled, refused (why),
+      plus the calls made. Journal output/collect/ht_seasons.parquet: a fetched league-season is not
+      fetched again unless the history has a match without HT dated after that fetch.
+
+BUDGET. Every call goes through collect_common.AFClient (45,000 calls per run-day for the whole
+collection job, stop below 25,000 remaining). A budget stop is a clean, resumable exit.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from collect_common import COLLECT_DIR, AFClient, BudgetStop, append_parquet, read_parquet  # noqa: E402
+
+HISTORY = ROOT / "output" / "fd_history.parquet"
+SCORES = COLLECT_DIR / "af_ht_scores.parquet"
+FILL = COLLECT_DIR / "fd_history_ht_fill.parquet"
+AUDIT = COLLECT_DIR / "ht_fill_audit.json"
+JOURNAL = COLLECT_DIR / "ht_seasons.parquet"
+FINISHED = {"FT", "AET", "PEN"}
+SOURCE = "api-football /fixtures score.halftime"
+SCORE_COLS = ["fixture_id", "league", "league_id", "season", "date", "kickoff", "home_id", "home_name",
+              "away_id", "away_name", "ht_home", "ht_away", "status"]
+FILL_COLS = ["league", "date", "home_team", "away_team", "HTHG", "HTAG", "fixture_id", "af_date",
+             "match_rule", "source", "matched_at"]
+JOURNAL_COLS = ["league_id", "season", "league", "n_fixtures", "n_finished", "n_with_ht", "fetched_at"]
+
+
+def new_format_leagues() -> dict[str, int]:
+    """{registry name: api_football_id} for every `model_type: new_format` league with an id."""
+    from src import league_registry as LR
+    return {e["name"]: int(e["api_football_id"]) for e in LR.leagues()
+            if e.get("model_type") == "new_format" and e.get("api_football_id") is not None}
+
+
+def lacking_rows(history: pd.DataFrame | None = None) -> pd.DataFrame:
+    """History rows of the new-format leagues without a half-time score, with canonical league,
+    API-Football league id and API season (src.season_resolver). Unknown season -> dropped, logged."""
+    from src import league_registry as LR
+    from src.season_resolver import is_known, resolve_api_season
+    if history is None:
+        history = pd.read_parquet(HISTORY, columns=["league", "date", "home_team", "away_team",
+                                                    "ht_home_goals", "ht_away_goals"])
+    nf = new_format_leagues()
+    h = history.copy()
+    h["canon"] = h["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
+    h = h[h["canon"].isin(nf)]
+    h = h[h["ht_home_goals"].isna() | h["ht_away_goals"].isna()].copy()
+    h["date"] = pd.to_datetime(h["date"], errors="coerce")
+    h = h[h["date"].notna() & h["home_team"].notna() & h["away_team"].notna()]
+    h["league_id"] = h["canon"].map(nf)
+    h["season"] = [resolve_api_season(c, d) for c, d in zip(h["canon"], h["date"])]
+    bad = ~h["season"].map(is_known)
+    if bad.any():
+        print(f"[ht] {int(bad.sum())} history row(s) skipped: API season unknown for "
+              f"{sorted(h.loc[bad, 'canon'].unique())}")
+    return h[~bad]
+
+
+def plan(lacking: pd.DataFrame, journal: pd.DataFrame) -> list[dict]:
+    """League-seasons to fetch: every (league_id, season) with a history row lacking HT, minus the
+    journaled ones whose fetch is newer than that league-season's latest lacking match."""
+    last_fetch = {}
+    if not journal.empty:
+        for r in journal.itertuples(index=False):
+            t = pd.to_datetime(r.fetched_at, errors="coerce", utc=True)
+            if t == t:
+                last_fetch[(int(r.league_id), str(r.season))] = t.tz_localize(None).normalize()
+    out = []
+    g = lacking.groupby(["canon", "league_id", "season"])["date"].agg(["max", "size"]).reset_index()
+    for r in g.itertuples(index=False):
+        key = (int(r.league_id), str(r.season))
+        if key in last_fetch and r.max < last_fetch[key]:
+            continue
+        out.append({"league": r.canon, "league_id": key[0], "season": key[1], "n_lacking": int(r.size)})
+    return sorted(out, key=lambda x: (x["league"], x["season"]))
+
+
+def _int_or_none(v):
+    try:
+        return int(v) if v is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def parse(body: dict, league: str, league_id: int, season: str) -> list[dict]:
+    """Finished fixtures with the provider's half-time score (None when the provider gives none)."""
+    rows = []
+    for f in (body or {}).get("response") or []:
+        fx, tm = f.get("fixture") or {}, f.get("teams") or {}
+        ht = (f.get("score") or {}).get("halftime") or {}
+        status = (fx.get("status") or {}).get("short")
+        if status not in FINISHED:
+            continue
+        h, a = tm.get("home") or {}, tm.get("away") or {}
+        ko = str(fx.get("date") or "")
+        rows.append({"fixture_id": _int_or_none(fx.get("id")), "league": league, "league_id": league_id,
+                     "season": season, "date": ko[:10], "kickoff": ko,
+                     "home_id": _int_or_none(h.get("id")), "home_name": h.get("name"),
+                     "away_id": _int_or_none(a.get("id")), "away_name": a.get("name"),
+                     "ht_home": _int_or_none(ht.get("home")), "ht_away": _int_or_none(ht.get("away")),
+                     "status": status})
+    return [r for r in rows if r["fixture_id"] is not None]
+
+
+def _resolve(name, candidates):
+    from src.team_names import resolve_result
+    return resolve_result(str(name), [str(c) for c in candidates]) if candidates else None
+
+
+def match(lacking: pd.DataFrame, scores: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """(fill rows, per-league counts). See the module docstring for the rule."""
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    stats: dict = defaultdict(lambda: defaultdict(int))
+    if scores.empty:
+        for lg, n in lacking["canon"].value_counts().items():
+            stats[lg]["lacking"] = int(n)
+            stats[lg]["no_fixture_stored"] = int(n)
+        return pd.DataFrame(columns=FILL_COLS), {k: dict(v) for k, v in stats.items()}
+    sc = scores.dropna(subset=["ht_home", "ht_away"]).copy()
+    sc["_d"] = pd.to_datetime(sc["date"], errors="coerce").dt.normalize()
+    by_day = {k: g for k, g in sc.groupby(["league", "_d"])}
+    # The history repeats some matches row for row (e.g. one season under two labels); a repeat is
+    # ONE match (one fill row, keyed like the sidecar), not two matches claiming one fixture.
+    key = ["canon", "date", "home_team", "away_team"]
+    rep = lacking.duplicated(subset=key)
+    for lg, n in lacking.loc[rep, "canon"].value_counts().items():
+        stats[lg]["history_repeat_rows"] += int(n)
+    lacking = lacking[~rep]
+    picks = []
+    for r in lacking.itertuples(index=False):
+        st = stats[r.canon]
+        st["lacking"] += 1
+        d = pd.Timestamp(r.date).normalize()
+        found, rule = [], None
+        for days, name in (((0,), "same_day"), ((-1, 1), "adjacent_day")):
+            parts = [by_day[(r.canon, d + pd.Timedelta(days=k))] for k in days
+                     if (r.canon, d + pd.Timedelta(days=k)) in by_day]
+            if not parts:
+                continue
+            pool = pd.concat(parts)
+            h = _resolve(r.home_team, pool["home_name"].unique())
+            a = _resolve(r.away_team, pool["away_name"].unique())
+            if h is None or a is None:
+                continue
+            found = pool[(pool["home_name"] == h) & (pool["away_name"] == a)]
+            if len(found):
+                rule = name
+                break
+        if len(found) == 0:
+            st["unmatched"] += 1
+            continue
+        if found["fixture_id"].nunique() > 1:
+            st["refused_ambiguous"] += 1
+            continue
+        f = found.iloc[0]
+        picks.append({"league": r.league, "date": r.date, "home_team": r.home_team,
+                      "away_team": r.away_team, "HTHG": int(f["ht_home"]), "HTAG": int(f["ht_away"]),
+                      "fixture_id": int(f["fixture_id"]), "af_date": f["date"], "match_rule": rule,
+                      "source": SOURCE, "matched_at": now, "_canon": r.canon})
+    fill = pd.DataFrame(picks, columns=FILL_COLS + ["_canon"])
+    if not fill.empty:
+        # One fixture claimed by several history rows. Rows of the SAME date whose clubs both
+        # resolved onto that fixture's two clubs are the same match under two spellings (the
+        # history carries e.g. 'Austin' / 'Austin FC' rows for one MLS game): each gets the score,
+        # counted. Claims from DIFFERENT dates are two matches for one fixture: all refused.
+        n_dates = fill.groupby("fixture_id")["date"].transform("nunique")
+        many = fill["fixture_id"].duplicated(keep=False)
+        twice = many & (n_dates > 1)
+        for lg, n in fill.loc[twice, "_canon"].value_counts().items():
+            stats[lg]["refused_fixture_claimed_twice"] += int(n)
+        for lg, n in fill.loc[many & ~twice, "_canon"].value_counts().items():
+            stats[lg]["history_rows_same_match_two_spellings"] += int(n)
+        fill = fill[~twice]
+        for lg, n in fill["_canon"].value_counts().items():
+            stats[lg]["filled"] += int(n)
+    return fill[FILL_COLS].reset_index(drop=True), {k: dict(v) for k, v in stats.items()}
+
+
+def run(dry_run: bool = False, match_only: bool = False, client: AFClient | None = None,
+        history: pd.DataFrame | None = None) -> dict:
+    lacking = lacking_rows(history)
+    todo = plan(lacking, read_parquet(JOURNAL))
+    print(f"[ht] {len(lacking):,} new-format history row(s) without a half-time score; "
+          f"{len(todo)} league-season(s) to fetch = {len(todo)} API-Football call(s)")
+    for t in todo:
+        print(f"  {t['league']} (id {t['league_id']}) season {t['season']}: {t['n_lacking']} row(s) lacking HT")
+    stats = {"planned_calls": len(todo), "calls": 0}
+    if dry_run:
+        return stats
+    if not match_only and todo:
+        client = client or AFClient()
+        try:
+            for t in todo:
+                body = client.get("fixtures", {"league": t["league_id"], "season": t["season"]})
+                if body is None:
+                    continue                                # failed: nothing recorded, retried next run
+                stats["calls"] += 1
+                rows = parse(body, t["league"], t["league_id"], t["season"])
+                if rows:
+                    append_parquet(SCORES, rows, ["fixture_id"], SCORE_COLS)
+                append_parquet(JOURNAL, [{"league_id": t["league_id"], "season": t["season"],
+                                          "league": t["league"],
+                                          "n_fixtures": len(body.get("response") or []),
+                                          "n_finished": len(rows),
+                                          "n_with_ht": sum(r["ht_home"] is not None for r in rows),
+                                          "fetched_at": datetime.now(timezone.utc).isoformat()}],
+                               ["league_id", "season"], JOURNAL_COLS)
+        except BudgetStop as e:
+            print(f"[ht] budget stop: {e} (resumable)")
+            stats["budget_stop"] = str(e)
+        finally:
+            client.flush()
+    fill, per_league = match(lacking, read_parquet(SCORES))
+    old = read_parquet(FILL)
+    if not fill.empty or old.empty:
+        # A history row matched earlier keeps its stored answer unless re-matched now (new wins).
+        key = ["league", "date", "home_team", "away_team"]
+        if not old.empty:
+            old = old[FILL_COLS]
+            fill = pd.concat([old, fill], ignore_index=True)
+        fill = fill.drop_duplicates(subset=key, keep="last").reset_index(drop=True)
+        FILL.parent.mkdir(parents=True, exist_ok=True)
+        tmp = FILL.with_suffix(".tmp.parquet")
+        fill.to_parquet(tmp, index=False)
+        tmp.replace(FILL)
+    stats["filled_rows_total"] = int(len(fill))
+    stats["per_league"] = per_league
+    AUDIT.parent.mkdir(parents=True, exist_ok=True)
+    AUDIT.write_text(json.dumps({"written_at": datetime.now(timezone.utc).isoformat(),
+                                 "history": str(HISTORY.relative_to(ROOT)),
+                                 "note": "Half-time scores for history rows that lack them, from API-"
+                                         "Football; fd_history.parquet itself is not modified.",
+                                 **stats}, indent=1, sort_keys=True, default=str), encoding="utf-8")
+    print(f"[ht] {json.dumps({k: v for k, v in stats.items() if k != 'per_league'})}")
+    return stats
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="collect half-time scores for the new-format leagues")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--match-only", action="store_true")
+    a = ap.parse_args(argv)
+    run(dry_run=a.dry_run, match_only=a.match_only)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
