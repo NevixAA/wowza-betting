@@ -74,14 +74,15 @@ def _props(r):
     return m or None
 
 
-# (label, file, market mapper, entry-odds column, player column or None)
+# (label, file, market mapper, entry-odds column, player-id column or None)
 LEDGERS = [
     ("main O/U", "bets_ledger.csv", _main_ou, "odds", None),
     ("side markets", "side_bets_ledger.csv", _side_market, "odds", None),
     ("half-time", "ht_ledger.csv", _ht, "entry_odds", None),
-    # Props carry one curve PER PLAYER under the same market key — without player_name the
-    # lookup grabs a team-mate's prices.
-    ("player props", "player_ledger.csv", _props, "market_odds", "player_name"),
+    # Props carry one curve PER PLAYER under the same market key — without the player the
+    # lookup grabs a team-mate's prices. Keyed by the API-Football player_id on both sides
+    # (player_ledger and player_prop_odds_history, 2026-11-02), never by the player's name.
+    ("player props", "player_ledger.csv", _props, "market_odds", "player_id"),
 ]
 
 
@@ -98,7 +99,7 @@ def main() -> int:
     log.info(f"curve index: {idx.n_rows:,} price rows\n")
 
     summary = []
-    for name, fname, market_of, entry_col, player_col in LEDGERS:
+    for name, fname, market_of, entry_col, player_id_col in LEDGERS:
         p = config.OUTPUT_DIR / fname
         if not p.exists():
             log.warning(f"{name}: {fname} absent"); continue
@@ -106,8 +107,10 @@ def main() -> int:
         if d.empty:
             log.warning(f"{name}: empty"); continue
         ec = entry_col if entry_col in d.columns else None
-        pc = player_col if player_col and player_col in d.columns else None
-        out = enrich(d, market_of, idx=idx, entry_col=ec, player_col=pc)
+        if player_id_col and player_id_col not in d.columns:
+            log.warning(f"{name}: {fname} has no {player_id_col} column - its prop rows get no curve")
+        pc = player_id_col if player_id_col and player_id_col in d.columns else None
+        out = enrich(d, market_of, idx=idx, entry_col=ec, player_id_col=pc)
 
         got = out["mv_close"].notna()
         clv = out["mv_clv_pct"].notna()

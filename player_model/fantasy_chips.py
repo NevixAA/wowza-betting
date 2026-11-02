@@ -100,8 +100,13 @@ def chip_values(proj: pd.DataFrame, squad: pd.DataFrame | None = None,
     # ── Triple Captain: exactly one more captain ─────────────────────────────
     elig = p
     if "availability" in p.columns:
-        av = p["availability"].astype(str).str.lower()
-        elig = p[~av.isin(("injured", "unavailable", "suspended")) & (av != "doubtful")]
+        # Ruled out, doubtful, or availability UNKNOWN: none can be the Triple Captain.
+        from player_model.fpl_api import availability_unknown, not_recommendable
+        n_unknown = int(availability_unknown(p["availability"]).sum())
+        if n_unknown:
+            log.info("chips: %d player(s) with unknown availability not considered for Triple Captain",
+                     n_unknown)
+        elig = p[~not_recommendable(p["availability"], also=("doubtful",))]
     if "p_start" in elig.columns:
         # Unknown P(start) is not eligible (NaN >= 0.60 is False) - a captain must be known to start.
         elig = elig[pd.to_numeric(elig["p_start"], errors="coerce") >= 0.60]

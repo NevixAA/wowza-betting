@@ -97,6 +97,12 @@ LEDGER_COLS = [
     "retrain_batch_id",
     "training_cutoff",
     "prediction_role",
+    # FIXTURE IDENTITY (issue #1, 2026-11-02), appended at the END like the attribution block.
+    # fixture_id = the API-Football fixture id src/predict.attach_fixture_ids resolved (blank when
+    # it did not resolve); oddsapi_event_id = the OddsAPI event id, kept in its OWN column so the
+    # two id spaces never mix. Rows written before this are blank (unknown), never back-filled.
+    "fixture_id",
+    "oddsapi_event_id",
 ]
 VERSION_FIELDS = ("model_version", "retrain_batch_id", "training_cutoff", "prediction_role")
 
@@ -137,6 +143,35 @@ def _num(v) -> float:
     except (TypeError, ValueError):
         return np.nan
     return f if np.isfinite(f) else np.nan
+
+
+def _af_fixture_id(v) -> int | str:
+    """A positive integer API-Football fixture id from a bets cell, or '' (blank) when absent."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return ""
+    return int(f) if np.isfinite(f) and f > 0 else ""
+
+
+def _event_id(v) -> str:
+    """The OddsAPI event id as sent, or '' (blank) when absent."""
+    if v is None or (isinstance(v, float) and v != v):
+        return ""
+    s = str(v).strip()
+    return "" if s in ("nan", "None", "<NA>") else s
+
+
+def _fixture_identity(row) -> dict:
+    return {"fixture_id": _af_fixture_id(row.get("fixture_id")),
+            "oddsapi_event_id": _event_id(row.get("oddsapi_event_id", row.get("_oa_event_id")))}
+
+
+def _warn_missing_identity(df: pd.DataFrame, ledger: str) -> None:
+    missing = [c for c in ("fixture_id", "oddsapi_event_id") if c not in df.columns]
+    if missing:
+        log.warning(f"{ledger}: tips frame has no {missing} column(s) - those ids are left blank "
+                    f"(src/betting.generate_bets must pass them through)")
 
 
 def _pct(v: float):
@@ -289,6 +324,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
         raise ValueError(f"bets_ledger.csv holds live tips only, got source={source!r}")
     if bets_df is None or bets_df.empty:
         return
+    _warn_missing_identity(bets_df, "bets_ledger")
 
     existing = _load_ledger()
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M")
@@ -385,6 +421,7 @@ def append_tips(bets_df: pd.DataFrame, source: str = "live") -> None:
             "pnl":          "",
             "notes":        "",
             **_version_fields(row, _ou_key(row.get("model_type", ""), row.get("serving_recipe"))),
+            **_fixture_identity(row),
         })
 
     if flips:

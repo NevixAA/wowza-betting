@@ -77,8 +77,13 @@ def optimal_squad(proj: pd.DataFrame, budget: float = BUDGET,
         return {}
 
     if exclude_unavailable and "availability" in df.columns:
-        av = df["availability"].astype(str).str.lower()
-        df = df[~av.isin(("injured", "unavailable", "suspended"))].reset_index(drop=True)
+        # Ruled out OR availability unknown: neither is recommendable (Data Truth 2026-11-02).
+        from player_model.fpl_api import availability_unknown, not_recommendable
+        out_mask = not_recommendable(df["availability"])
+        n_unknown = int(availability_unknown(df["availability"]).sum())
+        if n_unknown:
+            log.info("optimal_squad: excluded %d player(s) whose availability is unknown", n_unknown)
+        df = df[~out_mask].reset_index(drop=True)
     if df.empty:
         return {}
 

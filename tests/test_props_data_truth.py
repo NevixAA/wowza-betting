@@ -233,4 +233,7 @@ def test_fpl_missing_status_is_unknown():
     b = {"teams": [{"id": 1, "name": "Arsenal", "short_name": "ARS"}],
          "elements": [{"id": 9, "first_name": "A", "second_name": "B", "team": 1, "element_type": 4}]}
     r = F.players_df(b).iloc[0]
-    assert r["status"] == "unknown" and r["availability"] == "unknown" and math.isnan(r["owned_pct"])
+    # Status itself is None (no placeholder category); the availability LABEL says 'unknown'.
+    assert r["status"] is None and r["availability"] == "unknown" and math.isnan(r["owned_pct"])
+    for c in ("price", "fpl_form", "fpl_ppg", "fpl_ep_next", "total_points"):
+        assert math.isnan(r[c]), c

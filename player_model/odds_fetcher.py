@@ -415,8 +415,10 @@ def _append_odds_history(records: list[dict]) -> None:
     # fact — the one thing that would otherwise be unrecoverable once the rows are merged. Rows
     # from OddsAPI arrive without them, so they default rather than becoming NaN: 38,189 existing
     # rows predate the second source and are all OddsAPI by definition.
+    # `player_id` (2026-11-02): the API-Football id of the tip's player, set by attach_player_ids
+    # only when the bookmaker name maps to exactly one tip player of that fixture; else empty.
     cols = ["snapshot_date", "snapshot_ts", "match_date", "league", "match", "player", "market",
-            "odds", "source", "bookmaker"]
+            "odds", "source", "bookmaker", "player_id"]
     if "source" not in df.columns:
         df["source"] = "oddsapi"
     else:
@@ -440,6 +442,7 @@ def _append_odds_history(records: list[dict]) -> None:
             pass
     # Keep every distinct PRICE per real fixture (match_date disambiguates fixture-name
     # collisions across seasons) -> preserves the open->close line trajectory for CLV.
+    df = _carry_player_ids(df)
     df = df.drop_duplicates(subset=_ODDS_HISTORY_KEY, keep="first")
     df.to_csv(_ODDS_HISTORY_FILE, index=False)
     # Rolling file (2026-10-22): rows of matches already played move once into
@@ -448,6 +451,101 @@ def _append_odds_history(records: list[dict]) -> None:
     # Full-history readers use src.rolling_store.read_all. Never raises.
     from src.rolling_store import roll
     roll(_ODDS_HISTORY_FILE, dedupe_subset=_ODDS_HISTORY_KEY)
+
+
+_PLAYER_ROW_KEY = ["match_date", "league", "match", "player"]
+
+
+def _carry_player_ids(df):
+    """Give an id-less history row the player_id another row of the SAME (match_date, league,
+    match, player) carries - that is the same quoted player in the same fixture - but only when
+    those rows carry exactly ONE id. Rows written before player_id existed gain it this way when
+    the player is re-quoted; nothing is guessed across players or fixtures."""
+    import pandas as pd
+    if df.empty or "player_id" not in df.columns:
+        return df
+    pid = pd.to_numeric(df["player_id"], errors="coerce")
+    pid = pid.where(pid > 0)
+    keyed = df[_PLAYER_ROW_KEY].astype(str).agg("|".join, axis=1)
+    ids = pd.DataFrame({"k": keyed, "pid": pid}).dropna().groupby("k")["pid"].agg(set)
+    one = {k: next(iter(v)) for k, v in ids.items() if len(v) == 1}
+    df = df.copy()
+    df["player_id"] = pid.where(pid.notna(), keyed.map(one)).astype("Int64")
+    return df
+
+
+def attach_player_ids(records: list[dict], tips_df) -> dict[str, int]:
+    """Set `player_id` on every prop-odds history record whose quoted player maps UNAMBIGUOUSLY to
+    one API-Football player among the tips of the SAME fixture (same date within a day, both clubs
+    resolved by src.team_names). OddsAPI and API-Football odds name players only, so the bridge is
+    the tip slate, which carries API-Football's player_id:
+
+      1. the normalised name equals exactly one tip player's normalised name, else
+      2. first initial + surname equals exactly one tip player's AND exactly one quoted name in
+         that fixture (the rule match_odds_to_tips prices with).
+
+    Anything else (no tip player, two candidates) leaves the record WITHOUT an id; the counts are
+    logged. Returns {"matched": n, "ambiguous": n, "unmatched": n}. Never raises on a bad row."""
+    out = {"matched": 0, "ambiguous": 0, "unmatched": 0}
+    if not records:
+        return out
+    for r in records:
+        r["player_id"] = None
+    if tips_df is None or getattr(tips_df, "empty", True) or not {"player_id", "player_name",
+                                                                  "match"} <= set(tips_df.columns):
+        out["unmatched"] = len(records)
+        print(f"[odds_fetcher] player_id: no tip slate with player ids - {len(records)} odds row(s) "
+              f"written without a player_id")
+        return out
+    date_col = next((c for c in ("date", "match_date") if c in tips_df.columns), None)
+    tips = []
+    for _, t in tips_df.iterrows():
+        try:
+            pid = int(float(t.get("player_id")))
+        except (TypeError, ValueError):
+            continue
+        if pid <= 0 or not t.get("player_name"):
+            continue
+        tips.append((str(t.get(date_col))[:10] if date_col else "", str(t.get("match")),
+                     _norm(str(t.get("player_name"))), _initial_surname(t.get("player_name")), pid))
+
+    # One candidate list per (record date, record match); the fixture test is the resolver's.
+    by_fixture: dict[tuple[str, str], list] = {}
+    quoted: dict[tuple[str, str], dict] = {}
+    for r in records:
+        fk = (str(r.get("match_date"))[:10], str(r.get("match")))
+        if fk not in by_fixture:
+            by_fixture[fk] = [t for t in tips if _dates_close(t[0], fk[0]) and same_fixture(t[1], fk[1])]
+        q = quoted.setdefault(fk, {})
+        ik = _initial_surname(r.get("player"))
+        if ik:
+            q.setdefault(ik, set()).add(_norm(str(r.get("player"))))
+    for r in records:
+        fk = (str(r.get("match_date"))[:10], str(r.get("match")))
+        cands = by_fixture[fk]
+        name = _norm(str(r.get("player")))
+        exact = {t[4] for t in cands if t[2] == name}
+        if len(exact) == 1:
+            r["player_id"] = next(iter(exact))
+            out["matched"] += 1
+            continue
+        if len(exact) > 1:
+            out["ambiguous"] += 1
+            continue
+        ik = _initial_surname(r.get("player"))
+        short = {t[4] for t in cands if ik and t[3] == ik}
+        if len(short) == 1 and len(quoted[fk].get(ik, ())) == 1:
+            r["player_id"] = next(iter(short))
+            out["matched"] += 1
+        elif short:
+            out["ambiguous"] += 1
+        else:
+            out["unmatched"] += 1
+    if out["ambiguous"] or out["unmatched"]:
+        print(f"[odds_fetcher] player_id: {out['matched']} odds row(s) tied to an API-Football "
+              f"player; {out['ambiguous']} ambiguous and {out['unmatched']} with no tip player "
+              f"in that fixture are written without a player_id")
+    return out
 
 
 def _norm(name: str) -> str:
@@ -759,8 +857,10 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
     except Exception as e:
         print(f"[odds_fetcher] quote log skipped: {type(e).__name__}: {e}")
 
-    # Persist every fetched prop odd to the permanent forward-built history.
+    # Persist every fetched prop odd to the permanent forward-built history, each row carrying the
+    # API-Football player_id of the tip it prices where that match is unambiguous (2026-11-02).
     try:
+        attach_player_ids(history_records, signals_df)
         _append_odds_history(history_records)
     except Exception as e:
         print(f"[odds_fetcher] odds-history save skipped: {e}")

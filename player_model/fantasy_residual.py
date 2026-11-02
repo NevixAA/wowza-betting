@@ -52,36 +52,51 @@ RESIDUAL_ARMS = ["LINEAR", "RIDGE", "HGB"]
 
 
 def prepare(d: pd.DataFrame) -> pd.DataFrame:
-    """Derived/imputed model columns. Pure and row-wise, so train and test see the same thing."""
+    """Derived model columns. Pure and row-wise, so train and test see the same thing.
+
+    NAN-NATIVE (Data Truth, 2026-11-02). A missing input stays NaN. The only fallbacks left are to
+    another REAL column for the same player (last match minutes -> his minutes per team game, last
+    start -> his start rate, last points -> his points per team game). Typed fills are gone: minutes
+    / start / ownership / points 0, wowza_gap 0, home 0.5, fdr 3.0, lambdas 0.0, cs_exp 0.0,
+    attack_fixture 1.0. The models below handle NaN themselves (HistGradientBoosting) or fit and
+    predict on complete rows only (the closed-form linear arms), so no value is manufactured."""
     x = d.copy()
-    x["min_last_imp"] = x["min_last"].fillna(x["min_per_team_game"]).fillna(0) / 90.0
-    x["started_last_imp"] = x["started_last"].fillna(x["start_rate"]).fillna(0).clip(0, 2)
-    x["wowza_p_start_imp"] = x["wowza_p_start"].fillna(x["start_rate"]).fillna(0)
-    x["att_pts90"] = x["xg90"] * x["goal_pts"] + x["xa90"] * 3.0
-    x["att_pts90_x_start"] = x["att_pts90"] * x["start_rate"].fillna(0)
-    x["cs_exp_x_start"] = x["cs_exp"].fillna(0) * x["start_rate"].fillna(0)
-    x["log_own"] = np.log1p(x["ownership"].fillna(0))
+    x["min_last_imp"] = x["min_last"].fillna(x["min_per_team_game"]) / 90.0
+    x["started_last_imp"] = x["started_last"].fillna(x["start_rate"]).clip(0, 2)
+    x["wowza_p_start_imp"] = x["wowza_p_start"].fillna(x["start_rate"])
+    x["att_pts90"] = x["xg90"] * x["goal_pts"] + x["xa90"] * 3.0      # FPL rule: assist = 3
+    x["att_pts90_x_start"] = x["att_pts90"] * x["start_rate"]
+    x["cs_exp_x_start"] = pd.to_numeric(x["cs_exp"], errors="coerce") * x["start_rate"]
+    x["log_own"] = np.log1p(pd.to_numeric(x["ownership"], errors="coerce"))
     x["net_transfers_s"] = np.sign(x["net_transfers_k"]) * np.log1p(x["net_transfers_k"].abs())
     x["form_n"] = pd.to_numeric(x.get("form"), errors="coerce")
-    x["pts_last_imp"] = x["pts_last"].fillna(x["pts_per_team_game"]).fillna(0)
+    x["pts_last_imp"] = x["pts_last"].fillna(x["pts_per_team_game"])
     x["has_wowza"] = x["wowza_uncond"].notna().astype(int)
-    x["wowza_gap"] = (x["wowza_uncond"] - x["ep_next"]).fillna(0.0)
+    x["wowza_gap"] = x["wowza_uncond"] - x["ep_next"]                 # NaN without a projection
     for c in ("home", "fdr", "lam_for", "lam_against", "cs_exp", "attack_fixture"):
         x[c] = pd.to_numeric(x[c], errors="coerce")
-    x["home"] = x["home"].fillna(0.5)
-    x["fdr"] = x["fdr"].fillna(3.0)
-    x["lam_for"] = x["lam_for"].fillna(0.0)
-    x["lam_against"] = x["lam_against"].fillna(0.0)
-    x["cs_exp"] = x["cs_exp"].fillna(0.0)
-    x["attack_fixture"] = x["attack_fixture"].fillna(1.0)
     for c in FEATURES + LINEAR_FEATURES:
         x[c] = pd.to_numeric(x[c], errors="coerce")
     return x
 
 
 def _matrix(x: pd.DataFrame, cols) -> np.ndarray:
+    """Float matrix of `cols`; every missing or non-finite cell is NaN (never 0)."""
     m = x[cols].to_numpy(float)
-    return np.where(np.isfinite(m), m, 0.0)
+    return np.where(np.isfinite(m), m, np.nan)
+
+
+def _observed_columns(X: np.ndarray) -> np.ndarray:
+    """Indices of the columns with at least one value in the training rows. A feature missing on
+    EVERY training row carries no information (and sklearn's binning cannot take an all-NaN
+    column), so the NaN-native models leave it out rather than fill it."""
+    return np.where(np.isfinite(X).any(0))[0] if X.size else np.arange(X.shape[1])
+
+
+def _complete(X: np.ndarray) -> np.ndarray:
+    """Rows with every feature present. The closed-form linear arms cannot take a NaN, so they
+    fit on these rows only and predict NaN for the rest (no value is imputed)."""
+    return np.isfinite(X).all(1)
 
 
 # ── residual models ───────────────────────────────────────────────────────────────────────────
@@ -101,18 +116,28 @@ class LinearResidual:
 
     def fit(self, x, r, groups=None):
         X = _matrix(x, self.cols)
+        r = np.asarray(r, float)
+        ok = _complete(X) & np.isfinite(r)
+        self.n_fit_, self.n_skipped_ = int(ok.sum()), int((~ok).sum())
+        X, r = X[ok], r[ok]
+        if not len(X):
+            # Nothing complete to fit on: no coefficients, every prediction NaN.
+            self.mean_ = np.full(len(self.cols), np.nan)
+            self.coef_ = np.full(len(self.cols) + 1, np.nan)
+            return self
         self.mean_ = X.mean(0)
-        X1 = np.column_stack([np.ones(len(x)), X])
+        X1 = np.column_stack([np.ones(len(X)), X])
         self.coef_ = np.linalg.lstsq(X1, r, rcond=None)[0]
         return self
 
     def predict(self, x):
+        # A row with a missing feature gets NaN (NaN propagates through the product).
         return np.column_stack([np.ones(len(x)), _matrix(x, self.cols)]) @ self.coef_
 
     def contributions(self, x) -> pd.DataFrame:
         """Exact additive split: residual = base + sum of group terms, each term measured from
         the training-average player, so 'minutes +0.8' means 'his minutes evidence is worth 0.8
-        more than an average player's'."""
+        more than an average player's'. A group with a missing feature is NaN for that row."""
         X = _matrix(x, self.cols)
         terms = (X - self.mean_) * self.coef_[1:]
         out = pd.DataFrame(index=x.index)
@@ -144,6 +169,19 @@ class RidgeResidual:
 
     def fit(self, x, r, groups=None):
         X = _matrix(x, self.cols)
+        r = np.asarray(r, float)
+        ok = _complete(X) & np.isfinite(r)
+        self.n_fit_, self.n_skipped_ = int(ok.sum()), int((~ok).sum())
+        X, r = X[ok], r[ok]
+        if groups is not None:
+            groups = np.asarray(groups)[ok]
+        if not len(X):
+            # Nothing complete to fit on: every prediction NaN.
+            k = len(self.cols)
+            self.alpha_ = self.alpha
+            self.mu_, self.sd_, self.b0_, self.w_ = (np.full(k, np.nan), np.ones(k), np.nan,
+                                                     np.full(k, np.nan))
+            return self
         alpha = self.alpha
         if alpha is None:
             g = np.asarray(groups) if groups is not None else None
@@ -191,14 +229,18 @@ class HGBResidual:
 
     def fit(self, x, r, groups=None):
         from sklearn.ensemble import HistGradientBoostingRegressor
+        X = _matrix(x, self.cols)
+        r = np.asarray(r, float)
+        ok = np.isfinite(r)                      # a missing TARGET is not a training row
+        self.keep_ = _observed_columns(X[ok])
         self.m_ = HistGradientBoostingRegressor(
             max_depth=3, learning_rate=0.04, max_iter=150, min_samples_leaf=40,
             l2_regularization=5.0, random_state=7)
-        self.m_.fit(x[self.cols].to_numpy(float), r)
+        self.m_.fit(X[ok][:, self.keep_], r[ok])
         return self
 
     def predict(self, x):
-        return self.m_.predict(x[self.cols].to_numpy(float))
+        return self.m_.predict(_matrix(x, self.cols)[:, self.keep_])
 
 
 def make(arm: str):
@@ -583,13 +625,18 @@ class MinutesModel:
     minutes/points per bucket estimated from the training gameweeks."""
 
     def fit(self, x: pd.DataFrame):
-        from sklearn.linear_model import LogisticRegression
+        # NaN-NATIVE (Data Truth, 2026-11-02): a gradient-boosted classifier routes a missing
+        # feature down its own learned branch, so an unknown chance/start rate/minutes is never
+        # turned into a typed 0 first. Was a standardised LogisticRegression on NaN->0 inputs.
+        # Shallow and heavily regularised, like HGBResidual: the training panel is small.
+        from sklearn.ensemble import HistGradientBoostingClassifier
         X = _matrix(x, MIN_FEATURES)
-        self.mu_, self.sd_ = X.mean(0), X.std(0)
-        self.sd_[self.sd_ < 1e-9] = 1.0
-        self.m_ = LogisticRegression(C=0.5, max_iter=2000)
+        self.keep_ = _observed_columns(X)
+        self.m_ = HistGradientBoostingClassifier(
+            max_depth=3, learning_rate=0.05, max_iter=150, min_samples_leaf=20,
+            l2_regularization=5.0, random_state=7)
         y = x["bucket"].to_numpy()
-        self.m_.fit((X - self.mu_) / self.sd_, y)
+        self.m_.fit(X[:, self.keep_], y)
         self.classes_ = list(self.m_.classes_)
         self.cond_minutes_ = x.groupby("bucket")["actual_minutes"].mean().to_dict()
         sub = x[x["bucket"] == "m1_59"]
@@ -641,8 +688,7 @@ class MinutesModel:
         return self
 
     def predict_proba(self, x: pd.DataFrame) -> pd.DataFrame:
-        X = (_matrix(x, MIN_FEATURES) - self.mu_) / self.sd_
-        P = self.m_.predict_proba(X)
+        P = self.m_.predict_proba(_matrix(x, MIN_FEATURES)[:, self.keep_])
         out = pd.DataFrame(P, columns=self.classes_, index=x.index)
         for b in ("m0", "m1_59", "m60"):
             if b not in out:

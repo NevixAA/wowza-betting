@@ -67,7 +67,9 @@ DEFAULTS: list[dict] = [dict(zip(
     ("fdr_default_3", "fantasy.py:413,415", "missing FDR -> 3", "MISSING_DATA_FALLBACK", "V1", "LOW", False, "FIXED 2026-11-01 (data truth, dt/fantasy): missing FDR -> that fixture is left unadjusted (counted, logged)"),
     ("fixture_mult_clip_v1", "fantasy.py:418", "0.60-1.40", "DOMAIN_PRIOR", "V1->V2", "MED", False, ""),
     ("status_default_available", "fpl_api.py:218,229", "unknown FPL status -> available",
-     "MISSING_DATA_FALLBACK", "V1", "MED", False, "unknown data becomes MORE confident"),
+     "MISSING_DATA_FALLBACK", "V1", "MED", False,
+     "FIXED 2026-11-02 (data truth, dt2/producers): status None, availability 'unknown'; optimiser, "
+     "chips and transfers never recommend an unknown-availability player (logged)"),
     ("season_hardcoded", "fantasy.py:693,712", "seasons=('2026','2025')", "MISSING_DATA_FALLBACK", "V1",
      "MED", False, "hard-coded season; silently serves last season's squads from mid-2027"),
     # ---- V2 (production product)
@@ -87,14 +89,18 @@ DEFAULTS: list[dict] = [dict(zip(
     ("v2_chance_fill", "fantasy_panel.py:229", "NaN chance -> 100 if status 'a' else 0",
      "MISSING_DATA_FALLBACK", "V2", "HIGH", False, "FIXED 2026-11-01 (data truth, dt/fantasy): null chance on a non-'a' status -> NaN (the residual's prepare still imputes)"),
     ("v2_matrix_nan0", "fantasy_residual.py:84", "every residual feature NaN -> 0", "MISSING_DATA_FALLBACK",
-     "V2 (shadow residual)", "MED", False, ""),
+     "V2 (shadow residual)", "MED", False,
+     "FIXED 2026-11-02 (data truth, dt2/producers): prepare/_matrix keep NaN; HGB arms and the "
+     "minutes model are NaN-native, the linear arms fit/predict on complete rows only (else NaN)"),
     ("v2_cond_minutes", "fantasy_residual.py:701", "missing bucket -> 25 / 88 min", "MISSING_DATA_FALLBACK",
      "V2", "MED", False, "FIXED 2026-11-01 (data truth, dt/fantasy): missing bucket -> expected minutes NaN"),
     ("v2_confidence_thresholds", "fantasy_v2.py:256-262", "p_start 0.85 / 0.60", "DOMAIN_PRIOR", "V2",
      "MED", True, ""),
     ("v2_captain_pools", "fantasy_v2.py:404-425", "p_start 0.85 / 0.75; 0.7/0.8 x best", "DOMAIN_PRIOR",
      "V2", "HIGH", False, ""),
-    ("v2_minutes_model_C", "fantasy_residual.py:557", "C=0.5", "DOMAIN_PRIOR", "V2", "MED", False, ""),
+    ("v2_minutes_model_C", "fantasy_residual.py:557", "C=0.5", "DOMAIN_PRIOR", "V2", "MED", False,
+     "2026-11-02: the minutes model is now a NaN-native HistGradientBoostingClassifier "
+     "(depth 3, lr 0.05, 150 iter, leaf 20, l2 5.0); its hyperparameters are unfitted, like C was"),
     ("v2_nb_dispersion", "fantasy_residual.py:572-596", "likelihood-chosen size", "TRAIN_FITTED_PRIOR",
      "V2", "MED", False, "reproducible"),
     ("v2_ridge_alpha", "fantasy_residual.py:131", "leave-one-GW-out alpha", "TRAIN_FITTED_PRIOR", "V2",

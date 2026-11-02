@@ -164,7 +164,9 @@ def _synthetic_panel(n_gw=5, n=300, signal=1.5, seed=1):
             "threat_pg": 10, "creativity_pg": 10, "n_fix": 1, "home": 1.0, "fdr": 3, "lam_for": 1.4,
             "lam_against": 1.3, "cs_exp": 0.3, "attack_fixture": 1.0, "price": 6.0, "ownership": 5.0,
             "net_transfers_k": 0.0, "ppm": 0.5, "pts_per_team_game": 3.0, "form": 3.0, "pts_last": 3.0,
-            "wowza_uncond": np.nan, "in_ledger": 0, "position": "MID",
+            # A real (synthetic) Wowza projection on every row: since 2026-11-02 the linear arms fit
+            # on complete rows only, and an absent projection is no longer a typed gap of 0.
+            "wowza_uncond": ep, "in_ledger": 0, "position": "MID",
             **{f"pos_{p}": int(p == "MID") for p in fp.POSITIONS}}))
     return pd.concat(rows, ignore_index=True)
 
