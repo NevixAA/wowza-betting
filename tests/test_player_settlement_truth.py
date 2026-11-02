@@ -18,7 +18,10 @@ import update_results as U
     ("sot2", {"shots_on_target": 2}, "WIN"),
     ("sot3", {"shots_on_target": 2}, "LOSS"),
     ("goals2", {"goals": 2}, "WIN"),
-    ("cards", {"yellow_card": 0}, "LOSS"),
+    ("cards", {"yellow_card": 0, "red_card": 0}, "LOSS"),
+    # A straight red is a card (one rule with clv_records); an unknown red never reads as 0.
+    ("cards", {"yellow_card": 0, "red_card": 1}, "WIN"),
+    ("cards", {"yellow_card": 0}, ""),
     ("assists", {"assists": 1}, "WIN"),
     ("corners", {"corners": 3}, ""),
     # A stat the provider did not publish is unknown, never 0 -> LOSS.
@@ -232,7 +235,8 @@ def test_two_fixtures_matching_is_not_guessed(tmp_path, monkeypatch):
 
 
 def test_postponed_fixture_is_void(tmp_path, monkeypatch):
-    p = _ledger(tmp_path, monkeypatch, days_ago=2)
+    # days_ago=3: the 48-hour reschedule window (owner rule 2026-11-02) has closed.
+    p = _ledger(tmp_path, monkeypatch, days_ago=3)
     _api(monkeypatch, [], status="PST")
     U.update_player_results()
     row = _row(p)

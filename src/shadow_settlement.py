@@ -79,6 +79,23 @@ CLOSE_SETTLE_DELAY_MIN = 240
 
 
 # ── small helpers ─────────────────────────────────────────────────────────────────────────────
+def resolve_api_season(league, match_date) -> str:
+    """The match's season (src.season_resolver); a cache key only, so an unknown season is fine."""
+    from src.season_resolver import resolve_api_season as _r
+    return _r(league, match_date)
+
+
+def _takes_date(fn) -> bool:
+    """True when a results provider accepts (league, match_date)."""
+    import inspect
+    try:
+        ps = [p for p in inspect.signature(fn).parameters.values()
+              if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD, p.VAR_POSITIONAL)]
+    except (TypeError, ValueError):
+        return False
+    return len(ps) >= 2 or any(p.kind == p.VAR_POSITIONAL for p in ps)
+
+
 def _blank(v) -> bool:
     if v is None:
         return True
@@ -347,11 +364,21 @@ def settle_frame(df: pd.DataFrame, *,
     identity = identity or {}
     cache: dict[tuple[str, str], list[dict]] = {}
 
-    def events(src_name, fn, league):
-        k = (src_name, league)
+    def events(src_name, fn, league, match_date):
+        # THE MATCH'S SEASON, not today's (round 2 P1-8): this called fn(league), so a season-keyed
+        # provider (API-Football) looked every row up in TODAY's season - from 1 January a December
+        # MLS / Brazil / Argentina fixture could never settle. A provider that takes the match date
+        # gets it, and its events are cached per (league, season of that date).
+        if _takes_date(fn):
+            season = resolve_api_season(league, str(match_date)[:10])
+            k = (src_name, league, season)
+            call = lambda: fn(league, str(match_date)[:10])            # noqa: E731
+        else:
+            k = (src_name, league)
+            call = lambda: fn(league)                                   # noqa: E731
         if k not in cache:
             try:
-                cache[k] = list(fn(league) or [])
+                cache[k] = list(call() or [])
             except Exception as e:                                    # noqa: BLE001
                 log.warning(f"shadow settle: {src_name} {league} failed ({e})")
                 cache[k] = []
@@ -395,7 +422,7 @@ def settle_frame(df: pd.DataFrame, *,
             if max_age is not None and now_ts - kickoff > pd.Timedelta(days=max_age):
                 continue
             ev = match_event(home, away, row.get("match_date"), kickoff,
-                             events(src_name, fn, league), event_id=fid,
+                             events(src_name, fn, league, row.get("match_date")), event_id=fid,
                              fallback_matcher=fallback_matcher)
             if ev is not None:
                 src = src_name

@@ -113,8 +113,8 @@ def test_sharp_settles_from_api_football_results(af, monkeypatch, tmp_path):
     p = tmp_path / "sharp_ledger.csv"
     pd.DataFrame([{"signal_date": _d(10), "match_date": _d(10), "league": LEAGUE,
                    "home_team": "Inter Miami", "away_team": "Orlando City", "market_label": "Over 2.5",
-                   "side": "OVER", "signal": "STRONG", "opening_odds": "1.9", "result": "", "pnl": "",
-                   "resolved_date": ""}]).to_csv(p, index=False)
+                   "side": "OVER", "signal": "STRONG", "opening_odds": "2.1", "current_odds": "1.9",
+                   "result": "", "pnl": "", "resolved_date": ""}]).to_csv(p, index=False)
     monkeypatch.setattr(U, "SHARP_LEDGER_FILE", p)
     monkeypatch.setattr(U, "_FD_SOURCES", {})
     monkeypatch.setattr(U, "fetch_scores", lambda *a, **k: [])
