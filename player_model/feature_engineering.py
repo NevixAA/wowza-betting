@@ -28,8 +28,18 @@ import numpy as np
 import pandas as pd
 
 from . import config
+from . import league_quality as _LQ
+from .setpiece import features as _SP
 
 NAN = float("nan")
+
+# Retired set-piece composites (typed position weights over set-piece goal classifications that
+# API-Football does not provide; 100% missing in the 2026-11-01 rebuild). Kept as NaN columns for
+# the legacy serving payloads; the measured replacements are _SP.SETPIECE_COLUMNS and
+# corner_matchup_index. defender_sot_role_index is DROPPED on the same terms: its real-data
+# counterpart is us_sp_sot_p90 (set-piece shots on target per 90, every position, Understat).
+LEGACY_SETPIECE_COLUMNS = ("sp_taker_score", "sp_receiver_score", "set_piece_threat_score",
+                           "set_piece_corner_matchup", "defender_sot_role_index")
 
 # season_* feature -> raw per-match source column, for AS-OF-DATE recomputation.
 _SEASON_SRC = {
@@ -71,6 +81,190 @@ def _ratio(a, b) -> pd.Series:
 def _profile(df: pd.DataFrame, col: str) -> pd.Series:
     s = _num(df, col)
     return s.where(s != _PROFILE_PLACEHOLDERS[col]) if col in _PROFILE_PLACEHOLDERS else s
+
+
+# ── collected real data (scripts/collect_*.py -> output/collect, owner decision C/D 2026-11-02) ──
+
+COLLECT_DIR = config.OUTPUT_DIR / "collect"
+_COLLECTED: dict = {}
+
+
+def _collected(name: str) -> pd.DataFrame:
+    """output/collect/<name>.parquet (cached on path + mtime); empty frame when absent."""
+    p = COLLECT_DIR / f"{name}.parquet"
+    stamp = (str(p), p.stat().st_mtime if p.exists() else None)
+    hit = _COLLECTED.get(name)
+    if hit is not None and hit[0] == stamp:
+        return hit[1]
+    try:
+        df = pd.read_parquet(p) if p.exists() else pd.DataFrame()
+    except Exception as e:                                              # noqa: BLE001
+        print(f"[features] {p.name} unreadable ({e}): not used")
+        df = pd.DataFrame()
+    _COLLECTED[name] = (stamp, df)
+    return df
+
+
+def _season_year(s) -> pd.Series:
+    """API-Football season label -> its start year ('2024' / '2024/25' -> 2024), NaN if none."""
+    return pd.to_numeric(pd.Series(s).astype(str).str.extract(r"^(\d{4})")[0], errors="coerce")
+
+
+def collected_profiles() -> pd.DataFrame:
+    """One row per player_id from /players?id&season (status ok): height_cm and weight_kg of the
+    LATEST season that reports them, birth_date when every season that reports one agrees (two
+    different provider birth dates -> refused, NaN)."""
+    p = _collected("player_profiles")
+    memo = _COLLECTED.get("_profiles_derived")
+    if memo is not None and memo[0] is p:
+        return memo[1]
+    out = _derive_profiles(p)
+    _COLLECTED["_profiles_derived"] = (p, out)
+    return out
+
+
+def _derive_profiles(p: pd.DataFrame) -> pd.DataFrame:
+    cols = ["player_id", "height_cm", "weight_kg", "birth_date"]
+    if p.empty or "status" not in p.columns:
+        return pd.DataFrame(columns=cols)
+    p = p[p["status"] == "ok"].copy()                     # the collector's own status label
+    p["_y"] = _season_year(p["season"]).to_numpy()
+    p = p.sort_values(["player_id", "_y"])
+    out = pd.DataFrame(index=pd.Index(p["player_id"].unique(), name="player_id"))
+    for c in ("height_cm", "weight_kg"):
+        v = pd.to_numeric(p[c], errors="coerce")
+        out[c] = v.groupby(p["player_id"]).last()           # last non-null by season order
+    bd = p.dropna(subset=["birth_date"]).groupby("player_id")["birth_date"].agg(
+        lambda s: s.iloc[0] if s.nunique() == 1 else None)
+    out["birth_date"] = bd
+    return out.reset_index()
+
+
+def collected_sidelined() -> dict:
+    """{player_id: [{start, end}]} for every player whose /sidelined answer was collected (an empty
+    list is a real 'no recorded spell'); players never asked are absent."""
+    players, spells = _collected("sidelined_players"), _collected("sidelined_spells")
+    if players.empty:
+        return {}
+    out = {int(p): [] for p in pd.to_numeric(players["player_id"], errors="coerce").dropna()}
+    if not spells.empty:
+        for pid, s, e in zip(spells["player_id"], spells["start"], spells["end"]):
+            if int(pid) in out:
+                out[int(pid)].append({"start": s, "end": e})
+    return out
+
+
+def _season_pen_totals(hist: pd.DataFrame) -> pd.DataFrame:
+    """Per (player_id, season start year): penalty scored / attempts. The collected season record
+    (/players statistics.penalty, all competitions) where the provider reported it, else the sum of
+    the per-match rows we hold for that season. Real counts only."""
+    cols = ["player_id", "_y", "pen_s", "pen_a"]
+    parts = []
+    if {"penalty_scored", "penalty_missed", "season", "player_id"} <= set(hist.columns):
+        ps, pm = _num(hist, "penalty_scored"), _num(hist, "penalty_missed")
+        h = pd.DataFrame({"player_id": hist["player_id"], "_y": _season_year(hist["season"]).to_numpy(),
+                          "pen_s": ps, "pen_a": ps + pm}).dropna(subset=["player_id", "_y"])
+        h = h.groupby(["player_id", "_y"]).sum(min_count=1).reset_index()
+        parts.append(h.assign(_src=1))
+    prof = _collected("player_profiles")
+    if not prof.empty and "pen_entries" in prof.columns:
+        p = prof[pd.to_numeric(prof["pen_entries"], errors="coerce") > 0]
+        if len(p):
+            parts.append(pd.DataFrame({
+                "player_id": p["player_id"].to_numpy(), "_y": _season_year(p["season"]).to_numpy(),
+                "pen_s": pd.to_numeric(p["penalty_scored"], errors="coerce").to_numpy(),
+                "pen_a": (pd.to_numeric(p["penalty_scored"], errors="coerce")
+                          + pd.to_numeric(p["penalty_missed"], errors="coerce")).to_numpy(),
+                "_src": 0}))
+    if not parts:
+        return pd.DataFrame(columns=cols)
+    t = pd.concat(parts, ignore_index=True).dropna(subset=["pen_a"])
+    t = t.sort_values(["player_id", "_y", "_src"]).drop_duplicates(["player_id", "_y"], keep="first")
+    return t[cols]
+
+
+def _penalty_asof(df: pd.DataFrame) -> pd.Series:
+    """penalty_conversion_rate per row of a frame sorted by (player_id, date): earlier seasons'
+    totals (_season_pen_totals) + this season's per-match attempts strictly before the row; NaN
+    below config.MIN_PEN_ATTEMPTS attempts."""
+    if not {"penalty_scored", "penalty_missed", "player_id"} <= set(df.columns):
+        return pd.Series(np.nan, index=df.index)
+    ps, pm = _num(df, "penalty_scored"), _num(df, "penalty_missed")
+    att = ps + pm
+    if "season" not in df.columns:                  # no season: the per-match record only
+        cs = ps.groupby(df["player_id"]).cumsum() - ps
+        ca = att.groupby(df["player_id"]).cumsum() - att
+        return (cs / ca).where(ca >= config.MIN_PEN_ATTEMPTS)
+    y = pd.Series(_season_year(df["season"]).to_numpy(), index=df.index)
+    key = [df["player_id"], y]
+    in_s = ps.groupby(key).cumsum() - ps
+    in_a = att.groupby(key).cumsum() - att
+    tot = _season_pen_totals(df)
+    prior_s = pd.Series(0.0, index=df.index)
+    prior_a = pd.Series(0.0, index=df.index)
+    if len(tot):
+        tot = tot.sort_values(["player_id", "_y"])
+        g = tot.groupby("player_id")
+        tot = tot.assign(_cs=g["pen_s"].cumsum(), _ca=g["pen_a"].cumsum())
+        q = pd.DataFrame({"player_id": pd.to_numeric(df["player_id"], errors="coerce").to_numpy(float),
+                          "_y": y.to_numpy(float), "_i": np.arange(len(df))}).dropna(subset=["_y", "player_id"])
+        q = q.sort_values("_y")
+        t = tot[["player_id", "_y", "_cs", "_ca"]].astype({"_y": float, "player_id": float}).sort_values("_y")
+        # cumulative totals of the seasons strictly BEFORE the row's season
+        hit = pd.merge_asof(q, t, on="_y", by="player_id", allow_exact_matches=False)
+        hit = hit.dropna(subset=["_ca"])
+        prior_s.iloc[hit["_i"].to_numpy()] = hit["_cs"].to_numpy()
+        prior_a.iloc[hit["_i"].to_numpy()] = hit["_ca"].to_numpy()
+    s, a = prior_s + in_s, prior_a + in_a
+    return (s / a.where(a > 0)).where(a >= config.MIN_PEN_ATTEMPTS)
+
+
+def _penalty_now(tot: pd.DataFrame, pid, phist_all: pd.DataFrame, season) -> float:
+    """Serving counterpart of _penalty_asof for an upcoming fixture of `season` (None = unknown:
+    every stored season counts, all of them are before the fixture)."""
+    t = tot[pd.to_numeric(tot["player_id"], errors="coerce") == pid] if len(tot) else tot
+    if season is None:
+        s, a = (float(t["pen_s"].sum()), float(t["pen_a"].sum())) if len(t) else (0.0, 0.0)
+    else:
+        y = float(_season_year([season]).iloc[0])
+        prior = t[t["_y"] < y] if len(t) else t
+        s, a = (float(prior["pen_s"].sum()), float(prior["pen_a"].sum())) if len(prior) else (0.0, 0.0)
+        if "season" in phist_all.columns:
+            cur = phist_all[_season_year(phist_all["season"]).to_numpy() == y]
+            ps, pm = _num(cur, "penalty_scored"), _num(cur, "penalty_missed")
+            s += float(ps.sum())
+            a += float((ps + pm).sum())
+    return s / a if a >= config.MIN_PEN_ATTEMPTS else NAN
+
+
+def _height_series(d: pd.DataFrame) -> pd.Series:
+    """Player height per row: the collected profile first (a real 180 cm stays 180), else a stored
+    value that is not the old placeholder."""
+    stored = _profile(d, "height_cm")
+    prof = collected_profiles()
+    if prof.empty or "player_id" not in d.columns:
+        return stored
+    h = d["player_id"].map(prof.set_index("player_id")["height_cm"]).astype(float)
+    return h.where(h.notna(), stored)
+
+
+def _attach_profiles(df: pd.DataFrame) -> pd.DataFrame:
+    """height_cm / weight_kg / age per row: collected profile first, else a REAL stored value
+    (the old placeholders count as missing). Age at the row's match date from the birth date."""
+    prof = collected_profiles()
+    stored = {c: _profile(df, c) for c in ("age", "height_cm", "weight_kg")}
+    if prof.empty:
+        for c, v in stored.items():
+            df[c] = v
+        return df
+    p = prof.set_index("player_id")
+    pid = df["player_id"]
+    for c in ("height_cm", "weight_kg"):
+        df[c] = pid.map(p[c]).astype(float).where(lambda s: s.notna(), stored[c])
+    bd = pd.to_datetime(pid.map(p["birth_date"]), errors="coerce")
+    age = (pd.to_datetime(df["date"], errors="coerce") - bd).dt.days / 365.25
+    df["age"] = age.where(age.notna(), stored["age"])
+    return df
 
 
 def _grouped_prev(grp, col: str):
@@ -164,6 +358,7 @@ _TEAM_ROLL = {
     "conc_mid_sot":       ("opp_sot_conceded_vs_mid_pg",   "MIN_OPP_MATCHES"),
     "mid_fouls_pg":       ("opp_mid_fouls_pg",             "MIN_OPP_MATCHES"),
     "mid_cards_pg":       ("opp_mid_cards_pg",             "MIN_OPP_MATCHES"),
+    "corners_conceded":   ("opp_corners_conceded_pg",      "MIN_OPP_MATCHES"),
 }
 
 
@@ -197,7 +392,7 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
               "yellow_cards", "saves", "goals_conceded", "sp_goal", "team_corners"):
         d[c] = _num(d, c)
     d["_rating"] = _num(d, "rating").where(lambda s: s > 0)
-    d["_height"] = _profile(d, "height_cm")
+    d["_height"] = _height_series(d)
     key = ["fixture_id", "_tkey"]
 
     t = d.groupby(key).agg(date=("date", "first"), league=("league", "first"),
@@ -238,16 +433,36 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
 
     # What the OTHER side did in the same fixture = what this team conceded.
     other = t[["fixture_id", "_tkey", "goals_scored", "sot_scored", "sp_scored",
-               "fwd_goals", "fwd_sot", "mid_goals", "mid_sot"]].rename(columns={
+               "fwd_goals", "fwd_sot", "mid_goals", "mid_sot", "team_corners"]].rename(columns={
         "_tkey": "_okey", "goals_scored": "goals_conceded", "sot_scored": "sot_conceded",
         "sp_scored": "sp_conceded", "fwd_goals": "conc_fwd_goals", "fwd_sot": "conc_fwd_sot",
-        "mid_goals": "conc_mid_goals", "mid_sot": "conc_mid_sot"})
+        "mid_goals": "conc_mid_goals", "mid_sot": "conc_mid_sot", "team_corners": "corners_conceded"})
     t = t.merge(other, on=["fixture_id", "_okey"], how="left")
+    # Corners for / against from the API-Football team statistics. A fixture where BOTH sides show 0
+    # is an unrecorded statistic, not a result (see _blank_unrecorded_corners): NaN.
+    both0 = (t["team_corners"] == 0) & (t["corners_conceded"] == 0)
+    t.loc[both0, ["team_corners", "corners_conceded"]] = np.nan
     # Only the side we hold rows for can be measured: a fixture whose opponent was not collected
     # leaves every conceded quantity NaN (it used to drop out of an inner self-join silently).
     t["date"] = pd.to_datetime(t["date"], errors="coerce")
     t["_day"] = t["date"].dt.normalize()
     return t.sort_values(["_tkey", "date", "fixture_id"]).reset_index(drop=True)
+
+
+def _blank_unrecorded_corners(df: pd.DataFrame) -> pd.DataFrame:
+    """team_corners -> NaN on a fixture where we hold BOTH teams' rows and every one shows 0.
+    data_fetcher wrote `int(stats.get("Corner Kicks") or 0)`, so a fixture without statistics
+    looks like 0-0 corners; a real 0-0 is rare (each side has 0 corners in ~2% of team-matches),
+    while the share of 0s reaches 6-11% in leagues with patchy statistics (Finland, Sweden, Serie
+    A, Bundesliga; measured 2026-11-02 on player_history). Returns the frame (modified copy)."""
+    if not {"fixture_id", "team", "team_corners"} <= set(df.columns):
+        return df
+    df = df.copy()
+    tc = _num(df, "team_corners")
+    g = df.assign(_tc=tc).groupby("fixture_id")
+    both = (g["team"].transform("nunique") >= 2) & (g["_tc"].transform("max") == 0)
+    df["team_corners"] = tc.where(~both)
+    return df
 
 
 def _team_rolling(t: pd.DataFrame, n: int) -> pd.DataFrame:
@@ -471,16 +686,18 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     corners_rel = _ratio(f["team_corners_pg"], f["lg_corners_per_team"])
     sp_rel = _ratio(f["opp_sp_goals_conceded_pg"], f["lg_sp_per_team"])
 
-    # Set-piece role. career_sp_assist_rate / fk_goals_pg are NaN wherever the goal events carry no
-    # set-piece classification (API-Football: "Normal Goal" only), so these stay NaN there.
-    _pos_taker = (pm * 0.45 + pf * 0.30 + pd_ * 0.05).clip(0, 1)
-    f["sp_taker_score"] = ((f["career_sp_assist_rate"].clip(0, 0.15) / 0.15) * 0.60
-                           + (f["fk_goals_pg"].clip(0, 0.05) / 0.05) * 0.25
-                           + _pos_taker * 0.15).clip(0, 1)
-    f["sp_receiver_score"] = ((1.0 - f["sp_taker_score"]) * f["aerial_won_rate"]
-                              * (pd_ + 0.6 * pm)).clip(0, 1)
-    f["set_piece_threat_score"] = (f["aerial_won_rate"] * corners_rel.clip(upper=2.0) * sp_rel
-                                   * (pd_ + 0.7 * pm)).clip(0, 3.0)
+    # Set-piece role (owner decision B, 2026-11-02): REAL data only. The legacy scores were typed
+    # position weights (0.45 / 0.30 / 0.05 ...) over goal-event classifications API-Football does not
+    # provide; they are retired (NaN, LEGACY_SETPIECE_COLUMNS). Their measured replacements are the
+    # Understat features us_sp_taker_share / us_sp_receiver_share / us_sp_xg_p90 / us_sp_sot_p90 /
+    # us_dfk_shots_p90 (player_model/setpiece/features.py; NaN outside the Understat leagues), and
+    # the corner matchup below.
+    for c in LEGACY_SETPIECE_COLUMNS:
+        f[c] = np.nan
+    # Corner matchup: the player's team's corners per match (his last n games) relative to its
+    # league, times the opponent's corners CONCEDED per match relative to the league. Both from the
+    # API-Football team statistics (team_corners), every league.
+    f["corner_matchup_index"] = corners_rel * _ratio(f["opp_corners_conceded_pg"], f["lg_corners_per_team"])
 
     f["aerial_matchup_score"] = (f["aerial_won_rate"] * (1.0 - f["opp_def_aerial_win_rate"])).clip(lower=0.0)
     f["foul_draw_matchup_score"] = f["fouls_drawn_per90"] * f["opp_def_fouls_pg"]
@@ -521,7 +738,6 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["efficiency_vs_leaky_keeper"] = (f["shooting_efficiency_index"] * f["opp_sot_conceded_pg"]).clip(lower=0.0)
     f["kp_vs_aggressive_defense"] = (f["kp_per90"] * f["opp_def_cards_pg"]).clip(lower=0.0)
     f["team_momentum_forward_matchup"] = (f["team_goals_pg_roll"] * f["opp_goals_conceded_pg"] * pf).clip(lower=0.0)
-    f["set_piece_corner_matchup"] = (f["set_piece_threat_score"] * corners_rel.clip(upper=2.0)).clip(lower=0.0)
 
     # Height: the player's and the opponent defenders' measured heights (NaN while unprofiled).
     f["height_diff_vs_opp_def"] = f["height_cm"] - f["opp_def_mean_height"]
@@ -533,8 +749,6 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     _sp_sot_proxy = (f["sp_goals_pg"] * 5.0 + f["headed_goals_pg"] * 4.0).clip(0, 0.6)
     f["defender_sot_edge"] = (f["sp_receiver_score"] * _h_adj * corners_rel.clip(0.2, 3.0) * sp_rel
                               * (1.0 + _sp_sot_proxy * 4.0)).clip(0, 5.0)
-    f["defender_sot_role_index"] = (pd_ * f["aerial_won_rate"] * f["sp_receiver_score"]
-                                    * corners_rel.clip(0.2, 2.0)).clip(0, 2.0)
     f["sp_threat_vs_weak_sp_defense"] = (f["sp_goals_pg"] * sp_rel * (1.0 - f["sp_taker_score"])).clip(0, 1.0)
     f["aerial_height_sp_composite"] = (f["aerial_won_rate"] * _h_adj.clip(0.3, 1.0) * sp_rel
                                        * (pd_ + 0.5 * pm)).clip(0, 2.0)
@@ -561,14 +775,18 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["quality_adj_sot_pg"] = (f["sot_pg"] * f["opp_strength_index"]).clip(0.0, 10.0)
 
     # Opponent defensive quality: each factor relative to the league's measured average (was 6.8 /
-    # 7.0 / 0.50). League tier / quality have no measured source (league_quality.py): NaN, so the
-    # career-quality ratios are NaN too.
+    # 7.0 / 0.50).
     f["opp_def_player_quality"] = (_ratio(f["opp_def_player_rating_pg"], f["lg_def_rating"])
                                    * _ratio(f["opp_top_def_rating"], f["lg_def_rating_top"])
                                    * _ratio(f["opp_def_aerial_win_rate"], f["lg_def_aerial"])).clip(0.2, 4.0)
-    f["context_quality_discount"] = _ratio(f["player_career_avg_quality"], f["opp_def_player_quality"]).clip(0.1, 3.0)
-    f["quality_mismatch_goals"] = (f["goals_pg"] * f["context_quality_discount"]).clip(0.0, 5.0)
-    f["quality_mismatch_sot"] = (f["sot_pg"] * f["context_quality_discount"]).clip(0.0, 10.0)
+    # Measured strength (owner decision A; league_quality.py): the Elo odds ratio between the
+    # opposition the player's record was earned against and this opponent. Unclipped: a clip would
+    # manufacture a value. The legacy hand-tier ratios are NaN (league_quality.LEGACY_COLUMNS).
+    f["context_elo_odds"] = np.exp(f["player_career_avg_opp_elo"] - f["opp_club_elo"])
+    f["elo_mismatch_goals"] = f["goals_pg"] * f["context_elo_odds"]
+    f["elo_mismatch_sot"] = f["sot_pg"] * f["context_elo_odds"]
+    for c in _LQ.LEGACY_COLUMNS:
+        f[c] = np.nan
     return f
 
 
@@ -580,8 +798,9 @@ _COMPOSITE_INPUTS = (
     "dribbled_past_pg", "defensive_actions_per90", "penalties_won_pg", "red_cards_pg", "passes_pg",
     "tackles_per90", "offsides_pg", "height_cm", "age", "sp_goals_pg", "headed_goals_pg",
     "fk_goals_pg", "career_sp_goals_rate", "career_sp_assist_rate", "referee_yellows_pg",
-    "player_career_avg_quality", *(feat for feat, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS,
+    *(feat for feat, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS,
     "lg_yellows_per_match", "pos_forward", "pos_midfielder", "pos_defender",
+    *_LQ.MEASURED_COLUMNS, *_SP.SETPIECE_COLUMNS,
 )
 
 
@@ -612,6 +831,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df = pd.DataFrame(match_rows)
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
+    # Before the minutes filter: the rule needs both teams' rows of a fixture.
+    df = _blank_unrecorded_corners(df)
 
     # Drop bench/DNP rows (< 10 min)
     df = df[df["minutes"] >= 10].copy()
@@ -628,8 +849,8 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     grp = df.groupby("player_id", group_keys=False)
     df["rating_pg"] = _roll(grp, "_rating", n)
 
-    # ── League quality columns (league_quality.enrich_league_quality) ────────
-    # league_tier / league_quality / player_career_avg_quality have no measured source: NaN.
+    # ── League quality: the legacy hand-tier columns stay NaN; the measured strength columns are
+    # attached below once the opponent is known (league_quality.attach_strength).
     _ensure(df, ("league_tier", "league_quality", "player_career_avg_quality"))
 
     # Count of previous games this player has in the dataset
@@ -690,16 +911,12 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
                       ("career_shots_pg", "shots_total"), ("career_assists_pg", "assists")):
         df[feat] = _expand(grp, raw)
 
-    # Penalty conversion from the player's OWN penalty record: prior scored / prior attempts, NaN
-    # below config.MIN_PEN_ATTEMPTS (was a last-5 mean of per-match rates filled with 0.75: 96% of
-    # rows carried the 0.75).
-    if "penalty_scored" in df.columns and "penalty_missed" in df.columns:
-        _ps, _pm = _num(df, "penalty_scored"), _num(df, "penalty_missed")
-        _cum_s = _ps.groupby(df["player_id"]).cumsum() - _ps
-        _cum_a = (_ps + _pm).groupby(df["player_id"]).cumsum() - (_ps + _pm)
-        df["penalty_conversion_rate"] = (_cum_s / _cum_a).where(_cum_a >= config.MIN_PEN_ATTEMPTS)
-    else:
-        df["penalty_conversion_rate"] = np.nan
+    # Penalty conversion from the player's OWN penalty record, NaN below config.MIN_PEN_ATTEMPTS
+    # (was a last-5 mean of per-match rates filled with 0.75: 96% of rows carried the 0.75):
+    # earlier SEASONS from the collected /players season record (all competitions) where the
+    # provider reported it, else from our per-match rows of that season; the CURRENT season from
+    # our per-match rows strictly before this match.
+    df["penalty_conversion_rate"] = _penalty_asof(df)
 
     # The keeper's own save rate: saves / shots faced on target, NaN when he faced none.
     df["_gk_sr"] = _ratio(_num(df, "saves"), _num(df, "saves") + _num(df, "goals_conceded"))
@@ -709,16 +926,22 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     # ── Season-to-date features — AS-OF-DATE (fixes the whole-season broadcast leak).
     df = compute_season_asof(df)
 
-    # ── Age and physical profile (placeholders written by the old code are missing) ──
-    for c in ("age", "height_cm", "weight_kg"):
-        df[c] = _profile(df, c)
+    # ── Age and physical profile: the collected /players record first (height / weight of the
+    # latest season reporting them; age at the match date from the provider birth date), else a
+    # real stored value; the old code's placeholders count as missing.
+    df = _attach_profiles(df)
 
     # Season-level fields absent from the frame stay missing (were 0.7 / 0.75 / 0.3 / 1.0 / 0.8).
     _ensure(df, ("season_start_rate", "season_pass_accuracy", "season_dribble_pg",
                  "season_fouls_pg", "season_fouls_drawn_pg"))
-    # Injury features are owned by the injury refresh (history_integrity); absent -> NaN
-    # (were 0 / 365 / 0; pipeline.mode_collect already blanked them after the build).
+    # Injury features as of the match date from the collected /sidelined answer
+    # (history_integrity.injury_features_asof: only spells that STARTED before the match). Players
+    # never asked keep the injury refresh's stored values; absent -> NaN (were 0 / 365 / 0).
     _ensure(df, ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"))
+    _sid = collected_sidelined()
+    if _sid:
+        from .history_integrity import apply_injury_pit
+        apply_injury_pit(df, _sid)
 
     # ── Referee strictness, measured (see _referee_asof) ────────────────────────
     df = df.copy()                     # de-fragment after the column-by-column build above
@@ -753,6 +976,12 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
 
     # ── Opponent features, measured from the opponent's prior matches (team_match_table) ──────
     df["opponent"] = df["away_team"].where(df["is_home"].astype(bool), df["home_team"])
+    # Measured club / league strength as of the match date (league_quality.attach_strength).
+    df = _LQ.attach_strength(df)
+    # Set-piece roles from mapped Understat shots, as of the match date (setpiece/features.py).
+    _sp = _SP.asof(_SP.load(history_dates=df[["fixture_id", "date"]]), df["player_id"], df["date"])
+    for c in _SP.SETPIECE_COLUMNS:
+        df[c] = _sp[c].to_numpy()
     _, df["_okey"] = _team_keys(df)
     t = team_match_table(df)
     if not t.empty:
@@ -829,10 +1058,26 @@ def _serving_context(history: pd.DataFrame) -> dict:
             names = t["_tkey"].str.rsplit("|", n=1, expand=True)
             for scope, sub in names.groupby(1):
                 teams_by_scope[scope] = sorted(sub[0].unique())
+        # Measured strength over the whole history (career averages) and the collected real data.
+        hs = _LQ.attach_strength(h) if "team" in h.columns else h
+        by_pid_strength = ({p: g[["league_elo", "opp_club_elo", "_scope"]] for p, g in hs.groupby("player_id")}
+                           if "player_id" in hs.columns else {})
+        prof = collected_profiles()
+        blank = set()
+        if {"fixture_id", "team_corners"} <= set(h.columns):
+            hb = _blank_unrecorded_corners(h)
+            blank = set(hb.loc[hb["team_corners"].isna() & _num(h, "team_corners").notna(), "fixture_id"])
         _SERVE_CACHE.clear()
         _SERVE_CACHE.update({"key": key, "table": t,
                              "by_team": ({k: g for k, g in t.groupby("_tkey")} if not t.empty else {}),
-                             "teams_by_scope": teams_by_scope})
+                             "teams_by_scope": teams_by_scope,
+                             "blank_corner_fixtures": blank,
+                             "strength_by_pid": by_pid_strength,
+                             "profiles": prof.set_index("player_id") if not prof.empty else prof,
+                             "sidelined": collected_sidelined(),
+                             "pen_totals": _season_pen_totals(h),
+                             "sp_app": (_SP.load(history_dates=h[["fixture_id", "date"]])
+                                        if "fixture_id" in h.columns else pd.DataFrame())})
     return _SERVE_CACHE
 
 
@@ -920,6 +1165,9 @@ def build_upcoming_features(
         }
         mins = _num(phist, "minutes")
         r["minutes_est"] = p.get("minutes", NAN)
+        if "fixture_id" in phist.columns and ctx["blank_corner_fixtures"]:
+            phist = phist.assign(team_corners=_num(phist, "team_corners").where(
+                ~phist["fixture_id"].isin(ctx["blank_corner_fixtures"])))
         for feat, raw in (("goals_pg", "goals"), ("assists_pg", "assists"), ("shots_pg", "shots_total"),
                           ("sot_pg", "shots_on_target"), ("cards_pg", "yellow_cards"),
                           ("minutes_pg", "minutes"), ("key_passes_pg", "key_passes"),
@@ -966,14 +1214,11 @@ def build_upcoming_features(
                           ("career_sp_goals_rate", "sp_goal"), ("career_sp_assist_rate", "sp_assist")):
             s = _num(phist_all, raw)
             r[feat] = float(s.mean()) if s.notna().any() else NAN
-        _ps, _pm = _num(phist_all, "penalty_scored"), _num(phist_all, "penalty_missed")
-        _att = float((_ps + _pm).sum())
-        r["penalty_conversion_rate"] = (float(_ps.sum()) / _att
-                                        if _att >= config.MIN_PEN_ATTEMPTS else NAN)
-
         # Season to date: the player's games in the UPCOMING fixture's season (as-of definition).
         season = config.prop_season(league, fdate.date()) if (league and fdate == fdate) else None
         _sr = config._v9_src("season_resolver")
+        r["penalty_conversion_rate"] = _penalty_now(ctx["pen_totals"], pid, phist_all,
+                                                    season if season and _sr.is_known(season) else None)
         if season and _sr.is_known(season) and "season" in phist_all.columns:
             cur = phist_all[phist_all["season"].astype(str) == str(season)]
         else:
@@ -983,25 +1228,50 @@ def build_upcoming_features(
             r[feat] = float(s.mean()) if s.notna().any() else NAN
         r["season_appearances"] = float(len(cur)) if season and _sr.is_known(season) else NAN
 
-        # Profile: a real age from the caller (live squad list) first, else the history's measured
-        # value; the old code's placeholders count as missing.
+        # Profile: a real age from the caller (live squad list) first, then the collected /players
+        # record (age at the fixture date from the birth date; latest height / weight), else the
+        # history's measured value; the old code's placeholders count as missing.
+        prof = ctx["profiles"]
+        prow = prof.loc[pid] if (len(prof) and pid in prof.index) else None
         for c in ("age", "height_cm", "weight_kg"):
             given = _f(p.get(c)) if c == "age" else NAN
             if given == given and given > 0:
                 r[c] = given
                 continue
+            if prow is not None:
+                if c == "age":
+                    bd = pd.to_datetime(prow["birth_date"], errors="coerce")
+                    given = (fdate - bd).days / 365.25 if (bd == bd and fdate == fdate) else NAN
+                else:
+                    given = _f(prow[c])
+                if given == given:
+                    r[c] = given
+                    continue
             s = _profile(phist_all, c).dropna()
             r[c] = float(s.iloc[-1]) if len(s) else NAN
 
-        # Injury: the LATEST row's values as stored (NaN stays NaN; never an older row's value).
-        for c in ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"):
-            v = _num(phist_all, c)
-            r[c] = float(v.iloc[-1]) if len(v) else NAN
-        # Rows written before 2026-11-01 encode "no recorded spell" as the 365 sentinel: decode it
-        # to the current meaning (NaN days, history_integrity.injury_features_asof).
-        from .history_integrity import NO_INJURY_DAYS as _LEGACY_NONE
-        if r["days_since_last_injury"] == _LEGACY_NONE:
-            r["days_since_last_injury"] = NAN
+        # Injury: the collected /sidelined answer as of the fixture date; else the LATEST stored
+        # row's values (NaN stays NaN; never an older row's value).
+        _sid = ctx["sidelined"].get(int(pid)) if isinstance(pid, (int, np.integer, float)) else None
+        if _sid is not None and fdate == fdate:
+            from .history_integrity import injury_features_asof
+            r.update(injury_features_asof(_sid, fdate))
+        else:
+            for c in ("chronic_injury_risk", "days_since_last_injury", "return_from_injury_flag"):
+                v = _num(phist_all, c)
+                r[c] = float(v.iloc[-1]) if len(v) else NAN
+            # Rows written before 2026-11-01 encode "no recorded spell" as the 365 sentinel: decode
+            # it to the current meaning (NaN days, history_integrity.injury_features_asof).
+            from .history_integrity import NO_INJURY_DAYS as _LEGACY_NONE
+            if r["days_since_last_injury"] == _LEGACY_NONE:
+                r["days_since_last_injury"] = NAN
+
+        # Set-piece roles from mapped Understat shots, as of the fixture date.
+        if fdate == fdate and len(ctx["sp_app"]):
+            _sp = _SP.asof(ctx["sp_app"], [pid], [fdate]).iloc[0]
+            r.update({c: float(_sp[c]) for c in _SP.SETPIECE_COLUMNS})
+        else:
+            r.update({c: NAN for c in _SP.SETPIECE_COLUMNS})
 
         # Referee, measured (pipeline passes referee_profile_from_history).
         r["referee_yellows_pg"] = _f(ref.get("yellows_per_game"))
@@ -1029,7 +1299,15 @@ def build_upcoming_features(
         r.update(lg_cache[league])
         r["lg_yellows_per_match"] = _f(ref.get("lg_yellows_per_match"))
 
-        # League tier / quality: no measured source (league_quality.py) -> NaN.
+        # Measured strength (league_quality.py): the fixture's clubs and league as of its date, and
+        # the player's career averages over his stored rows. Legacy hand-tier columns: NaN.
+        skey = (str(p.get("team", "")), okey[0], league, fdate)
+        if skey not in lg_cache:
+            lg_cache[skey] = _LQ.fixture_strength(skey[0], skey[1], league, fdate)
+        r.update(lg_cache[skey])
+        _rows = ctx["strength_by_pid"].get(pid)
+        r.update(_LQ.career_now(_rows, league) if _rows is not None else
+                 {"player_career_avg_league_elo": NAN, "player_career_avg_opp_elo": NAN})
         r["league_tier"] = r["league_quality"] = r["player_career_avg_quality"] = NAN
         rows.append(r)
 
