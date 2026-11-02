@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-01T13:45:07Z",
+  "generated_at": "2026-11-02T16:28:19Z",
   "thresholds_hours": {
     "fpl_bootstrap": {
       "aging": 12,
@@ -34,30 +34,31 @@
     "official_squads": {
       "file": "pl_squads_official.csv",
       "exists": true,
-      "age_hours": null,
-      "state": "UNKNOWN_AGE"
+      "age_hours": 0.73,
+      "state": "CURRENT"
     }
   },
   "coverage": {
-    "projection_players": 283,
+    "projection_players": 154,
     "clubs": 20,
-    "available": 220,
-    "doubtful": 9,
-    "unavailable": 54,
+    "available": 93,
+    "doubtful": 6,
+    "unavailable": 55,
     "availability_breakdown": {
-      "available": 220,
+      "available": 93,
       "unavailable": 32,
       "injured": 22,
-      "doubtful": 9
+      "doubtful": 6,
+      "suspended": 1
     },
-    "p_start_zero": 54,
+    "p_start_zero": 55,
     "fpl_match_rate": 1.0,
     "fixture_coverage": 1.0
   },
   "projection_log": {
-    "rows": 10808,
-    "distinct_days": 46,
-    "rows_with_gameweek": 2442,
+    "rows": 10962,
+    "distinct_days": 47,
+    "rows_with_gameweek": 2596,
     "settleable": true,
     "gameweeks_logged": [
       6,
@@ -73,8 +74,8 @@
   "live_gameweek": 9,
   "last_finished_gameweek": 8,
   "season_complete": false,
-  "hours_to_deadline": 124.7,
-  "status": "AGING",
+  "hours_to_deadline": 98.0,
+  "status": "OK",
   "settlement_ready": true,
   "defaults_audit": {
     "register_version": "FANTASY-DEFAULTS-1.0",
@@ -93,7 +94,7 @@
         "reach": "V1->V2",
         "importance": "HIGH",
         "detectable": false,
-        "note": "SUSPECTED BUG: FPL rule is DEF>=10 CBIT, MID/FWD>=12 CBIRT; inflates dc_pts"
+        "note": "FIXED 2026-11-01 (owner): FPL's own DC count per 90 vs real thresholds DEF 10 / MID 12 / FWD 12, derived from FPL live scoring GW6-8"
       },
       {
         "id": "prop_model_missing_zero",
@@ -136,32 +137,22 @@
         "note": ""
       }
     ],
-    "suspected_bugs": [
-      "dc_thresholds",
-      "goal_points_gkp_6",
-      "bonus_cs_points_as_probability",
-      "status_n_not_out_v1",
-      "v1_next_gw_is_5_fixture_average",
-      "v2_p_start_unfitted",
-      "fantasy_health_pinned_aging",
-      "season_hardcoded",
-      "ranking_gate_without_ci"
-    ],
+    "suspected_bugs": [],
     "fire_counts": {
-      "v1_rows": 283,
-      "p_start_exactly_0_6": 3,
+      "v1_rows": 154,
+      "p_start_exactly_0_6": 4,
       "fpl_unmatched_rows": 0,
       "fixtures_unavailable_rows": 0,
       "p_goal_all_zero": false,
       "p_assist_all_zero": false,
       "p_sot2_all_zero": false,
       "mean_dc_pts_by_position": {
-        "DEF": 1.282,
-        "FWD": 1.294,
+        "DEF": 0.316,
+        "FWD": 0.008,
         "GKP": 0.0,
-        "MID": 1.077
+        "MID": 0.129
       },
-      "v2_rows": 451,
+      "v2_rows": 455,
       "v2_blank_gw_rows": 0,
       "v2_start_rate_missing": 0
     },
