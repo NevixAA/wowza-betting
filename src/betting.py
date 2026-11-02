@@ -162,6 +162,15 @@ def league_threshold_evidence(league: str, market: str = "ou25") -> bool:
     return bool(g.approved_optimizer_applied)
 
 
+def sniper_edge_ceiling_enforced() -> bool:
+    """True only when the owner has switched the documented SNIPER edge ceiling on."""
+    v = getattr(config, "SNIPER_EDGE_CEILING_ENFORCED", None)
+    if v is None:
+        import os
+        v = os.getenv("WOWZA_SNIPER_EDGE_CEILING", "0").strip() == "1"
+    return bool(v)
+
+
 def _base_tier(edge: float, side: str = "", league: str = "") -> str:
     """
     Three-tier signal system:
@@ -193,17 +202,29 @@ def _base_tier(edge: float, side: str = "", league: str = "") -> str:
         has_per_league = False
         sniper_thresh  = config.SNIPER_THRESHOLD
 
-    if edge >= sniper_thresh:
-        return "SNIPER"
-
     # Ceiling only applies to leagues using the global threshold (no per-league calibration).
     # Per-league thresholds are backtest-optimised — no ceiling needed there.
     # Per-league ceilings override global for new-format leagues with thinner data.
+    #
+    # ORDER (estate scan 2026-11-02, finding e). The ceiling is documented (config.EDGE_CEILING:
+    # "Bets above the ceiling are downgraded to MARKSMAN") but was checked AFTER the SNIPER return,
+    # and every ceiling (0.15-0.19) is above the global SNIPER bar (0.12), so an over-ceiling edge
+    # always returned SNIPER and the ceiling never fired. Checking it first is what the doc says,
+    # but it changes which tips are SNIPER, so it is an OWNER decision: off unless
+    # SNIPER_EDGE_CEILING_ENFORCED (config attribute or env WOWZA_SNIPER_EDGE_CEILING=1) is set.
+    # No threshold or ceiling value changes either way.
+    ceiling = None
     if not has_per_league:
         ceiling = config.LEAGUE_EDGE_CEILING.get(league, config.EDGE_CEILING) \
                   if hasattr(config, "LEAGUE_EDGE_CEILING") else config.EDGE_CEILING
-        if edge > ceiling:
+        if sniper_edge_ceiling_enforced() and edge > ceiling:
             return "MARKSMAN"
+
+    if edge >= sniper_thresh:
+        return "SNIPER"
+
+    if ceiling is not None and edge > ceiling:
+        return "MARKSMAN"
 
     # MARKSMAN floor: optimized marksman_th only for APPROVED leagues, else per-league
     # override, else global (mirrors the SNIPER logic above).
