@@ -1,10 +1,12 @@
 {
- "generated_at": "2026-11-02T15:44:28Z",
+ "generated_at": "2026-11-02T17:21:08Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-02",
  "leagues_with_current_week_data": 18,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Finland Veikkausliiga"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "Ireland Premier Division",
@@ -15,10 +17,10 @@
  "expected_candidate_rows": 708,
  "actual_candidate_rows": 708,
  "panel_rows": 512,
- "settled_rows": 483,
- "pending_rows": 29,
- "clv_certified_rows": 200,
- "clv_coverage": 0.4141,
+ "settled_rows": 494,
+ "pending_rows": 18,
+ "clv_certified_rows": 204,
+ "clv_coverage": 0.413,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
@@ -458,7 +460,7 @@
   "Finland Veikkausliiga": {
    "current": {
     "league_week_id": "Finland Veikkausliiga|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 2,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 2,
