@@ -62,6 +62,17 @@ from src.poisson import dixon_coles_p_over25 as _dc_p_over25
 _N = config.ROLLING_N
 
 
+def bookmaker_overround(over, under) -> pd.Series:
+    """THE bookmaker_overround feature, training and serving alike: the O/U 2.5 margin, NaN where
+    the pair is not a price (src.integrity.price_provenance.overround_or_missing). Both build paths
+    used `.clip(lower=0.0)`, which turned a negative margin - two books' best sides, 434 pairs at
+    data-truth-100 (11.5% of new-format priced rows) - into an invented overround of exactly 0."""
+    from src.integrity.price_provenance import overround_or_missing
+    o = pd.to_numeric(pd.Series(over), errors="coerce")
+    u = pd.to_numeric(pd.Series(under, index=o.index), errors="coerce")
+    return overround_or_missing(o, u)
+
+
 # ── Internal helpers ──────────────────────────────────────────────────────────
 
 def _build_team_centric(matches: pd.DataFrame) -> pd.DataFrame:
@@ -499,9 +510,7 @@ def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v
     # ── Implied probability from historical odds ────────────────────────────
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
     df["implied_prob_under"] = 1.0 / df["odds_under25"].replace(0, np.nan)
-    df["bookmaker_overround"] = (
-        df["implied_prob_over"] + df["implied_prob_under"] - 1.0
-    ).clip(lower=0.0)
+    df["bookmaker_overround"] = bookmaker_overround(df["odds_over25"], df["odds_under25"])
 
     # Dixon-Coles corrected P(over 2.5) using per-team rolling goal rates as lambdas; no form -> NaN
     if "home_scored_last5" in df.columns:
@@ -950,9 +959,7 @@ def build_upcoming_features(
     # Implied probs
     df["implied_prob_over"]  = 1.0 / df["odds_over25"].replace(0, np.nan)
     df["implied_prob_under"] = 1.0 / df["odds_under25"].replace(0, np.nan)
-    df["bookmaker_overround"] = (
-        df["implied_prob_over"] + df["implied_prob_under"] - 1.0
-    ).clip(lower=0.0)
+    df["bookmaker_overround"] = bookmaker_overround(df["odds_over25"], df["odds_under25"])
     # NEW-FORMAT OVERROUND FROM THE BEST PRICE PER SIDE (2026-11-01). New-format training odds are
     # one price per side from output/newformat_odds_history.csv, margin mean 3.6% - the shape of a
     # best-of-books price. Live odds_over25/under25 come from ONE bookmaker (~7.7%), so the model
@@ -964,8 +971,11 @@ def build_upcoming_features(
         _nf = df["league"].map(lambda l: config.model_type_for_league(l) == "new_format")
         _bo = pd.to_numeric(df["best_over25"], errors="coerce")
         _bu = pd.to_numeric(df["best_under25"], errors="coerce")
-        _best = (1.0 / _bo + 1.0 / _bu - 1.0).clip(lower=0.0)
-        _use = _nf & _best.notna()
+        _best = bookmaker_overround(_bo, _bu)
+        # A PRICED best pair always replaces the single-book value - also when its margin is
+        # negative (two books' best sides, not a price): then the feature is NaN, exactly as
+        # training reads the same pair, never a fallback to the one-book margin.
+        _use = _nf & (_bo > 0) & (_bu > 0)
         df.loc[_use, "bookmaker_overround"] = _best[_use]
 
     # Dixon-Coles corrected P(over 2.5); no form -> NaN (never the market price passed off as ours)
