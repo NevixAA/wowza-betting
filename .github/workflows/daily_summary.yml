@@ -121,6 +121,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # LEDGERS GO THROUGH THE ROW-LEVEL SYNC (estate scan P1, 2026-11-02): this step races
+          # predict and update_results on the same files, and `pull --rebase -X theirs` dropped the
+          # other run's rows in a conflicting hunk. sync-push re-applies this run's settlements row
+          # by row on the freshest origin/main (src/ledger.py "LEDGER SYNC"); on failure it puts
+          # the files back and the lines below commit them the old way.
+          ledger_sync_failed=0
+          python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
+          python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
+            --message "auto: pre-digest results ledgers $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
           for f in output/bets_ledger.csv output/side_bets_ledger.csv output/ht_ledger.csv output/player_ledger.csv output/sharp_ledger.csv; do git add -f "$f" 2>/dev/null || true; done
           git diff --staged --quiet || \
             git commit -m "auto: pre-digest results $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -137,6 +146,7 @@ jobs:
             echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
           done
           [ "$pushed" = "1" ] || { echo "push failed after 5 retries"; exit 1; }
+          [ "$ledger_sync_failed" = "0" ] || { echo "::error::ledger sync failed (see above)"; exit 1; }
         continue-on-error: true
 
       # ONE PICTURE ALBUM instead of the two long text digests + the props digest (owner,
