@@ -285,18 +285,108 @@ def _resolve_club(name, candidates) -> str | None:
     return resolve(str(name), [str(c) for c in candidates]) if name == name and name else None
 
 
-def _team_conceded_map(pl_all: pd.DataFrame, n: int = 8) -> dict:
-    """{history team name: recent mean goals-conceded/game} — the team clean-sheet model
-    input. One value per team per fixture, then the team's last-n mean. Keyed by the history's
+#: API-Football finished fixtures with their 90-minute score (scripts/collect_competition_fixtures).
+_FIXTURE_RESULTS = Path(__file__).resolve().parents[1] / "output" / "strength" / "competition_fixtures.parquet"
+_GC_COLS = ["team", "fixture_id", "date", "gc"]
+
+
+def _team_goals_conceded(pl_all: pd.DataFrame, results: pd.DataFrame | None = None) -> pd.DataFrame:
+    """TEAM goals conceded per fixture: [team, fixture_id, date, gc], from the FIXTURE SCORE.
+
+    The old map read the history's per-player `goals_conceded`. API-Football fills that for
+    goalkeepers only - every outfielder row carries 0 (measured 2026-11-02 on the 45,230 Premier
+    League rows: D/M/F mean exactly 0.000) - and the map took the FIRST row of each team-fixture,
+    almost always an outfielder's 0. A club's mean came out ~0.0-0.1, below the 0.3 plausibility
+    floor, so the clean-sheet model NEVER fitted: 19 of 20 clubs fell back to FDR alone. Even the
+    goalkeeper rows are not a team figure (22 of 3,085 team-fixtures disagree with the real score,
+    e.g. Arsenal 2026-09-19: 0 on the keeper row, 3 conceded).
+
+    The team figure is the opponent's 90-minute goals in the API-Football fixture result, joined
+    on the API-Football fixture_id; the history's club spelling is resolved onto that fixture's
+    two clubs with src.team_names.resolve. A fixture with no stored result, or whose clubs do not
+    resolve, has no figure (dropped, counted in the log), never 0."""
+    if results is None:
+        try:
+            results = pd.read_parquet(_FIXTURE_RESULTS, columns=["fixture_id", "home_name",
+                                                                 "away_name", "ft_home", "ft_away"])
+        except Exception as e:                                                # noqa: BLE001
+            log.warning("fantasy: no fixture results (%s) - team goals conceded unknown", e)
+            return pd.DataFrame(columns=_GC_COLS)
+    if pl_all.empty or not {"team", "fixture_id"} <= set(pl_all.columns) or results.empty:
+        return pd.DataFrame(columns=_GC_COLS)
+    tf = (pl_all.dropna(subset=["team", "fixture_id"])
+                .groupby(["team", "fixture_id"], as_index=False).agg(date=("date", "first")))
+    tf["fixture_id"] = pd.to_numeric(tf["fixture_id"], errors="coerce")
+    res = (results.assign(fixture_id=pd.to_numeric(results["fixture_id"], errors="coerce"))
+                  .drop_duplicates("fixture_id").set_index("fixture_id"))
+    rows, unresolved, no_result = [], 0, 0
+    for t, fid, d in tf[["team", "fixture_id", "date"]].itertuples(index=False):
+        if fid != fid or fid not in res.index:
+            no_result += 1
+            continue
+        r = res.loc[fid]
+        side = _resolve_club(t, [r["home_name"], r["away_name"]])
+        if side == r["home_name"]:
+            conc = r["ft_away"]
+        elif side == r["away_name"]:
+            conc = r["ft_home"]
+        else:
+            unresolved += 1
+            continue
+        conc = pd.to_numeric(conc, errors="coerce")
+        if conc != conc:
+            unresolved += 1
+            continue
+        rows.append({"team": t, "fixture_id": fid, "date": d, "gc": float(conc)})
+    if no_result or unresolved:
+        log.info("fantasy: team goals conceded unknown for %d team-fixture(s) with no stored result "
+                 "and %d whose club did not resolve onto the fixture", no_result, unresolved)
+    return pd.DataFrame(rows, columns=_GC_COLS)
+
+
+def _team_conceded_map(pl_all: pd.DataFrame, n: int = 8, results: pd.DataFrame | None = None) -> dict:
+    """{history team name: recent mean TEAM goals-conceded/game} — the team clean-sheet model
+    input: _team_goals_conceded per fixture, then the team's last-n mean. Keyed by the history's
     own spelling; callers resolve other sources' names onto these keys with _resolve_club."""
-    if "goals_conceded" not in pl_all.columns or "team" not in pl_all.columns:
+    fx = _team_goals_conceded(pl_all, results)
+    if fx.empty:
         return {}
-    key = ["team", "fixture_id"] if "fixture_id" in pl_all.columns else ["team", "date"]
-    fx = pl_all.groupby(key, as_index=False).agg(date=("date", "first"),
-                                                 gc=("goals_conceded", "first"))
     fx = fx.sort_values(["team", "date"])
     m = fx.groupby("team").tail(n).groupby("team")["gc"].mean()
     return {str(k): float(v) for k, v in m.items() if pd.notna(v)}
+
+
+#: profile columns derived from age / height; unknown whenever their source is a placeholder.
+_AGE_DERIVED = ("age_peak_delta",)
+_HEIGHT_DERIVED = ("height_aerial_interaction", "opp_def_mean_height", "height_diff_vs_opp_def",
+                   "height_advantage_score")
+
+
+def _mask_profile_placeholders(df: pd.DataFrame) -> pd.DataFrame:
+    """A copy of `df` with the history's profile PLACEHOLDERS read as missing: age 25.0, height
+    180 cm and weight 75 kg (the values player_model.feature_engineering._PROFILE_PLACEHOLDERS
+    records the old build wrote into every row) become NaN, and so does every column derived from
+    a masked age / height. A real 25-year-old or 180 cm player is lost to NaN until the profile
+    collector stores real values - the honest side of that trade (same rule as the feature build).
+
+    NOT applied to the prop-model input: the serving payloads were fitted on the constant, their
+    gradient-boost member drops all seven columns as constant (_UsableColumns) and their logistic
+    member standardises the constant to 0; a NaN there would instead knock every row out of the
+    logistic member and change every probability - a serving change only an approved props
+    retrain may make (V3 note). Fantasy's own reads are masked."""
+    from player_model.feature_engineering import _PROFILE_PLACEHOLDERS
+    d = df.copy()
+    for col, ph in _PROFILE_PLACEHOLDERS.items():
+        if col not in d.columns:
+            continue
+        v = pd.to_numeric(d[col], errors="coerce")
+        bad = v.isna() | (v == ph)
+        d[col] = v.where(~bad)
+        derived = _AGE_DERIVED if col == "age" else _HEIGHT_DERIVED if col == "height_cm" else ()
+        for c in derived:
+            if c in d.columns:
+                d[c] = pd.to_numeric(d[c], errors="coerce").where(~bad)
+    return d
 
 
 def fpl_ids(df: pd.DataFrame) -> pd.Series:
@@ -308,47 +398,29 @@ def fpl_ids(df: pd.DataFrame) -> pd.Series:
     return pd.Series(np.nan, index=df.index)
 
 
-def fpl_crosswalk(players: pd.DataFrame, fpl: pd.DataFrame, norm) -> pd.Series:
+def fpl_crosswalk(players: pd.DataFrame, fpl: pd.DataFrame, norm=None,
+                  crosswalk: pd.DataFrame | None = None) -> pd.Series:
     """FPL element id for each API-Football player row in `players`, NaN when not established.
 
-    THE ONLY NAME BRIDGE between the two sources. API-Football player_id and FPL element id share
-    no key, and no id crosswalk exists in the repos (needed: an FPL element id <-> API-Football
-    player_id table, built once from name + club + date of birth and stored). Until it does, the
-    bridge is the FPL full name, then the FPL web_name, and it REFUSES any key that more than one
-    FPL element carries (two players with one name used to pick whichever iterrows saw last).
-    Downstream joins use the returned id, never a name.
+    THE ONLY BRIDGE between the two sources, and it is an ID JOIN: players.player_id (API-Football)
+    -> the stored crosswalk output/fpl_af_crosswalk.csv (player_model.fantasy_crosswalk: name +
+    club + date of birth, ambiguity-refusing) -> FPL element id, kept only when that element is in
+    the live FPL set `fpl`. The old bridge matched NAMES (FPL full name, then web_name): 101 of the
+    318 current-season Premier League players, and it paired different people that share a short
+    name - Leicester's Tetê with Kenny Tete, Leeds' Rodrigo with Rodri, Bournemouth's goalkeeper
+    Neto with Pedro Neto (Data Truth round 2, 2026-11-02). `norm` is accepted and ignored (old
+    signature). Downstream joins use the returned id, never a name.
     """
+    from player_model import fantasy_crosswalk as _CW
     out = pd.Series(np.nan, index=players.index, dtype="float64")
-    if fpl.empty or "fpl_id" not in fpl.columns:
+    if fpl.empty or "fpl_id" not in fpl.columns or "player_id" not in players.columns:
         return out
-
-    def _unique(col):
-        g = fpl.groupby(col)["fpl_id"]
-        n = g.nunique()
-        return g.first()[n == 1].to_dict(), set(n[n > 1].index)
-
-    by_full, amb_full = _unique("match_key")
-    by_web, amb_web = _unique("web_key")
-    ambiguous = []
-    for i, nm in players["player_name"].items():
-        k = norm(nm) if nm == nm and nm is not None else ""
-        if not k:
-            continue
-        if k in amb_full:
-            ambiguous.append(str(nm))
-            continue
-        fid = by_full.get(k)
-        if fid is None:
-            if k in amb_web:
-                ambiguous.append(str(nm))
-                continue
-            fid = by_web.get(k)
-        if fid is not None:
-            out.at[i] = float(fid)
-    if ambiguous:
-        log.info("fantasy: %d player name(s) match more than one FPL element - left unmatched: %s",
-                 len(ambiguous), ", ".join(ambiguous[:20]))
-    return out
+    ids = _CW.af_to_fpl(players["player_id"], fpl["fpl_id"], crosswalk)
+    n_miss = int(ids.isna().sum())
+    if n_miss:
+        log.info("fantasy: %d of %d player(s) have no established FPL element id (crosswalk)",
+                 n_miss, len(ids))
+    return ids
 
 
 def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: float = 45.0,
@@ -389,6 +461,9 @@ def build_fantasy_projections(parquet_path: Path | None = None, min_minutes: flo
             log.error("fantasy: prop model %r not found - fantasy projections not built", market)
             return pd.DataFrame()
         pl[col] = predict_proba(pl, payload).values
+    # Scored on the frame the payload was fitted on; from here on the profile placeholders are
+    # missing values (see _mask_profile_placeholders for why the model input is left as is).
+    pl = _mask_profile_placeholders(pl)
 
     m = pd.to_numeric(pl["minutes_pg"], errors="coerce")
     pl["appearance"] = np.where(m >= 60, 2.0, 1.0)
@@ -860,7 +935,9 @@ def generate_fantasy_tips(write: bool = True) -> pd.DataFrame:
 
 # Squad-view stats are recomputed over a USER-SELECTABLE window (last-N games) from the
 # RAW per-game columns, so the dashboard can show 5/10/20/38/multi-season form dynamically.
-# (parquet age/height_cm are ~84% placeholder defaults -> excluded.)
+# The history's age / height_cm are NOT data: 100% of rows carry the placeholders age 25.0 and
+# height 180 cm (measured 2026-11-02 on all 45,230 Premier League rows; the comment here used to
+# say "~84%"). Fantasy reads them as MISSING (_mask_profile_placeholders) and never shows them.
 _RAW_MAP = {  # display "_pg" stat -> raw per-game source column
     "goals_pg": "goals", "assists_pg": "assists", "sot_pg": "shots_on_target",
     "shots_pg": "shots_total", "cards_pg": "yellow_cards", "minutes_pg": "minutes",
@@ -885,7 +962,7 @@ def build_squads(n: int = 5, parquet_path: Path | None = None, write: bool = Fal
     pl = _fantasy_league_rows(df).copy()
     if pl.empty:
         return pd.DataFrame()
-    pl = pl.sort_values("date")
+    pl = _mask_profile_placeholders(pl).sort_values("date")
     raw_cols = [r for r in _RAW_MAP.values() if r in pl.columns]
 
     recent = pl.groupby("player_id").tail(n)                       # last n games per player
@@ -923,6 +1000,7 @@ def player_form(n: int = 5, parquet_path: Path | None = None) -> pd.DataFrame:
     pl = _fantasy_league_rows(df).sort_values("date")
     if pl.empty:
         return pd.DataFrame(columns=["player_id"])
+    pl = _mask_profile_placeholders(pl)
     recent = pl.groupby("player_id").tail(n)
     # A missing source column gives a missing KPI - it used to be filled with the GOALS mean
     # under the SOT / minutes label.
