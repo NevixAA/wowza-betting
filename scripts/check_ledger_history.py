@@ -29,6 +29,8 @@ import argparse
 import csv
 import io
 import json
+import os
+import shutil
 import subprocess
 import sys
 from collections import Counter, defaultdict
@@ -38,6 +40,19 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from src.ledger import SYNC_LEDGERS, ledger_row_key  # noqa: E402
+
+csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
+
+
+def git_exe() -> str:
+    """git on PATH, else $GIT, else the Git for Windows default (git is not on PATH on the laptop)."""
+    for c in (os.environ.get("GIT"), shutil.which("git"), r"C:\Program Files\Git\cmd\git.exe"):
+        if c and (shutil.which(c) or Path(c).exists()):
+            return c
+    return "git"
+
+
+GIT = git_exe()
 
 LEDGERS = ["output/bets_ledger.csv", "output/side_bets_ledger.csv",
            "output/player_ledger.csv", "output/ht_ledger.csv"]
@@ -57,7 +72,7 @@ class Blobs:
     """`git cat-file --batch` reader: one process for every blob read."""
 
     def __init__(self, repo: Path):
-        self.p = subprocess.Popen(["git", "-C", str(repo), "cat-file", "--batch"],
+        self.p = subprocess.Popen([GIT, "-C", str(repo), "cat-file", "--batch"],
                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     def read(self, sha: str, path: str) -> str | None:
@@ -85,7 +100,7 @@ def parse(text: str | None, key: tuple, fp: tuple) -> dict:
 
 
 def history(repo: Path, ref: str, path: str) -> list[tuple[str, str, str]]:
-    r = subprocess.run(["git", "-C", str(repo), "log", "--reverse", "--format=%H%x09%cI%x09%s",
+    r = subprocess.run([GIT, "-C", str(repo), "log", "--reverse", "--format=%H%x09%cI%x09%s",
                         ref, "--", path], check=True, capture_output=True, text=True, encoding="utf-8")
     return [tuple(l.split("\t", 2)) for l in r.stdout.splitlines() if l.strip()]
 
@@ -133,6 +148,7 @@ def check_ledger(repo: Path, ref: str, path: str, max_commits: int, blobs: Blobs
     cats = Counter()
     lost_by_commit = defaultdict(lambda: Counter())
     examples = defaultdict(list)
+    keyed: list[dict] = []                    # every lost / reappeared key, for --restore
     for j, gone in events:
         sha, date, subj = commits[j]
         before = parse(blobs.read(commits[j - 1][0], path), key, fp)
@@ -152,6 +168,7 @@ def check_ledger(repo: Path, ref: str, path: str, max_commits: int, blobs: Blobs
                 c = "lost_in_bot_commit" if bot else "lost_in_manual_commit"
             cats[c] += 1
             if c.startswith("lost") or c == "reappeared":
+                keyed.append({"key": k, "removed_index": j, "category": c})
                 lost_by_commit[(sha[:10], date[:16], subj[:90])][c] += 1
                 if len(examples[c]) < 8:
                     examples[c].append({"commit": sha[:10], "date": date[:10], "key": list(k)})
@@ -159,7 +176,127 @@ def check_ledger(repo: Path, ref: str, path: str, max_commits: int, blobs: Blobs
             "removal_commits": len(events), "vanished": dict(cats),
             "by_commit": [{"commit": c[0], "date": c[1], "subject": c[2], **dict(v)}
                           for c, v in sorted(lost_by_commit.items(), key=lambda kv: -sum(kv[1].values()))],
-            "examples": dict(examples)}
+            "examples": dict(examples), "_keyed": keyed, "_commits": commits}
+
+
+# ── RESTORE BESIDE THE LEDGER (round 2 P2, owner 2026-11-02) ──────────────────────────────────────
+# Rows lost to overlapping bot commits are recovered from git history with their ORIGINAL
+# first-sight values into a sidecar (output/corrections/...); the ledger itself is never touched.
+# Re-logged rows (lost, then logged again later) are listed when the values they came back with
+# differ from what was first logged.
+#: columns a settlement run writes or back-fills: not first-sight values.
+SETTLEMENT_COLS = {"is_played", "result", "pnl", "notes", "resolved_date", "fixture_id", "player_id",
+                   "closing_odds", "clv_pct", "ht_score", "pnl_basis"}
+
+
+def parse_full(text: str | None, key: tuple, wanted: set) -> dict:
+    """{key: full row} of the first occurrence of each wanted key in one ledger version."""
+    out = {}
+    if not text:
+        return out
+    for rec in csv.DictReader(io.StringIO(text)):
+        k = ledger_row_key(rec, key)
+        if k in wanted and k not in out:
+            out[k] = {c: (v or "") for c, v in rec.items() if c is not None}
+    return out
+
+
+def first_sight(repo: Path, path: str, commits: list, keyed: list[dict], blobs: Blobs) -> dict:
+    """{key: (commit index, row)} - the earliest commit holding each key (binary search between the
+    ledger's first commit and the one before its removal; a key is present from its first sight
+    until that removal)."""
+    key = SYNC_LEDGERS[path]
+    wanted = {e["key"] for e in keyed}
+    cache: dict[int, dict] = {}
+
+    def at(i: int) -> dict:
+        if i not in cache:
+            cache[i] = parse_full(blobs.read(commits[i][0], path), key, wanted)
+        return cache[i]
+
+    out = {}
+    for e in keyed:
+        k, hi = e["key"], e["removed_index"] - 1
+        if k in out and out[k][0] <= hi:
+            continue
+        lo = 0
+        if k not in at(hi):
+            continue
+        while lo < hi:
+            m = (lo + hi) // 2
+            if k in at(m):
+                hi = m
+            else:
+                lo = m + 1
+        if k not in out or lo < out[k][0]:
+            out[k] = (lo, at(lo)[k])
+    return out
+
+
+def restore(repo: Path, ref: str, path: str, max_commits: int, out_csv: Path, relog_csv: Path,
+            note: Path) -> dict:
+    blobs = Blobs(repo)
+    try:
+        r = check_ledger(repo, ref, path, max_commits, blobs)
+        commits, keyed = r["_commits"], r["_keyed"]
+        fs = first_sight(repo, path, commits, keyed, blobs)
+        key = SYNC_LEDGERS[path]
+        tip_text = blobs.read(ref, path)
+        tip = parse_full(tip_text, key, {e["key"] for e in keyed})
+        cols = next(csv.reader(io.StringIO(tip_text or "")), [])
+    finally:
+        blobs.close()
+
+    lost, relog, seen = [], [], set()
+    for e in sorted(keyed, key=lambda e: e["removed_index"]):
+        k = e["key"]
+        if k in seen or k not in fs:
+            continue
+        seen.add(k)
+        i, row = fs[k]
+        rm = commits[e["removed_index"]]
+        audit = {"restore_category": e["category"], "first_seen_commit": commits[i][0][:10],
+                 "first_seen_date": commits[i][1][:16], "removed_commit": rm[0][:10],
+                 "removed_date": rm[1][:16], "removed_subject": rm[2][:90]}
+        if e["category"].startswith("lost"):
+            lost.append({**{c: row.get(c, "") for c in cols}, **audit})
+        elif k in tip:
+            now = tip[k]
+            diff = [c for c in cols if c not in SETTLEMENT_COLS
+                    and (row.get(c, "") or "").strip() != (now.get(c, "") or "").strip()]
+            relog.append({**{c: row.get(c, "") for c in cols}, **audit,
+                          "first_sight_changed": "True" if diff else "False",
+                          "changed_columns": "|".join(diff),
+                          "values_now": "|".join(f"{c}={now.get(c, '')}" for c in diff)})
+    acols = ["restore_category", "first_seen_commit", "first_seen_date", "removed_commit",
+             "removed_date", "removed_subject"]
+    out_csv.parent.mkdir(parents=True, exist_ok=True)
+    rcols = acols + ["first_sight_changed", "changed_columns", "values_now"]
+    for rows, f, extra in ((lost, out_csv, acols), (relog, relog_csv, rcols)):
+        with f.open("w", encoding="utf-8", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=cols + extra, lineterminator="\n")
+            w.writeheader()
+            w.writerows(rows)
+    by = Counter((x["removed_commit"], x["removed_date"], x["removed_subject"]) for x in lost)
+    sha = subprocess.run([GIT, "-C", str(repo), "rev-parse", "--short=10", ref],
+                         capture_output=True, text=True).stdout.strip()
+    at_ref = f"{ref} ({sha})" if sha and sha != ref else ref
+    lines = [f"# {Path(path).name}: rows restored beside the ledger", "",
+             f"Generated by `python scripts/check_ledger_history.py --restore --ledger {path} "
+             f"--ref {ref} --max-commits {max_commits}` (read-only on the ledger).", "",
+             f"* `{out_csv.name}`: {len(lost)} row(s) that existed in history and are absent at {at_ref}, "
+             "with their ORIGINAL first-sight values and the commit that first held them.",
+             f"* `{relog_csv.name}`: {len(relog)} row(s) lost and logged again, with their first-sight "
+             f"values; {sum(x['first_sight_changed'] == 'True' for x in relog)} came back with different "
+             "first-sight values (`first_sight_changed`, `changed_columns`, `values_now`; settlement "
+             "columns ignored).",
+             f"* `{path}` itself is NOT modified.", "", "## Removing commits", ""]
+    lines += [f"* {c} {d} - {n} row(s) - {s}" for (c, d, s), n in by.most_common()]
+    lines += ["", f"Categories seen: {dict(r['vanished'])}", ""]
+    note.write_text("\n".join(lines), encoding="utf-8")
+    return {"lost": len(lost), "relogged": len(relog),
+            "relogged_changed": sum(x["first_sight_changed"] == "True" for x in relog),
+            "vanished": r["vanished"]}
 
 
 def main(argv=None) -> int:
@@ -170,8 +307,19 @@ def main(argv=None) -> int:
     ap.add_argument("--ledger", action="append", help="limit to these paths (repeatable)")
     ap.add_argument("--json", help="write the full report here")
     ap.add_argument("--repo", default=str(ROOT))
+    ap.add_argument("--restore", action="store_true",
+                    help="write the lost rows (first-sight values) to sidecars under "
+                         "output/corrections/ for the one --ledger given; the ledger is not touched")
+    ap.add_argument("--tag", default="2026-11", help="sidecar file suffix for --restore")
     a = ap.parse_args(argv)
     repo = Path(a.repo)
+    if a.restore:
+        path = (a.ledger or ["output/player_ledger.csv"])[0]
+        stem, d = Path(path).stem, repo / "output" / "corrections"
+        res = restore(repo, a.ref, path, a.max_commits, d / f"{stem}_restored_{a.tag}.csv",
+                      d / f"{stem}_relogged_first_sight_{a.tag}.csv", d / f"{stem}_restored_{a.tag}.md")
+        print(json.dumps(res))
+        return 0
     blobs = Blobs(repo)
     out = []
     try:
@@ -186,6 +334,7 @@ def main(argv=None) -> int:
     finally:
         blobs.close()
     if a.json:
+        out = [{k: v for k, v in r.items() if not k.startswith("_")} for r in out]
         Path(a.json).write_text(json.dumps(out, indent=1), encoding="utf-8")
     return 0
 
