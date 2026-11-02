@@ -495,10 +495,11 @@ def test_system_health_serving_check(tmp_path, monkeypatch):
     assert S.standard_serving_health()["status"] == S.RED
 
 
-def test_frozen_alias_map_is_committed_and_identity_1_0():
+def test_frozen_alias_map_is_committed_and_identity_1_1():
+    # identity/1.1 (2026-11-02): + Ireland Bray Wanderers -> Bray (owner-accepted evidence merge)
     p = ROOT / "config" / "standard_ou25_identity_aliases.json"
     d = json.loads(p.read_text(encoding="utf-8"))
-    assert d["version"] == "identity/1.0" and isinstance(d["map"], dict) and d["map"]
+    assert d["version"] == "identity/1.1" and isinstance(d["map"], dict) and d["map"]
 
 
 # ── CI scripts on synthetic data (the real runs happen only in GitHub Actions) ────────────────
