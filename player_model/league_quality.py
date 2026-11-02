@@ -74,9 +74,71 @@ def _keys(S, names: pd.Series, leagues: pd.Series) -> pd.Series:
     return pairs.map(cache)
 
 
+def _is_cup(league) -> bool:
+    from src.strength import results
+    return isinstance(league, str) and results.competition_type(league) == "club_cup"
+
+
+def cup_strength(S, leagues, dates) -> pd.Series:
+    """Measured strength of a CLUB CUP fixture (UEFA Champions / Europa / Conference League) as of
+    its date, NaN for every non-cup row. src/strength rates leagues only (a cup has no country
+    scope), so the cup gets the SAME definition as a league strength (src/strength/build.py
+    league_strength_table): the mean Elo rating, BEFORE that day, of the clubs that played in the
+    competition in the previous elo.LEAGUE_WINDOW_DAYS, each with >= elo.MIN_CLUB_MATCHES rated
+    matches, NaN below elo.MIN_LEAGUE_CLUBS rated clubs. Membership is read from the measured
+    club_ratings table (one row per club and match, with its competition). Never a hand tier."""
+    from src.strength import elo, results
+    leagues = pd.Series(list(leagues))
+    dates = pd.to_datetime(pd.Series(list(dates)), errors="coerce").dt.normalize()
+    out = pd.Series(np.nan, index=leagues.index, dtype=float)
+    r = getattr(S, "ratings", None)
+    if r is None or r.empty or "competition" not in r.columns:
+        return out
+    cups = {lg: (results._canon(lg) or lg) for lg in pd.unique(leagues) if _is_cup(lg)}
+    if not cups:
+        return out
+    win = pd.Timedelta(days=elo.LEAGUE_WINDOW_DAYS)
+    for lg, name in cups.items():
+        m = (leagues == lg) & dates.notna()
+        if not m.any():
+            continue
+        mem = r.loc[r["competition"] == name, ["club_key", "date"]]
+        if mem.empty:
+            continue
+        md = pd.to_datetime(mem["date"]).to_numpy()
+        mk = mem["club_key"].to_numpy()
+        days = sorted(pd.unique(dates[m]))
+        q_k, q_d = [], []
+        for d in days:
+            d = pd.Timestamp(d)
+            sel = (md < np.datetime64(d)) & (md >= np.datetime64(d - win))
+            for k in pd.unique(mk[sel]):
+                q_k.append(k)
+                q_d.append(d)
+        if not q_k:
+            continue
+        e = S.club_elo_asof(q_k, q_d)["club_elo"].to_numpy()
+        snap = pd.DataFrame({"date": q_d, "elo": e})
+        g = snap.groupby("date")["elo"]
+        st = g.mean().where(g.count() >= elo.MIN_LEAGUE_CLUBS)
+        out.loc[m] = dates[m].map(st).to_numpy(dtype=float)
+    return out
+
+
+def _id_keys(df: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+    """'af:<API-Football id>' own / opponent keys where the row's fixture proves them, else None
+    (player_model.team_identity: one club identity across all competitions)."""
+    from . import team_identity as TI
+    tid, oid = TI.row_team_ids(df)
+    return tid.map(TI.key), oid.map(TI.key)
+
+
 def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
     """Add MEASURED_COLUMNS to a player-match frame (player_id, date, league, team, opponent).
-    Career averages use only the player's EARLIER rows (shift 1). Returns a new frame."""
+    Career averages use only the player's EARLIER rows (shift 1). Returns a new frame.
+    Clubs are keyed by their API-Football id where the row's fixture proves it (a cup row then
+    reads the club's rating directly instead of resolving its name across every country); a cup
+    fixture's league_elo is cup_strength."""
     from src.strength import lookup
     S = strength if strength is not None else lookup.load()
     out = df.copy()
@@ -88,12 +150,14 @@ def attach_strength(df: pd.DataFrame, strength=None) -> pd.DataFrame:
     opp = out["opponent"] if "opponent" in out.columns else \
         out["away_team"].where(out["is_home"].astype(bool), out["home_team"])
     dates = pd.to_datetime(out["date"], errors="coerce")
-    own_k = _keys(S, out["team"], out["league"])
-    opp_k = _keys(S, opp, out["league"])
+    own_id, opp_id = _id_keys(out)
+    own_k = own_id.where(own_id.notna(), _keys(S, out["team"], out["league"]))
+    opp_k = opp_id.where(opp_id.notna(), _keys(S, opp, out["league"]))
     out["team_club_elo"] = S.club_elo_asof(own_k, dates)["club_elo"].to_numpy()
     out["opp_club_elo"] = S.club_elo_asof(opp_k, dates)["club_elo"].to_numpy()
     lg = S.league_asof(out["league"], dates)
-    out["league_elo"] = lg["league_elo"].to_numpy()
+    cup = cup_strength(S, out["league"], dates).to_numpy()
+    out["league_elo"] = np.where(np.isnan(cup), lg["league_elo"].to_numpy(dtype=float), cup)
     out["league_elo_rank"] = lg["league_elo_rank"].to_numpy()
     out["_scope"] = _scopes(out["league"])
     if "player_id" in out.columns:
@@ -149,9 +213,13 @@ def fixture_strength(team, opponent, league, date, strength=None) -> dict:
     res = {c: float("nan") for c in ("team_club_elo", "opp_club_elo", "league_elo", "league_elo_rank")}
     if S.empty or d != d:
         return res
-    ks = [S.club_key(team, league), S.club_key(opponent, league)]
+    from . import team_identity as TI
+    ks = [TI.club_key(team, league, strength=S), TI.club_key(opponent, league, strength=S)]
     e = S.club_elo_asof(ks, [d, d])["club_elo"]
     res["team_club_elo"], res["opp_club_elo"] = float(e.iloc[0]), float(e.iloc[1])
     lg = S.league_asof([league], [d])
     res["league_elo"], res["league_elo_rank"] = float(lg["league_elo"].iloc[0]), float(lg["league_elo_rank"].iloc[0])
+    cup = float(cup_strength(S, [league], [d]).iloc[0])
+    if cup == cup:
+        res["league_elo"] = cup                  # a cup is not ranked among leagues: rank stays NaN
     return res

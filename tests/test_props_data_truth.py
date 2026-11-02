@@ -60,6 +60,33 @@ def _history(rounds: int = 24) -> list[dict]:
     return rows
 
 
+@pytest.fixture(scope="module", autouse=True)
+def _no_collected_tables(tmp_path_factory):
+    """Hermetic: no collected fixture / strength tables (the synthetic fixture ids would otherwise
+    meet real API-Football fixtures in output/strength, team_identity keys clubs by those ids)."""
+    from player_model import team_identity as TI
+    from src.strength import lookup
+    from player_model.setpiece import features as SPF
+    mp = pytest.MonkeyPatch()
+    mp.setattr(lookup, "DIR", tmp_path_factory.mktemp("strength"))
+    # ... and no collected profiles: the synthetic player ids are real API-Football ids, so the
+    # committed output/collect/player_profiles.parquet gave them real heights (the placeholder test
+    # failed at HEAD 7ad10cee for that reason alone).
+    empty = tmp_path_factory.mktemp("collect")
+    mp.setattr(FE, "COLLECT_DIR", empty)
+    mp.setattr(SPF, "DIR", empty)
+    TI._CACHE.clear()
+    lookup._LOADED.clear()
+    FE._COLLECTED.clear()
+    FE._SERVE_CACHE.clear()
+    yield
+    mp.undo()
+    TI._CACHE.clear()
+    lookup._LOADED.clear()
+    FE._COLLECTED.clear()
+    FE._SERVE_CACHE.clear()
+
+
 @pytest.fixture(scope="module")
 def built():
     return FE.build_features(_history())
