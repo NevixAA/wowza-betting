@@ -135,7 +135,8 @@ def load(directory: Path | None = None, history_dates: pd.DataFrame | None = Non
     d = Path(directory or DIR)
     files = {k: d / f"understat_{k}.parquet" for k in ("shots", "rosters", "match_map", "player_map")}
     stamp = tuple(f.stat().st_mtime if f.exists() else None for f in files.values())
-    key = (str(d), None if history_dates is None else len(history_dates))
+    key = (str(d), None if history_dates is None else
+           (len(history_dates), float(pd.to_numeric(history_dates["fixture_id"], errors="coerce").sum())))
     if key in _LOADED and _LOADED[key][0] == stamp:
         return _LOADED[key][1]
     if not all(f.exists() for f in files.values()) or history_dates is None:

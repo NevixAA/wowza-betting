@@ -27,8 +27,9 @@ def _ns(s: pd.Series) -> pd.Series:
 
 class Strength:
     def __init__(self, ratings: pd.DataFrame, leagues: pd.DataFrame, names: pd.DataFrame):
-        ratings = ratings.assign(date=_ns(ratings["date"]))
-        leagues = leagues.assign(date=_ns(leagues["date"]))
+        # one key dtype on both sides of merge_asof (parquet may hand back pandas' string dtype)
+        ratings = ratings.assign(date=_ns(ratings["date"]), club_key=ratings["club_key"].astype(object))
+        leagues = leagues.assign(date=_ns(leagues["date"]), league=leagues["league"].astype(object))
         self.ratings = ratings.sort_values("date").reset_index(drop=True)
         self.leagues = leagues.sort_values("date").reset_index(drop=True)
         self.index = results.ClubIndex()
