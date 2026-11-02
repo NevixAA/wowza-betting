@@ -31,6 +31,18 @@ BASE_URL = "https://v3.football.api-sports.io"
 
 DAILY_CAP = 45_000          # this job's API-Football calls per UTC day (hard)
 FLOOR = 25_000              # stop when the account's remaining daily quota falls below this
+# A run-day override is allowed only inside these bounds (owner 2026-11-02: floor 10,000 for one day
+# to finish sooner); the workflow sets COLLECT_AF_FLOOR / COLLECT_AF_DAILY_CAP explicitly for it.
+_FLOOR_MIN, _CAP_MAX = 10_000, 60_000
+for _var, _lo, _hi in (("COLLECT_AF_FLOOR", _FLOOR_MIN, 75_000), ("COLLECT_AF_DAILY_CAP", 1, _CAP_MAX)):
+    _v = os.getenv(_var, "").strip()
+    if _v:
+        if not _v.isdigit() or not _lo <= int(_v) <= _hi:
+            raise SystemExit(f"{_var}={_v!r} outside [{_lo:,}, {_hi:,}] - refusing to run")
+        if _var == "COLLECT_AF_FLOOR":
+            FLOOR = int(_v)
+        else:
+            DAILY_CAP = int(_v)
 FLUSH_EVERY = 200           # items between incremental parquet writes
 PAUSE_S = 0.15              # between calls (the plan allows 450/min; ~400/min used elsewhere)
 

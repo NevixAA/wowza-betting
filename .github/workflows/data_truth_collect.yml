@@ -50,6 +50,10 @@ jobs:
       contents: write
     env:
       STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,afgap,sidelined,profiles,understat,strength' }}
+      # Owner 2026-11-02 (one run-day only): floor 10,000 remaining, job cap 55,000, to finish today.
+      # Remove these two lines after run-day 2; the code defaults are 25,000 / 45,000.
+      COLLECT_AF_FLOOR: '10000'
+      COLLECT_AF_DAILY_CAP: '55000'
 
     steps:
       - uses: actions/checkout@v4
