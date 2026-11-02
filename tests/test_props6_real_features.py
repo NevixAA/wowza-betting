@@ -230,6 +230,52 @@ def test_prev_season_and_l10_serving_use_the_training_definition(iso):
     assert set(FE.PREV_SEASON_COLUMNS) | {"shot_accuracy_l10"} <= set(C.PLAYER_FEATURE_COLS)
 
 
+# ── 3. rest days on the complete match history ──────────────────────────────────────────────────
+
+def _cup_file(tmp, day, fid=7_900_001, minutes=90, status="FT"):
+    """A collected cup row file (what scripts/collect_cup_player_stats.py writes) with one cup tie
+    of Arsenal on `day`."""
+    rows = [dict(r, league="Champions League", fixture_status=status, date=str(pd.Timestamp(day).date()),
+                 minutes=minutes)
+            for r in _player_rows(fid, pd.Timestamp(day), "Arsenal", "Chelsea", "2024")]
+    pd.DataFrame(rows).to_parquet(tmp / "cup_player_rows.parquet", index=False)
+
+
+def test_training_rest_days_count_collected_cup_matches_and_short_cameos(iso):
+    rows = _season_rows("2024", "2024-08-10", 4, 7_400_000)        # Arsenal: 08-10, 08-17, 08-24, 08-31
+    # a 5-minute league cameo on 08-27 (not a training row: < 10 minutes) and a cup tie on 08-21
+    rows += [dict(r, minutes=5) for r in _player_rows(7_400_900, pd.Timestamp("2024-08-27"),
+                                                       "Arsenal", "Everton", "2024")]
+    _cup_file(iso, "2024-08-21", status="AET")                      # extra time: still a match played
+    b = FE.build_features(rows)
+    p = b[b["player_id"] == ARS_F].set_index("date")["rest_days"]
+    assert p.loc["2024-08-24"] == 3        # since the cup tie (was 7: league rows only)
+    assert p.loc["2024-08-31"] == 4        # since the cameo (was 7)
+    assert p.loc["2024-08-17"] == 7
+
+
+def test_rest_days_are_not_capped(iso):
+    rows = (_season_rows("2024", "2024-03-02", 2, 7_500_000)          # Arsenal 03-02, 03-09
+            + _season_rows("2024", "2024-05-18", 2, 7_510_000))       # Arsenal 05-18 (70 days later)
+    b = FE.build_features(rows)
+    p = b[b["player_id"] == ARS_F].set_index("date")["rest_days"]
+    assert p.loc["2024-05-18"] == 70       # was clipped to 30
+
+
+def test_serving_rest_days_count_collected_cup_matches(iso):
+    rows = _season_rows("2024", "2024-08-10", 4, 7_600_000)
+    hist = pd.DataFrame(rows).assign(date=lambda d: pd.to_datetime(d["date"]))
+    _cup_file(iso, "2024-09-03")
+    up = [{"player_id": ARS_F, "team": "Arsenal", "opponent": "Chelsea", "is_home": 1, "position": "F",
+           "fixture_league": "Premier League", "fixture_date": "2024-09-07"}]
+    r = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist)).iloc[0]
+    assert r["rest_days"] == 4             # since the collected cup tie (was 7: league history only)
+    FE._SERVE_CACHE.clear()
+    up[0]["fixture_date"] = "2024-11-30"
+    r = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist)).iloc[0]
+    assert r["rest_days"] == 88            # uncapped (was 30)
+
+
 def test_typed_weight_formulas_are_withheld_from_training():
     typed = {"penalty_threat_score", "card_risk_index", "midfield_engine_score",
              "progressive_carrier_score", "disciplinary_pressure_index", "foul_magnet_score",

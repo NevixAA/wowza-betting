@@ -894,6 +894,45 @@ def shot_accuracy_before(df: pd.DataFrame, n: int | None = None) -> pd.Series:
     return _ratio(sums["so"], sums["sh"]).where(sums["sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
 
 
+# ── rest days on the COMPLETE match history (league + collected cup rows; ONE definition) ────────
+
+def played_days(frame: pd.DataFrame) -> pd.DataFrame:
+    """(player_id, _day) of every match a player PLAYED (minutes > 0) in `frame` and in the collected
+    UEFA cup rows (output/collect/cup_player_rows.parquet, every status incl. extra time), one row
+    per player and day. A row without a minutes value is not proof of a match played: excluded."""
+    parts = []
+    for src in (frame, _collected("cup_player_rows")):
+        if src is None or src.empty or not {"player_id", "date", "minutes"} <= set(src.columns):
+            continue
+        m = _num(src, "minutes") > 0
+        parts.append(pd.DataFrame({
+            "player_id": pd.to_numeric(src.loc[m, "player_id"], errors="coerce").to_numpy(dtype=float),
+            "_day": pd.to_datetime(src.loc[m, "date"], errors="coerce").dt.normalize().to_numpy()}))
+    if not parts:
+        return pd.DataFrame(columns=["player_id", "_day"])
+    out = pd.concat(parts, ignore_index=True).dropna()
+    return out.drop_duplicates().sort_values("_day", kind="stable").reset_index(drop=True)
+
+
+def rest_days_before(played: pd.DataFrame, q: pd.DataFrame) -> pd.Series:
+    """rest_days for each query row (player_id, date): days from the player's last PLAYED day strictly
+    before the query day (played_days: every competition we hold) to the query day. NaN without one.
+    Uncapped (was clipped at 30: a 60-day gap is 60). Training and serving both call this."""
+    out = pd.Series(np.nan, index=q.index, dtype=float)
+    if played.empty or q.empty:
+        return out
+    qq = pd.DataFrame({"player_id": pd.to_numeric(q["player_id"], errors="coerce").to_numpy(dtype=float),
+                       "_day": pd.to_datetime(q["date"], errors="coerce").dt.normalize().to_numpy(),
+                       "_i": np.arange(len(q))}).dropna(subset=["player_id", "_day"])
+    if qq.empty:
+        return out
+    p = played.assign(_last=played["_day"]).sort_values("_day", kind="stable")
+    hit = pd.merge_asof(qq.sort_values("_day", kind="stable"), p, on="_day", by="player_id",
+                        allow_exact_matches=False)
+    out.iloc[hit["_i"].to_numpy()] = (hit["_day"] - hit["_last"]).dt.days.to_numpy(dtype=float)
+    return out
+
+
 # ── composites: ONE definition for training and serving ─────────────────────────────────────────
 
 def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
@@ -1052,6 +1091,9 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df = df.sort_values(["player_id", "date"]).reset_index(drop=True)
     # Before the minutes filter: the rule needs both teams' rows of a fixture.
     df = _blank_unrecorded_corners(df)
+    # Every match each player played (this frame before the minutes filter + the collected cup rows):
+    # rest_days is measured on the complete history, not on the training rows.
+    _played = played_days(df)
 
     # Drop bench/DNP rows (< 10 min)
     df = df[df["minutes"] >= 10].copy()
@@ -1179,11 +1221,10 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["referee_strictness"] = np.nan
         df["lg_yellows_per_match"] = np.nan
 
-    # ── Rest days: days since the player's previous match. A first match has none (NaN, was 6.0);
-    # a same-day duplicate (0 days) is not a rest period (NaN, was clipped up to 1). Capped at 30.
-    _d = pd.to_datetime(df["date"], errors="coerce")
-    _gap = _d.groupby(df["player_id"]).diff().dt.days
-    df["rest_days"] = _gap.where(_gap >= 1).clip(upper=30)
+    # ── Rest days: days since the player's previous match in ANY competition we hold (league rows,
+    # rows under 10 minutes, collected cup rows: rest_days_before). No earlier match -> NaN (was
+    # 6.0); uncapped (was clipped at 30).
+    df["rest_days"] = rest_days_before(_played, df[["player_id", "date"]]).to_numpy()
 
     # ── Goal-type rolling features under their own names (data_fetcher.enrich_sp_events: the goal
     # event's detail says header / free kick; NaN where the fixture's goals are unclassified). The
@@ -1311,8 +1352,10 @@ def _serving_context(history: pd.DataFrame) -> dict:
         if {"fixture_id", "team_corners"} <= set(h.columns):
             hb = _blank_unrecorded_corners(h)
             blank = set(hb.loc[hb["team_corners"].isna() & _num(h, "team_corners").notna(), "fixture_id"])
+        played = played_days(h)                # rest_days: every competition we hold
         _SERVE_CACHE.clear()
         _SERVE_CACHE.update({"key": key, "table": t,
+                             "played_by_pid": {p: g for p, g in played.groupby("player_id")},
                              "by_team": ({k: g for k, g in t.groupby("_tkey")} if not t.empty else {}),
                              "teams_by_scope": teams_by_scope,
                              "blank_corner_fixtures": blank,
@@ -1567,10 +1610,11 @@ def build_upcoming_features(
         r["pos_forward"], r["pos_midfielder"], r["pos_defender"] = (
             int(_pos == "F"), int(_pos == "M"), int(_pos == "D"))
 
-        # Rest days: from the player's last match to THIS fixture (NaN without a fixture date).
-        last = pd.to_datetime(phist_all["date"], errors="coerce").max()
-        gap = (fdate.normalize() - last.normalize()).days if (fdate == fdate and last == last) else NAN
-        r["rest_days"] = float(min(gap, 30)) if gap == gap and gap >= 1 else NAN
+        # Rest days: from the player's last match in ANY competition we hold to THIS fixture (the
+        # training function; NaN without a fixture date).
+        _pl = ctx["played_by_pid"].get(float(pid)) if isinstance(pid, (int, np.integer, float)) else None
+        r["rest_days"] = (float(rest_days_before(_pl, pd.DataFrame({"player_id": [pid], "date": [fdate]})).iloc[0])
+                          if _pl is not None and fdate == fdate else NAN)
 
         # Opponent (measured) and league averages.
         okey = (str(p.get("opponent", "")), league)
