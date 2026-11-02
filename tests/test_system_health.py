@@ -65,7 +65,11 @@ def test_workflow_health_counts_only_latest_failing_runs_on_main():
 def test_weekly_research_panel_is_red_when_protected_tracks_move():
     reg = {"tracked_leagues": ["A", "B"], "regime_counts": {"PROTECTED": 1, "REPAIR": 0, "LEARNING": 9}}
     ok = {"protected_tracks_modified": False, "changes": [], "unapproved_new_protected_tracks": []}
-    assert S.weekly_research_panel(reg, ok)["status"] == "GREEN"
+    fresh = {"generated_at": datetime.now(timezone.utc).isoformat(), "missing_leagues": [],
+             "missing_leagues_previous_week": []}
+    assert S.weekly_research_panel(reg, ok, fresh)["status"] == "GREEN"
+    # the rule says AMBER when the panel health is missing; it read GREEN until 2026-11-02 (team_frame)
+    assert S.weekly_research_panel(reg, ok)["status"] == "AMBER"
     moved = dict(ok, protected_tracks_modified=True, changes=["deployed_env.MARKSMAN_THRESHOLD: 0.08 -> 0.09"])
     c = S.weekly_research_panel(reg, moved)
     assert c["status"] == "RED" and "MARKSMAN_THRESHOLD" in c["detail"]
