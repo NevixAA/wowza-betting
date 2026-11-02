@@ -1,0 +1,36 @@
+name: Diagnostic - API-Football set-piece events
+
+# One-off, read-only (~25 API-Football calls): does API-Football tag goals/shots as corner or free
+# kick anywhere in its fixture events? Owner question 2026-11-02 (real set-piece data without paying
+# a premium feed). Triggered by changing .github/diag_trigger.txt on data-truth-100. Delete after use.
+on:
+  push:
+    branches: [data-truth-100]
+    paths: ['.github/diag_trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: data-truth-100
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Inspect fixture events
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: python scripts/diag_af_setpiece_events.py | tee diag.txt
+      - name: Commit the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/DIAG_AF_SETPIECE_EVENTS.md
+          git commit -q -m "diag: API-Football set-piece event fields" || exit 0
+          for i in 1 2 3; do git pull --rebase -X theirs origin data-truth-100 && git push origin HEAD:data-truth-100 && exit 0; sleep 5; done
