@@ -20,6 +20,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src import units as U
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 
@@ -98,28 +100,28 @@ def performance(settled: pd.DataFrame, today=None) -> dict:
     staked = settled[settled["signal_tier"].isin(STAKED)]
     paper = settled[settled["signal_tier"] == "VALUABLE"]
     n = int(len(staked))
-    out = {"n": n, "pnl": float(staked["_pnl"].sum()) if n else None,
+    out = {"n": n, "pnl": U.total(staked["_pnl"]) if n else None,
            "win_rate": float((staked["_pnl"] > 0).mean()) if n else None,
-           "roi": float(staked["_pnl"].sum()) / n if n else None,
-           "paper_n": int(len(paper)), "paper_pnl": float(paper["_pnl"].sum()) if len(paper) else None,
+           "roi": U.total(staked["_pnl"]) / n if n else None,
+           "paper_n": int(len(paper)), "paper_pnl": U.total(paper["_pnl"]) if len(paper) else None,
            "drawdown": None, "peak": None, "last7_pnl": None, "last7_n": 0, "curve": pd.DataFrame(),
            "by_market": pd.DataFrame()}
     if not n:
         return out
     s = staked.sort_values("_dt", kind="mergesort")
-    cum = s["_pnl"].cumsum()
+    cum = pd.Series(U.running(s["_pnl"]), index=s.index)
     peak = max(0.0, float(cum.max()))
     out["peak"] = peak
-    out["drawdown"] = float(cum.iloc[-1]) - peak                       # <= 0: units below the peak
-    daily = s.groupby(s["_dt"].dt.normalize())["_pnl"].sum()
-    out["curve"] = daily.cumsum().rename("cum").reset_index().rename(columns={"_dt": "date"})
+    out["drawdown"] = U.total([cum.iloc[-1], -peak])                        # <= 0: units below the peak
+    daily = s.groupby(s["_dt"].dt.normalize())["_pnl"].agg(U.total)
+    out["curve"] = pd.Series(U.running(daily), index=daily.index).rename("cum").reset_index().rename(columns={"_dt": "date"})
     t = pd.Timestamp(today).normalize() if today is not None else pd.Timestamp.now().normalize()
     w = s[s["_dt"] >= t - pd.Timedelta(days=6)]
-    out["last7_pnl"] = float(w["_pnl"].sum()) if len(w) else 0.0
+    out["last7_pnl"] = U.total(w["_pnl"]) if len(w) else 0.0
     out["last7_n"] = int(len(w))
-    bm = (s.groupby("_mkt")["_pnl"].agg(Bets="size", PL="sum").reset_index()
+    bm = (s.groupby("_mkt")["_pnl"].agg(Bets="size", PL=U.total).reset_index()
           .rename(columns={"_mkt": "Market", "PL": "P/L"}))
-    run = {k: [round(float(v), 3) for v in g["_pnl"].cumsum()] for k, g in s.groupby("_mkt")}
+    run = {k: [round(v, 3) for v in U.running(g["_pnl"])] for k, g in s.groupby("_mkt")}
     bm["Run"] = bm["Market"].map(lambda k: run.get(k) if len(run.get(k, [])) >= 3 else None)
     out["by_market"] = bm.sort_values("Bets", ascending=False).reset_index(drop=True)
     return out
