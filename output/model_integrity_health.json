@@ -1,7 +1,7 @@
 {
   "artifact": "model_integrity_health",
   "version": "model-integrity-health-0.1",
-  "generated_at": "2026-11-01T18:58:32Z",
+  "generated_at": "2026-11-02T18:34:43Z",
   "status": "FAIL",
   "inputs_present": {
     "feature_parity_health": true,
@@ -23,7 +23,7 @@
       "model_recipe_version": "v9_repaired-1.0",
       "serving_version": "standard_repaired_20261028T123040Z_1f5805e6",
       "training_cutoff": "2026-10-28",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "3fd56c29e2c55ee8",
       "identity_version": "v9r-identity-1.0",
       "feature_recipe_version": "v9r-features-1.0",
@@ -67,8 +67,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 20,
-          "WARN": 21,
+          "PASS": 22,
+          "WARN": 19,
           "FAIL": 0
         },
         "fail_features": []
@@ -116,7 +116,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "newformat_20261018T080423Z_9eb6b4b4",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -131,8 +131,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 19,
-          "WARN": 8,
+          "PASS": 17,
+          "WARN": 10,
           "FAIL": 0
         },
         "fail_features": []
@@ -177,7 +177,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "2026-10-28",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -192,8 +192,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 27,
+          "PASS": 13,
+          "WARN": 29,
           "FAIL": 0
         },
         "fail_features": []
@@ -213,11 +213,11 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9446,
+        "synthetic_share_historical": 0.6991,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 336,
+          "CONFIRMED_BY_DEVIG": 346,
           "UNVERIFIABLE_ONE_SIDED": 83,
           "ONLY_BECAUSE_OF_1_08": 78
         },
@@ -246,7 +246,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "btts_20261005T101905Z_238e3419",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -259,13 +259,15 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "WARN",
+        "status": "FAIL",
         "counts": {
-          "PASS": 19,
-          "WARN": 23,
-          "FAIL": 0
+          "PASS": 21,
+          "WARN": 20,
+          "FAIL": 1
         },
-        "fail_features": []
+        "fail_features": [
+          "combined_ht_goals_avg"
+        ]
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -282,11 +284,11 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9446,
+        "synthetic_share_historical": 0.6991,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 336,
+          "CONFIRMED_BY_DEVIG": 346,
           "UNVERIFIABLE_ONE_SIDED": 83,
           "ONLY_BECAUSE_OF_1_08": 78
         },
@@ -315,7 +317,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "2026-10-28",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -330,8 +332,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 27,
+          "PASS": 13,
+          "WARN": 29,
           "FAIL": 0
         },
         "fail_features": []
@@ -351,11 +353,11 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.993,
+        "synthetic_share_historical": 0.9765,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 77,
+          "CONFIRMED_BY_DEVIG": 80,
           "UNVERIFIABLE_ONE_SIDED": 20,
           "ONLY_BECAUSE_OF_1_08": 8
         },
@@ -384,7 +386,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over15_20261018T080423Z_da4743a2",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -397,13 +399,15 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "WARN",
+        "status": "FAIL",
         "counts": {
-          "PASS": 19,
-          "WARN": 23,
-          "FAIL": 0
+          "PASS": 21,
+          "WARN": 20,
+          "FAIL": 1
         },
-        "fail_features": []
+        "fail_features": [
+          "combined_ht_goals_avg"
+        ]
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -420,11 +424,11 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.993,
+        "synthetic_share_historical": 0.9765,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 77,
+          "CONFIRMED_BY_DEVIG": 80,
           "UNVERIFIABLE_ONE_SIDED": 20,
           "ONLY_BECAUSE_OF_1_08": 8
         },
@@ -453,7 +457,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "2026-10-28",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -468,8 +472,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 15,
-          "WARN": 27,
+          "PASS": 13,
+          "WARN": 29,
           "FAIL": 0
         },
         "fail_features": []
@@ -489,11 +493,11 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9929,
+        "synthetic_share_historical": 0.9756,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 18,
+          "CONFIRMED_BY_DEVIG": 21,
           "ONLY_BECAUSE_OF_1_08": 7,
           "UNVERIFIABLE_ONE_SIDED": 2
         },
@@ -522,7 +526,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "over35_20261005T101905Z_f546ce72",
       "training_cutoff": "UNKNOWN_PRE_GATE",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -535,13 +539,15 @@
         "note": "legacy recipe: no persisted block boundaries"
       },
       "parity": {
-        "status": "WARN",
+        "status": "FAIL",
         "counts": {
-          "PASS": 19,
-          "WARN": 23,
-          "FAIL": 0
+          "PASS": 21,
+          "WARN": 20,
+          "FAIL": 1
         },
-        "fail_features": []
+        "fail_features": [
+          "combined_ht_goals_avg"
+        ]
       },
       "batch_invariance": {
         "status": "FAIL",
@@ -558,11 +564,11 @@
         "price_features_in_model": [
           "bookmaker_overround"
         ],
-        "synthetic_share_historical": 0.9929,
+        "synthetic_share_historical": 0.9756,
         "placed_rows_synthetic": 0,
         "production_edge_rule": "p - (1/odds)/1.08 (fixed 8% margin assumption)",
         "devig_shadow_ledger": {
-          "CONFIRMED_BY_DEVIG": 18,
+          "CONFIRMED_BY_DEVIG": 21,
           "ONLY_BECAUSE_OF_1_08": 7,
           "UNVERIFIABLE_ONE_SIDED": 2
         },
@@ -591,7 +597,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over05_20261018T080423Z_359b491a",
       "training_cutoff": "2026-10-28",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -606,8 +612,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 38,
-          "WARN": 27,
+          "PASS": 36,
+          "WARN": 29,
           "FAIL": 0
         },
         "fail_features": []
@@ -653,7 +659,7 @@
       "model_recipe_version": "legacy_v9 (unversioned)",
       "serving_version": "ht_over15_20261004T093828Z_6f370f63",
       "training_cutoff": "2026-10-28",
-      "code_sha": "6c7d6a80dde5",
+      "code_sha": "fea036e16287",
       "data_hash": "UNKNOWN",
       "identity_version": "UNKNOWN",
       "feature_recipe_version": "legacy_v9 (unversioned)",
@@ -668,8 +674,8 @@
       "parity": {
         "status": "WARN",
         "counts": {
-          "PASS": 38,
-          "WARN": 27,
+          "PASS": 36,
+          "WARN": 29,
           "FAIL": 0
         },
         "fail_features": []

@@ -1,10 +1,10 @@
 {
   "artifact": "price_provenance_health",
   "version": "price-provenance-1.0",
-  "generated_at": "2026-11-01T18:57:51Z",
+  "generated_at": "2026-11-02T18:33:59Z",
   "capture_files": {
     "newformat_odds_history": {
-      "rows": 64554,
+      "rows": 65237,
       "invalid_rows": 5007,
       "invalid_by_reason": {
         "PARSER_PRE_FIX_OU_2026-08-10": 4074,
@@ -23,7 +23,7 @@
       "raw_file_rewritten": false
     },
     "standard_sidemarket_odds_history": {
-      "rows": 66873,
+      "rows": 67529,
       "invalid_rows": 271,
       "invalid_by_reason": {
         "FIRST_HALF_BTTS_PRICE_GT_3.20": 271
@@ -35,7 +35,7 @@
       "raw_file_rewritten": false
     },
     "standard_odds_history": {
-      "rows": 10716,
+      "rows": 10856,
       "invalid_rows": 0,
       "invalid_by_reason": {},
       "invalid_by_market": {},
@@ -191,83 +191,83 @@
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "OU1.5",
-      "n": 772,
+      "n": 846,
       "median_over": 1.25,
-      "implied_over": 0.7563,
-      "realised_over": 0.7811,
-      "gap": -0.0248,
+      "implied_over": 0.7579,
+      "realised_over": 0.7861,
+      "gap": -0.0282,
       "consistent_full_match": true
     },
     {
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "OU2.5",
-      "n": 766,
+      "n": 838,
       "median_over": 1.85,
-      "implied_over": 0.5245,
-      "realised_over": 0.5601,
-      "gap": -0.0356,
+      "implied_over": 0.527,
+      "realised_over": 0.568,
+      "gap": -0.041,
       "consistent_full_match": true
     },
     {
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "OU3.5",
-      "n": 772,
+      "n": 846,
       "median_over": 3.0,
-      "implied_over": 0.3238,
-      "realised_over": 0.3277,
-      "gap": -0.0039,
+      "implied_over": 0.326,
+      "realised_over": 0.3392,
+      "gap": -0.0132,
       "consistent_full_match": true
     },
     {
       "source": "standard_sidemarket_odds_history",
       "period": "forward_valid",
       "line": "BTTS",
-      "n": 658,
+      "n": 732,
       "median_over": 1.73,
-      "implied_over": 0.5424,
-      "realised_over": 0.5729,
-      "gap": -0.0305,
+      "implied_over": 0.5435,
+      "realised_over": 0.5738,
+      "gap": -0.0303,
       "consistent_full_match": true
     },
     {
       "source": "standard_odds_history",
       "period": "forward_valid",
       "line": "OU2.5",
-      "n": 292,
+      "n": 313,
       "median_over": 1.9,
-      "implied_over": 0.4964,
-      "realised_over": 0.5137,
-      "gap": -0.0173,
+      "implied_over": 0.4963,
+      "realised_over": 0.5048,
+      "gap": -0.0085,
       "consistent_full_match": true
     }
   ],
   "synthetic_side_prices_in_backtests": {
     "btts": {
-      "rows": 22794,
-      "synthetic_rows": 21531,
-      "synthetic_share": 0.9446,
+      "rows": 19669,
+      "synthetic_rows": 13751,
+      "synthetic_share": 0.6991,
       "basis": "price_synthetic flag",
-      "placed_rows": 227,
+      "placed_rows": 820,
       "placed_rows_synthetic": 0,
       "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
     },
     "over15": {
-      "rows": 22794,
-      "synthetic_rows": 22635,
-      "synthetic_share": 0.993,
+      "rows": 19669,
+      "synthetic_rows": 19206,
+      "synthetic_share": 0.9765,
       "basis": "price_synthetic flag",
-      "placed_rows": 7,
+      "placed_rows": 20,
       "placed_rows_synthetic": 0,
       "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
     },
     "over35": {
-      "rows": 22794,
-      "synthetic_rows": 22632,
-      "synthetic_share": 0.9929,
+      "rows": 19669,
+      "synthetic_rows": 19190,
+      "synthetic_share": 0.9756,
       "basis": "price_synthetic flag",
-      "placed_rows": 54,
+      "placed_rows": 9,
       "placed_rows_synthetic": 0,
       "label": "SYNTHETIC_PRICE_DIAGNOSTIC_ONLY / INVALID_FOR_PROFITABILITY on synthetic rows"
     }
