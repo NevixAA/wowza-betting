@@ -241,6 +241,13 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
 
     Bins below `min_bin` are returned flagged, never dropped: a bin of 3 that sits on the diagonal
     is not evidence of calibration.
+
+    SIDE MARKETS (fixed 2026-11-02, estate scan "calibration headline 8.97pp, corrected 7.44pp").
+    `edge_pct/100 + 1/odds` is the claim ONLY on the O/U 2.5 ledger. The side-market ledger's edge is
+    measured against the DE-VIGGED price, so the same formula added the bookmaker margin to every
+    side-market claim (+4.4pp on average over 603 settled side rows on 2026-11-02) and inflated the
+    headline. Side rows record the claim itself (`model_prob`), and that is what is used; a side row
+    without a recorded model_prob is left out (no reconstruction), and the count is returned.
     """
     import numpy as np
     d = ledger()
@@ -251,8 +258,13 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
     edge = pd.to_numeric(s.get("edge_pct"), errors="coerce")
     if odds.isna().all() or edge.isna().all():
         return {"available": False, "why": "ledger has no odds/edge_pct to recover a claim from"}
-    # edge_pct is stored as a percentage in the ledger, so it is divided by 100 here.
-    s["claimed"] = (edge / 100.0) + (1.0 / odds)
+    # edge_pct is stored as a percentage in the ledger, so it is divided by 100 here. That recovers the
+    # claim on O/U 2.5 only; side markets use their recorded model_prob (see the docstring).
+    ou = (s["market"].astype(str) == "ou25") if "market" in s.columns else pd.Series(True, index=s.index)
+    mp = pd.to_numeric(s["model_prob"], errors="coerce") if "model_prob" in s.columns else pd.Series(
+        float("nan"), index=s.index)
+    s["claimed"] = ((edge / 100.0) + (1.0 / odds)).where(ou, mp)
+    no_claim_side = int((~ou & mp.isna()).sum())
     s["won"] = (s["result"] == "WIN").astype(float)
     s = s[s["claimed"].between(0, 1)].dropna(subset=["claimed"])
     if len(s) < min_bin:
@@ -283,4 +295,4 @@ def calibration(bins: int = 8, min_bin: int = 20) -> dict:
             "claimed": round(overall_claim, 4), "realised": round(overall_real, 4),
             "gap_pp": round((overall_claim - overall_real) * 100, 2),
             "z": round((overall_claim - overall_real) / se, 2) if se else None,
-            "by_tier": by_tier}
+            "by_tier": by_tier, "side_rows_without_model_prob": no_claim_side}
