@@ -36,8 +36,15 @@ WINDOW_DAYS = 365
 MIN_TEAM_SP_EVENTS = 10      # team set-piece shots (or assisted ones) behind a share
 MIN_US_MINUTES = 450         # Understat minutes behind a per-90 rate
 
-SETPIECE_COLUMNS = ("us_sp_taker_share", "us_sp_receiver_share", "us_sp_xg_p90", "us_sp_sot_p90",
-                    "us_dfk_shots_p90")
+#: The Understat set-piece features this module can build.
+UNDERSTAT_SETPIECE_COLUMNS = ("us_sp_taker_share", "us_sp_receiver_share", "us_sp_xg_p90", "us_sp_sot_p90",
+                              "us_dfk_shots_p90")
+#: LICENCE GATE (owner 2026-11-02): Understat data is free for NON-commercial use only (its support,
+#: per the understatr README); Wowza is commercial (paid tiers), so these features are NOT used in
+#: training or serving until Understat grants written permission for commercial use. Set
+#: UNDERSTAT_COMMERCIAL_LICENCE to the written permission's reference to enable them.
+UNDERSTAT_COMMERCIAL_LICENCE: str | None = None
+SETPIECE_COLUMNS = UNDERSTAT_SETPIECE_COLUMNS if UNDERSTAT_COMMERCIAL_LICENCE else ()
 _SUMS = ("minutes", "sp_assists", "team_recv_assisted", "recv_shots", "team_recv_shots", "sp_xg",
          "recv_sot", "dfk_shots")
 

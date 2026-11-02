@@ -45,9 +45,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,understat,strength)'
+        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,strength)'
         required: false
-        default: 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,understat,strength'
+        default: 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,strength'
 
 concurrency:
   group: data-truth-collect
@@ -60,7 +60,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,understat,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,strength' }}
       # Owner 2026-11-02 (one run-day only): floor 10,000 remaining, job cap 55,000, to finish today.
       # Remove these two lines after run-day 2; the code defaults are 25,000 / 45,000.
       COLLECT_AF_FLOOR: '10000'
@@ -170,12 +170,9 @@ jobs:
           python scripts/collect_player_profiles.py
           /tmp/commit_collected.sh profiles
 
-      - name: 5. Understat shots (no API-Football calls)
-        if: contains(env.STEPS, 'understat')
-        timeout-minutes: 120
-        run: |
-          python scripts/collect_understat_shots.py --max-matches 4000
-          /tmp/commit_collected.sh understat
+      # 5. Understat: REMOVED (owner 2026-11-02). Understat data is free for non-commercial use only and
+      #    Wowza is commercial; no collection until Understat grants written commercial permission
+      #    (then restore this step and set player_model/setpiece/features.UNDERSTAT_COMMERCIAL_LICENCE).
 
       - name: 6. Measured club / league strength
         if: always() && contains(env.STEPS, 'strength')
