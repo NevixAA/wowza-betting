@@ -305,11 +305,8 @@ def _detect_lazy_factors(row: dict, feat_row: dict, market: str) -> list[str]:
         except (TypeError, ValueError):
             return float("nan")
 
-    if market == "sot":
-        sp_score = _v(feat_row, "set_piece_threat_score")
-        # Threshold: aerial 45% × corners at league avg (6) × 0.30 sp rate = 0.135
-        if sp_score > 0.135 and (feat_row.get("pos_defender", 0) or feat_row.get("pos_midfielder", 0)):
-            factors.append("SET_PIECE")
+    # (No SET_PIECE factor: it read the set-piece "threat score", a typed proxy - aerial rate x corners/6
+    #  x a typed 0.30 "sp rate" - purged 2026-11-02. It had been NaN, so it never fired since R2.)
 
     if market == "cards":
         if _v(feat_row, "referee_strictness") > 0.5:

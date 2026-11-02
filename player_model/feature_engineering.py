@@ -33,13 +33,23 @@ from .setpiece import features as _SP
 
 NAN = float("nan")
 
-# Retired set-piece composites (typed position weights over set-piece goal classifications that
-# API-Football does not provide; 100% missing in the 2026-11-01 rebuild). Kept as NaN columns for
-# the legacy serving payloads; the measured replacements are _SP.SETPIECE_COLUMNS and
-# corner_matchup_index. defender_sot_role_index is DROPPED on the same terms: its real-data
-# counterpart is us_sp_sot_p90 (set-piece shots on target per 90, every position, Understat).
-LEGACY_SETPIECE_COLUMNS = ("sp_taker_score", "sp_receiver_score", "set_piece_threat_score",
-                           "set_piece_corner_matchup", "defender_sot_role_index")
+# PURGED set-piece features (owner rule 2026-11-02, "no fake data, no proxies"). None of them is
+# set-piece data: they were typed position weights (0.45 / 0.30 ...), typed rates (x 0.30 "sp
+# rate", x 5.0 / x 4.0 "SOT proxy"), clip bounds (.clip(0.3, 2.0), .clip(0, 0.10) / 0.10) and
+# arithmetic on aerial-duel / corner / height numbers, or rolling means of `sp_goal` / `sp_assist`,
+# which data_fetcher._parse_sp_events sets for ANY header or free-kick goal (a header from open
+# play is not a set piece; API-Football labels goals "Normal Goal" so the split is unknown anyway).
+# They are no longer built for training OR serving (no NaN placeholder column either); a legacy
+# serving payload that lists one reads it as absent -> NaN, exactly what it read before (they were
+# all-NaN columns). The ONLY set-piece features are the Understat per-shot situations
+# (_SP.SETPIECE_COLUMNS, us_sp_*: NaN where Understat has no data).
+REMOVED_SETPIECE_FEATURES = (
+    "sp_taker_score", "sp_receiver_score", "set_piece_threat_score", "set_piece_corner_matchup",
+    "defender_sot_role_index", "defender_sp_edge", "defender_sot_edge",
+    "sp_threat_vs_weak_sp_defense", "sp_taker_assist_edge", "aerial_height_sp_composite",
+    "sp_goal_probability_composite", "opp_sp_goals_conceded_pg", "lg_sp_per_team",
+    "sp_goals_pg", "sp_assist_pg", "career_sp_goals_rate", "career_sp_assist_rate", "sp_goals_share",
+)
 
 # season_* feature -> raw per-match source column, for AS-OF-DATE recomputation.
 _SEASON_SRC = {
@@ -383,7 +393,6 @@ _TEAM_ROLL = {
     "def_rating":         ("opp_def_player_rating_pg",     "MIN_OPP_MATCHES"),
     "def_rating_top":     ("opp_top_def_rating",           "MIN_OPP_MATCHES"),
     "def_height":         ("opp_def_mean_height",          "MIN_OPP_MATCHES"),
-    "sp_conceded":        ("opp_sp_goals_conceded_pg",     "MIN_OPP_MATCHES"),
     "gk_save_rate":       ("opp_gk_save_rate",             "MIN_GK_MATCHES"),
     "gk_saves":           ("opp_gk_saves_pg",              "MIN_GK_MATCHES"),
     "conc_fwd_goals":     ("opp_goals_conceded_vs_fwd_pg", "MIN_OPP_MATCHES"),
@@ -423,7 +432,7 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame()
     pos = _first_letter(d["position"]) if "position" in d.columns else pd.Series("", index=d.index)
     for c in ("goals", "shots_on_target", "duels_won", "duels_total", "fouls_committed",
-              "yellow_cards", "saves", "goals_conceded", "sp_goal", "team_corners"):
+              "yellow_cards", "saves", "goals_conceded", "team_corners"):
         d[c] = _num(d, c)
     d["_rating"] = _num(d, "rating").where(lambda s: s > 0)
     d["_height"] = _height_series(d)
@@ -432,9 +441,7 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
     t = d.groupby(key).agg(date=("date", "first"), league=("league", "first"),
                            _okey=("_okey", "first"),
                            goals_scored=("goals", "sum"), sot_scored=("shots_on_target", "sum"),
-                           team_corners=("team_corners", "first"),
-                           sp_scored=("sp_goal", "sum"), _sp_n=("sp_goal", "count"))
-    t["sp_scored"] = t["sp_scored"].where(t.pop("_sp_n") > 0)     # unclassified goals -> NaN
+                           team_corners=("team_corners", "first"))
 
     def _role(letter, **aggs):
         sub = d[pos == letter]
@@ -466,10 +473,10 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
     t = t.reset_index()
 
     # What the OTHER side did in the same fixture = what this team conceded.
-    other = t[["fixture_id", "_tkey", "goals_scored", "sot_scored", "sp_scored",
+    other = t[["fixture_id", "_tkey", "goals_scored", "sot_scored",
                "fwd_goals", "fwd_sot", "mid_goals", "mid_sot", "team_corners"]].rename(columns={
         "_tkey": "_okey", "goals_scored": "goals_conceded", "sot_scored": "sot_conceded",
-        "sp_scored": "sp_conceded", "fwd_goals": "conc_fwd_goals", "fwd_sot": "conc_fwd_sot",
+        "fwd_goals": "conc_fwd_goals", "fwd_sot": "conc_fwd_sot",
         "mid_goals": "conc_mid_goals", "mid_sot": "conc_mid_sot", "team_corners": "corners_conceded"})
     t = t.merge(other, on=["fixture_id", "_okey"], how="left")
     # Corners for / against from the API-Football team statistics. A fixture where BOTH sides show 0
@@ -592,7 +599,6 @@ def _team_now(rows: pd.DataFrame, n: int) -> dict:
 _LEAGUE_NORMS = {
     "lg_goals_per_team":   "goals_scored",     # goals per team-match (the opp_strength_index base)
     "lg_corners_per_team": "team_corners",
-    "lg_sp_per_team":      "sp_scored",
     "lg_def_rating":       "def_rating",
     "lg_def_rating_top":   "def_rating_top",
     "lg_def_aerial":       "def_aerial",
@@ -777,23 +783,19 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     pf, pm, pd_ = f["pos_forward"], f["pos_midfielder"], f["pos_defender"]
 
     f["sot_rate"] = _ratio(f["sot_pg"], f["shots_pg"])
-    f["shooting_efficiency_index"] = _ratio(f["goals_pg"], f["sot_pg"]).clip(upper=1.0)
+    # Unclipped (was .clip(upper=1.0)): a goal is a shot on target, so the measured ratio is <= 1;
+    # a value above 1 is a provider inconsistency and stays visible instead of being rewritten.
+    f["shooting_efficiency_index"] = _ratio(f["goals_pg"], f["sot_pg"])
     f["card_exposure_index"] = f["cards_pg"] * (f["minutes_pg"] / 90.0) * (1 - pf)
     f["sot_quality_score"] = f["shot_accuracy_rate"] * f["sot_pg"]
     f["opp_adjusted_shot_threat"] = f["shots_pg"] * f["opp_sot_conceded_pg"]
     f["creative_playmaker_score"] = f["kp_per90"] * (pm + 0.5 * pf)
 
     corners_rel = _ratio(f["team_corners_pg"], f["lg_corners_per_team"])
-    sp_rel = _ratio(f["opp_sp_goals_conceded_pg"], f["lg_sp_per_team"])
 
-    # Set-piece role (owner decision B, 2026-11-02): REAL data only. The legacy scores were typed
-    # position weights (0.45 / 0.30 / 0.05 ...) over goal-event classifications API-Football does not
-    # provide; they are retired (NaN, LEGACY_SETPIECE_COLUMNS). Their measured replacements are the
-    # Understat features us_sp_taker_share / us_sp_receiver_share / us_sp_xg_p90 / us_sp_sot_p90 /
-    # us_dfk_shots_p90 (player_model/setpiece/features.py; NaN outside the Understat leagues), and
-    # the corner matchup below.
-    for c in LEGACY_SETPIECE_COLUMNS:
-        f[c] = np.nan
+    # Set pieces: REAL data only (owner rule 2026-11-02). The only set-piece features are the
+    # Understat per-shot situations us_sp_* (player_model/setpiece/features.py; NaN outside the
+    # Understat leagues). Nothing here builds a set-piece feature (REMOVED_SETPIECE_FEATURES).
     # Corner matchup: the player's team's corners per match (his last n games) relative to its
     # league, times the opponent's corners CONCEDED per match relative to the league. Both from the
     # API-Football team statistics (team_corners), every league.
@@ -815,7 +817,7 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
     f["midfield_engine_score"] = ((f["passes_pg"] / 50.0).clip(upper=1.0) * 0.4
                                   + (f["kp_per90"] / 3.0).clip(upper=1.0) * 0.4
                                   + (f["tackles_per90"] / 5.0).clip(upper=1.0) * 0.2) * (pm + 0.3 * pd_)
-    f["offside_aggressiveness"] = (f["offsides_pg"] * pf).clip(upper=2.0)
+    f["offside_aggressiveness"] = f["offsides_pg"] * pf               # unclipped (was upper=2.0)
     f["volume_shot_penetration"] = (f["shots_pg"] * f["shot_accuracy_rate"] * save_gap).clip(lower=0.0)
     f["finishing_threat_index"] = (f["sot_pg"] * f["shooting_efficiency_index"] * save_gap).clip(lower=0.0)
     f["box_dominance_vs_gk"] = ((f["box_actions_per90"] + f["dribbles_pg"]) * save_gap).clip(lower=0.0)
@@ -841,41 +843,32 @@ def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
 
     # Height: the player's and the opponent defenders' measured heights (NaN while unprofiled).
     profile_composites(f)
-    _h_adj = (f["height_advantage_score"] + 2.0) / 4.0
-    f["defender_sp_edge"] = (f["sp_receiver_score"] * _h_adj * sp_rel * corners_rel.clip(0.3, 2.0)).clip(0, 4.0)
-    _sp_sot_proxy = (f["sp_goals_pg"] * 5.0 + f["headed_goals_pg"] * 4.0).clip(0, 0.6)
-    f["defender_sot_edge"] = (f["sp_receiver_score"] * _h_adj * corners_rel.clip(0.2, 3.0) * sp_rel
-                              * (1.0 + _sp_sot_proxy * 4.0)).clip(0, 5.0)
-    f["sp_threat_vs_weak_sp_defense"] = (f["sp_goals_pg"] * sp_rel * (1.0 - f["sp_taker_score"])).clip(0, 1.0)
-    f["aerial_height_sp_composite"] = (f["aerial_won_rate"] * _h_adj.clip(0.3, 1.0) * sp_rel
-                                       * (pd_ + 0.5 * pm)).clip(0, 2.0)
-    f["sp_goal_probability_composite"] = (f["career_sp_goals_rate"] * 0.30 + f["sp_goals_pg"] * 0.30
-                                          + f["aerial_won_rate"] * _h_adj * 0.20
-                                          + (sp_rel - 1.0).clip(-0.5, 1.0) * 0.20).clip(0, 1.0)
-    f["sp_taker_assist_edge"] = (f["sp_taker_score"] * (f["career_sp_assist_rate"].clip(0, 0.10) / 0.10)
-                                 * corners_rel.clip(0.3, 2.0)).clip(0, 1.0)
     f["creative_pressure_matchup"] = (f["creative_playmaker_score"] * f["opp_def_fouls_pg"]).clip(lower=0.0)
     f["dribbler_vs_defensive_line"] = (f["dribble_creativity_score"] * (1.0 - f["opp_def_aerial_win_rate"])).clip(lower=0.0)
     f["carrier_vs_press"] = (f["progressive_carrier_score"] * f["opp_def_aggression"]).clip(lower=0.0)
     f["dribble_contact_rate"] = (f["dribbles_pg"] * (1.0 - f["dribble_success_rate"])).clip(lower=0.0)
     f["tackle_dribble_clash"] = (f["dribble_contact_rate"] * f["opp_mid_fouls_pg"]).clip(lower=0.0)
-    # The referee's yellows relative to the league's MEASURED yellows/match (was / 3.5).
+    # The referee's yellows relative to the league's MEASURED yellows/match (was / 3.5). Unclipped
+    # (was a 0.1 floor that manufactured a ratio for a referee with ~no yellows).
     f["card_clash_index"] = ((f["fouls_per90"] + f["dribble_contact_rate"]) * f["opp_mid_cards_pg"]
-                             * _ratio(f["referee_yellows_pg"], f["lg_yellows_per_match"]).clip(lower=0.1)
+                             * _ratio(f["referee_yellows_pg"], f["lg_yellows_per_match"])
                              ).clip(lower=0.0)
     f["opp_mid_discipline"] = (f["opp_mid_fouls_pg"] * 0.6 + f["opp_mid_cards_pg"] * 2.0).clip(lower=0.0)
 
     # Opposition strength: the opponent's goals CONCEDED per match relative to its league's goals per
     # team-match, both measured (was goals scored over a typed/whole-frame mean, fillna 1.3).
-    f["opp_strength_index"] = _ratio(f["opp_goals_conceded_pg"], f["lg_goals_per_team"]).clip(0.3, 3.0)
-    f["quality_adj_goals_pg"] = (f["goals_pg"] * f["opp_strength_index"]).clip(0.0, 5.0)
-    f["quality_adj_sot_pg"] = (f["sot_pg"] * f["opp_strength_index"]).clip(0.0, 10.0)
+    # Unclipped (were .clip(0.3, 3.0), .clip(0, 5), .clip(0, 10)): a bound rewrites a measured ratio
+    # into a typed one. The serving HistGradientBoosting payloads were trained on the clipped values,
+    # so a value beyond the old bound falls in the same edge bin as the bound: their scores do not move.
+    f["opp_strength_index"] = _ratio(f["opp_goals_conceded_pg"], f["lg_goals_per_team"])
+    f["quality_adj_goals_pg"] = f["goals_pg"] * f["opp_strength_index"]
+    f["quality_adj_sot_pg"] = f["sot_pg"] * f["opp_strength_index"]
 
     # Opponent defensive quality: each factor relative to the league's measured average (was 6.8 /
-    # 7.0 / 0.50).
+    # 7.0 / 0.50). Unclipped (was .clip(0.2, 4.0)).
     f["opp_def_player_quality"] = (_ratio(f["opp_def_player_rating_pg"], f["lg_def_rating"])
                                    * _ratio(f["opp_top_def_rating"], f["lg_def_rating_top"])
-                                   * _ratio(f["opp_def_aerial_win_rate"], f["lg_def_aerial"])).clip(0.2, 4.0)
+                                   * _ratio(f["opp_def_aerial_win_rate"], f["lg_def_aerial"]))
     # Measured strength (owner decision A; league_quality.py): the Elo odds ratio between the
     # opposition the player's record was earned against and this opponent. Unclipped: a clip would
     # manufacture a value. The legacy hand-tier ratios are NaN (league_quality.LEGACY_COLUMNS).
@@ -893,8 +886,8 @@ _COMPOSITE_INPUTS = (
     "team_corners_pg", "aerial_won_rate", "fouls_drawn_per90", "fouls_per90", "foul_committer_ratio",
     "duel_intensity_per90", "box_actions_per90", "dribbles_pg", "dribble_success_rate",
     "dribbled_past_pg", "defensive_actions_per90", "penalties_won_pg", "red_cards_pg", "passes_pg",
-    "tackles_per90", "offsides_pg", "height_cm", "age", "sp_goals_pg", "headed_goals_pg",
-    "fk_goals_pg", "career_sp_goals_rate", "career_sp_assist_rate", "referee_yellows_pg",
+    "tackles_per90", "offsides_pg", "height_cm", "age", "headed_goals_pg",
+    "fk_goals_pg", "referee_yellows_pg",
     *(feat for feat, _ in _TEAM_ROLL.values()), *_LEAGUE_NORMS,
     "lg_yellows_per_match", "pos_forward", "pos_midfielder", "pos_defender",
     *_LQ.MEASURED_COLUMNS, *_SP.SETPIECE_COLUMNS,
@@ -994,7 +987,7 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df["_fd90"] = _ratio(_num(df, "fouls_drawn"), mins) * 90
     df["_fp90"] = _ratio(_num(df, "fouls_committed"), mins) * 90
     _fc, _fd = _num(df, "fouls_committed"), _num(df, "fouls_drawn")
-    df["_fcr"] = (_fc / (_fc + _fd + 0.01)).where((_fc + _fd) > 0)    # no foul either way -> undefined
+    df["_fcr"] = _ratio(_fc, _fc + _fd)      # exact share (was + 0.01 typed); no foul -> undefined
     df["_tack90"] = _ratio(_num(df, "tackles_total"), mins) * 90
     df["_def90"] = _ratio(_num(df, "tackles_total") + _num(df, "interceptions"), mins) * 90
     df["_drib_acc"] = _ratio(_num(df, "dribbles_success"), _num(df, "dribbles_attempted"))
@@ -1071,16 +1064,14 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     _gap = _d.groupby(df["player_id"]).diff().dt.days
     df["rest_days"] = _gap.where(_gap >= 1).clip(upper=30)
 
-    # ── Set-piece event rolling features (data_fetcher.enrich_sp_events; NaN where unclassified)
+    # ── Goal-type rolling features under their own names (data_fetcher.enrich_sp_events: the goal
+    # event's detail says header / free kick; NaN where the fixture's goals are unclassified). The
+    # `sp_goal` / `sp_assist` columns (header OR free kick, called "set piece") feed nothing: a
+    # header is not a set piece (REMOVED_SETPIECE_FEATURES).
     grp = df.groupby("player_id", group_keys=False)
-    for _raw_col, _feat_name in (("sp_goal", "sp_goals_pg"), ("headed_goal", "headed_goals_pg"),
-                                 ("fk_goal", "fk_goals_pg"), ("sp_assist", "sp_assist_pg")):
+    for _raw_col, _feat_name in (("headed_goal", "headed_goals_pg"), ("fk_goal", "fk_goals_pg")):
         df[_feat_name] = _roll(grp, _raw_col, n) if _raw_col in df.columns else np.nan
-    for _raw_col, _feat_name in (("sp_goal", "career_sp_goals_rate"),
-                                 ("sp_assist", "career_sp_assist_rate")):
-        df[_feat_name] = _expand(grp, _raw_col) if _raw_col in df.columns else np.nan
-    df["sp_goals_share"] = _ratio(df["sp_goals_pg"], df["goals_pg"]).clip(0, 1)
-    df["headed_goals_share"] = _ratio(df["headed_goals_pg"], df["goals_pg"]).clip(0, 1)
+    df["headed_goals_share"] = _ratio(df["headed_goals_pg"], df["goals_pg"])      # unclipped
 
     # ── Opponent features, measured from the opponent's prior matches (team_match_table) ──────
     df["opponent"] = df["away_team"].where(df["is_home"].astype(bool), df["home_team"])
@@ -1305,8 +1296,7 @@ def build_upcoming_features(
                           ("red_cards_pg", "red_cards"), ("passes_pg", "passes_total"),
                           ("offsides_pg", "offsides"), ("penalties_won_pg", "penalty_won"),
                           ("saves_pg", "saves"), ("goals_conceded_gk_pg", "goals_conceded"),
-                          ("sp_goals_pg", "sp_goal"), ("headed_goals_pg", "headed_goal"),
-                          ("fk_goals_pg", "fk_goal"), ("sp_assist_pg", "sp_assist")):
+                          ("headed_goals_pg", "headed_goal"), ("fk_goals_pg", "fk_goal")):
             r[feat] = _mean_last(_num(phist, raw), n)
         r["rating_pg"] = _mean_last(_num(phist, "rating").where(lambda s: s > 0), n)
         _fc, _fd = _num(phist, "fouls_committed"), _num(phist, "fouls_drawn")
@@ -1319,7 +1309,7 @@ def build_upcoming_features(
                 ("duel_intensity_per90", _ratio(_num(phist, "duels_total"), mins) * 90),
                 ("fouls_drawn_per90", _ratio(_fd, mins) * 90),
                 ("fouls_per90", _ratio(_fc, mins) * 90),
-                ("foul_committer_ratio", (_fc / (_fc + _fd + 0.01)).where((_fc + _fd) > 0)),
+                ("foul_committer_ratio", _ratio(_fc, _fc + _fd)),
                 ("tackles_per90", _ratio(_num(phist, "tackles_total"), mins) * 90),
                 ("defensive_actions_per90",
                  _ratio(_num(phist, "tackles_total") + _num(phist, "interceptions"), mins) * 90),
@@ -1338,8 +1328,7 @@ def build_upcoming_features(
 
         # Career-to-date (full history).
         for feat, raw in (("career_goals_pg", "goals"), ("career_sot_pg", "shots_on_target"),
-                          ("career_shots_pg", "shots_total"), ("career_assists_pg", "assists"),
-                          ("career_sp_goals_rate", "sp_goal"), ("career_sp_assist_rate", "sp_assist")):
+                          ("career_shots_pg", "shots_total"), ("career_assists_pg", "assists")):
             s = _num(phist_all, raw)
             r[feat] = float(s.mean()) if s.notna().any() else NAN
         # Season to date: the player's games in the UPCOMING fixture's season (as-of definition).
