@@ -248,6 +248,11 @@ def build_features_repaired(matches: pd.DataFrame, n: int | None = None,
         part = tc[tc["is_home"] == is_home].set_index("_row")
         for src, dst in names.items():
             df[pfx + dst] = part[src].reindex(df.index).to_numpy()
+    # has_ht_history (Data Truth round 6): 1.0 only when the HT form window holds a real half-time
+    # score. This recipe's window is the last n NON-NULL HT values, so it holds one exactly when
+    # ht_scored_last5 is measured; else 0.0, so an imputed HT form value is visibly a gap.
+    for pfx in ("home_", "away_"):
+        df[pfx + "has_ht_history"] = df[pfx + "ht_scored_last5"].notna().astype(float)
     # no earlier home games in this league -> NaN (the payload's train-only imputer fills it)
     df["home_advantage"] = df.pop("home__ha")
     df["away_home_adv_factor"] = df.pop("away__ha")

@@ -152,14 +152,38 @@ _FORM_FEATURES = {
 }
 
 
+#: THE HT-history indicator (Data Truth round 6), next to the HT form features: 1.0 when the team's
+#: form window (the same last-n matches the HT form is averaged over) holds AT LEAST ONE real
+#: half-time score, else 0.0 - also with no earlier match at all, or no HT column anywhere. It says
+#: whether home/away_ht_*_last5 are measured or missing, so an unknown HT stat can never read as 0
+#: (an imputed HT form value next to has_ht_history=0 is visibly a gap). Training (build_features)
+#: and serving (build_upcoming_features via _latest_form) both take it from _ht_history_flag.
+HT_HISTORY_FEATURES = ("home_has_ht_history", "away_has_ht_history")
+_HT_KNOWN = "ht_known"
+
+
 def _add_ht_flags(tc: pd.DataFrame) -> bool:
-    """Per-match HT tendency flags (>= 1 / >= 2 combined HT goals); False when there is no HT data."""
+    """Per-match HT tendency flags (>= 1 / >= 2 combined HT goals); False when there is no HT data.
+    Always adds `ht_known` (1.0 = this match has a real half-time score, else 0.0) for the
+    has_ht_history indicator."""
     has_ht = "ht_scored" in tc.columns and tc["ht_scored"].notna().any()
     if has_ht:
         tc["ht_total"] = tc["ht_scored"] + tc["ht_conceded"]
         tc["ht_over05_flag"] = (tc["ht_total"] >= 1).astype(float).where(tc["ht_total"].notna())
         tc["ht_over15_flag"] = (tc["ht_total"] >= 2).astype(float).where(tc["ht_total"].notna())
+        tc[_HT_KNOWN] = (tc["ht_scored"].notna() & tc["ht_conceded"].notna()).astype(float)
+    else:
+        tc[_HT_KNOWN] = 0.0
     return has_ht
+
+
+def _ht_history_flag(window_share) -> float | pd.Series:
+    """has_ht_history from the window mean of `ht_known`: True only when the window holds at least
+    one real HT score. No window (NaN: no earlier match) -> 0.0, a fact about the window, not a
+    stand-in value."""
+    if isinstance(window_share, pd.Series):
+        return (window_share.fillna(0.0) > 0).astype(float)
+    return float(pd.notna(window_share) and window_share > 0)
 
 
 def _form_stats(tc: pd.DataFrame, has_ht: bool) -> list:
@@ -185,7 +209,9 @@ def _latest_form(hist: pd.DataFrame, n: int) -> pd.DataFrame:
     # tc is sorted by (league, team, date): the group's last n rows ARE its window, and the mean of
     # the values present over them equals _window_mean at the group's last row.
     last = tc.groupby(["league", "team"], sort=False).tail(n)
-    return last.groupby(["league", "team"], sort=False)[stats].mean()
+    out = last.groupby(["league", "team"], sort=False)[stats + [_HT_KNOWN]].mean()
+    out[_HT_KNOWN] = _ht_history_flag(out[_HT_KNOWN])
+    return out
 
 
 def _league_expanding_avg(df: pd.DataFrame) -> pd.Series:
@@ -438,11 +464,14 @@ def build_features(matches: pd.DataFrame, n: int = None, recipe: str = "legacy_v
     stats = _form_stats(tc, has_ht)
     for s in stats:
         tc[f"roll_{s}"] = _rolling(tc, s, n)
+    tc[f"roll_{_HT_KNOWN}"] = _ht_history_flag(_rolling(tc, _HT_KNOWN, n))
+    _names = {s: _FORM_FEATURES[s] for s in stats}
+    _names[_HT_KNOWN] = HT_HISTORY_FEATURES
 
     # Map back by original row index to avoid any cross-league duplicates
-    cols = ["_src_idx"] + [f"roll_{s}" for s in stats]
-    home_tc = tc[tc["is_home"] == 1][cols].rename(columns={f"roll_{s}": _FORM_FEATURES[s][0] for s in stats})
-    away_tc = tc[tc["is_home"] == 0][cols].rename(columns={f"roll_{s}": _FORM_FEATURES[s][1] for s in stats})
+    cols = ["_src_idx"] + [f"roll_{s}" for s in _names]
+    home_tc = tc[tc["is_home"] == 1][cols].rename(columns={f"roll_{s}": v[0] for s, v in _names.items()})
+    away_tc = tc[tc["is_home"] == 0][cols].rename(columns={f"roll_{s}": v[1] for s, v in _names.items()})
 
     df["_src_idx"] = df.index
     df = df.merge(home_tc, on="_src_idx", how="left")
@@ -650,6 +679,9 @@ def build_upcoming_features(
         for _stat, (_hcol, _acol) in _FORM_FEATURES.items():
             feat[_hcol] = hf.get(_stat, np.nan)
             feat[_acol] = af.get(_stat, np.nan)
+        # has_ht_history: same window and rule as training; no history at all -> 0.0
+        feat[HT_HISTORY_FEATURES[0]] = _ht_history_flag(hf.get(_HT_KNOWN, np.nan))
+        feat[HT_HISTORY_FEATURES[1]] = _ht_history_flag(af.get(_HT_KNOWN, np.nan))
         feat["home_possession_last5"] = _team_recent(ht, "home_possession", "away_possession", n, lg)
         feat["away_possession_last5"] = _team_recent(at, "home_possession", "away_possession", n, lg)
         feat["home_blocked_last5"]    = _team_recent(ht, "home_blocked",    "away_blocked",    n, lg)
