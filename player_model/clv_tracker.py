@@ -6,7 +6,10 @@ price the FIRST time we see it (≈ opening), then after kickoff fill the CLOSIN
 last snapshot before kickoff) and compute CLV. Positive persistent CLV would be the only
 signal that live diverges from the (efficient-market) backtest.
 
-DATA REALITY: our prop odds are single-book, OVER-PRICE ONLY. So `clv_prob` (no-vig) can't be
+BASIS (2026-11-02): entry and close are both BEST-OF-BOOKS (see close_best_of_books); every
+entry logged since is labelled `clv_basis=best_vs_best` in its notes.
+
+DATA REALITY: our prop odds are OVER-PRICE ONLY. So `clv_prob` (no-vig) can't be
 computed (needs two-sided), but `clv_pct = odds_entry/odds_close − 1` DOES work one-sided and
 is the metric we read. ISOLATION: props-only; writes only output/clv_records.csv. Standard
 model / team pipeline untouched.
@@ -50,7 +53,7 @@ def log_new_tips(tips_df: pd.DataFrame) -> int:
             continue                      # keep first-seen entry price
         clv_capture.log_bet(bid, row.get("market", ""), row.get("player_name", ""),
                             row.get("match", ""), "over", odds, None,
-                            notes=str(row.get("tier", "")))
+                            notes=f"{row.get('tier', '')};{CLV_BASIS}")
         existing.add(bid); n += 1
     if n:
         print(f"[clv_tracker] logged {n} new tip entry prices")
@@ -114,13 +117,46 @@ def close_out(odds_history_path=None, kickoff_map: dict | None = None) -> int:
             m = m[m["match"].astype(str).isin(ok)]
         if m.empty:
             continue
-        closing = float(m.sort_values("snapshot_ts").iloc[-1]["odds"])   # last snapshot = close
-        if closing > 1.0:
+        closing = close_best_of_books(m)
+        if closing is not None and closing > 1.0:
             clv_capture.capture_close(r["bet_id"], closing, None)
             closed += 1
     if closed:
-        print(f"[clv_tracker] closed out {closed} records")
+        print(f"[clv_tracker] closed out {closed} records (basis: {CLV_BASIS})")
     return closed
+
+
+#: Label written into clv_records.notes when a tip's entry is logged (log_new_tips): entry and
+#: close are both best-of-books. Records logged before 2026-11-02 carry no label; any of them
+#: closed before then used the last logged row of ANY single book as the close.
+CLV_BASIS = "clv_basis=best_vs_best"
+
+
+def close_best_of_books(m: pd.DataFrame) -> float | None:
+    """The CLOSE on the same basis as the ENTRY.
+
+    The entry (`market_odds` on the tip) is the BEST price across books (odds_fetcher._best_price,
+    and a second source only ever raises it). The close used to be the last history row, which
+    for API-Football is ONE bookmaker's quote (rows are per book), so CLV compared best-of-books
+    against a single book. Now: each book's LAST logged price, then the best of those. OddsAPI
+    rows carry no bookmaker - each is already the best across OddsAPI books at its snapshot - so
+    they form one series of their own.
+    """
+    if m is None or m.empty:
+        return None
+    d = m.copy()
+    d["odds"] = pd.to_numeric(d["odds"], errors="coerce")
+    d = d[d["odds"] > 1.0]
+    if d.empty:
+        return None
+    src = d["source"].astype(str) if "source" in d.columns else pd.Series("oddsapi", index=d.index)
+    book = (d["bookmaker"].astype(str).where(d["bookmaker"].notna(), "")
+            if "bookmaker" in d.columns else pd.Series("", index=d.index))
+    d["_book"] = src.str.strip().str.lower() + "|" + book.str.strip().str.lower().replace("nan", "")
+    last = d.sort_values("snapshot_ts", kind="mergesort").groupby("_book", sort=False).tail(1)
+    return float(last["odds"].max())
+
+
 
 
 def report() -> dict:
