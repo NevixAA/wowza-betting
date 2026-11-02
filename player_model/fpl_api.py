@@ -32,6 +32,25 @@ _POS = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
 # status flag -> human label
 _STATUS = {"a": "available", "d": "doubtful", "i": "injured",
            "s": "suspended", "u": "unavailable", "n": "not in squad"}
+#: availability label of a player whose FPL status is missing (or one we do not know).
+UNKNOWN_AVAILABILITY = "unknown"
+#: labels a recommender (squad optimiser, chips, transfers) must never pick. 'unknown' is here on
+#: purpose: a player whose availability nobody published is not recommendable (Data Truth 2026-11-02).
+NOT_RECOMMENDABLE = frozenset({"injured", "unavailable", "suspended", "not in squad",
+                               UNKNOWN_AVAILABILITY})
+
+
+def availability_unknown(av: "pd.Series") -> "pd.Series":
+    """Boolean mask: the availability label is missing or 'unknown'."""
+    s = av.astype(object)
+    return s.isna() | s.astype(str).str.strip().str.lower().isin(("", "nan", "none", UNKNOWN_AVAILABILITY))
+
+
+def not_recommendable(av: "pd.Series", also: tuple = ()) -> "pd.Series":
+    """Boolean mask over availability labels: True = must not be recommended (ruled out, or
+    availability unknown). `also` adds labels a caller excludes on top (chips add 'doubtful')."""
+    lab = av.astype(str).str.strip().str.lower()
+    return availability_unknown(av) | lab.isin(NOT_RECOMMENDABLE | set(also))
 
 
 def _norm(s: str) -> str:
@@ -222,8 +241,10 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
     for e in b["elements"]:
         t      = teams.get(e.get("team"), {})
         full   = f"{e.get('first_name', '')} {e.get('second_name', '')}".strip()
-        # Absent status is UNKNOWN, not "available" (Data Truth, 2026-11-01).
-        status = e.get("status") or "unknown"
+        # Absent status is UNKNOWN (None), not "available" (Data Truth, 2026-11-01/02). Its
+        # availability label is 'unknown', which every recommender treats as NOT recommendable.
+        status = e.get("status") or None
+        cost = _f_or_nan(e.get("now_cost"))
         rows.append({
             "fpl_id":            e.get("id"),
             "web_name":          e.get("web_name", ""),
@@ -232,9 +253,10 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "team_short":        t.get("short_name", ""),
             "team_id":           e.get("team"),
             "position":          _POS.get(e.get("element_type"), ""),
-            "price":             round((e.get("now_cost") or 0) / 10.0, 1),
+            # No now_cost -> price NaN (was 0.0, which made the player free to the optimiser).
+            "price":             round(cost / 10.0, 1) if cost == cost else float("nan"),
             "status":            status,
-            "availability":      _STATUS.get(status, "unknown"),
+            "availability":      _STATUS.get(status, UNKNOWN_AVAILABILITY),
             "chance_of_playing": e.get("chance_of_playing_next_round"),
             "news":              (e.get("news") or "").strip(),
             # 'n' (not in squad / ineligible) is OUT too - V2 already treats it so; V1 did not
@@ -242,14 +264,15 @@ def players_df(bootstrap: dict | None = None) -> pd.DataFrame:
             "injured":           status in ("i", "s", "u", "n"),
             "doubtful":          status == "d",
             # FPL-native signals (for differentials / hybrid ranking / price-change context)
-            "owned_pct":         _f_or_nan(e.get("selected_by_percent")),     # absent -> NaN, not 0%
-            "fpl_form":          float(e.get("form") or 0.0),
-            "fpl_ppg":           float(e.get("points_per_game") or 0.0),
-            "fpl_ep_next":       float(e.get("ep_next") or 0.0),   # FPL's own expected pts
-            "ict_index":         float(e.get("ict_index") or 0.0),
-            "transfers_in_gw":   int(e.get("transfers_in_event") or 0),
-            "transfers_out_gw":  int(e.get("transfers_out_event") or 0),
-            "total_points":      int(e.get("total_points") or 0),
+            # Every FPL number FPL did not send is NaN, never 0 (Data Truth, 2026-11-02).
+            "owned_pct":         _f_or_nan(e.get("selected_by_percent")),
+            "fpl_form":          _f_or_nan(e.get("form")),
+            "fpl_ppg":           _f_or_nan(e.get("points_per_game")),
+            "fpl_ep_next":       _f_or_nan(e.get("ep_next")),     # FPL's own expected pts
+            "ict_index":         _f_or_nan(e.get("ict_index")),
+            "transfers_in_gw":   _f_or_nan(e.get("transfers_in_event")),
+            "transfers_out_gw":  _f_or_nan(e.get("transfers_out_event")),
+            "total_points":      _f_or_nan(e.get("total_points")),
             # FPL's own defensive-contribution action count per 90 (the stat its DC points use)
             "dc_per90":          (float(e["defensive_contribution_per_90"])
                                   if e.get("defensive_contribution_per_90") is not None else None),

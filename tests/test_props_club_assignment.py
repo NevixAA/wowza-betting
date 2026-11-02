@@ -14,21 +14,30 @@ from __future__ import annotations
 
 import inspect
 
+from player_model import api_football
 from player_model import config as pm_config
 from player_model import predict
-from player_model.api_football import _club_name_subset, _same_club
+from src.team_names import resolve
 
 
-def test_a_senior_side_never_subset_matches_its_reserve_side():
-    assert not _club_name_subset("Real Sociedad", "Real Sociedad II")
-    assert not _club_name_subset("Barcelona", "Barcelona B")
+def test_a_senior_side_never_matches_its_reserve_side():
+    # Club identity is src.team_names.resolve only (api_football._same_club / _club_name_subset
+    # were deleted 2026-11-02 once the notifier stopped using them).
+    assert resolve("Real Sociedad", ["Real Sociedad II"]) is None
+    assert resolve("Barcelona", ["Barcelona B"]) is None
     # the legitimate short-name cases still pass
-    assert _club_name_subset("Plymouth", "Plymouth Argyle")
-    assert _club_name_subset("West Ham", "West Ham United")
+    assert resolve("Plymouth", ["Plymouth Argyle"]) == "Plymouth Argyle"
+    assert resolve("West Ham", ["West Ham United"]) == "West Ham United"
 
 
 def test_sporting_cp_is_not_sporting_gijon_by_name():
-    assert not _same_club("Sporting CP", "Sporting Gijón")
+    assert resolve("Sporting CP", ["Sporting Gijón"]) is None
+
+
+def test_the_private_token_matchers_are_gone():
+    assert not hasattr(api_football, "_same_club")
+    assert not hasattr(api_football, "_club_name_subset")
+    assert not hasattr(api_football, "_team_match")
 
 
 def test_league_corroboration_uses_the_clubs_own_rows():

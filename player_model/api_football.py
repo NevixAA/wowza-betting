@@ -264,92 +264,85 @@ def _norm_name(s: str) -> str:
     return "".join(c for c in nfkd if not unicodedata.combining(c)).lower().strip()
 
 
-_GENERIC_TOKENS = {"fc", "cf", "sc", "afc", "cd", "ac", "ss", "as", "us",
-                   "if", "fk", "sk", "bk", "club", "cp", "sd"}
-_RESERVE_TOKENS = {"b", "c", "ii", "2", "reserve", "reserves", "u19", "u20",
-                   "u21", "u23", "academy", "youth", "castilla"}
+def _fixture_teams(fix: dict) -> tuple[str | None, str | None]:
+    """(home name, away name) of one /fixtures record; None for a side the provider left out."""
+    t = fix.get("teams") or {}
+    return (t.get("home") or {}).get("name") or None, (t.get("away") or {}).get("name") or None
 
 
-def _team_match(a: str, b: str) -> bool:
-    """True iff a and b name the SAME senior club, decided by the v9 resolver
-    (src.team_names.resolve: normalised equality, registered aliases, identity-token tiers,
-    reserve sides only matching reserve sides, ambiguity refused).
+def match_fixture(fixtures: list[dict], home: str, away: str) -> dict | None:
+    """The ONE fixture in `fixtures` (a single league's /fixtures response for one date) whose
+    clubs are `home` and `away`, or None.
 
-    Data Truth (2026-11-01): this used to carry its own token-alias dict and a
-    difflib ratio >= 0.90 fuzzy fallback; club identity now has ONE definition. Callers compare
-    two names already scoped to one league/date's fixture list."""
-    if not a or not b:
-        return False
-    return bool(config._v9_src("team_names").resolve(a, [b]))
-
-
-# ── Strict variants, for SEARCHING a multi-league history ─────────────────────────────
-# _team_match above is deliberately generous (token prefixes, 0.90 fuzzy fallback) because it
-# compares two names already known to describe the SAME fixture. When instead you scan every
-# club we have ever collected, that generosity attaches players to unrelated matches — Lille
-# to Lillestrom, Real Madrid to Real Salt Lake, Monchengladbach to Chengdu Rongcheng. Use
-# these two for that job. They live here so predict.py and the Telegram reporting share one
-# definition and can never drift apart.
-
-def _same_club(a: str, b: str) -> bool:
-    """Identity-token sets are equal, or same size >= 2 with a token-prefix pairing.
-
-    Accepts "Girona" == "Girona FC" and "Man City" == "Manchester City". Single-token names
-    must match EXACTLY, which is what keeps "Lille" out of "Lillestrom".
-    Strict-subset cases are not decided here — see _club_name_subset.
-    """
-    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
-    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
-    if not sa or not sb:
-        return False
-    if sa == sb:
-        return True
-    if len(sa) != len(sb) or len(sa) < 2:
-        return False
-    remaining = set(sb)
-    for t in sa:
-        hit = next((o for o in remaining
-                    if t == o
-                    or (len(t) >= 3 and o.startswith(t))
-                    or (len(o) >= 3 and t.startswith(o))), None)
-        if hit is None:
-            return False
-        remaining.discard(hit)
-    return True
+    Both clubs are resolved by src.team_names.resolve against the POOL of that league-date's
+    fixture clubs (home names for `home`, away names for `away`): ambiguity is refused by the
+    resolver, and the resolved pair must then be one fixture. Data Truth (2026-11-02): this
+    replaces a pairwise test of every fixture (`_team_match(home, fh) and _team_match(away, fa)`),
+    which judged each candidate alone and so could not see that a name fitted two clubs."""
+    named = [f for f in (fixtures or []) if all(_fixture_teams(f))]
+    if not named or not home or not away:
+        return None
+    resolve = config._v9_src("team_names").resolve
+    rh = resolve(str(home), sorted({_fixture_teams(f)[0] for f in named}))
+    ra = resolve(str(away), sorted({_fixture_teams(f)[1] for f in named}))
+    if not rh or not ra:
+        return None
+    hits = [f for f in named if _fixture_teams(f) == (rh, ra)]
+    return hits[0] if len(hits) == 1 else None
 
 
-def _club_name_subset(a: str, b: str) -> bool:
-    """One name's identity tokens strictly contain the other's.
+# ── Public raw accessors (Data Truth, 2026-11-02) ─────────────────────────────────────────────
+# Raw provider JSON (the `response` list), every null exactly as API-Football sent it. Settlement
+# (update_results.py) needs the raw records because the flattened helpers below are shaped for
+# feature building. These are the supported way in; nothing outside this module calls _get.
+# An empty list means "no data" (no key, HTTP error, or the provider returned nothing).
 
-    Ambiguous on its own — "Plymouth" vs "Plymouth Argyle" is the SAME club, while "Inter"
-    vs "Inter Club d'Escaldes" and "Lincoln" vs "Lincoln Red Imps" are DIFFERENT ones. The
-    caller must corroborate with the competition we hold history for.
-    """
-    sa = set(_norm_name(a).split()) - _GENERIC_TOKENS
-    sb = set(_norm_name(b).split()) - _GENERIC_TOKENS
-    if not sa or not sb:
-        return False
-    # A senior side is never a subset-match for its own reserve side: "Real Sociedad" vs
-    # "Real Sociedad II" are two teams in two divisions (fixed 2026-10-08).
-    if bool(sa & _RESERVE_TOKENS) != bool(sb & _RESERVE_TOKENS):
-        return False
-    return sa < sb or sb < sa
+def _response(endpoint: str, params: dict, cache_hours: int) -> list:
+    data = _get(endpoint, params, cache_hours=cache_hours)
+    return list((data or {}).get("response") or [])
+
+
+def fixture_by_id_raw(fixture_id: int, cache_hours: int = 2) -> dict | None:
+    """GET /fixtures?id=<fixture_id>: the one fixture record, or None (none, or more than one)."""
+    hits = _response("/fixtures", {"id": int(fixture_id)}, cache_hours)
+    return hits[0] if len(hits) == 1 else None
+
+
+def fixtures_on_date_raw(league_id: int, season: str, date_str: str, cache_hours: int = 2,
+                         status: str | None = None) -> list[dict]:
+    """GET /fixtures?league&season&date[&status]: every fixture of one league on one date."""
+    params = {"league": league_id, "season": season, "date": date_str}
+    if status:
+        params["status"] = status
+    return _response("/fixtures", params, cache_hours)
+
+
+def fixture_players_raw(fixture_id: int, cache_hours: int = 168) -> list[dict]:
+    """GET /fixtures/players?fixture=<id>: per-team blocks of per-player statistics."""
+    return _response("/fixtures/players", {"fixture": int(fixture_id)}, cache_hours)
+
+
+def fixture_events_raw(fixture_id: int, cache_hours: int = 168) -> list[dict]:
+    """GET /fixtures/events?fixture=<id>: goals, cards, substitutions, VAR events."""
+    return _response("/fixtures/events", {"fixture": int(fixture_id)}, cache_hours)
+
+
+def fixture_statistics_raw(fixture_id: int, cache_hours: int = 168) -> list[dict]:
+    """GET /fixtures/statistics?fixture=<id>: per-team match statistics."""
+    return _response("/fixtures/statistics", {"fixture": int(fixture_id)}, cache_hours)
+
+
+def fixture_odds_raw(fixture_id: int, cache_hours: int = 1) -> list[dict]:
+    """GET /odds?fixture=<id>: bookmaker blocks for one fixture (player props among them)."""
+    return _response("/odds", {"fixture": int(fixture_id)}, cache_hours)
 
 
 def find_fixture_id(league_id: int, season: str, date_str: str, home: str, away: str) -> int | None:
-    """Find fixture ID for a completed (FT) match by league, season, date, and team names."""
-    data = _get("/fixtures", {
-        "league": league_id, "season": season, "date": date_str, "status": "FT",
-    }, cache_hours=168)  # completed fixtures cached 7 days
-    if not data:
-        return None
-
-    for fix in data.get("response", []):
-        fh = fix.get("teams", {}).get("home", {}).get("name", "")
-        fa = fix.get("teams", {}).get("away", {}).get("name", "")
-        if _team_match(home, fh) and _team_match(away, fa):
-            return fix.get("fixture", {}).get("id")
-    return None
+    """Find fixture ID for a completed (FT) match by league, season, date, and team names
+    (clubs resolved within that league-date's fixtures, see match_fixture)."""
+    fix = match_fixture(fixtures_on_date_raw(league_id, season, date_str, cache_hours=168,
+                                             status="FT"), home, away)   # FT cached 7 days
+    return (fix.get("fixture") or {}).get("id") if fix else None
 
 
 def get_fixture_goals(league_id: int, season: str, date_str: str, home: str, away: str):
@@ -357,25 +350,19 @@ def get_fixture_goals(league_id: int, season: str, date_str: str, home: str, awa
     Returns (ft_home, ft_away, ht_home, ht_away), or None if the fixture isn't found / not FT.
     ht_home/ht_away are None when the API carries no half-time score for that fixture. Used to
     grade the live-signal history; reuses the same cached /fixtures call as find_fixture_id."""
-    data = _get("/fixtures", {
-        "league": league_id, "season": season, "date": date_str, "status": "FT",
-    }, cache_hours=168)  # completed fixtures cached 7 days
-    if not data:
+    fix = match_fixture(fixtures_on_date_raw(league_id, season, date_str, cache_hours=168,
+                                             status="FT"), home, away)
+    if fix is None:
         return None
-    for fix in data.get("response", []):
-        fh = fix.get("teams", {}).get("home", {}).get("name", "")
-        fa = fix.get("teams", {}).get("away", {}).get("name", "")
-        if _team_match(home, fh) and _team_match(away, fa):
-            g  = fix.get("goals", {}) or {}
-            ht = (fix.get("score", {}) or {}).get("halftime", {}) or {}
-            fth, fta = g.get("home"), g.get("away")
-            if fth is None or fta is None:
-                return None
-            hth, hta = ht.get("home"), ht.get("away")
-            return (int(fth), int(fta),
-                    int(hth) if hth is not None else None,
-                    int(hta) if hta is not None else None)
-    return None
+    g  = fix.get("goals") or {}
+    ht = (fix.get("score") or {}).get("halftime") or {}
+    fth, fta = g.get("home"), g.get("away")
+    if fth is None or fta is None:
+        return None
+    hth, hta = ht.get("home"), ht.get("away")
+    return (int(fth), int(fta),
+            int(hth) if hth is not None else None,
+            int(hta) if hta is not None else None)
 
 
 def get_injured_players(league_id: int, season: str, date_str: str) -> set[int]:
@@ -406,7 +393,7 @@ def get_injured_players(league_id: int, season: str, date_str: str) -> set[int]:
     return injured
 
 
-def get_fixture_status(league_id: int, season: str, date_str: str, home: str, away: str) -> tuple[str, int | None]:
+def get_fixture_status(league_id: int, season: str, date_str: str, home: str, away: str) -> tuple[str | None, int | None]:
     """
     Check the status of any fixture (played, postponed, cancelled, etc.) regardless of completion.
     Returns (status_short, fixture_id).
@@ -420,67 +407,85 @@ def get_fixture_status(league_id: int, season: str, date_str: str, home: str, aw
     Used to mark player ledger rows as is_played=False when a match was called off.
     Cached only 2 hours (status can change until the match is done).
     """
-    data = _get("/fixtures", {
-        "league": league_id, "season": season, "date": date_str,
-    }, cache_hours=2)
-    if not data:
+    fix = match_fixture(fixtures_on_date_raw(league_id, season, date_str, cache_hours=2), home, away)
+    if fix is None:
         return "NOT_FOUND", None
-
-    for fix in data.get("response", []):
-        fh = fix.get("teams", {}).get("home", {}).get("name", "")
-        fa = fix.get("teams", {}).get("away", {}).get("name", "")
-        if _team_match(home, fh) and _team_match(away, fa):
-            status = fix.get("fixture", {}).get("status", {}).get("short", "")
-            fid    = fix.get("fixture", {}).get("id")
-            return status, fid
-
-    return "NOT_FOUND", None
+    f = fix.get("fixture") or {}
+    # A found fixture whose status the provider left out has status None (unknown), never "".
+    return (f.get("status") or {}).get("short"), f.get("id")
 
 
 # ── Player match stats ────────────────────────────────────────────────────────
+
+def _int_or_none(v) -> int | None:
+    """An integer the provider sent, or None for a null / unparseable value (never 0)."""
+    if v is None:
+        return None
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def _flag_or_none(v) -> int | None:
+    """1 if the count is > 0, 0 if it is 0, None if the provider sent no count."""
+    n = _int_or_none(v)
+    return None if n is None else int(n > 0)
+
 
 def get_fixture_player_stats(fixture_id: int) -> list[dict]:
     """
     Get per-player stats for one completed fixture.
     Returns flat list of player stat dicts.
-    """
-    data = _get("/fixtures/players", {"fixture": fixture_id}, cache_hours=168)  # 7 days
-    if not data:
-        return []
 
+    PROVIDER NULLS STAY None (Data Truth, 2026-11-02). API-Football sends null for minutes and
+    for counting stats it did not record (commonly goals.total / shots.on for a player with none,
+    and everything for an unused substitute). This used to write 0 for every null, so "not
+    recorded" and "recorded zero" were indistinguishable to every consumer. `started` is None when
+    the provider sent neither `substitute` nor minutes. Settlement reads the raw records
+    (fixture_players_raw) and decides itself what a null means.
+    """
     players = []
-    for team_data in data.get("response", []):
-        team_name = team_data.get("team", {}).get("name", "")
-        for player_entry in team_data.get("players", []):
-            p   = player_entry.get("player", {})
-            s   = (player_entry.get("statistics") or [{}])[0]
-            games = s.get("games", {})
-            shots = s.get("shots", {})
-            goals = s.get("goals", {})
-            cards = s.get("cards", {})
-            passes = s.get("passes", {})
-            duels  = s.get("duels", {})
-            fouls  = s.get("fouls", {})
+    for team_data in fixture_players_raw(fixture_id, cache_hours=168):   # 7 days
+        team_name = (team_data.get("team") or {}).get("name")
+        for player_entry in team_data.get("players") or []:
+            p   = player_entry.get("player") or {}
+            s   = (player_entry.get("statistics") or [{}])[0] or {}
+            games = s.get("games") or {}
+            shots = s.get("shots") or {}
+            goals = s.get("goals") or {}
+            cards = s.get("cards") or {}
+            passes = s.get("passes") or {}
+            duels  = s.get("duels") or {}
+            fouls  = s.get("fouls") or {}
+            minutes = _int_or_none(games.get("minutes"))
+            sub = games.get("substitute")
+            if sub is not None:
+                started = not bool(sub)
+            elif minutes is not None:
+                started = minutes > 45
+            else:
+                started = None
 
             players.append({
                 "fixture_id":      fixture_id,
                 "player_id":       p.get("id"),
-                "player_name":     repair_text(p.get("name", "")),
+                "player_name":     repair_text(p.get("name")) if p.get("name") else None,
                 "team":            team_name,
-                "position":        games.get("position", ""),
-                "minutes_played":  int(games.get("minutes") or 0),
-                "started":         (not bool(games.get("substitute"))) if games.get("substitute") is not None else bool((games.get("minutes") or 0) > 45),
-                "goals":           goals.get("total") or 0,
-                "assists":         goals.get("assists") or 0,
-                "shots_total":     shots.get("total") or 0,
-                "shots_on_target": shots.get("on") or 0,
-                "yellow_card":     int((cards.get("yellow") or 0) > 0),
-                "red_card":        int((cards.get("red") or 0) > 0),
-                "key_passes":      passes.get("key") or 0,
-                "fouls_committed": fouls.get("committed") or 0,
-                "fouls_drawn":     fouls.get("drawn") or 0,
-                "duels_total":     duels.get("total") or 0,
-                "duels_won":       duels.get("won") or 0,
+                "position":        games.get("position"),
+                "minutes_played":  minutes,
+                "started":         started,
+                "goals":           _int_or_none(goals.get("total")),
+                "assists":         _int_or_none(goals.get("assists")),
+                "shots_total":     _int_or_none(shots.get("total")),
+                "shots_on_target": _int_or_none(shots.get("on")),
+                "yellow_card":     _flag_or_none(cards.get("yellow")),
+                "red_card":        _flag_or_none(cards.get("red")),
+                "key_passes":      _int_or_none(passes.get("key")),
+                "fouls_committed": _int_or_none(fouls.get("committed")),
+                "fouls_drawn":     _int_or_none(fouls.get("drawn")),
+                "duels_total":     _int_or_none(duels.get("total")),
+                "duels_won":       _int_or_none(duels.get("won")),
             })
     return players
 
@@ -556,7 +561,8 @@ def get_player_recent_stats(player_id: int, league_id: int, season: str,
             continue
         stats = get_fixture_player_stats(fix_id)
         for s in stats:
-            if s.get("player_id") == player_id and (s.get("minutes_played") or 0) > 0:
+            mp = s.get("minutes_played")
+            if s.get("player_id") == player_id and mp is not None and mp > 0:
                 s["date"] = fix.get("fixture", {}).get("date", "")
                 player_matches.append(s)
                 break
@@ -602,13 +608,24 @@ def build_referee_profile(referee_name: str, league_id: int, season: str,
 
     total_yellows = 0
     n = 0
+    n_unknown = 0
     for fix in ref_fixtures:
         fix_id = fix.get("fixture", {}).get("id")
         stats = get_fixture_player_stats(fix_id) if fix_id else []
         if not stats:
             continue                     # no player stats -> this match is not counted
-        total_yellows += sum(s.get("yellow_card", 0) for s in stats)
+        # A player who PLAYED with no card count makes the match total unknown: the match is
+        # skipped (counted below), never summed as if he had no booking. An unused substitute
+        # (no minutes) cannot be booked on the pitch, so his null is not evidence either way.
+        played = [s for s in stats
+                  if s.get("minutes_played") is not None and s["minutes_played"] > 0]
+        if any(s.get("yellow_card") is None for s in played):
+            n_unknown += 1
+            continue
+        total_yellows += sum(s["yellow_card"] for s in played)
         n += 1
+    if n_unknown:
+        print(f"[referee] {referee_name}: {n_unknown} match(es) skipped - a player's card count is null")
     if n < config.MIN_REF_MATCHES:
         return {"yellows_per_game": nan, "strictness_score": nan, "n_games": n}
 

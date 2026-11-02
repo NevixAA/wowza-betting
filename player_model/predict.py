@@ -24,6 +24,37 @@ from .model import load_model, predict_proba
 import numpy as np
 
 
+def _af_id(v) -> int | None:
+    """A positive integer API-Football id from a CSV cell ('1379012', '1379012.0'), else None."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return int(f) if f == f and f > 0 else None
+
+
+def _lookup_fixture_id(league, date_str: str, home, away) -> int | None:
+    """API-Football fixture id of an upcoming match that came from bets.csv without one: the
+    league's fixtures on that date (registry API-Football id, season_resolver season), clubs
+    resolved within that pool. None when the league has no id, the season is unknown, there is
+    no API key, or the clubs do not resolve to exactly one fixture."""
+    if not _APIFOOTBALL_KEY:
+        return None
+    e = config.league_registry().entry(league) if league else None
+    lid = (e or {}).get("api_football_id")
+    if not lid:
+        return None
+    season = config.prop_season(league)
+    if not config._v9_src("season_resolver").is_known(season):
+        return None
+    try:
+        from player_model.prop_odds_af import find_upcoming_fixture_id
+        return _af_id(find_upcoming_fixture_id(int(lid), str(season), date_str, str(home), str(away)))
+    except Exception as ex:                                            # noqa: BLE001
+        print(f"[predict] fixture id lookup failed for {league} {home} v {away}: {type(ex).__name__}: {ex}")
+        return None
+
+
 def _compute_market_caps(history_path: Path) -> dict[str, float]:
     """
     Compute per-market probability caps = top-1% career rate among players
@@ -391,10 +422,12 @@ def run_player_predictions(
             prop_matches.append({
                 "home_team":   r["home_team"],
                 "away_team":   r["away_team"],
-                "league":      r.get("league", ""),
+                "league":      r.get("league"),
                 "date":        r["date"],
-                "signal_tier": r.get("signal_tier", ""),
-                "fixture_id":  None,
+                "signal_tier": r.get("signal_tier"),
+                # bets.csv carries the API-Football fixture id where src/predict found one
+                # (2026-11-02); a row without it is resolved below or skipped.
+                "fixture_id":  _af_id(r.get("fixture_id")),
             })
 
     # Where the fixture slate came from. Until now an EMPTY API response was completely
@@ -442,8 +475,33 @@ def run_player_predictions(
             seen_rows.add(key)
             bets_list.append(m)
 
+    # EVERY PROPS TIP CARRIES player_id AND fixture_id (issue #1 step 1, 2026-11-02). A bets.csv
+    # fixture without an API-Football id is looked up in that league's fixtures for its date (clubs
+    # resolved within the league-date pool, prop_odds_af.find_upcoming_fixture_id); one that still
+    # has no id is skipped and counted - a tip that cannot name its fixture cannot be settled.
+    _n_no_fid = 0
+    _kept, _kept_ids = [], set()
+    for m in bets_list:                                # API slate first, then bets.csv rows
+        if m.get("fixture_id") is None:
+            m["fixture_id"] = _lookup_fixture_id(m["league"], str(m["date"])[:10],
+                                                 m["home_team"], m["away_team"])
+        if m.get("fixture_id") is None:
+            _n_no_fid += 1
+            continue
+        if m["fixture_id"] in _kept_ids:
+            continue                                   # the slate already holds this fixture
+        _kept_ids.add(m["fixture_id"])
+        _kept.append(m)
+    bets_list = _kept
+    if _n_no_fid:
+        print(f"[predict] {_n_no_fid} fixture(s) skipped: no API-Football fixture_id "
+              f"(a props tip must carry one)")
+
     import pandas as _pd
     bets = _pd.DataFrame(bets_list)
+    if bets.empty:
+        print("[predict] no fixture with an API-Football fixture_id - no props tips this run")
+        return _pd.DataFrame()
 
     # ── Pre-fetch injury lists once per league (4 h cache) ────────────────────
     injured_cache: dict[str, set] = {}

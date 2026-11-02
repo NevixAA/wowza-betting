@@ -49,7 +49,9 @@ def _today() -> str:
 
 
 def _split_match(match_str: str) -> tuple[str, str]:
-    """'Arsenal vs Liverpool' → ('Arsenal', 'Liverpool')"""
+    """'Arsenal vs Liverpool' → ('Arsenal', 'Liverpool'); no match string -> (None, None)."""
+    if match_str is None or (isinstance(match_str, float) and match_str != match_str):
+        return None, None
     parts = str(match_str).split(" vs ", 1)
     if len(parts) == 2:
         return parts[0].strip(), parts[1].strip()
@@ -79,15 +81,22 @@ def _has_id(x) -> bool:
         return False
 
 
+def _id(x) -> int | None:
+    return int(float(x)) if _has_id(x) else None
+
+
 def _ledger_key(r) -> tuple:
-    """Identity of a ledger row: (player_id, fixture_id, market), or (player_id, match_date, market)
-    when the fixture has no API-Football id. Was (player_name, market, match_date) - two players
-    sharing a name on one day collapsed into one row."""
-    pid = int(float(r.get("player_id"))) if _has_id(r.get("player_id")) else None
-    fid = int(float(r.get("fixture_id"))) if _has_id(r.get("fixture_id")) else None
-    if fid is not None:
-        return ("fixture", pid, fid, str(r.get("market", "")))
-    return ("date", pid, str(r.get("match_date", ""))[:10], str(r.get("market", "")))
+    """Identity of a ledger row: (player_id, fixture_id, market) - issue #1 step 1. Was
+    (player_name, market, match_date): two players sharing a name on one day collapsed into one
+    row. Legacy rows written before every tip carried a fixture id key on (player_id, match_date,
+    market) so a re-seen tip is still recognised (see _legacy_key)."""
+    return ("fixture", _id(r.get("player_id")), _id(r.get("fixture_id")), str(r.get("market")))
+
+
+def _legacy_key(r) -> tuple:
+    """(player_id, match_date, market): how a NEW row is matched against a legacy row that has no
+    fixture_id. Ids only - never the player's name."""
+    return ("date", _id(r.get("player_id")), str(r.get("match_date"))[:10], str(r.get("market")))
 
 
 def append_player_signals(
@@ -96,9 +105,10 @@ def append_player_signals(
 ) -> int:
     """
     Append SNIPER/MARKSMAN/VALUABLE signals from tips_df to player_ledger.csv.
-    Deduplicates on IDS: (player_id, fixture_id, market), or (player_id, match_date, market) for a
-    fixture without an API-Football id. A tip without a match date or without a player_id is
-    refused (logged) - it cannot be settled honestly.
+    Deduplicates on IDS: (player_id, fixture_id, market) - issue #1 step 1. A tip without a match
+    date, without a player_id or without an API-Football fixture_id is REFUSED (logged with the
+    reason) - it cannot be settled honestly. Legacy ledger rows without a fixture_id still block
+    a duplicate of the same (player_id, match_date, market).
     Returns count of newly appended rows.
     """
     if tips_df.empty:
@@ -110,32 +120,39 @@ def append_player_signals(
 
     today = _today()
     rows = []
-    refused = 0
+    refused = {"no match date": 0, "no player_id": 0, "no fixture_id": 0}
     for _, r in signals.iterrows():
-        home, away = _split_match(r.get("match", ""))
-        _md = str(r.get("date") or "")[:10]
-        if not _md or _md in ("nan", "NaT", "None") or not _has_id(r.get("player_id")):
-            refused += 1          # no match date / no player id (was dated "today")
+        home, away = _split_match(r.get("match"))
+        _md = str(r.get("date"))[:10] if r.get("date") is not None else ""
+        if not _md or _md in ("nan", "NaT", "None"):
+            refused["no match date"] += 1          # (was dated "today")
             continue
+        if not _has_id(r.get("player_id")):
+            refused["no player_id"] += 1
+            continue
+        if not _has_id(r.get("fixture_id")):
+            refused["no fixture_id"] += 1
+            continue
+        name = r.get("player_name")
         rows.append({
             "signal_date":   today,
             "match_date":    _md,
-            "league":        r.get("league", ""),
+            "league":        r.get("league"),
             "home_team":     home,
             "away_team":     away,
-            "player_id":     r.get("player_id", ""),
-            "fixture_id":    r.get("fixture_id", ""),
+            "player_id":     _id(r.get("player_id")),
+            "fixture_id":    _id(r.get("fixture_id")),
             # API-Football sends some names with doubled spaces ("Paris Josua  Brunner")
-            "player_name":   " ".join(str(r.get("player_name", "") or "").split()),
-            "team":          r.get("team", ""),
-            "position":      r.get("position", ""),
-            "market":        r.get("market", ""),
-            "tier":          r.get("tier", ""),
-            "model_prob":    r.get("model_prob", ""),
-            "market_odds":   r.get("market_odds", ""),
-            "ev":            r.get("ev", ""),
-            "edge_rel":      r.get("edge_rel", ""),
-            "n_games":       r.get("n_games", ""),
+            "player_name":   " ".join(str(name).split()) if name is not None else None,
+            "team":          r.get("team"),
+            "position":      r.get("position"),
+            "market":        r.get("market"),
+            "tier":          r.get("tier"),
+            "model_prob":    r.get("model_prob"),
+            "market_odds":   r.get("market_odds"),
+            "ev":            r.get("ev"),
+            "edge_rel":      r.get("edge_rel"),
+            "n_games":       r.get("n_games"),
             "is_played":     "",
             "result":        "",
             "pnl":           "",
@@ -143,16 +160,22 @@ def append_player_signals(
             "resolved_date": "",
         })
 
-    if refused:
-        log.info(f"player_ledger: {refused} signal(s) refused (no match date or no player_id)")
+    if any(refused.values()):
+        log.info("player_ledger: signal(s) refused - "
+                 + ", ".join(f"{k}: {v}" for k, v in refused.items() if v))
     if not rows:
         return 0
     new_df = pd.DataFrame(rows, columns=PLAYER_LEDGER_COLS)
+    # One row per (player_id, fixture_id, market) within this batch as well.
+    new_df = new_df[~new_df.apply(_ledger_key, axis=1).duplicated()]
 
     if ledger_file.exists():
         existing = pd.read_csv(ledger_file, dtype=str)
-        existing_keys = {_ledger_key(r) for r in existing.to_dict("records")}
-        new_df = new_df[~new_df.apply(lambda r: _ledger_key(r) in existing_keys, axis=1)]
+        recs = existing.to_dict("records")
+        existing_keys = {_ledger_key(r) for r in recs if _has_id(r.get("fixture_id"))}
+        legacy_keys = {_legacy_key(r) for r in recs if not _has_id(r.get("fixture_id"))}
+        new_df = new_df[~new_df.apply(lambda r: _ledger_key(r) in existing_keys
+                                      or _legacy_key(r) in legacy_keys, axis=1)]
         if new_df.empty:
             log.info("player_ledger: all signals already recorded")
             return 0
@@ -183,13 +206,19 @@ def append_sharp_signals(
 
     today = _today()
     rows = []
+    undated = 0
     for _, r in signals.iterrows():
+        # A signal without a match date is refused (it was dated "today", a date it never had).
+        _md = str(r.get("date"))[:10] if r.get("date") is not None else ""
+        if not _md or _md in ("nan", "NaT", "None"):
+            undated += 1
+            continue
         home, away = _split_match(r.get("match", ""))
         label = str(r.get("market", ""))
         side  = _parse_side(label)
         rows.append({
             "signal_date":   today,
-            "match_date":    str(r.get("date", today))[:10],
+            "match_date":    _md,
             "league":        r.get("league", ""),
             "home_team":     home,
             "away_team":     away,
@@ -206,6 +235,10 @@ def append_sharp_signals(
             "resolved_date": "",
         })
 
+    if undated:
+        log.info(f"sharp_ledger: {undated} signal(s) refused (no match date)")
+    if not rows:
+        return 0
     new_df = pd.DataFrame(rows, columns=SHARP_LEDGER_COLS)
 
     if ledger_file.exists():

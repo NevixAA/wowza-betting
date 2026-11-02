@@ -147,8 +147,13 @@ def transfer_options(squad: pd.DataFrame, proj: pd.DataFrame, *,
         cands = pr[(pr.get("position") == pos) & (~pr["_key"].isin(owned))
                    & pr["_win"].notna() & pr["_gw"].notna()].copy()
         if "availability" in cands.columns:
-            cands = cands[~cands["availability"].astype(str).str.lower()
-                          .isin(("injured", "unavailable", "suspended"))]
+            # Ruled out OR availability unknown: never a transfer target (Data Truth 2026-11-02).
+            from player_model.fpl_api import availability_unknown, not_recommendable
+            n_unknown = int(availability_unknown(cands["availability"]).sum())
+            if n_unknown:
+                log.info("transfers: %d %s candidate(s) with unknown availability not offered",
+                         n_unknown, pos)
+            cands = cands[~not_recommendable(cands["availability"])]
         if cands.empty:
             continue
         sell_at = float(o["_sell_at"])
