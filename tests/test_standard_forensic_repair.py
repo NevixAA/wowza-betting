@@ -246,7 +246,8 @@ def test_07_weights_stay_with_fixture_after_sort(feat):
         M._rows_with_weights(rows, "over25", np.ones(len(rows) - 1))   # no silent fallback
 
 
-def test_07b_documents_legacy_weight_misalignment(feat, monkeypatch):
+def test_07b_legacy_weights_now_aligned(feat, monkeypatch):
+    """Was `test_07b_documents_legacy_weight_misalignment`: legacy bug 8 is fixed (2026-11-02)."""
     rows = feat.dropna(subset=["over25", "home_scored_last5"]).sample(frac=1.0, random_state=4)
     rows = rows.assign(rid=np.arange(len(rows), dtype=float))
     seen = []
@@ -260,7 +261,7 @@ def test_07b_documents_legacy_weight_misalignment(feat, monkeypatch):
     monkeypatch.setattr(Pipeline, "fit", spy)
     M.train(rows, "over25", sample_weight=rows["rid"].to_numpy() + 1.0, feature_cols=["rid"] + FEATS[:4])
     rid, w = seen[0]
-    assert not np.allclose(w, rid + 1.0), "legacy reorders rows but not their weights"
+    assert np.allclose(w, rid + 1.0), "legacy must keep each row's weight with the row"
     seen.clear()
     M.train_repaired(rows, "over25", sample_weight=rows["rid"] + 1.0, feature_cols=["rid"] + FEATS[:4])
     rid, w = seen[0]

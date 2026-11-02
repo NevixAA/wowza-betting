@@ -130,7 +130,8 @@ def test_prop_close_is_strictly_pre_kickoff(monkeypatch):
     assert closes.get(rec["bet_id"]) == 3.0
 
 
-@pytest.mark.xfail(strict=True, reason="AU4-P8-04 ACTIVE: close_out ignores the bookmaker; entry and close can be different books")
+# AU4-P8-04 FIXED 2026-11-02: the close is best-of-books (each book's last price, best of them),
+# the same basis as the best-of-books entry (player_model.clv_tracker.close_best_of_books).
 def test_prop_close_is_same_book_as_entry(monkeypatch):
     rec = {"bet_id": f"PLAYER|{DAY}|Ana Lima|sot", "match": "X vs Y", "odds_close": "", "odds_bet": "2.0"}
     hist = pd.DataFrame([

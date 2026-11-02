@@ -52,7 +52,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 from src.data_loader import load_all_matches
 from src.feature_engineering import build_features
-from src.model import (train as train_model, load_models,
+from src.model import (train_for_retrain as train_model, load_models,
                         get_feature_importances, chronological_split, score_payload,
                         predict_proba as model_predict_proba,
                         FEATURE_COLS as MODEL_FEATURE_COLS)
@@ -519,12 +519,10 @@ def _behaviour_canary(label: str, old_payload, results: dict, test_df, target: s
         return out
     try:
         import numpy as np
-        payload_new = {
-            "target": target,
-            "models": {k: v["model"] for k, v in results.items()},
-            "feature_cols": results[next(iter(results))]["feature_cols"],
-            "metrics": {k: v["metrics"] for k, v in results.items()},
-        }
+        from src.model import build_payload
+        # The payload exactly as it would serve (persisted imputer, track routing) - a hand-built
+        # four-key dict dropped both and scored the candidate with batch medians.
+        payload_new = build_payload(results, target)
         p_old = np.asarray(model_predict_proba(test_df, payload=old_payload), dtype=float)
         p_new = np.asarray(model_predict_proba(test_df, payload=payload_new), dtype=float)
         m = np.isfinite(p_old) & np.isfinite(p_new)
@@ -627,7 +625,15 @@ def _train_one(valid: "pd.DataFrame", label: str, model_file,
         log.warning(f"  [{label}] could not load/score the incumbent on today's holdout ({e}); "
                     f"the gate will fail closed")
 
-    results = train_model(valid, target=target, sample_weight=weights, feature_cols=feature_cols)
+    # REPAIRED RECIPE, NOT LEGACY (2026-11-02, estate scan training findings a-d): the candidate
+    # carries a persisted train-fitted imputer (no batch medians at serving), its meta-logistic is
+    # fitted on its own META block, weights travel with their rows, and side labels train one model
+    # per league track. The holdout starts at the first date of the gate's holdout (`_test_df`),
+    # so no row the gate scores below was used to fit any stage of the candidate.
+    _hs = (pd.to_datetime(_test_df["date"]).min()
+           if _test_df is not None and len(_test_df) and "date" in _test_df.columns else None)
+    results = train_model(valid, label=label, target=target, sample_weight=weights,
+                          feature_cols=feature_cols, holdout_start=_hs)
     canary = _behaviour_canary(label, _old_payload, results, _test_df, target)
 
     # 2. period 1 for the new candidate
@@ -789,10 +795,14 @@ def mode_train() -> tuple:
     else:
         log.warning(f"  Not enough HT data ({len(ht_valid)} rows) — skipping HT models")
 
-    # ── Side-market models (BTTS / O1.5 / O3.5) — all leagues with odds data ──
-    # nf_valid rows now have odds_btts/over15/over35 when af_odds_history.parquet
-    # has been backfilled; rows without odds simply drop out via dropna().
-    log.info("\nTraining side-market models (BTTS / Over 1.5 / Over 3.5)...")
+    # ── Side-market models (BTTS / O1.5 / O3.5) — one model PER LEAGUE TRACK ──
+    # Until 2026-11-02 one model per market was fitted on Standard + New Format rows POOLED and
+    # served to both tracks, against the model-isolation rule. The frame below still holds both
+    # tracks (one serving file per market), but src.model.train_for_retrain splits it with
+    # src.model.track_of and fits a separate Standard and New Format model; serving routes each
+    # fixture to its own track's model with the same function. A track with too little data gets
+    # no model, and its fixtures no side probability (never the other track's).
+    log.info("\nTraining side-market models (BTTS / Over 1.5 / Over 3.5), per league track...")
     _sm_all = pd.concat([std_valid, nf_valid], ignore_index=True)
     for target, model_file in config.SIDE_MARKETS.items():
         sm_valid = _sm_all.dropna(subset=[target])
