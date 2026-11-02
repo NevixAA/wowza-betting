@@ -273,12 +273,17 @@ def one_match(banks: dict | None = None) -> dict:
 def evaluate(now: datetime | None = None) -> list[dict]:
     """The rule checks. Never raises: a check that cannot run is itself RED."""
     out = []
-    for fn in (naming, defaults, lambda: missing(now), leagues, one_match):
+    # A crashed check carries its rule's label, so a gated rule that cannot run blocks the push (it
+    # was named after the function - 'one_match' - which the GATED prefixes never matched).
+    for label, fn in (("Data truth 1: one canonical name", naming),
+                      ("Data truth 2: no silent defaults", defaults),
+                      ("Data truth 3: no missing data", lambda: missing(now)),
+                      ("Data truth 4: right league relations", leagues),
+                      ("Data truth 5: one match, one row", lambda: one_match())):
         try:
             out.append(fn())
         except Exception as e:                                         # noqa: BLE001
-            out.append(_c(getattr(fn, "__name__", "data truth check"), RED, "check failed", "must run",
-                          f"{type(e).__name__}: {e}"[:200]))
+            out.append(_c(label, RED, "check failed", "must run", f"{type(e).__name__}: {e}"[:200]))
     return out
 
 
@@ -295,8 +300,12 @@ def write_baseline() -> int:
 # ── STOPLIGHT GATE (owner 2026-11-01: "we can't go back from 100% data") ─────────────────────────
 RATCHET = ROOT / "config" / "data_truth_ratchet.json"
 #: rules whose RED blocks a push/PR. Rule 3 (missing data) is operational - an API outage must not
-#: block code - and already turns system health RED daily via evidence_refresh.
-GATED = ("Data truth 1", "Data truth 2", "Data truth 4")
+#: block code - and already turns system health RED daily via evidence_refresh. Rule 5 (one match,
+#: one row) is gated since 2026-11-02 (owner): a code change that lets a match into the banks twice
+#: must not merge. It runs the loader's identity pipeline on the committed banks (~15 s; it was
+#: ~19-60 s before team_names memoised norm/identity_key and duplicate_pairs stopped slicing
+#: pandas groups).
+GATED = ("Data truth 1", "Data truth 2", "Data truth 4", "Data truth 5")
 
 
 def _ratchet() -> dict:

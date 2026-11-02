@@ -107,6 +107,24 @@ def club_identity(df: pd.DataFrame) -> dict:
     return out
 
 
+def _groups(k: pd.DataFrame, keys: list):
+    """(first key value, group frame as plain arrays) in the order and row order of
+    `k.groupby(keys, sort=False)`, without pandas' per-group frame slicing (the data-truth rule 5
+    stoplight spent most of its time there, 2026-11-02)."""
+    if k.empty:
+        return
+    gid = k.groupby(keys, sort=False, dropna=False).ngroup().to_numpy()
+    order = np.argsort(gid, kind="stable")
+    gid = gid[order]
+    cols = {c: k[c].to_numpy()[order] for c in k.columns}
+    cuts = np.flatnonzero(np.diff(gid)) + 1
+    starts = np.r_[0, cuts]
+    ends = np.r_[cuts, len(gid)]
+    first = keys[0]
+    for s, e in zip(starts, ends):
+        yield cols[first][s], {c: v[s:e] for c, v in cols.items()}
+
+
 def duplicate_pairs(df: pd.DataFrame, window_days: int = WINDOW_DAYS,
                     identity: dict | None = None) -> pd.DataFrame:
     """Every pair of rows that are one match (see module rule). Columns: i, j (df index labels,
@@ -127,11 +145,10 @@ def duplicate_pairs(df: pd.DataFrame, window_days: int = WINDOW_DAYS,
     k = k[k["dt"].notna()]
     dup = k.duplicated(["lg", "h", "a", "hg", "ag"], keep=False)
     rows, seen = [], set()
-    for (_lg, *_), g in k[dup].sort_values("dt", kind="mergesort").groupby(
-            ["lg", "h", "a", "hg", "ag"], sort=False):
-        dts, ids = g["dt"].to_numpy(), g["idx"].to_numpy()
-        for x in range(len(g)):
-            for y in range(x + 1, len(g)):
+    for _lg, g in _groups(k[dup].sort_values("dt", kind="mergesort"), ["lg", "h", "a", "hg", "ag"]):
+        dts, ids = g["dt"], g["idx"]
+        for x in range(len(ids)):
+            for y in range(x + 1, len(ids)):
                 gap = int((dts[y] - dts[x]) / np.timedelta64(1, "D"))
                 if gap > window_days:
                     break
@@ -140,7 +157,7 @@ def duplicate_pairs(df: pd.DataFrame, window_days: int = WINDOW_DAYS,
     # SAME DAY, SAME SCORE, ONE SIDE THE SAME CLUB: a club does not play twice in a day, so the two
     # rows are one match whatever the other side is called (match-level evidence; no club is renamed).
     same = k.duplicated(["lg", "dt", "hg", "ag"], keep=False)
-    for (_lg, *_), g in k[same].groupby(["lg", "dt", "hg", "ag"], sort=False):
+    for _lg, g in _groups(k[same], ["lg", "dt", "hg", "ag"]):
         r = list(zip(g["idx"], g["h"], g["a"]))
         for x in range(len(r)):
             for y in range(x + 1, len(r)):
