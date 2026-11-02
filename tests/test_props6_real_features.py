@@ -94,7 +94,7 @@ def iso(tmp_path, monkeypatch):
     _clear()
 
 
-# ── 1. set-piece proxies purged ──────────────────────────────────────────────────────────────────
+# â”€â”€ 1. set-piece proxies purged â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def test_setpiece_proxies_are_not_built_for_training_or_serving(iso):
     rows = _season_rows("2024", "2024-08-10", 8, 7_000_000)
@@ -230,7 +230,7 @@ def test_prev_season_and_l10_serving_use_the_training_definition(iso):
     assert set(FE.PREV_SEASON_COLUMNS) | {"shot_accuracy_l10"} <= set(C.PLAYER_FEATURE_COLS)
 
 
-# ── 3. rest days on the complete match history ──────────────────────────────────────────────────
+# â”€â”€ 3. rest days on the complete match history â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def _cup_file(tmp, day, fid=7_900_001, minutes=90, status="FT"):
     """A collected cup row file (what scripts/collect_cup_player_stats.py writes) with one cup tie
@@ -274,6 +274,116 @@ def test_serving_rest_days_count_collected_cup_matches(iso):
     up[0]["fixture_date"] = "2024-11-30"
     r = FE.build_upcoming_features(up, hist, {}, {}, FE._build_history_index(hist)).iloc[0]
     assert r["rest_days"] == 88            # uncapped (was 30)
+
+
+# â”€â”€ 4. cup collector: corners + referee, budget-guarded, counted â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+class _Resp:
+    def __init__(self, body):
+        self._b, self.status_code, self.headers = body, 200, {"x-ratelimit-requests-remaining": "70000"}
+
+    def json(self):
+        return self._b
+
+
+class _MetaSession:
+    """Fake API-Football: /fixtures?ids= answers with referee (+ statistics for even ids);
+    /fixtures/statistics answers with corners."""
+    def __init__(self):
+        self.calls = []
+
+    @staticmethod
+    def _stats(fid):
+        return [{"team": {"id": 1000 + fid}, "statistics": [{"type": "Corner Kicks", "value": 6}]},
+                {"team": {"id": 2000 + fid}, "statistics": [{"type": "Corner Kicks", "value": None}]}]
+
+    def get(self, url, headers=None, params=None, timeout=None):
+        self.calls.append((url.rsplit("/", 1)[-1] if "statistics" not in url else "fixtures/statistics", params))
+        if url.endswith("/status"):
+            return _Resp({"response": {}})
+        if url.endswith("/fixtures/statistics"):
+            return _Resp({"response": self._stats(int(params["fixture"])), "errors": []})
+        if url.endswith("/fixtures"):
+            out = []
+            for f in str(params["ids"]).split("-"):
+                f = int(f)
+                r = {"fixture": {"id": f, "referee": f"Ref {f}" if f != 3 else None}}
+                if f % 2 == 0:
+                    r["statistics"] = self._stats(f)
+                out.append(r)
+            return _Resp({"response": out, "errors": []})
+        return _Resp({"response": [], "errors": []})
+
+
+def _meta_world(tmp, monkeypatch, n=21):
+    import collect_cup_player_stats as K
+    monkeypatch.setattr(K, "META", tmp / "meta.parquet")
+    monkeypatch.setattr(K, "JOURNAL", tmp / "journal.parquet")
+    jr = [{"fixture_id": f, "league": "Champions League", "season": "2025", "date": f"2025-10-{1 + f % 28:02d}",
+           "n_rows": 30, "fetched_at": "x"} for f in range(1, n + 1)]
+    jr.append({"fixture_id": 99, "league": "Champions League", "season": "2025", "date": "2025-10-01",
+               "n_rows": 0, "fetched_at": "x"})                                  # no rows: no meta call
+    pd.DataFrame(jr).to_parquet(tmp / "journal.parquet", index=False)
+    fx = pd.DataFrame({"fixture_id": list(range(1, n + 1)) + [99],
+                       "home_id": [1000 + f for f in range(1, n + 1)] + [1],
+                       "away_id": [2000 + f for f in range(1, n + 1)] + [2]})
+    return K, fx
+
+
+def test_cup_meta_corners_and_referee_counted_and_resumable(tmp_path, monkeypatch):
+    import collect_common as CC
+    K, fx = _meta_world(tmp_path, monkeypatch)
+    s = _MetaSession()
+    c = CC.AFClient(key="k", session=s, budget_file=tmp_path / "b.json", pause_s=0)
+    st = K.run_meta(c, fx)
+    ids_calls = [p for u, p in s.calls if u == "fixtures"]
+    stat_calls = [p["fixture"] for u, p in s.calls if u == "fixtures/statistics"]
+    assert len(ids_calls) == 2 and all(len(p["ids"].split("-")) <= 20 for p in ids_calls)   # 21 -> 20 + 1
+    assert sorted(stat_calls) == [f for f in range(1, 22) if f % 2]     # only where statistics were not embedded
+    assert c.calls_run == 2 + 11 and st["calls_fixtures"] == 2 and st["calls_statistics"] == 11
+    m = pd.read_parquet(tmp_path / "meta.parquet").set_index("fixture_id")
+    assert len(m) == 21 and 99 not in m.index
+    assert (m["corners_status"] == "ok").all()
+    assert (m["home_corners"] == 6).all() and m["away_corners"].isna().all()          # null -> NaN, never 0
+    assert m.loc[5, "referee"] == "Ref 5" and pd.isna(m.loc[3, "referee"])
+    # resumable: a second run asks nothing
+    s2 = _MetaSession()
+    K.run_meta(CC.AFClient(key="k", session=s2, budget_file=tmp_path / "b.json", pause_s=0), fx)
+    assert not [u for u, _ in s2.calls if u != "status"]
+
+
+def test_cup_meta_budget_stop_is_clean(tmp_path, monkeypatch):
+    import json
+    import collect_common as CC
+    K, fx = _meta_world(tmp_path, monkeypatch)
+    (tmp_path / "b.json").write_text(json.dumps({CC.utc_day(): 100}))
+    c = CC.AFClient(key="k", session=_MetaSession(), budget_file=tmp_path / "b.json", daily_cap=101, pause_s=0)
+    st = K.run_meta(c, fx)
+    assert "budget_stop" in st and c.calls_run == 1
+    m = pd.read_parquet(tmp_path / "meta.parquet")
+    assert len(m) == 20 and (m["corners_status"] == "pending").sum() == 10            # resumable state
+
+
+def test_cup_rows_carry_the_sidecar_corners_and_referee(tmp_path):
+    from player_model import cup_history as CH
+    rows = pd.DataFrame([
+        {"fixture_id": 5, "player_id": 1, "team_id": 1005, "team_corners": None, "referee": None},
+        {"fixture_id": 5, "player_id": 2, "team_id": 2005, "team_corners": None, "referee": None},
+        {"fixture_id": 6, "player_id": 3, "team_id": 1006, "team_corners": 4.0, "referee": "Own Ref"},
+        {"fixture_id": 7, "player_id": 4, "team_id": 1007, "team_corners": None, "referee": None}])
+    meta = pd.DataFrame([
+        {"fixture_id": 5, "referee": "Ref 5", "home_id": 1005, "away_id": 2005, "home_corners": 6.0,
+         "away_corners": 3.0, "corners_status": "ok"},
+        {"fixture_id": 6, "referee": "Ref 6", "home_id": 1006, "away_id": 2006, "home_corners": 9.0,
+         "away_corners": 1.0, "corners_status": "ok"}])
+    rows.to_parquet(tmp_path / "rows.parquet", index=False)
+    meta.to_parquet(tmp_path / "meta.parquet", index=False)
+    out = CH.cup_rows(tmp_path / "rows.parquet", tmp_path / "meta.parquet").set_index("player_id")
+    assert out.loc[1, "team_corners"] == 6.0 and out.loc[2, "team_corners"] == 3.0
+    assert out.loc[1, "referee"] == "Ref 5"
+    assert out.loc[3, "team_corners"] == 4.0 and out.loc[3, "referee"] == "Own Ref"   # the row's own value wins
+    assert math.isnan(out.loc[4, "team_corners"]) and pd.isna(out.loc[4, "referee"])     # no sidecar row
+    assert pd.read_parquet(tmp_path / "rows.parquet")["team_corners"].isna().sum() == 3  # file not rewritten
 
 
 def test_typed_weight_formulas_are_withheld_from_training():

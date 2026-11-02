@@ -296,6 +296,8 @@ class _Session:
         self.calls.append((url, params))
         if url.endswith("/status"):
             return _Resp({"response": {}})
+        if "fixture" not in params:               # /fixtures?ids= (referee + corners sidecar)
+            return _Resp({"response": [], "errors": []})
         return _Resp(self.bodies.get(params["fixture"], {"response": [], "errors": []}))
 
 
@@ -346,6 +348,7 @@ def test_collector_plan_parse_journal_and_budget(tmp_path, monkeypatch):
     monkeypatch.setattr(K, "FIXTURES", tmp_path / "fx.parquet")
     monkeypatch.setattr(K, "OUT", out)
     monkeypatch.setattr(K, "JOURNAL", jrn)
+    monkeypatch.setattr(K, "META", tmp_path / "meta.parquet")
     monkeypatch.setattr(K, "cup_ids", lambda: cups)
     monkeypatch.setattr(K, "_start_and_leagues", lambda: (pd.Timestamp("2022-08-12"), ("Premier League",)))
     s = _Session({1: body})
