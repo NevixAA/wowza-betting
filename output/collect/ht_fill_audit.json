@@ -1,0 +1,98 @@
+{
+ "calls": 120,
+ "filled_rows_total": 33152,
+ "history": "output/fd_history.parquet",
+ "note": "Half-time scores for history rows that lack them, from API-Football; fd_history.parquet itself is not modified.",
+ "per_league": {
+  "Argentina Primera Division": {
+   "filled": 3643,
+   "history_rows_same_match_two_spellings": 1032,
+   "lacking": 4230,
+   "refused_fixture_claimed_twice": 180,
+   "unmatched": 407
+  },
+  "Austrian Bundesliga": {
+   "filled": 1707,
+   "history_rows_same_match_two_spellings": 706,
+   "lacking": 1938,
+   "unmatched": 231
+  },
+  "Brazil Serie A": {
+   "filled": 3110,
+   "history_rows_same_match_two_spellings": 606,
+   "lacking": 3599,
+   "refused_fixture_claimed_twice": 200,
+   "unmatched": 289
+  },
+  "China Super League": {
+   "filled": 1462,
+   "history_rows_same_match_two_spellings": 130,
+   "lacking": 2540,
+   "unmatched": 1078
+  },
+  "Denmark Superliga": {
+   "filled": 1666,
+   "history_rows_same_match_two_spellings": 394,
+   "lacking": 1667,
+   "unmatched": 1
+  },
+  "Finland Veikkausliiga": {
+   "filled": 1407,
+   "history_rows_same_match_two_spellings": 252,
+   "lacking": 1518,
+   "unmatched": 111
+  },
+  "Ireland Premier Division": {
+   "filled": 1582,
+   "history_rows_same_match_two_spellings": 506,
+   "lacking": 1657,
+   "unmatched": 75
+  },
+  "Japan J-League": {
+   "filled": 2744,
+   "history_rows_same_match_two_spellings": 478,
+   "lacking": 2946,
+   "unmatched": 202
+  },
+  "K-League 1": {
+   "filled": 1074,
+   "lacking": 1074
+  },
+  "Mexico Liga MX": {
+   "filled": 3048,
+   "history_rows_same_match_two_spellings": 1330,
+   "lacking": 3160,
+   "refused_fixture_claimed_twice": 112
+  },
+  "Norway Eliteserien": {
+   "filled": 2068,
+   "history_rows_same_match_two_spellings": 442,
+   "lacking": 2159,
+   "unmatched": 91
+  },
+  "Romanian Superliga": {
+   "filled": 2018,
+   "history_rows_same_match_two_spellings": 350,
+   "lacking": 3138,
+   "unmatched": 1120
+  },
+  "Saudi Pro League": {
+   "filled": 1423,
+   "lacking": 1423
+  },
+  "Sweden Allsvenskan": {
+   "filled": 2530,
+   "history_rows_same_match_two_spellings": 1312,
+   "lacking": 2648,
+   "unmatched": 118
+  },
+  "USA MLS": {
+   "filled": 3670,
+   "history_rows_same_match_two_spellings": 540,
+   "lacking": 4376,
+   "refused_fixture_claimed_twice": 706
+  }
+ },
+ "planned_calls": 120,
+ "written_at": "2026-11-02T15:53:29.630127+00:00"
+}
