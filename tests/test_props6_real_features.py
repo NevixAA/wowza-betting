@@ -82,6 +82,7 @@ def iso(tmp_path, monkeypatch):
     monkeypatch.setattr(SPF, "DIR", tmp_path)
     from player_model import cup_history as CH
     monkeypatch.setattr(CH, "CUP_ROWS_FILE", tmp_path / "cup_player_rows.parquet")
+    monkeypatch.setattr(CH, "CUP_META_FILE", tmp_path / "cup_fixture_meta.parquet", raising=False)
 
     def _clear():
         from player_model import team_identity as TI
@@ -384,6 +385,41 @@ def test_cup_rows_carry_the_sidecar_corners_and_referee(tmp_path):
     assert out.loc[3, "team_corners"] == 4.0 and out.loc[3, "referee"] == "Own Ref"   # the row's own value wins
     assert math.isnan(out.loc[4, "team_corners"]) and pd.isna(out.loc[4, "referee"])     # no sidecar row
     assert pd.read_parquet(tmp_path / "rows.parquet")["team_corners"].isna().sum() == 3  # file not rewritten
+
+
+# ── 5. merge-cups ready to run ──────────────────────────────────────────────────────────────────
+
+def test_merge_cups_writes_only_stored_columns_and_the_sidecar_values(iso, monkeypatch):
+    from player_model import pipeline as P
+    rows = _season_rows("2024", "2024-08-10", 4, 7_700_000)
+    stored = FE.build_features(rows)
+    # the stored history predates this build's new features
+    stored = stored.drop(columns=[c for c in (*FE.PREV_SEASON_COLUMNS, "shot_accuracy_l10") if c in stored.columns])
+    hdir = iso / "player_history.parquet"
+    P._save_history(stored, hdir)
+    monkeypatch.setattr(P, "HISTORY_CACHE", hdir)
+    _cup_file(iso, "2024-08-21")
+    for r in ("team_corners", "referee"):                                   # what the collector writes
+        f = pd.read_parquet(iso / "cup_player_rows.parquet")
+        f[r] = None
+        f.to_parquet(iso / "cup_player_rows.parquet", index=False)
+    pd.DataFrame([{"fixture_id": 7_900_001, "date": "2024-08-21", "referee": "Cup Ref",
+                   "home_id": IDS["Arsenal"], "away_id": IDS["Chelsea"], "home_corners": 7.0,
+                   "away_corners": 2.0, "corners_status": "ok", "fetched_at": "x"}]
+                 ).to_parquet(iso / "cup_fixture_meta.parquet", index=False)
+    FE._COLLECTED.clear()
+    P.mode_merge_cups()
+    out = pd.read_parquet(hdir)
+    assert set(out.columns) == set(stored.columns)                  # no column on the cup rows alone
+    cup = out[out["league"] == "Champions League"]
+    assert len(cup) > 0 and len(out) == len(stored) + len(cup)
+    assert set(cup["referee"]) == {"Cup Ref"}
+    assert set(pd.to_numeric(cup.loc[cup["team"] == "Arsenal", "team_corners"])) == {7.0}
+    assert set(pd.to_numeric(cup.loc[cup["team"] == "Chelsea", "team_corners"])) == {2.0}
+    # every stored row is untouched (a committed row is never rewritten)
+    old = out[out["league"] != "Champions League"].sort_values(["fixture_id", "player_id"]).reset_index(drop=True)
+    ref = stored.sort_values(["fixture_id", "player_id"]).reset_index(drop=True)
+    pd.testing.assert_series_equal(old["rest_days"], ref["rest_days"], check_dtype=False)
 
 
 def test_typed_weight_formulas_are_withheld_from_training():
