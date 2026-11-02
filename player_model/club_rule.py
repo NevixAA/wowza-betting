@@ -8,8 +8,8 @@ committed player_ledger: 337 graded rows whose player_id played a DIFFERENT fixt
 at Barcelona; Casemiro for Manchester United while at Inter Miami). They were graded off the other
 club's match because a lookup joined on (player_id, date) without checking the fixture.
 
-Club identity is src.team_names (identity_key, the resolver's token tier); a name with no identity
-token proves nothing and compares by its normalised form only.
+Club identity is src.team_names.resolve (normalised equality, alias store, identity tokens;
+ambiguity refused).
 """
 from __future__ import annotations
 
@@ -30,11 +30,13 @@ def same_club(a, b) -> bool | None:
     """True / False when both names are present; None when either is missing (unknown)."""
     if _blank(a) or _blank(b):
         return None
+    a, b = str(a), str(b)
+    if a == b:
+        return True
     TN = _tn()
-    ka, kb = TN.identity_key(str(a)), TN.identity_key(str(b))
-    if ka is not None and kb is not None:
-        return ka == kb
-    return TN.norm(str(a)) == TN.norm(str(b))
+    # The resolver's tiers (normalised equality, alias store, identity tokens): "Verona" /
+    # "Hellas Verona" and "Montreal Impact" / "CF Montreal" are alias-store pairs.
+    return TN.resolve(a, [b]) == b or TN.resolve(b, [a]) == a
 
 
 def club_conflict(tip_club, latest_club, latest_date, fixture_day,
@@ -66,9 +68,8 @@ def side_of(team, home, away) -> bool | None:
         return True
     if str(team) == str(away) and str(team) != str(home):
         return False
-    h, a = same_club(team, home), same_club(team, away)
-    if h is True and a is not True:
-        return True
-    if a is True and h is not True:
-        return False
-    return None
+    if _blank(home) or _blank(away) or str(home) == str(away):
+        return None
+    # resolve() refuses an ambiguous name (None), so a name matching both sides proves nothing.
+    hit = _tn().resolve(str(team), [str(home), str(away)])
+    return True if hit == str(home) else False if hit == str(away) else None

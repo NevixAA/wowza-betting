@@ -1,0 +1,37 @@
+{
+  "written": "2026-11-02 (props_truth)",
+  "ledger": "output/player_ledger.csv (NOT modified)",
+  "ledger_rows": 33677,
+  "sentinel": {
+    "rows": 376,
+    "in_round2_brief_168": 168,
+    "by_value": {
+      "0.4": 198,
+      "0.5": 168,
+      "0.8": 10
+    },
+    "results": {
+      "LOSS": 186,
+      "pending": 100,
+      "VOID": 61,
+      "WIN": 29
+    },
+    "pnl_u": -117.84,
+    "writer": "player_model/predict.py `p_model = min(p_model, _MARKET_CAPS[market], 0.95)`; replaced by capped_prob (refuses the tip) on fix4/props_truth"
+  },
+  "ghost": {
+    "other_fixture_same_day": 170,
+    "other_fixture_same_day_regraded_from_false_dnp": 147,
+    "other_fixture_same_day_pnl_u": -3.17,
+    "other_fixture_same_day_staked_tiers": 0,
+    "stats_disagree": 56,
+    "graded_rows_joined_to_history": "player_id + match_date, history months 2026-*"
+  },
+  "staked_tiers_graded_pnl_u": {
+    "as_stored": -231.34,
+    "excluding_listed_rows": -113.5,
+    "rows_as_stored": 709,
+    "rows_after": 494
+  },
+  "consumers": "exclude rows with exclude == True, keyed on ledger_row + (player_id, fixture_id, market, match_date); ledger_row is the 0-based row of player_ledger.csv at the commit this file was written on"
+}

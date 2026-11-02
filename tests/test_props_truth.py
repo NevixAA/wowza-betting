@@ -150,6 +150,35 @@ def test_odds_history_keeps_each_book_and_returns_to_a_price(tmp_path, monkeypat
     assert h[h["bookmaker"] == "Unibet"]["odds"].tolist() == [2.0]   # unchanged quotes collapse
 
 
+# ── sidecars (ledger never rewritten) ─────────────────────────────────────────────────────────────
+def test_sidecars_list_sentinels_and_ghosts_only():
+    import rebuild_player_history_props_sidecars as SC
+    base = {"signal_date": "2026-08-20", "league": "La Liga", "player_name": "R. De Paul", "team": "Atletico Madrid",
+            "tier": "AVOID", "market_odds": "", "pnl": "", "notes": "", "model_prob": "0.31", "market": "sot"}
+    led = pd.DataFrame([
+        {**base, "ledger_row": 0, "match_date": "2026-08-23", "home_team": "Atletico Madrid",
+         "away_team": "Villarreal", "player_id": "2472", "fixture_id": "", "result": "WIN"},       # ghost
+        {**base, "ledger_row": 1, "match_date": "2026-09-12", "home_team": "Inter Miami",
+         "away_team": "Nashville SC", "player_id": "2472", "fixture_id": "1490466", "result": "LOSS"},
+        {**base, "ledger_row": 2, "league": "World Cup", "tier": "VALUABLE", "model_prob": "0.5",
+         "market": "goals", "match_date": "2026-06-24", "home_team": "Egypt", "away_team": "Iran",
+         "player_id": "", "fixture_id": "", "result": "LOSS"}])
+    hist = pd.DataFrame([
+        {"fixture_id": 1490440, "player_id": 2472, "date": pd.Timestamp("2026-08-23"), "team": "Inter Miami",
+         "home_team": "Inter Miami", "away_team": "Toronto FC", "minutes": 90, "goals": 0,
+         "shots_on_target": 1, "yellow_cards": 0, "assists": 0},
+        {"fixture_id": 1490466, "player_id": 2472, "date": pd.Timestamp("2026-09-12"), "team": "Inter Miami",
+         "home_team": "Inter Miami", "away_team": "Nashville SC", "minutes": 90, "goals": 0,
+         "shots_on_target": 0, "yellow_cards": 0, "assists": 0},
+        {"fixture_id": 9999999, "player_id": 2472, "date": pd.Timestamp("2026-09-12"), "team": "Inter Miami",
+         "home_team": "Inter Miami", "away_team": "Other", "minutes": 90, "goals": 0,
+         "shots_on_target": 2, "yellow_cards": 0, "assists": 0}])                # duplicate-day row
+    gh = SC.ghost_rows(led, hist)
+    assert gh["ledger_row"].tolist() == [0] and gh["category"].tolist() == ["other_fixture_same_day"]
+    sen = SC.sentinel_rows(led)
+    assert sen["ledger_row"].tolist() == [2] and bool(sen["exclude"].all())
+
+
 # ── rebuild script (no network) ───────────────────────────────────────────────────────────────────
 def test_rebuild_player_history_derived_columns():
     import rebuild_player_history as RB
