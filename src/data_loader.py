@@ -1328,6 +1328,49 @@ def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFram
     return df
 
 
+#: Fixture statistics collected BESIDE af_history.parquet (Data Truth round 6) by
+#: scripts/collect_af_history_gap.py --insidebox: API-Football 'Shots insidebox' (HIB/AIB) and
+#: expected_goals (HXG/AXG) for af_history matches that lack them, keyed by af_history's own
+#: (league, date, home_team, away_team). af_history.parquet itself is never rewritten.
+AF_STATS_FILL = Path("output") / "collect" / "af_history_stats_fill.parquet"
+_AF_STATS_FILL_COLS = {"HIB": "home_insidebox", "AIB": "away_insidebox",
+                       "HXG": "home_xg", "AXG": "away_xg"}
+
+
+def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
+    """Fill MISSING home/away_insidebox and home/away_xg from AF_STATS_FILL (nan_only, a stored value
+    is never overwritten), league-keyed, clubs resolved onto df's spellings (team_names.resolve),
+    ambiguous cells refused by safe_left_enrich. Part of _enrich_with_api_shots, so training and
+    serving read the same history. Absent sidecar -> df unchanged."""
+    p = (root or Path(__file__).resolve().parents[1]) / AF_STATS_FILL
+    if not p.exists():
+        log.info(f"[af_stats_fill] {AF_STATS_FILL.as_posix()} not present - skipped")
+        return df
+    try:
+        fill = pd.read_parquet(p)
+        vals = [c for c in _AF_STATS_FILL_COLS if c in fill.columns]
+        if "league" not in fill.columns or not vals:
+            log.error("[af_stats_fill] no league / stat column - fill SKIPPED")
+            return df
+        fill = fill[fill[vals].notna().any(axis=1)].copy()
+        fill["date"] = pd.to_datetime(fill["date"], errors="coerce")
+        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_stats_fill")
+        fill["_date_str"] = fill["date"].dt.strftime("%Y-%m-%d")
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
+        df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        df, rep = _IJ.safe_left_enrich(
+            df, fill, keys=["league", "_h", "_a", "_date_str"], value_cols=vals,
+            target_cols={c: _AF_STATS_FILL_COLS[c] for c in vals}, name="af_stats_fill")
+        log.info(f"[af_stats_fill] filled {rep.filled_cells}; ambiguous key groups "
+                 f"{rep.ambiguous_key_groups}")
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[af_stats_fill] failed to merge {AF_STATS_FILL.as_posix()}: {e}")
+    finally:
+        df = df.drop(columns=["_h", "_a", "_date_str"], errors="ignore")
+    return df
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -1400,7 +1443,7 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     df = _enrich_ht_scores(df)
 
     if not api_key:
-        return df
+        return _enrich_af_stats_fill(df)
 
     from src.api_football_ou import fetch_shots_for_league   # import failure must surface
 
@@ -1569,6 +1612,10 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     except Exception as e:                                       # noqa: BLE001
         # Never fail a training run over the cache. Losing the bank costs time, not correctness.
         log.warning(f"[af_history] could not bank the enrichment: {e}")
+
+    # The collected fixture statistics, AFTER the bank step: they live beside af_history.parquet
+    # and are never written into it.
+    df = _enrich_af_stats_fill(df)
 
     # Recompute SOT ratios after enrichment
     with np.errstate(divide="ignore", invalid="ignore"):

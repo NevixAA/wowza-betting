@@ -23,6 +23,12 @@ name: Data Truth Collect (real data)
 #      covers: 1 call per fixture (3,779 on the 2026-11-02 fixture list, then only newly finished
 #      ones), written BESIDE the history to output/collect/cup_player_rows.parquet (serving reads it
 #      at once; python -m player_model.pipeline --mode merge-cups appends it to player_history)
+#   9. scripts/collect_af_history_gap.py --insidebox  API-Football 'Shots insidebox' (+ xG from the
+#      same response) for every af_history row without it, ALL leagues: fixture ids from step 1's
+#      fixture lists (no call), /leagues?id coverage (1 call per league, journaled; seasons without
+#      provider statistics are skipped), then /fixtures/statistics 1 call per fixture not already in
+#      scripts/af_history_cache/ or the journal (output/collect/af_fixture_stats.parquet). Written
+#      BESIDE af_history.parquet: output/collect/af_history_stats_fill.parquet + af_stats_fill_audit.json
 #
 # API-FOOTBALL BUDGET (scripts/collect_common.py, checked before EVERY call): this job may spend at
 # most 45,000 calls per UTC day (journal output/collect/af_budget.json, committed) and stops as soon
@@ -39,9 +45,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,sidelined,profiles,understat,strength)'
+        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,understat,strength)'
         required: false
-        default: 'fixtures,htscores,cupstats,afgap,sidelined,profiles,understat,strength'
+        default: 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,understat,strength'
 
 concurrency:
   group: data-truth-collect
@@ -54,7 +60,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,sidelined,profiles,understat,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,understat,strength' }}
       # Owner 2026-11-02 (one run-day only): floor 10,000 remaining, job cap 55,000, to finish today.
       # Remove these two lines after run-day 2; the code defaults are 25,000 / 45,000.
       COLLECT_AF_FLOOR: '10000'
@@ -137,6 +143,16 @@ jobs:
         run: |
           python scripts/collect_af_history_gap.py
           /tmp/commit_collected.sh afgap
+
+      # After the af_history gap (its new rows carry HIB already) and step 1 (the fixture lists it
+      # reads ids from). Budget-guarded per call; a budget stop is a clean, resumable exit.
+      - name: 9. Inside-box shots for af_history (all leagues)
+        if: contains(env.STEPS, 'insidebox')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_af_history_gap.py --insidebox
+          /tmp/commit_collected.sh insidebox
 
       - name: 3. Sidelined history per player
         if: contains(env.STEPS, 'sidelined')
