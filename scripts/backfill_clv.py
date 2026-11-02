@@ -5,11 +5,13 @@ update_results only ever visits rows whose `result` is still empty, so any row t
 while the closing-price lookup was broken keeps a blank closing_odds/clv_pct forever. Two
 fixes landed on 2026-08-15 that make those rows resolvable after the fact:
 
-  * _closing_from_csv now falls back to _names_match, so OddsAPI ledger names reconcile with
-    API-Football archive names ("Viborg FF"/"Viborg", "Tijuana"/"Club Tijuana");
+  * _closing_from_csv resolves clubs with team_names.resolve_result inside the row's LEAGUE and
+    date, so OddsAPI ledger names reconcile with API-Football archive names ("Viborg FF"/"Viborg",
+    "Tijuana"/"Club Tijuana") and a same-named fixture in another league never supplies the close;
   * side markets read closing prices from the archives at all.
 
-This script applies both retroactively. It only ever FILLS BLANKS — an existing
+This script applies both retroactively. A row whose league is blank or not in the registry gets
+no close (counted and printed, never looked up across leagues). It only ever FILLS BLANKS — an existing
 closing_odds/clv_pct is never overwritten — so it is safe to re-run.
 
     python scripts/backfill_clv.py --dry-run
@@ -55,10 +57,14 @@ def backfill_main(dry: bool) -> int:
     print(f"bets_ledger      : {len(led)} rows | {int(settled.sum())} settled | "
           f"{len(idxs)} settled-without-CLV")
 
-    filled = 0
+    filled, no_league = 0, 0
     for i in idxs:
         r = led.loc[i]
-        close = ur._closing_odds(r["home_team"], r["away_team"], r["match_date"], r["side"])
+        if _blank(pd.Series([r["league"]])).iloc[0]:
+            no_league += 1
+            continue
+        close = ur._closing_odds(r["home_team"], r["away_team"], r["match_date"], r["side"],
+                                 league=r["league"])
         if close is None or (isinstance(close, float) and np.isnan(close)) or close <= 1.0:
             continue
         try:
@@ -71,7 +77,7 @@ def backfill_main(dry: bool) -> int:
         led.at[i, "clv_pct"] = str(_pct(entry, close))
         filled += 1
 
-    print(f"                 -> filled {filled}")
+    print(f"                 -> filled {filled} | skipped {no_league} with no league")
     if filled and not dry:
         led.to_csv(f, index=False)
     return filled
@@ -93,11 +99,15 @@ def backfill_side(dry: bool) -> int:
     print(f"side_bets_ledger : {len(led)} rows | {int(settled.sum())} settled | "
           f"{len(idxs)} settled-without-CLV")
 
-    filled = 0
+    filled, no_league = 0, 0
     for i in idxs:
         r = led.loc[i]
+        if _blank(pd.Series([r["league"]])).iloc[0]:
+            no_league += 1
+            continue
         mkt = ur._SIDE_ARCHIVE_MARKET.get(str(r["market"]), str(r["market"]))
-        close = ur._closing_for_market(r["home_team"], r["away_team"], r["match_date"], mkt)
+        close = ur._closing_for_market(r["home_team"], r["away_team"], r["match_date"], mkt,
+                                       league=r["league"])
         if np.isnan(close) or close <= 1.0:
             continue
         try:
@@ -110,7 +120,7 @@ def backfill_side(dry: bool) -> int:
         led.at[i, "clv_pct"] = str(_pct(entry, close))
         filled += 1
 
-    print(f"                 -> filled {filled}")
+    print(f"                 -> filled {filled} | skipped {no_league} with no league")
     if filled and not dry:
         led.to_csv(f, index=False)
     return filled

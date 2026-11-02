@@ -306,14 +306,12 @@ def test_team_name_variants_resolve(shadow, ours, theirs):
 
 def test_manchester_city_is_never_matched_to_united():
     ev = [_ev("Manchester United", "Leeds")]
-    assert ss.match_event("Manchester City", "Leeds United", "2026-10-18", None, ev,
-                          fallback_matcher=ur._names_match) is None
+    assert ss.match_event("Manchester City", "Leeds United", "2026-10-18", None, ev) is None
 
 
 def test_two_candidate_events_are_refused_not_guessed():
     ev = [_ev("Real Madrid", "Getafe"), _ev("Real Sociedad", "Getafe")]
-    assert ss.match_event("Real", "Getafe", "2026-10-18", None, ev,
-                          fallback_matcher=ur._names_match) is None
+    assert ss.match_event("Real", "Getafe", "2026-10-18", None, ev) is None
 
 
 def test_a_row_with_no_identity_is_resolved_by_oddsapi_event_id(shadow):

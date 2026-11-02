@@ -634,7 +634,8 @@ def optimize_standard_thresholds(
       * Flat-stake PnL is computed directly from best_side + outcome + odds, so ANY
         candidate threshold can be scored — independent of the tier the backtest
         actually staked (this correctly includes leagues that a stale guard zeroed).
-      * COVID seasons are excluded (config.COVID_SEASONS).
+      * COVID seasons are excluded per league from its own season rule
+        (config.covid_season_mask), not a start-year label set.
       * DEPLOYED `sniper_th` = grid value maximising ROI on ALL non-COVID data
         (>= min_bets) — most data → most stable point estimate.
       * A WALK-FORWARD out-of-sample pass (tune on prior seasons, bet the next one
@@ -656,9 +657,9 @@ def optimize_standard_thresholds(
 
     # Season derived from (date, league), never the stored label (see optimize_side_market_thresholds)
     df["_szn"] = _derived_season(df)
-    covid = set(config.COVID_SEASONS)
+    covid = config.covid_season_mask(df).to_numpy()
     d = df[
-        ~df["_szn"].isin(covid)
+        ~covid
         & df["best_side"].isin(["OVER", "UNDER"])
         & df["best_edge"].notna()
         & df["_bpnl"].notna()

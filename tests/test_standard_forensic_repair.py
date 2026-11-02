@@ -416,15 +416,21 @@ def test_rolling_window_never_contains_a_later_match():
 
 
 def test_weights_are_derived_from_match_date():
-    from src.standard_repair import derived_weights, legacy_weights
+    from pathlib import Path
+    import src.standard_repair as SRP
     df = pd.DataFrame({"date": pd.to_datetime(["2026-10-01", "2025-11-01", "2024-11-01",
-                                               "2023-11-01", "2020-11-01"]),
+                                               "2023-11-01", "2020-11-01", "2017-11-01"]),
                        "league": STD_A,
-                       "season": ["2026/27", "2025", "2024/25", "2023/2024", "2020/21"]})
-    w = derived_weights(df)
-    assert list(w) == [4.0, 3.0, 2.0, 1.5, 0.0]
-    lw = legacy_weights(df)
-    assert lw.iloc[0] == 1.0 and lw.iloc[2] == 4.0       # legacy: newest season under-weighted
+                       "season": ["2026/27", "2025", "2024/25", "2023/2024", "2020/21", "2017/18"]})
+    w = SRP.derived_weights(df)
+    assert list(w) == [4.0, 3.0, 2.0, 1.5, 0.0, 1.0]     # older seasons: the frozen recency rule
+    # The season-label map, its 1.0 default and the label COVID set left the training path
+    # (Data Truth round 2): standard_repair has only the date-derived weights.
+    assert not hasattr(SRP, "legacy_weights")
+    src = Path(SRP.__file__).read_text(encoding="utf-8")
+    for name in ("config.TRAINING_DECAY_WEIGHTS", "config.DEFAULT_DECAY_WEIGHT", "config.COVID_SEASONS",
+                 "_norm_club"):
+        assert name not in src, name
 
 
 # ── safety: the legacy defaults are untouched ───────────────────────────────────────────────

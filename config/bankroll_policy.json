@@ -98,7 +98,7 @@
   "league_rating_sizing": {
     "enabled": true,
     "min_scale": 0.2,
-    "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between; ratings missing/stale or league unrated = 20%. Scales DOWN only; every cap unchanged."
+    "note": "Owner 2026-10-18: stake by Pro league rating 1-10 (output/studies/league_ratings.json). Rating 10 = today's stake, rating 1 = 20% of it, linear between. A league with no rating gets NO stake (reason NO_LEAGUE_RATING, Data Truth 2026-11-01: sizing it at 20% invented a rating of 1); ratings file missing/unreadable/older than 8 days = no league is rated = no stake (src/stake_plan.load_league_ratings). Scales DOWN only; every cap unchanged."
   },
   "track_tier_multipliers": {
     "new_format|OU25_OVER": {

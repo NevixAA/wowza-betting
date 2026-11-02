@@ -159,7 +159,8 @@ def test_bet_builder_missing_probability_is_a_dash(monkeypatch):
 def test_tips_table_untagged_model_is_derived_or_dash():
     from telegram_bot import tips_table as tt
     assert tt._model_of({"model_type": np.nan, "league": "Championship"}) == "standard"
-    assert tt._model_of({"model_type": "", "league": "Nowhere League"}) == "unknown"
+    # no registered model: None (config.model_type_for_league no longer returns 'unknown')
+    assert tt._model_of({"model_type": "", "league": "Nowhere League"}) is None
 
 
 # ── dashboard pages ─────────────────────────────────────────────────────────────────────────────
