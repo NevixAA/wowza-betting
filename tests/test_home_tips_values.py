@@ -13,6 +13,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from src import units as U
+
 ROOT = Path(__file__).resolve().parents[1]
 HOME = ROOT / "pages" / "00_🎯_Home.py"
 
@@ -44,6 +46,9 @@ def _metrics(at) -> dict:
 
 
 # ── frozen pre-redesign Home logic (pages/00_🎯_Home.py at 4af43f28), copied verbatim ─────────────
+# EXCEPT the P/L totals: the frozen copy summed floats ({x.sum():+.2f}u), whose last bit depends on
+# summation order, so an exact half (-8.445u) rounded either way (issue #19). The comparison now
+# sums with src.units.total (exact decimal) and formats with src.units.fmt (half-up), as the pages do.
 def _old_home_values():
     import config
 
@@ -78,10 +83,10 @@ def _old_home_values():
           if not bets.empty else bets)
     return {
         "🎯 Upcoming staked tips": str(len(up)),
-        "📈 P/L — staked (u)": f"{staked['_pnl'].sum():+.2f}u" if len(staked) else "—",
+        "📈 P/L — staked (u)": U.fmt(U.total(staked['_pnl'])) if len(staked) else "—",
         "✅ Win rate — staked": f"{(staked['_pnl'] > 0).mean() * 100:.1f}%" if len(staked) else "—",
         "📊 Settled staked bets": str(len(staked)),
-        "💎 Paper VALUABLE P/L": f"{paper['_pnl'].sum():+.2f}u" if len(paper) else "—",
+        "💎 Paper VALUABLE P/L": U.fmt(U.total(paper['_pnl'])) if len(paper) else "—",
         "paper_delta": f"{len(paper)} tips, not bets",
     }
 
@@ -122,7 +127,7 @@ def test_home_new_values_come_from_canonical_functions(monkeypatch):
     perf = today_view.performance(today_view.load_settled(), today=pd.Timestamp.now().normalize())
     if perf["n"]:
         assert stats["ROI"] == f"{perf['pnl'] / perf['n'] * 100:+.1f}%"
-        assert stats["Drawdown from peak"] == f"{perf['drawdown']:+.2f}u"
+        assert stats["Drawdown from peak"] == U.fmt(perf['drawdown'])
         assert perf["drawdown"] <= 0
     # needs-attention lists exactly the non-GREEN checks, never a healthy one
     shown = {m.value.split("**")[1] for m in at.markdown if "&nbsp;**" in m.value and "-badge[" in m.value}
@@ -183,6 +188,8 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
 
 
 # ── frozen pre-redesign Tips settled/CLV logic (pages/1_📊_Dashboard.py at 4af43f28) ─────────────
+# P/L total: src.units.total + src.units.fmt instead of float(s.sum()) and {:+.2f} - the float sum
+# showed -8.44u for an exact -8.445u (issue #19); every other line is the frozen logic.
 def _old_tips_settled_metrics() -> dict:
     import config
 
@@ -208,8 +215,8 @@ def _old_tips_settled_metrics() -> dict:
     out = {}
     if parts:
         s = pd.concat(parts, ignore_index=True)
-        tot = float(s["_pnl"].sum())
-        out["P/L — all staked markets"] = (f"{tot:+.2f}u", f"{tot / len(s):+.3f}u per bet")
+        tot = U.total(s["_pnl"])
+        out["P/L — all staked markets"] = (U.fmt(tot), f"{U.fmt(tot / len(s), 3)} per bet")
         out["Settled bets"] = (f"{len(s):,}", None)
         out["Days covered"] = (f"{s['_dt'].dt.date.nunique()}", None)
     cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)

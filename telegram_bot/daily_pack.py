@@ -35,6 +35,7 @@ import numpy as np
 import pandas as pd
 
 import config
+from src import units as U
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label
 from telegram_bot.tips_table import _fit, _font, render_pngs, todays_rows
 
@@ -253,17 +254,17 @@ def results_image(day: str) -> list[bytes]:
     st = y[y["tier"].isin(STAKED) & y["pnl"].notna()]
     pp = y[(y["tier"] == "VALUABLE") & y["pnl"].notna()]
     wins = int((st["result"] == "WIN").sum())
-    by_mkt = " · ".join(f"{k} {g['pnl'].sum():+.2f}u" for k, g in st.groupby("market"))
-    subtitle = (f"Staked ({STAKED_LABEL}): {wins}W-{len(st) - wins}L, {st['pnl'].sum():+.2f}u"
+    by_mkt = " · ".join(f"{k} {U.fmt(U.total(g['pnl']))}" for k, g in st.groupby("market"))
+    subtitle = (f"Staked ({STAKED_LABEL}): {wins}W-{len(st) - wins}L, {U.fmt(U.total(st['pnl']))}"
                 + (f"  ({by_mkt})" if by_mkt else "")
-                + (f"   ·   paper {PAPER_TIER_LABEL} {pp['pnl'].sum():+.2f}u on {len(pp)}" if len(pp) else "")
+                + (f"   ·   paper {PAPER_TIER_LABEL} {U.fmt(U.total(pp['pnl']))} on {len(pp)}" if len(pp) else "")
                 + f".  {GAP_EXPLAINER}")
     cols = [("League", 200), ("Match", 320), ("Gap", 170), ("Pick", 150), ("Odds", 64),
             ("Result", 90), ("P/L", 76)]
     rows = []
     for _, r in y.iterrows():
         res, rc = _res_cell(r["result"], r["pnl"])
-        pnl = "" if pd.isna(r["pnl"]) else f"{r['pnl']:+.2f}"
+        pnl = "" if pd.isna(r["pnl"]) else U.fmt(r["pnl"], suffix="")
         rows.append({"cells": [r["league"], r["match"], tier_label(r["tier"]) + ("" if r["tier"] in STAKED else " (paper)"),
                                r["pick"], "" if pd.isna(r["odds"]) else f"{r['odds']:.2f}", res, pnl],
                      "stripe": TIER_COLOUR.get(r["tier"]), "bold": {"Result", "P/L"},
@@ -291,11 +292,11 @@ def record_image(today: str) -> list[bytes]:
         g7 = g[g["date"] >= week]
         hit = 100 * w / len(g)
         return {"cells": [name, len(g), f"{w}-{len(g) - w}", f"{hit:.0f}%",
-                          "" if be is None else f"{be:.0f}%", f"{g['pnl'].sum():+.2f}u",
-                          f"{g7['pnl'].sum():+.2f}u ({len(g7)})"],
+                          "" if be is None else f"{be:.0f}%", U.fmt(U.total(g['pnl'])),
+                          f"{U.fmt(U.total(g7['pnl']))} ({len(g7)})"],
                 "stripe": stripe, "bold": {"P/L all"},
-                "colours": {"P/L all": GREEN if g["pnl"].sum() > 0 else RED,
-                            "P/L 7 days": GREEN if g7["pnl"].sum() > 0 else RED if len(g7) else MUTED,
+                "colours": {"P/L all": GREEN if U.total(g["pnl"]) > 0 else RED,
+                            "P/L 7 days": GREEN if U.total(g7["pnl"]) > 0 else RED if len(g7) else MUTED,
                             "Hit": GREEN if be is not None and hit > be else RED if be is not None else INK,
                             "Market": MUTED if paper else INK}}
 
@@ -501,8 +502,8 @@ def _shown_results(day: str, ledger_day: pd.DataFrame) -> list[bytes] | None:
         won = int((played["result"] == "WIN").sum())
         band = f"{label} — shown yesterday: {won}-{len(played) - won}"
         if section == "priced" and len(played):
-            pl = float((played["market_odds"] - 1).where(played["result"] == "WIN", -1.0).sum())
-            band += f" · paper {pl:+.2f}u at the odds shown"
+            pl = U.total(U.profit(played["market_odds"]).where(played["result"] == "WIN", -1.0))
+            band += f" · paper {U.fmt(pl)} at the odds shown"
         n_pend = int((~g["result"].isin(["WIN", "LOSS", "VOID"])).sum())
         rows.append({"band": band + (f" · {n_pend} pending" if n_pend else "")})
         for _, r in g.iterrows():
@@ -561,9 +562,9 @@ def props_results_image(day: str) -> list[bytes]:
         need = 100 * (1 / pr["market_odds"]).mean()
         hit = 100 * won / len(pr)
         # flat 1u at the recorded price (the ledger's pnl column is not filled for every row)
-        pl = float((pr["market_odds"] - 1).where(pr["result"] == "WIN", -1.0).sum())
+        pl = U.total(U.profit(pr["market_odds"]).where(pr["result"] == "WIN", -1.0))
         rows.append({"band": f"Priced — {won}-{len(pr) - won} · hit {hit:.0f}% vs {need:.0f}% needed · "
-                             f"paper {pl:+.2f}u at 1u"})
+                             f"paper {U.fmt(pl)} at 1u"})
         pr = pr.assign(_edge=pr["model_prob"] - 1 / pr["market_odds"]).sort_values("_edge", ascending=False)
         for _, r in pr.head(12).iterrows():
             w = r["result"] == "WIN"
@@ -803,16 +804,16 @@ def top_picks_results_image(day: str) -> list[bytes]:
         x = y[y["list"] == name].sort_values("rank")
         if x.empty:
             continue
-        pnl = np.where(x["result"] == "WIN", x["odds"] - 1.0, np.where(x["result"] == "LOSS", -1.0, np.nan))
+        pnl = np.where(x["result"] == "WIN", U.profit(x["odds"]), np.where(x["result"] == "LOSS", -1.0, np.nan))
         st = x["result"].isin(["WIN", "LOSS"])
         wins, n_set, n_pend = int((x["result"] == "WIN").sum()), int(st.sum()), int((~st).sum())
-        head = f"{TP.LIST_LABEL[name]} — {wins}/{n_set} won, {np.nansum(pnl):+.2f}u"
+        head = f"{TP.LIST_LABEL[name]} — {wins}/{n_set} won, {U.fmt(U.total(pnl))}"
         rows.append({"band": head + (f" · {n_pend} still to play" if n_pend else "")})
         for r, p in zip(x.itertuples(index=False), pnl):
             res = r.result if r.result in ("WIN", "LOSS") else "PENDING"
             txt, rc = _res_cell(res, None if np.isnan(p) else p)
             rows.append({"cells": [str(r.rank), f"{r.home_team} v {r.away_team}", r.pick, f"{float(r.odds):.2f}",
-                                   txt, "" if np.isnan(p) else f"{p:+.2f}"],
+                                   txt, "" if np.isnan(p) else U.fmt(p, suffix="")],
                          "bold": {"Result", "P/L"},
                          "colours": {"Result": rc,
                                      "P/L": GREEN if (p or 0) > 0 else RED if (p or 0) < 0 else MUTED}})
@@ -905,7 +906,7 @@ def scoreboard_images() -> list[bytes]:
         hit, need = b.get("hit_rate"), b.get("break_even")
         u = b.get("units")
         return {"cells": [label, b["settled"], b.get("won", ""), _pct(hit), _pct(need),
-                          _pct(b.get("model_claimed")), "" if u is None else f"{u:+.2f}u"],
+                          _pct(b.get("model_claimed")), "" if u is None else U.fmt(u)],
                 "stripe": stripe, "bold": {"Hit", "P/L"},
                 "colours": {"Hit": (GREEN if need is not None and hit is not None and hit > need
                                     else RED if need is not None else INK),
@@ -967,9 +968,9 @@ def _market_rows(d: pd.DataFrame) -> list[dict]:
             w = int((g["pnl"] > 0).sum())
             be = 100 / g["odds"].mean() if g["odds"].notna().sum() >= 0.8 * len(g) else None
             hit = 100 * w / len(g)
-            pl = g["pnl"].sum()
+            pl = U.total(g["pnl"])
             rows.append({"cells": [mk, len(g), f"{w}-{len(g) - w}", f"{hit:.0f}%",
-                                   "" if be is None else f"{be:.0f}%", f"{pl:+.2f}u", f"{pl / len(g):+.3f}"],
+                                   "" if be is None else f"{be:.0f}%", U.fmt(pl), U.fmt(pl / len(g), 3, suffix="")],
                          "stripe": (31, 41, 55) if mk == "All" else stripe, "bold": {"P/L"},
                          "colours": {"P/L": GREEN if pl > 0 else RED,
                                      "Market": MUTED if paper else INK,
@@ -995,10 +996,10 @@ def week_images(today: str) -> list[bytes]:
                        footer="Same basis as the dashboard · paper leagues excluded")
     st = w[w["tier"].isin(STAKED)]
     if len(st):
-        lg = (st.groupby("league")["pnl"].agg(Bets="size", PL="sum",
+        lg = (st.groupby("league")["pnl"].agg(Bets="size", PL=U.total,
                                               W=lambda x: int((x > 0).sum()))
               .reset_index().sort_values("PL", ascending=False))
-        rows = [{"cells": [r["league"], r["Bets"], f"{r['W']}-{r['Bets'] - r['W']}", f"{r['PL']:+.2f}u"],
+        rows = [{"cells": [r["league"], r["Bets"], f"{r['W']}-{r['Bets'] - r['W']}", U.fmt(r['PL'])],
                  "stripe": GREEN if r["PL"] > 0 else RED, "bold": {"P/L"},
                  "colours": {"P/L": GREEN if r["PL"] > 0 else RED}} for _, r in lg.iterrows()]
         out += render_table("Week by league — staked tips", [("League", 300), ("Bets", 70),
@@ -1025,9 +1026,9 @@ def props_week_image(today: str) -> list[bytes]:
         n, won = len(g), int((g["result"] == "WIN").sum())
         need = 100 * (1 / g["market_odds"]).mean()
         hit = 100 * won / n
-        pl = g["pnl"].sum()
+        pl = U.total(g["pnl"])
         rows.append({"cells": [PROP_LABEL.get(mk, mk), n, f"{won}-{n - won}", f"{hit:.0f}%",
-                               f"{need:.0f}%", f"{pl:+.2f}u"],
+                               f"{need:.0f}%", U.fmt(pl)],
                      "bold": {"P/L at 1u"}, "colours": {"Hit": GREEN if hit > need else RED,
                                                        "P/L at 1u": GREEN if pl > 0 else RED}})
     return render_table("Player props — week in review (paper)",
@@ -1179,7 +1180,7 @@ def league_rows(tab: pd.DataFrame) -> list[dict]:
         paper = r["League"].endswith(" (paper)")
         rows.append({"cells": [r["League"], r["Rating"], str(r["Tips"]), r["W-L"], _na(r["Hit %"], "{:.0f}%"),
                                _na(r["Avg odds"], "{:.2f}"), _na(r["Avg edge %"], "{:.1f}%"),
-                               _na(r["ROI %"], "{:+.0f}%"), f"{r['P/L (u)']:+.2f}u", f"{r['P/L 7d (u)']:+.2f}u",
+                               _na(r["ROI %"], "{:+.0f}%"), U.fmt(r['P/L (u)']), U.fmt(r['P/L 7d (u)']),
                                r["Best market"], r["Worst market"], "Paper league" if paper else r["State"]],
                      "stripe": MUTED if paper else _signed(r["P/L (u)"]), "bold": {"P/L"},
                      "colours": {"League": MUTED if paper else INK, "ROI": _signed(r["ROI %"] or 0),
@@ -1204,7 +1205,7 @@ def leagues_image(today: str | None = None) -> list[bytes]:
     t = L.totals(d)
     sub = (f"Staked tips ({STAKED_LABEL}), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
            f"All leagues: {t['tips']} tips, {L.wl(t['won'], t['lost'], t['void'])}, ROI {t['roi']:+.0%}, "
-           f"{t['pl']:+.2f}u (paper leagues not counted). Rating = Pro league rating 1-10.")
+           f"{U.fmt(t['pl'])} (paper leagues not counted). Rating = Pro league rating 1-10.")
     return render_table("Leagues — season to date", LEAGUE_COLUMNS, league_rows(L.overview_table(ov)),
                         subtitle=sub,
                         footer="Same numbers as the app's Leagues page · best/worst market needs 5+ tips · "
@@ -1223,8 +1224,8 @@ def last_week_leagues_image(today: str | None = None) -> list[bytes]:
         paper = r["paper"]
         rows.append({"cells": [r["league"] + (" (paper)" if paper else ""), str(r["tips"]),
                                L.wl(r["won"], r["lost"], r["void"]) if r["tips"] else "–",
-                               f"{r['pl']:+.2f}u" if r["tips"] else "–",
-                               str(r["valuable_tips"]), f"{r['valuable_pl']:+.2f}u" if r["valuable_tips"] else "–"],
+                               U.fmt(r['pl']) if r["tips"] else "–",
+                               str(r["valuable_tips"]), U.fmt(r['valuable_pl']) if r["valuable_tips"] else "–"],
                      "stripe": MUTED if paper else _signed(r["pl"]), "bold": {"P/L"},
                      "colours": {"P/L": _signed(r["pl"]), "League": MUTED if paper else INK,
                                  f"{PAPER_TIER_LABEL} P/L": _signed(r["valuable_pl"])}})

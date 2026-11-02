@@ -35,6 +35,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from src import units as U
 from src.tier_labels import PAPER_TIER_LABEL
 
 import config
@@ -193,21 +194,21 @@ def summarise(g: pd.DataFrame) -> dict:
                 "avg_model_prob": float("nan"), "avg_implied": float("nan")}
     pnl = g["pnl"]
     won, lost = int((pnl > 0).sum()), int((pnl < 0).sum())
-    pl = float(pnl.sum())
+    pl = U.total(pnl)
     return {"tips": n, "won": won, "lost": lost, "void": n - won - lost, "hit": won / n, "roi": pl / n,
-            "pl": round(pl, 4), "avg_odds": float(g["odds"].mean()), "avg_edge": float(g["edge_pct"].mean()),
+            "pl": pl, "avg_odds": float(g["odds"].mean()), "avg_edge": float(g["edge_pct"].mean()),
             "avg_model_prob": float(g["model_prob"].mean()), "avg_implied": float(g["implied"].mean())}
 
 
 def _best_worst(st: pd.DataFrame) -> tuple[str, str]:
     if st.empty:
         return "–", "–"
-    m = st.groupby("mkt")["pnl"].agg(["size", "sum"])
+    m = st.groupby("mkt")["pnl"].agg(size="size", sum=U.total)
     m = m[m["size"] >= MIN_MARKET_N] if (m["size"] >= MIN_MARKET_N).any() else m
     if len(m) == 0:
         return "–", "–"
     m = m.sort_values("sum", ascending=False)
-    fmt = lambda k: f"{k} ({m.loc[k, 'sum']:+.1f}u)"                    # noqa: E731
+    fmt = lambda k: f"{k} ({U.fmt(m.loc[k, 'sum'], 1)})"                 # noqa: E731
     best = fmt(m.index[0])
     worst = fmt(m.index[-1]) if len(m) > 1 else "–"
     return best, worst
@@ -246,8 +247,8 @@ def overview(d: pd.DataFrame, today: str, up: pd.DataFrame | None = None, rat: d
                      "state": state, "state_detail": state_detail,
                      "regime": research_regime(lg, reg or {}),
                      **s,
-                     "pl_7d": round(float(w7["pnl"].sum()), 4), "tips_7d": int(len(w7)),
-                     "valuable_tips": int(len(v)), "valuable_pl": round(float(v["pnl"].sum()), 4),
+                     "pl_7d": U.total(w7["pnl"]), "tips_7d": int(len(w7)),
+                     "valuable_tips": int(len(v)), "valuable_pl": U.total(v["pnl"]),
                      "upcoming": int(up_n.get(lg, 0)),
                      "best_market": best, "worst_market": worst,
                      "paper": bool(config.is_paper_league(lg))})
@@ -276,13 +277,13 @@ def overview_table(ov: pd.DataFrame) -> pd.DataFrame:
         "W-L": [wl(w, l, v) for w, l, v in zip(ov["won"], ov["lost"], ov["void"])],
         "Hit %": (ov["hit"] * 100).round(1),
         "ROI %": (ov["roi"] * 100).round(1),
-        "P/L (u)": ov["pl"].round(2),
+        "P/L (u)": ov["pl"].map(U.rnd),
         "Avg odds": ov["avg_odds"].round(2),
         "Avg edge %": ov["avg_edge"].round(1),
         "Model %": (ov["avg_model_prob"] * 100).round(1),
         "Implied %": (ov["avg_implied"] * 100).round(1),
-        "P/L 7d (u)": ov["pl_7d"].round(2),
-        PAPER_PL_COL: ov["valuable_pl"].round(2),
+        "P/L 7d (u)": ov["pl_7d"].map(U.rnd),
+        PAPER_PL_COL: ov["valuable_pl"].map(U.rnd),
         "Upcoming": ov["upcoming"].astype(int),
         "Best market": ov["best_market"],
         "Worst market": ov["worst_market"],
@@ -327,8 +328,8 @@ def cumulative(g: pd.DataFrame) -> pd.DataFrame:
     st = g[g["staked"]]
     if st.empty:
         return pd.DataFrame(columns=["date", "cum_pl"])
-    s = st.groupby("date")["pnl"].sum().cumsum()
-    return pd.DataFrame({"date": pd.to_datetime(s.index), "cum_pl": s.values.round(3)})
+    s = st.groupby("date")["pnl"].agg(U.total)
+    return pd.DataFrame({"date": pd.to_datetime(s.index), "cum_pl": [U.rnd(v, 3) for v in U.running(s)]})
 
 
 def last_week(d: pd.DataFrame, today: str) -> pd.DataFrame:
@@ -341,7 +342,7 @@ def last_week(d: pd.DataFrame, today: str) -> pd.DataFrame:
         s = summarise(g[g["staked"]])
         v = g[g["tier"] == "VALUABLE"]
         rows.append({"league": lg, "paper": bool(config.is_paper_league(lg)), **s,
-                     "valuable_tips": int(len(v)), "valuable_pl": round(float(v["pnl"].sum()), 4)})
+                     "valuable_tips": int(len(v)), "valuable_pl": U.total(v["pnl"])})
     out = pd.DataFrame(rows)
     if out.empty:
         return out

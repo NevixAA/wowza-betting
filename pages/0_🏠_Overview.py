@@ -35,6 +35,7 @@ def _n(v) -> str:
 
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
+from src import units as U  # noqa: E402
 from dashboard_data import overview_view as V  # noqa: E402
 from dashboard_data.core import REPOS, repo_path  # noqa: E402
 
@@ -101,7 +102,7 @@ else:
     st.caption(
         f"Every card above is {STAKED_LABEL} only — the tiers that carry money. "
         f"Including the paper {PAPER_TIER_LABEL} tier there are {total_n:,} tips worth "
-        f"{sum(t['pnl'] for t in tracks.values()):+.2f}u, but a paper tier is not a result and "
+        f"{U.fmt(U.total(t['pnl'] for t in tracks.values()))}, but a paper tier is not a result and "
         f"is kept out of every P/L headline on this page.")
 
     # per-track, per-tier P/L. One chart, one scale, n in every tooltip.

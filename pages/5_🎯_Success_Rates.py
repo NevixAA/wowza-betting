@@ -42,6 +42,7 @@ import config
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import PAPER_TIER_LABEL, STAKED_LABEL, display_frame, relabel_text  # noqa: E402
 from dashboard_data import freshness as _fresh, success_view as V  # noqa: E402
+from src import units as U  # noqa: E402
 import importlib  # noqa: E402
 V = importlib.reload(V)              # page + helper always the same version (see 15_League_Scout)
 
@@ -91,7 +92,11 @@ def _load() -> pd.DataFrame:
         oc = next((c for c in ("odds", "entry_odds", "market_odds") if c in d.columns), None)
         d["_odds"] = pd.to_numeric(d[oc], errors="coerce") if oc else np.nan
         d["_source"] = label
-        out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date"]])
+        d["_ledger"] = path
+        d["_live"] = d["source"] if "source" in d.columns else "live"
+        d["_league"] = d["league"] if "league" in d.columns else pd.NA
+        out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date",
+                      "_ledger", "_live", "_league"]])
 
     # Main O/U carries no `market` column — it IS the OU25 line. Named explicitly so it never
     # lands in an "unknown" bucket next to a genuinely missing value.
@@ -108,7 +113,7 @@ def _load() -> pd.DataFrame:
     # Flat 1u return, matching v9's "P/L in units" convention rather than an invented stake plan.
     # PRICED BETS ONLY: a bet without a recorded price has no return (NaN), so P/L and ROI are
     # over priced bets and the unpriced count is shown beside them - no 2.00 stand-in.
-    df["ret"] = np.where(df["_odds"].isna(), np.nan, np.where(df["win"] == 1, df["_odds"] - 1.0, -1.0))
+    df["ret"] = np.where(df["_odds"].isna(), np.nan, np.where(df["win"] == 1, U.profit(df["_odds"]), -1.0))
     return df
 
 
@@ -175,7 +180,12 @@ if window:
     _since = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=int(window))
     d = d[d["_date"] >= _since]
 if scope.startswith("STAKED"):
-    d = d[d["_tier"].isin(STAKED)]
+    # THE staked definition (dashboard_data.today_view.is_staked): SNIPER + MARKSMAN, live, settled,
+    # since the cutoff (whatever the checkbox says), paper leagues out, and never a player prop -
+    # props are paper-only, and their SNIPER/MARKSMAN rows were counted here as staked until 2026-11-02.
+    from dashboard_data.today_view import is_staked as _is_staked
+    d = d[_is_staked(d["_tier"], source=d["_live"], dt=d["_date"], league=d["_league"],
+                     ledger=d["_ledger"]).to_numpy()]
 
 st.caption(f"{len(d):,} settled observation(s) after filters · "
            f"sources: {d['_source'].value_counts().to_dict()}")
@@ -187,7 +197,7 @@ if d.empty:
 def _table(g: pd.DataFrame) -> pd.DataFrame:
     t = g.groupby(["_model", "_market", "_tier"]).agg(
         n=("win", "size"), wins=("win", "sum"),
-        pl_u=("ret", lambda s: s.sum(min_count=1)), roi=("ret", "mean"),
+        pl_u=("ret", lambda s: U.total(s) if s.notna().any() else np.nan), roi=("ret", "mean"),
         n_priced=("_odds", "count"),
         avg_odds=("_odds", "mean")).reset_index()
     t["unpriced"] = t["n"] - t["n_priced"]
@@ -286,7 +296,7 @@ def _rollup(g: pd.DataFrame, by: str) -> None:
     lost. Nothing here is a new claim — it is the existing arithmetic drawn instead of tabulated.
     """
     t = g.groupby(by).agg(n=("win", "size"), win_pct=("win", "mean"),
-                          pl_u=("ret", lambda s: s.sum(min_count=1)), roi=("ret", "mean"),
+                          pl_u=("ret", lambda s: U.total(s) if s.notna().any() else np.nan), roi=("ret", "mean"),
                           avg_odds=("_odds", "mean"),
                           n_odds=("_odds", "count")).reset_index()
     t["win_pct"] = (100 * t["win_pct"]).round(1)

@@ -58,7 +58,7 @@ def _replica_serving_rest_days(hist: pd.DataFrame, df: pd.DataFrame) -> pd.DataF
          combined_rd = _add_rest_days(combined); tail = combined_rd.tail(len(df)).reset_index(drop=True)
          df["home_rest_days"] = tail["home_rest_days"].values   (positional!)"""
     from src.feature_engineering import _add_rest_days
-    cols = ["date", "home_team", "away_team"]
+    cols = ["date", "league", "home_team", "away_team"]   # league: _add_rest_days keys (league, team)
     combined = pd.concat([hist[cols].tail(1000), df[cols]]).sort_values("date").reset_index(drop=True)
     tail = _add_rest_days(combined).tail(len(df)).reset_index(drop=True)
     out = df.copy()
@@ -70,17 +70,18 @@ def _replica_serving_rest_days(hist: pd.DataFrame, df: pd.DataFrame) -> pd.DataF
 @pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU1-B03: positional assignment of date-sorted rest days onto a "
                    "board that is ordered by league, not date")
 def test_serving_rest_days_follow_their_fixture():
-    hist = pd.DataFrame({"date": pd.to_datetime(["2026-10-20", "2026-10-25"]),
+    # league: _add_rest_days keys (league, team) since the Data Truth 2026-11-01 rewrite
+    hist = pd.DataFrame({"date": pd.to_datetime(["2026-10-20", "2026-10-25"]), "league": ["L1", "L2"],
                          "home_team": ["A", "C"], "away_team": ["B", "D"]})
-    board = pd.DataFrame({"date": pd.to_datetime(["2026-11-07", "2026-11-01"]),   # league order, not date
+    board = pd.DataFrame({"date": pd.to_datetime(["2026-11-07", "2026-11-01"]), "league": ["L1", "L2"],  # league order, not date
                           "home_team": ["A", "C"], "away_team": ["X", "Y"]})
     out = _replica_serving_rest_days(hist, board)
     assert out.loc[0, "home_rest_days"] == 18      # A: 10-20 -> 11-07
     assert out.loc[1, "home_rest_days"] == 7       # C: 10-25 -> 11-01
 
 
-@pytest.mark.xfail(strict=True, raises=AssertionError, reason="AU1-B03 on the committed board: a club's rest before its later "
-                   "board fixture exceeds the gap since its earlier board fixture")
+# AU1-B03 on the committed board: FIXED (data-truth-100, rest days keyed per fixture); xfail removed
+# 2026-11-02 when it XPASSed - now a plain guard.
 def test_committed_board_rest_days_physically_possible():
     p = pd.read_csv(O / "predictions.csv", low_memory=False)
     p["d"] = pd.to_datetime(p["date"])

@@ -27,6 +27,7 @@ require("pro")
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
 from dashboard_data import production_view, today_view  # noqa: E402
+from src import units as U  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Home", page_icon="🎯", layout="wide", initial_sidebar_state="expanded")
 ui.autorefresh(5, key="main_refresh")
@@ -110,23 +111,23 @@ with b:
     if perf["n"]:
         _dd = perf["drawdown"]
         ui.metric_card(
-            "Staked P/L", f"{perf['pnl']:+.2f}u", title="B · Current performance",
+            "Staked P/L", U.fmt(perf['pnl']), title="B · Current performance",
             help=f"Flat 1u, {STAKED_LABEL}, every staked market (O/U 2.5, side markets, HT), settled only. "
                  "Same number as the Tips page.",
             supporting=[("ROI", ui.fmt_roi(perf["roi"])),
                         ("Win rate — staked", f"{perf['win_rate'] * 100:.1f}%"),
                         ("Settled staked bets", f"{perf['n']}"),
-                        ("Drawdown from peak", ui.fmt_units(_dd)),
-                        ("Last 7 days", f"{ui.fmt_units(perf['last7_pnl'])} · n={perf['last7_n']}")],
+                        ("Drawdown from peak", U.fmt(_dd)),
+                        ("Last 7 days", f"{U.fmt(perf['last7_pnl'])} · n={perf['last7_n']}")],
             evidence=ui.evidence_badge("settled since", None, span=str(_cut), state="flat 1u"), n=perf["n"],
-            chart_data=perf["curve"]["cum"].round(2).tolist() if len(perf["curve"]) > 1 else None)
+            chart_data=perf["curve"]["cum"].map(U.rnd).tolist() if len(perf["curve"]) > 1 else None)
     else:
         with st.container(border=True):
             ui.eyebrow("B · Current performance")
             st.metric("Staked P/L", "—")
             ui.stat_line([("Win rate — staked", "—"), ("Settled staked bets", "0")])
     st.caption(f"Paper {PAPER_TIER_LABEL} P/L: "
-               + (f"**{perf['paper_pnl']:+.2f}u** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
+               + (f"**{U.fmt(perf['paper_pnl'])}** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
                + " — tracked, never staked, never in the P/L.")
 
 with c:

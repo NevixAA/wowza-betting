@@ -29,6 +29,7 @@ _require_tier("admin")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import PAPER_TIER_LABEL, TIER_LABEL  # noqa: E402
 from dashboard_data import pro  # noqa: E402
+from src import units as U  # noqa: E402
 from dashboard_data import research_view as V  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY. A page and its helper changed in the same
@@ -126,7 +127,7 @@ ui.research_card(title="Model champions", label="Promoted", value=str(_a.get("PR
                              ("Churn rate", str(_a.get("MODEL_CHURN_RATE", "—")))], state="RESEARCH", container=s2[0])
 ui.research_card(title="1X2 tips sent", label="Hit rate", value=ui.pct(_h1.get("hit_rate")) if _h1.get("settled") else "—",
                  supporting=[("Won", f"{_dash(_h1.get('won'))} / {_dash(_h1.get('settled'))}"),
-                             ("Flat stakes", ui.units(_h1["units"]) if _h1.get("settled") else "—"),
+                             ("Flat stakes", U.fmt(_h1["units"]) if _h1.get("settled") else "—"),
                              ("ROI", ui.pct(_h1.get("roi")) if _h1.get("settled") else "—")],
                  state="RESEARCH", n=_h1.get("settled") if _h1.get("settled") else None, container=s2[1])
 
@@ -504,7 +505,7 @@ with tab_tips:
                            supporting=[("Won", f"{h['won']} / {h['settled']}"), ("Pending", f"{_dash(a.get('pending'))} pending"),
                                        ("Break-even", ui.pct(h["break_even"]))],
                            n=h["settled"], container=c[0])
-            ui.metric_card("Flat stakes", ui.units(h["units"]), title="Result at flat 1u",
+            ui.metric_card("Flat stakes", U.fmt(h["units"]), title="Result at flat 1u",
                            supporting=[("ROI", ui.pct(h["roi"])),
                                        ("ROI 90% range", "–" if ci[0] is None else f"{ci[0]:+.0%} … {ci[1]:+.0%}")],
                            status=ui.status_chip("SMALL_SAMPLE", label="TOO FEW TIPS TO JUDGE")
@@ -562,7 +563,7 @@ with tab_studies:
             tv, tc = ch["tips_at_5pct_edge"]["v9"], ch["tips_at_5pct_edge"]["challenger"]
             w = ch.get("current_weights", {})
             c = st.columns(2)
-            ui.metric_card("v9 result", (ui.units(tv["units"]) if tv.get("units") is not None else "—"), title="v9 tips at a 5% edge",
+            ui.metric_card("v9 result", (U.fmt(tv["units"]) if tv.get("units") is not None else "—"), title="v9 tips at a 5% edge",
                            supporting=[("Tips", str(tv.get("n"))), ("UNDER share", f"{ui.pct(tv.get('under_share'))} UNDER"),
                                        ("ROI", f"ROI {ui.pct(tv.get('roi'))}")],
                            n=tv.get("n"), container=c[0])

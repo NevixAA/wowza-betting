@@ -20,12 +20,21 @@ from pathlib import Path
 
 import pandas as pd
 
+from src import units as U
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 
+# ── THE definition of "Staked" (owner, 2026-11-02) ─────────────────────────────────────────────
+# A staked bet is a SNIPER or MARKSMAN row, source == live, settled (pnl recorded), match date on or
+# after PERFORMANCE_CUTOFF_DATE, outside config.PAPER_LEAGUES, on a team-market ledger (SOURCES).
+# Player props are paper-only (invariant 2) and are never in SOURCES. Every page that says
+# "Staked" reads staked_settled() / is_staked(); nothing re-derives it.
 STAKED = ("SNIPER", "MARKSMAN")
 SOURCES = [("bets_ledger.csv", None, "O/U 2.5"), ("side_bets_ledger.csv", "market", None),
            ("ht_ledger.csv", None, "HT O/U")]
+#: ledgers that can never hold a staked bet (props are paper-only)
+PAPER_ONLY_LEDGERS = ("player_ledger.csv",)
 #: CLAUDE.md guardrail: alert at 45,000 of the 75,000/day API-Football plan.
 API_BUDGET_WARN_SHARE = 0.60
 
@@ -61,6 +70,35 @@ def load_bets(out_dir=None) -> pd.DataFrame:
     return df
 
 
+SETTLED_COLS = ["signal_tier", "_mkt", "_pnl", "_dt", "league", "_odds", "_ledger"]
+
+
+def is_staked(tier, source=None, dt=None, league=None, ledger=None, pnl=None) -> pd.Series:
+    """Row mask for THE staked definition above, on already-aligned Series (any may be None =
+    not filtered on that axis because the caller has already applied it)."""
+    import config
+    tier = pd.Series(tier).astype(str).str.upper()
+    m = tier.isin(STAKED)
+    if source is not None:
+        m &= pd.Series(source, index=tier.index).fillna("live").astype(str).eq("live")
+    if dt is not None:
+        cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
+        m &= pd.to_datetime(pd.Series(dt, index=tier.index), errors="coerce") >= cut
+    if league is not None:
+        m &= ~pd.Series(league, index=tier.index).map(config.is_paper_league).fillna(False).astype(bool)
+    if ledger is not None:
+        m &= ~pd.Series(ledger, index=tier.index).astype(str).isin(PAPER_ONLY_LEDGERS)
+    if pnl is not None:
+        m &= pd.to_numeric(pd.Series(pnl, index=tier.index), errors="coerce").notna()
+    return m
+
+
+def staked_settled(out_dir=None) -> pd.DataFrame:
+    """THE staked rows (see the definition at the top of this module)."""
+    s = load_settled(out_dir)
+    return s[s["signal_tier"].isin(STAKED)].reset_index(drop=True)
+
+
 def load_settled(out_dir=None) -> pd.DataFrame:
     """Every settled live row on every staked market since the cutoff (all tiers; callers split)."""
     import config
@@ -76,14 +114,17 @@ def load_settled(out_dir=None) -> pd.DataFrame:
                 d = d[d["source"].fillna("live").astype(str) == "live"]
             if "signal_tier" not in d.columns:
                 continue
+            oc = "odds" if "odds" in d.columns else "entry_odds"
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
+                         _odds=pd.to_numeric(d[oc], errors="coerce") if oc in d.columns else float("nan"),
+                         _ledger=f,
+                         league=d["league"] if "league" in d.columns else pd.NA,
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl", "_dt"]])
+            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][SETTLED_COLS])
         except Exception:                                             # noqa: BLE001 — a viewer never dies on one file
             continue
-    return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(
-        columns=["signal_tier", "_mkt", "_pnl", "_dt"])
+    return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=SETTLED_COLS)
 
 
 def upcoming_staked_ou(bets: pd.DataFrame) -> int:
@@ -98,28 +139,28 @@ def performance(settled: pd.DataFrame, today=None) -> dict:
     staked = settled[settled["signal_tier"].isin(STAKED)]
     paper = settled[settled["signal_tier"] == "VALUABLE"]
     n = int(len(staked))
-    out = {"n": n, "pnl": float(staked["_pnl"].sum()) if n else None,
+    out = {"n": n, "pnl": U.total(staked["_pnl"]) if n else None,
            "win_rate": float((staked["_pnl"] > 0).mean()) if n else None,
-           "roi": float(staked["_pnl"].sum()) / n if n else None,
-           "paper_n": int(len(paper)), "paper_pnl": float(paper["_pnl"].sum()) if len(paper) else None,
+           "roi": U.total(staked["_pnl"]) / n if n else None,
+           "paper_n": int(len(paper)), "paper_pnl": U.total(paper["_pnl"]) if len(paper) else None,
            "drawdown": None, "peak": None, "last7_pnl": None, "last7_n": 0, "curve": pd.DataFrame(),
            "by_market": pd.DataFrame()}
     if not n:
         return out
     s = staked.sort_values("_dt", kind="mergesort")
-    cum = s["_pnl"].cumsum()
+    cum = pd.Series(U.running(s["_pnl"]), index=s.index)
     peak = max(0.0, float(cum.max()))
     out["peak"] = peak
-    out["drawdown"] = float(cum.iloc[-1]) - peak                       # <= 0: units below the peak
-    daily = s.groupby(s["_dt"].dt.normalize())["_pnl"].sum()
-    out["curve"] = daily.cumsum().rename("cum").reset_index().rename(columns={"_dt": "date"})
+    out["drawdown"] = U.total([cum.iloc[-1], -peak])                        # <= 0: units below the peak
+    daily = s.groupby(s["_dt"].dt.normalize())["_pnl"].agg(U.total)
+    out["curve"] = pd.Series(U.running(daily), index=daily.index).rename("cum").reset_index().rename(columns={"_dt": "date"})
     t = pd.Timestamp(today).normalize() if today is not None else pd.Timestamp.now().normalize()
     w = s[s["_dt"] >= t - pd.Timedelta(days=6)]
-    out["last7_pnl"] = float(w["_pnl"].sum()) if len(w) else 0.0
+    out["last7_pnl"] = U.total(w["_pnl"]) if len(w) else 0.0
     out["last7_n"] = int(len(w))
-    bm = (s.groupby("_mkt")["_pnl"].agg(Bets="size", PL="sum").reset_index()
+    bm = (s.groupby("_mkt")["_pnl"].agg(Bets="size", PL=U.total).reset_index()
           .rename(columns={"_mkt": "Market", "PL": "P/L"}))
-    run = {k: [round(float(v), 3) for v in g["_pnl"].cumsum()] for k, g in s.groupby("_mkt")}
+    run = {k: [round(v, 3) for v in U.running(g["_pnl"])] for k, g in s.groupby("_mkt")}
     bm["Run"] = bm["Market"].map(lambda k: run.get(k) if len(run.get(k, [])) >= 3 else None)
     out["by_market"] = bm.sort_values("Bets", ascending=False).reset_index(drop=True)
     return out

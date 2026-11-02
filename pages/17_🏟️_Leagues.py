@@ -30,6 +30,7 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES) - same tier as the T
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
 from dashboard_data import core, leagues  # noqa: E402
+from src import units as U  # noqa: E402
 from dashboard_data import leagues_view as V  # noqa: E402
 
 # STREAMLIT CLOUD KEEPS IMPORTED MODULES ACROSS A REDEPLOY (see 15_League_Scout): reload the helper
@@ -79,7 +80,7 @@ if ov.empty:
 
 # ── headline ──────────────────────────────────────────────────────────────────────────────────
 tot = leagues.totals(d)
-ui.metric_card("P/L", ui.units(tot["pl"]), title="All leagues · staked tiers", help="Flat 1u stakes",
+ui.metric_card("P/L", U.fmt(tot["pl"]), title="All leagues · staked tiers", help="Flat 1u stakes",
                supporting=[("Staked tips settled", f"{tot['tips']:,}"), ("Hit", V.fmt_pct(tot["hit"], 1)),
                            ("ROI", V.fmt_roi(tot["roi"])), ("W-L", V.wl_help(tot["won"], tot["lost"], tot["void"])),
                            ("Leagues", f"{int((ov['tips'] > 0).sum())} with staked tips · {len(ov)} listed")],
