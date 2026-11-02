@@ -713,6 +713,61 @@ def card_market_result(yellow, red) -> str:
     return ""
 
 
+CARD_REGRADE_FILE = config.OUTPUT_DIR / "corrections" / "player_ledger_card_regrade_2026-11.csv"
+
+
+def card_regrade_sidecar(ledger: pd.DataFrame, history: pd.DataFrame) -> pd.DataFrame:
+    """Settled 'cards' rows whose committed result disagrees with card_market_result() on the
+    player's recorded cards (player_history: player_id + match date). The ledger is not rewritten;
+    original and restated values sit side by side. A row without a unique stats match is skipped."""
+    h = history.assign(_pid=pd.to_numeric(history["player_id"], errors="coerce"),
+                       _d=history["date"].astype(str).str[:10])
+    h = h.dropna(subset=["_pid"]).drop_duplicates(["_pid", "_d"], keep=False)    # ambiguous: skip
+    idx = {(p, d): (y, r) for p, d, y, r in zip(h["_pid"], h["_d"], h["yellow_cards"], h["red_cards"])}
+    rows = []
+    c = ledger[(ledger["market"] == "cards") & ledger["result"].isin(["WIN", "LOSS"])]
+    for _, r in c.iterrows():
+        pid = pd.to_numeric(r.get("player_id"), errors="coerce")
+        hit = idx.get((pid, str(r["match_date"])[:10]))
+        if hit is None:
+            continue
+        yc, rc = (None if pd.isna(v) else float(v) for v in hit)
+        new = card_market_result(yc, rc)
+        # Only rows the RULE changes: the old yellow-only rule on the same stats gives the committed
+        # result. A row where the stats sources themselves disagree is a different finding (P1-5).
+        old = "" if yc is None else ("WIN" if yc >= 1 else "LOSS")
+        if not new or new == r["result"] or old != r["result"]:
+            continue
+        try:
+            o = float(r.get("market_odds"))
+        except (TypeError, ValueError):
+            o = np.nan
+        priced = str(r.get("pnl", "")).strip() != "" and o > 1.0
+        rows.append({**{k: r.get(k, "") for k in ("signal_date", "match_date", "league", "home_team",
+                                                   "away_team", "player_name", "player_id", "market",
+                                                   "tier", "market_odds")},
+                     "original_result": r["result"], "original_pnl": r.get("pnl", ""),
+                     "restated_result": new,
+                     "restated_pnl": (round(o - 1.0, 4) if new == "WIN" else -1.0) if priced else "",
+                     "yellow_cards": hit[0], "red_cards": hit[1],
+                     "note": "one card rule (yellow OR red wins), as clv_records grades it; "
+                             "source player_history.parquet"})
+    return pd.DataFrame(rows)
+
+
+def write_card_regrade(dst: Path | None = None) -> pd.DataFrame:
+    """Write output/corrections/player_ledger_card_regrade_2026-11.csv (offline; ledger untouched)."""
+    dst = dst or CARD_REGRADE_FILE
+    led = pd.read_csv(PLAYER_LEDGER_FILE, dtype=str, keep_default_na=False)
+    hist = pd.read_parquet(config.OUTPUT_DIR.parent / "player_history.parquet",
+                           columns=["player_id", "date", "yellow_cards", "red_cards"])
+    out = card_regrade_sidecar(led, hist)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(dst, index=False, lineterminator="\n")
+    log.info(f"card regrade: {len(out)} row(s) -> {dst}")
+    return out
+
+
 def _resolve_player_market(market: str, stats: dict) -> str:
     """WIN/LOSS for a player prop: `<base>` means 1+, `<base><N>` means N+ ('sot2' = 2+ shots on
     target). The producer writes sot2/sot3/goals2; this used to know only the bare names, so every
@@ -2206,11 +2261,13 @@ def main():
     parser.add_argument("--shadow-only", action="store_true",
                         help="Settle only the shadow log (skip every ledger)")
     parser.add_argument("--restate-sharp", action="store_true",
-                        help="ONLY write output/corrections/sharp_ledger_restated.csv (offline)")
+                        help="ONLY write the settlement sidecars under output/corrections/ "
+                             "(sharp restatement, card regrade); offline, ledgers untouched")
     args = parser.parse_args()
 
     if args.restate_sharp:
         write_sharp_restatement()
+        write_card_regrade()
         return
     if args.shadow_reapply:
         reapply_shadow_settlement(args.shadow_reapply)

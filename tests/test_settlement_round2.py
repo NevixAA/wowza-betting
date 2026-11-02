@@ -254,6 +254,22 @@ def test_one_card_rule_in_player_ledger_and_clv_records(yc, rc):
     assert U._resolve_player_market("cards", {"yellow_card": int(yc > 0), "red_card": rc}) == want
 
 
+def test_card_regrade_sidecar_lists_straight_reds_beside_the_ledger():
+    led = pd.DataFrame([
+        {"match_date": "2026-10-10", "player_id": "7", "market": "cards", "result": "LOSS", "pnl": "",
+         "market_odds": "", "tier": "AVOID", "player_name": "Red"},
+        {"match_date": "2026-10-10", "player_id": "8", "market": "cards", "result": "LOSS", "pnl": "-1.0",
+         "market_odds": "4.0", "tier": "VALUABLE", "player_name": "Priced red"},
+        {"match_date": "2026-10-10", "player_id": "9", "market": "cards", "result": "LOSS", "pnl": "-1.0",
+         "market_odds": "4.0", "tier": "VALUABLE", "player_name": "Clean"}])
+    hist = pd.DataFrame({"player_id": [7.0, 8.0, 9.0], "date": ["2026-10-10"] * 3,
+                         "yellow_cards": [0, 0, 0], "red_cards": [1, 1, 0]})
+    out = U.card_regrade_sidecar(led, hist).set_index("player_name")
+    assert list(out.index) == ["Red", "Priced red"]
+    assert out.loc["Red", "restated_result"] == "WIN" and out.loc["Red", "restated_pnl"] == ""
+    assert out.loc["Priced red", "original_pnl"] == "-1.0" and out.loc["Priced red", "restated_pnl"] == 3.0
+
+
 def test_fixture_played_more_than_48h_later_is_void(tmp_path, monkeypatch):
     p = _pledger(tmp_path, monkeypatch, "goals", days_ago=10)
     _papi(monkeypatch, status="FT", date=_plus(_d(10), 4) + "T19:00:00+00:00")
