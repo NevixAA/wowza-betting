@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-11-02 owner decision: pooled Pro league rating no longer scales stakes until per league x market out-of-sample ratings exist",
- "approved_at": "2026-11-02T08:24:51Z",
+ "approval_note": "2026-11-02 owner (ok for all): research lock also watches REQUIRE_FORM_DATA + its UNTIL date",
+ "approved_at": "2026-11-02T16:25:45Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -208,6 +208,16 @@
     "cloudbet_mode_line": "MODE = os.getenv(\"CLOUDBET_MODE\", DRY).upper()",
     "workflows_setting_CLOUDBET_MODE": []
    },
+   "form_guard": {
+    "code_default": {
+     "REQUIRE_FORM_DATA": "1",
+     "REQUIRE_FORM_DATA_UNTIL": "2026-09-15"
+    },
+    "deployed": {
+     "REQUIRE_FORM_DATA": "0",
+     "REQUIRE_FORM_DATA_UNTIL": "2026-09-15"
+    }
+   },
    "thresholds": {
     "EDGE_CEILING": 0.19,
     "LEAGUE_EDGE_CEILING": {
@@ -289,5 +299,5 @@
    }
   }
  },
- "fingerprint_sha256": "521000edf970df8b4e9af0e640941570bee516c1c666d95dab25d5cb7cbc19a0"
+ "fingerprint_sha256": "837fce5601f43f4a5b04a3626f4e85f84ff217f145f1ed85b0c956ea457d8a0f"
 }
