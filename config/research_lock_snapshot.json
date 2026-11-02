@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-10-28 owner-approved: Standard OU25 serving switched to repaired recipe (STANDARD_OU25_SERVING_RECIPE=v9_repaired in predict.yml); rollback = legacy_v9",
- "approved_at": "2026-10-28T12:38:11Z",
+ "approval_note": "2026-11-02 owner decision: new-format O/U Unders paper-only until the clean-data retrain passes per-league validation",
+ "approved_at": "2026-11-02T07:07:00Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -31,7 +31,7 @@
     "paper_leagues": [
      "USA MLS"
     ],
-    "policy_version": "balanced-2026-10-13",
+    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02",
     "portfolio": {
      "daily_cap": 0.06,
      "fixture_cap": 0.02,
@@ -81,10 +81,15 @@
       "state": "ACTIVE_LOW"
      },
      "new_format|OU25_UNDER": {
-      "base_fraction": 0.005,
+      "base_fraction": 0.0,
       "evidence_score": 1.0,
       "max_odds": 2.5,
-      "state": "ACTIVE_LOW"
+      "paper_reason": "Owner 2026-11-02: new-format O/U Unders are paper-only (shown and recorded, never staked) until the clean-data retrain passes per-league validation. The NF model under-rates goals (457 settled: over rate 58.4%, model 47.8%); staked NF Unders -51u since 2026-08-10, 4-12 on 2026-11-01.",
+      "previous_state": {
+       "base_fraction": 0.005,
+       "state": "ACTIVE_LOW"
+      },
+      "state": "PAPER"
      },
      "new_format|OVER15": {
       "base_fraction": 0.005,
@@ -284,5 +289,5 @@
    }
   }
  },
- "fingerprint_sha256": "712bb087c6e81a38660a5ee411722d5ad5ea7483e3b608a6c0321929ad6c124f"
+ "fingerprint_sha256": "8f9b3844c38376da85e368e8d826866f8a745eea8f70e6ea57e741875aea54db"
 }

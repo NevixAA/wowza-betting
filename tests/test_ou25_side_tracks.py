@@ -19,6 +19,19 @@ PARENTS = {"new_format": {"state": "ACTIVE_LOW", "base_fraction": 0.005, "max_od
 EQUAL = {"SNIPER": 1.0, "MARKSMAN": 1.0, "VALUABLE": 1.0}
 
 
+def _at_split(policy: dict) -> dict:
+    """The policy as it was at the split: a side changed LATER by a documented owner decision
+    (`previous_state` + `paper_reason`, e.g. new_format|OU25_UNDER -> PAPER on 2026-11-02) is put back
+    to its previous settings, so these tests keep proving the split itself was a pure re-key."""
+    p = copy.deepcopy(policy)
+    for k in SIDE_TRACKS:
+        t = p["tracks"][k]
+        if "previous_state" in t:
+            p["tracks"][k] = {**{x: v for x, v in t.items() if x not in ("previous_state", "paper_reason")},
+                              **t["previous_state"]}
+    return p
+
+
 def _row(fixture, market, side, mt="new_format", tier="SNIPER", odds=2.0, league="Brazil Serie A"):
     return {"date": "2026-10-26", "fixture": fixture, "league": league, "model_type": mt, "market": market,
             "side": side, "signal_tier": tier, "odds": odds}
@@ -55,7 +68,7 @@ def test_track_key_splits_ou25_by_side_only():
 
 # ── the policy file ──────────────────────────────────────────────────────────────────────────────────
 def test_each_side_starts_with_exactly_its_parents_settings():
-    pol = load_policy()
+    pol = _at_split(load_policy())
     assert "new_format|OU25" not in pol["tracks"] and "standard|OU25" not in pol["tracks"]
     assert "new_format|OU25" not in pol["track_tier_multipliers"]
     for k in SIDE_TRACKS:
@@ -76,7 +89,7 @@ def _legacy(policy: dict) -> dict:
 
 
 def test_split_is_a_pure_rekey_every_stake_identical(monkeypatch):
-    pol = load_policy()
+    pol = _at_split(load_policy())
     after = size_day(_board(), pol, bankroll=100.0, peak=100.0, league_ratings={"Brazil Serie A": 7})
     monkeypatch.setattr(BP, "track_key", lambda mt, mk, sd=None: f"{mt}|{mk}")      # the pre-split reader
     before = size_day(_board(), _legacy(pol), bankroll=100.0, peak=100.0, league_ratings={"Brazil Serie A": 7})
