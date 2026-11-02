@@ -424,8 +424,9 @@ def test_corner_matchup_profiles_penalties_injuries(collect_dir, monkeypatch):
     # corners: the 0-0 fixture is blank; the matchup is measured once the opponent has a sample
     late = b[(b["player_id"] == 1) & (b["date"] >= "2025-09-12")]
     assert late["corner_matchup_index"].notna().all()
-    for c in (*LQ.LEGACY_COLUMNS, *FE.LEGACY_SETPIECE_COLUMNS, *SPF.SETPIECE_COLUMNS, *LQ.MEASURED_COLUMNS):
+    for c in (*LQ.LEGACY_COLUMNS, *SPF.SETPIECE_COLUMNS, *LQ.MEASURED_COLUMNS):
         assert b[c].isna().all(), c
+    assert not set(FE.REMOVED_SETPIECE_FEATURES) & set(b.columns)     # purged, not even NaN
     for c in ("context_elo_odds", "elo_mismatch_goals", "elo_mismatch_sot", "corner_matchup_index",
               "opp_corners_conceded_pg", *LQ.MEASURED_COLUMNS, *SPF.SETPIECE_COLUMNS):
         assert c in b.columns

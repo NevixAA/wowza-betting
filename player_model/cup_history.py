@@ -27,12 +27,13 @@ import pandas as pd
 from . import config
 
 CUP_ROWS_FILE = config.OUTPUT_DIR / "collect" / "cup_player_rows.parquet"
+# Sidecar of the same collector (fix6/props6): per cup fixture the referee (/fixtures) and both
+# teams' corners (/fixtures/statistics). Joined at read time; the player rows file is never rewritten.
+CUP_META_FILE = config.OUTPUT_DIR / "collect" / "cup_fixture_meta.parquet"
 EXTRA_TIME = {"AET", "PEN"}
 
 
-def cup_rows(path=None) -> pd.DataFrame:
-    """The collected cup rows (empty frame when none were collected yet)."""
-    p = CUP_ROWS_FILE if path is None else path
+def _read(p) -> pd.DataFrame:
     if not p.exists():
         return pd.DataFrame()
     try:
@@ -40,6 +41,41 @@ def cup_rows(path=None) -> pd.DataFrame:
     except Exception as e:                                              # noqa: BLE001
         print(f"[cups] {p.name} unreadable ({e}): not used")
         return pd.DataFrame()
+
+
+def with_fixture_meta(rows: pd.DataFrame, meta: pd.DataFrame) -> pd.DataFrame:
+    """team_corners (the row's own team, by API-Football team id) and referee from the sidecar where
+    the row has none. A value the row carries wins; a fixture the sidecar lacks stays missing."""
+    if rows.empty or meta.empty or "fixture_id" not in rows.columns:
+        return rows
+    m = meta.assign(fixture_id=pd.to_numeric(meta["fixture_id"], errors="coerce")).drop_duplicates(
+        "fixture_id", keep="last").set_index("fixture_id")
+    fid = pd.to_numeric(rows["fixture_id"], errors="coerce")
+    out = rows.copy()
+    tid = pd.to_numeric(out.get("team_id"), errors="coerce") if "team_id" in out.columns else None
+    if tid is not None:
+        home = fid.map(m["home_id"]).astype(float)
+        away = fid.map(m["away_id"]).astype(float)
+        corners = pd.Series(float("nan"), index=out.index)
+        corners = corners.where(~(tid == home), fid.map(m["home_corners"]).astype(float))
+        corners = corners.where(~(tid == away), fid.map(m["away_corners"]).astype(float))
+        own = pd.to_numeric(out["team_corners"], errors="coerce") if "team_corners" in out.columns \
+            else pd.Series(float("nan"), index=out.index)
+        out["team_corners"] = own.where(own.notna(), corners)
+    ref = fid.map(m["referee"])
+    own_ref = out["referee"] if "referee" in out.columns else pd.Series(None, index=out.index, dtype=object)
+    has = own_ref.notna() & (own_ref.astype(str).str.strip() != "")
+    out["referee"] = own_ref.where(has, ref)
+    return out
+
+
+def cup_rows(path=None, meta_path=None) -> pd.DataFrame:
+    """The collected cup rows (empty frame when none were collected yet), with the sidecar's corners
+    and referee joined (with_fixture_meta)."""
+    rows = _read(CUP_ROWS_FILE if path is None else path)
+    if rows.empty:
+        return rows
+    return with_fixture_meta(rows, _read(CUP_META_FILE if meta_path is None else meta_path))
 
 
 def new_cup_rows(history: pd.DataFrame, cups: pd.DataFrame | None = None) -> pd.DataFrame:

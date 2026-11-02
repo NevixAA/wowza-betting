@@ -179,7 +179,6 @@ PLAYER_FEATURE_COLS = [
     "opp_adjusted_shot_threat",  # shots_pg * opp_sot_conceded_pg — r=0.237
     "creative_playmaker_score",  # kp_per90 * position weight — r=0.311
     "team_corners_pg",           # rolling corners earned per match
-    "set_piece_threat_score",    # aerial_won_rate × (corners/6) × 0.30 sp rate × position
     # Match context
     "is_home",
     "opp_goals_conceded_pg", "opp_sot_conceded_pg",
@@ -251,7 +250,6 @@ PLAYER_FEATURE_COLS = [
     "efficiency_vs_leaky_keeper",     # shooting_efficiency_index × opp_sot_conceded_pg
     "kp_vs_aggressive_defense",       # kp_per90 × opp_def_cards_pg
     "team_momentum_forward_matchup",  # team_goals_pg_roll × opp_goals_conceded_pg × pos_forward
-    "set_piece_corner_matchup",       # set_piece_threat_score × (team_corners_pg/6)
     "creative_pressure_matchup",      # creative_playmaker_score × opp_def_fouls_pg
     "dribbler_vs_defensive_line",     # dribble_creativity_score × (1 - opp_def_aerial_win_rate)
     "carrier_vs_press",               # progressive_carrier_score × opp_def_aggression
@@ -262,32 +260,16 @@ PLAYER_FEATURE_COLS = [
     "tackle_dribble_clash",          # dribble_contact_rate × opp_mid_fouls_pg
     "card_clash_index",              # (fouls_per90 + dribble_contact_rate) × opp_mid_cards_pg × referee_strictness
     "opp_mid_discipline",            # opp_mid_fouls_pg×0.6 + opp_mid_cards_pg×2.0
-    # ── Set piece event features (from /fixtures/events — header/FK goals) ──────
-    "sp_goals_pg",               # rolling SP goals per game (headers + FKs)
+    # ── Goal-type features (from /fixtures/events goal detail — header / free kick) ──
     "headed_goals_pg",           # rolling header goals per game
     "fk_goals_pg",               # rolling direct free kick goals per game
-    "sp_assist_pg",              # rolling SP assists per game (taker signal)
-    "career_sp_goals_rate",      # career SP goal rate (expanding window)
-    "career_sp_assist_rate",     # career SP assist rate (taker signal, expanding)
-    "sp_goals_share",            # sp_goals_pg / goals_pg capped [0,1]
-    "headed_goals_share",        # headed_goals_pg / goals_pg capped [0,1]
-    # ── Set piece role ────────────────────────────────────────────────────────
-    "sp_taker_score",            # 0-1 probability this player DELIVERS set pieces
-    "sp_receiver_score",         # aerial threat when NOT the taker (defender/CM)
+    "headed_goals_share",        # headed_goals_pg / goals_pg
+    # (Set-piece features: the ONLY real ones are the Understat us_sp_* columns; every typed
+    #  set-piece proxy was purged 2026-11-02, see SETPIECE_PROXIES_REMOVED below.)
     # ── Height matchup vs opponent defenders ──────────────────────────────────
     "opp_def_mean_height",       # mean height of opponent starting defenders (cm)
     "height_diff_vs_opp_def",    # player height minus opp mean CB height
     "height_advantage_score",    # normalized: +1 = 10cm taller, clipped [-2,+2]
-    # ── Opponent set piece vulnerability ──────────────────────────────────────
-    "opp_sp_goals_conceded_pg",  # rolling SP goals conceded per game by opponent
-    # ── Set piece composites ──────────────────────────────────────────────────
-    "defender_sp_edge",              # aerial_won * height_adj * opp_sp_weakness * (1-taker)
-    "defender_sot_edge",             # SP aerial SOT threat — core defender-market edge (goals×5 proxy)
-    "defender_sot_role_index",       # how central this defender is to team's aerial SP attack
-    "sp_threat_vs_weak_sp_defense",  # sp_goals_pg * opp_sp_goals_conceded_pg / 0.12
-    "aerial_height_sp_composite",    # aerial_won * height_adj * opp_sp_pg * pos_weight
-    "sp_goal_probability_composite", # career + rolling + aerial + opp weighted sum
-    "sp_taker_assist_edge",          # taker prob * sp_assist rate * corner volume
     # ── Opposition quality adjustment (fixes weak-league inflation) ───────────
     "opp_strength_index",      # rolling: opp goals conceded relative to league avg
     "quality_adj_goals_pg",    # goals_pg * (1 / opp_strength_index), league-scaled
@@ -304,6 +286,17 @@ PLAYER_FEATURE_COLS = [
     "context_quality_discount",  # player career quality / opp def quality
     "quality_mismatch_goals",    # goals_pg * context_quality_discount
     "quality_mismatch_sot",      # sot_pg * context_quality_discount
+    # ── Previous season + longer-window shot accuracy (owner-approved 2026-11-02, fix6/props6) ──
+    # Real values over the player's / team's PREVIOUS season (own names; never fill a season_*
+    # value), NaN below MIN_PREV_SEASON_MATCHES; shot_accuracy_l10 = sum SOT / sum shots over the
+    # last SHOT_ACC_WINDOW matches, NaN below MIN_SHOTS_FOR_ACCURACY shots. Absent from the stored
+    # player_history until it is rebuilt; the props imputer drops an all-missing column at fit.
+    "prev_season_goals_pg", "prev_season_assists_pg", "prev_season_shots_pg", "prev_season_sot_pg",
+    "prev_season_cards_pg", "prev_season_minutes_pg", "prev_season_start_rate",
+    "prev_season_appearances", "prev_season_shot_accuracy",
+    "prev_season_team_goals_pg", "prev_season_team_conceded_pg",
+    "prev_season_opp_goals_pg", "prev_season_opp_conceded_pg",
+    "shot_accuracy_l10",
 ]
 
 # Pruned 2026-06-30 (local): set-piece / goal-type features that can't be reliably populated —
@@ -311,14 +304,48 @@ PLAYER_FEATURE_COLS = [
 # (API-Football goal events = "Normal Goal" only; Opta/StatsBomb-commercial = enterprise;
 # StatsBomb-open = historical seasons only; FBref = no clean headed-goals). All were 0-0.5%
 # nonzero (dead weight/noise). Removed so models train on RELIABLE features only.
-_DEAD_GOAL_TYPE_FEATURES = {
-    "sp_goals_pg", "headed_goals_pg", "fk_goals_pg", "sp_assist_pg",
-    "career_sp_goals_rate", "career_sp_assist_rate", "sp_goals_share", "headed_goals_share",
-    "sp_threat_vs_weak_sp_defense", "sp_taker_assist_edge", "opp_sp_goals_conceded_pg",
-    "sp_goal_probability_composite", "defender_sp_edge", "defender_sot_edge",
-    "aerial_height_sp_composite",
-}
+_DEAD_GOAL_TYPE_FEATURES = {"headed_goals_pg", "fk_goals_pg", "headed_goals_share"}
 PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in _DEAD_GOAL_TYPE_FEATURES]
+
+# PURGED 2026-11-02 (owner rule "no fake data, no proxies"; fix6/props6). These were named as
+# set-piece data but built from aerial-duel / corner / height numbers with typed rates (x 0.30 "sp
+# rate", x 5.0 "SOT proxy") and clip bounds, or from `sp_goal` (= ANY header or free-kick goal).
+# They are no longer built for training or serving (feature_engineering.REMOVED_SETPIECE_FEATURES)
+# and can never re-enter this list. The legacy serving payloads that list five of them read them as
+# absent -> NaN, which is what they already read (all-NaN columns since 2026-11-01).
+SETPIECE_PROXIES_REMOVED = frozenset({
+    "sp_taker_score", "sp_receiver_score", "set_piece_threat_score", "set_piece_corner_matchup",
+    "defender_sot_role_index", "defender_sp_edge", "defender_sot_edge",
+    "sp_threat_vs_weak_sp_defense", "sp_taker_assist_edge", "aerial_height_sp_composite",
+    "sp_goal_probability_composite", "opp_sp_goals_conceded_pg", "sp_goals_pg", "sp_assist_pg",
+    "career_sp_goals_rate", "career_sp_assist_rate", "sp_goals_share",
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in SETPIECE_PROXIES_REMOVED]
+
+# WITHHELD FROM TRAINING 2026-11-02 (fix6/props6): hand formulas whose VALUE is shaped by typed
+# weights / normalisers / smoothing constants, not by a measurement (e.g. penalty_threat_score =
+# penalties_won_pg * 3.0 + fouls_drawn_per90 * 0.08, capped at 1.0; midfield_engine_score =
+# passes/50 * 0.4 + kp/3 * 0.4 + tackles/5 * 0.2). Their inputs are real and stay features under
+# their own names. The serving payloads persist their own feature_cols, so serving keeps computing
+# these (feature_engineering._add_composites, unchanged) until the next owner-approved retrain,
+# which then trains without them. A feature whose only constant is a unit conversion (/90) or a
+# position mask, or a product / ratio of measured rates, is NOT here.
+TYPED_FORMULA_FEATURES_WITHHELD = frozenset({
+    "creative_playmaker_score",       # kp_per90 * (pm + 0.5 * pf)
+    "defensive_solidity",             # def_actions * (1 - dp / (dp + 1.0))
+    "penalty_threat_score",           # pens_won * 3.0 + fouls_drawn * 0.08, clip 1.0
+    "card_risk_index",                # cards * 2.0 + reds * 3.0 + ratio * 0.5, clip 1.0
+    "midfield_engine_score",          # /50, /3, /5 normalisers, 0.4/0.4/0.2 weights, 0.3 * pd
+    "aggression_adjusted_threat",     # / (1 + offsides * 0.3)
+    "defensive_vulnerability_index",  # 1.5 / 0.5 / 0.5 weights, clip 2.0, 1.0/0.7/0.3 positions
+    "progressive_carrier_score",      # /3, /60 normalisers, 0.45/0.35/0.20 weights, clips
+    "disciplinary_pressure_index",    # 0.20/0.25/1.5/0.10 weights, clip 2.0
+    "foul_magnet_score",              # 0.30/0.40/0.30 weights over two typed scores, clip 1.0
+    "creative_pressure_matchup",      # creative_playmaker_score (typed 0.5) * opp_def_fouls_pg
+    "carrier_vs_press",               # progressive_carrier_score (typed) * opp_def_aggression
+    "opp_mid_discipline",             # opp_mid_fouls * 0.6 + opp_mid_cards * 2.0
+})
+PLAYER_FEATURE_COLS = [f for f in PLAYER_FEATURE_COLS if f not in TYPED_FORMULA_FEATURES_WITHHELD]
 
 # 2026-07-08 (full A-Z audit): the referee/quality/height/rest features had BUGS (leak,
 # train≠serve scale, call-order, wrong-opponent, unit/inversion). Those computations are now
@@ -363,7 +390,6 @@ CURRENT_CLUB_CONFLICT_DAYS = 21
 # _UNDERSTAT_FEATURES = ["u_xg_pg","u_xg_recent","u_goals_minus_xg","u_headed_goals_pg","u_sp_goals_pg","u_fk_goals_pg"]
 
 # Phase 2 (future — needs /fixtures/events API data):
-#   "set_piece_threat_score"   (aerial_won_rate * team_corners_per90_opp * opp_sp_concession_rate)
 #   "referee_strictness"       (/fixtures/events fouls + /standings high-stakes flag)
 # Phase 3 (future — needs /players/statistics API data):
 #   "xg_per90", "xa_per90"    (shot location weighting — top goals feature once available)
@@ -379,6 +405,9 @@ MIN_GK_MATCHES     = 3    # a keeper's prior matches before his save rate / save
 MIN_PEN_ATTEMPTS   = 3    # a player's prior penalty attempts before his conversion rate counts
 MIN_REF_MATCHES    = 3    # a referee's prior matches before his yellows/match counts
 MIN_LEAGUE_MATCHES = 20   # a league's prior fixtures before its own average is used as a normaliser
+MIN_PREV_SEASON_MATCHES = 5   # a player's / team's previous-season matches before a prev_season_* mean counts
+SHOT_ACC_WINDOW = 10          # matches in shot_accuracy_l10 (the 5-match shot_accuracy_rate stays as is)
+MIN_SHOTS_FOR_ACCURACY = 10   # shots in the window (or previous season) below which an accuracy is NaN
 
 # ── Leagues with player prop markets ─────────────────────────────────────────
 # DERIVED FROM THE REGISTRY (Data Truth, LR-1.1): config/leagues.json `props: true` entries,

@@ -66,7 +66,7 @@ _DEGRADED_REASON = {
     "profile": "API-Football /players profile (age, height)",
     "quality": "league / opponent-quality enrichment",
     "opp_detail": "opponent lineup-level detail (GK, defenders)",
-    "set_piece": "set-piece role enrichment",
+    "prev_season": "the player's / team's previous season (absent for a debut season)",
 }
 _DEGRADED = {
     **{c: "injury" for c in ("days_since_last_injury", "return_from_injury_flag", "chronic_injury_risk")},
@@ -82,7 +82,12 @@ _DEGRADED = {
                               "opp_strength_index", "quality_adj_goals_pg", "quality_adj_sot_pg")},
     **{c: "opp_detail" for c in ("opp_gk_save_rate", "opp_gk_saves_pg", "opp_def_player_rating_pg",
                                  "opp_top_def_rating", "opp_def_player_quality")},
-    **{c: "set_piece" for c in ("sp_taker_score", "sp_receiver_score")},
+    **{c: "prev_season" for c in ("prev_season_goals_pg", "prev_season_assists_pg", "prev_season_shots_pg",
+                                  "prev_season_sot_pg", "prev_season_cards_pg", "prev_season_minutes_pg",
+                                  "prev_season_start_rate", "prev_season_appearances",
+                                  "prev_season_shot_accuracy", "prev_season_team_goals_pg",
+                                  "prev_season_team_conceded_pg", "prev_season_opp_goals_pg",
+                                  "prev_season_opp_conceded_pg")},
 }
 
 

@@ -398,6 +398,13 @@ def merge_cup_rows(existing: "pd.DataFrame", cups: "pd.DataFrame") -> tuple:
     for _c in HI.INJURY_COLUMNS:            # not observed by a collect -> NaN, see mode_collect
         if _c in out.columns:
             out[_c] = float("nan")
+    # Only the STORED history's columns are written (fix6/props6): a feature this build adds that
+    # the stored rows do not carry (prev_season_*, shot_accuracy_l10, ...) would otherwise exist on
+    # the cup rows alone - its presence would mark a row as a cup row. Such columns arrive for every
+    # row together, through a rebuild of player_history.
+    extra = sorted(c for c in out.columns if c not in existing.columns)
+    out = out[[c for c in out.columns if c in existing.columns]]
+    stats["columns_not_written"] = extra
     combined, _st = HI.merge_history(existing, out)
     stats["appended"] = int(len(combined) - len(existing))
     stats["first_appearance_dropped"] = int(len(new) - len(out))
