@@ -239,6 +239,8 @@ def _res_cell(result: str, pnl) -> tuple[str, tuple]:
         return "LOST", RED
     if result in ("VOID", "PUSH"):
         return result.title(), MUTED
+    if result == "EXCLUDED":
+        return "excluded", MUTED
     return "pending", MUTED
 
 
@@ -806,11 +808,13 @@ def top_picks_results_image(day: str) -> list[bytes]:
             continue
         pnl = np.where(x["result"] == "WIN", U.profit(x["odds"]), np.where(x["result"] == "LOSS", -1.0, np.nan))
         st = x["result"].isin(["WIN", "LOSS"])
-        wins, n_set, n_pend = int((x["result"] == "WIN").sum()), int(st.sum()), int((~st).sum())
+        excl = x["result"].eq("EXCLUDED")       # frozen after kickoff: not graded (corrections sidecar)
+        wins, n_set, n_pend = int((x["result"] == "WIN").sum()), int(st.sum()), int((~st & ~excl).sum())
         head = f"{TP.LIST_LABEL[name]} — {wins}/{n_set} won, {U.fmt(U.total(pnl))}"
-        rows.append({"band": head + (f" · {n_pend} still to play" if n_pend else "")})
+        rows.append({"band": head + (f" · {n_pend} still to play" if n_pend else "")
+                     + (f" · {int(excl.sum())} excluded (frozen after kickoff)" if excl.any() else "")})
         for r, p in zip(x.itertuples(index=False), pnl):
-            res = r.result if r.result in ("WIN", "LOSS") else "PENDING"
+            res = r.result if r.result in ("WIN", "LOSS", "EXCLUDED") else "PENDING"
             txt, rc = _res_cell(res, None if np.isnan(p) else p)
             rows.append({"cells": [str(r.rank), f"{r.home_team} v {r.away_team}", r.pick, f"{float(r.odds):.2f}",
                                    txt, "" if np.isnan(p) else U.fmt(p, suffix="")],

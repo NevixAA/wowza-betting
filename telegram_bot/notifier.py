@@ -37,6 +37,7 @@ PLAYER_KICKOFF_FILE   = BASE_DIR / "player_kickoff_cache.json"
 
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
+from src import clv_corrections as _CC
 from src import league_registry as _LRG
 from src import units as U
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
@@ -916,12 +917,19 @@ def notify_ht_tips() -> int:
     return sent
 
 
+class _SharpUnderRestatement(Exception):
+    """The restated sharp record (output/corrections/sharp_ledger_restated.csv) is absent."""
+
+
 def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
     """Under a model×tier, split settled bets by SHARP MOVEMENT and append confirm/disagree
     lines. clv_pct > 0 = our side's odds SHORTENED (sharp confirmed the tip); < 0 = drifted
     (sharp disagreed). Reporting only — skips silently until CLV is populated."""
     if ts is None or ts.empty or "clv_pct" not in ts.columns:
         return
+    # A first-half price stored as the close (2026-07/08, corrections sidecar) is no CLV at all:
+    # the row is left out of both splits rather than counted as a "sharp confirm".
+    ts = _CC.exclude_contaminated_clv(ts)
     clv = pd.to_numeric(ts["clv_pct"], errors="coerce")
     pnl = pd.to_numeric(ts["pnl"], errors="coerce")
     for tag, sym, mask in (("confirm", "✅", clv > 0), ("disagree", "⚠️", clv < 0)):
@@ -1157,17 +1165,23 @@ def notify_weekly_summary() -> bool:
         lw = live[live["match_date"] >= week_ago]
 
     # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
+    # The booked P/L is priced at opening_odds, a price already gone when the signal fired; only the
+    # RESTATED record (output/corrections/sharp_ledger_restated.csv) is ever shown. Without it the
+    # record reads UNDER RESTATEMENT - never the booked figure (src/clv_corrections.sharp_record).
     sharp_week: dict | None = None; sharp_week_pending = 0
     sharp_all:  dict | None = None
+    sharp_state = {"state": _CC.UNDER_RESTATEMENT, "unrestated": 0}
     sharp_file = app_config.OUTPUT_DIR / "sharp_ledger.csv"
     if sharp_file.exists():
-        sl = _read_csv(sharp_file)
-        sl["pnl"]        = pd.to_numeric(sl["pnl"], errors="coerce")
-        sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
-        sw = sl[sl["signal_date"] >= week_ago]
-        sharp_week         = _stats(sw)
-        sharp_week_pending = int((sw["pnl"].isna()).sum()) if not sw.empty else 0
-        sharp_all          = _stats(sl)
+        sl, sharp_state = _CC.sharp_record(_read_csv(sharp_file))
+        if sl is not None:
+            sl["pnl"]        = pd.to_numeric(sl["pnl"], errors="coerce")
+            sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
+            sw = sl[sl["signal_date"] >= week_ago]
+            sharp_week         = _stats(sw)
+            sharp_week_pending = int((sw["pnl"].isna() & sw["restatement"].ne("UNRESTATED")).sum()) \
+                if not sw.empty else 0
+            sharp_all          = _stats(sl)
 
     # ── 3. Player props (player_ledger.csv) ──────────────────────────────────
     props_week: dict | None = None; props_week_pending = 0
@@ -1312,11 +1326,9 @@ def notify_weekly_summary() -> bool:
                     # from the captured history. Either is a real market price, so either counts
                     # — otherwise every row logged before `odds` existed reads as unpriced when
                     # we do in fact know what it went off at.
-                    _px = pd.to_numeric(hw["odds"], errors="coerce") if "odds" in hw.columns \
-                        else pd.Series(index=hw.index, dtype=float)
-                    if "entry_odds" in hw.columns:
-                        _px = _px.fillna(pd.to_numeric(hw["entry_odds"], errors="coerce"))
-                    real = hw[_px.notna()]
+                    # THE rule (src/clv_corrections.ht_priced_mask) also drops the rows listed in
+                    # output/corrections/ht_ledger_unpriced.csv.
+                    real = hw[_CC.ht_priced_mask(hw)]
                     n = len(hw); w = int((hw["pnl"] > 0).sum())
                     lines.append(f"  {w}W/{n-w}L across {hw['market'].nunique()} line(s)"
                                  + (f" | ⏳ {pend} pending" if pend else ""))
@@ -1334,7 +1346,10 @@ def notify_weekly_summary() -> bool:
         except Exception:
             pass
 
-    lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
+    if sharp_state["state"] == _CC.UNDER_RESTATEMENT:
+        lines.append(f"  💰 <b>Sharp Tracker</b>: ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
+    else:
+        lines.append(_fmt("Sharp Tracker", "💰", sharp_week, sharp_week_pending))
 
     if wc_pending:
         lines.append(f"  🌍 <b>WC Drift</b>: {wc_pending} signals active | ⏳ no P/L tracking yet")
@@ -1377,9 +1392,12 @@ def notify_weekly_summary() -> bool:
         except Exception:
             pass
 
-    if sharp_all and sharp_all["n"] > 0:
-        pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
-        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {U.fmt(sharp_all['pnl'])}")
+    if sharp_all_total and sharp_state["state"] == _CC.UNDER_RESTATEMENT:
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
+    elif sharp_all and sharp_all["n"] > 0:
+        _unr = sharp_state.get("unrestated", 0)
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {U.fmt(sharp_all['pnl'])}"
+                     + (f" | {_unr} not yet restated — excluded" if _unr else ""))
     elif sharp_all_total:
         lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⏳ awaiting results")
     else:
@@ -2512,10 +2530,13 @@ def notify_daily_digest() -> bool:
         except Exception as e:
             lines2.append(f"  Side markets error: {e}")
 
-    # Sharp/WC yesterday
+    # Sharp/WC yesterday — RESTATED record only (src/clv_corrections.sharp_record); the booked P/L is
+    # priced at opening_odds and is never shown.
     if sharp_led.exists():
         try:
-            sled = _read_csv(sharp_led)
+            sled, _sst = _CC.sharp_record(_read_csv(sharp_led))
+            if sled is None:
+                raise _SharpUnderRestatement
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             yest_s = sled[
                 (sled["match_date"].astype(str).str[:10] == yesterday_str) &
@@ -2532,6 +2553,8 @@ def notify_daily_digest() -> bool:
                 )
             else:
                 lines2.append("  💰 Sharp/WC: no settled results")
+        except _SharpUnderRestatement:
+            lines2.append(f"  💰 Sharp/WC: ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
         except Exception:
             pass
 
@@ -2628,15 +2651,21 @@ def notify_daily_digest() -> bool:
         except Exception:
             pass
 
-    # Sharp all-time
+    # Sharp all-time — RESTATED record only
     if sharp_led.exists():
         try:
-            sled = _read_csv(sharp_led)
+            sled, _sst = _CC.sharp_record(_read_csv(sharp_led))
+            if sled is None:
+                raise _SharpUnderRestatement
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
                 n = len(all_s); pnl = U.total(all_s["pnl"])
-                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {U.fmt(pnl)})")
+                _unr = _sst.get("unrestated", 0)
+                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {U.fmt(pnl)})"
+                              + (f" | {_unr} not yet restated — excluded" if _unr else ""))
+        except _SharpUnderRestatement:
+            lines2.append(f"  💰 <b>Sharp/WC</b>  ⚠️ {_CC.UNDER_RESTATEMENT} — no P/L shown")
         except Exception:
             pass
 

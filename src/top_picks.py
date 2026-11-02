@@ -92,7 +92,9 @@ def load_tips() -> pd.DataFrame:
     # lists frozen before the change (keyed by match date) still grade.
     from src.tip_day import add_tip_day
     d["match_day"] = d["match_date"].astype(str).str[:10]
-    d["day"] = add_tip_day(d, date_col="match_day")["tip_day"].values
+    _td = add_tip_day(d, date_col="match_day")
+    d["day"] = _td["tip_day"].values
+    d["kickoff_utc"] = _td["kickoff_utc"].values                       # for the freeze-after-kickoff guard
     d["result"] = d["result"].fillna("").astype(str).str.upper()
     d = d.sort_values("generated_at", kind="mergesort").drop_duplicates(KEY, keep="first")
     return d.reset_index(drop=True)
@@ -117,13 +119,33 @@ def p_win(tips: pd.DataFrame, day: str, history: pd.DataFrame | None = None) -> 
     return pd.Series(lr.predict_proba(_design(tips, markets, tracks))[:, 1], index=tips.index)
 
 
-def todays_lists(day: str, tips: pd.DataFrame | None = None) -> pd.DataFrame:
+def started_by(tips: pd.DataFrame, now) -> pd.Series:
+    """True where a tip's match has kicked off at `now` (UTC). Kickoff unknown: true once the match
+    date is before now's UTC date - a pick is never offered for a match that may already be over."""
+    now = pd.Timestamp(now)
+    now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+    ko = pd.to_datetime(tips["kickoff_utc"], utc=True, errors="coerce") if "kickoff_utc" in tips.columns \
+        else pd.Series(pd.NaT, index=tips.index, dtype="datetime64[ns, UTC]")
+    md = tips["match_day"] if "match_day" in tips.columns else tips.get("match_date", tips.get("day"))
+    md = md.astype(str).str[:10]
+    return (ko.notna() & (ko <= now)) | (ko.isna() & (md < now.strftime("%Y-%m-%d")))
+
+
+def todays_lists(day: str, tips: pd.DataFrame | None = None, now=None) -> pd.DataFrame:
     """The three lists for `day` (not frozen). Columns: list, rank, day, league, home_team, away_team,
-    market, pick, odds, p_win, ev, signal_tier, model_type."""
+    market, pick, odds, p_win, ev, signal_tier, model_type.
+
+    `now` (freeze time): tips whose match has already kicked off are left out BEFORE ranking - 25 of
+    the first 219 frozen picks (2026-10-20..25) were frozen after kickoff and then graded."""
     allt = tips if tips is not None else load_tips()
     if allt is None or allt.empty:
         return pd.DataFrame()
     g = allt[allt["day"] == day].copy()
+    if now is not None and not g.empty:
+        gone = started_by(g, now)
+        if gone.any():
+            log.info("top picks: %d tip(s) for %s already kicked off - not eligible", int(gone.sum()), day)
+        g = g[~gone]
     if g.empty:
         return pd.DataFrame()
     g["p_win"] = p_win(g, day, allt)
@@ -160,16 +182,19 @@ def frozen(day: str | None = None) -> pd.DataFrame:
     return d if day is None else d[d["day"].astype(str) == day]
 
 
-def freeze_day(day: str) -> pd.DataFrame:
-    """Log the day's lists once (first sight) and return what is frozen for the day. Never raises."""
+def freeze_day(day: str, now=None) -> pd.DataFrame:
+    """Log the day's lists once (first sight) and return what is frozen for the day. Never raises.
+    `now` = the freeze time (default: the current UTC time); it also stamps frozen_at."""
     try:
         have = frozen(day)
         if not have.empty:
             return have
-        d = todays_lists(day)
+        now = pd.Timestamp(now) if now is not None else pd.Timestamp.now(tz="UTC")
+        now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+        d = todays_lists(day, now=now)          # GUARD: never freeze a pick whose match has kicked off
         if d.empty:
             return d
-        d.insert(0, "frozen_at", pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%dT%H:%M:%SZ"))
+        d.insert(0, "frozen_at", now.strftime("%Y-%m-%dT%H:%M:%SZ"))
         d.to_csv(LOG, mode="a", header=not LOG.exists(), index=False)
         try:                                     # SHADOW contract check (src/contracts); observe only
             from src.contracts.shadow import observe
@@ -183,13 +208,37 @@ def freeze_day(day: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+def frozen_after_kickoff(f: pd.DataFrame, ko: pd.DataFrame | None = None, out_dir=None) -> pd.DataFrame:
+    """Frozen picks whose match had already kicked off at `frozen_at` (the sidecar
+    output/corrections/top_picks_frozen_after_kickoff.csv). Kickoff = the fixture's kickoff nearest
+    the pick's day (src/tip_day.kickoffs); a pick with no known kickoff is not listed."""
+    cols = ["frozen_at", "list", "rank", "day", "league", "home_team", "away_team", "market", "pick",
+            "kickoff_utc", "reason"]
+    if f is None or f.empty:
+        return pd.DataFrame(columns=cols)
+    from src.tip_day import kickoffs
+    k = ko if ko is not None else kickoffs()
+    m = f.reset_index().merge(k[["league", "home_team", "away_team", "kickoff_utc"]],
+                              on=["league", "home_team", "away_team"], how="inner")
+    m["_ko"] = pd.to_datetime(m["kickoff_utc"], utc=True, errors="coerce")
+    m["_dd"] = (m["_ko"].dt.tz_convert(None).dt.normalize() - pd.to_datetime(m["day"].astype(str))).abs()
+    m = m.sort_values("_dd", kind="mergesort").drop_duplicates("index", keep="first").sort_values("index")
+    late = m[pd.to_datetime(m["frozen_at"], utc=True, errors="coerce") > m["_ko"]].copy()
+    late["reason"] = "frozen after kickoff - excluded from grading"
+    return late[[c for c in cols if c in late.columns]].reset_index(drop=True)
+
+
 def graded(days: int | None = None) -> pd.DataFrame:
-    """Frozen picks joined to their results (WIN / LOSS / pending)."""
+    """Frozen picks joined to their results (WIN / LOSS / pending). A pick listed in
+    output/corrections/top_picks_frozen_after_kickoff.csv is graded EXCLUDED: it was frozen after its
+    match kicked off, so it is not a pick anybody could have taken (the log row itself is kept)."""
     f = frozen()
     if f.empty:
         return f
+    from src.clv_corrections import top_picks_late_mask
     t = load_tips()
     f["day"] = f["day"].astype(str)
+    f["_late"] = top_picks_late_mask(f).to_numpy()
     g = f.merge(t[KEY + ["result"]], on=KEY, how="left")
     # lists frozen before 2026-10-25 used the match date as the day: grade those by match date
     alt = t[["match_day", "home_team", "away_team", "market", "result"]].rename(
@@ -198,6 +247,9 @@ def graded(days: int | None = None) -> pd.DataFrame:
     g["result"] = g["result"].where(g["result"].notna() & (g["result"] != ""), g["_r2"])
     g = g.drop(columns="_r2")
     g["result"] = g["result"].fillna("").replace({"": "PENDING"})
+    g["result_stored"] = g["result"]
+    g.loc[g["_late"].astype(bool), "result"] = "EXCLUDED"
+    g = g.drop(columns="_late")
     if days:
         cut = (pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=days)).strftime("%Y-%m-%d")
         g = g[g["day"] >= cut]

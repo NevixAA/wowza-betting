@@ -35,7 +35,11 @@ def tip_day_of(kickoff_utc, match_date: str | None = None) -> str:
     ko = pd.to_datetime(kickoff_utc, utc=True, errors="coerce")
     if pd.isna(ko):
         return str(match_date or "")[:10]
-    local = ko.tz_convert(TZ)
+    # WALL-CLOCK cut-off: the Israeli local time with its zone dropped, then 10 hours back. Subtracting
+    # 10 ELAPSED hours from the aware timestamp moved the cut-off by an hour on clock-change days -
+    # FC Tokyo v Mito and Kawasaki v Okayama (07:00 UTC = 09:00 Israel, 2026-10-25, the day DST ended)
+    # were filed under 10-25 although they kicked off before that day's 10:00 rollover.
+    local = ko.tz_convert(TZ).tz_localize(None)
     return (local - pd.Timedelta(hours=ROLLOVER_HOUR)).strftime("%Y-%m-%d")
 
 

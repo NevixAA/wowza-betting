@@ -415,7 +415,10 @@ def _settled_staked():
 
 @st.cache_data(ttl=60)
 def _clv_rows() -> pd.DataFrame:
-    _cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+    from src.clv_corrections import exclude_contaminated_clv
+    # first-half prices stored as closes (2026-07/08, output/corrections sidecar) are not CLV at all:
+    # blanked here so they are out of the raw mean as well as the plausible one.
+    _cl = exclude_contaminated_clv(_read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False))
     _cl["_clv"] = pd.to_numeric(_cl.get("clv_pct"), errors="coerce")
     _cl["_o"] = pd.to_numeric(_cl.get("odds"), errors="coerce")
     _cl["_c"] = pd.to_numeric(_cl.get("closing_odds"), errors="coerce")

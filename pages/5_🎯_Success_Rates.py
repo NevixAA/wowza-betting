@@ -91,6 +91,9 @@ def _load() -> pd.DataFrame:
         d["_date"] = pd.to_datetime(d[dc], errors="coerce") if dc else pd.NaT
         oc = next((c for c in ("odds", "entry_odds", "market_odds") if c in d.columns), None)
         d["_odds"] = pd.to_numeric(d[oc], errors="coerce") if oc else np.nan
+        if path == "ht_ledger.csv":   # unpriced HT bets settled at the model's own fair odds: no P/L
+            from src.clv_corrections import ht_priced_mask
+            d["_odds"] = d["_odds"].where(ht_priced_mask(d))
         d["_source"] = label
         d["_ledger"] = path
         d["_live"] = d["source"] if "source" in d.columns else "live"
