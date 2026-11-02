@@ -144,6 +144,36 @@ def _prep(df: pd.DataFrame, feat_cols: list[str] = None,
 
 # ── Training ──────────────────────────────────────────────────────────────────
 
+def _legacy_sorted_with_weights(df: pd.DataFrame, target: str, sample_weight):
+    """Labelled rows of `df` in date order, plus each row's OWN weight (or None).
+
+    `sample_weight` is positional to `df` as passed (one entry per row) or, as the legacy contract
+    allowed, to its labelled rows only. A pd.Series is aligned by index label. The weight is
+    attached as a column BEFORE the sort, so it cannot be separated from its row. The sort call is
+    the legacy one, so the row order (and the unweighted numerics) is unchanged.
+    """
+    lab = df[target].notna().to_numpy()
+    d = df[lab].copy()
+    if sample_weight is not None:
+        if isinstance(sample_weight, pd.Series):
+            ws = sample_weight.reindex(d.index)
+            if ws.isna().any():
+                raise ValueError("sample_weight Series does not cover every labelled row of df")
+            w = ws.to_numpy(dtype=float)
+        else:
+            w = np.asarray(sample_weight, dtype=float)
+            if len(w) == len(df):
+                w = w[lab]
+            elif len(w) != len(d):
+                raise ValueError(f"sample_weight has {len(w)} entries for {len(df)} rows "
+                                 f"({len(d)} labelled) - compute the weights on the frame passed "
+                                 f"to train()")
+        d[WEIGHT_COL] = w
+    d = d.sort_values("date").reset_index(drop=True)
+    w_sorted = d.pop(WEIGHT_COL).to_numpy() if sample_weight is not None else None
+    return d, w_sorted
+
+
 def train(
     df: pd.DataFrame,
     target: str = "over25",
@@ -158,13 +188,15 @@ def train(
     sample_weight: array-like of per-row weights (time-decay etc.), same length as df.
     Returns dict: {model_name: {"model", "metrics", "feature_cols"}}
 
-    recipe="legacy_v9" (DEFAULT — pipeline.mode_train never passes anything else) is the code
-    below, unchanged, defects included: batch-median imputation (bug 1), the meta-logistic fitted
-    AND reported on the same test block (bug 6), and weights indexed by a reset index (bug 8).
+    recipe="legacy_v9" (DEFAULT for direct callers: src/backtest, research scripts) keeps two
+    known defects: batch-median imputation (bug 1) and the meta-logistic fitted on the test block
+    (bug 6). Bug 8 (weights indexed by a reset index) is fixed here too since 2026-11-02.
+    pipeline.mode_train NO LONGER uses it: every scheduled retrain goes through
+    `retrain_recipe(label)` -> a repaired recipe (persisted train-fitted imputer, meta fitted on its
+    own block, holdout untouched). See RETRAIN_RECIPE.
     recipe="v9_repaired" -> train_repaired() (the serving Standard model's trainer).
-    recipe in R2_RECIPES ("nf_v9_repaired" / "side_v9_repaired" / "ht_v9_repaired") ->
-    train_repaired() with the R2 options (holdout_start, imputer_options, provenance) — challenger
-    payloads only; nothing serves them.
+    recipe in R2_RECIPES ("std_/nf_/side_/ht_v9_repaired") -> train_repaired() with the R2
+    options (holdout_start, imputer_options, provenance).
     """
     if recipe in REPAIRED_RECIPES:
         return train_repaired(df, target=target, sample_weight=sample_weight,
@@ -174,7 +206,10 @@ def train(
     if repaired_options:
         raise TypeError(f"legacy_v9 takes no repaired options: {sorted(repaired_options)}")
     import numpy as np
-    df = df.dropna(subset=[target]).copy().sort_values("date").reset_index(drop=True)
+    # Weights TRAVEL WITH THEIR ROWS (bug 8 fixed for legacy too, 2026-11-02). They used to be
+    # read positionally (`w[df.index]`) AFTER the sort + reset_index, so a frame not already in
+    # date order gave every row another row's recency weight.
+    df, w_all = _legacy_sorted_with_weights(df, target, sample_weight)
     split   = int(len(df) * train_ratio)
     train_df = df.iloc[:split]
     test_df  = df.iloc[split:]
@@ -187,18 +222,7 @@ def train(
     y_train = train_df[target].values
     y_test  = test_df[target].values
 
-    # Align sample weights to the sorted/reset df
-    if sample_weight is not None:
-        # A length mismatch used to swap the recency weights for uniform 1.0 silently. Raise, as
-        # _rows_with_weights does for the repaired recipe. (Positional indexing after the sort is
-        # the documented legacy defect bug 8, kept as-is: legacy numerics are the rollback.)
-        if len(sample_weight) != len(df):
-            raise ValueError(f"sample_weight has {len(sample_weight)} entries for {len(df)} labelled "
-                             f"rows - compute the weights on the frame passed to train()")
-        w_all = np.array(sample_weight)[df.index]
-        w_train = w_all[:split]
-    else:
-        w_train = None
+    w_train = w_all[:split] if w_all is not None else None
 
     # Hold out last 15% of train for calibration (still chronological, no leakage)
     cal_split  = int(len(X_train) * 0.85)
@@ -313,7 +337,7 @@ class TrainResults(dict):
 #: R2 (2026-11-01): ONE parameterised repaired architecture for every non-Standard team model.
 #: The recipe NAME selects only the default metadata label; the architecture is identical.
 #: "v9_repaired" keeps its exact 2026-10-28 numerics (the serving Standard model's trainer).
-R2_RECIPES = ("nf_v9_repaired", "side_v9_repaired", "ht_v9_repaired")
+R2_RECIPES = ("nf_v9_repaired", "side_v9_repaired", "ht_v9_repaired", "std_v9_repaired")
 REPAIRED_RECIPES = ("v9_repaired",) + R2_RECIPES
 R2_RECIPE_VERSION = "r2-repaired-1.0"
 #: R2 within-pre-holdout fractions: the same 0.64 / 0.08 / 0.08 shape as FOUR_BLOCKS once the
@@ -606,6 +630,117 @@ def build_payload(results: dict, target: str = "over25") -> dict:
     return payload
 
 
+# ── Scheduled retrain (pipeline.mode_train) — ONE trainer, ONE router ─────────────────────────
+#
+# 2026-11-02 (estate scan, training findings a-d). pipeline._train_one used the legacy recipe for
+# every model: batch-median imputation at serving (a fixture's probability depended on the other
+# fixtures scored with it), the meta-logistic fitted on the very rows the promotion gate then
+# scored, and side models (BTTS / O1.5 / O3.5) trained on Standard + New Format rows POOLED and
+# served to both. A scheduled retrain now trains every label on a repaired recipe, and the side
+# labels per league track. Payloads already on disk keep serving exactly as before (legacy
+# payloads have no `imputer` and no `tracks`), until a retrain replaces them through the gate.
+
+#: pipeline._train_one label -> repaired recipe. A label missing here is an error, not legacy.
+RETRAIN_RECIPE = {
+    "standard": "std_v9_repaired", "newformat": "nf_v9_repaired",
+    "btts": "side_v9_repaired", "over15": "side_v9_repaired", "over35": "side_v9_repaired",
+    "ht_over05": "ht_v9_repaired", "ht_over15": "ht_v9_repaired",
+}
+#: Labels whose ONE serving file is read for both league tracks: trained per track, routed per row.
+TRACK_SPLIT_LABELS = frozenset({"btts", "over15", "over35"})
+#: The track the payload's top-level models belong to (every flat reader keeps working on it).
+PRIMARY_TRACK = "standard"
+#: Tracks carried as nested payloads under payload["tracks"].
+ROUTED_TRACKS = ("new_format",)
+
+
+def retrain_recipe(label: str) -> str:
+    if label not in RETRAIN_RECIPE:
+        raise ValueError(f"no retrain recipe for model label {label!r}")
+    return RETRAIN_RECIPE[label]
+
+
+def track_of(leagues) -> pd.Series:
+    """'standard' | 'new_format' | None per row, from the league registry
+    (config.model_type_for_league). The ONE routing rule for track-split training and serving."""
+    s = pd.Series(leagues).reset_index(drop=True)
+    lut = {lg: config.model_type_for_league(lg) for lg in pd.unique(s.dropna())}
+    return s.map(lut).where(s.notna(), None)
+
+
+def train_by_track(df: pd.DataFrame, target: str, sample_weight=None,
+                   feature_cols: "list[str] | None" = None, recipe: str = "side_v9_repaired",
+                   holdout_start=None, provenance: "dict | None" = None) -> TrainResults:
+    """One repaired model per league track, on that track's rows only.
+
+    The Standard model is the payload's top level (so feature importances, the gate manifest and
+    every flat reader see a normal payload); each routed track is a complete nested payload under
+    meta["tracks"][track]. A routed track with too few rows is recorded as None — its fixtures then
+    get NO probability at serving (missing stays missing), never the Standard model's. Rows whose
+    league is in no track are excluded and counted. The Standard track failing raises.
+    """
+    if recipe not in REPAIRED_RECIPES:
+        raise ValueError(f"track-split training needs a repaired recipe, got {recipe!r}")
+    d = df.reset_index(drop=True)
+    w = None
+    if sample_weight is not None:
+        if isinstance(sample_weight, pd.Series):
+            ws = sample_weight.reindex(df.index)
+            if ws.isna().any():
+                raise ValueError("sample_weight Series does not cover every row of df")
+            w = ws.to_numpy(dtype=float)
+        else:
+            w = np.asarray(sample_weight, dtype=float)
+        if len(w) != len(d):
+            raise ValueError(f"sample_weight has {len(w)} entries for {len(d)} rows")
+    tr = track_of(d["league"]).to_numpy()
+
+    def _one(name):
+        m = tr == name
+        sub = d[m]
+        sw = pd.Series(w[m], index=sub.index) if w is not None else None
+        return train(sub, target=target, sample_weight=sw, feature_cols=feature_cols,
+                     recipe=recipe, holdout_start=holdout_start,
+                     provenance={**(provenance or {}), "track": name})
+
+    counts = {name: int((tr == name).sum()) for name in (PRIMARY_TRACK,) + ROUTED_TRACKS}
+    n_none = int(sum(t is None for t in tr))
+    if n_none:
+        log.warning(f"  [{target}] {n_none} row(s) in no league track excluded from training")
+    primary = _one(PRIMARY_TRACK)
+    tracks, status = {}, {PRIMARY_TRACK: "trained"}
+    for name in ROUTED_TRACKS:
+        try:
+            tracks[name] = build_payload(_one(name), target)
+            status[name] = "trained"
+        except ValueError as e:
+            tracks[name] = None
+            status[name] = f"not trained: {e}"
+            log.warning(f"  [{target}] {name} track not trained ({e}) — its fixtures will get no "
+                        f"{target} probability from this payload")
+    primary.meta.update({
+        "tracks": tracks,
+        "track_split": {"primary": PRIMARY_TRACK, "routed": list(ROUTED_TRACKS),
+                        "router": "src.model.track_of (config.model_type_for_league)",
+                        "rows": counts, "rows_in_no_track": n_none, "status": status},
+    })
+    return primary
+
+
+def train_for_retrain(df: pd.DataFrame, label: str, target: str = "over25", sample_weight=None,
+                      feature_cols: "list[str] | None" = None, holdout_start=None,
+                      provenance: "dict | None" = None) -> TrainResults:
+    """THE scheduled-retrain trainer (pipeline._train_one). Repaired recipe for every label;
+    side labels trained per track. `holdout_start` should be the first date of the promotion
+    gate's holdout, so no row the gate scores was used to fit any stage of the candidate."""
+    recipe = retrain_recipe(label)
+    if label in TRACK_SPLIT_LABELS:
+        return train_by_track(df, target, sample_weight=sample_weight, feature_cols=feature_cols,
+                              recipe=recipe, holdout_start=holdout_start, provenance=provenance)
+    return train(df, target=target, sample_weight=sample_weight, feature_cols=feature_cols,
+                 recipe=recipe, holdout_start=holdout_start, provenance=provenance)
+
+
 def score_served(payload: dict, df: pd.DataFrame, target: str) -> dict:
     """Log loss / Brier of the probability predict_proba actually SERVES (bug 7).
 
@@ -720,7 +855,34 @@ def predict_proba(df: pd.DataFrame, payload: Optional[dict] = None,
     """
     if payload is None:
         payload = load_models(model_file)
+    if payload.get("tracks") is not None:
+        return _predict_by_track(df, payload)
+    return _predict_flat(df, payload)
 
+
+def _predict_by_track(df: pd.DataFrame, payload: dict) -> pd.Series:
+    """A track-split payload (`train_by_track`): each row is scored ONLY by the model trained on
+    its own track (routing = `track_of`, the function the trainer split on). A row whose track has
+    no trained model, or whose league is in no track, gets NO probability (NaN) — never another
+    track's model."""
+    out = pd.Series(np.nan, index=df.index, name="p_over25")
+    if df.empty:
+        return out
+    tr = track_of(df["league"]).to_numpy() if "league" in df.columns else np.full(len(df), None)
+    for name in (PRIMARY_TRACK,) + ROUTED_TRACKS:
+        m = tr == name
+        if not m.any():
+            continue
+        sub = payload if name == PRIMARY_TRACK else (payload.get("tracks") or {}).get(name)
+        if sub is None:
+            log.warning(f"  {int(m.sum())} {name} row(s): no {name} model in this payload — "
+                        f"left without a probability")
+            continue
+        out[m] = _predict_flat(df[m], sub).to_numpy()
+    return out
+
+
+def _predict_flat(df: pd.DataFrame, payload: dict) -> pd.Series:
     feat_cols  = payload["feature_cols"]
     # A repaired payload WITHOUT its persisted imputer would silently fall back to the
     # batch-median path (finding 2): refuse it. Legacy payloads carry no `recipe` key.

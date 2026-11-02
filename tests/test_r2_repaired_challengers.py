@@ -283,7 +283,14 @@ def test_legacy_and_v9_repaired_training_match_main_golden():
     rr = f.dropna(subset=["over25", "home_scored_last5"])
     rep = M.train_repaired(rr, "over25", feature_cols=FEATS,
                            sample_weight=pd.Series(np.linspace(1, 3, len(rr)), index=rr.index))
-    leg = M.train(rr, "over25", feature_cols=FEATS, sample_weight=np.linspace(1, 3, len(rr)))
+    # Legacy bug 8 was fixed 2026-11-02 (weights now travel with their rows). The golden was
+    # recorded with the OLD positional read: sorted row i got linspace[i]. Feed the fixed trainer
+    # the weights that put linspace[i] on sorted row i (same sort call -> same order), so the
+    # golden still proves nothing else in the legacy trainer changed.
+    _pos = rr.reset_index(drop=True).sort_values("date").index.to_numpy()
+    _w_old = np.empty(len(rr))
+    _w_old[_pos] = np.linspace(1, 3, len(rr))
+    leg = M.train(rr, "over25", feature_cols=FEATS, sample_weight=_w_old)
     ev = rr.tail(60).copy()
     ev.iloc[3, ev.columns.get_loc("home_corners_pg_roll")] = np.nan
     # The golden was recorded on Windows from main 4e9c933. Probabilities are compared EXACTLY there

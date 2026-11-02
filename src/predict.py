@@ -476,8 +476,12 @@ def predict_upcoming(
     except Exception as e:
         log.debug(f"feature health skipped: {e}")
 
-    # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues
-    # New-format leagues have odds_btts/over15/over35 after af_odds_history backfill.
+    # Side-market predictions (BTTS / O1.5 / O3.5) — all known leagues.
+    # TRACK ROUTING lives in src.model.predict_proba: a payload trained by a scheduled retrain since
+    # 2026-11-02 is track-split (src.model.train_by_track) and scores every fixture with ITS OWN
+    # track's model only (a track without a model -> NaN, no tip). A payload trained before that has
+    # no `tracks` key: it is the pooled Standard+New Format model and keeps serving both, unchanged,
+    # until the next retrain replaces it through the promotion gate.
     if side_payloads:
         side_mask = std_mask | nf_mask
         for target, sp in side_payloads.items():
