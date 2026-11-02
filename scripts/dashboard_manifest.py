@@ -10,8 +10,15 @@ only the files listed here; its data is mirrored at runtime from v9's raw URLs
 manifest works on a developer checkout and silently breaks the deployment. So:
 
   CODE = the runtime import graph of app.py + every page (AppTest render, every tab, widget
-         interactions) UNION the static import closure (imports inside functions and button branches
-         included), plus the non-Python assets the app needs (.streamlit/config.toml).
+         interactions) UNION the static import closure, plus the non-Python assets the app needs
+         (.streamlit/config.toml). The static closure follows imports inside functions and button
+         branches too, but stops at the PIPELINE_ONLY entry points (update_results.py, src/predict.py,
+         src/feature_engineering.py, telegram_bot/notifier.py): the dashboard reaches them only through
+         function-scoped imports in pipeline jobs it never calls. They, and the files reachable only through
+         them, are listed under `not_shipped_pipeline_only`; the dashboard repo's sync removes them.
+         check_pipeline_only() refuses the build if a page, a dashboard_* module or a module-level import
+         needs one. The page buttons that run them (Dashboard 'Run predict' / 'Update results') are shown
+         only when pipeline.py exists, which the slim tree never carries.
   DATA = every repo file the pages open / stat / read_parquet while rendering, found with an audit hook
          (sys.addaudithook 'open') + os.stat + pandas/pyarrow wrappers. Files probed but absent today
          are kept as optional (the mirror asks for them; a 404 is fine). Secrets files (.env,
@@ -88,14 +95,31 @@ def _module_file(root: Path, dotted: str) -> list[Path]:
     return out
 
 
-def _imports(path: Path) -> set[str]:
+_FUNCTION_NODES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)
+
+
+def _module_level_nodes(tree: ast.AST):
+    """Every node that runs when the module is imported: module body, if/try/with/class bodies at module
+    level, but NOT the bodies of functions (or lambdas), which run only when called."""
+    todo = [tree]
+    while todo:
+        node = todo.pop()
+        yield node
+        for ch in ast.iter_child_nodes(node):
+            if not isinstance(ch, _FUNCTION_NODES):
+                todo.append(ch)
+
+
+def _imports(path: Path, lazy: bool = True) -> set[str]:
+    """Dotted names imported by one file. lazy=False keeps only imports that run at module import time
+    (imports inside function bodies are left out)."""
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"))
     except Exception:                                                # noqa: BLE001
         return set()
     mods = set()
     pkg = path.parent
-    for node in ast.walk(tree):
+    for node in (ast.walk(tree) if lazy else _module_level_nodes(tree)):
         if isinstance(node, ast.Import):
             mods.update(a.name for a in node.names)
         elif isinstance(node, ast.ImportFrom):
@@ -118,14 +142,42 @@ def _imports(path: Path) -> set[str]:
     return mods
 
 
-def static_closure(root: Path = ROOT, entries: list[str] | None = None) -> set[str]:
-    """Every repo .py file reachable by import statements (top level AND inside functions)."""
+VIEWER_LAYER = ("app.py", "pages/", "dashboard_", "dashboard_data/", "utils/")
+
+#: Pipeline entry points the slim dashboard never runs. The static closure does not ship them, or anything
+#: reachable ONLY through them, unless the runtime trace imported them while rendering a page. Every
+#: import of one of these must sit inside a function of a non-viewer module (check_pipeline_only), so a
+#: page can never fail at import time because one is missing. The page buttons that would run them as a
+#: subprocess (Dashboard 'Run predict' / 'Update results') are shown only when pipeline.py exists, which
+#: the slim tree never carries. Path -> where the dashboard used to reach it, and why it is not needed.
+PIPELINE_ONLY = {
+    "update_results.py": "settlement CLI; reached only from src/research/league_weekly._cli (a CLI entry) and "
+                         "the Dashboard 'Update results' subprocess button, hidden without pipeline.py",
+    "src/predict.py": "prediction pipeline; reached only from src/edge_engine_shadow.run (the predict job), "
+                      "the dashboard reads output/predictions.csv instead",
+    "src/feature_engineering.py": "feature building for predict/train; reached only through src/predict.py",
+    "telegram_bot/notifier.py": "Telegram sender; reached only from telegram_bot/daily_pack.send_weekly_pack and "
+                                "other send_* jobs, which the dashboard never calls",
+}
+
+
+def _is_viewer(rel: str) -> bool:
+    return rel.startswith(VIEWER_LAYER)
+
+
+def static_closure(root: Path = ROOT, entries: list[str] | None = None,
+                   stop_at: frozenset | set | None = None) -> set[str]:
+    """Every repo .py file reachable by import statements (top level AND inside functions) from app.py and
+    the pages, without entering the PIPELINE_ONLY entry points (stop_at=set() follows those too)."""
     entries = entries or entry_files(root)
+    stop = set(PIPELINE_ONLY) if stop_at is None else set(stop_at)
     seen: set[Path] = set()
     todo = [root / e for e in entries]
     while todo:
         f = todo.pop()
         if f in seen or not f.is_file():
+            continue
+        if f.relative_to(root).as_posix() in stop:
             continue
         seen.add(f)
         for m in _imports(f):
@@ -135,7 +187,40 @@ def static_closure(root: Path = ROOT, entries: list[str] | None = None) -> set[s
     return {p.relative_to(root).as_posix() for p in seen}
 
 
-VIEWER_LAYER = ("app.py", "pages/", "dashboard_", "dashboard_data/", "utils/")
+def check_pipeline_only(root: Path = ROOT, entries: list[str] | None = None) -> list[str]:
+    """Import sites that make a PIPELINE_ONLY module unsafe to leave out: an import that runs at module
+    import time, or any import from the viewer layer (a page or dashboard_* function calls it)."""
+    bad = []
+    for rel in sorted(static_closure(root, entries)):
+        lazy_all = _imports(root / rel, lazy=True)
+        eager = _imports(root / rel, lazy=False)
+        for m in lazy_all:
+            for p in _module_file(root, m):
+                q = p.relative_to(root).as_posix()
+                if q not in PIPELINE_ONLY:
+                    continue
+                if _is_viewer(rel):
+                    bad.append(f"{rel} imports {q} (viewer layer)")
+                elif m in eager:
+                    bad.append(f"{rel} imports {q} at module level")
+    return sorted(set(bad))
+
+
+def pipeline_only_files(root: Path, shipped: set[str], entries: list[str] | None = None) -> list[dict]:
+    """Files the full closure reaches only through a PIPELINE_ONLY entry point and that are not shipped,
+    each with the reachable files that import it."""
+    full = static_closure(root, entries, stop_at=set())
+    dropped = full - shipped
+    importers: dict[str, set[str]] = {d: set() for d in dropped}
+    for rel in full:
+        for m in _imports(root / rel):
+            for p in _module_file(root, m):
+                q = p.relative_to(root).as_posix()
+                if q in importers and q != rel:
+                    importers[q].add(rel)
+    return [{"path": d, "bytes": (root / d).stat().st_size, "imported_in": sorted(importers[d]),
+             "reason": PIPELINE_ONLY.get(d, "reachable only through a pipeline-only module")}
+            for d in sorted(dropped)]
 
 
 def data_literals(root: Path, code: list[str]) -> set[str]:
@@ -385,6 +470,10 @@ def build_manifest(trace: dict, root: Path = ROOT) -> dict:
             have.add(rel)
     data.sort(key=lambda e: e["path"])
     code_e = [{"path": c, "bytes": (root / c).stat().st_size} for c in sorted(code) if (root / c).is_file()]
+    unsafe = check_pipeline_only(root)
+    if unsafe:
+        raise SystemExit(f"PIPELINE_ONLY module imported where the slim app would need it: {unsafe}")
+    not_shipped = pipeline_only_files(root, {e["path"] for e in code_e})
     return {
         "about": "Files the Wowza dashboard needs. GENERATED by scripts/dashboard_manifest.py --write; consumed by "
                  "scripts/build_dashboard_repo.py (code) and dashboard_data/remote_mirror.py (data). Do not hand-edit.",
@@ -396,6 +485,9 @@ def build_manifest(trace: dict, root: Path = ROOT) -> dict:
         "code": code_e,
         "data": data,
         "excluded": excluded,
+        # PIPELINE_ONLY entry points and the files reachable only through them, not imported by the runtime
+        # trace: pipeline code the slim app never runs, so it is not shipped (the dashboard sync deletes it).
+        "not_shipped_pipeline_only": not_shipped,
         "third_party_imported": trace.get("third_party", []),
         "totals": {"code_files": len(code_e), "code_bytes": sum(e["bytes"] for e in code_e),
                    "data_files": len(data), "data_bytes": sum(e["bytes"] or 0 for e in data)},
@@ -418,8 +510,10 @@ def main(argv=None) -> int:
         have = {e["path"] for e in cur["code"]}
         miss_code = sorted(static_closure() - have)
         bad = unmatched_literals(cur)
-        print(f"static: {len(miss_code)} code file(s) missing {miss_code}; {len(bad)} unmatched data literal(s) {bad}")
-        return 1 if (miss_code or bad) else 0
+        unsafe = check_pipeline_only()
+        print(f"static: {len(miss_code)} code file(s) missing {miss_code}; {len(bad)} unmatched data literal(s) {bad}; "
+              f"{len(unsafe)} unsafe pipeline-only import(s) {unsafe}")
+        return 1 if (miss_code or bad or unsafe) else 0
     trace = run_trace()
     new = build_manifest(trace)
     errs = {p: i["exceptions"] for p, i in trace["pages"].items() if i["exceptions"]}
