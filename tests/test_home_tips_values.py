@@ -220,6 +220,10 @@ def _old_tips_settled_metrics() -> dict:
         out["Settled bets"] = (f"{len(s):,}", None)
         out["Days covered"] = (f"{s['_dt'].dt.date.nunique()}", None)
     cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)
+    # CLAUDE_PROMPT_2 V2 (2026-11-02): first-half prices recorded as full-match closes are quarantined
+    # upstream of every CLV consumer, so the page counts its outlier rejects AFTER that exclusion.
+    from src.clv_corrections import exclude_contaminated_clv
+    cl = exclude_contaminated_clv(cl)
     cl["_clv"] = pd.to_numeric(cl.get("clv_pct"), errors="coerce")
     cl["_o"] = pd.to_numeric(cl.get("odds"), errors="coerce")
     cl["_c"] = pd.to_numeric(cl.get("closing_odds"), errors="coerce")

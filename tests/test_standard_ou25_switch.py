@@ -474,7 +474,8 @@ def test_row_attribution_mapping():
 def test_system_health_serving_check(tmp_path, monkeypatch):
     from src import system_health as S
     monkeypatch.setattr(S, "OUT", tmp_path)
-    assert S.standard_serving_health()["status"] == S.GREEN                    # no board
+    # no board -> no evidence: a missing input is never GREEN (CLAUDE_PROMPT_2, 2026-11-02)
+    assert S.standard_serving_health()["status"] == S.GREY
     pd.DataFrame({"model_type": ["standard"], "model_version": ["standard_x"]}).to_csv(
         tmp_path / "predictions.csv", index=False)
     assert S.standard_serving_health()["status"] == S.GREEN                    # switch off
