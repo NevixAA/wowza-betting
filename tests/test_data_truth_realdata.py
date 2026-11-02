@@ -394,6 +394,9 @@ def test_corner_matchup_profiles_penalties_injuries(collect_dir, monkeypatch):
     pd.DataFrame([{"player_id": 1, "season": "2024", "status": "ok", "height_cm": 191.0, "weight_kg": 84.0,
                    "birth_date": "2000-08-01", "penalty_scored": 3.0, "penalty_missed": 1.0, "pen_entries": 2},
                   {"player_id": 2, "season": "2025", "status": "ok", "height_cm": np.nan, "weight_kg": np.nan,
+                   "birth_date": None, "penalty_scored": np.nan, "penalty_missed": np.nan, "pen_entries": 0},
+                  # a REAL 180 cm defender (the old placeholder value) must survive as 180
+                  {"player_id": 3, "season": "2025", "status": "ok", "height_cm": 180.0, "weight_kg": 75.0,
                    "birth_date": None, "penalty_scored": np.nan, "penalty_missed": np.nan, "pen_entries": 0}]
                  ).to_parquet(collect_dir / "player_profiles.parquet", index=False)
     pd.DataFrame([{"player_id": 3, "n_spells": 1, "fetched_at": "x"}, {"player_id": 4, "n_spells": 0, "fetched_at": "x"}]
@@ -410,6 +413,9 @@ def test_corner_matchup_profiles_penalties_injuries(collect_dir, monkeypatch):
     assert p1["penalty_conversion_rate"].iloc[-1] == pytest.approx(4 / 5)
     p2 = b[b["player_id"] == 2]
     assert p2["height_cm"].isna().all() and p2["penalty_conversion_rate"].isna().all()
+    assert (b.loc[b["player_id"] == 3, "height_cm"] == 180.0).all()
+    assert (p2.sort_values("date")["opp_def_mean_height"].dropna() == 180.0).all()
+    assert p2["opp_def_mean_height"].notna().any()
     p3 = b[b["player_id"] == 3].set_index("date")
     assert p3.loc["2025-08-22", "days_since_last_injury"] == 2.0
     assert p3.loc["2025-08-22", "return_from_injury_flag"] == 1.0

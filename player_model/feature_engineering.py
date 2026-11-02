@@ -115,6 +115,15 @@ def collected_profiles() -> pd.DataFrame:
     LATEST season that reports them, birth_date when every season that reports one agrees (two
     different provider birth dates -> refused, NaN)."""
     p = _collected("player_profiles")
+    memo = _COLLECTED.get("_profiles_derived")
+    if memo is not None and memo[0] is p:
+        return memo[1]
+    out = _derive_profiles(p)
+    _COLLECTED["_profiles_derived"] = (p, out)
+    return out
+
+
+def _derive_profiles(p: pd.DataFrame) -> pd.DataFrame:
     cols = ["player_id", "height_cm", "weight_kg", "birth_date"]
     if p.empty or "status" not in p.columns:
         return pd.DataFrame(columns=cols)
@@ -226,6 +235,17 @@ def _penalty_now(tot: pd.DataFrame, pid, phist_all: pd.DataFrame, season) -> flo
             s += float(ps.sum())
             a += float((ps + pm).sum())
     return s / a if a >= config.MIN_PEN_ATTEMPTS else NAN
+
+
+def _height_series(d: pd.DataFrame) -> pd.Series:
+    """Player height per row: the collected profile first (a real 180 cm stays 180), else a stored
+    value that is not the old placeholder."""
+    stored = _profile(d, "height_cm")
+    prof = collected_profiles()
+    if prof.empty or "player_id" not in d.columns:
+        return stored
+    h = d["player_id"].map(prof.set_index("player_id")["height_cm"]).astype(float)
+    return h.where(h.notna(), stored)
 
 
 def _attach_profiles(df: pd.DataFrame) -> pd.DataFrame:
@@ -372,7 +392,7 @@ def team_match_table(df: pd.DataFrame) -> pd.DataFrame:
               "yellow_cards", "saves", "goals_conceded", "sp_goal", "team_corners"):
         d[c] = _num(d, c)
     d["_rating"] = _num(d, "rating").where(lambda s: s > 0)
-    d["_height"] = _profile(d, "height_cm")
+    d["_height"] = _height_series(d)
     key = ["fixture_id", "_tkey"]
 
     t = d.groupby(key).agg(date=("date", "first"), league=("league", "first"),
