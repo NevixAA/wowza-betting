@@ -38,6 +38,7 @@ PLAYER_KICKOFF_FILE   = BASE_DIR / "player_kickoff_cache.json"
 sys.path.insert(0, str(BASE_DIR.parent))
 import config as app_config
 from src import league_registry as _LRG
+from src import units as U
 from src.tier_labels import GAP_EXPLAINER, TIER_ICON, tier_label, tier_tag
 
 
@@ -167,6 +168,18 @@ NON_BET_TIERS = {"AVOID", "WATCH"}
 # with staked P/L and show VALUABLE separately, labelled as collection.
 STAKED_TIERS = ["SNIPER", "MARKSMAN"]
 COLLECT_TIERS = ["VALUABLE"]
+
+
+def _since_cutoff(df):
+    """Rows whose MATCH DATE is on/after PERFORMANCE_CUTOFF_DATE - the cutoff clause of THE staked
+    definition (dashboard_data.today_view). Until 2026-11-02 the digests cut on generated_at, which
+    counted 764 staked rows (-3.06u) where Home/Tips/Leagues/Overview count 805 (-8.45u). A row
+    without a readable match date is not counted (it cannot be placed after the cutoff)."""
+    if df is None or len(df) == 0 or "match_date" not in df.columns:
+        return df
+    day = df["match_date"].astype(str).str[:10]
+    ok = day.str.fullmatch(r"\d{4}-\d{2}-\d{2}") & (day >= str(app_config.PERFORMANCE_CUTOFF_DATE)[:10])
+    return df[ok.to_numpy()]
 
 
 def _bet_tiers_only(df):
@@ -916,7 +929,7 @@ def _sharp_split_lines(ts, out_lines, indent="      ") -> None:
         if seg.empty:
             continue
         n = len(seg); w = int((seg > 0).sum())
-        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | P/L {seg.sum():+.2f}u")
+        out_lines.append(f"{indent}{sym} sharp {tag}: {w}W/{n-w}L | P/L {U.fmt(U.total(seg))}")
 
 
 _SHARP_MOVE_FILE = app_config.OUTPUT_DIR / "sharp_move_notified.json"
@@ -1111,7 +1124,7 @@ def notify_weekly_summary() -> bool:
         d = _settled_only(data)
         if d is None or d.empty:
             return None
-        n = len(d); w = (d["pnl"] > 0).sum(); pnl = d["pnl"].sum()
+        n = len(d); w = (d["pnl"] > 0).sum(); pnl = U.total(d["pnl"])
         return {"n": n, "win": float(w) / n, "roi": pnl / n * 100, "pnl": pnl}
 
     def _fmt(label: str, emoji: str, stats: dict | None, pending_n: int = 0) -> str:
@@ -1119,7 +1132,7 @@ def notify_weekly_summary() -> bool:
             pnl_s = "+" if stats["pnl"] >= 0 else ""
             return (f"  {emoji} <b>{label}</b>: {stats['n']} bets | "
                     f"{stats['win']:.0%} win | "
-                    f"P/L <b>{pnl_s}{stats['pnl']:.2f}u</b>")
+                    f"P/L <b>{U.fmt(stats['pnl'])}</b>")
         if pending_n:
             return f"  {emoji} <b>{label}</b>: {pending_n} signals sent | ⏳ awaiting results"
         return f"  {emoji} <b>{label}</b>: no settled bets this week"
@@ -1140,8 +1153,7 @@ def notify_weekly_summary() -> bool:
         _blk = live["model_type"].isna() | (live["model_type"].astype(str).str.strip().isin(["", "nan"]))
         live["model_type"] = live["model_type"].astype(object)   # an all-blank column reads as float
         live.loc[_blk, "model_type"] = live.loc[_blk, "league"].map(_model_type_of)
-        if "generated_at" in live.columns:   # count only tips generated on/after the cutoff
-            live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+        live = _since_cutoff(live)   # THE staked basis: match date on/after the cutoff
         lw = live[live["match_date"] >= week_ago]
 
     # ── 2. Sharp tracker (sharp_ledger.csv) ─────────────────────────────────
@@ -1210,9 +1222,9 @@ def notify_weekly_summary() -> bool:
             sub = sub_all[sub_all["signal_tier"].isin(STAKED_TIERS)] \
                   if "signal_tier" in sub_all.columns else sub_all
             if not sub.empty:
-                n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
+                n = len(sub); w = int((sub["pnl"] > 0).sum()); pnl = U.total(sub["pnl"])
                 lines.append(f"{emoji} <b>{label}</b> — 💰 {n} {settled_word} | {w/n:.0%} win | "
-                             f"P/L {pnl:+.2f}u")
+                             f"P/L {U.fmt(pnl)}")
             else:
                 lines.append(f"{emoji} <b>{label}</b> — no staked bets settled")
             for tier in STAKED_TIERS:
@@ -1221,7 +1233,7 @@ def notify_weekly_summary() -> bool:
                     continue
                 tn = len(ts); tw = int((ts["pnl"] > 0).sum())
                 lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {tn} bets | {tw/tn:.0%} win | "
-                             f"P/L <b>{ts['pnl'].sum():+.2f}u</b>")
+                             f"P/L <b>{U.fmt(U.total(ts['pnl']))}</b>")
                 _sharp_split_lines(ts, lines, "      ")
             for tier in COLLECT_TIERS:
                 cs = sub_all[sub_all["signal_tier"] == tier] if "signal_tier" in sub_all.columns else pd.DataFrame()
@@ -1229,7 +1241,7 @@ def notify_weekly_summary() -> bool:
                     continue
                 cn = len(cs); cw = int((cs["pnl"] > 0).sum())
                 lines.append(f"  {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {cn} signals | {cw/cn:.0%} win | "
-                             f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
+                             f"({U.fmt(U.total(cs['pnl']))}) — 📊 data only, not staked")
         if not any_shown:
             lines.append("⚽ <b>Over 2.5</b>: no settled bets")
 
@@ -1250,20 +1262,24 @@ def notify_weekly_summary() -> bool:
             sl["signal_date"] = pd.to_datetime(sl["signal_date"], errors="coerce")
             if sl["signal_date"].isna().any():
                 print(f"[weekly] {int(sl['signal_date'].isna().sum())} side-market row(s) without signal_date excluded")
-            sl_week = sl[sl["signal_date"] >= week_ago]
+            if "source" in sl.columns:
+                sl = sl[sl["source"].astype(str) == "live"]
+            sl_week = _since_cutoff(sl[sl["signal_date"] >= week_ago])
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_week[sl_week["market"] == mkt] if "market" in sl_week.columns else pd.DataFrame()
                 ms = _settled_only(ms)
                 if ms.empty:
                     continue
-                n = len(ms); mw2 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw2}W/{n-mw2}L | P/L {pnl:+.2f}u")
+                # Headline = STAKED tiers only (THE staked definition); VALUABLE stays below as data.
+                stk = ms[ms["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in ms.columns else ms
+                n = len(stk); mw2 = int((stk["pnl"] > 0).sum()); pnl = U.total(stk["pnl"])
+                lines.append(f"📌 <b>{mkt_label}</b> — 💰 staked {mw2}W/{n-mw2}L | P/L {U.fmt(pnl)}")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
                 lines.append("")
         except Exception:
             pass
@@ -1306,7 +1322,7 @@ def notify_weekly_summary() -> bool:
                                  + (f" | ⏳ {pend} pending" if pend else ""))
                     if not real.empty:
                         lines.append(f"  💵 priced only: {len(real)} bet(s) | "
-                                     f"P/L {real['pnl'].sum():+.2f}u")
+                                     f"P/L {U.fmt(U.total(real['pnl']))}")
                     unp = n - len(real)
                     if unp:
                         lines.append(f"  ⚠️ {unp} settled with no market price — excluded from P/L")
@@ -1341,26 +1357,29 @@ def notify_weekly_summary() -> bool:
         try:
             sl = _read_csv(side_led)
             sl["pnl"] = pd.to_numeric(sl["pnl"], errors="coerce")
-            sl_all = _settled_only(sl)
+            if "source" in sl.columns:
+                sl = sl[sl["source"].astype(str) == "live"]
+            sl_all = _settled_only(_since_cutoff(sl))
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sl_all[sl_all["market"] == mkt] if "market" in sl_all.columns else pd.DataFrame()
                 if ms.empty:
                     continue
-                n = len(ms); mw3 = int((ms["pnl"] > 0).sum()); pnl = ms["pnl"].sum()
-                lines.append(f"📌 <b>{mkt_label}</b> — {mw3}W/{n-mw3}L | P/L {pnl:+.2f}u")
+                stk = ms[ms["signal_tier"].isin(STAKED_TIERS)] if "signal_tier" in ms.columns else ms
+                n = len(stk); mw3 = int((stk["pnl"] > 0).sum()); pnl = U.total(stk["pnl"])
+                lines.append(f"📌 <b>{mkt_label}</b> — 💰 staked {mw3}W/{n-mw3}L | P/L {U.fmt(pnl)}")
                 for tier in TIER_ORDER:
                     ts = ms[ms["signal_tier"] == tier] if "signal_tier" in ms.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines.append(f"  {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
                 lines.append("")
         except Exception:
             pass
 
     if sharp_all and sharp_all["n"] > 0:
         pnl_s = "+" if sharp_all["pnl"] >= 0 else ""
-        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {pnl_s}{sharp_all['pnl']:.2f}u")
+        lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all['n']} settled | {sharp_all['win']:.0%} win | P/L {U.fmt(sharp_all['pnl'])}")
     elif sharp_all_total:
         lines.append(f"  💰 <b>Sharp Tracker</b>: {sharp_all_total} signals total | ⏳ awaiting results")
     else:
@@ -1902,8 +1921,8 @@ def notify_props_daily_digest() -> bool:
                 wins   = int((yest["pnl"] > 0).sum())
                 losses = int((yest["pnl"] < 0).sum())
                 voids  = int(yest["result"].str.upper().eq("VOID").sum()) if "result" in yest.columns else 0
-                pnl    = yest["pnl"].sum()
-                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  P/L <b>{pnl:+.2f}u</b>")
+                pnl    = U.total(yest["pnl"])
+                lines2.append(f"  {wins}W / {losses}L / {voids} VOID  |  P/L <b>{U.fmt(pnl)}</b>")
                 # Results by market
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = yest[yest["market"] == mkt_key] if "market" in yest.columns else pd.DataFrame()
@@ -1918,7 +1937,7 @@ def notify_props_daily_digest() -> bool:
                         tier_s = f"[{tier_label(r['tier'])}] " if "tier" in r and pd.notna(r.get("tier")) else ""
                         note   = f" ({r['notes']})" if pd.notna(r.get("notes")) and str(r.get("notes")).strip() else ""
                         lines2.append(
-                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{pnl_r:+.2f}u</b>"
+                            f"  {emoji} {tier_s}{r['player_name']} — {mkt_label}{note}  <b>{U.fmt(pnl_r)}</b>"
                         )
         except Exception as e:
             lines2.append(f"  error: {e}")
@@ -1933,22 +1952,22 @@ def notify_props_daily_digest() -> bool:
             pled["pnl"] = pd.to_numeric(pled["pnl"], errors="coerce")
             all_p = _settled_only(pled)
             if not all_p.empty:
-                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = all_p["pnl"].sum()
-                lines2.append(f"  Total: {w_all}W/{n-w_all}L | P/L <b>{pnl:+.2f}u</b>")
+                n = len(all_p); w_all = int((all_p["pnl"] > 0).sum()); pnl = U.total(all_p["pnl"])
+                lines2.append(f"  Total: {w_all}W/{n-w_all}L | P/L <b>{U.fmt(pnl)}</b>")
                 lines2.append("")
                 for mkt_key, mkt_label, _ in PLAYER_MARKETS:
                     ms = all_p[all_p["market"] == mkt_key] if "market" in all_p.columns else pd.DataFrame()
                     if ms.empty:
                         continue
-                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = ms["pnl"].sum()
-                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                    mn = len(ms); mw = int((ms["pnl"] > 0).sum()); mp = U.total(ms["pnl"])
+                    lines2.append(f"  📌 <b>{mkt_label}</b>  {mw}W/{mn-mw}L | P/L {U.fmt(mp)}")
                     if "tier" in ms.columns:
                         for tier in LEDGER_TIERS:
                             ts = ms[ms["tier"] == tier]
                             if ts.empty:
                                 continue
                             tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
         except Exception:
             pass
 
@@ -2019,7 +2038,7 @@ def notify_props_weekly_summary() -> bool:
             return None
         n   = len(d)
         w   = int((d["pnl"] > 0).sum())
-        pnl = d["pnl"].sum()
+        pnl = U.total(d["pnl"])
         return n, w, pnl
 
     lines = [
@@ -2033,7 +2052,7 @@ def notify_props_weekly_summary() -> bool:
     r = _row(settled_week)
     if r:
         n, w, pnl = r
-        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | P/L {pnl:+.2f}u</b>")
+        lines.append(f"<b>This week — {n} settled | {w}W/{n-w}L | P/L {U.fmt(pnl)}</b>")
         lines.append("")
         # By market
         for mkt in MARKETS:
@@ -2045,7 +2064,7 @@ def notify_props_weekly_summary() -> bool:
             pnl_s = "+" if mp >= 0 else ""
             lines.append(
                 f"  {MKT_EMOJI.get(mkt, '📌')} <b>{MKT_LABEL.get(mkt, mkt)}</b>: "
-                f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{pnl_s}{mp:.2f}u</b>"
+                f"{mn} bets | {mw}W/{mn-mw}L | P/L <b>{U.fmt(mp)}</b>"
             )
         lines.append("")
         # By tier
@@ -2057,7 +2076,7 @@ def notify_props_weekly_summary() -> bool:
                 continue
             tn, tw, tp = tr
             lines.append(
-                f"  {TIER_SYM.get(tier, '📌')} {tier_label(tier)}: {tw}W/{tn-tw}L | P/L {tp:+.2f}u"
+                f"  {TIER_SYM.get(tier, '📌')} {tier_label(tier)}: {tw}W/{tn-tw}L | P/L {U.fmt(tp)}"
             )
     else:
         pending = int(settled_week["pnl"].isna().sum()) if not settled_week.empty else 0
@@ -2072,7 +2091,7 @@ def notify_props_weekly_summary() -> bool:
     r_all = _row(settled_all)
     if r_all:
         n, w, pnl = r_all
-        lines.append(f"  Total: {n} bets | {w}W/{n-w}L | P/L {pnl:+.2f}u")
+        lines.append(f"  Total: {n} bets | {w}W/{n-w}L | P/L {U.fmt(pnl)}")
         lines.append("")
         for mkt in MARKETS:
             sub = settled_all[settled_all["market"] == mkt] if "market" in settled_all.columns else pd.DataFrame()
@@ -2082,7 +2101,7 @@ def notify_props_weekly_summary() -> bool:
             mn, mw, mp = mr
             lines.append(
                 f"  {MKT_EMOJI.get(mkt, '📌')} {MKT_LABEL.get(mkt, mkt)}: "
-                f"{mw}W/{mn-mw}L | P/L {mp:+.2f}u"
+                f"{mw}W/{mn-mw}L | P/L {U.fmt(mp)}"
             )
     else:
         total_all = len(pled)
@@ -2394,7 +2413,7 @@ def notify_daily_digest() -> bool:
         sub = _settled_only(df[mask]) if not df.empty else pd.DataFrame()
         if sub is None or sub.empty:
             return None
-        n = len(sub); w = int((sub["pnl"] > 0).sum()); p = sub["pnl"].sum()
+        n = len(sub); w = int((sub["pnl"] > 0).sum()); p = U.total(sub["pnl"])
         return n, w, p
 
     # Over 2.5 yesterday by tier
@@ -2404,8 +2423,7 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             yest_led = led[led["match_date"].astype(str).str[:10] == yesterday_str].copy()
             live_y = yest_led[yest_led["source"] == "live"] if "source" in yest_led.columns else yest_led
-            if "generated_at" in live_y.columns:   # count only tips generated on/after the cutoff
-                live_y = live_y[live_y["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            live_y = _since_cutoff(live_y)   # THE staked basis: match date on/after the cutoff
             if "model_type" not in live_y.columns:
                 live_y["model_type"] = ""
             _blk = live_y["model_type"].isna() | (live_y["model_type"].astype(str).str.strip().isin(["", "nan"]))
@@ -2416,7 +2434,7 @@ def notify_daily_digest() -> bool:
             r_all = _stats_sub(_stk, pd.Series([True] * len(_stk), index=_stk.index))
             if r_all:
                 n, w, pnl = r_all
-                lines2.append(f"⚽ <b>O/U 2.5</b>  💰 staked {w}W/{n-w}L  P/L {pnl:+.2f}u")
+                lines2.append(f"⚽ <b>O/U 2.5</b>  💰 staked {w}W/{n-w}L  P/L {U.fmt(pnl)}")
                 for fmt, femoji, flabel in [("standard", "⚽", "Standard"),
                                             ("new_format", "🌍", "New-Format")]:
                     fb_all = live_y[live_y["model_type"] == fmt]
@@ -2426,25 +2444,25 @@ def notify_daily_digest() -> bool:
                     rf = _stats_sub(fb, pd.Series([True] * len(fb), index=fb.index))
                     if rf:
                         fn, fw, fp = rf
-                        lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {fp:+.2f}u")
+                        lines2.append(f"  {femoji} <b>{flabel}</b>: {fw}W/{fn-fw}L  P/L {U.fmt(fp)}")
                         if "side" in fb.columns:
                             for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
                                 r = _stats_sub(fb, fb["side"].astype(str).str.upper() == sd)
                                 if r:
                                     sn, sw, sp = r
-                                    lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {sp:+.2f}u")
+                                    lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L  P/L {U.fmt(sp)}")
                         for tier in STAKED_TIERS:
                             r = _stats_sub(fb, fb["signal_tier"] == tier)
                             if r:
                                 tn, tw, tp = r
-                                lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                                lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {U.fmt(tp)}")
                     # Collection tiers: visible, but explicitly not money.
                     for tier in COLLECT_TIERS:
                         r = _stats_sub(fb_all, fb_all["signal_tier"] == tier)
                         if r:
                             tn, tw, tp = r
                             lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
-                                          f"({tp:+.2f}u) — 📊 data only, not staked")
+                                          f"({U.fmt(tp)}) — 📊 data only, not staked")
             else:
                 lines2.append("  ⚽ O/U 2.5: no settled staked bets")
                 for tier in COLLECT_TIERS:
@@ -2452,7 +2470,7 @@ def notify_daily_digest() -> bool:
                     if r:
                         tn, tw, tp = r
                         lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
-                                      f"({tp:+.2f}u) — 📊 data only, not staked")
+                                      f"({U.fmt(tp)}) — 📊 data only, not staked")
         except Exception:
             pass
 
@@ -2468,8 +2486,7 @@ def notify_daily_digest() -> bool:
             sy = sy[sy["match_date"].astype(str).str[:10] == yesterday_str]
             if "source" in sy.columns:
                 sy = sy[sy["source"].astype(str) == "live"]
-            if "generated_at" in sy.columns:
-                sy = sy[sy["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            sy = _since_cutoff(sy)
             for mkt, mkt_label in SIDE_LABELS.items():
                 ms = sy[sy["market"] == mkt] if "market" in sy.columns else pd.DataFrame()
                 if ms.empty:
@@ -2478,12 +2495,12 @@ def notify_daily_digest() -> bool:
                 r = _stats_sub(stk, pd.Series([True] * len(stk), index=stk.index)) if not stk.empty else None
                 if r:
                     n, w, pnl = r
-                    lines2.append(f"📌 <b>{mkt_label}</b>  💰 staked {w}W/{n-w}L  P/L {pnl:+.2f}u")
+                    lines2.append(f"📌 <b>{mkt_label}</b>  💰 staked {w}W/{n-w}L  P/L {U.fmt(pnl)}")
                     for tier in STAKED_TIERS:
                         rt = _stats_sub(stk, stk["signal_tier"] == tier)
                         if rt:
                             tn, tw, tp = rt
-                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {tp:+.2f}u")
+                            lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {tw}W/{tn-tw}L  P/L {U.fmt(tp)}")
                 else:
                     lines2.append(f"📌 <b>{mkt_label}</b>: no settled staked bets")
                 for tier in COLLECT_TIERS:
@@ -2491,7 +2508,7 @@ def notify_daily_digest() -> bool:
                     if rt:
                         tn, tw, tp = rt
                         lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {tw}W/{tn-tw}L "
-                                      f"({tp:+.2f}u) — 📊 data only, not staked")
+                                      f"({U.fmt(tp)}) — 📊 data only, not staked")
         except Exception as e:
             lines2.append(f"  Side markets error: {e}")
 
@@ -2509,9 +2526,9 @@ def notify_daily_digest() -> bool:
                 n = len(yest_s)
                 affected   = int((yest_s["pnl"] > 0).sum())
                 inaffected = n - affected
-                pnl = yest_s["pnl"].sum()
+                pnl = U.total(yest_s["pnl"])
                 lines2.append(
-                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{pnl:+.2f}u</b>"
+                    f"  💰 Sharp/WC: {n} settled | {affected} affected / {inaffected} inaffected | P/L <b>{U.fmt(pnl)}</b>"
                 )
             else:
                 lines2.append("  💰 Sharp/WC: no settled results")
@@ -2528,8 +2545,7 @@ def notify_daily_digest() -> bool:
             led["pnl"] = pd.to_numeric(led["pnl"], errors="coerce")
             live = led[(led["source"] == "live") & led["pnl"].notna()] \
                    if "source" in led.columns else led[led["pnl"].notna()]
-            if "generated_at" in live.columns:
-                live = live[live["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            live = _since_cutoff(live)
             # Never treat a blank tag as 'standard' — derive it from the league so new-format
             # bets can't leak into the standard column (canonical map in app_config).
             live = live.copy()
@@ -2549,15 +2565,15 @@ def notify_daily_digest() -> bool:
                 sub = sub_all[sub_all["signal_tier"].isin(STAKED_TIERS)] \
                       if "signal_tier" in sub_all.columns else sub_all
                 if not sub.empty:
-                    n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = sub["pnl"].sum()
-                    lines2.append(f"  {emoji} <b>{label}</b>  💰 {w_s}W/{n-w_s}L | P/L {pnl:+.2f}u")
+                    n = len(sub); w_s = int((sub["pnl"] > 0).sum()); pnl = U.total(sub["pnl"])
+                    lines2.append(f"  {emoji} <b>{label}</b>  💰 {w_s}W/{n-w_s}L | P/L {U.fmt(pnl)}")
                     if "side" in sub.columns:
                         for sd, ssym in (("OVER", "▲"), ("UNDER", "▼")):
                             ss = sub[sub["side"].astype(str).str.upper() == sd]
                             if ss.empty:
                                 continue
-                            sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = ss["pnl"].sum()
-                            lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {sp:+.2f}u")
+                            sn = len(ss); sw = int((ss["pnl"] > 0).sum()); sp = U.total(ss["pnl"])
+                            lines2.append(f"    {ssym} {sd}: {sw}W/{sn-sw}L | P/L {U.fmt(sp)}")
                 else:
                     lines2.append(f"  {emoji} <b>{label}</b>  no staked bets settled")
                 # Collection tiers listed after, clearly not money.
@@ -2567,13 +2583,13 @@ def notify_daily_digest() -> bool:
                         continue
                     cn = len(cs); cw = int((cs["pnl"] > 0).sum())
                     lines2.append(f"    {TIER_SYM.get(tier, '▰▱▱')} {tier_label(tier)}: {cw}W/{cn-cw}L "
-                                  f"({cs['pnl'].sum():+.2f}u) — 📊 data only, not staked")
+                                  f"({U.fmt(U.total(cs['pnl']))}) — 📊 data only, not staked")
                 for tier in STAKED_TIERS:
                     ts = sub[sub["signal_tier"] == tier] if "signal_tier" in sub.columns else pd.DataFrame()
                     if ts.empty:
                         continue
                     tn = len(ts); w = int((ts["pnl"] > 0).sum())
-                    lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u")
+                    lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}")
                     _sharp_split_lines(ts, lines2, "        ")
         except Exception:
             pass
@@ -2587,8 +2603,7 @@ def notify_daily_digest() -> bool:
             # Same basis as the O/U 2.5 ledger lines above: live tips generated on/after the cutoff.
             if "source" in sl.columns:
                 sl = sl[sl["source"].astype(str) == "live"]
-            if "generated_at" in sl.columns:
-                sl = sl[sl["generated_at"].astype(str).str[:10] >= app_config.PERFORMANCE_CUTOFF_DATE]
+            sl = _since_cutoff(sl)
             sl_s = _settled_only(sl)
             if not sl_s.empty:
                 lines2.append("")
@@ -2599,8 +2614,8 @@ def notify_daily_digest() -> bool:
                     # Headline = STAKED tiers only; VALUABLE was counted here as if it were money.
                     mstk = ms[ms["signal_tier"].isin(STAKED_TIERS)]
                     if not mstk.empty:
-                        mn = len(mstk); mw = int((mstk["pnl"] > 0).sum()); mp = mstk["pnl"].sum()
-                        lines2.append(f"  📌 <b>{mkt_label}</b>  💰 {mw}W/{mn-mw}L | P/L {mp:+.2f}u")
+                        mn = len(mstk); mw = int((mstk["pnl"] > 0).sum()); mp = U.total(mstk["pnl"])
+                        lines2.append(f"  📌 <b>{mkt_label}</b>  💰 {mw}W/{mn-mw}L | P/L {U.fmt(mp)}")
                     else:
                         lines2.append(f"  📌 <b>{mkt_label}</b>  no staked bets settled")
                     for tier in TIER_ORDER:
@@ -2609,7 +2624,7 @@ def notify_daily_digest() -> bool:
                             continue
                         tn = len(ts); w = int((ts["pnl"] > 0).sum())
                         tail = " — 📊 data only" if tier in COLLECT_TIERS else ""
-                        lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {ts['pnl'].sum():+.2f}u{tail}")
+                        lines2.append(f"    {TIER_SYM[tier]} {tier_label(tier)}: {w}W/{tn-w}L | P/L {U.fmt(U.total(ts['pnl']))}{tail}")
         except Exception:
             pass
 
@@ -2620,8 +2635,8 @@ def notify_daily_digest() -> bool:
             sled["pnl"] = pd.to_numeric(sled["pnl"], errors="coerce")
             all_s = sled[sled["pnl"].notna() & (sled["result"] != "VOID")]
             if not all_s.empty:
-                n = len(all_s); pnl = all_s["pnl"].sum()
-                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {pnl:+.2f}u)")
+                n = len(all_s); pnl = U.total(all_s["pnl"])
+                lines2.append(f"  💰 <b>Sharp/WC</b>  ({n} signals | P/L {U.fmt(pnl)})")
         except Exception:
             pass
 

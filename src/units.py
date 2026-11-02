@@ -64,6 +64,15 @@ def running(values) -> list[float]:
     return out
 
 
+def profit(odds):
+    """Exact flat-1u winning return odds - 1 (Series or scalar); missing/non-numeric -> NaN."""
+    import pandas as pd
+    if isinstance(odds, pd.Series):
+        return odds.map(lambda o: float(_dec(o) - 1) if _dec(o) is not None else float("nan"))
+    d = _dec(odds)
+    return float(d - 1) if d is not None else float("nan")
+
+
 def rnd(x, places: int = 2) -> float:
     """Half-up rounded float for numeric table cells (NaN stays NaN)."""
     d = _dec(x)

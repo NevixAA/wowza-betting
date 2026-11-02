@@ -328,7 +328,7 @@ for tab, mkt in zip(tabs, MARKETS):
             st.markdown(V.state_chip("Side/BTTS"))
             # Flat 1u result computed from the same rows (was a hand-typed +18.6u that went stale).
             _sp = _s[_s["odds"] > 1.0]
-            _flat = U.total(np.where(_sp["result"] == "WIN", _sp["odds"] - 1.0, -1.0)) if len(_sp) else None
+            _flat = U.total(U.profit(_sp["odds"]).where(_sp["result"] == "WIN", -1.0)) if len(_sp) else None
             _flat_s = ("—" if _flat is None
                        else f"**{U.fmt(_flat, 1)}** over {len(_sp)} priced bet(s), {100 * _flat / len(_sp):+.0f}%")
             # Side-market SNIPER + MARKSMAN tips ARE staked (THE staked definition, today_view), so this
