@@ -1,9 +1,9 @@
 {
-  "contract_sha256": "e5fb22a7fd9b4b750dd67cebcea43c7b1b37ef1029a51b48265ea43827c70938",
+  "contract_sha256": "894431750557bcb0c581a59f4d2fb816bf977bbfa1b79fbee9a0ccabacbb2f31",
   "contract_version": "PFC-1.0",
   "counts": {
-    "IMPUTABLE": 67,
-    "OPTIONAL_DEGRADED": 31,
+    "IMPUTABLE": 68,
+    "OPTIONAL_DEGRADED": 44,
     "REQUIRED_FAIL_ROW": 12,
     "SEMANTIC_ZERO": 3
   },
@@ -308,6 +308,58 @@
       "class": "REQUIRED_FAIL_ROW",
       "reason": "position encoding"
     },
+    "prev_season_appearances": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_assists_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_cards_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_minutes_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_opp_conceded_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_opp_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_shot_accuracy": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_shots_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_sot_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_start_rate": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_team_conceded_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
+    "prev_season_team_goals_pg": {
+      "class": "OPTIONAL_DEGRADED",
+      "reason": "the player's / team's previous season (absent for a debut season)"
+    },
     "quality_adj_goals_pg": {
       "class": "OPTIONAL_DEGRADED",
       "reason": "league / opponent-quality enrichment"
@@ -393,6 +445,10 @@
       "reason": "API-Football /players/statistics season priors"
     },
     "shooting_efficiency_index": {
+      "class": "IMPUTABLE",
+      "reason": "derived from the player's own match history"
+    },
+    "shot_accuracy_l10": {
       "class": "IMPUTABLE",
       "reason": "derived from the player's own match history"
     },

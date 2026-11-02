@@ -286,6 +286,17 @@ PLAYER_FEATURE_COLS = [
     "context_quality_discount",  # player career quality / opp def quality
     "quality_mismatch_goals",    # goals_pg * context_quality_discount
     "quality_mismatch_sot",      # sot_pg * context_quality_discount
+    # ── Previous season + longer-window shot accuracy (owner-approved 2026-11-02, fix6/props6) ──
+    # Real values over the player's / team's PREVIOUS season (own names; never fill a season_*
+    # value), NaN below MIN_PREV_SEASON_MATCHES; shot_accuracy_l10 = sum SOT / sum shots over the
+    # last SHOT_ACC_WINDOW matches, NaN below MIN_SHOTS_FOR_ACCURACY shots. Absent from the stored
+    # player_history until it is rebuilt; the props imputer drops an all-missing column at fit.
+    "prev_season_goals_pg", "prev_season_assists_pg", "prev_season_shots_pg", "prev_season_sot_pg",
+    "prev_season_cards_pg", "prev_season_minutes_pg", "prev_season_start_rate",
+    "prev_season_appearances", "prev_season_shot_accuracy",
+    "prev_season_team_goals_pg", "prev_season_team_conceded_pg",
+    "prev_season_opp_goals_pg", "prev_season_opp_conceded_pg",
+    "shot_accuracy_l10",
 ]
 
 # Pruned 2026-06-30 (local): set-piece / goal-type features that can't be reliably populated —
@@ -394,6 +405,9 @@ MIN_GK_MATCHES     = 3    # a keeper's prior matches before his save rate / save
 MIN_PEN_ATTEMPTS   = 3    # a player's prior penalty attempts before his conversion rate counts
 MIN_REF_MATCHES    = 3    # a referee's prior matches before his yellows/match counts
 MIN_LEAGUE_MATCHES = 20   # a league's prior fixtures before its own average is used as a normaliser
+MIN_PREV_SEASON_MATCHES = 5   # a player's / team's previous-season matches before a prev_season_* mean counts
+SHOT_ACC_WINDOW = 10          # matches in shot_accuracy_l10 (the 5-match shot_accuracy_rate stays as is)
+MIN_SHOTS_FOR_ACCURACY = 10   # shots in the window (or previous season) below which an accuracy is NaN
 
 # ── Leagues with player prop markets ─────────────────────────────────────────
 # DERIVED FROM THE REGISTRY (Data Truth, LR-1.1): config/leagues.json `props: true` entries,

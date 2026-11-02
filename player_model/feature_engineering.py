@@ -773,6 +773,127 @@ def compute_season_asof(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+# ── previous season, longer-window shot accuracy (owner-approved 2026-11-02; ONE definition) ─────
+
+# prev_season_* player feature -> per-match source column: the mean per appearance over the
+# player's rows of the PREVIOUS season (season start year - 1, every competition we hold), dated
+# strictly before the row. Own names: they never fill a season_* (this-season) value.
+PREV_SEASON_PLAYER = {
+    "prev_season_goals_pg":    "goals",
+    "prev_season_assists_pg":  "assists",
+    "prev_season_shots_pg":    "shots_total",
+    "prev_season_sot_pg":      "shots_on_target",
+    "prev_season_cards_pg":    "yellow_cards",
+    "prev_season_minutes_pg":  "_minutes_ok",
+    "prev_season_start_rate":  "started",
+}
+# prev_season_* team feature -> (side, team-table column): the player's own team ('own') or the
+# opponent ('opp'), mean per match over that team's previous-season fixtures (90-minute scores).
+PREV_SEASON_TEAM = {
+    "prev_season_team_goals_pg":     ("own", "goals_scored"),
+    "prev_season_team_conceded_pg":  ("own", "goals_conceded"),
+    "prev_season_opp_goals_pg":      ("opp", "goals_scored"),
+    "prev_season_opp_conceded_pg":   ("opp", "goals_conceded"),
+}
+PREV_SEASON_COLUMNS = (*PREV_SEASON_PLAYER, "prev_season_appearances", "prev_season_shot_accuracy",
+                       *PREV_SEASON_TEAM)
+
+
+def _prev_season_sums(src: pd.DataFrame, key: str, cols, q: pd.DataFrame) -> pd.DataFrame:
+    """For each query row of `q` (columns key, _y, date): over the `src` rows with the same key whose
+    season start year (_y) is the query's _y - 1 and whose date is STRICTLY before the query date,
+    the row count (_n) and, per col, the sum (<col>) and the number of rows carrying it (<col>__n).
+    Returned aligned with q's index. Used by training and serving alike."""
+    out_cols = ["_n", *cols, *(f"{c}__n" for c in cols)]
+    out = pd.DataFrame(np.nan, index=q.index, columns=out_cols)
+    if src.empty or q.empty:
+        return out
+    s = src[[key, "_y", "date", *cols]].copy()
+    s["date"] = pd.to_datetime(s["date"], errors="coerce")
+    s["_y"] = pd.to_numeric(s["_y"], errors="coerce").astype(float)
+    s = s.dropna(subset=[key, "_y", "date"]).sort_values("date", kind="stable")
+    if s.empty:
+        return out
+    gk = [s[key], s["_y"]]
+    cum = pd.DataFrame({key: s[key].to_numpy(), "_y": s["_y"].to_numpy(), "date": s["date"].to_numpy(),
+                        "_n": s.groupby(gk, sort=False).cumcount().to_numpy() + 1.0})
+    for c in cols:
+        v = pd.to_numeric(s[c], errors="coerce")
+        cum[c] = v.fillna(0.0).groupby(gk).cumsum().to_numpy()
+        cum[f"{c}__n"] = v.notna().astype(float).groupby(gk).cumsum().to_numpy()
+    qq = pd.DataFrame({key: q[key].to_numpy(),
+                       "_y": pd.to_numeric(q["_y"], errors="coerce").to_numpy(dtype=float) - 1.0,
+                       "date": pd.to_datetime(q["date"], errors="coerce").to_numpy(), "_i": np.arange(len(q))})
+    qq = qq.dropna(subset=[key, "_y", "date"]).sort_values("date", kind="stable")
+    if qq.empty:
+        return out
+    if cum[key].dtype != qq[key].dtype:
+        cum[key], qq[key] = cum[key].astype(str), qq[key].astype(str)
+    hit = pd.merge_asof(qq, cum, on="date", by=[key, "_y"], allow_exact_matches=False)
+    out.iloc[hit["_i"].to_numpy(), :] = hit[out_cols].to_numpy(dtype=float)
+    return out
+
+
+def _prev_season_player(src: pd.DataFrame, q: pd.DataFrame) -> pd.DataFrame:
+    """prev_season_* player features for the queries q (player_id, _y, date) from the player rows
+    `src` (player_id, _y, date + raw columns). NaN below config.MIN_PREV_SEASON_MATCHES rows; the
+    shot accuracy is sum(sot) / sum(shots), NaN below config.MIN_SHOTS_FOR_ACCURACY shots."""
+    raws = sorted(set(PREV_SEASON_PLAYER.values()))
+    sh, so = _num(src, "shots_total"), _num(src, "shots_on_target")
+    both = sh.notna() & so.notna()
+    src = src.assign(_minutes_ok=minutes_ok(_num(src, "minutes")).to_numpy(),
+                     **{r: _num(src, r) for r in raws if r != "_minutes_ok"},
+                     _acc_sh=sh.where(both), _acc_so=so.where(both))
+    s = _prev_season_sums(src, "player_id", [*raws, "_acc_sh", "_acc_so"], q)
+    enough = s["_n"] >= config.MIN_PREV_SEASON_MATCHES
+    out = pd.DataFrame(index=q.index)
+    for feat, raw in PREV_SEASON_PLAYER.items():
+        out[feat] = _ratio(s[raw], s[f"{raw}__n"]).where(enough)
+    out["prev_season_appearances"] = s["_n"]            # NaN = no row of that season held
+    out["prev_season_shot_accuracy"] = _ratio(s["_acc_so"], s["_acc_sh"]).where(
+        s["_acc_sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
+    return out
+
+
+def _team_seasons(t: pd.DataFrame) -> pd.Series:
+    """Season start year of every team-table row (the registry season rule of its competition via
+    src.season_resolver; NaN when the competition is unknown to the registry)."""
+    if t.empty:
+        return pd.Series(dtype=float)
+    return pd.Series(_season_year(_resolve_seasons(t[["league", "date"]])).to_numpy(), index=t.index)
+
+
+def _prev_season_team(t: pd.DataFrame, q: pd.DataFrame, side: str) -> pd.DataFrame:
+    """Team prev_season_* of `side` ('own' / 'opp') for the queries q (_tkey, _y, date): mean per
+    fixture over the team's previous-season fixtures (team table `t` with _y), NaN below
+    config.MIN_PREV_SEASON_MATCHES fixtures carrying the quantity."""
+    cols = sorted({c for _, c in PREV_SEASON_TEAM.values()})
+    s = _prev_season_sums(t, "_tkey", cols, q)
+    out = pd.DataFrame(index=q.index)
+    for feat, (sd, col) in PREV_SEASON_TEAM.items():
+        if sd == side:
+            out[feat] = _ratio(s[col], s[f"{col}__n"]).where(s[f"{col}__n"] >= config.MIN_PREV_SEASON_MATCHES)
+    return out
+
+
+def shot_accuracy_before(df: pd.DataFrame, n: int | None = None) -> pd.Series:
+    """shot_accuracy_l10: per row of `df` (sorted by player, date), BEFORE it: sum(shots on target) /
+    sum(shots) over the player's previous n matches (config.SHOT_ACC_WINDOW; a match without both
+    counts recorded adds nothing), NaN below config.MIN_SHOTS_FOR_ACCURACY shots. A separate
+    feature from the 5-match shot_accuracy_rate (mean of per-match ratios). Serving calls it on the
+    player's history plus one empty row for the fixture: the same definition."""
+    n = n or config.SHOT_ACC_WINDOW
+    sh, so = _num(df, "shots_total"), _num(df, "shots_on_target")
+    both = sh.notna() & so.notna()
+    g = df["player_id"]
+    sums = {}
+    for name, v in (("so", so.where(both)), ("sh", sh.where(both))):
+        prev = v.groupby(g).shift(1)
+        sums[name] = (prev.groupby(g).rolling(n, min_periods=1).sum()
+                      .reset_index(level=0, drop=True).reindex(df.index))
+    return _ratio(sums["so"], sums["sh"]).where(sums["sh"] >= config.MIN_SHOTS_FOR_ACCURACY)
+
+
 # ── composites: ONE definition for training and serving ─────────────────────────────────────────
 
 def _add_composites(df: pd.DataFrame) -> pd.DataFrame:
@@ -1086,7 +1207,7 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     _sp = _SP.asof(_SP.load(history_dates=df[["fixture_id", "date"]]), df["player_id"], df["date"])
     for c in _SP.SETPIECE_COLUMNS:
         df[c] = _sp[c].to_numpy()
-    _, df["_okey"] = _team_keys(df)
+    df["_tkey"], df["_okey"] = _team_keys(df)
     t = team_match_table(df)
     if not t.empty:
         roll = _team_rolling(t, n).rename(columns={"_tkey": "_okey"})
@@ -1094,6 +1215,21 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
         df["_day"] = pd.to_datetime(df["date"], errors="coerce").dt.normalize()
         df = df.merge(_league_asof(t), on=["league", "_day"], how="left")
     _ensure(df, [feat for feat, _ in _TEAM_ROLL.values()] + list(_LEAGUE_NORMS))
+
+    # ── Previous season (player and both teams) and the longer-window shot accuracy: real values
+    # under their own names, NaN below their minimum samples (one definition, also used by serving).
+    df["_y"] = _season_year(df["season"]).to_numpy() if "season" in df.columns else np.nan
+    ps = _prev_season_player(df, df[["player_id", "_y", "date"]])
+    for c in ps.columns:
+        df[c] = ps[c].to_numpy()
+    if not t.empty:
+        t["_y"] = _team_seasons(t).to_numpy()
+        for side, k in (("own", "_tkey"), ("opp", "_okey")):
+            pt = _prev_season_team(t, df[[k, "_y", "date"]].rename(columns={k: "_tkey"}), side)
+            for c in pt.columns:
+                df[c] = pt[c].to_numpy()
+    _ensure(df, PREV_SEASON_COLUMNS)
+    df["shot_accuracy_l10"] = shot_accuracy_before(df).to_numpy()
 
     # ── Position encoding ─────────────────────────────────────────────────────
     pos = _first_letter(df["position"]) if "position" in df.columns else pd.Series("", index=df.index)
@@ -1159,6 +1295,7 @@ def _serving_context(history: pd.DataFrame) -> dict:
         t = team_match_table(h)
         teams_by_scope: dict = {}
         if not t.empty:
+            t["_y"] = _team_seasons(t).to_numpy()          # prev_season_* team features
             named = t["_tkey"].astype(str)
             named = named[named.str.contains("|", regex=False)]      # national teams / no id
             if len(named):
@@ -1196,22 +1333,30 @@ def _opponent_state(ctx: dict, opponent: str, league, n: int) -> dict:
     to src.team_names.resolve among the names held in the fixture league's identity scope.
     Unresolvable -> every opponent feature NaN (logged by the caller)."""
     nan_state = {feat: NAN for feat, _ in _TEAM_ROLL.values()}
-    if not opponent:
-        return nan_state
+    rows = _team_rows_now(ctx, opponent, league)
+    return _team_now(rows, n) if rows is not None else nan_state
+
+
+def _team_rows_now(ctx: dict, team, league):
+    """The team-table rows of `team` for a fixture of `league` (the training key: API-Football id via
+    team_identity.club_key, else src.team_names.resolve among the names of the league's identity
+    scope), or None when unresolvable."""
+    if not team:
+        return None
     from . import team_identity as TI
-    k = TI.club_key(str(opponent), league) if team_scope(league) != "national_teams" else None
+    k = TI.club_key(str(team), league) if team_scope(league) != "national_teams" else None
     rows = ctx["by_team"].get(k) if k else None
     if rows is not None and len(rows):
-        return _team_now(rows, n)
+        return rows
     scope = team_scope(league)
     if scope is None:
-        return nan_state
+        return None
     cands = ctx["teams_by_scope"].get(scope, [])
-    hit = config._v9_src("team_names").resolve(str(opponent), cands) if cands else None
+    hit = config._v9_src("team_names").resolve(str(team), cands) if cands else None
     if not hit:
-        return nan_state
+        return None
     rows = ctx["by_team"].get(f"{hit}|{scope}")
-    return _team_now(rows, n) if rows is not None and len(rows) else nan_state
+    return rows if rows is not None and len(rows) else None
 
 
 def _f(x) -> float:
@@ -1344,6 +1489,27 @@ def build_upcoming_features(
             s = _num(cur, raw)
             r[feat] = float(s.mean()) if s.notna().any() else NAN
         r["season_appearances"] = float(len(cur)) if season and _sr.is_known(season) else NAN
+
+        # Previous season (player, own team, opponent) and the 10-match shot accuracy: the training
+        # functions, queried at the fixture date for the fixture's season.
+        y = float(_season_year([season]).iloc[0]) if season and _sr.is_known(season) else NAN
+        q = pd.DataFrame({"player_id": [pid], "_y": [y], "date": [fdate]})
+        src = phist_all.assign(_y=(_season_year(phist_all["season"]).to_numpy()
+                                   if "season" in phist_all.columns else NAN))
+        r.update(_prev_season_player(src, q).iloc[0].to_dict())
+        for side, name in (("own", p.get("team", "")), ("opp", p.get("opponent", ""))):
+            tk = (side, str(name), league, y, fdate)
+            if tk not in lg_cache:
+                trows = _team_rows_now(ctx, name, league)
+                tq = pd.DataFrame({"_tkey": [trows["_tkey"].iloc[0] if trows is not None else None],
+                                   "_y": [y], "date": [fdate]})
+                lg_cache[tk] = (_prev_season_team(trows, tq, side).iloc[0].to_dict() if trows is not None
+                                else {f: NAN for f, (sd, _) in PREV_SEASON_TEAM.items() if sd == side})
+            r.update(lg_cache[tk])
+        _acc = pd.concat([phist_all[[c for c in ("player_id", "shots_total", "shots_on_target")
+                                     if c in phist_all.columns]],
+                          pd.DataFrame({"player_id": [pid]})], ignore_index=True)
+        r["shot_accuracy_l10"] = float(shot_accuracy_before(_acc).iloc[-1])
 
         # Profile: a real age from the caller (live squad list) first, then the collected /players
         # record (age at the fixture date from the birth date; latest height / weight), else the

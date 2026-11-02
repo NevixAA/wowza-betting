@@ -82,6 +82,12 @@ _DEGRADED = {
                               "opp_strength_index", "quality_adj_goals_pg", "quality_adj_sot_pg")},
     **{c: "opp_detail" for c in ("opp_gk_save_rate", "opp_gk_saves_pg", "opp_def_player_rating_pg",
                                  "opp_top_def_rating", "opp_def_player_quality")},
+    **{c: "prev_season" for c in ("prev_season_goals_pg", "prev_season_assists_pg", "prev_season_shots_pg",
+                                  "prev_season_sot_pg", "prev_season_cards_pg", "prev_season_minutes_pg",
+                                  "prev_season_start_rate", "prev_season_appearances",
+                                  "prev_season_shot_accuracy", "prev_season_team_goals_pg",
+                                  "prev_season_team_conceded_pg", "prev_season_opp_goals_pg",
+                                  "prev_season_opp_conceded_pg")},
 }
 
 
