@@ -103,7 +103,16 @@ def test_leagues_of_type_partitions_the_registry():
     allnames = [e["name"] for e in REG["leagues"]]
     parts = [LR.leagues_of_type(t) for t in LR.COMPETITION_TYPES]
     assert sorted(sum(parts, [])) == sorted(allnames)
-    assert LR.leagues_of_type("national_teams") == ["World Cup 2026"]
+    # LR-1.2: the national-team competitions player_history holds are registered (no model, no props);
+    # World Cup 2026 stays FIRST (player_model/data_fetcher takes the first national_teams entry)
+    assert LR.leagues_of_type("national_teams") == [
+        "World Cup 2026", "Friendlies", "World Cup - Qualification Europe",
+        "World Cup - Qualification CONCACAF", "World Cup - Qualification Intercontinental Play-offs",
+        "Africa Cup of Nations"]
+    for n in LR.leagues_of_type("national_teams")[1:]:
+        e = LR.entry(n)
+        assert e["model_type"] is None and e["props"] is False and e["odds_api_props"] is False
+        assert e["api_football_id"] is None and e["season_rule"] is None and not e["enabled"]
     with pytest.raises(ValueError):
         LR.leagues_of_type("MID")
 

@@ -34,6 +34,10 @@ LR_1_1_ADDS = {
                             "Champions League", "Europa League", "Conference League"},
     "LEAGUE_TIMEZONES": {"Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1", "Swiss Super League",
                          "Czech Liga", "Croatia HNL", "Serbia Super Liga", "Ukraine Premier League"},
+    # LR-1.2 (2026-11-02): football-data codes for no-model leagues (big-5 from data_loader._HT_EXTRA,
+    # SWZ/POL from the deleted Pro backfill dict)
+    "FOOTBALL_DATA_LEAGUES": {"Premier League", "Bundesliga", "La Liga", "Serie A", "Ligue 1",
+                              "Swiss Super League", "Poland Ekstraklasa"},
 }
 
 
@@ -119,7 +123,9 @@ def test_shipped_registry_is_valid_and_consistent_with_config():
 
 def test_every_model_league_has_api_id_and_season_rule():
     for e in REG["leagues"]:
-        assert e["season_rule"], e["name"]
+        # LR-1.2: null only for a no-model, no-API-id collection entry (national-team rows)
+        assert e["season_rule"] or (e["model_type"] is None and e["api_football_id"] is None
+                                    and not e["enabled"]), e["name"]
         if e["model_type"]:
             assert e["api_football_id"], e["name"]
         if e["enabled"] and not e.get("provider_unsupported"):

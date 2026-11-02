@@ -37,8 +37,9 @@ def _ev(h, a, d="2026-10-24", hs=1, as_=0):
 
 
 def test_match_event_refuses_an_ambiguous_pool():
-    # Pairwise, 'Bristol' matches 'Bristol City' (one-name pool); in the date's pool it is ambiguous.
-    assert U._names_match("Bristol", "Bristol City")
+    # A token subset is not proof of one club (2026-11-02): 'Bristol' no longer matches 'Bristol
+    # City' even pairwise, and in the date's pool it resolves to neither.
+    assert not U._names_match("Bristol", "Bristol City")
     evs = [_ev("Bristol City", "Roma"), _ev("Bristol Rovers", "Roma")]
     assert U._match_event("Bristol", "Roma", evs, {"2026-10-24"}) is None
 

@@ -26,6 +26,11 @@ odds_api_sport_keys_for(), sport_key_to_league(), timezone(), competition_type()
 fpl_league(), provider_name() and same_club_spellings(). An unknown league or a fact the registry
 does not hold returns None (or an empty list): never a default.
 
+LR-1.2 (2026-11-02): football_data_format (the football-data file family of a code, so a no-model
+league's code is never filed under /new/ by elimination), odds_api_props (OddsAPI has priced player
+props for the league; read through odds_api_prop_sport_keys()), historical league spellings as
+aliases, and the national-team competitions of player_history (season_rule null = SEASON_UNKNOWN).
+
 THIS MODULE MUST NOT IMPORT config: config.py imports it.
 """
 from __future__ import annotations
@@ -44,6 +49,8 @@ MODEL_TYPES = ("standard", "new_format")
 PRODUCTION_STATES = ("ENABLED", "ENABLED_PROVIDER_UNSUPPORTED", "PAPER", "TRAINING_ONLY", "COLLECTION_ONLY")
 SEASON_RULE_TYPES = ("start_year", "calendar_year", "end_year", "fixed")
 COMPETITION_TYPES = ("club_league", "club_cup", "national_teams")
+FOOTBALL_DATA_FORMATS = ("mmz4281", "new")
+_MODEL_FD_FORMAT = {"standard": "mmz4281", "new_format": "new"}
 
 _IANA: set | None = None
 
@@ -177,7 +184,11 @@ def validate(reg: dict) -> list[str]:
                         f"would be routed nowhere)")
         if e.get("paper") and not e.get("enabled"):
             errs.append(f"{n}: a paper league must stay enabled (config.PAPER_LEAGUES rule)")
-        errs += [f"{n}: {m}" for m in _validate_season_rule(e.get("season_rule"))]
+        if e.get("season_rule") is None and e.get("model_type") is None \
+                and e.get("api_football_id") is None and not e.get("enabled"):
+            pass    # LR-1.2: season convention unknown -> season_resolver gives SEASON_UNKNOWN
+        else:
+            errs += [f"{n}: {m}" for m in _validate_season_rule(e.get("season_rule"))]
         errs += [f"{n}: {m}" for m in _validate_facts(e)]
     fpl = [e.get("name") for e in leagues if e.get("fpl") is True]
     if len(fpl) > 1:
@@ -228,6 +239,18 @@ def _validate_facts(e: dict) -> list[str]:
             out.append(f"{flag} must be true or false, got {e.get(flag)!r}")
     if e.get("props") is True and not e.get("api_football_id"):
         out.append("props league must have an api_football_id (the prop pipeline fetches by id)")
+    # LR-1.2
+    if not isinstance(e.get("odds_api_props"), bool):
+        out.append(f"odds_api_props must be true or false, got {e.get('odds_api_props')!r}")
+    elif e["odds_api_props"] and not e.get("odds_api_sport_key"):
+        out.append("odds_api_props league must have an odds_api_sport_key")
+    fmt, code = e.get("football_data_format"), e.get("football_data_code")
+    if fmt not in (None,) + FOOTBALL_DATA_FORMATS:
+        out.append(f"football_data_format {fmt!r} not in {FOOTBALL_DATA_FORMATS} or null")
+    elif bool(fmt) != bool(code):
+        out.append("football_data_format and football_data_code must be set together")
+    elif fmt and e.get("model_type") and fmt != _MODEL_FD_FORMAT[e["model_type"]]:
+        out.append(f"football_data_format {fmt!r} contradicts model_type {e['model_type']!r}")
     if e.get("fpl") is True and e.get("competition_type") != "club_league":
         out.append("the fpl league must be a club_league")
     tz = e.get("timezone")
@@ -367,6 +390,19 @@ def prop_sport_keys(path: Path | None = None) -> LeagueMap:
     `odds_api_sport_keys_for` / `sport_key_to_league`."""
     return LeagueMap({e["name"]: e["odds_api_sport_key"] for e in leagues(path)
                       if e.get("props") is True and e.get("odds_api_sport_key")}, alias_map(path))
+
+
+def odds_api_prop_sport_keys(path: Path | None = None) -> LeagueMap:
+    """{canonical name: OddsAPI sport key} for the leagues OddsAPI has actually priced player props
+    for (`odds_api_props: true`, evidence output/prop_odds_coverage.json). The props fetcher can ask
+    only these instead of probing every prop league."""
+    return LeagueMap({e["name"]: e["odds_api_sport_key"] for e in leagues(path)
+                      if e.get("odds_api_props") is True and e.get("odds_api_sport_key")}, alias_map(path))
+
+
+def football_data_format(league, path: Path | None = None) -> str | None:
+    """'mmz4281' | 'new' - the football-data.co.uk file family of the league's code, or None."""
+    return _fact(league, "football_data_format", path)
 
 
 def odds_api_sport_key(league, path: Path | None = None) -> str | None:

@@ -21,7 +21,6 @@ import os
 import re
 import sys
 import time
-import unicodedata
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
@@ -162,33 +161,18 @@ def _get(endpoint: str, params: dict, ttl_h: float = 24.0) -> Optional[dict]:
         return None
 
 
-# ── Name normalisation ────────────────────────────────────────────────────────
+# ── Club identity ─────────────────────────────────────────────────────────────
+#
+# Board (OddsAPI) club names are matched to API-Football's names ONLY through the canonical,
+# league-scoped resolver src.team_names.resolve (2026-11-02). The old _norm_name key stripped
+# suffixes like "SP"/"MG"/"RJ" ("Atletico-MG" and "Atletico GO" both lost their state tag) and
+# carried its own alias dict (_POST_NORM_ALIASES, now in the team_names alias store). Within one
+# API-Football payload names are compared as API-Football wrote them; players by player id.
 
-_STRIP_SUFFIXES = re.compile(
-    r"\b(FC|CF|SC|BK|IF|IFK|SK|FK|AC|AS|SS|SD|CD|UD|RJ|SP|MG|RS|PA|BA|CE|EC|"
-    r"CA|CR|SE|AF|GD|BS|SL|RFC|AFC|FBC|JFC)\b",
-    re.IGNORECASE,
-)
-
-# Known cross-source aliases: applied after suffix stripping and lowercasing.
-# Keys and values are already normalised (lowercase, no accents).
-_POST_NORM_ALIASES: dict[str, str] = {
-    "vasco da gama": "vasco",
-    "rb bragantino": "bragantino",
-    "red bull bragantino": "bragantino",
-    "atlanta united": "atlanta utd",
-    "internazionale": "inter",
-    "sporting cp": "sporting",
-}
-
-
-def _norm_name(name: str) -> str:
-    """Lowercase, strip accents, remove common football suffixes."""
-    name = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode()
-    name = _STRIP_SUFFIXES.sub("", name)
-    name = re.sub(r"\s+", " ", name).strip().lower()
-    name = name.rstrip("-").strip()   # "Atletico-MG" → "atletico-" → "atletico"
-    return _POST_NORM_ALIASES.get(name, name)
+def _resolve_club(name: str, af_names) -> Optional[str]:
+    """The ONE API-Football name in `af_names` (one league) that is provably `name`, else None."""
+    from src.team_names import resolve
+    return resolve(str(name or ""), sorted({str(n) for n in af_names if n}))
 
 
 def _to_int(val) -> Optional[int]:
@@ -279,10 +263,10 @@ def get_fixture_statistics(fixture_id: int) -> dict:
 def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -> pd.DataFrame:
     """
     Fetch match stats (shots, corners, fouls) for a league/season from cache.
-    Returns DataFrame: date(datetime), home_team, away_team,
+    Returns DataFrame: date(datetime), home_team, away_team (API-Football spellings),
                        home_shots, away_shots, home_sot, away_sot,
-                       home_corners, away_corners, home_fouls, away_fouls,
-                       _home_norm, _away_norm  (for matching).
+                       home_corners, away_corners, home_fouls, away_fouls.
+    Callers match the clubs with src.team_names.resolve within the league.
     """
     fixtures = get_completed_fixtures(league_id, season)
     if not fixtures:
@@ -331,8 +315,6 @@ def fetch_shots_for_league(league_id: int, season: str, league_name: str = "") -
                 "home_xg", "away_xg", "home_insidebox", "away_insidebox",
                 "home_possession", "away_possession", "home_blocked", "away_blocked"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")
-    df["_home_norm"] = df["home_team"].apply(_norm_name)
-    df["_away_norm"] = df["away_team"].apply(_norm_name)
 
     print(f"[api_football_ou] {len(df)} fixtures with shot data for {label}")
     return df
@@ -408,33 +390,34 @@ def fetch_league_fixture_results(
 # PHASE 2 — Injury features
 # ─────────────────────────────────────────────────────────────────────────────
 
-def get_top_scorers(league_id: int, season: str) -> dict[str, list[str]]:
+def get_top_scorers(league_id: int, season: str) -> dict[str, list[int]]:
     """
     Top 3 goal scorers per team for the league/season.
-    Returns {team_name_norm: [player_norm, ...]}  — cached 7 days.
+    Returns {API-Football team name: [player id, ...]}  — cached 7 days. A scorer without a
+    player id or team is skipped (never matched by name).
     """
     data = _get("players/topscorers", {"league": league_id, "season": season}, ttl_h=168)
     if not data:
         return {}
 
-    team_scorers: dict[str, list[str]] = {}
+    team_scorers: dict[str, list[int]] = {}
     for entry in data.get("response", []):
-        player_norm = _norm_name(entry.get("player", {}).get("name", ""))
-        stats_list  = entry.get("statistics", [])
-        if not stats_list:
+        pid        = (entry.get("player") or {}).get("id")
+        stats_list = entry.get("statistics", [])
+        if pid is None or not stats_list:
             continue
-        team_norm = _norm_name(stats_list[0].get("team", {}).get("name", ""))
-        if team_norm not in team_scorers:
-            team_scorers[team_norm] = []
-        if len(team_scorers[team_norm]) < 3:
-            team_scorers[team_norm].append(player_norm)
+        team = (stats_list[0].get("team") or {}).get("name")
+        if not team:
+            continue
+        if len(team_scorers.setdefault(team, [])) < 3:
+            team_scorers[team].append(pid)
 
     return team_scorers
 
 
 def get_upcoming_fixture_ids(league_id: int, season: str, next_n: int = 20) -> dict[tuple, int]:
     """
-    Upcoming fixture IDs keyed by (home_norm, away_norm, date_str).
+    Upcoming fixture IDs keyed by (home, away, date_str) as API-Football names the clubs.
     Cached 4 h.
     """
     data = _get("fixtures", {"league": league_id, "season": season, "next": next_n}, ttl_h=4)
@@ -445,29 +428,31 @@ def get_upcoming_fixture_ids(league_id: int, season: str, next_n: int = 20) -> d
     for f in data.get("response", []):
         fix   = f.get("fixture", {})
         teams = f.get("teams", {})
-        fix_id    = fix.get("id")
-        date_str  = str(fix.get("date", ""))[:10]
-        home_norm = _norm_name(teams.get("home", {}).get("name", ""))
-        away_norm = _norm_name(teams.get("away", {}).get("name", ""))
-        result[(home_norm, away_norm, date_str)] = fix_id
+        fix_id   = fix.get("id")
+        date_str = str(fix.get("date", ""))[:10]
+        home = teams.get("home", {}).get("name")
+        away = teams.get("away", {}).get("name")
+        if fix_id and home and away and len(date_str) == 10:
+            result[(home, away, date_str)] = fix_id
 
     return result
 
 
-def get_injuries_for_fixture(fixture_id: int) -> dict[str, list[str]]:
+def get_injuries_for_fixture(fixture_id: int) -> dict[str, list[int]]:
     """
     Injured/suspended players for a specific fixture.
-    Returns {team_norm: [player_norm, ...]}  — cached 2 h.
+    Returns {API-Football team name: [player id, ...]}  — cached 2 h.
     """
     data = _get("injuries", {"fixture": fixture_id}, ttl_h=2)
     if not data:
         return {}
 
-    injuries: dict[str, list[str]] = {}
+    injuries: dict[str, list[int]] = {}
     for entry in data.get("response", []):
-        team_norm   = _norm_name(entry.get("team", {}).get("name", ""))
-        player_norm = _norm_name(entry.get("player", {}).get("name", ""))
-        injuries.setdefault(team_norm, []).append(player_norm)
+        team = (entry.get("team") or {}).get("name")
+        pid  = (entry.get("player") or {}).get("id")
+        if team and pid is not None:
+            injuries.setdefault(team, []).append(pid)
 
     return injuries
 
@@ -477,11 +462,11 @@ def get_league_injury_context(league_id: int, season: str) -> dict:
     Pre-fetch everything needed for injury features for all upcoming fixtures
     in one league.  Call once per league, reuse for every row.
 
-    Returns:
+    Returns (API-Football club names, player ids):
         {
-            "top_scorers":  {team_norm: [player_norm, ...]},
-            "fixture_ids":  {(home_norm, away_norm, date_str): fixture_id},
-            "injuries":     {fixture_id: {team_norm: [player_norm, ...]}},
+            "top_scorers":  {team: [player_id, ...]},
+            "fixture_ids":  {(home, away, date_str): fixture_id},
+            "injuries":     {fixture_id: {team: [player_id, ...]}},
         }
     """
     ctx: dict = {
@@ -511,22 +496,25 @@ def injury_features_from_context(
     if not ctx:
         return unknown
 
-    home_norm = _norm_name(home_team)
-    away_norm = _norm_name(away_team)
-    date_str  = str(match_date)[:10]
-
-    fix_id = ctx["fixture_ids"].get((home_norm, away_norm, date_str))
-    if fix_id is None:
+    date_str = str(match_date)[:10]
+    # The board clubs resolved (src.team_names.resolve) among THAT date's API-Football fixtures
+    # of the league; exactly one fixture or unknown.
+    day = [(h, a, fid) for (h, a, d), fid in ctx.get("fixture_ids", {}).items() if d == date_str]
+    rh = _resolve_club(home_team, [h for h, _, _ in day])
+    ra = _resolve_club(away_team, [a for _, a, _ in day])
+    hits = [(h, a, fid) for h, a, fid in day if h == rh and a == ra] if rh and ra else []
+    if len(hits) != 1:
         return unknown
+    af_home, af_away, fix_id = hits[0]
     out = {"key_attacker_absent_home": 0.0, "key_attacker_absent_away": 0.0}
 
     injuries     = ctx["injuries"].get(fix_id, {})
     top_scorers  = ctx["top_scorers"]
 
-    home_scorers = top_scorers.get(home_norm, [])
-    away_scorers = top_scorers.get(away_norm, [])
-    home_injured = injuries.get(home_norm, [])
-    away_injured = injuries.get(away_norm, [])
+    home_scorers = top_scorers.get(af_home, [])
+    away_scorers = top_scorers.get(af_away, [])
+    home_injured = injuries.get(af_home, [])
+    away_injured = injuries.get(af_away, [])
 
     if home_scorers and any(p in home_injured for p in home_scorers):
         out["key_attacker_absent_home"] = 1.0
@@ -543,61 +531,25 @@ def injury_features_from_context(
 # ~40 calls/day (2 per upcoming match × ~20 matches/day). TTL: 24h.
 # ─────────────────────────────────────────────────────────────────────────────
 
-_TEAM_ID_CACHE_PATH = config.BASE_DIR / "team_id_cache.json"
-
-
-def _load_team_id_cache() -> dict:
-    try:
-        return json.loads(_TEAM_ID_CACHE_PATH.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-
-
-def _save_team_id_cache(cache: dict) -> None:
-    try:
-        _TEAM_ID_CACHE_PATH.write_text(
-            json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-    except Exception:
-        pass
-
-
 def _resolve_team_id(
     team_name: str, league_id: int, season: str
 ) -> Optional[int]:
     """
-    Resolve API-Football team ID by name within a league/season.
-    Checks persistent local cache first (zero API cost on cache hit).
-    Falls back to GET /teams?league=&season= (1 call per league-season, not per team).
-    Results cached permanently — team IDs don't change.
+    Resolve API-Football team ID by name within a league/season: the league-season's team list
+    (GET /teams?league=&season=, one call per league-season, disk-cached a year by _get) and the
+    canonical resolver src.team_names.resolve over its names. None when no team is provably the
+    club. (The old persistent team_id_cache.json was keyed by the _norm_name identity guess.)
     """
-    norm      = _norm_name(team_name)
-    league_key = str(league_id)
-    cache      = _load_team_id_cache()
-
-    if league_key in cache and norm in cache[league_key]:
-        return cache[league_key].get(norm)
-
-    # Fetch all teams in this league/season at once (1 API call, populates many teams)
     data = _get("teams", {"league": league_id, "season": season}, ttl_h=8760)
     if not data:
         return None
-
-    if league_key not in cache:
-        cache[league_key] = {}
-
-    team_id = None
+    ids: dict[str, int] = {}
     for entry in data.get("response", []):
-        t    = entry.get("team", {})
-        t_id = t.get("id")
-        t_nm = _norm_name(t.get("name", ""))
-        if t_id and t_nm:
-            cache[league_key][t_nm] = t_id
-            if t_nm == norm:
-                team_id = t_id
-
-    _save_team_id_cache(cache)
-    return team_id
+        t = entry.get("team", {}) or {}
+        if t.get("id") and t.get("name"):
+            ids[str(t["name"])] = t["id"]
+    hit = _resolve_club(team_name, ids)
+    return ids.get(hit) if hit else None
 
 
 def fetch_team_season_stats(
@@ -730,7 +682,8 @@ def resolve_upcoming_fixture_ids(
 ) -> dict[tuple[str, str, str, str], int]:
     """
     Fetch /fixtures?league=X&season=Y&next=10 per league in upcoming_df.
-    Returns {(league, date_str, home_norm, away_norm): fixture_id} - see _fixture_key. Keyed by
+    Returns {(league, date_str, home, away): fixture_id} with API-Football's club names - see
+    _fixture_key; _row_fixture_id resolves board names onto them. Keyed by
     league and date too: one name-only dict across all leagues let a same-named pairing in
     another competition (or a second leg) overwrite the id. Each fixture's API-Football team ids
     are kept in _FIXTURE_TEAM_IDS so lineups are matched by id, never by position.
@@ -768,17 +721,26 @@ _FIXTURE_TEAM_IDS: dict[int, tuple] = {}
 
 
 def _fixture_key(league, date, home, away):
-    """(league, 'YYYY-MM-DD', home_norm, away_norm), or None when any part is missing."""
+    """(league, 'YYYY-MM-DD', home, away), or None when any part is missing. Names as given."""
     d = str(date)[:10] if date is not None else ""
-    hn, an = _norm_name(str(home or "")), _norm_name(str(away or ""))
+    hn, an = str(home or "").strip(), str(away or "").strip()
     if not (league and len(d) == 10 and hn and an):
         return None
     return (str(league), d, hn, an)
 
 
 def _row_fixture_id(row, fixture_ids: dict):
+    """The API-Football fixture id of a board row: both clubs resolved (src.team_names.resolve)
+    among the API-Football fixtures of the SAME league and date; exactly one fixture or None."""
     key = _fixture_key(row.get("league"), _row_date(row), row.get("home_team"), row.get("away_team"))
-    return fixture_ids.get(key) if key else None
+    if not key:
+        return None
+    lg, d, home, away = key
+    day = [(k, fid) for k, fid in fixture_ids.items() if k[0] == lg and k[1] == d]
+    rh = _resolve_club(home, [k[2] for k, _ in day])
+    ra = _resolve_club(away, [k[3] for k, _ in day])
+    hits = [fid for k, fid in day if rh and ra and k[2] == rh and k[3] == ra]
+    return hits[0] if len(hits) == 1 else None
 
 
 # ─────────────────────────────────────────────────────────────────────────────

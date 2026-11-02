@@ -87,11 +87,8 @@ def test_a_name_sharing_nothing_is_refused():
     assert match_team("Platense", ["Boca Juniors", "Racing Club"])[0] is None
 
 
-@pytest.mark.xfail(strict=True, reason="KNOWN BUG in src/team_names.resolve (not owned here): tier 5 "
-                   "pairs 'platense' with the stem 'plate', so Platense resolves to River Plate when "
-                   "the real club is absent from the candidates. match_team now uses the estate "
-                   "resolver (owner rule), so it inherits this; fix belongs in team_names._prefix_eq.")
 def test_a_stem_only_overlap_is_refused():
+    # was a strict xfail until src/team_names dropped its stem tier (2026-11-02)
     assert match_team("Platense", ["Boca Juniors", "River Plate"])[0] is None
 
 
