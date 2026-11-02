@@ -561,4 +561,72 @@ def predict_upcoming(
     # 8. Re-run evaluate_value now that drift columns exist (single pass)
     feat = evaluate_value(feat)
 
+    # 9. Fixture identity (issue #1, 2026-11-02): API-Football fixture_id where it resolves, and
+    #    the OddsAPI event id in its own column. Identity only - no model input reads either.
+    feat = attach_fixture_ids(feat)
+
     return feat, postponed
+
+
+def _event_id(v) -> str | None:
+    """The OddsAPI event id as sent, or None for a missing / blank one."""
+    if v is None or (isinstance(v, float) and v != v):
+        return None
+    s = str(v).strip()
+    return s if s and s not in ("nan", "None") else None
+
+
+def attach_fixture_ids(df: pd.DataFrame, fixtures_for=None) -> pd.DataFrame:
+    """Add `fixture_id` (API-Football fixture id, nullable Int64) and `oddsapi_event_id` (the
+    OddsAPI event id, string) to a board of upcoming fixtures. Never raises.
+
+    `fixture_id` is looked up per (league, UTC date): the league's API-Football id from the
+    registry (src/league_registry), its season from src/season_resolver, that date's fixtures
+    from API-Football, and both clubs resolved by src.team_names.resolve within that pool
+    (player_model.api_football.match_fixture: ambiguity refused, the pair must be one fixture).
+    A league without an id, an unknown season, no API data or an unresolved pair leaves
+    fixture_id EMPTY (counted and logged); the OddsAPI id is never written into fixture_id.
+
+    `fixtures_for(league_id, season, date_str) -> list[dict]` is injectable for tests; the
+    default is player_model.api_football.fixtures_on_date_raw (cached 6 h)."""
+    out = df.copy()
+    out["oddsapi_event_id"] = (out["_oa_event_id"].map(_event_id) if "_oa_event_id" in out.columns
+                               else pd.Series([None] * len(out), index=out.index, dtype=object))
+    ids = pd.Series([pd.NA] * len(out), index=out.index, dtype="Int64")
+    if out.empty or not {"league", "date", "home_team", "away_team"} <= set(out.columns):
+        out["fixture_id"] = ids
+        return out
+    try:
+        from src import league_registry as LR
+        from src.season_resolver import is_known, resolve_api_season
+        from player_model.api_football import fixtures_on_date_raw, match_fixture
+        if fixtures_for is None:
+            def fixtures_for(lid, season, day):
+                return fixtures_on_date_raw(lid, season, day, cache_hours=6)
+        why: dict[str, int] = {}
+        days = pd.to_datetime(out["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        for (lg, day), g in out.groupby([out["league"].astype(str), days], sort=False):
+            lid = (LR.entry(lg) or {}).get("api_football_id")
+            if not lid:
+                why["league has no API-Football id"] = why.get("league has no API-Football id", 0) + len(g)
+                continue
+            season = resolve_api_season(lg, day)
+            if not is_known(season):
+                why["season unknown"] = why.get("season unknown", 0) + len(g)
+                continue
+            fixtures = fixtures_for(int(lid), str(season), day)
+            for i, r in g.iterrows():
+                fx = match_fixture(fixtures, r["home_team"], r["away_team"])
+                fid = ((fx or {}).get("fixture") or {}).get("id")
+                if fid:
+                    ids.at[i] = int(fid)
+                else:
+                    why["clubs not resolved to one API-Football fixture"] = \
+                        why.get("clubs not resolved to one API-Football fixture", 0) + 1
+        if why:
+            log.info(f"[fixture_id] {int(ids.notna().sum())} of {len(out)} fixture(s) carry an "
+                     f"API-Football fixture_id; without one: {why}")
+    except Exception as e:                                            # noqa: BLE001
+        log.warning(f"[fixture_id] API-Football fixture ids not attached ({type(e).__name__}: {e})")
+    out["fixture_id"] = ids
+    return out

@@ -530,15 +530,10 @@ def get_fixture_lineup(fixture_id: int) -> dict:
 
 # ── Referee ───────────────────────────────────────────────────────────────────
 
-def get_fixture_referee(fixture_id: int) -> str:
-    """Return referee name for a fixture."""
-    data = _get("/fixtures", {"id": fixture_id}, cache_hours=24)
-    if not data:
-        return ""
-    resp = data.get("response", [{}])
-    if not resp:
-        return ""
-    return resp[0].get("fixture", {}).get("referee", "") or ""
+def get_fixture_referee(fixture_id: int) -> str | None:
+    """Referee name for a fixture, or None when the provider has none (was "")."""
+    fix = fixture_by_id_raw(fixture_id, cache_hours=24)
+    return ((fix or {}).get("fixture") or {}).get("referee") or None
 
 
 # ── Rolling player stats ──────────────────────────────────────────────────────

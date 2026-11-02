@@ -989,12 +989,10 @@ def run_player_predictions(
 
     tips_df = pd.DataFrame(all_tips)
     tips_df = tips_df.sort_values("model_prob", ascending=False)
-    # One tip per (fixture, player, market) on IDS (was the normalised player NAME, which merged
-    # two different players sharing a short name). A bets.csv fixture has no fixture_id; its
-    # `match` string (the fixture's own names) stands in for it.
-    tips_df["_fx"] = tips_df["fixture_id"].where(tips_df["fixture_id"].notna(), tips_df["match"]).astype(str)
-    tips_df = tips_df.drop_duplicates(subset=["_fx", "player_id", "market"])
-    tips_df = tips_df.drop(columns=["_fx"])
+    # One tip per (player_id, fixture_id, market) on IDS (was the normalised player NAME, which
+    # merged two different players sharing a short name). Every fixture reaching this point has
+    # an API-Football fixture_id (fixtures without one were skipped above, issue #1 step 1).
+    tips_df = tips_df.drop_duplicates(subset=["player_id", "fixture_id", "market"])
 
     output = config.OUTPUT_DIR / "player_tips.csv"
     tips_df.to_csv(output, index=False)

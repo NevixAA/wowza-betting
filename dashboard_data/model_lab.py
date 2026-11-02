@@ -82,23 +82,45 @@ def gate_config(path: Path | None = None) -> dict:
             "max_age_days": (g.get("prospective") or {}).get("max_age_days")}
 
 
-def prospective(eval_path: Path | None = None, exp_path: Path | None = None) -> tuple[pd.DataFrame, str | None]:
-    """H-MODEL-01 paired comparison per track, with n against the registered per-track minimum."""
+def _int_or_none(v) -> int | None:
+    if v is None or isinstance(v, bool):
+        return None
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def prospective(eval_path: Path | None = None, exp_path: Path | None = None,
+                gate_path: Path | None = None) -> tuple[pd.DataFrame, str | None]:
+    """H-MODEL-01 paired comparison per track, with n against the registered per-track minimum.
+
+    The minimum is the experiment's registered n_min_per_track, else config/promotion_gate.json
+    prospective.min_n_per_track. With neither, or with no settled count, the track row is SKIPPED
+    and logged (Data Truth 2026-11-02: was `or 1000` / `or 0`, typed numbers shown as data)."""
     ev = _json(eval_path or SHADOW_EVAL)
     exps = {e.get("experiment_id"): e for e in (_json(exp_path or EXPERIMENTS).get("experiments") or [])}
-    rows = []
+    gate_min = _int_or_none((_json(gate_path or GATE_CFG).get("prospective") or {}).get("min_n_per_track"))
+    rows, skipped = [], []
     for key, r in (ev.get("results") or {}).items():
         exp_id, _, track = key.partition("|")
         e = exps.get(exp_id, {})
-        need = int(e.get("n_min_per_track") or 1000)
-        n = int(r.get("settled_paired") or 0)
-        rows.append({"experiment": exp_id, "track": track, "status": e.get("status", ""),
-                     "settled_paired_n": n, "required_n": need, "progress": min(1.0, n / need) if need else 0.0,
+        need = _int_or_none(e.get("n_min_per_track"))
+        need = need if need is not None else gate_min
+        n = _int_or_none(r.get("settled_paired"))
+        if not need or n is None:
+            skipped.append(key)
+            continue
+        rows.append({"experiment": exp_id, "track": track, "status": e.get("status"),
+                     "settled_paired_n": n, "required_n": need, "progress": min(1.0, n / need),
                      "logged_rows": r.get("rows"),
                      "delta_log_loss": r.get("delta_log_loss"), "delta_brier": r.get("delta_brier"),
                      "ll_champion": r.get("ll_champion_raw"), "ll_challenger": r.get("ll_challenger"),
                      "evaluable": n >= need,
                      "registered_at": e.get("registered_at"), "challenger_version": e.get("challenger_version")})
+    if skipped:
+        print(f"[model_lab] {len(skipped)} prospective track row(s) skipped - no registered per-track "
+              f"minimum or no settled count: {skipped}")
     return pd.DataFrame(rows), ev.get("computed_at")
 
 

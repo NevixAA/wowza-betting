@@ -141,6 +141,38 @@ _MARKET_HIT = {
     "sot4":    lambda s: s["sot"] >= 4,
     "cards":   lambda s: (s["yc"] >= 1) or (s["rc"] >= 1),
 }
+#: stats each market reads; a None among them leaves the record PENDING (Data Truth 2026-11-02).
+_MARKET_NEEDS = {m: (("yc", "rc") if m == "cards" else
+                     ("goals",) if m.startswith("goals") else
+                     ("assists",) if m == "assists" else ("sot",))
+                 for m in _MARKET_HIT}
+
+
+def _id_str(v) -> str | None:
+    """A provider id as a canonical string ('1635606.0' -> '1635606'), or None."""
+    if v is None:
+        return None
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return str(int(f)) if f == f and f > 0 else None
+
+
+def _stat(v) -> float | None:
+    """A recorded count as float, or None when the stats row has no value (never 0)."""
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return None
+    return f if f == f else None
+
+
+def _settle_stats(rec) -> dict:
+    """The grading stats of one player_history row; a missing stat is None, not 0 (was `or 0`)."""
+    return {"goals": _stat(rec.goals), "assists": _stat(rec.assists),
+            "sot": _stat(rec.shots_on_target),
+            "yc": _stat(rec.yellow_cards), "rc": _stat(rec.red_cards)}
 
 
 def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
@@ -176,35 +208,54 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     _cols = ["player_name", "date", "goals", "assists",
              "shots_on_target", "yellow_cards", "red_cards"]
     try:                       # player_id landed 2026-08-15; tolerate older parquets
-        pq = pd.read_parquet(pqp, columns=_cols + ["player_id"])
+        pq = pd.read_parquet(pqp, columns=_cols + ["player_id", "fixture_id"])
     except Exception:
-        pq = pd.read_parquet(pqp, columns=_cols)
-        pq["player_id"] = None
+        try:
+            pq = pd.read_parquet(pqp, columns=_cols + ["player_id"])
+        except Exception:
+            pq = pd.read_parquet(pqp, columns=_cols)
+            pq["player_id"] = None
+        pq["fixture_id"] = None
     pq["dkey"] = pq["date"].astype(str).str[:10]
     # Exact index. Joining players by NAME is the weak link that has kept props ungraded:
     # any spelling variance between the tip and the stats row silently drops the record, and a
-    # namesake's row grades the wrong player. player_ledger carries player_id: (id, date) ONLY.
-    idx_by_id = {(str(r.player_id), r.dkey): r for r in pq.itertuples()
-                 if r.player_id is not None and str(r.player_id) not in ("", "nan", "None")}
+    # namesake's row grades the wrong player. player_ledger carries player_id (and, since issue #1
+    # step 1, fixture_id): (player_id, fixture_id) when both sides have the fixture, else
+    # (player_id, date) for legacy rows.
+    idx_by_id: dict = {}
+    idx_by_fx: dict = {}
+    for r in pq.itertuples():
+        pid = _id_str(r.player_id)
+        if pid is None:
+            continue
+        idx_by_id[(pid, r.dkey)] = r
+        fid = _id_str(r.fixture_id)
+        if fid is not None:
+            idx_by_fx[(pid, fid)] = r
 
+    # clv bet_ids carry the tip's player NAME (the same string player_ledger wrote for that tip);
+    # the ledger row supplies its ids. This is an exact key between two files of one pipeline run,
+    # never a match against another source's spelling.
     pid_lookup: dict = {}
     try:
         _led = pd.read_csv(config.OUTPUT_DIR / "player_ledger.csv", dtype=str)
         if "player_id" in _led.columns:
             for _, _r in _led.iterrows():
-                _pid = str(_r.get("player_id", "")).strip()
-                if _pid and _pid not in ("nan", "None"):
+                _pid = _id_str(_r.get("player_id"))
+                if _pid is not None:
                     pid_lookup[(_norm(_r.get("player_name", "")),
                                 str(_r.get("market", "")),
-                                str(_r.get("match_date", ""))[:10])] = _pid
-    except Exception:
-        pass
+                                str(_r.get("match_date", ""))[:10])] = (_pid, _id_str(_r.get("fixture_id")))
+    except Exception as e:
+        print(f"[clv_tracker] settle: player_ledger.csv unreadable ({type(e).__name__}: {e}) - "
+              f"no player ids, nothing can be graded")
 
     pq_max = str(pq["dkey"].max()) if len(pq) else "(empty)"
     today = str(_dt.utcnow().date())
     graded = 0
     no_id = 0                  # no player_id for the tip -> cannot be graded honestly
     no_stats: list[str] = []   # played, but the parquet has no stats row -> can't grade
+    unknown_stat = 0           # stats row found, but the market's stat is missing -> pending
     for i in clv[pending].index:
         try:
             _, d, player, market = str(clv.at[i, "bet_id"]).split("|", 3)
@@ -218,13 +269,12 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
         # By player_id ONLY (Data Truth, 2026-11-01). The id comes from the ledger row the same tip
         # wrote; the old fallback joined the stats parquet on the normalised NAME, which graded a
         # namesake's match. No id -> the record stays PENDING (counted below).
-        rec = None
-        _pid = pid_lookup.get((_norm(player), market, d))
-        if _pid:
-            rec = idx_by_id.get((_pid, d))
-        else:
+        ids = pid_lookup.get((_norm(player), market, d))
+        if ids is None:
             no_id += 1
             continue
+        _pid, _fid = ids
+        rec = idx_by_fx.get((_pid, _fid)) if _fid is not None else idx_by_id.get((_pid, d))
         hit = _MARKET_HIT.get(market)
         if hit is None:
             continue
@@ -233,9 +283,11 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
             # PENDING; it grades once the fixture's stats land in the parquet. Never guess a VOID.
             no_stats.append(d)
             continue
-        s = {"goals":   float(rec.goals or 0),      "assists": float(rec.assists or 0),
-             "sot":     float(rec.shots_on_target or 0),
-             "yc":      float(rec.yellow_cards or 0), "rc":     float(rec.red_cards or 0)}
+        s = _settle_stats(rec)
+        if any(s[k] is None for k in _MARKET_NEEDS[market]):
+            # A stat the market needs is missing (provider null): unknown, NOT zero. PENDING.
+            unknown_stat += 1
+            continue
         won = bool(hit(s))
         try:
             odds = float(clv.at[i, "odds_bet"])
@@ -254,7 +306,9 @@ def settle_results(parquet_path=None, void_after_days: int = 3) -> int:
     if graded:
         clv.to_csv(f, index=False)
     print(f"[clv_tracker] settle: {graded} record(s) graded"
-          + (f"; {no_id} left PENDING (no player_id on the tip)" if no_id else ""))
+          + (f"; {no_id} left PENDING (no player_id on the tip)" if no_id else "")
+          + (f"; {unknown_stat} left PENDING (the market's stat is missing in the stats row)"
+             if unknown_stat else ""))
     if no_stats:
         # Be LOUD about this. A silent "0 graded" looks like "nothing to do", but the real
         # cause is upstream: player_history.parquet has no rows for those match dates, so the
