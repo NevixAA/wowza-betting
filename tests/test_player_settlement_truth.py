@@ -96,12 +96,13 @@ def test_no_stats_yet_stays_pending(tmp_path, monkeypatch):
     assert pd.read_csv(p, dtype=str)["result"].fillna("").iloc[0] == ""
 
 
-def test_no_stats_after_a_week_is_void_with_reason(tmp_path, monkeypatch):
-    p = _ledger(tmp_path, monkeypatch, days_ago=8)
+def test_no_stats_after_a_week_stays_pending_never_void_on_age(tmp_path, monkeypatch):
+    # Estate scan P2 (2026-11-02): this used to void as NO_STATS_7D. The fixture is FT - the match
+    # was played - so age alone is not evidence of anything; the row stays pending (logged).
+    p = _ledger(tmp_path, monkeypatch, days_ago=30)
     _api(monkeypatch, [])
     U.update_player_results()
-    row = _row(p)
-    assert row["result"] == "VOID" and row["notes"] == "NO_STATS_7D"
+    assert pd.read_csv(p, dtype=str)["result"].fillna("").iloc[0] == ""
 
 
 def test_absent_from_both_published_squads_is_dnp(tmp_path, monkeypatch):
