@@ -4,13 +4,16 @@ Real results for the club-strength rating, one row per match.
 SOURCES (only results we hold; nothing typed):
   output/strength/competition_fixtures.parquet  API-Football /fixtures?league&season, collected by
       scripts/collect_competition_fixtures.py for every registry club league AND every registry
-      club cup (UEFA Champions / Europa / Conference League, and any continental cup the registry
-      adds). Rows carry API-Football team ids and the 90-minute score.
+      club cup (UEFA Champions / Europa / Conference League), plus the continental cups listed in
+      src/strength/competitions.py (Libertadores, Sudamericana, AFC / CONCACAF Champions League,
+      Club World Cup; competition key 'af_cup:<id>'). Rows carry API-Football team ids and the
+      90-minute score.
   output/af_history.parquet   API-Football results of the new-format + standard leagues (names).
   output/fd_history.parquet   football-data.co.uk results (football-data spellings).
 
-PRECEDENCE. A (league, season) that the collected file covers is read ONLY from it (ids, full
-season); af_history then fd_history fill league-seasons it does not cover. The same pairing on dates
+PRECEDENCE. Inside the date span of a collected (league, season) the league is read ONLY from the
+collected file (ids, full season; spans, not season labels, because the banks label seasons
+differently); af_history then fd_history fill the rest. The same pairing on dates
 within DEDUP_DAYS of each other is one match reported by two sources (their kickoff dates differ by
 time zone), and the higher-precedence row is kept.
 
@@ -45,11 +48,22 @@ def _lr():
     return league_registry
 
 
+def competition_type(comp) -> str | None:
+    """'club_league' / 'club_cup' / 'national_teams' for a registry league or a collected
+    non-registry continental cup (src/strength/competitions.py); None when unknown."""
+    if not isinstance(comp, str):
+        return None
+    from src.strength.competitions import CUP_KEYS
+    if comp in CUP_KEYS:
+        return "club_cup"
+    return _lr().competition_type(comp)
+
+
 def scope_of(league) -> str | None:
     """Identity scope of a CLUB LEAGUE: 'club_league:<country>' from the registry; None for a cup,
     national-team competition or a league the registry does not know."""
     lr = _lr()
-    if not isinstance(league, str) or lr.competition_type(league) != "club_league":
+    if not isinstance(league, str) or competition_type(league) != "club_league":
         return None
     country = (lr.entry(league) or {}).get("country")
     return f"club_league:{country}" if country else None
@@ -121,10 +135,13 @@ def load_results(collected: Path | None = None, af: Path | None = None, fd: Path
 
     # 1. collected fixtures (ids). Domestic rows teach the index which id plays in which scope.
     c = _read(collected)
-    covered: set = set()
+    covered: dict = {}                     # competition -> [(first day, last day)] collected
     if not c.empty:
         c = c.copy()
-        c["competition"] = c["league"].map(_canon)
+        from src.strength.competitions import cup_key
+        reg = c["league"].map(_canon) if "league" in c.columns else pd.Series(None, index=c.index)
+        cup = c["league_id"].map(cup_key) if "league_id" in c.columns else pd.Series(None, index=c.index)
+        c["competition"] = reg.where(reg.notna(), cup)
         report["dropped_unknown_league"] += int(c["competition"].isna().sum())
         c = c[c["competition"].notna()]
         c["scope"] = c["competition"].map(scope_of)
@@ -136,7 +153,12 @@ def load_results(collected: Path | None = None, af: Path | None = None, fd: Path
         ok = c["ft_home"].notna() & c["ft_away"].notna() & c["home_id"].notna() & c["away_id"].notna()
         report["dropped_no_score"] += int((~ok).sum())
         c = c[ok]
-        covered = set(zip(c["competition"], c["season"].astype(str)))
+        # Coverage by DATE SPAN per competition-season: the history banks label seasons
+        # differently ('2023/24' vs API-Football '2023'), so a season label cannot be compared.
+        _d = pd.to_datetime(c["date"], errors="coerce", utc=True).dt.tz_localize(None).dt.normalize()
+        for (cp, _s), span in _d.groupby([c["competition"], c["season"].astype(str)]):
+            if span.notna().any():
+                covered.setdefault(cp, []).append((span.min(), span.max()))
         parts.append(pd.DataFrame({
             "date": pd.to_datetime(c["date"], errors="coerce", utc=True).dt.tz_localize(None).dt.normalize(),
             "competition": c["competition"], "season": c["season"].astype(str), "source": "collected",
@@ -154,6 +176,12 @@ def load_results(collected: Path | None = None, af: Path | None = None, fd: Path
         a = a[a["competition"].notna()].copy()
         a["scope"] = a["competition"].map(scope_of)
         a = a[a["scope"].notna()]
+        # Rows written since 2026-11-01 carry API-Football team ids: they teach the index too.
+        for side in ("home", "away"):
+            if f"{side}_team_id" in a.columns:
+                for sc, tid, nm in zip(a["scope"], a[f"{side}_team_id"], a[f"{side}_team"]):
+                    if tid == tid and tid is not None and nm == nm:
+                        idx.add(sc, str(nm), f"af:{int(tid)}")
         for sc, sub in a.groupby("scope"):
             for nm in pd.unique(pd.concat([sub["home_team"], sub["away_team"]]).dropna()):
                 if idx.resolve(str(nm), sc) is None:
@@ -171,8 +199,14 @@ def load_results(collected: Path | None = None, af: Path | None = None, fd: Path
         rows.append(("fd", f, "home_goals", "away_goals"))
 
     for src_name, d, hg, ag in rows:
-        d = d[~pd.Series([(cp, str(s)) in covered for cp, s in zip(d["competition"], d["season"])],
-                         index=d.index)]
+        _dd = pd.to_datetime(d["date"], errors="coerce").dt.normalize()
+        inside = pd.Series(False, index=d.index)
+        for cp, spans in covered.items():
+            m_cp = d["competition"] == cp          # registry canonical names on both sides
+            for lo, hi in spans:
+                inside |= m_cp & (_dd >= lo) & (_dd <= hi)
+        report["covered_by_collected"] = report.get("covered_by_collected", 0) + int(inside.sum())
+        d = d[~inside]
         ok = d[hg].notna() & d[ag].notna()
         report["dropped_no_score"] += int((~ok).sum())
         d = d[ok]

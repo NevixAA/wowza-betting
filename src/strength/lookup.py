@@ -48,7 +48,7 @@ class Strength:
             scope = results.scope_of(league)
             if scope is not None:
                 self._key_cache[k] = self.index.resolve(name, scope)
-            elif isinstance(league, str) and results._lr().competition_type(league) == "club_cup":
+            elif results.competition_type(league) == "club_cup":
                 self._key_cache[k] = self.index.resolve_any_scope(name)
             else:
                 self._key_cache[k] = None
