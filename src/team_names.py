@@ -41,6 +41,10 @@ _GENERIC = {
     # Koninklijke Voetbalclub, Turn- und Sportverein ...), added 2026-11-02 with the stem tiers'
     # removal: "Kalmar FF" == "Kalmar", "KV Mechelen" == "Mechelen", "TSV Hartberg" == "Hartberg"
     "ff", "ik", "aif", "kv", "kvc", "tsv", "ssv", "rc", "bc",
+    # the club-form affixes data_loader._norm_club stripped, so identity_key() (which replaces it in
+    # data_loader._canonicalise_clubs) keeps its merges: "UD Almeria" == "Almeria",
+    # "SSC Napoli" == "Napoli", "NK Osijek" == "Osijek" (2026-11-02)
+    "ud", "nk", "vv", "ssc", "usc", "cfc",
     "real",  # dropped only as a LAST resort, see _tokens(keep_real)
 }
 # Descriptors that distinguish English clubs from each other and must NEVER be stripped
@@ -390,6 +394,20 @@ def _tokens(s: str, keep_real: bool = True) -> set[str]:
             continue
         out.add(_ABBREV.get(t, t))
     return out
+
+
+def identity_key(name) -> str | None:
+    """The club-identity key of one spelling WITHIN A LEAGUE: two spellings with the same key pass
+    resolve()'s token-set tier for each other ("1. FC Koln" / "FC Koln" / "Koln"; "Cadiz CF" /
+    "Cadiz"). Reserve sides never share a key with a first team. None when the name carries no
+    identity token at all ("Sporting CP" is only club-form words): such a name proves nothing and
+    must not be merged with anything by this key."""
+    if name is None or (isinstance(name, float) and name != name):
+        return None
+    t = _tokens(str(name))
+    if not t:
+        return None
+    return ("reserve|" if _is_reserve(str(name)) else "") + " ".join(sorted(t))
 
 
 def resolve(name: str, candidates: list[str]) -> str | None:

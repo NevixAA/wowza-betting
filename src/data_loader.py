@@ -200,8 +200,12 @@ _AFFIX_RE = re.compile(
 
 
 def _norm_club(s: str) -> str:
-    """Accent-, punctuation- and affix-insensitive club key. Used ONLY to spot the same club
-    written two ways within one league -- never to match across different clubs."""
+    """Accent-, punctuation- and affix-insensitive club key.
+
+    NO LONGER USED IN THIS MODULE (2026-11-02): _canonicalise_clubs keys clubs by
+    src.team_names.identity_key. Kept ONLY because src/standard_repair.attach_entry_prices
+    (serve-owned) still imports it as a join key; delete it when that file moves to
+    team_names.resolve."""
     import unicodedata
     t = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode().lower().strip()
     t = re.sub(r"[^a-z0-9 ]+", " ", t)
@@ -277,8 +281,9 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     rows, including Kaiserslautern, Koln, Magdeburg, Nurnberg and Schalke in Bundesliga 2 and
     Granada, Cartagena and Castellon in La Liga 2.
 
-    THE MERGE IS EVIDENCE-BASED, NOT FUZZY. Two spellings are merged only when they normalise to
-    the same key WITHIN THE SAME LEAGUE. The winner is the spelling seen most recently, because
+    THE MERGE IS EVIDENCE-BASED, NOT FUZZY. Two spellings are merged only when they have the same
+    src.team_names.identity_key (same identity tokens once club-form words are removed; reserve
+    sides apart) WITHIN THE SAME LEAGUE. The winner is the spelling seen most recently, because
     that is what future downloads will keep producing, so the vocabulary converges rather than
     oscillating. Ambiguity is impossible here by construction: the merge is within one league and
     one normalised key, and the duplicated fixtures it resolves agree on every score.
@@ -290,7 +295,15 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
         d[c] = d[c].astype(str).str.strip()
     long = pd.concat([d[["league", "home_team", "date"]].rename(columns={"home_team": "t"}),
                       d[["league", "away_team", "date"]].rename(columns={"away_team": "t"})])
-    long["k"] = long["t"].map(_norm_club)
+    # Club identity through the canonical resolver's token rule (src.team_names.identity_key); a
+    # name with no identity token keys on itself, so it is never merged with anything.
+    from src.team_names import identity_key as _ikey
+
+    def _key(t):
+        k = _ikey(t)
+        return k if k is not None else f"raw|{t}"
+
+    long["k"] = long["t"].map(_key)
     long["date"] = pd.to_datetime(long["date"], errors="coerce")
     # Most recently seen spelling wins; frequency breaks a tie.
     agg = (long.groupby(["league", "k", "t"])
@@ -301,7 +314,7 @@ def _canonicalise_clubs(df: pd.DataFrame) -> pd.DataFrame:
     n_multi = int((agg.groupby(["league", "k"])["t"].transform("size") > 1).sum())
 
     for c in ("home_team", "away_team"):
-        keys = list(zip(d["league"].astype(str), d[c].map(_norm_club)))
+        keys = list(zip(d["league"].astype(str), d[c].map(_key)))
         d[c] = [mapping.get(kk, orig) for kk, orig in zip(keys, d[c])]
 
     # CONFLICTING SCORES ARE DROPPED, NOT GUESSED.

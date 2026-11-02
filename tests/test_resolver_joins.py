@@ -65,3 +65,28 @@ def test_injury_features_resolve_board_names_onto_the_api_fixture():
     assert out["key_attacker_absent_home"] == 1.0 and out["key_attacker_absent_away"] == 0.0
     miss = AF.injury_features_from_context("Platense", "Santos", "2026-11-05", ctx)
     assert all(np.isnan(v) for v in miss.values())
+
+
+# ── _canonicalise_clubs keys clubs by team_names.identity_key, not data_loader._norm_club ──────
+def test_identity_key_merges_club_form_spellings_and_keeps_clubs_apart():
+    from src.team_names import identity_key as k
+    assert k("1. FC Koln") == k("FC Koln") == k("Koln")
+    assert k("UD Almeria") == k("Almeria") and k("Kalmar FF") == k("Kalmar")
+    assert k("Sheffield Utd") == k("Sheffield United") != k("Sheffield Wednesday")
+    assert k("Manchester City") != k("Manchester United")
+    assert k("Celta de Vigo II") != k("Celta de Vigo")            # reserve side apart
+    assert k("Sporting CP") is None and k(None) is None
+
+
+def test_canonicalise_clubs_uses_the_resolver_key():
+    df = pd.DataFrame({
+        "league": ["Bundesliga 2"] * 3,
+        "date": pd.to_datetime(["2025-08-01", "2025-08-01", "2025-09-01"]),
+        "home_team": ["SC Paderborn 07", "Paderborn", "Paderborn"],
+        "away_team": ["Hertha BSC", "Hertha", "Sporting CP"],
+        "home_goals": [1, 1, 0], "away_goals": [0, 0, 0],
+    })
+    out = DL._canonicalise_clubs(df)
+    assert len(out) == 2                                          # the two spellings were one fixture
+    assert set(out["home_team"]) == {"Paderborn"}
+    assert "Sporting CP" in set(out["away_team"])                 # no identity token -> untouched
