@@ -1,10 +1,14 @@
 {
- "generated_at": "2026-11-02T18:16:23Z",
+ "generated_at": "2026-11-03T00:00:07Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
- "current_tip_day": "2026-11-02",
+ "current_tip_day": "2026-11-03",
  "leagues_with_current_week_data": 18,
- "missing_leagues": [],
+ "missing_leagues": [
+  "Argentina Primera Division",
+  "Brazil Serie A",
+  "Ligue 2"
+ ],
  "missing_leagues_previous_week": [],
  "no_fixture_leagues": [
   "Ireland Premier Division",
@@ -15,16 +19,16 @@
  "expected_candidate_rows": 720,
  "actual_candidate_rows": 720,
  "panel_rows": 560,
- "settled_rows": 494,
- "pending_rows": 66,
- "clv_certified_rows": 204,
- "clv_coverage": 0.413,
+ "settled_rows": 521,
+ "pending_rows": 39,
+ "clv_certified_rows": 214,
+ "clv_coverage": 0.4107,
  "protected_tracks_modified": false,
  "leagues": {
   "Argentina Primera Division": {
    "current": {
     "league_week_id": "Argentina Primera Division|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 19,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 19,
@@ -148,7 +152,7 @@
   "Brazil Serie A": {
    "current": {
     "league_week_id": "Brazil Serie A|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 10,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 10,
@@ -830,7 +834,7 @@
   "Ligue 2": {
    "current": {
     "league_week_id": "Ligue 2|2026-W45",
-    "state": "PROVISIONAL",
+    "state": "LOCKED_NOT_FROZEN",
     "fixtures_known": 11,
     "fixtures_before_panel_start": 0,
     "fixtures_with_candidates": 11,
