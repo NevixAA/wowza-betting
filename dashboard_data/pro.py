@@ -144,10 +144,76 @@ def scout_last_run() -> dict:
 
 
 # ── Tips Pro sends (1X2, Bet Builder) ─────────────────────────────────────────────────────────
+def _is_num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and v == v
+
+
+def _check_block(b, where: str, money: bool) -> str | None:
+    """One scoreboard block ({"settled": 0} or a settled block). Returns the first contract breach.
+
+    The P&L is checked against its OWN definition in Pro src/pipelines/tip_scoreboard.py: flat 1u,
+    roi = mean(units), hit_rate = won / settled. A block that cannot reproduce itself is not shown."""
+    if not isinstance(b, dict):
+        return f"{where} is not an object"
+    n = b.get("settled", 0)
+    if not _is_num(n) or n < 0 or int(n) != n:
+        return f"{where}.settled is not a non-negative integer"
+    if n == 0:
+        return None
+    for k in ("won", "hit_rate") + (("units", "roi") if money else ()):
+        if not _is_num(b.get(k)):
+            return f"{where}.{k} missing or not a number"
+    if not 0 <= b["won"] <= n:
+        return f"{where}.won {b['won']} outside 0..settled {n}"
+    if abs(b["hit_rate"] - b["won"] / n) > 0.0006:
+        return f"{where} cannot reproduce: hit_rate {b['hit_rate']} != won/settled {b['won'] / n:.4f}"
+    if money:
+        if b["units"] < -n - 0.006:
+            return f"{where} cannot reproduce: units {b['units']} below -settled at flat 1u"
+        if abs(b["units"] - b["roi"] * n) > 0.00005 * n + 0.006:
+            return f"{where} cannot reproduce: units {b['units']} != roi x settled {b['roi'] * n:.2f}"
+    return None
+
+
+def tip_scoreboard_contract_error(j: dict) -> str | None:
+    """Why a Pro tip_scoreboard.json may NOT be rendered, or None when it honours the contract."""
+    x = j.get("one_x_two", {"sent": 0})
+    if not isinstance(x, dict):
+        return "one_x_two is not an object"
+    for name in ("headline", "paper_leagues"):
+        if name in x:
+            e = _check_block(x[name], f"one_x_two.{name}", money=True)
+            if e:
+                return e
+    if not isinstance(x.get("by_pick", {}), dict):
+        return "one_x_two.by_pick is not an object"
+    for k, b in (x.get("by_pick") or {}).items():
+        e = _check_block(b, f"one_x_two.by_pick.{k}", money=True)
+        if e:
+            return e
+    bb = j.get("bet_builder", {"sent": 0})
+    if not isinstance(bb, dict):
+        return "bet_builder is not an object"
+    if "headline" in bb:
+        # Bet Builder has no price, so no units/roi: a calibration record only (Pro's own docstring).
+        e = _check_block(bb["headline"], "bet_builder.headline", money=False)
+        if e:
+            return e
+    return None
+
+
 def tip_scoreboard() -> dict:
+    """Pro's scoreboard of the tips it SENT. Cross-repo contract (Phase 2 Part 10): a payload whose shape
+    changed, or whose P&L cannot reproduce itself, comes back as {"schema_error": why} with NO figures, so
+    the page shows it as an error instead of P&L - and never as "no scoreboard yet"."""
     j = read_json(_f("output/tip_scoreboard.json"))
-    if j:
-        j["freshness"] = freshness_from_timestamp(j.get("generated_at"), "daily", "tip scoreboard")
+    if not j:
+        return j
+    err = tip_scoreboard_contract_error(j)
+    fresh = freshness_from_timestamp(j.get("generated_at"), "daily", "tip scoreboard")
+    if err:
+        return {"schema_error": err, "generated_at": j.get("generated_at"), "freshness": fresh}
+    j["freshness"] = fresh
     return j
 
 

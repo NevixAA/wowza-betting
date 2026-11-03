@@ -335,7 +335,9 @@ def test_research_load_all_returns_the_same_call_values(monkeypatch):
     fake = SimpleNamespace(**{n: (lambda n=n: vals[n]) for n in V.CALLS})
     fake.studies = _boom
     got = V.load_all(fake)
-    assert set(got) == set(V.CALLS)
+    # Phase 2 Part 10: the failing read is recorded beside the values, never swallowed silently
+    assert set(got) == set(V.CALLS) | {"_errors"}
+    assert set(got["_errors"]) == {"studies"} and "unreadable" in got["_errors"]["studies"]
     for n in V.CALLS:
         assert got[n] == ({} if n == "studies" else vals[n])
 
