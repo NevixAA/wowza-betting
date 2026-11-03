@@ -1,6 +1,6 @@
 {
- "calls": 120,
- "filled_rows_total": 33152,
+ "calls": 0,
+ "filled_rows_total": 33259,
  "history": "output/fd_history.parquet",
  "note": "Half-time scores for history rows that lack them, from API-Football; fd_history.parquet itself is not modified.",
  "per_league": {
@@ -71,10 +71,10 @@
    "unmatched": 91
   },
   "Romanian Superliga": {
-   "filled": 2018,
-   "history_rows_same_match_two_spellings": 350,
+   "filled": 2125,
+   "history_rows_same_match_two_spellings": 492,
    "lacking": 3138,
-   "unmatched": 1120
+   "unmatched": 1013
   },
   "Saudi Pro League": {
    "filled": 1423,
@@ -93,6 +93,6 @@
    "refused_fixture_claimed_twice": 706
   }
  },
- "planned_calls": 120,
- "written_at": "2026-11-02T15:53:29.630127+00:00"
+ "planned_calls": 0,
+ "written_at": "2026-11-03T00:16:21.899074+00:00"
 }
