@@ -398,6 +398,12 @@ def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
     return out
 
 
+#: the full club identity map {league: {spelling: canonical}} the last identity step applied
+#: (src.identity_repair.canonicalise_and_dedupe report 'aliases'). The HT step uses it to place
+#: sidecar rows keyed on the history's own pre-identity spelling (see _resolve_onto_history).
+IDENTITY_ALIASES: dict = {}
+
+
 def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
     """ONE club, ONE fixture, ONE season label - for every model track, not only Standard repaired.
 
@@ -432,6 +438,10 @@ def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
                     canon, alias = sorted((x, y), key=lambda t: _last[(lg, t)], reverse=True)
                     one_side.setdefault(lg, {})[alias] = canon
         out, rep = canonicalise_and_dedupe(out, alias_map=one_side)
+        # the map actually applied (explicit + derived), for sources keyed on the pre-identity
+        # spelling (the HT sidecar) - Phase 2 HT repair, 2026-11-03
+        IDENTITY_ALIASES.clear()
+        IDENTITY_ALIASES.update({lg: dict(m) for lg, m in rep.get("aliases", {}).items() if m})
         log.info(f"[identity] one-side same-day aliases: "
                  f"{sum(len(m) for m in one_side.values())} in {len(one_side)} league(s)")
         log.info(f"[identity] {rep['n_aliases']} club aliases, {rep['team_cells_renamed']:,} names "
@@ -1097,6 +1107,151 @@ def _enrich_ou25_from_captures(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, away_col: str,
+                          name: str, aliases: dict | None = None) -> pd.DataFrame:
+    """`right` restricted to the rows whose two clubs are PROVABLY clubs of `df`, with `_h`/`_a`
+    holding df's own spelling of each (owner rule: proven identity only, never guessed).
+
+    Each source name is resolved by src.team_names.resolve among df's clubs of the row's league;
+    a name no rule proves is skipped, counted and logged. `aliases` ({league: {spelling:
+    canonical}}): the identity map the loader APPLIED to df (IDENTITY_ALIASES). A source keyed on
+    the history's OWN pre-identity spelling (the HT sidecar) names a club the identity step renamed
+    by same-day evidence - 'Atletico Paranaense' -> 'Athletico-PR' - which resolve() cannot
+    spell-match. Only when resolve() finds nothing: the spelling (or one resolve() proves equal to
+    it) must be an alias of exactly ONE canonical club in THIS league's pool; otherwise the row
+    stays unplaced. Ported from data-truth-100 for the HT hotfix (2026-11-03)."""
+    from src.team_names import resolve
+    if right.empty or "league" not in right.columns or "league" not in df.columns:
+        return right.iloc[0:0].assign(_h=pd.Series(dtype=object), _a=pd.Series(dtype=object))
+    pools = {str(lg): sorted(set(g["home_team"].dropna().astype(str))
+                             | set(g["away_team"].dropna().astype(str)))
+             for lg, g in df.groupby("league")}
+    r = right[right["league"].astype(str).isin(pools)].copy()
+    memo: dict = {}
+    pool_sets = {lg: set(p) for lg, p in pools.items()}
+
+    def _by_identity_alias(lg, txt):
+        amap = (aliases or {}).get(lg) or {}
+        hits = {c for a, c in amap.items()
+                if c in pool_sets[lg] and (a == txt or resolve(txt, [a]) == a)}
+        return hits.pop() if len(hits) == 1 else None
+
+    def _one(lg, nm):
+        if nm is None or (isinstance(nm, float) and np.isnan(nm)) or not str(nm).strip():
+            return None
+        k = (lg, str(nm))
+        if k not in memo:
+            txt = str(nm)
+            memo[k] = resolve(txt, pools[lg])
+            if memo[k] is None and aliases:
+                memo[k] = _by_identity_alias(lg, txt)
+        return memo[k]
+
+    lgs = r["league"].astype(str).tolist()
+    r["_h"] = [_one(lg, n) for lg, n in zip(lgs, r[home_col].tolist())]
+    r["_a"] = [_one(lg, n) for lg, n in zip(lgs, r[away_col].tolist())]
+    bad = r["_h"].isna() | r["_a"].isna()
+    if bad.any():
+        miss = sorted({(lg, str(n)) for lg, n, ok in
+                       zip(lgs, r[home_col].tolist(), r["_h"].notna()) if not ok}
+                      | {(lg, str(n)) for lg, n, ok in
+                         zip(lgs, r[away_col].tolist(), r["_a"].notna()) if not ok})
+        log.info(f"  [{name}] {int(bad.sum())} source row(s) skipped: {len(miss)} club name(s) not "
+                 f"provably a club of the league (team_names.resolve), e.g. {miss[:5]}")
+    return r[~bad]
+
+
+#: HT score sources, in fill order. Same key (league, date, home_team, away_team) and HTHG/HTAG
+#: layout. fd_history_ht_fill.parquet is written beside the history by scripts/collect_ht_scores.py
+#: on data-truth-100 (API-Football score.halftime by fixture id, a null HT stored as missing, never
+#: 0) - fd_history itself is never rewritten. Either may be absent.
+HT_SOURCES = (("af_ht_history", Path("output") / "af_ht_history.parquet"),
+              ("fd_history_ht_fill", Path("output") / "collect" / "fd_history_ht_fill.parquet"))
+
+
+def ht_coverage(df: pd.DataFrame, leagues=None) -> dict:
+    """{league: share of PLAYED rows (full-time score present) carrying both HT goals}, for the
+    registry's new-format leagues (or `leagues`)."""
+    if df is None or df.empty or "league" not in df.columns:
+        return {}
+    if leagues is None:
+        leagues = [lg for lg in sorted(set(df["league"].astype(str)))
+                   if config.model_type_for_league(lg) == "new_format"]
+    played = df["home_goals"].notna() & df["away_goals"].notna() if "home_goals" in df.columns \
+        else pd.Series(True, index=df.index)
+    has = (df["ht_home_goals"].notna() & df["ht_away_goals"].notna()) \
+        if {"ht_home_goals", "ht_away_goals"} <= set(df.columns) else pd.Series(False, index=df.index)
+    out = {}
+    for lg in leagues:
+        m = played & (df["league"].astype(str) == lg)
+        if m.any():
+            out[lg] = round(float(has[m].mean()), 4)
+    return out
+
+
+def _ht_labels(df: pd.DataFrame) -> pd.DataFrame:
+    """ht_total_goals / ht_over05 / ht_over15 from the HT goals; NaN where either is missing.
+    Same guard as the loader's construction sites: only when some row carries an HT score."""
+    if not {"ht_home_goals", "ht_away_goals"} <= set(df.columns) or not df["ht_home_goals"].notna().any():
+        return df
+    df["ht_total_goals"] = df["ht_home_goals"] + df["ht_away_goals"]
+    _htn = df["ht_total_goals"].notna()
+    df["ht_over05"] = (df["ht_total_goals"] >= 1).astype(float).where(_htn)
+    df["ht_over15"] = (df["ht_total_goals"] >= 2).astype(float).where(_htn)
+    return df
+
+
+def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
+    """Fill MISSING ht_home_goals / ht_away_goals from HT_SOURCES (nan_only: a stored HT score is
+    never overwritten), league-keyed, clubs resolved onto the history's own spellings
+    (team_names.resolve + the applied identity map; an unprovable name is skipped and logged).
+    Then the HT labels are recomputed - they were built before this step, so a filled score never
+    reached ht_over05. Coverage per new-format league before/after is logged and kept in
+    df.attrs['ht_coverage']."""
+    root = root or Path(__file__).resolve().parents[1]
+    before = ht_coverage(df)
+    filled = {}
+    for name, rel in HT_SOURCES:
+        p = root / rel
+        if not p.exists():
+            log.info(f"[{name}] {rel.as_posix()} not present - skipped")
+            continue
+        try:
+            ht = pd.read_parquet(p)
+            if "league" not in ht.columns or not {"HTHG", "HTAG"} <= set(ht.columns):
+                log.error(f"[{name}] no league / HTHG / HTAG column - HT enrichment SKIPPED "
+                          "(a join without league can put scores on another league's fixture)")
+                continue
+            ht = ht[ht["HTHG"].notna() & ht["HTAG"].notna()].copy()      # a null HT is missing
+            ht["date"] = pd.to_datetime(ht["date"], errors="coerce")
+            ht = _resolve_onto_history(ht, df, "home_team", "away_team", name,
+                                       aliases=IDENTITY_ALIASES)
+            ht["_date_str"] = ht["date"].dt.strftime("%Y-%m-%d")
+            df["_h"] = df["home_team"].astype(str)
+            df["_a"] = df["away_team"].astype(str)
+            df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+            _k3 = ["_h", "_a", "_date_str"]
+            try:
+                _IJ.audit_legacy_merge(df, ht, _k3, name=f"{name}.legacy")
+            except Exception as _e:                              # noqa: BLE001
+                log.warning(f"[{name}] join audit skipped: {_e}")
+            df, rep = _IJ.safe_left_enrich(
+                df, ht, keys=["league"] + _k3, value_cols=["HTHG", "HTAG"],
+                target_cols={"HTHG": "ht_home_goals", "HTAG": "ht_away_goals"}, name=name)
+            filled[name] = int(rep.filled_cells.get("ht_home_goals", 0))
+        except Exception as e:                                   # noqa: BLE001
+            log.warning(f"[{name}] failed to merge {rel.as_posix()}: {e}")
+        finally:
+            df = df.drop(columns=["_h", "_a", "_date_str"], errors="ignore")
+    df = _ht_labels(df)
+    after = ht_coverage(df)
+    df.attrs["ht_coverage"] = {"before": before, "after": after, "filled_rows": filled}
+    moved = {lg: (before.get(lg, 0.0), v) for lg, v in after.items() if v != before.get(lg, 0.0)}
+    log.info(f"[ht] HT scores filled {filled}; new-format coverage before -> after: "
+             + ("; ".join(f"{lg} {a:.1%} -> {b:.1%}" for lg, (a, b) in moved.items()) or "unchanged"))
+    return df
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -1194,53 +1349,8 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         except Exception as e:
             log.warning(f"[af_history] failed to merge af_history.parquet: {e}")
 
-    # ── Step 1b: merge HT scores from af_ht_history.parquet ──────────────────
-    af_ht_path = Path(__file__).resolve().parents[1] / "output" / "af_ht_history.parquet"
-    if af_ht_path.exists():
-        try:
-            ht_hist = pd.read_parquet(af_ht_path)
-            ht_hist["date"] = pd.to_datetime(ht_hist["date"], errors="coerce")
-            ht_hist["_home_norm"] = ht_hist["home_team"].apply(_norm_name)
-            ht_hist["_away_norm"] = ht_hist["away_team"].apply(_norm_name)
-            ht_hist["_date_str"]  = ht_hist["date"].dt.strftime("%Y-%m-%d")
-
-            if "_home_norm" not in df.columns:
-                df["_home_norm"] = df["home_team"].apply(_norm_name)
-                df["_away_norm"] = df["away_team"].apply(_norm_name)
-                df["_date_str"]  = df["date"].dt.strftime("%Y-%m-%d")
-
-            _k3 = ["_home_norm", "_away_norm", "_date_str"]
-            try:
-                _IJ.audit_legacy_merge(df, ht_hist, _k3, name="af_ht_history.legacy")
-            except Exception as _e:                              # noqa: BLE001
-                log.warning(f"[af_ht_history] join audit skipped: {_e}")
-            if _safe_joins() and "league" in ht_hist.columns:
-                df, _ = _IJ.safe_left_enrich(
-                    df, ht_hist, keys=["league"] + _k3, value_cols=["HTHG", "HTAG"],
-                    target_cols={"HTHG": "ht_home_goals", "HTAG": "ht_away_goals"},
-                    name="af_ht_history")
-            else:
-                ht_merged = df.merge(
-                    ht_hist[["_home_norm", "_away_norm", "_date_str", "HTHG", "HTAG"]]
-                        .rename(columns={"HTHG": "HTHG_h", "HTAG": "HTAG_h"}),
-                    on=["_home_norm", "_away_norm", "_date_str"],
-                    how="left",
-                )
-                for src, dst in [("HTHG_h", "ht_home_goals"), ("HTAG_h", "ht_away_goals")]:
-                    if src not in ht_merged.columns:
-                        continue
-                    if dst not in df.columns:
-                        df[dst] = np.nan
-                    orig = df[dst].values
-                    fill = ht_merged[src].values
-                    df[dst] = [float(h) if pd.isna(o) and pd.notna(h) else o
-                               for o, h in zip(orig, fill)]
-
-            df.drop(columns=["_home_norm", "_away_norm", "_date_str"], errors="ignore", inplace=True)
-            n_ht = int(df["ht_home_goals"].notna().sum()) if "ht_home_goals" in df.columns else 0
-            log.info(f"[af_ht_history] merged HT scores: {n_ht} rows now have halftime data")
-        except Exception as e:
-            log.warning(f"[af_ht_history] failed to merge af_ht_history.parquet: {e}")
+    # ── Step 1b: merge HT scores where they are missing ──────────────────────
+    df = _enrich_ht_scores(df)
 
     if not api_key:
         return df
