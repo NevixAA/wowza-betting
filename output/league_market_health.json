@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-03T01:13:41Z",
+ "generated_at": "2026-11-03T06:44:10Z",
  "panel_version": "LWR-1",
  "tracked_leagues": 20,
  "current_tip_day": "2026-11-03",
@@ -11,8 +11,8 @@
  ],
  "panel_start": "2026-10-25T09:25:36Z",
  "market_gap_leagues": [],
- "expected_candidate_rows": 724,
- "actual_candidate_rows": 724,
+ "expected_candidate_rows": 740,
+ "actual_candidate_rows": 740,
  "panel_rows": 620,
  "settled_rows": 521,
  "pending_rows": 99,
@@ -24,33 +24,33 @@
    "current": {
     "league_week_id": "Argentina Primera Division|2026-W45",
     "state": "FROZEN",
-    "fixtures_known": 19,
+    "fixtures_known": 23,
     "fixtures_before_panel_start": 0,
-    "fixtures_with_candidates": 19,
+    "fixtures_with_candidates": 23,
     "fixtures_without_candidates": 0,
     "week_lock_ts": "2026-11-02T22:00:00Z",
-    "late_after_lock": 0,
+    "late_after_lock": 16,
     "market_gaps": [],
     "markets": {
      "OU25": {
-      "candidates": 19,
+      "candidates": 23,
       "panel_rows": 5
      },
      "BTTS": {
-      "candidates": 19,
+      "candidates": 23,
       "panel_rows": 5
      },
      "OVER15": {
-      "candidates": 19,
+      "candidates": 23,
       "panel_rows": 5
      },
      "OVER35": {
-      "candidates": 19,
+      "candidates": 23,
       "panel_rows": 5
      }
     },
-    "expected_candidate_rows": 76,
-    "actual_candidate_rows": 76
+    "expected_candidate_rows": 92,
+    "actual_candidate_rows": 92
    },
    "previous": {
     "league_week_id": "Argentina Primera Division|2026-W44",
