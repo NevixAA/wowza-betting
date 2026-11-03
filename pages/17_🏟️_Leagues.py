@@ -97,7 +97,7 @@ with _cards:
     V.league_cards(ov, tr)
 with _table:
     ui.compact_table(tab, V.table_config(tab, "Trend"), height=min(38 * (len(tab) + 1) + 4, 860))
-st.caption("**Rating** = Pro's league rating 1-10 (the stake plan's sizing; '—' when missing or older than 8 days). "
+st.caption("**Rating** = Pro's league rating 1-10 (display only - not used to size stakes since 2026-11-02; '—' when missing or older than 8 days). "
            "**State** = production state from the bankroll policy (the strongest market of the league's track; detail "
            "below). **Regime** = research regime (PROTECTED / REPAIR / LEARNING, count of markets) - labels where "
            "research effort goes, never a stake. **Model % vs Implied %** = average model probability against 1/odds "

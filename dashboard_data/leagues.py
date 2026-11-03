@@ -110,7 +110,7 @@ def upcoming(today: str, days: int = 7) -> pd.DataFrame:
 
 # ── context: rating, production state, research regime ──────────────────────────────────────────
 def ratings() -> dict:
-    """Pro's league rating 1-10 (the stake plan's source). {} when missing or stale - shown as '–'."""
+    """Pro's pooled league rating 1-10 (display only; not used to size stakes since 2026-11-02). {} when missing or stale - shown as '–'."""
     try:
         from src.stake_plan import load_league_ratings
         return load_league_ratings()

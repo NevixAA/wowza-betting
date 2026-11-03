@@ -294,8 +294,8 @@ else:
         "Kickoff": st.column_config.DatetimeColumn("Kickoff", format="HH:mm", width="small"),
         "Started": st.column_config.CheckboxColumn("Started", width="small"),
         "Match": ui.text_col("Match", width="medium"),
-        "Rating": ui.num_col("Rating", fmt="%d/10", help="League rating 1-10 (Pro), the number the stake plan "
-                             "sizes by.", width="small"),
+        "Rating": ui.num_col("Rating", fmt="%d/10", help="Pro's pooled league rating 1-10. Display only: "
+                             "not used to size stakes since 2026-11-02.", width="small"),
         "Odds": ui.num_col("Odds", fmt="%.2f", width="small"),
         "Edge %": ui.bar_col("Edge %", max_value=_emax, fmt="+%.1f%%",
                              help="Model-vs-price edge when the tip was sent (this is what the legacy tier sizes)."),
