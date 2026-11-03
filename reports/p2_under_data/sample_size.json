@@ -1,0 +1,28 @@
+{
+ "bias_ci_pm4pp": {
+  "n_closed_form": 584,
+  "sim_halfwidth": 0.04
+ },
+ "roi_halfwidth_n150": {
+  "closed_form": 0.1897,
+  "simulated": 0.1889
+ },
+ "roi_halfwidth_n300": {
+  "closed_form": 0.1341,
+  "simulated": 0.1354
+ },
+ "roi_halfwidth_n600": {
+  "closed_form": 0.0948,
+  "simulated": 0.0933
+ },
+ "roi_halfwidth_n1000": {
+  "closed_form": 0.0735,
+  "simulated": 0.0735
+ },
+ "n_for_roi_halfwidth_8pp": 844,
+ "inputs": {
+  "p_over": 0.5845,
+  "mean_odds": 2.395,
+  "breakeven_hit": 0.4285
+ }
+}

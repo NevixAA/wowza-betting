@@ -47,7 +47,15 @@ def market_group(m: str) -> str:
     return " ".join(m.split()[:-1]) if m else m
 
 
-def stake_label(tier: str, market: str) -> str:
+#: A tip whose bankroll-policy track is not real money (stake_plan deployment_state PAPER / BLOCKED /
+#: UNSUPPORTED; new_format|OU25_UNDER since 2026-11-02) is never "staked", whatever its tier (Phase 2).
+STAKE_PAPER_TRACK = "paper track · not staked"
+NON_REAL_STATES = ("PAPER", "BLOCKED", "BLOCKED_FROM_REAL", "UNSUPPORTED")
+
+
+def stake_label(tier: str, market: str, production_state: str | None = None) -> str:
+    if str(production_state or "").strip().upper() in NON_REAL_STATES:
+        return STAKE_PAPER_TRACK
     return STAKE_OU if market_group(str(market)) == "O/U 2.5" else STAKE.get(tier, "")
 
 
@@ -181,7 +189,7 @@ def selections_table(b: pd.DataFrame, research: bool = True) -> pd.DataFrame:
         "Production": b["production_state"].map(_state),
         "Stake %": b["final_fraction"] * 100,
         "Gap": b["tier"].map(tier_label),
-        "Stake note": [stake_label(t, m) for t, m in zip(b["tier"], b["market"])],
+        "Stake note": [stake_label(t, m, s) for t, m, s in zip(b["tier"], b["market"], b["production_state"])],
         "Model": b["model"].map(lambda m: "Standard" if str(m) == "standard" else "New-format"),
     })
     if research:

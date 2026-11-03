@@ -471,6 +471,23 @@ def instant_tip_allowed(match_date, notified: set, now: "datetime | None" = None
     return f"DIGEST|{today}" in notified or now.hour >= 12
 
 
+def _paper_track_note(model_type: str, market: str, side: str) -> str:
+    """'' when the tip's bankroll-policy track is real money, else a PAPER line for the message.
+
+    A tip on a PAPER track (new_format|OU25_UNDER since 2026-11-02, owner: "shown and recorded, never
+    staked") is still sent, but must not read as a staked bet. Policy unreadable -> labelled paper
+    (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03."""
+    try:
+        from src.bankroll_policy import REAL_STATES, load_policy, track_key
+        tk = track_key(model_type, market, side)
+        t = (load_policy().get("tracks") or {}).get(tk) or {}
+        if t.get("state") in REAL_STATES and float(t.get("base_fraction") or 0.0) > 0.0:
+            return ""
+        return f"📄 <b>PAPER</b> — not staked (track {tk}: {t.get('state', 'not in policy')})"
+    except Exception as e:                                            # noqa: BLE001
+        return f"📄 <b>PAPER</b> — not staked (stake policy unreadable: {type(e).__name__})"
+
+
 def notify_new_snipers() -> int:
     """Check bets.csv for new SNIPER and VALUE tips and send Telegram alerts. Returns count sent."""
     cfg = _load_config()
@@ -601,6 +618,9 @@ def notify_new_snipers() -> int:
             # Drift is information only since 2026-10-26: it never changes the tier above.
             f"🔀 Drift: {_drift_sig} {drift} (info only)"
         )
+        _paper = _paper_track_note(_mt, "OU25", side)
+        if _paper:
+            msg += f"\n{_paper}"
 
         if _send(token, chat_id, msg):
             notified.add(key)

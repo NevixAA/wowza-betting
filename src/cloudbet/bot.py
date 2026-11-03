@@ -21,6 +21,10 @@ is the second layer; neither is trusted alone.
 NO STAKE WITHOUT REAL INPUTS (Data Truth 2026-11-01). The bankroll is the live Cloudbet balance or
 an explicit CLOUDBET_BANKROLL - never a typed default; without one the run refuses to stake. A
 candidate tiered on a GLOBAL threshold (no per-league evidence; every prop) is never staked.
+
+NO STAKE ON A PAPER TRACK (Phase 2, 2026-11-03). A candidate whose config/bankroll_policy.json track
+is not a real-money track (PAPER: new_format|OU25_UNDER since 2026-11-02 and every standard track;
+BLOCKED; undefined) is never staked here either - see _drop_without_real_track.
 """
 from __future__ import annotations
 
@@ -180,6 +184,44 @@ def _drop_without_league_evidence(cands: pd.DataFrame) -> pd.DataFrame:
     return cands[keep]
 
 
+#: candidate market (ledger spelling) -> bankroll-policy market (src/stake_plan.SIDE_MARKET + OU25)
+_POLICY_MARKET = {"ou25": "OU25", "btts": "BTTS", "over15": "OVER15", "over35": "OVER35"}
+
+
+def _drop_without_real_track(cands: pd.DataFrame) -> pd.DataFrame:
+    """Only tips on a REAL-money bankroll-policy track may be staked (Phase 2, 2026-11-03).
+
+    The bot sized every SNIPER/MARKSMAN candidate at its own flat fraction and never read
+    config/bankroll_policy.json, so a track the owner set to PAPER (new_format|OU25_UNDER since
+    2026-11-02; every standard track) was still staked here. The track key is THE policy key
+    (src/bankroll_policy.track_key: model type, market and, for O/U 2.5, side); a track that is not
+    in REAL_STATES or has base_fraction 0 is dropped, and so is a market or model type the policy
+    does not define. An unreadable policy drops everything (fail closed). Every drop is logged."""
+    if cands.empty:
+        return cands
+    from src.bankroll_policy import REAL_STATES, load_policy, track_key
+    try:
+        tracks = load_policy().get("tracks") or {}
+    except Exception as e:                                            # noqa: BLE001 - fail closed
+        log.error(f"no stake: bankroll policy unreadable ({type(e).__name__}) - every candidate dropped")
+        return cands.iloc[0:0]
+
+    def _real(r) -> bool:
+        mk = _POLICY_MARKET.get(str(r.get("market")).lower())
+        if mk is None:
+            return False
+        t = tracks.get(track_key(r.get("model_type"), mk, r.get("side"))) or {}
+        return t.get("state") in REAL_STATES and float(t.get("base_fraction") or 0.0) > 0.0
+
+    keep = cands.apply(_real, axis=1).astype(bool)
+    if (~keep).any():
+        cells = sorted({f"{mt}|{m}|{s}" for mt, m, s in zip(cands.loc[~keep, "model_type"],
+                                                          cands.loc[~keep, "market"], cands.loc[~keep, "side"])})
+        log.info(f"no stake: {int((~keep).sum())} candidate(s) on a PAPER / BLOCKED / unknown policy "
+                 f"track: {cells[:20]}")
+    return cands[keep]
+
+
 def run(mode: str | None = None, bankroll: float | None = None,
         days_ahead: int = 0, rules: SelectionRules | None = None,
         staking: StakingRules | None = None,
@@ -207,7 +249,8 @@ def run(mode: str | None = None, bankroll: float | None = None,
         log.warning("no Cloudbet event feed supplied — every candidate will be dropped as "
                     "unpriced, which is correct: we do not bet into a price we cannot see")
         events_by_league = {}
-    priced = _drop_without_league_evidence(price_candidates(cands, client, events_by_league))
+    priced = _drop_without_real_track(
+        _drop_without_league_evidence(price_candidates(cands, client, events_by_league)))
 
     sel, rej = select(
         priced, rules,
