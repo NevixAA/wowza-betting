@@ -1,10 +1,10 @@
 {
-  "checked_at": "2026-11-03T13:34:35Z",
-  "run_id": "41635834459",
-  "run_number": "1579",
+  "checked_at": "2026-11-03T14:41:57Z",
+  "run_id": "41644995091",
+  "run_number": "1580",
   "event": "schedule",
   "schedule": "",
-  "sha": "2c8720243287",
+  "sha": "b0bc317fa626",
   "history_freshness": {
     "newest_match": "2026-11-03",
     "age_days": "0",
@@ -16,14 +16,14 @@
     "notify": "success"
   },
   "output/player_tips.csv": {
-    "rows": 3793,
+    "rows": 3791,
     "fixtures": 209,
-    "mtime": "2026-11-03T13:32:42Z"
+    "mtime": "2026-11-03T14:40:01Z"
   },
   "output/player_ledger.csv": {
     "rows": 35808,
     "fixtures": null,
-    "mtime": "2026-11-03T13:34:34Z"
+    "mtime": "2026-11-03T14:41:56Z"
   },
   "git_dirty_outputs": [
     "M output/clv_records.csv",
@@ -35,32 +35,32 @@
     " M output/props_r2_shadow.csv"
   ],
   "predict_log_tail": [
-    "[odds_fetcher] sports/soccer_usa_mls/events/1cecab6721bb9ac477e36301c2c5412b/odds OK | quota remaining: 92838",
-    "[odds_fetcher] sports/soccer_usa_mls/events/4e4cd20d205e8bd0cd8ba54391b62257/odds OK | quota remaining: 92836",
-    "[odds_fetcher] sports/soccer_usa_mls/events/666fea65b8706a9b975d3dad9ffea2b7/odds OK | quota remaining: 92834",
-    "[odds_fetcher] sports/soccer_usa_mls/events/b26aa1979396e60e599b7ef1cdaa606a/odds OK | quota remaining: 92832",
-    "[odds_fetcher] sports/soccer_usa_mls/events/e373abc8622b9853aa4fbd3d01c33d8e/odds OK | quota remaining: 92830",
-    "[odds_fetcher] sports/soccer_usa_mls/events/2999abe7822c923b29c9fd21905c1723/odds OK | quota remaining: 92828",
-    "[odds_fetcher] sports/soccer_usa_mls/events/c0c73d9305b8e399fb6cf9a234a7b9e4/odds OK | quota remaining: 92826",
-    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 92826",
+    "  [Austrian Bundesliga] 5 recent fixtures fetched",
+    "  [Ireland Premier Division] 5 recent fixtures fetched",
+    "  [Japan J-League] 5 recent fixtures fetched",
+    "  [Ligue 2] 5 recent fixtures fetched",
+    "  [Finland Veikkausliiga] 5 recent fixtures fetched",
+    "[pipeline] Win probs loaded for 102 WC matches",
+    "[player_model] market caps (top-1% real player): {'goals': 0.6846, 'goals2': 0.2741, 'assists': 0.4667, 'sot': 0.95, 'sot2': 0.7556, 'sot3': 0.4889, 'cards': 0.6087}",
+    "[predict] fixture slate: 179 from PROP_LEAGUES via API-Football, 39 from bets.csv supplement",
+    "[predict] Injury filter: 183 injured/suspended players loaded",
+    "[squad_overlay] 19714 live squad entries; current club taken from the live squad for 12621 player(s); 46387 history row(s) corrected where the latest appearance was a former club",
+    "[stale_club] 3285 player(s) dropped: not in their club's current squad list, or unseen for 120+ days where no list exists",
+    "[props_r2_shadow] +376 first-sight row(s) -> output/props_r2_shadow.csv",
+    "[player_model] 3791 player prop rows -> /home/runner/work/wowza-betting/wowza-betting/output/player_tips.csv",
+    "[predict] Fetching player prop odds from The Odds API...",
+    "[odds_fetcher] 84 fixture(s) in leagues with no OddsAPI sport key \u2014 never asked, so their players stay AVOID by construction: {'Ligue 2': 11, 'Brazil Serie A': 11, 'La Liga 2': 8, 'Serie B': 7, 'Mexico Liga MX': 7, 'Japan J-League': 7, 'Sweden Allsvenskan': 6, 'Norway Eliteserien': 5, 'Austrian Bundesliga': 5, 'Romanian Superliga': 5, 'Denmark Superliga': 4, 'Argentina Primera Division': 4, 'Ireland Premier Division': 2, 'Finland Veikkausliiga': 1, 'League Two': 1}",
+    "[odds_fetcher] out of season (valid key, nothing to fetch): ['World Cup', 'Champions League Qualifying']",
+    "[odds_fetcher] sports/soccer_uefa_champs_league/events OK | quota remaining: 92794",
+    "[odds_fetcher] sports/soccer_usa_mls/events OK | quota remaining: 92794",
+    "[odds_fetcher] sports/soccer_spain_la_liga/events OK | quota remaining: 92794",
     "[odds_fetcher] soccer_uefa_europa_conference_league: parked \u2014 15 consecutive events with no bookmaker, last probed 2026-10-28; retries every 7d",
-    "[odds_fetcher] sports/soccer_germany_bundesliga/events OK | quota remaining: 92826",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 92826",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/fa069801a5c9b49143447a1a1d173fd1/odds OK | quota remaining: 92824",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/52b256088d29b4abb82e0c63ea9852fe/odds OK | quota remaining: 92820",
-    "[odds_fetcher] sports/soccer_italy_serie_a/events/0d53a5dbd9d4f4716e923b97e92dfb0d/odds OK | quota remaining: 92816",
-    "[odds_fetcher] sports/soccer_france_ligue_one/events OK | quota remaining: 92816",
-    "[odds_fetcher] sports/soccer_france_ligue_one/events/5e7d141f719835de18877ed95bedcb32/odds OK | quota remaining: 92812",
-    "[odds_fetcher] sports/soccer_france_ligue_one/events/8553a80cf1ae5cbe3e7a69b76ce8167f/odds OK | quota remaining: 92808",
-    "[odds_fetcher] sports/soccer_france_ligue_one/events/f7b240389fa5ec055c58a48ab153dcdd/odds OK | quota remaining: 92804",
+    "[odds_fetcher] sports/soccer_germany_bundesliga/events OK | quota remaining: 92794",
+    "[odds_fetcher] sports/soccer_italy_serie_a/events OK | quota remaining: 92794",
     "[odds_fetcher] soccer_uefa_europa_league: parked \u2014 13 consecutive events with no bookmaker, last probed 2026-11-03; retries every 7d",
+    "[odds_fetcher] sports/soccer_france_ligue_one/events OK | quota remaining: 92794",
     "[odds_fetcher] soccer_germany_bundesliga2: parked \u2014 24 consecutive events with no bookmaker, last probed 2026-10-29; retries every 7d",
-    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 92804",
-    "[odds_fetcher] sports/soccer_epl/events/586bec023ee8ac2f0645d963bd2c9d25/odds OK | quota remaining: 92802",
-    "[odds_fetcher] sports/soccer_epl/events/5c87852253fd11eea5d34ad723356607/odds OK | quota remaining: 92800",
-    "[odds_fetcher] sports/soccer_epl/events/842fcc5b9feb8c63054a661ad1fc8926/odds OK | quota remaining: 92798",
-    "[odds_fetcher] sports/soccer_epl/events/3903e98a54db0f2cc23095407fe9dad8/odds OK | quota remaining: 92796",
-    "[odds_fetcher] sports/soccer_epl/events/59c5f635cfe11613c07e9a5520ced5c1/odds OK | quota remaining: 92794",
+    "[odds_fetcher] sports/soccer_epl/events OK | quota remaining: 92794",
     "[odds_fetcher] soccer_efl_champ: parked \u2014 24 consecutive events with no bookmaker, last probed 2026-10-29; retries every 7d",
     "[odds_fetcher] soccer_england_league1: parked \u2014 25 consecutive events with no bookmaker, last probed 2026-10-29; retries every 7d",
     "[odds_fetcher] api-football second source: +13861 quote(s)",
@@ -71,9 +71,9 @@
     "[player_model] PAPER feed: promoted 5 top picks (tracking-only, no edge)",
     "[clv_tracker] logged 86 new tip entry prices",
     "[clv_tracker] CLV report: {'n': 4359, 'mean_clv_pct': 0.0077, 'mean_clv_prob': None, 'beat_close_rate': 0.297, 'verdict': 'POSITIVE CLV \u2014 genuine edge signal'}",
-    "[lineup] 0 confirmed starters | 3793 lineup TBC",
+    "[lineup] 0 confirmed starters | 3791 lineup TBC",
     "[predict] SNIPER:0  MARKSMAN:1  VALUABLE:70",
     "[predict] player_ledger: +109 new signal(s) recorded",
-    "[api_usage] workflow=Player Props af_calls=680 cache_hits=193 cache_hit_rate=22% errors=0  quota_remaining 22768->22089 (account-wide delta 679)"
+    "[api_usage] workflow=Player Props af_calls=680 cache_hits=193 cache_hit_rate=22% errors=0  quota_remaining 21910->20380 (account-wide delta 1530)"
   ]
 }
