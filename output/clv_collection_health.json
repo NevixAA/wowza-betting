@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T15:26:25Z",
+  "generated_at": "2026-11-03T21:13:12Z",
   "close_rule": "strictly pre-kickoff, observed within 30 minutes",
   "shadow_all_time": {
     "eligible": 857,
@@ -474,94 +474,94 @@
   "measure_from": "2026-10-23T00:00:00Z",
   "collection": {
     "window_days": 7.0,
-    "from": "2026-10-27 15:26:25.897700+00:00",
-    "fixture_markets": 2621,
-    "fixtures": 328,
-    "t30_pct": 72.5,
-    "t10_pct": 71.0,
-    "t60_pct": 76.2,
-    "median_last_obs_minutes": 1.3,
+    "from": "2026-10-27 21:13:12.344584+00:00",
+    "fixture_markets": 2525,
+    "fixtures": 316,
+    "t30_pct": 67.4,
+    "t10_pct": 65.8,
+    "t60_pct": 71.2,
+    "median_last_obs_minutes": 1.4,
     "by_track": {
       "new_format": {
         "fixture_markets": 1151,
         "fixtures": 144,
-        "t30_pct": 59.5,
-        "t10_pct": 57.4,
-        "t60_pct": 59.5,
+        "t30_pct": 58.8,
+        "t10_pct": 56.7,
+        "t60_pct": 58.8,
         "median_last_obs_minutes": 1.7
       },
       "standard": {
-        "fixture_markets": 1470,
-        "fixtures": 184,
-        "t30_pct": 82.7,
-        "t10_pct": 81.6,
-        "t60_pct": 89.3,
+        "fixture_markets": 1374,
+        "fixtures": 172,
+        "t30_pct": 74.6,
+        "t10_pct": 73.4,
+        "t60_pct": 81.6,
         "median_last_obs_minutes": 1.1
       }
     },
     "by_market": {
       "btts_no": {
-        "fixture_markets": 328,
-        "fixtures": 328,
-        "t30_pct": 73.8,
-        "t10_pct": 72.3,
-        "t60_pct": 77.4,
+        "fixture_markets": 316,
+        "fixtures": 316,
+        "t30_pct": 68.7,
+        "t10_pct": 67.1,
+        "t60_pct": 72.5,
         "median_last_obs_minutes": 1.3
       },
       "btts_yes": {
-        "fixture_markets": 328,
-        "fixtures": 328,
-        "t30_pct": 73.8,
-        "t10_pct": 72.3,
-        "t60_pct": 77.4,
+        "fixture_markets": 316,
+        "fixtures": 316,
+        "t30_pct": 68.7,
+        "t10_pct": 67.1,
+        "t60_pct": 72.5,
         "median_last_obs_minutes": 1.3
       },
       "over15": {
-        "fixture_markets": 328,
-        "fixtures": 328,
-        "t30_pct": 73.8,
-        "t10_pct": 72.3,
-        "t60_pct": 77.4,
+        "fixture_markets": 316,
+        "fixtures": 316,
+        "t30_pct": 68.7,
+        "t10_pct": 67.1,
+        "t60_pct": 72.5,
         "median_last_obs_minutes": 1.3
       },
       "over25": {
-        "fixture_markets": 327,
-        "fixtures": 327,
-        "t30_pct": 67.9,
-        "t10_pct": 66.4,
-        "t60_pct": 71.6,
-        "median_last_obs_minutes": 1.4
+        "fixture_markets": 315,
+        "fixtures": 315,
+        "t30_pct": 62.5,
+        "t10_pct": 61.0,
+        "t60_pct": 66.3,
+        "median_last_obs_minutes": 1.5
       },
       "over35": {
-        "fixture_markets": 328,
-        "fixtures": 328,
-        "t30_pct": 73.8,
-        "t10_pct": 72.3,
-        "t60_pct": 77.4,
+        "fixture_markets": 316,
+        "fixtures": 316,
+        "t30_pct": 68.7,
+        "t10_pct": 67.1,
+        "t60_pct": 72.5,
         "median_last_obs_minutes": 1.3
       },
       "under15": {
-        "fixture_markets": 328,
-        "fixtures": 328,
-        "t30_pct": 73.8,
-        "t10_pct": 72.3,
-        "t60_pct": 77.4,
+        "fixture_markets": 316,
+        "fixtures": 316,
+        "t30_pct": 68.7,
+        "t10_pct": 67.1,
+        "t60_pct": 72.5,
         "median_last_obs_minutes": 1.3
       },
       "under25": {
-        "fixture_markets": 326,
-        "fixtures": 326,
-        "t30_pct": 69.6,
-        "t10_pct": 68.1,
-        "t60_pct": 73.3,
-        "median_last_obs_minutes": 1.3
+        "fixture_markets": 314,
+        "fixtures": 314,
+        "t30_pct": 64.6,
+        "t10_pct": 63.1,
+        "t60_pct": 68.5,
+        "median_last_obs_minutes": 1.4
       },
       "under35": {
-        "fixture_markets": 328,
-        "fixtures": 328,
-        "t30_pct": 73.8,
-        "t10_pct": 72.3,
-        "t60_pct": 77.4,
+        "fixture_markets": 316,
+        "fixtures": 316,
+        "t30_pct": 68.7,
+        "t10_pct": 67.1,
+        "t60_pct": 72.5,
         "median_last_obs_minutes": 1.3
       }
     },
@@ -607,12 +607,12 @@
         "median_last_obs_minutes": 0.4
       },
       "Championship": {
-        "fixture_markets": 95,
-        "fixtures": 12,
-        "t30_pct": 88.4,
-        "t10_pct": 88.4,
-        "t60_pct": 88.4,
-        "median_last_obs_minutes": 0.1
+        "fixture_markets": 167,
+        "fixtures": 21,
+        "t30_pct": 50.3,
+        "t10_pct": 50.3,
+        "t60_pct": 50.3,
+        "median_last_obs_minutes": 1.1
       },
       "Denmark Superliga": {
         "fixture_markets": 48,
@@ -679,19 +679,19 @@
         "median_last_obs_minutes": 0.9
       },
       "League One": {
-        "fixture_markets": 136,
-        "fixtures": 17,
-        "t30_pct": 97.1,
-        "t10_pct": 97.1,
-        "t60_pct": 97.1,
-        "median_last_obs_minutes": 0.8
+        "fixture_markets": 112,
+        "fixtures": 14,
+        "t30_pct": 83.0,
+        "t10_pct": 83.0,
+        "t60_pct": 83.0,
+        "median_last_obs_minutes": 0.1
       },
       "League Two": {
         "fixture_markets": 104,
         "fixtures": 13,
-        "t30_pct": 91.3,
-        "t10_pct": 91.3,
-        "t60_pct": 91.3,
+        "t30_pct": 83.7,
+        "t10_pct": 83.7,
+        "t60_pct": 83.7,
         "median_last_obs_minutes": 0.1
       },
       "Ligue 2": {
@@ -711,12 +711,12 @@
         "median_last_obs_minutes": 0.6
       },
       "National League": {
-        "fixture_markets": 192,
-        "fixtures": 24,
-        "t30_pct": 81.8,
-        "t10_pct": 81.8,
-        "t60_pct": 94.3,
-        "median_last_obs_minutes": 1.3
+        "fixture_markets": 120,
+        "fixtures": 15,
+        "t30_pct": 70.8,
+        "t10_pct": 70.8,
+        "t60_pct": 90.8,
+        "median_last_obs_minutes": 0.1
       },
       "Norway Eliteserien": {
         "fixture_markets": 64,
@@ -751,16 +751,16 @@
         "median_last_obs_minutes": 93.2
       },
       "Scottish Championship": {
-        "fixture_markets": 48,
-        "fixtures": 6,
-        "t30_pct": 81.2,
-        "t10_pct": 81.2,
-        "t60_pct": 81.2,
+        "fixture_markets": 40,
+        "fixtures": 5,
+        "t30_pct": 77.5,
+        "t10_pct": 77.5,
+        "t60_pct": 77.5,
         "median_last_obs_minutes": 0.1
       },
       "Scottish League One": {
-        "fixture_markets": 48,
-        "fixtures": 6,
+        "fixture_markets": 40,
+        "fixtures": 5,
         "t30_pct": 100.0,
         "t10_pct": 100.0,
         "t60_pct": 100.0,
@@ -783,19 +783,19 @@
         "median_last_obs_minutes": 46.7
       },
       "Serie B": {
-        "fixture_markets": 159,
-        "fixtures": 20,
-        "t30_pct": 94.3,
-        "t10_pct": 94.3,
-        "t60_pct": 94.3,
-        "median_last_obs_minutes": 1.7
+        "fixture_markets": 103,
+        "fixtures": 13,
+        "t30_pct": 91.3,
+        "t10_pct": 91.3,
+        "t60_pct": 91.3,
+        "median_last_obs_minutes": 1.4
       },
       "Sweden Allsvenskan": {
         "fixture_markets": 120,
         "fixtures": 15,
-        "t30_pct": 39.2,
-        "t10_pct": 39.2,
-        "t60_pct": 39.2,
+        "t30_pct": 32.5,
+        "t10_pct": 32.5,
+        "t60_pct": 32.5,
         "median_last_obs_minutes": 125.2
       },
       "Turkish Super Lig": {
