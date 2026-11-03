@@ -140,16 +140,6 @@ jobs:
           python scripts/collect_af_history_gap.py
           /tmp/commit_collected.sh afgap
 
-      # After the af_history gap (its new rows carry HIB already) and step 1 (the fixture lists it
-      # reads ids from). Budget-guarded per call; a budget stop is a clean, resumable exit.
-      - name: 9. Inside-box shots for af_history (all leagues)
-        if: contains(env.STEPS, 'insidebox')
-        env:
-          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
-        run: |
-          python scripts/collect_af_history_gap.py --insidebox
-          /tmp/commit_collected.sh insidebox
-
       - name: 3. Sidelined history per player
         if: contains(env.STEPS, 'sidelined')
         env:
@@ -165,6 +155,18 @@ jobs:
         run: |
           python scripts/collect_player_profiles.py
           /tmp/commit_collected.sh profiles
+
+      # LAST of the API-Football steps (2026-11-03): it is the largest (~54k calls) and lower priority
+      # than the player profiles the props retrain needs; on run-day 2 it ran first and spent the whole
+      # job cap before profiles started. After the af_history gap (its new rows carry HIB already) and
+      # step 1 (the fixture lists it reads ids from). Budget-guarded; a budget stop is resumable.
+      - name: 9. Inside-box shots for af_history (all leagues)
+        if: contains(env.STEPS, 'insidebox')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_af_history_gap.py --insidebox
+          /tmp/commit_collected.sh insidebox
 
       # 5. Understat: REMOVED (owner 2026-11-02). Understat data is free for non-commercial use only and
       #    Wowza is commercial; no collection until Understat grants written commercial permission
