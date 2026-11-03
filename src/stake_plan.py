@@ -73,6 +73,14 @@ def check_side_selections(side_bets: pd.DataFrame) -> None:
     if bad_mt or bad_odds:
         raise SelectionSchemaError(f"side selections lost model_type on {bad_mt} row(s) / odds on "
                                    f"{bad_odds} row(s) of {len(t)}")
+    # A side outside its market (BTTS "YES/OVER" - the pre-219c1848 union label in 110 committed audit
+    # rows - or a blank side) is a broken contract, not a tip (2026-11-03).
+    from src.bankroll_policy import side_valid
+    bad_side = [f"{m}/{s}" for m, s in zip(t["market"], t["side"])
+                if not side_valid(SIDE_MARKET.get(str(m).lower(), m), s)]
+    if bad_side:
+        raise SelectionSchemaError(f"side selections carry {len(bad_side)} side(s) outside their market: "
+                                   f"{sorted(set(map(str, bad_side)))[:5]}")
 
 
 def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
@@ -82,6 +90,9 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
        100% of those tips map to an UNSUPPORTED track - the 2026-10-22 failure shape.
     2. Any tip whose odds are missing.
     3. Any O/U 2.5 tip routed to no side track (track ..._UNKNOWN_SIDE, owner split 2026-10-26).
+    4. Any tip whose side does not belong to its market (BTTS "YES/OVER", blank, ...).
+    5. Any (fixture, market, side) holding two stakes, and - while the policy allows one position per
+       fixture - any fixture holding two stakes.
     """
     from src.bankroll_policy import REAL_STATES, UNKNOWN_SIDE, split_track
     if plan is None or plan.empty:
@@ -101,6 +112,23 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
     n_side = int(plan["track"].astype(str).str.endswith(f"_{UNKNOWN_SIDE}").sum()) if "track" in plan else 0
     if n_side:
         probs.append(f"{n_side} O/U tip(s) with no usable side (track *_{UNKNOWN_SIDE}, no stake)")
+    # 4-5 (2026-11-03): the two shapes found in output/stake_audit.csv must show up, never read healthy.
+    from src.bankroll_policy import side_valid
+    sides = plan["side"] if "side" in plan.columns else pd.Series("", index=plan.index, dtype=object)
+    n_bad = (sum(not side_valid(m, s) for m, s in zip(plan["market"], sides)) if "side" in plan.columns
+             else 0)                                      # a plan without sides: the contract's missing_column
+    if n_bad:
+        probs.append(f"{n_bad} tip(s) whose side does not belong to their market")
+    staked = plan[pd.to_numeric(plan["final_fraction"], errors="coerce").fillna(0) > 0]
+    if len(staked):
+        per_pos = staked.groupby([staked["fixture"].astype(str), staked["market"].astype(str),
+                                  sides.reindex(staked.index).astype(str)]).size()
+        if (per_pos > 1).any():
+            probs.append(f"{int((per_pos > 1).sum())} position(s) (fixture, market, side) with more than one stake")
+        per_fx = staked.groupby(staked["fixture"].astype(str)).size()
+        if (policy.get("portfolio") or {}).get("one_position_per_fixture", True) and (per_fx > 1).any():
+            probs.append(f"{int((per_fx > 1).sum())} fixture(s) with more than one stake although the policy "
+                         f"allows one position per fixture: {sorted(per_fx[per_fx > 1].index)[:5]}")
     return probs
 
 

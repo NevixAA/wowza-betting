@@ -47,9 +47,15 @@ SIDES = ("OVER", "UNDER", "YES", "NO")
 RESULTS = ("WIN", "LOSS", "VOID", "PUSH", "HALF_WIN", "HALF_LOSS")
 REAL_STATES = ("PROBATION", "ACTIVE_LOW", "ACTIVE", "ACTIVE_STRONG", "DEGRADED")
 DEPLOYMENT_STATES = REAL_STATES + ("PAPER", "BLOCKED", "BLOCKED_FROM_REAL", "UNSUPPORTED")
+# Every reason src/bankroll_policy.size_day can write (tests/test_stake_contract_guards.py scans the code
+# so a new reason cannot silently become a "violation"). Added 2026-11-03: NO_LEAGUE_THRESHOLD_EVIDENCE,
+# NO_LEAGUE_RATING, NO_RATING_MIN_SCALE (Data Truth 2026-11-01), OPPOSITE_DIRECTION_ON_FIXTURE
+# (2026-10-25) and DUPLICATE_POSITION (2026-11-03) - all zero-stake reasons the code already wrote or
+# now writes; none of them is a violation.
 STAKE_REASON_RX = (r"OK|NO_REAL_STAKE_[A-Z_]+|PAPER_LEAGUE|ODDS_BLOCKED|ODDS_ABOVE_TRACK_CAP|"
                    r"ODDS_BELOW_TRACK_FLOOR|TIER_NOT_STAKED|ONE_POSITION_PER_FIXTURE|[A-Z_]*CAP[A-Z_]*|"
-                   r"DRAWDOWN_[A-Z_]+")
+                   r"DRAWDOWN_[A-Z_]+|NO_LEAGUE_THRESHOLD_EVIDENCE|NO_LEAGUE_RATING|NO_RATING_MIN_SCALE|"
+                   r"OPPOSITE_DIRECTION_ON_FIXTURE|DUPLICATE_POSITION")
 HEX64 = r"[0-9a-f]{64}"
 
 
