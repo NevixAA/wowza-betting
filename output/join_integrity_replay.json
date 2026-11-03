@@ -20,26 +20,88 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83139,
-      "right_rows": 91689,
+      "left_rows": 83244,
+      "right_rows": 91701,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 82292,
+      "matched_left_rows": 82345,
       "unmapped_left_rows": 0,
-      "output_rows": 90182,
+      "output_rows": 90287,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83127,
+      "legacy_misaligned_rows": 83232,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
       ]
+    },
+    "fd_history_ht_fill.legacy": {
+      "name": "fd_history_ht_fill.legacy",
+      "keys": [
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 83244,
+      "right_rows": 33259,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1174,
+      "right_duplicate_rows": 2348,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 32084,
+      "unmapped_left_rows": 0,
+      "output_rows": 84417,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 1173,
+      "legacy_misaligned_rows": 67664,
+      "status": "FAIL",
+      "notes": [
+        "key omits league/fixture_id"
+      ]
+    },
+    "fd_history_ht_fill": {
+      "name": "fd_history_ht_fill",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 83244,
+      "right_rows": 33259,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1174,
+      "right_duplicate_rows": 2348,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 32084,
+      "unmapped_left_rows": 51160,
+      "output_rows": 83244,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "ht_home_goals": 31526,
+        "ht_away_goals": 31526
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
+      "notes": []
     },
     "std_sidemarket_odds.legacy": {
       "name": "std_sidemarket_odds.legacy",
@@ -50,17 +112,17 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83139,
-      "right_rows": 17025,
+      "left_rows": 83244,
+      "right_rows": 17292,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 6913,
-      "unmapped_left_rows": 76226,
-      "output_rows": 83139,
+      "matched_left_rows": 6919,
+      "unmapped_left_rows": 76325,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -80,17 +142,17 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83139,
-      "right_rows": 32302,
+      "left_rows": 83244,
+      "right_rows": 32658,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 4567,
-      "unmapped_left_rows": 78572,
-      "output_rows": 83139,
+      "matched_left_rows": 4627,
+      "unmapped_left_rows": 78617,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -112,22 +174,22 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83139,
-      "right_rows": 91689,
+      "left_rows": 83244,
+      "right_rows": 91701,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 82292,
+      "matched_left_rows": 82345,
       "unmapped_left_rows": 0,
-      "output_rows": 90182,
+      "output_rows": 90287,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
       "legacy_expansion_rows": 7043,
-      "legacy_misaligned_rows": 83127,
+      "legacy_misaligned_rows": 83232,
       "status": "FAIL",
       "notes": [
         "key omits league/fixture_id"
@@ -143,8 +205,8 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83139,
-      "right_rows": 91689,
+      "left_rows": 83244,
+      "right_rows": 91701,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -160,30 +222,92 @@
         "away_insidebox": 280
       },
       "left_null_key_rows": 0,
-      "matched_left_rows": 82292,
-      "unmapped_left_rows": 847,
-      "output_rows": 83139,
+      "matched_left_rows": 82345,
+      "unmapped_left_rows": 899,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "home_shots": 21652,
-        "away_shots": 21657,
-        "home_sot": 21674,
-        "away_sot": 21675,
-        "home_corners": 164,
-        "away_corners": 164,
-        "home_fouls": 164,
-        "away_fouls": 164,
-        "home_yellows": 161,
-        "away_yellows": 161,
-        "home_xg": 12266,
-        "away_xg": 12270,
-        "home_insidebox": 14795,
-        "away_insidebox": 14794
+        "home_shots": 21705,
+        "away_shots": 21710,
+        "home_sot": 21727,
+        "away_sot": 21728,
+        "home_corners": 217,
+        "away_corners": 217,
+        "home_fouls": 217,
+        "away_fouls": 217,
+        "home_yellows": 214,
+        "away_yellows": 214,
+        "home_xg": 12317,
+        "away_xg": 12321,
+        "home_insidebox": 14848,
+        "away_insidebox": 14847
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
       "legacy_misaligned_rows": null,
       "status": "WARN",
+      "notes": []
+    },
+    "fd_history_ht_fill.legacy": {
+      "name": "fd_history_ht_fill.legacy",
+      "keys": [
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "legacy_audit",
+      "left_rows": 83244,
+      "right_rows": 33259,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1174,
+      "right_duplicate_rows": 2348,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 32084,
+      "unmapped_left_rows": 0,
+      "output_rows": 84417,
+      "duplicate_output_rows": 0,
+      "filled_cells": {},
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": 1173,
+      "legacy_misaligned_rows": 67664,
+      "status": "FAIL",
+      "notes": [
+        "key omits league/fixture_id"
+      ]
+    },
+    "fd_history_ht_fill": {
+      "name": "fd_history_ht_fill",
+      "keys": [
+        "league",
+        "_h",
+        "_a",
+        "_date_str"
+      ],
+      "helper_version": "safe_left_enrich-1.0",
+      "mode": "safe",
+      "left_rows": 83244,
+      "right_rows": 33259,
+      "right_null_key_rows": 0,
+      "right_duplicate_key_groups": 1174,
+      "right_duplicate_rows": 2348,
+      "ambiguous_key_groups": 0,
+      "ambiguous_cells": {},
+      "left_null_key_rows": 0,
+      "matched_left_rows": 32084,
+      "unmapped_left_rows": 51160,
+      "output_rows": 83244,
+      "duplicate_output_rows": 0,
+      "filled_cells": {
+        "ht_home_goals": 31526,
+        "ht_away_goals": 31526
+      },
+      "overwritten_cells": 0,
+      "legacy_expansion_rows": null,
+      "legacy_misaligned_rows": null,
+      "status": "PASS",
       "notes": []
     },
     "std_sidemarket_odds.legacy": {
@@ -195,17 +319,17 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83139,
-      "right_rows": 17025,
+      "left_rows": 83244,
+      "right_rows": 17292,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 6913,
-      "unmapped_left_rows": 76226,
-      "output_rows": 83139,
+      "matched_left_rows": 6919,
+      "unmapped_left_rows": 76325,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -226,22 +350,22 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83139,
-      "right_rows": 7540,
+      "left_rows": 83244,
+      "right_rows": 7610,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 6913,
-      "unmapped_left_rows": 76226,
-      "output_rows": 83139,
+      "matched_left_rows": 6919,
+      "unmapped_left_rows": 76325,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "odds_btts": 6812,
-        "odds_over15": 827,
-        "odds_over35": 844
+        "odds_btts": 6818,
+        "odds_over15": 833,
+        "odds_over35": 850
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -258,17 +382,17 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
-      "left_rows": 83139,
-      "right_rows": 32302,
+      "left_rows": 83244,
+      "right_rows": 32658,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 4567,
-      "unmapped_left_rows": 78572,
-      "output_rows": 83139,
+      "matched_left_rows": 4627,
+      "unmapped_left_rows": 78617,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {},
       "overwritten_cells": 0,
@@ -289,21 +413,21 @@
       ],
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
-      "left_rows": 83139,
-      "right_rows": 6279,
+      "left_rows": 83244,
+      "right_rows": 6363,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
       "ambiguous_key_groups": 0,
       "ambiguous_cells": {},
       "left_null_key_rows": 0,
-      "matched_left_rows": 4567,
-      "unmapped_left_rows": 78572,
-      "output_rows": 83139,
+      "matched_left_rows": 4627,
+      "unmapped_left_rows": 78617,
+      "output_rows": 83244,
       "duplicate_output_rows": 0,
       "filled_cells": {
-        "odds_over25": 593,
-        "odds_under25": 595
+        "odds_over25": 594,
+        "odds_under25": 596
       },
       "overwritten_cells": 0,
       "legacy_expansion_rows": null,
@@ -313,8 +437,8 @@
     }
   },
   "history_diff": {
-    "rows_total": 83139,
-    "rows_with_any_change": 39842,
+    "rows_total": 83244,
+    "rows_with_any_change": 39984,
     "first_changed_row": {
       "date": "2019-02-25 00:00:00",
       "league": "Ireland Premier Division",
@@ -323,897 +447,858 @@
     },
     "columns": {
       "home_shots": {
-        "legacy_non_null": 82903,
-        "safe_non_null": 82280,
-        "shifted": 20256,
-        "phantom": 842,
-        "dropped": 219,
-        "rows_changed": 21317
+        "legacy_non_null": 83017,
+        "safe_non_null": 82343,
+        "shifted": 20266,
+        "phantom": 882,
+        "dropped": 208,
+        "rows_changed": 21356
       },
       "away_shots": {
-        "legacy_non_null": 82906,
-        "safe_non_null": 82285,
-        "shifted": 20082,
-        "phantom": 837,
-        "dropped": 216,
-        "rows_changed": 21135
+        "legacy_non_null": 83020,
+        "safe_non_null": 82348,
+        "shifted": 20156,
+        "phantom": 877,
+        "dropped": 205,
+        "rows_changed": 21238
       },
       "home_sot": {
-        "legacy_non_null": 82904,
-        "safe_non_null": 82292,
-        "shifted": 18804,
-        "phantom": 830,
-        "dropped": 218,
-        "rows_changed": 19852
+        "legacy_non_null": 83018,
+        "safe_non_null": 82355,
+        "shifted": 18851,
+        "phantom": 871,
+        "dropped": 208,
+        "rows_changed": 19930
       },
       "away_sot": {
-        "legacy_non_null": 82912,
-        "safe_non_null": 82293,
-        "shifted": 18574,
-        "phantom": 829,
-        "dropped": 210,
-        "rows_changed": 19613
+        "legacy_non_null": 83025,
+        "safe_non_null": 82356,
+        "shifted": 18657,
+        "phantom": 869,
+        "dropped": 200,
+        "rows_changed": 19726
       },
       "home_corners": {
-        "legacy_non_null": 56780,
-        "safe_non_null": 56944,
+        "legacy_non_null": 56790,
+        "safe_non_null": 57007,
         "shifted": 0,
         "phantom": 0,
-        "dropped": 164,
-        "rows_changed": 164
+        "dropped": 217,
+        "rows_changed": 217
       },
       "away_corners": {
-        "legacy_non_null": 56780,
-        "safe_non_null": 56944,
+        "legacy_non_null": 56790,
+        "safe_non_null": 57007,
         "shifted": 0,
         "phantom": 0,
-        "dropped": 164,
-        "rows_changed": 164
+        "dropped": 217,
+        "rows_changed": 217
       },
       "home_fouls": {
-        "legacy_non_null": 56782,
-        "safe_non_null": 56946,
+        "legacy_non_null": 56792,
+        "safe_non_null": 57009,
         "shifted": 0,
         "phantom": 0,
-        "dropped": 164,
-        "rows_changed": 164
+        "dropped": 217,
+        "rows_changed": 217
       },
       "away_fouls": {
-        "legacy_non_null": 56782,
-        "safe_non_null": 56946,
+        "legacy_non_null": 56792,
+        "safe_non_null": 57009,
         "shifted": 0,
         "phantom": 0,
-        "dropped": 164,
-        "rows_changed": 164
+        "dropped": 217,
+        "rows_changed": 217
       },
       "home_xg": {
-        "legacy_non_null": 8077,
-        "safe_non_null": 12266,
-        "shifted": 5357,
-        "phantom": 2704,
-        "dropped": 6893,
-        "rows_changed": 14954
+        "legacy_non_null": 8158,
+        "safe_non_null": 12317,
+        "shifted": 5389,
+        "phantom": 2750,
+        "dropped": 6909,
+        "rows_changed": 15048
       },
       "away_xg": {
-        "legacy_non_null": 8077,
-        "safe_non_null": 12270,
-        "shifted": 5354,
-        "phantom": 2701,
-        "dropped": 6894,
-        "rows_changed": 14949
+        "legacy_non_null": 8158,
+        "safe_non_null": 12321,
+        "shifted": 5390,
+        "phantom": 2749,
+        "dropped": 6912,
+        "rows_changed": 15051
       },
       "home_insidebox": {
-        "legacy_non_null": 10270,
-        "safe_non_null": 14795,
-        "shifted": 7398,
-        "phantom": 2302,
-        "dropped": 6827,
-        "rows_changed": 16527
+        "legacy_non_null": 10367,
+        "safe_non_null": 14848,
+        "shifted": 7466,
+        "phantom": 2310,
+        "dropped": 6791,
+        "rows_changed": 16567
       },
       "away_insidebox": {
-        "legacy_non_null": 10270,
-        "safe_non_null": 14794,
-        "shifted": 7288,
-        "phantom": 2299,
-        "dropped": 6823,
-        "rows_changed": 16410
+        "legacy_non_null": 10367,
+        "safe_non_null": 14847,
+        "shifted": 7387,
+        "phantom": 2309,
+        "dropped": 6789,
+        "rows_changed": 16485
       },
       "ht_home_goals": {
-        "legacy_non_null": 23638,
-        "safe_non_null": 23638,
+        "legacy_non_null": 55174,
+        "safe_non_null": 55174,
         "shifted": 0,
         "phantom": 0,
         "dropped": 0,
         "rows_changed": 0
       },
       "ht_away_goals": {
-        "legacy_non_null": 23638,
-        "safe_non_null": 23638,
+        "legacy_non_null": 55174,
+        "safe_non_null": 55174,
         "shifted": 0,
         "phantom": 0,
         "dropped": 0,
         "rows_changed": 0
       },
       "odds_btts": {
-        "legacy_non_null": 7915,
-        "safe_non_null": 10177,
-        "shifted": 625,
-        "phantom": 3911,
-        "dropped": 6173,
-        "rows_changed": 10709
+        "legacy_non_null": 8024,
+        "safe_non_null": 10271,
+        "shifted": 607,
+        "phantom": 3952,
+        "dropped": 6199,
+        "rows_changed": 10758
       },
       "odds_over15": {
-        "legacy_non_null": 1703,
-        "safe_non_null": 1979,
+        "legacy_non_null": 1826,
+        "safe_non_null": 2073,
         "shifted": 0,
-        "phantom": 551,
-        "dropped": 827,
-        "rows_changed": 1378
+        "phantom": 586,
+        "dropped": 833,
+        "rows_changed": 1419
       },
       "odds_over35": {
-        "legacy_non_null": 2031,
-        "safe_non_null": 2311,
+        "legacy_non_null": 2149,
+        "safe_non_null": 2405,
         "shifted": 0,
-        "phantom": 564,
-        "dropped": 844,
-        "rows_changed": 1408
+        "phantom": 594,
+        "dropped": 850,
+        "rows_changed": 1444
       },
       "odds_over25": {
-        "legacy_non_null": 44480,
-        "safe_non_null": 42978,
+        "legacy_non_null": 44590,
+        "safe_non_null": 43077,
         "shifted": 1,
-        "phantom": 1604,
-        "dropped": 102,
-        "rows_changed": 1707
+        "phantom": 1616,
+        "dropped": 103,
+        "rows_changed": 1720
       },
       "odds_under25": {
-        "legacy_non_null": 44491,
-        "safe_non_null": 42983,
+        "legacy_non_null": 44597,
+        "safe_non_null": 43081,
         "shifted": 1,
-        "phantom": 1610,
-        "dropped": 102,
-        "rows_changed": 1713
+        "phantom": 1619,
+        "dropped": 103,
+        "rows_changed": 1723
       }
     },
     "by_league": {
       "National League": {
-        "home_shots": 3037,
-        "away_shots": 2985,
-        "home_sot": 2802,
-        "away_sot": 2767,
-        "home_xg": 517,
-        "away_xg": 517,
-        "home_insidebox": 602,
-        "away_insidebox": 598,
-        "odds_btts": 212,
-        "odds_over15": 67,
-        "odds_over35": 70
+        "home_shots": 3008,
+        "away_shots": 2977,
+        "home_sot": 2790,
+        "away_sot": 2773,
+        "home_xg": 515,
+        "away_xg": 515,
+        "home_insidebox": 595,
+        "away_insidebox": 592,
+        "odds_btts": 226,
+        "odds_over15": 76,
+        "odds_over35": 76
       },
       "Argentina Primera Division": {
-        "home_shots": 2437,
-        "away_shots": 2412,
-        "home_sot": 2262,
-        "away_sot": 2213,
-        "home_corners": 9,
-        "away_corners": 9,
-        "home_fouls": 9,
-        "away_fouls": 9,
-        "home_xg": 756,
-        "away_xg": 755,
-        "home_insidebox": 979,
-        "away_insidebox": 973,
-        "odds_btts": 241,
-        "odds_over15": 22,
-        "odds_over35": 22,
-        "odds_over25": 146,
-        "odds_under25": 146
+        "home_shots": 2448,
+        "away_shots": 2421,
+        "home_sot": 2235,
+        "away_sot": 2247,
+        "home_corners": 15,
+        "away_corners": 15,
+        "home_fouls": 15,
+        "away_fouls": 15,
+        "home_xg": 763,
+        "away_xg": 764,
+        "home_insidebox": 984,
+        "away_insidebox": 958,
+        "odds_btts": 230,
+        "odds_over15": 12,
+        "odds_over35": 12,
+        "odds_over25": 130,
+        "odds_under25": 130
       },
       "USA MLS": {
-        "home_shots": 2077,
-        "away_shots": 2074,
-        "home_sot": 1955,
-        "away_sot": 1914,
-        "home_corners": 32,
-        "away_corners": 32,
-        "home_fouls": 32,
-        "away_fouls": 32,
-        "home_xg": 961,
-        "away_xg": 960,
-        "home_insidebox": 966,
-        "away_insidebox": 964,
-        "odds_btts": 215,
-        "odds_over15": 20,
-        "odds_over35": 20,
-        "odds_over25": 129,
-        "odds_under25": 129
+        "home_shots": 2084,
+        "away_shots": 2096,
+        "home_sot": 1957,
+        "away_sot": 1940,
+        "home_corners": 47,
+        "away_corners": 47,
+        "home_fouls": 47,
+        "away_fouls": 47,
+        "home_xg": 976,
+        "away_xg": 977,
+        "home_insidebox": 980,
+        "away_insidebox": 971,
+        "odds_btts": 226,
+        "odds_over15": 33,
+        "odds_over35": 33,
+        "odds_over25": 131,
+        "odds_under25": 131
       },
       "Brazil Serie A": {
-        "home_shots": 1724,
-        "away_shots": 1714,
-        "home_sot": 1612,
-        "away_sot": 1607,
-        "home_corners": 31,
-        "away_corners": 31,
-        "home_fouls": 31,
-        "away_fouls": 31,
-        "home_xg": 789,
+        "home_shots": 1725,
+        "away_shots": 1718,
+        "home_sot": 1634,
+        "away_sot": 1583,
+        "home_corners": 34,
+        "away_corners": 34,
+        "home_fouls": 34,
+        "away_fouls": 34,
+        "home_xg": 786,
         "away_xg": 789,
-        "home_insidebox": 786,
-        "away_insidebox": 781,
-        "odds_btts": 161,
+        "home_insidebox": 777,
+        "away_insidebox": 772,
+        "odds_btts": 190,
         "odds_over15": 20,
         "odds_over35": 20,
         "odds_over25": 140,
-        "odds_under25": 141
+        "odds_under25": 140
       },
       "Mexico Liga MX": {
-        "home_shots": 1432,
-        "away_shots": 1443,
-        "home_sot": 1337,
-        "away_sot": 1327,
-        "home_corners": 14,
-        "away_corners": 14,
-        "home_fouls": 14,
-        "away_fouls": 14,
-        "home_xg": 438,
-        "away_xg": 438,
-        "home_insidebox": 475,
-        "away_insidebox": 472,
-        "odds_btts": 166,
-        "odds_over15": 19,
-        "odds_over35": 20,
-        "odds_over25": 126,
-        "odds_under25": 126
-      },
-      "Ireland Premier Division": {
-        "home_shots": 1424,
-        "away_shots": 1406,
-        "home_sot": 1317,
-        "away_sot": 1293,
-        "home_xg": 292,
-        "away_xg": 292,
-        "home_insidebox": 425,
-        "away_insidebox": 422,
-        "odds_btts": 80,
-        "odds_over15": 13,
-        "odds_over35": 13,
-        "odds_over25": 62,
-        "odds_under25": 62
-      },
-      "Romanian Superliga": {
-        "home_shots": 1419,
-        "away_shots": 1410,
-        "home_sot": 1364,
-        "away_sot": 1360,
-        "home_corners": 4,
-        "away_corners": 4,
-        "home_fouls": 4,
-        "away_fouls": 4,
-        "home_xg": 562,
-        "away_xg": 564,
-        "home_insidebox": 611,
-        "away_insidebox": 605,
-        "odds_btts": 208,
-        "odds_over15": 23,
-        "odds_over35": 24,
-        "odds_over25": 117,
-        "odds_under25": 117
-      },
-      "Japan J-League": {
-        "home_shots": 1405,
-        "away_shots": 1380,
-        "home_sot": 1292,
-        "away_sot": 1291,
-        "home_corners": 16,
-        "away_corners": 16,
-        "home_fouls": 16,
-        "away_fouls": 16,
-        "home_xg": 349,
-        "away_xg": 350,
-        "home_insidebox": 366,
-        "away_insidebox": 351,
-        "odds_btts": 200,
-        "odds_over15": 26,
-        "odds_over35": 26,
-        "odds_over25": 102,
-        "odds_under25": 103
-      },
-      "China Super League": {
-        "home_shots": 1224,
-        "away_shots": 1221,
-        "home_sot": 1129,
-        "away_sot": 1128,
-        "home_xg": 460,
-        "away_xg": 458,
-        "home_insidebox": 480,
-        "away_insidebox": 480,
-        "odds_btts": 152,
-        "odds_over15": 19,
-        "odds_over35": 19,
-        "odds_over25": 62,
-        "odds_under25": 62
-      },
-      "Finland Veikkausliiga": {
-        "home_shots": 1209,
-        "away_shots": 1193,
-        "home_sot": 1115,
-        "away_sot": 1107,
-        "home_xg": 334,
-        "away_xg": 335,
-        "home_insidebox": 347,
-        "away_insidebox": 339,
-        "odds_btts": 59,
-        "odds_over15": 19,
-        "odds_over35": 19,
-        "odds_over25": 62,
-        "odds_under25": 62
-      },
-      "Norway Eliteserien": {
-        "home_shots": 982,
-        "away_shots": 968,
-        "home_sot": 927,
-        "away_sot": 909,
-        "home_corners": 6,
-        "away_corners": 6,
-        "home_fouls": 6,
-        "away_fouls": 6,
-        "home_xg": 468,
-        "away_xg": 468,
-        "home_insidebox": 474,
-        "away_insidebox": 470,
-        "odds_btts": 79,
-        "odds_over15": 18,
-        "odds_over35": 18,
-        "odds_over25": 60,
-        "odds_under25": 61
-      },
-      "Sweden Allsvenskan": {
-        "home_shots": 947,
-        "away_shots": 942,
-        "home_sot": 876,
-        "away_sot": 876,
+        "home_shots": 1456,
+        "away_shots": 1445,
+        "home_sot": 1354,
+        "away_sot": 1331,
         "home_corners": 19,
         "away_corners": 19,
         "home_fouls": 19,
         "away_fouls": 19,
-        "home_xg": 571,
-        "away_xg": 572,
-        "home_insidebox": 600,
-        "away_insidebox": 590,
-        "odds_btts": 146,
-        "odds_over15": 39,
-        "odds_over35": 39,
-        "odds_over25": 151,
-        "odds_under25": 152
+        "home_xg": 435,
+        "away_xg": 437,
+        "home_insidebox": 475,
+        "away_insidebox": 473,
+        "odds_btts": 163,
+        "odds_over15": 10,
+        "odds_over35": 11,
+        "odds_over25": 129,
+        "odds_under25": 130
+      },
+      "Ireland Premier Division": {
+        "home_shots": 1425,
+        "away_shots": 1408,
+        "home_sot": 1335,
+        "away_sot": 1310,
+        "home_corners": 3,
+        "away_corners": 3,
+        "home_fouls": 3,
+        "away_fouls": 3,
+        "home_xg": 300,
+        "away_xg": 300,
+        "home_insidebox": 431,
+        "away_insidebox": 429,
+        "odds_btts": 92,
+        "odds_over15": 15,
+        "odds_over35": 15,
+        "odds_over25": 64,
+        "odds_under25": 64
+      },
+      "Romanian Superliga": {
+        "home_shots": 1422,
+        "away_shots": 1418,
+        "home_sot": 1394,
+        "away_sot": 1362,
+        "home_corners": 6,
+        "away_corners": 6,
+        "home_fouls": 6,
+        "away_fouls": 6,
+        "home_xg": 561,
+        "away_xg": 561,
+        "home_insidebox": 616,
+        "away_insidebox": 612,
+        "odds_btts": 217,
+        "odds_over15": 22,
+        "odds_over35": 22,
+        "odds_over25": 135,
+        "odds_under25": 135
+      },
+      "Japan J-League": {
+        "home_shots": 1399,
+        "away_shots": 1398,
+        "home_sot": 1300,
+        "away_sot": 1304,
+        "home_corners": 18,
+        "away_corners": 18,
+        "home_fouls": 18,
+        "away_fouls": 18,
+        "home_xg": 367,
+        "away_xg": 368,
+        "home_insidebox": 392,
+        "away_insidebox": 389,
+        "odds_btts": 186,
+        "odds_over15": 20,
+        "odds_over35": 21,
+        "odds_over25": 117,
+        "odds_under25": 117
+      },
+      "China Super League": {
+        "home_shots": 1219,
+        "away_shots": 1221,
+        "home_sot": 1133,
+        "away_sot": 1127,
+        "home_xg": 456,
+        "away_xg": 456,
+        "home_insidebox": 461,
+        "away_insidebox": 465,
+        "odds_btts": 124,
+        "odds_over15": 15,
+        "odds_over35": 15,
+        "odds_over25": 58,
+        "odds_under25": 58
+      },
+      "Finland Veikkausliiga": {
+        "home_shots": 1210,
+        "away_shots": 1208,
+        "home_sot": 1120,
+        "away_sot": 1125,
+        "home_corners": 2,
+        "away_corners": 2,
+        "home_fouls": 2,
+        "away_fouls": 2,
+        "home_xg": 341,
+        "away_xg": 341,
+        "home_insidebox": 352,
+        "away_insidebox": 351,
+        "odds_btts": 63,
+        "odds_over15": 14,
+        "odds_over35": 14,
+        "odds_over25": 43,
+        "odds_under25": 43
+      },
+      "Norway Eliteserien": {
+        "home_shots": 985,
+        "away_shots": 993,
+        "home_sot": 925,
+        "away_sot": 909,
+        "home_corners": 12,
+        "away_corners": 12,
+        "home_fouls": 12,
+        "away_fouls": 12,
+        "home_xg": 485,
+        "away_xg": 486,
+        "home_insidebox": 477,
+        "away_insidebox": 479,
+        "odds_btts": 92,
+        "odds_over15": 19,
+        "odds_over35": 19,
+        "odds_over25": 70,
+        "odds_under25": 70
+      },
+      "Sweden Allsvenskan": {
+        "home_shots": 948,
+        "away_shots": 947,
+        "home_sot": 883,
+        "away_sot": 874,
+        "home_corners": 21,
+        "away_corners": 21,
+        "home_fouls": 21,
+        "away_fouls": 21,
+        "home_xg": 561,
+        "away_xg": 562,
+        "home_insidebox": 594,
+        "away_insidebox": 597,
+        "odds_btts": 129,
+        "odds_over15": 21,
+        "odds_over35": 21,
+        "odds_over25": 150,
+        "odds_under25": 150
       },
       "Austrian Bundesliga": {
-        "home_shots": 900,
-        "away_shots": 894,
-        "home_sot": 840,
-        "away_sot": 812,
-        "home_xg": 229,
-        "away_xg": 226,
-        "home_insidebox": 260,
-        "away_insidebox": 259,
-        "odds_btts": 84,
-        "odds_over15": 14,
-        "odds_over35": 15,
-        "odds_over25": 94,
-        "odds_under25": 94
+        "home_shots": 914,
+        "away_shots": 904,
+        "home_sot": 847,
+        "away_sot": 840,
+        "home_corners": 1,
+        "away_corners": 1,
+        "home_fouls": 1,
+        "away_fouls": 1,
+        "home_xg": 233,
+        "away_xg": 233,
+        "home_insidebox": 263,
+        "away_insidebox": 265,
+        "odds_btts": 114,
+        "odds_over15": 21,
+        "odds_over35": 21,
+        "odds_over25": 86,
+        "odds_under25": 86
       },
       "Denmark Superliga": {
-        "home_shots": 705,
-        "away_shots": 697,
-        "home_sot": 652,
-        "away_sot": 636,
-        "home_corners": 33,
-        "away_corners": 33,
-        "home_fouls": 33,
-        "away_fouls": 33,
-        "home_xg": 306,
-        "away_xg": 306,
-        "home_insidebox": 322,
-        "away_insidebox": 318,
-        "odds_btts": 64,
-        "odds_over15": 13,
-        "odds_over35": 13,
-        "odds_over25": 45,
-        "odds_under25": 46
+        "home_shots": 713,
+        "away_shots": 694,
+        "home_sot": 651,
+        "away_sot": 648,
+        "home_corners": 39,
+        "away_corners": 39,
+        "home_fouls": 39,
+        "away_fouls": 39,
+        "home_xg": 312,
+        "away_xg": 310,
+        "home_insidebox": 325,
+        "away_insidebox": 327,
+        "odds_btts": 58,
+        "odds_over15": 6,
+        "odds_over35": 6,
+        "odds_over25": 44,
+        "odds_under25": 44
       },
       "K-League 1": {
-        "home_shots": 358,
-        "away_shots": 360,
+        "home_shots": 363,
+        "away_shots": 357,
         "home_sot": 341,
-        "away_sot": 342,
-        "home_xg": 208,
-        "away_xg": 208,
-        "home_insidebox": 287,
+        "away_sot": 322,
+        "home_xg": 205,
+        "away_xg": 205,
+        "home_insidebox": 275,
         "away_insidebox": 275,
-        "odds_btts": 88,
-        "odds_over15": 20,
-        "odds_over35": 20,
+        "odds_btts": 79,
+        "odds_over15": 14,
+        "odds_over35": 14,
         "odds_over25": 51,
-        "odds_under25": 50
+        "odds_under25": 52
       },
       "Saudi Pro League": {
         "home_shots": 22,
         "away_shots": 22,
-        "home_sot": 16,
+        "home_sot": 18,
         "away_sot": 18,
-        "home_xg": 326,
-        "away_xg": 327,
-        "home_insidebox": 359,
+        "home_xg": 325,
+        "away_xg": 325,
+        "home_insidebox": 360,
         "away_insidebox": 356,
-        "odds_btts": 120,
-        "odds_over15": 15,
-        "odds_over35": 15,
-        "odds_over25": 76,
-        "odds_under25": 77
+        "odds_btts": 119,
+        "odds_over15": 14,
+        "odds_over35": 16,
+        "odds_over25": 84,
+        "odds_under25": 85
       },
       "Belgian First Division A": {
         "home_shots": 6,
-        "away_shots": 6,
+        "away_shots": 4,
         "home_sot": 6,
-        "away_sot": 6,
-        "home_xg": 395,
-        "away_xg": 395,
-        "home_insidebox": 412,
-        "away_insidebox": 412,
-        "odds_btts": 128,
-        "odds_over15": 25,
-        "odds_over35": 25
+        "away_sot": 5,
+        "home_xg": 408,
+        "away_xg": 408,
+        "home_insidebox": 432,
+        "away_insidebox": 427,
+        "odds_btts": 119,
+        "odds_over15": 27,
+        "odds_over35": 28
       },
       "Ligue 2": {
         "home_shots": 4,
-        "away_shots": 4,
+        "away_shots": 3,
         "home_sot": 4,
         "away_sot": 4,
-        "home_xg": 286,
-        "away_xg": 286,
-        "home_insidebox": 361,
-        "away_insidebox": 374,
-        "odds_btts": 698,
-        "odds_over15": 27,
-        "odds_over35": 27
+        "home_xg": 304,
+        "away_xg": 304,
+        "home_insidebox": 367,
+        "away_insidebox": 372,
+        "odds_btts": 689,
+        "odds_over15": 34,
+        "odds_over35": 34
       },
       "Turkish Super Lig": {
         "home_shots": 2,
         "away_shots": 2,
-        "home_sot": 2,
-        "away_sot": 1,
-        "home_xg": 346,
-        "away_xg": 346,
+        "home_sot": 1,
+        "away_sot": 2,
+        "home_xg": 350,
+        "away_xg": 350,
         "home_insidebox": 372,
-        "away_insidebox": 373,
-        "odds_btts": 155,
-        "odds_over15": 46,
-        "odds_over35": 46
+        "away_insidebox": 367,
+        "odds_btts": 149,
+        "odds_over15": 42,
+        "odds_over35": 42
       },
       "Scottish League Two": {
         "home_shots": 1,
         "away_shots": 1,
         "home_sot": 1,
-        "away_sot": 1,
         "home_xg": 130,
         "away_xg": 130,
-        "home_insidebox": 173,
-        "away_insidebox": 173,
-        "odds_btts": 80,
-        "odds_over15": 10,
-        "odds_over35": 10
+        "home_insidebox": 159,
+        "away_insidebox": 158,
+        "odds_btts": 75,
+        "odds_over15": 13,
+        "odds_over35": 13
       },
       "Greek Super League": {
         "home_shots": 1,
-        "home_sot": 1,
+        "away_shots": 1,
         "away_sot": 1,
-        "home_xg": 359,
-        "away_xg": 360,
-        "home_insidebox": 418,
-        "away_insidebox": 413,
-        "odds_btts": 144,
-        "odds_over15": 43,
-        "odds_over35": 43,
-        "odds_over25": 43,
-        "odds_under25": 43
+        "home_xg": 354,
+        "away_xg": 355,
+        "home_insidebox": 425,
+        "away_insidebox": 435,
+        "odds_btts": 159,
+        "odds_over15": 55,
+        "odds_over35": 55,
+        "odds_over25": 50,
+        "odds_under25": 49
       },
       "Scottish League One": {
         "home_shots": 1,
-        "away_shots": 1,
         "home_sot": 1,
-        "home_xg": 144,
+        "away_sot": 1,
+        "home_xg": 143,
         "away_xg": 143,
-        "home_insidebox": 168,
-        "away_insidebox": 169,
-        "odds_btts": 64,
-        "odds_over15": 10,
-        "odds_over35": 10
+        "home_insidebox": 166,
+        "away_insidebox": 167,
+        "odds_btts": 71,
+        "odds_over15": 7,
+        "odds_over35": 7
       },
       "Championship": {
-        "home_xg": 902,
-        "away_xg": 900,
-        "home_insidebox": 903,
-        "away_insidebox": 899,
-        "odds_btts": 1241,
-        "odds_over15": 159,
-        "odds_over35": 159,
-        "odds_over25": 52,
-        "odds_under25": 52
-      },
-      "League One": {
-        "home_xg": 811,
-        "away_xg": 812,
-        "home_insidebox": 943,
-        "away_insidebox": 935,
-        "odds_btts": 1358,
-        "odds_over15": 125,
-        "odds_over35": 125,
-        "odds_over25": 64,
-        "odds_under25": 64
-      },
-      "League Two": {
-        "home_xg": 803,
-        "away_xg": 800,
-        "home_insidebox": 928,
-        "away_insidebox": 930,
-        "odds_btts": 1366,
-        "odds_over15": 141,
-        "odds_over35": 141,
+        "home_xg": 892,
+        "away_xg": 893,
+        "home_insidebox": 905,
+        "away_insidebox": 892,
+        "odds_btts": 1246,
+        "odds_over15": 172,
+        "odds_over35": 172,
         "odds_over25": 41,
         "odds_under25": 41
       },
+      "League Two": {
+        "home_xg": 820,
+        "away_xg": 819,
+        "home_insidebox": 956,
+        "away_insidebox": 954,
+        "odds_btts": 1336,
+        "odds_over15": 150,
+        "odds_over35": 151,
+        "odds_over25": 48,
+        "odds_under25": 48
+      },
+      "League One": {
+        "home_xg": 792,
+        "away_xg": 792,
+        "home_insidebox": 934,
+        "away_insidebox": 925,
+        "odds_btts": 1345,
+        "odds_over15": 130,
+        "odds_over35": 131,
+        "odds_over25": 51,
+        "odds_under25": 51
+      },
       "La Liga 2": {
-        "home_xg": 652,
-        "away_xg": 652,
-        "home_insidebox": 789,
-        "away_insidebox": 783,
-        "odds_btts": 1089,
-        "odds_over15": 128,
-        "odds_over35": 134,
-        "odds_over25": 31,
-        "odds_under25": 31
+        "home_xg": 660,
+        "away_xg": 660,
+        "home_insidebox": 783,
+        "away_insidebox": 768,
+        "odds_btts": 1096,
+        "odds_over15": 123,
+        "odds_over35": 128,
+        "odds_over25": 38,
+        "odds_under25": 38
       },
       "Portuguese Primeira Liga": {
-        "home_xg": 603,
+        "home_xg": 604,
         "away_xg": 602,
-        "home_insidebox": 584,
-        "away_insidebox": 591,
-        "odds_btts": 159,
-        "odds_over15": 54,
-        "odds_over35": 54
+        "home_insidebox": 585,
+        "away_insidebox": 594,
+        "odds_btts": 158,
+        "odds_over15": 64,
+        "odds_over35": 65
       },
       "Dutch Eredivisie": {
-        "home_xg": 561,
-        "away_xg": 562,
-        "home_insidebox": 571,
-        "away_insidebox": 560,
-        "odds_btts": 130,
-        "odds_over15": 48,
-        "odds_over35": 48
+        "home_xg": 566,
+        "away_xg": 566,
+        "home_insidebox": 576,
+        "away_insidebox": 566,
+        "odds_btts": 141,
+        "odds_over15": 52,
+        "odds_over35": 52
       },
       "Bundesliga 2": {
-        "home_xg": 512,
-        "away_xg": 512,
-        "home_insidebox": 580,
-        "away_insidebox": 576,
-        "odds_btts": 732,
-        "odds_over15": 27,
-        "odds_over35": 40,
-        "odds_over25": 51,
-        "odds_under25": 52
+        "home_xg": 521,
+        "away_xg": 520,
+        "home_insidebox": 565,
+        "away_insidebox": 563,
+        "odds_btts": 753,
+        "odds_over15": 40,
+        "odds_over35": 52,
+        "odds_over25": 60,
+        "odds_under25": 61
       },
       "Serie B": {
-        "home_xg": 452,
-        "away_xg": 452,
-        "home_insidebox": 502,
-        "away_insidebox": 495,
-        "odds_btts": 890,
-        "odds_over15": 106,
-        "odds_over35": 108,
-        "odds_over25": 2,
-        "odds_under25": 2
+        "home_xg": 457,
+        "away_xg": 456,
+        "home_insidebox": 505,
+        "away_insidebox": 510,
+        "odds_btts": 915,
+        "odds_over15": 107,
+        "odds_over35": 107
       },
       "Scottish Premiership": {
-        "home_xg": 262,
-        "away_xg": 262,
-        "home_insidebox": 289,
-        "away_insidebox": 275,
-        "odds_btts": 121,
-        "odds_over15": 39,
-        "odds_over35": 39
+        "home_xg": 257,
+        "away_xg": 256,
+        "home_insidebox": 295,
+        "away_insidebox": 289,
+        "odds_btts": 119,
+        "odds_over15": 49,
+        "odds_over35": 49
       },
       "Scottish Championship": {
-        "home_xg": 170,
-        "away_xg": 170,
-        "home_insidebox": 195,
-        "away_insidebox": 199,
+        "home_xg": 169,
+        "away_xg": 168,
+        "home_insidebox": 185,
+        "away_insidebox": 187,
         "odds_btts": 79,
-        "odds_over15": 23,
-        "odds_over35": 26
+        "odds_over15": 22,
+        "odds_over35": 22
       }
     },
     "examples_latest": [
       {
-        "fixture": "2026-11-01 La Liga 2: Eldense v Granada",
+        "fixture": "2026-11-02 Portuguese Primeira Liga: Gil Vicente v Guimaraes",
         "legacy": {
-          "home_shots": 13.0,
-          "away_shots": 8.0,
-          "home_sot": 6.0,
-          "away_sot": 3.0
+          "home_shots": 10.0,
+          "away_shots": 11.0,
+          "home_sot": 1.0,
+          "away_sot": 2.0
         },
         "safe": {
-          "home_shots": 13.0,
-          "away_shots": 8.0,
-          "home_sot": 6.0,
-          "away_sot": 3.0
+          "home_shots": 10.0,
+          "away_shots": 11.0,
+          "home_sot": 1.0,
+          "away_sot": 2.0
         }
       },
       {
-        "fixture": "2026-11-01 La Liga 2: Burgos v Castellon",
+        "fixture": "2026-11-02 La Liga 2: Oviedo v Las Palmas",
         "legacy": {
-          "home_shots": 9.0,
-          "away_shots": 5.0,
-          "home_sot": 4.0,
-          "away_sot": 1.0
-        },
-        "safe": {
-          "home_shots": 9.0,
-          "away_shots": 5.0,
-          "home_sot": 4.0,
-          "away_sot": 1.0
-        }
-      },
-      {
-        "fixture": "2026-11-01 Turkish Super Lig: Kasimpasa v Besiktas",
-        "legacy": {
-          "home_shots": 16.0,
-          "away_shots": 8.0,
-          "home_sot": 6.0,
-          "away_sot": 4.0
-        },
-        "safe": {
-          "home_shots": 16.0,
-          "away_shots": 8.0,
-          "home_sot": 6.0,
-          "away_sot": 4.0
-        }
-      },
-      {
-        "fixture": "2026-11-01 Dutch Eredivisie: Groningen v Sparta Rotterdam",
-        "legacy": {
-          "home_shots": 20.0,
-          "away_shots": 8.0,
-          "home_sot": 10.0,
-          "away_sot": 4.0
-        },
-        "safe": {
-          "home_shots": 20.0,
-          "away_shots": 8.0,
-          "home_sot": 10.0,
-          "away_sot": 4.0
-        }
-      },
-      {
-        "fixture": "2026-11-01 Portuguese Primeira Liga: Academico Viseu v Rio Ave",
-        "legacy": {
-          "home_shots": 13.0,
-          "away_shots": 12.0,
-          "home_sot": 5.0,
+          "home_shots": 22.0,
+          "away_shots": 10.0,
+          "home_sot": 7.0,
           "away_sot": 5.0
         },
         "safe": {
-          "home_shots": 13.0,
-          "away_shots": 12.0,
-          "home_sot": 5.0,
+          "home_shots": 22.0,
+          "away_shots": 10.0,
+          "home_sot": 7.0,
           "away_sot": 5.0
         }
       },
       {
-        "fixture": "2026-11-01 Belgian First Division A: Charleroi v RAAL La Louviere",
+        "fixture": "2026-11-02 La Liga 2: Valladolid v Leganes",
         "legacy": {
-          "home_shots": 15.0,
-          "away_shots": 10.0,
-          "home_sot": 6.0,
-          "away_sot": 4.0
+          "home_shots": 17.0,
+          "away_shots": 21.0,
+          "home_sot": 10.0,
+          "away_sot": 10.0
         },
         "safe": {
-          "home_shots": 15.0,
+          "home_shots": 17.0,
+          "away_shots": 21.0,
+          "home_sot": 10.0,
+          "away_sot": 10.0
+        }
+      },
+      {
+        "fixture": "2026-11-02 La Liga 2: Mallorca v Cadiz",
+        "legacy": {
+          "home_shots": 23.0,
           "away_shots": 10.0,
           "home_sot": 6.0,
-          "away_sot": 4.0
+          "away_sot": 3.0
+        },
+        "safe": {
+          "home_shots": 23.0,
+          "away_shots": 10.0,
+          "home_sot": 6.0,
+          "away_sot": 3.0
+        }
+      },
+      {
+        "fixture": "2026-11-03 Argentina Primera Division: Ind. Rivadavia v Banfield",
+        "legacy": {
+          "home_shots": 16.0,
+          "away_shots": 9.0,
+          "home_sot": 7.0,
+          "away_sot": 2.0
+        },
+        "safe": {
+          "home_shots": null,
+          "away_shots": null,
+          "home_sot": null,
+          "away_sot": null
+        }
+      },
+      {
+        "fixture": "2026-11-03 Argentina Primera Division: Atl. Tucuman v Argentinos Jrs",
+        "legacy": {
+          "home_shots": 18.0,
+          "away_shots": 11.0,
+          "home_sot": 2.0,
+          "away_sot": 3.0
+        },
+        "safe": {
+          "home_shots": null,
+          "away_shots": null,
+          "home_sot": null,
+          "away_sot": null
         }
       }
     ]
   },
   "serving_diff": {
-    "board_fixtures": 172,
+    "board_fixtures": 166,
     "recipe": "v9_repaired",
     "serving_features_changed": {
       "away_corners_pg_roll": {
-        "fixtures_changed": 45,
+        "fixtures_changed": 63,
         "by_model_type": {
-          "new_format": 45
+          "new_format": 63
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_fouls_pg_roll": {
-        "fixtures_changed": 45,
+        "fixtures_changed": 63,
         "by_model_type": {
-          "new_format": 45
+          "new_format": 63
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "away_insidebox_last5": {
-        "fixtures_changed": 166,
+        "fixtures_changed": 158,
         "by_model_type": {
-          "new_format": 98,
-          "standard": 68
+          "new_format": 92,
+          "standard": 66
         },
-        "mean_abs_delta": 1.964558232931727,
-        "max_abs_delta": 8.65
+        "mean_abs_delta": 2.1460970464135025,
+        "max_abs_delta": 10.0
       },
       "away_xg_last5": {
-        "fixtures_changed": 166,
+        "fixtures_changed": 159,
         "by_model_type": {
-          "new_format": 98,
-          "standard": 68
+          "new_format": 93,
+          "standard": 66
         },
-        "mean_abs_delta": 0.49833232323232324,
-        "max_abs_delta": 1.8125
+        "mean_abs_delta": 0.49251572327044024,
+        "max_abs_delta": 2.265
       },
       "combined_sot_ratio": {
-        "fixtures_changed": 94,
+        "fixtures_changed": 90,
         "by_model_type": {
-          "new_format": 94
+          "new_format": 90
         },
-        "mean_abs_delta": 0.04783224107471375,
-        "max_abs_delta": 0.16066504747531918
+        "mean_abs_delta": 0.04635515053699688,
+        "max_abs_delta": 0.17509249339777766
       },
       "home_corners_pg_roll": {
-        "fixtures_changed": 39,
+        "fixtures_changed": 59,
         "by_model_type": {
-          "new_format": 39
+          "new_format": 59
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_fouls_pg_roll": {
-        "fixtures_changed": 39,
+        "fixtures_changed": 59,
         "by_model_type": {
-          "new_format": 39
+          "new_format": 59
         },
         "mean_abs_delta": null,
         "max_abs_delta": null
       },
       "home_insidebox_last5": {
-        "fixtures_changed": 167,
+        "fixtures_changed": 157,
         "by_model_type": {
-          "new_format": 99,
-          "standard": 68
+          "new_format": 93,
+          "standard": 64
         },
-        "mean_abs_delta": 2.2814371257485035,
-        "max_abs_delta": 9.0
+        "mean_abs_delta": 2.112738853503185,
+        "max_abs_delta": 7.4
       },
       "home_xg_last5": {
-        "fixtures_changed": 167,
+        "fixtures_changed": 161,
         "by_model_type": {
-          "new_format": 99,
-          "standard": 68
+          "new_format": 95,
+          "standard": 66
         },
-        "mean_abs_delta": 0.5399610778443114,
-        "max_abs_delta": 1.856666666666667
+        "mean_abs_delta": 0.4847660455486542,
+        "max_abs_delta": 2.1158333333333332
       },
       "p_over25": {
-        "fixtures_changed": 101,
+        "fixtures_changed": 97,
         "by_model_type": {
-          "new_format": 101
+          "new_format": 97
         },
-        "mean_abs_delta": 0.01572794985019129,
-        "max_abs_delta": 0.06479631785534806
+        "mean_abs_delta": 0.016765366246521828,
+        "max_abs_delta": 0.05225577510938939
       },
       "p_btts": {
-        "fixtures_changed": 172,
+        "fixtures_changed": 166,
         "by_model_type": {
-          "new_format": 103,
-          "standard": 69
+          "new_format": 99,
+          "standard": 67
         },
-        "mean_abs_delta": 0.01122405982547405,
-        "max_abs_delta": 0.04285126650113935
+        "mean_abs_delta": 0.011706144921149865,
+        "max_abs_delta": 0.05167183204752035
       },
       "p_over15": {
-        "fixtures_changed": 172,
+        "fixtures_changed": 166,
         "by_model_type": {
-          "new_format": 103,
-          "standard": 69
+          "new_format": 99,
+          "standard": 67
         },
-        "mean_abs_delta": 0.014457635874190402,
-        "max_abs_delta": 0.10431160698102016
+        "mean_abs_delta": 0.012586320507317629,
+        "max_abs_delta": 0.06631327516429042
       },
       "p_over35": {
-        "fixtures_changed": 172,
+        "fixtures_changed": 166,
         "by_model_type": {
-          "new_format": 103,
-          "standard": 69
+          "new_format": 99,
+          "standard": 67
         },
-        "mean_abs_delta": 0.010231139987321171,
-        "max_abs_delta": 0.06494347472106271
+        "mean_abs_delta": 0.012694055858140176,
+        "max_abs_delta": 0.09308163599322344
       },
       "p_ht_over05": {
-        "fixtures_changed": 69,
+        "fixtures_changed": 67,
         "by_model_type": {
-          "standard": 69
+          "standard": 67
         },
-        "mean_abs_delta": 0.0016439551995520412,
-        "max_abs_delta": 0.010529266319002195
+        "mean_abs_delta": 0.0016995919999051499,
+        "max_abs_delta": 0.007745932964222768
       },
       "p_ht_over15": {
-        "fixtures_changed": 69,
+        "fixtures_changed": 67,
         "by_model_type": {
-          "standard": 69
+          "standard": 67
         },
-        "mean_abs_delta": 0.0064740315280013335,
-        "max_abs_delta": 0.018413318899725972
+        "mean_abs_delta": 0.006272531658680109,
+        "max_abs_delta": 0.01701921541913698
       }
     },
-    "tips_legacy": 69,
-    "tips_safe": 61,
+    "tips_legacy": 44,
+    "tips_safe": 44,
     "tips_only_legacy": [
       [
         "Argentina Primera Division",
-        "Barracas Central",
-        "Racing Club",
-        "OU25",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "Boca Juniors",
-        "Defensa y Justicia",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "Independiente",
-        "Deportivo Riestra",
-        "btts",
-        "YES",
-        "SNIPER"
-      ],
-      [
-        "Argentina Primera Division",
-        "Independiente",
-        "Deportivo Riestra",
+        "Argentinos Juniors",
+        "Atl\u00e9tico Hurac\u00e1n",
         "over15",
         "OVER",
         "MARKSMAN"
-      ],
-      [
-        "Argentina Primera Division",
-        "Independiente Rivadavia",
-        "Banfield",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "San Lorenzo",
-        "Platense",
-        "over15",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Brazil Serie A",
-        "Chapecoense",
-        "Mirassol",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
       ],
       [
         "Brazil Serie A",
@@ -1224,16 +1309,8 @@
         "SNIPER"
       ],
       [
-        "Brazil Serie A",
-        "Sao Paulo",
-        "Corinthians",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
         "Championship",
-        "Portsmouth",
+        "Blackburn Rovers",
         "Stoke City",
         "btts",
         "YES",
@@ -1245,31 +1322,23 @@
         "Swansea City",
         "btts",
         "YES",
-        "VALUABLE"
+        "MARKSMAN"
       ],
       [
         "China Super League",
-        "Dalian Yingbo",
-        "Tianjin Jinmen Tiger FC",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "HJK Helsinki",
-        "AC Oulu",
-        "btts",
-        "YES",
+        "Qingdao Hainiu FC",
+        "Shenzhen Peng City FC",
+        "OU25",
+        "UNDER",
         "VALUABLE"
       ],
       [
-        "La Liga 2",
-        "C\u00e1diz CF",
-        "Oviedo",
-        "btts",
-        "YES",
-        "MARKSMAN"
+        "Finland Veikkausliiga",
+        "KuPS Kuopio",
+        "FC Inter Turku",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
       ],
       [
         "Mexico Liga MX",
@@ -1288,49 +1357,9 @@
         "VALUABLE"
       ],
       [
-        "Mexico Liga MX",
-        "Quer\u00e9taro",
-        "Puebla",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Norway Eliteserien",
-        "Fredrikstad FK",
-        "SK Brann",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Norway Eliteserien",
-        "Kristiansund BK",
-        "V\u00e5lerenga",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Norway Eliteserien",
-        "Viking FK",
-        "KFUM",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Serie B",
-        "Pisa",
-        "S\u00fcdtirol",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
         "Sweden Allsvenskan",
-        "AIK",
-        "BK Hacken",
+        "Halmstads BK",
+        "Djurgardens IF",
         "OU25",
         "UNDER",
         "VALUABLE"
@@ -1342,40 +1371,24 @@
         "OU25",
         "UNDER",
         "VALUABLE"
+      ],
+      [
+        "Sweden Allsvenskan",
+        "IK Sirius",
+        "Halmstads BK",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
       ]
     ],
     "tips_only_safe": [
       [
         "Argentina Primera Division",
-        "Independiente",
-        "Deportivo Riestra",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "Argentina Primera Division",
-        "Independiente",
-        "Deportivo Riestra",
+        "Argentinos Juniors",
+        "Atl\u00e9tico Hurac\u00e1n",
         "over15",
         "OVER",
         "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "San Lorenzo",
-        "Platense",
-        "OU25",
-        "OVER",
-        "VALUABLE"
-      ],
-      [
-        "Argentina Primera Division",
-        "San Lorenzo",
-        "Platense",
-        "over15",
-        "OVER",
-        "SNIPER"
       ],
       [
         "Brazil Serie A",
@@ -1387,14 +1400,6 @@
       ],
       [
         "Brazil Serie A",
-        "Chapecoense",
-        "Mirassol",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
-        "Brazil Serie A",
         "Palmeiras",
         "Remo",
         "OU25",
@@ -1403,42 +1408,34 @@
       ],
       [
         "Championship",
-        "West Bromwich Albion",
-        "Millwall",
+        "Portsmouth",
+        "Swansea City",
         "btts",
         "YES",
         "VALUABLE"
       ],
       [
         "China Super League",
-        "Dalian Yingbo",
-        "Tianjin Jinmen Tiger FC",
-        "btts",
-        "YES",
+        "Qingdao Hainiu FC",
+        "Shenzhen Peng City FC",
+        "OU25",
+        "UNDER",
+        "SNIPER"
+      ],
+      [
+        "Denmark Superliga",
+        "FC Copenhagen",
+        "Brondby IF",
+        "OU25",
+        "UNDER",
         "VALUABLE"
       ],
       [
-        "Finland Veikkausliiga",
-        "HJK Helsinki",
-        "AC Oulu",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "La Liga 2",
-        "C\u00e1diz CF",
-        "Oviedo",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "La Liga 2",
-        "Granada CF",
-        "Tenerife",
-        "btts",
-        "YES",
+        "League Two",
+        "Northampton Town",
+        "Oldham Athletic",
+        "over15",
+        "OVER",
         "VALUABLE"
       ],
       [
@@ -1455,14 +1452,22 @@
         "V\u00e5lerenga",
         "OU25",
         "UNDER",
+        "VALUABLE"
+      ],
+      [
+        "Sweden Allsvenskan",
+        "Halmstads BK",
+        "Djurgardens IF",
+        "OU25",
+        "UNDER",
         "SNIPER"
       ],
       [
-        "Serie B",
-        "Pisa",
-        "S\u00fcdtirol",
-        "btts",
-        "YES",
+        "Sweden Allsvenskan",
+        "IFK Goteborg",
+        "Malmo FF",
+        "OU25",
+        "UNDER",
         "VALUABLE"
       ]
     ]
