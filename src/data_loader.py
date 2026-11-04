@@ -1398,7 +1398,11 @@ _AF_STATS_FILL_COLS = {"HIB": "home_insidebox", "AIB": "away_insidebox",
 
 def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
     """Fill MISSING home/away_insidebox and home/away_xg from AF_STATS_FILL (nan_only, a stored value
-    is never overwritten), league-keyed, clubs resolved onto df's spellings (team_names.resolve),
+    is never overwritten), league-keyed, clubs resolved onto df's spellings (team_names.resolve,
+    then - since fix round 9, owner 2026-11-04 - the identity map one_club_one_match applied,
+    IDENTITY_ALIASES, exactly as the HT and fullstats fills: the sidecar is keyed on af_history's
+    pre-identity spelling, so a club the pipeline renamed by same-day evidence - 'Atletico
+    Paranaense' -> 'Athletico-PR' - was dropped here while the fullstats fill placed it),
     ambiguous cells refused by safe_left_enrich. Part of _enrich_with_api_shots, so training and
     serving read the same history. Absent sidecar -> df unchanged."""
     p = (root or Path(__file__).resolve().parents[1]) / AF_STATS_FILL
@@ -1413,7 +1417,8 @@ def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.Data
             return df
         fill = fill[fill[vals].notna().any(axis=1)].copy()
         fill["date"] = pd.to_datetime(fill["date"], errors="coerce")
-        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_stats_fill")
+        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_stats_fill",
+                                     aliases=IDENTITY_ALIASES)
         fill["_date_str"] = fill["date"].dt.strftime("%Y-%m-%d")
         df["_h"] = df["home_team"].astype(str)
         df["_a"] = df["away_team"].astype(str)
@@ -1483,6 +1488,10 @@ def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.
     give the values back without a new call. Part of _enrich_with_api_shots on both exits, so
     training and serving read the same history. Absent sidecar -> df unchanged.
 
+    Fix round 9 (owner 2026-11-04): the written-back rows' own shots / SoT are no longer served
+    (src/af_history_provenance), so this fill is where a provider value REPLACES them - nan_only
+    still holds, the cells it fills are the ones the provenance rule left empty.
+
     Rows whose shots or SoT this fill supplies get their row-level sot ratio from the filled
     values (same formula as the loader's); no other row's ratio is touched. Per-league coverage
     before/after is logged and kept in df.attrs['af_fullstats_fill']."""
@@ -1544,6 +1553,10 @@ def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.
     return df
 
 
+#: the committed provider bank this module READS (never writes, owner 2026-11-04)
+AF_HISTORY_PATH = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -1559,12 +1572,27 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             df[_col] = np.nan
 
     # ── Step 1: merge from af_history.parquet (historical backfill, one-time run) ──
-    af_history_path = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
+    # PROVENANCE RULE (owner 2026-11-04, fix round 9, src/af_history_provenance): only PROVIDER rows
+    # are served. A row this module wrote back (no fixture_id AND no FT score - 90,897 of 93,381 on
+    # the committed file) serves NONE of its statistics: where round 8 could compare them with a
+    # fixture-proven provider answer, their total shots agreed in only 14.3% of 1,583 pairs. Such a
+    # cell stays missing unless a provider source proven to the same match fills it below (the
+    # --insidebox and --fullstats sidecars, a live provider fetch). The rows stay in the file.
+    # What they WOULD have filled is measured (a probe join, never applied) so the per-league
+    # blanked / provider-replaced counts land in df.attrs['af_written_back'].
+    wb_blank = None
+    af_history_path = AF_HISTORY_PATH
     if af_history_path.exists():
         try:
+            from src.af_history_provenance import written_back_mask
             hist = pd.read_parquet(af_history_path)
             hist = _drop_misfiled_league_rows(hist, "af_history")
             hist["date"] = pd.to_datetime(hist["date"], errors="coerce")
+            _wb = written_back_mask(hist)
+            log.info(f"[af_history] provenance: {int(_wb.sum()):,} of {len(hist):,} rows written back "
+                     f"by the old loader bank (no fixture_id, no FT score) - their statistics are "
+                     f"not served; {int((~_wb).sum()):,} provider rows served")
+            hist = hist.assign(_written_back=_wb.to_numpy())
             hist = _resolve_onto_history(hist, df, "home_team", "away_team", "af_history")
             hist["_date_str"]  = hist["date"].dt.strftime("%Y-%m-%d")
 
@@ -1595,6 +1623,8 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             # onto the wrong fixture. Only the league-keyed safe join exists now (legacy path
             # removed 2026-11-01); the legacy shape is still AUDITED.
             _k3 = ["_h", "_a", "_date_str"]
+            _wbr = hist["_written_back"].astype(bool)
+            wb_hist, hist = hist[_wbr], hist[~_wbr]
             try:
                 _IJ.audit_legacy_merge(df, hist, _k3, name="af_history_shots.legacy")
             except Exception as _e:                              # noqa: BLE001
@@ -1602,6 +1632,16 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
             df, _rep = _IJ.safe_left_enrich(
                 df, hist, keys=["league"] + _k3, value_cols=hist_cols,
                 name="af_history_shots")
+            # the probe: cells the written-back rows would have filled had they been served
+            if len(wb_hist):
+                _probe, _ = _IJ.safe_left_enrich(
+                    df[["league"] + _k3 + [c for c in hist_cols if c in df.columns]],
+                    wb_hist, keys=["league"] + _k3, value_cols=hist_cols,
+                    name="af_history_written_back.probe", register=False)
+                wb_blank = pd.DataFrame(
+                    {c: (_probe[c].notna() & (df[c].isna() if c in df.columns else True)).to_numpy()
+                     for c in hist_cols if c in _probe.columns}, index=df.index)
+                wb_blank = wb_blank.loc[:, wb_blank.any(axis=0)]
             log.info(f"[af_history] SAFE join: matched {_rep.matched_left_rows:,}/"
                      f"{_rep.left_rows:,}; ambiguous key groups {_rep.ambiguous_key_groups}; "
                      f"right duplicate rows {_rep.right_duplicate_rows}")
@@ -1616,8 +1656,7 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     df = _enrich_ht_scores(df)
 
     if not api_key:
-        df = _enrich_af_stats_fill(df)
-        return _enrich_af_fullstats_fill(df)
+        return _finish_af_enrichment(df, wb_blank, recompute_sot_ratio=False)
 
     from src.api_football_ou import fetch_shots_for_league   # import failure must surface
 
@@ -1738,70 +1777,74 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
         n_filled = int(df.loc[mask, "home_shots"].notna().sum())
         log.info(f"[api_football_ou] {league}: {n_filled}/{int(mask.sum())} rows now have shot data")
 
-    # ── BANK THE ENRICHMENT, or pay for it again tomorrow ───────────────────────────────
-    # Everything above this line fetched shot and xG data for FINISHED matches — a game played
-    # in March 2024 has a final shot count that will never change. Until 2026-09-22 that result
-    # was used for training and then THROWN AWAY: nothing wrote it back to af_history.parquet,
-    # which is the committed bank the merge at the top of this function reads from. So every
-    # retrain re-derived the same immutable numbers from scratch, and on 2026-09-22 that cost
-    # TWO HOURS of a single run — 30 leagues at ~4 minutes each.
-    #
-    # apifootball_ou_cache/ (44,453 files) was the only thing standing between this and a full
-    # API re-fetch, and retrain.yml had no actions/cache step until the same day, so even that
-    # started empty on every run.
-    #
-    # Writing the result back means the next run's merge already has these rows and the
-    # skip-if-populated guard above (xG > 50% for a league) short-circuits the whole fetch. The
-    # cost goes from "every run, forever" to "once per genuinely new match".
-    #
-    # ONLY rows that actually gained data are written, and only the columns af_history owns, so
-    # this cannot widen the schema or overwrite a real value with a null.
-    try:
-        _hist_p = Path(__file__).resolve().parents[1] / "output" / "af_history.parquet"
-        _COLMAP = {"home_shots": "HS", "away_shots": "AS", "home_sot": "HST", "away_sot": "AST",
-                   "home_xg": "HXG", "away_xg": "AXG",
-                   "home_insidebox": "HIB", "away_insidebox": "AIB"}
-        _have = [c for c in _COLMAP if c in df.columns]
-        if _have:
-            _new = df[df[_have].notna().any(axis=1)][
-                ["league", "season", "date", "home_team", "away_team"] + _have].copy()
-            _new = _new.rename(columns={k: v for k, v in _COLMAP.items() if k in _have})
-            _prev = pd.read_parquet(_hist_p) if _hist_p.exists() else None
-            _merged = pd.concat([_prev, _new], ignore_index=True) if _prev is not None else _new
-            # Never bank a misfiled row: this write-back is how the archive's Dutch-as-Norway and
-            # Bundesliga-2-as-'Denmark 1st Div' copies got into af_history in the first place.
-            _merged = _drop_misfiled_league_rows(_merged, "af_history write-back")
-            # Newest row wins: a later fetch may fill a column an earlier one left null.
-            _merged = _merged.drop_duplicates(
-                subset=[c for c in ("date", "league", "home_team", "away_team")
-                        if c in _merged.columns], keep="last")
-            for _c in ("league", "season", "home_team", "away_team"):
-                if _c in _merged.columns:
-                    _merged[_c] = _merged[_c].astype(str)
-            _hist_p.parent.mkdir(exist_ok=True)
-            _merged.to_parquet(_hist_p, index=False)
-            log.info(f"[af_history] BANKED enrichment: {len(_merged):,} rows "
-                     f"({len(_merged) - (len(_prev) if _prev is not None else 0):+,} this run). "
-                     f"Next run merges these instead of re-fetching them.")
-    except Exception as e:                                       # noqa: BLE001
-        # Never fail a training run over the cache. Losing the bank costs time, not correctness.
-        log.warning(f"[af_history] could not bank the enrichment: {e}")
+    # ── NO WRITE-BACK (owner 2026-11-04, fix round 9, KEY=bank) ─────────────────────────────
+    # Until 2026-11-04 this point held 'BANK THE ENRICHMENT': every merged-history row carrying
+    # shots / SoT / xG / inside-box was appended to output/af_history.parquet (2026-09-22, to spare
+    # retrain a two-hour re-fetch). It wrote whatever the merged frame held - football-data values,
+    # live API values joined by club name, and values the bank itself had put there on an earlier
+    # run - into the ORIGINAL provider file, newest row winning, without fixture_id or score, and
+    # without corners or fouls. 90,897 of the file's 93,381 rows are such write-backs.
+    # af_history.parquet is an original: only scripts/backfill_af_history.py (provider rows with a
+    # fixture id) writes it. The enrichment is NOT banked anywhere else either, because nothing needs
+    # it: every live value above is re-read from apifootball_ou_cache/ (statistics cached a year,
+    # restored by actions/cache in predict / retrain / backtest), and the collected provider
+    # statistics live beside the history in output/collect/ (read just below).
+    return _finish_af_enrichment(df, wb_blank, recompute_sot_ratio=True)
 
-    # The collected fixture statistics, AFTER the bank step: they live beside af_history.parquet
-    # and are never written into it.
+
+#: the last run's written-back audit (df.attrs['af_written_back'] does not survive every later step)
+AF_WRITTEN_BACK_AUDIT: dict = {}
+
+
+def _finish_af_enrichment(df: pd.DataFrame, wb_blank: pd.DataFrame | None,
+                          recompute_sot_ratio: bool) -> pd.DataFrame:
+    """Both exits of _enrich_with_api_shots: the collected fixture statistics beside af_history
+    (AF_STATS_FILL, AF_FULLSTATS_FILL; never written into it), the row SoT ratios on the API exit
+    (as before; the no-key exit never recomputed them), and the written-back audit (fix round 9):
+    per league and column, the cells the written-back rows WOULD have filled (`blanked`), how many
+    of them a provider source filled instead (`provider_replaced`) and how many stay missing -
+    df.attrs['af_written_back']."""
     df = _enrich_af_stats_fill(df)
     df = _enrich_af_fullstats_fill(df)
 
-    # Recompute SOT ratios after enrichment
-    with np.errstate(divide="ignore", invalid="ignore"):
-        df["home_sot_ratio"] = np.where(
-            df["home_shots"] > 0, df["home_sot"] / df["home_shots"], np.nan
-        )
-        df["away_sot_ratio"] = np.where(
-            df["away_shots"] > 0, df["away_sot"] / df["away_shots"], np.nan
-        )
-
+    if recompute_sot_ratio:
+        with np.errstate(divide="ignore", invalid="ignore"):
+            df["home_sot_ratio"] = np.where(
+                df["home_shots"] > 0, df["home_sot"] / df["home_shots"], np.nan
+            )
+            df["away_sot_ratio"] = np.where(
+                df["away_shots"] > 0, df["away_sot"] / df["away_shots"], np.nan
+            )
+    df.attrs["af_written_back"] = written_back_audit(df, wb_blank)
+    AF_WRITTEN_BACK_AUDIT.clear()
+    AF_WRITTEN_BACK_AUDIT.update(df.attrs["af_written_back"])
+    tot = df.attrs["af_written_back"].get("total", {})
+    if tot:
+        log.info("[af_history] written-back cells not served -> provider replaced: " + "; ".join(
+            f"{c} {v['blanked']:,} -> {v['provider_replaced']:,}" for c, v in tot.items()))
     return df
+
+
+def written_back_audit(df: pd.DataFrame, wb_blank: pd.DataFrame | None) -> dict:
+    """{'per_league': {league: {column: {blanked, provider_replaced, missing}}}, 'total': {...}}.
+    `wb_blank` is the probe mask (df.index x column) of cells only a written-back row would have
+    filled; a cell is provider_replaced when it holds a value after every provider fill."""
+    if wb_blank is None or wb_blank.empty:
+        return {"per_league": {}, "total": {}}
+    blank = wb_blank.reindex(df.index).fillna(False).astype(bool)
+    lg = df["league"].astype(str)
+    per, tot = {}, {}
+    for c in blank.columns:
+        filled = blank[c] & (df[c].notna() if c in df.columns else False)
+        b_by = blank[c].groupby(lg).sum()
+        r_by = filled.groupby(lg).sum()
+        for league, nb in b_by.items():
+            if nb:
+                per.setdefault(league, {})[c] = {"blanked": int(nb), "provider_replaced": int(r_by[league]),
+                                                 "missing": int(nb - r_by[league])}
+        tot[c] = {"blanked": int(blank[c].sum()), "provider_replaced": int(filled.sum()),
+                  "missing": int(blank[c].sum() - filled.sum())}
+    return {"per_league": per, "total": tot}
 
 
 def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> pd.DataFrame:

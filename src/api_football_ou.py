@@ -234,11 +234,13 @@ def get_fixture_statistics(fixture_id: int) -> dict:
     if len(response) < 2:
         return {}
 
-    def _extract(team_block: dict) -> dict:
-        return {s["type"]: s.get("value") for s in team_block.get("statistics", [])}
+    # Owner's team null rule (2026-11-04, src/af_team_stats): in an ANSWERED team block a null
+    # COUNT (shots, SoT, corners, fouls, inside-box, blocked) is 0; an unanswered block or an
+    # unlisted type is None. xG and possession are not counts: a null stays None.
+    from src.af_team_stats import team_values
 
-    home_s = _extract(response[0])
-    away_s = _extract(response[1])
+    home_s = team_values(response[0].get("statistics") or [])
+    away_s = team_values(response[1].get("statistics") or [])
     return {
         "home_shots":      _to_int(home_s.get("Total Shots")),
         "away_shots":      _to_int(away_s.get("Total Shots")),

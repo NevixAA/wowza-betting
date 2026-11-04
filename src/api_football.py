@@ -227,36 +227,22 @@ def get_fixture_statistics(fixture_id: int, cache_hours: float = 8760) -> dict:
     if not data:
         return {}
 
+    # Owner's team null rule (2026-11-04, src/af_team_stats): in an ANSWERED team block a null count
+    # (shots, corners, fouls, offsides) is 0; an unanswered block or an unlisted type stays None;
+    # possession is a percentage and is never zero-filled. (Before: every null was None, and before
+    # fix round 7 every null was 0 - including a block the provider never filled.)
+    from src.af_team_stats import team_values
+    _counts = {"shots_on_target": "Shots on Goal", "shots_off": "Shots off Goal", "shots": "Total Shots",
+               "corners": "Corner Kicks", "fouls": "Fouls", "offsides": "Offsides"}
     result = {}
     for i, team_data in enumerate(data.get("response", [])):
         side = "home" if i == 0 else "away"
         team = team_data.get("team", {})
-
-        # A null/absent stat stays None (was 0 for counts and 50% possession)
-        parsed: dict = {"team_id": team.get("id"), "team_name": team.get("name", ""),
-                        "shots_on_target": None, "shots_off": None, "shots": None,
-                        "corners": None, "fouls": None, "possession": None, "offsides": None}
-        for stat in team_data.get("statistics", []):
-            t = stat.get("type", "")
-            v = stat.get("value")
-            if t == "Shots on Goal":
-                parsed["shots_on_target"] = _int_or_none(v)
-            elif t == "Shots off Goal":
-                parsed["shots_off"] = _int_or_none(v)
-            elif t == "Total Shots":
-                parsed["shots"] = _int_or_none(v)
-            elif t == "Corner Kicks":
-                parsed["corners"] = _int_or_none(v)
-            elif t == "Fouls":
-                parsed["fouls"] = _int_or_none(v)
-            elif t == "Ball Possession":
-                try:
-                    parsed["possession"] = (float(str(v).replace("%", "").strip())
-                                            if v is not None else None)
-                except ValueError:
-                    parsed["possession"] = None
-            elif t == "Offsides":
-                parsed["offsides"] = _int_or_none(v)
+        vals = team_values(team_data.get("statistics") or [])
+        parsed: dict = {"team_id": team.get("id"), "team_name": team.get("name", "")}
+        for key, typ in _counts.items():
+            parsed[key] = _int_or_none(vals.get(typ))
+        parsed["possession"] = vals.get("Ball Possession")
         result[side] = parsed
     return result
 

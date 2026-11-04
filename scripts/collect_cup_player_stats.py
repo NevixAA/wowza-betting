@@ -76,14 +76,14 @@ IDS_PER_CALL = 20                     # API-Football /fixtures?ids= maximum
 
 
 def _corner_value(stats_block) -> float:
-    """'Corner Kicks' of one team's statistics list; NaN when absent or null (never 0)."""
-    for s in stats_block or []:
-        if str(s.get("type", "")).strip().lower() == "corner kicks":
-            try:
-                return float(s.get("value"))
-            except (TypeError, ValueError):
-                return float("nan")
-    return float("nan")
+    """'Corner Kicks' of one team's statistics list under the owner's team null rule (2026-11-04,
+    src/af_team_stats): in an ANSWERED block (any non-null value) a null count is 0; an unanswered
+    block or a list without the type is NaN (missing, never 0)."""
+    from src.af_team_stats import team_value
+    block = [dict(s, type=("Corner Kicks" if str(s.get("type", "")).strip().lower() == "corner kicks"
+                           else s.get("type"))) for s in (stats_block or []) if isinstance(s, dict)]
+    v = team_value(block, "Corner Kicks")
+    return float("nan") if v is None else float(v)
 
 
 def parse_corners(stats: list | None, home_id: int, away_id: int) -> tuple[float, float, str]:

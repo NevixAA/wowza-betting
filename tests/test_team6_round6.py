@@ -45,27 +45,43 @@ def no_key(monkeypatch):
 
 
 def test_standard_af_history_xg_reaches_training_and_serving_xg_last5(no_key):
+    """Standard xG reaches xg_last5 in training and serving alike - from a PROVIDER source only.
+    Fix round 9 (owner 2026-11-04): the Standard af_history rows carrying HXG are rows the loader
+    once wrote back (no fixture_id, no FT score); their xG is not served. A match's xG is the
+    --insidebox sidecar's (the provider answer for that fixture), else missing."""
+    from src.af_history_provenance import written_back_mask
     af = ROOT / "output" / "af_history.parquet"
-    if not af.exists():
-        pytest.skip("af_history.parquet not in this checkout")
+    side = ROOT / DL.AF_STATS_FILL
+    if not af.exists() or not side.exists():
+        pytest.skip("af_history.parquet / stats sidecar not in this checkout")
     h = pd.read_parquet(af)
     h = h[h["league"].isin(config.STANDARD_FORMAT_LEAGUES) & h["HXG"].notna() & h["AXG"].notna()]
+    assert written_back_mask(h).all()                     # no Standard provider row carries xG
     h = h[~h.duplicated(["league", "date", "home_team"], keep=False)]
+    s = pd.read_parquet(side)
+    s = s[s["HXG"].notna()].drop_duplicates(["league", "date", "home_team", "away_team"], keep=False)
+    h = h.assign(_d=pd.to_datetime(h["date"]).dt.strftime("%Y-%m-%d")).merge(
+        s.rename(columns={"date": "_d", "HXG": "side_hxg"})[["league", "_d", "home_team", "away_team", "side_hxg"]],
+        on=["league", "_d", "home_team", "away_team"], how="left")
     team = h.groupby(["league", "home_team"]).size().sort_values().index[-1]
     rows = h[(h["league"] == team[0]) & (h["home_team"] == team[1])].sort_values("date").tail(3)
-    left = pd.DataFrame([_m(r.date, r.home_team, r.away_team, r.FTHG, r.FTAG, league=r.league)
+    left = pd.DataFrame([_m(r.date, r.home_team, r.away_team, 1, 0, league=r.league)
                          for r in rows.itertuples()])
     out = DL._enrich_with_api_shots(left.copy())
-    assert np.allclose(out["home_xg"].to_numpy(float), rows["HXG"].to_numpy(float))
+    got, want = out["home_xg"].to_numpy(float), rows["side_hxg"].to_numpy(float)
+    assert np.array_equal(np.isnan(got), np.isnan(want)) and np.allclose(got[~np.isnan(got)], want[~np.isnan(want)])
     nxt = pd.Timestamp(rows["date"].max()) + pd.Timedelta(days=7)
     tr = FE.build_features(pd.concat([out, pd.DataFrame([_m(nxt, team[1], "ZZ", 0, 0, league=team[0])])],
                                      ignore_index=True))
     row = tr[tr["date"] == nxt].iloc[0]
-    assert row["home_xg_last5"] == pytest.approx(rows["HXG"].mean())
+    if np.isnan(want).all():
+        assert pd.isna(row["home_xg_last5"])
+    else:
+        assert row["home_xg_last5"] == pytest.approx(np.nanmean(want))
     up = pd.DataFrame([{"date": nxt, "league": team[0], "home_team": team[1], "away_team": "ZZ",
                         "odds_over25": 1.9, "odds_under25": 1.95}])
     sv = FE.build_upcoming_features(up, out).iloc[0]
-    assert sv["home_xg_last5"] == pytest.approx(row["home_xg_last5"])
+    assert sv["home_xg_last5"] == pytest.approx(row["home_xg_last5"], nan_ok=True)
 
 
 # ── 2. inside-box shots: collection + loader fill ───────────────────────────────────────────────
@@ -110,7 +126,8 @@ def gap(tmp_path, monkeypatch):
     for name, val in (("STATS_STORE", cdir / "af_fixture_stats.parquet"),
                       ("COVERAGE", cdir / "af_stats_coverage.parquet"),
                       ("FILL", cdir / "af_history_stats_fill.parquet"),
-                      ("AUDIT", cdir / "af_stats_fill_audit.json")):
+                      ("AUDIT", cdir / "af_stats_fill_audit.json"),
+                      ("FULL_FILL", cdir / "af_history_fullstats_fill.parquet")):
         monkeypatch.setattr(G, name, val)
     fx = pd.DataFrame([
         {"fixture_id": 1001, "league_id": 40, "season": "2025", "date": "2026-03-07", "home_id": 1,
@@ -128,8 +145,10 @@ def gap(tmp_path, monkeypatch):
 
 
 def _af():
-    base = {"FTHG": 1.0, "FTAG": 0.0, "HS": 10.0, "AS": 8.0, "HXG": np.nan, "AXG": np.nan,
-            "fixture_id": np.nan, "home_team_id": np.nan, "away_team_id": np.nan}
+    # provider rows (an FT score) with shots, corners and fouls: inside-box is the only gap here
+    # (fix round 9 also targets matches whose served shots / corners / fouls are missing)
+    base = {"FTHG": 1.0, "FTAG": 0.0, "HS": 10.0, "AS": 8.0, "HC": 5.0, "AC": 4.0, "HF": 11.0, "AF": 12.0,
+            "HXG": np.nan, "AXG": np.nan, "fixture_id": np.nan, "home_team_id": np.nan, "away_team_id": np.nan}
     return pd.DataFrame([
         # Standard league, banked by the loader write-back with football-data spellings, HIB empty
         {**base, "league": STD, "date": pd.Timestamp("2026-03-07"), "home_team": "Leeds",
@@ -221,7 +240,8 @@ def test_loader_fills_insidebox_from_the_sidecar_nan_only(tmp_path):
 def test_loader_calls_the_sidecar_fill_on_both_exits():
     import inspect
     src = inspect.getsource(DL._enrich_with_api_shots)
-    assert src.count("_enrich_af_stats_fill(df)") == 2
+    assert src.count("return _finish_af_enrichment(df, wb_blank") == 2      # fix round 9: one tail
+    assert "_enrich_af_stats_fill(df)" in inspect.getsource(DL._finish_af_enrichment)
 
 
 def test_workflow_has_a_guarded_insidebox_step_and_no_run_day_override():

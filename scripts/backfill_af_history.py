@@ -148,16 +148,12 @@ def _get(endpoint: str, params: dict, cache_key: str, dry_run: bool = False,
 
 
 def _stat(stats_list: list, stat_type: str) -> int | None:
-    for s in stats_list:
-        if s.get("type") == stat_type:
-            val = s.get("value")
-            if val is None or val == "None":
-                return None
-            try:
-                return int(str(val).replace("%", "").strip())
-            except (ValueError, TypeError):
-                return None
-    return None
+    """One team COUNT from its /fixtures/statistics block, under the owner's team null rule
+    (2026-11-04, src/af_team_stats): in an ANSWERED block a null count is 0; a block with no value
+    at all, or a type the block does not list, is missing. Every caller reads a count (shots, SoT,
+    corners, fouls, cards, inside-box); xG goes through _statf, whose null stays missing."""
+    from src.af_team_stats import team_count
+    return team_count(stats_list or [], stat_type)
 
 
 def _statf(stats_list: list, stat_type: str) -> float | None:
@@ -255,9 +251,13 @@ def parse_fixture(league_name: str, season: str, f: dict, stats_resp) -> dict | 
         "HIB": None, "AIB": None,
     }
 
-    if stats_resp and len(stats_resp) >= 2:
-        h_stats = stats_resp[0].get("statistics", [])
-        a_stats = stats_resp[1].get("statistics", [])
+    # Home/away by the provider's TEAM IDS (2026-11-04, fix round 9), never by response order: the
+    # block order is not part of the provider's contract, and an answer that does not hold both of
+    # the fixture's clubs leaves every statistic missing.
+    by_team = {(t.get("team") or {}).get("id"): t.get("statistics") or [] for t in (stats_resp or [])}
+    hid, aid = row["home_team_id"], row["away_team_id"]
+    if hid is not None and aid is not None and hid in by_team and aid in by_team:
+        h_stats, a_stats = by_team[hid], by_team[aid]
 
         row["HS"]  = _stat(h_stats, "Total Shots")
         row["AS"]  = _stat(a_stats, "Total Shots")

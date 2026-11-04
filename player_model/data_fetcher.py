@@ -418,7 +418,11 @@ def _pct_or_none(v) -> Optional[float]:
 
 #: fixture-stats cache schema. v2 (2026-11-04) stores None for a statistic the provider did not send.
 #: A legacy (v1) file was written by `int(x or 0)`, so its 0s cannot be told from "not sent".
-FIXTURE_STATS_SCHEMA = 2
+#: v3 (2026-11-04, fix round 9) reads the answer under the owner's TEAM null rule (src/af_team_stats):
+#: in an answered team block a null count (corners, shots) is 0. A v2 file stored that null as None
+#: and cannot be told from "not sent", so it is served as written (missing stays missing).
+FIXTURE_STATS_SCHEMA = 3
+_FIXTURE_STATS_SERVED_AS_WRITTEN = (2, 3)
 
 
 def _legacy_fixture_stats(teams: dict) -> dict:
@@ -443,7 +447,7 @@ def _fetch_fixture_statistics(fixture_id: int) -> dict:
     if cache_p.exists():
         try:
             cached = json.loads(cache_p.read_text(encoding="utf-8"))
-            if isinstance(cached, dict) and cached.get("schema") == FIXTURE_STATS_SCHEMA:
+            if isinstance(cached, dict) and cached.get("schema") in _FIXTURE_STATS_SERVED_AS_WRITTEN:
                 return cached.get("teams") or {}
             return _legacy_fixture_stats(cached)
         except Exception:
@@ -454,10 +458,13 @@ def _fetch_fixture_statistics(fixture_id: int) -> dict:
     except RuntimeError:
         return {}
 
+    # Owner's team null rule (2026-11-04, src/af_team_stats): an answered block's null count is 0,
+    # an unanswered block / unlisted type is missing; possession (a %) is never zero-filled.
+    from src.af_team_stats import team_values
     result = {}
     for team_data in data.get("response", []):
         team_name = team_data.get("team", {}).get("name", "")
-        stats = {s.get("type", ""): s.get("value") for s in team_data.get("statistics", [])}
+        stats = team_values(team_data.get("statistics") or [])
         result[team_name] = {
             "corners":     _count_or_none(stats.get("Corner Kicks")),
             "shots_total": _count_or_none(stats.get("Total Shots")),

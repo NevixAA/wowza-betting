@@ -88,7 +88,11 @@ def test_write_join_health(tmp_path):
 
 
 def _real_rows():
+    """PROVIDER rows only (fix round 9, owner 2026-11-04): a row the loader once wrote back (no
+    fixture_id, no FT score) is no longer served, so it is no truth for the join either."""
+    from src.af_history_provenance import written_back_mask
     h = pd.read_parquet(ROOT / "output" / "af_history.parquet")
+    h = h[~written_back_mask(h)]
     h = h[h["league"].isin(["Brazil Serie A", "USA MLS", "Argentina Primera Division"])]
     return h.sort_values("date").tail(400)
 
@@ -121,17 +125,25 @@ def test_data_loader_safe_join_matches_af_history_truth(monkeypatch):
     assert (got["home_shots"] == got["HS"]).all()
 
 
-@pytest.mark.skipif(not (ROOT / "output" / "af_history.parquet").exists(), reason="no af_history")
-def test_data_loader_legacy_join_is_audited_as_fail(monkeypatch):
+def test_data_loader_legacy_join_is_audited_as_fail(monkeypatch, tmp_path):
+    """The legacy (league-less) join shape is still audited. Fix round 9: the committed bank's
+    duplicate keys were written-back rows, which are no longer joined, so the expansion is shown on
+    a bank holding one key in two leagues (provider rows)."""
     import config
     from src import data_loader as DL
     monkeypatch.setenv("APIFOOTBALL_KEY", "")
     monkeypatch.setattr(config, "API_KEY", "", raising=False)
     monkeypatch.setenv("WOWZA_SAFE_ENRICH_JOINS", "0")      # the legacy path, now rollback-only
-    h = pd.read_parquet(ROOT / "output" / "af_history.parquet")
-    left = h[h["league"] == "Argentina Primera Division"][["league", "date", "home_team", "away_team"]].copy()
-    left["date"] = pd.to_datetime(left["date"])
+    bank = pd.DataFrame([{"league": lg, "date": pd.Timestamp("2025-03-01"), "home_team": "Boca Juniors",
+                          "away_team": "River Plate", "FTHG": 1.0, "FTAG": 1.0, "fixture_id": fid, "HS": hs}
+                         for lg, fid, hs in (("Argentina Primera Division", 1, 10.0), ("USA MLS", 2, 7.0))])
+    p = tmp_path / "af_history.parquet"
+    bank.to_parquet(p)
+    monkeypatch.setattr(DL, "AF_HISTORY_PATH", p)
+    left = pd.DataFrame([{"league": lg, "date": pd.Timestamp("2025-03-01"), "home_team": "Boca Juniors",
+                          "away_team": "River Plate"} for lg in ("Argentina Primera Division", "USA MLS")])
     IJ.reset()
-    DL._enrich_with_api_shots(left.reset_index(drop=True))
+    out = DL._enrich_with_api_shots(left)
     rep = IJ.reports()["af_history_shots.legacy"]
     assert rep["legacy_expansion_rows"] > 0 and rep["status"] == "FAIL"
+    assert out["home_shots"].tolist() == [10.0, 7.0]            # the league-keyed join is right

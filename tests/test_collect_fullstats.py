@@ -1,5 +1,6 @@
 """--fullstats (owner 2026-11-04): every cached API-Football /fixtures/statistics value for
-af_history, 0 API calls, home/away by team id, a value the provider does not give stays missing."""
+af_history, 0 API calls, home/away by team id, a value the provider does not give stays missing
+(a null COUNT in an answered block is 0 since fix round 9, owner 2026-11-04)."""
 from __future__ import annotations
 
 import json
@@ -75,13 +76,17 @@ def test_fullstats_places_every_value_by_team_id_and_never_calls(full, monkeypat
     assert r["home_offsides"] == 2
 
 
-def test_fullstats_null_or_absent_value_stays_missing_never_zero(full):
+def test_fullstats_null_count_is_zero_absent_value_stays_missing(full):
+    """Owner 2026-11-04 (fix round 9, team null rule, src/af_team_stats): in an ANSWERED team block
+    a null COUNT is 0 (until then: missing); a type the answer does not list stays missing; xG and
+    percentages are never zero-filled."""
     G, af, fx, cache = full
     G.run_fullstats(af=af, cache_dir=cache, fixtures=fx)
     r = pd.read_parquet(G.FULL_FILL).iloc[0]
-    assert pd.isna(r["home_red"]) and r["away_red"] == 1          # null -> missing, not 0
-    assert pd.isna(r["away_offsides"])
+    assert r["home_red"] == 0 and r["away_red"] == 1              # null count -> 0
+    assert r["away_offsides"] == 0
     assert pd.isna(r["home_saves"]) and pd.isna(r["away_corners"])  # type absent -> missing
+    assert pd.isna(r["home_free_kicks"])                            # not in this answer
 
 
 def test_fullstats_audit_counts_uncached_and_unknown_types(full):
