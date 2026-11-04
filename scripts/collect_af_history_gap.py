@@ -541,7 +541,8 @@ def run_insidebox(dry_run: bool = False, client: AFClient | None = None,
 # ANSWERED team block a null COUNT ('Red Cards', 'Offsides', 'Corner Kicks', 'Fouls', shots,
 # 'Goalkeeper Saves', 'Blocked Shots', 'Free Kicks') is 0; no answer is missing; percentages,
 # expected_goals and goals_prevented stay missing when null; 'Total passes' / 'Passes accurate' stay
-# missing too (open owner question, see src/af_team_stats). Until this round every null was missing.
+# missing too, even in an answered block (owner decision 2026-11-04, fix round 10: a null pass count
+# means "not tracked"; see src/af_team_stats). Until fix round 9 every null was missing.
 # A re-run re-parses every cached answer, so the committed sidecar takes the rule on the next run.
 
 #: provider statistic type -> column stem (home_<stem> / away_<stem>). Possession and Passes % are

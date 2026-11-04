@@ -725,12 +725,23 @@ def mode_predict() -> None:
     import os
     api_key = os.getenv("APIFOOTBALL_KEY", "")
 
-    tips = run_player_predictions(
-        bets_csv=config.OUTPUT_DIR / "bets.csv",
-        history_df=history,
-        referee_profiles=_build_referee_profiles(history) if api_key else None,
-        match_contexts=_build_match_contexts(),
-    )
+    # Median-fill telemetry (owner 2026-11-04, fix round 10): count, per market and feature, the
+    # cells the serving imputer fills in THIS run and append them to output/props_median_fill.csv
+    # (committed by player_props.yml). Read-only: the scored matrix and the tips are unchanged.
+    from player_model import model as _M
+    _M.median_fill_reset()
+    try:
+        tips = run_player_predictions(
+            bets_csv=config.OUTPUT_DIR / "bets.csv",
+            history_df=history,
+            referee_profiles=_build_referee_profiles(history) if api_key else None,
+            match_contexts=_build_match_contexts(),
+        )
+    finally:
+        try:
+            print(f"[predict] median-fill telemetry: {_M.write_median_fill()} row(s) -> {_M.MEDIAN_FILL_FILE}")
+        except Exception as _e:              # never fatal: telemetry is beside the run
+            print(f"[predict] median-fill telemetry not written: {type(_e).__name__}: {_e}")
 
     if tips.empty:
         print("[predict] No player tips generated.")

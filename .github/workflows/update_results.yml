@@ -86,7 +86,9 @@ jobs:
           python -m src.ledger sync-snapshot --dir "$RUNNER_TEMP/ledger_sync" || echo "::warning::ledger sync-snapshot failed"
           python -m src.ledger sync-push --dir "$RUNNER_TEMP/ledger_sync" \
             --message "auto: results ledgers $(date -u '+%Y-%m-%d %H:%M UTC')" || ledger_sync_failed=1
-          for f in output/bets_ledger.csv output/side_bets_ledger.csv output/ht_ledger.csv output/ht_observations.csv output/player_ledger.csv output/sharp_ledger.csv output/live_signals_history.csv; do git add -f "$f" 2>/dev/null || true; done
+          # + the record of prop results decided by the null rule (fix10, owner 2026-11-04), beside
+          #   player_ledger.csv (update_results.NULL_RULE_SETTLED_FILE; union-merged, .gitattributes)
+          for f in output/bets_ledger.csv output/side_bets_ledger.csv output/ht_ledger.csv output/ht_observations.csv output/player_ledger.csv output/sharp_ledger.csv output/live_signals_history.csv output/corrections/player_ledger_null_rule_settled.csv; do git add -f "$f" 2>/dev/null || true; done
           git diff --staged --quiet || \
             git commit -m "auto: results $(date -u '+%Y-%m-%d %H:%M UTC')"
           pushed=0

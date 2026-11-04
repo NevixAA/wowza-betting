@@ -1,6 +1,8 @@
 """Fix round 9 'players' (owner decisions 2026-11-04): provenance of re-collected counts through the
 history merge, the season of national-team rows, the profile collector's key check, and what prop
-settlement does today with a null count (report only - settlement is not changed).
+settlement does with a null count. Updated in fix round 10 'settle' (owner 2026-11-04): the season of
+a national-team row is the PROVIDER'S league.season (no resolver), and settlement reads a null count
+with the shared null rule (tests/test_fix10_settle.py has the full settlement cases).
 
     PYTHONDONTWRITEBYTECODE=1 python -m pytest -p no:cacheprovider tests/test_fix9_players.py -q
 
@@ -57,20 +59,21 @@ def test_cup_merge_carries_the_provenance_column():
     assert "c != SOURCE_COL" in body and "or c == SOURCE_COL" in body
 
 
-# ── 3. national-team rows: the season from src.season_resolver, never "" ──────────────────────────
+# ── 3. national-team rows: the PROVIDER's season (fix round 10), never "" and never resolved ──────
 
-def test_national_row_season_from_the_resolver_or_missing():
+def test_national_row_season_is_the_providers_or_missing():
+    assert DF.provider_fixture_season({"league": {"name": "Friendlies", "season": 2026}}) == "2026"
+    assert DF.provider_fixture_season({"league": {"name": "Friendlies", "season": "2025"}}) == "2025"
+    for bad in ({"league": {"name": "Friendlies"}}, {"league": {"season": None}}, {"league": {"season": ""}},
+                {"league": {"season": "26"}}, {"league": {"season": True}}, {}, None):
+        assert DF.provider_fixture_season(bad) is None
+    assert not hasattr(DF, "national_row_season")                  # the resolver path is gone
+
+
+def test_national_team_collect_writes_the_provider_season(monkeypatch, tmp_path):
     from src import season_resolver as SR
-    assert DF.national_row_season("Premier League", "2026-03-01") == SR.resolve_api_season("Premier League", "2026-03-01")
-    assert SR.is_known(DF.national_row_season("Premier League", "2026-03-01"))
-    n0 = len(SR.degradations())
-    # the registry holds no season convention for Friendlies: missing, recorded, never a year
-    assert DF.national_row_season("Friendlies", "2026-03-31") is None
-    assert len(SR.degradations()) == n0 + 1
-
-
-def test_national_team_collect_writes_the_resolved_season(monkeypatch, tmp_path):
-    fixture = {"fixture": {"id": 77, "date": "2026-03-31T18:00:00+00:00", "status": {"short": "FT"}},
+    monkeypatch.setattr(DF, "NATIONAL_SEASONS_FILE", tmp_path / "national_fixture_seasons.csv")
+    fixture ={"fixture": {"id": 77, "date": "2026-03-31T18:00:00+00:00", "status": {"short": "FT"}},
                "teams": {"home": {"id": 1, "name": "A"}, "away": {"id": 2, "name": "B"}},
                "league": {"name": "Friendlies"}}
 
@@ -86,11 +89,18 @@ def test_national_team_collect_writes_the_resolved_season(monkeypatch, tmp_path)
     monkeypatch.setattr(DF, "_fetch_fixture_player_stats", lambda fid: [
         {"team": {"id": 1, "name": "A"}, "players": [{"player": {"id": 5, "name": "P5"},
                                                        "statistics": [{"games": {"minutes": 90}}]}]}])
+    n0 = len(SR.degradations())
     rows = DF.collect_national_team_history(last_n=1)
-    assert len(rows) == 1 and rows[0]["season"] is None                      # unresolved: missing, not ""
+    assert len(rows) == 1 and rows[0]["season"] is None                      # no provider season: missing
+    assert len(SR.degradations()) == n0 + 1                                   # recorded, never a year
+    assert not (tmp_path / "national_fixture_seasons.csv").exists()
     assert rows[0][PSN.SOURCE_COL] == PSN.PARSED_WITH_RULE and rows[0]["goals"] == 0
-    monkeypatch.setattr(DF, "national_row_season", lambda lg, d: "2026")
+    fixture["league"]["season"] = 2026                                        # the provider sends it
     assert DF.collect_national_team_history(last_n=1)[0]["season"] == "2026"
+    rec = pd.read_csv(tmp_path / "national_fixture_seasons.csv", dtype=str)
+    assert rec[["fixture_id", "league", "date", "season"]].values.tolist() == [["77", "Friendlies", "2026-03-31", "2026"]]
+    DF.collect_national_team_history(last_n=1)                                # a re-run never duplicates
+    assert len(pd.read_csv(tmp_path / "national_fixture_seasons.csv")) == 1
 
 
 # ── 3. the profile collector never sends an invalid key ───────────────────────────────────────────
@@ -120,15 +130,21 @@ class _Client:
 
 
 def test_profile_keys_are_checked_before_any_call(monkeypatch, tmp_path):
-    from src.season_resolver import resolve_api_season
+    # fix round 10: a blank season is the PROVIDER's recorded fixture season or nothing (no resolver)
+    seasons = {2: "2025"}                       # collect-wc recorded fixture 2's league.season
     monkeypatch.setattr(PROF, "OUT", tmp_path / "player_profiles.parquet")
+    monkeypatch.setattr(PROF, "provider_seasons", lambda path=None: dict(seasons))
     p = PROF.plan_keys(_hist(), pd.DataFrame())
-    pl = resolve_api_season("Premier League", "2026-03-01")
-    assert sorted(p["todo"]) == sorted([(10, "2025"), (11, pl)])               # blank season resolved
+    assert sorted(p["todo"]) == sorted([(10, "2025"), (11, "2025")])           # blank season proven
+    assert p["provider_fixture_rows"] == 1
     assert p["skipped_rows"] == {"player_id_invalid": 3, "season_unresolved": 2}
     assert p["skipped"]["season_unresolved"] == 2
     rows = PROF.invalid_key_rows(p["keys"])
     assert len(rows) == 5 and set(rows["problem"]) == {"player_id_invalid", "season_unresolved"}
+    # without the provider record fixture 2's pair is unresolved too: never a resolved / typed year
+    p0 = PROF.plan_keys(_hist(), pd.DataFrame(), seasons={})
+    assert p0["todo"] == [(10, "2025")] and p0["skipped_rows"]["season_unresolved"] == 3
+    pl = "2025"
     assert PROF.key_problem(0, "2025") == "player_id_invalid" and PROF.key_problem(None, "2025") == "player_id_invalid"
     assert PROF.key_problem(5, "") == "season_unresolved" and PROF.key_problem(5, None) == "season_unresolved"
     assert PROF.key_problem(5, "2025") is None and PROF.key_problem("5.0", "2025.0") is None
@@ -147,12 +163,13 @@ def test_profile_keys_are_checked_before_any_call(monkeypatch, tmp_path):
     assert PROF.run(client=c2)["todo"] == 0 and c2.calls == []
 
 
-# ── 4. prop settlement and a null count, as the code stands (report only) ─────────────────────────
+# ── 4. prop settlement and a null count: the shared null rule (fix round 10) ──────────────────────
 
-def test_settlement_today_with_a_null_shots_count(monkeypatch):
-    """A player who PLAYED with shots.on null: LOSS only when the team's 'Shots on Goal' equals the
-    sum of the players who have a value; otherwise the row stays pending (never VOID). The owner's
-    rule would read the null as 0 -> LOSS whenever the provider answered the fixture."""
+def test_settlement_with_a_null_shots_count(monkeypatch):
+    """Fix round 10 (owner 2026-11-04): a player who PLAYED with shots.on null, in a fixture the
+    provider answered, has 0 shots on target -> LOSS, whatever the team 'Shots on Goal' total says
+    (until fix round 10: LOSS only when that total reconciled, otherwise pending for ever). The
+    sheet itself settles it; the team-total proof path is not needed."""
     import update_results as U
     sheet = [{"team": {"id": 1}, "players": [
         {"player": {"id": 7, "name": "Seven"}, "statistics": [{"games": {"minutes": 90}, "shots": {"on": None},
@@ -170,10 +187,13 @@ def test_settlement_today_with_a_null_shots_count(monkeypatch):
         return []
     monkeypatch.setattr(U, "_af_response", _af)
     players = U._fixture_players(55)
+    assert players["answered"] is True
     rec = players["by_id"][7]
-    assert rec["shots_on_target"] is None                                       # the null is kept
-    assert U._resolve_player_market("sot", rec) == ""                           # not settled on the raw sheet
-    fx = {"goals": {"home": 1, "away": 0}}
-    assert U._resolve_player_market("sot", U._fill_null_stats(rec, 55, fx, players)) == "LOSS"
-    team_sot["v"] = 3                                                           # the team total is not accounted for
-    assert U._resolve_player_market("sot", U._fill_null_stats(rec, 55, fx, players)) == ""   # stays pending
+    assert rec["shots_on_target"] == 0 and "shots_on_target" in rec["rule_zero"]   # the rule's 0
+    assert U._resolve_player_market("sot", rec) == "LOSS"                       # settled on the sheet
+    assert U._rule_decided("sot", rec, "LOSS") == ["shots_on_target"]
+    team_sot["v"] = 3                                                           # total not accounted for
+    assert U._resolve_player_market("sot", U._fixture_players(55)["by_id"][7]) == "LOSS"   # still LOSS
+    # a sent value is kept as sent and is not a rule decision
+    assert players["by_id"][8]["shots_on_target"] == 2 and players["by_id"][8]["rule_zero"] == [
+        "assists", "red_card", "yellow_card"]

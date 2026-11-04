@@ -917,22 +917,58 @@ def _fetch_wc26_teams() -> list[dict]:
     return data.get("response", [])
 
 
-def national_row_season(league_name, fix_date) -> Optional[str]:
-    """The season of a national-team row: src.season_resolver on the competition and the match
-    date (owner 2026-11-04, fix round 9). None when the registry holds no season convention for the
-    competition - never a guessed year, never "".
+#: provider seasons of the national-team fixtures collect-wc reads, one row per fixture id, written
+#: BESIDE player_history (owner 2026-11-04, fix round 10). scripts/collect_player_profiles.py reads a
+#: blank-season history row's season from here when the provider's own value is recorded.
+NATIONAL_SEASONS_FILE = config.OUTPUT_DIR / "collect" / "national_fixture_seasons.csv"
+NATIONAL_SEASONS_COLS = ["fixture_id", "league", "date", "season", "source", "recorded_at"]
 
-    WHY. This collector's row meta carried no season at all, so _parse_fixture_player wrote "" on
-    every row: 3,423 player_history rows (139 fixtures, 2025-10-10..2026-06-10: Friendlies, World
-    Cup qualifiers, Africa Cup of Nations) hold a blank season, and scripts/collect_player_profiles.py
-    sent 1,516 (player, '') pairs to API-Football, which rejected each one ('The Season field cannot
-    be empty'). An unresolved season is recorded with src.season_resolver.record_degradation."""
-    from src.season_resolver import is_known, record_degradation, resolve_api_season
-    s = resolve_api_season(league_name, fix_date)
-    if is_known(s):
-        return s
-    record_degradation("data_fetcher.collect_national_team_history", league_name, "SEASON_UNKNOWN")
-    return None
+
+def provider_fixture_season(fix: dict) -> Optional[str]:
+    """The season API-Football ITSELF returns on a /fixtures answer (league.season), as text
+    ('2026'); None when the answer carries none or it is not a year. Never a resolved, guessed or
+    typed year (owner decision 2026-11-04, fix round 10: real data only).
+
+    WHY. This collector's row meta carried no season until fix round 9, so _parse_fixture_player
+    wrote "" on every row: 3,423 player_history rows (139 fixtures, 2025-10-10..2026-06-10:
+    Friendlies, World Cup qualifiers, Africa Cup of Nations) hold a blank season, and
+    scripts/collect_player_profiles.py sent 1,516 (player, '') pairs to API-Football, which rejected
+    each one. Fix round 9 asked src.season_resolver, which has no convention for these competitions
+    (every one of the 3,423 rows stayed unresolved); the provider's own league.season is on every
+    fixture of the list this collector already fetches, so that value is stored from now on. The
+    old rows stay blank (counted, output/corrections/player_history_invalid_profile_keys.csv): the
+    provider season of their fixtures is not stored anywhere in the repository."""
+    v = (fix.get("league") or {}).get("season") if isinstance(fix, dict) else None
+    if v is None or isinstance(v, bool):
+        return None
+    s = str(v).strip()
+    if s.endswith(".0"):
+        s = s[:-2]
+    return s if (len(s) == 4 and s.isdigit()) else None
+
+
+def record_national_seasons(rows: list[dict], dst: Optional[Path] = None) -> int:
+    """Union-append {fixture_id, league, date, season} rows (provider season only, never blank) to
+    NATIONAL_SEASONS_FILE; a fixture already recorded is kept as first recorded. Returns rows added."""
+    import pandas as pd
+    from datetime import timezone
+    dst = dst or NATIONAL_SEASONS_FILE
+    rows = [r for r in rows if r.get("season")]
+    if not rows:
+        return 0
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    new = pd.DataFrame([{**r, "source": "api-football /fixtures league.season", "recorded_at": now}
+                        for r in rows], columns=NATIONAL_SEASONS_COLS)
+    new["fixture_id"] = new["fixture_id"].astype(int)
+    new = new.drop_duplicates("fixture_id")
+    if dst.exists():
+        old = pd.read_csv(dst, dtype={"season": str})
+        new = new[~new["fixture_id"].isin(set(pd.to_numeric(old["fixture_id"], errors="coerce").dropna().astype(int)))]
+    if new.empty:
+        return 0
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    new.to_csv(dst, mode="a", header=not dst.exists(), index=False, lineterminator="\n")
+    return len(new)
 
 
 def collect_national_team_history(last_n: int = 10) -> list[dict]:
@@ -962,6 +998,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
     print(f"[wc26] {len(teams)} teams found. Collecting last {last_n} fixtures each...")
     all_rows: list[dict] = []
+    season_rows: list[dict] = []
 
     for entry in teams:
         team_info = entry.get("team", {})
@@ -1008,7 +1045,16 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
             fix_stats = _fetch_fixture_statistics(fixture_id)
             answered = _PSN.fixture_answered(team_data_list)
-            season = national_row_season(league_name, fix_date)
+            # The provider's own league.season of this fixture (owner 2026-11-04, fix round 10);
+            # None when the answer carries none - recorded, never a resolved or typed year.
+            season = provider_fixture_season(fix)
+            if season is None:
+                from src.season_resolver import record_degradation
+                record_degradation("data_fetcher.collect_national_team_history", league_name,
+                                   "PROVIDER_SEASON_MISSING")
+            else:
+                season_rows.append({"fixture_id": fixture_id, "league": league_name,
+                                    "date": fix_date, "season": season})
 
             for team_data in team_data_list:
                 t_name  = team_data.get("team", {}).get("name", "")
@@ -1025,7 +1071,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                     "team":         t_name,
                     "is_home":      is_home,
                     "team_corners": team_st.get("corners"),     # None when unavailable
-                    "season":       season,                     # None when unresolved, never ""
+                    "season":       season,                     # provider's own; None, never ""
                 }
                 for player_entry in team_data.get("players", []):
                     parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
@@ -1035,6 +1081,11 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
         print(f"  [{team_name}] {len(fixtures)} fixtures ({cached_count} cached) -> {team_rows} rows")
 
+    try:
+        n_seasons = record_national_seasons(season_rows)
+        print(f"[wc26] provider season recorded for {n_seasons} new fixture(s) -> {NATIONAL_SEASONS_FILE}")
+    except Exception as e:                       # the record is beside the history: never fatal
+        print(f"[wc26] provider season record not written: {type(e).__name__}: {e}")
     print(f"[wc26] Done. {len(all_rows)} player-match rows across {len(teams)} national teams.")
     return all_rows
 

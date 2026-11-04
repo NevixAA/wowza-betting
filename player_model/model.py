@@ -54,6 +54,77 @@ def _nan_native(model) -> bool:
 _ENSEMBLE_LOG: dict = {"rows_nan_native_only": 0, "rows_unscorable": 0}
 
 
+# ── MEDIAN-FILL TELEMETRY (owner decision 2026-11-04, fix round 10) ───────────────────────────────
+# The serving props models fill a missing feature with a MEDIAN: the legacy payloads (every serving
+# model until the Phase 2 retrain) with the median of the scoring batch (_prep), a repaired payload
+# with the FIT-block median of its persisted PropsImputer (its SEMANTIC_ZERO features are filled with
+# 0, not a median, and are not counted). How many cells each run fills was never measured. This
+# counts them per (market, feature) while predict_proba runs, READ-ONLY - it never touches the
+# matrix the model scores, so serving is unchanged (owner rule: no serving change until the Phase 2
+# retrain). pipeline --mode predict resets it before the run and appends one block per run to
+# output/props_median_fill.csv (write_median_fill).
+_MEDIAN_FILL: dict = {}          # (market, imputer) -> {"rows": int, "cells": {feature: int}}
+MEDIAN_FILL_FILE = config.OUTPUT_DIR / "props_median_fill.csv"
+MEDIAN_FILL_COLS = ["run_at", "run_id", "market", "imputer", "rows_scored", "feature", "cells_filled"]
+
+
+def median_fill_reset() -> None:
+    _MEDIAN_FILL.clear()
+
+
+def _record_median_fill(market, imputer: str, df: pd.DataFrame, X: pd.DataFrame,
+                        skip: frozenset = frozenset()) -> None:
+    """Count the cells of X that were missing in the raw input and hold a value after the median
+    fill (a column with no value anywhere stays NaN in the legacy path and is not a fill)."""
+    try:
+        from collections import Counter
+        slot = _MEDIAN_FILL.setdefault((str(market), imputer), {"rows": 0, "cells": Counter()})
+        slot["rows"] += int(len(X))
+        for c in X.columns:
+            if c in skip:
+                continue
+            raw = (pd.to_numeric(df[c], errors="coerce") if c in df.columns
+                   else pd.Series(np.nan, index=df.index))
+            n = int((raw.isna().to_numpy() & X[c].notna().to_numpy()).sum())
+            if n:
+                slot["cells"].update({c: n})          # a tally (Counter), not a default value
+    except Exception as e:                      # telemetry must never break scoring
+        import logging
+        logging.getLogger(__name__).warning(f"[props_model] median-fill telemetry skipped: {e}")
+
+
+def median_fill_rows(run_at: str, run_id: str = "") -> list[dict]:
+    """This run's counts as rows: one per (market, imputer, feature) with a fill; a market scored
+    with no fill at all gets one row with an empty feature and 0, so every scored market is seen."""
+    rows = []
+    for (market, imputer), slot in sorted(_MEDIAN_FILL.items()):
+        cells = slot["cells"]
+        if not cells:
+            rows.append({"run_at": run_at, "run_id": run_id, "market": market, "imputer": imputer,
+                         "rows_scored": slot["rows"], "feature": "", "cells_filled": 0})
+        for f in sorted(cells):
+            rows.append({"run_at": run_at, "run_id": run_id, "market": market, "imputer": imputer,
+                         "rows_scored": slot["rows"], "feature": f, "cells_filled": cells[f]})
+    return rows
+
+
+def write_median_fill(dst=None, run_at: str | None = None, run_id: str | None = None) -> int:
+    """Append this run's median-fill counts to output/props_median_fill.csv. Returns rows written."""
+    import os
+    from datetime import datetime, timezone
+    from pathlib import Path
+    dst = Path(dst or MEDIAN_FILL_FILE)
+    run_at = run_at or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    run_id = os.getenv("GITHUB_RUN_ID", "") if run_id is None else run_id
+    rows = median_fill_rows(run_at, run_id)
+    if not rows:
+        return 0
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(rows, columns=MEDIAN_FILL_COLS).to_csv(
+        dst, mode="a", header=not dst.exists(), index=False, lineterminator="\n")
+    return len(rows)
+
+
 def _ensemble_proba(models: dict, X: pd.DataFrame) -> np.ndarray:
     """Mean probability over the payload's models. A row that still has a missing input after the
     legacy batch-median step is scored ONLY by the NaN-native estimator(s) (no invented value is
@@ -316,7 +387,7 @@ def payload_recipe(payload: dict) -> str:
     return payload.get("recipe") or PC.RECIPE_LEGACY
 
 
-def predict_with_diagnostics(df: pd.DataFrame, payload: dict) -> pd.DataFrame:
+def predict_with_diagnostics(df: pd.DataFrame, payload: dict, _fill_telemetry: bool = False) -> pd.DataFrame:
     """Per-row probability plus the R2 integrity record. Columns: p, n_missing, n_degraded,
     n_required_missing, required_fail, imputer_version, contract_version, recipe.
 
@@ -328,6 +399,10 @@ def predict_with_diagnostics(df: pd.DataFrame, payload: dict) -> pd.DataFrame:
         X, diag = imp.transform(df)
         if list(X.columns) != list(payload["feature_cols"]):
             raise ValueError("payload feature_cols differ from its persisted imputer")
+        if _fill_telemetry:                      # serving calls only (predict_proba), not shadows
+            zero = frozenset(f for f, c in (payload["imputer"].get("contract_classes") or {}).items()
+                             if c == "SEMANTIC_ZERO")
+            _record_median_fill(payload.get("market"), "fit_median", df, X, skip=zero)
         probas = [m.predict_proba(X)[:, 1] for m in payload["models"].values()]
         p = pd.Series(np.mean(probas, axis=0), index=df.index)
         p[diag["required_fail"].to_numpy()] = np.nan
@@ -359,9 +434,10 @@ def predict_proba(df: pd.DataFrame, payload: dict) -> pd.Series:
     bit-identical to pre-R2 until an owner-approved retrain. Repaired payloads use the persisted
     train-fitted imputer and return NaN on rows that fail the feature contract."""
     if payload_recipe(payload) == PC.RECIPE_REPAIRED:
-        return predict_with_diagnostics(df, payload)["p"]
+        return predict_with_diagnostics(df, payload, _fill_telemetry=True)["p"]
     feat_cols = payload["feature_cols"]
     X, _ = _prep(df, feat_cols)
+    _record_median_fill(payload.get("market"), "batch_median_legacy", df, X)
     before = dict(_ENSEMBLE_LOG)
     p = pd.Series(_ensemble_proba(payload["models"], X), index=df.index)
     n_nn = _ENSEMBLE_LOG["rows_nan_native_only"] - before["rows_nan_native_only"]
