@@ -1,9 +1,9 @@
 {
  "calculation_version": "fantasy_v2-1.0.0",
- "generated_at": "2026-11-03T14:36:38Z",
+ "generated_at": "2026-11-04T14:51:38Z",
  "gameweek": 10,
  "deadline": "2026-11-06T18:30:00Z",
- "fpl_fetched_at": "2026-11-03T14:35:22Z",
+ "fpl_fetched_at": "2026-11-04T14:49:52Z",
  "fpl_age_hours_at_build": 0.0,
  "projection_health": {
   "players": 455,
@@ -25,11 +25,10 @@
    5,
    6,
    7,
-   8
-  ],
-  "provisional_gameweeks": [
+   8,
    9
   ],
+  "provisional_gameweeks": [],
   "state": "OK"
  },
  "benchmark_status": {
@@ -72,17 +71,17 @@
    "web_name": "Konsa",
    "team": "Arsenal",
    "position": "DEF",
-   "price": 4.7,
+   "price": 4.8,
    "final_xpts": 9.2,
    "captain_ev": 18.4,
    "fpl_ep_next": 9.2,
    "wowza_residual": -4.858,
-   "p6": 0.4856,
-   "p10": 0.3181,
-   "p15": 0.1985,
-   "p_blank": 0.2729,
-   "p_start": 0.924,
-   "exp_minutes": 78.6,
+   "p6": 0.4859,
+   "p10": 0.3182,
+   "p15": 0.1984,
+   "p_blank": 0.2722,
+   "p_start": 0.925,
+   "exp_minutes": 78.7,
    "ceiling": 22.0,
    "next_fixture": "HUL(H)",
    "opponent_weakness": 1.54,
@@ -125,12 +124,12 @@
    "captain_ev": 17.0,
    "fpl_ep_next": 8.5,
    "wowza_residual": -4.102,
-   "p6": 0.4495,
+   "p6": 0.4496,
    "p10": 0.2908,
    "p15": 0.1798,
-   "p_blank": 0.3217,
+   "p_blank": 0.3214,
    "p_start": 0.876,
-   "exp_minutes": 74.7,
+   "exp_minutes": 74.8,
    "ceiling": 21.0,
    "next_fixture": "IPS(A)",
    "opponent_weakness": 1.76,
@@ -149,10 +148,10 @@
     "p6": 0.486,
     "p10": 0.318,
     "p15": 0.198,
-    "p_blank": 0.273,
-    "p_start": 0.924,
+    "p_blank": 0.272,
+    "p_start": 0.925,
     "ceiling": 22.0,
-    "sd": 8.291,
+    "sd": 8.285,
     "next_fixture": "HUL(H)"
    },
    {
@@ -164,10 +163,10 @@
     "p6": 0.45,
     "p10": 0.291,
     "p15": 0.18,
-    "p_blank": 0.322,
+    "p_blank": 0.321,
     "p_start": 0.876,
     "ceiling": 21.0,
-    "sd": 8.108,
+    "sd": 8.106,
     "next_fixture": "IPS(A)"
    },
    {
@@ -182,7 +181,7 @@
     "p_blank": 0.322,
     "p_start": 0.882,
     "ceiling": 20.0,
-    "sd": 7.874,
+    "sd": 7.872,
     "next_fixture": "MUN(A)"
    },
    {
@@ -197,7 +196,7 @@
     "p_blank": 0.259,
     "p_start": 0.965,
     "ceiling": 19.0,
-    "sd": 7.399,
+    "sd": 7.398,
     "next_fixture": "HUL(H)"
    },
    {
@@ -227,7 +226,7 @@
     "p_blank": 0.291,
     "p_start": 0.948,
     "ceiling": 17.0,
-    "sd": 6.746,
+    "sd": 6.745,
     "next_fixture": "LEE(A)"
    },
    {
@@ -270,9 +269,9 @@
     "p10": 0.235,
     "p15": 0.131,
     "p_blank": 0.35,
-    "p_start": 0.865,
+    "p_start": 0.866,
     "ceiling": 17.0,
-    "sd": 7.038,
+    "sd": 7.034,
     "next_fixture": "BRE(H)"
    },
    {
@@ -302,7 +301,7 @@
     "p_blank": 0.345,
     "p_start": 0.891,
     "ceiling": 15.0,
-    "sd": 6.433,
+    "sd": 6.431,
     "next_fixture": "SUN(A)"
    },
    {
@@ -317,7 +316,7 @@
     "p_blank": 0.312,
     "p_start": 0.944,
     "ceiling": 15.0,
-    "sd": 6.15,
+    "sd": 6.149,
     "next_fixture": "BRE(H)"
    }
   ]
@@ -384,7 +383,7 @@
    "p6": 0.274,
    "p10": 0.1128,
    "p15": 0.0404,
-   "p_blank": 0.2937,
+   "p_blank": 0.2936,
    "p_start": 0.925,
    "exp_minutes": 78.7,
    "ceiling": 10.0,
@@ -423,7 +422,7 @@
     "p_blank": 0.259,
     "p_start": 0.965,
     "ceiling": 10.0,
-    "sd": 7.399,
+    "sd": 7.398,
     "next_fixture": "HUL(H)"
    },
    {
@@ -462,13 +461,13 @@
     "team": "Spurs",
     "position": "DEF",
     "final_xpts": 4.683,
-    "p6": 0.271,
+    "p6": 0.27,
     "p10": 0.108,
     "p15": 0.037,
     "p_blank": 0.291,
     "p_start": 0.948,
     "ceiling": 10.0,
-    "sd": 6.746,
+    "sd": 6.745,
     "next_fixture": "LEE(A)"
    },
    {
@@ -483,7 +482,7 @@
     "p_blank": 0.333,
     "p_start": 0.934,
     "ceiling": 10.0,
-    "sd": 5.679,
+    "sd": 5.678,
     "next_fixture": "IPS(A)"
    },
    {
@@ -494,7 +493,7 @@
     "final_xpts": 4.447,
     "p6": 0.249,
     "p10": 0.092,
-    "p15": 0.028,
+    "p15": 0.029,
     "p_blank": 0.376,
     "p_start": 0.95,
     "ceiling": 9.0,
@@ -513,7 +512,7 @@
     "p_blank": 0.414,
     "p_start": 0.876,
     "ceiling": 10.0,
-    "sd": 4.687,
+    "sd": 4.686,
     "next_fixture": "COV(H)"
    },
    {
@@ -525,10 +524,10 @@
     "p6": 0.251,
     "p10": 0.101,
     "p15": 0.035,
-    "p_blank": 0.322,
+    "p_blank": 0.321,
     "p_start": 0.876,
     "ceiling": 10.0,
-    "sd": 8.108,
+    "sd": 8.106,
     "next_fixture": "IPS(A)"
    },
    {
@@ -555,10 +554,10 @@
     "p6": 0.244,
     "p10": 0.091,
     "p15": 0.029,
-    "p_blank": 0.273,
-    "p_start": 0.924,
+    "p_blank": 0.272,
+    "p_start": 0.925,
     "ceiling": 9.0,
-    "sd": 8.291,
+    "sd": 8.285,
     "next_fixture": "HUL(H)"
    },
    {
@@ -573,7 +572,7 @@
     "p_blank": 0.312,
     "p_start": 0.944,
     "ceiling": 9.0,
-    "sd": 6.15,
+    "sd": 6.149,
     "next_fixture": "BRE(H)"
    }
   ]
