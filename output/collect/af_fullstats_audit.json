@@ -1,0 +1,291 @@
+{
+ "calls": 0,
+ "filled_rows_this_run": 63805,
+ "filled_rows_total": 63805,
+ "history_rows": 93381,
+ "matched_rows": 83423,
+ "non_null_share": {
+  "away_blocked": 0.9681,
+  "away_corners": 0.9996,
+  "away_fouls": 0.9963,
+  "away_goals_prevented": 0.0776,
+  "away_insidebox": 0.9566,
+  "away_offsides": 0.9468,
+  "away_outsidebox": 0.9564,
+  "away_pass_pct": 0.9379,
+  "away_passes": 0.9564,
+  "away_passes_accurate": 0.9564,
+  "away_possession": 0.9887,
+  "away_red": 0.2263,
+  "away_saves": 0.9896,
+  "away_shots": 0.997,
+  "away_shots_off": 0.9968,
+  "away_sot": 0.9968,
+  "away_xg": 0.2182,
+  "away_yellow": 0.9703,
+  "home_blocked": 0.9681,
+  "home_corners": 0.9996,
+  "home_fouls": 0.9963,
+  "home_goals_prevented": 0.0776,
+  "home_insidebox": 0.9566,
+  "home_offsides": 0.9468,
+  "home_outsidebox": 0.9565,
+  "home_pass_pct": 0.9381,
+  "home_passes": 0.9566,
+  "home_passes_accurate": 0.9566,
+  "home_possession": 0.9887,
+  "home_red": 0.226,
+  "home_saves": 0.9896,
+  "home_shots": 0.997,
+  "home_shots_off": 0.9968,
+  "home_sot": 0.9968,
+  "home_xg": 0.2182,
+  "home_yellow": 0.9703
+ },
+ "note": "Every /fixtures/statistics value for af_history matches whose answer is already cached; 0 API calls; a value the provider does not give is missing, never 0; af_history.parquet is not modified.",
+ "per_league": {
+  "Argentina Primera Division": {
+   "filled": 3744,
+   "lacking": 5289,
+   "matched": 4436,
+   "not_cached": 648,
+   "refused_fixture_claimed_twice": 446,
+   "teams_not_in_answer": 44,
+   "unmatched": 407
+  },
+  "Austrian Bundesliga": {
+   "filled": 2624,
+   "lacking": 2910,
+   "matched": 2679,
+   "not_cached": 55,
+   "unmatched": 231
+  },
+  "Belgian First Division A": {
+   "filled": 1522,
+   "lacking": 2101,
+   "matched": 1888,
+   "not_cached": 358,
+   "teams_not_in_answer": 8,
+   "unmatched": 213
+  },
+  "Brazil Serie A": {
+   "filled": 3451,
+   "lacking": 4672,
+   "matched": 3942,
+   "not_cached": 489,
+   "refused_fixture_claimed_twice": 441,
+   "teams_not_in_answer": 2,
+   "unmatched": 289
+  },
+  "Bundesliga 2": {
+   "filled": 2842,
+   "lacking": 3478,
+   "matched": 3213,
+   "not_cached": 370,
+   "teams_not_in_answer": 1,
+   "unmatched": 265
+  },
+  "Championship": {
+   "filled": 3339,
+   "lacking": 4056,
+   "matched": 4056,
+   "not_cached": 715,
+   "teams_not_in_answer": 2
+  },
+  "China Super League": {
+   "filled": 1784,
+   "lacking": 3153,
+   "matched": 2000,
+   "not_cached": 198,
+   "teams_not_in_answer": 18,
+   "unmatched": 1153
+  },
+  "Denmark Superliga": {
+   "filled": 1824,
+   "lacking": 2087,
+   "matched": 2086,
+   "not_cached": 262,
+   "unmatched": 1
+  },
+  "Dutch Eredivisie": {
+   "filled": 1547,
+   "lacking": 2092,
+   "matched": 2091,
+   "not_cached": 544,
+   "unmatched": 1
+  },
+  "Finland Veikkausliiga": {
+   "empty_answer": 2,
+   "filled": 640,
+   "lacking": 1684,
+   "matched": 1573,
+   "not_cached": 526,
+   "teams_not_in_answer": 405,
+   "unmatched": 111
+  },
+  "Greek Super League": {
+   "filled": 783,
+   "lacking": 2189,
+   "matched": 1065,
+   "not_cached": 280,
+   "teams_not_in_answer": 2,
+   "unmatched": 1124
+  },
+  "Ireland Premier Division": {
+   "filled": 627,
+   "lacking": 1840,
+   "matched": 1763,
+   "not_cached": 968,
+   "refused_fixture_claimed_twice": 3,
+   "teams_not_in_answer": 168,
+   "unmatched": 74
+  },
+  "Japan J-League": {
+   "filled": 3543,
+   "lacking": 4017,
+   "matched": 3705,
+   "not_cached": 161,
+   "teams_not_in_answer": 1,
+   "unmatched": 312
+  },
+  "K-League 1": {
+   "filled": 973,
+   "lacking": 1521,
+   "matched": 1521,
+   "not_cached": 266,
+   "teams_not_in_answer": 282
+  },
+  "La Liga 2": {
+   "filled": 2816,
+   "lacking": 3820,
+   "matched": 3507,
+   "not_cached": 690,
+   "teams_not_in_answer": 1,
+   "unmatched": 313
+  },
+  "League One": {
+   "filled": 3559,
+   "lacking": 4265,
+   "matched": 4265,
+   "not_cached": 705,
+   "teams_not_in_answer": 1
+  },
+  "League Two": {
+   "filled": 3510,
+   "lacking": 4240,
+   "matched": 4240,
+   "not_cached": 730
+  },
+  "Ligue 2": {
+   "filled": 1717,
+   "lacking": 2216,
+   "matched": 2062,
+   "not_cached": 344,
+   "teams_not_in_answer": 1,
+   "unmatched": 154
+  },
+  "Mexico Liga MX": {
+   "filled": 3679,
+   "lacking": 4172,
+   "matched": 3858,
+   "not_cached": 177,
+   "refused_fixture_claimed_twice": 314,
+   "teams_not_in_answer": 2
+  },
+  "National League": {
+   "lacking": 3316,
+   "matched": 2618,
+   "not_cached": 2618,
+   "unmatched": 698
+  },
+  "Norway Eliteserien": {
+   "filled": 2004,
+   "lacking": 2617,
+   "matched": 2433,
+   "not_cached": 428,
+   "teams_not_in_answer": 1,
+   "unmatched": 184
+  },
+  "Portuguese Primeira Liga": {
+   "filled": 1548,
+   "lacking": 2165,
+   "matched": 2137,
+   "not_cached": 589,
+   "unmatched": 28
+  },
+  "Romanian Superliga": {
+   "empty_answer": 1,
+   "filled": 2534,
+   "lacking": 3706,
+   "matched": 3069,
+   "not_cached": 385,
+   "teams_not_in_answer": 149,
+   "unmatched": 637
+  },
+  "Saudi Pro League": {
+   "filled": 1630,
+   "lacking": 1982,
+   "matched": 1982,
+   "not_cached": 330,
+   "teams_not_in_answer": 22
+  },
+  "Scottish Championship": {
+   "lacking": 1196,
+   "matched": 1196,
+   "not_cached": 1196
+  },
+  "Scottish League One": {
+   "lacking": 1172,
+   "matched": 1136,
+   "not_cached": 1136,
+   "unmatched": 36
+  },
+  "Scottish League Two": {
+   "lacking": 1166,
+   "matched": 1059,
+   "not_cached": 1059,
+   "unmatched": 107
+  },
+  "Scottish Premiership": {
+   "filled": 1197,
+   "lacking": 1577,
+   "matched": 1577,
+   "not_cached": 266,
+   "teams_not_in_answer": 114
+  },
+  "Serie B": {
+   "filled": 1819,
+   "lacking": 2434,
+   "matched": 2320,
+   "not_cached": 501,
+   "unmatched": 114
+  },
+  "Sweden Allsvenskan": {
+   "empty_answer": 1,
+   "filled": 3433,
+   "lacking": 4145,
+   "matched": 3991,
+   "not_cached": 557,
+   "unmatched": 154
+  },
+  "Turkish Super Lig": {
+   "filled": 1774,
+   "lacking": 2476,
+   "matched": 2082,
+   "not_cached": 308,
+   "unmatched": 394
+  },
+  "USA MLS": {
+   "filled": 3342,
+   "lacking": 5627,
+   "matched": 3873,
+   "not_cached": 517,
+   "refused_fixture_claimed_twice": 1754,
+   "teams_not_in_answer": 14
+  }
+ },
+ "unknown_provider_types": [
+  "Free Kicks"
+ ],
+ "written_at": "2026-11-04T09:50:39.297216+00:00"
+}
