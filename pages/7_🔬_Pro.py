@@ -489,7 +489,13 @@ with tab_health:
 
 # ── how the tips Pro SENDS are doing (src/pipelines/tip_scoreboard.py) ───────────────────────
 with tab_tips:
-    if not sb:
+    _sb_err = (P.get("_errors") or {}).get("tip_scoreboard")
+    if sb.get("schema_error") or _sb_err:
+        # Phase 2 Part 10: an incompatible or non-reproducible Pro payload, or a read that raised, is an
+        # ERROR - never rendered as P&L and never shown as "no scoreboard yet".
+        ui.empty_state("ERROR", "SCHEMA_MISMATCH - Pro's tip scoreboard was not shown: "
+                       + str(sb.get("schema_error") or _sb_err))
+    elif not sb:
         ui.empty_state("NO_DATA", "No tip scoreboard yet — it is written by `pro_tip_scoreboard.yml` each morning.")
     else:
         if sb.get("freshness"):
