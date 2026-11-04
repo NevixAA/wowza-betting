@@ -206,9 +206,13 @@ def parse(body: dict | None, fix) -> list[dict]:
     """player_history rows of one /fixtures/players answer for the cup fixture `fix` (a row of
     competition_fixtures). A team block that is neither side by team id is skipped."""
     from player_model.data_fetcher import _parse_fixture_player, fixture_side
+    from player_model.player_stat_nulls import fixture_answered
     rows = []
     hid, aid = int(fix["home_id"]), int(fix["away_id"])
     fixture = {"teams": {"home": {"id": hid}, "away": {"id": aid}}}
+    # owner 2026-11-04 (fix round 8): a null count is 0 only for a player who played, in a fixture
+    # whose answer carries that statistic for someone - the whole answer decides, so it is read once
+    answered = fixture_answered((body or {}).get("response") or [])
     for block in (body or {}).get("response") or []:
         is_home = fixture_side(block, fixture, fix["home_name"], fix["away_name"])
         if is_home is None:
@@ -220,7 +224,7 @@ def parse(body: dict | None, fix) -> list[dict]:
                 "team": (block.get("team") or {}).get("name", ""), "is_home": is_home,
                 "team_corners": None, "referee": None, "season": str(fix["season"])}
         for entry in block.get("players") or []:
-            r = _parse_fixture_player(entry, meta, fix["league"])
+            r = _parse_fixture_player(entry, meta, fix["league"], answered)
             if r:
                 r["team_id"], r["opponent_id"] = (hid, aid) if is_home else (aid, hid)
                 r["fixture_status"] = fix["status"]

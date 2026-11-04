@@ -26,6 +26,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from . import config
+from . import player_stat_nulls as _PSN
 from .text_fix import repair_text
 
 BASE_URL          = "https://v3.football.api-sports.io"
@@ -649,8 +650,15 @@ def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
     return response
 
 
-def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Optional[dict]:
-    """Parse one player from a /fixtures/players response entry."""
+def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
+                          answered: Optional[frozenset] = None) -> Optional[dict]:
+    """Parse one player from a /fixtures/players response entry.
+
+    `answered` = player_stat_nulls.fixture_answered(<the whole answer of this fixture>). Every
+    per-player count is read by player_stat_nulls (owner 2026-11-04, fix round 8): a null is 0
+    only when the player played (minutes > 0) AND the provider answered that statistic for the
+    fixture; without `answered` (a caller that does not hold the whole answer) every null stays
+    missing, the fix-round-7 reading."""
     p = player_entry.get("player", {})
     name = repair_text(p.get("name", "")).strip()
     if not name:
@@ -666,18 +674,11 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     if minutes is None or minutes < 10:              # no minutes recorded -> no row (never a 0-minute row)
         return None
 
-    # EVERY COUNT BELOW IS THE PROVIDER'S OR None (owner 2026-11-04). It was `int(x or 0)`, which
-    # wrote "API-Football sent no value" as a real 0 goals / shots / cards. Downstream, targets stay
-    # NaN where the count is None (feature_engineering) and the training drops unlabelled rows.
-    goals_d    = stats.get("goals",    {})
-    shots_d    = stats.get("shots",    {})
-    cards_d    = stats.get("cards",    {})
-    passes_d   = stats.get("passes",   {})
-    duels_d    = stats.get("duels",    {})
-    fouls_d    = stats.get("fouls",    {})
-    tackles_d  = stats.get("tackles",  {})
-    dribbles_d = stats.get("dribbles", {})
-    penalty_d  = stats.get("penalty",  {})
+    # EVERY COUNT BELOW IS THE PROVIDER'S, A NULL READ BY THE OWNER'S RULE, OR None (2026-11-04).
+    # It was `int(x or 0)`, which wrote "API-Football sent no value" as a real 0 even for a fixture
+    # the provider never covered; fix round 7 then made every null None, which lost the ordinary
+    # "played, did not score" 0. player_stat_nulls holds the rule and the per-field table.
+    c = _PSN.player_counts(stats, answered)
 
     substitute = games.get("substitute")
     # Unknown substitute flag -> started unknown (was guessed from minutes > 45). The real source
@@ -702,37 +703,12 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "minutes":         minutes,
         "started":         int(started) if started is not None else None,
-        "goals":           _count_or_none(goals_d.get("total")),
-        "assists":         _count_or_none(goals_d.get("assists")),
-        "shots_total":     _count_or_none(shots_d.get("total")),
-        "shots_on_target": _count_or_none(shots_d.get("on")),
-        "yellow_cards":    _count_or_none(cards_d.get("yellow")),
-        "key_passes":      _count_or_none(passes_d.get("key")),
-        # API-Football gives no rating for some appearances: None, never 0 (0 read as a real rating)
-        "rating":          float(games["rating"]) if games.get("rating") not in (None, "") else None,
-        "fouls_committed": _count_or_none(fouls_d.get("committed")),
-        "fouls_drawn":     _count_or_none(fouls_d.get("drawn")),
-        "duels_total":     _count_or_none(duels_d.get("total")),
-        "duels_won":       _count_or_none(duels_d.get("won")),
+        # rating is NOT a count: no rating for some appearances -> None, never 0
+        "rating":          _PSN.rating_of(stats),
         "team_corners":    (int(meta["team_corners"]) if meta.get("team_corners") is not None
                             else None),
-        # Defensive / technical
-        "red_cards":           _count_or_none(cards_d.get("red")),
-        "passes_total":        _count_or_none(passes_d.get("total")),
-        "offsides":            _count_or_none(stats.get("offsides")),
-        "tackles_total":       _count_or_none(tackles_d.get("total")),
-        "interceptions":       _count_or_none(tackles_d.get("interceptions")),
-        "dribbles_attempted":  _count_or_none(dribbles_d.get("attempts")),
-        "dribbles_success":    _count_or_none(dribbles_d.get("success")),
-        "dribbles_past":       _count_or_none(dribbles_d.get("past")),
-        # Goalkeeper
-        "goals_conceded":      _count_or_none(goals_d.get("conceded")),
-        "saves":               _count_or_none(goals_d.get("saves")),
-        # Penalty
-        "penalty_scored":      _count_or_none(penalty_d.get("scored")),
-        "penalty_missed":      _count_or_none(penalty_d.get("missed")),
-        "penalty_won":         _count_or_none(penalty_d.get("won")),
-        "penalty_saved":       _count_or_none(penalty_d.get("saved")),
+        # every per-player count player_history stores, under the owner's null rule
+        **{col: c[col] for col in _PSN.HISTORY_COUNT_COLS},
     }
 
 
@@ -787,6 +763,7 @@ def _collect_one_season(
 
         fix_stats = _fetch_fixture_statistics(fixture_id)
         _raw = fix.get("_raw", fix)
+        answered = _PSN.fixture_answered(team_data_list)      # the owner's null rule needs the whole answer
 
         for team_data in team_data_list:
             team_name = team_data.get("team", {}).get("name", "")
@@ -808,7 +785,7 @@ def _collect_one_season(
                 "season":      season,
             }
             for player_entry in team_data.get("players", []):
-                parsed = _parse_fixture_player(player_entry, meta, league_name)
+                parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
                 if parsed:
                     rows.append(parsed)
 
@@ -987,6 +964,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                 continue
 
             fix_stats = _fetch_fixture_statistics(fixture_id)
+            answered = _PSN.fixture_answered(team_data_list)
 
             for team_data in team_data_list:
                 t_name  = team_data.get("team", {}).get("name", "")
@@ -1005,7 +983,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                     "team_corners": team_st.get("corners"),     # None when unavailable
                 }
                 for player_entry in team_data.get("players", []):
-                    parsed = _parse_fixture_player(player_entry, meta, league_name)
+                    parsed = _parse_fixture_player(player_entry, meta, league_name, answered)
                     if parsed:
                         all_rows.append(parsed)
                         team_rows += 1
