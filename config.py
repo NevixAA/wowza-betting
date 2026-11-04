@@ -99,6 +99,21 @@ if SIDE_EDGE_FAIR_PRICE not in SIDE_EDGE_FAIR_PRICES:     # a typo falls to the 
     _logging.getLogger(__name__).error(
         f"SIDE_EDGE_FAIR_PRICE={SIDE_EDGE_FAIR_PRICE!r} not in {SIDE_EDGE_FAIR_PRICES}; using devig_two_sided")
     SIDE_EDGE_FAIR_PRICE = "devig_two_sided"
+# ── SIDE-MARKET GLOBAL BAR: an owner-visible POLICY value, declared ONCE (fix9/defaults 2026-11-04) ──
+# BTTS / Over 1.5 / Over 3.5 tips are tiered on a league's OWN sniper_th / marksman_th
+# (models/best_params_side_markets.json) only when that league's threshold is approved out of sample;
+# every other league - and every league the file does not list at all - is tiered on this one global
+# bar. Until 2026-11-04 the bar was a literal typed in three places (pipeline._generate_side_bets,
+# src/integrity/side_edge_devig.thresholds, src/research/edge_replay.legacy_side_tier) and a tip tiered
+# on it looked exactly like a per-league tier. The VALUES ARE UNCHANGED (owner rule: no threshold
+# changes); they are now one declared policy, read by src/side_thresholds.side_bars everywhere, and
+# every tip tiered on it carries threshold_source = "GLOBAL" through the ledger, Telegram and the
+# dashboard. VALUABLE has no per-league value anywhere: its 0.04 floor is global for every league.
+# A plain constant on purpose (no os.getenv): changing it is a threshold change and needs the owner.
+SIDE_GLOBAL_BARS = {"sniper": 0.10, "marksman": 0.08, "valuable": 0.04}
+#: threshold_source values: the league's own approved bars / the global bar above
+THRESHOLD_SOURCE_LEAGUE = "LEAGUE"
+THRESHOLD_SOURCE_GLOBAL = "GLOBAL"
 # Human-readable labels for Telegram / dashboard
 SIDE_MARKET_LABELS = {
     # "BTTS" alone does not say whether the tip is that both teams DO score or that they do not.

@@ -381,7 +381,9 @@ def test_scoreboard_metrics_on_a_known_gameweek():
                       "WOWZA": np.where(np.arange(n) < 10, y + 2.0, np.nan),
                       "bucket": ["m0", "m1_59", "m60", "m60"] * 3,
                       "chance_next_f": 1.0, "min_per_team_game": 60.0, "start_rate": 0.5,
-                      "n_fix": 1, "wowza_p_start": 0.75})
+                      "n_fix": 1, "wowza_p_start": 0.75,
+                      # the player's own history (fix9/defaults 2026-11-04: replaces the typed 0.35 / 0.92)
+                      "hist_play_share": 0.5, "hist_p60_given_start": 0.8})
     board, rel = R.gw_scoreboard(d)
     b = board.set_index("arm")
     assert (b["status"] == "PROVISIONAL").all() and (b["gw"] == 9).all()
@@ -405,8 +407,12 @@ def test_scoreboard_metrics_on_a_known_gameweek():
     assert w["obs_p60"] == pytest.approx(0.4)
     assert w["p60_brier"] == pytest.approx(0.4 * 0.25 ** 2 + 0.6 * 0.75 ** 2)
     assert w["p60_ece"] == pytest.approx(0.35)
-    # FPL heuristic: play = 1 * 1 * 0.5, P(60+) = 1 * 0.5 * 0.92 -> 0.46
-    assert f["pred_p0"] == pytest.approx(0.5) and f["pred_p60"] == pytest.approx(0.46)
+    # FPL heuristic (fix9/defaults): play = chance 1 x used 1 x own play share 0.5;
+    # P(60+) = chance 1 x start rate 0.5 x own 60'-share of starts 0.8 -> 0.40 (was a typed 0.92 -> 0.46)
+    assert f["pred_p0"] == pytest.approx(0.5) and f["pred_p60"] == pytest.approx(0.40)
+    # without the player's own history the heuristic is missing, not a typed number
+    nb, _ = R.gw_scoreboard(d.drop(columns=["hist_play_share", "hist_p60_given_start"]))
+    assert nb.set_index("arm").loc["FPL", "minutes_source"] == "not available"
     assert f["obs_p0"] == pytest.approx(3 / 12) and f["obs_p60"] == pytest.approx(6 / 12)
     # no minutes model passed: the residual arms report it as unavailable, not as zero
     assert b.loc["LINEAR", "minutes_source"] == "not available"

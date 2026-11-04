@@ -857,7 +857,9 @@ def _report_training_coverage(out: pd.DataFrame) -> None:
                              "last": str(pd.to_datetime(g["date"]).max())[:10],
                              **{c: round(float(g[c].notna().mean()), 4) for c in cols}}
         thin = sorted(lg for lg, r in rows.items()
-                      if r.get("home_corners", 1.0) < 0.5 or r.get("ht_home_goals", 1.0) < 0.5)
+                      # a column the frame lacks has UNKNOWN coverage (it was a typed 1.0 = full): not
+                      # listed as thin, same as before, but no number is invented for it
+                      if any(r.get(c) is not None and r[c] < 0.5 for c in ("home_corners", "ht_home_goals")))
         payload = {"generated_at": pd.Timestamp.now(tz="UTC").isoformat(),
                    "total_rows": int(len(out)), "leagues": rows,
                    "thin_on_corners_or_halftime": thin}

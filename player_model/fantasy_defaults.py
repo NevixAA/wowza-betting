@@ -147,7 +147,7 @@ def fire_counts() -> dict:
     if v is not None and len(v):
         c["v2_rows"] = int(len(v))
         if "n_fix" in v:
-            c["v2_blank_gw_rows"] = int((pd.to_numeric(v["n_fix"], errors="coerce").fillna(1) == 0).sum())
+            c["v2_blank_gw_rows"] = int((pd.to_numeric(v["n_fix"], errors="coerce") == 0).sum())  # NaN != 0
         if "start_rate" in v:
             c["v2_start_rate_missing"] = int(pd.to_numeric(v["start_rate"], errors="coerce").isna().sum())
         if "minutes_source" in v:

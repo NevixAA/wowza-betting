@@ -212,10 +212,11 @@ def _fetch_odds_api(days_ahead: int = 7) -> pd.DataFrame:
                             pr = outcome.get("price")
                             if outcome.get("point") != 2.5 or not pr:
                                 continue
+                            # best seen price; None until a book quotes one (no typed 0.0 start)
                             if outcome.get("name") == "Over":
-                                best_ov25 = max(best_ov25 or 0.0, float(pr))
+                                best_ov25 = float(pr) if best_ov25 is None else max(best_ov25, float(pr))
                             elif outcome.get("name") == "Under":
-                                best_un25 = max(best_un25 or 0.0, float(pr))
+                                best_un25 = float(pr) if best_un25 is None else max(best_un25, float(pr))
 
                 if ov25 and un25:
                     rows.append({

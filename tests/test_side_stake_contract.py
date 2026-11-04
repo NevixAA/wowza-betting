@@ -82,7 +82,9 @@ def _row(plan, home, market):
 def test_producer_emits_the_contract():
     side = pipeline._generate_side_bets(pd.DataFrame([_pred("A", NF, btts=(0.62, 2.10))]),
                                         config.SIDE_MARKETS)
-    assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds"]
+    # threshold_source (fix9/defaults 2026-11-04): which bar tiered the tip, for ledger / Telegram / dashboard
+    assert list(side.columns) == list(sp.SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]
+    assert (side["threshold_source"] == "GLOBAL").all()             # no per-league file -> global bar
     sp.check_side_selections(side)                                  # does not raise
 
 

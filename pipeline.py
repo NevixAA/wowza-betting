@@ -94,6 +94,7 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
     import pandas as pd
     import numpy as np
     from src.stake_plan import SIDE_SELECTION_COLUMNS
+    from src.side_thresholds import side_bars, tier_for
     frames = []
     OVERROUND    = 1.08          # legacy_1_08 only (config.SIDE_EDGE_FAIR_PRICE rollback)
     league_params = _load_side_market_thresholds()  # {target: {league: {sniper_th, marksman_th, drop}}}
@@ -207,26 +208,23 @@ def _generate_side_bets(preds: "pd.DataFrame", side_markets: dict) -> "pd.DataFr
             #
             # `approved` missing (an older best_params file) falls back to the previous rule, so
             # this can never regress an environment that has not rerun the optimizer yet.
-            _approved = lp.get("approved")
-            _use_own = (lp.get("approved", not lp.get("drop", False))
-                        if _approved is not None else not lp.get("drop", False))
-            if _use_own:
-                sniper_th   = lp.get("sniper_th",   0.10)
-                marksman_th = lp.get("marksman_th",  0.08)
-            else:
-                sniper_th, marksman_th = 0.10, 0.08
-            edge = row["edge"]
-            if edge >= sniper_th:   return "SNIPER"
-            if edge >= marksman_th: return "MARKSMAN"
-            if edge >= 0.04:        return "VALUABLE"
-            return "AVOID"
+            #
+            # THE GLOBAL BAR IS A DECLARED POLICY (fix9/defaults 2026-11-04): config.SIDE_GLOBAL_BARS,
+            # read through src/side_thresholds.side_bars - it was a typed lp.get("sniper_th", 0.10)
+            # here and in two research copies. Same values, same rule; the tip now also records
+            # WHICH bar tiered it (threshold_source LEAGUE / GLOBAL), so a global-bar tier is never
+            # shown as a per-league one.
+            bars = side_bars(lp)
+            return tier_for(row["edge"], bars), bars[3]
 
-        df["signal_tier"] = df.apply(_tier, axis=1)
+        _tiers = df.apply(_tier, axis=1, result_type="expand")
+        df["signal_tier"], df["threshold_source"] = _tiers[0], _tiers[1]
         df = df[df["signal_tier"] != "AVOID"]
         df = df.sort_values("edge", ascending=False)
         # ONE SCHEMA, defined once in src/stake_plan.py and read by the stake plan. `market_odds`
-        # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers.
-        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds"]])
+        # is kept beside the canonical `odds` for the side_bets.csv / ledger / notify readers;
+        # `threshold_source` beside both for the ledger / Telegram / dashboard (not a stake input).
+        frames.append(df[list(SIDE_SELECTION_COLUMNS) + ["market_odds", "threshold_source"]])
 
     if not frames:
         return pd.DataFrame()

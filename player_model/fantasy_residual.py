@@ -408,7 +408,10 @@ def acceptance(score: dict, arm: str) -> dict:
     n_final = len(fin)
     v = score["vs_fpl_final_only"].get(arm, {})
     mae_ok = v.get("mae_minus_fpl") is not None and v["mae_minus_fpl"] <= 0
-    won = sum(1 for r in fin if r.get(arm, {}).get("mae", 9e9) <= r["FPL"].get("mae", -1))
+    # a gameweek is won only when BOTH MAEs exist (they were typed 9e9 / -1, fix9/defaults 2026-11-04)
+    won = sum(1 for r in fin
+              if r.get(arm, {}).get("mae") is not None and r["FPL"].get("mae") is not None
+              and r[arm]["mae"] <= r["FPL"]["mae"])
     # The promised CI (R2-D bug 'ranking_gate_without_ci'): this used to require only that the arm's
     # Spearman beat FPL's in every final gameweek - a point comparison, no interval. Now the
     # player-clustered 90% CI of the mean per-GW Spearman gain must exclude zero.
@@ -434,7 +437,7 @@ def acceptance(score: dict, arm: str) -> dict:
 P60_BINS = (0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0 + 1e-9)
 #: which minutes forecast each arm carries. The three residual arms share the V2 minutes mixture
 #: (the residual only moves the MEAN), so their minutes columns are identical by construction.
-MINUTES_SOURCE = {"FPL": "FPL chance x usage heuristic", "WOWZA": "old Wowza p_start (60+ only)",
+MINUTES_SOURCE = {"FPL": "FPL chance x own minutes history", "WOWZA": "old Wowza p_start (60+ only)",
                   "LINEAR": "V2 minutes mixture", "RIDGE": "V2 minutes mixture",
                   "HGB": "V2 minutes mixture"}
 
@@ -707,13 +710,30 @@ def log_loss(y, P: pd.DataFrame) -> float:
 
 
 def heuristic_minutes(x: pd.DataFrame) -> pd.DataFrame:
-    """Baseline: P(play) = FPL chance x usage rate, P(60+) = chance x start rate."""
-    ch = x["chance_next_f"].fillna(0).clip(0, 1)
-    play = (ch * (x["min_per_team_game"].fillna(0) > 0).astype(float)
-            * np.maximum(x["start_rate"].fillna(0), 0.35)).clip(0.01, 0.98)
-    p60 = (ch * x["start_rate"].fillna(0) * 0.92).clip(0.005, 0.97)
-    p60 = np.minimum(p60, play - 0.005)
+    """Baseline: P(play) = FPL chance x the player's own play share, P(60+) = chance x start rate x
+    the share of HIS starts that reached 60 minutes.
+
+    REAL INPUTS ONLY (fix9/defaults 2026-11-04). It was
+        P(play) = chance.fillna(0) x [minutes > 0] x max(start_rate.fillna(0), 0.35)
+        P(60+)  = chance.fillna(0) x start_rate.fillna(0) x 0.92
+    - an unknown chance or start rate read as 0 %, usage floored at a typed 0.35 and a typed 0.92 for
+    "a start reaches 60'". The usage and the 60-minute share now come from the player's own FINAL
+    single-fixture gameweeks before this one (fantasy_panel.add_own_minutes_history:
+    hist_play_share, hist_p60_given_start). Where any input is missing the forecast is MISSING
+    (NaN in all three buckets), never a number; a known blank gameweek stays a real zero. The
+    consumers (gw_scoreboard, evaluate_distribution) score the rows that have a forecast and say how
+    many."""
+    def _col(c):
+        return (pd.to_numeric(x[c], errors="coerce") if c in x.columns
+                else pd.Series(np.nan, index=x.index, dtype=float))
+    ch = _col("chance_next_f").clip(0, 1)
+    mpg = _col("min_per_team_game")
+    used = (mpg > 0).astype(float).where(mpg.notna())
+    play = (ch * used * _col("hist_play_share")).clip(0.01, 0.98)
+    p60 = (ch * _col("start_rate") * _col("hist_p60_given_start")).clip(0.005, 0.97)
+    p60 = np.minimum(p60, play - 0.005)                     # NaN in either -> NaN
     out = pd.DataFrame({"m0": 1 - play, "m1_59": play - p60, "m60": p60}, index=x.index)
+    out.loc[out.isna().any(axis=1), ["m0", "m1_59", "m60"]] = np.nan
     blank = (pd.to_numeric(x["n_fix"], errors="coerce") == 0).to_numpy()   # NaN: not a known blank
     out.loc[blank, ["m1_59", "m60"]] = 0.001
     out.loc[blank, "m0"] = 0.998
@@ -845,14 +865,28 @@ def evaluate_distribution(oos_rows: pd.DataFrame, train_for: dict, mean_col: str
            "mean_column": mean_col}
     Pm = d[["P_m0", "P_m1_59", "P_m60"]].rename(columns=lambda c: c[2:])
     Ph = d[["H_m0", "H_m1_59", "H_m60"]].rename(columns=lambda c: c[2:])
-    res["minutes_log_loss"] = {"mixture_model": round(log_loss(y, Pm), 4),
-                               "heuristic_chance_x_rate": round(log_loss(y, Ph), 4)}
+    # The heuristic is MISSING where a player has no real chance / start rate / own minutes history
+    # (fix9/defaults 2026-11-04): it is scored on the rows it covers, with the mixture beside it on
+    # the SAME rows, and the coverage is reported - never a typed number standing in for the gap.
+    okh = Ph.notna().all(axis=1).to_numpy()
+    yh = [v for v, k in zip(y, okh) if k]
     played = (d["actual_minutes"] > 0).astype(float)
     started60 = (d["bucket"] == "m60").astype(float)
-    res["brier_play"] = {"mixture_model": round(float(((1 - d["P_m0"]) - played).pow(2).mean()), 4),
-                         "heuristic": round(float(((1 - d["H_m0"]) - played).pow(2).mean()), 4)}
-    res["brier_60plus"] = {"mixture_model": round(float((d["P_m60"] - started60).pow(2).mean()), 4),
-                           "heuristic": round(float((d["H_m60"] - started60).pow(2).mean()), 4)}
+
+    def _brier(p, hit, mask=None):
+        m = np.ones(len(p), dtype=bool) if mask is None else mask
+        return round(float((p[m] - hit[m]).pow(2).mean()), 4) if m.any() else None
+    res["heuristic_rows"] = {"covered": int(okh.sum()), "missing_input": int((~okh).sum())}
+    res["minutes_log_loss"] = {
+        "mixture_model": round(log_loss(y, Pm), 4),
+        "heuristic_chance_x_rate": round(log_loss(yh, Ph[okh]), 4) if okh.any() else None,
+        "mixture_model_heuristic_rows": round(log_loss(yh, Pm[okh]), 4) if okh.any() else None}
+    res["brier_play"] = {"mixture_model": _brier(1 - d["P_m0"], played),
+                         "heuristic": _brier(1 - d["H_m0"], played, okh),
+                         "mixture_model_heuristic_rows": _brier(1 - d["P_m0"], played, okh)}
+    res["brier_60plus"] = {"mixture_model": _brier(d["P_m60"], started60),
+                           "heuristic": _brier(d["H_m60"], started60, okh),
+                           "mixture_model_heuristic_rows": _brier(d["P_m60"], started60, okh)}
     led = d[d["in_ledger"] == 1].dropna(subset=["wowza_p_start"])
     if len(led) >= 30:
         pl = (led["actual_minutes"] > 0).astype(float)

@@ -436,7 +436,55 @@ def build_panel(archive: pd.DataFrame | None = None, fixtures: pd.DataFrame | No
     if not out:
         return pd.DataFrame()
     # the newest archived gameweek with no successor is the one to forecast
-    return pd.concat(out, ignore_index=True)
+    return add_own_minutes_history(pd.concat(out, ignore_index=True))
+
+
+#: the player's own minutes history, attached to every panel row (fix9/defaults 2026-11-04)
+OWN_HISTORY_COLS = ["hist_gws", "hist_play_share", "hist_starts", "hist_p60_given_start"]
+
+
+def add_own_minutes_history(panel: pd.DataFrame) -> pd.DataFrame:
+    """Each row's PLAYER-OWN minutes record from the FINAL gameweeks BEFORE its own (pre-deadline:
+    a FINAL gameweek < g finished before g's deadline). Only single-fixture gameweeks count (a blank
+    has no match to play, a double gameweek's 2 starts / 180 minutes cannot be split per match):
+
+      hist_gws               single-fixture FINAL gameweeks before this one with a known minutes count
+      hist_play_share        share of those in which he played (minutes > 0)
+      hist_starts            those in which he started (starts == 1)
+      hist_p60_given_start   share of those starts that reached 60 minutes
+
+    WHY. The FPL minutes baseline (fantasy_residual.heuristic_minutes) multiplied by a typed 0.92
+    ("a start reaches 60'"), floored usage at a typed 0.35 and read a missing chance / start rate as 0.
+    These are the player's own real rates instead; with no qualifying history they are NaN (missing),
+    never a number."""
+    d = panel
+    if d is None or d.empty or not {"element", "gw", "status"} <= set(d.columns):
+        return d
+    d = d.copy()
+    am = pd.to_numeric(d["actual_minutes"], errors="coerce") if "actual_minutes" in d.columns \
+        else pd.Series(np.nan, index=d.index)
+    ast = pd.to_numeric(d["actual_starts"], errors="coerce") if "actual_starts" in d.columns \
+        else pd.Series(np.nan, index=d.index)
+    nfx = pd.to_numeric(d["n_fix"], errors="coerce") if "n_fix" in d.columns \
+        else pd.Series(np.nan, index=d.index)
+    use = (d["status"] == "FINAL") & (nfx == 1) & am.notna()
+    ev = pd.DataFrame({"element": d["element"], "gw": pd.to_numeric(d["gw"], errors="coerce"),
+                       "g": use.astype(int), "play": (use & (am > 0)).astype(int),
+                       "start": (use & (ast == 1)).astype(int),
+                       "s60": (use & (ast == 1) & (am >= 60)).astype(int)})
+    # one record per (player, gameweek); the cumulative sum of the EARLIER gameweeks only
+    per = ev.groupby(["element", "gw"], as_index=False)[["g", "play", "start", "s60"]].max()
+    per = per.sort_values(["element", "gw"])
+    cum = per.groupby("element")[["g", "play", "start", "s60"]].cumsum() - per[["g", "play", "start", "s60"]]
+    per = per[["element", "gw"]].join(cum)
+    m = ev[["element", "gw"]].merge(per, on=["element", "gw"], how="left")
+    g, st = m["g"].to_numpy(dtype=float), m["start"].to_numpy(dtype=float)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d["hist_gws"] = g
+        d["hist_play_share"] = np.where(g > 0, m["play"].to_numpy(dtype=float) / g, np.nan)
+        d["hist_starts"] = st
+        d["hist_p60_given_start"] = np.where(st > 0, m["s60"].to_numpy(dtype=float) / st, np.nan)
+    return d
 
 
 def active_mask(d: pd.DataFrame) -> pd.Series:

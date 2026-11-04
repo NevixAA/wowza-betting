@@ -286,7 +286,7 @@ def fetch(fixtures: list[dict], *, verbose: bool = True) -> tuple[dict[str, floa
                             continue                  # quote log only - never a tip price
                         k = f"{_key_name(player)}|{mkt}"
                         # Best available price across books, matching odds_fetcher's contract.
-                        if odd > best.get(k, 0.0):
+                        if odd > 0 and (k not in best or odd > best[k]):   # best seen (no typed 0 floor)
                             best[k] = odd
                         records.append({"match_date": match_date, "league": league,
                                         "match": match, "player": player, "market": mkt,

@@ -322,6 +322,23 @@ _QUOTE_KEY = ["match_date", "league", "match", "player", "market", "side", "poin
 _QUOTES_LOOKBACK_DAYS = 14          # dedupe window across day-files (a fixture is quoted <~10 days)
 
 
+def _price(o: dict) -> float | None:
+    """A provider outcome's decimal price, or None when it sends none / an unparseable one (never 0)."""
+    v = o.get("price")
+    if v is None:
+        return None
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def _keep_best(best: dict, key, price: float) -> None:
+    """best[key] = the highest price seen for key (a key not seen yet takes its first price)."""
+    if key not in best or price > best[key]:
+        best[key] = price
+
+
 def _quotes_from_oddsapi(bookmakers: list, match_date: str, league: str, match: str) -> list[dict]:
     """Every bookmaker's quote, BOTH sides, for the markets we model (logging only)."""
     inv = {(k, p): our for our, (k, p) in _MARKET_MAP.items()}
@@ -338,15 +355,15 @@ def _quotes_from_oddsapi(bookmakers: list, match_date: str, league: str, match: 
                 our = inv.get((mkt.get("key"), pt))
                 if our is None:
                     continue
-                try:
-                    price = float(o.get("price", 0))
-                except (TypeError, ValueError):
-                    continue
-                if price <= 1.0:
+                # No price / no side from the provider -> no quote. They were read as price 0 (then
+                # dropped by the > 1.0 test) and side "yes" (kept: a nameless outcome was logged as
+                # the YES side). fix9/defaults 2026-11-04.
+                price = _price(o)
+                if price is None or price <= 1.0 or o.get("name") is None:
                     continue
                 out.append({"match_date": match_date, "league": league, "match": match,
                             "player": _norm(o.get("description", "")), "market": our,
-                            "side": str(o.get("name", "yes")).lower(), "point": pt, "odds": price,
+                            "side": str(o["name"]).lower(), "point": pt, "odds": price,
                             "bookmaker": book, "source": "oddsapi"})
     return out
 
@@ -680,7 +697,8 @@ def _best_price(bookmakers: list, mkt_key: str, point: Optional[float]) -> dict[
                 if point is not None:
                     if o.get("name") != "Over":
                         continue
-                    if abs(float(o.get("point", 999)) - point) > 0.01:
+                    # an outcome without a line is not this line (it was read as point 999)
+                    if o.get("point") is None or abs(float(o["point"]) - point) > 0.01:
                         continue
                 # Yes/no markets: the "No" side is the under of this bet and must never be read
                 # as the tip's price (2026-10-25: 44 OddsAPI anytime-scorer "No" quotes logged in
@@ -688,9 +706,10 @@ def _best_price(bookmakers: list, mkt_key: str, point: Optional[float]) -> dict[
                 elif str(o.get("name", "")).strip().lower() == "no":
                     continue
                 player = _norm(o.get("description", ""))
-                price = float(o.get("price", 0))
-                if price > best.get(player, 0):
-                    best[player] = price
+                # No price from the provider -> no price (it was read as 0, fix9/defaults 2026-11-04)
+                price = _price(o)
+                if price is not None and price > 0:
+                    _keep_best(best, player, price)
     return best
 
 
@@ -789,7 +808,8 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                     if isinstance(obj, dict) and "bookmakers" in obj:
                         ttl = (CACHE_TTL_PRICED if obj["bookmakers"]
                                else _empty_ttl_for(event.get("commence_time", "")))
-                        if (time.time() - obj.get("fetched_at", 0)) < ttl:
+                        # no recorded fetch time -> expired (it was age-from-epoch via a typed 0)
+                        if obj.get("fetched_at") is not None and (time.time() - obj["fetched_at"]) < ttl:
                             bookmakers = obj["bookmakers"]
                     # Old format (plain list) — treat as expired; will re-fetch below
                 except Exception:
@@ -828,8 +848,7 @@ def fetch_prop_odds(signals_df) -> dict[str, float]:
                 prices = _best_price(bookmakers, api_key, point)
                 for player_norm, price in prices.items():
                     key = f"{player_norm}|{our_market}"
-                    if price > result.get(key, 0):
-                        result[key] = price
+                    _keep_best(result, key, price)
                     # _hit is OUR (home, away) for this event, so the fixture map is keyed by the
                     # tip's own match name rather than OddsAPI's spelling.
                     _add_fixture_price(fixture_prices, _match_date, f"{_hit[0]} vs {_hit[1]}",
@@ -960,7 +979,7 @@ def _fill_from_api_football(signals_df, result: dict[str, float],
     for k, odd in best.items():
         player, _, market = k.rpartition("|")
         norm_key = f"{_norm(player)}|{market}"
-        if odd > result.get(norm_key, 0.0):
+        if odd > 0 and (norm_key not in result or odd > result[norm_key]):
             result[norm_key] = odd
             added += 1
     history_records.extend(records)
@@ -1042,9 +1061,7 @@ def _add_fixture_price(fixture_prices: dict, match_date, match, player_norm: str
     if not (odds > 1.0) or not player_norm or not market or not match:
         return
     fx = fixture_prices.setdefault((str(match_date or "")[:10], str(match)), {})
-    k = f"{player_norm}|{market}"
-    if odds > fx.get(k, 0.0):
-        fx[k] = odds
+    _keep_best(fx, f"{player_norm}|{market}", odds)
 
 
 def _split_match(match) -> Optional[tuple[str, str]]:
@@ -1096,8 +1113,8 @@ def prices_for_fixture(fixture_prices: dict, match_date, match) -> dict[str, flo
         if not _dates_close(fd, match_date) or not same_fixture(match, fm):
             continue
         for k, v in prices.items():
-            if v > out.get(k, 0.0):
-                out[k] = v
+            if v > 0:
+                _keep_best(out, k, v)
     return out
 
 

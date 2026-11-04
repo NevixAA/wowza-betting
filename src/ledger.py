@@ -449,6 +449,12 @@ SIDE_LEDGER_COLS = [
     "model_prob", "signal_tier", "model_type", "closing_odds", "clv_pct", "result", "pnl", "notes",
     # model attribution, appended (2026-10-18) — see LEDGER_COLS
     *VERSION_FIELDS,
+    # WHICH BAR TIERED THE TIP, appended (fix9/defaults 2026-11-04): "LEAGUE" = the league's own
+    # approved sniper/marksman bars, "GLOBAL" = the declared global policy bar (config.SIDE_GLOBAL_BARS;
+    # src/side_thresholds). Rows logged before it are blank: the bar of a past tip was not recorded
+    # in its row, so it is not written in afterwards (logged rows stand). Reconstructed 2026-11-04
+    # from the params file in force at each generated_at: 525 of 664 live tips were GLOBAL-bar tiers.
+    "threshold_source",
 ]
 _SIDE_RANK = _TIER_RANK
 
@@ -543,6 +549,9 @@ def append_side_market_tips(side_df: pd.DataFrame, source: str = "live") -> None
             "closing_odds": "", "clv_pct": "", "result": "", "pnl": "", "notes": "",
             # side rows are built from a column subset, so look the market's model up directly
             **_version_fields({}, market),
+            # recorded by the producer (pipeline._generate_side_bets); blank when it did not say
+            "threshold_source": (str(row["threshold_source"])
+                                 if pd.notna(row.get("threshold_source")) else ""),
         })
 
     _record_tiers_seen(tier_seen_rows, tier_seen_path)

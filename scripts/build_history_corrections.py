@@ -68,8 +68,20 @@ use only stored provider data - no call - and one pool of provider fixtures: the
    fixture): never corrected, reason 'ft_status_scores_differ' (UNIDENTIFIABLE - two sources, no
    proof which is right).
 5. AWARDED -> output/corrections/history_awarded_results.csv: a history row proven to be a provider
-   fixture with status AWD / WO is excluded (not a played score). The stores held no AWD / WO
-   fixture before fix8/history2 (both collectors kept FT/AET/PEN only).
+   fixture with status AWD / WO / ABD is excluded (not a played score), with its reason. The stores
+   held no AWD / WO fixture before fix8/history2 (both collectors kept FT/AET/PEN only); the 120 old
+   league-season lists are re-read once for them by collect_ht_scores.py --add-status (fix9/defaults).
+
+fix9/defaults owner decisions (2026-11-04), no call:
+6. NOT PLAYED (OWNER_NOT_PLAYED) -> the awarded list: Queretaro v Atlas 2022-03-05 was abandoned after
+   crowd violence and awarded; every history copy proven to be provider fixture 816403 is excluded with
+   that reason (the provider lists it FT 0-1, so rule 5 cannot see it).
+7. SAME-DAY COPY WITH A WRONG SCORE -> history_removed_duplicates.csv (found_by
+   'same_day_copy_wrong_score_provider_agrees'): "the provider plus an independent agreeing copy is
+   proven". Two or more same-day history copies of one provider FT fixture, one agreeing with
+   score.fulltime and one not: the disagreeing copy is removed as a duplicate (MLS 2023-11-25 Orlando
+   City v Columbus Crew: provider 0-2, copy 'Orlando City SC' 0-2, copy 'Orlando City' 0-0). A lone
+   disagreeing copy stays UNIDENTIFIABLE in history_score_refused.csv.
 
 Audit: output/corrections/history_corrections_audit.json. BUDGET: every call goes through
 collect_common.AFClient (job cap, account floor); MAX_CALLS per run on top. A budget stop is a clean,
@@ -102,6 +114,8 @@ CUP_UNPROVEN = OUT_DIR / "history_cup_unproven_rows.csv"
 SCORE_OUT = OUT_DIR / "history_score_90min.csv"
 SCORE_REFUSED = OUT_DIR / "history_score_refused.csv"
 AWARDED_OUT = OUT_DIR / "history_awarded_results.csv"
+AWARDED_COLS = ["league", "date", "home_team", "away_team", "home_goals", "away_goals", "fixture_id",
+                "provider_status", "reason"]
 AUDIT = OUT_DIR / "history_corrections_audit.json"
 KEY = ["league", "date", "home_team", "away_team"]
 EXTRA_TIME = {"AET", "PEN"}
@@ -295,7 +309,7 @@ def history_claims(rows: pd.DataFrame, pool: pd.DataFrame, statuses: set | None 
                           "provider_away", "et_home", "et_away", "pen_home", "pen_away", "day", "pdate"]
     if rows.empty or pool.empty:
         return pd.DataFrame(columns=cols)
-    c = H.claims(rows, pool, require_ht=False, statuses=statuses or (H.FINISHED | H.AWARDED))
+    c = H.claims(rows, pool, require_ht=False, statuses=statuses or (H.FINISHED | H.NOT_PLAYED))
     c = c.rename(columns={"_canon": "canon", "_hg": "hist_hg", "_ag": "hist_ag"})
     c["day"] = pd.to_datetime(c["date"]).dt.strftime("%Y-%m-%d")
     c["pdate"] = c["af_date"].astype(str).str[:10]
@@ -309,7 +323,7 @@ def score_corrections(history: pd.DataFrame, pool: pd.DataFrame) -> tuple[pd.Dat
     """(90-minute corrections, refused rows, awarded rows, counts) over the WHOLE history (`history`
     after the removal lists). See the module docstring, rules 4 and 5."""
     h = _with_canon(history)
-    statuses = H.FINISHED | H.AWARDED
+    statuses = H.FINISHED | H.NOT_PLAYED          # AWD / WO and (fix9/defaults) abandoned ABD
     c = history_claims(h, pool, statuses)
     st = {"history_rows_claimed": int(len(c))}
     if c.empty:
@@ -324,7 +338,7 @@ def score_corrections(history: pd.DataFrame, pool: pd.DataFrame) -> tuple[pd.Dat
         base = {"league": r.league, "date": r.day, "home_team": r.home_team, "away_team": r.away_team,
                 "fixture_id": int(r.fixture_id), "provider_status": r.status, "provider_date": r.pdate,
                 "provider_home": r.provider_home, "provider_away": r.provider_away}
-        if r.status in H.AWARDED:
+        if r.status in H.NOT_PLAYED:
             awarded.append({**base, "home_goals": r.hist_hg, "away_goals": r.hist_ag,
                             "provider_ft_home": pft[0] if pft else None,
                             "provider_ft_away": pft[1] if pft else None, "match_rule": r.match_rule})
@@ -364,6 +378,101 @@ def score_corrections(history: pd.DataFrame, pool: pd.DataFrame) -> tuple[pd.Dat
         "awarded_rows": int(len(awd)),
         "pool_fixtures_by_status": {k: int(v) for k, v in pool["status"].value_counts().items()}})
     return prov, refd, awd, st
+
+
+# ---- 6. owner decisions of fix9/defaults (2026-11-04) -------------------------------------------
+
+#: Provider fixtures the OWNER ruled are not played matches although the provider lists them FT.
+#: Every history row proven to be the fixture (same claim rule as above, any spelling) is excluded
+#: like an awarded result, with this reason and the provider fixture id. Keyed by the PROVIDER's id;
+#: the history rows and their recorded scores are found, never typed.
+OWNER_NOT_PLAYED = {
+    816403: ("Queretaro v Atlas, Liga MX 2022-03-05: abandoned after crowd violence and awarded - "
+             "not a played match (owner 2026-11-04; the provider lists it FT, the history holds two "
+             "copies: the awarded 0-3 and the 0-1 standing when play stopped)"),
+}
+#: why the provider + an agreeing history copy proves a same-day duplicate with a wrong score
+AGREE_FOUND_BY = "same_day_copy_wrong_score_provider_agrees"
+
+
+def owner_not_played(history: pd.DataFrame, pool: pd.DataFrame,
+                     decisions: dict | None = None) -> tuple[pd.DataFrame, dict]:
+    """(history rows proven to be an OWNER_NOT_PLAYED fixture, counts), in the awarded list's layout
+    plus `reason`. A decided fixture no history row claims is counted (listed nowhere)."""
+    decisions = OWNER_NOT_PLAYED if decisions is None else decisions
+    cols = KEY + ["home_goals", "away_goals", "fixture_id", "provider_status", "reason"]
+    st = {"decided_fixtures": len(decisions), "rows": 0, "fixtures_not_claimed": []}
+    if not decisions or pool.empty:
+        st["fixtures_not_claimed"] = sorted(decisions)
+        return pd.DataFrame(columns=cols), st
+    sub = pool[pool["fixture_id"].isin(list(decisions))]
+    statuses = set(sub["status"].dropna().unique()) or H.FINISHED
+    h = near(_with_canon(history), sub, statuses)
+    c = history_claims(h, sub, statuses)
+    rows = [{"league": r.league, "date": r.day, "home_team": r.home_team, "away_team": r.away_team,
+             "home_goals": r.hist_hg, "away_goals": r.hist_ag, "fixture_id": int(r.fixture_id),
+             "provider_status": r.status, "reason": decisions[int(r.fixture_id)]}
+            for r in c.itertuples(index=False) if int(r.fixture_id) in decisions]
+    out = pd.DataFrame(rows, columns=cols)
+    st["rows"] = int(len(out))
+    st["fixtures_not_claimed"] = sorted(set(decisions) - set(out["fixture_id"].astype(int)))
+    return out, st
+
+
+def agreeing_copy_removals(history: pd.DataFrame, pool: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """Owner rule 2026-11-04: "the provider plus an independent agreeing copy is proven". A provider
+    fixture finished FT that two or more history rows of the SAME day claim (one match under two club
+    spellings, clubs proven home->home / away->away) where at least one copy's FT EQUALS the provider's
+    score.fulltime and another copy's FT differs: each differing copy is a duplicate with a wrong
+    score -> removed (history_removed_duplicates.csv, found_by AGREE_FOUND_BY), the agreeing copy kept.
+    AET / PEN fixtures are left to the 90-minute rule; one copy alone is never 'proven' either way
+    (it stays in history_score_refused.csv, UNIDENTIFIABLE)."""
+    st = {"same_day_multi_copy_fixtures_with_disagreement": 0, "removed_rows": 0, "removed_by_league": {}}
+    h = near(_with_canon(history), pool, {"FT"})
+    c = history_claims(h, pool, {"FT"})
+    if c.empty:
+        return pd.DataFrame(), st
+    c = c[c.groupby("fixture_id")["day"].transform("nunique") == 1]
+    removed = []
+    for fid, g in c.groupby("fixture_id"):
+        if len(g) < 2:
+            continue
+        pft = _ft(g["provider_ft_home"].iloc[0], g["provider_ft_away"].iloc[0])
+        if pft is None:
+            continue
+        hft = [_ft(a, b) for a, b in zip(g["hist_hg"], g["hist_ag"])]
+        agree = [i for i, x in enumerate(hft) if x == pft]
+        differ = [i for i, x in enumerate(hft) if x is not None and x != pft]
+        if not agree or not differ:
+            continue
+        st["same_day_multi_copy_fixtures_with_disagreement"] += 1
+        k0 = g.iloc[sorted(agree, key=lambda i: (str(g["home_team"].iloc[i]), str(g["away_team"].iloc[i])))[0]]
+        for i in differ:
+            r = g.iloc[i]
+            removed.append({"league": r["league"], "date": r["day"], "home_team": r["home_team"],
+                            "away_team": r["away_team"], "home_goals": r["hist_hg"], "away_goals": r["hist_ag"],
+                            "kept_date": k0["day"], "kept_home_team": k0["home_team"],
+                            "kept_away_team": k0["away_team"], "kept_rows": len(agree),
+                            "fixture_id": int(fid), "provider_date": r["pdate"],
+                            "provider_home": r["provider_home"], "provider_away": r["provider_away"],
+                            "provider_ft_home": pft[0], "provider_ft_away": pft[1], "provider_status": r["status"],
+                            "found_by": AGREE_FOUND_BY})
+    rem = pd.DataFrame(removed)
+    if rem.empty:
+        return rem, st
+    # the FULL original row of each removed copy (key AND its recorded score: a repeated key keeps
+    # only the copy with the wrong score)
+    orig = history.copy()
+    orig["date"] = pd.to_datetime(orig["date"]).dt.strftime("%Y-%m-%d")
+    orig["_ftk"] = [_ft(a, b) for a, b in zip(orig["home_goals"], orig["away_goals"])]
+    rem["_ftk"] = [_ft(a, b) for a, b in zip(rem["home_goals"], rem["away_goals"])]
+    rem = rem.drop(columns=["home_goals", "away_goals"]).merge(orig, on=KEY + ["_ftk"], how="left")
+    rem = rem.drop(columns=["_ftk"])
+    lead = KEY + [c for c in history.columns if c not in KEY]
+    rem = rem[lead + [c for c in rem.columns if c not in lead]]
+    st["removed_rows"] = int(len(rem))
+    st["removed_by_league"] = {k: int(v) for k, v in rem["league"].value_counts().items()}
+    return rem, st
 
 
 # ---- 3. every pair the loader merges -------------------------------------------------------------
@@ -767,9 +876,20 @@ def follow_ups(history: pd.DataFrame, scores: pd.DataFrame, rem: pd.DataFrame, c
     prem, pcon, pst = pair_removals(history, pool, corr1, _scores_frame(sc1), archive)
     corr2 = pd.concat([corr1, _as_corrections(prem, "duplicate_removed")], ignore_index=True)
     h2 = apply_history_corrections(history, corr=corr2, scores=none)
-    sc, refused, awd, sst = score_corrections(h2, pool)
+    # fix9/defaults (owner 2026-11-04): the fixtures the owner ruled not played, then the same-day
+    # copies proven wrong by the provider plus an agreeing copy - before the final score lists, so a
+    # removed copy is no longer listed as an UNIDENTIFIABLE score disagreement.
+    onp, onp_st = owner_not_played(h2, pool)
+    corr3 = pd.concat([corr2, _as_corrections(onp, "awarded_excluded")], ignore_index=True)
+    h3 = apply_history_corrections(history, corr=corr3, scores=none)
+    agree, agree_st = agreeing_copy_removals(h3, pool)
+    corr4 = pd.concat([corr3, _as_corrections(agree, "duplicate_removed")], ignore_index=True)
+    h4 = apply_history_corrections(history, corr=corr4, scores=none)
+    sc, refused, awd, sst = score_corrections(h4, pool)
     return {"pool": pool, "pair_removed": prem, "pair_conflicts": pcon, "pair_stats": pst,
-            "score": sc, "score_refused": refused, "awarded": awd, "score_stats": sst}
+            "score": sc, "score_refused": refused, "awarded": awd, "score_stats": sst,
+            "owner_not_played": onp, "owner_not_played_stats": onp_st,
+            "agree_removed": agree, "agree_stats": agree_st}
 
 
 def run(fetch: bool = False, dry_run: bool = False, client: AFClient | None = None) -> dict:
@@ -798,7 +918,10 @@ def run(fetch: bool = False, dry_run: bool = False, client: AFClient | None = No
     fu = follow_ups(history, scores, rem, proven, load_archive())
     audit["loader_merge_duplicates"] = fu["pair_stats"]
     audit["score_90min"] = fu["score_stats"]
+    audit["owner_not_played"] = fu["owner_not_played_stats"]
+    audit["same_day_copy_provider_agrees"] = fu["agree_stats"]
     rem = pd.concat([rem, fu["pair_removed"]], ignore_index=True) if len(fu["pair_removed"]) else rem
+    rem = pd.concat([rem, fu["agree_removed"]], ignore_index=True) if len(fu["agree_removed"]) else rem
     con = pd.concat([con, fu["pair_conflicts"]], ignore_index=True) if len(fu["pair_conflicts"]) else con
     hist_cols = list(history.columns)
     _write(rem, DUP_OUT, hist_cols + ["kept_date", "kept_home_team", "kept_away_team", "fixture_id", "found_by"])
@@ -807,7 +930,12 @@ def run(fetch: bool = False, dry_run: bool = False, client: AFClient | None = No
     _write(unproven, CUP_UNPROVEN, hist_cols + ["reason"])
     _write(fu["score"], SCORE_OUT, SCORE_OUT_COLS)
     _write(fu["score_refused"], SCORE_REFUSED, SCORE_REFUSED_COLS)
-    _write(fu["awarded"], AWARDED_OUT, KEY + ["home_goals", "away_goals", "fixture_id", "provider_status"])
+    awd = fu["awarded"].copy()
+    if len(awd):
+        awd["reason"] = "provider status " + awd["provider_status"].astype(str) + ": result not played on the pitch"
+    awd = pd.concat([d for d in (awd, fu["owner_not_played"]) if len(d)], ignore_index=True) \
+        if len(awd) or len(fu["owner_not_played"]) else pd.DataFrame()
+    _write(awd, AWARDED_OUT, AWARDED_COLS)
     audit["written_at"] = datetime.now(timezone.utc).isoformat()
     AUDIT.write_text(json.dumps(audit, indent=1, sort_keys=True, default=str), encoding="utf-8")
     print(f"[history-corrections] {json.dumps({k: v for k, v in audit.items()}, default=str)[:2000]}")

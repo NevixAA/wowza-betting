@@ -173,7 +173,9 @@ def test_workflow_htscores_step_builds_corrections_and_adds_ft():
     step = wf.split("name: 7. Half-time scores")[1].split("- name:")[0]
     assert "python scripts/build_history_corrections.py --fetch" in step
     assert "python scripts/collect_ht_scores.py --add-ft" in step
-    assert step.index("build_history_corrections") < step.index("collect_ht_scores")
+    assert step.index("build_history_corrections") < step.index("collect_ht_scores.py --add-ft")
+    # fix9/defaults: the one-off status re-read (AWD / WO / ABD, extra time) runs BEFORE the builder
+    assert step.index("collect_ht_scores.py --add-status") < step.index("build_history_corrections")
     assert "output/corrections/history_*.csv" in wf
 
 
@@ -384,6 +386,16 @@ def test_committed_duplicate_list_is_proven_against_the_history():
     h = pd.read_parquet(ROOT / "output" / "fd_history.parquet", columns=KEY + ["home_goals", "away_goals"])
     h["date"] = pd.to_datetime(h["date"]).dt.strftime("%Y-%m-%d")
     hk = h.drop_duplicates(KEY).set_index(KEY)
+    # fix9/defaults (owner 2026-11-04): a SAME-DAY copy whose score the provider plus an agreeing copy
+    # prove wrong - its own invariants: same day, kept copy = provider FT, removed copy differs from it
+    agree = d["found_by"].eq("same_day_copy_wrong_score_provider_agrees") if "found_by" in d else False
+    for r in d[agree].itertuples(index=False) if len(d[agree]) else []:
+        a = hk.loc[(r.league, r.date, r.home_team, r.away_team)]
+        b = hk.loc[(r.league, r.kept_date, r.kept_home_team, r.kept_away_team)]
+        assert r.kept_date == r.date and (a.home_goals, a.away_goals) == (r.home_goals, r.away_goals)
+        assert (b.home_goals, b.away_goals) == (r.provider_ft_home, r.provider_ft_away)
+        assert (a.home_goals, a.away_goals) != (r.provider_ft_home, r.provider_ft_away)
+    d = d[~agree] if len(d[agree]) else d
     for r in d.drop_duplicates(KEY).itertuples(index=False):
         a = hk.loc[(r.league, r.date, r.home_team, r.away_team)]
         b = hk.loc[(r.league, r.kept_date, r.kept_home_team, r.kept_away_team)]

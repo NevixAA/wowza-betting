@@ -65,6 +65,25 @@ def _model_of(r) -> str:
     return config.model_type_for_league(canonical_name(r["league"]) or r["league"])
 
 
+#: drawn after the Gap word of a side tip tiered on the GLOBAL bar, explained in the footer
+GLOBAL_MARK = " *"
+GLOBAL_FOOTNOTE = "* tier on the GLOBAL bar (no approved per-league threshold)"
+
+
+def _threshold_source(v) -> str | None:
+    """The ledger's recorded threshold_source (fix9/defaults 2026-11-04): 'LEAGUE' / 'GLOBAL', or
+    None when the row does not record it (rows logged before 2026-11-04) - never guessed."""
+    if v is None or (isinstance(v, float) and v != v):
+        return None
+    s = str(v).strip().upper()
+    return s if s in (config.THRESHOLD_SOURCE_LEAGUE, config.THRESHOLD_SOURCE_GLOBAL) else None
+
+
+def gap_text(tier: str, threshold_source=None) -> str:
+    """The Gap cell: the tier's display word, marked when the tier came from the GLOBAL bar."""
+    return tier_label(tier) + (GLOBAL_MARK if threshold_source == config.THRESHOLD_SOURCE_GLOBAL else "")
+
+
 def todays_rows(today_str: str) -> pd.DataFrame:
     """One row per tip, best first: tier order, then edge."""
     return tips_rows(today_str, today_str)
@@ -110,6 +129,9 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
                         "odds": r.get("odds"), "edge": r.get("edge_pct"),
                         "drift": r.get("drift_signal"), "model_prob": None,
                         "generated_at": r.get("generated_at"),
+                        # O/U 2.5 is tiered by src/betting (its own per-league / global ladder),
+                        # not by the side-market bar: no threshold_source is recorded for it
+                        "threshold_source": None,
                         # the instant sender's dedup key (notifier.notify_new_snipers), so the
                         # morning album can mark what it showed and nothing is sent twice
                         "notify_key": f"{str(r['match_date'])[:10]}|{r['home_team']}|{r['away_team']}"
@@ -127,6 +149,7 @@ def tips_rows(date_from: str, date_to: str) -> pd.DataFrame:
                         "tier": r["signal_tier"], "market": label, "odds": r.get("odds"),
                         "edge": r.get("edge_pct"), "drift": None,
                         "model_prob": r.get("model_prob"), "generated_at": r.get("generated_at"),
+                        "threshold_source": _threshold_source(r.get("threshold_source")),
                         # notifier.notify_side_bets' dedup key (side suffix only when not YES/OVER)
                         "notify_key": (f"SIDE|{str(r['match_date'])[:10]}|{r['home_team']}|{r['away_team']}|{mk}"
                                        + (f"|{_sd}" if (_sd := str(r.get('side', '') or '')) and _sd != 'nan'
@@ -211,7 +234,7 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
             rt = r.get("rating")
             rating = "–" if rt is None or pd.isna(rt) else f"{int(rt)}/10"
             cells = [r["time"], r["league"], rating, f"{r['home_team']} v {r['away_team']}", model,
-                     tier_label(r["tier"]), r["market"], odds, edge]
+                     gap_text(r["tier"], r.get("threshold_source")), r["market"], odds, edge]
             x = pad
             for (name, w), val in zip(COLUMNS, cells):
                 font = f_head if name in ("Gap", "Edge", "Rating") else f_cell
@@ -222,7 +245,9 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
                 dr.text((x + 4, y + 8), _fit(dr, val, font, w - 8), font=font, fill=fill)
                 x += w
             y += row_h
-        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10 (10 best) · edge as recorded by v9 · paper leagues excluded",
+        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10 (10 best) · edge as recorded by v9 · paper leagues excluded"
+                + (" · " + GLOBAL_FOOTNOTE if "threshold_source" in page.columns
+                   and (page["threshold_source"] == config.THRESHOLD_SOURCE_GLOBAL).any() else ""),
                 font=f_foot, fill=(107, 114, 128))
         dr.text((pad, y + 26), GAP_EXPLAINER, font=f_foot, fill=(107, 114, 128))
         buf = io.BytesIO()

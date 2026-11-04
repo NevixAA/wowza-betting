@@ -83,13 +83,13 @@ def health_check(plan: pd.DataFrame, policy: dict) -> list[str]:
     2. Any tip whose odds are missing.
     3. Any O/U 2.5 tip routed to no side track (track ..._UNKNOWN_SIDE, owner split 2026-10-26).
     """
-    from src.bankroll_policy import REAL_STATES, UNKNOWN_SIDE, split_track
+    from src.bankroll_policy import REAL_STATES, UNKNOWN_SIDE, positive_fraction, split_track
     if plan is None or plan.empty:
         return []
     probs = []
     # market of a side-split track is its base market: new_format|OU25_OVER -> OU25
     active_markets = {split_track(k)[1] for k, v in (policy.get("tracks") or {}).items()
-                      if "|" in k and v.get("state") in REAL_STATES and float(v.get("base_fraction", 0) or 0) > 0}
+                      if "|" in k and v.get("state") in REAL_STATES and positive_fraction(v)}
     for m in sorted(active_markets):
         g = plan[plan["market"] == m]
         if len(g) and (g["deployment_state"] == "UNSUPPORTED").all():

@@ -214,15 +214,20 @@ def _team_strength_mult(team_win_prob: float, market: str) -> float:
 
 def _confidence_score(row: dict, lazy_factor_count: int = 0) -> float:
     """5-component confidence score (0.0-1.0)."""
-    n_games = row.get("n_games", 0)
+    # An unknown game count is left OUT like an unknown p_start (it was a typed 0 = "no games",
+    # which scored the volume part 0). fix9/defaults 2026-11-04.
+    _ng = pd.to_numeric(row.get("n_games"), errors="coerce")
+    n_games = None if pd.isna(_ng) else float(_ng)
 
     # MEASURED COMPONENTS ONLY (Data Truth audit finding 52, owner decision 2026-11-01). The score
     # used to add a literal recency 0.8 and model agreement 1.0 (+0.40 on every row) and a
     # p_start of 0.8 when absent - 45% of it was constant. Weights of the measured parts are kept
     # and renormalised; p_start counts only when it was actually computed.
-    vol_score = min(1.0, n_games / 20.0) * 0.70 + (min(n_games, 5) / 5.0) * 0.30
     lazy_score = min(lazy_factor_count / 2.0, 1.0)
-    parts = [(0.30, vol_score), (0.15, lazy_score)]
+    parts = [(0.15, lazy_score)]
+    if n_games is not None:
+        vol_score = min(1.0, n_games / 20.0) * 0.70 + (min(n_games, 5) / 5.0) * 0.30
+        parts.insert(0, (0.30, vol_score))
     p_start = row.get("p_start")
     if p_start is not None and p_start == p_start:
         parts.append((0.10, float(p_start)))
@@ -939,9 +944,11 @@ def run_player_predictions(
                 if p_model < config.MIN_SIGNAL_PROB:
                     continue
 
-                n_games = int(feat_row.get("n_games", 0))
-                if n_games < config.MIN_GAMES_SIGNAL:
+                # unknown game count -> no signal (it was a typed 0, the same skip, now said)
+                _ng = pd.to_numeric(feat_row.get("n_games"), errors="coerce")
+                if pd.isna(_ng) or int(_ng) < config.MIN_GAMES_SIGNAL:
                     continue
+                n_games = int(_ng)
 
                 # Fair odds (we don't have market odds yet — placeholder)
                 fair_o = round(1 / p_model, 2)

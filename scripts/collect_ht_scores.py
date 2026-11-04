@@ -65,6 +65,16 @@ the provider gives none) - the proof that a history score is 90' + extra time - 
 fixtures (AWD / WO) with their status: they are never matched for a half-time score (claims() takes
 FT/AET/PEN only) but scripts/build_history_corrections.py flags a history row proven to be one, since
 an awarded result is not a played score.
+
+STATUS RE-READ (fix9/defaults, owner 2026-11-04). The 120 league-season lists stored on 2026-11-02 were
+parsed before extra time / penalties / awarded fixtures were kept, so no awarded (AWD / WO) or
+abandoned (ABD) match could be detected in that history. --add-status re-reads each stored
+league-season list ONCE (journal output/collect/ht_status_seasons.parquet; resumable, budget-guarded by
+AFClient; about 120 calls - `--add-status --dry-run` prints the count) and stores score.extratime,
+score.penalty and the statuses AWD / WO / ABD. parse() now keeps ABD too; an abandoned fixture is,
+like an awarded one, never a source of a half-time or full-time score (claims() takes FT/AET/PEN only).
+--status-all-leagues extends the re-read to every other registry league-season of step 1's fixture
+lists (output/strength/competition_fixtures.parquet), so the whole history can be checked.
 """
 from __future__ import annotations
 
@@ -96,6 +106,13 @@ COMP_FIXTURES = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 FINISHED = {"FT", "AET", "PEN"}
 #: the provider's "technical loss" / "walk over": a result decided off the pitch, not a played score
 AWARDED = {"AWD", "WO"}
+#: abandoned and not resumed: whatever score stood when play stopped is not a played result
+ABANDONED = {"ABD"}
+#: kept by parse() beside the finished fixtures, never matched for a score
+NOT_PLAYED = AWARDED | ABANDONED
+STATUS_JOURNAL = COLLECT_DIR / "ht_status_seasons.parquet"
+STATUS_JOURNAL_COLS = ["league_id", "season", "league", "scope", "n_fixtures", "n_kept", "n_awarded",
+                       "n_abandoned", "n_extratime", "fetched_at"]
 SOURCE = "api-football /fixtures score.halftime"
 SCORE_COLS = ["fixture_id", "league", "league_id", "season", "date", "kickoff", "home_id", "home_name",
               "away_id", "away_name", "ht_home", "ht_away", "status", "ft_home", "ft_away", "ft_source",
@@ -181,14 +198,15 @@ def _pair_or_none(d: dict) -> tuple:
 
 def parse(body: dict, league: str, league_id: int, season: str) -> list[dict]:
     """Finished fixtures with the provider's half-time score (None when the provider gives none), and
-    awarded ones (AWD / WO) with their status. Extra time / penalties as the provider gives them."""
+    awarded (AWD / WO) and abandoned (ABD) ones with their status. Extra time / penalties as the
+    provider gives them."""
     rows = []
     for f in (body or {}).get("response") or []:
         fx, tm = f.get("fixture") or {}, f.get("teams") or {}
         score = f.get("score") or {}
         ht = score.get("halftime") or {}
         status = (fx.get("status") or {}).get("short")
-        if status not in FINISHED | AWARDED:
+        if status not in FINISHED | NOT_PLAYED:
             continue
         h, a = tm.get("home") or {}, tm.get("away") or {}
         ft = score.get("fulltime") or {}
@@ -440,6 +458,87 @@ def add_ft(client: AFClient | None = None, fetch: bool = False) -> dict:
     return out
 
 
+def status_plan(journal: pd.DataFrame, ft_journal: pd.DataFrame, status_journal: pd.DataFrame,
+                comp: pd.DataFrame | None = None, all_leagues: bool = False) -> list[dict]:
+    """League-season lists to re-read ONCE for extra time / penalties / AWD / WO / ABD: every stored
+    HT list (journal + FT journal; scope 'ht_lists') and, with all_leagues, every other registry
+    league-season of step 1's fixture lists (scope 'registry_leagues'), minus those already re-read
+    (status journal). One call each."""
+    done = set()
+    if not status_journal.empty:
+        done = {(int(r.league_id), str(r.season)) for r in status_journal.itertuples(index=False)}
+    out, seen = [], set()
+    for j in (journal, ft_journal):
+        if j is None or j.empty:
+            continue
+        for r in j.itertuples(index=False):
+            k = (int(r.league_id), str(r.season))
+            if k in done or k in seen:
+                continue
+            seen.add(k)
+            out.append({"league": r.league, "league_id": k[0], "season": k[1], "scope": "ht_lists"})
+    if all_leagues and comp is not None and not comp.empty:
+        c = comp[comp["league"].notna()]
+        if "competition_type" in c.columns:
+            c = c[c["competition_type"] == "club_league"]
+        for (lid, season, lg), _ in c.groupby(["league_id", "season", "league"]):
+            k = (int(lid), str(season))
+            if k in done or k in seen:
+                continue
+            seen.add(k)
+            out.append({"league": lg, "league_id": k[0], "season": k[1], "scope": "registry_leagues"})
+    return sorted(out, key=lambda x: (x["scope"] != "ht_lists", x["league"], x["season"]))
+
+
+def add_status(client: AFClient | None = None, fetch: bool = False, all_leagues: bool = False) -> dict:
+    """Re-read the stored league-season lists once (status_plan) and store every finished, awarded
+    and abandoned fixture with score.extratime / score.penalty and its status in af_ht_scores (the
+    NEW parse wins over the stored row of the same fixture id: same provider fields, plus the ones
+    the old parse dropped). Journaled per league-season, so a budget stop resumes. Returns counts."""
+    comp = None
+    if all_leagues and COMP_FIXTURES.exists():
+        comp = pd.read_parquet(COMP_FIXTURES, columns=["league_id", "league", "season", "competition_type"])
+    todo = status_plan(read_parquet(JOURNAL), read_parquet(FT_JOURNAL), read_parquet(STATUS_JOURNAL),
+                       comp, all_leagues)
+    from collections import Counter
+    by_scope = dict(Counter(t["scope"] for t in todo))
+    out = {"status_planned_calls": len(todo), "status_planned_by_scope": by_scope, "status_calls": 0,
+           "awarded_stored": 0, "abandoned_stored": 0}
+    print(f"[ht-status] {len(todo)} league-season list(s) to re-read once for extra time / penalties / "
+          f"AWD / WO / ABD = {len(todo)} API-Football call(s) {by_scope}"
+          + ("" if fetch else " - not fetched (dry run)"))
+    if not fetch or not todo:
+        return out
+    client = client or AFClient()
+    try:
+        for t in todo:
+            body = client.get("fixtures", {"league": t["league_id"], "season": t["season"]})
+            if body is None:
+                continue                                    # failed: nothing recorded, retried next run
+            out["status_calls"] += 1
+            rows = parse(body, t["league"], t["league_id"], t["season"])
+            if rows:
+                append_parquet(SCORES, rows, ["fixture_id"], SCORE_COLS)
+            n_awd = sum(r["status"] in AWARDED for r in rows)
+            n_abd = sum(r["status"] in ABANDONED for r in rows)
+            out["awarded_stored"] += n_awd
+            out["abandoned_stored"] += n_abd
+            append_parquet(STATUS_JOURNAL, [{"league_id": t["league_id"], "season": t["season"],
+                                             "league": t["league"], "scope": t["scope"],
+                                             "n_fixtures": len(body.get("response") or []),
+                                             "n_kept": len(rows), "n_awarded": n_awd, "n_abandoned": n_abd,
+                                             "n_extratime": sum(r["et_home"] is not None for r in rows),
+                                             "fetched_at": datetime.now(timezone.utc).isoformat()}],
+                           ["league_id", "season"], STATUS_JOURNAL_COLS)
+    except BudgetStop as e:
+        print(f"[ht-status] budget stop: {e} (resumable)")
+        out["status_budget_stop"] = str(e)
+    finally:
+        client.flush()
+    print(f"[ht-status] {json.dumps(out)}")
+    return out
+
+
 def run(dry_run: bool = False, match_only: bool = False, client: AFClient | None = None,
         history: pd.DataFrame | None = None, fetch_ft: bool = False) -> dict:
     """`fetch_ft` (--add-ft): also re-read the league-seasons whose stored fixtures still lack the
@@ -540,7 +639,15 @@ def main(argv=None) -> int:
     ap.add_argument("--add-ft", action="store_true",
                     help="re-read league-seasons whose stored fixtures lack score.fulltime "
                          "(about 120 calls at most, budget-guarded, resumable)")
+    ap.add_argument("--add-status", action="store_true",
+                    help="ONLY re-read each stored league-season list once for extra time, penalties and "
+                         "AWD / WO / ABD (about 120 calls, budget-guarded, resumable; with --dry-run: count)")
+    ap.add_argument("--status-all-leagues", action="store_true",
+                    help="with --add-status: also every other registry league-season of competition_fixtures")
     a = ap.parse_args(argv)
+    if a.add_status:
+        add_status(fetch=not a.dry_run, all_leagues=a.status_all_leagues)
+        return 0
     run(dry_run=a.dry_run, match_only=a.match_only, fetch_ft=a.add_ft)
     return 0
 

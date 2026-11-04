@@ -98,6 +98,21 @@ def _break_even(frame) -> float | None:
     return round(float(np.mean(1.0 / o[ok])), 4) if ok.any() else None
 
 
+def _settled_stats(t: pd.DataFrame) -> dict:
+    """n / P&L / ROI / hit over the rows with a RECORDED P/L only (fix9/defaults 2026-11-04).
+
+    This used pnl.fillna(0): a WIN/LOSS row whose P/L was not recorded yet counted as a 0.00u bet,
+    pulling ROI towards zero and inflating n. Now such a row is left out of every figure and counted
+    in `n_without_pnl`; `n` and `n_settled` are the rows the P/L, ROI and hit rate are computed on."""
+    pnl = pd.to_numeric(t.get("pnl"), errors="coerce") if len(t) else pd.Series(dtype=float)
+    ok = pnl.notna()
+    n = int(ok.sum())
+    return {"n": n, "n_settled": n, "n_without_pnl": int((~ok).sum()),
+            "pnl": U.total(pnl[ok]) if n else None,
+            "roi": round(U.total(pnl[ok]) / n, 4) if n else None,
+            "hit": round(float((t.loc[ok, "result"] == "WIN").mean()), 4) if n else None}
+
+
 def performance(days: int | None = None) -> dict:
     """P&L split by track and tier. NEVER one blended total across unrelated markets.
 
@@ -133,17 +148,11 @@ def performance(days: int | None = None) -> dict:
     for track, g in s.groupby(s.get("model_type", "unknown")):
         tiers = {}
         for tier, t in g.groupby(s.loc[g.index].get("signal_tier", "unknown")):
-            pnl = pd.to_numeric(t.get("pnl"), errors="coerce").fillna(0)
-            tiers[str(tier)] = {"n": int(len(t)), "pnl": U.total(pnl),
-                                "roi": round(U.total(pnl) / len(t), 4) if len(t) else None,
-                                "hit": round(float((t["result"] == "WIN").mean()), 4)}
-        pnl = pd.to_numeric(g.get("pnl"), errors="coerce").fillna(0)
+            tiers[str(tier)] = _settled_stats(t)
         staked = staked_all[staked_all.get("model_type", pd.Series("unknown", index=staked_all.index)) == track]
         spnl = pd.to_numeric(staked.get("pnl"), errors="coerce")
         out["by_track"][str(track)] = {
-            "n": int(len(g)), "pnl": U.total(pnl),
-            "roi": round(U.total(pnl) / len(g), 4) if len(g) else None,
-            "hit": round(float((g["result"] == "WIN").mean()), 4),
+            **_settled_stats(g),
             # BREAK-EVEN TRAVELS WITH THE HIT RATE. A 45% hit rate is excellent at 2.40 and a
             # disaster at 1.70, so a hit rate shown without the bar it has to clear invites
             # exactly the wrong read. mean(1/odds), never 1/mean(odds).
@@ -184,7 +193,13 @@ def by_league(days: int | None = 30, min_n: int = 5,
         s = s[s["generated_at"] >= pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=days)]
     if s.empty:
         return pd.DataFrame()
-    s["pnl"] = pd.to_numeric(s.get("pnl"), errors="coerce").fillna(0)
+    # SETTLED ROWS ONLY (fix9/defaults 2026-11-04): a WIN/LOSS row without a recorded P/L was
+    # pnl.fillna(0) - a 0.00u bet in the league's n, P/L and ROI. It is left out now, and n is the
+    # number of settled rows the figures are computed on.
+    s["pnl"] = pd.to_numeric(s.get("pnl"), errors="coerce")
+    s = s[s["pnl"].notna()].copy()
+    if s.empty:
+        return pd.DataFrame()
     s["_inv"] = 1.0 / pd.to_numeric(s.get("odds"), errors="coerce").where(
         lambda x: x > 1)
     g = s.groupby(["league", s.get("model_type", "unknown")]).agg(
