@@ -39,6 +39,38 @@ applies the lists in the loader and in the HT collector:
    national_cup_fixtures.parquet, national_cup_seasons.parquet (journal: a stored cup-season that has
    ended is never fetched again).
 
+fix8/history2 follow-ups (2026-11-04; the owner rules already decided: the provider's date decides
+duplicates, settlement is on the 90-minute score, corrections go beside the originals). All three
+use only stored provider data - no call - and one pool of provider fixtures: the HT store
+(af_ht_scores, FT completed from competition_fixtures) plus step 1's league fixture lists
+(output/strength/competition_fixtures.parquet), one row per fixture id.
+
+3. LOADER-MERGE DUPLICATES (appended to history_removed_duplicates.csv, found_by
+   'loader_merge_pair'). Rule 1 only saw rows lacking a half-time score. Now EVERY pair the loader's
+   own de-duplication merges (src.data_loader.identity_before_one_match + src.integrity.
+   duplicate_matches.duplicate_pairs, on fd_history + the backtest archive, after the other lists)
+   whose two rows are both history rows on different days goes through the same proof: both rows
+   claim the SAME provider fixture id (clubs resolved home->home / away->away), the same FT, one copy
+   on the provider date and the other one day off -> the off-date copy is removed. Anything else is a
+   conflict (listed, left to the loader). A same-day pair has no date to decide and is left to the
+   loader; a pair with an archive row is out of scope (a history correction never removes or keeps a
+   non-history row) - both counted. The audit counts how many survivors CHANGE versus the loader's
+   tie-break ("most populated, then earliest").
+4. 90-MINUTE SCORE -> output/corrections/history_score_90min.csv. Every history row (all leagues)
+   proven to be a provider fixture finished AET or PEN (claim as above, the fixture not claimed from
+   two dates) whose FT is not the provider's score.fulltime but >= it on both sides is served at the
+   90-minute score (original kept in the list). A history FT below the 90-minute score on a side is
+   not an extra-time score: refused (UNIDENTIFIABLE), listed in history_score_refused.csv. et_check
+   records whether the history FT equals 90' + score.extratime where the provider's extra time is
+   stored (it was not stored before fix8/history2: 'extratime_not_stored'); it is evidence, not a
+   gate - the fixture is proven by its clubs and date, and the 90-minute score is the provider's own.
+   The same list carries every FT-status disagreement (provider FT != history FT on a played
+   fixture): never corrected, reason 'ft_status_scores_differ' (UNIDENTIFIABLE - two sources, no
+   proof which is right).
+5. AWARDED -> output/corrections/history_awarded_results.csv: a history row proven to be a provider
+   fixture with status AWD / WO is excluded (not a played score). The stores held no AWD / WO
+   fixture before fix8/history2 (both collectors kept FT/AET/PEN only).
+
 Audit: output/corrections/history_corrections_audit.json. BUDGET: every call goes through
 collect_common.AFClient (job cap, account floor); MAX_CALLS per run on top. A budget stop is a clean,
 resumable exit: what is stored is used, the rest stays unproven (and in).
@@ -67,13 +99,23 @@ DUP_OUT = OUT_DIR / "history_removed_duplicates.csv"
 DUP_CONFLICTS = OUT_DIR / "history_duplicate_conflicts.csv"
 CUP_OUT = OUT_DIR / "history_excluded_cup_rows.csv"
 CUP_UNPROVEN = OUT_DIR / "history_cup_unproven_rows.csv"
+SCORE_OUT = OUT_DIR / "history_score_90min.csv"
+SCORE_REFUSED = OUT_DIR / "history_score_refused.csv"
+AWARDED_OUT = OUT_DIR / "history_awarded_results.csv"
 AUDIT = OUT_DIR / "history_corrections_audit.json"
+KEY = ["league", "date", "home_team", "away_team"]
+EXTRA_TIME = {"AET", "PEN"}
+SCORE_OUT_COLS = KEY + ["history_ft_home", "history_ft_away", "ft90_home", "ft90_away", "fixture_id",
+                        "provider_status", "provider_date", "provider_home", "provider_away", "et_home",
+                        "et_away", "pen_home", "pen_away", "match_rule", "et_check", "found_by"]
+SCORE_REFUSED_COLS = KEY + ["history_ft_home", "history_ft_away", "provider_ft_home", "provider_ft_away",
+                            "fixture_id", "provider_status", "provider_date", "provider_home",
+                            "provider_away", "reason", "verdict"]
 COMP_FIXTURES = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 CUPS = COLLECT_DIR / "national_cups.parquet"
 CUP_FIXTURES = COLLECT_DIR / "national_cup_fixtures.parquet"
 CUP_JOURNAL = COLLECT_DIR / "national_cup_seasons.parquet"
 MAX_CALLS = 40
-KEY = ["league", "date", "home_team", "away_team"]
 FINISHED = {"FT", "AET", "PEN"}
 CUPS_COLS = ["country", "league_id", "name", "type", "season", "start", "end", "fetched_at"]
 CUP_FX_COLS = ["fixture_id", "league_id", "cup_name", "country", "season", "date", "kickoff",
@@ -175,7 +217,10 @@ def duplicate_removals(history: pd.DataFrame, scores: pd.DataFrame) -> tuple[pd.
                             "removed_copy_is_local_date": (local == r.day) if local else None, **ev})
     rem = pd.DataFrame(removed)
     con = pd.DataFrame(conflicts)
+    if len(con):
+        con["found_by"] = "ht_claim_two_dates"
     if not rem.empty:
+        rem["found_by"] = "ht_claim_two_dates"
         # the FULL original rows (every column fd_history holds; a key the history repeats -> each copy)
         orig = history.copy()
         orig["date"] = orig["date"].dt.strftime("%Y-%m-%d")
@@ -194,6 +239,272 @@ def duplicate_removals(history: pd.DataFrame, scores: pd.DataFrame) -> tuple[pd.
                              "local_date_unknown": int(loc.isna().sum()),
                              "kept_copy_is_provider_utc_date": int(len(rem.drop_duplicates(KEY)))}
     return rem, con, stats
+
+
+# ---- provider pool and whole-history claims (fix8/history2) -------------------------------------
+
+def provider_pool(scores: pd.DataFrame | None = None, comp: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Every stored provider fixture of a registry league, one row per fixture id, in the HT store's
+    layout (H.SCORE_COLS): the HT store first (it carries kick-off, half-time, extra time), then step
+    1's league fixture lists for the fixtures the HT store lacks. Same provider fields, no call."""
+    sc = provider_scores() if scores is None else scores
+    comp = read_parquet(COMP_FIXTURES) if comp is None else comp
+    parts = []
+    if not sc.empty:
+        parts.append(sc.reindex(columns=H.SCORE_COLS))
+    if not comp.empty:
+        c = comp[comp["league"].notna()].copy()
+        c["kickoff"] = None
+        c["ft_source"] = H.FT_SRC_COMP
+        parts.append(c.reindex(columns=H.SCORE_COLS))
+    if not parts:
+        return pd.DataFrame(columns=H.SCORE_COLS)
+    pool = pd.concat(parts, ignore_index=True)
+    pool = pool.dropna(subset=["fixture_id"]).drop_duplicates("fixture_id", keep="first")
+    return pool.reset_index(drop=True)
+
+
+def _with_canon(history: pd.DataFrame) -> pd.DataFrame:
+    from src import league_registry as LR
+    h = history.copy()
+    h["date"] = pd.to_datetime(h["date"], errors="coerce")
+    h["canon"] = h["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
+    return h[h["canon"].notna() & h["date"].notna() & h["home_team"].notna() & h["away_team"].notna()]
+
+
+def near(history: pd.DataFrame, pool: pd.DataFrame, statuses: set) -> pd.DataFrame:
+    """History rows (with canon) within +-1 day of a pool fixture of their league whose status is in
+    `statuses` - the only rows that can claim one; keeps the whole-history claim cheap."""
+    p = pool[pool["status"].isin(statuses)]
+    if p.empty or history.empty:
+        return history.iloc[0:0]
+    d = pd.to_datetime(p["date"], errors="coerce").dt.normalize()
+    days = set()
+    for lg, dd in zip(p["league"], d):
+        for k in (-1, 0, 1):
+            days.add((lg, dd + pd.Timedelta(days=k)))
+    m = [(lg, dd) in days for lg, dd in zip(history["canon"], history["date"].dt.normalize())]
+    return history[m]
+
+
+def history_claims(rows: pd.DataFrame, pool: pd.DataFrame, statuses: set | None = None) -> pd.DataFrame:
+    """H.claims over history rows (any league), every fixture of `statuses` a candidate, no half-time
+    score required. History FT as hist_hg / hist_ag (itertuples renames '_' fields); adds `day`
+    (history date) and `pdate` (provider date)."""
+    cols = H.FILL_COLS + ["canon", "hist_hg", "hist_ag", "kickoff", "status", "provider_home",
+                          "provider_away", "et_home", "et_away", "pen_home", "pen_away", "day", "pdate"]
+    if rows.empty or pool.empty:
+        return pd.DataFrame(columns=cols)
+    c = H.claims(rows, pool, require_ht=False, statuses=statuses or (H.FINISHED | H.AWARDED))
+    c = c.rename(columns={"_canon": "canon", "_hg": "hist_hg", "_ag": "hist_ag"})
+    c["day"] = pd.to_datetime(c["date"]).dt.strftime("%Y-%m-%d")
+    c["pdate"] = c["af_date"].astype(str).str[:10]
+    return c[cols]
+
+
+# ---- 4. 90-minute score / 5. awarded results ----------------------------------------------------
+
+def score_corrections(history: pd.DataFrame, pool: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame,
+                                                                           pd.DataFrame, dict]:
+    """(90-minute corrections, refused rows, awarded rows, counts) over the WHOLE history (`history`
+    after the removal lists). See the module docstring, rules 4 and 5."""
+    h = _with_canon(history)
+    statuses = H.FINISHED | H.AWARDED
+    c = history_claims(h, pool, statuses)
+    st = {"history_rows_claimed": int(len(c))}
+    if c.empty:
+        return pd.DataFrame(columns=SCORE_OUT_COLS), pd.DataFrame(columns=SCORE_REFUSED_COLS), \
+            pd.DataFrame(), st
+    two = c.groupby("fixture_id")["day"].transform("nunique") > 1
+    st["claims_refused_fixture_claimed_from_two_dates"] = int(two.sum())
+    c = c[~two]
+    proven, refused, awarded = [], [], []
+    for r in c.itertuples(index=False):
+        hft, pft = _ft(r.hist_hg, r.hist_ag), _ft(r.provider_ft_home, r.provider_ft_away)
+        base = {"league": r.league, "date": r.day, "home_team": r.home_team, "away_team": r.away_team,
+                "fixture_id": int(r.fixture_id), "provider_status": r.status, "provider_date": r.pdate,
+                "provider_home": r.provider_home, "provider_away": r.provider_away}
+        if r.status in H.AWARDED:
+            awarded.append({**base, "home_goals": r.hist_hg, "away_goals": r.hist_ag,
+                            "provider_ft_home": pft[0] if pft else None,
+                            "provider_ft_away": pft[1] if pft else None, "match_rule": r.match_rule})
+            continue
+        if hft is None or pft is None or hft == pft:
+            continue
+        ref = {**base, "history_ft_home": hft[0], "history_ft_away": hft[1],
+               "provider_ft_home": pft[0], "provider_ft_away": pft[1], "verdict": "UNIDENTIFIABLE"}
+        if r.status not in EXTRA_TIME:
+            refused.append({**ref, "reason": "ft_status_scores_differ"})
+            continue
+        if hft[0] < pft[0] or hft[1] < pft[1]:
+            refused.append({**ref, "reason": "history_below_90min_score"})
+            continue
+        et = _ft(r.et_home, r.et_away)
+        et_check = ("extratime_not_stored" if et is None else "equals_90_plus_extratime"
+                    if hft == (pft[0] + et[0], pft[1] + et[1]) else "differs_from_90_plus_extratime")
+        pen = _ft(r.pen_home, r.pen_away)
+        proven.append({**base, "history_ft_home": hft[0], "history_ft_away": hft[1],
+                       "ft90_home": pft[0], "ft90_away": pft[1],
+                       "et_home": et[0] if et else None, "et_away": et[1] if et else None,
+                       "pen_home": pen[0] if pen else None, "pen_away": pen[1] if pen else None,
+                       "match_rule": r.match_rule, "et_check": et_check,
+                       "found_by": "provider_status_" + str(r.status)})
+    prov = pd.DataFrame(proven, columns=SCORE_OUT_COLS)
+    refd = pd.DataFrame(refused, columns=SCORE_REFUSED_COLS)
+    awd = pd.DataFrame(awarded)
+    xt = c[c["status"].isin(EXTRA_TIME)]
+    st.update({
+        "claims_of_aet_pen_fixtures": int(len(xt)),
+        "aet_pen_history_already_90min": int(sum(_ft(a, b) == _ft(x, y) and _ft(a, b) is not None
+                                                 for a, b, x, y in zip(xt["hist_hg"], xt["hist_ag"],
+                                                                       xt["provider_ft_home"], xt["provider_ft_away"]))),
+        "corrected_to_90min": int(len(prov)),
+        "corrected_by_league": {k: int(v) for k, v in prov["league"].value_counts().items()} if len(prov) else {},
+        "refused_by_reason": {k: int(v) for k, v in refd["reason"].value_counts().items()} if len(refd) else {},
+        "awarded_rows": int(len(awd)),
+        "pool_fixtures_by_status": {k: int(v) for k, v in pool["status"].value_counts().items()}})
+    return prov, refd, awd, st
+
+
+# ---- 3. every pair the loader merges -------------------------------------------------------------
+
+_HK = ["_hk_league", "_hk_date", "_hk_home", "_hk_away"]
+
+
+def loader_pairs(history: pd.DataFrame, corr: pd.DataFrame, scores: pd.DataFrame,
+                 archive: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """(the duplicate pairs the loader's one-match step merges today, the frame they index), on
+    fd_history (+ the backtest archive) after the lists `corr` / `scores`. Each row carries its
+    history key (_hk_*) and source; the frame also carries `_filled` (the loader's 'most populated'
+    count) for the survivor comparison."""
+    from src import data_loader as DL
+    from src.integrity.duplicate_matches import duplicate_pairs
+    h = history.copy()
+    h["date"] = pd.to_datetime(h["date"], errors="coerce")
+    h["_hk_league"], h["_hk_date"] = h["league"].astype(str), h["date"].dt.strftime("%Y-%m-%d")
+    h["_hk_home"], h["_hk_away"] = h["home_team"].astype(str), h["away_team"].astype(str)
+    parts = [h.assign(row_source="fd_cache")]
+    if archive is not None and len(archive):
+        parts.append(DL._drop_misfiled_league_rows(archive, "history-corrections:archive")
+                     .assign(row_source="backtest_archive"))
+    m = pd.concat(parts, ignore_index=True).sort_values("date", kind="mergesort").reset_index(drop=True)
+    x = DL.identity_before_one_match(m, corrections=corr, scores=scores)
+    # the loader's survivor rule counts populated cells WITHOUT these helper columns
+    x["_filled"] = x.drop(columns=_HK).notna().sum(axis=1)
+    return duplicate_pairs(x.drop(columns=["_filled"])), x
+
+
+def pair_removals(history: pd.DataFrame, pool: pd.DataFrame, corr: pd.DataFrame, scores: pd.DataFrame,
+                  archive: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
+    """(removed rows with evidence, conflicts, counts) for rule 3 of the module docstring."""
+    from src.history_corrections import HISTORY_SOURCES
+    from src.integrity.duplicate_matches import SOURCE_PRIORITY
+    pairs, x = loader_pairs(history, corr, scores, archive)
+    st = {"loader_pairs": int(len(pairs)),
+          "same_day_pairs_left_to_loader": int((pairs["gap_days"] == 0).sum()) if len(pairs) else 0}
+    if pairs.empty:
+        return pd.DataFrame(), pd.DataFrame(), st
+    src = x["row_source"]
+    both = pairs["i"].map(src).isin(HISTORY_SOURCES) & pairs["j"].map(src).isin(HISTORY_SOURCES)
+    st["pairs_with_a_non_history_row_out_of_scope"] = int((~both & (pairs["gap_days"] > 0)).sum())
+    pairs = pairs[both & (pairs["gap_days"] > 0)].reset_index(drop=True)
+    st["history_pairs_one_to_three_days_apart"] = int(len(pairs))
+    if pairs.empty:
+        return pd.DataFrame(), pd.DataFrame(), st
+    ix = sorted(set(pairs["i"]) | set(pairs["j"]))
+    rows = x.loc[ix, _HK].copy()
+    rows.columns = KEY
+    orig = history.copy()
+    orig["date"] = pd.to_datetime(orig["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    ft = orig.drop_duplicates(KEY).set_index(KEY)[["home_goals", "away_goals"]]
+    k = list(zip(rows["league"], rows["date"], rows["home_team"], rows["away_team"]))
+    rows["home_goals"] = [ft.loc[t, "home_goals"] if t in ft.index else None for t in k]
+    rows["away_goals"] = [ft.loc[t, "away_goals"] if t in ft.index else None for t in k]
+    cl = history_claims(_with_canon(rows.drop_duplicates(KEY)), pool, H.FINISHED)
+    by_key = {(r.league, r.day, r.home_team, r.away_team): r for r in cl.itertuples(index=False)}
+    reg = _registry()
+    prio = x["row_source"].map(SOURCE_PRIORITY).fillna(len(SOURCE_PRIORITY))
+    removed, conflicts = [], []
+    for p in pairs.itertuples(index=False):
+        ki = tuple(x.loc[p.i, _HK])
+        kj = tuple(x.loc[p.j, _HK])
+        ci, cj = by_key.get(ki), by_key.get(kj)
+        ev = {"loader_gap_days": int(p.gap_days)}
+        why = None
+        if ci is None or cj is None:
+            why = "a_copy_claims_no_provider_fixture"
+        elif ci.fixture_id != cj.fixture_id:
+            why = "copies_claim_different_fixtures"
+        else:
+            # round 7's proof: the copies' FT agree (the history-vs-provider FT is rule 4's business)
+            hi, hj = _ft(ci.hist_hg, ci.hist_ag), _ft(cj.hist_hg, cj.hist_ag)
+            pdate = ci.pdate
+            if hi is None or hi != hj:
+                why = "score_differs_between_copies"
+            elif abs((pd.Timestamp(ki[1]) - pd.Timestamp(kj[1])).days) != 1:
+                why = f"dates_{abs((pd.Timestamp(ki[1]) - pd.Timestamp(kj[1])).days)}_days_apart"
+            elif pdate not in (ki[1], kj[1]):
+                why = "no_copy_on_provider_date"
+            ev.update({"fixture_id": int(ci.fixture_id), "provider_date": pdate,
+                       "provider_kickoff_utc": ci.kickoff, "provider_home": ci.provider_home,
+                       "provider_away": ci.provider_away, "provider_ft_home": ci.provider_ft_home,
+                       "provider_ft_away": ci.provider_ft_away, "provider_status": ci.status})
+        if why:
+            for kk, rr in ((ki, ci), (kj, cj)):
+                conflicts.append({"league": kk[0], "date": kk[1], "home_team": kk[2], "away_team": kk[3],
+                                  "home_goals": rr.hist_hg if rr is not None else None,
+                                  "away_goals": rr.hist_ag if rr is not None else None,
+                                  "conflict": why, "found_by": "loader_merge_pair", **ev})
+            continue
+        keep_i = ki[1] == ev["provider_date"]
+        kept, gone, g_ix, k_ix = (ki, kj, p.j, p.i) if keep_i else (kj, ki, p.i, p.j)
+        # the loader's own survivor (src.integrity.duplicate_matches.dedupe_matches order)
+        order = sorted((p.i, p.j), key=lambda r: (prio[r], -x.at[r, "_filled"], x.at[r, "date"], str(r)))
+        tz = (reg.get(LR_canon(kept[0])) or {}).get("timezone")
+        removed.append({"league": gone[0], "date": gone[1], "home_team": gone[2], "away_team": gone[3],
+                        "kept_date": kept[1], "kept_home_team": kept[2], "kept_away_team": kept[3],
+                        "kept_rows": 1, "provider_timezone": tz,
+                        "provider_local_date": _local_date(str(ev["provider_kickoff_utc"]), tz),
+                        "loader_survivor_was": "kept_copy" if order[0] == k_ix else "removed_copy",
+                        "found_by": "loader_merge_pair", **ev})
+    rem, con = pd.DataFrame(removed), pd.DataFrame(conflicts)
+    st["pairs_proven"] = int(len(rem))
+    if len(rem):
+        rem = rem.drop_duplicates(KEY)
+        kept = set(zip(rem["league"], rem["kept_date"], rem["kept_home_team"], rem["kept_away_team"]))
+        clash = [k in kept for k in zip(rem["league"], rem["date"], rem["home_team"], rem["away_team"])]
+        if any(clash):              # a row kept by one pair and removed by another: not proven
+            bad = rem[clash]
+            st["removed_and_kept_clash"] = int(len(bad))
+            con = pd.concat([con, bad[KEY + ["fixture_id"]].assign(
+                conflict="row_kept_by_one_pair_removed_by_another", found_by="loader_merge_pair")],
+                ignore_index=True)
+            rem = rem[[not c for c in clash]]
+        o = history.copy()
+        o["date"] = pd.to_datetime(o["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        rem = rem.merge(o, on=KEY, how="left", validate="one_to_many")
+        lead = KEY + [c for c in history.columns if c not in KEY]
+        rem = rem[lead + [c for c in rem.columns if c not in lead]]
+    st.update({"removed_rows": int(len(rem)),
+               "removed_by_league": {k: int(v) for k, v in rem["league"].value_counts().items()} if len(rem) else {},
+               "survivor_changes_vs_loader_tiebreak": 0,
+               "conflict_rows": int(len(con)),
+               "conflicts_by_reason": {k: int(v) for k, v in con["conflict"].value_counts().items()} if len(con) else {}})
+    if len(rem):
+        st["survivor_changes_vs_loader_tiebreak"] = int((rem.drop_duplicates(KEY)["loader_survivor_was"]
+                                                         == "removed_copy").sum())
+    return rem, con, st
+
+
+def LR_canon(name):
+    from src import league_registry as LR
+    return LR.canonical_name(name) if isinstance(name, str) else None
+
+
+def load_archive() -> pd.DataFrame:
+    """The backtest archive exactly as the loader reads it (src.data_loader._load_backtest_archive)."""
+    from src import data_loader as DL
+    return DL._load_backtest_archive()
 
 
 # ---- 2. cup rows -------------------------------------------------------------------------------
@@ -422,10 +733,50 @@ def _write(df: pd.DataFrame, path: Path, cols: list[str]) -> None:
     (df if len(df) else pd.DataFrame(columns=cols)).to_csv(path, index=False)
 
 
+def _as_corrections(df: pd.DataFrame, kind: str) -> pd.DataFrame:
+    """A list frame in src.history_corrections.read_corrections' layout (in memory)."""
+    cols = KEY + ["home_goals", "away_goals", "correction", "kept_date", "kept_home_team", "kept_away_team"]
+    if df is None or df.empty:
+        return pd.DataFrame(columns=cols)
+    d = df.copy()
+    d["date"] = pd.to_datetime(d["date"]).dt.strftime("%Y-%m-%d")
+    d["correction"] = kind
+    return d.reindex(columns=cols)
+
+
+def _scores_frame(sc: pd.DataFrame) -> pd.DataFrame:
+    return sc[KEY + ["history_ft_home", "history_ft_away", "ft90_home", "ft90_away"]] if len(sc) else \
+        pd.DataFrame(columns=KEY + ["history_ft_home", "history_ft_away", "ft90_home", "ft90_away"])
+
+
+def follow_ups(history: pd.DataFrame, scores: pd.DataFrame, rem: pd.DataFrame, cups: pd.DataFrame,
+               archive: pd.DataFrame | None = None) -> dict:
+    """Rules 3-5 (fix8/history2). Two passes, because the loader applies the 90-minute list before
+    its one-match step and a proven duplicate removal decides which copy is corrected:
+      1. scores and awarded rows on the history after the round-7 lists;
+      2. the loader's pairs under those lists -> loader-merge duplicates;
+      3. scores and awarded rows again on the history after ALL removal lists (the final lists)."""
+    from src.history_corrections import apply_history_corrections
+    pool = provider_pool(scores)
+    base = pd.concat([_as_corrections(rem, "duplicate_removed"), _as_corrections(cups, "cup_excluded")],
+                     ignore_index=True)
+    none = _scores_frame(pd.DataFrame())
+    h1 = apply_history_corrections(history, corr=base, scores=none)
+    sc1, _, awd1, _ = score_corrections(h1, pool)
+    corr1 = pd.concat([base, _as_corrections(awd1, "awarded_excluded")], ignore_index=True)
+    prem, pcon, pst = pair_removals(history, pool, corr1, _scores_frame(sc1), archive)
+    corr2 = pd.concat([corr1, _as_corrections(prem, "duplicate_removed")], ignore_index=True)
+    h2 = apply_history_corrections(history, corr=corr2, scores=none)
+    sc, refused, awd, sst = score_corrections(h2, pool)
+    return {"pool": pool, "pair_removed": prem, "pair_conflicts": pcon, "pair_stats": pst,
+            "score": sc, "score_refused": refused, "awarded": awd, "score_stats": sst}
+
+
 def run(fetch: bool = False, dry_run: bool = False, client: AFClient | None = None) -> dict:
     history = load_history()
     audit: dict = {"history": HISTORY.relative_to(ROOT).as_posix(), "history_rows": int(len(history))}
-    rem, con, dst = duplicate_removals(history, provider_scores())
+    scores = provider_scores()
+    rem, con, dst = duplicate_removals(history, scores)
     audit["duplicates"] = dst
     cand = unplaced_rows(history, league_fixture_days())
     audit["cups"] = {"unplaced_rows": int(len(cand)),
@@ -444,11 +795,19 @@ def run(fetch: bool = False, dry_run: bool = False, client: AFClient | None = No
                                   proven.groupby(["league", "cup_name"]).size().items()} if len(proven) else {}),
         "unproven_by_reason": ({k: int(v) for k, v in unproven["reason"].value_counts().items()}
                                if len(unproven) else {})})
+    fu = follow_ups(history, scores, rem, proven, load_archive())
+    audit["loader_merge_duplicates"] = fu["pair_stats"]
+    audit["score_90min"] = fu["score_stats"]
+    rem = pd.concat([rem, fu["pair_removed"]], ignore_index=True) if len(fu["pair_removed"]) else rem
+    con = pd.concat([con, fu["pair_conflicts"]], ignore_index=True) if len(fu["pair_conflicts"]) else con
     hist_cols = list(history.columns)
-    _write(rem, DUP_OUT, hist_cols + ["kept_date", "kept_home_team", "kept_away_team", "fixture_id"])
-    _write(con, DUP_CONFLICTS, KEY + ["home_goals", "away_goals", "conflict", "fixture_id"])
+    _write(rem, DUP_OUT, hist_cols + ["kept_date", "kept_home_team", "kept_away_team", "fixture_id", "found_by"])
+    _write(con, DUP_CONFLICTS, KEY + ["home_goals", "away_goals", "conflict", "fixture_id", "found_by"])
     _write(proven, CUP_OUT, hist_cols + ["cup_league_id", "cup_name", "fixture_id"])
     _write(unproven, CUP_UNPROVEN, hist_cols + ["reason"])
+    _write(fu["score"], SCORE_OUT, SCORE_OUT_COLS)
+    _write(fu["score_refused"], SCORE_REFUSED, SCORE_REFUSED_COLS)
+    _write(fu["awarded"], AWARDED_OUT, KEY + ["home_goals", "away_goals", "fixture_id", "provider_status"])
     audit["written_at"] = datetime.now(timezone.utc).isoformat()
     AUDIT.write_text(json.dumps(audit, indent=1, sort_keys=True, default=str), encoding="utf-8")
     print(f"[history-corrections] {json.dumps({k: v for k, v in audit.items()}, default=str)[:2000]}")

@@ -18,6 +18,18 @@ COVERAGE (/leagues?id, ONE call per league, journaled in output/collect/af_leagu
   statistics, events, for the record). af_stats_coverage.parquet (round 6) stores only
   statistics_fixtures, so it cannot answer the injuries / lineups question; this file is separate so
   that the round-6 journal is never rewritten. A flag the provider does not give stays None.
+
+TRANSFER-WINDOW REFRESH (coaches, transfers; owner-approved cadence, fix8/history2 2026-11-04).
+  Until now a stored team was never asked again, so a coach sacked or a player signed after the first
+  answer never reached the store. Now every team is asked ONCE MORE after each transfer window
+  closes: the windows close about 2 September and 3 February for the European calendar; a
+  calendar-year league uses its own closes when its registry entry holds them
+  (`transfer_window_closes`: ["MM-DD", ...]), otherwise the same two dates (owner decision - not a
+  guess). A team in several leagues takes the latest close that has passed. A team is due when it
+  was never asked ('initial') or its latest answer predates that close (refresh_window = the close's
+  ISO date). The journal gains one row per (team, refresh_window) and the answers are only ever
+  ADDED (see collect_coaches / collect_transfers): about 1,645 calls per refresh, every one through
+  AFClient (budget-guarded, resumable - a budget stop leaves the rest due).
 """
 from __future__ import annotations
 
@@ -43,6 +55,9 @@ COVERAGE_FLAGS = {"injuries": ("injuries",), "lineups": ("fixtures", "lineups"),
                   "statistics_fixtures": ("fixtures", "statistics_fixtures"),
                   "statistics_players": ("fixtures", "statistics_players")}
 COVERAGE_COLS = ["league_id", "season", *COVERAGE_FLAGS, "fetched_at"]
+#: owner-approved transfer-window closes (month, day) of the European calendar, 2026-11-04
+WINDOW_CLOSES = ((9, 2), (2, 3))
+INITIAL = "initial"
 
 
 def now_iso() -> str:
@@ -95,6 +110,67 @@ def team_ids(fx: pd.DataFrame | None = None) -> list[int]:
     last = t.groupby("team_id")["date"].max().reset_index()
     last = last.sort_values(["date", "team_id"], ascending=[False, True], kind="mergesort")
     return [int(x) for x in last["team_id"]]
+
+
+def _league_closes() -> dict[int, tuple]:
+    """{api_football_id: ((month, day), ...)} for registry entries that hold their own
+    `transfer_window_closes`; every other league uses WINDOW_CLOSES."""
+    from src import league_registry as LR
+    out = {}
+    for e in LR.leagues():
+        raw, af = e.get("transfer_window_closes"), e.get("api_football_id")
+        if not raw or af is None:
+            continue
+        try:
+            out[int(af)] = tuple((int(s[:2]), int(s[3:5])) for s in raw)
+        except (TypeError, ValueError):
+            print(f"[refresh] {e.get('name')}: transfer_window_closes {raw!r} unreadable - the "
+                  f"European closes are used")
+    return out
+
+
+def last_close(closes, today) -> pd.Timestamp:
+    """The latest window close on or before `today` among (month, day) closes."""
+    today = pd.Timestamp(today).normalize()
+    cands = [pd.Timestamp(year=y, month=m, day=d) for y in (today.year, today.year - 1) for m, d in closes]
+    return max(c for c in cands if c <= today)
+
+
+def team_last_close(fx: pd.DataFrame | None = None, today=None,
+                    league_closes: dict | None = None) -> dict[int, pd.Timestamp]:
+    """{team_id: the latest passed window close of any league the team plays in}."""
+    fx = fixture_list() if fx is None else fx
+    today = pd.Timestamp.now(tz="UTC").tz_localize(None) if today is None else pd.Timestamp(today)
+    lc = _league_closes() if league_closes is None else league_closes
+    out: dict[int, pd.Timestamp] = {}
+    if fx.empty:
+        return out
+    t = pd.concat([fx[["home_id", "league_id"]].rename(columns={"home_id": "team_id"}),
+                   fx[["away_id", "league_id"]].rename(columns={"away_id": "team_id"})], ignore_index=True)
+    t = t.dropna().drop_duplicates()
+    for tid, lid in zip(t["team_id"].astype(int), t["league_id"].astype(int)):
+        c = last_close(lc.get(lid, WINDOW_CLOSES), today)
+        if tid not in out or c > out[tid]:
+            out[tid] = c
+    return out
+
+
+def refresh_todo(journal: Path, fx: pd.DataFrame | None = None, today=None,
+                 league_closes: dict | None = None) -> list[tuple[int, str]]:
+    """[(team_id, refresh_window)] due now, never-asked teams first, each part most recently active
+    first (team_ids order). See the module docstring."""
+    fx = fixture_list() if fx is None else fx
+    teams = team_ids(fx)
+    closes = team_last_close(fx, today, league_closes)
+    j = read_parquet(journal)
+    last = {}
+    if not j.empty:
+        t = pd.to_datetime(j["fetched_at"], errors="coerce", utc=True).dt.tz_localize(None)
+        last = pd.Series(t.to_numpy(), index=j["team_id"].astype(int)).groupby(level=0).max().to_dict()
+    initial = [(tid, INITIAL) for tid in teams if tid not in last]
+    due = [(tid, closes[tid].date().isoformat()) for tid in teams
+           if tid in last and tid in closes and (pd.isna(last[tid]) or last[tid] < closes[tid])]
+    return initial + due
 
 
 def done_keys(path: Path, cols: list[str]) -> set[tuple]:

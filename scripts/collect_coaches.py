@@ -9,16 +9,22 @@ CALLS. ONE /coachs?team per provider team id in output/strength/competition_fixt
 by the provider.
 
 OUTPUT (output/collect/ only)
-  coaches_teams.parquet   the journal: team_id, n_coaches (0 = the provider's real empty answer,
-        never asked again), fetched_at.
+  coaches_teams.parquet   the journal: team_id, n_coaches (0 = the provider's real empty answer),
+        fetched_at, refresh_window ('initial', or the transfer-window close that made the team due).
+        One row per (team_id, refresh_window); a row written before fix8/history2 has none.
   coach_careers.parquet   one row per career entry of every coach returned: coach_id, coach_name,
         team_id (the career entry's club - a coach's career covers other clubs too, all kept),
         start, end (ISO dates as the provider gives them; a current post has end None), fetched_at.
-        De-duplicated on (coach_id, team_id, start): the same career is returned by every club the
-        coach worked for. A career entry without a team id or a start cannot be placed: not stored,
-        counted.
-Collection only: no model feature reads these yet (they come with the Phase 2 retrain). A stored team
-is not asked again; refreshing current posts later is an owner decision.
+        De-duplicated on the WHOLE answer (coach_id, coach_name, team_id, start, end), first seen
+        kept: the same career is returned by every club the coach worked for, and a refresh that
+        answers the same adds nothing. A changed answer (a current post that has now ended) is a NEW
+        row; the previous answer stays (never deleted) - the latest fetched_at per (coach_id,
+        team_id, start) is the newest answer. A career entry without a team id or a start cannot be
+        placed: not stored, counted.
+REFRESH (owner-approved cadence 2026-11-04, collect_af_lists.refresh_todo): every team is asked once
+more after each transfer-window close (2 September / 3 February, or the league's own closes in the
+registry). About 1,645 calls per refresh, budget-guarded.
+Collection only: no model feature reads these yet (they come with the Phase 2 retrain).
 """
 from __future__ import annotations
 
@@ -40,8 +46,9 @@ from collect_common import (COLLECT_DIR, FLUSH_EVERY, AFClient, BudgetStop,  # n
 
 JOURNAL = COLLECT_DIR / "coaches_teams.parquet"
 CAREERS = COLLECT_DIR / "coach_careers.parquet"
-J_COLS = ["team_id", "n_coaches", "fetched_at"]
+J_COLS = ["team_id", "n_coaches", "fetched_at", "refresh_window"]
 C_COLS = ["coach_id", "coach_name", "team_id", "start", "end", "fetched_at"]
+C_KEY = ["coach_id", "coach_name", "team_id", "start", "end"]
 
 
 def parse(body: dict | None) -> tuple[int, list[dict], int]:
@@ -61,22 +68,24 @@ def parse(body: dict | None) -> tuple[int, list[dict], int]:
     return len(resp), rows, unplaceable
 
 
-def todo_teams(fx: pd.DataFrame | None = None) -> list[int]:
-    done = AL.done_keys(JOURNAL, ["team_id"])
-    return [t for t in AL.team_ids(fx) if (str(t),) not in done]
+def todo_teams(fx: pd.DataFrame | None = None, today=None) -> list[tuple[int, str]]:
+    """[(team_id, refresh_window)] due now (collect_af_lists.refresh_todo)."""
+    return AL.refresh_todo(JOURNAL, fx, today)
 
 
 def _flush(cb, jb):
     if cb:                                     # journal last: it decides what is asked again
-        append_parquet(CAREERS, cb, ["coach_id", "team_id", "start"], C_COLS)
+        append_parquet(CAREERS, cb, C_KEY, C_COLS, keep="first")
     if jb:
-        append_parquet(JOURNAL, jb, ["team_id"], J_COLS)
+        append_parquet(JOURNAL, jb, ["team_id", "refresh_window"], J_COLS)
 
 
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None,
-        fx: pd.DataFrame | None = None) -> dict:
-    todo = todo_teams(fx)
-    stats = {"teams_in_fixture_lists": len(AL.team_ids(fx)), "planned_calls": len(todo), "calls": 0,
+        fx: pd.DataFrame | None = None, today=None) -> dict:
+    todo = todo_teams(fx, today)
+    stats = {"teams_in_fixture_lists": len(AL.team_ids(fx)), "planned_calls": len(todo),
+             "planned_initial": sum(w == AL.INITIAL for _, w in todo),
+             "planned_refresh": sum(w != AL.INITIAL for _, w in todo), "calls": 0,
              "career_rows": 0, "unplaceable_career_entries": 0}
     print(f"[coaches] {json.dumps(stats)}")
     if dry_run:
@@ -84,7 +93,7 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
     client = client or AFClient()
     cb, jb = [], []
     try:
-        for tid in todo[: limit or None]:
+        for tid, window in todo[: limit or None]:
             body = client.get("coachs", {"team": int(tid)})
             if body is None:
                 continue                                   # failed: nothing recorded, asked next run
@@ -93,7 +102,8 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
             cb.extend(rows)
             stats["career_rows"] += len(rows)
             stats["unplaceable_career_entries"] += bad
-            jb.append({"team_id": int(tid), "n_coaches": n, "fetched_at": AL.now_iso()})
+            jb.append({"team_id": int(tid), "n_coaches": n, "fetched_at": AL.now_iso(),
+                       "refresh_window": window})
             if len(jb) >= FLUSH_EVERY:
                 _flush(cb, jb)
                 cb, jb = [], []

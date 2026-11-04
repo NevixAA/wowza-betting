@@ -53,6 +53,18 @@ history_removed_duplicates.csv (the same match filed twice one day apart) and
 history_excluded_cup_rows.csv (proven domestic-cup fixtures filed under the league) are not matched:
 they are not league matches of the history the loader serves (src/history_corrections.py). Without
 this the surviving copy of a duplicate kept being refused as "claimed by two dates".
+
+90-MINUTE SCORE (owner rule "settlement is on the 90-minute score", fix8/history2 2026-11-04). The
+FT check above refused 4 fill rows of knockout / play-off matches (Romania 2023-05-26 and 06-01,
+Liga MX 2023-05-29, MLS Cup 2022-11-05) because the history holds the after-extra-time score. The
+history score of a proven AET/PEN fixture is corrected BESIDE the history
+(output/corrections/history_score_90min.csv, built by scripts/build_history_corrections.py) and
+lacking_rows() reads the corrected score, so those rows now pass the FT check against the provider's
+score.fulltime. parse() now also keeps score.extratime / score.penalty (et_* / pen_*; missing when
+the provider gives none) - the proof that a history score is 90' + extra time - and keeps AWARDED
+fixtures (AWD / WO) with their status: they are never matched for a half-time score (claims() takes
+FT/AET/PEN only) but scripts/build_history_corrections.py flags a history row proven to be one, since
+an awarded result is not a played score.
 """
 from __future__ import annotations
 
@@ -82,9 +94,12 @@ FT_MISMATCH = COLLECT_DIR / "ht_fill_ft_mismatch.csv"
 #: step 1's league fixture lists (scripts/collect_competition_fixtures.py): score.fulltime by fixture id
 COMP_FIXTURES = ROOT / "output" / "strength" / "competition_fixtures.parquet"
 FINISHED = {"FT", "AET", "PEN"}
+#: the provider's "technical loss" / "walk over": a result decided off the pitch, not a played score
+AWARDED = {"AWD", "WO"}
 SOURCE = "api-football /fixtures score.halftime"
 SCORE_COLS = ["fixture_id", "league", "league_id", "season", "date", "kickoff", "home_id", "home_name",
-              "away_id", "away_name", "ht_home", "ht_away", "status", "ft_home", "ft_away", "ft_source"]
+              "away_id", "away_name", "ht_home", "ht_away", "status", "ft_home", "ft_away", "ft_source",
+              "et_home", "et_away", "pen_home", "pen_away"]
 FILL_COLS = ["league", "date", "home_team", "away_team", "HTHG", "HTAG", "fixture_id", "af_date",
              "match_rule", "source", "matched_at", "provider_ft_home", "provider_ft_away", "ft_check"]
 JOURNAL_COLS = ["league_id", "season", "league", "n_fixtures", "n_finished", "n_with_ht", "fetched_at"]
@@ -158,18 +173,28 @@ def _int_or_none(v):
         return None
 
 
+def _pair_or_none(d: dict) -> tuple:
+    """(home, away) of a provider score block; (None, None) unless BOTH sides are given."""
+    h, a = _int_or_none((d or {}).get("home")), _int_or_none((d or {}).get("away"))
+    return (h, a) if h is not None and a is not None else (None, None)
+
+
 def parse(body: dict, league: str, league_id: int, season: str) -> list[dict]:
-    """Finished fixtures with the provider's half-time score (None when the provider gives none)."""
+    """Finished fixtures with the provider's half-time score (None when the provider gives none), and
+    awarded ones (AWD / WO) with their status. Extra time / penalties as the provider gives them."""
     rows = []
     for f in (body or {}).get("response") or []:
         fx, tm = f.get("fixture") or {}, f.get("teams") or {}
-        ht = (f.get("score") or {}).get("halftime") or {}
+        score = f.get("score") or {}
+        ht = score.get("halftime") or {}
         status = (fx.get("status") or {}).get("short")
-        if status not in FINISHED:
+        if status not in FINISHED | AWARDED:
             continue
         h, a = tm.get("home") or {}, tm.get("away") or {}
-        ft = (f.get("score") or {}).get("fulltime") or {}
+        ft = score.get("fulltime") or {}
         ft_h, ft_a = _int_or_none(ft.get("home")), _int_or_none(ft.get("away"))
+        et_h, et_a = _pair_or_none(score.get("extratime"))
+        pen_h, pen_a = _pair_or_none(score.get("penalty"))
         ko = str(fx.get("date") or "")
         rows.append({"fixture_id": _int_or_none(fx.get("id")), "league": league, "league_id": league_id,
                      "season": season, "date": ko[:10], "kickoff": ko,
@@ -178,7 +203,8 @@ def parse(body: dict, league: str, league_id: int, season: str) -> list[dict]:
                      "ht_home": _int_or_none(ht.get("home")), "ht_away": _int_or_none(ht.get("away")),
                      "status": status, "ft_home": ft_h, "ft_away": ft_a,
                      # a half-given FT is no FT: both sides or neither (never one side + a missing 0)
-                     "ft_source": FT_SRC_FETCH if ft_h is not None and ft_a is not None else None})
+                     "ft_source": FT_SRC_FETCH if ft_h is not None and ft_a is not None else None,
+                     "et_home": et_h, "et_away": et_a, "pen_home": pen_h, "pen_away": pen_a})
         if rows[-1]["ft_source"] is None:
             rows[-1]["ft_home"] = rows[-1]["ft_away"] = None
     return [r for r in rows if r["fixture_id"] is not None]
@@ -229,7 +255,9 @@ def ft_plan(scores: pd.DataFrame, ft_journal: pd.DataFrame) -> list[dict]:
     completion, minus those already re-read (journal): one call each."""
     if scores.empty:
         return []
-    lack = scores[scores["ft_home"].isna() | scores["ft_away"].isna()]
+    # an awarded fixture (AWD / WO) often has no score.fulltime at all: it is no reason to re-read
+    fin = scores["status"].isin(FINISHED) if "status" in scores.columns else pd.Series(True, index=scores.index)
+    lack = scores[fin & (scores["ft_home"].isna() | scores["ft_away"].isna())]
     done = set()
     if not ft_journal.empty:
         done = {(int(r.league_id), str(r.season)) for r in ft_journal.itertuples(index=False)}
@@ -245,20 +273,27 @@ def _resolve(name, candidates):
     return resolve_result(str(name), [str(c) for c in candidates]) if candidates else None
 
 
-def claims(lacking: pd.DataFrame, scores: pd.DataFrame, stats: dict | None = None) -> pd.DataFrame:
+def claims(lacking: pd.DataFrame, scores: pd.DataFrame, stats: dict | None = None,
+           require_ht: bool = True, statuses: set | None = None) -> pd.DataFrame:
     """Every history row's ONE candidate fixture (same league, clubs proven home->home and
     away->away, same day else adjacent day), BEFORE the two-dates refusal and the FT check. Also the
     input of scripts/build_history_corrections.py, which proves duplicate history rows from these
     claims. Columns: FILL_COLS (FT check not yet applied) + _canon, _hg, _ag (history FT), kickoff,
-    status, provider_home, provider_away."""
+    status, provider_home, provider_away, et_home, et_away, pen_home, pen_away.
+    `require_ht` False (the history corrections builder): every fixture of `statuses` (default
+    FINISHED) is a candidate, HTHG / HTAG missing where the provider gives none."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     if stats is None:
         stats = defaultdict(lambda: defaultdict(int))
-    cols = FILL_COLS + ["_canon", "_hg", "_ag", "kickoff", "status", "provider_home", "provider_away"]
-    sc = scores.dropna(subset=["ht_home", "ht_away"]).copy()
-    for c in ("ft_home", "ft_away", "kickoff", "status"):
+    extra = ["et_home", "et_away", "pen_home", "pen_away"]
+    cols = FILL_COLS + ["_canon", "_hg", "_ag", "kickoff", "status", "provider_home", "provider_away"] + extra
+    sc = scores.dropna(subset=["ht_home", "ht_away"]).copy() if require_ht else scores.copy()
+    for c in ["ft_home", "ft_away", "kickoff", "status", "ht_home", "ht_away"] + extra:
         if c not in sc.columns:
             sc[c] = None
+    if "status" in scores.columns:
+        # an awarded fixture (AWD / WO) is no played match: never a source of a half-time score
+        sc = sc[sc["status"].isin(statuses or FINISHED)]
     sc["_d"] = pd.to_datetime(sc["date"], errors="coerce").dt.normalize()
     by_day = {k: g for k, g in sc.groupby(["league", "_d"])}
     # The history repeats some matches row for row (e.g. one season under two labels); a repeat is
@@ -296,8 +331,10 @@ def claims(lacking: pd.DataFrame, scores: pd.DataFrame, stats: dict | None = Non
             continue
         f = found.iloc[0]
         pft = _ft_pair(f["ft_home"], f["ft_away"])
+        pht = _ft_pair(f["ht_home"], f["ht_away"])
         picks.append({"league": r.league, "date": r.date, "home_team": r.home_team,
-                      "away_team": r.away_team, "HTHG": int(f["ht_home"]), "HTAG": int(f["ht_away"]),
+                      "away_team": r.away_team, "HTHG": pht[0] if pht else None,
+                      "HTAG": pht[1] if pht else None,
                       "fixture_id": int(f["fixture_id"]), "af_date": f["date"], "match_rule": rule,
                       "source": SOURCE, "matched_at": now,
                       "provider_ft_home": pft[0] if pft else None,
@@ -305,7 +342,8 @@ def claims(lacking: pd.DataFrame, scores: pd.DataFrame, stats: dict | None = Non
                       "_canon": r.canon, "_hg": getattr(r, "home_goals", None),
                       "_ag": getattr(r, "away_goals", None), "kickoff": f["kickoff"],
                       "status": f["status"], "provider_home": f["home_name"],
-                      "provider_away": f["away_name"]})
+                      "provider_away": f["away_name"],
+                      **{c: _int_or_none(f[c]) if pd.notna(f[c]) else None for c in extra}})
     return pd.DataFrame(picks, columns=cols)
 
 
@@ -389,7 +427,8 @@ def add_ft(client: AFClient | None = None, fetch: bool = False) -> dict:
             if rows:
                 append_parquet(SCORES, rows, ["fixture_id"], SCORE_COLS)
             append_parquet(FT_JOURNAL, [{"league_id": t["league_id"], "season": t["season"],
-                                         "league": t["league"], "n_finished": len(rows),
+                                         "league": t["league"],
+                                         "n_finished": sum(r["status"] in FINISHED for r in rows),
                                          "n_with_ft": sum(r["ft_home"] is not None for r in rows),
                                          "fetched_at": datetime.now(timezone.utc).isoformat()}],
                            ["league_id", "season"], FT_JOURNAL_COLS)
@@ -428,7 +467,7 @@ def run(dry_run: bool = False, match_only: bool = False, client: AFClient | None
                 append_parquet(JOURNAL, [{"league_id": t["league_id"], "season": t["season"],
                                           "league": t["league"],
                                           "n_fixtures": len(body.get("response") or []),
-                                          "n_finished": len(rows),
+                                          "n_finished": sum(r["status"] in FINISHED for r in rows),
                                           "n_with_ht": sum(r["ht_home"] is not None for r in rows),
                                           "fetched_at": datetime.now(timezone.utc).isoformat()}],
                                ["league_id", "season"], JOURNAL_COLS)

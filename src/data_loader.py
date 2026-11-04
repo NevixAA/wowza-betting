@@ -633,12 +633,15 @@ def _one_match_one_row(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def _apply_history_corrections(df: pd.DataFrame) -> pd.DataFrame:
+def _apply_history_corrections(df: pd.DataFrame, corrections: pd.DataFrame | None = None,
+                               scores: pd.DataFrame | None = None) -> pd.DataFrame:
     """src.history_corrections.apply_history_corrections, never fatal: an unreadable list logs an
-    error and the history is served uncorrected (the data-truth checks still see the duplicates)."""
+    error and the history is served uncorrected (the data-truth checks still see the duplicates).
+    `corrections` / `scores` override the committed lists (scripts/build_history_corrections.py
+    measures the loader's merge under the lists it is building)."""
     try:
         from src.history_corrections import apply_history_corrections
-        return apply_history_corrections(df, tag="history-corrections")
+        return apply_history_corrections(df, corr=corrections, scores=scores, tag="history-corrections")
     except Exception as e:                                             # noqa: BLE001
         log.error(f"[history-corrections] NOT applied ({type(e).__name__}: {e})")
         return df
@@ -654,11 +657,19 @@ def one_club_one_match(out: pd.DataFrame) -> pd.DataFrame:
     rows filed under a league are excluded ("cups are not in Wowza tips"), and the proven second copy
     of a match filed one day apart is removed (the provider's fixture date decides which copy stays).
     They run on the history's OWN key and spelling, so before any club is renamed."""
-    out = _apply_history_corrections(out)
+    return _one_match_one_row(identity_before_one_match(out))
+
+
+def identity_before_one_match(out: pd.DataFrame, corrections: pd.DataFrame | None = None,
+                              scores: pd.DataFrame | None = None) -> pd.DataFrame:
+    """one_club_one_match up to (not including) the last one-match de-duplication: the frame whose
+    duplicate pairs (src.integrity.duplicate_matches.duplicate_pairs) are exactly what the loader
+    merges. scripts/build_history_corrections.py proves the provider date of those pairs
+    (fix8/history2, 2026-11-04); `corrections` / `scores` override the committed lists."""
+    out = _apply_history_corrections(out, corrections, scores)
     out = _repair_club_text(out)
     out = _canonicalise_clubs(out)
-    out = _canonical_identity_and_seasons(out)
-    return _one_match_one_row(out)
+    return _canonical_identity_and_seasons(out)
 
 
 def _impossible_stats_to_missing(df: pd.DataFrame) -> pd.DataFrame:
