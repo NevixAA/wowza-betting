@@ -1,7 +1,7 @@
 {
   "artifact": "join_integrity_health",
   "helper_version": "safe_left_enrich-1.0",
-  "generated_at": "2026-11-03T16:22:47Z",
+  "generated_at": "2026-11-04T16:27:22Z",
   "status": "FAIL",
   "joins": {
     "af_history_shots.legacy": {
@@ -14,7 +14,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83244,
-      "right_rows": 91701,
+      "right_rows": 91704,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -106,7 +106,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83244,
-      "right_rows": 17292,
+      "right_rows": 17400,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -136,7 +136,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83244,
-      "right_rows": 32658,
+      "right_rows": 32880,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -170,7 +170,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83244,
-      "right_rows": 91701,
+      "right_rows": 91704,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -201,7 +201,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83244,
-      "right_rows": 91701,
+      "right_rows": 91704,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 5972,
       "right_duplicate_rows": 12139,
@@ -315,7 +315,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83244,
-      "right_rows": 17292,
+      "right_rows": 17400,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -346,7 +346,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83244,
-      "right_rows": 7610,
+      "right_rows": 7622,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -378,7 +378,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "legacy_audit",
       "left_rows": 83244,
-      "right_rows": 32658,
+      "right_rows": 32880,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -409,7 +409,7 @@
       "helper_version": "safe_left_enrich-1.0",
       "mode": "safe",
       "left_rows": 83244,
-      "right_rows": 6363,
+      "right_rows": 6383,
       "right_null_key_rows": 0,
       "right_duplicate_key_groups": 0,
       "right_duplicate_rows": 0,
@@ -671,10 +671,10 @@
     }
   ],
   "serving_replay": {
-    "board_fixtures": 166,
+    "board_fixtures": 151,
     "recipe": "v9_repaired",
-    "tips_legacy": 44,
-    "tips_safe": 44,
+    "tips_legacy": 34,
+    "tips_safe": 36,
     "tips_only_legacy": [
       [
         "Argentina Primera Division",
@@ -685,6 +685,14 @@
         "MARKSMAN"
       ],
       [
+        "Argentina Primera Division",
+        "Boca Juniors",
+        "Defensa y Justicia",
+        "OU25",
+        "UNDER",
+        "VALUABLE"
+      ],
+      [
         "Brazil Serie A",
         "Palmeiras",
         "Remo",
@@ -693,75 +701,11 @@
         "SNIPER"
       ],
       [
-        "Championship",
-        "Blackburn Rovers",
-        "Stoke City",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "Championship",
-        "Portsmouth",
-        "Swansea City",
-        "btts",
-        "YES",
-        "MARKSMAN"
-      ],
-      [
-        "China Super League",
-        "Qingdao Hainiu FC",
-        "Shenzhen Peng City FC",
+        "Japan J-League",
+        "Avispa Fukuoka",
+        "V-Varen Nagasaki",
         "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Finland Veikkausliiga",
-        "KuPS Kuopio",
-        "FC Inter Turku",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Atlante FC",
-        "Santos Laguna",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Mexico Liga MX",
-        "Necaxa",
-        "Tijuana",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "Halmstads BK",
-        "Djurgardens IF",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "Hammarby IF",
-        "IF Elfsborg",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "IK Sirius",
-        "Halmstads BK",
-        "OU25",
-        "UNDER",
+        "OVER",
         "VALUABLE"
       ]
     ],
@@ -775,11 +719,11 @@
         "VALUABLE"
       ],
       [
-        "Brazil Serie A",
-        "Botafogo",
-        "Atletico Mineiro",
+        "Argentina Primera Division",
+        "Talleres",
+        "Estudiantes",
         "OU25",
-        "UNDER",
+        "OVER",
         "VALUABLE"
       ],
       [
@@ -791,35 +735,11 @@
         "VALUABLE"
       ],
       [
-        "Championship",
-        "Portsmouth",
-        "Swansea City",
-        "btts",
-        "YES",
-        "VALUABLE"
-      ],
-      [
-        "China Super League",
-        "Qingdao Hainiu FC",
-        "Shenzhen Peng City FC",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
         "Denmark Superliga",
         "FC Copenhagen",
         "Brondby IF",
         "OU25",
         "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "League Two",
-        "Northampton Town",
-        "Oldham Athletic",
-        "over15",
-        "OVER",
         "VALUABLE"
       ],
       [
@@ -831,22 +751,6 @@
         "VALUABLE"
       ],
       [
-        "Norway Eliteserien",
-        "Kristiansund BK",
-        "V\u00e5lerenga",
-        "OU25",
-        "UNDER",
-        "VALUABLE"
-      ],
-      [
-        "Sweden Allsvenskan",
-        "Halmstads BK",
-        "Djurgardens IF",
-        "OU25",
-        "UNDER",
-        "SNIPER"
-      ],
-      [
         "Sweden Allsvenskan",
         "IFK Goteborg",
         "Malmo FF",
@@ -856,21 +760,21 @@
       ]
     ],
     "features_changed": {
-      "away_corners_pg_roll": 63,
-      "away_fouls_pg_roll": 63,
-      "away_insidebox_last5": 158,
-      "away_xg_last5": 159,
-      "combined_sot_ratio": 90,
-      "home_corners_pg_roll": 59,
-      "home_fouls_pg_roll": 59,
-      "home_insidebox_last5": 157,
-      "home_xg_last5": 161,
-      "p_over25": 97,
-      "p_btts": 166,
-      "p_over15": 166,
-      "p_over35": 166,
-      "p_ht_over05": 67,
-      "p_ht_over15": 67
+      "away_corners_pg_roll": 59,
+      "away_fouls_pg_roll": 59,
+      "away_insidebox_last5": 143,
+      "away_xg_last5": 144,
+      "combined_sot_ratio": 87,
+      "home_corners_pg_roll": 56,
+      "home_fouls_pg_roll": 56,
+      "home_insidebox_last5": 144,
+      "home_xg_last5": 148,
+      "p_over25": 94,
+      "p_btts": 151,
+      "p_over15": 151,
+      "p_over35": 151,
+      "p_ht_over05": 55,
+      "p_ht_over15": 55
     }
   }
 }
