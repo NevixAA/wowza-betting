@@ -17,8 +17,10 @@ import pandas as pd
 
 from src import data_loader as DL
 
-LG = "Brazil Serie A"
-OLD, NEW = "Atletico Paranaense", "Athletico-PR"
+LG = "China Super League"
+# Fix round 9 (2026-11-04) put Atletico Paranaense / Athletico-PR in the alias store (resolve() proves it
+# now); a pair the loader still derives by same-day evidence only keeps this test on the alias map.
+OLD, NEW = "Chengdu Better City", "Chengdu Rongcheng"
 
 
 def _r(d, h, a, hg, ag, hth=np.nan, hta=np.nan, lg=LG):
@@ -31,10 +33,10 @@ def _history():
     """Three same-day same-score copies under both spellings (the evidence), a later match under
     the NEW spelling (newest wins), and one match only under the OLD spelling without HT."""
     rows = []
-    for d, opp in (("2024-04-14", "Santos"), ("2024-05-05", "Gremio"), ("2024-06-02", "Bahia")):
+    for d, opp in (("2024-04-14", "Shandong Taishan"), ("2024-05-05", "Beijing Guoan"), ("2024-06-02", "Wuhan Three Towns")):
         rows += [_r(d, OLD, opp, 1, 0, 1.0, 0.0), _r(d, NEW, opp, 1, 0, 1.0, 0.0)]
-    rows.append(_r("2024-07-07", "Fortaleza", OLD, 2, 2))         # target: no HT, old spelling only
-    rows.append(_r("2025-03-30", NEW, "Santos", 0, 0, 0.0, 0.0))   # newest spelling = canonical
+    rows.append(_r("2024-07-07", "Tianjin Jinmen Tiger", OLD, 2, 2))         # target: no HT, old spelling only
+    rows.append(_r("2025-03-30", NEW, "Shandong Taishan", 0, 0, 0.0, 0.0))   # newest spelling = canonical
     return pd.DataFrame(rows)
 
 
@@ -54,9 +56,9 @@ def test_identity_pipeline_renames_the_old_spelling():
 
 def test_ht_fill_keyed_on_the_history_spelling_reaches_the_renamed_club(tmp_path):
     df = DL.one_club_one_match(_history())
-    _write_fill(tmp_path, [(LG, "2024-07-07", "Fortaleza", OLD, 1, 0, 99)])
+    _write_fill(tmp_path, [(LG, "2024-07-07", "Tianjin Jinmen Tiger", OLD, 1, 0, 99)])
     out = DL._enrich_ht_scores(df, root=tmp_path)
-    row = out[(out["date"] == "2024-07-07") & (out["home_team"] == "Fortaleza")]
+    row = out[(out["date"] == "2024-07-07") & (out["home_team"] == "Tianjin Jinmen Tiger")]
     assert len(row) == 1 and row["away_team"].iloc[0] == NEW
     assert row["ht_home_goals"].iloc[0] == 1.0 and row["ht_away_goals"].iloc[0] == 0.0
     assert out.attrs["ht_coverage"]["filled_rows"]["fd_history_ht_fill"] == 1
@@ -64,15 +66,15 @@ def test_ht_fill_keyed_on_the_history_spelling_reaches_the_renamed_club(tmp_path
 
 def test_identity_alias_is_league_scoped_and_needs_the_club_in_the_pool(tmp_path):
     df = DL.one_club_one_match(_history())
-    # same spelling filed under another league: that league has no 'Athletico-PR' -> never placed
-    _write_fill(tmp_path, [("Japan J-League", "2024-07-07", "Fortaleza", OLD, 1, 0, 99)])
+    # same spelling filed under another league: that league has no 'Chengdu Rongcheng' -> never placed
+    _write_fill(tmp_path, [("Japan J-League", "2024-07-07", "Tianjin Jinmen Tiger", OLD, 1, 0, 99)])
     out = DL._enrich_ht_scores(df, root=tmp_path)
     assert out["ht_home_goals"].isna().sum() == df["ht_home_goals"].isna().sum()
 
 
 def test_resolve_onto_history_without_aliases_is_unchanged():
     df = DL.one_club_one_match(_history())
-    right = pd.DataFrame({"league": [LG], "home_team": ["Fortaleza"], "away_team": [OLD]})
+    right = pd.DataFrame({"league": [LG], "home_team": ["Tianjin Jinmen Tiger"], "away_team": [OLD]})
     assert DL._resolve_onto_history(right, df, "home_team", "away_team", "t").empty
     got = DL._resolve_onto_history(right, df, "home_team", "away_team", "t", aliases={LG: {OLD: NEW}})
     assert got["_a"].tolist() == [NEW]
@@ -80,9 +82,9 @@ def test_resolve_onto_history_without_aliases_is_unchanged():
 
 def test_ambiguous_identity_alias_is_refused():
     df = DL.one_club_one_match(_history())
-    right = pd.DataFrame({"league": [LG], "home_team": ["Fortaleza"], "away_team": [OLD]})
+    right = pd.DataFrame({"league": [LG], "home_team": ["Tianjin Jinmen Tiger"], "away_team": [OLD]})
     # one spelling claimed by two different clubs of the pool -> not placed
-    amb = {LG: {OLD: NEW, "Atletico-Paranaense": "Santos"}}
+    amb = {LG: {OLD: NEW, "Chengdu-Better-City": "Shandong Taishan"}}
     got = DL._resolve_onto_history(right, df, "home_team", "away_team", "t", aliases=amb)
     assert got.empty
 

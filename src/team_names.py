@@ -308,6 +308,30 @@ _ALIASES = {
     # 'U Craiova 1948' (FC U Craiova 1948) is a DIFFERENT club: on 2022-02-14 both copies read
     # Craiova 2-0 U Craiova 1948. 'Universitatea Craiova' is the af/API spelling from 2022-07.
     "cs universitatea craiova": ("univ craiova", "universitatea craiova"),
+    # Fix round 9 (owner 2026-11-04, KEY=bank): identity gaps that dropped af_history / sidecar rows
+    # and left board clubs blind. FIXTURE-LEVEL proof against the PROVIDER fixture lists
+    # (output/strength/competition_fixtures.parquet: fixture id, team id, FT): every row of each
+    # spelling in fd_history / af_history (provider rows) / the committed ledgers was placed on the
+    # provider fixture of the same league, date +-1 and strictly resolved opponent, and the club's
+    # slot carries ONE provider team id for every spelling; FT agrees on every scored row unless
+    # noted. Counts: rows placed on that team id per spelling (history rows; ledger fixtures).
+    # The two spellings never meet in one row. Same pairs the loader's same-day identity step
+    # derived (IDENTITY_ALIASES), now provable by the resolver too.
+    "austria lustenau": "a lustenau",           # Austrian Bundesliga, team 1399: 'Austria Lustenau' 77
+                                                # (+10 ledger), 'A. Lustenau' 73 (72 FT agree, 1 differs)
+    "orgryte is": "orgryte",                    # Sweden Allsvenskan, team 2166: 29 / 26
+    "uc dublin": "ucd",                         # Ireland Premier Division, team 3844: 73 / 112
+    "atletico paranaense": "athletico pr",      # Brazil Serie A, team 134: 257 (+13 ledger) / 129
+    "atletico go": "atletico goianiense",       # Brazil Serie A, team 144: 66 / 150
+    "america mg": "america mineiro",            # Brazil Serie A, team 125: 66 / 112
+    # board spellings (OddsAPI) with no history spelling of their own; the club's history spellings
+    # are already one group above ('machida' / 'machida zelvia')
+    "fc machida zelvia": "machida zelvia",      # Japan J-League, team 303: 13 ledger fixtures;
+                                                # 'Machida Zelvia' 100, 'Machida' 82
+    "shanghai sipg fc": ("shanghai port", "shanghai sipg"),  # China Super League, team 836: 6 ledger
+                                                # fixtures; 'SHANGHAI SIPG' 193, 'Shanghai SIPG' 31,
+                                                # 'Shanghai Port' 64 (91 with an opponent the lists
+                                                # spell differently: not placed, not contradicting)
 }
 
 

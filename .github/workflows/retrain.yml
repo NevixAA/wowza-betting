@@ -171,9 +171,11 @@ jobs:
           #   output/fd_history.parquet  — the football-data history cache. The run on
           #     2026-09-22 grew it 37,623 -> 58,156 rows and that growth would have been thrown
           #     away, leaving the next run to re-download the same finished seasons.
-          #   output/af_history.parquet  — the shot/xG bank that data_loader now writes back
-          #     after enrichment. Unstaged it is pointless: the whole purpose is that the NEXT
-          #     run merges these rows instead of spending two hours re-fetching them.
+          #   output/af_history.parquet  — NOT STAGED since 2026-11-04 (owner, fix round 9):
+          #     data_loader no longer writes it back (90,897 of its rows were such write-backs,
+          #     unproven and no longer served). It is an original provider file written only by
+          #     scripts/backfill_af_history.py (af_history_extend.yml / data_truth_collect.yml);
+          #     the live enrichment is re-read from apifootball_ou_cache/ (restored above).
           #
           # Both hold data about FINISHED matches, which cannot change, so they only grow when
           # genuinely new fixtures settle — `git diff --staged --quiet` below means an unchanged
@@ -208,7 +210,6 @@ jobs:
                    output/training_coverage.json \
                    telegram_bot/notified.json \
                    output/fd_history.parquet \
-                   output/af_history.parquet \
                    output/backtest_results_standard.csv output/backtest_by_league_standard.csv \
                    output/backtest_results_newformat.csv output/backtest_by_league_newformat.csv; do
             git add -f "$f" 2>/dev/null || echo "  (skip, not present: $f)"

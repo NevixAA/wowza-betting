@@ -153,12 +153,13 @@ def test_absent_or_keyless_sidecar_leaves_history_unchanged(tmp_path):
 
 
 def test_loader_calls_the_fullstats_fill_on_both_exits_after_the_stats_fill():
+    # fix round 9 (owner 2026-11-04): both exits go through _finish_af_enrichment, and the bank
+    # step that wrote into af_history.parquet is gone (tests/test_fix9_bank.py)
     src = inspect.getsource(DL._enrich_with_api_shots)
-    assert src.count("_enrich_af_fullstats_fill(df)") == 2
-    assert src.count("_enrich_af_stats_fill(df)") == 2
-    # after the bank step: the sidecar is never written into af_history.parquet
-    assert src.index("BANK THE ENRICHMENT") < src.rindex("_enrich_af_fullstats_fill(df)")
-    assert "home_corners" not in src[src.index("_COLMAP = {"):src.index("_have = [c for c in _COLMAP")]
+    assert src.count("return _finish_af_enrichment(df, wb_blank") == 2
+    fin = inspect.getsource(DL._finish_af_enrichment)
+    assert fin.index("_enrich_af_stats_fill(df)") < fin.index("_enrich_af_fullstats_fill(df)")
+    assert "to_parquet" not in src and "to_parquet" not in fin
 
 
 def test_no_key_path_fills_from_the_sidecar(tmp_path, monkeypatch):
