@@ -224,13 +224,14 @@ def test_loader_calls_the_sidecar_fill_on_both_exits():
     assert src.count("_enrich_af_stats_fill(df)") == 2
 
 
-def test_workflow_has_a_guarded_insidebox_step_and_keeps_the_run_day_override():
+def test_workflow_has_a_guarded_insidebox_step_and_no_run_day_override():
     y = (ROOT / ".github" / "workflows" / "data_truth_collect.yml").read_text(encoding="utf-8")
     assert "python scripts/collect_af_history_gap.py --insidebox" in y
     assert "contains(env.STEPS, 'insidebox')" in y
     assert "afgap,insidebox," in y
-    # item 4: the one-day override is kept until the scheduled run-day 2 removes it
-    assert "COLLECT_AF_FLOOR: '10000'" in y and "COLLECT_AF_DAILY_CAP: '55000'" in y
+    # item 4: the one-day override (floor 10,000 / cap 55,000) was removed on run-day 2 (2026-11-03):
+    # the job runs on collect_common's defaults again
+    assert "COLLECT_AF_FLOOR" not in y and "COLLECT_AF_DAILY_CAP" not in y
 
 
 # ── 3. has_ht_history next to the HT form features ──────────────────────────────────────────────

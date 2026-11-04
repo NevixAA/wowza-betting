@@ -45,9 +45,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,strength)'
+        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,strength)'
         required: false
-        default: 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,strength'
+        default: 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,strength'
 
 concurrency:
   group: data-truth-collect
@@ -60,7 +60,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,sidelined,profiles,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,strength' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -167,6 +167,16 @@ jobs:
         run: |
           python scripts/collect_af_history_gap.py --insidebox
           /tmp/commit_collected.sh insidebox
+
+      # 0 API calls (owner 2026-11-04): every statistic of the /fixtures/statistics answers already in
+      # scripts/af_history_cache (shots off goal, offsides, passes, saves, ...), placed by team id,
+      # a value the provider does not give stays missing. No key on purpose: it cannot call the API.
+      # After step 9 so the answers it fetched today are included; runs after a budget stop too.
+      - name: 10. All cached fixture statistics for af_history (no API call)
+        if: always() && contains(env.STEPS, 'fullstats')
+        run: |
+          python scripts/collect_af_history_gap.py --fullstats
+          /tmp/commit_collected.sh fullstats
 
       # 5. Understat: REMOVED (owner 2026-11-02). Understat data is free for non-commercial use only and
       #    Wowza is commercial; no collection until Understat grants written commercial permission

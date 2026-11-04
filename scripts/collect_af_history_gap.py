@@ -10,6 +10,7 @@ job; stop when the account has < 25,000 calls left today).
 
     python scripts/collect_af_history_gap.py [--league NAME]
     python scripts/collect_af_history_gap.py --insidebox [--dry-run]
+    python scripts/collect_af_history_gap.py --fullstats        # 0 API calls, see run_fullstats
 
 A budget stop inside a league ends the run; that league's per-fixture statistics are already in
 scripts/af_history_cache/ (restored by the workflow's actions/cache), so the next run re-reads them
@@ -393,13 +394,154 @@ def run_insidebox(dry_run: bool = False, client: AFClient | None = None,
     return stats
 
 
+# ── --fullstats ─────────────────────────────────────────────────────────────────────────────────
+# Owner 2026-11-04: every statistic API-Football returns per fixture, for every af_history match whose
+# /fixtures/statistics answer is ALREADY cached (scripts/af_history_cache/stats_<id>.json, written by
+# backfill_af_history and --insidebox). ZERO API calls: a fixture without a cached answer is counted
+# ('not_cached') and left missing. Home/away by the provider's TEAM IDS, never response order. A
+# statistic the provider does not give - including a null 'Red Cards' / 'Offsides' that often means
+# zero - stays MISSING (never 0; whether null means 0 is an owner decision at feature time).
+
+#: provider statistic type -> column stem (home_<stem> / away_<stem>). Possession and Passes % are
+#: percentages ('55%' -> 55.0); expected_goals and goals_prevented are decimals.
+FULL_STATS = {"Shots on Goal": "sot", "Shots off Goal": "shots_off", "Total Shots": "shots",
+              "Blocked Shots": "blocked", "Shots insidebox": "insidebox",
+              "Shots outsidebox": "outsidebox", "Fouls": "fouls", "Corner Kicks": "corners",
+              "Offsides": "offsides", "Ball Possession": "possession", "Yellow Cards": "yellow",
+              "Red Cards": "red", "Goalkeeper Saves": "saves", "Total passes": "passes",
+              "Passes accurate": "passes_accurate", "Passes %": "pass_pct",
+              "expected_goals": "xg", "goals_prevented": "goals_prevented"}
+FULL_FILL = COLLECT_DIR / "af_history_fullstats_fill.parquet"
+FULL_AUDIT = COLLECT_DIR / "af_fullstats_audit.json"
+FULL_COLS = (["league", "date", "home_team", "away_team", "fixture_id", "home_id", "away_id"]
+             + [f"{side}_{stem}" for stem in FULL_STATS.values() for side in ("home", "away")]
+             + ["match_rule", "source", "matched_at"])
+
+
+def _num(v):
+    """A provider statistic value as a float; None / 'None' / '' / unparseable -> None (missing)."""
+    if v is None:
+        return None
+    t = str(v).strip().rstrip("%").strip()
+    if not t or t.lower() == "none":
+        return None
+    try:
+        return float(t)
+    except ValueError:
+        return None
+
+
+def parse_full_stats(resp, home_id, away_id) -> dict | None:
+    """{home_<stem>/away_<stem>: value} by the provider's team ids; None when the answer does not
+    hold BOTH of the fixture's clubs (nothing is placed by position). Also returns the provider
+    types this map does not know under '_unknown' (logged, never stored)."""
+    by_team = {_int_or_none((t.get("team") or {}).get("id")): t.get("statistics") or []
+               for t in (resp or [])}
+    if home_id is None or away_id is None or home_id not in by_team or away_id not in by_team:
+        return None
+    out: dict = {"_unknown": set()}
+    for side, tid in (("home", home_id), ("away", away_id)):
+        vals = {s.get("type"): s.get("value") for s in by_team[tid]}
+        out["_unknown"] |= {k for k in vals if k not in FULL_STATS}
+        for typ, stem in FULL_STATS.items():
+            out[f"{side}_{stem}"] = _num(vals.get(typ))
+    return out
+
+
+def run_fullstats(af: pd.DataFrame | None = None, cache_dir: Path = STATS_CACHE,
+                  fixtures: pd.DataFrame | None = None) -> dict:
+    """Every af_history row in a registry league with an API-Football id -> its fixture id (same
+    rules as --insidebox: own fixture_id, else the collected fixture lists, clubs proven by
+    team_names.resolve_result, ambiguity refused) -> the cached statistics answer. No API call."""
+    from src import league_registry as LR
+    if af is None:
+        af = pd.read_parquet(AF_HISTORY)
+    ids = _af_ids()
+    h = af.copy()
+    for c in ("fixture_id", "home_team_id", "away_team_id"):
+        if c not in h.columns:
+            h[c] = None
+    h["canon"] = h["league"].map(lambda x: LR.canonical_name(x) if isinstance(x, str) else None)
+    h = h[h["canon"].isin(ids)].copy()
+    h["date"] = pd.to_datetime(h["date"], errors="coerce").dt.normalize()
+    h = h[h["date"].notna() & h["home_team"].notna() & h["away_team"].notna()]
+    h["league_id"] = h["canon"].map(ids).astype(int)
+    m, per_league = match_fixtures(h, fixture_index() if fixtures is None else fixtures)
+    # team ids the --insidebox journal recorded for a fixture fill a match without them
+    store = read_parquet(STATS_STORE)
+    sid = (store.dropna(subset=["fixture_id"]).drop_duplicates("fixture_id", keep="last")
+           .set_index("fixture_id")) if not store.empty else pd.DataFrame()
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    rows, unknown = [], set()
+    counts: dict = defaultdict(lambda: defaultdict(int))
+    for r in m.itertuples(index=False):
+        hid, aid = _int_or_none(r.home_id), _int_or_none(r.away_id)
+        if (hid is None or aid is None) and len(sid) and int(r.fixture_id) in sid.index:
+            hid = hid if hid is not None else _int_or_none(sid.loc[int(r.fixture_id), "home_id"])
+            aid = aid if aid is not None else _int_or_none(sid.loc[int(r.fixture_id), "away_id"])
+        body = _cached_stats(int(r.fixture_id), cache_dir)
+        if body is None:
+            counts[r.canon]["not_cached"] += 1
+            continue
+        resp = body.get("response") if isinstance(body, dict) else body
+        parsed = parse_full_stats(resp, hid, aid)
+        if parsed is None:
+            counts[r.canon]["teams_not_in_answer"] += 1
+            continue
+        unknown |= parsed.pop("_unknown")
+        if all(v is None for v in parsed.values()):
+            counts[r.canon]["empty_answer"] += 1
+            continue
+        counts[r.canon]["filled"] += 1
+        rows.append({"league": r.league, "date": pd.Timestamp(r.date).strftime("%Y-%m-%d"),
+                     "home_team": r.home_team, "away_team": r.away_team,
+                     "fixture_id": int(r.fixture_id), "home_id": hid, "away_id": aid, **parsed,
+                     "match_rule": r.match_rule, "source": SOURCE, "matched_at": now})
+    fill = pd.DataFrame(rows, columns=FULL_COLS)
+    old = read_parquet(FULL_FILL)
+    if not old.empty:
+        fill = pd.concat([old[FULL_COLS], fill], ignore_index=True)
+    fill = fill.drop_duplicates(subset=["league", "date", "home_team", "away_team"], keep="last")
+    num = [c for c in FULL_COLS if c.startswith(("home_", "away_")) and c not in ("home_team", "away_team")]
+    fill[num] = fill[num].apply(pd.to_numeric, errors="coerce")    # None -> NaN (missing), never 0
+    FULL_FILL.parent.mkdir(parents=True, exist_ok=True)
+    tmp = FULL_FILL.with_suffix(".tmp.parquet")
+    fill.reset_index(drop=True).to_parquet(tmp, index=False)
+    tmp.replace(FULL_FILL)
+    for lg, st in per_league.items():
+        counts[lg].update({k: v for k, v in st.items()})
+    stats = {"history_rows": int(len(h)), "matched_rows": int(len(m)),
+             "filled_rows_this_run": len(rows), "filled_rows_total": int(len(fill)), "calls": 0,
+             "unknown_provider_types": sorted(unknown),
+             "non_null_share": {c: round(float(fill[c].notna().mean()), 4)
+                                for c in FULL_COLS if c.startswith(("home_", "away_"))
+                                and c not in ("home_team", "away_team", "home_id", "away_id")}
+             if len(fill) else {},
+             "per_league": {k: dict(v) for k, v in sorted(counts.items())}}
+    print(f"[fullstats] rows {stats['history_rows']:,}; matched {stats['matched_rows']:,}; "
+          f"filled {stats['filled_rows_total']:,}; unknown types {stats['unknown_provider_types']}; "
+          f"0 API calls")
+    FULL_AUDIT.write_text(json.dumps({"written_at": datetime.now(timezone.utc).isoformat(),
+                                      "note": "Every /fixtures/statistics value for af_history "
+                                              "matches whose answer is already cached; 0 API calls; "
+                                              "a value the provider does not give is missing, never "
+                                              "0; af_history.parquet is not modified.", **stats},
+                                     indent=1, sort_keys=True, default=str), encoding="utf-8")
+    return stats
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="af_history gap fill under the collection budget")
     ap.add_argument("--league", default=None)
     ap.add_argument("--insidebox", action="store_true",
                     help="collect 'Shots insidebox' for af_history rows lacking it (all leagues)")
+    ap.add_argument("--fullstats", action="store_true",
+                    help="every cached /fixtures/statistics value for af_history (0 API calls)")
     ap.add_argument("--dry-run", action="store_true", help="--insidebox: plan and count calls only")
     a = ap.parse_args(argv)
+    if a.fullstats:
+        run_fullstats()
+        return 0
     if a.insidebox:
         run_insidebox(dry_run=a.dry_run)
         return 0
