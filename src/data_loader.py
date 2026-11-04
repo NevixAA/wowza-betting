@@ -1428,6 +1428,120 @@ def _enrich_af_stats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.Data
     return df
 
 
+#: Every cached API-Football /fixtures/statistics answer for af_history matches, collected BESIDE
+#: af_history.parquet by scripts/collect_af_history_gap.py --fullstats (data_truth_collect.yml step
+#: 'fullstats', owner 2026-11-04; 0 API calls). Keyed by af_history's own (league, date, home_team,
+#: away_team); a statistic the provider does not give is missing there, never 0.
+AF_FULLSTATS_FILL = Path("output") / "collect" / "af_history_fullstats_fill.parquet"
+#: sidecar column -> history column. ONLY the statistics that already feed a model feature through
+#: the form window (corners/fouls_pg_roll, shots/sot_last5). Owner 2026-11-04: the other fullstats
+#: columns (possession, passes, saves, ...) become features only in the Phase 2 retrain, and xG /
+#: inside-box already come from AF_STATS_FILL (same provider answer).
+_AF_FULLSTATS_COLS = {"home_corners": "home_corners", "away_corners": "away_corners",
+                      "home_fouls": "home_fouls", "away_fouls": "away_fouls",
+                      "home_shots": "home_shots", "away_shots": "away_shots",
+                      "home_sot": "home_sot", "away_sot": "away_sot"}
+#: the per-league coverage logged before/after the fill (new-format leagues, played rows)
+_FULLSTATS_COVERAGE_COLS = ("home_corners", "home_fouls", "home_shots", "home_sot")
+
+
+def stat_coverage(df: pd.DataFrame, cols=_FULLSTATS_COVERAGE_COLS, leagues=None) -> dict:
+    """{league: {column: share of PLAYED rows carrying it}} for the registry's new-format leagues
+    (or `leagues`). Same 'played' rule as ht_coverage."""
+    if df is None or df.empty or "league" not in df.columns:
+        return {}
+    if leagues is None:
+        leagues = [lg for lg in sorted(set(df["league"].astype(str)))
+                   if config.model_type_for_league(lg) == "new_format"]
+    played = df["home_goals"].notna() & df["away_goals"].notna() if "home_goals" in df.columns \
+        else pd.Series(True, index=df.index)
+    out = {}
+    for lg in leagues:
+        m = played & (df["league"].astype(str) == lg)
+        if m.any():
+            out[lg] = {c: (round(float(df.loc[m, c].notna().mean()), 4) if c in df.columns else 0.0)
+                       for c in cols}
+    return out
+
+
+def _enrich_af_fullstats_fill(df: pd.DataFrame, root: Path | None = None) -> pd.DataFrame:
+    """Fill MISSING corners, fouls, shots and shots on target from AF_FULLSTATS_FILL (nan_only: a
+    stored value is never overwritten), league-keyed, clubs resolved onto df's spellings
+    (team_names.resolve, then the identity map one_club_one_match applied - the sidecar is keyed
+    on af_history's spelling, as the HT sidecar is on fd_history's), ambiguous cells refused by
+    safe_left_enrich.
+
+    WHY (fix round 8, owner 2026-11-04). Data truth check 3 put the live board AMBER on all four
+    new-format tracks: home/away corners_pg_roll and fouls_pg_roll 32-33% missing while shots_last5
+    was ~2% missing. The cause is in af_history.parquet itself: 90,876 of its 93,381 rows were
+    banked by this module's write-back (_enrich_with_api_shots, 'BANK THE ENRICHMENT'), whose column
+    map carries shots, SoT, xG and inside-box but NOT corners or fouls - the same /fixtures/statistics
+    answer was fetched, and its Corner Kicks and Fouls thrown away. Those rows have no fixture_id,
+    so only the --fullstats sidecar (which re-reads the cached answer by a proven fixture id) can
+    give the values back without a new call. Part of _enrich_with_api_shots on both exits, so
+    training and serving read the same history. Absent sidecar -> df unchanged.
+
+    Rows whose shots or SoT this fill supplies get their row-level sot ratio from the filled
+    values (same formula as the loader's); no other row's ratio is touched. Per-league coverage
+    before/after is logged and kept in df.attrs['af_fullstats_fill']."""
+    p = (root or Path(__file__).resolve().parents[1]) / AF_FULLSTATS_FILL
+    if not p.exists():
+        log.info(f"[af_fullstats_fill] {AF_FULLSTATS_FILL.as_posix()} not present - skipped")
+        return df
+    try:
+        fill = pd.read_parquet(p)
+        vals = [c for c in _AF_FULLSTATS_COLS if c in fill.columns]
+        if "league" not in fill.columns or not vals:
+            log.error("[af_fullstats_fill] no league / stat column - fill SKIPPED")
+            return df
+        before = stat_coverage(df)
+        df = df.copy()                       # the key helpers below never leak into the caller's frame
+        fill = fill[fill[vals].notna().any(axis=1)].copy()
+        for c in vals:                                     # a non-numeric cell is missing, never 0
+            fill[c] = pd.to_numeric(fill[c], errors="coerce")
+        fill["date"] = pd.to_datetime(fill["date"], errors="coerce")
+        fill = _resolve_onto_history(fill, df, "home_team", "away_team", "af_fullstats_fill",
+                                     aliases=IDENTITY_ALIASES)
+        fill["_date_str"] = fill["date"].dt.strftime("%Y-%m-%d")
+        df["_h"] = df["home_team"].astype(str)
+        df["_a"] = df["away_team"].astype(str)
+        df["_date_str"] = pd.to_datetime(df["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+        shot_cols = [c for c in ("home_shots", "away_shots", "home_sot", "away_sot") if c in df.columns]
+        had_shots = df[shot_cols].notna() if shot_cols else None
+        df, rep = _IJ.safe_left_enrich(
+            df, fill, keys=["league", "_h", "_a", "_date_str"], value_cols=vals,
+            target_cols={c: _AF_FULLSTATS_COLS[c] for c in vals}, name="af_fullstats_fill")
+        if had_shots is not None:
+            for side in ("home", "away"):
+                sh, so = f"{side}_shots", f"{side}_sot"
+                if sh not in df.columns or so not in df.columns:
+                    continue
+                newly = (df[sh].notna() & ~had_shots.get(sh, pd.Series(True, index=df.index))) | \
+                        (df[so].notna() & ~had_shots.get(so, pd.Series(True, index=df.index)))
+                if newly.any():
+                    with np.errstate(divide="ignore", invalid="ignore"):
+                        r = np.where(df[sh] > 0, df[so] / df[sh], np.nan)
+                    if f"{side}_sot_ratio" not in df.columns:
+                        df[f"{side}_sot_ratio"] = np.nan
+                    df.loc[newly, f"{side}_sot_ratio"] = r[newly.to_numpy()]
+        after = stat_coverage(df)
+        df.attrs["af_fullstats_fill"] = {"before": before, "after": after,
+                                         "filled_cells": dict(rep.filled_cells),
+                                         "ambiguous_key_groups": rep.ambiguous_key_groups}
+        moved = {lg: (before.get(lg, {}).get("home_corners", 0.0), v["home_corners"])
+                 for lg, v in after.items()
+                 if v["home_corners"] != before.get(lg, {}).get("home_corners", 0.0)}
+        log.info(f"[af_fullstats_fill] filled {rep.filled_cells}; ambiguous key groups "
+                 f"{rep.ambiguous_key_groups}; new-format corners coverage before -> after: "
+                 + ("; ".join(f"{lg} {a:.1%} -> {b:.1%}" for lg, (a, b) in moved.items())
+                    or "unchanged"))
+    except Exception as e:                                       # noqa: BLE001
+        log.warning(f"[af_fullstats_fill] failed to merge {AF_FULLSTATS_FILL.as_posix()}: {e}")
+    finally:
+        df = df.drop(columns=["_h", "_a", "_date_str"], errors="ignore")
+    return df
+
+
 def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     """
     For new-format leagues that have no shot data from football-data.co.uk,
@@ -1500,7 +1614,8 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     df = _enrich_ht_scores(df)
 
     if not api_key:
-        return _enrich_af_stats_fill(df)
+        df = _enrich_af_stats_fill(df)
+        return _enrich_af_fullstats_fill(df)
 
     from src.api_football_ou import fetch_shots_for_league   # import failure must surface
 
@@ -1673,6 +1788,7 @@ def _enrich_with_api_shots(df: pd.DataFrame) -> pd.DataFrame:
     # The collected fixture statistics, AFTER the bank step: they live beside af_history.parquet
     # and are never written into it.
     df = _enrich_af_stats_fill(df)
+    df = _enrich_af_fullstats_fill(df)
 
     # Recompute SOT ratios after enrichment
     with np.errstate(divide="ignore", invalid="ignore"):
