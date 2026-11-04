@@ -84,6 +84,28 @@ _ALIASES = {
     "austria wien": "austria vienna",
     "atletico mineiro": "atletico mg",
     "argentinos juniors": "argentinos jrs",
+    # Hotfix 2026-11-04 (owner: "repair what u can"), ported from data-truth-100's alias store,
+    # where each pair is proven AT FIXTURE LEVEL (the history row of that league, date +-1 day and
+    # the resolved opponent carries this spelling in the club's slot; fixture counts in brackets).
+    # Measured on main's served pools 2026-11-04: each of these resolved to NOTHING here, so the
+    # club's fixtures had no form at all. They only add data.
+    "estudiantes": "estudiantes l p",           # Argentina; Estudiantes de Rio Cuarto is another club (27/27)
+    "gimnasia la plata": "gimnasia l p",        # Argentina; Gimnasia Mendoza is another club (26/29)
+    "cercle brugge ksv": "cercle brugge",       # Belgium; tokens also hit Club Brugge (2/2)
+    "beijing fc": "beijing guoan",              # China; Beijing Renhe last played 2019 (24/24)
+    "verdy": "tokyo verdy",                     # Japan (13)
+}
+
+#: DIFFERENT clubs the stem / token-subset tiers below pair by spelling alone (hotfix 2026-11-04,
+#: from data-truth-100 where those tiers were removed). resolve() refuses these pairs from the
+#: guessing tiers 3-6; an exact or explicit-alias match is unaffected. Club Atletico Platense is not
+#: River Plate ('plate' is a stem of 'platense'); Independiente Rivadavia (Mendoza) is not
+#: Independiente (Avellaneda); Shenzhen Peng City (ex Sichuan Jiuniu) is not Shenzhen FC (dissolved
+#: 2024); Dundee United is not Dundee.
+_KNOWN_DIFFERENT = {
+    frozenset(p) for p in (("platense", "river plate"), ("independiente rivadavia", "independiente"),
+                           ("shenzhen peng city fc", "shenzhen"), ("shenzhen peng city", "shenzhen"),
+                           ("dundee utd", "dundee"), ("dundee united", "dundee"))
 }
 
 
@@ -226,6 +248,8 @@ def resolve(name: str, candidates: list[str]) -> str | None:
     cand_tokens = [(c, _tokens(c)) for c in candidates if _is_reserve(c) == res]
 
     def _only(hits):
+        # a pair of known DIFFERENT clubs is never a guessing-tier hit (see _KNOWN_DIFFERENT)
+        hits = [h for h in hits if frozenset((n, norm(h))) not in _KNOWN_DIFFERENT]
         return hits[0] if len(hits) == 1 else None
 
     # 3. identical identity-token sets  ("Cadiz CF" == "Cadiz", "Wimbledon" == "AFC Wimbledon")
