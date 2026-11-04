@@ -130,11 +130,15 @@ def test_flag_off_still_allows_two_different_positions():
     assert int((out["final_fraction"] > 0).sum()) == 2
 
 
-def test_production_policy_keeps_one_position_per_fixture():
+def test_production_policy_allows_same_direction_positions_within_the_fixture_cap():
+    """Owner 2026-11-04: several bets on one match are fine unless opposite (BTTS YES = OVER), so the
+    production policy stakes BTTS YES + Over 1.5 together, bounded by fixture_cap as a total."""
+    pol = load_policy()
     out = size_day(pd.DataFrame([_row("2026-11-03|A|B", "BTTS", "YES"),
-                                 _row("2026-11-03|A|B", "OVER15", "OVER", odds=1.6)]), load_policy(), 100.0, 100.0)
-    assert int((out["final_fraction"] > 0).sum()) == 1
-    assert "ONE_POSITION_PER_FIXTURE" in set(out["reason"])
+                                 _row("2026-11-03|A|B", "OVER15", "OVER", odds=1.6)]), pol, 100.0, 100.0)
+    assert int((out["final_fraction"] > 0).sum()) == 2
+    assert "ONE_POSITION_PER_FIXTURE" not in set(out["reason"])
+    assert float(out["final_fraction"].sum()) <= pol["portfolio"]["fixture_cap"] + 1e-9
 
 
 # ── 5. health checks show it ───────────────────────────────────────────────────────────────────────

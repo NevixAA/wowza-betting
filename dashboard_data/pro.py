@@ -155,7 +155,9 @@ def _check_block(b, where: str, money: bool) -> str | None:
     roi = mean(units), hit_rate = won / settled. A block that cannot reproduce itself is not shown."""
     if not isinstance(b, dict):
         return f"{where} is not an object"
-    n = b.get("settled", 0)
+    if "settled" not in b:
+        return f"{where}.settled is missing"
+    n = b["settled"]
     if not _is_num(n) or n < 0 or int(n) != n:
         return f"{where}.settled is not a non-negative integer"
     if n == 0:

@@ -499,10 +499,10 @@ def _paper_track_note(model_type: str, market: str, side: str) -> str:
     staked") is still sent, but must not read as a staked bet. Policy unreadable -> labelled paper
     (a label can only under-claim, never invent a stake). Phase 2, 2026-11-03."""
     try:
-        from src.bankroll_policy import REAL_STATES, load_policy, track_key
+        from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
         tk = track_key(model_type, market, side)
         t = (load_policy().get("tracks") or {}).get(tk) or {}
-        if t.get("state") in REAL_STATES and float(t.get("base_fraction") or 0.0) > 0.0:
+        if t.get("state") in REAL_STATES and positive_fraction(t):
             return ""
         return f"📄 <b>PAPER</b> — not staked (track {tk}: {t.get('state', 'not in policy')})"
     except Exception as e:                                            # noqa: BLE001

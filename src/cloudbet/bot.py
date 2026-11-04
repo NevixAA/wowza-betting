@@ -199,7 +199,7 @@ def _drop_without_real_track(cands: pd.DataFrame) -> pd.DataFrame:
     does not define. An unreadable policy drops everything (fail closed). Every drop is logged."""
     if cands.empty:
         return cands
-    from src.bankroll_policy import REAL_STATES, load_policy, track_key
+    from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
     try:
         tracks = load_policy().get("tracks") or {}
     except Exception as e:                                            # noqa: BLE001 - fail closed
@@ -211,7 +211,7 @@ def _drop_without_real_track(cands: pd.DataFrame) -> pd.DataFrame:
         if mk is None:
             return False
         t = tracks.get(track_key(r.get("model_type"), mk, r.get("side"))) or {}
-        return t.get("state") in REAL_STATES and float(t.get("base_fraction") or 0.0) > 0.0
+        return t.get("state") in REAL_STATES and positive_fraction(t)
 
     keep = cands.apply(_real, axis=1).astype(bool)
     if (~keep).any():
