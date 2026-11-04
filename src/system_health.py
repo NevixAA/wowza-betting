@@ -62,13 +62,18 @@ def side_routing(plan: pd.DataFrame, policy: dict) -> dict:
 
 
 def stake_mapping(plan: pd.DataFrame) -> dict:
-    rule = ("GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track or without odds; "
-            "AMBER < 5%; RED >= 5%")
+    rule = ("GREEN 0% of tips on unknown|* tracks, on an O/U side-less *_UNKNOWN_SIDE track, without odds or "
+            "with a side outside their market (2026-11-03); AMBER < 5%; RED >= 5%")
     if plan.empty:
         return _c("Stake-plan mapping", GREY, "no stake plan", rule)
+    from src.bankroll_policy import side_valid
     tr = plan["track"].astype(str)
+    # judged when the plan carries sides (every stake_plan.csv does; a missing column is the contract's
+    # missing_column finding)
+    bad_side = (pd.Series([not side_valid(m, s) for m, s in zip(plan["market"], plan["side"])], index=plan.index)
+                if "side" in plan.columns else pd.Series(False, index=plan.index))
     bad = (tr.str.startswith("unknown|") | tr.str.endswith("_UNKNOWN_SIDE")
-           | pd.to_numeric(plan["odds"], errors="coerce").isna())
+           | pd.to_numeric(plan["odds"], errors="coerce").isna() | bad_side)
     share = float(bad.mean() * 100)
     return _c("Stake-plan mapping", GREEN if share == 0 else AMBER if share < 5 else RED, f"{share:.1f}% unmapped", rule,
               f"generated {plan['generated_at'].iloc[0] if 'generated_at' in plan else '?'}")

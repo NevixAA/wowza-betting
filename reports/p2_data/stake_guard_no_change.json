@@ -1,0 +1,1017 @@
+{
+ "output/stake_plan.csv": {
+  "ref": "origin/main",
+  "base": "origin/data-truth-100",
+  "file": "output/stake_plan.csv",
+  "rows": 75,
+  "staked_base": 12,
+  "staked_new": 12,
+  "sum_fraction_base": 0.077501,
+  "sum_fraction_new": 0.077501,
+  "rows_differing": 0,
+  "differences": []
+ },
+ "output/stake_audit.csv": {
+  "ref": "origin/main",
+  "base": "origin/data-truth-100",
+  "file": "output/stake_audit.csv",
+  "rows": 815,
+  "staked_base": 29,
+  "staked_new": 29,
+  "sum_fraction_base": 0.206999,
+  "sum_fraction_new": 0.206999,
+  "rows_differing": 110,
+  "differences": [
+   {
+    "fixture_base": "2026-10-14|Sarmiento de Junin|River Plate",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-15|Atl\u00e9tico Hurac\u00e1n|Gimnasia La Plata",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-15|Nashville SC|Sporting Kansas City",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-16|Grenoble|Boulogne",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-16|Annecy FC|Nancy",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Platense|Lanus",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Independiente Rivadavia|CA Tigre BA",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Platense|Lanus",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Tokyo Verdy|FC Tokyo",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Boca Juniors|Talleres",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Austria Lustenau|LASK",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Atletico Mineiro|Coritiba",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Stockport County FC|Bromley FC",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Atl\u00e9tico Tucuman|Rosario Central",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Velez Sarsfield BA|Gimnasia Mendoza",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|FC Inter Turku|AC Oulu",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Atl\u00e9tico Tucuman|Rosario Central",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Sheffield Wednesday|Wimbledon",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|West Bromwich Albion|Blackburn Rovers",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|HamKam|Bod\u00f8/Glimt",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Wrexham AFC|Preston North End",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-17|Millwall|Lincoln City",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Estudiantes de R\u00edo Cuarto|Aldosivi Mar del Plata",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Estudiantes|San Lorenzo",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Belgrano de Cordoba|River Plate",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|KuPS Kuopio|VPS Vaasa",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Granada CF|C\u00e1diz CF",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Tromso|KFUM",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|FC Machida Zelvia|Avispa Fukuoka",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Burgos CF|Sabadell FC",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Estudiantes de R\u00edo Cuarto|Aldosivi Mar del Plata",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Molde|IK Start",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Halmstads BK|Hammarby IF",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Burgos CF|Sabadell FC",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Sampdoria|Arezzo",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Belgrano de Cordoba|River Plate",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Cruz Azul|FC Ju\u00e1rez",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Estudiantes|San Lorenzo",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Fluminense|Santos",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Fagiano Okayama|Vissel Kobe",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-18|Toluca|Atl\u00e9tico San Luis",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-19|Sarmiento de Junin|Barracas Central",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-19|Sarmiento de Junin|Barracas Central",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-19|Corinthians|Vitoria",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-19|Newells Old Boys|Central C\u00f3rdoba",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-20|Deportivo Riestra|Union Santa Fe",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-20|Deportivo Riestra|Union Santa Fe",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-20|Oxford United|Wigan Athletic",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-20|Wolverhampton Wanderers|Portsmouth",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-20|Northampton Town|Tranmere Rovers",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-21|Fagiano Okayama|Mito HollyHock",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-21|Shimizu S Pulse|FC Machida Zelvia",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-21|Yokohama F Marinos|Tokyo Verdy",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-22|Toluca|Tijuana",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-23|Gimnasia Mendoza|Platense",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-23|Gimnasia La Plata|Sarmiento de Junin",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-23|Shamrock Rovers|Sligo Rovers",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-23|Bohemians|Shelbourne Dublin",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-23|Pau FC|Grenoble",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|CA Tigre BA|Atl\u00e9tico Tucuman",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|CA Tigre BA|Atl\u00e9tico Tucuman",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Virtus Entella|Mantova",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|S\u00fcdtirol|Sampdoria",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Hartberg|Wolfsberger AC",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Banfield|Lanus",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Banfield|Lanus",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Rapid Wien|Austria Lustenau",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|San Lorenzo|Newells Old Boys",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|San Lorenzo|Newells Old Boys",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Palmeiras|Bragantino-SP",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Blackburn Rovers|Wrexham AFC",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Northampton Town|Colchester United",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Portsmouth|Millwall",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|VPS Vaasa|FC Inter Turku",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Cremonese|Juve Stabia",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Gillingham|Grimsby Town",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Vasco da Gama|Corinthians",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Rotherham United|Shrewsbury Town",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Chongqing Tonglianglong FC|Qingdao Hainiu FC",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Hertha Berlin|Arminia Bielefeld",
+    "market_base": "OVER35",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Chapecoense|Fluminense",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|HamKam|Rosenborg",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Modena|Cesena FC",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Vissel Kobe|FC Machida Zelvia",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Oxford United|Bradford City",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Tokyo Verdy|Avispa Fukuoka",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Tokyo Verdy|Avispa Fukuoka",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Huddersfield Town|Wigan Athletic",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Wolverhampton Wanderers|Watford",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-24|Avellino|Padova",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Rosario Central|Atl\u00e9tico Hurac\u00e1n",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Rosario Central|Atl\u00e9tico Hurac\u00e1n",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|FC Midtjylland|Lyngby",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Molde|Fredrikstad FK",
+    "market_base": "OVER35",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Independiente|Boca Juniors",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Molde|Fredrikstad FK",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|River Plate|Racing Club",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Sabadell FC|Tenerife",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Sabadell FC|Tenerife",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|Viking FK|Tromso",
+    "market_base": "OVER35",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-25|FC Tokyo|Mito HollyHock",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-26|Barracas Central|Estudiantes de R\u00edo Cuarto",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-26|Barracas Central|Estudiantes de R\u00edo Cuarto",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-26|Central C\u00f3rdoba|Velez Sarsfield BA",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-26|Union Santa Fe|Estudiantes",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-27|Instituto de C\u00f3rdoba|Deportivo Riestra",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-27|Instituto de C\u00f3rdoba|Deportivo Riestra",
+    "market_base": "OVER15",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-27|Argentinos Juniors|Independiente Rivadavia",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-28|Bragantino-SP|Chapecoense",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   },
+   {
+    "fixture_base": "2026-10-28|Fluminense|Internacional",
+    "market_base": "BTTS",
+    "side_base": "YES/OVER",
+    "final_fraction_base": 0.0,
+    "reason_base": "NO_REAL_STAKE_UNSUPPORTED",
+    "final_fraction_new": 0.0,
+    "reason_new": "NO_REAL_STAKE_INVALID_SIDE"
+   }
+  ]
+ }
+}
