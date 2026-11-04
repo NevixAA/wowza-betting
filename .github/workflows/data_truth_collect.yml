@@ -93,6 +93,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f output/collect output/strength output/af_history.parquet 2>/dev/null || true
+          # the owner's history corrections (step 7), on their own line: a missing path must not
+          # make git add skip the collected data above
+          git add -f output/corrections/history_*.csv output/corrections/history_corrections_audit.json 2>/dev/null || true
           if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
           git commit -q -m "auto: data truth collect ($1) $(date -u '+%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
@@ -114,12 +117,18 @@ jobs:
           /tmp/commit_collected.sh fixtures
 
       # Runs second: ~120 calls, so the HT gap is closed before the large budget consumers.
+      # Owner decisions 2026-11-04: (a) build_history_corrections first - the proven duplicate rows
+      # (no call) and the proven domestic-cup rows (national cup fixture lists, a few calls, at most
+      # 40) that the HT matcher and the loader leave out; (b) --add-ft stores the provider FT beside
+      # the HT fill (from step 1's fixture lists, else one re-read per league-season still lacking it,
+      # ~120 at most, resumable) and refuses fill rows whose provider FT differs from the history FT.
       - name: 7. Half-time scores for the new-format history
         if: contains(env.STEPS, 'htscores')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          python scripts/collect_ht_scores.py
+          python scripts/build_history_corrections.py --fetch
+          python scripts/collect_ht_scores.py --add-ft
           /tmp/commit_collected.sh htscores
 
       # Runs third: ~3,800 calls on the first run, then only newly finished cup fixtures. Needs

@@ -1,0 +1,48 @@
+{
+ "cups": {
+  "proven_by_league_cup": {},
+  "proven_cup_rows": 0,
+  "unplaced_by_league": {
+   "Argentina Primera Division": 407,
+   "Japan J-League": 1,
+   "Romanian Superliga": 2
+  },
+  "unplaced_lacking_ht": 410,
+  "unplaced_rows": 410,
+  "unproven_by_reason": {
+   "no_cup_fixture_stored_within_pm1_day": 410
+  },
+  "unproven_rows": 410
+ },
+ "duplicates": {
+  "by_league": {
+   "Argentina Primera Division": 180,
+   "Brazil Serie A": 200,
+   "Mexico Liga MX": 112,
+   "USA MLS": 706
+  },
+  "claims": 34457,
+  "conflict_fixtures": 0,
+  "conflict_rows": 0,
+  "conflicts_by_reason": {},
+  "fixtures": 599,
+  "removed_by_league": {
+   "Argentina Primera Division": 90,
+   "Brazil Serie A": 100,
+   "Mexico Liga MX": 56,
+   "USA MLS": 353
+  },
+  "removed_keys": 599,
+  "removed_rows": 599,
+  "rows_claiming_a_fixture_from_two_dates": 1198,
+  "timezone": {
+   "kept_copy_is_provider_utc_date": 599,
+   "local_date_unknown": 0,
+   "removed_copy_dated_by_local_kickoff_date": 0,
+   "removed_copy_not_local_date": 599
+  }
+ },
+ "history": "output/fd_history.parquet",
+ "history_rows": 65940,
+ "written_at": "2026-11-04T07:55:51.210152+00:00"
+}

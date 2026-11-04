@@ -60,7 +60,7 @@ class _FakeClient:
 
 @pytest.fixture()
 def paths(tmp_path, monkeypatch):
-    for name in ("SCORES", "FILL", "AUDIT", "JOURNAL"):
+    for name in ("SCORES", "FILL", "AUDIT", "JOURNAL", "FT_JOURNAL", "FT_MISMATCH"):
         monkeypatch.setattr(H, name, tmp_path / getattr(H, name).name)
     return tmp_path
 
