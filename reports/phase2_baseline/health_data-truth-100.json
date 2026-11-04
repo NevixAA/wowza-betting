@@ -1,0 +1,139 @@
+{
+ "overall": "WARN",
+ "counts": {
+  "GREEN": 20,
+  "AMBER": 2,
+  "RED": 0,
+  "NO_DATA": 0
+ },
+ "checks": [
+  {
+   "check": "Side-market routing",
+   "status": "GREEN",
+   "value": "18 side tips, 0 unknown|*"
+  },
+  {
+   "check": "Stake-plan mapping",
+   "status": "GREEN",
+   "value": "0.0% unmapped"
+  },
+  {
+   "check": "Shadow settlement coverage",
+   "status": "GREEN",
+   "value": "98.7% (829/840)"
+  },
+  {
+   "check": "Challenger prediction coverage",
+   "status": "GREEN",
+   "value": "100% of 175 rows (p_pro_hgb)"
+  },
+  {
+   "check": "Certified CLV coverage",
+   "status": "GREEN",
+   "value": "70.7% of 365 settled"
+  },
+  {
+   "check": "Stale artifacts",
+   "status": "GREEN",
+   "value": "0 stale"
+  },
+  {
+   "check": "Forward candidate progress",
+   "status": "GREEN",
+   "value": "35/1200 forward bets \u00b7 {'ACCRUING': 8, 'REGISTERED': 5, 'DISCOVERY': 1}"
+  },
+  {
+   "check": "GitHub workflow health",
+   "status": "GREEN",
+   "value": "0 still failing / 175 runs (24 h) \u00b7 6 fixed since"
+  },
+  {
+   "check": "Fantasy V2 status",
+   "status": "GREEN",
+   "value": "mode shadow (workflow)"
+  },
+  {
+   "check": "Weekly research panel",
+   "status": "GREEN",
+   "value": "20 leagues \u00b7 {'PROTECTED': 1, 'REPAIR': 6, 'LEARNING': 93} \u00b7 protected_tracks_modified=False \u00b7 tracked 20 \u00b7 with current-week data 18 \u00b7 missing 0 \u00b7 candidates 696/696 \u00b7 panel 492 (settled 483, pending 9) \u00b7 CLV coverage 41%"
+  },
+  {
+   "check": "Protected tracks (research lock)",
+   "status": "GREEN",
+   "value": "protected_tracks_modified=False"
+  },
+  {
+   "check": "Data contracts",
+   "status": "AMBER",
+   "value": "2 new violation(s) in 2 of 14 files \u00b7 6 known historical (config/contract_baseline.json)"
+  },
+  {
+   "check": "First-sight store integrity",
+   "status": "GREEN",
+   "value": "9 stores, 9 checked against the previous digest"
+  },
+  {
+   "check": "Data truth 1: one canonical name",
+   "status": "GREEN",
+   "value": "0 unknown league name(s); blind board fixtures 3.4%"
+  },
+  {
+   "check": "Data truth 2: no silent defaults",
+   "status": "GREEN",
+   "value": "0 new default(s); 0 known (baseline); 0 baseline entr(ies) now gone"
+  },
+  {
+   "check": "Data truth 3: no missing data",
+   "status": "GREEN",
+   "value": "board priced, features present"
+  },
+  {
+   "check": "Data truth 4: right league relations",
+   "status": "GREEN",
+   "value": "banks clean, registry valid, joins league-keyed"
+  },
+  {
+   "check": "Data truth 5: one match, one row",
+   "status": "GREEN",
+   "value": "0 duplicate pair(s), 0 self-containing row(s) after the loader's identity pipeline (105,999 bank rows -> 71,146; 34,853 copies removed)"
+  },
+  {
+   "check": "Promotion gate",
+   "status": "GREEN",
+   "value": "56 decision(s), last 2026-11-01 17:13Z"
+  },
+  {
+   "check": "Edge-engine shadow",
+   "status": "AMBER",
+   "value": "market_edge_v2 UNVALIDATED_DEFAULTS, 696 rows, shadow_only=True, 30.0 h old"
+  },
+  {
+   "check": "Track registry",
+   "status": "GREEN",
+   "value": "100 entries, 0 drifted field(s)"
+  },
+  {
+   "check": "Standard OU25 serving",
+   "status": "GREEN",
+   "value": "v9_repaired on 72/72 Standard rows, 0 legacy fallback(s), 0 failed closed (no probability)"
+  }
+ ],
+ "contract_violations": 2,
+ "protected_tracks_modified": false,
+ "versions": {
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
+  "selection_engine_version": {
+   "production": "legacy_raw_edge",
+   "shadow": "market_edge_v2"
+  },
+  "contracts_version": "CONTRACTS-1",
+  "research_lock_digest": "837fce5601f43f4a5b04a3626f4e85f84ff217f145f1ed85b0c956ea457d8a0f",
+  "code_commit": "local"
+ },
+ "secs": 8.7,
+ "gate_failures": [],
+ "baseline_entries": 0,
+ "ratchet_ceiling": 0,
+ "default_scan_hits": 0,
+ "new_defaults": []
+}
