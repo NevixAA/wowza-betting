@@ -727,8 +727,10 @@ def sharp_jumps(history: dict | None = None, min_pct: float | None = None,
         t = pd.to_datetime(b.get("at"), utc=True, errors="coerce")
         if pd.isna(t) or (now - t).total_seconds() > max_age_hours * 3600:
             continue
-        na, nb = a.get("n_books") or 0, b.get("n_books") or 0
-        if na < 5 or nb < 5 or not (0.8 <= nb / na <= 1.25):
+        # unknown book counts fail the >= 5 test (they were typed 0s, the same skip, now said)
+        na = pd.to_numeric(a.get("n_books"), errors="coerce")
+        nb = pd.to_numeric(b.get("n_books"), errors="coerce")
+        if not (na >= 5 and nb >= 5) or not (0.8 <= nb / na <= 1.25):
             continue
         totals = rec.get("market") == "totals"
         keys = ("odds_over", "odds_under") if totals else ("odds_home", "odds_away", "odds_draw")

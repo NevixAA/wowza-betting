@@ -339,21 +339,11 @@ def legacy_side_tier(p_model: float, odds: float, league: str, market: str,
     if not (np.isfinite(p) and np.isfinite(o) and o > 1):
         return "NOT_EVALUATED", float("nan")
     edge = p - (1.0 / o) / SIDE_OVERROUND
-    lp = ((side_params or {}).get(market) or {}).get(league, {})
-    appr = lp.get("approved")
-    use_own = (lp.get("approved", not lp.get("drop", False)) if appr is not None
-               else not lp.get("drop", False))
-    if use_own and lp:
-        sn, mm = lp.get("sniper_th", 0.10), lp.get("marksman_th", 0.08)
-    else:
-        sn, mm = 0.10, 0.08
-    if edge >= sn:
-        return "SNIPER", edge
-    if edge >= mm:
-        return "MARKSMAN", edge
-    if edge >= 0.04:
-        return "VALUABLE", edge
-    return "AVOID", edge
+    # The SAME bar choice as production (src/side_thresholds.side_bars, fix9/defaults 2026-11-04);
+    # the global bar was a typed 0.10 / 0.08 / 0.04 here before, now config.SIDE_GLOBAL_BARS.
+    from src.side_thresholds import side_bars, tier_for
+    lp = ((side_params or {}).get(market) or {}).get(league, {}) or {}
+    return tier_for(edge, side_bars(lp)), edge
 
 
 def _tier_str(v) -> str:

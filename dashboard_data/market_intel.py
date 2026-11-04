@@ -177,10 +177,10 @@ def deployable(league: str, track: str, family: str, tier: str, odds: float, pol
     RETROSPECTIVE classification: the policy in force at the time differed (e.g. VALUABLE was staked on
     OU25 only from 2026-10-22). The policy track is src/bankroll_policy.track_key, so O/U 2.5 needs the
     selection's `side` (per-side tracks since 2026-10-26); without one it is never deployable."""
-    from src.bankroll_policy import HARD, REAL_STATES, track_key
+    from src.bankroll_policy import HARD, REAL_STATES, positive_fraction, track_key
     tkey = track_key(track, POLICY_MARKET.get(family, family), side)
     t = (policy.get("tracks") or {}).get(tkey, {"state": "UNSUPPORTED", "base_fraction": 0.0})
-    if t.get("state") not in REAL_STATES or float(t.get("base_fraction", 0.0)) <= 0:
+    if t.get("state") not in REAL_STATES or not positive_fraction(t):
         return False, f"track {t.get('state')}"
     if league in set(policy.get("paper_leagues") or []):
         return False, "paper league"
@@ -189,7 +189,7 @@ def deployable(league: str, track: str, family: str, tier: str, odds: float, pol
         return False, "odds blocked"
     if odds > min(float(t.get("max_odds", HARD["max_odds"])), HARD["max_odds"]):
         return False, "odds above track cap"
-    if odds < float(t.get("min_odds", 1.0)):
+    if t.get("min_odds") is not None and odds < float(t["min_odds"]):    # no floor recorded = no floor
         return False, "odds below track floor"
     tt = (policy.get("track_tier_multipliers") or {}).get(tkey)
     if float((tt if tt is not None else policy.get("tier_multipliers", {})).get(str(tier), 0.0)) <= 0:

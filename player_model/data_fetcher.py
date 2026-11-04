@@ -586,16 +586,34 @@ def fetch_league_teams(league_id: int, season: str) -> list[dict]:
     """
     try:
         data = _api_get("teams", {"league": league_id, "season": season})
+        # A team the provider sends without an id is skipped, never filed under a typed team_id 0
+        # (fix9/defaults 2026-11-04: the id read was `.get("id", 0)`, guarded only by the filter).
         return [
             {
-                "team_id":   int(t.get("team", {}).get("id", 0)),
-                "team_name": t.get("team", {}).get("name", ""),
+                "team_id":   int((t.get("team") or {})["id"]),
+                "team_name": (t.get("team") or {}).get("name", ""),
             }
             for t in data.get("response", [])
-            if t.get("team", {}).get("id")
+            if (t.get("team") or {}).get("id")
         ]
     except RuntimeError:
         return []
+
+
+def _fixture_id_of(fix: dict):
+    """The provider fixture id of a fixture-list entry (the cached '_raw' layout or the API's), or None.
+    It was `fix.get("id") or fix.get("fixture", {}).get("id", 0)`: a fixture without an id was looked
+    up as cache file 0 (fix9/defaults 2026-11-04). Only the cached/to-fetch COUNT read it; the fetch
+    loop already skipped id-less fixtures."""
+    fid = fix.get("id")
+    if fid is None:
+        fid = (fix.get("fixture") or {}).get("id")
+    return fid if fid else None
+
+
+def _is_cached(fixture_id) -> bool:
+    """True when the per-fixture cache holds this fixture; an unknown id is never 'cached'."""
+    return fixture_id is not None and _fixture_cache_path(fixture_id).exists()
 
 
 # ── Per-fixture player stats (match-level data) ───────────────────────────────
@@ -730,10 +748,7 @@ def _collect_one_season(
         print(f"  [{league_name} {season}] No completed fixtures found")
         return []
 
-    cached_count = sum(
-        1 for fix in fixtures
-        if _fixture_cache_path(fix.get("id") or fix.get("fixture", {}).get("id", 0)).exists()
-    )
+    cached_count = sum(1 for fix in fixtures if _is_cached(_fixture_id_of(fix)))
     to_fetch = len(fixtures) - cached_count
     print(f"  [{league_name} {season}] {len(fixtures)} fixtures ({cached_count} cached, {to_fetch} to fetch)...")
 
@@ -936,10 +951,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
             print(f"  [{team_name}] No completed fixtures found")
             continue
 
-        cached_count = sum(
-            1 for f in fixtures
-            if _fixture_cache_path(f.get("fixture", {}).get("id", 0)).exists()
-        )
+        cached_count = sum(1 for f in fixtures if _is_cached((f.get("fixture") or {}).get("id")))
         team_rows = 0
         for fix in fixtures:
             fixture_id = fix.get("fixture", {}).get("id")
@@ -1065,16 +1077,22 @@ def fetch_league_player_stats(league: str, force_refresh: bool = False) -> list[
             break
 
         entries  = data.get("response", [])
-        paging   = data.get("paging", {})
-        total_pg = int(paging.get("total", 1))
+        # The page count is the provider's paging.total. It was `.get("total", 1)`: a response
+        # without it was read as "1 page". Same stop (no further page is requested), but now said:
+        # an unknown page count is not a known single page (fix9/defaults 2026-11-04).
+        total_raw = (data.get("paging") or {}).get("total")
+        total_pg = int(total_raw) if total_raw is not None else None
 
         for entry in entries:
             parsed = _parse_player(entry, league)
             if parsed:
                 players.append(parsed)
 
-        print(f"    page {page}/{total_pg} -- {len(entries)} entries")
+        print(f"    page {page}/{total_pg if total_pg is not None else '?'} -- {len(entries)} entries")
 
+        if total_pg is None:
+            print(f"  [{league}] provider sent no paging.total - no further page requested")
+            break
         if page >= total_pg:
             break
         page += 1
@@ -1244,9 +1262,13 @@ def fetch_all_player_season_stats(
     tasks: list[tuple[int, int, str]] = []
     seen: set[int] = set()
     for _, row in df.iterrows():
-        pid = int(row.get("player_id", 0))
-        if not pid or pid in seen:
+        # A row without a provider player id is skipped, not read as player 0 (fix9/defaults
+        # 2026-11-04: it was int(row.get("player_id", 0)), which also crashed on a NaN id).
+        import pandas as _pd
+        _pid = _pd.to_numeric(row.get("player_id"), errors="coerce")
+        if _pd.isna(_pid) or not int(_pid) or int(_pid) in seen:
             continue
+        pid = int(_pid)
         seen.add(pid)
         lg   = str(row.get("league", ""))
         info = leagues.get(lg)

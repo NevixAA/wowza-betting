@@ -237,8 +237,11 @@ def _fetch_odds(fixture_id: int, want_raw: bool = False) -> dict:
             r = requests.get(f"{_BASE}/odds", headers=_HEADERS, params=params, timeout=20)
             if r.status_code == 429:
                 time.sleep(15); continue
-            remaining = int(r.headers.get("x-ratelimit-requests-remaining", 9999))
-            if remaining < _MIN_QUOTA:
+            # an absent quota header is UNKNOWN headroom, not 9999 (fix9/defaults 2026-11-04): no stop
+            # is triggered by it (as before), and no number is invented for it
+            _rem = r.headers.get("x-ratelimit-requests-remaining")
+            remaining = int(_rem) if _rem is not None else None
+            if remaining is not None and remaining < _MIN_QUOTA:
                 print(f"  [!] quota low ({remaining}) — stopping"); return {"_stop": True}
             if r.status_code != 200:
                 return {}

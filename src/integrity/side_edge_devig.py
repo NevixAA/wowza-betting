@@ -37,6 +37,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src import side_thresholds as _ST
 from src.market_edge import overround, power_devig
 
 SHADOW_VERSION = "side_edge_devig_shadow-1.0"
@@ -46,7 +47,8 @@ FAMILY = {  # production market -> (snapshot market, side A, side B, p column, o
     "over15": ("OU15", "OVER", "UNDER", "p_over15", "odds_over15"),
     "over35": ("OU35", "OVER", "UNDER", "p_over35", "odds_over35"),
 }
-DEFAULT_BARS = (0.10, 0.08, 0.04)
+#: the declared global policy bar (config.SIDE_GLOBAL_BARS; was a typed (0.10, 0.08, 0.04) here)
+DEFAULT_BARS = _ST.global_bars()
 
 
 def _utc(x):
@@ -55,14 +57,16 @@ def _utc(x):
 
 
 def thresholds(league_params: dict, market: str, league: str) -> tuple[float, float, float]:
-    """Exactly pipeline._generate_side_bets' threshold choice (duplicated read-only)."""
+    """Exactly pipeline._generate_side_bets' threshold choice: the SAME function
+    (src/side_thresholds.side_bars, fix9/defaults 2026-11-04 - it was duplicated here with the
+    global bar typed as a literal default). threshold_source: thresholds_with_source."""
+    return thresholds_with_source(league_params, market, league)[:3]
+
+
+def thresholds_with_source(league_params: dict, market: str, league: str) -> tuple[float, float, float, str]:
+    """(sniper, marksman, valuable, 'LEAGUE' | 'GLOBAL')."""
     lp = (league_params.get(market, {}) or {}).get(league, {}) or {}
-    approved = lp.get("approved")
-    use_own = (lp.get("approved", not lp.get("drop", False)) if approved is not None
-               else not lp.get("drop", False))
-    if use_own:
-        return float(lp.get("sniper_th", 0.10)), float(lp.get("marksman_th", 0.08)), 0.04
-    return DEFAULT_BARS
+    return _ST.side_bars(lp)
 
 
 def tier(edge: float, bars: tuple) -> str:

@@ -179,13 +179,15 @@ def production_state(policy: dict, league: str, model_type: str, market: str, si
     """Exactly what production applies: bankroll_policy track state, then the paper-league override
     (src/bankroll_policy.size_day: PAPER_LEAGUE -> no stake; config.PAPER_LEAGUES -> never sent).
     The track key is src/bankroll_policy.track_key: O/U 2.5 is per side since 2026-10-26."""
-    from src.bankroll_policy import track_key
+    from src.bankroll_policy import positive_fraction, track_key
     track = track_key(model_type, market, side)
     t = (policy.get("tracks") or {}).get(track)
     track_state = t.get("state", "UNSUPPORTED") if t else "UNSUPPORTED"
     paper = league in set(policy.get("paper_leagues", [])) or config.is_paper_league(league)
     return {"track": track, "track_state": track_state,
-            "base_fraction": _f((t or {}).get("base_fraction", 0.0), 6),
+            # the fraction production APPLIES: the track's own > 0, else no stake (0) - the same rule as
+            # src/bankroll_policy.size_day (positive_fraction), not a typed .get(..., 0.0) default
+            "base_fraction": _f(t["base_fraction"], 6) if positive_fraction(t or {}) else 0.0,
             "paper_league": bool(paper),
             "production_state": "PAPER_LEAGUE" if paper else track_state,
             "provider_supported": bool(config.provider_supported(league))}

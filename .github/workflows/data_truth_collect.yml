@@ -138,11 +138,16 @@ jobs:
       # 40) that the HT matcher and the loader leave out; (b) --add-ft stores the provider FT beside
       # the HT fill (from step 1's fixture lists, else one re-read per league-season still lacking it,
       # ~120 at most, resumable) and refuses fill rows whose provider FT differs from the history FT.
+      # fix9/defaults (owner 2026-11-04): --add-status FIRST re-reads each of the 120 stored league-season
+      # lists ONCE (journal output/collect/ht_status_seasons.parquet, resumable, budget-guarded) to store
+      # score.extratime / score.penalty and the AWD / WO / ABD statuses the 2026-11-02 parse dropped, so
+      # build_history_corrections can exclude awarded / abandoned matches from the whole history.
       - name: 7. Half-time scores for the new-format history
         if: contains(env.STEPS, 'htscores')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
+          python scripts/collect_ht_scores.py --add-status
           python scripts/build_history_corrections.py --fetch
           python scripts/collect_ht_scores.py --add-ft
           /tmp/commit_collected.sh htscores

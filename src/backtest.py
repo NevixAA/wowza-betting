@@ -34,7 +34,11 @@ log = logging.getLogger(__name__)
 def _compute_pnl(row: dict) -> float:
     if row.get("bet") == "AVOID":
         return 0.0
-    stake = row.get("bet_stake", 1.0) or 0.0
+    # A row without a recorded stake has an UNKNOWN P/L, not a flat 1.0-unit one (fix9/defaults
+    # 2026-11-04: it was row.get("bet_stake", 1.0)). A recorded 0 stake is a real 0.
+    stake = pd.to_numeric(row.get("bet_stake"), errors="coerce")
+    if pd.isna(stake):
+        return np.nan
     if stake == 0:
         return 0.0
     target_val = row.get("over25", np.nan)

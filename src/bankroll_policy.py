@@ -49,6 +49,17 @@ SIDE_SPLIT_MARKETS = {"OU25": ("OVER", "UNDER")}
 UNKNOWN_SIDE = "UNKNOWN_SIDE"
 
 
+def positive_fraction(track: dict) -> bool:
+    """True when a policy track records a base_fraction > 0. A track that records none stakes nothing
+    (fail closed). The readers spelled this `float(t.get("base_fraction", 0) or 0) > 0` - a typed 0 for
+    a missing policy value; one function now, same verdict (fix9/defaults 2026-11-04)."""
+    bf = (track or {}).get("base_fraction")
+    try:
+        return bf is not None and float(bf) > 0.0
+    except (TypeError, ValueError):
+        return False
+
+
 def track_key(model_type, market, side=None) -> str:
     """THE policy track key. `model_type|market` (new_format|BTTS), except a side-split market, which is
     `model_type|market_SIDE` (new_format|OU25_OVER, standard|OU25_UNDER). A side-split market with a
@@ -176,7 +187,8 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     out = []
     for i, r in enumerate(d.itertuples(index=False)):
         t = policy["tracks"].get(r.track, {"state": "UNSUPPORTED", "base_fraction": 0.0})
-        base = min(float(t.get("base_fraction", 0.0)), HARD["base_fraction"])
+        # no recorded base fraction stakes nothing (fail closed; it was a typed .get(..., 0.0))
+        base = min(float(t["base_fraction"]), HARD["base_fraction"]) if positive_fraction(t) else 0.0
         state = t.get("state", "UNSUPPORTED")
         odds = float(r.odds) if pd.notna(r.odds) else float("nan")
         # PER-TRACK TIER MULTIPLIERS (owner 2026-10-22): a track whose edge does not rank outcomes
@@ -196,7 +208,7 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
             reason = "ODDS_BLOCKED"
         elif odds > min(float(t.get("max_odds", HARD["max_odds"])), HARD["max_odds"]):
             reason = "ODDS_ABOVE_TRACK_CAP"
-        elif odds < float(t.get("min_odds", 1.0)):
+        elif t.get("min_odds") is not None and odds < float(t["min_odds"]):   # none recorded = no floor
             reason = "ODDS_BELOW_TRACK_FLOOR"
         elif tm <= 0:
             reason = "TIER_NOT_STAKED"

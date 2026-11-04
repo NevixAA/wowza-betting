@@ -99,7 +99,7 @@ def real_track_checker():
     (state in REAL_STATES and base_fraction > 0). Policy unreadable -> always False (every tip
     counts as paper, so the guard falls back to first-tip-stands; logged)."""
     try:
-        from src.bankroll_policy import REAL_STATES, load_policy, track_key
+        from src.bankroll_policy import REAL_STATES, load_policy, positive_fraction, track_key
         tracks = load_policy().get("tracks") or {}
     except Exception as e:                                           # noqa: BLE001
         log.warning(f"direction guard: bankroll policy unreadable ({type(e).__name__}: {e}) — "
@@ -112,7 +112,7 @@ def real_track_checker():
         if mk is None or not mt or mt == "nan":
             return False
         t = tracks.get(track_key(mt, mk, str(side or "").strip().upper())) or {}
-        return t.get("state") in REAL_STATES and float(t.get("base_fraction") or 0.0) > 0.0
+        return t.get("state") in REAL_STATES and positive_fraction(t)
     return _real
 
 

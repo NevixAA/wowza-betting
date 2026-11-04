@@ -2786,6 +2786,16 @@ def notify_retrain_result() -> bool:
     return True
 
 
+def threshold_source_line(src) -> str:
+    """The alert line that says a side tip was tiered on the GLOBAL bar (fix9/defaults 2026-11-04).
+    A tier on the declared global policy bar (config.SIDE_GLOBAL_BARS) must never read like a
+    per-league tier; a LEAGUE tier, or a row that does not record its bar, adds no line."""
+    s = str(src).strip().upper() if src is not None and not (isinstance(src, float) and src != src) else ""
+    if s == app_config.THRESHOLD_SOURCE_GLOBAL:
+        return "📏 Tier on the GLOBAL bar - no approved per-league threshold\n"
+    return ""
+
+
 def notify_side_bets() -> int:
     """Send Telegram alerts for SNIPER/MARKSMAN BTTS / Over 1.5 / Over 3.5 tips. Returns count sent."""
     cfg = _load_config()
@@ -2863,6 +2873,7 @@ def notify_side_bets() -> int:
             f"⚽ {row['home_team']} vs {row['away_team']}\n"
             f"📌 <b>{label}</b>  @ {float(row['market_odds']):.2f}\n"
             f"📊 Edge: <b>{edge:.1f}%</b>  |  EV: <b>{ev:+.1f}%</b>  |  Model P={float(row['model_prob'])*100:.0f}%\n"
+            + threshold_source_line(row.get("threshold_source")) +
             f"⚠️ Check your bookmaker's {label} market"
         )
 

@@ -109,6 +109,11 @@ def _get_min_odds(league: str) -> tuple[float, float]:
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _kelly(p: float, odds: float) -> float:
+    """Kelly fraction. A MISSING price or probability gives a missing fraction (NaN), never 0:
+    until fix9/defaults (2026-11-04) the caller passed odds.fillna(0), so "no price" read as a real
+    zero Kelly stake. A real price at or below evens-of-nothing (odds <= 1) or p <= 0 is a real 0."""
+    if p is None or odds is None or not (np.isfinite(p) and np.isfinite(odds)):
+        return float("nan")
     b = odds - 1.0
     if b <= 0 or p <= 0:
         return 0.0
@@ -116,6 +121,11 @@ def _kelly(p: float, odds: float) -> float:
 
 
 def _stake(edge: float, p: float, odds: float, threshold: float) -> float:
+    """Stake for one side. Missing price / edge -> missing stake (NaN): no stake is sized, and none
+    is recorded as 0 or as the flat stake (a NaN edge used to fall through to FLAT_STAKE when
+    USE_KELLY is off). A side never bet still gets bet_stake 0.0 in evaluate_value."""
+    if edge is None or odds is None or not (np.isfinite(edge) and np.isfinite(odds)):
+        return float("nan")
     if edge < threshold:
         return 0.0
     if config.USE_KELLY:
@@ -297,8 +307,10 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
     df["edge_over"]  = p_over  - df["impl_prob_over"]
     df["edge_under"] = p_under - df["impl_prob_under"]
 
-    df["kelly_over"]  = [_kelly(p, o) for p, o in zip(p_over,  ov_odds.fillna(0))]
-    df["kelly_under"] = [_kelly(p, o) for p, o in zip(p_under, un_odds.fillna(0))]
+    # Kelly on a MISSING price is missing (NaN), not 0: the prices were passed as .fillna(0) until
+    # fix9/defaults (2026-11-04). See _kelly / _stake.
+    df["kelly_over"]  = [_kelly(p, o) for p, o in zip(p_over,  ov_odds)]
+    df["kelly_under"] = [_kelly(p, o) for p, o in zip(p_under, un_odds)]
 
     df["ev_over"]  = df["edge_over"]  * ov_odds
     df["ev_under"] = df["edge_under"] * un_odds
@@ -325,9 +337,9 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
 
     # Stake (uses VALUE_THRESHOLD as minimum to award stake)
     df["stake_over"]  = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
-                         zip(df["edge_over"],  p_over,  ov_odds.fillna(0))]
+                         zip(df["edge_over"],  p_over,  ov_odds)]
     df["stake_under"] = [_stake(e, p, o, config.VALUE_THRESHOLD) for e, p, o in
-                         zip(df["edge_under"], p_under, un_odds.fillna(0))]
+                         zip(df["edge_under"], p_under, un_odds)]
 
     # Base tier — per-league threshold if available, else side-specific global
     leagues = df.get("league", pd.Series([""] * len(df), index=df.index))
@@ -340,8 +352,10 @@ def evaluate_value(df: pd.DataFrame, p_col: str = "p_over25") -> pd.DataFrame:
 
     # New-format price cap (config.NF_MAX_OU_ODDS, owner 2026-10-22): a new-format side priced above
     # the cap is not bettable. Still scored and logged - only the tip is withheld.
-    cap = float(getattr(config, "NF_MAX_OU_ODDS", 0) or 0)
-    if cap > 0 and "league" in df.columns:
+    # an unset cap means "no cap" (a config switch, not a price); read without a typed 0 stand-in
+    _cap = getattr(config, "NF_MAX_OU_ODDS", None)
+    cap = float(_cap) if _cap else None
+    if cap is not None and cap > 0 and "league" in df.columns:
         nf = df["league"].map(lambda lg: config.model_type_for_league(str(lg)) == "new_format").astype(bool)
         over_cap, under_cap = nf & (ov_odds > cap), nf & (un_odds > cap)
         df["max_odds_blocked"] = (((df["edge_over"] >= config.VALUE_THRESHOLD) & over_cap) |

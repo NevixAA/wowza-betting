@@ -9,8 +9,12 @@ turns system health RED instead of waiting for the next audit:
     1 NAMING     every league value in the committed boards, ledgers and history banks is a
                  registry league (canonical or alias); blind board fixtures are counted.
     2 DEFAULTS   no NEW invented default in production code: fillna(<non-zero literal>), literal
-                 season fallbacks, literal season-year lists, pinned football-data folders. Known
-                 remaining ones live in config/data_truth_baseline.json, each with a reason.
+                 season fallbacks, literal season-year lists, pinned football-data folders, and
+                 (fix9/defaults 2026-11-04) numeric `.get(<key>, <number>)` defaults, `or 0` on a
+                 parsed value and fillna(0) on a price / odds. Scanned: ALL production code (not tests,
+                 not scripts/audit). Known remaining ones live in config/data_truth_baseline.json,
+                 each with a reason; genuine counters and display code are named, with a reason each,
+                 in config/data_truth_allowlist.json.
     3 MISSING    the live board carries its prices and, on EVERY served model track (standard and
                  new_format x O/U 2.5 / BTTS / Over 1.5 / Over 3.5, HT O/U on standard), every input
                  the scoring payload needs plus the HT form and rest days (2026-11-04: it checked two
@@ -43,18 +47,43 @@ VERSION = "DATA-TRUTH-1"
 
 GREEN, AMBER, RED, GREY = "GREEN", "AMBER", "RED", "NO_DATA"
 
-# Production code a default can hide in (tips, stakes, settlement, features, loaders).
-SCAN_FILES = ["pipeline.py", "update_results.py", "config.py", "src/predict.py", "src/feature_engineering.py",
-              "src/ht_features.py", "src/betting.py", "src/data_loader.py", "src/stake_plan.py",
-              "src/ledger.py", "src/api_football_ou.py", "src/btts_odds.py", "player_model/predict.py",
-              "player_model/pipeline.py", "player_model/config.py", "player_model/feature_engineering.py",
-              "player_model/data_fetcher.py", "player_model/fantasy.py", "player_model/league_quality.py",
-              "telegram_bot/notifier.py"]
+ALLOWLIST = ROOT / "config" / "data_truth_allowlist.json"
+
+# ALL production code (fix9/defaults 2026-11-04). Until then rule 2 scanned a hand-picked list of 20
+# files, so a wide scan of data-truth-100 on 2026-11-04 still found typed defaults in the side-market
+# tier bars, the FPL minutes baseline, prop prices, Kelly and the dashboard's tier P/L. Now every .py
+# file of the repository is scanned except tests, the audit scripts and non-code folders.
+SCAN_EXCLUDE_DIRS = ("tests/", "scripts/audit/", "_archive/", "output/", "docs/", "reports/", "deploy/")
+
+
+def production_files(root: Path | None = None) -> list[str]:
+    """Every production .py file (repo-relative, '/'-separated, sorted)."""
+    root = root or ROOT
+    out = []
+    for p in root.rglob("*.py"):
+        rel = p.relative_to(root).as_posix()
+        parts = rel.split("/")
+        if any(x.startswith(".") or x in ("__pycache__", "node_modules", "site-packages") for x in parts):
+            continue
+        if rel.startswith(SCAN_EXCLUDE_DIRS):
+            continue
+        out.append(rel)
+    return sorted(out)
+
+
+SCAN_FILES = production_files()
 DEFAULT_PATTERNS = {
     "fillna_literal": re.compile(r"\.fillna\(\s*-?(?:0*[1-9]\d*(?:\.\d+)?|0?\.\d*[1-9]\d*)\s*\)"),
     "season_literal_fallback": re.compile(r"""\.get\([^()]*,\s*["']20\d\d["']\s*\)"""),
     "season_year_list": re.compile(r"20\d\d\|20\d\d"),
     "pinned_fd_folder": re.compile(r"mmz4281/\d{4}/"),
+    # fix9/defaults 2026-11-04 - the classes the 2026-11-04 wide scan found and the 4 patterns missed:
+    #   d.get("price", 0) / lp.get("sniper_th", 0.10) - a number typed in for a field that was not sent
+    "numeric_get_default": re.compile(r"""\.get\(\s*[^(),]+?,\s*-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\s*\)"""),
+    #   int(x or 0) / float(v.get("n") or 0.0) - "no value" read as a real zero
+    "or_zero": re.compile(r"""\bor\s+0(?:\.0*)?(?![\d.eE])"""),
+    #   odds.fillna(0) - a missing price turned into a price of 0 (Kelly, EV, staking)
+    "fillna_zero_price": re.compile(r"""(?i)(?:odds|price)[^#\n]*\.fillna\(\s*0(?:\.0*)?\s*\)"""),
 }
 
 BOARD_FILES = ["predictions.csv", "bets_ledger.csv", "side_bets_ledger.csv", "player_tips.csv"]
@@ -108,21 +137,55 @@ def naming() -> dict:
 
 
 # ── 2 DEFAULTS ───────────────────────────────────────────────────────────────────────────────────
-def scan_defaults() -> list[dict]:
-    """Every invented-default site in SCAN_FILES: {file, kind, code}. Comments are ignored."""
+def _docstring_lines(text: str) -> set[int]:
+    """1-based line numbers inside a string literal that is a statement of its own (a docstring or
+    a bare string block). Prose there describes old code ("it was `int(x or 0)`") and is not code;
+    the line-based scan used to skip only lines that START with a quote."""
+    import io
+    import tokenize
+    skip: set[int] = set()
+    try:
+        toks = list(tokenize.generate_tokens(io.StringIO(text).readline))
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        return skip
+    prev = None
+    for t in toks:
+        if t.type in (tokenize.COMMENT, tokenize.NL, tokenize.ENCODING):
+            continue
+        if t.type == tokenize.STRING and prev in (None, tokenize.NEWLINE, tokenize.INDENT, tokenize.DEDENT):
+            skip.update(range(t.start[0], t.end[0] + 1))
+        prev = t.type
+    return skip
+
+
+def scan_file(rel: str, text: str) -> list[dict]:
+    """Every invented-default site of one file: {file, kind, code}. Comments and docstrings are ignored."""
     hits = []
-    for rel in SCAN_FILES:
+    skip = _docstring_lines(text)
+    for i, ln in enumerate(text.splitlines(), start=1):
+        if i in skip:
+            continue
+        code = ln.split("#", 1)[0]
+        s = code.strip()
+        # A line that merely STARTS with a quote is scanned since fix9/defaults: a continuation line
+        # such as  "RETROSPECTIVE_ONLY" if clv.get("n", 0) else "NONE"  is code (docstrings are skipped
+        # above by the tokenizer, which the old start-with-a-quote rule only approximated).
+        if not s:
+            continue
+        for kind, pat in DEFAULT_PATTERNS.items():
+            if pat.search(code):
+                hits.append({"file": rel, "kind": kind, "code": s})
+    return hits
+
+
+def scan_defaults(files: list[str] | None = None) -> list[dict]:
+    """Every invented-default site in SCAN_FILES (all production code): {file, kind, code}."""
+    hits = []
+    for rel in (SCAN_FILES if files is None else files):
         p = ROOT / rel
         if not p.exists():
             continue
-        for ln in p.read_text(encoding="utf-8").splitlines():
-            code = ln.split("#", 1)[0]
-            s = code.strip()
-            if not s or s.startswith(('"', "'")):
-                continue
-            for kind, pat in DEFAULT_PATTERNS.items():
-                if pat.search(code):
-                    hits.append({"file": rel, "kind": kind, "code": s})
+        hits += scan_file(rel, p.read_text(encoding="utf-8", errors="replace"))
     return hits
 
 
@@ -133,17 +196,41 @@ def _baseline() -> dict:
         return {"entries": []}
 
 
+def _allowlist() -> dict:
+    """config/data_truth_allowlist.json: sites that are NOT invented data - genuine counters (a tally
+    that starts at zero), lookup tables with a fail-closed fallback, config switches and display
+    code - each named exactly ({file, kind, code}) with its reason. NOT a baseline: a real default
+    is fixed, never listed here; an entry without a reason is refused (RED)."""
+    try:
+        return json.loads(ALLOWLIST.read_text(encoding="utf-8"))
+    except Exception:                                                 # noqa: BLE001
+        return {"entries": []}
+
+
 def defaults() -> dict:
-    rule = ("no NEW invented default in production code (fillna(<non-zero literal>), literal season "
-            "fallback/list, pinned football-data folder): RED if any site is not in "
-            "config/data_truth_baseline.json; GREEN otherwise (baseline entries each carry a reason)")
+    rule = ("no NEW invented default in ALL production code (fillna(<non-zero literal>), literal season "
+            "fallback/list, pinned football-data folder, numeric .get(<key>, <number>), an or-zero on a "
+            "parsed value, a zero fillna on a price/odds): RED if any site is in neither config/data_truth_baseline.json "
+            "nor config/data_truth_allowlist.json, or an allow-list entry has no reason; GREEN otherwise")
     known = {(e["file"], e["code"]) for e in _baseline().get("entries", [])}
+    allow_entries = _allowlist().get("entries", [])
+    allowed = {(e["file"], e["code"]) for e in allow_entries}
+    unreasoned = [e for e in allow_entries if not str(e.get("reason") or "").strip()]
     hits = scan_defaults()
-    new = [h for h in hits if (h["file"], h["code"]) not in known]
-    gone = len(known - {(h["file"], h["code"]) for h in hits})
-    return _c("Data truth 2: no silent defaults", RED if new else GREEN,
-              f"{len(new)} new default(s); {len(hits) - len(new)} known (baseline); {gone} baseline entr(ies) "
-              f"now gone", rule, "; ".join(f"{h['file']}: {h['code'][:80]}" for h in new[:5]))
+    new = [h for h in hits if (h["file"], h["code"]) not in known | allowed]
+    n_known = sum((h["file"], h["code"]) in known for h in hits)
+    n_allowed = sum((h["file"], h["code"]) in allowed and (h["file"], h["code"]) not in known for h in hits)
+    seen = {(h["file"], h["code"]) for h in hits}
+    gone = len(known - seen)
+    stale = len(allowed - seen)
+    detail = "; ".join(f"{h['file']}: {h['code'][:80]}" for h in new[:5])
+    if unreasoned:
+        detail = (detail + "; " if detail else "") + "allow-list entries without a reason: " + "; ".join(
+            f"{e.get('file')}: {str(e.get('code'))[:60]}" for e in unreasoned[:5])
+    return _c("Data truth 2: no silent defaults", RED if new or unreasoned else GREEN,
+              f"{len(new)} new default(s); {n_known} known (baseline); {n_allowed} allow-listed (counters/"
+              f"display); {gone} baseline entr(ies) now gone; {stale} allow-list entr(ies) now gone; "
+              f"{len(SCAN_FILES)} production files scanned", rule, detail)
 
 
 # ── 3 MISSING ────────────────────────────────────────────────────────────────────────────────────
@@ -381,7 +468,8 @@ def evaluate(now: datetime | None = None) -> list[dict]:
 def write_baseline() -> int:
     """Record today's remaining default sites for owner review (each needs a reason)."""
     prev = {(e["file"], e["code"]): e.get("reason", "") for e in _baseline().get("entries", [])}
-    hits = scan_defaults()
+    allowed = {(e["file"], e["code"]) for e in _allowlist().get("entries", [])}
+    hits = [h for h in scan_defaults() if (h["file"], h["code"]) not in allowed]
     entries = [{**h, "reason": prev.get((h["file"], h["code"]), "TODO: reason")} for h in hits]
     BASELINE.write_text(json.dumps({"version": VERSION, "entries": entries}, indent=1) + "\n",
                         encoding="utf-8", newline="\n")
