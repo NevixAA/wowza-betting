@@ -1,0 +1,118 @@
+name: Pre-kickoff Capture (prematch)
+
+# Owner approval 2026-11-04: capture injuries (~2 h), confirmed lineups with player ids (~45 min)
+# and player-prop odds (~75 and ~15 min) BEFORE kickoff, each row stamped with the real fetch time,
+# for the props matchup research in wowzaV9-Pro (R_PROPS_MATCHUP_SPEC.md). API-Football only;
+# script and output contract: scripts/capture_prematch.py, reports/PREMATCH_CAPTURE_CONTRACT.md.
+#
+# SWITCHED OFF until the big data collection (data_truth_collect.yml) ends on 2026-11-08. The job
+# runs only when the repository variable PREMATCH_CAPTURE_ENABLED is exactly 'true'; while it is
+# unset every scheduled firing is a skipped job (no runner, no API call). The script checks the same
+# variable again and makes no call without it.
+#   Switch ON:  gh variable set PREMATCH_CAPTURE_ENABLED --body true --repo NevixAA/wowza-betting
+#               (or Settings > Secrets and variables > Actions > Variables > New repository variable)
+#   Switch OFF: gh variable delete PREMATCH_CAPTURE_ENABLED --repo NevixAA/wowza-betting
+# The schedule is read from the DEFAULT branch (main): this file must be on main for the cron to fire.
+#
+# CADENCE. The slots are 20-30-minute windows, so the job needs a look every ~5 minutes. A cron of
+# */5 or */15 would NOT deliver that: measured on this estate (live_scanner.yml, 2026-08-30),
+# workflows asking >= 26 runs/day got 8-38% of them and <= 8/day got essentially all. So, like the
+# live scanner since 2026-10-12: 8 firings a day, each running a pass every 5 minutes for ~175
+# minutes (in-run loop), committing every 30 minutes. A late firing queues behind the running one
+# (concurrency below), so the loops run back to back. Actions minutes are free on this public repo;
+# the cost is one runner for up to ~23.5 h/day, which also does not add scheduler load (8 events/day).
+#
+# API-FOOTBALL BUDGET: its own journal output/prematch/af_budget.json (never the big job's
+# output/collect/af_budget.json), at most 1,000 calls per UTC day (dry-run 2026-11-04: peak 767 on
+# the busiest of 28 days, mean 276), and a stop when the account's remaining daily quota falls
+# below collect_common.FLOOR - 1,000 = 24,000. A budget stop is a clean exit; the next pass retries.
+
+on:
+  schedule:
+    - cron: '7 */3 * * *'           # every 3 h at :07 (off the contended :00 / :15), 8/day
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "capture = the loop (needs PREMATCH_CAPTURE_ENABLED=true); dry-run = call estimate, no API call, no commit"
+        required: false
+        default: 'dry-run'
+        type: choice
+        options: ['dry-run', 'capture']
+
+concurrency:
+  group: prematch-capture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    # THE SWITCH. Off by default: a capture needs the repository variable; a manual dry-run is always
+    # allowed (it makes no API call and commits nothing).
+    if: vars.PREMATCH_CAPTURE_ENABLED == 'true' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run')
+    runs-on: ubuntu-latest
+    timeout-minutes: 195
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Dry run (call estimate, no API call)
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run'
+        run: python scripts/capture_prematch.py --dry-run
+
+      - name: Commit helper
+        if: vars.PREMATCH_CAPTURE_ENABLED == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run')
+        run: |
+          cat > /tmp/commit_prematch.sh <<'EOF'
+          #!/usr/bin/env bash
+          # Commit what the passes stored so far (output/prematch/ only) and push it to this branch.
+          set -u
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f output/prematch 2>/dev/null || echo "  (nothing stored yet: output/prematch)"
+          if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
+          git commit -q -m "auto: prematch capture $(date -u '+%Y-%m-%d %H:%M UTC')"
+          for i in 1 2 3 4 5; do
+            # In a rebase `-X theirs` keeps THIS run's commit (the captured rows); only this job
+            # writes output/prematch/ and runs never overlap, so a conflict there is not expected.
+            git pull -q --rebase --autostash -X theirs origin "$GITHUB_REF_NAME" && \
+              git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            echo "push race - retry $i"; sleep $((RANDOM % 5 + 3))
+          done
+          echo "::warning::push failed after 5 retries"; exit 1
+          EOF
+          chmod +x /tmp/commit_prematch.sh
+
+      - name: Capture loop (a pass every 5 minutes for ~175 minutes)
+        if: vars.PREMATCH_CAPTURE_ENABLED == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+          PREMATCH_CAPTURE_ENABLED: ${{ vars.PREMATCH_CAPTURE_ENABLED }}
+        run: |
+          # One chunk name for the whole run: every pass appends to this run's files.
+          export PREMATCH_RUN_TAG="$(date -u +%Y%m%dT%H%MZ)-${GITHUB_RUN_ID}"
+          end=$(( $(date +%s) + 175*60 )); last_push=$(date +%s); passes=0
+          while [ "$(date +%s)" -lt "$end" ]; do
+            t0=$(date +%s)
+            timeout 280 python scripts/capture_prematch.py || echo "::warning::pass failed (exit $?)"
+            passes=$((passes+1))
+            if [ $(( $(date +%s) - last_push )) -ge 1800 ]; then /tmp/commit_prematch.sh || true; last_push=$(date +%s); fi
+            el=$(( $(date +%s) - t0 ))
+            if [ "$el" -lt 300 ]; then sleep $(( 300 - el )); fi
+          done
+          echo "passes this run: $passes"
+          /tmp/commit_prematch.sh
+
+      - name: Final commit (if the loop was cut short)
+        if: always() && vars.PREMATCH_CAPTURE_ENABLED == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run')
+        run: |
+          if [ -x /tmp/commit_prematch.sh ]; then /tmp/commit_prematch.sh; fi
