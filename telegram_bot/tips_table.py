@@ -35,8 +35,9 @@ _RATINGS: dict | None = None
 
 
 def league_ratings() -> dict:
-    """Pro's league rating 1-10 (10 = best league), the same source the stake plan sizes by.
-    Shown next to every tip (owner 2026-10-20). Missing or stale -> '-' on the row, never a guess."""
+    """Pro's pooled league rating 1-10 (10 = best league). DISPLAY ONLY: pooled rating stake sizing is
+    off since 2026-11-02 (config/bankroll_policy.json league_rating_sizing.enabled = false), so this
+    number is not used to size stakes. Shown next to every tip (owner 2026-10-20). Missing or stale -> '-' on the row, never a guess."""
     global _RATINGS
     if _RATINGS is None:
         try:
@@ -245,7 +246,7 @@ def render_pngs(rows: pd.DataFrame, title: str) -> list[bytes]:
                 dr.text((x + 4, y + 8), _fit(dr, val, font, w - 8), font=font, fill=fill)
                 x += w
             y += row_h
-        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10 (10 best) · edge as recorded by v9 · paper leagues excluded"
+        dr.text((pad, y + 8), "Times UTC · Rating = league rating 1-10, not used to size stakes · edge as recorded by v9 · paper leagues excluded"
                 + (" · " + GLOBAL_FOOTNOTE if "threshold_source" in page.columns
                    and (page["threshold_source"] == config.THRESHOLD_SOURCE_GLOBAL).any() else ""),
                 font=f_foot, fill=(107, 114, 128))
