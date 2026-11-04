@@ -175,9 +175,11 @@ def read_parquet(path: Path, columns=None) -> pd.DataFrame:
     return pd.read_parquet(path)
 
 
-def append_parquet(path: Path, rows: list[dict], key: list[str], columns: list[str]) -> int:
+def append_parquet(path: Path, rows: list[dict], key: list[str], columns: list[str],
+                   keep: str = "last") -> int:
     """Append `rows` to the parquet at `path` (created if absent), de-duplicated on `key` with the
-    NEW row winning. Returns the stored row count."""
+    NEW row winning (`keep="first"`: the STORED row wins - an answer kept as first seen, the
+    coaches / transfers refresh of fix8/history2). Returns the stored row count."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     new = pd.DataFrame(rows, columns=columns)
@@ -187,7 +189,7 @@ def append_parquet(path: Path, rows: list[dict], key: list[str], columns: list[s
             if c not in old.columns:
                 old[c] = None
         new = pd.concat([old[columns], new], ignore_index=True)
-    new = new.drop_duplicates(subset=key, keep="last").reset_index(drop=True)
+    new = new.drop_duplicates(subset=key, keep=keep).reset_index(drop=True)
     tmp = path.with_suffix(".tmp.parquet")
     new.to_parquet(tmp, index=False)
     os.replace(tmp, path)

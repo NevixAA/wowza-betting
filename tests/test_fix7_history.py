@@ -61,6 +61,8 @@ def no_corrections(tmp_path, monkeypatch):
     """The real committed lists must not leak into synthetic tests."""
     monkeypatch.setattr(HC, "CUP_EXCLUDED", tmp_path / "none_cup.csv")
     monkeypatch.setattr(HC, "DUP_REMOVED", tmp_path / "none_dup.csv")
+    monkeypatch.setattr(HC, "AWARDED_EXCLUDED", tmp_path / "none_awarded.csv")
+    monkeypatch.setattr(HC, "SCORE_90", tmp_path / "none_score90.csv")
     return tmp_path
 
 

@@ -68,10 +68,11 @@ def env(tmp_path, monkeypatch):
     monkeypatch.setattr(AL, "COVERAGE", cdir / "af_league_coverage.parquet")
     monkeypatch.setattr(AL, "registry_af_ids", lambda: {REG})
     for mod, names in ((INJ, ("ROWS", "SEASON_JOURNAL", "FIXTURE_JOURNAL")),
-                       (LU, ("JOURNAL", "TEAMS", "PLAYERS")), (CO, ("JOURNAL", "CAREERS")),
+                       (LU, ("JOURNAL", "LINEUPS_DIR")), (CO, ("JOURNAL", "CAREERS")),
                        (TR, ("JOURNAL", "ROWS"))):
         for n in names:
             monkeypatch.setattr(mod, n, cdir / Path(getattr(mod, n)).name)
+    monkeypatch.setattr(LU, "LEGACY", {k: cdir / v.name for k, v in LU.LEGACY.items()})
     monkeypatch.setattr(CC, "BUDGET_FILE", cdir / "af_budget.json")
     fxp = tmp_path / "competition_fixtures.parquet"
     _fx().to_parquet(fxp)
@@ -197,10 +198,10 @@ def test_lineups_newest_first_skips_seasons_without_coverage_and_journals(env):
     st = LU.run(client=cl)
     assert [c[1].get("fixture") for c in sess.calls[1:]] == [4, 3]        # 2024: provider has none
     assert st["skipped"] == {"no_provider_lineups": 2}
-    t = pd.read_parquet(LU.TEAMS).set_index("team_id")
+    t = LU.read_lineups("teams").set_index("team_id")
     assert t.loc[30, "coach_id"] == 5 and pd.isna(t.loc[10, "coach_id"])
     assert t.loc[30, "formation"] == "4-3-3" and t.loc[30, "n_start"] == 2
-    p = pd.read_parquet(LU.PLAYERS)
+    p = LU.read_lineups("players")
     assert len(p) == 6 and p.loc[p["role"] == "sub", "player_id"].isna().all()   # no id -> missing
     assert p.loc[(p["team_id"] == 30) & (p["slot"] == 0) & (p["role"] == "start"), "grid"].item() == "2:1"
     j = pd.read_parquet(LU.JOURNAL).set_index("fixture_id")
@@ -274,6 +275,7 @@ def test_workflow_runs_the_four_steps_after_profiles_and_insidebox_lineups_last(
 
 
 def test_collectors_write_only_under_output_collect():
-    for path in (INJ.ROWS, INJ.SEASON_JOURNAL, INJ.FIXTURE_JOURNAL, LU.JOURNAL, LU.TEAMS, LU.PLAYERS,
-                 CO.JOURNAL, CO.CAREERS, TR.JOURNAL, TR.ROWS, AL.COVERAGE):
+    for path in (INJ.ROWS, INJ.SEASON_JOURNAL, INJ.FIXTURE_JOURNAL, LU.JOURNAL, LU.LINEUPS_DIR,
+                 *LU.LEGACY.values(), CO.JOURNAL, CO.CAREERS, TR.JOURNAL, TR.ROWS, AL.COVERAGE):
         assert Path(path).parent == ROOT / "output" / "collect"
+    assert LU.partition_path("players", 40, "2024").parent == LU.LINEUPS_DIR

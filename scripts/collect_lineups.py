@@ -15,11 +15,19 @@ season whose flag is unknown (coverage call failed / season absent) is skipped t
 OUTPUT (output/collect/ only)
   lineups_fixtures.parquet  the journal: fixture_id, league_id, season, n_teams (0 = the provider's
         real empty answer, never asked again), fetched_at.
-  lineups_teams.parquet     one row per (fixture_id, team_id): formation, coach_id, coach_name,
-        n_start, n_subs. A formation / coach the provider does not give stays None.
-  lineups_players.parquet   one row per (fixture_id, team_id, role, slot): player_id, player_name,
-        number, pos, grid, role ('start' | 'sub'), slot (order in the provider's list). A player
-        without a provider id keeps player_id None (never matched by name).
+  lineups/teams_<league_id>_<season>.parquet    one row per (fixture_id, team_id): formation,
+        coach_id, coach_name, n_start, n_subs. A formation / coach the provider does not give stays None.
+  lineups/players_<league_id>_<season>.parquet  one row per (fixture_id, team_id, role, slot):
+        player_id, player_name, number, pos, grid, role ('start' | 'sub'), slot (order in the
+        provider's list). A player without a provider id keeps player_id None (never matched by name).
+ONE FILE PER LEAGUE-SEASON (fix8/history2, 2026-11-04). The full plan is about 119k fixtures x ~40
+player rows: as ONE parquet (lineups_players.parquet, the round-7 layout) it would grow towards
+GitHub's 100 MB file limit and every flush rewrote the whole file. A league-season holds at most a
+few hundred fixtures (a few MB), so no file can reach the limit, and a flush rewrites only the
+league-seasons it touched. The journal keeps its single file (5 small columns per fixture) and its
+semantics: written LAST, it alone decides what is asked again. read_lineups() is the reader: it
+reads every partition, plus a round-7 single file if one exists (a partition row wins on the same
+key); nothing is deleted or moved.
 Collection only: no model feature reads these yet (they come with the Phase 2 retrain).
 """
 from __future__ import annotations
@@ -38,14 +46,52 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import collect_af_lists as AL  # noqa: E402
 from collect_common import (COLLECT_DIR, FLUSH_EVERY, AFClient, BudgetStop,  # noqa: E402
-                            append_parquet)
+                            append_parquet, read_parquet)
 
 JOURNAL = COLLECT_DIR / "lineups_fixtures.parquet"
-TEAMS = COLLECT_DIR / "lineups_teams.parquet"
-PLAYERS = COLLECT_DIR / "lineups_players.parquet"
+LINEUPS_DIR = COLLECT_DIR / "lineups"
+#: the round-7 single-file layout: read if present, never written
+LEGACY = {"teams": COLLECT_DIR / "lineups_teams.parquet", "players": COLLECT_DIR / "lineups_players.parquet"}
 J_COLS = ["fixture_id", "league_id", "season", "n_teams", "fetched_at"]
 T_COLS = ["fixture_id", "team_id", "formation", "coach_id", "coach_name", "n_start", "n_subs"]
 P_COLS = ["fixture_id", "team_id", "role", "slot", "player_id", "player_name", "number", "pos", "grid"]
+COLS = {"teams": T_COLS, "players": P_COLS}
+KEYS = {"teams": ["fixture_id", "team_id"], "players": ["fixture_id", "team_id", "role", "slot"]}
+
+
+def _safe(season) -> str:
+    return "".join(ch if ch.isalnum() or ch == "-" else "-" for ch in str(season))
+
+
+def partition_path(kind: str, league_id: int, season: str, root: Path | None = None) -> Path:
+    """lineups/<kind>_<league_id>_<season>.parquet (kind 'teams' | 'players')."""
+    return (root or LINEUPS_DIR) / f"{kind}_{int(league_id)}_{_safe(season)}.parquet"
+
+
+def read_lineups(kind: str, league_id: int | None = None, season: str | None = None,
+                 root: Path | None = None, legacy: Path | None = None) -> pd.DataFrame:
+    """Every stored lineup row of `kind` ('teams' | 'players'), optionally one league / season, from
+    the partitions (+ a round-7 single file if present; a partition row wins on the same key)."""
+    root = root or LINEUPS_DIR
+    pat = f"{kind}_{int(league_id) if league_id is not None else '*'}_" \
+          f"{_safe(season) if season is not None else '*'}.parquet"
+    parts = [pd.read_parquet(p) for p in sorted(root.glob(pat))] if root.exists() else []
+    old = Path(legacy or LEGACY[kind])
+    if old.exists():
+        o = pd.read_parquet(old)
+        if league_id is not None or season is not None:
+            j = read_parquet(JOURNAL)
+            sel = j
+            if league_id is not None:
+                sel = sel[sel["league_id"].astype(int) == int(league_id)]
+            if season is not None:
+                sel = sel[sel["season"].astype(str) == str(season)]
+            o = o[o["fixture_id"].isin(set(sel["fixture_id"]))]
+        parts.insert(0, o)
+    if not parts:
+        return pd.DataFrame(columns=COLS[kind])
+    out = pd.concat([p.reindex(columns=COLS[kind]) for p in parts], ignore_index=True)
+    return out.drop_duplicates(KEYS[kind], keep="last").reset_index(drop=True)
 
 
 def parse(body: dict | None, fixture_id: int) -> tuple[list[dict], list[dict]]:
@@ -78,10 +124,12 @@ def plan(fx: pd.DataFrame | None = None) -> dict:
 
 
 def _flush(tb, pb, jb):
-    if pb:                                     # journal last: it decides what is asked again
-        append_parquet(PLAYERS, pb, ["fixture_id", "team_id", "role", "slot"], P_COLS)
-    if tb:
-        append_parquet(TEAMS, tb, ["fixture_id", "team_id"], T_COLS)
+    """tb / pb: {(league_id, season): rows}. Partitions first, the journal LAST: it decides what is
+    asked again, so a crash between the two re-asks a fixture rather than losing it."""
+    for kind, buf in (("players", pb), ("teams", tb)):
+        for (lid, season), rows in sorted(buf.items()):
+            if rows:
+                append_parquet(partition_path(kind, lid, season), rows, KEYS[kind], COLS[kind])
     if jb:
         append_parquet(JOURNAL, jb, ["fixture_id"], J_COLS)
 
@@ -104,7 +152,7 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
     if dry_run:
         return stats
     client = client or AFClient()
-    tb, pb, jb = [], [], []
+    tb, pb, jb = {}, {}, []
     try:
         stats["calls"] += AL.ensure_coverage(client, p["coverage"])
         cov = AL.coverage_map("lineups")
@@ -123,14 +171,15 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
                 continue                                   # failed: nothing recorded, asked next run
             stats["calls"] += 1
             teams, players = parse(body, f.fixture_id)
-            tb.extend(teams)
-            pb.extend(players)
+            part = (int(f.league_id), str(f.season))
+            tb.setdefault(part, []).extend(teams)
+            pb.setdefault(part, []).extend(players)
             jb.append({"fixture_id": int(f.fixture_id), "league_id": int(f.league_id),
                        "season": str(f.season), "n_teams": len(teams), "fetched_at": AL.now_iso()})
             stats["fetched"] += 1
             if len(jb) >= FLUSH_EVERY:
                 _flush(tb, pb, jb)
-                tb, pb, jb = [], [], []
+                tb, pb, jb = {}, {}, []
     except BudgetStop as e:
         print(f"[lineups] budget stop: {e} (resumable)")
         stats["budget_stop"] = str(e)

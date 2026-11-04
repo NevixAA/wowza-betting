@@ -8,16 +8,21 @@ CALLS. ONE /transfers?team per provider team id in output/strength/competition_f
 (continental cup clubs included), most recently active team first.
 
 OUTPUT (output/collect/ only)
-  transfers_teams.parquet  the journal: team_id, n_players (0 = the provider's real empty answer,
-        never asked again), fetched_at.
+  transfers_teams.parquet  the journal: team_id, n_players (0 = the provider's real empty answer),
+        fetched_at, refresh_window ('initial', or the transfer-window close that made the team due).
+        One row per (team_id, refresh_window); a row written before fix8/history2 has none.
   transfers.parquet        one row per transfer: player_id, player_name, date (ISO, as the provider
         gives it), type (the provider's own text - 'Loan', 'Free', a fee, 'N/A' - kept verbatim,
-        never interpreted), team_in_id, team_out_id, fetched_at. De-duplicated on
-        (player_id, date, team_in_id, team_out_id): one transfer is returned by both clubs. A
-        transfer without a player id or a date cannot be placed: not stored, counted. A missing
-        in / out club id stays None.
-Collection only: no model feature reads these yet (they come with the Phase 2 retrain). A stored team
-is not asked again; refreshing it after a transfer window is an owner decision.
+        never interpreted), team_in_id, team_out_id, fetched_at. De-duplicated on the WHOLE answer
+        (R_KEY + type + player_name), first seen kept: one transfer is returned by both clubs, and a
+        refresh that answers the same adds nothing. A changed answer (a type the provider has since
+        filled in) is a NEW row beside the previous one, which is never deleted. A transfer without
+        a player id or a date cannot be placed: not stored, counted. A missing in / out club id
+        stays None.
+REFRESH (owner-approved cadence 2026-11-04, collect_af_lists.refresh_todo): every team is asked once
+more after each transfer-window close (2 September / 3 February, or the league's own closes in the
+registry) - the window's signings only exist after it. About 1,645 calls per refresh, budget-guarded.
+Collection only: no model feature reads these yet (they come with the Phase 2 retrain).
 """
 from __future__ import annotations
 
@@ -39,9 +44,11 @@ from collect_common import (COLLECT_DIR, FLUSH_EVERY, AFClient, BudgetStop,  # n
 
 JOURNAL = COLLECT_DIR / "transfers_teams.parquet"
 ROWS = COLLECT_DIR / "transfers.parquet"
-J_COLS = ["team_id", "n_players", "fetched_at"]
+J_COLS = ["team_id", "n_players", "fetched_at", "refresh_window"]
 R_COLS = ["player_id", "player_name", "date", "type", "team_in_id", "team_out_id", "fetched_at"]
 R_KEY = ["player_id", "date", "team_in_id", "team_out_id"]
+#: the whole answer: a refresh adds a row only when the provider's answer changed
+R_ANSWER = R_KEY + ["type", "player_name"]
 
 
 def parse(body: dict | None) -> tuple[int, list[dict], int]:
@@ -65,22 +72,24 @@ def parse(body: dict | None) -> tuple[int, list[dict], int]:
     return len(resp), rows, unplaceable
 
 
-def todo_teams(fx: pd.DataFrame | None = None) -> list[int]:
-    done = AL.done_keys(JOURNAL, ["team_id"])
-    return [t for t in AL.team_ids(fx) if (str(t),) not in done]
+def todo_teams(fx: pd.DataFrame | None = None, today=None) -> list[tuple[int, str]]:
+    """[(team_id, refresh_window)] due now (collect_af_lists.refresh_todo)."""
+    return AL.refresh_todo(JOURNAL, fx, today)
 
 
 def _flush(rb, jb):
     if rb:                                     # journal last: it decides what is asked again
-        append_parquet(ROWS, rb, R_KEY, R_COLS)
+        append_parquet(ROWS, rb, R_ANSWER, R_COLS, keep="first")
     if jb:
-        append_parquet(JOURNAL, jb, ["team_id"], J_COLS)
+        append_parquet(JOURNAL, jb, ["team_id", "refresh_window"], J_COLS)
 
 
 def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None = None,
-        fx: pd.DataFrame | None = None) -> dict:
-    todo = todo_teams(fx)
-    stats = {"teams_in_fixture_lists": len(AL.team_ids(fx)), "planned_calls": len(todo), "calls": 0,
+        fx: pd.DataFrame | None = None, today=None) -> dict:
+    todo = todo_teams(fx, today)
+    stats = {"teams_in_fixture_lists": len(AL.team_ids(fx)), "planned_calls": len(todo),
+             "planned_initial": sum(w == AL.INITIAL for _, w in todo),
+             "planned_refresh": sum(w != AL.INITIAL for _, w in todo), "calls": 0,
              "transfer_rows": 0, "unplaceable_transfers": 0}
     print(f"[transfers] {json.dumps(stats)}")
     if dry_run:
@@ -88,7 +97,7 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
     client = client or AFClient()
     rb, jb = [], []
     try:
-        for tid in todo[: limit or None]:
+        for tid, window in todo[: limit or None]:
             body = client.get("transfers", {"team": int(tid)})
             if body is None:
                 continue                                   # failed: nothing recorded, asked next run
@@ -97,7 +106,8 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
             rb.extend(rows)
             stats["transfer_rows"] += len(rows)
             stats["unplaceable_transfers"] += bad
-            jb.append({"team_id": int(tid), "n_players": n, "fetched_at": AL.now_iso()})
+            jb.append({"team_id": int(tid), "n_players": n, "fetched_at": AL.now_iso(),
+                       "refresh_window": window})
             if len(jb) >= FLUSH_EVERY:
                 _flush(rb, jb)
                 rb, jb = [], []

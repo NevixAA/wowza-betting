@@ -22,8 +22,29 @@ and the loader (src/data_loader.one_club_one_match and the local-workbook path) 
       decides which copy stays. The removed row's full original values and the kept row's key are
       kept in the list.
 
-Both are built by scripts/build_history_corrections.py (no call for the duplicates; the cup fixture
-lists via collect_common.AFClient, budget-guarded). A list that is absent means "no correction".
+Follow-ups of fix8/history2 (2026-11-04, same owner decisions):
+
+  output/corrections/history_removed_duplicates.csv (extended)
+      The duplicate rule now covers EVERY same-match pair the loader's own one-match de-duplication
+      (src.integrity.duplicate_matches) merges between two history rows one day apart, not only the
+      rows that lacked a half-time score. Same proof (one provider fixture id claimed by both copies,
+      both clubs resolved, same FT); the provider date decides the survivor instead of the loader's
+      "most populated, then earliest" tie-break. Column found_by tells the two apart.
+  output/corrections/history_score_90min.csv
+      "Settlement is on the 90-minute score." A history row proven to be a provider fixture the
+      provider finished AET or PEN, whose full-time score is not the provider's score.fulltime (the
+      90-minute score) but is >= it on both sides (extra time / a shoot-out only ever add goals), is
+      SERVED with the provider's 90-minute score. The original history score is kept in the list
+      (history_ft_home / history_ft_away) and in fd_history.parquet, which is never rewritten.
+  output/corrections/history_awarded_results.csv
+      "Awarded results are not real played scores." A history row proven to be a provider fixture
+      with status AWD (technical loss) or WO (walk over) is excluded from the model history like a
+      cup row. Empty until the provider's awarded fixtures are stored (collect_ht_scores keeps them
+      from fix8/history2 on).
+
+All are built by scripts/build_history_corrections.py (no call for the duplicates, scores and awarded
+rows; the cup fixture lists via collect_common.AFClient, budget-guarded). A list that is absent means
+"no correction".
 
 APPLYING. A listed row is removed only when the frame holds a row with the SAME key (league, date,
 home_team, away_team - the history's own spelling) AND the same full-time score as recorded (a
@@ -32,6 +53,10 @@ are eligible (row_source football_data / fd_cache, or a frame without row_source
 or archive row is never removed by a history correction. Before a duplicate copy is removed, an
 EMPTY cell of the kept row is filled from it - the real value of the same proven match, which is
 what the loader's one-match de-duplication did with that copy before (never a default).
+A 90-minute score correction is applied AFTER the removals, on the same terms: same key, the row's
+FT equal to the recorded history FT (else counted, left alone), history rows only. The labels built
+from the score before this step (total_goals, over15/25/35, btts, and ftr where the row holds one)
+are recomputed on the corrected rows only.
 """
 from __future__ import annotations
 
@@ -47,6 +72,9 @@ ROOT = Path(__file__).resolve().parents[1]
 CORRECTIONS_DIR = ROOT / "output" / "corrections"
 CUP_EXCLUDED = CORRECTIONS_DIR / "history_excluded_cup_rows.csv"
 DUP_REMOVED = CORRECTIONS_DIR / "history_removed_duplicates.csv"
+AWARDED_EXCLUDED = CORRECTIONS_DIR / "history_awarded_results.csv"
+SCORE_90 = CORRECTIONS_DIR / "history_score_90min.csv"
+SCORE_COLS = ["history_ft_home", "history_ft_away", "ft90_home", "ft90_away"]
 KEY = ["league", "date", "home_team", "away_team"]
 HISTORY_SOURCES = {"football_data", "fd_cache"}
 #: never copied from a removed duplicate onto the kept row (identity, provenance, derived labels)
@@ -71,12 +99,15 @@ def _ft(a, b):
         return None
 
 
-def read_corrections(cup_path: Path | None = None, dup_path: Path | None = None) -> pd.DataFrame:
-    """Both lists as one frame: KEY + home_goals, away_goals (the recorded original FT),
-    correction ('cup_excluded' / 'duplicate_removed') and, for a duplicate, kept_date /
-    kept_home_team / kept_away_team. Empty when neither list exists."""
+def read_corrections(cup_path: Path | None = None, dup_path: Path | None = None,
+                     awarded_path: Path | None = None) -> pd.DataFrame:
+    """The REMOVAL lists as one frame: KEY + home_goals, away_goals (the recorded original FT),
+    correction ('cup_excluded' / 'duplicate_removed' / 'awarded_excluded') and, for a duplicate,
+    kept_date / kept_home_team / kept_away_team. Empty when no list exists. The 90-minute score list
+    is not a removal (read_score_corrections)."""
     parts = []
-    for path, kind in ((cup_path or CUP_EXCLUDED, "cup_excluded"), (dup_path or DUP_REMOVED, "duplicate_removed")):
+    for path, kind in ((cup_path or CUP_EXCLUDED, "cup_excluded"), (dup_path or DUP_REMOVED, "duplicate_removed"),
+                       (awarded_path or AWARDED_EXCLUDED, "awarded_excluded")):
         p = Path(path)
         if not p.exists():
             continue
@@ -113,13 +144,101 @@ def corrected_mask(df: pd.DataFrame, corr: pd.DataFrame | None = None) -> pd.Ser
     return pd.Series([k in listed for k in _keys(df)], index=df.index, dtype=bool)
 
 
+def read_score_corrections(path: Path | None = None) -> pd.DataFrame:
+    """The 90-minute score list: KEY + history_ft_home/away (the original, as recorded) + ft90_home/
+    away (the provider's score.fulltime). Empty when absent or unreadable (logged)."""
+    p = Path(path or SCORE_90)
+    empty = pd.DataFrame(columns=KEY + SCORE_COLS)
+    if not p.exists():
+        return empty
+    try:
+        d = pd.read_csv(p)
+    except (OSError, ValueError, pd.errors.EmptyDataError) as e:
+        log.error(f"[history-corrections] {p.name} unreadable ({e}) - NOT applied")
+        return empty
+    if d.empty:
+        return empty
+    if not set(KEY + SCORE_COLS) <= set(d.columns):
+        log.error(f"[history-corrections] {p.name} lacks {sorted(set(KEY + SCORE_COLS) - set(d.columns))} "
+                  f"- NOT applied")
+        return empty
+    return d
+
+
+def _relabel(df: pd.DataFrame, pos: list[int]) -> None:
+    """Recompute the score labels of the rows at positions `pos` (in place) from home/away_goals."""
+    if not pos:
+        return
+    hg = pd.to_numeric(df["home_goals"].iloc[pos], errors="coerce").to_numpy(dtype=float)
+    ag = pd.to_numeric(df["away_goals"].iloc[pos], errors="coerce").to_numpy(dtype=float)
+    tot = hg + ag
+    lab = {"total_goals": tot, "over15": (tot > 1.5).astype(float), "over25": (tot > 2.5).astype(float),
+           "over35": (tot > 3.5).astype(float), "btts": ((hg > 0) & (ag > 0)).astype(float)}
+    for c, v in lab.items():
+        if c in df.columns:
+            df.iloc[pos, df.columns.get_loc(c)] = v
+    if "ftr" in df.columns:
+        ci = df.columns.get_loc("ftr")
+        for p, h, a in zip(pos, hg, ag):
+            if isinstance(df.iat[p, ci], str):        # a row without ftr keeps none (never added)
+                df.iat[p, ci] = "H" if h > a else "A" if h < a else "D"
+
+
+def apply_score_corrections(df: pd.DataFrame, scores: pd.DataFrame | None = None,
+                            source_col: str = "row_source", tag: str = "history") -> tuple[pd.DataFrame, dict]:
+    """(df with the listed history rows served at the provider's 90-minute score, counts)."""
+    scores = read_score_corrections() if scores is None else scores
+    rep = {"score_rows_corrected_90min": 0, "score_listed_rows_changed_since_listing": 0}
+    if df is None or df.empty or scores.empty or not set(KEY) <= set(df.columns) \
+            or not {"home_goals", "away_goals"} <= set(df.columns):
+        return df, rep
+    eligible = (df[source_col].isin(HISTORY_SOURCES).tolist() if source_col in df.columns
+                else [True] * len(df))
+    rec = {}
+    for r, k in zip(scores.itertuples(index=False), _keys(scores)):
+        rec[k] = (_ft(r.history_ft_home, r.history_ft_away), _ft(r.ft90_home, r.ft90_away))
+    hg, ag = df["home_goals"].tolist(), df["away_goals"].tolist()
+    hit = []
+    for p, (k, ok) in enumerate(zip(_keys(df), eligible)):
+        if not ok or k not in rec:
+            continue
+        orig, ft90 = rec[k]
+        if ft90 is None or _ft(hg[p], ag[p]) != orig:
+            rep["score_listed_rows_changed_since_listing"] += 1      # not the row proven: left alone
+            continue
+        hit.append((p, ft90))
+    if hit:
+        df = df.copy()
+        hc, ac = df.columns.get_loc("home_goals"), df.columns.get_loc("away_goals")
+        for p, (h, a) in hit:
+            df.iat[p, hc], df.iat[p, ac] = float(h), float(a)
+        _relabel(df, [p for p, _ in hit])
+        rep["score_rows_corrected_90min"] = len(hit)
+        log.info(f"[{tag}] 90-minute score (owner rule): {len(hit)} history row(s) of AET/PEN fixtures "
+                 f"served at the provider's score.fulltime (originals kept in {SCORE_90.name})")
+    return df, rep
+
+
 def apply_history_corrections(df: pd.DataFrame, corr: pd.DataFrame | None = None,
-                              source_col: str = "row_source", tag: str = "history") -> pd.DataFrame:
+                              source_col: str = "row_source", tag: str = "history",
+                              scores: pd.DataFrame | None = None) -> pd.DataFrame:
     """`df` without the listed rows (see the module docstring); the kept copy of a removed duplicate
-    takes the removed copy's values in its EMPTY cells. Counts in df.attrs['history_corrections']."""
+    takes the removed copy's values in its EMPTY cells; then the 90-minute score list. Counts in
+    df.attrs['history_corrections']."""
     corr = read_corrections() if corr is None else corr
-    if df is None or df.empty or corr.empty or not set(KEY) <= set(df.columns):
+    if df is None or df.empty or not set(KEY) <= set(df.columns):
         return df
+    attrs = dict(getattr(df, "attrs", {}) or {})
+    out, rep = _apply_removals(df, corr, source_col, tag) if not corr.empty else (df, {})
+    out, srep = apply_score_corrections(out, scores, source_col, tag)
+    if not rep and not any(srep.values()):
+        return out
+    out.attrs = attrs
+    out.attrs["history_corrections"] = {**rep, **srep}
+    return out
+
+
+def _apply_removals(df: pd.DataFrame, corr: pd.DataFrame, source_col: str, tag: str) -> tuple[pd.DataFrame, dict]:
     eligible = (df[source_col].isin(HISTORY_SOURCES) if source_col in df.columns
                 else pd.Series(True, index=df.index))
     rec = {}
@@ -130,7 +249,7 @@ def apply_history_corrections(df: pd.DataFrame, corr: pd.DataFrame | None = None
     hg = df["home_goals"].tolist() if "home_goals" in df.columns else [None] * len(df)
     ag = df["away_goals"].tolist() if "away_goals" in df.columns else [None] * len(df)
     # POSITIONS, not index labels: a concatenated frame can repeat a label
-    drop, changed, filled, n_cup = [], 0, 0, 0
+    drop, changed, filled, n_cup, n_awd = [], 0, 0, 0, 0
     fill_from: list[tuple[int, tuple]] = []          # (position to remove, kept key)
     for p, (k, ok) in enumerate(zip(keys, ok_l)):
         if not ok or k not in rec:
@@ -142,10 +261,10 @@ def apply_history_corrections(df: pd.DataFrame, corr: pd.DataFrame | None = None
             continue
         drop.append(p)
         n_cup += hit.correction == "cup_excluded"
+        n_awd += hit.correction == "awarded_excluded"
         if hit.correction == "duplicate_removed" and isinstance(hit.kept_date, str):
             fill_from.append((p, (k[0], str(hit.kept_date)[:10], str(hit.kept_home_team),
                                   str(hit.kept_away_team))))
-    attrs = dict(getattr(df, "attrs", {}) or {})
     if fill_from:
         at = {}
         for p, (k, ok) in enumerate(zip(keys, ok_l)):
@@ -170,16 +289,16 @@ def apply_history_corrections(df: pd.DataFrame, corr: pd.DataFrame | None = None
     keep = np.ones(len(df), dtype=bool)
     keep[drop] = False
     out = df[keep]
-    rep = {"rows_removed": len(drop), "cup_rows_excluded": n_cup,
-           "duplicate_rows_removed": len(drop) - n_cup, "cells_filled_from_removed_copy": filled,
+    n_dup = len(drop) - n_cup - n_awd
+    rep = {"rows_removed": len(drop), "cup_rows_excluded": n_cup, "awarded_rows_excluded": n_awd,
+           "duplicate_rows_removed": n_dup, "cells_filled_from_removed_copy": filled,
            "listed_rows_changed_since_listing": changed}
-    out.attrs = attrs
-    out.attrs["history_corrections"] = rep
     if drop or changed:
-        log.info(f"[{tag}] history corrections (owner 2026-11-04): {n_cup} proven cup row(s) excluded, "
-                 f"{len(drop) - n_cup} duplicate row(s) removed, {filled} empty cell(s) of the kept copy "
-                 f"filled from the removed one; {changed} listed row(s) differ from the listing (left in)")
-    return out
+        log.info(f"[{tag}] history corrections (owner 2026-11-04): {n_cup} proven cup row(s) and {n_awd} "
+                 f"awarded result(s) excluded, {n_dup} duplicate row(s) removed, {filled} empty cell(s) "
+                 f"of the kept copy filled from the removed one; {changed} listed row(s) differ from the "
+                 f"listing (left in)")
+    return out, rep
 
 
 def drop_corrected_rows(history: pd.DataFrame, tag: str = "history") -> pd.DataFrame:
