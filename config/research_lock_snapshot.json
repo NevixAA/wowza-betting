@@ -1,7 +1,7 @@
 {
  "about": "Approved production-facing fingerprint for src/research_lock.py. Re-approve ONLY for a deliberate, owner-approved production change. Do not hand-edit.",
- "approval_note": "2026-11-02 owner (ok for all): research lock also watches REQUIRE_FORM_DATA + its UNTIL date",
- "approved_at": "2026-11-02T16:25:45Z",
+ "approval_note": "2026-11-04 owner: several same-direction bets per match; fixture_cap bounds the fixture total",
+ "approved_at": "2026-11-04T07:54:14Z",
  "approved_by": "Nevo (owner)",
  "fingerprint": {
   "global": {
@@ -31,14 +31,15 @@
     "paper_leagues": [
      "USA MLS"
     ],
-    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
+    "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04",
     "portfolio": {
+     "_one_position_per_fixture": "false since 2026-11-04 (owner: several bets on one match are fine unless they are opposites). Several real positions on one fixture are allowed when they share one goal direction (Over lines + BTTS Yes, or Under lines + BTTS No); an opposite-direction position is zeroed by size_day step 6 and the tip itself is suppressed by src/direction_guard.py (a paper tip never blocks a real one). fixture_cap limits the fixture's TOTAL within a sizing run (size_day step 10 scales the positions down together); positions staked in EARLIER runs are not counted against it yet. Previous state: true.",
      "daily_cap": 0.06,
      "fixture_cap": 0.02,
      "hard_max_odds": 3.0,
      "league_daily_cap": 0.03,
      "league_market_daily_cap": 0.03,
-     "one_position_per_fixture": true,
+     "one_position_per_fixture": false,
      "single_bet_cap": 0.02
     },
     "tier_multipliers": {
@@ -299,5 +300,5 @@
    }
   }
  },
- "fingerprint_sha256": "837fce5601f43f4a5b04a3626f4e85f84ff217f145f1ed85b0c956ea457d8a0f"
+ "fingerprint_sha256": "cb72cae73e83ad6000f31892b982b3e2e6ba16a61882d338b7bfdade8e217868"
 }

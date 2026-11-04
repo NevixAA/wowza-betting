@@ -149,11 +149,30 @@ def test_predictions_tag_wins_and_blank_tag_falls_back():
     assert got == {"L": "standard", "M": "new_format"}
 
 
-def test_one_position_per_fixture_still_holds():                     # (8)
+def test_same_direction_positions_share_the_fixture_cap():           # (8)
+    """Owner 2026-11-04: several bets on one match are fine unless opposite. BTTS YES + Over 1.5 are
+    both OVER, so both are staked, and together they stay within fixture_cap."""
     _, _, plan = _run([_pred("N", NF, btts=(0.62, 2.10), over15=(0.75, 1.60))])
     live = plan[plan["final_fraction"] > 0]
-    assert len(live) == 1 and live.iloc[0]["market"] == "BTTS"           # higher evidence_score
-    assert _row(plan, "N", "OVER15")["reason"] == "ONE_POSITION_PER_FIXTURE"
+    assert sorted(live["market"]) == ["BTTS", "OVER15"]
+    assert "ONE_POSITION_PER_FIXTURE" not in set(plan["reason"])
+    cap = load_policy()["portfolio"]["fixture_cap"]
+    assert float(live["final_fraction"].sum()) <= cap + 1e-9
+
+
+def test_fixture_cap_bounds_the_fixture_total():
+    import pandas as pd
+    from src.bankroll_policy import size_day
+    t = {"state": "ACTIVE", "base_fraction": 0.015, "max_odds": 2.75, "evidence_score": 1.0}
+    pol = {"policy_version": "t", "tier_multipliers": {"SNIPER": 1.0},
+           "portfolio": {"one_position_per_fixture": False, "fixture_cap": 0.02, "single_bet_cap": 0.02},
+           "tracks": {f"new_format|{m}": dict(t) for m in ("BTTS", "OVER15", "OU25_OVER")}}
+    sel = pd.DataFrame([{"date": "2026-11-05", "fixture": "F1", "league": "Argentina Primera Division",
+                         "model_type": "new_format", "market": m, "side": s, "signal_tier": "SNIPER", "odds": 2.0}
+                        for m, s in (("BTTS", "YES"), ("OVER15", "OVER"), ("OU25", "OVER"))])
+    out = size_day(sel, pol, 100.0, 100.0)
+    assert float(out["final_fraction"].sum()) == pytest.approx(0.02, abs=1e-5)
+    assert (out["final_fraction"] > 0).all()
 
 
 def test_paper_league_stays_paper():                                 # (9)

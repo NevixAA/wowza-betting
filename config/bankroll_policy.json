@@ -1,5 +1,5 @@
 {
-  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02",
+  "policy_version": "balanced-2026-10-13+nf-under-paper-2026-11-02+league-rating-off-2026-11-02+same-direction-positions-2026-11-04",
   "name": "WOWZA BALANCED",
   "status": "WIRED_PAPER",
   "note": "Read by src/bankroll_policy.py. WIRED since 2026-10-14: pipeline.py sizes every tip through src/stake_plan.py into output/stake_plan.csv. PAPER: no bet is placed (Cloudbet PAPER_ONLY). Staking is downstream of prediction: this file never decides whether a tip exists. Updated only by a reviewed PR from the monthly Pro bankroll review.",
@@ -12,7 +12,8 @@
     "daily_cap": 0.06,
     "league_daily_cap": 0.03,
     "league_market_daily_cap": 0.03,
-    "one_position_per_fixture": true,
+    "one_position_per_fixture": false,
+    "_one_position_per_fixture": "false since 2026-11-04 (owner: several bets on one match are fine unless they are opposites). Several real positions on one fixture are allowed when they share one goal direction (Over lines + BTTS Yes, or Under lines + BTTS No); an opposite-direction position is zeroed by size_day step 6 and the tip itself is suppressed by src/direction_guard.py (a paper tip never blocks a real one). fixture_cap limits the fixture's TOTAL within a sizing run (size_day step 10 scales the positions down together); positions staked in EARLIER runs are not counted against it yet. Previous state: true.",
     "hard_max_odds": 3.0
   },
   "tier_multipliers": {
