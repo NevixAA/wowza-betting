@@ -96,7 +96,7 @@ def test_rematch_drops_a_stored_answer_that_is_now_refused(tmp_path, monkeypatch
     from pathlib import Path
     sys.path.insert(0, str(Path(DL.__file__).resolve().parents[1] / "scripts"))
     import collect_ht_scores as H
-    for name in ("SCORES", "FILL", "AUDIT", "JOURNAL"):
+    for name in ("SCORES", "FILL", "AUDIT", "JOURNAL", "FT_JOURNAL", "FT_MISMATCH"):
         monkeypatch.setattr(H, name, tmp_path / getattr(H, name).name)
     fx = {"fixture": {"id": 11, "date": "2026-08-01T19:30:00+00:00", "status": {"short": "FT"}},
           "teams": {"home": {"id": 1, "name": "Columbus Crew"}, "away": {"id": 2, "name": "Inter Miami"}},
@@ -125,7 +125,7 @@ def test_rematch_keeps_rows_not_re_evaluated(tmp_path, monkeypatch):
     from pathlib import Path
     sys.path.insert(0, str(Path(DL.__file__).resolve().parents[1] / "scripts"))
     import collect_ht_scores as H
-    for name in ("SCORES", "FILL", "AUDIT", "JOURNAL"):
+    for name in ("SCORES", "FILL", "AUDIT", "JOURNAL", "FT_JOURNAL", "FT_MISMATCH"):
         monkeypatch.setattr(H, name, tmp_path / getattr(H, name).name)
     fx = {"fixture": {"id": 11, "date": "2026-08-01T19:30:00+00:00", "status": {"short": "FT"}},
           "teams": {"home": {"id": 1, "name": "Columbus Crew"}, "away": {"id": 2, "name": "Inter Miami"}},

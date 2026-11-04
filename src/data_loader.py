@@ -633,11 +633,28 @@ def _one_match_one_row(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _apply_history_corrections(df: pd.DataFrame) -> pd.DataFrame:
+    """src.history_corrections.apply_history_corrections, never fatal: an unreadable list logs an
+    error and the history is served uncorrected (the data-truth checks still see the duplicates)."""
+    try:
+        from src.history_corrections import apply_history_corrections
+        return apply_history_corrections(df, tag="history-corrections")
+    except Exception as e:                                             # noqa: BLE001
+        log.error(f"[history-corrections] NOT applied ({type(e).__name__}: {e})")
+        return df
+
+
 def one_club_one_match(out: pd.DataFrame) -> pd.DataFrame:
     """THE identity pipeline of the merged history, in ONE place - load_all_matches (train and serve)
     and the data-truth check (src/integrity/data_truth.one_match) both call it: mojibake repaired,
     one spelling per club (_canonicalise_clubs, _canonical_identity_and_seasons), one row per match
-    (_one_match_one_row: +-3 days, canonical clubs, same score)."""
+    (_one_match_one_row: +-3 days, canonical clubs, same score).
+
+    FIRST the owner's history corrections (2026-11-04, src/history_corrections.py): proven domestic-cup
+    rows filed under a league are excluded ("cups are not in Wowza tips"), and the proven second copy
+    of a match filed one day apart is removed (the provider's fixture date decides which copy stays).
+    They run on the history's OWN key and spelling, so before any club is renamed."""
+    out = _apply_history_corrections(out)
     out = _repair_club_text(out)
     out = _canonicalise_clubs(out)
     out = _canonical_identity_and_seasons(out)
@@ -2061,6 +2078,7 @@ def load_all_matches(xlsx_path: Optional[Path] = None, force: bool = False) -> p
     frames.extend(f.assign(row_source="api_football") for f in _load_api_football_only_leagues())
     out = pd.concat(frames, ignore_index=True)
     out = out[out["home_team"].notna() & out["away_team"].notna()]
+    out = _apply_history_corrections(out)                 # owner 2026-11-04, as one_club_one_match
     out = _repair_club_text(out)
     out = _one_match_one_row(out)                         # same rule as the CI path
     out = out.sort_values("date").reset_index(drop=True)
