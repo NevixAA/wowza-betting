@@ -131,7 +131,24 @@ def merge_history(existing: pd.DataFrame, fresh: pd.DataFrame, today=None,
         live_mask = (d >= cutoff).to_numpy()
         live, frozen = both[live_mask], both[~live_mask]
         if len(live):
-            parts.append(b.loc[live].combine_first(a.loc[live]))
+            refreshed = b.loc[live].combine_first(a.loc[live])
+            # A fresh row parsed with the owner's null rule (count_source 'provider_rule', fix round
+            # 9, 2026-11-04) carries its counts AS A SET: a count it leaves missing is the provider's
+            # "not answered", and combine_first would fill that hole with the stored row's `or 0`
+            # zero while the row claims to be verified. Its counts and rating replace the stored
+            # ones whole, missing included.
+            from .player_stat_nulls import HISTORY_COUNT_COLS, PARSED_WITH_RULE, SOURCE_COL
+            if SOURCE_COL in b.columns:
+                ruled = b.loc[live, SOURCE_COL].eq(PARSED_WITH_RULE).to_numpy()
+                if ruled.any():
+                    idx = live[ruled]
+                    for c in (*HISTORY_COUNT_COLS, "rating"):
+                        if c in b.columns:
+                            if c in refreshed.columns and refreshed[c].dtype.kind in "iub":
+                                refreshed[c] = refreshed[c].astype("float64")
+                            refreshed.loc[idx, c] = b.loc[idx, c].to_numpy()
+                    stats["refreshed_counts_as_set"] = int(ruled.sum())
+            parts.append(refreshed)
         if len(frozen):
             keep = a.loc[frozen].copy()
             for c in mutable_after_freeze:

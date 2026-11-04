@@ -154,13 +154,14 @@ def test_run_applies_the_null_rule_keeps_originals_and_journals(env):
     assert st["rows_refused"] == {"player_not_in_answer": 1, "side_unproven": 1, "empty_answer": 1}
     out = pd.read_parquet(RF.OUT).set_index("player_id")
     assert sorted(out.index) == [11, 12, 21]
-    # 12 played 75', goals / shots null, the fixture has them for others -> 0; nobody has saves -> missing
+    # 12 played 75', goals / shots null -> 0; nobody in the fixture has saves -> STILL 0 under the
+    # owner's refined rule (2026-11-04, fix round 9): the fixture was answered and he played
     assert out.loc[12, "goals"] == 0 and out.loc[12, "shots_on_target"] == 0
-    assert pd.isna(out.loc[12, "saves"]) and out.loc[12, "passes_total"] == 20
+    assert out.loc[12, "saves"] == 0 and out.loc[12, "passes_total"] == 20
     assert out.loc[12, "orig_saves"] == 0 and pd.isna(out.loc[12, "rating"]) and out.loc[12, "orig_rating"] == 7.0
     assert set(out.loc[12, "filled_cols"].split(",")) >= {"goals", "shots_total", "shots_on_target"}
     assert out.loc[11, "goals"] == 1 and out.loc[11, "rating"] == 7.4
-    assert pd.isna(out.loc[11, "assists"])                                    # nobody in the fixture has it
+    assert out.loc[11, "assists"] == 0                                        # nobody has it: still 0
     assert out.loc[12, "key_passes"] == 0 and "key_passes" in out.loc[12, "filled_cols"]
     assert out.loc[21, "is_home"] == 0 and out.loc[21, "yellow_cards"] == 1
     j = pd.read_parquet(RF.JOURNAL).set_index("fixture_id")
@@ -168,7 +169,9 @@ def test_run_applies_the_null_rule_keeps_originals_and_journals(env):
     a = json.loads(RF.AUDIT.read_text(encoding="utf-8"))
     assert a["stored_rows"] == 3 and a["journal_by_status"] == {"ok": 1, "empty": 1}
     f = a["fields"]["saves"]
-    assert f["missing"] == 3 and f["orig_zero_now_missing"] == 3
+    assert f["missing"] == 0 and f["null_read_as_zero"] == 3 and f["orig_zero_now_zero"] == 3
+    r = a["fields"]["rating"]                                                 # not a count: null stays missing
+    assert r["missing"] == 2 and r["orig_zero_now_missing"] == 0
     assert a["fields"]["goals"]["null_read_as_zero"] == 2 and a["fields"]["goals"]["sent_value"] == 1
     # resumable: both fixtures journaled (the empty answer too) -> nothing asked again
     again = _client(env, _bodies)
@@ -202,8 +205,8 @@ def test_reader_replaces_the_suspect_zero_and_marks_the_rest(env):
     assert len(got) == len(h) and (got.index == h.index).all()
     by = got.set_index(["fixture_id", "player_id"])
     assert by.loc[(100, 12), HR.STATUS_COL] == HR.REFETCHED
-    assert pd.isna(by.loc[(100, 12), "saves"])                                # 0 -> missing (replaced)
-    assert by.loc[(100, 12), "goals"] == 0 and pd.isna(by.loc[(100, 12), "rating"])
+    assert by.loc[(100, 12), "saves"] == 0                                    # null read as 0 (rule)
+    assert by.loc[(100, 12), "goals"] == 0 and pd.isna(by.loc[(100, 12), "rating"])  # 7.0 -> missing
     assert by.loc[(400, 11), HR.STATUS_COL] == HR.UNVERIFIED and by.loc[(400, 11), "saves"] == 0
     assert by.loc[(100, 99), HR.STATUS_COL] == HR.UNVERIFIED
     assert h["saves"].eq(0).all()                                             # the input is not touched
@@ -238,3 +241,39 @@ def test_collector_writes_only_under_output_collect():
     for p in (RF.OUT, RF.JOURNAL, RF.AUDIT):
         assert Path(p).parent == ROOT / "output" / "collect"
     assert Path(HR.REFETCH_FILE) == ROOT / "output" / "collect" / "player_history_refetch.parquet"
+
+
+# ── fix round 9 (owner 2026-11-04): rows parsed with the rule are verified at parse ──────────────
+
+def test_rows_parsed_with_the_rule_are_not_refetched(env):
+    h = _history()
+    h[PSN.SOURCE_COL] = None
+    h.loc[h["fixture_id"] == 100, PSN.SOURCE_COL] = PSN.PARSED_WITH_RULE      # new collect, verified
+    p = RF.plan(_rows(h), _fx(), pd.DataFrame())
+    assert p["rows_verified_at_parse"] == 5 and p["rows_to_verify"] == len(h) - 5
+    assert p["todo"]["fixture_id"].tolist() == [400] and p["planned_calls"] == 1
+    # a fixture with ONE old row left is still fetched, and only that row is corrected
+    h.loc[(h["fixture_id"] == 100) & (h["player_id"] == 12), PSN.SOURCE_COL] = None
+    p = RF.plan(_rows(h), _fx(), pd.DataFrame())
+    assert p["planned_calls"] == 2
+    RF.run(client=_client(env, _bodies), rows=_rows(h), fx=_fx())
+    assert pd.read_parquet(RF.OUT)["player_id"].tolist() == [12]
+    # cup rows carry the same column
+    cups = pd.DataFrame([dict(_h(100, 11, "2025-08-16", "Arsenal", "Chelsea", "Arsenal", 1), team_id=1,
+                              count_source=PSN.PARSED_WITH_RULE)])
+    assert RF.plan(RF.source_rows(pd.DataFrame(), cups), _fx(), pd.DataFrame())["planned_calls"] == 0
+
+
+def test_reader_keeps_rule_rows_verified_and_never_overrides_them():
+    h = _history()
+    h[PSN.SOURCE_COL] = None
+    h.loc[0, PSN.SOURCE_COL] = PSN.PARSED_WITH_RULE                           # (100, 11)
+    h.loc[0, "assists"] = None                                                # its own missing value
+    rf = pd.DataFrame([{"fixture_id": 100, "player_id": 11, "goals": 5, "assists": 9, "rating": 1.0},
+                       {"fixture_id": 100, "player_id": 12, "goals": 0, "assists": 0, "rating": None}])
+    got = HR.with_refetched(h, rf).set_index(["fixture_id", "player_id"])
+    assert got.loc[(100, 11), HR.STATUS_COL] == PSN.PARSED_WITH_RULE
+    assert got.loc[(100, 11), "goals"] == 1 and pd.isna(got.loc[(100, 11), "assists"])
+    assert got.loc[(100, 12), HR.STATUS_COL] == HR.REFETCHED
+    assert (got[HR.STATUS_COL] == HR.UNVERIFIED).sum() == len(h) - 2
+    assert HR.UNVERIFIED == "zeros_unverified" and HR.REFETCHED == "refetched"

@@ -28,9 +28,15 @@ provider id (> 0) appears exactly once in the answer, in the team block that is 
 (side by API-Football team id against the list's home_id / away_id; a cup row's team_id must equal
 the block's team id). Otherwise the row is counted (`rows_refused`) and gets no correction.
 
-THE NULL RULE (player_model.player_stat_nulls, the one shared reading): a null count is 0 only when
-the player played (minutes > 0) AND the same answer carries that statistic for some player of the
-fixture; otherwise it stays missing. `filled_cols` names, per row, the counts read from a null.
+THE NULL RULE (player_model.player_stat_nulls, the one shared reading; refined by the owner
+2026-11-04, fix round 9): a null count is 0 when the player played (minutes > 0) AND the provider
+returned player statistics for the fixture, even if nobody in the match has that statistic; otherwise
+it stays missing. `filled_cols` names, per row, the counts read from a null.
+
+ROWS ALREADY VERIFIED ARE NOT ASKED AGAIN (owner 2026-11-04, fix round 9). A row a collector parsed
+from the raw provider answer with the rule carries count_source 'provider_rule' (history or cup rows)
+and is left out of the plan: its fixture is fetched only if another row of it is still unverified.
+Only rows written before the fix (no count_source) are re-fetched. The plan counts both.
 
 OUTPUT (output/collect/ only; player_history.parquet and the cup rows are never rewritten)
   player_history_refetch.parquet   one row per corrected (fixture_id, player_id): source ('history' |
@@ -84,7 +90,7 @@ J_COLS = ["fixture_id", "source", "status", "n_teams", "n_players", "n_rows", "n
 
 def source_rows(history: pd.DataFrame | None = None, cups: pd.DataFrame | None = None) -> pd.DataFrame:
     """player_history rows + cup rows (the columns the plan and the correction need), `source` set."""
-    want = KEY_COLS + ["team_id"] + VALUE_COLS
+    want = KEY_COLS + ["team_id"] + VALUE_COLS + [PSN.SOURCE_COL]
     h = history_frame(want) if history is None else history
     c = read_parquet(CUP_ROWS) if cups is None else cups
     parts = []
@@ -135,6 +141,18 @@ def plan(rows: pd.DataFrame | None = None, fx: pd.DataFrame | None = None,
     journal = read_parquet(JOURNAL) if journal is None else journal
     out = {"rows": int(len(rows)), "rows_by_source": rows["source"].value_counts().to_dict() if len(rows) else {},
            "refused_fixtures": {}, "refused_rows": {}}
+    # rows parsed with the rule are verified as stored: never part of the re-fetch (fix round 9)
+    verified = (rows[PSN.SOURCE_COL].isin(PSN.VERIFIED_SOURCES) if PSN.SOURCE_COL in rows.columns
+                else pd.Series(False, index=rows.index))
+    out["rows_verified_at_parse"] = int(verified.sum())
+    rows = rows[~verified.to_numpy()]
+    out["rows_to_verify"] = int(len(rows))
+    if rows.empty:                                    # nothing left to verify: no call at all
+        out.update(rows_without_fixture_id=0, rows_mapped_through_lists=0, fixtures=0, proven_fixtures=0,
+                   journaled_fixtures=0, planned_calls=0,
+                   todo=pd.DataFrame(columns=["fixture_id", "date", "source"]),
+                   fx=fx.drop_duplicates("fixture_id").set_index("fixture_id"), rows_frame=rows)
+        return out
     out["rows_without_fixture_id"] = int(rows["fixture_id"].isna().sum())
     ids, n_unmapped = map_fixture_ids(rows, fx)
     rows = rows.assign(fixture_id=ids)

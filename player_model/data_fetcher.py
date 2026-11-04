@@ -651,14 +651,16 @@ def _fetch_fixture_player_stats(fixture_id: int) -> list[dict]:
 
 
 def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
-                          answered: Optional[frozenset] = None) -> Optional[dict]:
+                          answered: Optional[bool] = None) -> Optional[dict]:
     """Parse one player from a /fixtures/players response entry.
 
     `answered` = player_stat_nulls.fixture_answered(<the whole answer of this fixture>). Every
-    per-player count is read by player_stat_nulls (owner 2026-11-04, fix round 8): a null is 0
-    only when the player played (minutes > 0) AND the provider answered that statistic for the
-    fixture; without `answered` (a caller that does not hold the whole answer) every null stays
-    missing, the fix-round-7 reading."""
+    per-player count is read by player_stat_nulls (owner 2026-11-04, refined in fix round 9): a
+    null is 0 when the player played (minutes > 0) AND the provider returned player statistics for
+    the fixture, even if nobody in the match has that statistic; without `answered` (a caller that
+    does not hold the whole answer) every null stays missing, the fix-round-7 reading.
+    The row says so in `count_source` (provenance, owner 2026-11-04 fix round 9): a row parsed here
+    with the fixture proof is verified and is never sent to the player re-fetch."""
     p = player_entry.get("player", {})
     name = repair_text(p.get("name", "")).strip()
     if not name:
@@ -699,7 +701,9 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
         "team":            meta["team"],
         "is_home":         int(meta["is_home"]),
         "referee":         meta.get("referee", ""),
-        "season":          meta.get("season", ""),
+        # no season -> None (was "": 3,423 national-team rows carried a blank season, and the
+        # profile collector sent it to API-Football as season='' - owner 2026-11-04, fix round 9)
+        "season":          (str(meta["season"]).strip() or None) if meta.get("season") is not None else None,
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "minutes":         minutes,
         "started":         int(started) if started is not None else None,
@@ -709,6 +713,8 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str,
                             else None),
         # every per-player count player_history stores, under the owner's null rule
         **{col: c[col] for col in _PSN.HISTORY_COUNT_COLS},
+        # where these counts came from (player_stat_nulls.SOURCE_COL)
+        _PSN.SOURCE_COL:   _PSN.parsed_source(answered),
     }
 
 
@@ -889,6 +895,24 @@ def _fetch_wc26_teams() -> list[dict]:
     return data.get("response", [])
 
 
+def national_row_season(league_name, fix_date) -> Optional[str]:
+    """The season of a national-team row: src.season_resolver on the competition and the match
+    date (owner 2026-11-04, fix round 9). None when the registry holds no season convention for the
+    competition - never a guessed year, never "".
+
+    WHY. This collector's row meta carried no season at all, so _parse_fixture_player wrote "" on
+    every row: 3,423 player_history rows (139 fixtures, 2025-10-10..2026-06-10: Friendlies, World
+    Cup qualifiers, Africa Cup of Nations) hold a blank season, and scripts/collect_player_profiles.py
+    sent 1,516 (player, '') pairs to API-Football, which rejected each one ('The Season field cannot
+    be empty'). An unresolved season is recorded with src.season_resolver.record_degradation."""
+    from src.season_resolver import is_known, record_degradation, resolve_api_season
+    s = resolve_api_season(league_name, fix_date)
+    if is_known(s):
+        return s
+    record_degradation("data_fetcher.collect_national_team_history", league_name, "SEASON_UNKNOWN")
+    return None
+
+
 def collect_national_team_history(last_n: int = 10) -> list[dict]:
     """
     Collect per-match player stats for all WC2026 national teams.
@@ -965,6 +989,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
 
             fix_stats = _fetch_fixture_statistics(fixture_id)
             answered = _PSN.fixture_answered(team_data_list)
+            season = national_row_season(league_name, fix_date)
 
             for team_data in team_data_list:
                 t_name  = team_data.get("team", {}).get("name", "")
@@ -981,6 +1006,7 @@ def collect_national_team_history(last_n: int = 10) -> list[dict]:
                     "team":         t_name,
                     "is_home":      is_home,
                     "team_corners": team_st.get("corners"),     # None when unavailable
+                    "season":       season,                     # None when unresolved, never ""
                 }
                 for player_entry in team_data.get("players", []):
                     parsed = _parse_fixture_player(player_entry, meta, league_name, answered)

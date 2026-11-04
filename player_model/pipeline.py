@@ -402,8 +402,11 @@ def merge_cup_rows(existing: "pd.DataFrame", cups: "pd.DataFrame") -> tuple:
     # the stored rows do not carry (prev_season_*, shot_accuracy_l10, ...) would otherwise exist on
     # the cup rows alone - its presence would mark a row as a cup row. Such columns arrive for every
     # row together, through a rebuild of player_history.
-    extra = sorted(c for c in out.columns if c not in existing.columns)
-    out = out[[c for c in out.columns if c in existing.columns]]
+    # count_source is PROVENANCE, not a feature (owner 2026-11-04, fix round 9): it always travels
+    # with the counts it describes, or a verified cup row would read back as zeros_unverified.
+    from player_model.player_stat_nulls import SOURCE_COL
+    extra = sorted(c for c in out.columns if c not in existing.columns and c != SOURCE_COL)
+    out = out[[c for c in out.columns if c in existing.columns or c == SOURCE_COL]]
     stats["columns_not_written"] = extra
     combined, _st = HI.merge_history(existing, out)
     stats["appended"] = int(len(combined) - len(existing))

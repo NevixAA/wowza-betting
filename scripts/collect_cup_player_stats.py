@@ -64,7 +64,10 @@ COLS = ["player_id", "player_name", "fixture_id", "date", "league", "home_team",
         "fouls_drawn", "duels_total", "duels_won", "team_corners", "red_cards", "passes_total",
         "offsides", "tackles_total", "interceptions", "dribbles_attempted", "dribbles_success",
         "dribbles_past", "goals_conceded", "saves", "penalty_scored", "penalty_missed",
-        "penalty_won", "penalty_saved", "team_id", "opponent_id", "fixture_status"]
+        "penalty_won", "penalty_saved", "team_id", "opponent_id", "fixture_status",
+        # provenance of the counts (owner 2026-11-04, fix round 9): rows stored before this column
+        # existed read back None = parsed by the old `or 0` reading -> zeros_unverified
+        "count_source"]
 JOURNAL_COLS = ["fixture_id", "league", "season", "date", "n_rows", "fetched_at"]
 META = COLLECT_DIR / "cup_fixture_meta.parquet"
 META_COLS = ["fixture_id", "date", "referee", "home_id", "away_id", "home_corners", "away_corners",
@@ -210,8 +213,9 @@ def parse(body: dict | None, fix) -> list[dict]:
     rows = []
     hid, aid = int(fix["home_id"]), int(fix["away_id"])
     fixture = {"teams": {"home": {"id": hid}, "away": {"id": aid}}}
-    # owner 2026-11-04 (fix round 8): a null count is 0 only for a player who played, in a fixture
-    # whose answer carries that statistic for someone - the whole answer decides, so it is read once
+    # owner 2026-11-04 (refined in fix round 9): a null count is 0 for a player who played, in a
+    # fixture the provider returned player statistics for - the whole answer decides, read once.
+    # Each row carries count_source = 'provider_rule' (verified at parse, never re-fetched).
     answered = fixture_answered((body or {}).get("response") or [])
     for block in (body or {}).get("response") or []:
         is_home = fixture_side(block, fixture, fix["home_name"], fix["away_name"])

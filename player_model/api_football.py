@@ -445,10 +445,11 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
     the provider sent neither `substitute` nor minutes. Settlement reads the raw records
     (fixture_players_raw) and decides itself what a null means.
 
-    OWNER RULE 2026-11-04 (fix round 8): the provider's null for a count is its "none" for a player
-    who PLAYED; it is read as 0 only when minutes > 0 AND the same answer carries that statistic for
-    some player of the fixture (player_model.player_stat_nulls, the one shared reading). An unused
-    substitute, or a statistic the fixture's answer has for nobody, stays None.
+    OWNER RULE 2026-11-04 (refined in fix round 9): the provider's null for a count is its "none"
+    for a player who PLAYED; it is read as 0 when minutes > 0 AND the provider returned player
+    statistics for the fixture, even when nobody in the match has that statistic
+    (player_model.player_stat_nulls, the one shared reading). An unused substitute, or a fixture
+    the provider did not answer, stays None.
     """
     from .player_stat_nulls import fixture_answered, player_counts
     players = []
