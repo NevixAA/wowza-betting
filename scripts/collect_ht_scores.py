@@ -90,7 +90,9 @@ def lacking_rows(history: pd.DataFrame | None = None) -> pd.DataFrame:
     h = h[h["date"].notna() & h["home_team"].notna() & h["away_team"].notna()]
     h["league_id"] = h["canon"].map(nf)
     h["season"] = [resolve_api_season(c, d) for c, d in zip(h["canon"], h["date"])]
-    bad = ~h["season"].map(is_known)
+    # astype(bool): on an EMPTY frame map() gives an object Series, and h[<empty object Series>]
+    # selects COLUMNS - every column vanished and plan() died on KeyError 'canon' (Phase 2 HT repair)
+    bad = ~h["season"].map(is_known).astype(bool)
     if bad.any():
         print(f"[ht] {int(bad.sum())} history row(s) skipped: API season unknown for "
               f"{sorted(h.loc[bad, 'canon'].unique())}")
@@ -253,17 +255,32 @@ def run(dry_run: bool = False, match_only: bool = False, client: AFClient | None
             client.flush()
     fill, per_league = match(lacking, read_parquet(SCORES))
     old = read_parquet(FILL)
-    if not fill.empty or old.empty:
-        # A history row matched earlier keeps its stored answer unless re-matched now (new wins).
-        key = ["league", "date", "home_team", "away_team"]
-        if not old.empty:
-            old = old[FILL_COLS]
-            fill = pd.concat([old, fill], ignore_index=True)
-        fill = fill.drop_duplicates(subset=key, keep="last").reset_index(drop=True)
-        FILL.parent.mkdir(parents=True, exist_ok=True)
-        tmp = FILL.with_suffix(".tmp.parquet")
-        fill.to_parquet(tmp, index=False)
-        tmp.replace(FILL)
+    key = ["league", "date", "home_team", "away_team"]
+    if not old.empty:
+        # A history row RE-EVALUATED this run carries this run's answer - including "refused" or
+        # "unmatched". It used to keep its stored score unless re-matched now, so a row a later run
+        # refuses (a second history row of another date claiming the same fixture) kept a stale
+        # score, and an empty match result left the whole stored file untouched (Phase 2 HT repair,
+        # 2026-11-03). Rows outside this run's scope (no longer lacking HT, season unknown) stay.
+        old = old[FILL_COLS].copy()
+        seen = set(zip(lacking["league"].astype(str), pd.to_datetime(lacking["date"]),
+                       lacking["home_team"].astype(str), lacking["away_team"].astype(str)))
+        re_eval = pd.Series([k in seen for k in zip(old["league"].astype(str), pd.to_datetime(old["date"]),
+                                                     old["home_team"].astype(str), old["away_team"].astype(str))],
+                            index=old.index, dtype=bool)
+        new_keys = set(zip(fill["league"].astype(str), pd.to_datetime(fill["date"]),
+                           fill["home_team"].astype(str), fill["away_team"].astype(str)))
+        dropped = [k for k, r in zip(zip(old["league"].astype(str), pd.to_datetime(old["date"]),
+                                         old["home_team"].astype(str), old["away_team"].astype(str)), re_eval)
+                   if r and k not in new_keys]
+        stats["stored_rows_dropped_now_unanswered"] = len(dropped)
+        old = old[~re_eval]
+        fill = pd.concat([old, fill], ignore_index=True) if not fill.empty else old
+    fill = fill.drop_duplicates(subset=key, keep="last").reset_index(drop=True)
+    FILL.parent.mkdir(parents=True, exist_ok=True)
+    tmp = FILL.with_suffix(".tmp.parquet")
+    fill.to_parquet(tmp, index=False)
+    tmp.replace(FILL)
     stats["filled_rows_total"] = int(len(fill))
     stats["per_league"] = per_league
     AUDIT.parent.mkdir(parents=True, exist_ok=True)

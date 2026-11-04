@@ -227,7 +227,7 @@ def _norm_club(s: str) -> str:
 
 
 def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, away_col: str,
-                          name: str) -> pd.DataFrame:
+                          name: str, aliases: dict | None = None) -> pd.DataFrame:
     """`right` restricted to the rows whose two clubs are PROVABLY clubs of `df`, with `_h`/`_a`
     holding df's own spelling of each (2026-11-02, owner rule).
 
@@ -235,7 +235,14 @@ def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, 
     suffix-stripping key with its own alias dict -- an identity guess. Now each source name is
     resolved by src.team_names.resolve among df's clubs of the row's league (the canonical,
     league-scoped resolver); a name no rule proves is skipped, counted and logged, never guessed.
-    df's side of the join is then simply its own home_team / away_team."""
+    df's side of the join is then simply its own home_team / away_team.
+
+    `aliases` ({league: {spelling: canonical}}, Phase 2 HT repair 2026-11-03): the identity map
+    one_club_one_match APPLIED to df (IDENTITY_ALIASES). A source keyed on the history's OWN
+    pre-identity spelling (the HT sidecar) names a club the pipeline renamed by same-day evidence -
+    'Atletico Paranaense' -> 'Athletico-PR' - which resolve() cannot spell-match. Only when resolve()
+    finds nothing: the spelling (or one resolve() proves equal to it) must be an alias of exactly ONE
+    canonical club that is in THIS league's pool; otherwise the row stays unplaced."""
     from src.team_names import resolve
     if right.empty or "league" not in right.columns or "league" not in df.columns:
         return right.iloc[0:0].assign(_h=pd.Series(dtype=object), _a=pd.Series(dtype=object))
@@ -245,6 +252,13 @@ def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, 
              for lg, g in df.groupby("league")}
     r = right[right["league"].astype(str).isin(pools)].copy()
     memo: dict = {}
+    pool_sets = {lg: set(p) for lg, p in pools.items()}
+
+    def _by_identity_alias(lg, txt):
+        amap = (aliases or {}).get(lg) or {}
+        hits = {c for a, c in amap.items()
+                if c in pool_sets[lg] and (a == txt or resolve(txt, [a]) == a)}
+        return hits.pop() if len(hits) == 1 else None
 
     def _one(lg, nm):
         if nm is None or (isinstance(nm, float) and np.isnan(nm)) or not str(nm).strip():
@@ -252,7 +266,10 @@ def _resolve_onto_history(right: pd.DataFrame, df: pd.DataFrame, home_col: str, 
         k = (lg, str(nm))
         if k not in memo:
             # a source name banked as mojibake ('PreuÃ\x9fen MÃ¼nster') resolves by its real text
-            memo[k] = resolve(fix_mojibake(str(nm)), pools[lg])
+            txt = fix_mojibake(str(nm))
+            memo[k] = resolve(txt, pools[lg])
+            if memo[k] is None and aliases:
+                memo[k] = _by_identity_alias(lg, txt)
         return memo[k]
 
     lgs = r["league"].astype(str).tolist()
@@ -467,6 +484,11 @@ def _one_side_aliases(df: pd.DataFrame, min_dates: int = 3) -> dict:
 #: last run's alias-store merges {league: {alias: canonical}} (logged; read by tests)
 ALIAS_STORE_MERGES: dict = {}
 
+#: the full club identity map {league: {spelling: canonical}} the last one_club_one_match applied
+#: (src.identity_repair.canonicalise_and_dedupe report 'aliases'). The HT step uses it to place
+#: sidecar rows keyed on the history's own pre-identity spelling (see _resolve_onto_history).
+IDENTITY_ALIASES: dict = {}
+
 
 def _alias_store_merges(out: pd.DataFrame, amap: dict, last: dict) -> dict:
     """Add to `amap` ({league: {alias: canonical}}, edited in place) every club the ALIAS STORE
@@ -542,6 +564,10 @@ def _canonical_identity_and_seasons(out: pd.DataFrame) -> pd.DataFrame:
                     one_side.setdefault(lg, {})[alias] = canon
         _alias_store_merges(out, one_side, _last)
         out, rep = canonicalise_and_dedupe(out, alias_map=one_side)
+        # the map actually applied (explicit + derived), for sources keyed on the pre-identity
+        # spelling (the HT sidecar) - Phase 2 HT repair, 2026-11-03
+        IDENTITY_ALIASES.clear()
+        IDENTITY_ALIASES.update({lg: dict(m) for lg, m in rep.get("aliases", {}).items() if m})
         log.info(f"[identity] one-side same-day aliases: "
                  f"{sum(len(m) for m in one_side.values())} in {len(one_side)} league(s)")
         _ev = [(lg, a, c, n) for lg, m in sorted(_EVIDENCE_ONLY_ALIASES.items())
@@ -1301,7 +1327,10 @@ def _enrich_ht_scores(df: pd.DataFrame, root: Path | None = None) -> pd.DataFram
                 continue
             ht = ht[ht["HTHG"].notna() & ht["HTAG"].notna()].copy()      # a null HT is missing
             ht["date"] = pd.to_datetime(ht["date"], errors="coerce")
-            ht = _resolve_onto_history(ht, df, "home_team", "away_team", name)
+            # keyed on the history's own spelling: let the identity map the loader applied to df
+            # place a club it renamed (Phase 2 HT repair: 2,303 of 33,259 sidecar rows were lost)
+            ht = _resolve_onto_history(ht, df, "home_team", "away_team", name,
+                                       aliases=IDENTITY_ALIASES)
             ht["_date_str"] = ht["date"].dt.strftime("%Y-%m-%d")
             df["_h"] = df["home_team"].astype(str)
             df["_a"] = df["away_team"].astype(str)
