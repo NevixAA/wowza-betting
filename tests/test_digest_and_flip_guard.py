@@ -97,6 +97,18 @@ def digest(out, monkeypatch):
          "home_team": "Lanus", "away_team": "Tigre", "market": "over15", "odds": 1.5, "edge_pct": 9,
          "signal_tier": "VALUABLE", "model_type": "new_format", "result": "LOSS", "pnl": -1.0},
     ]).to_csv(out / "side_bets_ledger.csv", index=False)
+    # THE staked definition (src/staked.py, owner 2026-11-04): the BTTS tip carries a recorded policy
+    # stake; the Over 1.5 VALUABLE was recorded with a zero stake.
+    pd.DataFrame([
+        {"date": YDAY, "fixture": f"{YDAY}|Boca|River", "league": "Argentina Primera Division",
+         "model_type": "new_format", "market": "BTTS", "side": "YES", "deployment_state": "ACTIVE",
+         "base_fraction": 0.0125, "stake_amount": 1.1, "final_fraction": 0.011, "reason": "OK",
+         "policy_version": "t", "generated_at": f"{YDAY} 06:00:00"},
+        {"date": YDAY, "fixture": f"{YDAY}|Lanus|Tigre", "league": "Argentina Primera Division",
+         "model_type": "new_format", "market": "OVER15", "side": "OVER", "deployment_state": "ACTIVE_LOW",
+         "base_fraction": 0.005, "stake_amount": 0.0, "final_fraction": 0.0, "reason": "TIER_NOT_STAKED",
+         "policy_version": "t", "generated_at": f"{YDAY} 06:00:00"},
+    ]).to_csv(out / "stake_audit.csv", index=False)
     notifier.notify_daily_digest()
     return sent, photos
 

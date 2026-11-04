@@ -27,6 +27,7 @@ require("pro")
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
 from dashboard_data import production_view, today_view  # noqa: E402
+from src.staked import DEFINITION as STAKED_DEF, plan_staked  # noqa: E402
 from src import units as U  # noqa: E402
 
 st.set_page_config(page_title="Wowza | Home", page_icon="🎯", layout="wide", initial_sidebar_state="expanded")
@@ -54,13 +55,13 @@ def _home(today: str, local_day: str) -> dict:
     * the Best-bets list (src.top_picks, the Tips page's lists); system health, manifest, API budget."""
     plan = production_view.stake_plan(today=today)
     ko = today_view.kickoffs()
-    active = plan[plan["final_fraction"] > 0] if len(plan) else plan
+    active = plan[plan_staked(plan)] if len(plan) else plan
     times = (pd.to_datetime(active["fixture"].map(ko.set_index("fixture")["kickoff_utc"]), errors="coerce", utc=True)
              if len(active) and len(ko) else pd.Series(dtype="datetime64[ns, UTC]"))
     sh, man = today_view.health_files()
     bb, bb_frozen = _best_bets(today)
     return {"perf": today_view.performance(today_view.load_settled(), today=local_day),
-            "upcoming_ou": today_view.upcoming_staked_ou(today_view.load_bets()),
+            "upcoming_ou": today_view.upcoming_staked_ou(plan),
             "act": today_view.action(plan), "ko_times": times,
             "gen": plan["generated_at"].dropna().astype(str).max() if len(plan) else None,
             "bb": bb, "bb_frozen": bb_frozen, "sh": sh, "man": man, "budget": today_view.api_budget()}
@@ -104,17 +105,18 @@ with a:
         r = bb.iloc[0]
         st.caption(f"Best bets #1: **{r['home_team']} v {r['away_team']}** · {r['pick']} @ {ui.fmt_odds(r['odds'])}"
                    f" · chance {ui.fmt_prob(r['p_win'])}")
-    st.caption(f"Upcoming staked tips = {STAKED_LABEL} on O/U 2.5 in the current slate. "
+    st.caption(f"Upcoming staked tips = O/U 2.5 tips in the current stake plan with a policy stake > 0. "
                f"Not staked by state: {_paper_bits}. Kickoff in Israel time. {GAP_EXPLAINER}")
 
 with b:
     if perf["n"]:
         _dd = perf["drawdown"]
         ui.metric_card(
-            "Staked P/L", U.fmt(perf['pnl']), title="B · Current performance",
-            help=f"Flat 1u, {STAKED_LABEL}, every staked market (O/U 2.5, side markets, HT), settled only. "
-                 "Same number as the Tips page.",
-            supporting=[("ROI", ui.fmt_roi(perf["roi"])),
+            "Staked P/L (flat 1u)", U.fmt(perf['pnl']), title="B · Current performance",
+            help=f"{STAKED_DEF}. Flat 1u per staked bet, every policy market (O/U 2.5, side markets), settled "
+                 "only. Same number as the Tips page.",
+            supporting=[("P/L at recorded stakes", f"{U.fmt(perf['stake_pnl'])} on {U.fmt(perf['stake_units'])} staked"),
+                        ("ROI", ui.fmt_roi(perf["roi"])),
                         ("Win rate — staked", f"{perf['win_rate'] * 100:.1f}%"),
                         ("Settled staked bets", f"{perf['n']}"),
                         ("Drawdown from peak", U.fmt(_dd)),
@@ -124,11 +126,11 @@ with b:
     else:
         with st.container(border=True):
             ui.eyebrow("B · Current performance")
-            st.metric("Staked P/L", "—")
+            st.metric("Staked P/L (flat 1u)", "—")
             ui.stat_line([("Win rate — staked", "—"), ("Settled staked bets", "0")])
-    st.caption(f"Paper {PAPER_TIER_LABEL} P/L: "
+    st.caption("Not staked (every other settled tip, any tier) P/L: "
                + (f"**{U.fmt(perf['paper_pnl'])}** · {perf['paper_n']} tips, not bets" if perf["paper_n"] else "—")
-               + " — tracked, never staked, never in the P/L.")
+               + " — tracked, never in the staked P/L.")
 
 with c:
     overall = str(sh.get("overall", "UNKNOWN")) if sh else "UNKNOWN"
@@ -180,7 +182,7 @@ else:
             for _, r in bb.iloc[3:].iterrows()) + ". All three lists are on the Tips page.")
 
 # ── recent performance ───────────────────────────────────────────────────────────────────────
-ui.section_header("Recent performance", f"Staked P/L per market, flat 1u, {STAKED_LABEL}, settled since the "
+ui.section_header("Recent performance", "Staked P/L per market, flat 1u, policy stake > 0, settled since the "
                   "cutoff. The line on the P/L card above is the cumulative total by match date. A sample, "
                   "not a track record.")
 if perf["n"]:

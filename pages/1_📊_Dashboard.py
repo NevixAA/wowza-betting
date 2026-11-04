@@ -38,6 +38,7 @@ _require_tier("pro")  # tier guard (dashboard_access.PAGES), 2026-10-18
 import config  # noqa: E402
 import dashboard_ui as ui  # noqa: E402
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
+from src.staked import DEFINITION as _STAKED_DEF, plan_staked as _plan_staked  # noqa: E402
 from dashboard_data import tips_view as TV  # noqa: E402
 from src import units as U  # noqa: E402
 
@@ -205,16 +206,17 @@ if len(board):
 if board.empty:
     ui.empty_state("NO_DATA", "No tips match the current filters.")
 else:
-    _staked = int(board["tier"].isin(["SNIPER", "MARKSMAN"]).sum())
+    # THE staked definition (src/staked.py, owner 2026-11-04): the stake plan recorded a stake > 0 on a
+    # real-money track. Until then this counted SNIPER + MARKSMAN tiers, PAPER tracks included.
+    _staked =int(_plan_staked(board).sum()) if "deployment_state" in board.columns else 0
     _future = pd.to_datetime(board["kickoff_utc"], errors="coerce", utc=True)
     _next = _future[_future > pd.Timestamp.now(tz="UTC")].min()
     ui.metric_grid([
         {"label": "Tips shown", "value": f"{len(board)}",
          "help": "Every live tip in the date range, all markets, one side per fixture."},
-        {"label": f"Staked ({STAKED_LABEL})", "value": f"{_staked}",
-         "help": f"On O/U 2.5 every tier, {PAPER_TIER_LABEL} included, carries the same paper stake (the gap "
-                 f"size does not rank outcomes there); on other markets {PAPER_TIER_LABEL} is tracked but not "
-                 f"staked. {GAP_EXPLAINER}"},
+        {"label": "Staked (policy stake > 0)", "value": f"{_staked}",
+         "help": f"{_STAKED_DEF}. A tier alone never makes a tip staked: a PAPER track, a paper league or an "
+                 f"odds cap gives a zero stake whatever the tier. {GAP_EXPLAINER}"},
         {"label": "Fixtures", "value": f"{board[['date', 'home_team', 'away_team']].drop_duplicates().shape[0]}"},
         {"label": "Next kickoff", "value": (f"{_next.tz_convert(_TZ_NAME):%a %H:%M}" if pd.notna(_next) else "—"),
          "help": f"Israel time ({_TZ_NAME})."},
@@ -404,7 +406,8 @@ _cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
 @st.cache_data(ttl=60)
 def _settled_staked():
     """Settled staked rows per market - THE staked definition (dashboard_data.today_view.staked_settled:
-    SNIPER + MARKSMAN, live, settled, since the cutoff, paper leagues out; props never). This page
+    a recorded policy stake > 0 (src/staked.py, owner 2026-11-04), live, settled, since the cutoff,
+    paper leagues out; props never). This page
     used its own reader until 2026-11-02, without the live filter and reading ht_ledger.csv (which
     has no signal_tier) as 'unreadable'. Ledgers are read once a minute, not on every rerun."""
     from dashboard_data import today_view as _TV
@@ -453,9 +456,11 @@ with t_perf:
         _biggest = _m.iloc[_m["PL"].abs().values.argmax()]
         _ex = _s[_s["_mkt"] != _biggest["Market"]]
         ui.metric_grid([
-            {"label": "P/L — all staked markets", "value": U.fmt(_tot),
+            {"label": "P/L — all staked markets (flat 1u)", "value": U.fmt(_tot),
              "delta": f"{U.fmt(_tot / len(_s), 3)} per bet",
-             "help": f"Flat 1u stakes, {STAKED_LABEL} only. Read the per-market table below "
+             "help": f"Flat 1u per staked bet. {_STAKED_DEF}. At the recorded stakes "
+                     f"({U.fmt(U.total(_s['_stake_units']))} staked) the P/L is "
+                     f"{U.fmt(U.total(_s['_pnl'] * _s['_stake_units']))}. Read the per-market table below "
                      "before this number — it is a sum of very unequal samples."},
             {"label": f"Excluding {_biggest['Market']}",
              "value": U.fmt(U.total(_ex["_pnl"])) if len(_ex) else "—",
@@ -483,7 +488,7 @@ with t_perf:
             st.markdown(" ".join(ui.sample_marker(int(r["Bets"]), floor=_THIN) + f" :gray[{r['Market']}]"
                                  for _, r in _thin.iterrows()))
         st.caption(
-            f"Flat 1u stakes · **staked tiers only** ({STAKED_LABEL} — {PAPER_TIER_LABEL} is not a bet) · "
+            f"Flat 1u stakes · **staked only** (policy stake > 0 recorded in the stake plan / audit) · "
             f"settled only · from {_cut.date()}. **Hit** is the share won; **Need** is the "
             f"break-even rate implied by the average price paid, so Hit above Need is a profitable "
             f"market and below it is not."

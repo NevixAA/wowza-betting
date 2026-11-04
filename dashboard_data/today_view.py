@@ -25,11 +25,15 @@ from src import units as U
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "output"
 
-# ── THE definition of "Staked" (owner, 2026-11-02) ─────────────────────────────────────────────
-# A staked bet is a SNIPER or MARKSMAN row, source == live, settled (pnl recorded), match date on or
-# after PERFORMANCE_CUTOFF_DATE, outside config.PAPER_LEAGUES, on a team-market ledger (SOURCES).
-# Player props are paper-only (invariant 2) and are never in SOURCES. Every page that says
-# "Staked" reads staked_settled() / is_staked(); nothing re-derives it.
+# ── THE definition of "Staked" (owner 2026-11-04; supersedes the tier basis of 2026-11-02) ─────────
+# A staked bet is a ledger row the bankroll policy RECORDED a stake > 0 for on a real-money track
+# (src/staked.py: stake_audit.csv / stake_plan.csv, REAL_STATES, base_fraction > 0), source == live,
+# settled (pnl recorded), match date on or after PERFORMANCE_CUTOFF_DATE, outside config.PAPER_LEAGUES,
+# on a team-market ledger (SOURCES). Until 2026-11-04 it was "SNIPER or MARKSMAN on any track", which
+# counted 495 of 805 bets on PAPER tracks as money. Player props and HT O/U have no policy track and
+# are never staked. Every page that says "Staked" reads staked_settled() / is_staked(); P/L stays
+# flat 1u per bet (labelled so), with the P/L at the recorded stake beside it.
+#: TIER words only (the old basis) — kept for tier displays, never to decide "Staked"
 STAKED = ("SNIPER", "MARKSMAN")
 SOURCES = [("bets_ledger.csv", None, "O/U 2.5"), ("side_bets_ledger.csv", "market", None),
            ("ht_ledger.csv", None, "HT O/U")]
@@ -70,40 +74,51 @@ def load_bets(out_dir=None) -> pd.DataFrame:
     return df
 
 
-SETTLED_COLS = ["signal_tier", "_mkt", "_pnl", "_dt", "league", "_odds", "_ledger"]
+SETTLED_COLS = ["signal_tier", "_mkt", "_pnl", "_dt", "league", "_odds", "_ledger",
+                 "_stake_status", "_stake_units", "_staked"]
 
 
-def is_staked(tier, source=None, dt=None, league=None, ledger=None, pnl=None) -> pd.Series:
-    """Row mask for THE staked definition above, on already-aligned Series (any may be None =
-    not filtered on that axis because the caller has already applied it)."""
+def is_staked(labels, source=None, dt=None, league=None, ledger=None, pnl=None) -> pd.Series:
+    """Row mask for THE staked definition above. `labels` is src.staked.label()'s frame (or its
+    `stake_status` Series); the optional Series are the extra clauses (live, cutoff, paper league,
+    paper-only ledger, settled) on already-aligned rows (None = the caller has already applied it).
+    A tier is NOT an argument any more: SNIPER / MARKSMAN never prove a stake (owner 2026-11-04)."""
     import config
-    tier = pd.Series(tier).astype(str).str.upper()
-    m = tier.isin(STAKED)
+    from src import staked as S
+    m = S.is_staked(labels).reset_index(drop=True)
+    idx = m.index
+
+    def _al(x):
+        return pd.Series(pd.Series(x).to_numpy(), index=idx)
     if source is not None:
-        m &= pd.Series(source, index=tier.index).fillna("live").astype(str).eq("live")
+        m &= _al(source).fillna("live").astype(str).eq("live")
     if dt is not None:
         cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
-        m &= pd.to_datetime(pd.Series(dt, index=tier.index), errors="coerce") >= cut
+        m &= pd.to_datetime(_al(dt), errors="coerce") >= cut
     if league is not None:
-        m &= ~pd.Series(league, index=tier.index).map(config.is_paper_league).fillna(False).astype(bool)
+        m &= ~_al(league).map(config.is_paper_league).fillna(False).astype(bool)
     if ledger is not None:
-        m &= ~pd.Series(ledger, index=tier.index).astype(str).isin(PAPER_ONLY_LEDGERS)
+        m &= ~_al(ledger).astype(str).isin(PAPER_ONLY_LEDGERS)
     if pnl is not None:
-        m &= pd.to_numeric(pd.Series(pnl, index=tier.index), errors="coerce").notna()
-    return m
+        m &= pd.to_numeric(_al(pnl), errors="coerce").notna()
+    lab = labels if isinstance(labels, (pd.Series, pd.DataFrame)) else pd.Series(labels)
+    return pd.Series(m.to_numpy(), index=lab.index)
 
 
 def staked_settled(out_dir=None) -> pd.DataFrame:
     """THE staked rows (see the definition at the top of this module)."""
     s = load_settled(out_dir)
-    return s[s["signal_tier"].isin(STAKED)].reset_index(drop=True)
+    return s[s["_staked"]].reset_index(drop=True)
 
 
 def load_settled(out_dir=None) -> pd.DataFrame:
-    """Every settled live row on every staked market since the cutoff (all tiers; callers split)."""
+    """Every settled live row on every staked market since the cutoff (all tiers; callers split), each
+    labelled with its recorded policy stake (src/staked.py): `_stake_status`, `_stake_units`, `_staked`."""
     import config
+    from src import staked as S
     parts = []
     cut = pd.Timestamp(getattr(config, "PERFORMANCE_CUTOFF_DATE", "1970-01-01"))
+    records = S.load_records(_out(out_dir))
     for f, mkc, const in SOURCES:
         p = _out(out_dir) / f
         if not p.exists():
@@ -113,35 +128,45 @@ def load_settled(out_dir=None) -> pd.DataFrame:
             if "source" in d.columns:
                 d = d[d["source"].fillna("live").astype(str) == "live"]
             if "signal_tier" not in d.columns:
-                continue
+                continue                                  # HT O/U: no tier and no policy track - never staked
             oc = "odds" if "odds" in d.columns else "entry_odds"
+            lab = S.label_ledger(d, f, records)
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
                          _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
                          _odds=pd.to_numeric(d[oc], errors="coerce") if oc in d.columns else float("nan"),
                          _ledger=f,
                          league=d["league"] if "league" in d.columns else pd.NA,
-                         _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
+                         _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const,
+                         _stake_status=lab["stake_status"], _stake_units=lab["stake_units"],
+                         _staked=S.is_staked(lab))
             parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][SETTLED_COLS])
         except Exception:                                             # noqa: BLE001 — a viewer never dies on one file
             continue
     return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=SETTLED_COLS)
 
 
-def upcoming_staked_ou(bets: pd.DataFrame) -> int:
-    """SNIPER + MARKSMAN on O/U 2.5 in the current slate (bets.csv) — Home's original count."""
-    if bets.empty:
+def upcoming_staked_ou(plan: pd.DataFrame) -> int:
+    """O/U 2.5 tips in the current stake plan that the policy stakes (src.staked.plan_staked). Until
+    2026-11-04 this counted SNIPER + MARKSMAN in bets.csv, i.e. tiers, PAPER tracks included."""
+    from src import staked as S
+    if plan is None or plan.empty or "market" not in plan.columns:
         return 0
-    return int(len(bets[bets["signal_tier"].isin(STAKED) & bets["bet"].isin(["OVER", "UNDER"])]))
+    return int((S.plan_staked(plan) & plan["market"].astype(str).str.upper().eq("OU25")).sum())
 
 
 def performance(settled: pd.DataFrame, today=None) -> dict:
-    """Staked headline figures. P/L, win rate and n are Home's original definitions."""
-    staked = settled[settled["signal_tier"].isin(STAKED)]
-    paper = settled[settled["signal_tier"] == "VALUABLE"]
+    """Staked headline figures (THE definition: `_staked`). `pnl` is flat 1u per staked bet (the
+    ledgers' convention, labelled "flat 1u"); `stake_pnl` / `stake_units` are the P/L and units at the
+    stake the policy recorded (notional 100-unit bankroll). `unstaked_*` = every other settled tip."""
+    staked = settled[settled["_staked"].astype(bool)] if "_staked" in settled.columns else settled.iloc[0:0]
+    paper = settled.drop(index=staked.index)
     n = int(len(staked))
+    su = pd.to_numeric(staked.get("_stake_units"), errors="coerce") if n else pd.Series(dtype=float)
     out = {"n": n, "pnl": U.total(staked["_pnl"]) if n else None,
            "win_rate": float((staked["_pnl"] > 0).mean()) if n else None,
            "roi": U.total(staked["_pnl"]) / n if n else None,
+           "stake_units": U.total(su) if n else None,
+           "stake_pnl": U.total(staked["_pnl"] * su) if n else None,
            "paper_n": int(len(paper)), "paper_pnl": U.total(paper["_pnl"]) if len(paper) else None,
            "drawdown": None, "peak": None, "last7_pnl": None, "last7_n": 0, "curve": pd.DataFrame(),
            "by_market": pd.DataFrame()}
@@ -171,7 +196,8 @@ def action(plan: pd.DataFrame) -> dict:
     """Counts from the stake plan (production's own sizing; same reader as the Production page)."""
     if plan is None or plan.empty:
         return {"tips": 0, "active": 0, "paper": 0, "by_state": {}, "shadow_bet": 0, "shadow_n": 0}
-    staked = plan["final_fraction"] > 0
+    from src import staked as S
+    staked = S.plan_staked(plan)
     ds = plan.get("decision_state", pd.Series(dtype=str)).astype(str)
     return {"tips": int(len(plan)), "active": int(staked.sum()), "paper": int((~staked).sum()),
             "by_state": plan.loc[~staked, "deployment_state"].fillna("?").value_counts().to_dict(),
@@ -198,7 +224,8 @@ def next_kickoff(plan: pd.DataFrame, ko: pd.DataFrame, now=None, active_only: bo
     """Earliest kickoff still ahead among the stake plan's tips (active ones by default)."""
     if plan is None or plan.empty or ko is None or ko.empty:
         return pd.NaT
-    d = plan[plan["final_fraction"] > 0] if active_only else plan
+    from src import staked as S
+    d = plan[S.plan_staked(plan)] if active_only else plan
     t = pd.to_datetime(d["fixture"].map(ko.set_index("fixture")["kickoff_utc"]), errors="coerce", utc=True)
     now = now if now is not None else pd.Timestamp.now(tz="UTC")
     return t[t > now].min()

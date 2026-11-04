@@ -69,7 +69,8 @@ if _fstate != "FRESH":                     # the header chip states freshness; t
 if plan.empty:
     st.info(f"No tips dated {today} or later in output/stake_plan.csv — predict writes it on its next run.")
 else:
-    staked = plan[plan["final_fraction"] > 0]
+    from src.staked import plan_staked                  # THE staked definition (owner 2026-11-04)
+    staked = plan[plan_staked(plan)]
     ui.metric_grid([{"label": "Tips sized", "value": f"{len(plan):,}"},
                     {"label": "With a stake", "value": f"{len(staked):,}"},
                     {"label": "Days covered", "value": plan["date"].nunique()},

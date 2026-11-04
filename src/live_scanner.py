@@ -154,9 +154,19 @@ def _live_lambda_remaining(prior_lambda: float, elapsed: float, live_sot: float,
     elapsed = max(1.0, min(float(elapsed), 90.0))
     remaining = max(0.0, 90.0 - elapsed)
     r_prior = max(prior_lambda, 0.05) / 90.0
-    r_live = (SOT_TO_GOAL * float(live_sot or 0)) / elapsed
-    w = elapsed / (elapsed + BLEND_K_MINS)
-    r_blend = w * r_live + (1.0 - w) * r_prior
+    # No live SOT from the provider -> no in-play evidence: the prior alone (owner 2026-11-04). It was
+    # `float(live_sot or 0)`, which read "no statistic" as "zero shots on target" and dragged the
+    # remaining-goals estimate down exactly when the feed was silent.
+    try:
+        sot = float(live_sot) if live_sot is not None else float("nan")
+    except (TypeError, ValueError):
+        sot = float("nan")
+    if sot != sot:
+        r_blend = r_prior
+    else:
+        r_live = (SOT_TO_GOAL * sot) / elapsed
+        w = elapsed / (elapsed + BLEND_K_MINS)
+        r_blend = w * r_live + (1.0 - w) * r_prior
     margin = abs(int(home_g) - int(away_g))
     if remaining <= 30 and margin >= 2:
         gs = 0.85          # comfortable lead late -> game slows

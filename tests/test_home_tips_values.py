@@ -70,17 +70,23 @@ def _old_home_values():
                 d = d[d["source"].fillna("live").astype(str) == "live"]
             if "signal_tier" not in d.columns:
                 continue
+            from src import staked as S
+            lab = S.label_ledger(d, fn, S.load_records(config.OUTPUT_DIR))
             d = d.assign(_dt=pd.to_datetime(d.get("match_date"), errors="coerce"),
-                         _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"),
+                         _pnl=pd.to_numeric(d.get("pnl"), errors="coerce"), _staked=S.is_staked(lab),
                          _mkt=d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl"]])
+            parts.append(d[d["_pnl"].notna() & (d["_dt"] >= cut)][["signal_tier", "_mkt", "_pnl", "_staked"]])
         except Exception:                                   # noqa: BLE001
             continue
     settled = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=["signal_tier", "_mkt", "_pnl"])
-    staked = settled[settled["signal_tier"].isin(("SNIPER", "MARKSMAN"))]
-    paper = settled[settled["signal_tier"] == "VALUABLE"]
-    up = (bets[bets["signal_tier"].isin(("SNIPER", "MARKSMAN")) & bets["bet"].isin(["OVER", "UNDER"])]
-          if not bets.empty else bets)
+    # OWNER 2026-11-04: "Staked" = a recorded policy stake > 0 (src/staked.py), no longer the
+    # SNIPER + MARKSMAN tiers. The frozen arithmetic is unchanged; only the row mask is the new one.
+    staked = settled[settled["_staked"]] if len(settled) else settled
+    paper = settled[~settled["_staked"]] if len(settled) else settled
+    from dashboard_data import production_view
+    from src.staked import plan_staked
+    plan = production_view.stake_plan(today=pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d"))
+    up = plan[plan_staked(plan) & plan["market"].astype(str).str.upper().eq("OU25")] if len(plan) else plan
     return {
         "🎯 Upcoming staked tips": str(len(up)),
         "📈 P/L — staked (u)": U.fmt(U.total(staked['_pnl'])) if len(staked) else "—",
@@ -93,7 +99,7 @@ def _old_home_values():
 
 # Where each pre-redesign Home value lives now (label moved, value identical).
 HOME_MOVES = {"🎯 Upcoming staked tips": ("stat", "Upcoming staked tips (O/U 2.5)"),
-              "📈 P/L — staked (u)": ("metric", "Staked P/L"),
+              "📈 P/L — staked (u)": ("metric", "Staked P/L (flat 1u)"),
               "✅ Win rate — staked": ("stat", "Win rate — staked"),
               "📊 Settled staked bets": ("stat", "Settled staked bets")}
 
@@ -119,7 +125,8 @@ def test_home_new_values_come_from_canonical_functions(monkeypatch):
     metrics, stats = _metrics(at), _stats(at)
     today = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
     plan = production_view.stake_plan(today=today)
-    assert metrics["Active tips"] == str(int((plan["final_fraction"] > 0).sum()))
+    from src.staked import plan_staked
+    assert metrics["Active tips"] == str(int(plan_staked(plan).sum()))
     act = today_view.action(plan)
     assert stats["Paper / no stake"] == str(act["paper"])
     sh = json.loads((ROOT / "output" / "system_health.json").read_text(encoding="utf-8"))
@@ -172,8 +179,9 @@ def test_tips_board_is_tips_rows_unchanged(monkeypatch):
     if want.empty:
         return
     assert m["Tips shown"] == str(len(want)) and len(got) == len(want)
-    from src.tier_labels import STAKED_LABEL, tier_label    # display words (owner 2026-10-26)
-    assert m[f"Staked ({STAKED_LABEL})"] == str(int(want["tier"].isin(["SNIPER", "MARKSMAN"]).sum()))
+    from src.tier_labels import tier_label    # display words (owner 2026-10-26)
+    from src.staked import plan_staked        # THE staked definition (owner 2026-11-04), not the tier
+    assert m["Staked (policy stake > 0)"] == str(int(plan_staked(TV.attach(want, TV.load_plan())).sum()))
     assert m["Fixtures"] == str(want[["date", "home_team", "away_team"]].drop_duplicates().shape[0])
 
     def key(match, pick, odds, edge, tier):
@@ -204,10 +212,15 @@ def _old_tips_settled_metrics() -> dict:
             continue
         try:
             d = _read_csv(fp, low_memory=False)
+            if "source" in d.columns:                       # THE definition counts live rows only
+                d = d[d["source"].fillna("live").astype(str) == "live"]
             d["_dt"] = pd.to_datetime(d.get("match_date"), errors="coerce")
             d["_pnl"] = pd.to_numeric(d.get("pnl"), errors="coerce")
             d["_mkt"] = (d[mkc].astype(str) if mkc and mkc in d.columns else const)
-            keep = d.get("signal_tier").isin(("SNIPER", "MARKSMAN")) & d["_pnl"].notna() & (d["_dt"] >= cut)
+            # OWNER 2026-11-04: staked = a recorded policy stake > 0 (src/staked.py), not the tier
+            from src import staked as S
+            lab = S.label_ledger(d, f, S.load_records(config.OUTPUT_DIR))
+            keep = S.is_staked(lab) & d["_pnl"].notna() & (d["_dt"] >= cut)
             if keep.any():
                 parts.append(d[keep][["_mkt", "_dt", "_pnl"]])
         except Exception:                                    # noqa: BLE001
@@ -216,7 +229,7 @@ def _old_tips_settled_metrics() -> dict:
     if parts:
         s = pd.concat(parts, ignore_index=True)
         tot = U.total(s["_pnl"])
-        out["P/L — all staked markets"] = (U.fmt(tot), f"{U.fmt(tot / len(s), 3)} per bet")
+        out["P/L — all staked markets (flat 1u)"] = (U.fmt(tot), f"{U.fmt(tot / len(s), 3)} per bet")
         out["Settled bets"] = (f"{len(s):,}", None)
         out["Days covered"] = (f"{s['_dt'].dt.date.nunique()}", None)
     cl = _read_csv(config.OUTPUT_DIR / "bets_ledger.csv", low_memory=False)

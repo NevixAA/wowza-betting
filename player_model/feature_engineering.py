@@ -33,6 +33,13 @@ from .setpiece import features as _SP
 
 NAN = float("nan")
 
+
+def _label(df: pd.DataFrame, col: str, k: int) -> pd.Series:
+    """1.0 when the recorded count >= k, 0.0 when it is below, NaN when no count was recorded (or the
+    column is absent) - a missing count is never read as 0 (owner 2026-11-04)."""
+    v = pd.to_numeric(df[col], errors="coerce") if col in df.columns else pd.Series(NAN, index=df.index)
+    return (v >= k).astype(float).where(v.notna())
+
 # PURGED set-piece features (owner rule 2026-11-02, "no fake data, no proxies"). None of them is
 # set-piece data: they were typed position weights (0.45 / 0.30 ...), typed rates (x 0.30 "sp
 # rate", x 5.0 / x 4.0 "SOT proxy"), clip bounds (.clip(0.3, 2.0), .clip(0, 0.10) / 0.10) and
@@ -1282,14 +1289,17 @@ def build_features(match_rows: list[dict], n: int = None) -> pd.DataFrame:
     df = _add_composites(df)
 
     # ── Target variables — actual outcome in THIS match ───────────────────────
-    df["target_goals"]   = (df["goals"]             >= 1).astype(int)
-    df["target_sot"]     = (df["shots_on_target"]   >= 1).astype(int)
-    df["target_cards"]   = (df["yellow_cards"]       >= 1).astype(int)
-    df["target_assists"] = (df["assists"]             >= 1).astype(int)
-    df["target_goals2"]  = (df["goals"]             >= 2).astype(int)
-    df["target_sot2"]    = (df["shots_on_target"]   >= 2).astype(int)
-    df["target_sot3"]    = (df["shots_on_target"]   >= 3).astype(int)
-    df["target_sot4"]    = (df["shots_on_target"]   >= 4).astype(int)
+    # A count the provider did not send is NaN (data_fetcher, owner 2026-11-04), and so is its
+    # label: `(NaN >= 1).astype(int)` read a missing count as "did not score" - the 'or 0' bug
+    # one step later. model.train drops unlabelled rows; a recorded count labels as before.
+    df["target_goals"]   = _label(df, "goals", 1)
+    df["target_sot"]     = _label(df, "shots_on_target", 1)
+    df["target_cards"]   = _label(df, "yellow_cards", 1)
+    df["target_assists"] = _label(df, "assists", 1)
+    df["target_goals2"]  = _label(df, "goals", 2)
+    df["target_sot2"]    = _label(df, "shots_on_target", 2)
+    df["target_sot3"]    = _label(df, "shots_on_target", 3)
+    df["target_sot4"]    = _label(df, "shots_on_target", 4)
 
     # Drop rows with no prior history (rolling features would all be NaN)
     _n0 = len(df)

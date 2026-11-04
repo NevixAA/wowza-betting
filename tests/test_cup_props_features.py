@@ -340,7 +340,8 @@ def test_collector_plan_parse_journal_and_budget(tmp_path, monkeypatch):
     assert by[7]["league"] == "Champions League" and by[7]["is_home"] == 1
     assert (by[7]["team_id"], by[7]["opponent_id"]) == (42, 569) and by[9]["team_id"] == 569
     assert by[7]["fixture_status"] == "FT" and by[7]["team_corners"] is None
-    assert by[7]["goals"] == 1 and by[7]["assists"] == 0
+    # assists: null from the provider stays None (owner 2026-11-04, the 'or 0' bug), never 0
+    assert by[7]["goals"] == 1 and by[7]["assists"] is None
 
     # run: one call per fixture, rows + journal written, an empty answer journaled too
     out, jrn = tmp_path / "rows.parquet", tmp_path / "journal.parquet"
