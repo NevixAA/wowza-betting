@@ -168,18 +168,23 @@ def test_null_minutes_for_a_starter_is_not_dnp(tmp_path, monkeypatch):
     assert pd.isna(_row(p)["result"])
 
 
-def test_null_shots_are_zero_only_when_the_team_total_proves_it(tmp_path, monkeypatch):
+def test_null_shots_of_a_player_who_played_are_zero_by_the_rule(tmp_path, monkeypatch):
+    # fix round 10 (owner 2026-11-04): the shared null rule, whatever the team total says
     p = _ledger(tmp_path, monkeypatch, days_ago=2)
     _api(monkeypatch, [_pl(7, sot=None), _pl(8, sot=4), _pl(51, team=2)], team_stats={1: 4})
     U.update_player_results()
     assert _row(p)["result"] == "LOSS"
+    rec = pd.read_csv(tmp_path / "corrections" / "player_ledger_null_rule_settled.csv", dtype=str,
+                      keep_default_na=False)
+    assert rec[["result_before", "result_after", "rule_zero_stats"]].values.tolist() == [["", "LOSS", "shots_on_target"]]
 
 
-def test_null_shots_stay_pending_when_the_team_total_leaves_room(tmp_path, monkeypatch):
+def test_null_shots_settle_even_when_the_team_total_leaves_room(tmp_path, monkeypatch):
+    # until fix round 10 this stayed pending for ever (the team total did not reconcile)
     p = _ledger(tmp_path, monkeypatch, days_ago=2)
     _api(monkeypatch, [_pl(7, sot=None), _pl(8, sot=4), _pl(51, team=2)], team_stats={1: 6})
     U.update_player_results()
-    assert pd.isna(_row(p)["result"])
+    assert _row(p)["result"] == "LOSS"
 
 
 def test_null_goals_come_from_complete_goal_events(tmp_path, monkeypatch):
@@ -192,9 +197,20 @@ def test_null_goals_come_from_complete_goal_events(tmp_path, monkeypatch):
     assert _row(p)["result"] == "WIN"
 
 
-def test_null_goals_stay_pending_when_events_are_incomplete(tmp_path, monkeypatch):
+def test_null_goals_with_an_incomplete_feed_settle_by_the_rule(tmp_path, monkeypatch):
+    # fix round 10: an incomplete feed that does not name the player leaves the rule's 0 standing
+    # (until fix round 10 this stayed pending)
     p = _ledger(tmp_path, monkeypatch, days_ago=2, market="goals")
     ev = [{"type": "Goal", "detail": "Normal Goal", "player": {"id": 51}, "assist": {"id": None}}]
+    _api(monkeypatch, [_pl(7, goals=None), _pl(51, team=2)], events=ev)      # 1 event, 3 goals
+    U.update_player_results()
+    assert _row(p)["result"] == "LOSS"
+
+
+def test_null_goals_named_by_an_incomplete_feed_stay_pending(tmp_path, monkeypatch):
+    # the sheet's null and an incomplete feed that names him disagree; neither is proven
+    p = _ledger(tmp_path, monkeypatch, days_ago=2, market="goals")
+    ev = [{"type": "Goal", "detail": "Normal Goal", "player": {"id": 7}, "assist": {"id": None}}]
     _api(monkeypatch, [_pl(7, goals=None), _pl(51, team=2)], events=ev)      # 1 event, 3 goals
     U.update_player_results()
     assert pd.isna(_row(p)["result"])

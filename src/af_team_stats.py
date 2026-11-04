@@ -22,10 +22,12 @@ goals_prevented stay missing when null. Read here as:
   * `NOT_COUNTS` (Ball Possession, Passes %, expected_goals, goals_prevented) -> a null stays missing;
   * a value the provider SENT is kept as sent (a sent 0 is a 0); unparseable -> missing, never 0.
 
-'Total passes' / 'Passes accurate' are counts but are NOT zero-filled (`PASS_COUNTS`, owner question
-2026-11-04): on the same sidecar they are null in 2,767 answered matches and a sent 0 occurs 3 times
-in 61,038 - no side completes a match without a pass, so that null is "not tracked", and reading it
-as 0 would invent a value. They stay missing until the owner decides.
+'Total passes' / 'Passes accurate' are counts but are NEVER zero-filled (`PASS_COUNTS`; OWNER DECISION
+2026-11-04, fix round 10): they stay MISSING when null, even in an ANSWERED block. Measured in fix
+round 9 on the same sidecar: null in 2,767 answered matches, while a sent 0 occurs 3 times in 61,038 -
+no side completes a match without a pass, so for these two types a null means "not tracked" (the
+provider did not track passes for this match), not "none". Reading it as 0 would invent a value. (The per-PLAYER
+passes.total of /fixtures/players is a different field, read by player_model.player_stat_nulls.)
 
 'Free Kicks' is a count the provider sends in some answers (the fullstats audit reported it as an
 unknown type); it is stored and read under the same rule.
@@ -40,7 +42,8 @@ COUNT_TYPES = frozenset({
     "Shots outsidebox", "Fouls", "Corner Kicks", "Offsides", "Yellow Cards", "Red Cards",
     "Goalkeeper Saves", "Free Kicks",
 })
-#: counts whose null stays MISSING (see the module docstring; open owner question)
+#: counts whose null stays MISSING even in an answered block: a null pass count means "not tracked"
+#: (owner decision 2026-11-04, fix round 10; null in 2,767 answered matches vs 3 sent zeros in 61,038)
 PASS_COUNTS = frozenset({"Total passes", "Passes accurate"})
 #: not counts: a null stays missing, never 0
 NOT_COUNTS = frozenset({"Ball Possession", "Passes %", "expected_goals", "goals_prevented"})
@@ -80,6 +83,7 @@ def team_values(stats_list) -> dict:
             continue
         v = s.get("value")
         if _is_null(v):
+            # PASS_COUNTS / NOT_COUNTS are not in COUNT_TYPES: their null stays missing
             out[typ] = 0.0 if typ in COUNT_TYPES else None
         else:
             out[typ] = _number(v)

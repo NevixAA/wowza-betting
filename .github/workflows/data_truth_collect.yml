@@ -112,6 +112,7 @@ jobs:
           # the owner's history corrections (step 7), on their own line: a missing path must not
           # make git add skip the collected data above
           git add -f output/corrections/history_*.csv output/corrections/history_corrections_audit.json 2>/dev/null || true
+          git add -f output/corrections/player_history_invalid_profile_keys.csv 2>/dev/null || true
           if git diff --staged --quiet; then echo "nothing new to commit"; exit 0; fi
           git commit -q -m "auto: data truth collect ($1) $(date -u '+%Y-%m-%d %H:%M UTC')"
           for i in 1 2 3 4 5; do
@@ -142,12 +143,19 @@ jobs:
       # lists ONCE (journal output/collect/ht_status_seasons.parquet, resumable, budget-guarded) to store
       # score.extratime / score.penalty and the AWD / WO / ABD statuses the 2026-11-02 parse dropped, so
       # build_history_corrections can exclude awarded / abandoned matches from the whole history.
+      # fix10 (owner 2026-11-04): --status-all-leagues extends that re-read to every other registry
+      # league-season of step 1's fixture lists, so awarded and abandoned matches are detected in the
+      # STANDARD-league history too: 388 lists on 2026-11-04 (120 HT lists + 268 registry
+      # league-seasons; `collect_ht_scores.py --add-status --status-all-leagues --dry-run` prints the
+      # count), 1 call each, ONCE per league-season. Budget-guarded by AFClient (job cap and account
+      # floor checked before every call; a stop is a clean exit) and resumable: each list read is
+      # journaled in output/collect/ht_status_seasons.parquet and never asked again.
       - name: 7. Half-time scores for the new-format history
         if: contains(env.STEPS, 'htscores')
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          python scripts/collect_ht_scores.py --add-status
+          python scripts/collect_ht_scores.py --add-status --status-all-leagues
           python scripts/build_history_corrections.py --fetch
           python scripts/collect_ht_scores.py --add-ft
           /tmp/commit_collected.sh htscores
@@ -183,7 +191,12 @@ jobs:
         env:
           APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
         run: |
-          python scripts/collect_player_profiles.py
+          # fix10 (owner 2026-11-04): the history rows behind the keys never sent (player id 0, no
+          # PROVIDER season) are rewritten beside the history each run, so a pair made valid by a
+          # provider season recorded by collect-wc (output/collect/national_fixture_seasons.csv)
+          # leaves the list.
+          python scripts/collect_player_profiles.py \
+            --invalid-keys-out output/corrections/player_history_invalid_profile_keys.csv
           /tmp/commit_collected.sh profiles
 
       # LAST of the API-Football steps (2026-11-03): it is the largest (~54k calls) and lower priority

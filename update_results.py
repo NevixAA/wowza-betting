@@ -748,9 +748,13 @@ def _grade_ou_event(ev: dict | None, side: str) -> tuple[str, float, dict] | Non
 #     with no player_id stays pending (logged) - its producer has the id;
 #   * "did not play" needs evidence from the match sheet: 0 minutes, an unused substitute, or
 #     absence from both clubs' published match squads. A null minutes value is not evidence;
-#   * a stat the provider left null is never read as 0. It is taken from the fixture's own
-#     record only when that record is provably complete (goal events that add up to the final
-#     score; shots on target that add up to the team total), otherwise the row stays pending.
+#   * a null in the player sheet is read with THE shared null rule, player_model.player_stat_nulls
+#     (owner decision 2026-11-04, fix round 10 'settle'): a null COUNT is 0 when the player played
+#     (minutes > 0) AND the provider returned player statistics for the fixture; otherwise it stays
+#     missing and the row stays pending. Until fix round 10 settlement had its own reading - a null
+#     shots-on-target settled LOSS only when the team 'Shots on Goal' total reconciled with the
+#     players who had a value, and otherwise stayed pending for ever. A row settled because the
+#     rule read a null as 0 is recorded BESIDE the ledger (NULL_RULE_SETTLED_FILE).
 
 _FT_STATUSES = ("FT", "AET", "PEN")
 _VOID_STATUSES = {"PST": "POSTPONED", "CANC": "CANCELLED", "ABD": "ABANDONED"}
@@ -1140,31 +1144,48 @@ def _fixture_by_id(fixture_id: int):
     return hits[0] if len(hits) == 1 else None
 
 
+#: the per-player count columns (player_stat_nulls.COUNT_FIELDS) behind each settled stat of a rec
+_REC_COUNT_COLS = {"goals": ("goals",), "assists": ("assists",), "shots_on_target": ("shots_on_target",),
+                   "yellow_card": ("yellow_cards",), "red_card": ("red_cards",)}
+
+
 def _fixture_players(fixture_id: int) -> dict:
-    """{'teams': {team_id: [player rec]}, 'by_id': {player_id: rec}} from /fixtures/players.
-    Every value the provider left null stays None."""
+    """{'teams': {team_id: [player rec]}, 'by_id': {player_id: rec}, 'answered': bool} from
+    /fixtures/players, every count read with THE shared null rule (player_model.player_stat_nulls,
+    owner decision 2026-11-04 - one helper, no copy in the settler):
+      * a value the provider SENT is kept (a sent 0 is a 0);
+      * a null COUNT is 0 when the player PLAYED (games.minutes > 0) and the provider returned
+        player statistics for the fixture (fixture_answered); otherwise it stays None (pending).
+    `rule_zero` on a rec lists the stats the rule read as 0 from a provider null: a result decided
+    by one of them is recorded beside the ledger (NULL_RULE_SETTLED_FILE). Minutes are the gate,
+    never zero-filled (None when the provider sent none)."""
+    from player_model import player_stat_nulls as PSN
+    resp = _af_response("/fixtures/players", {"fixture": fixture_id}, 168)
+    answered = PSN.fixture_answered(resp)
     teams, by_id = {}, {}
-    for block in _af_response("/fixtures/players", {"fixture": fixture_id}, 168):
+    for block in resp:
         tid = (block.get("team") or {}).get("id")
         recs = []
         for pe in block.get("players") or []:
             p = pe.get("player") or {}
             s = (pe.get("statistics") or [{}])[0] or {}
-            games, goals = s.get("games") or {}, s.get("goals") or {}
-            shots, cards = s.get("shots") or {}, s.get("cards") or {}
-            yel, red = cards.get("yellow"), cards.get("red")
+            games = s.get("games") or {}
+            c = PSN.player_counts(s, answered)
+            yel, red = c["yellow_cards"], c["red_cards"]
             rec = {"player_id": p.get("id"), "player_name": p.get("name"), "team_id": tid,
-                   "minutes_played": games.get("minutes"), "substitute": games.get("substitute"),
-                   "goals": goals.get("total"), "assists": goals.get("assists"),
-                   "shots_on_target": shots.get("on"),
-                   "yellow_card": None if yel is None else int(int(yel) > 0),
-                   "red_card": None if red is None else int(int(red) > 0)}
+                   "minutes_played": PSN.minutes_of(s), "substitute": games.get("substitute"),
+                   "goals": c["goals"], "assists": c["assists"],
+                   "shots_on_target": c["shots_on_target"],
+                   "yellow_card": None if yel is None else int(yel > 0),
+                   "red_card": None if red is None else int(red > 0)}
+            rec["rule_zero"] = sorted(k for k, cols in _REC_COUNT_COLS.items()
+                                      if rec[k] == 0 and all(PSN.raw_value(s, col) is None for col in cols))
             recs.append(rec)
             if rec["player_id"] is not None:
                 by_id[int(rec["player_id"])] = rec
         if tid is not None:
             teams[tid] = recs
-    return {"teams": teams, "by_id": by_id}
+    return {"teams": teams, "by_id": by_id, "answered": answered}
 
 
 def _goal_events_complete(events: list, fixture: dict) -> bool:
@@ -1178,8 +1199,16 @@ def _goal_events_complete(events: list, fixture: dict) -> bool:
 
 
 def _fill_null_stats(rec: dict, fixture_id: int, fixture: dict, players: dict) -> dict:
-    """Replace null stats with values PROVEN from the fixture's own record; leave them None
-    otherwise. Lazy: the extra endpoints are called only when a needed stat is null."""
+    """Replace stats the null rule left None with values PROVEN from the fixture's own record;
+    leave them None otherwise. Lazy: the extra endpoints are called only when a needed stat is None.
+
+    Since fix round 10 (owner 2026-11-04) _fixture_players reads every count with the shared null
+    rule, so for a player who PLAYED a stat is None only when the provider sent something that is
+    not a count. This proof path is kept for that case, unchanged for goals / assists / cards (the
+    event feed when its goals add up to the final score). The team 'Shots on Goal' total is read
+    with THE team rule, src.af_team_stats (a null in an answered team block is 0; an unanswered
+    block is missing), not as a raw value."""
+    from src import af_team_stats as AFTS
     out = dict(rec)
     pid = int(rec["player_id"])
     if any(out.get(k) is None for k in ("goals", "assists", "yellow_card", "red_card")):
@@ -1204,12 +1233,11 @@ def _fill_null_stats(rec: dict, fixture_id: int, fixture: dict, players: dict) -
         total = None
         for blk in _af_response("/fixtures/statistics", {"fixture": fixture_id}, 168):
             if (blk.get("team") or {}).get("id") == tid:
-                total = next((s.get("value") for s in blk.get("statistics") or []
-                              if s.get("type") == "Shots on Goal"), None)
+                total = AFTS.team_count(blk.get("statistics"), "Shots on Goal")
         known = [r["shots_on_target"] for r in players["teams"].get(tid, [])
                  if r.get("shots_on_target") is not None]
-        # The team total is fully accounted for by the players who have a value -> the nulls are 0.
-        if total is not None and int(total) == sum(int(v) for v in known):
+        # The team total is fully accounted for by the players who have a value -> the rest are 0.
+        if total is not None and total == sum(int(v) for v in known):
             out["shots_on_target"] = 0
     return out
 
@@ -1234,6 +1262,111 @@ def _appearance(rec: dict | None, players: dict, fixture_id: int, pid: int) -> t
                    for e in ev):
             return "DNP", "DNP (unused substitute)"
     return "UNKNOWN", "minutes not published"
+
+
+# ── RESULTS DECIDED BY THE NULL RULE ARE RECORDED BESIDE THE LEDGER (owner 2026-11-04, fix10) ──────
+# Before fix round 10 a prop whose deciding stat the provider left null stayed pending (shots on
+# target unless the team total reconciled; goals / assists / cards unless the event feed was
+# complete). The shared null rule now settles it. Every such settlement is written - besides the
+# normal ledger write that fills the pending row - to output/corrections/
+# player_ledger_null_rule_settled.csv with the value before (pending: '') and after, the stats the
+# rule read as 0 and the reason, so the rows the rule decided can always be told apart and restated.
+# The event feed keeps its role for goals / assists / cards (_event_check): where the sheet's null
+# would decide the result, the feed is read as before fix round 10. A feed that does not name the
+# player leaves the rule's 0 standing. A COMPLETE feed (its goals add up to the final score) that
+# names him decides the stat, exactly as _fill_null_stats did (that settlement is not a rule
+# decision). An incomplete feed that names him contradicts the null and proves nothing, so the row
+# stays pending ('rule_zero_contradicted_by_events') rather than be settled on either side.
+NULL_RULE_SETTLED_FILE = config.OUTPUT_DIR / "corrections" / "player_ledger_null_rule_settled.csv"
+NULL_RULE_SETTLED_COLS = ["ledger", "signal_date", "match_date", "league", "home_team", "away_team",
+                          "player_name", "player_id", "fixture_id", "market", "tier",
+                          "result_before", "result_after", "pnl_before", "pnl_after", "minutes",
+                          "rule_zero_stats", "reason", "resolved_date"]
+NULL_RULE_REASON = ("provider null read as 0 under the owner's null rule 2026-11-04 (player_stat_nulls: "
+                    "player played, provider returned player statistics); was pending before fix round 10")
+#: the rec stats each prop market base reads (see _resolve_player_market / card_market_result)
+_MARKET_RECS = {"goals": ("goals",), "sot": ("shots_on_target",), "assists": ("assists",),
+                "cards": ("yellow_card", "red_card")}
+_EVENT_CHECKED = ("goals", "assists", "yellow_card", "red_card")
+
+
+def _rule_decided(market: str, rec: dict, result: str) -> list[str]:
+    """The stats the null rule read as 0 that DECIDED `result` (a LOSS only: a 0 can never win)."""
+    import re
+    if result != "LOSS":
+        return []
+    m = re.fullmatch(r"([a-z]+?)(\d*)", str(market or "").strip().lower())
+    base = m.group(1) if m else ""
+    return [k for k in _MARKET_RECS.get(base, ()) if k in (rec.get("rule_zero") or ())]
+
+
+def _event_check(rec: dict, stats: list[str], fixture_id: int, fixture: dict) -> tuple[dict | None, list[str], str]:
+    """The event-feed check of the goals / assists / cards nulls the rule read as 0 (`stats`).
+    Returns (rec to settle on, the stats still decided by the rule, '') or (None, [], why pending).
+      * the feed does not name the player for any of them -> the rule's 0 stands;
+      * it names him and is COMPLETE (its goals add up to the final score) -> the stat is taken
+        from the feed, exactly as before fix round 10 (_fill_null_stats), not from the rule;
+      * it names him but is not complete -> the sheet and the feed disagree and neither is proven:
+        the row stays pending.
+    One cached /fixtures/events call, made only when such a null decides the result."""
+    want = [k for k in stats if k in _EVENT_CHECKED]
+    if not want:
+        return rec, list(stats), ""
+    pid = int(rec["player_id"])
+    ev = _af_response("/fixtures/events", {"fixture": fixture_id}, 168)
+    who = lambda e, k="player": (e.get(k) or {}).get("id") == pid        # noqa: E731
+    scored = [e for e in ev if e.get("type") == "Goal" and e.get("detail") not in ("Own Goal", "Missed Penalty")]
+    cards = [str(e.get("detail", "")) for e in ev if e.get("type") == "Card" and who(e)]
+    feed = {"goals": sum(1 for e in scored if who(e)),
+            "assists": sum(1 for e in scored if who(e, "assist")),
+            "yellow_card": int(any(d.startswith("Yellow") for d in cards)),
+            "red_card": int(any(d in ("Red Card", "Second Yellow card") for d in cards))}
+    named = [k for k in want if feed[k]]
+    if not named:
+        return rec, list(stats), ""
+    if not _goal_events_complete(ev, fixture):
+        return None, [], f"sheet null read as 0 but the (incomplete) event feed names the player for {named}"
+    out = dict(rec)
+    for k in named:
+        out[k] = feed[k]
+    return out, [k for k in stats if k not in named], ""
+
+
+def record_null_rule_settlements(ledger_name: str, frame: pd.DataFrame, updates: list[dict],
+                                 dst: Path | None = None) -> int:
+    """Append the updates the null rule decided (u['rule_zero_stats']) to NULL_RULE_SETTLED_FILE,
+    one row per ledger row and result (a re-run never duplicates). Returns rows appended. The
+    default file sits in the corrections folder BESIDE the ledger being settled (PLAYER_LEDGER_FILE's
+    folder: output/corrections/ in production)."""
+    dst = dst or (Path(PLAYER_LEDGER_FILE).parent / "corrections" / NULL_RULE_SETTLED_FILE.name)
+    rows = []
+    for u in updates:
+        if not u.get("rule_zero_stats"):
+            continue
+        r = frame.loc[u["idx"]]
+        g = lambda c: "" if c not in r.index or pd.isna(r[c]) else str(r[c])   # noqa: E731
+        rows.append({"ledger": ledger_name, **{c: g(c) for c in (
+            "signal_date", "match_date", "league", "home_team", "away_team", "player_name",
+            "player_id", "fixture_id", "market", "tier")},
+            "fixture_id": str(u.get("fixture_id") or g("fixture_id")),
+            "result_before": g("result"), "result_after": u["result"],
+            "pnl_before": g("pnl"), "pnl_after": str(u["pnl"]), "minutes": str(u.get("minutes", "")),
+            "rule_zero_stats": "|".join(u["rule_zero_stats"]), "reason": NULL_RULE_REASON,
+            "resolved_date": u["resolved_date"]})
+    if not rows:
+        return 0
+    new = pd.DataFrame(rows, columns=NULL_RULE_SETTLED_COLS)
+    key = ["ledger", "signal_date", "match_date", "player_id", "player_name", "market", "result_after"]
+    if dst.exists():
+        old = pd.read_csv(dst, dtype=str, keep_default_na=False)
+        seen = set(map(tuple, old[key].astype(str).to_numpy()))
+        new = new[[tuple(x) not in seen for x in new[key].astype(str).to_numpy()]]
+    if new.empty:
+        return 0
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    new.to_csv(dst, mode="a", header=not dst.exists(), index=False, lineterminator="\n")
+    log.info(f"{ledger_name}: {len(new)} result(s) decided by the null rule recorded -> {dst}")
+    return len(new)
 
 
 def update_player_results(days: int = 3, dry_run: bool = False) -> None:
@@ -1275,13 +1408,14 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
         log.info("  No player prop results resolved.")
         return
 
+    n_rule = sum(1 for u in updates if u.get("rule_zero_stats"))
     if dry_run:
         voids   = sum(1 for u in updates if u["result"] == "VOID")
         wins    = sum(1 for u in updates if u["result"] == "WIN")
         losses  = sum(1 for u in updates if u["result"] == "LOSS")
         print(f"\n  [DRY RUN] Would update {len(updates)} player prop row(s): "
-              f"{wins}W / {losses}L / {voids} VOID, and write {len(fixture_ids)} fixture_id(s). "
-              f"No files written.")
+              f"{wins}W / {losses}L / {voids} VOID ({n_rule} decided by the null rule), and write "
+              f"{len(fixture_ids)} fixture_id(s). No files written.")
         return
 
     # Issue #1 step 1: the fixture id found for a row that had none is written back, so the next
@@ -1297,6 +1431,8 @@ def update_player_results(days: int = 3, dry_run: bool = False) -> None:
         ledger.at[u["idx"], "resolved_date"] = u["resolved_date"]
 
     ledger.to_csv(PLAYER_LEDGER_FILE, index=False)
+    # `pending` is a copy taken before the writes above: it holds the values before.
+    record_null_rule_settlements("output/player_ledger.csv", pending, updates)
 
     wins      = sum(1 for u in updates if u["result"] == "WIN")
     losses    = sum(1 for u in updates if u["result"] == "LOSS")
@@ -1355,7 +1491,12 @@ def grade_restored_player_sidecar(path: Path | None = None, dry_run: bool = Fals
         side.at[u["idx"], "graded_is_played"] = u["is_played"]
         side.at[u["idx"], "graded_result"] = u["result"]
         side.at[u["idx"], "graded_pnl"] = str(u["pnl"])
-        side.at[u["idx"], "graded_notes"] = u.get("notes", "")
+        # This file is itself the beside-record (graded_* next to the first-sight values), and its
+        # own CI step writes it alone: a result the null rule decided is marked in graded_notes.
+        side.at[u["idx"], "graded_notes"] = "; ".join(x for x in (
+            u.get("notes", ""),
+            f"null rule 2026-11-04: {'|'.join(u['rule_zero_stats'])} null read as 0"
+            if u.get("rule_zero_stats") else "") if x)
         side.at[u["idx"], "graded_resolved_date"] = u["resolved_date"]
     side.to_csv(p, index=False, lineterminator=eol)
     log.info(f"restored player rows: {len(updates)} graded beside the first-sight values -> {p}")
@@ -1494,6 +1635,24 @@ def _grade_player_rows(pending: pd.DataFrame, today_str: str,
         if not result:
             _skip("stat_unknown", f"{what}: market not settleable or stat not published")
             continue
+        # The extra-time path rebuilds goals / assists / cards from the event feed (no rule zero
+        # there); only its shots-on-target bound comes from the sheet under the rule.
+        if status in _EXTRA_TIME_STATUSES:
+            rule_zero = ["shots_on_target"] if (result == "LOSS" and str(market).startswith("sot")
+                                                and "shots_on_target" in (rec.get("rule_zero") or ())) else []
+        else:
+            rule_zero = _rule_decided(market, rec, result)
+            if rule_zero:
+                checked, rule_zero, clash = _event_check(rec, rule_zero, fid, fixture)
+                if checked is None:
+                    _skip("rule_zero_contradicted_by_events", f"{what}: {clash}")
+                    continue
+                if checked is not rec:                  # the complete feed named him: it decides
+                    result = _resolve_player_market(market, checked)
+                    rule_zero = _rule_decided(market, {**checked, "rule_zero": rule_zero}, result)
+                    if not result:
+                        _skip("stat_unknown", f"{what}: market not settleable on the event feed")
+                        continue
 
         # AN UNPRICED ROW HAS NO P&L, BECAUSE THERE WAS NO BET. This fell back to
         # `mkt_odds = 1.0`, which prices a win at 0.0 and a loss at -1.0 — so a prop nobody
@@ -1521,7 +1680,8 @@ def _grade_player_rows(pending: pd.DataFrame, today_str: str,
             note = ""
 
         updates.append({"idx": idx, "is_played": "True", "result": result,
-                        "pnl": pnl, "notes": note, "resolved_date": today_str})
+                        "pnl": pnl, "notes": note, "resolved_date": today_str,
+                        "rule_zero_stats": rule_zero, "minutes": minutes, "fixture_id": fid})
         # `pnl` is DELIBERATELY "" for an unpriced row (see the note above — invariant 9, write
         # nothing rather than an invented number). This log line still formatted it with
         # `:+.3f`, so the first unpriced prop raised

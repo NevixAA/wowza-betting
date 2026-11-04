@@ -25,10 +25,22 @@ rejection stores nothing, so they were asked again every run. They came from our
   * player_id 0: 256 rows of 153 players written by the league collect before 2026-11-02, when
     data_fetcher._stable_player_id still accepted the provider's id 0 (fixed then, fa3c758d).
 A key is checked BEFORE any call (`key_problem`): the player id must be a provider id > 0, and the
-season is the row's stored season or, when that is blank, src.season_resolver on the row's league and
-match date. A key that fails is skipped and counted by reason - never sent, never retried with a
-substitute value. `--invalid-keys-out` lists the history rows behind them (beside the history,
-never in it).
+season is the PROVIDER'S OWN season of the row's fixture. A key that fails is skipped and counted by
+reason - never sent, never retried with a substitute value. `--invalid-keys-out` lists the history
+rows behind them (beside the history, never in it).
+
+THE SEASON IS THE PROVIDER'S (owner decision 2026-11-04, fix round 10: real data only, never a typed
+year). The season to ask for is, in order:
+  1. the row's stored season (the collectors store the provider season id they read the row under);
+  2. when that is blank, the season API-Football itself returned on the row's fixture (league.season)
+     as recorded by `player_model.pipeline --mode collect-wc` in
+     output/collect/national_fixture_seasons.csv (data_fetcher.record_national_seasons);
+  3. otherwise none: the key is 'season_unresolved'.
+Fix round 9 filled a blank season from src.season_resolver on the row's league and date. That is the
+registry's convention, not the provider's answer, and on the committed history it resolved none of
+the 3,423 blank-season rows (no convention for Friendlies / WC qualifiers / AFCON), so it is gone.
+The provider season of those 139 fixtures is not stored anywhere in the repository (checked
+2026-11-04): they stay season_unresolved, counted, until collect-wc records it.
 """
 from __future__ import annotations
 
@@ -104,31 +116,43 @@ def _season_text(v) -> str | None:
     return s if s.isdigit() else None
 
 
-def key_frame(h: pd.DataFrame | None = None) -> pd.DataFrame:
-    """One row per history row: player_id, the season to ask for (`season_key`) and `problem`
-    (None | PROBLEM_ID | PROBLEM_SEASON). The season is the stored one, else src.season_resolver on
-    the row's league and match date (one resolution per distinct league and day); never a guess."""
-    from src.season_resolver import is_known, resolve_api_season
+def provider_seasons(path: Path | None = None) -> dict:
+    """{fixture_id: provider season} from data_fetcher.NATIONAL_SEASONS_FILE ({} when absent)."""
+    if path is None:
+        from player_model.data_fetcher import NATIONAL_SEASONS_FILE as path
+    if not Path(path).exists():
+        return {}
+    d = pd.read_csv(path, dtype=str, keep_default_na=False)
+    if "fixture_id" not in d.columns or "season" not in d.columns:
+        return {}
+    out = {}
+    for f, s in zip(pd.to_numeric(d["fixture_id"], errors="coerce"), d["season"].map(_season_text)):
+        if f == f and s:
+            out[int(f)] = s
+    return out
+
+
+def key_frame(h: pd.DataFrame | None = None, seasons: dict | None = None) -> pd.DataFrame:
+    """One row per history row: player_id, the season to ask for (`season_key`), where it came from
+    (`season_source`: 'stored' | 'provider_fixture' | None) and `problem` (None | PROBLEM_ID |
+    PROBLEM_SEASON). The season is the stored one, else the provider's own league.season of the
+    row's fixture as recorded by collect-wc (`seasons`, default provider_seasons()); never a guess."""
     cols = ["fixture_id", "player_id", "season", "league", "date"]
     h = history_frame(cols) if h is None else h.copy()
     if h.empty:
-        return pd.DataFrame(columns=cols + ["season_key", "problem"])
+        return pd.DataFrame(columns=cols + ["season_key", "season_source", "problem"])
     for c in cols:
         if c not in h.columns:
             h[c] = None
+    seasons = provider_seasons() if seasons is None else seasons
     pid = pd.to_numeric(h["player_id"], errors="coerce")
     stored = h["season"].map(_season_text)
-    day = pd.to_datetime(h["date"], errors="coerce").dt.strftime("%Y-%m-%d")
-    need = stored.isna()
-    memo: dict = {}
-    resolved = pd.Series(None, index=h.index, dtype=object)
-    for i, lg, d in zip(h.index[need], h.loc[need, "league"], day[need]):
-        k = (lg, d)
-        if k not in memo:
-            s = resolve_api_season(lg, d) if isinstance(d, str) else None
-            memo[k] = s if is_known(s) else None
-        resolved[i] = memo[k]
-    h["season_key"] = stored.where(stored.notna(), resolved)
+    fid = pd.to_numeric(h["fixture_id"], errors="coerce")
+    proven = pd.Series([seasons.get(int(f)) if f == f else None for f in fid], index=h.index, dtype=object)
+    h["season_key"] = stored.where(stored.notna(), proven)
+    h["season_source"] = None
+    h.loc[stored.notna(), "season_source"] = "stored"
+    h.loc[stored.isna() & proven.notna(), "season_source"] = "provider_fixture"
     h["problem"] = None
     h.loc[h["season_key"].isna(), "problem"] = PROBLEM_SEASON
     h.loc[~(pid > 0).to_numpy(), "problem"] = PROBLEM_ID          # an invented id outranks the season
@@ -147,13 +171,17 @@ def key_problem(player_id, season) -> str | None:
     return None if _season_text(season) else PROBLEM_SEASON
 
 
-def plan_keys(h: pd.DataFrame | None = None, have: pd.DataFrame | None = None) -> dict:
+def plan_keys(h: pd.DataFrame | None = None, have: pd.DataFrame | None = None,
+              seasons: dict | None = None) -> dict:
     """{'todo': valid keys without a stored profile (newest season first), 'skipped': {reason:
-    pairs}, 'skipped_rows': {reason: rows}, 'keys': key_frame()}."""
-    kf = key_frame(h)
+    pairs}, 'skipped_rows': {reason: rows}, 'provider_fixture_rows': blank-season rows made valid by
+    the provider's recorded fixture season, 'keys': key_frame()}."""
+    kf = key_frame(h, seasons)
     have = read_parquet(OUT) if have is None else have
     held = ({(int(p), str(s)) for p, s in zip(have["player_id"], have["season"])} if len(have) else set())
-    out = {"skipped": {}, "skipped_rows": {}, "keys": kf}
+    out = {"skipped": {}, "skipped_rows": {}, "keys": kf,
+           "provider_fixture_rows": int(((kf["season_source"] == "provider_fixture")
+                                         & kf["problem"].isna()).sum()) if len(kf) else 0}
     bad = kf[kf["problem"].notna()]
     for r, g in bad.groupby("problem"):
         out["skipped_rows"][r] = int(len(g))
@@ -181,7 +209,9 @@ def run(limit: int | None = None, dry_run: bool = False, client: AFClient | None
     p = plan_keys()
     keys = p["todo"]
     print(f"[profiles] {len(keys):,} valid (player, season) pair(s) without a stored profile; "
-          f"skipped, never sent: {p['skipped']} pair(s) from {p['skipped_rows']} history row(s)")
+          f"skipped, never sent: {p['skipped']} pair(s) from {p['skipped_rows']} history row(s); "
+          f"{p['provider_fixture_rows']:,} blank-season row(s) valid on the provider's recorded "
+          f"fixture season")
     if invalid_out is not None:
         rows = invalid_key_rows(p["keys"])
         Path(invalid_out).parent.mkdir(parents=True, exist_ok=True)
