@@ -27,12 +27,15 @@ TZ_NAME = "Asia/Jerusalem"
 from src.tier_labels import TIER_ICON, tier_label  # noqa: E402 - display words (owner 2026-10-26)
 
 TIER_ORDER = ("SNIPER", "MARKSMAN", "VALUABLE")
-STAKE = {"SNIPER": "staked · full", "MARKSMAN": "staked · ¾", "VALUABLE": "paper"}
+# Tier-multiplier notes, NOT "staked": whether a tip is staked is the stake plan's recorded stake
+# (src/staked.py, owner 2026-11-04), shown in the "Stake %" column.
+STAKE = {"SNIPER": "tier multiplier · full", "MARKSMAN": "tier multiplier · ¾", "VALUABLE": "paper"}
 # SIGNAL TIER != EVIDENCE RANK (P1-6, 2026-10-22): on O/U 2.5 the edge size does not rank outcomes, so the
 # bankroll policy stakes every O/U tier the same and the page must not imply SNIPER is the stronger bet.
 STAKE_OU = "equal stake · tier ≠ confidence"
 
-PLAN_COLS = ["date", "fixture", "market", "side", "deployment_state", "final_fraction", "decision_state",
+PLAN_COLS = ["date", "fixture", "market", "side", "deployment_state", "base_fraction", "final_fraction",
+             "stake_amount", "decision_state",
              "engine_version", "p_market_fair", "p_decision", "p_lower_bound", "ev_lower_bound",
              "clv_evidence_state", "track", "generated_at"]
 SHADOW_COLS = ["prediction_ts", "match_date", "home_team", "away_team", "market", "side", "ev_point",
@@ -106,8 +109,10 @@ def attach(board: pd.DataFrame, plan: pd.DataFrame, shadow: pd.DataFrame | None 
     p = plan.copy() if plan is not None else pd.DataFrame(columns=PLAN_COLS)
     p["side"] = p["side"].astype(str).str.upper()
     p = p.drop_duplicates(["fixture", "market", "side"], keep="last")
-    cols = ["deployment_state", "final_fraction", "decision_state", "engine_version", "p_market_fair",
+    cols = ["deployment_state", "base_fraction", "final_fraction", "stake_amount", "decision_state",
+            "engine_version", "p_market_fair",
             "p_decision", "p_lower_bound", "ev_lower_bound", "clv_evidence_state", "track"]
+    p = p.reindex(columns=list(dict.fromkeys(list(p.columns) + cols)))     # absent column = missing, never 0
     b = b.merge(p[["fixture", "market", "side"] + cols].rename(columns={"fixture": "_fx", "market": "_pm",
                                                                          "side": "_ps"}),
                 on=["_fx", "_pm", "_ps"], how="left")

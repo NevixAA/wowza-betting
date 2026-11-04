@@ -33,7 +33,8 @@ def _n(v) -> str:
     """A count from a health file, or '—' when the file does not carry it (missing is not 0)."""
     return "—" if v is None else f"{v:,}"
 
-from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label  # noqa: E402,F401
+from src.staked import DEFINITION as STAKED_DEF  # noqa: E402
 from dashboard_data import fantasy, pro, v9, v11  # noqa: E402
 from src import units as U  # noqa: E402
 from dashboard_data import overview_view as V  # noqa: E402
@@ -89,8 +90,8 @@ else:
     V.health_cards(checks)
 
 # ═══ PRODUCTION ═══════════════════════════════════════════════════════════════════════════════════
-ui.section_header("Production — V9 live betting", f"Staked tiers only ({STAKED_LABEL}). {PAPER_TIER_LABEL} is paper "
-                  f"and is kept out of every P/L headline. {GAP_EXPLAINER}")
+ui.section_header("Production — V9 live betting", f"Staked only: {STAKED_DEF}. Every other tip, whatever its "
+                  f"tier, is kept out of every P/L headline. {GAP_EXPLAINER}")
 perf = E["perf"]
 if not perf.get("available"):
     ui.empty_state("NO_DATA", perf.get("why", "no settled bets"))
@@ -100,9 +101,9 @@ else:
     # THE HEADLINE IS THE STAKED FIGURE, NOT THE ALL-TIPS FIGURE (see overview_view.staked_cards).
     V.staked_cards(perf)
     st.caption(
-        f"Every card above is {STAKED_LABEL} only — the tiers that carry money. "
-        f"Including the paper {PAPER_TIER_LABEL} tier there are {total_n:,} tips worth "
-        f"{U.fmt(U.total(t['pnl'] for t in tracks.values()))}, but a paper tier is not a result and "
+        f"Every card above is staked bets only (a recorded policy stake > 0), flat 1u. "
+        f"All settled tips, every tier, staked or not: {total_n:,} tips worth "
+        f"{U.fmt(U.total(t['pnl'] for t in tracks.values()))}; a tip without a stake is not a result and "
         f"is kept out of every P/L headline on this page.")
 
     # per-track, per-tier P/L. One chart, one scale, n in every tooltip.
@@ -144,9 +145,8 @@ else:
             # A 45% hit rate is excellent at 2.40 and a disaster at 1.70.
             st.altair_chart(ui.pnl_bars(bl, "label", "excess_hit", "n", h=26 * len(bl) + 60,
                                         title="Hit rate minus that league's own break-even"), width="stretch")
-        st.caption(f"Staked tiers only ({STAKED_LABEL}). Including the paper {PAPER_TIER_LABEL} tier the "
-                   "same chart reads -123.16u across 1,350 tips instead of -35.66u across 561 — "
-                   "three and a half times larger, and none of the difference is money.")
+        st.caption("Staked bets only (a recorded policy stake > 0), flat 1u. A tier alone is not a stake: "
+                   "tips on PAPER tracks or with a zero stake are never in this chart.")
         thin = int((~bl["reliable"]).sum())
         if thin:
             st.markdown(ui.status_chip("SMALL_SAMPLE", label=f"{thin} THIN LEAGUE(S) · n < 30")

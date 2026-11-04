@@ -331,9 +331,9 @@ for tab, mkt in zip(tabs, MARKETS):
             _flat = U.total(U.profit(_sp["odds"]).where(_sp["result"] == "WIN", -1.0)) if len(_sp) else None
             _flat_s = ("—" if _flat is None
                        else f"**{U.fmt(_flat, 1)}** over {len(_sp)} priced bet(s), {100 * _flat / len(_sp):+.0f}%")
-            # Side-market SNIPER + MARKSMAN tips ARE staked (THE staked definition, today_view), so this
-            # no longer says "paper only - never staked"; the per-track production state is the
-            # bankroll policy's (Production page).
+            # Whether a side-market tip is staked is THE staked definition (src/staked.py: a recorded
+            # policy stake > 0, owner 2026-11-04), not its tier; this view simulates every tip in the
+            # filter on a notional bankroll. The per-track state is the bankroll policy's (Production page).
             st.caption(
                 f"{len(_s)} settled bets in this view. "
                 f"Flat-stake result is {_flat_s}; "
@@ -356,7 +356,7 @@ for tab, mkt in zip(tabs, MARKETS):
         ui.compact_table(V.weekly_frame(eq), V.WEEKLY_CONFIG)
 
         if games is not None and not games.empty:
-            with st.expander(f"Games — {len(games)} settled bets staked"):
+            with st.expander(f"Games — {len(games)} settled bets in the simulation"):
                 ui.compact_table(V.games_frame(games), V.GAMES_CONFIG)
 
 st.caption("Sizing recomputed off bank at each week's open. Kelly f* = edge ÷ (odds−1), "

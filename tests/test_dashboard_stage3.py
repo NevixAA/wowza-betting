@@ -147,8 +147,11 @@ def test_bankroll_plan_rows_equal_the_old_arithmetic():
     sp = pd.DataFrame({"date": ["2026-10-25", "2026-10-25", "2026-10-26", "2026-10-26"],
                        "fixture": list("abcd"), "league": ["L"] * 4, "track": ["t"] * 4,
                        "signal_tier": ["SNIPER"] * 4, "odds": [1.9, 2.0, 2.1, 1.8],
+                       "deployment_state": ["ACTIVE"] * 4,      # THE staked definition needs the real state
                        "final_fraction": [0.0125, 0.005, 0.0, 0.0075]})
     show, by_day = V.plan_rows(sp)
+    # a stake on a non-real state (PAPER) is never a staked row (src/staked.plan_staked, owner 2026-11-04)
+    assert V.plan_rows(sp.assign(deployment_state="PAPER"))[0].empty
     staked = sp[sp["final_fraction"] > 0]
     old_by_day = (staked.groupby("date")["final_fraction"].sum() * 100).round(2).rename("% of bankroll").reset_index()
     pd.testing.assert_frame_equal(by_day[["date", "% of bankroll"]], old_by_day)

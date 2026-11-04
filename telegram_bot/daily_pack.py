@@ -39,7 +39,17 @@ from src import units as U
 from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL, tier_label
 from telegram_bot.tips_table import _fit, _font, render_pngs, todays_rows
 
+#: TIER words only. "Staked" is THE definition in src/staked.py (owner 2026-11-04): a recorded policy
+#: stake > 0 on a real-money track - settled_tips() carries it as `staked`; _staked() reads it.
 STAKED = ("SNIPER", "MARKSMAN")
+STAKED_TEXT = "policy stake > 0"
+
+
+def _staked(df: pd.DataFrame) -> pd.Series:
+    """THE staked mask on a settled_tips() frame; a frame without the label proves no stake (False)."""
+    if "staked" not in df.columns:
+        return pd.Series(False, index=df.index)
+    return df["staked"].fillna(False).astype(bool)
 TIER_COLOUR = {"SNIPER": (196, 43, 43), "MARKSMAN": (217, 119, 6), "VALUABLE": (37, 99, 235),
                "PAPER": (107, 114, 128), "AVOID": (156, 163, 175)}
 GREEN, RED, INK, MUTED = (21, 128, 61), (185, 28, 28), (17, 24, 39), (107, 114, 128)
@@ -204,7 +214,7 @@ def _read(name: str, include_paper: bool = False, usecols=None) -> pd.DataFrame:
 #: The only ledger columns settled_tips() uses - column-projected so the dashboard (a viewer on
 #: ~1 GB) never loads the CLV / provenance columns it does not draw.
 _TIP_COLS = {"source", "match_date", "league", "home_team", "away_team", "signal_tier", "side", "market",
-             "odds", "result", "pnl", "edge_pct", "model_prob"}
+             "odds", "result", "pnl", "edge_pct", "model_prob", "model_type", "generated_at"}
 
 
 def _col(df: pd.DataFrame, name: str) -> pd.Series:
@@ -233,13 +243,23 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
     picture can SHOW them, labelled as paper; every staked total still excludes them
     (dashboard_data/leagues.py). Default False = the behaviour every other image relies on.
     Also carries edge_pct (as recorded) and model_prob (side markets record it; on O/U 2.5 it is
-    NaN here - see dashboard_data/leagues.py for the derivation)."""
+    NaN here - see dashboard_data/leagues.py for the derivation).
+
+    Every row also carries `stake_status` / `stake_units` / `staked` from src/staked.py — THE staked
+    definition (owner 2026-11-04: a recorded policy stake > 0 on a real-money track, never a tier)."""
+    from src import staked as S
+    records = S.load_records(config.OUTPUT_DIR)
     parts = []
+
+    def _stake(df: pd.DataFrame, name: str) -> dict:
+        lab = S.label_ledger(df, name, records)
+        return {"stake_status": lab["stake_status"], "stake_units": lab["stake_units"],
+                "staked": S.is_staked(lab)}
     m = _read("bets_ledger.csv", include_paper, _TIP_COLS)
     if len(m):
         if "source" in m.columns:
             m = _live_only(m, "bets_ledger.csv")
-        parts.append(pd.DataFrame({
+        parts.append(pd.DataFrame({**_stake(m, "bets_ledger.csv"),
             "date": m["match_date"].astype(str).str[:10], "league": m["league"],
             "match": m["home_team"].astype(str) + " v " + m["away_team"].astype(str),
             "home_team": m["home_team"], "away_team": m["away_team"],
@@ -253,7 +273,7 @@ def settled_tips(include_paper: bool = False) -> pd.DataFrame:
         if "source" in s.columns:
             s = _live_only(s, "side_bets_ledger.csv")
         mk = s["market"].astype(str)
-        parts.append(pd.DataFrame({
+        parts.append(pd.DataFrame({**_stake(s, "side_bets_ledger.csv"),
             "date": s["match_date"].astype(str).str[:10], "league": s["league"],
             "match": s["home_team"].astype(str) + " v " + s["away_team"].astype(str),
             "home_team": s["home_team"], "away_team": s["away_team"],
@@ -292,28 +312,29 @@ def results_image(day: str) -> list[bytes]:
         return []
     y["_t"] = y["tier"].map({"SNIPER": 0, "MARKSMAN": 1, "VALUABLE": 2})
     y = y.sort_values(["_t", "market", "match"])
-    st = y[y["tier"].isin(STAKED) & y["pnl"].notna()]
-    pp = y[(y["tier"] == "VALUABLE") & y["pnl"].notna()]
+    st = y[_staked(y) & y["pnl"].notna()]
+    pp = y[~_staked(y) & y["pnl"].notna()]
     wins = int((st["result"] == "WIN").sum())
     by_mkt = " · ".join(f"{k} {U.fmt(U.total(g['pnl']))}" for k, g in st.groupby("market"))
-    subtitle = (f"Staked ({STAKED_LABEL}): {wins}W-{len(st) - wins}L, {U.fmt(U.total(st['pnl']))}"
+    subtitle = (f"Staked ({STAKED_TEXT}): {wins}W-{len(st) - wins}L, {U.fmt(U.total(st['pnl']))}"
                 + (f"  ({by_mkt})" if by_mkt else "")
-                + (f"   ·   paper {PAPER_TIER_LABEL} {U.fmt(U.total(pp['pnl']))} on {len(pp)}" if len(pp) else "")
+                + (f"   ·   not staked {U.fmt(U.total(pp['pnl']))} on {len(pp)}" if len(pp) else "")
                 + f".  {GAP_EXPLAINER}")
     cols = [("League", 200), ("Match", 320), ("Gap", 170), ("Pick", 150), ("Odds", 64),
             ("Result", 90), ("P/L", 76)]
     rows = []
+    y["_staked"] = _staked(y)
     for _, r in y.iterrows():
         res, rc = _res_cell(r["result"], r["pnl"])
         pnl = "" if pd.isna(r["pnl"]) else U.fmt(r["pnl"], suffix="")
-        rows.append({"cells": [r["league"], r["match"], tier_label(r["tier"]) + ("" if r["tier"] in STAKED else " (paper)"),
+        rows.append({"cells": [r["league"], r["match"], tier_label(r["tier"]) + ("" if r["_staked"] else " (not staked)"),
                                r["pick"], "" if pd.isna(r["odds"]) else f"{r['odds']:.2f}", res, pnl],
                      "stripe": TIER_COLOUR.get(r["tier"]), "bold": {"Result", "P/L"},
                      "colours": {"Gap": TIER_COLOUR.get(r["tier"], INK), "Result": rc,
                                  "P/L": GREEN if (r["pnl"] or 0) > 0 else RED if (r["pnl"] or 0) < 0 else MUTED}})
     label = pd.Timestamp(day).strftime("%a %d %b")
     return render_table(f"Yesterday's results — {label}", cols, rows, subtitle=subtitle,
-                        footer=f"Flat 1u stakes · {PAPER_TIER_LABEL} is paper (never staked) · paper leagues excluded")
+                        footer=f"Flat 1u stakes · staked = {STAKED_TEXT} · paper leagues excluded")
 
 
 def record_image(today: str) -> list[bytes]:
@@ -341,15 +362,15 @@ def record_image(today: str) -> list[bytes]:
                             "Hit": GREEN if be is not None and hit > be else RED if be is not None else INK,
                             "Market": MUTED if paper else INK}}
 
-    st = d[d["tier"].isin(STAKED)]
-    rows.append({"band": f"Staked — {STAKED_LABEL}"})
+    st = d[_staked(d)]
+    rows.append({"band": f"Staked — {STAKED_TEXT}"})
     for mk, g in sorted(st.groupby("market"), key=lambda kv: -len(kv[1])):
         rows.append(_row(mk, g, TIER_COLOUR["SNIPER"]))
     if len(st):
         rows.append(_row("All staked", st, (31, 41, 55)))
-    pp = d[d["tier"] == "VALUABLE"]
+    pp = d[~_staked(d)]
     if len(pp):
-        rows.append({"band": f"Paper — {PAPER_TIER_LABEL} (tracked, never staked)"})
+        rows.append({"band": "Not staked — every other tip (tracked)"})
         for mk, g in sorted(pp.groupby("market"), key=lambda kv: -len(kv[1])):
             rows.append(_row(mk, g, TIER_COLOUR["VALUABLE"], paper=True))
     return render_table("Record by market", cols, rows,
@@ -1033,9 +1054,10 @@ def scoreboard_images() -> list[bytes]:
 
 def _market_rows(d: pd.DataFrame) -> list[dict]:
     rows = []
-    for band, tiers, stripe, paper in ((f"Staked — {STAKED_LABEL}", STAKED, TIER_COLOUR["SNIPER"], False),
-                                       (f"Paper — {PAPER_TIER_LABEL}", ("VALUABLE",), TIER_COLOUR["VALUABLE"], True)):
-        g0 = d[d["tier"].isin(tiers)]
+    sm = _staked(d)
+    for band, keep, stripe, paper in ((f"Staked — {STAKED_TEXT}", sm, TIER_COLOUR["SNIPER"], False),
+                                      ("Not staked — every other tip", ~sm, TIER_COLOUR["VALUABLE"], True)):
+        g0 = d[keep]
         if g0.empty:
             continue
         rows.append({"band": band})
@@ -1070,7 +1092,7 @@ def week_images(today: str) -> list[bytes]:
                        subtitle="Every settled tip of the last 7 days, flat 1u. Hit is green when above "
                                 "the break-even rate implied by the average price.",
                        footer="Same basis as the dashboard · paper leagues excluded")
-    st = w[w["tier"].isin(STAKED)]
+    st = w[_staked(w)]
     if len(st):
         lg = (st.groupby("league")["pnl"].agg(Bets="size", PL=U.total,
                                               W=lambda x: int((x > 0).sum()))
@@ -1080,7 +1102,7 @@ def week_images(today: str) -> list[bytes]:
                  "colours": {"P/L": GREEN if r["PL"] > 0 else RED}} for _, r in lg.iterrows()]
         out += render_table("Week by league — staked tips", [("League", 300), ("Bets", 70),
                                                              ("Won-Lost", 110), ("P/L", 100)], rows,
-                            subtitle=f"{STAKED_LABEL}, all markets, best to worst. Small samples — "
+                            subtitle=f"Staked = {STAKED_TEXT}, all markets, best to worst. Small samples — "
                                      "one week is noise, not a verdict on a league.")
     return out
 
@@ -1279,7 +1301,7 @@ def leagues_image(today: str | None = None) -> list[bytes]:
     if ov.empty:
         return []
     t = L.totals(d)
-    sub = (f"Staked tips ({STAKED_LABEL}), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
+    sub = (f"Staked tips ({STAKED_TEXT}), settled since {str(config.PERFORMANCE_CUTOFF_DATE)[:10]}, flat 1u. "
            f"All leagues: {t['tips']} tips, {L.wl(t['won'], t['lost'], t['void'])}, ROI {t['roi']:+.0%}, "
            f"{U.fmt(t['pl'])} (paper leagues not counted). Rating = Pro league rating 1-10.")
     return render_table("Leagues — season to date", LEAGUE_COLUMNS, league_rows(L.overview_table(ov)),
@@ -1310,7 +1332,7 @@ def last_week_leagues_image(today: str | None = None) -> list[bytes]:
     return render_table(f"Last week by league — {span}",
                         [("League", 300), ("Staked", 80), ("W-L", 96), ("P/L", 96), (PAPER_TIER_LABEL, 100),
                          (f"{PAPER_TIER_LABEL} P/L", 130)], rows,
-                        subtitle=f"Settled tips by match date. Staked = {STAKED_LABEL}; {PAPER_TIER_LABEL} is paper. "
+                        subtitle=f"Settled tips by match date. Staked = {STAKED_TEXT}; {PAPER_TIER_LABEL} is the tier view. "
                                  "One week is noise, not a verdict on a league.",
                         footer="Flat 1u · same basis as the app's Leagues page")
 

@@ -22,8 +22,8 @@ STAKE_PLAN = ROOT / "output" / "stake_plan.csv"
 REGISTRY = ROOT / "config" / "track_registry.json"
 
 PLAN_COLS = ["date", "fixture", "league", "track", "market", "side", "signal_tier", "odds", "deployment_state",
-             "final_fraction", "stake_amount", "reason", "decision_state", "ev_lower_bound", "policy_version",
-             "generated_at"]
+             "base_fraction", "final_fraction", "stake_amount", "reason", "decision_state", "ev_lower_bound",
+             "policy_version", "generated_at"]
 REG_COLS = ["key", "league", "market", "side", "model_type", "research_regime", "owner_locked",
             "production_state", "track_state", "real_money", "paper_league", "sent", "evidence_status",
             "evidence_n", "independent_matchdays", "evidence_cutoff", "evidence_reason"]
@@ -48,7 +48,8 @@ def stake_plan(path: Path | None = None, today: str | None = None) -> pd.DataFra
 def plan_summary(plan: pd.DataFrame) -> pd.DataFrame:
     if plan.empty:
         return pd.DataFrame(columns=["deployment_state", "tips", "staked", "stake_pct_total"])
-    return (plan.assign(staked=plan["final_fraction"] > 0)
+    from src.staked import plan_staked                     # THE staked definition (owner 2026-11-04)
+    return (plan.assign(staked=plan_staked(plan))
             .groupby("deployment_state", dropna=False)
             .agg(tips=("fixture", "size"), staked=("staked", "sum"), stake_pct_total=("stake_pct", "sum"))
             .reset_index().sort_values("stake_pct_total", ascending=False))

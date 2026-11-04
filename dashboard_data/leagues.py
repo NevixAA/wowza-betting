@@ -13,7 +13,8 @@ SAME ROWS AND BASES AS THE REST OF THE APP - nothing here is a new definition:
   rows      telegram_bot.daily_pack.settled_tips(): live tips from bets_ledger.csv + side_bets_ledger.csv,
             every sent tip (no first-per-fixture filter, exactly as the dashboard's record)
   window    match date >= config.PERFORMANCE_CUTOFF_DATE, settled only (pnl present), flat 1u
-  staked    SNIPER + MARKSMAN (daily_pack.STAKED); VALUABLE is shown on its own line as paper
+  staked    a recorded policy stake > 0 (src/staked.py via settled_tips' `staked`, owner 2026-11-04);
+            every other tip, any tier, is shown on its own line as not staked
   paper     config.PAPER_LEAGUES rows are KEPT so the league can be shown, labelled PAPER LEAGUE,
             and are excluded from every all-league total
   upcoming  telegram_bot.tips_table.tips_rows() over tip days today..+7 (src/tip_day.py) - the sent
@@ -86,7 +87,10 @@ def prepare(raw: pd.DataFrame) -> pd.DataFrame:
         float("nan"), index=d.index)
     ou = d["mkt"].str.startswith("O/U 2.5")
     d["model_prob"] = mp.where(~ou, d["implied"] + d["edge_pct"] / 100.0)
-    d["staked"] = d["tier"].isin(STAKED)
+    # THE staked definition (src/staked.py, owner 2026-11-04): settled_tips() labels each row with its
+    # recorded policy stake. A frame without that label proves no stake (False), never a tier guess.
+    d["staked"] = (d["staked"].fillna(False).astype(bool) if "staked" in d.columns
+                   else pd.Series(False, index=d.index))
     d["paper"] = d["league"].map(config.is_paper_league).astype(bool)
     d["track"] = d["league"].map(config.model_type_for_league)
     return d[cols].sort_values("date", kind="mergesort").reset_index(drop=True)
@@ -222,8 +226,8 @@ def leagues_list(d: pd.DataFrame) -> list[str]:
 
 def overview(d: pd.DataFrame, today: str, up: pd.DataFrame | None = None, rat: dict | None = None,
              pol: dict | None = None, reg: dict | None = None, only_with_tips: bool = False) -> pd.DataFrame:
-    """One row per league. Results columns are STAKED tiers (SNIPER + MARKSMAN); VALUABLE is its
-    own pair of columns (paper). Sorted best P/L first, paper leagues last."""
+    """One row per league. Results columns are STAKED tips (a recorded policy stake > 0, `staked`);
+    VALUABLE is its own pair of columns (tier view). Sorted best P/L first, paper leagues last."""
     rat = {} if rat is None else rat
     week = (pd.Timestamp(today) - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
     up_n = (up["league"].value_counts() if up is not None and len(up) and "league" in up.columns
@@ -295,9 +299,10 @@ def totals(d: pd.DataFrame) -> dict:
     return summarise(d[d["staked"] & ~d["paper"]])
 
 
-def by_market(g: pd.DataFrame, tiers=STAKED, reg: dict | None = None, league: str | None = None) -> pd.DataFrame:
-    """One row per display market (sides apart), on the given tiers. Markets with no tips are omitted."""
-    x = g[g["tier"].isin(tiers)]
+def by_market(g: pd.DataFrame, tiers=None, reg: dict | None = None, league: str | None = None) -> pd.DataFrame:
+    """One row per display market (sides apart). tiers=None (default) = STAKED tips (THE definition,
+    `staked`); a tuple = those tiers, staked or not (a tier view). Markets with no tips are omitted."""
+    x = g[g["staked"]] if tiers is None else g[g["tier"].isin(tiers)]
     regs = regime_entries(league, reg) if league and reg else {}
     rows = []
     for mk in MARKETS + sorted(set(x["mkt"]) - set(MARKETS)):
@@ -310,16 +315,18 @@ def by_market(g: pd.DataFrame, tiers=STAKED, reg: dict | None = None, league: st
 def by_tier(g: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for t in TIERS:
-        s = summarise(g[g["tier"] == t])
+        x = g[g["tier"] == t]
+        s = summarise(x)
         if s["tips"]:
-            rows.append({"tier": t + ("" if t in STAKED else " (paper)"), **s})
+            # a tier is not a stake (owner 2026-11-04): the row says how many of its tips were staked
+            rows.append({"tier": t, "staked_tips": int(x["staked"].sum()), **s})
     return pd.DataFrame(rows)
 
 
 def recent(g: pd.DataFrame, n: int = 30) -> pd.DataFrame:
     x = g.sort_values("date", kind="mergesort").tail(n).iloc[::-1]
     return pd.DataFrame({"date": x["date"], "match": x["match"], "market": x["mkt"],
-                         "tier": x["tier"].where(x["staked"], x["tier"] + " (paper)"),
+                         "tier": x["tier"].where(x["staked"], x["tier"] + " (not staked)"),
                          "odds": x["odds"].round(2), "result": x["result"], "pnl": x["pnl"].round(2)})
 
 

@@ -13,8 +13,8 @@ import streamlit as st
 import dashboard_ui as ui
 
 #: What each simulated market IS, so a curve is never read as money it was not. Props are paper by
-#: invariant 2. Side markets are staked under THE staked definition (dashboard_data.today_view: their
-#: SNIPER + MARKSMAN rows are in Home's and Tips' Staked P/L), so - like the two O/U tracks - they are a
+#: invariant 2. Side markets can be staked under THE staked definition (src/staked.py: a recorded policy
+#: stake > 0, owner 2026-11-04 - in Home's and Tips' Staked P/L), so - like the two O/U tracks - they are a
 #: simulation of tips production sent on a notional bankroll: SIMULATED, not LIVE. (Until 2026-11-02
 #: this said "PAPER · NEVER STAKED" for Side/BTTS while the other pages counted it as staked.)
 MARKET_STATE = {"Standard O/U": ("SIMULATED", None), "New-Format": ("SIMULATED", None),
@@ -86,7 +86,8 @@ def weekly_frame(eq: pd.DataFrame) -> pd.DataFrame:
 
 
 WEEKLY_CONFIG = {"week": ui.text_col("Week"), "bets": st.column_config.NumberColumn("Bets", format="%d"),
-                 "staked": ui.num_col("Staked (U)", fmt="%.1f"), "pnl": ui.num_col("P/L (U)", fmt="%+.1f"),
+                 # simulated wager, NOT "Staked" (THE definition is a recorded policy stake, src/staked.py)
+                 "staked": ui.num_col("Wagered, simulated (U)", fmt="%.1f"), "pnl": ui.num_col("P/L (U)", fmt="%+.1f"),
                  "bank": ui.num_col("Bankroll (U)", fmt="%.0f"), "drawdown": ui.num_col("Drawdown %", fmt="%.1f")}
 
 

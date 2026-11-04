@@ -181,8 +181,11 @@ def tier_multiplier(policy: dict, track: str, tier: str) -> float:
     return float((tt if tt is not None else policy.get("tier_multipliers", {})).get(str(tier), 0.0))
 
 
-def staked(bets: pd.DataFrame, policy: dict) -> pd.DataFrame:
-    """Only the tiers the policy stakes (multiplier > 0) — the evidence for a track, as in the review."""
+def review_tier_rows(bets: pd.DataFrame, policy: dict) -> pd.DataFrame:
+    """Only the tiers the review's tier rule counts (multiplier > 0) — the evidence for a track, as in
+    Pro's review. NOT "Staked": that is a recorded policy stake (src/staked.py, owner 2026-11-04); this
+    reproduces Pro's evidence basis, which the review used before stakes were recorded. Renamed from
+    `staked` on 2026-11-04 so the word has one meaning."""
     if bets.empty:
         return bets
     keep = [tier_multiplier(policy, tr, t) > 0 for tr, t in zip(bets["track"], bets["signal_tier"])]
@@ -262,7 +265,7 @@ def since_review(track_evidence: dict, recommendation: dict, policy: dict | None
     evidence counted (review_policy)."""
     policy = _json(POLICY_FILE) if policy is None else policy
     meta = review_meta(recommendation, track_evidence)
-    b = staked(load_bets() if bets is None else bets, review_policy(policy, tier_rules))
+    b = review_tier_rows(load_bets() if bets is None else bets, review_policy(policy, tier_rules))
     cutoff = pd.Timestamp(meta["evidence_cutoff"]) if meta.get("evidence_cutoff") else None
     today = pd.Timestamp(today).normalize() if today is not None else pd.Timestamp.now(tz="UTC").tz_localize(None).normalize()
     ev = (track_evidence or {}).get("tracks") or {}

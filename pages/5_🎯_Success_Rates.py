@@ -12,8 +12,9 @@ its own bucket.
 WHAT IT REFUSES TO DO:
   * No bare percentages. Every rate carries its n, because "67% success" on three bets is noise
     wearing a number's clothes.
-  * STAKED (SNIPER/MARKSMAN) is separated from RECORDED (VALUABLE and below). VALUABLE is tracked
-    for measurement and never bet, so folding it into a win rate misstates what the money did.
+  * STAKED (a recorded policy stake > 0, src/staked.py, owner 2026-11-04) is separated from RECORDED
+    (every other tip, any tier). A tip without a stake is tracked for measurement and never bet, so
+    folding it into a win rate misstates what the money did.
   * Player props are labelled PAPER throughout. Invariant 2: the props model is accurate but has no
     betting edge, so its rates are research, not performance.
   * PERFORMANCE_CUTOFF_DATE is applied by default and named on screen. Pre-cutoff rows exist to
@@ -55,8 +56,11 @@ _LOSS = ("LOSS",)
 
 @st.cache_data(ttl=120)
 def _load() -> pd.DataFrame:
-    """Union the ledgers into (model, market, tier, result, odds, date)."""
+    """Union the ledgers into (model, market, tier, result, odds, date), each row labelled with its
+    recorded policy stake (src/staked.py — THE staked definition, owner 2026-11-04)."""
+    from src import staked as _S
     out = []
+    _records = _S.load_records(config.OUTPUT_DIR)
 
     def _grab(path, *, model_col=None, model_const=None, market_col=None,
               market_const=None, tier_col="signal_tier", label=""):
@@ -98,8 +102,9 @@ def _load() -> pd.DataFrame:
         d["_ledger"] = path
         d["_live"] = d["source"] if "source" in d.columns else "live"
         d["_league"] = d["league"] if "league" in d.columns else pd.NA
+        d["_stake_status"] = _S.label_ledger(d, path, _records)["stake_status"]
         out.append(d[["_source", "_model", "_market", "_tier", "_res", "_odds", "_date",
-                      "_ledger", "_live", "_league"]])
+                      "_ledger", "_live", "_league", "_stake_status"]])
 
     # Main O/U carries no `market` column — it IS the OU25 line. Named explicitly so it never
     # lands in an "unknown" bucket next to a genuinely missing value.
@@ -126,7 +131,7 @@ def _model_from_league(lg):
 
 
 df = _load()
-_SUB = ("Every rate with its n, staked tiers apart from recorded ones, and props labelled PAPER — the breakdown a "
+_SUB = ("Every rate with its n, staked bets (policy stake > 0) apart from recorded ones, and props labelled PAPER — the breakdown a "
         "single headline number hides.")
 _EYEBROW = "Performance · success rates"
 if df.empty:
@@ -156,13 +161,13 @@ else:
     st.caption(f"Last {window} days · Wowza Pro shows 7 / 14 / 30 / 60 / 90 days.")
 
 if _tier == "free":
-    use_cut, scope = bool(cut), f"STAKED only ({STAKED_LABEL})"
+    use_cut, scope = bool(cut), "STAKED only (policy stake > 0)"
     with st.expander("Advanced filters"):
         min_n = st.number_input("Hide cells with fewer than n", 1, 100, 5, 1,
                                 help="A rate on a handful of bets is noise. Hidden, not zeroed.")
 else:
     with c2:
-        scope = st.radio("Scope", [f"STAKED only ({STAKED_LABEL})", "All tiers"], index=0,
+        scope = st.radio("Scope", ["STAKED only (policy stake > 0)", "All tiers"], index=0,
                          help=f"{PAPER_TIER_LABEL} is recorded for measurement and never bet. Including it in a "
                               "win rate describes something other than what the money did.")
     with st.expander("Advanced filters"):
@@ -183,11 +188,11 @@ if window:
     _since = pd.Timestamp.now(tz="UTC").tz_localize(None).normalize() - pd.Timedelta(days=int(window))
     d = d[d["_date"] >= _since]
 if scope.startswith("STAKED"):
-    # THE staked definition (dashboard_data.today_view.is_staked): SNIPER + MARKSMAN, live, settled,
-    # since the cutoff (whatever the checkbox says), paper leagues out, and never a player prop -
-    # props are paper-only, and their SNIPER/MARKSMAN rows were counted here as staked until 2026-11-02.
+    # THE staked definition (dashboard_data.today_view.is_staked over src/staked.py): a recorded policy
+    # stake > 0 on a real-money track, live, settled, since the cutoff (whatever the checkbox says),
+    # paper leagues out, and never a player prop. Until 2026-11-04 it was the SNIPER + MARKSMAN tiers.
     from dashboard_data.today_view import is_staked as _is_staked
-    d = d[_is_staked(d["_tier"], source=d["_live"], dt=d["_date"], league=d["_league"],
+    d = d[_is_staked(d["_stake_status"], source=d["_live"], dt=d["_date"], league=d["_league"],
                      ledger=d["_ledger"]).to_numpy()]
 
 st.caption(f"{len(d):,} settled observation(s) after filters · "

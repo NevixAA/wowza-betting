@@ -11,8 +11,10 @@ turns system health RED instead of waiting for the next audit:
     2 DEFAULTS   no NEW invented default in production code: fillna(<non-zero literal>), literal
                  season fallbacks, literal season-year lists, pinned football-data folders. Known
                  remaining ones live in config/data_truth_baseline.json, each with a reason.
-    3 MISSING    the live board carries its prices and its serving features (rest days, HT form),
-                 and the history banks are fresh.
+    3 MISSING    the live board carries its prices and, on EVERY served model track (standard and
+                 new_format x O/U 2.5 / BTTS / Over 1.5 / Over 3.5, HT O/U on standard), every input
+                 the scoring payload needs plus the HT form and rest days (2026-11-04: it checked two
+                 Standard columns only, so the NF HT gap of 2026-11-02 stayed GREEN); banks fresh.
     4 LEAGUES    no misfiled league rows in the banks, the registry validates, joins serve
                  league-keyed.
     5 ONE MATCH  the banks, through the loader's identity pipeline, hold no match twice (same day
@@ -145,10 +147,99 @@ def defaults() -> dict:
 
 
 # ── 3 MISSING ────────────────────────────────────────────────────────────────────────────────────
-def missing(now: datetime | None = None) -> dict:
-    rule = ("live board: every fixture priced (odds_over25); Standard fixtures' rest days and HT form "
-            "present (RED if > 50% missing, AMBER if > 20%); history banks fresh (AMBER if the newest "
-            "match is > 10 days old)")
+#: Rule 3 covers EVERY model track since 2026-11-04 (owner). Until then it checked two columns on
+#: Standard fixtures only, so the new-format half-time gap of 2026-11-02 (NF fixtures served with
+#: their HT form missing) stayed GREEN. Each served (model_type, market) is checked on the live
+#: board against the feature list of the payload that actually scores it, plus the HT form inputs
+#: and rest days explicitly (they are the inputs the 2026-11-02 gap lost).
+MODEL_TYPES = ("standard", "new_format")
+#: market -> (config attribute of the payload file, model types it serves). O/U 2.5 is per model type
+#: (standard / newformat payloads); the side markets are one payload serving both model types
+#: (or a track-split payload since 2026-11-02); HT O/U serves Standard fixtures only (src/predict.py 5b).
+MARKET_PAYLOADS = {"BTTS": ("MODEL_FILE_BTTS", MODEL_TYPES), "Over 1.5": ("MODEL_FILE_OVER15", MODEL_TYPES),
+                   "Over 3.5": ("MODEL_FILE_OVER35", MODEL_TYPES),
+                   "HT Over 0.5": ("HT_MODEL_FILE_05", ("standard",)),
+                   "HT Over 1.5": ("HT_MODEL_FILE_15", ("standard",))}
+#: the HT form + rest inputs checked on every track whatever its payload lists (2026-11-02 gap)
+HT_FORM_INPUTS = ("home_ht_over05_rate", "away_ht_over05_rate", "home_ht_over15_rate", "away_ht_over15_rate",
+                  "home_ht_scored_last5", "away_ht_scored_last5", "home_ht_conceded_last5",
+                  "away_ht_conceded_last5")
+REST_INPUTS = ("home_rest_days", "away_rest_days")
+MISSING_RED_PCT, MISSING_AMBER_PCT = 50.0, 20.0
+
+
+def _payload_cols(payload: dict, model_type: str):
+    """Feature list that scores `model_type` rows in `payload`; None = the payload serves no model
+    for that track (a track-split payload whose routed track is None: no probability, not a gap)."""
+    if payload.get("tracks") is not None and model_type != "standard":
+        sub = (payload.get("tracks") or {}).get(model_type)
+        return None if sub is None else list(sub.get("feature_cols") or [])
+    return list(payload.get("feature_cols") or [])
+
+
+def serving_features() -> dict:
+    """{(model_type, market): [feature columns] | None | "UNREADABLE: why"} for every served track,
+    read from the committed model payloads (the same files src/predict.py loads)."""
+    import config
+    from src.model import load_models
+    out, cache = {}, {}
+
+    def _load(attr):
+        if attr not in cache:
+            try:
+                cache[attr] = load_models(model_file=getattr(config, attr))
+            except Exception as e:                                     # noqa: BLE001
+                cache[attr] = f"UNREADABLE: {type(e).__name__}"
+        return cache[attr]
+    recipe = str(getattr(config, "STANDARD_OU25_SERVING_RECIPE", "legacy_v9"))
+    std_attr = "MODEL_FILE_STANDARD" if recipe == "legacy_v9" else "MODEL_FILE_STANDARD_REPAIRED"
+    for mt, attr in (("standard", std_attr), ("new_format", "MODEL_FILE_NEWFORMAT")):
+        pl = _load(attr)
+        out[(mt, "O/U 2.5")] = pl if isinstance(pl, str) else _payload_cols(pl, mt)
+    for market, (attr, mts) in MARKET_PAYLOADS.items():
+        pl = _load(attr)
+        for mt in mts:
+            out[(mt, market)] = pl if isinstance(pl, str) else _payload_cols(pl, mt)
+    return out
+
+
+def track_gaps(p: pd.DataFrame, features: dict) -> dict:
+    """Per served track: fixtures, worst missing share, the columns over the AMBER line, status.
+    A column the payload needs but the board does not carry counts as 100% missing."""
+    out = {}
+    mt_col = p.get("model_type", pd.Series("", index=p.index)).astype(str)
+    for (mt, market), cols in features.items():
+        key = f"{mt}|{market}"
+        sub = p[mt_col == mt]
+        if isinstance(cols, str):
+            out[key] = {"status": AMBER, "fixtures": int(len(sub)), "worst_pct": None,
+                        "missing": {}, "note": f"payload {cols} - not checked"}
+            continue
+        if cols is None:
+            out[key] = {"status": GREEN, "fixtures": int(len(sub)), "worst_pct": None, "missing": {},
+                        "note": "payload serves no model for this track (no probability, no tip)"}
+            continue
+        if sub.empty:
+            out[key] = {"status": GREY, "fixtures": 0, "worst_pct": None, "missing": {}, "note": "no fixtures"}
+            continue
+        need = list(dict.fromkeys(list(cols) + list(HT_FORM_INPUTS) + list(REST_INPUTS)))
+        if market.startswith("HT"):
+            need = list(dict.fromkeys(list(cols) + list(HT_FORM_INPUTS)))
+        share = {c: (float(pd.to_numeric(sub[c], errors="coerce").isna().mean() * 100) if c in sub.columns
+                     else 100.0) for c in need}
+        gaps = {c: round(v, 1) for c, v in sorted(share.items(), key=lambda kv: -kv[1]) if v > MISSING_AMBER_PCT}
+        worst = max(share.values()) if share else 0.0
+        st = RED if worst > MISSING_RED_PCT else AMBER if worst > MISSING_AMBER_PCT else GREEN
+        out[key] = {"status": st, "fixtures": int(len(sub)), "worst_pct": round(worst, 1), "missing": gaps,
+                    "n_inputs": len(need)}
+    return out
+
+
+def missing(now: datetime | None = None, features: dict | None = None) -> dict:
+    rule = ("live board: every fixture priced (odds_over25); on EVERY served model track (standard and "
+            "new_format x O/U 2.5, BTTS, Over 1.5, Over 3.5; HT O/U on standard) each input the scoring "
+            "payload needs, plus the HT form and rest-day inputs, is present (RED if > 50% missing on a "
+            "track, AMBER if > 20%); history banks fresh (AMBER if the newest match is > 10 days old)")
     now = now or datetime.now(timezone.utc)
     p = _read(OUT / "predictions.csv")
     if p.empty:
@@ -158,16 +249,14 @@ def missing(now: datetime | None = None) -> dict:
     if unpriced:
         issues.append(f"{unpriced} unpriced fixture(s)")
         worst = RED
-    std = p[p.get("model_type", pd.Series("", index=p.index)).astype(str) == "standard"]
-    for col in ("home_rest_days", "home_ht_over05_rate"):
-        if len(std) and col in std.columns:
-            share = float(std[col].isna().mean() * 100)
-            if share > 50:
-                worst = RED
-            elif share > 20 and worst != RED:
-                worst = AMBER
-            if share > 20:
-                issues.append(f"{col} missing on {share:.0f}% of Standard fixtures")
+    tracks = track_gaps(p, serving_features() if features is None else features)
+    rank = {GREEN: 0, GREY: 0, AMBER: 1, RED: 2}
+    for key, t in tracks.items():
+        if rank[t["status"]] > rank[worst]:
+            worst = t["status"]
+        if t["status"] in (AMBER, RED):
+            top = ", ".join(f"{c} {v:.0f}%" for c, v in list(t["missing"].items())[:4])
+            issues.append(f"{key}: {t.get('note') or top} ({t['fixtures']} fixtures)")
     for f in BANK_FILES:
         d = _read(OUT / f, ["date"])
         if d.empty or "date" not in d.columns:
@@ -184,8 +273,10 @@ def missing(now: datetime | None = None) -> dict:
         if age > 10:
             issues.append(f"{f} newest match {age} days old")
             worst = AMBER if worst == GREEN else worst
-    return _c("Data truth 3: no missing data", worst, "; ".join(issues) or "board priced, features present",
-              rule)
+    out = _c("Data truth 3: no missing data", worst,
+             "; ".join(issues) or f"board priced, features present on {len(tracks)} served tracks", rule)
+    out["tracks"] = tracks
+    return out
 
 
 # ── 4 LEAGUES ────────────────────────────────────────────────────────────────────────────────────

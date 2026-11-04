@@ -390,15 +390,61 @@ def _save_fixture_cache(fixture_id: int, data: list) -> None:
     p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
 
 
+def _count_or_none(v) -> Optional[int]:
+    """A count the provider sent, or None when it sent none (null / "" / unparseable). NEVER 0 for a
+    missing value (owner 2026-11-04, the data_fetcher 'or 0' bug): `int(x or 0)` turned "no
+    statistics for this fixture" into a real-looking 0 corners / 0 shots / 0 goals."""
+    if v is None or (isinstance(v, str) and not v.strip()):
+        return None
+    try:
+        return int(float(str(v).strip()))
+    except (TypeError, ValueError):
+        return None
+
+
+def _pct_or_none(v) -> Optional[float]:
+    """'54%' / '54' / 54 -> 54.0; null / '' / unparseable -> None (was '0%' -> 0.0 possession)."""
+    if v is None:
+        return None
+    s = str(v).replace("%", "").strip()
+    if not s:
+        return None
+    try:
+        return float(s)
+    except ValueError:
+        return None
+
+
+#: fixture-stats cache schema. v2 (2026-11-04) stores None for a statistic the provider did not send.
+#: A legacy (v1) file was written by `int(x or 0)`, so its 0s cannot be told from "not sent".
+FIXTURE_STATS_SCHEMA = 2
+
+
+def _legacy_fixture_stats(teams: dict) -> dict:
+    """A v1 cache entry with its unprovable zeros refused: 0 corners / 0 shots / 0% possession were
+    written for a missing statistic, and a real 0 cannot be told apart from it in that file, so they
+    are None (ambiguity refused, never guessed). Non-zero values are the provider's and are kept."""
+    out = {}
+    for team, st in (teams or {}).items():
+        st = st if isinstance(st, dict) else {}
+        out[team] = {k: (None if (v is None or v == 0) else v)
+                     for k, v in ((k, st.get(k)) for k in ("corners", "shots_total", "possession"))}
+    return out
+
+
 def _fetch_fixture_statistics(fixture_id: int) -> dict:
     """
     Fetch team-level statistics for a completed fixture.
-    Cached permanently. Returns {team_name: {corners: N, shots_total: N, possession: N}}.
+    Cached permanently. Returns {team_name: {corners: N|None, shots_total: N|None, possession: x|None}}.
+    A statistic the provider did not send is None and stays None downstream (team_corners -> NaN).
     """
     cache_p = _fixture_stats_cache_path(fixture_id)
     if cache_p.exists():
         try:
-            return json.loads(cache_p.read_text(encoding="utf-8"))
+            cached = json.loads(cache_p.read_text(encoding="utf-8"))
+            if isinstance(cached, dict) and cached.get("schema") == FIXTURE_STATS_SCHEMA:
+                return cached.get("teams") or {}
+            return _legacy_fixture_stats(cached)
         except Exception:
             pass
 
@@ -412,13 +458,14 @@ def _fetch_fixture_statistics(fixture_id: int) -> dict:
         team_name = team_data.get("team", {}).get("name", "")
         stats = {s.get("type", ""): s.get("value") for s in team_data.get("statistics", [])}
         result[team_name] = {
-            "corners":     int(stats.get("Corner Kicks") or 0),
-            "shots_total": int(stats.get("Total Shots") or 0),
-            "possession":  float(str(stats.get("Ball Possession") or "0%").replace("%", "") or 0),
+            "corners":     _count_or_none(stats.get("Corner Kicks")),
+            "shots_total": _count_or_none(stats.get("Total Shots")),
+            "possession":  _pct_or_none(stats.get("Ball Possession")),
         }
 
     if result:
-        cache_p.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+        cache_p.write_text(json.dumps({"schema": FIXTURE_STATS_SCHEMA, "teams": result}, ensure_ascii=False),
+                           encoding="utf-8")
 
     return result
 
@@ -615,10 +662,13 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
     stats = stats_list[0]
 
     games   = stats.get("games",   {})
-    minutes = int(games.get("minutes") or 0)
-    if minutes < 10:
+    minutes = _count_or_none(games.get("minutes"))
+    if minutes is None or minutes < 10:              # no minutes recorded -> no row (never a 0-minute row)
         return None
 
+    # EVERY COUNT BELOW IS THE PROVIDER'S OR None (owner 2026-11-04). It was `int(x or 0)`, which
+    # wrote "API-Football sent no value" as a real 0 goals / shots / cards. Downstream, targets stay
+    # NaN where the count is None (feature_engineering) and the training drops unlabelled rows.
     goals_d    = stats.get("goals",    {})
     shots_d    = stats.get("shots",    {})
     cards_d    = stats.get("cards",    {})
@@ -652,37 +702,37 @@ def _parse_fixture_player(player_entry: dict, meta: dict, league: str) -> Option
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "minutes":         minutes,
         "started":         int(started) if started is not None else None,
-        "goals":           int(goals_d.get("total")   or 0),
-        "assists":         int(goals_d.get("assists")  or 0),
-        "shots_total":     int(shots_d.get("total")   or 0),
-        "shots_on_target": int(shots_d.get("on")      or 0),
-        "yellow_cards":    int(cards_d.get("yellow")  or 0),
-        "key_passes":      int(passes_d.get("key")    or 0),
+        "goals":           _count_or_none(goals_d.get("total")),
+        "assists":         _count_or_none(goals_d.get("assists")),
+        "shots_total":     _count_or_none(shots_d.get("total")),
+        "shots_on_target": _count_or_none(shots_d.get("on")),
+        "yellow_cards":    _count_or_none(cards_d.get("yellow")),
+        "key_passes":      _count_or_none(passes_d.get("key")),
         # API-Football gives no rating for some appearances: None, never 0 (0 read as a real rating)
         "rating":          float(games["rating"]) if games.get("rating") not in (None, "") else None,
-        "fouls_committed": int(fouls_d.get("committed") or 0),
-        "fouls_drawn":     int(fouls_d.get("drawn")     or 0),
-        "duels_total":     int(duels_d.get("total")     or 0),
-        "duels_won":       int(duels_d.get("won")       or 0),
+        "fouls_committed": _count_or_none(fouls_d.get("committed")),
+        "fouls_drawn":     _count_or_none(fouls_d.get("drawn")),
+        "duels_total":     _count_or_none(duels_d.get("total")),
+        "duels_won":       _count_or_none(duels_d.get("won")),
         "team_corners":    (int(meta["team_corners"]) if meta.get("team_corners") is not None
                             else None),
         # Defensive / technical
-        "red_cards":           int(cards_d.get("red")                or 0),
-        "passes_total":        int(passes_d.get("total")             or 0),
-        "offsides":            int(stats.get("offsides")             or 0),
-        "tackles_total":       int(tackles_d.get("total")            or 0),
-        "interceptions":       int(tackles_d.get("interceptions")    or 0),
-        "dribbles_attempted":  int(dribbles_d.get("attempts")        or 0),
-        "dribbles_success":    int(dribbles_d.get("success")         or 0),
-        "dribbles_past":       int(dribbles_d.get("past")            or 0),
+        "red_cards":           _count_or_none(cards_d.get("red")),
+        "passes_total":        _count_or_none(passes_d.get("total")),
+        "offsides":            _count_or_none(stats.get("offsides")),
+        "tackles_total":       _count_or_none(tackles_d.get("total")),
+        "interceptions":       _count_or_none(tackles_d.get("interceptions")),
+        "dribbles_attempted":  _count_or_none(dribbles_d.get("attempts")),
+        "dribbles_success":    _count_or_none(dribbles_d.get("success")),
+        "dribbles_past":       _count_or_none(dribbles_d.get("past")),
         # Goalkeeper
-        "goals_conceded":      int(goals_d.get("conceded")           or 0),
-        "saves":               int(goals_d.get("saves")              or 0),
+        "goals_conceded":      _count_or_none(goals_d.get("conceded")),
+        "saves":               _count_or_none(goals_d.get("saves")),
         # Penalty
-        "penalty_scored":      int(penalty_d.get("scored")           or 0),
-        "penalty_missed":      int(penalty_d.get("missed")           or 0),
-        "penalty_won":         int(penalty_d.get("won")              or 0),
-        "penalty_saved":       int(penalty_d.get("saved")            or 0),
+        "penalty_scored":      _count_or_none(penalty_d.get("scored")),
+        "penalty_missed":      _count_or_none(penalty_d.get("missed")),
+        "penalty_won":         _count_or_none(penalty_d.get("won")),
+        "penalty_saved":       _count_or_none(penalty_d.get("saved")),
     }
 
 
@@ -982,9 +1032,9 @@ def _parse_player(entry: dict, league: str) -> Optional[dict]:
     passes = stats.get("passes", {})
     team   = stats.get("team",   {})
 
-    appearances = int(games.get("appearences") or 0)
-    minutes     = int(games.get("minutes")     or 0)
-    if appearances < config.MIN_APPEARANCES or minutes < 1:
+    appearances = _count_or_none(games.get("appearences"))
+    minutes     = _count_or_none(games.get("minutes"))
+    if appearances is None or minutes is None or appearances < config.MIN_APPEARANCES or minutes < 1:
         return None
 
     pid = _stable_player_id(p.get("id"), name)
@@ -998,12 +1048,12 @@ def _parse_player(entry: dict, league: str) -> Optional[dict]:
         "position":        str(games.get("position") or p.get("position") or "").strip(),
         "appearances":     appearances,
         "minutes":         minutes,
-        "goals":           int(goals.get("total")   or 0),
-        "assists":         int(goals.get("assists")  or 0),
-        "shots_total":     int(shots.get("total")   or 0),
-        "shots_on_target": int(shots.get("on")      or 0),
-        "yellow_cards":    int(cards.get("yellow")  or 0),
-        "key_passes":      int(passes.get("key")    or 0),
+        "goals":           _count_or_none(goals.get("total")),
+        "assists":         _count_or_none(goals.get("assists")),
+        "shots_total":     _count_or_none(shots.get("total")),
+        "shots_on_target": _count_or_none(shots.get("on")),
+        "yellow_cards":    _count_or_none(cards.get("yellow")),
+        "key_passes":      _count_or_none(passes.get("key")),
         "rating":          float(games["rating"]) if games.get("rating") not in (None, "") else None,
     }
 
@@ -1107,7 +1157,8 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
         try:
             data = json.loads(cache_p.read_text(encoding="utf-8"))
             ts = datetime.fromisoformat(data.get("_cached_at", "2000-01-01"))
-            if datetime.now() - ts < timedelta(hours=24):
+            # a pre-2026-11-04 entry (no _schema) holds 'or 0' zeros: not served, re-read instead
+            if data.get("_schema") == FIXTURE_STATS_SCHEMA and datetime.now() - ts < timedelta(hours=24):
                 return data.get("stats", {})
         except Exception:
             pass
@@ -1155,32 +1206,43 @@ def fetch_player_season_stats(player_id: int, league_id: int, season: str) -> di
     shots   = s.get("shots",  {})
     cards   = s.get("cards",  {})
 
-    apps = max(int(games.get("appearences") or 0), 1)
+    # Per-game = count / appearances, both as the provider sent them (owner 2026-11-04). It was
+    # `max(int(apps or 0), 1)` and `int(x or 0)`: a player without recorded appearances got a typed
+    # divisor of 1, and a count the provider did not send became 0 per game. Now a missing count or
+    # missing / zero appearances gives None (NaN downstream), never a number.
+    apps = _count_or_none(games.get("appearences"))
+
+    def _pg(*vals):
+        if apps is None or apps <= 0 or any(v is None for v in vals):
+            return None
+        return sum(vals) / apps
+
+    _c = _count_or_none
     result = {
         "season_appearances":  apps,
-        "season_goals_pg":     (int(goals.get("total")   or 0)) / apps,
-        "season_assists_pg":   (int(goals.get("assists")  or 0)) / apps,
-        "season_shots_pg":     (int(shots.get("total")   or 0)) / apps,
-        "season_sot_pg":       (int(shots.get("on")      or 0)) / apps,
-        "season_cards_pg":     (int(cards.get("yellow")  or 0) + int(cards.get("red") or 0)) / apps,
-        "season_minutes_pg":   (int(games.get("minutes") or 0)) / apps,
+        "season_goals_pg":     _pg(_c(goals.get("total"))),
+        "season_assists_pg":   _pg(_c(goals.get("assists"))),
+        "season_shots_pg":     _pg(_c(shots.get("total"))),
+        "season_sot_pg":       _pg(_c(shots.get("on"))),
+        "season_cards_pg":     _pg(_c(cards.get("yellow")), _c(cards.get("red"))),
+        "season_minutes_pg":   _pg(_c(games.get("minutes"))),
     }
 
     # Additional season-level fields (from same API response, zero extra calls)
-    lineups      = s.get("games", {}).get("lineups", 0) or 0
     passes_obj   = s.get("passes",    {}) or {}
     dribbles_obj = s.get("dribbles", {}) or {}
     fouls_obj    = s.get("fouls",     {}) or {}
 
-    result["season_start_rate"]      = (int(lineups) / apps) if apps > 0 else 0.0
-    result["season_pass_accuracy"]   = float(passes_obj.get("accuracy") or 0) / 100.0  # convert % to 0-1
-    result["season_dribble_pg"]      = (int(dribbles_obj.get("success") or 0)) / apps
-    result["season_fouls_pg"]        = (int(fouls_obj.get("committed") or 0)) / apps
-    result["season_fouls_drawn_pg"]  = (int(fouls_obj.get("drawn") or 0)) / apps
+    result["season_start_rate"]      = _pg(_c((s.get("games") or {}).get("lineups")))
+    acc = _pct_or_none(passes_obj.get("accuracy"))
+    result["season_pass_accuracy"]   = acc / 100.0 if acc is not None else None   # % -> 0-1
+    result["season_dribble_pg"]      = _pg(_c(dribbles_obj.get("success")))
+    result["season_fouls_pg"]        = _pg(_c(fouls_obj.get("committed")))
+    result["season_fouls_drawn_pg"]  = _pg(_c(fouls_obj.get("drawn")))
 
     cache_p.write_text(
-        json.dumps({"_cached_at": datetime.now().isoformat(), "stats": result},
-                   ensure_ascii=False),
+        json.dumps({"_cached_at": datetime.now().isoformat(), "_schema": FIXTURE_STATS_SCHEMA,
+                    "stats": result}, ensure_ascii=False),
         encoding="utf-8",
     )
     return result

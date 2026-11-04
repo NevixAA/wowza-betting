@@ -38,7 +38,9 @@ def test_home_performance_totals_are_exact():
     from dashboard_data import today_view
     s = pd.DataFrame({"signal_tier": ["SNIPER", "MARKSMAN", "SNIPER", "SNIPER", "VALUABLE"],
                       "_mkt": ["O/U 2.5"] * 5, "_pnl": [0.1, 0.1, 0.1, -0.315, 0.1],
-                      "_dt": pd.to_datetime(["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-04"])})
+                      "_dt": pd.to_datetime(["2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04", "2026-10-04"]),
+                      # THE staked definition (owner 2026-11-04): a recorded policy stake, not the tier
+                      "_staked": [True, True, True, True, False], "_stake_units": [1.0, 1.0, 1.0, 1.0, None]})
     perf = today_view.performance(s, today="2026-10-05")
     assert perf["pnl"] == -0.015 and U.fmt(perf["pnl"]) == "-0.02u"
     assert perf["last7_pnl"] == -0.015 and perf["drawdown"] == -0.315

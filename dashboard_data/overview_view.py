@@ -17,7 +17,7 @@ import streamlit as st
 
 import dashboard_ui as ui
 from src import units as U
-from src.tier_labels import STAKED_LABEL
+from src.staked import FLAT_LABEL, SHORT as STAKED_SHORT
 from dashboard_data import core
 
 ORDER = {"RED": 0, "AMBER": 1, "NO_DATA": 2, "GREEN": 3}
@@ -78,14 +78,18 @@ def health_cards(checks: list[dict], per_row: int = 3) -> None:
 
 # ── production ────────────────────────────────────────────────────────────────────────────────
 def staked_cards(perf: dict) -> None:
-    """The staked headline + one card per track, SNIPER + MARKSMAN only (VALUABLE is paper)."""
+    """The staked headline + one card per track. Staked = THE definition (src/staked.py, owner
+    2026-11-04): a recorded policy stake > 0 on a real-money track — not a tier. P/L is flat 1u; the
+    P/L at the recorded stakes is a separate, labelled line."""
     tracks = {k: val for k, val in perf["by_track"].items() if k != "unknown"}
     staked_n = sum(t["staked_only"]["n"] for t in tracks.values())
     staked_pnl = U.total(t["staked_only"]["pnl"] for t in tracks.values())
+    stake_pnl = U.total(t["staked_only"].get("stake_pnl") or 0.0 for t in tracks.values())
     items = sorted(tracks.items())
     cols = st.columns(min(3, len(items) + 1))
     ui.metric_card("Staked P/L", U.fmt(staked_pnl), title="V9 · all tracks", container=cols[0],
-                   supporting=[("Staked bets", f"{staked_n:,}"), ("Tiers", f"{STAKED_LABEL} only")],
+                   supporting=[("Staked bets", f"{staked_n:,}"), ("Basis", f"{FLAT_LABEL} · {STAKED_SHORT}"),
+                               ("P/L at recorded stakes", U.fmt(stake_pnl))],
                    status=ui.status_chip("LIVE", label="STAKED"), n=staked_n)
     for i, (name, t) in enumerate(items):
         s_ = t["staked_only"]

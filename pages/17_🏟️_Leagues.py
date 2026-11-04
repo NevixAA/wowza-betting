@@ -6,7 +6,7 @@ the same functions the Monday Telegram "Leagues" picture draws (telegram_bot/dai
 so the app and Telegram cannot disagree.
 
 Basis (the same as the rest of the app): live tips from the two committed ledgers, settled, match
-date from PERFORMANCE_CUTOFF_DATE, flat 1u. Results = staked tiers (SNIPER + MARKSMAN); VALUABLE is
+date from PERFORMANCE_CUTOFF_DATE, flat 1u. Results = staked tips (a recorded policy stake > 0, src/staked.py, owner 2026-11-04); VALUABLE is
 shown on its own line as paper. A paper league (config.PAPER_LEAGUES) is shown, labelled, and kept
 out of every all-league total.
 
@@ -28,7 +28,8 @@ from dashboard_access import require as _require_tier  # noqa: E402
 _require_tier("pro")  # tier guard (dashboard_access.PAGES) - same tier as the Tips dashboard
 
 import dashboard_ui as ui  # noqa: E402
-from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402
+from src.tier_labels import GAP_EXPLAINER, PAPER_TIER_LABEL, STAKED_LABEL  # noqa: E402,F401
+from src.staked import DEFINITION as STAKED_DEF  # noqa: E402
 from dashboard_data import core, leagues  # noqa: E402
 from src import units as U  # noqa: E402
 from dashboard_data import leagues_view as V  # noqa: E402
@@ -60,7 +61,7 @@ def _pro_weekly():
 
 from src.tip_day import today as _tip_today  # noqa: E402
 TODAY = _tip_today()
-_SUB = (f"Every league's record, tips, rating and averages. Results are staked tiers ({STAKED_LABEL}), settled, "
+_SUB = (f"Every league's record, tips, rating and averages. Results are staked tips (policy stake > 0), settled, "
         f"flat 1u, from the performance cutoff; {PAPER_TIER_LABEL} is paper and shown on its own line. Paper leagues "
         f"are shown and labelled, never counted in totals. {GAP_EXPLAINER} Not betting advice.")
 try:
@@ -80,11 +81,11 @@ if ov.empty:
 
 # ── headline ──────────────────────────────────────────────────────────────────────────────────
 tot = leagues.totals(d)
-ui.metric_card("P/L", U.fmt(tot["pl"]), title="All leagues · staked tiers", help="Flat 1u stakes",
+ui.metric_card("P/L", U.fmt(tot["pl"]), title="All leagues · staked", help=f"Flat 1u per staked bet. {STAKED_DEF}",
                supporting=[("Staked tips settled", f"{tot['tips']:,}"), ("Hit", V.fmt_pct(tot["hit"], 1)),
                            ("ROI", V.fmt_roi(tot["roi"])), ("W-L", V.wl_help(tot["won"], tot["lost"], tot["void"])),
                            ("Leagues", f"{int((ov['tips'] > 0).sum())} with staked tips · {len(ov)} listed")],
-               status=ui.status_chip("LIVE", label=f"STAKED · {STAKED_LABEL.upper()}") + " "
+               status=ui.status_chip("LIVE", label="STAKED · POLICY STAKE > 0") + " "
                + ui.status_chip("PAPER", label="PAPER LEAGUES EXCLUDED"))
 
 # ── 1. all-leagues overview ───────────────────────────────────────────────────────────────────
@@ -139,9 +140,9 @@ ui.section_header("Market breakdown", "Sides never pooled: O/U 2.5 Over and Unde
 left, right = st.columns(2)
 with left:
     ui.eyebrow("By market")
-    basis = st.radio("Tiers", [f"Staked ({STAKED_LABEL})", f"{PAPER_TIER_LABEL} (paper)"], horizontal=True,
+    basis = st.radio("Tiers", ["Staked (policy stake > 0)", f"{PAPER_TIER_LABEL} (tier view)"], horizontal=True,
                      key="lg_mkt_basis", label_visibility="collapsed")
-    bm = leagues.by_market(g, leagues.STAKED if basis.startswith("Staked") else ("VALUABLE",), reg=reg, league=pick)
+    bm = leagues.by_market(g, None if basis.startswith("Staked") else ("VALUABLE",), reg=reg, league=pick)
     if bm.empty:
         ui.empty_state("NO_DATA", "No settled tips on this basis.")
     else:

@@ -64,6 +64,18 @@ def ledger(include_side_markets: bool = True,
     return d.reset_index(drop=True)
 
 
+def stake_labels(d: pd.DataFrame) -> pd.DataFrame:
+    """src.staked labels for ledger() rows (bets_ledger rows carry market 'ou25', side rows their own),
+    from the recorded stake_audit.csv / stake_plan.csv read through the dashboard's reader."""
+    from src import staked as S
+    rec = S.load_records(OUT, reader=read_csv)
+    x = d.copy()
+    for c in ("match_date", "generated_at"):
+        if c in x.columns and isinstance(x[c].dtype, pd.DatetimeTZDtype):
+            x[c] = x[c].dt.tz_convert(None)
+    return S.label(x, rec)
+
+
 def retrain_log() -> dict:
     return read_json(OUT / "retrain_log.json")
 
@@ -104,18 +116,20 @@ def performance(days: int | None = None) -> dict:
     if s.empty:
         return {"available": False, "why": f"no settled bets in the last {days} days"}
     out = {"available": True, "window_days": days, "by_track": {}}
-    # THE staked definition (dashboard_data.today_view.is_staked: SNIPER + MARKSMAN, live, settled,
-    # since the cutoff, paper leagues out). Until 2026-11-02 this counted WIN/LOSS rows of any source
-    # and kept rows without a match date, so Overview's "Staked" differed from Home's and Tips'.
+    # THE staked definition (dashboard_data.today_view.is_staked over src/staked.py: a recorded policy
+    # stake > 0 on a real-money track, live, settled, since the cutoff, paper leagues out; owner
+    # 2026-11-04). Until 2026-11-02 this counted WIN/LOSS rows of any source and kept rows without a
+    # match date; until 2026-11-04 it counted the SNIPER + MARKSMAN tiers, PAPER tracks included.
     from dashboard_data.today_view import is_staked
     dd = d.copy()
     if days and "generated_at" in dd.columns:
         dd = dd[dd["generated_at"] >= cut]
-    smask = is_staked(dd.get("signal_tier", pd.Series("", index=dd.index)),
+    lab = stake_labels(dd)
+    smask = is_staked(lab,
                       source=dd["source"] if "source" in dd.columns else None,
                       dt=dd["match_date"].dt.tz_convert(None) if "match_date" in dd.columns else None,
                       league=dd["league"] if "league" in dd.columns else None, pnl=dd.get("pnl"))
-    staked_all = dd[smask.to_numpy()]
+    staked_all = dd[smask.to_numpy()].assign(_stake_units=lab.loc[smask.to_numpy(), "stake_units"].to_numpy())
     for track, g in s.groupby(s.get("model_type", "unknown")):
         tiers = {}
         for tier, t in g.groupby(s.loc[g.index].get("signal_tier", "unknown")):
@@ -133,8 +147,12 @@ def performance(days: int | None = None) -> dict:
             # BREAK-EVEN TRAVELS WITH THE HIT RATE. A 45% hit rate is excellent at 2.40 and a
             # disaster at 1.70, so a hit rate shown without the bar it has to clear invites
             # exactly the wrong read. mean(1/odds), never 1/mean(odds).
+            # "staked_only" = THE staked definition (policy stake > 0). pnl is flat 1u; stake_pnl is the
+            # P/L at the recorded stakes (notional 100-unit bankroll).
             "staked_only": {
                 "n": int(len(staked)), "pnl": U.total(spnl),
+                "stake_units": U.total(staked["_stake_units"]) if len(staked) else 0.0,
+                "stake_pnl": U.total(spnl * staked["_stake_units"]) if len(staked) else 0.0,
                 "roi": round(U.total(spnl) / len(staked), 4) if len(staked) else None,
                 "hit": (round(float((spnl > 0).mean()), 4)
                         if len(staked) else None),
@@ -157,8 +175,11 @@ def by_league(days: int | None = 30, min_n: int = 5,
     if d.empty or "result" not in d.columns:
         return pd.DataFrame()
     s = d[d["result"].isin(["WIN", "LOSS"])].copy()
-    if staked_only and "signal_tier" in s.columns:
-        s = s[s["signal_tier"].astype(str).str.upper().isin(("SNIPER", "MARKSMAN"))]
+    if staked_only:
+        # THE staked definition (src/staked.py, owner 2026-11-04): a recorded policy stake > 0. Until
+        # then this kept the SNIPER + MARKSMAN tiers, PAPER tracks included.
+        from src.staked import is_staked as _is
+        s = s[_is(stake_labels(s)).to_numpy()]
     if days and "generated_at" in s.columns:
         s = s[s["generated_at"] >= pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=days)]
     if s.empty:
