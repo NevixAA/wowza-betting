@@ -268,7 +268,8 @@ def test_workflow_runs_the_four_steps_after_profiles_and_insidebox_lineups_last(
                 or ln.strip().startswith("STEPS:")]
     assert len(defaults) == 2
     for ln in defaults:
-        assert "profiles,injuries,coaches,transfers,lineups,strength" in ln
+        # fix round 8 (owner 2026-11-04): the player history re-fetch runs right after lineups
+        assert "profiles,injuries,coaches,transfers,lineups,playerrefetch,strength" in ln
     assert "COLLECT_AF_FLOOR" not in y and "COLLECT_AF_DAILY_CAP" not in y
     assert CC.FLOOR == 25_000 and CC.DAILY_CAP == 45_000
 

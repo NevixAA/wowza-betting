@@ -4,6 +4,11 @@ player_model/data_fetcher.py turned a missing corner count, total shots, possess
 count into 0 (`int(stats.get(...) or 0)`); feature_engineering then read a missing count as "did not
 score" (`(NaN >= 1).astype(int)`), and the live scanner read a silent feed as 0 shots on target.
 Each is None / NaN now, a recorded 0 is still 0, and nothing downstream casts the gap back to 0.
+
+Owner 2026-11-04 (fix round 8): API-Football sends null, not 0, for a count a player did not record in
+a match he played. A per-player null count is 0 ONLY when the player played (minutes > 0) AND the
+fixture's answer carries that statistic for some player; otherwise it stays missing
+(player_model/player_stat_nulls.py, the one shared reading).
 """
 from __future__ import annotations
 
@@ -64,7 +69,9 @@ META = {"fixture_id": 9, "date": "2026-10-01", "home_team": "H", "away_team": "A
         "team_corners": None, "referee": "", "season": "2026"}
 
 
-def test_fixture_player_counts_missing_stay_none():
+def test_fixture_player_counts_without_the_fixture_answer_stay_none():
+    """A caller that does not pass the fixture's answer (`answered`) cannot prove the provider
+    covered the statistic: every null stays None (the fix-round-7 reading)."""
     r = DF._parse_fixture_player(_player({"games": {"minutes": 90, "substitute": False},
                                           "goals": {"total": None, "assists": 1, "conceded": 0},
                                           "shots": {"total": None, "on": None}, "cards": {"yellow": 0}}),
@@ -74,6 +81,82 @@ def test_fixture_player_counts_missing_stay_none():
     assert r["team_corners"] is None and r["passes_total"] is None and r["saves"] is None
     # no minutes recorded -> no row (never a 0-minute appearance)
     assert DF._parse_fixture_player(_player({"games": {"minutes": None}}), META, "Premier League") is None
+
+
+# ── the owner's null rule (2026-11-04, fix round 8) ─────────────────────────────────────────────
+
+def _entry(pid, minutes, **groups):
+    return {"player": {"id": pid, "name": f"P{pid}"}, "statistics": [{"games": {"minutes": minutes}, **groups}]}
+
+
+def _answer(*players):
+    return [{"team": {"id": 1, "name": "H"}, "players": list(players)}]
+
+
+def test_null_is_zero_only_for_a_player_who_played_in_a_fixture_that_has_the_stat():
+    from player_model import player_stat_nulls as N
+    scorer = _entry(1, 90, goals={"total": 1, "assists": None}, shots={"total": 3, "on": 2},
+                    passes={"total": 40, "key": None, "accuracy": None}, penalty={"scored": None})
+    quiet = _entry(2, 70, goals={"total": None, "assists": None}, shots={"total": None, "on": None},
+                   passes={"total": 22, "key": None, "accuracy": None}, penalty={"scored": None})
+    bench = _entry(3, None, goals={"total": None}, shots={"total": None, "on": None})
+    zero_min = _entry(4, 0, goals={"total": None})
+    ans = N.fixture_answered(_answer(scorer, quiet, bench, zero_min))
+    assert {"goals", "shots_total", "shots_on_target", "passes_total"} <= ans
+    assert "assists" not in ans and "key_passes" not in ans and "penalty_scored" not in ans
+    q = N.player_counts(quiet["statistics"][0], ans)
+    assert q["goals"] == 0 and q["shots_total"] == 0 and q["shots_on_target"] == 0   # played, answered
+    assert q["passes_total"] == 22                                                    # sent value kept
+    assert q["assists"] is None and q["key_passes"] is None and q["penalty_scored"] is None  # nobody has it
+    assert all(v is None for v in N.player_counts(bench["statistics"][0], ans).values())     # no minutes
+    assert all(v is None for v in N.player_counts(zero_min["statistics"][0], ans).values())  # 0 minutes
+    # a fixture with no player statistics at all answers nothing
+    assert N.fixture_answered([]) == frozenset() and N.fixture_answered(None) == frozenset()
+    assert N.fixture_answered(_answer(bench)) == frozenset()
+    # a non-null value that is not a count is missing, never 0; rating / accuracy are not counts
+    assert N.read_count("n/a", 90, True) is None and N.read_count(None, 90, True) == 0
+    assert N.read_count(None, 90, False) is None and N.read_count(0, None, False) == 0
+    assert "rating" not in N.COUNT_FIELDS and "passes_accuracy" not in N.COUNT_FIELDS
+    assert N.rating_of({"games": {"rating": None}}) is None and N.rating_of({"games": {"rating": "7.1"}}) == 7.1
+
+
+def test_every_history_count_column_is_read_by_the_shared_rule():
+    from player_model import player_stat_nulls as N
+    stats = {"games": {"minutes": 90, "substitute": False}}
+    full = {"goals": {"total": 1, "assists": 1, "conceded": 1, "saves": 1}, "shots": {"total": 1, "on": 1},
+            "cards": {"yellow": 1, "red": 1}, "passes": {"total": 1, "key": 1}, "fouls": {"committed": 1, "drawn": 1},
+            "duels": {"total": 1, "won": 1}, "offsides": 1, "tackles": {"total": 1, "interceptions": 1, "blocks": 1},
+            "dribbles": {"attempts": 1, "success": 1, "past": 1},
+            "penalty": {"scored": 1, "missed": 1, "won": 1, "saved": 1, "commited": 1}}
+    other = _entry(9, 90, **full)
+    ans = N.fixture_answered(_answer(other))
+    assert ans == frozenset(N.COUNT_FIELDS)
+    r = DF._parse_fixture_player({"player": {"id": 5, "name": "Quiet"}, "statistics": [stats]}, META,
+                                 "Premier League", ans)
+    for col in N.HISTORY_COUNT_COLS:
+        assert r[col] == 0, col                                              # played + answered -> 0
+    assert r["rating"] is None and r["minutes"] == 90
+    r9 = DF._parse_fixture_player(other, META, "Premier League", ans)
+    assert all(r9[c] == 1 for c in N.HISTORY_COUNT_COLS)                     # sent values kept
+
+
+def test_cup_collector_and_live_player_stats_use_the_rule(monkeypatch):
+    from player_model import api_football as AF
+    played = _entry(11, 80, goals={"total": None}, shots={"on": None}, cards={"yellow": None, "red": None})
+    other = _entry(12, 90, goals={"total": 2}, shots={"on": 3}, cards={"yellow": 1, "red": 0})
+    unused = _entry(13, None, goals={"total": None})
+    raw = [{"team": {"id": 1, "name": "H"}, "players": [played, other, unused]}]
+    monkeypatch.setattr(AF, "fixture_players_raw", lambda *a, **k: raw)
+    s = {r["player_id"]: r for r in AF.get_fixture_player_stats(100)}
+    assert s[11]["goals"] == 0 and s[11]["shots_on_target"] == 0 and s[11]["yellow_card"] == 0
+    assert s[11]["red_card"] == 0 and s[11]["assists"] is None                # nobody has assists
+    assert s[13]["goals"] is None                                             # unused substitute
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import collect_cup_player_stats as CUP
+    fix = pd.Series({"fixture_id": 77, "home_id": 1, "away_id": 2, "home_name": "H", "away_name": "A",
+                     "date": "2026-10-01", "season": 2026, "league": "Champions League", "status": "FT"})
+    rows = {r["player_id"]: r for r in CUP.parse({"response": raw}, fix)}
+    assert rows[11]["goals"] == 0 and rows[11]["assists"] is None and 13 not in rows
 
 
 def test_season_stats_missing_appearances_or_counts_are_none(tmp_path, monkeypatch):

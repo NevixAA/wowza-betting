@@ -13,15 +13,25 @@ Owner 2026-11-04: "1 similar staked" — ONE definition everywhere, and it is th
     first sight per policy_version x fixture x track) or output/stake_plan.csv (the latest run).
 
 WHAT COUNTS AS PROOF. Only a recorded row. A position (match date, home, away, policy market, side,
-model_type) is STAKED when ANY of its recorded decisions qualifies; its stake is the EARLIEST
-qualifying record — the moment the recommendation was made (a later restatement under a renamed
-track or a new policy_version is the same bet, never a second stake; P1_STAKE_CONTRACT_RECONCILIATION
-section 4). A position staked once and later re-sized to zero is still STAKED and is counted in
-`withdrawn` so it is visible, not silently decided (open owner question).
+model_type) is STAKED when its LAST recorded decision BEFORE KICKOFF qualifies, and its stake is that
+decision's stake (owner 2026-11-04, fix round 8). Until then the EARLIEST qualifying record decided,
+so a position re-sized to 0 by a later run before kickoff still counted as staked. A restatement
+under a renamed track or a new policy_version is the same position, never a second stake
+(P1_STAKE_CONTRACT_RECONCILIATION section 4). A stake withdrawn before kickoff is NOT staked; it is
+counted in `withdrawn` so it stays visible. A decision recorded AFTER kickoff decides nothing (counted
+in `n_after_kickoff`): the bet could no longer be placed. A record without a generation time cannot
+be placed before or after kickoff and decides nothing either.
+
+KICKOFF. The recorded kickoff_utc of the same fixture key (date|home|away, the predict frame's own
+strings) in KICKOFF_FILES, the files the predict run writes beside the stake plan. Two different
+recorded kickoffs for one key are refused (ambiguity). Without a single recorded kickoff the deadline
+is the END of the match date, UTC (owner 2026-11-04), and those positions are counted
+(`kickoff_basis` = 'match_date_eod', never hidden).
 
 EVERY OTHER ROW IS LABELLED, NEVER GUESSED (`stake_status`):
-  STAKED                  a qualifying record exists
-  NOT_STAKED              records exist, none qualifies (PAPER track, tier, odds cap, ...) — reason kept
+  STAKED                  the last decision before kickoff qualifies
+  NOT_STAKED              records exist, the last one before kickoff does not qualify (PAPER track,
+                          tier, odds cap, withdrawn, no decision before kickoff ...) — reason kept
   PRE_POLICY_NO_RECORD    no record and the tip was generated before the first recorded policy decision
                           (the policy was wired 2026-10-14; earlier tips have no stake to prove)
   NO_STAKE_RECORD         no record although the tip is from after the policy start — UNIDENTIFIABLE,
@@ -50,6 +60,14 @@ from src.bankroll_policy import REAL_STATES
 
 #: the recorded stake decisions, newest file last
 RECORD_FILES = ("stake_audit.csv", "stake_plan.csv")
+#: recorded kickoffs (file, match-date column), written by the predict run from the same frame as the
+#: stake plan (home_team / away_team / kickoff_utc). Union; a key with two kickoffs is refused.
+KICKOFF_FILES = (("predictions.csv", "date"), ("edge_engine_shadow.csv", "match_date"),
+                 ("drift_shadow.csv", "match_date"), ("quality_tier_shadow.csv", "match_day"),
+                 ("league_weekly_candidates.csv", "match_date"))
+KICKOFF, EOD = "kickoff", "match_date_eod"
+NO_PRE_KICKOFF = "NO_DECISION_BEFORE_KICKOFF"
+AMBIGUOUS = "AMBIGUOUS_LAST_DECISION"
 #: ledger / display market -> policy market. Anything else has no policy track.
 POLICY_MARKET = {"ou25": "OU25", "o/u 2.5": "OU25", "OU25": "OU25", "btts": "BTTS", "BTTS": "BTTS",
                  "over15": "OVER15", "OVER15": "OVER15", "over 1.5": "OVER15",
@@ -107,7 +125,7 @@ def _model(m, index) -> pd.Series:
 def records_from(*frames: pd.DataFrame) -> pd.DataFrame:
     """Stake rows (stake_audit / stake_plan schema) -> one normalised row per recorded decision."""
     cols = ["date", "home", "away", "market", "side_key", "model_type", "generated_at", "qualifies",
-            "stake_amount", "final_fraction", "reason", "policy_version", "deployment_state"]
+            "stake_amount", "final_fraction", "reason", "policy_version", "deployment_state", "kickoff"]
     parts = []
     for f in frames:
         if f is None or f.empty or "fixture" not in f.columns:
@@ -127,30 +145,73 @@ def records_from(*frames: pd.DataFrame) -> pd.DataFrame:
             "stake_amount": pd.to_numeric(f.get("stake_amount"), errors="coerce"),
             "final_fraction": pd.to_numeric(f.get("final_fraction"), errors="coerce"),
             "reason": f.get("reason"), "policy_version": f.get("policy_version"),
-            "deployment_state": f.get("deployment_state")}, index=f.index))
+            "deployment_state": f.get("deployment_state"),
+            # a record frame that carries its own recorded kickoff (none of the stake files does yet)
+            "kickoff": (pd.to_datetime(f["kickoff_utc"], errors="coerce", utc=True, format="mixed")
+                        if "kickoff_utc" in f.columns
+                        else pd.Series(pd.NaT, index=f.index, dtype="datetime64[ns, UTC]"))},
+            index=f.index))
     if not parts:
         return pd.DataFrame(columns=cols)
     r = pd.concat(parts, ignore_index=True)
     r = r[r["market"].notna()]
-    return r.drop_duplicates(subset=[c for c in cols if c != "qualifies"]).reset_index(drop=True)
+    return r.drop_duplicates(subset=[c for c in cols if c not in ("qualifies", "kickoff")]).reset_index(drop=True)
 
 
-def load_records(out_dir=None, reader=None) -> pd.DataFrame:
-    """Read RECORD_FILES from `out_dir` (default config.OUTPUT_DIR). `reader(path)` lets the dashboard
-    pass its mirror-aware reader; a missing file contributes nothing (no record, never a default)."""
+def _read(out_dir, name, reader):
+    p = Path(out_dir) / name
+    try:
+        return reader(p) if reader is not None else (pd.read_csv(p, low_memory=False) if p.exists() else None)
+    except Exception:                                                      # noqa: BLE001 - absent = no record
+        return None
+
+
+def kickoffs_from(frames) -> pd.DataFrame:
+    """[(frame, date column)] -> one row per fixture key (date, home, away) with its recorded kickoff
+    (UTC). A key recorded with two different kickoffs gets NaT (ambiguity refused, never picked)."""
+    parts = []
+    for f, dc in frames:
+        if f is None or f.empty or not {dc, "home_team", "away_team", "kickoff_utc"} <= set(f.columns):
+            continue
+        parts.append(pd.DataFrame({
+            "date": f[dc].astype(object).map(lambda v: str(v).strip()[:10] if pd.notna(v) else None),
+            "home": f["home_team"].astype(object), "away": f["away_team"].astype(object),
+            "kickoff": pd.to_datetime(f["kickoff_utc"], errors="coerce", utc=True, format="mixed")}))
+    if not parts:
+        return pd.DataFrame(columns=["date", "home", "away", "kickoff"])
+    k = pd.concat(parts, ignore_index=True).dropna()
+    g = k.groupby(["date", "home", "away"])["kickoff"]
+    one = g.nunique() == 1
+    out = g.first().where(one).rename("kickoff").reset_index()
+    return out
+
+
+def load_kickoffs(out_dir=None, reader=None) -> pd.DataFrame:
+    """kickoffs_from(KICKOFF_FILES in `out_dir`); a missing file contributes nothing."""
     if out_dir is None:
         import config
         out_dir = config.OUTPUT_DIR
-    frames = []
-    for name in RECORD_FILES:
-        p = Path(out_dir) / name
-        try:
-            f = reader(p) if reader is not None else (pd.read_csv(p, low_memory=False) if p.exists() else None)
-        except Exception:                                                  # noqa: BLE001 - absent = no record
-            f = None
-        if f is not None and len(f):
-            frames.append(f)
-    return records_from(*frames)
+    return kickoffs_from([(_read(out_dir, name, reader), dc) for name, dc in KICKOFF_FILES])
+
+
+def with_kickoffs(records: pd.DataFrame, kickoffs: pd.DataFrame) -> pd.DataFrame:
+    """records with `kickoff` taken from `kickoffs` where the record carries none."""
+    if records is None or records.empty or kickoffs is None or kickoffs.empty:
+        return records
+    m = records.merge(kickoffs.rename(columns={"kickoff": "_k"}), on=["date", "home", "away"], how="left")
+    m["kickoff"] = m["kickoff"].where(m["kickoff"].notna(), m["_k"])
+    return m.drop(columns="_k")
+
+
+def load_records(out_dir=None, reader=None) -> pd.DataFrame:
+    """Read RECORD_FILES from `out_dir` (default config.OUTPUT_DIR), with each fixture's recorded
+    kickoff (KICKOFF_FILES). `reader(path)` lets the dashboard pass its mirror-aware reader; a missing
+    file contributes nothing (no record, never a default)."""
+    if out_dir is None:
+        import config
+        out_dir = config.OUTPUT_DIR
+    frames = [f for f in (_read(out_dir, name, reader) for name in RECORD_FILES) if f is not None and len(f)]
+    return with_kickoffs(records_from(*frames), load_kickoffs(out_dir, reader))
 
 
 def policy_start(records: pd.DataFrame):
@@ -160,26 +221,56 @@ def policy_start(records: pd.DataFrame):
     return records["generated_at"].min()
 
 
+def deadline(records: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+    """(deadline UTC, basis) per record: the recorded kickoff, else the end of the match date (UTC).
+    A record whose match date does not parse has no deadline (NaT) and decides nothing."""
+    ko = (pd.to_datetime(records["kickoff"], errors="coerce", utc=True) if "kickoff" in records.columns
+          else pd.Series(pd.NaT, index=records.index, dtype="datetime64[ns, UTC]"))
+    day = pd.to_datetime(records["date"], errors="coerce", format="%Y-%m-%d")
+    eod = day.dt.tz_localize("UTC") + pd.Timedelta(days=1) - pd.Timedelta(microseconds=1)
+    basis = pd.Series(KICKOFF, index=records.index, dtype=object).where(ko.notna(), EOD)
+    return ko.where(ko.notna(), eod), basis
+
+
 def decisions(records: pd.DataFrame) -> pd.DataFrame:
-    """One row per position: staked?, the earliest qualifying stake, the latest reason, withdrawn."""
+    """One row per position: staked? = its LAST decision before kickoff qualifies (owner 2026-11-04),
+    the stake of that decision, its reason, withdrawn (a qualifying decision before it, then not),
+    the kickoff basis and how many records came after kickoff."""
     key = ["date", "home", "away", "market", "side_key", "model_type"]
     cols = key + ["staked", "stake_units", "stake_fraction", "stake_reason", "stake_policy_version",
-                  "withdrawn", "n_records"]
+                  "withdrawn", "n_records", "kickoff_basis", "n_after_kickoff"]
     if records is None or records.empty:
         return pd.DataFrame(columns=cols)
     r = records.sort_values("generated_at", kind="mergesort").copy()
     r["model_type"] = r["model_type"].astype(object).where(r["model_type"].notna(), "")
+    r["_deadline"], r["_basis"] = deadline(r)
+    r["_pre"] = (r["generated_at"].notna() & r["_deadline"].notna()
+                 & (r["generated_at"] <= r["_deadline"])).astype(bool)
     out = []
     for k, g in r.groupby(key, sort=False, dropna=False):
-        q = g[g["qualifies"]]
-        last = g.iloc[-1]
-        first = q.iloc[0] if len(q) else None
-        out.append(dict(zip(key, k), staked=bool(len(q)),
-                        stake_units=float(first["stake_amount"]) if first is not None else 0.0,
-                        stake_fraction=float(first["final_fraction"]) if first is not None else 0.0,
-                        stake_reason="OK" if first is not None else str(last["reason"]),
-                        stake_policy_version=str((first if first is not None else last)["policy_version"]),
-                        withdrawn=bool(len(q) and not last["qualifies"]), n_records=int(len(g))))
+        pre = g[g["_pre"]]
+        basis = KICKOFF if (g["_basis"] == KICKOFF).all() else EOD
+        n_after = int((~g["_pre"]).sum())
+        if pre.empty:
+            last = g.iloc[-1]
+            out.append(dict(zip(key, k), staked=False, stake_units=0.0, stake_fraction=0.0,
+                            stake_reason=NO_PRE_KICKOFF, stake_policy_version=str(last["policy_version"]),
+                            withdrawn=False, n_records=int(len(g)), kickoff_basis=basis,
+                            n_after_kickoff=n_after))
+            continue
+        last = pre.iloc[-1]
+        # two records at the same last moment that disagree prove no single decision: refused
+        tie = pre[pre["generated_at"] == last["generated_at"]]
+        ambiguous = len(tie) > 1 and (tie["qualifies"].nunique() > 1
+                                      or tie["stake_amount"].nunique(dropna=False) > 1)
+        ok = bool(last["qualifies"]) and not ambiguous
+        out.append(dict(zip(key, k), staked=ok,
+                        stake_units=float(last["stake_amount"]) if ok else 0.0,
+                        stake_fraction=float(last["final_fraction"]) if ok else 0.0,
+                        stake_reason=("OK" if ok else AMBIGUOUS if ambiguous else str(last["reason"])),
+                        stake_policy_version=str(last["policy_version"]),
+                        withdrawn=bool(not ok and pre["qualifies"].any()), n_records=int(len(g)),
+                        kickoff_basis=basis, n_after_kickoff=n_after))
     return pd.DataFrame(out, columns=cols)
 
 

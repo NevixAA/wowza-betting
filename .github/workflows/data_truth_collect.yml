@@ -38,6 +38,11 @@ name: Data Truth Collect (real data)
 #  13. scripts/collect_transfers.py  /transfers?team, 1 call per team id (1,645)
 #  14. scripts/collect_lineups.py    /fixtures/lineups?fixture, 1 call per finished registry fixture,
 #      newest first (at most 119,058; seasons the provider flags without lineups are skipped)
+#  15. scripts/collect_player_refetch.py  /fixtures/players?fixture again for every fixture behind
+#      player_history + the UEFA cup rows whose identity the fixture lists prove (32,724 on
+#      2026-11-04; 247 national-team fixtures are not in the lists and are refused), newest first.
+#      Owner 2026-11-04: AFTER lineups. The counts are stored under the owner's null rule BESIDE the
+#      history (output/collect/player_history_refetch.parquet + player_history_refetch_audit.json)
 #
 # API-FOOTBALL BUDGET (scripts/collect_common.py, checked before EVERY call): this job may spend at
 # most 45,000 calls per UTC day (journal output/collect/af_budget.json, committed) and stops as soon
@@ -54,9 +59,9 @@ on:
   workflow_dispatch:
     inputs:
       steps:
-        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,strength)'
+        description: 'Comma list of steps to run (fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength)'
         required: false
-        default: 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,strength'
+        default: 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength'
 
 concurrency:
   group: data-truth-collect
@@ -69,7 +74,7 @@ jobs:
     permissions:
       contents: write
     env:
-      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,strength' }}
+      STEPS: ${{ github.event.inputs.steps || 'fixtures,htscores,cupstats,afgap,insidebox,fullstats,sidelined,profiles,injuries,coaches,transfers,lineups,playerrefetch,strength' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -221,6 +226,17 @@ jobs:
         run: |
           python scripts/collect_lineups.py
           /tmp/commit_collected.sh lineups
+
+      # Owner 2026-11-04 (fix round 8): AFTER lineups. player_history (and the UEFA cup rows) hold 0
+      # for every null the provider sent; one /fixtures/players re-read per proven fixture stores the
+      # counts under the owner's null rule beside the history. Budget-guarded, journaled, resumable.
+      - name: 15. Player history re-fetch (null rule)
+        if: contains(env.STEPS, 'playerrefetch')
+        env:
+          APIFOOTBALL_KEY: ${{ secrets.APIFOOTBALL_KEY }}
+        run: |
+          python scripts/collect_player_refetch.py
+          /tmp/commit_collected.sh playerrefetch
 
       # 0 API calls (owner 2026-11-04): every statistic of the /fixtures/statistics answers already in
       # scripts/af_history_cache (shots off goal, offsides, passes, saves, ...), placed by team id,

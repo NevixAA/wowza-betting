@@ -444,20 +444,23 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
     recorded" and "recorded zero" were indistinguishable to every consumer. `started` is None when
     the provider sent neither `substitute` nor minutes. Settlement reads the raw records
     (fixture_players_raw) and decides itself what a null means.
+
+    OWNER RULE 2026-11-04 (fix round 8): the provider's null for a count is its "none" for a player
+    who PLAYED; it is read as 0 only when minutes > 0 AND the same answer carries that statistic for
+    some player of the fixture (player_model.player_stat_nulls, the one shared reading). An unused
+    substitute, or a statistic the fixture's answer has for nobody, stays None.
     """
+    from .player_stat_nulls import fixture_answered, player_counts
     players = []
-    for team_data in fixture_players_raw(fixture_id, cache_hours=168):   # 7 days
+    raw = fixture_players_raw(fixture_id, cache_hours=168)   # 7 days
+    answered = fixture_answered(raw)
+    for team_data in raw:
         team_name = (team_data.get("team") or {}).get("name")
         for player_entry in team_data.get("players") or []:
             p   = player_entry.get("player") or {}
             s   = (player_entry.get("statistics") or [{}])[0] or {}
             games = s.get("games") or {}
-            shots = s.get("shots") or {}
-            goals = s.get("goals") or {}
-            cards = s.get("cards") or {}
-            passes = s.get("passes") or {}
-            duels  = s.get("duels") or {}
-            fouls  = s.get("fouls") or {}
+            c = player_counts(s, answered)
             minutes = _int_or_none(games.get("minutes"))
             sub = games.get("substitute")
             if sub is not None:
@@ -475,17 +478,17 @@ def get_fixture_player_stats(fixture_id: int) -> list[dict]:
                 "position":        games.get("position"),
                 "minutes_played":  minutes,
                 "started":         started,
-                "goals":           _int_or_none(goals.get("total")),
-                "assists":         _int_or_none(goals.get("assists")),
-                "shots_total":     _int_or_none(shots.get("total")),
-                "shots_on_target": _int_or_none(shots.get("on")),
-                "yellow_card":     _flag_or_none(cards.get("yellow")),
-                "red_card":        _flag_or_none(cards.get("red")),
-                "key_passes":      _int_or_none(passes.get("key")),
-                "fouls_committed": _int_or_none(fouls.get("committed")),
-                "fouls_drawn":     _int_or_none(fouls.get("drawn")),
-                "duels_total":     _int_or_none(duels.get("total")),
-                "duels_won":       _int_or_none(duels.get("won")),
+                "goals":           c["goals"],
+                "assists":         c["assists"],
+                "shots_total":     c["shots_total"],
+                "shots_on_target": c["shots_on_target"],
+                "yellow_card":     _flag_or_none(c["yellow_cards"]),
+                "red_card":        _flag_or_none(c["red_cards"]),
+                "key_passes":      c["key_passes"],
+                "fouls_committed": c["fouls_committed"],
+                "fouls_drawn":     c["fouls_drawn"],
+                "duels_total":     c["duels_total"],
+                "duels_won":       c["duels_won"],
             })
     return players
 

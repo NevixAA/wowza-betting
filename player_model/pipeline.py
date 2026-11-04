@@ -710,6 +710,11 @@ def mode_predict() -> None:
     # a player's form / minutes / rest days and the opponent tables include his cup matches.
     from player_model.cup_history import with_cup_rows
     history = with_cup_rows(pd.read_parquet(HISTORY_CACHE))
+    # Owner 2026-11-04 (fix round 8): the re-fetched per-player counts (output/collect/
+    # player_history_refetch.parquet, scripts/collect_player_refetch.py) replace the suspect 0s the
+    # old `or 0` parser stored; rows not yet re-fetched keep their values, marked 'zeros_unverified'.
+    from player_model.history_refetch import with_refetched
+    history = with_refetched(history)
 
     # (The old _enrich_with_recent_form overwrote a player's last stored goals_pg / sot_pg /
     # cards_pg with ONE match's raw counts, `stat.get(..., 0)`; recent matches belong in history
