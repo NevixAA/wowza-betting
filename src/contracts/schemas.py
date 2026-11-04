@@ -403,11 +403,23 @@ def _stake_rules() -> tuple:
         Rule("fixture_matches_date",
              lambda d: text(d["fixture"]).str[:10] != text(d["date"]).str[:10],
              "fixture key starts with its date", ("fixture", "date")),
-        Rule("one_position_per_fixture",
-             lambda d: (num(d["final_fraction"]) > 0)
-             & d.assign(_s=num(d["final_fraction"]) > 0).groupby("fixture")["_s"].transform("sum").gt(1),
-             "the policy allows one real position per fixture", ("final_fraction", "fixture")),
+        Rule("opposite_direction_on_fixture",
+             lambda d: _opposite_staked(d),
+             "real positions on one fixture share one goal direction (owner 2026-11-04: several bets "
+             "on one match are fine, never opposites; BTTS Yes = Over, BTTS No = Under)",
+             ("final_fraction", "fixture", "market", "side")),
     )
+
+
+def _opposite_staked(d: pd.DataFrame) -> pd.Series:
+    """Staked rows whose fixture also carries a staked row of the OTHER goal direction."""
+    from src.bankroll_policy import goal_direction
+    side = d["side"] if "side" in d.columns else pd.Series(None, index=d.index, dtype=object)
+    staked = num(d["final_fraction"]) > 0
+    dirs = pd.Series([goal_direction(m, s) for m, s in zip(text(d["market"]), side)], index=d.index,
+                     dtype=object).where(staked)
+    n_dirs = dirs.groupby(text(d["fixture"])).transform("nunique")
+    return staked & dirs.notna() & n_dirs.gt(1)
 
 
 STAKE_PLAN_ROW = Schema(

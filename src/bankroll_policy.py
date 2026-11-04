@@ -116,12 +116,13 @@ def _is_true(v) -> bool:
 
 def goal_direction(market, side=None) -> str | None:
     """OVER / UNDER for a goal-total position (OU25 by its side, OVER15/OVER35/OVERxx -> OVER,
-    UNDERxx -> UNDER); None for BTTS and anything else, which never conflicts. Self-contained on
-    purpose: Pro's simulator imports this file alone. Mirrors src/direction_guard.goal_direction."""
+    UNDERxx -> UNDER) and for BTTS (YES -> OVER, NO -> UNDER: owner 2026-11-04, "u cant tipped
+    under1.5 and btts Y"); None for anything else. Self-contained on purpose: Pro's simulator
+    imports this file alone. Mirrors src/direction_guard.goal_direction."""
     m = str(market or "").strip().upper()
     s = str(side or "").strip().upper()
     if m.startswith("BTTS"):
-        return None
+        return {"YES": "OVER", "NO": "UNDER"}.get(s)
     if m.startswith("OVER"):
         return "OVER"
     if m.startswith("UNDER"):
@@ -253,8 +254,11 @@ def size_day(selections: pd.DataFrame, policy: dict, bankroll: float, peak: floa
     if ddm == 0.0:
         a.loc[a["requested_fraction"] > 0, "reason"] = "DRAWDOWN_STOP_PAPER_REVIEW_REQUIRED"
 
-    # 10. league/day and league x market/day caps: scale inside the group down to the cap
-    for keys, cap in ((["league"], caps["league_daily_cap"]),
+    # 10. fixture total, league/day and league x market/day caps: scale inside the group down to the
+    # cap. The fixture total matters since 2026-11-04 (one_position_per_fixture false: several
+    # same-direction positions on one match), when step 8's per-bet clip no longer bounds a fixture.
+    for keys, cap in ((["fixture"], caps["fixture_cap"]),
+                      (["league"], caps["league_daily_cap"]),
                       (["league", "market"], caps["league_market_daily_cap"])):
         tot = f.groupby([a[k] for k in keys]).transform("sum")
         scale = (cap / tot).where(tot > cap, 1.0).fillna(1.0)
